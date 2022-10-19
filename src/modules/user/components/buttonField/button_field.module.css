@@ -1,0 +1,27 @@
+.buttonField{
+    width: 100%;
+    padding:15px 0;
+    cursor: pointer;
+    font-weight: 500;
+    outline: none;
+    border-radius: .5rem;
+    border: none;
+    font-size: var(--fontsize-glossy);
+    box-shadow: 6px 7px 40px -4px rgba(0, 0, 0, 0.2);
+}
+
+
+.ripple {
+    background-position: center;
+    transition: background 1s ease;
+}
+
+.ripple:hover {
+    background: var(--color-champagne) radial-gradient(circle, transparent 1%,var(--color-champagne) 1%) center/15000%;
+}
+
+.ripple:active {
+    background-color: var(--color-sunlight);
+    background-size: 100%;
+    transition: background 0.2s ease;
+}
