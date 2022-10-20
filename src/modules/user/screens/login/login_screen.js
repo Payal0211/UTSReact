@@ -1,8 +1,28 @@
+import { useRef } from 'react';
+
+import { InputType } from 'constants/application';
 import ButtonField from 'modules/user/components/buttonField/button_field';
 import InputField from 'modules/user/components/inputField/input_field';
+import useIconToggle from 'shared/hooks/useIconToggle';
+import {
+	PasswordIconAiFillEye,
+	PasswordIconAiFillEyeInvisible,
+} from 'shared/utils/password_icon_utils';
 import loginStyle from './login.module.css';
-
+import useForm from 'shared/hooks/useForm';
+import { ValidateInput } from 'constants/inputValidators';
+import { _isNull } from 'shared/utils/basic_utils';
 const LoginScreen = () => {
+	const [togglePasswordVisibility, onTogglePassword] = useIconToggle();
+
+	const userLoginInfo = useRef({
+		username: '',
+		password: '',
+	});
+	const { inputChangeHandler, formValues, error, onSubmitHandler } = useForm(
+		userLoginInfo.current,
+	);
+
 	return (
 		<div className={loginStyle.loginContainer}>
 			<div className={loginStyle.loginColumn_1}>
@@ -22,11 +42,41 @@ const LoginScreen = () => {
 					<br />
 					<hr />
 					<div className={loginStyle.loginFormPart}>
-						<InputField label="email" />
+						<InputField
+							label="Username"
+							name="username"
+							type={InputType.TEXT}
+							placeholder="Enter username"
+							value={formValues['username']}
+							onChangeHandler={inputChangeHandler}
+							errorMsg={error['username']}
+						/>
+						<InputField
+							name="password"
+							label="Password"
+							type={
+								togglePasswordVisibility ? InputType.PASSWORD : InputType.TEXT
+							}
+							placeholder="Enter password"
+							onChangeHandler={inputChangeHandler}
+							value={formValues['password']}
+							errorMsg={error['password']}
+							onIconToggleHandler={onTogglePassword}
+							trailingIcon={
+								togglePasswordVisibility ? (
+									<PasswordIconAiFillEyeInvisible />
+								) : (
+									<PasswordIconAiFillEye />
+								)
+							}
+						/>
+						<div className={loginStyle.forgotpassword}>Forgot Password ?</div>
+						<hr />
+						<br />
 						<ButtonField
 							label="Log In"
 							backgroundColor={`var(--color-sunlight)`}
-							onClickHandler={null}
+							onClickHandler={onSubmitHandler}
 						/>
 					</div>
 				</div>

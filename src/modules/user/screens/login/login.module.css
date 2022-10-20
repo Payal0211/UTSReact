@@ -7,27 +7,26 @@
 }
 
 .loginColumn_1{
-    width: 40%;
-    transition: all .6s ease;
+    width: 35%;
+    /* transition: all .6s ease; */
 }
 
-.loginColumn_1:hover {
+/* .loginColumn_1:hover {
     width: 43%;
     cursor: pointer;
-    /* background-color: var(--color-sunlight); */
+    background-color: var(--color-sunlight);
 }
 
 .loginColumn_1:hover + .loginColumn_2 {
     width: 57%;
-    /* background-color: var(--background-color-dim); */
-}
+    background-color: var(--background-color-dim);
+} */
 
 .loginColumn_1_Body{
     width: 90%;
-    margin-top: 10%;
+    margin-top: 15%;
     margin-left:  auto;
     margin-right: auto;
-    /* border: 1px solid red; */
 }
 
 .uplersTalentLogo{
@@ -46,14 +45,20 @@
     font-size: 1.1rem;
 }
 
+.forgotpassword{
+    font-size: 1rem;
+    text-decoration: underline;
+    color: var(--background-color-jade);
+    margin:25px 0 !important;
+}
 .loginFormPart{
-margin-top: 50px;
+margin-top: 30px;
 }
 
 .loginColumn_2{
-    width: 60%;
+    width: 65%;
     background-color: var(--color-sunlight);
-    transition: all .6s ease;
+    /* transition: all .6s ease; */
 }
 
 .loginHeadline{
@@ -62,9 +67,31 @@ margin-top: 50px;
 }
 
 .loginHeadline h1{
-    margin-top: 80vh;
+    margin-top: 800px;
     font-size: 2rem;
     font-weight: bolder;
     letter-spacing: 0.3rem;
 }
 
+
+/*---------------------- FOR SCREEN LESS THAN 767PX ------------------- */
+@media screen and (max-width: 767px) {
+.uplersTalentLogo {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+}
+.loginColumn_1 {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10%;
+}
+.loginColumn_1_Body{
+    margin-top: 5%;
+}
+.loginColumn_2 {
+    display: none;
+}
+
+}
