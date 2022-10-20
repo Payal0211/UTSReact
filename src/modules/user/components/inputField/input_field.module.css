@@ -1,0 +1,38 @@
+.formField{
+    width: 100%;
+    margin: 25px 0;
+}
+
+.inputBox,.inputBoxError{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 500;
+    margin: 10px 0;
+    outline: none;
+    border: 1px solid var(--background-color-metal);
+    border-radius: .5rem;
+}
+.inputBoxError{
+    border: 1px solid var(--danger-color);
+}
+.inputfield{
+    width: 100%;
+    padding: 18px 25px;
+    border: none;
+    font-size: var(--fontsize-brittle);
+    background-color: transparent;
+}
+
+.inputfield:focus{
+    border: none;
+    outline: none;
+}
+.trailingIcon{
+    margin-right: 5%;
+}
+.error{
+    color: var(--danger-color);
+    font-size: var(--fontsize-brittle);
+}

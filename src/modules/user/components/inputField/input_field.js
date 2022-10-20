@@ -1,3 +1,5 @@
+import { useRef, useState, useEffect } from 'react';
+
 import inputFieldStyles from './input_field.module.css';
 
 const InputField = ({
@@ -11,22 +13,44 @@ const InputField = ({
 	errorMsg,
 	trailingIcon,
 	onIconToggleHandler,
-	validators,
 }) => {
+	const inputRef = useRef();
+	const [error, setError] = useState(errorMsg);
+
+	useEffect(() => {
+		setError(errorMsg);
+
+		return () => {
+			setError('');
+		};
+	}, [errorMsg]);
+
 	return (
-		<div>
+		<div className={inputFieldStyles.formField}>
 			<label>{label}</label>
-			<div>
+			<div
+				className={
+					error ? inputFieldStyles.inputBoxError : inputFieldStyles.inputBox
+				}>
 				<input
+					ref={inputRef}
+					className={inputFieldStyles.inputfield}
 					type={type}
 					name={name}
 					placeholder={placeholder}
 					maxLength={maxLength}
+					onChange={onChangeHandler}
+					value={value}
 				/>
 				{trailingIcon && (
-					<div onClick={onIconToggleHandler}>{trailingIcon}</div>
+					<div
+						onClick={onIconToggleHandler}
+						className={inputFieldStyles.trailingIcon}>
+						{trailingIcon}
+					</div>
 				)}
 			</div>
+			{error && <div className={inputFieldStyles.error}>* {errorMsg}</div>}
 		</div>
 	);
 };
