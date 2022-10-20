@@ -41,3 +41,24 @@ body {
   --fontsize-glossy: 20px;
   --fontsize-brittle: 16px;
 }
+
+::selection {
+  color: black;
+  background-color: var(--color-sunlight);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-TealWithOpacity);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-sunlight)
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-sunlight)
+}
