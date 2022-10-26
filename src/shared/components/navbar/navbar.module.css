@@ -1,0 +1,67 @@
+.navbarContainer{
+    background-color: var(--background-color-light);
+    width: 100%;
+    overflow-x: hidden;
+    top: 0;
+    left: 0;
+    position:fixed;
+    z-index: 1;
+    box-shadow: 0 1px 3px rgba(161,161,161,0.12), 0 1px 2px rgba(161,161,161,0.24);
+}
+
+.nav{
+    width: 95%;
+    padding: 15px 0;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navHeading{
+    
+    width: 33%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.uplersTalentLogo {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+}
+
+.activeTalent{
+    
+    font-size: .8vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+}
+.talentIndicator{
+    width: 10px;
+    margin-right: 20px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--color-sunlight);
+}
+
+.navlink{
+    
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 2%;
+    width: 67%;
+}
+.avatar{
+    width: 50px;
+    max-width: 50px;
+    border-radius: 50%;
+}
+
+.avatarDetails{
+    font-size: .8vw;
+    font-weight: 600;
+}

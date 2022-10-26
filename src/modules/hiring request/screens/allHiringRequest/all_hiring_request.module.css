@@ -1,0 +1,81 @@
+.hiringRequestContainer {
+    width: 90%;
+    margin: 0 auto;
+    /* border: 1px solid rebeccapurple; */
+}
+
+.addnewHR {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hiringRequest {
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.newHR {
+    padding: 1px 0;
+    background-color: var(--color-sunlight);
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.newHR label {
+    padding: 0 20px;
+    font-weight: 500;
+    font-size: .8vw;
+}
+
+.iconDown {
+    height: 50px;
+    width: 50px;
+    margin-right: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: white;
+}
+.filterContainer{
+    margin: 70px auto  ;
+}
+
+.filterSets{
+    padding:30px 20px;
+    display: flex;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--background-color-light);
+}
+
+.addFilter{
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 13%;
+    padding: 12px 12px;
+    border: 1px solid var(--background-color-metal);
+}
+
+.filterLabel{
+    font-weight: 600;
+    font-size: .8vw;
+}
+
+.filterCount{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: var(--color-sunlight);
+    border-radius: 50%;
+    font-weight: 500;
+}

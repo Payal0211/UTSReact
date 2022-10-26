@@ -1,3 +1,5 @@
+@import '~antd/dist/antd.css';
+
 * {
   
   word-wrap: break-word;
@@ -6,7 +8,8 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  background-color: var(--background-color-slate) ;
+  overflow-x: hidden;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -25,6 +28,7 @@ body {
   --background-color-light: #fff;
   --background-color-dim:#F9F9F9;
   --background-color-dark: #000;
+  --background-color-slate:#F5F5F5;
   --background-color-ebony: #5c5b5b;
   --background-color-metal: #969696;
   --background-color-jade: #313131;
