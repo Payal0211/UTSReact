@@ -8,6 +8,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .hiringRequest {
@@ -39,22 +40,27 @@
     justify-content: center;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    background-color: white;
+    background-color: var(--background-color-light);
 }
 .filterContainer{
     margin: 70px auto  ;
+    background-color: var(--background-color-light);
 }
 
 .filterSets{
-    padding:30px 20px;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    padding:30px 0;
     display: flex;
     border-radius: 10px;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--background-color-light);
+    
 }
 
 .addFilter{
+    cursor: pointer;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -65,7 +71,7 @@
 }
 
 .filterLabel{
-    font-weight: 600;
+    font-weight: 500;
     font-size: .8vw;
 }
 
@@ -77,5 +83,73 @@
     height: 30px;
     background-color: var(--color-sunlight);
     border-radius: 50%;
+    font-weight: 700;
+}
+
+.filterRight{
+    width: 70%;  
+    display: flex;
+    justify-content: space-between;
+    align-items: center ; 
+}
+
+.searchFilterSet{
+    padding: 2px 0;
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    width: 25%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.searchInput{
+    cursor: pointer;
+    width: 80%;
+    padding: 12px 12px 12px 0px;
+    outline: none;
+    border: none;
+    color: var(--background-color-dark);
     font-weight: 500;
+}
+.calendarFilterSet{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 25%;
+}
+.label{
+    font-size: .8rem;
+    font-weight: 500;
+    color: var(--background-color-dark);
+}
+.calendarFilter{
+    border-radius: 8px;
+    padding: 2px 10px;
+    border: 1px solid var(--background-color-metal);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dateFilter{
+    cursor: pointer;
+    width: 102%;
+    padding: 12px 12px 12px 12px;
+    outline: none;
+    border:none;
+    color: var(--background-color-dark);
+    font-weight: 500;
+}
+.priorityFilterSet{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 15%;
+       
+}
+.priorityFilter{
+    padding: 12px 18px 12px 18px;
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
 }

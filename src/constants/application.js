@@ -65,3 +65,9 @@ export class InputType {
 	static FILE = 'file';
 	static EMAIL = 'email';
 }
+
+export class hiringRequestPriority {
+	static NO_PRIORITY = 201;
+	static CURRENT_WEEK_PRIORITY = 101;
+	static NEXT_WEEK_PRIORITY = 102;
+}
