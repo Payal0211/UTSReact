@@ -10,11 +10,17 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { BsCalendar4 } from 'react-icons/bs';
 import { BiLockAlt } from 'react-icons/bi';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
+import HiringFilters from 'modules/hiring request/components/hiringFilter/hiringFilters';
 
 const AllHiringRequestScreen = () => {
+	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
 	const [isLoading, setLoading] = useState(false);
+
+	const onRemoveHRFilters = () => {
+		setIsAllowFilters(false);
+	};
 
 	useEffect(() => {
 		setLoading(true);
@@ -23,7 +29,6 @@ const AllHiringRequestScreen = () => {
 				'https://api.npoint.io/abbeed53bf8b4b354bb0',
 			);
 			response = response.data;
-
 			setAPIdata(
 				response.details.Data.map((item) => ({
 					starStatus: All_Hiring_Request_Utils.GETHRPRIORITY(
@@ -72,7 +77,7 @@ const AllHiringRequestScreen = () => {
 				<div className={allHRStyles.filterSets}>
 					<div
 						className={allHRStyles.addFilter}
-						onClick={() => alert('hello')}>
+						onClick={() => setIsAllowFilters(!isAllowFilters)}>
 						<IoFunnelOutline style={{ fontSize: '20px', fontWeight: '800' }} />
 						<div className={allHRStyles.filterLabel}>Add Filters</div>
 						<div className={allHRStyles.filterCount}>7</div>
@@ -168,7 +173,6 @@ const AllHiringRequestScreen = () => {
 					</div>
 				</div>
 			</div>
-
 			<div style={{ marginTop: '5%' }}>
 				<Table
 					id="1"
@@ -255,8 +259,55 @@ const AllHiringRequestScreen = () => {
 					loading={isLoading}
 				/>
 			</div>
+			{isAllowFilters && (
+				<HiringFilters
+					onRemoveHRFilters={onRemoveHRFilters}
+					hrFilterList={hrFilterList}
+					filtersType={filtersType}
+				/>
+			)}
 		</div>
 	);
 };
 
 export default AllHiringRequestScreen;
+
+const hrFilterList = [
+	{ name: 'Tenure' },
+	{ name: 'ODR' },
+	{ name: 'Profile Shared' },
+	{ name: 'Data Analyst' },
+	{ name: 'ODR' },
+	{ name: 'Data Analyst' },
+];
+
+const filtersType = [
+	{ name: 'ODR/Pool', child: ['ODR', 'Pool'], isSearch: false },
+	{
+		name: 'Tenure',
+		child: ['3 Months', '6 Months', '12 Months'],
+		isSearch: false,
+	},
+	{
+		name: 'Talent Request',
+		child: ['3', '4', '7', '9', '10'],
+		isSearch: false,
+	},
+	{ name: 'Position', child: [], isSearch: true },
+	{ name: 'Company', child: [], isSearch: true },
+	{ name: 'FTE/PTE', child: ['FTE', 'PTE'], isSearch: false },
+	{ name: 'Manager', child: [], isSearch: true },
+	{ name: 'Sales Representative', child: [], isSearch: true },
+	{
+		name: 'HR Status',
+		child: [
+			'Hired',
+			'Profile Shared',
+			'HR Accepted',
+			'HR Submitted',
+			'Info Pending',
+			'In Process',
+		],
+		isSearch: false,
+	},
+];

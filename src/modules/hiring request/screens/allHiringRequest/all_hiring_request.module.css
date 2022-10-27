@@ -44,7 +44,7 @@
 }
 .filterContainer{
     border-radius: 8px;
-    box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09);
+    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
     margin: 70px auto  ;
     background-color: var(--background-color-light);
 }
