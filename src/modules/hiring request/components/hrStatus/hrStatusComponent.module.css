@@ -1,0 +1,16 @@
+.hrStatusContainer{
+    /* border-radius: 10px; */
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    line-height: 2.5;
+    width: 85%;
+    margin: 0 auto;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.hrStatusContainer:hover{
+    transform: scale(1.18);
+    font-weight: 700;
+    box-shadow: -4px 4px 20px rgba(0,0,0,0.09);
+}

@@ -30,15 +30,18 @@ const AllHiringRequestScreen = () => {
 						item.starMarkedStatusCode,
 					),
 					adHocHR: item.adHocHR,
-					Date: item.createdDateTime,
+					Date: item.createdDateTime.split(' ')[0],
 					HR_ID: item.hr,
 					TR: item.tr,
 					Position: item.position,
 					Company: item.company,
-					Time: item.timeZone,
+					Time: item.timeZone.split(' ')[0],
 					typeOfEmployee: item.typeOfEmployee,
 					salesRep: item.salesRep,
-					hrStatus: item.hrStatus,
+					hrStatus: All_Hiring_Request_Utils.GETHRSTATUS(
+						item.hrStatusCode,
+						item.hrStatus,
+					),
 				})),
 			);
 			setLoading(false);
@@ -67,7 +70,9 @@ const AllHiringRequestScreen = () => {
 			</div>
 			<div className={allHRStyles.filterContainer}>
 				<div className={allHRStyles.filterSets}>
-					<div className={allHRStyles.addFilter}>
+					<div
+						className={allHRStyles.addFilter}
+						onClick={() => alert('hello')}>
 						<IoFunnelOutline style={{ fontSize: '20px', fontWeight: '800' }} />
 						<div className={allHRStyles.filterLabel}>Add Filters</div>
 						<div className={allHRStyles.filterCount}>7</div>
@@ -105,9 +110,9 @@ const AllHiringRequestScreen = () => {
 											val.salesRep
 												.toLowerCase()
 												.includes(e.target.value.toLowerCase()) ||
-											val.hrStatus
+											/* val.hrStatus
 												.toLowerCase()
-												.includes(e.target.value.toLowerCase()) ||
+												.includes(e.target.value.toLowerCase()) || */
 											val.TR == e.target.value
 										);
 									});
@@ -120,12 +125,13 @@ const AllHiringRequestScreen = () => {
 							<div className={allHRStyles.calendarFilter}>
 								<BsCalendar4 />
 								<DatePicker
+									style={{ backgroundColor: 'red' }}
 									onKeyDown={(e) => {
 										e.preventDefault();
 										e.stopPropagation();
 									}}
 									className={allHRStyles.dateFilter}
-									placeholderText="Select Date"
+									placeholderText="Start date - End date"
 									selected={startDate}
 									onChange={onChange}
 									startDate={startDate}
@@ -138,26 +144,38 @@ const AllHiringRequestScreen = () => {
 						<div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Set Priority</div>
 							<div className={allHRStyles.priorityFilter}>
-								<BiLockAlt style={{ fontSize: '20px', fontWeight: '800' }} />
+								<BiLockAlt
+									style={{
+										fontSize: '20px',
+										fontWeight: '800',
+										opacity: '0.8',
+									}}
+								/>
 							</div>
 						</div>
 						<div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Showing</div>
 							<div className={allHRStyles.priorityFilter}>
-								<BiLockAlt style={{ fontSize: '20px', fontWeight: '800' }} />
+								<BiLockAlt
+									style={{
+										fontSize: '20px',
+										fontWeight: '800',
+										opacity: '0.8',
+									}}
+								/>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+
 			<div style={{ marginTop: '5%' }}>
 				<Table
 					id="1"
 					size="middle"
-					sticky={true}
 					columns={[
 						{
-							title: '',
+							title: '     ',
 							dataIndex: 'starStatus',
 							key: '0',
 							align: 'center',
@@ -192,7 +210,6 @@ const AllHiringRequestScreen = () => {
 							key: '5',
 							align: 'center',
 						},
-
 						{
 							title: 'Company',
 							dataIndex: 'Company',
@@ -227,7 +244,13 @@ const AllHiringRequestScreen = () => {
 					bordered={false}
 					dataSource={search && search.length > 0 ? search : apiData}
 					pagination={{
-						pageSize: 8,
+						size: 'small',
+						pageSize: 5,
+						pageSizeOptions: [5, 10],
+						total: apiData?.length,
+						showTotal: (total, range) =>
+							`${range[0]}-${range[1]} of ${total} items`,
+						defaultCurrent: 1,
 					}}
 					loading={isLoading}
 				/>

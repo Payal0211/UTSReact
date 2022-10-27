@@ -71,3 +71,12 @@ export class hiringRequestPriority {
 	static CURRENT_WEEK_PRIORITY = 101;
 	static NEXT_WEEK_PRIORITY = 102;
 }
+
+export class hiringRequestHRStatus {
+	static PROFILE_SHARED = 100;
+	static INFO_PENDING = 103;
+	static HR_ACCEPTED = 102;
+	static HR_SUBMITTED = 104;
+	static HIRED = 105;
+	static IN_PROCESS = 106;
+}
