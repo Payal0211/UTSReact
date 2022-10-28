@@ -18,7 +18,7 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 	return (
 		<aside className={hiringFilterStyle.aside}>
 			<div className={hiringFilterStyle.asideBody}>
-				<div className={toggleBack && hiringFilterStyle.asideHead}>
+				<div className={toggleBack ? hiringFilterStyle.asideHead : ''}>
 					{toggleBack && (
 						<span
 							className={hiringFilterStyle.goback}
@@ -62,7 +62,9 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 							<div className={hiringFilterStyle.filtersListType}>
 								{filterSubChild.child.map((item, index) => {
 									return (
-										<div className={hiringFilterStyle.filterItem}>
+										<div
+											className={hiringFilterStyle.filterItem}
+											key={index}>
 											<Checkbox style={{ fontSize: '1rem', fontWeight: '500' }}>
 												{item}
 											</Checkbox>
@@ -78,10 +80,11 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 								{hrFilterList.map((item, index) => {
 									return (
 										<Tag
+											key={index}
 											closable={true}
 											onClose={(e) => {
 												e.preventDefault();
-												console.log(e.target);
+												console.log(index);
 												// handleClose(e.target.value);
 											}}
 											style={{
@@ -105,6 +108,7 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 								{filtersType.map((item, index) => {
 									return (
 										<div
+											key={index}
 											className={hiringFilterStyle.filterItem}
 											onClick={() => toggleFilterSubChild(item)}>
 											<span style={{ fontSize: '1rem' }}>{item.name}</span>

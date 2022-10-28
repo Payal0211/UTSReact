@@ -25,9 +25,9 @@
     display: flex;
     font-size: .9rem;
     font-weight: 600;
-   
     cursor: pointer;
 }
+
 .asideFilters {
     margin-top: 5%;
 }
@@ -38,12 +38,11 @@
 }
 
 .filtersChips {
-    
    margin-top: 5%;
     display: flex;
     flex-wrap: wrap;
-    
 }
+
 .filtersListType {
     margin-top: 5%;
     width: 100%;

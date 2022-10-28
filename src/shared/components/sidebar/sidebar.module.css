@@ -6,7 +6,7 @@
     background-color: rgb(255, 255, 255);
     overflow-x: hidden;
     width: 90px;
-    box-shadow: 0 1px 3px rgba(91, 91, 91, 0.2), 0 1px 2px rgba(128, 128, 128, 0.24);
+    /* box-shadow: 0 1px 3px rgba(91, 91, 91, 0.2), 0 1px 2px rgba(128, 128, 128, 0.24); */
 }
 
 .sidebarBody {

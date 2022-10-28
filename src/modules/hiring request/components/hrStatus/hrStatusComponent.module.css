@@ -1,7 +1,7 @@
 .hrStatusContainer{
-    /* border-radius: 10px; */
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-radius: 10px;
+    /* border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px; */
     line-height: 2.5;
     width: 85%;
     margin: 0 auto;
