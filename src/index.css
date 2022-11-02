@@ -9,6 +9,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--background-color-slate) ;
+  color: var(--uplers-black);
   overflow-x: hidden;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -25,6 +26,7 @@ body {
   --success-color: #28a745;
   --text-color-purity: #fff;
   --text-color-dark: #000;
+  --uplers-black:#232323;
   --background-color-light: #fff;
   --background-color-dim:#F9F9F9;
   --background-color-dark: #000;
@@ -38,12 +40,15 @@ body {
   --color-sunlight: #FFDA31;
   --color-TealWithOpacity: #f5fcf9;
   --color-champagne: #edf69c;
+  --uplers-border-color:#E8E8E8;
   --fontsize-strong: 40px;
   --fontsize-tough: 32px;
   --fontsize-pearl: 28px;
   --fontsize-trim: 24px;
   --fontsize-glossy: 20px;
   --fontsize-brittle: 16px;
+  --fontsize-uplers:12px;
+
 }
 
 ::selection {
@@ -83,26 +88,12 @@ body {
   font-weight: 700;
   color: var(--background-color-dark) !important;
 }
-/* .ant-pagination-item{
-   border-radius: 8px;
-    border: none;
-    background-color: transparent;
-} */
-/* .ant-pagination-prev .ant-pagination-item-link,.ant-pagination-next .ant-pagination-item-link
- {
-  background-color: transparent !important;
-  border: none;
-} */
+
 
 .ant-pagination-item a:hover{
   color: var(--color-sunlight) !important;
 }
 
-
-
-/* tr:nth-child(even) {
-  background-color: rgb(249, 249, 249);
-} */
 
 
 th {
@@ -118,16 +109,20 @@ th {
 
 td {
   cursor: pointer;
-  text-align: center;
+  /* text-align: center; */
   font-size: 0.8rem;
   font-weight: 500;
 }
 
 
 .ant-table{
-  line-height: 5;
+  line-height: 4;
   border-radius: 10px !important;
   /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
+}
+.ant-table-tbody>tr>td{
+  width: auto !important;
+  padding: 10px 20px !important;
 }
 
 .react-datepicker{

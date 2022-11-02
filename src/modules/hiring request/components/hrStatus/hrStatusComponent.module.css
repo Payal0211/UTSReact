@@ -3,7 +3,7 @@
     /* border-top-right-radius: 10px;
     border-bottom-left-radius: 10px; */
     line-height: 2.5;
-    width: 85%;
+    padding: 0 15px;
     margin: 0 auto;
     font-weight: 600;
     transition: transform 0.2s;

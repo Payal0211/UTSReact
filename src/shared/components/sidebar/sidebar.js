@@ -9,6 +9,8 @@ const Sidebar = () => {
 	const sidebarDataSets = getSideBar();
 	const switchLocation = useLocation();
 
+	let urlSplitter = `/${switchLocation.pathname.split('/')[1]}`;
+
 	return (
 		<div className={sideBarStyles.sidebar}>
 			<div className={sideBarStyles.sidebarBody}>
@@ -31,7 +33,7 @@ const Sidebar = () => {
 							</Link>
 							<div
 								className={`${
-									switchLocation.pathname === item.navigateTo
+									urlSplitter === item.navigateTo
 										? sideBarStyles.indicator
 										: null
 								}`}></div>

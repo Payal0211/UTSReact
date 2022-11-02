@@ -7,7 +7,7 @@ import SideBar from 'shared/components/sidebar/sidebar';
 export const HomeScreen = () => {
 	return (
 		<div>
-			<h1>Hj</h1>
+			<h1>Hi</h1>
 		</div>
 	);
 };

@@ -10,10 +10,13 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { BsCalendar4 } from 'react-icons/bs';
 import { BiLockAlt } from 'react-icons/bi';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
+import { Link } from 'react-router-dom';
+import { InputType } from 'constants/application';
 
 const HiringFiltersLazyComponent = React.lazy(() =>
 	import('modules/hiring request/components/hiringFilter/hiringFilters'),
 );
+
 const AllHiringRequestScreen = () => {
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [apiData, setAPIdata] = useState([]);
@@ -92,7 +95,7 @@ const AllHiringRequestScreen = () => {
 								style={{ fontSize: '20px', fontWeight: '800' }}
 							/>
 							<input
-								type="text"
+								type={InputType.TEXT}
 								className={allHRStyles.searchInput}
 								placeholder="Search Table"
 								onChange={(e) => {
@@ -179,7 +182,8 @@ const AllHiringRequestScreen = () => {
 			<div style={{ marginTop: '5%' }}>
 				<Table
 					id="1"
-					size="middle"
+					// size="small"
+
 					columns={tableColumns}
 					bordered={false}
 					dataSource={search && search.length > 0 ? search : apiData}
@@ -222,6 +226,15 @@ const tableColumns = [
 		dataIndex: 'adHocHR',
 		key: '1',
 		align: 'center',
+		render: (text) => {
+			return (
+				<a
+					href="#"
+					style={{ color: 'black', textDecoration: 'underline' }}>
+					{text}
+				</a>
+			);
+		},
 	},
 	{
 		title: 'Date',
@@ -234,6 +247,7 @@ const tableColumns = [
 		dataIndex: 'HR_ID',
 		key: '3',
 		align: 'center',
+		render: (text) => <Link to={`/allhiringrequest/${text}`}>{text}</Link>,
 	},
 	{
 		title: 'TR',
@@ -252,6 +266,15 @@ const tableColumns = [
 		dataIndex: 'Company',
 		key: '6',
 		align: 'center',
+		render: (text) => {
+			return (
+				<a
+					href="#"
+					style={{ color: 'black', textDecoration: 'underline' }}>
+					{text}
+				</a>
+			);
+		},
 	},
 	{
 		title: 'Time',
@@ -270,6 +293,15 @@ const tableColumns = [
 		dataIndex: 'salesRep',
 		key: '9',
 		align: 'center',
+		render: (text) => {
+			return (
+				<a
+					href="#"
+					style={{ color: 'black', textDecoration: 'underline' }}>
+					{text}
+				</a>
+			);
+		},
 	},
 	{
 		title: 'HR Status',

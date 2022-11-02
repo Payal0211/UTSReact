@@ -5,6 +5,7 @@
 }
 
 .addnewHR {
+    
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -19,7 +20,7 @@
 .newHR {
     padding: 1px 0;
     background-color: var(--color-sunlight);
-    border-radius: 5px;
+    border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -38,8 +39,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
     background-color: var(--background-color-light);
 }
 .filterContainer{

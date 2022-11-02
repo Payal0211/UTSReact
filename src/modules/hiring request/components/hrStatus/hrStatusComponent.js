@@ -7,6 +7,7 @@ const HRStatusComponent = ({ title, backgroundColor, color }) => {
 			style={{
 				backgroundColor: backgroundColor,
 				color: color,
+				textAlign: 'center',
 			}}>
 			{title}
 		</div>
