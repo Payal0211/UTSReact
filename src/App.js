@@ -1,21 +1,39 @@
 import LoginScreen from 'modules/user/screens/login/login_screen';
-import { Redirect, Route } from 'react-router-dom';
-import Routes from 'constants/routes';
+import {
+	BrowserRouter as Router,
+	Redirect,
+	Route,
+	Switch,
+	useRouteMatch,
+} from 'react-router-dom';
+import Routes, { navigateToComponent } from 'constants/routes';
+import Layout from 'Layout/layout';
+import Test from 'shared/components/test';
 
 function App() {
+	let { path, url } = useRouteMatch();
 	return (
 		<div>
-			<Route path="/">
-				<Redirect
-					to={Routes.LOGINROUTE}
-					exact
-				/>
-			</Route>
-			<Route
-				path={Routes.LOGINROUTE}
-				component={LoginScreen}
-				exact
-			/>
+			<Router>
+				<Switch>
+					{Object.entries(navigateToComponent).map(([path, component]) => {
+						return (
+							<Route
+								key={path}
+								exact
+								component={Layout}
+								path={path}
+							/>
+						);
+					})}
+
+					<Route
+						path={Routes.LOGINROUTE}
+						component={LoginScreen}
+						exact
+					/>
+				</Switch>
+			</Router>
 		</div>
 	);
 }

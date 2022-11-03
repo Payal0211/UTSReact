@@ -1,0 +1,159 @@
+.hiringRequestContainer {
+    width: 90%;
+    margin: 0 auto;
+    /* border: 1px solid rebeccapurple; */
+}
+
+.addnewHR {
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.hiringRequest {
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.newHR {
+    padding: 1px 0;
+    background-color: var(--color-sunlight);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.newHR label {
+    padding: 0 20px;
+    font-weight: 500;
+    font-size: .8vw;
+}
+
+.iconDown {
+    height: 50px;
+    width: 50px;
+    margin-right: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color: var(--background-color-light);
+}
+.filterContainer{
+    border-radius: 10px;
+    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
+    margin: 70px auto  ;
+    background-color: var(--background-color-light);
+}
+
+.filterSets{
+    width: 96%;
+    margin-left: auto;
+    margin-right: auto;
+    padding:30px 0;
+    display: flex;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+    
+}
+
+.addFilter{
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 13%;
+    padding:10px;
+    border: 1px solid var(--background-color-metal);
+}
+
+.filterLabel{
+    font-weight: 500;
+    font-size: .7vw;
+}
+
+.filterCount{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: var(--color-sunlight);
+    border-radius: 50%;
+    font-weight: 700;
+}
+
+.filterRight{
+    width: 65%;  
+    display: flex;
+    justify-content: space-between;
+    align-items: center ; 
+}
+
+.searchFilterSet{
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    width: 25%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.searchInput{
+    cursor: pointer;
+    width: 80%;
+    padding: 14px 12px 14px 0px;
+    outline: none;
+    border: none;
+    color: var(--background-color-dark);
+    font-weight: 500;
+}
+.calendarFilterSet{
+    
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 30%;
+}
+.label{
+    font-size: .8rem;
+    font-weight: 500;
+    color: var(--background-color-dark);
+}
+.calendarFilter{
+   
+    border-radius: 8px;
+    padding: 2px 10px;
+    border: 1px solid var(--background-color-metal);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dateFilter{
+    cursor: pointer;
+    width: 102%;
+    padding: 12px 12px 12px 12px;
+    outline: none;
+    border:none;
+    color: var(--background-color-dark);
+    font-weight: 500;
+}
+.priorityFilterSet{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 15%;
+       
+}
+.priorityFilter{
+    padding: 12px 18px 12px 18px;
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+}
