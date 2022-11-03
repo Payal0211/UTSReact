@@ -10,7 +10,7 @@ const Sidebar = () => {
 	const switchLocation = useLocation();
 
 	let urlSplitter = `/${switchLocation.pathname.split('/')[1]}`;
-
+	
 	return (
 		<div className={sideBarStyles.sidebar}>
 			<div className={sideBarStyles.sidebarBody}>

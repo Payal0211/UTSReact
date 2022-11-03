@@ -1,6 +1,14 @@
 import navbarStyles from './navbar.module.css';
 import { AiOutlineBell } from 'react-icons/ai';
-const Navbar = () => {
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+
+
+const Navbar =  ({fullName}) => {
+
+   	/* UserSessionManagementController.getUserSession().then(function(userdata){
+		console.log(userdata.FullName);
+	}); */
+	
 	return (
 		<div className={navbarStyles.navbarContainer}>
 			<nav className={navbarStyles.nav}>
@@ -32,7 +40,7 @@ const Navbar = () => {
 						className={navbarStyles.avatar}
 						alt="avatar"
 					/>
-					<div className={navbarStyles.avatarDetails}>Nital Shah</div>
+					<div className={navbarStyles.avatarDetails}>{fullName}</div>
 				</div>
 			</nav>
 		</div>

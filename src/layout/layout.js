@@ -1,13 +1,25 @@
-import { navigateToComponent } from 'constants/routes';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Routes, { navigateToComponent } from 'constants/routes';
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import { useEffect,useState } from 'react';
+import { BrowserRouter as Router, Route, Switch, useHistory } from 'react-router-dom';
 import Navbar from 'shared/components/navbar/navbar';
 import Sidebar from 'shared/components/sidebar/sidebar';
 
 const Layout = () => {
+	const [userDetails,setUserDetails]=useState(null);
+	let history=useHistory();
+	useEffect(()=>{
+		const getUserConfiguration=async ()=>{
+			let response=await UserSessionManagementController.getUserSession();
+			if(!response) history.push(Routes.LOGINROUTE)
+			setUserDetails(response)
+		}
+		getUserConfiguration();
+	},[])
 	return (
 		<Router>
 			<div>
-				<Navbar />
+				<Navbar fullName={userDetails?.FullName}/>
 				<div style={{ display: 'flex' }}>
 					<Sidebar />
 					<main
