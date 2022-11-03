@@ -1,7 +1,6 @@
 import { SessionType } from 'constants/application';
 import { errorDebug } from 'shared/utils/error_debug_utils';
-import { SecureStorageUtils } from 'shared/utils/secure_storage_utils';
-
+import { SecuredStorageService } from 'shared/services/secure_storage/secure_storage_service';
 export const UserSessionManagementController = {
 	/**
 	 * @Function setUserSession()
@@ -11,7 +10,7 @@ export const UserSessionManagementController = {
 
 	setUserSession: async function (userAccount) {
 		try {
-			await SecureStorageUtils.writeSecuredData({
+			await SecuredStorageService.writeSecuredData({
 				key: 'userSessionInfo',
 				value: userAccount,
 			});
@@ -29,7 +28,7 @@ export const UserSessionManagementController = {
 	 */
 	getUserSession: async function () {
 		try {
-			const data = await SecureStorageUtils.readSecuredData('userSessionInfo');
+			const data = await SecuredStorageService.readSecuredData('userSessionInfo');
 			return data && data;
 		} catch (error) {
 			return errorDebug(
@@ -46,7 +45,7 @@ export const UserSessionManagementController = {
 	 */
 	deleteUserSession: async function () {
 		try {
-			const isUserSessionDeleted = await SecureStorageUtils.deleteSecuredData(
+			const isUserSessionDeleted = await SecuredStorageService.deleteSecuredData(
 				'userSessionInfo',
 			);
 			if (isUserSessionDeleted) this.setSessionStatus(SessionType.EXPIRED);
@@ -64,7 +63,7 @@ export const UserSessionManagementController = {
 	 */
 	setSessionStatus: async function (sessionStatus) {
 		try {
-			await SecureStorageUtils.writeSecuredData({
+			await SecuredStorageService.writeSecuredData({
 				key: 'sessionStatus',
 				value: sessionStatus,
 			});
@@ -82,7 +81,7 @@ export const UserSessionManagementController = {
 	 */
 	getSessionStatus: async function () {
 		try {
-			const data = await SecureStorageUtils.readSecuredData('sessionStatus');
+			const data = await SecuredStorageService.readSecuredData('sessionStatus');
 			return data && data;
 		} catch (error) {
 			return errorDebug(
@@ -99,7 +98,7 @@ export const UserSessionManagementController = {
 	 */
 	setAPIKey: async function (accessKey) {
 		try {
-			await SecureStorageUtils.writeSecuredData({
+			await SecuredStorageService.writeSecuredData({
 				key: 'apiKey',
 				value: accessKey,
 			});
@@ -114,7 +113,7 @@ export const UserSessionManagementController = {
 	 */
 	getAPIKey: async function () {
 		try {
-			const data = await SecureStorageUtils.readSecuredData('apiKey');
+			const data = await SecuredStorageService.readSecuredData('apiKey');
 			return data && data;
 		} catch (error) {
 			return errorDebug(error, 'UserSessionManagementController.getAPIKey');

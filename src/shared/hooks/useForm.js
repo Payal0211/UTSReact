@@ -67,7 +67,7 @@ const useForm = (initialFormValues) => {
 		validateInputHandler(0, e.target.name, e.target.value);
 	};
 
-	const onSubmitHandler = () => {
+	const onSubmitHandler = (e) => {
 		validateInputHandler(1);
 	};
 

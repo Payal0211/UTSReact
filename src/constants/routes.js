@@ -14,6 +14,7 @@ export default class Routes {
 	static NETWORKERRORROUTE = '/networkissue';
 }
 
+
 export const navigateToComponent = {
 	[Routes.HOMEROUTE]: HomeScreen,
 	[Routes.ALLHIRINGREQUESTROUTE]: AllHiringRequestScreen,
