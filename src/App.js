@@ -7,8 +7,8 @@ import {
 	useRouteMatch,
 } from 'react-router-dom';
 import Routes, { navigateToComponent } from 'constants/routes';
-import Layout from 'Layout/layout';
-import Test from 'shared/components/test';
+import Layout from 'layout/layout';
+
 
 function App() {
 	let { path, url } = useRouteMatch();
