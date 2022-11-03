@@ -1,7 +1,7 @@
 export class NetworkInfo {
     static protocol = "http://";
-    static domain = "localhost:5000";
-    static subDomain = "/api";
+    static domain = "localhost:5162/";
+    static subDomain = "UserOperationsAPI/";
     static networkInfo = NetworkInfo.protocol + NetworkInfo.domain + NetworkInfo.subDomain;
 }
 
@@ -15,7 +15,7 @@ export class MethodType {
     static DELETE = "/delete";
 }
 export class UserAPI {
-    static LOGIN = "/login";
+    static LOGIN = "AdminLogin";
     static SIGNUP = "/signup";
     static FORGOTPASSWORD = "/forgotpassword";
     static UPDATEPASSWORD = "/updatepassword"

@@ -12,6 +12,6 @@ export default class Routes {
 	static NETWORKERRORROUTE = '/networkissue';
 }
 
-export const navigateToComponent = {
+export const nqavigateToComponent = {
 	[Routes.LOGINROUTE]: LoginScreen,
 };
