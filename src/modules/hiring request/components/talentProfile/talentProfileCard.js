@@ -9,7 +9,7 @@ const TalentProfileCard = ({ talentDetail }) => {
 			</label>
 			<div className={TalentProfileCardStyle.talentCard}>
 				<div className={TalentProfileCardStyle.talentCardBody}>
-					{!talentDetail ? 'hello' : <EmptyTalentProfile />}
+					{!talentDetail ? <></> : <EmptyTalentProfile />}
 				</div>
 			</div>
 		</div>

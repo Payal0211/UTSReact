@@ -12,32 +12,31 @@ import loginStyle from './login.module.css';
 import useForm from 'shared/hooks/useForm';
 import { ValidateInput } from 'constants/inputValidators';
 import { _isNull } from 'shared/utils/basic_utils';
-import { HttpServices } from '../../../../shared/services/http/http_service'
+import { HttpServices } from '../../../../shared/services/http/http_service';
 import { userAPI } from 'apis/userAPI';
 import { userDAO } from 'core/user/userDAO';
 import { HTTPStatusCode } from 'constants/network';
-import { useHistory } from 'react-router-dom';
-import Routes from 'constants/routes';
+import { useNavigate } from 'react-router-dom';
+
+import UTSRoutes from 'constants/routes';
 const LoginScreen = () => {
 	const [togglePasswordVisibility, onTogglePassword] = useIconToggle();
-	const history=useHistory();
+	const navigate = useNavigate();
 	const userLoginInfo = useRef({
 		username: '',
 		password: '',
 	});
 	const { inputChangeHandler, formValues, error, onSubmitHandler } = useForm(
 		userLoginInfo.current,
-		
 	);
-	
+
 	const loginHandler = async () => {
 		onSubmitHandler();
-		console.log(formValues);
 		const result = await userDAO.loginDAO(formValues);
-		if(result.statusCode===HTTPStatusCode.OK){
-			history.push(Routes.HOMEROUTE)
+		if (result.statusCode === HTTPStatusCode.OK) {
+			navigate(UTSRoutes.HOMEROUTE);
 		}
-	}
+	};
 
 	return (
 		<div className={loginStyle.loginContainer}>
