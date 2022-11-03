@@ -57,14 +57,17 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 10px;
+  
 }
 
 ::-webkit-scrollbar-track {
+  
   background: var(--color-TealWithOpacity);
 }
 
 ::-webkit-scrollbar-thumb {
+  border-radius: 5px !important;
   background: var(--color-sunlight)
 }
 

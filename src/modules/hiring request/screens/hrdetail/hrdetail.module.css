@@ -96,3 +96,25 @@
     justify-content:center;
     align-items: center;
 }
+
+.portal{
+    gap: 2rem;
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.clientPortal{
+    width:33%;
+}
+
+.talentPortal{
+    width: 66%;
+    display: flex;
+    width: 70%;
+    gap: 2rem;
+}
+
+.activityFeed{
+    margin-top: 50px;
+}
