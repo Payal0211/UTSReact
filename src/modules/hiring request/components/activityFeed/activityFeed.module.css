@@ -1,0 +1,33 @@
+.activityContainer{
+    width: 100%;
+}
+
+.activityFeedHeading{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.searchFilterSet {
+    border: 1px solid var(--uplers-border-color) ;
+    border-radius: 8px;
+    width: 20%;
+    background-color: var(--background-color-light);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.searchInput {
+    cursor: pointer;
+    width: 80%;
+    padding: 14px 12px 14px 0px;
+    outline: none;
+    border: none;
+    color: var(--background-color-dark);
+    font-weight: 500;
+}
+
+.activityFeedList{
+    background-color: var(--background-color-light);
+    max-height: 100px;
+}

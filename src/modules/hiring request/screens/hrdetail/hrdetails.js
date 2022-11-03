@@ -13,6 +13,9 @@ import {
 import { AiOutlineDown } from 'react-icons/ai';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { AiOutlineClockCircle } from 'react-icons/ai';
+import CompanyProfileCard from 'modules/hiring request/components/companyProfile/companyProfileCard';
+import TalentProfileCard from 'modules/hiring request/components/talentProfile/talentProfileCard';
+import ActivityFeed from 'modules/hiring request/components/activityFeed/activityFeed';
 
 const HRDetailScreen = () => {
 	const [isLoading, setLoading] = useState(false);
@@ -27,7 +30,8 @@ const HRDetailScreen = () => {
 			let response = await axios.get(
 				' https://api.npoint.io/3f27611810049f9d387a',
 			);
-			console.log(response.data.details, '---------data');
+
+			setAPIdata(response.data.details);
 			setLoading(false);
 		}
 		callAPI();
@@ -97,7 +101,18 @@ const HRDetailScreen = () => {
 					</div>
 				</div>
 			</div>
-			<div></div>
+			<div className={HRDetailStyle.portal}>
+				<div className={HRDetailStyle.clientPortal}>
+					<CompanyProfileCard clientDetail={apiData.ClientDetail} />
+				</div>
+				<div className={HRDetailStyle.talentPortal}>
+					<TalentProfileCard talentDetail={apiData.HRTalentDetails} />
+				</div>
+			</div>
+			<div className={HRDetailStyle.activityFeed}>
+				<ActivityFeed activityFeed={apiData.HRHistory} />
+			</div>
+			<br />
 		</div>
 	);
 };
