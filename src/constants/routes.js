@@ -1,17 +1,20 @@
-import LoginScreen from 'modules/user/screens/login/login_screen';
+import DashboardScreen from 'modules/dashboard/screens/dashboard';
+import AllHiringRequestScreen from 'modules/hiring request/screens/allHiringRequest/all_hiring_request';
+import HRDetailScreen from 'modules/hiring request/screens/hrdetail/hrdetails';
 
-export default class Routes {
-	static LANDINGROUTE = '/';
+export default class UTSRoutes {
+	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
 	static LOGINROUTE = '/login';
-	static HOMEROUTE = '/home';
 	static FORGOTPASSWORDROUTE = '/forgotpassword';
-
 	static ALLHIRINGREQUESTROUTE = '/allhiringrequest';
+	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
 	static PAGENOTFOUNDROUTE = '/pagenotfound';
 	static NETWORKERRORROUTE = '/networkissue';
 }
 
 export const navigateToComponent = {
-	[Routes.LOGINROUTE]: LoginScreen,
+	[UTSRoutes.HOMEROUTE]: <DashboardScreen />,
+	[UTSRoutes.ALLHIRINGREQUESTROUTE]: <AllHiringRequestScreen />,
+	[UTSRoutes.ALLHIRINGREQUESTSUBROUTE]: <HRDetailScreen />,
 };

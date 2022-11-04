@@ -1,0 +1,43 @@
+.companyProfileContainer{
+    width: 100%;  
+}
+
+.companyCard{
+    border-radius: 8px;
+    background-color: var(--background-color-light);
+}
+.companyCardBody{
+    width: 90%;
+    margin:0 auto;
+    font-size: .7vw;
+    padding: 20px 0;
+}
+.partWise{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.companyName,
+.companyURL,
+.pocName,
+.pocEmail,
+.EngagementType,
+.category,
+.TR,
+.TRParked,
+.roleName,
+.contactDuration,
+.minExp,
+.budget,
+.engagement,
+.preferredShift,
+.preferredTime,
+.jdLink,
+.salesPerson,
+.manager{
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    padding-top:5px;
+}

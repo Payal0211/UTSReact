@@ -1,0 +1,45 @@
+.sidebar {
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgb(255, 255, 255);
+    overflow-x: hidden;
+    width: 90px;
+    /* box-shadow: 0 1px 3px rgba(91, 91, 91, 0.2), 0 1px 2px rgba(128, 128, 128, 0.24); */
+}
+
+.sidebarBody {
+    margin-top: 110px;
+}
+
+.sidebarItem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.iconSet {
+    width: 80px;
+    text-align: center;
+}
+
+.sidebarIcon {
+    opacity: 0.9;
+}
+
+.indicator {
+    width: 5px;
+    height: 30px;
+    border-top-left-radius: .15rem;
+    border-bottom-left-radius: .15rem;
+    align-items: flex-end;
+    transition: all .5s ease;
+    background-color: var(--background-color-dark);
+}
+
+.active {
+    opacity: 1 !important;
+    transition: all 0.5s ease;
+}
