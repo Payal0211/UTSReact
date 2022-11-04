@@ -1,6 +1,7 @@
 import { SessionType } from 'constants/application';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 import { SecuredStorageService } from 'shared/services/secure_storage/secure_storage_service';
+
 export const UserSessionManagementController = {
 	/**
 	 * @Function setUserSession()
@@ -28,7 +29,9 @@ export const UserSessionManagementController = {
 	 */
 	getUserSession: async function () {
 		try {
-			const data = await SecuredStorageService.readSecuredData('userSessionInfo');
+			const data = await SecuredStorageService.readSecuredData(
+				'userSessionInfo',
+			);
 			return data && data;
 		} catch (error) {
 			return errorDebug(
@@ -45,9 +48,8 @@ export const UserSessionManagementController = {
 	 */
 	deleteUserSession: async function () {
 		try {
-			const isUserSessionDeleted = await SecuredStorageService.deleteSecuredData(
-				'userSessionInfo',
-			);
+			const isUserSessionDeleted =
+				await SecuredStorageService.deleteSecuredData('userSessionInfo');
 			if (isUserSessionDeleted) this.setSessionStatus(SessionType.EXPIRED);
 			return isUserSessionDeleted;
 		} catch (error) {
