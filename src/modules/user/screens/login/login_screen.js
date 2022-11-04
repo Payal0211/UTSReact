@@ -10,15 +10,13 @@ import {
 } from 'shared/utils/password_icon_utils';
 import loginStyle from './login.module.css';
 import useForm from 'shared/hooks/useForm';
-
 import { _isNull } from 'shared/utils/basic_utils';
-
 import { userDAO } from 'core/user/userDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { useNavigate } from 'react-router-dom';
-
 import UTSRoutes from 'constants/routes';
 import { SecuredStorageService } from 'shared/services/secure_storage/secure_storage_service';
+
 const LoginScreen = () => {
 	const [togglePasswordVisibility, onTogglePassword] = useIconToggle();
 	const navigate = useNavigate();
