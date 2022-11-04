@@ -3,6 +3,7 @@ import LoginScreen from 'modules/user/screens/login/login_screen';
 import { Routes, Navigate, Route } from 'react-router-dom';
 import UTSRoutes, { navigateToComponent } from 'constants/routes';
 import Layout from 'Layout/layout';
+import { ProtectedUtils } from 'shared/utils/protected_utils';
 
 function App() {
 	return (
@@ -15,7 +16,7 @@ function App() {
 				/>
 				<Route
 					path={UTSRoutes.HOMEROUTE}
-					element={<Layout />}>
+					element={<ProtectedUtils Component={Layout} />}>
 					{Object.entries(navigateToComponent).map(([path, component]) => {
 						return (
 							<Route

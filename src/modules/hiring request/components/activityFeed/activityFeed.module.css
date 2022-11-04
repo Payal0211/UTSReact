@@ -7,6 +7,10 @@
     justify-content: space-between;
     align-items: center;
 }
+.activityLabel{
+    font-size: 1.8rem;
+    font-weight: 500;
+}
 .searchFilterSet {
     border: 1px solid var(--uplers-border-color) ;
     border-radius: 8px;
@@ -29,5 +33,12 @@
 
 .activityFeedList{
     background-color: var(--background-color-light);
-    max-height: 100px;
+    
+}
+
+.activityFeedListBody{
+    
+    margin-top: 10px;
+    max-height: 50vh;
+    overflow-y: scroll;
 }
