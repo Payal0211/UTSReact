@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 import { InputType } from 'constants/application';
 import ButtonField from 'modules/user/components/buttonField/button_field';
@@ -10,15 +10,15 @@ import {
 } from 'shared/utils/password_icon_utils';
 import loginStyle from './login.module.css';
 import useForm from 'shared/hooks/useForm';
-import { ValidateInput } from 'constants/inputValidators';
+
 import { _isNull } from 'shared/utils/basic_utils';
-import { HttpServices } from '../../../../shared/services/http/http_service';
-import { userAPI } from 'apis/userAPI';
+
 import { userDAO } from 'core/user/userDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { useNavigate } from 'react-router-dom';
 
 import UTSRoutes from 'constants/routes';
+import { SecuredStorageService } from 'shared/services/secure_storage/secure_storage_service';
 const LoginScreen = () => {
 	const [togglePasswordVisibility, onTogglePassword] = useIconToggle();
 	const navigate = useNavigate();
@@ -38,6 +38,10 @@ const LoginScreen = () => {
 		}
 	};
 
+	useEffect(() => {
+		let login = SecuredStorageService.readSecuredData('userSessionInfo');
+		if (login) navigate(UTSRoutes.HOMEROUTE);
+	});
 	return (
 		<div className={loginStyle.loginContainer}>
 			<div className={loginStyle.loginColumn_1}>
