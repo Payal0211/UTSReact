@@ -78,12 +78,19 @@ const TalentList = ({ talentDetail }) => {
 							<div className={TalentListStyle.profileURL}>
 								<span>profile URL:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									<a style={{ textDecoration: 'underline' }}>Click here</a>
+									<a
+										style={{ textDecoration: 'underline' }}
+										href={item?.ProfileURL}
+										target="_blank">
+										Click here
+									</a>
 								</span>
 							</div>
 							<div className={TalentListStyle.experience}>
 								<span>Experience:</span>&nbsp;&nbsp;
-								<span style={{ fontWeight: '500' }}></span>
+								<span style={{ fontWeight: '500' }}>
+									{item?.TotalExpYears} years
+								</span>
 							</div>
 							<div className={TalentListStyle.noticePeriod}>
 								<span>Notice Period:</span>&nbsp;&nbsp;

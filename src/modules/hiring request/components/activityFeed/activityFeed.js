@@ -4,8 +4,11 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { SlGraph } from 'react-icons/sl';
 import { IoMdSend } from 'react-icons/io';
 import { Fragment } from 'react';
+import { DateTimeUtils } from 'shared/utils/basic_utils';
+import { Divider } from 'antd';
+import { BsTag } from 'react-icons/bs';
+
 const ActivityFeed = ({ activityFeed }) => {
-	console.log('-activityFeed----', activityFeed);
 	return (
 		<div className={ActivityFeedStyle.activityContainer}>
 			<div className={ActivityFeedStyle.activityFeedHeading}>
@@ -27,8 +30,12 @@ const ActivityFeed = ({ activityFeed }) => {
 								<Fragment key={index}>
 									<div className={ActivityFeedStyle.activityFeedListItem}>
 										<div className={ActivityFeedStyle.activityFeedTimeDetails}>
-											<div>1</div>
-											<div>2</div>
+											<div>
+												{DateTimeUtils.getDateFromString(item?.ActionDate)}
+											</div>
+											<div>
+												{DateTimeUtils.getTimeFromString(item?.ActionDate)}
+											</div>
 										</div>
 										<div className={ActivityFeedStyle.activityFeedActivities}>
 											<div className={ActivityFeedStyle.profileStatus}>
@@ -43,20 +50,27 @@ const ActivityFeed = ({ activityFeed }) => {
 											</div>
 											<br />
 											<div className={ActivityFeedStyle.activityAction}>
-												<SlGraph />
+												{item?.IsNotes ? <BsTag /> : <SlGraph />}
 												&nbsp;&nbsp;
-												<span>Action by: </span>
+												<span>
+													{item?.IsNotes ? 'Assigned to' : 'Action by:'}{' '}
+												</span>
 												<span>{item?.ActionPerformedBy}</span>
 											</div>
+
+											{item?.Remark && (
+												<>
+													<br />
+													<div className={ActivityFeedStyle.activityAction}>
+														<span style={{ fontWeight: '500' }}>
+															“ {item?.Remark} ”
+														</span>
+													</div>
+												</>
+											)}
 										</div>
 									</div>
-									{index < activityFeed.length - 1 && (
-										<hr
-											style={{
-												borderTop: `1px solid var(--uplers-border-color)`,
-											}}
-										/>
-									)}
+									{index < activityFeed.length - 1 && <Divider />}
 								</Fragment>
 							);
 						})}

@@ -27,8 +27,18 @@ export const _isNotEmpty = function (value) {
 };
 
 export const DateTimeUtils = {
-	getDateFromString: (date) => {
-		let d = new Date(date);
-		console.log(d);
+	getDateFromString: (dateInStringFormat) => {
+		let date = new Date(dateInStringFormat);
+		date = date.toLocaleString('en-US');
+		let splittedValue = date.split(',');
+		return splittedValue[0];
+	},
+	getTimeFromString: (dateInStringFormat) => {
+		let date = new Date(dateInStringFormat);
+		date = date.toLocaleString('en-US');
+
+		let splittedValue = date.split(',');
+
+		return splittedValue[1];
 	},
 };

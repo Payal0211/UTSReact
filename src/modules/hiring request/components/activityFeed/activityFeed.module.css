@@ -38,7 +38,7 @@
 
 .activityFeedListBody{
     margin-top: 10px;
-    max-height: 350px;
+    max-height: 428px;
     overflow-y: scroll;
 }
 
@@ -75,7 +75,7 @@
     border-radius: 8px;
 }
 .activityFeedPostBody{
-    padding: 10px 0;
+    padding: 5px 0;
     width: 95%;
     margin:0 auto;
     display: flex;

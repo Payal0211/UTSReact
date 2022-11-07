@@ -1,7 +1,9 @@
-import { Card, List, Pagination } from 'antd';
+import React, { Suspense } from 'react';
 import EmptyTalentProfile from '../emptyTalentProfile/emptyTalentProfile';
-import TalentList from '../talentList/talentList';
+// import TalentList from '../talentList/talentList';
 import TalentProfileCardStyle from './talentProfile.module.css';
+
+const TalentList = React.lazy(() => import('../talentList/talentList'));
 
 const TalentProfileCard = ({ talentDetail }) => {
 	return (
@@ -18,7 +20,9 @@ const TalentProfileCard = ({ talentDetail }) => {
 				}}>
 				<div className={TalentProfileCardStyle.talentCardBody}>
 					{talentDetail ? (
-						<TalentList talentDetail={talentDetail && talentDetail} />
+						<Suspense>
+							<TalentList talentDetail={talentDetail && talentDetail} />
+						</Suspense>
 					) : (
 						<EmptyTalentProfile />
 					)}

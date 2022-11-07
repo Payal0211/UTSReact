@@ -1,6 +1,6 @@
 import allHRStyles from './all_hiring_request.module.css';
 import { AiOutlineDown } from 'react-icons/ai';
-import { Table } from 'antd';
+import { Skeleton, Table } from 'antd';
 import React, { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
@@ -13,6 +13,7 @@ import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { Link } from 'react-router-dom';
 import { InputType } from 'constants/application';
 
+/** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
 	import('modules/hiring request/components/hiringFilter/hiringFilters'),
 );
@@ -181,24 +182,31 @@ const AllHiringRequestScreen = () => {
 				</div>
 			</div>
 			<div style={{ marginTop: '5%' }}>
-				<Table
-					id="1"
-					// size="small"
-
-					columns={tableColumns}
-					bordered={false}
-					dataSource={search && search.length > 0 ? search : apiData}
-					pagination={{
-						size: 'small',
-						pageSize: 5,
-						pageSizeOptions: [5, 10],
-						total: apiData?.length,
-						showTotal: (total, range) =>
-							`${range[0]}-${range[1]} of ${total} items`,
-						defaultCurrent: 1,
-					}}
-					loading={isLoading}
-				/>
+				{isLoading ? (
+					<>
+						<Skeleton active />
+						<br />
+						<Skeleton active />
+						<br />
+						<Skeleton active />
+					</>
+				) : (
+					<Table
+						id="1"
+						columns={tableColumns}
+						bordered={false}
+						dataSource={search && search.length > 0 ? search : apiData}
+						pagination={{
+							size: 'small',
+							pageSize: 5,
+							pageSizeOptions: [5, 10],
+							total: apiData?.length,
+							showTotal: (total, range) =>
+								`${range[0]}-${range[1]} of ${total} items`,
+							defaultCurrent: 1,
+						}}
+					/>
+				)}
 			</div>
 			{isAllowFilters && (
 				<Suspense fallback={<div>Loading...</div>}>
