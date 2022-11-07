@@ -1,6 +1,8 @@
 import navbarStyles from './navbar.module.css';
 import { AiOutlineBell } from 'react-icons/ai';
+
 const Navbar = ({ fullName }) => {
+
 	return (
 		<div className={navbarStyles.navbarContainer}>
 			<nav className={navbarStyles.nav}>
