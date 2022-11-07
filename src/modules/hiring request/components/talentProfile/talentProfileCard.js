@@ -1,4 +1,6 @@
+import { Card, List, Pagination } from 'antd';
 import EmptyTalentProfile from '../emptyTalentProfile/emptyTalentProfile';
+import TalentList from '../talentList/talentList';
 import TalentProfileCardStyle from './talentProfile.module.css';
 
 const TalentProfileCard = ({ talentDetail }) => {
@@ -7,9 +9,19 @@ const TalentProfileCard = ({ talentDetail }) => {
 			<label>
 				<h1>Profiles Shared</h1>
 			</label>
-			<div className={TalentProfileCardStyle.talentCard}>
+			<div
+				className={TalentProfileCardStyle.talentCard}
+				style={{
+					backgroundColor: talentDetail
+						? `transparent`
+						: `var(--background-color-light)`,
+				}}>
 				<div className={TalentProfileCardStyle.talentCardBody}>
-					{!talentDetail ? <></> : <EmptyTalentProfile />}
+					{talentDetail ? (
+						<TalentList talentDetail={talentDetail && talentDetail} />
+					) : (
+						<EmptyTalentProfile />
+					)}
 				</div>
 			</div>
 		</div>

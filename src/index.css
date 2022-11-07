@@ -57,7 +57,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
   
 }
 
@@ -83,7 +83,7 @@ body {
 
 .ant-pagination-item-active{
   background-color: var(--color-sunlight) !important;
-  border-radius: 10px;
+  border-radius: 8px;
   border: none;
   
 }
@@ -178,4 +178,8 @@ td {
 .ant-checkbox:hover .ant-checkbox-inner,
 .ant-checkbox-input:focus+.ant-checkbox-inner{
   border: 1px solid var(--background-color-metal);
+}
+.ant-row{
+  flex-wrap: nowrap !important;
+  gap: 2rem;
 }

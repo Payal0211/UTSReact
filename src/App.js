@@ -15,7 +15,8 @@ function App() {
 				/>
 				<Route
 					path={UTSRoutes.HOMEROUTE}
-					element={<ProtectedUtils Component={Layout} />}>
+					// element={<ProtectedUtils Component={Layout} />}>
+					element={<Layout />}>
 					{Object.entries(navigateToComponent).map(([path, component]) => {
 						return (
 							<Route

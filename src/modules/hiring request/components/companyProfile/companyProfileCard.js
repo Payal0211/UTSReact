@@ -1,6 +1,7 @@
 import CompanyProfileCardStyle from './companyProfile.module.css';
 import { BsThreeDots } from 'react-icons/bs';
 import { AiFillLinkedin } from 'react-icons/ai';
+import { Divider } from 'antd';
 
 const CompanyProfileCard = ({ clientDetail }) => {
 	return (
@@ -45,7 +46,12 @@ const CompanyProfileCard = ({ clientDetail }) => {
 							<BsThreeDots style={{ fontSize: '1.5rem' }} />
 						</div>
 					</div>
-					<hr style={{ border: `1px solid var(--uplers-border-color)` }} />
+					<Divider
+						style={{
+							margin: '10px 0',
+							// border: `1px solid var(--uplers-border-color)`,
+						}}
+					/>
 					<div className={CompanyProfileCardStyle.partWise}>
 						<div style={{ marginBottom: '10px' }}>
 							<div className={CompanyProfileCardStyle.EngagementType}>
@@ -62,7 +68,13 @@ const CompanyProfileCard = ({ clientDetail }) => {
 							</div>
 						</div>
 					</div>
-					<hr style={{ border: `1px solid var(--uplers-border-color)` }} />
+					<Divider
+						style={{
+							margin: '10px 0',
+							// border: `1px solid var(--uplers-border-color)`,
+						}}
+					/>
+
 					<div className={CompanyProfileCardStyle.partWise}>
 						<div style={{ marginBottom: '10px' }}>
 							<div className={CompanyProfileCardStyle.TR}>
@@ -119,7 +131,11 @@ const CompanyProfileCard = ({ clientDetail }) => {
 							<div className={CompanyProfileCardStyle.jdLink}>
 								<span>JD Link:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.JobDetailURL}
+									<a
+										href="#"
+										style={{ textDecoration: 'underline' }}>
+										Click Here
+									</a>
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.TRParked}>

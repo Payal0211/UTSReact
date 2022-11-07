@@ -1,0 +1,51 @@
+.paginate {
+    top: 0;
+    margin-top: -90px;
+    margin-left: 83%;
+    gap: 1rem;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    position: absolute;
+    width: 20%;
+}
+.list{
+    background-color: red;
+}
+.talentCard {
+    margin-top: -45px;
+    border-radius: 8px;
+    height: 650px;
+    /* height: 119%; */
+    background-color: var(--background-color-light);
+}
+
+.talentCardBody {
+    width: 90%;
+    margin: 0 auto;
+    font-size: .7vw;
+    padding: 20px 0;
+}
+
+.partWise {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.avatar {
+    width: 72px;
+    max-width: 72px;
+    border-radius: 50%;
+}
+
+.nr,.interviewSlots,.time,.billRate,.payRate,.experience,.interviewStatus,.profileURL,.noticePeriod,.agreedShift,.availability,.profileSource{
+    display: flex;
+    align-items: center;
+    padding-top: 5px;
+}
+
+.payRate,.nr{
+    justify-content: space-between;
+}

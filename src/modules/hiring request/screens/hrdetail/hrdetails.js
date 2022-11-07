@@ -110,7 +110,7 @@ const HRDetailScreen = () => {
 				</div>
 			</div>
 			<div className={HRDetailStyle.activityFeed}>
-				<ActivityFeed activityFeed={apiData.HRHistory} />
+				<ActivityFeed activityFeed={apiData?.HRHistory} />
 			</div>
 			<br />
 		</div>

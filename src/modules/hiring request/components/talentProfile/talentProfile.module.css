@@ -6,13 +6,10 @@
     background-color: var(--background-color-light);
 }
 .talentCardBody {
-    width: 90%;
+    width: 98%;
     margin: 0 auto;
     padding: 20px 0;
 }
 
-.partWise {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
+
+

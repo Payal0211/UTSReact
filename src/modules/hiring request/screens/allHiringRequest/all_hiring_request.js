@@ -35,7 +35,8 @@ const AllHiringRequestScreen = () => {
 			);
 			response = response.data;
 			setAPIdata(
-				response.details.Data.map((item) => ({
+				response.details.Data.map((item, index) => ({
+					key: index,
 					starStatus: All_Hiring_Request_Utils.GETHRPRIORITY(
 						item.starMarkedStatusCode,
 					),
