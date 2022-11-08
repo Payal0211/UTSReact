@@ -183,3 +183,14 @@ td {
   flex-wrap: nowrap !important;
   gap: 2rem;
 }
+
+.ant-dropdown-menu{
+  background-color: transparent;
+  border-radius: 10px;
+  text-align: center;
+  background-color: var(--background-color-light);
+}
+
+.ant-dropdown-menu-item:hover{
+ border-radius: 10px;
+}

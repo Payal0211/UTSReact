@@ -39,7 +39,6 @@ const HRDetailScreen = () => {
 			let response = await axios.get(
 				' https://api.npoint.io/3f27611810049f9d387a',
 			);
-
 			setAPIdata(response.data.details);
 			setLoading(false);
 		}
@@ -76,6 +75,11 @@ const HRDetailScreen = () => {
 						backgroundColor={`var(--color-sunlight)`}
 						iconBorder={`1px solid var(--color-sunlight)`}
 						isDropdown={true}
+						listItem={[
+							{
+								label: 'Accept More TRs',
+							},
+						]}
 					/>
 					<HROperator
 						title="Pass to ODR"

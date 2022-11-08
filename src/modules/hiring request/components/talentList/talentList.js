@@ -1,4 +1,4 @@
-import { Card, Divider, List } from 'antd';
+import { Dropdown, Menu, Divider, List, Modal } from 'antd';
 import { hiringRequestHRStatus } from 'constants/application';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
@@ -6,9 +6,11 @@ import { RiArrowDropDownLine } from 'react-icons/ri';
 import TalentListStyle from './talentList.module.css';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
+import { useState } from 'react';
 
 const TalentList = ({ talentDetail }) => {
-	console.log('--talentDetails--', talentDetail);
+	const [showVersantModal, setVersantModal] = useState(false);
+
 	return (
 		<div>
 			<List
@@ -73,7 +75,24 @@ const TalentList = ({ talentDetail }) => {
 										</div>
 									</div>
 								</div>
-								<BsThreeDots style={{ fontSize: '1.5rem' }} />
+								<div style={{ cursor: 'pointer' }}>
+									<Dropdown
+										trigger={['click']}
+										placement="bottom"
+										overlay={
+											<Menu>
+												<Menu.Item key={0}>View Profile Log</Menu.Item>
+												<Divider
+													style={{
+														margin: '3px 0',
+													}}
+												/>
+												<Menu.Item key={1}>Remove Profile</Menu.Item>
+											</Menu>
+										}>
+										<BsThreeDots style={{ fontSize: '1.5rem' }} />
+									</Dropdown>
+								</div>
 							</div>
 							<div className={TalentListStyle.profileURL}>
 								<span>profile URL:</span>&nbsp;&nbsp;
@@ -171,16 +190,20 @@ const TalentList = ({ talentDetail }) => {
 							<div className={TalentListStyle.interviewSlots}>
 								<span>Available Interview Slots:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{item?.Slotconfirmed.split(' ')[0]}
+									{item?.Slotconfirmed
+										? item?.Slotconfirmed.split(' ')[0]
+										: 'not scheduled'}
 								</span>
 								<RiArrowDropDownLine />
 							</div>
 							<div className={TalentListStyle.time}>
 								<span>Time:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{item?.Slotconfirmed.split(' ')[1] +
-										' - ' +
-										item?.Slotconfirmed.split(' ')[3]}
+									{item?.Slotconfirmed
+										? item?.Slotconfirmed.split(' ')[1] +
+										  ' - ' +
+										  item?.Slotconfirmed.split(' ')[3]
+										: 'not scheduled'}
 								</span>
 							</div>
 							<Divider
@@ -189,9 +212,25 @@ const TalentList = ({ talentDetail }) => {
 									// border: `1px solid var(--uplers-border-color)`,
 								}}
 							/>
-							<div style={{ padding: '2px 0', textDecoration: 'underline' }}>
+							<div
+								style={{
+									padding: '2px 0',
+									textDecoration: 'underline',
+									cursor: 'pointer',
+								}}
+								onClick={() => setVersantModal(true)}>
 								Versant Test Results
 							</div>
+							<Modal
+								width="50%"
+								centered
+								footer={null}
+								open={showVersantModal}
+								// onOk={() => setVersantModal(false)}
+								onCancel={() => setVersantModal(false)}>
+								<p>some contents...</p>
+								<p>some contents...</p>
+							</Modal>
 							<div style={{ padding: '2px 0', textDecoration: 'underline' }}>
 								Skill Test Results
 							</div>

@@ -40,6 +40,7 @@ const LoginScreen = () => {
 		let login = SecuredStorageService.readSecuredData('userSessionInfo');
 		if (login) navigate(UTSRoutes.HOMEROUTE);
 	});
+
 	return (
 		<div className={loginStyle.loginContainer}>
 			<div className={loginStyle.loginColumn_1}>
