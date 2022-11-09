@@ -4,6 +4,7 @@ import { AiFillLinkedin } from 'react-icons/ai';
 import { Divider, Dropdown, Menu } from 'antd';
 
 const CompanyProfileCard = ({ clientDetail }) => {
+	console.log(clientDetail);
 	return (
 		<div className={CompanyProfileCardStyle.companyProfileContainer}>
 			<label>
@@ -25,7 +26,11 @@ const CompanyProfileCard = ({ clientDetail }) => {
 									{clientDetail?.CompanyURL}
 								</span>
 								&nbsp;&nbsp;
-								<AiFillLinkedin style={{ color: '#006699' }} />
+								<a
+									href={clientDetail?.LinkedInProfile}
+									target="_blank">
+									<AiFillLinkedin style={{ color: '#006699' }} />
+								</a>
 							</div>
 							<div className={CompanyProfileCardStyle.pocName}>
 								<span>POC Name:</span>&nbsp;&nbsp;
@@ -33,7 +38,8 @@ const CompanyProfileCard = ({ clientDetail }) => {
 									{clientDetail?.POCFullName}
 								</span>
 								&nbsp;&nbsp;
-								<AiFillLinkedin style={{ color: '#006699' }} />
+								{/*  TODO:- 
+								<AiFillLinkedin style={{ color: '#006699' }} /> */}
 							</div>
 							<div className={CompanyProfileCardStyle.pocEmail}>
 								<span>POC Email:</span>&nbsp;&nbsp;
@@ -96,7 +102,7 @@ const CompanyProfileCard = ({ clientDetail }) => {
 							<div className={CompanyProfileCardStyle.TR}>
 								<span>TR:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.Managed}
+									{clientDetail?.NoOfTalents}
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.TRParked}>
@@ -137,7 +143,6 @@ const CompanyProfileCard = ({ clientDetail }) => {
 									{clientDetail?.TimeZone}
 								</span>
 							</div>
-
 							<div className={CompanyProfileCardStyle.preferredTime}>
 								<span>Preferred Time:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
@@ -148,8 +153,9 @@ const CompanyProfileCard = ({ clientDetail }) => {
 								<span>JD Link:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									<a
-										href="#"
-										style={{ textDecoration: 'underline' }}>
+										href={clientDetail?.JobDetailURL}
+										style={{ textDecoration: 'underline' }}
+										target="_blank">
 										Click Here
 									</a>
 								</span>

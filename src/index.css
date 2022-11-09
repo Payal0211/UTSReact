@@ -27,6 +27,7 @@ body {
   --text-color-purity: #fff;
   --text-color-dark: #000;
   --uplers-black:#232323;
+  --uplers-grey:#F5F5F5;
   --background-color-light: #fff;
   --background-color-dim:#F9F9F9;
   --background-color-dark: #000;
@@ -111,6 +112,7 @@ th {
 }
 
 td {
+  color: var(--uplers-black);
   cursor: pointer;
   /* text-align: center; */
   font-size: 0.8rem;

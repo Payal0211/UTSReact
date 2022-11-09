@@ -4,6 +4,7 @@ import hiringFilterStyle from './hiringFilter.module.css';
 import { MdNavigateNext, MdArrowBackIosNew } from 'react-icons/md';
 import { GrFormClose } from 'react-icons/gr';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 
 const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 	const [toggleBack, setToggleBack] = useState(false);
@@ -46,6 +47,7 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 							<span className={hiringFilterStyle.label}>
 								{filterSubChild.name}
 							</span>
+							<br />
 							{filterSubChild.isSearch && (
 								<div className={hiringFilterStyle.searchFiltersList}>
 									<AiOutlineSearch
@@ -59,14 +61,26 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 									/>
 								</div>
 							)}
+							<br />
 							<div className={hiringFilterStyle.filtersListType}>
 								{filterSubChild.child.map((item, index) => {
+									console.log('--filtersubchild--', filterSubChild);
+									// return item.label ? <h1>fdsf</h1> : <h1>Bye</h1>;
 									return (
 										<div
 											className={hiringFilterStyle.filterItem}
 											key={index}>
-											<Checkbox style={{ fontSize: '1rem', fontWeight: '500' }}>
-												{item}
+											<Checkbox
+												style={{
+													fontSize: `${!item.label && '1rem'}`,
+													fontWeight: '500',
+												}}>
+												{item.label
+													? All_Hiring_Request_Utils.GETHRSTATUS(
+															item.statusCode,
+															item.label,
+													  )
+													: item}
 											</Checkbox>
 										</div>
 									);
@@ -121,7 +135,8 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 							</div>
 						</>
 					)}
-
+					<br />
+					<br />
 					<hr />
 					<div className={hiringFilterStyle.operationsFilters}>
 						<button className={hiringFilterStyle.clearAll}>Clear All</button>

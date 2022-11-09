@@ -1,17 +1,18 @@
 import allHRStyles from './all_hiring_request.module.css';
 import { AiOutlineDown } from 'react-icons/ai';
-import { Skeleton, Table } from 'antd';
+import { Dropdown, Menu, Select, Skeleton, Table } from 'antd';
 import React, { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { IoFunnelOutline } from 'react-icons/io5';
+import { IoChevronDownOutline, IoFunnelOutline } from 'react-icons/io5';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BsCalendar4 } from 'react-icons/bs';
 import { BiLockAlt } from 'react-icons/bi';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { Link } from 'react-router-dom';
-import { InputType } from 'constants/application';
+import { hiringRequestHRStatus, InputType } from 'constants/application';
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -26,6 +27,10 @@ const AllHiringRequestScreen = () => {
 
 	const onRemoveHRFilters = () => {
 		setIsAllowFilters(false);
+	};
+
+	const handleChange = (value) => {
+		console.log(`selected ${value}`);
 	};
 
 	useEffect(() => {
@@ -137,7 +142,7 @@ const AllHiringRequestScreen = () => {
 						<div className={allHRStyles.calendarFilterSet}>
 							<div className={allHRStyles.label}>Date</div>
 							<div className={allHRStyles.calendarFilter}>
-								<BsCalendar4 />
+								<CalenderSVG />
 								<DatePicker
 									style={{ backgroundColor: 'red' }}
 									onKeyDown={(e) => {
@@ -168,14 +173,44 @@ const AllHiringRequestScreen = () => {
 						</div>
 						<div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Showing</div>
-							<div className={allHRStyles.priorityFilter}>
-								<BiLockAlt
-									style={{
-										fontSize: '20px',
-										fontWeight: '800',
-										opacity: '0.8',
-									}}
-								/>
+							{/* <Select
+								defaultValue="50"
+								style={{
+									width: 80,
+
+									border: 'none !important',
+									outline: 'none !important',
+								}}
+								onChange={handleChange}
+								options={[
+									{
+										value: '100',
+										label: '100',
+									},
+									{
+										value: '200',
+										label: '200',
+									},
+								]}
+							/> */}
+							<div className={allHRStyles.paginationFilter}>
+								<Dropdown
+									trigger={['click']}
+									placement="bottom"
+									overlay={
+										<Menu>
+											<Menu.Item key={0}>50</Menu.Item>
+
+											<Menu.Item key={1}>100</Menu.Item>
+										</Menu>
+									}>
+									<span>
+										50{' '}
+										<IoChevronDownOutline
+											style={{ paddingTop: '5px', fontSize: '1rem' }}
+										/>
+									</span>
+								</Dropdown>
 							</div>
 						</div>
 					</div>
@@ -192,6 +227,7 @@ const AllHiringRequestScreen = () => {
 					</>
 				) : (
 					<Table
+						loading={isLoading && <Skeleton />}
 						id="1"
 						columns={tableColumns}
 						bordered={false}
@@ -349,12 +385,30 @@ const filtersType = [
 	{
 		name: 'HR Status',
 		child: [
-			'Hired',
-			'Profile Shared',
-			'HR Accepted',
-			'HR Submitted',
-			'Info Pending',
-			'In Process',
+			{
+				statusCode: hiringRequestHRStatus.HIRED,
+				label: 'Hired',
+			},
+			{
+				statusCode: hiringRequestHRStatus.PROFILE_SHARED,
+				label: 'Profile Shared',
+			},
+			{
+				statusCode: hiringRequestHRStatus.HR_ACCEPTED,
+				label: 'HR Accepted',
+			},
+			{
+				statusCode: hiringRequestHRStatus.HR_SUBMITTED,
+				label: 'HR Submitted',
+			},
+			{
+				statusCode: hiringRequestHRStatus.INFO_PENDING,
+				label: 'Info Pending',
+			},
+			{
+				statusCode: hiringRequestHRStatus.IN_PROCESS,
+				label: 'In Process',
+			},
 		],
 		isSearch: false,
 	},
