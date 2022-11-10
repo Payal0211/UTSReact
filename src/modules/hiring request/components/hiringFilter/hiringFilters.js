@@ -64,7 +64,6 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 							<br />
 							<div className={hiringFilterStyle.filtersListType}>
 								{filterSubChild.child.map((item, index) => {
-									console.log('--filtersubchild--', filterSubChild);
 									// return item.label ? <h1>fdsf</h1> : <h1>Bye</h1>;
 									return (
 										<div
@@ -98,7 +97,7 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 											closable={true}
 											onClose={(e) => {
 												e.preventDefault();
-												console.log(index);
+												// console.log(index);
 												// handleClose(e.target.value);
 											}}
 											style={{

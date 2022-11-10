@@ -1,18 +1,17 @@
+import { Dropdown, Menu, Skeleton, Table } from 'antd';
+import React, { useState, useEffect, Suspense } from 'react';
 import allHRStyles from './all_hiring_request.module.css';
 import { AiOutlineDown } from 'react-icons/ai';
-import { Dropdown, Menu, Select, Skeleton, Table } from 'antd';
-import React, { useState, useEffect, Suspense } from 'react';
-import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { IoChevronDownOutline, IoFunnelOutline } from 'react-icons/io5';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { BsCalendar4 } from 'react-icons/bs';
 import { BiLockAlt } from 'react-icons/bi';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { Link } from 'react-router-dom';
 import { hiringRequestHRStatus, InputType } from 'constants/application';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -20,6 +19,8 @@ const HiringFiltersLazyComponent = React.lazy(() =>
 );
 
 const AllHiringRequestScreen = () => {
+	const pageSizeOptions = [100, 200];
+	const [pageIndex, setPageIndex] = useState(0);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
@@ -29,41 +30,45 @@ const AllHiringRequestScreen = () => {
 		setIsAllowFilters(false);
 	};
 
-	const handleChange = (value) => {
+	/* const handleChange = (value) => {
 		console.log(`selected ${value}`);
+	}; */
+
+	const handleHRRequest = async (pageData) => {
+		let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
+			pageData
+				? pageData
+				: {
+						pageSize: 100,
+						pageNum: 1,
+				  },
+		);
+		setAPIdata(
+			response.responseBody.Data.map((item, index) => ({
+				key: index,
+				starStatus: All_Hiring_Request_Utils.GETHRPRIORITY(
+					item.starMarkedStatusCode,
+				),
+				adHocHR: item.adHocHR,
+				Date: item.createdDateTime.split(' ')[0],
+				HR_ID: item.hr,
+				TR: item.tr,
+				Position: item.position,
+				Company: item.company,
+				Time: item.timeZone.split(' ')[0],
+				typeOfEmployee: item.typeOfEmployee,
+				salesRep: item.salesRep,
+				hrStatus: All_Hiring_Request_Utils.GETHRSTATUS(
+					item.hrStatusCode,
+					item.hrStatus,
+				),
+			})),
+		);
+		setLoading(false);
 	};
 
 	useEffect(() => {
-		setLoading(true);
-		async function callAPI() {
-			let response = await axios.get(
-				'https://api.npoint.io/abbeed53bf8b4b354bb0',
-			);
-			response = response.data;
-			setAPIdata(
-				response.details.Data.map((item, index) => ({
-					key: index,
-					starStatus: All_Hiring_Request_Utils.GETHRPRIORITY(
-						item.starMarkedStatusCode,
-					),
-					adHocHR: item.adHocHR,
-					Date: item.createdDateTime.split(' ')[0],
-					HR_ID: item.hr,
-					TR: item.tr,
-					Position: item.position,
-					Company: item.company,
-					Time: item.timeZone.split(' ')[0],
-					typeOfEmployee: item.typeOfEmployee,
-					salesRep: item.salesRep,
-					hrStatus: All_Hiring_Request_Utils.GETHRSTATUS(
-						item.hrStatusCode,
-						item.hrStatus,
-					),
-				})),
-			);
-			setLoading(false);
-		}
-		callAPI();
+		handleHRRequest();
 	}, []);
 
 	/*--------- React DatePicker ---------------- */
@@ -199,13 +204,13 @@ const AllHiringRequestScreen = () => {
 									placement="bottom"
 									overlay={
 										<Menu>
-											<Menu.Item key={0}>50</Menu.Item>
+											<Menu.Item key={0}>100</Menu.Item>
 
-											<Menu.Item key={1}>100</Menu.Item>
+											<Menu.Item key={1}>200</Menu.Item>
 										</Menu>
 									}>
 									<span>
-										50{' '}
+										100{' '}
 										<IoChevronDownOutline
 											style={{ paddingTop: '5px', fontSize: '1rem' }}
 										/>
@@ -227,15 +232,18 @@ const AllHiringRequestScreen = () => {
 					</>
 				) : (
 					<Table
-						loading={isLoading && <Skeleton />}
-						id="1"
+						id="hrListingTable"
 						columns={tableColumns}
 						bordered={false}
 						dataSource={search && search.length > 0 ? search : apiData}
 						pagination={{
+							onChange: (e) => {
+								setPageIndex(e);
+								handleHRRequest({ pageSize: pageSizeOptions[e], pageNum: e });
+							},
 							size: 'small',
-							pageSize: 5,
-							pageSizeOptions: [5, 10],
+							pageSize: pageSizeOptions[pageIndex],
+							pageSizeOptions: pageSizeOptions,
 							total: apiData?.length,
 							showTotal: (total, range) =>
 								`${range[0]}-${range[1]} of ${total} items`,

@@ -6,11 +6,8 @@ export const userAPI = {
 	login: async function (userdata) {
 		let httpservices = new HttpServices();
 		httpservices.dataToSend = userdata;
-		// httpservices.URL =
-		// 	'https://1e43-2409-4041-2cb1-1b7-92b-cf60-be4c-251a.in.ngrok.io/UserOperationsAPI/AdminLogin';
-		httpservices.URL =  NetworkInfo.networkInfo + UserAPI.LOGIN;
+		httpservices.URL = 'http://3.218.6.134:9082/UserOperationsAPI/AdminLogin';
 		try {
-			console.log(httpservices.URL);
 			let response = await httpservices.sendPostRequest();
 			return response;
 		} catch (error) {
