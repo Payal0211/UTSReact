@@ -303,13 +303,13 @@ const tableColumns = [
 		title: 'Position',
 		dataIndex: 'Position',
 		key: '5',
-		align: 'right',
+		align: 'left',
 	},
 	{
 		title: 'Company',
 		dataIndex: 'Company',
 		key: '6',
-		align: 'right',
+		align: 'left',
 		render: (text) => {
 			return (
 				<a
@@ -325,19 +325,19 @@ const tableColumns = [
 		title: 'Time',
 		dataIndex: 'Time',
 		key: '7',
-		align: 'right',
+		align: 'left',
 	},
 	{
 		title: 'FTE/PTE',
 		dataIndex: 'typeOfEmployee',
 		key: '8',
-		align: 'right',
+		align: 'left',
 	},
 	{
 		title: 'Sales Rep',
 		dataIndex: 'salesRep',
 		key: '9',
-		align: 'right',
+		align: 'left',
 		render: (text) => {
 			return (
 				<a
