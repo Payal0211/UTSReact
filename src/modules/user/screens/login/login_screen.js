@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 import { InputType } from 'constants/application';
 import ButtonField from 'modules/user/components/buttonField/button_field';
@@ -10,14 +10,16 @@ import {
 } from 'shared/utils/password_icon_utils';
 import loginStyle from './login.module.css';
 import useForm from 'shared/hooks/useForm';
-import { _isNull } from 'shared/utils/basic_utils';
+
 import { userDAO } from 'core/user/userDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import { SecuredStorageService } from 'shared/services/secure_storage/secure_storage_service';
+import { Skeleton } from 'antd';
 
 const LoginScreen = () => {
+	const [isLoading, setLoading] = useState(false);
 	const [togglePasswordVisibility, onTogglePassword] = useIconToggle();
 	const navigate = useNavigate();
 	const userLoginInfo = useRef({
@@ -30,8 +32,10 @@ const LoginScreen = () => {
 
 	const loginHandler = async () => {
 		onSubmitHandler();
+		setLoading(true);
 		const result = await userDAO.loginDAO(formValues);
 		if (result.statusCode === HTTPStatusCode.OK) {
+			setLoading(false);
 			navigate(UTSRoutes.HOMEROUTE);
 		}
 	};
@@ -39,14 +43,29 @@ const LoginScreen = () => {
 	useEffect(() => {
 		let login = SecuredStorageService.readSecuredData('userSessionInfo');
 		if (login) navigate(UTSRoutes.HOMEROUTE);
-	});
+	}, []);
 
-	return (
+	return isLoading ? (
+		<>
+			<Skeleton active />
+			<br />
+			<Skeleton active />
+			<br />
+			<Skeleton active />
+			<br />
+			<Skeleton active />
+			<br />
+			<Skeleton active />
+			<br />
+			<Skeleton active />
+		</>
+	) : (
 		<div className={loginStyle.loginContainer}>
 			<div className={loginStyle.loginColumn_1}>
 				<div className={loginStyle.loginColumn_1_Body}>
 					<span>
 						<img
+							alt="avatar"
 							className={loginStyle.uplersTalentLogo}
 							src="https://staging.project-progress.net/html/uplers-talent-solutions/images/login-logo.svg"
 						/>

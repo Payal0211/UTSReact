@@ -29,4 +29,18 @@ export const hiringRequestAPI = {
 			return errorDebug(error, 'hiringRequestAPI.getAllHiringRequest');
 		}
 	},
+	getHRDetailsRequest: async function (hrid) {
+		let httpService = new HttpServices();
+		httpService.URL = `http://3.218.6.134:9082/ViewAllHR/GetHRDetail?id=${hrid}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken =
+			await UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestAPI.getHRDetailsRequest');
+		}
+	},
 };

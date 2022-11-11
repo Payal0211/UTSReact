@@ -1,4 +1,3 @@
-import { NetworkInfo, UserAPI } from 'constants/network';
 import { HttpServices } from 'shared/services/http/http_service';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 

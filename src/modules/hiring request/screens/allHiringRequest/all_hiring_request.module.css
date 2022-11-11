@@ -92,7 +92,8 @@
 .filterRight{
     width: 65%;  
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    gap:25px;
     align-items: center ; 
 }
 

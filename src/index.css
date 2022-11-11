@@ -106,7 +106,7 @@ th {
   /* border-radius: 8px !important; */
   font-weight: 700 !important;
   background-color: var(--background-color-light) !important;
-  text-align: center;
+  /* text-align: center; */
   font-size: 0.8rem;
   color: rgb(0, 0, 0);
 }

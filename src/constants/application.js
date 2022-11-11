@@ -74,6 +74,7 @@ export class hiringRequestPriority {
 
 export class hiringRequestHRStatus {
 	static PROFILE_SHARED = 100;
+	static DRAFT = 101;
 	static INFO_PENDING = 103;
 	static HR_ACCEPTED = 102;
 	static HR_SUBMITTED = 104;

@@ -19,8 +19,10 @@ const HiringFiltersLazyComponent = React.lazy(() =>
 );
 
 const AllHiringRequestScreen = () => {
-	const pageSizeOptions = [100, 200];
-	const [pageIndex, setPageIndex] = useState(0);
+	const pageSizeOptions = [100, 200, 300, 500, 1000];
+	const [totalRecords, setTotalRecords] = useState(0);
+	const [pageIndex, setPageIndex] = useState(1);
+	const [pageSize, setPageSize] = useState(100);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
@@ -35,6 +37,7 @@ const AllHiringRequestScreen = () => {
 	}; */
 
 	const handleHRRequest = async (pageData) => {
+		setLoading(true);
 		let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
 			pageData
 				? pageData
@@ -43,9 +46,10 @@ const AllHiringRequestScreen = () => {
 						pageNum: 1,
 				  },
 		);
+
 		setAPIdata(
-			response.responseBody.Data.map((item, index) => ({
-				key: index,
+			response.responseBody.Data.map((item) => ({
+				key: item.hrid,
 				starStatus: All_Hiring_Request_Utils.GETHRPRIORITY(
 					item.starMarkedStatusCode,
 				),
@@ -64,6 +68,7 @@ const AllHiringRequestScreen = () => {
 				),
 			})),
 		);
+		setTotalRecords(response.responseBody.TotalRecords);
 		setLoading(false);
 	};
 
@@ -176,28 +181,9 @@ const AllHiringRequestScreen = () => {
 								/>
 							</div>
 						</div>
-						<div className={allHRStyles.priorityFilterSet}>
+						{/* <div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Showing</div>
-							{/* <Select
-								defaultValue="50"
-								style={{
-									width: 80,
 
-									border: 'none !important',
-									outline: 'none !important',
-								}}
-								onChange={handleChange}
-								options={[
-									{
-										value: '100',
-										label: '100',
-									},
-									{
-										value: '200',
-										label: '200',
-									},
-								]}
-							/> */}
 							<div className={allHRStyles.paginationFilter}>
 								<Dropdown
 									trigger={['click']}
@@ -217,7 +203,7 @@ const AllHiringRequestScreen = () => {
 									</span>
 								</Dropdown>
 							</div>
-						</div>
+						</div> */}
 					</div>
 				</div>
 			</div>
@@ -232,22 +218,24 @@ const AllHiringRequestScreen = () => {
 					</>
 				) : (
 					<Table
+						loading={isLoading && <Skeleton active />}
 						id="hrListingTable"
 						columns={tableColumns}
 						bordered={false}
 						dataSource={search && search.length > 0 ? search : apiData}
 						pagination={{
-							onChange: (e) => {
-								setPageIndex(e);
-								handleHRRequest({ pageSize: pageSizeOptions[e], pageNum: e });
+							onChange: (pageNum, pageSize) => {
+								setPageIndex(pageNum);
+								setPageSize(pageSize);
+								handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
 							},
 							size: 'small',
-							pageSize: pageSizeOptions[pageIndex],
+							pageSize: pageSize,
 							pageSizeOptions: pageSizeOptions,
-							total: apiData?.length,
+							total: totalRecords,
 							showTotal: (total, range) =>
-								`${range[0]}-${range[1]} of ${total} items`,
-							defaultCurrent: 1,
+								`${range[0]}-${range[1]} of ${totalRecords} items`,
+							defaultCurrent: pageIndex,
 						}}
 					/>
 				)}
@@ -282,6 +270,7 @@ const tableColumns = [
 		render: (text) => {
 			return (
 				<a
+					target="_blank"
 					href="#"
 					style={{ color: 'black', textDecoration: 'underline' }}>
 					{text}
@@ -300,7 +289,9 @@ const tableColumns = [
 		dataIndex: 'HR_ID',
 		key: '3',
 		align: 'center',
-		render: (text) => <Link to={`/allhiringrequest/${text}`}>{text}</Link>,
+		render: (text, d) => (
+			<Link to={`/allhiringrequest/${d?.key}${text}`}>{text}</Link>
+		),
 	},
 	{
 		title: 'TR',
@@ -312,16 +303,17 @@ const tableColumns = [
 		title: 'Position',
 		dataIndex: 'Position',
 		key: '5',
-		align: 'center',
+		align: 'right',
 	},
 	{
 		title: 'Company',
 		dataIndex: 'Company',
 		key: '6',
-		align: 'center',
+		align: 'right',
 		render: (text) => {
 			return (
 				<a
+					target="_blank"
 					href="#"
 					style={{ color: 'black', textDecoration: 'underline' }}>
 					{text}
@@ -333,22 +325,23 @@ const tableColumns = [
 		title: 'Time',
 		dataIndex: 'Time',
 		key: '7',
-		align: 'center',
+		align: 'right',
 	},
 	{
 		title: 'FTE/PTE',
 		dataIndex: 'typeOfEmployee',
 		key: '8',
-		align: 'center',
+		align: 'right',
 	},
 	{
 		title: 'Sales Rep',
 		dataIndex: 'salesRep',
 		key: '9',
-		align: 'center',
+		align: 'right',
 		render: (text) => {
 			return (
 				<a
+					target="_blank"
 					href="#"
 					style={{ color: 'black', textDecoration: 'underline' }}>
 					{text}

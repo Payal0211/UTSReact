@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import EmptyTalentProfile from '../emptyTalentProfile/emptyTalentProfile';
-// import TalentList from '../talentList/talentList';
 import TalentProfileCardStyle from './talentProfile.module.css';
 
 const TalentList = React.lazy(() => import('../talentList/talentList'));
@@ -14,12 +13,13 @@ const TalentProfileCard = ({ talentDetail }) => {
 			<div
 				className={TalentProfileCardStyle.talentCard}
 				style={{
-					backgroundColor: talentDetail
-						? `transparent`
-						: `var(--background-color-light)`,
+					backgroundColor:
+						talentDetail?.length > 0
+							? `transparent`
+							: `var(--background-color-light)`,
 				}}>
 				<div className={TalentProfileCardStyle.talentCardBody}>
-					{talentDetail ? (
+					{talentDetail?.length > 0 ? (
 						<Suspense>
 							<TalentList talentDetail={talentDetail && talentDetail} />
 						</Suspense>

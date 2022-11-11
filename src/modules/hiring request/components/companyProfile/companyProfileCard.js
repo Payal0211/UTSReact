@@ -3,8 +3,7 @@ import { BsThreeDots } from 'react-icons/bs';
 import { AiFillLinkedin } from 'react-icons/ai';
 import { Divider, Dropdown, Menu } from 'antd';
 
-const CompanyProfileCard = ({ clientDetail }) => {
-	console.log(clientDetail);
+const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 	return (
 		<div className={CompanyProfileCardStyle.companyProfileContainer}>
 			<label>
@@ -28,7 +27,8 @@ const CompanyProfileCard = ({ clientDetail }) => {
 								&nbsp;&nbsp;
 								<a
 									href={clientDetail?.LinkedInProfile}
-									target="_blank">
+									target="_blank"
+									rel="noreferrer">
 									<AiFillLinkedin style={{ color: '#006699' }} />
 								</a>
 							</div>

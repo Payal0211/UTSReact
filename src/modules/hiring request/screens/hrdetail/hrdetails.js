@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 import { FiTrash2 } from 'react-icons/fi';
 import Routes from 'constants/routes';
-import axios from 'axios';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import {
 	hiringRequestHRStatus,
@@ -14,6 +13,7 @@ import { AiOutlineDown } from 'react-icons/ai';
 import { Skeleton } from 'antd';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { AiOutlineClockCircle } from 'react-icons/ai';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
 /** Lazy Loading the component */
 const CompanyProfileCard = React.lazy(() =>
@@ -32,19 +32,21 @@ const HRDetailScreen = () => {
 
 	const switchLocation = useLocation();
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
+	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 
 	useEffect(() => {
 		setLoading(true);
-		async function callAPI() {
-			let response = await axios.get(
-				' https://api.npoint.io/3f27611810049f9d387a',
-			);
-			setAPIdata(response.data.details);
-			setLoading(false);
+		async function callAPI(hrid) {
+			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+			if (response) {
+				setAPIdata(response && response?.responseBody);
+				setLoading(false);
+			}
 		}
-		callAPI();
-	}, []);
+		callAPI(urlSplitter?.split('HR')[0]);
+	}, [urlSplitter]);
 
+	console.log(apiData);
 	return (
 		<div className={HRDetailStyle.hiringRequestContainer}>
 			<Link to={Routes.ALLHIRINGREQUESTROUTE}>
@@ -56,7 +58,7 @@ const HRDetailScreen = () => {
 			<div className={HRDetailStyle.hrDetails}>
 				<div className={HRDetailStyle.hrDetailsLeftPart}>
 					<div className={HRDetailStyle.hiringRequestIdSets}>
-						HR ID - {urlSplitter}
+						HR ID - {updatedSplitter}
 					</div>
 					{All_Hiring_Request_Utils.GETHRSTATUS(
 						hiringRequestHRStatus.PROFILE_SHARED,
@@ -121,7 +123,7 @@ const HRDetailScreen = () => {
 						<Skeleton active />
 					) : (
 						<Suspense>
-							<CompanyProfileCard clientDetail={apiData.ClientDetail} />
+							<CompanyProfileCard clientDetail={apiData?.ClientDetail} />
 						</Suspense>
 					)}
 				</div>
@@ -130,7 +132,7 @@ const HRDetailScreen = () => {
 						<Skeleton active />
 					) : (
 						<Suspense>
-							<TalentProfileCard talentDetail={apiData.HRTalentDetails} />
+							<TalentProfileCard talentDetail={apiData?.HRTalentDetails} />
 						</Suspense>
 					)}
 				</div>

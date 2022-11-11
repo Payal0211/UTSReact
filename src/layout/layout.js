@@ -1,8 +1,6 @@
-import { navigateToComponent } from 'constants/routes';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import secureLocalStorage from 'react-secure-storage';
 import Navbar from 'shared/components/navbar/navbar';
 import Sidebar from 'shared/components/sidebar/sidebar';
 
@@ -15,6 +13,7 @@ const Layout = () => {
 		};
 		getUserResult();
 	}, []);
+
 	return (
 		<div>
 			<Navbar fullName={userData?.FullName} />
