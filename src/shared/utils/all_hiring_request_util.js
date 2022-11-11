@@ -1,6 +1,7 @@
 import {
-	hiringRequestHRStatus,
+	HiringRequestHRStatus,
 	hiringRequestPriority,
+	TalentRequestStatus,
 } from 'constants/application';
 import { ReactComponent as NoPriorityStar } from 'assets/svg/noPriorityStar.svg';
 import { ReactComponent as CurrentWeekPriorityStar } from 'assets/svg/currentWeekPriorityStar.svg';
@@ -22,23 +23,15 @@ export const All_Hiring_Request_Utils = {
 	},
 	GETHRSTATUS: function (statusCode, hrStatus) {
 		switch (statusCode) {
-			case hiringRequestHRStatus.PROFILE_SHARED:
+			case HiringRequestHRStatus.DRAFT:
 				return (
 					<HRStatusComponent
 						title={hrStatus}
-						backgroundColor={'#e4dcf5'}
-						color={'#784fcd'}
+						backgroundColor={'#EEEEEE'}
+						color={'#4E5063'}
 					/>
 				);
-			case hiringRequestHRStatus.INFO_PENDING:
-				return (
-					<HRStatusComponent
-						title={hrStatus}
-						backgroundColor={'#fad1d2'}
-						color={'#e41a1c'}
-					/>
-				);
-			case hiringRequestHRStatus.HR_ACCEPTED:
+			case HiringRequestHRStatus.HR_ACCEPTED:
 				return (
 					<HRStatusComponent
 						title={hrStatus}
@@ -46,28 +39,115 @@ export const All_Hiring_Request_Utils = {
 						color={'#799774'}
 					/>
 				);
-			case hiringRequestHRStatus.HR_SUBMITTED:
+			case HiringRequestHRStatus.ACCEPTANCE_PENDING:
 				return (
 					<HRStatusComponent
 						title={hrStatus}
-						backgroundColor={'#f1dfd7'}
-						color={'#b76038'}
+						backgroundColor={'#F2F4E6'}
+						color={'#1E210D'}
 					/>
 				);
-			case hiringRequestHRStatus.HIRED:
+			case HiringRequestHRStatus.INFO_PENDING:
 				return (
 					<HRStatusComponent
 						title={hrStatus}
-						backgroundColor={'#cce2d5'}
-						color={'#006d2c'}
+						backgroundColor={'#fad1d2'}
+						color={'#e41a1c'}
 					/>
 				);
-			case hiringRequestHRStatus.IN_PROCESS:
+			case HiringRequestHRStatus.COMPLETED:
 				return (
 					<HRStatusComponent
 						title={hrStatus}
-						backgroundColor={'#ffebcc'}
-						color={'#bc770e'}
+						backgroundColor={'#B0D2AA'}
+						color={'#006D2C'}
+					/>
+				);
+			case HiringRequestHRStatus.IN_PROCESS:
+				return (
+					<HRStatusComponent
+						title={hrStatus}
+						backgroundColor={'#F7E3C4'}
+						color={'#BC770E'}
+					/>
+				);
+			case HiringRequestHRStatus.CANCELLED:
+				return (
+					<HRStatusComponent
+						title={hrStatus}
+						backgroundColor={'#F0E2E2'}
+						color={'#810000'}
+					/>
+				);
+			default:
+				break;
+		}
+	},
+
+	GETTALENTSTATUS: function (statusCode, talentStatus) {
+		switch (statusCode) {
+			case TalentRequestStatus.SELECTED:
+				return (
+					<HRStatusComponent
+						title={talentStatus}
+						backgroundColor={'#D4DBEC'}
+						color={'#15317E'}
+					/>
+				);
+			case TalentRequestStatus.SHORTLISTED:
+				return (
+					<HRStatusComponent
+						title={talentStatus}
+						backgroundColor={'#DFEBEB'}
+						color={'#033E3E'}
+					/>
+				);
+			case TalentRequestStatus.IN_INTERVIEW:
+				return (
+					<HRStatusComponent
+						title={talentStatus}
+						backgroundColor={'#E4D8EE'}
+						color={'#6F2DA8'}
+					/>
+				);
+			case TalentRequestStatus.HIRED:
+				return (
+					<HRStatusComponent
+						title={talentStatus}
+						backgroundColor={'#C4DACD'}
+						color={'#006D2C'}
+					/>
+				);
+			case TalentRequestStatus.CANCELLED:
+				return (
+					<HRStatusComponent
+						title={talentStatus}
+						backgroundColor={'#F0E2E2'}
+						color={'#810000'}
+					/>
+				);
+			case TalentRequestStatus.ON_HOLD:
+				return (
+					<HRStatusComponent
+						title={talentStatus}
+						backgroundColor={'#EAD9C8'}
+						color={'#CD7F32'}
+					/>
+				);
+			case TalentRequestStatus.REJECTED:
+				return (
+					<HRStatusComponent
+						title={talentStatus}
+						backgroundColor={'#FEDADA'}
+						color={'#C80000'}
+					/>
+				);
+			case TalentRequestStatus.REPLACEMENT:
+				return (
+					<HRStatusComponent
+						title={talentStatus}
+						backgroundColor={'#E6EDF4'}
+						color={'#001C38'}
 					/>
 				);
 			default:

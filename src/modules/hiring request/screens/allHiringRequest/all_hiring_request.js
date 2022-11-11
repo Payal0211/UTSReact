@@ -1,15 +1,15 @@
-import { Dropdown, Menu, Skeleton, Table } from 'antd';
+import { Skeleton, Table } from 'antd';
 import React, { useState, useEffect, Suspense } from 'react';
 import allHRStyles from './all_hiring_request.module.css';
 import { AiOutlineDown } from 'react-icons/ai';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { IoChevronDownOutline, IoFunnelOutline } from 'react-icons/io5';
+import { IoFunnelOutline } from 'react-icons/io5';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BiLockAlt } from 'react-icons/bi';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { Link } from 'react-router-dom';
-import { hiringRequestHRStatus, InputType } from 'constants/application';
+import { HiringRequestHRStatus, InputType } from 'constants/application';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
@@ -31,10 +31,6 @@ const AllHiringRequestScreen = () => {
 	const onRemoveHRFilters = () => {
 		setIsAllowFilters(false);
 	};
-
-	/* const handleChange = (value) => {
-		console.log(`selected ${value}`);
-	}; */
 
 	const handleHRRequest = async (pageData) => {
 		setLoading(true);
@@ -314,7 +310,7 @@ const tableColumns = [
 			return (
 				<a
 					target="_blank"
-					href="#"
+					href=""
 					style={{ color: 'black', textDecoration: 'underline' }}>
 					{text}
 				</a>
@@ -387,28 +383,32 @@ const filtersType = [
 		name: 'HR Status',
 		child: [
 			{
-				statusCode: hiringRequestHRStatus.HIRED,
-				label: 'Hired',
+				statusCode: HiringRequestHRStatus.DRAFT,
+				label: 'Draft',
 			},
 			{
-				statusCode: hiringRequestHRStatus.PROFILE_SHARED,
-				label: 'Profile Shared',
+				statusCode: HiringRequestHRStatus.HR_ACCEPTED,
+				label: 'HR Aceepted',
 			},
 			{
-				statusCode: hiringRequestHRStatus.HR_ACCEPTED,
-				label: 'HR Accepted',
+				statusCode: HiringRequestHRStatus.ACCEPTANCE_PENDING,
+				label: 'Acceptance Pending',
 			},
 			{
-				statusCode: hiringRequestHRStatus.HR_SUBMITTED,
-				label: 'HR Submitted',
-			},
-			{
-				statusCode: hiringRequestHRStatus.INFO_PENDING,
+				statusCode: HiringRequestHRStatus.INFO_PENDING,
 				label: 'Info Pending',
 			},
 			{
-				statusCode: hiringRequestHRStatus.IN_PROCESS,
+				statusCode: HiringRequestHRStatus.COMPLETED,
+				label: 'Completed',
+			},
+			{
+				statusCode: HiringRequestHRStatus.IN_PROCESS,
 				label: 'In Process',
+			},
+			{
+				statusCode: HiringRequestHRStatus.CANCELLED,
+				label: 'Cancelled',
 			},
 		],
 		isSearch: false,

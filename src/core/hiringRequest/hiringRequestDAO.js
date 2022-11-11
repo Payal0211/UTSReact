@@ -10,6 +10,7 @@ export const hiringRequestDAO = {
 				const statusCode = hrResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = hrResult.responseBody;
+
 					return {
 						statusCode: statusCode,
 						responseBody: tempResult.details,

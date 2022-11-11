@@ -35,4 +35,13 @@ export const userDAO = {
 			return errorDebug(error, 'UserDAO.LoginDAO');
 		}
 	},
+	logoutDAO: async function () {
+		try {
+			let response = await UserSessionManagementController.deleteUserSession();
+			console.log(response);
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserDAO.LoginDAO');
+		}
+	},
 };

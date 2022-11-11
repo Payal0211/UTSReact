@@ -1,5 +1,4 @@
 import { Dropdown, Menu, Divider, List, Modal } from 'antd';
-import { hiringRequestHRStatus } from 'constants/application';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { RiArrowDropDownLine } from 'react-icons/ri';
@@ -53,9 +52,9 @@ const TalentList = ({ talentDetail }) => {
 												marginLeft: '60px',
 												top: '-35px',
 											}}>
-											{All_Hiring_Request_Utils.GETHRSTATUS(
-												hiringRequestHRStatus.IN_PROCESS,
-												item?.RequestStatus ? item?.RequestStatus : 'Hired',
+											{All_Hiring_Request_Utils.GETTALENTSTATUS(
+												item?.ProfileStatusCode,
+												item?.Status,
 											)}
 										</div>
 										<div

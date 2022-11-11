@@ -50,8 +50,15 @@ export const UserSessionManagementController = {
 		try {
 			const isUserSessionDeleted =
 				await SecuredStorageService.deleteSecuredData('userSessionInfo');
-			if (isUserSessionDeleted) this.setSessionStatus(SessionType.EXPIRED);
-			return isUserSessionDeleted;
+			const deleteUserBearerToken =
+				await SecuredStorageService.deleteSecuredData('apiKey');
+			const deleteSessionStatus = await SecuredStorageService.deleteSecuredData(
+				'sessionStatus',
+			);
+
+			return (
+				isUserSessionDeleted && deleteUserBearerToken && deleteSessionStatus
+			);
 		} catch (error) {
 			errorDebug(error, 'UserSessionManagementController.deleteUserSession');
 			return false;

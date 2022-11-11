@@ -67,17 +67,29 @@ export class InputType {
 }
 
 export class hiringRequestPriority {
-	static NO_PRIORITY = 201;
-	static CURRENT_WEEK_PRIORITY = 101;
-	static NEXT_WEEK_PRIORITY = 102;
+	static NO_PRIORITY = 0;
+	static CURRENT_WEEK_PRIORITY = 102;
+	static NEXT_WEEK_PRIORITY = 101;
 }
 
-export class hiringRequestHRStatus {
-	static PROFILE_SHARED = 100;
+export class HiringRequestHRStatus {
 	static DRAFT = 101;
-	static INFO_PENDING = 103;
 	static HR_ACCEPTED = 102;
-	static HR_SUBMITTED = 104;
-	static HIRED = 105;
+	static ACCEPTANCE_PENDING = 103;
+	static INFO_PENDING = 104;
+	static COMPLETED = 105;
 	static IN_PROCESS = 106;
+	static CANCELLED = 107;
+	static OTHER = 201;
+}
+
+export class TalentRequestStatus {
+	static SELECTED = 301;
+	static SHORTLISTED = 302;
+	static IN_INTERVIEW = 303;
+	static HIRED = 304;
+	static CANCELLED = 305;
+	static ON_HOLD = 306;
+	static REJECTED = 307;
+	static REPLACEMENT = 308;
 }
