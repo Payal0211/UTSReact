@@ -1,8 +1,17 @@
 import navbarStyles from './navbar.module.css';
 import { AiOutlineBell } from 'react-icons/ai';
+import { MdLogout } from 'react-icons/md';
+import { userDAO } from 'core/user/userDAO';
+import { useNavigate } from 'react-router-dom';
+import UTSRoutes from 'constants/routes';
+import { Tooltip } from 'antd';
 
 const Navbar = ({ fullName }) => {
-
+	const navigation = useNavigate();
+	const onLogoutHandler = async () => {
+		const res = await userDAO.logoutDAO();
+		if (res) navigation(UTSRoutes.LOGINROUTE);
+	};
 	return (
 		<div className={navbarStyles.navbarContainer}>
 			<nav className={navbarStyles.nav}>
@@ -35,6 +44,18 @@ const Navbar = ({ fullName }) => {
 						alt="avatar"
 					/>
 					<div className={navbarStyles.avatarDetails}>{fullName}</div>
+					<Tooltip
+						title="Logout"
+						color={`var(--color-sunlight)`}>
+						<MdLogout
+							onClick={onLogoutHandler}
+							style={{
+								color: `var(--background-color-dark)`,
+								fontSize: `var(--fontsize-trim)`,
+								cursor: 'pointer',
+							}}
+						/>
+					</Tooltip>
 				</div>
 			</nav>
 		</div>

@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState } from 'react';
-
 import { InputType } from 'constants/application';
 import ButtonField from 'modules/user/components/buttonField/button_field';
 import InputField from 'modules/user/components/inputField/input_field';
@@ -30,7 +29,7 @@ const LoginScreen = () => {
 		userLoginInfo.current,
 	);
 
-	const loginHandler = async () => {
+	const loginHandler = async (e) => {
 		onSubmitHandler();
 		setLoading(true);
 		const result = await userDAO.loginDAO(formValues);
@@ -113,7 +112,7 @@ const LoginScreen = () => {
 						<ButtonField
 							label="Log In"
 							backgroundColor={`var(--color-sunlight)`}
-							onClickHandler={loginHandler}
+							onClickHandler={(e) => loginHandler()}
 						/>
 					</div>
 				</div>

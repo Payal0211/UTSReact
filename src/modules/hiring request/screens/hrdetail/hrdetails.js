@@ -6,7 +6,7 @@ import { FiTrash2 } from 'react-icons/fi';
 import Routes from 'constants/routes';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import {
-	hiringRequestHRStatus,
+	// HiringRequestHRStatus,
 	hiringRequestPriority,
 } from 'constants/application';
 import { AiOutlineDown } from 'react-icons/ai';
@@ -46,7 +46,6 @@ const HRDetailScreen = () => {
 		callAPI(urlSplitter?.split('HR')[0]);
 	}, [urlSplitter]);
 
-	console.log(apiData);
 	return (
 		<div className={HRDetailStyle.hiringRequestContainer}>
 			<Link to={Routes.ALLHIRINGREQUESTROUTE}>
@@ -61,12 +60,12 @@ const HRDetailScreen = () => {
 						HR ID - {updatedSplitter}
 					</div>
 					{All_Hiring_Request_Utils.GETHRSTATUS(
-						hiringRequestHRStatus.PROFILE_SHARED,
-						'Profile Shared',
+						apiData?.HRStatusCode,
+						apiData?.HRStatus,
 					)}
 					<div className={HRDetailStyle.hiringRequestPriority}>
 						{All_Hiring_Request_Utils.GETHRPRIORITY(
-							hiringRequestPriority.NEXT_WEEK_PRIORITY,
+							apiData?.StarMarkedStatusCode,
 						)}
 					</div>
 				</div>
