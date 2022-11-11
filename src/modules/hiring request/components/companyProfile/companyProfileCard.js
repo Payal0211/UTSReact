@@ -1,8 +1,9 @@
 import CompanyProfileCardStyle from './companyProfile.module.css';
 import { BsThreeDots } from 'react-icons/bs';
 import { AiFillLinkedin } from 'react-icons/ai';
+import { Divider, Dropdown, Menu } from 'antd';
 
-const CompanyProfileCard = ({ clientDetail }) => {
+const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 	return (
 		<div className={CompanyProfileCardStyle.companyProfileContainer}>
 			<label>
@@ -24,28 +25,55 @@ const CompanyProfileCard = ({ clientDetail }) => {
 									{clientDetail?.CompanyURL}
 								</span>
 								&nbsp;&nbsp;
-								<AiFillLinkedin style={{ color: '#006699' }} />
+								<a
+									href={clientDetail?.LinkedInProfile}
+									target="_blank"
+									rel="noreferrer">
+									<AiFillLinkedin style={{ color: '#006699' }} />
+								</a>
 							</div>
 							<div className={CompanyProfileCardStyle.pocName}>
 								<span>POC Name:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.POCFullName}
 								</span>
+								&nbsp;&nbsp;
+								{/*  TODO:- 
+								<AiFillLinkedin style={{ color: '#006699' }} /> */}
 							</div>
 							<div className={CompanyProfileCardStyle.pocEmail}>
 								<span>POC Email:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.POCEmailID}
 								</span>
-								&nbsp;&nbsp;
-								<AiFillLinkedin style={{ color: '#006699' }} />
 							</div>
 						</div>
-						<div>
-							<BsThreeDots style={{ fontSize: '1.5rem' }} />
+						<div style={{ cursor: 'pointer' }}>
+							{
+								<Dropdown
+									trigger={['click']}
+									placement="bottom"
+									overlay={
+										<Menu>
+											<Menu.Item key={0}>View Profile Log</Menu.Item>
+											<Divider
+												style={{
+													margin: '3px 0',
+												}}
+											/>
+											<Menu.Item key={1}>Remove Profile</Menu.Item>
+										</Menu>
+									}>
+									<BsThreeDots style={{ fontSize: '1.5rem' }} />
+								</Dropdown>
+							}
 						</div>
 					</div>
-					<hr style={{ border: `1px solid var(--uplers-border-color)` }} />
+					<Divider
+						style={{
+							margin: '10px 0',
+						}}
+					/>
 					<div className={CompanyProfileCardStyle.partWise}>
 						<div style={{ marginBottom: '10px' }}>
 							<div className={CompanyProfileCardStyle.EngagementType}>
@@ -62,13 +90,19 @@ const CompanyProfileCard = ({ clientDetail }) => {
 							</div>
 						</div>
 					</div>
-					<hr style={{ border: `1px solid var(--uplers-border-color)` }} />
+					<Divider
+						style={{
+							margin: '10px 0',
+							// border: `1px solid var(--uplers-border-color)`,
+						}}
+					/>
+
 					<div className={CompanyProfileCardStyle.partWise}>
 						<div style={{ marginBottom: '10px' }}>
 							<div className={CompanyProfileCardStyle.TR}>
 								<span>TR:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.Managed}
+									{clientDetail?.NoOfTalents}
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.TRParked}>
@@ -109,7 +143,6 @@ const CompanyProfileCard = ({ clientDetail }) => {
 									{clientDetail?.TimeZone}
 								</span>
 							</div>
-
 							<div className={CompanyProfileCardStyle.preferredTime}>
 								<span>Preferred Time:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
@@ -119,7 +152,12 @@ const CompanyProfileCard = ({ clientDetail }) => {
 							<div className={CompanyProfileCardStyle.jdLink}>
 								<span>JD Link:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.JobDetailURL}
+									<a
+										href={clientDetail?.JobDetailURL}
+										style={{ textDecoration: 'underline' }}
+										target="_blank">
+										Click Here
+									</a>
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.TRParked}>

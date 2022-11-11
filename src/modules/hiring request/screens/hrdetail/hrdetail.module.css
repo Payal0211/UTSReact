@@ -22,7 +22,6 @@
     flex-wrap: wrap;
 }
 .hrDetailsLeftPart,.hrDetailsRightPart{
-    
     gap: 2rem;
     display: flex;
     justify-content: space-between;
@@ -112,9 +111,26 @@
     width: 66%;
     display: flex;
     width: 70%;
-    gap: 2rem;
 }
 
 .activityFeed{
     margin-top: 50px;
+}
+
+
+@media screen and (min-width:1200px) and (max-width:1300px) {
+    .hiringRequestIdSets {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+    
+    
+}
+@media only screen and (max-width:1260px) {
+   
+    .actionItem {
+        width: 45%;
+        gap:0;
+        justify-content: space-between;
+    }
 }

@@ -33,12 +33,64 @@
 
 .activityFeedList{
     background-color: var(--background-color-light);
-    
+    border-radius: 8px;
 }
 
 .activityFeedListBody{
-    
     margin-top: 10px;
-    max-height: 50vh;
+    max-height: 428px;
     overflow-y: scroll;
+}
+
+.activityFeedListItem{
+    width: 95%;
+    padding: 20px;
+    margin: 20px auto;
+    display: flex;
+    gap: 1%;
+    justify-content: flex-start;
+    align-items: center;
+    
+}
+
+.activityFeedTimeDetails{
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items:flex-start;
+}
+.activityFeedActivities{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.activityFeedPost{
+    border: 1px solid var(--uplers-border-color);
+    margin-top: 20px;
+    background-color: var(--background-color-light);
+    border-radius: 8px;
+}
+.activityFeedPostBody{
+    padding: 5px 0;
+    width: 95%;
+    margin:0 auto;
+    display: flex;
+        align-items: center;
+        justify-content: space-between;
+}
+.avatar {
+    width: 50px;
+    max-width: 50px;
+    border-radius: 50%;
+}
+.commentBox{
+    border: none;
+    outline: none;
+    width: 92%;
+    height:50px ;
+    font-size: 1rem;
 }

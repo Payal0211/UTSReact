@@ -1,4 +1,4 @@
-import { Link, Route, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ReactComponent as GridSVG } from 'assets/svg/grid.svg';
 import { ReactComponent as DashboardSVG } from 'assets/svg/dashboard.svg';
 import Routes from 'constants/routes';
@@ -10,7 +10,7 @@ const Sidebar = () => {
 	const switchLocation = useLocation();
 
 	let urlSplitter = `/${switchLocation.pathname.split('/')[1]}`;
-	
+
 	return (
 		<div className={sideBarStyles.sidebar}>
 			<div className={sideBarStyles.sidebarBody}>

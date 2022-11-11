@@ -13,7 +13,7 @@
 }
 
 .hiringRequest {
-    font-size: 2rem;
+    font-size: 32px;
     font-weight: 500;
 }
 
@@ -92,7 +92,8 @@
 .filterRight{
     width: 65%;  
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    gap:25px;
     align-items: center ; 
 }
 
@@ -156,4 +157,14 @@
     padding: 12px 18px 12px 18px;
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
+    cursor: pointer;
+}
+
+.paginationFilter {
+    display: flex;
+    align-items: center;
+    padding: 15px 18px 15px 18px;
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    cursor: pointer;
 }

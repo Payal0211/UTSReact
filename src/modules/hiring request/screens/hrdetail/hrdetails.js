@@ -1,21 +1,30 @@
 import HRDetailStyle from './hrdetail.module.css';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 import { FiTrash2 } from 'react-icons/fi';
 import Routes from 'constants/routes';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import {
 	hiringRequestHRStatus,
 	hiringRequestPriority,
 } from 'constants/application';
 import { AiOutlineDown } from 'react-icons/ai';
+import { Skeleton } from 'antd';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { AiOutlineClockCircle } from 'react-icons/ai';
-import CompanyProfileCard from 'modules/hiring request/components/companyProfile/companyProfileCard';
-import TalentProfileCard from 'modules/hiring request/components/talentProfile/talentProfileCard';
-import ActivityFeed from 'modules/hiring request/components/activityFeed/activityFeed';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+
+/** Lazy Loading the component */
+const CompanyProfileCard = React.lazy(() =>
+	import('modules/hiring request/components/companyProfile/companyProfileCard'),
+);
+const TalentProfileCard = React.lazy(() =>
+	import('modules/hiring request/components/talentProfile/talentProfileCard'),
+);
+const ActivityFeed = React.lazy(() =>
+	import('modules/hiring request/components/activityFeed/activityFeed'),
+);
 
 const HRDetailScreen = () => {
 	const [isLoading, setLoading] = useState(false);
@@ -23,20 +32,21 @@ const HRDetailScreen = () => {
 
 	const switchLocation = useLocation();
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
+	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 
 	useEffect(() => {
 		setLoading(true);
-		async function callAPI() {
-			let response = await axios.get(
-				' https://api.npoint.io/3f27611810049f9d387a',
-			);
-
-			setAPIdata(response.data.details);
-			setLoading(false);
+		async function callAPI(hrid) {
+			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+			if (response) {
+				setAPIdata(response && response?.responseBody);
+				setLoading(false);
+			}
 		}
-		callAPI();
-	}, []);
+		callAPI(urlSplitter?.split('HR')[0]);
+	}, [urlSplitter]);
 
+	console.log(apiData);
 	return (
 		<div className={HRDetailStyle.hiringRequestContainer}>
 			<Link to={Routes.ALLHIRINGREQUESTROUTE}>
@@ -48,7 +58,7 @@ const HRDetailScreen = () => {
 			<div className={HRDetailStyle.hrDetails}>
 				<div className={HRDetailStyle.hrDetailsLeftPart}>
 					<div className={HRDetailStyle.hiringRequestIdSets}>
-						HR ID - {urlSplitter}
+						HR ID - {updatedSplitter}
 					</div>
 					{All_Hiring_Request_Utils.GETHRSTATUS(
 						hiringRequestHRStatus.PROFILE_SHARED,
@@ -67,6 +77,11 @@ const HRDetailScreen = () => {
 						backgroundColor={`var(--color-sunlight)`}
 						iconBorder={`1px solid var(--color-sunlight)`}
 						isDropdown={true}
+						listItem={[
+							{
+								label: 'Accept More TRs',
+							},
+						]}
 					/>
 					<HROperator
 						title="Pass to ODR"
@@ -91,6 +106,7 @@ const HRDetailScreen = () => {
 						<AiOutlineClockCircle style={{ fontSize: '20px' }} />
 						<label>Saptarshee to schedule interview for Velma B R</label>
 					</div>
+
 					<div className={HRDetailStyle.actionItem}>
 						<AiOutlineClockCircle style={{ fontSize: '20px' }} />
 						<label>Saptarshee to schedule interview for Velma B R</label>
@@ -103,14 +119,32 @@ const HRDetailScreen = () => {
 			</div>
 			<div className={HRDetailStyle.portal}>
 				<div className={HRDetailStyle.clientPortal}>
-					<CompanyProfileCard clientDetail={apiData.ClientDetail} />
+					{isLoading ? (
+						<Skeleton active />
+					) : (
+						<Suspense>
+							<CompanyProfileCard clientDetail={apiData?.ClientDetail} />
+						</Suspense>
+					)}
 				</div>
 				<div className={HRDetailStyle.talentPortal}>
-					<TalentProfileCard talentDetail={apiData.HRTalentDetails} />
+					{isLoading ? (
+						<Skeleton active />
+					) : (
+						<Suspense>
+							<TalentProfileCard talentDetail={apiData?.HRTalentDetails} />
+						</Suspense>
+					)}
 				</div>
 			</div>
 			<div className={HRDetailStyle.activityFeed}>
-				<ActivityFeed activityFeed={apiData.HRHistory} />
+				{isLoading ? (
+					<Skeleton active />
+				) : (
+					<Suspense>
+						<ActivityFeed activityFeed={apiData?.HRHistory} />
+					</Suspense>
+				)}
 			</div>
 			<br />
 		</div>

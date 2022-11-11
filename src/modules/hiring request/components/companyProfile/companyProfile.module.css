@@ -1,9 +1,11 @@
 .companyProfileContainer{
     width: 100%;  
+    
 }
 
 .companyCard{
     border-radius: 8px;
+    height: 50%;
     background-color: var(--background-color-light);
 }
 .companyCardBody{

@@ -27,6 +27,7 @@ body {
   --text-color-purity: #fff;
   --text-color-dark: #000;
   --uplers-black:#232323;
+  --uplers-grey:#F5F5F5;
   --background-color-light: #fff;
   --background-color-dim:#F9F9F9;
   --background-color-dark: #000;
@@ -57,7 +58,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
   
 }
 
@@ -83,7 +84,7 @@ body {
 
 .ant-pagination-item-active{
   background-color: var(--color-sunlight) !important;
-  border-radius: 10px;
+  border-radius: 8px;
   border: none;
   
 }
@@ -105,12 +106,13 @@ th {
   /* border-radius: 8px !important; */
   font-weight: 700 !important;
   background-color: var(--background-color-light) !important;
-  text-align: center;
+  /* text-align: center; */
   font-size: 0.8rem;
   color: rgb(0, 0, 0);
 }
 
 td {
+  color: var(--uplers-black);
   cursor: pointer;
   /* text-align: center; */
   font-size: 0.8rem;
@@ -178,4 +180,19 @@ td {
 .ant-checkbox:hover .ant-checkbox-inner,
 .ant-checkbox-input:focus+.ant-checkbox-inner{
   border: 1px solid var(--background-color-metal);
+}
+.ant-row{
+  flex-wrap: nowrap !important;
+  gap: 2rem;
+}
+
+.ant-dropdown-menu{
+  background-color: transparent;
+  border-radius: 10px;
+  text-align: center;
+  background-color: var(--background-color-light);
+}
+
+.ant-dropdown-menu-item:hover{
+ border-radius: 10px;
 }

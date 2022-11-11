@@ -38,7 +38,7 @@ const useForm = (initialFormValues) => {
 			}
 			case 'password': {
 				let a = ValidateInput.required(value);
-				let b = ValidateInput.password(value);
+				let b = ValidateInput.required(value);
 				if (a.errorMsg) tempError['password'] = a.errorMsg;
 				else tempError['password'] = b.errorMsg;
 				break;

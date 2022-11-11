@@ -1,9 +1,9 @@
 import LoginScreen from 'modules/user/screens/login/login_screen';
-
 import { Routes, Navigate, Route } from 'react-router-dom';
 import UTSRoutes, { navigateToComponent } from 'constants/routes';
 import Layout from 'layout/layout';
 import { ProtectedUtils } from 'shared/utils/protected_utils';
+import { Result, Skeleton } from 'antd';
 
 function App() {
 	return (
@@ -17,6 +17,8 @@ function App() {
 				<Route
 					path={UTSRoutes.HOMEROUTE}
 					element={<ProtectedUtils Component={Layout} />}>
+					{/* element={<Layout />}x */}
+
 					{Object.entries(navigateToComponent).map(([path, component]) => {
 						return (
 							<Route
@@ -28,10 +30,23 @@ function App() {
 						);
 					})}
 				</Route>
-				/** No page found */
+
 				<Route
 					path="/404"
-					element={<div>Choose the correct path</div>}
+					element={
+						<Result
+							style={{
+								height: '600px',
+								display: 'flex',
+								flexDirection: 'column',
+								alignItems: 'center',
+								justifyContent: 'center',
+							}}
+							status="404"
+							title="404"
+							subTitle="Sorry, the page you visited does not exist."
+						/>
+					}
 				/>
 				<Route
 					path="*"
