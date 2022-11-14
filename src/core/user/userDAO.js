@@ -14,13 +14,9 @@ export const userDAO = {
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = loginResult.responseBody;
 					let _userAccount = new UserAccountModel(tempResult.details);
-					await UserSessionManagementController.setUserSession(_userAccount);
-					await UserSessionManagementController.setSessionStatus(
-						SessionType.ACTIVE,
-					);
-					await UserSessionManagementController.setAPIKey(
-						_userAccount['Token'],
-					);
+					UserSessionManagementController.setUserSession(_userAccount);
+					UserSessionManagementController.setSessionStatus(SessionType.ACTIVE);
+					UserSessionManagementController.setAPIKey(_userAccount['Token']);
 					return {
 						statusCode: statusCode,
 						responseBody: _userAccount,
@@ -37,9 +33,8 @@ export const userDAO = {
 	},
 	logoutDAO: async function () {
 		try {
-			let response = await UserSessionManagementController.deleteUserSession();
-
-			return response;
+			let response = await UserSessionManagementController.deleteAllSession();
+			return response && response;
 		} catch (error) {
 			return errorDebug(error, 'UserDAO.LoginDAO');
 		}

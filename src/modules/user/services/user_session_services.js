@@ -1,4 +1,3 @@
-import { SessionType } from 'constants/application';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 import { SecuredStorageService } from 'shared/services/secure_storage/secure_storage_service';
 
@@ -9,9 +8,9 @@ export const UserSessionManagementController = {
 	 * @returns Write data in Secured Storage
 	 */
 
-	setUserSession: async function (userAccount) {
+	setUserSession: function (userAccount) {
 		try {
-			await SecuredStorageService.writeSecuredData({
+			SecuredStorageService.writeSecuredData({
 				key: 'userSessionInfo',
 				value: userAccount,
 			});
@@ -27,11 +26,9 @@ export const UserSessionManagementController = {
 	 * @Function getUserSession()
 	 * @returns SecuredStorage data
 	 */
-	getUserSession: async function () {
+	getUserSession: function () {
 		try {
-			const data = await SecuredStorageService.readSecuredData(
-				'userSessionInfo',
-			);
+			const data = SecuredStorageService.readSecuredData('userSessionInfo');
 			return data && data;
 		} catch (error) {
 			return errorDebug(
@@ -46,19 +43,12 @@ export const UserSessionManagementController = {
 	 * @returns isSessionDeleted\
 	 * @returnType bool
 	 */
-	deleteUserSession: async function () {
+	deleteUserSession: function () {
 		try {
 			const isUserSessionDeleted =
-				await SecuredStorageService.deleteSecuredData('userSessionInfo');
-			const deleteUserBearerToken =
-				await SecuredStorageService.deleteSecuredData('apiKey');
-			const deleteSessionStatus = await SecuredStorageService.deleteSecuredData(
-				'sessionStatus',
-			);
+				SecuredStorageService.deleteSecuredData('userSessionInfo');
 
-			return (
-				isUserSessionDeleted && deleteUserBearerToken && deleteSessionStatus
-			);
+			return isUserSessionDeleted;
 		} catch (error) {
 			errorDebug(error, 'UserSessionManagementController.deleteUserSession');
 			return false;
@@ -70,9 +60,9 @@ export const UserSessionManagementController = {
 	 * @param {*} sessionStatus
 	 * @returns Write sessionStatus in Secured Storage
 	 */
-	setSessionStatus: async function (sessionStatus) {
+	setSessionStatus: function (sessionStatus) {
 		try {
-			await SecuredStorageService.writeSecuredData({
+			SecuredStorageService.writeSecuredData({
 				key: 'sessionStatus',
 				value: sessionStatus,
 			});
@@ -88,9 +78,9 @@ export const UserSessionManagementController = {
 	 * @Function getSessionStatus()
 	 * @returns sessionStatusData
 	 */
-	getSessionStatus: async function () {
+	getSessionStatus: function () {
 		try {
-			const data = await SecuredStorageService.readSecuredData('sessionStatus');
+			const data = SecuredStorageService.readSecuredData('sessionStatus');
 			return data && data;
 		} catch (error) {
 			return errorDebug(
@@ -105,9 +95,9 @@ export const UserSessionManagementController = {
 	 * @param {*} accessKey
 	 * @returns Write apiKey data in secured storage
 	 */
-	setAPIKey: async function (accessKey) {
+	setAPIKey: function (accessKey) {
 		try {
-			await SecuredStorageService.writeSecuredData({
+			SecuredStorageService.writeSecuredData({
 				key: 'apiKey',
 				value: accessKey,
 			});
@@ -120,12 +110,25 @@ export const UserSessionManagementController = {
 	 * @Function getAPIKey()
 	 * @returns apiKey securedStorage Data
 	 */
-	getAPIKey: async function () {
+	getAPIKey: function () {
 		try {
-			const data = await SecuredStorageService.readSecuredData('apiKey');
+			const data = SecuredStorageService.readSecuredData('apiKey');
+
 			return data && data;
 		} catch (error) {
 			return errorDebug(error, 'UserSessionManagementController.getAPIKey');
+		}
+	},
+
+	deleteAllSession: function () {
+		try {
+			const data = SecuredStorageService.deleteAllSecuredData();
+			return data && data;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'UserSessionManagementController.deleteAllSession',
+			);
 		}
 	},
 };
