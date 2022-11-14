@@ -1,3 +1,4 @@
+import { NetworkInfo, SubDomainsCollection, ViewAllHR } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
 import { errorDebug } from 'shared/utils/error_debug_utils';
@@ -5,7 +6,7 @@ import { errorDebug } from 'shared/utils/error_debug_utils';
 export const hiringRequestAPI = {
 	getPaginatedHiringRequest: async function (hrData) {
 		let httpService = new HttpServices();
-		httpService.URL = `http://3.218.6.134:9082/ViewAllHR/GetAllHiringRequests?Pagesize=${hrData.pageSize}&Pagenum=${hrData.pageNum}&Sortdatafield=CreatedDateTime&Sortorder=desc`;
+		httpService.URL =  NetworkInfo.networkInfo + SubDomainsCollection.ViewAllHR + ViewAllHR.GETALLHIRINGREQUESTS + `?Pagesize=${hrData.pageSize}&Pagenum=${hrData.pageNum}&Sortdatafield=CreatedDateTime&Sortorder=desc`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken =
 			await UserSessionManagementController.getAPIKey();
@@ -18,7 +19,7 @@ export const hiringRequestAPI = {
 	},
 	getAllHiringRequest: async function () {
 		let httpService = new HttpServices();
-		httpService.URL = 'http://3.218.6.134:9082/ViewAllHR/GetAllHiringRequests';
+		httpService.URL = NetworkInfo.networkInfo + SubDomainsCollection.ViewAllHR + ViewAllHR.GETALLHIRINGREQUESTS;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken =
 			await UserSessionManagementController.getAPIKey();
@@ -31,7 +32,7 @@ export const hiringRequestAPI = {
 	},
 	getHRDetailsRequest: async function (hrid) {
 		let httpService = new HttpServices();
-		httpService.URL = `http://3.218.6.134:9082/ViewAllHR/GetHRDetail?id=${hrid}`;
+		httpService.URL =   NetworkInfo.networkInfo + SubDomainsCollection.ViewAllHR + ViewAllHR.GetHRDetail +`?id=${hrid}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken =
 			await UserSessionManagementController.getAPIKey();

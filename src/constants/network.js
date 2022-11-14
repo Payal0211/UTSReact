@@ -1,8 +1,14 @@
 export class NetworkInfo {
     static protocol = "http://";
     static domain = "localhost:5162/";
-    static subDomain = "UserOperationsAPI/";
-    static networkInfo = NetworkInfo.protocol + NetworkInfo.domain + NetworkInfo.subDomain;
+    static QADomain = "localhost:5162/";
+    static StageDomain = "localhost:5162/";
+    static networkInfo = NetworkInfo.protocol + NetworkInfo.domain;
+}
+
+export class SubDomainsCollection {
+    static UserOperation = "UserOperationsAPI/";
+    static ViewAllHR = "ViewAllHR/";
 }
 
 export class APIType {
@@ -14,9 +20,16 @@ export class MethodType {
     static PUT = "/update";
     static DELETE = "/delete";
 }
-export class UserAPI {
+
+export class ViewAllHR{
+    static GETALLHIRINGREQUESTS = "GetAllHiringRequests";
+    static GetHRDetail = "GetHRDetail"
+}
+
+export class UserOperation {
     static LOGIN = "AdminLogin";
     static SIGNUP = "/signup";
+    static GETALLHIRINGREQUESTS = "GetAllHiringRequests";
     static FORGOTPASSWORD = "/forgotpassword";
     static UPDATEPASSWORD = "/updatepassword"
 }
