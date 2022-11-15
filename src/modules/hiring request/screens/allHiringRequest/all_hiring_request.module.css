@@ -1,8 +1,10 @@
 .hiringRequestContainer {
     width: 90%;
     margin: 0 auto;
+    
     /* border: 1px solid rebeccapurple; */
 }
+
 
 .addnewHR {
     
@@ -44,11 +46,14 @@
     background-color: var(--background-color-light);
 }
 .filterContainer{
+    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
     border-radius: 10px;
     /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
-    margin: 70px auto  ;
+    margin: 50px auto 20px auto ;
     background-color: var(--background-color-light);
 }
+
+
 
 .filterSets{
     width: 96%;
@@ -93,7 +98,7 @@
     width: 65%;  
     display: flex;
     justify-content: flex-end;
-    gap:25px;
+    gap:14px;
     align-items: center ; 
 }
 
@@ -113,7 +118,7 @@
     padding: 14px 12px 14px 0px;
     outline: none;
     border: none;
-    color: var(--background-color-dark);
+    color: var(--uplers-black);
     font-weight: 500;
 }
 .calendarFilterSet{
@@ -126,7 +131,7 @@
 .label{
     font-size: .8rem;
     font-weight: 500;
-    color: var(--background-color-dark);
+    color: var(--uplers-black);
 }
 .calendarFilter{
    
@@ -143,7 +148,7 @@
     padding: 12px 12px 12px 12px;
     outline: none;
     border:none;
-    color: var(--background-color-dark);
+    color: var(--uplers-black);
     font-weight: 500;
 }
 .priorityFilterSet{

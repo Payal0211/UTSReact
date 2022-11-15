@@ -69,6 +69,7 @@
 }
 
 .hrNextActionForTalent{
+    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
     margin-top: 80px;
     background-color: var(--background-color-light);
     border-radius: 8px;

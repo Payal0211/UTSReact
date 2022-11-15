@@ -1,10 +1,12 @@
 .emptyContainer{
     height: 495px;
+    
 }
 .emptyContainerBody{
     margin: 10% auto;
     width: 50%;
     border-radius: 8px;
+    
     border: 1px solid var(--uplers-border-color);
     text-align: center;
 }

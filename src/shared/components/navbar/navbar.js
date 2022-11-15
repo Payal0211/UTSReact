@@ -1,10 +1,10 @@
 import navbarStyles from './navbar.module.css';
-import { AiOutlineBell } from 'react-icons/ai';
-import { MdLogout } from 'react-icons/md';
 import { userDAO } from 'core/user/userDAO';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
-import { Tooltip } from 'antd';
+import { Badge, Tooltip } from 'antd';
+import { ReactComponent as BellSVG } from 'assets/svg/bell.svg';
+import { ReactComponent as LogoutSVG } from 'assets/svg/logout.svg';
 
 const Navbar = ({ fullName }) => {
 	const navigation = useNavigate();
@@ -18,12 +18,13 @@ const Navbar = ({ fullName }) => {
 				<div
 					id="logo"
 					className={navbarStyles.navHeading}>
-					<a href="#">
+					<Link to={UTSRoutes.HOMEROUTE}>
 						<img
+							alt="logo"
 							className={navbarStyles.uplersTalentLogo}
 							src="https://staging.project-progress.net/html/uplers-talent-solutions/images/login-logo.svg"
 						/>
-					</a>
+					</Link>
 					<div className={navbarStyles.activeTalent}>
 						<span className={navbarStyles.talentIndicator}></span>
 						<div>
@@ -32,26 +33,30 @@ const Navbar = ({ fullName }) => {
 					</div>
 				</div>
 				<div className={navbarStyles.navlink}>
-					<AiOutlineBell
-						style={{
-							color: `var(--background-color-dark)`,
-							fontSize: `var(--fontsize-trim)`,
-						}}
-					/>
+					<Badge count={4}>
+						<BellSVG
+							style={{
+								cursor: 'pointer',
+							}}
+						/>
+					</Badge>
+
 					<img
 						src="https://www.w3schools.com/howto/img_avatar.png"
 						className={navbarStyles.avatar}
 						alt="avatar"
+						style={{
+							cursor: 'pointer',
+						}}
 					/>
 					<div className={navbarStyles.avatarDetails}>{fullName}</div>
 					<Tooltip
+						placement="bottom"
 						title="Logout"
 						color={`var(--color-sunlight)`}>
-						<MdLogout
+						<LogoutSVG
 							onClick={onLogoutHandler}
 							style={{
-								color: `var(--background-color-dark)`,
-								fontSize: `var(--fontsize-trim)`,
 								cursor: 'pointer',
 							}}
 						/>

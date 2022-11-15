@@ -1,14 +1,20 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { SecuredStorageService } from 'shared/services/secure_storage/secure_storage_service';
 import UTSRoutes from 'constants/routes';
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
-export const ProtectedUtils = (props) => {
-	const { Component } = props;
+export const ProtectedRoutes = ({ Component }) => {
 	const navigate = useNavigate();
 	useEffect(() => {
-		let login = SecuredStorageService.readSecuredData('userSessionInfo');
-		if (!login) navigate(UTSRoutes.LOGINROUTE);
-	});
+		const checkStatus = async () => {
+			let login = UserSessionManagementController.getAPIKey();
+			if (!login) {
+				let deletedResponse =
+					UserSessionManagementController.deleteAllSession();
+				if (deletedResponse) navigate(UTSRoutes.LOGINROUTE);
+			}
+		};
+		checkStatus();
+	}, [navigate]);
 	return <Component />;
 };

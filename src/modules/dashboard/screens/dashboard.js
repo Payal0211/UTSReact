@@ -1,5 +1,5 @@
 const DashboardScreen = () => {
-	return <div>DashboardScreen</div>;
+	return <div></div>;
 };
 
 export default DashboardScreen;
