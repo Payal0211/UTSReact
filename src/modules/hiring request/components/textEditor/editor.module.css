@@ -1,0 +1,73 @@
+.activityFeedPost {
+    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
+    border: 1px solid var(--uplers-border-color);
+    margin-top: 20px;
+    background-color: var(--background-color-light);
+    border-radius: 8px;
+}
+
+.activityFeedPostBody {
+    padding: 5px 0;
+    width: 95%;
+    
+    margin: 0 auto;
+    display: flex;
+    gap:10px;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.avatar {
+    width: 50px;
+    max-width: 50px;
+    border-radius: 50%;
+}
+
+.commentBox {
+    padding-left: 20px;
+    outline: none;
+    width: 60%;
+    font-size: 1rem;
+}
+[contentEditable][placeholder]:empty:before {
+    content: attr(placeholder);
+    position: absolute;
+    color: gray;
+    background-color: transparent;
+}
+.actionItems{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 35%;
+    flex-wrap: wrap;
+}
+
+.buttonGroup{
+   
+    display: flex;
+    gap: 10px;
+    margin-right: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+button{
+    cursor: pointer;
+    height: 50px;
+    width: 50px;
+    border: none;
+    border-radius: 50%;
+    outline: none;
+}
+button:hover{
+    transition: all .5s ease-in-out;
+    color: var(--color-sunlight);
+    box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.4),
+}
+
+
+
+

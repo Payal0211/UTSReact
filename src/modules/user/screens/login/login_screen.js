@@ -36,6 +36,10 @@ const LoginScreen = () => {
 		if (result.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
 			navigate(UTSRoutes.HOMEROUTE);
+		} else if (result.statusCode === HTTPStatusCode.BAD_REQUEST) {
+			setLoading(false);
+			alert(result.responseBody);
+			navigate(UTSRoutes.LOGINROUTE);
 		}
 	};
 

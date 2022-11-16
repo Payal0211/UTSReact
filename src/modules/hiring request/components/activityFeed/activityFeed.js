@@ -7,6 +7,7 @@ import { Fragment, useState, useMemo } from 'react';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { Divider } from 'antd';
 import { BsTag } from 'react-icons/bs';
+import Editor from '../textEditor/editor';
 
 const ActivityFeed = ({ activityFeed }) => {
 	const [search, setSearch] = useState('');
@@ -96,26 +97,7 @@ const ActivityFeed = ({ activityFeed }) => {
 					})}
 				</div>
 			</div>
-			<div className={ActivityFeedStyle.activityFeedPost}>
-				<div className={ActivityFeedStyle.activityFeedPostBody}>
-					<img
-						src="https://www.w3schools.com/howto/img_avatar.png"
-						className={ActivityFeedStyle.avatar}
-						alt="avatar"
-					/>
-					<input
-						className={ActivityFeedStyle.commentBox}
-						type={InputType.TEXT}
-						placeholder="Comment on this thread by typing here or mention someone with @..."
-					/>
-					<IoMdSend
-						style={{
-							fontSize: '30px',
-							color: `var(--background-color-ebony)`,
-						}}
-					/>
-				</div>
-			</div>
+			<Editor />
 		</div>
 	);
 };
