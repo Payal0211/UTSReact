@@ -1,25 +1,24 @@
-import secureLocalStorage from 'react-secure-storage';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const SecuredStorageService = {
 	readSecuredData: function (key) {
 		try {
-			const result = secureLocalStorage.getItem(key);
-			return result;
+			const result = localStorage.getItem(key);
+			return result && JSON.parse(result);
 		} catch (error) {
 			return errorDebug(error, 'SecureStorageService.readSecuredData');
 		}
 	},
 	writeSecuredData: function (securedData) {
 		try {
-			secureLocalStorage.setItem(securedData.key, securedData.value);
+			localStorage.setItem(securedData.key, JSON.stringify(securedData.value));
 		} catch (error) {
 			return errorDebug(error, 'SecureStorageService.writeSecuredData');
 		}
 	},
 	deleteSecuredData: function (key) {
 		try {
-			secureLocalStorage.removeItem(key);
+			localStorage.removeItem(key);
 			return true;
 		} catch (error) {
 			errorDebug(error, 'SecureStorageService.deleteSecuredData');
@@ -28,7 +27,7 @@ export const SecuredStorageService = {
 	},
 	deleteAllSecuredData: function () {
 		try {
-			secureLocalStorage.clear();
+			localStorage.clear();
 			return true;
 		} catch (error) {
 			errorDebug(error, 'SecureStorageService.deleteAllSecureData');

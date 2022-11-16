@@ -7,16 +7,38 @@ import { ReactComponent as NoPriorityStar } from 'assets/svg/noPriorityStar.svg'
 import { ReactComponent as CurrentWeekPriorityStar } from 'assets/svg/currentWeekPriorityStar.svg';
 import { ReactComponent as NextWeekPriorityStar } from 'assets/svg/nextWeekPriorityStar.svg';
 import HRStatusComponent from 'modules/hiring request/components/hrStatus/hrStatusComponent';
+import { Tooltip } from 'antd';
 
 export const All_Hiring_Request_Utils = {
 	GETHRPRIORITY: function (statusCode) {
 		switch (statusCode) {
 			case hiringRequestPriority.NO_PRIORITY:
-				return <NoPriorityStar />;
+				return (
+					<Tooltip
+						placement="bottom"
+						title="No Priority"
+						color={`var(--uplers-black)`}>
+						<NoPriorityStar />
+					</Tooltip>
+				);
 			case hiringRequestPriority.CURRENT_WEEK_PRIORITY:
-				return <CurrentWeekPriorityStar />;
+				return (
+					<Tooltip
+						placement="bottom"
+						title="Current Week Priority"
+						color={`var(--success-color)`}>
+						<CurrentWeekPriorityStar />
+					</Tooltip>
+				);
 			case hiringRequestPriority.NEXT_WEEK_PRIORITY:
-				return <NextWeekPriorityStar />;
+				return (
+					<Tooltip
+						placement="bottom"
+						title="Next Week Priority"
+						color={`var(--color-sunlight)`}>
+						<NextWeekPriorityStar />
+					</Tooltip>
+				);
 			default:
 				break;
 		}

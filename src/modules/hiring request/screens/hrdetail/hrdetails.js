@@ -1,19 +1,15 @@
-import HRDetailStyle from './hrdetail.module.css';
 import React, { Suspense, useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { MdOutlineArrowBackIos } from 'react-icons/md';
-import { FiTrash2 } from 'react-icons/fi';
-import Routes from 'constants/routes';
-import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
-import {
-	// HiringRequestHRStatus,
-	hiringRequestPriority,
-} from 'constants/application';
-import { AiOutlineDown } from 'react-icons/ai';
 import { Skeleton } from 'antd';
+import { Link, useLocation } from 'react-router-dom';
+import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
-import { AiOutlineClockCircle } from 'react-icons/ai';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import HRDetailStyle from './hrdetail.module.css';
+import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
+import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
+import { ReactComponent as DeleteSVG } from 'assets/svg/delete.svg';
+import { ReactComponent as ClockSVG } from 'assets/svg/clock.svg';
+import UTSRoutes from 'constants/routes';
 
 /** Lazy Loading the component */
 const CompanyProfileCard = React.lazy(() =>
@@ -48,9 +44,10 @@ const HRDetailScreen = () => {
 
 	return (
 		<div className={HRDetailStyle.hiringRequestContainer}>
-			<Link to={Routes.ALLHIRINGREQUESTROUTE}>
+			<Link to={UTSRoutes.ALLHIRINGREQUESTROUTE}>
 				<div className={HRDetailStyle.goback}>
-					<MdOutlineArrowBackIos />
+					{/* <MdOutlineArrowBackIos /> */}
+					<ArrowLeftSVG style={{ width: '16px' }} />
 					<span>Go Back</span>
 				</div>
 			</Link>
@@ -63,16 +60,18 @@ const HRDetailScreen = () => {
 						apiData?.HRStatusCode,
 						apiData?.HRStatus,
 					)}
-					<div className={HRDetailStyle.hiringRequestPriority}>
-						{All_Hiring_Request_Utils.GETHRPRIORITY(
-							apiData?.StarMarkedStatusCode,
-						)}
-					</div>
+					{apiData && (
+						<div className={HRDetailStyle.hiringRequestPriority}>
+							{All_Hiring_Request_Utils.GETHRPRIORITY(
+								apiData?.StarMarkedStatusCode,
+							)}
+						</div>
+					)}
 				</div>
 				<div className={HRDetailStyle.hrDetailsRightPart}>
 					<HROperator
 						title="Accept HR"
-						icon={<AiOutlineDown />}
+						icon={<ArrowDownSVG style={{ width: '16px' }} />}
 						backgroundColor={`var(--color-sunlight)`}
 						iconBorder={`1px solid var(--color-sunlight)`}
 						isDropdown={true}
@@ -84,34 +83,29 @@ const HRDetailScreen = () => {
 					/>
 					<HROperator
 						title="Pass to ODR"
-						icon={<AiOutlineDown />}
+						icon={<ArrowDownSVG style={{ width: '16px' }} />}
 						backgroundColor={`var(--background-color-light)`}
 						labelBorder={`1px solid var(--color-sunlight)`}
 						iconBorder={`1px solid var(--color-sunlight)`}
 					/>
 					<div className={HRDetailStyle.hiringRequestPriority}>
-						<FiTrash2
-							style={{
-								fontSize: '1.5rem',
-								color: `var(--uplers-black)`,
-							}}
-						/>
+						<DeleteSVG style={{ width: '24px' }} />
 					</div>
 				</div>
 			</div>
 			<div className={HRDetailStyle.hrNextActionForTalent}>
 				<div className={HRDetailStyle.nextActionList}>
 					<div className={HRDetailStyle.actionItem}>
-						<AiOutlineClockCircle style={{ fontSize: '20px' }} />
+						<ClockSVG style={{ width: '20px' }} />
 						<label>Saptarshee to schedule interview for Velma B R</label>
 					</div>
 
 					<div className={HRDetailStyle.actionItem}>
-						<AiOutlineClockCircle style={{ fontSize: '20px' }} />
+						<ClockSVG style={{ width: '20px' }} />
 						<label>Saptarshee to schedule interview for Velma B R</label>
 					</div>
 					<div className={HRDetailStyle.actionItem}>
-						<AiOutlineClockCircle style={{ fontSize: '20px' }} />
+						<ClockSVG style={{ width: '20px' }} />
 						<label>Saptarshee to schedule interview for Velma B R</label>
 					</div>
 				</div>

@@ -27,11 +27,12 @@
     padding: 14px 12px 14px 0px;
     outline: none;
     border: none;
-    color: var(--background-color-dark);
+    color: var(--uplers-black);
     font-weight: 500;
 }
 
 .activityFeedList{
+    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
     background-color: var(--background-color-light);
     border-radius: 8px;
 }
@@ -69,6 +70,7 @@
 }
 
 .activityFeedPost{
+    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
     border: 1px solid var(--uplers-border-color);
     margin-top: 20px;
     background-color: var(--background-color-light);
