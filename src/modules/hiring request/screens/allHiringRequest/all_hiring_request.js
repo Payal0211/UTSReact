@@ -53,7 +53,7 @@ const AllHiringRequestScreen = () => {
 			setTotalRecords(hrQueryData?.data.responseBody.TotalRecords);
 		}
 	}, [hrQueryData?.data]);
-	console.log('-apiDAta--', apiData);
+
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);

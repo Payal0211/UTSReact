@@ -56,6 +56,7 @@ export class HttpServices {
 				error.response.data,
 				'httpServices.sendPostRequest()',
 			);
+
 			return {
 				statusCode: errorResult.statusCode,
 				responseBody: errorResult.responseBody,
