@@ -8,8 +8,8 @@ export const hiringRequestAPI = {
 		let httpService = new HttpServices();
 		httpService.URL =  NetworkInfo.networkInfo + SubDomainsCollection.ViewAllHR + ViewAllHR.GETALLHIRINGREQUESTS + `?Pagesize=${hrData.pageSize}&Pagenum=${hrData.pageNum}&Sortdatafield=CreatedDateTime&Sortorder=desc`;
 		httpService.setAuthRequired = true;
-		httpService.setAuthToken =
-			await UserSessionManagementController.getAPIKey();
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+
 		try {
 			let response = await httpService.sendPostRequest();
 			return response;
@@ -21,8 +21,7 @@ export const hiringRequestAPI = {
 		let httpService = new HttpServices();
 		httpService.URL = NetworkInfo.networkInfo + SubDomainsCollection.ViewAllHR + ViewAllHR.GETALLHIRINGREQUESTS;
 		httpService.setAuthRequired = true;
-		httpService.setAuthToken =
-			await UserSessionManagementController.getAPIKey();
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendPostRequest();
 			return response;
@@ -34,11 +33,9 @@ export const hiringRequestAPI = {
 		let httpService = new HttpServices();
 		httpService.URL =   NetworkInfo.networkInfo + SubDomainsCollection.ViewAllHR + ViewAllHR.GetHRDetail +`?id=${hrid}`;
 		httpService.setAuthRequired = true;
-		httpService.setAuthToken =
-			await UserSessionManagementController.getAPIKey();
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendPostRequest();
-
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'hiringRequestAPI.getHRDetailsRequest');

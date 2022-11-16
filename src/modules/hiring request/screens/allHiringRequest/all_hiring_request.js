@@ -1,17 +1,19 @@
-import { Skeleton, Table } from 'antd';
 import React, { useState, useEffect, Suspense } from 'react';
-import allHRStyles from './all_hiring_request.module.css';
-import { AiOutlineDown } from 'react-icons/ai';
+import { Skeleton, Table } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { IoFunnelOutline } from 'react-icons/io5';
-import { AiOutlineSearch } from 'react-icons/ai';
-import { BiLockAlt } from 'react-icons/bi';
-import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { Link } from 'react-router-dom';
 import { HiringRequestHRStatus, InputType } from 'constants/application';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
+import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
+import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
+import { ReactComponent as LockSVG } from 'assets/svg/lock.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { useAllHRQuery } from 'shared/hooks/useAllHRQuery';
+import { hrUtils } from 'modules/hiring request/hrUtils';
+import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
+import allHRStyles from './all_hiring_request.module.css';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -20,20 +22,18 @@ const HiringFiltersLazyComponent = React.lazy(() =>
 
 const AllHiringRequestScreen = () => {
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
+	const hrQueryData = useAllHRQuery();
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
 	const [pageSize, setPageSize] = useState(100);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
-	const [isLoading, setLoading] = useState(false);
-
 	const onRemoveHRFilters = () => {
 		setIsAllowFilters(false);
 	};
 
 	const handleHRRequest = async (pageData) => {
-		setLoading(true);
 		let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
 			pageData
 				? pageData
@@ -42,36 +42,18 @@ const AllHiringRequestScreen = () => {
 						pageNum: 1,
 				  },
 		);
-				  
-		setAPIdata(
-			response.responseBody.Data.map((item) => ({
-				key: item.hrid,
-				starStatus: All_Hiring_Request_Utils.GETHRPRIORITY(
-					item.starMarkedStatusCode,
-				),
-				adHocHR: item.adHocHR,
-				Date: item.createdDateTime.split(' ')[0],
-				HR_ID: item.hr,
-				TR: item.tr,
-				Position: item.position,
-				Company: item.company,
-				Time: item.timeZone.split(' ')[0],
-				typeOfEmployee: item.typeOfEmployee,
-				salesRep: item.salesRep,
-				hrStatus: All_Hiring_Request_Utils.GETHRSTATUS(
-					item.hrStatusCode,
-					item.hrStatus,
-				),
-			})),
-		);
+		setAPIdata(hrUtils.modifyHRRequestData(response && response));
 		setTotalRecords(response.responseBody.TotalRecords);
-		setLoading(false);
 	};
 
 	useEffect(() => {
-		handleHRRequest();
-	}, []);
+		if (hrQueryData?.data) {
+			setAPIdata(hrUtils.modifyHRRequestData(hrQueryData?.data));
 
+			setTotalRecords(hrQueryData?.data.responseBody.TotalRecords);
+		}
+	}, [hrQueryData?.data]);
+	console.log('-apiDAta--', apiData);
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
@@ -89,7 +71,7 @@ const AllHiringRequestScreen = () => {
 				<div className={allHRStyles.newHR}>
 					<label>Add new HR</label>
 					<div className={allHRStyles.iconDown}>
-						<AiOutlineDown />
+						<ArrowDownSVG />
 					</div>
 				</div>
 			</div>
@@ -98,49 +80,20 @@ const AllHiringRequestScreen = () => {
 					<div
 						className={allHRStyles.addFilter}
 						onClick={() => setIsAllowFilters(!isAllowFilters)}>
-						<IoFunnelOutline style={{ fontSize: '20px', fontWeight: '800' }} />
+						<FunnelSVG style={{ width: '18px', height: '18px' }} />
+
 						<div className={allHRStyles.filterLabel}>Add Filters</div>
 						<div className={allHRStyles.filterCount}>7</div>
 					</div>
 					<div className={allHRStyles.filterRight}>
 						<div className={allHRStyles.searchFilterSet}>
-							<AiOutlineSearch
-								style={{ fontSize: '20px', fontWeight: '800' }}
-							/>
+							<SearchSVG style={{ width: '18px', height: '18px' }} />
 							<input
 								type={InputType.TEXT}
 								className={allHRStyles.searchInput}
 								placeholder="Search Table"
 								onChange={(e) => {
-									let filteredData = apiData.filter((val) => {
-										return (
-											val.adHocHR
-												.toLowerCase()
-												.includes(e.target.value.toLowerCase()) ||
-											val.HR_ID.toLowerCase().includes(
-												e.target.value.toLowerCase(),
-											) ||
-											val.Position.toLowerCase().includes(
-												e.target.value.toLowerCase(),
-											) ||
-											val.Company.toLowerCase().includes(
-												e.target.value.toLowerCase(),
-											) ||
-											val.Time.toLowerCase().includes(
-												e.target.value.toLowerCase(),
-											) ||
-											val.typeOfEmployee
-												.toLowerCase()
-												.includes(e.target.value.toLowerCase()) ||
-											val.salesRep
-												.toLowerCase()
-												.includes(e.target.value.toLowerCase()) ||
-											/* val.hrStatus
-												.toLowerCase()
-												.includes(e.target.value.toLowerCase()) || */
-											val.TR == e.target.value
-										);
-									});
+									let filteredData = hrUtils.allHiringRequestSearch(e, apiData);
 									setSearch(filteredData);
 								}}
 							/>
@@ -168,13 +121,7 @@ const AllHiringRequestScreen = () => {
 						<div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Set Priority</div>
 							<div className={allHRStyles.priorityFilter}>
-								<BiLockAlt
-									style={{
-										fontSize: '20px',
-										fontWeight: '800',
-										opacity: '0.8',
-									}}
-								/>
+								<LockSVG style={{ width: '18px', height: '18px' }} />
 							</div>
 						</div>
 						{/* <div className={allHRStyles.priorityFilterSet}>
@@ -203,39 +150,38 @@ const AllHiringRequestScreen = () => {
 					</div>
 				</div>
 			</div>
-			<div style={{ marginTop: '5%' }}>
-				{isLoading ? (
-					<>
-						<Skeleton active />
-						<br />
-						<Skeleton active />
-						<br />
-						<Skeleton active />
-					</>
-				) : (
-					<Table
-						loading={isLoading && <Skeleton active />}
-						id="hrListingTable"
-						columns={tableColumns}
-						bordered={false}
-						dataSource={search && search.length > 0 ? search : apiData}
-						pagination={{
-							onChange: (pageNum, pageSize) => {
-								setPageIndex(pageNum);
-								setPageSize(pageSize);
-								handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
-							},
-							size: 'small',
-							pageSize: pageSize,
-							pageSizeOptions: pageSizeOptions,
-							total: totalRecords,
-							showTotal: (total, range) =>
-								`${range[0]}-${range[1]} of ${totalRecords} items`,
-							defaultCurrent: pageIndex,
-						}}
-					/>
-				)}
-			</div>
+			{
+				<Table
+					locale={{
+						emptyText: (
+							<>
+								<Skeleton />
+								<Skeleton />
+								<Skeleton />
+							</>
+						),
+					}}
+					id="hrListingTable"
+					columns={tableColumns}
+					bordered={false}
+					dataSource={search && search.length > 0 ? search : apiData}
+					pagination={{
+						onChange: (pageNum, pageSize) => {
+							setPageIndex(pageNum);
+							setPageSize(pageSize);
+							console.log(pageNum, pageSize, '------');
+							handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
+						},
+						size: 'small',
+						pageSize: pageSize,
+						pageSizeOptions: pageSizeOptions,
+						total: totalRecords,
+						showTotal: (total, range) =>
+							`${range[0]}-${range[1]} of ${totalRecords} items`,
+						defaultCurrent: pageIndex,
+					}}
+				/>
+			}
 			{isAllowFilters && (
 				<Suspense fallback={<div>Loading...</div>}>
 					<HiringFiltersLazyComponent
@@ -350,6 +296,12 @@ const tableColumns = [
 		dataIndex: 'hrStatus',
 		key: '10',
 		align: 'center',
+		render: (_, param) => {
+			return All_Hiring_Request_Utils.GETHRSTATUS(
+				param.hrStatusCode,
+				param.hrStatus,
+			);
+		},
 	},
 ];
 

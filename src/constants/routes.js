@@ -1,6 +1,13 @@
-import DashboardScreen from 'modules/dashboard/screens/dashboard';
-import AllHiringRequestScreen from 'modules/hiring request/screens/allHiringRequest/all_hiring_request';
-import HRDetailScreen from 'modules/hiring request/screens/hrdetail/hrdetails';
+import React, { Suspense } from 'react';
+const Dashboard = React.lazy(() =>
+	import('modules/dashboard/screens/dashboard'),
+);
+const AllHiringRequest = React.lazy(() =>
+	import('modules/hiring request/screens/allHiringRequest/all_hiring_request'),
+);
+const HRDetail = React.lazy(() =>
+	import('modules/hiring request/screens/hrdetail/hrdetails'),
+);
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -14,7 +21,19 @@ export default class UTSRoutes {
 }
 
 export const navigateToComponent = {
-	[UTSRoutes.HOMEROUTE]: <DashboardScreen />,
-	[UTSRoutes.ALLHIRINGREQUESTROUTE]: <AllHiringRequestScreen />,
-	[UTSRoutes.ALLHIRINGREQUESTSUBROUTE]: <HRDetailScreen />,
+	[UTSRoutes.HOMEROUTE]: (
+		<Suspense>
+			<Dashboard />
+		</Suspense>
+	),
+	[UTSRoutes.ALLHIRINGREQUESTROUTE]: (
+		<Suspense>
+			<AllHiringRequest />
+		</Suspense>
+	),
+	[UTSRoutes.ALLHIRINGREQUESTSUBROUTE]: (
+		<Suspense>
+			<HRDetail />
+		</Suspense>
+	),
 };

@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Checkbox, Radio, Tag } from 'antd';
 import hiringFilterStyle from './hiringFilter.module.css';
-import { MdNavigateNext, MdArrowBackIosNew } from 'react-icons/md';
-import { GrFormClose } from 'react-icons/gr';
+
 import { AiOutlineSearch } from 'react-icons/ai';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
+import { ReactComponent as ArrowRightSVG } from 'assets/svg/arrowRight.svg';
+import { ReactComponent as CrossSVG } from 'assets/svg/cross.svg';
+import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 
 
 const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
@@ -12,7 +14,6 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 	const [radioValue, setRadioValue] = useState('')
 
 	const [filterSubChild, setFilterSubChild] = useState(null);
-
 	const toggleFilterSubChild = (item) => {
 		setToggleBack(true);
 		setFilterSubChild(item);
@@ -36,7 +37,7 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 						<span
 							className={hiringFilterStyle.goback}
 							onClick={() => setToggleBack(false)}>
-							<MdArrowBackIosNew />
+							<ArrowLeftSVG />
 							&nbsp;&nbsp; Go back
 						</span>
 					)}
@@ -46,8 +47,8 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 							justifyContent: 'end',
 							cursor: 'pointer',
 						}}>
-						<GrFormClose
-							style={{ fontSize: '25px', fontWeight: '800' }}
+						<CrossSVG
+							style={{ width: '26px' }}
 							onClick={() => onRemoveHRFilters()}
 						/>
 					</span>
@@ -144,9 +145,8 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 											className={hiringFilterStyle.filterItem}
 											onClick={() => toggleFilterSubChild(item)}>
 											<span style={{ fontSize: '1rem' }}>{item.name}</span>
-											<MdNavigateNext
-												style={{ fontSize: '20px', fontWeight: '800' }}
-											/>
+
+											<ArrowRightSVG style={{ width: '26px' }} />
 										</div>
 									);
 								})}

@@ -14,8 +14,8 @@ import { userDAO } from 'core/user/userDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
-import { SecuredStorageService } from 'shared/services/secure_storage/secure_storage_service';
-import { Skeleton } from 'antd';
+import WithLoader from 'shared/components/loader/loader';
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
 const LoginScreen = () => {
 	const [isLoading, setLoading] = useState(false);
@@ -42,92 +42,80 @@ const LoginScreen = () => {
 	};
 
 	useEffect(() => {
-		let login = SecuredStorageService.readSecuredData('userSessionInfo');
+		let login = UserSessionManagementController.getAPIKey();
 		if (login) navigate(UTSRoutes.HOMEROUTE);
-	}, []);
+	}, [navigate]);
 
-	return isLoading ? (
-		<>
-			<Skeleton active />
-			<br />
-			<Skeleton active />
-			<br />
-			<Skeleton active />
-			<br />
-			<Skeleton active />
-			<br />
-			<Skeleton active />
-			<br />
-			<Skeleton active />
-		</>
-	) : (
-		<div className={loginStyle.loginContainer}>
-			<div className={loginStyle.loginColumn_1}>
-				<div className={loginStyle.loginColumn_1_Body}>
-					<span>
-						<img
-							alt="avatar"
-							className={loginStyle.uplersTalentLogo}
-							src="https://staging.project-progress.net/html/uplers-talent-solutions/images/login-logo.svg"
-						/>
-					</span>
-					<div className={loginStyle.welcomePart}>
-						<h1 className={loginStyle.welcomeTitle}>Welcome Back !</h1>
-						<p className={loginStyle.welcomeSubtitle}>
-							Please enter your log in information and get started
-						</p>
-					</div>
-					<br />
-					<hr />
-					<div className={loginStyle.loginFormPart}>
-						<InputField
-							label="Username"
-							name="username"
-							type={InputType.TEXT}
-							placeholder="Enter username"
-							value={formValues['username']}
-							onChangeHandler={inputChangeHandler}
-							errorMsg={error['username']}
-						/>
-						<InputField
-							name="password"
-							label="Password"
-							type={
-								togglePasswordVisibility ? InputType.PASSWORD : InputType.TEXT
-							}
-							placeholder="Enter password"
-							onChangeHandler={inputChangeHandler}
-							value={formValues['password']}
-							errorMsg={error['password']}
-							onIconToggleHandler={onTogglePassword}
-							trailingIcon={
-								togglePasswordVisibility ? (
-									<PasswordIconAiFillEyeInvisible />
-								) : (
-									<PasswordIconAiFillEye />
-								)
-							}
-						/>
-						<div className={loginStyle.forgotpassword}>Forgot Password ?</div>
-						<hr />
+	return (
+		<WithLoader showLoader={isLoading}>
+			<div className={loginStyle.loginContainer}>
+				<div className={loginStyle.loginColumn_1}>
+					<div className={loginStyle.loginColumn_1_Body}>
+						<span>
+							<img
+								alt="avatar"
+								className={loginStyle.uplersTalentLogo}
+								src="https://staging.project-progress.net/html/uplers-talent-solutions/images/login-logo.svg"
+							/>
+						</span>
+						<div className={loginStyle.welcomePart}>
+							<h1 className={loginStyle.welcomeTitle}>Welcome Back !</h1>
+							<p className={loginStyle.welcomeSubtitle}>
+								Please enter your log in information and get started
+							</p>
+						</div>
 						<br />
-						<ButtonField
-							label="Log In"
-							backgroundColor={`var(--color-sunlight)`}
-							onClickHandler={(e) => loginHandler()}
-						/>
+						<hr />
+						<div className={loginStyle.loginFormPart}>
+							<InputField
+								label="Username"
+								name="username"
+								type={InputType.TEXT}
+								placeholder="Enter username"
+								value={formValues['username']}
+								onChangeHandler={inputChangeHandler}
+								errorMsg={error['username']}
+							/>
+							<InputField
+								name="password"
+								label="Password"
+								type={
+									togglePasswordVisibility ? InputType.PASSWORD : InputType.TEXT
+								}
+								placeholder="Enter password"
+								onChangeHandler={inputChangeHandler}
+								value={formValues['password']}
+								errorMsg={error['password']}
+								onIconToggleHandler={onTogglePassword}
+								trailingIcon={
+									togglePasswordVisibility ? (
+										<PasswordIconAiFillEyeInvisible />
+									) : (
+										<PasswordIconAiFillEye />
+									)
+								}
+							/>
+							<div className={loginStyle.forgotpassword}>Forgot Password ?</div>
+							<hr />
+							<br />
+							<ButtonField
+								label="Log In"
+								backgroundColor={`var(--color-sunlight)`}
+								onClickHandler={(e) => loginHandler()}
+							/>
+						</div>
+					</div>
+				</div>
+				<div className={loginStyle.loginColumn_2}>
+					<div className={loginStyle.loginHeadline}>
+						<h1>
+							“Customers will never love a company until the employees love it
+							first.”
+						</h1>
 					</div>
 				</div>
 			</div>
-			<div className={loginStyle.loginColumn_2}>
-				<div className={loginStyle.loginHeadline}>
-					<h1>
-						“Customers will never love a company until the employees love it
-						first.”
-					</h1>
-				</div>
-			</div>
-		</div>
+		</WithLoader>
 	);
 };
 

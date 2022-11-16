@@ -6,9 +6,10 @@ import Sidebar from 'shared/components/sidebar/sidebar';
 
 const Layout = () => {
 	const [userData, setUserData] = useState({});
+
 	useEffect(() => {
 		const getUserResult = async () => {
-			let userData = await UserSessionManagementController.getUserSession();
+			let userData = UserSessionManagementController.getUserSession();
 			if (userData) setUserData(userData);
 		};
 		getUserResult();
