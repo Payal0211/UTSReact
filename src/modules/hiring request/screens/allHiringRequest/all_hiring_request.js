@@ -42,7 +42,7 @@ const AllHiringRequestScreen = () => {
 						pageNum: 1,
 				  },
 		);
-
+				  
 		setAPIdata(
 			response.responseBody.Data.map((item) => ({
 				key: item.hrid,

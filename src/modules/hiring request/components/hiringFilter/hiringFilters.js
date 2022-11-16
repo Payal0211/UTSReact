@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { Checkbox, Tag } from 'antd';
+import { Checkbox, Radio, Tag } from 'antd';
 import hiringFilterStyle from './hiringFilter.module.css';
 import { MdNavigateNext, MdArrowBackIosNew } from 'react-icons/md';
 import { GrFormClose } from 'react-icons/gr';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 
+
 const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 	const [toggleBack, setToggleBack] = useState(false);
+	const [radioValue, setRadioValue] = useState('')
 
 	const [filterSubChild, setFilterSubChild] = useState(null);
 
@@ -15,6 +17,16 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 		setToggleBack(true);
 		setFilterSubChild(item);
 	};
+
+	const applyFilterClick = () => {
+		console.log(radioValue);
+	};
+		
+
+	const onRadioChangeHandler = (e) => {
+		setRadioValue(e.target.value)
+		console.log(e.target.value)
+	}
 
 	return (
 		<aside className={hiringFilterStyle.aside}>
@@ -54,7 +66,7 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 										style={{ fontSize: '20px', fontWeight: '800' }}
 									/>
 									<input
-										class={hiringFilterStyle.searchInput}
+										className={hiringFilterStyle.searchInput}
 										type="text"
 										id="search"
 										placeholder={`Search ${filterSubChild?.name}`}
@@ -65,22 +77,29 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 							<div className={hiringFilterStyle.filtersListType}>
 								{filterSubChild.child.map((item, index) => {
 									// return item.label ? <h1>fdsf</h1> : <h1>Bye</h1>;
+									// console.log(item)
 									return (
 										<div
 											className={hiringFilterStyle.filterItem}
 											key={index}>
-											<Checkbox
-												style={{
-													fontSize: `${!item.label && '1rem'}`,
-													fontWeight: '500',
-												}}>
-												{item.label
-													? All_Hiring_Request_Utils.GETHRSTATUS(
+
+											<Radio.Group onChange={onRadioChangeHandler} value={radioValue}>
+												<Radio
+													value={item}
+													name={filterSubChild.name}
+													style={{
+														fontSize: `${!item.label && '1rem'}`,
+														fontWeight: '500',
+													}}>
+													{item.label
+														? All_Hiring_Request_Utils.GETHRSTATUS(
 															item.statusCode,
 															item.label,
-													  )
-													: item}
-											</Checkbox>
+														)
+														: item}
+												</Radio>
+											</Radio.Group>
+
 										</div>
 									);
 								})}
@@ -139,7 +158,7 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 					<hr />
 					<div className={hiringFilterStyle.operationsFilters}>
 						<button className={hiringFilterStyle.clearAll}>Clear All</button>
-						<button className={hiringFilterStyle.applyFilters}>
+						<button onClick={applyFilterClick} className={hiringFilterStyle.applyFilters}>
 							Apply Filters
 						</button>
 					</div>
