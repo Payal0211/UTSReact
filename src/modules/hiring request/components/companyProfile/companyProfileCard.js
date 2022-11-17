@@ -93,7 +93,6 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 					<Divider
 						style={{
 							margin: '10px 0',
-							// border: `1px solid var(--uplers-border-color)`,
 						}}
 					/>
 
@@ -108,7 +107,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.TRParked}>
 								<span>TR Parked:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.NoOfTalents}
+									{clientDetail?.NoOfTalents - talentLength}
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.roleName}>
