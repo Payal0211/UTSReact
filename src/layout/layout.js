@@ -23,7 +23,7 @@ const Layout = () => {
 				<main
 					style={{
 						marginTop: '150px',
-						marginLeft: '90px',
+						marginLeft: '100px',
 						width: '100%',
 					}}>
 					<Outlet />

@@ -1,7 +1,6 @@
 @import '~antd/dist/antd.css';
 
 * {
-  
   word-wrap: break-word;
   font-family: "Montserrat", sans-serif;  
 }
@@ -28,6 +27,7 @@ body {
   --text-color-dark: #000;
   --uplers-black:#232323;
   --uplers-grey:#F5F5F5;
+  --uplers-lightBlack:#676767;
   --background-color-light: #fff;
   --background-color-dim:#F9F9F9;
   --background-color-dark: #000;
@@ -101,22 +101,23 @@ body {
 }
 
 
-
 th {
   border-top-left-radius: 10px !important;
   border-top-right-radius: 10px !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   background-color: var(--background-color-light) !important;
-  font-size: 0.8rem;
-  color: rgb(0, 0, 0);
+  font-size: 0.875rem;
+  color: var(--uplers-black) !important;
+  font-family: "Montserrat", sans-serif !important;
 }
 
 td {
-  /* background-color: var(--background-color-light) !important; */
+  
   color: var(--uplers-black);
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   font-weight: 500;
+  font-family: "Montserrat", sans-serif !important;
 }
 
 

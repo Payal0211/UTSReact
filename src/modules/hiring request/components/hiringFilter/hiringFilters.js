@@ -125,7 +125,6 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 											className={hiringFilterStyle.filterItem}
 											onClick={() => toggleFilterSubChild(item)}>
 											<span style={{ fontSize: '1rem' }}>{item.name}</span>
-
 											<ArrowRightSVG style={{ width: '26px' }} />
 										</div>
 									);

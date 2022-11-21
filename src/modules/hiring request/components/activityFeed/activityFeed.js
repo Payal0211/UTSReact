@@ -2,7 +2,6 @@ import { InputType } from 'constants/application';
 import ActivityFeedStyle from './activityFeed.module.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { SlGraph } from 'react-icons/sl';
-import { IoMdSend } from 'react-icons/io';
 import { Fragment, useState, useMemo } from 'react';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { Divider } from 'antd';
