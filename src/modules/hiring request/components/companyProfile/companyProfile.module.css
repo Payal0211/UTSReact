@@ -1,6 +1,5 @@
 .companyProfileContainer{
-    width: 100%;  
-    
+    width: 100%;      
 }
 
 .companyCard{
@@ -38,7 +37,7 @@
 .preferredTime,
 .jdLink,
 .salesPerson,
-.manager{
+.manager,.geo{
     display: flex;
     align-items: center;
     /* justify-content: center; */

@@ -36,6 +36,8 @@ const Navbar = ({ fullName }) => {
 					<Badge count={4}>
 						<BellSVG
 							style={{
+								width: '30px',
+								height: '30px',
 								cursor: 'pointer',
 							}}
 						/>
@@ -57,6 +59,8 @@ const Navbar = ({ fullName }) => {
 						<LogoutSVG
 							onClick={onLogoutHandler}
 							style={{
+								width: '24px',
+								height: '24px',
 								cursor: 'pointer',
 							}}
 						/>

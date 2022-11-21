@@ -11,14 +11,12 @@
     position: absolute;
     width: 20%;
 }
-.list{
-    background-color: red;
-}
+
 .talentCard {
     box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
     margin-top: -45px;
     border-radius: 8px;
-    height: 646px;
+    height: 670px;
     background-color: var(--background-color-light);
 }
 
@@ -26,13 +24,14 @@
     width: 90%;
     margin: 0 auto;
     font-size: .7vw;
-    padding: 20px 0;
+    padding: 30px 0;
 }
 
 .partWise {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    margin-bottom: 5px;
 }
 .avatar {
     width: 72px;

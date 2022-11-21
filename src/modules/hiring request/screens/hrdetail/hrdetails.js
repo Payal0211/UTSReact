@@ -34,12 +34,10 @@ const HRDetailScreen = () => {
 		setLoading(true);
 		async function callAPI(hrid) {
 			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
-			console.log(response);
 			if (response) {
 				setAPIdata(response && response?.responseBody);
 				setLoading(false);
 			}
-			// console.log(response);
 		}
 		callAPI(urlSplitter?.split('HR')[0]);
 	}, [urlSplitter]);
@@ -118,7 +116,10 @@ const HRDetailScreen = () => {
 						<Skeleton active />
 					) : (
 						<Suspense>
-							<CompanyProfileCard clientDetail={apiData?.ClientDetail} />
+							<CompanyProfileCard
+								clientDetail={apiData?.ClientDetail}
+								talentLength={apiData?.HRTalentDetails?.length}
+							/>
 						</Suspense>
 					)}
 				</div>
