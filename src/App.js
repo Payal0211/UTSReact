@@ -1,10 +1,9 @@
 import React, { Suspense } from 'react';
 import { Routes, Navigate, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import UTSRoutes, { navigateToComponent } from 'constants/routes';
 import { ProtectedRoutes } from 'shared/utils/protected_utils';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PageNotFound from 'shared/screen/404';
-
 const Login = React.lazy(() =>
 	import('modules/user/screens/login/login_screen'),
 );

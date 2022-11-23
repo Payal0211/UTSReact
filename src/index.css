@@ -40,7 +40,7 @@ body {
   --background-color-pulp: #f7edc9;
   --color-sunlight: #FFDA31;
   --color-TealWithOpacity: #f5fcf9;
-  --color-champagne: #edf69c;
+  --color-champagne: #ffe87f;
   --uplers-border-color:#E8E8E8;
   --fontsize-strong: 40px;
   --fontsize-tough: 32px;
@@ -194,6 +194,7 @@ table{
 }
 
 .ant-dropdown-menu{
+  
   background-color: transparent;
   border-radius: 10px;
   text-align: center;

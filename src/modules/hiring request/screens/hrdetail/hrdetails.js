@@ -138,7 +138,10 @@ const HRDetailScreen = () => {
 					<Skeleton active />
 				) : (
 					<Suspense>
-						<ActivityFeed activityFeed={apiData?.HRHistory} />
+						<ActivityFeed
+							activityFeed={apiData?.HRHistory}
+							tagUsers={apiData?.UsersToTag}
+						/>
 					</Suspense>
 				)}
 			</div>
