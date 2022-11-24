@@ -11,15 +11,13 @@ import { ReactComponent as JustifyCenterSVG } from 'assets/svg/justifyCenter.svg
 import { ReactComponent as LinkSVG } from 'assets/svg/link.svg';
 import { ReactComponent as UnorderedListSVG } from 'assets/svg/unorderedList.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
-import { Divider, Tag, Tooltip } from 'antd';
+import { Divider, Tooltip } from 'antd';
 
 const Editor = ({ tagUsers }) => {
 	const [isStyleEditor, setStyleEditor] = useState(false);
 	const [isShowDropDownList, setShowDropDownList] = useState(false);
 	const [tagUserSearch, setTagUserSearch] = useState('');
-	const [positionOfSymbol, setPositionOfSymbol] = useState(0);
-	const [selectTaggedUser, setSelectTaggedUser] = useState('');
-	const tagRef = useRef();
+
 	const commentRef = useRef();
 	const tagUserSearchMemo = useMemo(() => {
 		if (tagUserSearch) return tagUserSearch;
@@ -37,52 +35,50 @@ const Editor = ({ tagUsers }) => {
 	});
 
 	const onKeyPressHandler = (e) => {
+		let tempString = commentRef.current.innerText;
+		if (e.ctrlKey && e.which === 65) {
+			setShowDropDownList(false);
+		}
+		if (tempString.length === 0) setShowDropDownList(false);
 		if (e.shiftKey && e.which === 50) {
 			setShowDropDownList(true);
-			setPositionOfSymbol(commentRef.current.innerText.length);
-			console.log(
-				commentRef.current.innerText[commentRef.current.innerText.length],
-				'---length',
-			);
 		} else if (e.which === 8) {
-			// setShowDropDownList(false);
-			console.log(commentRef.current.innerText.split('@'));
-			// tagRef.current.removeChild();
-			// if (tagRef) document.getElementById(tagRef).remove();
+			if (
+				tempString[tempString.length - 1] === '@' ||
+				tempString[tempString.length] === 0
+			)
+				setShowDropDownList(false);
+			else if (tempString.length > 0 && tempString.includes('@'))
+				setShowDropDownList(true);
+			else if (tempString.length > 0 && !tempString.includes('@'))
+				setShowDropDownList(false);
 		}
 	};
-	// console.log(selectTaggedUser, '-editor');
+
 	return (
 		<div className={EditorStyle.activityFeed}>
 			{isShowDropDownList ? (
 				<div
 					style={{
-						// position: 'absolute',
 						zIndex: '0',
 						backgroundColor: `var(--background-color-light)`,
 						maxHeight: '300px',
-						// height: '300px',
 						width: '300px',
-						// marginTop: '-300px',
 						boxShadow: '-4px 4px 20px rgba(166, 166, 166, 0.4)',
-						// top: 0,
 						borderRadius: '8px',
 						paddingTop: '15px',
 						overflow: 'scroll',
+						cursor: 'pointer',
 					}}>
 					{tagUserSearchMemo?.map((item) => (
 						<Fragment>
 							<div
-								onClick={(e) => {
-									let tempInnerHTML = commentRef.current.innerHTML.split('');
-									let spanTag = `<span id=${item?.Value} contentEditable="false" class=${EditorStyle.personTaggedValue}>
-										@${item?.Text} 
-									</span>`;
+								onClick={() => {
+									let tempInnerHTML = commentRef.current.innerHTML.split('@');
+									let spanTag = `&nbsp;<span id=${item?.Value} contentEditable="false" class=${EditorStyle.personTaggedValue}>
+										@${item?.Text} </span>&nbsp;`;
 									tempInnerHTML[tempInnerHTML.length - 1] = spanTag;
-
-									document.getElementById('commentBox').innerHTML =
-										tempInnerHTML.join('');
-									document.getElementById('comment').focus();
+									commentRef.current.innerHTML = tempInnerHTML.join('');
 									setShowDropDownList(false);
 								}}
 								key={item?.Value}
@@ -210,9 +206,10 @@ const Editor = ({ tagUsers }) => {
 													text[text.length - 1].toLowerCase(),
 												);
 											});
-											setTagUserSearch(
-												userFilter ? userFilter : 'User not found',
-											);
+
+											if (userFilter.length > 0 && userFilter)
+												setTagUserSearch(userFilter && userFilter);
+											else setShowDropDownList(false);
 									  }
 									: null
 							}

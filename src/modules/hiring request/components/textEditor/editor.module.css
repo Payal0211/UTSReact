@@ -1,10 +1,6 @@
 .activityFeed{
-    margin-top: 0px;
-    /* border: 1px solid red; */
-    /* position: relative; */
-    /* height:100vh; */
-    /* background-color: var(--background-color-light); */
-    /* z-index: 100; */
+    margin-top: 10px;
+   
     
 }
 .editor{
@@ -34,6 +30,7 @@
    
 }
 .activityFeedPost {
+    cursor: pointer;
     width: 95%;
     box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
     border: 1px solid var(--uplers-border-color);
@@ -45,8 +42,8 @@
 }
 
 .activityFeedPostBody {
+   
     width: 98%;
-    padding: 5px 0;
     margin: 0 auto;
     display: flex;
     gap: 20px;
@@ -65,6 +62,7 @@
 
 
 .commentBox {
+    padding: 15px 0;
     word-wrap: break-word;
     outline: none;
     width: 80%;
@@ -130,11 +128,9 @@ border-top-right-radius: 8px;
 
 .personTaggedValue{
     border-radius:10px;
-        padding: 5px 10px;
-        font-weight: 600;
-        
-   background-color: var(--color-champagne);
-     
-   font-size: .875rem;
-   text-align: center;
+    padding: 5px 5px;
+    font-weight: 600;    
+    background-color: var(--color-champagne); 
+    font-size: .875rem;
+    text-align: center;
 }
