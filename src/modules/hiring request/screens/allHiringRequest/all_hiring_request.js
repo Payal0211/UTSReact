@@ -13,8 +13,8 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useAllHRQuery } from 'shared/hooks/useAllHRQuery';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
-import allHRStyles from './all_hiring_request.module.css';
 import { IoChevronDownOutline } from 'react-icons/io5';
+import allHRStyles from './all_hiring_request.module.css';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -31,6 +31,7 @@ const AllHiringRequestScreen = () => {
 	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
+
 	const onRemoveHRFilters = () => {
 		setIsAllowFilters(false);
 	};
@@ -51,6 +52,7 @@ const AllHiringRequestScreen = () => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
 	}, [debouncedSearch]);
+
 	useEffect(() => {
 		if (hrQueryData?.data) {
 			setAPIdata(hrUtils.modifyHRRequestData(hrQueryData?.data));

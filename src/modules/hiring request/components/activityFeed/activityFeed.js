@@ -8,7 +8,7 @@ import { Divider } from 'antd';
 import { BsTag } from 'react-icons/bs';
 import Editor from '../textEditor/editor';
 
-const ActivityFeed = ({ activityFeed }) => {
+const ActivityFeed = ({ activityFeed, tagUsers }) => {
 	const [search, setSearch] = useState('');
 
 	const searchMemo = useMemo(() => {
@@ -96,7 +96,7 @@ const ActivityFeed = ({ activityFeed }) => {
 					})}
 				</div>
 			</div>
-			<Editor />
+			<Editor tagUsers={tagUsers && tagUsers} />
 		</div>
 	);
 };

@@ -35,6 +35,7 @@ export const hrUtils = {
 				val.hrStatus.toLowerCase().includes(e.target.value.toLowerCase())
 			);
 		});
+
 		return filteredData;
 	},
 };

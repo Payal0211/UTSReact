@@ -16,7 +16,7 @@ export default class UTSRoutes {
 	static FORGOTPASSWORDROUTE = '/forgotpassword';
 	static ALLHIRINGREQUESTROUTE = '/allhiringrequest';
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
-	static PAGENOTFOUNDROUTE = '/pagenotfound';
+	static PAGENOTFOUNDROUTE = '/404';
 	static NETWORKERRORROUTE = '/networkissue';
 }
 
