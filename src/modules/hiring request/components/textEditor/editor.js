@@ -10,15 +10,16 @@ import { ReactComponent as JustifyRightSVG } from 'assets/svg/justifyRight.svg';
 import { ReactComponent as JustifyCenterSVG } from 'assets/svg/justifyCenter.svg';
 import { ReactComponent as LinkSVG } from 'assets/svg/link.svg';
 import { ReactComponent as UnorderedListSVG } from 'assets/svg/unorderedList.svg';
+import { ReactComponent as OrderedListSVG } from 'assets/svg/orderedList.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
-import { Divider, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 
 const Editor = ({ tagUsers }) => {
 	const [isStyleEditor, setStyleEditor] = useState(false);
 	const [isShowDropDownList, setShowDropDownList] = useState(false);
 	const [tagUserSearch, setTagUserSearch] = useState('');
-
 	const commentRef = useRef();
+
 	const tagUserSearchMemo = useMemo(() => {
 		if (tagUserSearch) return tagUserSearch;
 		else return tagUsers;
@@ -56,22 +57,11 @@ const Editor = ({ tagUsers }) => {
 	};
 
 	return (
-		<div className={EditorStyle.activityFeed}>
+		<>
 			{isShowDropDownList ? (
-				<div
-					style={{
-						zIndex: '0',
-						backgroundColor: `var(--background-color-light)`,
-						maxHeight: '300px',
-						width: '300px',
-						boxShadow: '-4px 4px 20px rgba(166, 166, 166, 0.4)',
-						borderRadius: '8px',
-						paddingTop: '15px',
-						overflow: 'scroll',
-						cursor: 'pointer',
-					}}>
+				<div className={EditorStyle.dropUp}>
 					{tagUserSearchMemo?.map((item) => (
-						<Fragment>
+						<Fragment key={item?.Value}>
 							<div
 								onClick={() => {
 									let tempInnerHTML = commentRef.current.innerHTML.split('@');
@@ -81,7 +71,7 @@ const Editor = ({ tagUsers }) => {
 									commentRef.current.innerHTML = tempInnerHTML.join('');
 									setShowDropDownList(false);
 								}}
-								key={item?.Value}
+								className={EditorStyle.dropUpItems}
 								style={{
 									display: 'flex',
 									justifyContent: 'flex-start',
@@ -96,143 +86,124 @@ const Editor = ({ tagUsers }) => {
 								/>
 								{item?.Text}
 							</div>
-							<Divider
-								style={{
-									margin: '5px 0',
-								}}
-							/>
 						</Fragment>
 					))}
 				</div>
 			) : null}
-			{isStyleEditor && (
-				<div className={EditorStyle.editor}>
-					<div className={EditorStyle.editorBody}>
-						<div className={EditorStyle.editorSet1}>
-							<button
-								className={EditorStyle.editorBoldBtn}
-								id="editorBtn"
-								type="button"
-								data-element="bold">
-								<BoldSVG />
-							</button>
-							<button
-								className={EditorStyle.editorItalicBtn}
-								id="editorBtn"
-								type="button"
-								data-element="italic">
-								<ItalicSVG />
-							</button>
-							<button
-								className={EditorStyle.editorUnderlineBtn}
-								id="editorBtn"
-								type="button"
-								data-element="underline">
-								<UnderlineSVG />
-							</button>
-						</div>
-						<div className={EditorStyle.editorSet2}>
-							<button
-								className={EditorStyle.editorBoldBtn}
-								id="editorBtn"
-								type="button"
-								data-element="justifyLeft">
-								<JustifyLeftSVG />
-							</button>
-							<button
-								className={EditorStyle.editorItalicBtn}
-								id="editorBtn"
-								type="button"
-								data-element="justifyCenter">
-								<JustifyCenterSVG />
-							</button>
-							<button
-								className={EditorStyle.editorUnderlineBtn}
-								id="editorBtn"
-								type="button"
-								data-element="justifyRight">
-								<JustifyRightSVG />
-							</button>
-						</div>
-						<div className={EditorStyle.editorSet3}>
-							<button
-								className={EditorStyle.editorBoldBtn}
-								id="editorBtn"
-								type="button"
-								data-element="insertOrderedList">
-								<UnorderedListSVG />
-							</button>
-							<button
-								className={EditorStyle.editorItalicBtn}
-								id="editorBtn"
-								type="button"
-								data-element="insertUnorderedList">
-								<UnorderedListSVG />
-							</button>
-							<button
-								className={EditorStyle.editorUnderlineBtn}
-								id="editorBtn"
-								type="button"
-								data-element="createLink">
-								<LinkSVG />
-							</button>
+			<div className={EditorStyle.activityFeed}>
+				{isStyleEditor && (
+					<div className={EditorStyle.editor}>
+						<div className={EditorStyle.editorBody}>
+							<div className={EditorStyle.editorSet1}>
+								<button
+									className={EditorStyle.editorBoldBtn}
+									id="editorBtn"
+									type="button"
+									data-element="bold">
+									<BoldSVG />
+								</button>
+								<button
+									className={EditorStyle.editorItalicBtn}
+									id="editorBtn"
+									type="button"
+									data-element="italic">
+									<ItalicSVG />
+								</button>
+								<button
+									className={EditorStyle.editorUnderlineBtn}
+									id="editorBtn"
+									type="button"
+									data-element="underline">
+									<UnderlineSVG />
+								</button>
+							</div>
+							<div className={EditorStyle.editorSet2}>
+								<button
+									className={EditorStyle.editorBoldBtn}
+									id="editorBtn"
+									type="button"
+									data-element="justifyLeft">
+									<JustifyLeftSVG />
+								</button>
+								<button
+									className={EditorStyle.editorItalicBtn}
+									id="editorBtn"
+									type="button"
+									data-element="justifyCenter">
+									<JustifyCenterSVG />
+								</button>
+								<button
+									className={EditorStyle.editorUnderlineBtn}
+									id="editorBtn"
+									type="button"
+									data-element="justifyRight">
+									<JustifyRightSVG />
+								</button>
+							</div>
+							<div className={EditorStyle.editorSet3}>
+								<button
+									className={EditorStyle.editorBoldBtn}
+									id="editorBtn"
+									type="button"
+									data-element="insertOrderedList">
+									<OrderedListSVG />
+								</button>
+								<button
+									className={EditorStyle.editorItalicBtn}
+									id="editorBtn"
+									type="button"
+									data-element="insertUnorderedList">
+									<UnorderedListSVG />
+								</button>
+								<button
+									className={EditorStyle.editorUnderlineBtn}
+									id="editorBtn"
+									type="button"
+									data-element="createLink">
+									<LinkSVG />
+								</button>
+							</div>
 						</div>
 					</div>
-				</div>
-			)}
+				)}
 
-			<div className={EditorStyle.activityFeedBody}>
-				<div className={EditorStyle.activityFeedPost}>
-					<div className={EditorStyle.activityFeedPostBody}>
-						<img
-							src="https://www.w3schools.com/howto/img_avatar.png"
-							className={EditorStyle.avatar}
-							alt="avatar"
-						/>
-
-						<div
-							ref={commentRef}
-							id="commentBox"
-							className={EditorStyle.commentBox}
-							contentEditable={true}
-							placeholder="Comment on this thread by typing here or mention someone with @..."
-							onKeyDown={(e) => onKeyPressHandler(e)}
-							onInput={
-								isShowDropDownList
-									? (e) => {
-											let text = e.target.innerText.split('@');
-											let userFilter = tagUsers.filter((item) => {
-												return item.Text.toLowerCase().includes(
-													text[text.length - 1].toLowerCase(),
-												);
-											});
-
-											if (userFilter.length > 0 && userFilter)
-												setTagUserSearch(userFilter && userFilter);
-											else setShowDropDownList(false);
-									  }
-									: null
-							}
-							suppressContentEditableWarning={true}></div>
-					</div>
-					<div className={EditorStyle.actionItems}>
-						{isStyleEditor ? (
-							<ArrowDownSVG
-								style={{
-									height: '50px',
-									width: '50px',
-									borderRadius: '50%',
-									padding: '12px',
-									cursor: 'pointer',
-									color: `var(--uplers-black)`,
-								}}
-								onClick={() => setStyleEditor(!isStyleEditor)}
+				<div className={EditorStyle.activityFeedBody}>
+					<div className={EditorStyle.activityFeedPost}>
+						<div className={EditorStyle.activityFeedPostBody}>
+							<img
+								src="https://www.w3schools.com/howto/img_avatar.png"
+								className={EditorStyle.avatar}
+								alt="avatar"
 							/>
-						) : (
-							<Tooltip
-								placement="bottom"
-								title="Editor Actions">
-								<EditSVG
+
+							<div
+								ref={commentRef}
+								id="commentBox"
+								className={EditorStyle.commentBox}
+								contentEditable={true}
+								placeholder="Comment on this thread by typing here or mention someone with @..."
+								onKeyDown={(e) => onKeyPressHandler(e)}
+								onInput={
+									isShowDropDownList
+										? (e) => {
+												let text = e.target.innerText.split('@');
+												let userFilter = tagUsers.filter((item) => {
+													return item.Text.toLowerCase().includes(
+														text[text.length - 1].toLowerCase(),
+													);
+												});
+
+												if (userFilter.length > 0 && userFilter)
+													setTagUserSearch(userFilter && userFilter);
+												else setShowDropDownList(false);
+										  }
+										: null
+								}
+								suppressContentEditableWarning={true}></div>
+						</div>
+						<div className={EditorStyle.actionItems}>
+							{isStyleEditor ? (
+								<ArrowDownSVG
 									style={{
 										height: '50px',
 										width: '50px',
@@ -243,27 +214,46 @@ const Editor = ({ tagUsers }) => {
 									}}
 									onClick={() => setStyleEditor(!isStyleEditor)}
 								/>
-							</Tooltip>
-						)}
+							) : (
+								<Tooltip
+									placement="bottom"
+									title="Editor Actions">
+									<EditSVG
+										style={{
+											height: '50px',
+											width: '50px',
+											borderRadius: '50%',
+											padding: '12px',
+											cursor: 'pointer',
+											color: `var(--uplers-black)`,
+										}}
+										onClick={() => setStyleEditor(!isStyleEditor)}
+									/>
+								</Tooltip>
+							)}
+						</div>
+					</div>
+					<div
+						style={{
+							top: '0',
+							right: '0',
+							position: 'absolute',
+							cursor: 'pointer',
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+							backgroundColor: 'white',
+							height: '64px',
+							width: '64px',
+							borderRadius: '50%',
+							border: `1px solid var(--uplers-border-color) `,
+							boxShadow: '-4px 4px 20px rgba(166, 166, 166, 0.2)',
+						}}>
+						<SendSVG style={{ marginLeft: '5px' }} />
 					</div>
 				</div>
-				<div
-					style={{
-						cursor: 'pointer',
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						backgroundColor: 'white',
-						height: '64px',
-						width: '64px',
-						borderRadius: '50%',
-						border: `1px solid var(--uplers-border-color) `,
-						boxShadow: '-4px 4px 20px rgba(166, 166, 166, 0.2)',
-					}}>
-					<SendSVG style={{ marginLeft: '5px' }} />
-				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 

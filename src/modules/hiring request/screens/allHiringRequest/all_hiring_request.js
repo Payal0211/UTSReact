@@ -141,7 +141,6 @@ const AllHiringRequestScreen = () => {
 									overlay={
 										<Menu>
 											<Menu.Item key={0}>100</Menu.Item>
-
 											<Menu.Item key={1}>200</Menu.Item>
 										</Menu>
 									}>

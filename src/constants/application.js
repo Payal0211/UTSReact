@@ -80,6 +80,7 @@ export class HiringRequestHRStatus {
 	static COMPLETED = 105;
 	static IN_PROCESS = 106;
 	static CANCELLED = 107;
+	static ON_HOLD = 108;
 	static OTHER = 201;
 }
 
