@@ -66,7 +66,7 @@ const Editor = ({ tagUsers }) => {
 								onClick={() => {
 									let tempInnerHTML = commentRef.current.innerHTML.split('@');
 									let spanTag = `&nbsp;<span id=${item?.Value} contentEditable="false" class=${EditorStyle.personTaggedValue}>
-										@${item?.Text} </span>&nbsp;`;
+										${item?.Text} </span>&nbsp;`;
 									tempInnerHTML[tempInnerHTML.length - 1] = spanTag;
 									commentRef.current.innerHTML = tempInnerHTML.join('');
 									setShowDropDownList(false);
