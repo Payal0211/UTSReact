@@ -176,7 +176,6 @@ const AllHiringRequestScreen = () => {
 							onChange: (pageNum, pageSize) => {
 								setPageIndex(pageNum);
 								setPageSize(pageSize);
-								console.log(pageNum, pageSize, '------');
 								handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
 							},
 							size: 'small',
