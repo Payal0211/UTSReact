@@ -9,6 +9,7 @@ body {
   padding: 0;
   background-color: var(--background-color-slate) ;
   color: var(--uplers-black);
+  overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -28,6 +29,7 @@ body {
   --uplers-black:#232323;
   --uplers-grey:#F5F5F5;
   --uplers-lightBlack:#676767;
+  --uplers-dropUpHoverColor:#ededed;
   --background-color-light: #fff;
   --background-color-dim:#F9F9F9;
   --background-color-dark: #000;

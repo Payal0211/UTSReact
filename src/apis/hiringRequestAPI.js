@@ -35,7 +35,6 @@ export const hiringRequestAPI = {
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendGetRequest();
-
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'hiringRequestAPI.getHRDetailsRequest');

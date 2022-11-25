@@ -2,12 +2,12 @@ import { InputType } from 'constants/application';
 import ActivityFeedStyle from './activityFeed.module.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { SlGraph } from 'react-icons/sl';
-import { Fragment, useState, useMemo } from 'react';
+import React, { Fragment, useState, useMemo, Suspense } from 'react';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { Divider } from 'antd';
 import { BsTag } from 'react-icons/bs';
-import Editor from '../textEditor/editor';
 
+const Editor = React.lazy(() => import('../textEditor/editor'));
 const ActivityFeed = ({ activityFeed, tagUsers }) => {
 	const [search, setSearch] = useState('');
 
@@ -16,6 +16,7 @@ const ActivityFeed = ({ activityFeed, tagUsers }) => {
 		else return activityFeed;
 	}, [search, activityFeed]);
 
+	console.log(activityFeed);
 	return (
 		<div className={ActivityFeedStyle.activityContainer}>
 			<div className={ActivityFeedStyle.activityFeedHeading}>
@@ -26,6 +27,12 @@ const ActivityFeed = ({ activityFeed, tagUsers }) => {
 						onChange={(e) => {
 							let activityFilter = activityFeed.filter((item) => {
 								return (
+									item.ActionPerformedBy.toLowerCase().includes(
+										e.target.value.toLowerCase(),
+									) ||
+									item.Remark.toLowerCase().includes(
+										e.target.value.toLowerCase(),
+									) ||
 									item.ActionPerformedBy.toLowerCase().includes(
 										e.target.value.toLowerCase(),
 									) ||
@@ -96,7 +103,12 @@ const ActivityFeed = ({ activityFeed, tagUsers }) => {
 					})}
 				</div>
 			</div>
-			<Editor tagUsers={tagUsers && tagUsers} />
+			<Suspense>
+				<div style={{ position: 'relative' }}>
+					<Editor tagUsers={tagUsers && tagUsers} />
+				</div>
+			</Suspense>
+			<br />
 		</div>
 	);
 };

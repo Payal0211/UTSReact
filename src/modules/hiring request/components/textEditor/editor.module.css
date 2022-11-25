@@ -1,7 +1,23 @@
 .activityFeed{
     margin-top: 10px;
-   
-    
+}
+.dropUp{
+    position: absolute;
+    background-color:var(--background-color-light);
+    max-height: 300px !important;
+    overflow: auto;
+    width: 300px;
+    z-index: 1;
+    bottom: 100%;
+    left:0;
+    cursor: pointer;
+    box-shadow:-4px 4px 20px rgba(166, 166, 166, 0.4) ;
+    border-radius: 8px;
+    padding-top: 10px;   
+}
+
+.dropUpItems:hover{
+    background-color: var(--uplers-dropUpHoverColor);
 }
 .editor{
     margin-top: 8px;
@@ -24,10 +40,11 @@
         
 }
 .activityFeedBody{
+    
     display: flex;
     justify-content: space-between;
     align-items: center;
-   
+    word-break: break-word;
 }
 .activityFeedPost {
     cursor: pointer;
@@ -42,42 +59,44 @@
 }
 
 .activityFeedPostBody {
-   
     width: 98%;
     margin: 0 auto;
     display: flex;
     gap: 20px;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start ;
     flex-wrap: wrap;
-   
+    overflow: hidden;
 }
 
 .avatar {
     margin-left: 20px;
+    margin-top: 12px;
     width: 35px;
     max-width: 35px;
     border-radius: 50%;
 }
 
-
 .commentBox {
-    padding: 15px 0;
+    padding: 18px 0;
     word-wrap: break-word;
     outline: none;
-    width: 80%;
+    width: 88%;
     font-size: 1rem;
 }
 [contentEditable][placeholder]:empty:before {
-    content: attr(placeholder);
-    /* position: absolute; */
-    color: 4;
+    content: attr(placeholder) !important;
     background-color: transparent;
 }
 
 .usersDropdown{
     max-height: 300px;
-        overflow: scroll;
+    overflow: scroll;
+}
+.actionItems{
+    position: absolute;
+    right: 100px;
+    top: 5px;
 }
 .buttonGroup{
     display: flex;
@@ -89,17 +108,17 @@
     flex-wrap: wrap;
 }
 
-button{
+.editorBoldBtn,.editorItalicBtn,.editorUnderlineBtn{
     cursor: pointer;
     height: 50px;
     width: 50px;
-    
     background-color: var(--background-color-light);
-    /* border-radius: 50%; */
     outline: none;
 }
 
-button:hover{
+.editorBoldBtn:hover,
+.editorItalicBtn:hover,
+.editorUnderlineBtn:hover{
     background-color: var(--uplers-grey );
     transition: all .5s ease-in-out;
     color: var(--color-sunlight);
@@ -122,9 +141,6 @@ border-top-right-radius: 8px;
     border: 1px solid var(--uplers-border-color);
     border-bottom-right-radius: 8px;
 }
-
-
-
 
 .personTaggedValue{
     border-radius:10px;

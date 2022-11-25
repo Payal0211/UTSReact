@@ -40,12 +40,13 @@ export const hiringRequestDAO = {
 						statusCode: statusCode,
 						responseBody: JSON.parse(tempResult?.details),
 					};
-				} else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return hrResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return hrResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
 					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
-				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return hrResult;
-				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return hrResult;
+				}
 			}
 		} catch (error) {
 			return errorDebug(error, 'hiringRequestDAO.getViewHiringRequestDAO');

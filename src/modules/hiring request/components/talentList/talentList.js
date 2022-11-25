@@ -7,7 +7,7 @@ import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
 import { Fragment, useState } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
-import { ReactComponent as InfoSVG } from 'assets/svg/info.svg';
+
 const TalentList = ({ talentDetail }) => {
 	const [showVersantModal, setVersantModal] = useState(false);
 
@@ -51,8 +51,8 @@ const TalentList = ({ talentDetail }) => {
 											<div
 												style={{
 													position: 'absolute',
-													marginLeft: '60px',
-													top: '-25px',
+													marginLeft: '50px',
+													top: '-10px',
 												}}>
 												{All_Hiring_Request_Utils.GETTALENTSTATUS(
 													item?.ProfileStatusCode,
@@ -315,7 +315,6 @@ const TalentList = ({ talentDetail }) => {
 								<Divider
 									style={{
 										margin: '10px 0',
-										// border: `1px solid var(--uplers-border-color)`,
 									}}
 								/>
 								<div style={{ position: 'absolute', marginTop: '10px' }}>
@@ -328,28 +327,6 @@ const TalentList = ({ talentDetail }) => {
 									/>
 								</div>
 							</div>
-						</div>
-						<div
-							style={{
-								margin: '15px',
-
-								display: 'flex',
-								gap: '10px',
-								justifyContent: 'flex-start',
-								alignItems: 'flex-start',
-							}}>
-							<span>
-								<InfoSVG />
-							</span>
-							<span
-								style={{
-									color: `var(--uplers-lightBlack)`,
-									fontSize: '12px',
-									wordWrap: 'break-word',
-								}}>
-								Next Action is for the Saptarshee B to onboard the talent Velma
-								B R
-							</span>
 						</div>
 					</Fragment>
 				)}

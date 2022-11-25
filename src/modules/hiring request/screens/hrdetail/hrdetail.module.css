@@ -1,7 +1,6 @@
 .hiringRequestContainer {
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
-    /* border: 1px solid rebeccapurple; */
 }
 
 .goback{
@@ -68,34 +67,7 @@
     background-color: var(--background-color-light);
 }
 
-.hrNextActionForTalent{
-    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
-    margin-top: 80px;
-    background-color: var(--background-color-light);
-    border-radius: 8px;
-}
 
-.nextActionList{
-    padding: 30px 0;
-    width: 96%;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: space-between;
-    align-items: center;
-}
-.actionItem{
-    font-size: .9rem;
-    width: 32%;
-    border: 1px solid var(--uplers-border-color);
-    padding: 15px 15px;
-    border-radius: 8px;
-    display: flex;
-    gap: 10px;
-    justify-content:center;
-    align-items: center;
-}
 
 .portal{
     gap: 2rem;
