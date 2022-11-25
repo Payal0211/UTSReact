@@ -16,7 +16,6 @@ const ActivityFeed = ({ activityFeed, tagUsers }) => {
 		else return activityFeed;
 	}, [search, activityFeed]);
 
-	console.log(activityFeed);
 	return (
 		<div className={ActivityFeedStyle.activityContainer}>
 			<div className={ActivityFeedStyle.activityFeedHeading}>
