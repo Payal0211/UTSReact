@@ -2,8 +2,12 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { Dropdown, Menu, Skeleton, Table } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Link } from 'react-router-dom';
-import { HiringRequestHRStatus, InputType } from 'constants/application';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import {
+	AddNewType,
+	HiringRequestHRStatus,
+	InputType,
+} from 'constants/application';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
@@ -15,6 +19,9 @@ import { hrUtils } from 'modules/hiring request/hrUtils';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import allHRStyles from './all_hiring_request.module.css';
+import UTSRoutes from 'constants/routes';
+import { HTTPStatusCode } from 'constants/network';
+import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -31,7 +38,7 @@ const AllHiringRequestScreen = () => {
 	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
-
+	const navigate = useNavigate();
 	const onRemoveHRFilters = () => {
 		setIsAllowFilters(false);
 	};
@@ -55,8 +62,10 @@ const AllHiringRequestScreen = () => {
 
 	useEffect(() => {
 		if (hrQueryData?.data) {
-			setAPIdata(hrUtils.modifyHRRequestData(hrQueryData?.data));
-			setTotalRecords(hrQueryData?.data.responseBody.TotalRecords);
+			if (hrQueryData?.data.statusCode === HTTPStatusCode.OK) {
+				setAPIdata(hrUtils.modifyHRRequestData(hrQueryData?.data));
+				setTotalRecords(hrQueryData?.data.responseBody.TotalRecords);
+			} else Navigate(UTSRoutes.LOGINROUTE);
 		}
 	}, [hrQueryData?.data]);
 
@@ -74,12 +83,38 @@ const AllHiringRequestScreen = () => {
 		<div className={allHRStyles.hiringRequestContainer}>
 			<div className={allHRStyles.addnewHR}>
 				<div className={allHRStyles.hiringRequest}>All Hiring Requests</div>
-				<div className={allHRStyles.newHR}>
-					<label>Add new HR</label>
-					<div className={allHRStyles.iconDown}>
-						<ArrowDownSVG />
-					</div>
-				</div>
+
+				<HROperator
+					title="Add New HR"
+					icon={<ArrowDownSVG style={{ width: '16px' }} />}
+					backgroundColor={`var(--color-sunlight)`}
+					iconBorder={`1px solid var(--color-sunlight)`}
+					isDropdown={true}
+					listItem={[
+						{
+							label: 'Add New HR',
+							key: AddNewType.HR,
+						},
+						{
+							label: 'Add New Client',
+							key: AddNewType.CLIENT,
+						},
+					]}
+					menuAction={(item) => {
+						switch (item.key) {
+							case AddNewType.HR: {
+								navigate(UTSRoutes.ADDNEWHR);
+								break;
+							}
+							case AddNewType.CLIENT: {
+								navigate(UTSRoutes.ADDNEWCLIENT);
+								break;
+							}
+							default:
+								break;
+						}
+					}}
+				/>
 			</div>
 			<div className={allHRStyles.filterContainer}>
 				<div className={allHRStyles.filterSets}>

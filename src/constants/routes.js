@@ -8,6 +8,13 @@ const AllHiringRequest = React.lazy(() =>
 const HRDetail = React.lazy(() =>
 	import('modules/hiring request/screens/hrdetail/hrdetails'),
 );
+const AddNewHR = React.lazy(() =>
+	import('modules/hiring request/screens/addnewHR/add_new_HR'),
+);
+
+const AddNewClient = React.lazy(() =>
+	import('modules/client/screens/addnewClient/add_new_client'),
+);
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -16,6 +23,8 @@ export default class UTSRoutes {
 	static FORGOTPASSWORDROUTE = '/forgotpassword';
 	static ALLHIRINGREQUESTROUTE = '/allhiringrequest';
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
+	static ADDNEWHR = '/allhiringrequest/addnewHR';
+	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
 	static PAGENOTFOUNDROUTE = '/404';
 	static NETWORKERRORROUTE = '/networkissue';
 }
@@ -34,6 +43,16 @@ export const navigateToComponent = {
 	[UTSRoutes.ALLHIRINGREQUESTSUBROUTE]: (
 		<Suspense>
 			<HRDetail />
+		</Suspense>
+	),
+	[UTSRoutes.ADDNEWCLIENT]: (
+		<Suspense>
+			<AddNewClient />
+		</Suspense>
+	),
+	[UTSRoutes.ADDNEWHR]: (
+		<Suspense>
+			<AddNewHR />
 		</Suspense>
 	),
 };

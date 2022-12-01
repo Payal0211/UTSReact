@@ -57,6 +57,11 @@ export const OTPRegEx = {
 	length: '(?=.{6,6})',
 };
 
+export class AddNewType {
+	static CLIENT = 'addnewclient';
+	static HR = 'addNewHR';
+	static DEBRIEFING = 'debriefingHR';
+}
 export class InputType {
 	static TEXT = 'text';
 	static NUMBER = 'number';
