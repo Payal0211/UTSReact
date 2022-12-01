@@ -17,7 +17,14 @@ const TextEditor = ({ label, required, placeholder }) => {
 	const commentRef = useRef();
 	return (
 		<div className={TextEditorStyle.editorContainer}>
-			<label style={{ fontSize: '12px' }}>{label}</label>
+			<label
+				style={{
+					fontSize: '12px',
+					marginBottom: '8px',
+					display: 'inline-block',
+				}}>
+				{label}
+			</label>
 			{required && (
 				<span style={{ paddingLeft: '5px' }}>
 					<b>*</b>

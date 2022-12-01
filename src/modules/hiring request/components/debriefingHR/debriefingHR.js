@@ -34,7 +34,14 @@ const DebriefingHR = () => {
 							required
 						/>
 						<div className={DebriefingHRStyle.mb50}>
-							<label style={{ fontSize: '12px' }}>Required Skills</label>
+							<label
+								style={{
+									fontSize: '12px',
+									marginBottom: '8px',
+									display: 'inline-block',
+								}}>
+								Required Skills
+							</label>
 							<span style={{ paddingLeft: '5px' }}>
 								<b>*</b>
 							</span>
@@ -51,7 +58,12 @@ const DebriefingHR = () => {
 							/>
 						</div>
 						<div className={DebriefingHRStyle.mb50}>
-							<label style={{ fontSize: '12px' }}>
+							<label
+								style={{
+									fontSize: '12px',
+									marginBottom: '8px',
+									display: 'inline-block',
+								}}>
 								Required assessments for the talent skills
 							</label>
 							<span style={{ paddingLeft: '5px' }}>

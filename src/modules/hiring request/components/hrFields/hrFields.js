@@ -37,48 +37,53 @@ const HRFields = () => {
 				<div className={HRFieldStyle.hrFieldRightPane}>
 					<div className={HRFieldStyle.colMd12}>
 						<HRInputField
-							label={'Client Email/Name *'}
+							label={'Client Email/Name'}
 							name="client_Email_Name"
 							type={InputType.TEXT}
 							placeholder="Enter Client Email/Name"
+							required
 						/>
 					</div>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
-								label="Company Name *"
+								label="Company Name"
 								name="companyName"
 								type={InputType.TEXT}
 								placeholder="Enter Company Name"
+								required
 							/>
 						</div>
 
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
-								label="Hiring Request Role *"
+								label="Hiring Request Role"
 								name="hrRole"
 								type={InputType.TEXT}
 								placeholder="Enter Role"
+								required
 							/>
 						</div>
 					</div>
 					<div className={HRFieldStyle.colMd12}>
 						<HRInputField
-							label={'Hiring Request Title *'}
+							label={'Hiring Request Title'}
 							name="hrTitle"
 							type={InputType.TEXT}
 							placeholder="Enter title"
+							required
 						/>
 					</div>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
 								leadingIcon={<UploadSVG />}
-								label="Job Description (PDF) *"
+								label="Job Description (PDF)"
 								name="jdExport"
 								type={InputType.BUTTON}
 								value="Upload JD File"
 								onClickHandler={() => setUploadModal(true)}
+								required
 							/>
 						</div>
 						<Modal
@@ -90,7 +95,7 @@ const HRFields = () => {
 
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
-								label="Job Description URL "
+								label="Job Description URL"
 								name="jdURL"
 								type={InputType.TEXT}
 								placeholder="Add JD link"
@@ -101,7 +106,10 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Add your estimated budget *</label>
+								<label>Add your estimated budget</label>
+								<span style={{ paddingLeft: '5px' }}>
+									<b>*</b>
+								</span>
 								<Select
 									defaultValue="Select Budget"
 									onChange={selectHandleChange}
@@ -137,27 +145,31 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
-								label="NR Margin Percentage *"
+								label="NR Margin Percentage"
 								name="NRMargin"
 								type={InputType.TEXT}
 								placeholder="Select NR margin percentage"
+								required
 							/>
 						</div>
 
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Add your estimated budget *</label>
+								<label>Sales Person</label>
+								<span style={{ paddingLeft: '5px' }}>
+									<b>*</b>
+								</span>
 								<Select
-									defaultValue="Select Budget"
+									defaultValue="Select sales person"
 									onChange={selectHandleChange}
 									options={[
 										{
-											value: 'USD',
-											label: 'USD',
+											value: 'P1',
+											label: 'P1',
 										},
 										{
-											value: 'INR',
-											label: 'INR',
+											value: 'P2',
+											label: 'P2',
 										},
 									]}
 								/>
@@ -168,7 +180,10 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Sales Person *</label>
+								<label>Contract Duration (in months) </label>
+								<span style={{ paddingLeft: '5px' }}>
+									<b>*</b>
+								</span>
 								<Select
 									defaultValue="Ex: 3,6,12..."
 									dropdownRender={(menu) => (
@@ -218,7 +233,10 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Working Time Zone *</label>
+								<label>Working Time Zone</label>
+								<span style={{ paddingLeft: '5px' }}>
+									<b>*</b>
+								</span>
 								<Select
 									defaultValue="Select time zone"
 									onChange={selectHandleChange}
@@ -245,13 +263,17 @@ const HRFields = () => {
 								name="talentsNumber"
 								type={InputType.NUMBER}
 								placeholder="Please enter number of talents needed"
+								required
 							/>
 						</div>
 					</div>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>How soon can they join? *</label>
+								<label>How soon can they join? </label>
+								<span style={{ paddingLeft: '5px' }}>
+									<b>*</b>
+								</span>
 								<Select
 									defaultValue="Select availability   "
 									onChange={selectHandleChange}
@@ -280,18 +302,20 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
-								label="BQ Form Link * "
+								label="BQ Form Link"
 								name="bqFormLink"
 								type={InputType.TEXT}
 								placeholder="Enter the link for BQ form"
+								required
 							/>
 						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
-								label="Discovery Call Link *"
+								label="Discovery Call Link"
 								name="discoveryCallLink"
 								type={InputType.TEXT}
 								placeholder="Enter the link for Discovery call"
+								required
 							/>
 						</div>
 					</div>

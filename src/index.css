@@ -279,7 +279,7 @@ table{
 .ant-tabs-top .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: var(--uplers-black);
 }
-.ant-tabs-tab-btn {
+.ant-tabs-tab .ant-tabs-tab-btn {
   color: var(--uplers-lightBlack);
   font-size: var(--fontsize-glossy) !important;
 }

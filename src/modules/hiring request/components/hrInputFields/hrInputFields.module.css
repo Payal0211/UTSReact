@@ -67,6 +67,7 @@
 .leadingIcon {
     position: absolute;
     top: 19px;
+    left:5px;
     width: 16px;
     margin:0px 10px;
     

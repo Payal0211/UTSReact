@@ -13,6 +13,7 @@ const HRInputField = ({
 	errorMsg,
 	leadingIcon,
 	onClickHandler,
+	required,
 }) => {
 	const inputRef = useRef();
 	const [error, setError] = useState(errorMsg);
@@ -27,6 +28,11 @@ const HRInputField = ({
 	return (
 		<div className={HRInputFieldStyle.formField}>
 			<label>{label}</label>
+			{required && (
+				<span style={{ paddingLeft: '5px' }}>
+					<b>*</b>
+				</span>
+			)}
 			<div
 				className={
 					error ? HRInputFieldStyle.inputBoxError : HRInputFieldStyle.inputBox
@@ -36,7 +42,7 @@ const HRInputField = ({
 				)}
 				<input
 					style={{
-						paddingLeft: leadingIcon && '30px',
+						paddingLeft: leadingIcon && '40px',
 						cursor: InputType.BUTTON && 'pointer',
 					}}
 					ref={inputRef}
