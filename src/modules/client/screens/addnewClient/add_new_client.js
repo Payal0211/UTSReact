@@ -1,5 +1,44 @@
-const AddNewClient = () => {
-	return <div></div>;
+import { Tabs } from 'antd';
+import { useState } from 'react';
+import DebriefingHR from 'modules/hiring request/components/debriefingHR/debriefingHR';
+import HRFields from 'modules/hiring request/components/hrFields/hrFields';
+import AddNewClientStyle from './add_new_client.module.css';
+import ClientField from 'modules/client/components/clientField/clientField';
+
+const AddNewClientScreen = () => {
+	const [title, setTitle] = useState('Add New Client');
+	return (
+		<div className={AddNewClientStyle.addNewContainer}>
+			<div className={AddNewClientStyle.addHRTitle}>{title}</div>
+
+			<div className={AddNewClientStyle.addNewTabsWrap}>
+				<Tabs
+					onChange={(e) => setTitle(e)}
+					defaultActiveKey="1"
+					animated={true}
+					tabBarGutter={50}
+					tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
+					items={[
+						{
+							label: 'Add New Client',
+							key: 'Add New Client',
+							children: <ClientField />,
+						},
+						{
+							label: 'Add New Hiring Requests',
+							key: 'Add New Hiring Requests',
+							children: <HRFields />,
+						},
+						{
+							label: 'Debriefing HR',
+							key: 'Debriefing HR',
+							children: <DebriefingHR />,
+						},
+					]}
+				/>
+			</div>
+		</div>
+	);
 };
 
-export default AddNewClient;
+export default AddNewClientScreen;

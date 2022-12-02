@@ -14,7 +14,6 @@ const AddNewHR = () => {
 				onChange={(e) => setTitle(e)}
 				defaultActiveKey="1"
 				animated={true}
-				destroyInactiveTabPane={true}
 				tabBarGutter={50}
 				tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
 				items={[

@@ -12,6 +12,7 @@ import { ReactComponent as UnorderedListSVG } from 'assets/svg/unorderedList.svg
 import { ReactComponent as OrderedListSVG } from 'assets/svg/orderedList.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { Tooltip } from 'antd';
+
 const TextEditor = ({ label, required, placeholder }) => {
 	const [showEditor, setShowEditor] = useState(false);
 	const commentRef = useRef();
