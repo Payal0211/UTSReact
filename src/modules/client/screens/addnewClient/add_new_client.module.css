@@ -1,0 +1,38 @@
+
+
+.addHRTitle {
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 80px;
+}
+
+.addNewContainer {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.newHR {
+    padding: 1px 0;
+    background-color: var(--color-sunlight);
+    border-radius: 8px;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+}
+
+.addNewPageTitle {
+    margin-bottom: 55px;
+}
+
+.addNewPageTitle h1 {
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 40px;
+    color: var(--uplers-black);
+    margin: 0;
+}
+
+.addNewTabsWrap {
+    margin: 0;
+}

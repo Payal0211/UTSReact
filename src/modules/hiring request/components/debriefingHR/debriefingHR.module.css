@@ -1,0 +1,86 @@
+.debriefingHRContainer{
+    width: 100%;
+}
+.partOne {
+    padding-top: 50px;
+    display: flex;
+}
+.hrFieldLeftPane {
+    width: 30%;
+    /* border: 1px solid red; */
+}
+.hrFieldLeftPane h3 {
+    font-size: var(--fontsize-doom);
+    font-weight: 500;
+    line-height: 29px;
+    color: var(--uplers-black);
+}
+
+.hrFieldLeftPane p {
+    font-size: var(--fontsize-brittle);
+    font-weight: 400;
+    line-height: 20px;
+    color: #7C7C7C;
+}
+.hrFieldRightPane {
+    flex: 1;
+}
+
+.row {
+    margin: 0;
+    margin: 0 -9px;
+    display: flex;
+}
+
+.colMd4 {
+    margin: 0;
+    width: 33.33%;
+    padding: 0 9px;
+}
+
+.colMd6 {
+    margin: 0;
+    width: 50%;
+    padding: 0 9px;
+}
+
+.colMd12 {
+    margin: 0;
+    width: 100%;
+}
+
+.mb10{
+    margin-bottom: 10px;
+}
+.mb50{
+    margin-bottom: 50px;
+}
+.formPanelAction {
+    padding: 32px 0;
+    justify-content: center;
+    display: flex;
+}
+
+.formPanelAction button {
+    background: #FFFFFF;
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.formPanelAction .btnPrimary {
+    background: #FFDA30;
+    border-color: #FFDA30;
+}
+
+.formPanelAction button+button {
+    margin-left: 16px;
+}

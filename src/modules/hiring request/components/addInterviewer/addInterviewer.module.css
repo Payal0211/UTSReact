@@ -1,0 +1,43 @@
+.addInterviewContainer{
+    display: flex;
+    width: 100%;
+}
+.addInterviewLeftPane{
+    width: 30%;
+}
+.addInterviewLeftPane h3 {
+    font-size: var(--fontsize-doom);
+    font-weight: 500;
+    line-height: 29px;
+    color: var(--uplers-black);
+}
+
+.addInterviewLeftPane p {
+    font-size: var(--fontsize-brittle);
+    font-weight: 400;
+    line-height: 20px;
+    color: #7C7C7C;
+}
+.addInterviewer {
+    background-color: var(--background-color-light);
+    font-size: var(--fontsize-tough);
+    font-weight: 500;
+    border: 1px solid var(--background-color-metal);
+    border-radius: 10px;
+    padding: 10px 10% !important;
+    cursor: pointer;
+}
+.addInterviewRightPane{
+    flex:1;
+}
+.row {
+    margin: 0;
+    margin: 0 -9px;
+    display: flex;
+}
+
+.colMd6 {
+    margin: 0;
+    width: 50%;
+    padding: 0 9px;
+}

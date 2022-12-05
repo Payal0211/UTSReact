@@ -1,9 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
-
 import inputFieldStyles from './input_field.module.css';
 
 const InputField = ({
 	label,
+	reqField,
 	type,
 	name,
 	maxLength,
@@ -27,7 +27,12 @@ const InputField = ({
 
 	return (
 		<div className={inputFieldStyles.formField}>
-			<label className={inputFieldStyles.inputLabel}>{label}</label>
+			{label && (
+				<label>
+					{label}
+					{reqField && <span className={inputFieldStyles.reqField}>*</span>}
+				</label>
+			)}
 			<div
 				className={
 					error ? inputFieldStyles.inputBoxError : inputFieldStyles.inputBox
@@ -50,7 +55,7 @@ const InputField = ({
 					</div>
 				)}
 			</div>
-			{error && <div className={inputFieldStyles.error}>* {errorMsg}</div>}
+			{error && <div className={inputFieldStyles.error}>{errorMsg}</div>}
 		</div>
 	);
 };

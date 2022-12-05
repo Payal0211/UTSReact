@@ -5,10 +5,16 @@ import { errorDebug } from 'shared/utils/error_debug_utils';
 export const hiringRequestAPI = {
 	getPaginatedHiringRequest: async function (hrData) {
 		let httpService = new HttpServices();
-		httpService.URL = `http://3.218.6.134:9082/ViewAllHR/GetAllHiringRequests?Pagesize=${hrData.pageSize}&Pagenum=${hrData.pageNum}&Sortdatafield=CreatedDateTime&Sortorder=desc`;
+		let miscData = UserSessionManagementController.getUserMiscellaneousData();
+		httpService.URL = `http://3.218.6.134:9082/ViewAllHR/GetAllHiringRequests?
+							Pagesize=${hrData.pageSize}&
+							Pagenum=${hrData.pageNum}&
+							Sortdatafield=CreatedDateTime&
+							Sortorder=desc&LoggedInUserTypeID=${miscData?.loggedInUserTypeID}&
+							LoggedInUserID=${miscData?.loggedInUserID}
+							`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-
 		try {
 			let response = await httpService.sendPostRequest();
 			return response;

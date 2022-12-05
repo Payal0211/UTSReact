@@ -37,10 +37,30 @@ export const UserSessionManagementController = {
 			);
 		}
 	},
+	/**
+	 * @Function getUserMisc()
+	 * @returns UserId and UserTypeID
+	 */
 
+	getUserMiscellaneousData: function () {
+		try {
+			const data = SecuredStorageService.readSecuredData('userSessionInfo');
+			return (
+				data && {
+					loggedInUserID: data?.LoggedInUserID,
+					loggedInUserTypeID: data?.LoggedInUserTypeID,
+				}
+			);
+		} catch (error) {
+			return errorDebug(
+				error,
+				'UserSessionManagementController.getUserMiscellaneousData',
+			);
+		}
+	},
 	/**
 	 * @Function deleteUserSession()
-	 * @returns isSessionDeleted\
+	 * @returns isSessionDeleted
 	 * @returnType bool
 	 */
 	deleteUserSession: function () {

@@ -1,0 +1,72 @@
+
+.modalTitle{
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 21px;
+    color: var(--uplers-black);
+    margin: 30px 40px 8px 40px;
+
+}
+.suggestionText,.modalUploadType{
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    color:var(--uplers-lightBlack) ;
+    margin: 8px 40px 16px 40px;
+}
+.suggestionText{
+    font-size: 14px !important;
+    color: var(--uplers-black) !important;
+    line-height: 17px !important;
+    margin: 24px 40px 15px 40px !important;
+}
+.uploadBox{
+    margin:24px 40px;
+    height: 224px;
+    border-radius: 8px;
+    border:1px dashed #E8E8E8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.urlBox{
+    border-radius: 8px;
+    border: 1px solid #E8E8E8;
+    margin: 8px 40px 40px;
+    display: flex;
+   
+}
+.uploadURLBox{
+    border: none;
+    outline: none;
+    width: 90%;
+    border-radius: 8px;
+    padding: 13px 16px;
+    cursor: pointer;
+}
+.btnPrimary{
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 17px;
+    padding:13px 28px;
+    border-radius: 8px;
+    background: #FFDA30;
+    border-color:  #FFDA30;
+    cursor: pointer;
+}
+.cloudUploadLink{
+    color: #0278E4;
+    text-decoration: underline;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+}
+.maxFileSize{
+    margin-top: 16px;
+}
