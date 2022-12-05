@@ -1,4 +1,4 @@
-import { Button, Divider, Modal, Select, Space } from 'antd';
+import { Button, Divider, Select, Space } from 'antd';
 import { InputType } from 'constants/application';
 import { useRef, useState } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
@@ -6,6 +6,7 @@ import HRFieldStyle from './hrFIelds.module.css';
 import { PlusOutlined } from '@ant-design/icons';
 import AddInterviewer from '../addInterviewer/addInterviewer';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
+import UploadModal from 'shared/components/uploadModal/uploadModal';
 
 const HRFields = () => {
 	const inputRef = useRef(null);
@@ -86,12 +87,12 @@ const HRFields = () => {
 								required
 							/>
 						</div>
-						<Modal
-							width="864px"
-							centered
-							footer={null}
-							open={showUploadModal}
-							onCancel={() => setUploadModal(false)}></Modal>
+						<UploadModal
+							modalTitle={'Upload Logo'}
+							isFooter={false}
+							openModal={showUploadModal}
+							cancelModal={() => setUploadModal(false)}
+						/>
 
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField

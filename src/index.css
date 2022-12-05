@@ -92,6 +92,20 @@ input[type=number] {
   background: var(--color-sunlight)
 }
 
+::-webkit-file-upload-button {
+  border-radius: 2rem;
+  outline: none;
+  border: none;
+  padding: 2.5% 6%;
+  color: var(--color-darkTeal);
+  font-weight: 600;
+  background-color: var(--color-champagne);
+}
+
+input[type="file"] {
+  display: none;
+}
+
 /* -- Ant Table Pagination--*/
 .ant-table-pagination-right {
   margin-top: 30px !important;
@@ -456,3 +470,7 @@ table{
   transform: scale(1);
 }
 
+/**--MODAl---------*/
+.ant-modal-content{
+  border-radius: 8px !important;
+}
