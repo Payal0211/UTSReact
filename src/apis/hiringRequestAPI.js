@@ -46,4 +46,18 @@ export const hiringRequestAPI = {
 			return errorDebug(error, 'hiringRequestAPI.getHRDetailsRequest');
 		}
 	},
+	sendHREditorRequest: async function (editorDetails) {
+		let httpService = new HttpServices();
+		httpService.URL = `http://3.218.6.134:9082/ViewAllHR/SaveHRNotes`;
+		httpService.dataToSend = editorDetails;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			console.log(response, '--response');
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestAPI.sendHREditorRequest');
+		}
+	},
 };

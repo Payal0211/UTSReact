@@ -22,7 +22,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.companyURL}>
 								<span>Company URL:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.CompanyURL}
+									{clientDetail && clientDetail?.CompanyURL}
 								</span>
 								&nbsp;&nbsp;
 								<a
@@ -35,7 +35,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.pocName}>
 								<span>POC Name:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.POCFullName}
+									{clientDetail && clientDetail?.POCFullName}
 								</span>
 								&nbsp;&nbsp;
 								{/*  TODO:- 
@@ -44,7 +44,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.pocEmail}>
 								<span>POC Email:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.POCEmailID}
+									{clientDetail && clientDetail?.POCEmailID}
 								</span>
 							</div>
 						</div>
@@ -73,13 +73,13 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.EngagementType}>
 								<span>Engagement Type:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.Managed}
+									{clientDetail && clientDetail?.Managed}
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.category}>
 								<span>Uplers Category:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.Category}
+									{clientDetail && clientDetail?.Category}
 								</span>
 							</div>
 						</div>
@@ -95,7 +95,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.TR}>
 								<span>TR:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.NoOfTalents}
+									{clientDetail && clientDetail?.NoOfTalents}
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.TRParked}>

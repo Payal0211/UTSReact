@@ -21,7 +21,7 @@ const HROperator = ({
 					defaultSelectedKeys={'0'}>
 					{listItem?.map((item) => (
 						<Menu.Item
-							key={item.key}
+							key={item.label}
 							onClick={menuAction && menuAction}>
 							{item.label}
 						</Menu.Item>

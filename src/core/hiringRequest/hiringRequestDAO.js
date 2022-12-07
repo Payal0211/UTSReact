@@ -52,4 +52,23 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getViewHiringRequestDAO');
 		}
 	},
+	sendHREditorRequestDAO: async function (editorDetails) {
+		try {
+			const editorResult = await hiringRequestAPI.sendHREditorRequest(
+				editorDetails,
+			);
+			if (editorResult) {
+				const statusCode = editorResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = editorResult?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.sendHREditorRequestDAO');
+		}
+	},
 };

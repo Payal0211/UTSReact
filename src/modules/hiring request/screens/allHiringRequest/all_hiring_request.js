@@ -5,6 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import {
 	AddNewType,
+	DayName,
 	HiringRequestHRStatus,
 	InputType,
 } from 'constants/application';
@@ -22,7 +23,7 @@ import allHRStyles from './all_hiring_request.module.css';
 import UTSRoutes from 'constants/routes';
 import { HTTPStatusCode } from 'constants/network';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
-
+import { DateTimeUtils } from 'shared/utils/basic_utils';
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
 	import('modules/hiring request/components/hiringFilter/hiringFilters'),
@@ -162,7 +163,11 @@ const AllHiringRequestScreen = () => {
 						</div>
 						<div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Set Priority</div>
-							<div className={allHRStyles.priorityFilter}>
+							<div
+								className={allHRStyles.priorityFilter}
+								onClick={() => {
+									console.log('hello');
+								}}>
 								<LockSVG style={{ width: '18px', height: '18px' }} />
 							</div>
 						</div>

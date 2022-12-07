@@ -13,8 +13,10 @@ import { ReactComponent as UnorderedListSVG } from 'assets/svg/unorderedList.svg
 import { ReactComponent as OrderedListSVG } from 'assets/svg/orderedList.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { Tooltip } from 'antd';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { useLocation } from 'react-router-dom';
 
-const Editor = ({ tagUsers }) => {
+const Editor = ({ tagUsers, hrID, callActivityFeedAPI }) => {
 	const [isStyleEditor, setStyleEditor] = useState(false);
 	const [isShowDropDownList, setShowDropDownList] = useState(false);
 	const [tagUserSearch, setTagUserSearch] = useState('');
@@ -25,6 +27,8 @@ const Editor = ({ tagUsers }) => {
 		else return tagUsers;
 	}, [tagUserSearch, tagUsers]);
 
+	const switchLocation = useLocation();
+	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	useEffect(() => {
 		const elements = document.querySelectorAll('#editorBtn');
 		elements.forEach((ele) => {
@@ -234,6 +238,16 @@ const Editor = ({ tagUsers }) => {
 						</div>
 					</div>
 					<div
+						onClick={async () => {
+							let editorDetails = {
+								id: hrID,
+								note: commentRef.current.innerHTML,
+							};
+							console.log(commentRef.current.innerHTML);
+							await hiringRequestDAO.sendHREditorRequestDAO(editorDetails);
+							callActivityFeedAPI(urlSplitter?.split('HR')[0]);
+							commentRef.current.innerText = '';
+						}}
 						style={{
 							top: '0',
 							right: '0',
