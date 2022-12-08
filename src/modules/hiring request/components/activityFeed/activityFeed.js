@@ -6,15 +6,26 @@ import React, { Fragment, useState, useMemo, Suspense } from 'react';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { Divider } from 'antd';
 import { BsTag } from 'react-icons/bs';
-
+import DOMPurify from 'dompurify';
 const Editor = React.lazy(() => import('../textEditor/editor'));
-const ActivityFeed = ({ activityFeed, tagUsers }) => {
+const ActivityFeed = ({
+	hrID,
+	activityFeed,
+	tagUsers,
+	callActivityFeedAPI,
+}) => {
 	const [search, setSearch] = useState('');
 
+	const sanitizer = DOMPurify.sanitize;
 	const searchMemo = useMemo(() => {
 		if (search) return search;
 		else return activityFeed;
 	}, [search, activityFeed]);
+
+	const displayNotes = (notes) => {
+		const notesTemplate = new DOMParser().parseFromString(notes, 'text/html');
+		return notesTemplate.body;
+	};
 
 	return (
 		<div className={ActivityFeedStyle.activityContainer}>
@@ -64,36 +75,61 @@ const ActivityFeed = ({ activityFeed, tagUsers }) => {
 										</div>
 									</div>
 									<div className={ActivityFeedStyle.activityFeedActivities}>
-										<div className={ActivityFeedStyle.profileStatus}>
-											<span>{item?.ActionName} for </span>
-											<span
-												style={{
-													textDecoration: 'underline',
-													fontWeight: '500',
-												}}>
-												{item?.TalentName}
-											</span>
-										</div>
+										{item?.IsNotes === 0 ? (
+											<div className={ActivityFeedStyle.profileStatus}>
+												<span>{item?.ActionName} for </span>
+												<span
+													style={{
+														textDecoration: 'underline',
+														fontWeight: '500',
+													}}>
+													{item?.TalentName}
+												</span>
+											</div>
+										) : (
+											<div className={ActivityFeedStyle.profileStatus}>
+												<span>Note from </span>
+												<span
+													style={{
+														textDecoration: 'underline',
+														fontWeight: '500',
+													}}>
+													{item?.ActionPerformedBy}
+												</span>
+											</div>
+										)}
 										<br />
 										<div className={ActivityFeedStyle.activityAction}>
 											{item?.IsNotes ? <BsTag /> : <SlGraph />}
 											&nbsp;&nbsp;
 											<span>
-												{item?.IsNotes ? 'Assigned to' : 'Action by:'}{' '}
+												{item?.IsNotes === 1
+													? 'Assigned to : '
+													: 'Action by : '}
 											</span>
-											<span>{item?.ActionPerformedBy}</span>
+											<span>
+												{item?.IsNotes === 1
+													? item?.AssignedUsers
+													: item?.ActionPerformedBy}
+											</span>
 										</div>
 
-										{item?.Remark && (
-											<>
-												<br />
-												<div className={ActivityFeedStyle.activityAction}>
-													<span style={{ fontWeight: '500' }}>
-														“ {item?.Remark} ”
-													</span>
-												</div>
-											</>
-										)}
+										<br />
+										<div className={ActivityFeedStyle.activityAction}>
+											{item?.IsNotes === 0 && (
+												<span style={{ fontWeight: '500' }}>
+													{item?.Remark && '“' + item?.Remark + '”'}
+												</span>
+											)}
+											{item?.IsNotes === 1 && (
+												<span
+													dangerouslySetInnerHTML={{
+														__html: sanitizer(
+															displayNotes(item?.ActionName).innerHTML,
+														),
+													}}></span>
+											)}
+										</div>
 									</div>
 								</div>
 								{index < activityFeed.length - 1 && <Divider />}
@@ -104,7 +140,11 @@ const ActivityFeed = ({ activityFeed, tagUsers }) => {
 			</div>
 			<Suspense>
 				<div style={{ position: 'relative' }}>
-					<Editor tagUsers={tagUsers && tagUsers} />
+					<Editor
+						tagUsers={tagUsers && tagUsers}
+						hrID={hrID}
+						callActivityFeedAPI={callActivityFeedAPI}
+					/>
 				</div>
 			</Suspense>
 			<br />

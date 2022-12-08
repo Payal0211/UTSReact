@@ -33,15 +33,16 @@ const HRDetailScreen = () => {
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 
+	async function callAPI(hrid) {
+		let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+		if (response) {
+			setAPIdata(response && response?.responseBody);
+			setLoading(false);
+		}
+	}
 	useEffect(() => {
 		setLoading(true);
-		async function callAPI(hrid) {
-			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
-			if (response) {
-				setAPIdata(response && response?.responseBody);
-				setLoading(false);
-			}
-		}
+
 		callAPI(urlSplitter?.split('HR')[0]);
 	}, [urlSplitter]);
 
@@ -136,8 +137,10 @@ const HRDetailScreen = () => {
 				) : (
 					<Suspense>
 						<ActivityFeed
+							hrID={urlSplitter?.split('HR')[0]}
 							activityFeed={apiData?.HRHistory}
 							tagUsers={apiData?.UsersToTag}
+							callActivityFeedAPI={callAPI}
 						/>
 					</Suspense>
 				)}

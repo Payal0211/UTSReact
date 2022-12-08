@@ -121,3 +121,13 @@ export class UploadFileType {
 	static IMAGE = 2;
 	static DOC = 3;
 }
+
+export class DayName {
+	static SUNDAY = 'Sunday';
+	static MONDAY = 'Monday';
+	static TUESDAY = 'Tuesday';
+	static WEDNESDAY = 'Wednesday';
+	static THURSDAY = 'Thursday';
+	static FRIDAY = 'Friday';
+	static SATURDAY = 'Saturday';
+}

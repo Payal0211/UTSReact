@@ -113,7 +113,6 @@ export const All_Hiring_Request_Utils = {
 				break;
 		}
 	},
-
 	GETTALENTSTATUS: function (statusCode, talentStatus) {
 		switch (statusCode) {
 			case TalentRequestStatus.SELECTED:

@@ -1,11 +1,13 @@
 export class NetworkInfo {
-	static protocol = 'http://';
-	static domain = 'localhost:5162/';
-	static subDomain = 'UserOperationsAPI/';
-	static networkInfo =
-		NetworkInfo.protocol + NetworkInfo.domain + NetworkInfo.subDomain;
+	static PROTOCOL = 'http://';
+	// static domain = 'localhost:5162/';
+	static DOMAIN = '3.218.6.134:9082/';
+	static NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN;
 }
-
+export class SubDomain {
+	static USER_OPERATIONS = 'UserOperationsAPI/';
+	static MASTERS = 'Masters/';
+}
 export class APIType {
 	static USER = '/user';
 }
@@ -20,6 +22,17 @@ export class UserAPI {
 	static SIGNUP = '/signup';
 	static FORGOTPASSWORD = '/forgotpassword';
 	static UPDATEPASSWORD = '/updatepassword';
+}
+export class MastersAPI {
+	static GET_FIXED_VALUE = 'GetFixedValues';
+	static GET_GEO = 'GetGeo';
+	static GET_SKILLS = 'GetSkills';
+	static GET_CURRENCY = 'GetCurrency';
+	static GET_TALENT_TIME_ZONE = 'GetTalentTimeZone';
+	static GET_HOW_SOON = 'GetHowSoon';
+	static GET_TIME_ZONE_PREFERENCE = 'GetTimeZonePreference';
+	static GET_PARTIAL_ENGAGEMENT_TYPE = 'GetPartialEngagementType';
+	static GET_TALENTS_ROLE_REQUEST = 'GetTalentsRoles';
 }
 
 export class HTTPStatusCode {
