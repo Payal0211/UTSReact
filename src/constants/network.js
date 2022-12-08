@@ -6,6 +6,7 @@ export class NetworkInfo {
 }
 export class SubDomain {
 	static USER_OPERATIONS = 'UserOperationsAPI/';
+	static VIEW_ALL_HR = 'ViewAllHR/';
 	static MASTERS = 'Masters/';
 }
 export class APIType {
@@ -22,6 +23,9 @@ export class UserAPI {
 	static SIGNUP = '/signup';
 	static FORGOTPASSWORD = '/forgotpassword';
 	static UPDATEPASSWORD = '/updatepassword';
+}
+export class AllHiringRequestAPI {
+	static SET_PRIORITY_NEXT_WEEK = 'SetPriorityForNextWeek';
 }
 export class MastersAPI {
 	static GET_FIXED_VALUE = 'GetFixedValues';

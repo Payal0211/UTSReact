@@ -1,8 +1,14 @@
-import React, { useState, useEffect, Suspense } from 'react';
-import { Dropdown, Menu, Skeleton, Table } from 'antd';
+import React, {
+	useState,
+	useEffect,
+	Suspense,
+	useMemo,
+	useCallback,
+} from 'react';
+import { Dropdown, Menu, message, Skeleton, Table, Tooltip } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import {
 	AddNewType,
 	DayName,
@@ -14,16 +20,17 @@ import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as LockSVG } from 'assets/svg/lock.svg';
+import { ReactComponent as UnlockSVG } from 'assets/svg/unlock.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useAllHRQuery } from 'shared/hooks/useAllHRQuery';
 import { hrUtils } from 'modules/hiring request/hrUtils';
-import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import allHRStyles from './all_hiring_request.module.css';
 import UTSRoutes from 'constants/routes';
 import { HTTPStatusCode } from 'constants/network';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
+import { TableConfig } from './table.config';
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
 	import('modules/hiring request/components/hiringFilter/hiringFilters'),
@@ -43,7 +50,31 @@ const AllHiringRequestScreen = () => {
 	const onRemoveHRFilters = () => {
 		setIsAllowFilters(false);
 	};
+	const [messageAPI, contextHolder] = message.useMessage();
+	const togglePriority = useCallback(
+		async (payload) => {
+			let response = await hiringRequestDAO.sendHRPriorityForNextWeekRequestDAO(
+				payload,
+			);
+			const { tempdata, index } = hrUtils.hrTogglePriority(response, apiData);
+			setAPIdata([
+				...apiData.slice(0, index),
+				tempdata,
+				...apiData.slice(index + 1),
+			]);
 
+			messageAPI.open({
+				type: 'success',
+				content: `${tempdata.HR_ID} priority has been changed.`,
+			});
+		},
+		[apiData, messageAPI],
+	);
+
+	const tableColumnsMemo = useMemo(
+		() => TableConfig(togglePriority),
+		[togglePriority],
+	);
 	const handleHRRequest = async (pageData) => {
 		let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
 			pageData
@@ -56,6 +87,7 @@ const AllHiringRequestScreen = () => {
 		setAPIdata(hrUtils.modifyHRRequestData(response && response));
 		setTotalRecords(response.responseBody.TotalRecords);
 	};
+
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
@@ -82,6 +114,7 @@ const AllHiringRequestScreen = () => {
 
 	return (
 		<div className={allHRStyles.hiringRequestContainer}>
+			{contextHolder}
 			<div className={allHRStyles.addnewHR}>
 				<div className={allHRStyles.hiringRequest}>All Hiring Requests</div>
 
@@ -117,6 +150,10 @@ const AllHiringRequestScreen = () => {
 					}}
 				/>
 			</div>
+			{/*
+			 * --------- Filter Component Starts ---------
+			 * @Filter Part
+			 */}
 			<div className={allHRStyles.filterContainer}>
 				<div className={allHRStyles.filterSets}>
 					<div
@@ -163,12 +200,20 @@ const AllHiringRequestScreen = () => {
 						</div>
 						<div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Set Priority</div>
-							<div
-								className={allHRStyles.priorityFilter}
-								onClick={() => {
-									console.log('hello');
-								}}>
-								<LockSVG style={{ width: '18px', height: '18px' }} />
+							<div className={allHRStyles.priorityFilter}>
+								{DateTimeUtils.getTodaysDay() === DayName.THURSDAY ? (
+									<Tooltip
+										placement="bottom"
+										title="Unlocked">
+										<UnlockSVG style={{ width: '18px', height: '18px' }} />
+									</Tooltip>
+								) : (
+									<Tooltip
+										placement="bottom"
+										title="Locked">
+										<LockSVG style={{ width: '18px', height: '18px' }} />
+									</Tooltip>
+								)}
 							</div>
 						</div>
 						<div className={allHRStyles.priorityFilterSet}>
@@ -196,6 +241,11 @@ const AllHiringRequestScreen = () => {
 					</div>
 				</div>
 			</div>
+
+			{/*
+			 * ------------ Table Starts-----------
+			 * @Table Part
+			 */}
 			<div className={allHRStyles.tableDetails}>
 				{
 					<Table
@@ -209,9 +259,11 @@ const AllHiringRequestScreen = () => {
 							),
 						}}
 						id="hrListingTable"
-						columns={tableColumns}
+						columns={tableColumnsMemo}
 						bordered={false}
-						dataSource={search && search.length > 0 ? search : apiData}
+						dataSource={
+							search && search.length > 0 ? [...search] : [...apiData]
+						}
 						pagination={{
 							onChange: (pageNum, pageSize) => {
 								setPageIndex(pageNum);
@@ -244,104 +296,6 @@ const AllHiringRequestScreen = () => {
 };
 
 export default AllHiringRequestScreen;
-
-const tableColumns = [
-	{
-		title: '     ',
-		dataIndex: 'starStatus',
-		key: 'starStatus',
-		align: 'left',
-	},
-	{
-		title: 'O/P',
-		dataIndex: 'adHocHR',
-		key: 'adHocHR',
-		align: 'left',
-	},
-	{
-		title: 'Date',
-		dataIndex: 'Date',
-		key: 'Date',
-		align: 'left',
-	},
-	{
-		title: 'HR ID',
-		dataIndex: 'HR_ID',
-		key: 'HR_ID',
-		align: 'left',
-		render: (text, result) => (
-			<Link to={`/allhiringrequest/${result?.key}${text}`}>{text}</Link>
-		),
-	},
-	{
-		title: 'TR',
-		dataIndex: 'TR',
-		key: 'TR',
-		align: 'left',
-	},
-	{
-		title: 'Position',
-		dataIndex: 'Position',
-		key: 'position',
-		align: 'left',
-	},
-	{
-		title: 'Company',
-		dataIndex: 'Company',
-		key: 'company',
-		align: 'left',
-		render: (text) => {
-			return (
-				<a
-					target="_blank"
-					href=""
-					style={{ color: `var(--uplers-black)`, textDecoration: 'underline' }}>
-					{text}
-				</a>
-			);
-		},
-	},
-	{
-		title: 'Time',
-		dataIndex: 'Time',
-		key: 'time',
-		align: 'left',
-	},
-	{
-		title: 'FTE/PTE',
-		dataIndex: 'typeOfEmployee',
-		key: 'fte_pte',
-		align: 'left',
-	},
-	{
-		title: 'Sales Rep',
-		dataIndex: 'salesRep',
-		key: 'sales_rep',
-		align: 'left',
-		render: (text) => {
-			return (
-				<a
-					target="_blank"
-					href="#"
-					style={{ color: `var(--uplers-black)`, textDecoration: 'underline' }}>
-					{text}
-				</a>
-			);
-		},
-	},
-	{
-		title: 'HR Status',
-		dataIndex: 'hrStatus',
-		key: 'hr_status',
-		align: 'left',
-		render: (_, param) => {
-			return All_Hiring_Request_Utils.GETHRSTATUS(
-				param.hrStatusCode,
-				param.hrStatus,
-			);
-		},
-	},
-];
 
 const hrFilterList = [
 	{ name: 'Tenure' },

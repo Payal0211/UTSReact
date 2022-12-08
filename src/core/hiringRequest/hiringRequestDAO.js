@@ -71,4 +71,31 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.sendHREditorRequestDAO');
 		}
 	},
+	sendHRPriorityForNextWeekRequestDAO: async function (priorityDetails) {
+		try {
+			const priorityResult =
+				await hiringRequestAPI.sendHRPriorityForNextWeekRequest(
+					priorityDetails,
+				);
+			if (priorityResult) {
+				const statusCode = priorityResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = priorityResult?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.sendHRPriorityForNextWeekRequestDAO',
+			);
+		}
+	},
 };

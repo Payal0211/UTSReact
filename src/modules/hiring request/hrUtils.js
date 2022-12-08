@@ -1,12 +1,10 @@
-import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
+import { hiringRequestPriority } from 'constants/application';
 
 export const hrUtils = {
 	modifyHRRequestData: (hrData) => {
 		return hrData.responseBody.Data.map((item) => ({
 			key: item.hrid,
-			starStatus: All_Hiring_Request_Utils.GETHRPRIORITY(
-				item.starMarkedStatusCode,
-			),
+			starStatus: item.starMarkedStatusCode,
 			adHocHR: item.adHocHR,
 			Date: item.createdDateTime.split(' ')[0],
 			HR_ID: item.hr,
@@ -37,5 +35,21 @@ export const hrUtils = {
 		});
 
 		return filteredData;
+	},
+	hrTogglePriority: (response, apiData) => {
+		if (response.responseBody) {
+			let index = apiData.findIndex(
+				(item) => item.key === response.responseBody,
+			);
+			let tempdata = apiData[index];
+			if (tempdata.starStatus === hiringRequestPriority.NO_PRIORITY) {
+				tempdata.starStatus = hiringRequestPriority.NEXT_WEEK_PRIORITY;
+			} else if (
+				tempdata.starStatus === hiringRequestPriority.NEXT_WEEK_PRIORITY
+			) {
+				tempdata.starStatus = hiringRequestPriority.NO_PRIORITY;
+			}
+			return { tempdata, index };
+		}
 	},
 };
