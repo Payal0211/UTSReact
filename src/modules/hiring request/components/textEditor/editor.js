@@ -243,10 +243,10 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI }) => {
 								id: hrID,
 								note: commentRef.current.innerHTML,
 							};
-							console.log(commentRef.current.innerHTML);
+
+							commentRef.current.innerText = '';
 							await hiringRequestDAO.sendHREditorRequestDAO(editorDetails);
 							callActivityFeedAPI(urlSplitter?.split('HR')[0]);
-							commentRef.current.innerText = '';
 						}}
 						style={{
 							top: '0',
