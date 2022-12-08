@@ -1,3 +1,4 @@
+import { AllHiringRequestAPI, NetworkInfo, SubDomain } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
 import { errorDebug } from 'shared/utils/error_debug_utils';
@@ -54,10 +55,28 @@ export const hiringRequestAPI = {
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendPostRequest();
-			console.log(response, '--response');
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'hiringRequestAPI.sendHREditorRequest');
+		}
+	},
+	sendHRPriorityForNextWeekRequest: async function (priorityDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			AllHiringRequestAPI.SET_PRIORITY_NEXT_WEEK;
+		httpService.dataToSend = priorityDetails;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestAPI.sendHRPriorityForNextWeekRequest',
+			);
 		}
 	},
 };
