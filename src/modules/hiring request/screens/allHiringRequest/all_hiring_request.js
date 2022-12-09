@@ -201,17 +201,17 @@ const AllHiringRequestScreen = () => {
 						<div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Set Priority</div>
 							<div className={allHRStyles.priorityFilter}>
-								{DateTimeUtils.getTodaysDay() === DayName.THURSDAY ? (
-									<Tooltip
-										placement="bottom"
-										title="Unlocked">
-										<UnlockSVG style={{ width: '18px', height: '18px' }} />
-									</Tooltip>
-								) : (
+								{DateTimeUtils.getTodaysDay() === DayName.FRIDAY ? (
 									<Tooltip
 										placement="bottom"
 										title="Locked">
 										<LockSVG style={{ width: '18px', height: '18px' }} />
+									</Tooltip>
+								) : (
+									<Tooltip
+										placement="bottom"
+										title="Unlocked">
+										<UnlockSVG style={{ width: '18px', height: '18px' }} />
 									</Tooltip>
 								)}
 							</div>

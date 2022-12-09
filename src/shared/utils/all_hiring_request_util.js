@@ -1,4 +1,5 @@
 import {
+	DayName,
 	HiringRequestHRStatus,
 	hiringRequestPriority,
 	TalentRequestStatus,
@@ -8,7 +9,7 @@ import { ReactComponent as CurrentWeekPriorityStar } from 'assets/svg/currentWee
 import { ReactComponent as NextWeekPriorityStar } from 'assets/svg/nextWeekPriorityStar.svg';
 import HRStatusComponent from 'modules/hiring request/components/hrStatus/hrStatusComponent';
 import { Tooltip } from 'antd';
-import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { DateTimeUtils } from './basic_utils';
 
 export const All_Hiring_Request_Utils = {
 	GETHRPRIORITY: function (statusCode, hrID, togglePriority) {
@@ -20,13 +21,17 @@ export const All_Hiring_Request_Utils = {
 						title="No Priority"
 						color={`var(--uplers-black)`}>
 						<NoPriorityStar
-							onClick={async () => {
-								let priorityObject = {
-									isNextWeekStarMarked: '1',
-									hRID: hrID,
-								};
-								togglePriority(priorityObject);
-							}}
+							onClick={
+								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
+									? null
+									: () => {
+											let priorityObject = {
+												isNextWeekStarMarked: '1',
+												hRID: hrID,
+											};
+											togglePriority(priorityObject);
+									  }
+							}
 						/>
 					</Tooltip>
 				);
@@ -46,13 +51,17 @@ export const All_Hiring_Request_Utils = {
 						title="Next Week Priority"
 						color={`var(--color-sunlight)`}>
 						<NextWeekPriorityStar
-							onClick={async () => {
-								let priorityObject = {
-									isNextWeekStarMarked: '0',
-									hRID: hrID,
-								};
-								togglePriority(priorityObject);
-							}}
+							onClick={
+								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
+									? null
+									: () => {
+											let priorityObject = {
+												isNextWeekStarMarked: '0',
+												hRID: hrID,
+											};
+											togglePriority(priorityObject);
+									  }
+							}
 						/>
 					</Tooltip>
 				);
