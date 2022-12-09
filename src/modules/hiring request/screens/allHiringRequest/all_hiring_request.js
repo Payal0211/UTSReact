@@ -201,12 +201,28 @@ const AllHiringRequestScreen = () => {
 						</div>
 						<div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Set Priority</div>
-							<div className={allHRStyles.priorityFilter}>
+							<div
+								className={allHRStyles.priorityFilter}
+								style={{
+									cursor:
+										DateTimeUtils.getTodaysDay() === DayName.FRIDAY
+											? 'not-allowed'
+											: 'pointer',
+								}}>
 								{DateTimeUtils.getTodaysDay() === DayName.FRIDAY ? (
 									<Tooltip
 										placement="bottom"
 										title="Locked">
-										<LockSVG style={{ width: '18px', height: '18px' }} />
+										<LockSVG
+											style={{
+												width: '18px',
+												height: '18px',
+												cursor:
+													DateTimeUtils.getTodaysDay() === DayName.FRIDAY
+														? 'not-allowed'
+														: 'pointer',
+											}}
+										/>
 									</Tooltip>
 								) : (
 									<Tooltip
