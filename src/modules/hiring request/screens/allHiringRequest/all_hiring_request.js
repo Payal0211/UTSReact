@@ -5,15 +5,7 @@ import React, {
 	useMemo,
 	useCallback,
 } from 'react';
-import {
-	Dropdown,
-	Menu,
-	message,
-	Select,
-	Skeleton,
-	Table,
-	Tooltip,
-} from 'antd';
+import { Dropdown, Menu, message, Skeleton, Table, Tooltip } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Navigate, useNavigate } from 'react-router-dom';
