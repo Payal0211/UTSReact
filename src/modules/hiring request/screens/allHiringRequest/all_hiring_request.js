@@ -5,7 +5,15 @@ import React, {
 	useMemo,
 	useCallback,
 } from 'react';
-import { Dropdown, Menu, message, Skeleton, Table, Tooltip } from 'antd';
+import {
+	Dropdown,
+	Menu,
+	message,
+	Select,
+	Skeleton,
+	Table,
+	Tooltip,
+} from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -37,6 +45,7 @@ const HiringFiltersLazyComponent = React.lazy(() =>
 );
 
 const AllHiringRequestScreen = () => {
+	// const [showing, setShowing] = useState(100);
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
 	const hrQueryData = useAllHRQuery();
 	const [totalRecords, setTotalRecords] = useState(0);
@@ -224,13 +233,21 @@ const AllHiringRequestScreen = () => {
 									trigger={['click']}
 									placement="bottom"
 									overlay={
-										<Menu>
-											<Menu.Item key={0}>100</Menu.Item>
-											<Menu.Item key={1}>200</Menu.Item>
+										<Menu
+											onClick={(e) => {
+												setPageSize(parseInt(e.key));
+												handleHRRequest({
+													pageSize: pageSize,
+													pageNum: pageIndex,
+												});
+											}}>
+											{pageSizeOptions.map((item) => {
+												return <Menu.Item key={item}>{item}</Menu.Item>;
+											})}
 										</Menu>
 									}>
 									<span>
-										100{' '}
+										{pageSize}
 										<IoChevronDownOutline
 											style={{ paddingTop: '5px', fontSize: '16px' }}
 										/>
