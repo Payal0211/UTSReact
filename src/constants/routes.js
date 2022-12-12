@@ -23,7 +23,7 @@ export default class UTSRoutes {
 	static FORGOTPASSWORDROUTE = '/forgotpassword';
 	static ALLHIRINGREQUESTROUTE = '/allhiringrequest';
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
-	static ADDNEWHR = '/allhiringrequest/addnewHR';
+	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
 	static PAGENOTFOUNDROUTE = '/404';
 	static NETWORKERRORROUTE = '/networkissue';

@@ -22,7 +22,7 @@ const HROperator = ({
 					{listItem?.map((item) => (
 						<Menu.Item
 							key={item.label}
-							onClick={menuAction && menuAction}>
+							onClick={menuAction}>
 							{item.label}
 						</Menu.Item>
 					))}
