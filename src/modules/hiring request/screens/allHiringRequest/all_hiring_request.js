@@ -26,13 +26,13 @@ import { HTTPStatusCode } from 'constants/network';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { allHRConfig } from './allHR.config';
+
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
 	import('modules/hiring request/components/hiringFilter/hiringFilters'),
 );
 
 const AllHiringRequestScreen = () => {
-	// const [showing, setShowing] = useState(100);
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
 	const hrQueryData = useAllHRQuery();
 	const [totalRecords, setTotalRecords] = useState(0);
@@ -43,6 +43,7 @@ const AllHiringRequestScreen = () => {
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const navigate = useNavigate();
+
 	const onRemoveHRFilters = () => {
 		setIsAllowFilters(false);
 	};

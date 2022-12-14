@@ -311,7 +311,26 @@ table{
   height: 4px;
   background-color: var(--color-sunlight) !important;
 }
+.ant-tabs-top .ant-tabs-tab:before {
+  content: '';
+  position: absolute;
+  right: 0;
+  left: 0;
+  background: var(--color-sunlight);
+  height: 4px;
+  bottom: -2px;
+  opacity: 0;
+  width: 0;
+  margin: auto;
+  visibility: hidden;
+  transition: all 0.35s ease 0s;
+}
 
+.ant-tabs-top .ant-tabs-tab.ant-tabs-tab-active:before {
+  opacity: 1;
+  visibility: visible;
+  width: 100%;
+}
 /*Select*/
 .ant-select {
   width: 100%;

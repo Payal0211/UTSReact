@@ -73,8 +73,8 @@ export const OTPRegEx = {
 };
 
 export class AddNewType {
-	static CLIENT = 'addnewclient';
-	static HR = 'addNewHR';
+	static CLIENT = 'Add New Client';
+	static HR = 'Add New HR';
 	static DEBRIEFING = 'debriefingHR';
 }
 export class InputType {
