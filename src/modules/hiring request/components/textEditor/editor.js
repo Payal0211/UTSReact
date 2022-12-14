@@ -12,7 +12,7 @@ import { ReactComponent as LinkSVG } from 'assets/svg/link.svg';
 import { ReactComponent as UnorderedListSVG } from 'assets/svg/unorderedList.svg';
 import { ReactComponent as OrderedListSVG } from 'assets/svg/orderedList.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
-import { Tooltip } from 'antd';
+import { message, Tooltip } from 'antd';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI }) => {
 	const [isShowDropDownList, setShowDropDownList] = useState(false);
 	const [tagUserSearch, setTagUserSearch] = useState('');
 	const commentRef = useRef();
-
+	const [messageAPI, contextHolder] = message.useMessage();
 	const tagUserSearchMemo = useMemo(() => {
 		if (tagUserSearch) return tagUserSearch;
 		else return tagUsers;
@@ -34,6 +34,7 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI }) => {
 		elements.forEach((ele) => {
 			ele.addEventListener('click', () => {
 				let command = ele.getAttribute('data-element');
+				console.log(command);
 				document.execCommand(command, false, null);
 			});
 		});
@@ -62,6 +63,7 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI }) => {
 
 	return (
 		<>
+			{contextHolder}
 			{isShowDropDownList ? (
 				<div className={EditorStyle.dropUp}>
 					{tagUserSearchMemo?.map((item) => (
@@ -243,10 +245,16 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI }) => {
 								id: hrID,
 								note: commentRef.current.innerHTML,
 							};
-
-							commentRef.current.innerText = '';
-							await hiringRequestDAO.sendHREditorRequestDAO(editorDetails);
-							callActivityFeedAPI(urlSplitter?.split('HR')[0]);
+							if (commentRef.current.innerText.replace(/\s/g, '').length) {
+								await hiringRequestDAO.sendHREditorRequestDAO(editorDetails);
+								callActivityFeedAPI(urlSplitter?.split('HR')[0]);
+								commentRef.current.innerText = '';
+							} else {
+								messageAPI.open({
+									type: 'warning',
+									content: 'Please enter the comment and tag someone.',
+								});
+							}
 						}}
 						style={{
 							top: '0',

@@ -5,7 +5,7 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import { Navigate } from 'react-router-dom';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
-export const masterDAO = {
+export const MasterDAO = {
 	getFixedValueRequestDAO: async function () {
 		try {
 			const fixedValueResult = await MasterAPI.getFixedValueRequest();

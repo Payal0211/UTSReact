@@ -1,15 +1,17 @@
 import { Button, Divider, Select, Space } from 'antd';
 import { InputType } from 'constants/application';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import HRFieldStyle from './hrFIelds.module.css';
 import { PlusOutlined } from '@ant-design/icons';
-import AddInterviewer from '../addInterviewer/addInterviewer';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
+import { MasterDAO } from 'core/master/masterDAO';
 
 const HRFields = () => {
 	const inputRef = useRef(null);
+	const [availability, setAvailability] = useState([]);
+	const [timeZonePref, setTimeZonePref] = useState([]);
 	const [items, setItems] = useState(['3 months', '6 months', '9 months']);
 	const [name, setName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
@@ -27,7 +29,19 @@ const HRFields = () => {
 			inputRef.current?.focus();
 		}, 0);
 	};
+	const getTimeZonePreference = async () => {
+		const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO();
+		setTimeZonePref(timeZone && timeZone.responseBody);
+	};
+	const getAvailability = async () => {
+		const availabilityResponse = await MasterDAO.getHowSoonRequestDAO();
+		setAvailability(availabilityResponse && availabilityResponse.responseBody);
+	};
 
+	useEffect(() => {
+		getAvailability();
+		getTimeZonePreference();
+	}, []);
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
 			<div className={HRFieldStyle.partOne}>
@@ -57,13 +71,26 @@ const HRFields = () => {
 						</div>
 
 						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
-								label="Hiring Request Role"
-								name="hrRole"
-								type={InputType.TEXT}
-								placeholder="Enter Role"
-								required
-							/>
+							<div className={HRFieldStyle.formGroup}>
+								<label>Hiring Request Role</label>
+								<span style={{ paddingLeft: '5px' }}>
+									<b>*</b>
+								</span>
+								<Select
+									defaultValue="Select Role"
+									onChange={selectHandleChange}
+									options={[
+										{
+											value: 'USD',
+											label: 'USD',
+										},
+										{
+											value: 'INR',
+											label: 'INR',
+										},
+									]}
+								/>
+							</div>
 						</div>
 					</div>
 					<div className={HRFieldStyle.colMd12}>
@@ -241,20 +268,9 @@ const HRFields = () => {
 								<Select
 									defaultValue="Select time zone"
 									onChange={selectHandleChange}
-									options={[
-										{
-											value: 'UST',
-											label: 'UST',
-										},
-										{
-											value: 'EST',
-											label: 'EST',
-										},
-										{
-											value: 'AUS',
-											label: 'AUS',
-										},
-									]}
+									options={timeZonePref?.map((item) => [
+										{ value: item?.value, label: item?.value },
+									])}
 								/>
 							</div>
 						</div>
@@ -278,16 +294,7 @@ const HRFields = () => {
 								<Select
 									defaultValue="Select availability   "
 									onChange={selectHandleChange}
-									options={[
-										{
-											value: '3 months',
-											label: '3 months',
-										},
-										{
-											value: '1 week',
-											label: '1 week',
-										},
-									]}
+									options={availability}
 								/>
 							</div>
 						</div>
@@ -324,8 +331,8 @@ const HRFields = () => {
 			</div>
 			<Divider />
 
-			<AddInterviewer />
-			<Divider />
+			{/* <AddInterviewer />
+			<Divider /> */}
 			<div className={HRFieldStyle.formPanelAction}>
 				<button
 					type="button"

@@ -7,7 +7,7 @@ export class NetworkInfo {
 export class SubDomain {
 	static USER_OPERATIONS = 'UserOperationsAPI/';
 	static VIEW_ALL_HR = 'ViewAllHR/';
-	static MASTERS = 'Masters/';
+	static MASTERS = 'MastersAPI/';
 }
 export class APIType {
 	static USER = '/user';
