@@ -41,4 +41,8 @@ export const DateTimeUtils = {
 
 		return splittedValue[1];
 	},
+	getTodaysDay: () => {
+		let date = new Date();
+		return date.toLocaleString('en-us', { weekday: 'long' });
+	},
 };

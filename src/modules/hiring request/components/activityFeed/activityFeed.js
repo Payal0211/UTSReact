@@ -2,19 +2,30 @@ import { InputType } from 'constants/application';
 import ActivityFeedStyle from './activityFeed.module.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { SlGraph } from 'react-icons/sl';
-import { IoMdSend } from 'react-icons/io';
-import { Fragment, useState, useMemo } from 'react';
+import React, { Fragment, useState, useMemo, Suspense } from 'react';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { Divider } from 'antd';
 import { BsTag } from 'react-icons/bs';
-
-const ActivityFeed = ({ activityFeed }) => {
+import DOMPurify from 'dompurify';
+const Editor = React.lazy(() => import('../textEditor/editor'));
+const ActivityFeed = ({
+	hrID,
+	activityFeed,
+	tagUsers,
+	callActivityFeedAPI,
+}) => {
 	const [search, setSearch] = useState('');
 
+	const sanitizer = DOMPurify.sanitize;
 	const searchMemo = useMemo(() => {
 		if (search) return search;
 		else return activityFeed;
 	}, [search, activityFeed]);
+
+	const displayNotes = (notes) => {
+		const notesTemplate = new DOMParser().parseFromString(notes, 'text/html');
+		return notesTemplate.body;
+	};
 
 	return (
 		<div className={ActivityFeedStyle.activityContainer}>
@@ -26,6 +37,12 @@ const ActivityFeed = ({ activityFeed }) => {
 						onChange={(e) => {
 							let activityFilter = activityFeed.filter((item) => {
 								return (
+									item.ActionPerformedBy.toLowerCase().includes(
+										e.target.value.toLowerCase(),
+									) ||
+									item.Remark.toLowerCase().includes(
+										e.target.value.toLowerCase(),
+									) ||
 									item.ActionPerformedBy.toLowerCase().includes(
 										e.target.value.toLowerCase(),
 									) ||
@@ -58,36 +75,61 @@ const ActivityFeed = ({ activityFeed }) => {
 										</div>
 									</div>
 									<div className={ActivityFeedStyle.activityFeedActivities}>
-										<div className={ActivityFeedStyle.profileStatus}>
-											<span>{item?.ActionName} for </span>
-											<span
-												style={{
-													textDecoration: 'underline',
-													fontWeight: '500',
-												}}>
-												{item?.TalentName}
-											</span>
-										</div>
+										{item?.IsNotes === 0 ? (
+											<div className={ActivityFeedStyle.profileStatus}>
+												<span>{item?.ActionName} for </span>
+												<span
+													style={{
+														textDecoration: 'underline',
+														fontWeight: '500',
+													}}>
+													{item?.TalentName}
+												</span>
+											</div>
+										) : (
+											<div className={ActivityFeedStyle.profileStatus}>
+												<span>Note from </span>
+												<span
+													style={{
+														textDecoration: 'underline',
+														fontWeight: '500',
+													}}>
+													{item?.ActionPerformedBy}
+												</span>
+											</div>
+										)}
 										<br />
 										<div className={ActivityFeedStyle.activityAction}>
 											{item?.IsNotes ? <BsTag /> : <SlGraph />}
 											&nbsp;&nbsp;
 											<span>
-												{item?.IsNotes ? 'Assigned to' : 'Action by:'}{' '}
+												{item?.IsNotes === 1
+													? 'Assigned to : '
+													: 'Action by : '}
 											</span>
-											<span>{item?.ActionPerformedBy}</span>
+											<span>
+												{item?.IsNotes === 1
+													? item?.AssignedUsers
+													: item?.ActionPerformedBy}
+											</span>
 										</div>
 
-										{item?.Remark && (
-											<>
-												<br />
-												<div className={ActivityFeedStyle.activityAction}>
-													<span style={{ fontWeight: '500' }}>
-														“ {item?.Remark} ”
-													</span>
-												</div>
-											</>
-										)}
+										<br />
+										<div className={ActivityFeedStyle.activityAction}>
+											{item?.IsNotes === 0 && (
+												<span style={{ fontWeight: '500' }}>
+													{item?.Remark && '“' + item?.Remark + '”'}
+												</span>
+											)}
+											{item?.IsNotes === 1 && (
+												<span
+													dangerouslySetInnerHTML={{
+														__html: sanitizer(
+															displayNotes(item?.ActionName).innerHTML,
+														),
+													}}></span>
+											)}
+										</div>
 									</div>
 								</div>
 								{index < activityFeed.length - 1 && <Divider />}
@@ -96,26 +138,16 @@ const ActivityFeed = ({ activityFeed }) => {
 					})}
 				</div>
 			</div>
-			<div className={ActivityFeedStyle.activityFeedPost}>
-				<div className={ActivityFeedStyle.activityFeedPostBody}>
-					<img
-						src="https://www.w3schools.com/howto/img_avatar.png"
-						className={ActivityFeedStyle.avatar}
-						alt="avatar"
-					/>
-					<input
-						className={ActivityFeedStyle.commentBox}
-						type={InputType.TEXT}
-						placeholder="Comment on this thread by typing here or mention someone with @..."
-					/>
-					<IoMdSend
-						style={{
-							fontSize: '30px',
-							color: `var(--background-color-ebony)`,
-						}}
+			<Suspense>
+				<div style={{ position: 'relative' }}>
+					<Editor
+						tagUsers={tagUsers && tagUsers}
+						hrID={hrID}
+						callActivityFeedAPI={callActivityFeedAPI}
 					/>
 				</div>
-			</div>
+			</Suspense>
+			<br />
 		</div>
 	);
 };

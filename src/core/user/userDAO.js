@@ -33,7 +33,7 @@ export const userDAO = {
 	},
 	logoutDAO: async function () {
 		try {
-			let response = await UserSessionManagementController.deleteAllSession();
+			let response = UserSessionManagementController.deleteAllSession();
 			return response && response;
 		} catch (error) {
 			return errorDebug(error, 'UserDAO.LoginDAO');

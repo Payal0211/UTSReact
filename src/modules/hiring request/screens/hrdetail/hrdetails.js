@@ -8,10 +8,13 @@ import HRDetailStyle from './hrdetail.module.css';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as DeleteSVG } from 'assets/svg/delete.svg';
-import { ReactComponent as ClockSVG } from 'assets/svg/clock.svg';
+
 import UTSRoutes from 'constants/routes';
 
 /** Lazy Loading the component */
+const NextActionItem = React.lazy(() =>
+	import('modules/hiring request/components/nextAction/nextAction.js'),
+);
 const CompanyProfileCard = React.lazy(() =>
 	import('modules/hiring request/components/companyProfile/companyProfileCard'),
 );
@@ -30,15 +33,16 @@ const HRDetailScreen = () => {
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 
+	async function callAPI(hrid) {
+		let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+		if (response) {
+			setAPIdata(response && response?.responseBody);
+			setLoading(false);
+		}
+	}
 	useEffect(() => {
 		setLoading(true);
-		async function callAPI(hrid) {
-			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
-			if (response) {
-				setAPIdata(response && response?.responseBody);
-				setLoading(false);
-			}
-		}
+
 		callAPI(urlSplitter?.split('HR')[0]);
 	}, [urlSplitter]);
 
@@ -46,7 +50,6 @@ const HRDetailScreen = () => {
 		<div className={HRDetailStyle.hiringRequestContainer}>
 			<Link to={UTSRoutes.ALLHIRINGREQUESTROUTE}>
 				<div className={HRDetailStyle.goback}>
-					{/* <MdOutlineArrowBackIos /> */}
 					<ArrowLeftSVG style={{ width: '16px' }} />
 					<span>Go Back</span>
 				</div>
@@ -93,30 +96,28 @@ const HRDetailScreen = () => {
 					</div>
 				</div>
 			</div>
-			<div className={HRDetailStyle.hrNextActionForTalent}>
-				<div className={HRDetailStyle.nextActionList}>
-					<div className={HRDetailStyle.actionItem}>
-						<ClockSVG style={{ width: '20px' }} />
-						<label>Saptarshee to schedule interview for Velma B R</label>
-					</div>
+			{isLoading ? (
+				<>
+					<br />
+					<Skeleton active />
+					<br />
+				</>
+			) : (
+				<Suspense>
+					<NextActionItem nextAction={apiData?.NextActionsForTalent} />
+				</Suspense>
+			)}
 
-					<div className={HRDetailStyle.actionItem}>
-						<ClockSVG style={{ width: '20px' }} />
-						<label>Saptarshee to schedule interview for Velma B R</label>
-					</div>
-					<div className={HRDetailStyle.actionItem}>
-						<ClockSVG style={{ width: '20px' }} />
-						<label>Saptarshee to schedule interview for Velma B R</label>
-					</div>
-				</div>
-			</div>
 			<div className={HRDetailStyle.portal}>
 				<div className={HRDetailStyle.clientPortal}>
 					{isLoading ? (
 						<Skeleton active />
 					) : (
 						<Suspense>
-							<CompanyProfileCard clientDetail={apiData?.ClientDetail} />
+							<CompanyProfileCard
+								clientDetail={apiData?.ClientDetail}
+								talentLength={apiData?.HRTalentDetails?.length}
+							/>
 						</Suspense>
 					)}
 				</div>
@@ -135,11 +136,15 @@ const HRDetailScreen = () => {
 					<Skeleton active />
 				) : (
 					<Suspense>
-						<ActivityFeed activityFeed={apiData?.HRHistory} />
+						<ActivityFeed
+							hrID={urlSplitter?.split('HR')[0]}
+							activityFeed={apiData?.HRHistory}
+							tagUsers={apiData?.UsersToTag}
+							callActivityFeedAPI={callAPI}
+						/>
 					</Suspense>
 				)}
 			</div>
-			<br />
 		</div>
 	);
 };

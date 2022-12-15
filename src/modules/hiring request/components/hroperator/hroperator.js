@@ -9,15 +9,22 @@ const HROperator = ({
 	iconBorder,
 	isDropdown,
 	listItem,
+	menuAction,
 }) => {
 	return isDropdown ? (
 		<Dropdown
 			className={hroperatorStyle.dropdownMenu}
 			trigger={['click']}
 			overlay={
-				<Menu>
-					{listItem?.map((item, index) => (
-						<Menu.Item key={index}>{item.label}</Menu.Item>
+				<Menu
+					selectable={true}
+					defaultSelectedKeys={'0'}>
+					{listItem?.map((item) => (
+						<Menu.Item
+							key={item.label}
+							onClick={menuAction}>
+							{item.label}
+						</Menu.Item>
 					))}
 				</Menu>
 			}>

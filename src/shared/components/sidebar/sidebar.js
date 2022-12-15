@@ -1,9 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 import { ReactComponent as GridSVG } from 'assets/svg/grid.svg';
 import { ReactComponent as DashboardSVG } from 'assets/svg/dashboard.svg';
-import Routes from 'constants/routes';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
+import UTSRoutes from 'constants/routes';
 
 const Sidebar = () => {
 	const sidebarDataSets = getSideBar();
@@ -48,19 +48,19 @@ const Sidebar = () => {
 const getSideBar = () => {
 	let dataList = [
 		new SideBarModels({
-			id: 1,
+			id: 'UTS_dashboard',
 			title: 'dashboard',
 			isActive: true,
 			icon: <GridSVG />,
-			navigateTo: Routes.HOMEROUTE,
+			navigateTo: UTSRoutes.HOMEROUTE,
 		}),
 
 		new SideBarModels({
-			id: 4,
+			id: 'UTS_all_hiring_request',
 			title: 'allHiringRequest',
 			isActive: false,
 			icon: <DashboardSVG />,
-			navigateTo: Routes.ALLHIRINGREQUESTROUTE,
+			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 		}),
 	];
 	return dataList;

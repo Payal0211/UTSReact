@@ -1,0 +1,158 @@
+.activityFeed{
+    margin-top: 10px;
+}
+.dropUp{
+    position: absolute;
+    background-color:var(--background-color-light);
+    max-height: 300px !important;
+    overflow: auto;
+    width: 300px;
+    z-index: 1;
+    bottom: 100%;
+    left:0;
+    cursor: pointer;
+    box-shadow:-4px 4px 20px rgba(166, 166, 166, 0.4) ;
+    border-radius: 8px;
+    padding-top: 10px;   
+}
+
+.dropUpItems:hover{
+    background-color: var(--uplers-dropUpHoverColor);
+}
+.editor{
+    margin-top: 8px;
+    background-color: var(--background-color-light);
+    border: 1px solid var(--uplers-border-color);
+    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
+    width: 95%;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    margin-bottom: -5px;
+}
+.editorBody{
+   width: 95%;
+   margin:25px auto;
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   gap:30px;
+   flex-wrap: wrap;
+        
+}
+.activityFeedBody{
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    word-break: break-word;
+}
+.activityFeedPost {
+    cursor: pointer;
+    width: 95%;
+    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
+    border: 1px solid var(--uplers-border-color);
+    background-color: var(--background-color-light);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.activityFeedPostBody {
+    width: 98%;
+    margin: 0 auto;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    justify-content: flex-start ;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+.avatar {
+    margin-left: 20px;
+    margin-top: 12px;
+    width: 35px;
+    max-width: 35px;
+    border-radius: 50%;
+}
+
+.commentBox {
+    padding: 18px 0;
+    word-wrap: break-word;
+    outline: none;
+    width: 88%;
+    font-size: 1rem;
+}
+[contentEditable][placeholder]:empty:before {
+    content: attr(placeholder) !important;
+    background-color: transparent;
+}
+
+.usersDropdown{
+    max-height: 300px;
+    overflow: scroll;
+}
+.actionItems{
+    position: absolute;
+    right: 100px;
+    top: 5px;
+}
+.buttonGroup{
+    display: flex;
+    gap: 10px;
+    margin-right: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.editorBoldBtn,.editorItalicBtn,.editorUnderlineBtn{
+    cursor: pointer;
+    height: 50px;
+    width: 50px;
+    background-color: var(--background-color-light);
+    outline: none;
+}
+
+.editorBoldBtn:hover,
+.editorItalicBtn:hover,
+.editorUnderlineBtn:hover{
+    background-color: var(--uplers-grey );
+    transition: all .5s ease-in-out;
+    color: var(--color-sunlight);
+    box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.4),
+}
+
+.editorBoldBtn {
+    border-top-left-radius: 8px;
+    border: 1px solid var(--uplers-border-color);
+    border-bottom-left-radius: 8px;
+}
+.editorItalicBtn{
+    border-top: 1px solid var(--uplers-border-color);
+    border-left: none;
+    border-right:none;
+    border-bottom: 1px solid var(--uplers-border-color);
+}
+.editorUnderlineBtn{
+border-top-right-radius: 8px;
+    border: 1px solid var(--uplers-border-color);
+    border-bottom-right-radius: 8px;
+}
+
+.personTaggedValue{
+    border-radius:10px;
+    padding: 5px 5px;
+    font-weight: 600;    
+    background-color: var(--color-champagne); 
+    font-size: .875rem;
+    text-align: center;
+}
+
+.personTaggedValue:hover{
+    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.4);
+    background-color: var(--color-sunlight);
+    transition: all 0.2s ease-in;
+}

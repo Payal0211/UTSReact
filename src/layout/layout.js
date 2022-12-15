@@ -18,17 +18,15 @@ const Layout = () => {
 	return (
 		<div>
 			<Navbar fullName={userData?.FullName} />
-			<div style={{ display: 'flex' }}>
-				<Sidebar />
-				<main
-					style={{
-						marginTop: '150px',
-						marginLeft: '90px',
-						width: '100%',
-					}}>
-					<Outlet />
-				</main>
-			</div>
+			<Sidebar />
+			<main
+				style={{
+					paddingTop: '150px',
+					paddingLeft: '92px',
+					width: '100%',
+				}}>
+				<Outlet />
+			</main>
 		</div>
 	);
 };

@@ -1,10 +1,9 @@
 import React, { Suspense } from 'react';
 import { Routes, Navigate, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import UTSRoutes, { navigateToComponent } from 'constants/routes';
 import { ProtectedRoutes } from 'shared/utils/protected_utils';
-import { Result } from 'antd';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
+import PageNotFound from 'shared/screen/404';
 const Login = React.lazy(() =>
 	import('modules/user/screens/login/login_screen'),
 );
@@ -36,28 +35,15 @@ function App() {
 						})}
 					</Route>
 					<Route
-						path="/404"
-						element={
-							<Result
-								style={{
-									height: '600px',
-									display: 'flex',
-									flexDirection: 'column',
-									alignItems: 'center',
-									justifyContent: 'center',
-								}}
-								status="404"
-								title="404"
-								subTitle="Sorry, the page you visited does not exist."
-							/>
-						}
+						path={UTSRoutes.PAGENOTFOUNDROUTE}
+						element={<PageNotFound />}
 					/>
 					<Route
 						path="*"
 						element={
 							<Navigate
 								replace
-								to="/404"
+								to={UTSRoutes.PAGENOTFOUNDROUTE}
 							/>
 						}
 					/>

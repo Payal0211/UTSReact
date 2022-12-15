@@ -27,7 +27,7 @@ const InputField = ({
 
 	return (
 		<div className={inputFieldStyles.formField}>
-			<label>{label}</label>
+			<label className={inputFieldStyles.inputLabel}>{label}</label>
 			<div
 				className={
 					error ? inputFieldStyles.inputBoxError : inputFieldStyles.inputBox

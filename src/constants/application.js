@@ -27,6 +27,21 @@ export class NotificationStatus {
 	static UNREAD = 0;
 	static READ = 1;
 }
+export class UserAccountRole {
+	static ADMINISTRATOR = 1;
+	static DEVELOPER = 2;
+	static LEGAL = 3;
+	static SALES = 4;
+	static TALENTOPS = 5;
+	static RESUME_WRITER = 6;
+	static PRACTIVE_HEAD = 7;
+	static FINANCE_EXECUTIVE = 8;
+	static SALES_MANAGER = 9;
+	static OPS_TEAM_MANAGER = 10;
+	static BDR = 11;
+	static MARKETING = 12;
+}
+
 export class SessionType {
 	static EXPIRED = 0;
 	static ACTIVE = 1;
@@ -57,6 +72,11 @@ export const OTPRegEx = {
 	length: '(?=.{6,6})',
 };
 
+export class AddNewType {
+	static CLIENT = 'Add New Client';
+	static HR = 'Add New HR';
+	static DEBRIEFING = 'debriefingHR';
+}
 export class InputType {
 	static TEXT = 'text';
 	static NUMBER = 'number';
@@ -80,6 +100,7 @@ export class HiringRequestHRStatus {
 	static COMPLETED = 105;
 	static IN_PROCESS = 106;
 	static CANCELLED = 107;
+	static ON_HOLD = 108;
 	static OTHER = 201;
 }
 
@@ -92,4 +113,21 @@ export class TalentRequestStatus {
 	static ON_HOLD = 306;
 	static REJECTED = 307;
 	static REPLACEMENT = 308;
+}
+
+export class UploadFileType {
+	static ANY = 0;
+	static PDF = 1;
+	static IMAGE = 2;
+	static DOC = 3;
+}
+
+export class DayName {
+	static SUNDAY = 'Sunday';
+	static MONDAY = 'Monday';
+	static TUESDAY = 'Tuesday';
+	static WEDNESDAY = 'Wednesday';
+	static THURSDAY = 'Thursday';
+	static FRIDAY = 'Friday';
+	static SATURDAY = 'Saturday';
 }
