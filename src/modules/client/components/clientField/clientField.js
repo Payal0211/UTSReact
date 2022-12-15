@@ -4,6 +4,7 @@ import { InputType } from 'constants/application';
 import InputField from '../inputField/input_field';
 import ClientFieldStyle from './clientField.module.css';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
+import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 const ClientField = () => {
 	const [value, setValue] = useState(1);
 
@@ -30,37 +31,28 @@ const ClientField = () => {
 					<div className={ClientFieldStyle.tabsRightPanel}>
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="HS Company Name"
-									reqField="*"
-									name="username"
+								<HRInputField
+									label={'HS Company Name'}
+									name="hs_company_name"
 									type={InputType.TEXT}
-									placeholder="Enter name"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
+									placeholder="Enter Name"
+									required
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="Company URL"
-									reqField="*"
-									name="companyURL"
+									name="company_url"
 									type={InputType.TEXT}
 									placeholder="Enter profile link"
+									required
 								/>
 							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								{/* <InputField
-												label="Company Location"
-												name="username"
-												type={InputType.TEXT}
-												placeholder="Enter name"
-											/> */}
 								<div className={ClientFieldStyle.formGroup}>
 									<label>
 										Company Location{' '}
@@ -68,7 +60,7 @@ const ClientField = () => {
 									</label>
 									<Select
 										defaultValue="Select location"
-										onChange={selectHandleChange}
+										onSelect={selectHandleChange}
 										options={[
 											{
 												value: 'Location1',
@@ -104,7 +96,7 @@ const ClientField = () => {
 									</label>
 									<Select
 										defaultValue="Select location"
-										onChange={selectHandleChange}
+										onChange={(a, b) => console.log(a, b)}
 										options={[
 											{
 												value: '50Employees',

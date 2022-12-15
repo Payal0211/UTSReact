@@ -72,6 +72,11 @@ export const OTPRegEx = {
 	length: '(?=.{6,6})',
 };
 
+export class FormType {
+	static ONBOARDING = 'onboarding';
+	static HRFIELD = 'hrfield';
+	static CLIENTFIELD = 'clientfield';
+}
 export class AddNewType {
 	static CLIENT = 'Add New Client';
 	static HR = 'Add New HR';

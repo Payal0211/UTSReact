@@ -1,5 +1,5 @@
 import { Button, Divider, Select, Space } from 'antd';
-import { InputType } from 'constants/application';
+import { FormType, InputType } from 'constants/application';
 import { useEffect, useRef, useState } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import HRFieldStyle from './hrFIelds.module.css';
@@ -7,6 +7,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { MasterDAO } from 'core/master/masterDAO';
+import useForm from 'shared/hooks/useForm';
 
 const HRFields = () => {
 	const inputRef = useRef(null);
@@ -15,8 +16,19 @@ const HRFields = () => {
 	const [items, setItems] = useState(['3 months', '6 months', '9 months']);
 	const [name, setName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
-	const selectHandleChange = (value) => {
-		console.log(`selected ${value}`);
+
+	/** Starts Here */
+	const hrFieldInfo = useRef({
+		clientName: '',
+		companyName: '',
+		hrTitle: '',
+	});
+	const { inputChangeHandler, formValues, error, onSubmitHandler } = useForm(
+		hrFieldInfo.current,
+	);
+	/**Ends Here */
+	const selectHandleChange = (value, option) => {
+		console.log(`selected ${value},${option.value}`);
 	};
 	const onNameChange = (event) => {
 		setName(event.target.value);
@@ -30,7 +42,7 @@ const HRFields = () => {
 		}, 0);
 	};
 	const getTimeZonePreference = async () => {
-		const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO();
+		const timeZone = await MasterDAO.getTalentTimeZoneRequestDAO();
 		setTimeZonePref(timeZone && timeZone.responseBody);
 	};
 	const getAvailability = async () => {
@@ -49,19 +61,27 @@ const HRFields = () => {
 					<h3>Hiring Request Details</h3>
 					<p>Please provide the necessary details</p>
 				</div>
-				<div className={HRFieldStyle.hrFieldRightPane}>
+				<form
+					id="hrForm"
+					className={HRFieldStyle.hrFieldRightPane}>
 					<div className={HRFieldStyle.colMd12}>
 						<HRInputField
+							onChangeHandler={inputChangeHandler}
+							value={formValues['clientName']}
 							label={'Client Email/Name'}
-							name="client_Email_Name"
+							name="clientName"
 							type={InputType.TEXT}
 							placeholder="Enter Client Email/Name"
+							errorMsg={error['clientName']}
 							required
 						/>
 					</div>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								onChangeHandler={inputChangeHandler}
+								value={formValues['companyName']}
+								errorMsg={error['companyName']}
 								label="Company Name"
 								name="companyName"
 								type={InputType.TEXT}
@@ -95,6 +115,9 @@ const HRFields = () => {
 					</div>
 					<div className={HRFieldStyle.colMd12}>
 						<HRInputField
+							onChangeHandler={inputChangeHandler}
+							value={formValues['hrTitle']}
+							errorMsg={error['hrTitle']}
 							label={'Hiring Request Title'}
 							name="hrTitle"
 							type={InputType.TEXT}
@@ -268,9 +291,8 @@ const HRFields = () => {
 								<Select
 									defaultValue="Select time zone"
 									onChange={selectHandleChange}
-									options={timeZonePref?.map((item) => [
-										{ value: item?.value, label: item?.value },
-									])}
+									// onChange={(val, a) => selectHandleChange(val, a.id)}
+									options={timeZonePref}
 								/>
 							</div>
 						</div>
@@ -327,12 +349,10 @@ const HRFields = () => {
 							/>
 						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 			<Divider />
 
-			{/* <AddInterviewer />
-			<Divider /> */}
 			<div className={HRFieldStyle.formPanelAction}>
 				<button
 					type="button"
@@ -341,7 +361,9 @@ const HRFields = () => {
 				</button>
 
 				<button
-					type="button"
+					// form="hrForm"
+					onClick={(e) => onSubmitHandler(e, FormType.HRFIELD)}
+					// type="submit"
 					className={HRFieldStyle.btnPrimary}>
 					Submit
 				</button>

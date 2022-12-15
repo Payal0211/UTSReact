@@ -53,10 +53,12 @@ const HRInputField = ({
 					maxLength={maxLength}
 					onChange={onChangeHandler}
 					value={value}
+					onFocus={() => setError('')}
 					onClick={InputType.BUTTON && onClickHandler}
+					required={required}
 				/>
 			</div>
-			{error && <div className={HRInputFieldStyle.error}>{errorMsg}</div>}
+			{error && <div className={HRInputFieldStyle.error}>* {errorMsg}</div>}
 		</div>
 	);
 };
