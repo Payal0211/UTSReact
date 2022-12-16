@@ -5,9 +5,11 @@ import InputField from '../inputField/input_field';
 import ClientFieldStyle from './clientField.module.css';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
+import UploadModal from 'shared/components/uploadModal/uploadModal';
+
 const ClientField = () => {
 	const [value, setValue] = useState(1);
-
+	const [showUploadModal, setUploadModal] = useState(false);
 	const RadioButton = (e) => {
 		console.log('radio checked', e.target.value);
 		setValue(e.target.value);
@@ -89,71 +91,45 @@ const ClientField = () => {
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<div className={ClientFieldStyle.formGroup}>
-									<label>
-										Company Size{' '}
-										<span className={ClientFieldStyle.reqField}>*</span>
-									</label>
-									<Select
-										defaultValue="Select location"
-										onChange={(a, b) => console.log(a, b)}
-										options={[
-											{
-												value: '50Employees',
-												label: '0 - 50 Employees',
-											},
-											{
-												value: '100Employees',
-												label: '50 - 100 Employees',
-											},
-											{
-												value: '150Employees',
-												label: '100 - 150 Employees',
-												// disabled: true,
-											},
-											{
-												value: '200Employees',
-												label: '150 - 200 Employees',
-											},
-											{
-												value: '200+Employees',
-												label: '200+ Employees',
-											},
-										]}
-									/>
-								</div>
+								<HRInputField
+									label="Company Size"
+									name={'companySize'}
+									type={InputType.TEXT}
+									placeholder="Company Size "
+									required
+								/>
 							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd12}>
-								<InputField
+								<HRInputField
 									label="Company Address"
-									reqField="*"
-									name="username"
+									name={'companyAddress'}
 									type={InputType.TEXT}
-									placeholder="Enter address"
+									placeholder="Company Address "
+									required
 								/>
 							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="Linkedin Profile"
-									reqField="*"
-									name="username"
+									name={'companySize'}
 									type={InputType.TEXT}
-									placeholder="Enter linkedin Profile"
+									placeholder="Enter linkedin profile "
+									required
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="Phone number"
-									name="companyURL"
+									name={'phoneNumber'}
 									type={InputType.TEXT}
-									placeholder="Enter number"
+									placeholder="Enter Phone number"
 								/>
 							</div>
 						</div>
@@ -176,20 +152,22 @@ const ClientField = () => {
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd12}>
-								<div className={ClientFieldStyle.formGroup}>
-									<label>
-										Company Logo (JPG, PNG, SVG){' '}
-										<span className={ClientFieldStyle.reqField}>*</span>
-									</label>
-									<div className={ClientFieldStyle.uploadField}>
-										<div className={ClientFieldStyle.uploadFieldText}>
-											<input type="file" />
-											<UploadSVG />
-											Upload logo
-										</div>
-									</div>
-								</div>
+								<HRInputField
+									leadingIcon={<UploadSVG />}
+									label="Company Logo (JPG, PNG, SVG)"
+									name="jdExport"
+									type={InputType.BUTTON}
+									value="Upload logo"
+									onClickHandler={() => setUploadModal(true)}
+									required
+								/>
 							</div>
+							<UploadModal
+								modalTitle={'Upload Logo'}
+								isFooter={false}
+								openModal={showUploadModal}
+								cancelModal={() => setUploadModal(false)}
+							/>
 						</div>
 					</div>
 				</div>
@@ -211,57 +189,56 @@ const ClientField = () => {
 					<div className={ClientFieldStyle.tabsRightPanel}>
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="HS Client Full Name (Primary)"
-									reqField="*"
-									name="username"
+									name={'primaryClientFullName'}
 									type={InputType.TEXT}
-									placeholder="Enter full name"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
+									placeholder="Enter full name "
+									required
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="HS Client Email ID (Primary)"
-									reqField="*"
-									name="companyURL"
-									type={InputType.TEXT}
-									placeholder="Enter Email ID"
+									name={'primaryClientEmailID'}
+									type={InputType.EMAIL}
+									placeholder="Enter Email ID "
+									required
 								/>
 							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="Client's Phone Number (Primary)"
-									name="username"
-									type={InputType.TEXT}
-									placeholder="Enter number"
+									name={'primaryClientPhoneNumber'}
+									type={InputType.NUMBER}
+									placeholder="Enter Number"
+									required
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="Years of Experience (Primary)"
-									name="companyURL"
-									type={InputType.TEXT}
+									name={'PrimaryYearsOfExperience'}
+									type={InputType.NUMBER}
 									placeholder="Ex: 2, 3, 5..."
+									required
 								/>
 							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd12}>
-								<InputField
+								<HRInputField
 									label="HS Client Linkedin Profile (Primary)"
-									reqField="*"
-									name="username"
+									name={'PrimaryClientLinkedinProfile'}
 									type={InputType.TEXT}
 									placeholder="Add Linkedin profile link"
+									required
 								/>
 							</div>
 						</div>
@@ -288,44 +265,42 @@ const ClientField = () => {
 					<div className={ClientFieldStyle.tabsRightPanel}>
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="HS Client Full Name (Secondary)"
-									reqField="*"
-									name="username"
+									name={'SecondaryClientFullName'}
 									type={InputType.TEXT}
-									placeholder="Enter full name"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
+									placeholder="Add Linkedin profile link"
+									required
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="HS Client Email ID (Secondary)"
-									reqField="*"
-									name="companyURL"
-									type={InputType.TEXT}
+								<HRInputField
+									label="HS ClientEmail ID (Secondary)"
+									name={'SecondaryClientEmailID'}
+									type={InputType.EMAIL}
 									placeholder="Enter Email ID"
+									required
 								/>
 							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="Client's Phone Number (Secondary)"
-									name="username"
-									type={InputType.TEXT}
+									name={'SecondaryClientPhoneNumber'}
+									type={InputType.NUMBER}
 									placeholder="Enter number"
+									required
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="Years of Experience (Secondary)"
-									name="companyURL"
-									type={InputType.TEXT}
+									name={'SecondaryYearsOfExperience'}
+									type={InputType.NUMBER}
 									placeholder="Ex: 2, 3, 5..."
 								/>
 							</div>
@@ -333,12 +308,12 @@ const ClientField = () => {
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd12}>
-								<InputField
+								<HRInputField
 									label="HS Client Linkedin Profile (Secondary)"
-									reqField="*"
-									name="username"
+									name={'SecondaryClientLinkedinProfile'}
 									type={InputType.TEXT}
 									placeholder="Add Linkedin profile link  "
+									required
 								/>
 							</div>
 						</div>
@@ -370,39 +345,33 @@ const ClientField = () => {
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="HS Client Full Name"
-									reqField="*"
-									name="username"
+									name={'legalClientFullName'}
 									type={InputType.TEXT}
 									placeholder="Enter full name"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
+									required
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="HS Client Email ID"
-									reqField="*"
-									name="companyURL"
-									type={InputType.TEXT}
+									name={'legalClientEmailID'}
+									type={InputType.EMAIL}
 									placeholder="Enter Email ID"
+									required
 								/>
 							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="Client's Phone Number"
-									name="username"
-									type={InputType.TEXT}
+									name={'legalClientPhoneNumber'}
+									type={InputType.NUMBER}
 									placeholder="Enter number"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
 								/>
 							</div>
 
@@ -441,25 +410,22 @@ const ClientField = () => {
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="Legal Company Name"
-									reqField="*"
-									name="username"
+									name={'legalCompanyFullName'}
 									type={InputType.TEXT}
 									placeholder="Enter legal name"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
+									required
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
 									label="Legal Company Address"
-									reqField="*"
-									name="companyURL"
+									name={'legalCompanyAddress'}
 									type={InputType.TEXT}
 									placeholder="Enter legal address"
+									required
 								/>
 							</div>
 						</div>

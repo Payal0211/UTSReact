@@ -58,7 +58,9 @@ const HRInputField = ({
 					required={required}
 				/>
 			</div>
-			{error && <div className={HRInputFieldStyle.error}>* {errorMsg}</div>}
+			{required
+				? error && <div className={HRInputFieldStyle.error}>* {errorMsg}</div>
+				: false}
 		</div>
 	);
 };

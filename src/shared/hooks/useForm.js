@@ -90,6 +90,11 @@ const useForm = (initialFormValues) => {
 				if (a.errorMsg) tempError['companyName'] = a.errorMsg;
 				break;
 			}
+			case 'hrTitle': {
+				let a = ValidateInput.required(value, 'hiring request title.');
+				if (a.errorMsg) tempError['hrTitle'] = a.errorMsg;
+				break;
+			}
 
 			default:
 				break;

@@ -8,6 +8,7 @@ import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { MasterDAO } from 'core/master/masterDAO';
 import useForm from 'shared/hooks/useForm';
+import HRSelectField from '../hrSelectField/hrSelectField';
 
 const HRFields = () => {
 	const inputRef = useRef(null);
@@ -21,14 +22,19 @@ const HRFields = () => {
 	const hrFieldInfo = useRef({
 		clientName: '',
 		companyName: '',
+		hrRole: '',
 		hrTitle: '',
+		jobURL: '',
+		minimumBudget: '',
+		maximumBudget: '',
 	});
 	const { inputChangeHandler, formValues, error, onSubmitHandler } = useForm(
 		hrFieldInfo.current,
 	);
+	console.log(formValues);
 	/**Ends Here */
-	const selectHandleChange = (value, option) => {
-		console.log(`selected ${value},${option.value}`);
+	const selectHandleChange = (value) => {
+		hrFieldInfo.current.hrRole = value;
 	};
 	const onNameChange = (event) => {
 		setName(event.target.value);
@@ -92,13 +98,9 @@ const HRFields = () => {
 
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Hiring Request Role</label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
-								<Select
+								<HRSelectField
+									label={'Hiring Request Role'}
 									defaultValue="Select Role"
-									onChange={selectHandleChange}
 									options={[
 										{
 											value: 'USD',
@@ -109,6 +111,9 @@ const HRFields = () => {
 											label: 'INR',
 										},
 									]}
+									onChangeHandler={selectHandleChange}
+									required
+									errorMsg={'Please select hiring request role'}
 								/>
 							</div>
 						</div>
@@ -150,6 +155,7 @@ const HRFields = () => {
 								name="jdURL"
 								type={InputType.TEXT}
 								placeholder="Add JD link"
+								onChangeHandler={inputChangeHandler}
 							/>
 						</div>
 					</div>
@@ -180,6 +186,7 @@ const HRFields = () => {
 
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
+								onChangeHandler={inputChangeHandler}
 								name="minimumBudget"
 								type={InputType.TEXT}
 								placeholder="Minimum- Ex: 2300, 2000"
@@ -187,6 +194,7 @@ const HRFields = () => {
 						</div>
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
+								onChangeHandler={inputChangeHandler}
 								name="maximumBudget"
 								type={InputType.TEXT}
 								placeholder="Maximum- Ex: 2300, 2000"
@@ -291,7 +299,7 @@ const HRFields = () => {
 								<Select
 									defaultValue="Select time zone"
 									onChange={selectHandleChange}
-									// onChange={(val, a) => selectHandleChange(val, a.id)}
+									// onChange={(val, a) => selectHandleChange(val, a)}
 									options={timeZonePref}
 								/>
 							</div>
