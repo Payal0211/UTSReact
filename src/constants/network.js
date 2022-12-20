@@ -37,6 +37,8 @@ export class MastersAPI {
 	static GET_TIME_ZONE_PREFERENCE = 'GetTimeZonePreference';
 	static GET_PARTIAL_ENGAGEMENT_TYPE = 'GetPartialEngagementType';
 	static GET_TALENTS_ROLE_REQUEST = 'GetTalentsRoles';
+	static FILE_UPLOAD = 'FileUpload';
+	static GET_CODE_AND_FLAG = 'GetCodeandFlag';
 }
 
 export class HTTPStatusCode {

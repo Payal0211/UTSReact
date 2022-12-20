@@ -33,7 +33,7 @@ export const MasterDAO = {
 	},
 	getGEORequestDAO: async function () {
 		try {
-			const geoResult = await MasterAPI.getFixedValueRequest();
+			const geoResult = await MasterAPI.getGEORequest();
 			if (geoResult) {
 				const statusCode = geoResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
@@ -227,6 +227,52 @@ export const MasterDAO = {
 			}
 		} catch (error) {
 			return errorDebug(error, 'MasterDAO.getTalentsRoleRequestDAO');
+		}
+	},
+	getCodeAndFlagRequestDAO: async function () {
+		try {
+			const codeAndFlagResponse = await MasterAPI.getCodeAndFlagRequest();
+			if (codeAndFlagResponse) {
+				const statusCode = codeAndFlagResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = codeAndFlagResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return codeAndFlagResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return codeAndFlagResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getCodeAndFlagRequestDAO');
+		}
+	},
+	uploadFileRequestDAO: async function (fileData) {
+		try {
+			const uploadFileResult = await MasterAPI.uploadFileRequest(fileData);
+			if (uploadFileResult) {
+				const statusCode = uploadFileResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = uploadFileResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return uploadFileResult;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return uploadFileResult;
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.upload');
 		}
 	},
 };

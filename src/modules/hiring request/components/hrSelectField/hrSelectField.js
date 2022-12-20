@@ -34,7 +34,7 @@ const HRSelectField = ({
 				</span>
 			)}
 			<Select
-				defaultValue="Select Role"
+				defaultValue={defaultValue}
 				onChange={onSelectCallback}
 				options={options}
 			/>

@@ -35,7 +35,8 @@ const HRInputField = ({
 			)}
 			<div
 				className={
-					error ? HRInputFieldStyle.inputBoxError : HRInputFieldStyle.inputBox
+					HRInputFieldStyle.inputBox
+					// error ? HRInputFieldStyle.inputBoxError : HRInputFieldStyle.inputBox
 				}>
 				{leadingIcon && (
 					<div className={HRInputFieldStyle.leadingIcon}>{leadingIcon}</div>
@@ -53,7 +54,7 @@ const HRInputField = ({
 					maxLength={maxLength}
 					onChange={onChangeHandler}
 					value={value}
-					onFocus={() => setError('')}
+					// onFocus={() => setError('')}
 					onClick={InputType.BUTTON && onClickHandler}
 					required={required}
 				/>

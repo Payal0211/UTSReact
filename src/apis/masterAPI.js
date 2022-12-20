@@ -127,4 +127,31 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getTalentsRoleRequest');
 		}
 	},
+	getCodeAndFlagRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_CODE_AND_FLAG;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MastersAPI.getCodeAndFlagRequest');
+		}
+	},
+	uploadFileRequest: async function (fileData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.FILE_UPLOAD;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = fileData && fileData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.fileUploadRequest');
+		}
+	},
 };

@@ -31,7 +31,7 @@ const HRFields = () => {
 	const { inputChangeHandler, formValues, error, onSubmitHandler } = useForm(
 		hrFieldInfo.current,
 	);
-	console.log(formValues);
+
 	/**Ends Here */
 	const selectHandleChange = (value) => {
 		hrFieldInfo.current.hrRole = value;

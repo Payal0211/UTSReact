@@ -7,6 +7,7 @@ import ClientField from 'modules/client/components/clientField/clientField';
 
 const AddNewClientScreen = () => {
 	const [title, setTitle] = useState('Add New Client');
+
 	return (
 		<div className={AddNewClientStyle.addNewContainer}>
 			<div className={AddNewClientStyle.addHRTitle}>{title}</div>

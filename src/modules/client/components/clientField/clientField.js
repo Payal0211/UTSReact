@@ -1,15 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Checkbox, Radio, Select } from 'antd';
 import { InputType } from 'constants/application';
-import InputField from '../inputField/input_field';
 import ClientFieldStyle from './clientField.module.css';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
-
+import AddNewClient from '../addClient/addClient';
+import { MasterDAO } from 'core/master/masterDAO';
+import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
+const { Option } = Select;
 const ClientField = () => {
 	const [value, setValue] = useState(1);
 	const [showUploadModal, setUploadModal] = useState(false);
+	const [GEO, setGEO] = useState([]);
+	const [flagAndCode, setFlagAndCode] = useState([]);
 	const RadioButton = (e) => {
 		console.log('radio checked', e.target.value);
 		setValue(e.target.value);
@@ -22,6 +26,22 @@ const ClientField = () => {
 	const selectHandleChange = (value) => {
 		console.log(`selected ${value}`);
 	};
+	const getGEO = async () => {
+		const geoLocationResponse = await MasterDAO.getGEORequestDAO();
+		setGEO(geoLocationResponse && geoLocationResponse.responseBody);
+	};
+
+	const getCodeAndFlag = async () => {
+		const getCodeAndFlagResponse = await MasterDAO.getCodeAndFlagRequestDAO();
+		setFlagAndCode(
+			getCodeAndFlagResponse && getCodeAndFlagResponse.responseBody,
+		);
+	};
+	useEffect(() => {
+		getGEO();
+		getCodeAndFlag();
+	}, []);
+
 	return (
 		<div className={ClientFieldStyle.tabsBody}>
 			<div className={ClientFieldStyle.tabsFormItem}>
@@ -56,36 +76,13 @@ const ClientField = () => {
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
 								<div className={ClientFieldStyle.formGroup}>
-									<label>
-										Company Location{' '}
-										<span className={ClientFieldStyle.reqField}>*</span>
-									</label>
-									<Select
+									<HRSelectField
+										label="Company Location"
 										defaultValue="Select location"
-										onSelect={selectHandleChange}
-										options={[
-											{
-												value: 'Location1',
-												label: 'Location 1',
-											},
-											{
-												value: 'Location2',
-												label: 'Location 2',
-											},
-											{
-												value: 'Location3',
-												label: 'Location 3',
-												// disabled: true,
-											},
-											{
-												value: 'Location4',
-												label: 'Location 4',
-											},
-											{
-												value: 'Location5',
-												label: 'Location 5',
-											},
-										]}
+										options={GEO}
+										required
+										onChangeHandler={selectHandleChange}
+										errorMsg="Please select a location."
 									/>
 								</div>
 							</div>
@@ -112,7 +109,19 @@ const ClientField = () => {
 								/>
 							</div>
 						</div>
-
+						<Select>
+							{flagAndCode.map((item) => (
+								<Option key={item?.ccode}>
+									<img
+										src={item?.flag}
+										width="20"
+										height="20"
+										alt={''}
+									/>
+									{item?.ccode}
+								</Option>
+							))}
+						</Select>
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
 								<HRInputField
@@ -173,154 +182,7 @@ const ClientField = () => {
 				</div>
 			</div>
 
-			<div className={ClientFieldStyle.tabsFormItem}>
-				<div className={ClientFieldStyle.tabsFormItemInner}>
-					<div className={ClientFieldStyle.tabsLeftPanel}>
-						<h3>Client Details</h3>
-						<p>Please provide the necessary details</p>
-						<div className={ClientFieldStyle.leftPanelAction}>
-							<button
-								type="button"
-								className={ClientFieldStyle.btn}>
-								Add Secondary Client Details
-							</button>
-						</div>
-					</div>
-					<div className={ClientFieldStyle.tabsRightPanel}>
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									label="HS Client Full Name (Primary)"
-									name={'primaryClientFullName'}
-									type={InputType.TEXT}
-									placeholder="Enter full name "
-									required
-								/>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									label="HS Client Email ID (Primary)"
-									name={'primaryClientEmailID'}
-									type={InputType.EMAIL}
-									placeholder="Enter Email ID "
-									required
-								/>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									label="Client's Phone Number (Primary)"
-									name={'primaryClientPhoneNumber'}
-									type={InputType.NUMBER}
-									placeholder="Enter Number"
-									required
-								/>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									label="Years of Experience (Primary)"
-									name={'PrimaryYearsOfExperience'}
-									type={InputType.NUMBER}
-									placeholder="Ex: 2, 3, 5..."
-									required
-								/>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd12}>
-								<HRInputField
-									label="HS Client Linkedin Profile (Primary)"
-									name={'PrimaryClientLinkedinProfile'}
-									type={InputType.TEXT}
-									placeholder="Add Linkedin profile link"
-									required
-								/>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div className={ClientFieldStyle.tabsFormItemInner}>
-					<div className={ClientFieldStyle.tabsLeftPanel}>
-						<h3>Secondary Client Details</h3>
-						<p>Please provide the necessary details</p>
-						<div className={ClientFieldStyle.leftPanelAction}>
-							<button
-								type="button"
-								className={ClientFieldStyle.btnPrimary}>
-								Add More
-							</button>
-							<button
-								type="button"
-								className={ClientFieldStyle.btn}>
-								Remove
-							</button>
-						</div>
-					</div>
-					<div className={ClientFieldStyle.tabsRightPanel}>
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									label="HS Client Full Name (Secondary)"
-									name={'SecondaryClientFullName'}
-									type={InputType.TEXT}
-									placeholder="Add Linkedin profile link"
-									required
-								/>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									label="HS ClientEmail ID (Secondary)"
-									name={'SecondaryClientEmailID'}
-									type={InputType.EMAIL}
-									placeholder="Enter Email ID"
-									required
-								/>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									label="Client's Phone Number (Secondary)"
-									name={'SecondaryClientPhoneNumber'}
-									type={InputType.NUMBER}
-									placeholder="Enter number"
-									required
-								/>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									label="Years of Experience (Secondary)"
-									name={'SecondaryYearsOfExperience'}
-									type={InputType.NUMBER}
-									placeholder="Ex: 2, 3, 5..."
-								/>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd12}>
-								<HRInputField
-									label="HS Client Linkedin Profile (Secondary)"
-									name={'SecondaryClientLinkedinProfile'}
-									type={InputType.TEXT}
-									placeholder="Add Linkedin profile link  "
-									required
-								/>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
+			<AddNewClient />
 			<div className={ClientFieldStyle.tabsFormItem}>
 				<div className={ClientFieldStyle.tabsFormItemInner}>
 					<div className={ClientFieldStyle.tabsLeftPanel}>
@@ -432,7 +294,6 @@ const ClientField = () => {
 					</div>
 				</div>
 			</div>
-
 			<div className={ClientFieldStyle.tabsFormItem}>
 				<div className={ClientFieldStyle.tabsFormItemInner}>
 					<div className={ClientFieldStyle.tabsLeftPanel}>
@@ -521,7 +382,6 @@ const ClientField = () => {
 					</div>
 				</div>
 			</div>
-
 			<div className={ClientFieldStyle.formPanelAction}>
 				<button
 					type="button"
