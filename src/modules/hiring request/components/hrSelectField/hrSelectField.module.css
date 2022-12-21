@@ -10,10 +10,11 @@
     outline-color: var(--danger-color);
 }
 .formField label {
+    vertical-align: top;
     font-family: 'Montserrat';
     font-weight: 400;
     font-size: 12px;
-    line-height: 15px;
+    line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
     display: inline-block;
@@ -21,4 +22,10 @@
 .error {
     color: var(--danger-color);
     font-size: var(--fontsize-tough);
+}
+.reqField {
+    color: var(--uplers-black);
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
 }

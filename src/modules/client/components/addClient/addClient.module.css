@@ -69,6 +69,7 @@
 }
 
 .formGroup label {
+    vertical-align: top;
     font-family: 'Montserrat';
     font-weight: 400;
     font-size: 12px;
@@ -77,6 +78,7 @@
     margin: 0 0 8px;
     display: inline-block;
 }
+
 
 .formGroup .ant-select {
     width: 100%;
@@ -219,4 +221,36 @@
 
 .mb0 [class*="input_field"] {
     margin-bottom: 0 !important;
+}
+.phoneNoGroup {
+    margin: 0;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.phoneNoGroup label {
+    width: 100%;
+}
+.phoneNoCode {
+    width: 120px;
+}
+
+.phoneNoCode [class*="ant-select-selector"] {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.phoneNoInput {
+    flex: 1;
+}
+
+.phoneNoInput [class*="formField"] {
+    margin: 0;
+}
+
+.phoneNoInput input {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin: 0;
 }

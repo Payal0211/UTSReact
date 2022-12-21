@@ -1,24 +1,34 @@
-import { InputType } from 'constants/application';
+import { Select } from 'antd';
+import { EmailRegEx, InputType } from 'constants/application';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
-import { useRef, useState } from 'react';
-import useForm from 'shared/hooks/useForm';
+import React, { useCallback } from 'react';
+
+import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';
-const AddNewClient = () => {
-	const clientFieldInfo = useRef({});
-	const { inputChangeHandler, formValues, error, onSubmitHandler } = useForm(
-		clientFieldInfo.current,
+const { Option } = Select;
+const AddNewClient = ({
+	fields,
+	append,
+	remove,
+	register,
+	errors,
+	flagAndCode,
+}) => {
+	const onAddNewClient = useCallback(
+		(e) => {
+			e.preventDefault();
+			append({ ...secondaryClient });
+		},
+		[append],
 	);
-	const [countClient, setCountClient] = useState([]);
-	const onAddNewClient = (e) => {
-		e.preventDefault();
-		setCountClient([...countClient, countClient.length + 1]);
-	};
-	const onRemoveAddedClient = (e, index) => {
-		e.preventDefault();
-		let newFormValues = [...countClient];
-		newFormValues.splice(index, 1);
-		setCountClient(newFormValues);
-	};
+	const onRemoveAddedClient = useCallback(
+		(e, index) => {
+			e.preventDefault();
+			remove(index);
+		},
+		[remove],
+	);
+	console.log(errors);
 
 	return (
 		<div className={AddClientStyle.tabsFormItem}>
@@ -26,8 +36,9 @@ const AddNewClient = () => {
 				<div className={AddClientStyle.tabsLeftPanel}>
 					<h3>Client Details</h3>
 					<p>Please provide the necessary details</p>
+
 					<div className={AddClientStyle.leftPanelAction}>
-						{countClient.length === 0 && (
+						{fields.length === 0 && (
 							<button
 								type="button"
 								className={AddClientStyle.btn}
@@ -41,8 +52,13 @@ const AddNewClient = () => {
 					<div className={AddClientStyle.row}>
 						<div className={AddClientStyle.colMd6}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the primary client name',
+								}}
 								label="HS Client Full Name (Primary)"
-								name={'primaryClientFullName'}
+								name={'primaryClientName'}
 								type={InputType.TEXT}
 								placeholder="Enter full name "
 								required
@@ -51,6 +67,15 @@ const AddNewClient = () => {
 
 						<div className={AddClientStyle.colMd6}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the primary client email ID.',
+									pattern: {
+										value: EmailRegEx.email,
+										message: 'please enter a valid email.',
+									},
+								}}
 								label="HS Client Email ID (Primary)"
 								name={'primaryClientEmailID'}
 								type={InputType.EMAIL}
@@ -62,22 +87,46 @@ const AddNewClient = () => {
 
 					<div className={AddClientStyle.row}>
 						<div className={AddClientStyle.colMd6}>
-							<HRInputField
-								label="Client's Phone Number (Primary)"
-								name={'primaryClientPhoneNumber'}
-								type={InputType.NUMBER}
-								placeholder="Enter Number"
-								required
-							/>
+							<div
+								className={`${AddClientStyle.formGroup} ${AddClientStyle.phoneNoGroup}`}>
+								<label>
+									Client's Phone Number (Primary)
+									<span className={AddClientStyle.reqField}>*</span>
+								</label>
+								<div className={AddClientStyle.phoneNoCode}>
+									<Select showSearch>
+										{flagAndCode &&
+											flagAndCode?.map((item, index) => (
+												<Option key={index}>
+													<img
+														src={item?.flag}
+														width="20"
+														height="20"
+														alt={''}
+													/>
+													{item?.ccode}
+												</Option>
+											))}
+									</Select>
+								</div>
+								<div className={AddClientStyle.phoneNoInput}>
+									<HRInputField
+										register={register}
+										name={'primaryClientPhoneNumber'}
+										type={InputType.NUMBER}
+										placeholder="Enter Phone number"
+									/>
+								</div>
+							</div>
 						</div>
 
 						<div className={AddClientStyle.colMd6}>
 							<HRInputField
-								label="Years of Experience (Primary)"
-								name={'PrimaryYearsOfExperience'}
-								type={InputType.NUMBER}
-								placeholder="Ex: 2, 3, 5..."
-								required
+								register={register}
+								label="Designation (Primary)"
+								name={'primaryDesignation'}
+								type={InputType.TEXT}
+								placeholder="Enter client designation"
 							/>
 						</div>
 					</div>
@@ -85,6 +134,12 @@ const AddNewClient = () => {
 					<div className={AddClientStyle.row}>
 						<div className={AddClientStyle.colMd12}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required:
+										'please enter the primary client linkedin profile URL.',
+								}}
 								label="HS Client Linkedin Profile (Primary)"
 								name={'PrimaryClientLinkedinProfile'}
 								type={InputType.TEXT}
@@ -95,7 +150,7 @@ const AddNewClient = () => {
 					</div>
 				</div>
 			</div>
-			{countClient?.map((item, index) => {
+			{fields?.map((item, index) => {
 				return (
 					<div
 						className={AddClientStyle.tabsFormItemInner}
@@ -103,7 +158,7 @@ const AddNewClient = () => {
 						<div className={AddClientStyle.tabsLeftPanel}>
 							<h3>Secondary Client Details - {index + 1}</h3>
 							<p>Please provide the necessary details</p>
-							{countClient.length - 1 === index && (
+							{fields.length - 1 === index && (
 								<div className={AddClientStyle.leftPanelAction}>
 									<button
 										type="button"
@@ -124,18 +179,32 @@ const AddNewClient = () => {
 							<div className={AddClientStyle.row}>
 								<div className={AddClientStyle.colMd6}>
 									<HRInputField
+										register={register}
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the secondary client name.',
+										}}
 										label="HS Client Full Name (Secondary)"
-										name={`SecondaryClientFullName_${index}`}
+										name={`secondaryClient[${index}].fullName`}
 										type={InputType.TEXT}
-										placeholder="Add Linkedin profile link"
+										placeholder="Enter full name"
 										required
 									/>
 								</div>
 
 								<div className={AddClientStyle.colMd6}>
 									<HRInputField
+										register={register}
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the secondary client email ID.',
+											pattern: {
+												value: EmailRegEx.email,
+												message: 'please enter a valid email.',
+											},
+										}}
 										label="HS ClientEmail ID (Secondary)"
-										name={`SecondaryClientEmailID_${index}`}
+										name={`secondaryClient[${index}].emailID`}
 										type={InputType.EMAIL}
 										placeholder="Enter Email ID"
 										required
@@ -145,21 +214,51 @@ const AddNewClient = () => {
 
 							<div className={AddClientStyle.row}>
 								<div className={AddClientStyle.colMd6}>
-									<HRInputField
-										label="Client's Phone Number (Secondary)"
-										name={`SecondaryClientPhoneNumber_${index}`}
-										type={InputType.NUMBER}
-										placeholder="Enter number"
-										required
-									/>
+									<div
+										className={`${AddClientStyle.formGroup} ${AddClientStyle.phoneNoGroup}`}>
+										<label>
+											Client's Phone Number (Secondary)
+											<span className={AddClientStyle.reqField}>*</span>
+										</label>
+										<div className={AddClientStyle.phoneNoCode}>
+											<Select showSearch>
+												{flagAndCode &&
+													flagAndCode?.map((item, index) => (
+														<Option key={index}>
+															<img
+																src={item?.flag}
+																width="20"
+																height="20"
+																alt={''}
+															/>
+															{item?.ccode}
+														</Option>
+													))}
+											</Select>
+										</div>
+										<div className={AddClientStyle.phoneNoInput}>
+											<HRInputField
+												errors={errors}
+												validationSchema={{
+													required:
+														'please enter the secondary client phone number.',
+												}}
+												register={register}
+												name={`secondaryClient[${index}].phoneNumber`}
+												type={InputType.NUMBER}
+												placeholder="Enter Phone number"
+											/>
+										</div>
+									</div>
 								</div>
 
 								<div className={AddClientStyle.colMd6}>
 									<HRInputField
-										label="Years of Experience (Secondary)"
-										name={`SecondaryYearsOfExperience_${index}`}
-										type={InputType.NUMBER}
-										placeholder="Ex: 2, 3, 5..."
+										register={register}
+										label="Designation (Secondary)"
+										name={`secondaryClient[${index}].designation`}
+										type={InputType.TEXT}
+										placeholder="Enter client designation"
 									/>
 								</div>
 							</div>
@@ -167,8 +266,14 @@ const AddNewClient = () => {
 							<div className={AddClientStyle.row}>
 								<div className={AddClientStyle.colMd12}>
 									<HRInputField
+										register={register}
+										errors={errors}
+										validationSchema={{
+											required:
+												'please enter the secondary client linkedin profile URL.',
+										}}
 										label="HS Client Linkedin Profile (Secondary)"
-										name={`SecondaryClientLinkedinProfile_${index}`}
+										name={`secondaryClient[${index}].linkedinProfile`}
 										type={InputType.TEXT}
 										placeholder="Add Linkedin profile link  "
 										required
@@ -183,4 +288,4 @@ const AddNewClient = () => {
 	);
 };
 
-export default AddNewClient;
+export default React.memo(AddNewClient);

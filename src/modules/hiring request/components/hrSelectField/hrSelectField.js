@@ -1,48 +1,48 @@
 import { Select } from 'antd';
 import HRSelectFieldStyle from './hrSelectField.module.css';
-import { useState, useCallback, useMemo, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
+const { Option } = Select;
 const HRSelectField = ({
+	register,
+	setValue,
 	label,
+	name,
 	defaultValue,
 	options,
 	onChangeHandler,
 	required,
+	isError,
 	errorMsg,
 }) => {
-	const [selectedValue, setSelectedValue] = useState(defaultValue);
-	const firstMount = useRef(true);
-	const onSelectCallback = useCallback(
-		(value, option) => {
-			firstMount.current = false;
-			setSelectedValue(value);
-			onChangeHandler(value, option);
-		},
-		[onChangeHandler],
+	const getChangeHandlerWithValue = (value) => {
+		setValue(name, value);
+	};
+	useEffect(() => {
+		register(name, { required: required });
+	}, [register, required, name]);
+	const errorDetail = useMemo(
+		() =>
+			isError && <div className={HRSelectFieldStyle.error}>* {errorMsg}</div>,
+		[errorMsg, isError],
 	);
-	const errorMemo = useMemo(() => {
-		if (firstMount.current && required && selectedValue === defaultValue)
-			return true;
-		return false;
-	}, [defaultValue, required, selectedValue]);
 
 	return (
 		<div className={HRSelectFieldStyle.formField}>
-			<label>{label}</label>
-			{required && (
-				<span style={{ paddingLeft: '5px' }}>
-					<b>*</b>
-				</span>
-			)}
+			<label>
+				{label}
+				{required && <span className={HRSelectFieldStyle.reqField}>*</span>}
+			</label>
+
 			<Select
 				defaultValue={defaultValue}
-				onChange={onSelectCallback}
+				onChange={(value) => getChangeHandlerWithValue(value)}
 				options={options}
 			/>
-			{required
-				? errorMemo && (
-						<div className={HRSelectFieldStyle.error}>* {errorMsg}</div>
-				  )
-				: false}
+			{/* {options.map((item, index) => (
+					<Option key={index}>{item?.mapKey}</Option>
+				))}
+			</Select> */}
+			{errorDetail}
 		</div>
 	);
 };

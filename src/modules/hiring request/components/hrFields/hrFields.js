@@ -1,5 +1,5 @@
 import { Button, Divider, Select, Space } from 'antd';
-import { FormType, InputType } from 'constants/application';
+import { InputType } from 'constants/application';
 import { useEffect, useRef, useState } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import HRFieldStyle from './hrFIelds.module.css';
@@ -7,9 +7,9 @@ import { PlusOutlined } from '@ant-design/icons';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { MasterDAO } from 'core/master/masterDAO';
-import useForm from 'shared/hooks/useForm';
-import HRSelectField from '../hrSelectField/hrSelectField';
 
+import HRSelectField from '../hrSelectField/hrSelectField';
+import { useForm } from 'react-hook-form';
 const HRFields = () => {
 	const inputRef = useRef(null);
 	const [availability, setAvailability] = useState([]);
@@ -17,24 +17,16 @@ const HRFields = () => {
 	const [items, setItems] = useState(['3 months', '6 months', '9 months']);
 	const [name, setName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
+	const {
+		register,
+		handleSubmit,
+		reset,
+		control,
+		formState: { errors },
+	} = useForm();
 
-	/** Starts Here */
-	const hrFieldInfo = useRef({
-		clientName: '',
-		companyName: '',
-		hrRole: '',
-		hrTitle: '',
-		jobURL: '',
-		minimumBudget: '',
-		maximumBudget: '',
-	});
-	const { inputChangeHandler, formValues, error, onSubmitHandler } = useForm(
-		hrFieldInfo.current,
-	);
-
-	/**Ends Here */
 	const selectHandleChange = (value) => {
-		hrFieldInfo.current.hrRole = value;
+		console.log(`selected ${value}`);
 	};
 	const onNameChange = (event) => {
 		setName(event.target.value);
@@ -70,24 +62,30 @@ const HRFields = () => {
 				<form
 					id="hrForm"
 					className={HRFieldStyle.hrFieldRightPane}>
-					<div className={HRFieldStyle.colMd12}>
-						<HRInputField
-							onChangeHandler={inputChangeHandler}
-							value={formValues['clientName']}
-							label={'Client Email/Name'}
-							name="clientName"
-							type={InputType.TEXT}
-							placeholder="Enter Client Email/Name"
-							errorMsg={error['clientName']}
-							required
-						/>
+					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd12}>
+							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the client email/name.',
+								}}
+								label={'Client Email/Name'}
+								name="clientName"
+								type={InputType.TEXT}
+								placeholder="Enter Client Email/Name"
+								required
+							/>
+						</div>
 					</div>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
-								onChangeHandler={inputChangeHandler}
-								value={formValues['companyName']}
-								errorMsg={error['companyName']}
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the company name.',
+								}}
 								label="Company Name"
 								name="companyName"
 								type={InputType.TEXT}
@@ -99,6 +97,7 @@ const HRFields = () => {
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									register={register}
 									label={'Hiring Request Role'}
 									defaultValue="Select Role"
 									options={[
@@ -118,28 +117,32 @@ const HRFields = () => {
 							</div>
 						</div>
 					</div>
-					<div className={HRFieldStyle.colMd12}>
-						<HRInputField
-							onChangeHandler={inputChangeHandler}
-							value={formValues['hrTitle']}
-							errorMsg={error['hrTitle']}
-							label={'Hiring Request Title'}
-							name="hrTitle"
-							type={InputType.TEXT}
-							placeholder="Enter title"
-							required
-						/>
+					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd12}>
+							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the hiring request title.',
+								}}
+								label={'Hiring Request Title'}
+								name="hrTitle"
+								type={InputType.TEXT}
+								placeholder="Enter title"
+								required
+							/>
+						</div>
 					</div>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
 								leadingIcon={<UploadSVG />}
 								label="Job Description (PDF)"
 								name="jdExport"
 								type={InputType.BUTTON}
 								value="Upload JD File"
 								onClickHandler={() => setUploadModal(true)}
-								required
 							/>
 						</div>
 						<UploadModal
@@ -155,18 +158,23 @@ const HRFields = () => {
 								name="jdURL"
 								type={InputType.TEXT}
 								placeholder="Add JD link"
-								onChangeHandler={inputChangeHandler}
+								register={register}
 							/>
 						</div>
 					</div>
 
 					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd12}>
+							<div className={`${HRFieldStyle.formGroup} ${HRFieldStyle.mb0}`}>
+								<label>
+									Add your estimated budget
+									<span className={HRFieldStyle.reqField}>*</span>
+								</label>
+							</div>
+						</div>
+
 						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Add your estimated budget</label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
 								<Select
 									defaultValue="Select Budget"
 									onChange={selectHandleChange}
@@ -186,24 +194,31 @@ const HRFields = () => {
 
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
-								onChangeHandler={inputChangeHandler}
+								register={register}
 								name="minimumBudget"
 								type={InputType.TEXT}
 								placeholder="Minimum- Ex: 2300, 2000"
 							/>
 						</div>
+
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
-								onChangeHandler={inputChangeHandler}
+								register={register}
 								name="maximumBudget"
 								type={InputType.TEXT}
 								placeholder="Maximum- Ex: 2300, 2000"
 							/>
 						</div>
 					</div>
+
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the nr margin percentage.',
+								}}
 								label="NR Margin Percentage"
 								name="NRMargin"
 								type={InputType.TEXT}
@@ -281,12 +296,28 @@ const HRFields = () => {
 							</div>
 						</div>
 						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
-								label="Company URL"
-								name="companyURL"
-								type={InputType.TEXT}
-								placeholder="Enter profile link"
-							/>
+							<div className={HRFieldStyle.formGroup}>
+								<label>
+									Required Experience
+									<span className={HRFieldStyle.reqField}>*</span>
+								</label>
+								<div className={HRFieldStyle.reqExperience}>
+									<HRInputField
+										required
+										register={register}
+										name="years"
+										type={InputType.NUMBER}
+										placeholder="Enter years"
+									/>
+									<HRInputField
+										register={register}
+										required
+										name="months"
+										type={InputType.NUMBER}
+										placeholder="Enter months"
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div className={HRFieldStyle.row}>
@@ -306,6 +337,11 @@ const HRFields = () => {
 						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the number of talents.',
+								}}
 								label="How many talents are needed."
 								name="talentsNumber"
 								type={InputType.NUMBER}
@@ -330,6 +366,11 @@ const HRFields = () => {
 						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
+								/* errors={errors}
+								validationSchema={{
+									required: 'please enter the company name.',
+								}} */
 								label="Deal ID"
 								name="dealID"
 								type={InputType.TEXT}
@@ -340,6 +381,11 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the BQ form link.',
+								}}
 								label="BQ Form Link"
 								name="bqFormLink"
 								type={InputType.TEXT}
@@ -349,6 +395,11 @@ const HRFields = () => {
 						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the discovery call link.',
+								}}
 								label="Discovery Call Link"
 								name="discoveryCallLink"
 								type={InputType.TEXT}
@@ -365,15 +416,15 @@ const HRFields = () => {
 				<button
 					type="button"
 					className={HRFieldStyle.btn}>
-					Need More Info
+					Save as Draft
 				</button>
 
 				<button
 					// form="hrForm"
-					onClick={(e) => onSubmitHandler(e, FormType.HRFIELD)}
+					onClick={handleSubmit((d) => console.log(d))}
 					// type="submit"
 					className={HRFieldStyle.btnPrimary}>
-					Submit
+					Create HR
 				</button>
 			</div>
 		</div>

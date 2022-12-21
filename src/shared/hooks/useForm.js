@@ -81,21 +81,40 @@ const useForm = (initialFormValues) => {
 	const miscValidator = (name, value, tempError) => {
 		switch (name) {
 			case 'clientName': {
-				let a = ValidateInput.required(value, 'client email/name.');
+				let a = ValidateInput.required(value, 'client email/name');
 				if (a.errorMsg) tempError['clientName'] = a.errorMsg;
 				break;
 			}
 			case 'companyName': {
-				let a = ValidateInput.required(value, 'company name.');
+				let a = ValidateInput.required(value, 'company name');
 				if (a.errorMsg) tempError['companyName'] = a.errorMsg;
 				break;
 			}
 			case 'hrTitle': {
-				let a = ValidateInput.required(value, 'hiring request title.');
+				let a = ValidateInput.required(value, 'hiring request title');
 				if (a.errorMsg) tempError['hrTitle'] = a.errorMsg;
 				break;
 			}
-
+			case 'companyURL': {
+				let a = ValidateInput.required(value, 'company URL');
+				if (a.errorMsg) tempError['companyURL'] = a.errorMsg;
+				break;
+			}
+			case 'companySize': {
+				let a = ValidateInput.required(value, 'company size');
+				if (a.errorMsg) tempError['companySize'] = a.errorMsg;
+				break;
+			}
+			case 'companyAddress': {
+				let a = ValidateInput.required(value, 'company address');
+				if (a.errorMsg) tempError['companyAddress'] = a.errorMsg;
+				break;
+			}
+			case 'linkedinProfile': {
+				let a = ValidateInput.required(value, 'linkedin profile');
+				if (a.errorMsg) tempError['linkedinProfile'] = a.errorMsg;
+				break;
+			}
 			default:
 				break;
 		}

@@ -1,43 +1,29 @@
 import { InputType } from 'constants/application';
-import { useRef, useState, useEffect } from 'react';
 import HRInputFieldStyle from './hrInputFields.module.css';
 
 const HRInputField = ({
-	label,
-	type,
-	name,
-	maxLength,
-	placeholder,
-	onChangeHandler,
-	value,
-	errorMsg,
-	leadingIcon,
 	onClickHandler,
+	leadingIcon,
+	name,
+	label,
+	register,
+	errors,
+	placeholder,
 	required,
+	value,
+	type,
+	validationSchema,
 }) => {
-	const inputRef = useRef();
-	const [error, setError] = useState(errorMsg);
-
-	useEffect(() => {
-		setError(errorMsg);
-		return () => {
-			setError('');
-		};
-	}, [errorMsg]);
-
 	return (
 		<div className={HRInputFieldStyle.formField}>
-			<label>{label}</label>
-			{required && (
-				<span style={{ paddingLeft: '5px' }}>
-					<b>*</b>
-				</span>
+			{label && (
+				<label>
+					{label}
+					{required && <span className={HRInputFieldStyle.reqField}>*</span>}
+				</label>
 			)}
-			<div
-				className={
-					HRInputFieldStyle.inputBox
-					// error ? HRInputFieldStyle.inputBoxError : HRInputFieldStyle.inputBox
-				}>
+
+			<div className={HRInputFieldStyle.inputBox}>
 				{leadingIcon && (
 					<div className={HRInputFieldStyle.leadingIcon}>{leadingIcon}</div>
 				)}
@@ -46,24 +32,26 @@ const HRInputField = ({
 						paddingLeft: leadingIcon && '40px',
 						cursor: InputType.BUTTON && 'pointer',
 					}}
-					ref={inputRef}
+					// value={InputType.BUTTON && value}
 					className={HRInputFieldStyle.inputfield}
 					type={type}
 					name={name}
 					placeholder={placeholder}
-					maxLength={maxLength}
-					onChange={onChangeHandler}
-					value={value}
-					// onFocus={() => setError('')}
 					onClick={InputType.BUTTON && onClickHandler}
+					{...register(name, validationSchema)}
+					id={name}
 					required={required}
 				/>
 			</div>
 			{required
-				? error && <div className={HRInputFieldStyle.error}>* {errorMsg}</div>
+				? errors &&
+				  errors[name]?.type === 'required' && (
+						<div className={HRInputFieldStyle.error}>
+							* {errors[name]?.message}
+						</div>
+				  )
 				: false}
 		</div>
 	);
 };
-
 export default HRInputField;
