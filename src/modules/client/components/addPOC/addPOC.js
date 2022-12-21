@@ -20,6 +20,7 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 		},
 		[remove],
 	);
+
 	return (
 		<div className={AddNewPOCStyle.tabsFormItem}>
 			<div className={AddNewPOCStyle.tabsFormItemInner}>
@@ -39,7 +40,7 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 				<div className={AddNewPOCStyle.tabsRightPanel}>
 					<div className={AddNewPOCStyle.row}>
 						<div className={AddNewPOCStyle.colMd6}>
-							{/* 	<div className={AddNewPOCStyle.formGroup}>
+							<div className={AddNewPOCStyle.formGroup}>
 								<HRSelectField
 									setValue={setValue}
 									register={register}
@@ -75,7 +76,7 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 									}
 									errorMsg="Please select a primary POC."
 								/>
-							</div> */}
+							</div>
 						</div>
 
 						<div className={AddNewPOCStyle.colMd6}>
@@ -121,7 +122,7 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 										<HRSelectField
 											setValue={setValue}
 											register={register}
-											name="secondaryContactName"
+											name={`pocList.[${index}].contactName`}
 											label="Secondary Contact Name"
 											defaultValue="Select secondary POC"
 											options={[
@@ -149,6 +150,7 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 											]}
 										/>
 									</div>
+									<div onClick={(e) => onRemovePOC(e, index)}>X</div>
 								</div>
 							);
 						})}

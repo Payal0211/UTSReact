@@ -1,13 +1,14 @@
 import { Select } from 'antd';
 import HRSelectFieldStyle from './hrSelectField.module.css';
 import { useEffect, useMemo } from 'react';
-const { Option } = Select;
+
 const HRSelectField = ({
 	register,
 	setValue,
 	label,
 	name,
 	defaultValue,
+	searchable,
 	options,
 	onChangeHandler,
 	required,
@@ -20,6 +21,7 @@ const HRSelectField = ({
 	useEffect(() => {
 		register(name, { required: required });
 	}, [register, required, name]);
+
 	const errorDetail = useMemo(
 		() =>
 			isError && <div className={HRSelectFieldStyle.error}>* {errorMsg}</div>,
@@ -28,20 +30,20 @@ const HRSelectField = ({
 
 	return (
 		<div className={HRSelectFieldStyle.formField}>
-			<label>
-				{label}
-				{required && <span className={HRSelectFieldStyle.reqField}>*</span>}
-			</label>
+			{label && (
+				<label>
+					{label}
+					{required && <span className={HRSelectFieldStyle.reqField}>*</span>}
+				</label>
+			)}
 
 			<Select
+				showSearch={searchable}
 				defaultValue={defaultValue}
 				onChange={(value) => getChangeHandlerWithValue(value)}
 				options={options}
 			/>
-			{/* {options.map((item, index) => (
-					<Option key={index}>{item?.mapKey}</Option>
-				))}
-			</Select> */}
+
 			{errorDetail}
 		</div>
 	);

@@ -19,6 +19,10 @@
     position: relative;
 }
 
+.disabled{
+    opacity:.7;
+    cursor:not-allowed !important;
+}
 .inputBoxError .inputfield {
     border: 1px solid var(--danger-color);
     outline-color: var(--danger-color);

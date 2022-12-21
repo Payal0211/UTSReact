@@ -272,7 +272,28 @@ export const MasterDAO = {
 				// return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'MasterDAO.upload');
+			return errorDebug(error, 'MasterDAO.uploadFileRequestDAO');
+		}
+	},
+	getSalesManRequestDAO: async function () {
+		try {
+			const salesManResult = await MasterAPI.getSalesManRequest();
+			if (salesManResult) {
+				const statusCode = salesManResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = salesManResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return salesManResult;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return salesManResult;
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getSalesManRequestDAO');
 		}
 	},
 };

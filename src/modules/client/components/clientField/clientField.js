@@ -10,11 +10,13 @@ import { MasterDAO } from 'core/master/masterDAO';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { useFieldArray, useForm } from 'react-hook-form';
 import AddNewPOC from '../addPOC/addPOC';
-const { Option } = Select;
+import { useMemo } from 'react';
+import { getFlagAndCodeOptions } from 'modules/client/clientUtils';
 
 export const secondaryClient = {
 	fullName: '',
 	emailID: '',
+	countryCode: '',
 	phoneNumber: '',
 	designation: '',
 	linkedinProfile: '',
@@ -23,33 +25,45 @@ export const poc = {
 	contactName: '',
 };
 
-const ClientField = () => {
+const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
 	const {
 		register,
 		handleSubmit,
 		setValue,
 		control,
+		watch,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
 			secondaryClient: [],
-			poc: [],
+			pocList: [],
 		},
 	});
 
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryClient',
-		// name: 'poc',
 	});
-	/* const { fields, append1, remove1 } = useFieldArray({
+	const {
+		fields: pocFields,
+		append: appendPOC,
+		remove: removePOC,
+	} = useFieldArray({
 		control,
-		name: 'poc',
-	}); */
-
+		name: 'pocList',
+	});
+	const watchFields = watch([
+		'primaryClientName',
+		'primaryClientEmailID',
+		'primaryClientPhoneNumber',
+		'primaryDesignation',
+		'companyName',
+		'companyAddress',
+		'primaryClientCountryCode',
+	]);
 	// const [value, setValue] = useState(1);
 	const [showUploadModal, setUploadModal] = useState(false);
-	const [isPrimaryPOC, setPrimaryPOC] = useState(false);
+	const [isSameAsPrimaryPOC, setSameAsPrimaryPOC] = useState(false);
 	const [GEO, setGEO] = useState([]);
 	const [flagAndCode, setFlagAndCode] = useState([]);
 	const RadioButton = (e) => {
@@ -58,8 +72,7 @@ const ClientField = () => {
 	};
 
 	const CheckboxButton = (e) => {
-		setPrimaryPOC(e.target.checked);
-		console.log(`checked = ${e.target.checked}`);
+		setSameAsPrimaryPOC(e.target.checked);
 	};
 
 	const selectHandleChange = (value) => {
@@ -76,13 +89,42 @@ const ClientField = () => {
 			getCodeAndFlagResponse && getCodeAndFlagResponse.responseBody,
 		);
 	};
+	const flagAndCodeMemo = useMemo(
+		() => getFlagAndCodeOptions(flagAndCode),
+		[flagAndCode],
+	);
+	const clientSubmitHandler = (d, error) => {
+		let clientFormDetails = {
+			company: {
+				company: d.companyName,
+				website: d.companyURL,
+				location: d.companyLocation,
+				companySize: d.companySize,
+				address: d.companyAddress,
+				linkedinProfile: d.companyLinkedinProfile,
+			},
+		};
+
+		setTabFieldDisabled({ ...tabFieldDisabled, addNewHiringRequest: false });
+	};
 
 	useEffect(() => {
 		getGEO();
 		getCodeAndFlag();
 	}, []);
 
-	// console.log(errors);
+	useEffect(() => {
+		if (isSameAsPrimaryPOC) {
+			setValue('legalClientFullName', watchFields[0]);
+			setValue('legalClientEmailID', watchFields[1]);
+			setValue('legalClientPhoneNumber', watchFields[2]);
+			setValue('legalClientDesignation', watchFields[3]);
+			setValue('legalCompanyFullName', watchFields[4]);
+			setValue('legalCompanyAddress', watchFields[5]);
+			setValue('legalClientCountryCode', watchFields[6]);
+		}
+	}, [isSameAsPrimaryPOC, setValue, watchFields]);
+
 	return (
 		<div className={ClientFieldStyle.tabsBody}>
 			<div className={ClientFieldStyle.tabsFormItem}>
@@ -91,13 +133,7 @@ const ClientField = () => {
 						<h3>Company Details</h3>
 						<p>Please provide the necessary details</p>
 					</div>
-					{/* <Select
-						onChange={getChangeHandlerWithValue('select')}
-						defaultValue={''}>
-						<Option value="value1">Value1</Option>
-						<Option value="value2">Value2</Option>
-					</Select> */}
-					{/* {errorDetail('select', 'Please input your nickname!')} */}
+
 					<div className={ClientFieldStyle.tabsRightPanel}>
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
@@ -159,7 +195,7 @@ const ClientField = () => {
 									}}
 									label="Company Size"
 									name={'companySize'}
-									type={InputType.TEXT}
+									type={InputType.NUMBER}
 									placeholder="Company Size "
 									required
 								/>
@@ -192,7 +228,7 @@ const ClientField = () => {
 										required: 'please enter the linkedin profile.',
 									}}
 									label="Linkedin Profile"
-									name={'linkedinProfile'}
+									name={'companyLinkedinProfile'}
 									type={InputType.TEXT}
 									placeholder="Enter linkedin profile "
 									required
@@ -204,22 +240,17 @@ const ClientField = () => {
 									className={`${ClientFieldStyle.formGroup} ${ClientFieldStyle.phoneNoGroup}`}>
 									<label>
 										Phone number
-										<span className={ClientFieldStyle.reqField}>*</span>
+										{/* <span className={ClientFieldStyle.reqField}>*</span> */}
 									</label>
 									<div className={ClientFieldStyle.phoneNoCode}>
-										<Select showSearch>
-											{flagAndCode.map((item, index) => (
-												<Option key={index}>
-													<img
-														src={item?.flag}
-														width="20"
-														height="20"
-														alt={''}
-													/>
-													{item?.ccode}
-												</Option>
-											))}
-										</Select>
+										<HRSelectField
+											searchable={true}
+											setValue={setValue}
+											register={register}
+											name="companyCountryCode"
+											defaultValue="+91"
+											options={flagAndCodeMemo}
+										/>
 									</div>
 									<div className={ClientFieldStyle.phoneNoInput}>
 										<HRInputField
@@ -263,20 +294,15 @@ const ClientField = () => {
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd12}>
-								{/* <HRInputField
-									errors={errors}
+								<HRInputField
 									register={register}
 									leadingIcon={<UploadSVG />}
 									label="Company Logo (JPG, PNG, SVG)"
 									name="jdExport"
-									validationSchema={{
-										required: 'please enter the linkedin profile.',
-									}}
 									type={InputType.BUTTON}
-									// value="Upload logo"
+									value="Upload logo"
 									onClickHandler={() => setUploadModal(true)}
-									required
-								/> */}
+								/>
 							</div>
 							<UploadModal
 								modalTitle={'Upload Logo'}
@@ -290,12 +316,13 @@ const ClientField = () => {
 			</div>
 
 			<AddNewClient
-				flagAndCode={flagAndCode}
+				setValue={setValue}
 				fields={fields}
 				append={append}
 				remove={remove}
 				register={register}
 				errors={errors}
+				flagAndCodeMemo={flagAndCodeMemo}
 			/>
 			<div className={ClientFieldStyle.tabsFormItem}>
 				<div className={ClientFieldStyle.tabsFormItemInner}>
@@ -328,12 +355,11 @@ const ClientField = () => {
 										required: 'please enter the client name.',
 									}}
 									label="HS Client Full Name"
-									name={
-										!isPrimaryPOC ? 'legalClientFullName' : 'primaryClientName'
-									}
+									name="legalClientFullName"
 									type={InputType.TEXT}
 									placeholder="Enter full name"
 									required
+									disabled={isSameAsPrimaryPOC}
 								/>
 							</div>
 
@@ -352,6 +378,7 @@ const ClientField = () => {
 									name={'legalClientEmailID'}
 									type={InputType.EMAIL}
 									placeholder="Enter Email ID"
+									disabled={isSameAsPrimaryPOC}
 									required
 								/>
 							</div>
@@ -361,24 +388,16 @@ const ClientField = () => {
 							<div className={ClientFieldStyle.colMd6}>
 								<div
 									className={`${ClientFieldStyle.formGroup} ${ClientFieldStyle.phoneNoGroup}`}>
-									<label>
-										Client's Phone Number
-										<span className={ClientFieldStyle.reqField}>*</span>
-									</label>
+									<label>Client's Phone Number</label>
 									<div className={ClientFieldStyle.phoneNoCode}>
-										<Select showSearch>
-											{flagAndCode.map((item, index) => (
-												<Option key={index}>
-													<img
-														src={item?.flag}
-														width="20"
-														height="20"
-														alt={''}
-													/>
-													{item?.ccode}
-												</Option>
-											))}
-										</Select>
+										<HRSelectField
+											searchable={true}
+											setValue={setValue}
+											register={register}
+											name="legalClientCountryCode"
+											defaultValue="+91"
+											options={flagAndCodeMemo}
+										/>
 									</div>
 									<div className={ClientFieldStyle.phoneNoInput}>
 										<HRInputField
@@ -386,6 +405,7 @@ const ClientField = () => {
 											name={'legalClientPhoneNumber'}
 											type={InputType.NUMBER}
 											placeholder="Enter Phone number"
+											disabled={isSameAsPrimaryPOC}
 										/>
 									</div>
 								</div>
@@ -395,9 +415,10 @@ const ClientField = () => {
 								<HRInputField
 									register={register}
 									label="Designation"
-									name={'legalClientPhoneNumber'}
-									type={InputType.NUMBER}
+									name={'legalClientDesignation'}
+									type={InputType.TEXT}
 									placeholder="Enter designation"
+									disabled={isSameAsPrimaryPOC}
 								/>
 							</div>
 						</div>
@@ -414,6 +435,7 @@ const ClientField = () => {
 									name={'legalCompanyFullName'}
 									type={InputType.TEXT}
 									placeholder="Enter legal name"
+									disabled={isSameAsPrimaryPOC}
 									required
 								/>
 							</div>
@@ -429,6 +451,7 @@ const ClientField = () => {
 									name={'legalCompanyAddress'}
 									type={InputType.TEXT}
 									placeholder="Enter legal address"
+									disabled={isSameAsPrimaryPOC}
 									required
 								/>
 							</div>
@@ -437,13 +460,14 @@ const ClientField = () => {
 				</div>
 			</div>
 
-			{/* <AddNewPOC
-				fields={fields}
-				append={append}
-				remove={remove}
+			<AddNewPOC
+				setValue={setValue}
+				fields={pocFields}
+				append={appendPOC}
+				remove={removePOC}
 				register={register}
 				errors={errors}
-			/> */}
+			/>
 			<div className={ClientFieldStyle.formPanelAction}>
 				<button
 					type="button"
@@ -451,8 +475,8 @@ const ClientField = () => {
 					Save as Draft
 				</button>
 				<button
-					type="button"
-					onClick={handleSubmit((d) => console.log(d))}
+					type="submit"
+					onClick={handleSubmit(clientSubmitHandler)}
 					className={ClientFieldStyle.btnPrimary}>
 					Next Page
 				</button>
