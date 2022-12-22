@@ -1,13 +1,17 @@
-import { Select } from 'antd';
 import { EmailRegEx, InputType } from 'constants/application';
+import { ValidateInput } from 'constants/inputValidators';
+import { HTTPStatusCode } from 'constants/network';
+import { ClientDAO } from 'core/client/clientDAO';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
-import React, { useCallback } from 'react';
-
+import React, { useCallback, useEffect, useState } from 'react';
+import { _isNull } from 'shared/utils/basic_utils';
 import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';
-const { Option } = Select;
+
 const AddNewClient = ({
+	setError,
+	watch,
 	fields,
 	append,
 	remove,
@@ -30,6 +34,40 @@ const AddNewClient = ({
 		},
 		[remove],
 	);
+
+	/** To check Duplicate email exists Start */
+
+	const watchPrimaryEmail = watch('primaryClientEmailID');
+	const getEmailALreadyExist = useCallback(
+		async (data) => {
+			let emailDuplicate = await ClientDAO.getDuplicateEmailRequestDAO(data);
+			emailDuplicate?.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
+				setError('primaryClientEmailID', {
+					type: 'duplicateEmail',
+					message: emailDuplicate?.responseBody,
+				});
+		},
+		[setError],
+	);
+	const checkEmailFormat = useCallback(() => {
+		let emailValidResponse = ValidateInput.email(watchPrimaryEmail);
+
+		setError('primaryClientEmailID', {
+			type: 'emailFormat',
+			message: emailValidResponse?.isError && emailValidResponse?.errorMsg,
+		});
+		return emailValidResponse?.isError;
+	}, [setError, watchPrimaryEmail]);
+
+	useEffect(() => {
+		let timer;
+		if (!_isNull(watchPrimaryEmail) && !checkEmailFormat()) {
+			timer = setTimeout(() => getEmailALreadyExist(watchPrimaryEmail), 3000);
+		}
+		return () => clearTimeout(timer);
+	}, [getEmailALreadyExist, watchPrimaryEmail, checkEmailFormat]);
+
+	/** To check Duplicate email exists End */
 
 	return (
 		<div className={AddClientStyle.tabsFormItem}>
@@ -72,10 +110,13 @@ const AddNewClient = ({
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the primary client email ID.',
-									pattern: {
-										value: EmailRegEx.email,
-										message: 'please enter a valid email.',
-									},
+									/* validate: {
+										emailFormat: (val) =>
+											ValidateInput.email(val).isError || 'Email is not valid.',
+										duplicateEmail: async (val) =>
+											(await getEmailALreadyExist(val)) ||
+											'Email Aleady exits.',
+									}, */
 								}}
 								label="HS Client Email ID (Primary)"
 								name={'primaryClientEmailID'}
@@ -155,12 +196,14 @@ const AddNewClient = ({
 							<p>Please provide the necessary details</p>
 							{fields.length - 1 === index && (
 								<div className={AddClientStyle.leftPanelAction}>
-									<button
-										type="button"
-										className={AddClientStyle.btnPrimary}
-										onClick={onAddNewClient}>
-										Add More
-									</button>
+									{fields.length < 3 && (
+										<button
+											type="button"
+											className={AddClientStyle.btnPrimary}
+											onClick={onAddNewClient}>
+											Add More
+										</button>
+									)}
 									<button
 										type="button"
 										className={AddClientStyle.btn}

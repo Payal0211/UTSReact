@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Checkbox, Select } from 'antd';
+import { Checkbox } from 'antd';
 import { EmailRegEx, InputType } from 'constants/application';
 import ClientFieldStyle from './clientField.module.css';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
@@ -11,7 +11,12 @@ import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSel
 import { useFieldArray, useForm } from 'react-hook-form';
 import AddNewPOC from '../addPOC/addPOC';
 import { useMemo } from 'react';
-import { getFlagAndCodeOptions } from 'modules/client/clientUtils';
+import {
+	clientFormDataFormatter,
+	getFlagAndCodeOptions,
+} from 'modules/client/clientUtils';
+import { ClientDAO } from 'core/client/clientDAO';
+import { HTTPStatusCode } from 'constants/network';
 
 export const secondaryClient = {
 	fullName: '',
@@ -25,12 +30,19 @@ export const poc = {
 	contactName: '',
 };
 
-const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
+const ClientField = ({
+	setTitle,
+	salesManData,
+	tabFieldDisabled,
+	setTabFieldDisabled,
+}) => {
 	const {
 		register,
 		handleSubmit,
 		setValue,
 		control,
+		setError,
+		getValues,
 		watch,
 		formState: { errors },
 	} = useForm({
@@ -44,6 +56,7 @@ const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
 		control,
 		name: 'secondaryClient',
 	});
+
 	const {
 		fields: pocFields,
 		append: appendPOC,
@@ -61,7 +74,9 @@ const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
 		'companyAddress',
 		'primaryClientCountryCode',
 	]);
-	// const [value, setValue] = useState(1);
+	/* console.log(watchFields);
+	console.log(getValues()); */
+
 	const [showUploadModal, setUploadModal] = useState(false);
 	const [isSameAsPrimaryPOC, setSameAsPrimaryPOC] = useState(false);
 	const [GEO, setGEO] = useState([]);
@@ -71,7 +86,7 @@ const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
 		// setValue(e.target.value);
 	};
 
-	const CheckboxButton = (e) => {
+	const SameASPrimaryPOCHandler = (e) => {
 		setSameAsPrimaryPOC(e.target.checked);
 	};
 
@@ -93,19 +108,13 @@ const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
 		() => getFlagAndCodeOptions(flagAndCode),
 		[flagAndCode],
 	);
-	const clientSubmitHandler = (d, error) => {
-		let clientFormDetails = {
-			company: {
-				company: d.companyName,
-				website: d.companyURL,
-				location: d.companyLocation,
-				companySize: d.companySize,
-				address: d.companyAddress,
-				linkedinProfile: d.companyLinkedinProfile,
-			},
-		};
-
-		setTabFieldDisabled({ ...tabFieldDisabled, addNewHiringRequest: false });
+	const clientSubmitHandler = async (d) => {
+		let clientFormDetails = clientFormDataFormatter(d);
+		const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
+		if (addClientResult.statusCode === HTTPStatusCode.OK) {
+			setTitle('Add New Hiring Requests');
+			setTabFieldDisabled({ ...tabFieldDisabled, addNewHiringRequest: false });
+		}
 	};
 
 	useEffect(() => {
@@ -123,7 +132,8 @@ const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
 			setValue('legalCompanyAddress', watchFields[5]);
 			setValue('legalClientCountryCode', watchFields[6]);
 		}
-	}, [isSameAsPrimaryPOC, setValue, watchFields]);
+		console.log(getValues('legalClientCountryCode'), '=dsad');
+	}, [isSameAsPrimaryPOC, setValue, watchFields, getValues]);
 
 	return (
 		<div className={ClientFieldStyle.tabsBody}>
@@ -274,7 +284,7 @@ const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
 										<input
 											{...register('remote')}
 											type="radio"
-											value="yes"
+											value={1}
 											id="remote"
 										/>
 										yes
@@ -283,7 +293,7 @@ const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
 										<input
 											{...register('remote')}
 											type="radio"
-											value="no"
+											value={0}
 											id="remote"
 										/>
 										no
@@ -316,6 +326,8 @@ const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
 			</div>
 
 			<AddNewClient
+				setError={setError}
+				watch={watch}
 				setValue={setValue}
 				fields={fields}
 				append={append}
@@ -339,7 +351,7 @@ const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd12}>
 								<div className={ClientFieldStyle.checkBoxGroup}>
-									<Checkbox onChange={CheckboxButton}>
+									<Checkbox onChange={SameASPrimaryPOCHandler}>
 										Same as primary client details
 									</Checkbox>
 								</div>
@@ -461,6 +473,7 @@ const ClientField = ({ tabFieldDisabled, setTabFieldDisabled }) => {
 			</div>
 
 			<AddNewPOC
+				salesManData={salesManData}
 				setValue={setValue}
 				fields={pocFields}
 				append={appendPOC}

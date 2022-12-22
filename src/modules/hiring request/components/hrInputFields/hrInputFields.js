@@ -15,6 +15,7 @@ const HRInputField = ({
 	required,
 	value,
 	disabled,
+
 	type,
 	validationSchema,
 }) => {
@@ -55,9 +56,9 @@ const HRInputField = ({
 			</div>
 			{required && !disabled
 				? errors &&
-				  errors[name]?.type === 'required' && (
+				  errors[name] && (
 						<div className={HRInputFieldStyle.error}>
-							* {errors[name]?.message}
+							{errors[name]?.message && `* ${errors[name]?.message}`}
 						</div>
 				  )
 				: false}

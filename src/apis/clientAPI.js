@@ -20,4 +20,39 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getPOCRequest');
 		}
 	},
+	createClientRequest: async function (clientData) {
+		let httpService = new HttpServices();
+		const miscellaneousData =
+			UserSessionManagementController.getUserMiscellaneousData();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.CREATE +
+			`?LoggedInUserId=${miscellaneousData?.loggedInUserTypeID}`;
+		httpService.dataToSend = clientData;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.createClientRequest');
+		}
+	},
+	getDuplicateEmailRequest: async function (email) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.CHECK_DUPLICATE_EMAIL +
+			`?email=${email}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getDuplicateEmailRequest');
+		}
+	},
 };

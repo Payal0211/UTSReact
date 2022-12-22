@@ -62,6 +62,7 @@ export class HTTPStatusCode {
 	static FORBIDDEN = 403;
 	static NOT_FOUND = 404;
 	static REQUEST_TIMEOUT = 408;
+	static DUPLICATE_RECORD = 409;
 	static UNSUPPORTED_MEDIA_TYPE = 415;
 	static UNPROCESSABLE_ENTITY = 422;
 	static INTERNAL_SERVER_ERROR = 500;

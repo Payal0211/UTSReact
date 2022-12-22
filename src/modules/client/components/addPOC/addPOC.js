@@ -4,7 +4,15 @@ import { useCallback } from 'react';
 import AddNewPOCStyle from './addPOC.module.css';
 import poc from '../clientField/clientField';
 
-const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
+const AddNewPOC = ({
+	salesManData,
+	setValue,
+	fields,
+	append,
+	remove,
+	register,
+	errors,
+}) => {
 	const onAddNewPOC = useCallback(
 		(e) => {
 			e.preventDefault();
@@ -47,29 +55,7 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 									name="primaryContactName"
 									label="Primary Contact Name"
 									defaultValue="Select primary POC"
-									options={[
-										{
-											value: 'contactName1',
-											label: 'Contact Name 1',
-										},
-										{
-											value: 'contactName2',
-											label: 'Contact Name 2',
-										},
-										{
-											value: 'contactName3',
-											label: 'Contact Name 3',
-											// disabled: true,
-										},
-										{
-											value: 'contactName4',
-											label: 'Contact Name 4',
-										},
-										{
-											value: 'contactName5',
-											label: 'Contact Name 5',
-										},
-									]}
+									options={salesManData}
 									required
 									isError={
 										errors['primaryContactName'] && errors['primaryContactName']
@@ -87,29 +73,7 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 									name="secondaryContactName"
 									label="Secondary Contact Name"
 									defaultValue="Select secondary POC"
-									options={[
-										{
-											value: 'contactName1',
-											label: 'Contact Name 1',
-										},
-										{
-											value: 'contactName2',
-											label: 'Contact Name 2',
-										},
-										{
-											value: 'contactName3',
-											label: 'Contact Name 3',
-											// disabled: true,
-										},
-										{
-											value: 'contactName4',
-											label: 'Contact Name 4',
-										},
-										{
-											value: 'contactName5',
-											label: 'Contact Name 5',
-										},
-									]}
+									options={salesManData}
 								/>
 							</div>
 						</div>
@@ -125,29 +89,7 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 											name={`pocList.[${index}].contactName`}
 											label="Secondary Contact Name"
 											defaultValue="Select secondary POC"
-											options={[
-												{
-													value: 'contactName1',
-													label: 'Contact Name 1',
-												},
-												{
-													value: 'contactName2',
-													label: 'Contact Name 2',
-												},
-												{
-													value: 'contactName3',
-													label: 'Contact Name 3',
-													// disabled: true,
-												},
-												{
-													value: 'contactName4',
-													label: 'Contact Name 4',
-												},
-												{
-													value: 'contactName5',
-													label: 'Contact Name 5',
-												},
-											]}
+											options={salesManData}
 										/>
 									</div>
 									<div onClick={(e) => onRemovePOC(e, index)}>X</div>
