@@ -48,6 +48,8 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 		},
 	});
 	const [addClientResponseID, setAddClientResponseID] = useState(0);
+	const [controlledLegalCountryCode, setControlledLegalCountryCode] =
+		useState('+91');
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryClient',
@@ -129,6 +131,7 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 			setValue('legalCompanyFullName', watchFields[4]);
 			setValue('legalCompanyAddress', watchFields[5]);
 			setValue('legalClientCountryCode', watchFields[6]);
+			setControlledLegalCountryCode(watchFields[6]);
 		}
 	}, [isSameAsPrimaryPOC, setValue, watchFields, getValues]);
 
@@ -406,12 +409,16 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 									<label>Client's Phone Number</label>
 									<div className={ClientFieldStyle.phoneNoCode}>
 										<HRSelectField
+											setControlledValue={setControlledLegalCountryCode}
+											controlledValue={controlledLegalCountryCode}
+											isControlled={true}
 											searchable={true}
 											setValue={setValue}
 											register={register}
 											name="legalClientCountryCode"
 											defaultValue="+91"
 											options={flagAndCodeMemo}
+											disabled={isSameAsPrimaryPOC}
 										/>
 									</div>
 									<div className={ClientFieldStyle.phoneNoInput}>

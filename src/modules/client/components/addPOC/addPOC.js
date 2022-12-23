@@ -38,16 +38,16 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 				<div className={AddNewPOCStyle.tabsLeftPanel}>
 					<h3>Point of Contact</h3>
 					<p>Enter the point of contact from Uplers</p>
-					<div className={AddNewPOCStyle.leftPanelAction}>
-						{fields.length < 2 && (
+					{fields.length < 2 && (
+						<div className={AddNewPOCStyle.leftPanelAction}>
 							<button
 								onClick={onAddNewPOC}
 								type="button"
 								className={AddNewPOCStyle.btn}>
 								Add More
 							</button>
-						)}
-					</div>
+						</div>
+					)}
 				</div>
 
 				<div className={AddNewPOCStyle.tabsRightPanel}>
