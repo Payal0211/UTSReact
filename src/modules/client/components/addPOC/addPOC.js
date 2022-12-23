@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import AddNewPOCStyle from './addPOC.module.css';
 import poc from '../clientField/clientField';
 import { MasterDAO } from 'core/master/masterDAO';
-
+import { ReactComponent as CircleDeleteSVG } from 'assets/svg/circleDelete.svg';
 const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 	const [salesMan, setSalesMan] = useState([]);
 	const getSalesMan = async () => {
@@ -39,12 +39,14 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 					<h3>Point of Contact</h3>
 					<p>Enter the point of contact from Uplers</p>
 					<div className={AddNewPOCStyle.leftPanelAction}>
-						<button
-							onClick={onAddNewPOC}
-							type="button"
-							className={AddNewPOCStyle.btn}>
-							Add More
-						</button>
+						{fields.length < 2 && (
+							<button
+								onClick={onAddNewPOC}
+								type="button"
+								className={AddNewPOCStyle.btn}>
+								Add More
+							</button>
+						)}
 					</div>
 				</div>
 
@@ -85,7 +87,8 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 								<div
 									className={AddNewPOCStyle.colMd6}
 									key={`countPOC${index}`}>
-									<div className={AddNewPOCStyle.formGroup}>
+									<div
+										className={`${AddNewPOCStyle.formGroup} ${AddNewPOCStyle.formClosed}`}>
 										<HRSelectField
 											setValue={setValue}
 											register={register}
@@ -94,8 +97,12 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
 											defaultValue="Select secondary POC"
 											options={salesMan && salesMan}
 										/>
+										<div
+											className={AddNewPOCStyle.formClosedICon}
+											onClick={(e) => onRemovePOC(e, index)}>
+											<CircleDeleteSVG />
+										</div>
 									</div>
-									<div onClick={(e) => onRemovePOC(e, index)}>X</div>
 								</div>
 							);
 						})}

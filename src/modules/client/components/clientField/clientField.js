@@ -14,6 +14,7 @@ import { useMemo } from 'react';
 import {
 	clientFormDataFormatter,
 	getFlagAndCodeOptions,
+	locationFormatter,
 } from 'modules/client/clientUtils';
 import { ClientDAO } from 'core/client/clientDAO';
 import { HTTPStatusCode } from 'constants/network';
@@ -46,7 +47,7 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 			pocList: [],
 		},
 	});
-
+	const [addClientResponseID, setAddClientResponseID] = useState(0);
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryClient',
@@ -105,11 +106,11 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 		[flagAndCode],
 	);
 	const clientSubmitHandler = async (d) => {
-		let clientFormDetails = clientFormDataFormatter(d);
-		console.log(clientFormDetails);
+		let clientFormDetails = clientFormDataFormatter(d, addClientResponseID);
 		const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
 		if (addClientResult.statusCode === HTTPStatusCode.OK) {
 			setTitle('Add New Hiring Requests');
+			setAddClientResponseID(addClientResult?.responseBody?.details?.ContactID);
 			setTabFieldDisabled({ ...tabFieldDisabled, addNewHiringRequest: false });
 		}
 	};
@@ -182,7 +183,7 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 										name="companyLocation"
 										label="Company Location"
 										defaultValue="Select location"
-										options={GEO}
+										options={locationFormatter(GEO)}
 										required
 										isError={
 											errors['companyLocation'] && errors['companyLocation']
@@ -275,24 +276,30 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 								<div className={ClientFieldStyle.radioFormGroup}>
 									<label>
 										Does the client have experience of hiring remotely?
+										<span className={ClientFieldStyle.reqField}>*</span>
 									</label>
-									<label htmlFor="remote">
+									<label className={ClientFieldStyle.container}>
+										<p>Yes</p>
 										<input
 											{...register('remote')}
-											type="radio"
 											value={1}
+											type="radio"
+											checked="checked"
 											id="remote"
+											name="remote"
 										/>
-										yes
+										<span className={ClientFieldStyle.checkmark}></span>
 									</label>
-									<label htmlFor="remote">
+									<label className={ClientFieldStyle.container}>
+										<p>No</p>
 										<input
 											{...register('remote')}
-											type="radio"
 											value={0}
+											type="radio"
 											id="remote"
+											name="remote"
 										/>
-										no
+										<span className={ClientFieldStyle.checkmark}></span>
 									</label>
 								</div>
 							</div>

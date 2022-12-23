@@ -223,3 +223,21 @@
 .mb0 [class*="input_field"] {
     margin-bottom: 0 !important;
 }
+.formClosed{
+    margin: 0;
+    position: relative;
+    padding-right: 28px;
+}
+.formClosedICon{
+    position: absolute;
+    right: 0;
+    top: 24px;
+    line-height: 20px;
+    border-radius: 30px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+.formClosedICon svg{
+    vertical-align: middle;
+}

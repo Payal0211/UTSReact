@@ -11,6 +11,7 @@ export function getFlagAndCodeOptions(flagAndCode) {
 	});
 	return tempArray;
 }
+
 function getFlagLabel(item) {
 	return (
 		<>
@@ -24,12 +25,22 @@ function getFlagLabel(item) {
 		</>
 	);
 }
-export function clientFormDataFormatter(d) {
+export function locationFormatter(location) {
+	let tempArray = [];
+	location?.forEach((item) => {
+		tempArray.push({
+			id: item.value,
+			value: item.value,
+		});
+	});
+	return tempArray;
+}
+export function clientFormDataFormatter(d, contactID) {
 	const clientFormDetails = {
 		company: {
 			company: d.companyName,
 			website: d.companyURL,
-			location: d.companyLocation.toString(),
+			location: d.companyLocation,
 			companySize: d.companySize,
 			address: d.companyAddress,
 			linkedinProfile: d.companyLinkedinProfile,
@@ -40,6 +51,7 @@ export function clientFormDataFormatter(d) {
 			teamManagement: d.remote,
 		},
 		primaryClient: {
+			id: !_isNull(contactID) ? contactID : 0,
 			fullName: d.primaryClientName,
 			emailId: d.primaryClientEmailID,
 			contactNo: _isNull(d.primaryClientCountryCode)
