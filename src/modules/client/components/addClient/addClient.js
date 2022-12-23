@@ -36,7 +36,7 @@ const AddNewClient = ({
 	);
 
 	/** To check Duplicate email exists Start */
-
+	//TODO:- Show loader on Duplicate email caption:- verifying email
 	const watchPrimaryEmail = watch('primaryClientEmailID');
 	const getEmailALreadyExist = useCallback(
 		async (data) => {
@@ -44,28 +44,23 @@ const AddNewClient = ({
 			emailDuplicate?.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
 				setError('primaryClientEmailID', {
 					type: 'duplicateEmail',
-					message: emailDuplicate?.responseBody,
+					message: 'This email is already exists. Please enter another email.',
 				});
+			emailDuplicate.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
+				setValue('primaryClientEmailID', '');
 		},
-		[setError],
+		[setError, setValue],
 	);
-	const checkEmailFormat = useCallback(() => {
-		let emailValidResponse = ValidateInput.email(watchPrimaryEmail);
-
-		setError('primaryClientEmailID', {
-			type: 'emailFormat',
-			message: emailValidResponse?.isError && emailValidResponse?.errorMsg,
-		});
-		return emailValidResponse?.isError;
-	}, [setError, watchPrimaryEmail]);
-
 	useEffect(() => {
 		let timer;
-		if (!_isNull(watchPrimaryEmail) && !checkEmailFormat()) {
+		if (
+			!_isNull(watchPrimaryEmail) &&
+			!ValidateInput.email(watchPrimaryEmail).isError
+		) {
 			timer = setTimeout(() => getEmailALreadyExist(watchPrimaryEmail), 3000);
 		}
 		return () => clearTimeout(timer);
-	}, [getEmailALreadyExist, watchPrimaryEmail, checkEmailFormat]);
+	}, [getEmailALreadyExist, watchPrimaryEmail]);
 
 	/** To check Duplicate email exists End */
 
@@ -110,13 +105,10 @@ const AddNewClient = ({
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the primary client email ID.',
-									/* validate: {
-										emailFormat: (val) =>
-											ValidateInput.email(val).isError || 'Email is not valid.',
-										duplicateEmail: async (val) =>
-											(await getEmailALreadyExist(val)) ||
-											'Email Aleady exits.',
-									}, */
+									pattern: {
+										value: EmailRegEx.email,
+										message: 'Entered value does not match email format',
+									},
 								}}
 								label="HS Client Email ID (Primary)"
 								name={'primaryClientEmailID'}

@@ -29,3 +29,7 @@
     font-size: 14px;
     margin-left: 4px;
 }
+.disabled {
+    opacity: .7;
+    cursor: not-allowed !important;
+}
