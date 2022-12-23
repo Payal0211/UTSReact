@@ -1,5 +1,5 @@
 import { Tabs } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DebriefingHR from 'modules/hiring request/components/debriefingHR/debriefingHR';
 import HRFields from 'modules/hiring request/components/hrFields/hrFields';
 import AddNewClientStyle from './add_new_client.module.css';
@@ -7,6 +7,12 @@ import ClientField from 'modules/client/components/clientField/clientField';
 
 const AddNewClientScreen = () => {
 	const [title, setTitle] = useState('Add New Client');
+	const [tabFieldDisabled, setTabFieldDisabled] = useState({
+		addNewClient: false,
+		addNewHiringRequest: true,
+		debriefingHR: true,
+	});
+
 	return (
 		<div className={AddNewClientStyle.addNewContainer}>
 			<div className={AddNewClientStyle.addHRTitle}>{title}</div>
@@ -15,6 +21,7 @@ const AddNewClientScreen = () => {
 				<Tabs
 					onChange={(e) => setTitle(e)}
 					defaultActiveKey="1"
+					activeKey={title}
 					animated={true}
 					tabBarGutter={50}
 					tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
@@ -22,17 +29,35 @@ const AddNewClientScreen = () => {
 						{
 							label: 'Add New Client',
 							key: 'Add New Client',
-							children: <ClientField />,
+							children: (
+								<ClientField
+									setTitle={setTitle}
+									tabFieldDisabled={tabFieldDisabled}
+									setTabFieldDisabled={setTabFieldDisabled}
+								/>
+							),
 						},
 						{
 							label: 'Add New Hiring Requests',
 							key: 'Add New Hiring Requests',
-							children: <HRFields />,
+							children: (
+								<HRFields
+									tabFieldDisabled={tabFieldDisabled}
+									setTabFieldDisabled={setTabFieldDisabled}
+								/>
+							),
+							disabled: tabFieldDisabled.addNewHiringRequest,
 						},
 						{
 							label: 'Debriefing HR',
 							key: 'Debriefing HR',
-							children: <DebriefingHR />,
+							children: (
+								<DebriefingHR
+									tabFieldDisabled={tabFieldDisabled}
+									setTabFieldDisabled={setTabFieldDisabled}
+								/>
+							),
+							disabled: tabFieldDisabled.debriefingHR,
 						},
 					]}
 				/>

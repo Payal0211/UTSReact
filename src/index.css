@@ -357,6 +357,10 @@ table{
   font-size: inherit;
   color: inherit;
 }
+.ant-select .ant-select-selector .ant-select-selection-item img{
+  margin-right:8px;
+  vertical-align: top;
+}
 
 .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
   border-color: #CECCCC;
@@ -487,6 +491,29 @@ table{
 
 .ant-radio-group .ant-radio-wrapper .ant-radio.ant-radio-checked .ant-radio-inner::after {
   transform: scale(1);
+}
+.ant-select-dropdown .ant-select-item img {
+  margin-right: 8px;
+}
+
+/*Ant Select Search*/
+.ant-select .ant-select-selector .ant-select-selection-search {
+  position: absolute;
+  padding: 16px 0 16px 16px;
+  left: 0;
+  right: 40px;
+}
+
+.ant-select .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input {
+  height: 20px;
+}
+
+.ant-select .ant-select-selector .ant-select-selection-placeholder {
+  font-family: 'Montserrat';
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(107, 107, 107, 0.6);
 }
 
 /**--MODAl---------*/

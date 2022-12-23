@@ -8,6 +8,8 @@ import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { MasterDAO } from 'core/master/masterDAO';
 
+import HRSelectField from '../hrSelectField/hrSelectField';
+import { useForm } from 'react-hook-form';
 const HRFields = () => {
 	const inputRef = useRef(null);
 	const [availability, setAvailability] = useState([]);
@@ -15,6 +17,14 @@ const HRFields = () => {
 	const [items, setItems] = useState(['3 months', '6 months', '9 months']);
 	const [name, setName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
+	const {
+		register,
+		handleSubmit,
+		reset,
+		control,
+		formState: { errors },
+	} = useForm();
+
 	const selectHandleChange = (value) => {
 		console.log(`selected ${value}`);
 	};
@@ -30,7 +40,7 @@ const HRFields = () => {
 		}, 0);
 	};
 	const getTimeZonePreference = async () => {
-		const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO();
+		const timeZone = await MasterDAO.getTalentTimeZoneRequestDAO();
 		setTimeZonePref(timeZone && timeZone.responseBody);
 	};
 	const getAvailability = async () => {
@@ -49,19 +59,33 @@ const HRFields = () => {
 					<h3>Hiring Request Details</h3>
 					<p>Please provide the necessary details</p>
 				</div>
-				<div className={HRFieldStyle.hrFieldRightPane}>
-					<div className={HRFieldStyle.colMd12}>
-						<HRInputField
-							label={'Client Email/Name'}
-							name="client_Email_Name"
-							type={InputType.TEXT}
-							placeholder="Enter Client Email/Name"
-							required
-						/>
+				<form
+					id="hrForm"
+					className={HRFieldStyle.hrFieldRightPane}>
+					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd12}>
+							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the client email/name.',
+								}}
+								label={'Client Email/Name'}
+								name="clientName"
+								type={InputType.TEXT}
+								placeholder="Enter Client Email/Name"
+								required
+							/>
+						</div>
 					</div>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the company name.',
+								}}
 								label="Company Name"
 								name="companyName"
 								type={InputType.TEXT}
@@ -72,13 +96,10 @@ const HRFields = () => {
 
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Hiring Request Role</label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
-								<Select
+								<HRSelectField
+									register={register}
+									label={'Hiring Request Role'}
 									defaultValue="Select Role"
-									onChange={selectHandleChange}
 									options={[
 										{
 											value: 'USD',
@@ -89,29 +110,39 @@ const HRFields = () => {
 											label: 'INR',
 										},
 									]}
+									onChangeHandler={selectHandleChange}
+									required
+									errorMsg={'Please select hiring request role'}
 								/>
 							</div>
 						</div>
 					</div>
-					<div className={HRFieldStyle.colMd12}>
-						<HRInputField
-							label={'Hiring Request Title'}
-							name="hrTitle"
-							type={InputType.TEXT}
-							placeholder="Enter title"
-							required
-						/>
+					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd12}>
+							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the hiring request title.',
+								}}
+								label={'Hiring Request Title'}
+								name="hrTitle"
+								type={InputType.TEXT}
+								placeholder="Enter title"
+								required
+							/>
+						</div>
 					</div>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
 								leadingIcon={<UploadSVG />}
 								label="Job Description (PDF)"
 								name="jdExport"
 								type={InputType.BUTTON}
 								value="Upload JD File"
 								onClickHandler={() => setUploadModal(true)}
-								required
 							/>
 						</div>
 						<UploadModal
@@ -127,17 +158,23 @@ const HRFields = () => {
 								name="jdURL"
 								type={InputType.TEXT}
 								placeholder="Add JD link"
+								register={register}
 							/>
 						</div>
 					</div>
 
 					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd12}>
+							<div className={`${HRFieldStyle.formGroup} ${HRFieldStyle.mb0}`}>
+								<label>
+									Add your estimated budget
+									<span className={HRFieldStyle.reqField}>*</span>
+								</label>
+							</div>
+						</div>
+
 						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Add your estimated budget</label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
 								<Select
 									defaultValue="Select Budget"
 									onChange={selectHandleChange}
@@ -157,22 +194,31 @@ const HRFields = () => {
 
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
+								register={register}
 								name="minimumBudget"
 								type={InputType.TEXT}
 								placeholder="Minimum- Ex: 2300, 2000"
 							/>
 						</div>
+
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
+								register={register}
 								name="maximumBudget"
 								type={InputType.TEXT}
 								placeholder="Maximum- Ex: 2300, 2000"
 							/>
 						</div>
 					</div>
+
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the nr margin percentage.',
+								}}
 								label="NR Margin Percentage"
 								name="NRMargin"
 								type={InputType.TEXT}
@@ -250,12 +296,28 @@ const HRFields = () => {
 							</div>
 						</div>
 						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
-								label="Company URL"
-								name="companyURL"
-								type={InputType.TEXT}
-								placeholder="Enter profile link"
-							/>
+							<div className={HRFieldStyle.formGroup}>
+								<label>
+									Required Experience
+									<span className={HRFieldStyle.reqField}>*</span>
+								</label>
+								<div className={HRFieldStyle.reqExperience}>
+									<HRInputField
+										required
+										register={register}
+										name="years"
+										type={InputType.NUMBER}
+										placeholder="Enter years"
+									/>
+									<HRInputField
+										register={register}
+										required
+										name="months"
+										type={InputType.NUMBER}
+										placeholder="Enter months"
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div className={HRFieldStyle.row}>
@@ -268,14 +330,18 @@ const HRFields = () => {
 								<Select
 									defaultValue="Select time zone"
 									onChange={selectHandleChange}
-									options={timeZonePref?.map((item) => [
-										{ value: item?.value, label: item?.value },
-									])}
+									// onChange={(val, a) => selectHandleChange(val, a)}
+									options={timeZonePref}
 								/>
 							</div>
 						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the number of talents.',
+								}}
 								label="How many talents are needed."
 								name="talentsNumber"
 								type={InputType.NUMBER}
@@ -300,6 +366,11 @@ const HRFields = () => {
 						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
+								/* errors={errors}
+								validationSchema={{
+									required: 'please enter the company name.',
+								}} */
 								label="Deal ID"
 								name="dealID"
 								type={InputType.TEXT}
@@ -310,6 +381,11 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the BQ form link.',
+								}}
 								label="BQ Form Link"
 								name="bqFormLink"
 								type={InputType.TEXT}
@@ -319,6 +395,11 @@ const HRFields = () => {
 						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the discovery call link.',
+								}}
 								label="Discovery Call Link"
 								name="discoveryCallLink"
 								type={InputType.TEXT}
@@ -327,23 +408,23 @@ const HRFields = () => {
 							/>
 						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 			<Divider />
 
-			{/* <AddInterviewer />
-			<Divider /> */}
 			<div className={HRFieldStyle.formPanelAction}>
 				<button
 					type="button"
 					className={HRFieldStyle.btn}>
-					Need More Info
+					Save as Draft
 				</button>
 
 				<button
-					type="button"
+					// form="hrForm"
+					onClick={handleSubmit((d) => console.log(d))}
+					// type="submit"
 					className={HRFieldStyle.btnPrimary}>
-					Submit
+					Create HR
 				</button>
 			</div>
 		</div>

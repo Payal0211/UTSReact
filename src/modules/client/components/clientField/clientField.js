@@ -1,24 +1,136 @@
-import { useState } from 'react';
-import { Checkbox, Radio, Select } from 'antd';
-import { InputType } from 'constants/application';
-import InputField from '../inputField/input_field';
+import { useState, useEffect } from 'react';
+import { Checkbox } from 'antd';
+import { EmailRegEx, InputType } from 'constants/application';
 import ClientFieldStyle from './clientField.module.css';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
-const ClientField = () => {
-	const [value, setValue] = useState(1);
+import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
+import UploadModal from 'shared/components/uploadModal/uploadModal';
+import AddNewClient from '../addClient/addClient';
+import { MasterDAO } from 'core/master/masterDAO';
+import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
+import { useFieldArray, useForm } from 'react-hook-form';
+import AddNewPOC from '../addPOC/addPOC';
+import { useMemo } from 'react';
+import {
+	clientFormDataFormatter,
+	getFlagAndCodeOptions,
+} from 'modules/client/clientUtils';
+import { ClientDAO } from 'core/client/clientDAO';
+import { HTTPStatusCode } from 'constants/network';
+
+export const secondaryClient = {
+	fullName: '',
+	emailID: '',
+	countryCode: '',
+	phoneNumber: '',
+	designation: '',
+	linkedinProfile: '',
+};
+export const poc = {
+	contactName: '',
+};
+
+const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		control,
+		setError,
+		getValues,
+		watch,
+		formState: { errors },
+	} = useForm({
+		defaultValues: {
+			secondaryClient: [],
+			pocList: [],
+		},
+	});
+
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: 'secondaryClient',
+	});
+
+	const {
+		fields: pocFields,
+		append: appendPOC,
+		remove: removePOC,
+	} = useFieldArray({
+		control,
+		name: 'pocList',
+	});
+	const watchFields = watch([
+		'primaryClientName',
+		'primaryClientEmailID',
+		'primaryClientPhoneNumber',
+		'primaryDesignation',
+		'companyName',
+		'companyAddress',
+		'primaryClientCountryCode',
+	]);
+	/* console.log(watchFields);
+	console.log(getValues()); */
+
+	const [showUploadModal, setUploadModal] = useState(false);
+	const [isSameAsPrimaryPOC, setSameAsPrimaryPOC] = useState(false);
+	const [GEO, setGEO] = useState([]);
+	const [flagAndCode, setFlagAndCode] = useState([]);
 
 	const RadioButton = (e) => {
 		console.log('radio checked', e.target.value);
-		setValue(e.target.value);
+		// setValue(e.target.value);
 	};
 
-	const CheckboxButton = (e) => {
-		console.log(`checked = ${e.target.checked}`);
+	const SameASPrimaryPOCHandler = (e) => {
+		setSameAsPrimaryPOC(e.target.checked);
 	};
 
 	const selectHandleChange = (value) => {
 		console.log(`selected ${value}`);
 	};
+	const getGEO = async () => {
+		const geoLocationResponse = await MasterDAO.getGEORequestDAO();
+		setGEO(geoLocationResponse && geoLocationResponse.responseBody);
+	};
+
+	const getCodeAndFlag = async () => {
+		const getCodeAndFlagResponse = await MasterDAO.getCodeAndFlagRequestDAO();
+		setFlagAndCode(
+			getCodeAndFlagResponse && getCodeAndFlagResponse.responseBody,
+		);
+	};
+	const flagAndCodeMemo = useMemo(
+		() => getFlagAndCodeOptions(flagAndCode),
+		[flagAndCode],
+	);
+	const clientSubmitHandler = async (d) => {
+		let clientFormDetails = clientFormDataFormatter(d);
+		console.log(clientFormDetails);
+		const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
+		if (addClientResult.statusCode === HTTPStatusCode.OK) {
+			setTitle('Add New Hiring Requests');
+			setTabFieldDisabled({ ...tabFieldDisabled, addNewHiringRequest: false });
+		}
+	};
+
+	useEffect(() => {
+		getGEO();
+		getCodeAndFlag();
+	}, []);
+
+	useEffect(() => {
+		if (isSameAsPrimaryPOC) {
+			setValue('legalClientFullName', watchFields[0]);
+			setValue('legalClientEmailID', watchFields[1]);
+			setValue('legalClientPhoneNumber', watchFields[2]);
+			setValue('legalClientDesignation', watchFields[3]);
+			setValue('legalCompanyFullName', watchFields[4]);
+			setValue('legalCompanyAddress', watchFields[5]);
+			setValue('legalClientCountryCode', watchFields[6]);
+		}
+	}, [isSameAsPrimaryPOC, setValue, watchFields, getValues]);
+
 	return (
 		<div className={ClientFieldStyle.tabsBody}>
 			<div className={ClientFieldStyle.tabsFormItem}>
@@ -27,142 +139,134 @@ const ClientField = () => {
 						<h3>Company Details</h3>
 						<p>Please provide the necessary details</p>
 					</div>
+
 					<div className={ClientFieldStyle.tabsRightPanel}>
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="HS Company Name"
-									reqField="*"
-									name="username"
+								<HRInputField
 									type={InputType.TEXT}
+									name="companyName"
+									label="HS Company Name"
+									errors={errors}
+									register={register}
 									placeholder="Enter name"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
+									validationSchema={{
+										required: 'Please enter the company name.',
+									}}
+									required
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
+									register={register}
+									errors={errors}
 									label="Company URL"
-									reqField="*"
 									name="companyURL"
 									type={InputType.TEXT}
+									validationSchema={{
+										required: 'Please enter the profile link.',
+									}}
 									placeholder="Enter profile link"
+									required
 								/>
 							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								{/* <InputField
-												label="Company Location"
-												name="username"
-												type={InputType.TEXT}
-												placeholder="Enter name"
-											/> */}
 								<div className={ClientFieldStyle.formGroup}>
-									<label>
-										Company Location{' '}
-										<span className={ClientFieldStyle.reqField}>*</span>
-									</label>
-									<Select
+									<HRSelectField
+										setValue={setValue}
+										register={register}
+										name="companyLocation"
+										label="Company Location"
 										defaultValue="Select location"
-										onChange={selectHandleChange}
-										options={[
-											{
-												value: 'Location1',
-												label: 'Location 1',
-											},
-											{
-												value: 'Location2',
-												label: 'Location 2',
-											},
-											{
-												value: 'Location3',
-												label: 'Location 3',
-												// disabled: true,
-											},
-											{
-												value: 'Location4',
-												label: 'Location 4',
-											},
-											{
-												value: 'Location5',
-												label: 'Location 5',
-											},
-										]}
+										options={GEO}
+										required
+										isError={
+											errors['companyLocation'] && errors['companyLocation']
+										}
+										errorMsg="Please select a location."
 									/>
 								</div>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<div className={ClientFieldStyle.formGroup}>
-									<label>
-										Company Size{' '}
-										<span className={ClientFieldStyle.reqField}>*</span>
-									</label>
-									<Select
-										defaultValue="Select location"
-										onChange={selectHandleChange}
-										options={[
-											{
-												value: '50Employees',
-												label: '0 - 50 Employees',
-											},
-											{
-												value: '100Employees',
-												label: '50 - 100 Employees',
-											},
-											{
-												value: '150Employees',
-												label: '100 - 150 Employees',
-												// disabled: true,
-											},
-											{
-												value: '200Employees',
-												label: '150 - 200 Employees',
-											},
-											{
-												value: '200+Employees',
-												label: '200+ Employees',
-											},
-										]}
-									/>
-								</div>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'Please enter the company size.',
+									}}
+									label="Company Size"
+									name={'companySize'}
+									type={InputType.NUMBER}
+									placeholder="Company Size "
+									required
+								/>
 							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd12}>
-								<InputField
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'Please enter the company address.',
+									}}
 									label="Company Address"
-									reqField="*"
-									name="username"
+									name={'companyAddress'}
 									type={InputType.TEXT}
-									placeholder="Enter address"
+									placeholder="Company Address "
+									required
 								/>
 							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the linkedin profile.',
+									}}
 									label="Linkedin Profile"
-									reqField="*"
-									name="username"
+									name={'companyLinkedinProfile'}
 									type={InputType.TEXT}
-									placeholder="Enter linkedin Profile"
+									placeholder="Enter linkedin profile "
+									required
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="Phone number"
-									name="companyURL"
-									type={InputType.TEXT}
-									placeholder="Enter number"
-								/>
+								<div
+									className={`${ClientFieldStyle.formGroup} ${ClientFieldStyle.phoneNoGroup}`}>
+									<label>
+										Phone number
+										{/* <span className={ClientFieldStyle.reqField}>*</span> */}
+									</label>
+									<div className={ClientFieldStyle.phoneNoCode}>
+										<HRSelectField
+											searchable={true}
+											setValue={setValue}
+											register={register}
+											name="companyCountryCode"
+											defaultValue="+91"
+											options={flagAndCodeMemo}
+										/>
+									</div>
+									<div className={ClientFieldStyle.phoneNoInput}>
+										<HRInputField
+											register={register}
+											name={'phoneNumber'}
+											type={InputType.NUMBER}
+											placeholder="Enter Phone number"
+										/>
+									</div>
+								</div>
 							</div>
 						</div>
 
@@ -172,188 +276,62 @@ const ClientField = () => {
 									<label>
 										Does the client have experience of hiring remotely?
 									</label>
-									<Radio.Group
-										onChange={RadioButton}
-										value={value}>
-										<Radio value={1}>Yes</Radio>
-										<Radio value={2}>No</Radio>
-									</Radio.Group>
-								</div>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd12}>
-								<div className={ClientFieldStyle.formGroup}>
-									<label>
-										Company Logo (JPG, PNG, SVG){' '}
-										<span className={ClientFieldStyle.reqField}>*</span>
+									<label htmlFor="remote">
+										<input
+											{...register('remote')}
+											type="radio"
+											value={1}
+											id="remote"
+										/>
+										yes
 									</label>
-									<div className={ClientFieldStyle.uploadField}>
-										<div className={ClientFieldStyle.uploadFieldText}>
-											<input type="file" />
-											<UploadSVG />
-											Upload logo
-										</div>
-									</div>
+									<label htmlFor="remote">
+										<input
+											{...register('remote')}
+											type="radio"
+											value={0}
+											id="remote"
+										/>
+										no
+									</label>
 								</div>
 							</div>
 						</div>
-					</div>
-				</div>
-			</div>
-
-			<div className={ClientFieldStyle.tabsFormItem}>
-				<div className={ClientFieldStyle.tabsFormItemInner}>
-					<div className={ClientFieldStyle.tabsLeftPanel}>
-						<h3>Client Details</h3>
-						<p>Please provide the necessary details</p>
-						<div className={ClientFieldStyle.leftPanelAction}>
-							<button
-								type="button"
-								className={ClientFieldStyle.btn}>
-								Add Secondary Client Details
-							</button>
-						</div>
-					</div>
-					<div className={ClientFieldStyle.tabsRightPanel}>
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="HS Client Full Name (Primary)"
-									reqField="*"
-									name="username"
-									type={InputType.TEXT}
-									placeholder="Enter full name"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
-								/>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="HS Client Email ID (Primary)"
-									reqField="*"
-									name="companyURL"
-									type={InputType.TEXT}
-									placeholder="Enter Email ID"
-								/>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="Client's Phone Number (Primary)"
-									name="username"
-									type={InputType.TEXT}
-									placeholder="Enter number"
-								/>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="Years of Experience (Primary)"
-									name="companyURL"
-									type={InputType.TEXT}
-									placeholder="Ex: 2, 3, 5..."
-								/>
-							</div>
-						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd12}>
-								<InputField
-									label="HS Client Linkedin Profile (Primary)"
-									reqField="*"
-									name="username"
-									type={InputType.TEXT}
-									placeholder="Add Linkedin profile link"
+								<HRInputField
+									register={register}
+									leadingIcon={<UploadSVG />}
+									label="Company Logo (JPG, PNG, SVG)"
+									name="jdExport"
+									type={InputType.BUTTON}
+									value="Upload logo"
+									onClickHandler={() => setUploadModal(true)}
 								/>
 							</div>
-						</div>
-					</div>
-				</div>
-
-				<div className={ClientFieldStyle.tabsFormItemInner}>
-					<div className={ClientFieldStyle.tabsLeftPanel}>
-						<h3>Secondary Client Details</h3>
-						<p>Please provide the necessary details</p>
-						<div className={ClientFieldStyle.leftPanelAction}>
-							<button
-								type="button"
-								className={ClientFieldStyle.btnPrimary}>
-								Add More
-							</button>
-							<button
-								type="button"
-								className={ClientFieldStyle.btn}>
-								Remove
-							</button>
-						</div>
-					</div>
-					<div className={ClientFieldStyle.tabsRightPanel}>
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="HS Client Full Name (Secondary)"
-									reqField="*"
-									name="username"
-									type={InputType.TEXT}
-									placeholder="Enter full name"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
-								/>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="HS Client Email ID (Secondary)"
-									reqField="*"
-									name="companyURL"
-									type={InputType.TEXT}
-									placeholder="Enter Email ID"
-								/>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="Client's Phone Number (Secondary)"
-									name="username"
-									type={InputType.TEXT}
-									placeholder="Enter number"
-								/>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="Years of Experience (Secondary)"
-									name="companyURL"
-									type={InputType.TEXT}
-									placeholder="Ex: 2, 3, 5..."
-								/>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd12}>
-								<InputField
-									label="HS Client Linkedin Profile (Secondary)"
-									reqField="*"
-									name="username"
-									type={InputType.TEXT}
-									placeholder="Add Linkedin profile link  "
-								/>
-							</div>
+							<UploadModal
+								modalTitle={'Upload Logo'}
+								isFooter={false}
+								openModal={showUploadModal}
+								cancelModal={() => setUploadModal(false)}
+							/>
 						</div>
 					</div>
 				</div>
 			</div>
 
+			<AddNewClient
+				setError={setError}
+				watch={watch}
+				setValue={setValue}
+				fields={fields}
+				append={append}
+				remove={remove}
+				register={register}
+				errors={errors}
+				flagAndCodeMemo={flagAndCodeMemo}
+			/>
 			<div className={ClientFieldStyle.tabsFormItem}>
 				<div className={ClientFieldStyle.tabsFormItemInner}>
 					<div className={ClientFieldStyle.tabsLeftPanel}>
@@ -369,8 +347,8 @@ const ClientField = () => {
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd12}>
 								<div className={ClientFieldStyle.checkBoxGroup}>
-									<Checkbox onChange={CheckboxButton}>
-										Same as primary POC
+									<Checkbox onChange={SameASPrimaryPOCHandler}>
+										Same as primary client details
 									</Checkbox>
 								</div>
 							</div>
@@ -378,96 +356,111 @@ const ClientField = () => {
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the client name.',
+									}}
 									label="HS Client Full Name"
-									reqField="*"
-									name="username"
+									name="legalClientFullName"
 									type={InputType.TEXT}
 									placeholder="Enter full name"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
+									required
+									disabled={isSameAsPrimaryPOC}
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the client email ID.',
+										pattern: {
+											value: EmailRegEx.email,
+											message: 'please enter a valid email.',
+										},
+									}}
 									label="HS Client Email ID"
-									reqField="*"
-									name="companyURL"
-									type={InputType.TEXT}
+									name={'legalClientEmailID'}
+									type={InputType.EMAIL}
 									placeholder="Enter Email ID"
+									disabled={isSameAsPrimaryPOC}
+									required
 								/>
 							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
-									label="Client's Phone Number"
-									name="username"
-									type={InputType.TEXT}
-									placeholder="Enter number"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
-								/>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<div className={ClientFieldStyle.formGroup}>
-									<label>Designation</label>
-									<Select
-										defaultValue="Select Designation"
-										onChange={selectHandleChange}
-										options={[
-											{
-												value: 'designation1',
-												label: 'Designation 1',
-											},
-											{
-												value: 'designation2',
-												label: 'Designation 2',
-											},
-											{
-												value: 'designation3',
-												label: 'Designation 3',
-											},
-											{
-												value: 'designation4',
-												label: 'Designation 4',
-											},
-											{
-												value: 'designation5',
-												label: 'Designation 5',
-											},
-										]}
-									/>
+								<div
+									className={`${ClientFieldStyle.formGroup} ${ClientFieldStyle.phoneNoGroup}`}>
+									<label>Client's Phone Number</label>
+									<div className={ClientFieldStyle.phoneNoCode}>
+										<HRSelectField
+											searchable={true}
+											setValue={setValue}
+											register={register}
+											name="legalClientCountryCode"
+											defaultValue="+91"
+											options={flagAndCodeMemo}
+										/>
+									</div>
+									<div className={ClientFieldStyle.phoneNoInput}>
+										<HRInputField
+											register={register}
+											name={'legalClientPhoneNumber'}
+											type={InputType.NUMBER}
+											placeholder="Enter Phone number"
+											disabled={isSameAsPrimaryPOC}
+										/>
+									</div>
 								</div>
 							</div>
+
+							<div className={ClientFieldStyle.colMd6}>
+								<HRInputField
+									register={register}
+									label="Designation"
+									name={'legalClientDesignation'}
+									type={InputType.TEXT}
+									placeholder="Enter designation"
+									disabled={isSameAsPrimaryPOC}
+								/>
+							</div>
 						</div>
 
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the legal company name.',
+									}}
 									label="Legal Company Name"
-									reqField="*"
-									name="username"
+									name={'legalCompanyFullName'}
 									type={InputType.TEXT}
 									placeholder="Enter legal name"
-									// value={formValues['username']}
-									// onChangeHandler={inputChangeHandler}
-									// errorMsg={error['username']}
+									disabled={isSameAsPrimaryPOC}
+									required
 								/>
 							</div>
 
 							<div className={ClientFieldStyle.colMd6}>
-								<InputField
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the legal company address.',
+									}}
 									label="Legal Company Address"
-									reqField="*"
-									name="companyURL"
+									name={'legalCompanyAddress'}
 									type={InputType.TEXT}
 									placeholder="Enter legal address"
+									disabled={isSameAsPrimaryPOC}
+									required
 								/>
 							</div>
 						</div>
@@ -475,95 +468,14 @@ const ClientField = () => {
 				</div>
 			</div>
 
-			<div className={ClientFieldStyle.tabsFormItem}>
-				<div className={ClientFieldStyle.tabsFormItemInner}>
-					<div className={ClientFieldStyle.tabsLeftPanel}>
-						<h3>Point of Contact</h3>
-						<p>Enter the point of contact from Uplers</p>
-						<div className={ClientFieldStyle.leftPanelAction}>
-							<button
-								type="button"
-								className={ClientFieldStyle.btn}>
-								Add More
-							</button>
-						</div>
-					</div>
-
-					<div className={ClientFieldStyle.tabsRightPanel}>
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<div className={ClientFieldStyle.formGroup}>
-									<label>
-										Primary Contact Name{' '}
-										<span className={ClientFieldStyle.reqField}>*</span>
-									</label>
-									<Select
-										defaultValue="Enter Name"
-										onChange={selectHandleChange}
-										options={[
-											{
-												value: 'contactName1',
-												label: 'Contact Name 1',
-											},
-											{
-												value: 'contactName2',
-												label: 'Contact Name 2',
-											},
-											{
-												value: 'contactName3',
-												label: 'Contact Name 3',
-												// disabled: true,
-											},
-											{
-												value: 'contactName4',
-												label: 'Contact Name 4',
-											},
-											{
-												value: 'contactName5',
-												label: 'Contact Name 5',
-											},
-										]}
-									/>
-								</div>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<div className={ClientFieldStyle.formGroup}>
-									<label>Secondary Contact Name</label>
-									<Select
-										defaultValue="Enter Name"
-										onChange={selectHandleChange}
-										options={[
-											{
-												value: 'secondaryContactName',
-												label: 'Secondary Contact Name',
-											},
-											{
-												value: 'secondaryContactName1',
-												label: 'Secondary Contact Name 1',
-											},
-											{
-												value: 'secondaryContactName2',
-												label: 'Secondary Contact Name 2',
-												// disabled: true,
-											},
-											{
-												value: 'secondaryContactName3',
-												label: 'Secondary Contact Name 3',
-											},
-											{
-												value: 'secondaryContactName4',
-												label: 'Secondary Contact Name 4',
-											},
-										]}
-									/>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
+			<AddNewPOC
+				setValue={setValue}
+				fields={pocFields}
+				append={appendPOC}
+				remove={removePOC}
+				register={register}
+				errors={errors}
+			/>
 			<div className={ClientFieldStyle.formPanelAction}>
 				<button
 					type="button"
@@ -571,7 +483,8 @@ const ClientField = () => {
 					Save as Draft
 				</button>
 				<button
-					type="button"
+					type="submit"
+					onClick={handleSubmit(clientSubmitHandler)}
 					className={ClientFieldStyle.btnPrimary}>
 					Next Page
 				</button>

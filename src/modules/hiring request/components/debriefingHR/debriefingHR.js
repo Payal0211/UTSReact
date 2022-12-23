@@ -85,7 +85,7 @@ const DebriefingHR = () => {
 				</div>
 			</div>
 			<Divider />
-			<AddInterviewer />
+			{/* <AddInterviewer /> */}
 			<Divider />
 			<div className={DebriefingHRStyle.formPanelAction}>
 				<button

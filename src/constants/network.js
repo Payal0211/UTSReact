@@ -8,6 +8,7 @@ export class SubDomain {
 	static USER_OPERATIONS = 'UserOperationsAPI/';
 	static VIEW_ALL_HR = 'ViewAllHR/';
 	static MASTERS = 'MastersAPI/';
+	static CLIENT = 'Client/';
 }
 export class APIType {
 	static USER = '/user';
@@ -37,8 +38,17 @@ export class MastersAPI {
 	static GET_TIME_ZONE_PREFERENCE = 'GetTimeZonePreference';
 	static GET_PARTIAL_ENGAGEMENT_TYPE = 'GetPartialEngagementType';
 	static GET_TALENTS_ROLE_REQUEST = 'GetTalentsRoles';
+	static FILE_UPLOAD = 'FileUpload';
+	static GET_CODE_AND_FLAG = 'GetCodeandFlag';
+	static Get_SALESMAN = 'GetSalesman';
 }
 
+export class ClientsAPI {
+	static CREATE = 'Create';
+	static CHECK_DUPLICATE_COMPANY_NAME = 'CheckDuplicateCompanyName';
+	static CHECK_DUPLICATE_EMAIL = 'CheckDuplicateEmail';
+	static GET_POINT_OF_CONTACT = 'GetPointOfContact';
+}
 export class HTTPStatusCode {
 	static OK = 200;
 	static CREATED = 201;
@@ -52,6 +62,7 @@ export class HTTPStatusCode {
 	static FORBIDDEN = 403;
 	static NOT_FOUND = 404;
 	static REQUEST_TIMEOUT = 408;
+	static DUPLICATE_RECORD = 409;
 	static UNSUPPORTED_MEDIA_TYPE = 415;
 	static UNPROCESSABLE_ENTITY = 422;
 	static INTERNAL_SERVER_ERROR = 500;

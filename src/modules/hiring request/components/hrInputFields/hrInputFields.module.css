@@ -1,14 +1,14 @@
 .formField {
     width: 100%;
-    margin: 0 0 32px;
-    
+    margin: 0 0 32px;  
 }
 
 .formField label {
+    vertical-align: top;
     font-family: 'Montserrat';
     font-weight: 400;
     font-size: 12px;
-    line-height: 15px;
+    line-height: 16px;
     color: #676767;
     margin: 0 0 8px;
     display: inline-block;
@@ -19,6 +19,10 @@
     position: relative;
 }
 
+.disabled{
+    opacity:.7;
+    cursor:not-allowed !important;
+}
 .inputBoxError .inputfield {
     border: 1px solid var(--danger-color);
     outline-color: var(--danger-color);
@@ -65,15 +69,21 @@
 }
 
 .leadingIcon {
+    
     position: absolute;
     top: 19px;
     left:5px;
-    width: 16px;
-    margin:0px 10px;
-    
+    /* width: 16px; */
+    margin:0px 10px; 
 }
 
 .error {
     color: var(--danger-color);
-    font-size: var(--fontsize-brittle);
+    font-size: var(--fontsize-tough);
+}
+.reqField {
+    color: var(--uplers-black);
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
 }

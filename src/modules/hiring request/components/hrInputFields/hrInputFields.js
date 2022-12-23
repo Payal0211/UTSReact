@@ -1,42 +1,39 @@
 import { InputType } from 'constants/application';
-import { useRef, useState, useEffect } from 'react';
 import HRInputFieldStyle from './hrInputFields.module.css';
+import classNames from 'classnames';
 
 const HRInputField = ({
-	label,
-	type,
-	name,
-	maxLength,
-	placeholder,
-	onChangeHandler,
-	value,
-	errorMsg,
-	leadingIcon,
 	onClickHandler,
+	leadingIcon,
+	name,
+	label,
+	register,
+	isError,
+	errorMsg,
+	errors,
+	placeholder,
 	required,
-}) => {
-	const inputRef = useRef();
-	const [error, setError] = useState(errorMsg);
+	value,
+	disabled,
 
-	useEffect(() => {
-		setError(errorMsg);
-		return () => {
-			setError('');
-		};
-	}, [errorMsg]);
+	type,
+	validationSchema,
+}) => {
+	const formFieldClasses = classNames({
+		[HRInputFieldStyle.inputfield]: true,
+		[HRInputFieldStyle.disabled]: disabled,
+	});
 
 	return (
 		<div className={HRInputFieldStyle.formField}>
-			<label>{label}</label>
-			{required && (
-				<span style={{ paddingLeft: '5px' }}>
-					<b>*</b>
-				</span>
+			{label && (
+				<label>
+					{label}
+					{required && <span className={HRInputFieldStyle.reqField}>*</span>}
+				</label>
 			)}
-			<div
-				className={
-					error ? HRInputFieldStyle.inputBoxError : HRInputFieldStyle.inputBox
-				}>
+
+			<div className={HRInputFieldStyle.inputBox}>
 				{leadingIcon && (
 					<div className={HRInputFieldStyle.leadingIcon}>{leadingIcon}</div>
 				)}
@@ -45,20 +42,28 @@ const HRInputField = ({
 						paddingLeft: leadingIcon && '40px',
 						cursor: InputType.BUTTON && 'pointer',
 					}}
-					ref={inputRef}
-					className={HRInputFieldStyle.inputfield}
+					value={InputType.BUTTON && value}
+					className={formFieldClasses}
 					type={type}
 					name={name}
 					placeholder={placeholder}
-					maxLength={maxLength}
-					onChange={onChangeHandler}
-					value={value}
 					onClick={InputType.BUTTON && onClickHandler}
+					{...register(name, validationSchema)}
+					id={name}
+					disabled={disabled}
+					required={required}
 				/>
 			</div>
-			{error && <div className={HRInputFieldStyle.error}>{errorMsg}</div>}
+			{required && !disabled
+				? errors &&
+				  errors[name] && (
+						<div className={HRInputFieldStyle.error}>
+							{errors[name]?.message && `* ${errors[name]?.message}`}
+						</div>
+				  )
+				: false}
+			{isError && <div className={HRInputFieldStyle.error}>* {errorMsg}</div>}
 		</div>
 	);
 };
-
 export default HRInputField;
