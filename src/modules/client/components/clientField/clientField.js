@@ -30,12 +30,7 @@ export const poc = {
 	contactName: '',
 };
 
-const ClientField = ({
-	setTitle,
-	salesManData,
-	tabFieldDisabled,
-	setTabFieldDisabled,
-}) => {
+const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 	const {
 		register,
 		handleSubmit,
@@ -81,6 +76,7 @@ const ClientField = ({
 	const [isSameAsPrimaryPOC, setSameAsPrimaryPOC] = useState(false);
 	const [GEO, setGEO] = useState([]);
 	const [flagAndCode, setFlagAndCode] = useState([]);
+
 	const RadioButton = (e) => {
 		console.log('radio checked', e.target.value);
 		// setValue(e.target.value);
@@ -110,6 +106,7 @@ const ClientField = ({
 	);
 	const clientSubmitHandler = async (d) => {
 		let clientFormDetails = clientFormDataFormatter(d);
+		console.log(clientFormDetails);
 		const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
 		if (addClientResult.statusCode === HTTPStatusCode.OK) {
 			setTitle('Add New Hiring Requests');
@@ -132,7 +129,6 @@ const ClientField = ({
 			setValue('legalCompanyAddress', watchFields[5]);
 			setValue('legalClientCountryCode', watchFields[6]);
 		}
-		console.log(getValues('legalClientCountryCode'), '=dsad');
 	}, [isSameAsPrimaryPOC, setValue, watchFields, getValues]);
 
 	return (
@@ -473,7 +469,6 @@ const ClientField = ({
 			</div>
 
 			<AddNewPOC
-				salesManData={salesManData}
 				setValue={setValue}
 				fields={pocFields}
 				append={appendPOC}

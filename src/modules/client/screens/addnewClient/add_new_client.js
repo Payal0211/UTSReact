@@ -4,25 +4,14 @@ import DebriefingHR from 'modules/hiring request/components/debriefingHR/debrief
 import HRFields from 'modules/hiring request/components/hrFields/hrFields';
 import AddNewClientStyle from './add_new_client.module.css';
 import ClientField from 'modules/client/components/clientField/clientField';
-import { MasterDAO } from 'core/master/masterDAO';
 
 const AddNewClientScreen = () => {
-	const [salesMan, setSalesMan] = useState([]);
 	const [title, setTitle] = useState('Add New Client');
 	const [tabFieldDisabled, setTabFieldDisabled] = useState({
 		addNewClient: false,
 		addNewHiringRequest: true,
 		debriefingHR: true,
 	});
-
-	const getSalesMan = async () => {
-		let response = await MasterDAO.getSalesManRequestDAO();
-		// console.log(response.responseBody.details);
-		setSalesMan(response?.responseBody?.details);
-	};
-	useEffect(() => {
-		getSalesMan();
-	}, []);
 
 	return (
 		<div className={AddNewClientStyle.addNewContainer}>
@@ -45,7 +34,6 @@ const AddNewClientScreen = () => {
 									setTitle={setTitle}
 									tabFieldDisabled={tabFieldDisabled}
 									setTabFieldDisabled={setTabFieldDisabled}
-									salesManData={salesMan && salesMan}
 								/>
 							),
 						},

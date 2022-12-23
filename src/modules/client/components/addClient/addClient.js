@@ -4,7 +4,7 @@ import { HTTPStatusCode } from 'constants/network';
 import { ClientDAO } from 'core/client/clientDAO';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { _isNull } from 'shared/utils/basic_utils';
 import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';

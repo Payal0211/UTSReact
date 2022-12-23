@@ -29,7 +29,7 @@ export function clientFormDataFormatter(d) {
 		company: {
 			company: d.companyName,
 			website: d.companyURL,
-			location: d.companyLocation,
+			location: d.companyLocation.toString(),
 			companySize: d.companySize,
 			address: d.companyAddress,
 			linkedinProfile: d.companyLinkedinProfile,
@@ -63,10 +63,10 @@ export function clientFormDataFormatter(d) {
 		pocList: d.pocList,
 		primaryContactName: _isNull(d.primaryContactName)
 			? ''
-			: d.primaryContactName,
+			: d.primaryContactName.toString(),
 		secondaryContactName: _isNull(d.secondaryContactName)
 			? ''
-			: d.secondaryContactName,
+			: d.secondaryContactName.toString(),
 	};
 	return clientFormDetails;
 }

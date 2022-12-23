@@ -1,18 +1,21 @@
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCallback } from 'react';
 import AddNewPOCStyle from './addPOC.module.css';
 import poc from '../clientField/clientField';
+import { MasterDAO } from 'core/master/masterDAO';
 
-const AddNewPOC = ({
-	salesManData,
-	setValue,
-	fields,
-	append,
-	remove,
-	register,
-	errors,
-}) => {
+const AddNewPOC = ({ setValue, fields, append, remove, register, errors }) => {
+	const [salesMan, setSalesMan] = useState([]);
+	const getSalesMan = async () => {
+		let response = await MasterDAO.getSalesManRequestDAO();
+		setSalesMan(response?.responseBody?.details);
+	};
+
+	useEffect(() => {
+		getSalesMan();
+	}, []);
+
 	const onAddNewPOC = useCallback(
 		(e) => {
 			e.preventDefault();
@@ -55,7 +58,7 @@ const AddNewPOC = ({
 									name="primaryContactName"
 									label="Primary Contact Name"
 									defaultValue="Select primary POC"
-									options={salesManData}
+									options={salesMan && salesMan}
 									required
 									isError={
 										errors['primaryContactName'] && errors['primaryContactName']
@@ -73,7 +76,7 @@ const AddNewPOC = ({
 									name="secondaryContactName"
 									label="Secondary Contact Name"
 									defaultValue="Select secondary POC"
-									options={salesManData}
+									options={salesMan && salesMan}
 								/>
 							</div>
 						</div>
@@ -89,7 +92,7 @@ const AddNewPOC = ({
 											name={`pocList.[${index}].contactName`}
 											label="Secondary Contact Name"
 											defaultValue="Select secondary POC"
-											options={salesManData}
+											options={salesMan && salesMan}
 										/>
 									</div>
 									<div onClick={(e) => onRemovePOC(e, index)}>X</div>
