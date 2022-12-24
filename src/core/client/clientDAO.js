@@ -62,6 +62,36 @@ export const ClientDAO = {
 			return errorDebug(error, 'ClientDAO.getDuplicateEmailRequestDAO');
 		}
 	},
+	getDuplicateCompanyNameRequestDAO: async function (companyName) {
+		try {
+			const duplicateCompanyNameRequest =
+				await ClientAPI.getDuplicateCompanyNameRequest(companyName);
+			if (duplicateCompanyNameRequest) {
+				const statusCode = duplicateCompanyNameRequest['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = duplicateCompanyNameRequest.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.DUPLICATE_RECORD) {
+					const tempResult = duplicateCompanyNameRequest.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return duplicateCompanyNameRequest;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.getDuplicateCompanyNameRequestDAO');
+		}
+	},
 	createClientDAO: async function (clientData) {
 		try {
 			const createClientResult = await ClientAPI.createClientRequest(

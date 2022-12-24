@@ -1,3 +1,4 @@
+import { SubmitType } from 'constants/application';
 import { _isNull } from 'shared/utils/basic_utils';
 
 export function getFlagAndCodeOptions(flagAndCode) {
@@ -35,49 +36,109 @@ export function locationFormatter(location) {
 	});
 	return tempArray;
 }
-export function clientFormDataFormatter(d, contactID) {
+export function clientFormDataFormatter(d, draft, contactID, watch) {
 	const clientFormDetails = {
+		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 		company: {
-			company: d.companyName,
-			website: d.companyURL,
-			location: d.companyLocation,
-			companySize: d.companySize,
-			address: d.companyAddress,
-			linkedinProfile: d.companyLinkedinProfile,
+			company:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('companyName')
+					: d.companyName,
+			website:
+				draft === SubmitType.SAVE_AS_DRAFT ? watch('companyURL') : d.companyURL,
+			location:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('companyLocation'))
+						? ''
+						: watch('companyLocation')
+					: d.companyLocation,
+			companySize:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('companySize')
+					: d.companySize,
+			address:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('companyAddress')
+					: d.companyAddress,
+			linkedinProfile:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('companyLinkedinProfile')
+					: d.companyLinkedinProfile,
 			phone: _isNull(d.companyCountryCode)
 				? ''
+				: draft === SubmitType.SAVE_AS_DRAFT
+				? watch('companyCountryCode') + watch('phoneNumber')
 				: d.companyCountryCode + d.phoneNumber,
 
-			teamManagement: d.remote,
+			teamManagement:
+				draft === SubmitType.SAVE_AS_DRAFT ? watch('companyName') : d.remote,
 		},
 		primaryClient: {
 			id: !_isNull(contactID) ? contactID : 0,
-			fullName: d.primaryClientName,
-			emailId: d.primaryClientEmailID,
+			fullName:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('primaryClientName')
+					: d.primaryClientName,
+			emailId:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('primaryClientEmailID')
+					: d.primaryClientEmailID,
 			contactNo: _isNull(d.primaryClientCountryCode)
 				? ''
+				: draft === SubmitType.SAVE_AS_DRAFT
+				? watch('primaryClientCountryCode') + watch('primaryClientPhoneNumber')
 				: d.primaryClientCountryCode + d.primaryClientPhoneNumber,
-			designation: d.primaryDesignation,
-			linkedin: d.PrimaryClientLinkedinProfile,
+			designation:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('primaryDesignation')
+					: d.primaryDesignation,
+			linkedin:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('PrimaryClientLinkedinProfile')
+					: d.PrimaryClientLinkedinProfile,
 		},
-		secondaryClients: d.secondaryClient,
+		secondaryClients:
+			draft === SubmitType.SAVE_AS_DRAFT
+				? watch('secondaryClient')
+				: d.secondaryClient,
 		legalInfo: {
-			name: d.legalClientFullName,
-			email: d.legalClientEmailID,
-			designation: d.legalClientDesignation,
-			legalCompanyName: d.legalCompanyFullName,
+			name:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('legalClientFullName')
+					: d.legalClientFullName,
+			email:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('legalClientEmailID')
+					: d.legalClientEmailID,
+			designation:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('legalClientDesignation')
+					: d.legalClientDesignation,
+			legalCompanyName:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('legalCompanyFullName')
+					: d.legalCompanyFullName,
 			phoneNumber: _isNull(d.legalClientCountryCode)
 				? ''
+				: draft === SubmitType.SAVE_AS_DRAFT
+				? watch('legalClientCountryCode') + watch('legalClientPhoneNumber')
 				: d.legalClientCountryCode + d.legalClientPhoneNumber,
-			legalCompanyAddress: d.legalCompanyAddress,
+			legalCompanyAddress:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('legalCompanyAddress')
+					: d.legalCompanyAddress,
 			isAcceptPolicy: true,
 		},
-		pocList: d.pocList,
+		pocList: draft === SubmitType.SAVE_AS_DRAFT ? watch('pocList') : d.pocList,
 		primaryContactName: _isNull(d.primaryContactName)
 			? ''
+			: draft === SubmitType.SAVE_AS_DRAFT
+			? watch('primaryContactName').toString()
 			: d.primaryContactName.toString(),
 		secondaryContactName: _isNull(d.secondaryContactName)
 			? ''
+			: draft === SubmitType.SAVE_AS_DRAFT
+			? watch('secondaryContactName').toString()
 			: d.secondaryContactName.toString(),
 	};
 	return clientFormDetails;

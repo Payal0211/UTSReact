@@ -136,3 +136,8 @@ export class DayName {
 	static FRIDAY = 'Friday';
 	static SATURDAY = 'Saturday';
 }
+
+export class SubmitType {
+	static SAVE_AS_DRAFT = 0;
+	static SUBMIT = 1;
+}

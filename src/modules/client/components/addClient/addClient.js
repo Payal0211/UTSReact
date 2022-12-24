@@ -4,7 +4,7 @@ import { HTTPStatusCode } from 'constants/network';
 import { ClientDAO } from 'core/client/clientDAO';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { _isNull } from 'shared/utils/basic_utils';
 import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';
@@ -20,6 +20,7 @@ const AddNewClient = ({
 	errors,
 	flagAndCodeMemo,
 }) => {
+	const [isLoading, setIsLoading] = useState(false);
 	const onAddNewClient = useCallback(
 		(e) => {
 			e.preventDefault();
@@ -36,18 +37,20 @@ const AddNewClient = ({
 	);
 
 	/** To check Duplicate email exists Start */
-	//TODO:- Show loader on Duplicate email caption:- verifying email
+
 	const watchPrimaryEmail = watch('primaryClientEmailID');
 	const getEmailALreadyExist = useCallback(
 		async (data) => {
 			let emailDuplicate = await ClientDAO.getDuplicateEmailRequestDAO(data);
-			emailDuplicate?.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
-				setError('primaryClientEmailID', {
-					type: 'duplicateEmail',
-					message: 'This email is already exists. Please enter another email.',
-				});
+			setError('primaryClientEmailID', {
+				type: 'duplicateEmail',
+				message:
+					emailDuplicate?.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
+					'This email already exists. Please enter another email.',
+			});
 			emailDuplicate.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
 				setValue('primaryClientEmailID', '');
+			setIsLoading(false);
 		},
 		[setError, setValue],
 	);
@@ -57,7 +60,10 @@ const AddNewClient = ({
 			!_isNull(watchPrimaryEmail) &&
 			!ValidateInput.email(watchPrimaryEmail).isError
 		) {
-			timer = setTimeout(() => getEmailALreadyExist(watchPrimaryEmail), 3000);
+			timer = setTimeout(() => {
+				setIsLoading(true);
+				getEmailALreadyExist(watchPrimaryEmail);
+			}, 2000);
 		}
 		return () => clearTimeout(timer);
 	}, [getEmailALreadyExist, watchPrimaryEmail]);
@@ -101,6 +107,7 @@ const AddNewClient = ({
 
 						<div className={AddClientStyle.colMd6}>
 							<HRInputField
+								disabled={isLoading}
 								register={register}
 								errors={errors}
 								validationSchema={{
