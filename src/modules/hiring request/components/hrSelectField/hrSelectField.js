@@ -3,6 +3,7 @@ import HRSelectFieldStyle from './hrSelectField.module.css';
 import { useEffect, useMemo } from 'react';
 
 const HRSelectField = ({
+	dropdownRender,
 	controlledValue,
 	setControlledValue,
 	register,
@@ -52,6 +53,7 @@ const HRSelectField = ({
 				/>
 			) : (
 				<Select
+					dropdownRender={dropdownRender}
 					disabled={disabled}
 					showSearch={searchable}
 					defaultValue={defaultValue}

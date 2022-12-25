@@ -9,7 +9,14 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { MasterDAO } from 'core/master/masterDAO';
 
 import HRSelectField from '../hrSelectField/hrSelectField';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
+import AddInterviewer from '../addInterviewer/addInterviewer';
+export const secondaryInterviewer = {
+	fullName: '',
+	emailID: '',
+	linkedin: '',
+	designation: '',
+};
 const HRFields = () => {
 	const inputRef = useRef(null);
 	const [availability, setAvailability] = useState([]);
@@ -20,10 +27,14 @@ const HRFields = () => {
 	const {
 		register,
 		handleSubmit,
-		reset,
+		setValue,
 		control,
 		formState: { errors },
 	} = useForm();
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: 'secondaryInterviewer',
+	});
 
 	const selectHandleChange = (value) => {
 		console.log(`selected ${value}`);
@@ -97,6 +108,7 @@ const HRFields = () => {
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									setValue={setValue}
 									register={register}
 									label={'Hiring Request Role'}
 									defaultValue="Select Role"
@@ -110,7 +122,8 @@ const HRFields = () => {
 											label: 'INR',
 										},
 									]}
-									onChangeHandler={selectHandleChange}
+									name="role"
+									isError={errors['role'] && errors['role']}
 									required
 									errorMsg={'Please select hiring request role'}
 								/>
@@ -164,20 +177,13 @@ const HRFields = () => {
 					</div>
 
 					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd12}>
-							<div className={`${HRFieldStyle.formGroup} ${HRFieldStyle.mb0}`}>
-								<label>
-									Add your estimated budget
-									<span className={HRFieldStyle.reqField}>*</span>
-								</label>
-							</div>
-						</div>
-
 						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
-								<Select
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Add your estimated budget'}
 									defaultValue="Select Budget"
-									onChange={selectHandleChange}
 									options={[
 										{
 											value: 'USD',
@@ -188,12 +194,16 @@ const HRFields = () => {
 											label: 'INR',
 										},
 									]}
+									name="budget"
+									isError={errors['budget'] && errors['budget']}
+									required
+									errorMsg={'Please select hiring request budget'}
 								/>
 							</div>
 						</div>
-
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
+								label={' '}
 								register={register}
 								name="minimumBudget"
 								type={InputType.TEXT}
@@ -203,6 +213,7 @@ const HRFields = () => {
 
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
+								label={' '}
 								register={register}
 								name="maximumBudget"
 								type={InputType.TEXT}
@@ -229,23 +240,25 @@ const HRFields = () => {
 
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Sales Person</label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
-								<Select
-									defaultValue="Select sales person"
-									onChange={selectHandleChange}
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Sales Person'}
+									defaultValue="Select sales Person"
 									options={[
 										{
-											value: 'P1',
-											label: 'P1',
+											value: 'USD',
+											label: 'USD',
 										},
 										{
-											value: 'P2',
-											label: 'P2',
+											value: 'INR',
+											label: 'INR',
 										},
 									]}
+									name="salesPerson"
+									isError={errors['salesPerson'] && errors['salesPerson']}
+									required
+									errorMsg={'Please select hiring request sales person'}
 								/>
 							</div>
 						</div>
@@ -254,12 +267,7 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Contract Duration (in months) </label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
-								<Select
-									defaultValue="Ex: 3,6,12..."
+								<HRSelectField
 									dropdownRender={(menu) => (
 										<>
 											{menu}
@@ -292,6 +300,19 @@ const HRFields = () => {
 										label: item,
 										value: item,
 									}))}
+									setValue={setValue}
+									register={register}
+									label={'Contact Duration (in months)'}
+									defaultValue="Ex: 3,6,12..."
+									inputRef={inputRef}
+									addItem={addItem}
+									onNameChange={onNameChange}
+									name="contactDuration"
+									isError={
+										errors['contactDuration'] && errors['contactDuration']
+									}
+									required
+									errorMsg={'Please select hiring request contact duration'}
 								/>
 							</div>
 						</div>
@@ -304,6 +325,14 @@ const HRFields = () => {
 								<div className={HRFieldStyle.reqExperience}>
 									<HRInputField
 										required
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the years.',
+											min: {
+												value: 0,
+												message: `please don't enter the value less than 0`,
+											},
+										}}
 										register={register}
 										name="years"
 										type={InputType.NUMBER}
@@ -312,6 +341,18 @@ const HRFields = () => {
 									<HRInputField
 										register={register}
 										required
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the months.',
+											max: {
+												value: 12,
+												message: `please don't enter the value more than 12`,
+											},
+											min: {
+												value: 0,
+												message: `please don't enter the value less than 0`,
+											},
+										}}
 										name="months"
 										type={InputType.NUMBER}
 										placeholder="Enter months"
@@ -323,15 +364,16 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Working Time Zone</label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
-								<Select
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Working Time Zone'}
 									defaultValue="Select time zone"
-									onChange={selectHandleChange}
-									// onChange={(val, a) => selectHandleChange(val, a)}
 									options={timeZonePref}
+									name="timeZone"
+									isError={errors['timeZone'] && errors['timeZone']}
+									required
+									errorMsg={'Please select hiring request time zone.'}
 								/>
 							</div>
 						</div>
@@ -353,24 +395,22 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>How soon can they join? </label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
-								<Select
-									defaultValue="Select availability   "
-									onChange={selectHandleChange}
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'How soon can they join?'}
+									defaultValue="Select availability"
 									options={availability}
+									name="availability"
+									isError={errors['availability'] && errors['availability']}
+									required
+									errorMsg={'Please select the availability.'}
 								/>
 							</div>
 						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
 								register={register}
-								/* errors={errors}
-								validationSchema={{
-									required: 'please enter the company name.',
-								}} */
 								label="Deal ID"
 								name="dealID"
 								type={InputType.TEXT}
@@ -411,7 +451,13 @@ const HRFields = () => {
 				</form>
 			</div>
 			<Divider />
-
+			<AddInterviewer
+				errors={errors}
+				append={append}
+				remove={remove}
+				register={register}
+				fields={fields}
+			/>
 			<div className={HRFieldStyle.formPanelAction}>
 				<button
 					type="button"
@@ -420,9 +466,7 @@ const HRFields = () => {
 				</button>
 
 				<button
-					// form="hrForm"
 					onClick={handleSubmit((d) => console.log(d))}
-					// type="submit"
 					className={HRFieldStyle.btnPrimary}>
 					Create HR
 				</button>

@@ -33,3 +33,8 @@
     opacity: .7;
     cursor: not-allowed !important;
 }
+.addSalesItem {
+    outline: none;
+    border: none;
+    border-bottom: 1px solid var(--uplers-border-color);
+}
