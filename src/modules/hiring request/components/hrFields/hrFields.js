@@ -1,6 +1,6 @@
 import { Button, Divider, Select, Space } from 'antd';
-import { InputType } from 'constants/application';
-import { useEffect, useRef, useState } from 'react';
+import { ClientHRURL, InputType } from 'constants/application';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import HRFieldStyle from './hrFIelds.module.css';
 import { PlusOutlined } from '@ant-design/icons';
@@ -9,25 +9,36 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { MasterDAO } from 'core/master/masterDAO';
 
 import HRSelectField from '../hrSelectField/hrSelectField';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { set, useFieldArray, useForm } from 'react-hook-form';
 import AddInterviewer from '../addInterviewer/addInterviewer';
+import { HTTPStatusCode } from 'constants/network';
+import { _isNull } from 'shared/utils/basic_utils';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { useLocation } from 'react-router-dom';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
 	linkedin: '',
 	designation: '',
 };
-const HRFields = () => {
+
+const HRFields = ({ clientDetail }) => {
 	const inputRef = useRef(null);
 	const [availability, setAvailability] = useState([]);
 	const [timeZonePref, setTimeZonePref] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
 	const [items, setItems] = useState(['3 months', '6 months', '9 months']);
+	const [talentRole, setTalentRole] = useState([]);
+	const [salesPerson, setSalesPerson] = useState([]);
 	const [name, setName] = useState('');
+	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
 	const {
+		watch,
 		register,
 		handleSubmit,
 		setValue,
+		setError,
 		control,
 		formState: { errors },
 	} = useForm();
@@ -36,9 +47,23 @@ const HRFields = () => {
 		name: 'secondaryInterviewer',
 	});
 
-	const selectHandleChange = (value) => {
-		console.log(`selected ${value}`);
-	};
+	const getLocation = useLocation();
+	useEffect(() => {
+		let urlSplitter = `${getLocation.pathname.split('/')[2]}`;
+		setPathName(urlSplitter);
+		pathName === ClientHRURL.ADD_NEW_CLIENT &&
+			setValue('clientName', clientDetail?.Email);
+
+		pathName === ClientHRURL.ADD_NEW_CLIENT &&
+			setValue('companyName', clientDetail?.Name);
+	}, [
+		getLocation.pathname,
+		clientDetail?.Email,
+		clientDetail?.Name,
+		pathName,
+		setValue,
+	]);
+
 	const onNameChange = (event) => {
 		setName(event.target.value);
 	};
@@ -58,10 +83,55 @@ const HRFields = () => {
 		const availabilityResponse = await MasterDAO.getHowSoonRequestDAO();
 		setAvailability(availabilityResponse && availabilityResponse.responseBody);
 	};
+	const getTalentRole = async () => {
+		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
+		setTalentRole(talentRole && talentRole.responseBody);
+	};
+	const getSalesPerson = async () => {
+		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
+		setSalesPerson(
+			salesPersonResponse && salesPersonResponse.responseBody.details,
+		);
+	};
 
+	/** To check Duplicate email exists Start */
+	//TODO:- Show loader on Duplicate email caption:- verifying email
+	const watchClientName = watch('clientName');
+
+	const getHRClientName = useCallback(
+		async (data) => {
+			let existingClientDetails =
+				await hiringRequestDAO.getClientDetailRequestDAO(data);
+			setError('clientName', {
+				type: 'duplicateCompanyName',
+				message:
+					existingClientDetails?.statusCode ===
+						HTTPStatusCode.DUPLICATE_RECORD &&
+					'This company name already exists. Please enter another company name.',
+			});
+			existingClientDetails.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
+				setValue('clientName', '');
+			setIsLoading(false);
+		},
+		[setError, setValue],
+	);
+	useEffect(() => {
+		let timer;
+		if (!_isNull(watchClientName)) {
+			timer = setTimeout(() => {
+				setIsLoading(true);
+				getHRClientName(watchClientName);
+			}, 2000);
+		}
+		return () => clearTimeout(timer);
+	}, [getHRClientName, watchClientName]);
+
+	/** To check Duplicate email exists End */
 	useEffect(() => {
 		getAvailability();
 		getTimeZonePreference();
+		getTalentRole();
+		getSalesPerson();
 	}, []);
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
@@ -76,6 +146,7 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd12}>
 							<HRInputField
+								disabled={pathName === ClientHRURL.ADD_NEW_CLIENT}
 								register={register}
 								errors={errors}
 								validationSchema={{
@@ -92,6 +163,7 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								disabled={pathName === ClientHRURL.ADD_NEW_CLIENT}
 								register={register}
 								errors={errors}
 								validationSchema={{
@@ -112,16 +184,7 @@ const HRFields = () => {
 									register={register}
 									label={'Hiring Request Role'}
 									defaultValue="Select Role"
-									options={[
-										{
-											value: 'USD',
-											label: 'USD',
-										},
-										{
-											value: 'INR',
-											label: 'INR',
-										},
-									]}
+									options={talentRole && talentRole}
 									name="role"
 									isError={errors['role'] && errors['role']}
 									required
@@ -245,16 +308,7 @@ const HRFields = () => {
 									register={register}
 									label={'Sales Person'}
 									defaultValue="Select sales Person"
-									options={[
-										{
-											value: 'USD',
-											label: 'USD',
-										},
-										{
-											value: 'INR',
-											label: 'INR',
-										},
-									]}
+									options={salesPerson && salesPerson}
 									name="salesPerson"
 									isError={errors['salesPerson'] && errors['salesPerson']}
 									required

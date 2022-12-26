@@ -29,7 +29,12 @@ export const poc = {
 	contactName: '',
 };
 
-const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
+const ClientField = ({
+	setTitle,
+	tabFieldDisabled,
+	setTabFieldDisabled,
+	setClientDetails,
+}) => {
 	const [messageAPI, contextHolder] = message.useMessage();
 	/** ---- Useform()  Starts here --------- */
 	const {
@@ -118,6 +123,8 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 					...tabFieldDisabled,
 					addNewHiringRequest: false,
 				});
+			type !== SubmitType.SAVE_AS_DRAFT &&
+				setClientDetails(addClientResult?.responseBody?.details);
 			type === SubmitType.SAVE_AS_DRAFT &&
 				messageAPI.open({
 					type: 'success',

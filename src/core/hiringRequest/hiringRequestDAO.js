@@ -1,4 +1,5 @@
 import { hiringRequestAPI } from 'apis/hiringRequestAPI';
+import { HiringRequestAPI } from 'apis/hrAPI';
 import { HTTPStatusCode } from 'constants/network';
 import UTSRoutes from 'constants/routes';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
@@ -85,7 +86,11 @@ export const hiringRequestDAO = {
 						statusCode: statusCode,
 						responseBody: tempResult.details,
 					};
-				} else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return priorityResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return priorityResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
 					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
@@ -96,6 +101,31 @@ export const hiringRequestDAO = {
 				error,
 				'hiringRequestDAO.sendHRPriorityForNextWeekRequestDAO',
 			);
+		}
+	},
+	getClientDetailRequestDAO: async function (clientEmail) {
+		try {
+			const clientDetailResult = await HiringRequestAPI.getClientDetailRequest(
+				clientEmail,
+			);
+			console.log(clientDetailResult);
+			if (clientDetailResult) {
+				const statusCode = clientDetailResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = clientDetailResult?.responseBody;
+					return { statusCode: statusCode, responseBody: tempResult.details };
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return clientDetailResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return clientDetailResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getClientDetailRequestDAO');
 		}
 	},
 };
