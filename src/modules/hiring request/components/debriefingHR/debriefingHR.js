@@ -3,8 +3,27 @@ import TextEditor from 'shared/components/textEditor/textEditor';
 import { useState } from 'react';
 import DebriefingHRStyle from './debriefingHR.module.css';
 import AddInterviewer from '../addInterviewer/addInterviewer';
-
+import { useFieldArray, useForm } from 'react-hook-form';
+export const secondaryInterviewer = {
+	fullName: '',
+	emailID: '',
+	linkedin: '',
+	designation: '',
+};
 const DebriefingHR = () => {
+	const {
+		watch,
+		register,
+		handleSubmit,
+		setValue,
+		setError,
+		control,
+		formState: { errors },
+	} = useForm();
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: 'secondaryInterviewer',
+	});
 	const [selectedItems, setSelectedItems] = useState([]);
 	const OPTIONS = [
 		'Full Stack Developer',
@@ -57,7 +76,7 @@ const DebriefingHR = () => {
 								}))}
 							/>
 						</div>
-						<div className={DebriefingHRStyle.mb50}>
+						{/* <div className={DebriefingHRStyle.mb50}>
 							<label
 								style={{
 									fontSize: '12px',
@@ -80,12 +99,18 @@ const DebriefingHR = () => {
 									label: item,
 								}))}
 							/>
-						</div>
+						</div> */}
 					</div>
 				</div>
 			</div>
 			<Divider />
-			{/* <AddInterviewer /> */}
+			<AddInterviewer
+				errors={errors}
+				append={append}
+				remove={remove}
+				register={register}
+				fields={fields}
+			/>
 			<Divider />
 			<div className={DebriefingHRStyle.formPanelAction}>
 				<button

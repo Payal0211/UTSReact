@@ -11,6 +11,8 @@ import { ReactComponent as DeleteSVG } from 'assets/svg/delete.svg';
 
 import UTSRoutes from 'constants/routes';
 
+import MatchmakingModal from 'modules/hiring request/components/matchmaking/matchmaking';
+
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
 	import('modules/hiring request/components/nextAction/nextAction.js'),
@@ -71,6 +73,7 @@ const HRDetailScreen = () => {
 						</div>
 					)}
 				</div>
+				<MatchmakingModal />
 				<div className={HRDetailStyle.hrDetailsRightPart}>
 					<HROperator
 						title="Accept HR"

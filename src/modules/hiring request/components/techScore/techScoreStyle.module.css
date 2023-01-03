@@ -1,0 +1,29 @@
+.th {
+    padding-top: 26px;
+    padding-bottom: 26px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: left;
+    color: var(--background-color-light);
+    font-size: 18px !important;
+    font-weight: 600 ;
+    line-height: 17px !important;
+    color: var(--uplers-black);
+    border-bottom: 1px dashed var(--uplers-grey);
+}
+.td {
+    padding: 21px 20px;
+    text-align: start;
+font-size: 14px !important;
+    border-bottom: 1px solid var(--uplers-grey) !important;
+
+}
+
+.td:nth-child(5){
+    text-decoration: underline;
+}
+
+.tfooterTD{
+    font-size: 16px !important;
+    font-weight: 500 !important;
+}

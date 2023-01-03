@@ -518,5 +518,11 @@ table{
 
 /**--MODAl---------*/
 .ant-modal-content{
+ 
   border-radius: 8px !important;
+  background-color: #F7F7F7 !important
+}
+
+.ant-table{
+  box-shadow: none !important;
 }

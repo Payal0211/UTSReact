@@ -1,4 +1,4 @@
-import { Button, Divider, Select, Space } from 'antd';
+import { Button, Divider, Space } from 'antd';
 import { ClientHRURL, InputType } from 'constants/application';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
@@ -9,7 +9,7 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { MasterDAO } from 'core/master/masterDAO';
 
 import HRSelectField from '../hrSelectField/hrSelectField';
-import { set, useFieldArray, useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import AddInterviewer from '../addInterviewer/addInterviewer';
 import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
@@ -48,21 +48,6 @@ const HRFields = ({ clientDetail }) => {
 	});
 
 	const getLocation = useLocation();
-	useEffect(() => {
-		let urlSplitter = `${getLocation.pathname.split('/')[2]}`;
-		setPathName(urlSplitter);
-		pathName === ClientHRURL.ADD_NEW_CLIENT &&
-			setValue('clientName', clientDetail?.Email);
-
-		pathName === ClientHRURL.ADD_NEW_CLIENT &&
-			setValue('companyName', clientDetail?.Name);
-	}, [
-		getLocation.pathname,
-		clientDetail?.Email,
-		clientDetail?.Name,
-		pathName,
-		setValue,
-	]);
 
 	const onNameChange = (event) => {
 		setName(event.target.value);
@@ -125,7 +110,21 @@ const HRFields = ({ clientDetail }) => {
 		}
 		return () => clearTimeout(timer);
 	}, [getHRClientName, watchClientName]);
+	useEffect(() => {
+		let urlSplitter = `${getLocation.pathname.split('/')[2]}`;
+		setPathName(urlSplitter);
+		pathName === ClientHRURL.ADD_NEW_CLIENT &&
+			setValue('clientName', clientDetail?.Email);
 
+		pathName === ClientHRURL.ADD_NEW_CLIENT &&
+			setValue('companyName', clientDetail?.Name);
+	}, [
+		getLocation.pathname,
+		clientDetail?.Email,
+		clientDetail?.Name,
+		pathName,
+		setValue,
+	]);
 	/** To check Duplicate email exists End */
 	useEffect(() => {
 		getAvailability();
@@ -133,6 +132,7 @@ const HRFields = ({ clientDetail }) => {
 		getTalentRole();
 		getSalesPerson();
 	}, []);
+
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
 			<div className={HRFieldStyle.partOne}>
@@ -250,11 +250,11 @@ const HRFields = ({ clientDetail }) => {
 									options={[
 										{
 											value: 'USD',
-											label: 'USD',
+											id: 'USD',
 										},
 										{
 											value: 'INR',
-											label: 'INR',
+											id: 'INR',
 										},
 									]}
 									name="budget"
@@ -362,11 +362,11 @@ const HRFields = ({ clientDetail }) => {
 									addItem={addItem}
 									onNameChange={onNameChange}
 									name="contactDuration"
-									isError={
-										errors['contactDuration'] && errors['contactDuration']
-									}
-									required
-									errorMsg={'Please select hiring request contact duration'}
+									// isError={
+									// 	errors['contactDuration'] && errors['contactDuration']
+									// }
+									// required
+									// errorMsg={'Please select hiring request contact duration'}
 								/>
 							</div>
 						</div>
@@ -454,11 +454,11 @@ const HRFields = ({ clientDetail }) => {
 									register={register}
 									label={'How soon can they join?'}
 									defaultValue="Select availability"
-									options={availability}
+									options={availability && availability}
 									name="availability"
-									isError={errors['availability'] && errors['availability']}
-									required
-									errorMsg={'Please select the availability.'}
+									// isError={errors['availability'] && errors['availability']}
+									// required
+									// errorMsg={'Please select the availability.'}
 								/>
 							</div>
 						</div>
