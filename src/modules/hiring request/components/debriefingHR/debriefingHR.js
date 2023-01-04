@@ -10,7 +10,7 @@ export const secondaryInterviewer = {
 	linkedin: '',
 	designation: '',
 };
-const DebriefingHR = () => {
+const DebriefingHR = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 	const {
 		watch,
 		register,

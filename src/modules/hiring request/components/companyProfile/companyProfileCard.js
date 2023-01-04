@@ -53,7 +53,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 								<Dropdown
 									trigger={['click']}
 									placement="bottom"
-									overlay={
+									menu={
 										<Menu>
 											<Menu.Item key={0}>View Company </Menu.Item>
 										</Menu>

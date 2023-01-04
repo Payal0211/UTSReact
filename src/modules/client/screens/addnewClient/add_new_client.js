@@ -46,6 +46,7 @@ const AddNewClientScreen = () => {
 							key: 'Add New Hiring Requests',
 							children: (
 								<HRFields
+									setTitle={setTitle}
 									tabFieldDisabled={tabFieldDisabled}
 									setTabFieldDisabled={setTabFieldDisabled}
 									clientDetail={clientDetail}
@@ -58,6 +59,7 @@ const AddNewClientScreen = () => {
 							key: 'Debriefing HR',
 							children: (
 								<DebriefingHR
+									setTitle={setTitle}
 									tabFieldDisabled={tabFieldDisabled}
 									setTabFieldDisabled={setTabFieldDisabled}
 								/>

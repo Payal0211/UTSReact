@@ -1,5 +1,5 @@
-import { Button, Divider, Space } from 'antd';
-import { ClientHRURL, InputType } from 'constants/application';
+import { Button, Divider, Space, message } from 'antd';
+import { ClientHRURL, InputType, SubmitType } from 'constants/application';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import HRFieldStyle from './hrFIelds.module.css';
@@ -15,6 +15,7 @@ import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
+import { hrUtils } from 'modules/hiring request/hrUtils';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -22,7 +23,12 @@ export const secondaryInterviewer = {
 	designation: '',
 };
 
-const HRFields = ({ clientDetail }) => {
+const HRFields = ({
+	setTitle,
+	clientDetail,
+	tabFieldDisabled,
+	setTabFieldDisabled,
+}) => {
 	const inputRef = useRef(null);
 	const [availability, setAvailability] = useState([]);
 	const [timeZonePref, setTimeZonePref] = useState([]);
@@ -33,6 +39,7 @@ const HRFields = ({ clientDetail }) => {
 	const [name, setName] = useState('');
 	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
+	const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
 	const {
 		watch,
 		register,
@@ -41,7 +48,11 @@ const HRFields = ({ clientDetail }) => {
 		setError,
 		control,
 		formState: { errors },
-	} = useForm();
+	} = useForm({
+		defaultValues: {
+			secondaryInterviewer: [],
+		},
+	});
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
@@ -80,7 +91,7 @@ const HRFields = ({ clientDetail }) => {
 	};
 
 	/** To check Duplicate email exists Start */
-	//TODO:- Show loader on Duplicate email caption:- verifying email
+
 	const watchClientName = watch('clientName');
 
 	const getHRClientName = useCallback(
@@ -90,26 +101,35 @@ const HRFields = ({ clientDetail }) => {
 			setError('clientName', {
 				type: 'duplicateCompanyName',
 				message:
-					existingClientDetails?.statusCode ===
-						HTTPStatusCode.DUPLICATE_RECORD &&
-					'This company name already exists. Please enter another company name.',
+					existingClientDetails?.statusCode === HTTPStatusCode.NOT_FOUND &&
+					'Client email does not exist.',
 			});
-			existingClientDetails.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
+			existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
 				setValue('clientName', '');
+			existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
+				setValue('companyName', '');
+			existingClientDetails.statusCode === HTTPStatusCode.OK &&
+				setValue('companyName', existingClientDetails?.responseBody?.name);
+			existingClientDetails.statusCode === HTTPStatusCode.OK &&
+				setIsCompanyNameAvailable(true);
 			setIsLoading(false);
 		},
 		[setError, setValue],
 	);
+
 	useEffect(() => {
 		let timer;
 		if (!_isNull(watchClientName)) {
-			timer = setTimeout(() => {
-				setIsLoading(true);
-				getHRClientName(watchClientName);
-			}, 2000);
+			timer =
+				pathName === ClientHRURL.ADD_NEW_HR &&
+				setTimeout(() => {
+					setIsLoading(true);
+					getHRClientName(watchClientName);
+				}, 2000);
 		}
 		return () => clearTimeout(timer);
-	}, [getHRClientName, watchClientName]);
+	}, [getHRClientName, watchClientName, pathName]);
+
 	useEffect(() => {
 		let urlSplitter = `${getLocation.pathname.split('/')[2]}`;
 		setPathName(urlSplitter);
@@ -132,9 +152,29 @@ const HRFields = ({ clientDetail }) => {
 		getTalentRole();
 		getSalesPerson();
 	}, []);
+	const [messageAPI, contextHolder] = message.useMessage();
+
+	const hrSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+		let hrFormDetails = hrUtils.hrFormDataFormatter(d, type, watch);
+
+		const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
+
+		if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
+			type !== SubmitType.SAVE_AS_DRAFT &&
+				setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+
+			type === SubmitType.SAVE_AS_DRAFT &&
+				messageAPI.open({
+					type: 'success',
+					content: 'HR details has been saved to draft.',
+				});
+		}
+	};
 
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
+			{contextHolder}
 			<div className={HRFieldStyle.partOne}>
 				<div className={HRFieldStyle.hrFieldLeftPane}>
 					<h3>Hiring Request Details</h3>
@@ -146,7 +186,7 @@ const HRFields = ({ clientDetail }) => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd12}>
 							<HRInputField
-								disabled={pathName === ClientHRURL.ADD_NEW_CLIENT}
+								disabled={pathName === ClientHRURL.ADD_NEW_CLIENT || isLoading}
 								register={register}
 								errors={errors}
 								validationSchema={{
@@ -163,7 +203,11 @@ const HRFields = ({ clientDetail }) => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
-								disabled={pathName === ClientHRURL.ADD_NEW_CLIENT}
+								disabled={
+									pathName === ClientHRURL.ADD_NEW_CLIENT ||
+									isCompanyNameAvailable ||
+									isLoading
+								}
 								register={register}
 								errors={errors}
 								validationSchema={{
@@ -266,21 +310,39 @@ const HRFields = ({ clientDetail }) => {
 						</div>
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
-								label={' '}
+								label={'Minimum Budget'}
 								register={register}
 								name="minimumBudget"
-								type={InputType.TEXT}
+								type={InputType.NUMBER}
 								placeholder="Minimum- Ex: 2300, 2000"
+								required
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the minimum budget.',
+									min: {
+										value: 0,
+										message: `please don't enter the value less than 0`,
+									},
+								}}
 							/>
 						</div>
 
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
-								label={' '}
+								label={'Maximum Budget'}
 								register={register}
 								name="maximumBudget"
-								type={InputType.TEXT}
+								type={InputType.NUMBER}
 								placeholder="Maximum- Ex: 2300, 2000"
+								required
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the maximum budget.',
+									min: {
+										value: watch('minimumBudget'),
+										message: 'Budget should me more than minimum budget.',
+									},
+								}}
 							/>
 						</div>
 					</div>
@@ -295,7 +357,7 @@ const HRFields = ({ clientDetail }) => {
 								}}
 								label="NR Margin Percentage"
 								name="NRMargin"
-								type={InputType.TEXT}
+								type={InputType.NUMBER}
 								placeholder="Select NR margin percentage"
 								required
 							/>
@@ -351,6 +413,7 @@ const HRFields = ({ clientDetail }) => {
 										</>
 									)}
 									options={items.map((item) => ({
+										id: item,
 										label: item,
 										value: item,
 									}))}
@@ -362,11 +425,11 @@ const HRFields = ({ clientDetail }) => {
 									addItem={addItem}
 									onNameChange={onNameChange}
 									name="contactDuration"
-									// isError={
-									// 	errors['contactDuration'] && errors['contactDuration']
-									// }
-									// required
-									// errorMsg={'Please select hiring request contact duration'}
+									isError={
+										errors['contactDuration'] && errors['contactDuration']
+									}
+									required
+									errorMsg={'Please select hiring request contact duration'}
 								/>
 							</div>
 						</div>
@@ -454,7 +517,7 @@ const HRFields = ({ clientDetail }) => {
 									register={register}
 									label={'How soon can they join?'}
 									defaultValue="Select availability"
-									options={availability && availability}
+									options={availability}
 									name="availability"
 									// isError={errors['availability'] && errors['availability']}
 									// required
@@ -514,13 +577,13 @@ const HRFields = ({ clientDetail }) => {
 			/>
 			<div className={HRFieldStyle.formPanelAction}>
 				<button
-					type="button"
-					className={HRFieldStyle.btn}>
+					className={HRFieldStyle.btn}
+					onClick={hrSubmitHandler}>
 					Save as Draft
 				</button>
 
 				<button
-					onClick={handleSubmit((d) => console.log(d))}
+					onClick={handleSubmit(hrSubmitHandler)}
 					className={HRFieldStyle.btnPrimary}>
 					Create HR
 				</button>

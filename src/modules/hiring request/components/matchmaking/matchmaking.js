@@ -1,30 +1,23 @@
-import { Button, Checkbox, Divider, Modal, Skeleton, Tooltip } from 'antd';
+import { Button, Modal, Skeleton } from 'antd';
 import axios from 'axios';
-import { HiringRequestHRStatus, InputType } from 'constants/application';
+import { InputType } from 'constants/application';
 import { useEffect, useState } from 'react';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import MatchMakingStyle from './matchmaking.module.css';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
-import { ReactComponent as ArrowRightSVG } from 'assets/svg/arrowRightLight.svg';
-import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDownLight.svg';
 import { ShowTechScore } from '../techScore/techScore';
 import { ShowTalentCost } from '../talentCost/talentCost';
 import { ShowVersantScore } from '../versantScore/versantScore';
 import { ShowProfileLog } from '../profileLog/profileLog';
+import MatchMakingTable from './matchmakingTable';
 
 const MatchmakingModal = () => {
-	const [isTechScoreActive, setIsTechScoreActive] = useState(false);
-	const [isTalentCostActive, setIsTalentCostActive] = useState(false);
-	const [isVersantScoreActive, setIsVersantScoreActive] = useState(false);
-	const [isProfileLogActive, setIsProfileLogActive] = useState(false);
 	const [matchmakingModal, setMatchmakingModal] = useState(false);
 	const [matchmakingData, setMatchmakingData] = useState([]);
+
 	/** State variable to keep track of all the expanded rows*/
-	const [expandedRows, setExpandedRows] = useState(
-		[],
-	); /** By default Empty Array */
-	/**  State variable to keep track which row is currently expanded. */
-	const [expandState, setExpandState] = useState({});
+	const [expandedRows, setExpandedRows] = useState([]);
+
 	const [tableFunctionData, setTableFunctionData] = useState('');
 	const [currentExpandedCell, setCurrentExpandedCell] = useState('');
 	const [selectedRows, setSelectedRows] = useState([]);
@@ -38,14 +31,9 @@ const MatchmakingModal = () => {
 	 * @param {*} key
 	 * @purpose This function gets called when show/hide link is clicked.
 	 */
-	const handleEpandRow = (event, userId, attributeID, key) => {
+	const handleExpandRow = (event, userId, attributeID, key) => {
 		const currentExpandedRows = expandedRows;
-
 		const isRowExpanded = currentExpandedRows.includes(userId);
-
-		let obj = {};
-		isRowExpanded ? (obj[userId] = false) : (obj[userId] = true);
-		setExpandState(obj);
 
 		// If the row is expanded, we are here to hide it. Hence remove
 		// it from the state variable. Otherwise add to it.
@@ -70,8 +58,9 @@ const MatchmakingModal = () => {
 	/**
 	 * @Function toggleRowSelection()
 	 * @param {*} id
-	 * @Purpose This is used to select a row or select all row
+	 * @purpose This is used to select a row or select all row
 	 */
+
 	const toggleRowSelection = (id) => {
 		if (id === 'selectAll') {
 			if (allSelected) {
@@ -94,17 +83,13 @@ const MatchmakingModal = () => {
 	};
 
 	const tableFunctions = {
-		talentCost: (
-			<ShowTalentCost
-				isTalentCostActive={isTalentCostActive}
-				setIsTalentCostActive={setIsTalentCostActive}
-			/>
-		),
+		talentCost: <ShowTalentCost />,
 		techScore: <ShowTechScore />,
 		versantScore: <ShowVersantScore />,
 		profileLog: <ShowProfileLog />,
 	};
 
+	/** Fetching the Modal Table API */
 	const fetchMatchmakingData = async () => {
 		const response = await axios.get(
 			'https://api.npoint.io/abbeed53bf8b4b354bb0',
@@ -115,6 +100,19 @@ const MatchmakingModal = () => {
 	useEffect(() => {
 		fetchMatchmakingData();
 	}, []);
+
+	/** Disposing the Modal State */
+	useEffect(() => {
+		return () => {
+			if (!matchmakingModal) {
+				setExpandedRows([]);
+				setTableFunctionData('');
+				setCurrentExpandedCell('');
+				setSelectedRows([]);
+				setAllSelected(false);
+			}
+		};
+	}, [matchmakingModal]);
 
 	return (
 		<div className="profileLogModal">
@@ -207,187 +205,23 @@ const MatchmakingModal = () => {
 							marginLeft: 'auto',
 							marginRight: 'auto',
 						}}>
-						<table className={MatchMakingStyle.matchmakingTable}>
-							<thead className={MatchMakingStyle.thead}>
-								<tr>
-									<th className={MatchMakingStyle.th}></th>
-									<th className={MatchMakingStyle.th}>
-										<Checkbox
-											id="selectAll"
-											checked={allSelected}
-											onClick={() => toggleRowSelection('selectAll')}
-										/>
-									</th>
-									<th className={MatchMakingStyle.th}>Name</th>
-									<th className={MatchMakingStyle.th}>Talent Cost</th>
-									<th className={MatchMakingStyle.th}>Role</th>
-									<th className={MatchMakingStyle.th}>Email ID</th>
-									<th className={MatchMakingStyle.th}>Status</th>
-									<th className={MatchMakingStyle.th}>Tech Score</th>
-									<th className={MatchMakingStyle.th}>Versant Score</th>
-									<th className={MatchMakingStyle.th}>Profile Log</th>
-								</tr>
-							</thead>
-							<tbody>
-								{matchmakingData?.map((user, index) => (
-									<>
-										<tr
-											key={user.key}
-											className={
-												expandedRows.includes(user.key) &&
-												MatchMakingStyle.isSelectedBackground
-											}>
-											<td
-												className={MatchMakingStyle.td}
-												onClick={(e) => {
-													setIsTalentCostActive(!isTalentCostActive);
-													return handleEpandRow(
-														e,
-														user.key,
-														`talentCost_${user.key}`,
-														'talentCost',
-														user.talentCost,
-													);
-												}}>
-												{expandState[user.key] ? (
-													<ArrowDownSVG />
-												) : (
-													<ArrowRightSVG />
-												)}
-											</td>
-											<td className={MatchMakingStyle.td}>
-												<Checkbox
-													id={user.key}
-													checked={selectedRows.includes(user.key)}
-													onClick={() => toggleRowSelection(user.key)}
-												/>
-											</td>
-											<td
-												className={`${MatchMakingStyle.td} ${MatchMakingStyle.ellipsis}  ${MatchMakingStyle.maxWidth164}`}>
-												<Tooltip
-													placement="bottom"
-													title={user.name}>
-													{user.name}
-												</Tooltip>
-											</td>
-											<td
-												className={MatchMakingStyle.td}
-												id={`talentCost${index}`}
-												onClick={(e) => {
-													setIsTalentCostActive(!isTalentCostActive);
-													handleEpandRow(
-														e,
-														user.key,
-														`talentCost_${user.key}`,
-														'talentCost',
-														user.talentCost,
-													);
-												}}>
-												{user.talentCost}
-												{isTalentCostActive ? (
-													<ArrowDownSVG style={{ marginLeft: '8px' }} />
-												) : (
-													<ArrowRightSVG style={{ marginLeft: '8px' }} />
-												)}
-											</td>
-											<td
-												className={`${MatchMakingStyle.td} ${MatchMakingStyle.ellipsis} ${MatchMakingStyle.maxWidth134}`}>
-												<Tooltip
-													placement="bottom"
-													title={user.role}>
-													{user.role}
-												</Tooltip>
-											</td>
-											<td
-												className={`${MatchMakingStyle.td} ${MatchMakingStyle.ellipsis} ${MatchMakingStyle.maxWidth170}`}>
-												<Tooltip
-													placement="bottom"
-													title={user.emailID}>
-													{user.emailID}
-												</Tooltip>
-											</td>
-											<td className={MatchMakingStyle.td}>
-												{All_Hiring_Request_Utils.GETHRSTATUS(105, 'Completed')}
-											</td>
-											<td
-												className={MatchMakingStyle.td}
-												id={`techScore${index}`}
-												onClick={(e) => {
-													setIsTechScoreActive(!isTechScoreActive);
-													return handleEpandRow(
-														e,
-														user.key,
-														`techScore_${user.key}`,
-														'techScore',
-														user.techScore,
-													);
-												}}>
-												{user.techScore}
-												{isTechScoreActive ? (
-													<ArrowDownSVG style={{ marginLeft: '8px' }} />
-												) : (
-													<ArrowRightSVG style={{ marginLeft: '8px' }} />
-												)}
-											</td>
-											<td
-												className={MatchMakingStyle.td}
-												id={`versantScore${index}`}
-												onClick={(e) => {
-													setIsVersantScoreActive(!isVersantScoreActive);
-													return handleEpandRow(
-														e,
-														user.key,
-														`versantScore_${user.key}`,
-														'versantScore',
-														user.versantScore,
-													);
-												}}>
-												{user.versantScore}
-												{isVersantScoreActive ? (
-													<ArrowDownSVG style={{ marginLeft: '8px' }} />
-												) : (
-													<ArrowRightSVG style={{ marginLeft: '8px' }} />
-												)}
-											</td>
-											<td
-												className={`${MatchMakingStyle.td}`}
-												id={`profileLog${index}`}
-												onClick={(e) => {
-													setIsProfileLogActive(!isProfileLogActive);
-													return handleEpandRow(
-														e,
-														user.key,
-														`profileLog_${user.key}`,
-														'profileLog',
-														user.profileLog,
-													);
-												}}>
-												View
-												{isProfileLogActive ? (
-													<ArrowDownSVG style={{ marginLeft: '8px' }} />
-												) : (
-													<ArrowRightSVG style={{ marginLeft: '8px' }} />
-												)}
-											</td>
-										</tr>
-										<>
-											{expandedRows.includes(user.key) ? (
-												<tr className={MatchMakingStyle.isSelectedBackground}>
-													<td
-														colSpan="12"
-														className={MatchMakingStyle.td}>
-														<div>
-															{tableFunctions[tableFunctionData] &&
-																tableFunctions[tableFunctionData]}
-														</div>
-													</td>
-												</tr>
-											) : null}
-										</>
-									</>
-								))}
-							</tbody>
-						</table>
+						{matchmakingData.length === 0 ? (
+							<Skeleton />
+						) : (
+							<MatchMakingTable
+								matchMakingData={matchmakingData}
+								allSelected={allSelected}
+								toggleRowSelection={toggleRowSelection}
+								expandedRows={expandedRows}
+								handleExpandRow={handleExpandRow}
+								selectedRows={selectedRows}
+								currentExpandedCell={currentExpandedCell}
+								componentToRender={
+									tableFunctions[tableFunctionData] &&
+									tableFunctions[tableFunctionData]
+								}
+							/>
+						)}
 					</div>
 					<div className={MatchMakingStyle.formPanelAction}>
 						<button

@@ -1,4 +1,4 @@
-import { hiringRequestPriority } from 'constants/application';
+import { SubmitType, hiringRequestPriority } from 'constants/application';
 
 export const hrUtils = {
 	modifyHRRequestData: (hrData) => {
@@ -51,5 +51,80 @@ export const hrUtils = {
 			}
 			return { tempdata, index };
 		}
+	},
+	hrFormDataFormatter(d, draft, watch) {
+		console.log('--here--');
+		const hrFormDetails = {
+			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
+			clientName:
+				draft === SubmitType.SAVE_AS_DRAFT ? watch('clientName') : d.clientName,
+			companyName:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('companyName')
+					: d.companyName,
+			role: draft === SubmitType.SAVE_AS_DRAFT ? watch('role') : d.role,
+			hrTitle:
+				draft === SubmitType.SAVE_AS_DRAFT ? watch('hrTitle') : d.hrTitle,
+			jdURL: draft === SubmitType.SAVE_AS_DRAFT ? watch('jdURL') : d.jdURL,
+			budget: draft === SubmitType.SAVE_AS_DRAFT ? watch('budget') : d.budget,
+			minimumBudget:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('minimumBudget')
+					: d.minimumBudget,
+			maximumBudget:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('maximumBudget')
+					: d.maximumBudget,
+			NRMargin:
+				draft === SubmitType.SAVE_AS_DRAFT ? watch('NRMargin') : d.NRMargin,
+			salesPerson:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('salesPerson')
+					: d.salesPerson,
+			contactDuration:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('contactDuration')
+					: d.contactDuration,
+			availability:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('availability')
+					: d.availability,
+			years: draft === SubmitType.SAVE_AS_DRAFT ? watch('years') : d.years,
+			months: draft === SubmitType.SAVE_AS_DRAFT ? watch('months') : d.months,
+			timeZone:
+				draft === SubmitType.SAVE_AS_DRAFT ? watch('timeZone') : d.timeZone,
+			talentsNumber:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('talentsNumber')
+					: d.talentsNumber,
+			dealID: draft === SubmitType.SAVE_AS_DRAFT ? watch('dealID') : d.dealID,
+			bqFormLink:
+				draft === SubmitType.SAVE_AS_DRAFT ? watch('bqFormLink') : d.bqFormLink,
+			discoveryCallLink:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('discoveryCallLink')
+					: d.discoveryCallLink,
+			interviewerFullName:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('interviewerFullName')
+					: d.interviewerFullName,
+			interviewerEmail:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('interviewerEmail')
+					: d.interviewerEmail,
+			interviewerLinkedin:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('interviewerLinkedin')
+					: d.interviewerLinkedin,
+			interviewerDesignation:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('interviewerDesignation')
+					: d.interviewerDesignation,
+			secondaryInterviewer:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? watch('secondaryInterviewer')
+					: d.secondaryInterviewer,
+		};
+		return hrFormDetails;
 	},
 };

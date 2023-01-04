@@ -128,4 +128,25 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getClientDetailRequestDAO');
 		}
 	},
+	createHRDAO: async function (hrData) {
+		try {
+			const createHRResult = await HiringRequestAPI.createHiringRequest(hrData);
+			if (createHRResult) {
+				const statusCode = createHRResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = createHRResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return createHRResult;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return createHRResult;
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.createHRDAO');
+		}
+	},
 };

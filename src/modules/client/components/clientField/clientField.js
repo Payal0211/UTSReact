@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Checkbox, message } from 'antd';
 import { EmailRegEx, InputType, SubmitType } from 'constants/application';
 import ClientFieldStyle from './clientField.module.css';
@@ -83,9 +83,9 @@ const ClientField = ({
 
 	const [flagAndCode, setFlagAndCode] = useState([]);
 
-	const SameASPrimaryPOCHandler = (e) => {
+	const SameASPrimaryPOCHandler = useCallback((e) => {
 		setSameAsPrimaryPOC(e.target.checked);
-	};
+	}, []);
 
 	/** -------- Masters API Starts here-------------- */
 
@@ -109,7 +109,6 @@ const ClientField = ({
 			addClientResponseID,
 			watch,
 		);
-		console.log(clientFormDetails);
 
 		const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
 		if (addClientResult.statusCode === HTTPStatusCode.OK) {
@@ -128,7 +127,7 @@ const ClientField = ({
 			type === SubmitType.SAVE_AS_DRAFT &&
 				messageAPI.open({
 					type: 'success',
-					content: 'Client details has been saved as draft.',
+					content: 'Client details has been saved to draft.',
 				});
 		}
 	};
@@ -146,7 +145,6 @@ const ClientField = ({
 			setValue('legalClientDesignation', watchFields[3]);
 			setValue('legalCompanyFullName', watchFields[4]);
 			setValue('legalCompanyAddress', watchFields[5]);
-			setValue('legalClientCountryCode', watchFields[6]);
 			setControlledLegalCountryCode(watchFields[6]);
 		}
 	}, [isSameAsPrimaryPOC, setValue, watchFields, getValues]);
@@ -188,7 +186,7 @@ const ClientField = ({
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd12}>
 								<div className={ClientFieldStyle.checkBoxGroup}>
-									<Checkbox onChange={SameASPrimaryPOCHandler}>
+									<Checkbox onClick={SameASPrimaryPOCHandler}>
 										Same as primary client details
 									</Checkbox>
 								</div>
@@ -324,7 +322,6 @@ const ClientField = ({
 			<div className={ClientFieldStyle.formPanelAction}>
 				<button
 					onClick={clientSubmitHandler}
-					type="button"
 					className={ClientFieldStyle.btn}>
 					Save as Draft
 				</button>
