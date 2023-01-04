@@ -97,8 +97,6 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 											closable={true}
 											onClose={(e) => {
 												e.preventDefault();
-												// console.log(index);
-												// handleClose(e.target.value);
 											}}
 											style={{
 												display: 'flex',

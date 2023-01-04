@@ -1,5 +1,10 @@
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
-export const ShowTalentCost = () => {
+import './talentCost.css';
+
+export const ShowTalentCost = ({
+	isTalentCostActive,
+	setIsTalentCostActive,
+}) => {
 	const talentCost = [
 		{
 			id: 'talentCost1',
@@ -30,15 +35,18 @@ export const ShowTalentCost = () => {
 		<div
 			style={{
 				display: 'flex',
-				width: '90%',
+				width: '1100px',
 				margin: 'auto',
 				justifyContent: 'space-between',
 				alignItems: 'flex-start',
+				background: 'white',
+				borderRadius: '8px',
 			}}>
 			<div
 				style={{
 					display: 'flex',
 					justifyContent: 'flex-start',
+					padding: '24px',
 					gap: '24px',
 					alignItems: 'center',
 				}}>
@@ -59,7 +67,7 @@ export const ShowTalentCost = () => {
 					);
 				})}
 			</div>
-			<CloseSVG />
+			<CloseSVG style={{ marginTop: '16px', marginRight: '16px' }} />
 		</div>
 	);
 };

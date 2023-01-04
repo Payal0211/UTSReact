@@ -11,9 +11,23 @@
     margin-right: auto;
     justify-content: flex-start;
     display: flex;
-    width: 1176px
+    /* width: 1176px */
+}
+.isSelectedBackground {
+    background: #f7f7f7 !important;
 }
 
+.selectedCell{
+padding: 17px 12px;
+    text-align: start;
+   border-bottom: 1px solid var(--color-sunlight);
+   
+   
+}
+
+.isSelected{
+    background-color: var(--background-color-light);
+}
 .formPanelAction button {
     background: #FFFFFF;
     border: 1px solid #CECCCC;
@@ -62,53 +76,52 @@
    cursor: pointer;
     border-collapse: collapse;
     width: 100%;
-    max-height: 100px !important;
+    
+    position: relative;
 }
 .td{
-    padding: 21px 20px;
+    padding: 17px 12px;
     text-align: start;
-    /* text-overflow: ellipsis; */
+   
     border-bottom: 1px solid var(--uplers-grey) !important;
-    
 }
+
+tr .td:first-child {
+padding-left: 20px;
+}
+
 .ellipsis{
     white-space: nowrap;
-    width: 130px;   
+   
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.maxWidth164{
+    max-width: 164px;
+}
+.maxWidth134{
+    max-width: 134px;
+}
+.maxWidth170{
+    max-width: 170px;
+}
 .ml5{
-    
     width: 10px;
    margin-left: 5px;
 }
 .th{
-    padding-top: 26px;
-    padding-bottom: 26px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 24px 12px;
     text-align: left;
     color: var(--background-color-light);
     font-size: 14px !important;
     font-weight: 600;
     line-height: 17px !important;
     color: var(--uplers-black);
+    position: sticky;
+    top: 0;
     border-bottom: 1px dashed var(--uplers-grey);
 }
-.checkBox{
-    display: none;
-        cursor: pointer;
-        height: 0;
-        width: 0;
+tr th:first-child{
+    padding-left: 20px;
 }
 
-.checkmark{
-   
-    top: 0;
-        border-radius: 8px;
-        left: 0;
-        border: 1px solid grey;
-        height: 25px;
-        width: 25px;
-        background-color: white;
-}

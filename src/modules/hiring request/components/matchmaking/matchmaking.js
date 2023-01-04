@@ -1,4 +1,4 @@
-import { Button, Divider, Modal, Skeleton } from 'antd';
+import { Button, Checkbox, Divider, Modal, Skeleton, Tooltip } from 'antd';
 import axios from 'axios';
 import { HiringRequestHRStatus, InputType } from 'constants/application';
 import { useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ import { ShowProfileLog } from '../profileLog/profileLog';
 
 const MatchmakingModal = () => {
 	const [isTechScoreActive, setIsTechScoreActive] = useState(false);
-	const [isTalenCostActive, setIsTalentCostActive] = useState(false);
+	const [isTalentCostActive, setIsTalentCostActive] = useState(false);
 	const [isVersantScoreActive, setIsVersantScoreActive] = useState(false);
 	const [isProfileLogActive, setIsProfileLogActive] = useState(false);
 	const [matchmakingModal, setMatchmakingModal] = useState(false);
@@ -94,10 +94,15 @@ const MatchmakingModal = () => {
 	};
 
 	const tableFunctions = {
-		talentCost: ShowTalentCost,
-		techScore: ShowTechScore,
-		versantScore: ShowVersantScore,
-		profileLog: ShowProfileLog,
+		talentCost: (
+			<ShowTalentCost
+				isTalentCostActive={isTalentCostActive}
+				setIsTalentCostActive={setIsTalentCostActive}
+			/>
+		),
+		techScore: <ShowTechScore />,
+		versantScore: <ShowVersantScore />,
+		profileLog: <ShowProfileLog />,
 	};
 
 	const fetchMatchmakingData = async () => {
@@ -115,6 +120,7 @@ const MatchmakingModal = () => {
 		<div className="profileLogModal">
 			<Button onClick={() => setMatchmakingModal(true)}>Matchmaking </Button>
 			<Modal
+				centered
 				open={matchmakingModal}
 				width="1256px"
 				footer={null}
@@ -136,7 +142,7 @@ const MatchmakingModal = () => {
 							marginTop: '30px',
 							marginLeft: 'auto',
 							marginRight: 'auto',
-							// width: '1176px',
+
 							borderRadius: '8px',
 							marginBottom: '30px',
 						}}>
@@ -145,7 +151,6 @@ const MatchmakingModal = () => {
 								display: 'flex',
 								justifyContent: 'space-between',
 								alignItems: 'center',
-								gap: '80px',
 							}}>
 							<div
 								style={{
@@ -164,7 +169,6 @@ const MatchmakingModal = () => {
 									}}>
 									Save Eat Foods Pvt Ltd -
 								</span>
-								&nbsp;&nbsp;&nbsp;
 								<span
 									style={{
 										fontSize: '16px',
@@ -198,21 +202,20 @@ const MatchmakingModal = () => {
 					</div>
 					<div
 						style={{
-							/* border: '1px solid red',
-							maxHeight: '100px', */
+							maxHeight: '581px',
+							overflowY: 'auto',
 							marginLeft: 'auto',
 							marginRight: 'auto',
 						}}>
 						<table className={MatchMakingStyle.matchmakingTable}>
-							<thead>
+							<thead className={MatchMakingStyle.thead}>
 								<tr>
 									<th className={MatchMakingStyle.th}></th>
 									<th className={MatchMakingStyle.th}>
-										<input
-											type="checkbox"
+										<Checkbox
 											id="selectAll"
 											checked={allSelected}
-											onChange={() => toggleRowSelection('selectAll')}
+											onClick={() => toggleRowSelection('selectAll')}
 										/>
 									</th>
 									<th className={MatchMakingStyle.th}>Name</th>
@@ -228,11 +231,16 @@ const MatchmakingModal = () => {
 							<tbody>
 								{matchmakingData?.map((user, index) => (
 									<>
-										<tr key={user.key}>
+										<tr
+											key={user.key}
+											className={
+												expandedRows.includes(user.key) &&
+												MatchMakingStyle.isSelectedBackground
+											}>
 											<td
 												className={MatchMakingStyle.td}
 												onClick={(e) => {
-													setIsTalentCostActive(!isTalenCostActive);
+													setIsTalentCostActive(!isTalentCostActive);
 													return handleEpandRow(
 														e,
 														user.key,
@@ -248,19 +256,25 @@ const MatchmakingModal = () => {
 												)}
 											</td>
 											<td className={MatchMakingStyle.td}>
-												<input
-													type="checkbox"
+												<Checkbox
 													id={user.key}
 													checked={selectedRows.includes(user.key)}
 													onClick={() => toggleRowSelection(user.key)}
 												/>
 											</td>
-											<td className={MatchMakingStyle.td}>{user.name}</td>
+											<td
+												className={`${MatchMakingStyle.td} ${MatchMakingStyle.ellipsis}  ${MatchMakingStyle.maxWidth164}`}>
+												<Tooltip
+													placement="bottom"
+													title={user.name}>
+													{user.name}
+												</Tooltip>
+											</td>
 											<td
 												className={MatchMakingStyle.td}
 												id={`talentCost${index}`}
 												onClick={(e) => {
-													setIsTalentCostActive(!isTalenCostActive);
+													setIsTalentCostActive(!isTalentCostActive);
 													handleEpandRow(
 														e,
 														user.key,
@@ -269,17 +283,29 @@ const MatchmakingModal = () => {
 														user.talentCost,
 													);
 												}}>
-												{user.talentCost}{' '}
-												<span>
-													{isTalenCostActive ? (
-														<ArrowDownSVG />
-													) : (
-														<ArrowRightSVG />
-													)}
-												</span>
+												{user.talentCost}
+												{isTalentCostActive ? (
+													<ArrowDownSVG style={{ marginLeft: '8px' }} />
+												) : (
+													<ArrowRightSVG style={{ marginLeft: '8px' }} />
+												)}
 											</td>
-											<td className={MatchMakingStyle.td}>{user.role}</td>
-											<td className={MatchMakingStyle.td}>{user.emailID}</td>
+											<td
+												className={`${MatchMakingStyle.td} ${MatchMakingStyle.ellipsis} ${MatchMakingStyle.maxWidth134}`}>
+												<Tooltip
+													placement="bottom"
+													title={user.role}>
+													{user.role}
+												</Tooltip>
+											</td>
+											<td
+												className={`${MatchMakingStyle.td} ${MatchMakingStyle.ellipsis} ${MatchMakingStyle.maxWidth170}`}>
+												<Tooltip
+													placement="bottom"
+													title={user.emailID}>
+													{user.emailID}
+												</Tooltip>
+											</td>
 											<td className={MatchMakingStyle.td}>
 												{All_Hiring_Request_Utils.GETHRSTATUS(105, 'Completed')}
 											</td>
@@ -297,13 +323,11 @@ const MatchmakingModal = () => {
 													);
 												}}>
 												{user.techScore}
-												<span>
-													{isTechScoreActive ? (
-														<ArrowDownSVG />
-													) : (
-														<ArrowRightSVG />
-													)}
-												</span>
+												{isTechScoreActive ? (
+													<ArrowDownSVG style={{ marginLeft: '8px' }} />
+												) : (
+													<ArrowRightSVG style={{ marginLeft: '8px' }} />
+												)}
 											</td>
 											<td
 												className={MatchMakingStyle.td}
@@ -319,13 +343,11 @@ const MatchmakingModal = () => {
 													);
 												}}>
 												{user.versantScore}
-												<span className={MatchMakingStyle.flex}>
-													{isVersantScoreActive ? (
-														<ArrowDownSVG />
-													) : (
-														<ArrowRightSVG />
-													)}
-												</span>
+												{isVersantScoreActive ? (
+													<ArrowDownSVG style={{ marginLeft: '8px' }} />
+												) : (
+													<ArrowRightSVG style={{ marginLeft: '8px' }} />
+												)}
 											</td>
 											<td
 												className={`${MatchMakingStyle.td}`}
@@ -341,24 +363,22 @@ const MatchmakingModal = () => {
 													);
 												}}>
 												View
-												<span className={MatchMakingStyle.flex}>
-													{isProfileLogActive ? (
-														<ArrowDownSVG />
-													) : (
-														<ArrowRightSVG />
-													)}
-												</span>
+												{isProfileLogActive ? (
+													<ArrowDownSVG style={{ marginLeft: '8px' }} />
+												) : (
+													<ArrowRightSVG style={{ marginLeft: '8px' }} />
+												)}
 											</td>
 										</tr>
 										<>
 											{expandedRows.includes(user.key) ? (
-												<tr>
+												<tr className={MatchMakingStyle.isSelectedBackground}>
 													<td
 														colSpan="12"
 														className={MatchMakingStyle.td}>
 														<div>
 															{tableFunctions[tableFunctionData] &&
-																tableFunctions[tableFunctionData]()}
+																tableFunctions[tableFunctionData]}
 														</div>
 													</td>
 												</tr>
