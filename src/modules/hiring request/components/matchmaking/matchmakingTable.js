@@ -136,7 +136,11 @@ const TrAPIData = ({
 					</Tooltip>
 				</td>
 				<td
-					className={MatchMakingStyle.td}
+					className={
+						activeCellMemo.talentCost
+							? `${MatchMakingStyle.selectedCell}`
+							: `${MatchMakingStyle.td}`
+					}
 					id={`talentCost_${user.key}`}
 					onClick={(e) => {
 						handleExpandRow(
@@ -170,7 +174,11 @@ const TrAPIData = ({
 					{All_Hiring_Request_Utils.GETHRSTATUS(105, 'Completed')}
 				</td>
 				<td
-					className={MatchMakingStyle.td}
+					className={
+						activeCellMemo.techScore
+							? `${MatchMakingStyle.selectedCell}`
+							: `${MatchMakingStyle.td}`
+					}
 					id={`techScore_${user.key}`}
 					onClick={(e) => {
 						return handleExpandRow(
@@ -185,7 +193,11 @@ const TrAPIData = ({
 					{expandedIconMemo.techScore}
 				</td>
 				<td
-					className={MatchMakingStyle.td}
+					className={
+						activeCellMemo.versantScore
+							? `${MatchMakingStyle.selectedCell}`
+							: `${MatchMakingStyle.td}`
+					}
 					id={`versantScore_${user.key}`}
 					onClick={(e) => {
 						return handleExpandRow(
@@ -200,7 +212,11 @@ const TrAPIData = ({
 					{expandedIconMemo.versantScore}
 				</td>
 				<td
-					className={`${MatchMakingStyle.td}`}
+					className={
+						activeCellMemo.profileLog
+							? `${MatchMakingStyle.selectedCell}`
+							: `${MatchMakingStyle.td}`
+					}
 					id={`profileLog_${user.key}`}
 					onClick={(e) => {
 						return handleExpandRow(
