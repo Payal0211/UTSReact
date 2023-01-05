@@ -138,14 +138,15 @@ const AddInterviewer = ({ register, fields, remove, append, errors }) => {
 										register={register}
 										label="Interviewer Full Name"
 										validationSchema={{
-											required: true,
+											required:
+												'please enter the secondary interviewer full name.',
 										}}
 										name={`secondaryInterviewer.[${index}].fullName`}
 										type={InputType.TEXT}
 										placeholder="Enter Full Name"
 										required
 										isError={!!errors?.secondaryInterviewer?.[index]?.fullName}
-										errorMsg="please enter the secondary interviewer name."
+										errorMsg="please enter the secondary interviewer full name."
 									/>
 								</div>
 
@@ -160,7 +161,7 @@ const AddInterviewer = ({ register, fields, remove, append, errors }) => {
 												'please enter the secondary interviewer email ID.',
 											pattern: {
 												value: EmailRegEx.email,
-												message: 'please enter a valid email.',
+												message: 'Entered value does not match email format',
 											},
 										}}
 										name={`secondaryInterviewer.[${index}].emailID`}
@@ -177,7 +178,8 @@ const AddInterviewer = ({ register, fields, remove, append, errors }) => {
 										label="Interviewer Linkedin"
 										name={`secondaryInterviewer.[${index}].linkedin`}
 										validationSchema={{
-											required: true,
+											required:
+												'please enter secondary interviewer linkedin url.',
 										}}
 										type={InputType.TEXT}
 										placeholder="Enter Linkedin Profile"
@@ -193,7 +195,8 @@ const AddInterviewer = ({ register, fields, remove, append, errors }) => {
 										label="Interviewer Designation"
 										name={`secondaryInterviewer.[${index}].designation`}
 										validationSchema={{
-											required: true,
+											required:
+												'please enter secondary interviewer designation.',
 										}}
 										type={InputType.TEXT}
 										placeholder="Enter Designation"

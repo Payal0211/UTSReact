@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import TextEditorStyle from './textEditor.module.css';
 import { ReactComponent as EditSVG } from 'assets/svg/edit.svg';
 import { ReactComponent as BoldSVG } from 'assets/svg/bold.svg';
@@ -13,9 +13,29 @@ import { ReactComponent as OrderedListSVG } from 'assets/svg/orderedList.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { Tooltip } from 'antd';
 
-const TextEditor = ({ label, required, placeholder }) => {
+const TextEditor = ({
+	label,
+	required,
+	placeholder,
+	register,
+	errors,
+	validationSchema,
+	name,
+	setValue,
+	watch,
+}) => {
 	const [showEditor, setShowEditor] = useState(false);
 	const commentRef = useRef();
+	useEffect(() => {
+		const elements = document.querySelectorAll('#editorBtn');
+		elements.forEach((ele) => {
+			ele.addEventListener('click', () => {
+				let command = ele.getAttribute('data-element');
+				document.execCommand(command, false, null);
+			});
+		});
+	});
+
 	return (
 		<div className={TextEditorStyle.editorContainer}>
 			<label
@@ -109,12 +129,20 @@ const TextEditor = ({ label, required, placeholder }) => {
 
 			<div className={TextEditorStyle.editorBody}>
 				<div
+					{...register(name, {
+						required: `please enter the ${label.toLowerCase()}`,
+					})}
 					ref={commentRef}
 					id="commentBox"
 					className={TextEditorStyle.commentBox}
 					contentEditable={true}
 					placeholder={placeholder}
-					suppressContentEditableWarning={true}></div>
+					suppressContentEditableWarning={true}
+					onInput={(e) => {
+						setValue(name, e.currentTarget.textContent, {
+							shouldDirty: true,
+						});
+					}}></div>
 				<div className={TextEditorStyle.actionItem}>
 					{showEditor ? (
 						<ArrowDownSVG
@@ -147,6 +175,15 @@ const TextEditor = ({ label, required, placeholder }) => {
 					)}
 				</div>
 			</div>
+
+			{required
+				? errors &&
+				  errors[name] && (
+						<div className={TextEditorStyle.error}>
+							{errors[name]?.message && `* ${errors[name]?.message}`}
+						</div>
+				  )
+				: false}
 		</div>
 	);
 };

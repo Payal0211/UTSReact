@@ -234,10 +234,10 @@ table{
 
 .ant-dropdown-menu-item:hover{
   border-radius: 8px;
-  width: 95%;
+  /* width: 100%; */
   margin: 0 auto;
   font-size: var(--fontsize-tough);
-    font-weight: 500;
+  font-weight: 500;
 }
 .ant-spin-dot-item {
   background-color: var(--color-sunlight);

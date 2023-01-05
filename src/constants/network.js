@@ -10,6 +10,7 @@ export class SubDomain {
 	static MASTERS = 'MastersAPI/';
 	static CLIENT = 'Client/';
 	static HIRING = 'Hiring/';
+	static DEBRIEFING = 'Debriefing/';
 }
 export class APIType {
 	static USER = '/user';

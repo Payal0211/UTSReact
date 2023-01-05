@@ -157,8 +157,15 @@ const HRFields = ({
 	const hrSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 		let hrFormDetails = hrUtils.hrFormDataFormatter(d, type, watch);
 
+		if (type === SubmitType.SAVE_AS_DRAFT) {
+			if (_isNull(watch('clientName'))) {
+				return setError('clientName', {
+					type: 'emptyClientName',
+					message: 'Please enter the client name.',
+				});
+			}
+		}
 		const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
-
 		if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
 			type !== SubmitType.SAVE_AS_DRAFT &&
@@ -419,17 +426,17 @@ const HRFields = ({
 									}))}
 									setValue={setValue}
 									register={register}
-									label={'Contact Duration (in months)'}
+									label={'Contract Duration (in months)'}
 									defaultValue="Ex: 3,6,12..."
 									inputRef={inputRef}
 									addItem={addItem}
 									onNameChange={onNameChange}
-									name="contactDuration"
+									name="contractDuration"
 									isError={
-										errors['contactDuration'] && errors['contactDuration']
+										errors['contractDuration'] && errors['contractDuration']
 									}
 									required
-									errorMsg={'Please select hiring request contact duration'}
+									errorMsg={'Please select hiring request conrtact duration'}
 								/>
 							</div>
 						</div>
@@ -575,6 +582,7 @@ const HRFields = ({
 				register={register}
 				fields={fields}
 			/>
+
 			<div className={HRFieldStyle.formPanelAction}>
 				<button
 					className={HRFieldStyle.btn}

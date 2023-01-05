@@ -236,7 +236,7 @@ const AllHiringRequestScreen = () => {
 								<Dropdown
 									trigger={['click']}
 									placement="bottom"
-									menu={
+									overlay={
 										<Menu
 											onClick={(e) => {
 												setPageSize(parseInt(e.key));

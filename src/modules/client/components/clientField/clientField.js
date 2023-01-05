@@ -16,6 +16,7 @@ import {
 import { ClientDAO } from 'core/client/clientDAO';
 import { HTTPStatusCode } from 'constants/network';
 import CompanyDetails from '../companyDetails/companyDetails';
+import { _isNull } from 'shared/utils/basic_utils';
 
 export const secondaryClient = {
 	fullName: '',
@@ -52,6 +53,7 @@ const ClientField = ({
 			pocList: [],
 		},
 	});
+	const [isLoading, setIsLoading] = useState(false);
 	const [addClientResponseID, setAddClientResponseID] = useState(0);
 	const [controlledLegalCountryCode, setControlledLegalCountryCode] =
 		useState('+91');
@@ -103,13 +105,21 @@ const ClientField = ({
 	/** -------- Masters API Ends here-------------- */
 	/** Submit the client form Starts */
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+		setIsLoading(true);
 		let clientFormDetails = clientFormDataFormatter(
 			d,
 			type,
 			addClientResponseID,
 			watch,
 		);
-
+		if (type === SubmitType.SAVE_AS_DRAFT) {
+			if (_isNull(watch('companyName'))) {
+				return setError('companyName', {
+					type: 'emptyCompanyName',
+					message: 'please enter the company name.',
+				});
+			}
+		}
 		const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
 		if (addClientResult.statusCode === HTTPStatusCode.OK) {
 			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Add New Hiring Requests');
@@ -117,6 +127,7 @@ const ClientField = ({
 				setAddClientResponseID(
 					addClientResult?.responseBody?.details?.ContactID,
 				);
+			setIsLoading(false);
 			type !== SubmitType.SAVE_AS_DRAFT &&
 				setTabFieldDisabled({
 					...tabFieldDisabled,
@@ -321,11 +332,13 @@ const ClientField = ({
 			/>
 			<div className={ClientFieldStyle.formPanelAction}>
 				<button
+					disabled={isLoading}
 					onClick={clientSubmitHandler}
 					className={ClientFieldStyle.btn}>
 					Save as Draft
 				</button>
 				<button
+					disabled={isLoading}
 					type="submit"
 					onClick={handleSubmit(clientSubmitHandler)}
 					className={ClientFieldStyle.btnPrimary}>

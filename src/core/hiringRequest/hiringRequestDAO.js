@@ -143,10 +143,42 @@ export const hiringRequestDAO = {
 					return createHRResult;
 				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
 					return createHRResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
 				return statusCode;
 			}
 		} catch (error) {
 			return errorDebug(error, 'ClientDAO.createHRDAO');
+		}
+	},
+	createDebriefingDAO: async function (debriefData) {
+		try {
+			const createDebriefResult =
+				await HiringRequestAPI.createDebriefingRequest(debriefData);
+			if (createDebriefResult) {
+				const statusCode = createDebriefResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = createDebriefResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return createDebriefResult;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return createDebriefResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.createDebriefingDAO');
 		}
 	},
 };

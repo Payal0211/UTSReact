@@ -91,3 +91,7 @@
     content: attr(placeholder) !important;
     background-color: transparent;
 }
+.error {
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
+}
