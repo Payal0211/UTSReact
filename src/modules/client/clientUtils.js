@@ -84,12 +84,15 @@ export function clientFormDataFormatter(d, draft, contactID, watch) {
 					: _isNull(d.companyLinkedinProfile)
 					? null
 					: d.companyLinkedinProfile,
-			phone: _isNull(d.companyCountryCode)
-				? null
-				: draft === SubmitType.SAVE_AS_DRAFT
-				? watch('companyCountryCode') + watch('phoneNumber')
-				: d.companyCountryCode + d.phoneNumber,
 
+			phone:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('companyCountryCode'))
+						? '+91' + watch('phoneNumber')
+						: watch('companyCountryCode') + watch('phoneNumber')
+					: _isNull(d.companyCountryCode)
+					? '+91' + d.phoneNumber
+					: d.companyCountryCode + d.phoneNumber,
 			teamManagement:
 				draft === SubmitType.SAVE_AS_DRAFT ? watch('remote') : d.remote,
 		},
@@ -111,11 +114,16 @@ export function clientFormDataFormatter(d, draft, contactID, watch) {
 					: _isNull(d.primaryClientEmailID)
 					? null
 					: d.primaryClientEmailID,
-			contactNo: _isNull(d.primaryClientCountryCode)
-				? null
-				: draft === SubmitType.SAVE_AS_DRAFT
-				? watch('primaryClientCountryCode') + watch('primaryClientPhoneNumber')
-				: d.primaryClientCountryCode + d.primaryClientPhoneNumber,
+
+			contactNo:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('primaryClientCountryCode'))
+						? '+91' + watch('primaryClientPhoneNumber')
+						: watch('primaryClientCountryCode') +
+						  watch('primaryClientPhoneNumber')
+					: _isNull(d.primaryClientCountryCode)
+					? '+91' + d.primaryClientPhoneNumber
+					: d.primaryClientCountryCode + d.primaryClientPhoneNumber,
 			designation:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('primaryDesignation'))
@@ -170,11 +178,15 @@ export function clientFormDataFormatter(d, draft, contactID, watch) {
 					: _isNull(d.legalCompanyFullName)
 					? null
 					: d.legalCompanyFullName,
-			phoneNumber: _isNull(d.legalClientCountryCode)
-				? null
-				: draft === SubmitType.SAVE_AS_DRAFT
-				? watch('legalClientCountryCode') + watch('legalClientPhoneNumber')
-				: d.legalClientCountryCode + d.legalClientPhoneNumber,
+
+			phoneNumber:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('legalClientCountryCode'))
+						? '+91' + watch('legalClientPhoneNumber')
+						: watch('legalClientCountryCode') + watch('legalClientPhoneNumber')
+					: _isNull(d.legalClientCountryCode)
+					? '+91' + d.legalClientPhoneNumber
+					: d.legalClientCountryCode + d.legalClientPhoneNumber,
 			legalCompanyAddress:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('legalCompanyAddress'))

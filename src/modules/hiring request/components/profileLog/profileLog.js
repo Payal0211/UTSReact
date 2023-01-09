@@ -1,7 +1,7 @@
 import { Divider } from 'antd';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 
-export const ShowProfileLog = () => {
+export const ShowProfileLog = ({ handleClose }) => {
 	return (
 		<div>
 			<div
@@ -70,7 +70,7 @@ export const ShowProfileLog = () => {
 						</span>
 					</div>
 				</div>
-				<CloseSVG />
+				<CloseSVG onClick={handleClose} />
 			</div>
 			<Divider />
 		</div>

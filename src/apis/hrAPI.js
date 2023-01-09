@@ -6,7 +6,7 @@ import { errorDebug } from 'shared/utils/error_debug_utils';
 export const HiringRequestAPI = {
 	getClientDetailRequest: async function (clientEmail) {
 		let httpService = new HttpServices();
-		console.log('clientemail-', clientEmail);
+
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.HIRING +
@@ -17,7 +17,6 @@ export const HiringRequestAPI = {
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendGetRequest();
-			console.log(response);
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.getClientDetail');

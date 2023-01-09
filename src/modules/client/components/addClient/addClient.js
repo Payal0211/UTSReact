@@ -130,10 +130,7 @@ const AddNewClient = ({
 						<div className={AddClientStyle.colMd6}>
 							<div
 								className={`${AddClientStyle.formGroup} ${AddClientStyle.phoneNoGroup}`}>
-								<label>
-									Client's Phone Number (Primary)
-									{/* <span className={AddClientStyle.reqField}>*</span> */}
-								</label>
+								<label>Client's Phone Number (Primary)</label>
 								<div className={AddClientStyle.phoneNoCode}>
 									<HRSelectField
 										searchable={true}
@@ -233,7 +230,6 @@ const AddNewClient = ({
 								<div className={AddClientStyle.colMd6}>
 									<HRInputField
 										register={register}
-										// errors={errors}
 										validationSchema={{
 											required: 'please enter the secondary client email ID.',
 											pattern: {

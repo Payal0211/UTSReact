@@ -1,11 +1,7 @@
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import './talentCost.css';
 
-export const ShowTalentCost = ({
-	expandedFunction,
-	isTalentCostActive,
-	setIsTalentCostActive,
-}) => {
+export const ShowTalentCost = ({ handleClose }) => {
 	const talentCost = [
 		{
 			id: 'talentCost1',
@@ -70,7 +66,7 @@ export const ShowTalentCost = ({
 			</div>
 			<CloseSVG
 				style={{ marginTop: '16px', marginRight: '16px' }}
-				onClick={expandedFunction}
+				onClick={handleClose}
 			/>
 		</div>
 	);

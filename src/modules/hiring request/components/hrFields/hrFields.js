@@ -1,6 +1,11 @@
 import { Button, Divider, Space, message } from 'antd';
-import { ClientHRURL, InputType, SubmitType } from 'constants/application';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+	ClientHRURL,
+	InputType,
+	MastersKey,
+	SubmitType,
+} from 'constants/application';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import HRFieldStyle from './hrFIelds.module.css';
 import { PlusOutlined } from '@ant-design/icons';
@@ -16,6 +21,7 @@ import { _isNull } from 'shared/utils/basic_utils';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
+import { useMastersAPI } from 'shared/hooks/useMastersAPI';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -30,12 +36,19 @@ const HRFields = ({
 	setTabFieldDisabled,
 }) => {
 	const inputRef = useRef(null);
-	const [availability, setAvailability] = useState([]);
-	const [timeZonePref, setTimeZonePref] = useState([]);
+	const mastersKey = useMemo(() => {
+		return {
+			availability: MastersKey.AVAILABILITY,
+			timeZonePref: MastersKey.TIMEZONE,
+			talentRole: MastersKey.TALENTROLE,
+			salesPerson: MastersKey.SALESPERSON,
+		};
+	}, []);
+	const { returnState } = useMastersAPI(mastersKey);
+	const { availability, timeZonePref, talentRole, salesPerson } = returnState;
 	const [isLoading, setIsLoading] = useState(false);
 	const [items, setItems] = useState(['3 months', '6 months', '9 months']);
-	const [talentRole, setTalentRole] = useState([]);
-	const [salesPerson, setSalesPerson] = useState([]);
+
 	const [name, setName] = useState('');
 	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
@@ -63,32 +76,17 @@ const HRFields = ({
 	const onNameChange = (event) => {
 		setName(event.target.value);
 	};
-	const addItem = (e) => {
-		e.preventDefault();
-		setItems([...items, name + ' months' || name]);
-		setName('');
-		setTimeout(() => {
-			inputRef.current?.focus();
-		}, 0);
-	};
-	const getTimeZonePreference = async () => {
-		const timeZone = await MasterDAO.getTalentTimeZoneRequestDAO();
-		setTimeZonePref(timeZone && timeZone.responseBody);
-	};
-	const getAvailability = async () => {
-		const availabilityResponse = await MasterDAO.getHowSoonRequestDAO();
-		setAvailability(availabilityResponse && availabilityResponse.responseBody);
-	};
-	const getTalentRole = async () => {
-		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
-		setTalentRole(talentRole && talentRole.responseBody);
-	};
-	const getSalesPerson = async () => {
-		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
-		setSalesPerson(
-			salesPersonResponse && salesPersonResponse.responseBody.details,
-		);
-	};
+	const addItem = useCallback(
+		(e) => {
+			e.preventDefault();
+			setItems([...items, name + ' months' || name]);
+			setName('');
+			setTimeout(() => {
+				inputRef.current?.focus();
+			}, 0);
+		},
+		[items, name],
+	);
 
 	/** To check Duplicate email exists Start */
 
@@ -146,12 +144,7 @@ const HRFields = ({
 		setValue,
 	]);
 	/** To check Duplicate email exists End */
-	useEffect(() => {
-		getAvailability();
-		getTimeZonePreference();
-		getTalentRole();
-		getSalesPerson();
-	}, []);
+
 	const [messageAPI, contextHolder] = message.useMessage();
 
 	const hrSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {

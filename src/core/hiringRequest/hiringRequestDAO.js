@@ -108,7 +108,7 @@ export const hiringRequestDAO = {
 			const clientDetailResult = await HiringRequestAPI.getClientDetailRequest(
 				clientEmail,
 			);
-			console.log(clientDetailResult);
+
 			if (clientDetailResult) {
 				const statusCode = clientDetailResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
@@ -141,7 +141,10 @@ export const hiringRequestDAO = {
 					};
 				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
 					return createHRResult;
-				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
 					return createHRResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =

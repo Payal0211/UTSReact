@@ -1,23 +1,29 @@
-import { Divider } from 'antd';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import TechScoreStyle from './techScoreStyle.module.css';
-export const ShowTechScore = () => {
+export const ShowTechScore = ({ handleClose }) => {
 	return (
-		<>
+		<div
+			style={{
+				width: '1100px',
+				margin: 'auto',
+				background: 'white',
+				borderRadius: '8px',
+			}}>
 			<div
 				style={{
 					display: 'flex',
-					width: '90%',
-					margin: 'auto',
 					justifyContent: 'space-between',
 					alignItems: 'flex-start',
 				}}>
 				<div
 					style={{
+						width: '90%',
+						margin: 'auto',
 						display: 'flex',
 						justifyContent: 'flex-start',
 						alignItems: 'center',
 						gap: '24px',
+						padding: '24px',
 					}}>
 					<div
 						style={{
@@ -69,16 +75,15 @@ export const ShowTechScore = () => {
 						</span>
 					</div>
 				</div>
-				<CloseSVG />
+				<CloseSVG
+					onClick={handleClose}
+					style={{ marginTop: '16px', marginRight: '16px' }}
+				/>
 			</div>
-			<Divider style={{ height: '5px' }} />
+			<hr style={{ border: `1px solid var(--uplers-grey)` }} />
+
 			<div>
-				<table
-					style={{
-						width: '90%',
-						borderCollapse: 'collapse',
-						margin: '0 auto',
-					}}>
+				<table className={TechScoreStyle.expandedTable}>
 					<thead>
 						<tr>
 							<th className={TechScoreStyle.th}>Skill Test</th>
@@ -136,6 +141,6 @@ export const ShowTechScore = () => {
 					</tfoot>
 				</table>
 			</div>
-		</>
+		</div>
 	);
 };

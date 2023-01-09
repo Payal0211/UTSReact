@@ -112,6 +112,7 @@ const ClientField = ({
 			addClientResponseID,
 			watch,
 		);
+		console.log(clientFormDetails);
 		if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(watch('companyName'))) {
 				return setError('companyName', {
@@ -338,7 +339,7 @@ const ClientField = ({
 					Save as Draft
 				</button>
 				<button
-					disabled={isLoading}
+					// disabled={isLoading}
 					type="submit"
 					onClick={handleSubmit(clientSubmitHandler)}
 					className={ClientFieldStyle.btnPrimary}>

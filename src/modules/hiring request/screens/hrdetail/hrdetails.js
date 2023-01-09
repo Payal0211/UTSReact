@@ -37,6 +37,7 @@ const HRDetailScreen = () => {
 
 	async function callAPI(hrid) {
 		let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+		console.log(response);
 		if (response) {
 			setAPIdata(response && response?.responseBody);
 			setLoading(false);

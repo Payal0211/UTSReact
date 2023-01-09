@@ -1,7 +1,7 @@
-import { Button, Modal, Skeleton } from 'antd';
+import { Button, Modal, Pagination, Skeleton } from 'antd';
 import axios from 'axios';
 import { InputType } from 'constants/application';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import MatchMakingStyle from './matchmaking.module.css';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
@@ -14,7 +14,9 @@ import MatchMakingTable from './matchmakingTable';
 const MatchmakingModal = () => {
 	const [matchmakingModal, setMatchmakingModal] = useState(false);
 	const [matchmakingData, setMatchmakingData] = useState([]);
-
+	const [pageSize, setPageSize] = useState(100);
+	const [pageIndex, setPageIndex] = useState(1);
+	const pageSizeOptions = [100, 200, 300, 500, 1000];
 	/** State variable to keep track of all the expanded rows*/
 	const [expandedRows, setExpandedRows] = useState([]);
 
@@ -31,29 +33,32 @@ const MatchmakingModal = () => {
 	 * @param {*} key
 	 * @purpose This function gets called when show/hide link is clicked.
 	 */
-	const handleExpandRow = (event, userId, attributeID, key) => {
-		const currentExpandedRows = expandedRows;
-		const isRowExpanded = currentExpandedRows.includes(userId);
+	const handleExpandRow = useCallback(
+		(event, userId, attributeID, key) => {
+			const currentExpandedRows = expandedRows;
+			const isRowExpanded = currentExpandedRows.includes(userId);
 
-		// If the row is expanded, we are here to hide it. Hence remove
-		// it from the state variable. Otherwise add to it.
-		const splittedAttribute = attributeID.split('_')[0];
-		const currentExpandedCellAttribute = currentExpandedCell.split('_')[0];
+			// If the row is expanded, we are here to hide it. Hence remove
+			// it from the state variable. Otherwise add to it.
+			const splittedAttribute = attributeID.split('_')[0];
+			const currentExpandedCellAttribute = currentExpandedCell.split('_')[0];
 
-		let newExpandedRows;
-		if (isRowExpanded && splittedAttribute === currentExpandedCellAttribute)
-			newExpandedRows = [];
-		else if (
-			isRowExpanded &&
-			splittedAttribute !== currentExpandedCellAttribute
-		)
-			newExpandedRows = [userId];
-		else newExpandedRows = [userId];
+			let newExpandedRows;
+			if (isRowExpanded && splittedAttribute === currentExpandedCellAttribute)
+				newExpandedRows = [];
+			else if (
+				isRowExpanded &&
+				splittedAttribute !== currentExpandedCellAttribute
+			)
+				newExpandedRows = [userId];
+			else newExpandedRows = [userId];
 
-		setExpandedRows(newExpandedRows);
-		setTableFunctionData(key);
-		setCurrentExpandedCell(attributeID);
-	};
+			setExpandedRows(newExpandedRows);
+			setTableFunctionData(key);
+			setCurrentExpandedCell(attributeID);
+		},
+		[currentExpandedCell, expandedRows],
+	);
 
 	/**
 	 * @Function toggleRowSelection()
@@ -61,35 +66,49 @@ const MatchmakingModal = () => {
 	 * @purpose This is used to select a row or select all row
 	 */
 
-	const toggleRowSelection = (id) => {
-		if (id === 'selectAll') {
-			if (allSelected) {
-				setAllSelected(false);
-				setSelectedRows([]);
+	const toggleRowSelection = useCallback(
+		(id) => {
+			if (id === 'selectAll') {
+				if (allSelected) {
+					setAllSelected(false);
+					setSelectedRows([]);
+				} else {
+					setAllSelected(true);
+					setSelectedRows(matchmakingData?.map((a) => a.key));
+				}
 			} else {
-				setAllSelected(true);
-				setSelectedRows(matchmakingData?.map((a) => a.key));
+				let currentSelectedRows = [...selectedRows];
+				const isRowSelected = selectedRows.includes(id);
+
+				if (isRowSelected && id !== 'selectAll')
+					currentSelectedRows = currentSelectedRows.filter(
+						(item) => item !== id,
+					);
+				else currentSelectedRows = currentSelectedRows.concat(id);
+
+				setSelectedRows(currentSelectedRows);
 			}
-		} else {
-			let currentSelectedRows = [...selectedRows];
-			const isRowSelected = selectedRows.includes(id);
+		},
+		[allSelected, selectedRows, matchmakingData],
+	);
 
-			if (isRowSelected && id !== 'selectAll')
-				currentSelectedRows = currentSelectedRows.filter((item) => item !== id);
-			else currentSelectedRows = currentSelectedRows.concat(id);
+	const closeExpandedCell = useCallback(() => {
+		setExpandedRows([]);
+		setCurrentExpandedCell('');
+	}, []);
 
-			setSelectedRows(currentSelectedRows);
-		}
-	};
-
-	const tableFunctions = {
-		talentCost: <ShowTalentCost />,
-		techScore: <ShowTechScore />,
-		versantScore: <ShowVersantScore />,
-		profileLog: <ShowProfileLog />,
-	};
+	const expandedCellUI = useMemo(() => {
+		const tableFunctions = {
+			talentCost: <ShowTalentCost handleClose={closeExpandedCell} />,
+			techScore: <ShowTechScore handleClose={closeExpandedCell} />,
+			versantScore: <ShowVersantScore handleClose={closeExpandedCell} />,
+			profileLog: <ShowProfileLog handleClose={closeExpandedCell} />,
+		};
+		return tableFunctions;
+	}, [closeExpandedCell]);
 
 	/** Fetching the Modal Table API */
+	/**TODO():- Remove from here */
 	const fetchMatchmakingData = async () => {
 		const response = await axios.get(
 			'https://api.npoint.io/abbeed53bf8b4b354bb0',
@@ -115,7 +134,7 @@ const MatchmakingModal = () => {
 	}, [matchmakingModal]);
 
 	return (
-		<div className="profileLogModal">
+		<>
 			<Button onClick={() => setMatchmakingModal(true)}>Matchmaking </Button>
 			<Modal
 				centered
@@ -124,14 +143,7 @@ const MatchmakingModal = () => {
 				footer={null}
 				onCancel={() => setMatchmakingModal(false)}>
 				<div>
-					<label
-						style={{
-							marginTop: '40px',
-							marginLeft: '20px',
-							lineHeight: '39px',
-							fontWeight: '500',
-							fontSize: '32px',
-						}}>
+					<label className={MatchMakingStyle.matchmakingLabel}>
 						Search Talent
 					</label>
 					<div
@@ -217,12 +229,13 @@ const MatchmakingModal = () => {
 								selectedRows={selectedRows}
 								currentExpandedCell={currentExpandedCell}
 								componentToRender={
-									tableFunctions[tableFunctionData] &&
-									tableFunctions[tableFunctionData]
+									expandedCellUI[tableFunctionData] &&
+									expandedCellUI[tableFunctionData]
 								}
 							/>
 						)}
 					</div>
+
 					<div className={MatchMakingStyle.formPanelAction}>
 						<button
 							type="button"
@@ -235,10 +248,28 @@ const MatchmakingModal = () => {
 							className={MatchMakingStyle.btn}>
 							Cancel
 						</button>
+						<div
+							style={{ position: 'absolute', right: '0', marginRight: '32px' }}>
+							<Pagination
+								onChange={(pageNum, pageSize) => {
+									setPageIndex(pageNum);
+									setPageSize(pageSize);
+									// handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
+								}}
+								size={'small'}
+								pageSize={100}
+								// pageSizeOptions={pageSizeOptions}
+								// total={totalRecords}
+								// showTotal={(total, range) =>
+								// 	`${range[0]}-${range[1]} of ${totalRecords} items`
+								// }
+								// defaultCurrent={pageIndex}
+							/>
+						</div>
 					</div>
 				</div>
 			</Modal>
-		</div>
+		</>
 	);
 };
 

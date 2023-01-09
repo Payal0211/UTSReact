@@ -1,6 +1,8 @@
 import { Divider } from 'antd';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
-export const ShowVersantScore = () => {
+import VersantScoreStyle from './versantScoreStyle.module.css';
+
+export const ShowVersantScore = ({ handleClose }) => {
 	const versantScore = [
 		{
 			id: 'versantScore1',
@@ -28,22 +30,28 @@ export const ShowVersantScore = () => {
 		},
 	];
 	return (
-		<div>
+		<div
+			style={{
+				width: '1100px',
+				margin: 'auto',
+				background: 'white',
+				borderRadius: '8px',
+			}}>
 			<div
 				style={{
 					display: 'flex',
-					width: '95%',
-					margin: 'auto',
 					justifyContent: 'space-between',
 					alignItems: 'flex-start',
 				}}>
 				<div
 					style={{
+						width: '90%',
+						margin: 'auto',
 						display: 'flex',
-
 						justifyContent: 'flex-start',
 						alignItems: 'center',
 						gap: '24px',
+						padding: '24px',
 					}}>
 					<div
 						style={{
@@ -95,16 +103,19 @@ export const ShowVersantScore = () => {
 						</span>
 					</div>
 				</div>
-				<CloseSVG />
+				<CloseSVG
+					onClick={handleClose}
+					style={{ marginTop: '16px', marginRight: '16px' }}
+				/>
 			</div>
-			<Divider />
+			<hr style={{ border: `1px solid var(--uplers-grey)` }} />
 			<div
 				style={{
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'flex-start',
 					gap: '18px',
-					width: '95%',
+					width: '90%',
 					margin: 'auto',
 				}}>
 				<div
@@ -117,7 +128,7 @@ export const ShowVersantScore = () => {
 						borderRadius: '8px',
 						fontSize: '14px',
 						lineHeight: '17px',
-						gap: '8px',
+						// gap: '8px',
 						color: `var(--uplers-black)`,
 						fontWeight: 500,
 					}}>
