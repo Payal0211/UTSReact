@@ -15,7 +15,6 @@ const HRInputField = ({
 	required,
 	value,
 	disabled,
-
 	type,
 	validationSchema,
 }) => {

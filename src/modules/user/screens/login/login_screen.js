@@ -9,7 +9,6 @@ import {
 } from 'shared/utils/password_icon_utils';
 import loginStyle from './login.module.css';
 import useForm from 'shared/hooks/useForm';
-
 import { userDAO } from 'core/user/userDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { useNavigate } from 'react-router-dom';

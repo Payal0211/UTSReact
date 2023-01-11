@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Checkbox } from 'antd';
-import { EmailRegEx, InputType } from 'constants/application';
+import { useState, useEffect, useCallback } from 'react';
+import { Checkbox, message } from 'antd';
+import { EmailRegEx, InputType, SubmitType } from 'constants/application';
 import ClientFieldStyle from './clientField.module.css';
-import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
-import UploadModal from 'shared/components/uploadModal/uploadModal';
 import AddNewClient from '../addClient/addClient';
 import { MasterDAO } from 'core/master/masterDAO';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
@@ -14,10 +12,11 @@ import { useMemo } from 'react';
 import {
 	clientFormDataFormatter,
 	getFlagAndCodeOptions,
-	locationFormatter,
 } from 'modules/client/clientUtils';
 import { ClientDAO } from 'core/client/clientDAO';
 import { HTTPStatusCode } from 'constants/network';
+import CompanyDetails from '../companyDetails/companyDetails';
+import { _isNull } from 'shared/utils/basic_utils';
 
 export const secondaryClient = {
 	fullName: '',
@@ -31,7 +30,14 @@ export const poc = {
 	contactName: '',
 };
 
-const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
+const ClientField = ({
+	setTitle,
+	tabFieldDisabled,
+	setTabFieldDisabled,
+	setClientDetails,
+}) => {
+	const [messageAPI, contextHolder] = message.useMessage();
+	/** ---- Useform()  Starts here --------- */
 	const {
 		register,
 		handleSubmit,
@@ -47,6 +53,7 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 			pocList: [],
 		},
 	});
+	const [isLoading, setIsLoading] = useState(false);
 	const [addClientResponseID, setAddClientResponseID] = useState(0);
 	const [controlledLegalCountryCode, setControlledLegalCountryCode] =
 		useState('+91');
@@ -72,30 +79,17 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 		'companyAddress',
 		'primaryClientCountryCode',
 	]);
-	/* console.log(watchFields);
-	console.log(getValues()); */
+	/** -------- UseForm Ends here --------------- */
 
-	const [showUploadModal, setUploadModal] = useState(false);
 	const [isSameAsPrimaryPOC, setSameAsPrimaryPOC] = useState(false);
-	const [GEO, setGEO] = useState([]);
+
 	const [flagAndCode, setFlagAndCode] = useState([]);
 
-	const RadioButton = (e) => {
-		console.log('radio checked', e.target.value);
-		// setValue(e.target.value);
-	};
-
-	const SameASPrimaryPOCHandler = (e) => {
+	const SameASPrimaryPOCHandler = useCallback((e) => {
 		setSameAsPrimaryPOC(e.target.checked);
-	};
+	}, []);
 
-	const selectHandleChange = (value) => {
-		console.log(`selected ${value}`);
-	};
-	const getGEO = async () => {
-		const geoLocationResponse = await MasterDAO.getGEORequestDAO();
-		setGEO(geoLocationResponse && geoLocationResponse.responseBody);
-	};
+	/** -------- Masters API Starts here-------------- */
 
 	const getCodeAndFlag = async () => {
 		const getCodeAndFlagResponse = await MasterDAO.getCodeAndFlagRequestDAO();
@@ -107,18 +101,51 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 		() => getFlagAndCodeOptions(flagAndCode),
 		[flagAndCode],
 	);
-	const clientSubmitHandler = async (d) => {
-		let clientFormDetails = clientFormDataFormatter(d, addClientResponseID);
+
+	/** -------- Masters API Ends here-------------- */
+	/** Submit the client form Starts */
+	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+		setIsLoading(true);
+		let clientFormDetails = clientFormDataFormatter(
+			d,
+			type,
+			addClientResponseID,
+			watch,
+		);
+		console.log(clientFormDetails);
+		if (type === SubmitType.SAVE_AS_DRAFT) {
+			if (_isNull(watch('companyName'))) {
+				return setError('companyName', {
+					type: 'emptyCompanyName',
+					message: 'please enter the company name.',
+				});
+			}
+		}
 		const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
 		if (addClientResult.statusCode === HTTPStatusCode.OK) {
-			setTitle('Add New Hiring Requests');
-			setAddClientResponseID(addClientResult?.responseBody?.details?.ContactID);
-			setTabFieldDisabled({ ...tabFieldDisabled, addNewHiringRequest: false });
+			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Add New Hiring Requests');
+			type !== SubmitType.SAVE_AS_DRAFT &&
+				setAddClientResponseID(
+					addClientResult?.responseBody?.details?.ContactID,
+				);
+			setIsLoading(false);
+			type !== SubmitType.SAVE_AS_DRAFT &&
+				setTabFieldDisabled({
+					...tabFieldDisabled,
+					addNewHiringRequest: false,
+				});
+			type !== SubmitType.SAVE_AS_DRAFT &&
+				setClientDetails(addClientResult?.responseBody?.details);
+			type === SubmitType.SAVE_AS_DRAFT &&
+				messageAPI.open({
+					type: 'success',
+					content: 'Client details has been saved to draft.',
+				});
 		}
 	};
+	/** Submit the client form Ends */
 
 	useEffect(() => {
-		getGEO();
 		getCodeAndFlag();
 	}, []);
 
@@ -130,207 +157,21 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 			setValue('legalClientDesignation', watchFields[3]);
 			setValue('legalCompanyFullName', watchFields[4]);
 			setValue('legalCompanyAddress', watchFields[5]);
-			setValue('legalClientCountryCode', watchFields[6]);
 			setControlledLegalCountryCode(watchFields[6]);
 		}
 	}, [isSameAsPrimaryPOC, setValue, watchFields, getValues]);
 
 	return (
 		<div className={ClientFieldStyle.tabsBody}>
-			<div className={ClientFieldStyle.tabsFormItem}>
-				<div className={ClientFieldStyle.tabsFormItemInner}>
-					<div className={ClientFieldStyle.tabsLeftPanel}>
-						<h3>Company Details</h3>
-						<p>Please provide the necessary details</p>
-					</div>
-
-					<div className={ClientFieldStyle.tabsRightPanel}>
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									type={InputType.TEXT}
-									name="companyName"
-									label="HS Company Name"
-									errors={errors}
-									register={register}
-									placeholder="Enter name"
-									validationSchema={{
-										required: 'Please enter the company name.',
-									}}
-									required
-								/>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									label="Company URL"
-									name="companyURL"
-									type={InputType.TEXT}
-									validationSchema={{
-										required: 'Please enter the profile link.',
-									}}
-									placeholder="Enter profile link"
-									required
-								/>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<div className={ClientFieldStyle.formGroup}>
-									<HRSelectField
-										setValue={setValue}
-										register={register}
-										name="companyLocation"
-										label="Company Location"
-										defaultValue="Select location"
-										options={locationFormatter(GEO)}
-										required
-										isError={
-											errors['companyLocation'] && errors['companyLocation']
-										}
-										errorMsg="Please select a location."
-									/>
-								</div>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'Please enter the company size.',
-									}}
-									label="Company Size"
-									name={'companySize'}
-									type={InputType.NUMBER}
-									placeholder="Company Size "
-									required
-								/>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd12}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'Please enter the company address.',
-									}}
-									label="Company Address"
-									name={'companyAddress'}
-									type={InputType.TEXT}
-									placeholder="Company Address "
-									required
-								/>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'please enter the linkedin profile.',
-									}}
-									label="Linkedin Profile"
-									name={'companyLinkedinProfile'}
-									type={InputType.TEXT}
-									placeholder="Enter linkedin profile "
-									required
-								/>
-							</div>
-
-							<div className={ClientFieldStyle.colMd6}>
-								<div
-									className={`${ClientFieldStyle.formGroup} ${ClientFieldStyle.phoneNoGroup}`}>
-									<label>
-										Phone number
-										{/* <span className={ClientFieldStyle.reqField}>*</span> */}
-									</label>
-									<div className={ClientFieldStyle.phoneNoCode}>
-										<HRSelectField
-											searchable={true}
-											setValue={setValue}
-											register={register}
-											name="companyCountryCode"
-											defaultValue="+91"
-											options={flagAndCodeMemo}
-										/>
-									</div>
-									<div className={ClientFieldStyle.phoneNoInput}>
-										<HRInputField
-											register={register}
-											name={'phoneNumber'}
-											type={InputType.NUMBER}
-											placeholder="Enter Phone number"
-										/>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd12}>
-								<div className={ClientFieldStyle.radioFormGroup}>
-									<label>
-										Does the client have experience of hiring remotely?
-										<span className={ClientFieldStyle.reqField}>*</span>
-									</label>
-									<label className={ClientFieldStyle.container}>
-										<p>Yes</p>
-										<input
-											{...register('remote')}
-											value={1}
-											type="radio"
-											checked="checked"
-											id="remote"
-											name="remote"
-										/>
-										<span className={ClientFieldStyle.checkmark}></span>
-									</label>
-									<label className={ClientFieldStyle.container}>
-										<p>No</p>
-										<input
-											{...register('remote')}
-											value={0}
-											type="radio"
-											id="remote"
-											name="remote"
-										/>
-										<span className={ClientFieldStyle.checkmark}></span>
-									</label>
-								</div>
-							</div>
-						</div>
-
-						<div className={ClientFieldStyle.row}>
-							<div className={ClientFieldStyle.colMd12}>
-								<HRInputField
-									register={register}
-									leadingIcon={<UploadSVG />}
-									label="Company Logo (JPG, PNG, SVG)"
-									name="jdExport"
-									type={InputType.BUTTON}
-									value="Upload logo"
-									onClickHandler={() => setUploadModal(true)}
-								/>
-							</div>
-							<UploadModal
-								modalTitle={'Upload Logo'}
-								isFooter={false}
-								openModal={showUploadModal}
-								cancelModal={() => setUploadModal(false)}
-							/>
-						</div>
-					</div>
-				</div>
-			</div>
-
+			{contextHolder}
+			<CompanyDetails
+				flagAndCodeMemo={flagAndCodeMemo}
+				setError={setError}
+				setValue={setValue}
+				register={register}
+				errors={errors}
+				watch={watch}
+			/>
 			<AddNewClient
 				setError={setError}
 				watch={watch}
@@ -357,7 +198,7 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 						<div className={ClientFieldStyle.row}>
 							<div className={ClientFieldStyle.colMd12}>
 								<div className={ClientFieldStyle.checkBoxGroup}>
-									<Checkbox onChange={SameASPrimaryPOCHandler}>
+									<Checkbox onClick={SameASPrimaryPOCHandler}>
 										Same as primary client details
 									</Checkbox>
 								</div>
@@ -492,11 +333,13 @@ const ClientField = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 			/>
 			<div className={ClientFieldStyle.formPanelAction}>
 				<button
-					type="button"
+					disabled={isLoading}
+					onClick={clientSubmitHandler}
 					className={ClientFieldStyle.btn}>
 					Save as Draft
 				</button>
 				<button
+					// disabled={isLoading}
 					type="submit"
 					onClick={handleSubmit(clientSubmitHandler)}
 					className={ClientFieldStyle.btnPrimary}>

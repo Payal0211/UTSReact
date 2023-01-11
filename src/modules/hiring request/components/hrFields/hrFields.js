@@ -1,6 +1,11 @@
-import { Button, Divider, Select, Space } from 'antd';
-import { InputType } from 'constants/application';
-import { useEffect, useRef, useState } from 'react';
+import { Button, Divider, Space, message } from 'antd';
+import {
+	ClientHRURL,
+	InputType,
+	MastersKey,
+	SubmitType,
+} from 'constants/application';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import HRFieldStyle from './hrFIelds.module.css';
 import { PlusOutlined } from '@ant-design/icons';
@@ -9,51 +14,167 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { MasterDAO } from 'core/master/masterDAO';
 
 import HRSelectField from '../hrSelectField/hrSelectField';
-import { useForm } from 'react-hook-form';
-const HRFields = () => {
+import { useFieldArray, useForm } from 'react-hook-form';
+import AddInterviewer from '../addInterviewer/addInterviewer';
+import { HTTPStatusCode } from 'constants/network';
+import { _isNull } from 'shared/utils/basic_utils';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { useLocation } from 'react-router-dom';
+import { hrUtils } from 'modules/hiring request/hrUtils';
+import { useMastersAPI } from 'shared/hooks/useMastersAPI';
+export const secondaryInterviewer = {
+	fullName: '',
+	emailID: '',
+	linkedin: '',
+	designation: '',
+};
+
+const HRFields = ({
+	setTitle,
+	clientDetail,
+	tabFieldDisabled,
+	setTabFieldDisabled,
+}) => {
 	const inputRef = useRef(null);
-	const [availability, setAvailability] = useState([]);
-	const [timeZonePref, setTimeZonePref] = useState([]);
+	const mastersKey = useMemo(() => {
+		return {
+			availability: MastersKey.AVAILABILITY,
+			timeZonePref: MastersKey.TIMEZONE,
+			talentRole: MastersKey.TALENTROLE,
+			salesPerson: MastersKey.SALESPERSON,
+		};
+	}, []);
+	const { returnState } = useMastersAPI(mastersKey);
+	const { availability, timeZonePref, talentRole, salesPerson } = returnState;
+	const [isLoading, setIsLoading] = useState(false);
 	const [items, setItems] = useState(['3 months', '6 months', '9 months']);
+
 	const [name, setName] = useState('');
+	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
+	const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
 	const {
+		watch,
 		register,
 		handleSubmit,
-		reset,
+		setValue,
+		setError,
 		control,
 		formState: { errors },
-	} = useForm();
+	} = useForm({
+		defaultValues: {
+			secondaryInterviewer: [],
+		},
+	});
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: 'secondaryInterviewer',
+	});
 
-	const selectHandleChange = (value) => {
-		console.log(`selected ${value}`);
-	};
+	const getLocation = useLocation();
+
 	const onNameChange = (event) => {
 		setName(event.target.value);
 	};
-	const addItem = (e) => {
-		e.preventDefault();
-		setItems([...items, name + ' months' || name]);
-		setName('');
-		setTimeout(() => {
-			inputRef.current?.focus();
-		}, 0);
-	};
-	const getTimeZonePreference = async () => {
-		const timeZone = await MasterDAO.getTalentTimeZoneRequestDAO();
-		setTimeZonePref(timeZone && timeZone.responseBody);
-	};
-	const getAvailability = async () => {
-		const availabilityResponse = await MasterDAO.getHowSoonRequestDAO();
-		setAvailability(availabilityResponse && availabilityResponse.responseBody);
-	};
+	const addItem = useCallback(
+		(e) => {
+			e.preventDefault();
+			setItems([...items, name + ' months' || name]);
+			setName('');
+			setTimeout(() => {
+				inputRef.current?.focus();
+			}, 0);
+		},
+		[items, name],
+	);
+
+	/** To check Duplicate email exists Start */
+
+	const watchClientName = watch('clientName');
+
+	const getHRClientName = useCallback(
+		async (data) => {
+			let existingClientDetails =
+				await hiringRequestDAO.getClientDetailRequestDAO(data);
+			setError('clientName', {
+				type: 'duplicateCompanyName',
+				message:
+					existingClientDetails?.statusCode === HTTPStatusCode.NOT_FOUND &&
+					'Client email does not exist.',
+			});
+			existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
+				setValue('clientName', '');
+			existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
+				setValue('companyName', '');
+			existingClientDetails.statusCode === HTTPStatusCode.OK &&
+				setValue('companyName', existingClientDetails?.responseBody?.name);
+			existingClientDetails.statusCode === HTTPStatusCode.OK &&
+				setIsCompanyNameAvailable(true);
+			setIsLoading(false);
+		},
+		[setError, setValue],
+	);
 
 	useEffect(() => {
-		getAvailability();
-		getTimeZonePreference();
-	}, []);
+		let timer;
+		if (!_isNull(watchClientName)) {
+			timer =
+				pathName === ClientHRURL.ADD_NEW_HR &&
+				setTimeout(() => {
+					setIsLoading(true);
+					getHRClientName(watchClientName);
+				}, 2000);
+		}
+		return () => clearTimeout(timer);
+	}, [getHRClientName, watchClientName, pathName]);
+
+	useEffect(() => {
+		let urlSplitter = `${getLocation.pathname.split('/')[2]}`;
+		setPathName(urlSplitter);
+		pathName === ClientHRURL.ADD_NEW_CLIENT &&
+			setValue('clientName', clientDetail?.Email);
+
+		pathName === ClientHRURL.ADD_NEW_CLIENT &&
+			setValue('companyName', clientDetail?.Name);
+	}, [
+		getLocation.pathname,
+		clientDetail?.Email,
+		clientDetail?.Name,
+		pathName,
+		setValue,
+	]);
+	/** To check Duplicate email exists End */
+
+	const [messageAPI, contextHolder] = message.useMessage();
+
+	const hrSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+		let hrFormDetails = hrUtils.hrFormDataFormatter(d, type, watch);
+
+		if (type === SubmitType.SAVE_AS_DRAFT) {
+			if (_isNull(watch('clientName'))) {
+				return setError('clientName', {
+					type: 'emptyClientName',
+					message: 'Please enter the client name.',
+				});
+			}
+		}
+		const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
+		if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
+			type !== SubmitType.SAVE_AS_DRAFT &&
+				setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+
+			type === SubmitType.SAVE_AS_DRAFT &&
+				messageAPI.open({
+					type: 'success',
+					content: 'HR details has been saved to draft.',
+				});
+		}
+	};
+
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
+			{contextHolder}
 			<div className={HRFieldStyle.partOne}>
 				<div className={HRFieldStyle.hrFieldLeftPane}>
 					<h3>Hiring Request Details</h3>
@@ -65,6 +186,7 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd12}>
 							<HRInputField
+								disabled={pathName === ClientHRURL.ADD_NEW_CLIENT || isLoading}
 								register={register}
 								errors={errors}
 								validationSchema={{
@@ -81,6 +203,11 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								disabled={
+									pathName === ClientHRURL.ADD_NEW_CLIENT ||
+									isCompanyNameAvailable ||
+									isLoading
+								}
 								register={register}
 								errors={errors}
 								validationSchema={{
@@ -97,20 +224,13 @@ const HRFields = () => {
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									setValue={setValue}
 									register={register}
 									label={'Hiring Request Role'}
 									defaultValue="Select Role"
-									options={[
-										{
-											value: 'USD',
-											label: 'USD',
-										},
-										{
-											value: 'INR',
-											label: 'INR',
-										},
-									]}
-									onChangeHandler={selectHandleChange}
+									options={talentRole && talentRole}
+									name="role"
+									isError={errors['role'] && errors['role']}
 									required
 									errorMsg={'Please select hiring request role'}
 								/>
@@ -164,49 +284,65 @@ const HRFields = () => {
 					</div>
 
 					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd12}>
-							<div className={`${HRFieldStyle.formGroup} ${HRFieldStyle.mb0}`}>
-								<label>
-									Add your estimated budget
-									<span className={HRFieldStyle.reqField}>*</span>
-								</label>
-							</div>
-						</div>
-
 						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
-								<Select
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Add your estimated budget'}
 									defaultValue="Select Budget"
-									onChange={selectHandleChange}
 									options={[
 										{
 											value: 'USD',
-											label: 'USD',
+											id: 'USD',
 										},
 										{
 											value: 'INR',
-											label: 'INR',
+											id: 'INR',
 										},
 									]}
+									name="budget"
+									isError={errors['budget'] && errors['budget']}
+									required
+									errorMsg={'Please select hiring request budget'}
 								/>
 							</div>
 						</div>
-
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
+								label={'Minimum Budget'}
 								register={register}
 								name="minimumBudget"
-								type={InputType.TEXT}
+								type={InputType.NUMBER}
 								placeholder="Minimum- Ex: 2300, 2000"
+								required
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the minimum budget.',
+									min: {
+										value: 0,
+										message: `please don't enter the value less than 0`,
+									},
+								}}
 							/>
 						</div>
 
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
+								label={'Maximum Budget'}
 								register={register}
 								name="maximumBudget"
-								type={InputType.TEXT}
+								type={InputType.NUMBER}
 								placeholder="Maximum- Ex: 2300, 2000"
+								required
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the maximum budget.',
+									min: {
+										value: watch('minimumBudget'),
+										message: 'Budget should me more than minimum budget.',
+									},
+								}}
 							/>
 						</div>
 					</div>
@@ -221,7 +357,7 @@ const HRFields = () => {
 								}}
 								label="NR Margin Percentage"
 								name="NRMargin"
-								type={InputType.TEXT}
+								type={InputType.NUMBER}
 								placeholder="Select NR margin percentage"
 								required
 							/>
@@ -229,23 +365,16 @@ const HRFields = () => {
 
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Sales Person</label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
-								<Select
-									defaultValue="Select sales person"
-									onChange={selectHandleChange}
-									options={[
-										{
-											value: 'P1',
-											label: 'P1',
-										},
-										{
-											value: 'P2',
-											label: 'P2',
-										},
-									]}
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Sales Person'}
+									defaultValue="Select sales Person"
+									options={salesPerson && salesPerson}
+									name="salesPerson"
+									isError={errors['salesPerson'] && errors['salesPerson']}
+									required
+									errorMsg={'Please select hiring request sales person'}
 								/>
 							</div>
 						</div>
@@ -254,12 +383,7 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Contract Duration (in months) </label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
-								<Select
-									defaultValue="Ex: 3,6,12..."
+								<HRSelectField
 									dropdownRender={(menu) => (
 										<>
 											{menu}
@@ -289,9 +413,23 @@ const HRFields = () => {
 										</>
 									)}
 									options={items.map((item) => ({
+										id: item,
 										label: item,
 										value: item,
 									}))}
+									setValue={setValue}
+									register={register}
+									label={'Contract Duration (in months)'}
+									defaultValue="Ex: 3,6,12..."
+									inputRef={inputRef}
+									addItem={addItem}
+									onNameChange={onNameChange}
+									name="contractDuration"
+									isError={
+										errors['contractDuration'] && errors['contractDuration']
+									}
+									required
+									errorMsg={'Please select hiring request conrtact duration'}
 								/>
 							</div>
 						</div>
@@ -304,6 +442,14 @@ const HRFields = () => {
 								<div className={HRFieldStyle.reqExperience}>
 									<HRInputField
 										required
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the years.',
+											min: {
+												value: 0,
+												message: `please don't enter the value less than 0`,
+											},
+										}}
 										register={register}
 										name="years"
 										type={InputType.NUMBER}
@@ -312,6 +458,18 @@ const HRFields = () => {
 									<HRInputField
 										register={register}
 										required
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the months.',
+											max: {
+												value: 12,
+												message: `please don't enter the value more than 12`,
+											},
+											min: {
+												value: 0,
+												message: `please don't enter the value less than 0`,
+											},
+										}}
 										name="months"
 										type={InputType.NUMBER}
 										placeholder="Enter months"
@@ -323,15 +481,16 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Working Time Zone</label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
-								<Select
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Working Time Zone'}
 									defaultValue="Select time zone"
-									onChange={selectHandleChange}
-									// onChange={(val, a) => selectHandleChange(val, a)}
 									options={timeZonePref}
+									name="timeZone"
+									isError={errors['timeZone'] && errors['timeZone']}
+									required
+									errorMsg={'Please select hiring request time zone.'}
 								/>
 							</div>
 						</div>
@@ -353,24 +512,22 @@ const HRFields = () => {
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>How soon can they join? </label>
-								<span style={{ paddingLeft: '5px' }}>
-									<b>*</b>
-								</span>
-								<Select
-									defaultValue="Select availability   "
-									onChange={selectHandleChange}
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'How soon can they join?'}
+									defaultValue="Select availability"
 									options={availability}
+									name="availability"
+									// isError={errors['availability'] && errors['availability']}
+									// required
+									// errorMsg={'Please select the availability.'}
 								/>
 							</div>
 						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
 								register={register}
-								/* errors={errors}
-								validationSchema={{
-									required: 'please enter the company name.',
-								}} */
 								label="Deal ID"
 								name="dealID"
 								type={InputType.TEXT}
@@ -411,18 +568,23 @@ const HRFields = () => {
 				</form>
 			</div>
 			<Divider />
+			<AddInterviewer
+				errors={errors}
+				append={append}
+				remove={remove}
+				register={register}
+				fields={fields}
+			/>
 
 			<div className={HRFieldStyle.formPanelAction}>
 				<button
-					type="button"
-					className={HRFieldStyle.btn}>
+					className={HRFieldStyle.btn}
+					onClick={hrSubmitHandler}>
 					Save as Draft
 				</button>
 
 				<button
-					// form="hrForm"
-					onClick={handleSubmit((d) => console.log(d))}
-					// type="submit"
+					onClick={handleSubmit(hrSubmitHandler)}
 					className={HRFieldStyle.btnPrimary}>
 					Create HR
 				</button>

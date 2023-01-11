@@ -4,9 +4,12 @@ import DebriefingHR from 'modules/hiring request/components/debriefingHR/debrief
 import HRFields from 'modules/hiring request/components/hrFields/hrFields';
 import AddNewClientStyle from './add_new_client.module.css';
 import ClientField from 'modules/client/components/clientField/clientField';
+import { useLocation } from 'react-router-dom';
 
 const AddNewClientScreen = () => {
 	const [title, setTitle] = useState('Add New Client');
+
+	const [clientDetail, setClientDetails] = useState({});
 	const [tabFieldDisabled, setTabFieldDisabled] = useState({
 		addNewClient: false,
 		addNewHiringRequest: true,
@@ -34,6 +37,7 @@ const AddNewClientScreen = () => {
 									setTitle={setTitle}
 									tabFieldDisabled={tabFieldDisabled}
 									setTabFieldDisabled={setTabFieldDisabled}
+									setClientDetails={setClientDetails}
 								/>
 							),
 						},
@@ -42,8 +46,10 @@ const AddNewClientScreen = () => {
 							key: 'Add New Hiring Requests',
 							children: (
 								<HRFields
+									setTitle={setTitle}
 									tabFieldDisabled={tabFieldDisabled}
 									setTabFieldDisabled={setTabFieldDisabled}
+									clientDetail={clientDetail}
 								/>
 							),
 							disabled: tabFieldDisabled.addNewHiringRequest,
@@ -53,6 +59,7 @@ const AddNewClientScreen = () => {
 							key: 'Debriefing HR',
 							children: (
 								<DebriefingHR
+									setTitle={setTitle}
 									tabFieldDisabled={tabFieldDisabled}
 									setTabFieldDisabled={setTabFieldDisabled}
 								/>

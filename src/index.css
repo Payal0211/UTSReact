@@ -234,10 +234,10 @@ table{
 
 .ant-dropdown-menu-item:hover{
   border-radius: 8px;
-  width: 95%;
+  /* width: 100%; */
   margin: 0 auto;
   font-size: var(--fontsize-tough);
-    font-weight: 500;
+  font-weight: 500;
 }
 .ant-spin-dot-item {
   background-color: var(--color-sunlight);
@@ -356,6 +356,7 @@ table{
   font-weight: inherit;
   font-size: inherit;
   color: inherit;
+ 
 }
 .ant-select .ant-select-selector .ant-select-selection-item img{
   margin-right:8px;
@@ -398,6 +399,7 @@ table{
   border: 1px solid #FFDA30;
   padding: 0;
   border-radius: 8px;
+  z-index: 99;
 }
 
 .ant-select-dropdown .ant-select-item {
@@ -497,11 +499,19 @@ table{
 }
 
 /*Ant Select Search*/
-.ant-select .ant-select-selector .ant-select-selection-search {
+/* .ant-select .ant-select-selector .ant-select-selection-search {
   position: absolute;
   padding: 16px 0 16px 16px;
   left: 0;
   right: 40px;
+} */
+
+.ant-select .ant-select-selector .ant-select-selection-search {
+  padding: 0;
+  top:0;
+  left: 0;
+  right: 40px;
+  margin: 0;
 }
 
 .ant-select .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input {
@@ -518,5 +528,65 @@ table{
 
 /**--MODAl---------*/
 .ant-modal-content{
+ 
   border-radius: 8px !important;
+  background-color: #F7F7F7 !important
+}
+
+.ant-table{
+  box-shadow: none !important;
+}
+.ant-select-show-search.ant-select-multiple .ant-select-selector {
+  padding-top: 13px;
+  padding-bottom: 13px;
+  height: auto;
+  min-height: 54px;
+}
+
+.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item {
+  margin: 0;
+  font-family: 'Montserrat';
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  padding: 6px 28px 6px 14px;
+  border-radius: 8px;
+  background: #232323;
+  display: inline-flex;
+  height: auto;
+  border: none;
+}
+
+.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-multiple .ant-select-selection-item-content{
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding: 0;
+  border-radius: 0;
+}
+.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item .ant-select-selection-item-remove {
+  color: #fff;
+  position: absolute;
+  top: 7px;
+  right: 10px;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: 10px;
+  line-height: 10px;
+}
+
+.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item .ant-select-selection-item-remove svg {
+  width: 13px;
+  height: 13px;
+}
+
+.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow {
+  gap: 8px;
 }

@@ -9,6 +9,8 @@ export class SubDomain {
 	static VIEW_ALL_HR = 'ViewAllHR/';
 	static MASTERS = 'MastersAPI/';
 	static CLIENT = 'Client/';
+	static HIRING = 'Hiring/';
+	static DEBRIEFING = 'Debriefing/';
 }
 export class APIType {
 	static USER = '/user';
@@ -48,6 +50,11 @@ export class ClientsAPI {
 	static CHECK_DUPLICATE_COMPANY_NAME = 'CheckDuplicateCompanyName';
 	static CHECK_DUPLICATE_EMAIL = 'CheckDuplicateEmail';
 	static GET_POINT_OF_CONTACT = 'GetPointOfContact';
+}
+export class HiringRequestsAPI {
+	static CREATE_HR = 'Create';
+	static CHECK_CLIENT_EMAIL = 'CheckClientEmail';
+	static SEARCHING_HIRING_REQUEST_DETAIL = 'SearchHiringRequestDetail';
 }
 export class HTTPStatusCode {
 	static OK = 200;

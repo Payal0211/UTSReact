@@ -136,3 +136,20 @@ export class DayName {
 	static FRIDAY = 'Friday';
 	static SATURDAY = 'Saturday';
 }
+
+export class SubmitType {
+	static SAVE_AS_DRAFT = 0;
+	static SUBMIT = 1;
+}
+
+export class ClientHRURL {
+	static ADD_NEW_HR = 'addnewhr';
+	static ADD_NEW_CLIENT = 'addnewclient';
+}
+
+export class MastersKey {
+	static AVAILABILITY = 'availability';
+	static TIMEZONE = 'timeZonePref';
+	static TALENTROLE = 'talentRole';
+	static SALESPERSON = 'salesPerson';
+}

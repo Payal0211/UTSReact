@@ -3,6 +3,8 @@ import HRSelectFieldStyle from './hrSelectField.module.css';
 import { useEffect, useMemo } from 'react';
 
 const HRSelectField = ({
+	mode,
+	dropdownRender,
 	controlledValue,
 	setControlledValue,
 	register,
@@ -17,6 +19,7 @@ const HRSelectField = ({
 	errorMsg,
 	isControlled,
 	disabled,
+	placeholder,
 }) => {
 	const getChangeHandlerWithValue = (value, option) => {
 		setValue(name, option.id);
@@ -43,6 +46,8 @@ const HRSelectField = ({
 
 			{isControlled ? (
 				<Select
+					placeholder={placeholder}
+					mode={mode}
 					className={disabled && HRSelectFieldStyle.disabled}
 					disabled={disabled}
 					value={controlledValue || defaultValue}
@@ -52,6 +57,9 @@ const HRSelectField = ({
 				/>
 			) : (
 				<Select
+					placeholder={placeholder}
+					mode={mode}
+					dropdownRender={dropdownRender}
 					disabled={disabled}
 					showSearch={searchable}
 					defaultValue={defaultValue}
@@ -59,7 +67,6 @@ const HRSelectField = ({
 					options={options}
 				/>
 			)}
-
 			{errorDetail}
 		</div>
 	);

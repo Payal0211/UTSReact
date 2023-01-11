@@ -34,7 +34,6 @@ const Editor = ({ tagUsers, hrID, callActivityFeedAPI }) => {
 		elements.forEach((ele) => {
 			ele.addEventListener('click', () => {
 				let command = ele.getAttribute('data-element');
-				console.log(command);
 				document.execCommand(command, false, null);
 			});
 		});

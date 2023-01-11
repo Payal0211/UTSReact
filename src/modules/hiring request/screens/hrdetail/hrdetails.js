@@ -11,6 +11,8 @@ import { ReactComponent as DeleteSVG } from 'assets/svg/delete.svg';
 
 import UTSRoutes from 'constants/routes';
 
+// import MatchmakingModal from 'modules/hiring request/components/matchmaking/matchmaking';
+
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
 	import('modules/hiring request/components/nextAction/nextAction.js'),
@@ -25,6 +27,9 @@ const ActivityFeed = React.lazy(() =>
 	import('modules/hiring request/components/activityFeed/activityFeed'),
 );
 
+const MatchmakingModal = React.lazy(() =>
+	import('modules/hiring request/components/matchmaking/matchmaking'),
+);
 const HRDetailScreen = () => {
 	const [isLoading, setLoading] = useState(false);
 	const [apiData, setAPIdata] = useState([]);
@@ -35,6 +40,7 @@ const HRDetailScreen = () => {
 
 	async function callAPI(hrid) {
 		let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+
 		if (response) {
 			setAPIdata(response && response?.responseBody);
 			setLoading(false);
@@ -42,7 +48,6 @@ const HRDetailScreen = () => {
 	}
 	useEffect(() => {
 		setLoading(true);
-
 		callAPI(urlSplitter?.split('HR')[0]);
 	}, [urlSplitter]);
 
@@ -71,6 +76,15 @@ const HRDetailScreen = () => {
 						</div>
 					)}
 				</div>
+				<Suspense>
+					<MatchmakingModal
+						hrID={urlSplitter?.split('HR')[0]}
+						hrNo={updatedSplitter}
+						hrStatusCode={apiData?.HRStatusCode}
+						hrStatus={apiData?.HRStatus}
+						hrPriority={apiData?.StarMarkedStatusCode}
+					/>
+				</Suspense>
 				<div className={HRDetailStyle.hrDetailsRightPart}>
 					<HROperator
 						title="Accept HR"

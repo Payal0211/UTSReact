@@ -6,6 +6,10 @@ import AddNewHRStyle from './add_new_HR.module.css';
 
 const AddNewHR = () => {
 	const [title, setTitle] = useState('Add New Hiring Requests');
+	const [tabFieldDisabled, setTabFieldDisabled] = useState({
+		addNewHiringRequest: false,
+		debriefingHR: false,
+	});
 
 	return (
 		<div className={AddNewHRStyle.addNewContainer}>
@@ -13,6 +17,7 @@ const AddNewHR = () => {
 			<Tabs
 				onChange={(e) => setTitle(e)}
 				defaultActiveKey="1"
+				activeKey={title}
 				animated={true}
 				tabBarGutter={50}
 				tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
@@ -20,12 +25,25 @@ const AddNewHR = () => {
 					{
 						label: 'Add New Hiring Requests',
 						key: 'Add New Hiring Requests',
-						children: <HRFields />,
+						children: (
+							<HRFields
+								setTitle={setTitle}
+								tabFieldDisabled={tabFieldDisabled}
+								setTabFieldDisabled={setTabFieldDisabled}
+							/>
+						),
 					},
 					{
 						label: 'Debriefing HR',
 						key: 'Debriefing HR',
-						children: <DebriefingHR />,
+						children: (
+							<DebriefingHR
+								setTitle={setTitle}
+								tabFieldDisabled={tabFieldDisabled}
+								setTabFieldDisabled={setTabFieldDisabled}
+							/>
+						),
+						disabled: tabFieldDisabled.debriefingHR,
 					},
 				]}
 			/>
