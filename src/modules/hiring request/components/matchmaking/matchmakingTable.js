@@ -152,7 +152,10 @@ const TrAPIData = ({
 							user.talentCost,
 						);
 					}}>
-					{user.talentCost}
+					<span style={{ fontWeight: 600 }}>
+						{user.talentCost.split('.')[0]}
+					</span>{' '}
+					/ Month
 					{expandedIconMemo.talentCost}
 				</td>
 				<td
@@ -172,7 +175,10 @@ const TrAPIData = ({
 					</Tooltip>
 				</td>
 				<td className={MatchMakingStyle.td}>
-					{All_Hiring_Request_Utils.GETTALENTSTATUS(105, 'Completed')}
+					{All_Hiring_Request_Utils.GETTALENTSTATUS(
+						user.frontStatusID,
+						user.talentStatus,
+					)}
 				</td>
 				<td
 					className={

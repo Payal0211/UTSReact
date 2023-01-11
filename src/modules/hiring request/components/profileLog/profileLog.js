@@ -1,78 +1,108 @@
 import { Divider } from 'antd';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import ProfileStyle from './profile.module.css';
+import { useState } from 'react';
 
 export const ShowProfileLog = ({ handleClose }) => {
-	return (
-		<div>
-			<div
-				style={{
-					display: 'flex',
-					width: '95%',
-					margin: 'auto',
-					justifyContent: 'space-between',
-					alignItems: 'flex-start',
-				}}>
-				<div
-					style={{
-						display: 'flex',
+	const profileData = [
+		{
+			id: 'profileShared',
+			score: '10',
+			label: 'Profile Shared',
+			activeColor: `var(--color-purple)`,
+		},
+		{
+			id: 'feedback',
+			score: '08',
+			label: 'Feedback Received',
+			activeColor: `var(--color-cyan)`,
+		},
+		{
+			id: 'rejected',
+			score: '04',
+			label: 'Rejected',
+			activeColor: `var(--color-danger)`,
+		},
+		{
+			id: 'selected',
+			score: '04',
+			label: 'Selected For',
+			activeColor: `var(--color-success)`,
+		},
+	];
+	/*--------- React DatePicker ---------------- */
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
 
-						justifyContent: 'flex-start',
-						alignItems: 'center',
-						gap: '24px',
-					}}>
-					<div
-						style={{
-							border: '1px solid #CECCCC',
-							borderRadius: '8px',
-							padding: '12px 24px',
-						}}>
-						<span
-							style={{
-								color: '#676767',
-								fontSize: '16px',
-								lineHeight: '20px',
-							}}>
-							Name:
-						</span>
-						&nbsp;&nbsp;
-						<span
-							style={{
-								color: `var(--uplers-black)`,
-								fontSize: '16px',
-								lineHeight: '20px',
-								textDecoration: 'underline',
-							}}>
-							Velma Balaji Reddy
-						</span>
-					</div>
-					<div
-						style={{
-							border: '1px solid #CECCCC',
-							borderRadius: '8px',
-							padding: '12px 24px',
-						}}>
-						<span
-							style={{
-								color: '#676767',
-								fontSize: '16px',
-								lineHeight: '20px',
-							}}>
-							Total Attempts:
-						</span>
-						&nbsp;&nbsp;
-						<span
-							style={{
-								color: `var(--uplers-black)`,
-								fontSize: '16px',
-								lineHeight: '20px',
-							}}>
-							04
-						</span>
+	const onChange = (dates) => {
+		const [start, end] = dates;
+		setStartDate(start);
+		setEndDate(end);
+	};
+	return (
+		<div className={ProfileStyle.profileContainer}>
+			<div className={ProfileStyle.flexStart}>
+				<div className={ProfileStyle.profileBody}>
+					<>
+						<div className={ProfileStyle.profileNameContainer}>
+							<span className={ProfileStyle.label}>Name:</span>
+							&nbsp;&nbsp;
+							<span className={ProfileStyle.value}>Velma Balaji Reddy</span>
+						</div>
+						<div className={ProfileStyle.attemptsContainer}>
+							<span className={ProfileStyle.label}>Total Attempts:</span>
+							&nbsp;&nbsp;
+							<span className={ProfileStyle.value}>04</span>
+						</div>
+					</>
+					<div className={ProfileStyle.calendarFilterSet}>
+						<div className={ProfileStyle.label}>Date</div>
+						<div className={ProfileStyle.calendarFilter}>
+							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+							<DatePicker
+								style={{ backgroundColor: 'red' }}
+								onKeyDown={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+								}}
+								className={ProfileStyle.dateFilter}
+								placeholderText="Start date - End date"
+								selected={startDate}
+								onChange={onChange}
+								startDate={startDate}
+								endDate={endDate}
+								selectsRange
+							/>
+						</div>
 					</div>
 				</div>
-				<CloseSVG onClick={handleClose} />
+
+				<CloseSVG
+					onClick={handleClose}
+					style={{ marginTop: '16px', marginRight: '16px' }}
+				/>
 			</div>
-			<Divider />
+
+			<hr style={{ border: `1px solid var(--uplers-grey)`, margin: 0 }} />
+			<div className={ProfileStyle.profileDataContainer}>
+				{profileData?.map((item) => {
+					return (
+						<div
+							key={item.id}
+							className={ProfileStyle.profileSets}>
+							<span className={ProfileStyle.scoreValue}>{item?.score}</span>
+							&nbsp;
+							{item?.label}
+						</div>
+					);
+				})}
+			</div>
+			<div className={ProfileStyle.stages}>
+				Select the stages to view their HRs
+			</div>
 		</div>
 	);
 };
