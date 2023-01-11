@@ -45,7 +45,7 @@ export const ShowVersantScore = ({ handleClose }) => {
 				}}>
 				<div
 					style={{
-						width: '90%',
+						width: '93%',
 						margin: 'auto',
 						display: 'flex',
 						justifyContent: 'flex-start',
@@ -108,15 +108,16 @@ export const ShowVersantScore = ({ handleClose }) => {
 					style={{ marginTop: '16px', marginRight: '16px' }}
 				/>
 			</div>
-			<hr style={{ border: `1px solid var(--uplers-grey)` }} />
+			<hr style={{ border: `1px solid var(--uplers-grey)`, margin: 0 }} />
 			<div
 				style={{
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'flex-start',
 					gap: '18px',
-					width: '90%',
+					width: '93%',
 					margin: 'auto',
+					padding: '16px 0 24px',
 				}}>
 				<div
 					style={{
@@ -127,7 +128,7 @@ export const ShowVersantScore = ({ handleClose }) => {
 						border: '1px solid #CECCCC',
 						borderRadius: '8px',
 						fontSize: '14px',
-						lineHeight: '17px',
+						lineHeight: '18px',
 						// gap: '8px',
 						color: `var(--uplers-black)`,
 						fontWeight: 500,
@@ -138,6 +139,9 @@ export const ShowVersantScore = ({ handleClose }) => {
 							borderRadius: '50%',
 							height: '34px',
 							width: '34px',
+							fontSize: '14px',
+							lineHeight: '18px',
+							marginRight: '8px',
 							display: 'flex',
 							alignItems: 'center',
 							justifyContent: 'center',
@@ -158,8 +162,8 @@ export const ShowVersantScore = ({ handleClose }) => {
 								border: '1px solid #CECCCC',
 								borderRadius: '8px',
 								fontSize: '14px',
-								lineHeight: '17px',
-								gap: '18px',
+								lineHeight: '18px',
+								// gap: '18px',
 								color: `var(--uplers-black)`,
 								fontWeight: 500,
 							}}>
@@ -168,8 +172,11 @@ export const ShowVersantScore = ({ handleClose }) => {
 									border: `1px solid ${item?.scoreColor}`,
 									borderRadius: '50%',
 									height: '34px',
+									lineHeight: '18px',
+									marginRight: '8px',
 									width: '34px',
 									display: 'flex',
+									fontSize: '14px',
 									alignItems: 'center',
 									justifyContent: 'center',
 								}}>

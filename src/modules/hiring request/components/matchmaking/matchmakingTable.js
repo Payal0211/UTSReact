@@ -24,7 +24,7 @@ const MatchMakingTable = ({
 			<tbody>
 				{matchMakingData.map((user) => (
 					<TrAPIData
-						key={user.key}
+						key={user.id}
 						user={user}
 						expandedRows={expandedRows}
 						toggleRowSelection={toggleRowSelection}
@@ -67,6 +67,7 @@ const Thead = ({ allSelected, toggleRowSelection }) => {
 };
 
 const TrAPIData = ({
+	key,
 	user,
 	expandedRows,
 	toggleRowSelection,
@@ -91,20 +92,20 @@ const TrAPIData = ({
 		};
 		const columnValue = currentExpandedCell.split('_')[0];
 
-		if (expandedRows.includes(user.key)) {
+		if (expandedRows.includes(user.id)) {
 			iconObj[columnValue] = <ArrowDownSVG style={{ marginLeft: '8px' }} />;
 			iconObj['showAll'] = <ArrowDownSVG style={{ marginLeft: '8px' }} />;
 			obj[columnValue] = true;
 		}
 		return [obj, iconObj];
-	}, [user.key, currentExpandedCell, expandedRows]);
+	}, [user.id, currentExpandedCell, expandedRows]);
 
 	return (
 		<>
 			<tr
-				key={user.key}
+				key={key}
 				className={
-					expandedRows.includes(user.key) &&
+					expandedRows.includes(user.id) &&
 					MatchMakingStyle.isSelectedBackground
 				}>
 				<td
@@ -112,8 +113,8 @@ const TrAPIData = ({
 					onClick={(e) => {
 						return handleExpandRow(
 							e,
-							user.key,
-							`talentCost_${user.key}`,
+							user.id,
+							`talentCost_${user.id}`,
 							'talentCost',
 							user.talentCost,
 						);
@@ -122,9 +123,9 @@ const TrAPIData = ({
 				</td>
 				<td className={MatchMakingStyle.td}>
 					<Checkbox
-						id={user.key}
-						checked={selectedRows.includes(user.key)}
-						onClick={() => toggleRowSelection(user.key)}
+						id={user.id}
+						checked={selectedRows.includes(user.id)}
+						onClick={() => toggleRowSelection(user.id)}
 					/>
 				</td>
 				<td
@@ -141,12 +142,12 @@ const TrAPIData = ({
 							? `${MatchMakingStyle.selectedCell}`
 							: `${MatchMakingStyle.td}`
 					}
-					id={`talentCost_${user.key}`}
+					id={`talentCost_${user.id}`}
 					onClick={(e) => {
 						handleExpandRow(
 							e,
-							user.key,
-							`talentCost_${user.key}`,
+							user.id,
+							`talentCost_${user.id}`,
 							'talentCost',
 							user.talentCost,
 						);
@@ -158,8 +159,8 @@ const TrAPIData = ({
 					className={`${MatchMakingStyle.td} ${MatchMakingStyle.ellipsis} ${MatchMakingStyle.maxWidth134}`}>
 					<Tooltip
 						placement="bottom"
-						title={user.role}>
-						{user.role}
+						title={user.talentRole}>
+						{user.talentRole}
 					</Tooltip>
 				</td>
 				<td
@@ -171,7 +172,7 @@ const TrAPIData = ({
 					</Tooltip>
 				</td>
 				<td className={MatchMakingStyle.td}>
-					{All_Hiring_Request_Utils.GETHRSTATUS(105, 'Completed')}
+					{All_Hiring_Request_Utils.GETTALENTSTATUS(105, 'Completed')}
 				</td>
 				<td
 					className={
@@ -179,12 +180,12 @@ const TrAPIData = ({
 							? `${MatchMakingStyle.selectedCell}`
 							: `${MatchMakingStyle.td}`
 					}
-					id={`techScore_${user.key}`}
+					id={`techScore_${user.id}`}
 					onClick={(e) => {
 						return handleExpandRow(
 							e,
-							user.key,
-							`techScore_${user.key}`,
+							user.id,
+							`techScore_${user.id}`,
 							'techScore',
 							user.techScore,
 						);
@@ -198,12 +199,12 @@ const TrAPIData = ({
 							? `${MatchMakingStyle.selectedCell}`
 							: `${MatchMakingStyle.td}`
 					}
-					id={`versantScore_${user.key}`}
+					id={`versantScore_${user.id}`}
 					onClick={(e) => {
 						return handleExpandRow(
 							e,
-							user.key,
-							`versantScore_${user.key}`,
+							user.id,
+							`versantScore_${user.id}`,
 							'versantScore',
 							user.versantScore,
 						);
@@ -217,12 +218,12 @@ const TrAPIData = ({
 							? `${MatchMakingStyle.selectedCell}`
 							: `${MatchMakingStyle.td}`
 					}
-					id={`profileLog_${user.key}`}
+					id={`profileLog_${user.id}`}
 					onClick={(e) => {
 						return handleExpandRow(
 							e,
-							user.key,
-							`profileLog_${user.key}`,
+							user.id,
+							`profileLog_${user.id}`,
 							'profileLog',
 							user.profileLog,
 						);
@@ -232,7 +233,7 @@ const TrAPIData = ({
 				</td>
 			</tr>
 			<>
-				{expandedRows.includes(user.key) ? (
+				{expandedRows.includes(user.id) ? (
 					<tr className={MatchMakingStyle.isSelectedBackground}>
 						<td
 							colSpan="12"

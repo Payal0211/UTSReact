@@ -14,3 +14,11 @@ export const useAllHRQuery = () => {
 		},
 	);
 };
+
+export const useMatchmakingQuery = () => {
+	return useQuery(
+		['matchmakingList'],
+		async () => await hiringRequestDAO.getMatchmakingDAO({}),
+		{ enabled: false, staleTime: 50000000 },
+	);
+};

@@ -54,6 +54,7 @@ export class ClientsAPI {
 export class HiringRequestsAPI {
 	static CREATE_HR = 'Create';
 	static CHECK_CLIENT_EMAIL = 'CheckClientEmail';
+	static SEARCHING_HIRING_REQUEST_DETAIL = 'SearchHiringRequestDetail';
 }
 export class HTTPStatusCode {
 	static OK = 200;

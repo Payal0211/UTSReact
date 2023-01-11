@@ -10,13 +10,18 @@ import { ShowTalentCost } from '../talentCost/talentCost';
 import { ShowVersantScore } from '../versantScore/versantScore';
 import { ShowProfileLog } from '../profileLog/profileLog';
 import MatchMakingTable from './matchmakingTable';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
-const MatchmakingModal = () => {
+const MatchmakingModal = ({
+	hrID,
+	hrNo,
+	hrStatusCode,
+	hrStatus,
+	hrPriority,
+}) => {
 	const [matchmakingModal, setMatchmakingModal] = useState(false);
 	const [matchmakingData, setMatchmakingData] = useState([]);
-	const [pageSize, setPageSize] = useState(100);
-	const [pageIndex, setPageIndex] = useState(1);
-	const pageSizeOptions = [100, 200, 300, 500, 1000];
+
 	/** State variable to keep track of all the expanded rows*/
 	const [expandedRows, setExpandedRows] = useState([]);
 
@@ -74,7 +79,7 @@ const MatchmakingModal = () => {
 					setSelectedRows([]);
 				} else {
 					setAllSelected(true);
-					setSelectedRows(matchmakingData?.map((a) => a.key));
+					setSelectedRows(matchmakingData.rows?.map((a) => a.id));
 				}
 			} else {
 				let currentSelectedRows = [...selectedRows];
@@ -85,7 +90,6 @@ const MatchmakingModal = () => {
 						(item) => item !== id,
 					);
 				else currentSelectedRows = currentSelectedRows.concat(id);
-
 				setSelectedRows(currentSelectedRows);
 			}
 		},
@@ -109,16 +113,15 @@ const MatchmakingModal = () => {
 
 	/** Fetching the Modal Table API */
 	/**TODO():- Remove from here */
-	const fetchMatchmakingData = async () => {
-		const response = await axios.get(
-			'https://api.npoint.io/abbeed53bf8b4b354bb0',
-		);
-		setMatchmakingData(response?.data);
-	};
-
-	useEffect(() => {
-		fetchMatchmakingData();
-	}, []);
+	const fetchMatchmakingData = useCallback(async () => {
+		setMatchmakingModal(true);
+		const response = await hiringRequestDAO.getMatchmakingDAO({
+			hrID: hrID,
+			rows: 10,
+			page: 1,
+		});
+		setMatchmakingData(response?.responseBody.details);
+	}, [hrID]);
 
 	/** Disposing the Modal State */
 	useEffect(() => {
@@ -135,7 +138,7 @@ const MatchmakingModal = () => {
 
 	return (
 		<>
-			<Button onClick={() => setMatchmakingModal(true)}>Matchmaking </Button>
+			<Button onClick={() => fetchMatchmakingData()}>Matchmaking </Button>
 			<Modal
 				centered
 				open={matchmakingModal}
@@ -185,14 +188,14 @@ const MatchmakingModal = () => {
 										lineHeight: '19px',
 										fontWeight: '500',
 									}}>
-									HR081222024440
+									{hrNo}
 								</span>
 							</div>
 							<div
 								style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-								{All_Hiring_Request_Utils.GETHRSTATUS(105, 'Completed')}
+								{All_Hiring_Request_Utils.GETHRSTATUS(hrStatusCode, hrStatus)}
 								<div className={MatchMakingStyle.hiringRequestPriority}>
-									{All_Hiring_Request_Utils.GETHRPRIORITY(101)}
+									{All_Hiring_Request_Utils.GETHRPRIORITY(hrPriority)}
 								</div>
 							</div>
 							<div className={MatchMakingStyle.searchFilterSet}>
@@ -201,11 +204,29 @@ const MatchmakingModal = () => {
 									type={InputType.TEXT}
 									className={MatchMakingStyle.searchInput}
 									placeholder="Search Talent Details"
-									/* onChange={(e) => {
-										return setDebouncedSearch(
-											hrUtils.allHiringRequestSearch(e, apiData),
-										);
-									}} */
+									onChange={(e) => {
+										console.log(e.target.value);
+										let filteredData = matchmakingData.filter((val) => {
+											return (
+												val.adHocHR
+													.toLowerCase()
+													.includes(e.target.value.toLowerCase()) ||
+												val.HR_ID.toLowerCase().includes(
+													e.target.value.toLowerCase(),
+												) ||
+												val.Position.toLowerCase().includes(
+													e.target.value.toLowerCase(),
+												) ||
+												val.Company.toLowerCase().includes(
+													e.target.value.toLowerCase(),
+												) ||
+												val.Time.toLowerCase().includes(
+													e.target.value.toLowerCase(),
+												)
+											);
+										});
+										return filteredData;
+									}}
 								/>
 							</div>
 						</div>
@@ -221,7 +242,7 @@ const MatchmakingModal = () => {
 							<Skeleton />
 						) : (
 							<MatchMakingTable
-								matchMakingData={matchmakingData}
+								matchMakingData={matchmakingData?.rows}
 								allSelected={allSelected}
 								toggleRowSelection={toggleRowSelection}
 								expandedRows={expandedRows}
@@ -243,28 +264,24 @@ const MatchmakingModal = () => {
 							Select Talent
 						</button>
 
-						<button
-							// onClick={handleSubmit((d) => console.log(d))}
-							className={MatchMakingStyle.btn}>
-							Cancel
-						</button>
+						<button className={MatchMakingStyle.btn}>Cancel</button>
 						<div
 							style={{ position: 'absolute', right: '0', marginRight: '32px' }}>
-							<Pagination
+							{/* <Pagination
 								onChange={(pageNum, pageSize) => {
 									setPageIndex(pageNum);
 									setPageSize(pageSize);
-									// handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
+									handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
 								}}
 								size={'small'}
 								pageSize={100}
 								// pageSizeOptions={pageSizeOptions}
-								// total={totalRecords}
+								total={totalRecords}
 								// showTotal={(total, range) =>
 								// 	`${range[0]}-${range[1]} of ${totalRecords} items`
 								// }
 								// defaultCurrent={pageIndex}
-							/>
+							/> */}
 						</div>
 					</div>
 				</div>

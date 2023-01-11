@@ -1,9 +1,14 @@
-import { AllHiringRequestAPI, NetworkInfo, SubDomain } from 'constants/network';
+import {
+	AllHiringRequestAPI,
+	HiringRequestsAPI,
+	NetworkInfo,
+	SubDomain,
+} from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
-export const hiringRequestAPI = {
+export const HiringRequestAPI = {
 	getPaginatedHiringRequest: async function (hrData) {
 		let httpService = new HttpServices();
 		httpService.URL = `http://3.218.6.134:9082/ViewAllHR/GetAllHiringRequests?
@@ -75,6 +80,77 @@ export const hiringRequestAPI = {
 				error,
 				'hiringRequestAPI.sendHRPriorityForNextWeekRequest',
 			);
+		}
+	},
+	getClientDetailRequest: async function (clientEmail) {
+		let httpService = new HttpServices();
+
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.CHECK_CLIENT_EMAIL +
+			`?email=${clientEmail}`;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getClientDetail');
+		}
+	},
+	createHiringRequest: async function (hrData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.CREATE_HR;
+		httpService.dataToSend = hrData;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.createHiringRequest');
+		}
+	},
+	createDebriefingRequest: async function (debriefData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			SubDomain.DEBRIEFING +
+			HiringRequestsAPI.CREATE_HR;
+		httpService.dataToSend = debriefData;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.createDebriefingRequest');
+		}
+	},
+	getMatchmakingRequest: async function (matchMakingData) {
+		let httpService = new HttpServices();
+		const miscData =
+			await UserSessionManagementController.getUserMiscellaneousData();
+
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.SEARCHING_HIRING_REQUEST_DETAIL +
+			`?HiringRequestId=${matchMakingData.hrID}
+			&rows=${matchMakingData.rows}
+			&page=${matchMakingData.page}&LoggedInUserId=${miscData?.loggedInUserTypeID}`;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getMatchmakingRequest');
 		}
 	},
 };
