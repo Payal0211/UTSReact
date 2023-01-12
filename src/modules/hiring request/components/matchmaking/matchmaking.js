@@ -180,7 +180,7 @@ const MatchmakingModal = ({
 										lineHeight: '19px',
 										fontWeight: '500',
 									}}>
-									Save Eat Foods Pvt Ltd -
+									{matchmakingData?.CompanyName} -
 								</span>
 								<span
 									style={{
