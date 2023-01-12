@@ -7,15 +7,15 @@ export const useMastersAPI = (mastersKey) => {
 
 	const getTimeZonePreference = useCallback(async () => {
 		const timeZone = await MasterDAO.getTalentTimeZoneRequestDAO();
-
 		setReturnState({
 			...returnState,
 			[MastersKey.TIMEZONE]: timeZone && timeZone.responseBody,
 		});
+		// console.log(mastersKey);
 	}, [returnState]);
 	const getAvailability = useCallback(async () => {
 		const availabilityResponse = await MasterDAO.getHowSoonRequestDAO();
-
+		// console.log('--availabilityResponse--', availabilityResponse);
 		setReturnState({
 			...returnState,
 			[MastersKey.AVAILABILITY]:
@@ -24,7 +24,7 @@ export const useMastersAPI = (mastersKey) => {
 	}, [returnState]);
 	const getTalentRole = useCallback(async () => {
 		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
-
+		// console.log('--talentRole--', talentRole);
 		setReturnState({
 			...returnState,
 			[MastersKey.TALENTROLE]: talentRole && talentRole.responseBody,
@@ -32,7 +32,7 @@ export const useMastersAPI = (mastersKey) => {
 	}, [returnState]);
 	const getSalesPerson = useCallback(async () => {
 		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
-
+		// console.log('--salesPersonResponse--', salesPersonResponse);
 		setReturnState({
 			...returnState,
 			[MastersKey.TALENTROLE]:
@@ -41,7 +41,7 @@ export const useMastersAPI = (mastersKey) => {
 	}, [returnState]);
 
 	useEffect(() => {
-		Object.values(mastersKey).forEach((value) => {
+		Object.keys(mastersKey).forEach((value) => {
 			switch (value) {
 				case MastersKey.AVAILABILITY:
 					getAvailability();
@@ -62,5 +62,6 @@ export const useMastersAPI = (mastersKey) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mastersKey]);
 
+	// console.log(returnState, '--hooks');
 	return { returnState };
 };

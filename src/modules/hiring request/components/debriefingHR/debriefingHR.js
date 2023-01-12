@@ -82,9 +82,9 @@ const DebriefingHR = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 									id: item,
 								}))}
 								name="skills"
-								isError={errors['skills'] && errors['skills']}
-								required
-								errorMsg={'Please enter the skills.'}
+								// isError={errors['skills'] && errors['skills']}
+								// required
+								// errorMsg={'Please enter the skills.'}
 							/>
 						</div>
 						{/* <div className={DebriefingHRStyle.mb50}>

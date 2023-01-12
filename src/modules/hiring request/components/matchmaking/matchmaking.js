@@ -140,6 +140,7 @@ const MatchmakingModal = ({
 		<>
 			<Button onClick={() => fetchMatchmakingData()}>Matchmaking </Button>
 			<Modal
+				transitionName=""
 				centered
 				open={matchmakingModal}
 				width="1256px"
@@ -155,7 +156,6 @@ const MatchmakingModal = ({
 							marginTop: '30px',
 							marginLeft: 'auto',
 							marginRight: 'auto',
-
 							borderRadius: '8px',
 							marginBottom: '30px',
 						}}>
