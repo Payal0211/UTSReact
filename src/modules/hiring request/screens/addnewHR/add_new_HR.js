@@ -8,7 +8,7 @@ const AddNewHR = () => {
 	const [title, setTitle] = useState('Add New Hiring Requests');
 	const [tabFieldDisabled, setTabFieldDisabled] = useState({
 		addNewHiringRequest: false,
-		debriefingHR: false,
+		debriefingHR: true,
 	});
 
 	return (

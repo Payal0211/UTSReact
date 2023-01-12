@@ -11,17 +11,18 @@ import HRFieldStyle from './hrFIelds.module.css';
 import { PlusOutlined } from '@ant-design/icons';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
-import { MasterDAO } from 'core/master/masterDAO';
+// import { MasterDAO } from 'core/master/masterDAO';
 
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { useFieldArray, useForm } from 'react-hook-form';
-import AddInterviewer from '../addInterviewer/addInterviewer';
+// import AddInterviewer from '../addInterviewer/addInterviewer';
 import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { useMastersAPI } from 'shared/hooks/useMastersAPI';
+import { MasterDAO } from 'core/master/masterDAO';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -44,8 +45,14 @@ const HRFields = ({
 			salesPerson: MastersKey.SALESPERSON,
 		};
 	}, []);
-	const { returnState } = useMastersAPI(mastersKey);
-	const { availability, timeZonePref, talentRole, salesPerson } = returnState;
+	// const { returnState } = useMastersAPI(mastersKey);
+
+	// const { availability, timeZonePref, talentRole, salesPerson } = returnState;
+	const [availability, setAvailability] = useState([]);
+	const [timeZonePref, setTimeZonePref] = useState([]);
+	const [talentRole, setTalentRole] = useState([]);
+	const [salesPerson, setSalesPerson] = useState([]);
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [items, setItems] = useState(['3 months', '6 months', '9 months']);
 
@@ -59,17 +66,38 @@ const HRFields = ({
 		handleSubmit,
 		setValue,
 		setError,
-		control,
+		// control,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
 			secondaryInterviewer: [],
 		},
 	});
-	const { fields, append, remove } = useFieldArray({
+	/* const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
-	});
+	}); */
+
+	const getTimeZonePreference = useCallback(async () => {
+		const timeZone = await MasterDAO.getTalentTimeZoneRequestDAO();
+		setTimeZonePref(timeZone && timeZone.responseBody);
+	}, []);
+	const getAvailability = useCallback(async () => {
+		const availabilityResponse = await MasterDAO.getHowSoonRequestDAO();
+		setAvailability(availabilityResponse && availabilityResponse.responseBody);
+	}, []);
+	const getTalentRole = useCallback(async () => {
+		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
+		// console.log('--talentRole--', talentRole);
+		setTalentRole(talentRole && talentRole.responseBody);
+	}, []);
+	const getSalesPerson = useCallback(async () => {
+		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
+		// console.log('--salesPersonResponse--', salesPersonResponse);
+		setSalesPerson(
+			salesPersonResponse && salesPersonResponse.responseBody.details,
+		);
+	}, []);
 
 	const getLocation = useLocation();
 
@@ -143,6 +171,12 @@ const HRFields = ({
 		pathName,
 		setValue,
 	]);
+	useEffect(() => {
+		getTimeZonePreference();
+		getAvailability();
+		getTalentRole();
+		getSalesPerson();
+	}, [getAvailability, getSalesPerson, getTalentRole, getTimeZonePreference]);
 	/** To check Duplicate email exists End */
 
 	const [messageAPI, contextHolder] = message.useMessage();
@@ -568,13 +602,13 @@ const HRFields = ({
 				</form>
 			</div>
 			<Divider />
-			<AddInterviewer
+			{/* <AddInterviewer
 				errors={errors}
 				append={append}
 				remove={remove}
 				register={register}
 				fields={fields}
-			/>
+			/> */}
 
 			<div className={HRFieldStyle.formPanelAction}>
 				<button

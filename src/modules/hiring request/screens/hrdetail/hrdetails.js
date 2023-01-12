@@ -1,6 +1,6 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import { Skeleton } from 'antd';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
@@ -10,6 +10,8 @@ import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as DeleteSVG } from 'assets/svg/delete.svg';
 
 import UTSRoutes from 'constants/routes';
+import { HTTPStatusCode } from 'constants/network';
+import WithLoader from 'shared/components/loader/loader';
 
 // import MatchmakingModal from 'modules/hiring request/components/matchmaking/matchmaking';
 
@@ -33,133 +35,140 @@ const MatchmakingModal = React.lazy(() =>
 const HRDetailScreen = () => {
 	const [isLoading, setLoading] = useState(false);
 	const [apiData, setAPIdata] = useState([]);
-
+	const navigate = useNavigate();
 	const switchLocation = useLocation();
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 
-	async function callAPI(hrid) {
-		let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+	const callAPI = useCallback(
+		async (hrid) => {
+			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
 
-		if (response) {
-			setAPIdata(response && response?.responseBody);
-			setLoading(false);
-		}
-	}
+			if (response.statusCode === HTTPStatusCode.OK) {
+				setAPIdata(response && response?.responseBody);
+				setLoading(false);
+			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+				navigate(UTSRoutes.PAGENOTFOUNDROUTE);
+			}
+		},
+		[navigate],
+	);
 	useEffect(() => {
 		setLoading(true);
 		callAPI(urlSplitter?.split('HR')[0]);
-	}, [urlSplitter]);
+	}, [urlSplitter, callAPI]);
 
 	return (
-		<div className={HRDetailStyle.hiringRequestContainer}>
-			<Link to={UTSRoutes.ALLHIRINGREQUESTROUTE}>
-				<div className={HRDetailStyle.goback}>
-					<ArrowLeftSVG style={{ width: '16px' }} />
-					<span>Go Back</span>
-				</div>
-			</Link>
-			<div className={HRDetailStyle.hrDetails}>
-				<div className={HRDetailStyle.hrDetailsLeftPart}>
-					<div className={HRDetailStyle.hiringRequestIdSets}>
-						HR ID - {updatedSplitter}
+		<WithLoader showLoader={isLoading}>
+			<div className={HRDetailStyle.hiringRequestContainer}>
+				<Link to={UTSRoutes.ALLHIRINGREQUESTROUTE}>
+					<div className={HRDetailStyle.goback}>
+						<ArrowLeftSVG style={{ width: '16px' }} />
+						<span>Go Back</span>
 					</div>
-					{All_Hiring_Request_Utils.GETHRSTATUS(
-						apiData?.HRStatusCode,
-						apiData?.HRStatus,
-					)}
-					{apiData && (
-						<div className={HRDetailStyle.hiringRequestPriority}>
-							{All_Hiring_Request_Utils.GETHRPRIORITY(
-								apiData?.StarMarkedStatusCode,
-							)}
+				</Link>
+				<div className={HRDetailStyle.hrDetails}>
+					<div className={HRDetailStyle.hrDetailsLeftPart}>
+						<div className={HRDetailStyle.hiringRequestIdSets}>
+							HR ID - {updatedSplitter}
 						</div>
-					)}
-				</div>
-				<Suspense>
-					<MatchmakingModal
-						hrID={urlSplitter?.split('HR')[0]}
-						hrNo={updatedSplitter}
-						hrStatusCode={apiData?.HRStatusCode}
-						hrStatus={apiData?.HRStatus}
-						hrPriority={apiData?.StarMarkedStatusCode}
-					/>
-				</Suspense>
-				<div className={HRDetailStyle.hrDetailsRightPart}>
-					<HROperator
-						title="Accept HR"
-						icon={<ArrowDownSVG style={{ width: '16px' }} />}
-						backgroundColor={`var(--color-sunlight)`}
-						iconBorder={`1px solid var(--color-sunlight)`}
-						isDropdown={true}
-						listItem={[
-							{
-								label: 'Accept More TRs',
-							},
-						]}
-					/>
-					<HROperator
-						title="Pass to ODR"
-						icon={<ArrowDownSVG style={{ width: '16px' }} />}
-						backgroundColor={`var(--background-color-light)`}
-						labelBorder={`1px solid var(--color-sunlight)`}
-						iconBorder={`1px solid var(--color-sunlight)`}
-					/>
-					<div className={HRDetailStyle.hiringRequestPriority}>
-						<DeleteSVG style={{ width: '24px' }} />
+						{All_Hiring_Request_Utils.GETHRSTATUS(
+							apiData?.HRStatusCode,
+							apiData?.HRStatus,
+						)}
+						{apiData && (
+							<div className={HRDetailStyle.hiringRequestPriority}>
+								{All_Hiring_Request_Utils.GETHRPRIORITY(
+									apiData?.StarMarkedStatusCode,
+								)}
+							</div>
+						)}
+					</div>
+					<Suspense>
+						<MatchmakingModal
+							hrID={urlSplitter?.split('HR')[0]}
+							hrNo={updatedSplitter}
+							hrStatusCode={apiData?.HRStatusCode}
+							hrStatus={apiData?.HRStatus}
+							hrPriority={apiData?.StarMarkedStatusCode}
+						/>
+					</Suspense>
+					<div className={HRDetailStyle.hrDetailsRightPart}>
+						<HROperator
+							title="Accept HR"
+							icon={<ArrowDownSVG style={{ width: '16px' }} />}
+							backgroundColor={`var(--color-sunlight)`}
+							iconBorder={`1px solid var(--color-sunlight)`}
+							isDropdown={true}
+							listItem={[
+								{
+									label: 'Accept More TRs',
+								},
+							]}
+						/>
+						<HROperator
+							title="Pass to ODR"
+							icon={<ArrowDownSVG style={{ width: '16px' }} />}
+							backgroundColor={`var(--background-color-light)`}
+							labelBorder={`1px solid var(--color-sunlight)`}
+							iconBorder={`1px solid var(--color-sunlight)`}
+						/>
+						<div className={HRDetailStyle.hiringRequestPriority}>
+							<DeleteSVG style={{ width: '24px' }} />
+						</div>
 					</div>
 				</div>
-			</div>
-			{isLoading ? (
-				<>
-					<br />
-					<Skeleton active />
-					<br />
-				</>
-			) : (
-				<Suspense>
-					<NextActionItem nextAction={apiData?.NextActionsForTalent} />
-				</Suspense>
-			)}
+				{isLoading ? (
+					<>
+						<br />
+						<Skeleton active />
+						<br />
+					</>
+				) : (
+					<Suspense>
+						<NextActionItem nextAction={apiData?.NextActionsForTalent} />
+					</Suspense>
+				)}
 
-			<div className={HRDetailStyle.portal}>
-				<div className={HRDetailStyle.clientPortal}>
+				<div className={HRDetailStyle.portal}>
+					<div className={HRDetailStyle.clientPortal}>
+						{isLoading ? (
+							<Skeleton active />
+						) : (
+							<Suspense>
+								<CompanyProfileCard
+									clientDetail={apiData?.ClientDetail}
+									talentLength={apiData?.HRTalentDetails?.length}
+								/>
+							</Suspense>
+						)}
+					</div>
+					<div className={HRDetailStyle.talentPortal}>
+						{isLoading ? (
+							<Skeleton active />
+						) : (
+							<Suspense>
+								<TalentProfileCard talentDetail={apiData?.HRTalentDetails} />
+							</Suspense>
+						)}
+					</div>
+				</div>
+				<div className={HRDetailStyle.activityFeed}>
 					{isLoading ? (
 						<Skeleton active />
 					) : (
 						<Suspense>
-							<CompanyProfileCard
-								clientDetail={apiData?.ClientDetail}
-								talentLength={apiData?.HRTalentDetails?.length}
+							<ActivityFeed
+								hrID={urlSplitter?.split('HR')[0]}
+								activityFeed={apiData?.HRHistory}
+								tagUsers={apiData?.UsersToTag}
+								callActivityFeedAPI={callAPI}
 							/>
 						</Suspense>
 					)}
 				</div>
-				<div className={HRDetailStyle.talentPortal}>
-					{isLoading ? (
-						<Skeleton active />
-					) : (
-						<Suspense>
-							<TalentProfileCard talentDetail={apiData?.HRTalentDetails} />
-						</Suspense>
-					)}
-				</div>
 			</div>
-			<div className={HRDetailStyle.activityFeed}>
-				{isLoading ? (
-					<Skeleton active />
-				) : (
-					<Suspense>
-						<ActivityFeed
-							hrID={urlSplitter?.split('HR')[0]}
-							activityFeed={apiData?.HRHistory}
-							tagUsers={apiData?.UsersToTag}
-							callActivityFeedAPI={callAPI}
-						/>
-					</Suspense>
-				)}
-			</div>
-		</div>
+		</WithLoader>
 	);
 };
 

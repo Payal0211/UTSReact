@@ -198,7 +198,7 @@ export const hrUtils = {
 					: _isNull(d.discoveryCallLink)
 					? null
 					: d.discoveryCallLink,
-			interviewerFullName:
+			/* interviewerFullName:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('interviewerFullName'))
 						? null
@@ -233,7 +233,7 @@ export const hrUtils = {
 			secondaryInterviewer:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? watch('secondaryInterviewer')
-					: d.secondaryInterviewer,
+					: d.secondaryInterviewer, */
 		};
 		return hrFormDetails;
 	},

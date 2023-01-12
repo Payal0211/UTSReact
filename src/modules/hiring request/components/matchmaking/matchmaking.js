@@ -21,7 +21,7 @@ const MatchmakingModal = ({
 }) => {
 	const [matchmakingModal, setMatchmakingModal] = useState(false);
 	const [matchmakingData, setMatchmakingData] = useState([]);
-
+	const [filterMatchmakingData, setFilterMatchmakingData] = useState([]);
 	/** State variable to keep track of all the expanded rows*/
 	const [expandedRows, setExpandedRows] = useState([]);
 
@@ -140,6 +140,7 @@ const MatchmakingModal = ({
 		<>
 			<Button onClick={() => fetchMatchmakingData()}>Matchmaking </Button>
 			<Modal
+				transitionName=""
 				centered
 				open={matchmakingModal}
 				width="1256px"
@@ -155,7 +156,6 @@ const MatchmakingModal = ({
 							marginTop: '30px',
 							marginLeft: 'auto',
 							marginRight: 'auto',
-
 							borderRadius: '8px',
 							marginBottom: '30px',
 						}}>
@@ -205,27 +205,27 @@ const MatchmakingModal = ({
 									className={MatchMakingStyle.searchInput}
 									placeholder="Search Talent Details"
 									onChange={(e) => {
-										console.log(e.target.value);
-										let filteredData = matchmakingData.filter((val) => {
+										let filteredData = matchmakingData?.rows.filter((val) => {
 											return (
-												val.adHocHR
+												val.name
 													.toLowerCase()
 													.includes(e.target.value.toLowerCase()) ||
-												val.HR_ID.toLowerCase().includes(
-													e.target.value.toLowerCase(),
-												) ||
-												val.Position.toLowerCase().includes(
-													e.target.value.toLowerCase(),
-												) ||
-												val.Company.toLowerCase().includes(
-													e.target.value.toLowerCase(),
-												) ||
-												val.Time.toLowerCase().includes(
-													e.target.value.toLowerCase(),
-												)
+												val.talentCost
+													.toLowerCase()
+													.includes(e.target.value.toLowerCase()) ||
+												val.talentRole
+													.toLowerCase()
+													.includes(e.target.value.toLowerCase()) ||
+												val.emailID
+													.toLowerCase()
+													.includes(e.target.value.toLowerCase()) ||
+												val.talentStatus
+													.toLowerCase()
+													.includes(e.target.value.toLowerCase())
 											);
 										});
-										return filteredData;
+
+										setFilterMatchmakingData(filteredData);
 									}}
 								/>
 							</div>
@@ -242,7 +242,11 @@ const MatchmakingModal = ({
 							<Skeleton />
 						) : (
 							<MatchMakingTable
-								matchMakingData={matchmakingData?.rows}
+								matchMakingData={
+									filterMatchmakingData.length > 0
+										? filterMatchmakingData
+										: matchmakingData?.rows
+								}
 								allSelected={allSelected}
 								toggleRowSelection={toggleRowSelection}
 								expandedRows={expandedRows}
@@ -266,23 +270,11 @@ const MatchmakingModal = ({
 
 						<button className={MatchMakingStyle.btn}>Cancel</button>
 						<div
-							style={{ position: 'absolute', right: '0', marginRight: '32px' }}>
-							{/* <Pagination
-								onChange={(pageNum, pageSize) => {
-									setPageIndex(pageNum);
-									setPageSize(pageSize);
-									handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
-								}}
-								size={'small'}
-								pageSize={100}
-								// pageSizeOptions={pageSizeOptions}
-								total={totalRecords}
-								// showTotal={(total, range) =>
-								// 	`${range[0]}-${range[1]} of ${totalRecords} items`
-								// }
-								// defaultCurrent={pageIndex}
-							/> */}
-						</div>
+							style={{
+								position: 'absolute',
+								right: '0',
+								marginRight: '32px',
+							}}></div>
 					</div>
 				</div>
 			</Modal>

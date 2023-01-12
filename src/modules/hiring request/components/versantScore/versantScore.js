@@ -1,4 +1,3 @@
-import { Divider } from 'antd';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import VersantScoreStyle from './versantScoreStyle.module.css';
 

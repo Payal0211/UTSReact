@@ -42,6 +42,10 @@ body {
   --background-color-leather: #0b0705;
   --background-color-pulp: #f7edc9;
   --color-sunlight: #FFDA31;
+  --color-purple:#784FCD;
+  --color-cyan:#00DFDF;
+  --color-danger:#E41A1C;
+  --color-success:#85B844;
   --color-TealWithOpacity: #f5fcf9;
   --color-champagne: #ffe87f;
   --uplers-border-color:#E8E8E8;
@@ -225,6 +229,9 @@ table{
 }
 
 /*-- DropDown--*/
+.ant-dropdown{
+  z-index: 0 !important;
+}
 .ant-dropdown-menu{
   background-color: transparent;
   border-radius: 10px;
@@ -339,7 +346,7 @@ table{
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
-  color: #232323;
+  color: var(--uplers-black);
 }
 
 .ant-select:not(.ant-select-customize-input) .ant-select-selector {
