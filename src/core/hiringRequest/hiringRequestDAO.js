@@ -214,4 +214,127 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getMatchmakingDAO()');
 		}
 	},
+	getTalentCostConversionDAO: async function (talentCost) {
+		try {
+			const getTalentCostResponse =
+				await HiringRequestAPI.getTalentCostConversionRequest(talentCost);
+			if (getTalentCostResponse) {
+				const statusCode = getTalentCostResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getTalentCostResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getTalentCostResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getTalentCostResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getTalentCostConversionDAO()');
+		}
+	},
+	getTalentTechScoreDAO: async function (talentID) {
+		try {
+			const getTalentTechScoreResponse =
+				await HiringRequestAPI.getTalentTechScoreCardRequest(talentID);
+			if (getTalentTechScoreResponse) {
+				const statusCode = getTalentTechScoreResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getTalentTechScoreResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getTalentTechScoreResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getTalentTechScoreResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getTalentTechScoreDAO()');
+		}
+	},
+	getTalentProfileSharedDetailDAO: async function (talentObj) {
+		try {
+			const getTalentProfileSharedDetailResponse =
+				await HiringRequestAPI.getTalentProfileSharedDetailRequest(talentObj);
+			if (getTalentProfileSharedDetailResponse) {
+				const statusCode = getTalentProfileSharedDetailResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getTalentProfileSharedDetailResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getTalentProfileSharedDetailResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getTalentProfileSharedDetailResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getTalentProfileSharedDetailDAO()',
+			);
+		}
+	},
+	getTalentProfileLogDAO: async (talentID) => {
+		try {
+			const getTalentProfileLogResponse =
+				await HiringRequestAPI.getTalentProfileLogReqeust(talentID);
+			if (getTalentProfileLogResponse) {
+				const statusCode = getTalentProfileLogResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getTalentProfileLogResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getTalentProfileLogResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getTalentProfileLogResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getTalentProfileLogDAO()');
+		}
+	},
 };

@@ -1,10 +1,9 @@
 import { Tabs } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import DebriefingHR from 'modules/hiring request/components/debriefingHR/debriefingHR';
 import HRFields from 'modules/hiring request/components/hrFields/hrFields';
 import AddNewClientStyle from './add_new_client.module.css';
 import ClientField from 'modules/client/components/clientField/clientField';
-import { useLocation } from 'react-router-dom';
 
 const AddNewClientScreen = () => {
 	const [title, setTitle] = useState('Add New Client');
@@ -15,7 +14,7 @@ const AddNewClientScreen = () => {
 		addNewHiringRequest: true,
 		debriefingHR: true,
 	});
-
+	const [enID, setEnID] = useState({});
 	return (
 		<div className={AddNewClientStyle.addNewContainer}>
 			<div className={AddNewClientStyle.addHRTitle}>{title}</div>
@@ -46,6 +45,7 @@ const AddNewClientScreen = () => {
 							key: 'Add New Hiring Requests',
 							children: (
 								<HRFields
+									setEnID={setEnID}
 									setTitle={setTitle}
 									tabFieldDisabled={tabFieldDisabled}
 									setTabFieldDisabled={setTabFieldDisabled}
@@ -59,6 +59,7 @@ const AddNewClientScreen = () => {
 							key: 'Debriefing HR',
 							children: (
 								<DebriefingHR
+									enID={enID}
 									setTitle={setTitle}
 									tabFieldDisabled={tabFieldDisabled}
 									setTabFieldDisabled={setTabFieldDisabled}

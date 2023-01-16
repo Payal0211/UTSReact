@@ -97,6 +97,7 @@ export const ClientDAO = {
 			const createClientResult = await ClientAPI.createClientRequest(
 				clientData,
 			);
+
 			if (createClientResult) {
 				const statusCode = createClientResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {

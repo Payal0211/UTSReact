@@ -1,34 +1,45 @@
-import { Divider } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import ProfileStyle from './profile.module.css';
-import { useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
-export const ShowProfileLog = ({ handleClose }) => {
+export const ShowProfileLog = ({ talentID, handleClose }) => {
+	const [profileLog, setProfileLog] = useState(null);
+
+	const getTechScore = useCallback(async () => {
+		const response = await hiringRequestDAO.getTalentProfileLogDAO(talentID);
+		setProfileLog(response && response?.responseBody?.details);
+	}, [talentID]);
+
+	useEffect(() => {
+		getTechScore();
+	}, [getTechScore]);
+
 	const profileData = [
 		{
 			id: 'profileShared',
-			score: '10',
+			score: profileLog?.profileSharedCount,
 			label: 'Profile Shared',
 			activeColor: `var(--color-purple)`,
 		},
 		{
 			id: 'feedback',
-			score: '08',
+			score: profileLog?.feedbackCount,
 			label: 'Feedback Received',
 			activeColor: `var(--color-cyan)`,
 		},
 		{
 			id: 'rejected',
-			score: '04',
+			score: profileLog?.rejectedCount,
 			label: 'Rejected',
 			activeColor: `var(--color-danger)`,
 		},
 		{
 			id: 'selected',
-			score: '04',
+			score: profileLog?.selectedForCount,
 			label: 'Selected For',
 			activeColor: `var(--color-success)`,
 		},
@@ -50,7 +61,9 @@ export const ShowProfileLog = ({ handleClose }) => {
 						<div className={ProfileStyle.profileNameContainer}>
 							<span className={ProfileStyle.label}>Name:</span>
 							&nbsp;&nbsp;
-							<span className={ProfileStyle.value}>Velma Balaji Reddy</span>
+							<span className={ProfileStyle.value}>
+								{profileLog?.talentName}
+							</span>
 						</div>
 						<div className={ProfileStyle.attemptsContainer}>
 							<span className={ProfileStyle.label}>Total Attempts:</span>

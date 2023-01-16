@@ -36,10 +36,17 @@ export function locationFormatter(location) {
 	});
 	return tempArray;
 }
-export function clientFormDataFormatter(d, draft, contactID, watch) {
+export function clientFormDataFormatter(
+	d,
+	draft,
+	contactID,
+	watch,
+	addClientResponse,
+) {
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 		company: {
+			en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
 			company:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? watch('companyName')
@@ -63,11 +70,11 @@ export function clientFormDataFormatter(d, draft, contactID, watch) {
 			companySize:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('companySize'))
-						? null
-						: watch('companySize')
+						? 0
+						: parseInt(watch('companySize'))
 					: _isNull(d.companySize)
 					? null
-					: d.companySize,
+					: parseInt(d.companySize),
 			address:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('companyAddress'))
@@ -97,7 +104,9 @@ export function clientFormDataFormatter(d, draft, contactID, watch) {
 				draft === SubmitType.SAVE_AS_DRAFT ? watch('remote') : d.remote,
 		},
 		primaryClient: {
-			id: !_isNull(contactID) ? contactID : 0,
+			en_Id: _isNull(addClientResponse)
+				? ''
+				: addClientResponse?.primaryClient?.en_Id,
 			fullName:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('primaryClientName'))
@@ -143,9 +152,19 @@ export function clientFormDataFormatter(d, draft, contactID, watch) {
 		},
 		secondaryClients:
 			draft === SubmitType.SAVE_AS_DRAFT
-				? watch('secondaryClient')
-				: d.secondaryClient,
+				? _isNull(watch('secondaryClient'))
+					? []
+					: watch('secondaryClient')
+				: _isNull(addClientResponse)
+				? d.secondaryClient
+				: enIDFieldsFormatter(
+						addClientResponse.secondaryClients,
+						d.secondaryClient,
+				  ),
 		legalInfo: {
+			en_Id: _isNull(addClientResponse)
+				? ''
+				: addClientResponse?.legalInfo?.en_Id,
 			name:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('legalClientFullName'))
@@ -197,7 +216,12 @@ export function clientFormDataFormatter(d, draft, contactID, watch) {
 					: d.legalCompanyAddress,
 			isAcceptPolicy: true,
 		},
-		pocList: draft === SubmitType.SAVE_AS_DRAFT ? watch('pocList') : d.pocList,
+		pocList:
+			draft === SubmitType.SAVE_AS_DRAFT
+				? watch('pocList')
+				: _isNull(addClientResponse)
+				? d.pocList
+				: enIDFieldsFormatter(addClientResponse.pocList, d.pocList),
 		primaryContactName: _isNull(d.primaryContactName)
 			? null
 			: draft === SubmitType.SAVE_AS_DRAFT
@@ -210,4 +234,17 @@ export function clientFormDataFormatter(d, draft, contactID, watch) {
 			: d.secondaryContactName.toString(),
 	};
 	return clientFormDetails;
+}
+
+function enIDFieldsFormatter(apiResponse, uiValues) {
+	if (_isNull(apiResponse)) {
+		return uiValues;
+	} else {
+		if (uiValues.length > 0) {
+			apiResponse?.forEach((item, index) => {
+				if (index <= uiValues.length - 1) uiValues[index].en_Id = item?.en_Id;
+			});
+		}
+		return uiValues;
+	}
 }

@@ -129,6 +129,10 @@ const CompanyDetails = ({
 								errors={errors}
 								validationSchema={{
 									required: 'Please enter the company size.',
+									min: {
+										value: 1,
+										message: `please don't enter the value less than 1`,
+									},
 								}}
 								label="Company Size"
 								name={'companySize'}

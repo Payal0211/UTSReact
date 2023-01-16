@@ -29,6 +29,8 @@ const MatchmakingModal = ({
 	const [currentExpandedCell, setCurrentExpandedCell] = useState('');
 	const [selectedRows, setSelectedRows] = useState([]);
 	const [allSelected, setAllSelected] = useState(false);
+	const [talentCost, setTalentCost] = useState(null);
+	const [talentID, setTalentID] = useState(null);
 
 	/**
 	 * @Function handleExpandRow
@@ -103,13 +105,28 @@ const MatchmakingModal = ({
 
 	const expandedCellUI = useMemo(() => {
 		const tableFunctions = {
-			talentCost: <ShowTalentCost handleClose={closeExpandedCell} />,
-			techScore: <ShowTechScore handleClose={closeExpandedCell} />,
+			talentCost: (
+				<ShowTalentCost
+					talentCost={talentCost}
+					handleClose={closeExpandedCell}
+				/>
+			),
+			techScore: (
+				<ShowTechScore
+					talentID={talentID}
+					handleClose={closeExpandedCell}
+				/>
+			),
 			versantScore: <ShowVersantScore handleClose={closeExpandedCell} />,
-			profileLog: <ShowProfileLog handleClose={closeExpandedCell} />,
+			profileLog: (
+				<ShowProfileLog
+					talentID={talentID}
+					handleClose={closeExpandedCell}
+				/>
+			),
 		};
 		return tableFunctions;
-	}, [closeExpandedCell]);
+	}, [closeExpandedCell, talentCost, talentID]);
 
 	/** Fetching the Modal Table API */
 	/**TODO():- Remove from here */
@@ -247,6 +264,8 @@ const MatchmakingModal = ({
 										? filterMatchmakingData
 										: matchmakingData?.rows
 								}
+								setTalentID={setTalentID}
+								setTalentCost={setTalentCost}
 								allSelected={allSelected}
 								toggleRowSelection={toggleRowSelection}
 								expandedRows={expandedRows}

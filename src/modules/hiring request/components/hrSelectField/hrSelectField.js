@@ -22,9 +22,20 @@ const HRSelectField = ({
 	placeholder,
 }) => {
 	const getChangeHandlerWithValue = (value, option) => {
-		setValue(name, option.id);
+		if (mode === 'multiple') {
+			setValue(
+				name,
+				option.map((item) => ({
+					skillsID: item?.id,
+					skillsName: item?.value,
+				})),
+			);
+		} else {
+			setValue(name, option.id);
+		}
 		isControlled && setControlledValue(option.id);
 	};
+
 	useEffect(() => {
 		register(name, { required: required });
 	}, [register, required, name]);

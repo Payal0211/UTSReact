@@ -11,6 +11,8 @@ const AddNewHR = () => {
 		debriefingHR: true,
 	});
 
+	const [enID, setEnID] = useState('');
+
 	return (
 		<div className={AddNewHRStyle.addNewContainer}>
 			<div className={AddNewHRStyle.addHRTitle}>{title}</div>
@@ -30,6 +32,7 @@ const AddNewHR = () => {
 								setTitle={setTitle}
 								tabFieldDisabled={tabFieldDisabled}
 								setTabFieldDisabled={setTabFieldDisabled}
+								setEnID={setEnID}
 							/>
 						),
 					},
@@ -41,6 +44,7 @@ const AddNewHR = () => {
 								setTitle={setTitle}
 								tabFieldDisabled={tabFieldDisabled}
 								setTabFieldDisabled={setTabFieldDisabled}
+								enID={enID}
 							/>
 						),
 						disabled: tabFieldDisabled.debriefingHR,

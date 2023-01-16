@@ -1,10 +1,13 @@
-import { Divider, Select } from 'antd';
+import { Divider, Select, message } from 'antd';
 import TextEditor from 'shared/components/textEditor/textEditor';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import DebriefingHRStyle from './debriefingHR.module.css';
 import AddInterviewer from '../addInterviewer/addInterviewer';
 import { useFieldArray, useForm } from 'react-hook-form';
 import HRSelectField from '../hrSelectField/hrSelectField';
+import { MasterDAO } from 'core/master/masterDAO';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { HTTPStatusCode } from 'constants/network';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -12,7 +15,13 @@ export const secondaryInterviewer = {
 	linkedin: '',
 	designation: '',
 };
-const DebriefingHR = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
+
+const DebriefingHR = ({
+	setTitle,
+	tabFieldDisabled,
+	setTabFieldDisabled,
+	enID,
+}) => {
 	const {
 		watch,
 		register,
@@ -31,17 +40,45 @@ const DebriefingHR = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 		name: 'secondaryInterviewer',
 	});
 	const [selectedItems, setSelectedItems] = useState([]);
-	const OPTIONS = [
-		'Full Stack Developer',
-		'FrontEnd Developer',
-		'Backend Developer',
-		'Wordpress Developer',
-		'Data Scientist',
-	];
-	const filteredOptions = OPTIONS.filter((o) => !selectedItems.includes(o));
+	const [skills, setSkills] = useState([]);
+	const [messageAPI, contextHolder] = message.useMessage();
+	const getSkills = useCallback(async () => {
+		const response = await MasterDAO.getSkillsRequestDAO();
+		setSkills(response && response.responseBody);
+	}, []);
 
+	const filteredOptions = skills.filter((o) => !selectedItems.includes(o));
+
+	const debriefSubmitHandler = async (d) => {
+		let debriefFormDetails = {
+			roleAndResponsibilites: d.roleAndResponsibilities,
+			requirements: d.requirements,
+			en_Id: enID,
+			skills: d.skills,
+			secondaryInterviewer: d.secondaryInterviewer,
+			interviewerFullName: d.interviewerFullName,
+			interviewerEmail: d.interviewerEmail,
+			interviewerLinkedin: d.interviewerLinkedin,
+			interviewerDesignation: d.interviewerDesignation,
+		};
+
+		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
+			debriefFormDetails,
+		);
+		if (debriefResult.statusCode === HTTPStatusCode.OK) {
+			messageAPI.open({
+				type: 'success',
+				content: 'HR Debriefing has been created successfully..',
+			});
+		}
+	};
+
+	useEffect(() => {
+		getSkills();
+	}, [getSkills]);
 	return (
 		<div className={DebriefingHRStyle.debriefingHRContainer}>
+			{contextHolder}
 			<div className={DebriefingHRStyle.partOne}>
 				<div className={DebriefingHRStyle.hrFieldLeftPane}>
 					<h3>Job Description</h3>
@@ -77,16 +114,14 @@ const DebriefingHR = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 								label={'Required Skills'}
 								placeholder="Type skills"
 								onChange={setSelectedItems}
-								options={filteredOptions.map((item) => ({
-									value: item,
-									id: item,
-								}))}
+								options={filteredOptions}
 								name="skills"
-								// isError={errors['skills'] && errors['skills']}
-								// required
-								// errorMsg={'Please enter the skills.'}
+								isError={errors['skills'] && errors['skills']}
+								required
+								errorMsg={'Please enter the skills.'}
 							/>
 						</div>
+
 						{/* <div className={DebriefingHRStyle.mb50}>
 							<label
 								style={{
@@ -114,6 +149,7 @@ const DebriefingHR = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 					</div>
 				</div>
 			</div>
+
 			<Divider />
 			<AddInterviewer
 				errors={errors}
@@ -127,18 +163,13 @@ const DebriefingHR = ({ setTitle, tabFieldDisabled, setTabFieldDisabled }) => {
 				<button
 					type="button"
 					className={DebriefingHRStyle.btn}>
-					Save as Draft
-				</button>
-				<button
-					type="button"
-					className={DebriefingHRStyle.btn}>
-					Preview HR
+					Need More Info
 				</button>
 				<button
 					type="button"
 					className={DebriefingHRStyle.btnPrimary}
-					onClick={handleSubmit((d) => console.log(d))}>
-					Next Page
+					onClick={handleSubmit(debriefSubmitHandler)}>
+					Create
 				</button>
 			</div>
 		</div>

@@ -7,6 +7,8 @@ import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDownLight.svg';
 
 const MatchMakingTable = ({
 	matchMakingData,
+	setTalentCost,
+	setTalentID,
 	allSelected,
 	toggleRowSelection,
 	expandedRows,
@@ -24,6 +26,8 @@ const MatchMakingTable = ({
 			<tbody>
 				{matchMakingData.map((user) => (
 					<TrAPIData
+						setTalentCost={setTalentCost}
+						setTalentID={setTalentID}
 						key={user.id}
 						user={user}
 						expandedRows={expandedRows}
@@ -68,6 +72,8 @@ const Thead = ({ allSelected, toggleRowSelection }) => {
 
 const TrAPIData = ({
 	key,
+	setTalentCost,
+	setTalentID,
 	user,
 	expandedRows,
 	toggleRowSelection,
@@ -111,13 +117,14 @@ const TrAPIData = ({
 				<td
 					className={MatchMakingStyle.td}
 					onClick={(e) => {
-						return handleExpandRow(
+						handleExpandRow(
 							e,
 							user.id,
 							`talentCost_${user.id}`,
 							'talentCost',
 							user.talentCost,
 						);
+						setTalentCost(user.talentCost.split('.')[0]);
 					}}>
 					{expandedIconMemo.showAll}
 				</td>
@@ -129,7 +136,9 @@ const TrAPIData = ({
 					/>
 				</td>
 				<td
-					className={`${MatchMakingStyle.td} ${MatchMakingStyle.ellipsis}  ${MatchMakingStyle.maxWidth164}`}>
+					className={`${MatchMakingStyle.td}
+								${MatchMakingStyle.ellipsis}
+								 ${MatchMakingStyle.maxWidth164}`}>
 					<Tooltip
 						placement="bottom"
 						title={user.name}>
@@ -151,6 +160,7 @@ const TrAPIData = ({
 							'talentCost',
 							user.talentCost,
 						);
+						setTalentCost(user.talentCost.split('.')[0]);
 					}}>
 					<span style={{ fontWeight: 600 }}>
 						{user.talentCost.split('.')[0]}
@@ -188,13 +198,14 @@ const TrAPIData = ({
 					}
 					id={`techScore_${user.id}`}
 					onClick={(e) => {
-						return handleExpandRow(
+						handleExpandRow(
 							e,
 							user.id,
 							`techScore_${user.id}`,
 							'techScore',
 							user.techScore,
 						);
+						setTalentID(user.id);
 					}}>
 					{user.techScore}
 					{expandedIconMemo.techScore}
@@ -226,13 +237,14 @@ const TrAPIData = ({
 					}
 					id={`profileLog_${user.id}`}
 					onClick={(e) => {
-						return handleExpandRow(
+						handleExpandRow(
 							e,
 							user.id,
 							`profileLog_${user.id}`,
 							'profileLog',
 							user.profileLog,
 						);
+						setTalentID(user.id);
 					}}>
 					View
 					{expandedIconMemo.profileLog}

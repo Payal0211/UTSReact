@@ -1,33 +1,20 @@
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import './talentCost.css';
+import { useCallback, useState, useEffect } from 'react';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
-export const ShowTalentCost = ({ handleClose }) => {
-	const talentCost = [
-		{
-			id: 'talentCost1',
-			cost: '2,48,450',
-			currency: 'INR',
-			currencyIcon: '(₹)',
-		},
-		{
-			id: 'talentCost2',
-			cost: '2,48,450',
-			currency: 'AUD',
-			currencyIcon: '($)',
-		},
-		{
-			id: 'talentCost3',
-			cost: '2,48,450',
-			currency: 'EUR',
-			currencyIcon: '(€)',
-		},
-		{
-			id: 'talentCost4',
-			cost: '2,48,450',
-			currency: 'GBP',
-			currencyIcon: '(£)',
-		},
-	];
+export const ShowTalentCost = ({ talentCost, handleClose }) => {
+	const [talentList, setTalentList] = useState([]);
+	const getTalentCost = useCallback(async () => {
+		const response = await hiringRequestDAO.getTalentCostConversionDAO(
+			talentCost?.split(' ')[1],
+		);
+		setTalentList(response && response?.responseBody?.details);
+	}, [talentCost]);
+
+	useEffect(() => {
+		getTalentCost();
+	}, [getTalentCost]);
 	return (
 		<div
 			style={{
@@ -47,7 +34,7 @@ export const ShowTalentCost = ({ handleClose }) => {
 					gap: '24px',
 					alignItems: 'center',
 				}}>
-				{talentCost?.map((item) => {
+				{talentList?.map((item) => {
 					return (
 						<div
 							key={item.id}

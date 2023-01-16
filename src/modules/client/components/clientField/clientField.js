@@ -19,6 +19,7 @@ import CompanyDetails from '../companyDetails/companyDetails';
 import { _isNull } from 'shared/utils/basic_utils';
 
 export const secondaryClient = {
+	en_Id: '',
 	fullName: '',
 	emailID: '',
 	countryCode: '',
@@ -54,6 +55,8 @@ const ClientField = ({
 		},
 	});
 	const [isLoading, setIsLoading] = useState(false);
+	const [type, setType] = useState('');
+	const [addClientResponse, setAddClientResponse] = useState(null);
 	const [addClientResponseID, setAddClientResponseID] = useState(0);
 	const [controlledLegalCountryCode, setControlledLegalCountryCode] =
 		useState('+91');
@@ -86,6 +89,7 @@ const ClientField = ({
 	const [flagAndCode, setFlagAndCode] = useState([]);
 
 	const SameASPrimaryPOCHandler = useCallback((e) => {
+		// e.preventDefault();
 		setSameAsPrimaryPOC(e.target.checked);
 	}, []);
 
@@ -105,30 +109,45 @@ const ClientField = ({
 	/** -------- Masters API Ends here-------------- */
 	/** Submit the client form Starts */
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
-		setIsLoading(true);
+		// setIsLoading(true);
 		let clientFormDetails = clientFormDataFormatter(
 			d,
 			type,
 			addClientResponseID,
 			watch,
+			addClientResponse,
 		);
-		console.log(clientFormDetails);
+		console.log(clientFormDetails, '-clientFormDetails');
 		if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(watch('companyName'))) {
 				return setError('companyName', {
 					type: 'emptyCompanyName',
 					message: 'please enter the company name.',
 				});
+			} else if (_isNull(watch('primaryClientName'))) {
+				return setError('primaryClientName', {
+					type: 'emptyprimaryClientName',
+					message: 'please enter the client name.',
+				});
+			} else {
+				setError('primaryClientName', {
+					type: 'emptyprimaryClientName',
+					message: '',
+				});
 			}
+		} else if (type !== SubmitType.SAVE_AS_DRAFT) {
+			setType(SubmitType.SAVE_AS_DRAFT);
 		}
 		const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
+
 		if (addClientResult.statusCode === HTTPStatusCode.OK) {
+			setAddClientResponse(addClientResult?.responseBody?.details);
 			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Add New Hiring Requests');
 			type !== SubmitType.SAVE_AS_DRAFT &&
 				setAddClientResponseID(
-					addClientResult?.responseBody?.details?.ContactID,
+					addClientResult?.responseBody?.details?.contactId,
 				);
-			setIsLoading(false);
+
 			type !== SubmitType.SAVE_AS_DRAFT &&
 				setTabFieldDisabled({
 					...tabFieldDisabled,
@@ -136,15 +155,17 @@ const ClientField = ({
 				});
 			type !== SubmitType.SAVE_AS_DRAFT &&
 				setClientDetails(addClientResult?.responseBody?.details);
+
 			type === SubmitType.SAVE_AS_DRAFT &&
 				messageAPI.open({
 					type: 'success',
 					content: 'Client details has been saved to draft.',
 				});
 		}
+		setIsLoading(false);
 	};
 	/** Submit the client form Ends */
-
+	// console.log(addClientResponse, '--addClientResponse');
 	useEffect(() => {
 		getCodeAndFlag();
 	}, []);
@@ -157,9 +178,11 @@ const ClientField = ({
 			setValue('legalClientDesignation', watchFields[3]);
 			setValue('legalCompanyFullName', watchFields[4]);
 			setValue('legalCompanyAddress', watchFields[5]);
+			//setValue('legalCompanyAddress', watchFields[6]);
 			setControlledLegalCountryCode(watchFields[6]);
 		}
-	}, [isSameAsPrimaryPOC, setValue, watchFields, getValues]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isSameAsPrimaryPOC]);
 
 	return (
 		<div className={ClientFieldStyle.tabsBody}>
@@ -217,7 +240,7 @@ const ClientField = ({
 									name="legalClientFullName"
 									type={InputType.TEXT}
 									placeholder="Enter full name"
-									required
+									// required
 									disabled={isSameAsPrimaryPOC}
 								/>
 							</div>
@@ -238,7 +261,7 @@ const ClientField = ({
 									type={InputType.EMAIL}
 									placeholder="Enter Email ID"
 									disabled={isSameAsPrimaryPOC}
-									required
+									// required
 								/>
 							</div>
 						</div>
@@ -299,7 +322,7 @@ const ClientField = ({
 									type={InputType.TEXT}
 									placeholder="Enter legal name"
 									disabled={isSameAsPrimaryPOC}
-									required
+									// required
 								/>
 							</div>
 
@@ -315,7 +338,7 @@ const ClientField = ({
 									type={InputType.TEXT}
 									placeholder="Enter legal address"
 									disabled={isSameAsPrimaryPOC}
-									required
+									// required
 								/>
 							</div>
 						</div>
@@ -333,7 +356,10 @@ const ClientField = ({
 			/>
 			<div className={ClientFieldStyle.formPanelAction}>
 				<button
-					disabled={isLoading}
+					style={{
+						cursor: type === SubmitType.SAVE_AS_DRAFT ? 'no-drop' : 'pointer',
+					}}
+					disabled={type === SubmitType.SAVE_AS_DRAFT}
 					onClick={clientSubmitHandler}
 					className={ClientFieldStyle.btn}>
 					Save as Draft
