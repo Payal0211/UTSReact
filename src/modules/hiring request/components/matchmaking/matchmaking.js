@@ -207,6 +207,7 @@ const MatchmakingModal = ({
 				setCurrentExpandedCell('');
 				setSelectedRows([]);
 				setAllSelected(false);
+				setListOfTalents([]);
 			}
 		};
 	}, [matchmakingModal]);
