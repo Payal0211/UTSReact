@@ -33,33 +33,34 @@ export const secondaryInterviewer = {
 const HRFields = ({
 	setTitle,
 	clientDetail,
+	setEnID,
 	tabFieldDisabled,
 	setTabFieldDisabled,
 }) => {
 	const inputRef = useRef(null);
-	const mastersKey = useMemo(() => {
+	/* const mastersKey = useMemo(() => {
 		return {
 			availability: MastersKey.AVAILABILITY,
 			timeZonePref: MastersKey.TIMEZONE,
 			talentRole: MastersKey.TALENTROLE,
 			salesPerson: MastersKey.SALESPERSON,
 		};
-	}, []);
+	}, []); */
 	// const { returnState } = useMastersAPI(mastersKey);
-
 	// const { availability, timeZonePref, talentRole, salesPerson } = returnState;
 	const [availability, setAvailability] = useState([]);
 	const [timeZonePref, setTimeZonePref] = useState([]);
 	const [talentRole, setTalentRole] = useState([]);
 	const [salesPerson, setSalesPerson] = useState([]);
-
 	const [isLoading, setIsLoading] = useState(false);
 	const [items, setItems] = useState(['3 months', '6 months', '9 months']);
-
 	const [name, setName] = useState('');
 	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
 	const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
+	const [addHRResponse, setAddHRResponse] = useState(null);
+	const [type, setType] = useState('');
+
 	const {
 		watch,
 		register,
@@ -88,12 +89,12 @@ const HRFields = ({
 	}, []);
 	const getTalentRole = useCallback(async () => {
 		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
-		// console.log('--talentRole--', talentRole);
+
 		setTalentRole(talentRole && talentRole.responseBody);
 	}, []);
 	const getSalesPerson = useCallback(async () => {
 		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
-		// console.log('--salesPersonResponse--', salesPersonResponse);
+
 		setSalesPerson(
 			salesPersonResponse && salesPersonResponse.responseBody.details,
 		);
@@ -116,6 +117,16 @@ const HRFields = ({
 		[items, name],
 	);
 
+	/** AutoFIll HR Title based on HR Role */
+	const watchHiringRequestRole = watch('role');
+	useEffect(() => {
+		setValue(
+			'hrTitle',
+			talentRole.map(
+				(item) => item.id === watchHiringRequestRole && item?.value,
+			),
+		);
+	}, [watchHiringRequestRole, setValue, talentRole]);
 	/** To check Duplicate email exists Start */
 
 	const watchClientName = watch('clientName');
@@ -160,17 +171,17 @@ const HRFields = ({
 		let urlSplitter = `${getLocation.pathname.split('/')[2]}`;
 		setPathName(urlSplitter);
 		pathName === ClientHRURL.ADD_NEW_CLIENT &&
-			setValue('clientName', clientDetail?.Email);
-
+			setValue('clientName', clientDetail?.clientemail);
 		pathName === ClientHRURL.ADD_NEW_CLIENT &&
-			setValue('companyName', clientDetail?.Name);
+			setValue('companyName', clientDetail?.companyname);
 	}, [
 		getLocation.pathname,
-		clientDetail?.Email,
-		clientDetail?.Name,
+		clientDetail?.clientemail,
+		clientDetail?.companyname,
 		pathName,
 		setValue,
 	]);
+
 	useEffect(() => {
 		getTimeZonePreference();
 		getAvailability();
@@ -182,7 +193,13 @@ const HRFields = ({
 	const [messageAPI, contextHolder] = message.useMessage();
 
 	const hrSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
-		let hrFormDetails = hrUtils.hrFormDataFormatter(d, type, watch);
+		let hrFormDetails = hrUtils.hrFormDataFormatter(
+			d,
+			type,
+			watch,
+			clientDetail?.contactId,
+			addHRResponse,
+		);
 
 		if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(watch('clientName'))) {
@@ -191,9 +208,14 @@ const HRFields = ({
 					message: 'Please enter the client name.',
 				});
 			}
+		} else if (type !== SubmitType.SAVE_AS_DRAFT) {
+			setType(SubmitType.SUBMIT);
 		}
 		const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
+
 		if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+			setAddHRResponse(addHRRequest?.responseBody?.details);
+			setEnID(addHRRequest?.responseBody?.details?.en_Id);
 			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
 			type !== SubmitType.SAVE_AS_DRAFT &&
 				setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
@@ -534,6 +556,10 @@ const HRFields = ({
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the number of talents.',
+									min: {
+										value: 1,
+										message: `please don't enter the value less than 1`,
+									},
 								}}
 								label="How many talents are needed."
 								name="talentsNumber"
@@ -552,10 +578,10 @@ const HRFields = ({
 									label={'How soon can they join?'}
 									defaultValue="Select availability"
 									options={availability}
-									name="availability"
-									// isError={errors['availability'] && errors['availability']}
-									// required
-									// errorMsg={'Please select the availability.'}
+									name="howSoon"
+									isError={errors['howSoon'] && errors['howSoon']}
+									required
+									errorMsg={'Please select the availability.'}
 								/>
 							</div>
 						</div>
@@ -612,6 +638,8 @@ const HRFields = ({
 
 			<div className={HRFieldStyle.formPanelAction}>
 				<button
+					style={{ cursor: type === SubmitType.SUBMIT ? 'no-drop' : 'pointer' }}
+					disabled={type === SubmitType.SUBMIT}
 					className={HRFieldStyle.btn}
 					onClick={hrSubmitHandler}>
 					Save as Draft

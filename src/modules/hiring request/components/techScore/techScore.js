@@ -1,6 +1,19 @@
+import { useCallback, useEffect, useState } from 'react';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import TechScoreStyle from './techScoreStyle.module.css';
-export const ShowTechScore = ({ handleClose }) => {
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+export const ShowTechScore = ({ talentID, handleClose }) => {
+	const [techDetails, setTechDetails] = useState(null);
+
+	const getTechScore = useCallback(async () => {
+		const response = await hiringRequestDAO.getTalentTechScoreDAO(talentID);
+		setTechDetails(response && response?.responseBody?.details);
+	}, [talentID]);
+
+	useEffect(() => {
+		getTechScore();
+	}, [getTechScore]);
+
 	return (
 		<div
 			style={{
@@ -47,7 +60,7 @@ export const ShowTechScore = ({ handleClose }) => {
 								lineHeight: '20px',
 								textDecoration: 'underline',
 							}}>
-							Velma Balaji Reddy
+							{techDetails?.name}
 						</span>
 					</div>
 					<div
@@ -71,7 +84,7 @@ export const ShowTechScore = ({ handleClose }) => {
 								fontSize: '16px',
 								lineHeight: '20px',
 							}}>
-							04
+							{techDetails?.rows[0]?.attempts}
 						</span>
 					</div>
 				</div>
@@ -94,34 +107,17 @@ export const ShowTechScore = ({ handleClose }) => {
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td className={TechScoreStyle.td}>CS Codility</td>
-							<td className={TechScoreStyle.td}>Pass</td>
-							<td className={TechScoreStyle.td}>60/100</td>
-							<td className={TechScoreStyle.td}>2</td>
-							<td className={TechScoreStyle.td}>Download</td>
-						</tr>
-						<tr>
-							<td className={TechScoreStyle.td}>Front End Developer</td>
-							<td className={TechScoreStyle.td}>Pass</td>
-							<td className={TechScoreStyle.td}>60/100</td>
-							<td className={TechScoreStyle.td}>2</td>
-							<td className={TechScoreStyle.td}>Download</td>
-						</tr>
-						<tr>
-							<td className={TechScoreStyle.td}>Javascript Codility</td>
-							<td className={TechScoreStyle.td}>Pass</td>
-							<td className={TechScoreStyle.td}>60/100</td>
-							<td className={TechScoreStyle.td}>2</td>
-							<td className={TechScoreStyle.td}>Download</td>
-						</tr>
-						<tr>
-							<td className={TechScoreStyle.td}>Search Engine Optimization</td>
-							<td className={TechScoreStyle.td}>Pass</td>
-							<td className={TechScoreStyle.td}>60/100</td>
-							<td className={TechScoreStyle.td}>2</td>
-							<td className={TechScoreStyle.td}>Download</td>
-						</tr>
+						{techDetails?.rows?.map((item, id) => {
+							return (
+								<tr key={id}>
+									<td className={TechScoreStyle.td}>{item?.skillTest}</td>
+									<td className={TechScoreStyle.td}>{item?.result}</td>
+									<td className={TechScoreStyle.td}>{item?.score}/100</td>
+									<td className={TechScoreStyle.td}>{item?.attempts}</td>
+									<td className={TechScoreStyle.td}>Download</td>
+								</tr>
+							);
+						})}
 					</tbody>
 					<tfoot>
 						<tr>
@@ -131,11 +127,13 @@ export const ShowTechScore = ({ handleClose }) => {
 							</td>
 							<td
 								className={`${TechScoreStyle.td} ${TechScoreStyle.tfooterTD}`}>
-								63.5%
+								{techDetails?.percentage}
 							</td>
 							<td
 								className={`${TechScoreStyle.td} ${TechScoreStyle.tfooterTD}`}>
-								254/400
+								{techDetails?.totalGained}
+								{techDetails && '/'}
+								{techDetails?.total}
 							</td>
 						</tr>
 					</tfoot>

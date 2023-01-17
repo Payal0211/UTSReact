@@ -1,4 +1,4 @@
-import { Button, Modal, Pagination, Skeleton } from 'antd';
+import { Button, Modal, Pagination, Skeleton, message } from 'antd';
 import axios from 'axios';
 import { InputType } from 'constants/application';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -11,6 +11,7 @@ import { ShowVersantScore } from '../versantScore/versantScore';
 import { ShowProfileLog } from '../profileLog/profileLog';
 import MatchMakingTable from './matchmakingTable';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { HTTPStatusCode } from 'constants/network';
 
 const MatchmakingModal = ({
 	hrID,
@@ -24,12 +25,15 @@ const MatchmakingModal = ({
 	const [filterMatchmakingData, setFilterMatchmakingData] = useState([]);
 	/** State variable to keep track of all the expanded rows*/
 	const [expandedRows, setExpandedRows] = useState([]);
-
 	const [tableFunctionData, setTableFunctionData] = useState('');
 	const [currentExpandedCell, setCurrentExpandedCell] = useState('');
 	const [selectedRows, setSelectedRows] = useState([]);
 	const [allSelected, setAllSelected] = useState(false);
-
+	const [talentCost, setTalentCost] = useState(null);
+	const [talentID, setTalentID] = useState(null);
+	const [listOfTalents, setListOfTalents] = useState([]);
+	const [messageAPI, contextHolder] = message.useMessage();
+	const [isLoading, setIsLoading] = useState(false);
 	/**
 	 * @Function handleExpandRow
 	 * @param {*} event
@@ -77,23 +81,55 @@ const MatchmakingModal = ({
 				if (allSelected) {
 					setAllSelected(false);
 					setSelectedRows([]);
+					setListOfTalents([]);
 				} else {
 					setAllSelected(true);
-					setSelectedRows(matchmakingData.rows?.map((a) => a.id));
+					filterMatchmakingData.length > 0
+						? setSelectedRows(filterMatchmakingData?.map((a) => a.id))
+						: setSelectedRows(matchmakingData.rows?.map((a) => a.id));
+					filterMatchmakingData.length > 0
+						? setListOfTalents(
+								filterMatchmakingData?.map((a) => ({
+									talentId: a.id,
+									amount: parseInt(a?.talentCost.split(' ')[1]),
+								})),
+						  )
+						: setListOfTalents(
+								matchmakingData?.rows?.map((a) => ({
+									talentId: a.id,
+									amount: parseInt(a?.talentCost.split(' ')[1]),
+								})),
+						  );
 				}
 			} else {
+				let tempObj = [];
 				let currentSelectedRows = [...selectedRows];
+
 				const isRowSelected = selectedRows.includes(id);
 
-				if (isRowSelected && id !== 'selectAll')
+				if (isRowSelected && id !== 'selectAll') {
 					currentSelectedRows = currentSelectedRows.filter(
 						(item) => item !== id,
 					);
-				else currentSelectedRows = currentSelectedRows.concat(id);
+				} else currentSelectedRows = currentSelectedRows.concat(id);
+
+				for (let i = 0; i < currentSelectedRows.length; i++) {
+					for (let j = 0; j < matchmakingData?.rows?.length; j++) {
+						if (currentSelectedRows[i] === matchmakingData?.rows[j]?.id) {
+							tempObj.push({
+								talentId: currentSelectedRows[i],
+								amount: parseInt(
+									matchmakingData?.rows[j]?.talentCost.split(' ')[1],
+								),
+							});
+						}
+					}
+				}
 				setSelectedRows(currentSelectedRows);
+				setListOfTalents(tempObj);
 			}
 		},
-		[allSelected, selectedRows, matchmakingData],
+		[allSelected, filterMatchmakingData, matchmakingData.rows, selectedRows],
 	);
 
 	const closeExpandedCell = useCallback(() => {
@@ -103,13 +139,28 @@ const MatchmakingModal = ({
 
 	const expandedCellUI = useMemo(() => {
 		const tableFunctions = {
-			talentCost: <ShowTalentCost handleClose={closeExpandedCell} />,
-			techScore: <ShowTechScore handleClose={closeExpandedCell} />,
+			talentCost: (
+				<ShowTalentCost
+					talentCost={talentCost}
+					handleClose={closeExpandedCell}
+				/>
+			),
+			techScore: (
+				<ShowTechScore
+					talentID={talentID}
+					handleClose={closeExpandedCell}
+				/>
+			),
 			versantScore: <ShowVersantScore handleClose={closeExpandedCell} />,
-			profileLog: <ShowProfileLog handleClose={closeExpandedCell} />,
+			profileLog: (
+				<ShowProfileLog
+					talentID={talentID}
+					handleClose={closeExpandedCell}
+				/>
+			),
 		};
 		return tableFunctions;
-	}, [closeExpandedCell]);
+	}, [closeExpandedCell, talentCost, talentID]);
 
 	/** Fetching the Modal Table API */
 	/**TODO():- Remove from here */
@@ -123,6 +174,30 @@ const MatchmakingModal = ({
 		setMatchmakingData(response?.responseBody.details);
 	}, [hrID]);
 
+	const getTalentPriorities = useCallback(async () => {
+		setIsLoading(true);
+		const talentPrioritiesObj = {
+			hrId: parseInt(hrID),
+			listOfTalents: listOfTalents,
+		};
+		const response = await hiringRequestDAO.setTalentPrioritiesDAO(
+			talentPrioritiesObj,
+		);
+
+		if (response.statusCode === HTTPStatusCode.OK) {
+			messageAPI.open({
+				type: 'success',
+				content: response?.responseBody?.message,
+			});
+			setIsLoading(false);
+		} else {
+			messageAPI.open({
+				type: 'error',
+				content: 'Something went wrong.',
+			});
+			setIsLoading(false);
+		}
+	}, [hrID, listOfTalents, messageAPI]);
 	/** Disposing the Modal State */
 	useEffect(() => {
 		return () => {
@@ -139,6 +214,7 @@ const MatchmakingModal = ({
 	return (
 		<>
 			<Button onClick={() => fetchMatchmakingData()}>Matchmaking </Button>
+			{contextHolder}
 			<Modal
 				transitionName=""
 				centered
@@ -247,6 +323,8 @@ const MatchmakingModal = ({
 										? filterMatchmakingData
 										: matchmakingData?.rows
 								}
+								setTalentID={setTalentID}
+								setTalentCost={setTalentCost}
 								allSelected={allSelected}
 								toggleRowSelection={toggleRowSelection}
 								expandedRows={expandedRows}
@@ -263,6 +341,11 @@ const MatchmakingModal = ({
 
 					<div className={MatchMakingStyle.formPanelAction}>
 						<button
+							disabled={listOfTalents.length === 0}
+							style={{
+								cursor: listOfTalents.length === 0 ? 'no-drop' : 'pointer',
+							}}
+							onClick={getTalentPriorities}
 							type="button"
 							className={MatchMakingStyle.btnPrimary}>
 							Select Talent

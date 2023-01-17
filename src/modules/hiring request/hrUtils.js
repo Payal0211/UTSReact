@@ -53,8 +53,10 @@ export const hrUtils = {
 			return { tempdata, index };
 		}
 	},
-	hrFormDataFormatter(d, draft, watch) {
+	hrFormDataFormatter(d, draft, watch, contactID, addHrResponse) {
 		const hrFormDetails = {
+			en_Id: _isNull(addHrResponse) ? '' : addHrResponse.en_Id,
+			contactId: _isNull(contactID) ? 0 : contactID,
 			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 			clientName:
 				draft === SubmitType.SAVE_AS_DRAFT ? watch('clientName') : d.clientName,
@@ -113,11 +115,11 @@ export const hrUtils = {
 			NRMargin:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('NRMargin'))
-						? null
-						: watch('NRMargin')
+						? 0
+						: parseInt(watch('NRMargin'))
 					: _isNull(d.NRMargin)
-					? null
-					: d.NRMargin,
+					? 0
+					: parseInt(d.NRMargin),
 			salesPerson:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('salesPerson'))
@@ -134,14 +136,14 @@ export const hrUtils = {
 					: _isNull(d.contractDuration)
 					? null
 					: d.contractDuration,
-			availability:
+			howSoon:
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('availability'))
+					? _isNull(watch('howSoon'))
 						? null
-						: watch('availability')
-					: _isNull(d.availability)
+						: watch('howSoon').toString()
+					: _isNull(d.howSoon)
 					? null
-					: d.availability,
+					: d.howSoon.toString(),
 			years:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('years'))
@@ -170,10 +172,10 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('talentsNumber'))
 						? 0
-						: watch('talentsNumber')
+						: parseInt(watch('talentsNumber'))
 					: _isNull(d.talentsNumber)
 					? 0
-					: d.talentsNumber,
+					: parseInt(d.talentsNumber),
 			dealID:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('dealID'))

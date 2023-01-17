@@ -22,12 +22,15 @@
     border: 1px solid #CECCCC;
     border-radius: 8px;
     padding: 12px 24px;
+    width: 260px;
 }
 .attemptsContainer{
     border: 1px solid #CECCCC;
         border-radius: 8px;
         padding: 12px 24px;
-            /* margin-left: -7%, */
+       
+            width: 260px;
+           
 }
 
 .label{
@@ -39,7 +42,7 @@
     color: var(--uplers-black);
     font-size: 16px;
     line-height: 20px;
-    text-decoration: underline;
+    /* text-decoration: underline; */
 }
 .profileDataContainer{
     display: flex;
@@ -48,6 +51,7 @@
     width: 93%;
     margin: auto;
     padding: 16px 5px 24px;
+   
 }
 .stages{
     text-align: center;
@@ -108,4 +112,76 @@
     padding: 14px 4px 14px 24px;
     font-weight: 600;
     font-size: 22px;
+}
+.matchmakingTable {
+    cursor: pointer;
+    border-collapse: collapse;
+    width: 92%;
+    margin :0 auto;
+max-height: 200px !important;
+    overflow-y: scroll;
+    padding-bottom: 10px;
+    position: relative;
+   
+}
+.table{
+    
+    cursor: pointer;
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 8px;
+       
+}
+
+.td {
+    padding: 17px 12px;
+    text-align: start;
+
+    border-bottom: 1px solid var(--uplers-grey) !important;
+}
+
+tr .td:first-child {
+    padding-left: 20px;
+}
+
+.ellipsis {
+    white-space: nowrap;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.maxWidth164 {
+    max-width: 164px;
+}
+
+.maxWidth134 {
+    max-width: 134px;
+}
+
+.maxWidth170 {
+    max-width: 170px;
+}
+
+.ml5 {
+    width: 10px;
+    margin-left: 5px;
+}
+
+.th {
+    z-index: 1;
+    padding: 24px 12px;
+    text-align: start;
+    color: var(--uplers-grey);
+    font-size: 14px !important;
+    font-weight: 600;
+    line-height: 17px !important;
+    color: var(--uplers-black);
+    position: sticky;
+    top: 0;
+    border-bottom: 1px dashed var(--uplers-grey);
+}
+
+tr th:first-child {
+    padding-left: 20px;
 }

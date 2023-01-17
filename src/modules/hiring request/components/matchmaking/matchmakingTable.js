@@ -1,12 +1,14 @@
 import { Checkbox, Tooltip } from 'antd';
 import MatchMakingStyle from './matchmaking.module.css';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { ReactComponent as ArrowRightSVG } from 'assets/svg/arrowRightLight.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDownLight.svg';
 
 const MatchMakingTable = ({
 	matchMakingData,
+	setTalentCost,
+	setTalentID,
 	allSelected,
 	toggleRowSelection,
 	expandedRows,
@@ -15,15 +17,21 @@ const MatchMakingTable = ({
 	currentExpandedCell,
 	componentToRender,
 }) => {
+	const [disableAll, setDisableAll] = useState(false);
 	return (
 		<table className={MatchMakingStyle.matchmakingTable}>
 			<Thead
+				disableAll={disableAll}
+				setDisableAll={setDisableAll}
 				allSelected={allSelected}
 				toggleRowSelection={toggleRowSelection}
 			/>
 			<tbody>
 				{matchMakingData.map((user) => (
 					<TrAPIData
+						disableAll={disableAll}
+						setTalentCost={setTalentCost}
+						setTalentID={setTalentID}
 						key={user.id}
 						user={user}
 						expandedRows={expandedRows}
@@ -41,7 +49,12 @@ const MatchMakingTable = ({
 
 export default MatchMakingTable;
 
-const Thead = ({ allSelected, toggleRowSelection }) => {
+const Thead = ({
+	allSelected,
+	toggleRowSelection,
+	setDisableAll,
+	disableAll,
+}) => {
 	return (
 		<thead className={MatchMakingStyle.thead}>
 			<tr>
@@ -50,7 +63,10 @@ const Thead = ({ allSelected, toggleRowSelection }) => {
 					<Checkbox
 						id="selectAll"
 						checked={allSelected}
-						onClick={() => toggleRowSelection('selectAll')}
+						onClick={() => {
+							toggleRowSelection('selectAll');
+							setDisableAll(!disableAll);
+						}}
 					/>
 				</th>
 				<th className={MatchMakingStyle.th}>Name</th>
@@ -68,8 +84,11 @@ const Thead = ({ allSelected, toggleRowSelection }) => {
 
 const TrAPIData = ({
 	key,
+	setTalentCost,
+	setTalentID,
 	user,
 	expandedRows,
+	disableAll,
 	toggleRowSelection,
 	handleExpandRow,
 	selectedRows,
@@ -111,25 +130,29 @@ const TrAPIData = ({
 				<td
 					className={MatchMakingStyle.td}
 					onClick={(e) => {
-						return handleExpandRow(
+						handleExpandRow(
 							e,
 							user.id,
 							`talentCost_${user.id}`,
 							'talentCost',
 							user.talentCost,
 						);
+						setTalentCost(user.talentCost.split('.')[0]);
 					}}>
 					{expandedIconMemo.showAll}
 				</td>
 				<td className={MatchMakingStyle.td}>
 					<Checkbox
+						disabled={disableAll}
 						id={user.id}
 						checked={selectedRows.includes(user.id)}
 						onClick={() => toggleRowSelection(user.id)}
 					/>
 				</td>
 				<td
-					className={`${MatchMakingStyle.td} ${MatchMakingStyle.ellipsis}  ${MatchMakingStyle.maxWidth164}`}>
+					className={`${MatchMakingStyle.td}
+								${MatchMakingStyle.ellipsis}
+								 ${MatchMakingStyle.maxWidth164}`}>
 					<Tooltip
 						placement="bottom"
 						title={user.name}>
@@ -151,6 +174,7 @@ const TrAPIData = ({
 							'talentCost',
 							user.talentCost,
 						);
+						setTalentCost(user.talentCost.split('.')[0]);
 					}}>
 					<span style={{ fontWeight: 600 }}>
 						{user.talentCost.split('.')[0]}
@@ -188,13 +212,14 @@ const TrAPIData = ({
 					}
 					id={`techScore_${user.id}`}
 					onClick={(e) => {
-						return handleExpandRow(
+						handleExpandRow(
 							e,
 							user.id,
 							`techScore_${user.id}`,
 							'techScore',
 							user.techScore,
 						);
+						setTalentID(user.id);
 					}}>
 					{user.techScore}
 					{expandedIconMemo.techScore}
@@ -226,13 +251,14 @@ const TrAPIData = ({
 					}
 					id={`profileLog_${user.id}`}
 					onClick={(e) => {
-						return handleExpandRow(
+						handleExpandRow(
 							e,
 							user.id,
 							`profileLog_${user.id}`,
 							'profileLog',
 							user.profileLog,
 						);
+						setTalentID(user.id);
 					}}>
 					View
 					{expandedIconMemo.profileLog}

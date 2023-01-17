@@ -11,12 +11,16 @@ import { errorDebug } from 'shared/utils/error_debug_utils';
 export const HiringRequestAPI = {
 	getPaginatedHiringRequest: async function (hrData) {
 		let httpService = new HttpServices();
-		httpService.URL = `http://3.218.6.134:9082/ViewAllHR/GetAllHiringRequests?
-							Pagesize=${hrData.pageSize}&
-							Pagenum=${hrData.pageNum}&
-							Sortdatafield=CreatedDateTime&
-							Sortorder=desc
-							`;
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.GET_ALL_HIRING_REQUEST +
+			`?
+				Pagesize=${hrData.pageSize}&
+				Pagenum=${hrData.pageNum}&
+				Sortdatafield=CreatedDateTime&
+				Sortorder=desc
+			`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -28,7 +32,10 @@ export const HiringRequestAPI = {
 	},
 	getAllHiringRequest: async function () {
 		let httpService = new HttpServices();
-		httpService.URL = 'http://3.218.6.134:9082/ViewAllHR/GetAllHiringRequests';
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.GET_ALL_HIRING_REQUEST;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -40,7 +47,11 @@ export const HiringRequestAPI = {
 	},
 	getHRDetailsRequest: async function (hrid) {
 		let httpService = new HttpServices();
-		httpService.URL = `http://3.218.6.134:9082/ViewAllHR/GetHRDetail?id=${hrid}`;
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.GET_HR_DETAIL +
+			`?id=${hrid}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -52,7 +63,10 @@ export const HiringRequestAPI = {
 	},
 	sendHREditorRequest: async function (editorDetails) {
 		let httpService = new HttpServices();
-		httpService.URL = `http://3.218.6.134:9082/ViewAllHR/SaveHRNotes`;
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.SAVE_HR_NOTES;
 		httpService.dataToSend = editorDetails;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -151,6 +165,97 @@ export const HiringRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.getMatchmakingRequest');
+		}
+	},
+	getTalentCostConversionRequest: async (talentAmount) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.GET_TALENT_COST_CONVERSION +
+			`?amount=${talentAmount}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'HiringRequestAPI.getTalentCostConversionRequest',
+			);
+		}
+	},
+	getTalentTechScoreCardRequest: async (talentID) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.GET_TALENT_TECH_SCORE_CARD +
+			`?talentid=${talentID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'HiringRequestAPI.getTalentTechScoreCardRequest',
+			);
+		}
+	},
+	getTalentProfileSharedDetailRequest: async (talentDetails) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.GET_TALENT_PROFILE_SHARED_DETAILS +
+			`?talentid=${talentDetails?.talentID}&typeid=${talentDetails?.typeID}&fromDate=''&toDate=''`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'HiringRequestAPI.getTalentTechScoreCardRequest',
+			);
+		}
+	},
+	getTalentProfileLogReqeust: async (talentID) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.GET_TALENT_PROFILE_LOG +
+			`?talentid=${talentID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getTalentProfileLogReqeust');
+		}
+	},
+	setTalentPrioritiesRequest: async (talentPrioritiesData) => {
+		let httpService = new HttpServices();
+		const miscData = UserSessionManagementController.getUserMiscellaneousData();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.SET_TALENT_PRIORITIES +
+			`?LoggedInUserId=${miscData?.loggedInUserTypeID}`;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = talentPrioritiesData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.setTalentPrioritiesRequest');
 		}
 	},
 };

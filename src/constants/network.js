@@ -2,6 +2,8 @@ export class NetworkInfo {
 	static PROTOCOL = 'http://';
 	// static domain = 'localhost:5162/';
 	static DOMAIN = '3.218.6.134:9082/';
+	// static PROTOCOL = 'https://';
+	// static DOMAIN = '809c77bfbe78ce2d4010a080a425ea2b.loophole.site/';
 	static NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN;
 }
 export class SubDomain {
@@ -52,10 +54,19 @@ export class ClientsAPI {
 	static GET_POINT_OF_CONTACT = 'GetPointOfContact';
 }
 export class HiringRequestsAPI {
+	static GET_ALL_HIRING_REQUEST = 'GetAllHiringRequests';
 	static CREATE_HR = 'Create';
 	static CHECK_CLIENT_EMAIL = 'CheckClientEmail';
 	static SEARCHING_HIRING_REQUEST_DETAIL = 'SearchHiringRequestDetail';
+	static GET_HR_DETAIL = 'GetHRDetail';
+	static SAVE_HR_NOTES = 'SaveHRNotes';
+	static GET_TALENT_COST_CONVERSION = 'GetTalentCostConversion';
+	static GET_TALENT_TECH_SCORE_CARD = 'GetTalentTechScoreCard';
+	static GET_TALENT_PROFILE_SHARED_DETAILS = 'GetTalentProfileSharedDetail';
+	static GET_TALENT_PROFILE_LOG = 'GetTalentProfileLog';
+	static SET_TALENT_PRIORITIES = 'SetTalentPriorties';
 }
+
 export class HTTPStatusCode {
 	static OK = 200;
 	static CREATED = 201;
