@@ -9,6 +9,7 @@ const MatchMakingTable = ({
 	matchMakingData,
 	setTalentCost,
 	setTalentID,
+
 	allSelected,
 	toggleRowSelection,
 	expandedRows,

@@ -5,10 +5,14 @@ import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import ProfileStyle from './profile.module.css';
 import { useCallback, useState, useEffect } from 'react';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { ProfileLog } from 'constants/application';
+import { Skeleton } from 'antd';
+import { _isNull } from 'shared/utils/basic_utils';
 
 export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const [profileLog, setProfileLog] = useState(null);
-
+	const [activeIndex, setActiveIndex] = useState(-1);
+	const [logExpanded, setLogExpanded] = useState(null);
 	const getTechScore = useCallback(async () => {
 		const response = await hiringRequestDAO.getTalentProfileLogDAO(talentID);
 		setProfileLog(response && response?.responseBody?.details);
@@ -24,26 +28,43 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 			score: profileLog?.profileSharedCount,
 			label: 'Profile Shared',
 			activeColor: `var(--color-purple)`,
+			typeID: ProfileLog.PROFILE_SHARED,
 		},
 		{
 			id: 'feedback',
 			score: profileLog?.feedbackCount,
 			label: 'Feedback Received',
 			activeColor: `var(--color-cyan)`,
+			typeID: ProfileLog.FEEDBACK,
 		},
 		{
 			id: 'rejected',
 			score: profileLog?.rejectedCount,
 			label: 'Rejected',
 			activeColor: `var(--color-danger)`,
+			typeID: ProfileLog.REJECTED,
 		},
 		{
 			id: 'selected',
 			score: profileLog?.selectedForCount,
 			label: 'Selected For',
 			activeColor: `var(--color-success)`,
+			typeID: ProfileLog.SELECTED,
 		},
 	];
+
+	const onProfileLogClickHandler = async (typeID, index) => {
+		setLogExpanded([]);
+		setActiveIndex(index);
+		const profileObj = {
+			talentID: talentID,
+			typeID: typeID,
+		};
+		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
+			profileObj,
+		);
+		setLogExpanded(response && response?.responseBody?.details);
+	};
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
@@ -66,9 +87,11 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 							</span>
 						</div>
 						<div className={ProfileStyle.attemptsContainer}>
-							<span className={ProfileStyle.label}>Total Attempts:</span>
+							<span className={ProfileStyle.label}>Role:</span>
 							&nbsp;&nbsp;
-							<span className={ProfileStyle.value}>04</span>
+							<span className={ProfileStyle.value}>
+								{profileLog?.talentRole}
+							</span>
 						</div>
 					</>
 					<div className={ProfileStyle.calendarFilterSet}>
@@ -98,12 +121,18 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 					style={{ marginTop: '16px', marginRight: '16px' }}
 				/>
 			</div>
-
 			<hr style={{ border: `1px solid var(--uplers-grey)`, margin: 0 }} />
 			<div className={ProfileStyle.profileDataContainer}>
-				{profileData?.map((item) => {
+				{profileData?.map((item, index) => {
 					return (
 						<div
+							style={{
+								backgroundColor: index === activeIndex && '#F5F5F5',
+								border:
+									index === activeIndex &&
+									`1px solid ${profileData[activeIndex]?.activeColor}`,
+							}}
+							onClick={() => onProfileLogClickHandler(item?.typeID, index)}
 							key={item.id}
 							className={ProfileStyle.profileSets}>
 							<span className={ProfileStyle.scoreValue}>{item?.score}</span>
@@ -113,9 +142,60 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 					);
 				})}
 			</div>
-			<div className={ProfileStyle.stages}>
-				Select the stages to view their HRs
-			</div>
+			{activeIndex < 0 ? (
+				<div className={ProfileStyle.stages}>
+					Select the stages to view their HRs
+				</div>
+			) : (
+				<>
+					<ProfileLogTable
+						logExpanded={logExpanded}
+						borderColor={profileData[activeIndex]?.activeColor}
+					/>
+					<br />
+				</>
+			)}
+		</div>
+	);
+};
+
+const ProfileLogTable = ({ borderColor, logExpanded }) => {
+	return (
+		<div
+			className={ProfileStyle.matchmakingTable}
+			style={{ border: `1px solid ${borderColor}`, borderRadius: '8px' }}>
+			<table className={ProfileStyle.table}>
+				<thead>
+					<tr>
+						<th className={ProfileStyle.th}>No.</th>
+						<th className={ProfileStyle.th}>HR ID</th>
+						<th className={ProfileStyle.th}>Position</th>
+						<th className={ProfileStyle.th}>Company</th>
+						<th className={ProfileStyle.th}>Date</th>
+					</tr>
+				</thead>
+				<tbody>
+					{logExpanded === null ? (
+						<Skeleton style={{ width: '100%' }} />
+					) : _isNull(logExpanded) ? (
+						<tr>
+							<td colSpan={5}>No data found.</td>
+						</tr>
+					) : (
+						logExpanded?.map((item, index) => {
+							return (
+								<tr>
+									<td className={ProfileStyle.td}>HR {index + 1}</td>
+									<td className={ProfileStyle.td}>{item?.hrid}</td>
+									<td className={ProfileStyle.td}>{item?.position}</td>
+									<td className={ProfileStyle.td}>{item?.company}</td>
+									<td className={ProfileStyle.td}>{item?.sDate}</td>
+								</tr>
+							);
+						})
+					)}
+				</tbody>
+			</table>
 		</div>
 	);
 };

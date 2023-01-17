@@ -60,7 +60,7 @@ export const ShowTechScore = ({ talentID, handleClose }) => {
 								lineHeight: '20px',
 								textDecoration: 'underline',
 							}}>
-							Velma Balaji Reddy
+							{techDetails?.name}
 						</span>
 					</div>
 					<div
@@ -84,7 +84,7 @@ export const ShowTechScore = ({ talentID, handleClose }) => {
 								fontSize: '16px',
 								lineHeight: '20px',
 							}}>
-							04
+							{techDetails?.rows[0]?.attempts}
 						</span>
 					</div>
 				</div>

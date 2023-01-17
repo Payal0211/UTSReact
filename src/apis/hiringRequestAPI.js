@@ -205,13 +205,13 @@ export const HiringRequestAPI = {
 			);
 		}
 	},
-	getTalentProfileSharedDetailRequest: async (talentID) => {
+	getTalentProfileSharedDetailRequest: async (talentDetails) => {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.HIRING +
 			HiringRequestsAPI.GET_TALENT_PROFILE_SHARED_DETAILS +
-			`?talentid=${talentID}`;
+			`?talentid=${talentDetails?.talentID}&typeid=${talentDetails?.typeID}&fromDate=''&toDate=''`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -238,6 +238,24 @@ export const HiringRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.getTalentProfileLogReqeust');
+		}
+	},
+	setTalentPrioritiesRequest: async (talentPrioritiesData) => {
+		let httpService = new HttpServices();
+		const miscData = UserSessionManagementController.getUserMiscellaneousData();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.SET_TALENT_PRIORITIES +
+			`?LoggedInUserId=${miscData?.loggedInUserTypeID}`;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = talentPrioritiesData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.setTalentPrioritiesRequest');
 		}
 	},
 };

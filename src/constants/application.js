@@ -153,3 +153,10 @@ export class MastersKey {
 	static TALENTROLE = 'talentRole';
 	static SALESPERSON = 'salesPerson';
 }
+
+export class ProfileLog {
+	static PROFILE_SHARED = 6;
+	static FEEDBACK = 12;
+	static REJECTED = 22;
+	static SELECTED = 51;
+}

@@ -24,14 +24,13 @@ const MatchmakingModal = ({
 	const [filterMatchmakingData, setFilterMatchmakingData] = useState([]);
 	/** State variable to keep track of all the expanded rows*/
 	const [expandedRows, setExpandedRows] = useState([]);
-
 	const [tableFunctionData, setTableFunctionData] = useState('');
 	const [currentExpandedCell, setCurrentExpandedCell] = useState('');
 	const [selectedRows, setSelectedRows] = useState([]);
 	const [allSelected, setAllSelected] = useState(false);
 	const [talentCost, setTalentCost] = useState(null);
 	const [talentID, setTalentID] = useState(null);
-
+	const [listOfTalents, setListOfTalents] = useState([]);
 	/**
 	 * @Function handleExpandRow
 	 * @param {*} event
@@ -79,9 +78,25 @@ const MatchmakingModal = ({
 				if (allSelected) {
 					setAllSelected(false);
 					setSelectedRows([]);
+					setListOfTalents([]);
 				} else {
 					setAllSelected(true);
-					setSelectedRows(matchmakingData.rows?.map((a) => a.id));
+					setSelectedRows(
+						filterMatchmakingData.length > 0
+							? filterMatchmakingData.rows?.map((a) => a.id)
+							: matchmakingData.rows?.map((a) => a.id),
+					);
+					setListOfTalents(
+						filterMatchmakingData.length > 0
+							? filterMatchmakingData?.rows?.map((a) => ({
+									talentId: a.id,
+									amount: 100,
+							  }))
+							: matchmakingData?.rows?.map((a) => ({
+									talentId: a.id,
+									amount: 100,
+							  })),
+					);
 				}
 			} else {
 				let currentSelectedRows = [...selectedRows];
@@ -95,7 +110,13 @@ const MatchmakingModal = ({
 				setSelectedRows(currentSelectedRows);
 			}
 		},
-		[allSelected, selectedRows, matchmakingData],
+		[
+			allSelected,
+			filterMatchmakingData.length,
+			filterMatchmakingData.rows,
+			matchmakingData.rows,
+			selectedRows,
+		],
 	);
 
 	const closeExpandedCell = useCallback(() => {
@@ -140,6 +161,16 @@ const MatchmakingModal = ({
 		setMatchmakingData(response?.responseBody.details);
 	}, [hrID]);
 
+	const getTalentPriorities = useCallback(async () => {
+		const talentPrioritiesObj = {
+			hrId: parseInt(hrID),
+			listOfTalents: listOfTalents,
+		};
+		const response = await hiringRequestDAO.setTalentPrioritiesDAO(
+			talentPrioritiesObj,
+		);
+		console.log(response);
+	}, [hrID, listOfTalents]);
 	/** Disposing the Modal State */
 	useEffect(() => {
 		return () => {
@@ -282,6 +313,7 @@ const MatchmakingModal = ({
 
 					<div className={MatchMakingStyle.formPanelAction}>
 						<button
+							onClick={getTalentPriorities}
 							type="button"
 							className={MatchMakingStyle.btnPrimary}>
 							Select Talent

@@ -3,7 +3,7 @@ export class NetworkInfo {
 	// static domain = 'localhost:5162/';
 	// static DOMAIN = '3.218.6.134:9082/';
 	static PROTOCOL = 'https://';
-	static DOMAIN = '822a28ef7b5b7a85e198752918a7ffda.loophole.site/';
+	static DOMAIN = '809c77bfbe78ce2d4010a080a425ea2b.loophole.site/';
 	static NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN;
 }
 export class SubDomain {
@@ -64,6 +64,7 @@ export class HiringRequestsAPI {
 	static GET_TALENT_TECH_SCORE_CARD = 'GetTalentTechScoreCard';
 	static GET_TALENT_PROFILE_SHARED_DETAILS = 'GetTalentProfileSharedDetail';
 	static GET_TALENT_PROFILE_LOG = 'GetTalentProfileLog';
+	static SET_TALENT_PRIORITIES = 'SetTalentPriorties';
 }
 
 export class HTTPStatusCode {

@@ -337,4 +337,34 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getTalentProfileLogDAO()');
 		}
 	},
+	setTalentPrioritiesDAO: async (talentPrioritiesData) => {
+		try {
+			const getTalentPrioritiesResponse =
+				await HiringRequestAPI.setTalentPrioritiesRequest(talentPrioritiesData);
+			if (getTalentPrioritiesResponse) {
+				const statusCode = getTalentPrioritiesResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getTalentPrioritiesResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getTalentPrioritiesResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getTalentPrioritiesResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.setTalentPrioritiesDAO()');
+		}
+	},
 };
