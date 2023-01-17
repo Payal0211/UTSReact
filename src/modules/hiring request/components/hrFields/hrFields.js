@@ -118,7 +118,7 @@ const HRFields = ({
 	);
 
 	/** AutoFIll HR Title based on HR Role */
-	const watchHiringRequestRole = watch('role');
+	/* const watchHiringRequestRole = watch('role');
 	useEffect(() => {
 		setValue(
 			'hrTitle',
@@ -126,7 +126,7 @@ const HRFields = ({
 				(item) => item.id === watchHiringRequestRole && item?.value,
 			),
 		);
-	}, [watchHiringRequestRole, setValue, talentRole]);
+	}, [watchHiringRequestRole, setValue, talentRole]); */
 	/** To check Duplicate email exists Start */
 
 	const watchClientName = watch('clientName');
