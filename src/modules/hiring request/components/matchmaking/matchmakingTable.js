@@ -1,6 +1,6 @@
 import { Checkbox, Tooltip } from 'antd';
 import MatchMakingStyle from './matchmaking.module.css';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { ReactComponent as ArrowRightSVG } from 'assets/svg/arrowRightLight.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDownLight.svg';
@@ -9,7 +9,6 @@ const MatchMakingTable = ({
 	matchMakingData,
 	setTalentCost,
 	setTalentID,
-
 	allSelected,
 	toggleRowSelection,
 	expandedRows,
@@ -18,15 +17,19 @@ const MatchMakingTable = ({
 	currentExpandedCell,
 	componentToRender,
 }) => {
+	const [disableAll, setDisableAll] = useState(false);
 	return (
 		<table className={MatchMakingStyle.matchmakingTable}>
 			<Thead
+				disableAll={disableAll}
+				setDisableAll={setDisableAll}
 				allSelected={allSelected}
 				toggleRowSelection={toggleRowSelection}
 			/>
 			<tbody>
 				{matchMakingData.map((user) => (
 					<TrAPIData
+						disableAll={disableAll}
 						setTalentCost={setTalentCost}
 						setTalentID={setTalentID}
 						key={user.id}
@@ -46,7 +49,12 @@ const MatchMakingTable = ({
 
 export default MatchMakingTable;
 
-const Thead = ({ allSelected, toggleRowSelection }) => {
+const Thead = ({
+	allSelected,
+	toggleRowSelection,
+	setDisableAll,
+	disableAll,
+}) => {
 	return (
 		<thead className={MatchMakingStyle.thead}>
 			<tr>
@@ -55,7 +63,10 @@ const Thead = ({ allSelected, toggleRowSelection }) => {
 					<Checkbox
 						id="selectAll"
 						checked={allSelected}
-						onClick={() => toggleRowSelection('selectAll')}
+						onClick={() => {
+							toggleRowSelection('selectAll');
+							setDisableAll(!disableAll);
+						}}
 					/>
 				</th>
 				<th className={MatchMakingStyle.th}>Name</th>
@@ -77,6 +88,7 @@ const TrAPIData = ({
 	setTalentID,
 	user,
 	expandedRows,
+	disableAll,
 	toggleRowSelection,
 	handleExpandRow,
 	selectedRows,
@@ -131,6 +143,7 @@ const TrAPIData = ({
 				</td>
 				<td className={MatchMakingStyle.td}>
 					<Checkbox
+						disabled={disableAll}
 						id={user.id}
 						checked={selectedRows.includes(user.id)}
 						onClick={() => toggleRowSelection(user.id)}

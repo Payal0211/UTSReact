@@ -117,7 +117,7 @@ const ClientField = ({
 			watch,
 			addClientResponse,
 		);
-		console.log(clientFormDetails, '-clientFormDetails');
+
 		if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(watch('companyName'))) {
 				return setError('companyName', {

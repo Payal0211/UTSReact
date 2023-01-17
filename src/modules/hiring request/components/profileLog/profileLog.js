@@ -8,10 +8,12 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { ProfileLog } from 'constants/application';
 import { Skeleton } from 'antd';
 import { _isNull } from 'shared/utils/basic_utils';
+import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 
 export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const [profileLog, setProfileLog] = useState(null);
 	const [activeIndex, setActiveIndex] = useState(-1);
+	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
 	const getTechScore = useCallback(async () => {
 		const response = await hiringRequestDAO.getTalentProfileLogDAO(talentID);
@@ -53,9 +55,10 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 		},
 	];
 
-	const onProfileLogClickHandler = async (typeID, index) => {
+	const onProfileLogClickHandler = async (typeID, index, type) => {
 		setLogExpanded([]);
 		setActiveIndex(index);
+		setActiveType(type);
 		const profileObj = {
 			talentID: talentID,
 			typeID: typeID,
@@ -132,7 +135,9 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 									index === activeIndex &&
 									`1px solid ${profileData[activeIndex]?.activeColor}`,
 							}}
-							onClick={() => onProfileLogClickHandler(item?.typeID, index)}
+							onClick={() =>
+								onProfileLogClickHandler(item?.typeID, index, item?.typeID)
+							}
 							key={item.id}
 							className={ProfileStyle.profileSets}>
 							<span className={ProfileStyle.scoreValue}>{item?.score}</span>
@@ -149,6 +154,7 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 			) : (
 				<>
 					<ProfileLogTable
+						activeType={activeType}
 						logExpanded={logExpanded}
 						borderColor={profileData[activeIndex]?.activeColor}
 					/>
@@ -159,7 +165,7 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 	);
 };
 
-const ProfileLogTable = ({ borderColor, logExpanded }) => {
+const ProfileLogTable = ({ borderColor, logExpanded, activeType }) => {
 	return (
 		<div
 			className={ProfileStyle.matchmakingTable}
@@ -171,7 +177,17 @@ const ProfileLogTable = ({ borderColor, logExpanded }) => {
 						<th className={ProfileStyle.th}>HR ID</th>
 						<th className={ProfileStyle.th}>Position</th>
 						<th className={ProfileStyle.th}>Company</th>
-						<th className={ProfileStyle.th}>Date</th>
+						{activeType === ProfileLog.FEEDBACK && (
+							<th className={ProfileStyle.th}>Feedback</th>
+						)}
+						{activeType === ProfileLog.REJECTED && (
+							<th className={ProfileStyle.th}>Feedback</th>
+						)}
+						{activeType === ProfileLog.SELECTED ? (
+							<th className={ProfileStyle.th}>Current Status</th>
+						) : (
+							<th className={ProfileStyle.th}>Date</th>
+						)}
 					</tr>
 				</thead>
 				<tbody>
@@ -189,7 +205,30 @@ const ProfileLogTable = ({ borderColor, logExpanded }) => {
 									<td className={ProfileStyle.td}>{item?.hrid}</td>
 									<td className={ProfileStyle.td}>{item?.position}</td>
 									<td className={ProfileStyle.td}>{item?.company}</td>
-									<td className={ProfileStyle.td}>{item?.sDate}</td>
+									{activeType === ProfileLog.FEEDBACK && (
+										<td className={ProfileStyle.td}>
+											<a
+												href="#"
+												style={{ textDecoration: 'underline' }}>
+												View here
+											</a>
+										</td>
+									)}
+									{activeType === ProfileLog.REJECTED && (
+										<td className={ProfileStyle.td}>
+											<a href="#">View here</a>
+										</td>
+									)}
+									{activeType === ProfileLog.SELECTED ? (
+										<td className={ProfileStyle.td}>
+											{All_Hiring_Request_Utils.GETTALENTSTATUS(
+												item?.frontStatusID,
+												item?.talentStatus,
+											)}
+										</td>
+									) : (
+										<td className={ProfileStyle.td}>{item?.sDate}</td>
+									)}
 								</tr>
 							);
 						})
