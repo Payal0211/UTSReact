@@ -24,7 +24,7 @@ const TalentProfileCard = ({ talentDetail }) => {
 							<TalentList talentDetail={talentDetail && talentDetail} />
 						</Suspense>
 					) : (
-						<EmptyTalentProfile />
+						<EmptyTalentProfile talentLength={talentDetail?.length} />
 					)}
 				</div>
 			</div>

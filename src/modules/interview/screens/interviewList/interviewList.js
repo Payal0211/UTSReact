@@ -13,6 +13,8 @@ import { Skeleton } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { InputType } from 'constants/application';
+import { Link } from 'react-router-dom';
+import UTSRoutes from 'constants/routes';
 const InterviewList = () => {
 	const pageSizeOptions = [100, 200, 300, 500];
 	const [interviewList, setInterviewList] = useState([]);
@@ -326,7 +328,11 @@ const InterviewList = () => {
 											</td>
 											<td
 												className={`${InterviewListStyle.td} ${InterviewListStyle.anchor}`}>
-												{interviewUtils.dateFormatter(item?.istSlotconfirmed)}
+												<Link
+													to={UTSRoutes.INTERVIEWSCHEDULE}
+													style={{ color: `var(--uplers-black)` }}>
+													{interviewUtils.dateFormatter(item?.istSlotconfirmed)}
+												</Link>
 											</td>
 											<td
 												className={`${InterviewListStyle.td} ${InterviewListStyle.anchor}`}>
@@ -348,7 +354,12 @@ const InterviewList = () => {
 												)}
 											</td>
 											<td className={InterviewListStyle.td}>
-												{item?.clientStatus ? item?.clientStatus : 'NA'}
+												{/* {item?.clientStatus ? item?.clientStatus : 'NA'} */}
+												<Link
+													to={UTSRoutes.INTERVIEWFEEDBACK}
+													style={{ color: `var(--uplers-black)` }}>
+													{'View Feedback'}
+												</Link>
 											</td>
 										</tr>
 									);

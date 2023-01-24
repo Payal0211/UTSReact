@@ -57,7 +57,6 @@ const HRDetailScreen = () => {
 	const callAPI = useCallback(
 		async (hrid) => {
 			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
-
 			if (response.statusCode === HTTPStatusCode.OK) {
 				setAPIdata(response && response?.responseBody);
 				setLoading(false);
@@ -100,15 +99,17 @@ const HRDetailScreen = () => {
 							</div>
 						)}
 					</div>
-					<Suspense>
-						<MatchmakingModal
-							hrID={urlSplitter?.split('HR')[0]}
-							hrNo={updatedSplitter}
-							hrStatusCode={apiData?.HRStatusCode}
-							hrStatus={apiData?.HRStatus}
-							hrPriority={apiData?.StarMarkedStatusCode}
-						/>
-					</Suspense>
+					{apiData?.HRTalentDetails?.length > 0 && (
+						<Suspense>
+							<MatchmakingModal
+								hrID={urlSplitter?.split('HR')[0]}
+								hrNo={updatedSplitter}
+								hrStatusCode={apiData?.HRStatusCode}
+								hrStatus={apiData?.HRStatus}
+								hrPriority={apiData?.StarMarkedStatusCode}
+							/>
+						</Suspense>
+					)}
 					<div className={HRDetailStyle.hrDetailsRightPart}>
 						<HROperator
 							title="Accept HR"

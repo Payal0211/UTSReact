@@ -53,7 +53,7 @@ const HRFields = ({
 	const [talentRole, setTalentRole] = useState([]);
 	const [salesPerson, setSalesPerson] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [items, setItems] = useState(['3 months', '6 months', '9 months']);
+	const [items, setItems] = useState(['3 months', '6 months', '12 months']);
 	const [name, setName] = useState('');
 	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
@@ -280,6 +280,7 @@ const HRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									searchable={true}
 									setValue={setValue}
 									register={register}
 									label={'Hiring Request Role'}
@@ -516,7 +517,7 @@ const HRFields = ({
 										required
 										errors={errors}
 										validationSchema={{
-											required: 'please enter the months.',
+											// required: 'please enter the months.',
 											max: {
 												value: 12,
 												message: `please don't enter the value more than 12`,

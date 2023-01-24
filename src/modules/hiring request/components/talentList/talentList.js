@@ -7,6 +7,7 @@ import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
 import { Fragment, useState } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
+import { AddNewType, TalentOnboardStatus } from 'constants/application';
 
 const TalentList = ({ talentDetail }) => {
 	const [showVersantModal, setVersantModal] = useState(false);
@@ -317,13 +318,28 @@ const TalentList = ({ talentDetail }) => {
 										margin: '10px 0',
 									}}
 								/>
-								<div style={{ position: 'absolute', marginTop: '10px' }}>
+								<div
+									style={{
+										position: 'absolute',
+										marginTop: '10px',
+										textAlign: 'start !important',
+									}}>
 									<HROperator
 										title="Update kickoff & Onboard Status"
 										icon={<AiOutlineDown />}
 										backgroundColor={`var(--color-sunlight)`}
 										iconBorder={`1px solid var(--color-sunlight)`}
 										isDropdown={true}
+										listItem={[
+											{
+												label: 'Schedule Interview',
+												key: TalentOnboardStatus.SCHEDULE_INTERVIEW,
+											},
+											{
+												label: 'Talent Status',
+												key: TalentOnboardStatus.TALENT_STATUS,
+											},
+										]}
 									/>
 								</div>
 							</div>

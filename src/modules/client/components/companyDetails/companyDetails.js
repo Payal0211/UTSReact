@@ -225,7 +225,7 @@ const CompanyDetails = ({
 										{...register('remote')}
 										value={1}
 										type="radio"
-										checked="checked"
+										checked
 										id="remote"
 										name="remote"
 									/>
@@ -254,7 +254,7 @@ const CompanyDetails = ({
 									name="companyLeadSource"
 									label="Lead Source"
 									defaultValue="Select Lead Source"
-									options={leadSource}
+									options={[]}
 									required
 									isError={
 										errors['companyLeadSource'] && errors['companyLeadSource']

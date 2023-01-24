@@ -21,6 +21,14 @@ const InterviewList = React.lazy(() =>
 	import('modules/interview/screens/interviewList/interviewList'),
 );
 
+const InterviewSchedule = React.lazy(() =>
+	import('modules/interview/screens/interviewSchedule/interviewSchedule'),
+);
+
+const InterviewFeedback = React.lazy(() =>
+	import('modules/interview/screens/interviewFeedback/interviewFeedback'),
+);
+
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
@@ -30,7 +38,9 @@ export default class UTSRoutes {
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
-	static INTERVIEWLISTROUTE = '/interviewlist';
+	static INTERVIEWLISTROUTE = '/interview';
+	static INTERVIEWSCHEDULE = '/interview/scheduleinterview';
+	static INTERVIEWFEEDBACK = '/interview/feedback';
 	static PAGENOTFOUNDROUTE = '/404';
 	static NETWORKERRORROUTE = '/networkissue';
 }
@@ -64,6 +74,16 @@ export const navigateToComponent = {
 	[UTSRoutes.INTERVIEWLISTROUTE]: (
 		<Suspense>
 			<InterviewList />
+		</Suspense>
+	),
+	[UTSRoutes.INTERVIEWSCHEDULE]: (
+		<Suspense>
+			<InterviewSchedule />
+		</Suspense>
+	),
+	[UTSRoutes.INTERVIEWFEEDBACK]: (
+		<Suspense>
+			<InterviewFeedback />
 		</Suspense>
 	),
 };
