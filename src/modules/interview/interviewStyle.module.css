@@ -1,73 +1,50 @@
-.hiringRequestContainer {
-    /* width: 95%; */
-    /* margin: 0 auto; */
-    margin: 25px 40px;
+.interviewContainer{
+    /* background-color: red; */
+    height: 100vh;
+    margin:25px 40px;
 }
 
-
-.addnewHR {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+.header{
+    margin-bottom: 61px;
+    width:inherit;
 }
-
-.hiringRequest {
+.allInterviewLabel{
     font-size: 32px;
     font-weight: 500;
+    line-height: 40px;
 }
 
-.newHR {
-    padding: 1px 0;
-    background-color: var(--color-sunlight);
+.filterInterview{
+    height: 10vh;
     border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.newHR label {
-    padding: 0 20px;
-    font-weight: 500;
-    font-size: .8vw;
-}
-
-.iconDown {
-    height: 50px;
-    width: 50px;
-    margin-right: 1px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
     background-color: var(--background-color-light);
+    margin-bottom: 25px;
 }
-.filterContainer{
+.filterContainer {
     /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
     /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
-    margin: 50px auto 20px auto ;
+    margin: 50px auto 20px auto;
     background-color: var(--background-color-light);
 }
 
 
 
-.filterSets{
+.filterSets {
     width: 96%;
     margin-left: auto;
     margin-right: auto;
-    padding:30px 0;
+    padding: 30px 0;
     display: flex;
     border-radius: 10px;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     /* height: 92px; */
-    
+
 }
 
-.addFilter{
+.addFilter {
     cursor: pointer;
     border-radius: 8px;
     display: flex;
@@ -79,12 +56,12 @@
     border: 1px solid var(--background-color-metal);
 }
 
-.filterLabel{
+.filterLabel {
     font-weight: 500;
     font-size: .7vw;
 }
 
-.filterCount{
+.filterCount {
     align-items: center;
     display: flex;
     justify-content: center;
@@ -96,15 +73,15 @@
     font-weight: 700;
 }
 
-.filterRight{
+.filterRight {
     display: flex;
     justify-content: flex-end;
-    gap:24px;
-    align-items: center ; 
+    gap: 24px;
+    align-items: center;
     flex-wrap: wrap;
 }
 
-.searchFilterSet{
+.searchFilterSet {
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
     width: 250px;
@@ -115,7 +92,7 @@
     flex-wrap: wrap;
 }
 
-.searchInput{
+.searchInput {
     cursor: pointer;
     width: 80%;
     outline: none;
@@ -123,19 +100,22 @@
     color: var(--uplers-black);
     font-weight: 500;
 }
-.calendarFilterSet{
+
+.calendarFilterSet {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     gap: 8px;
 }
-.label{
+
+.label {
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--uplers-lightBlack);
 }
-.calendarFilter{
-    width:250px ;
+
+.calendarFilter {
+    width: 250px;
     height: 44px;
     border-radius: 8px;
     padding: 2px 10px;
@@ -145,42 +125,50 @@
     align-items: center;
     position: relative;
 }
-.calendarFilter [class*="react-datepicker-popper"]{
+
+.calendarFilter [class*="react-datepicker-popper"] {
     right: 0 !important;
-        left: auto !important;
-        transform: none !important;
-        width: 100% !important;
-        margin: 40px 0 30px;
+    left: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    margin: 40px 0 30px;
 }
-.calendarFilter [class*="react-datepicker-popper"] > div > [class*="react-datepicker"] {
-        margin-left: 0;
-        min-width: 100%;
+
+.calendarFilter [class*="react-datepicker-popper"]>div>[class*="react-datepicker"] {
+    margin-left: 0;
+    min-width: 100%;
 }
+
 .calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
     top: 14px;
 }
-.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__day-names"]{
+
+.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__day-names"] {
     margin-top: 5px;
 }
-.calendarFilter [class*="react-datepicker__month-container"] [class*="react-datepicker__month"]{
+
+.calendarFilter [class*="react-datepicker__month-container"] [class*="react-datepicker__month"] {
     margin-bottom: 10px;
 }
 
-.dateFilter{
+
+.dateFilter {
     cursor: pointer;
     width: 102%;
     outline: none;
-    border:none;
+    border: none;
     color: var(--uplers-black);
     font-weight: 500;
 }
-.priorityFilterSet{
+
+.priorityFilterSet {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
 }
-.priorityFilter{
+
+.priorityFilter {
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
     cursor: pointer;
@@ -202,5 +190,59 @@
     cursor: pointer;
 }
 .tableDetails{
-    margin-top: 24px;
+   overflow: auto;
+    /* margin-bottom: 24px; */
+    border-radius: 8px;
+    /* max-height: 1000px; */
+    
 }
+table{
+    width: 100%;
+}
+.thead{
+    position: sticky !important;
+    top: 0px !important;
+    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2)
+}
+.theadLoading {
+    position: sticky !important;
+    top: 0px !important;
+   
+}
+.th {
+  
+    z-index: 1;
+    padding: 24px 40px;
+     
+    flex-direction: row;
+    text-align: start;
+    color: var(--background-color-light);
+    font-size: 14px !important;
+    font-weight: 600;
+    line-height: 17px !important;
+    color: var(--uplers-black);
+    
+    border-bottom: 1px dashed var(--uplers-grey);
+}
+
+.td {
+    font-weight: 500;
+    line-height: 17px;
+    padding: 24px 40px;
+    text-align: start;
+    border-bottom: 1px solid var(--uplers-grey) !important;
+}
+.anchor{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.pagination{
+    text-align: center;
+    margin: 24px auto;
+    padding-bottom: 24px;
+}
+/* .pagination ul li:last-child{
+    display: none !important;
+} */
+
+

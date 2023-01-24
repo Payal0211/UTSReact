@@ -37,6 +37,20 @@ const HRDetailScreen = () => {
 	const [apiData, setAPIdata] = useState([]);
 	const navigate = useNavigate();
 	const switchLocation = useLocation();
+	const [adHOC, setAdHOC] = useState([
+		{
+			label: 'Pass to Pool',
+			// key: AddNewType.HR,
+		},
+		{
+			label: 'Pass to ODR',
+			// key: AddNewType.HR,
+		},
+		{
+			label: 'Keep it with me as well',
+			// key: AddNewType.CLIENT,
+		},
+	]);
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 
@@ -53,6 +67,8 @@ const HRDetailScreen = () => {
 		},
 		[navigate],
 	);
+	console.log('apoiData', apiData);
+
 	useEffect(() => {
 		setLoading(true);
 		callAPI(urlSplitter?.split('HR')[0]);
@@ -107,11 +123,13 @@ const HRDetailScreen = () => {
 							]}
 						/>
 						<HROperator
-							title="Pass to ODR"
+							title="Pass to Pool"
 							icon={<ArrowDownSVG style={{ width: '16px' }} />}
 							backgroundColor={`var(--background-color-light)`}
 							labelBorder={`1px solid var(--color-sunlight)`}
 							iconBorder={`1px solid var(--color-sunlight)`}
+							isDropdown={true}
+							listItem={adHOC}
 						/>
 						<div className={HRDetailStyle.hiringRequestPriority}>
 							<DeleteSVG style={{ width: '24px' }} />

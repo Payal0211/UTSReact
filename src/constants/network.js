@@ -13,6 +13,7 @@ export class SubDomain {
 	static CLIENT = 'Client/';
 	static HIRING = 'Hiring/';
 	static DEBRIEFING = 'Debriefing/';
+	static INTERVIEW = 'Interview/';
 }
 export class APIType {
 	static USER = '/user';
@@ -66,7 +67,9 @@ export class HiringRequestsAPI {
 	static GET_TALENT_PROFILE_LOG = 'GetTalentProfileLog';
 	static SET_TALENT_PRIORITIES = 'SetTalentPriorties';
 }
-
+export class InterviewsAPI {
+	static LIST = 'List';
+}
 export class HTTPStatusCode {
 	static OK = 200;
 	static CREATED = 201;

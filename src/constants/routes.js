@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+
 const Dashboard = React.lazy(() =>
 	import('modules/dashboard/screens/dashboard'),
 );
@@ -16,6 +17,10 @@ const AddNewClient = React.lazy(() =>
 	import('modules/client/screens/addnewClient/add_new_client'),
 );
 
+const InterviewList = React.lazy(() =>
+	import('modules/interview/screens/interviewList/interviewList'),
+);
+
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
@@ -25,6 +30,7 @@ export default class UTSRoutes {
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
+	static INTERVIEWLISTROUTE = '/interviewlist';
 	static PAGENOTFOUNDROUTE = '/404';
 	static NETWORKERRORROUTE = '/networkissue';
 }
@@ -53,6 +59,11 @@ export const navigateToComponent = {
 	[UTSRoutes.ADDNEWHR]: (
 		<Suspense>
 			<AddNewHR />
+		</Suspense>
+	),
+	[UTSRoutes.INTERVIEWLISTROUTE]: (
+		<Suspense>
+			<InterviewList />
 		</Suspense>
 	),
 };

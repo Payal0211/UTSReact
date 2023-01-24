@@ -558,7 +558,7 @@ const HRFields = ({
 									required: 'please enter the number of talents.',
 									min: {
 										value: 1,
-										message: `please don't enter the value less than 1`,
+										message: `please enter the value more than 0`,
 									},
 								}}
 								label="How many talents are needed."

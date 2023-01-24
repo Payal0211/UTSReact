@@ -257,7 +257,8 @@ const MatchmakingModal = ({
 										lineHeight: '19px',
 										fontWeight: '500',
 									}}>
-									{matchmakingData?.CompanyName} -
+									{matchmakingData && matchmakingData?.CompanyName}{' '}
+									{matchmakingData?.CompanyName && '-'}
 								</span>
 								<span
 									style={{
@@ -265,7 +266,7 @@ const MatchmakingModal = ({
 										lineHeight: '19px',
 										fontWeight: '500',
 									}}>
-									{hrNo}
+									{matchmakingData?.CompanyName && hrNo}
 								</span>
 							</div>
 							<div

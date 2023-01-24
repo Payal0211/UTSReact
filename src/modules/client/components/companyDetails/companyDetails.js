@@ -20,11 +20,17 @@ const CompanyDetails = ({
 	flagAndCodeMemo,
 }) => {
 	const [GEO, setGEO] = useState([]);
+	const [leadSource, setLeadSource] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [showUploadModal, setUploadModal] = useState(false);
 	const getGEO = async () => {
 		const geoLocationResponse = await MasterDAO.getGEORequestDAO();
 		setGEO(geoLocationResponse && geoLocationResponse.responseBody);
+	};
+
+	const getLeadSource = async () => {
+		const getLeadSourceResponse = await MasterDAO.getFixedValueRequestDAO();
+		setLeadSource(getLeadSourceResponse && getLeadSourceResponse.responseBody);
 	};
 	/** To check Duplicate email exists Start */
 	//TODO:- Show loader on Duplicate email caption:- verifying email
@@ -61,6 +67,7 @@ const CompanyDetails = ({
 	/** To check Duplicate email exists End */
 	useEffect(() => {
 		getGEO();
+		getLeadSource();
 	}, []);
 	return (
 		<div className={CompanyDetailsStyle.tabsFormItem}>
@@ -238,7 +245,25 @@ const CompanyDetails = ({
 							</div>
 						</div>
 					</div>
-
+					<div className={CompanyDetailsStyle.row}>
+						<div className={CompanyDetailsStyle.colMd6}>
+							<div className={CompanyDetailsStyle.formGroup}>
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									name="companyLeadSource"
+									label="Lead Source"
+									defaultValue="Select Lead Source"
+									options={leadSource}
+									required
+									isError={
+										errors['companyLeadSource'] && errors['companyLeadSource']
+									}
+									errorMsg="Please select a lead source."
+								/>
+							</div>
+						</div>
+					</div>
 					<div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd12}>
 							<HRInputField
