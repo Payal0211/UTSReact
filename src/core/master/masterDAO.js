@@ -152,10 +152,10 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getHowSoonRequestDAO');
 		}
 	},
-	getTimeZonePreferenceRequestDAO: async function () {
+	getTimeZonePreferenceRequestDAO: async function (timeZoneID) {
 		try {
 			const timeZonePreferenceResult =
-				await MasterAPI.getTimeZonePreferenceRequest();
+				await MasterAPI.getTimeZonePreferenceRequest(timeZoneID);
 			if (timeZonePreferenceResult) {
 				const statusCode = timeZonePreferenceResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
@@ -290,10 +290,67 @@ export const MasterDAO = {
 					return salesManResult;
 				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
 					return salesManResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
 				// return statusCode;
 			}
 		} catch (error) {
 			return errorDebug(error, 'MasterDAO.getSalesManRequestDAO');
+		}
+	},
+	getHRDeletReasonRequestDAO: async function () {
+		try {
+			const hrDeleteResponse = await MasterAPI.getHRDeleteReasonRequest();
+			if (hrDeleteResponse) {
+				const statusCode = hrDeleteResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hrDeleteResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return hrDeleteResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return hrDeleteResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getHRDeletReasonRequestDAO');
+		}
+	},
+	getRegionsRequestDAO: async function () {
+		try {
+			const hrRegionsResponse = await MasterAPI.getRegionsRequest();
+			if (hrRegionsResponse) {
+				const statusCode = hrRegionsResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hrRegionsResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return hrRegionsResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return hrRegionsResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getRegionsRequestDAO');
 		}
 	},
 };

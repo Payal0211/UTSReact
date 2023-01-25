@@ -46,6 +46,8 @@ export class MastersAPI {
 	static FILE_UPLOAD = 'FileUpload';
 	static GET_CODE_AND_FLAG = 'GetCodeandFlag';
 	static Get_SALESMAN = 'GetSalesman';
+	static GET_HR_DELETE_REASON = 'GetHRDeleteReason';
+	static GET_REGIONS = 'GetRegions';
 }
 
 export class ClientsAPI {
@@ -66,6 +68,7 @@ export class HiringRequestsAPI {
 	static GET_TALENT_PROFILE_SHARED_DETAILS = 'GetTalentProfileSharedDetail';
 	static GET_TALENT_PROFILE_LOG = 'GetTalentProfileLog';
 	static SET_TALENT_PRIORITIES = 'SetTalentPriorties';
+	static DELETE = 'delete';
 }
 export class InterviewsAPI {
 	static LIST = 'List';

@@ -367,4 +367,35 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.setTalentPrioritiesDAO()');
 		}
 	},
+	deleteHRDAO: async (deleteBody) => {
+		try {
+			const deleteHRResponse = await HiringRequestAPI.deleteHRRequest(
+				deleteBody,
+			);
+			if (deleteHRResponse) {
+				const statusCode = deleteHRResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = deleteHRResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return deleteHRResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return deleteHRResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
+		}
+	},
 };

@@ -50,8 +50,10 @@ const HRFields = ({
 	// const { availability, timeZonePref, talentRole, salesPerson } = returnState;
 	const [availability, setAvailability] = useState([]);
 	const [timeZonePref, setTimeZonePref] = useState([]);
+
 	const [talentRole, setTalentRole] = useState([]);
 	const [salesPerson, setSalesPerson] = useState([]);
+	const [region, setRegion] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [items, setItems] = useState(['3 months', '6 months', '12 months']);
 	const [name, setName] = useState('');
@@ -78,11 +80,13 @@ const HRFields = ({
 		control,
 		name: 'secondaryInterviewer',
 	}); */
-
+	let prefRegion = watch('region');
 	const getTimeZonePreference = useCallback(async () => {
-		const timeZone = await MasterDAO.getTalentTimeZoneRequestDAO();
+		const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO(
+			prefRegion && prefRegion,
+		);
 		setTimeZonePref(timeZone && timeZone.responseBody);
-	}, []);
+	}, [prefRegion]);
 	const getAvailability = useCallback(async () => {
 		const availabilityResponse = await MasterDAO.getHowSoonRequestDAO();
 		setAvailability(availabilityResponse && availabilityResponse.responseBody);
@@ -98,6 +102,11 @@ const HRFields = ({
 		setSalesPerson(
 			salesPersonResponse && salesPersonResponse.responseBody.details,
 		);
+	}, []);
+
+	const getRegion = useCallback(async () => {
+		let response = await MasterDAO.getRegionsRequestDAO();
+		setRegion(response && response?.responseBody?.details);
 	}, []);
 
 	const getLocation = useLocation();
@@ -183,11 +192,19 @@ const HRFields = ({
 	]);
 
 	useEffect(() => {
-		getTimeZonePreference();
+		!_isNull(prefRegion) && getTimeZonePreference();
 		getAvailability();
 		getTalentRole();
 		getSalesPerson();
-	}, [getAvailability, getSalesPerson, getTalentRole, getTimeZonePreference]);
+		getRegion();
+	}, [
+		getAvailability,
+		getSalesPerson,
+		getTalentRole,
+		getTimeZonePreference,
+		getRegion,
+		prefRegion,
+	]);
 	/** To check Duplicate email exists End */
 
 	const [messageAPI, contextHolder] = message.useMessage();
@@ -537,21 +554,6 @@ const HRFields = ({
 					</div>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									setValue={setValue}
-									register={register}
-									label={'Working Time Zone'}
-									defaultValue="Select time zone"
-									options={timeZonePref}
-									name="timeZone"
-									isError={errors['timeZone'] && errors['timeZone']}
-									required
-									errorMsg={'Please select hiring request time zone.'}
-								/>
-							</div>
-						</div>
-						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
 								register={register}
 								errors={errors}
@@ -568,6 +570,54 @@ const HRFields = ({
 								placeholder="Please enter number of talents needed"
 								required
 							/>
+						</div>
+						<div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Availability'}
+									defaultValue="Select availability"
+									options={availability}
+									name="availability"
+									// isError={errors['availability'] && errors['availability']}
+									// required
+									// errorMsg={'Please select the availability.'}
+								/>
+							</div>
+						</div>
+					</div>
+					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Select Region'}
+									defaultValue="Select Region"
+									options={region && region}
+									name="region"
+									isError={errors['region'] && errors['region']}
+									required
+									errorMsg={'Please select the region.'}
+								/>
+							</div>
+						</div>
+						<div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									disabled={_isNull(prefRegion)}
+									setValue={setValue}
+									register={register}
+									label={'Select Time Zone'}
+									defaultValue="Select time zone"
+									options={timeZonePref}
+									name="timeZone"
+									isError={errors['timeZone'] && errors['timeZone']}
+									required
+									errorMsg={'Please select hiring request time zone.'}
+								/>
+							</div>
 						</div>
 					</div>
 					<div className={HRFieldStyle.row}>
@@ -596,6 +646,7 @@ const HRFields = ({
 							/>
 						</div>
 					</div>
+
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField

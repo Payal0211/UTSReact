@@ -3,9 +3,11 @@ import HRInputFieldStyle from './hrInputFields.module.css';
 import classNames from 'classnames';
 
 const HRInputField = ({
+	isTextArea,
 	onClickHandler,
 	leadingIcon,
 	name,
+	height,
 	label,
 	register,
 	isError,
@@ -32,27 +34,53 @@ const HRInputField = ({
 				</label>
 			)}
 
-			<div className={HRInputFieldStyle.inputBox}>
-				{leadingIcon && (
-					<div className={HRInputFieldStyle.leadingIcon}>{leadingIcon}</div>
-				)}
-				<input
-					style={{
-						paddingLeft: leadingIcon && '40px',
-						cursor: InputType.BUTTON && 'pointer',
-					}}
-					value={InputType.BUTTON && value}
-					className={formFieldClasses}
-					type={type}
-					name={name}
-					placeholder={placeholder}
-					onClick={InputType.BUTTON && onClickHandler}
-					{...register(name, validationSchema)}
-					id={name}
-					disabled={disabled}
-					required={required}
-				/>
-			</div>
+			{isTextArea ? (
+				<div className={HRInputFieldStyle.inputBox}>
+					{leadingIcon && (
+						<div className={HRInputFieldStyle.leadingIcon}>{leadingIcon}</div>
+					)}
+					<textarea
+						style={{
+							paddingLeft: leadingIcon && '40px',
+							cursor: InputType.BUTTON && 'pointer',
+						}}
+						value={InputType.BUTTON && value}
+						className={formFieldClasses}
+						type={type}
+						name={name}
+						placeholder={placeholder}
+						onClick={InputType.BUTTON && onClickHandler}
+						{...register(name, validationSchema)}
+						id={name}
+						disabled={disabled}
+						required={required}
+						height={height && height}
+					/>
+				</div>
+			) : (
+				<div className={HRInputFieldStyle.inputBox}>
+					{leadingIcon && (
+						<div className={HRInputFieldStyle.leadingIcon}>{leadingIcon}</div>
+					)}
+					<input
+						style={{
+							paddingLeft: leadingIcon && '40px',
+							cursor: InputType.BUTTON && 'pointer',
+						}}
+						value={InputType.BUTTON && value}
+						className={formFieldClasses}
+						type={type}
+						name={name}
+						placeholder={placeholder}
+						onClick={InputType.BUTTON && onClickHandler}
+						{...register(name, validationSchema)}
+						id={name}
+						disabled={disabled}
+						required={required}
+						height={height && height}
+					/>
+				</div>
+			)}
 			{required && !disabled
 				? errors &&
 				  errors[name] && (
