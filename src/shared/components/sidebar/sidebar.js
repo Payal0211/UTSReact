@@ -62,6 +62,13 @@ const getSideBar = () => {
 			icon: <DashboardSVG />,
 			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 		}),
+		new SideBarModels({
+			id: 'UTS_Interview',
+			title: 'interviewList',
+			isActive: false,
+			icon: <DashboardSVG />,
+			navigateTo: UTSRoutes.INTERVIEWLISTROUTE,
+		}),
 	];
 	return dataList;
 };

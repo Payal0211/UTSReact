@@ -82,12 +82,13 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getHowSoonRequest');
 		}
 	},
-	getTimeZonePreferenceRequest: async function () {
+	getTimeZonePreferenceRequest: async function (timeZoneID) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.MASTERS +
-			MastersAPI.GET_TIME_ZONE_PREFERENCE;
+			MastersAPI.GET_TIME_ZONE_PREFERENCE +
+			`?timezoneid=${timeZoneID}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -165,6 +166,32 @@ export const MasterAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.getSalesManRequest');
+		}
+	},
+	getHRDeleteReasonRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_HR_DELETE_REASON;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getHRDeleteReasonRequest');
+		}
+	},
+	getRegionsRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_REGIONS;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getRegionsRequest');
 		}
 	},
 };

@@ -1,4 +1,4 @@
-import { Checkbox, Tooltip } from 'antd';
+import { Checkbox, Skeleton, Tooltip } from 'antd';
 import MatchMakingStyle from './matchmaking.module.css';
 import { useMemo, useState } from 'react';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
@@ -177,7 +177,7 @@ const TrAPIData = ({
 						setTalentCost(user.talentCost.split('.')[0]);
 					}}>
 					<span style={{ fontWeight: 600 }}>
-						{user.talentCost.split('.')[0]}
+						{user ? user.talentCost.split('.')[0] : <Skeleton />}
 					</span>{' '}
 					/ Month
 					{expandedIconMemo.talentCost}

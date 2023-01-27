@@ -1,6 +1,12 @@
-import { SubmitType, hiringRequestPriority } from 'constants/application';
+import {
+	HiringRequestHRStatus,
+	SubmitType,
+	UserAccountRole,
+	hiringRequestPriority,
+} from 'constants/application';
 import { _isNull } from 'shared/utils/basic_utils';
-
+import HROperator from './components/hroperator/hroperator';
+import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 export const hrUtils = {
 	modifyHRRequestData: (hrData) => {
 		return hrData.responseBody.Data.map((item) => ({
@@ -60,6 +66,7 @@ export const hrUtils = {
 			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 			clientName:
 				draft === SubmitType.SAVE_AS_DRAFT ? watch('clientName') : d.clientName,
+
 			companyName:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? watch('companyName')
@@ -72,6 +79,16 @@ export const hrUtils = {
 					: _isNull(d.role)
 					? 0
 					: d.role,
+			otherRole:
+				watch('role') === 'others'
+					? draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('otherRole'))
+							? null
+							: watch('otherRole').trim()
+						: _isNull(d.otherRole)
+						? null
+						: d.otherRole.trim()
+					: null,
 			hrTitle:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('hrTitle'))
@@ -238,5 +255,58 @@ export const hrUtils = {
 					: d.secondaryInterviewer, */
 		};
 		return hrFormDetails;
+	},
+
+	getAcceptTR(IsAccepted, loggedInUserTypeID) {
+		if (
+			loggedInUserTypeID === UserAccountRole.TALENTOPS ||
+			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+		) {
+			if (
+				HiringRequestHRStatus.DRAFT ||
+				HiringRequestHRStatus.HR_ACCEPTED ||
+				HiringRequestHRStatus.ACCEPTANCE_PENDING ||
+				HiringRequestHRStatus.INFO_PENDING ||
+				HiringRequestHRStatus.IN_PROCESS ||
+				HiringRequestHRStatus.OTHER
+			) {
+				if (IsAccepted === 0) {
+					return (
+						<HROperator
+							title="Accept HR"
+							icon={<ArrowDownSVG style={{ width: '16px' }} />}
+							backgroundColor={`var(--color-sunlight)`}
+							iconBorder={`1px solid var(--color-sunlight)`}
+						/>
+					);
+				}
+			}
+		}
+	},
+	getAccpetMoreTR(IsAccepted, loggedInUserTypeID, TRAcceptedValue) {
+		if (
+			loggedInUserTypeID === UserAccountRole.TALENTOPS ||
+			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+		) {
+			if (
+				HiringRequestHRStatus.DRAFT ||
+				HiringRequestHRStatus.HR_ACCEPTED ||
+				HiringRequestHRStatus.ACCEPTANCE_PENDING ||
+				HiringRequestHRStatus.INFO_PENDING ||
+				HiringRequestHRStatus.IN_PROCESS ||
+				HiringRequestHRStatus.OTHER
+			) {
+				if (IsAccepted === 1 && TRAcceptedValue >= 1) {
+					return (
+						<HROperator
+							title="Accept More TRs"
+							icon={<ArrowDownSVG style={{ width: '16px' }} />}
+							backgroundColor={`var(--color-sunlight)`}
+							iconBorder={`1px solid var(--color-sunlight)`}
+						/>
+					);
+				}
+			}
+		}
 	},
 };

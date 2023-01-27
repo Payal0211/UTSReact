@@ -1,7 +1,7 @@
 import { Button, Modal, Pagination, Skeleton, message } from 'antd';
 import axios from 'axios';
 import { InputType } from 'constants/application';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import MatchMakingStyle from './matchmaking.module.css';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
@@ -12,14 +12,22 @@ import { ShowProfileLog } from '../profileLog/profileLog';
 import MatchMakingTable from './matchmakingTable';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
+import { useLocation, useNavigate } from 'react-router-dom';
+import UTSRoutes from 'constants/routes';
 
 const MatchmakingModal = ({
+	talentLength,
 	hrID,
 	hrNo,
 	hrStatusCode,
 	hrStatus,
 	hrPriority,
 }) => {
+	const [apiData, setAPIdata] = useState([]);
+	const navigate = useNavigate();
+	const switchLocation = useLocation();
+	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
+	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 	const [matchmakingModal, setMatchmakingModal] = useState(false);
 	const [matchmakingData, setMatchmakingData] = useState([]);
 	const [filterMatchmakingData, setFilterMatchmakingData] = useState([]);
@@ -34,6 +42,18 @@ const MatchmakingModal = ({
 	const [listOfTalents, setListOfTalents] = useState([]);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [isLoading, setIsLoading] = useState(false);
+	/* const callAPI = useCallback(
+		async (hrid) => {
+			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+			if (response.statusCode === HTTPStatusCode.OK) {
+				setAPIdata(response && response?.responseBody);
+				// setLoading(false);
+			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+				navigate(UTSRoutes.PAGENOTFOUNDROUTE);
+			}
+		},
+		[navigate],
+	); */
 	/**
 	 * @Function handleExpandRow
 	 * @param {*} event
@@ -214,7 +234,11 @@ const MatchmakingModal = ({
 
 	return (
 		<>
-			<Button onClick={() => fetchMatchmakingData()}>Matchmaking </Button>
+			{talentLength === 0 ? (
+				<div onClick={() => fetchMatchmakingData()}>Explore Profiles</div>
+			) : (
+				<Button onClick={() => fetchMatchmakingData()}>Matchmaking </Button>
+			)}
 			{contextHolder}
 			<Modal
 				transitionName=""
@@ -257,7 +281,8 @@ const MatchmakingModal = ({
 										lineHeight: '19px',
 										fontWeight: '500',
 									}}>
-									{matchmakingData?.CompanyName} -
+									{matchmakingData && matchmakingData?.CompanyName}{' '}
+									{matchmakingData?.CompanyName && '-'}
 								</span>
 								<span
 									style={{
@@ -265,7 +290,7 @@ const MatchmakingModal = ({
 										lineHeight: '19px',
 										fontWeight: '500',
 									}}>
-									{hrNo}
+									{matchmakingData?.CompanyName && hrNo}
 								</span>
 							</div>
 							<div
@@ -346,7 +371,11 @@ const MatchmakingModal = ({
 							style={{
 								cursor: listOfTalents.length === 0 ? 'no-drop' : 'pointer',
 							}}
-							onClick={getTalentPriorities}
+							onClick={() => {
+								getTalentPriorities();
+								console.log(messageAPI);
+								// callAPI(hrID);
+							}}
 							type="button"
 							className={MatchMakingStyle.btnPrimary}>
 							Select Talent

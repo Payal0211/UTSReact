@@ -82,6 +82,15 @@ export class AddNewType {
 	static HR = 'Add New HR';
 	static DEBRIEFING = 'debriefingHR';
 }
+
+export class TalentOnboardStatus {
+	static SCHEDULE_INTERVIEW = 'Schedule Interview';
+	static RESCHEDULE_INTERVIEW = 'Reschedule Interview';
+	static TALENT_STATUS = 'Talent Status';
+	static TALENT_ACCEPTANCE = 'Talent Acceptance';
+	static UPDATE_KICKOFF = 'Update kickoff & Onboard Status';
+	static ONBOARD_TALENT = 'Onboard Talent';
+}
 export class InputType {
 	static TEXT = 'text';
 	static NUMBER = 'number';
@@ -118,6 +127,21 @@ export class TalentRequestStatus {
 	static ON_HOLD = 306;
 	static REJECTED = 307;
 	static REPLACEMENT = 308;
+}
+export class InterviewStatus {
+	static SLOT_GIVEN = 501;
+	static CANCELLED = 503;
+	static INTERVIEW_SCHEDULED = 504;
+	static INTERVIEW_IN_PROCESS = 505;
+	static INTERVIEW_COMPLETED = 506;
+	static FEEDBACK_SUBMITTED = 507;
+	static INTERVIEW_RESCHEDULES = 508;
+}
+export class ClientStatus {
+	static ANOTHER_ROUND = 601;
+	static HIRED = 602;
+	static NOT_HIRED = 603;
+	static ON_HOLD = 604;
 }
 
 export class UploadFileType {

@@ -51,6 +51,11 @@
     margin: 0 0 32px;
 }
 
+.formGroup [class*="ant-select-selection-search-input"]{
+        height: auto !important;
+        padding: 16px 16px !important;
+}
+
 .formGroup label {
     vertical-align: top;
     font-family: 'Montserrat';
@@ -126,4 +131,7 @@
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     border-left: none;
+}
+[class*="ant-select-dropdown"] {
+    z-index: 99 !important;
 }

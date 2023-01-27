@@ -1,6 +1,7 @@
 .hiringRequestContainer {
-    width: 95%;
-    margin: 0 auto;
+    /* width: 95%; */
+    /* margin: 0 auto; */
+    margin: 25px 40px;
 }
 
 
@@ -43,7 +44,7 @@
     background-color: var(--background-color-light);
 }
 .filterContainer{
-    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
+    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
     /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
     margin: 50px auto 20px auto ;
@@ -106,7 +107,7 @@
 .searchFilterSet{
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
-    width: 230px;
+    width: 250px;
     height: 44px;
     display: flex;
     justify-content: space-evenly;
@@ -142,7 +143,29 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 }
+.calendarFilter [class*="react-datepicker-popper"]{
+    right: 0 !important;
+        left: auto !important;
+        transform: none !important;
+        width: 100% !important;
+        margin: 40px 0 30px;
+}
+.calendarFilter [class*="react-datepicker-popper"] > div > [class*="react-datepicker"] {
+        margin-left: 0;
+        min-width: 100%;
+}
+.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
+    top: 14px;
+}
+.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__day-names"]{
+    margin-top: 5px;
+}
+.calendarFilter [class*="react-datepicker__month-container"] [class*="react-datepicker__month"]{
+    margin-bottom: 10px;
+}
+
 .dateFilter{
     cursor: pointer;
     width: 102%;
