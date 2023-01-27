@@ -16,6 +16,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 
 const MatchmakingModal = ({
+	refreshedHRDetail,
 	talentLength,
 	hrID,
 	hrNo,
@@ -42,18 +43,7 @@ const MatchmakingModal = ({
 	const [listOfTalents, setListOfTalents] = useState([]);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [isLoading, setIsLoading] = useState(false);
-	/* const callAPI = useCallback(
-		async (hrid) => {
-			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
-			if (response.statusCode === HTTPStatusCode.OK) {
-				setAPIdata(response && response?.responseBody);
-				// setLoading(false);
-			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
-				navigate(UTSRoutes.PAGENOTFOUNDROUTE);
-			}
-		},
-		[navigate],
-	); */
+
 	/**
 	 * @Function handleExpandRow
 	 * @param {*} event
@@ -183,7 +173,7 @@ const MatchmakingModal = ({
 	}, [closeExpandedCell, talentCost, talentID]);
 
 	/** Fetching the Modal Table API */
-	/**TODO():- Remove from here */
+
 	const fetchMatchmakingData = useCallback(async () => {
 		setMatchmakingModal(true);
 		const response = await hiringRequestDAO.getMatchmakingDAO({
@@ -210,6 +200,8 @@ const MatchmakingModal = ({
 				content: response?.responseBody?.message,
 			});
 			setIsLoading(false);
+			setMatchmakingModal(false);
+			refreshedHRDetail(hrID);
 		} else {
 			messageAPI.open({
 				type: 'error',
@@ -217,7 +209,7 @@ const MatchmakingModal = ({
 			});
 			setIsLoading(false);
 		}
-	}, [hrID, listOfTalents, messageAPI]);
+	}, [hrID, listOfTalents, messageAPI, refreshedHRDetail]);
 	/** Disposing the Modal State */
 	useEffect(() => {
 		return () => {
@@ -373,7 +365,7 @@ const MatchmakingModal = ({
 							}}
 							onClick={() => {
 								getTalentPriorities();
-								console.log(messageAPI);
+
 								// callAPI(hrID);
 							}}
 							type="button"

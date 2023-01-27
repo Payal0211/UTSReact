@@ -80,6 +80,7 @@ const HRDetailScreen = () => {
 
 	const callAPI = useCallback(
 		async (hrid) => {
+			setLoading(true);
 			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
 			if (response.statusCode === HTTPStatusCode.OK) {
 				setAPIdata(response && response?.responseBody);
@@ -133,6 +134,7 @@ const HRDetailScreen = () => {
 					{apiData?.HRTalentDetails?.length > 0 && (
 						<Suspense>
 							<MatchmakingModal
+								refreshedHRDetail={callAPI}
 								hrID={urlSplitter?.split('HR')[0]}
 								hrNo={updatedSplitter}
 								hrStatusCode={apiData?.HRStatusCode}

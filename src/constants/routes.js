@@ -22,7 +22,7 @@ const InterviewList = React.lazy(() =>
 );
 
 const InterviewSchedule = React.lazy(() =>
-	import('modules/interview/screens/interviewSchedule/interviewSchedule'),
+	import('modules/interview/screens/interviewReschedule/interviewReschedule'),
 );
 
 const InterviewFeedback = React.lazy(() =>

@@ -31,6 +31,7 @@ const InterviewFeedback = () => {
 		console.log('radio checked', e.target.value);
 		setRadioValue(e.target.value);
 	};
+
 	const onChange2 = (e) => {
 		console.log('radio checked', e.target.value);
 		setRadioValue2(e.target.value);

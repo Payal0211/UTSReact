@@ -264,13 +264,13 @@ table{
     display: flex;
 }
 
-.leftPane{
+/* .leftPane{
     width: 25%;
-}
+} */
 .leftPane h3 {
-    font-size: var(--fontsize-doom);
+    font-size: 32px;
     font-weight: 500;
-    line-height: 29px;
+    line-height: 40px;
     color: var(--uplers-black);
 }
 
@@ -284,7 +284,8 @@ table{
     flex: 1;
 }
 .row {
-   gap: 8px;
+    
+    gap: 8px;
     /* margin: 0 -9px; */
     flex-wrap: wrap;
     display: flex;
@@ -298,6 +299,7 @@ table{
 }
 
 .cardBody{
+    
     padding:16px 0 16px 16px;
 }
 
@@ -321,7 +323,7 @@ table{
 
 .colMd4{
     width: 24%;
-    padding: 0 9px;
+    /* padding: 0 9px; */
 }
 .colMd3 {
     width: 33.33%;

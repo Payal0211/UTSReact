@@ -5,13 +5,13 @@ import UTSRoutes from 'constants/routes';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { interviewUtils } from 'modules/interview/interviewUtils';
 import { InputType, InterviewStatus } from 'constants/application';
-import { Divider } from 'antd';
+import { Divider, Radio } from 'antd';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import { useForm } from 'react-hook-form';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
 
-const InterviewSchedule = () => {
+const InterviewReschedule = ({ talentName, key }) => {
 	const [timezone, setTimezone] = useState([]);
 	const {
 		register,
@@ -30,6 +30,14 @@ const InterviewSchedule = () => {
 		{ id: 3, value: 'Talent not available on given Slots' },
 		{ id: 4, value: 'Talent not available on selected Slot' },
 	];
+	const [rescheduleRadio, setRescheduleRadio] = useState(1);
+	const [slotRadio, setSlotRadio] = useState(1);
+	const onRescheduleChange = (e) => {
+		setRescheduleRadio(e.target.value);
+	};
+	const onSlotChange = (e) => {
+		setSlotRadio(e.target.value);
+	};
 
 	const getTimeZone = useCallback(async () => {
 		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
@@ -39,18 +47,13 @@ const InterviewSchedule = () => {
 		getTimeZone();
 	}, [getTimeZone]);
 	return (
-		<div className={InterviewScheduleStyle.interviewContainer}>
-			<Link to={UTSRoutes.INTERVIEWLISTROUTE}>
-				<div className={InterviewScheduleStyle.goback}>
-					<ArrowLeftSVG style={{ width: '16px' }} />
-					<span>Go Back</span>
-				</div>
-			</Link>
+		<div
+			className={InterviewScheduleStyle.interviewContainer}
+			id={key}>
+			<div className={InterviewScheduleStyle.leftPane}>
+				<h3>Reschedule Interview</h3>
+			</div>
 			<div className={InterviewScheduleStyle.panelBody}>
-				<div className={InterviewScheduleStyle.leftPane}>
-					<h3>Reschedule Interview</h3>
-					<p>Please provide the necessary details</p>
-				</div>
 				<div className={InterviewScheduleStyle.rightPane}>
 					<div className={InterviewScheduleStyle.row}>
 						<div
@@ -62,7 +65,7 @@ const InterviewSchedule = () => {
 								</div>
 
 								<div className={InterviewScheduleStyle.cardTitle}>
-									Pandey Raghu
+									{talentName}
 								</div>
 							</div>
 						</div>
@@ -120,35 +123,22 @@ const InterviewSchedule = () => {
 					/>
 					<form id="interviewReschedule">
 						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.coldMd12}>
+							<div className={InterviewScheduleStyle.colMd12}>
 								<div className={InterviewScheduleStyle.radioFormGroup}>
 									<label>
 										Reschedule Request By
 										<span className={InterviewScheduleStyle.reqField}>*</span>
 									</label>
-									<label className={InterviewScheduleStyle.radioContainer}>
-										<p>Client</p>
-										<input
-											// {...register('remote')}
-											value={1}
-											type="radio"
-											checked="checked"
-											id="remote"
-											name="remote"
-										/>
-										<span className={InterviewScheduleStyle.checkmark}></span>
-									</label>
-									<label className={InterviewScheduleStyle.radioContainer}>
-										<p>Talent</p>
-										<input
-											// {...register('remote')}
-											value={0}
-											type="radio"
-											id="remote"
-											name="remote"
-										/>
-										<span className={InterviewScheduleStyle.checkmark}></span>
-									</label>
+									<div>
+										<Radio.Group
+											defaultValue={1}
+											className={InterviewScheduleStyle.radioGroup}
+											onChange={onRescheduleChange}
+											value={rescheduleRadio}>
+											<Radio value={1}>Client</Radio>
+											<Radio value={2}>Talent</Radio>
+										</Radio.Group>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -198,46 +188,21 @@ const InterviewSchedule = () => {
 										Slot
 										<span className={InterviewScheduleStyle.reqField}>*</span>
 									</label>
-
-									<label
-										className={InterviewScheduleStyle.radioContainer}
-										style={{ marginTop: '8px' }}>
-										<p>From Client</p>
-										<input
-											// {...register('remote')}
-											value={'slot1'}
-											type="radio"
-											checked="checked"
-											id="slot1"
-											name="slot1"
-										/>
-										<span className={InterviewScheduleStyle.checkmark}></span>
-									</label>
-									<label className={InterviewScheduleStyle.radioContainer}>
-										<p>Add Final Interview Slot</p>
-										<input
-											// {...register('remote')}
-											value={'slot2'}
-											type="radio"
-											id="slot2"
-											name="slot2"
-										/>
-										<span className={InterviewScheduleStyle.checkmark}></span>
-									</label>
-									<label className={InterviewScheduleStyle.radioContainer}>
-										<p>Give New Slot to Client</p>
-										<input
-											// {...register('remote')}
-											value={'slot3'}
-											type="radio"
-											id="slot3"
-											name="slot3"
-										/>
-										<span className={InterviewScheduleStyle.checkmark}></span>
-									</label>
+									<Radio.Group
+										defaultValue={1}
+										className={InterviewScheduleStyle.radioGroup}
+										onChange={onSlotChange}
+										value={slotRadio}>
+										<Radio value={1}>
+											Slot Directly Add Final Interview Slot
+										</Radio>
+										<Radio value={2}>Send a link shared by client</Radio>
+										<Radio value={3}>Slot From Client</Radio>
+									</Radio.Group>
 								</div>
 							</div>
 						</div>
+
 						<div className={InterviewScheduleStyle.row}>
 							<div className={InterviewScheduleStyle.colMd12}>
 								<HRSelectField
@@ -285,4 +250,4 @@ const InterviewSchedule = () => {
 	);
 };
 
-export default InterviewSchedule;
+export default InterviewReschedule;

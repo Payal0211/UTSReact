@@ -9,9 +9,14 @@ import { Fragment, useState } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
 import { AddNewType, TalentOnboardStatus } from 'constants/application';
 
+import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
+
 const TalentList = ({ talentDetail }) => {
 	const [showVersantModal, setVersantModal] = useState(false);
+	const [showReScheduleInterviewModal, setReScheduleInterviewModal] =
+		useState(false);
 
+	const [talentIndex, setTalentIndex] = useState(0);
 	return (
 		<div>
 			<List
@@ -24,8 +29,11 @@ const TalentList = ({ talentDetail }) => {
 					pageSize: 2,
 					position: 'top',
 				}}
-				renderItem={(item) => (
-					<Fragment>
+				renderItem={(item, listIndex) => (
+					<div
+						key={item?.Name}
+						id={listIndex}>
+						{/* {console.log('item.name', item?.Name, '--And--', listIndex)} */}
 						<div className={TalentListStyle.talentCard}>
 							<div className={TalentListStyle.talentCardBody}>
 								<div className={TalentListStyle.partWise}>
@@ -224,92 +232,13 @@ const TalentList = ({ talentDetail }) => {
 										textDecoration: 'underline',
 										cursor: 'pointer',
 									}}
-									onClick={() => setVersantModal(true)}>
+									onClick={() => {
+										setVersantModal(true);
+										setTalentIndex(listIndex);
+									}}>
 									Versant Test Results
 								</div>
-								<Modal
-									width="864px"
-									centered
-									footer={null}
-									open={showVersantModal}
-									// onOk={() => setVersantModal(false)}
-									onCancel={() => setVersantModal(false)}>
-									<h1>Versant Test Results</h1>
-									<div
-										style={{
-											// border: '1px solid red',
-											display: 'flex',
-											justifyContent: 'space-between',
-											alignItems: 'center',
-											marginTop: '50px',
-										}}>
-										<div
-											style={{
-												display: 'flex',
-												justifyContent: 'space-between',
-												alignItems: 'center',
-												width: '60%',
-												flexWrap: 'wrap',
-											}}>
-											<div
-												style={{
-													borderRadius: '8px',
-													border: `1px solid var(--uplers-border-color)`,
-													padding: '10px 30px',
-												}}>
-												<span>Name: </span>
-												<span
-													style={{
-														fontWeight: 500,
-														textDecoration: 'underline',
-													}}>
-													{item?.Name}
-												</span>
-											</div>
-											<div
-												style={{
-													borderRadius: '8px',
-													border: `1px solid var(--uplers-border-color)`,
-													padding: '10px 30px',
-												}}>
-												<span>Date of Test:</span>
-												<span
-													style={{
-														fontWeight: 500,
-													}}>
-													10/09/2022
-												</span>
-											</div>
-										</div>
-										<div
-											style={{
-												padding: '1px 10px',
-												borderRadius: '8px',
-												backgroundColor: `var(--uplers-grey)`,
-											}}>
-											<ExportSVG />
-										</div>
-									</div>
-									<Divider />
-									<div
-										style={{
-											display: 'flex',
-											justifyContent: 'space-between',
-											alignItems: 'center',
-										}}>
-										<div style={{ width: '50%' }}>
-											<div
-												style={{
-													fontWeight: '500',
-													fontSize: '18px',
-													textAlign: 'center',
-												}}>
-												Overall GSE Score
-											</div>
-										</div>
-										<div></div>
-									</div>
-								</Modal>
+
 								<div style={{ padding: '2px 0', textDecoration: 'underline' }}>
 									Skill Test Results
 								</div>
@@ -336,17 +265,128 @@ const TalentList = ({ talentDetail }) => {
 												key: TalentOnboardStatus.SCHEDULE_INTERVIEW,
 											},
 											{
+												label: 'Reschedule Interview',
+												key: TalentOnboardStatus.RESCHEDULE_INTERVIEW,
+											},
+											{
 												label: 'Talent Status',
 												key: TalentOnboardStatus.TALENT_STATUS,
 											},
 										]}
+										menuAction={(item) => {
+											switch (item.key) {
+												case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
+													setReScheduleInterviewModal(true);
+													setTalentIndex(listIndex);
+													break;
+												}
+												default:
+													break;
+											}
+										}}
 									/>
 								</div>
 							</div>
 						</div>
-					</Fragment>
+					</div>
 				)}
 			/>
+			<Modal
+				width="864px"
+				centered
+				footer={null}
+				open={showVersantModal}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setVersantModal(false)}>
+				<h1>Versant Test Results</h1>
+				<div
+					style={{
+						// border: '1px solid red',
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						marginTop: '50px',
+					}}>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							alignItems: 'center',
+							width: '60%',
+							flexWrap: 'wrap',
+						}}>
+						<div
+							style={{
+								borderRadius: '8px',
+								border: `1px solid var(--uplers-border-color)`,
+								padding: '10px 30px',
+							}}>
+							<span>Name: </span>
+							<span
+								style={{
+									fontWeight: 500,
+									textDecoration: 'underline',
+								}}>
+								{talentDetail[talentIndex]?.Name}
+							</span>
+						</div>
+						<div
+							style={{
+								borderRadius: '8px',
+								border: `1px solid var(--uplers-border-color)`,
+								padding: '10px 30px',
+							}}>
+							<span>Date of Test:</span>
+							<span
+								style={{
+									fontWeight: 500,
+								}}>
+								10/09/2022
+							</span>
+						</div>
+					</div>
+					<div
+						style={{
+							padding: '1px 10px',
+							borderRadius: '8px',
+							backgroundColor: `var(--uplers-grey)`,
+						}}>
+						<ExportSVG />
+					</div>
+				</div>
+				<Divider />
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}>
+					<div style={{ width: '50%' }}>
+						<div
+							style={{
+								fontWeight: '500',
+								fontSize: '18px',
+								textAlign: 'center',
+							}}>
+							Overall GSE Score
+						</div>
+					</div>
+					<div></div>
+				</div>
+			</Modal>
+			<Modal
+				// key={index}
+				width="930px"
+				centered
+				footer={null}
+				open={showReScheduleInterviewModal}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setReScheduleInterviewModal(false)}>
+				<InterviewReschedule
+					// key={index}
+					talentName={talentDetail[talentIndex]?.Name}
+				/>
+			</Modal>
 		</div>
 	);
 };

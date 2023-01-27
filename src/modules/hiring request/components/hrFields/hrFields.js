@@ -328,7 +328,7 @@ const HRFields = ({
 									validationSchema={{
 										required: 'please enter the other role.',
 										pattern: {
-											value: /other/,
+											value: /^((?!other).)*$/,
 											message: 'Please remove other word.',
 										},
 									}}
