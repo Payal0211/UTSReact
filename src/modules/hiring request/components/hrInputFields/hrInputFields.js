@@ -14,6 +14,7 @@ const HRInputField = ({
 	errorMsg,
 	errors,
 	placeholder,
+	maxLength,
 	required,
 	value,
 	disabled,
@@ -78,6 +79,7 @@ const HRInputField = ({
 						disabled={disabled}
 						required={required}
 						height={height && height}
+						maxLength={maxLength}
 					/>
 				</div>
 			)}

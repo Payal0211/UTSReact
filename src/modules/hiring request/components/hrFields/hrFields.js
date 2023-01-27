@@ -95,7 +95,15 @@ const HRFields = ({
 		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
 
 		setTalentRole(talentRole && talentRole.responseBody);
+		setTalentRole((preValue) => [
+			...preValue,
+			{
+				id: 'others',
+				value: 'Others',
+			},
+		]);
 	}, []);
+
 	const getSalesPerson = useCallback(async () => {
 		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
 
@@ -217,7 +225,7 @@ const HRFields = ({
 			clientDetail?.contactId,
 			addHRResponse,
 		);
-
+		console.log(hrFormDetails, 'hrFormdetails');
 		if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(watch('clientName'))) {
 				return setError('clientName', {
@@ -311,6 +319,29 @@ const HRFields = ({
 							</div>
 						</div>
 					</div>
+					{watch('role') === 'others' && (
+						<div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd12}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the other role.',
+										pattern: {
+											value: /other/,
+											message: 'Please remove other word.',
+										},
+									}}
+									label="Other Role"
+									name="otherRole"
+									type={InputType.TEXT}
+									placeholder="Enter Other role"
+									maxLength={50}
+									required
+								/>
+							</div>
+						</div>
+					)}
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd12}>
 							<HRInputField

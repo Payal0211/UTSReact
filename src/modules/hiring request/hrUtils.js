@@ -66,6 +66,7 @@ export const hrUtils = {
 			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 			clientName:
 				draft === SubmitType.SAVE_AS_DRAFT ? watch('clientName') : d.clientName,
+
 			companyName:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? watch('companyName')
@@ -78,6 +79,16 @@ export const hrUtils = {
 					: _isNull(d.role)
 					? 0
 					: d.role,
+			otherRole:
+				watch('role') === 'others'
+					? draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('otherRole'))
+							? null
+							: watch('otherRole').trim()
+						: _isNull(d.otherRole)
+						? null
+						: d.otherRole.trim()
+					: null,
 			hrTitle:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('hrTitle'))
