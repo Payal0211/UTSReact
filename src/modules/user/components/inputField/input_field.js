@@ -9,6 +9,7 @@ const InputField = ({
 	maxLength,
 	placeholder,
 	onChangeHandler,
+	onKeyDownHandler,
 	value,
 	errorMsg,
 	trailingIcon,
@@ -33,6 +34,7 @@ const InputField = ({
 					error ? inputFieldStyles.inputBoxError : inputFieldStyles.inputBox
 				}>
 				<input
+					onKeyDown={onKeyDownHandler}
 					ref={inputRef}
 					className={inputFieldStyles.inputfield}
 					type={type}

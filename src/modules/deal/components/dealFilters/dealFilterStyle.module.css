@@ -8,7 +8,7 @@
     box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.09);
     border-bottom-left-radius: 8px;
     z-index: 1000;
-   
+
 }
 
 
@@ -22,7 +22,8 @@
     justify-content: space-between;
     align-items: center;
 }
-.goback{
+
+.goback {
     align-items: center;
     justify-content: center;
     display: flex;
@@ -33,7 +34,7 @@
 
 .asideFilters {
     margin-top: 5%;
-    
+
 }
 
 .label {
@@ -42,7 +43,7 @@
 }
 
 .filtersChips {
-   margin-top: 5%;
+    margin-top: 5%;
     display: flex;
     flex-wrap: wrap;
 }
@@ -61,6 +62,7 @@
     align-items: center;
     font-size: 0.7rem;
 }
+
 .operationsFilters {
     display: flex;
     margin-top: 5%;
@@ -70,25 +72,28 @@
     gap: 5%;
     margin-bottom: 10%;
 }
-.clearAll{
+
+.clearAll {
     background-color: var(--background-color-light);
     font-size: 1rem;
     font-weight: 500;
-    border:1px solid var(--background-color-metal);
+    border: 1px solid var(--background-color-metal);
     border-radius: 10px;
     padding: 10px 10% !important;
     cursor: pointer;
 }
-.applyFilters{
+
+.applyFilters {
     cursor: pointer;
     font-size: 1rem;
-        font-weight: 500;
-        border:none;
+    font-weight: 500;
+    border: none;
     background-color: var(--color-sunlight);
-        color: #000;
-        border-radius: 10px;
-        padding: 10px 10% !important
+    color: #000;
+    border-radius: 10px;
+    padding: 10px 10% !important
 }
+
 .searchFiltersList {
     margin-top: 35px;
     display: flex;
@@ -100,6 +105,7 @@
     justify-content: center;
     border: 1px solid var(--background-color-metal);
 }
+
 .searchInput {
     padding: 5px 0;
     width: 90%;

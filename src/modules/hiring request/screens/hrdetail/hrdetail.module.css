@@ -37,8 +37,20 @@
     background-color: var(--background-color-light);
     border: 2px solid var(--uplers-border-color);
     padding: 10px 15px;
+    cursor: pointer;
     border-radius: 8px;
 }
+
+.hiringRequestPriority:hover{
+    border: 2px solid var(--background-color-light);
+    background-color: var(--color-sunlight);
+    transition: all .2s ease;
+}
+.hiringRequestPriority:hover>.deleteSVG{
+   transform: scale(.9);
+   transition: all .2s ease;
+}
+
 
 .newHR {
     padding: 1px 0;

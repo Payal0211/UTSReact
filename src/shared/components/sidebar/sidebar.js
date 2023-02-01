@@ -69,6 +69,13 @@ const getSideBar = () => {
 			icon: <DashboardSVG />,
 			navigateTo: UTSRoutes.INTERVIEWLISTROUTE,
 		}),
+		new SideBarModels({
+			id: 'UTS_DealList',
+			title: 'dealList',
+			isActive: false,
+			icon: <DashboardSVG />,
+			navigateTo: UTSRoutes.DEALLISTROUTE,
+		}),
 	];
 	return dataList;
 };

@@ -10,10 +10,15 @@ import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
 import { AddNewType, TalentOnboardStatus } from 'constants/application';
 
 import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
+import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
+import InterviewFeedback from 'modules/interview/screens/interviewFeedback/interviewFeedback';
 
 const TalentList = ({ talentDetail }) => {
 	const [showVersantModal, setVersantModal] = useState(false);
+	const [interviewStatus, setInterviewStatus] = useState(false);
 	const [showReScheduleInterviewModal, setReScheduleInterviewModal] =
+		useState(false);
+	const [showScheduleInterviewModal, setScheduleInterviewModal] =
 		useState(false);
 
 	const [talentIndex, setTalentIndex] = useState(0);
@@ -153,8 +158,15 @@ const TalentList = ({ talentDetail }) => {
 								/>
 								<div className={TalentListStyle.interviewStatus}>
 									<span>Interview Status:</span>&nbsp;&nbsp;
-									<span style={{ fontWeight: '500' }}>
-										{item?.InterviewStatus}
+									<span
+										style={{ fontWeight: '500', cursor: 'pointer' }}
+										onClick={() => {
+											setInterviewStatus(true);
+											setTalentIndex(listIndex);
+										}}>
+										{item?.InterviewStatus === ''
+											? 'NA'
+											: item?.InterviewStatus}
 									</span>
 								</div>
 								<Divider
@@ -275,6 +287,11 @@ const TalentList = ({ talentDetail }) => {
 										]}
 										menuAction={(item) => {
 											switch (item.key) {
+												case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
+													setScheduleInterviewModal(true);
+													setTalentIndex(listIndex);
+													break;
+												}
 												case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
 													setReScheduleInterviewModal(true);
 													setTalentIndex(listIndex);
@@ -291,6 +308,7 @@ const TalentList = ({ talentDetail }) => {
 					</div>
 				)}
 			/>
+			{/** ============ MODAL FOR VERSANT SCORE ================ */}
 			<Modal
 				width="864px"
 				centered
@@ -374,8 +392,9 @@ const TalentList = ({ talentDetail }) => {
 					<div></div>
 				</div>
 			</Modal>
+			{/** ============ MODAL FOR RESCHEDULING INTERVIEW ================ */}
 			<Modal
-				// key={index}
+				transitionName=""
 				width="930px"
 				centered
 				footer={null}
@@ -383,9 +402,34 @@ const TalentList = ({ talentDetail }) => {
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setReScheduleInterviewModal(false)}>
 				<InterviewReschedule
-					// key={index}
+					closeModal={() => setReScheduleInterviewModal(false)}
 					talentName={talentDetail[talentIndex]?.Name}
 				/>
+			</Modal>
+			{/** ============ MODAL FOR SCHEDULING INTERVIEW ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				open={showScheduleInterviewModal}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setScheduleInterviewModal(false)}>
+				<InterviewSchedule
+					talentName={talentDetail[talentIndex]?.Name}
+					closeModal={() => setScheduleInterviewModal(false)}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR INTERVIEW FEEDBACK STATUS ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				open={interviewStatus}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setInterviewStatus(false)}>
+				<InterviewFeedback />
 			</Modal>
 		</div>
 	);

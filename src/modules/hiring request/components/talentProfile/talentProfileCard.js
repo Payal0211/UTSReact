@@ -5,7 +5,6 @@ import TalentProfileCardStyle from './talentProfile.module.css';
 const TalentList = React.lazy(() => import('../talentList/talentList'));
 
 const TalentProfileCard = ({ talentDetail }) => {
-	console.log(talentDetail, '--talentProfileCard');
 	return (
 		<div className={TalentProfileCardStyle.talentProfileContainer}>
 			<label>

@@ -28,6 +28,9 @@ const InterviewSchedule = React.lazy(() =>
 const InterviewFeedback = React.lazy(() =>
 	import('modules/interview/screens/interviewFeedback/interviewFeedback'),
 );
+const DealList = React.lazy(() =>
+	import('modules/deal/screens/dealList/dealList'),
+);
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -41,6 +44,7 @@ export default class UTSRoutes {
 	static INTERVIEWLISTROUTE = '/interview';
 	static INTERVIEWSCHEDULE = '/interview/scheduleinterview';
 	static INTERVIEWFEEDBACK = '/interview/feedback';
+	static DEALLISTROUTE = '/deallist';
 	static PAGENOTFOUNDROUTE = '/404';
 	static NETWORKERRORROUTE = '/networkissue';
 }
@@ -84,6 +88,11 @@ export const navigateToComponent = {
 	[UTSRoutes.INTERVIEWFEEDBACK]: (
 		<Suspense>
 			<InterviewFeedback />
+		</Suspense>
+	),
+	[UTSRoutes.DEALLISTROUTE]: (
+		<Suspense>
+			<DealList />
 		</Suspense>
 	),
 };

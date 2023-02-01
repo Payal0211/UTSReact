@@ -14,6 +14,7 @@ export class SubDomain {
 	static HIRING = 'Hiring/';
 	static DEBRIEFING = 'Debriefing/';
 	static INTERVIEW = 'Interview/';
+	static DEAL = 'Deal/';
 }
 export class APIType {
 	static USER = '/user';
@@ -72,6 +73,10 @@ export class HiringRequestsAPI {
 }
 export class InterviewsAPI {
 	static LIST = 'List';
+}
+export class DealsAPI {
+	static LIST = 'List';
+	static DETAIL = 'Detail';
 }
 export class HTTPStatusCode {
 	static OK = 200;

@@ -30,6 +30,11 @@ const HRSelectField = ({
 					skillsName: item?.value,
 				})),
 			);
+		} else if (mode === 'id/value') {
+			setValue(name, {
+				id: option.id,
+				value: option.value,
+			});
 		} else {
 			setValue(name, option.id);
 		}
@@ -57,6 +62,7 @@ const HRSelectField = ({
 
 			{isControlled ? (
 				<Select
+					id="selectedValue"
 					placeholder={placeholder}
 					mode={mode}
 					className={disabled && HRSelectFieldStyle.disabled}
@@ -68,6 +74,7 @@ const HRSelectField = ({
 				/>
 			) : (
 				<Select
+					id="selectedValue"
 					placeholder={placeholder}
 					mode={mode}
 					dropdownRender={dropdownRender}

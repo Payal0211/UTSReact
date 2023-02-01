@@ -1,4 +1,10 @@
-import React, { Suspense, useCallback, useEffect, useState } from 'react';
+import React, {
+	useRef,
+	Suspense,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Modal, Skeleton, Tabs } from 'antd';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
@@ -8,7 +14,6 @@ import HRDetailStyle from './hrdetail.module.css';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as DeleteSVG } from 'assets/svg/delete.svg';
-
 import UTSRoutes from 'constants/routes';
 import { HTTPStatusCode } from 'constants/network';
 import WithLoader from 'shared/components/loader/loader';
@@ -16,6 +21,7 @@ import { useForm } from 'react-hook-form';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import {
+	HRDeleteType,
 	HiringRequestHRStatus,
 	InputType,
 	UserAccountRole,
@@ -50,6 +56,7 @@ const HRDetailScreen = () => {
 	const navigate = useNavigate();
 	const switchLocation = useLocation();
 	const [deleteReason, setDeleteReason] = useState([]);
+
 	const [adHOC, setAdHOC] = useState([
 		{
 			label: 'Pass to Pool',
@@ -64,6 +71,7 @@ const HRDetailScreen = () => {
 			// key: AddNewType.CLIENT,
 		},
 	]);
+
 	const {
 		register,
 		handleSubmit,
@@ -74,6 +82,7 @@ const HRDetailScreen = () => {
 		watch,
 		formState: { errors },
 	} = useForm();
+
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 	const miscData = UserSessionManagementController.getUserSession();
@@ -91,15 +100,50 @@ const HRDetailScreen = () => {
 		},
 		[navigate],
 	);
-	const clientSubmitHandler = useCallback(async (d) => {
-		console.log(d, 'd---');
-	}, []);
-	// console.log('apoiData', apiData);
+	const clientOnHoldSubmitHandler = useCallback(
+		async (d) => {
+			let deleteObj = {
+				id: urlSplitter?.split('HR')[0],
+				deleteType: HRDeleteType.ON_HOLD,
+				reasonId: d.hrDeleteReason.id,
+				otherReason: d.hrDeleteOtherReason,
+				reason: d.hrDeleteReason.value,
+				remark: d.hrDeleteRemark,
+				onBoardId: 0,
+			};
+
+			let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
+			if (deletedResponse && deletedResponse.statusCode === HTTPStatusCode.OK) {
+				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+			}
+		},
+		[navigate, urlSplitter],
+	);
+	/* const clientLossSbmitHandler = useCallback(
+		async (d) => {
+			let deleteObj = {
+				id: urlSplitter?.split('HR')[0],
+				deleteType: HRDeleteType.LOSS,
+				reasonId: d.hrDeleteReason.id,
+				otherReason: d.hrDeleteOtherReason,
+				reason: d.hrDeleteReason.value,
+				remark: d.hrDeleteRemark,
+				onBoardId: 0,
+			};
+
+			let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
+			if (deletedResponse && deletedResponse.statusCode === HTTPStatusCode.OK) {
+				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+			}
+		},
+		[navigate, urlSplitter],
+	); */
+
 	const getHRDeleteReason = useCallback(async () => {
 		let response = await MasterDAO.getHRDeletReasonRequestDAO();
 		setDeleteReason(response && response?.responseBody?.details);
 	}, []);
-	console.log(deleteReason, '-deleteReason');
+
 	useEffect(() => {
 		setLoading(true);
 		callAPI(urlSplitter?.split('HR')[0]);
@@ -170,165 +214,11 @@ const HRDetailScreen = () => {
 								setDeleteModal(true);
 								getHRDeleteReason();
 							}}>
-							<DeleteSVG style={{ width: '24px' }} />
+							<DeleteSVG
+								style={{ width: '24px' }}
+								className={HRDetailStyle.deleteSVG}
+							/>
 						</div>
-
-						<Modal
-							transitionName=""
-							centered
-							open={deleteModal}
-							width={'864px'}
-							footer={null}
-							onCancel={() => setDeleteModal(false)}>
-							<div className={HRDetailStyle.modalBody}>
-								<div>
-									<h1>Delete Type</h1>
-									<p>{updatedSplitter}</p>
-								</div>
-
-								<div className={HRDetailStyle.tabContainer}>
-									<Tabs
-										defaultActiveKey="1"
-										// activeKey={title}
-										animated={true}
-										// tabBarGutter={200}
-
-										centered
-										tabBarStyle={{
-											borderBottom: `1px solid var(--uplers-border-color)`,
-										}}
-										items={[
-											{
-												label: 'On Hold',
-												key: 'On Hold',
-												children: (
-													<div style={{ marginTop: '35px' }}>
-														<div className={HRDetailStyle.row}>
-															<div className={HRDetailStyle.colMd12}>
-																<HRSelectField
-																	searchable={false}
-																	setValue={setValue}
-																	register={register}
-																	name="hrDeleteReason"
-																	label="Delete Reason"
-																	defaultValue="Please select reason"
-																	options={deleteReason && deleteReason}
-																	required
-																	isError={
-																		errors['hrDeleteReason'] &&
-																		errors['hrDeleteReason']
-																	}
-																	errorMsg="Please select a delete reason."
-																/>
-															</div>
-														</div>
-														<div className={HRDetailStyle.row}>
-															<div className={HRDetailStyle.colMd12}>
-																<HRInputField
-																	isTextArea={true}
-																	register={register}
-																	errors={errors}
-																	validationSchema={{
-																		required: 'please enter the HR Remark.',
-																	}}
-																	label="On Hold Remark"
-																	name="hrDeleteRemark"
-																	type={InputType.TEXT}
-																	placeholder="Enter Remark"
-																	required
-																/>
-															</div>
-														</div>
-														<div className={HRDetailStyle.formPanelAction}>
-															<button
-																/* style={{
-																					cursor:
-																						type === SubmitType.SAVE_AS_DRAFT ? 'no-drop' : 'pointer',
-																				}} */
-																// disabled={type === SubmitType.SAVE_AS_DRAFT}
-																// onClick={clientSubmitHandler}
-																className={HRDetailStyle.btn}>
-																Cancel
-															</button>
-															<button
-																// disabled={isLoading}
-																type="submit"
-																onClick={handleSubmit(clientSubmitHandler)}
-																className={HRDetailStyle.btnPrimary}>
-																Delete
-															</button>
-														</div>
-													</div>
-												),
-											},
-											{
-												label: 'Loss',
-												key: 'Loss',
-												children: (
-													<div style={{ marginTop: '35px' }}>
-														<div className={HRDetailStyle.row}>
-															<div className={HRDetailStyle.colMd12}>
-																<HRSelectField
-																	searchable={false}
-																	setValue={setValue}
-																	register={register}
-																	name="hrDeleteReason"
-																	label="Delete Reason"
-																	defaultValue="Please select reason"
-																	options={deleteReason && deleteReason}
-																	required
-																	isError={
-																		errors['hrDeleteReason'] &&
-																		errors['hrDeleteReason']
-																	}
-																	errorMsg="Please select a delete reason."
-																/>
-															</div>
-														</div>
-														<div className={HRDetailStyle.row}>
-															<div className={HRDetailStyle.colMd12}>
-																<HRInputField
-																	isTextArea={true}
-																	register={register}
-																	errors={errors}
-																	validationSchema={{
-																		required: 'please enter the HR Remark.',
-																	}}
-																	label="Loss Remark"
-																	name="hrDeleteRemark"
-																	type={InputType.TEXT}
-																	placeholder="Enter Remark"
-																	required
-																/>
-															</div>
-														</div>
-														<div className={HRDetailStyle.formPanelAction}>
-															<button
-																/* style={{
-																					cursor:
-																						type === SubmitType.SAVE_AS_DRAFT ? 'no-drop' : 'pointer',
-																				}} */
-																// disabled={type === SubmitType.SAVE_AS_DRAFT}
-																// onClick={clientSubmitHandler}
-																className={HRDetailStyle.btn}>
-																Cancel
-															</button>
-															<button
-																// disabled={isLoading}
-																type="submit"
-																// onClick={handleSubmit(clientSubmitHandler)}
-																className={HRDetailStyle.btnPrimary}>
-																Delete
-															</button>
-														</div>
-													</div>
-												),
-											},
-										]}
-									/>
-								</div>
-							</div>
-						</Modal>
 					</div>
 				</div>
 				{isLoading ? (
@@ -380,6 +270,170 @@ const HRDetailScreen = () => {
 						</Suspense>
 					)}
 				</div>
+
+				{/** ------------------ HR Delete Modal ---------------------- */}
+				<Modal
+					transitionName=""
+					centered
+					open={deleteModal}
+					width={'864px'}
+					footer={null}
+					onCancel={() => setDeleteModal(false)}>
+					<div className={HRDetailStyle.modalBody}>
+						<div>
+							<h1>Delete Type</h1>
+							<p>{updatedSplitter}</p>
+						</div>
+
+						<div className={HRDetailStyle.tabContainer}>
+							<Tabs
+								defaultActiveKey="1"
+								animated={true}
+								centered
+								tabBarStyle={{
+									borderBottom: `1px solid var(--uplers-border-color)`,
+								}}
+								items={[
+									{
+										label: 'On Hold',
+										key: 'On Hold',
+										children: (
+											<div style={{ marginTop: '35px' }}>
+												<div className={HRDetailStyle.row}>
+													<div className={HRDetailStyle.colMd12}>
+														<HRSelectField
+															mode={'id/value'}
+															searchable={false}
+															setValue={setValue}
+															register={register}
+															name="hrDeleteReason"
+															label="Delete Reason"
+															defaultValue="Please select reason"
+															options={deleteReason && deleteReason}
+															required
+															isError={
+																errors['hrDeleteReason'] &&
+																errors['hrDeleteReason']
+															}
+															errorMsg="Please select a delete reason."
+														/>
+													</div>
+												</div>
+												{watch('hrDeleteReason')?.value === 'Other' && (
+													<div className={HRDetailStyle.row}>
+														<div className={HRDetailStyle.colMd12}>
+															<HRInputField
+																register={register}
+																errors={errors}
+																validationSchema={{
+																	required: 'Please enter the other reason.',
+																}}
+																label="On Hold Other Reason"
+																name="hrDeleteOtherReason"
+																type={InputType.TEXT}
+																placeholder="Enter Other Reason"
+																required
+															/>
+														</div>
+													</div>
+												)}
+												<div className={HRDetailStyle.row}>
+													<div className={HRDetailStyle.colMd12}>
+														<HRInputField
+															isTextArea={true}
+															register={register}
+															errors={errors}
+															validationSchema={{
+																required: 'Please enter the HR Remark.',
+															}}
+															label="On Hold Remark"
+															name="hrDeleteRemark"
+															type={InputType.TEXT}
+															placeholder="Enter Remark"
+															required
+														/>
+													</div>
+												</div>
+												<div className={HRDetailStyle.formPanelAction}>
+													<button
+														onClick={() => setDeleteModal(false)}
+														className={HRDetailStyle.btn}>
+														Cancel
+													</button>
+													<button
+														id={HRDeleteType.ON_HOLD}
+														type="submit"
+														onClick={handleSubmit(clientOnHoldSubmitHandler)}
+														className={HRDetailStyle.btnPrimary}>
+														Delete
+													</button>
+												</div>
+											</div>
+										),
+									},
+									{
+										label: 'Loss',
+										key: 'Loss',
+										children: (
+											<div style={{ marginTop: '35px' }}>
+												<div className={HRDetailStyle.row}>
+													<div className={HRDetailStyle.colMd12}>
+														<HRSelectField
+															searchable={false}
+															setValue={setValue}
+															register={register}
+															name="hrDeleteLossReason"
+															label="Delete Reason"
+															defaultValue="Please select reason"
+															options={deleteReason && deleteReason}
+															required
+															isError={
+																errors['hrDeleteLossReason'] &&
+																errors['hrDeleteLossReason']
+															}
+															errorMsg="Please select a delete reason."
+														/>
+													</div>
+												</div>
+												<div className={HRDetailStyle.row}>
+													<div className={HRDetailStyle.colMd12}>
+														<HRInputField
+															isTextArea={true}
+															register={register}
+															errors={errors}
+															validationSchema={{
+																required: 'please enter the HR Remark.',
+															}}
+															label="Loss Remark"
+															name="hrDeleteLossRemark"
+															type={InputType.TEXT}
+															placeholder="Enter Remark"
+															required
+														/>
+													</div>
+												</div>
+												<div className={HRDetailStyle.formPanelAction}>
+													<button
+														onClick={() => setDeleteModal(false)}
+														className={HRDetailStyle.btn}>
+														Cancel
+													</button>
+													<button
+														id={HRDeleteType.LOSS}
+														type="submit"
+														// onClick={handleSubmit(clientLossSubmitHandler)}
+														className={HRDetailStyle.btnPrimary}>
+														Delete
+													</button>
+												</div>
+											</div>
+										),
+									},
+								]}
+							/>
+						</div>
+					</div>
+				</Modal>
 			</div>
 		</WithLoader>
 	);

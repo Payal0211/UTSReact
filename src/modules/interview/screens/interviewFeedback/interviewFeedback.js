@@ -53,14 +53,17 @@ const InterviewFeedback = () => {
 	}, [getTimeZone]);
 	return (
 		<div className={InterviewScheduleStyle.interviewContainer}>
-			<Link to={UTSRoutes.INTERVIEWLISTROUTE}>
+			{/* <Link to={UTSRoutes.INTERVIEWLISTROUTE}>
 				<div className={InterviewScheduleStyle.goback}>
 					<ArrowLeftSVG style={{ width: '16px' }} />
 					<span>Go Back</span>
 				</div>
-			</Link>
+			</Link> */}
+			<div className={InterviewScheduleStyle.leftPane}>
+				<h3>Share Your Feedback</h3>
+			</div>
 			<div className={InterviewScheduleStyle.panelBody}>
-				<div className={InterviewScheduleStyle.leftPane}>
+				{/* <div className={InterviewScheduleStyle.leftPane}>
 					<h3>
 						Share Your Feedback for <br />
 						Manideep Koduri
@@ -71,7 +74,7 @@ const InterviewFeedback = () => {
 						Share your experience during the interview in the below feedback
 						form!
 					</p>
-				</div>
+				</div> */}
 				<div className={InterviewScheduleStyle.rightPane}>
 					<div className={InterviewScheduleStyle.row}>
 						<div
@@ -187,8 +190,8 @@ const InterviewFeedback = () => {
 										flexDirection: 'column',
 									}}>
 									<label>
-										Would you like to proceed with the next steps of hiring this
-										talent?
+										How would you rate this talent in terms of technical skills
+										required for DevOps Engineer?
 										<span className={InterviewScheduleStyle.reqField}>*</span>
 									</label>
 
@@ -215,8 +218,8 @@ const InterviewFeedback = () => {
 										flexDirection: 'column',
 									}}>
 									<label>
-										Would you like to proceed with the next steps of hiring this
-										talent?
+										How would you rate this talent in terms of Communication
+										skills required for DevOps Engineer?
 										<span className={InterviewScheduleStyle.reqField}>*</span>
 									</label>
 
@@ -243,8 +246,8 @@ const InterviewFeedback = () => {
 										flexDirection: 'column',
 									}}>
 									<label>
-										Would you like to proceed with the next steps of hiring this
-										talent?
+										How would you rate this talent in terms of the Cognitive
+										skills required for DevOps Engineer?
 										<span className={InterviewScheduleStyle.reqField}>*</span>
 									</label>
 
@@ -262,7 +265,28 @@ const InterviewFeedback = () => {
 								</div>
 							</div>
 						</div>
-
+						<div className={InterviewScheduleStyle.row}>
+							<div className={InterviewScheduleStyle.colMd12}>
+								<HRInputField
+									register={register}
+									label="Any Feedback you want to share straight to the talent?"
+									name="interviewClientFeedback"
+									type={InputType.TEXT}
+									placeholder="Enter message"
+								/>
+							</div>
+						</div>
+						<div className={InterviewScheduleStyle.row}>
+							<div className={InterviewScheduleStyle.colMd12}>
+								<HRInputField
+									register={register}
+									label="Client's Decision"
+									name="interviewClientDecision"
+									type={InputType.TEXT}
+									placeholder="Enter message"
+								/>
+							</div>
+						</div>
 						<div className={InterviewScheduleStyle.row}>
 							<div className={InterviewScheduleStyle.colMd12}>
 								<HRInputField
@@ -298,7 +322,7 @@ const InterviewFeedback = () => {
 					// disabled={type === SubmitType.SAVE_AS_DRAFT}
 					// onClick={clientSubmitHandler}
 					className={InterviewScheduleStyle.btn}>
-					Back to Interview Page
+					Cancel
 				</button>
 			</div>
 		</div>

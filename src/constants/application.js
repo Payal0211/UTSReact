@@ -137,6 +137,25 @@ export class InterviewStatus {
 	static FEEDBACK_SUBMITTED = 507;
 	static INTERVIEW_RESCHEDULES = 508;
 }
+
+export class DealStageStatus {
+	static BOOKING = 101;
+	static BOOKING_WITHOUT_INVOICE = 102;
+	static ESCALATION = 103;
+	static EXTRA = 104;
+	static GOAL = 105;
+	static HOLD = 106;
+	static LOST = 107;
+	static OPPORTUNITY = 108;
+	static PIPELINE = 109;
+	static PITCH_PLANNING = 110;
+	static PITCH_PLANNING_TARGETS = 111;
+	static PRE_APPROVED_PIPELINE = 112;
+	static REALIZATION = 113;
+	static WEEKLY_CONVERSION_EXPECTED = 114;
+	static WEEKLY_GOAL = 115;
+	static NOT_FOUND = 1000;
+}
 export class ClientStatus {
 	static ANOTHER_ROUND = 601;
 	static HIRED = 602;
@@ -150,7 +169,10 @@ export class UploadFileType {
 	static IMAGE = 2;
 	static DOC = 3;
 }
-
+export class HRDeleteType {
+	static ON_HOLD = 1;
+	static LOSS = 2;
+}
 export class DayName {
 	static SUNDAY = 'Sunday';
 	static MONDAY = 'Monday';

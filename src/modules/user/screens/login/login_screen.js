@@ -69,6 +69,9 @@ const LoginScreen = () => {
 						<hr />
 						<div className={loginStyle.loginFormPart}>
 							<InputField
+								/* onKeyDownHandler={(e) => {
+									if (e.key === 'Enter') loginHandler();
+								}} */
 								label="Username"
 								name="username"
 								type={InputType.TEXT}
@@ -78,6 +81,9 @@ const LoginScreen = () => {
 								errorMsg={error['username']}
 							/>
 							<InputField
+								onKeyDownHandler={(e) => {
+									if (e.key === 'Enter') loginHandler();
+								}}
 								name="password"
 								label="Password"
 								type={
