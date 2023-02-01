@@ -5,11 +5,14 @@ import UTSRoutes from 'constants/routes';
 import { Badge, Tooltip } from 'antd';
 import { ReactComponent as BellSVG } from 'assets/svg/bell.svg';
 import { ReactComponent as LogoutSVG } from 'assets/svg/logout.svg';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Navbar = ({ fullName }) => {
 	const navigation = useNavigate();
+	const queryClient = useQueryClient();
 	const onLogoutHandler = async () => {
 		const res = await userDAO.logoutDAO();
+		queryClient.removeQueries();
 		if (res) navigation(UTSRoutes.LOGINROUTE);
 	};
 	return (

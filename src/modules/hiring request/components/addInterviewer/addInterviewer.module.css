@@ -1,0 +1,72 @@
+.addInterviewContainer{
+    display: flex;
+    width: 100%;
+}
+.addInterviewLeftPane{
+    width: 33.33%;
+}
+.addInterviewLeftPane h3 {
+    font-size: var(--fontsize-doom);
+    font-weight: 500;
+    line-height: 29px;
+    color: var(--uplers-black);
+}
+
+.addInterviewLeftPane p {
+    font-size: var(--fontsize-brittle);
+    font-weight: 400;
+    line-height: 20px;
+    color: #7C7C7C;
+}
+.addInterviewer {
+    background-color: var(--background-color-light);
+    font-size: var(--fontsize-tough);
+    font-weight: 500;
+    border: 1px solid var(--background-color-metal);
+    border-radius: 10px;
+    padding: 10px 10% !important;
+    cursor: pointer;
+}
+.addInterviewRightPane{
+    flex:1;
+}
+.row {
+    margin: 0;
+    margin: 0 -9px;
+    display: flex;
+}
+
+.colMd6 {
+    margin: 0;
+    width: 50%;
+    padding: 0 9px;
+}
+
+.leftPanelAction {
+    margin-top: 32px;
+}
+
+.leftPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid var(--tabs-border-color);
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.leftPanelAction button+button {
+    margin-left: 16px;
+}
+
+.leftPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    color: var(--uplers-black);
+    border-color: var(--color-sunlight);
+}

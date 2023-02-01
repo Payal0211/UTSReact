@@ -8,6 +8,7 @@
     padding: 0 10px;
     font-weight: 600;
     transition: transform 0.2s;
+    white-space: nowrap;
 }
 
 /* .hrStatusContainer:hover{

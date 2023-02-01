@@ -47,11 +47,11 @@ export class ValidateInput {
 		}
 	}
 
-	static required(value) {
+	static required(value, fieldName = '') {
 		if (!value || !value.toString().trim().length) {
 			return {
 				isError: true,
-				errorMsg: 'Required field.',
+				errorMsg: `Please enter the ${fieldName}.`,
 			};
 		} else {
 			return {

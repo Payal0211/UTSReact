@@ -1,0 +1,256 @@
+.tabsBody {
+    margin: 55px 0 0;
+}
+
+.tabsFormItem {
+    padding-bottom: 23px;
+    margin-bottom: 55px;
+    border-bottom: 1px solid rgba(206, 204, 204, 0.5);
+}
+
+.tabsFormItemInner {
+    display: flex;
+}
+
+.tabsFormItem:nth-last-child(2) {
+    margin-bottom: 0;
+}
+
+.tabsLeftPanel {
+    width: 33.33%;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #7C7C7C;
+}
+
+.tabsRightPanel {
+    flex: 1;
+    padding-left: 30px;
+}
+
+.row {
+    margin: 0 -9px;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.colMd12 {
+    width: 100%;
+    padding: 0 9px;
+}
+
+.colMd6 {
+    width: 50%;
+    padding: 0 9px;
+}
+
+.colMd4 {
+    width: 33.33%;
+    padding: 0 9px;
+}
+
+.tabsLeftPanel h3 {
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 30px;
+    color: var(--uplers-black);
+    margin: 0 0 8px;
+}
+
+.tabsLeftPanel p {
+    margin: 0;
+}
+
+.formGroup {
+    margin: 0 0 32px;
+}
+
+.formGroup label {
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--uplers-lightBlack);
+    margin: 0 0 8px;
+    display: inline-block;
+}
+
+
+.formGroup .ant-select {
+    width: 100%;
+}
+
+.reqField {
+    color: var(--uplers-black);
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+.radioFormGroup {
+    margin-bottom: 32px;
+}
+
+.radioFormGroup>label {
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--uplers-lightBlack);
+    margin: 0 16px 0 0;
+    display: inline-block;
+}
+
+.leftPanelAction {
+    margin-top: 32px;
+}
+
+.leftPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid var(--tabs-border-color);
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.leftPanelAction button+button {
+    margin-left: 16px;
+}
+
+.leftPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    color: var(--uplers-black);
+    border-color: var(--color-sunlight);
+}
+
+.formPanelAction {
+    padding: 32px 0;
+    justify-content: center;
+    display: flex;
+}
+
+.formPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid var(--tabs-border-color);
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.formPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+
+.formPanelAction button+button {
+    margin-left: 16px;
+}
+
+.checkBoxGroup {
+    margin-bottom: 32px;
+}
+
+.uploadField {
+    margin: 0;
+    position: relative;
+}
+
+.uploadFieldText {
+    position: relative;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(107, 107, 107, 0.6);
+    vertical-align: middle;
+    margin: 0;
+    width: 100%;
+    padding: 16px 16px;
+    background: var(--text-color-purity);
+    border: 1px solid var(--tabs-border-color);
+    border-radius: 8px;
+    transition: all 0.25s ease 0s;
+    overflow: hidden;
+    cursor: pointer;
+    align-items: center;
+    display: flex;
+}
+
+.uploadFieldText input {
+    position: absolute;
+    left: -110px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0;
+}
+
+.uploadFieldText svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.mb0 {
+    margin-bottom: 0 !important;
+}
+
+.mb0 [class*="input_field"] {
+    margin-bottom: 0 !important;
+}
+.phoneNoGroup {
+    margin: 0;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.phoneNoGroup label {
+    width: 100%;
+}
+.phoneNoCode {
+    width: 120px;
+}
+
+.phoneNoCode [class*="ant-select-selector"] {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.phoneNoInput {
+    flex: 1;
+}
+
+.phoneNoInput [class*="formField"] {
+    margin: 0;
+}
+
+.phoneNoInput input {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin: 0;
+}

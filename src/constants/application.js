@@ -27,6 +27,21 @@ export class NotificationStatus {
 	static UNREAD = 0;
 	static READ = 1;
 }
+export class UserAccountRole {
+	static ADMINISTRATOR = 1;
+	static DEVELOPER = 2;
+	static LEGAL = 3;
+	static SALES = 4;
+	static TALENTOPS = 5;
+	static RESUME_WRITER = 6;
+	static PRACTIVE_HEAD = 7;
+	static FINANCE_EXECUTIVE = 8;
+	static SALES_MANAGER = 9;
+	static OPS_TEAM_MANAGER = 10;
+	static BDR = 11;
+	static MARKETING = 12;
+}
+
 export class SessionType {
 	static EXPIRED = 0;
 	static ACTIVE = 1;
@@ -47,7 +62,7 @@ export const PasswordRegEx = {
 
 export const EmailRegEx = {
 	email:
-		'^(([^<>()\\[\\]\\\\.,;:\\s@]+(\\.[^<>()\\[\\]\\\\.,;:\\s@]+)*)|(.+))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$',
+		/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
 };
 
 export const UsernameRegEx = {
@@ -57,6 +72,25 @@ export const OTPRegEx = {
 	length: '(?=.{6,6})',
 };
 
+export class FormType {
+	static ONBOARDING = 'onboarding';
+	static HRFIELD = 'hrfield';
+	static CLIENTFIELD = 'clientfield';
+}
+export class AddNewType {
+	static CLIENT = 'Add New Client';
+	static HR = 'Add New HR';
+	static DEBRIEFING = 'debriefingHR';
+}
+
+export class TalentOnboardStatus {
+	static SCHEDULE_INTERVIEW = 'Schedule Interview';
+	static RESCHEDULE_INTERVIEW = 'Reschedule Interview';
+	static TALENT_STATUS = 'Talent Status';
+	static TALENT_ACCEPTANCE = 'Talent Acceptance';
+	static UPDATE_KICKOFF = 'Update kickoff & Onboard Status';
+	static ONBOARD_TALENT = 'Onboard Talent';
+}
 export class InputType {
 	static TEXT = 'text';
 	static NUMBER = 'number';
@@ -93,4 +127,82 @@ export class TalentRequestStatus {
 	static ON_HOLD = 306;
 	static REJECTED = 307;
 	static REPLACEMENT = 308;
+}
+export class InterviewStatus {
+	static SLOT_GIVEN = 501;
+	static CANCELLED = 503;
+	static INTERVIEW_SCHEDULED = 504;
+	static INTERVIEW_IN_PROCESS = 505;
+	static INTERVIEW_COMPLETED = 506;
+	static FEEDBACK_SUBMITTED = 507;
+	static INTERVIEW_RESCHEDULES = 508;
+}
+
+export class DealStageStatus {
+	static BOOKING = 101;
+	static BOOKING_WITHOUT_INVOICE = 102;
+	static ESCALATION = 103;
+	static EXTRA = 104;
+	static GOAL = 105;
+	static HOLD = 106;
+	static LOST = 107;
+	static OPPORTUNITY = 108;
+	static PIPELINE = 109;
+	static PITCH_PLANNING = 110;
+	static PITCH_PLANNING_TARGETS = 111;
+	static PRE_APPROVED_PIPELINE = 112;
+	static REALIZATION = 113;
+	static WEEKLY_CONVERSION_EXPECTED = 114;
+	static WEEKLY_GOAL = 115;
+	static NOT_FOUND = 1000;
+}
+export class ClientStatus {
+	static ANOTHER_ROUND = 601;
+	static HIRED = 602;
+	static NOT_HIRED = 603;
+	static ON_HOLD = 604;
+}
+
+export class UploadFileType {
+	static ANY = 0;
+	static PDF = 1;
+	static IMAGE = 2;
+	static DOC = 3;
+}
+export class HRDeleteType {
+	static ON_HOLD = 1;
+	static LOSS = 2;
+}
+export class DayName {
+	static SUNDAY = 'Sunday';
+	static MONDAY = 'Monday';
+	static TUESDAY = 'Tuesday';
+	static WEDNESDAY = 'Wednesday';
+	static THURSDAY = 'Thursday';
+	static FRIDAY = 'Friday';
+	static SATURDAY = 'Saturday';
+}
+
+export class SubmitType {
+	static SAVE_AS_DRAFT = 0;
+	static SUBMIT = 1;
+}
+
+export class ClientHRURL {
+	static ADD_NEW_HR = 'addnewhr';
+	static ADD_NEW_CLIENT = 'addnewclient';
+}
+
+export class MastersKey {
+	static AVAILABILITY = 'availability';
+	static TIMEZONE = 'timeZonePref';
+	static TALENTROLE = 'talentRole';
+	static SALESPERSON = 'salesPerson';
+}
+
+export class ProfileLog {
+	static PROFILE_SHARED = 6;
+	static FEEDBACK = 12;
+	static REJECTED = 22;
+	static SELECTED = 51;
 }

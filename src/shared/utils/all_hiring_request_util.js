@@ -1,4 +1,5 @@
 import {
+	DayName,
 	HiringRequestHRStatus,
 	hiringRequestPriority,
 	TalentRequestStatus,
@@ -8,9 +9,10 @@ import { ReactComponent as CurrentWeekPriorityStar } from 'assets/svg/currentWee
 import { ReactComponent as NextWeekPriorityStar } from 'assets/svg/nextWeekPriorityStar.svg';
 import HRStatusComponent from 'modules/hiring request/components/hrStatus/hrStatusComponent';
 import { Tooltip } from 'antd';
+import { DateTimeUtils } from './basic_utils';
 
 export const All_Hiring_Request_Utils = {
-	GETHRPRIORITY: function (statusCode) {
+	GETHRPRIORITY: function (statusCode, hrID, togglePriority) {
 		switch (statusCode) {
 			case hiringRequestPriority.NO_PRIORITY:
 				return (
@@ -18,7 +20,19 @@ export const All_Hiring_Request_Utils = {
 						placement="bottom"
 						title="No Priority"
 						color={`var(--uplers-black)`}>
-						<NoPriorityStar />
+						<NoPriorityStar
+							onClick={
+								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
+									? null
+									: () => {
+											let priorityObject = {
+												isNextWeekStarMarked: '1',
+												hRID: hrID,
+											};
+											togglePriority(priorityObject);
+									  }
+							}
+						/>
 					</Tooltip>
 				);
 			case hiringRequestPriority.CURRENT_WEEK_PRIORITY:
@@ -36,7 +50,19 @@ export const All_Hiring_Request_Utils = {
 						placement="bottom"
 						title="Next Week Priority"
 						color={`var(--color-sunlight)`}>
-						<NextWeekPriorityStar />
+						<NextWeekPriorityStar
+							onClick={
+								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
+									? null
+									: () => {
+											let priorityObject = {
+												isNextWeekStarMarked: '0',
+												hRID: hrID,
+											};
+											togglePriority(priorityObject);
+									  }
+							}
+						/>
 					</Tooltip>
 				);
 			default:
@@ -113,7 +139,6 @@ export const All_Hiring_Request_Utils = {
 				break;
 		}
 	},
-
 	GETTALENTSTATUS: function (statusCode, talentStatus) {
 		switch (statusCode) {
 			case TalentRequestStatus.SELECTED:

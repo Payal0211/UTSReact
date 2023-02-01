@@ -1,0 +1,187 @@
+.profileContainer{
+    width: 1100px;
+    margin:auto;
+    background-color: var(--background-color-light);
+    border-radius: 8px;
+}
+.flexStart{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.profileBody{
+    width: 93%;
+    margin: auto;
+    display: flex;
+    justify-content: flex-start;
+    gap:16px;
+    align-items: center;
+    padding: 24px;
+}
+.profileNameContainer{
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    padding: 12px 24px;
+    width: 260px;
+}
+.attemptsContainer{
+    border: 1px solid #CECCCC;
+        border-radius: 8px;
+        padding: 12px 24px;
+       
+            width: 260px;
+           
+}
+
+.label{
+    color: #676767;
+    font-size: 16px;
+    line-height: 20px;
+}
+.value{
+    color: var(--uplers-black);
+    font-size: 16px;
+    line-height: 20px;
+    /* text-decoration: underline; */
+}
+.profileDataContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 93%;
+    margin: auto;
+    padding: 16px 5px 24px;
+   
+}
+.stages{
+    text-align: center;
+    padding: 16px 0 24px;
+    color: var(--uplers-lightBlack);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+}
+.calendarFilterSet {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-left: 176px;
+}
+
+.label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--uplers-lightBlack);
+}
+
+.calendarFilter {
+    width: 250px;
+    height: 44px;
+    border-radius: 8px;
+    padding: 2px 10px;
+    border: 1px solid var(--background-color-metal);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dateFilter {
+    cursor: pointer;
+    width: 102%;
+    outline: none;
+    border: none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}
+
+.profileSets{
+    width: 230px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 14px;
+    color: var(--uplers-black);
+    font-weight: 500;
+}
+.scoreValue{
+    line-height: 26px;
+    padding: 14px 4px 14px 24px;
+    font-weight: 600;
+    font-size: 22px;
+}
+.matchmakingTable {
+    cursor: pointer;
+    border-collapse: collapse;
+    width: 92%;
+    margin :0 auto;
+max-height: 200px !important;
+    overflow-y: scroll;
+    padding-bottom: 10px;
+    position: relative;
+   
+}
+.table{
+    
+    cursor: pointer;
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 8px;
+       
+}
+
+.td {
+    padding: 17px 12px;
+    text-align: start;
+
+    border-bottom: 1px solid var(--uplers-grey) !important;
+}
+
+tr .td:first-child {
+    padding-left: 20px;
+}
+
+.ellipsis {
+    white-space: nowrap;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.maxWidth164 {
+    max-width: 164px;
+}
+
+.maxWidth134 {
+    max-width: 134px;
+}
+
+.maxWidth170 {
+    max-width: 170px;
+}
+
+.ml5 {
+    width: 10px;
+    margin-left: 5px;
+}
+
+.th {
+    z-index: 1;
+    padding: 24px 12px;
+    text-align: start;
+    color: var(--uplers-grey);
+    font-size: 14px !important;
+    font-weight: 600;
+    line-height: 17px !important;
+    color: var(--uplers-black);
+    position: sticky;
+    top: 0;
+    border-bottom: 1px dashed var(--uplers-grey);
+}
+
+tr th:first-child {
+    padding-left: 20px;
+}

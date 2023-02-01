@@ -37,8 +37,20 @@
     background-color: var(--background-color-light);
     border: 2px solid var(--uplers-border-color);
     padding: 10px 15px;
+    cursor: pointer;
     border-radius: 8px;
 }
+
+.hiringRequestPriority:hover{
+    border: 2px solid var(--background-color-light);
+    background-color: var(--color-sunlight);
+    transition: all .2s ease;
+}
+.hiringRequestPriority:hover>.deleteSVG{
+   transform: scale(.9);
+   transition: all .2s ease;
+}
+
 
 .newHR {
     padding: 1px 0;
@@ -74,7 +86,7 @@
     margin-top: 50px;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    /* align-items: flex-start; */
 }
 .clientPortal{
     width:33%;
@@ -106,4 +118,74 @@
         gap:0;
         justify-content: space-between;
     }
+}
+
+.modalBody{
+    padding:0 40px 
+}
+
+.tabContainer{
+    margin-top: 32px;
+    margin-bottom: 40px;
+}
+
+.tabContainer [class*="ant-tabs-nav-list"]{    
+    width: 100%;
+}
+.tabContainer [class*="ant-tabs-top"] [class*="ant-tabs-nav-list"] [class*="ant-tabs-tab"]{    
+    width: 50%;
+    justify-content: center;
+}
+
+.colMd12 {
+    width: 100%;
+    padding: 0 25px 0 0;
+}
+
+.reqField {
+    color: var(--uplers-black);
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
+}
+.row {
+    gap: 8px;
+    /* margin: 0 -9px; */
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.formPanelAction {
+    /* padding: 32px 0; */
+    justify-content: flex-start;
+    align-items: center;
+    display: flex;
+}
+
+.formPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid var(--uplers-border-color);
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.formPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+
+.formPanelAction button+button {
+    margin-left: 16px;
+}
+[class*="ant-select-dropdown"] {
+    z-index: 1000 !important;
 }

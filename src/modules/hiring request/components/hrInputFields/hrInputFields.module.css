@@ -1,0 +1,89 @@
+.formField {
+    width: 100%;
+    margin: 0 0 32px;  
+}
+
+.formField label {
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #676767;
+    margin: 0 0 8px;
+    display: inline-block;
+}
+
+.inputBox {
+    /* text-align: left; */
+    position: relative;
+}
+
+.disabled{
+    opacity:.7;
+    cursor:not-allowed !important;
+}
+.inputBoxError .inputfield {
+    border: 1px solid var(--danger-color);
+    outline-color: var(--danger-color);
+}
+
+.inputfield {
+    text-align: left;
+    width: 100%;
+    padding: 16px 16px;
+    background: var(--background-color-light);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--uplers-black);
+    outline: 1px solid transparent;
+    transition: all 0.25s ease 0s;
+}
+
+.inputfield::-webkit-input-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.inputfield::-moz-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.inputfield:-ms-input-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.inputfield:-moz-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.inputfield:focus {
+    outline-color: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+
+.leadingIcon {
+    
+    position: absolute;
+    top: 19px;
+    left:5px;
+    /* width: 16px; */
+    margin:0px 10px; 
+}
+
+.error {
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
+}
+.reqField {
+    color: var(--uplers-black);
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
+}

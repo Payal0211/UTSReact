@@ -7,10 +7,21 @@ import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
 import { Fragment, useState } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
+import { AddNewType, TalentOnboardStatus } from 'constants/application';
+
+import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
+import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
+import InterviewFeedback from 'modules/interview/screens/interviewFeedback/interviewFeedback';
 
 const TalentList = ({ talentDetail }) => {
 	const [showVersantModal, setVersantModal] = useState(false);
+	const [interviewStatus, setInterviewStatus] = useState(false);
+	const [showReScheduleInterviewModal, setReScheduleInterviewModal] =
+		useState(false);
+	const [showScheduleInterviewModal, setScheduleInterviewModal] =
+		useState(false);
 
+	const [talentIndex, setTalentIndex] = useState(0);
 	return (
 		<div>
 			<List
@@ -23,8 +34,11 @@ const TalentList = ({ talentDetail }) => {
 					pageSize: 2,
 					position: 'top',
 				}}
-				renderItem={(item) => (
-					<Fragment>
+				renderItem={(item, listIndex) => (
+					<div
+						key={item?.Name}
+						id={listIndex}>
+						{/* {console.log('item.name', item?.Name, '--And--', listIndex)} */}
 						<div className={TalentListStyle.talentCard}>
 							<div className={TalentListStyle.talentCardBody}>
 								<div className={TalentListStyle.partWise}>
@@ -144,8 +158,15 @@ const TalentList = ({ talentDetail }) => {
 								/>
 								<div className={TalentListStyle.interviewStatus}>
 									<span>Interview Status:</span>&nbsp;&nbsp;
-									<span style={{ fontWeight: '500' }}>
-										{item?.InterviewStatus}
+									<span
+										style={{ fontWeight: '500', cursor: 'pointer' }}
+										onClick={() => {
+											setInterviewStatus(true);
+											setTalentIndex(listIndex);
+										}}>
+										{item?.InterviewStatus === ''
+											? 'NA'
+											: item?.InterviewStatus}
 									</span>
 								</div>
 								<Divider
@@ -223,92 +244,13 @@ const TalentList = ({ talentDetail }) => {
 										textDecoration: 'underline',
 										cursor: 'pointer',
 									}}
-									onClick={() => setVersantModal(true)}>
+									onClick={() => {
+										setVersantModal(true);
+										setTalentIndex(listIndex);
+									}}>
 									Versant Test Results
 								</div>
-								<Modal
-									width="864px"
-									centered
-									footer={null}
-									open={showVersantModal}
-									// onOk={() => setVersantModal(false)}
-									onCancel={() => setVersantModal(false)}>
-									<h1>Versant Test Results</h1>
-									<div
-										style={{
-											// border: '1px solid red',
-											display: 'flex',
-											justifyContent: 'space-between',
-											alignItems: 'center',
-											marginTop: '50px',
-										}}>
-										<div
-											style={{
-												display: 'flex',
-												justifyContent: 'space-between',
-												alignItems: 'center',
-												width: '60%',
-												flexWrap: 'wrap',
-											}}>
-											<div
-												style={{
-													borderRadius: '8px',
-													border: `1px solid var(--uplers-border-color)`,
-													padding: '10px 30px',
-												}}>
-												<span>Name: </span>
-												<span
-													style={{
-														fontWeight: 500,
-														textDecoration: 'underline',
-													}}>
-													{item?.Name}
-												</span>
-											</div>
-											<div
-												style={{
-													borderRadius: '8px',
-													border: `1px solid var(--uplers-border-color)`,
-													padding: '10px 30px',
-												}}>
-												<span>Date of Test:</span>
-												<span
-													style={{
-														fontWeight: 500,
-													}}>
-													10/09/2022
-												</span>
-											</div>
-										</div>
-										<div
-											style={{
-												padding: '1px 10px',
-												borderRadius: '8px',
-												backgroundColor: `var(--uplers-grey)`,
-											}}>
-											<ExportSVG />
-										</div>
-									</div>
-									<Divider />
-									<div
-										style={{
-											display: 'flex',
-											justifyContent: 'space-between',
-											alignItems: 'center',
-										}}>
-										<div style={{ width: '50%' }}>
-											<div
-												style={{
-													fontWeight: '500',
-													fontSize: '18px',
-													textAlign: 'center',
-												}}>
-												Overall GSE Score
-											</div>
-										</div>
-										<div></div>
-									</div>
-								</Modal>
+
 								<div style={{ padding: '2px 0', textDecoration: 'underline' }}>
 									Skill Test Results
 								</div>
@@ -317,20 +259,178 @@ const TalentList = ({ talentDetail }) => {
 										margin: '10px 0',
 									}}
 								/>
-								<div style={{ position: 'absolute', marginTop: '10px' }}>
+								<div
+									style={{
+										position: 'absolute',
+										marginTop: '10px',
+										textAlign: 'start !important',
+									}}>
 									<HROperator
 										title="Update kickoff & Onboard Status"
 										icon={<AiOutlineDown />}
 										backgroundColor={`var(--color-sunlight)`}
 										iconBorder={`1px solid var(--color-sunlight)`}
 										isDropdown={true}
+										listItem={[
+											{
+												label: 'Schedule Interview',
+												key: TalentOnboardStatus.SCHEDULE_INTERVIEW,
+											},
+											{
+												label: 'Reschedule Interview',
+												key: TalentOnboardStatus.RESCHEDULE_INTERVIEW,
+											},
+											{
+												label: 'Talent Status',
+												key: TalentOnboardStatus.TALENT_STATUS,
+											},
+										]}
+										menuAction={(item) => {
+											switch (item.key) {
+												case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
+													setScheduleInterviewModal(true);
+													setTalentIndex(listIndex);
+													break;
+												}
+												case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
+													setReScheduleInterviewModal(true);
+													setTalentIndex(listIndex);
+													break;
+												}
+												default:
+													break;
+											}
+										}}
 									/>
 								</div>
 							</div>
 						</div>
-					</Fragment>
+					</div>
 				)}
 			/>
+			{/** ============ MODAL FOR VERSANT SCORE ================ */}
+			<Modal
+				width="864px"
+				centered
+				footer={null}
+				open={showVersantModal}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setVersantModal(false)}>
+				<h1>Versant Test Results</h1>
+				<div
+					style={{
+						// border: '1px solid red',
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						marginTop: '50px',
+					}}>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							alignItems: 'center',
+							width: '60%',
+							flexWrap: 'wrap',
+						}}>
+						<div
+							style={{
+								borderRadius: '8px',
+								border: `1px solid var(--uplers-border-color)`,
+								padding: '10px 30px',
+							}}>
+							<span>Name: </span>
+							<span
+								style={{
+									fontWeight: 500,
+									textDecoration: 'underline',
+								}}>
+								{talentDetail[talentIndex]?.Name}
+							</span>
+						</div>
+						<div
+							style={{
+								borderRadius: '8px',
+								border: `1px solid var(--uplers-border-color)`,
+								padding: '10px 30px',
+							}}>
+							<span>Date of Test:</span>
+							<span
+								style={{
+									fontWeight: 500,
+								}}>
+								10/09/2022
+							</span>
+						</div>
+					</div>
+					<div
+						style={{
+							padding: '1px 10px',
+							borderRadius: '8px',
+							backgroundColor: `var(--uplers-grey)`,
+						}}>
+						<ExportSVG />
+					</div>
+				</div>
+				<Divider />
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}>
+					<div style={{ width: '50%' }}>
+						<div
+							style={{
+								fontWeight: '500',
+								fontSize: '18px',
+								textAlign: 'center',
+							}}>
+							Overall GSE Score
+						</div>
+					</div>
+					<div></div>
+				</div>
+			</Modal>
+			{/** ============ MODAL FOR RESCHEDULING INTERVIEW ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				open={showReScheduleInterviewModal}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setReScheduleInterviewModal(false)}>
+				<InterviewReschedule
+					closeModal={() => setReScheduleInterviewModal(false)}
+					talentName={talentDetail[talentIndex]?.Name}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR SCHEDULING INTERVIEW ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				open={showScheduleInterviewModal}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setScheduleInterviewModal(false)}>
+				<InterviewSchedule
+					talentName={talentDetail[talentIndex]?.Name}
+					closeModal={() => setScheduleInterviewModal(false)}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR INTERVIEW FEEDBACK STATUS ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				open={interviewStatus}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setInterviewStatus(false)}>
+				<InterviewFeedback />
+			</Modal>
 		</div>
 	);
 };

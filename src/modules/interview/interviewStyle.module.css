@@ -1,0 +1,416 @@
+.interviewContainer{
+    /* background-color: red; */
+    /* height: 100vh; */
+    margin:25px 40px;
+}
+
+.header{
+    margin-bottom: 61px;
+    width:inherit;
+}
+.allInterviewLabel{
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 40px;
+}
+
+.filterInterview{
+    height: 10vh;
+    border-radius: 8px;
+    background-color: var(--background-color-light);
+    margin-bottom: 25px;
+}
+.filterContainer {
+    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
+    border-radius: 10px;
+    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
+    margin: 50px auto 20px auto;
+    background-color: var(--background-color-light);
+}
+
+
+
+.filterSets {
+    width: 96%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 30px 0;
+    display: flex;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    /* height: 92px; */
+
+}
+
+.addFilter {
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 167px;
+    height: 44px;
+    border: 1px solid var(--background-color-metal);
+}
+
+.filterLabel {
+    font-weight: 500;
+    font-size: .7vw;
+}
+
+.filterCount {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    font-size: var(--fontsize-uplers);
+    background-color: var(--color-sunlight);
+    border-radius: 50%;
+    font-weight: 700;
+}
+
+.filterRight {
+    display: flex;
+    justify-content: flex-end;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.searchFilterSet {
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    width: 250px;
+    height: 44px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.searchInput {
+    cursor: pointer;
+    width: 80%;
+    outline: none;
+    border: none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}
+
+.calendarFilterSet {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 8px;
+}
+
+.label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--uplers-lightBlack);
+}
+
+.calendarFilter {
+    width: 250px;
+    height: 44px;
+    border-radius: 8px;
+    padding: 2px 10px;
+    border: 1px solid var(--background-color-metal);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.calendarFilter [class*="react-datepicker-popper"] {
+    right: 0 !important;
+    left: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    margin: 40px 0 30px;
+}
+
+.calendarFilter [class*="react-datepicker-popper"]>div>[class*="react-datepicker"] {
+    margin-left: 0;
+    min-width: 100%;
+}
+
+.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
+    top: 14px;
+}
+
+.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__day-names"] {
+    margin-top: 5px;
+}
+
+.calendarFilter [class*="react-datepicker__month-container"] [class*="react-datepicker__month"] {
+    margin-bottom: 10px;
+}
+
+
+.dateFilter {
+    cursor: pointer;
+    width: 102%;
+    outline: none;
+    border: none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}
+
+.priorityFilterSet {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.priorityFilter {
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 44px;
+}
+
+.paginationFilter {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 71px;
+    height: 44px;
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    cursor: pointer;
+}
+.tableDetails{
+   overflow: auto;
+    /* margin-bottom: 24px; */
+    border-radius: 8px;
+    /* max-height: 1000px; */
+    
+}
+table{
+    width: 100%;
+}
+.thead{
+    position: sticky !important;
+    top: 0px !important;
+    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2)
+}
+.theadLoading {
+    position: sticky !important;
+    top: 0px !important;
+   
+}
+.th {
+  
+    z-index: 1;
+    padding: 24px 40px;
+     
+    flex-direction: row;
+    text-align: start;
+    color: var(--background-color-light);
+    font-size: 14px !important;
+    font-weight: 600;
+    line-height: 17px !important;
+    color: var(--uplers-black);
+    
+    border-bottom: 1px dashed var(--uplers-grey);
+}
+
+.td {
+    font-weight: 500;
+    line-height: 17px;
+    padding: 24px 40px;
+    text-align: start;
+    border-bottom: 1px solid var(--uplers-grey) !important;
+}
+.anchor{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.pagination{
+    text-align: center;
+    margin: 24px auto;
+    padding-bottom: 24px;
+}
+/* .pagination ul li:last-child{
+    display: none !important;
+} */
+
+
+
+.goback {
+    color: var(--uplers-black);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: var(--fontsize-uplers);
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.panelBody{
+    padding-top: 50px;
+    display: flex;
+}
+
+/* .leftPane{
+    width: 25%;
+} */
+.leftPane h3 {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 40px;
+    color: var(--uplers-black);
+}
+
+.leftPane p {
+    font-size: var(--fontsize-brittle);
+    font-weight: 400;
+    line-height: 20px;
+    color: #7C7C7C;
+}
+.rightPane{
+    flex: 1;
+}
+.row {
+    
+    gap: 8px;
+    /* margin: 0 -9px; */
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.transparent{
+   
+    border-radius: 8px;
+    border: 1px solid var(--uplers-border-color);
+}
+
+.cardBody{
+    
+    padding:16px 0 16px 16px;
+}
+
+
+.cardLabel{
+    font-size: 12px;
+    line-height: 15px;
+    font-weight: 400;
+    color:var(--uplers-black);
+}
+.mb8{
+    margin-bottom: 8px;
+}
+.cardTitle{
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 600;
+    color:var(--uplers-black)
+}
+
+
+.colMd4{
+    width: 24%;
+    /* padding: 0 9px; */
+}
+.colMd3 {
+    width: 33.33%;
+    padding: 0 9px;
+}
+
+.colMd6 {
+    width: 50%;
+    padding: 0 9px;
+}
+
+.colMd12 {
+    width: 100%;
+    padding: 0 25px 0 0;
+}
+.reqField {
+    color: var(--uplers-black);
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+.ml8{
+    margin-left: 8px;
+}
+.radioGroup{
+    margin: 8px 0 0;
+    flex-direction: column;
+    display: flex;
+}
+.radioGroup [class*="ant-radio-wrapper"]{
+    margin: 0 0 16px 0;
+    min-height: 25px;
+    padding-left: 35px;
+}
+.radioGroup [class*="ant-radio-wrapper"]:last-child{
+    margin-bottom:0;
+}
+
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]{
+    width: 25px;
+    height: 25px;
+}
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]:after{
+    width: 15px;
+    height: 15px;
+}
+
+.radioFormGroup {
+    margin-bottom: 32px;
+}
+
+.radioFormGroup>label {
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    /* line-height: 16px; */
+    color: var(--uplers-lightBlack);
+    margin: 0 16px 0 0;
+    display: inline-block;
+}
+.formPanelAction {
+    padding: 32px 0;
+    justify-content: center;
+    display: flex;
+}
+
+.formPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid var(--tabs-border-color);
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.formPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+
+.formPanelAction button+button {
+    margin-left: 16px;
+}

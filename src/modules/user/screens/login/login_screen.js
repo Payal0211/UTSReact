@@ -9,7 +9,6 @@ import {
 } from 'shared/utils/password_icon_utils';
 import loginStyle from './login.module.css';
 import useForm from 'shared/hooks/useForm';
-
 import { userDAO } from 'core/user/userDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { useNavigate } from 'react-router-dom';
@@ -70,6 +69,9 @@ const LoginScreen = () => {
 						<hr />
 						<div className={loginStyle.loginFormPart}>
 							<InputField
+								/* onKeyDownHandler={(e) => {
+									if (e.key === 'Enter') loginHandler();
+								}} */
 								label="Username"
 								name="username"
 								type={InputType.TEXT}
@@ -79,6 +81,9 @@ const LoginScreen = () => {
 								errorMsg={error['username']}
 							/>
 							<InputField
+								onKeyDownHandler={(e) => {
+									if (e.key === 'Enter') loginHandler();
+								}}
 								name="password"
 								label="Password"
 								type={
