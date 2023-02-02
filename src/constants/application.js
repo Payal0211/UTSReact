@@ -202,7 +202,7 @@ export class MastersKey {
 
 export class ProfileLog {
 	static PROFILE_SHARED = 6;
-	static FEEDBACK = 12;
+	static FEEDBACK = 51;
 	static REJECTED = 22;
-	static SELECTED = 51;
+	static SELECTED = 12;
 }

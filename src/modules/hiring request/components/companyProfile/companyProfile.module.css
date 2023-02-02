@@ -3,16 +3,16 @@
 }
 
 .companyCard{
-    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
+    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 8px;
     height: 50%;
     background-color: var(--background-color-light);
 }
 .companyCardBody{
-    width: 90%;
+    /* width: 90%; */
     margin:0 auto;
-    font-size: .7vw;
-    padding: 20px 0;
+    font-size: 14px;
+    padding: 24px;
 }
 .partWise{
     display: flex;
