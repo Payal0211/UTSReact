@@ -100,6 +100,7 @@ const HRDetailScreen = () => {
 		},
 		[navigate],
 	);
+	console.log(apiData, '--apiData--');
 	const clientOnHoldSubmitHandler = useCallback(
 		async (d) => {
 			let deleteObj = {

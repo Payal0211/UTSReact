@@ -260,7 +260,9 @@ export const hrUtils = {
 	getAcceptTR(IsAccepted, loggedInUserTypeID) {
 		if (
 			loggedInUserTypeID === UserAccountRole.TALENTOPS ||
-			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+			loggedInUserTypeID === UserAccountRole.ADMINISTRATOR ||
+			loggedInUserTypeID === UserAccountRole.DEVELOPER
 		) {
 			if (
 				HiringRequestHRStatus.DRAFT ||
@@ -286,7 +288,9 @@ export const hrUtils = {
 	getAccpetMoreTR(IsAccepted, loggedInUserTypeID, TRAcceptedValue) {
 		if (
 			loggedInUserTypeID === UserAccountRole.TALENTOPS ||
-			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+			loggedInUserTypeID === UserAccountRole.ADMINISTRATOR ||
+			loggedInUserTypeID === UserAccountRole.DEVELOPER
 		) {
 			if (
 				HiringRequestHRStatus.DRAFT ||

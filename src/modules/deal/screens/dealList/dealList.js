@@ -22,6 +22,7 @@ import { interviewUtils } from 'modules/interview/interviewUtils';
 import { InputType } from 'constants/application';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
 import { DealConfig } from 'modules/deal/deal.config';
+import { dealUtils } from 'modules/deal/dealUtils';
 // import DealFilters from 'modules/deal/components/dealFilters/dealFilters';
 const DealListLazyComponents = React.lazy(() =>
 	import('modules/deal/components/dealFilters/dealFilters'),
@@ -48,7 +49,7 @@ const DealList = () => {
 		setStartDate(start);
 		setEndDate(end);
 	};
-	const fetchInterviewList = useCallback(async (pageData) => {
+	const fetchDealListAPIResponse = useCallback(async (pageData) => {
 		setLoading(true);
 		const response = await DealDAO.getDealListDAO(
 			pageData
@@ -67,8 +68,10 @@ const DealList = () => {
 		return () => clearTimeout(timer);
 	}, [debouncedSearch]);
 	useEffect(() => {
-		fetchInterviewList();
-	}, [fetchInterviewList]);
+		fetchDealListAPIResponse();
+	}, [fetchDealListAPIResponse]);
+
+	console.log('---dealList--', dealList);
 	return (
 		<div className={DealListStyle.dealContainer}>
 			<div className={DealListStyle.header}>
@@ -132,7 +135,7 @@ const DealList = () => {
 												setPageSize(parseInt(e.key));
 
 												if (pageSize !== parseInt(e.key)) {
-													fetchInterviewList({
+													fetchDealListAPIResponse({
 														pageNumber: pageIndex,
 														totalRecord: parseInt(e.key),
 													});
@@ -293,43 +296,35 @@ const DealList = () => {
 							dealList?.rows?.map((item, index) => {
 								return (
 									<tr key={`interviewList item${index}`}>
-										<td className={DealListStyle.td}>{item?.iDate}</td>
-										<td
-											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											{item?.hrid}
+										<td className={DealListStyle.td}>
+											{dealUtils.dateFormatter(item?.dealDate)}
 										</td>
 										<td
 											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											<Link
-												to={UTSRoutes.INTERVIEWSCHEDULE}
-												style={{ color: `var(--uplers-black)` }}>
-												{interviewUtils.dateFormatter(item?.istSlotconfirmed)}
-											</Link>
+											{item?.deal_Id ? item?.deal_Id : 'NA'}
 										</td>
 										<td
 											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											{item?.companyname ? item?.companyname : 'NA'}
+											NA
+										</td>
+										<td
+											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
+											{item?.pipeline ? item?.pipeline : 'NA'}
 										</td>
 										<td className={DealListStyle.td}>
-											{item?.interviewTimeZone ? item?.interviewTimeZone : 'NA'}
+											{item?.company ? item?.company : 'NA'}
 										</td>
 										<td
 											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											{item?.talentName}
+											{item?.geo ? item?.geo : 'NA'}
 										</td>
 										<td className={DealListStyle.td}>
-											{interviewUtils.GETINTERVIEWSTATUS(
-												item?.interviewStatus,
-												item?.interviewStatusFrontCode,
-											)}
+											{item?.bdr ? item?.bdr : 'NA'}
 										</td>
 										<td className={DealListStyle.td}>
-											<Link
-												to={(UTSRoutes = {}.INTERVIEWFEEDBACK)}
-												style={{ color: `var(--uplers-black)` }}>
-												{'View Feedback'}
-											</Link>
+											{item?.sales_Consultant ? item?.sales_Consultant : 'NA'}
 										</td>
+										<td className={DealListStyle.td}>{'NA'}</td>
 									</tr>
 								);
 							})
@@ -344,7 +339,7 @@ const DealList = () => {
 						onChange={(pageNum, pageSize) => {
 							setPageIndex(pageNum);
 							setPageSize(pageSize);
-							fetchInterviewList({
+							fetchDealListAPIResponse({
 								pageNumber: pageNum,
 								totalRecord: pageSize,
 							});

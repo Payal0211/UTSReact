@@ -195,7 +195,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 						}}
 					/>
 					<div className={CompanyProfileCardStyle.partWise}>
-						<div style={{ marginBottom: '10px' }}>
+						<div>
 							<div className={CompanyProfileCardStyle.salesPerson}>
 								<span>Sales Person:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
