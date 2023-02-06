@@ -16,7 +16,10 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 		setToggleBack(true);
 		setFilterSubChild(item);
 	};
-
+	const onFilterValueClick = (e) => {
+		console.log(e.target.id);
+	};
+	console.log(filterSubChild, '--filterSubChild');
 	return (
 		<aside className={hiringFilterStyle.aside}>
 			<div className={hiringFilterStyle.asideBody}>
@@ -70,6 +73,8 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 											className={hiringFilterStyle.filterItem}
 											key={index}>
 											<Checkbox
+												onChange={onFilterValueClick}
+												id={item?.value + `/${index + 1}`}
 												style={{
 													fontSize: `${!item.label && '1rem'}`,
 													fontWeight: '500',
@@ -79,7 +84,7 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 															item.statusCode,
 															item.label,
 													  )
-													: item}
+													: item?.value}
 											</Checkbox>
 										</div>
 									);

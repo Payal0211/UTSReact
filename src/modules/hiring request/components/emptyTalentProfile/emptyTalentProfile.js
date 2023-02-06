@@ -41,7 +41,7 @@ const EmptyTalentProfile = ({ talentLength }) => {
 				<div>
 					<p>Please select a profile that best matches this hiring request</p>
 				</div>
-				<div className={emptyTalentProfileStyle.exploreMore}>
+				{/* <div className={emptyTalentProfileStyle.exploreMore}>
 					<Suspense>
 						<MatchmakingModal
 							refreshedHRDetail={callAPI}
@@ -53,7 +53,7 @@ const EmptyTalentProfile = ({ talentLength }) => {
 							hrPriority={apiData?.StarMarkedStatusCode}
 						/>
 					</Suspense>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);

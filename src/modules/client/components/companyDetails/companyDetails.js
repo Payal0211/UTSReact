@@ -258,11 +258,6 @@ const CompanyDetails = ({
 									label="Lead Source"
 									defaultValue="Select Lead Source"
 									options={leadSource && leadSource}
-									required
-									isError={
-										errors['companyLeadSource'] && errors['companyLeadSource']
-									}
-									errorMsg="Please select a lead source."
 								/>
 							</div>
 						</div>

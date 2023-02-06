@@ -70,7 +70,9 @@ export class HiringRequestsAPI {
 	static GET_TALENT_PROFILE_LOG = 'GetTalentProfileLog';
 	static SET_TALENT_PRIORITIES = 'SetTalentPriorties';
 	static DELETE = 'delete';
+	static GET_ALL_FILTER_DATA_FOR_HR = 'GetAllFilterDataForHR';
 }
+
 export class InterviewsAPI {
 	static LIST = 'List';
 }

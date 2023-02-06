@@ -56,7 +56,7 @@ const HRDetailScreen = () => {
 	const navigate = useNavigate();
 	const switchLocation = useLocation();
 	const [deleteReason, setDeleteReason] = useState([]);
-
+	const [activeTab, setActiveTab] = useState('');
 	const [adHOC, setAdHOC] = useState([
 		{
 			label: 'Pass to Pool',
@@ -120,7 +120,7 @@ const HRDetailScreen = () => {
 		},
 		[navigate, urlSplitter],
 	);
-	/* const clientLossSbmitHandler = useCallback(
+	const clientLossSubmitHandler = useCallback(
 		async (d) => {
 			let deleteObj = {
 				id: urlSplitter?.split('HR')[0],
@@ -138,7 +138,7 @@ const HRDetailScreen = () => {
 			}
 		},
 		[navigate, urlSplitter],
-	); */
+	);
 
 	const getHRDeleteReason = useCallback(async () => {
 		let response = await MasterDAO.getHRDeletReasonRequestDAO();
@@ -176,51 +176,50 @@ const HRDetailScreen = () => {
 							</div>
 						)}
 					</div>
-					{apiData?.HRTalentDetails?.length > 0 && (
-						<Suspense>
-							<MatchmakingModal
-								refreshedHRDetail={callAPI}
-								hrID={urlSplitter?.split('HR')[0]}
-								hrNo={updatedSplitter}
-								hrStatusCode={apiData?.HRStatusCode}
-								hrStatus={apiData?.HRStatus}
-								hrPriority={apiData?.StarMarkedStatusCode}
-							/>
-						</Suspense>
-					)}
+					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED
+						? null
+						: hrUtils.showMatchmaking(
+								apiData,
+								miscData?.LoggedInUserTypeID,
+								callAPI,
+								urlSplitter,
+								updatedSplitter,
+						  )}
 
-					<div className={HRDetailStyle.hrDetailsRightPart}>
-						{hrUtils.getAcceptTR(
-							apiData?.IsAccepted,
-							miscData?.LoggedInUserTypeID,
-						)}
-						{hrUtils.getAccpetMoreTR(
-							apiData?.IsAccepted,
-							miscData?.LoggedInUserTypeID,
-							apiData?.TR_Accepted,
-						)}
+					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
+						<div className={HRDetailStyle.hrDetailsRightPart}>
+							{hrUtils.getAcceptTR(
+								apiData?.IsAccepted,
+								miscData?.LoggedInUserTypeID,
+							)}
+							{hrUtils.getAccpetMoreTR(
+								apiData?.IsAccepted,
+								miscData?.LoggedInUserTypeID,
+								apiData?.TR_Accepted,
+							)}
 
-						<HROperator
-							title="Pass to Pool"
-							icon={<ArrowDownSVG style={{ width: '16px' }} />}
-							backgroundColor={`var(--background-color-light)`}
-							labelBorder={`1px solid var(--color-sunlight)`}
-							iconBorder={`1px solid var(--color-sunlight)`}
-							isDropdown={true}
-							listItem={adHOC}
-						/>
-						<div
-							className={HRDetailStyle.hiringRequestPriority}
-							onClick={() => {
-								setDeleteModal(true);
-								getHRDeleteReason();
-							}}>
-							<DeleteSVG
-								style={{ width: '24px' }}
-								className={HRDetailStyle.deleteSVG}
+							<HROperator
+								title="Pass to Pool"
+								icon={<ArrowDownSVG style={{ width: '16px' }} />}
+								backgroundColor={`var(--background-color-light)`}
+								labelBorder={`1px solid var(--color-sunlight)`}
+								iconBorder={`1px solid var(--color-sunlight)`}
+								isDropdown={true}
+								listItem={adHOC}
 							/>
+							<div
+								className={HRDetailStyle.hiringRequestPriority}
+								onClick={() => {
+									setDeleteModal(true);
+									getHRDeleteReason();
+								}}>
+								<DeleteSVG
+									style={{ width: '24px' }}
+									className={HRDetailStyle.deleteSVG}
+								/>
+							</div>
 						</div>
-					</div>
+					)}
 				</div>
 				{isLoading ? (
 					<>
@@ -228,7 +227,7 @@ const HRDetailScreen = () => {
 						<Skeleton active />
 						<br />
 					</>
-				) : (
+				) : apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 					<Suspense>
 						<NextActionItem nextAction={apiData?.NextActionsForTalent} />
 					</Suspense>

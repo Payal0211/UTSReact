@@ -26,6 +26,7 @@ import { HTTPStatusCode } from 'constants/network';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { allHRConfig } from './allHR.config';
+import WithLoader from 'shared/components/loader/loader';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -39,6 +40,7 @@ const AllHiringRequestScreen = () => {
 	const [pageIndex, setPageIndex] = useState(1);
 	const [pageSize, setPageSize] = useState(100);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
+	const [filtersList, setFiltersList] = useState([]);
 	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
@@ -77,8 +79,8 @@ const AllHiringRequestScreen = () => {
 			pageData
 				? pageData
 				: {
-						pageSize: 100,
-						pageNum: 1,
+						pagesize: 100,
+						pagenum: 1,
 				  },
 		);
 		setAPIdata(hrUtils.modifyHRRequestData(response && response));
@@ -98,6 +100,16 @@ const AllHiringRequestScreen = () => {
 			} else Navigate(UTSRoutes.LOGINROUTE);
 		}
 	}, [hrQueryData?.data]);
+
+	const getHRFilterRequest = useCallback(async () => {
+		const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
+		setFiltersList(response && response?.responseBody?.details?.Data);
+	}, []);
+
+	const toggleHRFilter = useCallback(() => {
+		getHRFilterRequest();
+		setIsAllowFilters(!isAllowFilters);
+	}, [getHRFilterRequest, isAllowFilters]);
 
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);
@@ -155,7 +167,7 @@ const AllHiringRequestScreen = () => {
 				<div className={allHRStyles.filterSets}>
 					<div
 						className={allHRStyles.addFilter}
-						onClick={() => setIsAllowFilters(!isAllowFilters)}>
+						onClick={toggleHRFilter}>
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
 						<div className={allHRStyles.filterLabel}>Add Filters</div>
@@ -242,8 +254,8 @@ const AllHiringRequestScreen = () => {
 												setPageSize(parseInt(e.key));
 												if (pageSize !== parseInt(e.key)) {
 													handleHRRequest({
-														pageSize: parseInt(e.key),
-														pageNum: pageIndex,
+														pagesize: parseInt(e.key),
+														pagenum: pageIndex,
 													});
 												}
 											}}>
@@ -271,37 +283,39 @@ const AllHiringRequestScreen = () => {
 			 */}
 			<div className={allHRStyles.tableDetails}>
 				{
-					<Table
-						locale={{
-							emptyText: (
-								<>
-									<Skeleton />
-									<Skeleton />
-									<Skeleton />
-								</>
-							),
-						}}
-						id="hrListingTable"
-						columns={tableColumnsMemo}
-						bordered={false}
-						dataSource={
-							search && search.length > 0 ? [...search] : [...apiData]
-						}
-						pagination={{
-							onChange: (pageNum, pageSize) => {
-								setPageIndex(pageNum);
-								setPageSize(pageSize);
-								handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
-							},
-							size: 'small',
-							pageSize: pageSize,
-							pageSizeOptions: pageSizeOptions,
-							total: totalRecords,
-							showTotal: (total, range) =>
-								`${range[0]}-${range[1]} of ${totalRecords} items`,
-							defaultCurrent: pageIndex,
-						}}
-					/>
+					<WithLoader>
+						<Table
+							locale={{
+								emptyText: (
+									<>
+										<Skeleton />
+										<Skeleton />
+										<Skeleton />
+									</>
+								),
+							}}
+							id="hrListingTable"
+							columns={tableColumnsMemo}
+							bordered={false}
+							dataSource={
+								search && search.length > 0 ? [...search] : [...apiData]
+							}
+							pagination={{
+								onChange: (pageNum, pageSize) => {
+									setPageIndex(pageNum);
+									setPageSize(pageSize);
+									handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
+								},
+								size: 'small',
+								pageSize: pageSize,
+								pageSizeOptions: pageSizeOptions,
+								total: totalRecords,
+								showTotal: (total, range) =>
+									`${range[0]}-${range[1]} of ${totalRecords} items`,
+								defaultCurrent: pageIndex,
+							}}
+						/>
+					</WithLoader>
 				}
 			</div>
 
@@ -310,7 +324,9 @@ const AllHiringRequestScreen = () => {
 					<HiringFiltersLazyComponent
 						onRemoveHRFilters={onRemoveHRFilters}
 						hrFilterList={allHRConfig.hrFilterListConfig()}
-						filtersType={allHRConfig.hrFilterTypeConfig()}
+						filtersType={allHRConfig.hrFilterTypeConfig(
+							filtersList && filtersList,
+						)}
 					/>
 				</Suspense>
 			)}
