@@ -1,25 +1,27 @@
-.interviewContainer{
+.dealContainer {
     /* background-color: red; */
     /* height: 100vh; */
-    margin:25px 40px;
+    margin: 25px 40px;
 }
 
-.header{
+.header {
     margin-bottom: 61px;
-    width:inherit;
+    width: inherit;
 }
-.allInterviewLabel{
+
+.dealLable {
     font-size: 32px;
     font-weight: 500;
     line-height: 40px;
 }
 
-.filterInterview{
+.filterInterview {
     height: 10vh;
     border-radius: 8px;
     background-color: var(--background-color-light);
     margin-bottom: 25px;
 }
+
 .filterContainer {
     /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
@@ -27,7 +29,9 @@
     margin: 50px auto 20px auto;
     background-color: var(--background-color-light);
 }
-
+.tableDetails {
+    margin-top: 24px;
+}
 
 
 .filterSets {
@@ -189,31 +193,36 @@
     border-radius: 8px;
     cursor: pointer;
 }
-.tableDetails{
-   overflow: auto;
+
+.tableDetails {
+    overflow: auto;
     /* margin-bottom: 24px; */
     border-radius: 8px;
     /* max-height: 1000px; */
-    
+
 }
-table{
+
+table {
     width: 100%;
 }
-.thead{
+
+.thead {
     position: sticky !important;
     top: 0px !important;
     box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2)
 }
+
 .theadLoading {
     position: sticky !important;
     top: 0px !important;
-   
+
 }
+
 .th {
-  
+
     z-index: 1;
     padding: 24px 40px;
-     
+
     flex-direction: row;
     text-align: start;
     color: var(--background-color-light);
@@ -221,7 +230,7 @@ table{
     font-weight: 600;
     line-height: 17px !important;
     color: var(--uplers-black);
-    
+
     border-bottom: 1px dashed var(--uplers-grey);
 }
 
@@ -232,15 +241,18 @@ table{
     text-align: start;
     border-bottom: 1px solid var(--uplers-grey) !important;
 }
-.anchor{
+
+.anchor {
     text-decoration: underline;
     cursor: pointer;
 }
-.pagination{
+
+.pagination {
     text-align: center;
     margin: 24px auto;
     padding-bottom: 24px;
 }
+
 /* .pagination ul li:last-child{
     display: none !important;
 } */
@@ -259,7 +271,7 @@ table{
     font-size: 12px;
 }
 
-.panelBody{
+.panelBody {
     padding-top: 50px;
     display: flex;
 }
@@ -280,11 +292,13 @@ table{
     line-height: 20px;
     color: #7C7C7C;
 }
-.rightPane{
+
+.rightPane {
     flex: 1;
 }
+
 .row {
-    
+
     gap: 8px;
     /* margin: 0 -9px; */
     flex-wrap: wrap;
@@ -292,39 +306,42 @@ table{
     justify-content: flex-start;
 }
 
-.transparent{
-   
+.transparent {
+
     border-radius: 8px;
     border: 1px solid var(--uplers-border-color);
 }
 
-.cardBody{
-    
-    padding:16px 0 16px 16px;
+.cardBody {
+
+    padding: 16px 0 16px 16px;
 }
 
 
-.cardLabel{
+.cardLabel {
     font-size: 12px;
     line-height: 15px;
     font-weight: 400;
-    color:var(--uplers-black);
+    color: var(--uplers-black);
 }
-.mb8{
+
+.mb8 {
     margin-bottom: 8px;
 }
-.cardTitle{
+
+.cardTitle {
     font-size: 18px;
     line-height: 22px;
     font-weight: 600;
-    color:var(--uplers-black)
+    color: var(--uplers-black)
 }
 
 
-.colMd4{
+.colMd4 {
     width: 24%;
     /* padding: 0 9px; */
 }
+
 .colMd3 {
     width: 33.33%;
     padding: 0 9px;
@@ -339,6 +356,7 @@ table{
     width: 100%;
     padding: 0 25px 0 0;
 }
+
 .reqField {
     color: var(--uplers-black);
     font-weight: 700;
@@ -346,28 +364,32 @@ table{
     margin-left: 4px;
 }
 
-.ml8{
+.ml8 {
     margin-left: 8px;
 }
-.radioGroup{
+
+.radioGroup {
     margin: 8px 0 0;
     flex-direction: column;
     display: flex;
 }
-.radioGroup [class*="ant-radio-wrapper"]{
+
+.radioGroup [class*="ant-radio-wrapper"] {
     margin: 0 0 16px 0;
     min-height: 25px;
     padding-left: 35px;
 }
-.radioGroup [class*="ant-radio-wrapper"]:last-child{
-    margin-bottom:0;
+
+.radioGroup [class*="ant-radio-wrapper"]:last-child {
+    margin-bottom: 0;
 }
 
-.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]{
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"] {
     width: 25px;
     height: 25px;
 }
-.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]:after{
+
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]:after {
     width: 15px;
     height: 15px;
 }
@@ -385,6 +407,7 @@ table{
     margin: 0 16px 0 0;
     display: inline-block;
 }
+
 .formPanelAction {
     padding: 32px 0;
     justify-content: center;

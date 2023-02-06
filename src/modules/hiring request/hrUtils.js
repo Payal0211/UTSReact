@@ -7,6 +7,7 @@ import {
 import { _isNull } from 'shared/utils/basic_utils';
 import HROperator from './components/hroperator/hroperator';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
+import MatchmakingModal from './components/matchmaking/matchmaking';
 export const hrUtils = {
 	modifyHRRequestData: (hrData) => {
 		return hrData.responseBody.Data.map((item) => ({
@@ -260,7 +261,9 @@ export const hrUtils = {
 	getAcceptTR(IsAccepted, loggedInUserTypeID) {
 		if (
 			loggedInUserTypeID === UserAccountRole.TALENTOPS ||
-			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+			loggedInUserTypeID === UserAccountRole.ADMINISTRATOR ||
+			loggedInUserTypeID === UserAccountRole.DEVELOPER
 		) {
 			if (
 				HiringRequestHRStatus.DRAFT ||
@@ -286,7 +289,9 @@ export const hrUtils = {
 	getAccpetMoreTR(IsAccepted, loggedInUserTypeID, TRAcceptedValue) {
 		if (
 			loggedInUserTypeID === UserAccountRole.TALENTOPS ||
-			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+			loggedInUserTypeID === UserAccountRole.ADMINISTRATOR ||
+			loggedInUserTypeID === UserAccountRole.DEVELOPER
 		) {
 			if (
 				HiringRequestHRStatus.DRAFT ||
@@ -307,6 +312,35 @@ export const hrUtils = {
 					);
 				}
 			}
+		}
+	},
+	showMatchmaking(
+		apiData,
+		loggedInUserTypeID,
+		callAPI,
+		urlSplitter,
+		updatedSplitter,
+	) {
+		if (apiData?.IsAccepted === 1 && apiData?.TR_Accepted >= 1) {
+			if (
+				loggedInUserTypeID === UserAccountRole.TALENTOPS ||
+				loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+			) {
+				return (
+					apiData?.HRTalentDetails?.length > 0 && (
+						<MatchmakingModal
+							refreshedHRDetail={callAPI}
+							hrID={urlSplitter?.split('HR')[0]}
+							hrNo={updatedSplitter}
+							hrStatusCode={apiData?.HRStatusCode}
+							hrStatus={apiData?.HRStatus}
+							hrPriority={apiData?.StarMarkedStatusCode}
+						/>
+					)
+				);
+			}
+		} else {
+			return null;
 		}
 	},
 };

@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
 
-const InterviewSchedule = ({ talentName, key, closeModal }) => {
+const InterviewReschedule = ({ talentName, key, closeModal }) => {
 	const [timezone, setTimezone] = useState([]);
 	const {
 		register,
@@ -124,6 +124,60 @@ const InterviewSchedule = ({ talentName, key, closeModal }) => {
 					<form id="interviewReschedule">
 						<div className={InterviewScheduleStyle.row}>
 							<div className={InterviewScheduleStyle.colMd12}>
+								<div className={InterviewScheduleStyle.radioFormGroup}>
+									<label>
+										Reschedule Request By
+										<span className={InterviewScheduleStyle.reqField}>*</span>
+									</label>
+									<div>
+										<Radio.Group
+											defaultValue={1}
+											className={InterviewScheduleStyle.radioGroup}
+											onChange={onRescheduleChange}
+											value={rescheduleRadio}>
+											<Radio value={1}>Client</Radio>
+											<Radio value={2}>Talent</Radio>
+										</Radio.Group>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div className={InterviewScheduleStyle.row}>
+							<div className={InterviewScheduleStyle.colMd12}>
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									name="interviewRescheduleReason"
+									label="Reason for Reschedule"
+									defaultValue="Select reschedule reason"
+									options={rescheduleReason}
+									required
+									isError={
+										errors['interviewRescheduleReason'] &&
+										errors['interviewRescheduleReason']
+									}
+									errorMsg="Please select a reason."
+								/>
+							</div>
+						</div>
+						<div className={InterviewScheduleStyle.row}>
+							<div className={InterviewScheduleStyle.colMd12}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the client name.',
+									}}
+									label="Message to Appear"
+									name="interviewMessage"
+									type={InputType.TEXT}
+									placeholder="Enter message"
+									required
+								/>
+							</div>
+						</div>
+						<div className={InterviewScheduleStyle.row}>
+							<div className={InterviewScheduleStyle.colMd12}>
 								<div
 									className={InterviewScheduleStyle.radioFormGroup}
 									style={{
@@ -196,4 +250,4 @@ const InterviewSchedule = ({ talentName, key, closeModal }) => {
 	);
 };
 
-export default InterviewSchedule;
+export default InterviewReschedule;

@@ -30,7 +30,10 @@ const CompanyDetails = ({
 
 	const getLeadSource = async () => {
 		const getLeadSourceResponse = await MasterDAO.getFixedValueRequestDAO();
-		setLeadSource(getLeadSourceResponse && getLeadSourceResponse.responseBody);
+		setLeadSource(
+			getLeadSourceResponse &&
+				getLeadSourceResponse?.responseBody?.BindLeadType,
+		);
 	};
 	/** To check Duplicate email exists Start */
 	//TODO:- Show loader on Duplicate email caption:- verifying email
@@ -63,7 +66,7 @@ const CompanyDetails = ({
 		}
 		return () => clearTimeout(timer);
 	}, [getCompanyNameAlreadyExist, watchCompanyName]);
-
+	console.log(leadSource, '-leadSource');
 	/** To check Duplicate email exists End */
 	useEffect(() => {
 		getGEO();
@@ -254,12 +257,7 @@ const CompanyDetails = ({
 									name="companyLeadSource"
 									label="Lead Source"
 									defaultValue="Select Lead Source"
-									options={[]}
-									required
-									isError={
-										errors['companyLeadSource'] && errors['companyLeadSource']
-									}
-									errorMsg="Please select a lead source."
+									options={leadSource && leadSource}
 								/>
 							</div>
 						</div>

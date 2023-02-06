@@ -106,15 +106,14 @@ const HRFields = ({
 
 	const getSalesPerson = useCallback(async () => {
 		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
-
 		setSalesPerson(
-			salesPersonResponse && salesPersonResponse.responseBody.details,
+			salesPersonResponse && salesPersonResponse?.responseBody?.details,
 		);
 	}, []);
 
 	const getRegion = useCallback(async () => {
-		let response = await MasterDAO.getRegionsRequestDAO();
-		setRegion(response && response?.responseBody?.details);
+		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
+		setRegion(response && response?.responseBody);
 	}, []);
 
 	const getLocation = useLocation();
@@ -133,18 +132,6 @@ const HRFields = ({
 		},
 		[items, name],
 	);
-
-	/** AutoFIll HR Title based on HR Role */
-	/* const watchHiringRequestRole = watch('role');
-	useEffect(() => {
-		setValue(
-			'hrTitle',
-			talentRole.map(
-				(item) => item.id === watchHiringRequestRole && item?.value,
-			),
-		);
-	}, [watchHiringRequestRole, setValue, talentRole]); */
-	/** To check Duplicate email exists Start */
 
 	const watchClientName = watch('clientName');
 
@@ -328,8 +315,8 @@ const HRFields = ({
 									validationSchema={{
 										required: 'please enter the other role.',
 										pattern: {
-											value: /other/,
-											message: 'Please remove other word.',
+											value: /^((?!other).)*$/,
+											message: 'Please remove "other" keyword.',
 										},
 									}}
 									label="Other Role"

@@ -1,28 +1,24 @@
+import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
+const antIcon = (
+	<LoadingOutlined
+		style={{
+			fontSize: 50,
+			display: 'flex',
+			flexDirection: 'row',
+			alignItems: 'center',
+			justifyContent: 'center',
+			marginTop: '300px',
+			marginLeft: '850px',
+			fontWeight: 500,
+			color: `var(--uplers-black)`,
+		}}
+		spin
+	/>
+);
 
 const WithLoader = ({ showLoader, children }) => {
-	return (
-		<div>
-			{showLoader ? (
-				<Spin
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-						justifyContent: 'center',
-						height: '100vh',
-						fontWeight: 500,
-						fontSize: '1rem',
-						color: `var(--uplers-black)`,
-					}}
-					size="large"
-					tip="Loading..."
-				/>
-			) : (
-				children
-			)}
-		</div>
-	);
+	return <>{showLoader ? <Spin indicator={antIcon} /> : children}</>;
 };
 
 export default WithLoader;

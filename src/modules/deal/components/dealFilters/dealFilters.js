@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import { Checkbox, Tag } from 'antd';
-import hiringFilterStyle from './hiringFilter.module.css';
-
-import { AiOutlineSearch } from 'react-icons/ai';
-import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
+import DealFiltersStyle from './dealFilterStyle.module.css';
 import { ReactComponent as ArrowRightSVG } from 'assets/svg/arrowRight.svg';
 import { ReactComponent as CrossSVG } from 'assets/svg/cross.svg';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
+import { AiOutlineSearch } from 'react-icons/ai';
+import { Checkbox, Tag } from 'antd';
+import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 
-const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
+const DealFilters = ({ onRemoveDealFilters, hrFilterList, filtersType }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 
 	const [filterSubChild, setFilterSubChild] = useState(null);
@@ -16,17 +15,13 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 		setToggleBack(true);
 		setFilterSubChild(item);
 	};
-	const onFilterValueClick = (e) => {
-		console.log(e.target.id);
-	};
-	console.log(filterSubChild, '--filterSubChild');
 	return (
-		<aside className={hiringFilterStyle.aside}>
-			<div className={hiringFilterStyle.asideBody}>
-				<div className={toggleBack ? hiringFilterStyle.asideHead : ''}>
+		<aside className={DealFiltersStyle.aside}>
+			<div className={DealFiltersStyle.asideBody}>
+				<div className={toggleBack ? DealFiltersStyle.asideHead : ''}>
 					{toggleBack && (
 						<span
-							className={hiringFilterStyle.goback}
+							className={DealFiltersStyle.goback}
 							onClick={() => setToggleBack(false)}>
 							<ArrowLeftSVG />
 							&nbsp;&nbsp; Go back
@@ -40,25 +35,25 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 						}}>
 						<CrossSVG
 							style={{ width: '26px' }}
-							onClick={() => onRemoveHRFilters()}
+							onClick={() => onRemoveDealFilters()}
 						/>
 					</span>
 				</div>
 
-				<div className={hiringFilterStyle.asideFilters}>
+				<div className={DealFiltersStyle.asideFilters}>
 					{toggleBack ? (
 						<>
-							<span className={hiringFilterStyle.label}>
+							<span className={DealFiltersStyle.label}>
 								{filterSubChild.name}
 							</span>
 							<br />
 							{filterSubChild.isSearch && (
-								<div className={hiringFilterStyle.searchFiltersList}>
+								<div className={DealFiltersStyle.searchFiltersList}>
 									<AiOutlineSearch
 										style={{ fontSize: '20px', fontWeight: '800' }}
 									/>
 									<input
-										class={hiringFilterStyle.searchInput}
+										class={DealFiltersStyle.searchInput}
 										type="text"
 										id="search"
 										placeholder={`Search ${filterSubChild?.name}`}
@@ -66,15 +61,13 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 								</div>
 							)}
 							<br />
-							<div className={hiringFilterStyle.filtersListType}>
+							<div className={DealFiltersStyle.filtersListType}>
 								{filterSubChild.child.map((item, index) => {
 									return (
 										<div
-											className={hiringFilterStyle.filterItem}
+											className={DealFiltersStyle.filterItem}
 											key={index}>
 											<Checkbox
-												onChange={onFilterValueClick}
-												id={item?.value + `/${index + 1}`}
 												style={{
 													fontSize: `${!item.label && '1rem'}`,
 													fontWeight: '500',
@@ -84,7 +77,7 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 															item.statusCode,
 															item.label,
 													  )
-													: item?.value}
+													: item}
 											</Checkbox>
 										</div>
 									);
@@ -93,8 +86,8 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 						</>
 					) : (
 						<>
-							<span className={hiringFilterStyle.label}>Filters</span>
-							<div className={hiringFilterStyle.filtersChips}>
+							<span className={DealFiltersStyle.label}>Filters</span>
+							<div className={DealFiltersStyle.filtersChips}>
 								{hrFilterList.map((item, index) => {
 									return (
 										<Tag
@@ -120,12 +113,12 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 									);
 								})}
 							</div>
-							<div className={hiringFilterStyle.filtersListType}>
+							<div className={DealFiltersStyle.filtersListType}>
 								{filtersType.map((item, index) => {
 									return (
 										<div
 											key={index}
-											className={hiringFilterStyle.filterItem}
+											className={DealFiltersStyle.filterItem}
 											onClick={() => toggleFilterSubChild(item)}>
 											<span style={{ fontSize: '1rem' }}>{item.name}</span>
 											<ArrowRightSVG style={{ width: '26px' }} />
@@ -138,9 +131,9 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 					<br />
 					<br />
 					<hr />
-					<div className={hiringFilterStyle.operationsFilters}>
-						<button className={hiringFilterStyle.clearAll}>Clear All</button>
-						<button className={hiringFilterStyle.applyFilters}>
+					<div className={DealFiltersStyle.operationsFilters}>
+						<button className={DealFiltersStyle.clearAll}>Clear All</button>
+						<button className={DealFiltersStyle.applyFilters}>
 							Apply Filters
 						</button>
 					</div>
@@ -150,4 +143,4 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 	);
 };
 
-export default HiringFilters;
+export default DealFilters;

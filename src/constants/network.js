@@ -14,6 +14,7 @@ export class SubDomain {
 	static HIRING = 'Hiring/';
 	static DEBRIEFING = 'Debriefing/';
 	static INTERVIEW = 'Interview/';
+	static DEAL = 'Deal/';
 }
 export class APIType {
 	static USER = '/user';
@@ -69,9 +70,15 @@ export class HiringRequestsAPI {
 	static GET_TALENT_PROFILE_LOG = 'GetTalentProfileLog';
 	static SET_TALENT_PRIORITIES = 'SetTalentPriorties';
 	static DELETE = 'delete';
+	static GET_ALL_FILTER_DATA_FOR_HR = 'GetAllFilterDataForHR';
 }
+
 export class InterviewsAPI {
 	static LIST = 'List';
+}
+export class DealsAPI {
+	static LIST = 'List';
+	static DETAIL = 'Detail';
 }
 export class HTTPStatusCode {
 	static OK = 200;
