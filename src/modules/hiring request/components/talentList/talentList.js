@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Divider, List, Modal } from 'antd';
+import { Dropdown, Menu, Divider, List, Modal, message } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { RiArrowDropDownLine } from 'react-icons/ri';
@@ -12,8 +12,9 @@ import { AddNewType, TalentOnboardStatus } from 'constants/application';
 import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
 import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
 import InterviewFeedback from 'modules/interview/screens/interviewFeedback/interviewFeedback';
+import { hrUtils } from 'modules/hiring request/hrUtils';
 
-const TalentList = ({ talentDetail }) => {
+const TalentList = ({ talentDetail, miscData, HRStatusCode }) => {
 	const [showVersantModal, setVersantModal] = useState(false);
 	const [interviewStatus, setInterviewStatus] = useState(false);
 	const [showReScheduleInterviewModal, setReScheduleInterviewModal] =
@@ -21,9 +22,11 @@ const TalentList = ({ talentDetail }) => {
 	const [showScheduleInterviewModal, setScheduleInterviewModal] =
 		useState(false);
 
+	const [messageAPI, contextHolder] = message.useMessage();
 	const [talentIndex, setTalentIndex] = useState(0);
 	return (
 		<div>
+			{contextHolder}
 			<List
 				grid={{ gutter: 16, column: 2 }}
 				size="large"
@@ -38,7 +41,6 @@ const TalentList = ({ talentDetail }) => {
 					<div
 						key={item?.Name}
 						id={listIndex}>
-						{/* {console.log('item.name', item?.Name, '--And--', listIndex)} */}
 						<div className={TalentListStyle.talentCard}>
 							<div className={TalentListStyle.talentCardBody}>
 								<div className={TalentListStyle.partWise}>
@@ -284,17 +286,69 @@ const TalentList = ({ talentDetail }) => {
 												label: 'Talent Status',
 												key: TalentOnboardStatus.TALENT_STATUS,
 											},
+											{
+												label: 'Update kickoff & Onboard Status',
+												key: TalentOnboardStatus.UPDATE_KICKOFF,
+											},
 										]}
-										menuAction={(item) => {
-											switch (item.key) {
+										menuAction={(menuItem) => {
+											switch (menuItem.key) {
 												case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
-													setScheduleInterviewModal(true);
-													setTalentIndex(listIndex);
+													if (
+														hrUtils.handleScheduleInterview(
+															item,
+															miscData,
+															HRStatusCode,
+														)
+													) {
+														setScheduleInterviewModal(true);
+														setTalentIndex(listIndex);
+													} else {
+														messageAPI.open({
+															type: 'info',
+															content:
+																"Cann't schedule interview for this talent.",
+														});
+													}
 													break;
 												}
 												case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
-													setReScheduleInterviewModal(true);
-													setTalentIndex(listIndex);
+													if (
+														hrUtils.handleScheduleInterview(item, HRStatusCode)
+													) {
+														setReScheduleInterviewModal(true);
+														setTalentIndex(listIndex);
+													} else {
+														messageAPI.open({
+															type: 'info',
+															content:
+																"Cann't Reschedule interview for this talent.",
+														});
+													}
+													break;
+												}
+												case TalentOnboardStatus.TALENT_STATUS: {
+													if (hrUtils.handleTalentStatus(item, HRStatusCode)) {
+														setTalentIndex(listIndex);
+													} else {
+														messageAPI.open({
+															type: 'info',
+															content: "Cann't see the talent status.",
+														});
+													}
+													break;
+												}
+												case TalentOnboardStatus.UPDATE_KICKOFF: {
+													if (
+														hrUtils.handlerUpdateKickOff(item, HRStatusCode)
+													) {
+														setTalentIndex(listIndex);
+													} else {
+														messageAPI.open({
+															type: 'info',
+															content: "Cann't update the talent.",
+														});
+													}
 													break;
 												}
 												default:

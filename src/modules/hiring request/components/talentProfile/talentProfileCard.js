@@ -4,7 +4,7 @@ import TalentProfileCardStyle from './talentProfile.module.css';
 
 const TalentList = React.lazy(() => import('../talentList/talentList'));
 
-const TalentProfileCard = ({ talentDetail }) => {
+const TalentProfileCard = ({ talentDetail, miscData, HRStatusCode }) => {
 	return (
 		<div className={TalentProfileCardStyle.talentProfileContainer}>
 			<label>
@@ -21,7 +21,11 @@ const TalentProfileCard = ({ talentDetail }) => {
 				<div className={TalentProfileCardStyle.talentCardBody}>
 					{talentDetail?.length > 0 ? (
 						<Suspense>
-							<TalentList talentDetail={talentDetail && talentDetail} />
+							<TalentList
+								talentDetail={talentDetail && talentDetail}
+								miscData={miscData}
+								HRStatusCode={HRStatusCode}
+							/>
 						</Suspense>
 					) : (
 						<EmptyTalentProfile talentLength={talentDetail?.length} />
