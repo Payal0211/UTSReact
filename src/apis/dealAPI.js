@@ -7,14 +7,11 @@ export const DealAPI = {
 	getDealListRequest: async (dealData) => {
 		try {
 			let httpService = new HttpServices();
-			httpService.URL =
-				NetworkInfo.NETWORK +
-				SubDomain.DEAL +
-				DealsAPI.LIST +
-				`?totalrecord=${dealData?.pageSize}&pagenumber=${dealData?.pageNum}`;
+			httpService.URL = NetworkInfo.NETWORK + SubDomain.DEAL + DealsAPI.LIST;
 			httpService.setAuthRequired = true;
+			httpService.dataToSend = dealData;
 			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-			let response = await httpService.sendGetRequest();
+			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'DealAPI.getDealListRequest');

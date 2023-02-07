@@ -343,4 +343,63 @@ export const hrUtils = {
 			return null;
 		}
 	},
+	handleScheduleInterview(item, miscData, HRStatusCode) {
+		if (
+			miscData?.LoggedInUserTypeID === UserAccountRole.TALENTOPS ||
+			miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+		)
+			return false;
+		else {
+			if (
+				HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
+				item?.TalentStatusID_BasedOnHR === 2 &&
+				item?.InterViewStatusId === 0 &&
+				(item?.Status !== 'Cancelled' || item?.Status !== 'Rejected')
+			) {
+				return true;
+			}
+		}
+	},
+	handleRescheduleInterview(item, HRStatusCode) {
+		if (
+			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
+			(item?.Status !== 'Cancelled' || item?.Status !== 'Rejected') &&
+			item?.InterviewStatus !== '' &&
+			(item?.InterviewStatus !== 'Interview in Process' ||
+				item?.InterviewStatus !== 'Interview Completed' ||
+				item?.InterviewStatus !== 'Feedback Submitted' ||
+				item?.InterviewStatus !== 'Cancelled')
+		) {
+			return true;
+		}
+		return false;
+	},
+	handleTalentStatus(item, HRStatusCode) {
+		if (
+			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
+			(item?.InterviewStatus !== 'Rejected' ||
+				item?.InterviewStatus !== 'Replacement' ||
+				item?.InterviewStatus !== 'Hired' ||
+				item?.InterviewStatus !== 'Cancelled')
+		) {
+			return true;
+		}
+		return false;
+	},
+	handlerUpdateKickOff(item, miscData, HRStatusCode) {
+		if (
+			miscData?.LoggedInUserTypeID === UserAccountRole.TALENTOPS ||
+			miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+		)
+			return false;
+		else {
+			if (
+				HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
+				item?.TalentStatusID_BasedOnHR === 2 &&
+				item?.InterViewStatusId === 0
+			) {
+				return true;
+			}
+		}
+	},
 };

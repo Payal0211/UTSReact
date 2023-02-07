@@ -55,10 +55,12 @@ const DealList = () => {
 			pageData
 				? pageData
 				: {
-						pageNum: 1,
-						pageSize: 100,
+						pagenumber: 1,
+						totalrecord: 10,
+						filterFields_DealList: null,
 				  },
 		);
+		console.log('--response---', response);
 		setTotalRecords(response && response?.responseBody?.details?.totalrows);
 		setDealList(response && response?.responseBody?.details);
 		setLoading(false);
