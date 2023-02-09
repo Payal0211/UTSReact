@@ -353,4 +353,56 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getRegionsRequestDAO');
 		}
 	},
+	getModeOfWorkDAO: async function () {
+		try {
+			const hrWorkingModeResponse = await MasterAPI.getModeOfWorkRequest();
+			if (hrWorkingModeResponse) {
+				const statusCode = hrWorkingModeResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hrWorkingModeResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return hrWorkingModeResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return hrWorkingModeResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getModeOfWorkDAO');
+		}
+	},
+	getCountryDAO: async function () {
+		try {
+			const hrCountryResponse = await MasterAPI.getCountryRequest();
+			if (hrCountryResponse) {
+				const statusCode = hrCountryResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hrCountryResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return hrCountryResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return hrCountryResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getCountryDAO');
+		}
+	},
 };

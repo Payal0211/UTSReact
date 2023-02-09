@@ -1,6 +1,16 @@
 .dealDetailsWrap{
     padding:0 40px 40px;
 }
+.goback {
+    color: var(--uplers-black);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: var(--fontsize-uplers);
+    font-weight: 500;
+}
 .dealDetailsBack{
     margin: 0;
     font-family: 'Montserrat';

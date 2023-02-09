@@ -188,6 +188,12 @@ export class SubmitType {
 	static SUBMIT = 1;
 }
 
+export class WorkingMode {
+	static REMOTE = 'Remote';
+	static HYBRID = 'Hybrid';
+	static OFFICE = 'Office';
+}
+
 export class ClientHRURL {
 	static ADD_NEW_HR = 'addnewhr';
 	static ADD_NEW_CLIENT = 'addnewclient';

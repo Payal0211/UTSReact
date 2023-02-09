@@ -51,7 +51,7 @@ const InterviewSchedule = ({ talentName, key, closeModal }) => {
 			className={InterviewScheduleStyle.interviewContainer}
 			id={key}>
 			<div className={InterviewScheduleStyle.leftPane}>
-				<h3>Reschedule Interview</h3>
+				<h3>Schedule Interview</h3>
 			</div>
 			<div className={InterviewScheduleStyle.panelBody}>
 				<div className={InterviewScheduleStyle.rightPane}>

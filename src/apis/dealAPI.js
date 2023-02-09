@@ -23,8 +23,9 @@ export const DealAPI = {
 			httpService.URL =
 				NetworkInfo.NETWORK +
 				SubDomain.DEAL +
-				DealsAPI.LIST +
+				DealsAPI.DETAIL +
 				`?DealID=${dealData?.dealID}`;
+
 			httpService.setAuthRequired = true;
 			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 			let response = await httpService.sendGetRequest();
