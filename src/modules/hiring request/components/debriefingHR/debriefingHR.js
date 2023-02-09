@@ -8,6 +8,8 @@ import HRSelectField from '../hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
+import HRInputField from '../hrInputFields/hrInputFields';
+import { InputType } from 'constants/application';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -55,6 +57,7 @@ const DebriefingHR = ({
 			requirements: d.requirements,
 			en_Id: enID,
 			skills: d.skills,
+			aboutCompanyDesc: d.aboutCompany,
 			secondaryInterviewer: d.secondaryInterviewer,
 			interviewerFullName: d.interviewerFullName,
 			interviewerEmail: d.interviewerEmail,
@@ -95,6 +98,19 @@ const DebriefingHR = ({
 							register={register}
 							errors={errors}
 							name="roleAndResponsibilities"
+						/>
+						<HRInputField
+							required
+							isTextArea={true}
+							errors={errors}
+							validationSchema={{
+								required: 'please enter the years.',
+							}}
+							label={'About Company'}
+							register={register}
+							name="aboutCompany"
+							type={InputType.TEXT}
+							placeholder="Please enter details about company."
 						/>
 						<TextEditor
 							label={'Requirements'}

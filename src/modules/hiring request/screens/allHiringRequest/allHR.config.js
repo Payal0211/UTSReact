@@ -1,4 +1,4 @@
-import { HiringRequestHRStatus } from 'constants/application';
+import { HiringRequestHRStatus, ProfileLog } from 'constants/application';
 import { Link } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 
@@ -282,6 +282,42 @@ export const allHRConfig = {
 					},
 				],
 				isSearch: false,
+			},
+		];
+	},
+	profileLogConfig: (profileLog) => {
+		return [
+			{
+				id: 'profileShared',
+				// score: profileLog?.profileSharedCount,
+				score: 60,
+				label: 'Profile Shared',
+				activeColor: `var(--color-purple)`,
+				typeID: ProfileLog.PROFILE_SHARED,
+			},
+			{
+				id: 'feedback',
+				// score: profileLog?.feedbackCount,\
+				score: 60,
+				label: 'Feedback Received',
+				activeColor: `var(--color-cyan)`,
+				typeID: ProfileLog.FEEDBACK,
+			},
+			{
+				id: 'rejected',
+				// score: profileLog?.rejectedCount,
+				score: 60,
+				label: 'Rejected',
+				activeColor: `var(--color-danger)`,
+				typeID: ProfileLog.REJECTED,
+			},
+			{
+				id: 'selected',
+				// score: profileLog?.selectedForCount,
+				score: 60,
+				label: 'Selected For',
+				activeColor: `var(--color-success)`,
+				typeID: ProfileLog.SELECTED,
 			},
 		];
 	},

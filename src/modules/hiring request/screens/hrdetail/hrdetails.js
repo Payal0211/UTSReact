@@ -99,30 +99,27 @@ const HRDetailScreen = () => {
 
 	const clientOnLossSubmitHandler = useCallback(
 		async (d) => {
-			if (_isNull(watch('hrDeleteLossReason'))) {
+			_isNull(watch('hrDeleteLossReason')) &&
 				setError('hrDeleteLossReason', 'Please select loss reason.');
-			} else if (_isNull(watch('hrDeleteLossRemark'))) {
-				setError('hrDeleteLossRemark', 'Please enter loss remark');
-			} else {
-				let deleteObj = {
-					id: urlSplitter?.split('HR')[0],
-					deleteType: HRDeleteType.LOSS,
-					reasonId: watch('hrDeleteLossReason').id,
-					otherReason: _isNull(watch('hrLossDeleteOtherReason'))
-						? ''
-						: watch('hrLossDeleteOtherReason'),
-					reason: watch('hrDeleteLossReason').value,
-					remark: watch('hrDeleteLossRemark'),
-					onBoardId: 0,
-				};
 
-				let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
-				if (
-					deletedResponse &&
-					deletedResponse.statusCode === HTTPStatusCode.OK
-				) {
-					navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
-				}
+			_isNull(watch('hrDeleteLossRemark')) &&
+				setError('hrDeleteLossRemark', 'Please enter loss remark');
+
+			let deleteObj = {
+				id: urlSplitter?.split('HR')[0],
+				deleteType: HRDeleteType.LOSS,
+				reasonId: watch('hrDeleteLossReason').id,
+				otherReason: _isNull(watch('hrLossDeleteOtherReason'))
+					? ''
+					: watch('hrLossDeleteOtherReason'),
+				reason: watch('hrDeleteLossReason').value,
+				remark: watch('hrDeleteLossRemark'),
+				onBoardId: 0,
+			};
+
+			let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
+			if (deletedResponse && deletedResponse.statusCode === HTTPStatusCode.OK) {
+				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
 			}
 		},
 		[navigate, setError, urlSplitter, watch],

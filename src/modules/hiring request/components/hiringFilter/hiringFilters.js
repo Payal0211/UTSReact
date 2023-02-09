@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Checkbox, Tag } from 'antd';
 import hiringFilterStyle from './hiringFilter.module.css';
 
@@ -10,16 +10,54 @@ import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 
 const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 	const [toggleBack, setToggleBack] = useState(false);
-
+	const [appliedFilter, setAppliedFilters] = useState(new Map());
+	const [checkedState, setCheckedState] = useState(new Map());
 	const [filterSubChild, setFilterSubChild] = useState(null);
 	const toggleFilterSubChild = (item) => {
 		setToggleBack(true);
 		setFilterSubChild(item);
 	};
-	const onFilterValueClick = (e) => {
-		console.log(e.target.id);
+	const handleAppliedFilters = (e, filterObj) => {
+		let tempAppliedFilters = new Map(appliedFilter);
+		let tempCheckedState = new Map(checkedState);
+		if (e.target.checked) {
+			tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, true);
+		} else {
+			tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, false);
+		}
+		if (tempAppliedFilters.has(filterObj.filterType)) {
+			let filterAddress = tempAppliedFilters.get(filterObj.filterType);
+			if (e.target.checked) {
+				filterAddress.value = filterAddress?.value + ',' + filterObj.value;
+				filterAddress.id = filterAddress.id + ',' + filterObj.id;
+				tempAppliedFilters.set(filterObj.filterType, filterAddress);
+			} else {
+				let splittedID = filterAddress.id.split(',');
+				let splittedIDIndex = splittedID.indexOf(filterObj.id);
+				splittedID = [
+					...splittedID.slice(0, splittedIDIndex),
+					...splittedID.slice(splittedIDIndex + 1),
+				];
+
+				let splittedValue = filterAddress.value.split(',');
+				let splittedValueIndex = splittedValue.indexOf(filterObj.value);
+				splittedValue = [
+					...splittedValue.slice(0, splittedValueIndex),
+					...splittedValue.slice(splittedValueIndex + 1),
+				];
+				filterAddress.value = splittedValue.toString();
+				filterAddress.id = splittedID.toString();
+				splittedID.length === 0
+					? tempAppliedFilters.delete(filterObj.filterType)
+					: tempAppliedFilters.set(filterObj.filterType, filterAddress);
+			}
+		} else {
+			tempAppliedFilters.set(filterObj.filterType, filterObj);
+		}
+		setAppliedFilters(tempAppliedFilters);
+		setCheckedState(tempCheckedState);
 	};
-	console.log(filterSubChild, '--filterSubChild');
+
 	return (
 		<aside className={hiringFilterStyle.aside}>
 			<div className={hiringFilterStyle.asideBody}>
@@ -73,7 +111,16 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 											className={hiringFilterStyle.filterItem}
 											key={index}>
 											<Checkbox
-												onChange={onFilterValueClick}
+												checked={checkedState.get(
+													`${filterSubChild.name}${item.text}`,
+												)}
+												onChange={(e) =>
+													handleAppliedFilters(e, {
+														filterType: filterSubChild.name,
+														value: item?.value,
+														id: item?.text,
+													})
+												}
 												id={item?.value + `/${index + 1}`}
 												style={{
 													fontSize: `${!item.label && '1rem'}`,
@@ -95,10 +142,12 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 						<>
 							<span className={hiringFilterStyle.label}>Filters</span>
 							<div className={hiringFilterStyle.filtersChips}>
-								{hrFilterList.map((item, index) => {
+								{appliedFilter.forEach((value, key) => {
+									console.log('--value', value);
+									console.log('--key--', key);
 									return (
 										<Tag
-											key={index}
+											key={key}
 											closable={true}
 											onClose={(e) => {
 												e.preventDefault();
@@ -115,7 +164,7 @@ const HiringFilters = ({ onRemoveHRFilters, hrFilterList, filtersType }) => {
 												fontWeight: '600',
 												padding: '10px 20px',
 											}}>
-											{item.name}&nbsp;
+											{value.value}&nbsp;
 										</Tag>
 									);
 								})}

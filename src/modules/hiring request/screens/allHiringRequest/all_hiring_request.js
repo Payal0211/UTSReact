@@ -93,12 +93,16 @@ const AllHiringRequestScreen = () => {
 	}, [debouncedSearch]);
 
 	useEffect(() => {
-		if (hrQueryData?.data) {
+		handleHRRequest({
+			pagesize: 100,
+			pagenum: 1,
+		});
+		/* if (hrQueryData?.data) {
 			if (hrQueryData?.data.statusCode === HTTPStatusCode.OK) {
 				setAPIdata(hrUtils.modifyHRRequestData(hrQueryData?.data));
 				setTotalRecords(hrQueryData?.data.responseBody.TotalRecords);
 			} else Navigate(UTSRoutes.LOGINROUTE);
-		}
+		} */
 	}, [hrQueryData?.data]);
 
 	const getHRFilterRequest = useCallback(async () => {
