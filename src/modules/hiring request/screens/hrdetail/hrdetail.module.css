@@ -134,6 +134,7 @@
 }
 .tabContainer [class*="ant-tabs-top"] [class*="ant-tabs-nav-list"] [class*="ant-tabs-tab"]{    
     width: 50%;
+    padding-left: 30px;
     justify-content: center;
 }
 

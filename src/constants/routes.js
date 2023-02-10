@@ -31,6 +31,9 @@ const InterviewFeedback = React.lazy(() =>
 const DealList = React.lazy(() =>
 	import('modules/deal/screens/dealList/dealList'),
 );
+const DealDetails = React.lazy(() =>
+	import('modules/deal/screens/dealDetails/dealDetails'),
+);
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -44,7 +47,8 @@ export default class UTSRoutes {
 	static INTERVIEWLISTROUTE = '/interview';
 	static INTERVIEWSCHEDULE = '/interview/scheduleinterview';
 	static INTERVIEWFEEDBACK = '/interview/feedback';
-	static DEALLISTROUTE = '/deallist';
+	static DEALLISTROUTE = '/deal';
+	static DEALDETAILS = '/deal/:dealID';
 	static PAGENOTFOUNDROUTE = '/404';
 	static NETWORKERRORROUTE = '/networkissue';
 }
@@ -93,6 +97,11 @@ export const navigateToComponent = {
 	[UTSRoutes.DEALLISTROUTE]: (
 		<Suspense>
 			<DealList />
+		</Suspense>
+	),
+	[UTSRoutes.DEALDETAILS]: (
+		<Suspense>
+			<DealDetails />
 		</Suspense>
 	),
 };

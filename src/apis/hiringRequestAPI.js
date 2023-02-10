@@ -14,13 +14,8 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.GET_ALL_HIRING_REQUEST +
-			`?
-				Pagesize=${hrData.pageSize}&
-				Pagenum=${hrData.pageNum}&
-				Sortdatafield=CreatedDateTime&
-				Sortorder=desc
-			`;
+			HiringRequestsAPI.GET_ALL_HIRING_REQUEST;
+		httpService.dataToSend = hrData;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -238,6 +233,22 @@ export const HiringRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.getTalentProfileLogReqeust');
+		}
+	},
+	getAllFilterDataForHRRequest: async () => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.GET_ALL_FILTER_DATA_FOR_HR;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getAllFilterDataForHRRequest');
 		}
 	},
 	setTalentPrioritiesRequest: async (talentPrioritiesData) => {

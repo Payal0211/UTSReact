@@ -55,10 +55,12 @@ const DealList = () => {
 			pageData
 				? pageData
 				: {
-						pageNum: 1,
-						pageSize: 100,
+						pagenumber: 1,
+						totalrecord: 10,
+						filterFields_DealList: null,
 				  },
 		);
+
 		setTotalRecords(response && response?.responseBody?.details?.totalrows);
 		setDealList(response && response?.responseBody?.details);
 		setLoading(false);
@@ -71,7 +73,6 @@ const DealList = () => {
 		fetchDealListAPIResponse();
 	}, [fetchDealListAPIResponse]);
 
-	console.log('---dealList--', dealList);
 	return (
 		<div className={DealListStyle.dealContainer}>
 			<div className={DealListStyle.header}>
@@ -301,7 +302,11 @@ const DealList = () => {
 										</td>
 										<td
 											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											{item?.deal_Id ? item?.deal_Id : 'NA'}
+											<Link
+												to={`/deal/${item?.deal_Id}`}
+												style={{ color: `var(--uplers-black)` }}>
+												{item?.deal_Id ? item?.deal_Id : 'NA'}
+											</Link>
 										</td>
 										<td
 											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
@@ -333,7 +338,7 @@ const DealList = () => {
 				</table>
 			</div>
 			<div className={DealListStyle.pagination}>
-				{DealList?.rows && (
+				{dealList?.rows && (
 					<Pagination
 						size="small"
 						onChange={(pageNum, pageSize) => {

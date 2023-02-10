@@ -1,4 +1,4 @@
-import { HiringRequestHRStatus } from 'constants/application';
+import { HiringRequestHRStatus, ProfileLog } from 'constants/application';
 import { Link } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 
@@ -131,24 +131,124 @@ export const allHRConfig = {
 			{ name: 'Data Analyst' },
 		];
 	},
-	hrFilterTypeConfig: () => {
+	hrFilterTypeConfig: (filterList) => {
 		return [
-			{ name: 'ODR/Pool', child: ['ODR', 'Pool'], isSearch: false },
+			{
+				name: 'ODR/Pool',
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '1',
+						value: 'ODR',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '2',
+						value: 'Pool',
+					},
+				],
+				isSearch: false,
+			},
 			{
 				name: 'Tenure',
-				child: ['3 Months', '6 Months', '12 Months'],
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '1',
+						value: '3 Months',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '2',
+						value: '6 Months',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '3',
+						value: '12 Months',
+					},
+				],
 				isSearch: false,
 			},
 			{
 				name: 'Talent Request',
-				child: ['3', '4', '7', '9', '10'],
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '1',
+						value: '3',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '2',
+						value: '4',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '3',
+						value: '7',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '4',
+						value: '9',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '5',
+						value: '10',
+					},
+				],
 				isSearch: false,
 			},
-			{ name: 'Position', child: [], isSearch: true },
-			{ name: 'Company', child: [], isSearch: true },
-			{ name: 'FTE/PTE', child: ['FTE', 'PTE'], isSearch: false },
-			{ name: 'Manager', child: [], isSearch: true },
-			{ name: 'Sales Representative', child: [], isSearch: true },
+			{ name: 'Position', child: filterList?.positions, isSearch: true },
+			{ name: 'Company', child: filterList?.companies, isSearch: true },
+			{
+				name: 'FTE/PTE',
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '1',
+						value: 'FTE',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '2',
+						value: 'PTE',
+					},
+				],
+				isSearch: false,
+			},
+			{ name: 'Manager', child: filterList?.managers, isSearch: true },
+			{
+				name: 'Sales Representative',
+				child: filterList?.salesReps,
+				isSearch: true,
+			},
 			{
 				name: 'HR Status',
 				child: [
@@ -182,6 +282,42 @@ export const allHRConfig = {
 					},
 				],
 				isSearch: false,
+			},
+		];
+	},
+	profileLogConfig: (profileLog) => {
+		return [
+			{
+				id: 'profileShared',
+				// score: profileLog?.profileSharedCount,
+				score: 60,
+				label: 'Profile Shared',
+				activeColor: `var(--color-purple)`,
+				typeID: ProfileLog.PROFILE_SHARED,
+			},
+			{
+				id: 'feedback',
+				// score: profileLog?.feedbackCount,\
+				score: 60,
+				label: 'Feedback Received',
+				activeColor: `var(--color-cyan)`,
+				typeID: ProfileLog.FEEDBACK,
+			},
+			{
+				id: 'rejected',
+				// score: profileLog?.rejectedCount,
+				score: 60,
+				label: 'Rejected',
+				activeColor: `var(--color-danger)`,
+				typeID: ProfileLog.REJECTED,
+			},
+			{
+				id: 'selected',
+				// score: profileLog?.selectedForCount,
+				score: 60,
+				label: 'Selected For',
+				activeColor: `var(--color-success)`,
+				typeID: ProfileLog.SELECTED,
 			},
 		];
 	},

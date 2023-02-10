@@ -1,9 +1,10 @@
-import { Button, Divider, Space, message } from 'antd';
+import { Button, Checkbox, Divider, Space, message } from 'antd';
 import {
 	ClientHRURL,
 	InputType,
 	MastersKey,
 	SubmitType,
+	WorkingMode,
 } from 'constants/application';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
@@ -50,9 +51,11 @@ const HRFields = ({
 	// const { availability, timeZonePref, talentRole, salesPerson } = returnState;
 	const [availability, setAvailability] = useState([]);
 	const [timeZonePref, setTimeZonePref] = useState([]);
-
+	const [workingMode, setWorkingMode] = useState([]);
 	const [talentRole, setTalentRole] = useState([]);
+	const [country, setCountry] = useState([]);
 	const [salesPerson, setSalesPerson] = useState([]);
+	const [howSoon, setHowSoon] = useState([]);
 	const [region, setRegion] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [items, setItems] = useState(['3 months', '6 months', '12 months']);
@@ -62,6 +65,7 @@ const HRFields = ({
 	const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
 	const [addHRResponse, setAddHRResponse] = useState(null);
 	const [type, setType] = useState('');
+	const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
 
 	const {
 		watch,
@@ -88,8 +92,26 @@ const HRFields = ({
 		setTimeZonePref(timeZone && timeZone.responseBody);
 	}, [prefRegion]);
 	const getAvailability = useCallback(async () => {
-		const availabilityResponse = await MasterDAO.getHowSoonRequestDAO();
-		setAvailability(availabilityResponse && availabilityResponse.responseBody);
+		const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
+		setAvailability(
+			availabilityResponse &&
+				availabilityResponse.responseBody?.BindHiringAvailability,
+		);
+	}, []);
+	const getHowSoon = useCallback(async () => {
+		const howSoonResponse = await MasterDAO.getHowSoonRequestDAO();
+		setHowSoon(howSoonResponse && howSoonResponse.responseBody);
+	}, []);
+
+	const getWorkingMode = useCallback(async () => {
+		const workingModeResponse = await MasterDAO.getModeOfWorkDAO();
+		setWorkingMode(
+			workingModeResponse && workingModeResponse?.responseBody?.details,
+		);
+	}, []);
+	const getCountry = useCallback(async () => {
+		const countryResponse = await MasterDAO.getCountryDAO();
+		setCountry(countryResponse && countryResponse?.responseBody?.details);
 	}, []);
 	const getTalentRole = useCallback(async () => {
 		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
@@ -106,15 +128,14 @@ const HRFields = ({
 
 	const getSalesPerson = useCallback(async () => {
 		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
-
 		setSalesPerson(
-			salesPersonResponse && salesPersonResponse.responseBody.details,
+			salesPersonResponse && salesPersonResponse?.responseBody?.details,
 		);
 	}, []);
 
 	const getRegion = useCallback(async () => {
-		let response = await MasterDAO.getRegionsRequestDAO();
-		setRegion(response && response?.responseBody?.details);
+		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
+		setRegion(response && response?.responseBody);
 	}, []);
 
 	const getLocation = useLocation();
@@ -134,20 +155,11 @@ const HRFields = ({
 		[items, name],
 	);
 
-	/** AutoFIll HR Title based on HR Role */
-	/* const watchHiringRequestRole = watch('role');
-	useEffect(() => {
-		setValue(
-			'hrTitle',
-			talentRole.map(
-				(item) => item.id === watchHiringRequestRole && item?.value,
-			),
-		);
-	}, [watchHiringRequestRole, setValue, talentRole]); */
-	/** To check Duplicate email exists Start */
-
 	const watchClientName = watch('clientName');
-
+	const toggleHRDirectPlacement = useCallback((e) => {
+		// e.preventDefault();
+		setHRDirectPlacement(e.target.checked);
+	}, []);
 	const getHRClientName = useCallback(
 		async (data) => {
 			let existingClientDetails =
@@ -205,6 +217,9 @@ const HRFields = ({
 		getTalentRole();
 		getSalesPerson();
 		getRegion();
+		getWorkingMode();
+		getCountry();
+		getHowSoon();
 	}, [
 		getAvailability,
 		getSalesPerson,
@@ -212,6 +227,9 @@ const HRFields = ({
 		getTimeZonePreference,
 		getRegion,
 		prefRegion,
+		getHowSoon,
+		getWorkingMode,
+		getCountry,
 	]);
 	/** To check Duplicate email exists End */
 
@@ -223,6 +241,7 @@ const HRFields = ({
 			type,
 			watch,
 			clientDetail?.contactId,
+			isHRDirectPlacement,
 			addHRResponse,
 		);
 		console.log(hrFormDetails, 'hrFormdetails');
@@ -240,6 +259,7 @@ const HRFields = ({
 
 		if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 			setAddHRResponse(addHRRequest?.responseBody?.details);
+			console.log(addHRRequest?.responseBody?.details?.en_Id, '---eniD');
 			setEnID(addHRRequest?.responseBody?.details?.en_Id);
 			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
 			type !== SubmitType.SAVE_AS_DRAFT &&
@@ -329,7 +349,7 @@ const HRFields = ({
 										required: 'please enter the other role.',
 										pattern: {
 											value: /^((?!other).)*$/,
-											message: 'Please remove other word.',
+											message: 'Please remove "other" keyword.',
 										},
 									}}
 									label="Other Role"
@@ -637,6 +657,7 @@ const HRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									mode={'id/value'}
 									disabled={_isNull(prefRegion)}
 									setValue={setValue}
 									register={register}
@@ -658,12 +679,12 @@ const HRFields = ({
 									setValue={setValue}
 									register={register}
 									label={'How soon can they join?'}
-									defaultValue="Select availability"
-									options={availability}
+									defaultValue="Select how soon?"
+									options={howSoon}
 									name="howSoon"
 									isError={errors['howSoon'] && errors['howSoon']}
 									required
-									errorMsg={'Please select the availability.'}
+									errorMsg={'Please select the how soon.'}
 								/>
 							</div>
 						</div>
@@ -708,6 +729,54 @@ const HRFields = ({
 							/>
 						</div>
 					</div>
+
+					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd12}>
+							<div className={HRFieldStyle.checkBoxGroup}>
+								<Checkbox onClick={toggleHRDirectPlacement}>
+									Is this HR a Direct Placement?
+								</Checkbox>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									mode={'id/value'}
+									searchable={false}
+									setValue={setValue}
+									register={register}
+									label={'Mode of Working?'}
+									defaultValue="Select working mode"
+									options={workingMode && workingMode}
+									name="workingMode"
+									isError={errors['workingMode'] && errors['workingMode']}
+									required
+									errorMsg={'Please select the working mode.'}
+								/>
+							</div>
+						</div>
+						{isHRDirectPlacement && (
+							<div className={HRFieldStyle.colMd6}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the DP Percentage.',
+									}}
+									label="DP Percentage"
+									name="dpPercentage"
+									type={InputType.NUMBER}
+									placeholder="Enter the DP Percentage"
+									required
+								/>
+							</div>
+						)}
+					</div>
+
+					{getWorkingModelFields()}
 				</form>
 			</div>
 			<Divider />
@@ -736,6 +805,102 @@ const HRFields = ({
 			</div>
 		</div>
 	);
+	function getWorkingModelFields() {
+		if (
+			watch('workingMode') === undefined ||
+			watch('workingMode').value === undefined ||
+			watch('workingMode').value === WorkingMode.REMOTE
+		) {
+			return null;
+		} else {
+			return (
+				<>
+					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd6}>
+							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the postal code.',
+								}}
+								label="Postal Code"
+								name="postalCode"
+								type={InputType.TEXT}
+								placeholder="Enter the Postal Code"
+								required
+							/>
+						</div>
+						<div className={HRFieldStyle.colMd6}>
+							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the city.',
+								}}
+								label="City"
+								name="city"
+								type={InputType.TEXT}
+								placeholder="Enter the City"
+								required
+							/>
+						</div>
+					</div>
+
+					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd6}>
+							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the state.',
+								}}
+								label="State"
+								name="state"
+								type={InputType.TEXT}
+								placeholder="Enter the State"
+								required
+							/>
+						</div>
+						<div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									mode={'id/value'}
+									searchable={false}
+									setValue={setValue}
+									register={register}
+									label={'Country'}
+									defaultValue="Select country"
+									options={country && country}
+									name="country"
+									isError={errors['country'] && errors['country']}
+									required
+									errorMsg={'Please select the country.'}
+								/>
+							</div>
+						</div>
+					</div>
+					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd12}>
+							<HRInputField
+								isTextArea={true}
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the address.',
+								}}
+								label="Address"
+								name="address"
+								type={InputType.TEXT}
+								placeholder="Enter the Address"
+								required
+							/>
+						</div>
+					</div>
+				</>
+			);
+		}
+		return null;
+	}
 };
 
 export default HRFields;

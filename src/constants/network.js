@@ -49,6 +49,8 @@ export class MastersAPI {
 	static Get_SALESMAN = 'GetSalesman';
 	static GET_HR_DELETE_REASON = 'GetHRDeleteReason';
 	static GET_REGIONS = 'GetRegions';
+	static GET_MODE_OF_WORK = 'GetModeOfWork';
+	static GET_COUNTRY = 'GetCountry';
 }
 
 export class ClientsAPI {
@@ -70,7 +72,9 @@ export class HiringRequestsAPI {
 	static GET_TALENT_PROFILE_LOG = 'GetTalentProfileLog';
 	static SET_TALENT_PRIORITIES = 'SetTalentPriorties';
 	static DELETE = 'delete';
+	static GET_ALL_FILTER_DATA_FOR_HR = 'GetAllFilterDataForHR';
 }
+
 export class InterviewsAPI {
 	static LIST = 'List';
 }
