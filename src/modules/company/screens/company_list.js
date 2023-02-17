@@ -19,20 +19,19 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useAllHRQuery } from 'shared/hooks/useAllHRQuery';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { IoChevronDownOutline } from 'react-icons/io5';
-import allUserStyles from './user_list.module.css';
+import allCompanyStyles from './company.module.css';
 import UTSRoutes from 'constants/routes';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
-import { allHRConfig } from '../../../hiring request/screens/allHiringRequest/allHR.config';
+import { allHRConfig } from '../../hiring request/screens/allHiringRequest/allHR.config';
 import WithLoader from 'shared/components/loader/loader';
-import { UserRequestDAO } from 'core/users/users';
-import { UserUtils } from 'modules/users/userUtils';
+
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
     import('modules/hiring request/components/hiringFilter/hiringFilters'),
 );
 
-const UserList = () => {
+const CompanyList = () => {
     const pageSizeOptions = [100, 200, 300, 500, 1000];
     const hrQueryData = useAllHRQuery();
     const [totalRecords, setTotalRecords] = useState(0);
@@ -87,15 +86,7 @@ const UserList = () => {
         setTotalRecords(response.responseBody.TotalRecords);
     };
 
-    const userListRequestHandler = async () => {
-        const listData = {
-            totalrecord: 10,
-            pagenumber: 1,
-        }
-        let response = await UserRequestDAO.getUserList(listData);
-        setAPIdata(UserUtils.userList(response && response));
-        setTotalRecords(300);
-    };
+
 
     useEffect(() => {
         const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
@@ -110,9 +101,7 @@ const UserList = () => {
 
     }, [hrQueryData?.data]);
 
-    useEffect(() => {
-        userListRequestHandler({ pageSize: pageSize, pageNum: pageIndex });
-    }, [])
+
 
 
     const getHRFilterRequest = useCallback(async () => {
@@ -126,15 +115,14 @@ const UserList = () => {
     }, [getHRFilterRequest, isAllowFilters]);
 
 
-
     return (
-        <div className={allUserStyles.hiringRequestContainer}>
+        <div className={allCompanyStyles.hiringRequestContainer}>
             {contextHolder}
-            <div className={allUserStyles.addnewHR}>
-                <div className={allUserStyles.hiringRequest}>Users</div>
+            <div className={allCompanyStyles.addnewHR}>
+                <div className={allCompanyStyles.hiringRequest}>Company List</div>
 
                 <HROperator
-                    title="Add New User"
+                    title="Add New Company"
                     icon={<ArrowDownSVG style={{ width: '16px' }} />}
                     backgroundColor={`var(--color-sunlight)`}
                     iconBorder={`1px solid var(--color-sunlight)`}
@@ -169,22 +157,22 @@ const UserList = () => {
 			 * --------- Filter Component Starts ---------
 			 * @Filter Part
 			 */}
-            <div className={allUserStyles.filterContainer}>
-                <div className={allUserStyles.filterSets}>
+            <div className={allCompanyStyles.filterContainer}>
+                <div className={allCompanyStyles.filterSets}>
                     <div
-                        className={allUserStyles.addFilter}
+                        className={allCompanyStyles.addFilter}
                         onClick={toggleHRFilter}>
                         <FunnelSVG style={{ width: '16px', height: '16px' }} />
 
-                        <div className={allUserStyles.filterLabel}>Add Filters</div>
-                        <div className={allUserStyles.filterCount}>7</div>
+                        <div className={allCompanyStyles.filterLabel}>Add Filters</div>
+                        <div className={allCompanyStyles.filterCount}>7</div>
                     </div>
-                    <div className={allUserStyles.filterRight}>
-                        <div className={allUserStyles.searchFilterSet}>
+                    <div className={allCompanyStyles.filterRight}>
+                        <div className={allCompanyStyles.searchFilterSet}>
                             <SearchSVG style={{ width: '16px', height: '16px' }} />
                             <input
                                 type={InputType.TEXT}
-                                className={allUserStyles.searchInput}
+                                className={allCompanyStyles.searchInput}
                                 placeholder="Search Table"
                                 onChange={(e) => {
                                     return setDebouncedSearch(
@@ -193,13 +181,13 @@ const UserList = () => {
                                 }}
                             />
                         </div>
-                        <div className={allUserStyles.calendarFilterSet}>
+                        <div className={allCompanyStyles.calendarFilterSet}>
 
                         </div>
 
-                        <div className={allUserStyles.priorityFilterSet}>
-                            <div className={allUserStyles.label}>Showing</div>
-                            <div className={allUserStyles.paginationFilter}>
+                        <div className={allCompanyStyles.priorityFilterSet}>
+                            <div className={allCompanyStyles.label}>Showing</div>
+                            <div className={allCompanyStyles.paginationFilter}>
                                 <Dropdown
                                     trigger={['click']}
                                     placement="bottom"
@@ -236,7 +224,7 @@ const UserList = () => {
 			 * ------------ Table Starts-----------
 			 * @Table Part
 			 */}
-            <div className={allUserStyles.tableDetails}>
+            <div className={allCompanyStyles.tableDetails}>
                 {
                     <WithLoader>
                         <Table
@@ -289,4 +277,4 @@ const UserList = () => {
     );
 };
 
-export default UserList;
+export default CompanyList;
