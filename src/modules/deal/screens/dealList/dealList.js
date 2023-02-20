@@ -302,11 +302,15 @@ const DealList = () => {
 										</td>
 										<td
 											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											<Link
-												to={`/deal/${item?.deal_Id}`}
-												style={{ color: `var(--uplers-black)` }}>
-												{item?.deal_Id ? item?.deal_Id : 'NA'}
-											</Link>
+											{item?.deal_Id ? (
+												<Link
+													to={`/deal/${item?.deal_Id}`}
+													style={{ color: `var(--uplers-black)` }}>
+													{item?.deal_Id}
+												</Link>
+											) : (
+												'NA'
+											)}
 										</td>
 										<td
 											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>

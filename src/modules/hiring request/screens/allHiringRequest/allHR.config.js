@@ -134,7 +134,7 @@ export const allHRConfig = {
 	hrFilterTypeConfig: (filterList) => {
 		return [
 			{
-				name: 'ODR/Pool',
+				name: 'isPoolODRBoth',
 				child: [
 					{
 						disabled: false,
@@ -154,7 +154,7 @@ export const allHRConfig = {
 				isSearch: false,
 			},
 			{
-				name: 'Tenure',
+				name: 'tenure',
 				child: [
 					{
 						disabled: false,
@@ -181,7 +181,7 @@ export const allHRConfig = {
 				isSearch: false,
 			},
 			{
-				name: 'Talent Request',
+				name: 'tr',
 				child: [
 					{
 						disabled: false,
@@ -221,8 +221,8 @@ export const allHRConfig = {
 				],
 				isSearch: false,
 			},
-			{ name: 'Position', child: filterList?.positions, isSearch: true },
-			{ name: 'Company', child: filterList?.companies, isSearch: true },
+			{ name: 'position', child: filterList?.positions, isSearch: true },
+			{ name: 'company', child: filterList?.companies, isSearch: true },
 			{
 				name: 'FTE/PTE',
 				child: [
@@ -243,42 +243,79 @@ export const allHRConfig = {
 				],
 				isSearch: false,
 			},
-			{ name: 'Manager', child: filterList?.managers, isSearch: true },
+			{ name: 'manager', child: filterList?.managers, isSearch: true },
 			{
 				name: 'Sales Representative',
 				child: filterList?.salesReps,
 				isSearch: true,
 			},
 			{
-				name: 'HR Status',
+				name: 'hrStatus',
 				child: [
 					{
+						disabled: false,
+						group: null,
+						selected: false,
 						statusCode: HiringRequestHRStatus.DRAFT,
 						label: 'Draft',
+						value: 'Draft',
+						text: HiringRequestHRStatus.DRAFT.toString(),
 					},
+
 					{
+						disabled: false,
+						group: null,
+						selected: false,
 						statusCode: HiringRequestHRStatus.HR_ACCEPTED,
 						label: 'HR Aceepted',
+						value: 'Draft',
+						text: HiringRequestHRStatus.HR_ACCEPTED.toString(),
 					},
 					{
+						disabled: false,
+						group: null,
+						selected: false,
 						statusCode: HiringRequestHRStatus.ACCEPTANCE_PENDING,
 						label: 'Acceptance Pending',
+						text: HiringRequestHRStatus.ACCEPTANCE_PENDING.toString(),
+						value: 'Acceptance Pending',
 					},
 					{
+						disabled: false,
+						group: null,
+						selected: false,
 						statusCode: HiringRequestHRStatus.INFO_PENDING,
 						label: 'Info Pending',
+						text: HiringRequestHRStatus.INFO_PENDING.toString(),
+						value: 'Info Pending',
 					},
 					{
+						disabled: false,
+						group: null,
+						selected: false,
 						statusCode: HiringRequestHRStatus.COMPLETED,
 						label: 'Completed',
+						text: HiringRequestHRStatus.COMPLETED.toString(),
+						value: 'Completed',
 					},
+
 					{
+						disabled: false,
+						group: null,
+						selected: false,
 						statusCode: HiringRequestHRStatus.IN_PROCESS,
 						label: 'In Process',
+						text: HiringRequestHRStatus.IN_PROCESS.toString(),
+						value: 'In Process',
 					},
 					{
+						disabled: false,
+						group: null,
+						selected: false,
 						statusCode: HiringRequestHRStatus.CANCELLED,
 						label: 'Cancelled',
+						text: HiringRequestHRStatus.CANCELLED.toString(),
+						value: 'Cancelled',
 					},
 				],
 				isSearch: false,
