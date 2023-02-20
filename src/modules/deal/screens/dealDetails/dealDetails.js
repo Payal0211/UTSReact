@@ -178,19 +178,18 @@ const DealDetails = () => {
 	const switchLocation = useLocation();
 	const [dealDetails, setDealDetails] = useState(null);
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
-	console.log(urlSplitter);
+
 	const getDealDetails = useCallback(async () => {
 		const response = await DealDAO.getDealDetailRequestDAO({
 			dealID: urlSplitter,
 		});
-		console.log(response);
-		setDealDetails(response && response?.responseBody);
+		setDealDetails(response && response?.responseBody?.details);
 	}, [urlSplitter]);
 
 	useEffect(() => {
 		getDealDetails();
-	});
-	console.log(dealDetails, '---');
+	}, [getDealDetails]);
+
 	return (
 		<div className={dealDetailsStyles.dealDetailsWrap}>
 			<div className={dealDetailsStyles.dealDetailsBack}>
@@ -207,7 +206,7 @@ const DealDetails = () => {
 						src="https://www.w3schools.com/howto/img_avatar.png"
 						alt="food network"
 					/>
-					Save Eat Foods Pvt Ltd - New Deal
+					{dealDetails?.dealName}
 				</h1>
 				<button type="button">View BQ Form</button>
 			</div>
@@ -216,22 +215,26 @@ const DealDetails = () => {
 				<ul>
 					<li>
 						<div className={dealDetailsStyles.topCardItem}>
-							<span>Stage</span> SAL Achieved
+							<span>Stage</span>
+							{dealDetails?.dealStage ? dealDetails?.dealStage : 'NA'}
 						</div>
 					</li>
 					<li>
 						<div className={dealDetailsStyles.topCardItem}>
-							<span>Deal Owner</span> Prachi Porwal
+							<span>Deal Owner</span>
+							{dealDetails?.Owner ? dealDetails?.Owner : 'NA'}
 						</div>
 					</li>
 					<li>
 						<div className={dealDetailsStyles.topCardItem}>
-							<span>Deal Type</span> New Business
+							<span>Deal Type</span>
+							{dealDetails?.dealType ? dealDetails?.dealType : 'NA'}
 						</div>
 					</li>
 					<li>
 						<div className={dealDetailsStyles.topCardItem}>
-							<span>POC</span> Silvia Gomez
+							<span>POC</span>
+							{dealDetails?.poc ? dealDetails?.poc : 'NA'}
 						</div>
 					</li>
 				</ul>
@@ -243,22 +246,35 @@ const DealDetails = () => {
 						<h2>Company Details</h2>
 						<ul>
 							<li>
-								<span>URL:</span> saveeat.au
+								<span>URL:</span>
+								{dealDetails?.getDealCompanydetails[0]?.url
+									? dealDetails?.getDealCompanydetails[0]?.url
+									: 'NA'}
 							</li>
 							<li>
-								<span>Location:</span> Australia
+								<span>Location:</span>
+								{dealDetails?.getDealCompanydetails[0]?.location
+									? dealDetails?.getDealCompanydetails[0]?.location
+									: 'NA'}
 							</li>
 							<li>
-								<span>Size:</span> 500
+								<span>Size:</span>
+								{dealDetails?.getDealCompanydetails[0]?.size
+									? dealDetails?.getDealCompanydetails[0]?.size
+									: 0}
+							</li>
+
+							<li>
+								<span>Address:</span>
+								{dealDetails?.getDealCompanydetails[0]?.address
+									? dealDetails?.getDealCompanydetails[0]?.address
+									: 'NA'}
 							</li>
 							<li>
-								<span>Location:</span> Australia
-							</li>
-							<li>
-								<span>Address:</span> Queens, Brisbane, Australia
-							</li>
-							<li>
-								<span>Linkedin:</span> saveeatfood
+								<span>Linkedin:</span>
+								{dealDetails?.getDealCompanydetails[0]?.linkedin
+									? dealDetails?.getDealCompanydetails[0]?.linkedin
+									: 'NA'}
 								<a
 									href="#"
 									target="_blank"
@@ -282,10 +298,16 @@ const DealDetails = () => {
 								</a>
 							</li>
 							<li>
-								<span>Phone:</span> +61 4336 25656
+								<span>Phone:</span>{' '}
+								{dealDetails?.getDealCompanydetails[0]?.phone
+									? dealDetails?.getDealCompanydetails[0]?.phone
+									: 'NA'}
 							</li>
 							<li>
-								<span>Lead Source:</span> Outbound
+								<span>Lead Source:</span>
+								{dealDetails?.getDealCompanydetails[0]?.leadSOurce
+									? dealDetails?.getDealCompanydetails[0]?.leadSOurce
+									: 'NA'}
 							</li>
 						</ul>
 					</div>
@@ -293,19 +315,34 @@ const DealDetails = () => {
 						<h2>Lead Details</h2>
 						<ul>
 							<li>
-								<span>Deal ID:</span> 349854379
+								<span>Deal ID:</span>{' '}
+								{dealDetails?.getDealLeadDetails[0]?.deal
+									? dealDetails?.getDealLeadDetails[0]?.deal
+									: 'NA'}
 							</li>
 							<li>
-								<span>Lead Source:</span> Outbound
+								<span>Lead Source:</span>{' '}
+								{dealDetails?.getDealLeadDetails[0]?.leadSource
+									? dealDetails?.getDealLeadDetails[0]?.leadSource
+									: 'NA'}
 							</li>
 							<li>
-								<span>Pipeline:</span> Conversion
+								<span>Pipeline:</span>{' '}
+								{dealDetails?.getDealLeadDetails[0]?.pipeLine
+									? dealDetails?.getDealLeadDetails[0]?.pipeLine
+									: 'NA'}
 							</li>
 							<li>
-								<span>BDR:</span> Madhava Achaval
+								<span>BDR:</span>{' '}
+								{dealDetails?.getDealLeadDetails[0]?.bdr
+									? dealDetails?.getDealLeadDetails[0]?.bdr
+									: 'NA'}
 							</li>
 							<li>
-								<span>Sales Consultant:</span> Sid Hans
+								<span>Sales Consultant:</span>{' '}
+								{dealDetails?.getDealLeadDetails[0]?.salesConsultant
+									? dealDetails?.getDealLeadDetails[0]?.salesConsultant
+									: 'NA'}
 							</li>
 						</ul>
 					</div>
