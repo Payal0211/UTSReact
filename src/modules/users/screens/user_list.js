@@ -118,40 +118,9 @@ const UserList = () => {
     return (
         <div className={allUserStyles.hiringRequestContainer}>
             {contextHolder}
-            <div className={allUserStyles.addnewHR}>
+            <div className={allUserStyles.userListTitle}>
                 <div className={allUserStyles.hiringRequest}>Users</div>
-
-                <HROperator
-                    title="Add New User"
-                    icon={<ArrowDownSVG style={{ width: '16px' }} />}
-                    backgroundColor={`var(--color-sunlight)`}
-                    iconBorder={`1px solid var(--color-sunlight)`}
-                    isDropdown={true}
-                    listItem={[
-                        {
-                            label: 'Add New HR',
-                            key: AddNewType.HR,
-                        },
-                        {
-                            label: 'Add New Client',
-                            key: AddNewType.CLIENT,
-                        },
-                    ]}
-                    menuAction={(item) => {
-                        switch (item.key) {
-                            case AddNewType.HR: {
-                                navigate(UTSRoutes.ADDNEWHR);
-                                break;
-                            }
-                            case AddNewType.CLIENT: {
-                                navigate(UTSRoutes.ADDNEWCLIENT);
-                                break;
-                            }
-                            default:
-                                break;
-                        }
-                    }}
-                />
+                <button type="button" onClick={() => navigate(UTSRoutes.ADDNEWUSER)}>Add New User</button>
             </div>
             {/*
 			 * --------- Filter Component Starts ---------

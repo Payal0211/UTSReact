@@ -4,13 +4,35 @@
     margin: 25px 40px;
 }
 
-
-.addnewHR {
+.companyListTitle {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
 }
+
+.companyListTitle button {
+    background: #FFDA30;
+    border: 1px solid #FFDA30;
+    border-radius: 8px;
+    padding: 13px 16px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    cursor: pointer;
+    transition: all 0.35s ease 0s;
+    box-shadow: none;
+    outline: none;
+}
+
+.companyListTitle button:hover{
+    background: #232323;
+    color: #fff;
+    border-color: #232323;
+}
+
 
 .hiringRequest {
     font-size: 32px;

@@ -87,7 +87,6 @@ const CompanyList = () => {
     };
 
 
-
     useEffect(() => {
         const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
         return () => clearTimeout(timer);
@@ -100,9 +99,6 @@ const CompanyList = () => {
         });
 
     }, [hrQueryData?.data]);
-
-
-
 
     const getHRFilterRequest = useCallback(async () => {
         const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
@@ -118,40 +114,9 @@ const CompanyList = () => {
     return (
         <div className={allCompanyStyles.hiringRequestContainer}>
             {contextHolder}
-            <div className={allCompanyStyles.addnewHR}>
+            <div className={allCompanyStyles.companyListTitle}>
                 <div className={allCompanyStyles.hiringRequest}>Company List</div>
-
-                <HROperator
-                    title="Add New Company"
-                    icon={<ArrowDownSVG style={{ width: '16px' }} />}
-                    backgroundColor={`var(--color-sunlight)`}
-                    iconBorder={`1px solid var(--color-sunlight)`}
-                    isDropdown={true}
-                    listItem={[
-                        {
-                            label: 'Add New HR',
-                            key: AddNewType.HR,
-                        },
-                        {
-                            label: 'Add New Client',
-                            key: AddNewType.CLIENT,
-                        },
-                    ]}
-                    menuAction={(item) => {
-                        switch (item.key) {
-                            case AddNewType.HR: {
-                                navigate(UTSRoutes.ADDNEWHR);
-                                break;
-                            }
-                            case AddNewType.CLIENT: {
-                                navigate(UTSRoutes.ADDNEWCLIENT);
-                                break;
-                            }
-                            default:
-                                break;
-                        }
-                    }}
-                />
+                <button type="button">Add New Company</button>
             </div>
             {/*
 			 * --------- Filter Component Starts ---------
