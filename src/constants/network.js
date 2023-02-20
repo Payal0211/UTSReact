@@ -15,6 +15,7 @@ export class SubDomain {
 	static DEBRIEFING = 'Debriefing/';
 	static INTERVIEW = 'Interview/';
 	static DEAL = 'Deal/';
+	static USER = 'User/';
 }
 export class APIType {
 	static USER = '/user';
@@ -29,8 +30,10 @@ export class UserAPI {
 	static LOGIN = 'AdminLogin';
 	static SIGNUP = '/signup';
 	static FORGOTPASSWORD = '/forgotpassword';
+	static LIST = 'List';
 	static UPDATEPASSWORD = '/updatepassword';
 }
+
 export class AllHiringRequestAPI {
 	static SET_PRIORITY_NEXT_WEEK = 'SetPriorityForNextWeek';
 }
