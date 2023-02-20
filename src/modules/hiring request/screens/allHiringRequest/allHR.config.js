@@ -1,4 +1,4 @@
-import { HiringRequestHRStatus } from 'constants/application';
+import { HiringRequestHRStatus, ProfileLog } from 'constants/application';
 import { Link } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 
@@ -131,57 +131,230 @@ export const allHRConfig = {
 			{ name: 'Data Analyst' },
 		];
 	},
-	hrFilterTypeConfig: () => {
+	hrFilterTypeConfig: (filterList) => {
 		return [
-			{ name: 'ODR/Pool', child: ['ODR', 'Pool'], isSearch: false },
 			{
-				name: 'Tenure',
-				child: ['3 Months', '6 Months', '12 Months'],
-				isSearch: false,
-			},
-			{
-				name: 'Talent Request',
-				child: ['3', '4', '7', '9', '10'],
-				isSearch: false,
-			},
-			{ name: 'Position', child: [], isSearch: true },
-			{ name: 'Company', child: [], isSearch: true },
-			{ name: 'FTE/PTE', child: ['FTE', 'PTE'], isSearch: false },
-			{ name: 'Manager', child: [], isSearch: true },
-			{ name: 'Sales Representative', child: [], isSearch: true },
-			{
-				name: 'HR Status',
+				name: 'isPoolODRBoth',
 				child: [
 					{
-						statusCode: HiringRequestHRStatus.DRAFT,
-						label: 'Draft',
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '1',
+						value: 'ODR',
 					},
 					{
-						statusCode: HiringRequestHRStatus.HR_ACCEPTED,
-						label: 'HR Aceepted',
-					},
-					{
-						statusCode: HiringRequestHRStatus.ACCEPTANCE_PENDING,
-						label: 'Acceptance Pending',
-					},
-					{
-						statusCode: HiringRequestHRStatus.INFO_PENDING,
-						label: 'Info Pending',
-					},
-					{
-						statusCode: HiringRequestHRStatus.COMPLETED,
-						label: 'Completed',
-					},
-					{
-						statusCode: HiringRequestHRStatus.IN_PROCESS,
-						label: 'In Process',
-					},
-					{
-						statusCode: HiringRequestHRStatus.CANCELLED,
-						label: 'Cancelled',
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '2',
+						value: 'Pool',
 					},
 				],
 				isSearch: false,
+			},
+			{
+				name: 'tenure',
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '1',
+						value: '3 Months',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '2',
+						value: '6 Months',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '3',
+						value: '12 Months',
+					},
+				],
+				isSearch: false,
+			},
+			{
+				name: 'tr',
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '1',
+						value: '3',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '2',
+						value: '4',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '3',
+						value: '7',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '4',
+						value: '9',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '5',
+						value: '10',
+					},
+				],
+				isSearch: false,
+			},
+			{ name: 'position', child: filterList?.positions, isSearch: true },
+			{ name: 'company', child: filterList?.companies, isSearch: true },
+			{
+				name: 'FTE/PTE',
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '1',
+						value: 'FTE',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '2',
+						value: 'PTE',
+					},
+				],
+				isSearch: false,
+			},
+			{ name: 'manager', child: filterList?.managers, isSearch: true },
+			{
+				name: 'Sales Representative',
+				child: filterList?.salesReps,
+				isSearch: true,
+			},
+			{
+				name: 'hrStatus',
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						statusCode: HiringRequestHRStatus.DRAFT,
+						label: 'Draft',
+						value: 'Draft',
+						text: HiringRequestHRStatus.DRAFT.toString(),
+					},
+
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						statusCode: HiringRequestHRStatus.HR_ACCEPTED,
+						label: 'HR Aceepted',
+						value: 'Draft',
+						text: HiringRequestHRStatus.HR_ACCEPTED.toString(),
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						statusCode: HiringRequestHRStatus.ACCEPTANCE_PENDING,
+						label: 'Acceptance Pending',
+						text: HiringRequestHRStatus.ACCEPTANCE_PENDING.toString(),
+						value: 'Acceptance Pending',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						statusCode: HiringRequestHRStatus.INFO_PENDING,
+						label: 'Info Pending',
+						text: HiringRequestHRStatus.INFO_PENDING.toString(),
+						value: 'Info Pending',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						statusCode: HiringRequestHRStatus.COMPLETED,
+						label: 'Completed',
+						text: HiringRequestHRStatus.COMPLETED.toString(),
+						value: 'Completed',
+					},
+
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						statusCode: HiringRequestHRStatus.IN_PROCESS,
+						label: 'In Process',
+						text: HiringRequestHRStatus.IN_PROCESS.toString(),
+						value: 'In Process',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						statusCode: HiringRequestHRStatus.CANCELLED,
+						label: 'Cancelled',
+						text: HiringRequestHRStatus.CANCELLED.toString(),
+						value: 'Cancelled',
+					},
+				],
+				isSearch: false,
+			},
+		];
+	},
+	profileLogConfig: (profileLog) => {
+		return [
+			{
+				id: 'profileShared',
+				// score: profileLog?.profileSharedCount,
+				score: 60,
+				label: 'Profile Shared',
+				activeColor: `var(--color-purple)`,
+				typeID: ProfileLog.PROFILE_SHARED,
+			},
+			{
+				id: 'feedback',
+				// score: profileLog?.feedbackCount,\
+				score: 60,
+				label: 'Feedback Received',
+				activeColor: `var(--color-cyan)`,
+				typeID: ProfileLog.FEEDBACK,
+			},
+			{
+				id: 'rejected',
+				// score: profileLog?.rejectedCount,
+				score: 60,
+				label: 'Rejected',
+				activeColor: `var(--color-danger)`,
+				typeID: ProfileLog.REJECTED,
+			},
+			{
+				id: 'selected',
+				// score: profileLog?.selectedForCount,
+				score: 60,
+				label: 'Selected For',
+				activeColor: `var(--color-success)`,
+				typeID: ProfileLog.SELECTED,
 			},
 		];
 	},

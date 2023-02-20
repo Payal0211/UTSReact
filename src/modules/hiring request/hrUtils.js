@@ -7,6 +7,7 @@ import {
 import { _isNull } from 'shared/utils/basic_utils';
 import HROperator from './components/hroperator/hroperator';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
+import MatchmakingModal from './components/matchmaking/matchmaking';
 export const hrUtils = {
 	modifyHRRequestData: (hrData) => {
 		return hrData.responseBody.Data.map((item) => ({
@@ -59,7 +60,14 @@ export const hrUtils = {
 			return { tempdata, index };
 		}
 	},
-	hrFormDataFormatter(d, draft, watch, contactID, addHrResponse) {
+	hrFormDataFormatter(
+		d,
+		draft,
+		watch,
+		contactID,
+		isHRDirectPlacement,
+		addHrResponse,
+	) {
 		const hrFormDetails = {
 			en_Id: _isNull(addHrResponse) ? '' : addHrResponse.en_Id,
 			contactId: _isNull(contactID) ? 0 : contactID,
@@ -179,12 +187,29 @@ export const hrUtils = {
 					: parseInt(d.months),
 			timeZone:
 				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('region'))
+						? 0
+						: watch('region')
+					: _isNull(d.region)
+					? 0
+					: d.region,
+			timeZonePreferenceId:
+				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('timeZone'))
 						? 0
-						: watch('timeZone')
+						: watch('timeZone')?.id
 					: _isNull(d.timeZone)
 					? 0
-					: d.timeZone,
+					: d.timeZone?.id,
+			timezone_Preference:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('timeZone'))
+						? 0
+						: watch('timeZone')?.value
+					: _isNull(d.timeZone)
+					? 0
+					: d.timeZone?.value,
+
 			talentsNumber:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('talentsNumber'))
@@ -217,6 +242,66 @@ export const hrUtils = {
 					: _isNull(d.discoveryCallLink)
 					? null
 					: d.discoveryCallLink,
+			isHRTypeDP: isHRDirectPlacement,
+			directPlacement: {
+				hiringRequestId: 0,
+				modeOfWork:
+					draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('workingMode'))
+							? null
+							: watch('workingMode')?.value
+						: _isNull(d.workingMode)
+						? null
+						: d.workingMode?.value,
+				dpPercentage:
+					draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('dpPercentage'))
+							? 0
+							: parseFloat(watch('dpPercentage'))
+						: _isNull(d.dpPercentage)
+						? 0
+						: parseFloat(d.dpPercentage),
+				address:
+					draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('address'))
+							? null
+							: watch('address')
+						: _isNull(d.address)
+						? null
+						: d.address,
+				city:
+					draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('city'))
+							? null
+							: watch('city')
+						: _isNull(d.city)
+						? null
+						: d.city,
+				state:
+					draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('state'))
+							? null
+							: watch('state')
+						: _isNull(d.state)
+						? null
+						: d.state,
+				country:
+					draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('country'))
+							? null
+							: watch('country')?.value
+						: _isNull(d.country)
+						? null
+						: d.country?.value,
+				postalCode:
+					draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('postalCode'))
+							? null
+							: watch('postalCode')
+						: _isNull(d.postalCode)
+						? null
+						: d.postalCode,
+			},
 			/* interviewerFullName:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('interviewerFullName'))
@@ -310,6 +395,94 @@ export const hrUtils = {
 						/>
 					);
 				}
+			}
+		}
+	},
+	showMatchmaking(
+		apiData,
+		loggedInUserTypeID,
+		callAPI,
+		urlSplitter,
+		updatedSplitter,
+	) {
+		if (apiData?.IsAccepted === 1 && apiData?.TR_Accepted >= 1) {
+			if (
+				loggedInUserTypeID === UserAccountRole.TALENTOPS ||
+				loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+			) {
+				return (
+					apiData?.HRTalentDetails?.length > 0 && (
+						<MatchmakingModal
+							refreshedHRDetail={callAPI}
+							hrID={urlSplitter?.split('HR')[0]}
+							hrNo={updatedSplitter}
+							hrStatusCode={apiData?.HRStatusCode}
+							hrStatus={apiData?.HRStatus}
+							hrPriority={apiData?.StarMarkedStatusCode}
+						/>
+					)
+				);
+			}
+		} else {
+			return null;
+		}
+	},
+	handleScheduleInterview(item, miscData, HRStatusCode) {
+		if (
+			miscData?.LoggedInUserTypeID === UserAccountRole.TALENTOPS ||
+			miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+		)
+			return false;
+		else {
+			if (
+				HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
+				item?.TalentStatusID_BasedOnHR === 2 &&
+				item?.InterViewStatusId === 0 &&
+				(item?.Status !== 'Cancelled' || item?.Status !== 'Rejected')
+			) {
+				return true;
+			}
+		}
+	},
+	handleRescheduleInterview(item, HRStatusCode) {
+		if (
+			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
+			(item?.Status !== 'Cancelled' || item?.Status !== 'Rejected') &&
+			item?.InterviewStatus !== '' &&
+			(item?.InterviewStatus !== 'Interview in Process' ||
+				item?.InterviewStatus !== 'Interview Completed' ||
+				item?.InterviewStatus !== 'Feedback Submitted' ||
+				item?.InterviewStatus !== 'Cancelled')
+		) {
+			return true;
+		}
+		return false;
+	},
+	handleTalentStatus(item, HRStatusCode) {
+		if (
+			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
+			(item?.InterviewStatus !== 'Rejected' ||
+				item?.InterviewStatus !== 'Replacement' ||
+				item?.InterviewStatus !== 'Hired' ||
+				item?.InterviewStatus !== 'Cancelled')
+		) {
+			return true;
+		}
+		return false;
+	},
+	handlerUpdateKickOff(item, miscData, HRStatusCode) {
+		if (
+			miscData?.LoggedInUserTypeID === UserAccountRole.TALENTOPS ||
+			miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+		)
+			return false;
+		else {
+			if (
+				HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
+				item?.TalentStatusID_BasedOnHR === 2 &&
+				item?.InterViewStatusId === 0
+			) {
+				return true;
 			}
 		}
 	},

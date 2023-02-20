@@ -22,10 +22,11 @@ import { hrUtils } from 'modules/hiring request/hrUtils';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import allHRStyles from './all_hiring_request.module.css';
 import UTSRoutes from 'constants/routes';
-import { HTTPStatusCode } from 'constants/network';
+
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { allHRConfig } from './allHR.config';
+import WithLoader from 'shared/components/loader/loader';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -33,17 +34,24 @@ const HiringFiltersLazyComponent = React.lazy(() =>
 );
 
 const AllHiringRequestScreen = () => {
+	const [tableFilteredState, setTableFilteredState] = useState({
+		pagesize: 100,
+		pagenum: 1,
+		sortdatafield: 'CreatedDateTime',
+		sortorder: 'desc',
+	});
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
 	const hrQueryData = useAllHRQuery();
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
 	const [pageSize, setPageSize] = useState(100);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
+	const [filtersList, setFiltersList] = useState([]);
 	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const navigate = useNavigate();
-
+	const [filteredTagLength, setFilteredTagLength] = useState(0);
 	const onRemoveHRFilters = () => {
 		setIsAllowFilters(false);
 	};
@@ -74,12 +82,7 @@ const AllHiringRequestScreen = () => {
 	);
 	const handleHRRequest = async (pageData) => {
 		let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
-			pageData
-				? pageData
-				: {
-						pageSize: 100,
-						pageNum: 1,
-				  },
+			pageData,
 		);
 		setAPIdata(hrUtils.modifyHRRequestData(response && response));
 		setTotalRecords(response.responseBody.TotalRecords);
@@ -91,13 +94,24 @@ const AllHiringRequestScreen = () => {
 	}, [debouncedSearch]);
 
 	useEffect(() => {
-		if (hrQueryData?.data) {
+		handleHRRequest(tableFilteredState);
+		/* if (hrQueryData?.data) {
 			if (hrQueryData?.data.statusCode === HTTPStatusCode.OK) {
 				setAPIdata(hrUtils.modifyHRRequestData(hrQueryData?.data));
 				setTotalRecords(hrQueryData?.data.responseBody.TotalRecords);
 			} else Navigate(UTSRoutes.LOGINROUTE);
-		}
-	}, [hrQueryData?.data]);
+		} */
+	}, [hrQueryData.data, tableFilteredState]);
+
+	const getHRFilterRequest = useCallback(async () => {
+		const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
+		setFiltersList(response && response?.responseBody?.details?.Data);
+	}, []);
+
+	const toggleHRFilter = useCallback(() => {
+		getHRFilterRequest();
+		setIsAllowFilters(!isAllowFilters);
+	}, [getHRFilterRequest, isAllowFilters]);
 
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);
@@ -155,11 +169,11 @@ const AllHiringRequestScreen = () => {
 				<div className={allHRStyles.filterSets}>
 					<div
 						className={allHRStyles.addFilter}
-						onClick={() => setIsAllowFilters(!isAllowFilters)}>
+						onClick={toggleHRFilter}>
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
 						<div className={allHRStyles.filterLabel}>Add Filters</div>
-						<div className={allHRStyles.filterCount}>7</div>
+						<div className={allHRStyles.filterCount}>{filteredTagLength}</div>
 					</div>
 					<div className={allHRStyles.filterRight}>
 						<div className={allHRStyles.searchFilterSet}>
@@ -242,8 +256,8 @@ const AllHiringRequestScreen = () => {
 												setPageSize(parseInt(e.key));
 												if (pageSize !== parseInt(e.key)) {
 													handleHRRequest({
-														pageSize: parseInt(e.key),
-														pageNum: pageIndex,
+														pagesize: parseInt(e.key),
+														pagenum: pageIndex,
 													});
 												}
 											}}>
@@ -271,46 +285,58 @@ const AllHiringRequestScreen = () => {
 			 */}
 			<div className={allHRStyles.tableDetails}>
 				{
-					<Table
-						locale={{
-							emptyText: (
-								<>
-									<Skeleton />
-									<Skeleton />
-									<Skeleton />
-								</>
-							),
-						}}
-						id="hrListingTable"
-						columns={tableColumnsMemo}
-						bordered={false}
-						dataSource={
-							search && search.length > 0 ? [...search] : [...apiData]
-						}
-						pagination={{
-							onChange: (pageNum, pageSize) => {
-								setPageIndex(pageNum);
-								setPageSize(pageSize);
-								handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
-							},
-							size: 'small',
-							pageSize: pageSize,
-							pageSizeOptions: pageSizeOptions,
-							total: totalRecords,
-							showTotal: (total, range) =>
-								`${range[0]}-${range[1]} of ${totalRecords} items`,
-							defaultCurrent: pageIndex,
-						}}
-					/>
+					<WithLoader>
+						<Table
+							locale={{
+								emptyText: (
+									<>
+										<Skeleton />
+										<Skeleton />
+										<Skeleton />
+									</>
+								),
+							}}
+							id="hrListingTable"
+							columns={tableColumnsMemo}
+							bordered={false}
+							dataSource={
+								search && search.length > 0 ? [...search] : [...apiData]
+							}
+							pagination={{
+								onChange: (pageNum, pageSize) => {
+									setPageIndex(pageNum);
+									setPageSize(pageSize);
+									setTableFilteredState({
+										...tableFilteredState,
+										pagesize: pageSize,
+										pagenum: pageNum,
+									});
+									handleHRRequest({ pagesize: pageSize, pagenum: pageNum });
+								},
+								size: 'small',
+								pageSize: pageSize,
+								pageSizeOptions: pageSizeOptions,
+								total: totalRecords,
+								showTotal: (total, range) =>
+									`${range[0]}-${range[1]} of ${totalRecords} items`,
+								defaultCurrent: pageIndex,
+							}}
+						/>
+					</WithLoader>
 				}
 			</div>
 
 			{isAllowFilters && (
 				<Suspense fallback={<div>Loading...</div>}>
 					<HiringFiltersLazyComponent
+						setTableFilteredState={setTableFilteredState}
+						tableFilteredState={tableFilteredState}
+						setFilteredTagLength={setFilteredTagLength}
 						onRemoveHRFilters={onRemoveHRFilters}
 						hrFilterList={allHRConfig.hrFilterListConfig()}
-						filtersType={allHRConfig.hrFilterTypeConfig()}
+						filtersType={allHRConfig.hrFilterTypeConfig(
+							filtersList && filtersList,
+						)}
 					/>
 				</Suspense>
 			)}
