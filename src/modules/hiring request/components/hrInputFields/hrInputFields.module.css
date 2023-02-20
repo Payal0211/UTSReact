@@ -1,6 +1,6 @@
 .formField {
     width: 100%;
-    margin: 0 0 32px;  
+    margin: 0 0 32px;
 }
 
 .formField label {
@@ -41,6 +41,7 @@
     color: var(--uplers-black);
     outline: 1px solid transparent;
     transition: all 0.25s ease 0s;
+    vertical-align: middle;
 }
 
 .inputfield::-webkit-input-placeholder {
@@ -69,12 +70,12 @@
 }
 
 .leadingIcon {
-    
+
     position: absolute;
     top: 19px;
     left:5px;
     /* width: 16px; */
-    margin:0px 10px; 
+    margin:0px 10px;
 }
 
 .error {

@@ -20,6 +20,7 @@ const HRInputField = ({
 	disabled,
 	type,
 	validationSchema,
+	rows,
 }) => {
 	const formFieldClasses = classNames({
 		[HRInputFieldStyle.inputfield]: true,
@@ -56,6 +57,7 @@ const HRInputField = ({
 						disabled={disabled}
 						required={required}
 						height={height && height}
+						rows={rows}
 					/>
 				</div>
 			) : (
@@ -85,11 +87,11 @@ const HRInputField = ({
 			)}
 			{required && !disabled
 				? errors &&
-				  errors[name] && (
-						<div className={HRInputFieldStyle.error}>
-							{errors[name]?.message && `* ${errors[name]?.message}`}
-						</div>
-				  )
+				errors[name] && (
+					<div className={HRInputFieldStyle.error}>
+						{errors[name]?.message && `* ${errors[name]?.message}`}
+					</div>
+				)
 				: false}
 			{isError && <div className={HRInputFieldStyle.error}>* {errorMsg}</div>}
 		</div>
