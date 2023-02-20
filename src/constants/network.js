@@ -76,6 +76,13 @@ export class HiringRequestsAPI {
 	static SET_TALENT_PRIORITIES = 'SetTalentPriorties';
 	static DELETE = 'delete';
 	static GET_ALL_FILTER_DATA_FOR_HR = 'GetAllFilterDataForHR';
+	static SCHEDULE_INTERVIEW = 'Schedule';
+	static RESCHEDULE_INTERVIEW = 'Reschedule';
+}
+
+
+export class UsersAPI {
+	static LIST = "List";
 }
 
 export class InterviewsAPI {
