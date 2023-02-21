@@ -35,6 +35,15 @@ const DealDetails = React.lazy(() =>
 	import('modules/deal/screens/dealDetails/dealDetails'),
 );
 
+const AddNewUser = React.lazy(() =>
+	import('modules/users/screens/addNewUser/addUser'),
+);
+const CompanyList = React.lazy(() =>
+	import('modules/company/screens/company_list'),
+);
+
+const UserList = React.lazy(() => import('modules/users/screens/user_list'));
+
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
@@ -51,6 +60,9 @@ export default class UTSRoutes {
 	static DEALDETAILS = '/deal/:dealID';
 	static PAGENOTFOUNDROUTE = '/404';
 	static NETWORKERRORROUTE = '/networkissue';
+	static COMPANYLISTROUTE = '/companylist';
+	static USERLISTROUTE = '/user';
+	static ADDNEWUSERROUTE = '/user/addnewuser';
 }
 
 export const navigateToComponent = {
@@ -102,6 +114,21 @@ export const navigateToComponent = {
 	[UTSRoutes.DEALDETAILS]: (
 		<Suspense>
 			<DealDetails />
+		</Suspense>
+	),
+	[UTSRoutes.USERLISTROUTE]: (
+		<Suspense>
+			<UserList />
+		</Suspense>
+	),
+	[UTSRoutes.COMPANYLISTROUTE]: (
+		<Suspense>
+			<CompanyList />
+		</Suspense>
+	),
+	[UTSRoutes.ADDNEWUSERROUTE]: (
+		<Suspense>
+			<AddNewUser />
 		</Suspense>
 	),
 };

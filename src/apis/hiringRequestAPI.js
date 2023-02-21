@@ -25,6 +25,38 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'hiringRequestAPI.getPaginatedHiringRequest');
 		}
 	},
+	scheduleInterview: async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.INTERVIEW +
+			HiringRequestsAPI.SCHEDULE_INTERVIEW;
+		httpService.dataToSend = data;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestAPI.getPaginatedHiringRequest');
+		}
+	},
+	reScheduleInterview: async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.INTERVIEW +
+			HiringRequestsAPI.RESCHEDULE_INTERVIEW;
+		httpService.dataToSend = data;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestAPI.getPaginatedHiringRequest');
+		}
+	},
 	getAllHiringRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =

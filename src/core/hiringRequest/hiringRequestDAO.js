@@ -33,6 +33,64 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getPaginatedHiringRequestDAO');
 		}
 	},
+	getSchduleInterviewInformation: async function (data) {
+		try {
+			const scheduleResult = await HiringRequestAPI.scheduleInterview(data);
+			if (scheduleResult) {
+				const statusCode = scheduleResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = scheduleResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				}
+				else if (statusCode === HTTPStatusCode.NOT_FOUND) return scheduleResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return scheduleResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getPaginatedHiringRequestDAO');
+		}
+	},
+
+	getReSchduleInterviewInformation: async function (data) {
+		try {
+			const reScheduleResult = await HiringRequestAPI.reScheduleInterview(data);
+			if (reScheduleResult) {
+				const statusCode = reScheduleResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = reScheduleResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				}
+				else if (statusCode === HTTPStatusCode.NOT_FOUND) return reScheduleResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return reScheduleResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getPaginatedHiringRequestDAO');
+		}
+	},
+
 	getViewHiringRequestDAO: async function (hrid) {
 		try {
 			const hrResult = await HiringRequestAPI.getHRDetailsRequest(hrid);
