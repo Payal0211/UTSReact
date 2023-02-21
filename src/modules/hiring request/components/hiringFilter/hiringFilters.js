@@ -8,16 +8,20 @@ import { ReactComponent as CrossSVG } from 'assets/svg/cross.svg';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 
 const HiringFilters = ({
+	setAppliedFilters,
+	appliedFilter,
+	setCheckedState,
+	handleHRRequest,
 	setFilteredTagLength,
 	onRemoveHRFilters,
+	checkedState,
 	hrFilterList,
 	tableFilteredState,
 	setTableFilteredState,
 	filtersType,
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
-	const [appliedFilter, setAppliedFilters] = useState(new Map());
-	const [checkedState, setCheckedState] = useState(new Map());
+
 	const [filterSubChild, setFilterSubChild] = useState(null);
 
 	const toggleFilterSubChild = (item) => {
@@ -136,13 +140,27 @@ const HiringFilters = ({
 		}
 	}, [appliedFilter, handleAppliedFilters]);
 
-	const handleFilters = async () => {
-		appliedFilter.forEach((item) => {
-			tableFilteredState.filterFields_ViewAllHRs = {
-				[item.filterType]: item.id,
-			};
+	const clearFilters = () => {
+		setAppliedFilters(new Map());
+		setCheckedState(new Map());
+		setFilteredTagLength(0);
+		setTableFilteredState({
+			...tableFilteredState,
+			filterFields_ViewAllHRs: {},
 		});
-		console.log(tableFilteredState, '--tableFilteredState--');
+		handleHRRequest(tableFilteredState);
+	};
+	const handleFilters = () => {
+		let filters = {};
+		appliedFilter.forEach((item) => {
+			filters = { ...filters, [item.filterType]: item.id };
+		});
+		setTableFilteredState({
+			...tableFilteredState,
+			filterFields_ViewAllHRs: { ...filters },
+		});
+
+		handleHRRequest(tableFilteredState);
 	};
 
 	return (
@@ -250,7 +268,11 @@ const HiringFilters = ({
 					<br />
 					<hr />
 					<div className={hiringFilterStyle.operationsFilters}>
-						<button className={hiringFilterStyle.clearAll}>Clear All</button>
+						<button
+							className={hiringFilterStyle.clearAll}
+							onClick={clearFilters}>
+							Clear All
+						</button>
 						<button
 							className={hiringFilterStyle.applyFilters}
 							onClick={handleFilters}>

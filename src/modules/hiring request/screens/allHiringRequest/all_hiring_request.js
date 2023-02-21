@@ -5,10 +5,10 @@ import React, {
 	useMemo,
 	useCallback,
 } from 'react';
-import { Dropdown, Menu, message, Skeleton, Table, Tooltip } from 'antd';
+import { Dropdown, Menu, message, Table, Tooltip } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AddNewType, DayName, InputType } from 'constants/application';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
@@ -27,6 +27,8 @@ import HROperator from 'modules/hiring request/components/hroperator/hroperator'
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { allHRConfig } from './allHR.config';
 import WithLoader from 'shared/components/loader/loader';
+import { HTTPStatusCode } from 'constants/network';
+import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -40,6 +42,7 @@ const AllHiringRequestScreen = () => {
 		sortdatafield: 'CreatedDateTime',
 		sortorder: 'desc',
 	});
+	const [isLoading, setLoading] = useState(false);
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
 	const hrQueryData = useAllHRQuery();
 	const [totalRecords, setTotalRecords] = useState(0);
@@ -52,6 +55,8 @@ const AllHiringRequestScreen = () => {
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const navigate = useNavigate();
 	const [filteredTagLength, setFilteredTagLength] = useState(0);
+	const [appliedFilter, setAppliedFilters] = useState(new Map());
+	const [checkedState, setCheckedState] = useState(new Map());
 	const onRemoveHRFilters = () => {
 		setIsAllowFilters(false);
 	};
@@ -80,13 +85,26 @@ const AllHiringRequestScreen = () => {
 		() => allHRConfig.tableConfig(togglePriority),
 		[togglePriority],
 	);
-	const handleHRRequest = async (pageData) => {
-		let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
-			pageData,
-		);
-		setAPIdata(hrUtils.modifyHRRequestData(response && response));
-		setTotalRecords(response.responseBody.TotalRecords);
-	};
+	const handleHRRequest = useCallback(
+		async (pageData) => {
+			setLoading(true);
+			let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
+				pageData,
+			);
+			if (response.statusCode === HTTPStatusCode.OK) {
+				setAPIdata(hrUtils.modifyHRRequestData(response && response));
+				setTotalRecords(response.responseBody.TotalRecords);
+				setLoading(false);
+			} else if (response.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				setLoading(false);
+				return navigate(UTSRoutes.LOGINROUTE);
+			} else {
+				setLoading(false);
+				return 'NO DATA FOUND';
+			}
+		},
+		[navigate],
+	);
 
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
@@ -101,7 +119,7 @@ const AllHiringRequestScreen = () => {
 				setTotalRecords(hrQueryData?.data.responseBody.TotalRecords);
 			} else Navigate(UTSRoutes.LOGINROUTE);
 		} */
-	}, [hrQueryData.data, tableFilteredState]);
+	}, [handleHRRequest, hrQueryData.data, tableFilteredState]);
 
 	const getHRFilterRequest = useCallback(async () => {
 		const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
@@ -284,18 +302,11 @@ const AllHiringRequestScreen = () => {
 			 * @Table Part
 			 */}
 			<div className={allHRStyles.tableDetails}>
-				{
+				{isLoading ? (
+					<TableSkeleton />
+				) : (
 					<WithLoader>
 						<Table
-							locale={{
-								emptyText: (
-									<>
-										<Skeleton />
-										<Skeleton />
-										<Skeleton />
-									</>
-								),
-							}}
 							id="hrListingTable"
 							columns={tableColumnsMemo}
 							bordered={false}
@@ -323,12 +334,17 @@ const AllHiringRequestScreen = () => {
 							}}
 						/>
 					</WithLoader>
-				}
+				)}
 			</div>
 
 			{isAllowFilters && (
 				<Suspense fallback={<div>Loading...</div>}>
 					<HiringFiltersLazyComponent
+						setAppliedFilters={setAppliedFilters}
+						appliedFilter={appliedFilter}
+						setCheckedState={setCheckedState}
+						checkedState={checkedState}
+						handleHRRequest={handleHRRequest}
 						setTableFilteredState={setTableFilteredState}
 						tableFilteredState={tableFilteredState}
 						setFilteredTagLength={setFilteredTagLength}
