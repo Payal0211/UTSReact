@@ -22,7 +22,7 @@ import { hrUtils } from 'modules/hiring request/hrUtils';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import allHRStyles from './all_hiring_request.module.css';
 import UTSRoutes from 'constants/routes';
-import { HTTPStatusCode } from 'constants/network';
+
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { allHRConfig } from './allHR.config';
@@ -34,6 +34,12 @@ const HiringFiltersLazyComponent = React.lazy(() =>
 );
 
 const AllHiringRequestScreen = () => {
+	const [tableFilteredState, setTableFilteredState] = useState({
+		pagesize: 100,
+		pagenum: 1,
+		sortdatafield: 'CreatedDateTime',
+		sortorder: 'desc',
+	});
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
 	const hrQueryData = useAllHRQuery();
 	const [totalRecords, setTotalRecords] = useState(0);
@@ -45,7 +51,7 @@ const AllHiringRequestScreen = () => {
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const navigate = useNavigate();
-
+	const [filteredTagLength, setFilteredTagLength] = useState(0);
 	const onRemoveHRFilters = () => {
 		setIsAllowFilters(false);
 	};
@@ -76,12 +82,7 @@ const AllHiringRequestScreen = () => {
 	);
 	const handleHRRequest = async (pageData) => {
 		let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
-			pageData
-				? pageData
-				: {
-						pagesize: 100,
-						pagenum: 1,
-				  },
+			pageData,
 		);
 		setAPIdata(hrUtils.modifyHRRequestData(response && response));
 		setTotalRecords(response.responseBody.TotalRecords);
@@ -93,17 +94,14 @@ const AllHiringRequestScreen = () => {
 	}, [debouncedSearch]);
 
 	useEffect(() => {
-		handleHRRequest({
-			pagesize: 100,
-			pagenum: 1,
-		});
+		handleHRRequest(tableFilteredState);
 		/* if (hrQueryData?.data) {
 			if (hrQueryData?.data.statusCode === HTTPStatusCode.OK) {
 				setAPIdata(hrUtils.modifyHRRequestData(hrQueryData?.data));
 				setTotalRecords(hrQueryData?.data.responseBody.TotalRecords);
 			} else Navigate(UTSRoutes.LOGINROUTE);
 		} */
-	}, [hrQueryData?.data]);
+	}, [hrQueryData.data, tableFilteredState]);
 
 	const getHRFilterRequest = useCallback(async () => {
 		const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
@@ -175,7 +173,7 @@ const AllHiringRequestScreen = () => {
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
 						<div className={allHRStyles.filterLabel}>Add Filters</div>
-						<div className={allHRStyles.filterCount}>7</div>
+						<div className={allHRStyles.filterCount}>{filteredTagLength}</div>
 					</div>
 					<div className={allHRStyles.filterRight}>
 						<div className={allHRStyles.searchFilterSet}>
@@ -308,7 +306,12 @@ const AllHiringRequestScreen = () => {
 								onChange: (pageNum, pageSize) => {
 									setPageIndex(pageNum);
 									setPageSize(pageSize);
-									handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
+									setTableFilteredState({
+										...tableFilteredState,
+										pagesize: pageSize,
+										pagenum: pageNum,
+									});
+									handleHRRequest({ pagesize: pageSize, pagenum: pageNum });
 								},
 								size: 'small',
 								pageSize: pageSize,
@@ -326,6 +329,9 @@ const AllHiringRequestScreen = () => {
 			{isAllowFilters && (
 				<Suspense fallback={<div>Loading...</div>}>
 					<HiringFiltersLazyComponent
+						setTableFilteredState={setTableFilteredState}
+						tableFilteredState={tableFilteredState}
+						setFilteredTagLength={setFilteredTagLength}
 						onRemoveHRFilters={onRemoveHRFilters}
 						hrFilterList={allHRConfig.hrFilterListConfig()}
 						filtersType={allHRConfig.hrFilterTypeConfig(
