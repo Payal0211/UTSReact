@@ -172,8 +172,7 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 									register={register}
 									name="interviewTimezone"
 									label="Time Zone"
-									// defaultValue="Select timezone"
-									placeholder="Select timezone"
+									defaultValue="Select timezone"
 									options={scheduleTimezone && scheduleTimezone}
 									required
 									isError={
