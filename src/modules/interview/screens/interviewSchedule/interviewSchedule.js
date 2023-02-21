@@ -54,7 +54,6 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 	}, [getTimeZone]);
 
 	const scheduleInterviewAPIHandler = async (data) => {
-		console.log(data, "data")
 		const scheduleData = {
 			slotType: scheduleSlotRadio,
 			recheduleSlots: scheduleSlotRadio === 1 ? getScheduleSlotInfomation : getScheduleSlotInfomation?.slice(0, 1),
@@ -173,7 +172,8 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 									register={register}
 									name="interviewTimezone"
 									label="Time Zone"
-									defaultValue="Select timezone"
+									// defaultValue="Select timezone"
+									placeholder="Select timezone"
 									options={scheduleTimezone && scheduleTimezone}
 									required
 									isError={
@@ -217,7 +217,8 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 									showTimeSelectOnly
 									timeIntervals={60}
 									timeCaption="Time"
-									dateFormat="h:mm"
+									timeFormat="h:mm a"
+									dateFormat="h:mm a"
 									placeholderText="Start Time"
 								/>
 							</div>
@@ -230,7 +231,8 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 									showTimeSelectOnly
 									timeIntervals={60}
 									timeCaption="Time"
-									dateFormat="h:mm"
+									dateFormat="h:mm a"
+									timeFormat="h:mm a"
 									placeholderText="End Time"
 								/>
 							</div>
@@ -255,7 +257,8 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 											showTimeSelectOnly
 											timeIntervals={60}
 											timeCaption="Time"
-											dateFormat="h:mm"
+											dateFormat="h:mm a"
+											timeFormat="h:mm a"
 											placeholderText="Start Time"
 										/>
 									</div>
@@ -268,7 +271,8 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 											showTimeSelectOnly
 											timeIntervals={60}
 											timeCaption="Time"
-											dateFormat="h:mm"
+											dateFormat="h:mm a"
+											timeFormat="h:mm a"
 											placeholderText="End Time"
 										/>
 									</div>
@@ -291,7 +295,8 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 											showTimeSelectOnly
 											timeIntervals={60}
 											timeCaption="Time"
-											dateFormat="h:mm"
+											dateFormat="h:mm a"
+											timeFormat="h:mm a"
 											placeholderText="Start Time"
 										/>
 									</div>
@@ -304,7 +309,8 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 											showTimeSelectOnly
 											timeIntervals={60}
 											timeCaption="Time"
-											dateFormat="h:mm"
+											dateFormat="h:mm a"
+											timeFormat="h:mm a"
 											placeholderText="End Time"
 										/>
 									</div>

@@ -275,7 +275,8 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 									showTimeSelectOnly
 									timeIntervals={60}
 									timeCaption="Time"
-									dateFormat="h:mm"
+									timeFormat="h:mm a"
+									dateFormat="h:mm a"
 									placeholderText="Start Time"
 								/>
 							</div>
@@ -288,7 +289,8 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 									showTimeSelectOnly
 									timeIntervals={60}
 									timeCaption="Time"
-									dateFormat="h:mm"
+									timeFormat="h:mm a"
+									dateFormat="h:mm a"
 									placeholderText="End Time"
 								/>
 							</div>
@@ -313,7 +315,8 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 											showTimeSelectOnly
 											timeIntervals={60}
 											timeCaption="Time"
-											dateFormat="h:mm"
+											timeFormat="h:mm a"
+											dateFormat="h:mm a"
 											placeholderText="Start Time"
 										/>
 									</div>
@@ -326,7 +329,8 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 											showTimeSelectOnly
 											timeIntervals={60}
 											timeCaption="Time"
-											dateFormat="h:mm"
+											timeFormat="h:mm a"
+											dateFormat="h:mm a"
 											placeholderText="End Time"
 										/>
 									</div>
@@ -349,7 +353,8 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 											showTimeSelectOnly
 											timeIntervals={60}
 											timeCaption="Time"
-											dateFormat="h:mm"
+											timeFormat="h:mm a"
+											dateFormat="h:mm a"
 											placeholderText="Start Time"
 										/>
 									</div>
@@ -362,7 +367,8 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 											showTimeSelectOnly
 											timeIntervals={60}
 											timeCaption="Time"
-											dateFormat="h:mm"
+											timeFormat="h:mm a"
+											dateFormat="h:mm a"
 											placeholderText="End Time"
 										/>
 									</div>
