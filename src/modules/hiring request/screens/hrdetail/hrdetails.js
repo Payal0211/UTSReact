@@ -83,14 +83,14 @@ const HRDetailScreen = () => {
 	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 	const miscData = UserSessionManagementController.getUserSession();
 
-	console.log(apiData, "apiData")
+	console.log(apiData, 'apiData');
 
 	const callAPI = useCallback(
 		async (hrid) => {
 			setLoading(true);
 			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
 			if (response.statusCode === HTTPStatusCode.OK) {
-				setAPIdata(response && response?.responseBody)
+				setAPIdata(response && response?.responseBody);
 				setLoading(false);
 			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
 				navigate(UTSRoutes.PAGENOTFOUNDROUTE);
@@ -98,8 +98,6 @@ const HRDetailScreen = () => {
 		},
 		[navigate],
 	);
-
-
 
 	const clientOnLossSubmitHandler = useCallback(
 		async (d) => {
@@ -187,12 +185,12 @@ const HRDetailScreen = () => {
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED
 						? null
 						: hrUtils.showMatchmaking(
-							apiData,
-							miscData?.LoggedInUserTypeID,
-							callAPI,
-							urlSplitter,
-							updatedSplitter,
-						)}
+								apiData,
+								miscData?.LoggedInUserTypeID,
+								callAPI,
+								urlSplitter,
+								updatedSplitter,
+						  )}
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
@@ -235,10 +233,12 @@ const HRDetailScreen = () => {
 						<Skeleton active />
 						<br />
 					</>
-				) : apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
-					<Suspense>
-						<NextActionItem nextAction={apiData?.NextActionsForTalent} />
-					</Suspense>
+				) : (
+					apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED && (
+						<Suspense>
+							<NextActionItem nextAction={apiData?.NextActionsForTalent} />
+						</Suspense>
+					)
 				)}
 
 				<div className={HRDetailStyle.portal}>

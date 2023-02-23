@@ -1,6 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
 import { ReactComponent as GridSVG } from 'assets/svg/grid.svg';
 import { ReactComponent as DashboardSVG } from 'assets/svg/dashboard.svg';
+
+import { ReactComponent as BriefCaseSVG } from 'assets/svg/briefcase.svg';
+import { ReactComponent as HandShakeSVG } from 'assets/svg/handshake.svg';
+import { ReactComponent as HRSVG } from 'assets/svg/hr.svg';
+
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -59,21 +64,21 @@ const getSideBar = () => {
 			id: 'UTS_all_hiring_request',
 			title: 'allHiringRequest',
 			isActive: false,
-			icon: <DashboardSVG />,
+			icon: <HRSVG />,
 			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 		}),
-		new SideBarModels({
+		/* new SideBarModels({
 			id: 'UTS_Interview',
 			title: 'interviewList',
 			isActive: false,
 			icon: <DashboardSVG />,
 			navigateTo: UTSRoutes.INTERVIEWLISTROUTE,
-		}),
+		}), */
 		new SideBarModels({
 			id: 'UTS_DealList',
 			title: 'dealList',
 			isActive: false,
-			icon: <DashboardSVG />,
+			icon: <HandShakeSVG />,
 			navigateTo: UTSRoutes.DEALLISTROUTE,
 		}),
 		new SideBarModels({

@@ -59,6 +59,7 @@ export default class UTSRoutes {
 	static DEALLISTROUTE = '/deal';
 	static DEALDETAILS = '/deal/:dealID';
 	static PAGENOTFOUNDROUTE = '/404';
+	static SOMETHINGWENTWRONG = '/500';
 	static NETWORKERRORROUTE = '/networkissue';
 	static COMPANYLISTROUTE = '/companylist';
 	static USERLISTROUTE = '/user';
@@ -91,7 +92,7 @@ export const navigateToComponent = {
 			<AddNewHR />
 		</Suspense>
 	),
-	[UTSRoutes.INTERVIEWLISTROUTE]: (
+	/* [UTSRoutes.INTERVIEWLISTROUTE]: (
 		<Suspense>
 			<InterviewList />
 		</Suspense>
@@ -100,12 +101,12 @@ export const navigateToComponent = {
 		<Suspense>
 			<InterviewSchedule />
 		</Suspense>
-	),
-	[UTSRoutes.INTERVIEWFEEDBACK]: (
+	), */
+	/* [UTSRoutes.INTERVIEWFEEDBACK]: (
 		<Suspense>
 			<InterviewFeedback />
 		</Suspense>
-	),
+	), */
 	[UTSRoutes.DEALLISTROUTE]: (
 		<Suspense>
 			<DealList />

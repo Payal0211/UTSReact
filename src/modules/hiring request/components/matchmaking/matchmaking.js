@@ -24,8 +24,6 @@ const MatchmakingModal = ({
 	hrStatus,
 	hrPriority,
 }) => {
-	const [apiData, setAPIdata] = useState([]);
-	const navigate = useNavigate();
 	const switchLocation = useLocation();
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
@@ -229,7 +227,12 @@ const MatchmakingModal = ({
 			{talentLength === 0 ? (
 				<div onClick={() => fetchMatchmakingData()}>Explore Profiles</div>
 			) : (
-				<Button onClick={() => fetchMatchmakingData()}>Matchmaking </Button>
+				<button
+					onClick={() => fetchMatchmakingData()}
+					className={MatchMakingStyle.btnPrimary}>
+					Matchmaking
+				</button>
+				// <Button onClick={() => fetchMatchmakingData()}>Matchmaking </Button>
 			)}
 			{contextHolder}
 			<Modal

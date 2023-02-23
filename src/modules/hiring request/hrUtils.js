@@ -44,6 +44,12 @@ export const hrUtils = {
 
 		return filteredData;
 	},
+	hrFilterSearch: (e, data) => {
+		let filteredData = data.filter((val) => {
+			return val.value.toLowerCase().includes(e.target.value.toLowerCase());
+		});
+		return filteredData;
+	},
 	hrTogglePriority: (response, apiData) => {
 		if (response.responseBody) {
 			let index = apiData.findIndex(
@@ -408,7 +414,9 @@ export const hrUtils = {
 		if (apiData?.IsAccepted === 1 && apiData?.TR_Accepted >= 1) {
 			if (
 				loggedInUserTypeID === UserAccountRole.TALENTOPS ||
-				loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+				loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+				loggedInUserTypeID === UserAccountRole.DEVELOPER ||
+				loggedInUserTypeID === UserAccountRole.ADMINISTRATOR
 			) {
 				return (
 					apiData?.HRTalentDetails?.length > 0 && (
@@ -430,7 +438,9 @@ export const hrUtils = {
 	handleScheduleInterview(item, miscData, HRStatusCode) {
 		if (
 			miscData?.LoggedInUserTypeID === UserAccountRole.TALENTOPS ||
-			miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+			miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+			miscData?.LoggedInUserTypeID === UserAccountRole.DEVELOPER ||
+			miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR
 		)
 			return false;
 		else {
@@ -473,7 +483,9 @@ export const hrUtils = {
 	handlerUpdateKickOff(item, miscData, HRStatusCode) {
 		if (
 			miscData?.LoggedInUserTypeID === UserAccountRole.TALENTOPS ||
-			miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+			miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+			miscData?.LoggedInUserTypeID === UserAccountRole.DEVELOPER ||
+			miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR
 		)
 			return false;
 		else {

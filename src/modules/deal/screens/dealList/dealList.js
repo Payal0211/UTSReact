@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Pagination, Skeleton, Table } from 'antd';
+import { Dropdown, Menu, Table } from 'antd';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
@@ -8,21 +8,24 @@ import DealListStyle from '../../dealStyle.module.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import React, {
-	Fragment,
 	Suspense,
 	useCallback,
 	useEffect,
+	useMemo,
 	useState,
 } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { InterviewDAO } from 'core/interview/interviewDAO';
 import { DealDAO } from 'core/deal/dealDAO';
 import UTSRoutes from 'constants/routes';
-import { interviewUtils } from 'modules/interview/interviewUtils';
+
 import { InputType } from 'constants/application';
-import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
+
 import { DealConfig } from 'modules/deal/deal.config';
 import { dealUtils } from 'modules/deal/dealUtils';
+import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
+import WithLoader from 'shared/components/loader/loader';
+import { HTTPStatusCode } from 'constants/network';
 // import DealFilters from 'modules/deal/components/dealFilters/dealFilters';
 const DealListLazyComponents = React.lazy(() =>
 	import('modules/deal/components/dealFilters/dealFilters'),
@@ -49,6 +52,7 @@ const DealList = () => {
 		setStartDate(start);
 		setEndDate(end);
 	};
+	const tableColumnsMemo = useMemo(() => DealConfig.tableConfig(), []);
 	const fetchDealListAPIResponse = useCallback(async (pageData) => {
 		setLoading(true);
 		const response = await DealDAO.getDealListDAO(
@@ -56,15 +60,20 @@ const DealList = () => {
 				? pageData
 				: {
 						pagenumber: 1,
-						totalrecord: 10,
-						filterFields_DealList: null,
+						totalrecord: 100,
 				  },
 		);
-
-		setTotalRecords(response && response?.responseBody?.details?.totalrows);
-		setDealList(response && response?.responseBody?.details);
-		setLoading(false);
+		if (response.statusCode === HTTPStatusCode.OK) {
+			setTotalRecords(response?.responseBody?.details?.totalrows);
+			setDealList(
+				dealUtils.modifyDealRequestData(
+					response && response?.responseBody?.details,
+				),
+			);
+			setLoading(false);
+		}
 	}, []);
+
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
@@ -95,11 +104,11 @@ const DealList = () => {
 								type={InputType.TEXT}
 								className={DealListStyle.searchInput}
 								placeholder="Search Table"
-								/* onChange={(e) => {
+								onChange={(e) => {
 									return setDebouncedSearch(
-										interviewUtils.interviewListSearch(e, dealList?.rows),
+										dealUtils.dealListSearch(e, dealList),
 									);
-								}} */
+								}}
 							/>
 						</div>
 						<div className={DealListStyle.calendarFilterSet}>
@@ -164,206 +173,44 @@ const DealList = () => {
 			 * @Table Part
 			 */}
 			<div className={DealListStyle.tableDetails}>
-				<table>
-					<thead
-						className={
-							isLoading ? DealListStyle.theadLoading : DealListStyle.thead
-						}>
-						{
-							<tr>
-								<th className={DealListStyle.th}>
-									{isLoading ? <Skeleton active /> : 'Date'}
-								</th>
-								<th className={DealListStyle.th}>
-									{isLoading ? <Skeleton active /> : 'Deal ID'}
-								</th>
-								<th className={DealListStyle.th}>
-									{isLoading ? <Skeleton active /> : 'Lead Source'}
-								</th>
-								<th className={DealListStyle.th}>
-									{isLoading ? <Skeleton active /> : 'Pipeline'}
-								</th>
-								<th className={DealListStyle.th}>
-									{isLoading ? <Skeleton active /> : 'Company'}
-								</th>
-								<th className={DealListStyle.th}>
-									{isLoading ? <Skeleton active /> : 'Geo'}
-								</th>
-								<th className={DealListStyle.th}>
-									{isLoading ? <Skeleton active /> : 'BDR'}
-								</th>
-								<th className={DealListStyle.th}>
-									{isLoading ? <Skeleton active /> : 'Sales Consultant'}
-								</th>
-								<th className={DealListStyle.th}>
-									{isLoading ? <Skeleton active /> : 'Deal Stage'}
-								</th>
-							</tr>
-						}
-					</thead>
-					<tbody>
-						{search && search.length > 0 ? (
-							[...search].map((item, index) => {
-								return (
-									<tr key={`interviewList item${index}`}>
-										<td className={DealListStyle.td}>{item?.iDate}</td>
-										<td
-											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											{item?.hrid}
-										</td>
-										<td
-											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											{interviewUtils.dateFormatter(item?.istSlotconfirmed)}
-										</td>
-										<td
-											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											{item?.companyname ? item?.companyname : 'NA'}
-										</td>
-										<td className={DealListStyle.td}>
-											{item?.interviewTimeZone ? item?.interviewTimeZone : 'NA'}
-										</td>
-										<td
-											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											{item?.talentName}
-										</td>
-										<td className={DealListStyle.td}>
-											{interviewUtils.GETINTERVIEWSTATUS(
-												item?.interviewStatus,
-												item?.interviewStatusFrontCode,
-											)}
-										</td>
-										<td className={DealListStyle.td}>
-											{item?.clientStatus ? item?.clientStatus : 'NA'}
-										</td>
-									</tr>
-								);
-							})
-						) : isLoading ? (
-							<Fragment>
-								<tr key={`interviewListLoading loadedItem `}>
-									<td className={DealListStyle.td}>
-										<Skeleton active />
-									</td>
-									<td className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-										<Skeleton active />
-									</td>
-									<td className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-										<Skeleton active />
-									</td>
-									<td className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-										<Skeleton active />
-									</td>
-									<td className={DealListStyle.td}>
-										<Skeleton active />
-									</td>
-									<td className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-										<Skeleton active />
-									</td>
-									<td className={DealListStyle.td}>
-										<Skeleton active />
-									</td>
-									<td className={DealListStyle.td}>
-										<Skeleton active />
-									</td>
-								</tr>
-								<tr key={`interviewListLoading item`}>
-									<td className={DealListStyle.td}>
-										<Skeleton active />
-									</td>
-									<td className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-										<Skeleton active />
-									</td>
-									<td className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-										<Skeleton active />
-									</td>
-									<td className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-										<Skeleton active />
-									</td>
-									<td className={DealListStyle.td}>
-										<Skeleton active />
-									</td>
-									<td className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-										<Skeleton active />
-									</td>
-									<td className={DealListStyle.td}>
-										<Skeleton active />
-									</td>
-									<td className={DealListStyle.td}>
-										<Skeleton active />
-									</td>
-								</tr>
-							</Fragment>
-						) : (
-							dealList?.rows?.map((item, index) => {
-								return (
-									<tr key={`interviewList item${index}`}>
-										<td className={DealListStyle.td}>
-											{dealUtils.dateFormatter(item?.dealDate)}
-										</td>
-										<td
-											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											{item?.deal_Id ? (
-												<Link
-													to={`/deal/${item?.deal_Id}`}
-													style={{ color: `var(--uplers-black)` }}>
-													{item?.deal_Id}
-												</Link>
-											) : (
-												'NA'
-											)}
-										</td>
-										<td
-											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											NA
-										</td>
-										<td
-											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											{item?.pipeline ? item?.pipeline : 'NA'}
-										</td>
-										<td className={DealListStyle.td}>
-											{item?.company ? item?.company : 'NA'}
-										</td>
-										<td
-											className={`${DealListStyle.td} ${DealListStyle.anchor}`}>
-											{item?.geo ? item?.geo : 'NA'}
-										</td>
-										<td className={DealListStyle.td}>
-											{item?.bdr ? item?.bdr : 'NA'}
-										</td>
-										<td className={DealListStyle.td}>
-											{item?.sales_Consultant ? item?.sales_Consultant : 'NA'}
-										</td>
-										<td className={DealListStyle.td}>{'NA'}</td>
-									</tr>
-								);
-							})
-						)}
-					</tbody>
-				</table>
-			</div>
-			<div className={DealListStyle.pagination}>
-				{dealList?.rows && (
-					<Pagination
-						size="small"
-						onChange={(pageNum, pageSize) => {
-							setPageIndex(pageNum);
-							setPageSize(pageSize);
-							fetchDealListAPIResponse({
-								pageNumber: pageNum,
-								totalRecord: pageSize,
-							});
-						}}
-						pageSize={pageSize}
-						defaultCurrent={pageIndex && pageIndex}
-						pageSizeOptions={pageSizeOptions}
-						defaultPageSize={pageSize > 0 ? pageSize : 100}
-						total={totalRecords}
-						showTotal={(total, range) => {
-							return `${range[0]}-${range[1]} of ${totalRecords} items`;
-						}}
-					/>
+				{isLoading ? (
+					<TableSkeleton />
+				) : (
+					<WithLoader>
+						<Table
+							id="hrListingTable"
+							columns={tableColumnsMemo}
+							bordered={false}
+							dataSource={
+								search && search.length > 0 ? [...search] : [...dealList]
+							}
+							pagination={{
+								onChange: (pageNum, pageSize) => {
+									setPageIndex(pageNum);
+									setPageSize(pageSize);
+									// setTableFilteredState({
+									// 	...tableFilteredState,
+									// 	pagesize: pageSize,
+									// 	pagenum: pageNum,
+									// });
+									fetchDealListAPIResponse({
+										pageNumber: pageNum,
+										totalRecord: pageSize,
+									});
+								},
+								size: 'small',
+								pageSize: pageSize,
+								pageSizeOptions: pageSizeOptions,
+								total: totalRecords,
+								showTotal: (total, range) =>
+									`${range[0]}-${range[1]} of ${totalRecords} items`,
+								defaultCurrent: pageIndex,
+							}}
+						/>
+					</WithLoader>
 				)}
 			</div>
+
 			{isAllowFilters && (
 				<Suspense fallback={<div>Loading...</div>}>
 					<DealListLazyComponents
