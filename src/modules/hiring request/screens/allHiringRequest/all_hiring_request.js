@@ -44,7 +44,7 @@ const AllHiringRequestScreen = () => {
 	});
 	const [isLoading, setLoading] = useState(false);
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
-	const hrQueryData = useAllHRQuery();
+	// const hrQueryData = useAllHRQuery();
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
 	const [pageSize, setPageSize] = useState(100);
@@ -63,22 +63,36 @@ const AllHiringRequestScreen = () => {
 	const [messageAPI, contextHolder] = message.useMessage();
 	const togglePriority = useCallback(
 		async (payload) => {
+			setLoading(true);
 			let response = await hiringRequestDAO.sendHRPriorityForNextWeekRequestDAO(
 				payload,
 			);
-			const { tempdata, index } = hrUtils.hrTogglePriority(response, apiData);
-			setAPIdata([
-				...apiData.slice(0, index),
-				tempdata,
-				...apiData.slice(index + 1),
-			]);
-
-			messageAPI.open({
-				type: 'success',
-				content: `${tempdata.HR_ID} priority has been changed.`,
-			});
+			if (response.statusCode === HTTPStatusCode.OK) {
+				const { tempdata, index } = hrUtils.hrTogglePriority(response, apiData);
+				setAPIdata([
+					...apiData.slice(0, index),
+					tempdata,
+					...apiData.slice(index + 1),
+				]);
+				setLoading(false);
+				messageAPI.open({
+					type: 'success',
+					content: `${tempdata.HR_ID} priority has been changed.`,
+				});
+			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				setLoading(false);
+				return navigate(UTSRoutes.LOGINROUTE);
+			} else if (
+				response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+			) {
+				setLoading(false);
+				return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+			} else {
+				setLoading(false);
+				return 'NO DATA FOUND';
+			}
 		},
-		[apiData, messageAPI],
+		[apiData, messageAPI, navigate],
 	);
 
 	const tableColumnsMemo = useMemo(
@@ -91,13 +105,18 @@ const AllHiringRequestScreen = () => {
 			let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
 				pageData,
 			);
-			if (response.statusCode === HTTPStatusCode.OK) {
-				setAPIdata(hrUtils.modifyHRRequestData(response && response));
-				setTotalRecords(response.responseBody.TotalRecords);
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				setTotalRecords(response?.responseBody?.TotalRecords);
 				setLoading(false);
-			} else if (response.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				setAPIdata(hrUtils.modifyHRRequestData(response && response));
+			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 				setLoading(false);
 				return navigate(UTSRoutes.LOGINROUTE);
+			} else if (
+				response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+			) {
+				setLoading(false);
+				return navigate(UTSRoutes.SOMETHINGWENTWRONG);
 			} else {
 				setLoading(false);
 				return 'NO DATA FOUND';
@@ -113,18 +132,21 @@ const AllHiringRequestScreen = () => {
 
 	useEffect(() => {
 		handleHRRequest(tableFilteredState);
-		/* if (hrQueryData?.data) {
-			if (hrQueryData?.data.statusCode === HTTPStatusCode.OK) {
-				setAPIdata(hrUtils.modifyHRRequestData(hrQueryData?.data));
-				setTotalRecords(hrQueryData?.data.responseBody.TotalRecords);
-			} else Navigate(UTSRoutes.LOGINROUTE);
-		} */
-	}, [handleHRRequest, hrQueryData.data, tableFilteredState]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [tableFilteredState]);
 
 	const getHRFilterRequest = useCallback(async () => {
 		const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
-		setFiltersList(response && response?.responseBody?.details?.Data);
-	}, []);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setFiltersList(response && response?.responseBody?.details?.Data);
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			return 'NO DATA FOUND';
+		}
+	}, [navigate]);
 
 	const toggleHRFilter = useCallback(() => {
 		getHRFilterRequest();
@@ -135,10 +157,28 @@ const AllHiringRequestScreen = () => {
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 
-	const onChange = (dates) => {
+	const onCalenderFilter = (dates) => {
 		const [start, end] = dates;
+
 		setStartDate(start);
 		setEndDate(end);
+
+		if (start && end) {
+			setTableFilteredState({
+				...tableFilteredState,
+				filterFields_ViewAllHRs: {
+					fromDate: new Date(start).toLocaleDateString('en-US'),
+					toDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			});
+			handleHRRequest({
+				...tableFilteredState,
+				filterFields_ViewAllHRs: {
+					fromDate: new Date(start).toLocaleDateString('en-US'),
+					toDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			});
+		}
 	};
 
 	return (
@@ -220,7 +260,7 @@ const AllHiringRequestScreen = () => {
 									className={allHRStyles.dateFilter}
 									placeholderText="Start date - End date"
 									selected={startDate}
-									onChange={onChange}
+									onChange={onCalenderFilter}
 									startDate={startDate}
 									endDate={endDate}
 									selectsRange
@@ -274,6 +314,7 @@ const AllHiringRequestScreen = () => {
 												setPageSize(parseInt(e.key));
 												if (pageSize !== parseInt(e.key)) {
 													handleHRRequest({
+														...tableFilteredState,
 														pagesize: parseInt(e.key),
 														pagenum: pageIndex,
 													});

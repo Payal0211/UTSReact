@@ -134,6 +134,7 @@ export const allHRConfig = {
 	hrFilterTypeConfig: (filterList) => {
 		return [
 			{
+				label: 'ODR/Pool',
 				name: 'isPoolODRBoth',
 				child: [
 					{
@@ -154,6 +155,7 @@ export const allHRConfig = {
 				isSearch: false,
 			},
 			{
+				label: 'Tenure',
 				name: 'tenure',
 				child: [
 					{
@@ -181,75 +183,94 @@ export const allHRConfig = {
 				isSearch: false,
 			},
 			{
+				label: 'Talent Request',
 				name: 'tr',
 				child: [
 					{
 						disabled: false,
 						group: null,
 						selected: false,
-						text: '1',
+						text: '3',
 						value: '3',
 					},
 					{
 						disabled: false,
 						group: null,
 						selected: false,
-						text: '2',
+						text: '4',
 						value: '4',
 					},
 					{
 						disabled: false,
 						group: null,
 						selected: false,
-						text: '3',
+						text: '7',
 						value: '7',
 					},
 					{
 						disabled: false,
 						group: null,
 						selected: false,
-						text: '4',
+						text: '9',
 						value: '9',
 					},
 					{
 						disabled: false,
 						group: null,
 						selected: false,
-						text: '5',
+						text: '10',
 						value: '10',
 					},
 				],
 				isSearch: false,
 			},
-			{ name: 'position', child: filterList?.positions, isSearch: true },
-			{ name: 'company', child: filterList?.companies, isSearch: true },
 			{
-				name: 'FTE/PTE',
+				label: 'Position',
+				name: 'position',
+				child: filterList?.positions,
+				isSearch: true,
+			},
+			{
+				label: 'Company',
+				name: 'company',
+				child: filterList?.companies,
+				isSearch: true,
+			},
+			{
+				label: 'FTE/PTE',
+				name: 'typeOfEmployee',
 				child: [
 					{
 						disabled: false,
 						group: null,
 						selected: false,
-						text: '1',
+						text: 'FTE',
 						value: 'FTE',
 					},
 					{
 						disabled: false,
 						group: null,
 						selected: false,
-						text: '2',
+						text: 'PTE',
 						value: 'PTE',
 					},
 				],
 				isSearch: false,
 			},
-			{ name: 'manager', child: filterList?.managers, isSearch: true },
 			{
+				label: 'Manager',
+				name: 'manager',
+				child: filterList?.managers,
+				isSearch: true,
+			},
+			{
+				label: 'Sales Representative',
 				name: 'Sales Representative',
 				child: filterList?.salesReps,
 				isSearch: true,
 			},
 			{
+				label: 'HR Status',
 				name: 'hrStatus',
 				child: [
 					{

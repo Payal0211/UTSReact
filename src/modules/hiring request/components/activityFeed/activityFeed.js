@@ -77,7 +77,12 @@ const ActivityFeed = ({
 									<div className={ActivityFeedStyle.activityFeedActivities}>
 										{item?.IsNotes === 0 ? (
 											<div className={ActivityFeedStyle.profileStatus}>
-												<span>{item?.ActionName} for </span>
+												<span>
+													{item?.DisplayName
+														? item?.DisplayName
+														: item?.ActionName}{' '}
+												</span>
+												<span>{item?.TalentName && ' for '}</span>
 												<span
 													style={{
 														textDecoration: 'underline',

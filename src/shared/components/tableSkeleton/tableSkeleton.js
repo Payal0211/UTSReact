@@ -7,9 +7,11 @@ const TableSkeleton = () => {
 			<table>
 				<thead className={TableSkeletonStyle.theadLoading}>
 					<tr>
-						{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => {
+						{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => {
 							return (
-								<th className={TableSkeletonStyle.th}>
+								<th
+									className={TableSkeletonStyle.th}
+									key={`th${index}`}>
 									<Skeleton active />
 								</th>
 							);
@@ -17,9 +19,9 @@ const TableSkeleton = () => {
 					</tr>
 				</thead>
 				<tbody>
-					{[1, 2].map((item) => {
+					{[1, 2].map((item, index) => {
 						return (
-							<tr key={`loadedItem `}>
+							<tr key={`loadedItem ${index}`}>
 								<td className={TableSkeletonStyle.td}>
 									<Skeleton active />
 								</td>

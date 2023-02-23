@@ -4,7 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import UTSRoutes, { navigateToComponent } from 'constants/routes';
 import { ProtectedRoutes } from 'shared/utils/protected_utils';
 import PageNotFound from 'shared/screen/404';
-import { useSessionTimeout } from 'shared/hooks/useSessionTimeout';
+import SomethingWentWrong from 'shared/screen/500';
+
 const Login = React.lazy(() =>
 	import('modules/user/screens/login/login_screen'),
 );
@@ -12,7 +13,7 @@ const Layout = React.lazy(() => import('layout/layout'));
 
 function App() {
 	const queryClient = new QueryClient();
-	// useSessionTimeout();
+
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Suspense>
@@ -36,6 +37,10 @@ function App() {
 							);
 						})}
 					</Route>
+					<Route
+						path={UTSRoutes.SOMETHINGWENTWRONG}
+						element={<SomethingWentWrong />}
+					/>
 					<Route
 						path={UTSRoutes.PAGENOTFOUNDROUTE}
 						element={<PageNotFound />}

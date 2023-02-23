@@ -132,3 +132,24 @@ tr th:first-child{
     padding-left: 20px;
 }
 
+ .btnPrimary {
+    background: #FFDA30;
+     border: 1px solid transparent;
+     border-radius: 8px;
+     font-family: 'Montserrat';
+     font-weight: 500;
+     font-size: 14px;
+     line-height: 17px;
+     color: #232323;
+     padding: 12px 28px;
+     outline: none;
+    transition: all 0.35s ease 0s;
+     cursor: pointer;
+     box-shadow: none;
+ }
+ .btnPrimary:hover {
+     background: #232323;
+     color: #fff;
+     border-color: #232323;
+ }
+

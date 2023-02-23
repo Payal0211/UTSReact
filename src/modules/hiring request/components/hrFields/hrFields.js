@@ -899,7 +899,6 @@ const HRFields = ({
 				</>
 			);
 		}
-		return null;
 	}
 };
 
