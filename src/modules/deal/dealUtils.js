@@ -26,8 +26,6 @@ export const dealUtils = {
 		}));
 	},
 	dealListSearch: (e, apiData) => {
-		console.log(apiData, '--apiData');
-		console.log(e.target.value);
 		let filteredData = apiData?.filter((val) => {
 			return (
 				(val?.deal_Id &&

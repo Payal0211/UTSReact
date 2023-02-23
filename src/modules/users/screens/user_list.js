@@ -12,108 +12,86 @@ import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
-import { ReactComponent as LockSVG } from 'assets/svg/lock.svg';
-import { ReactComponent as UnlockSVG } from 'assets/svg/unlock.svg';
-import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { userDAO } from 'core/user/userDAO';
 import { useAllHRQuery } from 'shared/hooks/useAllHRQuery';
-import { hrUtils } from 'modules/hiring request/hrUtils';
+
 import { IoChevronDownOutline } from 'react-icons/io5';
 import allUserStyles from './user_list.module.css';
 import UTSRoutes from 'constants/routes';
-import HROperator from 'modules/hiring request/components/hroperator/hroperator';
-import { allHRConfig } from '../../hiring request/screens/allHiringRequest/allHR.config';
-import WithLoader from 'shared/components/loader/loader';
 
-/** Importing Lazy components using Suspense */
-const HiringFiltersLazyComponent = React.lazy(() =>
-	import('modules/hiring request/components/hiringFilter/hiringFilters'),
-);
+import WithLoader from 'shared/components/loader/loader';
+import { userConfig } from '../users.config';
+import { userUtils } from '../userUtils';
+import { HTTPStatusCode } from 'constants/network';
+import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 
 const UserList = () => {
+	/* const [tableFilteredState, setTableFilteredState] = useState({
+		pagesize: 100,
+		pagenum: 1,
+		sortdatafield: 'CreatedDateTime',
+		sortorder: 'desc',
+	}); */
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
-	const hrQueryData = useAllHRQuery();
+	const [userList, setUserList] = useState([]);
+	const [isLoading, setLoading] = useState(false);
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
 	const [pageSize, setPageSize] = useState(100);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [filtersList, setFiltersList] = useState([]);
-	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const navigate = useNavigate();
 
-	const onRemoveHRFilters = () => {
-		setIsAllowFilters(false);
-	};
-	const [messageAPI, contextHolder] = message.useMessage();
-	const togglePriority = useCallback(
-		async (payload) => {
-			let response = await hiringRequestDAO.sendHRPriorityForNextWeekRequestDAO(
-				payload,
+	const fetchUserList = useCallback(
+		async (pageData) => {
+			setLoading(true);
+			const response = await userDAO.getUserListRequestDAO(
+				pageData
+					? pageData
+					: {
+							pageNumber: 1,
+							totalRecord: 100,
+					  },
 			);
-			const { tempdata, index } = hrUtils.hrTogglePriority(response, apiData);
-			setAPIdata([
-				...apiData.slice(0, index),
-				tempdata,
-				...apiData.slice(index + 1),
-			]);
-
-			messageAPI.open({
-				type: 'success',
-				content: `${tempdata.HR_ID} priority has been changed.`,
-			});
+			if (response.statusCode === HTTPStatusCode.OK) {
+				setTotalRecords(response && response?.responseBody?.details?.totalrows);
+				setUserList(response && response?.responseBody?.details?.rows);
+				setLoading(false);
+			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				setLoading(false);
+				return navigate(UTSRoutes.LOGINROUTE);
+			} else if (
+				response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+			) {
+				setLoading(false);
+				return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+			} else {
+				setLoading(false);
+				return 'NO DATA FOUND';
+			}
 		},
-		[apiData, messageAPI],
+		[navigate],
 	);
-
-	const tableColumnsMemo = useMemo(
-		() => allHRConfig.tableConfig(togglePriority),
-		[togglePriority],
-	);
-
-	const handleHRRequest = async (pageData) => {
-		let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
-			pageData
-				? pageData
-				: {
-						pagesize: 100,
-						pagenum: 1,
-				  },
-		);
-		setAPIdata(hrUtils.modifyHRRequestData(response && response));
-		setTotalRecords(response.responseBody.TotalRecords);
-	};
 
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
 	}, [debouncedSearch]);
-
 	useEffect(() => {
-		handleHRRequest({
-			pagesize: 100,
-			pagenum: 1,
-		});
-	}, [hrQueryData?.data]);
+		fetchUserList();
+	}, [fetchUserList]);
 
-	const getHRFilterRequest = useCallback(async () => {
-		const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
-		setFiltersList(response && response?.responseBody?.details?.Data);
-	}, []);
-
-	const toggleHRFilter = useCallback(() => {
-		getHRFilterRequest();
-		setIsAllowFilters(!isAllowFilters);
-	}, [getHRFilterRequest, isAllowFilters]);
+	const tableColumnsMemo = useMemo(() => userConfig.tableConfig(), []);
 
 	return (
 		<div className={allUserStyles.hiringRequestContainer}>
-			{contextHolder}
 			<div className={allUserStyles.userListTitle}>
 				<div className={allUserStyles.hiringRequest}>Users</div>
 				<button
 					type="button"
-					onClick={() => navigate(UTSRoutes.ADDNEWUSERROUTE)}>
+					onClick={() => navigate(UTSRoutes.ADDNEWUSER)}>
 					Add New User
 				</button>
 			</div>
@@ -125,7 +103,7 @@ const UserList = () => {
 				<div className={allUserStyles.filterSets}>
 					<div
 						className={allUserStyles.addFilter}
-						onClick={toggleHRFilter}>
+						onClick={isAllowFilters}>
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
 						<div className={allUserStyles.filterLabel}>Add Filters</div>
@@ -140,7 +118,7 @@ const UserList = () => {
 								placeholder="Search Table"
 								onChange={(e) => {
 									return setDebouncedSearch(
-										hrUtils.allHiringRequestSearch(e, apiData),
+										userUtils.userListSearch(e, userList),
 									);
 								}}
 							/>
@@ -158,9 +136,9 @@ const UserList = () => {
 											onClick={(e) => {
 												setPageSize(parseInt(e.key));
 												if (pageSize !== parseInt(e.key)) {
-													handleHRRequest({
-														pagesize: parseInt(e.key),
-														pagenum: pageIndex,
+													fetchUserList({
+														pageNumber: pageIndex,
+														totalRecord: parseInt(e.key),
 													});
 												}
 											}}>
@@ -187,29 +165,27 @@ const UserList = () => {
 			 * @Table Part
 			 */}
 			<div className={allUserStyles.tableDetails}>
-				{
+				{isLoading ? (
+					<TableSkeleton />
+				) : (
 					<WithLoader>
 						<Table
-							locale={{
-								emptyText: (
-									<>
-										<Skeleton />
-										<Skeleton />
-										<Skeleton />
-									</>
-								),
-							}}
-							id="hrListingTable"
+							id="userListingTable"
 							columns={tableColumnsMemo}
 							bordered={false}
 							dataSource={
-								search && search.length > 0 ? [...search] : [...apiData]
+								search && search.length > 0 ? [...search] : [...userList]
 							}
 							pagination={{
 								onChange: (pageNum, pageSize) => {
 									setPageIndex(pageNum);
 									setPageSize(pageSize);
-									handleHRRequest({ pageSize: pageSize, pageNum: pageNum });
+									/* setTableFilteredState({
+										...tableFilteredState,
+										pageNumber: pageNum,
+										totalRecord: pageSize,
+									}); */
+									fetchUserList({ pageNumber: pageNum, totalRecord: pageSize });
 								},
 								size: 'small',
 								pageSize: pageSize,
@@ -221,20 +197,8 @@ const UserList = () => {
 							}}
 						/>
 					</WithLoader>
-				}
+				)}
 			</div>
-
-			{isAllowFilters && (
-				<Suspense fallback={<div>Loading...</div>}>
-					<HiringFiltersLazyComponent
-						onRemoveHRFilters={onRemoveHRFilters}
-						hrFilterList={allHRConfig.hrFilterListConfig()}
-						filtersType={allHRConfig.hrFilterTypeConfig(
-							filtersList && filtersList,
-						)}
-					/>
-				</Suspense>
-			)}
 		</div>
 	);
 };
