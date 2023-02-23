@@ -40,6 +40,7 @@ const DealList = () => {
 	const [pageSize, setPageSize] = useState(100);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [isLoading, setLoading] = useState(false);
+	const navigate = useNavigate();
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
@@ -53,26 +54,40 @@ const DealList = () => {
 		setEndDate(end);
 	};
 	const tableColumnsMemo = useMemo(() => DealConfig.tableConfig(), []);
-	const fetchDealListAPIResponse = useCallback(async (pageData) => {
-		setLoading(true);
-		const response = await DealDAO.getDealListDAO(
-			pageData
-				? pageData
-				: {
-						pagenumber: 1,
-						totalrecord: 100,
-				  },
-		);
-		if (response.statusCode === HTTPStatusCode.OK) {
-			setTotalRecords(response?.responseBody?.details?.totalrows);
-			setDealList(
-				dealUtils.modifyDealRequestData(
-					response && response?.responseBody?.details,
-				),
+	const fetchDealListAPIResponse = useCallback(
+		async (pageData) => {
+			setLoading(true);
+			const response = await DealDAO.getDealListDAO(
+				pageData
+					? pageData
+					: {
+							pagenumber: 1,
+							totalrecord: 100,
+					  },
 			);
-			setLoading(false);
-		}
-	}, []);
+			if (response.statusCode === HTTPStatusCode.OK) {
+				setTotalRecords(response?.responseBody?.details?.totalrows);
+				setDealList(
+					dealUtils.modifyDealRequestData(
+						response && response?.responseBody?.details,
+					),
+				);
+				setLoading(false);
+			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				setLoading(false);
+				return navigate(UTSRoutes.LOGINROUTE);
+			} else if (
+				response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+			) {
+				setLoading(false);
+				return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+			} else {
+				setLoading(false);
+				return 'NO DATA FOUND';
+			}
+		},
+		[navigate],
+	);
 
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
@@ -212,7 +227,7 @@ const DealList = () => {
 			</div>
 
 			{isAllowFilters && (
-				<Suspense fallback={<div>Loading...</div>}>
+				<Suspense>
 					<DealListLazyComponents
 						onRemoveDealFilters={onRemoveDealFilters}
 						hrFilterList={DealConfig.dealFiltersListConfig()}
