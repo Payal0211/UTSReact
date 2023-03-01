@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Checkbox, Tag } from 'antd';
 import hiringFilterStyle from './hiringFilter.module.css';
 import { AiOutlineSearch } from 'react-icons/ai';
@@ -14,11 +14,20 @@ const HiringFilters = ({
 	tableFilteredState,
 	setTableFilteredState,
 	filtersType,
+	getHTMLFilter
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
 	const [filterSubChild, setFilterSubChild] = useState(null);
+
+	useEffect(() => {
+		getHTMLFilter ?
+			setTimeout(() => {
+				document.querySelector(`.${hiringFilterStyle.aside}`).classList.add(`${hiringFilterStyle.closeFilter}`)
+			}, 300) :
+			document.querySelector(`.${hiringFilterStyle.aside}`).classList.remove(`${hiringFilterStyle.closeFilter}`)
+	}, [getHTMLFilter])
 
 	const toggleFilterSubChild = (item) => {
 		setToggleBack(true);
@@ -165,7 +174,10 @@ const HiringFilters = ({
 						}}>
 						<CrossSVG
 							style={{ width: '26px' }}
-							onClick={() => onRemoveHRFilters()}
+							onClick={() => {
+								onRemoveHRFilters()
+							}
+							}
 						/>
 					</span>
 				</div>
@@ -215,9 +227,9 @@ const HiringFilters = ({
 												}}>
 												{item.label
 													? All_Hiring_Request_Utils.GETHRSTATUS(
-															item.statusCode,
-															item.label,
-													  )
+														item.statusCode,
+														item.label,
+													)
 													: item?.value}
 											</Checkbox>
 										</div>

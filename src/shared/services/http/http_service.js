@@ -3,10 +3,12 @@ import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export class HttpServices {
 	_contentType = 'application/json; charset=UTF-8';
+	_formType = 'multipart/form-data';
 
 	get dataToSend() {
 		return this._dataToSend;
 	}
+
 
 	get URL() {
 		return this._URL;
@@ -42,6 +44,37 @@ export class HttpServices {
 				{
 					headers: {
 						'Content-Type': this._contentType,
+						Authorization: this._isAuthRequired && this._authToken,
+					},
+				},
+			);
+
+			return {
+				statusCode: response.status,
+				responseBody: response.data,
+			};
+		} catch (error) {
+			const errorResult = errorDebug(
+				error.response.data,
+				'httpServices.sendPostRequest()',
+			);
+
+			return {
+				statusCode: errorResult.statusCode,
+				responseBody: errorResult.responseBody,
+			};
+		}
+	}
+
+
+	async sendFileDataPostRequest() {
+		try {
+			const response = await axios.post(
+				this._URL, // URL Passing
+				this._dataToSend, // Data-Body Passing
+				{
+					headers: {
+						'Content-Type': this._formType,
 						Authorization: this._isAuthRequired && this._authToken,
 					},
 				},
@@ -125,5 +158,5 @@ export class HttpServices {
 	}
 
 	//TODO:- Implementation
-	async sendDeleteRequest() {}
+	async sendDeleteRequest() { }
 }

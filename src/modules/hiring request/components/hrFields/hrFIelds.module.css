@@ -1,5 +1,5 @@
 .hrFieldContainer{
-    width: 100%;    
+    width: 100%;
 }
 .reqField {
     color: var(--uplers-black);
@@ -39,7 +39,7 @@
     width: 33.33%;
     padding: 0 9px;
 }
-.colMd6 {    
+.colMd6 {
     width: 50%;
     padding: 0 9px;
 }
@@ -134,4 +134,9 @@
 }
 [class*="ant-select-dropdown"] {
     z-index: 99 !important;
+}
+
+.error {
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
 }

@@ -493,4 +493,98 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
 		}
 	},
+	uploadFileDAO: async (fileData) => {
+		console.log('run')
+		try {
+			const uploadFileResponse = await HiringRequestAPI.uploadFile(
+				fileData,
+			);
+			if (uploadFileResponse) {
+				const statusCode = uploadFileResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = uploadFileResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return uploadFileResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return uploadFileResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
+		}
+	},
+	uploadGoogleDriveFileDAO: async (fileData) => {
+		try {
+			const uploadFileResponse = await HiringRequestAPI.uploadGoogleDriveFile(
+				fileData,
+			);
+			if (uploadFileResponse) {
+				const statusCode = uploadFileResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = uploadFileResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return uploadFileResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return uploadFileResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
+		}
+	},
+	uploadFileFromGoogleDriveLinkDAO: async (link) => {
+		try {
+			const uploadFileResponse = await HiringRequestAPI.uploadFileFromGoogleDriveLink(
+				link,
+			);
+			if (uploadFileResponse) {
+				const statusCode = uploadFileResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = uploadFileResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return uploadFileResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return uploadFileResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
+		}
+	},
 };

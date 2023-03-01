@@ -54,6 +54,7 @@ export class MastersAPI {
 	static GET_REGIONS = 'GetRegions';
 	static GET_MODE_OF_WORK = 'GetModeOfWork';
 	static GET_COUNTRY = 'GetCountry';
+	static GET_EMAIL_SUGGESTION = 'AutoComplete/Contact'
 }
 
 export class ClientsAPI {
@@ -78,8 +79,10 @@ export class HiringRequestsAPI {
 	static GET_ALL_FILTER_DATA_FOR_HR = 'GetAllFilterDataForHR';
 	static SCHEDULE_INTERVIEW = 'Schedule';
 	static RESCHEDULE_INTERVIEW = 'Reschedule';
+	static UPLOAD_FILE = 'UploadFile';
+	static UPLOAD_DRIVE_FILE = 'UploadDriveFile';
+	static UPLOAD_GOOGLE_FILE_LINK = 'UploadGoogleFileLink';
 }
-
 
 export class UsersAPI {
 	static LIST = "List";
