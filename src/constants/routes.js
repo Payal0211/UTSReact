@@ -17,7 +17,7 @@ const AddNewClient = React.lazy(() =>
 	import('modules/client/screens/addnewClient/add_new_client'),
 );
 
-const InterviewList = React.lazy(() =>
+/* const InterviewList = React.lazy(() =>
 	import('modules/interview/screens/interviewList/interviewList'),
 );
 
@@ -27,7 +27,8 @@ const InterviewSchedule = React.lazy(() =>
 
 const InterviewFeedback = React.lazy(() =>
 	import('modules/interview/screens/interviewFeedback/interviewFeedback'),
-);
+); */
+
 const DealList = React.lazy(() =>
 	import('modules/deal/screens/dealList/dealList'),
 );
@@ -36,13 +37,19 @@ const DealDetails = React.lazy(() =>
 );
 
 const AddNewUser = React.lazy(() =>
-	import('modules/users/screens/addNewUser/addUser'),
+	import('modules/user/screens/addNewUser/addUser'),
 );
 const CompanyList = React.lazy(() =>
 	import('modules/company/screens/company_list'),
 );
 
-const UserList = React.lazy(() => import('modules/users/screens/user_list'));
+const UserList = React.lazy(() =>
+	import('modules/user/screens/userList/user_list'),
+);
+
+const AddNewOnboard = React.lazy(() =>
+	import('modules/onboard/screens/addNewOnboard/addNewOnboard'),
+);
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -58,6 +65,8 @@ export default class UTSRoutes {
 	static INTERVIEWFEEDBACK = '/interview/feedback';
 	static DEALLISTROUTE = '/deal';
 	static DEALDETAILS = '/deal/:dealID';
+	static ONBOARDROUTE = '/onboard';
+	static ONBOARDEDITROUTE = '/onboard/edit/:onboardID';
 	static PAGENOTFOUNDROUTE = '/404';
 	static SOMETHINGWENTWRONG = '/500';
 	static NETWORKERRORROUTE = '/networkissue';
@@ -130,6 +139,11 @@ export const navigateToComponent = {
 	[UTSRoutes.ADDNEWUSERROUTE]: (
 		<Suspense>
 			<AddNewUser />
+		</Suspense>
+	),
+	[UTSRoutes.ONBOARDROUTE]: (
+		<Suspense>
+			<AddNewOnboard />
 		</Suspense>
 	),
 };

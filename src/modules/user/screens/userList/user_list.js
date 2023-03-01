@@ -20,8 +20,8 @@ import allUserStyles from './user_list.module.css';
 import UTSRoutes from 'constants/routes';
 
 import WithLoader from 'shared/components/loader/loader';
-import { userConfig } from '../users.config';
-import { userUtils } from '../userUtils';
+import { userConfig } from '../../users.config';
+import { userUtils } from '../../userUtils';
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 
@@ -91,7 +91,7 @@ const UserList = () => {
 				<div className={allUserStyles.hiringRequest}>Users</div>
 				<button
 					type="button"
-					onClick={() => navigate(UTSRoutes.ADDNEWUSER)}>
+					onClick={() => navigate(UTSRoutes.ADDNEWUSERROUTE)}>
 					Add New User
 				</button>
 			</div>

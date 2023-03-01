@@ -1,7 +1,17 @@
-import { userUtils } from 'modules/users/userUtils';
+import { userUtils } from 'modules/user/userUtils';
+import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
 export const userConfig = {
 	tableConfig: () => {
 		return [
+			{
+				title: '     ',
+				dataIndex: 'starStatus',
+				key: 'starStatus',
+				align: 'left',
+				render: (_, param) => {
+					return <PencilSVG />;
+				},
+			},
 			{
 				title: 'Created on',
 				dataIndex: 'createdbyDatetime',
