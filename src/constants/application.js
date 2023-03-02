@@ -42,11 +42,17 @@ export class UserAccountRole {
 	static MARKETING = 12;
 }
 
+export class AdHOCHR {
+	static POOL = 'Pool';
+	static ODR = 'ODR';
+	static BOTH = 'Pool + ODR';
+}
 export class SessionType {
 	static EXPIRED = 0;
 	static ACTIVE = 1;
 	static NEWUSER = 2;
 }
+
 export class VerificationType {
 	static ACCOUNT_VERIFICATION = 0;
 	static FORGOT_PASSWORD = 1;

@@ -38,4 +38,26 @@ export const userUtils = {
 
 		return filteredData;
 	},
+	userDataFormatter: (d, id) => {
+		const userFormDetails = {
+			id: _isNull(id) ? 0 : id,
+			employeeId: d.employeeId,
+			fullName: d.employeeFullName,
+			isNewUser: d.isNewUser === 'true' ? true : false,
+			userTypeId: d.userType?.id,
+			roleId: d.userRole,
+			geoId: d.geo,
+			isOdr: d.odrPool,
+			managerID: d.salesManager?.id,
+			priorityCount: parseInt(d.priorityCount),
+			skypeId: d.skypeID,
+			emailId: d.emailID,
+			contactNumber: d.contactNumber,
+			designation: d.employeeDesignation,
+			profilePic: d.profilePic,
+			description: d.description,
+			isActive: d.isActive,
+		};
+		return userFormDetails;
+	},
 };

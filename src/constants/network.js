@@ -54,6 +54,10 @@ export class MastersAPI {
 	static GET_REGIONS = 'GetRegions';
 	static GET_MODE_OF_WORK = 'GetModeOfWork';
 	static GET_COUNTRY = 'GetCountry';
+	static GET_USER_TYPE = 'GetUserType';
+	static GET_TEAM_MANAGER = 'GetTeamManager';
+	static GET_USER_BY_TYPE = 'GetUserByType';
+	static GET_REPORTEE_MANAGER = 'GetFetchReporteeTeamManager';
 }
 
 export class ClientsAPI {
@@ -80,9 +84,9 @@ export class HiringRequestsAPI {
 	static RESCHEDULE_INTERVIEW = 'Reschedule';
 }
 
-
 export class UsersAPI {
-	static LIST = "List";
+	static LIST = 'List';
+	static ADD_NEW_USER = 'AddEdit';
 }
 
 export class InterviewsAPI {

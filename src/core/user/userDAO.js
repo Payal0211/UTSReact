@@ -30,7 +30,32 @@ export const userDAO = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'DealDAO.getUserListRequestDAO');
+			return errorDebug(error, 'userDAO.getUserListRequestDAO');
+		}
+	},
+	addNewUserRequestDAO: async function (userData) {
+		try {
+			const addNewUserResponse = await userAPI.createUserRequest(userData);
+			if (addNewUserResponse) {
+				const statusCode = addNewUserResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = addNewUserResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return addNewUserResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return addNewUserResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.addNewUserRequestDAO');
 		}
 	},
 	loginDAO: async function (userdata) {

@@ -1,4 +1,5 @@
 import {
+	AdHOCHR,
 	HiringRequestHRStatus,
 	SubmitType,
 	UserAccountRole,
@@ -496,6 +497,42 @@ export const hrUtils = {
 			) {
 				return true;
 			}
+		}
+	},
+	handleAdHOC(adHOCValue) {
+		if (_isNull(adHOCValue) || adHOCValue === AdHOCHR.POOL) {
+			return [
+				{
+					label: 'Pass to ODR',
+					// key: AddNewType.HR,
+				},
+				{
+					label: 'Keep it with me as well',
+					// key: AddNewType.CLIENT,
+				},
+			];
+		} else if (adHOCValue === AdHOCHR.ODR) {
+			return [
+				{
+					label: 'Pass to Pool',
+					// key: AddNewType.HR,
+				},
+				{
+					label: 'Keep it with me as well',
+					// key: AddNewType.CLIENT,
+				},
+			];
+		} else if (adHOCValue === AdHOCHR.BOTH) {
+			return [
+				{
+					label: 'Pass to Pool',
+					// key: AddNewType.HR,
+				},
+				{
+					label: 'Pass to ODR',
+					// key: AddNewType.HR,
+				},
+			];
 		}
 	},
 };

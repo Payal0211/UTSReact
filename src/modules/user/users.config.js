@@ -1,7 +1,24 @@
-import { userUtils } from 'modules/users/userUtils';
+import { userUtils } from 'modules/user/userUtils';
+import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
+import { Link } from 'react-router-dom';
 export const userConfig = {
 	tableConfig: () => {
 		return [
+			{
+				title: '     ',
+				dataIndex: 'starStatus',
+				key: 'starStatus',
+				align: 'left',
+				render: (_, param) => {
+					return (
+						<Link
+							to={`/user/${param?.id}`}
+							style={{ color: 'black', textDecoration: 'underline' }}>
+							<PencilSVG />
+						</Link>
+					);
+				},
+			},
 			{
 				title: 'Created on',
 				dataIndex: 'createdbyDatetime',
