@@ -5,10 +5,10 @@ import { RiArrowDropDownLine } from 'react-icons/ri';
 import TalentListStyle from './talentList.module.css';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useCallback } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
 import { AddNewType, TalentOnboardStatus } from 'constants/application';
-
+import { MasterDAO } from 'core/master/masterDAO';
 import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
 import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
 import InterviewFeedback from 'modules/interview/screens/interviewFeedback/interviewFeedback';
@@ -63,9 +63,7 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 		strEndTime: "",
 		iD_As_ShortListedID: ""
 	}
-
 	])
-	const [scheduleRadio, setScheduleRadio] = useState(1);
 	const [scheduleSlotRadio, setScheduleSlotRadio] = useState(1);
 	//reschedule modal state
 	const [reScheduleTimezone, setRescheduleTimezone] = useState([]);
@@ -100,15 +98,13 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 		strEndTime: "",
 		iD_As_ShortListedID: ""
 	}
-
 	])
 	const [reScheduleRadio, setRescheduleRadio] = useState(1);
 	const [reScheduleSlotRadio, setRescheduleSlotRadio] = useState(1);
 
 	const scheuleResetDataHander = () => {
 		setScheduleSlotDate([{ slot1: null, slot2: null, slot3: null }, { slot1: null, slot2: null, slot3: null }, { slot1: null, slot2: null, slot3: null }])
-		setScheduleRadio(1)
-		setScheduleSlotRadio(1)
+
 		setScheduleSlotInformation([{
 			slotID: 1,
 			slotDate: "",
@@ -145,7 +141,6 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 	const resetRescheuleDataHander = () => {
 		setRescheduleSlotDate([{ slot1: null, slot2: null, slot3: null }, { slot1: null, slot2: null, slot3: null }, { slot1: null, slot2: null, slot3: null }])
 		setRescheduleRadio("client");
-		setRescheduleSlotRadio(1);
 		setRescheduleSlotInformation([{
 			slotID: 1,
 			slotDate: "",
@@ -200,20 +195,22 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 		switch (type) {
 			case "slot1Date":
 				if (interviewType === "schedule") {
-					startTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[0]?.strStartTime.slice(10)}`
-					endTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[0]?.strEndTime?.slice(10)}`
-					startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[0]?.strStartTime.slice(11)}:00.0000`;
-					endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[0]?.strEndTime.slice(11)}:00.0000`;
+					if (getScheduleSlotInfomation[0]?.strStartTime && getScheduleSlotInfomation[0]?.strEndTime) {
+						startTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[0]?.strStartTime.slice(10)}`
+						endTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[0]?.strEndTime?.slice(10)}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[0]?.strStartTime.slice(11)}:00.0000`;
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[0]?.strEndTime.slice(11)}:00.0000`;
+					}
 					setScheduleSlotInformation(getScheduleSlotInfomation.map((item, index) => {
 						if (index == 0) {
 							return {
 								...item,
 								slotDate: secondDateFormate,
 								strSlotDate: firstDateFormate,
-								strStartTime: startTimeFirstFormate,
-								strEndTime: endTimeFirstFormate,
-								startTime: startTimeSecondFormate,
-								endTime: endTimeSecondFormate,
+								strStartTime: startTimeFirstFormate || null,
+								strEndTime: endTimeFirstFormate || null,
+								startTime: startTimeSecondFormate || null,
+								endTime: endTimeSecondFormate || null,
 							};
 						} else {
 							return item;
@@ -226,23 +223,25 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 							return item;
 						}
 					}))
+
 				}
 				else if (interviewType === "reschedule") {
-					startTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[0]?.strStartTime.slice(10)}`
-					endTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[0]?.strEndTime?.slice(10)}`
-					startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[0]?.strStartTime.slice(11)}:00.0000`;
-					endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[0]?.strEndTime.slice(11)}:00.0000`;
-
+					if (getRescheduleSlotInfomation[0]?.strStartTime && getRescheduleSlotInfomation[0]?.strEndTime) {
+						startTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[0]?.strStartTime.slice(10)}`
+						endTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[0]?.strEndTime?.slice(10)}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[0]?.strStartTime.slice(11)}:00.0000`;
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[0]?.strEndTime.slice(11)}:00.0000`;
+					}
 					setRescheduleSlotInformation(getRescheduleSlotInfomation.map((item, index) => {
 						if (index == 0) {
 							return {
 								...item,
 								slotDate: secondDateFormate,
 								strSlotDate: firstDateFormate,
-								strStartTime: startTimeFirstFormate,
-								strEndTime: endTimeFirstFormate,
-								startTime: startTimeSecondFormate,
-								endTime: endTimeSecondFormate,
+								strStartTime: startTimeFirstFormate || null,
+								strEndTime: endTimeFirstFormate || null,
+								startTime: startTimeSecondFormate || null,
+								endTime: endTimeSecondFormate || null,
 							};
 						} else {
 							return item;
@@ -259,8 +258,14 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 				break;
 			case "slot1StartTime":
 				if (interviewType === "schedule") {
-					startTimeFirstFormate = `${getScheduleSlotInfomation[0]?.strSlotDate} ${timeFormate}`
-					startTimeSecondFormate = `${getScheduleSlotInfomation[0]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getScheduleSlotInfomation[0]?.strSlotDate && getScheduleSlotInfomation[0]?.slotDate) {
+						startTimeFirstFormate = `${getScheduleSlotInfomation[0]?.strSlotDate} ${timeFormate}`
+						startTimeSecondFormate = `${getScheduleSlotInfomation[0]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
 					setScheduleSlotInformation(getScheduleSlotInfomation.map((item, index) => {
 						if (index == 0) {
 							return {
@@ -283,8 +288,14 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 					}))
 				}
 				else if (interviewType === "reschedule") {
-					startTimeFirstFormate = `${getRescheduleSlotInfomation[0]?.strSlotDate} ${timeFormate}`
-					startTimeSecondFormate = `${getRescheduleSlotInfomation[0]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getRescheduleSlotInfomation[0]?.strSlotDate && getRescheduleSlotInfomation[0]?.slotDate) {
+						startTimeFirstFormate = `${getRescheduleSlotInfomation[0]?.strSlotDate} ${timeFormate}`
+						startTimeSecondFormate = `${getRescheduleSlotInfomation[0]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
 					setRescheduleSlotInformation(getRescheduleSlotInfomation.map((item, index) => {
 						if (index == 0) {
 							return {
@@ -296,8 +307,6 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 							return item;
 						}
 					}))
-
-
 					setRescheduleSlotDate(getRescheduleSlotDate.map((item, index) => {
 						if (index == 0) {
 							return { ...item, slot2: date };
@@ -308,9 +317,17 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 				}
 				break;
 			case "slot1EndTime":
+
+
 				if (interviewType === "schedule") {
-					endTimeFirstFormate = `${getScheduleSlotInfomation[0]?.strSlotDate} ${timeFormate}`
-					endTimeSecondFormate = `${getScheduleSlotInfomation[0]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getScheduleSlotInfomation[0]?.strSlotDate && getScheduleSlotInfomation[0]?.slotDate) {
+						endTimeFirstFormate = `${getScheduleSlotInfomation[0]?.strSlotDate} ${timeFormate}`
+						endTimeSecondFormate = `${getScheduleSlotInfomation[0]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
 					setScheduleSlotInformation(getScheduleSlotInfomation.map((item, index) => {
 						if (index == 0) {
 							return {
@@ -333,8 +350,14 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 					}))
 				}
 				else if (interviewType === "reschedule") {
-					endTimeFirstFormate = `${getRescheduleSlotInfomation[0]?.strSlotDate} ${timeFormate}`
-					endTimeSecondFormate = `${getRescheduleSlotInfomation[0]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getRescheduleSlotInfomation[0]?.strSlotDate && getRescheduleSlotInfomation[0]?.slotDate) {
+						endTimeFirstFormate = `${getRescheduleSlotInfomation[0]?.strSlotDate} ${timeFormate}`
+						endTimeSecondFormate = `${getRescheduleSlotInfomation[0]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
 					setRescheduleSlotInformation(getRescheduleSlotInfomation.map((item, index) => {
 						if (index == 0) {
 							return {
@@ -346,8 +369,6 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 							return item;
 						}
 					}))
-
-
 					setRescheduleSlotDate(getRescheduleSlotDate.map((item, index) => {
 						if (index == 0) {
 							return { ...item, slot3: date };
@@ -358,22 +379,25 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 				}
 				break;
 
+
 			case "slot2Date":
 				if (interviewType === "schedule") {
-					startTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[1]?.strStartTime.slice(10)}`
-					endTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[1]?.strEndTime?.slice(10)}`
-					startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[1]?.strStartTime.slice(11)}:00.0000`;
-					endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[1]?.strEndTime.slice(11)}:00.0000`;
+					if (getScheduleSlotInfomation[1]?.strStartTime && getScheduleSlotInfomation[1]?.strEndTime) {
+						startTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[1]?.strStartTime.slice(10)}`
+						endTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[1]?.strEndTime?.slice(10)}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[1]?.strStartTime.slice(11)}:00.0000`;
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[1]?.strEndTime.slice(11)}:00.0000`;
+					}
 					setScheduleSlotInformation(getScheduleSlotInfomation.map((item, index) => {
 						if (index == 1) {
 							return {
 								...item,
 								slotDate: secondDateFormate,
 								strSlotDate: firstDateFormate,
-								strStartTime: startTimeFirstFormate,
-								strEndTime: endTimeFirstFormate,
-								startTime: startTimeSecondFormate,
-								endTime: endTimeSecondFormate,
+								strStartTime: startTimeFirstFormate || null,
+								strEndTime: endTimeFirstFormate || null,
+								startTime: startTimeSecondFormate || null,
+								endTime: endTimeSecondFormate || null,
 							};
 						} else {
 							return item;
@@ -389,20 +413,23 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 					}))
 				}
 				else if (interviewType === "reschedule") {
-					startTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[1]?.strStartTime.slice(10)}`
-					endTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[1]?.strEndTime?.slice(10)}`
-					startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[1]?.strStartTime.slice(11)}:00.0000`;
-					endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[1]?.strEndTime.slice(11)}:00.0000`;
+
+					if (getRescheduleSlotInfomation[1]?.strStartTime && getRescheduleSlotInfomation[1]?.strEndTime) {
+						startTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[1]?.strStartTime.slice(10)}`
+						endTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[1]?.strEndTime?.slice(10)}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[1]?.strStartTime.slice(11)}:00.0000`;
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[1]?.strEndTime.slice(11)}:00.0000`;
+					}
 					setRescheduleSlotInformation(getRescheduleSlotInfomation.map((item, index) => {
 						if (index == 1) {
 							return {
 								...item,
 								slotDate: secondDateFormate,
 								strSlotDate: firstDateFormate,
-								strStartTime: startTimeFirstFormate,
-								strEndTime: endTimeFirstFormate,
-								startTime: startTimeSecondFormate,
-								endTime: endTimeSecondFormate,
+								strStartTime: startTimeFirstFormate || null,
+								strEndTime: endTimeFirstFormate || null,
+								startTime: startTimeSecondFormate || null,
+								endTime: endTimeSecondFormate || null,
 							};
 						} else {
 							return item;
@@ -420,8 +447,14 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 				break;
 			case "slot2StartTime":
 				if (interviewType === "schedule") {
-					startTimeFirstFormate = `${getScheduleSlotInfomation[1]?.strSlotDate} ${timeFormate}`
-					startTimeSecondFormate = `${getScheduleSlotInfomation[1]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getScheduleSlotInfomation[1]?.strSlotDate && getScheduleSlotInfomation[1]?.slotDate) {
+						startTimeFirstFormate = `${getScheduleSlotInfomation[1]?.strSlotDate} ${timeFormate}`
+						startTimeSecondFormate = `${getScheduleSlotInfomation[1]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
 					setScheduleSlotInformation(getScheduleSlotInfomation.map((item, index) => {
 						if (index == 1) {
 							return {
@@ -443,8 +476,14 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 					}))
 				}
 				else if (interviewType === "reschedule") {
-					startTimeFirstFormate = `${getRescheduleSlotInfomation[1]?.strSlotDate} ${timeFormate}`
-					startTimeSecondFormate = `${getRescheduleSlotInfomation[1]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getRescheduleSlotInfomation[1]?.strSlotDate && getRescheduleSlotInfomation[1]?.slotDate) {
+						startTimeFirstFormate = `${getRescheduleSlotInfomation[1]?.strSlotDate} ${timeFormate}`
+						startTimeSecondFormate = `${getRescheduleSlotInfomation[1]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
 					setRescheduleSlotInformation(getRescheduleSlotInfomation.map((item, index) => {
 						if (index == 1) {
 							return {
@@ -468,8 +507,15 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 				break;
 			case "slot2EndTime":
 				if (interviewType === "schedule") {
-					endTimeFirstFormate = `${getScheduleSlotInfomation[1]?.strSlotDate} ${timeFormate}`
-					endTimeSecondFormate = `${getScheduleSlotInfomation[1]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getScheduleSlotInfomation[1]?.strSlotDate && getScheduleSlotInfomation[1]?.slotDate) {
+						endTimeFirstFormate = `${getScheduleSlotInfomation[1]?.strSlotDate} ${timeFormate}`
+						endTimeSecondFormate = `${getScheduleSlotInfomation[1]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+
 					setScheduleSlotInformation(getScheduleSlotInfomation.map((item, index) => {
 						if (index == 1) {
 							return {
@@ -490,8 +536,14 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 					}))
 				}
 				else if (interviewType === "reschedule") {
-					endTimeFirstFormate = `${getRescheduleSlotInfomation[1]?.strSlotDate} ${timeFormate}`
-					endTimeSecondFormate = `${getRescheduleSlotInfomation[1]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getRescheduleSlotInfomation[1]?.strSlotDate && getRescheduleSlotInfomation[1]?.slotDate) {
+						endTimeFirstFormate = `${getRescheduleSlotInfomation[1]?.strSlotDate} ${timeFormate}`
+						endTimeSecondFormate = `${getRescheduleSlotInfomation[1]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
 					setRescheduleSlotInformation(getRescheduleSlotInfomation.map((item, index) => {
 						if (index == 1) {
 							return {
@@ -504,7 +556,6 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 						}
 					}))
 
-
 					setRescheduleSlotDate(getRescheduleSlotDate.map((item, index) => {
 						if (index == 1) {
 							return { ...item, slot3: date };
@@ -514,23 +565,25 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 					}))
 				}
 				break;
+
 			case "slot3Date":
 				if (interviewType === "schedule") {
-					startTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[2]?.strStartTime.slice(10)}`
-					endTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[2]?.strEndTime?.slice(10)}`
-					startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[2]?.strStartTime.slice(11)}:00.0000`;
-					endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[2]?.strEndTime.slice(11)}:00.0000`;
-
+					if (getScheduleSlotInfomation[2]?.strStartTime && getScheduleSlotInfomation[2]?.strEndTime) {
+						startTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[2]?.strStartTime.slice(10)}`
+						endTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[2]?.strEndTime?.slice(10)}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[2]?.strStartTime.slice(11)}:00.0000`;
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getScheduleSlotInfomation[2]?.strEndTime.slice(11)}:00.0000`;
+					}
 					setScheduleSlotInformation(getScheduleSlotInfomation.map((item, index) => {
 						if (index === 2) {
 							return {
 								...item,
 								slotDate: secondDateFormate,
 								strSlotDate: firstDateFormate,
-								strStartTime: startTimeFirstFormate,
-								strEndTime: endTimeFirstFormate,
-								startTime: startTimeSecondFormate,
-								endTime: endTimeSecondFormate,
+								strStartTime: startTimeFirstFormate || null,
+								strEndTime: endTimeFirstFormate || null,
+								startTime: startTimeSecondFormate || null,
+								endTime: endTimeSecondFormate || null,
 							};
 						} else {
 							return item;
@@ -546,21 +599,22 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 					}))
 				}
 				else if (interviewType === "reschedule") {
-					startTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[2]?.strStartTime.slice(10)}`
-					endTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[2]?.strEndTime?.slice(10)}`
-					startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[2]?.strStartTime.slice(11)}:00.0000`;
-					endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[2]?.strEndTime.slice(11)}:00.0000`;
-
+					if (getRescheduleSlotInfomation[2]?.strStartTime && getRescheduleSlotInfomation[2]?.strEndTime) {
+						startTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[2]?.strStartTime.slice(10)}`
+						endTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[2]?.strEndTime?.slice(10)}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[2]?.strStartTime.slice(11)}:00.0000`;
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${getRescheduleSlotInfomation[2]?.strEndTime.slice(11)}:00.0000`;
+					}
 					setRescheduleSlotInformation(getRescheduleSlotInfomation.map((item, index) => {
 						if (index === 2) {
 							return {
 								...item,
 								slotDate: secondDateFormate,
 								strSlotDate: firstDateFormate,
-								strStartTime: startTimeFirstFormate,
-								strEndTime: endTimeFirstFormate,
-								startTime: startTimeSecondFormate,
-								endTime: endTimeSecondFormate,
+								strStartTime: startTimeFirstFormate || null,
+								strEndTime: endTimeFirstFormate || null,
+								startTime: startTimeSecondFormate || null,
+								endTime: endTimeSecondFormate || null,
 							};
 						} else {
 							return item;
@@ -578,8 +632,14 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 				break;
 			case "slot3StartTime":
 				if (interviewType === "schedule") {
-					startTimeFirstFormate = `${getScheduleSlotInfomation[2]?.strSlotDate} ${timeFormate}`
-					startTimeSecondFormate = `${getScheduleSlotInfomation[2]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getScheduleSlotInfomation[2]?.strSlotDate && getScheduleSlotInfomation[2]?.slotDate) {
+						startTimeFirstFormate = `${getScheduleSlotInfomation[2]?.strSlotDate} ${timeFormate}`
+						startTimeSecondFormate = `${getScheduleSlotInfomation[2]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
 					setScheduleSlotInformation(getScheduleSlotInfomation.map((item, index) => {
 						if (index === 2) {
 							return {
@@ -601,8 +661,14 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 					}))
 				}
 				else if (interviewType === "reschedule") {
-					startTimeFirstFormate = `${getRescheduleSlotInfomation[2]?.strSlotDate} ${timeFormate}`
-					startTimeSecondFormate = `${getRescheduleSlotInfomation[2]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getRescheduleSlotInfomation[2]?.strSlotDate && getRescheduleSlotInfomation[2]?.slotDate) {
+						startTimeFirstFormate = `${getRescheduleSlotInfomation[2]?.strSlotDate} ${timeFormate}`
+						startTimeSecondFormate = `${getRescheduleSlotInfomation[2]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
 					setRescheduleSlotInformation(getRescheduleSlotInfomation.map((item, index) => {
 						if (index === 2) {
 							return {
@@ -626,8 +692,14 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 				break;
 			case "slot3EndTime":
 				if (interviewType === "schedule") {
-					endTimeFirstFormate = `${getScheduleSlotInfomation[2]?.strSlotDate} ${timeFormate}`
-					endTimeSecondFormate = `${getScheduleSlotInfomation[2]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getScheduleSlotInfomation[2]?.strSlotDate && getScheduleSlotInfomation[2]?.slotDate) {
+						endTimeFirstFormate = `${getScheduleSlotInfomation[2]?.strSlotDate} ${timeFormate}`
+						endTimeSecondFormate = `${getScheduleSlotInfomation[2]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
 					setScheduleSlotInformation(getScheduleSlotInfomation.map((item, index) => {
 						if (index === 2) {
 							return {
@@ -639,8 +711,6 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 							return item;
 						}
 					}))
-
-
 					setScheduleSlotDate(getScheduleSlotDate.map((item, index) => {
 						if (index === 2) {
 							return { ...item, slot3: date };
@@ -650,8 +720,14 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 					}))
 				}
 				else if (interviewType === "reschedule") {
-					endTimeFirstFormate = `${getRescheduleSlotInfomation[2]?.strSlotDate} ${timeFormate}`
-					endTimeSecondFormate = `${getRescheduleSlotInfomation[2]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					if (getRescheduleSlotInfomation[2]?.strSlotDate && getRescheduleSlotInfomation[2]?.slotDate) {
+						endTimeFirstFormate = `${getRescheduleSlotInfomation[2]?.strSlotDate} ${timeFormate}`
+						endTimeSecondFormate = `${getRescheduleSlotInfomation[2]?.slotDate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
+					else {
+						endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`
+						endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
+					}
 					setRescheduleSlotInformation(getRescheduleSlotInfomation.map((item, index) => {
 						if (index === 2) {
 							return {
@@ -674,41 +750,32 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 					}))
 				}
 				break;
-
-
 			case "initial":
 				if (interviewType === "schedule") {
-					startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
-					endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
-					startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
-					endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
 					setScheduleSlotInformation(getScheduleSlotInfomation.map((item, index) => {
 						return {
 							...item,
-							slotDate: secondDateFormate,
-							strSlotDate: firstDateFormate,
-							startTime: startTimeSecondFormate,
-							strStartTime: startTimeFirstFormate,
-							endTime: endTimeSecondFormate,
-							strEndTime: endTimeFirstFormate,
+							slotDate: null,
+							strSlotDate: null,
+							startTime: null,
+							strStartTime: null,
+							endTime: null,
+							strEndTime: null,
 						};
 					}))
 				}
 				else if (interviewType === "reschedule") {
-					startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
-					endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
-					startTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
-					endTimeSecondFormate = `${secondDateFormate.slice(0, 11)}${timeFormate}:00.0000`;
 					setRescheduleSlotInformation(getRescheduleSlotInfomation.map((item, index) => {
 						return {
 							...item,
-							slotDate: secondDateFormate,
-							strSlotDate: firstDateFormate,
-							startTime: startTimeSecondFormate,
-							strStartTime: startTimeFirstFormate,
-							endTime: endTimeSecondFormate,
-							strEndTime: endTimeFirstFormate,
+							slotDate: null,
+							strSlotDate: null,
+							startTime: null,
+							strStartTime: null,
+							endTime: null,
+							strEndTime: null,
 						};
+
 					}))
 				}
 				break;
@@ -757,14 +824,24 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 
 	useEffect(() => {
 		scheuleResetDataHander()
+		setScheduleSlotRadio(1)
 		getSlotInformationHandler(new Date(), "initial", 'schedule');
 	}, [showScheduleInterviewModal])
 
+
 	useEffect(() => {
 		resetRescheuleDataHander()
+		setRescheduleSlotRadio(1);
 		getSlotInformationHandler(new Date(), "initial", "reschedule");
 	}, [showReScheduleInterviewModal])
 
+	useEffect(() => {
+		scheuleResetDataHander()
+	}, [scheduleSlotRadio])
+
+	useEffect(() => {
+		resetRescheuleDataHander()
+	}, [reScheduleSlotRadio])
 
 	return (
 		<div>
@@ -1367,8 +1444,6 @@ const TalentList = ({ talentDetail, miscData, HRStatusCode, hrId, hiringRequestN
 					setScheduleSlotDate={setScheduleSlotDate}
 					getScheduleSlotInfomation={getScheduleSlotInfomation}
 					setScheduleSlotInformation={setScheduleSlotInformation}
-					scheduleRadio={scheduleRadio}
-					setScheduleRadio={setScheduleRadio}
 					scheduleSlotRadio={scheduleSlotRadio}
 					setScheduleSlotRadio={setScheduleSlotRadio}
 					getSlotInformationHandler={getSlotInformationHandler}
