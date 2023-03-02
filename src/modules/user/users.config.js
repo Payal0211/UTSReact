@@ -1,5 +1,6 @@
 import { userUtils } from 'modules/user/userUtils';
 import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
+import { Link } from 'react-router-dom';
 export const userConfig = {
 	tableConfig: () => {
 		return [
@@ -9,7 +10,13 @@ export const userConfig = {
 				key: 'starStatus',
 				align: 'left',
 				render: (_, param) => {
-					return <PencilSVG />;
+					return (
+						<Link
+							to={`/user/${param?.id}`}
+							style={{ color: 'black', textDecoration: 'underline' }}>
+							<PencilSVG />
+						</Link>
+					);
 				},
 			},
 			{

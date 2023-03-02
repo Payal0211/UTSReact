@@ -28,6 +28,8 @@ import { useMastersAPI } from 'shared/hooks/useMastersAPI';
 import { MasterDAO } from 'core/master/masterDAO';
 import { getFlagAndCodeOptions } from 'modules/client/clientUtils';
 import UTSRoutes from 'constants/routes';
+import { userUtils } from 'modules/user/userUtils';
+import { userAPI } from 'apis/userAPI';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -35,16 +37,11 @@ export const secondaryInterviewer = {
 	designation: '',
 };
 
-const UsersFields = ({
-	setTitle,
-	clientDetail,
-	setEnID,
-	tabFieldDisabled,
-	setTabFieldDisabled,
-}) => {
+const UsersFields = ({ id }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [userType, setUserType] = useState([]);
 	const [teamManager, setTeamManager] = useState([]);
+	const [reporteeManager, setReporteeManager] = useState([]);
 	const [salesMan, setSalesMan] = useState([]);
 	const [userRole, setUserRole] = useState([]);
 	const [GEO, setGEO] = useState([]);
@@ -63,12 +60,9 @@ const UsersFields = ({
 		setError,
 		// control,
 		formState: { errors },
-	} = useForm({
-		defaultValues: {
-			secondaryInterviewer: [],
-		},
-	});
+	} = useForm({});
 	let watchUserType = watch('userType');
+	let watchReporteeManager = watch('salesManager');
 
 	const navigate = useNavigate();
 	const getCodeAndFlag = async () => {
@@ -104,6 +98,12 @@ const UsersFields = ({
 		});
 		setUserRole(response && response?.responseBody?.details);
 	}, [watchUserType]);
+	const getReporteeManager = useCallback(async () => {
+		let response = await MasterDAO.getReporteeTeamManagerRequestDAO({
+			typeID: watchReporteeManager?.id,
+		});
+		setReporteeManager(response && response?.responseBody?.details);
+	}, [watchReporteeManager]);
 	const getTalentRole = useCallback(async () => {
 		let response = await MasterDAO.getTalentsRoleRequestDAO();
 		setTalentRole(response && response?.responseBody);
@@ -112,13 +112,21 @@ const UsersFields = ({
 	useEffect(() => {
 		!_isNull(watchUserType) && getUserRoles();
 		!_isNull(watchUserType) && getGEO();
-	}, [getGEO, getUserRoles, watchUserType]);
+		!_isNull(watchReporteeManager) && getReporteeManager();
+	}, [
+		getGEO,
+		getReporteeManager,
+		getUserRoles,
+		watchReporteeManager,
+		watchUserType,
+	]);
 
 	useEffect(() => {
 		// !_isNull(watchUserType) && getUserRoles();
 		getCodeAndFlag();
 		getUserType();
 		getTeamManager();
+
 		getSalesMan();
 		getTalentRole();
 	}, [getSalesMan, getTeamManager, getUserType, getTalentRole]);
@@ -131,7 +139,10 @@ const UsersFields = ({
 	const [messageAPI, contextHolder] = message.useMessage();
 
 	const hrSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
-		console.log(d, '---d');
+		let userFormDetails = userUtils.userDataFormatter(d, id);
+		console.log(userFormDetails);
+		let userResponse = await userAPI.createUserRequest(userFormDetails);
+		console.log(userResponse);
 		/* let hrFormDetails = hrUtils.hrFormDataFormatter(
 			d,
 			type,
@@ -214,42 +225,40 @@ const UsersFields = ({
 							watch('userType')?.id === UserAccountRole.SALES_MANAGER) && (
 							<div className={UserFieldStyle.row}>
 								<div className={UserFieldStyle.colMd12}>
-									<div
-										className={`${UserFieldStyle.radioFormGroup} ${UserFieldStyle.newUserRadioGroup}`}>
+									<div className={UserFieldStyle.radioFormGroup}>
 										<label>
 											Is the User New?
 											<span className={UserFieldStyle.reqField}>*</span>
 										</label>
-										<Radio.Group
-											defaultValue={1}
-											className={UserFieldStyle.radioGroup}>
-											<Radio value={1}>Yes</Radio>
-											<Radio value={2}>No</Radio>
-										</Radio.Group>
+										<label className={UserFieldStyle.container}>
+											<p>Yes</p>
+											<input
+												{...register('isNewUser')}
+												value={true}
+												type="radio"
+												checked
+												id="isNewUser"
+												name="isNewUser"
+											/>
+											<span className={UserFieldStyle.checkmark}></span>
+										</label>
+										<label className={UserFieldStyle.container}>
+											<p>No</p>
+											<input
+												{...register('isNewUser')}
+												value={false}
+												type="radio"
+												id="isNewUser"
+												name="isNewUser"
+											/>
+											<span className={UserFieldStyle.checkmark}></span>
+										</label>
 									</div>
 								</div>
 							</div>
 						)}
 
 						<div className={UserFieldStyle.row}>
-							{watch('userType')?.id === UserAccountRole.SALES && (
-								<div className={UserFieldStyle.colMd6}>
-									<div className={UserFieldStyle.formGroup}>
-										<HRSelectField
-											setValue={setValue}
-											register={register}
-											label={'User Team'}
-											defaultValue="Please Select"
-											options={salesMan && salesMan}
-											placeholderText="Please Select"
-											name="userTeam"
-											isError={errors['userTeam'] && errors['userTeam']}
-											required
-											errorMsg={'Please select user team'}
-										/>
-									</div>
-								</div>
-							)}
 							<div className={UserFieldStyle.colMd6}>
 								<div className={UserFieldStyle.formGroup}>
 									<HRSelectField
@@ -350,22 +359,73 @@ const UsersFields = ({
 						)}
 
 						<div className={UserFieldStyle.row}>
-							<div className={UserFieldStyle.colMd6}>
-								<div className={UserFieldStyle.formGroup}>
-									<HRSelectField
-										setValue={setValue}
-										register={register}
-										label={'Manager'}
-										defaultValue="Please Select"
-										options={teamManager && teamManager}
-										placeholderText="Please Select"
-										name="manager"
-										isError={errors['manager'] && errors['manager']}
-										required
-										errorMsg={'Please select manager'}
-									/>
+							{watch('userType')?.id === UserAccountRole.SALES && (
+								<div className={UserFieldStyle.colMd6}>
+									<div className={UserFieldStyle.formGroup}>
+										<HRSelectField
+											mode="id/value"
+											setValue={setValue}
+											register={register}
+											label={'Sales Manager'}
+											defaultValue="Please Select"
+											options={teamManager && teamManager}
+											placeholderText="Please Select"
+											name="salesManager"
+											isError={errors['salesManager'] && errors['salesManager']}
+											required
+											errorMsg={'Please select manager'}
+										/>
+									</div>
 								</div>
-							</div>
+							)}
+							{watch('userType')?.id === UserAccountRole.TALENTOPS && (
+								<div className={UserFieldStyle.colMd6}>
+									<div className={UserFieldStyle.formGroup}>
+										<HRSelectField
+											mode="id/value"
+											setValue={setValue}
+											register={register}
+											label={'Ops Team Manager'}
+											defaultValue="Please Select"
+											options={teamManager && teamManager}
+											placeholderText="Please Select"
+											name="opsTeamManager"
+										/>
+									</div>
+								</div>
+							)}
+							{!_isNull(watch('salesManager')?.id) &&
+							watch('userType')?.id === UserAccountRole.SALES ? (
+								<div className={UserFieldStyle.colMd6}>
+									<div className={UserFieldStyle.formGroup}>
+										<HRSelectField
+											setValue={setValue}
+											register={register}
+											label={'Reportee User'}
+											defaultValue="Please Select"
+											options={reporteeManager && reporteeManager}
+											placeholderText="Please Select"
+											name="reporteeUser"
+										/>
+									</div>
+								</div>
+							) : null}
+							{!_isNull(watch('salesManager')?.id) &&
+							watch('userType')?.id === UserAccountRole.TALENTOPS ? (
+								<div className={UserFieldStyle.colMd6}>
+									<div className={UserFieldStyle.formGroup}>
+										<HRSelectField
+											setValue={setValue}
+											register={register}
+											label={'Reportee User'}
+											defaultValue="Please Select"
+											options={reporteeManager && reporteeManager}
+											placeholderText="Please Select"
+											name="reporteeUser"
+										/>
+									</div>
+								</div>
+							) : null}
 							<div className={UserFieldStyle.colMd6}>
 								<div className={UserFieldStyle.formGroup}>
 									<HRInputField
@@ -375,8 +435,8 @@ const UsersFields = ({
 											required: 'please enter priority count',
 										}}
 										label="Priority Count"
-										name="prioritycount"
-										type={InputType.TEXT}
+										name="priorityCount"
+										type={InputType.NUMBER}
 										placeholder="Enter Priority Count"
 										required
 									/>
@@ -410,7 +470,7 @@ const UsersFields = ({
 											required: 'Please enter skype ID',
 										}}
 										label={'Skype'}
-										name="skypeId"
+										name="skypeID"
 										type={InputType.TEXT}
 										placeholder="Enter Link"
 										required
@@ -491,7 +551,7 @@ const UsersFields = ({
 									register={register}
 									leadingIcon={<UploadSVG />}
 									label="Profile Picture"
-									name="jdExport"
+									name="profilePic"
 									type={InputType.BUTTON}
 									value="Upload Profile Picture"
 									onClickHandler={() => setUploadModal(true)}

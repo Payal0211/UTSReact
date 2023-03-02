@@ -1,5 +1,5 @@
 import { Tabs } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DebriefingHR from 'modules/hiring request/components/debriefingHR/debriefingHR';
 import AddNewUserStyle from './add_new_user.module.css';
 import UsersFields from 'modules/user/components/userFIelds/userfields';
@@ -8,6 +8,9 @@ import { Link } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 
 const AddNewUser = () => {
+	const [id, setID] = useState(0);
+
+	useEffect(() => {}, []);
 	return (
 		<div className={AddNewUserStyle.addNewContainer}>
 			<Link to={UTSRoutes.USERLISTROUTE}>
@@ -16,7 +19,7 @@ const AddNewUser = () => {
 					<span>Go Back</span>
 				</div>
 			</Link>
-			<UsersFields />
+			<UsersFields id={id} />
 		</div>
 	);
 };

@@ -73,6 +73,7 @@ export default class UTSRoutes {
 	static COMPANYLISTROUTE = '/companylist';
 	static USERLISTROUTE = '/user';
 	static ADDNEWUSERROUTE = '/user/addnewuser';
+	static EDITUSERROUTE = '/user/:userID';
 }
 
 export const navigateToComponent = {
@@ -99,6 +100,11 @@ export const navigateToComponent = {
 	[UTSRoutes.ADDNEWHR]: (
 		<Suspense>
 			<AddNewHR />
+		</Suspense>
+	),
+	[UTSRoutes.EDITUSERROUTE]: (
+		<Suspense>
+			<AddNewUser />
 		</Suspense>
 	),
 	/* [UTSRoutes.INTERVIEWLISTROUTE]: (

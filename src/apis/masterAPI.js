@@ -263,4 +263,22 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getUserByTypeRequest');
 		}
 	},
+
+	getReporteeTeamManagerRequest: async function (userType) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.GET_REPORTEE_MANAGER +
+			'?userType=' +
+			userType?.typeID;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getReporteeTeamManagerRequest');
+		}
+	},
 };

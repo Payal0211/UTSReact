@@ -483,4 +483,31 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getUserByTypeRequestDAO');
 		}
 	},
+	getReporteeTeamManagerRequestDAO: async function (userType) {
+		try {
+			const reporteeTeamManagerResponse =
+				await MasterAPI.getReporteeTeamManagerRequest(userType);
+			if (reporteeTeamManagerResponse) {
+				const statusCode = reporteeTeamManagerResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = reporteeTeamManagerResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return reporteeTeamManagerResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return reporteeTeamManagerResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getReporteeTeamManagerRequestDAO');
+		}
+	},
 };

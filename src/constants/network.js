@@ -57,6 +57,7 @@ export class MastersAPI {
 	static GET_USER_TYPE = 'GetUserType';
 	static GET_TEAM_MANAGER = 'GetTeamManager';
 	static GET_USER_BY_TYPE = 'GetUserByType';
+	static GET_REPORTEE_MANAGER = 'GetFetchReporteeTeamManager';
 }
 
 export class ClientsAPI {
@@ -85,6 +86,7 @@ export class HiringRequestsAPI {
 
 export class UsersAPI {
 	static LIST = 'List';
+	static ADD_NEW_USER = 'AddEdit';
 }
 
 export class InterviewsAPI {
