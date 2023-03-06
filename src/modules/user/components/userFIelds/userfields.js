@@ -114,16 +114,11 @@ const UsersFields = ({ id }) => {
 	}, [id]);
 
 	useEffect(() => {
-		!_isNull(watchUserType) && getUserRoles();
+		(!_isNull(watchUserType) || id !== 0) && getUserRoles();
 		!_isNull(watchUserType) && getGEO();
 		!_isNull(watchReporteeManager) && getReporteeManager();
-	}, [
-		getGEO,
-		getReporteeManager,
-		getUserRoles,
-		watchReporteeManager,
-		watchUserType,
-	]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [id, watchReporteeManager, watchUserType]);
 
 	useEffect(() => {
 		id !== 0 && getUserDetails();
@@ -132,24 +127,22 @@ const UsersFields = ({ id }) => {
 		getTeamManager();
 		getSalesMan();
 		getTalentRole();
-	}, [
-		getSalesMan,
-		getTeamManager,
-		getUserType,
-		getTalentRole,
-		id,
-		getUserDetails,
-	]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [id]);
 
 	useEffect(() => {
 		if (id !== 0) {
 			let result = userType?.filter(
 				(item) => item?.id === userDetails?.userTypeId,
 			);
-			setValue('userType', result[0]?.value);
+			setValue('userType', {
+				id: result?.[0]?.id,
+				value: result?.[0]?.value,
+			});
+			setUserTypeEdit(result?.[0]?.value);
 		}
 	}, [id, setValue, userDetails?.userTypeId, userType]);
-	console.log(watch('userType'), '--watchedVakue');
+	console.log(watch('userType')?.id, userTypeEdit, '--watchedVakue');
 	const hrSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 		let userFormDetails = userUtils.userDataFormatter(d, id);
 		console.log(userFormDetails);
@@ -291,14 +284,15 @@ const UsersFields = ({ id }) => {
 							<div className={UserFieldStyle.colMd6}>
 								<div className={UserFieldStyle.formGroup}>
 									<HRSelectField
-										disabled={id !== 0 && true}
+										controlledValue={userTypeEdit}
+										setControlledValue={setUserTypeEdit}
+										isControlled={true}
+										// disabled={id !== 0}
 										mode="id/value"
-										setValue={id !== 0 ? watch('userType') : setValue}
+										setValue={setValue}
 										register={register}
 										label={'User Type'}
-										defaultValue={
-											id !== 0 ? watch('userType') : 'Please select'
-										}
+										defaultValue={'Please select'}
 										options={userType && userType}
 										name="userType"
 										isError={errors['userType'] && errors['userType']}
