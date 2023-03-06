@@ -1,0 +1,22 @@
+.addNewContainer {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.onboardLabel {
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 42px;
+}
+
+.goBack {
+    color: var(--uplers-black);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: var(--fontsize-uplers);
+    font-weight: 500;
+    margin: 0 0 24px;
+}

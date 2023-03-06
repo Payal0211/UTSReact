@@ -37,7 +37,7 @@ export const userAPI = {
 			httpService.URL =
 				NetworkInfo.NETWORK +
 				SubDomain.USER +
-				UsersAPI.ADD_NEW_USER +
+				UserAPI.ADD_NEW_USER +
 				`?LoggedInUserId=${miscData?.loggedInUserTypeID}`;
 			httpService.setAuthRequired = true;
 			httpService.dataToSend = userData;
@@ -46,6 +46,23 @@ export const userAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'UserAPI.createUserRequest');
+		}
+	},
+	getUserDetailsRequest: async (userData) => {
+		try {
+			let httpService = new HttpServices();
+
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.USER +
+				UserAPI.GET_USER_DETAIL +
+				`?userid=${userData?.userID}`;
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserAPI.getUserDetailsRequest');
 		}
 	},
 };

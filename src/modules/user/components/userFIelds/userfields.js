@@ -1,35 +1,26 @@
-import { Button, Checkbox, Divider, Space, message, Radio } from 'antd';
-import {
-	ClientHRURL,
-	InputType,
-	MastersKey,
-	SubmitType,
-	UserAccountRole,
-	WorkingMode,
-} from 'constants/application';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Divider } from 'antd';
+import { InputType, SubmitType, UserAccountRole } from 'constants/application';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import HRInputField from '../../../hiring request/components/hrInputFields/hrInputFields';
 import UserFieldStyle from './userFields.module.css';
-// import UserFieldStyle from './hrFIelds.module.css';
-import { PlusOutlined } from '@ant-design/icons';
+
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 // import { MasterDAO } from 'core/master/masterDAO';
 
 import HRSelectField from '../../../hiring request/components/hrSelectField/hrSelectField';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 // import AddInterviewer from '../addInterviewer/addInterviewer';
 import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
-import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { hrUtils } from 'modules/hiring request/hrUtils';
-import { useMastersAPI } from 'shared/hooks/useMastersAPI';
+import { useNavigate } from 'react-router-dom';
 import { MasterDAO } from 'core/master/masterDAO';
 import { getFlagAndCodeOptions } from 'modules/client/clientUtils';
 import UTSRoutes from 'constants/routes';
 import { userUtils } from 'modules/user/userUtils';
 import { userAPI } from 'apis/userAPI';
+import { userDAO } from 'core/user/userDAO';
+
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -38,6 +29,8 @@ export const secondaryInterviewer = {
 };
 
 const UsersFields = ({ id }) => {
+	const [userDetails, setUserDetails] = useState(null);
+	const [userTypeEdit, setUserTypeEdit] = useState('Please select');
 	const [isLoading, setIsLoading] = useState(false);
 	const [userType, setUserType] = useState([]);
 	const [teamManager, setTeamManager] = useState([]);
@@ -57,6 +50,7 @@ const UsersFields = ({ id }) => {
 		register,
 		handleSubmit,
 		setValue,
+		getValues,
 		setError,
 		// control,
 		formState: { errors },
@@ -84,30 +78,40 @@ const UsersFields = ({ id }) => {
 		let response = await MasterDAO.getUserTypeRequestDAO();
 		setUserType(response && response?.responseBody?.details);
 	}, []);
+
 	const getTeamManager = useCallback(async () => {
 		let response = await MasterDAO.getTeamManagerRequestDAO();
 		setTeamManager(response && response?.responseBody?.details);
 	}, []);
+
 	const getSalesMan = useCallback(async () => {
 		let response = await MasterDAO.getSalesManRequestDAO();
 		setSalesMan(response && response?.responseBody?.details);
 	}, []);
+
 	const getUserRoles = useCallback(async () => {
 		let response = await MasterDAO.getUserByTypeRequestDAO({
 			typeID: watchUserType?.id,
 		});
 		setUserRole(response && response?.responseBody?.details);
 	}, [watchUserType]);
+
 	const getReporteeManager = useCallback(async () => {
 		let response = await MasterDAO.getReporteeTeamManagerRequestDAO({
 			typeID: watchReporteeManager?.id,
 		});
 		setReporteeManager(response && response?.responseBody?.details);
 	}, [watchReporteeManager]);
+
 	const getTalentRole = useCallback(async () => {
 		let response = await MasterDAO.getTalentsRoleRequestDAO();
 		setTalentRole(response && response?.responseBody);
 	}, []);
+
+	const getUserDetails = useCallback(async () => {
+		const response = await userDAO.getUserDetailsRequestDAO({ userID: id });
+		setUserDetails(response && response?.responseBody?.details);
+	}, [id]);
 
 	useEffect(() => {
 		!_isNull(watchUserType) && getUserRoles();
@@ -122,22 +126,30 @@ const UsersFields = ({ id }) => {
 	]);
 
 	useEffect(() => {
-		// !_isNull(watchUserType) && getUserRoles();
+		id !== 0 && getUserDetails();
 		getCodeAndFlag();
 		getUserType();
 		getTeamManager();
-
 		getSalesMan();
 		getTalentRole();
-	}, [getSalesMan, getTeamManager, getUserType, getTalentRole]);
+	}, [
+		getSalesMan,
+		getTeamManager,
+		getUserType,
+		getTalentRole,
+		id,
+		getUserDetails,
+	]);
 
-	/* const { fields, append, remove } = useFieldArray({
-        control,
-        name: 'secondaryInterviewer',
-    }); */
-
-	const [messageAPI, contextHolder] = message.useMessage();
-
+	useEffect(() => {
+		if (id !== 0) {
+			let result = userType?.filter(
+				(item) => item?.id === userDetails?.userTypeId,
+			);
+			setValue('userType', result[0]?.value);
+		}
+	}, [id, setValue, userDetails?.userTypeId, userType]);
+	console.log(watch('userType'), '--watchedVakue');
 	const hrSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 		let userFormDetails = userUtils.userDataFormatter(d, id);
 		console.log(userFormDetails);
@@ -179,20 +191,35 @@ const UsersFields = ({ id }) => {
 				});
 		} */
 	};
+
 	return (
 		<div className={UserFieldStyle.hrFieldContainer}>
-			{contextHolder}
 			<form id="hrForm">
 				<div className={UserFieldStyle.partOne}>
 					<div className={UserFieldStyle.hrFieldLeftPane}>
-						<h3>Add New User</h3>
+						<h3>{id === 0 ? 'Add New User' : 'Edit User'}</h3>
 						<p>Please provide the necessary details</p>
+						{id !== 0 && (
+							<div className={UserFieldStyle.formPanelAction}>
+								<button
+									style={{
+										cursor: type === SubmitType.SUBMIT ? 'no-drop' : 'pointer',
+									}}
+									disabled={type === SubmitType.SUBMIT}
+									className={UserFieldStyle.btnPrimary}
+									onClick={handleSubmit(hrSubmitHandler)}>
+									Edit User
+								</button>
+							</div>
+						)}
 					</div>
 
 					<div className={UserFieldStyle.hrFieldRightPane}>
 						<div className={UserFieldStyle.row}>
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
+									value={id !== 0 ? userDetails?.employeeId : null}
+									disabled={id !== 0 && true}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -207,6 +234,8 @@ const UsersFields = ({ id }) => {
 							</div>
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
+									value={id !== 0 ? userDetails?.fullName : null}
+									disabled={id !== 0 && true}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -262,11 +291,14 @@ const UsersFields = ({ id }) => {
 							<div className={UserFieldStyle.colMd6}>
 								<div className={UserFieldStyle.formGroup}>
 									<HRSelectField
+										disabled={id !== 0 && true}
 										mode="id/value"
-										setValue={setValue}
+										setValue={id !== 0 ? watch('userType') : setValue}
 										register={register}
 										label={'User Type'}
-										defaultValue="Please Select"
+										defaultValue={
+											id !== 0 ? watch('userType') : 'Please select'
+										}
 										options={userType && userType}
 										name="userType"
 										isError={errors['userType'] && errors['userType']}
@@ -429,6 +461,8 @@ const UsersFields = ({ id }) => {
 							<div className={UserFieldStyle.colMd6}>
 								<div className={UserFieldStyle.formGroup}>
 									<HRInputField
+										value={id !== 0 ? userDetails?.priorityCount : null}
+										disabled={id !== 0 && true}
 										register={register}
 										errors={errors}
 										validationSchema={{
@@ -479,6 +513,8 @@ const UsersFields = ({ id }) => {
 							)}
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
+									value={id !== 0 ? userDetails?.emailId : null}
+									disabled={id !== 0 && true}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -530,6 +566,8 @@ const UsersFields = ({ id }) => {
 								watch('userType')?.id === UserAccountRole.MARKETING) && (
 								<div className={UserFieldStyle.colMd6}>
 									<HRInputField
+										value={id !== 0 ? userDetails?.designation : null}
+										disabled={id !== 0 && true}
 										register={register}
 										errors={errors}
 										validationSchema={{
@@ -548,12 +586,17 @@ const UsersFields = ({ id }) => {
 						<div className={UserFieldStyle.row}>
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
+									value={
+										userDetails?.profilePic
+											? userDetails?.profilePic
+											: 'Upload Profile Picture'
+									}
+									disabled={id !== 0 && true}
 									register={register}
 									leadingIcon={<UploadSVG />}
 									label="Profile Picture"
 									name="profilePic"
 									type={InputType.BUTTON}
-									value="Upload Profile Picture"
 									onClickHandler={() => setUploadModal(true)}
 								/>
 							</div>
@@ -611,10 +654,10 @@ const UsersFields = ({ id }) => {
 				<div className={UserFieldStyle.hrFieldRightPane}>
 					<div className={UserFieldStyle.formPanelAction}>
 						<button
-							style={{
-								cursor: type === SubmitType.SUBMIT ? 'no-drop' : 'pointer',
-							}}
-							disabled={type === SubmitType.SUBMIT}
+							// style={{
+							// 	cursor: id !== 0 ? 'no-drop' : 'pointer',
+							// }}
+							// disabled={id !== 0 && true}
 							className={UserFieldStyle.btnPrimary}
 							onClick={handleSubmit(hrSubmitHandler)}>
 							Submit

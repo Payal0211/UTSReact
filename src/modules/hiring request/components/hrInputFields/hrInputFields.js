@@ -19,6 +19,7 @@ const HRInputField = ({
 	value,
 	disabled,
 	type,
+	trailingIcon,
 	validationSchema,
 	rows,
 }) => {
@@ -83,15 +84,18 @@ const HRInputField = ({
 						height={height && height}
 						maxLength={maxLength}
 					/>
+					{trailingIcon && (
+						<div className={HRInputFieldStyle.trailingIcon}>{trailingIcon}</div>
+					)}
 				</div>
 			)}
 			{required && !disabled
 				? errors &&
-				errors[name] && (
-					<div className={HRInputFieldStyle.error}>
-						{errors[name]?.message && `* ${errors[name]?.message}`}
-					</div>
-				)
+				  errors[name] && (
+						<div className={HRInputFieldStyle.error}>
+							{errors[name]?.message && `* ${errors[name]?.message}`}
+						</div>
+				  )
 				: false}
 			{isError && <div className={HRInputFieldStyle.error}>* {errorMsg}</div>}
 		</div>

@@ -31,6 +31,8 @@ export class UserAPI {
 	static SIGNUP = '/signup';
 	static FORGOTPASSWORD = '/forgotpassword';
 	static LIST = 'List';
+	static ADD_NEW_USER = 'AddEdit';
+	static GET_USER_DETAIL = 'GetUserDetail';
 	static UPDATEPASSWORD = '/updatepassword';
 }
 
