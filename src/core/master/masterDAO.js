@@ -405,21 +405,28 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getCountryDAO');
 		}
 	},
-	getEmailSuggestionDAO: async function (email) {
+
+	getUserTypeRequestDAO: async function () {
 		try {
-			const emailSuggestionResponse = await MasterAPI.getEmailSuggestion(email);
-			if (emailSuggestionResponse) {
-				const statusCode = emailSuggestionResponse['statusCode'];
+			const userTypeResponse = await MasterAPI.getUserTypeRequest();
+			if (userTypeResponse) {
+				const statusCode = userTypeResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
-					const tempResult = emailSuggestionResponse.responseBody;
+					const tempResult = userTypeResponse.responseBody;
+
 					return {
 						statusCode: statusCode,
 						responseBody: tempResult,
 					};
 				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
-					return emailSuggestionResponse;
+
+					return userTypeResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return userTypeResponse;
+
 				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
 					return emailSuggestionResponse;
+
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
@@ -428,9 +435,88 @@ export const MasterDAO = {
 				// return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'MasterDAO.getCountryDAO');
+
+			return errorDebug(error, 'MasterDAO.getUserTypeRequestDAO');
 		}
 	},
-
+	getTeamManagerRequestDAO: async function () {
+		try {
+			const teamManagerResponse = await MasterAPI.getTeamManagerRequest();
+			if (teamManagerResponse) {
+				const statusCode = teamManagerResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = teamManagerResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return teamManagerResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return teamManagerResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getTeamManagerRequestDAO');
+		}
+	},
+	getUserByTypeRequestDAO: async function (userType) {
+		try {
+			const userByTypeResponse = await MasterAPI.getUserByTypeRequest(userType);
+			if (userByTypeResponse) {
+				const statusCode = userByTypeResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = userByTypeResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return userByTypeResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return userByTypeResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getUserByTypeRequestDAO');
+		}
+	},
+	getReporteeTeamManagerRequestDAO: async function (userType) {
+		try {
+			const reporteeTeamManagerResponse =
+				await MasterAPI.getReporteeTeamManagerRequest(userType);
+			if (reporteeTeamManagerResponse) {
+				const statusCode = reporteeTeamManagerResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = reporteeTeamManagerResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return reporteeTeamManagerResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return reporteeTeamManagerResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getReporteeTeamManagerRequestDAO');
+		}
+	},
 
 };

@@ -17,7 +17,11 @@ export const hiringRequestDAO = {
 						statusCode: statusCode,
 						responseBody: tempResult.details,
 					};
-				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return hrResult;
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return hrResult;
 				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return hrResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					UserSessionManagementController.deleteAllSession();
@@ -44,9 +48,10 @@ export const hiringRequestDAO = {
 						statusCode: statusCode,
 						responseBody: tempResult.details,
 					};
-				}
-				else if (statusCode === HTTPStatusCode.NOT_FOUND) return scheduleResult;
-				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return scheduleResult;
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return scheduleResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return scheduleResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					UserSessionManagementController.deleteAllSession();
 					return (
@@ -73,9 +78,10 @@ export const hiringRequestDAO = {
 						statusCode: statusCode,
 						responseBody: tempResult.details,
 					};
-				}
-				else if (statusCode === HTTPStatusCode.NOT_FOUND) return reScheduleResult;
-				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return reScheduleResult;
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return reScheduleResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return reScheduleResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					UserSessionManagementController.deleteAllSession();
 					return (

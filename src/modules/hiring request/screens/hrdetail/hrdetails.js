@@ -1,12 +1,6 @@
-import React, {
-	useRef,
-	Suspense,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import { Modal, Skeleton, Tabs } from 'antd';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
@@ -24,14 +18,11 @@ import {
 	HRDeleteType,
 	HiringRequestHRStatus,
 	InputType,
-	UserAccountRole,
 } from 'constants/application';
 import { MasterDAO } from 'core/master/masterDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
-
-// import MatchmakingModal from 'modules/hiring request/components/matchmaking/matchmaking';
 
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
@@ -55,21 +46,6 @@ const HRDetailScreen = () => {
 	const switchLocation = useLocation();
 	const [deleteReason, setDeleteReason] = useState([]);
 
-	const [adHOC, setAdHOC] = useState([
-		{
-			label: 'Pass to Pool',
-			// key: AddNewType.HR,
-		},
-		{
-			label: 'Pass to ODR',
-			// key: AddNewType.HR,
-		},
-		{
-			label: 'Keep it with me as well',
-			// key: AddNewType.CLIENT,
-		},
-	]);
-
 	const {
 		register,
 		handleSubmit,
@@ -83,14 +59,12 @@ const HRDetailScreen = () => {
 	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 	const miscData = UserSessionManagementController.getUserSession();
 
-	console.log(apiData, "apiData")
-
 	const callAPI = useCallback(
 		async (hrid) => {
 			setLoading(true);
 			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
 			if (response.statusCode === HTTPStatusCode.OK) {
-				setAPIdata(response && response?.responseBody)
+				setAPIdata(response && response?.responseBody);
 				setLoading(false);
 			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
 				navigate(UTSRoutes.PAGENOTFOUNDROUTE);
@@ -98,8 +72,6 @@ const HRDetailScreen = () => {
 		},
 		[navigate],
 	);
-
-
 
 	const clientOnLossSubmitHandler = useCallback(
 		async (d) => {
@@ -187,12 +159,12 @@ const HRDetailScreen = () => {
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED
 						? null
 						: hrUtils.showMatchmaking(
-							apiData,
-							miscData?.LoggedInUserTypeID,
-							callAPI,
-							urlSplitter,
-							updatedSplitter,
-						)}
+								apiData,
+								miscData?.LoggedInUserTypeID,
+								callAPI,
+								urlSplitter,
+								updatedSplitter,
+						  )}
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
@@ -207,13 +179,13 @@ const HRDetailScreen = () => {
 							)}
 
 							<HROperator
-								title="Pass to Pool"
+								title={hrUtils.handleAdHOC(apiData?.AdhocPoolValue)[0]?.label}
 								icon={<ArrowDownSVG style={{ width: '16px' }} />}
 								backgroundColor={`var(--background-color-light)`}
 								labelBorder={`1px solid var(--color-sunlight)`}
 								iconBorder={`1px solid var(--color-sunlight)`}
 								isDropdown={true}
-								listItem={adHOC}
+								listItem={hrUtils.handleAdHOC(apiData?.AdhocPoolValue)}
 							/>
 							<div
 								className={HRDetailStyle.hiringRequestPriority}
@@ -235,10 +207,12 @@ const HRDetailScreen = () => {
 						<Skeleton active />
 						<br />
 					</>
-				) : apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
-					<Suspense>
-						<NextActionItem nextAction={apiData?.NextActionsForTalent} />
-					</Suspense>
+				) : (
+					apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED && (
+						<Suspense>
+							<NextActionItem nextAction={apiData?.NextActionsForTalent} />
+						</Suspense>
+					)
 				)}
 
 				<div className={HRDetailStyle.portal}>
@@ -285,7 +259,7 @@ const HRDetailScreen = () => {
 					)}
 				</div>
 			</div>
-			{/** ------------------ HR Delete Modal ---------------------- */}
+			{/* ------------------ HR Delete Modal ---------------------- */}
 			<Modal
 				transitionName=""
 				centered

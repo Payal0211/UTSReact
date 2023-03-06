@@ -1,57 +1,71 @@
-.hrFieldContainer{
+.hrFieldContainer {
     width: 100%;
 }
+
 .reqField {
     color: var(--uplers-black);
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
 }
-.midDivider{margin:8px 0 40px;border-color:rgba(206, 204, 204, 0.5);}
-.partOne{
+
+.midDivider {
+    margin:56px 0;
+    border-color: rgba(206, 204, 204, 0.5);
+}
+
+.partOne {
     display: flex;
 }
-.hrFieldLeftPane{
+
+.hrFieldLeftPane {
     width: 33.33%;
 }
-.hrFieldLeftPane h3{
+
+.hrFieldLeftPane h3 {
     font-size: var(--fontsize-doom);
     font-weight: 500;
     line-height: 29px;
     color: var(--uplers-black);
 }
 
-.hrFieldLeftPane p{
+.hrFieldLeftPane p {
     font-size: var(--fontsize-brittle);
     font-weight: 400;
     line-height: 20px;
     color: #7C7C7C;
 }
-.hrFieldRightPane{
+
+.hrFieldRightPane {
     flex: 1;
 }
+
 .row {
     margin: 0 -9px;
     flex-wrap: wrap;
     display: flex;
 }
+
 .colMd4 {
     width: 33.33%;
     padding: 0 9px;
 }
+
 .colMd6 {
     width: 50%;
     padding: 0 9px;
 }
+
 .colMd12 {
     width: 100%;
     padding: 0 9px;
 }
+
 .formGroup {
     margin: 0 0 32px;
 }
 
-.formGroup [class*="ant-select-selection-search-input"]{
+.formGroup [class*="ant-select-selection-search-input"] {
     height: auto !important;
     padding: 16px 16px !important;
 }
@@ -70,13 +84,14 @@
 .formGroup .ant-select {
     width: 100%;
 }
-.addSalesItem{
+
+.addSalesItem {
     outline: none;
     border: none;
     border-bottom: 1px solid var(--uplers-border-color);
 }
 
-.infoNotes{
+.infoNotes {
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 400;
@@ -114,15 +129,18 @@
 .formPanelAction button+button {
     margin-left: 24px;
 }
+
 .mb0 {
     margin-bottom: 0 !important;
 }
+
 .reqExperience {
     margin: 0;
     flex-wrap: wrap;
     display: flex;
 }
-.reqExperience label{
+
+.reqExperience label {
     display: none;
 }
 
@@ -141,6 +159,7 @@
     border-bottom-left-radius: 0;
     border-left: none;
 }
+
 [class*="ant-select-dropdown"] {
     z-index: 99 !important;
 }
@@ -154,6 +173,7 @@
 .phoneNoGroup label {
     width: 100%;
 }
+
 .phoneNoCode {
     width: 120px;
 }
@@ -178,28 +198,31 @@
     margin: 0;
 }
 
-.newUserRadioGroup{
+.newUserRadioGroup {
     display: flex;
     align-items: center;
 }
-
-.radioGroup{
+.radioGroup {
+    flex-direction: column;
     display: flex;
 }
-.radioGroup [class*="ant-radio-wrapper"]{
-    margin: 0 16px 0 0;
+
+.radioGroup [class*="ant-radio-wrapper"] {
+    margin: 0 0 16px 0;
     min-height: 25px;
     padding-left: 35px;
 }
-.radioGroup [class*="ant-radio-wrapper"]:last-child{
-    margin-bottom:0;
+
+.radioGroup [class*="ant-radio-wrapper"]:last-child {
+    margin-bottom: 0;
 }
 
-.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]{
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"] {
     width: 25px;
     height: 25px;
 }
-.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]:after{
+
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]:after {
     width: 15px;
     height: 15px;
 }
@@ -216,4 +239,94 @@
     color: var(--uplers-lightBlack);
     margin: 0 16px 0 0;
     display: inline-block;
+}
+.Card {
+    
+    border-radius: 8px;
+   
+    background-color: var(--background-color-light);
+}
+.partWise {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.CardBody {
+    /* width: 90%; */
+    margin: 0 auto;
+    font-size: 14px;
+    padding: 24px;
+}
+
+.companyName{
+    display: flex;
+        align-items: center;
+        /* justify-content: center; */
+        padding-top: 5px;
+}
+/* Radio button */
+/* The container */
+.container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.container p {
+    font-size: var(--fontsize-tough);
+    font-weight: 500;
+    color: var(--uplers-black);
+}
+
+/* Create a custom radio button */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
+
+/* When the radio button is checked, add a blue background */
+.container input:checked~.checkmark {
+    border: 1px solid var(--uplers-black);
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked~.checkmark:after {
+    display: block;
+}
+
+
+.container .checkmark:after {
+    top: 4px;
+    left: 4px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--color-sunlight);
 }

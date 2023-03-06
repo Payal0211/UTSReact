@@ -1,6 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
-import { ReactComponent as GridSVG } from 'assets/svg/grid.svg';
-import { ReactComponent as DashboardSVG } from 'assets/svg/dashboard.svg';
+import GridSVG from 'assets/svg/grid.svg';
+
+import HR from 'assets/svg/hr.svg';
+import Briefcase from 'assets/svg/briefcase.svg';
+import Handshake from 'assets/svg/handshake.svg';
+
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -14,28 +18,29 @@ const Sidebar = () => {
 	return (
 		<div className={sideBarStyles.sidebar}>
 			<div className={sideBarStyles.sidebarBody}>
-				{sidebarDataSets?.map((item, index) => {
+				{sidebarDataSets?.map(({ navigateTo, icon }, index) => {
 					return (
 						<div
 							className={sideBarStyles.sidebarItem}
 							key={index}>
-							<Link to={item.navigateTo}>
+							<Link to={navigateTo}>
 								<div className={sideBarStyles.iconSet}>
 									<div
 										className={`${sideBarStyles.sidebarIcon} ${
-											switchLocation.pathname === item.navigateTo
+											switchLocation.pathname === navigateTo
 												? sideBarStyles.active
 												: ''
 										}`}>
-										{item.icon}
+										<img
+											src={icon}
+											alt="mySvgImage"
+										/>
 									</div>
 								</div>
 							</Link>
 							<div
 								className={`${
-									urlSplitter === item.navigateTo
-										? sideBarStyles.indicator
-										: null
+									urlSplitter === navigateTo ? sideBarStyles.indicator : null
 								}`}></div>
 						</div>
 					);
@@ -51,30 +56,37 @@ const getSideBar = () => {
 			id: 'UTS_dashboard',
 			title: 'dashboard',
 			isActive: true,
-			icon: <GridSVG />,
+			icon: GridSVG,
 			navigateTo: UTSRoutes.HOMEROUTE,
 		}),
-
 		new SideBarModels({
 			id: 'UTS_all_hiring_request',
 			title: 'allHiringRequest',
 			isActive: false,
-			icon: <DashboardSVG />,
+			icon: Briefcase,
 			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 		}),
-		new SideBarModels({
-			id: 'UTS_Interview',
-			title: 'interviewList',
-			isActive: false,
-			icon: <DashboardSVG />,
-			navigateTo: UTSRoutes.INTERVIEWLISTROUTE,
-		}),
+
 		new SideBarModels({
 			id: 'UTS_DealList',
 			title: 'dealList',
 			isActive: false,
-			icon: <DashboardSVG />,
+			icon: Handshake,
 			navigateTo: UTSRoutes.DEALLISTROUTE,
+		}),
+		new SideBarModels({
+			id: 'UTS_UserList',
+			title: 'userList',
+			isActive: false,
+			icon: HR,
+			navigateTo: UTSRoutes.USERLISTROUTE,
+		}),
+		new SideBarModels({
+			id: 'UTS_Onboard',
+			title: 'onboardUser',
+			isActive: false,
+			icon: HR,
+			navigateTo: UTSRoutes.ONBOARDROUTE,
 		}),
 	];
 	return dataList;

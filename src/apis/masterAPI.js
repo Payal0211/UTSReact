@@ -220,7 +220,72 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getCountryRequest');
 		}
 	},
-	getEmailSuggestion: async function (email) {
+
+	getUserTypeRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_USER_TYPE;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getUserTypeRequest');
+		}
+	},
+	getTeamManagerRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_TEAM_MANAGER;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getTeamManagerRequest');
+		}
+	},
+	getUserByTypeRequest: async function (userType) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.GET_USER_BY_TYPE +
+			'?userType=' +
+			userType?.typeID;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getUserByTypeRequest');
+		}
+	},
+
+	getReporteeTeamManagerRequest: async function (userType) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.GET_REPORTEE_MANAGER +
+			'?userType=' +
+			userType?.typeID;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+
+			return errorDebug(error, 'MasterAPI.getReporteeTeamManagerRequest');
+
+		}
+	},
+  getEmailSuggestion: async function (email) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +

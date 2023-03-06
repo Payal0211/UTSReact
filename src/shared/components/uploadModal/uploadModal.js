@@ -13,6 +13,7 @@ const UploadModal = ({
 	openModal,
 	cancelModal,
 	fileUploadType,
+	footer,
 	modalTitle,
 	setValidation,
 	getValidation,
@@ -198,32 +199,40 @@ const UploadModal = ({
 				</div>
 				<span style={{ color: 'red' }}>{getValidation?.googleDriveFileUpload}</span>
 			</div>
-			<center>
-				<p style={{ fontSize: '14px', fontWeight: '400', lineHeight: '18px' }}>
-					Or,
-				</p>
-			</center>
-			<span className={UploadModalStyle.suggestionText}>
-				You can also upload the file using Google Drive Link
-			</span>
-			<div className={UploadModalStyle.urlBox}>
-				<input
-					className={UploadModalStyle.uploadURLBox}
-					type={InputType.TEXT}
-					placeholder="Paste URL here"
-					onChange={(e) => setGoogleDriveLink((e.target.value).trim())}
-					value={getGoogleDriveLink}
-				/>
-				<label className={UploadModalStyle.linkError}>{getValidation?.linkValidation}</label>
-				<button
-					type="button"
-					onClick={() => uploadFileFromGoogleDriveLink()}
-					className={UploadModalStyle.btnPrimary
-					}>
-					Add
-				</button>
 
-			</div>
+			{footer && (
+				<>
+					<center>
+						<p
+							style={{
+								fontSize: '14px',
+								fontWeight: '400',
+								lineHeight: '18px',
+							}}>
+							Or,
+						</p>
+					</center>
+					<span className={UploadModalStyle.suggestionText}>
+						You can also upload the file using Google Drive Link
+					</span>
+					<div className={UploadModalStyle.urlBox}>
+						<input
+							className={UploadModalStyle.uploadURLBox}
+							type={InputType.TEXT}
+							placeholder="Paste URL here"
+	onChange={(e) => setGoogleDriveLink((e.target.value).trim())}
+					value={getGoogleDriveLink}
+						/>
+            <label className={UploadModalStyle.linkError}>{getValidation?.linkValidation}</label>
+						<button
+							type="button"
+							className={UploadModalStyle.btnPrimary}>
+							Add
+						</button>
+					</div>
+				</>
+			)}
+
 		</Modal>
 	);
 };
