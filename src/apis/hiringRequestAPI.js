@@ -316,4 +316,49 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.deleteHRRequest');
 		}
 	},
+	uploadFile: async (file) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_FILE;
+		httpService.dataToSend = file;
+		console.log(httpService.dataToSend, '---httpservice--')
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendFileDataPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.deleteHRRequest');
+		}
+	},
+	uploadGoogleDriveFile: async (file) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_DRIVE_FILE;
+		httpService.dataToSend = file;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.deleteHRRequest');
+		}
+	},
+	uploadFileFromGoogleDriveLink: async (link) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_GOOGLE_FILE_LINK +
+			`?url=${link}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.deleteHRRequest');
+		}
+	},
+
 };

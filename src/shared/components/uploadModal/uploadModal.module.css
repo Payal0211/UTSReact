@@ -33,10 +33,11 @@
 
 .urlBox{
     border-radius: 8px;
+    background: #fff;
     border: 1px solid #E8E8E8;
     margin: 8px 40px 40px;
     display: flex;
-   
+    position: relative;
 }
 .uploadURLBox{
     border: none;
@@ -46,6 +47,7 @@
     padding: 13px 16px;
     cursor: pointer;
 }
+
 .btnPrimary{
     border: none;
     font-size: 14px;
@@ -69,4 +71,13 @@
 }
 .maxFileSize{
     margin-top: 16px;
+}
+.linkError{
+    margin: 0;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    font-size: var(--fontsize-tough);
+    color: var(--danger-color);
+    margin-top: 5px;
 }

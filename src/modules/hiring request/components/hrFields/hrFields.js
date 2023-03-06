@@ -1,4 +1,4 @@
-import { Button, Checkbox, Divider, Space, message } from 'antd';
+import { Button, Checkbox, Divider, Space, message, AutoComplete } from 'antd';
 import {
 	ClientHRURL,
 	InputType,
@@ -15,7 +15,7 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 // import { MasterDAO } from 'core/master/masterDAO';
 
 import HRSelectField from '../hrSelectField/hrSelectField';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useFieldArray, Controller, useForm } from 'react-hook-form';
 // import AddInterviewer from '../addInterviewer/addInterviewer';
 import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
@@ -39,6 +39,7 @@ const HRFields = ({
 	setTabFieldDisabled,
 }) => {
 	const inputRef = useRef(null);
+	const controllerRef = useRef(null);
 	/* const mastersKey = useMemo(() => {
 		return {
 			availability: MastersKey.AVAILABILITY,
@@ -65,21 +66,29 @@ const HRFields = ({
 	const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
 	const [addHRResponse, setAddHRResponse] = useState(null);
 	const [type, setType] = useState('');
+	const [getClientNameMessage, setClientNameMessage] = useState("")
 	const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
-
+	const [getValidation, setValidation] = useState({
+		systemFileUpload: '',
+		googleDriveFileUpload: '',
+		linkValidation: ''
+	})
+	const [getGoogleDriveLink, setGoogleDriveLink] = useState("")
+	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
 	const {
 		watch,
 		register,
 		handleSubmit,
 		setValue,
 		setError,
-		// control,
+		control,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
 			secondaryInterviewer: [],
 		},
 	});
+
 	/* const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
@@ -95,7 +104,7 @@ const HRFields = ({
 		const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
 		setAvailability(
 			availabilityResponse &&
-				availabilityResponse.responseBody?.BindHiringAvailability,
+			availabilityResponse.responseBody?.BindHiringAvailability,
 		);
 	}, []);
 	const getHowSoon = useCallback(async () => {
@@ -138,6 +147,30 @@ const HRFields = ({
 		setRegion(response && response?.responseBody);
 	}, []);
 
+	const getClientNameSuggestionHandler = useCallback(async (clientName) => {
+		let response = await MasterDAO.getEmailSuggestionDAO(clientName);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setClientNameSuggestion(response?.responseBody?.details)
+			setClientNameMessage("")
+		}
+		else if (response?.statusCode === HTTPStatusCode.BAD_REQUEST || response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+			setError('clientName', {
+				type: 'validate',
+				message: response?.responseBody
+			});
+			setClientNameSuggestion([])
+			setClientNameMessage(response?.responseBody)
+		}
+	}, []);
+
+	const getClientNameValue = (clientName) => {
+		setValue('clientName', clientName)
+		setError('clientName', {
+			type: 'validate',
+			message: ""
+		});
+	};
+
 	const getLocation = useLocation();
 
 	const onNameChange = (event) => {
@@ -155,46 +188,20 @@ const HRFields = ({
 		[items, name],
 	);
 
-	const watchClientName = watch('clientName');
+	useEffect(() => {
+		setValidation({
+			systemFileUpload: '',
+			googleDriveFileUpload: '',
+			linkValidation: ''
+		})
+		setGoogleDriveLink("")
+	}, [showUploadModal])
+
+
 	const toggleHRDirectPlacement = useCallback((e) => {
 		// e.preventDefault();
 		setHRDirectPlacement(e.target.checked);
 	}, []);
-	const getHRClientName = useCallback(
-		async (data) => {
-			let existingClientDetails =
-				await hiringRequestDAO.getClientDetailRequestDAO(data);
-			setError('clientName', {
-				type: 'duplicateCompanyName',
-				message:
-					existingClientDetails?.statusCode === HTTPStatusCode.NOT_FOUND &&
-					'Client email does not exist.',
-			});
-			existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
-				setValue('clientName', '');
-			existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
-				setValue('companyName', '');
-			existingClientDetails.statusCode === HTTPStatusCode.OK &&
-				setValue('companyName', existingClientDetails?.responseBody?.name);
-			existingClientDetails.statusCode === HTTPStatusCode.OK &&
-				setIsCompanyNameAvailable(true);
-			setIsLoading(false);
-		},
-		[setError, setValue],
-	);
-
-	useEffect(() => {
-		let timer;
-		if (!_isNull(watchClientName)) {
-			timer =
-				pathName === ClientHRURL.ADD_NEW_HR &&
-				setTimeout(() => {
-					setIsLoading(true);
-					getHRClientName(watchClientName);
-				}, 2000);
-		}
-		return () => clearTimeout(timer);
-	}, [getHRClientName, watchClientName, pathName]);
 
 	useEffect(() => {
 		let urlSplitter = `${getLocation.pathname.split('/')[2]}`;
@@ -244,7 +251,7 @@ const HRFields = ({
 			isHRDirectPlacement,
 			addHRResponse,
 		);
-		console.log(hrFormDetails, 'hrFormdetails');
+
 		if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(watch('clientName'))) {
 				return setError('clientName', {
@@ -252,10 +259,18 @@ const HRFields = ({
 					message: 'Please enter the client name.',
 				});
 			}
-		} else if (type !== SubmitType.SAVE_AS_DRAFT) {
+			else if (getClientNameMessage !== "" && !(_isNull(watch('clientName')))) {
+				return setError('clientName', {
+					type: 'validate',
+					message: getClientNameMessage
+				});
+			}
+		}
+		else if (type !== SubmitType.SAVE_AS_DRAFT) {
 			setType(SubmitType.SUBMIT);
 		}
-		const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
+
+		const addHRRequest = !getClientNameMessage && await hiringRequestDAO.createHRDAO(hrFormDetails);
 
 		if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 			setAddHRResponse(addHRRequest?.responseBody?.details);
@@ -273,6 +288,24 @@ const HRFields = ({
 		}
 	};
 
+	const validate = (clientName) => {
+		if (!clientName) {
+			return "please enter the client email/name.";
+		}
+		else if (getClientNameMessage !== "" && clientName) {
+			return getClientNameMessage;
+		}
+		return true;
+	};
+
+
+	useEffect(() => {
+		if (errors?.clientName?.message) {
+			controllerRef.current.focus();
+		}
+	}, [errors?.clientName]);
+
+
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
 			{contextHolder}
@@ -286,21 +319,39 @@ const HRFields = ({
 					className={HRFieldStyle.hrFieldRightPane}>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd12}>
-							<HRInputField
-								disabled={pathName === ClientHRURL.ADD_NEW_CLIENT || isLoading}
-								register={register}
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the client email/name.',
-								}}
-								label={'Client Email/Name'}
-								name="clientName"
-								type={InputType.TEXT}
-								placeholder="Enter Client Email/Name"
-								required
-							/>
+							<div className={HRFieldStyle.formGroup}>
+								<label>Client Email/Name</label>
+								<Controller
+									render={({ ...props }) => (
+										<AutoComplete
+											options={getClientNameSuggestion}
+											onSelect={(clientName) => getClientNameValue(clientName)}
+											filterOption={true}
+											onSearch={(searchValue) => {
+												setClientNameSuggestion([])
+												getClientNameSuggestionHandler(searchValue)
+											}}
+											onChange={(clientName) => setValue('clientName', clientName)}
+											placeholder="Enter Client Email/Name"
+											ref={controllerRef}
+										/>
+									)}
+									{...register("clientName", {
+										validate
+									})}
+									name="clientName"
+									// rules={{ required: true }}
+									control={control}
+								/>
+								{errors.clientName &&
+									<div className={HRFieldStyle.error}>
+										{errors.clientName?.message && `* ${errors?.clientName?.message}`}
+									</div>}
+							</div>
 						</div>
 					</div>
+
+
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
@@ -394,7 +445,12 @@ const HRFields = ({
 							modalTitle={'Upload Logo'}
 							isFooter={false}
 							openModal={showUploadModal}
+							setUploadModal={setUploadModal}
 							cancelModal={() => setUploadModal(false)}
+							setValidation={setValidation}
+							getValidation={getValidation}
+							getGoogleDriveLink={getGoogleDriveLink}
+							setGoogleDriveLink={setGoogleDriveLink}
 						/>
 
 						<div className={HRFieldStyle.colMd6}>
@@ -631,9 +687,9 @@ const HRFields = ({
 									defaultValue="Select availability"
 									options={availability}
 									name="availability"
-									// isError={errors['availability'] && errors['availability']}
-									// required
-									// errorMsg={'Please select the availability.'}
+								// isError={errors['availability'] && errors['availability']}
+								// required
+								// errorMsg={'Please select the availability.'}
 								/>
 							</div>
 						</div>

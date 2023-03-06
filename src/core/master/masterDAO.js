@@ -405,6 +405,7 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getCountryDAO');
 		}
 	},
+
 	getUserTypeRequestDAO: async function () {
 		try {
 			const userTypeResponse = await MasterAPI.getUserTypeRequest();
@@ -412,14 +413,20 @@ export const MasterDAO = {
 				const statusCode = userTypeResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = userTypeResponse.responseBody;
+
 					return {
 						statusCode: statusCode,
 						responseBody: tempResult,
 					};
 				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+
 					return userTypeResponse;
 				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
 					return userTypeResponse;
+
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return emailSuggestionResponse;
+
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
@@ -428,6 +435,7 @@ export const MasterDAO = {
 				// return statusCode;
 			}
 		} catch (error) {
+
 			return errorDebug(error, 'MasterDAO.getUserTypeRequestDAO');
 		}
 	},
@@ -510,4 +518,5 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getReporteeTeamManagerRequestDAO');
 		}
 	},
+
 };

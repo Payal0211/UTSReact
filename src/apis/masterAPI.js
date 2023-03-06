@@ -220,6 +220,7 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getCountryRequest');
 		}
 	},
+
 	getUserTypeRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -272,13 +273,32 @@ export const MasterAPI = {
 			MastersAPI.GET_REPORTEE_MANAGER +
 			'?userType=' +
 			userType?.typeID;
+
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
+
 			return errorDebug(error, 'MasterAPI.getReporteeTeamManagerRequest');
+
+		}
+	},
+  getEmailSuggestion: async function (email) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			MastersAPI.GET_EMAIL_SUGGESTION +
+			`?search=${email}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCountryRequest');
 		}
 	},
 };
