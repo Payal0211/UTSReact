@@ -52,6 +52,9 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 	}, [getTimeZone]);
 
 
+	console.log(getRescheduleSlotInfomation, "getRescheduleSlotInfomation")
+
+
 	const reScheduleInterviewAPIHandler = async (data) => {
 		const reScheduleData = {
 			rescheduleRequestBy: reScheduleRadio,
@@ -72,6 +75,10 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 		closeModal();
 		resetReScheduleFields();
 	};
+
+
+
+
 
 	const resetReScheduleFields = () => {
 		resetField("interviewMessage");
@@ -231,10 +238,10 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 										onChange={onSlotChange}
 										value={reScheduleSlotRadio}>
 										<Radio value={1}>Slot options provided by the client</Radio>
-										<Radio value={2}>
+										<Radio value={4}>
 											Send a link shared by client
 										</Radio>
-										<Radio value={3}>Slot Directly Added for Final Interview Slot</Radio>
+										<Radio value={2}>Slot Directly Added for Final Interview Slot</Radio>
 									</Radio.Group>
 								</div>
 							</div>
