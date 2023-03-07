@@ -50,7 +50,6 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 	}, [getTimeZone]);
 
 	const scheduleInterviewAPIHandler = async (data) => {
-
 		const scheduleData = {
 			slotType: scheduleSlotRadio,
 			recheduleSlots:
@@ -71,11 +70,6 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 			scheduleData,
 		);
 		closeModal();
-
-// 		resetField('additionalNotes');
-// 		resetField('interviewCallLink');
-// 	};
-
 		resetScheduleFields();
 	};
 
@@ -242,7 +236,7 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 							</div>
 							<div className={InterviewScheduleStyle.timeSlotItem}>
 								<CalenderSVG />
-=
+								=
 								<Controller
 									render={({ ...props }) => (
 										<DatePicker selected={getScheduleSlotDate[0].slot1}
@@ -429,7 +423,6 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 									</div>
 									<div className={InterviewScheduleStyle.timeSlotItem}>
 										<CalenderSVG />
-
 										<Controller
 											render={({ ...props }) => (
 												<DatePicker placeholderText="Select Date" selected={getScheduleSlotDate[2].slot1}
@@ -514,7 +507,7 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 											</div>}
 									</div>
 								</div>
-							</>
+							</>)
 
 						}
 

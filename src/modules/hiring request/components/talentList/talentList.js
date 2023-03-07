@@ -111,7 +111,6 @@ const TalentList = ({
 
 	const scheuleResetDataHander = () => {
 		setScheduleSlotDate([{ slot1: null, slot2: null, slot3: null }, { slot1: null, slot2: null, slot3: null }, { slot1: null, slot2: null, slot3: null }])
-
 		setScheduleSlotInformation([{
 
 			slotID: 1,
@@ -180,93 +179,9 @@ const TalentList = ({
 			strEndTime: '',
 			iD_As_ShortListedID: '',
 		},
-	]);
-	const [reScheduleRadio, setRescheduleRadio] = useState(1);
-	const [reScheduleSlotRadio, setRescheduleSlotRadio] = useState(1);
+		]);
 
-	const scheuleResetDataHander = () => {
-		setScheduleSlotDate([
-			{ slot1: null, slot2: null, slot3: null },
-			{ slot1: null, slot2: null, slot3: null },
-			{ slot1: null, slot2: null, slot3: null },
-		]);
-		setScheduleRadio(1);
-		setScheduleSlotRadio(1);
-		setScheduleSlotInformation([
-			{
-				slotID: 1,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
-				iD_As_ShortListedID: '',
-			},
-			{
-				slotID: 2,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
-				iD_As_ShortListedID: '',
-			},
-			{
-				slotID: 3,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
-				iD_As_ShortListedID: '',
-			},
-		]);
-	};
-
-	const resetRescheuleDataHander = () => {
-		setRescheduleSlotDate([
-			{ slot1: null, slot2: null, slot3: null },
-			{ slot1: null, slot2: null, slot3: null },
-			{ slot1: null, slot2: null, slot3: null },
-		]);
-		setRescheduleRadio('client');
-		setRescheduleSlotRadio(1);
-		setRescheduleSlotInformation([
-			{
-				slotID: 1,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
-				iD_As_ShortListedID: '',
-			},
-			{
-				slotID: 2,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
-				iD_As_ShortListedID: '',
-			},
-			{
-				slotID: 3,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
-				iD_As_ShortListedID: '',
-			},
-		]);
-	};
+	}
 
 	const getSlotInformationHandler = (date, type, interviewType) => {
 		const yyyy = date.getFullYear();
@@ -372,7 +287,6 @@ const TalentList = ({
 							return item;
 						}
 					}))
-=
 					setScheduleSlotDate(
 						getScheduleSlotDate.map((item, index) => {
 							if (index == 0) {
@@ -443,8 +357,6 @@ const TalentList = ({
 				}
 				break;
 			case "slot1EndTime":
-
-
 				if (interviewType === "schedule") {
 					if (getScheduleSlotInfomation[0]?.strSlotDate && getScheduleSlotInfomation[0]?.slotDate) {
 						endTimeFirstFormate = `${getScheduleSlotInfomation[0]?.strSlotDate} ${timeFormate}`
@@ -465,7 +377,7 @@ const TalentList = ({
 							return item;
 						}
 					}))
-
+				}
 
 			case 'slot2Date':
 				if (interviewType === 'schedule') {
@@ -547,6 +459,8 @@ const TalentList = ({
 						0,
 						11,
 					)}${timeFormate}:00.0000`;
+
+
 					setScheduleSlotInformation(
 						getScheduleSlotInfomation.map((item, index) => {
 							if (index == 1) {
@@ -560,8 +474,8 @@ const TalentList = ({
 							}
 						}),
 					);
-
-
+				}
+				break;
 			case "slot2Date":
 				if (interviewType === "schedule") {
 					if (getScheduleSlotInfomation[1]?.strStartTime && getScheduleSlotInfomation[1]?.strEndTime) {
@@ -598,7 +512,6 @@ const TalentList = ({
 				}
 
 				else if (interviewType === "reschedule") {
-
 					if (getRescheduleSlotInfomation[1]?.strStartTime && getRescheduleSlotInfomation[1]?.strEndTime) {
 						startTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[1]?.strStartTime.slice(10)}`
 						endTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[1]?.strEndTime?.slice(10)}`
@@ -620,7 +533,6 @@ const TalentList = ({
 							return item;
 						}
 					}))
-
 
 					setRescheduleSlotDate(
 						getRescheduleSlotDate.map((item, index) => {
@@ -1035,9 +947,7 @@ const TalentList = ({
 		getSlotInformationHandler(new Date(), "initial", 'schedule');
 	}, [showScheduleInterviewModal])
 
-
 	useEffect(() => {
-
 		resetRescheuleDataHander()
 		setRescheduleSlotRadio(1);
 		getSlotInformationHandler(new Date(), "initial", "reschedule");
@@ -1281,8 +1191,8 @@ const TalentList = ({
 									<span style={{ fontWeight: '500' }}>
 										{item?.Slotconfirmed
 											? item?.Slotconfirmed.split(' ')[1] +
-											  ' - ' +
-											  item?.Slotconfirmed.split(' ')[3]
+											' - ' +
+											item?.Slotconfirmed.split(' ')[3]
 											: 'NA'}
 									</span>
 								</div>
@@ -1671,5 +1581,4 @@ const TalentList = ({
 		</div>
 	);
 };
-
 export default TalentList;
