@@ -1,6 +1,7 @@
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
-import OnboardStyleModule from './onboardField.module.css';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 import { InputType } from 'constants/application';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { Divider, Dropdown, Menu, Radio } from 'antd';
@@ -8,9 +9,14 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as EditSVG } from 'assets/svg/edit.svg';
 import { ReactComponent as TimeDropDownSVG } from 'assets/svg/timeDropdown.svg';
+import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { useState } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { AiFillLinkedin } from 'react-icons/ai';
+import OnboardStyleModule from './onboardField.module.css';
+
+
+
 const OnboardField = () => {
 	const [value, setRadioValue] = useState(1);
 	const [showTextBox, setTextBox] = useState(true);
@@ -22,7 +28,7 @@ const OnboardField = () => {
 		setValue,
 		getValues,
 		setError,
-		// control,
+		control,
 		formState: { errors },
 	} = useForm({});
 	const onChange = (e) => {
@@ -50,7 +56,7 @@ const OnboardField = () => {
 									// }}
 									// disabled={type === SubmitType.SUBMIT}
 									className={OnboardStyleModule.btnPrimary}
-									// onClick={handleSubmit(hrSubmitHandler)}
+								// onClick={handleSubmit(hrSubmitHandler)}
 								>
 									Edit User
 								</button>
@@ -214,7 +220,7 @@ const OnboardField = () => {
 									type={InputType.TEXT}
 									placeholder="End Date"
 									trailingIcon={<CalenderSVG />}
-									// required
+								// required
 								/>
 							</div>
 						</div>
@@ -238,7 +244,7 @@ const OnboardField = () => {
 						</div>
 						<div className={OnboardStyleModule.row}>
 							<div className={OnboardStyleModule.colMd6}>
-								<HRInputField
+								{/* <HRInputField
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -250,11 +256,43 @@ const OnboardField = () => {
 									placeholder="Start Time"
 									required
 									trailingIcon={<TimeDropDownSVG />}
-								/>
+								/> */}
+
+								<div className={OnboardStyleModule.timeSlotItemField}>
+									<div className={OnboardStyleModule.timeSlotLabel}>Shift Start Time <span>*</span>
+									</div>
+									<div className={OnboardStyleModule.timeSlotItem}>
+										<ClockIconSVG />
+										<Controller
+											render={({ ...props }) => (
+												<DatePicker
+													selected={watch('shiftStartTime')}
+													onChange={(date) => {
+														setValue('shiftStartTime', date)
+													}}
+													showTimeSelect
+													showTimeSelectOnly
+													timeIntervals={60}
+													timeCaption="Time"
+													timeFormat="h:mm a"
+													dateFormat="h:mm a"
+													placeholderText="Start Time"
+												/>
+											)}
+											name="shiftStartTime"
+											rules={{ required: true }}
+											control={control}
+										/>
+										{errors.shiftStartTime &&
+											<div className={OnboardStyleModule.error}>
+												Please enter start time
+											</div>}
+									</div>
+								</div>
 							</div>
 
 							<div className={OnboardStyleModule.colMd6}>
-								<HRInputField
+								{/* <HRInputField
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -265,8 +303,40 @@ const OnboardField = () => {
 									type={InputType.TEXT}
 									placeholder="End Time"
 									trailingIcon={<TimeDropDownSVG />}
-									// required
-								/>
+								// required
+								/> */}
+
+								<div className={OnboardStyleModule.timeSlotItemField}>
+									<div className={OnboardStyleModule.timeSlotLabel}>Shift End Time <span>*</span>
+									</div>
+									<div className={OnboardStyleModule.timeSlotItem}>
+										<ClockIconSVG />
+										<Controller
+											render={({ ...props }) => (
+												<DatePicker
+													selected={watch('shiftEndTime')}
+													onChange={(date) => {
+														setValue('shiftEndTime', date)
+													}}
+													showTimeSelect
+													showTimeSelectOnly
+													timeIntervals={60}
+													timeCaption="Time"
+													timeFormat="h:mm a"
+													dateFormat="h:mm a"
+													placeholderText="End Time"
+												/>
+											)}
+											name="shiftEndTime"
+											rules={{ required: true }}
+											control={control}
+										/>
+										{errors.shiftEndTime &&
+											<div className={OnboardStyleModule.error}>
+												Please enter end time
+											</div>}
+									</div>
+								</div>
 							</div>
 						</div>
 						<div className={OnboardStyleModule.row}>
@@ -400,7 +470,7 @@ const OnboardField = () => {
 								// }}
 								// disabled={type === SubmitType.SUBMIT}
 								className={OnboardStyleModule.btnPrimary}
-								// onClick={handleSubmit(hrSubmitHandler)}
+							// onClick={handleSubmit(hrSubmitHandler)}
 							>
 								Add More Team Member
 							</button>
@@ -526,10 +596,10 @@ const OnboardField = () => {
 																<Menu>
 																	<Menu.Item
 																		key={0}
-																		/* onClick={() => {
-																	setProfileLogModal(true);
-																	setTalentIndex(listIndex);
-																}} */
+																	/* onClick={() => {
+																setProfileLogModal(true);
+																setTalentIndex(listIndex);
+															}} */
 																	>
 																		Edit Details
 																	</Menu.Item>
@@ -690,7 +760,7 @@ const OnboardField = () => {
 						</div>
 					</div>
 				</div>
-			</form>
+			</form >
 
 			<Divider className={OnboardStyleModule.midDivider} />
 
@@ -704,7 +774,7 @@ const OnboardField = () => {
 							// }}
 							// disabled={id !== 0 && true}
 							className={OnboardStyleModule.btnPrimary}
-							// onClick={handleSubmit(hrSubmitHandler)}
+						// onClick={handleSubmit(hrSubmitHandler)}
 						>
 							Submit
 						</button>
@@ -717,7 +787,7 @@ const OnboardField = () => {
 					</div>
 				</div>
 			</div>
-		</div>
+		</div >
 	);
 };
 
