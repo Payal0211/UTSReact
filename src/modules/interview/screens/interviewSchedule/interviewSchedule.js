@@ -236,7 +236,6 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 							</div>
 							<div className={InterviewScheduleStyle.timeSlotItem}>
 								<CalenderSVG />
-								=
 								<Controller
 									render={({ ...props }) => (
 										<DatePicker selected={getScheduleSlotDate[0].slot1}
@@ -261,7 +260,6 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 							<div
 								className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
 								<ClockIconSVG />
-
 								<Controller
 									render={({ ...props }) => (
 										<DatePicker
@@ -292,7 +290,6 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 							<div
 								className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
 								<ClockIconSVG />
-
 								<Controller
 									render={({ ...props }) => (
 										<DatePicker
@@ -331,7 +328,6 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 									</div>
 									<div className={InterviewScheduleStyle.timeSlotItem}>
 										<CalenderSVG />
-
 										<Controller
 											render={({ ...props }) => (
 												<DatePicker selected={getScheduleSlotDate[1].slot1} placeholderText="Select Date" onChange={(date) => {
@@ -348,7 +344,6 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 											<div className={InterviewScheduleStyle.error}>
 												Please select date
 											</div>}
-
 									</div>
 									<div
 										className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
