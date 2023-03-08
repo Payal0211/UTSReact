@@ -424,18 +424,16 @@ export const MasterDAO = {
 				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
 					return userTypeResponse;
 
-				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
-					return emailSuggestionResponse;
+			} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+				return emailSuggestionResponse;
 
-				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
-					let deletedResponse =
-						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
-				}
-				// return statusCode;
+			else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				let deletedResponse =
+					UserSessionManagementController.deleteAllSession();
+				if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
 			}
+			// return statusCode;
 		} catch (error) {
-
 			return errorDebug(error, 'MasterDAO.getUserTypeRequestDAO');
 		}
 	},

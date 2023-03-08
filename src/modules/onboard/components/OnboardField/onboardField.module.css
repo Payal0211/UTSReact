@@ -241,9 +241,9 @@
     display: inline-block;
 }
 .Card {
-    
+
     border-radius: 8px;
-   
+
     background-color: var(--background-color-light);
 }
 .partWise {
@@ -329,4 +329,142 @@
     height: 15px;
     border-radius: 50%;
     background: var(--color-sunlight);
+}
+
+.timeSlotRow{
+    margin: 0 -9px 30px;
+    flex-wrap: wrap;
+    display: flex;
+}
+.timeSlotLabel{
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #676767;
+    margin: 0 0 8px;
+    display: inline-block;
+}
+.timeSlotLabel span{
+    color: var(--uplers-black);
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
+}
+.timeSlotItem{
+    position: relative;
+}
+.timeSlotItem svg{
+    position: absolute;
+    top: 19px;
+    right: 26px;
+    z-index: 1;
+    pointer-events: none;
+}
+.timeSlotItem [class*="react-datepicker__input-container"] input{
+    text-align: left;
+    width: 100%;
+    padding: 16px 40px 16px 16px;
+    background: var(--background-color-light);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--uplers-black);
+    outline: 1px solid transparent;
+    transition: all 0.25s ease 0s;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input::-webkit-input-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input::-moz-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input:-ms-input-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input:-moz-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input:focus {
+    outline-color: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+.timeSlotItem [class="react-datepicker-popper"]{
+    right: 16px !important;
+    left: 0 !important;
+    z-index: 2;
+    background: #FFFFFF;
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    box-shadow: -4px 4px 20px rgba(57, 57, 57, 0.09);
+    margin: -1px 0;
+    padding: 4px 0;
+}
+
+.timeSlotItem [class="react-datepicker"],.timeSlotItem [class*="react-datepicker--time-only"] {
+    margin-left: 0;
+    width: 100%;
+    box-shadow: none !important;
+    vertical-align: middle;
+}
+
+.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-container"],.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-box"]{width:100%}
+.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-box"] [class*="react-datepicker__time-list"] li[class*="react-datepicker__time-list-item--selected"]{
+    background: #FFDA30 !important;
+    color: #232323 !important;
+}
+.timeSlotItem [class="react-datepicker__month-container"] {
+    width: 100%;
+}
+.timeSlotItem [class*="react-datepicker__header "]{
+    border-bottom: 1px solid #E8E8E8;
+}
+.timeSlotItem [class="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
+    top: 14px;
+}
+.timeSlotItemField{
+    margin: 0 0 32px;
+}
+.timePickerItem{
+    margin: 0;
+}
+.timeSlotItem [class="react-datepicker-popper"]{
+    width: 40%;
+    right: auto !important;
+}
+.requestByRadio{
+    align-items: center;
+    display: flex;
+}
+.requestByRadio [class*="ant-radio-group "]{
+    flex-direction: row;
+    display: flex;
+}
+.requestByRadio [class*="ant-radio-group "] label{
+    margin: 0 16px 0 0;
+}
+.mB0 [class*="hrInputFields"]{
+    margin-bottom: 0 !important;
+}
+
+
+.ant-select .ant-select-selector .ant-select-selection-item{
+    color: red;
+}
+
+.error {
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
 }
