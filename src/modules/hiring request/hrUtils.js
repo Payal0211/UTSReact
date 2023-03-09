@@ -2,6 +2,7 @@ import {
 	AdHOCHR,
 	HiringRequestHRStatus,
 	SubmitType,
+	TalentOnboardStatus,
 	UserAccountRole,
 	hiringRequestPriority,
 } from 'constants/application';
@@ -438,29 +439,21 @@ export const hrUtils = {
 	},
 	handleScheduleInterview(item, miscData, HRStatusCode) {
 		if (
-			miscData?.LoggedInUserTypeID === UserAccountRole.TALENTOPS ||
-			miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
-			miscData?.LoggedInUserTypeID === UserAccountRole.DEVELOPER ||
-			miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR
-		)
-			return false;
-		else {
-			if (
-				HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
-				item?.TalentStatusID_BasedOnHR === 2 &&
-				item?.InterViewStatusId === 0 &&
-				(item?.Status !== 'Cancelled' || item?.Status !== 'Rejected')
-			) {
-				return true;
-			}
+			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
+			item?.TalentStatusID_BasedOnHR === 2 &&
+			item?.InterViewStatusId === 0 &&
+			(item?.Status !== 'Cancelled' || item?.Status !== 'Rejected')
+		) {
+			return true;
 		}
+		return false;
 	},
 	handleRescheduleInterview(item, HRStatusCode) {
 		if (
 			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
 			(item?.Status !== 'Cancelled' || item?.Status !== 'Rejected') &&
-			item?.InterviewStatus !== '' &&
-			(item?.InterviewStatus !== 'Interview in Process' ||
+			(item?.InterviewStatus !== '' ||
+				item?.InterviewStatus !== 'Interview in Process' ||
 				item?.InterviewStatus !== 'Interview Completed' ||
 				item?.InterviewStatus !== 'Feedback Submitted' ||
 				item?.InterviewStatus !== 'Cancelled')
@@ -468,6 +461,77 @@ export const hrUtils = {
 			return true;
 		}
 		return false;
+	},
+	showOnboardStatus(item, miscData, HRStatusCode) {
+		if (
+			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
+			item?.TalentStatusID_BasedOnHR === 2 &&
+			item?.InterViewStatusId === 0 &&
+			(item?.Status !== 'Cancelled' || item?.Status !== 'Rejected')
+		) {
+			if (
+				miscData?.LoggedInUserTypeID !== UserAccountRole.TALENTOPS ||
+				miscData?.loggedInUserTypeID !== UserAccountRole.OPS_TEAM_MANAGER
+			) {
+				return [
+					{
+						label: 'Schedule Interview',
+						key: TalentOnboardStatus.SCHEDULE_INTERVIEW,
+					},
+
+					{
+						label: 'Talent Status',
+						key: TalentOnboardStatus.TALENT_STATUS,
+					},
+					{
+						label: 'Update kickoff & Onboard Status',
+						key: TalentOnboardStatus.UPDATE_KICKOFF,
+					},
+				];
+			} else return [];
+		} else if (
+			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
+			(item?.Status !== 'Cancelled' || item?.Status !== 'Rejected') &&
+			(item?.InterviewStatus !== '' ||
+				item?.InterviewStatus !== 'Interview in Process' ||
+				item?.InterviewStatus !== 'Interview Completed' ||
+				item?.InterviewStatus !== 'Feedback Submitted' ||
+				item?.InterviewStatus !== 'Cancelled')
+		) {
+			return [
+				{
+					label: 'Reschedule Interview',
+					key: TalentOnboardStatus.RESCHEDULE_INTERVIEW,
+				},
+				{
+					label: 'Talent Status',
+					key: TalentOnboardStatus.TALENT_STATUS,
+				},
+				{
+					label: 'Update kickoff & Onboard Status',
+					key: TalentOnboardStatus.UPDATE_KICKOFF,
+				},
+			];
+		} else {
+			return [
+				{
+					label: 'Schedule Interview',
+					key: TalentOnboardStatus.SCHEDULE_INTERVIEW,
+				},
+				{
+					label: 'Reschedule Interview',
+					key: TalentOnboardStatus.RESCHEDULE_INTERVIEW,
+				},
+				{
+					label: 'Talent Status',
+					key: TalentOnboardStatus.TALENT_STATUS,
+				},
+				{
+					label: 'Update kickoff & Onboard Status',
+					key: TalentOnboardStatus.UPDATE_KICKOFF,
+				},
+			];
+		}
 	},
 	handleTalentStatus(item, HRStatusCode) {
 		if (
