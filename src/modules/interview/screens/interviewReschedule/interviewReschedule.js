@@ -121,10 +121,9 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 							<div className={InterviewScheduleStyle.transparentTopCard}>
 								<div className={InterviewScheduleStyle.cardLabel}>
 									Hiring Request No
-
-									<div className={InterviewScheduleStyle.cardTitle}>
-										{hiringRequestNumber}
-									</div>
+								</div>
+								<div className={InterviewScheduleStyle.cardTitle}>
+									{hiringRequestNumber}
 								</div>
 							</div>
 						</div>
@@ -249,7 +248,7 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 						</div>
 
 						<div className={InterviewScheduleStyle.row}>
-							<div className={reScheduleSlotRadio === 2 ? InterviewScheduleStyle.colMd6 : InterviewScheduleStyle.colMd12} >
+							<div className={reScheduleSlotRadio === 4 ? InterviewScheduleStyle.colMd6 : InterviewScheduleStyle.colMd12} >
 								<HRSelectField
 									setValue={setValue}
 									register={register}
@@ -264,7 +263,7 @@ const InterviewReschedule = ({ talentName, key, closeModal, hrId, talentInfo, hi
 									errorMsg="Please select a timezone."
 								/>
 							</div>
-							{reScheduleSlotRadio === 2 && <div className={reScheduleSlotRadio === 2 ? InterviewScheduleStyle.colMd6 : InterviewScheduleStyle.colMd12} >
+							{reScheduleSlotRadio === 4 && <div className={reScheduleSlotRadio === 4 ? InterviewScheduleStyle.colMd6 : InterviewScheduleStyle.colMd12} >
 								<HRInputField
 									register={register}
 									errors={errors}
