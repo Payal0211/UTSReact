@@ -566,3 +566,8 @@ table{
 .ant-select .ant-select-selector .ant-select-selection-item{
     color: red;
 }
+
+.error {
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
+}

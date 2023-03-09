@@ -31,6 +31,7 @@ const HRSelectField = ({
 				})),
 			);
 		} else if (mode === 'id/value') {
+			console.log('--option--', option);
 			setValue(name, {
 				id: option.id,
 				value: option.value,
@@ -38,7 +39,7 @@ const HRSelectField = ({
 		} else {
 			setValue(name, option.id);
 		}
-		isControlled && setControlledValue(option.id);
+		isControlled && setControlledValue(option.value);
 	};
 
 	useEffect(() => {

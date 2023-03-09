@@ -1,14 +1,19 @@
 .aside {
     background-color: #ffffff;
     position: fixed;
-    top: 0;
+    top: 0px;
     width: 25%;
     max-height: 800px;
     overflow: hidden;
-    right: 0;
+    right: -30%;
     box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.09);
     border-bottom-left-radius: 8px;
     z-index: 1000;
+    transition: all 0.45s ease 0s;
+}
+
+.aside.closeFilter{
+    right:0;
 }
 
 

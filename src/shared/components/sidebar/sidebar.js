@@ -66,13 +66,7 @@ const getSideBar = () => {
 			icon: Briefcase,
 			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 		}),
-		/* new SideBarModels({
-			id: 'UTS_Interview',
-			title: 'interviewList',
-			isActive: false,
-			icon: HR,
-			navigateTo: UTSRoutes.INTERVIEWLISTROUTE,
-		}), */
+
 		new SideBarModels({
 			id: 'UTS_DealList',
 			title: 'dealList',
@@ -86,6 +80,13 @@ const getSideBar = () => {
 			isActive: false,
 			icon: HR,
 			navigateTo: UTSRoutes.USERLISTROUTE,
+		}),
+		new SideBarModels({
+			id: 'UTS_Onboard',
+			title: 'onboardUser',
+			isActive: false,
+			icon: HR,
+			navigateTo: UTSRoutes.ONBOARDROUTE,
 		}),
 	];
 	return dataList;

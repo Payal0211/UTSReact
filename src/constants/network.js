@@ -31,6 +31,8 @@ export class UserAPI {
 	static SIGNUP = '/signup';
 	static FORGOTPASSWORD = '/forgotpassword';
 	static LIST = 'List';
+	static ADD_NEW_USER = 'AddEdit';
+	static GET_USER_DETAIL = 'GetUserDetail';
 	static UPDATEPASSWORD = '/updatepassword';
 }
 
@@ -54,10 +56,16 @@ export class MastersAPI {
 	static GET_REGIONS = 'GetRegions';
 	static GET_MODE_OF_WORK = 'GetModeOfWork';
 	static GET_COUNTRY = 'GetCountry';
+
 	static GET_USER_TYPE = 'GetUserType';
 	static GET_TEAM_MANAGER = 'GetTeamManager';
 	static GET_USER_BY_TYPE = 'GetUserByType';
 	static GET_REPORTEE_MANAGER = 'GetFetchReporteeTeamManager';
+	static GET_BDR_MARKETING_BASED_ON_USER_TYPE =
+		'FetchBDRMarketingBasedOnUserType';
+	static GET_TEAM_MANAGER_BASED_ON_USER_TYPE =
+		'FetchTeamManagerBasedOnUserType';
+	static GET_EMAIL_SUGGESTION = 'AutoComplete/Contact';
 }
 
 export class ClientsAPI {
@@ -82,6 +90,9 @@ export class HiringRequestsAPI {
 	static GET_ALL_FILTER_DATA_FOR_HR = 'GetAllFilterDataForHR';
 	static SCHEDULE_INTERVIEW = 'Schedule';
 	static RESCHEDULE_INTERVIEW = 'Reschedule';
+	static UPLOAD_FILE = 'UploadFile';
+	static UPLOAD_DRIVE_FILE = 'UploadDriveFile';
+	static UPLOAD_GOOGLE_FILE_LINK = 'UploadGoogleFileLink';
 }
 
 export class UsersAPI {
