@@ -283,7 +283,7 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getReporteeTeamManagerRequest');
 		}
 	},
-	getEmailSuggestion: async function (email) {
+	getEmailSuggestionRequest: async function (email) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
@@ -296,7 +296,7 @@ export const MasterAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, 'MasterAPI.getCountryRequest');
+			return errorDebug(error, 'MasterAPI.getEmailSuggestionRequest');
 		}
 	},
 	getBDRMarketingBasedOnUserTypeRequest: async function (userType) {
