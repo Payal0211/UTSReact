@@ -419,20 +419,12 @@ export const MasterDAO = {
 						responseBody: tempResult,
 					};
 				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
-
 					return userTypeResponse;
 				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
 					return userTypeResponse;
 
-			} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
-				return emailSuggestionResponse;
-
-			else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
-				let deletedResponse =
-					UserSessionManagementController.deleteAllSession();
-				if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				// return statusCode;
 			}
-			// return statusCode;
 		} catch (error) {
 			return errorDebug(error, 'MasterDAO.getUserTypeRequestDAO');
 		}
@@ -517,4 +509,64 @@ export const MasterDAO = {
 		}
 	},
 
+	getBDRMarketingBasedOnUserTypeRequestDAO: async function (userType) {
+		try {
+			const reporteeTeamManagerResponse =
+				await MasterAPI.getBDRMarketingBasedOnUserTypeRequest(userType);
+			if (reporteeTeamManagerResponse) {
+				const statusCode = reporteeTeamManagerResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = reporteeTeamManagerResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return reporteeTeamManagerResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return reporteeTeamManagerResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.getBDRMarketingBasedOnUserTypeRequestDAO',
+			);
+		}
+	},
+	getTeamManagerBasedOnUserTypeRequestDAO: async function (userType) {
+		try {
+			const reporteeTeamManagerResponse =
+				await MasterAPI.getTeamManagerBasedOnUserTypeRequest(userType);
+			if (reporteeTeamManagerResponse) {
+				const statusCode = reporteeTeamManagerResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = reporteeTeamManagerResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return reporteeTeamManagerResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return reporteeTeamManagerResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.getTeamManagerBasedOnUserTypeRequestDAO',
+			);
+		}
+	},
 };

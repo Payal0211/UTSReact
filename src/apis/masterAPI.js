@@ -280,12 +280,10 @@ export const MasterAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-
 			return errorDebug(error, 'MasterAPI.getReporteeTeamManagerRequest');
-
 		}
 	},
-  getEmailSuggestion: async function (email) {
+	getEmailSuggestion: async function (email) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
@@ -299,6 +297,46 @@ export const MasterAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.getCountryRequest');
+		}
+	},
+	getBDRMarketingBasedOnUserTypeRequest: async function (userType) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.GET_BDR_MARKETING_BASED_ON_USER_TYPE +
+			'?RoleID=' +
+			userType?.roleID;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterAPI.getBDRMarketingBasedOnUserTypeRequest',
+			);
+		}
+	},
+	getTeamManagerBasedOnUserTypeRequest: async function (userType) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.GET_TEAM_MANAGER_BASED_ON_USER_TYPE +
+			'?UserTypeID=' +
+			userType?.userTypeID;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterAPI.getTeamManagerBasedOnUserTypeRequest',
+			);
 		}
 	},
 };
