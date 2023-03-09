@@ -569,4 +569,32 @@ export const MasterDAO = {
 			);
 		}
 	},
+	getEmailSuggestionDAO: async function (email) {
+		try {
+			const emailSuggestionResponse = await MasterAPI.getEmailSuggestionRequest(
+				email,
+			);
+			if (emailSuggestionResponse) {
+				const statusCode = emailSuggestionResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = emailSuggestionResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return emailSuggestionResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return emailSuggestionResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getEmailSuggestionDAO');
+		}
+	},
 };

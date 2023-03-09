@@ -187,7 +187,7 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 						<div className={InterviewScheduleStyle.row}>
 							<div
 								className={
-									scheduleSlotRadio === 2
+									scheduleSlotRadio === 4
 										? InterviewScheduleStyle.colMd6
 										: InterviewScheduleStyle.colMd12
 								}>
@@ -205,10 +205,10 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 									errorMsg="Please select a timezone."
 								/>
 							</div>
-							{scheduleSlotRadio === 2 && (
+							{scheduleSlotRadio === 4 && (
 								<div
 									className={
-										scheduleSlotRadio === 2
+										scheduleSlotRadio === 4
 											? InterviewScheduleStyle.colMd6
 											: InterviewScheduleStyle.colMd12
 									}>

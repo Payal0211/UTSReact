@@ -339,6 +339,7 @@ const OnboardField = () => {
 								</div>
 							</div>
 						</div>
+						{console.log("test")}
 						<div className={OnboardStyleModule.row}>
 							<div className={OnboardStyleModule.colMd6}>
 								<HRInputField
