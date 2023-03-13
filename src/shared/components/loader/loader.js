@@ -4,14 +4,14 @@ const antIcon = (
 	<LoadingOutlined
 		style={{
 			fontSize: 50,
-			display: 'flex',
-			flexDirection: 'row',
-			alignItems: 'center',
-			justifyContent: 'center',
-			marginTop: '300px',
-			marginLeft: '850px',
 			fontWeight: 500,
 			color: `var(--uplers-black)`,
+			// display: 'flex',
+			// flexDirection: 'row',
+			// alignItems: 'center',
+			// justifyContent: 'center',
+			// marginTop: '300px',
+			// marginLeft: '850px',
 		}}
 		spin
 	/>

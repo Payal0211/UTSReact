@@ -1,4 +1,4 @@
-import { Space, Table, Tag } from 'antd';
+import { Space, Table, Tag, Modal } from 'antd';
 import allHRStyles from '../../../hiring request/screens/allHiringRequest/all_hiring_request.module.css';
 import dealDetailsStyles from './dealDetailsStyle.module.css';
 import arrow from '../../../../assets/svg/trending.svg';
@@ -9,6 +9,7 @@ import UTSRoutes from 'constants/routes';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { HTTPStatusCode } from 'constants/network';
 import WithLoader from 'shared/components/loader/loader';
+import AcceptanceModal from './acceptanceModal';
 const columns = [
 	{
 		title: '',
@@ -181,6 +182,12 @@ const DealDetails = () => {
 	const [isLoading, setLoading] = useState(false);
 	const switchLocation = useLocation();
 	const [dealDetails, setDealDetails] = useState(null);
+	// acceptance modal start
+	const [showAcceptancelModal, setAcceptanceModal] = useState(false);
+	const [workShift, setWorkShift] = useState(0);
+	const [acceptOffer, setAcceptOffer] = useState(1);
+	const [preference, setPreference] = useState(1);
+	// acceptance modal end
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 
 	const getDealDetails = useCallback(async () => {
@@ -199,6 +206,19 @@ const DealDetails = () => {
 	useEffect(() => {
 		getDealDetails();
 	}, [getDealDetails]);
+
+	// acceptance modal start
+	const openAcceptanceModal = () => {
+		setAcceptanceModal(true);
+	}
+	// acceptance modal end
+
+	useEffect(() => {
+		setWorkShift(0)
+		setAcceptOffer(1)
+		setPreference(1)
+	}, [showAcceptancelModal])
+
 
 	return (
 		<WithLoader showLoader={isLoading}>
@@ -219,6 +239,7 @@ const DealDetails = () => {
 						/>
 						{dealDetails?.dealName}
 					</h1>
+					<button type="button" onClick={openAcceptanceModal}>Acceptance</button>
 					<button type="button">View BQ Form</button>
 				</div>
 
@@ -603,6 +624,24 @@ const DealDetails = () => {
 					/>
 				</div>
 			</div>
+			<Modal
+				transitionName=""
+				centered
+				open={showAcceptancelModal}
+				width="1256px"
+				footer={null}
+				onCancel={() => setAcceptanceModal(false)}>
+				<AcceptanceModal
+					setAcceptanceModal={setAcceptanceModal}
+					showAcceptancelModal={showAcceptancelModal}
+					workShift={workShift}
+					acceptOffer={acceptOffer}
+					preference={preference}
+					setWorkShift={setWorkShift}
+					setAcceptOffer={setAcceptOffer}
+					setPreference={setPreference}
+				/>
+			</Modal>
 		</WithLoader>
 	);
 };
