@@ -46,7 +46,6 @@ const InterviewSchedule = ({
 		resetField,
 		formState: { errors },
 	} = useForm();
-	const [messageAPI, contextHolder] = message.useMessage();
 	const rescheduleReason = [
 		{ id: 1, value: 'Client not available on given Slots' },
 		{ id: 2, value: 'Client not available on selected Slot' },
@@ -69,7 +68,7 @@ const InterviewSchedule = ({
 	const scheduleInterviewAPIHandler = async (data) => {
 		const scheduleData = {
 			slotType: scheduleSlotRadio,
-			rescheduleSlots:
+			RecheduleSlots:
 				scheduleSlotRadio === 1
 					? getScheduleSlotInfomation
 					: getScheduleSlotInfomation?.slice(0, 1),
@@ -78,18 +77,18 @@ const InterviewSchedule = ({
 			contactID: talentInfo?.ContactId,
 			talent_ID: talentInfo?.TalentID,
 			interviewStatus: getInterviewStatus(),
-			interviewMasterID: talentInfo?.MasterId,
+			interviewMasterID: 11,
 			hiringRequestNumber: hiringRequestNumber,
 			workingTimeZoneID: data?.interviewTimezone,
 			shortListedID: '',
-			additional_notes: data?.additionalNotes,
+			additional_notes: data?.additionalNotes ? data?.additionalNotes : '',
 			interviewCallLink: data?.interviewCallLink ? data?.interviewCallLink : '',
 		};
 		let response = await hiringRequestDAO.getSchduleInterviewInformation(
 			scheduleData,
 		);
 		if (response.statusCode === HTTPStatusCode.OK) {
-			alert('Scheduled Inteview');
+			message.success("Interview scheduled successfully")
 			closeModal();
 			resetScheduleFields();
 		}
@@ -238,7 +237,7 @@ const InterviewSchedule = ({
 										validationSchema={{
 											required: 'please enter the interview call link.',
 										}}
-										label="Interview Call Link*"
+										label="Interview Call Link"
 										name="interviewCallLink"
 										type={InputType.TEXT}
 										placeholder="Please Add a Meeting Link"
@@ -564,18 +563,21 @@ const InterviewSchedule = ({
 							</>
 						)}
 
-						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd12}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									label="Additional Notes"
-									name="additionalNotes"
-									type={InputType.TEXT}
-									placeholder="Add Notes"
-								/>
+						{scheduleSlotRadio === 4 &&
+							<div className={InterviewScheduleStyle.row}>
+								<div className={InterviewScheduleStyle.colMd12}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										label="Additional Notes"
+										name="additionalNotes"
+										type={InputType.TEXT}
+										placeholder="Add Notes"
+									/>
+								</div>
 							</div>
-						</div>
+						}
+
 					</form>
 				</div>
 			</div>

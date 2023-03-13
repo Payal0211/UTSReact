@@ -47,7 +47,6 @@ const InterviewReschedule = ({
 		formState: { errors },
 		resetField,
 	} = useForm();
-	const [messageAPI, contextHolder] = message.useMessage();
 	const rescheduleReason = [
 		{ id: 1, value: 'Client not available on given Slots' },
 		{ id: 2, value: 'Client not available on selected Slot' },
@@ -91,7 +90,7 @@ const InterviewReschedule = ({
 				rescheduleRequestBy: reScheduleRadio,
 				reasonforReschedule: data?.interviewRescheduleReason?.value,
 				slotType: reScheduleSlotRadio,
-				rescheduleSlot:
+				RescheduleSlot:
 					reScheduleSlotRadio === 1
 						? getRescheduleSlotInfomation
 						: getRescheduleSlotInfomation.slice(0, 1),
@@ -104,7 +103,7 @@ const InterviewReschedule = ({
 				hiringRequestNumber: hiringRequestNumber,
 				workingTimeZoneID: data?.interviewTimezone,
 				nextRound_InterviewDetailsID: 0,
-				additional_notes: data?.additionalNotes,
+				additional_notes: data?.additionalNotes ? data?.additionalNotes : '',
 				interviewCallLink: data?.interviewCallLink
 					? data?.interviewCallLink
 					: '',
@@ -113,11 +112,7 @@ const InterviewReschedule = ({
 				reScheduleData,
 			);
 			if (response.statusCode === HTTPStatusCode.OK) {
-				/* messageAPI.open({
-					type: 'info',
-					content: "Cann't see the talent status.",
-				}); */
-				alert('Interview is rescheduled.');
+				message.success("Interview rescheduled successfully")
 				closeModal();
 				resetReScheduleFields();
 			}
@@ -328,7 +323,7 @@ const InterviewReschedule = ({
 										validationSchema={{
 											required: 'please enter the interview call link.',
 										}}
-										label="Interview Call Link*"
+										label="Interview Call Link"
 										name="interviewCallLink"
 										type={InputType.TEXT}
 										placeholder="Please Add a Meeting Link"
@@ -650,7 +645,8 @@ const InterviewReschedule = ({
 								</div>
 							</>
 						)}
-						<div className={InterviewScheduleStyle.row}>
+
+						{reScheduleSlotRadio === 4 && <div className={InterviewScheduleStyle.row}>
 							<div className={InterviewScheduleStyle.colMd12}>
 								<HRInputField
 									register={register}
@@ -661,10 +657,11 @@ const InterviewReschedule = ({
 									placeholder="Add Notes"
 								/>
 							</div>
-						</div>
+						</div>}
+
 					</form>
 				</div>
-			</div>
+			</div >
 
 			<div className={InterviewScheduleStyle.formPanelAction}>
 				<button
@@ -687,7 +684,7 @@ const InterviewReschedule = ({
 					Cancel
 				</button>
 			</div>
-		</div>
+		</div >
 	);
 };
 

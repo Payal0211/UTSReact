@@ -1,4 +1,4 @@
-import { Divider, Modal } from 'antd';
+import { Divider, Modal, message } from 'antd';
 import { InputType } from 'constants/application';
 import React, { useEffect, useState, useRef } from 'react';
 import { ReactComponent as CloudUploadSVG } from 'assets/svg/cloudUpload.svg';
@@ -48,6 +48,7 @@ const UploadModal = ({
 					...getValidation,
 					systemFileUpload: '',
 				})
+				message('File Uploaded Successfully')
 			}
 		}
 		uploadFile.current.value = '';
@@ -91,6 +92,7 @@ const UploadModal = ({
 
 			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 				setUploadModal(false);
+				message('File uploaded successfully')
 
 			}
 		}
@@ -139,6 +141,7 @@ const UploadModal = ({
 			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 				setUploadModal(false);
 				setGoogleDriveLink("")
+				message('File uploaded successfully')
 			}
 		}
 	}
@@ -220,10 +223,10 @@ const UploadModal = ({
 							className={UploadModalStyle.uploadURLBox}
 							type={InputType.TEXT}
 							placeholder="Paste URL here"
-	onChange={(e) => setGoogleDriveLink((e.target.value).trim())}
-					value={getGoogleDriveLink}
+							onChange={(e) => setGoogleDriveLink((e.target.value).trim())}
+							value={getGoogleDriveLink}
 						/>
-            <label className={UploadModalStyle.linkError}>{getValidation?.linkValidation}</label>
+						<label className={UploadModalStyle.linkError}>{getValidation?.linkValidation}</label>
 						<button
 							type="button"
 							className={UploadModalStyle.btnPrimary}>
