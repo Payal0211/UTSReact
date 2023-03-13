@@ -77,7 +77,7 @@ const InterviewSchedule = ({
 			contactID: talentInfo?.ContactId,
 			talent_ID: talentInfo?.TalentID,
 			interviewStatus: getInterviewStatus(),
-			interviewMasterID: 11,
+			interviewMasterID: talentInfo?.MasterId,
 			hiringRequestNumber: hiringRequestNumber,
 			workingTimeZoneID: data?.interviewTimezone,
 			shortListedID: '',
