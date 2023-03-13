@@ -61,8 +61,11 @@ export class MastersAPI {
 	static GET_TEAM_MANAGER = 'GetTeamManager';
 	static GET_USER_BY_TYPE = 'GetUserByType';
 	static GET_REPORTEE_MANAGER = 'GetFetchReporteeTeamManager';
-	static GET_EMAIL_SUGGESTION = 'AutoComplete/Contact'
-
+	static GET_BDR_MARKETING_BASED_ON_USER_TYPE =
+		'FetchBDRMarketingBasedOnUserType';
+	static GET_TEAM_MANAGER_BASED_ON_USER_TYPE =
+		'FetchTeamManagerBasedOnUserType';
+	static GET_EMAIL_SUGGESTION = 'AutoComplete/Contact';
 }
 
 export class ClientsAPI {

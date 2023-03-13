@@ -6,7 +6,7 @@ import DatePicker from 'react-datepicker';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { interviewUtils } from 'modules/interview/interviewUtils';
 import { InputType, InterviewStatus } from 'constants/application';
-import { Divider, Radio } from 'antd';
+import { Divider, Radio, message } from 'antd';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import { useForm, Controller } from 'react-hook-form';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
@@ -14,9 +14,26 @@ import { MasterDAO } from 'core/master/masterDAO';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { HTTPStatusCode } from 'constants/network';
 
-
-const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiringRequestNumber, scheduleTimezone, setScheduleTimezone, getScheduleSlotDate, setScheduleSlotDate, getScheduleSlotInfomation, setScheduleSlotInformation, scheduleSlotRadio, setScheduleSlotRadio, getSlotInformationHandler, getInterviewStatus }) => {
+const InterviewSchedule = ({
+	talentName,
+	key,
+	closeModal,
+	talentInfo,
+	hrId,
+	hiringRequestNumber,
+	scheduleTimezone,
+	setScheduleTimezone,
+	getScheduleSlotDate,
+	setScheduleSlotDate,
+	getScheduleSlotInfomation,
+	setScheduleSlotInformation,
+	scheduleSlotRadio,
+	setScheduleSlotRadio,
+	getSlotInformationHandler,
+	getInterviewStatus,
+}) => {
 	const {
 		register,
 		handleSubmit,
@@ -29,7 +46,7 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 		resetField,
 		formState: { errors },
 	} = useForm();
-
+	const [messageAPI, contextHolder] = message.useMessage();
 	const rescheduleReason = [
 		{ id: 1, value: 'Client not available on given Slots' },
 		{ id: 2, value: 'Client not available on selected Slot' },
@@ -44,7 +61,7 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 	const getTimeZone = useCallback(async () => {
 		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
 		setScheduleTimezone(response && response?.responseBody);
-	}, []);
+	}, [setScheduleTimezone]);
 	useEffect(() => {
 		getTimeZone();
 	}, [getTimeZone]);
@@ -52,7 +69,7 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 	const scheduleInterviewAPIHandler = async (data) => {
 		const scheduleData = {
 			slotType: scheduleSlotRadio,
-			recheduleSlots:
+			rescheduleSlots:
 				scheduleSlotRadio === 1
 					? getScheduleSlotInfomation
 					: getScheduleSlotInfomation?.slice(0, 1),
@@ -65,38 +82,42 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 			hiringRequestNumber: hiringRequestNumber,
 			workingTimeZoneID: data?.interviewTimezone,
 			shortListedID: '',
+			additional_notes: data?.additionalNotes,
+			interviewCallLink: data?.interviewCallLink ? data?.interviewCallLink : '',
 		};
 		let response = await hiringRequestDAO.getSchduleInterviewInformation(
 			scheduleData,
 		);
-		closeModal();
-		resetScheduleFields();
+		if (response.statusCode === HTTPStatusCode.OK) {
+			alert('Scheduled Inteview');
+			closeModal();
+			resetScheduleFields();
+		}
 	};
-
 
 	useEffect(() => {
 		resetScheduleFields();
-	}, [scheduleSlotRadio])
+	}, [scheduleSlotRadio]);
 
 	const resetScheduleFields = () => {
-		resetField("additionalNotes")
-		resetField("interviewCallLink")
-		resetField('slot1Date')
-		resetField('slot1StartTime')
-		resetField('slot1EndTime')
-		resetField('slot2Date')
-		resetField('slot2StartTime')
-		resetField('slot2EndTime')
-		resetField('slot3Date')
-		resetField('slot3StartTime')
-		resetField('slot3EndTime')
-	}
-
+		resetField('additionalNotes');
+		resetField('interviewCallLink');
+		resetField('slot1Date');
+		resetField('slot1StartTime');
+		resetField('slot1EndTime');
+		resetField('slot2Date');
+		resetField('slot2StartTime');
+		resetField('slot2EndTime');
+		resetField('slot3Date');
+		resetField('slot3StartTime');
+		resetField('slot3EndTime');
+	};
 
 	return (
 		<div
 			className={InterviewScheduleStyle.interviewContainer}
 			id={key}>
+			{/* {{ contextHolder }} */}
 			<div className={InterviewScheduleStyle.leftPane}>
 				<h3>Schedule Interview</h3>
 			</div>
@@ -174,11 +195,10 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 										value={scheduleSlotRadio}>
 										<Radio value={1}>Slot options provided by the client</Radio>
 
-										<Radio value={4}>
-											Send a link shared by client
+										<Radio value={4}>Send a link shared by client</Radio>
+										<Radio value={2}>
+											Slot Directly Added for Final Interview Slot
 										</Radio>
-										<Radio value={2}>Slot Directly Added for Final Interview Slot</Radio>
-
 									</Radio.Group>
 								</div>
 							</div>
@@ -238,24 +258,28 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 								<CalenderSVG />
 								<Controller
 									render={({ ...props }) => (
-										<DatePicker selected={getScheduleSlotDate[0].slot1}
+										<DatePicker
+											selected={getScheduleSlotDate[0].slot1}
 											placeholderText="Select Date"
 											onChange={(date) => {
-												setValue('slot1Date', date)
-												getSlotInformationHandler(date, "slot1Date", "schedule")
-											}
-											}
+												setValue('slot1Date', date);
+												getSlotInformationHandler(
+													date,
+													'slot1Date',
+													'schedule',
+												);
+											}}
 										/>
 									)}
 									name="slot1Date"
 									rules={{ required: true }}
 									control={control}
 								/>
-								{errors.slot1Date &&
+								{errors.slot1Date && (
 									<div className={InterviewScheduleStyle.error}>
 										Please select slot1 date
-									</div>}
-
+									</div>
+								)}
 							</div>
 							<div
 								className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -265,8 +289,12 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 										<DatePicker
 											selected={getScheduleSlotDate[0].slot2}
 											onChange={(date) => {
-												setValue('slot1StartTime', date)
-												getSlotInformationHandler(date, "slot1StartTime", "schedule")
+												setValue('slot1StartTime', date);
+												getSlotInformationHandler(
+													date,
+													'slot1StartTime',
+													'schedule',
+												);
 											}}
 											showTimeSelect
 											showTimeSelectOnly
@@ -280,12 +308,12 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 									name="slot1StartTime"
 									rules={{ required: true }}
 									control={control}
-
 								/>
-								{errors.slot1StartTime &&
+								{errors.slot1StartTime && (
 									<div className={InterviewScheduleStyle.error}>
 										Please select start time
-									</div>}
+									</div>
+								)}
 							</div>
 							<div
 								className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -295,8 +323,12 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 										<DatePicker
 											selected={getScheduleSlotDate[0].slot3}
 											onChange={(date) => {
-												setValue('slot1EndTime', date)
-												getSlotInformationHandler(date, "slot1EndTime", "schedule")
+												setValue('slot1EndTime', date);
+												getSlotInformationHandler(
+													date,
+													'slot1EndTime',
+													'schedule',
+												);
 											}}
 											showTimeSelect
 											showTimeSelectOnly
@@ -310,12 +342,12 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 									name="slot1EndTime"
 									rules={{ required: true }}
 									control={control}
-
 								/>
-								{errors.slot1EndTime &&
+								{errors.slot1EndTime && (
 									<div className={InterviewScheduleStyle.error}>
 										Please select end time
-									</div>}
+									</div>
+								)}
 							</div>
 						</div>
 						{scheduleSlotRadio === 1 && (
@@ -330,20 +362,28 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 										<CalenderSVG />
 										<Controller
 											render={({ ...props }) => (
-												<DatePicker selected={getScheduleSlotDate[1].slot1} placeholderText="Select Date" onChange={(date) => {
-													setValue('slot2Date', date)
-													getSlotInformationHandler(date, "slot2Date", "schedule")
-												}
-												} />
+												<DatePicker
+													selected={getScheduleSlotDate[1].slot1}
+													placeholderText="Select Date"
+													onChange={(date) => {
+														setValue('slot2Date', date);
+														getSlotInformationHandler(
+															date,
+															'slot2Date',
+															'schedule',
+														);
+													}}
+												/>
 											)}
 											name="slot2Date"
 											rules={{ required: true }}
 											control={control}
 										/>
-										{errors.slot2Date &&
+										{errors.slot2Date && (
 											<div className={InterviewScheduleStyle.error}>
 												Please select date
-											</div>}
+											</div>
+										)}
 									</div>
 									<div
 										className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -354,10 +394,13 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 												<DatePicker
 													selected={getScheduleSlotDate[1].slot2}
 													onChange={(date) => {
-														setValue('slot2StartTime', date)
-														getSlotInformationHandler(date, "slot2StartTime", "schedule")
-													}
-													}
+														setValue('slot2StartTime', date);
+														getSlotInformationHandler(
+															date,
+															'slot2StartTime',
+															'schedule',
+														);
+													}}
 													showTimeSelect
 													showTimeSelectOnly
 													timeIntervals={60}
@@ -370,12 +413,12 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 											name="slot2StartTime"
 											rules={{ required: true }}
 											control={control}
-
 										/>
-										{errors.slot2StartTime &&
+										{errors.slot2StartTime && (
 											<div className={InterviewScheduleStyle.error}>
 												Please select start time
-											</div>}
+											</div>
+										)}
 									</div>
 									<div
 										className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -386,8 +429,12 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 												<DatePicker
 													selected={getScheduleSlotDate[1].slot3}
 													onChange={(date) => {
-														setValue('slot2EndTime', date)
-														getSlotInformationHandler(date, "slot2EndTime", "schedule")
+														setValue('slot2EndTime', date);
+														getSlotInformationHandler(
+															date,
+															'slot2EndTime',
+															'schedule',
+														);
 													}}
 													showTimeSelect
 													showTimeSelectOnly
@@ -401,12 +448,12 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 											name="slot2EndTime"
 											control={control}
 											rules={{ required: true }}
-
 										/>
-										{errors.slot2EndTime &&
+										{errors.slot2EndTime && (
 											<div className={InterviewScheduleStyle.error}>
 												Please select end time
-											</div>}
+											</div>
+										)}
 									</div>
 								</div>
 
@@ -420,10 +467,16 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 										<CalenderSVG />
 										<Controller
 											render={({ ...props }) => (
-												<DatePicker placeholderText="Select Date" selected={getScheduleSlotDate[2].slot1}
+												<DatePicker
+													placeholderText="Select Date"
+													selected={getScheduleSlotDate[2].slot1}
 													onChange={(date) => {
-														setValue('slot3Date', date)
-														getSlotInformationHandler(date, "slot3Date", "schedule")
+														setValue('slot3Date', date);
+														getSlotInformationHandler(
+															date,
+															'slot3Date',
+															'schedule',
+														);
 													}}
 												/>
 											)}
@@ -431,11 +484,11 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 											control={control}
 											rules={{ required: true }}
 										/>
-										{errors.slot3Date &&
+										{errors.slot3Date && (
 											<div className={InterviewScheduleStyle.error}>
 												Please select date
-											</div>}
-
+											</div>
+										)}
 									</div>
 									<div
 										className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -446,10 +499,13 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 												<DatePicker
 													selected={getScheduleSlotDate[2].slot2}
 													onChange={(date) => {
-														setValue('slot3StartTime', date)
-														getSlotInformationHandler(date, "slot3StartTime", "schedule")
-													}
-													}
+														setValue('slot3StartTime', date);
+														getSlotInformationHandler(
+															date,
+															'slot3StartTime',
+															'schedule',
+														);
+													}}
 													showTimeSelect
 													showTimeSelectOnly
 													timeIntervals={60}
@@ -462,12 +518,12 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 											name="slot3StartTime"
 											rules={{ required: true }}
 											control={control}
-
 										/>
-										{errors.slot3StartTime &&
+										{errors.slot3StartTime && (
 											<div className={InterviewScheduleStyle.error}>
 												Please select start time
-											</div>}
+											</div>
+										)}
 									</div>
 									<div
 										className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -478,10 +534,13 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 												<DatePicker
 													selected={getScheduleSlotDate[2].slot3}
 													onChange={(date) => {
-														setValue('slot3EndTime', date)
-														getSlotInformationHandler(date, "slot3EndTime", "schedule")
-													}
-													}
+														setValue('slot3EndTime', date);
+														getSlotInformationHandler(
+															date,
+															'slot3EndTime',
+															'schedule',
+														);
+													}}
 													showTimeSelect
 													showTimeSelectOnly
 													timeIntervals={60}
@@ -494,18 +553,16 @@ const InterviewSchedule = ({ talentName, key, closeModal, talentInfo, hrId, hiri
 											name="slot3EndTime"
 											rules={{ required: true }}
 											control={control}
-
 										/>
-										{errors.slot3EndTime &&
+										{errors.slot3EndTime && (
 											<div className={InterviewScheduleStyle.error}>
 												Please select end time
-											</div>}
+											</div>
+										)}
 									</div>
 								</div>
-							</>)
-
-						}
-
+							</>
+						)}
 
 						<div className={InterviewScheduleStyle.row}>
 							<div className={InterviewScheduleStyle.colMd12}>
