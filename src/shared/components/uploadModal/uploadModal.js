@@ -48,7 +48,8 @@ const UploadModal = ({
 					...getValidation,
 					systemFileUpload: '',
 				})
-				message('File Uploaded Successfully')
+				message.success('File uploaded successfully')
+
 			}
 		}
 		uploadFile.current.value = '';
@@ -92,7 +93,7 @@ const UploadModal = ({
 
 			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 				setUploadModal(false);
-				message('File uploaded successfully')
+				message.success('File uploaded successfully')
 
 			}
 		}
@@ -141,7 +142,7 @@ const UploadModal = ({
 			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 				setUploadModal(false);
 				setGoogleDriveLink("")
-				message('File uploaded successfully')
+				message.success('File uploaded successfully')
 			}
 		}
 	}
