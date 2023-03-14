@@ -23,6 +23,7 @@ import { MasterDAO } from 'core/master/masterDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
+import { toast } from 'react-toastify';
 
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
@@ -130,6 +131,7 @@ const HRDetailScreen = () => {
 		callAPI(urlSplitter?.split('HR')[0]);
 	}, [urlSplitter, callAPI]);
 
+	console.log(apiData, '--APIDATA--');
 	return (
 		<WithLoader showLoader={isLoading}>
 			<div className={HRDetailStyle.hiringRequestContainer}>

@@ -33,6 +33,7 @@ const UsersFields = ({ id }) => {
 	const [userTypeEdit, setUserTypeEdit] = useState('Please select');
 	const [controlledUserRole, setControlledUserRole] = useState('Please select');
 	const [isLoading, setIsLoading] = useState(false);
+	const [formLoading, setFormLoading] = useState(false);
 	const [userType, setUserType] = useState([]);
 	const [teamManager, setTeamManager] = useState([]);
 	const [opsTeamManager, setOpsTeamManager] = useState([]);
@@ -67,9 +68,10 @@ const UsersFields = ({ id }) => {
 	const getEmployeeIDAlreadyExist = useCallback(
 		async (data) => {
 			console.log('--getEmployeeIDAlreadyExist daya---', data);
-			let companyNameDuplicate = await userDAO.getDuplicateEmployeeIDRequestDAO(
-				{ userID: id !== 0 ? id : 0, employeeID: data },
-			);
+			let companyNameDuplicate = await userDAO.getIsEmployeeIDExistRequestDAO({
+				userID: id !== 0 ? id : 0,
+				employeeID: data,
+			});
 			console.log(companyNameDuplicate, '---companyNameDuplicate');
 			setError('employeeId', {
 				type: 'duplicateEmployeeID',
@@ -86,11 +88,12 @@ const UsersFields = ({ id }) => {
 	const getEmployeeFullNameAlreadyExist = useCallback(
 		async (data) => {
 			console.log('-- getEmployeeFullNameAlreadyExistdaya---', data);
-			let companyNameDuplicate =
-				await userDAO.getDuplicateEmployeeNameRequestDAO({
+			let companyNameDuplicate = await userDAO.getIsEmployeeNameExistRequestDAO(
+				{
 					userID: id !== 0 ? id : 0,
-					fullName: data,
-				});
+					employeeName: data,
+				},
+			);
 			console.log(companyNameDuplicate, '---companyNameDuplicate');
 			setError('employeeFullName', {
 				type: 'duplicateEmployeeFullName',
@@ -197,6 +200,7 @@ const UsersFields = ({ id }) => {
 		!_isNull(watchUserType) && getGEO();
 		!_isNull(watchReporteeManager) && getReporteeManager();
 		!_isNull(watchUserRole) && getBDRMarketingOnUserType();
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id, watchReporteeManager, watchUserType, watchUserRole]);
 
@@ -212,6 +216,11 @@ const UsersFields = ({ id }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id]);
 
+	useEffect(() => {
+		if (watch('userType')?.id === UserAccountRole.LEGAL) {
+			console.log('hereh--');
+		}
+	}, [watch]);
 	useEffect(() => {
 		if (id !== 0) {
 			let result = userType?.filter(
@@ -241,15 +250,18 @@ const UsersFields = ({ id }) => {
 		}
 	}, [id, setValue, userDetails?.roleId, userRole]);
 
-	const hrSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
-		let userFormDetails = userUtils.userDataFormatter(d, id);
+	const userSubmitHandler = useCallback(
+		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+			setFormLoading(true);
+			let userFormDetails = userUtils.userDataFormatter(d, id);
 
-		let userResponse = await userAPI.createUserRequest(userFormDetails);
+			let userResponse = await userAPI.createUserRequest(userFormDetails);
 
-		if (userResponse.statusCode === HTTPStatusCode.OK) {
-			navigate(UTSRoutes.USERLISTROUTE);
-		}
-		/* let hrFormDetails = hrUtils.hrFormDataFormatter(
+			if (userResponse.statusCode === HTTPStatusCode.OK) {
+				setFormLoading(false);
+				navigate(UTSRoutes.USERLISTROUTE);
+			}
+			/* let hrFormDetails = hrUtils.hrFormDataFormatter(
 			d,
 			type,
 			watch,
@@ -258,7 +270,7 @@ const UsersFields = ({ id }) => {
 			addHRResponse,
 		);
  */
-		/* if (type === SubmitType.SAVE_AS_DRAFT) {
+			/* if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(watch('clientName'))) {
 				return setError('clientName', {
 					type: 'emptyClientName',
@@ -270,7 +282,7 @@ const UsersFields = ({ id }) => {
 		}
 		const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails); */
 
-		/* if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+			/* if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 			setAddHRResponse(addHRRequest?.responseBody?.details);
 			console.log(addHRRequest?.responseBody?.details?.en_Id, '---eniD');
 			setEnID(addHRRequest?.responseBody?.details?.en_Id);
@@ -284,7 +296,9 @@ const UsersFields = ({ id }) => {
 					content: 'HR details has been saved to draft.',
 				});
 		} */
-	};
+		},
+		[id, navigate],
+	);
 
 	return (
 		<div className={UserFieldStyle.hrFieldContainer}>
@@ -301,7 +315,7 @@ const UsersFields = ({ id }) => {
 									}}
 									disabled={type === SubmitType.SUBMIT}
 									className={UserFieldStyle.btnPrimary}
-									onClick={handleSubmit(hrSubmitHandler)}>
+									onClick={handleSubmit(userSubmitHandler)}>
 									Edit User
 								</button>
 							</div>
@@ -329,7 +343,7 @@ const UsersFields = ({ id }) => {
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
 									value={id !== 0 ? userDetails?.fullName : null}
-									disabled={id !== 0 && true}
+									disabled={id !== 0 || isLoading}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -784,7 +798,14 @@ const UsersFields = ({ id }) => {
 										watch('userType')?.id === UserAccountRole.FINANCE_EXECUTIVE
 									}
 									isTextArea={true}
-									errors={errors}
+									errors={
+										(watch('userType')?.id === UserAccountRole.SALES ||
+											watch('userType')?.id === UserAccountRole.TALENTOPS ||
+											watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
+											watch('userType')?.id ===
+												UserAccountRole.FINANCE_EXECUTIVE) &&
+										errors
+									}
 									label={'Description'}
 									register={register}
 									name="description"
@@ -813,7 +834,7 @@ const UsersFields = ({ id }) => {
 							// }}
 							// disabled={id !== 0 && true}
 							className={UserFieldStyle.btnPrimary}
-							onClick={handleSubmit(hrSubmitHandler)}>
+							onClick={handleSubmit(userSubmitHandler)}>
 							Submit
 						</button>
 

@@ -31,7 +31,6 @@ const HRSelectField = ({
 				})),
 			);
 		} else if (mode === 'id/value') {
-			console.log('--option--', option);
 			setValue(name, {
 				id: option.id,
 				value: option.value,

@@ -34,6 +34,8 @@ export class UserAPI {
 	static ADD_NEW_USER = 'AddEdit';
 	static GET_USER_DETAIL = 'GetUserDetail';
 	static UPDATEPASSWORD = '/updatepassword';
+	static IS_EMPLOYEE_ID_EXIST = 'IsEmployeeIDExist';
+	static IS_EMPLOYEE_NAME_EXIST = 'IsEmployeeFullNameExist';
 }
 
 export class AllHiringRequestAPI {

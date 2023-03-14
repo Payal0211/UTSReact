@@ -65,14 +65,6 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.HOMEROUTE,
 		}),
 		new SideBarModels({
-			id: 'UTS_all_hiring_request',
-			title: 'HR',
-			isActive: false,
-			icon: Briefcase,
-			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
-		}),
-
-		new SideBarModels({
 			id: 'UTS_DealList',
 			title: 'Deal',
 			isActive: false,
@@ -81,11 +73,19 @@ const getSideBar = () => {
 		}),
 		new SideBarModels({
 			id: 'UTS_UserList',
-			title: 'User',
+			title: 'Users',
 			isActive: false,
 			icon: HR,
 			navigateTo: UTSRoutes.USERLISTROUTE,
 		}),
+		new SideBarModels({
+			id: 'UTS_all_hiring_request',
+			title: 'HR',
+			isActive: false,
+			icon: Briefcase,
+			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
+		}),
+
 		new SideBarModels({
 			id: 'UTS_Onboard',
 			title: 'Onboard',
