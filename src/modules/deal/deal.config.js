@@ -137,16 +137,16 @@ export const DealConfig = {
 			{ name: 'BDR', child: ['FTE', 'PTE'], isSearch: false },
 			{ name: 'Sales Consultant', child: [], isSearch: true },
 			{ name: 'Deal Stage', child: [], isSearch: true },
-			{
+			/* {
 				name: 'HR Status',
 				child: [
-					/* {
+					{
 						statusCode: HiringRequestHRStatus.DRAFT,
 						label: 'Draft',
-					}, */
+					},
 				],
 				isSearch: false,
-			},
+			}, */
 		];
 	},
 };

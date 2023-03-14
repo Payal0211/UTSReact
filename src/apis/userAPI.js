@@ -65,4 +65,36 @@ export const userAPI = {
 			return errorDebug(error, 'UserAPI.getUserDetailsRequest');
 		}
 	},
+	getIsEmployeeIDExistRequest: async (userData) => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.USER +
+				UserAPI.IS_EMPLOYEE_ID_EXIST +
+				`?id=${userData?.userID}&employeeId=${userData?.employeeID}`;
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserAPI.getIsEmployeeIDExistRequest');
+		}
+	},
+	getIsEmployeeNameExistRequest: async (userData) => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.USER +
+				UserAPI.IS_EMPLOYEE_NAME_EXIST +
+				`?id=${userData?.userID}&employeeFullName=${userData?.employeeName}`;
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserAPI.getIsEmployeeNameExistRequest');
+		}
+	},
 };

@@ -37,6 +37,7 @@ const DealList = () => {
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
+	const [getHTMLFilter, setHTMLFilter] = useState(false);
 	const [pageSize, setPageSize] = useState(100);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [isLoading, setLoading] = useState(false);
@@ -46,7 +47,10 @@ const DealList = () => {
 	const [endDate, setEndDate] = useState(null);
 
 	const onRemoveDealFilters = () => {
-		setIsAllowFilters(false);
+		setTimeout(() => {
+			setIsAllowFilters(false);
+		}, 300);
+		setHTMLFilter(false);
 	};
 	const onChange = (dates) => {
 		const [start, end] = dates;
