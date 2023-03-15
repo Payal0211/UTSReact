@@ -31,6 +31,12 @@ const DealListLazyComponents = React.lazy(() =>
 	import('modules/deal/components/dealFilters/dealFilters'),
 );
 const DealList = () => {
+	const [tableFilteredState, setTableFilteredState] = useState({
+		pagesize: 100,
+		pagenum: 1,
+		sortdatafield: 'CreatedDateTime',
+		sortorder: 'desc',
+	});
 	const pageSizeOptions = [100, 200, 300, 500];
 	const [dealList, setDealList] = useState([]);
 	const [search, setSearch] = useState('');
@@ -38,13 +44,14 @@ const DealList = () => {
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
 	const [getHTMLFilter, setHTMLFilter] = useState(false);
+	const [filtersList, setFiltersList] = useState([]);
 	const [pageSize, setPageSize] = useState(100);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [isLoading, setLoading] = useState(false);
+	const [filteredTagLength, setFilteredTagLength] = useState(0);
+	const [appliedFilter, setAppliedFilters] = useState(new Map());
+	const [checkedState, setCheckedState] = useState(new Map());
 	const navigate = useNavigate();
-	/*--------- React DatePicker ---------------- */
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
 
 	const onRemoveDealFilters = () => {
 		setTimeout(() => {
@@ -93,6 +100,28 @@ const DealList = () => {
 		[navigate],
 	);
 
+	const getDealFilterRequest = useCallback(async () => {
+		const response = await DealDAO.getAllFilterDataForDealRequestDAO();
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setFiltersList(response && response?.responseBody?.details?.Data);
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			return 'NO DATA FOUND';
+		}
+	}, [navigate]);
+
+	const toggleDealFilter = useCallback(() => {
+		getDealFilterRequest();
+		!getHTMLFilter
+			? setIsAllowFilters(!isAllowFilters)
+			: setTimeout(() => {
+					setIsAllowFilters(!isAllowFilters);
+			  }, 300);
+		setHTMLFilter(!getHTMLFilter);
+	}, [getDealFilterRequest, getHTMLFilter, isAllowFilters]);
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
@@ -100,7 +129,33 @@ const DealList = () => {
 	useEffect(() => {
 		fetchDealListAPIResponse();
 	}, [fetchDealListAPIResponse]);
+	/*--------- React DatePicker ---------------- */
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
 
+	const onCalenderFilter = (dates) => {
+		const [start, end] = dates;
+
+		setStartDate(start);
+		setEndDate(end);
+
+		if (start && end) {
+			setTableFilteredState({
+				...tableFilteredState,
+				filterFields_ViewAllHRs: {
+					fromDate: new Date(start).toLocaleDateString('en-US'),
+					toDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			});
+			fetchDealListAPIResponse({
+				...tableFilteredState,
+				filterFields_ViewAllHRs: {
+					fromDate: new Date(start).toLocaleDateString('en-US'),
+					toDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			});
+		}
+	};
 	return (
 		<div className={DealListStyle.dealContainer}>
 			<div className={DealListStyle.header}>
@@ -110,7 +165,7 @@ const DealList = () => {
 				<div className={DealListStyle.filterSets}>
 					<div
 						className={DealListStyle.addFilter}
-						onClick={() => setIsAllowFilters(!isAllowFilters)}>
+						onClick={toggleDealFilter}>
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
 						<div className={DealListStyle.filterLabel}>Add Filters</div>
@@ -233,7 +288,16 @@ const DealList = () => {
 			{isAllowFilters && (
 				<Suspense>
 					<DealListLazyComponents
+						setAppliedFilters={setAppliedFilters}
+						appliedFilter={appliedFilter}
+						setCheckedState={setCheckedState}
+						checkedState={checkedState}
+						handleDealRequest={fetchDealListAPIResponse}
+						setTableFilteredState={setTableFilteredState}
+						tableFilteredState={tableFilteredState}
+						setFilteredTagLength={setFilteredTagLength}
 						onRemoveDealFilters={onRemoveDealFilters}
+						getHTMLFilter={getHTMLFilter}
 						hrFilterList={DealConfig.dealFiltersListConfig()}
 						filtersType={DealConfig.dealFilterTypeConfig()}
 					/>

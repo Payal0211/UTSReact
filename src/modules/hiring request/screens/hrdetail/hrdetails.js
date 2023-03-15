@@ -60,6 +60,7 @@ const HRDetailScreen = () => {
 	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 	const miscData = UserSessionManagementController.getUserSession();
 
+	console.log('apiData--', apiData);
 	const callAPI = useCallback(
 		async (hrid) => {
 			setLoading(true);
@@ -236,6 +237,7 @@ const HRDetailScreen = () => {
 						) : (
 							<Suspense>
 								<TalentProfileCard
+									talentCTA={apiData?.talent_CTAs}
 									HRStatusCode={apiData?.HRStatusCode}
 									talentDetail={apiData?.HRTalentDetails}
 									hrId={apiData.HR_Id}

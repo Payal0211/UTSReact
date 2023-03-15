@@ -101,7 +101,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.TRParked}>
 								<span>TR Parked:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.NoOfTalents - talentLength}
+									{clientDetail?.TR_Accepted ? clientDetail?.TR_Accepted : 'NA'}
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.roleName}>

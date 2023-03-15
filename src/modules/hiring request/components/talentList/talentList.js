@@ -17,6 +17,7 @@ import { _isNull } from 'shared/utils/basic_utils';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
 
 const TalentList = ({
+	talentCTA,
 	talentDetail,
 	miscData,
 	HRStatusCode,
@@ -38,7 +39,8 @@ const TalentList = ({
 	const [showScheduleInterviewModal, setScheduleInterviewModal] =
 		useState(false);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
-
+	console.log('--talentDetails---', talentCTA);
+	console.log(talentCTA?.[0]?.cTAInfoList[0]?.Label);
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
 		{ slot1: null, slot2: null, slot3: null },
 		{ slot1: null, slot2: null, slot3: null },
@@ -1136,7 +1138,7 @@ const TalentList = ({
 											}}>
 											<img
 												src={
-													!item?.ProfileURL
+													item?.ProfileURL
 														? item?.ProfileURL
 														: 'https://www.w3schools.com/howto/img_avatar.png'
 												}
@@ -1371,16 +1373,12 @@ const TalentList = ({
 										textAlign: 'start !important',
 									}}>
 									<HROperator
-										title="Update kickoff & Onboard Status"
+										title={talentCTA?.[listIndex]?.cTAInfoList[0]?.Label}
 										icon={<AiOutlineDown />}
 										backgroundColor={`var(--color-sunlight)`}
 										iconBorder={`1px solid var(--color-sunlight)`}
 										isDropdown={true}
-										listItem={hrUtils.showOnboardStatus(
-											item,
-											miscData,
-											HRStatusCode,
-										)}
+										listItem={hrUtils.showTalentCTA(talentCTA)}
 										menuAction={(menuItem) => {
 											switch (menuItem.key) {
 												case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
