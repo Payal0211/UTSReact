@@ -533,6 +533,9 @@ export const hrUtils = {
 			];
 		}
 	},
+	showTalentCTA(item) {
+		return item?.cTAInfoList;
+	},
 	handleTalentStatus(item, HRStatusCode) {
 		if (
 			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&

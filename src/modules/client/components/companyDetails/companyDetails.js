@@ -275,9 +275,8 @@ const CompanyDetails = ({
 							/>
 						</div>
 						<UploadModal
-							footer={true}
+							isFooter={true}
 							modalTitle={'Upload Logo'}
-							isFooter={false}
 							openModal={showUploadModal}
 							cancelModal={() => setUploadModal(false)}
 						/>

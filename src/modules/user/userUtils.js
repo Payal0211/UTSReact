@@ -49,7 +49,7 @@ export const userUtils = {
 			geoId: d.geo,
 			isOdr: d.odrPool,
 			managerID: d.salesManager?.id,
-			priorityCount: parseInt(d.priorityCount),
+			priorityCount: _isNull(d.priorityCount) ? 0 : parseInt(d.priorityCount),
 			skypeId: d.skypeID,
 			emailId: d.emailID,
 			contactNumber: d.contactNumber,

@@ -29,9 +29,11 @@ export const secondaryInterviewer = {
 };
 
 const UsersFields = ({ id }) => {
+	const [enableAllFields, setEnableAllFields] = useState(false);
 	const [userDetails, setUserDetails] = useState(null);
 	const [userTypeEdit, setUserTypeEdit] = useState('Please select');
 	const [controlledUserRole, setControlledUserRole] = useState('Please select');
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [formLoading, setFormLoading] = useState(false);
 	const [userType, setUserType] = useState([]);
@@ -128,6 +130,7 @@ const UsersFields = ({ id }) => {
 		return () => clearTimeout(timer);
 	}, [getEmployeeFullNameAlreadyExist, watchEmployeeName]);
 	const navigate = useNavigate();
+
 	const getCodeAndFlag = async () => {
 		const getCodeAndFlagResponse = await MasterDAO.getCodeAndFlagRequestDAO();
 		setFlagAndCode(
@@ -200,9 +203,8 @@ const UsersFields = ({ id }) => {
 		!_isNull(watchUserType) && getGEO();
 		!_isNull(watchReporteeManager) && getReporteeManager();
 		!_isNull(watchUserRole) && getBDRMarketingOnUserType();
-
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [id, watchReporteeManager, watchUserType, watchUserRole]);
+	}, []);
 
 	useEffect(() => {
 		id !== 0 && getUserDetails();
@@ -216,11 +218,6 @@ const UsersFields = ({ id }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id]);
 
-	useEffect(() => {
-		if (watch('userType')?.id === UserAccountRole.LEGAL) {
-			console.log('hereh--');
-		}
-	}, [watch]);
 	useEffect(() => {
 		if (id !== 0) {
 			let result = userType?.filter(
@@ -249,16 +246,20 @@ const UsersFields = ({ id }) => {
 			setControlledUserRole(userRoleResult?.[0]?.value);
 		}
 	}, [id, setValue, userDetails?.roleId, userRole]);
-
+	const enableALlFieldsMemo = useMemo(
+		() => id !== 0 && !enableAllFields,
+		[enableAllFields, id],
+	);
+	const editButtonHandler = useCallback(() => {
+		setEnableAllFields(true);
+	}, []);
 	const userSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
-			setFormLoading(true);
 			let userFormDetails = userUtils.userDataFormatter(d, id);
 
 			let userResponse = await userAPI.createUserRequest(userFormDetails);
 
 			if (userResponse.statusCode === HTTPStatusCode.OK) {
-				setFormLoading(false);
 				navigate(UTSRoutes.USERLISTROUTE);
 			}
 			/* let hrFormDetails = hrUtils.hrFormDataFormatter(
@@ -307,7 +308,7 @@ const UsersFields = ({ id }) => {
 					<div className={UserFieldStyle.hrFieldLeftPane}>
 						<h3>{id === 0 ? 'Add New User' : 'Edit User'}</h3>
 						<p>Please provide the necessary details</p>
-						{id !== 0 && (
+						{enableALlFieldsMemo && (
 							<div className={UserFieldStyle.formPanelAction}>
 								<button
 									style={{
@@ -315,7 +316,7 @@ const UsersFields = ({ id }) => {
 									}}
 									disabled={type === SubmitType.SUBMIT}
 									className={UserFieldStyle.btnPrimary}
-									onClick={handleSubmit(userSubmitHandler)}>
+									onClick={editButtonHandler}>
 									Edit User
 								</button>
 							</div>
@@ -326,8 +327,8 @@ const UsersFields = ({ id }) => {
 						<div className={UserFieldStyle.row}>
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
-									value={id !== 0 ? userDetails?.employeeId : null}
-									disabled={id !== 0 || isLoading}
+									value={enableALlFieldsMemo ? userDetails?.employeeId : null}
+									disabled={enableALlFieldsMemo || isLoading}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -342,8 +343,8 @@ const UsersFields = ({ id }) => {
 							</div>
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
-									value={id !== 0 ? userDetails?.fullName : null}
-									disabled={id !== 0 || isLoading}
+									value={enableALlFieldsMemo ? userDetails?.fullName : null}
+									disabled={enableALlFieldsMemo || isLoading}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -396,7 +397,7 @@ const UsersFields = ({ id }) => {
 										controlledValue={userTypeEdit}
 										setControlledValue={setUserTypeEdit}
 										isControlled={true}
-										disabled={id !== 0}
+										disabled={enableALlFieldsMemo}
 										mode="id/value"
 										setValue={setValue}
 										register={register}
@@ -420,7 +421,7 @@ const UsersFields = ({ id }) => {
 											controlledValue={controlledUserRole}
 											setControlledValue={setControlledUserRole}
 											isControlled={true}
-											disabled={id !== 0}
+											disabled={enableALlFieldsMemo}
 											setValue={setValue}
 											register={register}
 											label={'User Role'}
@@ -440,6 +441,7 @@ const UsersFields = ({ id }) => {
 								<div className={UserFieldStyle.colMd6}>
 									<div className={UserFieldStyle.formGroup}>
 										<HRSelectField
+											disabled={enableALlFieldsMemo}
 											setValue={setValue}
 											register={register}
 											label={'Is ODR/Pool?'}
@@ -558,8 +560,8 @@ const UsersFields = ({ id }) => {
 							{watch('userType')?.id === UserAccountRole.SALES_MANAGER && (
 								<div className={UserFieldStyle.colMd6}>
 									<HRInputField
-										value={id !== 0 ? userDetails?.fullName : null}
-										disabled={id !== 0 && true}
+										value={enableALlFieldsMemo ? userDetails?.fullName : null}
+										disabled={enableALlFieldsMemo && true}
 										register={register}
 										errors={errors}
 										validationSchema={{
@@ -660,6 +662,7 @@ const UsersFields = ({ id }) => {
 						<div className={UserFieldStyle.row}>
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
+									disabled={enableALlFieldsMemo}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -679,8 +682,8 @@ const UsersFields = ({ id }) => {
 							</div>
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
-									value={id !== 0 ? userDetails?.emailId : null}
-									disabled={id !== 0 && true}
+									value={enableALlFieldsMemo ? userDetails?.emailId : null}
+									disabled={enableALlFieldsMemo && true}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -707,6 +710,7 @@ const UsersFields = ({ id }) => {
 									</label>
 									<div className={UserFieldStyle.phoneNoCode}>
 										<HRSelectField
+											disabled={enableALlFieldsMemo}
 											searchable={true}
 											setValue={setValue}
 											register={register}
@@ -717,6 +721,7 @@ const UsersFields = ({ id }) => {
 									</div>
 									<div className={UserFieldStyle.phoneNoInput}>
 										<HRInputField
+											disabled={enableALlFieldsMemo}
 											required={watch('userType')?.id === UserAccountRole.SALES}
 											register={register}
 											name={'primaryClientPhoneNumber'}
@@ -732,8 +737,8 @@ const UsersFields = ({ id }) => {
 
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
-									value={id !== 0 ? userDetails?.designation : null}
-									disabled={id !== 0 && true}
+									value={enableALlFieldsMemo ? userDetails?.designation : null}
+									disabled={enableALlFieldsMemo && true}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -746,15 +751,10 @@ const UsersFields = ({ id }) => {
 									required
 								/>
 							</div>
-
 							<div className={UserFieldStyle.colMd12}>
 								<HRInputField
-									value={
-										userDetails?.profilePic
-											? userDetails?.profilePic
-											: 'Upload Profile Picture'
-									}
-									disabled={id !== 0 && true}
+									value={userDetails?.profilePic ? userDetails?.profilePic : ''}
+									disabled={enableALlFieldsMemo && true}
 									register={register}
 									leadingIcon={<UploadSVG />}
 									label="Profile Picture"
@@ -791,6 +791,7 @@ const UsersFields = ({ id }) => {
 
 							<div className={UserFieldStyle.colMd12}>
 								<HRInputField
+									disabled={enableALlFieldsMemo}
 									required={
 										watch('userType')?.id === UserAccountRole.SALES ||
 										watch('userType')?.id === UserAccountRole.TALENTOPS ||
@@ -830,9 +831,9 @@ const UsersFields = ({ id }) => {
 					<div className={UserFieldStyle.formPanelAction}>
 						<button
 							// style={{
-							// 	cursor: id !== 0 ? 'no-drop' : 'pointer',
+							// 	cursor: enableALlFieldsMemo? 'no-drop' : 'pointer',
 							// }}
-							// disabled={id !== 0 && true}
+							// disabled={enableALlFieldsMemo && true}
 							className={UserFieldStyle.btnPrimary}
 							onClick={handleSubmit(userSubmitHandler)}>
 							Submit

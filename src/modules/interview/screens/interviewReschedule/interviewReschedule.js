@@ -91,7 +91,7 @@ const InterviewReschedule = ({
 				rescheduleRequestBy: reScheduleRadio,
 				reasonforReschedule: data?.interviewRescheduleReason?.value,
 				slotType: reScheduleSlotRadio,
-				rescheduleSlot:
+				RescheduleSlot:
 					reScheduleSlotRadio === 1
 						? getRescheduleSlotInfomation
 						: getRescheduleSlotInfomation.slice(0, 1),
@@ -104,7 +104,7 @@ const InterviewReschedule = ({
 				hiringRequestNumber: hiringRequestNumber,
 				workingTimeZoneID: data?.interviewTimezone,
 				nextRound_InterviewDetailsID: 0,
-				additional_notes: data?.additionalNotes,
+				additional_notes: data?.additionalNotes ? data?.additionalNotes : '',
 				interviewCallLink: data?.interviewCallLink
 					? data?.interviewCallLink
 					: '',
@@ -117,7 +117,7 @@ const InterviewReschedule = ({
 					type: 'info',
 					content: "Cann't see the talent status.",
 				}); */
-				alert('Interview is rescheduled.');
+				message.success('Interview rescheduled successfully');
 				closeModal();
 				resetReScheduleFields();
 			}
@@ -650,18 +650,21 @@ const InterviewReschedule = ({
 								</div>
 							</>
 						)}
-						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd12}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									label="Additional Notes"
-									name="additionalNotes"
-									type={InputType.TEXT}
-									placeholder="Add Notes"
-								/>
+
+						{reScheduleSlotRadio === 4 && (
+							<div className={InterviewScheduleStyle.row}>
+								<div className={InterviewScheduleStyle.colMd12}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										label="Additional Notes"
+										name="additionalNotes"
+										type={InputType.TEXT}
+										placeholder="Add Notes"
+									/>
+								</div>
 							</div>
-						</div>
+						)}
 					</form>
 				</div>
 			</div>

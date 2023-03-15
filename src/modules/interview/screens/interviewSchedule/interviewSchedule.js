@@ -69,7 +69,7 @@ const InterviewSchedule = ({
 	const scheduleInterviewAPIHandler = async (data) => {
 		const scheduleData = {
 			slotType: scheduleSlotRadio,
-			rescheduleSlots:
+			RecheduleSlots:
 				scheduleSlotRadio === 1
 					? getScheduleSlotInfomation
 					: getScheduleSlotInfomation?.slice(0, 1),
@@ -82,14 +82,14 @@ const InterviewSchedule = ({
 			hiringRequestNumber: hiringRequestNumber,
 			workingTimeZoneID: data?.interviewTimezone,
 			shortListedID: '',
-			additional_notes: data?.additionalNotes,
+			additional_notes: data?.additionalNotes ? data?.additionalNotes : '',
 			interviewCallLink: data?.interviewCallLink ? data?.interviewCallLink : '',
 		};
 		let response = await hiringRequestDAO.getSchduleInterviewInformation(
 			scheduleData,
 		);
 		if (response.statusCode === HTTPStatusCode.OK) {
-			alert('Scheduled Inteview');
+			message.success('Interview scheduled successfully');
 			closeModal();
 			resetScheduleFields();
 		}
@@ -564,18 +564,20 @@ const InterviewSchedule = ({
 							</>
 						)}
 
-						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd12}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									label="Additional Notes"
-									name="additionalNotes"
-									type={InputType.TEXT}
-									placeholder="Add Notes"
-								/>
+						{scheduleSlotRadio === 4 && (
+							<div className={InterviewScheduleStyle.row}>
+								<div className={InterviewScheduleStyle.colMd12}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										label="Additional Notes"
+										name="additionalNotes"
+										type={InputType.TEXT}
+										placeholder="Add Notes"
+									/>
+								</div>
 							</div>
-						</div>
+						)}
 					</form>
 				</div>
 			</div>

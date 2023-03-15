@@ -56,4 +56,29 @@ export const DealDAO = {
 			return errorDebug(error, 'DealDAO.getDealDetailRequestDAO');
 		}
 	},
+	getAllFilterDataForDealRequestDAO: async function () {
+		try {
+			const dealFilterResponse = await DealAPI.getAllFilterDataForDealRequest();
+			if (dealFilterResponse) {
+				const statusCode = dealFilterResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = dealFilterResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return dealFilterResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return dealFilterResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'DealDAO.getAllFilterDataForDealRequestDAO');
+		}
+	},
 };

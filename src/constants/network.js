@@ -108,6 +108,7 @@ export class InterviewsAPI {
 export class DealsAPI {
 	static LIST = 'List';
 	static DETAIL = 'Detail';
+	static DEAL_FILTER = 'FilterCriterias';
 }
 export class HTTPStatusCode {
 	static OK = 200;

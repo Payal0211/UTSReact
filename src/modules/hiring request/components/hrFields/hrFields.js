@@ -66,7 +66,12 @@ const HRFields = ({
 	const [addHRResponse, setAddHRResponse] = useState(null);
 	const [type, setType] = useState('');
 	const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
-
+	const [getValidation, setValidation] = useState({
+		systemFileUpload: '',
+		googleDriveFileUpload: '',
+		linkValidation: '',
+	});
+	const [getGoogleDriveLink, setGoogleDriveLink] = useState('');
 	const {
 		watch,
 		register,
@@ -84,6 +89,16 @@ const HRFields = ({
 		control,
 		name: 'secondaryInterviewer',
 	}); */
+
+	useEffect(() => {
+		setValidation({
+			systemFileUpload: '',
+			googleDriveFileUpload: '',
+			linkValidation: '',
+		});
+		setGoogleDriveLink('');
+	}, [showUploadModal]);
+
 	let prefRegion = watch('region');
 	const getTimeZonePreference = useCallback(async () => {
 		const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO(
@@ -390,12 +405,23 @@ const HRFields = ({
 								onClickHandler={() => setUploadModal(true)}
 							/>
 						</div>
-						<UploadModal
+						{/* <UploadModal
 							footer={true}
 							modalTitle={'Upload Logo'}
 							isFooter={false}
 							openModal={showUploadModal}
 							cancelModal={() => setUploadModal(false)}
+						/> */}
+						<UploadModal
+							modalTitle={'Upload JD'}
+							isFooter={true}
+							openModal={showUploadModal}
+							setUploadModal={setUploadModal}
+							cancelModal={() => setUploadModal(false)}
+							setValidation={setValidation}
+							getValidation={getValidation}
+							getGoogleDriveLink={getGoogleDriveLink}
+							setGoogleDriveLink={setGoogleDriveLink}
 						/>
 
 						<div className={HRFieldStyle.colMd6}>
