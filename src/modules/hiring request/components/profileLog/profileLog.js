@@ -15,6 +15,11 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
+	const [calenderFilter, setCalenderFilter] = useState({
+		talentid: 0,
+		fromDate: 'mm/dd/yyyy',
+		toDate: 'mm/dd/yyyy',
+	});
 	const getTechScore = useCallback(async () => {
 		const response = await hiringRequestDAO.getTalentProfileLogDAO(talentID);
 		setProfileLog(response && response?.responseBody?.details);
@@ -72,11 +77,25 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 
-	const onChange = (dates) => {
+	/* const onCalenderFilter = (dates) => {
 		const [start, end] = dates;
 		setStartDate(start);
 		setEndDate(end);
-	};
+		if (start && end) {
+			setCalenderFilter({
+				...calenderFilter,
+				fromDate: new Date(start).toLocaleDateString('en-US'),
+				toDate: new Date(end).toLocaleDateString('en-US'),
+			});
+			handleHRRequest({
+				...tableFilteredState,
+				filterFields_ViewAllHRs: {
+					fromDate: new Date(start).toLocaleDateString('en-US'),
+					toDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			});
+		}
+	}; */
 	return (
 		<div className={ProfileStyle.profileContainer}>
 			<div className={ProfileStyle.flexStart}>
@@ -110,7 +129,7 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 								className={ProfileStyle.dateFilter}
 								placeholderText="Start date - End date"
 								selected={startDate}
-								onChange={onChange}
+								// onChange={}
 								startDate={startDate}
 								endDate={endDate}
 								selectsRange

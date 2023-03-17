@@ -5,7 +5,7 @@ import { RiArrowDropDownLine } from 'react-icons/ri';
 import TalentListStyle from './talentList.module.css';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
-import { Fragment, useEffect, useState, useCallback } from 'react';
+import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
 import { AddNewType, TalentOnboardStatus } from 'constants/application';
 import { MasterDAO } from 'core/master/masterDAO';
@@ -1061,7 +1061,7 @@ const TalentList = ({
 	};
 
 	const getInterviewStatus = () => {
-		switch (talentDetail[talentIndex]?.InterviewStatus) {
+		switch (filterTalentID?.InterviewStatus) {
 			case 'Feedback Submitted':
 				return 7;
 				break;
@@ -1085,6 +1085,18 @@ const TalentList = ({
 		}
 	};
 
+	const filterTalentID = useMemo(
+		() =>
+			talentDetail?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
+		[talentDetail, talentIndex],
+	);
+
+	const filterTalentCTAs = useMemo(
+		() =>
+			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
+		[talentCTA, talentIndex],
+	);
+	console.log(filterTalentCTAs, '--filteredCTAs');
 	useEffect(() => {
 		scheuleResetDataHander();
 		setScheduleSlotRadio(1);
@@ -1121,7 +1133,7 @@ const TalentList = ({
 				renderItem={(item, listIndex) => (
 					<div
 						key={item?.Name}
-						id={listIndex}>
+						id={item?.TalentID}>
 						<div className={TalentListStyle.talentCard}>
 							<div className={TalentListStyle.talentCardBody}>
 								<div className={TalentListStyle.partWise}>
@@ -1353,7 +1365,7 @@ const TalentList = ({
 									}}
 									onClick={() => {
 										setVersantModal(true);
-										setTalentIndex(listIndex);
+										setTalentIndex(item?.TalentID);
 									}}>
 									Versant Test Results
 								</div>
@@ -1374,29 +1386,30 @@ const TalentList = ({
 											textAlign: 'start !important',
 										}}>
 										<HROperator
+											onClickHandler={() => setTalentIndex(item?.TalentID)}
 											title={talentCTA?.[listIndex]?.cTAInfoList[0]?.label}
 											icon={<AiOutlineDown />}
 											backgroundColor={`var(--color-sunlight)`}
 											iconBorder={`1px solid var(--color-sunlight)`}
 											isDropdown={true}
-											listItem={hrUtils.showTalentCTA(talentCTA, listIndex)}
+											listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
 											menuAction={(menuItem) => {
 												switch (menuItem.key) {
 													case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 														setScheduleInterviewModal(true);
-														setTalentIndex(listIndex);
+														setTalentIndex(item?.TalentID);
 														break;
 													}
 													case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
 														setReScheduleInterviewModal(true);
-														setTalentIndex(listIndex);
+														setTalentIndex(item?.TalentID);
 														break;
 													}
 													case TalentOnboardStatus.TALENT_STATUS: {
 														if (
 															hrUtils.handleTalentStatus(item, HRStatusCode)
 														) {
-															setTalentIndex(listIndex);
+															setTalentIndex(item?.TalentID);
 														} else {
 															messageAPI.open({
 																type: 'info',
@@ -1467,7 +1480,7 @@ const TalentList = ({
 									fontWeight: 500,
 									textDecoration: 'underline',
 								}}>
-								{talentDetail[talentIndex]?.Name}
+								{filterTalentID?.Name}
 							</span>
 						</div>
 						<div
@@ -1481,7 +1494,7 @@ const TalentList = ({
 								style={{
 									fontWeight: 500,
 								}}>
-								{talentDetail[talentIndex]?.TalentRole}
+								{filterTalentID?.TalentRole}
 							</span>
 						</div>
 					</div>
@@ -1564,7 +1577,7 @@ const TalentList = ({
 									fontWeight: 500,
 									textDecoration: 'underline',
 								}}>
-								{talentDetail[talentIndex]?.Name}
+								{filterTalentID?.Name}
 							</span>
 						</div>
 						<div
@@ -1623,9 +1636,9 @@ const TalentList = ({
 				onCancel={() => setReScheduleInterviewModal(false)}>
 				<InterviewReschedule
 					closeModal={() => setReScheduleInterviewModal(false)}
-					talentName={talentDetail[talentIndex]?.Name}
+					talentName={filterTalentID?.Name}
 					hrId={hrId}
-					talentInfo={talentDetail[talentIndex]}
+					talentInfo={filterTalentID}
 					hiringRequestNumber={hiringRequestNumber}
 					reScheduleTimezone={reScheduleTimezone}
 					setRescheduleTimezone={setRescheduleTimezone}
@@ -1651,8 +1664,8 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setScheduleInterviewModal(false)}>
 				<InterviewSchedule
-					talentName={talentDetail[talentIndex]?.Name}
-					talentInfo={talentDetail[talentIndex]}
+					talentName={filterTalentID?.Name}
+					talentInfo={filterTalentID}
 					hrId={hrId}
 					closeModal={() => setScheduleInterviewModal(false)}
 					hiringRequestNumber={hiringRequestNumber}

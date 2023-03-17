@@ -91,7 +91,7 @@ export class AddNewType {
 
 export class TalentOnboardStatus {
 	static SCHEDULE_INTERVIEW = 'Schedule Interview';
-	static RESCHEDULE_INTERVIEW = 'ReSchedule Interview';
+	static RESCHEDULE_INTERVIEW = 'Reschedule Interview';
 	static TALENT_STATUS = 'Talent Status';
 	static TALENT_ACCEPTANCE = 'TalentAcceptance';
 	static UPDATE_KICKOFF = 'Update kickoff & Onboard Status';
