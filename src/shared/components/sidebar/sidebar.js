@@ -1,6 +1,4 @@
 import { Link, useLocation } from 'react-router-dom';
-import GridSVG from 'assets/svg/grid.svg';
-
 import HR from 'assets/svg/hr.svg';
 import Briefcase from 'assets/svg/briefcase.svg';
 import Handshake from 'assets/svg/handshake.svg';
@@ -62,7 +60,7 @@ const getSideBar = () => {
 			id: 'UTS_dashboard',
 			title: 'Dashboard',
 			isActive: true,
-			icon: GridSVG,
+			icon: HR,
 			navigateTo: UTSRoutes.HOMEROUTE,
 		}),
 		new SideBarModels({
