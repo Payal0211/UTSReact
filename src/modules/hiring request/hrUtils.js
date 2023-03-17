@@ -12,7 +12,7 @@ import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import MatchmakingModal from './components/matchmaking/matchmaking';
 export const hrUtils = {
 	modifyHRRequestData: (hrData) => {
-		return hrData.responseBody.Data.map((item) => ({
+		return hrData?.responseBody?.rows.map((item) => ({
 			key: item.hrid,
 			starStatus: item.starMarkedStatusCode,
 			adHocHR: item.adHocHR,
@@ -533,9 +533,10 @@ export const hrUtils = {
 			];
 		}
 	},
-	showTalentCTA(item, index) {
+	showTalentCTA(item) {
+		// console.log('--index---', item);
 		let tempArray = [];
-		item?.[index]?.cTAInfoList?.map((item) =>
+		item?.cTAInfoList?.map((item) =>
 			tempArray.push({
 				key: item?.label,
 				label: item?.label,

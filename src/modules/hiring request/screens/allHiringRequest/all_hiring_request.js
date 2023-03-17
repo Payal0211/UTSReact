@@ -109,6 +109,7 @@ const AllHiringRequestScreen = () => {
 			let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
 				pageData,
 			);
+
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setTotalRecords(response?.responseBody?.TotalRecords);
 				setLoading(false);
@@ -160,7 +161,7 @@ const AllHiringRequestScreen = () => {
 					setIsAllowFilters(!isAllowFilters);
 			  }, 300);
 		setHTMLFilter(!getHTMLFilter);
-	}, [getHRFilterRequest, isAllowFilters]);
+	}, [getHRFilterRequest, getHTMLFilter, isAllowFilters]);
 
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);

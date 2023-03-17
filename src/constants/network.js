@@ -12,6 +12,7 @@ export class SubDomain {
 	static MASTERS = 'MastersAPI/';
 	static CLIENT = 'Client/';
 	static HIRING = 'Hiring/';
+	static MATCHMAKING = 'Matchmaking/';
 	static DEBRIEFING = 'Debriefing/';
 	static INTERVIEW = 'Interview/';
 	static DEAL = 'Deal/';
