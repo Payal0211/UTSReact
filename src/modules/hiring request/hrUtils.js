@@ -533,8 +533,15 @@ export const hrUtils = {
 			];
 		}
 	},
-	showTalentCTA(item) {
-		return item?.cTAInfoList;
+	showTalentCTA(item, index) {
+		let tempArray = [];
+		item?.[index]?.cTAInfoList?.map((item) =>
+			tempArray.push({
+				key: item?.label,
+				label: item?.label,
+			}),
+		);
+		return tempArray;
 	},
 	handleTalentStatus(item, HRStatusCode) {
 		if (

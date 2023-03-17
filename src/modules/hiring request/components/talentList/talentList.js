@@ -1366,61 +1366,65 @@ const TalentList = ({
 										margin: '10px 0',
 									}}
 								/>
-								<div
-									style={{
-										position: 'absolute',
-										marginTop: '10px',
-										textAlign: 'start !important',
-									}}>
-									<HROperator
-										title={talentCTA?.[listIndex]?.cTAInfoList[0]?.Label}
-										icon={<AiOutlineDown />}
-										backgroundColor={`var(--color-sunlight)`}
-										iconBorder={`1px solid var(--color-sunlight)`}
-										isDropdown={true}
-										listItem={hrUtils.showTalentCTA(talentCTA)}
-										menuAction={(menuItem) => {
-											switch (menuItem.key) {
-												case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
-													setScheduleInterviewModal(true);
-													setTalentIndex(listIndex);
-													break;
-												}
-												case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
-													setReScheduleInterviewModal(true);
-													setTalentIndex(listIndex);
-													break;
-												}
-												case TalentOnboardStatus.TALENT_STATUS: {
-													if (hrUtils.handleTalentStatus(item, HRStatusCode)) {
+								{talentCTA[listIndex]?.cTAInfoList?.length > 0 && (
+									<div
+										style={{
+											position: 'absolute',
+											marginTop: '10px',
+											textAlign: 'start !important',
+										}}>
+										<HROperator
+											title={talentCTA?.[listIndex]?.cTAInfoList[0]?.label}
+											icon={<AiOutlineDown />}
+											backgroundColor={`var(--color-sunlight)`}
+											iconBorder={`1px solid var(--color-sunlight)`}
+											isDropdown={true}
+											listItem={hrUtils.showTalentCTA(talentCTA, listIndex)}
+											menuAction={(menuItem) => {
+												switch (menuItem.key) {
+													case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
+														setScheduleInterviewModal(true);
 														setTalentIndex(listIndex);
-													} else {
-														messageAPI.open({
-															type: 'info',
-															content: "Cann't see the talent status.",
-														});
+														break;
 													}
-													break;
-												}
-												case TalentOnboardStatus.UPDATE_KICKOFF: {
-													if (
-														hrUtils.handlerUpdateKickOff(item, HRStatusCode)
-													) {
+													case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
+														setReScheduleInterviewModal(true);
 														setTalentIndex(listIndex);
-													} else {
-														messageAPI.open({
-															type: 'info',
-															content: "Cann't update the talent.",
-														});
+														break;
 													}
-													break;
+													case TalentOnboardStatus.TALENT_STATUS: {
+														if (
+															hrUtils.handleTalentStatus(item, HRStatusCode)
+														) {
+															setTalentIndex(listIndex);
+														} else {
+															messageAPI.open({
+																type: 'info',
+																content: "Cann't see the talent status.",
+															});
+														}
+														break;
+													}
+													case TalentOnboardStatus.UPDATE_KICKOFF: {
+														if (
+															hrUtils.handlerUpdateKickOff(item, HRStatusCode)
+														) {
+															setTalentIndex(listIndex);
+														} else {
+															messageAPI.open({
+																type: 'info',
+																content: "Cann't update the talent.",
+															});
+														}
+														break;
+													}
+													default:
+														break;
 												}
-												default:
-													break;
-											}
-										}}
-									/>
-								</div>
+											}}
+										/>
+									</div>
+								)}
 							</div>
 						</div>
 					</div>

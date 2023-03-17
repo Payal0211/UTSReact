@@ -103,7 +103,7 @@ const DealList = () => {
 	const getDealFilterRequest = useCallback(async () => {
 		const response = await DealDAO.getAllFilterDataForDealRequestDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			setFiltersList(response && response?.responseBody?.details?.Data);
+			setFiltersList(response && response?.responseBody?.details);
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
@@ -299,7 +299,9 @@ const DealList = () => {
 						onRemoveDealFilters={onRemoveDealFilters}
 						getHTMLFilter={getHTMLFilter}
 						hrFilterList={DealConfig.dealFiltersListConfig()}
-						filtersType={DealConfig.dealFilterTypeConfig()}
+						filtersType={DealConfig.dealFilterTypeConfig(
+							filtersList && filtersList,
+						)}
 					/>
 				</Suspense>
 			)}

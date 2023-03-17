@@ -111,42 +111,53 @@ export const DealConfig = {
 			{ name: 'No Show' },
 		];
 	},
-	dealFilterTypeConfig: () => {
+	dealFilterTypeConfig: (filtersList) => {
 		return [
-			{ name: 'Deal ID', child: ['ODR', 'Pool'], isSearch: false },
 			{
-				name: 'Lead Source',
-				child: [
-					'Outbound',
-					'Inbound SEO',
-					'Inbound DL',
-					'Inbound CMS',
-					'Inbound LI',
-					'Inbound Direct',
-					'Inbound ABM',
-				],
-				isSearch: false,
-			},
-			{
-				name: 'Pipeline',
-				child: ['3', '4', '7', '9', '10'],
-				isSearch: false,
-			},
-			{ name: 'Company', child: [], isSearch: true },
-			{ name: 'Geo', child: ['UK', 'USA', 'AU'], isSearch: true },
-			{ name: 'BDR', child: ['FTE', 'PTE'], isSearch: false },
-			{ name: 'Sales Consultant', child: [], isSearch: true },
-			{ name: 'Deal Stage', child: [], isSearch: true },
-			/* {
-				name: 'HR Status',
+				label: 'Deal ID',
+				name: 'dealID',
 				child: [
 					{
-						statusCode: HiringRequestHRStatus.DRAFT,
-						label: 'Draft',
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '1',
+						value: 'ODR',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '2',
+						value: 'Pool',
 					},
 				],
 				isSearch: false,
-			}, */
+			},
+			{
+				label: 'Lead Source',
+				child: filtersList?.LeadSource,
+				isSearch: false,
+			},
+			{
+				label: 'Pipeline',
+				child: ['3', '4', '7', '9', '10'],
+				isSearch: false,
+			},
+			{
+				label: 'Company',
+				name: 'company',
+				child: filtersList?.Company,
+				isSearch: true,
+			},
+			{ label: 'Geo', child: filtersList?.Geo, isSearch: true },
+			{ label: 'BDR', child: filtersList?.BDR, isSearch: false },
+			{
+				label: 'Sales Consultant',
+				child: filtersList?.SalesConsultant,
+				isSearch: true,
+			},
+			{ label: 'Deal Stage', child: filtersList?.DealStage, isSearch: true },
 		];
 	},
 };

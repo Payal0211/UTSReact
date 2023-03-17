@@ -211,7 +211,7 @@ const HRDetailScreen = () => {
 						<br />
 					</>
 				) : (
-					apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED && (
+					apiData?.NextActionsForTalent?.length > 0 && (
 						<Suspense>
 							<NextActionItem nextAction={apiData?.NextActionsForTalent} />
 						</Suspense>

@@ -22,6 +22,7 @@ const Sidebar = () => {
 				{sidebarDataSets?.map(({ navigateTo, icon, title }, index) => {
 					return (
 						<Tooltip
+							key={index}
 							placement="right"
 							title={title}>
 							<div
