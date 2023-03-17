@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import DealFiltersStyle from './dealFilterStyle.module.css';
 import { ReactComponent as ArrowRightSVG } from 'assets/svg/arrowRight.svg';
 import { ReactComponent as CrossSVG } from 'assets/svg/cross.svg';
@@ -28,6 +28,18 @@ const DealFilters = ({
 		setToggleBack(true);
 		setFilterSubChild(item);
 	};
+	useEffect(() => {
+		getHTMLFilter
+			? setTimeout(() => {
+					document
+						.querySelector(`.${DealFiltersStyle.aside}`)
+						.classList.add(`${DealFiltersStyle.closeFilter}`);
+			  }, 300)
+			: document
+					.querySelector(`.${DealFiltersStyle.aside}`)
+					.classList.remove(`${DealFiltersStyle.closeFilter}`);
+	}, [getHTMLFilter]);
+
 	const handleAppliedFilters = useCallback(
 		(isChecked, filterObj) => {
 			let tempAppliedFilters = new Map(appliedFilter);
@@ -212,7 +224,7 @@ const DealFilters = ({
 					{toggleBack ? (
 						<>
 							<span className={DealFiltersStyle.label}>
-								{filterSubChild.name}
+								{filterSubChild.label}
 							</span>
 							<br />
 							{filterSubChild.isSearch && (
