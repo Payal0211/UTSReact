@@ -16,10 +16,10 @@ const AddNewHR = React.lazy(() =>
 const AddNewClient = React.lazy(() =>
 	import('modules/client/screens/addnewClient/add_new_client'),
 );
-
-/* const InterviewList = React.lazy(() =>
+const InterviewList = React.lazy(() =>
 	import('modules/interview/screens/interviewList/interviewList'),
 );
+/* 
 
 const InterviewSchedule = React.lazy(() =>
 	import('modules/interview/screens/interviewReschedule/interviewReschedule'),
@@ -107,16 +107,16 @@ export const navigateToComponent = {
 			<AddNewUser />
 		</Suspense>
 	),
-	/* [UTSRoutes.INTERVIEWLISTROUTE]: (
+	[UTSRoutes.INTERVIEWLISTROUTE]: (
 		<Suspense>
 			<InterviewList />
 		</Suspense>
-	),
+	) /*
 	[UTSRoutes.INTERVIEWSCHEDULE]: (
 		<Suspense>
 			<InterviewSchedule />
 		</Suspense>
-	), */
+	), */,
 	/* [UTSRoutes.INTERVIEWFEEDBACK]: (
 		<Suspense>
 			<InterviewFeedback />

@@ -39,16 +39,7 @@ const HRFields = ({
 	setTabFieldDisabled,
 }) => {
 	const inputRef = useRef(null);
-	/* const mastersKey = useMemo(() => {
-		return {
-			availability: MastersKey.AVAILABILITY,
-			timeZonePref: MastersKey.TIMEZONE,
-			talentRole: MastersKey.TALENTROLE,
-			salesPerson: MastersKey.SALESPERSON,
-		};
-	}, []); */
-	// const { returnState } = useMastersAPI(mastersKey);
-	// const { availability, timeZonePref, talentRole, salesPerson } = returnState;
+
 	const [availability, setAvailability] = useState([]);
 	const [timeZonePref, setTimeZonePref] = useState([]);
 	const [workingMode, setWorkingMode] = useState([]);
@@ -89,15 +80,47 @@ const HRFields = ({
 		control,
 		name: 'secondaryInterviewer',
 	}); */
-
-	useEffect(() => {
-		setValidation({
-			systemFileUpload: '',
-			googleDriveFileUpload: '',
-			linkValidation: '',
-		});
-		setGoogleDriveLink('');
-	}, [showUploadModal]);
+	const uploadFile = useRef(null);
+	const uploadFileHandler = useCallback(
+		async (fileData) => {
+			if (
+				fileData?.type !== 'application/pdf' &&
+				fileData?.type !== 'application/docs' &&
+				fileData?.type !== 'application/msword' &&
+				fileData?.type !== 'text/plain' &&
+				fileData?.type !==
+					'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+				fileData?.type !== 'image/png' &&
+				fileData?.type !== 'image/jpeg'
+			) {
+				setValidation({
+					...getValidation,
+					systemFileUpload:
+						'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
+				});
+			} else if (fileData?.size >= 500000) {
+				setValidation({
+					...getValidation,
+					systemFileUpload:
+						'Upload file size more than 500kb, Please Upload file upto 500kb',
+				});
+			} else {
+				let formData = new FormData();
+				formData.append('File', fileData);
+				let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
+				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+					setUploadModal(false);
+					setValidation({
+						...getValidation,
+						systemFileUpload: '',
+					});
+					message.success('File uploaded successfully');
+				}
+			}
+			uploadFile.current.value = '';
+		},
+		[getValidation],
+	);
 
 	let prefRegion = watch('region');
 	const getTimeZonePreference = useCallback(async () => {
@@ -246,6 +269,14 @@ const HRFields = ({
 		getWorkingMode,
 		getCountry,
 	]);
+	useEffect(() => {
+		setValidation({
+			systemFileUpload: '',
+			googleDriveFileUpload: '',
+			linkValidation: '',
+		});
+		setGoogleDriveLink('');
+	}, [showUploadModal]);
 	/** To check Duplicate email exists End */
 
 	const [messageAPI, contextHolder] = message.useMessage();
@@ -405,14 +436,10 @@ const HRFields = ({
 								onClickHandler={() => setUploadModal(true)}
 							/>
 						</div>
-						{/* <UploadModal
-							footer={true}
-							modalTitle={'Upload Logo'}
-							isFooter={false}
-							openModal={showUploadModal}
-							cancelModal={() => setUploadModal(false)}
-						/> */}
+						{/** TODO:-  */}
 						<UploadModal
+							uploadFileRef={uploadFile}
+							uploadFileHandler={uploadFileHandler}
 							modalTitle={'Upload JD'}
 							isFooter={true}
 							openModal={showUploadModal}

@@ -25,18 +25,25 @@ export const dealUtils = {
 			dealStageColorCode: item.dealStageColorCode,
 		}));
 	},
+	dealFilterSearch: (e, data) => {
+		let filteredData = data.filter((val) => {
+			return val.value.toLowerCase().includes(e.target.value.toLowerCase());
+		});
+		return filteredData;
+	},
 	dealListSearch: (e, apiData) => {
 		let filteredData = apiData?.filter((val) => {
 			return (
 				(val?.deal_Id &&
 					val?.deal_Id.toLowerCase().includes(e.target.value.toLowerCase())) ||
-				/* 			val?.lead_Type.toLowerCase().includes(e.target.value.toLowerCase()) ||
+				val?.lead_Type.toLowerCase().includes(e.target.value.toLowerCase()) ||
+				val?.bdr.toLowerCase().includes(e.target.value.toLowerCase()) ||
 				val?.pipeline.toLowerCase().includes(e.target.value.toLowerCase()) ||
 				val.company.toLowerCase().includes(e.target.value.toLowerCase()) ||
 				val.geo.toLowerCase().includes(e.target.value.toLowerCase()) ||
 				val.sales_Consultant
 					.toLowerCase()
-					.includes(e.target.value.toLowerCase()) || */
+					.includes(e.target.value.toLowerCase()) ||
 				val.dealStage.toLowerCase().includes(e.target.value.toLowerCase())
 			);
 		});

@@ -8,6 +8,7 @@ import UploadModalStyle from './uploadModal.module.css';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { Form } from 'react-router-dom';
 import { HTTPStatusCode } from 'constants/network';
+
 const UploadModal = ({
 	isFooter,
 	openModal,
@@ -20,47 +21,10 @@ const UploadModal = ({
 	getGoogleDriveLink,
 	setGoogleDriveLink,
 	setUploadModal,
+	uploadFileRef,
+	uploadFileHandler,
 }) => {
-	const uploadFile = useRef(null);
 	const [openPicker, authResponse] = useDrivePicker();
-
-	const uploadFileValidator = async (fileData) => {
-		if (
-			fileData?.type !== 'application/pdf' &&
-			fileData?.type !== 'application/docs' &&
-			fileData?.type !== 'application/msword' &&
-			fileData?.type !== 'text/plain' &&
-			fileData?.type !==
-				'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
-			fileData?.type !== 'image/png' &&
-			fileData?.type !== 'image/jpeg'
-		) {
-			setValidation({
-				...getValidation,
-				systemFileUpload:
-					'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
-			});
-		} else if (fileData?.size >= 500000) {
-			setValidation({
-				...getValidation,
-				systemFileUpload:
-					'Upload file size more than 500kb, Please Upload file upto 500kb',
-			});
-		} else {
-			let formData = new FormData();
-			formData.append('File', fileData);
-			let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
-			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
-				setUploadModal(false);
-				setValidation({
-					...getValidation,
-					systemFileUpload: '',
-				});
-				message.success('File uploaded successfully');
-			}
-		}
-		uploadFile.current.value = '';
-	};
 
 	const uploadFileFromGoogleDriveValidator = async (fileData) => {
 		setValidation({
@@ -189,11 +153,11 @@ const UploadModal = ({
 					<input
 						style={{ height: '10vh', background: 'red' }}
 						type={InputType.FILE}
-						ref={uploadFile}
+						ref={uploadFileRef}
 						id="modalFile"
 						name="modalFileUpload"
 						onChange={(e) => {
-							uploadFileValidator(e.target.files[0]);
+							// uploadFileValidator(e.target.files[0]);
 						}}
 					/>
 

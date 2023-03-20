@@ -20,19 +20,23 @@ const HiringFilters = ({
 	tableFilteredState,
 	setTableFilteredState,
 	filtersType,
-	getHTMLFilter
+	getHTMLFilter,
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
 	const [filterSubChild, setFilterSubChild] = useState(null);
 
 	useEffect(() => {
-		getHTMLFilter ?
-			setTimeout(() => {
-				document.querySelector(`.${hiringFilterStyle.aside}`).classList.add(`${hiringFilterStyle.closeFilter}`)
-			}, 300) :
-			document.querySelector(`.${hiringFilterStyle.aside}`).classList.remove(`${hiringFilterStyle.closeFilter}`)
-	}, [getHTMLFilter])
+		getHTMLFilter
+			? setTimeout(() => {
+					document
+						.querySelector(`.${hiringFilterStyle.aside}`)
+						.classList.add(`${hiringFilterStyle.closeFilter}`);
+			  }, 300)
+			: document
+					.querySelector(`.${hiringFilterStyle.aside}`)
+					.classList.remove(`${hiringFilterStyle.closeFilter}`);
+	}, [getHTMLFilter]);
 
 	const toggleFilterSubChild = (item) => {
 		setToggleBack(true);
@@ -40,6 +44,7 @@ const HiringFilters = ({
 	};
 	const handleAppliedFilters = useCallback(
 		(isChecked, filterObj) => {
+			console.log(isChecked, '-----', filterObj, '---');
 			let tempAppliedFilters = new Map(appliedFilter);
 			let tempCheckedState = new Map(checkedState);
 			if (isChecked) {
@@ -216,9 +221,8 @@ const HiringFilters = ({
 						<CrossSVG
 							style={{ width: '26px' }}
 							onClick={() => {
-								onRemoveHRFilters()
-							}
-							}
+								onRemoveHRFilters();
+							}}
 						/>
 					</span>
 				</div>
@@ -250,7 +254,6 @@ const HiringFilters = ({
 							)}
 							<br />
 							<div className={hiringFilterStyle.filtersListType}>
-
 								{searchData && searchData.length > 0
 									? searchData.map((item, index) => {
 											return (
@@ -314,7 +317,6 @@ const HiringFilters = ({
 												</div>
 											);
 									  })}
-
 							</div>
 						</>
 					) : (
