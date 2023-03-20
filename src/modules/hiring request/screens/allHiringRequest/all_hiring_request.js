@@ -58,6 +58,7 @@ const AllHiringRequestScreen = () => {
 	const [filteredTagLength, setFilteredTagLength] = useState(0);
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
+
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
 			setIsAllowFilters(false);

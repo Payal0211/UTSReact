@@ -17,11 +17,11 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const [logExpanded, setLogExpanded] = useState(null);
 	const [calenderFilter, setCalenderFilter] = useState({
 		talentid: 0,
-		fromDate: 'mm/dd/yyyy',
-		toDate: 'mm/dd/yyyy',
+		fromDate: '',
+		toDate: '',
 	});
 	const getTechScore = useCallback(async () => {
-		const response = await hiringRequestDAO.getTalentProfileLogDAO(talentID);
+		const response = await hiringRequestDAO.getTalentTechScoreDAO(talentID);
 		setProfileLog(response && response?.responseBody?.details);
 	}, [talentID]);
 
@@ -60,19 +60,6 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 		},
 	];
 
-	const onProfileLogClickHandler = async (typeID, index, type) => {
-		setLogExpanded([]);
-		setActiveIndex(index);
-		setActiveType(type);
-		const profileObj = {
-			talentID: talentID,
-			typeID: typeID,
-		};
-		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
-			profileObj,
-		);
-		setLogExpanded(response && response?.responseBody?.details);
-	};
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
@@ -96,6 +83,23 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 			});
 		}
 	}; */
+	const onProfileLogClickHandler = async (typeID, index, type) => {
+		setLogExpanded([]);
+		setActiveIndex(index);
+		setActiveType(type);
+		const profileObj = {
+			talentID: talentID,
+			typeID: typeID,
+		};
+		setCalenderFilter({
+			...calenderFilter,
+			talentid: talentID,
+		});
+		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
+			profileObj,
+		);
+		setLogExpanded(response && response?.responseBody?.details);
+	};
 	return (
 		<div className={ProfileStyle.profileContainer}>
 			<div className={ProfileStyle.flexStart}>

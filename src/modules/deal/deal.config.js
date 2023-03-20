@@ -1,6 +1,7 @@
 import HRStatusComponent from 'modules/hiring request/components/hrStatus/hrStatusComponent';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { _isNull } from 'shared/utils/basic_utils';
 
 export const DealConfig = {
 	tableConfig: () => {
@@ -11,7 +12,7 @@ export const DealConfig = {
 				key: 'dealDate',
 				align: 'left',
 				render: (text) => {
-					return text ? text : 'NA';
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
 				},
 			},
 			{
@@ -91,7 +92,9 @@ export const DealConfig = {
 				key: 'dealStage',
 				align: 'left',
 				render: (text, param) => {
-					return (
+					return _isNull(text) ? (
+						'NA'
+					) : (
 						<HRStatusComponent
 							title={text}
 							backgroundColor={param.dealStageColorCode}

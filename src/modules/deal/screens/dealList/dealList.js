@@ -15,7 +15,6 @@ import React, {
 	useState,
 } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { InterviewDAO } from 'core/interview/interviewDAO';
 import { DealDAO } from 'core/deal/dealDAO';
 import UTSRoutes from 'constants/routes';
 
@@ -32,8 +31,8 @@ const DealListLazyComponents = React.lazy(() =>
 );
 const DealList = () => {
 	const [tableFilteredState, setTableFilteredState] = useState({
-		pagesize: 100,
-		pagenum: 1,
+		totalrecord: 100,
+		pagenumber: 1,
 		sortdatafield: 'CreatedDateTime',
 		sortorder: 'desc',
 	});
@@ -65,7 +64,7 @@ const DealList = () => {
 		setEndDate(end);
 	};
 	const tableColumnsMemo = useMemo(() => DealConfig.tableConfig(), []);
-	const fetchDealListAPIResponse = useCallback(
+	const handleDealRequest = useCallback(
 		async (pageData) => {
 			setLoading(true);
 			const response = await DealDAO.getDealListDAO(
@@ -103,7 +102,7 @@ const DealList = () => {
 	const getDealFilterRequest = useCallback(async () => {
 		const response = await DealDAO.getAllFilterDataForDealRequestDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			setFiltersList(response && response?.responseBody?.details);
+			setFiltersList(response && response?.responseBody?.details?.Data);
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
@@ -127,8 +126,9 @@ const DealList = () => {
 		return () => clearTimeout(timer);
 	}, [debouncedSearch]);
 	useEffect(() => {
-		fetchDealListAPIResponse();
-	}, [fetchDealListAPIResponse]);
+		handleDealRequest(tableFilteredState);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [tableFilteredState]);
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
@@ -147,7 +147,7 @@ const DealList = () => {
 					toDate: new Date(end).toLocaleDateString('en-US'),
 				},
 			});
-			fetchDealListAPIResponse({
+			handleDealRequest({
 				...tableFilteredState,
 				filterFields_ViewAllHRs: {
 					fromDate: new Date(start).toLocaleDateString('en-US'),
@@ -161,6 +161,10 @@ const DealList = () => {
 			<div className={DealListStyle.header}>
 				<div className={DealListStyle.dealLable}>Deal Listing</div>
 			</div>
+			{/*
+			 * --------- Filter Component Starts ---------
+			 * @Filter Part
+			 */}
 			<div className={DealListStyle.filterContainer}>
 				<div className={DealListStyle.filterSets}>
 					<div
@@ -169,7 +173,7 @@ const DealList = () => {
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
 						<div className={DealListStyle.filterLabel}>Add Filters</div>
-						<div className={DealListStyle.filterCount}>7</div>
+						<div className={DealListStyle.filterCount}>{filteredTagLength}</div>
 					</div>
 					<div className={DealListStyle.filterRight}>
 						<div className={DealListStyle.searchFilterSet}>
@@ -198,7 +202,7 @@ const DealList = () => {
 									className={DealListStyle.dateFilter}
 									placeholderText="Start date - End date"
 									selected={startDate}
-									onChange={onChange}
+									onChange={onCalenderFilter}
 									startDate={startDate}
 									endDate={endDate}
 									selectsRange
@@ -219,7 +223,8 @@ const DealList = () => {
 												setPageSize(parseInt(e.key));
 
 												if (pageSize !== parseInt(e.key)) {
-													fetchDealListAPIResponse({
+													handleDealRequest({
+														...tableFilteredState,
 														pageNumber: pageIndex,
 														totalRecord: parseInt(e.key),
 													});
@@ -262,12 +267,12 @@ const DealList = () => {
 								onChange: (pageNum, pageSize) => {
 									setPageIndex(pageNum);
 									setPageSize(pageSize);
-									// setTableFilteredState({
-									// 	...tableFilteredState,
-									// 	pagesize: pageSize,
-									// 	pagenum: pageNum,
-									// });
-									fetchDealListAPIResponse({
+									setTableFilteredState({
+										...tableFilteredState,
+										totalRecord: pageSize,
+										pageNumber: pageNum,
+									});
+									handleDealRequest({
 										pageNumber: pageNum,
 										totalRecord: pageSize,
 									});
@@ -292,7 +297,7 @@ const DealList = () => {
 						appliedFilter={appliedFilter}
 						setCheckedState={setCheckedState}
 						checkedState={checkedState}
-						handleDealRequest={fetchDealListAPIResponse}
+						handleDealRequest={handleDealRequest}
 						setTableFilteredState={setTableFilteredState}
 						tableFilteredState={tableFilteredState}
 						setFilteredTagLength={setFilteredTagLength}

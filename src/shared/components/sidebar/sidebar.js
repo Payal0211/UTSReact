@@ -2,7 +2,8 @@ import { Link, useLocation } from 'react-router-dom';
 import HR from 'assets/svg/hr.svg';
 import Briefcase from 'assets/svg/briefcase.svg';
 import Handshake from 'assets/svg/handshake.svg';
-
+import AddHR from 'assets/svg/addHR.svg';
+import HRDetails from 'assets/svg/HRDetails.svg';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -60,7 +61,7 @@ const getSideBar = () => {
 			id: 'UTS_dashboard',
 			title: 'Dashboard',
 			isActive: true,
-			icon: HR,
+			icon: AddHR,
 			navigateTo: UTSRoutes.HOMEROUTE,
 		}),
 		new SideBarModels({
@@ -92,7 +93,15 @@ const getSideBar = () => {
 			icon: HR,
 			navigateTo: UTSRoutes.ONBOARDROUTE,
 		}),
+		new SideBarModels({
+			id: 'UTS_Interview',
+			title: 'Interview',
+			isActive: false,
+			icon: HRDetails,
+			navigateTo: UTSRoutes.INTERVIEWLISTROUTE,
+		}),
 	];
+
 	return dataList;
 };
 

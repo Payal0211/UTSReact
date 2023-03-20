@@ -6,6 +6,7 @@ import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { Checkbox, Tag } from 'antd';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
+import { dealUtils } from 'modules/deal/dealUtils';
 
 const DealFilters = ({
 	onRemoveDealFilters,
@@ -42,6 +43,7 @@ const DealFilters = ({
 
 	const handleAppliedFilters = useCallback(
 		(isChecked, filterObj) => {
+			console.log(isChecked, '-----', filterObj, '---');
 			let tempAppliedFilters = new Map(appliedFilter);
 			let tempCheckedState = new Map(checkedState);
 			if (isChecked) {
@@ -83,7 +85,13 @@ const DealFilters = ({
 			setAppliedFilters(tempAppliedFilters);
 			setCheckedState(tempCheckedState);
 		},
-		[appliedFilter, checkedState, setFilteredTagLength],
+		[
+			appliedFilter,
+			checkedState,
+			setAppliedFilters,
+			setCheckedState,
+			setFilteredTagLength,
+		],
 	);
 	const filteredTags = useMemo(() => {
 		if (appliedFilter.size > 0) {
@@ -234,8 +242,9 @@ const DealFilters = ({
 									/>
 									<input
 										onChange={(e) => {
-											return setSearchData();
-											// hrUtils.hrFilterSearch(e, filterSubChild.child),
+											return setSearchData(
+												dealUtils.dealFilterSearch(e, filterSubChild.child),
+											);
 										}}
 										class={DealFiltersStyle.searchInput}
 										type="text"
@@ -336,8 +345,14 @@ const DealFilters = ({
 					<br />
 					<hr />
 					<div className={DealFiltersStyle.operationsFilters}>
-						<button className={DealFiltersStyle.clearAll}>Clear All</button>
-						<button className={DealFiltersStyle.applyFilters}>
+						<button
+							className={DealFiltersStyle.clearAll}
+							onClick={clearFilters}>
+							Clear All
+						</button>
+						<button
+							className={DealFiltersStyle.applyFilters}
+							onClick={handleFilters}>
 							Apply Filters
 						</button>
 					</div>

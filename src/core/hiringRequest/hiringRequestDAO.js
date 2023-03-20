@@ -500,11 +500,9 @@ export const hiringRequestDAO = {
 		}
 	},
 	uploadFileDAO: async (fileData) => {
-		console.log('run')
+		console.log('run');
 		try {
-			const uploadFileResponse = await HiringRequestAPI.uploadFile(
-				fileData,
-			);
+			const uploadFileResponse = await HiringRequestAPI.uploadFile(fileData);
 			if (uploadFileResponse) {
 				const statusCode = uploadFileResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
@@ -564,9 +562,8 @@ export const hiringRequestDAO = {
 	},
 	uploadFileFromGoogleDriveLinkDAO: async (link) => {
 		try {
-			const uploadFileResponse = await HiringRequestAPI.uploadFileFromGoogleDriveLink(
-				link,
-			);
+			const uploadFileResponse =
+				await HiringRequestAPI.uploadFileFromGoogleDriveLink(link);
 			if (uploadFileResponse) {
 				const statusCode = uploadFileResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
