@@ -364,4 +364,20 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.deleteHRRequest');
 		}
 	},
+	updateODRPOOLStatusRequest: async (odrPoolStatus) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.UPDATE_ODR_POOL_STATUS +
+			`?HiringRequestID=${odrPoolStatus.hrID}&IsPool=${odrPoolStatus.isPool}&IsODR=${odrPoolStatus.isODR}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.updateODRPOOLStatusRequest');
+		}
+	},
 };

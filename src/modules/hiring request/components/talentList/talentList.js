@@ -15,6 +15,7 @@ import InterviewFeedback from 'modules/interview/screens/interviewFeedback/inter
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
+import TalentAcceptance from '../talentAcceptance/talentAcceptance';
 
 const TalentList = ({
 	talentCTA,
@@ -22,6 +23,8 @@ const TalentList = ({
 	miscData,
 	HRStatusCode,
 	hrId,
+	starMarkedStatusCode,
+	hrStatus,
 	hiringRequestNumber,
 }) => {
 	const [activeIndex, setActiveIndex] = useState(-1);
@@ -32,6 +35,7 @@ const TalentList = ({
 	const profileData = allHRConfig.profileLogConfig();
 	const [showReScheduleInterviewModal, setReScheduleInterviewModal] =
 		useState(false);
+	const [showTalentAcceptance, setTalentAcceptance] = useState(false);
 	const [showProfileLogModal, setProfileLogModal] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [talentIndex, setTalentIndex] = useState(0);
@@ -1405,6 +1409,11 @@ const TalentList = ({
 														setTalentIndex(item?.TalentID);
 														break;
 													}
+													case TalentOnboardStatus.TALENT_ACCEPTANCE: {
+														setTalentAcceptance(true);
+														setTalentIndex(item?.TalentID);
+														break;
+													}
 													case TalentOnboardStatus.TALENT_STATUS: {
 														if (
 															hrUtils.handleTalentStatus(item, HRStatusCode)
@@ -1691,6 +1700,26 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setInterviewStatus(false)}>
 				<InterviewFeedback />
+			</Modal>
+			{/** ============ MODAL FOR TALENT ACCEPTANCE ================ */}
+			<Modal
+				transitionName=""
+				width="1256px"
+				centered
+				footer={null}
+				open={showTalentAcceptance}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setTalentAcceptance(false)}>
+				<TalentAcceptance
+					talentName={filterTalentID?.Name}
+					/* 	hrId={hrId}
+					talentInfo={filterTalentID} */
+					HRStatusCode={HRStatusCode}
+					hiringRequestNumber={hiringRequestNumber}
+					starMarkedStatusCode={starMarkedStatusCode}
+					hrStatus={hrStatus}
+					closeModal={() => setTalentAcceptance(false)}
+				/>
 			</Modal>
 		</div>
 	);

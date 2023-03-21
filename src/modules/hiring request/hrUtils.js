@@ -556,6 +556,7 @@ export const hrUtils = {
 		}
 		return false;
 	},
+	handleTalentAcceptance() {},
 	handlerUpdateKickOff(item, miscData, HRStatusCode) {
 		if (
 			miscData?.LoggedInUserTypeID === UserAccountRole.TALENTOPS ||
@@ -579,33 +580,33 @@ export const hrUtils = {
 			return [
 				{
 					label: 'Pass to ODR',
-					// key: AddNewType.HR,
+					key: 'Pass to ODR',
 				},
 				{
 					label: 'Keep it with me as well',
-					// key: AddNewType.CLIENT,
+					key: 'Keep it with me as well',
 				},
 			];
 		} else if (adHOCValue === AdHOCHR.ODR) {
 			return [
 				{
 					label: 'Pass to Pool',
-					// key: AddNewType.HR,
+					key: 'Pass to Pool',
 				},
 				{
 					label: 'Keep it with me as well',
-					// key: AddNewType.CLIENT,
+					key: 'Keep it with me as well',
 				},
 			];
 		} else if (adHOCValue === AdHOCHR.BOTH) {
 			return [
 				{
 					label: 'Pass to Pool',
-					// key: AddNewType.HR,
+					key: 'Pass to Pool',
 				},
 				{
 					label: 'Pass to ODR',
-					// key: AddNewType.HR,
+					key: 'Pass to ODR',
 				},
 			];
 		}

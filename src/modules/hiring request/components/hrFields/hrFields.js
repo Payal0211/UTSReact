@@ -24,6 +24,8 @@ import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { useMastersAPI } from 'shared/hooks/useMastersAPI';
 import { MasterDAO } from 'core/master/masterDAO';
+import WithLoader from 'shared/components/loader/loader';
+import useDrivePicker from 'react-google-drive-picker/dist';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -37,6 +39,7 @@ const HRFields = ({
 	setEnID,
 	tabFieldDisabled,
 	setTabFieldDisabled,
+	setJDParsedSkills,
 }) => {
 	const inputRef = useRef(null);
 
@@ -57,6 +60,7 @@ const HRFields = ({
 	const [addHRResponse, setAddHRResponse] = useState(null);
 	const [type, setType] = useState('');
 	const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
+
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
 		googleDriveFileUpload: '',
@@ -80,9 +84,13 @@ const HRFields = ({
 		control,
 		name: 'secondaryInterviewer',
 	}); */
+
+	/* ------------------ Upload JD Starts Here ---------------------- */
+	const [openPicker, authResponse] = useDrivePicker();
 	const uploadFile = useRef(null);
 	const uploadFileHandler = useCallback(
 		async (fileData) => {
+			setIsLoading(true);
 			if (
 				fileData?.type !== 'application/pdf' &&
 				fileData?.type !== 'application/docs' &&
@@ -98,30 +106,168 @@ const HRFields = ({
 					systemFileUpload:
 						'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
 				});
+				setIsLoading(false);
 			} else if (fileData?.size >= 500000) {
 				setValidation({
 					...getValidation,
 					systemFileUpload:
 						'Upload file size more than 500kb, Please Upload file upto 500kb',
 				});
+				setIsLoading(false);
 			} else {
 				let formData = new FormData();
 				formData.append('File', fileData);
 				let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
 				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+					if (
+						fileData?.type === 'image/png' ||
+						fileData?.type === 'image/jpeg'
+					) {
+						setUploadModal(false);
+						setValidation({
+							...getValidation,
+							systemFileUpload: '',
+						});
+						message.success('File uploaded successfully');
+					} else if (
+						fileData?.type === 'application/pdf' ||
+						fileData?.type === 'application/docs' ||
+						fileData?.type === 'application/msword' ||
+						fileData?.type === 'text/plain' ||
+						fileData?.type ===
+							'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+					) {
+						setJDParsedSkills(
+							uploadFileResponse &&
+								uploadFileResponse?.responseBody?.details?.Skills,
+						);
+						setUploadModal(false);
+						setValidation({
+							...getValidation,
+							systemFileUpload: '',
+						});
+						message.success('File uploaded successfully');
+					}
+				}
+				setIsLoading(false);
+			}
+			uploadFile.current.value = '';
+		},
+		[getValidation, setJDParsedSkills],
+	);
+	const uploadFileFromGoogleDriveValidator = useCallback(
+		async (fileData) => {
+			setValidation({
+				...getValidation,
+				googleDriveFileUpload: '',
+			});
+			if (
+				fileData[0]?.mimeType !== 'application/vnd.google-apps.document' &&
+				fileData[0]?.mimeType !== 'application/pdf' &&
+				fileData[0]?.mimeType !== 'text/plain' &&
+				fileData[0]?.mimeType !== 'application/docs' &&
+				fileData[0]?.mimeType !== 'application/msword' &&
+				fileData[0]?.mimeType !== 'image/png' &&
+				fileData[0]?.mimeType !== 'image/jpeg' &&
+				fileData[0]?.mimeType !==
+					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+			) {
+				setValidation({
+					...getValidation,
+					googleDriveFileUpload:
+						'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
+				});
+			} else if (fileData[0]?.sizeBytes >= 500000) {
+				setValidation({
+					...getValidation,
+					googleDriveFileUpload:
+						'Upload file size more than 500kb, Please Upload file upto 500kb',
+				});
+			} else {
+				let fileType;
+				let fileName;
+				if (fileData[0]?.mimeType === 'application/vnd.google-apps.document') {
+					fileType = 'docs';
+					fileName = `${fileData[0]?.name}.${fileType}`;
+				} else {
+					fileName = `${fileData[0]?.name}`;
+				}
+				const formData = {
+					fileID: fileData[0]?.id,
+					FileName: fileName,
+				};
+				let uploadFileResponse =
+					await hiringRequestDAO.uploadGoogleDriveFileDAO(formData);
+
+				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 					setUploadModal(false);
-					setValidation({
-						...getValidation,
-						systemFileUpload: '',
-					});
 					message.success('File uploaded successfully');
 				}
 			}
-			uploadFile.current.value = '';
 		},
 		[getValidation],
 	);
 
+	const googleDriveFileUploader = useCallback(() => {
+		openPicker({
+			clientId:
+				'643188410943-pqbg632ja9hji6qoia62p5bnjanir9t9.apps.googleusercontent.com',
+			developerKey: 'AIzaSyCW6lF0-A6JCVWjOJRVlwN4F1OA3zaOwJw',
+			viewId: 'DOCS',
+			// token: token, // pass oauth token in case you already have one
+			showUploadView: true,
+			showUploadFolders: true,
+			supportDrives: true,
+			multiselect: true,
+			// customViews: customViewsArray, // custom view
+			callbackFunction: (data) => {
+				if (data?.action === 'cancel') {
+				} else {
+					data?.docs && uploadFileFromGoogleDriveValidator(data?.docs);
+				}
+			},
+		});
+	}, [openPicker, uploadFileFromGoogleDriveValidator]);
+
+	const uploadFileFromGoogleDriveLink = useCallback(async () => {
+		setValidation({
+			...getValidation,
+			linkValidation: '',
+		});
+		if (!getGoogleDriveLink) {
+			setValidation({
+				...getValidation,
+				linkValidation: 'Please enter google docs url',
+			});
+		} else if (
+			!/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
+				getGoogleDriveLink,
+			)
+		) {
+			setValidation({
+				...getValidation,
+				linkValidation: 'Please enter valid google docs url',
+			});
+		} else {
+			let uploadFileResponse =
+				await hiringRequestDAO.uploadFileFromGoogleDriveLinkDAO(
+					getGoogleDriveLink,
+				);
+			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+				setUploadModal(false);
+				setGoogleDriveLink('');
+				message.success('File uploaded successfully');
+			}
+		}
+	}, [
+		getGoogleDriveLink,
+		getValidation,
+		setGoogleDriveLink,
+		setUploadModal,
+		setValidation,
+	]);
+
+	/* ------------------ Upload JD Ends Here -------------------- */
 	let prefRegion = watch('region');
 	const getTimeZonePreference = useCallback(async () => {
 		const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO(
@@ -290,7 +436,7 @@ const HRFields = ({
 			isHRDirectPlacement,
 			addHRResponse,
 		);
-		// console.log(hrFormDetails, 'hrFormdetails');
+
 		if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(watch('clientName'))) {
 				return setError('clientName', {
@@ -438,8 +584,11 @@ const HRFields = ({
 						</div>
 						{/** TODO:-  */}
 						<UploadModal
+							isLoading={isLoading}
 							uploadFileRef={uploadFile}
-							uploadFileHandler={uploadFileHandler}
+							uploadFileHandler={(e) => uploadFileHandler(e.target.files[0])}
+							googleDriveFileUploader={() => googleDriveFileUploader()}
+							uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
 							modalTitle={'Upload JD'}
 							isFooter={true}
 							openModal={showUploadModal}

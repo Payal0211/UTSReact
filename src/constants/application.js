@@ -45,7 +45,7 @@ export class UserAccountRole {
 export class AdHOCHR {
 	static POOL = 'Pool';
 	static ODR = 'ODR';
-	static BOTH = 'Pool + ODR';
+	static BOTH = 'ODR + Pool';
 }
 export class SessionType {
 	static EXPIRED = 0;
@@ -93,7 +93,7 @@ export class TalentOnboardStatus {
 	static SCHEDULE_INTERVIEW = 'Schedule Interview';
 	static RESCHEDULE_INTERVIEW = 'Reschedule Interview';
 	static TALENT_STATUS = 'Talent Status';
-	static TALENT_ACCEPTANCE = 'TalentAcceptance';
+	static TALENT_ACCEPTANCE = 'Talent Acceptance';
 	static UPDATE_KICKOFF = 'Update kickoff & Onboard Status';
 	static ONBOARD_TALENT = 'Onboard Talent';
 }

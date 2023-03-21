@@ -23,6 +23,7 @@ const HRSelectField = ({
 }) => {
 	const getChangeHandlerWithValue = (value, option) => {
 		if (mode === 'multiple') {
+			console.log(option, '---option--');
 			setValue(
 				name,
 				option.map((item) => ({
@@ -30,15 +31,17 @@ const HRSelectField = ({
 					skillsName: item?.value,
 				})),
 			);
+			console.log(option, '---After setValue--');
+			isControlled && setControlledValue(option);
 		} else if (mode === 'id/value') {
 			setValue(name, {
 				id: option.id,
 				value: option.value,
 			});
+			isControlled && setControlledValue(option.value);
 		} else {
 			setValue(name, option.id);
 		}
-		isControlled && setControlledValue(option.value);
 	};
 
 	useEffect(() => {
