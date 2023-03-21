@@ -243,6 +243,8 @@ const HRDetailScreen = () => {
 									hrId={apiData.HR_Id}
 									miscData={miscData}
 									hiringRequestNumber={updatedSplitter}
+									starMarkedStatusCode={apiData?.StarMarkedStatusCode}
+									hrStatus={apiData?.HRStatus}
 								/>
 							</Suspense>
 						)}

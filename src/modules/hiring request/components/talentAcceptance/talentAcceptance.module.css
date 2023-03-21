@@ -1,0 +1,402 @@
+.container {
+    /* padding:16px; */
+    margin: 25px 40px;
+    /* background: #fff; */
+    border-radius: 8px;
+    
+}
+
+.topDivider {
+    margin: 40px 0;
+    border-color: #E8E8E8;
+}
+
+.modalTitle {
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 39px;
+    color: #232323;
+    margin: 0 0 25px;
+}
+
+.modalTitle h2 {
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+    margin: 0;
+}
+
+
+.panelBody {
+    display: flex;
+}
+
+
+.leftPane p {
+    font-size: var(--fontsize-brittle);
+    font-weight: 400;
+    line-height: 20px;
+    color: #7C7C7C;
+}
+
+.whitep16{
+    background-color: var(--background-color-light);
+    padding: 16px;
+    border-radius: 8px;
+}
+.rightPane {
+    flex: 1;
+}
+
+.row {
+    /* gap: 8px; */
+    margin: 0 -9px;
+    flex-wrap: wrap;
+    display: flex;
+    /* justify-content: flex-start; */
+}
+
+.transparentTopCard {
+    border-radius: 8px;
+    border: 1px solid var(--uplers-border-color);
+    padding: 16px;
+    height: 100%;
+    flex-direction: row;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.cardBody {
+    padding: 16px 0 16px 16px;
+}
+
+.cardLabel {
+    font-size: 12px;
+    line-height: 15px;
+    font-weight: 500;
+    color: var(--uplers-black);
+    /* margin-bottom: 8px; */
+}
+
+.mb8 {
+    margin-bottom: 8px;
+}
+.rowBody{
+    padding: 30px;
+    max-height: 412px;
+    overflow-y: scroll;
+}
+.flex{
+    display: flex;
+}
+
+.cardTitle {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 600;
+    color: var(--uplers-black)
+}
+
+.cardTitle [class*="hrStatusComponent"] {
+    height: 23px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    display: inline-flex;
+    padding: 0 8px;
+}
+
+
+.colMd4 {
+    width: calc(25% - 6px);
+}
+
+.colMd12 {
+    width: 100%;
+    padding: 0 9px;
+}
+
+.colMd6 {
+    width: 50%;
+    padding: 0 9px;
+}
+
+.colMd3 {
+    width: 33.33%;
+    padding: 0 9px;
+}
+
+.colMd4 {
+    width: 25%;
+    padding: 0 9px;
+}
+.colMd5 {
+    width: 20%;
+    padding: 0 9px;
+}
+.info{
+    margin: 24px 0 16px 0;
+    color:var(--uplers-black);
+    font-size: 14px;
+    line-height: 26px;
+    font-weight: 400;
+}
+.statusPart{
+    margin-left: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 16px;
+}
+.hiringRequestPriority {
+    
+    background-color: var(--background-color-light);
+    border: 2px solid var(--uplers-border-color);
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.hiringRequestPriority:hover {
+    border: 2px solid var(--background-color-light);
+    background-color: var(--color-sunlight);
+    transition: all .2s ease;
+}
+.reqField {
+    color: var(--uplers-black);
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+.ml8 {
+    margin-left: 8px;
+}
+
+.radioGroup {
+    flex-direction: column;
+    display: flex;
+}
+
+.radioGroup [class*="ant-radio-wrapper"] {
+    margin: 16px 0 0px 0;
+    min-height: 25px;
+    padding-left: 35px;
+    font-weight: 400;
+    font-size: 14px;
+    color: #6B6B6B;
+}
+
+.radioGroup [class*="ant-radio-wrapper"]:last-child {
+    margin-bottom: 0;
+}
+
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"] {
+    width: 25px;
+    height: 25px;
+}
+
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]:after {
+    width: 15px;
+    height: 15px;
+}
+
+.radioFormGroup {
+    margin-bottom: 32px;
+}
+
+.radioFormGroup>label {
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: var(--uplers-black);
+    margin: 0 0 8px 0;
+    display: inline-block;
+}
+.notes{
+    margin:24px 0;
+}
+.formPanelAction {
+    display: flex;
+    margin: 30px 0 0 0;
+}
+
+.formPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.formPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+
+.formPanelAction button+button {
+    margin-left: 18px;
+}
+
+.timeSlotRow {
+    margin: 0 -9px 30px;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.timeSlotLabel {
+    padding: 0 8px;
+    width: 100%;
+    margin: 0 0 7px;
+    position: relative;
+}
+
+.timeSlotLabel label {
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    color: #676767;
+}
+
+.timeSlotItem {
+    padding: 0 8px;
+    width: 33.33%;
+    position: relative;
+}
+
+.timeSlotItem svg {
+    position: absolute;
+    top: 19px;
+    right: 26px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input {
+    text-align: left;
+    width: 100%;
+    padding: 16px 40px 16px 16px;
+    background: var(--background-color-light);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--uplers-black);
+    outline: 1px solid transparent;
+    transition: all 0.25s ease 0s;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input::-webkit-input-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input::-moz-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input:-ms-input-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input:-moz-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input:focus {
+    outline-color: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+
+.timeSlotItem [class="react-datepicker-popper"] {
+    right: 16px !important;
+    left: 0 !important;
+    z-index: 2;
+    background: #FFFFFF;
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    box-shadow: -4px 4px 20px rgba(57, 57, 57, 0.09);
+    margin: -1px 0;
+    padding: 4px 0;
+}
+
+.timeSlotItem [class="react-datepicker"],
+.timeSlotItem [class*="react-datepicker--time-only"] {
+    margin-left: 0;
+    width: 100%;
+    box-shadow: none !important;
+    vertical-align: middle;
+}
+
+.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-container"],
+.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-box"] {
+    width: 100%
+}
+
+.timeSlotItem [class="react-datepicker__month-container"] {
+    width: 100%;
+}
+
+.timeSlotItem [class*="react-datepicker__header "] {
+    border-bottom: 1px solid #E8E8E8;
+}
+
+.timeSlotItem [class="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
+    top: 14px;
+}
+
+.timePickerItem {
+    margin: 0;
+}
+
+.timeSlotItem.timePickerItem [class="react-datepicker-popper"] {
+    width: 60%;
+    right: auto !important;
+}
+
+.requestByRadio {
+    align-items: center;
+    display: flex;
+}
+
+.requestByRadio>label {
+    margin: 0 16px 0 0;
+}
+
+.requestByRadio [class*="ant-radio-group "] {
+    flex-direction: row;
+    display: flex;
+}
+
+.requestByRadio [class*="ant-radio-group "] label {
+    margin: 0 16px 0 0;
+}
+
+.mB0 [class*="hrInputFields"] {
+    margin-bottom: 0 !important;
+}
+
+
+.ant-select .ant-select-selector .ant-select-selection-item {
+    color: red;
+}
+
+.error {
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
+}

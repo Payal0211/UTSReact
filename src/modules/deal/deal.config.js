@@ -118,33 +118,20 @@ export const DealConfig = {
 		return [
 			{
 				label: 'Deal ID',
-				name: 'dealID',
-				child: [
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '1',
-						value: 'ODR',
-					},
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '2',
-						value: 'Pool',
-					},
-				],
+				name: 'deal_Id',
+				child: filtersList?.DealId,
 				isSearch: false,
 			},
 			{
 				label: 'Lead Source',
+				name: 'lead_Type',
 				child: filtersList?.LeadSource,
 				isSearch: false,
 			},
 			{
 				label: 'Pipeline',
-				child: ['3', '4', '7', '9', '10'],
+				name: 'pipeline',
+				child: filtersList?.Pipeline,
 				isSearch: false,
 			},
 			{
@@ -153,14 +140,20 @@ export const DealConfig = {
 				child: filtersList?.Company,
 				isSearch: true,
 			},
-			{ label: 'Geo', child: filtersList?.Geo, isSearch: true },
-			{ label: 'BDR', child: filtersList?.BDR, isSearch: false },
+			{ label: 'Geo', name: 'geo', child: filtersList?.Geo, isSearch: true },
+			{ label: 'BDR', name: 'bdr', child: filtersList?.BDR, isSearch: false },
 			{
 				label: 'Sales Consultant',
+				name: 'sales_Consultant',
 				child: filtersList?.SalesConsultant,
 				isSearch: true,
 			},
-			{ label: 'Deal Stage', child: filtersList?.DealStage, isSearch: true },
+			{
+				label: 'Deal Stage',
+				name: 'dealStage',
+				child: filtersList?.DealStage,
+				isSearch: true,
+			},
 		];
 	},
 };

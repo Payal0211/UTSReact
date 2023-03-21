@@ -24,6 +24,7 @@ import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { useMastersAPI } from 'shared/hooks/useMastersAPI';
 import { MasterDAO } from 'core/master/masterDAO';
+import WithLoader from 'shared/components/loader/loader';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -37,6 +38,7 @@ const HRFields = ({
 	setEnID,
 	tabFieldDisabled,
 	setTabFieldDisabled,
+	setJDParsedSkills,
 }) => {
 	const inputRef = useRef(null);
 
@@ -57,6 +59,7 @@ const HRFields = ({
 	const [addHRResponse, setAddHRResponse] = useState(null);
 	const [type, setType] = useState('');
 	const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
+
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
 		googleDriveFileUpload: '',
@@ -83,6 +86,7 @@ const HRFields = ({
 	const uploadFile = useRef(null);
 	const uploadFileHandler = useCallback(
 		async (fileData) => {
+			setIsLoading(true);
 			if (
 				fileData?.type !== 'application/pdf' &&
 				fileData?.type !== 'application/docs' &&
@@ -98,28 +102,54 @@ const HRFields = ({
 					systemFileUpload:
 						'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
 				});
+				setIsLoading(false);
 			} else if (fileData?.size >= 500000) {
 				setValidation({
 					...getValidation,
 					systemFileUpload:
 						'Upload file size more than 500kb, Please Upload file upto 500kb',
 				});
+				setIsLoading(false);
 			} else {
 				let formData = new FormData();
 				formData.append('File', fileData);
 				let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
 				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
-					setUploadModal(false);
-					setValidation({
-						...getValidation,
-						systemFileUpload: '',
-					});
-					message.success('File uploaded successfully');
+					if (
+						fileData?.type === 'image/png' ||
+						fileData?.type === 'image/jpeg'
+					) {
+						setUploadModal(false);
+						setValidation({
+							...getValidation,
+							systemFileUpload: '',
+						});
+						message.success('File uploaded successfully');
+					} else if (
+						fileData?.type === 'application/pdf' ||
+						fileData?.type === 'application/docs' ||
+						fileData?.type === 'application/msword' ||
+						fileData?.type === 'text/plain' ||
+						fileData?.type ===
+							'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+					) {
+						setJDParsedSkills(
+							uploadFileResponse &&
+								uploadFileResponse?.responseBody?.details?.Skills,
+						);
+						setUploadModal(false);
+						setValidation({
+							...getValidation,
+							systemFileUpload: '',
+						});
+						message.success('File uploaded successfully');
+					}
 				}
+				setIsLoading(false);
 			}
 			uploadFile.current.value = '';
 		},
-		[getValidation],
+		[getValidation, setJDParsedSkills],
 	);
 
 	let prefRegion = watch('region');
@@ -290,7 +320,7 @@ const HRFields = ({
 			isHRDirectPlacement,
 			addHRResponse,
 		);
-		// console.log(hrFormDetails, 'hrFormdetails');
+
 		if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(watch('clientName'))) {
 				return setError('clientName', {
@@ -438,8 +468,9 @@ const HRFields = ({
 						</div>
 						{/** TODO:-  */}
 						<UploadModal
+							isLoading={isLoading}
 							uploadFileRef={uploadFile}
-							uploadFileHandler={uploadFileHandler}
+							uploadFileHandler={(e) => uploadFileHandler(e.target.files[0])}
 							modalTitle={'Upload JD'}
 							isFooter={true}
 							openModal={showUploadModal}

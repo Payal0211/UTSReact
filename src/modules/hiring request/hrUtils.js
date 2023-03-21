@@ -556,6 +556,7 @@ export const hrUtils = {
 		}
 		return false;
 	},
+	handleTalentAcceptance() {},
 	handlerUpdateKickOff(item, miscData, HRStatusCode) {
 		if (
 			miscData?.LoggedInUserTypeID === UserAccountRole.TALENTOPS ||

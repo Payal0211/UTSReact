@@ -1,5 +1,4 @@
-import { Space, Table, Tag } from 'antd';
-import allHRStyles from '../../../hiring request/screens/allHiringRequest/all_hiring_request.module.css';
+import { Table, Tag } from 'antd';
 import dealDetailsStyles from './dealDetailsStyle.module.css';
 import arrow from '../../../../assets/svg/trending.svg';
 import { useCallback, useEffect, useState } from 'react';

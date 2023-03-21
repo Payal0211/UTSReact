@@ -1,6 +1,5 @@
 import { Dropdown, Menu, Table } from 'antd';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { IoChevronDownOutline } from 'react-icons/io5';
@@ -14,7 +13,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { DealDAO } from 'core/deal/dealDAO';
 import UTSRoutes from 'constants/routes';
 
@@ -33,8 +32,6 @@ const DealList = () => {
 	const [tableFilteredState, setTableFilteredState] = useState({
 		totalrecord: 100,
 		pagenumber: 1,
-		sortdatafield: 'CreatedDateTime',
-		sortorder: 'desc',
 	});
 	const pageSizeOptions = [100, 200, 300, 500];
 	const [dealList, setDealList] = useState([]);

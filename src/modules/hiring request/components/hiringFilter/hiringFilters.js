@@ -44,7 +44,6 @@ const HiringFilters = ({
 	};
 	const handleAppliedFilters = useCallback(
 		(isChecked, filterObj) => {
-			console.log(isChecked, '-----', filterObj, '---');
 			let tempAppliedFilters = new Map(appliedFilter);
 			let tempCheckedState = new Map(checkedState);
 			if (isChecked) {

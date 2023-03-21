@@ -1,6 +1,6 @@
 import { Divider, Select, message } from 'antd';
 import TextEditor from 'shared/components/textEditor/textEditor';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import DebriefingHRStyle from './debriefingHR.module.css';
 import AddInterviewer from '../addInterviewer/addInterviewer';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -23,6 +23,8 @@ const DebriefingHR = ({
 	tabFieldDisabled,
 	setTabFieldDisabled,
 	enID,
+	JDParsedSkills,
+	setJDParsedSkills,
 }) => {
 	const {
 		watch,
@@ -41,15 +43,36 @@ const DebriefingHR = ({
 		control,
 		name: 'secondaryInterviewer',
 	});
+	const [controlledJDParsed, setControlledJDParsed] = useState(
+		JDParsedSkills?.map((item) => item?.value),
+	);
 	const [selectedItems, setSelectedItems] = useState([]);
 	const [skills, setSkills] = useState([]);
+
 	const [messageAPI, contextHolder] = message.useMessage();
 	const getSkills = useCallback(async () => {
 		const response = await MasterDAO.getSkillsRequestDAO();
 		setSkills(response && response.responseBody);
 	}, []);
 
-	const filteredOptions = skills.filter((o) => !selectedItems.includes(o));
+	const combinedSkillsMemo = useMemo(
+		() => [...JDParsedSkills, ...skills],
+		[JDParsedSkills, skills],
+	);
+
+	const filteredOptions = combinedSkillsMemo.filter(
+		(o) => !selectedItems.includes(o),
+	);
+
+	useEffect(() => {
+		setValue(
+			'skills',
+			JDParsedSkills?.map((item) => ({
+				skillsID: item?.id.toString(),
+				skillsName: item?.text,
+			})),
+		);
+	}, [JDParsedSkills, setValue]);
 
 	const debriefSubmitHandler = async (d) => {
 		let debriefFormDetails = {
@@ -124,6 +147,9 @@ const DebriefingHR = ({
 						/>
 						<div className={DebriefingHRStyle.mb50}>
 							<HRSelectField
+								isControlled={true}
+								controlledValue={controlledJDParsed}
+								setControlledValue={setControlledJDParsed}
 								mode="multiple"
 								setValue={setValue}
 								register={register}

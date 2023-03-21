@@ -165,11 +165,11 @@ const DealFilters = ({
 		setFilteredTagLength(0);
 		setTableFilteredState({
 			...tableFilteredState,
-			filterFields_ViewAllHRs: {},
+			filterFields_DealList: {},
 		});
 		const reqFilter = {
 			...tableFilteredState,
-			filterFields_ViewAllHRs: {},
+			filterFields_DealList: {},
 		};
 		handleDealRequest(reqFilter);
 	}, [
@@ -187,11 +187,11 @@ const DealFilters = ({
 		});
 		setTableFilteredState({
 			...tableFilteredState,
-			filterFields_ViewAllHRs: { ...filters },
+			filterFields_DealList: { ...filters },
 		});
 		const reqFilter = {
 			...tableFilteredState,
-			filterFields_ViewAllHRs: { ...filters },
+			filterFields_DealList: { ...filters },
 		};
 		handleDealRequest(reqFilter);
 	}, [
