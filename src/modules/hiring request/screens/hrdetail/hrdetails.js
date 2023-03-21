@@ -57,7 +57,7 @@ const HRDetailScreen = () => {
 	} = useForm();
 
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
-	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
+	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
 	const miscData = UserSessionManagementController.getUserSession();
 
 	console.log('apiData--', apiData);
@@ -127,12 +127,20 @@ const HRDetailScreen = () => {
 		setDeleteReason(response && response?.responseBody?.details);
 	}, []);
 
+	const updateODRPoolStatusHandler = useCallback(
+		async (data) => {
+			await hiringRequestDAO.updateODRPOOLStatusRequestDAO(data);
+
+			callAPI(urlSplitter?.split('HR')[0]);
+		},
+		[callAPI, urlSplitter],
+	);
+
 	useEffect(() => {
 		setLoading(true);
 		callAPI(urlSplitter?.split('HR')[0]);
 	}, [urlSplitter, callAPI]);
 
-	console.log(apiData, '--APIDATA--');
 	return (
 		<WithLoader showLoader={isLoading}>
 			<div className={HRDetailStyle.hiringRequestContainer}>
@@ -182,13 +190,46 @@ const HRDetailScreen = () => {
 							)}
 
 							<HROperator
-								title={hrUtils.handleAdHOC(apiData?.AdhocPoolValue)[0]?.label}
+								title={
+									hrUtils.handleAdHOC(apiData && apiData?.AdhocPoolValue)[0]
+										?.label
+								}
 								icon={<ArrowDownSVG style={{ width: '16px' }} />}
 								backgroundColor={`var(--background-color-light)`}
 								labelBorder={`1px solid var(--color-sunlight)`}
 								iconBorder={`1px solid var(--color-sunlight)`}
 								isDropdown={true}
 								listItem={hrUtils.handleAdHOC(apiData?.AdhocPoolValue)}
+								menuAction={(menuItem) => {
+									switch (menuItem.key) {
+										case 'Pass to ODR': {
+											updateODRPoolStatusHandler({
+												hrID: urlSplitter?.split('HR')[0],
+												isPool: false,
+												isODR: true,
+											});
+											break;
+										}
+										case 'Pass to Pool': {
+											updateODRPoolStatusHandler({
+												hrID: urlSplitter?.split('HR')[0],
+												isPool: true,
+												isODR: false,
+											});
+											break;
+										}
+										case 'Keep it with me as well': {
+											updateODRPoolStatusHandler({
+												hrID: urlSplitter?.split('HR')[0],
+												isPool: true,
+												isODR: true,
+											});
+											break;
+										}
+										default:
+											break;
+									}
+								}}
 							/>
 							<div
 								className={HRDetailStyle.hiringRequestPriority}

@@ -33,6 +33,7 @@ const UploadModal = ({
 	fileUploadType,
 	footer,
 	modalTitle,
+
 	setValidation,
 	getValidation,
 	getGoogleDriveLink,
@@ -40,119 +41,9 @@ const UploadModal = ({
 	setUploadModal,
 	uploadFileRef,
 	uploadFileHandler,
+	googleDriveFileUploader,
+	uploadFileFromGoogleDriveLink,
 }) => {
-	const [openPicker, authResponse] = useDrivePicker();
-
-	const uploadFileFromGoogleDriveValidator = async (fileData) => {
-		setValidation({
-			...getValidation,
-			googleDriveFileUpload: '',
-		});
-		if (
-			fileData[0]?.mimeType !== 'application/vnd.google-apps.document' &&
-			fileData[0]?.mimeType !== 'application/pdf' &&
-			fileData[0]?.mimeType !== 'text/plain' &&
-			fileData[0]?.mimeType !== 'application/docs' &&
-			fileData[0]?.mimeType !== 'application/msword' &&
-			fileData[0]?.mimeType !== 'image/png' &&
-			fileData[0]?.mimeType !== 'image/jpeg' &&
-			fileData[0]?.mimeType !==
-				'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-		) {
-			setValidation({
-				...getValidation,
-				googleDriveFileUpload:
-					'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
-			});
-		} else if (fileData[0]?.sizeBytes >= 500000) {
-			setValidation({
-				...getValidation,
-				googleDriveFileUpload:
-					'Upload file size more than 500kb, Please Upload file upto 500kb',
-			});
-		} else {
-			let fileType;
-			let fileName;
-			if (fileData[0]?.mimeType === 'application/vnd.google-apps.document') {
-				fileType = 'docs';
-				fileName = `${fileData[0]?.name}.${fileType}`;
-			} else {
-				fileName = `${fileData[0]?.name}`;
-			}
-			const formData = {
-				fileID: fileData[0]?.id,
-				FileName: fileName,
-			};
-			let uploadFileResponse = await hiringRequestDAO.uploadGoogleDriveFileDAO(
-				formData,
-			);
-
-			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
-				setUploadModal(false);
-				message.success('File uploaded successfully');
-			}
-		}
-	};
-
-	const googleDriveFileUploader = () => {
-		openPicker({
-			clientId:
-				'643188410943-pqbg632ja9hji6qoia62p5bnjanir9t9.apps.googleusercontent.com',
-			developerKey: 'AIzaSyCW6lF0-A6JCVWjOJRVlwN4F1OA3zaOwJw',
-			viewId: 'DOCS',
-			// token: token, // pass oauth token in case you already have one
-			showUploadView: true,
-			showUploadFolders: true,
-			supportDrives: true,
-			multiselect: true,
-			// customViews: customViewsArray, // custom view
-			callbackFunction: (data) => {
-				if (data?.action === 'cancel') {
-				} else {
-					data?.docs && uploadFileFromGoogleDriveValidator(data?.docs);
-				}
-			},
-		});
-	};
-
-	const uploadFileFromGoogleDriveLink = useCallback(async () => {
-		setValidation({
-			...getValidation,
-			linkValidation: '',
-		});
-		if (!getGoogleDriveLink) {
-			setValidation({
-				...getValidation,
-				linkValidation: 'Please enter google docs url',
-			});
-		} else if (
-			!/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
-				getGoogleDriveLink,
-			)
-		) {
-			setValidation({
-				...getValidation,
-				linkValidation: 'Please enter valid google docs url',
-			});
-		} else {
-			let uploadFileResponse =
-				await hiringRequestDAO.uploadFileFromGoogleDriveLinkDAO(
-					getGoogleDriveLink,
-				);
-			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
-				setUploadModal(false);
-				setGoogleDriveLink('');
-				message.success('File uploaded successfully');
-			}
-		}
-	}, [
-		getGoogleDriveLink,
-		getValidation,
-		setGoogleDriveLink,
-		setUploadModal,
-		setValidation,
-	]);
-
 	return (
 		<Modal
 			width="864px"
@@ -206,7 +97,7 @@ const UploadModal = ({
 						{/* <button onClick={() => handleOpenPicker()}>Open Picker</button> */}
 						<div
 							className={UploadModalStyle.cloudUploadLink}
-							onClick={() => googleDriveFileUploader()}>
+							onClick={googleDriveFileUploader}>
 							<CloudUploadSVG />
 							Upload From Google Drive
 						</div>

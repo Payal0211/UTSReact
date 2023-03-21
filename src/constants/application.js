@@ -45,7 +45,7 @@ export class UserAccountRole {
 export class AdHOCHR {
 	static POOL = 'Pool';
 	static ODR = 'ODR';
-	static BOTH = 'Pool + ODR';
+	static BOTH = 'ODR + Pool';
 }
 export class SessionType {
 	static EXPIRED = 0;

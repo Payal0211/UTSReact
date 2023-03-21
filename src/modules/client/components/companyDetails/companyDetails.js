@@ -5,7 +5,7 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 import { InputType } from 'constants/application';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { locationFormatter } from 'modules/client/clientUtils';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { MasterDAO } from 'core/master/masterDAO';
 import { ClientDAO } from 'core/client/clientDAO';
 import { HTTPStatusCode } from 'constants/network';
@@ -27,6 +27,49 @@ const CompanyDetails = ({
 		const geoLocationResponse = await MasterDAO.getGEORequestDAO();
 		setGEO(geoLocationResponse && geoLocationResponse.responseBody);
 	};
+	const [getValidation, setValidation] = useState({
+		systemFileUpload: '',
+		googleDriveFileUpload: '',
+		linkValidation: '',
+	});
+
+	const uploadFile = useRef(null);
+	const uploadFileHandler = useCallback(
+		async (fileData) => {
+			setIsLoading(true);
+			if (fileData?.type !== 'image/png' && fileData?.type !== 'image/jpeg') {
+				setValidation({
+					...getValidation,
+					systemFileUpload:
+						'Uploaded file is not a valid, Only jpg, jpeg, png files are allowed',
+				});
+				setIsLoading(false);
+			} else if (fileData?.size >= 500000) {
+				setValidation({
+					...getValidation,
+					systemFileUpload:
+						'Upload file size more than 500kb, Please Upload file upto 500kb',
+				});
+				setIsLoading(false);
+			} else {
+				let formData = new FormData();
+				formData.append('File', fileData);
+				console.log(fileData, '---formData-----');
+				// let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
+				/* if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+					setUploadModal(false);
+					setValidation({
+						...getValidation,
+						systemFileUpload: '',
+					});
+					message.success('File uploaded successfully');
+				} */
+				setIsLoading(false);
+			}
+			uploadFile.current.value = '';
+		},
+		[getValidation],
+	);
 
 	const getLeadSource = async () => {
 		const getLeadSourceResponse = await MasterDAO.getFixedValueRequestDAO();
@@ -275,10 +318,14 @@ const CompanyDetails = ({
 							/>
 						</div>
 						<UploadModal
-							isFooter={true}
+							isFooter={false}
+							uploadFileRef={uploadFile}
+							uploadFileHandler={(e) => uploadFileHandler(e.target.files[0])}
 							modalTitle={'Upload Logo'}
 							openModal={showUploadModal}
 							cancelModal={() => setUploadModal(false)}
+							setValidation={setValidation}
+							getValidation={getValidation}
 						/>
 					</div>
 				</div>

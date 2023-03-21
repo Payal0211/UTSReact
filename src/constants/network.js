@@ -96,6 +96,7 @@ export class HiringRequestsAPI {
 	static UPLOAD_FILE = 'UploadFile';
 	static UPLOAD_DRIVE_FILE = 'UploadDriveFile';
 	static UPLOAD_GOOGLE_FILE_LINK = 'UploadGoogleFileLink';
+	static UPDATE_ODR_POOL_STATUS = 'UpdateODRPoolStatus';
 }
 
 export class UsersAPI {
