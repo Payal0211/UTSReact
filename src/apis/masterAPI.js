@@ -98,6 +98,19 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getTimeZonePreferenceRequest');
 		}
 	},
+	getTimeZoneRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_TIME_ZONE;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getTimeZoneRequest');
+		}
+	},
 	getPartialEngagementTypeRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =

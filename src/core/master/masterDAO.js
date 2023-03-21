@@ -127,6 +127,31 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getTalentTimeZoneRequestDAO');
 		}
 	},
+	getTimeZoneRequestDAO: async function () {
+		try {
+			const timeZoneRequest = await MasterAPI.getTimeZoneRequest();
+			if (timeZoneRequest) {
+				const statusCode = timeZoneRequest['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = timeZoneRequest.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return timeZoneRequest;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return timeZoneRequest;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getTimeZoneRequestDAO');
+		}
+	},
 	getHowSoonRequestDAO: async function () {
 		try {
 			const howSoonResult = await MasterAPI.getHowSoonRequest();
