@@ -59,7 +59,7 @@ const InterviewSchedule = ({
 	};
 
 	const getTimeZone = useCallback(async () => {
-		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
+		let response = await MasterDAO.getTimeZoneRequestDAO();
 		setScheduleTimezone(response && response?.responseBody);
 	}, [setScheduleTimezone]);
 	useEffect(() => {

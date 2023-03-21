@@ -171,7 +171,6 @@ tr .td:first-child {
 }
 
 .th {
-    /* z-index: 1; */
     padding: 24px 12px;
     text-align: start;
     color: var(--uplers-grey);
