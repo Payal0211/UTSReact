@@ -31,6 +31,25 @@
     justify-content: center;
 }
 
+.progressBox{
+    height: 80px;
+    border: 1px dashed #E8E8E8;
+border-radius: 8px;
+margin: 24px 40px;
+display: flex;
+    
+    align-items: center;
+    justify-content: center;
+}
+
+.progressBoxBody{
+    width: 95%;
+    margin:auto;
+}
+
+.progress{
+    width:85%;
+}
 .urlBox{
     border-radius: 8px;
     background: #fff;

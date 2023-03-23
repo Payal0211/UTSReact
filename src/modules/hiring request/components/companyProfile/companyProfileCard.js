@@ -200,12 +200,16 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.TRParked}>
 								<span>Discovery Call:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									<a
-										target="_blank"
-										href={clientDetail?.Discovery_Call}
-										style={{ textDecoration: 'underline' }}>
-										Click Here
-									</a>
+									{clientDetail?.Discovery_Call ? (
+										<a
+											target="_blank"
+											href={clientDetail?.Discovery_Call}
+											style={{ textDecoration: 'underline' }}>
+											Click Here
+										</a>
+									) : (
+										'NA'
+									)}
 								</span>
 							</div>
 						</div>

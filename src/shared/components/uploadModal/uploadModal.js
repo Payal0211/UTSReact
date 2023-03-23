@@ -1,4 +1,4 @@
-import { Divider, Modal, Spin, message } from 'antd';
+import { Divider, Modal, Progress, Spin, message } from 'antd';
 import { InputType } from 'constants/application';
 import React, { useCallback } from 'react';
 import { ReactComponent as CloudUploadSVG } from 'assets/svg/cloudUpload.svg';
@@ -8,7 +8,7 @@ import UploadModalStyle from './uploadModal.module.css';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { LoadingOutlined } from '@ant-design/icons';
-
+import { ReactComponent as CrossSVG } from 'assets/svg/cross.svg';
 const antIcon = (
 	<LoadingOutlined
 		style={{
@@ -33,7 +33,6 @@ const UploadModal = ({
 	fileUploadType,
 	footer,
 	modalTitle,
-
 	setValidation,
 	getValidation,
 	getGoogleDriveLink,
@@ -144,6 +143,17 @@ const UploadModal = ({
 							</div>
 						</>
 					)}
+					{/* <div className={UploadModalStyle.progressBox}>
+						<div className={UploadModalStyle.progressBoxBody}>
+							<Progress
+								className={UploadModalStyle.progress}
+								percent={99.9}
+								status="active"
+								strokeColor={{ from: '#108ee9', to: '#87d068' }}
+							/>
+							<CrossSVG />
+						</div>
+					</div> */}
 				</>
 			)}
 		</Modal>
