@@ -113,14 +113,21 @@ export const hrUtils = {
 					: _isNull(d.hrTitle)
 					? null
 					: d.hrTitle,
-			jdURL:
-				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('jdURL'))
+
+			jDInfo: {
+				jdURL:
+					draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('jdURL'))
+							? null
+							: watch('jdURL')
+						: _isNull(d.jdURL)
 						? null
-						: watch('jdURL')
-					: _isNull(d.jdURL)
-					? null
-					: d.jdURL,
+						: d.jdURL,
+				jDFilename: null,
+				jDDescription: null,
+				jDDump_ID: null,
+				hdnSkills: null,
+			},
 			budget:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('budget'))
@@ -221,10 +228,10 @@ export const hrUtils = {
 			timezone_Preference:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('timeZone'))
-						? 0
+						? ' '
 						: watch('timeZone')?.value
 					: _isNull(d.timeZone)
-					? 0
+					? ' '
 					: d.timeZone?.value,
 
 			talentsNumber:

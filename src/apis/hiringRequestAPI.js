@@ -143,8 +143,13 @@ export const HiringRequestAPI = {
 	},
 	createHiringRequest: async function (hrData) {
 		let httpService = new HttpServices();
+		const miscData = UserSessionManagementController.getUserMiscellaneousData();
+		console.log(miscData, '--miscData0---');
 		httpService.URL =
-			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.CREATE_HR;
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.CREATE_HR +
+			`?LoggedInUserId=${miscData?.loggedInUserTypeID}`;
 		httpService.dataToSend = hrData;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();

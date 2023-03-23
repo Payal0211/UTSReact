@@ -44,6 +44,7 @@ const DebriefingHR = ({
 		control,
 		name: 'secondaryInterviewer',
 	});
+
 	const navigate = useNavigate();
 	const [controlledJDParsed, setControlledJDParsed] = useState(
 		JDParsedSkills?.Skills?.map((item) => item?.value),
@@ -58,7 +59,16 @@ const DebriefingHR = ({
 	}, []);
 
 	const combinedSkillsMemo = useMemo(
-		() => [...JDParsedSkills?.Skills, ...skills],
+		() => [
+			...JDParsedSkills?.Skills,
+			...skills,
+			...[
+				{
+					id: 'others',
+					value: 'Others',
+				},
+			],
+		],
 		[JDParsedSkills?.Skills, skills],
 	);
 
@@ -77,6 +87,33 @@ const DebriefingHR = ({
 
 	const debriefSubmitHandler = async (d) => {
 		let debriefFormDetails = {
+			roleAndResponsibilites: d.roleAndResponsibilities,
+			requirements: d.requirements,
+			en_Id: enID,
+			skills: d.skills,
+			aboutCompanyDesc: d.aboutCompany,
+			secondaryInterviewer: d.secondaryInterviewer,
+			interviewerFullName: d.interviewerFullName,
+			interviewerEmail: d.interviewerEmail,
+			interviewerLinkedin: d.interviewerLinkedin,
+			interviewerDesignation: d.interviewerDesignation,
+		};
+
+		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
+			debriefFormDetails,
+		);
+		if (debriefResult.statusCode === HTTPStatusCode.OK) {
+			messageAPI.open({
+				type: 'success',
+				content: 'HR Debriefing has been created successfully..',
+			});
+			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+		}
+	};
+
+	const needMoreInforSubmitHandler = async (d) => {
+		let debriefFormDetails = {
+			isneedmore: true,
 			roleAndResponsibilites: d.roleAndResponsibilities,
 			requirements: d.requirements,
 			en_Id: enID,
@@ -224,7 +261,8 @@ const DebriefingHR = ({
 			<div className={DebriefingHRStyle.formPanelAction}>
 				<button
 					type="button"
-					className={DebriefingHRStyle.btn}>
+					className={DebriefingHRStyle.btn}
+					onClick={handleSubmit(needMoreInforSubmitHandler)}>
 					Need More Info
 				</button>
 				<button
