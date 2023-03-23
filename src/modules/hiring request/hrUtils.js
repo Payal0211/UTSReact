@@ -91,10 +91,10 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('role'))
 						? 0
-						: watch('role')
+						: watch('role')?.id
 					: _isNull(d.role)
 					? 0
-					: d.role,
+					: d.role?.id,
 			otherRole:
 				watch('role') === 'others'
 					? draft === SubmitType.SAVE_AS_DRAFT
@@ -145,6 +145,15 @@ export const hrUtils = {
 					: _isNull(d.maximumBudget)
 					? 0
 					: parseFloat(d.maximumBudget),
+
+			availability:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('availability'))
+						? null
+						: watch('availability')?.value
+					: _isNull(d.availability)
+					? null
+					: d.availability?.value,
 			NRMargin:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('NRMargin'))
@@ -229,11 +238,11 @@ export const hrUtils = {
 			dealID:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('dealID'))
-						? null
-						: watch('dealID')
+						? '0'
+						: watch('dealID').toString()
 					: _isNull(d.dealID)
-					? null
-					: d.dealID,
+					? '0'
+					: d.dealID.toString(),
 			bqFormLink:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('bqFormLink'))
@@ -261,14 +270,15 @@ export const hrUtils = {
 						: _isNull(d.workingMode)
 						? null
 						: d.workingMode?.value,
-				dpPercentage:
-					draft === SubmitType.SAVE_AS_DRAFT
+				dpPercentage: isHRDirectPlacement
+					? draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('dpPercentage'))
 							? 0
 							: parseFloat(watch('dpPercentage'))
 						: _isNull(d.dpPercentage)
 						? 0
-						: parseFloat(d.dpPercentage),
+						: parseFloat(d.dpPercentage)
+					: 0,
 				address:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('address'))
@@ -300,7 +310,7 @@ export const hrUtils = {
 							: watch('country')?.value
 						: _isNull(d.country)
 						? null
-						: d.country?.value,
+						: d?.country?.value,
 				postalCode:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('postalCode'))

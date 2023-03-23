@@ -83,6 +83,7 @@ const HRInputField = ({
 						required={required}
 						height={height && height}
 						maxLength={maxLength}
+						onWheel={(e) => e.target.blur()}
 					/>
 					{trailingIcon && (
 						<div className={HRInputFieldStyle.trailingIcon}>{trailingIcon}</div>

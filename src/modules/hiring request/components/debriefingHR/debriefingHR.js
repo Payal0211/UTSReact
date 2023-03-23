@@ -10,6 +10,8 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
 import HRInputField from '../hrInputFields/hrInputFields';
 import { InputType } from 'constants/application';
+import { useNavigate } from 'react-router-dom';
+import UTSRoutes from 'constants/routes';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -31,7 +33,6 @@ const DebriefingHR = ({
 		register,
 		handleSubmit,
 		setValue,
-		setError,
 		control,
 		formState: { errors },
 	} = useForm({
@@ -43,8 +44,9 @@ const DebriefingHR = ({
 		control,
 		name: 'secondaryInterviewer',
 	});
+	const navigate = useNavigate();
 	const [controlledJDParsed, setControlledJDParsed] = useState(
-		JDParsedSkills?.map((item) => item?.value),
+		JDParsedSkills?.Skills?.map((item) => item?.value),
 	);
 	const [selectedItems, setSelectedItems] = useState([]);
 	const [skills, setSkills] = useState([]);
@@ -56,20 +58,19 @@ const DebriefingHR = ({
 	}, []);
 
 	const combinedSkillsMemo = useMemo(
-		() => [...JDParsedSkills, ...skills],
-		[JDParsedSkills, skills],
+		() => [...JDParsedSkills?.Skills, ...skills],
+		[JDParsedSkills?.Skills, skills],
 	);
 
 	const filteredOptions = combinedSkillsMemo.filter(
 		(o) => !selectedItems.includes(o),
 	);
-
 	useEffect(() => {
 		setValue(
 			'skills',
-			JDParsedSkills?.map((item) => ({
+			JDParsedSkills?.Skills?.map((item) => ({
 				skillsID: item?.id.toString(),
-				skillsName: item?.text,
+				skillsName: item?.value,
 			})),
 		);
 	}, [JDParsedSkills, setValue]);
@@ -96,12 +97,27 @@ const DebriefingHR = ({
 				type: 'success',
 				content: 'HR Debriefing has been created successfully..',
 			});
+			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
 		}
 	};
 
 	useEffect(() => {
 		getSkills();
 	}, [getSkills]);
+
+	useEffect(() => {
+		JDParsedSkills &&
+			setValue('roleAndResponsibilities', JDParsedSkills?.Responsibility, {
+				shouldDirty: true,
+			});
+
+		JDParsedSkills &&
+			setValue('requirements', JDParsedSkills?.Requirements, {
+				shouldDirty: true,
+			});
+	}, [JDParsedSkills, setValue]);
+
+	console.log(watch('skills'), '--skills---');
 	return (
 		<div className={DebriefingHRStyle.debriefingHRContainer}>
 			{contextHolder}
@@ -113,6 +129,8 @@ const DebriefingHR = ({
 				<div className={DebriefingHRStyle.hrFieldRightPane}>
 					<div className={DebriefingHRStyle.colMd12}>
 						<TextEditor
+							isControlled={true}
+							controlledValue={JDParsedSkills?.Responsibility}
 							label={'Roles & Responsibilities'}
 							placeholder={'Enter roles & responsibilities'}
 							required
@@ -136,6 +154,8 @@ const DebriefingHR = ({
 							placeholder="Please enter details about company."
 						/>
 						<TextEditor
+							isControlled={true}
+							controlledValue={JDParsedSkills?.Requirements}
 							label={'Requirements'}
 							placeholder={'Enter Requirements'}
 							setValue={setValue}

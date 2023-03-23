@@ -10,7 +10,11 @@ const AddNewHR = () => {
 		addNewHiringRequest: false,
 		debriefingHR: true,
 	});
-	const [JDParsedSkills, setJDParsedSkills] = useState([]);
+	const [JDParsedSkills, setJDParsedSkills] = useState({
+		Skills: [],
+		Responsibility: '',
+		Requirements: '',
+	});
 	const [enID, setEnID] = useState('');
 
 	return (
