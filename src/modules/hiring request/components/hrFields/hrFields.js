@@ -87,6 +87,59 @@ const HRFields = ({
 	/* ------------------ Upload JD Starts Here ---------------------- */
 	const [openPicker, authResponse] = useDrivePicker();
 	const uploadFile = useRef(null);
+	const uploadFileFromGoogleDriveValidator = useCallback(
+		async (fileData) => {
+			setValidation({
+				...getValidation,
+				googleDriveFileUpload: '',
+			});
+			if (
+				fileData[0]?.mimeType !== 'application/vnd.google-apps.document' &&
+				fileData[0]?.mimeType !== 'application/pdf' &&
+				fileData[0]?.mimeType !== 'text/plain' &&
+				fileData[0]?.mimeType !== 'application/docs' &&
+				fileData[0]?.mimeType !== 'application/msword' &&
+				fileData[0]?.mimeType !== 'image/png' &&
+				fileData[0]?.mimeType !== 'image/jpeg' &&
+				fileData[0]?.mimeType !==
+					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+			) {
+				setValidation({
+					...getValidation,
+					googleDriveFileUpload:
+						'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
+				});
+			} else if (fileData[0]?.sizeBytes >= 500000) {
+				setValidation({
+					...getValidation,
+					googleDriveFileUpload:
+						'Upload file size more than 500kb, Please Upload file upto 500kb',
+				});
+			} else {
+				let fileType;
+				let fileName;
+				if (fileData[0]?.mimeType === 'application/vnd.google-apps.document') {
+					fileType = 'docs';
+					fileName = `${fileData[0]?.name}.${fileType}`;
+				} else {
+					fileName = `${fileData[0]?.name}`;
+				}
+				const formData = {
+					fileID: fileData[0]?.id,
+					FileName: fileName,
+				};
+				let uploadFileResponse =
+					await hiringRequestDAO.uploadGoogleDriveFileDAO(formData);
+
+				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+					setUploadModal(false);
+					setUploadFileData(fileName);
+					message.success('File uploaded successfully');
+				}
+			}
+		},
+		[getValidation],
+	);
 	const uploadFileHandler = useCallback(
 		async (fileData) => {
 			setIsLoading(true);
@@ -155,59 +208,6 @@ const HRFields = ({
 		},
 		[getValidation, setJDParsedSkills],
 	);
-	const uploadFileFromGoogleDriveValidator = useCallback(
-		async (fileData) => {
-			setValidation({
-				...getValidation,
-				googleDriveFileUpload: '',
-			});
-			if (
-				fileData[0]?.mimeType !== 'application/vnd.google-apps.document' &&
-				fileData[0]?.mimeType !== 'application/pdf' &&
-				fileData[0]?.mimeType !== 'text/plain' &&
-				fileData[0]?.mimeType !== 'application/docs' &&
-				fileData[0]?.mimeType !== 'application/msword' &&
-				fileData[0]?.mimeType !== 'image/png' &&
-				fileData[0]?.mimeType !== 'image/jpeg' &&
-				fileData[0]?.mimeType !==
-					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-			) {
-				setValidation({
-					...getValidation,
-					googleDriveFileUpload:
-						'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
-				});
-			} else if (fileData[0]?.sizeBytes >= 500000) {
-				setValidation({
-					...getValidation,
-					googleDriveFileUpload:
-						'Upload file size more than 500kb, Please Upload file upto 500kb',
-				});
-			} else {
-				let fileType;
-				let fileName;
-				if (fileData[0]?.mimeType === 'application/vnd.google-apps.document') {
-					fileType = 'docs';
-					fileName = `${fileData[0]?.name}.${fileType}`;
-				} else {
-					fileName = `${fileData[0]?.name}`;
-				}
-				const formData = {
-					fileID: fileData[0]?.id,
-					FileName: fileName,
-				};
-				let uploadFileResponse =
-					await hiringRequestDAO.uploadGoogleDriveFileDAO(formData);
-
-				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
-					setUploadModal(false);
-					setUploadFileData(fileName);
-					message.success('File uploaded successfully');
-				}
-			}
-		},
-		[getValidation],
-	);
 
 	const googleDriveFileUploader = useCallback(() => {
 		openPicker({
@@ -224,7 +224,16 @@ const HRFields = ({
 			callbackFunction: (data) => {
 				if (data?.action === 'cancel') {
 				} else {
-					data?.docs && uploadFileFromGoogleDriveValidator(data?.docs);
+					if (data?.docs) {
+						let uploadFileResponse = uploadFileFromGoogleDriveValidator(
+							data?.docs,
+						);
+						setUploadFileData(uploadFileResponse?.responseBody?.FileName);
+						setJDParsedSkills(
+							uploadFileResponse && uploadFileResponse?.responseBody?.details,
+						);
+						setUploadModal(false);
+					}
 				}
 			},
 		});
