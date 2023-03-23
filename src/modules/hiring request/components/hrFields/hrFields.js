@@ -139,8 +139,7 @@ const HRFields = ({
 					) {
 						setUploadFileData(fileData?.name);
 						setJDParsedSkills(
-							uploadFileResponse &&
-								uploadFileResponse?.responseBody?.details?.Skills,
+							uploadFileResponse && uploadFileResponse?.responseBody?.details,
 						);
 						setUploadModal(false);
 						setValidation({
@@ -485,7 +484,6 @@ const HRFields = ({
 	}, [modeOfWork, unregister]);
 
 	useEffect(() => {
-		console.log(hrRole !== 'others', '----hrRole---');
 		hrRole !== 'others' && unregister('otherRole');
 	}, [hrRole, unregister]);
 	/** To check Duplicate email exists End */
@@ -517,7 +515,6 @@ const HRFields = ({
 
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 				setAddHRResponse(addHRRequest?.responseBody?.details);
-				// console.log(addHRRequest?.responseBody?.details?.en_Id, '---eniD');
 				setEnID(addHRRequest?.responseBody?.details?.en_Id);
 				type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
 				type !== SubmitType.SAVE_AS_DRAFT &&
@@ -543,6 +540,9 @@ const HRFields = ({
 			watch,
 		],
 	);
+	useEffect(() => {
+		setValue('hrTitle', hrRole?.value);
+	}, [hrRole?.value, setValue]);
 
 	useEffect(() => {
 		if (errors?.clientName?.message) {
@@ -638,6 +638,7 @@ const HRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									mode={'id/value'}
 									searchable={true}
 									setValue={setValue}
 									register={register}
@@ -652,7 +653,7 @@ const HRFields = ({
 							</div>
 						</div>
 					</div>
-					{watch('role') === 'others' && (
+					{watch('role')?.id === 'others' && (
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd12}>
 								<HRInputField
@@ -678,6 +679,7 @@ const HRFields = ({
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd12}>
 							<HRInputField
+								disabled={hrRole}
 								register={register}
 								errors={errors}
 								validationSchema={{
@@ -712,6 +714,7 @@ const HRFields = ({
 										<CloseSVG
 											className={HRFieldStyle.uploadedJDClose}
 											onClick={() => {
+												// setJDParsedSkills({});
 												setUploadFileData('');
 											}}
 										/>
@@ -963,15 +966,16 @@ const HRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									mode={'id/value'}
 									setValue={setValue}
 									register={register}
 									label={'Availability'}
 									defaultValue="Select availability"
 									options={availability}
 									name="availability"
-									// isError={errors['availability'] && errors['availability']}
-									// required
-									// errorMsg={'Please select the availability.'}
+									isError={errors['availability'] && errors['availability']}
+									required
+									errorMsg={'Please select the availability.'}
 								/>
 							</div>
 						</div>

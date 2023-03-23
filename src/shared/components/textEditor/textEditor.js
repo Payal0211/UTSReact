@@ -23,6 +23,8 @@ const TextEditor = ({
 	name,
 	setValue,
 	watch,
+	isControlled,
+	controlledValue,
 }) => {
 	const [showEditor, setShowEditor] = useState(false);
 	const commentRef = useRef();
@@ -35,6 +37,10 @@ const TextEditor = ({
 			});
 		});
 	});
+
+	useEffect(() => {
+		if (isControlled) document.getElementById(name).innerText = controlledValue;
+	}, [controlledValue, isControlled, name]);
 
 	return (
 		<div className={TextEditorStyle.editorContainer}>
@@ -133,7 +139,7 @@ const TextEditor = ({
 						required: `please enter the ${label.toLowerCase()}`,
 					})}
 					ref={commentRef}
-					id="commentBox"
+					id={name || 'commentBox'}
 					className={TextEditorStyle.commentBox}
 					contentEditable={true}
 					placeholder={placeholder}

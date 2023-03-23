@@ -76,9 +76,6 @@ export const hrUtils = {
 		isHRDirectPlacement,
 		addHrResponse,
 	) {
-		console.log('--contactID---', contactID);
-		console.log('--isHRDirectPlacement---', isHRDirectPlacement);
-		console.log('--addHrResponse---', addHrResponse);
 		const hrFormDetails = {
 			en_Id: _isNull(addHrResponse) ? '' : addHrResponse.en_Id,
 			contactId: _isNull(contactID) ? 0 : contactID,
@@ -94,10 +91,10 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('role'))
 						? 0
-						: watch('role')
+						: watch('role')?.id
 					: _isNull(d.role)
 					? 0
-					: d.role,
+					: d.role?.id,
 			otherRole:
 				watch('role') === 'others'
 					? draft === SubmitType.SAVE_AS_DRAFT
@@ -152,11 +149,11 @@ export const hrUtils = {
 			availability:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('availability'))
-						? 0
-						: watch('availability')
+						? null
+						: watch('availability')?.value
 					: _isNull(d.availability)
-					? 0
-					: d.availability,
+					? null
+					: d.availability?.value,
 			NRMargin:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('NRMargin'))
@@ -241,11 +238,11 @@ export const hrUtils = {
 			dealID:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('dealID'))
-						? 0
-						: watch('dealID')
+						? '0'
+						: watch('dealID').toString()
 					: _isNull(d.dealID)
-					? 0
-					: d.dealID,
+					? '0'
+					: d.dealID.toString(),
 			bqFormLink:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('bqFormLink'))
