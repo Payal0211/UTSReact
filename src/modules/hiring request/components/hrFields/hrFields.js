@@ -1,6 +1,7 @@
 import { Button, Checkbox, Divider, Space, message, AutoComplete } from 'antd';
 import {
 	ClientHRURL,
+	GoogleDriveCredentials,
 	InputType,
 	SubmitType,
 	WorkingMode,
@@ -211,9 +212,8 @@ const HRFields = ({
 
 	const googleDriveFileUploader = useCallback(() => {
 		openPicker({
-			clientId:
-				'643188410943-pqbg632ja9hji6qoia62p5bnjanir9t9.apps.googleusercontent.com',
-			developerKey: 'AIzaSyCW6lF0-A6JCVWjOJRVlwN4F1OA3zaOwJw',
+			clientId: GoogleDriveCredentials.clientID,
+			developerKey: GoogleDriveCredentials.developerKey,
 			viewId: 'DOCS',
 			// token: token, // pass oauth token in case you already have one
 			showUploadView: true,
@@ -253,7 +253,7 @@ const HRFields = ({
 			!/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
 				getGoogleDriveLink,
 			) &&
-			!/https:\/\/drive\.google\.com\/file\/d\/(.*?)\/.*?\?usp=sharing/g.test(
+			!/https:\/\/drive\.google\.com\/file\/d\/(.*?)\/.*?/g.test(
 				getGoogleDriveLink,
 			)
 		) {
@@ -261,8 +261,7 @@ const HRFields = ({
 				...getValidation,
 				linkValidation: 'Please Enter Google Docs/Drive URL',
 			});
-		} else {
-			/* else if (
+		} /* else if (
 			!/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
 				getGoogleDriveLink,
 			)
@@ -271,7 +270,7 @@ const HRFields = ({
 				...getValidation,
 				linkValidation: 'Please Enter Google Docs/Drive URL',
 			});
-		}  */
+		}  */ else {
 			let uploadFileResponse =
 				await hiringRequestDAO.uploadFileFromGoogleDriveLinkDAO(
 					getGoogleDriveLink,
