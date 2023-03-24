@@ -189,10 +189,10 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('howSoon'))
 						? null
-						: watch('howSoon').toString()
+						: watch('howSoon')?.value.toString()
 					: _isNull(d.howSoon)
 					? null
-					: d.howSoon.toString(),
+					: d.howSoon?.value.toString(),
 			years:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('years'))
@@ -213,10 +213,10 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('region'))
 						? 0
-						: watch('region')
+						: watch('region')?.id
 					: _isNull(d.region)
 					? 0
-					: d.region,
+					: d.region?.id,
 			timeZonePreferenceId:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('timeZone'))
@@ -229,10 +229,10 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('timeZone'))
 						? ' '
-						: watch('timeZone')?.value
+						: watch('region')?.value + watch('timeZone')?.value
 					: _isNull(d.timeZone)
 					? ' '
-					: d.timeZone?.value,
+					: d.region?.value + d.timeZone?.value,
 
 			talentsNumber:
 				draft === SubmitType.SAVE_AS_DRAFT
