@@ -69,6 +69,9 @@ export class MastersAPI {
 	static GET_TEAM_MANAGER_BASED_ON_USER_TYPE =
 		'FetchTeamManagerBasedOnUserType';
 	static GET_EMAIL_SUGGESTION = 'AutoComplete/Contact';
+	static GET_NR_MARGIN = 'GetNRMargin';
+	static CHECK_OTHER_ROLE = 'CheckOtherRole';
+	static ADD_OTHER_SKILL = 'AddOtherSkill';
 }
 
 export class ClientsAPI {

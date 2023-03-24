@@ -237,7 +237,7 @@ const HRFields = ({
 				}
 			},
 		});
-	}, [openPicker, uploadFileFromGoogleDriveValidator]);
+	}, [openPicker, setJDParsedSkills, uploadFileFromGoogleDriveValidator]);
 
 	const uploadFileFromGoogleDriveLink = useCallback(async () => {
 		setValidation({
@@ -247,7 +247,7 @@ const HRFields = ({
 		if (!getGoogleDriveLink) {
 			setValidation({
 				...getValidation,
-				linkValidation: 'Please enter google docs url',
+				linkValidation: 'Please Enter Google Docs/Drive URL',
 			});
 		} else if (
 			!/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
@@ -256,7 +256,7 @@ const HRFields = ({
 		) {
 			setValidation({
 				...getValidation,
-				linkValidation: 'Please enter valid google docs url',
+				linkValidation: 'Please Enter Google Docs/Drive URL',
 			});
 		} else {
 			let uploadFileResponse =
@@ -281,9 +281,18 @@ const HRFields = ({
 	let prefRegion = watch('region');
 	let modeOfWork = watch('workingMode');
 	let hrRole = watch('role');
+	let watchOtherRole = watch('otherRole');
+
+	const getNRMarginHandler = useCallback(async () => {
+		const response = await MasterDAO.getNRMarginRequestDAO();
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setValue('NRMargin', response && response?.responseBody?.details?.value);
+		}
+	}, [setValue]);
+
 	const getTimeZonePreference = useCallback(async () => {
 		const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO(
-			prefRegion && prefRegion,
+			prefRegion && prefRegion?.id,
 		);
 		setTimeZonePref(timeZone && timeZone.responseBody);
 	}, [prefRegion]);
@@ -316,7 +325,7 @@ const HRFields = ({
 		setTalentRole((preValue) => [
 			...preValue,
 			{
-				id: 'others',
+				id: -1,
 				value: 'Others',
 			},
 		]);
@@ -425,6 +434,32 @@ const HRFields = ({
 		setIsLoading(false);
 	}, [filteredMemo, setError, setValue]);
 
+	const getOtherRoleHandler = useCallback(
+		async (data) => {
+			let response = await MasterDAO.getOtherRoleRequestDAO({
+				roleName: data,
+				roleID: 0,
+			});
+			if (response?.statusCode === HTTPStatusCode?.BAD_REQUEST) {
+				return setError('otherRole', {
+					type: 'otherRole',
+					message: response?.responseBody,
+				});
+			}
+		},
+		[setError],
+	);
+	useEffect(() => {
+		let timer;
+		if (!_isNull(watchOtherRole)) {
+			timer = setTimeout(() => {
+				setIsLoading(true);
+				getOtherRoleHandler(watchOtherRole);
+			}, 2000);
+		}
+		return () => clearTimeout(timer);
+	}, [getOtherRoleHandler, watchOtherRole]);
+
 	useEffect(() => {
 		let timer;
 		if (!_isNull(watchClientName)) {
@@ -462,6 +497,7 @@ const HRFields = ({
 		getWorkingMode();
 		getCountry();
 		getHowSoon();
+		getNRMarginHandler();
 	}, [
 		getAvailability,
 		getSalesPerson,
@@ -472,6 +508,7 @@ const HRFields = ({
 		getHowSoon,
 		getWorkingMode,
 		getCountry,
+		getNRMarginHandler,
 	]);
 	useEffect(() => {
 		setValidation({
@@ -662,7 +699,7 @@ const HRFields = ({
 							</div>
 						</div>
 					</div>
-					{watch('role')?.id === 'others' && (
+					{watch('role')?.id === -1 && (
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd12}>
 								<HRInputField
@@ -688,7 +725,6 @@ const HRFields = ({
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd12}>
 							<HRInputField
-								disabled={hrRole}
 								register={register}
 								errors={errors}
 								validationSchema={{
@@ -833,7 +869,7 @@ const HRFields = ({
 								}}
 								label="NR Margin Percentage"
 								name="NRMargin"
-								type={InputType.NUMBER}
+								type={InputType.TEXT}
 								placeholder="Select NR margin percentage"
 								required
 							/>
@@ -993,6 +1029,7 @@ const HRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									mode={'id/value'}
 									setValue={setValue}
 									register={register}
 									label={'Select Region'}
@@ -1027,6 +1064,7 @@ const HRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									mode={'id/value'}
 									setValue={setValue}
 									register={register}
 									label={'How soon can they join?'}
