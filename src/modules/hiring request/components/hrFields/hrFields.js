@@ -252,6 +252,9 @@ const HRFields = ({
 		} else if (
 			!/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
 				getGoogleDriveLink,
+			) &&
+			!/https:\/\/drive\.google\.com\/file\/d\/(.*?)\/.*?\?usp=sharing/g.test(
+				getGoogleDriveLink,
 			)
 		) {
 			setValidation({
@@ -259,6 +262,16 @@ const HRFields = ({
 				linkValidation: 'Please Enter Google Docs/Drive URL',
 			});
 		} else {
+			/* else if (
+			!/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
+				getGoogleDriveLink,
+			)
+		) {
+			setValidation({
+				...getValidation,
+				linkValidation: 'Please Enter Google Docs/Drive URL',
+			});
+		}  */
 			let uploadFileResponse =
 				await hiringRequestDAO.uploadFileFromGoogleDriveLinkDAO(
 					getGoogleDriveLink,
