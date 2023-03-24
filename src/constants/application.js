@@ -42,6 +42,11 @@ export class UserAccountRole {
 	static MARKETING = 12;
 }
 
+export class GoogleDriveCredentials {
+	static clientID =
+		'643188410943-pqbg632ja9hji6qoia62p5bnjanir9t9.apps.googleusercontent.com';
+	static developerKey = 'AIzaSyCW6lF0-A6JCVWjOJRVlwN4F1OA3zaOwJw';
+}
 export class AdHOCHR {
 	static POOL = 'Pool';
 	static ODR = 'ODR';
