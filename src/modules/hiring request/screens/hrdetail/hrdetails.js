@@ -159,12 +159,12 @@ const HRDetailScreen = () => {
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED
 						? null
 						: hrUtils.showMatchmaking(
-								apiData,
-								miscData?.LoggedInUserTypeID,
-								callAPI,
-								urlSplitter,
-								updatedSplitter,
-						  )}
+							apiData,
+							miscData?.LoggedInUserTypeID,
+							callAPI,
+							urlSplitter,
+							updatedSplitter,
+						)}
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
@@ -239,6 +239,7 @@ const HRDetailScreen = () => {
 									hrId={apiData.HR_Id}
 									miscData={miscData}
 									hiringRequestNumber={updatedSplitter}
+									hrType={apiData.Is_HRTypeDP}
 								/>
 							</Suspense>
 						)}

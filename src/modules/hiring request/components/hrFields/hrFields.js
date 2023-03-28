@@ -13,7 +13,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 // import { MasterDAO } from 'core/master/masterDAO';
-
+import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { useFieldArray, Controller, useForm } from 'react-hook-form';
 // import AddInterviewer from '../addInterviewer/addInterviewer';
@@ -74,6 +74,7 @@ const HRFields = ({
 		linkValidation: ''
 	})
 	const [getGoogleDriveLink, setGoogleDriveLink] = useState("")
+	const [getUploadFileData, setUploadFileData] = useState("")
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
 	const {
 		watch,
@@ -429,9 +430,9 @@ const HRFields = ({
 							/>
 						</div>
 					</div>
-					<div className={HRFieldStyle.row}>
+					<div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
 						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
+							{!getUploadFileData ? <HRInputField
 								register={register}
 								leadingIcon={<UploadSVG />}
 								label="Job Description (PDF)"
@@ -439,7 +440,13 @@ const HRFields = ({
 								type={InputType.BUTTON}
 								value="Upload JD File"
 								onClickHandler={() => setUploadModal(true)}
-							/>
+							/> :
+								<div className={HRFieldStyle.uploadedJDWrap}>
+									<label>Job Description (PDF)</label>
+									<div className={HRFieldStyle.uploadedJDName}>
+										{getUploadFileData} <CloseSVG className={HRFieldStyle.uploadedJDClose} onClick={() => {
+											setUploadFileData("")
+										}} /></div></div>}
 						</div>
 						<UploadModal
 							modalTitle={'Upload Logo'}
@@ -451,8 +458,11 @@ const HRFields = ({
 							getValidation={getValidation}
 							getGoogleDriveLink={getGoogleDriveLink}
 							setGoogleDriveLink={setGoogleDriveLink}
+							setUploadFileData={setUploadFileData}
 						/>
-
+						<div className={HRFieldStyle.orLabel}>
+							OR
+						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
 								label="Job Description URL"

@@ -16,6 +16,7 @@ export class SubDomain {
 	static INTERVIEW = 'Interview/';
 	static DEAL = 'Deal/';
 	static USER = 'User/';
+	static ENGAGEMENT = 'Engagement/'
 }
 export class APIType {
 	static USER = '/user';
@@ -34,6 +35,10 @@ export class UserAPI {
 	static ADD_NEW_USER = 'AddEdit';
 	static GET_USER_DETAIL = 'GetUserDetail';
 	static UPDATEPASSWORD = '/updatepassword';
+}
+
+export class EngagementAPI {
+	static FILTER = 'Filters'
 }
 
 export class AllHiringRequestAPI {

@@ -19,7 +19,8 @@ const UploadModal = ({
 	getValidation,
 	getGoogleDriveLink,
 	setGoogleDriveLink,
-	setUploadModal
+	setUploadModal,
+	setUploadFileData
 }) => {
 
 	const uploadFile = useRef(null)
@@ -43,6 +44,8 @@ const UploadModal = ({
 			formData.append('File', fileData);
 			let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
 			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+
+				setUploadFileData(fileData?.name)
 				setUploadModal(false);
 				setValidation({
 					...getValidation,
@@ -93,6 +96,7 @@ const UploadModal = ({
 
 			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 				setUploadModal(false);
+				setUploadFileData(fileName)
 				message.success('File uploaded successfully')
 
 			}
@@ -120,29 +124,38 @@ const UploadModal = ({
 		})
 	}
 
+
 	const uploadFileFromGoogleDriveLink = async () => {
 		setValidation({
 			...getValidation,
 			linkValidation: '',
-		})
+		});
 		if (!getGoogleDriveLink) {
 			setValidation({
 				...getValidation,
-				linkValidation: 'Please enter google docs url',
-			})
-		}
-		else if (!(/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(getGoogleDriveLink))) {
+				linkValidation: 'Please Enter Google Docs/Drive URL',
+			});
+		} else if (
+			!/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
+				getGoogleDriveLink,
+			) &&
+			!/https:\/\/drive\.google\.com\/file\/d\/(.*?)\/.*?/g.test(
+				getGoogleDriveLink,
+			)
+		) {
 			setValidation({
 				...getValidation,
-				linkValidation: 'Please enter valid google docs url',
-			})
-		}
-		else {
-			let uploadFileResponse = await hiringRequestDAO.uploadFileFromGoogleDriveLinkDAO(getGoogleDriveLink);
+				linkValidation: 'Please Enter Google Docs/Drive URL',
+			});
+		} else {
+			let uploadFileResponse =
+				await hiringRequestDAO.uploadFileFromGoogleDriveLinkDAO(
+					getGoogleDriveLink,
+				);
 			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 				setUploadModal(false);
-				setGoogleDriveLink("")
-				message.success('File uploaded successfully')
+				setGoogleDriveLink('');
+				message.success('File uploaded successfully');
 			}
 		}
 	}

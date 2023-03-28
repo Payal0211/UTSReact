@@ -51,6 +51,10 @@ const AddNewOnboard = React.lazy(() =>
 	import('modules/onboard/screens/addNewOnboard/addNewOnboard'),
 );
 
+const EngagementOnboardList = React.lazy(() =>
+	import('modules/engagement/screens/engagementList/engagementList'),
+);
+
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
@@ -74,6 +78,7 @@ export default class UTSRoutes {
 	static USERLISTROUTE = '/user';
 	static ADDNEWUSERROUTE = '/user/addnewuser';
 	static EDITUSERROUTE = '/user/:userID';
+	static ENGAGEMENTRROUTE = '/engagement';
 }
 
 export const navigateToComponent = {
@@ -150,6 +155,11 @@ export const navigateToComponent = {
 	[UTSRoutes.ONBOARDROUTE]: (
 		<Suspense>
 			<AddNewOnboard />
+		</Suspense>
+	),
+	[UTSRoutes.ENGAGEMENTRROUTE]: (
+		<Suspense>
+			<EngagementOnboardList />
 		</Suspense>
 	),
 };

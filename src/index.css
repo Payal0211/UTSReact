@@ -612,3 +612,43 @@ table{
   align-items: center;
   display: flex;
 }
+
+
+/*antd model*/
+.engagementModalStyle .ant-modal-content {
+background: #FFFFFF !important;
+box-shadow: 0px 1.91653px 7.66613px rgba(204, 238, 204, 0.25);
+}
+
+.engagementModalStyle .ant-modal-body {
+padding: 0px !important;
+}
+
+.engagementBillRateModal .ant-modal-content , .engagementPayRateModal .ant-modal-content , .engagementAddFeedbackModal .ant-modal-content , .engagementReplaceTalentModal .ant-modal-content  {
+  background: #FFFFFF !important;
+  box-shadow: 0px 1.91653px 7.66613px rgba(204, 238, 204, 0.25) !important;
+  border-radius: 8px !important;
+  padding: 40px !important;
+}
+
+.engagementBillRateModal .ant-modal-body, .engagementPayRateModal .ant-modal-body, .engagementAddFeedbackModal .ant-modal-body, .engagementReplaceTalentModal .ant-modal-body   {
+  padding: 0px;
+}
+
+.engagementReplaceTalentModal .ant-radio-group .ant-radio-wrapper .ant-radio+* {
+  padding: 0;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #676767;
+}
+
+.engagementReplaceTalentModal .ant-tabs-nav {
+  border-bottom: 1px solid #CECCCC;
+}
+
+.engagementReplaceTalentModal .ant-tabs-content-holder {
+margin-top: 24px;
+}

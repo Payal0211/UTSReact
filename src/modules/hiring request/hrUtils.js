@@ -12,7 +12,7 @@ import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import MatchmakingModal from './components/matchmaking/matchmaking';
 export const hrUtils = {
 	modifyHRRequestData: (hrData) => {
-		return hrData.responseBody.Data.map((item) => ({
+		return hrData.responseBody.rows.map((item) => ({
 			key: item.hrid,
 			starStatus: item.starMarkedStatusCode,
 			adHocHR: item.adHocHR,
@@ -93,8 +93,8 @@ export const hrUtils = {
 						? 0
 						: watch('role')
 					: _isNull(d.role)
-					? 0
-					: d.role,
+						? 0
+						: d.role,
 			otherRole:
 				watch('role') === 'others'
 					? draft === SubmitType.SAVE_AS_DRAFT
@@ -102,8 +102,8 @@ export const hrUtils = {
 							? null
 							: watch('otherRole').trim()
 						: _isNull(d.otherRole)
-						? null
-						: d.otherRole.trim()
+							? null
+							: d.otherRole.trim()
 					: null,
 			hrTitle:
 				draft === SubmitType.SAVE_AS_DRAFT
@@ -111,112 +111,112 @@ export const hrUtils = {
 						? null
 						: watch('hrTitle')
 					: _isNull(d.hrTitle)
-					? null
-					: d.hrTitle,
+						? null
+						: d.hrTitle,
 			jdURL:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('jdURL'))
 						? null
 						: watch('jdURL')
 					: _isNull(d.jdURL)
-					? null
-					: d.jdURL,
+						? null
+						: d.jdURL,
 			budget:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('budget'))
 						? null
 						: watch('budget')
 					: _isNull(d.budget)
-					? null
-					: d.budget,
+						? null
+						: d.budget,
 			minimumBudget:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('minimumBudget'))
 						? 0
 						: parseFloat(watch('minimumBudget'))
 					: _isNull(d.minimumBudget)
-					? 0
-					: parseFloat(d.minimumBudget),
+						? 0
+						: parseFloat(d.minimumBudget),
 			maximumBudget:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('maximumBudget'))
 						? 0
 						: parseFloat(watch('maximumBudget'))
 					: _isNull(d.maximumBudget)
-					? 0
-					: parseFloat(d.maximumBudget),
+						? 0
+						: parseFloat(d.maximumBudget),
 			NRMargin:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('NRMargin'))
 						? 0
 						: parseInt(watch('NRMargin'))
 					: _isNull(d.NRMargin)
-					? 0
-					: parseInt(d.NRMargin),
+						? 0
+						: parseInt(d.NRMargin),
 			salesPerson:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('salesPerson'))
 						? 0
 						: watch('salesPerson')
 					: _isNull(d.salesPerson)
-					? 0
-					: d.salesPerson,
+						? 0
+						: d.salesPerson,
 			contractDuration:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('contractDuration'))
 						? null
 						: watch('contractDuration')
 					: _isNull(d.contractDuration)
-					? null
-					: d.contractDuration,
+						? null
+						: d.contractDuration,
 			howSoon:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('howSoon'))
 						? null
 						: watch('howSoon').toString()
 					: _isNull(d.howSoon)
-					? null
-					: d.howSoon.toString(),
+						? null
+						: d.howSoon.toString(),
 			years:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('years'))
 						? 0
 						: parseInt(watch('years'))
 					: _isNull(d.years)
-					? 0
-					: parseInt(d.years),
+						? 0
+						: parseInt(d.years),
 			months:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('months'))
 						? 0
 						: parseInt(watch('months'))
 					: _isNull(d.months)
-					? 0
-					: parseInt(d.months),
+						? 0
+						: parseInt(d.months),
 			timeZone:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('region'))
 						? 0
 						: watch('region')
 					: _isNull(d.region)
-					? 0
-					: d.region,
+						? 0
+						: d.region,
 			timeZonePreferenceId:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('timeZone'))
 						? 0
 						: watch('timeZone')?.id
 					: _isNull(d.timeZone)
-					? 0
-					: d.timeZone?.id,
+						? 0
+						: d.timeZone?.id,
 			timezone_Preference:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('timeZone'))
 						? 0
 						: watch('timeZone')?.value
 					: _isNull(d.timeZone)
-					? 0
-					: d.timeZone?.value,
+						? 0
+						: d.timeZone?.value,
 
 			talentsNumber:
 				draft === SubmitType.SAVE_AS_DRAFT
@@ -224,32 +224,32 @@ export const hrUtils = {
 						? 0
 						: parseInt(watch('talentsNumber'))
 					: _isNull(d.talentsNumber)
-					? 0
-					: parseInt(d.talentsNumber),
+						? 0
+						: parseInt(d.talentsNumber),
 			dealID:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('dealID'))
 						? null
 						: watch('dealID')
 					: _isNull(d.dealID)
-					? null
-					: d.dealID,
+						? null
+						: d.dealID,
 			bqFormLink:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('bqFormLink'))
 						? null
 						: watch('bqFormLink')
 					: _isNull(d.bqFormLink)
-					? null
-					: d.bqFormLink,
+						? null
+						: d.bqFormLink,
 			discoveryCallLink:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('discoveryCallLink'))
 						? null
 						: watch('discoveryCallLink')
 					: _isNull(d.discoveryCallLink)
-					? null
-					: d.discoveryCallLink,
+						? null
+						: d.discoveryCallLink,
 			isHRTypeDP: isHRDirectPlacement,
 			directPlacement: {
 				hiringRequestId: 0,
@@ -259,56 +259,56 @@ export const hrUtils = {
 							? null
 							: watch('workingMode')?.value
 						: _isNull(d.workingMode)
-						? null
-						: d.workingMode?.value,
+							? null
+							: d.workingMode?.value,
 				dpPercentage:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('dpPercentage'))
 							? 0
 							: parseFloat(watch('dpPercentage'))
 						: _isNull(d.dpPercentage)
-						? 0
-						: parseFloat(d.dpPercentage),
+							? 0
+							: parseFloat(d.dpPercentage),
 				address:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('address'))
 							? null
 							: watch('address')
 						: _isNull(d.address)
-						? null
-						: d.address,
+							? null
+							: d.address,
 				city:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('city'))
 							? null
 							: watch('city')
 						: _isNull(d.city)
-						? null
-						: d.city,
+							? null
+							: d.city,
 				state:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('state'))
 							? null
 							: watch('state')
 						: _isNull(d.state)
-						? null
-						: d.state,
+							? null
+							: d.state,
 				country:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('country'))
 							? null
 							: watch('country')?.value
 						: _isNull(d.country)
-						? null
-						: d.country?.value,
+							? null
+							: d.country?.value,
 				postalCode:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('postalCode'))
 							? null
 							: watch('postalCode')
 						: _isNull(d.postalCode)
-						? null
-						: d.postalCode,
+							? null
+							: d.postalCode,
 			},
 			/* interviewerFullName:
 				draft === SubmitType.SAVE_AS_DRAFT

@@ -30,11 +30,10 @@ const Sidebar = () => {
 								<Link to={navigateTo}>
 									<div className={sideBarStyles.iconSet}>
 										<div
-											className={`${sideBarStyles.sidebarIcon} ${
-												switchLocation.pathname === navigateTo
-													? sideBarStyles.active
-													: ''
-											}`}>
+											className={`${sideBarStyles.sidebarIcon} ${switchLocation.pathname === navigateTo
+												? sideBarStyles.active
+												: ''
+												}`}>
 											<img
 												src={icon}
 												alt="mySvgImage"
@@ -43,9 +42,8 @@ const Sidebar = () => {
 									</div>
 								</Link>
 								<div
-									className={`${
-										urlSplitter === navigateTo ? sideBarStyles.indicator : null
-									}`}></div>
+									className={`${urlSplitter === navigateTo ? sideBarStyles.indicator : null
+										}`}></div>
 							</div>
 						</Tooltip>
 					);
