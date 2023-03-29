@@ -702,4 +702,56 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getOtherRoleRequestDAO');
 		}
 	},
+	getContractTypeRequestDAO: async function () {
+		try {
+			const contractTypeResponse = await MasterAPI.getContractTypeRequest();
+			if (contractTypeResponse) {
+				const statusCode = contractTypeResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = contractTypeResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return contractTypeResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return contractTypeResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getContractTypeRequestDAO');
+		}
+	},
+	getNetPaymentDaysRequestDAO: async function () {
+		try {
+			const netPaymentDaysResponse = await MasterAPI.getNetPaymentDaysRequest();
+			if (netPaymentDaysResponse) {
+				const statusCode = netPaymentDaysResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = netPaymentDaysResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return netPaymentDaysResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return netPaymentDaysResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getNetPaymentDaysRequestDAO');
+		}
+	},
 };

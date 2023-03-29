@@ -1,5 +1,6 @@
 import {
 	AllHiringRequestAPI,
+	HRAcceptanceAPI,
 	HiringRequestsAPI,
 	NetworkInfo,
 	SubDomain,
@@ -383,6 +384,55 @@ export const HiringRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.updateODRPOOLStatusRequest');
+		}
+	},
+	getHRAcceptanceRequest: async (hrAcceptanceDetail) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HR_ACCEPTANCE +
+			HRAcceptanceAPI.GET_HR_ACCEPTANCE +
+			`?PostID=${hrAcceptanceDetail?.postID}&TalentID=${hrAcceptanceDetail?.talentID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getHRAcceptanceRequest');
+		}
+	},
+	addHRAcceptanceRequest: async (hrAcceptanceDetail) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HR_ACCEPTANCE +
+			HRAcceptanceAPI.ADD_HR_ACCEPTANCE;
+		httpService.dataToSend = hrAcceptanceDetail;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
+		}
+	},
+	openPostAcceptanceRequest: async (hrAcceptanceDetail) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HR_ACCEPTANCE +
+			HRAcceptanceAPI.OPEN_POST_ACCEPTANCE +
+			`?HRDetailId=${hrAcceptanceDetail.hrDetailID}&TalentId=${hrAcceptanceDetail.talentID}`;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.openPostAcceptanceRequest');
 		}
 	},
 };

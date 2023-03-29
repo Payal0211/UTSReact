@@ -21,6 +21,7 @@ const TalentList = ({
 	talentCTA,
 	talentDetail,
 	miscData,
+	callAPI,
 	HRStatusCode,
 	hrId,
 	starMarkedStatusCode,
@@ -43,8 +44,8 @@ const TalentList = ({
 	const [showScheduleInterviewModal, setScheduleInterviewModal] =
 		useState(false);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
-	console.log('--talentDetails---', talentCTA);
-	console.log(talentCTA?.[0]?.cTAInfoList[0]?.Label);
+	// console.log('--talentDetails---', );
+	console.log('talentCTA-------', talentCTA?.[0]?.cTAInfoList[0]?.label);
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
 		{ slot1: null, slot2: null, slot3: null },
 		{ slot1: null, slot2: null, slot3: null },
@@ -1101,6 +1102,7 @@ const TalentList = ({
 		[talentCTA, talentIndex],
 	);
 	console.log(filterTalentCTAs, '--filteredCTAs');
+	console.log(filterTalentID, '---filterTalentID');
 	useEffect(() => {
 		scheuleResetDataHander();
 		setScheduleSlotRadio(1);
@@ -1412,6 +1414,7 @@ const TalentList = ({
 													case TalentOnboardStatus.TALENT_ACCEPTANCE: {
 														setTalentAcceptance(true);
 														setTalentIndex(item?.TalentID);
+														console.log('---talentID---', item?.TalentID);
 														break;
 													}
 													case TalentOnboardStatus.TALENT_STATUS: {
@@ -1711,9 +1714,9 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setTalentAcceptance(false)}>
 				<TalentAcceptance
+					callAPI={callAPI}
+					talentInfo={filterTalentID}
 					talentName={filterTalentID?.Name}
-					/* 	hrId={hrId}
-					talentInfo={filterTalentID} */
 					HRStatusCode={HRStatusCode}
 					hiringRequestNumber={hiringRequestNumber}
 					starMarkedStatusCode={starMarkedStatusCode}

@@ -551,7 +551,6 @@ export const hrUtils = {
 		}
 	},
 	showTalentCTA(item) {
-		// console.log('--index---', item);
 		let tempArray = [];
 		item?.cTAInfoList?.map((item) =>
 			tempArray.push({
@@ -559,6 +558,7 @@ export const hrUtils = {
 				label: item?.label,
 			}),
 		);
+
 		return tempArray;
 	},
 	handleTalentStatus(item, HRStatusCode) {

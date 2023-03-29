@@ -656,21 +656,6 @@ const HRFields = ({
 								)}
 							</div>
 						</div>
-						{/* <div className={HRFieldStyle.colMd12}>
-							<HRInputField
-								disabled={pathName === ClientHRURL.ADD_NEW_CLIENT || isLoading}
-								register={register}
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the client email/name.',
-								}}
-								label={'Client Email/Name'}
-								name="clientName"
-								type={InputType.TEXT}
-								placeholder="Enter Client Email/Name"
-								required
-							/>
-						</div> */}
 					</div>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>

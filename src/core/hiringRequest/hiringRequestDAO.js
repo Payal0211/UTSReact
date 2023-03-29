@@ -620,7 +620,103 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
+			return errorDebug(
+				error,
+				'hiringRequestDAO.uploadFileFromGoogleDriveLinkDAO()',
+			);
+		}
+	},
+	getHRAcceptanceRequestDAO: async (hrAcceptanceDetail) => {
+		try {
+			const getHRAcceptanceResponse =
+				await HiringRequestAPI.getHRAcceptanceRequest(hrAcceptanceDetail);
+			if (getHRAcceptanceResponse) {
+				const statusCode = getHRAcceptanceResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getHRAcceptanceResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getHRAcceptanceResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getHRAcceptanceResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getHRAcceptanceRequestDAO()');
+		}
+	},
+	addHRAcceptanceRequestDAO: async (hrAcceptanceDetail) => {
+		try {
+			const addHRAcceptanceResponse =
+				await HiringRequestAPI.addHRAcceptanceRequest(hrAcceptanceDetail);
+			if (addHRAcceptanceResponse) {
+				const statusCode = addHRAcceptanceResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = addHRAcceptanceResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return addHRAcceptanceResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return addHRAcceptanceResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.addHRAcceptanceRequestDAO()');
+		}
+	},
+	openPostAcceptanceRequestDAO: async (hrAcceptanceDetail) => {
+		try {
+			const openPostAcceptanceResponse =
+				await HiringRequestAPI.openPostAcceptanceRequest(hrAcceptanceDetail);
+			if (openPostAcceptanceResponse) {
+				const statusCode = openPostAcceptanceResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = openPostAcceptanceResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return openPostAcceptanceResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return openPostAcceptanceResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.openPostAcceptanceRequestDAO()',
+			);
 		}
 	},
 };
