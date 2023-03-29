@@ -9,6 +9,7 @@ const TalentProfileCard = ({
 	talentDetail,
 	miscData,
 	HRStatusCode,
+	callAPI,
 	hrId,
 	hiringRequestNumber,
 	starMarkedStatusCode,
@@ -31,6 +32,7 @@ const TalentProfileCard = ({
 					{talentDetail?.length > 0 ? (
 						<Suspense>
 							<TalentList
+								callAPI={callAPI}
 								talentCTA={talentCTA}
 								talentDetail={talentDetail && talentDetail}
 								miscData={miscData}

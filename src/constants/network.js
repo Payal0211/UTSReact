@@ -17,6 +17,7 @@ export class SubDomain {
 	static INTERVIEW = 'Interview/';
 	static DEAL = 'Deal/';
 	static USER = 'User/';
+	static HR_ACCEPTANCE = 'HRAcceptance/';
 }
 export class APIType {
 	static USER = '/user';
@@ -72,8 +73,15 @@ export class MastersAPI {
 	static GET_NR_MARGIN = 'GetNRMargin';
 	static CHECK_OTHER_ROLE = 'CheckOtherRole';
 	static ADD_OTHER_SKILL = 'AddOtherSkill';
+	static CONTRACT_TYPE = 'ContractType';
+	static NET_PAYMENT_DAYS = 'NetPaymentDays';
 }
 
+export class HRAcceptanceAPI {
+	static GET_HR_ACCEPTANCE = 'GetHRAcceptance';
+	static ADD_HR_ACCEPTANCE = 'AddHRAcceptance';
+	static OPEN_POST_ACCEPTANCE = 'OpenPostAcceptance';
+}
 export class ClientsAPI {
 	static CREATE = 'Create';
 	static CHECK_DUPLICATE_COMPANY_NAME = 'CheckDuplicateCompanyName';

@@ -22,7 +22,17 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.companyURL}>
 								<span>Company URL:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.CompanyURL ? clientDetail?.CompanyURL : 'NA'}
+									{clientDetail?.CompanyURL ? (
+										<a
+											target="_blank"
+											href={clientDetail?.CompanyURL}
+											style={{ textDecoration: 'underline' }}
+											rel="noreferrer">
+											Click Here
+										</a>
+									) : (
+										'NA'
+									)}
 								</span>
 								&nbsp;&nbsp;
 								<a
@@ -162,39 +172,53 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							</div>
 							<div className={CompanyProfileCardStyle.preferredTime}>
 								<span>Mode of Work:</span>&nbsp;&nbsp;
-								<span style={{ fontWeight: '500' }}>NA</span>
+								<span style={{ fontWeight: '500' }}>
+									{clientDetail?.ModeOfWork || 'NA'}
+								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.jdLink}>
 								<span>JD Link:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									<a
-										href={clientDetail?.JobDetailURL}
-										style={{ textDecoration: 'underline' }}
-										target="_blank">
-										Click Here
-									</a>
+									{clientDetail?.JobDetailURL ? (
+										<a
+											rel="noreferrer"
+											href={clientDetail?.JobDetailURL}
+											style={{ textDecoration: 'underline' }}
+											target="_blank">
+											Click Here
+										</a>
+									) : (
+										'NA'
+									)}
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.TRParked}>
 								<span>Behavioral Questions:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									<a
-										target="_blank"
-										href={clientDetail?.BQLink}
-										style={{ textDecoration: 'underline' }}>
-										Click Here
-									</a>
+									{clientDetail?.BQLink ? (
+										<a
+											target="_blank"
+											href={clientDetail?.BQLink}
+											style={{ textDecoration: 'underline' }}
+											rel="noreferrer">
+											Click Here
+										</a>
+									) : (
+										'NA'
+									)}
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.TRParked}>
 								<span>Additional Information:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									<a
+									{/* <a
+										rel="noreferrer"
 										target="_blank"
 										href="#"
 										style={{ textDecoration: 'underline' }}>
 										Click Here
-									</a>
+									</a> */}
+									NA
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.TRParked}>
@@ -204,7 +228,8 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 										<a
 											target="_blank"
 											href={clientDetail?.Discovery_Call}
-											style={{ textDecoration: 'underline' }}>
+											style={{ textDecoration: 'underline' }}
+											rel="noreferrer">
 											Click Here
 										</a>
 									) : (

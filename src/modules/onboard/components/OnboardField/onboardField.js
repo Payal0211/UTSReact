@@ -1,26 +1,30 @@
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css';
 import { InputType } from 'constants/application';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
-import { Divider, Dropdown, Menu, Radio } from 'antd';
-import UploadModal from 'shared/components/uploadModal/uploadModal';
+import { Button, Divider, Dropdown, Menu, Radio, Space } from 'antd';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as EditSVG } from 'assets/svg/edit.svg';
 import { ReactComponent as TimeDropDownSVG } from 'assets/svg/timeDropdown.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { AiFillLinkedin } from 'react-icons/ai';
+import { PlusOutlined } from '@ant-design/icons';
 import OnboardStyleModule from './onboardField.module.css';
-
-
+import { MasterDAO } from 'core/master/masterDAO';
 
 const OnboardField = () => {
 	const [value, setRadioValue] = useState(1);
 	const [showTextBox, setTextBox] = useState(true);
-
+	const [contractType, setContractType] = useState([]);
+	const [talentTimeZone, setTalentTimeZone] = useState([]);
+	const [netPaymentDays, setNetPaymentDays] = useState([]);
+	const [addTeamMembersModal, setAddTeamMemberModal] = useState(false);
+	// const [startDate, setStartDate] = useState(null);
+	// const [endDate, setEndDate] = useState(null);
 	const {
 		watch,
 		register,
@@ -40,6 +44,52 @@ const OnboardField = () => {
 			setTextBox(false);
 		}
 	};
+	const [name, setName] = useState('');
+	const inputRef = useRef(null);
+	const [items, setItems] = useState(['3 months', '6 months', '12 months']);
+	const onNameChange = (event) => {
+		setName(event.target.value);
+	};
+	const addItem = useCallback(
+		(e) => {
+			e.preventDefault();
+			setItems([...items, name + ' months' || name]);
+			setName('');
+			setTimeout(() => {
+				inputRef.current?.focus();
+			}, 0);
+		},
+		[items, name],
+	);
+
+	const contractTypeHandler = useCallback(async () => {
+		let response = await MasterDAO.getContractTypeRequestDAO();
+		setContractType(response && response?.responseBody?.details);
+	}, []);
+
+	const talentTimeZoneHandler = useCallback(async () => {
+		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
+		setTalentTimeZone(response && response?.responseBody?.details);
+	}, []);
+
+	const netPaymentDaysHandler = useCallback(async () => {
+		let response = await MasterDAO.getNetPaymentDaysRequestDAO();
+		setNetPaymentDays(response && response?.responseBody?.details);
+	}, []);
+
+	const onboardSubmitHandler = (d) => {
+		console.log(d);
+	};
+	useEffect(() => {
+		contractTypeHandler();
+		talentTimeZoneHandler();
+		netPaymentDaysHandler();
+		return () => {
+			setContractType([]);
+			setTalentTimeZone([]);
+			setNetPaymentDays([]);
+		};
+	}, [contractTypeHandler, netPaymentDaysHandler, talentTimeZoneHandler]);
 
 	return (
 		<div className={OnboardStyleModule.hrFieldContainer}>
@@ -56,7 +106,7 @@ const OnboardField = () => {
 									// }}
 									// disabled={type === SubmitType.SUBMIT}
 									className={OnboardStyleModule.btnPrimary}
-								// onClick={handleSubmit(hrSubmitHandler)}
+									// onClick={handleSubmit(hrSubmitHandler)}
 								>
 									Edit User
 								</button>
@@ -68,8 +118,6 @@ const OnboardField = () => {
 						<div className={OnboardStyleModule.row}>
 							<div className={OnboardStyleModule.colMd6}>
 								<HRInputField
-									// value={id !== 0 ? userDetails?.employeeId : null}
-									// disabled={id !== 0 && true}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -168,7 +216,7 @@ const OnboardField = () => {
 										register={register}
 										label={'Contract Type'}
 										defaultValue={'Please select'}
-										options={[]}
+										options={contractType}
 										name="contractType"
 										isError={errors['contractType'] && errors['contractType']}
 										required
@@ -177,51 +225,116 @@ const OnboardField = () => {
 								</div>
 							</div>
 							<div className={OnboardStyleModule.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'please enter the contract duration',
-									}}
-									label="Contract Duration (Months)"
-									name="contractDuration"
-									type={InputType.TEXT}
-									placeholder="Enter contract duration"
-									required
-								/>
+								<div className={OnboardStyleModule.formGroup}>
+									<HRSelectField
+										dropdownRender={(menu) => (
+											<>
+												{menu}
+												<Divider style={{ margin: '8px 0' }} />
+												<Space style={{ padding: '0 8px 4px' }}>
+													<label>Other:</label>
+													<input
+														type={InputType.NUMBER}
+														className={OnboardStyleModule.addSalesItem}
+														placeholder="Ex: 5,6,7..."
+														ref={inputRef}
+														value={name}
+														onChange={onNameChange}
+													/>
+													<Button
+														style={{
+															backgroundColor: `var(--uplers-grey)`,
+														}}
+														shape="round"
+														type="text"
+														icon={<PlusOutlined />}
+														onClick={addItem}>
+														Add item
+													</Button>
+												</Space>
+												<br />
+											</>
+										)}
+										options={items.map((item) => ({
+											id: item,
+											label: item,
+											value: item,
+										}))}
+										setValue={setValue}
+										register={register}
+										label={'Contract Duration (in months)'}
+										defaultValue="Ex: 3,6,12..."
+										inputRef={inputRef}
+										addItem={addItem}
+										onNameChange={onNameChange}
+										name="contractDuration"
+										isError={
+											errors['contractDuration'] && errors['contractDuration']
+										}
+										required
+										errorMsg={'Please select hiring request conrtact duration'}
+									/>
+								</div>
 							</div>
 						</div>
 						<div className={OnboardStyleModule.row}>
 							<div className={OnboardStyleModule.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'Please enter start date',
-									}}
-									label={'Contract Start & End Date'}
-									name="startDate"
-									type={InputType.TEXT}
-									placeholder="Start Date"
-									required
-									trailingIcon={<CalenderSVG />}
-								/>
+								<div className={OnboardStyleModule.timeSlotItemField}>
+									<div className={OnboardStyleModule.timeSlotLabel}>
+										Contract Start Date <span>*</span>
+									</div>
+									<div className={OnboardStyleModule.timeSlotItem}>
+										<CalenderSVG />
+										<Controller
+											render={({ ...props }) => (
+												<DatePicker
+													selected={watch('contractStartDate')}
+													onChange={(date) => {
+														setValue('contractStartDate', date);
+													}}
+													placeholderText="Contract Start Date"
+												/>
+											)}
+											name="contractStartDate"
+											rules={{ required: true }}
+											control={control}
+										/>
+										{errors.contractStartDate && (
+											<div className={OnboardStyleModule.error}>
+												Please select contract start date
+											</div>
+										)}
+									</div>
+								</div>
 							</div>
-
 							<div className={OnboardStyleModule.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'please enter the end date',
-									}}
-									label=" "
-									name="endDate"
-									type={InputType.TEXT}
-									placeholder="End Date"
-									trailingIcon={<CalenderSVG />}
-								// required
-								/>
+								<div className={OnboardStyleModule.timeSlotItemField}>
+									<div className={OnboardStyleModule.timeSlotLabel}>
+										Contract End Date <span>*</span>
+									</div>
+									<div className={OnboardStyleModule.timeSlotItem}>
+										<CalenderSVG />
+										<Controller
+											render={({ ...props }) => (
+												<DatePicker
+													selected={watch('contractEndDate')}
+													onChange={(date) => {
+														setValue('contractEndDate', date);
+													}}
+													placeholderText="Contract End Date"
+												/>
+											)}
+											name="contractEndDate"
+											rules={{ required: true }}
+											control={control}
+										/>
+										{errors.contractEndDate && (
+											<div className={OnboardStyleModule.error}>
+												Please select contract End date
+											</div>
+										)}
+									</div>
+								</div>
 							</div>
 						</div>
 						<div className={OnboardStyleModule.row}>
@@ -233,33 +346,20 @@ const OnboardField = () => {
 										register={register}
 										label={'Talent Time Zone'}
 										defaultValue={'Select Time Zone'}
-										options={[]}
+										options={talentTimeZone}
 										name="timeZone"
 										isError={errors['timeZone'] && errors['timeZone']}
 										required
-										errorMsg={'Please select timezone'}
+										errorMsg={'Please select the timezone'}
 									/>
 								</div>
 							</div>
 						</div>
 						<div className={OnboardStyleModule.row}>
 							<div className={OnboardStyleModule.colMd6}>
-								{/* <HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'Please enter start time',
-									}}
-									label={'Talent Shift Start & End Time'}
-									name="shiftStartTime"
-									type={InputType.TEXT}
-									placeholder="Start Time"
-									required
-									trailingIcon={<TimeDropDownSVG />}
-								/> */}
-
 								<div className={OnboardStyleModule.timeSlotItemField}>
-									<div className={OnboardStyleModule.timeSlotLabel}>Shift Start Time <span>*</span>
+									<div className={OnboardStyleModule.timeSlotLabel}>
+										Shift Start Time <span>*</span>
 									</div>
 									<div className={OnboardStyleModule.timeSlotItem}>
 										<ClockIconSVG />
@@ -268,7 +368,7 @@ const OnboardField = () => {
 												<DatePicker
 													selected={watch('shiftStartTime')}
 													onChange={(date) => {
-														setValue('shiftStartTime', date)
+														setValue('shiftStartTime', date);
 													}}
 													showTimeSelect
 													showTimeSelectOnly
@@ -283,31 +383,19 @@ const OnboardField = () => {
 											rules={{ required: true }}
 											control={control}
 										/>
-										{errors.shiftStartTime &&
+										{errors.shiftStartTime && (
 											<div className={OnboardStyleModule.error}>
 												Please enter start time
-											</div>}
+											</div>
+										)}
 									</div>
 								</div>
 							</div>
 
 							<div className={OnboardStyleModule.colMd6}>
-								{/* <HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'please enter the end time',
-									}}
-									label=" "
-									name="shiftEndTime"
-									type={InputType.TEXT}
-									placeholder="End Time"
-									trailingIcon={<TimeDropDownSVG />}
-								// required
-								/> */}
-
 								<div className={OnboardStyleModule.timeSlotItemField}>
-									<div className={OnboardStyleModule.timeSlotLabel}>Shift End Time <span>*</span>
+									<div className={OnboardStyleModule.timeSlotLabel}>
+										Shift End Time <span>*</span>
 									</div>
 									<div className={OnboardStyleModule.timeSlotItem}>
 										<ClockIconSVG />
@@ -316,7 +404,7 @@ const OnboardField = () => {
 												<DatePicker
 													selected={watch('shiftEndTime')}
 													onChange={(date) => {
-														setValue('shiftEndTime', date)
+														setValue('shiftEndTime', date);
 													}}
 													showTimeSelect
 													showTimeSelectOnly
@@ -331,45 +419,80 @@ const OnboardField = () => {
 											rules={{ required: true }}
 											control={control}
 										/>
-										{errors.shiftEndTime &&
+										{errors.shiftEndTime && (
 											<div className={OnboardStyleModule.error}>
 												Please enter end time
-											</div>}
+											</div>
+										)}
 									</div>
 								</div>
 							</div>
 						</div>
-						{console.log("test")}
+
 						<div className={OnboardStyleModule.row}>
 							<div className={OnboardStyleModule.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'Please enter onboarding date',
-									}}
-									label={'Talent Onboarding Date'}
-									name="talentOnboardingDate"
-									type={InputType.TEXT}
-									placeholder="Select Onboarding Date "
-									required
-									trailingIcon={<CalenderSVG />}
-								/>
+								<div className={OnboardStyleModule.timeSlotItemField}>
+									<div className={OnboardStyleModule.timeSlotLabel}>
+										Talent Onboarding Date <span>*</span>
+									</div>
+									<div className={OnboardStyleModule.timeSlotItem}>
+										<CalenderSVG />
+										<Controller
+											render={({ ...props }) => (
+												<DatePicker
+													selected={watch('talentOnboardingDate')}
+													onChange={(date) => {
+														setValue('talentOnboardingDate', date);
+													}}
+													placeholderText="Talent Onboard Date"
+												/>
+											)}
+											name="talentOnboardingDate"
+											rules={{ required: true }}
+											control={control}
+										/>
+										{errors.contractEndDate && (
+											<div className={OnboardStyleModule.error}>
+												Please select talent onboard date
+											</div>
+										)}
+									</div>
+								</div>
 							</div>
 							<div className={OnboardStyleModule.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'please enter the talent full name',
-									}}
-									label="Talent Onboarding Time"
-									name="talentOnboardingTime"
-									type={InputType.TEXT}
-									placeholder="Select Onboarding Time"
-									required
-									trailingIcon={<CalenderSVG />}
-								/>
+								<div className={OnboardStyleModule.timeSlotItemField}>
+									<div className={OnboardStyleModule.timeSlotLabel}>
+										Talent Onboarding Time <span>*</span>
+									</div>
+									<div className={OnboardStyleModule.timeSlotItem}>
+										<ClockIconSVG />
+										<Controller
+											render={({ ...props }) => (
+												<DatePicker
+													selected={watch('talentOnboardingTime')}
+													onChange={(date) => {
+														setValue('talentOnboardingTime', date);
+													}}
+													showTimeSelect
+													showTimeSelectOnly
+													timeIntervals={60}
+													timeCaption="Time"
+													timeFormat="h:mm a"
+													dateFormat="h:mm a"
+													placeholderText="End Time"
+												/>
+											)}
+											name="talentOnboardingTime"
+											rules={{ required: true }}
+											control={control}
+										/>
+										{errors.talentOnboardingTime && (
+											<div className={OnboardStyleModule.error}>
+												Please enter talent onboarding time
+											</div>
+										)}
+									</div>
+								</div>
 							</div>
 						</div>
 						<div className={OnboardStyleModule.row}>
@@ -397,6 +520,35 @@ const OnboardField = () => {
 								</div>
 							</div>
 							<div className={OnboardStyleModule.colMd6}>
+								<div className={OnboardStyleModule.timeSlotItemField}>
+									<div className={OnboardStyleModule.timeSlotLabel}>
+										Client’s First Billing Date <span>*</span>
+									</div>
+									<div className={OnboardStyleModule.timeSlotItem}>
+										<CalenderSVG />
+										<Controller
+											render={({ ...props }) => (
+												<DatePicker
+													selected={watch('clientFirstBillingDate')}
+													onChange={(date) => {
+														setValue('clientFirstBillingDate', date);
+													}}
+													placeholderText="Client First Billing Date"
+												/>
+											)}
+											name="clientFirstBillingDate"
+											rules={{ required: true }}
+											control={control}
+										/>
+										{errors.contractEndDate && (
+											<div className={OnboardStyleModule.error}>
+												Please enter billing date
+											</div>
+										)}
+									</div>
+								</div>
+							</div>
+							{/* <div className={OnboardStyleModule.colMd6}>
 								<HRInputField
 									register={register}
 									errors={errors}
@@ -410,7 +562,7 @@ const OnboardField = () => {
 									required
 									trailingIcon={<CalenderSVG />}
 								/>
-							</div>
+							</div> */}
 						</div>
 						<div className={OnboardStyleModule.row}>
 							<div className={OnboardStyleModule.colMd6}>
@@ -422,7 +574,7 @@ const OnboardField = () => {
 										register={register}
 										label={'Net Payment Days'}
 										defaultValue={'Enter Number of Days'}
-										options={[]}
+										options={netPaymentDays}
 										name="netPaymentDays"
 										isError={
 											errors['netPaymentDays'] && errors['netPaymentDays']
@@ -471,7 +623,7 @@ const OnboardField = () => {
 								// }}
 								// disabled={type === SubmitType.SUBMIT}
 								className={OnboardStyleModule.btnPrimary}
-							// onClick={handleSubmit(hrSubmitHandler)}
+								// onClick={handleSubmit(hrSubmitHandler)}
 							>
 								Add More Team Member
 							</button>
@@ -597,7 +749,7 @@ const OnboardField = () => {
 																<Menu>
 																	<Menu.Item
 																		key={0}
-																	/* onClick={() => {
+																		/* onClick={() => {
 																setProfileLogModal(true);
 																setTalentIndex(listIndex);
 															}} */
@@ -724,10 +876,13 @@ const OnboardField = () => {
 							<div className={OnboardStyleModule.colMd6}>
 								<HRInputField
 									required
+									errors={errors}
+									validationSchema={{
+										required: 'Please enter leave policies.',
+									}}
 									label={'Leave Polices'}
 									register={register}
-									errors={errors}
-									name="specialFeedback"
+									name="leavePolicies"
 									type={InputType.TEXT}
 									placeholder="Specify standard specifications, if any..."
 								/>
@@ -738,8 +893,11 @@ const OnboardField = () => {
 									trailingIcon={<EditSVG />}
 									label="Exit Policy"
 									register={register}
+									validationSchema={{
+										required: 'Please enter exit policies.',
+									}}
 									errors={errors}
-									name="specialFeedback"
+									name="exitPolicies"
 									type={InputType.TEXT}
 									placeholder="Specify standard specifications, if any..."
 								/>
@@ -752,6 +910,9 @@ const OnboardField = () => {
 									required
 									label={'Feedback Process '}
 									register={register}
+									validationSchema={{
+										required: 'Please enter feedback process.',
+									}}
 									errors={errors}
 									name="specialFeedback"
 									type={InputType.TEXT}
@@ -761,7 +922,7 @@ const OnboardField = () => {
 						</div>
 					</div>
 				</div>
-			</form >
+			</form>
 
 			<Divider className={OnboardStyleModule.midDivider} />
 
@@ -775,8 +936,7 @@ const OnboardField = () => {
 							// }}
 							// disabled={id !== 0 && true}
 							className={OnboardStyleModule.btnPrimary}
-						// onClick={handleSubmit(hrSubmitHandler)}
-						>
+							onClick={handleSubmit(onboardSubmitHandler)}>
 							Submit
 						</button>
 
@@ -788,7 +948,7 @@ const OnboardField = () => {
 					</div>
 				</div>
 			</div>
-		</div >
+		</div>
 	);
 };
 

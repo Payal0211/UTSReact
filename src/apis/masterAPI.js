@@ -398,4 +398,30 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getOtherRoleRequest');
 		}
 	},
+	getContractTypeRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.CONTRACT_TYPE;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getContractTypeRequest');
+		}
+	},
+	getNetPaymentDaysRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.NET_PAYMENT_DAYS;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getNetPaymentDaysRequest');
+		}
+	},
 };
