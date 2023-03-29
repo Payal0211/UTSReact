@@ -112,15 +112,11 @@ const InterviewReschedule = ({
 				reScheduleData,
 			);
 			if (response.statusCode === HTTPStatusCode.OK) {
-<<<<<<< HEAD
-				message.success("Interview rescheduled successfully")
-=======
 				/* messageAPI.open({
 					type: 'info',
 					content: "Cann't see the talent status.",
 				}); */
 				message.success('Interview rescheduled successfully');
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 				closeModal();
 				resetReScheduleFields();
 			}
@@ -654,21 +650,6 @@ const InterviewReschedule = ({
 							</>
 						)}
 
-<<<<<<< HEAD
-						{reScheduleSlotRadio === 4 && <div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd12}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									label="Additional Notes"
-									name="additionalNotes"
-									type={InputType.TEXT}
-									placeholder="Add Notes"
-								/>
-							</div>
-						</div>}
-
-=======
 						{reScheduleSlotRadio === 4 && (
 							<div className={InterviewScheduleStyle.row}>
 								<div className={InterviewScheduleStyle.colMd12}>
@@ -683,7 +664,6 @@ const InterviewReschedule = ({
 								</div>
 							</div>
 						)}
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 					</form>
 				</div>
 			</div >

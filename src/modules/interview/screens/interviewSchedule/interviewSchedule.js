@@ -88,11 +88,7 @@ const InterviewSchedule = ({
 			scheduleData,
 		);
 		if (response.statusCode === HTTPStatusCode.OK) {
-<<<<<<< HEAD
-			message.success("Interview scheduled successfully")
-=======
 			message.success('Interview scheduled successfully');
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 			closeModal();
 			resetScheduleFields();
 		}
@@ -567,11 +563,7 @@ const InterviewSchedule = ({
 							</>
 						)}
 
-<<<<<<< HEAD
-						{scheduleSlotRadio === 4 &&
-=======
 						{scheduleSlotRadio === 4 && (
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 							<div className={InterviewScheduleStyle.row}>
 								<div className={InterviewScheduleStyle.colMd12}>
 									<HRInputField
@@ -584,12 +576,7 @@ const InterviewSchedule = ({
 									/>
 								</div>
 							</div>
-<<<<<<< HEAD
-						}
-
-=======
 						)}
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 					</form>
 				</div>
 			</div>

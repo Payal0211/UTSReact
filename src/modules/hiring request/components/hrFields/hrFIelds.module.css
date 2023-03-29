@@ -156,22 +156,12 @@
     font-size: var(--fontsize-tough);
 }
 
-<<<<<<< HEAD
-
-
-.fieldOr{
-    position: relative;
-    flex-wrap: nowrap;
-}
-.orLabel{
-=======
 .fieldOr {
     position: relative;
     flex-wrap: nowrap;
 }
 
 .orLabel {
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
     padding: 0 10px 6px;
     font-family: 'Montserrat';
     font-weight: 500;
@@ -181,20 +171,12 @@
     display: flex;
     align-items: center;
 }
-<<<<<<< HEAD
-.uploadedJDWrap{
-    margin: 0 0 32px;
-}
-
-.uploadedJDWrap label{
-=======
 
 .uploadedJDWrap {
     margin: 0 0 32px;
 }
 
 .uploadedJDWrap label {
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
     vertical-align: top;
     font-family: 'Montserrat';
     font-weight: 400;
@@ -204,12 +186,8 @@
     margin: 0 0 8px;
     display: inline-block;
 }
-<<<<<<< HEAD
-.uploadedJDName{
-=======
 
 .uploadedJDName {
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
     text-align: left;
     width: 100%;
     padding: 16px 45px 16px 16px;
@@ -225,12 +203,8 @@
     vertical-align: middle;
     position: relative;
 }
-<<<<<<< HEAD
-.uploadedJDClose{
-=======
 
 .uploadedJDClose {
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
     position: absolute;
     right: 12px;
     top: 14px;
