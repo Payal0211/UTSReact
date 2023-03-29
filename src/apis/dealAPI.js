@@ -34,4 +34,18 @@ export const DealAPI = {
 			return errorDebug(error, 'DealAPI.getDealDetailsRequest');
 		}
 	},
+	getAllFilterDataForDealRequest: async () => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.DEAL + DealsAPI.DEAL_FILTER;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'DealAPI.getAllFilterDataForDealRequest');
+		}
+	},
 };

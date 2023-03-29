@@ -5,7 +5,7 @@ import { RiArrowDropDownLine } from 'react-icons/ri';
 import TalentListStyle from './talentList.module.css';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
-import { Fragment, useEffect, useState, useCallback } from 'react';
+import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
 import { AddNewType, TalentOnboardStatus } from 'constants/application';
 import { MasterDAO } from 'core/master/masterDAO';
@@ -15,12 +15,16 @@ import InterviewFeedback from 'modules/interview/screens/interviewFeedback/inter
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
+import TalentAcceptance from '../talentAcceptance/talentAcceptance';
 
 const TalentList = ({
+	talentCTA,
 	talentDetail,
 	miscData,
 	HRStatusCode,
 	hrId,
+	starMarkedStatusCode,
+	hrStatus,
 	hiringRequestNumber,
 	hrType
 }) => {
@@ -32,6 +36,7 @@ const TalentList = ({
 	const profileData = allHRConfig.profileLogConfig();
 	const [showReScheduleInterviewModal, setReScheduleInterviewModal] =
 		useState(false);
+	const [showTalentAcceptance, setTalentAcceptance] = useState(false);
 	const [showProfileLogModal, setProfileLogModal] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [talentIndex, setTalentIndex] = useState(0);
@@ -39,7 +44,8 @@ const TalentList = ({
 	const [showScheduleInterviewModal, setScheduleInterviewModal] =
 		useState(false);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
-
+	console.log('--talentDetails---', talentCTA);
+	console.log(talentCTA?.[0]?.cTAInfoList[0]?.Label);
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
 		{ slot1: null, slot2: null, slot3: null },
 		{ slot1: null, slot2: null, slot3: null },
@@ -1060,7 +1066,7 @@ const TalentList = ({
 	};
 
 	const getInterviewStatus = () => {
-		switch (talentDetail[talentIndex]?.InterviewStatus) {
+		switch (filterTalentID?.InterviewStatus) {
 			case 'Feedback Submitted':
 				return 7;
 				break;
@@ -1084,6 +1090,18 @@ const TalentList = ({
 		}
 	};
 
+	const filterTalentID = useMemo(
+		() =>
+			talentDetail?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
+		[talentDetail, talentIndex],
+	);
+
+	const filterTalentCTAs = useMemo(
+		() =>
+			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
+		[talentCTA, talentIndex],
+	);
+	console.log(filterTalentCTAs, '--filteredCTAs');
 	useEffect(() => {
 		scheuleResetDataHander();
 		setScheduleSlotRadio(1);
@@ -1120,7 +1138,7 @@ const TalentList = ({
 				renderItem={(item, listIndex) => (
 					<div
 						key={item?.Name}
-						id={listIndex}>
+						id={item?.TalentID}>
 						<div className={TalentListStyle.talentCard}>
 							<div className={TalentListStyle.talentCardBody}>
 								<div className={TalentListStyle.partWise}>
@@ -1137,7 +1155,7 @@ const TalentList = ({
 											}}>
 											<img
 												src={
-													!item?.ProfileURL
+													item?.ProfileURL
 														? item?.ProfileURL
 														: 'https://www.w3schools.com/howto/img_avatar.png'
 												}
@@ -1375,7 +1393,7 @@ const TalentList = ({
 									}}
 									onClick={() => {
 										setVersantModal(true);
-										setTalentIndex(listIndex);
+										setTalentIndex(item?.TalentID);
 									}}>
 									Versant Test Results
 								</div>
@@ -1388,65 +1406,71 @@ const TalentList = ({
 										margin: '10px 0',
 									}}
 								/>
-								<div
-									style={{
-										position: 'absolute',
-										marginTop: '10px',
-										textAlign: 'start !important',
-									}}>
-									<HROperator
-										title="Update kickoff & Onboard Status"
-										icon={<AiOutlineDown />}
-										backgroundColor={`var(--color-sunlight)`}
-										iconBorder={`1px solid var(--color-sunlight)`}
-										isDropdown={true}
-										listItem={hrUtils.showOnboardStatus(
-											item,
-											miscData,
-											HRStatusCode,
-										)}
-										menuAction={(menuItem) => {
-											switch (menuItem.key) {
-												case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
-													setScheduleInterviewModal(true);
-													setTalentIndex(listIndex);
-													break;
-												}
-												case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
-													setReScheduleInterviewModal(true);
-													setTalentIndex(listIndex);
-													break;
-												}
-												case TalentOnboardStatus.TALENT_STATUS: {
-													if (hrUtils.handleTalentStatus(item, HRStatusCode)) {
-														setTalentIndex(listIndex);
-													} else {
-														messageAPI.open({
-															type: 'info',
-															content: "Cann't see the talent status.",
-														});
+								{talentCTA[listIndex]?.cTAInfoList?.length > 0 && (
+									<div
+										style={{
+											position: 'absolute',
+											marginTop: '10px',
+											textAlign: 'start !important',
+										}}>
+										<HROperator
+											onClickHandler={() => setTalentIndex(item?.TalentID)}
+											title={talentCTA?.[listIndex]?.cTAInfoList[0]?.label}
+											icon={<AiOutlineDown />}
+											backgroundColor={`var(--color-sunlight)`}
+											iconBorder={`1px solid var(--color-sunlight)`}
+											isDropdown={true}
+											listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
+											menuAction={(menuItem) => {
+												switch (menuItem.key) {
+													case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
+														setScheduleInterviewModal(true);
+														setTalentIndex(item?.TalentID);
+														break;
 													}
-													break;
-												}
-												case TalentOnboardStatus.UPDATE_KICKOFF: {
-													if (
-														hrUtils.handlerUpdateKickOff(item, HRStatusCode)
-													) {
-														setTalentIndex(listIndex);
-													} else {
-														messageAPI.open({
-															type: 'info',
-															content: "Cann't update the talent.",
-														});
+													case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
+														setReScheduleInterviewModal(true);
+														setTalentIndex(item?.TalentID);
+														break;
 													}
-													break;
+													case TalentOnboardStatus.TALENT_ACCEPTANCE: {
+														setTalentAcceptance(true);
+														setTalentIndex(item?.TalentID);
+														break;
+													}
+													case TalentOnboardStatus.TALENT_STATUS: {
+														if (
+															hrUtils.handleTalentStatus(item, HRStatusCode)
+														) {
+															setTalentIndex(item?.TalentID);
+														} else {
+															messageAPI.open({
+																type: 'info',
+																content: "Cann't see the talent status.",
+															});
+														}
+														break;
+													}
+													case TalentOnboardStatus.UPDATE_KICKOFF: {
+														if (
+															hrUtils.handlerUpdateKickOff(item, HRStatusCode)
+														) {
+															setTalentIndex(listIndex);
+														} else {
+															messageAPI.open({
+																type: 'info',
+																content: "Cann't update the talent.",
+															});
+														}
+														break;
+													}
+													default:
+														break;
 												}
-												default:
-													break;
-											}
-										}}
-									/>
-								</div>
+											}}
+										/>
+									</div>
+								)}
 							</div>
 						</div>
 					</div>
@@ -1489,7 +1513,7 @@ const TalentList = ({
 									fontWeight: 500,
 									textDecoration: 'underline',
 								}}>
-								{talentDetail[talentIndex]?.Name}
+								{filterTalentID?.Name}
 							</span>
 						</div>
 						<div
@@ -1503,7 +1527,7 @@ const TalentList = ({
 								style={{
 									fontWeight: 500,
 								}}>
-								{talentDetail[talentIndex]?.TalentRole}
+								{filterTalentID?.TalentRole}
 							</span>
 						</div>
 					</div>
@@ -1586,7 +1610,7 @@ const TalentList = ({
 									fontWeight: 500,
 									textDecoration: 'underline',
 								}}>
-								{talentDetail[talentIndex]?.Name}
+								{filterTalentID?.Name}
 							</span>
 						</div>
 						<div
@@ -1645,9 +1669,9 @@ const TalentList = ({
 				onCancel={() => setReScheduleInterviewModal(false)}>
 				<InterviewReschedule
 					closeModal={() => setReScheduleInterviewModal(false)}
-					talentName={talentDetail[talentIndex]?.Name}
+					talentName={filterTalentID?.Name}
 					hrId={hrId}
-					talentInfo={talentDetail[talentIndex]}
+					talentInfo={filterTalentID}
 					hiringRequestNumber={hiringRequestNumber}
 					reScheduleTimezone={reScheduleTimezone}
 					setRescheduleTimezone={setRescheduleTimezone}
@@ -1673,8 +1697,8 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setScheduleInterviewModal(false)}>
 				<InterviewSchedule
-					talentName={talentDetail[talentIndex]?.Name}
-					talentInfo={talentDetail[talentIndex]}
+					talentName={filterTalentID?.Name}
+					talentInfo={filterTalentID}
 					hrId={hrId}
 					closeModal={() => setScheduleInterviewModal(false)}
 					hiringRequestNumber={hiringRequestNumber}
@@ -1700,6 +1724,26 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setInterviewStatus(false)}>
 				<InterviewFeedback />
+			</Modal>
+			{/** ============ MODAL FOR TALENT ACCEPTANCE ================ */}
+			<Modal
+				transitionName=""
+				width="1256px"
+				centered
+				footer={null}
+				open={showTalentAcceptance}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setTalentAcceptance(false)}>
+				<TalentAcceptance
+					talentName={filterTalentID?.Name}
+					/* 	hrId={hrId}
+					talentInfo={filterTalentID} */
+					HRStatusCode={HRStatusCode}
+					hiringRequestNumber={hiringRequestNumber}
+					starMarkedStatusCode={starMarkedStatusCode}
+					hrStatus={hrStatus}
+					closeModal={() => setTalentAcceptance(false)}
+				/>
 			</Modal>
 		</div>
 	);

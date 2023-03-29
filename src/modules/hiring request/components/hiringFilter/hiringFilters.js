@@ -20,19 +20,23 @@ const HiringFilters = ({
 	tableFilteredState,
 	setTableFilteredState,
 	filtersType,
-	getHTMLFilter
+	getHTMLFilter,
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
 	const [filterSubChild, setFilterSubChild] = useState(null);
 
 	useEffect(() => {
-		getHTMLFilter ?
-			setTimeout(() => {
-				document.querySelector(`.${hiringFilterStyle.aside}`).classList.add(`${hiringFilterStyle.closeFilter}`)
-			}, 300) :
-			document.querySelector(`.${hiringFilterStyle.aside}`).classList.remove(`${hiringFilterStyle.closeFilter}`)
-	}, [getHTMLFilter])
+		getHTMLFilter
+			? setTimeout(() => {
+					document
+						.querySelector(`.${hiringFilterStyle.aside}`)
+						.classList.add(`${hiringFilterStyle.closeFilter}`);
+			  }, 300)
+			: document
+					.querySelector(`.${hiringFilterStyle.aside}`)
+					.classList.remove(`${hiringFilterStyle.closeFilter}`);
+	}, [getHTMLFilter]);
 
 	const toggleFilterSubChild = (item) => {
 		setToggleBack(true);
@@ -216,9 +220,8 @@ const HiringFilters = ({
 						<CrossSVG
 							style={{ width: '26px' }}
 							onClick={() => {
-								onRemoveHRFilters()
-							}
-							}
+								onRemoveHRFilters();
+							}}
 						/>
 					</span>
 				</div>
@@ -250,7 +253,6 @@ const HiringFilters = ({
 							)}
 							<br />
 							<div className={hiringFilterStyle.filtersListType}>
-
 								{searchData && searchData.length > 0
 									? searchData.map((item, index) => {
 										return (
@@ -284,6 +286,7 @@ const HiringFilters = ({
 										);
 									})
 									: filterSubChild.child.map((item, index) => {
+<<<<<<< HEAD
 										return (
 											<div
 												className={hiringFilterStyle.filterItem}
@@ -315,6 +318,38 @@ const HiringFilters = ({
 										);
 									})}
 
+=======
+											return (
+												<div
+													className={hiringFilterStyle.filterItem}
+													key={index}>
+													<Checkbox
+														checked={checkedState.get(
+															`${filterSubChild.name}${item.text}`,
+														)}
+														onChange={(e) =>
+															handleAppliedFilters(e.target.checked, {
+																filterType: filterSubChild.name,
+																value: item?.value,
+																id: item?.text,
+															})
+														}
+														id={item?.value + `/${index + 1}`}
+														style={{
+															fontSize: `${!item.label && '1rem'}`,
+															fontWeight: '500',
+														}}>
+														{item.label
+															? All_Hiring_Request_Utils.GETHRSTATUS(
+																	item.statusCode,
+																	item.label,
+															  )
+															: item?.value}
+													</Checkbox>
+												</div>
+											);
+									  })}
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 							</div>
 						</>
 					) : (

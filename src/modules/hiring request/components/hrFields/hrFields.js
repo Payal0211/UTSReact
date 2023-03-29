@@ -1,29 +1,32 @@
 import { Button, Checkbox, Divider, Space, message, AutoComplete } from 'antd';
 import {
 	ClientHRURL,
+	GoogleDriveCredentials,
 	InputType,
-	MastersKey,
 	SubmitType,
 	WorkingMode,
 } from 'constants/application';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
+import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import HRFieldStyle from './hrFIelds.module.css';
 import { PlusOutlined } from '@ant-design/icons';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
+<<<<<<< HEAD
 // import { MasterDAO } from 'core/master/masterDAO';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
+=======
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 import HRSelectField from '../hrSelectField/hrSelectField';
-import { useFieldArray, Controller, useForm } from 'react-hook-form';
-// import AddInterviewer from '../addInterviewer/addInterviewer';
+import { useForm, Controller } from 'react-hook-form';
 import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
-import { useMastersAPI } from 'shared/hooks/useMastersAPI';
 import { MasterDAO } from 'core/master/masterDAO';
+import useDrivePicker from 'react-google-drive-picker/dist';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -37,19 +40,10 @@ const HRFields = ({
 	setEnID,
 	tabFieldDisabled,
 	setTabFieldDisabled,
+	setJDParsedSkills,
 }) => {
 	const inputRef = useRef(null);
-	const controllerRef = useRef(null);
-	/* const mastersKey = useMemo(() => {
-		return {
-			availability: MastersKey.AVAILABILITY,
-			timeZonePref: MastersKey.TIMEZONE,
-			talentRole: MastersKey.TALENTROLE,
-			salesPerson: MastersKey.SALESPERSON,
-		};
-	}, []); */
-	// const { returnState } = useMastersAPI(mastersKey);
-	// const { availability, timeZonePref, talentRole, salesPerson } = returnState;
+	const [getUploadFileData, setUploadFileData] = useState('');
 	const [availability, setAvailability] = useState([]);
 	const [timeZonePref, setTimeZonePref] = useState([]);
 	const [workingMode, setWorkingMode] = useState([]);
@@ -66,22 +60,31 @@ const HRFields = ({
 	const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
 	const [addHRResponse, setAddHRResponse] = useState(null);
 	const [type, setType] = useState('');
-	const [getClientNameMessage, setClientNameMessage] = useState("")
 	const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
+	const [getClientNameMessage, setClientNameMessage] = useState('');
+
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
 		googleDriveFileUpload: '',
+<<<<<<< HEAD
 		linkValidation: ''
 	})
 	const [getGoogleDriveLink, setGoogleDriveLink] = useState("")
 	const [getUploadFileData, setUploadFileData] = useState("")
+=======
+		linkValidation: '',
+	});
+	const [getGoogleDriveLink, setGoogleDriveLink] = useState('');
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
+	let controllerRef = useRef(null);
 	const {
 		watch,
 		register,
 		handleSubmit,
 		setValue,
 		setError,
+		unregister,
 		control,
 		formState: { errors },
 	} = useForm({
@@ -89,15 +92,231 @@ const HRFields = ({
 			secondaryInterviewer: [],
 		},
 	});
-
 	/* const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
 	}); */
+
+	/* ------------------ Upload JD Starts Here ---------------------- */
+	const [openPicker, authResponse] = useDrivePicker();
+	const uploadFile = useRef(null);
+	const uploadFileFromGoogleDriveValidator = useCallback(
+		async (fileData) => {
+			setValidation({
+				...getValidation,
+				googleDriveFileUpload: '',
+			});
+			if (
+				fileData[0]?.mimeType !== 'application/vnd.google-apps.document' &&
+				fileData[0]?.mimeType !== 'application/pdf' &&
+				fileData[0]?.mimeType !== 'text/plain' &&
+				fileData[0]?.mimeType !== 'application/docs' &&
+				fileData[0]?.mimeType !== 'application/msword' &&
+				fileData[0]?.mimeType !== 'image/png' &&
+				fileData[0]?.mimeType !== 'image/jpeg' &&
+				fileData[0]?.mimeType !==
+					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+			) {
+				setValidation({
+					...getValidation,
+					googleDriveFileUpload:
+						'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
+				});
+			} else if (fileData[0]?.sizeBytes >= 500000) {
+				setValidation({
+					...getValidation,
+					googleDriveFileUpload:
+						'Upload file size more than 500kb, Please Upload file upto 500kb',
+				});
+			} else {
+				let fileType;
+				let fileName;
+				if (fileData[0]?.mimeType === 'application/vnd.google-apps.document') {
+					fileType = 'docs';
+					fileName = `${fileData[0]?.name}.${fileType}`;
+				} else {
+					fileName = `${fileData[0]?.name}`;
+				}
+				const formData = {
+					fileID: fileData[0]?.id,
+					FileName: fileName,
+				};
+				let uploadFileResponse =
+					await hiringRequestDAO.uploadGoogleDriveFileDAO(formData);
+
+				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+					setUploadModal(false);
+					setUploadFileData(fileName);
+					message.success('File uploaded successfully');
+				}
+			}
+		},
+		[getValidation],
+	);
+	const uploadFileHandler = useCallback(
+		async (fileData) => {
+			setIsLoading(true);
+			if (
+				fileData?.type !== 'application/pdf' &&
+				fileData?.type !== 'application/docs' &&
+				fileData?.type !== 'application/msword' &&
+				fileData?.type !== 'text/plain' &&
+				fileData?.type !==
+					'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+				fileData?.type !== 'image/png' &&
+				fileData?.type !== 'image/jpeg'
+			) {
+				setValidation({
+					...getValidation,
+					systemFileUpload:
+						'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
+				});
+				setIsLoading(false);
+			} else if (fileData?.size >= 500000) {
+				setValidation({
+					...getValidation,
+					systemFileUpload:
+						'Upload file size more than 500kb, Please Upload file upto 500kb',
+				});
+				setIsLoading(false);
+			} else {
+				let formData = new FormData();
+				formData.append('File', fileData);
+				let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
+				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+					if (
+						fileData?.type === 'image/png' ||
+						fileData?.type === 'image/jpeg'
+					) {
+						setUploadFileData(fileData?.name);
+						setUploadModal(false);
+						setValidation({
+							...getValidation,
+							systemFileUpload: '',
+						});
+						message.success('File uploaded successfully');
+					} else if (
+						fileData?.type === 'application/pdf' ||
+						fileData?.type === 'application/docs' ||
+						fileData?.type === 'application/msword' ||
+						fileData?.type === 'text/plain' ||
+						fileData?.type ===
+							'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+					) {
+						setUploadFileData(fileData?.name);
+						setJDParsedSkills(
+							uploadFileResponse && uploadFileResponse?.responseBody?.details,
+						);
+						setUploadModal(false);
+						setValidation({
+							...getValidation,
+							systemFileUpload: '',
+						});
+						message.success('File uploaded successfully');
+					}
+				}
+				setIsLoading(false);
+			}
+			uploadFile.current.value = '';
+		},
+		[getValidation, setJDParsedSkills],
+	);
+
+	const googleDriveFileUploader = useCallback(() => {
+		openPicker({
+			clientId: GoogleDriveCredentials.clientID,
+			developerKey: GoogleDriveCredentials.developerKey,
+			viewId: 'DOCS',
+			// token: token, // pass oauth token in case you already have one
+			showUploadView: true,
+			showUploadFolders: true,
+			supportDrives: true,
+			multiselect: true,
+			// customViews: customViewsArray, // custom view
+			callbackFunction: (data) => {
+				if (data?.action === 'cancel') {
+				} else {
+					if (data?.docs) {
+						let uploadFileResponse = uploadFileFromGoogleDriveValidator(
+							data?.docs,
+						);
+						setUploadFileData(uploadFileResponse?.responseBody?.FileName);
+						setJDParsedSkills(
+							uploadFileResponse && uploadFileResponse?.responseBody?.details,
+						);
+						setUploadModal(false);
+					}
+				}
+			},
+		});
+	}, [openPicker, setJDParsedSkills, uploadFileFromGoogleDriveValidator]);
+
+	const uploadFileFromGoogleDriveLink = useCallback(async () => {
+		setValidation({
+			...getValidation,
+			linkValidation: '',
+		});
+		if (!getGoogleDriveLink) {
+			setValidation({
+				...getValidation,
+				linkValidation: 'Please Enter Google Docs/Drive URL',
+			});
+		} else if (
+			!/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
+				getGoogleDriveLink,
+			) &&
+			!/https:\/\/drive\.google\.com\/file\/d\/(.*?)\/.*?/g.test(
+				getGoogleDriveLink,
+			)
+		) {
+			setValidation({
+				...getValidation,
+				linkValidation: 'Please Enter Google Docs/Drive URL',
+			});
+		} /* else if (
+			!/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
+				getGoogleDriveLink,
+			)
+		) {
+			setValidation({
+				...getValidation,
+				linkValidation: 'Please Enter Google Docs/Drive URL',
+			});
+		}  */ else {
+			let uploadFileResponse =
+				await hiringRequestDAO.uploadFileFromGoogleDriveLinkDAO(
+					getGoogleDriveLink,
+				);
+			if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+				setUploadModal(false);
+				setGoogleDriveLink('');
+				message.success('File uploaded successfully');
+			}
+		}
+	}, [
+		getGoogleDriveLink,
+		getValidation,
+		setGoogleDriveLink,
+		setUploadModal,
+		setValidation,
+	]);
+
+	/* ------------------ Upload JD Ends Here -------------------- */
 	let prefRegion = watch('region');
+	let modeOfWork = watch('workingMode');
+	let hrRole = watch('role');
+	let watchOtherRole = watch('otherRole');
+
+	const getNRMarginHandler = useCallback(async () => {
+		const response = await MasterDAO.getNRMarginRequestDAO();
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setValue('NRMargin', response && response?.responseBody?.details?.value);
+		}
+	}, [setValue]);
+
 	const getTimeZonePreference = useCallback(async () => {
 		const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO(
-			prefRegion && prefRegion,
+			prefRegion && prefRegion?.id,
 		);
 		setTimeZonePref(timeZone && timeZone.responseBody);
 	}, [prefRegion]);
@@ -105,7 +324,7 @@ const HRFields = ({
 		const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
 		setAvailability(
 			availabilityResponse &&
-			availabilityResponse.responseBody?.BindHiringAvailability,
+				availabilityResponse.responseBody?.BindHiringAvailability,
 		);
 	}, []);
 	const getHowSoon = useCallback(async () => {
@@ -130,7 +349,7 @@ const HRFields = ({
 		setTalentRole((preValue) => [
 			...preValue,
 			{
-				id: 'others',
+				id: -1,
 				value: 'Others',
 			},
 		]);
@@ -147,30 +366,6 @@ const HRFields = ({
 		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
 		setRegion(response && response?.responseBody);
 	}, []);
-
-	const getClientNameSuggestionHandler = useCallback(async (clientName) => {
-		let response = await MasterDAO.getEmailSuggestionDAO(clientName);
-		if (response?.statusCode === HTTPStatusCode.OK) {
-			setClientNameSuggestion(response?.responseBody?.details)
-			setClientNameMessage("")
-		}
-		else if (response?.statusCode === HTTPStatusCode.BAD_REQUEST || response?.statusCode === HTTPStatusCode.NOT_FOUND) {
-			setError('clientName', {
-				type: 'validate',
-				message: response?.responseBody
-			});
-			setClientNameSuggestion([])
-			setClientNameMessage(response?.responseBody)
-		}
-	}, []);
-
-	const getClientNameValue = (clientName) => {
-		setValue('clientName', clientName)
-		setError('clientName', {
-			type: 'validate',
-			message: ""
-		});
-	};
 
 	const getLocation = useLocation();
 
@@ -189,20 +384,118 @@ const HRFields = ({
 		[items, name],
 	);
 
-	useEffect(() => {
-		setValidation({
-			systemFileUpload: '',
-			googleDriveFileUpload: '',
-			linkValidation: ''
-		})
-		setGoogleDriveLink("")
-	}, [showUploadModal])
-
+	const watchClientName = watch('clientName');
 
 	const toggleHRDirectPlacement = useCallback((e) => {
 		// e.preventDefault();
 		setHRDirectPlacement(e.target.checked);
 	}, []);
+
+	const getClientNameValue = (clientName) => {
+		setValue('clientName', clientName);
+		setError('clientName', {
+			type: 'validate',
+			message: '',
+		});
+	};
+
+	const getClientNameSuggestionHandler = useCallback(
+		async (clientName) => {
+			let response = await MasterDAO.getEmailSuggestionDAO(clientName);
+
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				setClientNameSuggestion(response?.responseBody?.details);
+
+				setClientNameMessage('');
+			} else if (
+				response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+				response?.statusCode === HTTPStatusCode.NOT_FOUND
+			) {
+				setError('clientName', {
+					type: 'validate',
+					message: response?.responseBody,
+				});
+				setClientNameSuggestion([]);
+				setClientNameMessage(response?.responseBody);
+			}
+		},
+		[setError],
+	);
+
+	const validate = (clientName) => {
+		if (!clientName) {
+			return 'please enter the client email/name.';
+		} else if (getClientNameMessage !== '' && clientName) {
+			return getClientNameMessage;
+		}
+		return true;
+	};
+	let filteredMemo = useMemo(() => {
+		let filteredData = getClientNameSuggestion?.filter(
+			(item) => item?.value === watchClientName,
+		);
+		return filteredData;
+	}, [getClientNameSuggestion, watchClientName]);
+	const getHRClientName = useCallback(async () => {
+		let existingClientDetails =
+			await hiringRequestDAO.getClientDetailRequestDAO(
+				filteredMemo[0]?.emailId,
+			);
+		setError('clientName', {
+			type: 'duplicateCompanyName',
+			message:
+				existingClientDetails?.statusCode === HTTPStatusCode.NOT_FOUND &&
+				'Client email does not exist.',
+		});
+		existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
+			setValue('clientName', '');
+		existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
+			setValue('companyName', '');
+		existingClientDetails.statusCode === HTTPStatusCode.OK &&
+			setValue('companyName', existingClientDetails?.responseBody?.name);
+		existingClientDetails.statusCode === HTTPStatusCode.OK &&
+			setIsCompanyNameAvailable(true);
+		setIsLoading(false);
+	}, [filteredMemo, setError, setValue]);
+
+	const getOtherRoleHandler = useCallback(
+		async (data) => {
+			let response = await MasterDAO.getOtherRoleRequestDAO({
+				roleName: data,
+				roleID: 0,
+			});
+			if (response?.statusCode === HTTPStatusCode?.BAD_REQUEST) {
+				return setError('otherRole', {
+					type: 'otherRole',
+					message: response?.responseBody,
+				});
+			}
+		},
+		[setError],
+	);
+	useEffect(() => {
+		let timer;
+		if (!_isNull(watchOtherRole)) {
+			timer = setTimeout(() => {
+				setIsLoading(true);
+				getOtherRoleHandler(watchOtherRole);
+			}, 2000);
+		}
+		return () => clearTimeout(timer);
+	}, [getOtherRoleHandler, watchOtherRole]);
+
+	useEffect(() => {
+		let timer;
+		if (!_isNull(watchClientName)) {
+			timer =
+				pathName === ClientHRURL.ADD_NEW_HR &&
+				setTimeout(() => {
+					setIsLoading(true);
+					getHRClientName();
+				}, 2000);
+		}
+		return () => clearTimeout(timer);
+	}, [getHRClientName, watchClientName, pathName]);
 
 	useEffect(() => {
 		let urlSplitter = `${getLocation.pathname.split('/')[2]}`;
@@ -228,6 +521,7 @@ const HRFields = ({
 		getWorkingMode();
 		getCountry();
 		getHowSoon();
+		getNRMarginHandler();
 	}, [
 		getAvailability,
 		getSalesPerson,
@@ -238,74 +532,93 @@ const HRFields = ({
 		getHowSoon,
 		getWorkingMode,
 		getCountry,
+		getNRMarginHandler,
 	]);
+	useEffect(() => {
+		setValidation({
+			systemFileUpload: '',
+			googleDriveFileUpload: '',
+			linkValidation: '',
+		});
+		setGoogleDriveLink('');
+	}, [showUploadModal]);
+
+	useEffect(() => {
+		isHRDirectPlacement === false && unregister('dpPercentage');
+	}, [isHRDirectPlacement, unregister]);
+
+	useEffect(() => {
+		if (modeOfWork?.value === 'Remote') {
+			unregister(['address', 'city', 'state', 'country', 'postalCode']);
+		}
+	}, [modeOfWork, unregister]);
+
+	useEffect(() => {
+		hrRole !== 'others' && unregister('otherRole');
+	}, [hrRole, unregister]);
 	/** To check Duplicate email exists End */
 
 	const [messageAPI, contextHolder] = message.useMessage();
 
-	const hrSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
-		let hrFormDetails = hrUtils.hrFormDataFormatter(
-			d,
-			type,
-			watch,
-			clientDetail?.contactId,
-			isHRDirectPlacement,
+	const hrSubmitHandler = useCallback(
+		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+			let hrFormDetails = hrUtils.hrFormDataFormatter(
+				d,
+				type,
+				watch,
+				filteredMemo[0]?.contactId,
+				isHRDirectPlacement,
+				addHRResponse,
+			);
+
+			if (type === SubmitType.SAVE_AS_DRAFT) {
+				if (_isNull(watch('clientName'))) {
+					return setError('clientName', {
+						type: 'emptyClientName',
+						message: 'Please enter the client name.',
+					});
+				}
+			} else if (type !== SubmitType.SAVE_AS_DRAFT) {
+				setType(SubmitType.SUBMIT);
+			}
+			const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
+
+			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+				setAddHRResponse(addHRRequest?.responseBody?.details);
+				setEnID(addHRRequest?.responseBody?.details?.en_Id);
+				type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
+				type !== SubmitType.SAVE_AS_DRAFT &&
+					setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+
+				type === SubmitType.SAVE_AS_DRAFT &&
+					messageAPI.open({
+						type: 'success',
+						content: 'HR details has been saved to draft.',
+					});
+			}
+		},
+		[
 			addHRResponse,
-		);
-
-		if (type === SubmitType.SAVE_AS_DRAFT) {
-			if (_isNull(watch('clientName'))) {
-				return setError('clientName', {
-					type: 'emptyClientName',
-					message: 'Please enter the client name.',
-				});
-			}
-			else if (getClientNameMessage !== "" && !(_isNull(watch('clientName')))) {
-				return setError('clientName', {
-					type: 'validate',
-					message: getClientNameMessage
-				});
-			}
-		}
-		else if (type !== SubmitType.SAVE_AS_DRAFT) {
-			setType(SubmitType.SUBMIT);
-		}
-
-		const addHRRequest = !getClientNameMessage && await hiringRequestDAO.createHRDAO(hrFormDetails);
-
-		if (addHRRequest.statusCode === HTTPStatusCode.OK) {
-			setAddHRResponse(addHRRequest?.responseBody?.details);
-			console.log(addHRRequest?.responseBody?.details?.en_Id, '---eniD');
-			setEnID(addHRRequest?.responseBody?.details?.en_Id);
-			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
-			type !== SubmitType.SAVE_AS_DRAFT &&
-				setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
-
-			type === SubmitType.SAVE_AS_DRAFT &&
-				messageAPI.open({
-					type: 'success',
-					content: 'HR details has been saved to draft.',
-				});
-		}
-	};
-
-	const validate = (clientName) => {
-		if (!clientName) {
-			return "please enter the client email/name.";
-		}
-		else if (getClientNameMessage !== "" && clientName) {
-			return getClientNameMessage;
-		}
-		return true;
-	};
-
+			filteredMemo,
+			isHRDirectPlacement,
+			messageAPI,
+			setEnID,
+			setError,
+			setTabFieldDisabled,
+			setTitle,
+			tabFieldDisabled,
+			watch,
+		],
+	);
+	useEffect(() => {
+		setValue('hrTitle', hrRole?.value);
+	}, [hrRole?.value, setValue]);
 
 	useEffect(() => {
 		if (errors?.clientName?.message) {
 			controllerRef.current.focus();
 		}
 	}, [errors?.clientName]);
-
 
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
@@ -315,6 +628,7 @@ const HRFields = ({
 					<h3>Hiring Request Details</h3>
 					<p>Please provide the necessary details</p>
 				</div>
+
 				<form
 					id="hrForm"
 					className={HRFieldStyle.hrFieldRightPane}>
@@ -329,30 +643,47 @@ const HRFields = ({
 											onSelect={(clientName) => getClientNameValue(clientName)}
 											filterOption={true}
 											onSearch={(searchValue) => {
-												setClientNameSuggestion([])
-												getClientNameSuggestionHandler(searchValue)
+												setClientNameSuggestion([]);
+												getClientNameSuggestionHandler(searchValue);
 											}}
-											onChange={(clientName) => setValue('clientName', clientName)}
+											onChange={(clientName) =>
+												setValue('clientName', clientName)
+											}
 											placeholder="Enter Client Email/Name"
 											ref={controllerRef}
 										/>
 									)}
-									{...register("clientName", {
-										validate
+									{...register('clientName', {
+										validate,
 									})}
 									name="clientName"
 									// rules={{ required: true }}
 									control={control}
 								/>
-								{errors.clientName &&
+								{errors.clientName && (
 									<div className={HRFieldStyle.error}>
-										{errors.clientName?.message && `* ${errors?.clientName?.message}`}
-									</div>}
+										{errors.clientName?.message &&
+											`* ${errors?.clientName?.message}`}
+									</div>
+								)}
 							</div>
 						</div>
+						{/* <div className={HRFieldStyle.colMd12}>
+							<HRInputField
+								disabled={pathName === ClientHRURL.ADD_NEW_CLIENT || isLoading}
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the client email/name.',
+								}}
+								label={'Client Email/Name'}
+								name="clientName"
+								type={InputType.TEXT}
+								placeholder="Enter Client Email/Name"
+								required
+							/>
+						</div> */}
 					</div>
-
-
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
@@ -377,6 +708,7 @@ const HRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									mode={'id/value'}
 									searchable={true}
 									setValue={setValue}
 									register={register}
@@ -391,7 +723,7 @@ const HRFields = ({
 							</div>
 						</div>
 					</div>
-					{watch('role') === 'others' && (
+					{watch('role')?.id === -1 && (
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd12}>
 								<HRInputField
@@ -432,6 +764,7 @@ const HRFields = ({
 					</div>
 					<div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
 						<div className={HRFieldStyle.colMd6}>
+<<<<<<< HEAD
 							{!getUploadFileData ? <HRInputField
 								register={register}
 								leadingIcon={<UploadSVG />}
@@ -447,10 +780,43 @@ const HRFields = ({
 										{getUploadFileData} <CloseSVG className={HRFieldStyle.uploadedJDClose} onClick={() => {
 											setUploadFileData("")
 										}} /></div></div>}
+=======
+							{!getUploadFileData ? (
+								<HRInputField
+									disabled={!_isNull(watch('jdURL'))}
+									register={register}
+									leadingIcon={<UploadSVG />}
+									label="Job Description (PDF)"
+									name="jdExport"
+									type={InputType.BUTTON}
+									value="Upload JD File"
+									onClickHandler={() => setUploadModal(true)}
+								/>
+							) : (
+								<div className={HRFieldStyle.uploadedJDWrap}>
+									<label>Job Description (PDF)</label>
+									<div className={HRFieldStyle.uploadedJDName}>
+										{getUploadFileData}{' '}
+										<CloseSVG
+											className={HRFieldStyle.uploadedJDClose}
+											onClick={() => {
+												// setJDParsedSkills({});
+												setUploadFileData('');
+											}}
+										/>
+									</div>
+								</div>
+							)}
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 						</div>
 						<UploadModal
-							modalTitle={'Upload Logo'}
-							isFooter={false}
+							isLoading={isLoading}
+							uploadFileRef={uploadFile}
+							uploadFileHandler={(e) => uploadFileHandler(e.target.files[0])}
+							googleDriveFileUploader={() => googleDriveFileUploader()}
+							uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+							modalTitle={'Upload JD'}
+							isFooter={true}
 							openModal={showUploadModal}
 							setUploadModal={setUploadModal}
 							cancelModal={() => setUploadModal(false)}
@@ -460,11 +826,16 @@ const HRFields = ({
 							setGoogleDriveLink={setGoogleDriveLink}
 							setUploadFileData={setUploadFileData}
 						/>
+<<<<<<< HEAD
 						<div className={HRFieldStyle.orLabel}>
 							OR
 						</div>
+=======
+						<div className={HRFieldStyle.orLabel}>OR</div>
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								disabled={getUploadFileData}
 								label="Job Description URL"
 								name="jdURL"
 								type={InputType.TEXT}
@@ -473,7 +844,6 @@ const HRFields = ({
 							/>
 						</div>
 					</div>
-
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
@@ -548,7 +918,7 @@ const HRFields = ({
 								}}
 								label="NR Margin Percentage"
 								name="NRMargin"
-								type={InputType.NUMBER}
+								type={InputType.TEXT}
 								placeholder="Select NR margin percentage"
 								required
 							/>
@@ -651,7 +1021,6 @@ const HRFields = ({
 										required
 										errors={errors}
 										validationSchema={{
-											// required: 'please enter the months.',
 											max: {
 												value: 12,
 												message: `please don't enter the value more than 12`,
@@ -691,15 +1060,16 @@ const HRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									mode={'id/value'}
 									setValue={setValue}
 									register={register}
 									label={'Availability'}
 									defaultValue="Select availability"
 									options={availability}
 									name="availability"
-								// isError={errors['availability'] && errors['availability']}
-								// required
-								// errorMsg={'Please select the availability.'}
+									isError={errors['availability'] && errors['availability']}
+									required
+									errorMsg={'Please select the availability.'}
 								/>
 							</div>
 						</div>
@@ -708,6 +1078,7 @@ const HRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									mode={'id/value'}
 									setValue={setValue}
 									register={register}
 									label={'Select Region'}
@@ -742,6 +1113,7 @@ const HRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
+									mode={'id/value'}
 									setValue={setValue}
 									register={register}
 									label={'How soon can they join?'}
@@ -759,7 +1131,7 @@ const HRFields = ({
 								register={register}
 								label="Deal ID"
 								name="dealID"
-								type={InputType.TEXT}
+								type={InputType.NUMBER}
 								placeholder="Enter ID"
 							/>
 						</div>
@@ -871,6 +1243,7 @@ const HRFields = ({
 			</div>
 		</div>
 	);
+
 	function getWorkingModelFields() {
 		if (
 			watch('workingMode') === undefined ||

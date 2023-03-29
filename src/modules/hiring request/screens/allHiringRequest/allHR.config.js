@@ -39,7 +39,7 @@ export const allHRConfig = {
 				align: 'left',
 				render: (text, result) => (
 					<Link
-						to={`/allhiringrequest/${result?.key}${text}`}
+						to={`/allhiringrequest/${result?.key}`}
 						style={{ color: 'black', textDecoration: 'underline' }}>
 						{text}
 					</Link>

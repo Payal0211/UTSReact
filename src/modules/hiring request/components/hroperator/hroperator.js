@@ -2,6 +2,7 @@ import { Dropdown, Menu } from 'antd';
 import hroperatorStyle from './hroperator.module.css';
 
 const HROperator = ({
+	onClickHandler,
 	title,
 	icon,
 	backgroundColor,
@@ -15,6 +16,7 @@ const HROperator = ({
 		<Dropdown
 			className={hroperatorStyle.dropdownMenu}
 			trigger={['click']}
+			onOpenChange={onClickHandler}
 			overlay={
 				<Menu
 					selectable={true}

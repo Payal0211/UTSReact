@@ -3,15 +3,19 @@
     position: fixed;
     top: 0;
     width: 25%;
-    /* height: 80%; */
+    max-height: 800px;
+        overflow: hidden;
+        right: -30%;
     right: 0;
     box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.09);
     border-bottom-left-radius: 8px;
     z-index: 1000;
-
+transition: all 0.45s ease 0s;
 }
 
-
+.aside.closeFilter {
+    right: 0;
+}
 .asideBody {
     width: 85%;
     margin: 5% auto 5% auto;
@@ -51,6 +55,8 @@
 .filtersListType {
     margin-top: 5%;
     width: 100%;
+    max-height: 410px;
+        overflow-y: scroll;
 }
 
 .filterItem {

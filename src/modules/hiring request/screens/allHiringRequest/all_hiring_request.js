@@ -49,7 +49,7 @@ const AllHiringRequestScreen = () => {
 	const [pageIndex, setPageIndex] = useState(1);
 	const [pageSize, setPageSize] = useState(100);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
-	const [getHTMLFilter, setHTMLFilter] = useState(false)
+	const [getHTMLFilter, setHTMLFilter] = useState(false);
 	const [filtersList, setFiltersList] = useState([]);
 	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
@@ -58,11 +58,12 @@ const AllHiringRequestScreen = () => {
 	const [filteredTagLength, setFilteredTagLength] = useState(0);
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
+
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
 			setIsAllowFilters(false);
-		}, 300)
-		setHTMLFilter(false)
+		}, 300);
+		setHTMLFilter(false);
 	};
 	const [messageAPI, contextHolder] = message.useMessage();
 	const togglePriority = useCallback(
@@ -109,6 +110,7 @@ const AllHiringRequestScreen = () => {
 			let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
 				pageData,
 			);
+
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setTotalRecords(response?.responseBody?.TotalRecords);
 				setLoading(false);
@@ -154,11 +156,13 @@ const AllHiringRequestScreen = () => {
 
 	const toggleHRFilter = useCallback(() => {
 		getHRFilterRequest();
-		!getHTMLFilter ? setIsAllowFilters(!isAllowFilters) : setTimeout(() => {
-			setIsAllowFilters(!isAllowFilters);
-		}, 300)
-		setHTMLFilter(!getHTMLFilter)
-	}, [getHRFilterRequest, isAllowFilters]);
+		!getHTMLFilter
+			? setIsAllowFilters(!isAllowFilters)
+			: setTimeout(() => {
+					setIsAllowFilters(!isAllowFilters);
+			  }, 300);
+		setHTMLFilter(!getHTMLFilter);
+	}, [getHRFilterRequest, getHTMLFilter, isAllowFilters]);
 
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);

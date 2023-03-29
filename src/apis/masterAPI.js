@@ -98,6 +98,19 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getTimeZonePreferenceRequest');
 		}
 	},
+	getTimeZoneRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_TIME_ZONE;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getTimeZoneRequest');
+		}
+	},
 	getPartialEngagementTypeRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -337,6 +350,52 @@ export const MasterAPI = {
 				error,
 				'MasterAPI.getTeamManagerBasedOnUserTypeRequest',
 			);
+		}
+	},
+	getNRMarginRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_NR_MARGIN;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getNRMarginRequest');
+		}
+	},
+	getOtherSkillsRequest: async function (skillsData) {
+		let httpService = new HttpServices();
+		let miscData = UserSessionManagementController.getUserMiscellaneousData();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.ADD_OTHER_SKILL +
+			`?skillname=${skillsData?.skillName}&LoggedInUserId=${miscData?.loggedInUserTypeID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getOtherSkillsRequest');
+		}
+	},
+	getOtherRoleRequest: async function (roleData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.CHECK_OTHER_ROLE +
+			`?rolename=${roleData?.roleName}&RoleId=${roleData?.roleID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getOtherRoleRequest');
 		}
 	},
 };

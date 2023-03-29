@@ -10,7 +10,11 @@ const AddNewHR = () => {
 		addNewHiringRequest: false,
 		debriefingHR: true,
 	});
-
+	const [JDParsedSkills, setJDParsedSkills] = useState({
+		Skills: [],
+		Responsibility: '',
+		Requirements: '',
+	});
 	const [enID, setEnID] = useState('');
 
 	return (
@@ -33,6 +37,7 @@ const AddNewHR = () => {
 								tabFieldDisabled={tabFieldDisabled}
 								setTabFieldDisabled={setTabFieldDisabled}
 								setEnID={setEnID}
+								setJDParsedSkills={setJDParsedSkills}
 							/>
 						),
 					},
@@ -45,6 +50,8 @@ const AddNewHR = () => {
 								tabFieldDisabled={tabFieldDisabled}
 								setTabFieldDisabled={setTabFieldDisabled}
 								enID={enID}
+								setJDParsedSkills={setJDParsedSkills}
+								JDParsedSkills={JDParsedSkills}
 							/>
 						),
 						disabled: tabFieldDisabled.debriefingHR,

@@ -12,7 +12,11 @@ import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import MatchmakingModal from './components/matchmaking/matchmaking';
 export const hrUtils = {
 	modifyHRRequestData: (hrData) => {
+<<<<<<< HEAD
 		return hrData.responseBody.rows.map((item) => ({
+=======
+		return hrData?.responseBody?.rows.map((item) => ({
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 			key: item.hrid,
 			starStatus: item.starMarkedStatusCode,
 			adHocHR: item.adHocHR,
@@ -91,10 +95,15 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('role'))
 						? 0
-						: watch('role')
+						: watch('role')?.id
 					: _isNull(d.role)
+<<<<<<< HEAD
 						? 0
 						: d.role,
+=======
+					? 0
+					: d.role?.id,
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 			otherRole:
 				watch('role') === 'others'
 					? draft === SubmitType.SAVE_AS_DRAFT
@@ -111,6 +120,7 @@ export const hrUtils = {
 						? null
 						: watch('hrTitle')
 					: _isNull(d.hrTitle)
+<<<<<<< HEAD
 						? null
 						: d.hrTitle,
 			jdURL:
@@ -121,6 +131,25 @@ export const hrUtils = {
 					: _isNull(d.jdURL)
 						? null
 						: d.jdURL,
+=======
+					? null
+					: d.hrTitle,
+
+			jDInfo: {
+				jdURL:
+					draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('jdURL'))
+							? null
+							: watch('jdURL')
+						: _isNull(d.jdURL)
+						? null
+						: d.jdURL,
+				jDFilename: null,
+				jDDescription: null,
+				jDDump_ID: null,
+				hdnSkills: null,
+			},
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 			budget:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('budget'))
@@ -143,8 +172,22 @@ export const hrUtils = {
 						? 0
 						: parseFloat(watch('maximumBudget'))
 					: _isNull(d.maximumBudget)
+<<<<<<< HEAD
 						? 0
 						: parseFloat(d.maximumBudget),
+=======
+					? 0
+					: parseFloat(d.maximumBudget),
+
+			availability:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('availability'))
+						? null
+						: watch('availability')?.value
+					: _isNull(d.availability)
+					? null
+					: d.availability?.value,
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 			NRMargin:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('NRMargin'))
@@ -173,10 +216,15 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('howSoon'))
 						? null
-						: watch('howSoon').toString()
+						: watch('howSoon')?.value.toString()
 					: _isNull(d.howSoon)
+<<<<<<< HEAD
 						? null
 						: d.howSoon.toString(),
+=======
+					? null
+					: d.howSoon?.value.toString(),
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 			years:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('years'))
@@ -197,10 +245,15 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('region'))
 						? 0
-						: watch('region')
+						: watch('region')?.id
 					: _isNull(d.region)
+<<<<<<< HEAD
 						? 0
 						: d.region,
+=======
+					? 0
+					: d.region?.id,
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 			timeZonePreferenceId:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('timeZone'))
@@ -212,11 +265,16 @@ export const hrUtils = {
 			timezone_Preference:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('timeZone'))
-						? 0
-						: watch('timeZone')?.value
+						? ' '
+						: watch('region')?.value + watch('timeZone')?.value
 					: _isNull(d.timeZone)
+<<<<<<< HEAD
 						? 0
 						: d.timeZone?.value,
+=======
+					? ' '
+					: d.region?.value + d.timeZone?.value,
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 
 			talentsNumber:
 				draft === SubmitType.SAVE_AS_DRAFT
@@ -229,11 +287,16 @@ export const hrUtils = {
 			dealID:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('dealID'))
-						? null
-						: watch('dealID')
+						? '0'
+						: watch('dealID').toString()
 					: _isNull(d.dealID)
+<<<<<<< HEAD
 						? null
 						: d.dealID,
+=======
+					? '0'
+					: d.dealID.toString(),
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 			bqFormLink:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('bqFormLink'))
@@ -259,16 +322,29 @@ export const hrUtils = {
 							? null
 							: watch('workingMode')?.value
 						: _isNull(d.workingMode)
+<<<<<<< HEAD
 							? null
 							: d.workingMode?.value,
 				dpPercentage:
 					draft === SubmitType.SAVE_AS_DRAFT
+=======
+						? null
+						: d.workingMode?.value,
+				dpPercentage: isHRDirectPlacement
+					? draft === SubmitType.SAVE_AS_DRAFT
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 						? _isNull(watch('dpPercentage'))
 							? 0
 							: parseFloat(watch('dpPercentage'))
 						: _isNull(d.dpPercentage)
+<<<<<<< HEAD
 							? 0
 							: parseFloat(d.dpPercentage),
+=======
+						? 0
+						: parseFloat(d.dpPercentage)
+					: 0,
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 				address:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('address'))
@@ -299,8 +375,13 @@ export const hrUtils = {
 							? null
 							: watch('country')?.value
 						: _isNull(d.country)
+<<<<<<< HEAD
 							? null
 							: d.country?.value,
+=======
+						? null
+						: d?.country?.value,
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 				postalCode:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('postalCode'))
@@ -533,6 +614,17 @@ export const hrUtils = {
 			];
 		}
 	},
+	showTalentCTA(item) {
+		// console.log('--index---', item);
+		let tempArray = [];
+		item?.cTAInfoList?.map((item) =>
+			tempArray.push({
+				key: item?.label,
+				label: item?.label,
+			}),
+		);
+		return tempArray;
+	},
 	handleTalentStatus(item, HRStatusCode) {
 		if (
 			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
@@ -545,6 +637,7 @@ export const hrUtils = {
 		}
 		return false;
 	},
+	handleTalentAcceptance() {},
 	handlerUpdateKickOff(item, miscData, HRStatusCode) {
 		if (
 			miscData?.LoggedInUserTypeID === UserAccountRole.TALENTOPS ||
@@ -568,33 +661,33 @@ export const hrUtils = {
 			return [
 				{
 					label: 'Pass to ODR',
-					// key: AddNewType.HR,
+					key: 'Pass to ODR',
 				},
 				{
 					label: 'Keep it with me as well',
-					// key: AddNewType.CLIENT,
+					key: 'Keep it with me as well',
 				},
 			];
 		} else if (adHOCValue === AdHOCHR.ODR) {
 			return [
 				{
 					label: 'Pass to Pool',
-					// key: AddNewType.HR,
+					key: 'Pass to Pool',
 				},
 				{
 					label: 'Keep it with me as well',
-					// key: AddNewType.CLIENT,
+					key: 'Keep it with me as well',
 				},
 			];
 		} else if (adHOCValue === AdHOCHR.BOTH) {
 			return [
 				{
 					label: 'Pass to Pool',
-					// key: AddNewType.HR,
+					key: 'Pass to Pool',
 				},
 				{
 					label: 'Pass to ODR',
-					// key: AddNewType.HR,
+					key: 'Pass to ODR',
 				},
 			];
 		}

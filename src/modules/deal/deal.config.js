@@ -1,6 +1,7 @@
 import HRStatusComponent from 'modules/hiring request/components/hrStatus/hrStatusComponent';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { _isNull } from 'shared/utils/basic_utils';
 
 export const DealConfig = {
 	tableConfig: () => {
@@ -11,7 +12,7 @@ export const DealConfig = {
 				key: 'dealDate',
 				align: 'left',
 				render: (text) => {
-					return text ? text : 'NA';
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
 				},
 			},
 			{
@@ -91,7 +92,9 @@ export const DealConfig = {
 				key: 'dealStage',
 				align: 'left',
 				render: (text, param) => {
-					return (
+					return _isNull(text) ? (
+						'NA'
+					) : (
 						<HRStatusComponent
 							title={text}
 							backgroundColor={param.dealStageColorCode}
@@ -111,41 +114,45 @@ export const DealConfig = {
 			{ name: 'No Show' },
 		];
 	},
-	dealFilterTypeConfig: () => {
+	dealFilterTypeConfig: (filtersList) => {
 		return [
-			{ name: 'Deal ID', child: ['ODR', 'Pool'], isSearch: false },
 			{
-				name: 'Lead Source',
-				child: [
-					'Outbound',
-					'Inbound SEO',
-					'Inbound DL',
-					'Inbound CMS',
-					'Inbound LI',
-					'Inbound Direct',
-					'Inbound ABM',
-				],
+				label: 'Deal ID',
+				name: 'deal_Id',
+				child: filtersList?.DealId,
 				isSearch: false,
 			},
 			{
-				name: 'Pipeline',
-				child: ['3', '4', '7', '9', '10'],
+				label: 'Lead Source',
+				name: 'lead_Type',
+				child: filtersList?.LeadSource,
 				isSearch: false,
 			},
-			{ name: 'Company', child: [], isSearch: true },
-			{ name: 'Geo', child: ['UK', 'USA', 'AU'], isSearch: true },
-			{ name: 'BDR', child: ['FTE', 'PTE'], isSearch: false },
-			{ name: 'Sales Consultant', child: [], isSearch: true },
-			{ name: 'Deal Stage', child: [], isSearch: true },
 			{
-				name: 'HR Status',
-				child: [
-					/* {
-						statusCode: HiringRequestHRStatus.DRAFT,
-						label: 'Draft',
-					}, */
-				],
+				label: 'Pipeline',
+				name: 'pipeline',
+				child: filtersList?.Pipeline,
 				isSearch: false,
+			},
+			{
+				label: 'Company',
+				name: 'company',
+				child: filtersList?.Company,
+				isSearch: true,
+			},
+			{ label: 'Geo', name: 'geo', child: filtersList?.Geo, isSearch: true },
+			{ label: 'BDR', name: 'bdr', child: filtersList?.BDR, isSearch: false },
+			{
+				label: 'Sales Consultant',
+				name: 'sales_Consultant',
+				child: filtersList?.SalesConsultant,
+				isSearch: true,
+			},
+			{
+				label: 'Deal Stage',
+				name: 'dealStage',
+				child: filtersList?.DealStage,
+				isSearch: true,
 			},
 		];
 	},

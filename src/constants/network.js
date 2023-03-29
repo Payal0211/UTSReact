@@ -12,6 +12,7 @@ export class SubDomain {
 	static MASTERS = 'MastersAPI/';
 	static CLIENT = 'Client/';
 	static HIRING = 'Hiring/';
+	static MATCHMAKING = 'Matchmaking/';
 	static DEBRIEFING = 'Debriefing/';
 	static INTERVIEW = 'Interview/';
 	static DEAL = 'Deal/';
@@ -35,6 +36,8 @@ export class UserAPI {
 	static ADD_NEW_USER = 'AddEdit';
 	static GET_USER_DETAIL = 'GetUserDetail';
 	static UPDATEPASSWORD = '/updatepassword';
+	static IS_EMPLOYEE_ID_EXIST = 'IsEmployeeIDExist';
+	static IS_EMPLOYEE_NAME_EXIST = 'IsEmployeeFullNameExist';
 }
 
 export class EngagementAPI {
@@ -51,6 +54,7 @@ export class MastersAPI {
 	static GET_CURRENCY = 'GetCurrency';
 	static GET_TALENT_TIME_ZONE = 'GetTalentTimeZone';
 	static GET_HOW_SOON = 'GetHowSoon';
+	static GET_TIME_ZONE = 'GetTimeZone';
 	static GET_TIME_ZONE_PREFERENCE = 'GetTimeZonePreference';
 	static GET_PARTIAL_ENGAGEMENT_TYPE = 'GetPartialEngagementType';
 	static GET_TALENTS_ROLE_REQUEST = 'GetTalentsRoles';
@@ -61,7 +65,6 @@ export class MastersAPI {
 	static GET_REGIONS = 'GetRegions';
 	static GET_MODE_OF_WORK = 'GetModeOfWork';
 	static GET_COUNTRY = 'GetCountry';
-
 	static GET_USER_TYPE = 'GetUserType';
 	static GET_TEAM_MANAGER = 'GetTeamManager';
 	static GET_USER_BY_TYPE = 'GetUserByType';
@@ -71,6 +74,9 @@ export class MastersAPI {
 	static GET_TEAM_MANAGER_BASED_ON_USER_TYPE =
 		'FetchTeamManagerBasedOnUserType';
 	static GET_EMAIL_SUGGESTION = 'AutoComplete/Contact';
+	static GET_NR_MARGIN = 'GetNRMargin';
+	static CHECK_OTHER_ROLE = 'CheckOtherRole';
+	static ADD_OTHER_SKILL = 'AddOtherSkill';
 }
 
 export class ClientsAPI {
@@ -98,6 +104,7 @@ export class HiringRequestsAPI {
 	static UPLOAD_FILE = 'UploadFile';
 	static UPLOAD_DRIVE_FILE = 'UploadDriveFile';
 	static UPLOAD_GOOGLE_FILE_LINK = 'UploadGoogleFileLink';
+	static UPDATE_ODR_POOL_STATUS = 'UpdateODRPoolStatus';
 }
 
 export class UsersAPI {
@@ -111,6 +118,7 @@ export class InterviewsAPI {
 export class DealsAPI {
 	static LIST = 'List';
 	static DETAIL = 'Detail';
+	static DEAL_FILTER = 'FilterCriterias';
 }
 export class HTTPStatusCode {
 	static OK = 200;

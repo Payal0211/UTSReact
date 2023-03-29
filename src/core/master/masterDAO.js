@@ -127,6 +127,31 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getTalentTimeZoneRequestDAO');
 		}
 	},
+	getTimeZoneRequestDAO: async function () {
+		try {
+			const timeZoneRequest = await MasterAPI.getTimeZoneRequest();
+			if (timeZoneRequest) {
+				const statusCode = timeZoneRequest['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = timeZoneRequest.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return timeZoneRequest;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return timeZoneRequest;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getTimeZoneRequestDAO');
+		}
+	},
 	getHowSoonRequestDAO: async function () {
 		try {
 			const howSoonResult = await MasterAPI.getHowSoonRequest();
@@ -595,6 +620,86 @@ export const MasterDAO = {
 			}
 		} catch (error) {
 			return errorDebug(error, 'MasterDAO.getEmailSuggestionDAO');
+		}
+	},
+	getNRMarginRequestDAO: async function (email) {
+		try {
+			const nrMarginResponse = await MasterAPI.getNRMarginRequest();
+			if (nrMarginResponse) {
+				const statusCode = nrMarginResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = nrMarginResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return nrMarginResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return nrMarginResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getNRMarginRequestDAO');
+		}
+	},
+	getOtherSkillsRequestDAO: async function (skillsData) {
+		try {
+			const otherSkillsResponse = await MasterAPI.getOtherSkillsRequest(
+				skillsData,
+			);
+			if (otherSkillsResponse) {
+				const statusCode = otherSkillsResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = otherSkillsResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return otherSkillsResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return otherSkillsResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getOtherSkillsRequestDAO');
+		}
+	},
+	getOtherRoleRequestDAO: async function (roleData) {
+		try {
+			const otherRoleResponse = await MasterAPI.getOtherRoleRequest(roleData);
+			if (otherRoleResponse) {
+				const statusCode = otherRoleResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = otherRoleResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return otherRoleResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return otherRoleResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getOtherRoleRequestDAO');
 		}
 	},
 };

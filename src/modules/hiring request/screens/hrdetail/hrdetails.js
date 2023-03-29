@@ -23,6 +23,7 @@ import { MasterDAO } from 'core/master/masterDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
+import { toast } from 'react-toastify';
 
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
@@ -56,9 +57,10 @@ const HRDetailScreen = () => {
 	} = useForm();
 
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
-	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
+	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
 	const miscData = UserSessionManagementController.getUserSession();
 
+	console.log('apiData--', apiData);
 	const callAPI = useCallback(
 		async (hrid) => {
 			setLoading(true);
@@ -125,6 +127,15 @@ const HRDetailScreen = () => {
 		setDeleteReason(response && response?.responseBody?.details);
 	}, []);
 
+	const updateODRPoolStatusHandler = useCallback(
+		async (data) => {
+			await hiringRequestDAO.updateODRPOOLStatusRequestDAO(data);
+
+			callAPI(urlSplitter?.split('HR')[0]);
+		},
+		[callAPI, urlSplitter],
+	);
+
 	useEffect(() => {
 		setLoading(true);
 		callAPI(urlSplitter?.split('HR')[0]);
@@ -179,13 +190,46 @@ const HRDetailScreen = () => {
 							)}
 
 							<HROperator
-								title={hrUtils.handleAdHOC(apiData?.AdhocPoolValue)[0]?.label}
+								title={
+									hrUtils.handleAdHOC(apiData && apiData?.AdhocPoolValue)[0]
+										?.label
+								}
 								icon={<ArrowDownSVG style={{ width: '16px' }} />}
 								backgroundColor={`var(--background-color-light)`}
 								labelBorder={`1px solid var(--color-sunlight)`}
 								iconBorder={`1px solid var(--color-sunlight)`}
 								isDropdown={true}
 								listItem={hrUtils.handleAdHOC(apiData?.AdhocPoolValue)}
+								menuAction={(menuItem) => {
+									switch (menuItem.key) {
+										case 'Pass to ODR': {
+											updateODRPoolStatusHandler({
+												hrID: urlSplitter?.split('HR')[0],
+												isPool: false,
+												isODR: true,
+											});
+											break;
+										}
+										case 'Pass to Pool': {
+											updateODRPoolStatusHandler({
+												hrID: urlSplitter?.split('HR')[0],
+												isPool: true,
+												isODR: false,
+											});
+											break;
+										}
+										case 'Keep it with me as well': {
+											updateODRPoolStatusHandler({
+												hrID: urlSplitter?.split('HR')[0],
+												isPool: true,
+												isODR: true,
+											});
+											break;
+										}
+										default:
+											break;
+									}
+								}}
 							/>
 							<div
 								className={HRDetailStyle.hiringRequestPriority}
@@ -208,7 +252,7 @@ const HRDetailScreen = () => {
 						<br />
 					</>
 				) : (
-					apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED && (
+					apiData?.NextActionsForTalent?.length > 0 && (
 						<Suspense>
 							<NextActionItem nextAction={apiData?.NextActionsForTalent} />
 						</Suspense>
@@ -234,12 +278,18 @@ const HRDetailScreen = () => {
 						) : (
 							<Suspense>
 								<TalentProfileCard
+									talentCTA={apiData?.talent_CTAs}
 									HRStatusCode={apiData?.HRStatusCode}
 									talentDetail={apiData?.HRTalentDetails}
 									hrId={apiData.HR_Id}
 									miscData={miscData}
 									hiringRequestNumber={updatedSplitter}
+<<<<<<< HEAD
 									hrType={apiData.Is_HRTypeDP}
+=======
+									starMarkedStatusCode={apiData?.StarMarkedStatusCode}
+									hrStatus={apiData?.HRStatus}
+>>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 								/>
 							</Suspense>
 						)}

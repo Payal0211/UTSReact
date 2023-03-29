@@ -468,6 +468,39 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.setTalentPrioritiesDAO()');
 		}
 	},
+	updateODRPOOLStatusRequestDAO: async (odrPoolStatus) => {
+		try {
+			const odrPoolStatusResponse =
+				await HiringRequestAPI.updateODRPOOLStatusRequest(odrPoolStatus);
+			if (odrPoolStatusResponse) {
+				const statusCode = odrPoolStatusResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = odrPoolStatusResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return odrPoolStatusResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return odrPoolStatusResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.updateODRPOOLStatusRequestDAO()',
+			);
+		}
+	},
 	deleteHRDAO: async (deleteBody) => {
 		try {
 			const deleteHRResponse = await HiringRequestAPI.deleteHRRequest(
@@ -500,11 +533,9 @@ export const hiringRequestDAO = {
 		}
 	},
 	uploadFileDAO: async (fileData) => {
-		console.log('run')
+		console.log('run');
 		try {
-			const uploadFileResponse = await HiringRequestAPI.uploadFile(
-				fileData,
-			);
+			const uploadFileResponse = await HiringRequestAPI.uploadFile(fileData);
 			if (uploadFileResponse) {
 				const statusCode = uploadFileResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
@@ -564,9 +595,8 @@ export const hiringRequestDAO = {
 	},
 	uploadFileFromGoogleDriveLinkDAO: async (link) => {
 		try {
-			const uploadFileResponse = await HiringRequestAPI.uploadFileFromGoogleDriveLink(
-				link,
-			);
+			const uploadFileResponse =
+				await HiringRequestAPI.uploadFileFromGoogleDriveLink(link);
 			if (uploadFileResponse) {
 				const statusCode = uploadFileResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {

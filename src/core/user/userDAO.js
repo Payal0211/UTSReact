@@ -83,6 +83,59 @@ export const userDAO = {
 			return errorDebug(error, 'userDAO.addNewUserRequestDAO');
 		}
 	},
+	getIsEmployeeIDExistRequestDAO: async function (userData) {
+		try {
+			const employeeIDExistResponse = await userAPI.getIsEmployeeIDExistRequest(
+				userData,
+			);
+			if (employeeIDExistResponse) {
+				const statusCode = employeeIDExistResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = employeeIDExistResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return employeeIDExistResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return employeeIDExistResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.getIsEmployeeIDExistRequestDAO');
+		}
+	},
+	getIsEmployeeNameExistRequestDAO: async function (userData) {
+		try {
+			const employeeNameExistResponse =
+				await userAPI.getIsEmployeeNameExistRequest(userData);
+			if (employeeNameExistResponse) {
+				const statusCode = employeeNameExistResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = employeeNameExistResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return employeeNameExistResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return employeeNameExistResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.getIsEmployeeNameExistRequestDAO');
+		}
+	},
 	loginDAO: async function (userdata) {
 		try {
 			const loginResult = await userAPI.login(userdata);
@@ -108,6 +161,7 @@ export const userDAO = {
 			return errorDebug(error, 'UserDAO.LoginDAO');
 		}
 	},
+
 	logoutDAO: async function () {
 		try {
 			let response = UserSessionManagementController.deleteAllSession();

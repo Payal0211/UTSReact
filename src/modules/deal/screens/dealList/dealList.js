@@ -1,6 +1,5 @@
 import { Dropdown, Menu, Table } from 'antd';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { IoChevronDownOutline } from 'react-icons/io5';
@@ -14,8 +13,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { InterviewDAO } from 'core/interview/interviewDAO';
+import { useNavigate } from 'react-router-dom';
 import { DealDAO } from 'core/deal/dealDAO';
 import UTSRoutes from 'constants/routes';
 
@@ -31,22 +29,31 @@ const DealListLazyComponents = React.lazy(() =>
 	import('modules/deal/components/dealFilters/dealFilters'),
 );
 const DealList = () => {
+	const [tableFilteredState, setTableFilteredState] = useState({
+		totalrecord: 100,
+		pagenumber: 1,
+	});
 	const pageSizeOptions = [100, 200, 300, 500];
 	const [dealList, setDealList] = useState([]);
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
+	const [getHTMLFilter, setHTMLFilter] = useState(false);
+	const [filtersList, setFiltersList] = useState([]);
 	const [pageSize, setPageSize] = useState(100);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [isLoading, setLoading] = useState(false);
+	const [filteredTagLength, setFilteredTagLength] = useState(0);
+	const [appliedFilter, setAppliedFilters] = useState(new Map());
+	const [checkedState, setCheckedState] = useState(new Map());
 	const navigate = useNavigate();
-	/*--------- React DatePicker ---------------- */
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
 
 	const onRemoveDealFilters = () => {
-		setIsAllowFilters(false);
+		setTimeout(() => {
+			setIsAllowFilters(false);
+		}, 300);
+		setHTMLFilter(false);
 	};
 	const onChange = (dates) => {
 		const [start, end] = dates;
@@ -54,7 +61,7 @@ const DealList = () => {
 		setEndDate(end);
 	};
 	const tableColumnsMemo = useMemo(() => DealConfig.tableConfig(), []);
-	const fetchDealListAPIResponse = useCallback(
+	const handleDealRequest = useCallback(
 		async (pageData) => {
 			setLoading(true);
 			const response = await DealDAO.getDealListDAO(
@@ -89,28 +96,81 @@ const DealList = () => {
 		[navigate],
 	);
 
+	const getDealFilterRequest = useCallback(async () => {
+		const response = await DealDAO.getAllFilterDataForDealRequestDAO();
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setFiltersList(response && response?.responseBody?.details?.Data);
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			return 'NO DATA FOUND';
+		}
+	}, [navigate]);
+
+	const toggleDealFilter = useCallback(() => {
+		getDealFilterRequest();
+		!getHTMLFilter
+			? setIsAllowFilters(!isAllowFilters)
+			: setTimeout(() => {
+					setIsAllowFilters(!isAllowFilters);
+			  }, 300);
+		setHTMLFilter(!getHTMLFilter);
+	}, [getDealFilterRequest, getHTMLFilter, isAllowFilters]);
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
 	}, [debouncedSearch]);
 	useEffect(() => {
-		fetchDealListAPIResponse();
-	}, [fetchDealListAPIResponse]);
+		handleDealRequest(tableFilteredState);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [tableFilteredState]);
+	/*--------- React DatePicker ---------------- */
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
 
+	const onCalenderFilter = (dates) => {
+		const [start, end] = dates;
+
+		setStartDate(start);
+		setEndDate(end);
+
+		if (start && end) {
+			setTableFilteredState({
+				...tableFilteredState,
+				filterFields_ViewAllHRs: {
+					fromDate: new Date(start).toLocaleDateString('en-US'),
+					toDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			});
+			handleDealRequest({
+				...tableFilteredState,
+				filterFields_ViewAllHRs: {
+					fromDate: new Date(start).toLocaleDateString('en-US'),
+					toDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			});
+		}
+	};
 	return (
 		<div className={DealListStyle.dealContainer}>
 			<div className={DealListStyle.header}>
 				<div className={DealListStyle.dealLable}>Deal Listing</div>
 			</div>
+			{/*
+			 * --------- Filter Component Starts ---------
+			 * @Filter Part
+			 */}
 			<div className={DealListStyle.filterContainer}>
 				<div className={DealListStyle.filterSets}>
 					<div
 						className={DealListStyle.addFilter}
-						onClick={() => setIsAllowFilters(!isAllowFilters)}>
+						onClick={toggleDealFilter}>
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
 						<div className={DealListStyle.filterLabel}>Add Filters</div>
-						<div className={DealListStyle.filterCount}>7</div>
+						<div className={DealListStyle.filterCount}>{filteredTagLength}</div>
 					</div>
 					<div className={DealListStyle.filterRight}>
 						<div className={DealListStyle.searchFilterSet}>
@@ -139,7 +199,7 @@ const DealList = () => {
 									className={DealListStyle.dateFilter}
 									placeholderText="Start date - End date"
 									selected={startDate}
-									onChange={onChange}
+									onChange={onCalenderFilter}
 									startDate={startDate}
 									endDate={endDate}
 									selectsRange
@@ -160,7 +220,8 @@ const DealList = () => {
 												setPageSize(parseInt(e.key));
 
 												if (pageSize !== parseInt(e.key)) {
-													fetchDealListAPIResponse({
+													handleDealRequest({
+														...tableFilteredState,
 														pageNumber: pageIndex,
 														totalRecord: parseInt(e.key),
 													});
@@ -203,12 +264,12 @@ const DealList = () => {
 								onChange: (pageNum, pageSize) => {
 									setPageIndex(pageNum);
 									setPageSize(pageSize);
-									// setTableFilteredState({
-									// 	...tableFilteredState,
-									// 	pagesize: pageSize,
-									// 	pagenum: pageNum,
-									// });
-									fetchDealListAPIResponse({
+									setTableFilteredState({
+										...tableFilteredState,
+										totalRecord: pageSize,
+										pageNumber: pageNum,
+									});
+									handleDealRequest({
 										pageNumber: pageNum,
 										totalRecord: pageSize,
 									});
@@ -229,9 +290,20 @@ const DealList = () => {
 			{isAllowFilters && (
 				<Suspense>
 					<DealListLazyComponents
+						setAppliedFilters={setAppliedFilters}
+						appliedFilter={appliedFilter}
+						setCheckedState={setCheckedState}
+						checkedState={checkedState}
+						handleDealRequest={handleDealRequest}
+						setTableFilteredState={setTableFilteredState}
+						tableFilteredState={tableFilteredState}
+						setFilteredTagLength={setFilteredTagLength}
 						onRemoveDealFilters={onRemoveDealFilters}
+						getHTMLFilter={getHTMLFilter}
 						hrFilterList={DealConfig.dealFiltersListConfig()}
-						filtersType={DealConfig.dealFilterTypeConfig()}
+						filtersType={DealConfig.dealFilterTypeConfig(
+							filtersList && filtersList,
+						)}
 					/>
 				</Suspense>
 			)}

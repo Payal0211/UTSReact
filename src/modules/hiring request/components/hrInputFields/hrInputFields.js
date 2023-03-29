@@ -53,7 +53,7 @@ const HRInputField = ({
 						name={name}
 						placeholder={placeholder}
 						onClick={InputType.BUTTON && onClickHandler}
-						{...register(name, validationSchema)}
+						{...register(name, required && validationSchema)}
 						id={name}
 						disabled={disabled}
 						required={required}
@@ -77,12 +77,13 @@ const HRInputField = ({
 						name={name}
 						placeholder={placeholder}
 						onClick={InputType.BUTTON && onClickHandler}
-						{...register(name, validationSchema)}
+						{...register(name, required && validationSchema)}
 						id={name}
 						disabled={disabled}
 						required={required}
 						height={height && height}
 						maxLength={maxLength}
+						onWheel={(e) => e.target.blur()}
 					/>
 					{trailingIcon && (
 						<div className={HRInputFieldStyle.trailingIcon}>{trailingIcon}</div>

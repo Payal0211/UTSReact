@@ -101,7 +101,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.TRParked}>
 								<span>TR Parked:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.NoOfTalents - talentLength}
+									{clientDetail?.TR_Accepted ? clientDetail?.TR_Accepted : 'NA'}
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.roleName}>
@@ -160,6 +160,10 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 										: 'NA'}
 								</span>
 							</div>
+							<div className={CompanyProfileCardStyle.preferredTime}>
+								<span>Mode of Work:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>NA</span>
+							</div>
 							<div className={CompanyProfileCardStyle.jdLink}>
 								<span>JD Link:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
@@ -175,7 +179,8 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 								<span>Behavioral Questions:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									<a
-										href="#"
+										target="_blank"
+										href={clientDetail?.BQLink}
 										style={{ textDecoration: 'underline' }}>
 										Click Here
 									</a>
@@ -185,6 +190,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 								<span>Additional Information:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									<a
+										target="_blank"
 										href="#"
 										style={{ textDecoration: 'underline' }}>
 										Click Here
@@ -194,11 +200,16 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.TRParked}>
 								<span>Discovery Call:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									<a
-										href="#"
-										style={{ textDecoration: 'underline' }}>
-										Click Here
-									</a>
+									{clientDetail?.Discovery_Call ? (
+										<a
+											target="_blank"
+											href={clientDetail?.Discovery_Call}
+											style={{ textDecoration: 'underline' }}>
+											Click Here
+										</a>
+									) : (
+										'NA'
+									)}
 								</span>
 							</div>
 						</div>

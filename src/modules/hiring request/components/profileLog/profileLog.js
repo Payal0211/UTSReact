@@ -15,8 +15,13 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
+	const [calenderFilter, setCalenderFilter] = useState({
+		talentid: 0,
+		fromDate: '',
+		toDate: '',
+	});
 	const getTechScore = useCallback(async () => {
-		const response = await hiringRequestDAO.getTalentProfileLogDAO(talentID);
+		const response = await hiringRequestDAO.getTalentTechScoreDAO(talentID);
 		setProfileLog(response && response?.responseBody?.details);
 	}, [talentID]);
 
@@ -55,6 +60,29 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 		},
 	];
 
+	/*--------- React DatePicker ---------------- */
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+
+	/* const onCalenderFilter = (dates) => {
+		const [start, end] = dates;
+		setStartDate(start);
+		setEndDate(end);
+		if (start && end) {
+			setCalenderFilter({
+				...calenderFilter,
+				fromDate: new Date(start).toLocaleDateString('en-US'),
+				toDate: new Date(end).toLocaleDateString('en-US'),
+			});
+			handleHRRequest({
+				...tableFilteredState,
+				filterFields_ViewAllHRs: {
+					fromDate: new Date(start).toLocaleDateString('en-US'),
+					toDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			});
+		}
+	}; */
 	const onProfileLogClickHandler = async (typeID, index, type) => {
 		setLogExpanded([]);
 		setActiveIndex(index);
@@ -63,19 +91,14 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 			talentID: talentID,
 			typeID: typeID,
 		};
+		setCalenderFilter({
+			...calenderFilter,
+			talentid: talentID,
+		});
 		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
 			profileObj,
 		);
 		setLogExpanded(response && response?.responseBody?.details);
-	};
-	/*--------- React DatePicker ---------------- */
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
-
-	const onChange = (dates) => {
-		const [start, end] = dates;
-		setStartDate(start);
-		setEndDate(end);
 	};
 	return (
 		<div className={ProfileStyle.profileContainer}>
@@ -110,7 +133,7 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 								className={ProfileStyle.dateFilter}
 								placeholderText="Start date - End date"
 								selected={startDate}
-								onChange={onChange}
+								// onChange={}
 								startDate={startDate}
 								endDate={endDate}
 								selectsRange

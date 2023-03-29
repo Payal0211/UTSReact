@@ -30,16 +30,17 @@ const HRSelectField = ({
 					skillsName: item?.value,
 				})),
 			);
+
+			isControlled && setControlledValue(option);
 		} else if (mode === 'id/value') {
-			console.log('--option--', option);
 			setValue(name, {
 				id: option.id,
 				value: option.value,
 			});
+			isControlled && setControlledValue(option.value);
 		} else {
 			setValue(name, option.id);
 		}
-		isControlled && setControlledValue(option.value);
 	};
 
 	useEffect(() => {

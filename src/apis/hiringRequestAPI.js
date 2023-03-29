@@ -143,8 +143,13 @@ export const HiringRequestAPI = {
 	},
 	createHiringRequest: async function (hrData) {
 		let httpService = new HttpServices();
+		const miscData = UserSessionManagementController.getUserMiscellaneousData();
+		console.log(miscData, '--miscData0---');
 		httpService.URL =
-			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.CREATE_HR;
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.CREATE_HR +
+			`?LoggedInUserId=${miscData?.loggedInUserTypeID}`;
 		httpService.dataToSend = hrData;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -198,7 +203,7 @@ export const HiringRequestAPI = {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
-			SubDomain.HIRING +
+			SubDomain.MATCHMAKING +
 			HiringRequestsAPI.GET_TALENT_COST_CONVERSION +
 			`?amount=${talentAmount}`;
 		httpService.setAuthRequired = true;
@@ -217,7 +222,7 @@ export const HiringRequestAPI = {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
-			SubDomain.HIRING +
+			SubDomain.MATCHMAKING +
 			HiringRequestsAPI.GET_TALENT_TECH_SCORE_CARD +
 			`?talentid=${talentID}`;
 		httpService.setAuthRequired = true;
@@ -236,7 +241,7 @@ export const HiringRequestAPI = {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
-			SubDomain.HIRING +
+			SubDomain.MATCHMAKING +
 			HiringRequestsAPI.GET_TALENT_PROFILE_SHARED_DETAILS +
 			`?talentid=${talentDetails?.talentID}&typeid=${talentDetails?.typeID}&fromDate=''&toDate=''`;
 		httpService.setAuthRequired = true;
@@ -255,13 +260,13 @@ export const HiringRequestAPI = {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
-			SubDomain.HIRING +
+			SubDomain.MATCHMAKING +
 			HiringRequestsAPI.GET_TALENT_PROFILE_LOG +
 			`?talentid=${talentID}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
-			let response = await httpService.sendGetRequest();
+			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.getTalentProfileLogReqeust');
@@ -321,7 +326,7 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_FILE;
 		httpService.dataToSend = file;
-		console.log(httpService.dataToSend, '---httpservice--')
+		console.log(httpService.dataToSend, '---httpservice--');
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -334,7 +339,9 @@ export const HiringRequestAPI = {
 	uploadGoogleDriveFile: async (file) => {
 		let httpService = new HttpServices();
 		httpService.URL =
-			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_DRIVE_FILE;
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.UPLOAD_DRIVE_FILE;
 		httpService.dataToSend = file;
 
 		httpService.setAuthRequired = true;
@@ -349,7 +356,9 @@ export const HiringRequestAPI = {
 	uploadFileFromGoogleDriveLink: async (link) => {
 		let httpService = new HttpServices();
 		httpService.URL =
-			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_GOOGLE_FILE_LINK +
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.UPLOAD_GOOGLE_FILE_LINK +
 			`?url=${link}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -360,5 +369,20 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.deleteHRRequest');
 		}
 	},
-
+	updateODRPOOLStatusRequest: async (odrPoolStatus) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.UPDATE_ODR_POOL_STATUS +
+			`?HiringRequestID=${odrPoolStatus.hrID}&IsPool=${odrPoolStatus.isPool}&IsODR=${odrPoolStatus.isODR}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.updateODRPOOLStatusRequest');
+		}
+	},
 };

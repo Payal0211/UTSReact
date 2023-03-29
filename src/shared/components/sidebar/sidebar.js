@@ -1,10 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
-import GridSVG from 'assets/svg/grid.svg';
-
 import HR from 'assets/svg/hr.svg';
 import Briefcase from 'assets/svg/briefcase.svg';
 import Handshake from 'assets/svg/handshake.svg';
-
+import AddHR from 'assets/svg/addHR.svg';
+import HRDetails from 'assets/svg/HRDetails.svg';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -22,6 +21,7 @@ const Sidebar = () => {
 				{sidebarDataSets?.map(({ navigateTo, icon, title }, index) => {
 					return (
 						<Tooltip
+							key={index}
 							placement="right"
 							title={title}>
 							<div
@@ -59,8 +59,22 @@ const getSideBar = () => {
 			id: 'UTS_dashboard',
 			title: 'Dashboard',
 			isActive: true,
-			icon: GridSVG,
+			icon: AddHR,
 			navigateTo: UTSRoutes.HOMEROUTE,
+		}),
+		new SideBarModels({
+			id: 'UTS_DealList',
+			title: 'Deal',
+			isActive: false,
+			icon: Handshake,
+			navigateTo: UTSRoutes.DEALLISTROUTE,
+		}),
+		new SideBarModels({
+			id: 'UTS_UserList',
+			title: 'Users',
+			isActive: false,
+			icon: HR,
+			navigateTo: UTSRoutes.USERLISTROUTE,
 		}),
 		new SideBarModels({
 			id: 'UTS_all_hiring_request',
@@ -71,27 +85,21 @@ const getSideBar = () => {
 		}),
 
 		new SideBarModels({
-			id: 'UTS_DealList',
-			title: 'Deal',
-			isActive: false,
-			icon: Handshake,
-			navigateTo: UTSRoutes.DEALLISTROUTE,
-		}),
-		new SideBarModels({
-			id: 'UTS_UserList',
-			title: 'User',
-			isActive: false,
-			icon: HR,
-			navigateTo: UTSRoutes.USERLISTROUTE,
-		}),
-		new SideBarModels({
 			id: 'UTS_Onboard',
 			title: 'Onboard',
 			isActive: false,
 			icon: HR,
 			navigateTo: UTSRoutes.ONBOARDROUTE,
 		}),
+		new SideBarModels({
+			id: 'UTS_Interview',
+			title: 'Interview',
+			isActive: false,
+			icon: HRDetails,
+			navigateTo: UTSRoutes.INTERVIEWLISTROUTE,
+		}),
 	];
+
 	return dataList;
 };
 
