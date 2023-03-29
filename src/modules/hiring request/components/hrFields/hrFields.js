@@ -13,11 +13,6 @@ import HRFieldStyle from './hrFIelds.module.css';
 import { PlusOutlined } from '@ant-design/icons';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
-<<<<<<< HEAD
-// import { MasterDAO } from 'core/master/masterDAO';
-import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
-=======
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { useForm, Controller } from 'react-hook-form';
 import { HTTPStatusCode } from 'constants/network';
@@ -66,16 +61,9 @@ const HRFields = ({
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
 		googleDriveFileUpload: '',
-<<<<<<< HEAD
-		linkValidation: ''
-	})
-	const [getGoogleDriveLink, setGoogleDriveLink] = useState("")
-	const [getUploadFileData, setUploadFileData] = useState("")
-=======
 		linkValidation: '',
 	});
 	const [getGoogleDriveLink, setGoogleDriveLink] = useState('');
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
 	let controllerRef = useRef(null);
 	const {
@@ -115,7 +103,7 @@ const HRFields = ({
 				fileData[0]?.mimeType !== 'image/png' &&
 				fileData[0]?.mimeType !== 'image/jpeg' &&
 				fileData[0]?.mimeType !==
-					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 			) {
 				setValidation({
 					...getValidation,
@@ -162,7 +150,7 @@ const HRFields = ({
 				fileData?.type !== 'application/msword' &&
 				fileData?.type !== 'text/plain' &&
 				fileData?.type !==
-					'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
 				fileData?.type !== 'image/png' &&
 				fileData?.type !== 'image/jpeg'
 			) {
@@ -201,7 +189,7 @@ const HRFields = ({
 						fileData?.type === 'application/msword' ||
 						fileData?.type === 'text/plain' ||
 						fileData?.type ===
-							'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+						'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 					) {
 						setUploadFileData(fileData?.name);
 						setJDParsedSkills(
@@ -324,7 +312,7 @@ const HRFields = ({
 		const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
 		setAvailability(
 			availabilityResponse &&
-				availabilityResponse.responseBody?.BindHiringAvailability,
+			availabilityResponse.responseBody?.BindHiringAvailability,
 		);
 	}, []);
 	const getHowSoon = useCallback(async () => {
@@ -764,23 +752,6 @@ const HRFields = ({
 					</div>
 					<div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
 						<div className={HRFieldStyle.colMd6}>
-<<<<<<< HEAD
-							{!getUploadFileData ? <HRInputField
-								register={register}
-								leadingIcon={<UploadSVG />}
-								label="Job Description (PDF)"
-								name="jdExport"
-								type={InputType.BUTTON}
-								value="Upload JD File"
-								onClickHandler={() => setUploadModal(true)}
-							/> :
-								<div className={HRFieldStyle.uploadedJDWrap}>
-									<label>Job Description (PDF)</label>
-									<div className={HRFieldStyle.uploadedJDName}>
-										{getUploadFileData} <CloseSVG className={HRFieldStyle.uploadedJDClose} onClick={() => {
-											setUploadFileData("")
-										}} /></div></div>}
-=======
 							{!getUploadFileData ? (
 								<HRInputField
 									disabled={!_isNull(watch('jdURL'))}
@@ -807,7 +778,6 @@ const HRFields = ({
 									</div>
 								</div>
 							)}
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 						</div>
 						<UploadModal
 							isLoading={isLoading}
@@ -826,13 +796,7 @@ const HRFields = ({
 							setGoogleDriveLink={setGoogleDriveLink}
 							setUploadFileData={setUploadFileData}
 						/>
-<<<<<<< HEAD
-						<div className={HRFieldStyle.orLabel}>
-							OR
-						</div>
-=======
 						<div className={HRFieldStyle.orLabel}>OR</div>
->>>>>>> df1cd3f06111f5ac3626c935a61abe324ed42123
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
 								disabled={getUploadFileData}
