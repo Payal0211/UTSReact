@@ -1,0 +1,214 @@
+import { SubmitType } from 'constants/application';
+import { _isNull } from 'shared/utils/basic_utils';
+
+export const onboardUtils = {
+	onboardDataFormatter: (d, draft, watch, onboardID, teamMembers) => {
+		const onboardFormDetails = {
+			onboardID: _isNull(onboardID) ? 0 : onboardID,
+
+			clientName:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('clientName'))
+						? null
+						: watch('clientName')
+					: _isNull(d.clientName)
+					? null
+					: d.clientName,
+			clientemail:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('clientEmail'))
+						? null
+						: watch('clientEmail')
+					: _isNull(d.clientEmail)
+					? null
+					: d.clientEmail,
+			companyName:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('companyName'))
+						? null
+						: watch('companyName')
+					: _isNull(d.companyName)
+					? null
+					: d.companyName,
+			talentName:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('talentFullName'))
+						? null
+						: watch('talentFullName')
+					: _isNull(d.talentFullName)
+					? null
+					: d.talentFullName,
+			engagemenID:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('engagementID'))
+						? null
+						: watch('engagementID')
+					: _isNull(d.engagementID)
+					? null
+					: d.engagementID,
+			hiringRequestNumber:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('hiringID'))
+						? null
+						: watch('hiringID')
+					: _isNull(d.hiringID)
+					? null
+					: d.hiringID,
+			contractType:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('contractType'))
+						? null
+						: watch('contractType')
+					: _isNull(d.contractType)
+					? null
+					: d.contractType,
+			contractDuration:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('contractDuration'))
+						? 0
+						: watch('contractDuration')
+					: _isNull(d.contractDuration)
+					? 0
+					: d.contractDuration,
+
+			contractStartDate:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('contractStartDate'))
+						? null
+						: watch('contractStartDate')
+					: _isNull(d.contractStartDate)
+					? null
+					: d.contractStartDate,
+			contractEndDate:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('contractEndDate'))
+						? null
+						: watch('contractEndDate')
+					: _isNull(d.contractEndDate)
+					? null
+					: d.contractEndDate,
+			timezone_Preference_ID:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('timeZone'))
+						? 0
+						: watch('timeZone')
+					: _isNull(d.timeZone)
+					? 0
+					: d.timeZone,
+			punchStartTime:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('shiftStartTime'))
+						? null
+						: watch('shiftStartTime')
+					: _isNull(d.shiftStartTime)
+					? null
+					: d.shiftStartTime,
+			punchEndTime:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('shiftEndTime'))
+						? null
+						: watch('shiftEndTime')
+					: _isNull(d.shiftEndTime)
+					? null
+					: d.shiftEndTime,
+			talentOnBoardDate:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('talentOnboardingDate'))
+						? null
+						: watch('talentOnboardingDate')
+					: _isNull(d.talentOnboardingDate)
+					? null
+					: d.talentOnboardingDate,
+			talentOnBoardTime:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('talentOnboardingTime'))
+						? null
+						: watch('talentOnboardingTime')
+					: _isNull(d.talentOnboardingTime)
+					? null
+					: d.talentOnboardingTime,
+			phoneNumber:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('phoneNumber'))
+						? null
+						: watch('phoneNumber')
+					: _isNull(d.phoneNumber)
+					? null
+					: d.phoneNumber,
+			clientFirstBillingDate:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('clientFirstBillingDate'))
+						? null
+						: watch('clientFirstBillingDate')
+					: _isNull(d.clientFirstBillingDate)
+					? null
+					: d.clientFirstBillingDate,
+			netPaymentDays:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('netPaymentDays'))
+						? null
+						: watch('netPaymentDays')
+					: _isNull(d.netPaymentDays)
+					? null
+					: d.netPaymentDays,
+			contractRenewal:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('contractRenewal'))
+						? null
+						: watch('contractRenewal')
+					: _isNull(d.contractRenewal)
+					? null
+					: d.contractRenewal,
+			firstWeek:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('firstWeek'))
+						? null
+						: watch('firstWeek')
+					: _isNull(d.firstWeek)
+					? null
+					: d.firstWeek,
+			firstMonth:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('firstMonth'))
+						? null
+						: watch('firstMonth')
+					: _isNull(d.firstMonth)
+					? null
+					: d.firstMonth,
+			additionalInformation:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('additionalInformation'))
+						? null
+						: watch('additionalInformation')
+					: _isNull(d.additionalInformation)
+					? null
+					: d.additionalInformation,
+			leavePolicies:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('leavePolicies'))
+						? null
+						: watch('leavePolicies')
+					: _isNull(d.leavePolicies)
+					? null
+					: d.leavePolicies,
+			exitPolicies:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('exitPolicies'))
+						? null
+						: watch('exitPolicies')
+					: _isNull(d.exitPolicies)
+					? null
+					: d.exitPolicies,
+			specialFeedback:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('specialFeedback'))
+						? null
+						: watch('specialFeedback')
+					: _isNull(d.specialFeedback)
+					? null
+					: d.specialFeedback,
+			teamMemebers: teamMembers,
+		};
+		return onboardFormDetails;
+	},
+};

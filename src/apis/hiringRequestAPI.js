@@ -380,7 +380,7 @@ export const HiringRequestAPI = {
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
-			let response = await httpService.sendGetRequest();
+			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.updateODRPOOLStatusRequest');
