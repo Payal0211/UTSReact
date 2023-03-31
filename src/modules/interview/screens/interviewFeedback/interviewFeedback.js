@@ -175,7 +175,7 @@ const InterviewFeedback = ({
 					<form id="interviewReschedule" className={InterviewScheduleStyle.interviewFeedbackContainer}>
 						<div className={InterviewScheduleStyle.row}>
 							<div className={InterviewScheduleStyle.colMd12}>
-								<div className={InterviewScheduleStyle.radioFormGroup}>
+								<div className={`${InterviewScheduleStyle.radioFormGroup} ${InterviewScheduleStyle.feedBackRadioGroup}`}>
 									<label>
 										Would you like to proceed with the next steps of hiring this
 										talent?
@@ -211,7 +211,7 @@ const InterviewFeedback = ({
 						<div className={InterviewScheduleStyle.row}>
 							<div className={InterviewScheduleStyle.colMd12}>
 								<div
-									className={InterviewScheduleStyle.radioFormGroup}
+									className={`${InterviewScheduleStyle.radioFormGroup} ${InterviewScheduleStyle.feedBackRadioGroup}`}
 									style={{
 										display: 'flex',
 										flexDirection: 'column',
@@ -239,7 +239,7 @@ const InterviewFeedback = ({
 						<div className={InterviewScheduleStyle.row}>
 							<div className={InterviewScheduleStyle.colMd12}>
 								<div
-									className={InterviewScheduleStyle.radioFormGroup}
+									className={`${InterviewScheduleStyle.radioFormGroup} ${InterviewScheduleStyle.feedBackRadioGroup}`}
 									style={{
 										display: 'flex',
 										flexDirection: 'column',
@@ -267,7 +267,7 @@ const InterviewFeedback = ({
 						<div className={InterviewScheduleStyle.row}>
 							<div className={InterviewScheduleStyle.colMd12}>
 								<div
-									className={InterviewScheduleStyle.radioFormGroup}
+									className={`${InterviewScheduleStyle.radioFormGroup} ${InterviewScheduleStyle.feedBackRadioGroup}`}
 									style={{
 										display: 'flex',
 										flexDirection: 'column',

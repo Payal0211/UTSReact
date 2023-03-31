@@ -1,5 +1,4 @@
 .interviewContainer{
-    padding: 25px 40px;
     border-radius:8px;
 }
 .interviewFeedbackContainer {
@@ -587,4 +586,8 @@ display: inline-block;
 .error {
     color: var(--danger-color);
     font-size: var(--fontsize-tough);
+}
+
+.feedBackRadioGroup label{
+    margin:0px 0px 16px 0px
 }

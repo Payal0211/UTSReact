@@ -19,8 +19,6 @@ import TalentAcceptance from '../talentAcceptance/talentAcceptance';
 import { useForm } from 'react-hook-form';
 import { InterviewDAO } from 'core/interview/interviewDAO';
 
-
-
 const TalentList = ({
 	talentCTA,
 	talentDetail,
