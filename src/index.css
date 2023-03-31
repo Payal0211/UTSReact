@@ -652,3 +652,42 @@ padding: 0px !important;
 .engagementReplaceTalentModal .ant-tabs-content-holder {
 margin-top: 24px;
 }
+
+/*Share Feedback Modal*/
+.ant-modal-centered{padding: 30px 0;}
+.interviewFeedbackModal .ant-modal-body{padding: 40px;}
+.interviewFeedbackModal .ant-modal-content,  .interviewScheduleModal .ant-modal-content, .interviewRescheduleModal .ant-modal-content  {
+  background: #FFFFFF !important;
+}
+
+.interviewFeedbackModal .ant-checkbox-wrapper{
+  line-height: 20px;
+  align-items: center;
+}
+.interviewFeedbackModal .ant-checkbox{
+  top: 0;
+}
+
+.interviewFeedbackModal .ant-checkbox-inner {
+  border: 1px solid #232323 !important;
+  border-radius: 5px;
+  width: 20px;
+  height: 20px;
+}
+
+.interviewFeedbackModal .ant-checkbox-checked .ant-checkbox-inner{
+  border-color: var(--color-sunlight) !important;
+}
+.interviewFeedbackModal .ant-checkbox + span{
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #232323;
+}
+
+.interviewFeedbackModal  .ant-checkbox-inner::after {
+  left: 5px;
+  top: 9px;
+}

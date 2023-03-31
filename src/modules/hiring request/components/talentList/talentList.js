@@ -16,6 +16,10 @@ import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
 import TalentAcceptance from '../talentAcceptance/talentAcceptance';
+import { useForm } from 'react-hook-form';
+import { InterviewDAO } from 'core/interview/interviewDAO';
+
+
 
 const TalentList = ({
 	talentCTA,
@@ -125,6 +129,65 @@ const TalentList = ({
 	]);
 	const [reScheduleRadio, setRescheduleRadio] = useState(1);
 	const [reScheduleSlotRadio, setRescheduleSlotRadio] = useState(1);
+	// interviewFeedback state
+	const [getHiringStep, setHiringStep] = useState(1);
+	const [getTechnicalSkill, setTechnicalSkill] = useState('EE (Exceeds Expectation)');
+	const [getCommunicationSkill, setCommunicationSkill] = useState('EE (Exceeds Expectation)');
+	const [getCognitiveSkill, setCognitiveSkill] = useState('EE (Exceeds Expectation)');
+	const [sendToclient, setSendToClient] = useState(false)
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		control,
+		setError,
+		getValues,
+		watch,
+		reset,
+		resetField,
+		formState: { errors },
+	} = useForm();
+
+	const interviewFeedbackHandler = async (data) => {
+		const interviewFeedbackData = {
+			role: interviewFeedbackSubmitted.TalentRole,
+			talentName: interviewFeedbackSubmitted.Name,
+			talentFirstName: "",
+			descriptionTalent: "",
+			rateCommunication: 0,
+			communicationDescription: "",
+			professionalismDescription: "",
+			fitToYourCultureRate: 0,
+			fitToYourCulture: "",
+			fitToCompanyCultureDescription: "",
+			reconsiderHiring: true,
+			hdnRadiovalue: "",
+			talentIDValue: interviewFeedbackSubmitted.TalentID, // 1
+			contactIDValue: interviewFeedbackSubmitted.ContactId,
+			hiringRequestID: interviewFeedbackSubmitted.HiringDetailID, // discussion
+			hiringRequestDetailID: 0,
+			shortlistedInterviewID: 0,
+			contactInterviewFeedbackId: 0,
+			nohireReconsiderHiringTalentYes: true,
+			nohireReconsiderHiringTalentNo: true,
+			topSkill: "",
+			improvedSkill: "",
+			isClientNotificationSent: true,
+			technicalSkillRating: getTechnicalSkill,
+			communicationSkillRating: getCommunicationSkill,
+			cognitiveSkillRating: getCognitiveSkill,
+			messageToTalent: data?.interviewClientFeedback,//discussion
+			clientsDecision: data?.interviewClientDecision,
+			comments: data?.interviewComments,//2
+			en_Id: ""
+		}
+		let response = await InterviewDAO.interviewFeedbackDAO(interviewFeedbackData);
+		setInterviewStatus(false)
+	}
+
+	const resetInterviewFeedbackFields = () => {
+		reset({ interviewClientDecision: "", interviewClientFeedback: '', interviewComments: '' })
+	}
 
 	const scheuleResetDataHander = () => {
 		setScheduleSlotDate([
@@ -1096,12 +1159,19 @@ const TalentList = ({
 		[talentDetail, talentIndex],
 	);
 
+
+	const interviewFeedbackSubmitted = useMemo(
+		() =>
+			talentDetail?.filter((item) => item?.InterviewStatus === 'Feedback Submitted')?.[0] || {},
+		[talentDetail, talentIndex],
+	);
+
+
 	const filterTalentCTAs = useMemo(
 		() =>
 			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
 		[talentCTA, talentIndex],
 	);
-	console.log(filterTalentCTAs, '--filteredCTAs');
 	useEffect(() => {
 		scheuleResetDataHander();
 		setScheduleSlotRadio(1);
@@ -1121,6 +1191,16 @@ const TalentList = ({
 	useEffect(() => {
 		resetRescheuleDataHander();
 	}, [reScheduleSlotRadio]);
+
+	useEffect(() => {
+		setHiringStep(1);
+		setSendToClient(false)
+		setTechnicalSkill('EE (Exceeds Expectation)');
+		setCommunicationSkill('EE (Exceeds Expectation)');
+		setCognitiveSkill('EE (Exceeds Expectation)');
+		resetInterviewFeedbackFields()
+	}, [interviewStatus])
+
 
 	return (
 		<div>
@@ -1664,8 +1744,8 @@ const TalentList = ({
 				width="930px"
 				centered
 				footer={null}
+				className='interviewRescheduleModal'
 				open={showReScheduleInterviewModal}
-				// onOk={() => setVersantModal(false)}
 				onCancel={() => setReScheduleInterviewModal(false)}>
 				<InterviewReschedule
 					closeModal={() => setReScheduleInterviewModal(false)}
@@ -1693,9 +1773,12 @@ const TalentList = ({
 				width="930px"
 				centered
 				footer={null}
+				className='interviewScheduleModal'
 				open={showScheduleInterviewModal}
 				// onOk={() => setVersantModal(false)}
-				onCancel={() => setScheduleInterviewModal(false)}>
+				onCancel={() => {
+					setScheduleInterviewModal(false)
+				}}>
 				<InterviewSchedule
 					talentName={filterTalentID?.Name}
 					talentInfo={filterTalentID}
@@ -1721,9 +1804,33 @@ const TalentList = ({
 				centered
 				footer={null}
 				open={interviewStatus}
-				// onOk={() => setVersantModal(false)}
+				className='interviewFeedbackModal'
 				onCancel={() => setInterviewStatus(false)}>
-				<InterviewFeedback />
+				<InterviewFeedback
+					getHiringStep={getHiringStep}
+					getTechnicalSkill={getTechnicalSkill}
+					getCommunicationSkill={getCommunicationSkill}
+					getCognitiveSkill={getCognitiveSkill}
+					setHiringStep={setHiringStep}
+					setTechnicalSkill={setTechnicalSkill}
+					setCommunicationSkill={setCommunicationSkill}
+					setCognitiveSkill={setCognitiveSkill}
+					sendToclient={sendToclient}
+					setSendToClient={setSendToClient}
+					closeModal={() => setInterviewStatus(false)}
+					register={register}
+					handleSubmit={handleSubmit}
+					setValue={setValue}
+					control={control}
+					setError={setError}
+					getValues={getValues}
+					watch={watch}
+					reset={reset}
+					resetField={resetField}
+					errors={errors}
+					interviewFeedbackHandler={interviewFeedbackHandler}
+					interviewFeedbackSubmitted={interviewFeedbackSubmitted}
+				/>
 			</Modal>
 			{/** ============ MODAL FOR TALENT ACCEPTANCE ================ */}
 			<Modal

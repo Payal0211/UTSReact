@@ -183,10 +183,10 @@ const InterviewSchedule = ({
 										display: 'flex',
 										flexDirection: 'column',
 									}}>
-									<label>
+									{/* <label className={InterviewScheduleStyle.scheduleLable}>
 										Slot
 										<span className={InterviewScheduleStyle.reqField}>*</span>
-									</label>
+									</label> */}
 									<Radio.Group
 										defaultValue={1}
 										className={InterviewScheduleStyle.radioGroup}

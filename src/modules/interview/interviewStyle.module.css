@@ -1,10 +1,9 @@
 .interviewContainer{
-    /* padding:16px; */
-    
-margin: 25px 40px;
-    /* background: #fff; */
+    padding: 25px 40px;
     border-radius:8px;
-    box-shadow: 0px 2px 7px rgba(204, 238, 204, 0.25);
+}
+.interviewFeedbackContainer {
+    margin: 0px 0px 40px 0px;
 }
 .topDivider{
     margin: 40px 0;
@@ -382,9 +381,11 @@ table{
     margin-left: 8px;
 }
 .radioGroup{
+    margin-bottom: 16px;
     flex-direction: column;
     display: flex;
 }
+.radioGroup:last-child{margin-bottom: 0;}
 .radioGroup [class*="ant-radio-wrapper"]{
     margin: 0 0 16px 0;
     min-height: 25px;
@@ -405,16 +406,26 @@ table{
 
 .radioFormGroup {
     margin-bottom: 32px;
-}
-
-.radioFormGroup>label {
     font-family: 'Montserrat';
     font-weight: 400;
     font-size: 12px;
-    /* line-height: 16px; */
-    color: var(--uplers-lightBlack);
-    margin: 0 0 8px 0;
-    display: inline-block;
+    line-height: 16px;
+    color: #232323;
+    flex-direction: column;
+    display: flex;
+}
+
+.radioFormGroup p{margin-bottom: 16px;}
+.radioFormGroup p:last-child{margin-bottom: 0;}
+
+
+.radioFormGroup>label {
+font-family: 'Montserrat';
+font-weight: 400;
+font-size: 12px;
+/* line-height: 16px; */
+color: var(--uplers-lightBlack);
+display: inline-block;
 }
 .formPanelAction {
     display: flex;
@@ -551,13 +562,15 @@ table{
     right: auto !important;
 }
 .requestByRadio{
-    align-items: center;
     display: flex;
+    flex-direction: row;
+    align-items: center;
 }
-.requestByRadio > label{margin:0 16px 0 0;}
+/* .requestByRadio > label{margin:0 0px 8px 0;} */
 .requestByRadio [class*="ant-radio-group "]{
     flex-direction: row;
     display: flex;
+    margin: 0px 0px 0px 18px;
 }
 .requestByRadio [class*="ant-radio-group "] label{
     margin: 0 16px 0 0;

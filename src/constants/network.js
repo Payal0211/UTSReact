@@ -114,6 +114,7 @@ export class UsersAPI {
 
 export class InterviewsAPI {
 	static LIST = 'List';
+	static FEEDBACK = 'Feedback'
 }
 export class DealsAPI {
 	static LIST = 'List';

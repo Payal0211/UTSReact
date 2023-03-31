@@ -1,113 +1,143 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import InterviewScheduleStyle from '../../interviewStyle.module.css';
-import { Link } from 'react-router-dom';
-import UTSRoutes from 'constants/routes';
-import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { interviewUtils } from 'modules/interview/interviewUtils';
 import { InputType, InterviewStatus } from 'constants/application';
 import { Checkbox, Divider, Radio } from 'antd';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import { useForm } from 'react-hook-form';
-import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
+import { InterviewDAO } from 'core/interview/interviewDAO';
 
-const InterviewFeedback = () => {
+const InterviewFeedback = ({
+	getHiringStep,
+	getTechnicalSkill,
+	getCommunicationSkill,
+	getCognitiveSkill,
+	setHiringStep,
+	setTechnicalSkill,
+	setCommunicationSkill,
+	setCognitiveSkill,
+	setSendToClient,
+	interviewFeedbackSubmitted,
+	closeModal,
+	sendToclient,
+	setValue,
+	control,
+	setError,
+	getValues,
+	watch,
+	reset,
+	resetField,
+	register,
+	errors,
+	handleSubmit,
+	interviewFeedbackHandler
+}) => {
 	const [timezone, setTimezone] = useState([]);
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		control,
-		setError,
-		getValues,
-		watch,
-		formState: { errors },
-	} = useForm();
-	const [value, setRadioValue] = useState(1);
-	const [radioValue2, setRadioValue2] = useState(1);
-	const [radioValue3, setRadioValue3] = useState(1);
-	const [radioValue4, setRadioValue4] = useState(1);
-	const onChange = (e) => {
-		console.log('radio checked', e.target.value);
-		setRadioValue(e.target.value);
+
+	const getHiringStepHandler = (e) => {
+		setHiringStep(e.target.value);
 	};
 
-	const onChange2 = (e) => {
-		console.log('radio checked', e.target.value);
-		setRadioValue2(e.target.value);
+	const getTechnicalSkillHandler = (e) => {
+		setTechnicalSkill(e.target.value);
 	};
-	const onChange3 = (e) => {
-		console.log('radio checked', e.target.value);
-		setRadioValue3(e.target.value);
+
+	const getCommunicationSkillHandler = (e) => {
+		setCommunicationSkill(e.target.value);
 	};
-	const onChange4 = (e) => {
-		console.log('radio checked', e.target.value);
-		setRadioValue4(e.target.value);
+
+	const getCongitiveSkillHandler = (e) => {
+		setCognitiveSkill(e.target.value);
 	};
+
 	const getTimeZone = useCallback(async () => {
 		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
 		setTimezone(response && response?.responseBody);
 	}, []);
+
 	useEffect(() => {
 		getTimeZone();
 	}, [getTimeZone]);
+
+	// const interviewFeedbackHandler = async (data) => {
+	// 	const interviewFeedbackData = {
+	// 		role: interviewFeedbackSubmitted.TalentRole,
+	// 		talentName: interviewFeedbackSubmitted.Name,
+	// 		talentFirstName: "",
+	// 		descriptionTalent: "",
+	// 		rateCommunication: 0,
+	// 		communicationDescription: "",
+	// 		professionalismDescription: "",
+	// 		fitToYourCultureRate: 0,
+	// 		fitToYourCulture: "",
+	// 		fitToCompanyCultureDescription: "",
+	// 		reconsiderHiring: true,
+	// 		hdnRadiovalue: "",
+	// 		talentIDValue: interviewFeedbackSubmitted.TalentID, // 1
+	// 		contactIDValue: interviewFeedbackSubmitted.ContactId,
+	// 		hiringRequestID: interviewFeedbackSubmitted.HiringDetailID, // discussion
+	// 		hiringRequestDetailID: 0,
+	// 		shortlistedInterviewID: 0,
+	// 		contactInterviewFeedbackId: 0,
+	// 		nohireReconsiderHiringTalentYes: true,
+	// 		nohireReconsiderHiringTalentNo: true,
+	// 		topSkill: "",
+	// 		improvedSkill: "",
+	// 		isClientNotificationSent: true,
+	// 		technicalSkillRating: getTechnicalSkill,
+	// 		communicationSkillRating: getCommunicationSkill,
+	// 		cognitiveSkillRating: getCognitiveSkill,
+	// 		messageToTalent: data?.interviewClientFeedback,//discussion
+	// 		clientsDecision: data?.interviewClientDecision,
+	// 		comments: data?.interviewComments,//2
+	// 		en_Id: ""
+	// 	}
+	// 	let response = await InterviewDAO.interviewFeedbackDAO(interviewFeedbackData);
+	// 	closeModal()
+	// 	resetInterviewFeedback()
+	// }
+
+	// const resetInterviewFeedback = () => {
+	// 	reset({ interviewClientDecision: "", interviewClientFeedback: '', interviewComments: '' })
+
+	// }
+
 	return (
-		<div className={InterviewScheduleStyle.interviewContainer}>
-			{/* <Link to={UTSRoutes.INTERVIEWLISTROUTE}>
-				<div className={InterviewScheduleStyle.goback}>
-					<ArrowLeftSVG style={{ width: '16px' }} />
-					<span>Go Back</span>
-				</div>
-			</Link> */}
+		<div className={InterviewScheduleStyle.shareFeedbackWrap}>
 			<div className={InterviewScheduleStyle.leftPane}>
 				<h3>Share Your Feedback</h3>
 			</div>
 			<div className={InterviewScheduleStyle.panelBody}>
-				{/* <div className={InterviewScheduleStyle.leftPane}>
-					<h3>
-						Share Your Feedback for <br />
-						Manideep Koduri
-					</h3>
-					<p style={{ maxWidth: '334px' }}>
-						Thank you! We really appreciate the time you took to interview
-						Manideep Koduri. Hope you enjoyed the interaction with this talent.
-						Share your experience during the interview in the below feedback
-						form!
-					</p>
-				</div> */}
 				<div className={InterviewScheduleStyle.rightPane}>
 					<div className={InterviewScheduleStyle.row}>
-						<div
-							className={`${InterviewScheduleStyle.transparent} ${InterviewScheduleStyle.colMd4}`}>
-							<div className={InterviewScheduleStyle.cardBody}>
-								<div
-									className={`${InterviewScheduleStyle.cardLabel} ${InterviewScheduleStyle.mb8}`}>
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
 									Talent Name
 								</div>
 
 								<div className={InterviewScheduleStyle.cardTitle}>
-									Pandey Raghu
+									{interviewFeedbackSubmitted?.Name}
 								</div>
 							</div>
 						</div>
-						<div
-							className={`${InterviewScheduleStyle.transparent} ${InterviewScheduleStyle.colMd4}`}>
-							<div className={InterviewScheduleStyle.cardBody}>
-								<div
-									className={`${InterviewScheduleStyle.cardLabel} ${InterviewScheduleStyle.mb8}`}>
+
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
 									Hiring Request No
 								</div>
 
 								<div className={InterviewScheduleStyle.cardTitle}>
-									HR54906458963
+									{interviewFeedbackSubmitted?.HR_Number}
 								</div>
 							</div>
 						</div>
-						<div
-							className={`${InterviewScheduleStyle.transparent} ${InterviewScheduleStyle.colMd4}`}>
-							<div className={InterviewScheduleStyle.cardBody}>
-								<div
-									className={`${InterviewScheduleStyle.cardLabel} ${InterviewScheduleStyle.mb8}`}>
+
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
 									Interview Status
 								</div>
 
@@ -119,38 +149,33 @@ const InterviewFeedback = () => {
 											width: '120px ',
 										}}>
 										{interviewUtils.GETINTERVIEWSTATUS(
-											'Scheduled',
-											InterviewStatus.INTERVIEW_SCHEDULED,
+											'Feedback Submitted',
+											InterviewStatus.FEEDBACK_SUBMITTED,
 										)}
 									</div>
 								</div>
 							</div>
 						</div>
-						<div
-							className={`${InterviewScheduleStyle.transparent} ${InterviewScheduleStyle.colMd4}`}>
-							<div className={InterviewScheduleStyle.cardBody}>
-								<div
-									className={`${InterviewScheduleStyle.cardLabel} ${InterviewScheduleStyle.mb8}`}>
+
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
 									Interview Round
 								</div>
 
-								<div className={InterviewScheduleStyle.cardTitle}>Round 1</div>
+								<div className={InterviewScheduleStyle.cardTitle}>{interviewFeedbackSubmitted?.InterviewROUND}</div>
 							</div>
 						</div>
+
 					</div>
 					<Divider
 						style={{ margin: '40px 0' }}
 						dashed
 					/>
-					<form id="interviewReschedule">
+					<form id="interviewReschedule" className={InterviewScheduleStyle.interviewFeedbackContainer}>
 						<div className={InterviewScheduleStyle.row}>
 							<div className={InterviewScheduleStyle.colMd12}>
-								<div
-									className={InterviewScheduleStyle.radioFormGroup}
-									style={{
-										display: 'flex',
-										flexDirection: 'column',
-									}}>
+								<div className={InterviewScheduleStyle.radioFormGroup}>
 									<label>
 										Would you like to proceed with the next steps of hiring this
 										talent?
@@ -159,8 +184,8 @@ const InterviewFeedback = () => {
 
 									<Radio.Group
 										className={InterviewScheduleStyle.radioGroup}
-										onChange={onChange}
-										value={value}>
+										onChange={getHiringStepHandler}
+										value={getHiringStep}>
 										<Radio value={1}>
 											Definitely, I would like to proceed for hiring this
 											talent.
@@ -178,6 +203,8 @@ const InterviewFeedback = () => {
 											interview
 										</Radio>
 									</Radio.Group>
+									<p>Great! We are glad that you got the right match. Congratulations on your new hiring. Please take a moment to share the details of
+										this talent through the below feedback form.</p>
 								</div>
 							</div>
 						</div>
@@ -197,14 +224,14 @@ const InterviewFeedback = () => {
 
 									<Radio.Group
 										className={InterviewScheduleStyle.radioGroup}
-										onChange={onChange2}
-										value={radioValue2}>
-										<Radio value={1}>EE (Exceeds Expectation)</Radio>
-										<Radio value={2}>ME (Meets Expectation)</Radio>
-										<Radio value={3}>
+										onChange={getTechnicalSkillHandler}
+										value={getTechnicalSkill}>
+										<Radio value={'EE (Exceeds Expectation)'}>EE (Exceeds Expectation)</Radio>
+										<Radio value={'ME (Meets Expectation)'}>ME (Meets Expectation)</Radio>
+										<Radio value={'IME (Inconsistently Meets Expectations)'}>
 											IME (Inconsistently Meets Expectations)
 										</Radio>
-										<Radio value={4}>DNME (Does not Meet Expectation)</Radio>
+										<Radio value={'DNME (Does not Meet Expectation)'}>DNME (Does not Meet Expectation)</Radio>
 									</Radio.Group>
 								</div>
 							</div>
@@ -225,14 +252,14 @@ const InterviewFeedback = () => {
 
 									<Radio.Group
 										className={InterviewScheduleStyle.radioGroup}
-										onChange={onChange3}
-										value={radioValue3}>
-										<Radio value={1}>EE (Exceeds Expectation)</Radio>
-										<Radio value={2}>ME (Meets Expectation)</Radio>
-										<Radio value={3}>
+										onChange={getCommunicationSkillHandler}
+										value={getCommunicationSkill}>
+										<Radio value={'EE (Exceeds Expectation)'}>EE (Exceeds Expectation)</Radio>
+										<Radio value={'ME (Meets Expectation)'}>ME (Meets Expectation)</Radio>
+										<Radio value={'IME (Inconsistently Meets Expectations)'}>
 											IME (Inconsistently Meets Expectations)
 										</Radio>
-										<Radio value={4}>DNME (Does not Meet Expectation)</Radio>
+										<Radio value={'DNME (Does not Meet Expectation)'}>DNME (Does not Meet Expectation)</Radio>
 									</Radio.Group>
 								</div>
 							</div>
@@ -253,14 +280,14 @@ const InterviewFeedback = () => {
 
 									<Radio.Group
 										className={InterviewScheduleStyle.radioGroup}
-										onChange={onChange4}
-										value={radioValue4}>
-										<Radio value={1}>EE (Exceeds Expectation)</Radio>
-										<Radio value={2}>ME (Meets Expectation)</Radio>
-										<Radio value={3}>
+										onChange={getCongitiveSkillHandler}
+										value={getCognitiveSkill}>
+										<Radio value={'EE (Exceeds Expectation)'}>EE (Exceeds Expectation)</Radio>
+										<Radio value={'ME (Meets Expectation)'}>ME (Meets Expectation)</Radio>
+										<Radio value={'IME (Inconsistently Meets Expectations)'}>
 											IME (Inconsistently Meets Expectations)
 										</Radio>
-										<Radio value={4}>DNME (Does not Meet Expectation)</Radio>
+										<Radio value={'DNME (Does not Meet Expectation)'}>DNME (Does not Meet Expectation)</Radio>
 									</Radio.Group>
 								</div>
 							</div>
@@ -269,10 +296,15 @@ const InterviewFeedback = () => {
 							<div className={InterviewScheduleStyle.colMd12}>
 								<HRInputField
 									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter feedback.',
+									}}
 									label="Any Feedback you want to share straight to the talent?"
 									name="interviewClientFeedback"
 									type={InputType.TEXT}
 									placeholder="Enter message"
+
 								/>
 							</div>
 						</div>
@@ -280,6 +312,10 @@ const InterviewFeedback = () => {
 							<div className={InterviewScheduleStyle.colMd12}>
 								<HRInputField
 									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter client decesion.',
+									}}
 									label="Client's Decision"
 									name="interviewClientDecision"
 									type={InputType.TEXT}
@@ -291,6 +327,10 @@ const InterviewFeedback = () => {
 							<div className={InterviewScheduleStyle.colMd12}>
 								<HRInputField
 									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter comments.',
+									}}
 									label="Comments"
 									name="interviewComments"
 									type={InputType.TEXT}
@@ -298,29 +338,22 @@ const InterviewFeedback = () => {
 								/>
 							</div>
 						</div>
-						<Checkbox>Send To Client</Checkbox>
+						<Checkbox checked={sendToclient} onChange={(e) => e.target.checked ? setSendToClient(true) : setSendToClient(false)}>Send To Client</Checkbox>
 					</form>
 				</div>
 			</div>
-			<Divider
-				style={{ margin: '40px 0' }}
-				dashed
-			/>
+
 			<div className={InterviewScheduleStyle.formPanelAction}>
 				<button
-					// disabled={isLoading}
 					type="submit"
-					// onClick={handleSubmit(clientSubmitHandler)}
+					onClick={handleSubmit(interviewFeedbackHandler)}
 					className={InterviewScheduleStyle.btnPrimary}>
 					Save
 				</button>
 				<button
-					/* style={{
-								cursor:
-									type === SubmitType.SAVE_AS_DRAFT ? 'no-drop' : 'pointer',
-							}} */
-					// disabled={type === SubmitType.SAVE_AS_DRAFT}
-					// onClick={clientSubmitHandler}
+					onClick={() => {
+						closeModal();
+					}}
 					className={InterviewScheduleStyle.btn}>
 					Cancel
 				</button>
