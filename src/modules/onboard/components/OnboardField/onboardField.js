@@ -2,7 +2,7 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { InputType } from 'constants/application';
+import { InputType, SubmitType } from 'constants/application';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { Button, Divider, Dropdown, Menu, Radio, Space } from 'antd';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
@@ -15,6 +15,9 @@ import { AiFillLinkedin } from 'react-icons/ai';
 import { PlusOutlined } from '@ant-design/icons';
 import OnboardStyleModule from './onboardField.module.css';
 import { MasterDAO } from 'core/master/masterDAO';
+import AddTeamMemberModal from '../addTeamMembers/addTeamMemberModal';
+import TeamMembers from '../teamMembers/teamMembers';
+import { onboardUtils } from 'modules/onboard/onboardUtils';
 
 const OnboardField = () => {
 	const [value, setRadioValue] = useState(1);
@@ -23,6 +26,9 @@ const OnboardField = () => {
 	const [talentTimeZone, setTalentTimeZone] = useState([]);
 	const [netPaymentDays, setNetPaymentDays] = useState([]);
 	const [addTeamMembersModal, setAddTeamMemberModal] = useState(false);
+	const [teamMembers, setTeamMembers] = useState([]);
+	const [isEditMode, setEditMode] = useState(false);
+	const [indexOfMember, setIndexOfMember] = useState(null);
 	// const [startDate, setStartDate] = useState(null);
 	// const [endDate, setEndDate] = useState(null);
 	const {
@@ -69,7 +75,7 @@ const OnboardField = () => {
 
 	const talentTimeZoneHandler = useCallback(async () => {
 		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
-		setTalentTimeZone(response && response?.responseBody?.details);
+		setTalentTimeZone(response && response?.responseBody);
 	}, []);
 
 	const netPaymentDaysHandler = useCallback(async () => {
@@ -77,9 +83,33 @@ const OnboardField = () => {
 		setNetPaymentDays(response && response?.responseBody?.details);
 	}, []);
 
-	const onboardSubmitHandler = (d) => {
-		console.log(d);
-	};
+	const onEditHandler = useCallback((index) => {
+		setIndexOfMember(index);
+		setAddTeamMemberModal(true);
+	}, []);
+
+	const onRemoveHandler = useCallback(
+		(pos) => {
+			const itemRemoved = teamMembers.filter((item, index) => pos !== index);
+
+			setTeamMembers(itemRemoved);
+		},
+		[teamMembers],
+	);
+	const onboardSubmitHandler = useCallback(
+		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+			let onboardDataFormatter = onboardUtils.onboardDataFormatter(
+				d,
+				type,
+				watch,
+				0,
+				teamMembers,
+			);
+			console.log(onboardDataFormatter);
+		},
+		[teamMembers, watch],
+	);
+
 	useEffect(() => {
 		contractTypeHandler();
 		talentTimeZoneHandler();
@@ -93,7 +123,7 @@ const OnboardField = () => {
 
 	return (
 		<div className={OnboardStyleModule.hrFieldContainer}>
-			<form id="hrForm">
+			<div id="hrForm">
 				<div className={OnboardStyleModule.partOne}>
 					<div className={OnboardStyleModule.hrFieldLeftPane}>
 						<h3>General Information</h3>
@@ -548,21 +578,6 @@ const OnboardField = () => {
 									</div>
 								</div>
 							</div>
-							{/* <div className={OnboardStyleModule.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'Please enter billing date',
-									}}
-									label={'Client’s First Billing Date'}
-									name="clientFirstBillingDate"
-									type={InputType.TEXT}
-									placeholder="Select Billing Date "
-									required
-									trailingIcon={<CalenderSVG />}
-								/>
-							</div> */}
 						</div>
 						<div className={OnboardStyleModule.row}>
 							<div className={OnboardStyleModule.colMd6}>
@@ -612,174 +627,15 @@ const OnboardField = () => {
 				</div>
 				<br />
 				<Divider className={OnboardStyleModule.midDivider} />
-				<div className={OnboardStyleModule.partOne}>
-					<div className={OnboardStyleModule.hrFieldLeftPane}>
-						<h3>Team Members</h3>
-						<p>Please provide the necessary details</p>
-						<div className={OnboardStyleModule.formPanelAction}>
-							<button
-								// style={{
-								// 	cursor: type === SubmitType.SUBMIT ? 'no-drop' : 'pointer',
-								// }}
-								// disabled={type === SubmitType.SUBMIT}
-								className={OnboardStyleModule.btnPrimary}
-								// onClick={handleSubmit(hrSubmitHandler)}
-							>
-								Add More Team Member
-							</button>
-						</div>
-					</div>
-					<div className={OnboardStyleModule.hrFieldRightPane}>
-						<div className={OnboardStyleModule.row}>
-							{[1, 2].map((item) => {
-								return (
-									<div className={OnboardStyleModule.colMd6}>
-										<div className={OnboardStyleModule.Card}>
-											<div className={OnboardStyleModule.CardBody}>
-												<div className={OnboardStyleModule.partWise}>
-													<div>
-														<div className={OnboardStyleModule.companyName}>
-															<span
-																style={{
-																	color: '#7C7C7C',
-																}}>
-																Name:
-															</span>
-															&nbsp;&nbsp;
-															<span
-																style={{
-																	fontWeight: '400',
-																}}>
-																Rachel Green
-															</span>
-														</div>
-														<div className={OnboardStyleModule.companyName}>
-															<span
-																style={{
-																	color: '#7C7C7C',
-																}}>
-																Designation:
-															</span>
-															&nbsp;&nbsp;
-															<span
-																style={{
-																	fontWeight: '400',
-																}}>
-																Front End Developer
-															</span>
-														</div>
-														<div className={OnboardStyleModule.companyName}>
-															<span
-																style={{
-																	color: '#7C7C7C',
-																}}>
-																Reporting To:
-															</span>
-															&nbsp;&nbsp;
-															<span
-																style={{
-																	fontWeight: '400',
-																}}>
-																Fredrik Champ
-															</span>
-														</div>
-														<div className={OnboardStyleModule.companyName}>
-															<span
-																style={{
-																	color: '#7C7C7C',
-																}}>
-																Linkedin:
-															</span>
-															&nbsp;&nbsp;
-															<span
-																style={{
-																	fontWeight: '400',
-																}}>
-																Rachel Green
-															</span>
-															&nbsp;&nbsp;
-															<a
-																// href={}
-																target="_blank"
-																rel="noreferrer">
-																<AiFillLinkedin
-																	style={{
-																		color: '#006699',
-																		fontSize: '14px',
-																	}}
-																/>
-															</a>
-														</div>
-														<div className={OnboardStyleModule.companyName}>
-															<span
-																style={{
-																	color: '#7C7C7C',
-																}}>
-																Email:
-															</span>
-															&nbsp;&nbsp;
-															<span
-																style={{
-																	fontWeight: '400',
-																}}>
-																rachelgreen455@gmail.com
-															</span>
-														</div>
-														<div className={OnboardStyleModule.companyName}>
-															<span
-																style={{
-																	color: '#7C7C7C',
-																}}>
-																Buddy:
-															</span>
-															&nbsp;&nbsp;
-															<span
-																style={{
-																	fontWeight: '400',
-																}}>
-																Monica Geller
-															</span>
-														</div>
-													</div>
-													<div style={{ cursor: 'pointer' }}>
-														<Dropdown
-															trigger={['click']}
-															placement="bottom"
-															overlay={
-																<Menu>
-																	<Menu.Item
-																		key={0}
-																		/* onClick={() => {
-																setProfileLogModal(true);
-																setTalentIndex(listIndex);
-															}} */
-																	>
-																		Edit Details
-																	</Menu.Item>
-																	<Divider
-																		style={{
-																			margin: '3px 0',
-																		}}
-																	/>
-																	<Menu.Item key={1}>Remove Profile</Menu.Item>
-																</Menu>
-															}>
-															<BsThreeDots
-																style={{
-																	fontSize: '1.5rem',
-																}}
-															/>
-														</Dropdown>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								);
-							})}
-						</div>
-					</div>
-				</div>
+
+				<TeamMembers
+					setAddTeamMemberModal={setAddTeamMemberModal}
+					setEditMode={setEditMode}
+					teamMembers={teamMembers}
+					onEditHandler={onEditHandler}
+					onRemoveHandler={onRemoveHandler}
+				/>
+
 				<Divider className={OnboardStyleModule.midDivider} />
 				<div className={OnboardStyleModule.partOne}>
 					<div className={OnboardStyleModule.hrFieldLeftPane}>
@@ -880,7 +736,7 @@ const OnboardField = () => {
 									validationSchema={{
 										required: 'Please enter leave policies.',
 									}}
-									label={'Leave Polices'}
+									label={'Leave Policies'}
 									register={register}
 									name="leavePolicies"
 									type={InputType.TEXT}
@@ -922,7 +778,7 @@ const OnboardField = () => {
 						</div>
 					</div>
 				</div>
-			</form>
+			</div>
 
 			<Divider className={OnboardStyleModule.midDivider} />
 
@@ -948,6 +804,16 @@ const OnboardField = () => {
 					</div>
 				</div>
 			</div>
+			<AddTeamMemberModal
+				membersIndex={indexOfMember}
+				editMode={isEditMode}
+				teamMemberList={teamMembers}
+				setTeamMembers={setTeamMembers}
+				isFooter={false}
+				openModal={addTeamMembersModal}
+				cancelModal={() => setAddTeamMemberModal(false)}
+				modalTitle={'Add Team Members'}
+			/>
 		</div>
 	);
 };

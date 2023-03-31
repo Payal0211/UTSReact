@@ -18,6 +18,7 @@ export class SubDomain {
 	static DEAL = 'Deal/';
 	static USER = 'User/';
 	static HR_ACCEPTANCE = 'HRAcceptance/';
+	static ONBOARD = 'OnBoard/';
 }
 export class APIType {
 	static USER = '/user';
@@ -75,6 +76,8 @@ export class MastersAPI {
 	static ADD_OTHER_SKILL = 'AddOtherSkill';
 	static CONTRACT_TYPE = 'ContractType';
 	static NET_PAYMENT_DAYS = 'NetPaymentDays';
+	static YES_NO_OPTION = 'YesNoOption';
+	static BUDDY = 'Buddy';
 }
 
 export class HRAcceptanceAPI {
@@ -123,6 +126,11 @@ export class DealsAPI {
 	static DETAIL = 'Detail';
 	static DEAL_FILTER = 'FilterCriterias';
 }
+
+export class OnboardsAPI {
+	static ONBOARD_TALENT = 'OnBoardTalent';
+}
+
 export class HTTPStatusCode {
 	static OK = 200;
 	static CREATED = 201;

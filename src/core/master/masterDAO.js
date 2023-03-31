@@ -754,4 +754,56 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getNetPaymentDaysRequestDAO');
 		}
 	},
+	getYesNoOptionRequestDAO: async function () {
+		try {
+			const yesNoOptionResponse = await MasterAPI.getYesNoOptionRequest();
+			if (yesNoOptionResponse) {
+				const statusCode = yesNoOptionResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = yesNoOptionResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return yesNoOptionResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return yesNoOptionResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getYesNoOptionRequestDAO');
+		}
+	},
+	getBuddyRequestDAO: async function () {
+		try {
+			const buddyResponse = await MasterAPI.getBuddyRequest();
+			if (buddyResponse) {
+				const statusCode = buddyResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = buddyResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return buddyResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return buddyResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getBuddyRequestDAO');
+		}
+	},
 };

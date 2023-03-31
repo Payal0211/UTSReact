@@ -424,4 +424,30 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getNetPaymentDaysRequest');
 		}
 	},
+	getYesNoOptionRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.YES_NO_OPTION;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getYesNoOptionRequest');
+		}
+	},
+	getBuddyRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.BUDDY;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getBuddyRequest');
+		}
+	},
 };
