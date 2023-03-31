@@ -42,6 +42,7 @@ export class UserAPI {
 
 export class EngagementAPI {
 	static FILTER = 'Filters'
+	static LIST = 'List'
 }
 
 export class AllHiringRequestAPI {

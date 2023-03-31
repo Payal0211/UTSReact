@@ -72,8 +72,6 @@ const EngagementList = () => {
     const [getPayRate, setPayRate] = useState(0);
     const [engagementBillAndPayRateTab, setEngagementBillAndPayRateTab] = useState("1")
     const [getFilterList, setFilterList] = useState([])
-
-
     const [getEngagementModal, setEngagementModal
     ] = useState({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementReplaceTalent: false, engagementBillRateAndPayRate: false });
 
@@ -123,6 +121,37 @@ const EngagementList = () => {
         () => allHRConfig.tableConfig(togglePriority),
         [togglePriority],
     );
+
+    const engagementListAPI = async () => {
+        const data = {
+            totalrecord: 10,
+            pagenumber: 1,
+            filterFieldsEngagement: {
+                clientFeedback: "",
+                typeOfHiring: "",
+                currentStatus: "",
+                tscName: "",
+                company: "",
+                geo: "",
+                position: "",
+                engagementTenure: 0,
+                nbdName: "",
+                amName: "",
+                pending: "",
+                searchMonth: 0,
+                searchYear: 0,
+                searchType: "",
+                islost: ""
+            }
+        }
+        const response = await engagementRequestDAO.getEngagementListDAO(data)
+    }
+
+    useEffect(() => {
+        engagementListAPI()
+    }, [])
+
+
     const handleHRRequest = useCallback(
         async (pageData) => {
             setLoading(true);

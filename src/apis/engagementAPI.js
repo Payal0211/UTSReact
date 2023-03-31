@@ -8,17 +8,17 @@ import { HttpServices } from 'shared/services/http/http_service';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const EngagementRequestAPI = {
-    getEngagementList: async function (hrData) {
+    getEngagementList: async function (data) {
         let httpService = new HttpServices();
         httpService.URL =
             NetworkInfo.NETWORK +
-            SubDomain.VIEW_ALL_HR +
-            HiringRequestsAPI.GET_ALL_HIRING_REQUEST;
-        httpService.dataToSend = hrData;
+            SubDomain.ENGAGEMENT +
+            EngagementAPI.LIST;
+        httpService.dataToSend = data;
         httpService.setAuthRequired = true;
         httpService.setAuthToken = UserSessionManagementController.getAPIKey();
         try {
-            let response = await httpService.sendPostRequest();
+            let response = await httpService.sendPostRequest(data);
             return response;
         } catch (error) {
             return errorDebug(error, 'EngagementRequestAPI.getEngagementList');

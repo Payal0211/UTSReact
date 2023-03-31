@@ -7,9 +7,9 @@ import { errorDebug } from 'shared/utils/error_debug_utils';
 
 
 export const engagementRequestDAO = {
-    getEngagementListDAO: async function (hrData) {
+    getEngagementListDAO: async function (data) {
         try {
-            const engagementListResult = await EngagementRequestAPI.getEngagementList(hrData);
+            const engagementListResult = await EngagementRequestAPI.getEngagementList(data);
             if (engagementListResult) {
                 const statusCode = engagementListResult['statusCode'];
                 if (statusCode === HTTPStatusCode.OK) {
