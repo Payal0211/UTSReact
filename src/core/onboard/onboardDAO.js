@@ -8,7 +8,7 @@ import { errorDebug } from 'shared/utils/error_debug_utils';
 export const OnboardDAO = {
 	onboardTalentRequestDAO: async function (onboardData) {
 		try {
-			const onboardTalentResponse = await OnboardAPI.createUserRequest(
+			const onboardTalentResponse = await OnboardAPI.onboardTalentRequest(
 				onboardData,
 			);
 			if (onboardTalentResponse) {

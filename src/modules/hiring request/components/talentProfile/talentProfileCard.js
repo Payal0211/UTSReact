@@ -14,6 +14,7 @@ const TalentProfileCard = ({
 	hiringRequestNumber,
 	starMarkedStatusCode,
 	hrStatus,
+	hrType,
 }) => {
 	return (
 		<div className={TalentProfileCardStyle.talentProfileContainer}>
@@ -41,6 +42,7 @@ const TalentProfileCard = ({
 								hiringRequestNumber={hiringRequestNumber}
 								starMarkedStatusCode={starMarkedStatusCode}
 								hrStatus={hrStatus}
+								hrType={hrType}
 							/>
 						</Suspense>
 					) : (

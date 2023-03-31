@@ -27,6 +27,7 @@ const TalentList = ({
 	starMarkedStatusCode,
 	hrStatus,
 	hiringRequestNumber,
+	hrType,
 }) => {
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
@@ -1290,7 +1291,70 @@ const TalentList = ({
 										// border: `1px solid var(--uplers-border-color)`,
 									}}
 								/>
-								<div className={TalentListStyle.billRate}>
+
+								{!hrType ? (
+									<>
+										<div className={TalentListStyle.billRate}>
+											<span>Bill Rate:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
+											</span>
+										</div>
+										<div className={TalentListStyle.payRate}>
+											<div>
+												<span>Pay Rate:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{_isNull(item?.PayRate) ? 'NA' : item?.PayRate}
+												</span>
+											</div>
+											<span
+												style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>
+												edit
+											</span>
+										</div>
+										<div className={TalentListStyle.nr}>
+											<div>
+												<span>NR:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{_isNull(item?.NR) ? 'NA' : item?.NR}
+												</span>
+											</div>
+											<span
+												style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>
+												edit
+											</span>
+										</div>
+									</>
+								) : (
+									<>
+										<div className={TalentListStyle.billRate}>
+											<span>DP Amount:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{_isNull(item?.DPAmount) ? 'NA' : item?.DPAmount}
+											</span>
+										</div>
+										<div className={TalentListStyle.payRate}>
+											<div>
+												<span>DP Percetange:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{_isNull(item?.DPPercentage)
+														? 'NA'
+														: item?.DPPercentage}
+												</span>
+											</div>
+										</div>
+									</>
+								)}
+
+								{/* <div className={TalentListStyle.billRate}>
 									<span>Bill Rate:</span>&nbsp;&nbsp;
 									<span style={{ fontWeight: '500' }}>
 										{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
@@ -1311,7 +1375,8 @@ const TalentList = ({
 										}}>
 										edit
 									</span>
-								</div>
+								</div> */}
+
 								<div className={TalentListStyle.nr}>
 									<div>
 										<span>NR:</span>&nbsp;&nbsp;
