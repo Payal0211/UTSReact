@@ -18,8 +18,12 @@ import { MasterDAO } from 'core/master/masterDAO';
 import AddTeamMemberModal from '../addTeamMembers/addTeamMemberModal';
 import TeamMembers from '../teamMembers/teamMembers';
 import { onboardUtils } from 'modules/onboard/onboardUtils';
+import { OnboardDAO } from 'core/onboard/onboardDAO';
+import { HTTPStatusCode } from 'constants/network';
+import { useNavigate } from 'react-router-dom';
+import UTSRoutes from 'constants/routes';
 
-const OnboardField = () => {
+const OnboardField = ({ onboardID }) => {
 	const [value, setRadioValue] = useState(1);
 	const [showTextBox, setTextBox] = useState(true);
 	const [contractType, setContractType] = useState([]);
@@ -50,6 +54,8 @@ const OnboardField = () => {
 			setTextBox(false);
 		}
 	};
+
+	const navigate = useNavigate();
 	const [name, setName] = useState('');
 	const inputRef = useRef(null);
 	const [items, setItems] = useState(['3 months', '6 months', '12 months']);
@@ -106,8 +112,14 @@ const OnboardField = () => {
 				teamMembers,
 			);
 			console.log(onboardDataFormatter);
+			const addOnboardResponse = await OnboardDAO.onboardTalentRequestDAO(
+				onboardDataFormatter,
+			);
+			if (addOnboardResponse.statusCode === HTTPStatusCode.OK) {
+				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+			}
 		},
-		[teamMembers, watch],
+		[navigate, teamMembers, watch],
 	);
 
 	useEffect(() => {
@@ -128,15 +140,11 @@ const OnboardField = () => {
 					<div className={OnboardStyleModule.hrFieldLeftPane}>
 						<h3>General Information</h3>
 						<p>Please provide the necessary details</p>
-						{false && (
+						{onboardID && (
 							<div className={OnboardStyleModule.formPanelAction}>
 								<button
-									// style={{
-									// 	cursor: type === SubmitType.SUBMIT ? 'no-drop' : 'pointer',
-									// }}
-									// disabled={type === SubmitType.SUBMIT}
 									className={OnboardStyleModule.btnPrimary}
-									// onClick={handleSubmit(hrSubmitHandler)}
+									// onClick={}
 								>
 									Edit User
 								</button>
@@ -787,17 +795,13 @@ const OnboardField = () => {
 				<div className={OnboardStyleModule.hrFieldRightPane}>
 					<div className={OnboardStyleModule.formPanelAction}>
 						<button
-							// style={{
-							// 	cursor: id !== 0 ? 'no-drop' : 'pointer',
-							// }}
-							// disabled={id !== 0 && true}
 							className={OnboardStyleModule.btnPrimary}
 							onClick={handleSubmit(onboardSubmitHandler)}>
 							Submit
 						</button>
 
 						<button
-							// onClick={() => navigate(UTSRoutes.USERLISTROUTE)}
+							onClick={onboardSubmitHandler}
 							className={OnboardStyleModule.btn}>
 							Save as Draft
 						</button>

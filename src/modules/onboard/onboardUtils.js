@@ -58,10 +58,10 @@ export const onboardUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('contractType'))
 						? null
-						: watch('contractType')
+						: watch('contractType')?.value
 					: _isNull(d.contractType)
 					? null
-					: d.contractType,
+					: d.contractType?.value,
 			contractDuration:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('contractDuration'))
@@ -75,26 +75,32 @@ export const onboardUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('contractStartDate'))
 						? null
-						: watch('contractStartDate')
+						: new Date(watch('contractStartDate'))
+								.toLocaleDateString('en-US')
+								.toString()
 					: _isNull(d.contractStartDate)
 					? null
-					: d.contractStartDate,
+					: new Date(d.contractStartDate)
+							.toLocaleDateString('en-US')
+							.toString(),
 			contractEndDate:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('contractEndDate'))
 						? null
-						: watch('contractEndDate')
+						: new Date(watch('contractEndDate'))
+								.toLocaleDateString('en-US')
+								.toString()
 					: _isNull(d.contractEndDate)
 					? null
-					: d.contractEndDate,
+					: new Date(d.contractEndDate).toLocaleDateString('en-US').toString(),
 			timezone_Preference_ID:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('timeZone'))
 						? 0
-						: watch('timeZone')
+						: watch('timeZone')?.id
 					: _isNull(d.timeZone)
 					? 0
-					: d.timeZone,
+					: d.timeZone?.id,
 			punchStartTime:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('shiftStartTime'))
@@ -115,10 +121,14 @@ export const onboardUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('talentOnboardingDate'))
 						? null
-						: watch('talentOnboardingDate')
+						: new Date(watch('talentOnboardingDate'))
+								.toLocaleDateString('en-US')
+								.toString()
 					: _isNull(d.talentOnboardingDate)
 					? null
-					: d.talentOnboardingDate,
+					: new Date(d.talentOnboardingDate)
+							.toLocaleDateString('en-US')
+							.toString(),
 			talentOnBoardTime:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('talentOnboardingTime'))
@@ -135,31 +145,35 @@ export const onboardUtils = {
 					: _isNull(d.phoneNumber)
 					? null
 					: d.phoneNumber,
-			clientFirstBillingDate:
+			firstClientBillingDate:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('clientFirstBillingDate'))
 						? null
-						: watch('clientFirstBillingDate')
+						: new Date(watch('clientFirstBillingDate'))
+								.toLocaleDateString('en-US')
+								.toString()
 					: _isNull(d.clientFirstBillingDate)
 					? null
-					: d.clientFirstBillingDate,
+					: new Date(d.clientFirstBillingDate)
+							.toLocaleDateString('en-US')
+							.toString(),
 			netPaymentDays:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('netPaymentDays'))
 						? null
-						: watch('netPaymentDays')
+						: watch('netPaymentDays')?.id
 					: _isNull(d.netPaymentDays)
 					? null
-					: d.netPaymentDays,
-			contractRenewal:
+					: d.netPaymentDays?.id,
+			contractRenewalSlot:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('contractRenewal'))
 						? null
-						: watch('contractRenewal')
+						: parseInt(watch('contractRenewal'))
 					: _isNull(d.contractRenewal)
 					? null
-					: d.contractRenewal,
-			firstWeek:
+					: parseInt(d.contractRenewal),
+			expectationFromTalent_FirstWeek:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('firstWeek'))
 						? null
@@ -167,7 +181,7 @@ export const onboardUtils = {
 					: _isNull(d.firstWeek)
 					? null
 					: d.firstWeek,
-			firstMonth:
+			expectationFromTalent_FirstMonth:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('firstMonth'))
 						? null
@@ -183,7 +197,7 @@ export const onboardUtils = {
 					: _isNull(d.additionalInformation)
 					? null
 					: d.additionalInformation,
-			leavePolicies:
+			proceedWithClient_LeavePolicyOption:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('leavePolicies'))
 						? null
@@ -191,7 +205,7 @@ export const onboardUtils = {
 					: _isNull(d.leavePolicies)
 					? null
 					: d.leavePolicies,
-			exitPolicies:
+			proceedWithUplers_ExitPolicyOption:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('exitPolicies'))
 						? null
@@ -199,7 +213,7 @@ export const onboardUtils = {
 					: _isNull(d.exitPolicies)
 					? null
 					: d.exitPolicies,
-			specialFeedback:
+			client_Remark:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('specialFeedback'))
 						? null

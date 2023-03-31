@@ -7,7 +7,7 @@ export const OnboardAPI = {
 	onboardTalentRequest: async function (onboardData) {
 		let httpService = new HttpServices();
 		httpService.URL =
-			NetworkInfo.NETWORK + SubDomain.MASTERS + OnboardsAPI.ONBOARD_TALENT;
+			NetworkInfo.NETWORK + SubDomain.ONBOARD + OnboardsAPI.ONBOARD_TALENT;
 		httpService.setAuthRequired = true;
 		httpService.dataToSend = onboardData;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
