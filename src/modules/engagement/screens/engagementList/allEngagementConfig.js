@@ -8,13 +8,13 @@ export const allEngagementConfig = {
                 label: 'Client Feedback',
                 name: 'clientFeedback',
                 child: filterList?.clientFeedback,
-                isSearch: true,
+                isSearch: false,
             },
             {
                 label: 'Hiring',
                 name: 'typeOfHiring',
                 child: filterList?.typeOfHiring,
-                isSearch: true,
+                isSearch: false,
             },
             {
                 label: 'Current Status',
@@ -38,7 +38,7 @@ export const allEngagementConfig = {
                 label: 'Geo',
                 name: 'geo',
                 child: filterList?.geo,
-                isSearch: true,
+                isSearch: false,
             },
             {
                 label: 'Position',
@@ -50,7 +50,7 @@ export const allEngagementConfig = {
                 label: 'Engagement Tenure',
                 name: 'engagementTenure',
                 child: filterList?.engagementTenure,
-                isSearch: true,
+                isSearch: false,
             },
             {
                 label: 'NBD',
@@ -68,7 +68,7 @@ export const allEngagementConfig = {
                 label: 'Pending',
                 name: 'pending',
                 child: filterList?.pending,
-                isSearch: true,
+                isSearch: false,
             },
             {
                 label: 'Lost',
