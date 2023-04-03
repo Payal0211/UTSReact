@@ -98,6 +98,13 @@ const getSideBar = () => {
 			icon: HRDetails,
 			navigateTo: UTSRoutes.INTERVIEWLISTROUTE,
 		}),
+		new SideBarModels({
+			id: 'Engagement_List',
+			title: 'Engagement',
+			isActive: false,
+			icon: HRDetails,
+			navigateTo: UTSRoutes.ENGAGEMENTRROUTE,
+		}),
 	];
 
 	return dataList;
