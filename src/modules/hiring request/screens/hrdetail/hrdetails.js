@@ -24,6 +24,7 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
 import { toast } from 'react-toastify';
+import AcceptHR from 'modules/hiring request/components/acceptHR/acceptHR';
 
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
@@ -46,7 +47,7 @@ const HRDetailScreen = () => {
 	const navigate = useNavigate();
 	const switchLocation = useLocation();
 	const [deleteReason, setDeleteReason] = useState([]);
-
+	const [acceptHRModal, setAcceptHRModal] = useState(false);
 	const {
 		register,
 		handleSubmit,
@@ -182,7 +183,14 @@ const HRDetailScreen = () => {
 							{hrUtils.getAcceptTR(
 								apiData?.IsAccepted,
 								miscData?.LoggedInUserTypeID,
+								setAcceptHRModal,
+								acceptHRModal,
 							)}
+							<AcceptHR
+								hrID={apiData?.ClientDetail?.HR_Number}
+								openModal={acceptHRModal}
+								cancelModal={() => setAcceptHRModal(false)}
+							/>
 							{hrUtils.getAccpetMoreTR(
 								apiData?.IsAccepted,
 								miscData?.LoggedInUserTypeID,
@@ -308,6 +316,7 @@ const HRDetailScreen = () => {
 					)}
 				</div>
 			</div>
+
 			{/* ------------------ HR Delete Modal ---------------------- */}
 			<Modal
 				transitionName=""

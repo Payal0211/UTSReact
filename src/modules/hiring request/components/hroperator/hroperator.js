@@ -50,6 +50,7 @@ const HROperator = ({
 		</Dropdown>
 	) : (
 		<div
+			onClick={onClickHandler}
 			style={{
 				display: 'flex',
 				flexDirection: 'column',

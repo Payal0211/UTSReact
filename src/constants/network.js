@@ -120,6 +120,7 @@ export class UsersAPI {
 
 export class InterviewsAPI {
 	static LIST = 'List';
+	static INTERVIEW_STATUS_DETAILS = 'GetInterviewStatusDetail';
 }
 export class DealsAPI {
 	static LIST = 'List';

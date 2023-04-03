@@ -16,6 +16,8 @@ import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
 import TalentAcceptance from '../talentAcceptance/talentAcceptance';
+import TalentStatus from '../talentStatus/talentStatus';
+import InterviewStatus from 'modules/interview/components/interviewStatus/interviewStatus';
 
 const TalentList = ({
 	talentCTA,
@@ -33,20 +35,21 @@ const TalentList = ({
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
 	const [showVersantModal, setVersantModal] = useState(false);
-	const [interviewStatus, setInterviewStatus] = useState(false);
+	const [showInterviewStatus, setInterviewStatus] = useState(false);
 	const profileData = allHRConfig.profileLogConfig();
 	const [showReScheduleInterviewModal, setReScheduleInterviewModal] =
 		useState(false);
 	const [showTalentAcceptance, setTalentAcceptance] = useState(false);
 	const [showProfileLogModal, setProfileLogModal] = useState(false);
+	const [showTalentStatus, setTalentStatus] = useState(false);
+
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [talentIndex, setTalentIndex] = useState(0);
 	//schedule modal state
 	const [showScheduleInterviewModal, setScheduleInterviewModal] =
 		useState(false);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
-	// console.log('--talentDetails---', );
-	console.log('talentCTA-------', talentCTA?.[0]?.cTAInfoList[0]?.label);
+
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
 		{ slot1: null, slot2: null, slot3: null },
 		{ slot1: null, slot2: null, slot3: null },
@@ -1065,45 +1068,38 @@ const TalentList = ({
 		// );
 		// setLogExpanded(response && response?.responseBody?.details);
 	};
-
-	const getInterviewStatus = () => {
-		switch (filterTalentID?.InterviewStatus) {
-			case 'Feedback Submitted':
-				return 7;
-				break;
-			case 'Interview Scheduled':
-				return 4;
-				break;
-			case 'Interview in Process':
-				return 5;
-				break;
-			case 'Interview Completed':
-				return 6;
-				break;
-			case 'Interview Rescheduled':
-				return 8;
-				break;
-			case 'Cancelled':
-				return 3;
-			case 'Slot Given':
-				return 1;
-				break;
-		}
-	};
-
 	const filterTalentID = useMemo(
 		() =>
 			talentDetail?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
 		[talentDetail, talentIndex],
 	);
 
+	const getInterviewStatus = useCallback(() => {
+		switch (filterTalentID?.InterviewStatus) {
+			case 'Feedback Submitted':
+				return 7;
+			case 'Interview Scheduled':
+				return 4;
+			case 'Interview in Process':
+				return 5;
+			case 'Interview Completed':
+				return 6;
+			case 'Interview Rescheduled':
+				return 8;
+			case 'Cancelled':
+				return 3;
+			case 'Slot Given':
+				return 1;
+			default:
+		}
+	}, [filterTalentID?.InterviewStatus]);
+
 	const filterTalentCTAs = useMemo(
 		() =>
 			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
 		[talentCTA, talentIndex],
 	);
-	console.log(filterTalentCTAs, '--filteredCTAs');
-	console.log(filterTalentID, '---filterTalentID');
+
 	useEffect(() => {
 		scheuleResetDataHander();
 		setScheduleSlotRadio(1);
@@ -1444,16 +1440,9 @@ const TalentList = ({
 														break;
 													}
 													case TalentOnboardStatus.TALENT_STATUS: {
-														if (
-															hrUtils.handleTalentStatus(item, HRStatusCode)
-														) {
-															setTalentIndex(item?.TalentID);
-														} else {
-															messageAPI.open({
-																type: 'info',
-																content: "Cann't see the talent status.",
-															});
-														}
+														setTalentStatus(true);
+														setTalentIndex(item?.TalentID);
+
 														break;
 													}
 													case TalentOnboardStatus.UPDATE_KICKOFF: {
@@ -1662,7 +1651,6 @@ const TalentList = ({
 					<div></div>
 				</div>
 			</Modal>
-
 			{/** ============ MODAL FOR RESCHEDULING INTERVIEW ================ */}
 			<Modal
 				transitionName=""
@@ -1725,7 +1713,7 @@ const TalentList = ({
 				width="930px"
 				centered
 				footer={null}
-				open={interviewStatus}
+				open={showInterviewStatus}
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setInterviewStatus(false)}>
 				<InterviewFeedback />
@@ -1748,6 +1736,34 @@ const TalentList = ({
 					starMarkedStatusCode={starMarkedStatusCode}
 					hrStatus={hrStatus}
 					closeModal={() => setTalentAcceptance(false)}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR TALENT STATUS ================ */}
+			<Modal
+				transitionName=""
+				width="1256px"
+				centered
+				footer={null}
+				open={showTalentStatus}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setTalentStatus(false)}>
+				<TalentStatus
+					callAPI={callAPI}
+					closeModal={() => setTalentStatus(false)}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR INTERVIEW STATUS ================ */}
+			<Modal
+				transitionName=""
+				width="1256px"
+				centered
+				footer={null}
+				open={showTalentStatus}
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setInterviewStatus(false)}>
+				<InterviewStatus
+					callAPI={callAPI}
+					closeModal={() => setInterviewStatus(false)}
 				/>
 			</Modal>
 		</div>
