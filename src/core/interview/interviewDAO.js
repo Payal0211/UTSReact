@@ -33,4 +33,30 @@ export const InterviewDAO = {
 			return errorDebug(error, 'InterviewDAO.getInterviewListDAO');
 		}
 	},
+	getInterviewStatusRequestDAO: async function (interviewData) {
+		try {
+			const interviewStatusDetailsResponse =
+				await InterviewAPI.getInterviewStatusDetailsRequest(interviewData);
+			if (interviewStatusDetailsResponse) {
+				const statusCode = interviewStatusDetailsResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = interviewStatusDetailsResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return interviewStatusDetailsResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return interviewStatusDetailsResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'InterviewDAO.getInterviewStatusRequestDAO');
+		}
+	},
 };

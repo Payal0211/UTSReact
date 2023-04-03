@@ -364,7 +364,7 @@ export const HiringRequestAPI = {
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
-			let response = await httpService.sendPostRequest();
+			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.deleteHRRequest');

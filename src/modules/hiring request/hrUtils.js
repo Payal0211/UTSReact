@@ -367,7 +367,7 @@ export const hrUtils = {
 		return hrFormDetails;
 	},
 
-	getAcceptTR(IsAccepted, loggedInUserTypeID) {
+	getAcceptTR(IsAccepted, loggedInUserTypeID, setAcceptHRModal, acceptHRModal) {
 		if (
 			loggedInUserTypeID === UserAccountRole.TALENTOPS ||
 			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
@@ -389,6 +389,7 @@ export const hrUtils = {
 							icon={<ArrowDownSVG style={{ width: '16px' }} />}
 							backgroundColor={`var(--color-sunlight)`}
 							iconBorder={`1px solid var(--color-sunlight)`}
+							onClickHandler={() => setAcceptHRModal(true)}
 						/>
 					);
 				}
