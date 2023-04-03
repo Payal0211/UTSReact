@@ -10,16 +10,10 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
 import allEngagementStyles from './engagement.module.css';
-import { AddNewType, DayName, InputType } from 'constants/application';
+import { InputType } from 'constants/application';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
-import { ReactComponent as LockSVG } from 'assets/svg/lock.svg';
-import { ReactComponent as UnlockSVG } from 'assets/svg/unlock.svg';
-import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
-import { useAllHRQuery } from 'shared/hooks/useAllHRQuery';
-import { hrUtils } from '../../../hiring request/hrUtils';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import UTSRoutes from 'constants/routes';
 import Handshake from 'assets/svg/handshake.svg';
@@ -39,6 +33,7 @@ import EngagementReplaceTalent from '../engagementReplaceTalent/engagementReplac
 import EngagementBillRateAndPayRate from '../engagementBillAndPayRate/engagementBillRateAndPayRate';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
+import { engagementUtils } from './engagementUtils';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() =>
@@ -47,14 +42,28 @@ const EngagementFilerList = React.lazy(() =>
 
 const EngagementList = () => {
     const [tableFilteredState, setTableFilteredState] = useState({
-        pagesize: 100,
-        pagenum: 1,
-        sortdatafield: 'CreatedDateTime',
-        sortorder: 'desc',
+        totalrecord: 10,
+        pagenumber: 1,
+        filterFieldsEngagement: {
+            clientFeedback: "",
+            typeOfHiring: "",
+            currentStatus: "",
+            tscName: "",
+            company: "",
+            geo: "",
+            position: "",
+            engagementTenure: 0,
+            nbdName: "",
+            amName: "",
+            pending: "",
+            searchMonth: 0,
+            searchYear: 0,
+            searchType: "",
+            islost: ""
+        }
     });
     const [isLoading, setLoading] = useState(false);
     const pageSizeOptions = [100, 200, 300, 500, 1000];
-    // const hrQueryData = useAllHRQuery();
     const [totalRecords, setTotalRecords] = useState(0);
     const [pageIndex, setPageIndex] = useState(1);
     const [pageSize, setPageSize] = useState(100);
@@ -71,7 +80,6 @@ const EngagementList = () => {
     const [getBillRate, setBillRate] = useState(0);
     const [getPayRate, setPayRate] = useState(0);
     const [engagementBillAndPayRateTab, setEngagementBillAndPayRateTab] = useState("1")
-    const [getFilterList, setFilterList] = useState([])
     const [getEngagementModal, setEngagementModal
     ] = useState({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementReplaceTalent: false, engagementBillRateAndPayRate: false });
 
@@ -81,87 +89,22 @@ const EngagementList = () => {
         }, 300)
         setHTMLFilter(false)
     };
-    const [messageAPI, contextHolder] = message.useMessage();
-    const togglePriority = useCallback(
-        async (payload) => {
-            setLoading(true);
-            let response = await hiringRequestDAO.sendHRPriorityForNextWeekRequestDAO(
-                payload,
-            );
-            if (response.statusCode === HTTPStatusCode.OK) {
-                const { tempdata, index } = hrUtils.hrTogglePriority(response, apiData);
-
-                setAPIdata([
-                    ...apiData.slice(0, index),
-                    tempdata,
-                    ...apiData.slice(index + 1),
-                ]);
-                setLoading(false);
-                messageAPI.open({
-                    type: 'success',
-                    content: `${tempdata.HR_ID} priority has been changed.`,
-                });
-            } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-                setLoading(false);
-                return navigate(UTSRoutes.LOGINROUTE);
-            } else if (
-                response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
-            ) {
-                setLoading(false);
-                return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-            } else {
-                setLoading(false);
-                return 'NO DATA FOUND';
-            }
-        },
-        [apiData, messageAPI, navigate],
-    );
 
     const tableColumnsMemo = useMemo(
-        () => allHRConfig.tableConfig(togglePriority),
-        [togglePriority],
+        () => allEngagementConfig.tableConfig(),
+        [],
     );
-
-    const engagementListAPI = async () => {
-        const data = {
-            totalrecord: 10,
-            pagenumber: 1,
-            filterFieldsEngagement: {
-                clientFeedback: "",
-                typeOfHiring: "",
-                currentStatus: "",
-                tscName: "",
-                company: "",
-                geo: "",
-                position: "",
-                engagementTenure: 0,
-                nbdName: "",
-                amName: "",
-                pending: "",
-                searchMonth: 0,
-                searchYear: 0,
-                searchType: "",
-                islost: ""
-            }
-        }
-        const response = await engagementRequestDAO.getEngagementListDAO(data)
-    }
-
-    useEffect(() => {
-        engagementListAPI()
-    }, [])
-
 
     const handleHRRequest = useCallback(
         async (pageData) => {
             setLoading(true);
-            let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
+            let response = await engagementRequestDAO.getEngagementListDAO(
                 pageData,
             );
             if (response?.statusCode === HTTPStatusCode.OK) {
-                setTotalRecords(response?.responseBody?.TotalRecords);
+                setTotalRecords(response?.responseBody?.totalrows);
                 setLoading(false);
-                setAPIdata(hrUtils.modifyHRRequestData(response && response));
+                setAPIdata(engagementUtils.modifyEngagementListData(response && response));
             } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
                 setLoading(false);
                 return navigate(UTSRoutes.LOGINROUTE);
@@ -185,7 +128,6 @@ const EngagementList = () => {
 
     useEffect(() => {
         handleHRRequest(tableFilteredState);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tableFilteredState]);
 
     useEffect(() => {
@@ -424,7 +366,6 @@ const EngagementList = () => {
                             filtersType={allEngagementConfig.engagementFilterTypeConfig(
                                 filtersList && filtersList,
                             )}
-                        // filtersType={getFilterList}
 
                         />
                     </Suspense>

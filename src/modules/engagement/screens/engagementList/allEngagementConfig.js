@@ -1,4 +1,8 @@
 import { HiringRequestHRStatus, ProfileLog } from 'constants/application';
+import HROperator from 'modules/hiring request/components/hroperator/hroperator';
+import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
+import { Link } from 'react-router-dom';
+
 
 export const allEngagementConfig = {
     engagementFilterTypeConfig: (filterList) => {
@@ -96,5 +100,100 @@ export const allEngagementConfig = {
             },
         ];
     },
+    tableConfig: (togglePriority) => {
+        return [
+            {
+                title: '    ',
+                dataIndex: 'action',
+                key: 'action',
+                align: 'left',
+                render: (_, param) => {
+                    return <HROperator
+                        title="Action"
+                        icon={<ArrowDownSVG style={{ width: '16px' }} />}
+                        backgroundColor={`var(--color-sunlight)`}
+                        iconBorder={`1px solid var(--color-sunlight)`}
+                        isDropdown={true}
+                        listItem={[
+                            {
+                                label: 'Replace Engagement',
+                                key: '',
+                            },
+                            {
+                                label: 'Renew Engagement',
+                                key: '',
+                            },
+                            {
+                                label: 'End Engagement',
+                                key: '',
+                            },
+                            {
+                                label: 'Edit Bill Rate',
+                                key: '',
+                            },
+                            {
+                                label: 'Edit Pay Rate',
+                                key: '',
+                            },
+                            {
+                                label: 'Add Invoice Details',
+                                key: '',
+                            },
+                        ]}
+                    />
+                },
+            },
+            {
+                title: 'Client Feedback',
+                dataIndex: 'clientFeedback',
+                key: 'clientFeedback',
+                align: 'left',
+            },
+            {
+                title: 'Last Feedback Date',
+                dataIndex: 'lastFeedbackDate',
+                key: 'lastFeedbackDate',
+                align: 'left',
+            },
+            {
+                title: 'Onboarding Form',
+                dataIndex: 'ClientLegal_StatusID',
+                key: 'ClientLegal_StatusID',
+                align: 'left',
+                render: (text, result) => (
+                    result?.clientLegal_StatusID === 2 &&
+                    <Link
+                        to=""
 
+                        style={{ color: 'black', textDecoration: 'underline' }}>
+                        {'View'}
+                    </Link >
+                ),
+            },
+            {
+                title: 'Engagement ID/HR ID',
+                dataIndex: 'engagementId_HRID',
+                key: 'engagementId_HRID',
+                align: 'left',
+            },
+            {
+                title: 'Talent Name',
+                dataIndex: 'talentName',
+                key: 'talentName',
+                align: 'left',
+            },
+            {
+                title: 'Company',
+                dataIndex: 'company',
+                key: 'company',
+                align: 'left',
+            },
+            {
+                title: 'Current Status',
+                dataIndex: 'currentStatus',
+                key: 'currentStatus',
+                align: 'left',
+            },
+        ];
+    },
 };
