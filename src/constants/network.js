@@ -116,6 +116,9 @@ export class HiringRequestsAPI {
 export class UsersAPI {
 	static LIST = 'List';
 	static ADD_NEW_USER = 'AddEdit';
+	static DEPARTMENT = 'GetDepartment';
+	static TEAM = 'GetTeam'
+	static LEVEL = 'GetLevel'
 }
 
 export class InterviewsAPI {

@@ -1,4 +1,5 @@
 import { MasterAPI } from 'apis/masterAPI';
+import { userAPI } from 'apis/userAPI';
 import { HTTPStatusCode } from 'constants/network';
 import UTSRoutes from 'constants/routes';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
@@ -806,4 +807,81 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getBuddyRequestDAO');
 		}
 	},
+
+	getDepartmentRequestDAO: async function () {
+		try {
+			const departmentListResult = await userAPI.getDeparmentListRequest();
+			if (departmentListResult) {
+				const statusCode = departmentListResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = departmentListResult?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return departmentListResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return departmentListResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getDepartmentRequestDAO');
+		}
+	},
+	getTeamListRequestDAO: async function () {
+		try {
+			const teamListResult = await userAPI.getTeamListRequest();
+			if (teamListResult) {
+				const statusCode = teamListResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = teamListResult?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return teamListResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return teamListResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getTeamListRequestDAO');
+		}
+	},
+	getLevelListRequestDAO: async function () {
+		try {
+			const levelList = await userAPI.getLevelListRequest();
+			if (levelList) {
+				const statusCode = levelList['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = levelList?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return levelList;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return levelList;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getLevelListRequestDAO');
+		}
+	},
+
 };

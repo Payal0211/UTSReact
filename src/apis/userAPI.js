@@ -97,4 +97,49 @@ export const userAPI = {
 			return errorDebug(error, 'UserAPI.getIsEmployeeNameExistRequest');
 		}
 	},
+	getDeparmentListRequest: async () => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.MASTERS +
+				UsersAPI.DEPARTMENT
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserAPI.getDeparmentListRequest');
+		}
+	},
+	getTeamListRequest: async () => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.MASTERS +
+				UsersAPI.TEAM;
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserAPI.getTeamListRequest');
+		}
+	},
+	getLevelListRequest: async () => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.MASTERS +
+				UsersAPI.LEVEL
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserAPI.getLevelListRequest');
+		}
+	},
 };

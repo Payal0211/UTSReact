@@ -52,7 +52,7 @@ const UploadModal = ({
 			onCancel={cancelModal}>
 			<h1 className={UploadModalStyle.modalTitle}>{modalTitle}</h1>
 			<p className={UploadModalStyle.modalUploadType}>
-				File should be (JPG, PNG, SVG)
+				Only image (jpg, jpeg, png) file will be saved
 			</p>
 			<Divider style={{ borderTop: '1px solid #E8E8E8' }} />
 			{isLoading ? (
@@ -101,7 +101,7 @@ const UploadModal = ({
 							Upload From Google Drive
 						</div>
 						<div className={UploadModalStyle.maxFileSize}>
-							Max. File Size: 500 KB
+							Image File size must be less than 2 MB
 						</div>
 						<span style={{ color: 'red' }}>
 							{getValidation?.googleDriveFileUpload}
