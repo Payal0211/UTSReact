@@ -31,8 +31,14 @@ export const secondaryInterviewer = {
 const UsersFields = ({ id }) => {
 	const [enableAllFields, setEnableAllFields] = useState(false);
 	const [userDetails, setUserDetails] = useState(null);
-	const [userTypeEdit, setUserTypeEdit] = useState('Please select');
-	const [controlledUserRole, setControlledUserRole] = useState('Please select');
+	const [userTypeEdit, setUserTypeEdit] = useState('Select');
+	const [controlledUserRole, setControlledUserRole] = useState('Select');
+
+	const [departMentTypeEdit, setDepartMentEdit] = useState('Select');
+	const [levelTypeEdit, setLevelEdit] = useState('Select');
+	const [teamTypeEdit, setTeamTypeEdit] = useState('Select');
+	const [reportTypeEdit, setReportTypeEdit] = useState('Select');
+
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [formLoading, setFormLoading] = useState(false);
@@ -49,10 +55,13 @@ const UsersFields = ({ id }) => {
 	const [showUploadModal, setUploadModal] = useState(false);
 	const [type, setType] = useState('');
 	const [flagAndCode, setFlagAndCode] = useState([]);
-	const [getDepartment, setDepartment] = useState([])
+	const [getDepartment, setDepartment] = useState([{ id: 1, value: 'Select' }])
 	const [getTeamList, setTeamList] = useState([])
-	const [getTeamListEdit, setTeamListEdit] = useState([])
-	const [getLevelList, seLevelList] = useState([])
+	const [getTeamListEdit, setTeamListEdit] = useState([{ id: 1, value: 'Select' }])
+	const [getLevelList, seLevelList] = useState([{ id: 1, value: 'Select' }]);
+	const [getReportingList, setReportingList] = useState([{ id: 1, value: 'Select' }]);
+	const [getGeoSpecificList, setGeoSpecificList] = useState([{ id: "", value: "Select" }, { id: 1, value: "Yes" }, { id: 2, value: "No" }])
+
 
 
 
@@ -74,15 +83,16 @@ const UsersFields = ({ id }) => {
 	const watchDepartMentName = watch('departMent');
 	const watchTeamName = watch('team');
 	const watchLevelName = watch('level');
+	const watchReportingUser = watch('reportingUser');
+	const watchGEO = watch('geo');
+	const watchGEOSpecific = watch('geoSpecific');
 
 	const getEmployeeIDAlreadyExist = useCallback(
 		async (data) => {
-			console.log('--getEmployeeIDAlreadyExist daya---', data);
 			let companyNameDuplicate = await userDAO.getIsEmployeeIDExistRequestDAO({
 				userID: id !== 0 ? id : 0,
 				employeeID: data,
 			});
-			console.log(companyNameDuplicate, '---companyNameDuplicate');
 			setError('employeeId', {
 				type: 'duplicateEmployeeID',
 				message:
@@ -161,8 +171,9 @@ const UsersFields = ({ id }) => {
 
 	const getDepartMentType = useCallback(async () => {
 		let response = await MasterDAO.getDepartmentRequestDAO();
-		setDepartment(response && response?.responseBody?.details);
+		setDepartment((prev) => [...prev, ...response?.responseBody?.details]);
 	}, []);
+
 
 	const getTeamType = useCallback(async () => {
 		let response = await MasterDAO.getTeamListRequestDAO();
@@ -171,9 +182,24 @@ const UsersFields = ({ id }) => {
 
 	const getLevelType = useCallback(async () => {
 		let response = await MasterDAO.getLevelListRequestDAO();
-		seLevelList(response && response?.responseBody?.details);
+		seLevelList((prev) => [...prev, ...response?.responseBody?.details]);
 	}, []);
 
+	const getReportingType = useCallback(async (departId, levelId) => {
+		let response = await MasterDAO.getReportingListRequestDAO(departId, levelId);
+		if (response?.responseBody?.details?.length > 0) {
+			setReportingList((prev) => [...prev, ...response?.responseBody?.details.map(({ id, fullName }) => ({ id: id, value: fullName }))]);
+		}
+		else if (response?.responseBody?.details === null) {
+			setReportingList([])
+		}
+	}, [watchDepartMentName, watchLevelName]);
+
+	useEffect(() => {
+		if (watchDepartMentName?.id && watchLevelName?.id) {
+			getReportingType(watchDepartMentName?.id, watchLevelName?.id)
+		}
+	}, [watchDepartMentName, watchLevelName])
 
 	const getTeamManager = useCallback(async () => {
 		let response = await MasterDAO.getTeamManagerRequestDAO();
@@ -223,7 +249,33 @@ const UsersFields = ({ id }) => {
 	}, [watchUserRole]);
 
 	useEffect(() => {
-		setTeamListEdit(getTeamList?.filter((ele) => parseInt(ele?.text) === watchDepartMentName?.id))
+		setLevelEdit('Select');
+		setTeamTypeEdit('Select');
+		setReportTypeEdit('Select');
+		setValue("team", null)
+		setValue("level", null)
+		setValue("reportingUser", null)
+		setValue("geoSpecific", null)
+		setValue("geo", null)
+	}, [watchDepartMentName])
+
+	useEffect(() => {
+		setReportTypeEdit('Select');
+		setValue("reportingUser", null)
+		setValue("geoSpecific", null)
+		setValue("geo", null)
+	}, [watchLevelName])
+
+	useEffect(() => {
+		setValue("level", null)
+		setValue("reportingUser", null)
+		setValue("geoSpecific", null)
+		setValue("geo", null)
+	}, [watchTeamName])
+
+	useEffect(() => {
+		setTeamListEdit([{ id: 1, value: "Select" }])
+		setTeamListEdit((prev) => [...prev, ...(getTeamList?.filter((ele) => parseInt(ele?.text) === watchDepartMentName?.id))]);
 	}, [watchDepartMentName])
 
 	useEffect(() => {
@@ -242,10 +294,14 @@ const UsersFields = ({ id }) => {
 		getTeamManager();
 		getSalesMan();
 		getTalentRole();
+	}, [id]);
+
+	useEffect(() => {
 		getDepartMentType()
 		getTeamType();
 		getLevelType();
-	}, [id]);
+		getGEO();
+	}, [])
 
 	useEffect(() => {
 		if (id !== 0) {
@@ -299,7 +355,7 @@ const UsersFields = ({ id }) => {
 			isHRDirectPlacement,
 			addHRResponse,
 		);
- */
+	*/
 			/* if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(watch('clientName'))) {
 				return setError('clientName', {
@@ -441,15 +497,17 @@ const UsersFields = ({ id }) => {
 								</div>
 							</div>
 
-
 							<div className={UserFieldStyle.colMd6}>
 								<div className={UserFieldStyle.formGroup}>
 									<HRSelectField
+										controlledValue={departMentTypeEdit}
+										setControlledValue={setDepartMentEdit}
+										isControlled={true}
 										mode="id/value"
 										setValue={setValue}
 										register={register}
 										label={'Department'}
-										defaultValue={'Please select'}
+										defaultValue={'Select'}
 										options={getDepartment && getDepartment}
 										name="departMent"
 										isError={errors['departMent'] && errors['departMent']}
@@ -459,15 +517,18 @@ const UsersFields = ({ id }) => {
 								</div>
 							</div>
 
-							{watchDepartMentName && watchDepartMentName.value !== 'Administration' &&
+							{watchDepartMentName && watchDepartMentName?.value !== 'Administration' && watchTeamName?.value !== 'Select' && watchDepartMentName?.value !== 'Select' &&
 								<div className={UserFieldStyle.colMd6}>
 									<div className={UserFieldStyle.formGroup}>
 										<HRSelectField
+											controlledValue={teamTypeEdit}
+											setControlledValue={setTeamTypeEdit}
+											isControlled={true}
 											mode="id/value"
 											setValue={setValue}
 											register={register}
 											label={'Team'}
-											defaultValue={'Please select'}
+											defaultValue={'Select'}
 											options={getTeamListEdit && getTeamListEdit}
 											name="team"
 											isError={errors['team'] && errors['team']}
@@ -477,20 +538,97 @@ const UsersFields = ({ id }) => {
 									</div>
 								</div>}
 
-							{watchTeamName && watchDepartMentName.value !== 'Administration' &&
+							{watchTeamName && watchDepartMentName?.value !== 'Administration' &&
+								watchLevelName?.value !== 'Select' && watchTeamName?.value !== "Select" && watchDepartMentName?.value !== 'Select' &&
+								<div className={UserFieldStyle.colMd6}>
+									<div className={UserFieldStyle.formGroup}>
+										<HRSelectField
+											controlledValue={levelTypeEdit}
+											setControlledValue={setLevelEdit}
+											isControlled={true}
+											mode="id/value"
+											setValue={setValue}
+											register={register}
+											label={'Level'}
+											defaultValue={'Select'}
+											options={getLevelList && getLevelList}
+											name="level"
+											isError={errors['level'] && errors['level']}
+											required
+											errorMsg={'Please select level'}
+										/>
+									</div>
+								</div>}
+
+							{getReportingList?.length > 0 && watchLevelName && watchDepartMentName?.value !== 'Administration' && watchLevelName?.value !== "Select" && watchTeamName?.value !== "Select" && watchDepartMentName?.value !== 'Select' &&
+								<div className={UserFieldStyle.colMd6}>
+									<div className={UserFieldStyle.formGroup}>
+										<HRSelectField
+											controlledValue={reportTypeEdit}
+											setControlledValue={setReportTypeEdit}
+											isControlled={true}
+											mode="id/value"
+											setValue={setValue}
+											register={register}
+											label={'Reporting User'}
+											defaultValue={'Select'}
+											options={getReportingList && getReportingList}
+											name="reportingUser"
+											isError={errors['reportingUser'] && errors['reportingUser']}
+											required
+											errorMsg={'Please select reporting user'}
+										/>
+									</div>
+								</div>}
+
+							{watchTeamName && watchDepartMentName?.value !== 'Administration' && watchLevelName?.value !== "Select" && watchTeamName?.value !== "Select" && watchDepartMentName?.value !== 'Select' &&
 								<div className={UserFieldStyle.colMd6}>
 									<div className={UserFieldStyle.formGroup}>
 										<HRSelectField
 											mode="id/value"
 											setValue={setValue}
 											register={register}
-											label={'Level'}
-											defaultValue={'Please select'}
-											options={getLevelList && getLevelList}
-											name="level"
-											isError={errors['level'] && errors['level']}
+											label={'Is this Geo Specific?'}
+											defaultValue={'Select                                                               '}
+											options={getGeoSpecificList && getGeoSpecificList}
+											name="geoSpecific"
+											isError={errors['geoSpecific'] && errors['geoSpecific']}
 											required
-											errorMsg={'Please select level'}
+											errorMsg={'Please select geo specific'}
+										/>
+									</div>
+								</div>}
+
+							{watchGEOSpecific?.value === "Yes" && watchLevelName?.value !== "Select" && watchTeamName?.value !== "Select" && watchDepartMentName?.value !== 'Select' &&
+								<div className={UserFieldStyle.colMd6}>
+									{/* <div className={UserFieldStyle.formGroup}>
+									<HRSelectField
+										isControlled={true}
+										mode="multiple"
+										setValue={setValue}
+										register={register}
+										label={'Geo'}
+										defaultValue="Please Select"
+										options={GEO && GEO}
+										placeholderText="Please Select"
+										name="geo"
+										isError={errors['geo'] && errors['geo']}
+										required
+										errorMsg={'Please select GEO'}
+									/> */}
+									<div className={UserFieldStyle.mb50}>
+										<HRSelectField
+											// isControlled={true}
+											mode="multiple"
+											setValue={setValue}
+											register={register}
+											label={'Geo'}
+											placeholder="Please Select"
+											options={GEO && GEO}
+											name="geo"
+											isError={errors['geo'] && errors['geo']}
+											required
+											errorMsg={'Please select GEO'}
 										/>
 									</div>
 								</div>}
@@ -622,7 +760,7 @@ const UsersFields = ({ id }) => {
 									</div>
 								</div>
 							) : null}
-							{(watch('userType')?.id === UserAccountRole.SALES ||
+							{/* {(watch('userType')?.id === UserAccountRole.SALES ||
 								watch('userType')?.id === UserAccountRole.SALES_MANAGER) && (
 									<div className={UserFieldStyle.colMd6}>
 										<div className={UserFieldStyle.formGroup}>
@@ -639,8 +777,10 @@ const UsersFields = ({ id }) => {
 												errorMsg={'Please select GEO'}
 											/>
 										</div>
-									</div>
-								)}
+									</div>)} */}
+
+
+
 							{watch('userType')?.id === UserAccountRole.SALES_MANAGER && (
 								<div className={UserFieldStyle.colMd6}>
 									<HRInputField
@@ -905,7 +1045,7 @@ const UsersFields = ({ id }) => {
 						</div>
 					</div>
 				</div>
-			</form>
+			</form >
 
 			<Divider className={UserFieldStyle.midDivider} />
 
@@ -931,7 +1071,7 @@ const UsersFields = ({ id }) => {
 					</div>
 				</div>
 			</div>
-		</div>
+		</div >
 	);
 };
 

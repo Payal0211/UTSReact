@@ -142,4 +142,20 @@ export const userAPI = {
 			return errorDebug(error, 'UserAPI.getLevelListRequest');
 		}
 	},
+	getReportingListRequest: async (deptId, levelId) => {
+
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.MASTERS +
+				UsersAPI.REPORTING_USER + `?DeptID=${deptId}&LevelID=${levelId}`
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserAPI.getReportingListRequest');
+		}
+	},
 };

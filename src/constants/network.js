@@ -119,6 +119,8 @@ export class UsersAPI {
 	static DEPARTMENT = 'GetDepartment';
 	static TEAM = 'GetTeam'
 	static LEVEL = 'GetLevel'
+	static GEO = 'GetGeo'
+	static REPORTING_USER = 'GetReportingUser'
 }
 
 export class InterviewsAPI {
