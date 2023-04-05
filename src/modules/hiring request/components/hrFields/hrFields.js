@@ -765,6 +765,7 @@ const HRFields = ({
 							)}
 						</div>
 						<UploadModal
+							isGoogleDriveUpload={true}
 							isLoading={isLoading}
 							uploadFileRef={uploadFile}
 							uploadFileHandler={(e) => uploadFileHandler(e.target.files[0])}

@@ -19,6 +19,7 @@ export class SubDomain {
 	static USER = 'User/';
 	static HR_ACCEPTANCE = 'HRAcceptance/';
 	static ONBOARD = 'OnBoard/';
+	static TALENT_STATUS = 'TalentStatus/';
 }
 export class APIType {
 	static USER = '/user';
@@ -79,7 +80,11 @@ export class MastersAPI {
 	static YES_NO_OPTION = 'YesNoOption';
 	static BUDDY = 'Buddy';
 }
-
+export class TalentStatus {
+	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
+	static UPDATE_TALENT_STATUS = 'UpdateTalentStatus';
+	static REMOVE_ONHOLD_STATUS = 'RemoveOnHoldStatus';
+}
 export class HRAcceptanceAPI {
 	static GET_HR_ACCEPTANCE = 'GetHRAcceptance';
 	static ADD_HR_ACCEPTANCE = 'AddHRAcceptance';

@@ -27,7 +27,7 @@ const InterviewStatus = ({ callAPI, closeModal }) => {
 	return (
 		<div className={InterviewStatusStyle.container}>
 			<div className={InterviewStatusStyle.modalTitle}>
-				<h2>Change Talent Status</h2>
+				<h2>Change Interview Status</h2>
 			</div>
 
 			<div className={InterviewStatusStyle.transparent}>

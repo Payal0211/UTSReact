@@ -15,6 +15,11 @@ const AddNewClientScreen = () => {
 		debriefingHR: true,
 	});
 	const [enID, setEnID] = useState({});
+	const [JDParsedSkills, setJDParsedSkills] = useState({
+		Skills: [],
+		Responsibility: '',
+		Requirements: '',
+	});
 	return (
 		<div className={AddNewClientStyle.addNewContainer}>
 			<div className={AddNewClientStyle.addHRTitle}>{title}</div>
@@ -50,6 +55,7 @@ const AddNewClientScreen = () => {
 									tabFieldDisabled={tabFieldDisabled}
 									setTabFieldDisabled={setTabFieldDisabled}
 									clientDetail={clientDetail}
+									setJDParsedSkills={setJDParsedSkills}
 								/>
 							),
 							disabled: tabFieldDisabled.addNewHiringRequest,
@@ -63,6 +69,8 @@ const AddNewClientScreen = () => {
 									setTitle={setTitle}
 									tabFieldDisabled={tabFieldDisabled}
 									setTabFieldDisabled={setTabFieldDisabled}
+									setJDParsedSkills={setJDParsedSkills}
+									JDParsedSkills={JDParsedSkills}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,

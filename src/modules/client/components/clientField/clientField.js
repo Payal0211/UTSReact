@@ -45,6 +45,7 @@ const ClientField = ({
 		setValue,
 		control,
 		setError,
+		unregister,
 		getValues,
 		watch,
 		formState: { errors },
@@ -64,7 +65,8 @@ const ClientField = ({
 		control,
 		name: 'secondaryClient',
 	});
-
+	const [base64Image, setBase64Image] = useState('');
+	const [getUploadFileData, setUploadFileData] = useState('');
 	const {
 		fields: pocFields,
 		append: appendPOC,
@@ -116,6 +118,8 @@ const ClientField = ({
 			addClientResponseID,
 			watch,
 			addClientResponse,
+			base64Image,
+			getUploadFileData,
 		);
 
 		if (type === SubmitType.SAVE_AS_DRAFT) {
@@ -193,7 +197,12 @@ const ClientField = ({
 				setValue={setValue}
 				register={register}
 				errors={errors}
+				unregister={unregister}
 				watch={watch}
+				base64Image={base64Image}
+				setBase64Image={setBase64Image}
+				getUploadFileData={getUploadFileData}
+				setUploadFileData={setUploadFileData}
 			/>
 			<AddNewClient
 				setError={setError}
@@ -234,13 +243,13 @@ const ClientField = ({
 									register={register}
 									errors={errors}
 									validationSchema={{
-										required: 'please enter the client name.',
+										required: 'please enter the legal client name.',
 									}}
 									label="HS Client Full Name"
 									name="legalClientFullName"
 									type={InputType.TEXT}
 									placeholder="Enter full name"
-									// required
+									required
 									disabled={isSameAsPrimaryPOC}
 								/>
 							</div>
@@ -250,7 +259,7 @@ const ClientField = ({
 									register={register}
 									errors={errors}
 									validationSchema={{
-										required: 'please enter the client email ID.',
+										required: 'please enter the legal client email ID.',
 										pattern: {
 											value: EmailRegEx.email,
 											message: 'please enter a valid email.',
@@ -261,7 +270,7 @@ const ClientField = ({
 									type={InputType.EMAIL}
 									placeholder="Enter Email ID"
 									disabled={isSameAsPrimaryPOC}
-									// required
+									required
 								/>
 							</div>
 						</div>
@@ -322,7 +331,7 @@ const ClientField = ({
 									type={InputType.TEXT}
 									placeholder="Enter legal name"
 									disabled={isSameAsPrimaryPOC}
-									// required
+									required
 								/>
 							</div>
 
@@ -338,7 +347,7 @@ const ClientField = ({
 									type={InputType.TEXT}
 									placeholder="Enter legal address"
 									disabled={isSameAsPrimaryPOC}
-									// required
+									required
 								/>
 							</div>
 						</div>
