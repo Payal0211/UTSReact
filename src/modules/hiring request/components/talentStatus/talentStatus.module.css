@@ -58,6 +58,12 @@
     border-color: var(--color-sunlight);
 }
 
+.formPanelAction .btnDanger{
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    color:var(--text-color-purity)
+}
+
 .formPanelAction button+button {
     margin-left: 18px;
 }

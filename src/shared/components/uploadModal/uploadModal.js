@@ -33,6 +33,7 @@ const UploadModal = ({
 	fileUploadType,
 	footer,
 	modalTitle,
+	isGoogleDriveUpload,
 	setValidation,
 	getValidation,
 	getGoogleDriveLink,
@@ -91,21 +92,24 @@ const UploadModal = ({
 						<span style={{ color: 'red' }}>
 							{getValidation?.systemFileUpload}
 						</span>
-						<span style={{ margin: '16px 0' }}>Or,</span>
+						{isGoogleDriveUpload && (
+							<>
+								<span style={{ margin: '16px 0' }}>Or,</span>
 
-						{/* <button onClick={() => handleOpenPicker()}>Open Picker</button> */}
-						<div
-							className={UploadModalStyle.cloudUploadLink}
-							onClick={googleDriveFileUploader}>
-							<CloudUploadSVG />
-							Upload From Google Drive
-						</div>
-						<div className={UploadModalStyle.maxFileSize}>
-							Max. File Size: 500 KB
-						</div>
-						<span style={{ color: 'red' }}>
-							{getValidation?.googleDriveFileUpload}
-						</span>
+								<div
+									className={UploadModalStyle.cloudUploadLink}
+									onClick={googleDriveFileUploader}>
+									<CloudUploadSVG />
+									Upload From Google Drive
+								</div>
+								<div className={UploadModalStyle.maxFileSize}>
+									Max. File Size: 500 KB
+								</div>
+								<span style={{ color: 'red' }}>
+									{getValidation?.googleDriveFileUpload}
+								</span>
+							</>
+						)}
 					</div>
 
 					{isFooter && (

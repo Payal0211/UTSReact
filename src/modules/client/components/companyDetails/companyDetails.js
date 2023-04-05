@@ -10,6 +10,9 @@ import { MasterDAO } from 'core/master/masterDAO';
 import { ClientDAO } from 'core/client/clientDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
+import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
+import { MdOutlinePreview } from 'react-icons/md';
+import { Modal, Tooltip } from 'antd';
 
 const CompanyDetails = ({
 	register,
@@ -27,13 +30,29 @@ const CompanyDetails = ({
 		const geoLocationResponse = await MasterDAO.getGEORequestDAO();
 		setGEO(geoLocationResponse && geoLocationResponse.responseBody);
 	};
+	const [base64Image, setBase64Image] = useState('');
+	const [toggleImagePreview, setToggleImagePreview] = useState(false);
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
 		googleDriveFileUpload: '',
 		linkValidation: '',
 	});
+	const [getUploadFileData, setUploadFileData] = useState('');
 
 	const uploadFile = useRef(null);
+	const convertToBase64 = useCallback((file) => {
+		return new Promise((resolve, reject) => {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(file);
+			fileReader.onload = () => {
+				resolve(fileReader.result);
+			};
+			fileReader.onerror = (error) => {
+				reject(error);
+			};
+		});
+	}, []);
+
 	const uploadFileHandler = useCallback(
 		async (fileData) => {
 			setIsLoading(true);
@@ -52,9 +71,19 @@ const CompanyDetails = ({
 				});
 				setIsLoading(false);
 			} else {
-				let formData = new FormData();
+				const base64 = await convertToBase64(fileData);
+				console.log(base64, '--base64---');
+				setValidation({
+					...getValidation,
+					systemFileUpload: '',
+				});
+				console.log(fileData, 'fileData');
+				setBase64Image(base64);
+				setUploadFileData(fileData.name);
+				setUploadModal(false);
+				/* let formData = new FormData();
 				formData.append('File', fileData);
-				console.log(fileData, '---formData-----');
+				console.log(fileData, '---formData-----'); */
 				// let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
 				/* if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 					setUploadModal(false);
@@ -64,20 +93,19 @@ const CompanyDetails = ({
 					});
 					message.success('File uploaded successfully');
 				} */
+
 				setIsLoading(false);
 			}
 			uploadFile.current.value = '';
 		},
-		[getValidation],
+		[convertToBase64, getValidation],
 	);
 
-	const getLeadSource = async () => {
+	const getLeadSource = useCallback(async () => {
 		const getLeadSourceResponse = await MasterDAO.getFixedValueRequestDAO();
-		setLeadSource(
-			getLeadSourceResponse &&
-				getLeadSourceResponse?.responseBody?.BindLeadType,
-		);
-	};
+		setLeadSource(getLeadSourceResponse && getLeadSourceResponse?.responseBody);
+	}, []);
+
 	/** To check Duplicate email exists Start */
 	//TODO:- Show loader on Duplicate email caption:- verifying email
 	const watchCompanyName = watch('companyName');
@@ -99,6 +127,7 @@ const CompanyDetails = ({
 		},
 		[setError, setValue],
 	);
+
 	useEffect(() => {
 		let timer;
 		if (!_isNull(watchCompanyName)) {
@@ -109,12 +138,12 @@ const CompanyDetails = ({
 		}
 		return () => clearTimeout(timer);
 	}, [getCompanyNameAlreadyExist, watchCompanyName]);
-	console.log(leadSource, '-leadSource');
+
 	/** To check Duplicate email exists End */
 	useEffect(() => {
 		getGEO();
 		getLeadSource();
-	}, []);
+	}, [getLeadSource]);
 	return (
 		<div className={CompanyDetailsStyle.tabsFormItem}>
 			<div className={CompanyDetailsStyle.tabsFormItemInner}>
@@ -300,23 +329,74 @@ const CompanyDetails = ({
 									name="companyLeadSource"
 									label="Lead Source"
 									defaultValue="Select Lead Source"
-									options={leadSource && leadSource}
+									options={leadSource?.BindLeadType}
 								/>
 							</div>
 						</div>
+						{watch('companyLeadSource') === 1 && (
+							<div className={CompanyDetailsStyle.colMd6}>
+								<div className={CompanyDetailsStyle.formGroup}>
+									<HRSelectField
+										setValue={setValue}
+										register={register}
+										name="companyInboundType"
+										label="Inbound Type"
+										defaultValue="Please Select"
+										options={leadSource?.BindInBoundDrp}
+									/>
+								</div>
+							</div>
+						)}
 					</div>
 					<div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd12}>
-							<HRInputField
-								register={register}
-								leadingIcon={<UploadSVG />}
-								label="Company Logo (JPG, PNG, SVG)"
-								name="jdExport"
-								type={InputType.BUTTON}
-								value="Upload logo"
-								onClickHandler={() => setUploadModal(true)}
-							/>
+							{!getUploadFileData ? (
+								<HRInputField
+									register={register}
+									leadingIcon={<UploadSVG />}
+									label="Company Logo (JPG, PNG, SVG)"
+									name="jdExport"
+									type={InputType.BUTTON}
+									value="Upload logo"
+									onClickHandler={() => setUploadModal(true)}
+								/>
+							) : (
+								<div className={CompanyDetailsStyle.uploadedJDWrap}>
+									<label>Company Logo (JPG, PNG, SVG)</label>
+									<div className={CompanyDetailsStyle.uploadedJDName}>
+										{getUploadFileData}
+										<div
+											className={CompanyDetailsStyle.uploadedImgPreview}
+											onClick={() => setToggleImagePreview(true)}>
+											<Tooltip
+												placement="top"
+												title={'Image Preview'}>
+												<MdOutlinePreview />
+											</Tooltip>
+										</div>
+										<CloseSVG
+											className={CompanyDetailsStyle.uploadedJDClose}
+											onClick={() => {
+												// setJDParsedSkills({});
+												setUploadFileData('');
+											}}
+										/>
+									</div>
+								</div>
+							)}
 						</div>
+						<Modal
+							className={CompanyDetailsStyle.imagePreviewModal}
+							width={'500px'}
+							centered
+							footer={false}
+							open={toggleImagePreview}
+							onCancel={() => setToggleImagePreview(false)}>
+							<img
+								src={base64Image}
+								alt="preview"
+							/>
+						</Modal>
 						<UploadModal
 							isFooter={false}
 							uploadFileRef={uploadFile}

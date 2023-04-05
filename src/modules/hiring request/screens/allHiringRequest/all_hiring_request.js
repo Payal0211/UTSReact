@@ -112,7 +112,7 @@ const AllHiringRequestScreen = () => {
 			);
 
 			if (response?.statusCode === HTTPStatusCode.OK) {
-				setTotalRecords(response?.responseBody?.TotalRecords);
+				setTotalRecords(response?.responseBody?.totalrows);
 				setLoading(false);
 				setAPIdata(hrUtils.modifyHRRequestData(response && response));
 			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {

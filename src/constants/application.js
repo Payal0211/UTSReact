@@ -101,6 +101,8 @@ export class TalentOnboardStatus {
 	static TALENT_ACCEPTANCE = 'Talent Acceptance';
 	static UPDATE_KICKOFF = 'Update kickoff & Onboard Status';
 	static ONBOARD_TALENT = 'Onboard Talent';
+	static INTERVIEW_STATUS = 'Interview Status';
+	static INTERVIEW_DETAILS = 'Interviewer Details';
 }
 export class InputType {
 	static TEXT = 'text';

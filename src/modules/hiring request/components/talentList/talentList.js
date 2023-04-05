@@ -31,10 +31,12 @@ const TalentList = ({
 	hiringRequestNumber,
 	hrType,
 }) => {
+	console.log(hrId, 'hriD');
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
 	const [showVersantModal, setVersantModal] = useState(false);
+	const [interviewFeedback, setInterviewFeedback] = useState(false);
 	const [showInterviewStatus, setInterviewStatus] = useState(false);
 	const profileData = allHRConfig.profileLogConfig();
 	const [showReScheduleInterviewModal, setReScheduleInterviewModal] =
@@ -1273,7 +1275,7 @@ const TalentList = ({
 									<span
 										style={{ fontWeight: '500', cursor: 'pointer' }}
 										onClick={() => {
-											setInterviewStatus(true);
+											setInterviewFeedback(true);
 											setTalentIndex(listIndex);
 										}}>
 										{item?.InterviewStatus === ''
@@ -1442,7 +1444,11 @@ const TalentList = ({
 													case TalentOnboardStatus.TALENT_STATUS: {
 														setTalentStatus(true);
 														setTalentIndex(item?.TalentID);
-
+														break;
+													}
+													case TalentOnboardStatus.INTERVIEW_STATUS: {
+														setInterviewStatus(true);
+														setTalentIndex(item?.TalentID);
 														break;
 													}
 													case TalentOnboardStatus.UPDATE_KICKOFF: {
@@ -1713,9 +1719,9 @@ const TalentList = ({
 				width="930px"
 				centered
 				footer={null}
-				open={showInterviewStatus}
+				open={interviewFeedback}
 				// onOk={() => setVersantModal(false)}
-				onCancel={() => setInterviewStatus(false)}>
+				onCancel={() => setInterviewFeedback(false)}>
 				<InterviewFeedback />
 			</Modal>
 			{/** ============ MODAL FOR TALENT ACCEPTANCE ================ */}
@@ -1748,6 +1754,8 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setTalentStatus(false)}>
 				<TalentStatus
+					talentInfo={filterTalentID}
+					hrId={hrId}
 					callAPI={callAPI}
 					closeModal={() => setTalentStatus(false)}
 				/>
@@ -1758,7 +1766,7 @@ const TalentList = ({
 				width="1256px"
 				centered
 				footer={null}
-				open={showTalentStatus}
+				open={showInterviewStatus}
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setInterviewStatus(false)}>
 				<InterviewStatus
