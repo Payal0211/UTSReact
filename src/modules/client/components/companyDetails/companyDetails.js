@@ -21,6 +21,11 @@ const CompanyDetails = ({
 	watch,
 	setError,
 	flagAndCodeMemo,
+	base64Image,
+	unregister,
+	setBase64Image,
+	getUploadFileData,
+	setUploadFileData,
 }) => {
 	const [GEO, setGEO] = useState([]);
 	const [leadSource, setLeadSource] = useState([]);
@@ -30,15 +35,14 @@ const CompanyDetails = ({
 		const geoLocationResponse = await MasterDAO.getGEORequestDAO();
 		setGEO(geoLocationResponse && geoLocationResponse.responseBody);
 	};
-	const [base64Image, setBase64Image] = useState('');
+
 	const [toggleImagePreview, setToggleImagePreview] = useState(false);
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
 		googleDriveFileUpload: '',
 		linkValidation: '',
 	});
-	const [getUploadFileData, setUploadFileData] = useState('');
-
+	const watchCompanyLeadSource = watch('companyLeadSource');
 	const uploadFile = useRef(null);
 	const convertToBase64 = useCallback((file) => {
 		return new Promise((resolve, reject) => {
@@ -81,24 +85,11 @@ const CompanyDetails = ({
 				setBase64Image(base64);
 				setUploadFileData(fileData.name);
 				setUploadModal(false);
-				/* let formData = new FormData();
-				formData.append('File', fileData);
-				console.log(fileData, '---formData-----'); */
-				// let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
-				/* if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
-					setUploadModal(false);
-					setValidation({
-						...getValidation,
-						systemFileUpload: '',
-					});
-					message.success('File uploaded successfully');
-				} */
-
 				setIsLoading(false);
 			}
 			uploadFile.current.value = '';
 		},
-		[convertToBase64, getValidation],
+		[convertToBase64, getValidation, setBase64Image, setUploadFileData],
 	);
 
 	const getLeadSource = useCallback(async () => {
@@ -144,6 +135,10 @@ const CompanyDetails = ({
 		getGEO();
 		getLeadSource();
 	}, [getLeadSource]);
+
+	useEffect(() => {
+		if (watchCompanyLeadSource?.id !== 1) unregister('companyLeadSource');
+	}, [unregister, watchCompanyLeadSource?.id]);
 	return (
 		<div className={CompanyDetailsStyle.tabsFormItem}>
 			<div className={CompanyDetailsStyle.tabsFormItemInner}>
@@ -324,6 +319,7 @@ const CompanyDetails = ({
 						<div className={CompanyDetailsStyle.colMd6}>
 							<div className={CompanyDetailsStyle.formGroup}>
 								<HRSelectField
+									mode={'id/value'}
 									setValue={setValue}
 									register={register}
 									name="companyLeadSource"
@@ -333,10 +329,12 @@ const CompanyDetails = ({
 								/>
 							</div>
 						</div>
-						{watch('companyLeadSource') === 1 && (
+
+						{watch('companyLeadSource')?.id === 1 && (
 							<div className={CompanyDetailsStyle.colMd6}>
 								<div className={CompanyDetailsStyle.formGroup}>
 									<HRSelectField
+										mode={'id/value'}
 										setValue={setValue}
 										register={register}
 										name="companyInboundType"
@@ -355,7 +353,7 @@ const CompanyDetails = ({
 									register={register}
 									leadingIcon={<UploadSVG />}
 									label="Company Logo (JPG, PNG, SVG)"
-									name="jdExport"
+									name="companyLogo"
 									type={InputType.BUTTON}
 									value="Upload logo"
 									onClickHandler={() => setUploadModal(true)}

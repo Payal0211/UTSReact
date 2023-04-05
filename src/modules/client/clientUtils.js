@@ -42,6 +42,8 @@ export function clientFormDataFormatter(
 	contactID,
 	watch,
 	addClientResponse,
+	base64Image,
+	getUploadFileData,
 ) {
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
@@ -51,6 +53,10 @@ export function clientFormDataFormatter(
 				draft === SubmitType.SAVE_AS_DRAFT
 					? watch('companyName')
 					: d.companyName,
+			fileUpload: {
+				base64ProfilePic: base64Image,
+				extenstion: getUploadFileData?.split('.')[1],
+			},
 			website:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('companyURL'))
@@ -102,6 +108,22 @@ export function clientFormDataFormatter(
 					: d.companyCountryCode + d.phoneNumber,
 			teamManagement:
 				draft === SubmitType.SAVE_AS_DRAFT ? watch('remote') : d.remote,
+			leadType:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('companyLeadSource'))
+						? 0
+						: watch('companyLeadSource')?.id
+					: _isNull(d.companyLeadSource)
+					? 0
+					: d.companyLeadSource?.id,
+			inboundType:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('companyInboundType'))
+						? 0
+						: watch('companyInboundType')?.id
+					: _isNull(d.companyInboundType)
+					? 0
+					: d.companyInboundType?.id,
 		},
 		primaryClient: {
 			en_Id: _isNull(addClientResponse)

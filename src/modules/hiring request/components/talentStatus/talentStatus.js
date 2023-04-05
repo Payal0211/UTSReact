@@ -33,15 +33,15 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 			talentID: talentInfo?.TalentID,
 			hrID: hrId,
 			talentStatusID: talentInfo?.TalentStatusID_BasedOnHR,
-			talentStatus: _isNull(watchTalentStatus?.id) ? 0 : watchTalentStatus?.id,
+			talentStatus: _isNull(talentInfo?.Status) ? '0' : talentInfo?.Status,
 		});
 
 		setTalentStatus(response && response?.responseBody?.details);
 	}, [
 		hrId,
+		talentInfo?.Status,
 		talentInfo?.TalentID,
 		talentInfo?.TalentStatusID_BasedOnHR,
-		watchTalentStatus?.id,
 	]);
 
 	const removeOnHoldStatusHandler = useCallback(async () => {
@@ -49,16 +49,17 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 			hrID: hrId,
 			contactTalentPriorityID: talentInfo?.ContactPriorityID,
 		});
-		console.log(response, '---response---');
-	}, [hrId, talentInfo?.ContactPriorityID]);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			callAPI(hrId);
+		}
+	}, [callAPI, hrId, talentInfo?.ContactPriorityID]);
 	const talentStatusSubmitHanlder = useCallback(
 		async (d) => {
-			console.log(d, '--d--');
 			let talentStatusObject = {
 				hrid: hrId,
 				hrDetailID: talentInfo?.HiringDetailID,
 				talentID: talentInfo?.TalentID,
-				talentStatusID: talentInfo?.TalentStatusID_BasedOnHR,
+				talentStatusID: d.talentStatus?.id,
 				talentStatus: d.talentStatus?.value,
 				rejectReasonID: _isNull(d.rejectReason?.id) ? 0 : d.rejectReason?.id,
 				onHoldReasonID: _isNull(d.onHoldReason?.id) ? 0 : d.onHoldReason?.id,
@@ -67,23 +68,15 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 				remark: d.onHoldRemark || d.lossRemark,
 			};
 
-			console.log(talentStatusObject, '---talentStatusObject---');
-
 			let response = await TalentStatusDAO.updateTalentStatusRequestDAO(
 				talentStatusObject,
 			);
-			if (response?.statusCode === HTTPStatusCode.OK) {
+			/* if (response?.statusCode === HTTPStatusCode.OK) {
 				callAPI(hrId);
-			}
-			console.log(response, '---response---');
+			} */
+			if (response) callAPI(hrId);
 		},
-		[
-			callAPI,
-			hrId,
-			talentInfo?.HiringDetailID,
-			talentInfo?.TalentID,
-			talentInfo?.TalentStatusID_BasedOnHR,
-		],
+		[callAPI, hrId, talentInfo?.HiringDetailID, talentInfo?.TalentID],
 	);
 
 	useEffect(() => {
@@ -237,7 +230,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 					</div>
 				) : null}
 				{talentStatus?.Data?.TalentStatus === 'On Hold' && (
-					<center>
+					<div className={TalentStatusStyle?.colMd12}>
 						<div className={TalentStatusStyle.formPanelAction}>
 							<button
 								type="submit"
@@ -246,7 +239,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 								Remove OnHold Status
 							</button>
 						</div>
-					</center>
+					</div>
 				)}
 				<div className={TalentStatusStyle.formPanelAction}>
 					<button

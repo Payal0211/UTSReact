@@ -45,6 +45,7 @@ const ClientField = ({
 		setValue,
 		control,
 		setError,
+		unregister,
 		getValues,
 		watch,
 		formState: { errors },
@@ -64,7 +65,8 @@ const ClientField = ({
 		control,
 		name: 'secondaryClient',
 	});
-
+	const [base64Image, setBase64Image] = useState('');
+	const [getUploadFileData, setUploadFileData] = useState('');
 	const {
 		fields: pocFields,
 		append: appendPOC,
@@ -116,6 +118,8 @@ const ClientField = ({
 			addClientResponseID,
 			watch,
 			addClientResponse,
+			base64Image,
+			getUploadFileData,
 		);
 
 		if (type === SubmitType.SAVE_AS_DRAFT) {
@@ -193,7 +197,12 @@ const ClientField = ({
 				setValue={setValue}
 				register={register}
 				errors={errors}
+				unregister={unregister}
 				watch={watch}
+				base64Image={base64Image}
+				setBase64Image={setBase64Image}
+				getUploadFileData={getUploadFileData}
+				setUploadFileData={setUploadFileData}
 			/>
 			<AddNewClient
 				setError={setError}
