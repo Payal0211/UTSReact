@@ -87,7 +87,7 @@ const HRFields = ({
 
 	/* ------------------ Upload JD Starts Here ---------------------- */
 	const [openPicker, authResponse] = useDrivePicker();
-	const uploadFile = useRef(null);
+
 	const uploadFileFromGoogleDriveValidator = useCallback(
 		async (fileData) => {
 			setValidation({
@@ -205,7 +205,6 @@ const HRFields = ({
 				}
 				setIsLoading(false);
 			}
-			uploadFile.current.value = '';
 		},
 		[getValidation, setJDParsedSkills],
 	);
@@ -621,41 +620,67 @@ const HRFields = ({
 					id="hrForm"
 					className={HRFieldStyle.hrFieldRightPane}>
 					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd12}>
-							<div className={HRFieldStyle.formGroup}>
-								<label>Client Email/Name</label>
-								<Controller
-									render={({ ...props }) => (
-										<AutoComplete
-											options={getClientNameSuggestion}
-											onSelect={(clientName) => getClientNameValue(clientName)}
-											filterOption={true}
-											onSearch={(searchValue) => {
-												setClientNameSuggestion([]);
-												getClientNameSuggestionHandler(searchValue);
-											}}
-											onChange={(clientName) =>
-												setValue('clientName', clientName)
-											}
-											placeholder="Enter Client Email/Name"
-											ref={controllerRef}
-										/>
-									)}
-									{...register('clientName', {
-										validate,
-									})}
+						{pathName === ClientHRURL.ADD_NEW_CLIENT ? (
+							<div className={HRFieldStyle.colMd12}>
+								<HRInputField
+									disabled={
+										pathName === ClientHRURL.ADD_NEW_CLIENT ||
+										isCompanyNameAvailable ||
+										isLoading
+									}
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the client name.',
+									}}
+									label="Client Email/Name"
 									name="clientName"
-									// rules={{ required: true }}
-									control={control}
+									type={InputType.TEXT}
+									placeholder="Enter Client Email/Name"
+									required
 								/>
-								{errors.clientName && (
-									<div className={HRFieldStyle.error}>
-										{errors.clientName?.message &&
-											`* ${errors?.clientName?.message}`}
-									</div>
-								)}
 							</div>
-						</div>
+						) : (
+							<div className={HRFieldStyle.colMd12}>
+								<div className={HRFieldStyle.formGroup}>
+									<label>
+										Client Email/Name <b style={{ color: 'black' }}>*</b>
+									</label>
+									<Controller
+										render={({ ...props }) => (
+											<AutoComplete
+												options={getClientNameSuggestion}
+												onSelect={(clientName) =>
+													getClientNameValue(clientName)
+												}
+												filterOption={true}
+												onSearch={(searchValue) => {
+													setClientNameSuggestion([]);
+													getClientNameSuggestionHandler(searchValue);
+												}}
+												onChange={(clientName) =>
+													setValue('clientName', clientName)
+												}
+												placeholder="Enter Client Email/Name"
+												ref={controllerRef}
+											/>
+										)}
+										{...register('clientName', {
+											validate,
+										})}
+										name="clientName"
+										// rules={{ required: true }}
+										control={control}
+									/>
+									{errors.clientName && (
+										<div className={HRFieldStyle.error}>
+											{errors.clientName?.message &&
+												`* ${errors?.clientName?.message}`}
+										</div>
+									)}
+								</div>
+							</div>
+						)}
 					</div>
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
@@ -745,8 +770,14 @@ const HRFields = ({
 									label="Job Description (PDF)"
 									name="jdExport"
 									type={InputType.BUTTON}
-									value="Upload JD File"
+									buttonLabel="Upload JD File"
+									// value="Upload JD File"
 									onClickHandler={() => setUploadModal(true)}
+									required
+									validationSchema={{
+										required: 'please select a file.',
+									}}
+									errors={errors}
 								/>
 							) : (
 								<div className={HRFieldStyle.uploadedJDWrap}>
@@ -767,11 +798,11 @@ const HRFields = ({
 						<UploadModal
 							isGoogleDriveUpload={true}
 							isLoading={isLoading}
-							uploadFileRef={uploadFile}
 							uploadFileHandler={(e) => uploadFileHandler(e.target.files[0])}
 							googleDriveFileUploader={() => googleDriveFileUploader()}
 							uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
 							modalTitle={'Upload JD'}
+							modalSubtitle={'Job Description (PDF)'}
 							isFooter={true}
 							openModal={showUploadModal}
 							setUploadModal={setUploadModal}

@@ -9,8 +9,10 @@ export const hiringRequestDAO = {
 	getPaginatedHiringRequestDAO: async function (hrData) {
 		try {
 			const hrResult = await HiringRequestAPI.getPaginatedHiringRequest(hrData);
+			console.log(hrResult, '--hrResult---');
 			if (hrResult) {
 				const statusCode = hrResult['statusCode'];
+
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = hrResult.responseBody;
 					return {
@@ -25,15 +27,11 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return hrResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
+			console.log(error, '---errorr---');
 			return errorDebug(error, 'hiringRequestDAO.getPaginatedHiringRequestDAO');
 		}
 	},
@@ -54,12 +52,7 @@ export const hiringRequestDAO = {
 					return scheduleResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -84,12 +77,7 @@ export const hiringRequestDAO = {
 					return reScheduleResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -113,7 +101,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -160,7 +148,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -188,7 +176,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -216,7 +204,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -243,7 +231,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -274,7 +262,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -304,7 +292,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -334,7 +322,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -364,7 +352,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -397,7 +385,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -427,7 +415,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -460,7 +448,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -490,7 +478,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -524,7 +512,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -533,7 +521,6 @@ export const hiringRequestDAO = {
 		}
 	},
 	uploadFileDAO: async (fileData) => {
-		console.log('run');
 		try {
 			const uploadFileResponse = await HiringRequestAPI.uploadFile(fileData);
 			if (uploadFileResponse) {
@@ -554,7 +541,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -585,7 +572,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -615,7 +602,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -648,7 +635,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -678,7 +665,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}
@@ -690,8 +677,10 @@ export const hiringRequestDAO = {
 		try {
 			const openPostAcceptanceResponse =
 				await HiringRequestAPI.openPostAcceptanceRequest(hrAcceptanceDetail);
+
 			if (openPostAcceptanceResponse) {
 				const statusCode = openPostAcceptanceResponse['statusCode'];
+
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = openPostAcceptanceResponse.responseBody;
 					return {
@@ -708,7 +697,7 @@ export const hiringRequestDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				return statusCode;
 			}

@@ -26,7 +26,7 @@ export const userDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -51,7 +51,7 @@ export const userDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -76,7 +76,7 @@ export const userDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -103,7 +103,7 @@ export const userDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -129,7 +129,7 @@ export const userDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {

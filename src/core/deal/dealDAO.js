@@ -2,7 +2,6 @@ import { DealAPI } from 'apis/dealAPI';
 import { HTTPStatusCode } from 'constants/network';
 import UTSRoutes from 'constants/routes';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
-import { Navigate } from 'react-router-dom';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const DealDAO = {
@@ -24,7 +23,7 @@ export const DealDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -49,7 +48,7 @@ export const DealDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -74,7 +73,7 @@ export const DealDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {

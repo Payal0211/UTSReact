@@ -1,3 +1,6 @@
+import { HTTPStatusCode } from 'constants/network';
+import UTSRoutes from 'constants/routes';
+
 export const _isNull = function (value) {
 	if (value === null || value === undefined || value === '') return true;
 	else return false;
@@ -46,3 +49,7 @@ export const DateTimeUtils = {
 		return date.toLocaleString('en-us', { weekday: 'long' });
 	},
 };
+
+export const isAuthCodeValid = (statusCode) =>
+	statusCode === HTTPStatusCode.UNAUTHORIZED &&
+	window.location.replace(UTSRoutes.LOGINROUTE);

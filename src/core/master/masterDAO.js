@@ -24,7 +24,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -47,7 +47,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -70,7 +70,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -95,7 +95,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -120,7 +120,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -145,7 +145,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -170,7 +170,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -196,7 +196,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -222,7 +222,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -247,7 +247,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -272,7 +272,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -318,7 +318,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -344,7 +344,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -370,7 +370,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -396,7 +396,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -422,7 +422,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -472,7 +472,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -498,7 +498,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -525,7 +525,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -553,7 +553,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -583,7 +583,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -614,7 +614,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -640,7 +640,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -668,7 +668,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -694,7 +694,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -720,7 +720,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -746,7 +746,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -772,7 +772,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}
@@ -798,7 +798,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 				// return statusCode;
 			}

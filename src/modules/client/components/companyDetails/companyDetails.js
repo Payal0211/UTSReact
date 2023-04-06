@@ -43,7 +43,7 @@ const CompanyDetails = ({
 		linkValidation: '',
 	});
 	const watchCompanyLeadSource = watch('companyLeadSource');
-	const uploadFile = useRef(null);
+
 	const convertToBase64 = useCallback((file) => {
 		return new Promise((resolve, reject) => {
 			const fileReader = new FileReader();
@@ -81,13 +81,12 @@ const CompanyDetails = ({
 					...getValidation,
 					systemFileUpload: '',
 				});
-				console.log(fileData, 'fileData');
+				setIsLoading(false);
 				setBase64Image(base64);
 				setUploadFileData(fileData.name);
 				setUploadModal(false);
-				setIsLoading(false);
 			}
-			uploadFile.current.value = '';
+			// uploadFile.current.value = '';
 		},
 		[convertToBase64, getValidation, setBase64Image, setUploadFileData],
 	);
@@ -397,7 +396,6 @@ const CompanyDetails = ({
 						</Modal>
 						<UploadModal
 							isFooter={false}
-							uploadFileRef={uploadFile}
 							uploadFileHandler={(e) => uploadFileHandler(e.target.files[0])}
 							modalTitle={'Upload Logo'}
 							openModal={showUploadModal}

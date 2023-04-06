@@ -1,10 +1,19 @@
 import { EmailRegEx, InputType } from 'constants/application';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import AddInterviewerStyle from './addInterviewer.module.css';
 import { secondaryInterviewer } from '../hrFields/hrFields';
+import { _isNull } from 'shared/utils/basic_utils';
 
-const AddInterviewer = ({ register, fields, remove, append, errors }) => {
+const AddInterviewer = ({
+	interviewDetails,
+	register,
+	fields,
+	remove,
+	append,
+	setValue,
+	errors,
+}) => {
 	/**Add Secondary Items*/
 	const onAddSecondaryInterviewer = useCallback(
 		(e) => {
@@ -21,6 +30,18 @@ const AddInterviewer = ({ register, fields, remove, append, errors }) => {
 		[remove],
 	);
 
+	const autoFillInterviewDetailsHandler = useCallback(() => {
+		if (interviewDetails) {
+			setValue('interviewerFullName', interviewDetails?.fullName);
+			setValue('interviewerEmail', interviewDetails?.emailId);
+			setValue('interviewerLinkedin', interviewDetails?.linkedin);
+			setValue('interviewerDesignation', interviewDetails?.designation);
+		}
+	}, [interviewDetails, setValue]);
+
+	useEffect(() => {
+		if (interviewDetails) autoFillInterviewDetailsHandler();
+	}, [autoFillInterviewDetailsHandler, interviewDetails]);
 	return (
 		<div>
 			<div className={AddInterviewerStyle.addInterviewContainer}>
@@ -39,6 +60,7 @@ const AddInterviewer = ({ register, fields, remove, append, errors }) => {
 					<div className={AddInterviewerStyle.row}>
 						<div className={AddInterviewerStyle.colMd6}>
 							<HRInputField
+								disabled={!_isNull(interviewDetails)}
 								register={register}
 								label="Interviewer Full Name"
 								name="interviewerFullName"
@@ -54,6 +76,7 @@ const AddInterviewer = ({ register, fields, remove, append, errors }) => {
 
 						<div className={AddInterviewerStyle.colMd6}>
 							<HRInputField
+								disabled={!_isNull(interviewDetails)}
 								register={register}
 								label="Interviewer Email"
 								name="interviewerEmail"
@@ -74,6 +97,7 @@ const AddInterviewer = ({ register, fields, remove, append, errors }) => {
 					<div className={AddInterviewerStyle.row}>
 						<div className={AddInterviewerStyle.colMd6}>
 							<HRInputField
+								disabled={!_isNull(interviewDetails)}
 								register={register}
 								label="Interviewer Linkedin"
 								name="interviewerLinkedin"
@@ -89,6 +113,7 @@ const AddInterviewer = ({ register, fields, remove, append, errors }) => {
 
 						<div className={AddInterviewerStyle.colMd6}>
 							<HRInputField
+								disabled={!_isNull(interviewDetails)}
 								required
 								errors={errors}
 								validationSchema={{
