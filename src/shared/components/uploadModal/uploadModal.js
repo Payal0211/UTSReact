@@ -1,6 +1,6 @@
 import { Divider, Modal, Progress, Spin, message } from 'antd';
 import { InputType } from 'constants/application';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { ReactComponent as CloudUploadSVG } from 'assets/svg/cloudUpload.svg';
 import { ReactComponent as FolderSVG } from 'assets/svg/folder.svg';
 import useDrivePicker from 'react-google-drive-picker';
@@ -39,11 +39,14 @@ const UploadModal = ({
 	getGoogleDriveLink,
 	setGoogleDriveLink,
 	setUploadModal,
-	uploadFileRef,
+	// uploadFileRef,
 	uploadFileHandler,
 	googleDriveFileUploader,
 	uploadFileFromGoogleDriveLink,
+	modalSubtitle,
 }) => {
+	const uploadFileRef = useRef(null);
+
 	return (
 		<Modal
 			width="864px"
@@ -53,7 +56,7 @@ const UploadModal = ({
 			onCancel={cancelModal}>
 			<h1 className={UploadModalStyle.modalTitle}>{modalTitle}</h1>
 			<p className={UploadModalStyle.modalUploadType}>
-				File should be (JPG, PNG, SVG)
+				{modalSubtitle || 'File should be (JPG, PNG, SVG)'}
 			</p>
 			<Divider style={{ borderTop: '1px solid #E8E8E8' }} />
 			{isLoading ? (

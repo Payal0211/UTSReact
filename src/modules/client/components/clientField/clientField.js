@@ -17,6 +17,7 @@ import { ClientDAO } from 'core/client/clientDAO';
 import { HTTPStatusCode } from 'constants/network';
 import CompanyDetails from '../companyDetails/companyDetails';
 import { _isNull } from 'shared/utils/basic_utils';
+import WithLoader from 'shared/components/loader/loader';
 
 export const secondaryClient = {
 	en_Id: '',
@@ -55,7 +56,7 @@ const ClientField = ({
 			pocList: [],
 		},
 	});
-	const [isLoading, setIsLoading] = useState(false);
+	// const [isLoading, setIsLoading] = useState(false);
 	const [type, setType] = useState('');
 	const [addClientResponse, setAddClientResponse] = useState(null);
 	const [addClientResponseID, setAddClientResponseID] = useState(0);
@@ -166,7 +167,6 @@ const ClientField = ({
 					content: 'Client details has been saved to draft.',
 				});
 		}
-		setIsLoading(false);
 	};
 	/** Submit the client form Ends */
 	// console.log(addClientResponse, '--addClientResponse');

@@ -107,23 +107,21 @@ export function clientFormDataFormatter(
 					? '+91' + d.phoneNumber
 					: d.companyCountryCode + d.phoneNumber,
 			teamManagement:
-				draft === SubmitType.SAVE_AS_DRAFT ? watch('remote') : d.remote,
+				draft === SubmitType.SAVE_AS_DRAFT
+					? parseInt(watch('remote'))
+					: parseInt(d.remote),
 			leadType:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('companyLeadSource'))
-						? 0
-						: watch('companyLeadSource')?.id
+						? null
+						: watch('companyLeadSource')?.id === 1
+						? watch('companyInboundType')?.value
+						: watch('companyLeadSource')?.value
 					: _isNull(d.companyLeadSource)
-					? 0
-					: d.companyLeadSource?.id,
-			inboundType:
-				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('companyInboundType'))
-						? 0
-						: watch('companyInboundType')?.id
-					: _isNull(d.companyInboundType)
-					? 0
-					: d.companyInboundType?.id,
+					? null
+					: d.companyLeadSource?.id === 1
+					? d.companyInboundType?.value
+					: d.companyLeadSource?.value,
 		},
 		primaryClient: {
 			en_Id: _isNull(addClientResponse)

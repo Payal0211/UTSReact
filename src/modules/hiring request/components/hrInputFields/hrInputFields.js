@@ -17,6 +17,7 @@ const HRInputField = ({
 	maxLength,
 	required,
 	value,
+	buttonLabel,
 	disabled,
 	type,
 	trailingIcon,
@@ -65,6 +66,9 @@ const HRInputField = ({
 				<div className={HRInputFieldStyle.inputBox}>
 					{leadingIcon && (
 						<div className={HRInputFieldStyle.leadingIcon}>{leadingIcon}</div>
+					)}
+					{InputType.BUTTON && (
+						<span className={HRInputFieldStyle.btnLabel}>{buttonLabel}</span>
 					)}
 					<input
 						style={{

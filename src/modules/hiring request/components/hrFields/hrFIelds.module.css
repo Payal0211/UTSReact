@@ -160,10 +160,11 @@
 .fieldOr {
     position: relative;
     flex-wrap: nowrap;
+    align-items: flex-start;
 }
 
 .orLabel {
-    padding: 0 10px 6px;
+    padding: 43px 10px 6px;
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 16px;

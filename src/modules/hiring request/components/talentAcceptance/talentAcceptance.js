@@ -7,6 +7,7 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { LoadingOutlined } from '@ant-design/icons';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HTTPStatusCode } from 'constants/network';
+import { useLocation } from 'react-router-dom';
 const antIcon = (
 	<LoadingOutlined
 		style={{
@@ -33,6 +34,8 @@ const TalentAcceptance = ({
 	talentInfo,
 	closeModal,
 }) => {
+	const switchLocation = useLocation();
+	let urlSplitter = switchLocation.pathname.split('/')[2];
 	const [postAcceptanceValue, setPostAcceptanceValue] = useState(null);
 	const [postAcceptanceAvailability, setPostAcceptanceAvailability] =
 		useState(null);
@@ -97,9 +100,10 @@ const TalentAcceptance = ({
 		let response = await hiringRequestDAO.addHRAcceptanceRequestDAO(
 			formattedResponse,
 		);
-		if (response?.responseStatusCode === HTTPStatusCode.OK) {
+
+		if (response?.statusCode === HTTPStatusCode.OK) {
 			setIsLoading(false);
-			callAPI(talentInfo?.HiringDetailID);
+			callAPI(urlSplitter);
 		}
 		setIsLoading(false);
 	}, [
@@ -110,8 +114,8 @@ const TalentAcceptance = ({
 		talentAcceptanceResult?.postAcceptanceDetail,
 		talentAcceptanceResult?.postAcceptanceDetailAvailability,
 		talentAcceptanceResult?.postAcceptanceDetailHowSoon,
-		talentInfo?.HiringDetailID,
 		talentInfo?.TalentID,
+		urlSplitter,
 	]);
 	useEffect(() => {
 		openPostAcceptanceHandler();
