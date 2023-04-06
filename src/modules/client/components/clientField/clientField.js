@@ -36,6 +36,8 @@ const ClientField = ({
 	setTitle,
 	tabFieldDisabled,
 	setTabFieldDisabled,
+	setInterviewDetails,
+	interviewDetails,
 	setClientDetails,
 }) => {
 	const [messageAPI, contextHolder] = message.useMessage();
@@ -160,6 +162,11 @@ const ClientField = ({
 				});
 			type !== SubmitType.SAVE_AS_DRAFT &&
 				setClientDetails(addClientResult?.responseBody?.details);
+
+			type !== SubmitType.SAVE_AS_DRAFT &&
+				setInterviewDetails(
+					addClientResult?.responseBody?.details?.primaryClient,
+				);
 
 			type === SubmitType.SAVE_AS_DRAFT &&
 				messageAPI.open({

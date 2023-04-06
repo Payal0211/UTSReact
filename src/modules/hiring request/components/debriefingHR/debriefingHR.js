@@ -27,6 +27,7 @@ const DebriefingHR = ({
 	setTabFieldDisabled,
 	enID,
 	JDParsedSkills,
+	interviewDetails,
 	setJDParsedSkills,
 }) => {
 	const {
@@ -309,7 +310,9 @@ const DebriefingHR = ({
 				errors={errors}
 				append={append}
 				remove={remove}
+				setValue={setValue}
 				register={register}
+				interviewDetails={interviewDetails}
 				fields={fields}
 			/>
 			<Divider />

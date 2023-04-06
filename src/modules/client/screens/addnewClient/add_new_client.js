@@ -9,6 +9,7 @@ const AddNewClientScreen = () => {
 	const [title, setTitle] = useState('Add New Client');
 
 	const [clientDetail, setClientDetails] = useState({});
+	const [interviewDetails, setInterviewDetails] = useState(null);
 	const [tabFieldDisabled, setTabFieldDisabled] = useState({
 		addNewClient: false,
 		addNewHiringRequest: true,
@@ -20,6 +21,7 @@ const AddNewClientScreen = () => {
 		Responsibility: '',
 		Requirements: '',
 	});
+	console.log(interviewDetails, '-interviewDetailss---');
 	return (
 		<div className={AddNewClientStyle.addNewContainer}>
 			<div className={AddNewClientStyle.addHRTitle}>{title}</div>
@@ -42,6 +44,8 @@ const AddNewClientScreen = () => {
 									tabFieldDisabled={tabFieldDisabled}
 									setTabFieldDisabled={setTabFieldDisabled}
 									setClientDetails={setClientDetails}
+									setInterviewDetails={setInterviewDetails}
+									interviewDetails={interviewDetails}
 								/>
 							),
 						},
@@ -65,6 +69,7 @@ const AddNewClientScreen = () => {
 							key: 'Debriefing HR',
 							children: (
 								<DebriefingHR
+									interviewDetails={interviewDetails}
 									enID={enID}
 									setTitle={setTitle}
 									tabFieldDisabled={tabFieldDisabled}
