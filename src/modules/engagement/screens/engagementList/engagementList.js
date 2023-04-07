@@ -91,7 +91,7 @@ const EngagementList = () => {
     };
 
     const tableColumnsMemo = useMemo(
-        () => allEngagementConfig.tableConfig(),
+        () => allEngagementConfig.tableConfig(setEngagementModal),
         [],
     );
 
@@ -294,7 +294,6 @@ const EngagementList = () => {
                 </div>
             </div>
 
-
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementFeedback: true })}>EngagementFeeback</a>
                 {/* <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementBillRate: true })}  >EngagementBillRate</a> */}
@@ -304,9 +303,6 @@ const EngagementList = () => {
                 <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })} >EngagementReplaceTalent</a>
                 <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementBillRateAndPayRate: true })} >EngagementBillRateAndPayRate</a>
             </div>
-
-
-
 
             {/*
 			 * ------------ Table Starts-----------

@@ -100,7 +100,7 @@ export const allEngagementConfig = {
             },
         ];
     },
-    tableConfig: (togglePriority) => {
+    tableConfig: (setEngagementModal) => {
         return [
             {
                 title: '    ',
@@ -117,29 +117,62 @@ export const allEngagementConfig = {
                         listItem={[
                             {
                                 label: 'Replace Engagement',
-                                key: '',
+                                key: 'replaceEngagement',
                             },
                             {
                                 label: 'Renew Engagement',
-                                key: '',
+                                key: 'reNewEngagement',
                             },
                             {
                                 label: 'End Engagement',
-                                key: '',
+                                key: 'endEngagement',
                             },
                             {
                                 label: 'Edit Bill Rate',
-                                key: '',
+                                key: 'editRateBillRate',
                             },
                             {
                                 label: 'Edit Pay Rate',
-                                key: '',
+                                key: 'editPayRate',
                             },
                             {
                                 label: 'Add Invoice Details',
-                                key: '',
+                                key: 'addInvoiceDetails',
                             },
                         ]}
+                        menuAction={(item) => {
+                            console.log(item, "item")
+                            switch (item.key) {
+                                case "Replace Engagement": {
+                                    setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })
+                                    break;
+                                }
+                                case "Renew Engagement": {
+                                    // setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })
+                                    break;
+                                }
+                                case "End Engagement": {
+                                    setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })
+                                    break;
+                                }
+                                case "Edit Bill Rate": {
+                                    setEngagementModal({ ...getEngagementModal, engagementBillRateAndPayRate: true })
+                                    break;
+                                }
+                                case "Edit Pay Rate": {
+                                    setEngagementModal({ ...getEngagementModal, engagementBillRateAndPayRate: true })
+                                    break;
+                                }
+                                case "Add Invoice Details": {
+                                    // setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })
+                                    break;
+                                }
+                                default:
+                                    break;
+                            }
+                        }}
+
+
                     />
                 },
             },
