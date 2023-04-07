@@ -8,6 +8,7 @@ const TalentProfileCard = ({
 	talentCTA,
 	talentDetail,
 	miscData,
+	clientDetail,
 	HRStatusCode,
 	callAPI,
 	hrId,
@@ -43,6 +44,7 @@ const TalentProfileCard = ({
 								starMarkedStatusCode={starMarkedStatusCode}
 								hrStatus={hrStatus}
 								hrType={hrType}
+								clientDetail={clientDetail}
 							/>
 						</Suspense>
 					) : (

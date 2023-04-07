@@ -24,6 +24,7 @@ const TalentList = ({
 	talentDetail,
 	miscData,
 	callAPI,
+	clientDetail,
 	HRStatusCode,
 	hrId,
 	starMarkedStatusCode,
@@ -31,7 +32,6 @@ const TalentList = ({
 	hiringRequestNumber,
 	hrType,
 }) => {
-	console.log(hrId, 'hriD');
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
@@ -1438,7 +1438,7 @@ const TalentList = ({
 													case TalentOnboardStatus.TALENT_ACCEPTANCE: {
 														setTalentAcceptance(true);
 														setTalentIndex(item?.TalentID);
-														console.log('---talentID---', item?.TalentID);
+
 														break;
 													}
 													case TalentOnboardStatus.TALENT_STATUS: {
@@ -1734,6 +1734,7 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setTalentAcceptance(false)}>
 				<TalentAcceptance
+					clientDetail={clientDetail}
 					callAPI={callAPI}
 					talentInfo={filterTalentID}
 					talentName={filterTalentID?.Name}
