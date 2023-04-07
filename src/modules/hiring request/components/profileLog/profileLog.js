@@ -16,11 +16,11 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const [typeId, setTypeId] = useState(0);
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
-	const [calenderFilter, setCalenderFilter] = useState({});
-	const getTechScore = useCallback(async () => {
+	// const [calenderFilter, setCalenderFilter] = useState({});
+	/* const getTechScore = useCallback(async () => {
 		const response = await hiringRequestDAO.getTalentTechScoreDAO(talentID);
 		setProfileLog(response && response?.responseBody?.details);
-	}, [talentID]);
+	}, [talentID]); */
 
 	const getTalentProfileLogHandler = useCallback(async () => {
 		let response = await hiringRequestDAO.getTalentProfileLogDAO({
@@ -33,7 +33,7 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 	useEffect(() => {
 		// getTechScore();
 		getTalentProfileLogHandler();
-	}, [getTalentProfileLogHandler, getTechScore]);
+	}, [getTalentProfileLogHandler]);
 
 	const profileData = [
 		{
@@ -71,38 +71,44 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const [endDate, setEndDate] = useState(null);
 
 	const onProfileLogClickHandler = useCallback(
-		async (typeID, index, type) => {
+		async (typeID, index, type, start = null, end = null) => {
 			setLogExpanded([]);
 			setTypeId(typeID);
 			setActiveIndex(index);
 			setActiveType(type);
 
-			// console.log(calenderFilter, '--calenderFiler');
+			let profileObj = {
+				talentID: talentID,
+				typeID: typeID,
+				fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
+				toDate: !!end && new Date(end).toLocaleDateString('en-US'),
+			};
 
 			const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
-				calenderFilter,
+				profileObj,
 			);
 			setLogExpanded(response && response?.responseBody?.details);
 		},
-		[calenderFilter],
+		[talentID],
 	);
+
 	const onCalenderFilter = useCallback(
 		(dates) => {
 			const [start, end] = dates;
 			setStartDate(start);
 			setEndDate(end);
 			if (start && end) {
-				setCalenderFilter({
+				/* setCalenderFilter({
 					...calenderFilter,
-					fromDate: new Date(start).toLocaleDateString('en-US'),
-					toDate: new Date(end).toLocaleDateString('en-US'),
-				});
-				onProfileLogClickHandler(typeId, activeIndex, activeType);
+					fromDate: ,
+					toDate: ,
+				}); */
+				onProfileLogClickHandler(typeId, activeIndex, activeType, start, end);
 			}
 		},
-		[activeIndex, activeType, calenderFilter, onProfileLogClickHandler, typeId],
+		[activeIndex, activeType, onProfileLogClickHandler, typeId],
 	);
-	// console.log(calenderFilter, '---calenderFilter---');
+
 	return (
 		<div className={ProfileStyle.profileContainer}>
 			<div className={ProfileStyle.flexStart}>
@@ -161,20 +167,8 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 									index === activeIndex &&
 									`1px solid ${profileData[activeIndex]?.activeColor}`,
 							}}
-							onClick={
-								() => {
-									console.log('--item--', item);
-									setCalenderFilter({
-										...calenderFilter,
-										talentID: item?.typeID,
-										typeID: item?.typeID,
-										fromDate: null,
-										toDate: null,
-									});
-									console.log('--calenderFilteronclick', calenderFilter);
-									onProfileLogClickHandler(item?.typeID, index, item?.typeID);
-								}
-								//
+							onClick={() =>
+								onProfileLogClickHandler(item?.typeID, index, item?.typeID)
 							}
 							key={item.id}
 							className={ProfileStyle.profileSets}>
