@@ -180,7 +180,7 @@ const HRDetailScreen = () => {
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
-							{hrUtils.getAcceptTR(
+							{/* {hrUtils.getAcceptTR(
 								apiData?.IsAccepted,
 								miscData?.LoggedInUserTypeID,
 								setAcceptHRModal,
@@ -195,7 +195,7 @@ const HRDetailScreen = () => {
 								apiData?.IsAccepted,
 								miscData?.LoggedInUserTypeID,
 								apiData?.TR_Accepted,
-							)}
+							)} */}
 
 							<HROperator
 								title={

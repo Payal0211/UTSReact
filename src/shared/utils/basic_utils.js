@@ -53,3 +53,12 @@ export const DateTimeUtils = {
 export const isAuthCodeValid = (statusCode) =>
 	statusCode === HTTPStatusCode.UNAUTHORIZED &&
 	window.location.replace(UTSRoutes.LOGINROUTE);
+
+export const makeURLParamsFromPayload = (payload) => {
+	let url = '';
+	Object.entries(payload).forEach(([key, value], index) => {
+		if (!!value) url = url + `${key}=${value}&`;
+	});
+
+	return `?${url.slice(0, -1)}`;
+};

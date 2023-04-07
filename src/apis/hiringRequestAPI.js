@@ -7,6 +7,7 @@ import {
 } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
+import { makeURLParamsFromPayload } from 'shared/utils/basic_utils';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const HiringRequestAPI = {
@@ -240,12 +241,12 @@ export const HiringRequestAPI = {
 	},
 	getTalentProfileSharedDetailRequest: async (talentDetails) => {
 		let httpService = new HttpServices();
-		console.log('--rtalentDetaulis---', talentDetails);
+
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.MATCHMAKING +
 			HiringRequestsAPI.GET_TALENT_PROFILE_SHARED_DETAILS +
-			`?talentid=${talentDetails?.talentID}&typeid=${talentDetails?.typeID}&fromDate=${talentDetails?.fromDate}&toDate=${talentDetails?.toDate}`;
+			makeURLParamsFromPayload(talentDetails);
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
