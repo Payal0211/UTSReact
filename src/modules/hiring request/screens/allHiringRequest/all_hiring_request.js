@@ -110,7 +110,6 @@ const AllHiringRequestScreen = () => {
 			let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
 				pageData,
 			);
-
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setTotalRecords(response?.responseBody?.totalrows);
 				setLoading(false);

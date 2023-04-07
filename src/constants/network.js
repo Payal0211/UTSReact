@@ -131,6 +131,7 @@ export class UsersAPI {
 export class InterviewsAPI {
 	static LIST = 'List';
 	static INTERVIEW_STATUS_DETAILS = 'GetInterviewStatusDetail';
+	static UPDATE_INTERVIEW_STATUS = 'UpdateInterviewStatus';
 }
 export class DealsAPI {
 	static LIST = 'List';

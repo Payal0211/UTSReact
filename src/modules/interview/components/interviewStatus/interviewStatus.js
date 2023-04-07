@@ -3,8 +3,10 @@ import InterviewStatusStyle from './interviewStatus.module.css';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
+import { InterviewDAO } from 'core/interview/interviewDAO';
+import { HTTPStatusCode } from 'constants/network';
 
-const InterviewStatus = ({ callAPI, closeModal }) => {
+const InterviewStatus = ({ hrId, talentInfo, callAPI, closeModal }) => {
 	const {
 		register,
 		handleSubmit,
@@ -16,10 +18,28 @@ const InterviewStatus = ({ callAPI, closeModal }) => {
 		formState: { errors },
 	} = useForm({});
 	const [interviewStatus, setInterviewStatus] = useState([]);
+	console.log(hrId, '--talentInfo---');
 	const getInterviewStatusHandler = useCallback(async () => {
-		setInterviewStatus([]);
-	}, []);
+		const response = await InterviewDAO.getInterviewStatusRequestDAO({
+			interviewStatusID: talentInfo?.SelectedInterviewId,
+		});
+		setInterviewStatus(
+			response && response?.responseBody?.details?.Data?.HiringStatus,
+		);
+	}, [talentInfo?.SelectedInterviewId]);
 
+	const updateInterviewStatusHandler = useCallback(
+		async (d) => {
+			const response = await InterviewDAO.updateInterviewStatusDAO({
+				hrID: hrId,
+				interviewStatusID: d.interviewStatus,
+				interviewMasterID: talentInfo?.MasterId,
+				talentSelectedInterviewDetailsID: talentInfo?.SelectedInterviewId,
+			});
+			if (response.statusCode === HTTPStatusCode.OK) callAPI(hrId);
+		},
+		[callAPI, hrId, talentInfo?.MasterId, talentInfo?.SelectedInterviewId],
+	);
 	useEffect(() => {
 		getInterviewStatusHandler();
 	}, [getInterviewStatusHandler]);
@@ -35,20 +55,19 @@ const InterviewStatus = ({ callAPI, closeModal }) => {
 					<HRSelectField
 						setValue={setValue}
 						register={register}
-						name="InterviewStatus"
+						name="interviewStatus"
 						label="Select Interview Status"
 						defaultValue="Please Select"
 						options={interviewStatus}
 						required
-						isError={errors['InterviewStatus'] && errors['InterviewStatus']}
+						isError={errors['interviewStatus'] && errors['interviewStatus']}
 						errorMsg="Please select interview Status."
 					/>
 				</div>
 				<div className={InterviewStatusStyle.formPanelAction}>
 					<button
 						type="submit"
-						// onClick={cancelModal}
-
+						onClick={handleSubmit(updateInterviewStatusHandler)}
 						className={InterviewStatusStyle.btnPrimary}>
 						Save
 					</button>

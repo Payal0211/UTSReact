@@ -1199,7 +1199,7 @@ const TalentList = ({
 													<Menu.Item
 														key={0}
 														onClick={() => {
-															setProfileLogModal(true);
+															// setProfileLogModal(true); // TODO:-
 															setTalentIndex(listIndex);
 														}}>
 														View Profile Log
@@ -1394,7 +1394,7 @@ const TalentList = ({
 										cursor: 'pointer',
 									}}
 									onClick={() => {
-										setVersantModal(true);
+										// setVersantModal(true);-  //TODO:-
 										setTalentIndex(item?.TalentID);
 									}}>
 									Versant Test Results
@@ -1752,7 +1752,6 @@ const TalentList = ({
 				centered
 				footer={null}
 				open={showTalentStatus}
-				// onOk={() => setVersantModal(false)}
 				onCancel={() => setTalentStatus(false)}>
 				<TalentStatus
 					talentInfo={filterTalentID}
@@ -1771,6 +1770,8 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setInterviewStatus(false)}>
 				<InterviewStatus
+					hrId={hrId}
+					talentInfo={filterTalentID}
 					callAPI={callAPI}
 					closeModal={() => setInterviewStatus(false)}
 				/>

@@ -36,4 +36,20 @@ export const InterviewAPI = {
 			return errorDebug(error, 'InterviewAPI.getInterviewStatusDetailsRequest');
 		}
 	},
+	updateInterviewStatus: async (interviewDetails) => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.INTERVIEW +
+				InterviewsAPI.UPDATE_INTERVIEW_STATUS;
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			httpService.dataToSend = interviewDetails;
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'InterviewAPI.updateInterviewStatus');
+		}
+	},
 };
