@@ -363,10 +363,10 @@ export const hiringRequestDAO = {
 			);
 		}
 	},
-	getTalentProfileLogDAO: async (talentID) => {
+	getTalentProfileLogDAO: async (talentDetails) => {
 		try {
 			const getTalentProfileLogResponse =
-				await HiringRequestAPI.getTalentProfileLogReqeust(talentID);
+				await HiringRequestAPI.getTalentProfileLogReqeust(talentDetails);
 			if (getTalentProfileLogResponse) {
 				const statusCode = getTalentProfileLogResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {

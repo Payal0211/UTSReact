@@ -43,6 +43,7 @@ const UploadModal = ({
 	uploadFileHandler,
 	googleDriveFileUploader,
 	uploadFileFromGoogleDriveLink,
+	imageSize,
 	modalSubtitle,
 }) => {
 	const uploadFileRef = useRef(null);
@@ -90,6 +91,19 @@ const UploadModal = ({
 									}}>
 									Browse My Device to Upload File
 								</div>
+
+								{imageSize && (
+									<div
+										style={{
+											fontSize: '14px',
+											fontWeight: '500',
+											lineHeight: '17px',
+											color: `var(--uplers-black)`,
+											marginTop: '8px',
+										}}>
+										Image File size must be less than {imageSize} MB
+									</div>
+								)}
 							</label>
 						</span>
 						<span style={{ color: 'red' }}>

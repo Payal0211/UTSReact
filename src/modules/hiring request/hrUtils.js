@@ -451,9 +451,28 @@ export const hrUtils = {
 					)
 				);
 			}
+		} else return null;
+
+		/* console.log(apiData, '--Matchmaking-apiData-----');
+		if (
+			loggedInUserTypeID === UserAccountRole.TALENTOPS ||
+			loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+			loggedInUserTypeID === UserAccountRole.DEVELOPER ||
+			loggedInUserTypeID === UserAccountRole.ADMINISTRATOR
+		) {
+			return (
+				<MatchmakingModal
+					refreshedHRDetail={callAPI}
+					hrID={urlSplitter?.split('HR')[0]}
+					hrNo={updatedSplitter}
+					hrStatusCode={apiData?.HRStatusCode}
+					hrStatus={apiData?.HRStatus}
+					hrPriority={apiData?.StarMarkedStatusCode}
+				/>
+			);
 		} else {
 			return null;
-		}
+		} */
 	},
 	handleScheduleInterview(item, miscData, HRStatusCode) {
 		if (
