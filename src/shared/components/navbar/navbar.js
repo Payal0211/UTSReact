@@ -6,15 +6,27 @@ import { Badge, Tooltip } from 'antd';
 import { ReactComponent as BellSVG } from 'assets/svg/bell.svg';
 import { ReactComponent as LogoutSVG } from 'assets/svg/logout.svg';
 import { useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect, useState } from 'react';
+import { MasterDAO } from 'core/master/masterDAO';
 
 const Navbar = ({ fullName }) => {
 	const navigation = useNavigate();
+	const [dashboardCount, setDashboardCount] = useState(null);
 	const queryClient = useQueryClient();
 	const onLogoutHandler = async () => {
 		const res = await userDAO.logoutDAO();
 		queryClient.removeQueries();
 		if (res) navigation(UTSRoutes.LOGINROUTE);
 	};
+
+	const getDashboardCountHandler = useCallback(async () => {
+		const response = await MasterDAO.getDashboardCountForEngagementDAO();
+		setDashboardCount(response && response.responseBody?.details);
+	}, []);
+
+	useEffect(() => {
+		getDashboardCountHandler();
+	}, [getDashboardCountHandler]);
 	return (
 		<div className={navbarStyles.navbarContainer}>
 			<nav className={navbarStyles.nav}>
@@ -31,7 +43,11 @@ const Navbar = ({ fullName }) => {
 					<div className={navbarStyles.activeTalent}>
 						<span className={navbarStyles.talentIndicator}></span>
 						<div>
-							<b>299/300</b> Active Talent Deployed
+							<b>
+								{dashboardCount?.totalActiveEngagement}/
+								{dashboardCount?.totalEnagagement}
+							</b>{' '}
+							Active Talent Deployed
 						</div>
 					</div>
 				</div>

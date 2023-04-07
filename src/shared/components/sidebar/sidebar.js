@@ -85,7 +85,13 @@ const getSideBar = () => {
 			icon: Briefcase,
 			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 		}),
-
+  new SideBarModels({
+			id: 'Engagement_List',
+			title: 'Engagement',
+			isActive: false,
+			icon: HRDetails,
+			navigateTo: UTSRoutes.ENGAGEMENTRROUTE,
+		}),
 		/* new SideBarModels({
 			id: 'UTS_Onboard',
 			title: 'Onboard',

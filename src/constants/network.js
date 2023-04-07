@@ -20,6 +20,7 @@ export class SubDomain {
 	static HR_ACCEPTANCE = 'HRAcceptance/';
 	static ONBOARD = 'OnBoard/';
 	static TALENT_STATUS = 'TalentStatus/';
+	static ENGAGEMENT = 'Engagement/';
 }
 export class APIType {
 	static USER = '/user';
@@ -40,6 +41,11 @@ export class UserAPI {
 	static UPDATEPASSWORD = '/updatepassword';
 	static IS_EMPLOYEE_ID_EXIST = 'IsEmployeeIDExist';
 	static IS_EMPLOYEE_NAME_EXIST = 'IsEmployeeFullNameExist';
+}
+
+export class EngagementAPI {
+	static FILTER = 'Filters';
+	static LIST = 'List';
 }
 
 export class AllHiringRequestAPI {
@@ -79,6 +85,7 @@ export class MastersAPI {
 	static NET_PAYMENT_DAYS = 'NetPaymentDays';
 	static YES_NO_OPTION = 'YesNoOption';
 	static BUDDY = 'Buddy';
+	static GET_DASHBOARD_COUNT_FOR_ENGAGEMENT = 'GetDashboardCountForEngagement';
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
@@ -132,6 +139,7 @@ export class InterviewsAPI {
 	static LIST = 'List';
 	static INTERVIEW_STATUS_DETAILS = 'GetInterviewStatusDetail';
 	static UPDATE_INTERVIEW_STATUS = 'UpdateInterviewStatus';
+	static FEEDBACK = 'Feedback';
 }
 export class DealsAPI {
 	static LIST = 'List';
