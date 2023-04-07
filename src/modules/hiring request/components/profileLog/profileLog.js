@@ -13,21 +13,27 @@ import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const [profileLog, setProfileLog] = useState(null);
 	const [activeIndex, setActiveIndex] = useState(-1);
+	const [typeId, setTypeId] = useState(0);
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
-	const [calenderFilter, setCalenderFilter] = useState({
-		talentid: 0,
-		fromDate: '',
-		toDate: '',
-	});
+	const [calenderFilter, setCalenderFilter] = useState({});
 	const getTechScore = useCallback(async () => {
 		const response = await hiringRequestDAO.getTalentTechScoreDAO(talentID);
 		setProfileLog(response && response?.responseBody?.details);
 	}, [talentID]);
 
+	const getTalentProfileLogHandler = useCallback(async () => {
+		let response = await hiringRequestDAO.getTalentProfileLogDAO({
+			talentid: talentID,
+			fromDate: null,
+			toDate: null,
+		});
+		setProfileLog(response && response?.responseBody?.details);
+	}, [talentID]);
 	useEffect(() => {
-		getTechScore();
-	}, [getTechScore]);
+		// getTechScore();
+		getTalentProfileLogHandler();
+	}, [getTalentProfileLogHandler, getTechScore]);
 
 	const profileData = [
 		{
@@ -64,42 +70,39 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 
-	/* const onCalenderFilter = (dates) => {
-		const [start, end] = dates;
-		setStartDate(start);
-		setEndDate(end);
-		if (start && end) {
-			setCalenderFilter({
-				...calenderFilter,
-				fromDate: new Date(start).toLocaleDateString('en-US'),
-				toDate: new Date(end).toLocaleDateString('en-US'),
-			});
-			handleHRRequest({
-				...tableFilteredState,
-				filterFields_ViewAllHRs: {
+	const onProfileLogClickHandler = useCallback(
+		async (typeID, index, type) => {
+			setLogExpanded([]);
+			setTypeId(typeID);
+			setActiveIndex(index);
+			setActiveType(type);
+
+			// console.log(calenderFilter, '--calenderFiler');
+
+			const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
+				calenderFilter,
+			);
+			setLogExpanded(response && response?.responseBody?.details);
+		},
+		[calenderFilter],
+	);
+	const onCalenderFilter = useCallback(
+		(dates) => {
+			const [start, end] = dates;
+			setStartDate(start);
+			setEndDate(end);
+			if (start && end) {
+				setCalenderFilter({
+					...calenderFilter,
 					fromDate: new Date(start).toLocaleDateString('en-US'),
 					toDate: new Date(end).toLocaleDateString('en-US'),
-				},
-			});
-		}
-	}; */
-	const onProfileLogClickHandler = async (typeID, index, type) => {
-		setLogExpanded([]);
-		setActiveIndex(index);
-		setActiveType(type);
-		const profileObj = {
-			talentID: talentID,
-			typeID: typeID,
-		};
-		setCalenderFilter({
-			...calenderFilter,
-			talentid: talentID,
-		});
-		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
-			profileObj,
-		);
-		setLogExpanded(response && response?.responseBody?.details);
-	};
+				});
+				onProfileLogClickHandler(typeId, activeIndex, activeType);
+			}
+		},
+		[activeIndex, activeType, calenderFilter, onProfileLogClickHandler, typeId],
+	);
+	// console.log(calenderFilter, '---calenderFilter---');
 	return (
 		<div className={ProfileStyle.profileContainer}>
 			<div className={ProfileStyle.flexStart}>
@@ -133,7 +136,7 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 								className={ProfileStyle.dateFilter}
 								placeholderText="Start date - End date"
 								selected={startDate}
-								// onChange={}
+								onChange={onCalenderFilter}
 								startDate={startDate}
 								endDate={endDate}
 								selectsRange
@@ -158,8 +161,20 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 									index === activeIndex &&
 									`1px solid ${profileData[activeIndex]?.activeColor}`,
 							}}
-							onClick={() =>
-								onProfileLogClickHandler(item?.typeID, index, item?.typeID)
+							onClick={
+								() => {
+									console.log('--item--', item);
+									setCalenderFilter({
+										...calenderFilter,
+										talentID: item?.typeID,
+										typeID: item?.typeID,
+										fromDate: null,
+										toDate: null,
+									});
+									console.log('--calenderFilteronclick', calenderFilter);
+									onProfileLogClickHandler(item?.typeID, index, item?.typeID);
+								}
+								//
 							}
 							key={item.id}
 							className={ProfileStyle.profileSets}>

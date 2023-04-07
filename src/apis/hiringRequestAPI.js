@@ -240,11 +240,12 @@ export const HiringRequestAPI = {
 	},
 	getTalentProfileSharedDetailRequest: async (talentDetails) => {
 		let httpService = new HttpServices();
+		console.log('--rtalentDetaulis---', talentDetails);
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.MATCHMAKING +
 			HiringRequestsAPI.GET_TALENT_PROFILE_SHARED_DETAILS +
-			`?talentid=${talentDetails?.talentID}&typeid=${talentDetails?.typeID}&fromDate=''&toDate=''`;
+			`?talentid=${talentDetails?.talentID}&typeid=${talentDetails?.typeID}&fromDate=${talentDetails?.fromDate}&toDate=${talentDetails?.toDate}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -257,14 +258,14 @@ export const HiringRequestAPI = {
 			);
 		}
 	},
-	getTalentProfileLogReqeust: async (talentID) => {
+	getTalentProfileLogReqeust: async (talentDetails) => {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.MATCHMAKING +
-			HiringRequestsAPI.GET_TALENT_PROFILE_LOG +
-			`?talentid=${talentID}`;
+			HiringRequestsAPI.GET_TALENT_PROFILE_LOG;
 		httpService.setAuthRequired = true;
+		httpService.dataToSend = talentDetails;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendPostRequest();

@@ -81,7 +81,7 @@
     padding:30px 0;
     display: flex;
     border-radius: 10px;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
     flex-wrap: wrap;
     /* height: 92px; */

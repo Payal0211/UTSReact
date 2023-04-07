@@ -51,9 +51,9 @@ const UserList = () => {
 				pageData
 					? pageData
 					: {
-							pageNumber: 1,
-							totalRecord: 100,
-					  },
+						pageNumber: 1,
+						totalRecord: 100,
+					},
 			);
 			if (response.statusCode === HTTPStatusCode.OK) {
 				setTotalRecords(response && response?.responseBody?.details?.totalrows);
@@ -101,14 +101,14 @@ const UserList = () => {
 			 */}
 			<div className={allUserStyles.filterContainer}>
 				<div className={allUserStyles.filterSets}>
-					<div
+					{/* <div
 						className={allUserStyles.addFilter}
 						onClick={isAllowFilters}>
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
 						<div className={allUserStyles.filterLabel}>Add Filters</div>
 						<div className={allUserStyles.filterCount}>7</div>
-					</div>
+					</div> */}
 					<div className={allUserStyles.filterRight}>
 						<div className={allUserStyles.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
