@@ -85,8 +85,14 @@ const getSideBar = () => {
 			icon: Briefcase,
 			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 		}),
-
-		new SideBarModels({
+  new SideBarModels({
+			id: 'Engagement_List',
+			title: 'Engagement',
+			isActive: false,
+			icon: HRDetails,
+			navigateTo: UTSRoutes.ENGAGEMENTRROUTE,
+		}),
+		/* new SideBarModels({
 			id: 'UTS_Onboard',
 			title: 'Onboard',
 			isActive: false,
@@ -99,7 +105,7 @@ const getSideBar = () => {
 			isActive: false,
 			icon: HRDetails,
 			navigateTo: UTSRoutes.INTERVIEWLISTROUTE,
-		}),
+		}), */
 	];
 
 	return dataList;

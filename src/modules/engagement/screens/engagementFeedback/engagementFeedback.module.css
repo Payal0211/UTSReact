@@ -1,0 +1,113 @@
+.engagementModalWrap{
+    margin: 0;
+}
+.engagementModalWrap p{
+    margin: 0 0 16px;
+}
+.engagementModalWrap p:last-child{
+    margin: 0;
+}
+.engagementModalTitle {
+    padding: 32px 24px;
+    border-top: 8px solid #006D2C;
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid #E8E8E8;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    color: #232323;
+}
+.engagementModalTitle span{
+    color: #7C7C7C;
+}
+.engagementModalTitle h1 {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 39px;
+    color: #232323;
+    margin-bottom: 14px;
+}
+
+.feebackTableWrap table thead{
+    border-bottom: 1px dashed #CECCCC;
+    position: sticky;
+    top: 0;
+}
+
+.feebackTableWrap table tr th {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 16px;
+    font-weight: 600 !important;
+    font-family: 'Montserrat' !important;
+    border: none;
+    white-space: nowrap;
+}
+.feebackTableWrap table tr th:first-child{
+    padding-left: 24px;
+}
+.feebackTableWrap table tr th:last-child{
+    padding-right: 24px;
+}
+.feebackTableWrap table tr td{
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: #232323;
+    cursor: default;
+    padding: 16px;
+    border: none;
+    border-bottom: 1px solid #F7F7F7;
+    vertical-align: top;
+}
+.feebackTableWrap table tr:last-child td{
+    border-bottom: none;
+}
+.feebackTableWrap table tr td:first-child{
+    padding-left: 24px;
+}
+.feebackTableWrap table tr td:last-child{
+    padding-right: 24px;
+}
+.feedbackLabel{
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+    color: #FFFFFF;
+    text-shadow: -0.5px -0.5px 0px rgba(0, 0, 0, 0.25);
+    display: inline-block;
+    padding: 4px 8px;
+}
+.greenLabel{background: #006D2C;}
+.readLabel{background: #C80000;}
+.orangeLabel{background: #FD7021;}
+.feebackTableWrap table tr td.pastFeedbackTitle{padding-top: 32px;border-bottom: none;}
+
+.pastFeedbackTitle h2{
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 29px;
+    color: #232323;
+    margin-bottom:0;
+}
+
+.feebackTableWrap{
+    overflow-y: auto;
+    max-height: calc(100vh - 280px);
+}
+
+.feebackTableWrap table tr td.pastFeedbackID {
+    border-bottom: none;
+    background: #FFDA30;
+    font-weight: 600;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}

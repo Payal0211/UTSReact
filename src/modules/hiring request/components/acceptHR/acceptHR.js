@@ -18,8 +18,8 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 		formState: { errors },
 	} = useForm({});
 	const toggleHandler = useCallback(() => {
-		setMoreInfo(!showMoreInfo);
-	}, [showMoreInfo]);
+		setMoreInfo(true);
+	}, []);
 	return (
 		<Modal
 			width="864px"
@@ -64,13 +64,15 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 							className={AcceptHRStyle.btn}>
 							Accept HR
 						</button>
-						<button
-							// disabled={isLoading}
-							type="submit"
-							onClick={toggleHandler}
-							className={AcceptHRStyle.btnPrimary}>
-							Wait for more Information
-						</button>
+						{!showMoreInfo && (
+							<button
+								// disabled={isLoading}
+								type="submit"
+								onClick={toggleHandler}
+								className={AcceptHRStyle.btnPrimary}>
+								Wait for more Information
+							</button>
+						)}
 					</div>
 				</div>
 			</div>

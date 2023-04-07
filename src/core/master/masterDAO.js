@@ -826,7 +826,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -851,7 +851,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -874,7 +874,7 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -882,7 +882,6 @@ export const MasterDAO = {
 		}
 	},
 	getReportingListRequestDAO: async function (deptId, levelId) {
-		console.log(deptId, levelId, '---Id----');
 		try {
 			const levelList = await userAPI.getReportingListRequest(deptId, levelId);
 			if (levelList) {
@@ -898,11 +897,34 @@ export const MasterDAO = {
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
 			return errorDebug(error, 'MasterDAO.getReportingListRequestDAO');
+		}
+	},
+	getDashboardCountForEngagementDAO: async function () {
+		try {
+			const levelList = await MasterAPI.getDashboardCountRequest();
+			if (levelList) {
+				const statusCode = levelList['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = levelList?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return levelList;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return levelList;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getDashboardCountForEngagementDAO');
 		}
 	},
 };

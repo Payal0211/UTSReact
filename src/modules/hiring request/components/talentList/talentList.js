@@ -24,6 +24,7 @@ const TalentList = ({
 	talentDetail,
 	miscData,
 	callAPI,
+	clientDetail,
 	HRStatusCode,
 	hrId,
 	starMarkedStatusCode,
@@ -31,7 +32,6 @@ const TalentList = ({
 	hiringRequestNumber,
 	hrType,
 }) => {
-	console.log(hrId, 'hriD');
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
@@ -1199,7 +1199,7 @@ const TalentList = ({
 													<Menu.Item
 														key={0}
 														onClick={() => {
-															setProfileLogModal(true);
+															// setProfileLogModal(true); // TODO:-
 															setTalentIndex(listIndex);
 														}}>
 														View Profile Log
@@ -1394,7 +1394,7 @@ const TalentList = ({
 										cursor: 'pointer',
 									}}
 									onClick={() => {
-										setVersantModal(true);
+										// setVersantModal(true);-  //TODO:-
 										setTalentIndex(item?.TalentID);
 									}}>
 									Versant Test Results
@@ -1438,7 +1438,7 @@ const TalentList = ({
 													case TalentOnboardStatus.TALENT_ACCEPTANCE: {
 														setTalentAcceptance(true);
 														setTalentIndex(item?.TalentID);
-														console.log('---talentID---', item?.TalentID);
+
 														break;
 													}
 													case TalentOnboardStatus.TALENT_STATUS: {
@@ -1734,6 +1734,7 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setTalentAcceptance(false)}>
 				<TalentAcceptance
+					clientDetail={clientDetail}
 					callAPI={callAPI}
 					talentInfo={filterTalentID}
 					talentName={filterTalentID?.Name}
@@ -1751,7 +1752,6 @@ const TalentList = ({
 				centered
 				footer={null}
 				open={showTalentStatus}
-				// onOk={() => setVersantModal(false)}
 				onCancel={() => setTalentStatus(false)}>
 				<TalentStatus
 					talentInfo={filterTalentID}
@@ -1770,6 +1770,8 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setInterviewStatus(false)}>
 				<InterviewStatus
+					hrId={hrId}
+					talentInfo={filterTalentID}
 					callAPI={callAPI}
 					closeModal={() => setInterviewStatus(false)}
 				/>

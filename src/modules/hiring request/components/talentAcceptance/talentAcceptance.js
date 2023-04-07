@@ -31,9 +31,11 @@ const TalentAcceptance = ({
 	HRStatusCode,
 	hrStatus,
 	callAPI,
+	clientDetail,
 	talentInfo,
 	closeModal,
 }) => {
+	console.log(talentInfo, '--talentInfo');
 	const switchLocation = useLocation();
 	let urlSplitter = switchLocation.pathname.split('/')[2];
 	const [postAcceptanceValue, setPostAcceptanceValue] = useState(null);
@@ -146,10 +148,7 @@ const TalentAcceptance = ({
 								<div className={TalentAcceptanceStyle.colMd5}>
 									<div className={TalentAcceptanceStyle.transparentTopCard}>
 										<div className={TalentAcceptanceStyle.cardLabel}>
-											Talent -{' '}
-										</div>
-										<div className={TalentAcceptanceStyle.cardLabel}>
-											{talentName}
+											Talent - {talentName}
 										</div>
 									</div>
 								</div>
@@ -157,19 +156,16 @@ const TalentAcceptance = ({
 									<div className={TalentAcceptanceStyle.transparentTopCard}>
 										<div className={TalentAcceptanceStyle.cardLabel}>
 											Company -{' '}
-										</div>
-										<div className={TalentAcceptanceStyle.cardLabel}>
-											{talentName}
+											{clientDetail?.CompanyName
+												? clientDetail?.CompanyName
+												: 'NA'}
 										</div>
 									</div>
 								</div>
 								<div className={TalentAcceptanceStyle.colMd5}>
 									<div className={TalentAcceptanceStyle.transparentTopCard}>
 										<div className={TalentAcceptanceStyle.cardLabel}>
-											Role -{' '}
-										</div>
-										<div className={TalentAcceptanceStyle.cardLabel}>
-											{talentName}
+											Role - {talentInfo?.TalentRole}
 										</div>
 									</div>
 								</div>

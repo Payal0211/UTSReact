@@ -286,6 +286,7 @@ const HRDetailScreen = () => {
 						) : (
 							<Suspense>
 								<TalentProfileCard
+									clientDetail={apiData?.ClientDetail}
 									callAPI={callAPI}
 									talentCTA={apiData?.talent_CTAs}
 									HRStatusCode={apiData?.HRStatusCode}
