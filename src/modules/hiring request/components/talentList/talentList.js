@@ -18,6 +18,8 @@ import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/all
 import TalentAcceptance from '../talentAcceptance/talentAcceptance';
 import TalentStatus from '../talentStatus/talentStatus';
 import InterviewStatus from 'modules/interview/components/interviewStatus/interviewStatus';
+import UpdateClientOnBoardStatus from '../updateClientOnboardStatus/updateClientOnboardStatus';
+import UpdateTalentOnboardStatus from '../updateTalentOnboardStatus/updateTalentOnboardStatus';
 
 const TalentList = ({
 	talentCTA,
@@ -44,7 +46,8 @@ const TalentList = ({
 	const [showTalentAcceptance, setTalentAcceptance] = useState(false);
 	const [showProfileLogModal, setProfileLogModal] = useState(false);
 	const [showTalentStatus, setTalentStatus] = useState(false);
-
+	const [updateOnboardClientModal, setOnboardClientModal] = useState(false);
+	const [updateOnboardTalentModal, setOnboardTalentModal] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [talentIndex, setTalentIndex] = useState(0);
 	//schedule modal state
@@ -1451,6 +1454,16 @@ const TalentList = ({
 														setTalentIndex(item?.TalentID);
 														break;
 													}
+													case TalentOnboardStatus.UPDATE_CLIENT_ON_BOARD_STATUS: {
+														setOnboardClientModal(true);
+														setTalentIndex(item?.TalentID);
+														break;
+													}
+													case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
+														setOnboardTalentModal(true);
+														setTalentIndex(item?.TalentID);
+														break;
+													}
 													case TalentOnboardStatus.UPDATE_KICKOFF: {
 														if (
 															hrUtils.handlerUpdateKickOff(item, HRStatusCode)
@@ -1774,6 +1787,36 @@ const TalentList = ({
 					talentInfo={filterTalentID}
 					callAPI={callAPI}
 					closeModal={() => setInterviewStatus(false)}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR UPDATE CLIENT ONBOARD STATUS ================ */}
+			<Modal
+				transitionName=""
+				width="1256px"
+				centered
+				footer={null}
+				open={updateOnboardClientModal}
+				onCancel={() => setOnboardClientModal(false)}>
+				<UpdateClientOnBoardStatus
+					talentInfo={filterTalentID}
+					hrId={hrId}
+					callAPI={callAPI}
+					closeModal={() => setOnboardClientModal(false)}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR UPDATE TALENT ONBOARD STATUS ================ */}
+			<Modal
+				transitionName=""
+				width="1256px"
+				centered
+				footer={null}
+				open={updateOnboardTalentModal}
+				onCancel={() => setOnboardTalentModal(false)}>
+				<UpdateTalentOnboardStatus
+					talentInfo={filterTalentID}
+					hrId={hrId}
+					callAPI={callAPI}
+					closeModal={() => setOnboardTalentModal(false)}
 				/>
 			</Modal>
 		</div>

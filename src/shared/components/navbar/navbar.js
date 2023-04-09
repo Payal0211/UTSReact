@@ -44,7 +44,8 @@ const Navbar = ({ fullName }) => {
 						<span className={navbarStyles.talentIndicator}></span>
 						<div>
 							<b>
-								{dashboardCount?.totalActiveEngagement}/
+								{dashboardCount?.totalActiveEngagement}
+								{dashboardCount && '/'}
 								{dashboardCount?.totalEnagagement}
 							</b>{' '}
 							Active Talent Deployed

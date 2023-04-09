@@ -149,6 +149,8 @@ export class DealsAPI {
 
 export class OnboardsAPI {
 	static ONBOARD_TALENT = 'OnBoardTalent';
+	static GET_ONBOARDING_STATUS = 'GetOnboardingStatus';
+	static ONBOARDING_STATUS_UPDATES = 'OnBoardingStatusUpdates';
 }
 
 export class HTTPStatusCode {
