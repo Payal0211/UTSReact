@@ -91,7 +91,7 @@ const EngagementList = () => {
     };
 
     const tableColumnsMemo = useMemo(
-        () => allEngagementConfig.tableConfig(setEngagementModal),
+        () => allEngagementConfig.tableConfig(getEngagementModal, setEngagementModal),
         [],
     );
 

@@ -100,7 +100,7 @@ export const allEngagementConfig = {
             },
         ];
     },
-    tableConfig: (setEngagementModal) => {
+    tableConfig: (getEngagementModal, setEngagementModal) => {
         return [
             {
                 title: '    ',
