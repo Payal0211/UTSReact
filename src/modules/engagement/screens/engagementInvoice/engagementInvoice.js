@@ -4,12 +4,12 @@ import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSel
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
-import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
-import allengagementEnd from '../engagementBillAndPayRate/engagementBillRate.module.css';
+import engagementInvoice from '../engagementBillAndPayRate/engagementBillRate.module.css';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const EngagementEnd = ({
+
+const EngagementInvoice = ({
 }) => {
 
     const {
@@ -37,24 +37,39 @@ const EngagementEnd = ({
 
 
     return (
-        <div className={allengagementEnd.engagementModalWrap}
+        <div className={engagementInvoice.engagementModalWrap}
         >
-            <div className={`${allengagementEnd.headingContainer} ${allengagementEnd.addFeebackContainer}`}>
-                <h1>End Engagement</h1>
+            <div className={`${engagementInvoice.headingContainer} ${engagementInvoice.addFeebackContainer}`}>
+                <h1>Add Invoice Details</h1>
                 <ul>
                     <li><span>HR ID:</span>HR151122121801</li>
-                    <li className={allengagementEnd.divider}>|</li>
+                    <li className={engagementInvoice.divider}>|</li>
                     <li><span>Engagement ID:</span>EN151122121801</li>
-                    <li className={allengagementEnd.divider}>|</li>
+                    <li className={engagementInvoice.divider}>|</li>
                     <li><span>Talent Name:</span>Kirtikumar Avaiya</li>
                 </ul>
             </div>
 
-            <div className={allengagementEnd.row}>
+            <div className={engagementInvoice.row}>
                 <div
-                    className={`${allengagementEnd.colMd6}`}>
-                    <label className={allengagementEnd.timeLabel}>Contract End Date <span>*</span></label>
-                    <div className={allengagementEnd.timeSlotItem}>
+                    className={engagementInvoice.colMd6}>
+                    <HRInputField
+                        required
+                        errors={errors}
+                        validationSchema={{
+                            required: 'Please enter the invoice number.',
+                        }}
+                        label={'Invoice Number'}
+                        register={register}
+                        name="invoiceNumber"
+                        type={InputType.TEXT}
+                        placeholder="Enter Invoice Number"
+                    />
+                </div>
+                <div
+                    className={`${engagementInvoice.colMd6}`}>
+                    <label className={engagementInvoice.timeLabel}>Invoice Sent Date</label>
+                    <div className={engagementInvoice.timeSlotItem}>
                         <DatePicker
                             onKeyDown={(e) => {
                                 e.preventDefault();
@@ -69,49 +84,36 @@ const EngagementEnd = ({
                         <CalenderSVG />
                     </div>
                 </div>
-                <div className={allengagementEnd.colMd6}>
-                    <HRInputField
-                        value={'Upload Communication Records'}
-                        register={register}
-                        leadingIcon={<UploadSVG />}
-                        label="Contract Supporting Documents(PDF)"
-                        name="contractSupporting"
-                        type={InputType.BUTTON}
-                    />
-                </div>
             </div>
-            <div className={allengagementEnd.row}>
+            <div className={engagementInvoice.row}>
                 <div
-                    className={allengagementEnd.colMd12}>
-                    <HRInputField
-                        required
-                        isTextArea={true}
-                        rows={4}
-                        errors={errors}
-                        validationSchema={{
-                            required: 'Please enter the reason for Ending Engagement.',
-                        }}
-                        label={'Reason for Ending Engagement'}
+                    className={engagementInvoice.colMd12}>
+                    <HRSelectField
+                        setValue={setValue}
                         register={register}
-                        name="endEngagement"
-                        type={InputType.TEXT}
-                        placeholder="Enter Reason"
+                        name="invoiceStatus"
+                        label="Invoice Status"
+                        defaultValue="Select Invoice Status"
+                        options={[]}
+                        required
+                        isError={
+                            errors['invoiceStatus'] && errors['invoiceStatus']
+                        }
+                        errorMsg="Please select a invoice status."
                     />
                 </div>
             </div>
 
-
-
-            <div className={allengagementEnd.formPanelAction}>
+            <div className={engagementInvoice.formPanelAction}>
                 <button
                     // disabled={isLoading}
                     type="submit"
                     // onClick={handleSubmit(clientSubmitHandler)}
-                    className={allengagementEnd.btnPrimary}>
+                    className={engagementInvoice.btnPrimary}>
                     Save
                 </button>
                 <button
-                    className={allengagementEnd.btn}>
+                    className={engagementInvoice.btn}>
                     Cancel
                 </button>
             </div>
@@ -119,4 +121,4 @@ const EngagementEnd = ({
     );
 };
 
-export default EngagementEnd;
+export default EngagementInvoice;

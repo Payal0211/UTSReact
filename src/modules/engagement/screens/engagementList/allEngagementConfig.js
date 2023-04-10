@@ -164,7 +164,7 @@ export const allEngagementConfig = {
                                     break;
                                 }
                                 case "Add Invoice Details": {
-                                    // setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })
+                                    setEngagementModal({ ...getEngagementModal, engagementInvoice: true })
                                     break;
                                 }
                                 default:

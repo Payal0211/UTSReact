@@ -35,6 +35,7 @@ import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
 import { engagementUtils } from './engagementUtils';
 import EngagementEnd from '../endEngagement/endEngagement';
+import EngagementInvoice from '../engagementInvoice/engagementInvoice';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() =>
@@ -82,7 +83,7 @@ const EngagementList = () => {
     const [getPayRate, setPayRate] = useState(0);
     const [engagementBillAndPayRateTab, setEngagementBillAndPayRateTab] = useState("1")
     const [getEngagementModal, setEngagementModal
-    ] = useState({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementReplaceTalent: false, engagementBillRateAndPayRate: false, engagementEnd: false });
+    ] = useState({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementReplaceTalent: false, engagementBillRateAndPayRate: false, engagementEnd: false, engagementInvoice: false });
 
     const onRemoveHRFilters = () => {
         setTimeout(() => {
@@ -495,6 +496,20 @@ const EngagementList = () => {
                 onCancel={() => setEngagementModal({ ...getEngagementModal, engagementEnd: false })}
             >
                 <EngagementEnd />
+            </Modal>
+
+
+            {/** ============ MODAL FOR ENGAGEMENT INVOICE ================ */}
+            <Modal
+                transitionName=""
+                width="930px"
+                centered
+                footer={null}
+                open={getEngagementModal.engagementInvoice}
+                className="engagementReplaceTalentModal"
+                onCancel={() => setEngagementModal({ ...getEngagementModal, engagementInvoice: false })}
+            >
+                <EngagementInvoice />
             </Modal>
 
         </div >
