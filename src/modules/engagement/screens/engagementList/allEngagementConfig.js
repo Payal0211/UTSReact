@@ -152,7 +152,7 @@ export const allEngagementConfig = {
                                     break;
                                 }
                                 case "End Engagement": {
-                                    setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })
+                                    setEngagementModal({ ...getEngagementModal, engagementEnd: true })
                                     break;
                                 }
                                 case "Edit Bill Rate": {
@@ -197,8 +197,9 @@ export const allEngagementConfig = {
                     result?.clientLegal_StatusID === 2 &&
                     <Link
                         to=""
-
-                        style={{ color: 'black', textDecoration: 'underline' }}>
+                        style={{ color: 'black', textDecoration: 'underline' }}
+                        onClick={() => setEngagementModal({ ...getEngagementModal, engagementOnboard: true })}
+                    >
                         {'View'}
                     </Link >
                 ),
@@ -208,6 +209,16 @@ export const allEngagementConfig = {
                 dataIndex: 'engagementId_HRID',
                 key: 'engagementId_HRID',
                 align: 'left',
+                render: (text, result) => (
+                    <p>
+                        {result?.engagementId_HRID.slice(0, result?.engagementId_HRID?.indexOf('/'))}
+                        <Link
+                            to=""
+                            style={{ color: 'black', textDecoration: 'underline' }}>
+                            {result?.engagementId_HRID.slice(result?.engagementId_HRID?.indexOf('/'))}
+                        </Link>
+                    </p>
+                ),
             },
             {
                 title: 'Talent Name',

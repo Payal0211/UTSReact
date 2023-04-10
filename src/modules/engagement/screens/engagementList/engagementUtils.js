@@ -11,9 +11,9 @@ export const engagementUtils = {
             currentStatus: item?.currentStatus,
             clientLegal_StatusID: item?.clientLegal_StatusID,
             activeEngagement: item?.activeEngagement,
-            actualBillRate: item?.actualBillRate,
-            actualPayRate: item?.actualPayRate,
-            feedbcakReceive: item?.feedbcakReceive
+            feedbcakReceive: item?.feedbcakReceive,
+            avgDP: item?.avgDP,
+            avgNR: item?.avgNR
         }));
     },
 };

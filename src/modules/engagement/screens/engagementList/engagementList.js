@@ -34,6 +34,7 @@ import EngagementBillRateAndPayRate from '../engagementBillAndPayRate/engagement
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
 import { engagementUtils } from './engagementUtils';
+import EngagementEnd from '../endEngagement/endEngagement';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() =>
@@ -81,7 +82,7 @@ const EngagementList = () => {
     const [getPayRate, setPayRate] = useState(0);
     const [engagementBillAndPayRateTab, setEngagementBillAndPayRateTab] = useState("1")
     const [getEngagementModal, setEngagementModal
-    ] = useState({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementReplaceTalent: false, engagementBillRateAndPayRate: false });
+    ] = useState({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementReplaceTalent: false, engagementBillRateAndPayRate: false, engagementEnd: false });
 
     const onRemoveHRFilters = () => {
         setTimeout(() => {
@@ -277,19 +278,19 @@ const EngagementList = () => {
                 <div className={`${allEngagementStyles.filterSets} ${allEngagementStyles.filterDescription}`}>
                     <div className={allEngagementStyles.filterType}>
                         <img src={Handshake} alt="handshaker" />
-                        <h2>Active Engagements - <span>2023</span></h2>
+                        <h2>Active Engagements - <span>{apiData[0]?.activeEngagement ? apiData[0]?.activeEngagement : 0}</span></h2>
                     </div>
                     <div className={allEngagementStyles.filterType}>
                         <img src={Smile} alt="smile" />
-                        <h2>Feedback Received - <span>1500</span></h2>
+                        <h2>Feedback Received - <span>{apiData[0]?.feedbcakReceive ? apiData[0]?.feedbcakReceive : 0}</span></h2>
                     </div>
                     <div className={allEngagementStyles.filterType}>
                         <img src={Rocket} alt="rocket" />
-                        <h2>Average NR% - <span>10%</span></h2>
+                        <h2>Average NR% - <span>{apiData[0]?.avgNR ? apiData[0]?.avgNR : 0}</span></h2>
                     </div>
                     <div className={allEngagementStyles.filterType}>
                         <img src={Briefcase} alt="briefcase" />
-                        <h2>Average DP%  - <span>10%</span></h2>
+                        <h2>Average DP%  - <span>{apiData[0]?.avgDP ? apiData[0]?.avgDP : 0}</span></h2>
                     </div>
                 </div>
             </div>
@@ -461,9 +462,6 @@ const EngagementList = () => {
                 <EngagementReplaceTalent />
             </Modal>
 
-
-
-
             {/** ============ MODAL FOR ENGAGEMENT BILLRATE AND PAYRATE ================ */}
 
             <Modal
@@ -486,6 +484,18 @@ const EngagementList = () => {
                 />
             </Modal>
 
+            {/** ============ MODAL FOR ENGAGEMENT END ================ */}
+            <Modal
+                transitionName=""
+                width="930px"
+                centered
+                footer={null}
+                open={getEngagementModal.engagementEnd}
+                className="engagementReplaceTalentModal"
+                onCancel={() => setEngagementModal({ ...getEngagementModal, engagementEnd: false })}
+            >
+                <EngagementEnd />
+            </Modal>
 
         </div >
     );
