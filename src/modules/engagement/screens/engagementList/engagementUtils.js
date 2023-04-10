@@ -9,7 +9,11 @@ export const engagementUtils = {
             talentName: item?.talentName,
             company: item?.company,
             currentStatus: item?.currentStatus,
-            clientLegal_StatusID: item?.clientLegal_StatusID
+            clientLegal_StatusID: item?.clientLegal_StatusID,
+            activeEngagement: item?.activeEngagement,
+            actualBillRate: item?.actualBillRate,
+            actualPayRate: item?.actualPayRate,
+            feedbcakReceive: item?.feedbcakReceive
         }));
     },
 };
