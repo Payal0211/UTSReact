@@ -64,6 +64,7 @@ const EngagementList = () => {
 
 	const [isLoading, setLoading] = useState(false);
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
+	const [filteredData, setFilteredData] = useState(null);
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
 	const [pageSize, setPageSize] = useState(100);
@@ -100,7 +101,11 @@ const EngagementList = () => {
 
 	const tableColumnsMemo = useMemo(
 		() =>
-			allEngagementConfig.tableConfig(getEngagementModal, setEngagementModal),
+			allEngagementConfig.tableConfig(
+				getEngagementModal,
+				setEngagementModal,
+				setFilteredData,
+			),
 		[getEngagementModal],
 	);
 
@@ -111,6 +116,7 @@ const EngagementList = () => {
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setTotalRecords(response?.responseBody?.totalrows);
 				setLoading(false);
+
 				setAPIdata(
 					engagementUtils.modifyEngagementListData(response && response),
 				);
@@ -130,6 +136,7 @@ const EngagementList = () => {
 		[navigate],
 	);
 
+	console.log('APIDATA ENGAGEMENT LIST-----------', apiData);
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
@@ -137,7 +144,7 @@ const EngagementList = () => {
 
 	useEffect(() => {
 		handleHRRequest(tableFilteredState);
-	}, [tableFilteredState]);
+	}, [handleHRRequest, tableFilteredState]);
 
 	useEffect(() => {
 		setBillRate(0);
@@ -489,14 +496,23 @@ const EngagementList = () => {
 				footer={null}
 				open={getEngagementModal.engagementReplaceTalent}
 				className="engagementReplaceTalentModal"
-				// onOk={() => setVersantModal(false)}
 				onCancel={() =>
 					setEngagementModal({
 						...getEngagementModal,
 						engagementReplaceTalent: false,
 					})
 				}>
-				<EngagementReplaceTalent />
+				<EngagementReplaceTalent
+					engagementListHandler={() => handleHRRequest(tableFilteredState)}
+					talentInfo={filteredData}
+					isEngagement={true}
+					closeModal={() =>
+						setEngagementModal({
+							...getEngagementModal,
+							engagementReplaceTalent: false,
+						})
+					}
+				/>
 			</Modal>
 
 			{/** ============ MODAL FOR ENGAGEMENT BILLRATE AND PAYRATE ================ */}

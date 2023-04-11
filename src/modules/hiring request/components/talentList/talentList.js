@@ -20,6 +20,10 @@ import TalentStatus from '../talentStatus/talentStatus';
 import InterviewStatus from 'modules/interview/components/interviewStatus/interviewStatus';
 import UpdateClientOnBoardStatus from '../updateClientOnboardStatus/updateClientOnboardStatus';
 import UpdateTalentOnboardStatus from '../updateTalentOnboardStatus/updateTalentOnboardStatus';
+import UpdateLegalClientOnboardStatus from '../updateLegalClientOnboardStatus/updateLegalClientOnboardStatus';
+
+import EngagementReplaceTalent from 'modules/engagement/screens/engagementReplaceTalent/engagementReplaceTalent';
+import UpdateLegalTalentOnboardStatus from '../updateLegalTalentOnboardStatus/updateLegalTalentOnboardStatus';
 
 const TalentList = ({
 	talentCTA,
@@ -48,6 +52,13 @@ const TalentList = ({
 	const [showTalentStatus, setTalentStatus] = useState(false);
 	const [updateOnboardClientModal, setOnboardClientModal] = useState(false);
 	const [updateOnboardTalentModal, setOnboardTalentModal] = useState(false);
+	const [updateLegalClientOnboardModal, setLegalClientOnboardModal] =
+		useState(false);
+	const [updateLegalTalentOnboardModal, setLegalTalentOnboardModal] =
+		useState(false);
+	const [updateTalentKickOffModal, setTalentKickOffModal] = useState(false);
+	const [editBRPRModal, setEDITBRPRModal] = useState(false);
+	const [replaceTalentModal, setReplaceTalentModal] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [talentIndex, setTalentIndex] = useState(0);
 	//schedule modal state
@@ -1295,10 +1306,23 @@ const TalentList = ({
 
 								{!hrType ? (
 									<>
-										<div className={TalentListStyle.billRate}>
-											<span>Bill Rate:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
+										<div className={TalentListStyle.payRate}>
+											<div>
+												<span>Bill Rate:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
+												</span>
+											</div>
+											<span
+												onClick={() => {
+													setEDITBRPRModal(true);
+												}}
+												style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>
+												edit
 											</span>
 										</div>
 										<div className={TalentListStyle.payRate}>
@@ -1427,6 +1451,7 @@ const TalentList = ({
 											isDropdown={true}
 											listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
 											menuAction={(menuItem) => {
+												console.log(menuItem.key, '--menuItem.key');
 												switch (menuItem.key) {
 													case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 														setScheduleInterviewModal(true);
@@ -1464,17 +1489,25 @@ const TalentList = ({
 														setTalentIndex(item?.TalentID);
 														break;
 													}
-													case TalentOnboardStatus.UPDATE_KICKOFF: {
-														if (
-															hrUtils.handlerUpdateKickOff(item, HRStatusCode)
-														) {
-															setTalentIndex(listIndex);
-														} else {
-															messageAPI.open({
-																type: 'info',
-																content: "Cann't update the talent.",
-															});
-														}
+													case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
+														console.log('hello');
+														setLegalTalentOnboardModal(true);
+														setTalentIndex(item?.TalentID);
+														break;
+													}
+													case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
+														setLegalClientOnboardModal(true);
+														setTalentIndex(item?.TalentID);
+														break;
+													}
+													case TalentOnboardStatus.UPDATE_KICKOFF_ONBOARD_STATUS: {
+														setTalentKickOffModal(true);
+														setTalentIndex(item?.TalentID);
+														break;
+													}
+													case TalentOnboardStatus.REPLACE_TALENT: {
+														setReplaceTalentModal(true);
+														setTalentIndex(item?.TalentID);
 														break;
 													}
 													default:
@@ -1817,6 +1850,52 @@ const TalentList = ({
 					hrId={hrId}
 					callAPI={callAPI}
 					closeModal={() => setOnboardTalentModal(false)}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR UPDATE LEGAL CLIENT ONBOARD STATUS ================ */}
+			<Modal
+				transitionName=""
+				width="1256px"
+				centered
+				footer={null}
+				open={updateLegalClientOnboardModal}
+				onCancel={() => setLegalClientOnboardModal(false)}>
+				<UpdateLegalClientOnboardStatus
+					talentInfo={filterTalentID}
+					hrId={hrId}
+					callAPI={callAPI}
+					closeModal={() => setLegalClientOnboardModal(false)}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR UPDATE LEGAL TALENT ONBOARD STATUS ================ */}
+			<Modal
+				transitionName=""
+				width="1256px"
+				centered
+				footer={null}
+				open={updateLegalTalentOnboardModal}
+				onCancel={() => setLegalTalentOnboardModal(false)}>
+				<UpdateLegalTalentOnboardStatus
+					talentInfo={filterTalentID}
+					hrId={hrId}
+					callAPI={callAPI}
+					closeModal={() => setLegalTalentOnboardModal(false)}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR TALENT REPLACEMENT ================ */}
+			<Modal
+				transitionName=""
+				width="1256px"
+				centered
+				footer={null}
+				open={replaceTalentModal}
+				onCancel={() => setReplaceTalentModal(false)}>
+				<EngagementReplaceTalent
+					talentInfo={filterTalentID}
+					hrId={hrId}
+					callAPI={callAPI}
+					closeModal={() => setReplaceTalentModal(false)}
+					isEngagement={false}
 				/>
 			</Modal>
 		</div>

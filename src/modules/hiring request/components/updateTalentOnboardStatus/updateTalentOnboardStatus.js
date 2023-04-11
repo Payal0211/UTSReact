@@ -40,10 +40,11 @@ const UpdateTalentOnboardStatus = ({
 				hiringRequestID: hrId,
 				contactID: talentInfo?.ContactId,
 				action: 'OnboardingTalent',
-				onboardingClient: {
+				onboardingTalent: {
 					clientOnBoardingStatusID: d.onboardTalentStatus?.id,
 					clientConcernRemark: d.concernRemark || '',
 				},
+				onboardingClient: null,
 				legalTalent: null,
 				legalClient: null,
 				kickOff: null,

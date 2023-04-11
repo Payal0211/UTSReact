@@ -99,14 +99,14 @@ export const allEngagementConfig = {
 			},
 		];
 	},
-	tableConfig: (getEngagementModal, setEngagementModal) => {
+	tableConfig: (getEngagementModal, setEngagementModal, setFilteredData) => {
 		return [
 			{
 				title: '    ',
 				dataIndex: 'action',
 				key: 'action',
 				align: 'left',
-				render: (_, param) => {
+				render: (_, param, index) => {
 					return (
 						<HROperator
 							title="Action"
@@ -148,6 +148,7 @@ export const allEngagementConfig = {
 											...getEngagementModal,
 											engagementReplaceTalent: true,
 										});
+										setFilteredData(param);
 										break;
 									}
 									case 'Renew Engagement': {

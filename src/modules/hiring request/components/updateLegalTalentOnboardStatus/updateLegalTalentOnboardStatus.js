@@ -1,4 +1,4 @@
-import UpdateLegalClientOnboardStatusStyle from './updateLegalClientOnboardStatus.module.css';
+import UpdateLegalClientOnboardStatusStyle from './updateLegalTalentOnboard.module.css';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import HRSelectField from '../hrSelectField/hrSelectField';
@@ -8,7 +8,7 @@ import { OnboardDAO } from 'core/onboard/onboardDAO';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import DatePicker from 'react-datepicker';
 
-const UpdateLegalClientOnboardStatus = ({
+const UpdateLegalTalentOnboardStatus = ({
 	talentInfo,
 	hrId,
 	callAPI,
@@ -44,16 +44,15 @@ const UpdateLegalClientOnboardStatus = ({
 				contactID: talentInfo?.ContactId,
 				action: 'LegalClient',
 				onboardingClient: {},
-				legalTalent: null,
-				legalClient: {
-					clientLegalStatusID: d.onboardTalentStatus?.id, // dropdown selected id
-					clientLegalDate: d.clientLegalDate,
+				legalTalent: {
+					talentLegalStatusID: d.onboardTalentStatus?.id, // dropdown selected id
+					talentLegalDate: d.talentLegalDate,
 					totalDuration: 0,
 					contractStartDate: d.engagementStartDate,
 					contractEndDate: d.engagementEndDate,
 					lastworkingdate: d.engagementEndDate,
-					companyLegalDocID: d.legalDocument?.id,
 				},
+				legalClient: {},
 				kickOff: null,
 			};
 
@@ -77,8 +76,7 @@ const UpdateLegalClientOnboardStatus = ({
 
 	useEffect(() => {
 		if (watchOnboardTalentStatus?.id !== 2) {
-			unregister('clientLegalDate');
-			unregister('legalDocument');
+			unregister('talentLegalDate');
 			unregister('engagementStartDate');
 			unregister('engagementEndDate');
 		}
@@ -87,7 +85,7 @@ const UpdateLegalClientOnboardStatus = ({
 	return (
 		<div className={UpdateLegalClientOnboardStatusStyle.container}>
 			<div className={UpdateLegalClientOnboardStatusStyle.modalTitle}>
-				<h2>Change Client Legal Status</h2>
+				<h2>Change Talent Legal Status</h2>
 			</div>
 
 			<div className={UpdateLegalClientOnboardStatusStyle.transparent}>
@@ -111,20 +109,6 @@ const UpdateLegalClientOnboardStatus = ({
 					<>
 						<div className={UpdateLegalClientOnboardStatusStyle.row}>
 							<div className={UpdateLegalClientOnboardStatusStyle.colMd6}>
-								<HRSelectField
-									mode={'id/value'}
-									setValue={setValue}
-									register={register}
-									name="legalDocument"
-									label="Legal Document"
-									defaultValue="Please Select"
-									options={talentStatus?.CompanyLegalDocInfo}
-									required
-									isError={errors['legalDocument'] && errors['legalDocument']}
-									errorMsg="Please select the legal document."
-								/>
-							</div>
-							<div className={UpdateLegalClientOnboardStatusStyle.colMd6}>
 								<div
 									className={
 										UpdateLegalClientOnboardStatusStyle.timeSlotItemField
@@ -143,21 +127,21 @@ const UpdateLegalClientOnboardStatus = ({
 										<Controller
 											render={({ ...props }) => (
 												<DatePicker
-													selected={watch('clientLegalDate')}
+													selected={watch('talentLegalDate')}
 													onChange={(date) => {
-														setValue('clientLegalDate', date);
+														setValue('talentLegalDate', date);
 													}}
-													placeholderText="Client Legal Date"
+													placeholderText="Talent Legal Date"
 												/>
 											)}
-											name="clientLegalDate"
+											name="talentLegalDate"
 											rules={{ required: true }}
 											control={control}
 										/>
-										{errors.clientLegalDate && (
+										{errors.talentLegalDate && (
 											<div
 												className={UpdateLegalClientOnboardStatusStyle.error}>
-												Please select client legal date
+												Please select talent legal date
 											</div>
 										)}
 									</div>
@@ -232,7 +216,7 @@ const UpdateLegalClientOnboardStatus = ({
 											rules={{ required: true }}
 											control={control}
 										/>
-										{errors.engagementStartDate && (
+										{errors.engagementEndDate && (
 											<div
 												className={UpdateLegalClientOnboardStatusStyle.error}>
 												Please select engagement end date
@@ -263,4 +247,4 @@ const UpdateLegalClientOnboardStatus = ({
 	);
 };
 
-export default UpdateLegalClientOnboardStatus;
+export default UpdateLegalTalentOnboardStatus;

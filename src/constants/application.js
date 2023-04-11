@@ -105,6 +105,12 @@ export class TalentOnboardStatus {
 	static INTERVIEW_DETAILS = 'Interviewer Details';
 	static UPDATE_CLIENT_ON_BOARD_STATUS = 'Update Client On Board Status';
 	static UPDATE_TALENT_ON_BOARD_STATUS = 'Update Talent On Board Status';
+	static UPDATE_LEGAL_TALENT_ONBOARD_STATUS =
+		'Update Legal Talent On Board Status';
+	static UPDATE_LEGAL_CLIENT_ONBOARD_STATUS =
+		'Update Legal Client On Board Status';
+	static UPDATE_KICKOFF_ONBOARD_STATUS = 'Update Kick Off On Board Status';
+	static REPLACE_TALENT = 'Replace Talent';
 }
 export class InputType {
 	static TEXT = 'text';
