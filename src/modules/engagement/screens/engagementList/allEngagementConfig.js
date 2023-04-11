@@ -2,6 +2,7 @@ import { HiringRequestHRStatus, ProfileLog } from 'constants/application';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { Link } from 'react-router-dom';
+import { engagementUtils } from './engagementUtils';
 
 
 export const allEngagementConfig = {
@@ -25,12 +26,6 @@ export const allEngagementConfig = {
                 name: 'currentStatus',
                 child: filterList?.currentStatus,
                 isSearch: false,
-            },
-            {
-                label: 'Tsc',
-                name: 'tscName',
-                child: filterList?.tscName,
-                isSearch: true,
             },
             {
                 label: 'Company',
@@ -66,12 +61,6 @@ export const allEngagementConfig = {
                 label: 'AM',
                 name: 'amName',
                 child: filterList?.amName,
-                isSearch: true,
-            },
-            {
-                label: 'Pending',
-                name: 'pending',
-                child: filterList?.pending,
                 isSearch: true,
             },
             {
@@ -181,6 +170,27 @@ export const allEngagementConfig = {
                 dataIndex: 'clientFeedback',
                 key: 'clientFeedback',
                 align: 'left',
+                render: (text, result) => (
+
+                    result?.clientFeedback ?
+                        <Link
+                            to=""
+                            style={{ color: engagementUtils.getClientFeedbackColor(result?.feedbackType), textDecoration: 'underline' }
+                            }
+                            onClick={() => setEngagementModal({ ...getEngagementModal, engagementAddFeedback: true })}
+                        >
+                            {'Add'}
+                        </Link >
+                        :
+                        <Link
+                            to=""
+                            style={{ color: engagementUtils.getClientFeedbackColor(result?.feedbackType), textDecoration: 'underline' }}
+                            onClick={() => setEngagementModal({ ...getEngagementModal, engagementFeedback: true })}
+                        >
+                            {'View'}
+                        </Link >
+                ),
+
             },
             {
                 title: 'Last Feedback Date',
@@ -197,7 +207,7 @@ export const allEngagementConfig = {
                     result?.clientLegal_StatusID === 2 &&
                     <Link
                         to=""
-                        style={{ color: 'black', textDecoration: 'underline' }}
+                        style={{ color: '#006699', textDecoration: 'underline' }}
                         onClick={() => setEngagementModal({ ...getEngagementModal, engagementOnboard: true })}
                     >
                         {'View'}
@@ -214,7 +224,7 @@ export const allEngagementConfig = {
                         {result?.engagementId_HRID.slice(0, result?.engagementId_HRID?.indexOf('/'))}
                         <Link
                             to=""
-                            style={{ color: 'black', textDecoration: 'underline' }}>
+                            style={{ color: '#006699', textDecoration: 'underline' }}>
                             {result?.engagementId_HRID.slice(result?.engagementId_HRID?.indexOf('/'))}
                         </Link>
                     </p>
@@ -238,6 +248,7 @@ export const allEngagementConfig = {
                 key: 'currentStatus',
                 align: 'left',
             },
+
         ];
     },
 };

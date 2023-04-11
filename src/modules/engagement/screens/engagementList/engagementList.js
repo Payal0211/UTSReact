@@ -107,7 +107,13 @@ const EngagementList = () => {
                 setTotalRecords(response?.responseBody?.totalrows);
                 setLoading(false);
                 setAPIdata(engagementUtils.modifyEngagementListData(response && response));
-            } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            }
+            else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+                setAPIdata([]);
+                setLoading(false);
+                setTotalRecords(0)
+            }
+            else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
                 setLoading(false);
                 return navigate(UTSRoutes.LOGINROUTE);
             } else if (
@@ -143,7 +149,9 @@ const EngagementList = () => {
         if (response?.statusCode === HTTPStatusCode.OK) {
             console.log(response && response?.responseBody?.details, "data")
             setFiltersList(response && response?.responseBody?.details);
-        } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+        }
+
+        else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
             return navigate(UTSRoutes.LOGINROUTE);
         } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
             return navigate(UTSRoutes.SOMETHINGWENTWRONG);
