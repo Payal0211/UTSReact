@@ -42,6 +42,7 @@ const EngagementFilerList = ({
         (isChecked, filterObj) => {
             let tempAppliedFilters = new Map(appliedFilter);
             let tempCheckedState = new Map(checkedState);
+
             if (isChecked) {
                 tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, true);
                 setFilteredTagLength((prev) => prev + 1);
@@ -51,6 +52,7 @@ const EngagementFilerList = ({
             }
             if (tempAppliedFilters.has(filterObj.filterType)) {
                 let filterAddress = tempAppliedFilters.get(filterObj.filterType);
+                console.log(filterAddress, "filterAddress")
                 if (isChecked) {
                     filterAddress.value = filterAddress?.value + ',' + filterObj.value;
                     filterAddress.id = filterAddress.id + ',' + filterObj.id;
@@ -83,6 +85,8 @@ const EngagementFilerList = ({
         },
         [appliedFilter, checkedState, setFilteredTagLength],
     );
+
+    console.log(appliedFilter, "appliedFilter")
 
     const clearFilters = useCallback(() => {
         setAppliedFilters(new Map());
@@ -128,8 +132,10 @@ const EngagementFilerList = ({
     ]);
 
     const engagementFilterSearch = (e, data) => {
+        console.log(e, "evetObject");
+        console.log(data, "data");
         let filteredData = data.filter((val) => {
-            return val.value.toLowerCase().includes(e.target.value.toLowerCase());
+            return val?.text?.toLowerCase().includes(e.target.value.toLowerCase());
         });
         return filteredData;
     }
@@ -139,8 +145,11 @@ const EngagementFilerList = ({
     const filteredTags = useMemo(() => {
         if (appliedFilter.size > 0) {
             return Array.from(appliedFilter?.values()).map((item) => {
+                console.log(item, "item")
                 const splittedTags = item?.value.split(',');
                 const splittedIDs = item?.id.split(',');
+                console.log("splittedTags", splittedTags)
+                console.log("splittedIDs", splittedIDs)
                 if (splittedTags.length > 0) {
                     return splittedTags?.map((splittedItem, index) => {
                         return (
@@ -168,7 +177,7 @@ const EngagementFilerList = ({
                                     fontWeight: '600',
                                     padding: '10px 20px',
                                 }}>
-                                {splittedItem}&nbsp;
+                                {splittedIDs[index]}&nbsp;
                             </Tag>
                         );
                     });
@@ -280,17 +289,14 @@ const EngagementFilerList = ({
                                                         fontSize: `${!item.label && '1rem'}`,
                                                         fontWeight: '500',
                                                     }}>
-                                                    {item.label
-                                                        ? All_Hiring_Request_Utils.GETHRSTATUS(
-                                                            item.statusCode,
-                                                            item.label,
-                                                        )
-                                                        : item?.value}
+                                                    {item.text}
                                                 </Checkbox>
                                             </div>
                                         );
                                     })
-                                    : filterSubChild.child.map((item, index) => {
+                                    :
+
+                                    filterSubChild?.child.map((item, index) => {
                                         return (
                                             <div
                                                 className={engagementFilterStyle.filterItem}

@@ -23,7 +23,7 @@ export const allEngagementConfig = {
             {
                 label: 'Current Status',
                 name: 'currentStatus',
-                child: filterList.currentStatus,
+                child: filterList?.currentStatus,
                 isSearch: false,
             },
             {
