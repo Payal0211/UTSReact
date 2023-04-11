@@ -90,11 +90,11 @@ const EngagementFilerList = ({
         setFilteredTagLength(0);
         setTableFilteredState({
             ...tableFilteredState,
-            filterFields_ViewAllHRs: {},
+            filterFieldsEngagement: {},
         });
         const reqFilter = {
             ...tableFilteredState,
-            filterFields_ViewAllHRs: {},
+            filterFieldsEngagement: {},
         };
         handleHRRequest(reqFilter);
     }, [
@@ -106,6 +106,26 @@ const EngagementFilerList = ({
         tableFilteredState,
     ]);
 
+    const handleFilters = useCallback(() => {
+        let filters = {};
+        appliedFilter.forEach((item) => {
+            filters = { ...filters, [item.filterType]: item.id };
+        });
+        setTableFilteredState({
+            ...tableFilteredState,
+            filterFieldsEngagement: { ...filters },
+        });
+        const reqFilter = {
+            ...tableFilteredState,
+            filterFieldsEngagement: { ...filters },
+        };
+        handleHRRequest(reqFilter);
+    }, [
+        appliedFilter,
+        handleHRRequest,
+        setTableFilteredState,
+        tableFilteredState,
+    ]);
 
     const engagementFilterSearch = (e, data) => {
         let filteredData = data.filter((val) => {
@@ -113,6 +133,8 @@ const EngagementFilerList = ({
         });
         return filteredData;
     }
+
+    console.log(appliedFilter, "appliedFilter")
 
     const filteredTags = useMemo(() => {
         if (appliedFilter.size > 0) {
@@ -330,6 +352,7 @@ const EngagementFilerList = ({
                         </button>
                         <button
                             className={engagementFilterStyle.applyFilters}
+                            onClick={handleFilters}
                         >
                             Apply Filters
                         </button>

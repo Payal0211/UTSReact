@@ -203,7 +203,7 @@ const EngagementList = () => {
                         <FunnelSVG style={{ width: '16px', height: '16px' }} />
 
                         <div className={allEngagementStyles.filterLabel}>Add Filters</div>
-                        <div className={allEngagementStyles.filterCount}>7</div>
+                        <div className={allEngagementStyles.filterCount}>{filteredTagLength}</div>
                     </div>
 
 
@@ -254,9 +254,10 @@ const EngagementList = () => {
                                             onClick={(e) => {
                                                 setPageSize(parseInt(e.key));
                                                 if (pageSize !== parseInt(e.key)) {
-                                                    fetchUserList({
-                                                        pageNumber: pageIndex,
-                                                        totalRecord: parseInt(e.key),
+                                                    handleHRRequest({
+                                                        ...tableFilteredState,
+                                                        totalrecord: parseInt(e.key),
+                                                        pagenumber: pageIndex,
                                                     });
                                                 }
                                             }}>
@@ -328,10 +329,10 @@ const EngagementList = () => {
                                     setPageSize(pageSize);
                                     setTableFilteredState({
                                         ...tableFilteredState,
-                                        pagesize: pageSize,
-                                        pagenum: pageNum,
+                                        totalrecord: pageSize,
+                                        pagenumber: pageNum,
                                     });
-                                    handleHRRequest({ pagesize: pageSize, pagenum: pageNum });
+                                    handleHRRequest({ pagenumber: pageNum, totalrecord: pageSize });
                                 },
                                 size: 'small',
                                 pageSize: pageSize,

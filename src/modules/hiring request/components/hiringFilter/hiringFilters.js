@@ -285,7 +285,7 @@ const HiringFilters = ({
 											</div>
 										);
 									})
-									: filterSubChild.child.map((item, index) => {
+									: filterSubChild?.child?.map((item, index) => {
 										return (
 											<div
 												className={hiringFilterStyle.filterItem}
