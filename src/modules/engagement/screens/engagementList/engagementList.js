@@ -65,10 +65,10 @@ const EngagementList = () => {
         }
     });
     const [isLoading, setLoading] = useState(false);
-    const pageSizeOptions = [100, 200, 300, 500, 1000];
+    const pageSizeOptions = [10, 20, 50, 100];
     const [totalRecords, setTotalRecords] = useState(0);
     const [pageIndex, setPageIndex] = useState(1);
-    const [pageSize, setPageSize] = useState(100);
+    const [pageSize, setPageSize] = useState(10);
     const [isAllowFilters, setIsAllowFilters] = useState(false);
     const [getHTMLFilter, setHTMLFilter] = useState(false)
     const [filtersList, setFiltersList] = useState([]);
@@ -306,13 +306,13 @@ const EngagementList = () => {
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementFeedback: true })}>EngagementFeeback</a>
+                {/* <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementFeedback: true })}>EngagementFeeback</a> */}
                 {/* <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementBillRate: true })}  >EngagementBillRate</a> */}
                 {/* <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementPayRate: true })} >EngagementPayRate</a> */}
-                <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementOnboard: true })} >EngagementOnboard</a>
+                {/* <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementOnboard: true })} >EngagementOnboard</a>
                 <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementAddFeedback: true })} >EngagementAddFeedback</a>
                 <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })} >EngagementReplaceTalent</a>
-                <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementBillRateAndPayRate: true })} >EngagementBillRateAndPayRate</a>
+                <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementBillRateAndPayRate: true })} >EngagementBillRateAndPayRate</a> */}
             </div>
 
             {/*
@@ -340,7 +340,6 @@ const EngagementList = () => {
                                         totalrecord: pageSize,
                                         pagenumber: pageNum,
                                     });
-                                    handleHRRequest({ pagenumber: pageNum, totalrecord: pageSize });
                                 },
                                 size: 'small',
                                 pageSize: pageSize,
