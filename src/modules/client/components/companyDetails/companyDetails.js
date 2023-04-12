@@ -76,7 +76,7 @@ const CompanyDetails = ({
 				setIsLoading(false);
 			} else {
 				const base64 = await convertToBase64(fileData);
-				console.log(base64, '--base64---');
+
 				setValidation({
 					...getValidation,
 					systemFileUpload: '',

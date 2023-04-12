@@ -7,6 +7,7 @@ import { InputType } from 'constants/application';
 import { OnboardDAO } from 'core/onboard/onboardDAO';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import DatePicker from 'react-datepicker';
+import { lastWorkingDay } from 'shared/utils/basic_utils';
 
 const UpdateLegalClientOnboardStatus = ({
 	talentInfo,
@@ -48,7 +49,10 @@ const UpdateLegalClientOnboardStatus = ({
 				legalClient: {
 					clientLegalStatusID: d.onboardTalentStatus?.id, // dropdown selected id
 					clientLegalDate: d.clientLegalDate,
-					totalDuration: 0,
+					totalDuration: lastWorkingDay(
+						d.engagementStartDate,
+						d.engagementEndDate,
+					),
 					contractStartDate: d.engagementStartDate,
 					contractEndDate: d.engagementEndDate,
 					lastworkingdate: d.engagementEndDate,

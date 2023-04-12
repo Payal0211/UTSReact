@@ -152,4 +152,224 @@ export const engagementRequestDAO = {
 			return errorDebug(error, 'engagementRequestDAO.saveTalentReplacementDAO');
 		}
 	},
+	getContentEndEngagementRequestDAO: async function (talentDetails) {
+		try {
+			const replaceTalentResponse =
+				await EngagementRequestAPI.getContentEndEngagementRequest(
+					talentDetails,
+				);
+			if (replaceTalentResponse) {
+				const statusCode = replaceTalentResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = replaceTalentResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return replaceTalentResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return replaceTalentResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.getContentEndEngagementRequestDAO',
+			);
+		}
+	},
+	changeContractEndDateRequestDAO: async function (talentDetails) {
+		try {
+			const changeContractEndDateResponse =
+				await EngagementRequestAPI.changeContractEndDateRequest(talentDetails);
+			if (changeContractEndDateResponse) {
+				const statusCode = changeContractEndDateResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = changeContractEndDateResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return changeContractEndDateResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return changeContractEndDateResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.changeContractEndDateRequestDAO',
+			);
+		}
+	},
+	saveInvoiceDetailsRequestDAO: async function (talentDetails) {
+		try {
+			const saveInvoiceResponse =
+				await EngagementRequestAPI.saveInvoiceDetailsRequest(talentDetails);
+			if (saveInvoiceResponse) {
+				const statusCode = saveInvoiceResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = saveInvoiceResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return saveInvoiceResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return saveInvoiceResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.saveInvoiceDetailsRequestDAO',
+			);
+		}
+	},
+	getContentForAddInvoiceRequestDAO: async function (talentDetails) {
+		try {
+			const invoiceResponse =
+				await EngagementRequestAPI.getContentForAddInvoiceRequest(
+					talentDetails,
+				);
+			if (invoiceResponse) {
+				const statusCode = invoiceResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = invoiceResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return invoiceResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return invoiceResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.getContentForAddInvoiceRequestDAO',
+			);
+		}
+	},
+	editBillRatePayRateRequestDAO: async function (talentDetails) {
+		try {
+			const editBillPayRateResponse =
+				await EngagementRequestAPI.editBillRatePayRateRequest(talentDetails);
+			if (editBillPayRateResponse) {
+				const statusCode = editBillPayRateResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = editBillPayRateResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return editBillPayRateResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return editBillPayRateResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.editBillRatePayRateRequestDAO',
+			);
+		}
+	},
+	saveEditBillPayRateRequestDAO: async function (talentDetails) {
+		try {
+			const saveBillPayRateResponse =
+				await EngagementRequestAPI.saveBillRatePayRateRequest(talentDetails);
+			if (saveBillPayRateResponse) {
+				const statusCode = saveBillPayRateResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = saveBillPayRateResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return saveBillPayRateResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return saveBillPayRateResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.saveEditBillPayRateRequestDAO',
+			);
+		}
+	},
 };

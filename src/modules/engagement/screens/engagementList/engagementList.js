@@ -25,8 +25,6 @@ import WithLoader from 'shared/components/loader/loader';
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import EngagementFeedback from '../engagementFeedback/engagementFeedback';
-import EngagementBillRate from '../engagementBillAndPayRate/engagementBillRate';
-import EngagementPayRate from '../engagementBillAndPayRate/engagementPayRate';
 import EngagementOnboard from '../engagementOnboard/engagementOnboard';
 import EngagementAddFeedback from '../engagementAddFeedback/engagementAddFeedback';
 import EngagementReplaceTalent from '../engagementReplaceTalent/engagementReplaceTalent';
@@ -143,7 +141,6 @@ const EngagementList = () => {
 		[navigate],
 	);
 
-	console.log('APIDATA ENGAGEMENT LIST-----------', apiData);
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
@@ -359,7 +356,6 @@ const EngagementList = () => {
                 <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })} >EngagementReplaceTalent</a>
                 <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementBillRateAndPayRate: true })} >EngagementBillRateAndPayRate</a> */}
 				</div>
-
 				{/*
 				 * ------------ Table Starts-----------
 				 * @Table Part
@@ -398,7 +394,6 @@ const EngagementList = () => {
 						</WithLoader>
 					)}
 				</div>
-
 				{isAllowFilters && (
 					<Suspense fallback={<div>Loading...</div>}>
 						<EngagementFilerList
@@ -419,7 +414,6 @@ const EngagementList = () => {
 						/>
 					</Suspense>
 				)}
-
 				{/** ============ MODAL FOR ENGAGEMENTFEEDBACK ================ */}
 				<Modal
 					transitionName=""
@@ -438,9 +432,8 @@ const EngagementList = () => {
 					}>
 					<EngagementFeedback />
 				</Modal>
-
 				{/** ============ MODAL FOR ENGAGEMENTBILLRATE ================ */}
-				<Modal
+				{/* <Modal
 					transitionName=""
 					width="930px"
 					centered
@@ -455,11 +448,9 @@ const EngagementList = () => {
 						})
 					}>
 					<EngagementBillRate />
-				</Modal>
-
-				{/** ============ MODAL FOR ENGAGEMENTPAYRATE ================ */}
-
-				<Modal
+				</Modal> */}
+				{/* {/** ============ MODAL FOR ENGAGEMENTPAYRATE ================ */}
+				{/* <Modal
 					transitionName=""
 					width="930px"
 					centered
@@ -474,10 +465,9 @@ const EngagementList = () => {
 						})
 					}>
 					<EngagementPayRate />
-				</Modal>
-
+				</Modal> */}{' '}
+				*/
 				{/** ============ MODAL FOR ENGAGEMENTONBOARD ================ */}
-
 				<Modal
 					transitionName=""
 					width="930px"
@@ -493,9 +483,7 @@ const EngagementList = () => {
 					}>
 					<EngagementOnboard />
 				</Modal>
-
 				{/** ============ MODAL FOR ENGAGEMENT ADD FEEDBACK ================ */}
-
 				<Modal
 					transitionName=""
 					width="930px"
@@ -511,9 +499,7 @@ const EngagementList = () => {
 					}>
 					<EngagementAddFeedback />
 				</Modal>
-
 				{/** ============ MODAL FOR ENGAGEMENT REPLACE TALENT ================ */}
-
 				<Modal
 					transitionName=""
 					width="930px"
@@ -539,9 +525,29 @@ const EngagementList = () => {
 						}
 					/>
 				</Modal>
-
+				{/** ============ MODAL FOR ENGAGEMENT END ================ */}
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					open={getEngagementModal.engagementEnd}
+					className="engagementReplaceTalentModal"
+					onCancel={() =>
+						setEngagementModal({ ...getEngagementModal, engagementEnd: false })
+					}>
+					<EngagementEnd
+						engagementListHandler={() => handleHRRequest(tableFilteredState)}
+						talentInfo={filteredData}
+						closeModal={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementEnd: false,
+							})
+						}
+					/>
+				</Modal>
 				{/** ============ MODAL FOR ENGAGEMENT BILLRATE AND PAYRATE ================ */}
-
 				<Modal
 					transitionName=""
 					width="930px"
@@ -556,6 +562,15 @@ const EngagementList = () => {
 						})
 					}>
 					<EngagementBillRateAndPayRate
+						engagementListHandler={() => handleHRRequest(tableFilteredState)}
+						talentInfo={filteredData}
+						closeModal={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementBillRateAndPayRate: false,
+							})
+						}
+						// activeIndex={}
 						getBillRate={getBillRate}
 						setBillRate={setBillRate}
 						getPayRate={getPayRate}
@@ -564,20 +579,6 @@ const EngagementList = () => {
 						engagementBillAndPayRateTab={engagementBillAndPayRateTab}
 					/>
 				</Modal>
-				{/** ============ MODAL FOR ENGAGEMENT END ================ */}
-				<Modal
-					transitionName=""
-					width="930px"
-					centered
-					footer={null}
-					open={getEngagementModal.engagementEnd}
-					className="engagementReplaceTalentModal"
-					onCancel={() =>
-						setEngagementModal({ ...getEngagementModal, engagementEnd: false })
-					}>
-					<EngagementEnd />
-				</Modal>
-
 				{/** ============ MODAL FOR ENGAGEMENT INVOICE ================ */}
 				<Modal
 					transitionName=""
@@ -592,7 +593,16 @@ const EngagementList = () => {
 							engagementInvoice: false,
 						})
 					}>
-					<EngagementInvoice />
+					<EngagementInvoice
+						engagementListHandler={() => handleHRRequest(tableFilteredState)}
+						talentInfo={filteredData}
+						closeModal={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementInvoice: false,
+							})
+						}
+					/>
 				</Modal>
 			</div>
 		</div>

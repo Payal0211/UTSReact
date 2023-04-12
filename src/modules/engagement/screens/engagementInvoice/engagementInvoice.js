@@ -7,118 +7,283 @@ import DatePicker from 'react-datepicker';
 import engagementInvoice from '../engagementBillAndPayRate/engagementBillRate.module.css';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import { engagementRequestDAO } from 'core/engagement/engagementDAO';
+import { HTTPStatusCode } from 'constants/network';
+import { _isNull } from 'shared/utils/basic_utils';
 
 const EngagementInvoice = ({
+	engagementListHandler,
+	talentInfo,
+	closeModal,
 }) => {
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		control,
+		setError,
+		getValues,
+		watch,
+		reset,
+		resetField,
+		unregister,
+		formState: { errors },
+	} = useForm();
+	const [getInvoiceDetails, setInvoiceDetails] = useState(null);
+	const watchInvoiceStatus = watch('invoiceStatus');
+	const submitEndEngagementHandler = useCallback(
+		async (d) => {
+			let formattedData = {
+				onBoardID: talentInfo?.onboardID,
+				invoiceNumber: d.invoiceNumber,
+				invoiceSentdate: new Date(d.invoiceDate)
+					.toLocaleDateString('en-UK')
+					.split('/')
+					.reverse()
+					.join('-'),
+				invoiceStatusId: d.invoiceStatus?.id,
+				invoiceStatus: null,
+				paymentDate: _isNull(watchInvoiceStatus?.id)
+					? null
+					: new Date(d?.paymentDate)
+							.toLocaleDateString('en-UK')
+							.split('/')
+							.reverse()
+							.join('-'),
+				hrNumber: '',
+				talentName: '',
+				currencyDrp: [
+					{
+						disabled: true,
+						group: {
+							disabled: true,
+							name: 'string',
+						},
+						selected: true,
+						text: 'string',
+						value: 'string',
+					},
+				],
+				leaveType: {
+					additionalProp1: 'string',
+					additionalProp2: 'string',
+					additionalProp3: 'string',
+				},
+				leaveDrp: [
+					{
+						disabled: true,
+						group: {
+							disabled: true,
+							name: 'string',
+						},
+						selected: true,
+						text: 'string',
+						value: 'string',
+					},
+				],
+				billRate: 0,
+				payRate: 0,
+				payRate_NR: 0,
+				billRate_NR: 0,
+				billRate_Comment: '',
+				payRate_Comment: '',
+				currency: '',
+				currencyId: 0,
+				payRateCurrencyId: 0,
+				finalPayRate: 0,
+				finalBillRate: 0,
+			};
 
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        control,
-        setError,
-        getValues,
-        watch,
-        reset,
-        resetField,
-        formState: { errors },
-    } = useForm();
+			const response = await engagementRequestDAO.saveInvoiceDetailsRequestDAO(
+				formattedData,
+			);
+			if (response.statusCode === HTTPStatusCode.OK) {
+				closeModal();
+				engagementListHandler();
+			}
+		},
+		[
+			closeModal,
+			engagementListHandler,
+			talentInfo?.onboardID,
+			watchInvoiceStatus?.id,
+		],
+	);
+	const getContentForAddInvoiceHandler = useCallback(async () => {
+		const response =
+			await engagementRequestDAO.getContentForAddInvoiceRequestDAO({
+				onboardID: talentInfo?.onboardID,
+			});
 
-    /*--------- React DatePicker ---------------- */
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setInvoiceDetails(response && response?.responseBody?.details);
+			// setValue('invoiceNumber', response?.responseBody?.details?.invoiceNumber);
+			// setValue(
+			// 	'invoiceDate',
+			// 	new Date(response?.responseBody?.details?.invoiceSentdate),
+			// );
+		}
+	}, [talentInfo?.onboardID]);
 
-    const onCalenderFilter = (dates) => {
-        const [start, end] = dates;
-        setStartDate(start);
-        setEndDate(end);
-    };
+	useEffect(() => {
+		getContentForAddInvoiceHandler();
+	}, [getContentForAddInvoiceHandler]);
 
+	useEffect(() => {
+		if (watchInvoiceStatus?.id !== 3) unregister('paymentDate');
+	}, [unregister, watchInvoiceStatus?.id]);
 
-    return (
-        <div className={engagementInvoice.engagementModalWrap}
-        >
-            <div className={`${engagementInvoice.headingContainer} ${engagementInvoice.addFeebackContainer}`}>
-                <h1>Add Invoice Details</h1>
-                <ul>
-                    <li><span>HR ID:</span>HR151122121801</li>
-                    <li className={engagementInvoice.divider}>|</li>
-                    <li><span>Engagement ID:</span>EN151122121801</li>
-                    <li className={engagementInvoice.divider}>|</li>
-                    <li><span>Talent Name:</span>Kirtikumar Avaiya</li>
-                </ul>
-            </div>
+	useEffect(() => {
+		if (closeModal) {
+			resetField('invoiceNumber');
+			resetField('invoiceDate');
+			resetField('invoiceStatus');
+			resetField('paymentDate');
+			unregister('paymentDate');
+		}
+	}, [closeModal, resetField, unregister]);
+	return (
+		<div className={engagementInvoice.engagementModalWrap}>
+			<div
+				className={`${engagementInvoice.headingContainer} ${engagementInvoice.addFeebackContainer}`}>
+				<h1>Add Invoice Details</h1>
+				<ul>
+					<li>
+						<span>HR ID:</span>
+						{talentInfo?.hrNumber}
+					</li>
+					<li className={engagementInvoice.divider}>|</li>
+					<li>
+						<span>Engagement ID:</span>
+						{talentInfo?.engagementID}
+					</li>
+					<li className={engagementInvoice.divider}>|</li>
+					<li>
+						<span>Talent Name:</span>
+						{talentInfo?.talentName}
+					</li>
+				</ul>
+			</div>
 
-            <div className={engagementInvoice.row}>
-                <div
-                    className={engagementInvoice.colMd6}>
-                    <HRInputField
-                        required
-                        errors={errors}
-                        validationSchema={{
-                            required: 'Please enter the invoice number.',
-                        }}
-                        label={'Invoice Number'}
-                        register={register}
-                        name="invoiceNumber"
-                        type={InputType.TEXT}
-                        placeholder="Enter Invoice Number"
-                    />
-                </div>
-                <div
-                    className={`${engagementInvoice.colMd6}`}>
-                    <label className={engagementInvoice.timeLabel}>Invoice Sent Date</label>
-                    <div className={engagementInvoice.timeSlotItem}>
-                        <DatePicker
-                            onKeyDown={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                            }}
-                            placeholderText="Please Select Date"
-                            selected={startDate}
-                            onChange={onCalenderFilter}
-                            startDate={startDate}
-                            endDate={endDate}
-                        />
-                        <CalenderSVG />
-                    </div>
-                </div>
-            </div>
-            <div className={engagementInvoice.row}>
-                <div
-                    className={engagementInvoice.colMd12}>
-                    <HRSelectField
-                        setValue={setValue}
-                        register={register}
-                        name="invoiceStatus"
-                        label="Invoice Status"
-                        defaultValue="Select Invoice Status"
-                        options={[]}
-                        required
-                        isError={
-                            errors['invoiceStatus'] && errors['invoiceStatus']
-                        }
-                        errorMsg="Please select a invoice status."
-                    />
-                </div>
-            </div>
+			<div className={engagementInvoice.row}>
+				<div className={engagementInvoice.colMd6}>
+					<HRInputField
+						required
+						errors={errors}
+						validationSchema={{
+							required: 'Please enter the invoice number.',
+						}}
+						label={'Invoice Number'}
+						register={register}
+						name="invoiceNumber"
+						type={InputType.TEXT}
+						placeholder="Enter Invoice Number"
+					/>
+				</div>
+				<div className={engagementInvoice.colMd6}>
+					<div className={engagementInvoice.timeSlotItemField}>
+						<div className={engagementInvoice.timeLabel}>
+							Invoice Sent Date
+							<span>
+								<b style={{ color: 'black' }}>*</b>
+							</span>
+						</div>
+						<div className={engagementInvoice.timeSlotItem}>
+							<CalenderSVG />
+							<Controller
+								render={({ ...props }) => (
+									<DatePicker
+										selected={watch('invoiceDate')}
+										onChange={(date) => {
+											setValue('invoiceDate', date);
+										}}
+										placeholderText="Invoice sent date"
+									/>
+								)}
+								name="invoiceDate"
+								rules={{ required: true }}
+								control={control}
+							/>
+							{errors.invoiceDate && (
+								<div className={engagementInvoice.error}>
+									* Please select invoice sent date.
+								</div>
+							)}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div className={engagementInvoice.row}>
+				<div className={engagementInvoice.colMd12}>
+					<HRSelectField
+						mode={'id/value'}
+						setValue={setValue}
+						register={register}
+						name="invoiceStatus"
+						label="Invoice Status"
+						defaultValue="Select Invoice Status"
+						options={getInvoiceDetails?._InvoiceStatus}
+						required
+						isError={errors['invoiceStatus'] && errors['invoiceStatus']}
+						errorMsg="Please select a invoice status."
+					/>
+				</div>
+			</div>
+			{watch('invoiceStatus')?.id === 3 && (
+				<>
+					<div className={engagementInvoice.row}>
+						<div className={engagementInvoice.colMd6}>
+							<div className={engagementInvoice.timeSlotItemField}>
+								<div className={engagementInvoice.timeLabel}>
+									Payment Date
+									<span>
+										<b style={{ color: 'black' }}>*</b>
+									</span>
+								</div>
+								<div className={engagementInvoice.timeSlotItem}>
+									<CalenderSVG />
+									<Controller
+										render={({ ...props }) => (
+											<DatePicker
+												selected={watch('paymentDate')}
+												onChange={(date) => {
+													setValue('paymentDate', date);
+												}}
+												placeholderText="Invoice sent date"
+											/>
+										)}
+										name="paymentDate"
+										rules={{ required: true }}
+										control={control}
+									/>
+									{errors.paymentDate && (
+										<div className={engagementInvoice.error}>
+											* Please select payment date.
+										</div>
+									)}
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+				</>
+			)}
 
-            <div className={engagementInvoice.formPanelAction}>
-                <button
-                    // disabled={isLoading}
-                    type="submit"
-                    // onClick={handleSubmit(clientSubmitHandler)}
-                    className={engagementInvoice.btnPrimary}>
-                    Save
-                </button>
-                <button
-                    className={engagementInvoice.btn}>
-                    Cancel
-                </button>
-            </div>
-        </div>
-    );
+			<div className={engagementInvoice.formPanelAction}>
+				<button
+					type="submit"
+					onClick={handleSubmit(submitEndEngagementHandler)}
+					className={engagementInvoice.btnPrimary}>
+					Save
+				</button>
+				<button
+					className={engagementInvoice.btn}
+					onClick={closeModal}>
+					Cancel
+				</button>
+			</div>
+		</div>
+	);
 };
 
 export default EngagementInvoice;
