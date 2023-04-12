@@ -42,7 +42,9 @@ export const userUtils = {
 		const userFormDetails = {
 			id: _isNull(id) ? 0 : id,
 			employeeId: d?.employeeId,
-			fullName: `${d?.firstName?.split(" ")?.join("")} ${d?.lastName?.split(" ")?.join("")}`,
+			fullName: `${d?.firstName?.split(' ')?.join('')} ${d?.lastName
+				?.split(' ')
+				?.join('')}`,
 			isNewUser: d.isNewUser === 'true' ? true : false,
 			userTypeId: d.userType?.id,
 			roleId: d?.userRole,
@@ -57,13 +59,13 @@ export const userUtils = {
 			isActive: d?.isActive,
 			fileUpload: {
 				base64ProfilePic: base64Image,
-				extenstion: getUploadFileData?.type?.slice(6)
+				extenstion: getUploadFileData?.type?.slice(6),
 			},
 			DeptID: d?.departMent?.id,
 			TeamID: d?.team?.id,
 			LevelID: d?.level?.id,
 			userHierarchyParentID: d?.reportingUser?.id,
-			contactNumber: d?.primaryClientPhoneNumber
+			contactNumber: d?.primaryClientPhoneNumber,
 		};
 		return userFormDetails;
 	},

@@ -159,6 +159,7 @@ export const allEngagementConfig = {
 											...getEngagementModal,
 											engagementBillRateAndPayRate: true,
 										});
+										setFilteredData(param);
 										break;
 									}
 									case 'Edit Pay Rate': {
@@ -166,6 +167,7 @@ export const allEngagementConfig = {
 											...getEngagementModal,
 											engagementBillRateAndPayRate: true,
 										});
+										setFilteredData(param);
 										break;
 									}
 									case 'Add Invoice Details': {
@@ -173,6 +175,7 @@ export const allEngagementConfig = {
 											...getEngagementModal,
 											engagementInvoice: true,
 										});
+										setFilteredData(param);
 										break;
 									}
 									default:

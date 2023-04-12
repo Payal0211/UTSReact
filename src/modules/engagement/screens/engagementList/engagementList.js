@@ -577,6 +577,15 @@ const EngagementList = () => {
 						})
 					}>
 					<EngagementBillRateAndPayRate
+						engagementListHandler={() => handleHRRequest(tableFilteredState)}
+						talentInfo={filteredData}
+						closeModal={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementBillRateAndPayRate: false,
+							})
+						}
+						// activeIndex={}
 						getBillRate={getBillRate}
 						setBillRate={setBillRate}
 						getPayRate={getPayRate}
@@ -600,7 +609,16 @@ const EngagementList = () => {
 							engagementInvoice: false,
 						})
 					}>
-					<EngagementInvoice />
+					<EngagementInvoice
+						engagementListHandler={() => handleHRRequest(tableFilteredState)}
+						talentInfo={filteredData}
+						closeModal={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementInvoice: false,
+							})
+						}
+					/>
 				</Modal>
 			</div>
 		</div>

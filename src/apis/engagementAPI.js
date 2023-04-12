@@ -47,16 +47,13 @@ export const EngagementRequestAPI = {
 		isEngagement,
 	) {
 		let httpService = new HttpServices();
-		/* let url = isEngagement
-			? TalentReplaceAPI.ENGAGEMENT_REPLACE_TALENT
-			: TalentReplaceAPI.REPLACE_TALENT;
-		console.log('-isENgagement--', url); */
+
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TALENT_REPLACEMENT +
 			TalentReplaceAPI.REPLACE_TALENT +
 			makeURLParamsFromPayload(talentReplaceDetails);
-		// `?OnBoardId=${talentReplaceDetails.onboardID}&LastWorkingDayOption=${talentReplaceDetails.lwd}`;
+
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -161,6 +158,46 @@ export const EngagementRequestAPI = {
 			return errorDebug(
 				error,
 				'EngagementRequestAPI.saveInvoiceDetailsRequest',
+			);
+		}
+	},
+	editBillRatePayRateRequest: async function (talentDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.GET_CONTENT_FOR_ADD_INVOICE +
+			`?HR_ID=${talentDetails?.hrID}
+			&OnBoardID=${talentDetails?.onboardID}
+			&Month=${talentDetails?.month}&Year=${talentDetails?.year}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.editBillRatePayRateRequest',
+			);
+		}
+	},
+	saveBillRatePayRateRequest: async function (talentDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.SAVE_BILL_RATE_PAY_RATE;
+		httpService.dataToSend = talentDetails;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.saveBillRatePayRateRequest',
 			);
 		}
 	},

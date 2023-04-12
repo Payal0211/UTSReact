@@ -218,7 +218,7 @@ const EngagementReplaceTalent = ({
 				</div>
 
 				<div className={allengagementReplceTalentStyles.row}>
-					<div className={allengagementReplceTalentStyles.colMd6}>
+					<div className={allengagementReplceTalentStyles.colMd12}>
 						<HRSelectField
 							setValue={setValue}
 							register={register}
@@ -262,7 +262,7 @@ const EngagementReplaceTalent = ({
 							errorMsg="Please select reason for replacement."
 						/>
 					</div>
-					<div className={allengagementReplceTalentStyles.colMd6}>
+					{/* <div className={allengagementReplceTalentStyles.colMd6}>
 						<HRSelectField
 							setValue={setValue}
 							register={register}
@@ -273,7 +273,7 @@ const EngagementReplaceTalent = ({
 							isError={errors['replaceStage'] && errors['replaceStage']}
 							errorMsg="Please select replacement handler."
 						/>
-					</div>
+					</div> */}
 				</div>
 
 				<div className={allengagementReplceTalentStyles.row}>

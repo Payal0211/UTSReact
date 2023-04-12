@@ -52,6 +52,7 @@ export class EngagementAPI {
 	static CHANGE_CONTRACT_END_DATE = 'ChangeContractEndDate';
 	static GET_CONTENT_FOR_ADD_INVOICE = 'GetContentForAddInvoice';
 	static SAVE_INVOICE_DETAILS = 'SaveInvoiceDetails';
+	static SAVE_BILL_RATE_PAY_RATE = 'SaveBillRatePayRate';
 }
 
 export class AllHiringRequestAPI {
