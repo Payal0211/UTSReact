@@ -16,7 +16,9 @@ export const EngagementRequestAPI = {
 			NetworkInfo.NETWORK +
 			SubDomain.ENGAGEMENT +
 			EngagementAPI.LIST +
-			`?loggedinuserid=2`;
+			`?loggedinuserid=${
+				JSON.parse(localStorage.getItem('userSessionInfo')).LoggedInUserTypeID
+			}`;
 		httpService.dataToSend = data;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();

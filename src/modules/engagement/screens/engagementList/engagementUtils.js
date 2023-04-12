@@ -14,6 +14,33 @@ export const engagementUtils = {
 			onboardID: item?.onBoardID,
 			talentID: item?.talentID,
 			contractEndDate: item?.contractEndDate,
+  activeEngagement: item?.activeEngagement,
+            feedbcakReceive: item?.feedbcakReceive,
+            avgDP: item?.avgDP,
+            avgNR: item?.avgNR,
+            feedbackType: item?.feedbackType
 		}));
 	},
+    getClientFeedbackColor: (color) => {
+        switch (color) {
+            case "0": {
+                return "#006699";
+                break;
+            }
+            case "Green": {
+                return "#006D2C";
+                break;
+            }
+            case "Red": {
+                return "#C80000";
+                break;
+            }
+            case "Orange": {
+                return "#FD7021"
+                break;
+            }
+            default:
+                break;
+        }
+    }
 };
