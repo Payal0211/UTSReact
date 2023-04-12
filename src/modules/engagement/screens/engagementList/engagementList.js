@@ -143,7 +143,6 @@ const EngagementList = () => {
 		[navigate],
 	);
 
-	console.log('APIDATA ENGAGEMENT LIST-----------', apiData);
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
@@ -539,6 +538,28 @@ const EngagementList = () => {
 						}
 					/>
 				</Modal>
+				{/** ============ MODAL FOR ENGAGEMENT END ================ */}
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					open={getEngagementModal.engagementEnd}
+					className="engagementReplaceTalentModal"
+					onCancel={() =>
+						setEngagementModal({ ...getEngagementModal, engagementEnd: false })
+					}>
+					<EngagementEnd
+						engagementListHandler={() => handleHRRequest(tableFilteredState)}
+						talentInfo={filteredData}
+						closeModal={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementEnd: false,
+							})
+						}
+					/>
+				</Modal>
 
 				{/** ============ MODAL FOR ENGAGEMENT BILLRATE AND PAYRATE ================ */}
 
@@ -563,19 +584,6 @@ const EngagementList = () => {
 						setEngagementBillAndPayRateTab={setEngagementBillAndPayRateTab}
 						engagementBillAndPayRateTab={engagementBillAndPayRateTab}
 					/>
-				</Modal>
-				{/** ============ MODAL FOR ENGAGEMENT END ================ */}
-				<Modal
-					transitionName=""
-					width="930px"
-					centered
-					footer={null}
-					open={getEngagementModal.engagementEnd}
-					className="engagementReplaceTalentModal"
-					onCancel={() =>
-						setEngagementModal({ ...getEngagementModal, engagementEnd: false })
-					}>
-					<EngagementEnd />
 				</Modal>
 
 				{/** ============ MODAL FOR ENGAGEMENT INVOICE ================ */}

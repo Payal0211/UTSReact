@@ -151,6 +151,7 @@ export const allEngagementConfig = {
 											...getEngagementModal,
 											engagementEnd: true,
 										});
+										setFilteredData(param);
 										break;
 									}
 									case 'Edit Bill Rate': {

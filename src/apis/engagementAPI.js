@@ -88,4 +88,80 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	getContentEndEngagementRequest: async function (talentDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.GET_CONTENT_END_ENGAGEMENT +
+			`?OnBoardID=${talentDetails?.onboardID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.getContentEndEngagementRequest',
+			);
+		}
+	},
+	changeContractEndDateRequest: async function (talentDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.CHANGE_CONTRACT_END_DATE;
+		httpService.dataToSend = talentDetails;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.changeContractEndDateRequest',
+			);
+		}
+	},
+	getContentForAddInvoiceRequest: async function (talentDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.GET_CONTENT_FOR_ADD_INVOICE +
+			`?OnBoardID=${talentDetails?.onboardID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.getContentForAddInvoiceRequest',
+			);
+		}
+	},
+	saveInvoiceDetailsRequest: async function (talentDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.SAVE_INVOICE_DETAILS;
+		httpService.dataToSend = talentDetails;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.saveInvoiceDetailsRequest',
+			);
+		}
+	},
 };

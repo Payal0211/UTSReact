@@ -62,3 +62,28 @@ export const makeURLParamsFromPayload = (payload) => {
 
 	return `?${url.slice(0, -1)}`;
 };
+
+export const lastWorkingDay = (startDate, endDate) => {
+	// const formattedStartDate = new Date(startDate).toLocaleDateString('en-US');
+	// const formattedEndDate = new Date(endDate).toLocaleDateString('en-US');
+
+	const startMonth = new Date(startDate).getMonth();
+	const startYear = new Date(startDate).getFullYear();
+
+	const endMonth = new Date(endDate).getMonth();
+	const endYear = new Date(endDate).getFullYear();
+
+	let duration = 0;
+	if (endYear > startYear) {
+		let yearDiff = parseInt(endYear) - parseInt(startYear);
+		let diff =
+			parseInt(parseInt(12 * parseInt(yearDiff))) -
+			parseInt(startMonth) +
+			parseInt(endMonth);
+		duration += diff;
+	} else {
+		duration = parseInt(endMonth) - parseInt(startMonth);
+	}
+
+	return duration;
+};

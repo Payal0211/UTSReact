@@ -48,6 +48,10 @@ export class EngagementAPI {
 	static FILTER = 'Filters';
 	static LIST = 'List';
 	static EDIT_BILL_PAY_RATE = 'EditBillRatePayRate';
+	static GET_CONTENT_END_ENGAGEMENT = 'GetContentEndEnagagement';
+	static CHANGE_CONTRACT_END_DATE = 'ChangeContractEndDate';
+	static GET_CONTENT_FOR_ADD_INVOICE = 'GetContentForAddInvoice';
+	static SAVE_INVOICE_DETAILS = 'SaveInvoiceDetails';
 }
 
 export class AllHiringRequestAPI {
