@@ -9,6 +9,7 @@ import { ProfileLog } from 'constants/application';
 import { Skeleton } from 'antd';
 import { _isNull } from 'shared/utils/basic_utils';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
+import { HTTPStatusCode } from 'constants/network';
 
 export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const [profileLog, setProfileLog] = useState(null);
@@ -38,28 +39,28 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 	const profileData = [
 		{
 			id: 'profileShared',
-			score: profileLog?.profileSharedCount,
+			score: profileLog?.length === 0 ? 0 : profileLog?.profileSharedCount,
 			label: 'Profile Shared',
 			activeColor: `var(--color-purple)`,
 			typeID: ProfileLog.PROFILE_SHARED,
 		},
 		{
 			id: 'feedback',
-			score: profileLog?.feedbackCount,
+			score: profileLog?.length === 0 ? 0 : profileLog?.feedbackCount,
 			label: 'Feedback Received',
 			activeColor: `var(--color-cyan)`,
 			typeID: ProfileLog.FEEDBACK,
 		},
 		{
 			id: 'rejected',
-			score: profileLog?.rejectedCount,
+			score: profileLog?.length === 0 ? 0 : profileLog?.rejectedCount,
 			label: 'Rejected',
 			activeColor: `var(--color-danger)`,
 			typeID: ProfileLog.REJECTED,
 		},
 		{
 			id: 'selected',
-			score: profileLog?.selectedForCount,
+			score: profileLog?.length === 0 ? 0 : profileLog?.selectedForCount,
 			label: 'Selected For',
 			activeColor: `var(--color-success)`,
 			typeID: ProfileLog.SELECTED,
@@ -87,7 +88,14 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 			const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
 				profileObj,
 			);
-			setLogExpanded(response && response?.responseBody?.details);
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				setLogExpanded(response && response?.responseBody?.details);
+				// setProfileLog()
+			}
+			if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+				setLogExpanded([]);
+				setProfileLog([]);
+			}
 		},
 		[talentID],
 	);
@@ -98,11 +106,6 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 			setStartDate(start);
 			setEndDate(end);
 			if (start && end) {
-				/* setCalenderFilter({
-					...calenderFilter,
-					fromDate: ,
-					toDate: ,
-				}); */
 				onProfileLogClickHandler(typeId, activeIndex, activeType, start, end);
 			}
 		},
@@ -168,6 +171,7 @@ export const ShowProfileLog = ({ talentID, handleClose }) => {
 									`1px solid ${profileData[activeIndex]?.activeColor}`,
 							}}
 							onClick={() =>
+								item?.score > 0 &&
 								onProfileLogClickHandler(item?.typeID, index, item?.typeID)
 							}
 							key={item.id}

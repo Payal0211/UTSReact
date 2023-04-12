@@ -33,4 +33,57 @@ export const OnboardDAO = {
 			return errorDebug(error, 'userDAO.onboardTalentRequestDAO');
 		}
 	},
+	getOnboardStatusRequestDAO: async function (onboardData) {
+		try {
+			const onboardTalentResponse = await OnboardAPI.getOnboardingStatusRequest(
+				onboardData,
+			);
+			if (onboardTalentResponse) {
+				const statusCode = onboardTalentResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = onboardTalentResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return onboardTalentResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return onboardTalentResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.getOnboardStatusRequestDAO');
+		}
+	},
+	onboardStatusUpdatesRequestDAO: async function (onboardData) {
+		try {
+			const onboardTalentResponse =
+				await OnboardAPI.onboardingStatusUpdatesRequest(onboardData);
+			if (onboardTalentResponse) {
+				const statusCode = onboardTalentResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = onboardTalentResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return onboardTalentResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return onboardTalentResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.onboardStatusUpdatesRequestDAO');
+		}
+	},
 };

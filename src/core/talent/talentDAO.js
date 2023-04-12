@@ -84,4 +84,30 @@ export const TalentStatusDAO = {
 			return errorDebug(error, 'userDAO.removeOnHoldStatusRequestDAO');
 		}
 	},
+	talentReplacementRequestDAO: async function (talentDetails) {
+		try {
+			const talentDetailsResponse =
+				await TalentStatusAPI.talentReplacementRequest(talentDetails);
+			if (talentDetailsResponse) {
+				const statusCode = talentDetailsResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = talentDetailsResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return talentDetailsResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return talentDetailsResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.talentReplacementRequestDAO');
+		}
+	},
 };

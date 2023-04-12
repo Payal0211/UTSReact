@@ -212,13 +212,14 @@ const TalentAcceptance = ({
 														}
 													</label>
 													<Radio.Group
+														defaultValue={1}
 														className={TalentAcceptanceStyle.radioGroup}
 														onChange={onChangePostAcceptanceDetails}
 														value={postAcceptanceValue}>
 														{talentAcceptanceResult?.postAcceptanceDetail?.map(
-															(item) => {
+															(item, index) => {
 																return (
-																	<Radio value={item?.primaryKey}>
+																	<Radio value={index}>
 																		{item?.talent_ReadytoworkShift}
 																	</Radio>
 																);
@@ -286,13 +287,14 @@ const TalentAcceptance = ({
 													</label>
 
 													<Radio.Group
+														defaultValue={1}
 														className={TalentAcceptanceStyle.radioGroup}
 														onChange={onChangePostAcceptanceDetailHowSoon}
 														value={postAcceptanceHowSoon}>
 														{talentAcceptanceResult?.postAcceptanceDetailHowSoon?.map(
-															(item) => {
+															(item, index) => {
 																return (
-																	<Radio value={item?.primaryKey}>
+																	<Radio value={index}>
 																		{item?.talent_JoinWithin}
 																	</Radio>
 																);

@@ -2,6 +2,7 @@ import { HiringRequestHRStatus, ProfileLog } from 'constants/application';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { Link } from 'react-router-dom';
+import { engagementUtils } from './engagementUtils';
 
 export const allEngagementConfig = {
 	engagementFilterTypeConfig: (filterList) => {
@@ -25,12 +26,7 @@ export const allEngagementConfig = {
 				child: filterList.currentStatus,
 				isSearch: false,
 			},
-			{
-				label: 'Tsc',
-				name: 'tscName',
-				child: filterList?.tscName,
-				isSearch: true,
-			},
+
 			{
 				label: 'Company',
 				name: 'company',
@@ -67,12 +63,7 @@ export const allEngagementConfig = {
 				child: filterList?.amName,
 				isSearch: true,
 			},
-			{
-				label: 'Pending',
-				name: 'pending',
-				child: filterList?.pending,
-				isSearch: true,
-			},
+
 			{
 				label: 'Lost',
 				name: 'lost',
@@ -99,14 +90,14 @@ export const allEngagementConfig = {
 			},
 		];
 	},
-	tableConfig: (getEngagementModal, setEngagementModal) => {
+	tableConfig: (getEngagementModal, setEngagementModal, setFilteredData) => {
 		return [
 			{
 				title: '    ',
 				dataIndex: 'action',
 				key: 'action',
 				align: 'left',
-				render: (_, param) => {
+				render: (_, param, index) => {
 					return (
 						<HROperator
 							title="Action"
@@ -148,6 +139,7 @@ export const allEngagementConfig = {
 											...getEngagementModal,
 											engagementReplaceTalent: true,
 										});
+										setFilteredData(param);
 										break;
 									}
 									case 'Renew Engagement': {
@@ -157,7 +149,7 @@ export const allEngagementConfig = {
 									case 'End Engagement': {
 										setEngagementModal({
 											...getEngagementModal,
-											engagementReplaceTalent: true,
+											engagementEnd: true,
 										});
 										break;
 									}
@@ -176,7 +168,10 @@ export const allEngagementConfig = {
 										break;
 									}
 									case 'Add Invoice Details': {
-										// setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })
+										setEngagementModal({
+											...getEngagementModal,
+											engagementInvoice: true,
+										});
 										break;
 									}
 									default:
@@ -192,6 +187,42 @@ export const allEngagementConfig = {
 				dataIndex: 'clientFeedback',
 				key: 'clientFeedback',
 				align: 'left',
+				render: (text, result) =>
+					result?.clientFeedback ? (
+						<Link
+							to=""
+							style={{
+								color: engagementUtils.getClientFeedbackColor(
+									result?.feedbackType,
+								),
+								textDecoration: 'underline',
+							}}
+							onClick={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementAddFeedback: true,
+								})
+							}>
+							{'Add'}
+						</Link>
+					) : (
+						<Link
+							to=""
+							style={{
+								color: engagementUtils.getClientFeedbackColor(
+									result?.feedbackType,
+								),
+								textDecoration: 'underline',
+							}}
+							onClick={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementFeedback: true,
+								})
+							}>
+							{'View'}
+						</Link>
+					),
 			},
 			{
 				title: 'Last Feedback Date',
@@ -208,7 +239,13 @@ export const allEngagementConfig = {
 					result?.clientLegal_StatusID === 2 && (
 						<Link
 							to=""
-							style={{ color: 'black', textDecoration: 'underline' }}>
+							style={{ color: '#006699', textDecoration: 'underline' }}
+							onClick={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementOnboard: true,
+								})
+							}>
 							{'View'}
 						</Link>
 					),
@@ -218,6 +255,21 @@ export const allEngagementConfig = {
 				dataIndex: 'engagementId_HRID',
 				key: 'engagementId_HRID',
 				align: 'left',
+				render: (text, result) => (
+					<p>
+						{result?.engagementId_HRID.slice(
+							0,
+							result?.engagementId_HRID?.indexOf('/'),
+						)}
+						<Link
+							to=""
+							style={{ color: '#006699', textDecoration: 'underline' }}>
+							{result?.engagementId_HRID.slice(
+								result?.engagementId_HRID?.indexOf('/'),
+							)}
+						</Link>
+					</p>
+				),
 			},
 			{
 				title: 'Talent Name',

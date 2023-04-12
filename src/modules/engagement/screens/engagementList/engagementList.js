@@ -34,6 +34,8 @@ import EngagementBillRateAndPayRate from '../engagementBillAndPayRate/engagement
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
 import { engagementUtils } from './engagementUtils';
+import EngagementEnd from '../endEngagement/endEngagement';
+import EngagementInvoice from '../engagementInvoice/engagementInvoice';
 import { userUtils } from 'modules/user/userUtils';
 
 /** Importing Lazy components using Suspense */
@@ -63,10 +65,11 @@ const EngagementList = () => {
 	});
 
 	const [isLoading, setLoading] = useState(false);
-	const pageSizeOptions = [100, 200, 300, 500, 1000];
+	const pageSizeOptions = [10, 20, 50, 100];
+	const [filteredData, setFilteredData] = useState(null);
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
-	const [pageSize, setPageSize] = useState(100);
+	const [pageSize, setPageSize] = useState(10);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [getHTMLFilter, setHTMLFilter] = useState(false);
 	const [filtersList, setFiltersList] = useState([]);
@@ -89,6 +92,8 @@ const EngagementList = () => {
 		engagementAddFeedback: false,
 		engagementReplaceTalent: false,
 		engagementBillRateAndPayRate: false,
+		engagementEnd: false,
+		engagementInvoice: false,
 	});
 
 	const onRemoveHRFilters = () => {
@@ -100,7 +105,11 @@ const EngagementList = () => {
 
 	const tableColumnsMemo = useMemo(
 		() =>
-			allEngagementConfig.tableConfig(getEngagementModal, setEngagementModal),
+			allEngagementConfig.tableConfig(
+				getEngagementModal,
+				setEngagementModal,
+				setFilteredData,
+			),
 		[getEngagementModal],
 	);
 
@@ -114,6 +123,10 @@ const EngagementList = () => {
 				setAPIdata(
 					engagementUtils.modifyEngagementListData(response && response),
 				);
+			} else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+				setAPIdata([]);
+				setLoading(false);
+				setTotalRecords(0);
 			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 				setLoading(false);
 				return navigate(UTSRoutes.LOGINROUTE);
@@ -130,6 +143,7 @@ const EngagementList = () => {
 		[navigate],
 	);
 
+	console.log('APIDATA ENGAGEMENT LIST-----------', apiData);
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
@@ -137,7 +151,7 @@ const EngagementList = () => {
 
 	useEffect(() => {
 		handleHRRequest(tableFilteredState);
-	}, [tableFilteredState]);
+	}, [handleHRRequest, tableFilteredState]);
 
 	useEffect(() => {
 		setBillRate(0);
@@ -263,12 +277,13 @@ const EngagementList = () => {
 										<Menu
 											onClick={(e) => {
 												setPageSize(parseInt(e.key));
-												/* if (pageSize !== parseInt(e.key)) {
-													fetchUserList({
-														pageNumber: pageIndex,
-														totalRecord: parseInt(e.key),
+												if (pageSize !== parseInt(e.key)) {
+													handleHRRequest({
+														...tableFilteredState,
+														totalrecord: parseInt(e.key),
+														pagenumber: pageIndex,
 													});
-												} */
+												}
 											}}>
 											{pageSizeOptions.map((item) => {
 												return <Menu.Item key={item}>{item}</Menu.Item>;
@@ -294,7 +309,12 @@ const EngagementList = () => {
 							alt="handshaker"
 						/>
 						<h2>
-							Active Engagements - <span>2023</span>
+							Active Engagements -{' '}
+							<span>
+								{apiData[0]?.activeEngagement
+									? apiData[0]?.activeEngagement
+									: 0}
+							</span>
 						</h2>
 					</div>
 					<div className={allEngagementStyles.filterType}>
@@ -303,7 +323,10 @@ const EngagementList = () => {
 							alt="smile"
 						/>
 						<h2>
-							Feedback Received - <span>1500</span>
+							Feedback Received -{' '}
+							<span>
+								{apiData[0]?.feedbcakReceive ? apiData[0]?.feedbcakReceive : 0}
+							</span>
 						</h2>
 					</div>
 					<div className={allEngagementStyles.filterType}>
@@ -312,7 +335,8 @@ const EngagementList = () => {
 							alt="rocket"
 						/>
 						<h2>
-							Average NR% - <span>10%</span>
+							Average NR% -{' '}
+							<span>{apiData[0]?.avgNR ? apiData[0]?.avgNR : 0}</span>
 						</h2>
 					</div>
 					<div className={allEngagementStyles.filterType}>
@@ -321,208 +345,256 @@ const EngagementList = () => {
 							alt="briefcase"
 						/>
 						<h2>
-							Average DP% - <span>10%</span>
+							Average DP% -{' '}
+							<span>{apiData[0]?.avgDP ? apiData[0]?.avgDP : 0}</span>
 						</h2>
 					</div>
 				</div>
-			</div>
+				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+					{/* <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementFeedback: true })}>EngagementFeeback</a> */}
+					{/* <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementBillRate: true })}  >EngagementBillRate</a> */}
+					{/* <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementPayRate: true })} >EngagementPayRate</a> */}
+					{/* <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementOnboard: true })} >EngagementOnboard</a>
+                <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementAddFeedback: true })} >EngagementAddFeedback</a>
+                <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })} >EngagementReplaceTalent</a>
+                <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementBillRateAndPayRate: true })} >EngagementBillRateAndPayRate</a> */}
+				</div>
 
-			{/*
-			 * ------------ Table Starts-----------
-			 * @Table Part
-			 */}
-			<div className={allEngagementStyles.tableDetails}>
-				{isLoading ? (
-					<TableSkeleton />
-				) : (
-					<WithLoader>
-						<Table
-							id="hrListingTable"
-							columns={tableColumnsMemo}
-							bordered={false}
-							dataSource={
-								search && search.length > 0 ? [...search] : [...apiData]
-							}
-							pagination={{
-								onChange: (pageNum, pageSize) => {
-									setPageIndex(pageNum);
-									setPageSize(pageSize);
-									setTableFilteredState({
-										...tableFilteredState,
-										pagesize: pageSize,
-										pagenum: pageNum,
-									});
-									handleHRRequest({ pagesize: pageSize, pagenum: pageNum });
-								},
-								size: 'small',
-								pageSize: pageSize,
-								pageSizeOptions: pageSizeOptions,
-								total: totalRecords,
-								showTotal: (total, range) =>
-									`${range[0]}-${range[1]} of ${totalRecords} items`,
-								defaultCurrent: pageIndex,
-							}}
+				{/*
+				 * ------------ Table Starts-----------
+				 * @Table Part
+				 */}
+				<div className={allEngagementStyles.tableDetails}>
+					{isLoading ? (
+						<TableSkeleton />
+					) : (
+						<WithLoader>
+							<Table
+								id="hrListingTable"
+								columns={tableColumnsMemo}
+								bordered={false}
+								dataSource={
+									search && search.length > 0 ? [...search] : [...apiData]
+								}
+								pagination={{
+									onChange: (pageNum, pageSize) => {
+										setPageIndex(pageNum);
+										setPageSize(pageSize);
+										setTableFilteredState({
+											...tableFilteredState,
+											totalrecord: pageSize,
+											pagenumber: pageNum,
+										});
+									},
+									size: 'small',
+									pageSize: pageSize,
+									pageSizeOptions: pageSizeOptions,
+									total: totalRecords,
+									showTotal: (total, range) =>
+										`${range[0]}-${range[1]} of ${totalRecords} items`,
+									defaultCurrent: pageIndex,
+								}}
+							/>
+						</WithLoader>
+					)}
+				</div>
+
+				{isAllowFilters && (
+					<Suspense fallback={<div>Loading...</div>}>
+						<EngagementFilerList
+							setAppliedFilters={setAppliedFilters}
+							appliedFilter={appliedFilter}
+							setCheckedState={setCheckedState}
+							checkedState={checkedState}
+							handleHRRequest={handleHRRequest}
+							setTableFilteredState={setTableFilteredState}
+							tableFilteredState={tableFilteredState}
+							setFilteredTagLength={setFilteredTagLength}
+							onRemoveHRFilters={onRemoveHRFilters}
+							getHTMLFilter={getHTMLFilter}
+							hrFilterList={allHRConfig.hrFilterListConfig()}
+							filtersType={allEngagementConfig.engagementFilterTypeConfig(
+								filtersList && filtersList,
+							)}
 						/>
-					</WithLoader>
+					</Suspense>
 				)}
-			</div>
 
-			{isAllowFilters && (
-				<Suspense fallback={<div>Loading...</div>}>
-					<EngagementFilerList
-						setAppliedFilters={setAppliedFilters}
-						appliedFilter={appliedFilter}
-						setCheckedState={setCheckedState}
-						checkedState={checkedState}
-						handleHRRequest={handleHRRequest}
-						setTableFilteredState={setTableFilteredState}
-						tableFilteredState={tableFilteredState}
-						setFilteredTagLength={setFilteredTagLength}
-						onRemoveHRFilters={onRemoveHRFilters}
-						getHTMLFilter={getHTMLFilter}
-						hrFilterList={allHRConfig.hrFilterListConfig()}
-						filtersType={allEngagementConfig.engagementFilterTypeConfig(
-							filtersList && filtersList,
-						)}
+				{/** ============ MODAL FOR ENGAGEMENTFEEDBACK ================ */}
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					open={getEngagementModal.engagementFeedback}
+					// className={allEngagementStyles.engagementModalContainer}
+					className="engagementModalStyle"
+					// onOk={() => setVersantModal(false)}
+					onCancel={() =>
+						setEngagementModal({
+							...getEngagementModal,
+							engagementFeedback: false,
+						})
+					}>
+					<EngagementFeedback />
+				</Modal>
+
+				{/** ============ MODAL FOR ENGAGEMENTBILLRATE ================ */}
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					className="engagementBillRateModal"
+					open={getEngagementModal.engagementBillRate}
+					// onOk={() => setVersantModal(false)}
+					onCancel={() =>
+						setEngagementModal({
+							...getEngagementModal,
+							engagementBillRate: false,
+						})
+					}>
+					<EngagementBillRate />
+				</Modal>
+
+				{/** ============ MODAL FOR ENGAGEMENTPAYRATE ================ */}
+
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					open={getEngagementModal.engagementPayRate}
+					className="engagementPayRateModal"
+					// onOk={() => setVersantModal(false)}
+					onCancel={() =>
+						setEngagementModal({
+							...getEngagementModal,
+							engagementPayRate: false,
+						})
+					}>
+					<EngagementPayRate />
+				</Modal>
+
+				{/** ============ MODAL FOR ENGAGEMENTONBOARD ================ */}
+
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					className="engagementPayRateModal"
+					open={getEngagementModal.engagementOnboard}
+					onCancel={() =>
+						setEngagementModal({
+							...getEngagementModal,
+							engagementOnboard: false,
+						})
+					}>
+					<EngagementOnboard />
+				</Modal>
+
+				{/** ============ MODAL FOR ENGAGEMENT ADD FEEDBACK ================ */}
+
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					className="engagementAddFeedbackModal"
+					open={getEngagementModal.engagementAddFeedback}
+					onCancel={() =>
+						setEngagementModal({
+							...getEngagementModal,
+							engagementAddFeedback: false,
+						})
+					}>
+					<EngagementAddFeedback />
+				</Modal>
+
+				{/** ============ MODAL FOR ENGAGEMENT REPLACE TALENT ================ */}
+
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					open={getEngagementModal.engagementReplaceTalent}
+					className="engagementReplaceTalentModal"
+					onCancel={() =>
+						setEngagementModal({
+							...getEngagementModal,
+							engagementReplaceTalent: false,
+						})
+					}>
+					<EngagementReplaceTalent
+						engagementListHandler={() => handleHRRequest(tableFilteredState)}
+						talentInfo={filteredData}
+						isEngagement={true}
+						closeModal={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementReplaceTalent: false,
+							})
+						}
 					/>
-				</Suspense>
-			)}
+				</Modal>
 
-			{/** ============ MODAL FOR ENGAGEMENTFEEDBACK ================ */}
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				open={getEngagementModal.engagementFeedback}
-				// className={allEngagementStyles.engagementModalContainer}
-				className="engagementModalStyle"
-				// onOk={() => setVersantModal(false)}
-				onCancel={() =>
-					setEngagementModal({
-						...getEngagementModal,
-						engagementFeedback: false,
-					})
-				}>
-				<EngagementFeedback />
-			</Modal>
+				{/** ============ MODAL FOR ENGAGEMENT BILLRATE AND PAYRATE ================ */}
 
-			{/** ============ MODAL FOR ENGAGEMENTBILLRATE ================ */}
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				className="engagementBillRateModal"
-				open={getEngagementModal.engagementBillRate}
-				// onOk={() => setVersantModal(false)}
-				onCancel={() =>
-					setEngagementModal({
-						...getEngagementModal,
-						engagementBillRate: false,
-					})
-				}>
-				<EngagementBillRate />
-			</Modal>
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					open={getEngagementModal.engagementBillRateAndPayRate}
+					className="engagementReplaceTalentModal"
+					onCancel={() =>
+						setEngagementModal({
+							...getEngagementModal,
+							engagementBillRateAndPayRate: false,
+						})
+					}>
+					<EngagementBillRateAndPayRate
+						getBillRate={getBillRate}
+						setBillRate={setBillRate}
+						getPayRate={getPayRate}
+						setPayRate={setPayRate}
+						setEngagementBillAndPayRateTab={setEngagementBillAndPayRateTab}
+						engagementBillAndPayRateTab={engagementBillAndPayRateTab}
+					/>
+				</Modal>
+				{/** ============ MODAL FOR ENGAGEMENT END ================ */}
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					open={getEngagementModal.engagementEnd}
+					className="engagementReplaceTalentModal"
+					onCancel={() =>
+						setEngagementModal({ ...getEngagementModal, engagementEnd: false })
+					}>
+					<EngagementEnd />
+				</Modal>
 
-			{/** ============ MODAL FOR ENGAGEMENTPAYRATE ================ */}
-
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				open={getEngagementModal.engagementPayRate}
-				className="engagementPayRateModal"
-				// onOk={() => setVersantModal(false)}
-				onCancel={() =>
-					setEngagementModal({
-						...getEngagementModal,
-						engagementPayRate: false,
-					})
-				}>
-				<EngagementPayRate />
-			</Modal>
-
-			{/** ============ MODAL FOR ENGAGEMENTONBOARD ================ */}
-
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				className="engagementPayRateModal"
-				open={getEngagementModal.engagementOnboard}
-				onCancel={() =>
-					setEngagementModal({
-						...getEngagementModal,
-						engagementOnboard: false,
-					})
-				}>
-				<EngagementOnboard />
-			</Modal>
-
-			{/** ============ MODAL FOR ENGAGEMENT ADD FEEDBACK ================ */}
-
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				className="engagementAddFeedbackModal"
-				open={getEngagementModal.engagementAddFeedback}
-				onCancel={() =>
-					setEngagementModal({
-						...getEngagementModal,
-						engagementAddFeedback: false,
-					})
-				}>
-				<EngagementAddFeedback />
-			</Modal>
-
-			{/** ============ MODAL FOR ENGAGEMENT REPLACE TALENT ================ */}
-
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				open={getEngagementModal.engagementReplaceTalent}
-				className="engagementReplaceTalentModal"
-				// onOk={() => setVersantModal(false)}
-				onCancel={() =>
-					setEngagementModal({
-						...getEngagementModal,
-						engagementReplaceTalent: false,
-					})
-				}>
-				<EngagementReplaceTalent />
-			</Modal>
-
-			{/** ============ MODAL FOR ENGAGEMENT BILLRATE AND PAYRATE ================ */}
-
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				open={getEngagementModal.engagementBillRateAndPayRate}
-				className="engagementReplaceTalentModal"
-				onCancel={() =>
-					setEngagementModal({
-						...getEngagementModal,
-						engagementBillRateAndPayRate: false,
-					})
-				}>
-				<EngagementBillRateAndPayRate
-					getBillRate={getBillRate}
-					setBillRate={setBillRate}
-					getPayRate={getPayRate}
-					setPayRate={setPayRate}
-					setEngagementBillAndPayRateTab={setEngagementBillAndPayRateTab}
-					engagementBillAndPayRateTab={engagementBillAndPayRateTab}
-				/>
-			</Modal>
+				{/** ============ MODAL FOR ENGAGEMENT INVOICE ================ */}
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					open={getEngagementModal.engagementInvoice}
+					className="engagementReplaceTalentModal"
+					onCancel={() =>
+						setEngagementModal({
+							...getEngagementModal,
+							engagementInvoice: false,
+						})
+					}>
+					<EngagementInvoice />
+				</Modal>
+			</div>
 		</div>
 	);
 };

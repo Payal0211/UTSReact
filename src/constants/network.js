@@ -21,6 +21,7 @@ export class SubDomain {
 	static ONBOARD = 'OnBoard/';
 	static TALENT_STATUS = 'TalentStatus/';
 	static ENGAGEMENT = 'Engagement/';
+	static TALENT_REPLACEMENT = 'TalentReplacement/';
 }
 export class APIType {
 	static USER = '/user';
@@ -46,6 +47,7 @@ export class UserAPI {
 export class EngagementAPI {
 	static FILTER = 'Filters';
 	static LIST = 'List';
+	static EDIT_BILL_PAY_RATE = 'EditBillRatePayRate';
 }
 
 export class AllHiringRequestAPI {
@@ -90,6 +92,7 @@ export class MastersAPI {
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
 	static UPDATE_TALENT_STATUS = 'UpdateTalentStatus';
+
 	static REMOVE_ONHOLD_STATUS = 'RemoveOnHoldStatus';
 }
 export class HRAcceptanceAPI {
@@ -149,6 +152,8 @@ export class DealsAPI {
 
 export class OnboardsAPI {
 	static ONBOARD_TALENT = 'OnBoardTalent';
+	static GET_ONBOARDING_STATUS = 'GetOnboardingStatus';
+	static ONBOARDING_STATUS_UPDATES = 'OnBoardingStatusUpdates';
 }
 
 export class HTTPStatusCode {
@@ -169,4 +174,11 @@ export class HTTPStatusCode {
 	static UNPROCESSABLE_ENTITY = 422;
 	static INTERNAL_SERVER_ERROR = 500;
 	static BAD_GATEWAY = 502;
+}
+
+export class TalentReplaceAPI {
+	static REPLACE_TALENT = 'ReplaceTalent';
+	static ENGAGEMENT_REPLACE_TALENT =
+		'GetEngagemetnsForReplacementBasedOnLWDOption';
+	static SAVE_REPLACED_TALENT = 'SaveReplaceTalent';
 }
