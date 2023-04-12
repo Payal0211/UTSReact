@@ -36,9 +36,62 @@ const EngagementInvoice = ({
 			let formattedData = {
 				onBoardID: talentInfo?.onboardID,
 				invoiceNumber: d.invoiceNumber,
-				invoiceSentdate: d.invoiceDate,
+				invoiceSentdate: new Date(d.invoiceDate)
+					.toLocaleDateString('en-UK')
+					.split('/')
+					.reverse()
+					.join('-'),
 				invoiceStatusId: d.invoiceStatus?.id,
-				paymentDate: d.invoiceStatus?.id === undefined ? null : d.paymentDate,
+				invoiceStatus: null,
+				paymentDate: _isNull(watchInvoiceStatus?.id)
+					? null
+					: new Date(d?.paymentDate)
+							.toLocaleDateString('en-UK')
+							.split('/')
+							.reverse()
+							.join('-'),
+				hrNumber: '',
+				talentName: '',
+				currencyDrp: [
+					{
+						disabled: true,
+						group: {
+							disabled: true,
+							name: 'string',
+						},
+						selected: true,
+						text: 'string',
+						value: 'string',
+					},
+				],
+				leaveType: {
+					additionalProp1: 'string',
+					additionalProp2: 'string',
+					additionalProp3: 'string',
+				},
+				leaveDrp: [
+					{
+						disabled: true,
+						group: {
+							disabled: true,
+							name: 'string',
+						},
+						selected: true,
+						text: 'string',
+						value: 'string',
+					},
+				],
+				billRate: 0,
+				payRate: 0,
+				payRate_NR: 0,
+				billRate_NR: 0,
+				billRate_Comment: '',
+				payRate_Comment: '',
+				currency: '',
+				currencyId: 0,
+				payRateCurrencyId: 0,
+				finalPayRate: 0,
+				finalBillRate: 0,
 			};
 
 			const response = await engagementRequestDAO.saveInvoiceDetailsRequestDAO(
@@ -49,7 +102,12 @@ const EngagementInvoice = ({
 				engagementListHandler();
 			}
 		},
-		[closeModal, engagementListHandler, talentInfo?.onboardID],
+		[
+			closeModal,
+			engagementListHandler,
+			talentInfo?.onboardID,
+			watchInvoiceStatus?.id,
+		],
 	);
 	const getContentForAddInvoiceHandler = useCallback(async () => {
 		const response =
@@ -60,12 +118,12 @@ const EngagementInvoice = ({
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setInvoiceDetails(response && response?.responseBody?.details);
 			// setValue('invoiceNumber', response?.responseBody?.details?.invoiceNumber);
-			setValue(
-				'invoiceDate',
-				new Date(response?.responseBody?.details?.invoiceSentdate),
-			);
+			// setValue(
+			// 	'invoiceDate',
+			// 	new Date(response?.responseBody?.details?.invoiceSentdate),
+			// );
 		}
-	}, [setValue, talentInfo?.onboardID]);
+	}, [talentInfo?.onboardID]);
 
 	useEffect(() => {
 		getContentForAddInvoiceHandler();
@@ -80,8 +138,10 @@ const EngagementInvoice = ({
 			resetField('invoiceNumber');
 			resetField('invoiceDate');
 			resetField('invoiceStatus');
+			resetField('paymentDate');
+			unregister('paymentDate');
 		}
-	}, [closeModal, resetField]);
+	}, [closeModal, resetField, unregister]);
 	return (
 		<div className={engagementInvoice.engagementModalWrap}>
 			<div
