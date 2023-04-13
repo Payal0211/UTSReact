@@ -107,6 +107,7 @@ const EngagementList = () => {
 				getEngagementModal,
 				setEngagementModal,
 				setFilteredData,
+				setEngagementBillAndPayRateTab,
 			),
 		[getEngagementModal],
 	);
@@ -153,7 +154,7 @@ const EngagementList = () => {
 	useEffect(() => {
 		setBillRate(0);
 		setPayRate(0);
-		setEngagementBillAndPayRateTab('1');
+		// setEngagementBillAndPayRateTab('1');
 	}, [getEngagementModal.engagementBillRateAndPayRate]);
 
 	const getEngagementFilterList = useCallback(async () => {
@@ -570,7 +571,8 @@ const EngagementList = () => {
 								engagementBillRateAndPayRate: false,
 							})
 						}
-						// activeIndex={}
+						month={new Date(startDate).getMonth()}
+						year={new Date(startDate).getFullYear()}
 						getBillRate={getBillRate}
 						setBillRate={setBillRate}
 						getPayRate={getPayRate}

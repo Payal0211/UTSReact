@@ -12,7 +12,7 @@ import { HTTPStatusCode } from 'constants/network';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 
-const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
+const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 	const {
 		register,
 		handleSubmit,
@@ -289,4 +289,4 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 	);
 };
 
-export default EngagementEnd;
+export default RenewEngagement;

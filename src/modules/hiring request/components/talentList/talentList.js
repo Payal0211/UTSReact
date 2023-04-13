@@ -24,6 +24,7 @@ import UpdateLegalClientOnboardStatus from '../updateLegalClientOnboardStatus/up
 
 import EngagementReplaceTalent from 'modules/engagement/screens/engagementReplaceTalent/engagementReplaceTalent';
 import UpdateLegalTalentOnboardStatus from '../updateLegalTalentOnboardStatus/updateLegalTalentOnboardStatus';
+import UpdateKickOffOnboardStatus from '../updateKickOffOnboardStatus/updateKickOffOnboardStatus';
 
 const TalentList = ({
 	talentCTA,
@@ -1880,6 +1881,21 @@ const TalentList = ({
 					hrId={hrId}
 					callAPI={callAPI}
 					closeModal={() => setLegalTalentOnboardModal(false)}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR UPDATE LEGAL TALENT ONBOARD STATUS ================ */}
+			<Modal
+				transitionName=""
+				width="1256px"
+				centered
+				footer={null}
+				open={updateTalentKickOffModal}
+				onCancel={() => setTalentKickOffModal(false)}>
+				<UpdateKickOffOnboardStatus
+					talentInfo={filterTalentID}
+					hrId={hrId}
+					callAPI={callAPI}
+					closeModal={() => setTalentKickOffModal(false)}
 				/>
 			</Modal>
 			{/** ============ MODAL FOR TALENT REPLACEMENT ================ */}
