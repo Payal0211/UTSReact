@@ -23,7 +23,7 @@ const HRInputField = ({
 	trailingIcon,
 	validationSchema,
 	rows,
-	buttonLabel
+
 }) => {
 	const formFieldClasses = classNames({
 		[HRInputFieldStyle.inputfield]: true,
