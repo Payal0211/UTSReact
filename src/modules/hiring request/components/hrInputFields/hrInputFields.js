@@ -23,6 +23,7 @@ const HRInputField = ({
 	trailingIcon,
 	validationSchema,
 	rows,
+	buttonLabel
 }) => {
 	const formFieldClasses = classNames({
 		[HRInputFieldStyle.inputfield]: true,
@@ -96,11 +97,11 @@ const HRInputField = ({
 			)}
 			{required && !disabled
 				? errors &&
-				  errors[name] && (
-						<div className={HRInputFieldStyle.error}>
-							{errors[name]?.message && `* ${errors[name]?.message}`}
-						</div>
-				  )
+				errors[name] && (
+					<div className={HRInputFieldStyle.error}>
+						{errors[name]?.message && `* ${errors[name]?.message}`}
+					</div>
+				)
 				: false}
 			{isError && <div className={HRInputFieldStyle.error}>* {errorMsg}</div>}
 		</div>
