@@ -82,7 +82,7 @@
     position: absolute;
     top: 19px;
     right: 5px;
-   
+
     margin: 0px 10px;
 }
 .error {
@@ -94,4 +94,14 @@
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;
+}
+.btnLabel{
+    margin: 0;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--uplers-black);
+    position: absolute;
+    left: 41px;
+    top: 17px;
 }
