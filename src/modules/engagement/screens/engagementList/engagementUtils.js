@@ -21,6 +21,7 @@ export const engagementUtils = {
 			feedbackType: item?.feedbackType,
 			hrNumber: item?.hrNumber,
 			engagementID: item?.engagementId_HRID.split(' /')[0],
+			hrID: item?.hR_ID,
 		}));
 	},
 	getClientFeedbackColor: (color) => {

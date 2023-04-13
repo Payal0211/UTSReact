@@ -90,7 +90,12 @@ export const allEngagementConfig = {
 			},
 		];
 	},
-	tableConfig: (getEngagementModal, setEngagementModal, setFilteredData) => {
+	tableConfig: (
+		getEngagementModal,
+		setEngagementModal,
+		setFilteredData,
+		setEngagementBillAndPayRateTab,
+	) => {
 		return [
 			{
 				title: '    ',
@@ -143,7 +148,10 @@ export const allEngagementConfig = {
 										break;
 									}
 									case 'Renew Engagement': {
-										// setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })
+										setEngagementModal({
+											...getEngagementModal,
+											engagementReplaceTalent: true,
+										});
 										break;
 									}
 									case 'End Engagement': {
@@ -159,6 +167,7 @@ export const allEngagementConfig = {
 											...getEngagementModal,
 											engagementBillRateAndPayRate: true,
 										});
+										setEngagementBillAndPayRateTab('1');
 										setFilteredData(param);
 										break;
 									}
@@ -167,6 +176,7 @@ export const allEngagementConfig = {
 											...getEngagementModal,
 											engagementBillRateAndPayRate: true,
 										});
+										setEngagementBillAndPayRateTab('2');
 										setFilteredData(param);
 										break;
 									}

@@ -53,6 +53,8 @@ export class EngagementAPI {
 	static GET_CONTENT_FOR_ADD_INVOICE = 'GetContentForAddInvoice';
 	static SAVE_INVOICE_DETAILS = 'SaveInvoiceDetails';
 	static SAVE_BILL_RATE_PAY_RATE = 'SaveBillRatePayRate';
+	static GET_RENEW_ENGAGEMENT = 'GetRenewEngagement';
+	static SAVE_RENEW_ENGAGEMENT = 'SaveRenewEngagement';
 }
 
 export class AllHiringRequestAPI {

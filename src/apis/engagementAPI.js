@@ -166,7 +166,7 @@ export const EngagementRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.ENGAGEMENT +
-			EngagementAPI.GET_CONTENT_FOR_ADD_INVOICE +
+			EngagementAPI.EDIT_BILL_PAY_RATE +
 			`?HR_ID=${talentDetails?.hrID}
 			&OnBoardID=${talentDetails?.onboardID}
 			&Month=${talentDetails?.month}&Year=${talentDetails?.year}`;
@@ -198,6 +198,44 @@ export const EngagementRequestAPI = {
 			return errorDebug(
 				error,
 				'EngagementRequestAPI.saveBillRatePayRateRequest',
+			);
+		}
+	},
+	GetRenewEngagementRequest: async function (talentDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.GET_RENEW_ENGAGEMENT +
+			`onBoardId=${talentDetails?.onboardID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.editBillRatePayRateRequest',
+			);
+		}
+	},
+	saveRenewEngagementRequest: async function (talentDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.SAVE_RENEW_ENGAGEMENT;
+		httpService.dataToSend = talentDetails;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.saveRenewEngagementRequest',
 			);
 		}
 	},

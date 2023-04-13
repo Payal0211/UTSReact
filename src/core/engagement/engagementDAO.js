@@ -372,4 +372,76 @@ export const engagementRequestDAO = {
 			);
 		}
 	},
+	getRenewEngagementRequestDAO: async function (talentDetails) {
+		try {
+			const renewEngagementResponse =
+				await EngagementRequestAPI.editBillRatePayRateRequest(talentDetails);
+			if (renewEngagementResponse) {
+				const statusCode = renewEngagementResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = renewEngagementResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return renewEngagementResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return renewEngagementResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.getRenewEngagementRequestDAO',
+			);
+		}
+	},
+	saveRenewEngagementRequestDAO: async function (talentDetails) {
+		try {
+			const saveRenewEngagementResponse =
+				await EngagementRequestAPI.saveRenewEngagementRequest(talentDetails);
+			if (saveRenewEngagementResponse) {
+				const statusCode = saveRenewEngagementResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = saveRenewEngagementResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return saveRenewEngagementResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return saveRenewEngagementResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.saveRenewEngagementRequestDAO',
+			);
+		}
+	},
 };

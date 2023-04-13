@@ -7,8 +7,13 @@ import allengagementBillAndPayRateStyles from './engagementBillRate.module.css';
 import { Tabs } from 'antd';
 import { ReactComponent as MinusSVG } from 'assets/svg/minus.svg';
 import { ReactComponent as PlusSVG } from 'assets/svg/plus.svg';
+import { engagementRequestDAO } from 'core/engagement/engagementDAO';
+import { MasterDAO } from 'core/master/masterDAO';
+import { HTTPStatusCode } from 'constants/network';
 
 const EngagementBillRateAndPayRate = ({
+	month,
+	year,
 	getBillRate,
 	getPayRate,
 	setPayRate,
@@ -20,6 +25,7 @@ const EngagementBillRateAndPayRate = ({
 	closeModal,
 }) => {
 	const { TabPane } = Tabs;
+
 	const {
 		register,
 		handleSubmit,
@@ -33,11 +39,144 @@ const EngagementBillRateAndPayRate = ({
 		formState: { errors },
 	} = useForm();
 
+	const watchBillRate = watch('billRate');
+	const watchPayRate = watch('payRate');
+	const watchNRRate = watch('billNRRate');
+	console.log(watchNRRate, '-watch');
+	const [billRateValue, setBillRateValue] = useState(watchBillRate);
+	const [payRateValue, setPayRateValue] = useState(watchPayRate);
 	function callback(key) {
-		console.log(key, 'key');
 		setEngagementBillAndPayRateTab(key);
 	}
 
+	const [currency, setCurrency] = useState([]);
+
+	const currencyHandler = useCallback(async () => {
+		const response = await MasterDAO.getCurrencyRequestDAO();
+		setCurrency(response && response?.responseBody);
+	}, []);
+
+	const editBillRatePayRateHandler = useCallback(async () => {
+		const editBPRateResponse =
+			await engagementRequestDAO.editBillRatePayRateRequestDAO({
+				hrID: talentInfo?.hrID,
+				onboardID: talentInfo?.onboardID,
+				month: month === 0 ? new Date().getMonth() + 1 : month + 1,
+				year: year === 1970 ? new Date().getFullYear() : year,
+			});
+
+		if (editBPRateResponse?.statusCode === HTTPStatusCode.OK) {
+			setValue(
+				'finalBillRate',
+				editBPRateResponse?.responseBody?.details?.finalBillRate,
+			);
+			setValue(
+				'finalPayRate',
+				editBPRateResponse?.responseBody?.details?.finalPayRate,
+			);
+			setBillRateValue(
+				editBPRateResponse?.responseBody?.details?.finalBillRate,
+			);
+			setPayRateValue(editBPRateResponse?.responseBody?.details?.finalPayRate);
+			setValue(
+				'billRate',
+				editBPRateResponse?.responseBody?.details?.finalBillRate,
+			);
+			setValue(
+				'payRate',
+				editBPRateResponse?.responseBody?.details?.finalPayRate,
+			);
+
+			setValue(
+				'billNRRate',
+				editBPRateResponse?.responseBody?.details?.billRate_NR,
+			);
+			setValue(
+				'payNRRate',
+				editBPRateResponse?.responseBody?.details?.payRate_NR,
+			);
+		}
+	}, [month, setValue, talentInfo?.hrID, talentInfo?.onboardID, year]);
+
+	const submitBillRateHandler = useCallback(
+		async (d) => {
+			let billRateDataFormatter = {
+				onboardId: talentInfo?.onboardID,
+				billRate: d.billRate,
+				payRate: 0,
+				nr: d.billNRRate,
+				billRateComment: d.billRateAdditionalComment,
+				payRateComment: d.payRateAdditionalComment || '',
+				billrateCurrency: d.billRateCurrency?.value,
+				month: month === 0 ? new Date().getMonth() + 1 : month + 1,
+				year: year === 1970 ? new Date().getFullYear() : year,
+				billRateReason: d.billRateReason?.value,
+				payrateReason: d.payRateReason?.value || '',
+				isEditBillRate: true,
+			};
+
+			console.log(billRateDataFormatter, '-billRateFormatter');
+			const response = await engagementRequestDAO.saveEditBillPayRateRequestDAO(
+				billRateDataFormatter,
+			);
+			if (response.statusCode === HTTPStatusCode.OK) {
+				closeModal();
+				engagementListHandler();
+			}
+		},
+		[closeModal, engagementListHandler, month, talentInfo?.onboardID, year],
+	);
+
+	const submitPayRateHandler = useCallback(
+		async (d) => {
+			let billRateDataFormatter = {
+				onboardId: talentInfo?.onboardID,
+				billRate: d.billRate,
+				payRate: d.payRate,
+				nr: d.payNRRate,
+				billRateComment: d.billRateAdditionalComment || '',
+				payRateComment: d.payRateAdditionalComment || '',
+				billrateCurrency: d.payRateCurrency?.value,
+				month: month === 0 ? new Date().getMonth() + 1 : month + 1,
+				year: year === 1970 ? new Date().getFullYear() : year,
+				billRateReason: d.payRateReason?.value || '',
+				payrateReason: d.payRateReason?.value || '',
+				isEditBillRate: true,
+			};
+
+			console.log(billRateDataFormatter, '-billRateFormatter');
+			const response = await engagementRequestDAO.saveEditBillPayRateRequestDAO(
+				billRateDataFormatter,
+			);
+			if (response.statusCode === HTTPStatusCode.OK) {
+				closeModal();
+				engagementListHandler();
+			}
+			// console.log(response, '-response---');
+		},
+		[closeModal, engagementListHandler, month, talentInfo?.onboardID, year],
+	);
+	useEffect(() => {
+		editBillRatePayRateHandler();
+		currencyHandler();
+	}, [currencyHandler, editBillRatePayRateHandler]);
+
+	useEffect(() => {
+		if (closeModal) {
+			resetField('billRateCurrency');
+			resetField('billRate');
+			// resetField('finalBillRate');
+			resetField('billRateReason');
+			resetField('billNRRate');
+			resetField('billRateAdditionalComment');
+			resetField('payRateCurrency');
+			resetField('payRate');
+			resetField('finalPayRate');
+			resetField('payRateReason');
+			resetField('payNRRate');
+			resetField('payRateAdditionalComment');
+		}
+	}, [closeModal, resetField]);
 	return (
 		<div className={allengagementBillAndPayRateStyles.engagementModalContainer}>
 			<div
@@ -60,14 +199,17 @@ const EngagementBillRateAndPayRate = ({
 							className={`${allengagementBillAndPayRateStyles.row} ${allengagementBillAndPayRateStyles.billRateWrapper}`}>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
+									mode={'id/value'}
 									setValue={setValue}
 									register={register}
-									name="selectCurrency"
+									name="billRateCurrency"
 									label="Select Currency"
 									defaultValue="Please Select"
-									options={[]}
+									options={currency}
 									required
-									isError={errors['selectCurrency'] && errors['selectCurrency']}
+									isError={
+										errors['billRateCurrency'] && errors['billRateCurrency']
+									}
 									errorMsg="Please select a currency."
 								/>
 							</div>
@@ -76,11 +218,11 @@ const EngagementBillRateAndPayRate = ({
 								<button
 									className={allengagementBillAndPayRateStyles.minusButton}
 									onClick={(e) =>
-										getBillRate > 0
-											? setBillRate(getBillRate - 1)
+										billRateValue > 0
+											? setBillRateValue(billRateValue - 1)
 											: e.preventDefault()
 									}
-									disabled={getBillRate === 0 ? true : false}>
+									disabled={billRateValue === 0 ? true : false}>
 									<MinusSVG />
 								</button>
 								<HRInputField
@@ -93,13 +235,13 @@ const EngagementBillRateAndPayRate = ({
 									label="Bill Rate(USD)"
 									name="billRate"
 									type={InputType.NUMBER}
-									value={getBillRate}
+									value={billRateValue}
 									placeholder="Enter Amount"
 									required
 								/>
 								<button
 									className={allengagementBillAndPayRateStyles.plusButton}
-									onClick={() => setBillRate(getBillRate + 1)}>
+									onClick={() => setBillRateValue(billRateValue + 1)}>
 									<PlusSVG />
 								</button>
 							</div>
@@ -113,7 +255,7 @@ const EngagementBillRateAndPayRate = ({
 										required: 'please enter bill rate manually.',
 									}}
 									label="Final Actual Bill Rate"
-									name="billRateManually"
+									name="finalBillRate"
 									type={InputType.TEXT}
 									placeholder="Enter Amount"
 									required
@@ -121,14 +263,24 @@ const EngagementBillRateAndPayRate = ({
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
+									mode={'id/value'}
 									setValue={setValue}
 									register={register}
-									name="reason"
+									name="billRateReason"
 									label="Reason"
 									defaultValue="Please Select"
-									options={[]}
+									options={[
+										{
+											id: 1,
+											value: 'Leave Deduction',
+										},
+										{
+											id: 2,
+											value: 'Add Bonus',
+										},
+									]}
 									required
-									isError={errors['reason'] && errors['reason']}
+									isError={errors['billRateReason'] && errors['billRateReason']}
 									errorMsg="Please select a reason."
 								/>
 							</div>
@@ -144,9 +296,9 @@ const EngagementBillRateAndPayRate = ({
 										required: 'please enter NR rate.',
 									}}
 									label="NR%"
-									name="nrRate"
+									name="billNRRate"
 									type={InputType.TEXT}
-									value="10%"
+									// value="10%"
 									disabled
 								/>
 							</div>
@@ -158,7 +310,7 @@ const EngagementBillRateAndPayRate = ({
 										required: 'please enter additional comment.',
 									}}
 									label="Additioanl Comment"
-									name="additionalComment"
+									name="billRateAdditionalComment"
 									type={InputType.TEXT}
 									placeholder="Enter"
 								/>
@@ -169,11 +321,13 @@ const EngagementBillRateAndPayRate = ({
 							<button
 								// disabled={isLoading}
 								type="submit"
-								// onClick={handleSubmit(clientSubmitHandler)}
+								onClick={handleSubmit(submitBillRateHandler)}
 								className={allengagementBillAndPayRateStyles.btnPrimary}>
 								Save
 							</button>
-							<button className={allengagementBillAndPayRateStyles.btn}>
+							<button
+								className={allengagementBillAndPayRateStyles.btn}
+								onClick={closeModal}>
 								Cancel
 							</button>
 						</div>
@@ -190,14 +344,17 @@ const EngagementBillRateAndPayRate = ({
 							className={`${allengagementBillAndPayRateStyles.row} ${allengagementBillAndPayRateStyles.billRateWrapper}`}>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
+									mode={'id/value'}
 									setValue={setValue}
 									register={register}
-									name="selectCurrency"
+									name="payRateCurrency"
 									label="Select Currency"
 									defaultValue="Please Select"
-									options={[]}
+									options={currency}
 									required
-									isError={errors['selectCurrency'] && errors['selectCurrency']}
+									isError={
+										errors['payRateCurrency'] && errors['payRateCurrency']
+									}
 									errorMsg="Please select a currency."
 								/>
 							</div>
@@ -206,10 +363,10 @@ const EngagementBillRateAndPayRate = ({
 								className={`${allengagementBillAndPayRateStyles.colMd6} ${allengagementBillAndPayRateStyles.rateCounterField}`}>
 								<button
 									className={allengagementBillAndPayRateStyles.minusButton}
-									disabled={getPayRate === 0 ? true : false}
+									disabled={payRateValue === 0 ? true : false}
 									onClick={(e) =>
-										getPayRate > 0
-											? setPayRate(getPayRate - 1)
+										payRateValue > 0
+											? setPayRateValue(payRateValue - 1)
 											: e.preventDefault()
 									}>
 									<MinusSVG />
@@ -219,10 +376,11 @@ const EngagementBillRateAndPayRate = ({
 									errors={errors}
 									validationSchema={{
 										required: 'Please enter pay rate.',
+										valueAsNumber: true,
 									}}
 									label="Pay Rate(USD)"
 									name="payRate"
-									value={getPayRate}
+									value={payRateValue}
 									type={InputType.TEXT}
 									placeholder="Enter Amount"
 									required
@@ -230,8 +388,8 @@ const EngagementBillRateAndPayRate = ({
 								<button
 									className={allengagementBillAndPayRateStyles.plusButton}
 									onClick={(e) =>
-										getPayRate >= 0
-											? setPayRate(getPayRate + 1)
+										payRateValue >= 0
+											? setPayRateValue(payRateValue + 1)
 											: e.preventDefault()
 									}>
 									<PlusSVG />
@@ -244,10 +402,10 @@ const EngagementBillRateAndPayRate = ({
 									register={register}
 									errors={errors}
 									validationSchema={{
-										required: 'please enter bill rate manually.',
+										required: 'please enter pay rate manually.',
 									}}
-									label="Final Actual Bill Rate"
-									name="billRateManually"
+									label="Final Actual Pay Rate"
+									name="finalPayRate"
 									type={InputType.TEXT}
 									placeholder="Enter Amount"
 									required
@@ -255,14 +413,24 @@ const EngagementBillRateAndPayRate = ({
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
+									mode={'id/value'}
 									setValue={setValue}
 									register={register}
-									name="reason"
+									name="payRateReason"
 									label="Reason"
 									defaultValue="Please Select"
-									options={[]}
+									options={[
+										{
+											id: 1,
+											value: 'Leave Deduction',
+										},
+										{
+											id: 2,
+											value: 'Add Bonus',
+										},
+									]}
 									required
-									isError={errors['reason'] && errors['reason']}
+									isError={errors['payRateReason'] && errors['payRateReason']}
 									errorMsg="Please select a reason."
 								/>
 							</div>
@@ -278,9 +446,9 @@ const EngagementBillRateAndPayRate = ({
 										required: 'please enter NR rate.',
 									}}
 									label="NR%"
-									name="nrRate"
+									name="payNRRate"
 									type={InputType.TEXT}
-									value="10%"
+									// value="10%"
 									disabled
 								/>
 							</div>
@@ -292,7 +460,7 @@ const EngagementBillRateAndPayRate = ({
 										required: 'please enter additional comment.',
 									}}
 									label="Additioanl Comment"
-									name="additionalComment"
+									name="payRateAdditionalComment"
 									type={InputType.TEXT}
 									placeholder="Enter"
 								/>
@@ -301,13 +469,14 @@ const EngagementBillRateAndPayRate = ({
 
 						<div className={allengagementBillAndPayRateStyles.formPanelAction}>
 							<button
-								// disabled={isLoading}
 								type="submit"
-								// onClick={handleSubmit(clientSubmitHandler)}
+								onClick={handleSubmit(submitPayRateHandler)}
 								className={allengagementBillAndPayRateStyles.btnPrimary}>
 								Save
 							</button>
-							<button className={allengagementBillAndPayRateStyles.btn}>
+							<button
+								className={allengagementBillAndPayRateStyles.btn}
+								onClick={closeModal}>
 								Cancel
 							</button>
 						</div>

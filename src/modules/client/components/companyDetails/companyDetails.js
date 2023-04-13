@@ -86,7 +86,6 @@ const CompanyDetails = ({
 				setUploadFileData(fileData.name);
 				setUploadModal(false);
 			}
-			// uploadFile.current.value = '';
 		},
 		[convertToBase64, getValidation, setBase64Image, setUploadFileData],
 	);
