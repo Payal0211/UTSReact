@@ -81,7 +81,8 @@ export const engagementRequestDAO = {
                         statusCode: statusCode,
                         responseBody: tempResult,
                     };
-                } else if (
+                }
+                else if (
                     statusCode === HTTPStatusCode.NOT_FOUND ||
                     statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
                 )
@@ -164,9 +165,9 @@ export const engagementRequestDAO = {
             return errorDebug(error, 'engagementRequestDAO.viewOnboardDetailsDAO');
         }
     },
-    getFeedbackFormContentDAO: async function (onBoardID) {
+    getFeedbackFormContentDAO: async function (getHRAndEngagementId) {
         try {
-            const feedbackFormContent = await EngagementRequestAPI.feedbackFormContent(onBoardID);
+            const feedbackFormContent = await EngagementRequestAPI.feedbackFormContent(getHRAndEngagementId);
             if (feedbackFormContent) {
                 const statusCode = feedbackFormContent['statusCode'];
                 if (statusCode === HTTPStatusCode.OK) {
@@ -196,9 +197,9 @@ export const engagementRequestDAO = {
         }
     },
 
-    saveFeedbackFormDAO: async function (onBoardID) {
+    saveFeedbackFormDAO: async function (feedBackdata) {
         try {
-            const submitFeedBackForm = await EngagementRequestAPI.submitFeedBackForm(onBoardID);
+            const submitFeedBackForm = await EngagementRequestAPI.submitFeedBackForm(feedBackdata);
             if (submitFeedBackForm) {
                 const statusCode = submitFeedBackForm['statusCode'];
                 if (statusCode === HTTPStatusCode.OK) {

@@ -7,12 +7,13 @@ import allengagementOnboardStyles from '../engagementOnboard/engagementOnboard.m
 import { ReactComponent as LinkedInSVG } from 'assets/svg/linkedin.svg';
 
 const EngagementOnboard = ({
-    getOnboardFormDetails
+    getOnboardFormDetails,
+    getHRAndEngagementId
 }) => {
     return (
         <div className={allengagementOnboardStyles.engagementModalWrap}>
             <div className={allengagementOnboardStyles.engagementModalTitle}>
-                <h1>Onboarding for Anjali Arora
+                <h1>Onboarding for {getHRAndEngagementId?.talentName}
 
                     {/* <button
                     type="submit"
@@ -29,25 +30,25 @@ const EngagementOnboard = ({
                         <li><span>Client Name:</span> {getOnboardFormDetails?.onboardDetails?.clientName}</li>
                         <li><span>Talent Time Zone:</span> {getOnboardFormDetails?.onboardDetails?.timeZone}</li>
                         <li><span>Client Email:</span> {getOnboardFormDetails?.onboardDetails?.clientemail}</li>
-                        <li><span>Talent Shift Start & End Time:</span> 5 AM IST to 4 PM IST</li>
-                        <li><span>Company Name:</span> Oracle Pvt. Ltd.</li>
+                        <li><span>Talent Shift Start & End Time:</span> {getOnboardFormDetails?.startTime} to {getOnboardFormDetails?.endTime} IST</li>
+                        <li><span>Company Name:</span> {getOnboardFormDetails?.compnayName}</li>
                         <li><span>Talent Onboarding Date:</span> {getOnboardFormDetails?.onboardDetails?.talentOnBoardDate}</li>
                         <li><span>Talent Onboarding Time:</span> {getOnboardFormDetails?.onboardDetails?.talentOnBoardTime}</li>
                         <li><span>Talent Full Name:</span> {getOnboardFormDetails?.onboardDetails?.talentName} </li>
                         <li><span>Engagement ID:</span> {getOnboardFormDetails?.onboardDetails?.engagemenID}</li>
-                        <li><span>Bill Rate:</span> 5000 USD/ Month</li>
+                        <li><span>Bill Rate:</span> {getOnboardFormDetails?.billRate} USD/ Month</li>
                         <li><span>Hiring ID:</span> {getOnboardFormDetails?.onboardDetails?.hiringRequestNumber}</li>
                         <li><span>Actual Bill Rate:</span> 5000 USD/ Month</li>
-                        <li><span> Contract Type:</span> Contractual</li>
-                        <li><span>Talent Pay Rate:</span> 5000 USD/ Month</li>
-                        <li><span> Contract Duration:</span> 9 Months</li>
-                        <li><span>Actual Talent Pay Rate:</span> 5000 USD/ Month</li>
-                        <li><span>Contract Start & End Date:</span> 2/9/2022 to 2/9/2023</li>
+                        <li><span> Contract Type:</span> {getOnboardFormDetails?.contractType}</li>
+                        <li><span>Talent Pay Rate:</span> {getOnboardFormDetails?.talentPayRate} USD/ Month</li>
+                        <li><span> Contract Duration:</span> {getOnboardFormDetails?.contractDutation} Months</li>
+                        <li><span>Actual Talent Pay Rate:</span> {getOnboardFormDetails?.payRate} USD/ Month</li>
+                        <li><span>Contract Start & End Date:</span> {getOnboardFormDetails?.contractStartDate} to {getOnboardFormDetails?.contractEndDate}</li>
                         <li><span>Client’s First Date:</span> {getOnboardFormDetails?.onboardDetails?.clientFirstDate}</li>
-                        <li><span>AM Name:</span> Anjali Arora</li>
+                        <li><span>AM Name:</span> {getOnboardFormDetails?.amUser}</li>
                         <li><span>Net Payment Days:</span> {getOnboardFormDetails?.onboardDetails?.netPaymentDays}</li>
                         <li><span>BD Name:</span> Anjali Arora</li>
-                        <li><span>Contact Renewal %:</span> 10%</li>
+                        <li><span>Contact Renewal %:</span> {getOnboardFormDetails?.autoRenewContract}%</li>
                     </ul>
                 </div>
 

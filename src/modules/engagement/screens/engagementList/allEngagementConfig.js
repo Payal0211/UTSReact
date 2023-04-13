@@ -90,7 +90,7 @@ export const allEngagementConfig = {
             },
         ];
     },
-    tableConfig: (getEngagementModal, setEngagementModal, setOnbaordId, setFeedBackData) => {
+    tableConfig: (getEngagementModal, setEngagementModal, setOnbaordId, setFeedBackData, setHRAndEngagementId) => {
         return [
             {
                 title: '    ',
@@ -172,27 +172,42 @@ export const allEngagementConfig = {
                 align: 'left',
                 render: (text, result) => (
                     result?.clientFeedback === 0 && result?.onBoardID && result?.hR_ID ?
-                        <Link
-                            to=""
+                        <span
                             style={{ color: engagementUtils.getClientFeedbackColor(result?.feedbackType), textDecoration: 'underline' }
                             }
-                            onClick={() => setEngagementModal({ ...getEngagementModal, engagementAddFeedback: true })}
+                            onClick={() => {
+                                setHRAndEngagementId({
+                                    talentName: result?.talentName, engagementID: result?.engagementId_HRID.slice(0, result?.engagementId_HRID?.indexOf('/')),
+                                    hrNumber: result?.engagementId_HRID.slice(result?.engagementId_HRID?.indexOf('/') + 1),
+                                    onBoardId: result?.onBoardID,
+                                    hrId: result?.hR_ID,
+                                    hrId: result?.hR_ID
+                                }
+                                )
+                                setEngagementModal({ ...getEngagementModal, engagementAddFeedback: true })
+                                // setOnbaordId(result?.onBoardID)
+                            }}
                         >
                             {'Add'}
-                        </Link>
+                        </span>
                         :
-                        <Link
-                            to=""
+                        <span
                             style={{ color: engagementUtils.getClientFeedbackColor(result?.feedbackType), textDecoration: 'underline' }}
                             onClick={() => {
-                                setOnbaordId(result?.onBoardID)
+                                // setOnbaordId(result?.onBoardID)
                                 setFeedBackData((prev) => ({ ...prev, onBoardId: result?.onBoardID }))
-                                setHRAndEngagementId((prev) => ({ ...prev, talentName: result?.talentName }))
+                                setHRAndEngagementId({
+                                    talentName: result?.talentName, engagementID: result?.engagementId_HRID.slice(0, result?.engagementId_HRID?.indexOf('/')),
+                                    hrNumber: result?.engagementId_HRID.slice(result?.engagementId_HRID?.indexOf('/')),
+                                    onBoardId: result?.onBoardID,
+                                    hrId: result?.hR_ID
+                                }
+                                )
                                 setEngagementModal({ ...getEngagementModal, engagementFeedback: true })
                             }}
                         >
                             {'View'}
-                        </Link >
+                        </span>
                 ),
 
             },
@@ -209,16 +224,21 @@ export const allEngagementConfig = {
                 align: 'left',
                 render: (text, result) => (
                     result?.clientLegal_StatusID === 2 &&
-                    <Link
-                        to=""
+                    <span
                         style={{ color: '#006699', textDecoration: 'underline' }}
                         onClick={() => {
-                            setOnbaordId(result?.onBoardID)
+                            setHRAndEngagementId({
+                                talentName: result?.talentName, engagementID: result?.engagementId_HRID.slice(0, result?.engagementId_HRID?.indexOf('/')),
+                                hrNumber: result?.engagementId_HRID.slice(result?.engagementId_HRID?.indexOf('/')),
+                                onBoardId: result?.onBoardID,
+                                hrId: result?.hR_ID
+                            }
+                            )
                             setEngagementModal({ ...getEngagementModal, engagementOnboard: true })
                         }}
                     >
                         {'View'}
-                    </Link >
+                    </span>
                 ),
             },
             {
@@ -230,7 +250,7 @@ export const allEngagementConfig = {
                     <p>
                         {result?.engagementId_HRID.slice(0, result?.engagementId_HRID?.indexOf('/'))}
                         <Link
-                            to=""
+                            to={`/allhiringrequest/${result?.hR_ID}`}
                             style={{ color: '#006699', textDecoration: 'underline' }}>
                             {result?.engagementId_HRID.slice(result?.engagementId_HRID?.indexOf('/'))}
                         </Link>

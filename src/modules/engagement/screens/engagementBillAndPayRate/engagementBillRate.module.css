@@ -308,3 +308,11 @@ background:#CECCCC ;
     border-left: 1px solid #CECCCC;
     border-radius: 0 8px 8px 0;
 }
+
+[class*="ant-select-dropdown"]{
+    z-index: 1000;
+}
+
+.error {
+    color: #fe0000;
+}

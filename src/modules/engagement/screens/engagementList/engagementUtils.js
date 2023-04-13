@@ -50,4 +50,28 @@ export const engagementUtils = {
             feedbackType: item?.feedbackType,
         }));
     },
+
+    engagementListSearch: (e, apiData) => {
+        let filteredData = apiData?.filter((val) => {
+
+            console.log(val, "value")
+            return (
+                (val?.lastFeedbackDate &&
+                    val?.lastFeedbackDate
+                        .toLowerCase()
+                        .includes(e.target.value.toLowerCase())) ||
+                (val?.engagementId_HRID &&
+                    val?.engagementId_HRID.toLowerCase().includes(e.target.value.toLowerCase())) ||
+                (val?.talentName &&
+                    val?.talentName.toLowerCase().includes(e.target.value.toLowerCase())) ||
+                (val?.currentStatus &&
+                    val?.currentStatus.toLowerCase().includes(e.target.value.toLowerCase()))
+
+            );
+        });
+
+        return filteredData;
+    },
+
+
 };

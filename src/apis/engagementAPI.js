@@ -52,7 +52,7 @@ export const EngagementRequestAPI = {
             let response = await httpService.sendGetRequest();
             return response;
         } catch (error) {
-            return errorDebug(error, 'EngagementRequestAPI.viewOnboardFeedback');
+            return errorDebug(error, 'EngagementRequestAPI.getEngagementFilterList');
         }
     },
     getFeedback: async function (feedback) {
@@ -86,12 +86,12 @@ export const EngagementRequestAPI = {
         }
     },
 
-    feedbackFormContent: async function (onBoardID) {
+    feedbackFormContent: async function (getHRAndEngagementId) {
         let httpService = new HttpServices();
         httpService.URL =
             NetworkInfo.NETWORK +
             SubDomain.ENGAGEMENT +
-            EngagementAPI.GET_FEEDBACK_CONTENT + `?HR_ID=${12465}&OnBoardID=${10649}`
+            EngagementAPI.GET_FEEDBACK_CONTENT + `?HR_ID=${getHRAndEngagementId?.hrId}&OnBoardID=${getHRAndEngagementId?.onBoardId}`
         httpService.setAuthRequired = true;
         httpService.setAuthToken = UserSessionManagementController.getAPIKey();
         try {
@@ -101,17 +101,17 @@ export const EngagementRequestAPI = {
             return errorDebug(error, 'EngagementRequestAPI.feedbackFormContent');
         }
     },
-    submitFeedBackForm: async function (data) {
+    submitFeedBackForm: async function (addFeedBackData) {
         let httpService = new HttpServices();
         httpService.URL =
             NetworkInfo.NETWORK +
             SubDomain.ENGAGEMENT +
             EngagementAPI.SAVE_FEEDBACK_CLIENT_ONBOARD
-        httpService.dataToSend = data;
+        httpService.dataToSend = addFeedBackData;
         httpService.setAuthRequired = true;
         httpService.setAuthToken = UserSessionManagementController.getAPIKey();
         try {
-            let response = await httpService.sendPostRequest(data);
+            let response = await httpService.sendPostRequest(addFeedBackData);
             return response;
         } catch (error) {
             return errorDebug(error, 'EngagementRequestAPI.submitFeedBackForm');

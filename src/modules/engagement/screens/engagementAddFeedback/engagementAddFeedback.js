@@ -7,9 +7,12 @@ import DatePicker from 'react-datepicker';
 import allengagementAddFeedbackStyles from '../engagementBillAndPayRate/engagementBillRate.module.css';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import 'react-datepicker/dist/react-datepicker.css';
+import { engagementRequestDAO } from 'core/engagement/engagementDAO';
+import { HTTPStatusCode } from 'constants/network';
 
 
-const EngagementAddFeedback = ({
+
+const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave, setFeedbackSave
 }) => {
 
     const {
@@ -25,16 +28,33 @@ const EngagementAddFeedback = ({
         formState: { errors },
     } = useForm();
 
-    /*--------- React DatePicker ---------------- */
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+    const watchFeedbackDate = watch('feedBackDate');
 
-    const onCalenderFilter = (dates) => {
-        const [start, end] = dates;
-        setStartDate(start);
-        setEndDate(end);
-    };
-
+    const submitFeedbacHandler = async (data) => {
+        const feedBackdata = {
+            hiringRequest_ID: getFeedbackFormContent?.hiringRequest_ID,
+            contactID: getFeedbackFormContent?.contactID,
+            onBoardID: getFeedbackFormContent?.onBoardID,
+            feedbackType: data.feedbackType.value,
+            feedbackComment: data.feedbackComments,
+            feedbackActionToTake: data.actionToTake,
+            feedbackCreatedDateTime: data.feedBackDate,
+            hrNumber: getFeedbackFormContent?.hrNumber,
+            talentName: getFeedbackFormContent?.talentName,
+            talentID: getFeedbackFormContent?.talentID,
+            engagemenID: getFeedbackFormContent?.engagementID
+        }
+        const response = await engagementRequestDAO.saveFeedbackFormDAO(feedBackdata);
+        console.log(response, "response")
+        if (response.statusCode === HTTPStatusCode.OK) {
+            onCancel()
+            resetField('feedbackComments');
+            resetField('actionToTake');
+            resetField("feedBackDate")
+            resetField("feedbackType")
+            setFeedbackSave(!feedBackSave)
+        }
+    }
 
     return (
         <div className={allengagementAddFeedbackStyles.engagementModalWrap}
@@ -42,11 +62,11 @@ const EngagementAddFeedback = ({
             <div className={`${allengagementAddFeedbackStyles.headingContainer} ${allengagementAddFeedbackStyles.addFeebackContainer}`}>
                 <h1>Add Feedback</h1>
                 <ul>
-                    <li><span>HR ID:</span>HR151122121801</li>
+                    <li><span>HR ID:</span> {getFeedbackFormContent?.hrNumber}</li>
                     <li className={allengagementAddFeedbackStyles.divider}>|</li>
-                    <li><span>Engagement ID:</span>EN151122121801</li>
+                    <li><span>Engagement ID:</span>{getFeedbackFormContent?.engagemenID}</li>
                     <li className={allengagementAddFeedbackStyles.divider}>|</li>
-                    <li><span>Talent Name:</span>Kirtikumar Avaiya</li>
+                    <li><span>Talent Name:</span> {getFeedbackFormContent?.talentName}</li>
                 </ul>
             </div>
 
@@ -54,12 +74,13 @@ const EngagementAddFeedback = ({
                 <div
                     className={allengagementAddFeedbackStyles.colMd6}>
                     <HRSelectField
+                        mode='id/value'
                         setValue={setValue}
                         register={register}
                         name="feedbackType"
                         label="Feedback Type"
                         defaultValue="Please Select"
-                        options={[]}
+                        options={getFeedbackFormContent.drpFeedbackType?.filter((item) => item?.value !== "0")}
                         required
                         isError={
                             errors['feedbackType'] && errors['feedbackType']
@@ -71,17 +92,25 @@ const EngagementAddFeedback = ({
                     className={`${allengagementAddFeedbackStyles.colMd6}`}>
                     <label className={allengagementAddFeedbackStyles.timeLabel}>Feedback Date</label>
                     <div className={allengagementAddFeedbackStyles.timeSlotItem}>
-                        <DatePicker
-                            onKeyDown={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                            }}
-                            placeholderText="Please Select Date"
-                            selected={startDate}
-                            onChange={onCalenderFilter}
-                            startDate={startDate}
-                            endDate={endDate}
+                        <Controller
+                            render={({ ...props }) => (
+                                <DatePicker
+                                    selected={watchFeedbackDate ? watchFeedbackDate : null}
+                                    placeholderText="Please Select Date"
+                                    onChange={(date) => {
+                                        setValue('feedBackDate', date);
+                                    }}
+                                />
+                            )}
+                            name="feedBackDate"
+                            rules={{ required: true }}
+                            control={control}
                         />
+                        {errors.feedBackDate && (
+                            <div className={allengagementAddFeedbackStyles.error}>
+                                Please select feedback date
+                            </div>
+                        )}
                         <CalenderSVG />
                     </div>
                 </div>
@@ -90,6 +119,7 @@ const EngagementAddFeedback = ({
                 <div
                     className={allengagementAddFeedbackStyles.colMd12}>
                     <HRInputField
+                        register={register}
                         required
                         isTextArea={true}
                         rows={4}
@@ -98,7 +128,6 @@ const EngagementAddFeedback = ({
                             required: 'Please enter the feedback comment.',
                         }}
                         label={'Feedback Comments'}
-                        register={register}
                         name="feedbackComments"
                         type={InputType.TEXT}
                         placeholder="Enter Client's Feedback Comments"
@@ -110,6 +139,7 @@ const EngagementAddFeedback = ({
                 <div
                     className={allengagementAddFeedbackStyles.colMd12}>
                     <HRInputField
+                        register={register}
                         isTextArea={true}
                         rows={4}
                         errors={errors}
@@ -117,7 +147,6 @@ const EngagementAddFeedback = ({
                             required: 'Please enter the action to take.',
                         }}
                         label={'Action to Take'}
-                        register={register}
                         name="actionToTake"
                         type={InputType.TEXT}
                         placeholder="Add the Next Action to Take"
@@ -129,16 +158,23 @@ const EngagementAddFeedback = ({
                 <button
                     // disabled={isLoading}
                     type="submit"
-                    // onClick={handleSubmit(clientSubmitHandler)}
+                    onClick={handleSubmit(submitFeedbacHandler)}
                     className={allengagementAddFeedbackStyles.btnPrimary}>
                     Save
                 </button>
                 <button
+                    onClick={() => {
+                        resetField('feedbackComments');
+                        resetField('actionToTake');
+                        resetField("feedBackDate")
+                        resetField("feedbackType")
+                        onCancel()
+                    }}
                     className={allengagementAddFeedbackStyles.btn}>
                     Cancel
                 </button>
             </div>
-        </div>
+        </div >
     );
 };
 

@@ -88,7 +88,9 @@ const EngagementList = () => {
     const [getHRAndEngagementId, setHRAndEngagementId] = useState({
         hrNumber: '',
         engagementID: '',
-        talentName: ''
+        talentName: '',
+        onBoardId: '',
+        hrId: ''
     })
     const [getOnboardID, setOnbaordId] = useState("")
     const [feedBackData, setFeedBackData] = useState({ totalRecords: 10, pagenumber: 1, onBoardId: "" })
@@ -96,9 +98,11 @@ const EngagementList = () => {
     const [getFeedbackPagination, setFeedbackPagination] = useState({
         totalRecords: 0,
         pageIndex: 1,
-        pageSize: 100
+        pageSize: 10
     })
     const [getOnboardFormDetails, setOnboardFormDetails] = useState({})
+    const [getFeedbackFormContent, setFeedbackFormContent] = useState({})
+    const [feedBackSave, setFeedbackSave] = useState(false)
 
     const onRemoveHRFilters = () => {
         setTimeout(() => {
@@ -107,8 +111,9 @@ const EngagementList = () => {
         setHTMLFilter(false)
     };
 
+
     const tableColumnsMemo = useMemo(
-        () => allEngagementConfig.tableConfig(getEngagementModal, setEngagementModal, setOnbaordId, setFeedBackData),
+        () => allEngagementConfig.tableConfig(getEngagementModal, setEngagementModal, setOnbaordId, setFeedBackData, setHRAndEngagementId),
         [],
     );
 
@@ -149,25 +154,25 @@ const EngagementList = () => {
         [navigate],
     );
 
-    const viewOnboardFeedback = async () => {
-        const response = await engagementRequestDAO.viewOnboardFeedbackDAO(getOnboardID)
-        if (response?.statusCode === HTTPStatusCode.OK) {
-            response &&
-                setHRAndEngagementId((prev) => ({
-                    ...prev, hrNumber: response?.responseBody?.details?.hrNumber,
-                    engagementID: response?.responseBody?.details?.engagemenID
-                }))
-        }
-        // else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-        //     return navigate(UTSRoutes.LOGINROUTE);
-        // } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-        //     return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-        // } else {
-        //     return 'NO DATA FOUND';
-        // }
-    }
+    // const viewOnboardFeedback = async (getOnboardID) => {
+    //     const response = await engagementRequestDAO.viewOnboardFeedbackDAO(getOnboardID)
+    //     if (response?.statusCode === HTTPStatusCode.OK) {
+    //         response &&
+    //             setHRAndEngagementId((prev) => ({
+    //                 ...prev, hrNumber: response?.responseBody?.details?.hrNumber,
+    //                 engagementID: response?.responseBody?.details?.engagemenID
+    //             }))
+    //     }
+    //     else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+    //         return navigate(UTSRoutes.LOGINROUTE);
+    //     } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+    //         return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+    //     } else {
+    //         return 'NO DATA FOUND';
+    //     }
+    // }
 
-    const getFeedbackList = async () => {
+    const getFeedbackList = async (feedBackData) => {
         setLoading(true);
         const response = await engagementRequestDAO.getFeedbackListDAO(feedBackData)
         if (response?.statusCode === HTTPStatusCode.OK) {
@@ -186,10 +191,27 @@ const EngagementList = () => {
         }
     }
 
-    const getOnboardingForm = async () => {
+    const getOnboardingForm = async (getOnboardID) => {
+        setOnboardFormDetails({})
         const response = await engagementRequestDAO.viewOnboardDetailsDAO(getOnboardID)
         if (response?.statusCode === HTTPStatusCode.OK) {
             setOnboardFormDetails(response?.responseBody?.details)
+        }
+        else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            return navigate(UTSRoutes.LOGINROUTE);
+        } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+            setLoading(false);
+            return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+            return 'NO DATA FOUND';
+        }
+    }
+
+    const getFeedbackFormDetails = async (getHRAndEngagementId) => {
+        setFeedbackFormContent({})
+        const response = await engagementRequestDAO.getFeedbackFormContentDAO(getHRAndEngagementId)
+        if (response?.statusCode === HTTPStatusCode.OK) {
+            setFeedbackFormContent(response?.responseBody?.details)
         }
         else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
             return navigate(UTSRoutes.LOGINROUTE);
@@ -206,12 +228,12 @@ const EngagementList = () => {
         return () => clearTimeout(timer);
     }, [debouncedSearch]);
 
-    useEffect(() => {
-        getOnboardID && viewOnboardFeedback(getOnboardID);
-    }, [getOnboardID])
+    // useEffect(() => {
+    //     getOnboardID && !getEngagementModal?.engagementOnboard && viewOnboardFeedback(getOnboardID);
+    // }, [getOnboardID])
 
     useEffect(() => {
-        getEngagementModal?.engagementOnboard && getOnboardID && getOnboardingForm(getOnboardID)
+        getEngagementModal?.engagementOnboard && getHRAndEngagementId?.onBoardId && getOnboardingForm(getHRAndEngagementId?.onBoardId)
     }, [getEngagementModal?.engagementOnboard])
 
     useEffect(() => {
@@ -219,8 +241,12 @@ const EngagementList = () => {
     }, [getEngagementModal?.engagementFeedback])
 
     useEffect(() => {
+        getEngagementModal?.engagementAddFeedback && getFeedbackFormDetails(getHRAndEngagementId)
+    }, [getEngagementModal?.engagementAddFeedback])
+
+    useEffect(() => {
         handleHRRequest(tableFilteredState);
-    }, [tableFilteredState]);
+    }, [tableFilteredState, feedBackSave]);
 
     useEffect(() => {
         setBillRate(0);
@@ -307,7 +333,7 @@ const EngagementList = () => {
                                 placeholder="Search Table"
                                 onChange={(e) => {
                                     return setDebouncedSearch(
-                                        userUtils.userListSearch(e, userList),
+                                        engagementUtils.engagementListSearch(e, apiData),
                                     );
                                 }}
                             />
@@ -523,7 +549,9 @@ const EngagementList = () => {
                 onCancel={() => setEngagementModal({ ...getEngagementModal, engagementOnboard: false })}
 
             >
-                <EngagementOnboard getOnboardFormDetails={getOnboardFormDetails} />
+                <EngagementOnboard getOnboardFormDetails={getOnboardFormDetails}
+                    getHRAndEngagementId={getHRAndEngagementId}
+                />
             </Modal>
 
 
@@ -539,7 +567,13 @@ const EngagementList = () => {
                 onCancel={() => setEngagementModal({ ...getEngagementModal, engagementAddFeedback: false })}
 
             >
-                <EngagementAddFeedback />
+                <EngagementAddFeedback
+                    getFeedbackFormContent={getFeedbackFormContent}
+                    getHRAndEngagementId={getHRAndEngagementId}
+                    onCancel={() => setEngagementModal({ ...getEngagementModal, engagementAddFeedback: false })}
+                    setFeedbackSave={setFeedbackSave}
+                    feedBackSave={feedBackSave}
+                />
             </Modal>
 
 
