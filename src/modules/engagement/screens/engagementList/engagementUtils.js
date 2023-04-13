@@ -14,10 +14,11 @@ export const engagementUtils = {
             feedbcakReceive: item?.feedbcakReceive,
             avgDP: item?.avgDP,
             avgNR: item?.avgNR,
-            feedbackType: item?.feedbackType
+            feedbackType: item?.feedbackType,
+            onBoardID: item?.onBoardID,
+            hR_ID: item?.hR_ID,
         }));
     },
-
     getClientFeedbackColor: (color) => {
         switch (color) {
             case "0": {
@@ -39,7 +40,14 @@ export const engagementUtils = {
             default:
                 break;
         }
-    }
-
-
+    },
+    modifyEngagementFeedbackData: (response) => {
+        return response?.responseBody?.details?.rows.map((item) => ({
+            engagemenID: item?.engagemenID,
+            feedbackActionToTake: item?.feedbackActionToTake,
+            feedbackComment: item?.feedbackComment,
+            feedbackCreatedDateTime: item?.feedbackCreatedDateTime ? item?.feedbackCreatedDateTime?.split(' ')[0] : 'NA',
+            feedbackType: item?.feedbackType,
+        }));
+    },
 };

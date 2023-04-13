@@ -7,18 +7,18 @@ import allengagementOnboardStyles from '../engagementOnboard/engagementOnboard.m
 import { ReactComponent as LinkedInSVG } from 'assets/svg/linkedin.svg';
 
 const EngagementOnboard = ({
+    getOnboardFormDetails
 }) => {
-
-
-
     return (
         <div className={allengagementOnboardStyles.engagementModalWrap}>
             <div className={allengagementOnboardStyles.engagementModalTitle}>
-                <h1>Onboarding for Anjali Arora <button
+                <h1>Onboarding for Anjali Arora
+
+                    {/* <button
                     type="submit"
                     className={allengagementOnboardStyles.btnPrimary}>
                     Edit Details
-                </button>
+                </button> */}
                 </h1>
             </div>
 
@@ -26,26 +26,26 @@ const EngagementOnboard = ({
                 <div className={allengagementOnboardStyles.engagementContent}>
                     <h2>General Information</h2>
                     <ul>
-                        <li><span>Client Name:</span> John Stamos</li>
-                        <li><span>Talent Time Zone:</span> AEST</li>
-                        <li><span>Client Email:</span> johnstamos@gmail.com</li>
+                        <li><span>Client Name:</span> {getOnboardFormDetails?.onboardDetails?.clientName}</li>
+                        <li><span>Talent Time Zone:</span> {getOnboardFormDetails?.onboardDetails?.timeZone}</li>
+                        <li><span>Client Email:</span> {getOnboardFormDetails?.onboardDetails?.clientemail}</li>
                         <li><span>Talent Shift Start & End Time:</span> 5 AM IST to 4 PM IST</li>
                         <li><span>Company Name:</span> Oracle Pvt. Ltd.</li>
-                        <li><span>Talent Onboarding Date:</span> 5/12/2023</li>
-                        <li><span>Talent Onboarding Time:</span> 5AM IST</li>
-                        <li><span>Talent Full Name:</span> Anjali Arora</li>
-                        <li><span>Engagement ID:</span> EID8947954793</li>
+                        <li><span>Talent Onboarding Date:</span> {getOnboardFormDetails?.onboardDetails?.talentOnBoardDate}</li>
+                        <li><span>Talent Onboarding Time:</span> {getOnboardFormDetails?.onboardDetails?.talentOnBoardTime}</li>
+                        <li><span>Talent Full Name:</span> {getOnboardFormDetails?.onboardDetails?.talentName} </li>
+                        <li><span>Engagement ID:</span> {getOnboardFormDetails?.onboardDetails?.engagemenID}</li>
                         <li><span>Bill Rate:</span> 5000 USD/ Month</li>
-                        <li><span>Hiring ID:</span> HID430438044323</li>
+                        <li><span>Hiring ID:</span> {getOnboardFormDetails?.onboardDetails?.hiringRequestNumber}</li>
                         <li><span>Actual Bill Rate:</span> 5000 USD/ Month</li>
                         <li><span> Contract Type:</span> Contractual</li>
                         <li><span>Talent Pay Rate:</span> 5000 USD/ Month</li>
                         <li><span> Contract Duration:</span> 9 Months</li>
                         <li><span>Actual Talent Pay Rate:</span> 5000 USD/ Month</li>
                         <li><span>Contract Start & End Date:</span> 2/9/2022 to 2/9/2023</li>
-                        <li><span>Client’s First Date:</span> 5/12/2023</li>
+                        <li><span>Client’s First Date:</span> {getOnboardFormDetails?.onboardDetails?.clientFirstDate}</li>
                         <li><span>AM Name:</span> Anjali Arora</li>
-                        <li><span>Net Payment Days:</span> 5</li>
+                        <li><span>Net Payment Days:</span> {getOnboardFormDetails?.onboardDetails?.netPaymentDays}</li>
                         <li><span>BD Name:</span> Anjali Arora</li>
                         <li><span>Contact Renewal %:</span> 10%</li>
                     </ul>

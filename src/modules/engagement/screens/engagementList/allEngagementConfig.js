@@ -3,6 +3,7 @@ import HROperator from 'modules/hiring request/components/hroperator/hroperator'
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { Link } from 'react-router-dom';
 import { engagementUtils } from './engagementUtils';
+import allengagementStyles from '../engagementFeedback/engagementFeedback.module.css';
 
 
 export const allEngagementConfig = {
@@ -89,7 +90,7 @@ export const allEngagementConfig = {
             },
         ];
     },
-    tableConfig: (getEngagementModal, setEngagementModal) => {
+    tableConfig: (getEngagementModal, setEngagementModal, setOnbaordId, setFeedBackData) => {
         return [
             {
                 title: '    ',
@@ -130,7 +131,6 @@ export const allEngagementConfig = {
                             },
                         ]}
                         menuAction={(item) => {
-                            console.log(item, "item")
                             switch (item.key) {
                                 case "Replace Engagement": {
                                     setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })
@@ -171,8 +171,7 @@ export const allEngagementConfig = {
                 key: 'clientFeedback',
                 align: 'left',
                 render: (text, result) => (
-
-                    result?.clientFeedback ?
+                    result?.clientFeedback === 0 && result?.onBoardID && result?.hR_ID ?
                         <Link
                             to=""
                             style={{ color: engagementUtils.getClientFeedbackColor(result?.feedbackType), textDecoration: 'underline' }
@@ -180,12 +179,17 @@ export const allEngagementConfig = {
                             onClick={() => setEngagementModal({ ...getEngagementModal, engagementAddFeedback: true })}
                         >
                             {'Add'}
-                        </Link >
+                        </Link>
                         :
                         <Link
                             to=""
                             style={{ color: engagementUtils.getClientFeedbackColor(result?.feedbackType), textDecoration: 'underline' }}
-                            onClick={() => setEngagementModal({ ...getEngagementModal, engagementFeedback: true })}
+                            onClick={() => {
+                                setOnbaordId(result?.onBoardID)
+                                setFeedBackData((prev) => ({ ...prev, onBoardId: result?.onBoardID }))
+                                setHRAndEngagementId((prev) => ({ ...prev, talentName: result?.talentName }))
+                                setEngagementModal({ ...getEngagementModal, engagementFeedback: true })
+                            }}
                         >
                             {'View'}
                         </Link >
@@ -208,7 +212,10 @@ export const allEngagementConfig = {
                     <Link
                         to=""
                         style={{ color: '#006699', textDecoration: 'underline' }}
-                        onClick={() => setEngagementModal({ ...getEngagementModal, engagementOnboard: true })}
+                        onClick={() => {
+                            setOnbaordId(result?.onBoardID)
+                            setEngagementModal({ ...getEngagementModal, engagementOnboard: true })
+                        }}
                     >
                         {'View'}
                     </Link >
@@ -249,6 +256,42 @@ export const allEngagementConfig = {
                 align: 'left',
             },
 
+        ];
+    },
+    clientFeedbackTypeConfig: (filterList) => {
+        console.log(filterList, "filterList")
+        return [
+            {
+                title: 'Last Feedback Date',
+                dataIndex: 'feedbackCreatedDateTime',
+                key: 'feedbackCreatedDateTime',
+                align: 'left',
+            },
+            {
+                title: 'Feedback Type',
+                dataIndex: 'feedbackType',
+                key: 'feedbackType',
+                align: 'left',
+                render: (text, result) => (
+                    <span
+                        style={{ background: engagementUtils.getClientFeedbackColor(result?.feedbackType) }}
+                        className={allengagementStyles.feedbackLabel}
+                    > {result?.feedbackType}
+                    </span >
+                ),
+            },
+            {
+                title: 'Feedback Comments',
+                dataIndex: 'feedbackComment',
+                key: 'feedbackComment',
+                align: 'left',
+            },
+            {
+                title: 'Action To Take',
+                dataIndex: 'feedbackActionToTake',
+                key: 'feedbackActionToTake',
+                align: 'left',
+            }
         ];
     },
 };

@@ -18,6 +18,8 @@ export class SubDomain {
 	static DEAL = 'Deal/';
 	static USER = 'User/';
 	static ENGAGEMENT = 'Engagement/'
+	static ONBOARD = 'OnBoard/'
+
 }
 export class APIType {
 	static USER = '/user';
@@ -43,6 +45,13 @@ export class UserAPI {
 export class EngagementAPI {
 	static FILTER = 'Filters'
 	static LIST = 'List'
+	static VIEW_ONBOARD_FEEDBACK = 'ViewOnBoardFeedback'
+	static GET_ONBOARD_FEEDBACK = 'GetOnBordFeedBack'
+	static GET_FEEDBACK_CONTENT = 'GetFeedbackFormContent'
+	static SAVE_FEEDBACK_CLIENT_ONBOARD = 'SaveFeedbackClientOnBoard'
+}
+export class OnboardAPI {
+	static VIEW_IN_DETAIL = 'ViewInDetail'
 }
 
 export class AllHiringRequestAPI {

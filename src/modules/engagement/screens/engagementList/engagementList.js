@@ -44,7 +44,7 @@ const EngagementFilerList = React.lazy(() =>
 
 const EngagementList = () => {
     const [tableFilteredState, setTableFilteredState] = useState({
-        totalrecord: 10,
+        totalrecord: 100,
         pagenumber: 1,
         filterFieldsEngagement: {
             clientFeedback: "",
@@ -65,10 +65,11 @@ const EngagementList = () => {
         }
     });
     const [isLoading, setLoading] = useState(false);
-    const pageSizeOptions = [10, 20, 50, 100];
+    const pageSizeOptions = [100, 200, 300, 500, 1000];
+    const pageFeedbackSizeOptions = [10, 20, 30, 50, 100];
     const [totalRecords, setTotalRecords] = useState(0);
     const [pageIndex, setPageIndex] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(100);
     const [isAllowFilters, setIsAllowFilters] = useState(false);
     const [getHTMLFilter, setHTMLFilter] = useState(false)
     const [filtersList, setFiltersList] = useState([]);
@@ -84,6 +85,20 @@ const EngagementList = () => {
     const [engagementBillAndPayRateTab, setEngagementBillAndPayRateTab] = useState("1")
     const [getEngagementModal, setEngagementModal
     ] = useState({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementReplaceTalent: false, engagementBillRateAndPayRate: false, engagementEnd: false, engagementInvoice: false });
+    const [getHRAndEngagementId, setHRAndEngagementId] = useState({
+        hrNumber: '',
+        engagementID: '',
+        talentName: ''
+    })
+    const [getOnboardID, setOnbaordId] = useState("")
+    const [feedBackData, setFeedBackData] = useState({ totalRecords: 10, pagenumber: 1, onBoardId: "" })
+    const [getClientFeedbackList, setClientFeedbackList] = useState([])
+    const [getFeedbackPagination, setFeedbackPagination] = useState({
+        totalRecords: 0,
+        pageIndex: 1,
+        pageSize: 100
+    })
+    const [getOnboardFormDetails, setOnboardFormDetails] = useState({})
 
     const onRemoveHRFilters = () => {
         setTimeout(() => {
@@ -93,7 +108,12 @@ const EngagementList = () => {
     };
 
     const tableColumnsMemo = useMemo(
-        () => allEngagementConfig.tableConfig(getEngagementModal, setEngagementModal),
+        () => allEngagementConfig.tableConfig(getEngagementModal, setEngagementModal, setOnbaordId, setFeedBackData),
+        [],
+    );
+
+    const feedbackTableColumnsMemo = useMemo(
+        () => allEngagementConfig.clientFeedbackTypeConfig(),
         [],
     );
 
@@ -129,10 +149,74 @@ const EngagementList = () => {
         [navigate],
     );
 
+    const viewOnboardFeedback = async () => {
+        const response = await engagementRequestDAO.viewOnboardFeedbackDAO(getOnboardID)
+        if (response?.statusCode === HTTPStatusCode.OK) {
+            response &&
+                setHRAndEngagementId((prev) => ({
+                    ...prev, hrNumber: response?.responseBody?.details?.hrNumber,
+                    engagementID: response?.responseBody?.details?.engagemenID
+                }))
+        }
+        // else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+        //     return navigate(UTSRoutes.LOGINROUTE);
+        // } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+        //     return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        // } else {
+        //     return 'NO DATA FOUND';
+        // }
+    }
+
+    const getFeedbackList = async () => {
+        setLoading(true);
+        const response = await engagementRequestDAO.getFeedbackListDAO(feedBackData)
+        if (response?.statusCode === HTTPStatusCode.OK) {
+            setClientFeedbackList(engagementUtils.modifyEngagementFeedbackData(response && response))
+            setFeedbackPagination((prev) => ({ ...prev, totalRecords: response.responseBody.details.totalrows }))
+            setLoading(false);
+        }
+        else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            setLoading(false);
+            return navigate(UTSRoutes.LOGINROUTE);
+        } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+            setLoading(false);
+            return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+            return 'NO DATA FOUND';
+        }
+    }
+
+    const getOnboardingForm = async () => {
+        const response = await engagementRequestDAO.viewOnboardDetailsDAO(getOnboardID)
+        if (response?.statusCode === HTTPStatusCode.OK) {
+            setOnboardFormDetails(response?.responseBody?.details)
+        }
+        else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            return navigate(UTSRoutes.LOGINROUTE);
+        } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+            setLoading(false);
+            return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+            return 'NO DATA FOUND';
+        }
+    }
+
     useEffect(() => {
         const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
         return () => clearTimeout(timer);
     }, [debouncedSearch]);
+
+    useEffect(() => {
+        getOnboardID && viewOnboardFeedback(getOnboardID);
+    }, [getOnboardID])
+
+    useEffect(() => {
+        getEngagementModal?.engagementOnboard && getOnboardID && getOnboardingForm(getOnboardID)
+    }, [getEngagementModal?.engagementOnboard])
+
+    useEffect(() => {
+        getEngagementModal?.engagementFeedback && feedBackData?.onBoardId && getFeedbackList(feedBackData)
+    }, [getEngagementModal?.engagementFeedback])
 
     useEffect(() => {
         handleHRRequest(tableFilteredState);
@@ -150,7 +234,6 @@ const EngagementList = () => {
             console.log(response && response?.responseBody?.details, "data")
             setFiltersList(response && response?.responseBody?.details);
         }
-
         else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
             return navigate(UTSRoutes.LOGINROUTE);
         } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
@@ -390,7 +473,11 @@ const EngagementList = () => {
                 // onOk={() => setVersantModal(false)}
                 onCancel={() => setEngagementModal({ ...getEngagementModal, engagementFeedback: false })}
             >
-                <EngagementFeedback />
+                <EngagementFeedback getHRAndEngagementId={getHRAndEngagementId} feedbackTableColumnsMemo={feedbackTableColumnsMemo} getClientFeedbackList={getClientFeedbackList} isLoading={isLoading}
+                    pageFeedbackSizeOptions={pageFeedbackSizeOptions}
+                    getFeedbackPagination={getFeedbackPagination}
+                    setFeedbackPagination={setFeedbackPagination}
+                />
             </Modal>
 
 
@@ -436,7 +523,7 @@ const EngagementList = () => {
                 onCancel={() => setEngagementModal({ ...getEngagementModal, engagementOnboard: false })}
 
             >
-                <EngagementOnboard />
+                <EngagementOnboard getOnboardFormDetails={getOnboardFormDetails} />
             </Modal>
 
 
