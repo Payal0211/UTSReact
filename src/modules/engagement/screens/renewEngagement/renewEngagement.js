@@ -11,7 +11,9 @@ import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
-
+import { Divider } from 'antd';
+import { ReactComponent as MinusSVG } from 'assets/svg/minus.svg';
+import { ReactComponent as PlusSVG } from 'assets/svg/plus.svg';
 const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 	const {
 		register,
@@ -22,129 +24,76 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 		resetField,
 		formState: { errors },
 	} = useForm();
-	const [getEndEngagementDetails, setEndEngagementDetails] = useState(null);
-	const [getUploadFileData, setUploadFileData] = useState('');
-	const [showUploadModal, setUploadModal] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const [getValidation, setValidation] = useState({
-		systemFileUpload: '',
-		googleDriveFileUpload: '',
-		linkValidation: '',
-	});
-	const [base64File, setBase64File] = useState('');
+	const watchBillRate = watch('billRate');
+	const watchPayRate = watch('payRate');
+	const [billRateValue, setBillRateValue] = useState(watchBillRate);
+	const [payRateValue, setPayRateValue] = useState(watchPayRate);
+	const [getRenewEngagement, setRenewEngagement] = useState(null);
 
-	const convertToBase64 = useCallback((file) => {
-		return new Promise((resolve, reject) => {
-			const fileReader = new FileReader();
-			fileReader.readAsDataURL(file);
-			fileReader.onload = () => {
-				resolve(fileReader.result);
-			};
-			fileReader.onerror = (error) => {
-				reject(error);
-			};
+	const getRenewEngagementHandler = useCallback(async () => {
+		const response = await engagementRequestDAO.getRenewEngagementRequestDAO({
+			onBoardId: talentInfo?.onboardID,
 		});
-	}, []);
-	const uploadFileHandler = useCallback(
-		async (fileData) => {
-			setIsLoading(true);
-			if (
-				fileData?.type !== 'application/pdf' &&
-				fileData?.type !== 'application/docs' &&
-				fileData?.type !== 'application/msword' &&
-				fileData?.type !== 'text/plain' &&
-				fileData?.type !==
-					'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
-				fileData?.type !== 'image/png' &&
-				fileData?.type !== 'image/jpeg'
-			) {
-				setValidation({
-					...getValidation,
-					systemFileUpload:
-						'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
-				});
-				setIsLoading(false);
-			} else if (fileData?.size >= 500000) {
-				setValidation({
-					...getValidation,
-					systemFileUpload:
-						'Upload file size more than 500kb, Please Upload file upto 500kb',
-				});
-				setIsLoading(false);
-			} else {
-				const base64 = await convertToBase64(fileData);
-
-				setValidation({
-					...getValidation,
-					systemFileUpload: '',
-				});
-				setIsLoading(false);
-				setBase64File(base64);
-				setUploadFileData(fileData.name);
-				setUploadModal(false);
-			}
-		},
-		[convertToBase64, getValidation],
-	);
-
-	const getEndEngagementHandler = useCallback(async () => {
-		const response =
-			await engagementRequestDAO.getContentEndEngagementRequestDAO({
-				onboardID: talentInfo?.onboardID,
-			});
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			setEndEngagementDetails(response?.responseBody?.details);
-			/* let updatedDate = new Date(
-				new Date(
-					response?.responseBody?.details?.contractEndDate,
-				).toLocaleDateString('en-US'),
+			setRenewEngagement(response?.responseBody?.details);
+			setValue(
+				'contractDuration',
+				response?.responseBody?.details?.contarctDuration,
 			);
-
-			console.log(updatedDate, '-updatedDate');
-			setValue('lastWorkingDate', updatedDate); */
+			setValue('billRate', response?.responseBody?.details?.billRate);
+			setValue('payRate', response?.responseBody?.details?.payRate);
+			setBillRateValue(response?.responseBody?.details?.billRate);
+			setPayRateValue(response?.responseBody?.details?.payRate);
+			setValue('nrMargin', response?.responseBody?.details?.nrPercentage);
+			setValue(
+				'addReason',
+				response?.responseBody?.details?.reasonForBRPRChange,
+			);
 		}
-	}, [talentInfo?.onboardID]);
-
-	const submitEndEngagementHandler = useCallback(
+	}, [setValue, talentInfo?.onboardID]);
+	const submitContractRenewalHandler = useCallback(
 		async (d) => {
-			let formattedData = {
-				contractDetailID: getEndEngagementDetails?.contractDetailID,
-				contractEndDate: d.lastWorkingDate,
-				reason: d.endEngagementReason,
-				fileName: getUploadFileData,
-				fileUpload: {
-					base64ProfilePic: base64File,
-					extenstion: getUploadFileData?.split('.')[1],
-				},
+			let contractRenewalDataFormatter = {
+				onBoardId: talentInfo?.onboardID,
+				contractStartDate: d.renewedStartDate,
+				contractEndDate: d.renewedEndDate,
+				billRate: d.billRate,
+				payRate: d.payRate,
+				engagementId: getRenewEngagement?.engagementId,
+				contactName: getRenewEngagement?.contactName,
+				company: getRenewEngagement?.company,
+				talentName: getRenewEngagement?.talentName,
+				nrPercentage: d.nrMargin,
+				contarctDuration: d.contractDuration,
+				reasonForBRPRChange: d.addReason,
 			};
-
-			const response =
-				await engagementRequestDAO.changeContractEndDateRequestDAO(
-					formattedData,
-				);
+			let response = await engagementRequestDAO.saveRenewEngagementRequestDAO(
+				contractRenewalDataFormatter,
+			);
 			if (response.statusCode === HTTPStatusCode.OK) {
 				closeModal();
 				engagementListHandler();
 			}
 		},
 		[
-			base64File,
 			closeModal,
 			engagementListHandler,
-			getEndEngagementDetails?.contractDetailID,
-			getUploadFileData,
+			getRenewEngagement?.company,
+			getRenewEngagement?.contactName,
+			getRenewEngagement?.engagementId,
+			getRenewEngagement?.talentName,
+			talentInfo?.onboardID,
 		],
 	);
-
 	useEffect(() => {
-		getEndEngagementHandler();
-	}, [getEndEngagementHandler]);
+		getRenewEngagementHandler();
+	}, [getRenewEngagementHandler]);
 
 	useEffect(() => {
 		if (closeModal) {
 			resetField('lastWorkingDate');
 			resetField('jdExport');
-			setUploadFileData(null);
+
 			resetField('endEngagementReason');
 		}
 	}, [closeModal, resetField]);
@@ -153,30 +102,27 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 		<div className={allengagementEnd.engagementModalWrap}>
 			<div
 				className={`${allengagementEnd.headingContainer} ${allengagementEnd.addFeebackContainer}`}>
-				<h1>End Engagement</h1>
+				<h1>Contract Renewal</h1>
 				<ul>
 					<li>
-						<span>HR ID:</span>
-						{talentInfo?.hrNumber}
+						<span>{getRenewEngagement?.talentName}</span>
+						{/* {talentInfo?.hrNumber} */}
 					</li>
 					<li className={allengagementEnd.divider}>|</li>
 					<li>
-						<span>Engagement ID:</span>
-						{talentInfo?.engagementID}
-					</li>
-					<li className={allengagementEnd.divider}>|</li>
-					<li>
-						<span>Talent Name:</span>
-						{talentInfo?.talentName}
+						<span>{getRenewEngagement?.engagementId}</span>
+						{/* {talentInfo?.engagementID} */}
 					</li>
 				</ul>
 			</div>
 
+			<h2 className={allengagementEnd.contractTitle}>Contract Details</h2>
 			<div className={allengagementEnd.row}>
 				<div className={allengagementEnd.colMd6}>
-					<div className={allengagementEnd.timeSlotItemField}>
+					<div
+						className={`${allengagementEnd.timeSlotItemField} ${allengagementEnd.mb32}`}>
 						<div className={allengagementEnd.timeLabel}>
-							Please Select Date
+							Renewed Start Date
 							<span>
 								<b style={{ color: 'black' }}>*</b>
 							</span>
@@ -186,88 +132,170 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 							<Controller
 								render={({ ...props }) => (
 									<DatePicker
-										selected={watch('lastWorkingDate')}
+										selected={watch('renewedStartDate')}
 										onChange={(date) => {
-											setValue('lastWorkingDate', date);
+											setValue('renewedStartDate', date);
 										}}
 										placeholderText="Last working date"
 									/>
 								)}
-								name="lastWorkingDate"
+								name="renewedStartDate"
 								rules={{ required: true }}
 								control={control}
 							/>
-							{errors.lastWorkingDate && (
+							{errors.renewedStartDate && (
 								<div className={allengagementEnd.error}>
-									* Please select last working date.
+									* Please select renewed start date.
 								</div>
 							)}
 						</div>
 					</div>
 				</div>
-
 				<div className={allengagementEnd.colMd6}>
-					{!getUploadFileData ? (
-						<HRInputField
-							register={register}
-							leadingIcon={<UploadSVG />}
-							label="Contract Supporting Documents (PDF)"
-							name="jdExport"
-							type={InputType.BUTTON}
-							buttonLabel="Upload Communication Records"
-							onClickHandler={() => setUploadModal(true)}
-							required
-							validationSchema={{
-								required: 'please select a file.',
-							}}
-							errors={errors}
-						/>
-					) : (
-						<div className={allengagementEnd.uploadedJDWrap}>
-							<label>
-								Contract Supporting Documents (PDF){' '}
+					<div
+						className={`${allengagementEnd.timeSlotItemField} ${allengagementEnd.mb32}`}>
+						<div className={allengagementEnd.timeLabel}>
+							Renewed End Date
+							<span>
 								<b style={{ color: 'black' }}>*</b>
-							</label>
-							<div className={allengagementEnd.uploadedJDName}>
-								{getUploadFileData}{' '}
-								<CloseSVG
-									className={allengagementEnd.uploadedJDClose}
-									onClick={() => {
-										// setJDParsedSkills({});
-										setUploadFileData('');
-									}}
-								/>
-							</div>
+							</span>
 						</div>
-					)}
+						<div className={allengagementEnd.timeSlotItem}>
+							<CalenderSVG />
+							<Controller
+								render={({ ...props }) => (
+									<DatePicker
+										selected={watch('renewedEndDate')}
+										onChange={(date) => {
+											setValue('renewedEndDate', date);
+										}}
+										placeholderText="Last working date"
+									/>
+								)}
+								name="renewedEndDate"
+								rules={{ required: true }}
+								control={control}
+							/>
+							{errors.renewedEndDate && (
+								<div className={allengagementEnd.error}>
+									* Please select renewed end date.
+								</div>
+							)}
+						</div>
+					</div>
 				</div>
 			</div>
-			<UploadModal
-				isLoading={isLoading}
-				uploadFileHandler={(e) => uploadFileHandler(e.target.files[0])}
-				modalTitle={'Contract Supporting Documents'}
-				modalSubtitle={'Contract Supporting Documents (PDF)'}
-				isFooter={false}
-				openModal={showUploadModal}
-				cancelModal={() => setUploadModal(false)}
-				setValidation={setValidation}
-				getValidation={getValidation}
-			/>
 			<div className={allengagementEnd.row}>
-				<div className={allengagementEnd.colMd12}>
+				<div className={allengagementEnd.colMd6}>
 					<HRInputField
-						required
-						isTextArea={true}
-						rows={4}
+						register={register}
+						label="Contract Duration (Months)"
+						name="contractDuration"
+						type={InputType.NUMBER}
+						placeholder="Enter contract duration                                                                                   "
 						errors={errors}
 						validationSchema={{
-							required: 'Please enter the reason for Ending Engagement.',
+							required: 'please enter the contract duration.',
 						}}
-						label={'Reason for Ending Engagement'}
+						required
+					/>
+				</div>
+			</div>
+
+			<h2 className={allengagementEnd.contractBorderTitle}>Amount Details</h2>
+			<div className={allengagementEnd.row}>
+				<div
+					className={`${allengagementEnd.colMd6} ${allengagementEnd.rateCounterField}`}>
+					<button
+						className={allengagementEnd.minusButton}
+						onClick={(e) =>
+							billRateValue > 0
+								? setBillRateValue(billRateValue - 1)
+								: e.preventDefault()
+						}
+						disabled={billRateValue === 0 ? true : false}>
+						<MinusSVG />
+					</button>
+					<HRInputField
 						register={register}
-						name="endEngagementReason"
+						errors={errors}
+						validationSchema={{
+							required: 'Please enter bill rate.',
+							valueAsNumber: true,
+						}}
+						label="Bill Rate(USD)"
+						name="billRate"
+						type={InputType.NUMBER}
+						value={billRateValue}
+						placeholder="Enter Amount"
+						required
+					/>
+					<button
+						className={allengagementEnd.plusButton}
+						onClick={() => setBillRateValue(billRateValue + 1)}>
+						<PlusSVG />
+					</button>
+				</div>
+				<div
+					className={`${allengagementEnd.colMd6} ${allengagementEnd.rateCounterField}`}>
+					<button
+						className={allengagementEnd.minusButton}
+						onClick={(e) =>
+							payRateValue > 0
+								? setPayRateValue(payRateValue - 1)
+								: e.preventDefault()
+						}
+						disabled={payRateValue === 0 ? true : false}>
+						<MinusSVG />
+					</button>
+					<HRInputField
+						register={register}
+						errors={errors}
+						validationSchema={{
+							required: 'Please enter pay rate.',
+							valueAsNumber: true,
+						}}
+						label="Pay Rate(USD)"
+						name="payRate"
+						type={InputType.NUMBER}
+						value={payRateValue}
+						placeholder="Enter Amount"
+						required
+					/>
+					<button
+						className={allengagementEnd.plusButton}
+						onClick={() => setPayRateValue(payRateValue + 1)}>
+						<PlusSVG />
+					</button>
+				</div>
+			</div>
+			<div className={allengagementEnd.row}>
+				<div className={allengagementEnd.colMd6}>
+					<HRInputField
+						register={register}
+						label="NR%"
+						name="nrMargin"
+						type={InputType.NUMBER}
+						placeholder="Enter NR%                                                                                                "
+						errors={errors}
+						validationSchema={{
+							required: 'please enter the NR%.',
+						}}
+						required
+					/>
+				</div>
+				<div className={allengagementEnd.colMd6}>
+					<HRInputField
+						register={register}
+						label="Reason For BR/PR Change"
+						name="addReason"
 						type={InputType.TEXT}
-						placeholder="Enter Reason"
+						placeholder="Add Reason"
+						errors={errors}
+						validationSchema={{
+							required: 'please enter the reason for change.',
+						}}
+						required
 					/>
 				</div>
 			</div>
@@ -275,7 +303,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 			<div className={allengagementEnd.formPanelAction}>
 				<button
 					type="submit"
-					onClick={handleSubmit(submitEndEngagementHandler)}
+					onClick={handleSubmit(submitContractRenewalHandler)}
 					className={allengagementEnd.btnPrimary}>
 					Save
 				</button>

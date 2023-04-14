@@ -21,6 +21,7 @@ import UTSRoutes from 'constants/routes';
 import { userUtils } from 'modules/user/userUtils';
 import { userAPI } from 'apis/userAPI';
 import { userDAO } from 'core/user/userDAO';
+import { HttpServices } from 'shared/services/http/http_service';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -29,7 +30,7 @@ export const secondaryInterviewer = {
 	designation: '',
 };
 
-const UsersFields = ({ id }) => {
+const UsersFields = ({ id, setLoading, loading }) => {
 	const [enableAllFields, setEnableAllFields] = useState(false);
 	const [userDetails, setUserDetails] = useState(null);
 	const [toggleImagePreview, setToggleImagePreview] = useState(false);
@@ -39,13 +40,15 @@ const UsersFields = ({ id }) => {
 		googleDriveFileUpload: '',
 		linkValidation: '',
 	});
-	const [getUploadFileData, setUploadFileData] = useState('');
+	const [getUploadFileData, setUploadFileData] = useState({});
 	const [userTypeEdit, setUserTypeEdit] = useState('Select');
 	const [controlledUserRole, setControlledUserRole] = useState('Select');
 	const [departMentTypeEdit, setDepartMentEdit] = useState('Select');
 	const [levelTypeEdit, setLevelEdit] = useState('Select');
 	const [teamTypeEdit, setTeamTypeEdit] = useState('Select');
 	const [reportTypeEdit, setReportTypeEdit] = useState('Select');
+	const [getGEOType, setGEOType] = useState('');
+	const [specificGeo, setSpecificGEO] = useState('Select');
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [formLoading, setFormLoading] = useState(false);
@@ -57,6 +60,7 @@ const UsersFields = ({ id }) => {
 	const [userRole, setUserRole] = useState([]);
 	const [BDRManager, setBDRManager] = useState([]);
 	const [GEO, setGEO] = useState([]);
+	const [modifiedGEO, setModifiedGEO] = useState([]);
 	const [talentRole, setTalentRole] = useState([]);
 	const [showUploadModal, setUploadModal] = useState(false);
 	const [type, setType] = useState('');
@@ -98,6 +102,7 @@ const UsersFields = ({ id }) => {
 		getValues,
 		setError,
 		resetField,
+		clearErrors,
 		reset,
 		// control,
 		formState: { errors },
@@ -106,7 +111,8 @@ const UsersFields = ({ id }) => {
 	let watchReporteeManager = watch('salesManager');
 	let watchUserRole = watch('userRole');
 	const watchEmployeeID = watch('employeeId');
-	const watchEmployeeName = watch('employeeFullName');
+	const watchEmployeeFirstName = watch('employeeFirstName');
+	const watchEmployeeLastName = watch('employeeLastName');
 	const watchDepartMentName = watch('departMent');
 	const watchTeamName = watch('team');
 	const watchLevelName = watch('level');
@@ -121,13 +127,17 @@ const UsersFields = ({ id }) => {
 				userID: id !== 0 ? id : 0,
 				employeeID: data,
 			});
-			setError('employeeId', {
-				type: 'duplicateEmployeeID',
-				message:
-					companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST &&
-					'This employee ID already exists. Please enter another one.',
-			});
-
+			if (companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST) {
+				setError('employeeId', {
+					type: 'duplicateEmployeeID',
+					message:
+						companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST &&
+						'This employee ID already exists. Please enter another one.',
+				});
+			}
+			if (companyNameDuplicate?.statusCode === HTTPStatusCode.OK) {
+				clearErrors('employeeId');
+			}
 			if (companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST) {
 				setEmploymentMessage(
 					'This employee ID already exists.Please enter another one.',
@@ -144,21 +154,27 @@ const UsersFields = ({ id }) => {
 		[id, setError, setValue],
 	);
 	const getEmployeeFullNameAlreadyExist = useCallback(
-		async (data) => {
+		async (firstName, lastName) => {
 			let companyNameDuplicate = await userDAO.getIsEmployeeNameExistRequestDAO(
 				{
 					userID: id !== 0 ? id : 0,
-					employeeName: data,
+					employeeName: `${firstName} ${lastName}`,
 				},
 			);
-			setError('employeeFullName', {
-				type: 'duplicateEmployeeFullName',
-				message:
-					companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST &&
-					'This employee name already exists. Please enter another one.',
-			});
+			if (companyNameDuplicate?.statusCode === HTTPStatusCode.OK) {
+				clearErrors('employeeFirstName');
+			}
+
+			if (companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST) {
+				setError('employeeFirstName', {
+					type: 'duplicateEmployeeFullName',
+					message:
+						companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST &&
+						'This employee name already exists. Please enter another one.',
+				});
+			}
 			companyNameDuplicate.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
-				setValue('employeeFullName', '');
+				setValue('employeeFirstName', '');
 			setIsLoading(false);
 		},
 		[id, setError, setValue],
@@ -177,14 +193,21 @@ const UsersFields = ({ id }) => {
 
 	useEffect(() => {
 		let timer;
-		if (!_isNull(watchEmployeeName)) {
+		if (!_isNull(watchEmployeeFirstName)) {
 			timer = setTimeout(() => {
 				setIsLoading(true);
-				getEmployeeFullNameAlreadyExist(watchEmployeeName);
+				getEmployeeFullNameAlreadyExist(
+					watchEmployeeFirstName,
+					watchEmployeeLastName,
+				);
 			}, 2000);
 		}
 		return () => clearTimeout(timer);
-	}, [getEmployeeFullNameAlreadyExist, watchEmployeeName]);
+	}, [
+		getEmployeeFullNameAlreadyExist,
+		watchEmployeeFirstName,
+		watchEmployeeLastName,
+	]);
 	const navigate = useNavigate();
 
 	const getCodeAndFlag = async () => {
@@ -197,61 +220,6 @@ const UsersFields = ({ id }) => {
 		() => getFlagAndCodeOptions(flagAndCode),
 		[flagAndCode],
 	);
-	const getGEO = useCallback(async () => {
-		let response = await MasterDAO.getGEORequestDAO();
-		setGEO(response && response?.responseBody);
-	}, []);
-
-	const getUserType = useCallback(async () => {
-		let response = await MasterDAO.getUserTypeRequestDAO();
-		setUserType(response && response?.responseBody?.details);
-	}, []);
-
-	const getDepartMentType = useCallback(async () => {
-		setDepartment([{ id: 0, value: 'Select' }]);
-		let response = await MasterDAO.getDepartmentRequestDAO();
-		setDepartment((prev) => [...prev, ...response?.responseBody?.details]);
-	}, []);
-
-	const getTeamType = useCallback(async () => {
-		let response = await MasterDAO.getTeamListRequestDAO();
-		setTeamList(response && response?.responseBody?.details);
-	}, []);
-
-	const getLevelType = useCallback(async () => {
-		seLevelList([{ id: 0, value: 'Select' }]);
-		let response = await MasterDAO.getLevelListRequestDAO();
-		seLevelList((prev) => [...prev, ...response?.responseBody?.details]);
-	}, []);
-
-	const getReportingType = useCallback(
-		async (departId, levelId) => {
-			setReportingList([{ id: 0, value: 'Select' }]);
-			let response = await MasterDAO.getReportingListRequestDAO(
-				departId,
-				levelId,
-			);
-			if (response?.responseBody?.details?.length > 0) {
-				setReportingList([{ id: 0, value: 'Select' }]);
-				setReportingList((prev) => [
-					...prev,
-					...response?.responseBody?.details.map(({ id, fullName }) => ({
-						id: id,
-						value: fullName,
-					})),
-				]);
-			} else if (response?.responseBody?.details === null) {
-				setReportingList([{ id: 0, value: 'Select' }]);
-			}
-		},
-		[watchDepartMentName, watchLevelName],
-	);
-
-	useEffect(() => {
-		if (watchDepartMentName?.id && watchLevelName?.id) {
-			getReportingType(watchDepartMentName?.id, watchLevelName?.id);
-		}
-	}, [watchDepartMentName, watchLevelName]);
 
 	const getTeamManager = useCallback(async () => {
 		let response = await MasterDAO.getTeamManagerRequestDAO();
@@ -292,7 +260,7 @@ const UsersFields = ({ id }) => {
 	const getUserDetails = useCallback(async () => {
 		const response = await userDAO.getUserDetailsRequestDAO({ userID: id });
 		setUserDetails(response && response?.responseBody?.details);
-	}, [id]);
+	}, []);
 
 	const getBDRMarketingOnUserType = useCallback(async () => {
 		let response = await MasterDAO.getBDRMarketingBasedOnUserTypeRequestDAO({
@@ -301,27 +269,105 @@ const UsersFields = ({ id }) => {
 		setBDRManager(response && response?.responseBody?.details);
 	}, [watchUserRole]);
 
+	const getUserType = useCallback(async () => {
+		let response = await MasterDAO.getUserTypeRequestDAO();
+		setUserType(response && response?.responseBody?.details);
+	}, []);
+
+	const getGEO = useCallback(async () => {
+		let response = await MasterDAO.getGEORequestDAO();
+		setGEO(response && response?.responseBody);
+	}, []);
+
+	const getDepartMentType = useCallback(async () => {
+		setDepartment([{ id: 0, value: 'Select' }]);
+		let response = await MasterDAO.getDepartmentRequestDAO();
+		setDepartment((prev) => [...prev, ...response?.responseBody?.details]);
+	}, []);
+
+	const getTeamType = useCallback(async () => {
+		let response = await MasterDAO.getTeamListRequestDAO();
+		setTeamList(response && response?.responseBody?.details);
+	}, []);
+
+	const getLevelType = useCallback(async () => {
+		seLevelList([{ id: 0, value: 'Select' }]);
+		let response = await MasterDAO.getLevelListRequestDAO();
+		seLevelList((prev) => [...prev, ...response?.responseBody?.details]);
+	}, []);
+
+	const getReportingType = useCallback(
+		async (departId, levelId) => {
+			setReportTypeEdit('Select');
+			resetField('reportingUser');
+			setReportingList([{ id: 0, value: 'Select' }]);
+			let response = await MasterDAO.getReportingListRequestDAO(
+				departId,
+				levelId,
+			);
+			if (response?.responseBody?.details?.length > 0) {
+				setReportingList((prev) => [
+					...prev,
+					...response?.responseBody?.details.map(({ id, fullName }) => ({
+						id: id,
+						value: fullName,
+					})),
+				]);
+			} else if (response?.responseBody?.details === null) {
+				setReportingList([{ id: 0, value: 'Select' }]);
+			}
+		},
+		[watchDepartMentName, watchLevelName],
+	);
+
 	useEffect(() => {
-		setLevelEdit('Select');
-		setTeamTypeEdit('Select');
-		setReportTypeEdit('Select');
-		if (watchDepartMentName?.value === 'Select') {
-			resetField('departMent', { keepError: false });
+		if (
+			watchDepartMentName?.value === 'Select' ||
+			watchDepartMentName?.value === 'Administration'
+		) {
 			resetField('level', { keepError: false });
 			resetField('reportingUser', { keepError: false });
 			resetField('geoSpecific', { keepError: false });
 			resetField('geo', { keepError: false });
 			resetField('team', { keepError: false });
+			setLevelEdit('Select');
+			setGEOType('');
+			setSpecificGEO('Select');
+			setReportTypeEdit('Select');
+			setTeamTypeEdit('Select');
+			resetField('departMent');
+		}
+		if (
+			!enableALlFieldsMemo &&
+			watchDepartMentName?.value !== 'Select' &&
+			watchDepartMentName?.value !== 'Administration'
+		) {
+			setTeamTypeEdit('Select');
+			setReportTypeEdit('Select');
+			setLevelEdit('Select');
+			setGEOType('');
+			setSpecificGEO('Select');
+			resetField('team');
+			resetField('level');
+			resetField('reportingUser');
+			resetField('geoSpecific');
+			resetField('geo');
 		}
 	}, [watchDepartMentName]);
 
 	useEffect(() => {
-		setReportTypeEdit('Select');
 		if (watchLevelName?.value === 'Select') {
-			resetField('level', { keepError: false });
 			resetField('reportingUser', { keepError: false });
 			resetField('geoSpecific', { keepError: false });
 			resetField('geo', { keepError: false });
+			setGEOType('');
+			setSpecificGEO('Select');
+			setReportTypeEdit('Select');
+			resetField('level');
+		}
+		if (!enableALlFieldsMemo && watchLevelName?.value !== 'Select') {
+			resetField('reportingUser');
+			setReportTypeEdit('Select');
 		}
 	}, [watchLevelName]);
 
@@ -331,26 +377,65 @@ const UsersFields = ({ id }) => {
 			resetField('reportingUser', { keepError: false });
 			resetField('geoSpecific', { keepError: false });
 			resetField('geo', { keepError: false });
-			resetField('team', { keepError: false });
+			setReportTypeEdit('Select');
+			setLevelEdit('Select');
+			setGEOType('');
+			setSpecificGEO('Select');
+			resetField('team');
+		}
+		if (!enableALlFieldsMemo && watchTeamName?.value !== 'Select') {
+			resetField('level');
+			resetField('reportingUser');
+			resetField('geoSpecific');
+			resetField('geo');
+			setReportTypeEdit('Select');
+			setLevelEdit('Select');
+			setGEOType('');
+			setSpecificGEO('Select');
 		}
 	}, [watchTeamName]);
 
 	useEffect(() => {
-		setTeamListEdit([{ id: 0, value: 'Select' }]);
-		setTeamListEdit((prev) => [
-			...prev,
-			...getTeamList?.filter(
-				(ele) => parseInt(ele?.text) === watchDepartMentName?.id,
-			),
-		]);
-	}, [watchDepartMentName, userDetails?.teamID]);
-
-	useEffect(() => {
 		if (watchGEOSpecific?.value === 'Select') {
-			resetField('geoSpecific');
+			resetField('geo');
+			setGEOType('');
+		} else if (watchGEOSpecific?.value === 'No') {
+			setGEOType('');
 			resetField('geo');
 		}
 	}, [watchGEOSpecific]);
+
+	// useEffect(() => {
+	// 	setTeamListEdit((prev) => [...prev, ...(getTeamList?.filter((ele) => parseInt(ele?.text) === watchDepartMentName?.id))]);
+	// }, [watchDepartMentName, userDetails?.teamID])
+
+	useEffect(() => {
+		if (
+			watchDepartMentName?.id &&
+			watchLevelName?.id &&
+			watchDepartMentName?.value !== 'Select' &&
+			watchLevelName.value !== 'Select'
+		) {
+			getReportingType(watchDepartMentName?.id, watchLevelName?.id);
+		}
+	}, [watchDepartMentName, watchLevelName]);
+
+	useEffect(() => {
+		if (watchDepartMentName?.value !== 'Select' && watchDepartMentName?.id) {
+			setTeamListEdit([{ id: 0, value: 'Select' }]);
+			setTeamListEdit((prev) => [
+				...prev,
+				...getTeamList?.filter(
+					(ele) => parseInt(ele?.text) === watchDepartMentName?.id,
+				),
+			]);
+		}
+	}, [watchDepartMentName]);
+
+	useEffect(() => {
+		setModifiedGEO([]);
+		watchGEO?.map(({ id }) => setModifiedGEO((prev) => [...prev, id]));
+	}, [watchGEO]);
 
 	useEffect(() => {
 		(!_isNull(watchUserType) || id !== 0) && getUserRoles();
@@ -371,6 +456,12 @@ const UsersFields = ({ id }) => {
 	}, [id]);
 
 	useEffect(() => {
+		setDepartment([{ id: 0, value: 'Select' }]);
+		seLevelList([{ id: 0, value: 'Select' }]);
+		setReportingList([{ id: 0, value: 'Select' }]);
+		setTeamListEdit([{ id: 0, value: 'Select' }]);
+		setGEO([]);
+		setTeamList([]);
 		getDepartMentType();
 		getTeamType();
 		getLevelType();
@@ -405,6 +496,7 @@ const UsersFields = ({ id }) => {
 			setControlledUserRole(userRoleResult?.[0]?.value);
 		}
 	}, [id, setValue, userDetails?.roleId, userRole]);
+
 	const enableALlFieldsMemo = useMemo(
 		() => id !== 0 && !enableAllFields,
 		[enableAllFields, id],
@@ -420,6 +512,7 @@ const UsersFields = ({ id }) => {
 				id,
 				base64Image,
 				getUploadFileData,
+				modifiedGEO,
 			);
 			let userResponse = await userAPI.createUserRequest(userFormDetails);
 
@@ -462,7 +555,7 @@ const UsersFields = ({ id }) => {
 				});
 		} */
 		},
-		[id, navigate, base64Image, getUploadFileData],
+		[id, navigate, base64Image, getUploadFileData, modifiedGEO],
 	);
 
 	const uploadFileHandler = useCallback(
@@ -475,7 +568,7 @@ const UsersFields = ({ id }) => {
 						'Uploaded file is not a valid, Only jpg, jpeg, png files are allowed',
 				});
 				setIsLoading(false);
-			} else if (fileData?.size >= 2000000) {
+			} else if (fileData?.size > 2000000) {
 				setValidation({
 					...getValidation,
 					systemFileUpload:
@@ -489,7 +582,7 @@ const UsersFields = ({ id }) => {
 					systemFileUpload: '',
 				});
 				setBase64Image(base64);
-				setUploadFileData(fileData);
+				setUploadFileData({ name: fileData?.name, type: fileData?.type });
 				setUploadModal(false);
 				setIsLoading(false);
 			}
@@ -522,7 +615,7 @@ const UsersFields = ({ id }) => {
 	useEffect(() => {
 		if (getLevelList.length > 1) {
 			getLevelList?.map((item) => {
-				if (item?.id === userDetails?.levelId) {
+				if (item?.id === userDetails?.levelID) {
 					setLevelEdit(item?.value);
 					setValue('level', item);
 				}
@@ -530,20 +623,50 @@ const UsersFields = ({ id }) => {
 		}
 	}, [userDetails, getLevelList]);
 
-	{
-		console.log(errors, 'errors');
-	}
+	useEffect(() => {
+		if (getReportingList.length > 1) {
+			getReportingList?.map((item) => {
+				if (item?.id === userDetails?.userHierarchyParentID) {
+					setReportTypeEdit(item?.value);
+					setValue('reportingUser', item);
+				}
+			});
+		}
+	}, [userDetails, getReportingList]);
+
+	useEffect(() => {
+		const modifiedGeo = GEO?.filter((item) => {
+			if (userDetails?.detail?.geoIDs.includes(item?.id)) {
+				return item;
+			}
+		});
+		setGEOType(modifiedGeo);
+		setValue('geo', modifiedGeo);
+	}, [userDetails, GEO]);
 
 	useEffect(() => {
 		if (enableALlFieldsMemo) {
-			setValue('lastName', userDetails?.fullName?.split(' ')[1]);
-			setValue('firstName', userDetails?.fullName?.split(' ')[0]);
+			setValue('employeeLastName', userDetails?.fullName?.split(' ')[1]);
+			setValue('employeeFirstName', userDetails?.fullName?.split(' ')[0]);
 			setValue('employeeId', userDetails?.employeeId);
 			setValue('skypeID', userDetails?.skypeId);
 			setValue('emailID', userDetails?.emailId);
 			setValue('primaryClientPhoneNumber', userDetails?.contactNumber);
 			setValue('employeeDesignation', userDetails?.designation);
 			setValue('description', userDetails?.description);
+			setUploadFileData({
+				name: userDetails?.profilePic,
+				type: userDetails?.fileUpload?.extenstion,
+			});
+			setBase64Image(userDetails?.fileUpload?.base64ProfilePic);
+
+			if (userDetails?.detail?.geoIDs?.length > 0) {
+				setSpecificGEO('Yes');
+				setValue('geoSpecific', { id: 1, value: 'Yes' });
+			} else {
+				setSpecificGEO('No');
+				setValue('geoSpecific', { id: 2, value: 'No' });
+			}
 		}
 	}, [userDetails]);
 
@@ -595,6 +718,7 @@ const UsersFields = ({ id }) => {
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
 									// defaultValue={enableALlFieldsMemo ? userDetails?.fullName?.split(" ")[0] : null}
+									disabled={enableALlFieldsMemo || isLoading}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -607,7 +731,7 @@ const UsersFields = ({ id }) => {
 										},
 									}}
 									label="First Name"
-									name="firstName"
+									name="employeeFirstName"
 									type={InputType.TEXT}
 									placeholder="Enter First Name"
 									required
@@ -615,11 +739,7 @@ const UsersFields = ({ id }) => {
 							</div>
 							<div className={UserFieldStyle.colMd6}>
 								<HRInputField
-									defaultValue={
-										enableALlFieldsMemo
-											? userDetails?.fullName?.split(' ')[1]
-											: null
-									}
+									disabled={enableALlFieldsMemo || isLoading}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -632,7 +752,7 @@ const UsersFields = ({ id }) => {
 										},
 									}}
 									label="Last Name"
-									name="lastName"
+									name="employeeLastName"
 									type={InputType.TEXT}
 									placeholder="Enter Last Name"
 									required
@@ -715,7 +835,6 @@ const UsersFields = ({ id }) => {
 
 							{watchDepartMentName &&
 								watchDepartMentName?.value !== 'Administration' &&
-								watchTeamName?.value !== 'Select' &&
 								watchDepartMentName?.value !== 'Select' && (
 									<div className={UserFieldStyle.colMd6}>
 										<div className={UserFieldStyle.formGroup}>
@@ -739,8 +858,8 @@ const UsersFields = ({ id }) => {
 								)}
 
 							{watchTeamName &&
+								watchDepartMentName &&
 								watchDepartMentName?.value !== 'Administration' &&
-								watchLevelName?.value !== 'Select' &&
 								watchTeamName?.value !== 'Select' &&
 								watchDepartMentName?.value !== 'Select' && (
 									<div className={UserFieldStyle.colMd6}>
@@ -764,14 +883,16 @@ const UsersFields = ({ id }) => {
 									</div>
 								)}
 
-							{watchTeamName &&
-								watchDepartMentName?.value !== 'Administration' &&
+							{watchLevelName &&
 								watchLevelName?.value !== 'Select' &&
-								watchTeamName?.value !== 'Select' &&
+								watchDepartMentName?.value !== 'Administration' &&
 								watchDepartMentName?.value !== 'Select' && (
 									<div className={UserFieldStyle.colMd6}>
 										<div className={UserFieldStyle.formGroup}>
 											<HRSelectField
+												controlledValue={specificGeo}
+												setControlledValue={setSpecificGEO}
+												isControlled={true}
 												mode="id/value"
 												setValue={setValue}
 												register={register}
@@ -790,9 +911,8 @@ const UsersFields = ({ id }) => {
 								)}
 
 							{watchGEOSpecific?.value === 'Yes' &&
-								watchLevelName?.value !== 'Select' &&
-								watchTeamName?.value !== 'Select' &&
-								watchDepartMentName?.value !== 'Select' && (
+								watchDepartMentName?.value !== 'Select' &&
+								watchDepartMentName?.value !== 'Administration' && (
 									<div className={UserFieldStyle.colMd6}>
 										{/* <div className={UserFieldStyle.formGroup}>
 									<HRSelectField
@@ -811,7 +931,9 @@ const UsersFields = ({ id }) => {
 									/> */}
 										<div className={UserFieldStyle.mb50}>
 											<HRSelectField
-												// isControlled={true}
+												isControlled={true}
+												controlledValue={getGEOType}
+												setControlledValue={setGEOType}
 												mode="multiple"
 												setValue={setValue}
 												register={register}
@@ -819,9 +941,6 @@ const UsersFields = ({ id }) => {
 												placeholder="Please Select"
 												options={GEO && GEO}
 												name="geo"
-												isError={errors['geo'] && errors['geo']}
-												required
-												errorMsg={'Please select GEO'}
 											/>
 										</div>
 									</div>
@@ -829,9 +948,9 @@ const UsersFields = ({ id }) => {
 
 							{getReportingList?.length > 1 &&
 								watchLevelName &&
+								watchDepartMentName &&
 								watchDepartMentName?.value !== 'Administration' &&
 								watchLevelName?.value !== 'Select' &&
-								watchTeamName?.value !== 'Select' &&
 								watchDepartMentName?.value !== 'Select' && (
 									<div className={UserFieldStyle.colMd6}>
 										<div className={UserFieldStyle.formGroup}>
@@ -1199,13 +1318,10 @@ const UsersFields = ({ id }) => {
 								/>
 							</div>
 							<div className={UserFieldStyle.colMd12}>
-								{!getUploadFileData ? (
+								{Object.keys(getUploadFileData).length === 0 ? (
 									<HRInputField
-										value={
-											userDetails?.profilePic
-												? userDetails?.profilePic
-												: 'Upload Profile Picture'
-										}
+										// value={userDetails?.profilePic ? userDetails?.profilePic : 'Upload Profile Picture'}
+										buttonLabel="Upload Profile Picture"
 										register={register}
 										leadingIcon={<UploadSVG />}
 										label="Profile Picture"
@@ -1230,12 +1346,45 @@ const UsersFields = ({ id }) => {
 											<CloseSVG
 												className={UserFieldStyle.uploadedJDClose}
 												onClick={() => {
-													setUploadFileData('');
+													setUploadFileData({});
 												}}
 											/>
 										</div>
 									</div>
 								)}
+
+								{/* {!getUploadFileData ? (
+									<HRInputField
+										disabled={!_isNull(watch('jdURL'))}
+										register={register}
+										leadingIcon={<UploadSVG />}
+										label="Job Description (PDF)"
+										name="jdExport"
+										type={InputType.BUTTON}
+										buttonLabel="Upload JD File"
+										// value="Upload JD File"
+										onClickHandler={() => setUploadModal(true)}
+										required
+										validationSchema={{
+											required: 'please select a file.',
+										}}
+										errors={errors}
+									/>
+								) : (
+									<div className={HRFieldStyle.uploadedJDWrap}>
+										<label>Job Description (PDF)</label>
+										<div className={HRFieldStyle.uploadedJDName}>
+											{getUploadFileData}{' '}
+											<CloseSVG
+												className={HRFieldStyle.uploadedJDClose}
+												onClick={() => {
+													// setJDParsedSkills({});
+													setUploadFileData('');
+												}}
+											/>
+										</div>
+									</div>
+								)} */}
 							</div>
 							{/* {watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD && (
 								<div className={UserFieldStyle.colMd6}>

@@ -1,6 +1,7 @@
 import {
 	EngagementAPI,
 	NetworkInfo,
+	OnboardsAPI,
 	SubDomain,
 	TalentReplaceAPI,
 } from 'constants/network';
@@ -207,7 +208,7 @@ export const EngagementRequestAPI = {
 			NetworkInfo.NETWORK +
 			SubDomain.ENGAGEMENT +
 			EngagementAPI.GET_RENEW_ENGAGEMENT +
-			`onBoardId=${talentDetails?.onboardID}`;
+			`?onBoardId=${talentDetails?.onBoardId}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -216,7 +217,7 @@ export const EngagementRequestAPI = {
 		} catch (error) {
 			return errorDebug(
 				error,
-				'EngagementRequestAPI.editBillRatePayRateRequest',
+				'EngagementRequestAPI.GetRenewEngagementRequest',
 			);
 		}
 	},
@@ -237,6 +238,87 @@ export const EngagementRequestAPI = {
 				error,
 				'EngagementRequestAPI.saveRenewEngagementRequest',
 			);
+		}
+	},
+
+	viewOnboardFeedback: async function (onBoardID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.VIEW_ONBOARD_FEEDBACK +
+			`?OnBoardID=${onBoardID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.getEngagementFilterList');
+		}
+	},
+	getFeedback: async function (feedback) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.GET_ONBOARD_FEEDBACK +
+			`?totalrecord=${feedback?.totalRecords}&pagenumber=${feedback?.pagenumber}&onBoardId=${feedback?.onBoardId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.getFeedback');
+		}
+	},
+	onBoardDetails: async function (onBoardID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ONBOARD +
+			OnboardsAPI.VIEW_IN_DETAIL +
+			`?onBoardId=${onBoardID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.onBoardDetails');
+		}
+	},
+	feedbackFormContent: async function (getHRAndEngagementId) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.GET_FEEDBACK_CONTENT +
+			`?HR_ID=${getHRAndEngagementId?.hrId}&OnBoardID=${getHRAndEngagementId?.onBoardId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.feedbackFormContent');
+		}
+	},
+	submitFeedBackForm: async function (addFeedBackData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.SAVE_FEEDBACK_CLIENT_ONBOARD;
+		httpService.dataToSend = addFeedBackData;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest(addFeedBackData);
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.submitFeedBackForm');
 		}
 	},
 };

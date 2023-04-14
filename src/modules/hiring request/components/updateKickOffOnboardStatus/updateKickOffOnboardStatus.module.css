@@ -1,18 +1,10 @@
-.container {
-    /* padding:16px; */
-    margin: 25px 40px;
-    /* background: #fff; */
-    border-radius: 8px;
-
-}
-
 .modalTitle {
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 32px;
     line-height: 39px;
     color: #232323;
-    margin: 0 0 25px;
+    margin: 0 0 32px;
 }
 
 .modalTitle h2 {
@@ -35,7 +27,7 @@
 
 .formPanelAction {
     display: flex;
-    margin: 30px 0 0 0;
+    margin:0;
 }
 
 .formPanelAction button {
@@ -109,7 +101,7 @@
 .timeSlotItem svg {
     position: absolute;
     top: 19px;
-    right: 26px;
+    right: 16px;
     z-index: 1;
     pointer-events: none;
 }
@@ -235,4 +227,25 @@
 .error {
     color: var(--danger-color);
     font-size: var(--fontsize-tough);
+}
+.startEndDate{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.startEndDate .timeSlotItem{
+    width: 50%;
+}
+.startEndDate .timeSlotItem:first-child [class*="react-datepicker__input-container"] input{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.startEndDate .timeSlotItem:last-child [class*="react-datepicker__input-container"] input{
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: none;
+}
+.timeSlotItem.timePickerItem [class="react-datepicker-popper"] {
+    width: 70%;
+    right: auto !important;
 }

@@ -8,6 +8,7 @@ import { OnboardDAO } from 'core/onboard/onboardDAO';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import DatePicker from 'react-datepicker';
 import { lastWorkingDay } from 'shared/utils/basic_utils';
+import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 
 const UpdateKickOffOnboardStatus = ({
 	talentInfo,
@@ -87,7 +88,7 @@ const UpdateKickOffOnboardStatus = ({
 	}, [unregister, watchOnboardTalentStatus?.id]);
 
 	return (
-		<div className={UpdateLegalClientOnboardStatusStyle.container}>
+		<div className={UpdateLegalClientOnboardStatusStyle.statusModalWrap}>
 			<div className={UpdateLegalClientOnboardStatusStyle.modalTitle}>
 				<h2>Kick Off Status</h2>
 			</div>
@@ -156,9 +157,7 @@ const UpdateKickOffOnboardStatus = ({
 										Kick Off Date <span>*</span>
 									</div>
 									<div
-										className={
-											UpdateLegalClientOnboardStatusStyle.timeSlotItem
-										}>
+										className={`${UpdateLegalClientOnboardStatusStyle.timeSlotItem}`}>
 										<CalenderSVG />
 										<Controller
 											render={({ ...props }) => (
@@ -167,7 +166,7 @@ const UpdateKickOffOnboardStatus = ({
 													onChange={(date) => {
 														setValue('kickOffDate', date);
 													}}
-													placeholderText="Please select Date"
+													placeholderText="Please Select Date"
 												/>
 											)}
 											name="kickOffDate"
@@ -180,6 +179,85 @@ const UpdateKickOffOnboardStatus = ({
 												Please select kick off date
 											</div>
 										)}
+									</div>
+								</div>
+							</div>
+
+							<div className={UpdateLegalClientOnboardStatusStyle.colMd6}>
+								<div
+									className={
+										UpdateLegalClientOnboardStatusStyle.timeSlotItemField
+									}>
+									<div
+										className={
+											UpdateLegalClientOnboardStatusStyle.timeSlotLabel
+										}>
+										Start & End Time <span>*</span>
+									</div>
+									<div
+										className={
+											UpdateLegalClientOnboardStatusStyle.startEndDate
+										}>
+										<div
+											className={`${UpdateLegalClientOnboardStatusStyle.timeSlotItem} ${UpdateLegalClientOnboardStatusStyle.timePickerItem}`}>
+											<ClockIconSVG />
+											<Controller
+												render={({ ...props }) => (
+													<DatePicker
+														selected={watch('kickOffDate')}
+														onChange={(date) => {
+															setValue('kickOffDate', date);
+														}}
+														showTimeSelect
+														showTimeSelectOnly
+														timeIntervals={60}
+														timeCaption="Time"
+														timeFormat="h:mm a"
+														dateFormat="h:mm a"
+														placeholderText="Start Time"
+													/>
+												)}
+												name="kickOffDate"
+												rules={{ required: true }}
+												control={control}
+											/>
+											{errors.kickOffDate && (
+												<div
+													className={UpdateLegalClientOnboardStatusStyle.error}>
+													Please select kick off date
+												</div>
+											)}
+										</div>
+										<div
+											className={`${UpdateLegalClientOnboardStatusStyle.timeSlotItem} ${UpdateLegalClientOnboardStatusStyle.timePickerItem}`}>
+											<ClockIconSVG />
+											<Controller
+												render={({ ...props }) => (
+													<DatePicker
+														selected={watch('kickOffDate')}
+														onChange={(date) => {
+															setValue('kickOffDate', date);
+														}}
+														placeholderText="End Time"
+														showTimeSelect
+														showTimeSelectOnly
+														timeIntervals={60}
+														timeCaption="Time"
+														timeFormat="h:mm a"
+														dateFormat="h:mm a"
+													/>
+												)}
+												name="kickOffDate"
+												rules={{ required: true }}
+												control={control}
+											/>
+											{errors.kickOffDate && (
+												<div
+													className={UpdateLegalClientOnboardStatusStyle.error}>
+													Please select kick off date
+												</div>
+											)}
+										</div>
 									</div>
 								</div>
 							</div>

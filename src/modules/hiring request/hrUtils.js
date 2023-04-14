@@ -375,7 +375,7 @@ export const hrUtils = {
 			loggedInUserTypeID === UserAccountRole.DEVELOPER
 		) {
 			if (
-				HiringRequestHRStatus.DRAFT ||
+				// HiringRequestHRStatus.DRAFT ||
 				HiringRequestHRStatus.HR_ACCEPTED ||
 				HiringRequestHRStatus.ACCEPTANCE_PENDING ||
 				HiringRequestHRStatus.INFO_PENDING ||
@@ -404,7 +404,7 @@ export const hrUtils = {
 			loggedInUserTypeID === UserAccountRole.DEVELOPER
 		) {
 			if (
-				HiringRequestHRStatus.DRAFT ||
+				// HiringRequestHRStatus.DRAFT ||
 				HiringRequestHRStatus.HR_ACCEPTED ||
 				HiringRequestHRStatus.ACCEPTANCE_PENDING ||
 				HiringRequestHRStatus.INFO_PENDING ||

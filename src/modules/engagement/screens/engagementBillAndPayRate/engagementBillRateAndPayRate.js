@@ -42,7 +42,7 @@ const EngagementBillRateAndPayRate = ({
 	const watchBillRate = watch('billRate');
 	const watchPayRate = watch('payRate');
 	const watchNRRate = watch('billNRRate');
-	console.log(watchNRRate, '-watch');
+
 	const [billRateValue, setBillRateValue] = useState(watchBillRate);
 	const [payRateValue, setPayRateValue] = useState(watchPayRate);
 	function callback(key) {

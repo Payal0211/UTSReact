@@ -46,4 +46,33 @@ export const engagementUtils = {
 				break;
 		}
 	},
+   modifyEngagementFeedbackData: (response) => {
+        return response?.responseBody?.details?.rows.map((item) => ({
+            engagemenID: item?.engagemenID,
+            feedbackActionToTake: item?.feedbackActionToTake,
+            feedbackComment: item?.feedbackComment,
+            feedbackCreatedDateTime: item?.feedbackCreatedDateTime ? item?.feedbackCreatedDateTime?.split(' ')[0] : 'NA',
+            feedbackType: item?.feedbackType,
+        }));
+    },
+
+    engagementListSearch: (e, apiData) => {
+        let filteredData = apiData?.filter((val) => {
+            return (
+                (val?.lastFeedbackDate &&
+                    val?.lastFeedbackDate
+                        .toLowerCase()
+                        .includes(e.target.value.toLowerCase())) ||
+                (val?.engagementId_HRID &&
+                    val?.engagementId_HRID.toLowerCase().includes(e.target.value.toLowerCase())) ||
+                (val?.talentName &&
+                    val?.talentName.toLowerCase().includes(e.target.value.toLowerCase())) ||
+                (val?.currentStatus &&
+                    val?.currentStatus.toLowerCase().includes(e.target.value.toLowerCase()))
+
+            );
+        });
+
+        return filteredData;
+    },
 };

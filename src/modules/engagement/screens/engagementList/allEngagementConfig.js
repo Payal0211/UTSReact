@@ -3,10 +3,9 @@ import HROperator from 'modules/hiring request/components/hroperator/hroperator'
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { Link } from 'react-router-dom';
 import { engagementUtils } from './engagementUtils';
-
+import allengagementStyles from '../engagementFeedback/engagementFeedback.module.css';
 export const allEngagementConfig = {
 	engagementFilterTypeConfig: (filterList) => {
-		console.log(filterList, 'filterList');
 		return [
 			{
 				label: 'Client Feedback',
@@ -95,6 +94,9 @@ export const allEngagementConfig = {
 		setEngagementModal,
 		setFilteredData,
 		setEngagementBillAndPayRateTab,
+		setOnbaordId,
+		setFeedBackData,
+		setHRAndEngagementId,
 	) => {
 		return [
 			{
@@ -150,8 +152,9 @@ export const allEngagementConfig = {
 									case 'Renew Engagement': {
 										setEngagementModal({
 											...getEngagementModal,
-											engagementReplaceTalent: true,
+											engagementRenew: true,
 										});
+										setFilteredData(param);
 										break;
 									}
 									case 'End Engagement': {
@@ -202,40 +205,80 @@ export const allEngagementConfig = {
 				key: 'clientFeedback',
 				align: 'left',
 				render: (text, result) =>
-					result?.clientFeedback ? (
-						<Link
-							to=""
+					result?.clientFeedback === 0 && result?.onboardID && result?.hrID ? (
+						<span
 							style={{
 								color: engagementUtils.getClientFeedbackColor(
 									result?.feedbackType,
 								),
 								textDecoration: 'underline',
 							}}
-							onClick={() =>
+							onClick={() => {
+								setHRAndEngagementId({
+									talentName: result?.talentName,
+									engagementID: result?.engagementId_HRID.slice(
+										0,
+										result?.engagementId_HRID?.indexOf('/'),
+									),
+									hrNumber: result?.engagementId_HRID.slice(
+										result?.engagementId_HRID?.indexOf('/') + 1,
+									),
+									onBoardId: result?.onboardID,
+									hrId: result?.hrID,
+								});
 								setEngagementModal({
-									...getEngagementModal,
+									engagementFeedback: false,
+									engagementBillRate: false,
+									engagementPayRate: false,
+									engagementOnboard: false,
 									engagementAddFeedback: true,
-								})
-							}>
+									engagementBillRateAndPayRate: false,
+									engagementEnd: false,
+									engagementInvoice: false,
+									engagementReplaceTalent: false,
+								});
+							}}>
 							{'Add'}
-						</Link>
+						</span>
 					) : (
-						<Link
-							to=""
+						<span
 							style={{
 								color: engagementUtils.getClientFeedbackColor(
 									result?.feedbackType,
 								),
 								textDecoration: 'underline',
 							}}
-							onClick={() =>
+							onClick={() => {
+								setFeedBackData((prev) => ({
+									...prev,
+									onBoardId: result?.onboardID,
+								}));
+								setHRAndEngagementId({
+									talentName: result?.talentName,
+									engagementID: result?.engagementId_HRID.slice(
+										0,
+										result?.engagementId_HRID?.indexOf('/'),
+									),
+									hrNumber: result?.engagementId_HRID.slice(
+										result?.engagementId_HRID?.indexOf('/') + 1,
+									),
+									onBoardId: result?.onboardID,
+									hrId: result?.hrID,
+								});
 								setEngagementModal({
-									...getEngagementModal,
 									engagementFeedback: true,
-								})
-							}>
+									engagementBillRate: false,
+									engagementPayRate: false,
+									engagementOnboard: false,
+									engagementAddFeedback: false,
+									engagementBillRateAndPayRate: false,
+									engagementEnd: false,
+									engagementInvoice: false,
+									engagementReplaceTalent: false,
+								});
+							}}>
 							{'View'}
-						</Link>
+						</span>
 					),
 			},
 			{
@@ -251,17 +294,35 @@ export const allEngagementConfig = {
 				align: 'left',
 				render: (text, result) =>
 					result?.clientLegal_StatusID === 2 && (
-						<Link
-							to=""
+						<span
 							style={{ color: '#006699', textDecoration: 'underline' }}
-							onClick={() =>
+							onClick={() => {
+								setHRAndEngagementId({
+									talentName: result?.talentName,
+									engagementID: result?.engagementId_HRID.slice(
+										0,
+										result?.engagementId_HRID?.indexOf('/'),
+									),
+									hrNumber: result?.engagementId_HRID.slice(
+										result?.engagementId_HRID?.indexOf('/'),
+									),
+									onBoardId: result?.onboardID,
+									hrId: result?.hrID,
+								});
 								setEngagementModal({
-									...getEngagementModal,
+									engagementFeedback: false,
+									engagementBillRate: false,
+									engagementPayRate: false,
 									engagementOnboard: true,
-								})
-							}>
+									engagementAddFeedback: false,
+									engagementBillRateAndPayRate: false,
+									engagementEnd: false,
+									engagementInvoice: false,
+									engagementReplaceTalent: false,
+								});
+							}}>
 							{'View'}
-						</Link>
+						</span>
 					),
 			},
 			{
@@ -276,7 +337,7 @@ export const allEngagementConfig = {
 							result?.engagementId_HRID?.indexOf('/'),
 						)}
 						<Link
-							to=""
+							to={`/allhiringrequest/${result?.hrID}`}
 							style={{ color: '#006699', textDecoration: 'underline' }}>
 							{result?.engagementId_HRID.slice(
 								result?.engagementId_HRID?.indexOf('/'),
@@ -301,6 +362,46 @@ export const allEngagementConfig = {
 				title: 'Current Status',
 				dataIndex: 'currentStatus',
 				key: 'currentStatus',
+				align: 'left',
+			},
+		];
+	},
+	clientFeedbackTypeConfig: (filterList) => {
+		return [
+			{
+				title: 'Last Feedback Date',
+				dataIndex: 'feedbackCreatedDateTime',
+				key: 'feedbackCreatedDateTime',
+				align: 'left',
+			},
+			{
+				title: 'Feedback Type',
+				dataIndex: 'feedbackType',
+				key: 'feedbackType',
+				align: 'left',
+				render: (text, result) => (
+					<span
+						style={{
+							background: engagementUtils.getClientFeedbackColor(
+								result?.feedbackType,
+							),
+						}}
+						className={allengagementStyles.feedbackLabel}>
+						{' '}
+						{result?.feedbackType}
+					</span>
+				),
+			},
+			{
+				title: 'Feedback Comments',
+				dataIndex: 'feedbackComment',
+				key: 'feedbackComment',
+				align: 'left',
+			},
+			{
+				title: 'Action To Take',
+				dataIndex: 'feedbackActionToTake',
+				key: 'feedbackActionToTake',
 				align: 'left',
 			},
 		];
