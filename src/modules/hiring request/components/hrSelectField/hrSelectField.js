@@ -16,6 +16,7 @@ const HRSelectField = ({
 	options,
 	required,
 	isError,
+	unregister,
 	errorMsg,
 	isControlled,
 	disabled,

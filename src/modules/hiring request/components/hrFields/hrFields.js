@@ -142,8 +142,10 @@ const HRFields = ({
 		[getValidation],
 	);
 	const uploadFileHandler = useCallback(
-		async (fileData) => {
+		async (e) => {
 			setIsLoading(true);
+			let fileData = e.target.files[0];
+			console.log('--fileData---', fileData);
 			if (
 				fileData?.type !== 'application/pdf' &&
 				fileData?.type !== 'application/docs' &&
@@ -795,23 +797,25 @@ const HRFields = ({
 								</div>
 							)}
 						</div>
-						<UploadModal
-							isGoogleDriveUpload={true}
-							isLoading={isLoading}
-							uploadFileHandler={(e) => uploadFileHandler(e.target.files[0])}
-							googleDriveFileUploader={() => googleDriveFileUploader()}
-							uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
-							modalTitle={'Upload JD'}
-							modalSubtitle={'Job Description (PDF)'}
-							isFooter={true}
-							openModal={showUploadModal}
-							setUploadModal={setUploadModal}
-							cancelModal={() => setUploadModal(false)}
-							setValidation={setValidation}
-							getValidation={getValidation}
-							getGoogleDriveLink={getGoogleDriveLink}
-							setGoogleDriveLink={setGoogleDriveLink}
-						/>
+						{showUploadModal && (
+							<UploadModal
+								isGoogleDriveUpload={true}
+								isLoading={isLoading}
+								uploadFileHandler={uploadFileHandler}
+								googleDriveFileUploader={() => googleDriveFileUploader()}
+								uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+								modalTitle={'Upload JD'}
+								modalSubtitle={'Job Description (PDF)'}
+								isFooter={true}
+								openModal={showUploadModal}
+								setUploadModal={setUploadModal}
+								cancelModal={() => setUploadModal(false)}
+								setValidation={setValidation}
+								getValidation={getValidation}
+								getGoogleDriveLink={getGoogleDriveLink}
+								setGoogleDriveLink={setGoogleDriveLink}
+							/>
+						)}
 						<div className={HRFieldStyle.orLabel}>OR</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
