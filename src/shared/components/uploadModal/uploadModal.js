@@ -45,13 +45,22 @@ const UploadModal = ({
 	uploadFileFromGoogleDriveLink,
 	modalSubtitle,
 }) => {
-	const uploadFileRef = useRef(null);
+	// const uploadFileRef = useRef(null);
+	/* const modalFileHandler = useCallback(
+		(e) => {
+			console.log('--inside modal File handler---', e);
+			console.log(uploadFileHandler, '--UPLOADfilehandler--');
+			uploadFileHandler(e);
+		},
+		[uploadFileHandler],
+	); */
 
-	useEffect(() => {
-		return () => {
-			if (!openModal) uploadFileRef.current = null;
-		};
-	}, [openModal]);
+	const modalFileHandler = (e) => {
+		console.log('--inside modal File handler---', e);
+		console.log(uploadFileHandler, '--UPLOADfilehandler--');
+		uploadFileHandler(e);
+	};
+
 	return (
 		<Modal
 			width="864px"
@@ -73,10 +82,10 @@ const UploadModal = ({
 							<input
 								style={{ height: '10vh', background: 'red' }}
 								type={InputType.FILE}
-								ref={uploadFileRef}
+								// ref={uploadFileRef}
 								id="modalFile"
 								name="modalFileUpload"
-								onChange={uploadFileHandler}
+								onChange={modalFileHandler}
 							/>
 
 							<label

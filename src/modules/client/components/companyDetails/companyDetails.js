@@ -58,8 +58,9 @@ const CompanyDetails = ({
 	}, []);
 
 	const uploadFileHandler = useCallback(
-		async (fileData) => {
+		async (e) => {
 			setIsLoading(true);
+			let fileData = e.target.files[0];
 			if (fileData?.type !== 'image/png' && fileData?.type !== 'image/jpeg') {
 				setValidation({
 					...getValidation,
@@ -393,15 +394,17 @@ const CompanyDetails = ({
 								alt="preview"
 							/>
 						</Modal>
-						<UploadModal
-							isFooter={false}
-							uploadFileHandler={(e) => uploadFileHandler(e.target.files[0])}
-							modalTitle={'Upload Logo'}
-							openModal={showUploadModal}
-							cancelModal={() => setUploadModal(false)}
-							setValidation={setValidation}
-							getValidation={getValidation}
-						/>
+						{showUploadModal && (
+							<UploadModal
+								isFooter={false}
+								uploadFileHandler={uploadFileHandler}
+								modalTitle={'Upload Logo'}
+								openModal={showUploadModal}
+								cancelModal={() => setUploadModal(false)}
+								setValidation={setValidation}
+								getValidation={getValidation}
+							/>
+						)}
 					</div>
 				</div>
 			</div>

@@ -21,7 +21,6 @@ import InterviewStatus from 'modules/interview/components/interviewStatus/interv
 import UpdateClientOnBoardStatus from '../updateClientOnboardStatus/updateClientOnboardStatus';
 import UpdateTalentOnboardStatus from '../updateTalentOnboardStatus/updateTalentOnboardStatus';
 import UpdateLegalClientOnboardStatus from '../updateLegalClientOnboardStatus/updateLegalClientOnboardStatus';
-
 import EngagementReplaceTalent from 'modules/engagement/screens/engagementReplaceTalent/engagementReplaceTalent';
 import UpdateLegalTalentOnboardStatus from '../updateLegalTalentOnboardStatus/updateLegalTalentOnboardStatus';
 import UpdateKickOffOnboardStatus from '../updateKickOffOnboardStatus/updateKickOffOnboardStatus';
@@ -146,7 +145,7 @@ const TalentList = ({
 	]);
 	const [reScheduleRadio, setRescheduleRadio] = useState(1);
 	const [reScheduleSlotRadio, setRescheduleSlotRadio] = useState(1);
-
+	const [pageIndex, setPageIndex] = useState(0);
 	const scheuleResetDataHander = () => {
 		setScheduleSlotDate([
 			{ slot1: null, slot2: null, slot3: null },
@@ -1090,7 +1089,7 @@ const TalentList = ({
 			talentDetail?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
 		[talentDetail, talentIndex],
 	);
-
+	console.log(filterTalentID, '---filterTalentID');
 	const getInterviewStatus = useCallback(() => {
 		switch (filterTalentID?.InterviewStatus) {
 			case 'Feedback Submitted':
@@ -1147,381 +1146,389 @@ const TalentList = ({
 				pagination={{
 					className: TalentListStyle.paginate,
 					size: 'small',
-					pageSize: 2,
+					pageSize: 1,
 					position: 'top',
+					onChange: (page, pageSize) => {
+						setPageIndex(pageIndex + 1);
+					},
 				}}
-				renderItem={(item, listIndex) => (
-					<div
-						key={item?.Name}
-						id={item?.TalentID}>
-						<div className={TalentListStyle.talentCard}>
-							<div className={TalentListStyle.talentCardBody}>
-								<div className={TalentListStyle.partWise}>
-									<div
-										style={{
-											marginBottom: '10px',
-											display: 'flex',
-										}}>
+				renderItem={(item, listIndex) => {
+					// console.log('---item---', item, '-----------', talentCTA);
+
+					return (
+						<div
+							key={item?.Name}
+							id={item?.TalentID}>
+							<div className={TalentListStyle.talentCard}>
+								<div className={TalentListStyle.talentCardBody}>
+									<div className={TalentListStyle.partWise}>
 										<div
 											style={{
+												marginBottom: '10px',
 												display: 'flex',
-												justifyContent: 'space-between',
-												alignItems: 'center',
 											}}>
-											<img
-												src={
-													item?.ProfileURL
-														? item?.ProfileURL
-														: 'https://www.w3schools.com/howto/img_avatar.png'
-												}
-												className={TalentListStyle.avatar}
-												alt="avatar"
-											/>
 											<div
 												style={{
-													position: 'absolute',
-													marginLeft: '50px',
-													top: '-30px',
+													display: 'flex',
+													justifyContent: 'space-between',
+													alignItems: 'center',
 												}}>
-												{All_Hiring_Request_Utils.GETTALENTSTATUS(
-													item?.ProfileStatusCode,
-													item?.Status,
-												)}
-											</div>
-											<div
-												style={{
-													marginLeft: '50px',
-													marginTop: '20px',
-													fontSize: '.7vw',
-												}}>
+												<img
+													src={
+														item?.ProfileURL
+															? item?.ProfileURL
+															: 'https://www.w3schools.com/howto/img_avatar.png'
+													}
+													className={TalentListStyle.avatar}
+													alt="avatar"
+												/>
 												<div
 													style={{
-														textDecoration: 'underline',
-														fontWeight: '600',
+														position: 'absolute',
+														marginLeft: '50px',
+														top: '-30px',
 													}}>
-													{item?.Name}
+													{All_Hiring_Request_Utils.GETTALENTSTATUS(
+														item?.ProfileStatusCode,
+														item?.Status,
+													)}
 												</div>
-												<div>{item?.TalentRole}</div>
-											</div>
-										</div>
-									</div>
-									<div style={{ cursor: 'pointer' }}>
-										<Dropdown
-											trigger={['click']}
-											placement="bottom"
-											overlay={
-												<Menu>
-													<Menu.Item
-														key={0}
-														onClick={() => {
-															// setProfileLogModal(true); // TODO:-
-															setTalentIndex(listIndex);
-														}}>
-														View Profile Log
-													</Menu.Item>
-													<Divider
+												<div
+													style={{
+														marginLeft: '50px',
+														marginTop: '20px',
+														fontSize: '.7vw',
+													}}>
+													<div
 														style={{
-															margin: '3px 0',
-														}}
-													/>
-													<Menu.Item key={1}>Remove Profile</Menu.Item>
-												</Menu>
-											}>
-											<BsThreeDots style={{ fontSize: '1.5rem' }} />
-										</Dropdown>
+															textDecoration: 'underline',
+															fontWeight: '600',
+														}}>
+														{item?.Name}
+													</div>
+													<div>{item?.TalentRole}</div>
+												</div>
+											</div>
+										</div>
+										<div style={{ cursor: 'pointer' }}>
+											<Dropdown
+												trigger={['click']}
+												placement="bottom"
+												overlay={
+													<Menu>
+														<Menu.Item
+															key={0}
+															onClick={() => {
+																// setProfileLogModal(true); // TODO:-
+																setTalentIndex(listIndex);
+															}}>
+															View Profile Log
+														</Menu.Item>
+														<Divider
+															style={{
+																margin: '3px 0',
+															}}
+														/>
+														<Menu.Item key={1}>Remove Profile</Menu.Item>
+													</Menu>
+												}>
+												<BsThreeDots style={{ fontSize: '1.5rem' }} />
+											</Dropdown>
+										</div>
 									</div>
-								</div>
-								<div className={TalentListStyle.profileURL}>
-									<span>profile URL:</span>&nbsp;&nbsp;
-									<span style={{ fontWeight: '500' }}>
-										<a
-											style={{ textDecoration: 'underline' }}
-											href={item?.ProfileURL}
-											target="_blank"
-											rel="noreferrer">
-											Click here
-										</a>
-									</span>
-								</div>
-								<div className={TalentListStyle.experience}>
-									<span>Experience:</span>&nbsp;&nbsp;
-									<span style={{ fontWeight: '500' }}>
-										{_isNull(item?.TotalExpYears)
-											? 'NA'
-											: item?.TotalExpYears + ' years'}
-									</span>
-								</div>
-								<div className={TalentListStyle.noticePeriod}>
-									<span>Notice Period:</span>&nbsp;&nbsp;
-									<span style={{ fontWeight: '500' }}>
-										{_isNull(item?.NoticePeriod) ? 'NA' : item?.NoticePeriod}
-									</span>
-								</div>
-								<div className={TalentListStyle.agreedShift}>
-									<span>Agreed Shift:</span>&nbsp;&nbsp;
-									<span style={{ fontWeight: '500' }}>
-										{_isNull(item?.TalentTimeZone)
-											? 'NA'
-											: item?.TalentTimeZone}
-									</span>
-								</div>
-								<div className={TalentListStyle.availability}>
-									<span>Preferred Availability:</span>&nbsp;&nbsp;
-									<span style={{ fontWeight: '500' }}>
-										{_isNull(item?.PreferredAvailability)
-											? 'NA'
-											: item?.PreferredAvailability}
-									</span>
-								</div>
-								<div className={TalentListStyle.profileSource}>
-									<span>Profile Source:</span>&nbsp;&nbsp;
-									<span style={{ fontWeight: '500' }}>
-										{_isNull(item?.TalentSource) ? 'NA' : item?.TalentSource}
-									</span>
-								</div>
-								<Divider
-									style={{
-										margin: '10px 0',
-										// border: `1px solid var(--uplers-border-color)`,
-									}}
-								/>
-								<div className={TalentListStyle.interviewStatus}>
-									<span>Interview Status:</span>&nbsp;&nbsp;
-									<span
-										style={{ fontWeight: '500', cursor: 'pointer' }}
-										onClick={() => {
-											setInterviewFeedback(true);
-											setTalentIndex(listIndex);
-										}}>
-										{item?.InterviewStatus === ''
-											? 'NA'
-											: item?.InterviewStatus}
-									</span>
-								</div>
-								<Divider
-									style={{
-										margin: '10px 0',
-										// border: `1px solid var(--uplers-border-color)`,
-									}}
-								/>
+									<div className={TalentListStyle.profileURL}>
+										<span>profile URL:</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											<a
+												style={{ textDecoration: 'underline' }}
+												href={item?.ProfileURL}
+												target="_blank"
+												rel="noreferrer">
+												Click here
+											</a>
+										</span>
+									</div>
+									<div className={TalentListStyle.experience}>
+										<span>Experience:</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											{_isNull(item?.TotalExpYears)
+												? 'NA'
+												: item?.TotalExpYears + ' years'}
+										</span>
+									</div>
+									<div className={TalentListStyle.noticePeriod}>
+										<span>Notice Period:</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											{_isNull(item?.NoticePeriod) ? 'NA' : item?.NoticePeriod}
+										</span>
+									</div>
+									<div className={TalentListStyle.agreedShift}>
+										<span>Agreed Shift:</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											{_isNull(item?.TalentTimeZone)
+												? 'NA'
+												: item?.TalentTimeZone}
+										</span>
+									</div>
+									<div className={TalentListStyle.availability}>
+										<span>Preferred Availability:</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											{_isNull(item?.PreferredAvailability)
+												? 'NA'
+												: item?.PreferredAvailability}
+										</span>
+									</div>
+									<div className={TalentListStyle.profileSource}>
+										<span>Profile Source:</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											{_isNull(item?.TalentSource) ? 'NA' : item?.TalentSource}
+										</span>
+									</div>
+									<Divider
+										style={{
+											margin: '10px 0',
+											// border: `1px solid var(--uplers-border-color)`,
+										}}
+									/>
+									<div className={TalentListStyle.interviewStatus}>
+										<span>Interview Status:</span>&nbsp;&nbsp;
+										<span
+											style={{ fontWeight: '500', cursor: 'pointer' }}
+											onClick={() => {
+												setInterviewFeedback(true);
+												setTalentIndex(listIndex);
+											}}>
+											{item?.InterviewStatus === ''
+												? 'NA'
+												: item?.InterviewStatus}
+										</span>
+									</div>
+									<Divider
+										style={{
+											margin: '10px 0',
+											// border: `1px solid var(--uplers-border-color)`,
+										}}
+									/>
 
-								{!hrType ? (
-									<>
-										<div className={TalentListStyle.payRate}>
-											<div>
-												<span>Bill Rate:</span>&nbsp;&nbsp;
-												<span style={{ fontWeight: '500' }}>
-													{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
+									{!hrType ? (
+										<>
+											<div className={TalentListStyle.payRate}>
+												<div>
+													<span>Bill Rate:</span>&nbsp;&nbsp;
+													<span style={{ fontWeight: '500' }}>
+														{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
+													</span>
+												</div>
+												<span
+													onClick={() => {
+														setEDITBRPRModal(true);
+													}}
+													style={{
+														textDecoration: 'underline',
+														color: `var(--background-color-ebony)`,
+														cursor: 'pointer',
+													}}>
+													edit
 												</span>
 											</div>
-											<span
-												onClick={() => {
-													setEDITBRPRModal(true);
-												}}
-												style={{
-													textDecoration: 'underline',
-													color: `var(--background-color-ebony)`,
-													cursor: 'pointer',
-												}}>
-												edit
-											</span>
-										</div>
-										<div className={TalentListStyle.payRate}>
-											<div>
-												<span>Pay Rate:</span>&nbsp;&nbsp;
-												<span style={{ fontWeight: '500' }}>
-													{_isNull(item?.PayRate) ? 'NA' : item?.PayRate}
+											<div className={TalentListStyle.payRate}>
+												<div>
+													<span>Pay Rate:</span>&nbsp;&nbsp;
+													<span style={{ fontWeight: '500' }}>
+														{_isNull(item?.PayRate) ? 'NA' : item?.PayRate}
+													</span>
+												</div>
+												<span
+													style={{
+														textDecoration: 'underline',
+														color: `var(--background-color-ebony)`,
+														cursor: 'pointer',
+													}}>
+													edit
 												</span>
 											</div>
-											<span
-												style={{
-													textDecoration: 'underline',
-													color: `var(--background-color-ebony)`,
-													cursor: 'pointer',
-												}}>
-												edit
-											</span>
-										</div>
-										<div className={TalentListStyle.nr}>
-											<div>
-												<span>NR:</span>&nbsp;&nbsp;
-												<span style={{ fontWeight: '500' }}>
-													{_isNull(item?.NR) ? 'NA' : item?.NR}
+											<div className={TalentListStyle.nr}>
+												<div>
+													<span>NR:</span>&nbsp;&nbsp;
+													<span style={{ fontWeight: '500' }}>
+														{_isNull(item?.NR) ? 'NA' : item?.NR}
+													</span>
+												</div>
+												<span
+													style={{
+														textDecoration: 'underline',
+														color: `var(--background-color-ebony)`,
+														cursor: 'pointer',
+													}}>
+													edit
 												</span>
 											</div>
-											<span
-												style={{
-													textDecoration: 'underline',
-													color: `var(--background-color-ebony)`,
-													cursor: 'pointer',
-												}}>
-												edit
-											</span>
-										</div>
-									</>
-								) : (
-									<>
-										<div className={TalentListStyle.billRate}>
-											<span>DP Amount:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{_isNull(item?.DPAmount) ? 'NA' : item?.DPAmount}
-											</span>
-										</div>
-										<div className={TalentListStyle.payRate}>
-											<div>
-												<span>DP Percetange:</span>&nbsp;&nbsp;
+										</>
+									) : (
+										<>
+											<div className={TalentListStyle.billRate}>
+												<span>DP Amount:</span>&nbsp;&nbsp;
 												<span style={{ fontWeight: '500' }}>
-													{_isNull(item?.DPPercentage)
-														? 'NA'
-														: item?.DPPercentage}
+													{_isNull(item?.DPAmount) ? 'NA' : item?.DPAmount}
 												</span>
 											</div>
-										</div>
-									</>
-								)}
+											<div className={TalentListStyle.payRate}>
+												<div>
+													<span>DP Percetange:</span>&nbsp;&nbsp;
+													<span style={{ fontWeight: '500' }}>
+														{_isNull(item?.DPPercentage)
+															? 'NA'
+															: item?.DPPercentage}
+													</span>
+												</div>
+											</div>
+										</>
+									)}
 
-								<Divider
-									style={{
-										margin: '10px 0',
-										// border: `1px solid var(--uplers-border-color)`,
-									}}
-								/>
-								<div className={TalentListStyle.interviewSlots}>
-									<span>Available Interview Slots:</span>&nbsp;&nbsp;
-									<span style={{ fontWeight: '500' }}>
-										{item?.Slotconfirmed ? (
-											<>
-												{item?.Slotconfirmed.split(' ')[0]}
-												<RiArrowDropDownLine />
-											</>
-										) : (
-											'NA'
-										)}
-									</span>
-								</div>
-								<div className={TalentListStyle.time}>
-									<span>Time:</span>&nbsp;&nbsp;
-									<span style={{ fontWeight: '500' }}>
-										{item?.Slotconfirmed
-											? item?.Slotconfirmed.split(' ')[1] +
-											  ' - ' +
-											  item?.Slotconfirmed.split(' ')[3]
-											: 'NA'}
-									</span>
-								</div>
-								<Divider
-									style={{
-										margin: '10px 0',
-										// border: `1px solid var(--uplers-border-color)`,
-									}}
-								/>
-								<div
-									style={{
-										padding: '2px 0',
-										textDecoration: 'underline',
-										cursor: 'pointer',
-									}}
-									onClick={() => {
-										// setVersantModal(true);-  //TODO:-
-										setTalentIndex(item?.TalentID);
-									}}>
-									Versant Test Results
-								</div>
-
-								<div style={{ padding: '2px 0', textDecoration: 'underline' }}>
-									Skill Test Results
-								</div>
-								<Divider
-									style={{
-										margin: '10px 0',
-									}}
-								/>
-								{talentCTA[listIndex]?.cTAInfoList?.length > 0 && (
+									<Divider
+										style={{
+											margin: '10px 0',
+											// border: `1px solid var(--uplers-border-color)`,
+										}}
+									/>
+									<div className={TalentListStyle.interviewSlots}>
+										<span>Available Interview Slots:</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											{item?.Slotconfirmed ? (
+												<>
+													{item?.Slotconfirmed.split(' ')[0]}
+													<RiArrowDropDownLine />
+												</>
+											) : (
+												'NA'
+											)}
+										</span>
+									</div>
+									<div className={TalentListStyle.time}>
+										<span>Time:</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											{item?.Slotconfirmed
+												? item?.Slotconfirmed.split(' ')[1] +
+												  ' - ' +
+												  item?.Slotconfirmed.split(' ')[3]
+												: 'NA'}
+										</span>
+									</div>
+									<Divider
+										style={{
+											margin: '10px 0',
+											// border: `1px solid var(--uplers-border-color)`,
+										}}
+									/>
 									<div
 										style={{
-											position: 'absolute',
-											marginTop: '10px',
-											textAlign: 'start !important',
+											padding: '2px 0',
+											textDecoration: 'underline',
+											cursor: 'pointer',
+										}}
+										onClick={() => {
+											// setVersantModal(true);-  //TODO:-
+											setTalentIndex(item?.TalentID);
 										}}>
-										<HROperator
-											onClickHandler={() => setTalentIndex(item?.TalentID)}
-											title={talentCTA?.[listIndex]?.cTAInfoList[0]?.label}
-											icon={<AiOutlineDown />}
-											backgroundColor={`var(--color-sunlight)`}
-											iconBorder={`1px solid var(--color-sunlight)`}
-											isDropdown={true}
-											listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
-											menuAction={(menuItem) => {
-												console.log(menuItem.key, '--menuItem.key');
-												switch (menuItem.key) {
-													case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
-														setScheduleInterviewModal(true);
-														setTalentIndex(item?.TalentID);
-														break;
-													}
-													case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
-														setReScheduleInterviewModal(true);
-														setTalentIndex(item?.TalentID);
-														break;
-													}
-													case TalentOnboardStatus.TALENT_ACCEPTANCE: {
-														setTalentAcceptance(true);
-														setTalentIndex(item?.TalentID);
-
-														break;
-													}
-													case TalentOnboardStatus.TALENT_STATUS: {
-														setTalentStatus(true);
-														setTalentIndex(item?.TalentID);
-														break;
-													}
-													case TalentOnboardStatus.INTERVIEW_STATUS: {
-														setInterviewStatus(true);
-														setTalentIndex(item?.TalentID);
-														break;
-													}
-													case TalentOnboardStatus.UPDATE_CLIENT_ON_BOARD_STATUS: {
-														setOnboardClientModal(true);
-														setTalentIndex(item?.TalentID);
-														break;
-													}
-													case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
-														setOnboardTalentModal(true);
-														setTalentIndex(item?.TalentID);
-														break;
-													}
-													case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
-														console.log('hello');
-														setLegalTalentOnboardModal(true);
-														setTalentIndex(item?.TalentID);
-														break;
-													}
-													case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
-														setLegalClientOnboardModal(true);
-														setTalentIndex(item?.TalentID);
-														break;
-													}
-													case TalentOnboardStatus.UPDATE_KICKOFF_ONBOARD_STATUS: {
-														setTalentKickOffModal(true);
-														setTalentIndex(item?.TalentID);
-														break;
-													}
-													case TalentOnboardStatus.REPLACE_TALENT: {
-														setReplaceTalentModal(true);
-														setTalentIndex(item?.TalentID);
-														break;
-													}
-													default:
-														break;
-												}
-											}}
-										/>
+										Versant Test Results
 									</div>
-								)}
+
+									<div
+										style={{ padding: '2px 0', textDecoration: 'underline' }}>
+										Skill Test Results
+									</div>
+									<Divider
+										style={{
+											margin: '10px 0',
+										}}
+									/>
+									{talentCTA[listIndex]?.cTAInfoList?.length > 0 && (
+										<div
+											style={{
+												position: 'absolute',
+												marginTop: '10px',
+												textAlign: 'start !important',
+											}}>
+											<HROperator
+												onClickHandler={() => setTalentIndex(item?.TalentID)}
+												title={talentCTA?.[pageIndex]?.cTAInfoList[0]?.label}
+												icon={<AiOutlineDown />}
+												backgroundColor={`var(--color-sunlight)`}
+												iconBorder={`1px solid var(--color-sunlight)`}
+												isDropdown={true}
+												listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
+												menuAction={(menuItem) => {
+													console.log(menuItem.key, '--menuItem.key');
+													switch (menuItem.key) {
+														case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
+															setScheduleInterviewModal(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
+															setReScheduleInterviewModal(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.TALENT_ACCEPTANCE: {
+															setTalentAcceptance(true);
+															setTalentIndex(item?.TalentID);
+
+															break;
+														}
+														case TalentOnboardStatus.TALENT_STATUS: {
+															setTalentStatus(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.INTERVIEW_STATUS: {
+															setInterviewStatus(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.UPDATE_CLIENT_ON_BOARD_STATUS: {
+															setOnboardClientModal(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
+															setOnboardTalentModal(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
+															console.log('hello');
+															setLegalTalentOnboardModal(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
+															setLegalClientOnboardModal(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.UPDATE_KICKOFF_ONBOARD_STATUS: {
+															setTalentKickOffModal(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.REPLACE_TALENT: {
+															setReplaceTalentModal(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
+														default:
+															break;
+													}
+												}}
+											/>
+										</div>
+									)}
+								</div>
 							</div>
 						</div>
-					</div>
-				)}
+					);
+				}}
 			/>
 			{/** ============ MODAL FOR PROFILE LOG ================ */}
 			<Modal

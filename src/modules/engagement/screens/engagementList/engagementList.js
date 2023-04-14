@@ -416,196 +416,180 @@ const EngagementList = () => {
 					</Suspense>
 				)}
 				{/** ============ MODAL FOR ENGAGEMENTFEEDBACK ================ */}
-				<Modal
-					transitionName=""
-					width="930px"
-					centered
-					footer={null}
-					open={getEngagementModal.engagementFeedback}
-					// className={allEngagementStyles.engagementModalContainer}
-					className="engagementModalStyle"
-					// onOk={() => setVersantModal(false)}
-					onCancel={() =>
-						setEngagementModal({
-							...getEngagementModal,
-							engagementFeedback: false,
-						})
-					}>
-					<EngagementFeedback />
-				</Modal>
-				{/** ============ MODAL FOR ENGAGEMENTBILLRATE ================ */}
-				{/* <Modal
-					transitionName=""
-					width="930px"
-					centered
-					footer={null}
-					className="engagementBillRateModal"
-					open={getEngagementModal.engagementBillRate}
-					// onOk={() => setVersantModal(false)}
-					onCancel={() =>
-						setEngagementModal({
-							...getEngagementModal,
-							engagementBillRate: false,
-						})
-					}>
-					<EngagementBillRate />
-				</Modal> */}
-				{/* {/** ============ MODAL FOR ENGAGEMENTPAYRATE ================ */}
-				{/* <Modal
-					transitionName=""
-					width="930px"
-					centered
-					footer={null}
-					open={getEngagementModal.engagementPayRate}
-					className="engagementPayRateModal"
-					// onOk={() => setVersantModal(false)}
-					onCancel={() =>
-						setEngagementModal({
-							...getEngagementModal,
-							engagementPayRate: false,
-						})
-					}>
-					<EngagementPayRate />
-				</Modal> */}{' '}
-				*/
+				{getEngagementModal.engagementFeedback && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementFeedback}
+						// className={allEngagementStyles.engagementModalContainer}
+						className="engagementModalStyle"
+						// onOk={() => setVersantModal(false)}
+						onCancel={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementFeedback: false,
+							})
+						}>
+						<EngagementFeedback />
+					</Modal>
+				)}
+
 				{/** ============ MODAL FOR ENGAGEMENTONBOARD ================ */}
-				<Modal
-					transitionName=""
-					width="930px"
-					centered
-					footer={null}
-					className="engagementPayRateModal"
-					open={getEngagementModal.engagementOnboard}
-					onCancel={() =>
-						setEngagementModal({
-							...getEngagementModal,
-							engagementOnboard: false,
-						})
-					}>
-					<EngagementOnboard />
-				</Modal>
+				{getEngagementModal.engagementOnboard && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className="engagementPayRateModal"
+						open={getEngagementModal.engagementOnboard}
+						onCancel={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementOnboard: false,
+							})
+						}>
+						<EngagementOnboard />
+					</Modal>
+				)}
 				{/** ============ MODAL FOR ENGAGEMENT ADD FEEDBACK ================ */}
-				<Modal
-					transitionName=""
-					width="930px"
-					centered
-					footer={null}
-					className="engagementAddFeedbackModal"
-					open={getEngagementModal.engagementAddFeedback}
-					onCancel={() =>
-						setEngagementModal({
-							...getEngagementModal,
-							engagementAddFeedback: false,
-						})
-					}>
-					<EngagementAddFeedback />
-				</Modal>
+				{getEngagementModal.engagementAddFeedback && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className="engagementAddFeedbackModal"
+						open={getEngagementModal.engagementAddFeedback}
+						onCancel={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementAddFeedback: false,
+							})
+						}>
+						<EngagementAddFeedback />
+					</Modal>
+				)}
 				{/** ============ MODAL FOR ENGAGEMENT REPLACE TALENT ================ */}
-				<Modal
-					transitionName=""
-					width="930px"
-					centered
-					footer={null}
-					open={getEngagementModal.engagementReplaceTalent}
-					className="engagementReplaceTalentModal"
-					onCancel={() =>
-						setEngagementModal({
-							...getEngagementModal,
-							engagementReplaceTalent: false,
-						})
-					}>
-					<EngagementReplaceTalent
-						engagementListHandler={() => handleHRRequest(tableFilteredState)}
-						talentInfo={filteredData}
-						isEngagement={true}
-						closeModal={() =>
+				{getEngagementModal.engagementReplaceTalent && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementReplaceTalent}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
 							setEngagementModal({
 								...getEngagementModal,
 								engagementReplaceTalent: false,
 							})
-						}
-					/>
-				</Modal>
+						}>
+						<EngagementReplaceTalent
+							engagementListHandler={() => handleHRRequest(tableFilteredState)}
+							talentInfo={filteredData}
+							isEngagement={true}
+							closeModal={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementReplaceTalent: false,
+								})
+							}
+						/>
+					</Modal>
+				)}
 				{/** ============ MODAL FOR ENGAGEMENT END ================ */}
-				<Modal
-					transitionName=""
-					width="930px"
-					centered
-					footer={null}
-					open={getEngagementModal.engagementEnd}
-					className="engagementReplaceTalentModal"
-					onCancel={() =>
-						setEngagementModal({ ...getEngagementModal, engagementEnd: false })
-					}>
-					<EngagementEnd
-						engagementListHandler={() => handleHRRequest(tableFilteredState)}
-						talentInfo={filteredData}
-						closeModal={() =>
+				{getEngagementModal.engagementEnd && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementEnd}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
 							setEngagementModal({
 								...getEngagementModal,
 								engagementEnd: false,
 							})
-						}
-					/>
-				</Modal>
+						}>
+						<EngagementEnd
+							engagementListHandler={() => handleHRRequest(tableFilteredState)}
+							talentInfo={filteredData}
+							closeModal={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementEnd: false,
+								})
+							}
+						/>
+					</Modal>
+				)}
 				{/** ============ MODAL FOR ENGAGEMENT BILLRATE AND PAYRATE ================ */}
-				<Modal
-					transitionName=""
-					width="930px"
-					centered
-					footer={null}
-					open={getEngagementModal.engagementBillRateAndPayRate}
-					className="engagementReplaceTalentModal"
-					onCancel={() =>
-						setEngagementModal({
-							...getEngagementModal,
-							engagementBillRateAndPayRate: false,
-						})
-					}>
-					<EngagementBillRateAndPayRate
-						engagementListHandler={() => handleHRRequest(tableFilteredState)}
-						talentInfo={filteredData}
-						closeModal={() =>
+				{getEngagementModal.engagementBillRateAndPayRate && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementBillRateAndPayRate}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
 							setEngagementModal({
 								...getEngagementModal,
 								engagementBillRateAndPayRate: false,
 							})
-						}
-						month={new Date(startDate).getMonth()}
-						year={new Date(startDate).getFullYear()}
-						getBillRate={getBillRate}
-						setBillRate={setBillRate}
-						getPayRate={getPayRate}
-						setPayRate={setPayRate}
-						setEngagementBillAndPayRateTab={setEngagementBillAndPayRateTab}
-						engagementBillAndPayRateTab={engagementBillAndPayRateTab}
-					/>
-				</Modal>
+						}>
+						<EngagementBillRateAndPayRate
+							engagementListHandler={() => handleHRRequest(tableFilteredState)}
+							talentInfo={filteredData}
+							closeModal={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementBillRateAndPayRate: false,
+								})
+							}
+							month={new Date(startDate).getMonth()}
+							year={new Date(startDate).getFullYear()}
+							getBillRate={getBillRate}
+							setBillRate={setBillRate}
+							getPayRate={getPayRate}
+							setPayRate={setPayRate}
+							setEngagementBillAndPayRateTab={setEngagementBillAndPayRateTab}
+							engagementBillAndPayRateTab={engagementBillAndPayRateTab}
+						/>
+					</Modal>
+				)}
 				{/** ============ MODAL FOR ENGAGEMENT INVOICE ================ */}
-				<Modal
-					transitionName=""
-					width="930px"
-					centered
-					footer={null}
-					open={getEngagementModal.engagementInvoice}
-					className="engagementReplaceTalentModal"
-					onCancel={() =>
-						setEngagementModal({
-							...getEngagementModal,
-							engagementInvoice: false,
-						})
-					}>
-					<EngagementInvoice
-						engagementListHandler={() => handleHRRequest(tableFilteredState)}
-						talentInfo={filteredData}
-						closeModal={() =>
+				{getEngagementModal.engagementInvoice && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementInvoice}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
 							setEngagementModal({
 								...getEngagementModal,
 								engagementInvoice: false,
 							})
-						}
-					/>
-				</Modal>
+						}>
+						<EngagementInvoice
+							isModalOpen={getEngagementModal.engagementInvoice}
+							engagementListHandler={() => handleHRRequest(tableFilteredState)}
+							talentInfo={filteredData}
+							closeModal={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementInvoice: false,
+								})
+							}
+						/>
+					</Modal>
+				)}
 			</div>
 		</div>
 	);

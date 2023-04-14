@@ -13,6 +13,7 @@ import { _isNull } from 'shared/utils/basic_utils';
 
 const EngagementInvoice = ({
 	engagementListHandler,
+	isModalOpen,
 	talentInfo,
 	closeModal,
 }) => {
@@ -133,15 +134,6 @@ const EngagementInvoice = ({
 		if (watchInvoiceStatus?.id !== 3) unregister('paymentDate');
 	}, [unregister, watchInvoiceStatus?.id]);
 
-	useEffect(() => {
-		if (closeModal) {
-			resetField('invoiceNumber');
-			resetField('invoiceDate');
-			resetField('invoiceStatus');
-			resetField('paymentDate');
-			unregister('paymentDate');
-		}
-	}, [closeModal, resetField, unregister]);
 	return (
 		<div className={engagementInvoice.engagementModalWrap}>
 			<div
@@ -219,6 +211,7 @@ const EngagementInvoice = ({
 						mode={'id/value'}
 						setValue={setValue}
 						register={register}
+						unregister={unregister}
 						name="invoiceStatus"
 						label="Invoice Status"
 						defaultValue="Select Invoice Status"
