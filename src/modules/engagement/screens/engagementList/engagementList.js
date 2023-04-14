@@ -25,6 +25,7 @@ import WithLoader from 'shared/components/loader/loader';
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import EngagementFeedback from '../engagementFeedback/engagementFeedback';
+
 import EngagementOnboard from '../engagementOnboard/engagementOnboard';
 import EngagementAddFeedback from '../engagementAddFeedback/engagementAddFeedback';
 import EngagementReplaceTalent from '../engagementReplaceTalent/engagementReplaceTalent';
@@ -35,13 +36,15 @@ import { engagementUtils } from './engagementUtils';
 import EngagementEnd from '../endEngagement/endEngagement';
 import EngagementInvoice from '../engagementInvoice/engagementInvoice';
 import { userUtils } from 'modules/user/userUtils';
+import RenewEngagement from '../renewEngagement/renewEngagement';
+import { useForm, Controller } from 'react-hook-form';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() => import('./engagementFilter'));
 
 const EngagementList = () => {
 	const [tableFilteredState, setTableFilteredState] = useState({
-		totalrecord: 10,
+		totalrecord: 100,
 		pagenumber: 1,
 		filterFieldsEngagement: {
 			clientFeedback: '',
@@ -63,11 +66,12 @@ const EngagementList = () => {
 	});
 
 	const [isLoading, setLoading] = useState(false);
-	const pageSizeOptions = [10, 20, 50, 100];
+	const pageSizeOptions = [100, 200, 300, 500, 1000];
+	const pageFeedbackSizeOptions = [10, 20, 30, 50, 100];
 	const [filteredData, setFilteredData] = useState(null);
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
-	const [pageSize, setPageSize] = useState(10);
+	const [pageSize, setPageSize] = useState(100);
 	const [isAllowFilters, setIsAllowFilters] = useState(false);
 	const [getHTMLFilter, setHTMLFilter] = useState(false);
 	const [filtersList, setFiltersList] = useState([]);
@@ -84,6 +88,7 @@ const EngagementList = () => {
 		useState('1');
 	const [getEngagementModal, setEngagementModal] = useState({
 		engagementFeedback: false,
+		engagementRenew: false,
 		engagementBillRate: false,
 		engagementPayRate: false,
 		engagementOnboard: false,
@@ -93,6 +98,29 @@ const EngagementList = () => {
 		engagementEnd: false,
 		engagementInvoice: false,
 	});
+	const [getHRAndEngagementId, setHRAndEngagementId] = useState({
+		hrNumber: '',
+		engagementID: '',
+		talentName: '',
+		onBoardId: '',
+		hrId: '',
+	});
+	const [getOnboardID, setOnbaordId] = useState('');
+	const [feedBackData, setFeedBackData] = useState({
+		totalRecords: 10,
+		pagenumber: 1,
+		onBoardId: '',
+	});
+	const [getClientFeedbackList, setClientFeedbackList] = useState([]);
+	const [getFeedbackPagination, setFeedbackPagination] = useState({
+		totalRecords: 0,
+		pageIndex: 1,
+		pageSize: 10,
+	});
+	const [getOnboardFormDetails, setOnboardFormDetails] = useState({});
+	const [getFeedbackFormContent, setFeedbackFormContent] = useState({});
+	const [feedBackSave, setFeedbackSave] = useState(false);
+	const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -101,6 +129,18 @@ const EngagementList = () => {
 		setHTMLFilter(false);
 	};
 
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		control,
+		setError,
+		getValues,
+		watch,
+		reset,
+		resetField,
+		formState: { errors },
+	} = useForm();
 	const tableColumnsMemo = useMemo(
 		() =>
 			allEngagementConfig.tableConfig(
@@ -108,8 +148,15 @@ const EngagementList = () => {
 				setEngagementModal,
 				setFilteredData,
 				setEngagementBillAndPayRateTab,
+				setOnbaordId,
+				setFeedBackData,
+				setHRAndEngagementId,
 			),
 		[getEngagementModal],
+	);
+	const feedbackTableColumnsMemo = useMemo(
+		() => allEngagementConfig.clientFeedbackTypeConfig(),
+		[],
 	);
 
 	const handleHRRequest = useCallback(
@@ -142,14 +189,99 @@ const EngagementList = () => {
 		[navigate],
 	);
 
+	const getFeedbackList = async (feedBackData) => {
+		setLoading(true);
+		const response = await engagementRequestDAO.getFeedbackListDAO(
+			feedBackData,
+		);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setClientFeedbackList(
+				engagementUtils.modifyEngagementFeedbackData(response && response),
+			);
+			setFeedbackPagination((prev) => ({
+				...prev,
+				totalRecords: response.responseBody.details.totalrows,
+			}));
+			setLoading(false);
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			setLoading(false);
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			setLoading(false);
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			return 'NO DATA FOUND';
+		}
+	};
+
+	const getOnboardingForm = async (getOnboardID) => {
+		setOnboardFormDetails({});
+		setLoading(true);
+		const response = await engagementRequestDAO.viewOnboardDetailsDAO(
+			getOnboardID,
+		);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setOnboardFormDetails(response?.responseBody?.details);
+			setLoading(false);
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			setLoading(false);
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			return 'NO DATA FOUND';
+		}
+	};
+
+	const getFeedbackFormDetails = async (getHRAndEngagementId) => {
+		setFeedbackFormContent({});
+		const response = await engagementRequestDAO.getFeedbackFormContentDAO(
+			getHRAndEngagementId,
+		);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setFeedbackFormContent(response?.responseBody?.details);
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			setLoading(false);
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			return 'NO DATA FOUND';
+		}
+	};
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
 	}, [debouncedSearch]);
 
 	useEffect(() => {
+		getEngagementModal?.engagementOnboard &&
+			getHRAndEngagementId?.onBoardId &&
+			getOnboardingForm(getHRAndEngagementId?.onBoardId);
+	}, [getEngagementModal?.engagementOnboard]);
+
+	useEffect(() => {
+		getEngagementModal?.engagementFeedback &&
+			feedBackData?.onBoardId &&
+			getFeedbackList(feedBackData);
+	}, [getEngagementModal?.engagementFeedback]);
+
+	useEffect(() => {
+		getEngagementModal?.engagementAddFeedback &&
+			getFeedbackFormDetails(getHRAndEngagementId);
+	}, [getEngagementModal?.engagementAddFeedback]);
+
+	useEffect(() => {
 		handleHRRequest(tableFilteredState);
-	}, [handleHRRequest, tableFilteredState]);
+	}, [handleHRRequest, tableFilteredState, feedBackSave]);
+
+	useEffect(() => {
+		resetField('feedbackComments');
+		resetField('actionToTake');
+		resetField('feedBackDate');
+		resetField('feedbackType');
+		setFeedbackTypeEdit('Please Select');
+	}, [getEngagementModal?.engagementAddFeedback]);
 
 	useEffect(() => {
 		setBillRate(0);
@@ -237,11 +369,11 @@ const EngagementList = () => {
 								type={InputType.TEXT}
 								className={allEngagementStyles.searchInput}
 								placeholder="Search Table"
-								/* onChange={(e) => {
+								onChange={(e) => {
 									return setDebouncedSearch(
-										userUtils.userListSearch(e, userList),
+										engagementUtils.engagementListSearch(e, apiData),
 									);
-								}} */
+								}}
 							/>
 						</div>
 						<div className={allEngagementStyles.calendarFilterSet}>
@@ -432,7 +564,17 @@ const EngagementList = () => {
 								engagementFeedback: false,
 							})
 						}>
-						<EngagementFeedback />
+						<EngagementFeedback
+							getHRAndEngagementId={getHRAndEngagementId}
+							feedbackTableColumnsMemo={feedbackTableColumnsMemo}
+							getClientFeedbackList={getClientFeedbackList}
+							isLoading={isLoading}
+							pageFeedbackSizeOptions={pageFeedbackSizeOptions}
+							getFeedbackPagination={getFeedbackPagination}
+							setFeedbackPagination={setFeedbackPagination}
+							setFeedBackData={setFeedBackData}
+							feedBackData={feedBackData}
+						/>
 					</Modal>
 				)}
 
@@ -451,9 +593,13 @@ const EngagementList = () => {
 								engagementOnboard: false,
 							})
 						}>
-						<EngagementOnboard />
+						<EngagementOnboard
+							getOnboardFormDetails={getOnboardFormDetails}
+							getHRAndEngagementId={getHRAndEngagementId}
+						/>
 					</Modal>
 				)}
+
 				{/** ============ MODAL FOR ENGAGEMENT ADD FEEDBACK ================ */}
 				{getEngagementModal.engagementAddFeedback && (
 					<Modal
@@ -469,7 +615,30 @@ const EngagementList = () => {
 								engagementAddFeedback: false,
 							})
 						}>
-						<EngagementAddFeedback />
+						<EngagementAddFeedback
+							getFeedbackFormContent={getFeedbackFormContent}
+							getHRAndEngagementId={getHRAndEngagementId}
+							onCancel={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementAddFeedback: false,
+								})
+							}
+							setFeedbackSave={setFeedbackSave}
+							feedBackSave={feedBackSave}
+							register={register}
+							handleSubmit={handleSubmit}
+							setValue={setValue}
+							control={control}
+							setError={setError}
+							getValues={getValues}
+							watch={watch}
+							reset={reset}
+							resetField={resetField}
+							errors={errors}
+							feedBackTypeEdit={feedBackTypeEdit}
+							setFeedbackTypeEdit={setFeedbackTypeEdit}
+						/>
 					</Modal>
 				)}
 				{/** ============ MODAL FOR ENGAGEMENT REPLACE TALENT ================ */}
@@ -522,6 +691,33 @@ const EngagementList = () => {
 								setEngagementModal({
 									...getEngagementModal,
 									engagementEnd: false,
+								})
+							}
+						/>
+					</Modal>
+				)}
+				{/** ============ MODAL FOR RENEW ENGAGEMENT ================ */}
+				{getEngagementModal.engagementRenew && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementRenew}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementRenew: false,
+							})
+						}>
+						<RenewEngagement
+							engagementListHandler={() => handleHRRequest(tableFilteredState)}
+							talentInfo={filteredData}
+							closeModal={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementRenew: false,
 								})
 							}
 						/>

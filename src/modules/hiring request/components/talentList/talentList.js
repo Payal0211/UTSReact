@@ -1893,10 +1893,11 @@ const TalentList = ({
 			{/** ============ MODAL FOR UPDATE LEGAL TALENT ONBOARD STATUS ================ */}
 			<Modal
 				transitionName=""
-				width="1256px"
+				width="930px"
 				centered
 				footer={null}
 				open={updateTalentKickOffModal}
+				className="statusModalWrap"
 				onCancel={() => setTalentKickOffModal(false)}>
 				<UpdateKickOffOnboardStatus
 					talentInfo={filterTalentID}

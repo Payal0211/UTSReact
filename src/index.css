@@ -611,7 +611,7 @@ table{
 .engagementBillRateModal .ant-modal-content,
 .engagementPayRateModal .ant-modal-content,
 .engagementAddFeedbackModal .ant-modal-content,
-.engagementReplaceTalentModal .ant-modal-content {
+.engagementReplaceTalentModal .ant-modal-content,.statusModalWrap .ant-modal-content {
   background: #FFFFFF !important;
   box-shadow: 0px 1.91653px 7.66613px rgba(204, 238, 204, 0.25) !important;
   border-radius: 8px !important;
@@ -621,7 +621,7 @@ table{
 .engagementBillRateModal .ant-modal-body,
 .engagementPayRateModal .ant-modal-body,
 .engagementAddFeedbackModal .ant-modal-body,
-.engagementReplaceTalentModal .ant-modal-body {
+.engagementReplaceTalentModal .ant-modal-body,.statusModalWrap .ant-modal-body{
   padding: 0px;
 }
 
