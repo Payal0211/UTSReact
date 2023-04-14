@@ -53,8 +53,6 @@ export const engagementUtils = {
 
     engagementListSearch: (e, apiData) => {
         let filteredData = apiData?.filter((val) => {
-
-            console.log(val, "value")
             return (
                 (val?.lastFeedbackDate &&
                     val?.lastFeedbackDate

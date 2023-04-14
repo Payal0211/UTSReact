@@ -8,7 +8,6 @@ import allengagementStyles from '../engagementFeedback/engagementFeedback.module
 
 export const allEngagementConfig = {
     engagementFilterTypeConfig: (filterList) => {
-        console.log(filterList, "filterList")
         return [
             {
                 label: 'Client Feedback',
@@ -279,7 +278,6 @@ export const allEngagementConfig = {
         ];
     },
     clientFeedbackTypeConfig: (filterList) => {
-        console.log(filterList, "filterList")
         return [
             {
                 title: 'Last Feedback Date',

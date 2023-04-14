@@ -24,7 +24,6 @@ const EngagementBillRateAndPayRate = ({ getBillRate, getPayRate, setPayRate, set
     } = useForm();
 
     function callback(key) {
-        console.log(key, "key")
         setEngagementBillAndPayRateTab(key)
     }
 

@@ -281,7 +281,6 @@ const EngagementList = () => {
     const getEngagementFilterList = useCallback(async () => {
         const response = await engagementRequestDAO.getEngagementFilterListDAO();
         if (response?.statusCode === HTTPStatusCode.OK) {
-            console.log(response && response?.responseBody?.details, "data")
             setFiltersList(response && response?.responseBody?.details);
         }
         else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {

@@ -14,27 +14,22 @@ import { HTTPStatusCode } from 'constants/network';
 
 const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave, setFeedbackSave, register, handleSubmit, setValue, control, setError, getValues, watch, reset, resetField, errors, setFeedbackTypeEdit, feedBackTypeEdit
 }) => {
-
-
-
-    const watchFeedbackDate = watch('feedBackDate');
-
+    const watchFeedbackDate = watch('feedBackDate')
     const submitFeedbacHandler = async (data) => {
         const feedBackdata = {
             hiringRequest_ID: getFeedbackFormContent?.hiringRequest_ID,
             contactID: getFeedbackFormContent?.contactID,
             onBoardID: getFeedbackFormContent?.onBoardID,
-            feedbackType: data.feedbackType.value,
-            feedbackComment: data.feedbackComments,
-            feedbackActionToTake: data.actionToTake,
-            feedbackCreatedDateTime: data.feedBackDate,
+            feedbackType: data?.feedbackType.value,
+            feedbackComment: data?.feedbackComments,
+            feedbackActionToTake: data?.actionToTake,
+            feedbackCreatedDateTime: data?.feedBackDate,
             hrNumber: getFeedbackFormContent?.hrNumber,
             talentName: getFeedbackFormContent?.talentName,
             talentID: getFeedbackFormContent?.talentID,
             engagemenID: getFeedbackFormContent?.engagementID
         }
         const response = await engagementRequestDAO.saveFeedbackFormDAO(feedBackdata);
-        console.log(response, "response")
         if (response.statusCode === HTTPStatusCode.OK) {
             onCancel()
             setFeedbackSave(!feedBackSave)
