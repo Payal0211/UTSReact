@@ -36,7 +36,7 @@ import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/all
 import { engagementUtils } from './engagementUtils';
 import EngagementEnd from '../endEngagement/endEngagement';
 import EngagementInvoice from '../engagementInvoice/engagementInvoice';
-
+import { useForm, Controller } from 'react-hook-form';
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() =>
     import('./engagementFilter'),
@@ -103,6 +103,7 @@ const EngagementList = () => {
     const [getOnboardFormDetails, setOnboardFormDetails] = useState({})
     const [getFeedbackFormContent, setFeedbackFormContent] = useState({})
     const [feedBackSave, setFeedbackSave] = useState(false)
+    const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
 
     const onRemoveHRFilters = () => {
         setTimeout(() => {
@@ -110,6 +111,19 @@ const EngagementList = () => {
         }, 300)
         setHTMLFilter(false)
     };
+
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        control,
+        setError,
+        getValues,
+        watch,
+        reset,
+        resetField,
+        formState: { errors },
+    } = useForm();
 
 
     const tableColumnsMemo = useMemo(
@@ -193,9 +207,11 @@ const EngagementList = () => {
 
     const getOnboardingForm = async (getOnboardID) => {
         setOnboardFormDetails({})
+        setLoading(true)
         const response = await engagementRequestDAO.viewOnboardDetailsDAO(getOnboardID)
         if (response?.statusCode === HTTPStatusCode.OK) {
             setOnboardFormDetails(response?.responseBody?.details)
+            setLoading(false)
         }
         else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
             return navigate(UTSRoutes.LOGINROUTE);
@@ -247,6 +263,14 @@ const EngagementList = () => {
     useEffect(() => {
         handleHRRequest(tableFilteredState);
     }, [tableFilteredState, feedBackSave]);
+
+    useEffect(() => {
+        resetField('feedbackComments');
+        resetField('actionToTake');
+        resetField("feedBackDate")
+        resetField("feedbackType")
+        setFeedbackTypeEdit('Please Select')
+    }, [getEngagementModal?.engagementAddFeedback])
 
     useEffect(() => {
         setBillRate(0);
@@ -551,6 +575,7 @@ const EngagementList = () => {
             >
                 <EngagementOnboard getOnboardFormDetails={getOnboardFormDetails}
                     getHRAndEngagementId={getHRAndEngagementId}
+
                 />
             </Modal>
 
@@ -573,6 +598,18 @@ const EngagementList = () => {
                     onCancel={() => setEngagementModal({ ...getEngagementModal, engagementAddFeedback: false })}
                     setFeedbackSave={setFeedbackSave}
                     feedBackSave={feedBackSave}
+                    register={register}
+                    handleSubmit={handleSubmit}
+                    setValue={setValue}
+                    control={control}
+                    setError={setError}
+                    getValues={getValues}
+                    watch={watch}
+                    reset={reset}
+                    resetField={resetField}
+                    errors={errors}
+                    feedBackTypeEdit={feedBackTypeEdit}
+                    setFeedbackTypeEdit={setFeedbackTypeEdit}
                 />
             </Modal>
 

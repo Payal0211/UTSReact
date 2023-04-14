@@ -133,7 +133,7 @@ export const allEngagementConfig = {
                         menuAction={(item) => {
                             switch (item.key) {
                                 case "Replace Engagement": {
-                                    setEngagementModal({ ...getEngagementModal, engagementReplaceTalent: true })
+                                    setEngagementModal({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementBillRateAndPayRate: false, engagementEnd: false, engagementInvoice: false, engagementReplaceTalent: true })
                                     break;
                                 }
                                 case "Renew Engagement": {
@@ -141,19 +141,19 @@ export const allEngagementConfig = {
                                     break;
                                 }
                                 case "End Engagement": {
-                                    setEngagementModal({ ...getEngagementModal, engagementEnd: true })
+                                    setEngagementModal({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementBillRateAndPayRate: false, engagementEnd: true, engagementInvoice: false, engagementReplaceTalent: false })
                                     break;
                                 }
                                 case "Edit Bill Rate": {
-                                    setEngagementModal({ ...getEngagementModal, engagementBillRateAndPayRate: true })
+                                    setEngagementModal({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementBillRateAndPayRate: true, engagementEnd: false, engagementInvoice: false, engagementReplaceTalent: false })
                                     break;
                                 }
                                 case "Edit Pay Rate": {
-                                    setEngagementModal({ ...getEngagementModal, engagementBillRateAndPayRate: true })
+                                    setEngagementModal({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementBillRateAndPayRate: true, engagementEnd: false, engagementInvoice: false, engagementReplaceTalent: false })
                                     break;
                                 }
                                 case "Add Invoice Details": {
-                                    setEngagementModal({ ...getEngagementModal, engagementInvoice: true })
+                                    setEngagementModal({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementBillRateAndPayRate: false, engagementEnd: false, engagementInvoice: true, engagementReplaceTalent: false })
                                     break;
                                 }
                                 default:
@@ -184,8 +184,8 @@ export const allEngagementConfig = {
                                     hrId: result?.hR_ID
                                 }
                                 )
-                                setEngagementModal({ ...getEngagementModal, engagementAddFeedback: true })
-                                // setOnbaordId(result?.onBoardID)
+                                setEngagementModal({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: true, engagementBillRateAndPayRate: false, engagementEnd: false, engagementInvoice: false, engagementReplaceTalent: false })
+
                             }}
                         >
                             {'Add'}
@@ -203,7 +203,7 @@ export const allEngagementConfig = {
                                     hrId: result?.hR_ID
                                 }
                                 )
-                                setEngagementModal({ ...getEngagementModal, engagementFeedback: true })
+                                setEngagementModal({ engagementFeedback: true, engagementBillRate: false, engagementPayRate: false, engagementOnboard: false, engagementAddFeedback: false, engagementBillRateAndPayRate: false, engagementEnd: false, engagementInvoice: false, engagementReplaceTalent: false })
                             }}
                         >
                             {'View'}
@@ -234,7 +234,7 @@ export const allEngagementConfig = {
                                 hrId: result?.hR_ID
                             }
                             )
-                            setEngagementModal({ ...getEngagementModal, engagementOnboard: true })
+                            setEngagementModal({ engagementFeedback: false, engagementBillRate: false, engagementPayRate: false, engagementOnboard: true, engagementAddFeedback: false, engagementBillRateAndPayRate: false, engagementEnd: false, engagementInvoice: false, engagementReplaceTalent: false })
                         }}
                     >
                         {'View'}

@@ -5,10 +5,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import allengagementOnboardStyles from '../engagementOnboard/engagementOnboard.module.css';
 import { ReactComponent as LinkedInSVG } from 'assets/svg/linkedin.svg';
+import WithLoader from 'shared/components/loader/loader';
 
 const EngagementOnboard = ({
     getOnboardFormDetails,
-    getHRAndEngagementId
+    getHRAndEngagementId,
+    isLoading
 }) => {
     return (
         <div className={allengagementOnboardStyles.engagementModalWrap}>
@@ -95,7 +97,7 @@ const EngagementOnboard = ({
                 </div>
 
                 <div className={`${allengagementOnboardStyles.engagementContent} ${allengagementOnboardStyles.engagementPolicy}`}>
-                    <p><span>Leave Policies:</span> <a href="#" title="Proceed with Uplers Policies">Proceed with Uplers Policies</a></p>
+                    <p><span>Leave Policies:</span> <a href="#" title="Proceed with Uplers Policies">{getOnboardFormDetails?.proceedWithUplers_ExitPolicyOption}</a></p>
                     <p><span>Exit Policy:</span> <strong>First Month - 7 Days  | . Second Month Onwards - 30 Days</strong></p>
                     <p><span>Feedback Policy:</span> <strong>Weekly during the first 2 weeks  |  Fortnightly for the next 2 months  |  Monthly / Quarterly feedback thereafter</strong></p>
                 </div>

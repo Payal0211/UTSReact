@@ -12,21 +12,10 @@ import { HTTPStatusCode } from 'constants/network';
 
 
 
-const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave, setFeedbackSave
+const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave, setFeedbackSave, register, handleSubmit, setValue, control, setError, getValues, watch, reset, resetField, errors, setFeedbackTypeEdit, feedBackTypeEdit
 }) => {
 
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        control,
-        setError,
-        getValues,
-        watch,
-        reset,
-        resetField,
-        formState: { errors },
-    } = useForm();
+
 
     const watchFeedbackDate = watch('feedBackDate');
 
@@ -48,10 +37,6 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
         console.log(response, "response")
         if (response.statusCode === HTTPStatusCode.OK) {
             onCancel()
-            resetField('feedbackComments');
-            resetField('actionToTake');
-            resetField("feedBackDate")
-            resetField("feedbackType")
             setFeedbackSave(!feedBackSave)
         }
     }
@@ -75,6 +60,9 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                     className={allengagementAddFeedbackStyles.colMd6}>
                     <HRSelectField
                         mode='id/value'
+                        controlledValue={feedBackTypeEdit}
+                        setControlledValue={setFeedbackTypeEdit}
+                        isControlled={true}
                         setValue={setValue}
                         register={register}
                         name="feedbackType"
@@ -108,7 +96,7 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                         />
                         {errors.feedBackDate && (
                             <div className={allengagementAddFeedbackStyles.error}>
-                                Please select feedback date
+                                * Please select feedback date
                             </div>
                         )}
                         <CalenderSVG />
@@ -164,10 +152,7 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                 </button>
                 <button
                     onClick={() => {
-                        resetField('feedbackComments');
-                        resetField('actionToTake');
-                        resetField("feedBackDate")
-                        resetField("feedbackType")
+
                         onCancel()
                     }}
                     className={allengagementAddFeedbackStyles.btn}>
