@@ -198,7 +198,7 @@ export const allEngagementConfig = {
                                 setFeedBackData((prev) => ({ ...prev, onBoardId: result?.onBoardID }))
                                 setHRAndEngagementId({
                                     talentName: result?.talentName, engagementID: result?.engagementId_HRID.slice(0, result?.engagementId_HRID?.indexOf('/')),
-                                    hrNumber: result?.engagementId_HRID.slice(result?.engagementId_HRID?.indexOf('/')),
+                                    hrNumber: result?.engagementId_HRID.slice(result?.engagementId_HRID?.indexOf('/') + 1),
                                     onBoardId: result?.onBoardID,
                                     hrId: result?.hR_ID
                                 }
