@@ -21,6 +21,7 @@ import UTSRoutes from 'constants/routes';
 import { userUtils } from 'modules/user/userUtils';
 import { userAPI } from 'apis/userAPI';
 import { userDAO } from 'core/user/userDAO';
+import { HttpServices } from 'shared/services/http/http_service';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -29,7 +30,7 @@ export const secondaryInterviewer = {
 	designation: '',
 };
 
-const UsersFields = ({ id }) => {
+const UsersFields = ({ id, setLoading, loading }) => {
 	const [enableAllFields, setEnableAllFields] = useState(false);
 	const [userDetails, setUserDetails] = useState(null);
 	const [toggleImagePreview, setToggleImagePreview] = useState(false);
@@ -85,7 +86,7 @@ const UsersFields = ({ id }) => {
 		});
 	}, []);
 
-	console.log(specificGeo, "specificGeo")
+
 
 	const {
 		watch,
@@ -114,11 +115,6 @@ const UsersFields = ({ id }) => {
 	const watchGEO = watch('geo');
 	const watchGEOSpecific = watch('geoSpecific');
 	const uploadFile = useRef(null);
-
-	const data = watch();
-	console.log(data, "data")
-	console.log(watchGEO, "watchGEO")
-	console.log(errors, "errors")
 
 
 	const getEmployeeIDAlreadyExist = useCallback(
@@ -252,7 +248,7 @@ const UsersFields = ({ id }) => {
 	const getUserDetails = useCallback(async () => {
 		const response = await userDAO.getUserDetailsRequestDAO({ userID: id });
 		setUserDetails(response && response?.responseBody?.details);
-	}, [id]);
+	}, []);
 
 	const getBDRMarketingOnUserType = useCallback(async () => {
 		let response = await MasterDAO.getBDRMarketingBasedOnUserTypeRequestDAO({
@@ -291,6 +287,8 @@ const UsersFields = ({ id }) => {
 	}, []);
 
 	const getReportingType = useCallback(async (departId, levelId) => {
+		setReportTypeEdit('Select')
+		resetField('reportingUser')
 		setReportingList([{ id: 0, value: "Select" }])
 		let response = await MasterDAO.getReportingListRequestDAO(departId, levelId);
 		if (response?.responseBody?.details?.length > 0) {
@@ -313,6 +311,7 @@ const UsersFields = ({ id }) => {
 			setSpecificGEO("Select")
 			setReportTypeEdit('Select');
 			setTeamTypeEdit('Select');
+			resetField("departMent")
 		}
 		if (!enableALlFieldsMemo && watchDepartMentName?.value !== "Select" && watchDepartMentName?.value !== 'Administration') {
 			setTeamTypeEdit('Select');
@@ -326,18 +325,7 @@ const UsersFields = ({ id }) => {
 			resetField("geoSpecific");
 			resetField("geo");
 		}
-		if (enableALlFieldsMemo && watchDepartMentName?.value !== "Select" && watchDepartMentName?.value !== 'Administration' && userDetails?.deptID !== watchDepartMentName?.id) {
-			setTeamTypeEdit('Select');
-			setReportTypeEdit('Select');
-			setLevelEdit('Select');
-			setGEOType('')
-			setSpecificGEO("Select")
-			resetField("team")
-			resetField("level")
-			resetField("reportingUser");
-			resetField("geoSpecific");
-			resetField("geo");
-		}
+
 	}, [watchDepartMentName])
 
 	useEffect(() => {
@@ -348,23 +336,13 @@ const UsersFields = ({ id }) => {
 			setGEOType('')
 			setSpecificGEO("Select")
 			setReportTypeEdit('Select');
+			resetField("level")
 		}
 		if (!enableALlFieldsMemo && watchLevelName?.value !== "Select") {
 			resetField("reportingUser");
-			resetField("geoSpecific");
-			resetField("geo");
-			setGEOType('')
-			setSpecificGEO("Select")
 			setReportTypeEdit('Select');
 		}
-		if (enableALlFieldsMemo && watchLevelName?.value !== "Select" && userDetails?.levelID !== watchLevelName?.id) {
-			resetField("reportingUser");
-			resetField("geoSpecific");
-			resetField("geo");
-			setGEOType('')
-			setSpecificGEO("Select")
-			setReportTypeEdit('Select');
-		}
+
 	}, [watchLevelName])
 
 	useEffect(() => {
@@ -377,6 +355,7 @@ const UsersFields = ({ id }) => {
 			setLevelEdit('Select');
 			setGEOType('')
 			setSpecificGEO("Select")
+			resetField("team")
 		}
 		if (!enableALlFieldsMemo && watchTeamName?.value !== "Select") {
 			resetField("level")
@@ -388,16 +367,7 @@ const UsersFields = ({ id }) => {
 			setGEOType('')
 			setSpecificGEO("Select")
 		}
-		if (enableALlFieldsMemo && watchTeamName?.value !== "Select" && userDetails?.teamID !== watchTeamName?.id) {
-			resetField("level")
-			resetField("reportingUser");
-			resetField("geoSpecific");
-			resetField("geo");
-			setReportTypeEdit('Select');
-			setLevelEdit('Select');
-			setGEOType('')
-			setSpecificGEO("Select")
-		}
+
 	}, [watchTeamName])
 
 	useEffect(() => {
@@ -416,14 +386,16 @@ const UsersFields = ({ id }) => {
 	// }, [watchDepartMentName, userDetails?.teamID])
 
 	useEffect(() => {
-		if (watchDepartMentName?.id && watchLevelName?.id) {
+		if (watchDepartMentName?.id && watchLevelName?.id && watchDepartMentName?.value !== "Select" && watchLevelName.value !== "Select") {
 			getReportingType(watchDepartMentName?.id, watchLevelName?.id)
 		}
 	}, [watchDepartMentName, watchLevelName])
 
 	useEffect(() => {
-		setTeamListEdit([{ id: 0, value: "Select" }])
-		setTeamListEdit((prev) => [...prev, ...(getTeamList?.filter((ele) => parseInt(ele?.text) === watchDepartMentName?.id))]);
+		if (watchDepartMentName?.value !== "Select" && watchDepartMentName?.id) {
+			setTeamListEdit([{ id: 0, value: "Select" }])
+			setTeamListEdit((prev) => [...prev, ...(getTeamList?.filter((ele) => parseInt(ele?.text) === watchDepartMentName?.id))]);
+		}
 	}, [watchDepartMentName])
 
 	useEffect(() => {
@@ -491,8 +463,6 @@ const UsersFields = ({ id }) => {
 		}
 	}, [id, setValue, userDetails?.roleId, userRole]);
 
-
-
 	const enableALlFieldsMemo = useMemo(
 		() => id !== 0 && !enableAllFields,
 		[enableAllFields, id],
@@ -500,6 +470,7 @@ const UsersFields = ({ id }) => {
 	const editButtonHandler = useCallback(() => {
 		setEnableAllFields(true);
 	}, []);
+
 
 	const userSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
@@ -646,7 +617,7 @@ const UsersFields = ({ id }) => {
 			setValue('description', userDetails?.description)
 			setUploadFileData({ name: userDetails?.profilePic, type: userDetails?.fileUpload?.extenstion })
 			setBase64Image(userDetails?.fileUpload?.base64ProfilePic)
-			// setValue('geo', userDetails?.geoList)
+
 			if (userDetails?.detail?.geoIDs?.length > 0) {
 				setSpecificGEO("Yes");
 				setValue("geoSpecific", { id: 1, value: "Yes" })
