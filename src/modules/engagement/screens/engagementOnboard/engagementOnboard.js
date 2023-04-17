@@ -40,7 +40,7 @@ const EngagementOnboard = ({
                         <li><span>Engagement ID:</span> {getOnboardFormDetails?.onboardDetails?.engagemenID}</li>
                         <li><span>Bill Rate:</span> {getOnboardFormDetails?.billRate} USD/ Month</li>
                         <li><span>Hiring ID:</span> {getOnboardFormDetails?.onboardDetails?.hiringRequestNumber}</li>
-                        <li><span>Actual Bill Rate:</span> 5000 USD/ Month</li>
+                        <li><span>Actual Bill Rate:</span> {getOnboardFormDetails?.talentPayRate} USD/ Month</li>
                         <li><span> Contract Type:</span> {getOnboardFormDetails?.contractType}</li>
                         <li><span>Talent Pay Rate:</span> {getOnboardFormDetails?.talentPayRate} USD/ Month</li>
                         <li><span> Contract Duration:</span> {getOnboardFormDetails?.contractDutation} Months</li>
@@ -57,48 +57,41 @@ const EngagementOnboard = ({
                 <div className={allengagementOnboardStyles.engagementContent}>
                     <h2>Team Members</h2>
                     <ul>
-                        <li><span>Name:</span> Rachel Green</li>
-                        <li><span>Name:</span> Rachel Green</li>
-                        <li><span>Designation:</span> Front End Developer</li>
-                        <li><span>Designation:</span> Front End Developer</li>
-                        <li><span>Reporting To:</span> Fredrik Champ</li>
-                        <li><span>Reporting To:</span> Fredrik Champ</li>
-                        <li><span>LinkedIn:</span> Rachel Green <a href="" target="_blank" className={allengagementOnboardStyles.liLink}><LinkedInSVG /></a></li>
-                        <li><span>LinkedIn:</span> Rachel Green <a href="" target="_blank" className={allengagementOnboardStyles.liLink}><LinkedInSVG /></a></li>
-                        <li><span>Email:</span> rachelgreen455@gmail.com</li>
-                        <li><span>Email:</span> rachelgreen455@gmail.com</li>
-                        <li><span>Buddy:</span> Monica Geller</li>
-                        <li><span>Buddy:</span> Monica Geller</li>
+                        {getOnboardFormDetails?.listOnBoardClientTeam?.map((item) => {
+                            <>
+                                <li><span>Name:</span>{item?.name}</li>
+                                <li><span>Designation:</span> {item?.Designation}</li>
+                                <li><span>Reporting To:</span>{item?.ReportingTo}</li>
+                                <li><span>LinkedIn:</span> {item?.Linkedin} <a href="" target="_blank" className={allengagementOnboardStyles.liLink}><LinkedInSVG /></a></li>
+                                <li><span>Email:</span> {item?.Email}</li>
+                                <li><span>Buddy:</span> {item?.Buddy}</li>
+                            </>
+                        })}
+
                     </ul>
                 </div>
 
 
                 <div className={allengagementOnboardStyles.engagementContent}>
                     <h2>Device Policies</h2>
-                    <p>Client can use remote desktop sercurity option facilitated by Uplers (At additional cost of $100 per month).</p>
+                    <p>{getOnboardFormDetails?.devicesPoliciesOption}</p>
                 </div>
 
                 <div className={`${allengagementOnboardStyles.engagementContent} ${allengagementOnboardStyles.engagementContentGroup}`}>
                     <h2>Expectation From Talent</h2>
                     <h4>First Week:</h4>
-                    <p>RLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat.</p>
+                    <p>{getOnboardFormDetails?.expectationFirstWeek}</p>
 
                     <h4>First Month:</h4>
-                    <p>RLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat.</p>
+                    <p>{getOnboardFormDetails?.expectationFirstMonth}</p>
 
                     <h4>Additional Information:</h4>
-                    <p>RLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                        commodo consequat.</p>
+                    <p>{getOnboardFormDetails?.expectationAdditionalInformation}</p>
                 </div>
 
                 <div className={`${allengagementOnboardStyles.engagementContent} ${allengagementOnboardStyles.engagementPolicy}`}>
                     <p><span>Leave Policies:</span> <a href="#" title="Proceed with Uplers Policies">{getOnboardFormDetails?.proceedWithUplers_ExitPolicyOption}</a></p>
-                    <p><span>Exit Policy:</span> <strong>First Month - 7 Days  | . Second Month Onwards - 30 Days</strong></p>
+                    <p><span>Exit Policy:</span> <strong>{getOnboardFormDetails?.exitPolicyFileName}</strong></p>
                     <p><span>Feedback Policy:</span> <strong>Weekly during the first 2 weeks  |  Fortnightly for the next 2 months  |  Monthly / Quarterly feedback thereafter</strong></p>
                 </div>
 

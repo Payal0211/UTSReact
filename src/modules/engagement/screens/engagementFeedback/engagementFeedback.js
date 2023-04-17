@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import WithLoader from 'shared/components/loader/loader';
 
-const EngagementFeedback = ({ getHRAndEngagementId, feedbackTableColumnsMemo, getClientFeedbackList, isLoading, pageFeedbackSizeOptions, getFeedbackPagination, setFeedbackPagination
+const EngagementFeedback = ({ getHRAndEngagementId, feedbackTableColumnsMemo, getClientFeedbackList, isLoading, pageFeedbackSizeOptions, getFeedbackPagination, setFeedbackPagination, setFeedBackData, feedBackData
 }) => {
 
     return (
