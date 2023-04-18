@@ -57,6 +57,13 @@ const HRFields = ({
 	const [type, setType] = useState('');
 	const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
 	const [getClientNameMessage, setClientNameMessage] = useState('');
+	const [getContactAndSaleID, setContactAndSalesID] = useState({
+		contactID: '',
+		salesID: ''
+	})
+	const [childCompany, setChildCompany] = useState([])
+	const [isSalesUserPartner, setIsSalesUserPartner] = useState(false)
+
 
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
@@ -80,6 +87,11 @@ const HRFields = ({
 			secondaryInterviewer: [],
 		},
 	});
+
+	const data = watch()
+	const watchSalesPerson = watch('salesPerson');
+	const watchChildCompany = watch('childCompany');
+
 	/* const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
@@ -103,7 +115,7 @@ const HRFields = ({
 				fileData[0]?.mimeType !== 'image/png' &&
 				fileData[0]?.mimeType !== 'image/jpeg' &&
 				fileData[0]?.mimeType !==
-					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 			) {
 				setValidation({
 					...getValidation,
@@ -145,14 +157,13 @@ const HRFields = ({
 		async (e) => {
 			setIsLoading(true);
 			let fileData = e.target.files[0];
-			console.log('--fileData---', fileData);
 			if (
 				fileData?.type !== 'application/pdf' &&
 				fileData?.type !== 'application/docs' &&
 				fileData?.type !== 'application/msword' &&
 				fileData?.type !== 'text/plain' &&
 				fileData?.type !==
-					'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
 				fileData?.type !== 'image/png' &&
 				fileData?.type !== 'image/jpeg'
 			) {
@@ -191,7 +202,7 @@ const HRFields = ({
 						fileData?.type === 'application/msword' ||
 						fileData?.type === 'text/plain' ||
 						fileData?.type ===
-							'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+						'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 					) {
 						setUploadFileData(fileData?.name);
 						setJDParsedSkills(
@@ -313,9 +324,23 @@ const HRFields = ({
 		const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
 		setAvailability(
 			availabilityResponse &&
-				availabilityResponse.responseBody?.BindHiringAvailability,
+			availabilityResponse.responseBody?.BindHiringAvailability,
 		);
 	}, []);
+
+	const CheckSalesUserIsPartner = useCallback(async (getContactAndSaleID) => {
+		const response = await MasterDAO.checkIsSalesPersonDAO(getContactAndSaleID);
+		if (response?.responseBody?.details?.SaleUserIsPartner) {
+			setIsSalesUserPartner(response?.responseBody?.details?.SaleUserIsPartner)
+			const newChildCompanyList = response?.responseBody?.details?.ChildCompanyList.filter((ele, index) => index !== 0)
+			setChildCompany([])
+			setChildCompany((prev) => newChildCompanyList.map(({ childCompanyID, childCompanyName }) => childCompanyID !== -1 && ({ id: childCompanyID, value: childCompanyName })),
+			);
+			setChildCompany((prev) => [...prev, { id: 0, value: "Add Other Company" }])
+		}
+	}, []);
+
+
 	const getHowSoon = useCallback(async () => {
 		const howSoonResponse = await MasterDAO.getHowSoonRequestDAO();
 		setHowSoon(howSoonResponse && howSoonResponse.responseBody);
@@ -430,6 +455,10 @@ const HRFields = ({
 			await hiringRequestDAO.getClientDetailRequestDAO(
 				filteredMemo[0]?.emailId,
 			);
+
+		existingClientDetails?.statusCode === HTTPStatusCode.OK &&
+			setContactAndSalesID((prev) => ({ ...prev, contactID: existingClientDetails?.responseBody?.contactid }))
+
 		setError('clientName', {
 			type: 'duplicateCompanyName',
 			message:
@@ -473,6 +502,9 @@ const HRFields = ({
 		return () => clearTimeout(timer);
 	}, [getOtherRoleHandler, watchOtherRole]);
 
+
+
+
 	useEffect(() => {
 		let timer;
 		if (!_isNull(watchClientName)) {
@@ -500,6 +532,11 @@ const HRFields = ({
 		pathName,
 		setValue,
 	]);
+
+	useEffect(() => {
+		if (getContactAndSaleID?.contactID && getContactAndSaleID?.salesID)
+			CheckSalesUserIsPartner(getContactAndSaleID)
+	}, [getContactAndSaleID])
 
 	useEffect(() => {
 		!_isNull(prefRegion) && getTimeZonePreference();
@@ -609,6 +646,12 @@ const HRFields = ({
 		}
 	}, [errors?.clientName]);
 
+
+	useEffect(() => {
+		setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }))
+	}, [watchSalesPerson])
+
+
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
 			{contextHolder}
@@ -704,6 +747,51 @@ const HRFields = ({
 								required
 							/>
 						</div>
+
+						<div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Sales Person'}
+									defaultValue="Select sales Person"
+									options={salesPerson && salesPerson}
+									name="salesPerson"
+									isError={errors['salesPerson'] && errors['salesPerson']}
+									required
+									errorMsg={'Please select hiring request sales person'}
+								/>
+							</div>
+						</div>
+
+
+						{isSalesUserPartner && <div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									setValue={setValue}
+									mode='id/value'
+									register={register}
+									label={'Child Companies'}
+									defaultValue="Select Company"
+									options={childCompany && childCompany}
+									name="childCompany"
+									isError={errors['childCompany'] && errors['childCompany']}
+								/>
+							</div>
+						</div>}
+
+						{watchChildCompany?.id === 0 && <div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									label={'Other Child Company Name'}
+									name="otherChildCompanyName"
+									type={InputType.TEXT}
+									placeholder="Child Company"
+								/>
+							</div>
+						</div>}
 
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
@@ -908,21 +996,6 @@ const HRFields = ({
 							/>
 						</div>
 
-						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									setValue={setValue}
-									register={register}
-									label={'Sales Person'}
-									defaultValue="Select sales Person"
-									options={salesPerson && salesPerson}
-									name="salesPerson"
-									isError={errors['salesPerson'] && errors['salesPerson']}
-									required
-									errorMsg={'Please select hiring request sales person'}
-								/>
-							</div>
-						</div>
 					</div>
 
 					<div className={HRFieldStyle.row}>

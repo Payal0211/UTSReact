@@ -51,7 +51,7 @@ export class EngagementAPI {
 	static GET_CONTENT_END_ENGAGEMENT = 'GetContentEndEnagagement';
 	static CHANGE_CONTRACT_END_DATE = 'ChangeContractEndDate';
 	static GET_CONTENT_FOR_ADD_INVOICE = 'GetContentForAddInvoice';
-  static VIEW_ONBOARD_FEEDBACK = 'ViewOnBoardFeedback'
+	static VIEW_ONBOARD_FEEDBACK = 'ViewOnBoardFeedback'
 	static GET_ONBOARD_FEEDBACK = 'GetOnBordFeedBack'
 	static GET_FEEDBACK_CONTENT = 'GetFeedbackFormContent'
 	static SAVE_FEEDBACK_CLIENT_ONBOARD = 'SaveFeedbackClientOnBoard'
@@ -137,6 +137,7 @@ export class HiringRequestsAPI {
 	static UPLOAD_DRIVE_FILE = 'UploadDriveFile';
 	static UPLOAD_GOOGLE_FILE_LINK = 'UploadGoogleFileLink';
 	static UPDATE_ODR_POOL_STATUS = 'UpdateODRPoolStatus';
+	static CHECK_SALES_USER_IS_PARTNER = 'CheckSalesUserIsPartner';
 }
 
 export class UsersAPI {
@@ -165,7 +166,7 @@ export class OnboardsAPI {
 	static ONBOARD_TALENT = 'OnBoardTalent';
 	static GET_ONBOARDING_STATUS = 'GetOnboardingStatus';
 	static ONBOARDING_STATUS_UPDATES = 'OnBoardingStatusUpdates';
-  static VIEW_IN_DETAIL = 'ViewInDetail'
+	static VIEW_IN_DETAIL = 'ViewInDetail'
 }
 
 export class HTTPStatusCode {
