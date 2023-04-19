@@ -85,7 +85,7 @@ const getSideBar = () => {
 			icon: Briefcase,
 			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 		}),
-  new SideBarModels({
+		new SideBarModels({
 			id: 'Engagement_List',
 			title: 'Engagement',
 			isActive: false,
@@ -106,6 +106,13 @@ const getSideBar = () => {
 			icon: HRDetails,
 			navigateTo: UTSRoutes.INTERVIEWLISTROUTE,
 		}), */
+		new SideBarModels({
+			id: 'demand_funnel_report',
+			title: 'Demand Funnel',
+			isActive: false,
+			icon: HRDetails,
+			navigateTo: UTSRoutes.DEMANDFUNNELROUTE,
+		}),
 	];
 
 	return dataList;

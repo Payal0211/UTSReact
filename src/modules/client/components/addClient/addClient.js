@@ -159,6 +159,11 @@ const AddNewClient = ({
 								name={'primaryDesignation'}
 								type={InputType.TEXT}
 								placeholder="Enter client designation"
+								errors={errors}
+								required
+								validationSchema={{
+									required: 'please enter the primary client designation.',
+								}}
 							/>
 						</div>
 					</div>
