@@ -39,6 +39,7 @@ const ClientField = ({
 	setInterviewDetails,
 	interviewDetails,
 	setClientDetails,
+	setContactID,
 }) => {
 	const [messageAPI, contextHolder] = message.useMessage();
 	/** ---- Useform()  Starts here --------- */
@@ -154,6 +155,8 @@ const ClientField = ({
 				setAddClientResponseID(
 					addClientResult?.responseBody?.details?.contactId,
 				);
+			type !== SubmitType.SAVE_AS_DRAFT &&
+				setContactID(addClientResult?.responseBody?.details?.contactId);
 
 			type !== SubmitType.SAVE_AS_DRAFT &&
 				setTabFieldDisabled({

@@ -16,6 +16,7 @@ const AddNewClientScreen = () => {
 		debriefingHR: true,
 	});
 	const [enID, setEnID] = useState({});
+	const [contactID, setContactID] = useState(0);
 	const [JDParsedSkills, setJDParsedSkills] = useState({
 		Skills: [],
 		Responsibility: '',
@@ -46,6 +47,7 @@ const AddNewClientScreen = () => {
 									setClientDetails={setClientDetails}
 									setInterviewDetails={setInterviewDetails}
 									interviewDetails={interviewDetails}
+									setContactID={setContactID}
 								/>
 							),
 						},
@@ -60,6 +62,7 @@ const AddNewClientScreen = () => {
 									setTabFieldDisabled={setTabFieldDisabled}
 									clientDetail={clientDetail}
 									setJDParsedSkills={setJDParsedSkills}
+									contactID={contactID}
 								/>
 							),
 							disabled: tabFieldDisabled.addNewHiringRequest,

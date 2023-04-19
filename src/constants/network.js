@@ -22,6 +22,7 @@ export class SubDomain {
 	static TALENT_STATUS = 'TalentStatus/';
 	static ENGAGEMENT = 'Engagement/';
 	static TALENT_REPLACEMENT = 'TalentReplacement/';
+	static REPORT = 'Report/';
 }
 export class APIType {
 	static USER = '/user';
@@ -44,6 +45,12 @@ export class UserAPI {
 	static IS_EMPLOYEE_NAME_EXIST = 'IsEmployeeFullNameExist';
 }
 
+export class ReportType {
+	static DEMAND_FUNNEL = 'DemandFunnel/';
+}
+export class ReportsAPI {
+	static LISTING = 'Listing';
+}
 export class EngagementAPI {
 	static FILTER = 'Filters';
 	static LIST = 'List';
@@ -51,10 +58,10 @@ export class EngagementAPI {
 	static GET_CONTENT_END_ENGAGEMENT = 'GetContentEndEnagagement';
 	static CHANGE_CONTRACT_END_DATE = 'ChangeContractEndDate';
 	static GET_CONTENT_FOR_ADD_INVOICE = 'GetContentForAddInvoice';
-  static VIEW_ONBOARD_FEEDBACK = 'ViewOnBoardFeedback'
-	static GET_ONBOARD_FEEDBACK = 'GetOnBordFeedBack'
-	static GET_FEEDBACK_CONTENT = 'GetFeedbackFormContent'
-	static SAVE_FEEDBACK_CLIENT_ONBOARD = 'SaveFeedbackClientOnBoard'
+	static VIEW_ONBOARD_FEEDBACK = 'ViewOnBoardFeedback';
+	static GET_ONBOARD_FEEDBACK = 'GetOnBordFeedBack';
+	static GET_FEEDBACK_CONTENT = 'GetFeedbackFormContent';
+	static SAVE_FEEDBACK_CLIENT_ONBOARD = 'SaveFeedbackClientOnBoard';
 	static SAVE_INVOICE_DETAILS = 'SaveInvoiceDetails';
 	static SAVE_BILL_RATE_PAY_RATE = 'SaveBillRatePayRate';
 	static GET_RENEW_ENGAGEMENT = 'GetRenewEngagement';
@@ -165,7 +172,7 @@ export class OnboardsAPI {
 	static ONBOARD_TALENT = 'OnBoardTalent';
 	static GET_ONBOARDING_STATUS = 'GetOnboardingStatus';
 	static ONBOARDING_STATUS_UPDATES = 'OnBoardingStatusUpdates';
-  static VIEW_IN_DETAIL = 'ViewInDetail'
+	static VIEW_IN_DETAIL = 'ViewInDetail';
 }
 
 export class HTTPStatusCode {

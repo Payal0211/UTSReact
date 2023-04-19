@@ -36,6 +36,7 @@ const HRFields = ({
 	tabFieldDisabled,
 	setTabFieldDisabled,
 	setJDParsedSkills,
+	contactID,
 }) => {
 	const inputRef = useRef(null);
 	const [getUploadFileData, setUploadFileData] = useState('');
@@ -555,7 +556,8 @@ const HRFields = ({
 				d,
 				type,
 				watch,
-				filteredMemo[0]?.contactId,
+				// filteredMemo[0]?.contactId,
+				contactID,
 				isHRDirectPlacement,
 				addHRResponse,
 			);

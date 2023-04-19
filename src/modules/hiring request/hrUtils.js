@@ -10,6 +10,7 @@ import { _isNull } from 'shared/utils/basic_utils';
 import HROperator from './components/hroperator/hroperator';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import MatchmakingModal from './components/matchmaking/matchmaking';
+import AcceptHR from './components/acceptHR/acceptHR';
 export const hrUtils = {
 	modifyHRRequestData: (hrData) => {
 		return hrData?.responseBody?.rows.map((item) => ({
@@ -76,6 +77,8 @@ export const hrUtils = {
 		isHRDirectPlacement,
 		addHrResponse,
 	) {
+		console.log('--contactID---', contactID);
+		console.log('--contactID is null', _isNull(contactID));
 		const hrFormDetails = {
 			en_Id: _isNull(addHrResponse) ? '' : addHrResponse.en_Id,
 			contactId: _isNull(contactID) ? 0 : contactID,
@@ -623,6 +626,19 @@ export const hrUtils = {
 					key: 'Pass to ODR',
 				},
 			];
+		}
+	},
+	showNextAction(apiData, acceptHRModal, setAcceptHRModal) {
+		if (apiData?.FetchMissingAction?.NextActionID) {
+			return (
+				<HROperator
+					title="Accept HR"
+					icon={<ArrowDownSVG style={{ width: '16px' }} />}
+					backgroundColor={`var(--color-sunlight)`}
+					iconBorder={`1px solid var(--color-sunlight)`}
+					onClickHandler={() => setAcceptHRModal(true)}
+				/>
+			);
 		}
 	},
 };

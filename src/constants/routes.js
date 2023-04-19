@@ -55,6 +55,10 @@ const EngagementOnboardList = React.lazy(() =>
 	import('modules/engagement/screens/engagementList/engagementList'),
 );
 
+const DemandFunnelReport = React.lazy(() =>
+	import('modules/report/screens/demandFunnel/demandFunnel'),
+);
+
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
@@ -79,6 +83,7 @@ export default class UTSRoutes {
 	static ADDNEWUSERROUTE = '/user/addnewuser';
 	static EDITUSERROUTE = '/user/:userID';
 	static ENGAGEMENTRROUTE = '/engagement';
+	static DEMANDFUNNELROUTE = '/report/demandfunnel';
 }
 
 export const navigateToComponent = {
@@ -160,6 +165,11 @@ export const navigateToComponent = {
 	[UTSRoutes.ENGAGEMENTRROUTE]: (
 		<Suspense>
 			<EngagementOnboardList />
+		</Suspense>
+	),
+	[UTSRoutes.DEMANDFUNNELROUTE]: (
+		<Suspense>
+			<DemandFunnelReport />
 		</Suspense>
 	),
 };
