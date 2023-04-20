@@ -47,6 +47,7 @@ const HRDetailScreen = () => {
 	const navigate = useNavigate();
 	const switchLocation = useLocation();
 	const [deleteReason, setDeleteReason] = useState([]);
+	const [callHRapi, setHRapiCall] = useState(false)
 	const [acceptHRModal, setAcceptHRModal] = useState(false);
 	const {
 		register,
@@ -140,7 +141,7 @@ const HRDetailScreen = () => {
 	useEffect(() => {
 		setLoading(true);
 		callAPI(urlSplitter?.split('HR')[0]);
-	}, [urlSplitter, callAPI]);
+	}, [urlSplitter, callAPI, callHRapi]);
 
 	return (
 		<WithLoader showLoader={isLoading}>
@@ -171,12 +172,12 @@ const HRDetailScreen = () => {
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED
 						? null
 						: hrUtils.showMatchmaking(
-								apiData,
-								miscData?.LoggedInUserTypeID,
-								callAPI,
-								urlSplitter,
-								updatedSplitter,
-						  )}
+							apiData,
+							miscData?.LoggedInUserTypeID,
+							callAPI,
+							urlSplitter,
+							updatedSplitter,
+						)}
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
@@ -186,7 +187,7 @@ const HRDetailScreen = () => {
 								setAcceptHRModal,
 								acceptHRModal,
 							)}
-							
+
 							<AcceptHR
 								hrID={apiData?.ClientDetail?.HR_Number}
 								openModal={acceptHRModal}
@@ -316,6 +317,8 @@ const HRDetailScreen = () => {
 									hrType={apiData.Is_HRTypeDP}
 									starMarkedStatusCode={apiData?.StarMarkedStatusCode}
 									hrStatus={apiData?.HRStatus}
+									callHRapi={callHRapi}
+									setHRapiCall={setHRapiCall}
 								/>
 							</Suspense>
 						)}

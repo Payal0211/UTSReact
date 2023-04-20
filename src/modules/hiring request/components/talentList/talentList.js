@@ -24,6 +24,11 @@ import UpdateLegalClientOnboardStatus from '../updateLegalClientOnboardStatus/up
 import EngagementReplaceTalent from 'modules/engagement/screens/engagementReplaceTalent/engagementReplaceTalent';
 import UpdateLegalTalentOnboardStatus from '../updateLegalTalentOnboardStatus/updateLegalTalentOnboardStatus';
 import UpdateKickOffOnboardStatus from '../updateKickOffOnboardStatus/updateKickOffOnboardStatus';
+import EditBillRate from '../editBillAndPayRate/editBillRateModal';
+import EditPayRate from '../editBillAndPayRate/editPayRateModal';
+import { useForm } from 'react-hook-form';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { HTTPStatusCode } from 'constants/network';
 
 const TalentList = ({
 	talentCTA,
@@ -37,6 +42,8 @@ const TalentList = ({
 	hrStatus,
 	hiringRequestNumber,
 	hrType,
+	setHRapiCall,
+	callHRapi
 }) => {
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
@@ -146,6 +153,22 @@ const TalentList = ({
 	const [reScheduleRadio, setRescheduleRadio] = useState(1);
 	const [reScheduleSlotRadio, setRescheduleSlotRadio] = useState(1);
 	const [pageIndex, setPageIndex] = useState(0);
+	const [editBillRate, setEditBillRate] = useState(false);
+	const [editPayRate, setEditPayRate] = useState(false);
+	const [getBillRateInfo, setBillRateInfo] = useState({})
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		control,
+		setError,
+		getValues,
+		watch,
+		reset,
+		resetField,
+		formState: { errors },
+	} = useForm();
+
 	const scheuleResetDataHander = () => {
 		setScheduleSlotDate([
 			{ slot1: null, slot2: null, slot3: null },
@@ -1089,7 +1112,8 @@ const TalentList = ({
 			talentDetail?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
 		[talentDetail, talentIndex],
 	);
-	console.log(filterTalentID, '---filterTalentID');
+
+
 	const getInterviewStatus = useCallback(() => {
 		switch (filterTalentID?.InterviewStatus) {
 			case 'Feedback Submitted':
@@ -1112,7 +1136,7 @@ const TalentList = ({
 
 	const filterTalentCTAs = useMemo(
 		() =>
-			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
+			talentCTA?.filter((item) => item?.TalentID === 0)?.[0] || {},
 		[talentCTA, talentIndex],
 	);
 
@@ -1135,6 +1159,69 @@ const TalentList = ({
 	useEffect(() => {
 		resetRescheuleDataHander();
 	}, [reScheduleSlotRadio]);
+
+	//PayRate Code
+	useEffect(() => {
+		resetField("talentFees")
+	}, [editPayRate])
+
+	useEffect(() => {
+		if (Object.keys(filterTalentID).length > 0 && editPayRate) {
+			setValue("talentFees", ((filterTalentID?.PayRate).slice(1, (filterTalentID?.PayRate).indexOf("U"))).trim())
+		}
+	}, [filterTalentID, editPayRate])
+
+	//BillRate Code
+
+	const hrCostDetailsHandler = async () => {
+		const hrCostData = {
+			hrID: hrId,
+			BillRate: ((filterTalentID?.BillRate).slice(1, (filterTalentID?.BillRate).indexOf("U"))).trim(),
+			PayRate: ((filterTalentID?.PayRate).slice(1, (filterTalentID?.PayRate).indexOf("U"))).trim(),
+			ContactPriorityID: filterTalentID?.ContactPriorityID,
+		}
+		const response = await hiringRequestDAO.getHRCostDetalisRequestDAO(hrCostData);
+		if (response.responseBody.statusCode === HTTPStatusCode.OK) {
+			setBillRateInfo(response?.responseBody?.details)
+		}
+	}
+
+	const updateHRcostHandler = async () => {
+		const calculateHRData = {
+			ContactPriorityID: filterTalentID?.ContactPriorityID,
+			Hr_Cost: getBillRateInfo?.hrCost,
+			HR_Percentage: watch("nrMarginPercentage"),
+			hrID: hrId,
+		}
+		const response = await hiringRequestDAO.calculateHRCostRequestDAO(calculateHRData);
+		if (response.responseBody.statusCode === HTTPStatusCode.OK) {
+			setValue("hrCost", response?.responseBody?.details)
+		}
+	}
+
+
+	useEffect(() => {
+		if (Object.keys(filterTalentID).length > 0 && editBillRate) {
+			hrCostDetailsHandler()
+		}
+	}, [filterTalentID, editBillRate])
+
+	useEffect(() => {
+		if (Object.keys(getBillRateInfo).length > 0 && editBillRate) {
+			setValue("nrMarginPercentage", getBillRateInfo?.hR_Percentage)
+		}
+	}, [getBillRateInfo, editBillRate])
+
+	useEffect(() => {
+		if (Object.keys(getBillRateInfo).length > 0 && editBillRate) {
+			setValue("hrCost", getBillRateInfo?.hrCost)
+		}
+	}, [getBillRateInfo, editBillRate])
+
+
+	useEffect(() => {
+		updateHRcostHandler()
+	}, [watch("nrMarginPercentage")])
 
 	return (
 		<div>
@@ -1290,13 +1377,14 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
+									{console.log(listIndex, "listIndex")}
 									<div className={TalentListStyle.interviewStatus}>
 										<span>Interview Status:</span>&nbsp;&nbsp;
 										<span
 											style={{ fontWeight: '500', cursor: 'pointer' }}
 											onClick={() => {
-												setInterviewFeedback(true);
 												setTalentIndex(listIndex);
+												setInterviewFeedback(true);
 											}}>
 											{item?.InterviewStatus === ''
 												? 'NA'
@@ -1321,7 +1409,8 @@ const TalentList = ({
 												</div>
 												<span
 													onClick={() => {
-														setEDITBRPRModal(true);
+														setTalentIndex(item?.TalentID);
+														setEditBillRate(true)
 													}}
 													style={{
 														textDecoration: 'underline',
@@ -1333,12 +1422,16 @@ const TalentList = ({
 											</div>
 											<div className={TalentListStyle.payRate}>
 												<div>
-													<span>Pay Rate:</span>&nbsp;&nbsp;
+													<span onClick={() => setEditPayRate(true)}>Pay Rate:</span>&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
 														{_isNull(item?.PayRate) ? 'NA' : item?.PayRate}
 													</span>
 												</div>
 												<span
+													onClick={() => {
+														setTalentIndex(item?.TalentID);
+														setEditPayRate(true)
+													}}
 													style={{
 														textDecoration: 'underline',
 														color: `var(--background-color-ebony)`,
@@ -1354,14 +1447,7 @@ const TalentList = ({
 														{_isNull(item?.NR) ? 'NA' : item?.NR}
 													</span>
 												</div>
-												<span
-													style={{
-														textDecoration: 'underline',
-														color: `var(--background-color-ebony)`,
-														cursor: 'pointer',
-													}}>
-													edit
-												</span>
+
 											</div>
 										</>
 									) : (
@@ -1409,8 +1495,8 @@ const TalentList = ({
 										<span style={{ fontWeight: '500' }}>
 											{item?.Slotconfirmed
 												? item?.Slotconfirmed.split(' ')[1] +
-												  ' - ' +
-												  item?.Slotconfirmed.split(' ')[3]
+												' - ' +
+												item?.Slotconfirmed.split(' ')[3]
 												: 'NA'}
 										</span>
 									</div>
@@ -1920,6 +2006,45 @@ const TalentList = ({
 					callAPI={callAPI}
 					closeModal={() => setReplaceTalentModal(false)}
 					isEngagement={false}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR EDIT BILL RATE ================ */}
+			<Modal
+				transitionName=""
+				width="700px"
+				centered
+				footer={null}
+				open={editBillRate}
+				className="statusModalWrap"
+				onCancel={() => setEditBillRate(false)}>
+				<EditBillRate
+					getBillRateInfo={getBillRateInfo}
+					handleSubmit={handleSubmit}
+					onCancel={() => setEditBillRate(false)}
+					register={register}
+					errors={errors}
+					setHRapiCall={setHRapiCall}
+					callHRapi={callHRapi}
+					talentInfo={filterTalentID}
+				/>
+			</Modal>
+			{/** ============ MODAL FOR EDIT PAY RATE ================ */}
+			<Modal
+				transitionName=""
+				width="700px"
+				centered
+				footer={null}
+				open={editPayRate}
+				className="statusModalWrap"
+				onCancel={() => setEditPayRate(false)}>
+				<EditPayRate
+					talentInfo={filterTalentID}
+					onCancel={() => setEditPayRate(false)}
+					handleSubmit={handleSubmit}
+					register={register}
+					errors={errors}
+					setHRapiCall={setHRapiCall}
+					callHRapi={callHRapi}
 				/>
 			</Modal>
 		</div>

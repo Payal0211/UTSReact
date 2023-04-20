@@ -144,6 +144,10 @@ export class HiringRequestsAPI {
 	static UPLOAD_DRIVE_FILE = 'UploadDriveFile';
 	static UPLOAD_GOOGLE_FILE_LINK = 'UploadGoogleFileLink';
 	static UPDATE_ODR_POOL_STATUS = 'UpdateODRPoolStatus';
+	static GET_HR_COST_DETAILS = 'GetHRCostDetails';
+	static CALCULATE_HR_COST = 'CalculateHRCost';
+	static UPDATE_HR_COST = 'UpdateHRCost';
+	static UPDATE_TALENT_FEES = 'UpdateTalentFees';
 }
 
 export class UsersAPI {

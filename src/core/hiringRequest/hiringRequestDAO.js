@@ -708,4 +708,144 @@ export const hiringRequestDAO = {
 			);
 		}
 	},
+	getHRCostDetalisRequestDAO: async (hrCostData) => {
+		try {
+			const getHRCostDetailsRequest =
+				await HiringRequestAPI.getHRCostDetailsRequest(hrCostData);
+
+			if (getHRCostDetailsRequest) {
+				const statusCode = getHRCostDetailsRequest['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getHRCostDetailsRequest.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getHRCostDetailsRequest;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getHRCostDetailsRequest;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getHRCostDetalisRequestDAO()',
+			);
+		}
+	},
+	calculateHRCostRequestDAO: async (calculateHRData) => {
+		try {
+			const calcualteHRCostDetials =
+				await HiringRequestAPI.calculateHRCostRequest(calculateHRData);
+
+			if (calcualteHRCostDetials) {
+				const statusCode = calcualteHRCostDetials['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = calcualteHRCostDetials.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return calcualteHRCostDetials;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return calcualteHRCostDetials;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getHRCostDetalisRequestDAO()',
+			);
+		}
+	},
+	updateHRCostRequestDAO: async (saveBillRatePayload) => {
+		try {
+			const updateHRCostDetails =
+				await HiringRequestAPI.updateHRCostRequest(saveBillRatePayload);
+
+			if (updateHRCostDetails) {
+				const statusCode = updateHRCostDetails['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = updateHRCostDetails.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return updateHRCostDetails;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return updateHRCostDetails;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.updateHRCostRequestDAO()',
+			);
+		}
+	},
+	updateTalentFeesRequestDAO: async (savePayRatePayload) => {
+		try {
+			const updateTalentFees =
+				await HiringRequestAPI.updateTalentFeesRequest(savePayRatePayload);
+
+			if (updateTalentFees) {
+				const statusCode = updateTalentFees['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = updateTalentFees.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return updateTalentFees;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return updateTalentFees;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.updateTalentFeesRequestDAO()',
+			);
+		}
+	},
 };

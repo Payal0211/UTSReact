@@ -16,6 +16,8 @@ const TalentProfileCard = ({
 	starMarkedStatusCode,
 	hrStatus,
 	hrType,
+	callHRapi,
+	setHRapiCall
 }) => {
 	return (
 		<div className={TalentProfileCardStyle.talentProfileContainer}>
@@ -45,6 +47,8 @@ const TalentProfileCard = ({
 								hrStatus={hrStatus}
 								hrType={hrType}
 								clientDetail={clientDetail}
+								callHRapi={callHRapi}
+								setHRapiCall={setHRapiCall}
 							/>
 						</Suspense>
 					) : (
