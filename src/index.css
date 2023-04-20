@@ -2,7 +2,7 @@
 
 * {
   word-wrap: break-word;
-  font-family: "Montserrat", sans-serif;  
+  font-family: "Montserrat", sans-serif;
 }
 body {
   margin: 0;
@@ -68,7 +68,7 @@ body {
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
-  
+
 }
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -83,7 +83,7 @@ input[type=number] {
 }
 
 ::-webkit-scrollbar-track {
-  
+
   background: var(--color-TealWithOpacity);
 }
 
@@ -121,7 +121,7 @@ input[type="file"] {
   background-color: var(--color-sunlight) !important;
   border-radius: 8px;
   border: none;
-  
+
 }
 .ant-pagination-item-active a{
   font-weight: 700;
@@ -145,7 +145,7 @@ th {
 }
 
 td {
-  
+
   color: var(--uplers-black);
   cursor: pointer;
   font-size: 0.875rem;
@@ -216,7 +216,7 @@ table{
 .ant-checkbox-checked .ant-checkbox-inner{
   background-color: var(--color-sunlight);
     border: none !important;
-    
+
 }
 .ant-checkbox-wrapper:hover .ant-checkbox-inner,
 .ant-checkbox:hover .ant-checkbox-inner,
@@ -363,7 +363,7 @@ table{
   font-weight: inherit;
   font-size: inherit;
   color: inherit;
- 
+
 }
 .ant-select .ant-select-selector .ant-select-selection-item img{
   margin-right:8px;
@@ -535,7 +535,7 @@ table{
 
 /**--MODAl---------*/
 .ant-modal-content{
- 
+
   border-radius: 8px !important;
   background-color: #F7F7F7 !important
 }
@@ -648,13 +648,14 @@ table{
   padding: 30px 0;
 }
 
-.interviewFeedbackModal .ant-modal-body {
+.interviewFeedbackModal .ant-modal-body, .cloneHRModal .ant-modal-body {
   padding: 40px;
 }
 
 .interviewFeedbackModal .ant-modal-content,
 .interviewScheduleModal .ant-modal-content,
-.interviewRescheduleModal .ant-modal-content {
+.interviewRescheduleModal .ant-modal-content,
+.cloneHRModal .ant-modal-content {
   background: #FFFFFF !important;
 }
 

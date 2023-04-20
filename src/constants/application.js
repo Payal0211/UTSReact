@@ -111,6 +111,8 @@ export class TalentOnboardStatus {
 		'Update Legal Client On Board Status';
 	static UPDATE_KICKOFF_ONBOARD_STATUS = 'Update Kick Off On Board Status';
 	static REPLACE_TALENT = 'Replace Talent';
+	static CLONE_HR = 'Clone HR'
+	static CONFIRM_SLOT = 'Confirm Slot'
 }
 export class InputType {
 	static TEXT = 'text';

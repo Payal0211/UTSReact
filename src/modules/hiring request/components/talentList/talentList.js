@@ -24,6 +24,11 @@ import UpdateLegalClientOnboardStatus from '../updateLegalClientOnboardStatus/up
 import EngagementReplaceTalent from 'modules/engagement/screens/engagementReplaceTalent/engagementReplaceTalent';
 import UpdateLegalTalentOnboardStatus from '../updateLegalTalentOnboardStatus/updateLegalTalentOnboardStatus';
 import UpdateKickOffOnboardStatus from '../updateKickOffOnboardStatus/updateKickOffOnboardStatus';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { HttpStatusCode } from 'axios';
+import { HTTPStatusCode } from 'constants/network';
+import { useForm, Controller } from 'react-hook-form';
+import ConfirmSlotModal from '../cloneHR/confirmSlotModal';
 
 const TalentList = ({
 	talentCTA,
@@ -37,6 +42,8 @@ const TalentList = ({
 	hrStatus,
 	hiringRequestNumber,
 	hrType,
+	setHRapiCall,
+	callHRapi
 }) => {
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
@@ -146,6 +153,12 @@ const TalentList = ({
 	const [reScheduleRadio, setRescheduleRadio] = useState(1);
 	const [reScheduleSlotRadio, setRescheduleSlotRadio] = useState(1);
 	const [pageIndex, setPageIndex] = useState(0);
+	const [getConfirmSlotModal, setConfirmSlotModal] = useState(false)
+	const [getConfirmSlotDetails, setConfirmSlotDetails] = useState({})
+	const [confirmSlotRadio, setConfirmSlotRadio] = useState(1)
+	const [getDateNewFormate, setDateNewFormate] = useState([])
+
+
 	const scheuleResetDataHander = () => {
 		setScheduleSlotDate([
 			{ slot1: null, slot2: null, slot3: null },
@@ -1089,7 +1102,7 @@ const TalentList = ({
 			talentDetail?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
 		[talentDetail, talentIndex],
 	);
-	console.log(filterTalentID, '---filterTalentID');
+
 	const getInterviewStatus = useCallback(() => {
 		switch (filterTalentID?.InterviewStatus) {
 			case 'Feedback Submitted':
@@ -1136,6 +1149,23 @@ const TalentList = ({
 		resetRescheuleDataHander();
 	}, [reScheduleSlotRadio]);
 
+	// confirm slot functionality
+	useEffect(() => {
+		filterTalentID?.MasterId !== undefined && getConfirmSlotDetailsHandler(filterTalentID?.MasterId)
+	}, [filterTalentID])
+
+	const getConfirmSlotDetailsHandler = async (id) => {
+		const response = await hiringRequestDAO.getConfirmSlotDetailsDAO(id)
+		if (response?.responseBody?.statusCode === HTTPStatusCode.OK) {
+			setConfirmSlotDetails(response?.responseBody?.details?.Data)
+
+		}
+	}
+
+	useEffect(() => {
+		setConfirmSlotRadio(1)
+	}, [getConfirmSlotModal])
+
 	return (
 		<div>
 			{contextHolder}
@@ -1153,7 +1183,6 @@ const TalentList = ({
 					},
 				}}
 				renderItem={(item, listIndex) => {
-					// console.log('---item---', item, '-----------', talentCTA);
 
 					return (
 						<div
@@ -1409,8 +1438,8 @@ const TalentList = ({
 										<span style={{ fontWeight: '500' }}>
 											{item?.Slotconfirmed
 												? item?.Slotconfirmed.split(' ')[1] +
-												  ' - ' +
-												  item?.Slotconfirmed.split(' ')[3]
+												' - ' +
+												item?.Slotconfirmed.split(' ')[3]
 												: 'NA'}
 										</span>
 									</div>
@@ -1458,7 +1487,6 @@ const TalentList = ({
 												isDropdown={true}
 												listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
 												menuAction={(menuItem) => {
-													console.log(menuItem.key, '--menuItem.key');
 													switch (menuItem.key) {
 														case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 															setScheduleInterviewModal(true);
@@ -1497,7 +1525,6 @@ const TalentList = ({
 															break;
 														}
 														case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
-															console.log('hello');
 															setLegalTalentOnboardModal(true);
 															setTalentIndex(item?.TalentID);
 															break;
@@ -1514,6 +1541,11 @@ const TalentList = ({
 														}
 														case TalentOnboardStatus.REPLACE_TALENT: {
 															setReplaceTalentModal(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.CONFIRM_SLOT: {
+															setConfirmSlotModal(true);
 															setTalentIndex(item?.TalentID);
 															break;
 														}
@@ -1920,6 +1952,30 @@ const TalentList = ({
 					callAPI={callAPI}
 					closeModal={() => setReplaceTalentModal(false)}
 					isEngagement={false}
+				/>
+			</Modal>
+
+			{/** ============ MODAL FOR Confirm slot modal ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				open={getConfirmSlotModal}
+				className='cloneHRModal'
+				onCancel={() => setConfirmSlotModal(false)}>
+				<ConfirmSlotModal
+					getConfirmSlotDetails={getConfirmSlotDetails}
+					onCancel={() => setConfirmSlotModal(false)}
+					confirmSlotRadio={confirmSlotRadio}
+					setConfirmSlotRadio={setConfirmSlotRadio}
+					talentInfo={filterTalentID}
+					hrId={hrId}
+					getDateNewFormate={getDateNewFormate}
+					setDateNewFormate={setDateNewFormate}
+					hiringRequestNumber={hiringRequestNumber}
+					setHRapiCall={setHRapiCall}
+					callHRapi={callHRapi}
 				/>
 			</Modal>
 		</div>

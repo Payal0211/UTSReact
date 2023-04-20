@@ -51,7 +51,7 @@ export class EngagementAPI {
 	static GET_CONTENT_END_ENGAGEMENT = 'GetContentEndEnagagement';
 	static CHANGE_CONTRACT_END_DATE = 'ChangeContractEndDate';
 	static GET_CONTENT_FOR_ADD_INVOICE = 'GetContentForAddInvoice';
-  static VIEW_ONBOARD_FEEDBACK = 'ViewOnBoardFeedback'
+	static VIEW_ONBOARD_FEEDBACK = 'ViewOnBoardFeedback'
 	static GET_ONBOARD_FEEDBACK = 'GetOnBordFeedBack'
 	static GET_FEEDBACK_CONTENT = 'GetFeedbackFormContent'
 	static SAVE_FEEDBACK_CLIENT_ONBOARD = 'SaveFeedbackClientOnBoard'
@@ -154,6 +154,8 @@ export class InterviewsAPI {
 	static INTERVIEW_STATUS_DETAILS = 'GetInterviewStatusDetail';
 	static UPDATE_INTERVIEW_STATUS = 'UpdateInterviewStatus';
 	static FEEDBACK = 'Feedback';
+	static GET_SLOT_DETAILS = 'GetExistingSlotDetails'
+	static SAVE_CONFIRM_INTERVIEW = 'SaveConfirmInterviewSlot'
 }
 export class DealsAPI {
 	static LIST = 'List';
@@ -165,7 +167,7 @@ export class OnboardsAPI {
 	static ONBOARD_TALENT = 'OnBoardTalent';
 	static GET_ONBOARDING_STATUS = 'GetOnboardingStatus';
 	static ONBOARDING_STATUS_UPDATES = 'OnBoardingStatusUpdates';
-  static VIEW_IN_DETAIL = 'ViewInDetail'
+	static VIEW_IN_DETAIL = 'ViewInDetail'
 }
 
 export class HTTPStatusCode {
