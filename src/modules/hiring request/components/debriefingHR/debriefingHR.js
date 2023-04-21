@@ -69,7 +69,7 @@ const DebriefingHR = ({
 			...skills,
 			...[
 				{
-					id: -1,
+					id: '-1',
 					value: 'Others',
 				},
 			],
@@ -82,7 +82,8 @@ const DebriefingHR = ({
 	);
 
 	const isOtherSkillExistMemo = useMemo(() => {
-		let response = watchSkills?.filter((item) => item?.skillsID === -1);
+		let response = watchSkills?.filter((item) => item?.id === '-1');
+
 		return response?.length > 0;
 	}, [watchSkills]);
 

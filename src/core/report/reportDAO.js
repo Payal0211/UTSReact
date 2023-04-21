@@ -32,4 +32,83 @@ export const ReportDAO = {
 			return errorDebug(error, 'ReportDAO.demandFunnelListingRequestDAO');
 		}
 	},
+	demandFunnelSummaryRequestDAO: async function (reportData) {
+		try {
+			const demandFunnelSummary = await ReportAPI.demandFunnelSummary(
+				reportData,
+			);
+			if (demandFunnelSummary) {
+				const statusCode = demandFunnelSummary['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = demandFunnelSummary?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: JSON.parse(tempResult),
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return demandFunnelSummary;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return demandFunnelSummary;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.demandFunnelSummaryRequestDAO');
+		}
+	},
+	demandFunnelFiltersRequestDAO: async function () {
+		try {
+			const demandFunnelReport = await ReportAPI.demandFunnelFilters();
+			if (demandFunnelReport) {
+				const statusCode = demandFunnelReport['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = demandFunnelReport?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return demandFunnelReport;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return demandFunnelReport;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.demandFunnelFiltersRequestDAO');
+		}
+	},
+	demandFunnelHRDetailsRequestDAO: async function (reportData) {
+		try {
+			const demandFunnelReport = await ReportAPI.demandFunnelHRDetailsRequest(
+				reportData,
+			);
+			if (demandFunnelReport) {
+				const statusCode = demandFunnelReport['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = demandFunnelReport?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return demandFunnelReport;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return demandFunnelReport;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.demandFunnelHRDetailsRequestDAO');
+		}
+	},
 };

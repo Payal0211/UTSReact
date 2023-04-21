@@ -58,6 +58,12 @@ const HRFields = ({
 	const [type, setType] = useState('');
 	const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
 	const [getClientNameMessage, setClientNameMessage] = useState('');
+	const [getContactAndSaleID, setContactAndSalesID] = useState({
+		contactID: '',
+		salesID: '',
+	});
+	const [childCompany, setChildCompany] = useState([]);
+	const [isSalesUserPartner, setIsSalesUserPartner] = useState(false);
 
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
@@ -81,6 +87,11 @@ const HRFields = ({
 			secondaryInterviewer: [],
 		},
 	});
+
+	const data = watch();
+	const watchSalesPerson = watch('salesPerson');
+	const watchChildCompany = watch('childCompany');
+
 	/* const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
@@ -317,6 +328,32 @@ const HRFields = ({
 				availabilityResponse.responseBody?.BindHiringAvailability,
 		);
 	}, []);
+
+	const CheckSalesUserIsPartner = useCallback(async (getContactAndSaleID) => {
+		const response = await MasterDAO.checkIsSalesPersonDAO(getContactAndSaleID);
+		if (response?.responseBody?.details?.SaleUserIsPartner) {
+			setIsSalesUserPartner(response?.responseBody?.details?.SaleUserIsPartner);
+			const newChildCompanyList =
+				response?.responseBody?.details?.ChildCompanyList.filter(
+					(ele, index) => index !== 0,
+				);
+			setChildCompany([]);
+			setChildCompany((prev) =>
+				newChildCompanyList.map(
+					({ childCompanyID, childCompanyName }) =>
+						childCompanyID !== -1 && {
+							id: childCompanyID,
+							value: childCompanyName,
+						},
+				),
+			);
+			setChildCompany((prev) => [
+				...prev,
+				{ id: 0, value: 'Add Other Company' },
+			]);
+		}
+	}, []);
+
 	const getHowSoon = useCallback(async () => {
 		const howSoonResponse = await MasterDAO.getHowSoonRequestDAO();
 		setHowSoon(howSoonResponse && howSoonResponse.responseBody);
@@ -392,7 +429,7 @@ const HRFields = ({
 	const getClientNameSuggestionHandler = useCallback(
 		async (clientName) => {
 			let response = await MasterDAO.getEmailSuggestionDAO(clientName);
-
+			console.log(response);
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setClientNameSuggestion(response?.responseBody?.details);
 
@@ -431,12 +468,19 @@ const HRFields = ({
 			await hiringRequestDAO.getClientDetailRequestDAO(
 				filteredMemo[0]?.emailId,
 			);
-		setError('clientName', {
+
+		existingClientDetails?.statusCode === HTTPStatusCode.OK &&
+			setContactAndSalesID((prev) => ({
+				...prev,
+				contactID: existingClientDetails?.responseBody?.contactid,
+			}));
+
+		/* setError('clientName', {
 			type: 'duplicateCompanyName',
 			message:
 				existingClientDetails?.statusCode === HTTPStatusCode.NOT_FOUND &&
 				'Client email does not exist.',
-		});
+		}); */
 		existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
 			setValue('clientName', '');
 		existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
@@ -446,7 +490,7 @@ const HRFields = ({
 		existingClientDetails.statusCode === HTTPStatusCode.OK &&
 			setIsCompanyNameAvailable(true);
 		setIsLoading(false);
-	}, [filteredMemo, setError, setValue]);
+	}, [filteredMemo, setValue]);
 
 	const getOtherRoleHandler = useCallback(
 		async (data) => {
@@ -503,6 +547,11 @@ const HRFields = ({
 	]);
 
 	useEffect(() => {
+		if (getContactAndSaleID?.contactID && getContactAndSaleID?.salesID)
+			CheckSalesUserIsPartner(getContactAndSaleID);
+	}, [getContactAndSaleID]);
+
+	useEffect(() => {
 		!_isNull(prefRegion) && getTimeZonePreference();
 		getAvailability();
 		getTalentRole();
@@ -549,6 +598,7 @@ const HRFields = ({
 	/** To check Duplicate email exists End */
 
 	const [messageAPI, contextHolder] = message.useMessage();
+	console.log(errors, '---hrFieldsd');
 
 	const hrSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
@@ -610,6 +660,10 @@ const HRFields = ({
 			controllerRef.current.focus();
 		}
 	}, [errors?.clientName]);
+
+	useEffect(() => {
+		setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));
+	}, [watchSalesPerson]);
 
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
@@ -706,6 +760,54 @@ const HRFields = ({
 								required
 							/>
 						</div>
+
+						<div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Sales Person'}
+									defaultValue="Select sales Person"
+									options={salesPerson && salesPerson}
+									name="salesPerson"
+									isError={errors['salesPerson'] && errors['salesPerson']}
+									required
+									errorMsg={'Please select hiring request sales person'}
+								/>
+							</div>
+						</div>
+
+						{isSalesUserPartner && (
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										setValue={setValue}
+										mode="id/value"
+										register={register}
+										label={'Child Companies'}
+										defaultValue="Select Company"
+										options={childCompany && childCompany}
+										name="childCompany"
+										isError={errors['childCompany'] && errors['childCompany']}
+									/>
+								</div>
+							</div>
+						)}
+
+						{watchChildCompany?.id === 0 && (
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										label={'Other Child Company Name'}
+										name="otherChildCompanyName"
+										type={InputType.TEXT}
+										placeholder="Child Company"
+									/>
+								</div>
+							</div>
+						)}
 
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
@@ -908,22 +1010,6 @@ const HRFields = ({
 								placeholder="Select NR margin percentage"
 								required
 							/>
-						</div>
-
-						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									setValue={setValue}
-									register={register}
-									label={'Sales Person'}
-									defaultValue="Select sales Person"
-									options={salesPerson && salesPerson}
-									name="salesPerson"
-									isError={errors['salesPerson'] && errors['salesPerson']}
-									required
-									errorMsg={'Please select hiring request sales person'}
-								/>
-							</div>
 						</div>
 					</div>
 

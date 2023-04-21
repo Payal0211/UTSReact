@@ -178,8 +178,9 @@ export const hrUtils = {
 						? 0
 						: watch('salesPerson')
 					: _isNull(d.salesPerson)
-					? 0
-					: d.salesPerson,
+						? 0
+						: d.salesPerson,
+			ChildCompanyName: watch("otherChildCompanyName") ? watch('otherChildCompanyName') : watch('childCompany')?.value,
 			contractDuration:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('contractDuration'))

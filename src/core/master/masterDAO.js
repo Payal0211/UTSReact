@@ -927,4 +927,30 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getDashboardCountForEngagementDAO');
 		}
 	},
+
+	checkIsSalesPersonDAO: async function (getContactAndSaleID) {
+		try {
+			const isCheckSales = await MasterAPI.checkIsSalesPersonDAO(getContactAndSaleID);
+			if (isCheckSales) {
+				const statusCode = isCheckSales['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = isCheckSales?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return isCheckSales;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return isCheckSales;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getDashboardCountForEngagementDAO');
+		}
+	},
+
+
 };
