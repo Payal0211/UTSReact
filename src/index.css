@@ -648,13 +648,14 @@ table{
   padding: 30px 0;
 }
 
-.interviewFeedbackModal .ant-modal-body {
+.interviewFeedbackModal .ant-modal-body, .cloneHRModal .ant-modal-body {
   padding: 40px;
 }
 
 .interviewFeedbackModal .ant-modal-content,
 .interviewScheduleModal .ant-modal-content,
-.interviewRescheduleModal .ant-modal-content {
+.interviewRescheduleModal .ant-modal-content,
+.cloneHRModal .ant-modal-content {
   background: #FFFFFF !important;
 }
 

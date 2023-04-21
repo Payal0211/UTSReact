@@ -132,6 +132,7 @@ export const allHRConfig = {
 		];
 	},
 	hrFilterTypeConfig: (filterList) => {
+		console.log('--filterList--', filterList);
 		return [
 			{
 				label: 'ODR/Pool',

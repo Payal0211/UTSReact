@@ -2,6 +2,7 @@ import {
 	AllHiringRequestAPI,
 	HRAcceptanceAPI,
 	HiringRequestsAPI,
+	InterviewsAPI,
 	NetworkInfo,
 	SubDomain,
 } from 'constants/network';
@@ -437,4 +438,37 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.openPostAcceptanceRequest');
 		}
 	},
+	getConfirmSlotDetailsRequest: async (interviewId) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.INTERVIEW +
+			InterviewsAPI.GET_SLOT_DETAILS + `?InterviewMasterId=${interviewId}`
+			;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getConfirmSlotDetailsRequest');
+		}
+	},
+	saveConfirmSlotDetailsRequest: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.INTERVIEW +
+			InterviewsAPI.SAVE_CONFIRM_INTERVIEW;
+		httpService.dataToSend = data;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
+		}
+	}
 };

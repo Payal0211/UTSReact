@@ -50,6 +50,9 @@ export class ReportType {
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
+	static SUMMARY = 'Summary';
+	static FILTERS = 'Filters';
+	static HRDETAILS = 'HRDetails';
 }
 export class EngagementAPI {
 	static FILTER = 'Filters';
@@ -144,6 +147,7 @@ export class HiringRequestsAPI {
 	static UPLOAD_DRIVE_FILE = 'UploadDriveFile';
 	static UPLOAD_GOOGLE_FILE_LINK = 'UploadGoogleFileLink';
 	static UPDATE_ODR_POOL_STATUS = 'UpdateODRPoolStatus';
+	static CHECK_SALES_USER_IS_PARTNER = 'CheckSalesUserIsPartner';
 }
 
 export class UsersAPI {
@@ -161,6 +165,8 @@ export class InterviewsAPI {
 	static INTERVIEW_STATUS_DETAILS = 'GetInterviewStatusDetail';
 	static UPDATE_INTERVIEW_STATUS = 'UpdateInterviewStatus';
 	static FEEDBACK = 'Feedback';
+	static GET_SLOT_DETAILS = 'GetExistingSlotDetails'
+	static SAVE_CONFIRM_INTERVIEW = 'SaveConfirmInterviewSlot'
 }
 export class DealsAPI {
 	static LIST = 'List';
