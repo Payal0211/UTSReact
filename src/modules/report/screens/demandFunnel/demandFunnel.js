@@ -5,11 +5,10 @@ import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as LockSVG } from 'assets/svg/lock.svg';
 import { ReactComponent as UnlockSVG } from 'assets/svg/unlock.svg';
-import { Dropdown, Menu, message, Table, Tooltip } from 'antd';
+import { Dropdown, Menu, message, Modal, Table, Tooltip } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { IoChevronDownOutline } from 'react-icons/io5';
-import { InputType } from 'constants/application';
+
 import React, {
 	Suspense,
 	useCallback,
@@ -21,8 +20,10 @@ import { ReportDAO } from 'core/report/reportDAO';
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { reportConfig } from 'modules/report/report.config';
-const HiringFiltersLazyComponent = React.lazy(() =>
-	import('modules/hiring request/components/hiringFilter/hiringFilters'),
+import DemandFunnelModal from 'modules/report/components/demandFunnelModal/demandFunnelModal';
+
+const DemandFunnelFilterLazyComponent = React.lazy(() =>
+	import('modules/report/components/demandFunnelFilter/demandFunnelFilter'),
 );
 
 const DemandFunnelScreen = () => {
@@ -37,6 +38,23 @@ const DemandFunnelScreen = () => {
 		head: '',
 		isActionWise: true,
 	});
+	const [demandFunnelHRDetailsState, setDemandFunnelHRDetailsState] = useState({
+		adhocType: '',
+		TeamManagerName: '',
+		currentStage: 'TR Accepted',
+		IsExport: false,
+		hrFilter: {
+			hR_No: '',
+			salesPerson: '',
+			compnayName: '',
+			role: '',
+			managed_Self: '',
+			talentName: '',
+			availability: '',
+		},
+		funnelFilter: tableFilteredState,
+	});
+
 	const [apiData, setApiData] = useState([]);
 	const [viewSummaryData, setSummaryData] = useState([]);
 	const [isSummary, setIsSummary] = useState(false);
@@ -48,6 +66,7 @@ const DemandFunnelScreen = () => {
 	const [filtersList, setFiltersList] = useState([]);
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
+	const [demandFunnelModal, setDemandFunnelModal] = useState(false);
 	const onRemoveFilters = () => {
 		setTimeout(() => {
 			setIsAllowFilters(false);
@@ -84,9 +103,17 @@ const DemandFunnelScreen = () => {
 	}, [tableFilteredState]);
 
 	const tableColumnsMemo = useMemo(
-		() => reportConfig.demandFunnelTable(apiData && apiData),
-		[apiData],
+		() =>
+			reportConfig.demandFunnelTable(
+				apiData && apiData,
+				demandFunnelModal,
+				setDemandFunnelModal,
+				setDemandFunnelHRDetailsState,
+				demandFunnelHRDetailsState,
+			),
+		[apiData, demandFunnelHRDetailsState, demandFunnelModal],
 	);
+
 	const viewSummaryMemo = useMemo(
 		() =>
 			reportConfig.viewSummaryDemandFunnel(viewSummaryData && viewSummaryData),
@@ -152,30 +179,14 @@ const DemandFunnelScreen = () => {
 							id="hrListingTable"
 							columns={tableColumnsMemo}
 							bordered={false}
-							dataSource={[...apiData]}
+							dataSource={[...apiData?.slice(1)]}
 							pagination={{
-								/* onChange: (pageNum, pageSize) => {
-									setPageIndex(pageNum);
-									setPageSize(pageSize);
-									setTableFilteredState({
-										...tableFilteredState,
-										pagesize: pageSize,
-										pagenum: pageNum,
-									});
-									handleHRRequest({ pagesize: pageSize, pagenum: pageNum });
-								}, */
 								size: 'small',
-								/* pageSize: pageSize,
-							pageSizeOptions: pageSizeOptions,
-							total: totalRecords,
-							showTotal: (total, range) =>
-								`${range[0]}-${range[1]} of ${totalRecords} items`,
-							defaultCurrent: pageIndex, */
+								pageSize: apiData?.length,
 							}}
 						/>
 						<div className={DemandFunnelStyle.formPanelAction}>
 							<button
-								// disabled={isLoading}
 								type="submit"
 								onClick={viewDemandFunnelSummaryHandler}
 								className={DemandFunnelStyle.btnPrimary}>
@@ -195,9 +206,10 @@ const DemandFunnelScreen = () => {
 								id="hrListingTable"
 								columns={viewSummaryMemo}
 								bordered={false}
-								dataSource={[...viewSummaryData]}
+								dataSource={[...viewSummaryData?.slice(1)]}
 								pagination={{
 									size: 'small',
+									pageSize: viewSummaryData?.length,
 								}}
 							/>
 						</>
@@ -207,7 +219,7 @@ const DemandFunnelScreen = () => {
 
 			{isAllowFilters && (
 				<Suspense fallback={<div>Loading...</div>}>
-					<HiringFiltersLazyComponent
+					<DemandFunnelFilterLazyComponent
 						setAppliedFilters={setAppliedFilters}
 						appliedFilter={appliedFilter}
 						setCheckedState={setCheckedState}
@@ -224,6 +236,14 @@ const DemandFunnelScreen = () => {
 						)}
 					/>
 				</Suspense>
+			)}
+			{demandFunnelModal && (
+				<DemandFunnelModal
+					demandFunnelModal={demandFunnelModal}
+					setDemandFunnelModal={setDemandFunnelModal}
+					demandFunnelHRDetailsState={demandFunnelHRDetailsState}
+					setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
+				/>
 			)}
 		</div>
 	);

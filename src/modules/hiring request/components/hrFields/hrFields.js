@@ -429,7 +429,7 @@ const HRFields = ({
 	const getClientNameSuggestionHandler = useCallback(
 		async (clientName) => {
 			let response = await MasterDAO.getEmailSuggestionDAO(clientName);
-
+			console.log(response);
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setClientNameSuggestion(response?.responseBody?.details);
 
@@ -475,12 +475,12 @@ const HRFields = ({
 				contactID: existingClientDetails?.responseBody?.contactid,
 			}));
 
-		setError('clientName', {
+		/* setError('clientName', {
 			type: 'duplicateCompanyName',
 			message:
 				existingClientDetails?.statusCode === HTTPStatusCode.NOT_FOUND &&
 				'Client email does not exist.',
-		});
+		}); */
 		existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
 			setValue('clientName', '');
 		existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
@@ -490,7 +490,7 @@ const HRFields = ({
 		existingClientDetails.statusCode === HTTPStatusCode.OK &&
 			setIsCompanyNameAvailable(true);
 		setIsLoading(false);
-	}, [filteredMemo, setError, setValue]);
+	}, [filteredMemo, setValue]);
 
 	const getOtherRoleHandler = useCallback(
 		async (data) => {
@@ -598,6 +598,7 @@ const HRFields = ({
 	/** To check Duplicate email exists End */
 
 	const [messageAPI, contextHolder] = message.useMessage();
+	console.log(errors, '---hrFieldsd');
 
 	const hrSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
