@@ -1,11 +1,6 @@
 import DemandFunnelStyle from './demandFunnel.module.css';
-import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
-import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
-import { ReactComponent as LockSVG } from 'assets/svg/lock.svg';
-import { ReactComponent as UnlockSVG } from 'assets/svg/unlock.svg';
-import { Dropdown, Menu, message, Modal, Table, Tooltip } from 'antd';
+import { Table } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -21,12 +16,26 @@ import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { reportConfig } from 'modules/report/report.config';
 import DemandFunnelModal from 'modules/report/components/demandFunnelModal/demandFunnelModal';
-
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import { Controller, useForm } from 'react-hook-form';
 const DemandFunnelFilterLazyComponent = React.lazy(() =>
 	import('modules/report/components/demandFunnelFilter/demandFunnelFilter'),
 );
 
 const DemandFunnelScreen = () => {
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		control,
+		setError,
+		getValues,
+		watch,
+		reset,
+		resetField,
+		unregister,
+		formState: { errors },
+	} = useForm();
 	const [tableFilteredState, setTableFilteredState] = useState({
 		startDate: '',
 		endDate: '',
@@ -38,6 +47,7 @@ const DemandFunnelScreen = () => {
 		head: '',
 		isActionWise: true,
 	});
+	const [demandFunnelCount, setDemandFunnelCount] = useState(0);
 	const [demandFunnelHRDetailsState, setDemandFunnelHRDetailsState] = useState({
 		adhocType: '',
 		TeamManagerName: '',
@@ -67,17 +77,13 @@ const DemandFunnelScreen = () => {
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
 	const [demandFunnelModal, setDemandFunnelModal] = useState(false);
-	const onRemoveFilters = () => {
-		setTimeout(() => {
-			setIsAllowFilters(false);
-		}, 300);
-		setHTMLFilter(false);
-	};
-	const getDemandFunnelListingHandler = useCallback(async () => {
+
+	const [startDate, setStartDate] = useState();
+	const [endDate, setEndDate] = useState(null);
+
+	const getDemandFunnelListingHandler = useCallback(async (taleData) => {
 		setLoading(true);
-		let response = await ReportDAO.demandFunnelListingRequestDAO(
-			tableFilteredState,
-		);
+		let response = await ReportDAO.demandFunnelListingRequestDAO(taleData);
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
 			setApiData(response?.responseBody);
@@ -85,7 +91,49 @@ const DemandFunnelScreen = () => {
 			setLoading(false);
 			setApiData([]);
 		}
-	}, [tableFilteredState]);
+	}, []);
+
+	const onCalenderFilter = (dates) => {
+		const [start, end] = dates;
+
+		setStartDate(start);
+		setEndDate(end);
+
+		if (start && end) {
+			setTableFilteredState({
+				...tableFilteredState,
+				startDate: new Date(start)
+					.toLocaleDateString('en-UK')
+					.split('/')
+					.reverse()
+					.join('-'),
+				endDate: new Date(end)
+					.toLocaleDateString('en-UK')
+					.split('/')
+					.reverse()
+					.join('-'),
+			});
+			getDemandFunnelListingHandler({
+				...tableFilteredState,
+				startDate: new Date(start)
+					.toLocaleDateString('en-UK')
+					.split('/')
+					.reverse()
+					.join('-'),
+				endDate: new Date(end)
+					.toLocaleDateString('en-UK')
+					.split('/')
+					.reverse()
+					.join('-'),
+			});
+		}
+	};
+	const onRemoveFilters = () => {
+		setTimeout(() => {
+			setIsAllowFilters(false);
+		}, 300);
+		setHTMLFilter(false);
+	};
 
 	const viewDemandFunnelSummaryHandler = useCallback(async () => {
 		setIsSummary(true);
@@ -110,6 +158,7 @@ const DemandFunnelScreen = () => {
 				setDemandFunnelModal,
 				setDemandFunnelHRDetailsState,
 				demandFunnelHRDetailsState,
+				setDemandFunnelCount,
 			),
 		[apiData, demandFunnelHRDetailsState, demandFunnelModal],
 	);
@@ -123,23 +172,37 @@ const DemandFunnelScreen = () => {
 		const response = await ReportDAO.demandFunnelFiltersRequestDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setFiltersList(response && response?.responseBody?.Data);
+			setStartDate(new Date(response?.responseBody?.Data?.StartDate));
+			setEndDate(new Date(response?.responseBody?.Data?.EndDate));
+			setDemandFunnelHRDetailsState({
+				...demandFunnelHRDetailsState,
+
+				funnelFilter: {
+					startDate: response?.responseBody?.Data?.StartDate,
+					endDate: response?.responseBody?.Data?.EndDate,
+				},
+			});
 		} else {
 			setFiltersList([]);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const toggleDemandReportFilter = useCallback(() => {
-		getReportFilterHandler();
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
 					setIsAllowFilters(!isAllowFilters);
 			  }, 300);
 		setHTMLFilter(!getHTMLFilter);
-	}, [getHTMLFilter, getReportFilterHandler, isAllowFilters]);
+	}, [getHTMLFilter, isAllowFilters]);
+
 	useEffect(() => {
-		getDemandFunnelListingHandler();
-	}, [getDemandFunnelListingHandler]);
+		getDemandFunnelListingHandler(tableFilteredState);
+	}, [getDemandFunnelListingHandler, tableFilteredState]);
+	useEffect(() => {
+		getReportFilterHandler();
+	}, [getReportFilterHandler]);
 	return (
 		<div className={DemandFunnelStyle.hiringRequestContainer}>
 			<div className={DemandFunnelStyle.addnewHR}>
@@ -161,6 +224,53 @@ const DemandFunnelScreen = () => {
 						<div className={DemandFunnelStyle.filterLabel}>Add Filters</div>
 						<div className={DemandFunnelStyle.filterCount}>
 							{filteredTagLength}
+						</div>
+					</div>
+					<div className={DemandFunnelStyle.calendarFilterSet}>
+						<div className={DemandFunnelStyle.label}>Date</div>
+						{/* <div className={DemandFunnelStyle.calendarFilter}>
+							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+							<DatePicker
+								style={{ backgroundColor: 'red' }}
+								onKeyDown={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+								}}
+								className={DemandFunnelStyle.dateFilter}
+								placeholderText="Start date - End date"
+								selected={startDate}
+								onChange={onCalenderFilter}
+								startDate={startDate}
+								endDate={endDate}
+								selectsRange
+							/>
+						</div> */}
+						<div className={DemandFunnelStyle.calendarFilter}>
+							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+							<Controller
+								render={({ ...props }) => (
+									<DatePicker
+										className={DemandFunnelStyle.dateFilter}
+										onKeyDown={(e) => {
+											e.preventDefault();
+											e.stopPropagation();
+										}}
+										// selected={watch('invoiceDate')}
+										// onChange={(date) => {
+										// 	setValue('invoiceDate', date);
+										// }}
+										placeholderText="Start date - End date"
+										selected={startDate}
+										onChange={onCalenderFilter}
+										startDate={startDate}
+										endDate={endDate}
+										selectsRange
+									/>
+								)}
+								name="invoiceDate"
+								rules={{ required: true }}
+								control={control}
+							/>
 						</div>
 					</div>
 				</div>
@@ -243,6 +353,7 @@ const DemandFunnelScreen = () => {
 					setDemandFunnelModal={setDemandFunnelModal}
 					demandFunnelHRDetailsState={demandFunnelHRDetailsState}
 					setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
+					demandFunnelCount={demandFunnelCount}
 				/>
 			)}
 		</div>

@@ -185,7 +185,11 @@ const DemandFunnelFilter = ({
 	const handleFilters = useCallback(() => {
 		let filters = {};
 		appliedFilter.forEach((item) => {
-			filters = { ...filters, [item.filterType]: item.id };
+			filters = {
+				...filters,
+				[item.filterType]:
+					item?.filterType === 'companyCategory' ? item?.value : item.id,
+			};
 		});
 		setTableFilteredState({
 			...tableFilteredState,
@@ -196,13 +200,12 @@ const DemandFunnelFilter = ({
 			...filters,
 			// filterFields_ViewAllHRs: { ...filters },
 		};
-		handleHRRequest(reqFilter);
-	}, [
-		appliedFilter,
-		handleHRRequest,
-		setTableFilteredState,
-		tableFilteredState,
-	]);
+
+		if (reqFilter?.isActionWise === '1') reqFilter.isActionWise = true;
+		else reqFilter.isActionWise = false;
+		setTableFilteredState(reqFilter);
+		// handleHRRequest(reqFilter);
+	}, [appliedFilter, setTableFilteredState, tableFilteredState]);
 
 	return (
 		<aside className={hiringFilterStyle.aside}>

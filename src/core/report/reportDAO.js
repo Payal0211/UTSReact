@@ -89,10 +89,14 @@ export const ReportDAO = {
 			const demandFunnelReport = await ReportAPI.demandFunnelHRDetailsRequest(
 				reportData,
 			);
+
 			if (demandFunnelReport) {
 				const statusCode = demandFunnelReport['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
-					const tempResult = demandFunnelReport?.responseBody?.details;
+					const tempResult =
+						demandFunnelReport?.responseBody?.details ||
+						demandFunnelReport?.responseBody;
+
 					return {
 						statusCode: statusCode,
 						responseBody: tempResult,

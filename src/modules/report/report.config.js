@@ -7,6 +7,7 @@ export const reportConfig = {
 		setDemandFunnelModal,
 		setDemandFunnelHRDetailsState,
 		demandFunnelHRDetailsState,
+		setDemandFunnelCount,
 	) => {
 		let tableHeader = Object?.keys(demandTable?.[0] || {});
 
@@ -38,6 +39,7 @@ export const reportConfig = {
 											currentStage: param.Stage,
 											IsExport: false,
 										});
+										setDemandFunnelCount(data);
 										setDemandFunnelModal(true);
 									}}>
 									{data}
