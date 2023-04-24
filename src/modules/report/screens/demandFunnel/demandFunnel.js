@@ -47,7 +47,7 @@ const DemandFunnelScreen = () => {
 		head: '',
 		isActionWise: true,
 	});
-	const [demandFunnelCount, setDemandFunnelCount] = useState(0);
+	const [demandFunnelValue, setDemandFunnelValue] = useState({});
 	const [demandFunnelHRDetailsState, setDemandFunnelHRDetailsState] = useState({
 		adhocType: '',
 		TeamManagerName: '',
@@ -158,7 +158,7 @@ const DemandFunnelScreen = () => {
 				setDemandFunnelModal,
 				setDemandFunnelHRDetailsState,
 				demandFunnelHRDetailsState,
-				setDemandFunnelCount,
+				setDemandFunnelValue,
 			),
 		[apiData, demandFunnelHRDetailsState, demandFunnelModal],
 	);
@@ -353,7 +353,7 @@ const DemandFunnelScreen = () => {
 					setDemandFunnelModal={setDemandFunnelModal}
 					demandFunnelHRDetailsState={demandFunnelHRDetailsState}
 					setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
-					demandFunnelCount={demandFunnelCount}
+					demandFunnelValue={demandFunnelValue}
 				/>
 			)}
 		</div>
