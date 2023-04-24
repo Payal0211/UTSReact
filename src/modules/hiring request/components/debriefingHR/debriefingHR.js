@@ -311,6 +311,7 @@ const DebriefingHR = ({
 				remove={remove}
 				register={register}
 				fields={fields}
+				setValue={setValue}
 			/>
 			<Divider />
 			<div className={DebriefingHRStyle.formPanelAction}>
