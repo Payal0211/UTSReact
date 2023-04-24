@@ -77,6 +77,7 @@ export class MastersAPI {
 	static GET_NR_MARGIN = 'GetNRMargin';
 	static CHECK_OTHER_ROLE = 'CheckOtherRole';
 	static ADD_OTHER_SKILL = 'AddOtherSkill';
+	static CLONE_HR = 'CloneHR'
 }
 
 export class ClientsAPI {
@@ -105,6 +106,7 @@ export class HiringRequestsAPI {
 	static UPLOAD_DRIVE_FILE = 'UploadDriveFile';
 	static UPLOAD_GOOGLE_FILE_LINK = 'UploadGoogleFileLink';
 	static UPDATE_ODR_POOL_STATUS = 'UpdateODRPoolStatus';
+	static GET_HR_DETAILS = 'GetHRDetails'
 }
 
 export class UsersAPI {

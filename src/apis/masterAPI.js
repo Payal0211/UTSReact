@@ -398,4 +398,20 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getOtherRoleRequest');
 		}
 	},
+	cloneHRRequest: async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			MastersAPI.CLONE_HR;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getDashboardCountRequest');
+		}
+	},
 };

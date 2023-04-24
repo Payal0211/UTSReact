@@ -3,8 +3,9 @@ import { useCallback } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import AddInterviewerStyle from './addInterviewer.module.css';
 import { secondaryInterviewer } from '../hrFields/hrFields';
+import { useEffect } from 'react';
 
-const AddInterviewer = ({ register, fields, remove, append, errors }) => {
+const AddInterviewer = ({ register, fields, remove, append, errors, getHRdetails, setValue }) => {
 	/**Add Secondary Items*/
 	const onAddSecondaryInterviewer = useCallback(
 		(e) => {
@@ -20,6 +21,17 @@ const AddInterviewer = ({ register, fields, remove, append, errors }) => {
 		},
 		[remove],
 	);
+
+
+	useEffect(() => {
+		setValue("interviewerFullName", getHRdetails?.salesHiringRequest_Details?.interviewerName)
+		setValue("interviewerEmail", getHRdetails?.salesHiringRequest_Details?.interviewerEmailId)
+		setValue("interviewerLinkedin", getHRdetails?.salesHiringRequest_Details?.interviewLinkedin)
+		setValue("interviewerDesignation", getHRdetails?.salesHiringRequest_Details?.interviewerDesignation)
+
+	}, [getHRdetails])
+
+
 
 	return (
 		<div>

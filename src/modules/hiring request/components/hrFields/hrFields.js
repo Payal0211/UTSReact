@@ -65,6 +65,9 @@ const HRFields = ({
 	});
 	const [getGoogleDriveLink, setGoogleDriveLink] = useState('');
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
+
+
+
 	let controllerRef = useRef(null);
 	const {
 		watch,
@@ -607,6 +610,8 @@ const HRFields = ({
 			controllerRef.current.focus();
 		}
 	}, [errors?.clientName]);
+
+
 
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
