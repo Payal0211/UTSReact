@@ -7,7 +7,7 @@ export const reportConfig = {
 		setDemandFunnelModal,
 		setDemandFunnelHRDetailsState,
 		demandFunnelHRDetailsState,
-		setDemandFunnelCount,
+		setDemandFunnelValue,
 	) => {
 		let tableHeader = Object?.keys(demandTable?.[0] || {});
 
@@ -22,6 +22,7 @@ export const reportConfig = {
 				},
 				width: 250,
 				render: (data, param) => {
+					console.log(param, '--param');
 					return (
 						<Tooltip
 							placement="bottomLeft"
@@ -39,7 +40,10 @@ export const reportConfig = {
 											currentStage: param.Stage,
 											IsExport: false,
 										});
-										setDemandFunnelCount(data);
+										setDemandFunnelValue({
+											stage: param?.Stage,
+											count: data,
+										});
 										setDemandFunnelModal(true);
 									}}>
 									{data}

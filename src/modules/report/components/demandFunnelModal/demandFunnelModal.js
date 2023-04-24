@@ -13,7 +13,7 @@ const DemandFunnelModal = ({
 	setDemandFunnelModal,
 	demandFunnelHRDetailsState,
 	setDemandFunnelHRDetailsState,
-	demandFunnelCount,
+	demandFunnelValue,
 }) => {
 	const [apiData, setApiData] = useState([]);
 	const [searchData, setSearchData] = useState([]);
@@ -58,7 +58,7 @@ const DemandFunnelModal = ({
 						Demand Funnel HR Details
 					</label>
 					<p className={DemandFunnelStyle.trReq}>
-						TR Required ( Count: {demandFunnelCount})
+						{demandFunnelValue?.stage} ( Count: {demandFunnelValue?.count})
 					</p>
 				</div>
 				<div
