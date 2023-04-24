@@ -72,6 +72,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const [getReportingList, setReportingList] = useState([{ id: 0, value: 'Select' }]);
 	const [getGeoSpecificList, setGeoSpecificList] = useState([{ id: 0, value: "Select" }, { id: 1, value: "Yes" }, { id: 2, value: "No" }])
 	const [getEmployementMessage, setEmploymentMessage] = useState("")
+	const [editUser, setEditUser] = useState(false)
 
 	const convertToBase64 = useCallback((file) => {
 		return new Promise((resolve, reject) => {
@@ -115,6 +116,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const watchGEO = watch('geo');
 	const watchGEOSpecific = watch('geoSpecific');
 	const uploadFile = useRef(null);
+
+
 
 
 	const getEmployeeIDAlreadyExist = useCallback(
@@ -299,22 +302,36 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		}
 	}, [watchDepartMentName, watchLevelName]);
 
+	// useEffect(() => {
+	// 	if (watchDepartMentName?.value === "Select" || watchDepartMentName?.value === 'Administration') {
+	// 		resetField("level", { keepError: false })
+	// 		resetField("reportingUser", { keepError: false });
+	// 		resetField("geoSpecific", { keepError: false });
+	// 		resetField("geo", { keepError: false });
+	// 		resetField("team", { keepError: false })
+	// 		setLevelEdit('Select');
+	// 		setGEOType('')
+	// 		setSpecificGEO("Select")
+	// 		setReportTypeEdit('Select');
+	// 		setTeamTypeEdit('Select');
+	// 	}
+	// 	if (!enableALlFieldsMemo && watchDepartMentName?.value !== "Select" && watchDepartMentName?.value !== 'Administration') {
+	// 		setTeamTypeEdit('Select');
+	// 		setReportTypeEdit('Select');
+	// 		setLevelEdit('Select');
+	// 		setGEOType('')
+	// 		setSpecificGEO("Select")
+	// 		resetField("team")
+	// 		resetField("level")
+	// 		resetField("reportingUser");
+	// 		resetField("geoSpecific");
+	// 		resetField("geo");
+	// 	}
+
+	// }, [watchDepartMentName])
+
 	useEffect(() => {
-		if (watchDepartMentName?.value === "Select" || watchDepartMentName?.value === 'Administration') {
-			resetField("level", { keepError: false })
-			resetField("reportingUser", { keepError: false });
-			resetField("geoSpecific", { keepError: false });
-			resetField("geo", { keepError: false });
-			resetField("team", { keepError: false })
-			setLevelEdit('Select');
-			setGEOType('')
-			setSpecificGEO("Select")
-			setReportTypeEdit('Select');
-			setTeamTypeEdit('Select');
-			resetField("departMent")
-		}
-		if (!enableALlFieldsMemo && watchDepartMentName?.value !== "Select" && watchDepartMentName?.value !== 'Administration') {
-			setTeamTypeEdit('Select');
+		if (!enableALlFieldsMemo) {
 			setReportTypeEdit('Select');
 			setLevelEdit('Select');
 			setGEOType('')
@@ -324,51 +341,91 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			resetField("reportingUser");
 			resetField("geoSpecific");
 			resetField("geo");
+			resetField("priorityCount")
 		}
-
+		if (watchDepartMentName?.value === "Select") {
+			resetField("departMent")
+			setDepartMentEdit("Select")
+		}
 	}, [watchDepartMentName])
 
+
+
+	// useEffect(() => {
+	// 	if (watchLevelName?.value === "Select") {
+	// 		resetField("reportingUser", { keepError: false });
+	// 		resetField("geoSpecific", { keepError: false });
+	// 		resetField("geo", { keepError: false });
+	// 		setGEOType('')
+	// 		setSpecificGEO("Select")
+	// 		setReportTypeEdit('Select');
+	// 		resetField("level")
+	// 	}
+	// 	if (!enableALlFieldsMemo && watchLevelName?.value !== "Select") {
+	// 		resetField("reportingUser");
+	// 		setReportTypeEdit('Select');
+	// 	}
+
+	// }, [watchLevelName])
+
 	useEffect(() => {
-		if (watchLevelName?.value === "Select") {
-			resetField("reportingUser", { keepError: false });
-			resetField("geoSpecific", { keepError: false });
-			resetField("geo", { keepError: false });
+		if (!enableALlFieldsMemo) {
+			setReportTypeEdit('Select');
 			setGEOType('')
 			setSpecificGEO("Select")
-			setReportTypeEdit('Select');
-			resetField("level")
-		}
-		if (!enableALlFieldsMemo && watchLevelName?.value !== "Select") {
+			resetField("team")
 			resetField("reportingUser");
-			setReportTypeEdit('Select');
+			resetField("geoSpecific");
+			resetField("geo");
+			resetField("priorityCount")
+		}
+		if (watchLevelName?.value === "Select") {
+			resetField("level")
+			setLevelEdit('Select');
 		}
 
 	}, [watchLevelName])
 
 	useEffect(() => {
-		if (watchTeamName?.value === "Select") {
-			resetField("level", { keepError: false })
-			resetField("reportingUser", { keepError: false });
-			resetField("geoSpecific", { keepError: false });
-			resetField("geo", { keepError: false });
+		if (!enableALlFieldsMemo) {
 			setReportTypeEdit('Select');
-			setLevelEdit('Select');
 			setGEOType('')
 			setSpecificGEO("Select")
-			resetField("team")
-		}
-		if (!enableALlFieldsMemo && watchTeamName?.value !== "Select") {
-			resetField("level")
 			resetField("reportingUser");
 			resetField("geoSpecific");
 			resetField("geo");
-			setReportTypeEdit('Select');
-			setLevelEdit('Select');
-			setGEOType('')
-			setSpecificGEO("Select")
+			resetField("priorityCount")
 		}
-
+		if (watchTeamName?.value === "Select") {
+			resetField("team")
+			setTeamTypeEdit('Select');
+		}
 	}, [watchTeamName])
+
+	// useEffect(() => {
+	// 	if (watchTeamName?.value === "Select") {
+	// 		resetField("level", { keepError: false })
+	// 		resetField("reportingUser", { keepError: false });
+	// 		resetField("geoSpecific", { keepError: false });
+	// 		resetField("geo", { keepError: false });
+	// 		setReportTypeEdit('Select');
+	// 		setLevelEdit('Select');
+	// 		setGEOType('')
+	// 		setSpecificGEO("Select")
+	// 		resetField("team")
+	// 	}
+	// 	if (!enableALlFieldsMemo && watchTeamName?.value !== "Select") {
+	// 		resetField("level")
+	// 		resetField("reportingUser");
+	// 		resetField("geoSpecific");
+	// 		resetField("geo");
+	// 		setReportTypeEdit('Select');
+	// 		setLevelEdit('Select');
+	// 		setGEOType('')
+	// 		setSpecificGEO("Select")
+	// 	}
+
+	// }, [watchTeamName])
 
 	useEffect(() => {
 		if (watchGEOSpecific?.value === "Select") {
@@ -392,11 +449,18 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	}, [watchDepartMentName, watchLevelName])
 
 	useEffect(() => {
-		if (watchDepartMentName?.value !== "Select" && watchDepartMentName?.id) {
+		if (watchDepartMentName?.value !== "Select" && watchDepartMentName?.id && watchDepartMentName?.value === "Demand" && watchLevelName?.value === "Head") {
+			setTeamListEdit([])
+			setTeamListEdit(getTeamList?.filter((ele) => parseInt(ele?.text) === watchDepartMentName?.id));
+			setTeamTypeEdit("")
+		}
+		else if (watchDepartMentName?.value !== "Select" && watchDepartMentName?.id) {
 			setTeamListEdit([{ id: 0, value: "Select" }])
 			setTeamListEdit((prev) => [...prev, ...(getTeamList?.filter((ele) => parseInt(ele?.text) === watchDepartMentName?.id))]);
+			setTeamTypeEdit("Select")
 		}
-	}, [watchDepartMentName])
+
+	}, [watchDepartMentName, watchLevelName])
 
 	useEffect(() => {
 		setModifiedGEO([])
@@ -471,10 +535,12 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		setEnableAllFields(true);
 	}, []);
 
-
 	const userSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
-			let userFormDetails = userUtils.userDataFormatter(d, id, base64Image, getUploadFileData, modifiedGEO);
+			const teamValue = [];
+			Array.isArray(watchTeamName) && watchTeamName?.forEach((item) => teamValue.push(item?.id));
+			let userFormDetails = userUtils.userDataFormatter(d, id, base64Image, getUploadFileData, modifiedGEO, teamValue);
+			console.log(teamValue, "teamValue")
 			let userResponse = await userAPI.createUserRequest(userFormDetails);
 
 			if (userResponse.statusCode === HTTPStatusCode.OK) {
@@ -516,7 +582,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				});
 		} */
 		},
-		[id, navigate, base64Image, getUploadFileData, modifiedGEO],
+		[id, navigate, base64Image, getUploadFileData, modifiedGEO, watchTeamName],
 	);
 
 	const uploadFileHandler = useCallback(
@@ -563,7 +629,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	}, [userDetails, getDepartment])
 
 	useEffect(() => {
-		if (getTeamListEdit.length > 1) {
+		if (getTeamListEdit.length > 1 && typeof userDetails?.teamID === "number") {
 			getTeamListEdit?.map((item) => {
 				if (item?.id === userDetails?.teamID) {
 					setTeamTypeEdit(item?.value)
@@ -571,7 +637,23 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				}
 			})
 		}
+		else if (getTeamListEdit.length > 1 && typeof userDetails?.teamID === "string") {
+			const teamDetails = userDetails.teamID.split(",")
+			console.log(teamDetails, "teamDetails")
+			const multipleTeam = []
+			getTeamListEdit?.map((item) => {
+				if (teamDetails.includes(item?.id?.toString())) {
+					multipleTeam.push({ id: item?.id, value: item?.value })
+				}
+			})
+			console.log(multipleTeam, "multipleTeam")
+			setTeamTypeEdit(multipleTeam)
+			setValue('team', multipleTeam)
+
+		}
 	}, [userDetails, getTeamListEdit])
+
+
 
 	useEffect(() => {
 		if (getLevelList.length > 1) {
@@ -615,9 +697,9 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			setValue('primaryClientPhoneNumber', userDetails?.contactNumber)
 			setValue('employeeDesignation', userDetails?.designation)
 			setValue('description', userDetails?.description)
+			setValue('priorityCount', userDetails?.priorityCount)
 			setUploadFileData({ name: userDetails?.profilePic, type: userDetails?.fileUpload?.extenstion })
 			setBase64Image(userDetails?.fileUpload?.base64ProfilePic)
-
 			if (userDetails?.detail?.geoIDs?.length > 0) {
 				setSpecificGEO("Yes");
 				setValue("geoSpecific", { id: 1, value: "Yes" })
@@ -795,29 +877,9 @@ const UsersFields = ({ id, setLoading, loading }) => {
 								</div>
 							</div>
 
-							{watchDepartMentName && watchDepartMentName?.value !== 'Administration' && watchDepartMentName?.value !== 'Select' &&
-								<div className={UserFieldStyle.colMd6}>
-									<div className={UserFieldStyle.formGroup}>
-										<HRSelectField
-											controlledValue={teamTypeEdit}
-											setControlledValue={setTeamTypeEdit}
-											isControlled={true}
-											mode="id/value"
-											setValue={setValue}
-											register={register}
-											label={'Team'}
-											defaultValue={'Select'}
-											options={getTeamListEdit && getTeamListEdit}
-											name="team"
-											isError={errors['team'] && errors['team']}
-											required
-											errorMsg={'Please select team'}
-										/>
-									</div>
-								</div>}
 
-							{watchTeamName && watchDepartMentName && watchDepartMentName?.value !== 'Administration' &&
-								watchTeamName?.value !== "Select" && watchDepartMentName?.value !== 'Select' &&
+							{watchDepartMentName && watchDepartMentName?.value !== 'Administration' &&
+								watchDepartMentName?.value !== 'Select' &&
 								<div className={UserFieldStyle.colMd6}>
 									<div className={UserFieldStyle.formGroup}>
 										<HRSelectField
@@ -838,7 +900,50 @@ const UsersFields = ({ id, setLoading, loading }) => {
 									</div>
 								</div>}
 
-							{watchLevelName && watchLevelName?.value !== 'Select' && watchDepartMentName?.value !== 'Administration' && watchDepartMentName?.value !== 'Select' &&
+
+							{watchDepartMentName && watchDepartMentName?.value !== 'Administration' && watchDepartMentName?.value !== 'Select' && watchLevelName && watchLevelName?.value !== 'Select' &&
+								<div className={UserFieldStyle.colMd6}>
+									<div className={UserFieldStyle.formGroup}>
+										<HRSelectField
+											controlledValue={teamTypeEdit}
+											setControlledValue={setTeamTypeEdit}
+											isControlled={true}
+											mode={watchDepartMentName?.value === "Demand" && watchLevelName?.value === "Head" ? "multiple" : "id/value"}
+											setValue={setValue}
+											register={register}
+											label={'Team'}
+											options={getTeamListEdit && getTeamListEdit}
+											name="team"
+											isError={errors['team'] && errors['team']}
+											required
+											errorMsg={'Please select team'}
+										/>
+									</div>
+								</div>}
+
+							{/* {watchTeamName && watchDepartMentName && watchDepartMentName?.value !== 'Administration' &&
+								watchTeamName?.value !== "Select" && watchDepartMentName?.value !== 'Select' &&
+								<div className={UserFieldStyle.colMd6}>
+									<div className={UserFieldStyle.formGroup}>
+										<HRSelectField
+											controlledValue={levelTypeEdit}
+											setControlledValue={setLevelEdit}
+											isControlled={true}
+											mode="id/value"
+											setValue={setValue}
+											register={register}
+											label={'Level'}
+											defaultValue={'Select'}
+											options={getLevelList && getLevelList}
+											name="level"
+											isError={errors['level'] && errors['level']}
+											required
+											errorMsg={'Please select level'}
+										/>
+									</div>
+								</div>} */}
+
+							{watchTeamName && watchTeamName?.value !== 'Select' && watchDepartMentName?.value !== 'Administration' && watchDepartMentName?.value !== 'Select' &&
 								<div className={UserFieldStyle.colMd6}>
 									<div className={UserFieldStyle.formGroup}>
 										<HRSelectField
@@ -849,7 +954,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											setValue={setValue}
 											register={register}
 											label={'Is this Geo Specific?'}
-											defaultValue={'Select                                                               '}
+											defaultValue={'Select'}
 											options={getGeoSpecificList && getGeoSpecificList}
 											name="geoSpecific"
 											isError={errors['geoSpecific'] && errors['geoSpecific']}
@@ -888,11 +993,17 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											placeholder="Please Select"
 											options={GEO && GEO}
 											name="geo"
+											required={watchGEOSpecific?.value === "Yes" ? true : false}
+											errorMsg={'Please select geo fields'}
+											isError={errors['geo'] && errors['geo']}
+
 										/>
 									</div>
 								</div>}
 
-							{getReportingList?.length > 1 && watchLevelName && watchDepartMentName && watchDepartMentName?.value !== 'Administration' && watchLevelName?.value !== "Select" && watchDepartMentName?.value !== 'Select' &&
+							{console.log(watchGEOSpecific, "watchGEOSpecific")}
+
+							{getReportingList?.length > 1 && watchTeamName && watchDepartMentName && watchDepartMentName?.value !== 'Administration' && watchTeamName?.value !== "Select" && watchLevelName?.value !== "Head" && watchDepartMentName?.value !== 'Select' &&
 								<div className={UserFieldStyle.colMd6}>
 									<div className={UserFieldStyle.formGroup}>
 										<HRSelectField
@@ -1057,26 +1168,24 @@ const UsersFields = ({ id, setLoading, loading }) => {
 										</div>
 									</div>)} */}
 
-							{/*
-
-							{watch('userType')?.id === UserAccountRole.SALES_MANAGER && (
+							{watchTeamName && watchTeamName !== "Select" && (
 								<div className={UserFieldStyle.colMd6}>
 									<HRInputField
-										value={enableALlFieldsMemo ? userDetails?.fullName : null}
-										disabled={enableALlFieldsMemo && true}
 										register={register}
 										errors={errors}
 										validationSchema={{
 											required: 'please enter the priority count',
 										}}
 										label="Priority Count"
+										defaultValue={enableALlFieldsMemo ? userDetails?.priorityCount : null}
+										value={watch("priorityCount")}
 										name="priorityCount"
 										type={InputType.Number}
 										placeholder="Enter Priority Count "
 										required
 									/>
 								</div>
-							)} */}
+							)}
 							{/* {watch('userType')?.id === UserAccountRole.SALES && (
 								<div className={UserFieldStyle.colMd6}>
 									<div className={UserFieldStyle.formGroup}>

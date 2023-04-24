@@ -38,7 +38,7 @@ export const userUtils = {
 
 		return filteredData;
 	},
-	userDataFormatter: (d, id, base64Image, getUploadFileData, modifiedGEO) => {
+	userDataFormatter: (d, id, base64Image, getUploadFileData, modifiedGEO, teamValue) => {
 		console.log(modifiedGEO, "modifiedGEO")
 		const userFormDetails = {
 			id: _isNull(id) ? 0 : id,
@@ -60,7 +60,7 @@ export const userUtils = {
 				extenstion: getUploadFileData?.type?.slice(6) ? getUploadFileData?.type?.slice(6) : ''
 			},
 			DeptID: d?.departMent?.id,
-			TeamID: d?.team?.id,
+			TeamID: teamValue?.length === 0 ? d?.team?.id.toString() : teamValue?.join(","),
 			LevelID: d?.level?.id,
 			profilePic: "",
 			geoIds: modifiedGEO,
