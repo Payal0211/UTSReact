@@ -153,11 +153,12 @@ const HRFields = ({
 		},
 		[getValidation],
 	);
+
 	const uploadFileHandler = useCallback(
 		async (e) => {
 			setIsLoading(true);
 			let fileData = e.target.files[0];
-			console.log('--fileData---', fileData);
+
 			if (
 				fileData?.type !== 'application/pdf' &&
 				fileData?.type !== 'application/docs' &&
@@ -429,7 +430,7 @@ const HRFields = ({
 	const getClientNameSuggestionHandler = useCallback(
 		async (clientName) => {
 			let response = await MasterDAO.getEmailSuggestionDAO(clientName);
-			console.log(response);
+
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setClientNameSuggestion(response?.responseBody?.details);
 
@@ -598,7 +599,6 @@ const HRFields = ({
 	/** To check Duplicate email exists End */
 
 	const [messageAPI, contextHolder] = message.useMessage();
-	console.log(errors, '---hrFieldsd');
 
 	const hrSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
@@ -607,7 +607,7 @@ const HRFields = ({
 				type,
 				watch,
 				// filteredMemo[0]?.contactId,
-				contactID,
+				contactID || getContactAndSaleID?.contactID,
 				isHRDirectPlacement,
 				addHRResponse,
 			);
@@ -640,7 +640,8 @@ const HRFields = ({
 		},
 		[
 			addHRResponse,
-			filteredMemo,
+			contactID,
+			getContactAndSaleID?.contactID,
 			isHRDirectPlacement,
 			messageAPI,
 			setEnID,

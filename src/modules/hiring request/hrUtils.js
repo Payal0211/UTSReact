@@ -77,11 +77,9 @@ export const hrUtils = {
 		isHRDirectPlacement,
 		addHrResponse,
 	) {
-		console.log('--contactID---', contactID);
-		console.log('--contactID is null', _isNull(contactID));
 		const hrFormDetails = {
 			en_Id: _isNull(addHrResponse) ? '' : addHrResponse.en_Id,
-			contactId: _isNull(contactID) ? 0 : contactID,
+			contactId: contactID || 0,
 			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 			clientName:
 				draft === SubmitType.SAVE_AS_DRAFT ? watch('clientName') : d.clientName,
@@ -178,9 +176,11 @@ export const hrUtils = {
 						? 0
 						: watch('salesPerson')
 					: _isNull(d.salesPerson)
-						? 0
-						: d.salesPerson,
-			ChildCompanyName: watch("otherChildCompanyName") ? watch('otherChildCompanyName') : watch('childCompany')?.value,
+					? 0
+					: d.salesPerson,
+			ChildCompanyName: watch('otherChildCompanyName')
+				? watch('otherChildCompanyName')
+				: watch('childCompany')?.value,
 			contractDuration:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('contractDuration'))

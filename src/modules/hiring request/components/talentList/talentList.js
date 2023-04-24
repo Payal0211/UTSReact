@@ -1480,7 +1480,7 @@ const TalentList = ({
 											}}>
 											<HROperator
 												onClickHandler={() => setTalentIndex(item?.TalentID)}
-												title={talentCTA?.[pageIndex]?.cTAInfoList[0]?.label}
+												title={talentCTA?.[listIndex]?.cTAInfoList[0]?.label}
 												icon={<AiOutlineDown />}
 												backgroundColor={`var(--color-sunlight)`}
 												iconBorder={`1px solid var(--color-sunlight)`}
