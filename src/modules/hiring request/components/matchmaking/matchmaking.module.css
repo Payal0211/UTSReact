@@ -132,7 +132,7 @@ tr th:first-child{
     padding-left: 20px;
 }
 
- .btnPrimary {
+ /* .btnPrimary {
     background: #FFDA30;
      border: 1px solid transparent;
      border-radius: 8px;
@@ -144,6 +144,21 @@ tr th:first-child{
      padding: 12px 28px;
      outline: none;
     transition: all 0.35s ease 0s;
+     cursor: pointer;
+     box-shadow: none;
+ } */
+ .btnPrimary {
+     background: #FFDA30;
+     border: 1px solid #FFDA30;
+     border-radius: 8px;
+     font-family: 'Montserrat';
+     font-weight: 500;
+     font-size: 15px;
+     line-height: 17px;
+     color: #232323;
+     padding: 17px 28px;
+     outline: none;
+     transition: all 0.35s ease 0s;
      cursor: pointer;
      box-shadow: none;
  }

@@ -36,12 +36,13 @@ const DemandFunnelModal = ({
 		});
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			downloadFileUtil(response?.responseBody);
-			// setDemandFunnelModal(false);
+			// setDemandFunnelModal(false);`
 		}
 	}, [demandFunnelHRDetailsState]);
 
 	useEffect(() => {
 		getDemandFunnelHRDetailsHandler();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [getDemandFunnelHRDetailsHandler]);
 	return (
 		<Modal
