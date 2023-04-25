@@ -31,7 +31,6 @@ const HRSelectField = ({
 					value: item?.value,
 				})),
 			);
-
 			isControlled && setControlledValue(option);
 		} else if (mode === 'id/value') {
 			setValue(name, {

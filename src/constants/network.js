@@ -23,6 +23,7 @@ export class SubDomain {
 	static ENGAGEMENT = 'Engagement/';
 	static TALENT_REPLACEMENT = 'TalentReplacement/';
 	static REPORT = 'Report/';
+	static INCENTIVE_REPORT = 'IncentiveReport/'
 }
 export class APIType {
 	static USER = '/user';
@@ -206,4 +207,9 @@ export class TalentReplaceAPI {
 	static ENGAGEMENT_REPLACE_TALENT =
 		'GetEngagemetnsForReplacementBasedOnLWDOption';
 	static SAVE_REPLACED_TALENT = 'SaveReplaceTalent';
+}
+
+export class IncentiveReport {
+	static GET_USER_ROLE = 'GetIncentiveReport';
+
 }

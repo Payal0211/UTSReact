@@ -19,7 +19,7 @@ const AddNewClient = React.lazy(() =>
 const InterviewList = React.lazy(() =>
 	import('modules/interview/screens/interviewList/interviewList'),
 );
-/* 
+/*
 
 const InterviewSchedule = React.lazy(() =>
 	import('modules/interview/screens/interviewReschedule/interviewReschedule'),
@@ -59,6 +59,11 @@ const DemandFunnelReport = React.lazy(() =>
 	import('modules/report/screens/demandFunnel/demandFunnel'),
 );
 
+const IncentiveReport = React.lazy(() =>
+	import('modules/IncentiveReport/screens/IncentiveReport'),
+);
+
+
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
@@ -84,6 +89,7 @@ export default class UTSRoutes {
 	static EDITUSERROUTE = '/user/:userID';
 	static ENGAGEMENTRROUTE = '/engagement';
 	static DEMANDFUNNELROUTE = '/report/demandfunnel';
+	static INCENTIVEREPORTROUTE = '/report/incentive';
 }
 
 export const navigateToComponent = {
@@ -172,4 +178,10 @@ export const navigateToComponent = {
 			<DemandFunnelReport />
 		</Suspense>
 	),
+	[UTSRoutes.INCENTIVEREPORTROUTE]: (
+		<Suspense>
+			<IncentiveReport />
+		</Suspense>
+	),
+
 };
