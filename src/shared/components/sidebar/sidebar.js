@@ -1,9 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
-import HR from 'assets/svg/hr.svg';
-import Briefcase from 'assets/svg/briefcase.svg';
-import Handshake from 'assets/svg/handshake.svg';
-import AddHR from 'assets/svg/addHR.svg';
+import HRList from 'assets/svg/HRList.svg';
+import DealList from 'assets/svg/DealList.svg';
+import UserList from 'assets/svg/UserList.svg';
+import Dashboard from 'assets/svg/dashboard.svg';
 import HRDetails from 'assets/svg/HRDetails.svg';
+import EngagementList from 'assets/svg/engagement.svg';
+import DemandFunnel from 'assets/svg/demandFunnel.svg';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -61,35 +63,35 @@ const getSideBar = () => {
 			id: 'UTS_dashboard',
 			title: 'Dashboard',
 			isActive: true,
-			icon: AddHR,
+			icon: Dashboard,
 			navigateTo: UTSRoutes.HOMEROUTE,
 		}),
 		new SideBarModels({
 			id: 'UTS_DealList',
 			title: 'Deal',
 			isActive: false,
-			icon: Handshake,
+			icon: DealList,
 			navigateTo: UTSRoutes.DEALLISTROUTE,
 		}),
 		new SideBarModels({
 			id: 'UTS_UserList',
 			title: 'Users',
 			isActive: false,
-			icon: HR,
+			icon: UserList,
 			navigateTo: UTSRoutes.USERLISTROUTE,
 		}),
 		new SideBarModels({
 			id: 'UTS_all_hiring_request',
-			title: 'HR',
+			title: 'Hiring Request',
 			isActive: false,
-			icon: Briefcase,
+			icon: HRList,
 			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 		}),
 		new SideBarModels({
 			id: 'Engagement_List',
 			title: 'Engagement',
 			isActive: false,
-			icon: HRDetails,
+			icon: EngagementList,
 			navigateTo: UTSRoutes.ENGAGEMENTRROUTE,
 		}),
 		/* new SideBarModels({
@@ -110,7 +112,7 @@ const getSideBar = () => {
 			id: 'demand_funnel_report',
 			title: 'Demand Funnel',
 			isActive: false,
-			icon: HRDetails,
+			icon: DemandFunnel,
 			navigateTo: UTSRoutes.DEMANDFUNNELROUTE,
 		}),
 	];

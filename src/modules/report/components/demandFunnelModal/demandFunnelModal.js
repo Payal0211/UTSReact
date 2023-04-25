@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ReportDAO } from 'core/report/reportDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { reportConfig } from 'modules/report/report.config';
-import { downloadFileUtil } from 'modules/report/reportUtils';
+import { downloadFileUtil, downloadToExcel } from 'modules/report/reportUtils';
 
 const DemandFunnelModal = ({
 	demandFunnelModal,
@@ -32,10 +32,10 @@ const DemandFunnelModal = ({
 	const exportHandler = useCallback(async () => {
 		const response = await ReportDAO.demandFunnelHRDetailsRequestDAO({
 			...demandFunnelHRDetailsState,
-			IsExport: true,
+			IsExport: false,
 		});
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			downloadFileUtil(response?.responseBody);
+			downloadToExcel(response?.responseBody);
 			// setDemandFunnelModal(false);`
 		}
 	}, [demandFunnelHRDetailsState]);

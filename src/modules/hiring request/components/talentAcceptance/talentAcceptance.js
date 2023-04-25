@@ -38,29 +38,51 @@ const TalentAcceptance = ({
 	console.log(talentInfo, '--talentInfo');
 	const switchLocation = useLocation();
 	let urlSplitter = switchLocation.pathname.split('/')[2];
+	const [talentAcceptanceResult, setTalentAcceptanceResult] = useState();
+	const [isLoading, setIsLoading] = useState(false);
 	const [postAcceptanceValue, setPostAcceptanceValue] = useState(null);
 	const [postAcceptanceAvailability, setPostAcceptanceAvailability] =
 		useState(null);
 	const [postAcceptanceHowSoon, setPostAcceptanceHowSoon] = useState(null);
-	const [isLoading, setIsLoading] = useState(false);
-
 	const onChangePostAcceptanceDetails = (e) => {
+		console.log(
+			e.target.value,
+			'---e.target.value  onChangePostAcceptanceDetails',
+		);
 		setPostAcceptanceValue(e.target.value);
 	};
 	const onChangePostAcceptanceDetailAvailability = (e) => {
+		console.log(
+			e.target.value,
+			'---e.target.value onChangePostAcceptanceDetailAvailability',
+		);
 		setPostAcceptanceAvailability(e.target.value);
 	};
 	const onChangePostAcceptanceDetailHowSoon = (e) => {
+		console.log(e.target.value, '---e.target.value post acceptance');
 		setPostAcceptanceHowSoon(e.target.value);
 	};
 
-	const [talentAcceptanceResult, setTalentAcceptanceResult] = useState();
 	const getHRAcceptanceHandler = useCallback(async (data) => {
 		const response = await hiringRequestDAO.getHRAcceptanceRequestDAO({
 			postID: data?.postId,
 			talentID: data?.talentId,
 		});
 		setTalentAcceptanceResult(response && response?.responseBody?.details);
+		setPostAcceptanceValue(
+			response &&
+				response?.responseBody?.details?.postAcceptanceDetail?.[0]?.primaryKey,
+		);
+		setPostAcceptanceAvailability(
+			response &&
+				response?.responseBody?.details?.postAcceptanceDetailAvailability?.[0]
+					?.primaryKey,
+		);
+		setPostAcceptanceHowSoon(
+			response &&
+				response?.responseBody?.details?.postAcceptanceDetailHowSoon?.[0]
+					?.primaryKey,
+		);
 		setIsLoading(false);
 	}, []);
 	const openPostAcceptanceHandler = useCallback(async () => {
@@ -77,6 +99,7 @@ const TalentAcceptance = ({
 		talentInfo?.TalentID,
 	]);
 
+	console.log(talentAcceptanceResult, '--talenttalentAcceptanceResult');
 	const saveTalentAcceptanceHandler = useCallback(async () => {
 		setIsLoading(true);
 		let formattedResponse = {
@@ -219,7 +242,7 @@ const TalentAcceptance = ({
 														{talentAcceptanceResult?.postAcceptanceDetail?.map(
 															(item, index) => {
 																return (
-																	<Radio value={index}>
+																	<Radio value={item?.primaryKey}>
 																		{item?.talent_ReadytoworkShift}
 																	</Radio>
 																);
@@ -294,7 +317,7 @@ const TalentAcceptance = ({
 														{talentAcceptanceResult?.postAcceptanceDetailHowSoon?.map(
 															(item, index) => {
 																return (
-																	<Radio value={index}>
+																	<Radio value={item?.primaryKey}>
 																		{item?.talent_JoinWithin}
 																	</Radio>
 																);

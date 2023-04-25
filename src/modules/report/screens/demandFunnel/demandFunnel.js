@@ -23,19 +23,7 @@ const DemandFunnelFilterLazyComponent = React.lazy(() =>
 );
 
 const DemandFunnelScreen = () => {
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		control,
-		setError,
-		getValues,
-		watch,
-		reset,
-		resetField,
-		unregister,
-		formState: { errors },
-	} = useForm();
+	const { control } = useForm();
 	const [tableFilteredState, setTableFilteredState] = useState({
 		startDate: '',
 		endDate: '',
@@ -112,6 +100,21 @@ const DemandFunnelScreen = () => {
 					.split('/')
 					.reverse()
 					.join('-'),
+			});
+			setDemandFunnelHRDetailsState({
+				...demandFunnelHRDetailsState,
+				funnelFilter: {
+					startDate: new Date(start)
+						.toLocaleDateString('en-UK')
+						.split('/')
+						.reverse()
+						.join('-'),
+					endDate: new Date(end)
+						.toLocaleDateString('en-UK')
+						.split('/')
+						.reverse()
+						.join('-'),
+				},
 			});
 			getDemandFunnelListingHandler({
 				...tableFilteredState,
