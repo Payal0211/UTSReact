@@ -22,7 +22,6 @@ export const reportConfig = {
 				},
 				width: 250,
 				render: (data, param) => {
-					console.log(param, '--param');
 					return (
 						<Tooltip
 							placement="bottomLeft"

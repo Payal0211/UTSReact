@@ -168,36 +168,39 @@ const HRDetailScreen = () => {
 								)}
 							</div>
 						)}
+						<button className={HRDetailStyle.btnPrimary}>
+							Clone - {updatedSplitter}
+						</button>
 					</div>
-					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED
-						? null
-						: hrUtils.showMatchmaking(
-								apiData,
-								miscData?.LoggedInUserTypeID,
-								callAPI,
-								urlSplitter,
-								updatedSplitter,
-						  )}
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
-							{/* {hrUtils.getAcceptTR(
-								apiData?.IsAccepted,
-								miscData?.LoggedInUserTypeID,
-								setAcceptHRModal,
-								acceptHRModal,
-							)}
-							
 							<AcceptHR
 								hrID={apiData?.ClientDetail?.HR_Number}
 								openModal={acceptHRModal}
 								cancelModal={() => setAcceptHRModal(false)}
-							/> */}
+							/>{' '}
 							{/* {hrUtils.getAccpetMoreTR(
 								apiData?.IsAccepted,
 								miscData?.LoggedInUserTypeID,
 								apiData?.TR_Accepted,
 							)} */}
+							{hrUtils.showMatchmaking(
+								apiData,
+								miscData?.LoggedInUserTypeID,
+								callAPI,
+								urlSplitter,
+								updatedSplitter,
+							)}
+							{apiData?.DpFlag ? (
+								<button className={HRDetailStyle.btnPrimary}>
+									Convert to DP
+								</button>
+							) : (
+								<button className={HRDetailStyle.btnPrimary}>
+									Convert to contractual
+								</button>
+							)}
 							<AcceptHR
 								hrID={apiData?.ClientDetail?.HR_Number}
 								openModal={acceptHRModal}

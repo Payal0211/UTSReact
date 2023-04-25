@@ -108,12 +108,12 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 									{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 								</span>
 							</div>
-							<div className={CompanyProfileCardStyle.TRParked}>
+							{/* <div className={CompanyProfileCardStyle.TRParked}>
 								<span>TR Parked:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.TR_Accepted ? clientDetail?.TR_Accepted : 'NA'}
 								</span>
-							</div>
+							</div> */}
 							<div className={CompanyProfileCardStyle.roleName}>
 								<span>Role Name:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
