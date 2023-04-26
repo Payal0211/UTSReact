@@ -470,6 +470,21 @@ export const HiringRequestAPI = {
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
 		}
+	},
+	convertToDirectPlacement: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.INTERVIEW +
+			InterviewsAPI.CONVERT_DP + `?HiringRequest_ID=${data}`;
+		httpService.dataToSend = data;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
+		}
 	}
-
 };

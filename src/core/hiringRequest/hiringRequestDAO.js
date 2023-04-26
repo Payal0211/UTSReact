@@ -779,4 +779,39 @@ export const hiringRequestDAO = {
 			);
 		}
 	},
+	convertToDirectPlacementDAO: async (data) => {
+		try {
+			const convertToDireactPlacementDetails =
+				await HiringRequestAPI.convertToDirectPlacement(data);
+
+			if (convertToDireactPlacementDetails) {
+				const statusCode = convertToDireactPlacementDetails['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = convertToDireactPlacementDetails.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return convertToDireactPlacementDetails;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return convertToDireactPlacementDetails;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
+			);
+		}
+	},
 };

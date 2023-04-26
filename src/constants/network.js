@@ -23,6 +23,7 @@ export class SubDomain {
 	static ENGAGEMENT = 'Engagement/';
 	static TALENT_REPLACEMENT = 'TalentReplacement/';
 	static REPORT = 'Report/';
+	static CONVERTTODP = "ViewAllHR/"
 }
 export class APIType {
 	static USER = '/user';
@@ -148,6 +149,7 @@ export class HiringRequestsAPI {
 	static UPLOAD_GOOGLE_FILE_LINK = 'UploadGoogleFileLink';
 	static UPDATE_ODR_POOL_STATUS = 'UpdateODRPoolStatus';
 	static CHECK_SALES_USER_IS_PARTNER = 'CheckSalesUserIsPartner';
+	static CONVERT_DP = "GetHrDPConversion"
 }
 
 export class UsersAPI {
