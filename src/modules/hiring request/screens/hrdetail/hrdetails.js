@@ -172,12 +172,12 @@ const HRDetailScreen = () => {
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED
 						? null
 						: hrUtils.showMatchmaking(
-								apiData,
-								miscData?.LoggedInUserTypeID,
-								callAPI,
-								urlSplitter,
-								updatedSplitter,
-						  )}
+							apiData,
+							miscData?.LoggedInUserTypeID,
+							callAPI,
+							urlSplitter,
+							updatedSplitter,
+						)}
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
@@ -187,7 +187,7 @@ const HRDetailScreen = () => {
 								setAcceptHRModal,
 								acceptHRModal,
 							)}
-							
+
 							<AcceptHR
 								hrID={apiData?.ClientDetail?.HR_Number}
 								openModal={acceptHRModal}

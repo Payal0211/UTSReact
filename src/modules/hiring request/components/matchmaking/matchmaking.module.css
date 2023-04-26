@@ -5,7 +5,7 @@
     border-radius: 8px;
 }
 .formPanelAction {
-   
+
     padding: 32px 0;
     margin-left: auto;
     margin-right: auto;
@@ -16,7 +16,7 @@
 }
 .matchmakingLabel{
     margin-top: 40px;
-    margin-left: 20px;
+    /* margin-left: 20px; */
     line-height: 39px;
     font-weight: 500;
     font-size: 32px;
@@ -29,7 +29,7 @@
 padding: 17px 12px;
 font-weight: 600 !important;
 text-align: start;
-border-bottom: 2px solid var(--color-sunlight);  
+border-bottom: 2px solid var(--color-sunlight);
 }
 
 .isSelected{
@@ -83,7 +83,7 @@ border-bottom: 2px solid var(--color-sunlight);
    cursor: pointer;
     border-collapse: collapse;
     width: 100%;
-    
+
     position: relative;
 }
 .td{
@@ -98,7 +98,7 @@ padding-left: 20px;
 
 .ellipsis{
     white-space: nowrap;
-   
+
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -152,4 +152,3 @@ tr th:first-child{
      color: #fff;
      border-color: #232323;
  }
-

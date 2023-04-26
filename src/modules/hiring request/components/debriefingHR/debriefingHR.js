@@ -144,7 +144,10 @@ const DebriefingHR = ({
 			roleAndResponsibilites: d.roleAndResponsibilities,
 			requirements: d.requirements,
 			en_Id: enID,
-			skills: d.skills?.filter((item) => item?.skillsID !== -1),
+			skills: d.skills.map((item) => {
+				const obj = { skillsID: item.id, skillsName: item.value }
+				return obj;
+			}),
 			aboutCompanyDesc: d.aboutCompany,
 			secondaryInterviewer: d.secondaryInterviewer,
 			interviewerFullName: d.interviewerFullName,

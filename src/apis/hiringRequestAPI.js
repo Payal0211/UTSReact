@@ -471,4 +471,5 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
 		}
 	}
+
 };
