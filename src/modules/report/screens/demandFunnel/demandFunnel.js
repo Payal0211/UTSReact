@@ -177,6 +177,11 @@ const DemandFunnelScreen = () => {
 			setFiltersList(response && response?.responseBody?.Data);
 			setStartDate(new Date(response?.responseBody?.Data?.StartDate));
 			setEndDate(new Date(response?.responseBody?.Data?.EndDate));
+			setTableFilteredState({
+				...tableFilteredState,
+				startDate: response?.responseBody?.Data?.StartDate,
+				endDate: response?.responseBody?.Data?.EndDate,
+			});
 			setDemandFunnelHRDetailsState({
 				...demandFunnelHRDetailsState,
 

@@ -115,4 +115,116 @@ export const ReportDAO = {
 			return errorDebug(error, 'ReportDAO.demandFunnelHRDetailsRequestDAO');
 		}
 	},
+
+	/** ----------- SUPPLY FUNNEL ---------------- */
+	supplyFunnelListingRequestDAO: async function (reportData) {
+		try {
+			const SupplyFunnelReport = await ReportAPI.supplyFunnelListingRequest(
+				reportData,
+			);
+			if (SupplyFunnelReport) {
+				const statusCode = SupplyFunnelReport['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = SupplyFunnelReport?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: JSON.parse(tempResult),
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return SupplyFunnelReport;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return SupplyFunnelReport;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.supplyFunnelListingRequestDAO');
+		}
+	},
+	supplyFunnelSummaryRequestDAO: async function (reportData) {
+		try {
+			const supplyFunnelSummary = await ReportAPI.supplyFunnelSummary(
+				reportData,
+			);
+			if (supplyFunnelSummary) {
+				const statusCode = supplyFunnelSummary['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = supplyFunnelSummary?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: JSON.parse(tempResult),
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return supplyFunnelSummary;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return supplyFunnelSummary;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.supplyFunnelSummaryRequestDAO');
+		}
+	},
+	supplyFunnelFiltersRequestDAO: async function () {
+		try {
+			const supplyFunnelFilters = await ReportAPI.supplyFunnelFilters();
+			if (supplyFunnelFilters) {
+				const statusCode = supplyFunnelFilters['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = supplyFunnelFilters?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return supplyFunnelFilters;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return supplyFunnelFilters;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.supplyFunnelFiltersRequestDAO');
+		}
+	},
+	supplyFunnelHRDetailsRequestDAO: async function (reportData) {
+		try {
+			const supplyFunnelReport = await ReportAPI.supplyFunnelHRDetailsRequest(
+				reportData,
+			);
+
+			if (supplyFunnelReport) {
+				const statusCode = supplyFunnelReport['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult =
+						supplyFunnelReport?.responseBody?.details ||
+						supplyFunnelReport?.responseBody;
+
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return supplyFunnelReport;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return supplyFunnelReport;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.supplyFunnelHRDetailsRequestDAO');
+		}
+	},
 };

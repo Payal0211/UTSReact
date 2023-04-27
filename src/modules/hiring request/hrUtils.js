@@ -76,7 +76,9 @@ export const hrUtils = {
 		contactID,
 		isHRDirectPlacement,
 		addHrResponse,
+		fileName,
 	) {
+		console.log(fileName, '--fileName');
 		const hrFormDetails = {
 			en_Id: _isNull(addHrResponse) ? '' : addHrResponse.en_Id,
 			contactId: contactID || 0,
@@ -115,20 +117,18 @@ export const hrUtils = {
 					? null
 					: d.hrTitle,
 
-			jDInfo: {
-				jdURL:
-					draft === SubmitType.SAVE_AS_DRAFT
-						? _isNull(watch('jdURL'))
-							? null
-							: watch('jdURL')
-						: _isNull(d.jdURL)
+			jdURL:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('jdURL'))
 						? null
-						: d.jdURL,
-				jDFilename: null,
-				jDDescription: null,
-				jDDump_ID: null,
-				hdnSkills: null,
-			},
+						: watch('jdURL')
+					: _isNull(d.jdURL)
+					? null
+					: d.jdURL,
+			jDFilename: fileName,
+			jDDescription: null,
+			jDDump_ID: null,
+			hdnSkills: null,
 			budget:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('budget'))
@@ -317,11 +317,11 @@ export const hrUtils = {
 				country:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('country'))
-							? null
-							: watch('country')?.value
+							? '0'
+							: watch('country')?.id?.toString()
 						: _isNull(d.country)
-						? null
-						: d?.country?.value,
+						? '0'
+						: d?.country?.id?.toString(),
 				postalCode:
 					draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('postalCode'))

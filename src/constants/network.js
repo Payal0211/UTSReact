@@ -47,6 +47,7 @@ export class UserAPI {
 
 export class ReportType {
 	static DEMAND_FUNNEL = 'DemandFunnel/';
+	static SUPPLY_FUNNEL = 'SupplyFunnel/';
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
@@ -165,8 +166,8 @@ export class InterviewsAPI {
 	static INTERVIEW_STATUS_DETAILS = 'GetInterviewStatusDetail';
 	static UPDATE_INTERVIEW_STATUS = 'UpdateInterviewStatus';
 	static FEEDBACK = 'Feedback';
-	static GET_SLOT_DETAILS = 'GetExistingSlotDetails'
-	static SAVE_CONFIRM_INTERVIEW = 'SaveConfirmInterviewSlot'
+	static GET_SLOT_DETAILS = 'GetExistingSlotDetails';
+	static SAVE_CONFIRM_INTERVIEW = 'SaveConfirmInterviewSlot';
 }
 export class DealsAPI {
 	static LIST = 'List';

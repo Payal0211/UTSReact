@@ -39,6 +39,15 @@
     transition: all .5s ease;
     background-color: var(--uplers-black);
 }
+.transparentIndicator{
+    width: 5px;
+        height: 30px;
+        border-top-left-radius: .15rem;
+        border-bottom-left-radius: .15rem;
+        align-items: flex-end;
+        transition: all .5s ease;
+        background-color: transparent;
+}
 
 .active {
     opacity: 1 !important;
