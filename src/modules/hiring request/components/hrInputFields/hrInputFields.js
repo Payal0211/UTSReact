@@ -1,6 +1,6 @@
-import { InputType } from 'constants/application';
-import HRInputFieldStyle from './hrInputFields.module.css';
-import classNames from 'classnames';
+import { InputType } from "constants/application";
+import HRInputFieldStyle from "./hrInputFields.module.css";
+import classNames from "classnames";
 
 const HRInputField = ({
 	isTextArea,
@@ -46,8 +46,8 @@ const HRInputField = ({
 					)}
 					<textarea
 						style={{
-							paddingLeft: leadingIcon && '40px',
-							cursor: InputType.BUTTON && 'pointer',
+							paddingLeft: leadingIcon && "40px",
+							cursor: InputType.BUTTON && "pointer",
 						}}
 						value={InputType.BUTTON && value}
 						className={formFieldClasses}
@@ -56,7 +56,6 @@ const HRInputField = ({
 						placeholder={placeholder}
 						onClick={InputType.BUTTON && onClickHandler}
 						{...register(name, required && validationSchema)}
-						onChange={onChangeHandler}
 						id={name}
 						disabled={disabled}
 						required={required}
@@ -74,10 +73,10 @@ const HRInputField = ({
 					)}
 					<input
 						style={{
-							paddingLeft: leadingIcon && '40px',
-							cursor: InputType.BUTTON && 'pointer',
+							paddingLeft: leadingIcon && "40px",
+							cursor: InputType.BUTTON && "pointer",
 						}}
-						value={value}
+						value={InputType.BUTTON && value}
 						className={formFieldClasses}
 						type={type}
 						name={name}

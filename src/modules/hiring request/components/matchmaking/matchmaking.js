@@ -57,7 +57,20 @@ const MatchmakingModal = ({
 	const [convertToContracual, setConvertToContracual] = useState(false)
 	const [getDpConversion, setDpConversion] = useState("")
 	const [saveContractualInfo, setContractualInfo] = useState("")
-	// const _indexRef = useRef();
+	const [hiringRequest, setHiringRequest] = useState([
+		{ id: 0, value: "Select" },
+		{ id: 1, value: "Yes, it's for a limited Project" },
+		{ id: 2, value: "No, they want to hire for long term" },
+	]);
+	const [gethringRequest, sethringRequest] = useState("Select");
+	const [longTerm, setLongTerm] = useState([
+		{ id: 0, value: "Select" },
+		{ id: 1, value: "Long Term" },
+		{ id: 2, value: "Sort Term" },
+	]);
+	const [getlongTermdata, setlongTermdata] = useState("Select");
+	const [getTelantCC, setTalentCC] = useState([]);
+
 
 	const param = useParams()
 	const {
@@ -197,11 +210,7 @@ const MatchmakingModal = ({
 		setDpConversion(response.responseBody.details)
 		setValue("DpPercentage", getDpConversion)
 	}
-	const getConvertToContractual = async () => {
-		setConvertToContracual(true);
-		const response = await hiringRequestDAO.getConvertToContractualDAO(param.hrid)
-		setValue("ContractualPercentage", response.responseBody.details)
-	}
+
 
 	const saveConvertToContractual = async () => {
 		const response = await hiringRequestDAO.saveConvertToContractualDAO(param.hrid, watch("ContractualPercentage"))
@@ -218,14 +227,7 @@ const MatchmakingModal = ({
 		const response = await hiringRequestDAO.getTalentDPConversionDAO(param.hrid)
 		setTalentDpConversion(response.responseBody.details)
 		setValue(`talentData`, talentDpConversion)
-		// talentDpConversion?.forEach((value, index) => {
-		// 	setValue(`talentName[${index}]`, value.talentname)
-		// 	setValue(`currentCTC[${index}]`, value.currentCTC)
-		// 	setValue(`expectedCTC[${index}]`, value.expectedCTC)
-		// 	setValue(`dpPercentage[${index}]`, value.dpPercentage)
-		// 	setValue(`dpAmount[${index}]`, value.dpAmount)
-		// 	setValue(`contactTalentPriorityID[${index}]`, value.contactTalentPriorityID)
-		// })
+
 	}
 	useEffect(() => {
 		convertToDpAPIS()
@@ -233,7 +235,7 @@ const MatchmakingModal = ({
 		convertToContracualAPIS()
 		getTalentDPConversionAPIS()
 		getHrDpConversion()
-		getConvertToContractual()
+		// getConvertToContractual()
 		setConvertToContracual(false)
 		setConvertToDp(false)
 	}, [])
@@ -301,7 +303,7 @@ const MatchmakingModal = ({
 		}
 	}, [hrID, listOfTalents, messageAPI, refreshedHRDetail]);
 
-	// const _data = watch(`talentData[${index}].talentname`)
+
 
 	/** Disposing the Modal State */
 	useEffect(() => {
@@ -338,6 +340,49 @@ const MatchmakingModal = ({
 		}
 	}
 
+	const convertToContracualInfo = useCallback(async () => {
+		setConvertToContracual(true);
+		getTalentCC();
+	}, [hrID]);
+
+	const saveTalentContracual = async () => {
+		const data = watch("Contracual");
+		const _hiringrequest = watch("hiringrequest");
+		const _longterm = watch("longterm");
+		const _contactDuration = watch("contactDuration");
+
+		let _list = [];
+		for (let sd of data) {
+			let obj = {};
+			obj.hrid = sd.hrid;
+			obj.talentID = sd.talentID;
+			obj.contactTalentID = sd.contactTalentPriorityID;
+			obj.nrPercentage = Number(sd.nrPercentage);
+			obj.hR_Cost = sd.brAmount;
+			obj.isHiringLimited =
+				_hiringrequest.id === 1 ? true : _hiringrequest.id === 2 ? false : null;
+			obj.durationType = _longterm.value;
+			obj.specificMonth = Number(_contactDuration);
+			_list.push(obj);
+		}
+
+		const response = await hiringRequestDAO.saveTalentsContracualDAO(_list);
+	};
+
+	const getTalentCC = async () => {
+		const response = await hiringRequestDAO.getTelantContracualConversionDAO(
+			param.hrid
+		);
+		setTalentCC(response.responseBody.details);
+
+		setValue("Contracual", response.responseBody.details);
+	};
+
+	useEffect(() => {
+		getTalentCC();
+	}, []);
+
+
 
 	return (
 		<>
@@ -356,8 +401,9 @@ const MatchmakingModal = ({
 						Convert To Dp
 					</button>
 					<button
-						onClick={() => getConvertToContractual()}
-						className={MatchMakingStyle.btnPrimary}>
+						onClick={() => convertToContracualInfo()}
+						className={MatchMakingStyle.btnPrimary}
+					>
 						Convert To Contractual
 					</button>
 				</>
@@ -516,7 +562,7 @@ const MatchmakingModal = ({
 				</div>
 			</Modal>
 			{/* dp */}
-			{modalFlag === false ? (
+			{modalFlag === true ? (
 				<>
 					<Modal
 						transitionName=""
@@ -621,13 +667,9 @@ const MatchmakingModal = ({
 								<button className={MatchMakingStyle.btn} onClick={() => setConvertToDp(false)}>Cancel</button>
 
 								<button
-									// disabled={listOfTalents.length === 0}
-									// style={{
-									// 	cursor: listOfTalents.length === 0 ? 'no-drop' : 'pointer',
-									// }}
+
 									onClick={() => {
-										// getTalentPriorities();
-										// callAPI(hrID);
+
 										convertToDpCollapseModal()
 									}}
 									type="button"
@@ -672,7 +714,7 @@ const MatchmakingModal = ({
 											name='DpPercentage'
 											type={InputType.TEXT}
 											placeholder="Enter Percentage"
-											// disabled={isSameAsPrimaryPOC}
+
 											required
 										/>
 									</div>
@@ -684,15 +726,12 @@ const MatchmakingModal = ({
 								<button className={MatchMakingStyle.btn} onClick={() => setConvertToDp(false)}>Cancel</button>
 
 								<button
-									// disabled={listOfTalents.length === 0}
-									// style={{
-									// 	cursor: listOfTalents.length === 0 ? 'no-drop' : 'pointer',
-									// }}
+
 									onClick={() => {
-										// getTalentPriorities();
+
 										saveDpConversion();
 										setConvertToDp(false)
-										// callAPI(hrID);
+
 
 									}}
 									type="button"
@@ -713,51 +752,68 @@ const MatchmakingModal = ({
 
 
 			{/* convert to contracual */}
-			{/* {modalFlag === false ? (
+			{modalFlag === true ? (
 				<>
 					<Modal
 						transitionName=""
 						centered
 						open={convertToContracual}
-						width="864px"
+						width="846px"
 						footer={null}
-						className="convert-contractual-modal-wrap"
-						onCancel={() => setConvertToContracual(false)}>
+						onCancel={() => setConvertToContracual(false)}
+					>
 						<div className="convert-contractual-modal">
 							<label className={MatchMakingStyle.matchmakingLabel}>
 								Convert to Contractual
 							</label>
-							<p className={convertToDPmodule.test}> Please add necessary details for converting this HR from Contractual to  Direct Placement</p>
-
+							<p className={convertToDPmodule.test}>
+								{" "}
+								Please add necessary details for converting this HR from Contractual
+								to Direct Placement
+							</p>
 
 							<div className={UserFieldStyle.hrFieldContainer}>
 								<div className={UserFieldStyle.row}>
 									<div className={UserFieldStyle.colMd12}>
-										<HRInputField
+										<HRSelectField
+											controlledValue={gethringRequest}
+											setControlledValue={sethringRequest}
+											isControlled={true}
+											setValue={setValue}
 											register={register}
-											errors={errors}
-											label="DP Percentage"
-											name={'legalClientEmailID'}
-											type={InputType.TEXT}
-											placeholder="Enter Percentage"
+											name="hiringrequest"
+											label="Is this Hiring need Temporary for any project?"
+											mode={"id/value"}
+											options={hiringRequest}
 											required
+											isError={errors["hiringrequest"] && errors["hiringrequest"]}
+											errorMsg="Please select a hiringrequest."
+										/>
+										<HRSelectField
+											controlledValue={getlongTermdata}
+											setControlledValue={setlongTermdata}
+											isControlled={true}
+											setValue={setValue}
+											register={register}
+											name="longterm"
+											label="Long Term/Short Term?"
+											mode={"id/value"}
+											options={longTerm}
+											required
+											isError={errors["longterm"] && errors["longterm"]}
+											errorMsg="Please select a longterm."
 										/>
 										<HRInputField
 											register={register}
 											errors={errors}
-											label="DP Percentage"
-											name={'legalClientEmailID'}
+											label="Contact Duration (In Months)"
+											name="contactDuration"
 											type={InputType.TEXT}
-											placeholder="Enter Percentage"
-											required
-										/>
-										<HRInputField
-											register={register}
-											errors={errors}
-											label="DP Percentage"
-											name={'legalClientEmailID'}
-											type={InputType.TEXT}
-											placeholder="Enter Percentage"
+											placeholder="Enter Months"
+											isError={
+												errors["contactDuration"] && errors["contactDuration"]
+											}
+											errorMsg="Please enter Contact Duration."
 											required
 										/>
 									</div>
@@ -766,197 +822,106 @@ const MatchmakingModal = ({
 
 							<div className="talent-detail-part">
 								<h4>Talent Details</h4>
-								<Collapse
-									accordion
-								>
-									<Panel header="This is panel header 1" key="1">
-										<div className={UserFieldStyle.hrFieldContainer}>
-											<div className={UserFieldStyle.row}>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
+								<Collapse accordion>
+									{getTelantCC?.map((data, index) => {
+										return (
+											<Panel header={`Talent ${index}`} key={index}>
+												<div className={UserFieldStyle.hrFieldContainer}>
+													<div className={UserFieldStyle.row}>
+														<div className={UserFieldStyle.colMd6}>
+															<HRInputField
+																register={register}
+																errors={errors}
+																label="Talent Name"
+																name={`Contracual[${index}].talentname`}
+																type={InputType.TEXT}
+																placeholder="Enter Percentage"
+																disabled={true}
+																required
+															/>
+														</div>
+														<div className={UserFieldStyle.colMd6}>
+															<HRInputField
+																register={register}
+																errors={errors}
+																label="Talent Fees"
+																name={`Contracual[${index}].expectedCTC`}
+																type={InputType.TEXT}
+																placeholder="Enter Percentage"
+																disabled={true}
+																required
+															/>
+														</div>
+														<div className={UserFieldStyle.colMd6}>
+															<HRInputField
+																register={register}
+																errors={errors}
+																label="NR Margin Percentage"
+																name={`Contracual[${index}].nrPercentage`}
+																type={InputType.TEXT}
+																placeholder="Enter Percentage"
+																onChangeHandler={async (e) => {
+																	const response =
+																		await hiringRequestDAO.calculateHRCostDAO(
+																			data.hrid,
+																			data.contactTalentPriorityID,
+																			data.brAmount,
+																			e.target.value
+																		);
+																	setValue(
+																		`Contracual[${index}].brAmount`,
+																		response.responseBody.details
+																	);
+																}}
+																// disabled={isSameAsPrimaryPOC}
+																required
+															/>
+														</div>
+														<div className={UserFieldStyle.colMd6}>
+															<HRInputField
+																register={register}
+																errors={errors}
+																label="HR Cost"
+																name={`Contracual[${index}].brAmount`}
+																type={InputType.TEXT}
+																placeholder="Enter Percentage"
+																disabled={true}
+																required
+															/>
+														</div>
+													</div>
 												</div>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
-												</div>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
-												</div>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
-												</div>
-											</div>
-										</div>
-									</Panel>
-									<Panel header="This is panel header 2" key="2">
-										<div className={UserFieldStyle.hrFieldContainer}>
-											<div className={UserFieldStyle.row}>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
-												</div>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
-												</div>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
-												</div>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
-												</div>
-											</div>
-										</div>
-									</Panel>
-									<Panel header="This is panel header 3" key="3">
-										<div className={UserFieldStyle.hrFieldContainer}>
-											<div className={UserFieldStyle.row}>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
-												</div>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
-												</div>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
-												</div>
-												<div className={UserFieldStyle.colMd6}>
-													<HRInputField
-														register={register}
-														errors={errors}
-														label="DP Percentage"
-														name={'legalClientEmailID'}
-														type={InputType.TEXT}
-														placeholder="Enter Percentage"
-														required
-													/>
-												</div>
-											</div>
-										</div>
-									</Panel>
+											</Panel>
+										);
+									})}
 								</Collapse>
 							</div>
-
-							<div className="last-field">
-								<HRInputField
-									register={register}
-									errors={errors}
-									label="DP Percentage"
-									name={'legalClientEmailID'}
-									type={InputType.TEXT}
-									placeholder="Enter Percentage"
-									required
-								/>
-							</div>
-
 							<div className={MatchMakingStyle.formPanelAction}>
-								<button className={MatchMakingStyle.btn} onClick={() => setConvertToContracual(false)}>Cancel</button>
+								<button
+									className={MatchMakingStyle.btn}
+									onClick={() => setConvertToContracual(false)}
+								>
+									Cancel
+								</button>
 
 								<button
-									disabled={listOfTalents.length === 0}
-									style={{
-										cursor: listOfTalents.length === 0 ? 'no-drop' : 'pointer',
-									}}
 									onClick={() => {
-										getTalentPriorities();
-										saveConvertToContractual();
+										saveTalentContracual();
+										setConvertToContracual(false);
 									}}
 									type="button"
-									className={MatchMakingStyle.btnPrimary}>
+									className={MatchMakingStyle.btnPrimary}
+								>
 									Convert to DP
 								</button>
 
 								<div
 									style={{
-										position: 'absolute',
-										right: '0',
-										marginRight: '32px',
-									}}></div>
+										position: "absolute",
+										right: "0",
+										marginRight: "32px",
+									}}
+								></div>
 							</div>
 						</div>
 					</Modal>
@@ -1001,10 +966,8 @@ const MatchmakingModal = ({
 								<button
 
 									onClick={() => {
-										// getTalentPriorities();
 										saveConvertToContractual();
 										setConvertToContracual(false)
-										// callAPI(hrID);
 
 									}}
 									type="button"
@@ -1021,7 +984,7 @@ const MatchmakingModal = ({
 						</div>
 					</Modal>
 				</>
-			)} */}
+			)}
 
 
 		</>

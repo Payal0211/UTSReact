@@ -1,17 +1,17 @@
-import { HiringRequestAPI } from 'apis/hiringRequestAPI';
-import { HTTPStatusCode } from 'constants/network';
-import UTSRoutes from 'constants/routes';
-import { UserSessionManagementController } from 'modules/user/services/user_session_services';
-import { Navigate } from 'react-router-dom';
-import { errorDebug } from 'shared/utils/error_debug_utils';
+import { HiringRequestAPI } from "apis/hiringRequestAPI";
+import { HTTPStatusCode } from "constants/network";
+import UTSRoutes from "constants/routes";
+import { UserSessionManagementController } from "modules/user/services/user_session_services";
+import { Navigate } from "react-router-dom";
+import { errorDebug } from "shared/utils/error_debug_utils";
 
 export const hiringRequestDAO = {
 	getPaginatedHiringRequestDAO: async function (hrData) {
 		try {
 			const hrResult = await HiringRequestAPI.getPaginatedHiringRequest(hrData);
-			console.log(hrResult, '--hrResult---');
+			console.log(hrResult, "--hrResult---");
 			if (hrResult) {
-				const statusCode = hrResult['statusCode'];
+				const statusCode = hrResult["statusCode"];
 
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = hrResult.responseBody;
@@ -31,15 +31,15 @@ export const hiringRequestDAO = {
 				}
 			}
 		} catch (error) {
-			console.log(error, '---errorr---');
-			return errorDebug(error, 'hiringRequestDAO.getPaginatedHiringRequestDAO');
+			console.log(error, "---errorr---");
+			return errorDebug(error, "hiringRequestDAO.getPaginatedHiringRequestDAO");
 		}
 	},
 	getSchduleInterviewInformation: async function (data) {
 		try {
 			const scheduleResult = await HiringRequestAPI.scheduleInterview(data);
 			if (scheduleResult) {
-				const statusCode = scheduleResult['statusCode'];
+				const statusCode = scheduleResult["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = scheduleResult.responseBody;
 					return {
@@ -56,7 +56,7 @@ export const hiringRequestDAO = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.getPaginatedHiringRequestDAO');
+			return errorDebug(error, "hiringRequestDAO.getPaginatedHiringRequestDAO");
 		}
 	},
 
@@ -64,7 +64,7 @@ export const hiringRequestDAO = {
 		try {
 			const reScheduleResult = await HiringRequestAPI.reScheduleInterview(data);
 			if (reScheduleResult) {
-				const statusCode = reScheduleResult['statusCode'];
+				const statusCode = reScheduleResult["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = reScheduleResult.responseBody;
 					return {
@@ -81,7 +81,7 @@ export const hiringRequestDAO = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.getPaginatedHiringRequestDAO');
+			return errorDebug(error, "hiringRequestDAO.getPaginatedHiringRequestDAO");
 		}
 	},
 
@@ -89,7 +89,7 @@ export const hiringRequestDAO = {
 		try {
 			const hrResult = await HiringRequestAPI.getHRDetailsRequest(hrid);
 			if (hrResult) {
-				const statusCode = hrResult['statusCode'];
+				const statusCode = hrResult["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = hrResult?.responseBody;
 					return {
@@ -105,16 +105,16 @@ export const hiringRequestDAO = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.getViewHiringRequestDAO');
+			return errorDebug(error, "hiringRequestDAO.getViewHiringRequestDAO");
 		}
 	},
 	sendHREditorRequestDAO: async function (editorDetails) {
 		try {
 			const editorResult = await HiringRequestAPI.sendHREditorRequest(
-				editorDetails,
+				editorDetails
 			);
 			if (editorResult) {
-				const statusCode = editorResult['statusCode'];
+				const statusCode = editorResult["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = editorResult?.responseBody;
 					return {
@@ -124,17 +124,17 @@ export const hiringRequestDAO = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.sendHREditorRequestDAO');
+			return errorDebug(error, "hiringRequestDAO.sendHREditorRequestDAO");
 		}
 	},
 	sendHRPriorityForNextWeekRequestDAO: async function (priorityDetails) {
 		try {
 			const priorityResult =
 				await HiringRequestAPI.sendHRPriorityForNextWeekRequest(
-					priorityDetails,
+					priorityDetails
 				);
 			if (priorityResult) {
-				const statusCode = priorityResult['statusCode'];
+				const statusCode = priorityResult["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = priorityResult?.responseBody;
 					return {
@@ -154,18 +154,18 @@ export const hiringRequestDAO = {
 		} catch (error) {
 			return errorDebug(
 				error,
-				'hiringRequestDAO.sendHRPriorityForNextWeekRequestDAO',
+				"hiringRequestDAO.sendHRPriorityForNextWeekRequestDAO"
 			);
 		}
 	},
 	getClientDetailRequestDAO: async function (clientEmail) {
 		try {
 			const clientDetailResult = await HiringRequestAPI.getClientDetailRequest(
-				clientEmail,
+				clientEmail
 			);
 
 			if (clientDetailResult) {
-				const statusCode = clientDetailResult['statusCode'];
+				const statusCode = clientDetailResult["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = clientDetailResult?.responseBody;
 					return { statusCode: statusCode, responseBody: tempResult.details };
@@ -180,14 +180,14 @@ export const hiringRequestDAO = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.getClientDetailRequestDAO');
+			return errorDebug(error, "hiringRequestDAO.getClientDetailRequestDAO");
 		}
 	},
 	createHRDAO: async function (hrData) {
 		try {
 			const createHRResult = await HiringRequestAPI.createHiringRequest(hrData);
 			if (createHRResult) {
-				const statusCode = createHRResult['statusCode'];
+				const statusCode = createHRResult["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = createHRResult.responseBody;
 					return {
@@ -209,7 +209,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.createHRDAO');
+			return errorDebug(error, "hiringRequestDAO.createHRDAO");
 		}
 	},
 	createDebriefingDAO: async function (debriefData) {
@@ -217,7 +217,7 @@ export const hiringRequestDAO = {
 			const createDebriefResult =
 				await HiringRequestAPI.createDebriefingRequest(debriefData);
 			if (createDebriefResult) {
-				const statusCode = createDebriefResult['statusCode'];
+				const statusCode = createDebriefResult["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = createDebriefResult.responseBody;
 					return {
@@ -236,16 +236,16 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.createDebriefingDAO');
+			return errorDebug(error, "hiringRequestDAO.createDebriefingDAO");
 		}
 	},
 	getMatchmakingDAO: async function (matchMakingData) {
 		try {
 			const getMatchmakingResult = await HiringRequestAPI.getMatchmakingRequest(
-				matchMakingData,
+				matchMakingData
 			);
 			if (getMatchmakingResult) {
-				const statusCode = getMatchmakingResult['statusCode'];
+				const statusCode = getMatchmakingResult["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = getMatchmakingResult.responseBody;
 					return {
@@ -267,7 +267,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.getMatchmakingDAO()');
+			return errorDebug(error, "hiringRequestDAO.getMatchmakingDAO()");
 		}
 	},
 	getTalentCostConversionDAO: async function (talentCost) {
@@ -275,7 +275,7 @@ export const hiringRequestDAO = {
 			const getTalentCostResponse =
 				await HiringRequestAPI.getTalentCostConversionRequest(talentCost);
 			if (getTalentCostResponse) {
-				const statusCode = getTalentCostResponse['statusCode'];
+				const statusCode = getTalentCostResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = getTalentCostResponse.responseBody;
 					return {
@@ -297,7 +297,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.getTalentCostConversionDAO()');
+			return errorDebug(error, "hiringRequestDAO.getTalentCostConversionDAO()");
 		}
 	},
 	getTalentTechScoreDAO: async function (talentID) {
@@ -305,7 +305,7 @@ export const hiringRequestDAO = {
 			const getTalentTechScoreResponse =
 				await HiringRequestAPI.getTalentTechScoreCardRequest(talentID);
 			if (getTalentTechScoreResponse) {
-				const statusCode = getTalentTechScoreResponse['statusCode'];
+				const statusCode = getTalentTechScoreResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = getTalentTechScoreResponse.responseBody;
 					return {
@@ -327,7 +327,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.getTalentTechScoreDAO()');
+			return errorDebug(error, "hiringRequestDAO.getTalentTechScoreDAO()");
 		}
 	},
 	getTalentProfileSharedDetailDAO: async function (talentObj) {
@@ -335,7 +335,7 @@ export const hiringRequestDAO = {
 			const getTalentProfileSharedDetailResponse =
 				await HiringRequestAPI.getTalentProfileSharedDetailRequest(talentObj);
 			if (getTalentProfileSharedDetailResponse) {
-				const statusCode = getTalentProfileSharedDetailResponse['statusCode'];
+				const statusCode = getTalentProfileSharedDetailResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = getTalentProfileSharedDetailResponse.responseBody;
 					return {
@@ -359,7 +359,7 @@ export const hiringRequestDAO = {
 		} catch (error) {
 			return errorDebug(
 				error,
-				'hiringRequestDAO.getTalentProfileSharedDetailDAO()',
+				"hiringRequestDAO.getTalentProfileSharedDetailDAO()"
 			);
 		}
 	},
@@ -368,7 +368,7 @@ export const hiringRequestDAO = {
 			const getTalentProfileLogResponse =
 				await HiringRequestAPI.getTalentProfileLogReqeust(talentDetails);
 			if (getTalentProfileLogResponse) {
-				const statusCode = getTalentProfileLogResponse['statusCode'];
+				const statusCode = getTalentProfileLogResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = getTalentProfileLogResponse.responseBody;
 					return {
@@ -390,7 +390,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.getTalentProfileLogDAO()');
+			return errorDebug(error, "hiringRequestDAO.getTalentProfileLogDAO()");
 		}
 	},
 	getAllFilterDataForHRRequestDAO: async () => {
@@ -398,7 +398,7 @@ export const hiringRequestDAO = {
 			const getAllFilterDataResponse =
 				await HiringRequestAPI.getAllFilterDataForHRRequest();
 			if (getAllFilterDataResponse) {
-				const statusCode = getAllFilterDataResponse['statusCode'];
+				const statusCode = getAllFilterDataResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = getAllFilterDataResponse.responseBody;
 					return {
@@ -422,7 +422,7 @@ export const hiringRequestDAO = {
 		} catch (error) {
 			return errorDebug(
 				error,
-				'hiringRequestDAO.getAllFilterDataForHRRequestDAO()',
+				"hiringRequestDAO.getAllFilterDataForHRRequestDAO()"
 			);
 		}
 	},
@@ -431,7 +431,7 @@ export const hiringRequestDAO = {
 			const getTalentPrioritiesResponse =
 				await HiringRequestAPI.setTalentPrioritiesRequest(talentPrioritiesData);
 			if (getTalentPrioritiesResponse) {
-				const statusCode = getTalentPrioritiesResponse['statusCode'];
+				const statusCode = getTalentPrioritiesResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = getTalentPrioritiesResponse.responseBody;
 					return {
@@ -453,7 +453,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.setTalentPrioritiesDAO()');
+			return errorDebug(error, "hiringRequestDAO.setTalentPrioritiesDAO()");
 		}
 	},
 	updateODRPOOLStatusRequestDAO: async (odrPoolStatus) => {
@@ -461,7 +461,7 @@ export const hiringRequestDAO = {
 			const odrPoolStatusResponse =
 				await HiringRequestAPI.updateODRPOOLStatusRequest(odrPoolStatus);
 			if (odrPoolStatusResponse) {
-				const statusCode = odrPoolStatusResponse['statusCode'];
+				const statusCode = odrPoolStatusResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = odrPoolStatusResponse.responseBody;
 					return {
@@ -485,17 +485,17 @@ export const hiringRequestDAO = {
 		} catch (error) {
 			return errorDebug(
 				error,
-				'hiringRequestDAO.updateODRPOOLStatusRequestDAO()',
+				"hiringRequestDAO.updateODRPOOLStatusRequestDAO()"
 			);
 		}
 	},
 	deleteHRDAO: async (deleteBody) => {
 		try {
 			const deleteHRResponse = await HiringRequestAPI.deleteHRRequest(
-				deleteBody,
+				deleteBody
 			);
 			if (deleteHRResponse) {
-				const statusCode = deleteHRResponse['statusCode'];
+				const statusCode = deleteHRResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = deleteHRResponse.responseBody;
 					return {
@@ -517,14 +517,14 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
+			return errorDebug(error, "hiringRequestDAO.deleteHRDAO()");
 		}
 	},
 	uploadFileDAO: async (fileData) => {
 		try {
 			const uploadFileResponse = await HiringRequestAPI.uploadFile(fileData);
 			if (uploadFileResponse) {
-				const statusCode = uploadFileResponse['statusCode'];
+				const statusCode = uploadFileResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = uploadFileResponse.responseBody;
 					return {
@@ -546,16 +546,16 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
+			return errorDebug(error, "hiringRequestDAO.deleteHRDAO()");
 		}
 	},
 	uploadGoogleDriveFileDAO: async (fileData) => {
 		try {
 			const uploadFileResponse = await HiringRequestAPI.uploadGoogleDriveFile(
-				fileData,
+				fileData
 			);
 			if (uploadFileResponse) {
-				const statusCode = uploadFileResponse['statusCode'];
+				const statusCode = uploadFileResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = uploadFileResponse.responseBody;
 					return {
@@ -577,7 +577,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
+			return errorDebug(error, "hiringRequestDAO.deleteHRDAO()");
 		}
 	},
 	uploadFileFromGoogleDriveLinkDAO: async (link) => {
@@ -585,7 +585,7 @@ export const hiringRequestDAO = {
 			const uploadFileResponse =
 				await HiringRequestAPI.uploadFileFromGoogleDriveLink(link);
 			if (uploadFileResponse) {
-				const statusCode = uploadFileResponse['statusCode'];
+				const statusCode = uploadFileResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = uploadFileResponse.responseBody;
 					return {
@@ -609,7 +609,7 @@ export const hiringRequestDAO = {
 		} catch (error) {
 			return errorDebug(
 				error,
-				'hiringRequestDAO.uploadFileFromGoogleDriveLinkDAO()',
+				"hiringRequestDAO.uploadFileFromGoogleDriveLinkDAO()"
 			);
 		}
 	},
@@ -618,7 +618,7 @@ export const hiringRequestDAO = {
 			const getHRAcceptanceResponse =
 				await HiringRequestAPI.getHRAcceptanceRequest(hrAcceptanceDetail);
 			if (getHRAcceptanceResponse) {
-				const statusCode = getHRAcceptanceResponse['statusCode'];
+				const statusCode = getHRAcceptanceResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = getHRAcceptanceResponse.responseBody;
 					return {
@@ -640,7 +640,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.getHRAcceptanceRequestDAO()');
+			return errorDebug(error, "hiringRequestDAO.getHRAcceptanceRequestDAO()");
 		}
 	},
 	addHRAcceptanceRequestDAO: async (hrAcceptanceDetail) => {
@@ -648,7 +648,7 @@ export const hiringRequestDAO = {
 			const addHRAcceptanceResponse =
 				await HiringRequestAPI.addHRAcceptanceRequest(hrAcceptanceDetail);
 			if (addHRAcceptanceResponse) {
-				const statusCode = addHRAcceptanceResponse['statusCode'];
+				const statusCode = addHRAcceptanceResponse["statusCode"];
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = addHRAcceptanceResponse.responseBody;
 					return {
@@ -670,7 +670,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.addHRAcceptanceRequestDAO()');
+			return errorDebug(error, "hiringRequestDAO.addHRAcceptanceRequestDAO()");
 		}
 	},
 	openPostAcceptanceRequestDAO: async (hrAcceptanceDetail) => {
@@ -679,7 +679,7 @@ export const hiringRequestDAO = {
 				await HiringRequestAPI.openPostAcceptanceRequest(hrAcceptanceDetail);
 
 			if (openPostAcceptanceResponse) {
-				const statusCode = openPostAcceptanceResponse['statusCode'];
+				const statusCode = openPostAcceptanceResponse["statusCode"];
 
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = openPostAcceptanceResponse.responseBody;
@@ -704,7 +704,7 @@ export const hiringRequestDAO = {
 		} catch (error) {
 			return errorDebug(
 				error,
-				'hiringRequestDAO.openPostAcceptanceRequestDAO()',
+				"hiringRequestDAO.openPostAcceptanceRequestDAO()"
 			);
 		}
 	},
@@ -715,7 +715,7 @@ export const hiringRequestDAO = {
 				await HiringRequestAPI.getConfirmSlotDetailsRequest(interviewId);
 
 			if (getConfirmSlotDetails) {
-				const statusCode = getConfirmSlotDetails['statusCode'];
+				const statusCode = getConfirmSlotDetails["statusCode"];
 
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = getConfirmSlotDetails.responseBody;
@@ -738,10 +738,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
 		}
 	},
 	saveConfirmSlotDetailsDAO: async (data) => {
@@ -750,7 +747,7 @@ export const hiringRequestDAO = {
 				await HiringRequestAPI.saveConfirmSlotDetailsRequest(data);
 
 			if (saveConfirmSlotDetails) {
-				const statusCode = saveConfirmSlotDetails['statusCode'];
+				const statusCode = saveConfirmSlotDetails["statusCode"];
 
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = saveConfirmSlotDetails.responseBody;
@@ -773,10 +770,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
 		}
 	},
 	convertToDirectPlacementDAO: async (data) => {
@@ -785,7 +779,7 @@ export const hiringRequestDAO = {
 				await HiringRequestAPI.convertToDirectPlacement(data);
 
 			if (convertToDireactPlacementDetails) {
-				const statusCode = convertToDireactPlacementDetails['statusCode'];
+				const statusCode = convertToDireactPlacementDetails["statusCode"];
 
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = convertToDireactPlacementDetails.responseBody;
@@ -1127,6 +1121,131 @@ export const hiringRequestDAO = {
 				error,
 				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
 			);
+		}
+	},
+	//         if (statusCode === HTTPStatusCode.OK) {
+	//           const tempResult = convertToDireactPlacementDetails.responseBody;
+	//           return {
+	//             statusCode: statusCode,
+	//             responseBody: tempResult,
+	//           };
+	//         } else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+	//           return convertToDireactPlacementDetails;
+	//         } else if (
+	//           statusCode === HTTPStatusCode.BAD_REQUEST ||
+	//           statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+	//         )
+	//           return convertToDireactPlacementDetails;
+	//         else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+	//           let deletedResponse =
+	//             UserSessionManagementController.deleteAllSession();
+	//           if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+	//         }
+	//         return statusCode;
+	//       }
+	//     } catch (error) {
+	//       return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
+	//     }
+	//   },
+	saveTalentsContracualDAO: async (data) => {
+		try {
+			const saveTalentContracual = await HiringRequestAPI.saveTalentContracual(
+				data
+			);
+
+			if (saveTalentContracual) {
+				const statusCode = saveTalentContracual["statusCode"];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = saveTalentContracual.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return saveTalentContracual;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return saveTalentContracual;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
+		}
+	},
+	calculateHRCostDAO: async (hrid, priorityId, hrcost, percentageid) => {
+		try {
+			const calculateHrCost = await HiringRequestAPI.calculateHRConst(
+				hrid,
+				priorityId,
+				hrcost,
+				percentageid
+			);
+
+			if (calculateHrCost) {
+				const statusCode = calculateHrCost["statusCode"];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = calculateHrCost.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return calculateHrCost;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return calculateHrCost;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
+		}
+	},
+	getTelantContracualConversionDAO: async (data) => {
+		try {
+			const getTelantCC =
+				await HiringRequestAPI.getTelentsContractualConversion(data);
+
+			if (getTelantCC) {
+				const statusCode = getTelantCC["statusCode"];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getTelantCC.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getTelantCC;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getTelantCC;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
 		}
 	},
 };
