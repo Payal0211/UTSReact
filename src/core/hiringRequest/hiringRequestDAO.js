@@ -814,4 +814,319 @@ export const hiringRequestDAO = {
 			);
 		}
 	},
+	convertToContracualPlacementDAO: async (data) => {
+		try {
+			const convertToContracualPlacementDetails =
+				await HiringRequestAPI.convertToContracual(data);
+
+			if (convertToContracualPlacementDetails) {
+				const statusCode = convertToContracualPlacementDetails['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = convertToContracualPlacementDetails.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return convertToContracualPlacementDetails;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return convertToContracualPlacementDetails;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
+			);
+		}
+	},
+	getHrDetailsDAO: async (data) => {
+		try {
+			const getHrDetails =
+				await HiringRequestAPI.getAllHrDetails(data);
+
+			if (getHrDetails) {
+				const statusCode = getHrDetails['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getHrDetails.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getHrDetails;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getHrDetails;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
+			);
+		}
+	},
+	getTalentDPConversionDAO: async (data) => {
+		try {
+			const getTalentDPConversion =
+				await HiringRequestAPI.getTalentDPConversion(data);
+
+			if (getTalentDPConversion) {
+				const statusCode = getTalentDPConversion['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getTalentDPConversion.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getTalentDPConversion;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getTalentDPConversion;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
+			);
+		}
+	},
+	getHrDpConversionDAO: async (data) => {
+		try {
+			const getHrDpConversion =
+				await HiringRequestAPI.getHrDpConversion(data);
+
+			if (getHrDpConversion) {
+				const statusCode = getHrDpConversion['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getHrDpConversion.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getHrDpConversion;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getHrDpConversion;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
+			);
+		}
+	},
+	saveDpConversionDAO: async (data, amount) => {
+		try {
+			const saveDpConversion =
+				await HiringRequestAPI.saveDpConversion(data, amount);
+
+			if (saveDpConversion) {
+				const statusCode = saveDpConversion['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = saveDpConversion.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return saveDpConversion;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return saveDpConversion;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
+			);
+		}
+	},
+	getConvertToContractualDAO: async (data) => {
+		try {
+			const getHrDpConversion =
+				await HiringRequestAPI.getHrConvertToContractualInfo(data);
+
+			if (getHrDpConversion) {
+				const statusCode = getHrDpConversion['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getHrDpConversion.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getHrDpConversion;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getHrDpConversion;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
+			);
+		}
+	},
+	saveConvertToContractualDAO: async (data, amount) => {
+		try {
+			const saveDpConversion =
+				await HiringRequestAPI.saveHrConvertToContractualInfo(data, amount);
+
+			if (saveDpConversion) {
+				const statusCode = saveDpConversion['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = saveDpConversion.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return saveDpConversion;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return saveDpConversion;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
+			);
+		}
+	},
+	saveTalentDpConversionDAO: async (data) => {
+		try {
+			const saveDpConversion =
+				await HiringRequestAPI.saveTalentDpConversion(data);
+
+			if (saveDpConversion) {
+				const statusCode = saveDpConversion['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = saveDpConversion.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return saveDpConversion;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return saveDpConversion;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
+			);
+		}
+	},
+	calculateTalentDpConversion: async (hrid, contactPriorityId, dpPercentage, talentExpectedCTC) => {
+		try {
+			const saveTalentDpConversion =
+				await HiringRequestAPI.calculateDpConversionCost(hrid, contactPriorityId, dpPercentage, talentExpectedCTC);
+
+			if (saveTalentDpConversion) {
+				const statusCode = saveTalentDpConversion['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = saveTalentDpConversion.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return saveTalentDpConversion;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return saveTalentDpConversion;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
+			);
+		}
+	},
 };

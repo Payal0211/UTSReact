@@ -23,7 +23,6 @@ export class SubDomain {
 	static ENGAGEMENT = 'Engagement/';
 	static TALENT_REPLACEMENT = 'TalentReplacement/';
 	static REPORT = 'Report/';
-	static CONVERTTODP = "ViewAllHR/"
 }
 export class APIType {
 	static USER = '/user';
@@ -150,6 +149,14 @@ export class HiringRequestsAPI {
 	static UPDATE_ODR_POOL_STATUS = 'UpdateODRPoolStatus';
 	static CHECK_SALES_USER_IS_PARTNER = 'CheckSalesUserIsPartner';
 	static CONVERT_DP = "GetHrDPConversion"
+	static CONVERT_TO_CONRACUAL = "GetHrContractualConversion"
+	static GET_TALENT_DP_CONVERSION = "GetTalentsDPConversion"
+	static GET_HR_DP_CONVERSION = "GetHrDPConversion"
+	static SAVE_DP_CONVERSION = "SaveHrDPConversion"
+	static CONVERT_TO_CONTRACTUAL = "GetHrContractualConversion"
+	static SAVE_CONVERT_TO_CONTRACTUAL = "SaveHrContractualConversion"
+	static SAVE_TALENT_DP_CONVERSION = "SaveTalentsDPConversion"
+	static CALCULATE_DP_CONVERSION_COST = "CalculateDPConversionCost"
 }
 
 export class UsersAPI {

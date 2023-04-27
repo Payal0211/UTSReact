@@ -121,6 +121,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const watchGEOSpecific = watch('geoSpecific');
 	const uploadFile = useRef(null);
 
+	console.log(watch(), "setValue");
+
 	const getEmployeeIDAlreadyExist = useCallback(
 		async (data) => {
 			let companyNameDuplicate = await userDAO.getIsEmployeeIDExistRequestDAO({
@@ -1236,12 +1238,12 @@ const UsersFields = ({ id, setLoading, loading }) => {
 									name="skypeID"
 									type={InputType.TEXT}
 									placeholder="Enter Link"
-									// required={
-									// 	watch('userType')?.id === UserAccountRole.SALES ||
-									// 	watch('userType')?.id === UserAccountRole.TALENTOPS ||
-									// 	watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
-									// 	watch('userType')?.id === UserAccountRole.FINANCE_EXECUTIVE
-									// }
+								// required={
+								// 	watch('userType')?.id === UserAccountRole.SALES ||
+								// 	watch('userType')?.id === UserAccountRole.TALENTOPS ||
+								// 	watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
+								// 	watch('userType')?.id === UserAccountRole.FINANCE_EXECUTIVE
+								// }
 								/>
 							</div>
 							<div className={UserFieldStyle.colMd6}>
@@ -1295,9 +1297,9 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											name={'primaryClientPhoneNumber'}
 											type={InputType.NUMBER}
 											placeholder="Enter number"
-											// validationSchema={{
-											// 	required: 'Please enter contact number',
-											// }}
+										// validationSchema={{
+										// 	required: 'Please enter contact number',
+										// }}
 										/>
 									</div>
 								</div>
