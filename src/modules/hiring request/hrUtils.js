@@ -78,7 +78,6 @@ export const hrUtils = {
 		addHrResponse,
 		fileName,
 	) {
-		console.log(fileName, '--fileName');
 		const hrFormDetails = {
 			en_Id: _isNull(addHrResponse) ? '' : addHrResponse.en_Id,
 			contactId: contactID || 0,
