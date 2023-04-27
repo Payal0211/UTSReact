@@ -58,6 +58,9 @@ const EngagementOnboardList = React.lazy(() =>
 const DemandFunnelReport = React.lazy(() =>
 	import('modules/report/screens/demandFunnel/demandFunnel'),
 );
+const SupplyFunnelReport = React.lazy(() =>
+	import('modules/report/screens/supplyFunnel/supplyFunnel'),
+);
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -83,7 +86,8 @@ export default class UTSRoutes {
 	static ADDNEWUSERROUTE = '/user/addnewuser';
 	static EDITUSERROUTE = '/user/:userID';
 	static ENGAGEMENTRROUTE = '/engagement';
-	static DEMANDFUNNELROUTE = '/report/demandfunnel';
+	static DEMANDFUNNELROUTE = '/demandfunnel';
+	static SUPPLYFUNNELROUTE = '/supplyfunnel';
 }
 
 export const navigateToComponent = {
@@ -170,6 +174,11 @@ export const navigateToComponent = {
 	[UTSRoutes.DEMANDFUNNELROUTE]: (
 		<Suspense>
 			<DemandFunnelReport />
+		</Suspense>
+	),
+	[UTSRoutes.SUPPLYFUNNELROUTE]: (
+		<Suspense>
+			<SupplyFunnelReport />
 		</Suspense>
 	),
 };

@@ -3,9 +3,9 @@ import HRList from 'assets/svg/HRList.svg';
 import DealList from 'assets/svg/DealList.svg';
 import UserList from 'assets/svg/UserList.svg';
 import Dashboard from 'assets/svg/dashboard.svg';
-import HRDetails from 'assets/svg/HRDetails.svg';
 import EngagementList from 'assets/svg/engagement.svg';
 import DemandFunnel from 'assets/svg/demandFunnel.svg';
+import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -46,7 +46,9 @@ const Sidebar = () => {
 								</Link>
 								<div
 									className={`${
-										urlSplitter === navigateTo ? sideBarStyles.indicator : null
+										urlSplitter === navigateTo
+											? sideBarStyles.indicator
+											: sideBarStyles.transparentIndicator
 									}`}></div>
 							</div>
 						</Tooltip>
@@ -94,26 +96,20 @@ const getSideBar = () => {
 			icon: EngagementList,
 			navigateTo: UTSRoutes.ENGAGEMENTRROUTE,
 		}),
-		/* new SideBarModels({
-			id: 'UTS_Onboard',
-			title: 'Onboard',
-			isActive: false,
-			icon: HR,
-			navigateTo: UTSRoutes.ONBOARDROUTE,
-		}),
-		new SideBarModels({
-			id: 'UTS_Interview',
-			title: 'Interview',
-			isActive: false,
-			icon: HRDetails,
-			navigateTo: UTSRoutes.INTERVIEWLISTROUTE,
-		}), */
+
 		new SideBarModels({
 			id: 'demand_funnel_report',
 			title: 'Demand Funnel',
 			isActive: false,
 			icon: DemandFunnel,
 			navigateTo: UTSRoutes.DEMANDFUNNELROUTE,
+		}),
+		new SideBarModels({
+			id: 'supply_funnel_report',
+			title: 'Supply Funnel',
+			isActive: false,
+			icon: SupplyFunnel,
+			navigateTo: UTSRoutes.SUPPLYFUNNELROUTE,
 		}),
 	];
 

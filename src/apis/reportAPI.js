@@ -10,6 +10,7 @@ import { HttpServices } from 'shared/services/http/http_service';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const ReportAPI = {
+	/** ------------ supply FUNNEL ---------------- */
 	demandFunnelListingRequest: async function (reportData) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -75,6 +76,74 @@ export const ReportAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'ReportAPI.demandFunnelHRDetailsRequest');
+		}
+	},
+	/**------------- SUPPLY FUNNEL  -------------------- */
+	supplyFunnelListingRequest: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.SUPPLY_FUNNEL +
+			ReportsAPI.LISTING;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.supplyFunnelListingRequest');
+		}
+	},
+	supplyFunnelSummary: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.SUPPLY_FUNNEL +
+			ReportsAPI.SUMMARY;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.supplyFunnelSummary');
+		}
+	},
+	supplyFunnelFilters: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.SUPPLY_FUNNEL +
+			ReportsAPI.FILTERS;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.supplyFunnelFilters');
+		}
+	},
+	supplyFunnelHRDetailsRequest: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.SUPPLY_FUNNEL +
+			ReportsAPI.HRDETAILS;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.supplyFunnelHRDetailsRequest');
 		}
 	},
 };

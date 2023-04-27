@@ -302,7 +302,7 @@ const HRFields = ({
 		setUploadModal,
 		setValidation,
 	]);
-
+	console.log(getUploadFileData, '--getUploadFileData');
 	/* ------------------ Upload JD Ends Here -------------------- */
 	let prefRegion = watch('region');
 	let modeOfWork = watch('workingMode');
@@ -610,6 +610,7 @@ const HRFields = ({
 				contactID || getContactAndSaleID?.contactID,
 				isHRDirectPlacement,
 				addHRResponse,
+				getUploadFileData && getUploadFileData,
 			);
 
 			if (type === SubmitType.SAVE_AS_DRAFT) {
