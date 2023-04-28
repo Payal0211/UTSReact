@@ -162,6 +162,7 @@ export class HiringRequestsAPI {
 	static SAVE_TALENT_CONTRACTUAL = 'SaveTalentsContractualConversion';
 	static CALCULATE_HR_COST = 'CalculateHRCost';
 	static GET_HR_CONTARCTUAL = 'GetTalentsContractualConversion';
+	static HRAccept = 'HRAccept';
 }
 
 export class UsersAPI {

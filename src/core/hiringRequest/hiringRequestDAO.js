@@ -1228,4 +1228,34 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
+	acceptHRRequestDAO: async (data) => {
+		try {
+			const acceptHRResponse = await HiringRequestAPI.acceptHRRequest(data);
+
+			if (acceptHRResponse) {
+				const statusCode = acceptHRResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = acceptHRResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return acceptHRResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return acceptHRResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.acceptHRRequestDAO()');
+		}
+	},
 };

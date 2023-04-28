@@ -735,4 +735,18 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
 		}
 	},
+	acceptHRRequest: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.HRAccept;
+		httpService.dataToSend = data;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.acceptHRRequest');
+		}
+	},
 };
