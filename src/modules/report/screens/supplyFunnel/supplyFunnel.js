@@ -131,20 +131,27 @@ const SupplyFunnelScreen = () => {
 								placement="bottomLeft"
 								title={text}>
 								<p
-									style={{ textDecoration: 'underline' }}
-									onClick={() => {
-										setSupplyFunnelModal(true);
-										setSupplyFunnelValue({
-											stage: param?.Stage,
-											count: text,
-										});
-										setSupplyFunnelHRDetailsState({
-											...supplyFunnelHRDetailsState,
-											newExistingType: 'Exist',
-											currentStage: param.Stage,
-											TeamManagerName: groupedColumnDataMemo[i],
-										});
-									}}>
+									style={{
+										textDecoration: 'underline',
+										cursor: text === 0 ? 'no-drop' : 'pointer',
+									}}
+									onClick={
+										text === 0
+											? null
+											: () => {
+													setSupplyFunnelModal(true);
+													setSupplyFunnelValue({
+														stage: param?.Stage,
+														count: text,
+													});
+													setSupplyFunnelHRDetailsState({
+														...supplyFunnelHRDetailsState,
+														newExistingType: 'Exist',
+														currentStage: param.Stage,
+														TeamManagerName: groupedColumnDataMemo[i],
+													});
+											  }
+									}>
 									{text}
 								</p>
 							</Tooltip>
@@ -159,20 +166,27 @@ const SupplyFunnelScreen = () => {
 								placement="bottomLeft"
 								title={text}>
 								<p
-									style={{ textDecoration: 'underline' }}
-									onClick={() => {
-										setSupplyFunnelModal(true);
-										setSupplyFunnelValue({
-											stage: param?.Stage,
-											count: text,
-										});
-										setSupplyFunnelHRDetailsState({
-											...supplyFunnelHRDetailsState,
-											newExistingType: 'Exist',
-											currentStage: param.Stage,
-											TeamManagerName: groupedColumnDataMemo[i],
-										});
-									}}>
+									style={{
+										textDecoration: 'underline',
+										cursor: text === 0 ? 'no-drop' : 'pointer',
+									}}
+									onClick={
+										text === 0
+											? null
+											: () => {
+													setSupplyFunnelModal(true);
+													setSupplyFunnelValue({
+														stage: param?.Stage,
+														count: text,
+													});
+													setSupplyFunnelHRDetailsState({
+														...supplyFunnelHRDetailsState,
+														newExistingType: 'Exist',
+														currentStage: param.Stage,
+														TeamManagerName: groupedColumnDataMemo[i],
+													});
+											  }
+									}>
 									{text}
 								</p>
 							</Tooltip>
@@ -187,20 +201,27 @@ const SupplyFunnelScreen = () => {
 								placement="bottomLeft"
 								title={text}>
 								<p
-									style={{ textDecoration: 'underline' }}
-									onClick={() => {
-										setSupplyFunnelModal(true);
-										setSupplyFunnelValue({
-											stage: param?.Stage,
-											count: text,
-										});
-										setSupplyFunnelHRDetailsState({
-											...supplyFunnelHRDetailsState,
-											newExistingType: 'Exist',
-											currentStage: param.Stage,
-											TeamManagerName: groupedColumnDataMemo[i],
-										});
-									}}>
+									style={{
+										textDecoration: 'underline',
+										cursor: text === 0 ? 'no-drop' : 'pointer',
+									}}
+									onClick={
+										text === 0
+											? null
+											: () => {
+													setSupplyFunnelModal(true);
+													setSupplyFunnelValue({
+														stage: param?.Stage,
+														count: text,
+													});
+													setSupplyFunnelHRDetailsState({
+														...supplyFunnelHRDetailsState,
+														newExistingType: 'Exist',
+														currentStage: param.Stage,
+														TeamManagerName: groupedColumnDataMemo[i],
+													});
+											  }
+									}>
 									{text}
 								</p>
 							</Tooltip>
@@ -504,22 +525,29 @@ const SupplyFunnelScreen = () => {
 												<p style={{ fontWeight: '550' }}>{text}</p>
 											) : (
 												<p
-													style={{ textDecoration: 'underline' }}
-													onClick={() => {
-														setSupplyFunnelModal(true);
-														setSupplyFunnelValue({
-															stage: param?.Stage,
-															count: text,
-														});
-														setSupplyFunnelHRDetailsState({
-															...supplyFunnelHRDetailsState,
-															newExistingType:
-																item === 'Final Total'
-																	? ''
-																	: item?.split(' ')[0],
-															currentStage: param.Stage,
-														});
-													}}>
+													style={{
+														textDecoration: 'underline',
+														cursor: text === 0 ? 'no-drop' : 'pointer',
+													}}
+													onClick={
+														text === 0
+															? null
+															: () => {
+																	setSupplyFunnelModal(true);
+																	setSupplyFunnelValue({
+																		stage: param?.Stage,
+																		count: text,
+																	});
+																	setSupplyFunnelHRDetailsState({
+																		...supplyFunnelHRDetailsState,
+																		newExistingType:
+																			item === 'Final Total'
+																				? ''
+																				: item?.split(' ')[0],
+																		currentStage: param.Stage,
+																	});
+															  }
+													}>
 													{text}
 												</p>
 											)}

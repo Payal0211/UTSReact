@@ -30,21 +30,28 @@ export const reportConfig = {
 								<p style={{ fontWeight: '550' }}>{data}</p>
 							) : (
 								<p
-									style={{ textDecoration: 'underline' }}
-									onClick={() => {
-										setDemandFunnelHRDetailsState({
-											...demandFunnelHRDetailsState,
-											adhocType: item === 'Final Total' ? '' : 'Total',
-											TeamManagerName: item === 'Final Total' ? '' : item,
-											currentStage: param.Stage,
-											IsExport: false,
-										});
-										setDemandFunnelValue({
-											stage: param?.Stage,
-											count: data,
-										});
-										setDemandFunnelModal(true);
-									}}>
+									style={{
+										textDecoration: 'underline',
+										cursor: data === 0 ? 'no-drop' : 'pointer',
+									}}
+									onClick={
+										data === 0
+											? null
+											: () => {
+													setDemandFunnelHRDetailsState({
+														...demandFunnelHRDetailsState,
+														adhocType: item === 'Final Total' ? '' : 'Total',
+														TeamManagerName: item === 'Final Total' ? '' : item,
+														currentStage: param.Stage,
+														IsExport: false,
+													});
+													setDemandFunnelValue({
+														stage: param?.Stage,
+														count: data,
+													});
+													setDemandFunnelModal(true);
+											  }
+									}>
 									{data}
 								</p>
 							)}
