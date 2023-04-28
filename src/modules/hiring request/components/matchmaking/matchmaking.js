@@ -584,17 +584,17 @@ const MatchmakingModal = ({
 								Convert to Direct Placement
 							</label>
 							<p className={convertToDPmodule.test}>
-								{' '}
 								Please add necessary details for converting this HR from
 								Contractual to Direct Placement
 							</p>
 
 							<div className="talent-detail-part">
-								<h4>
-									{talentDpConversion?.length === 0 || !talentDpConversion
-										? 'Talent Details Not Found'
-										: 'Talent Details'}
-								</h4>
+								{talentDpConversion?.length === 0 ? (
+									<p className="data-not-found">Talents Details Not Found</p>
+								) : (
+									<h4>Talents Detail</h4>
+								)}
+
 								<div className={UserFieldStyle.hrFieldContainer}>
 									<Collapse accordion>
 										{talentDpConversion?.map((item, index) => {
@@ -797,6 +797,7 @@ const MatchmakingModal = ({
 						open={convertToContracual}
 						width="846px"
 						footer={null}
+						className="convert-contractual-modal-wrap"
 						onCancel={() => setConvertToContracual(false)}>
 						<div className="convert-contractual-modal">
 							<label className={MatchMakingStyle.matchmakingLabel}>
@@ -858,11 +859,11 @@ const MatchmakingModal = ({
 							</div>
 
 							<div className="talent-detail-part">
-								<h4>
-									{getTelantCC?.length === 0 || !talentDpConversion
-										? 'Talent Details Not Found'
-										: 'Talent Details'}
-								</h4>
+								{getTelantCC?.length === 0 ? (
+									<p className="data-not-found">Talents Details Not Found</p>
+								) : (
+									<h4>Talents Detail</h4>
+								)}
 								<Collapse accordion>
 									{getTelantCC?.map((data, index) => {
 										return (
@@ -953,7 +954,7 @@ const MatchmakingModal = ({
 									}}
 									type="button"
 									className={MatchMakingStyle.btnPrimary}>
-									Convert to DP
+									Convert to Contractual
 								</button>
 
 								<div
@@ -974,7 +975,7 @@ const MatchmakingModal = ({
 						open={convertToContracual}
 						width="600px"
 						footer={null}
-						className="convert-dp-modal-wrap"
+						className="convert-contractual-modal-wrap"
 						onCancel={() => setConvertToContracual(false)}>
 						<div className="convert-dp-modal">
 							<label className={MatchMakingStyle.matchmakingLabel}>
