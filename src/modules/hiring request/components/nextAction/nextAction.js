@@ -2,7 +2,6 @@ import NextActionStyle from './nextAction.module.css';
 import { ReactComponent as ClockSVG } from 'assets/svg/clock.svg';
 
 const NextAction = ({ nextAction }) => {
-	console.log('---nextAction----', nextAction);
 	return (
 		<div className={NextActionStyle.hrNextActionForTalent}>
 			<div className={NextActionStyle.nextActionList}>

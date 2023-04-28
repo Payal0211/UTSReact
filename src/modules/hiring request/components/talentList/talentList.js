@@ -1101,7 +1101,7 @@ const TalentList = ({
 			talentDetail?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
 		[talentDetail, talentIndex],
 	);
-	console.log(filterTalentID, '---filterTalentID');
+
 	const getInterviewStatus = useCallback(() => {
 		switch (filterTalentID?.InterviewStatus) {
 			case 'Feedback Submitted':
@@ -1487,7 +1487,6 @@ const TalentList = ({
 												isDropdown={true}
 												listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
 												menuAction={(menuItem) => {
-													console.log(menuItem.key, '--menuItem.key');
 													switch (menuItem.key) {
 														case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 															setScheduleInterviewModal(true);
@@ -1526,7 +1525,6 @@ const TalentList = ({
 															break;
 														}
 														case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
-															console.log('hello');
 															setLegalTalentOnboardModal(true);
 															setTalentIndex(item?.TalentID);
 															break;

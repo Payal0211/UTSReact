@@ -9,7 +9,7 @@ export const hiringRequestDAO = {
 	getPaginatedHiringRequestDAO: async function (hrData) {
 		try {
 			const hrResult = await HiringRequestAPI.getPaginatedHiringRequest(hrData);
-			console.log(hrResult, '--hrResult---');
+
 			if (hrResult) {
 				const statusCode = hrResult['statusCode'];
 
@@ -31,7 +31,6 @@ export const hiringRequestDAO = {
 				}
 			}
 		} catch (error) {
-			console.log(error, '---errorr---');
 			return errorDebug(error, 'hiringRequestDAO.getPaginatedHiringRequestDAO');
 		}
 	},
@@ -738,10 +737,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	saveConfirmSlotDetailsDAO: async (data) => {
@@ -773,19 +769,16 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
-  	convertToDirectPlacementDAO: async (data) => {
+	convertToDirectPlacementDAO: async (data) => {
 		try {
 			const convertToDireactPlacementDetails =
 				await HiringRequestAPI.convertToDirectPlacement(data);
 
 			if (convertToDireactPlacementDetails) {
-				const statusCode = convertToDireactPlacementDetails["statusCode"];
+				const statusCode = convertToDireactPlacementDetails['statusCode'];
 
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = convertToDireactPlacementDetails.responseBody;
@@ -808,10 +801,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	convertToContracualPlacementDAO: async (data) => {
@@ -843,16 +833,12 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	getHrDetailsDAO: async (data) => {
 		try {
-			const getHrDetails =
-				await HiringRequestAPI.getAllHrDetails(data);
+			const getHrDetails = await HiringRequestAPI.getAllHrDetails(data);
 
 			if (getHrDetails) {
 				const statusCode = getHrDetails['statusCode'];
@@ -878,10 +864,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	getTalentDPConversionDAO: async (data) => {
@@ -913,16 +896,12 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	getHrDpConversionDAO: async (data) => {
 		try {
-			const getHrDpConversion =
-				await HiringRequestAPI.getHrDpConversion(data);
+			const getHrDpConversion = await HiringRequestAPI.getHrDpConversion(data);
 
 			if (getHrDpConversion) {
 				const statusCode = getHrDpConversion['statusCode'];
@@ -948,16 +927,15 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	saveDpConversionDAO: async (data, amount) => {
 		try {
-			const saveDpConversion =
-				await HiringRequestAPI.saveDpConversion(data, amount);
+			const saveDpConversion = await HiringRequestAPI.saveDpConversion(
+				data,
+				amount,
+			);
 
 			if (saveDpConversion) {
 				const statusCode = saveDpConversion['statusCode'];
@@ -983,10 +961,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	getConvertToContractualDAO: async (data) => {
@@ -1018,10 +993,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	saveConvertToContractualDAO: async (data, amount) => {
@@ -1053,16 +1025,14 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	saveTalentDpConversionDAO: async (data) => {
 		try {
-			const saveDpConversion =
-				await HiringRequestAPI.saveTalentDpConversion(data);
+			const saveDpConversion = await HiringRequestAPI.saveTalentDpConversion(
+				data,
+			);
 
 			if (saveDpConversion) {
 				const statusCode = saveDpConversion['statusCode'];
@@ -1088,16 +1058,23 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
-	calculateTalentDpConversion: async (hrid, contactPriorityId, dpPercentage, talentExpectedCTC) => {
+	calculateTalentDpConversion: async (
+		hrid,
+		contactPriorityId,
+		dpPercentage,
+		talentExpectedCTC,
+	) => {
 		try {
 			const saveTalentDpConversion =
-				await HiringRequestAPI.calculateDpConversionCost(hrid, contactPriorityId, dpPercentage, talentExpectedCTC);
+				await HiringRequestAPI.calculateDpConversionCost(
+					hrid,
+					contactPriorityId,
+					dpPercentage,
+					talentExpectedCTC,
+				);
 
 			if (saveTalentDpConversion) {
 				const statusCode = saveTalentDpConversion['statusCode'];
@@ -1123,10 +1100,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(
-				error,
-				'hiringRequestDAO.getConfirmSlotDetailsDAO()',
-			);
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	//         if (statusCode === HTTPStatusCode.OK) {
@@ -1156,11 +1130,11 @@ export const hiringRequestDAO = {
 	saveTalentsContracualDAO: async (data) => {
 		try {
 			const saveTalentContracual = await HiringRequestAPI.saveTalentContracual(
-				data
+				data,
 			);
 
 			if (saveTalentContracual) {
-				const statusCode = saveTalentContracual["statusCode"];
+				const statusCode = saveTalentContracual['statusCode'];
 
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = saveTalentContracual.responseBody;
@@ -1183,7 +1157,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	calculateHRCostDAO: async (hrid, priorityId, hrcost, percentageid) => {
@@ -1192,11 +1166,11 @@ export const hiringRequestDAO = {
 				hrid,
 				priorityId,
 				hrcost,
-				percentageid
+				percentageid,
 			);
 
 			if (calculateHrCost) {
-				const statusCode = calculateHrCost["statusCode"];
+				const statusCode = calculateHrCost['statusCode'];
 
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = calculateHrCost.responseBody;
@@ -1219,7 +1193,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 	getTelantContracualConversionDAO: async (data) => {
@@ -1228,7 +1202,7 @@ export const hiringRequestDAO = {
 				await HiringRequestAPI.getTelentsContractualConversion(data);
 
 			if (getTelantCC) {
-				const statusCode = getTelantCC["statusCode"];
+				const statusCode = getTelantCC['statusCode'];
 
 				if (statusCode === HTTPStatusCode.OK) {
 					const tempResult = getTelantCC.responseBody;
@@ -1251,7 +1225,7 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
+			return errorDebug(error, 'hiringRequestDAO.getConfirmSlotDetailsDAO()');
 		}
 	},
 };

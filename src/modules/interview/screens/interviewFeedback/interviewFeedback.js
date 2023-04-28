@@ -28,20 +28,16 @@ const InterviewFeedback = () => {
 	const [radioValue3, setRadioValue3] = useState(1);
 	const [radioValue4, setRadioValue4] = useState(1);
 	const onChange = (e) => {
-		console.log('radio checked', e.target.value);
 		setRadioValue(e.target.value);
 	};
 
 	const onChange2 = (e) => {
-		console.log('radio checked', e.target.value);
 		setRadioValue2(e.target.value);
 	};
 	const onChange3 = (e) => {
-		console.log('radio checked', e.target.value);
 		setRadioValue3(e.target.value);
 	};
 	const onChange4 = (e) => {
-		console.log('radio checked', e.target.value);
 		setRadioValue4(e.target.value);
 	};
 	const getTimeZone = useCallback(async () => {

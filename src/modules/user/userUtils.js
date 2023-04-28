@@ -39,7 +39,6 @@ export const userUtils = {
 		return filteredData;
 	},
 	userDataFormatter: (d, id, base64Image, getUploadFileData, modifiedGEO) => {
-		console.log(modifiedGEO, 'modifiedGEO');
 		const userFormDetails = {
 			id: _isNull(id) ? 0 : id,
 			employeeId: d?.employeeId,

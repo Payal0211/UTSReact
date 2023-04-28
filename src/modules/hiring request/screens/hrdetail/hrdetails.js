@@ -62,7 +62,6 @@ const HRDetailScreen = () => {
 	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
 	const miscData = UserSessionManagementController.getUserSession();
 
-	console.log('apiData--', apiData);
 	const callAPI = useCallback(
 		async (hrid) => {
 			setLoading(true);

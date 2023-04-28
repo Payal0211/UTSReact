@@ -2,7 +2,6 @@ import { errorDebug } from 'shared/utils/error_debug_utils';
 import * as XLSX from 'xlsx';
 export const downloadFileUtil = (response) => {
 	try {
-		console.log(response, '--response--');
 		const fileName = 'my-file';
 		const json = JSON.stringify(response, null, 2);
 		const blob = new Blob([json], {

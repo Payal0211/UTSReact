@@ -20,7 +20,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 	const toggleHandler = useCallback(() => {
 		setMoreInfo(true);
 	}, []);
-	console.log('herhehr', 'accept HR');
+
 	return (
 		<Modal
 			width="864px"
