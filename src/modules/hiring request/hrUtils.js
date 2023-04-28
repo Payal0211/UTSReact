@@ -443,6 +443,7 @@ export const hrUtils = {
 			) {
 				return (
 					<MatchmakingModal
+						apiData={apiData}
 						refreshedHRDetail={callAPI}
 						hrID={urlSplitter?.split('HR')[0]}
 						hrNo={updatedSplitter}

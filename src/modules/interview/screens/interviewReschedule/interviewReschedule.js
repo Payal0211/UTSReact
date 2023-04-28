@@ -23,6 +23,7 @@ const InterviewReschedule = ({
 	hrId,
 	talentInfo,
 	hiringRequestNumber,
+	callAPI,
 	reScheduleTimezone,
 	setRescheduleTimezone,
 	getRescheduleSlotDate,
@@ -120,6 +121,7 @@ const InterviewReschedule = ({
 				message.success('Interview rescheduled successfully');
 				closeModal();
 				resetReScheduleFields();
+				callAPI(hrId);
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -251,7 +253,7 @@ const InterviewReschedule = ({
 									register={register}
 									errors={errors}
 									validationSchema={{
-										required: 'please enter the client name.',
+										required: 'please enter the message.',
 									}}
 									label="Message to Appear"
 									name="interviewMessage"

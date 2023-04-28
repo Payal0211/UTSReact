@@ -192,7 +192,7 @@ const HRDetailScreen = () => {
 								urlSplitter,
 								updatedSplitter,
 							)}
-							{apiData?.DpFlag ? (
+							{/* {apiData?.DpFlag ? (
 								<button className={HRDetailStyle.btnPrimary}>
 									Convert to DP
 								</button>
@@ -200,7 +200,7 @@ const HRDetailScreen = () => {
 								<button className={HRDetailStyle.btnPrimary}>
 									Convert to contractual
 								</button>
-							)}
+							)} */}
 							<AcceptHR
 								hrID={apiData?.ClientDetail?.HR_Number}
 								openModal={acceptHRModal}
