@@ -579,7 +579,8 @@ const MatchmakingModal = ({
 							<p className={convertToDPmodule.test}> Please add necessary details for converting this HR from Contractual to  Direct Placement</p>
 
 							<div className="talent-detail-part">
-								<h4>Talent Details</h4>
+
+								<h4>{(talentDpConversion?.length === 0 || !talentDpConversion) ? "Talent Details Not Found" : "Talent Details"}</h4>
 								<div className={UserFieldStyle.hrFieldContainer}>
 									<Collapse
 										accordion
@@ -605,7 +606,8 @@ const MatchmakingModal = ({
 																	errors={errors}
 																	label="Talent Current CTC"
 																	name={`talentData[${index}].currentCTC`}
-																	type={InputType.TEXT}
+
+																	type={InputType.NUMBER}
 																	placeholder="Enter Percentage"
 																/>
 															</div>
@@ -616,7 +618,7 @@ const MatchmakingModal = ({
 																	errors={errors}
 																	label="Talent Expected CTC"
 																	name={`talentData[${index}].expectedCTC`}
-																	type={InputType.TEXT}
+																	type={InputType.NUMBER}
 																	placeholder="Enter Percentage"
 																	onChangeHandler={async (e) => {
 																		let _dpValue = watch(`talentData[${index}].dpPercentage`);
@@ -628,11 +630,11 @@ const MatchmakingModal = ({
 															<div className={UserFieldStyle.colMd6}>
 																<HRInputField
 																	register={register}
-																	errors={errors}
 																	label="DP Percentage"
 																	name={`talentData[${index}].dpPercentage`}
-																	type={InputType.TEXT}
+																	type={InputType.NUMBER}
 																	placeholder="Enter Percentage"
+																	errors={errors}
 																	onChangeHandler={async (e) => {
 																		let _perValue = watch(`talentData[${index}].expectedCTC`);
 																		let response = await hiringRequestDAO.calculateTalentDpConversion(item.hrid, item.contactTalentPriorityID, e.target.value, _perValue)
@@ -659,6 +661,7 @@ const MatchmakingModal = ({
 												</Panel>
 											)
 										})}
+
 									</Collapse>
 								</div>
 							</div>
@@ -767,7 +770,7 @@ const MatchmakingModal = ({
 								Convert to Contractual
 							</label>
 							<p className={convertToDPmodule.test}>
-								{" "}
+
 								Please add necessary details for converting this HR from Contractual
 								to Direct Placement
 							</p>
@@ -821,7 +824,7 @@ const MatchmakingModal = ({
 							</div>
 
 							<div className="talent-detail-part">
-								<h4>Talent Details</h4>
+								<h4>{(getTelantCC?.length === 0 || !talentDpConversion) ? "Talent Details Not Found" : "Talent Details"}</h4>
 								<Collapse accordion>
 									{getTelantCC?.map((data, index) => {
 										return (
