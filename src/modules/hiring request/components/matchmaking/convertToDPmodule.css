@@ -19,6 +19,10 @@
       margin-left: 0;
 }
 
+ .convert-dp-modal .data-not-found {
+   font-size: 18px;
+ }
+
 .convert-dp-modal [class*="matchmaking_formPanelAction"]{
       padding-bottom: 0;
 }
@@ -27,6 +31,18 @@
 
 
 /* convert-contractual-modal modal css start */
+
+ .convert-contractual-modal label {
+   margin-left: 0;
+ }
+
+ .convert-contractual-modal [class*="matchmaking_formPanelAction"] {
+   padding-bottom: 0;
+ }
+
+ .convert-contractual-modal .data-not-found{
+      font-size: 18px;
+ }
 
 .convert-contractual-modal p{
     font-family: 'Montserrat';
