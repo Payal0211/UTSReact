@@ -30,6 +30,8 @@ export const secondaryInterviewer = {
 };
 
 const HRFields = ({
+	setJDDumpID,
+	jdDumpID,
 	setTitle,
 	clientDetail,
 	setEnID,
@@ -147,11 +149,12 @@ const HRFields = ({
 				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 					setUploadModal(false);
 					setUploadFileData(fileName);
+					setJDDumpID(uploadFileResponse?.responseBody?.details?.JDDumpID);
 					message.success('File uploaded successfully');
 				}
 			}
 		},
-		[getValidation],
+		[getValidation, setJDDumpID],
 	);
 
 	const uploadFileHandler = useCallback(
@@ -210,6 +213,10 @@ const HRFields = ({
 						setJDParsedSkills(
 							uploadFileResponse && uploadFileResponse?.responseBody?.details,
 						);
+						setJDDumpID(
+							uploadFileResponse &&
+								uploadFileResponse?.responseBody?.details?.JDDumpID,
+						);
 						setUploadModal(false);
 						setValidation({
 							...getValidation,
@@ -221,7 +228,7 @@ const HRFields = ({
 				setIsLoading(false);
 			}
 		},
-		[getValidation, setJDParsedSkills],
+		[getValidation, setJDDumpID, setJDParsedSkills],
 	);
 
 	const googleDriveFileUploader = useCallback(() => {
@@ -445,6 +452,7 @@ const HRFields = ({
 				});
 				setClientNameSuggestion([]);
 				setClientNameMessage(response?.responseBody);
+				//TODO:- JD Dump ID
 			}
 		},
 		[setError],
@@ -643,6 +651,7 @@ const HRFields = ({
 			addHRResponse,
 			contactID,
 			getContactAndSaleID?.contactID,
+			getUploadFileData,
 			isHRDirectPlacement,
 			messageAPI,
 			setEnID,

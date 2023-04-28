@@ -1755,6 +1755,7 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setReScheduleInterviewModal(false)}>
 				<InterviewReschedule
+					callAPI={callAPI}
 					closeModal={() => setReScheduleInterviewModal(false)}
 					talentName={filterTalentID?.Name}
 					hrId={hrId}
@@ -1784,6 +1785,7 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setScheduleInterviewModal(false)}>
 				<InterviewSchedule
+					callAPI={callAPI}
 					talentName={filterTalentID?.Name}
 					talentInfo={filterTalentID}
 					hrId={hrId}

@@ -23,6 +23,7 @@ export const secondaryInterviewer = {
 
 const DebriefingHR = ({
 	setTitle,
+	jdDumpID,
 	tabFieldDisabled,
 	setTabFieldDisabled,
 	enID,
@@ -151,6 +152,7 @@ const DebriefingHR = ({
 			interviewerEmail: d.interviewerEmail,
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
+			JDDumpID: jdDumpID,
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -178,6 +180,7 @@ const DebriefingHR = ({
 			interviewerEmail: d.interviewerEmail,
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
+			JDDumpID: jdDumpID,
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(

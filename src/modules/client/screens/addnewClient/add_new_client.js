@@ -22,7 +22,7 @@ const AddNewClientScreen = () => {
 		Responsibility: '',
 		Requirements: '',
 	});
-	console.log(interviewDetails, '-interviewDetailss---');
+	const [jdDumpID, setJDDumpID] = useState('');
 	return (
 		<div className={AddNewClientStyle.addNewContainer}>
 			<div className={AddNewClientStyle.addHRTitle}>{title}</div>
@@ -63,6 +63,8 @@ const AddNewClientScreen = () => {
 									clientDetail={clientDetail}
 									setJDParsedSkills={setJDParsedSkills}
 									contactID={contactID}
+									setJDDumpID={setJDDumpID}
+									jdDumpID={jdDumpID}
 								/>
 							),
 							disabled: tabFieldDisabled.addNewHiringRequest,
@@ -79,6 +81,7 @@ const AddNewClientScreen = () => {
 									setTabFieldDisabled={setTabFieldDisabled}
 									setJDParsedSkills={setJDParsedSkills}
 									JDParsedSkills={JDParsedSkills}
+									jdDumpID={jdDumpID}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,

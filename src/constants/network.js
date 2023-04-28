@@ -128,6 +128,7 @@ export class ClientsAPI {
 	static CHECK_DUPLICATE_EMAIL = 'CheckDuplicateEmail';
 	static GET_POINT_OF_CONTACT = 'GetPointOfContact';
 }
+
 export class HiringRequestsAPI {
 	static GET_ALL_HIRING_REQUEST = 'GetAllHiringRequests';
 	static CREATE_HR = 'Create';
@@ -149,6 +150,18 @@ export class HiringRequestsAPI {
 	static UPLOAD_GOOGLE_FILE_LINK = 'UploadGoogleFileLink';
 	static UPDATE_ODR_POOL_STATUS = 'UpdateODRPoolStatus';
 	static CHECK_SALES_USER_IS_PARTNER = 'CheckSalesUserIsPartner';
+	static CONVERT_DP = 'GetHrDPConversion';
+	static CONVERT_TO_CONRACUAL = 'GetHrContractualConversion';
+	static GET_TALENT_DP_CONVERSION = 'GetTalentsDPConversion';
+	static GET_HR_DP_CONVERSION = 'GetHrDPConversion';
+	static SAVE_DP_CONVERSION = 'SaveHrDPConversion';
+	static CONVERT_TO_CONTRACTUAL = 'GetHrContractualConversion';
+	static SAVE_CONVERT_TO_CONTRACTUAL = 'SaveHrContractualConversion';
+	static SAVE_TALENT_DP_CONVERSION = 'SaveTalentsDPConversion';
+	static CALCULATE_DP_CONVERSION_COST = 'CalculateDPConversionCost';
+	static SAVE_TALENT_CONTRACTUAL = 'SaveTalentsContractualConversion';
+	static CALCULATE_HR_COST = 'CalculateHRCost';
+	static GET_HR_CONTARCTUAL = 'GetTalentsContractualConversion';
 }
 
 export class UsersAPI {

@@ -16,6 +16,7 @@ const AddNewHR = () => {
 		Requirements: '',
 	});
 	const [enID, setEnID] = useState('');
+	const [jdDumpID, setJDDumpID] = useState('');
 
 	return (
 		<div className={AddNewHRStyle.addNewContainer}>
@@ -38,6 +39,8 @@ const AddNewHR = () => {
 								setTabFieldDisabled={setTabFieldDisabled}
 								setEnID={setEnID}
 								setJDParsedSkills={setJDParsedSkills}
+								setJDDumpID={setJDDumpID}
+								jdDumpID={jdDumpID}
 							/>
 						),
 					},
@@ -52,6 +55,7 @@ const AddNewHR = () => {
 								enID={enID}
 								setJDParsedSkills={setJDParsedSkills}
 								JDParsedSkills={JDParsedSkills}
+								jdDumpID={jdDumpID}
 							/>
 						),
 						disabled: tabFieldDisabled.debriefingHR,

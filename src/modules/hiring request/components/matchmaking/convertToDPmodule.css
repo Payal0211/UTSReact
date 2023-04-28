@@ -1,0 +1,122 @@
+/* convert-dp-modal modal css start */
+
+
+.convert-dp-modal-wrap .matchmaking_formPanelAction__xW2AT{
+    padding-bottom: 0;
+}
+
+.convert-dp-modal p{
+   font-family: 'Montserrat';
+   font-style: normal;
+   font-weight: 400;
+   font-size: 14px;
+   line-height: 17px;
+   color: #232323;
+   margin: 15px 0 35px;
+}
+
+.convert-dp-modal label{
+      margin-left: 0;
+}
+
+.convert-dp-modal [class*="matchmaking_formPanelAction"]{
+      padding-bottom: 0;
+}
+
+/* Dp modal css End */
+
+
+/* convert-contractual-modal modal css start */
+
+.convert-contractual-modal p{
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    margin: 15px 0 35px;
+ }
+
+
+.talent-detail-part{
+    border-top: 1px solid #CECCCC;
+    padding: 24px 0 0;
+    margin-bottom: 24px;
+ }
+
+.talent-detail-part h4{
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 29px;
+    color: #232323;
+ }
+
+ .convert-contractual-modal .last-field .hrInputFields_formField__yXoGH{
+    margin: 0 !important;
+ }
+
+ .talent-detail-part .ant-collapse-content-box{
+   padding: 0 2px;
+ }
+
+
+
+ .convert-contractual-modal .matchmaking_formPanelAction__xW2AT{
+    padding-bottom: 0;
+ }
+
+ /* convert-contractual-modal modal css End */
+
+
+ /* accordian custom css start */
+
+ .talent-detail-part .ant-collapse {
+    background-color: transparent;
+    border: 0px solid #d9d9d9;
+  }
+
+  .talent-detail-part .ant-collapse-item{
+    border-bottom: 1px solid #d9d9d9;
+  }
+
+  .talent-detail-part .ant-collapse-item .ant-collapse-header-text{
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    color: #232323;
+  }
+
+  .talent-detail-part .ant-collapse-content{
+    background-color: transparent;
+    border-top: 0px solid #d9d9d9;
+    padding: 0;
+  }
+
+  .talent-detail-part .ant-collapse .ant-collapse-header{
+    padding: 20px 2px;
+  }
+
+  .talent-detail-part .ant-collapse .ant-collapse-item .ant-collapse-header:after{
+      content: "";
+      position: absolute;
+      right: 2px;
+      top: 20px;
+      background-image: url('../../../../assets/svg/plush-icon.svg');
+      background-repeat: no-repeat;
+      width: 15px;
+      height: 15px;
+      background-size: 100%;
+  }
+
+  .talent-detail-part .ant-collapse .ant-collapse-item.ant-collapse-item-active .ant-collapse-header:after{
+    background-image: url('../../../../assets/svg/minus-icon.svg');
+  }
+
+  .talent-detail-part .ant-collapse-arrow{
+    display: none !important;
+  }
+
+ /* accordian custom css End */

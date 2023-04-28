@@ -33,6 +33,7 @@ const InterviewSchedule = ({
 	setScheduleSlotRadio,
 	getSlotInformationHandler,
 	getInterviewStatus,
+	callAPI,
 }) => {
 	const {
 		register,
@@ -92,6 +93,7 @@ const InterviewSchedule = ({
 			message.success('Interview scheduled successfully');
 			closeModal();
 			resetScheduleFields();
+			callAPI(hrId);
 		}
 	};
 
