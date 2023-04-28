@@ -131,7 +131,6 @@ const InterviewReschedule = ({
 			getRescheduleSlotInfomation,
 			hiringRequestNumber,
 			hrId,
-
 			reScheduleRadio,
 			reScheduleSlotRadio,
 			resetReScheduleFields,

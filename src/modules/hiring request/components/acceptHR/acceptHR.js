@@ -28,7 +28,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 			let acceptHRObject = {
 				HRID: urlSplitter,
 				AcceptValue: '1',
-				Reason: d.acceptHRDetails,
+				Reason: '',
 			};
 
 			const response = await hiringRequestDAO.acceptHRRequestDAO(
@@ -78,34 +78,38 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 						If you need more clarity on this HR, then change the Status to
 						“Waiting for more information”.
 					</p>
-					<div className={AcceptHRStyle.colMd12}>
-						<HRInputField
-							required
-							isTextArea={true}
-							register={register}
-							errors={errors}
-							validationSchema={{
-								required: 'please enter the details.',
-							}}
-							label="Add Details which are missing to have more clarity "
-							name={'acceptHRDetails'}
-							type={InputType.TEXT}
-							placeholder="Add Details which are missing or needs more clarity"
-						/>
-					</div>
+					{showMoreInfo && (
+						<div className={AcceptHRStyle.colMd12}>
+							<HRInputField
+								required
+								isTextArea={true}
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the details.',
+								}}
+								label="Add Details which are missing to have more clarity "
+								name={'acceptHRDetails'}
+								type={InputType.TEXT}
+								placeholder="Add Details which are missing or needs more clarity"
+							/>
+						</div>
+					)}
 
 					<div className={AcceptHRStyle.formPanelAction}>
 						<button
-							// disabled={type === SubmitType.SAVE_AS_DRAFT}
 							onClick={handleSubmit(acceptHRHandler)}
 							className={AcceptHRStyle.btn}>
 							Accept HR
 						</button>
 						{
 							<button
-								// disabled={isLoading}
 								type="submit"
-								onClick={handleSubmit(waitForMoreInfoHandler)}
+								onClick={
+									showMoreInfo === false
+										? () => setMoreInfo(true)
+										: handleSubmit(waitForMoreInfoHandler)
+								}
 								className={AcceptHRStyle.btnPrimary}>
 								Wait for more Information
 							</button>
