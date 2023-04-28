@@ -18,7 +18,7 @@ const InterviewStatus = ({ hrId, talentInfo, callAPI, closeModal }) => {
 		formState: { errors },
 	} = useForm({});
 	const [interviewStatus, setInterviewStatus] = useState([]);
-	console.log(hrId, '--talentInfo---');
+
 	const getInterviewStatusHandler = useCallback(async () => {
 		const response = await InterviewDAO.getInterviewStatusRequestDAO({
 			interviewStatusID: talentInfo?.SelectedInterviewId,

@@ -115,7 +115,6 @@ const EngagementBillRateAndPayRate = ({
 				isEditBillRate: true,
 			};
 
-			console.log(billRateDataFormatter, '-billRateFormatter');
 			const response = await engagementRequestDAO.saveEditBillPayRateRequestDAO(
 				billRateDataFormatter,
 			);
@@ -144,7 +143,6 @@ const EngagementBillRateAndPayRate = ({
 				isEditBillRate: true,
 			};
 
-			console.log(billRateDataFormatter, '-billRateFormatter');
 			const response = await engagementRequestDAO.saveEditBillPayRateRequestDAO(
 				billRateDataFormatter,
 			);

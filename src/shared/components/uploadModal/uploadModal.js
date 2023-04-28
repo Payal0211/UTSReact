@@ -56,8 +56,6 @@ const UploadModal = ({
 	); */
 
 	const modalFileHandler = (e) => {
-		console.log('--inside modal File handler---', e);
-		console.log(uploadFileHandler, '--UPLOADfilehandler--');
 		uploadFileHandler(e);
 	};
 

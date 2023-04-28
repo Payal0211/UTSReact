@@ -139,7 +139,6 @@ export const allEngagementConfig = {
 								},
 							]}
 							menuAction={(item) => {
-								console.log(item, 'item');
 								switch (item.key) {
 									case 'Replace Engagement': {
 										setEngagementModal({

@@ -46,7 +46,6 @@ const OnboardField = ({ onboardID }) => {
 		formState: { errors },
 	} = useForm({});
 	const onChange = (e) => {
-		console.log('radio checked', e.target.value);
 		setRadioValue(e.target.value);
 		if (e.target.value === 1) {
 			setTextBox(true);
@@ -111,7 +110,7 @@ const OnboardField = ({ onboardID }) => {
 				0,
 				teamMembers,
 			);
-			console.log(onboardDataFormatter);
+
 			const addOnboardResponse = await OnboardDAO.onboardTalentRequestDAO(
 				onboardDataFormatter,
 			);

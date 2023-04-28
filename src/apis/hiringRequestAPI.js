@@ -147,7 +147,7 @@ export const HiringRequestAPI = {
 	createHiringRequest: async function (hrData) {
 		let httpService = new HttpServices();
 		const miscData = UserSessionManagementController.getUserMiscellaneousData();
-		console.log(miscData, '--miscData0---');
+
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.HIRING +
@@ -330,7 +330,7 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_FILE;
 		httpService.dataToSend = file;
-		console.log(httpService.dataToSend, '---httpservice--');
+
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -443,8 +443,8 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.INTERVIEW +
-			InterviewsAPI.GET_SLOT_DETAILS + `?InterviewMasterId=${interviewId}`
-			;
+			InterviewsAPI.GET_SLOT_DETAILS +
+			`?InterviewMasterId=${interviewId}`;
 
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -476,7 +476,8 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.CONVERT_DP + `?HiringRequest_ID=${data}`;
+			HiringRequestsAPI.CONVERT_DP +
+			`?HiringRequest_ID=${data}`;
 		httpService.dataToSend = data;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -492,7 +493,8 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.CONVERT_TO_CONRACUAL + `?HiringRequest_ID=${data}`;
+			HiringRequestsAPI.CONVERT_TO_CONRACUAL +
+			`?HiringRequest_ID=${data}`;
 		httpService.dataToSend = data;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -508,7 +510,8 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.GET_HR_DETAIL + `?id=${data}`;
+			HiringRequestsAPI.GET_HR_DETAIL +
+			`?id=${data}`;
 		httpService.dataToSend = data;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -524,7 +527,8 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.GET_TALENT_DP_CONVERSION + `?HiringRequest_ID=${data}`;
+			HiringRequestsAPI.GET_TALENT_DP_CONVERSION +
+			`?HiringRequest_ID=${data}`;
 		httpService.dataToSend = data;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -540,7 +544,8 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.GET_HR_DP_CONVERSION + `?HiringRequest_ID=${data}`;
+			HiringRequestsAPI.GET_HR_DP_CONVERSION +
+			`?HiringRequest_ID=${data}`;
 		httpService.dataToSend = data;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -556,7 +561,8 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.SAVE_DP_CONVERSION + `?HrId=${data}&DPAmount=${amount}`;
+			HiringRequestsAPI.SAVE_DP_CONVERSION +
+			`?HrId=${data}&DPAmount=${amount}`;
 		httpService.dataToSend = data;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -580,7 +586,7 @@ export const HiringRequestAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, "hiringRequestAPI.getHRDetailsRequest");
+			return errorDebug(error, 'hiringRequestAPI.getHRDetailsRequest');
 		}
 	},
 	saveHrConvertToContractualInfo: async function (hrid, percentage) {
@@ -596,7 +602,7 @@ export const HiringRequestAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, "hiringRequestAPI.getHRDetailsRequest");
+			return errorDebug(error, 'hiringRequestAPI.getHRDetailsRequest');
 		}
 	},
 	saveTalentDpConversion: async function (data) {
@@ -604,7 +610,7 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.SAVE_TALENT_DP_CONVERSION
+			HiringRequestsAPI.SAVE_TALENT_DP_CONVERSION;
 		httpService.dataToSend = data;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -612,10 +618,15 @@ export const HiringRequestAPI = {
 			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, "hiringRequestAPI.getHRDetailsRequest");
+			return errorDebug(error, 'hiringRequestAPI.getHRDetailsRequest');
 		}
 	},
-	calculateDpConversionCost: async function (hrid, contactPriorityId, dpPercentage, talentExpectedCTC) {
+	calculateDpConversionCost: async function (
+		hrid,
+		contactPriorityId,
+		dpPercentage,
+		talentExpectedCTC,
+	) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
@@ -629,7 +640,7 @@ export const HiringRequestAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, "hiringRequestAPI.getHRDetailsRequest");
+			return errorDebug(error, 'hiringRequestAPI.getHRDetailsRequest');
 		}
 	},
 	// httpService.setAuthRequired = true;
@@ -654,7 +665,7 @@ export const HiringRequestAPI = {
 			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, "HiringRequestAPI.addHRAcceptanceRequest");
+			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
 		}
 	},
 	convertToDirectPlacement: async (data) => {
@@ -671,7 +682,7 @@ export const HiringRequestAPI = {
 			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, "HiringRequestAPI.addHRAcceptanceRequest");
+			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
 		}
 	},
 	saveTalentContracual: async (data) => {
@@ -687,7 +698,7 @@ export const HiringRequestAPI = {
 			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, "HiringRequestAPI.addHRAcceptanceRequest");
+			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
 		}
 	},
 	calculateHRConst: async (hrid, priorityId, hrcost, percentageid) => {
@@ -704,7 +715,7 @@ export const HiringRequestAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, "HiringRequestAPI.addHRAcceptanceRequest");
+			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
 		}
 	},
 	getTelentsContractualConversion: async (data) => {
@@ -721,7 +732,7 @@ export const HiringRequestAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, "HiringRequestAPI.addHRAcceptanceRequest");
+			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
 		}
 	},
 };

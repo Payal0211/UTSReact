@@ -309,7 +309,7 @@ const HRFields = ({
 		setUploadModal,
 		setValidation,
 	]);
-	console.log(getUploadFileData, '--getUploadFileData');
+
 	/* ------------------ Upload JD Ends Here -------------------- */
 	let prefRegion = watch('region');
 	let modeOfWork = watch('workingMode');
