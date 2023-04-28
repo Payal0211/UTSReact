@@ -828,9 +828,9 @@ const UsersFields = ({ id, setLoading, loading }) => {
 										defaultValue={'Select'}
 										options={getDepartment && getDepartment}
 										name="departMent"
-										isError={errors['departMent'] && errors['departMent']}
-										required
-										errorMsg={'Please select department'}
+									// isError={errors['departMent'] && errors['departMent']}
+									// required
+									// errorMsg={'Please select department'}
 									/>
 								</div>
 							</div>

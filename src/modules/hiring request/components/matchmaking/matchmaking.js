@@ -606,7 +606,6 @@ const MatchmakingModal = ({
 																	errors={errors}
 																	label="Talent Current CTC"
 																	name={`talentData[${index}].currentCTC`}
-
 																	type={InputType.NUMBER}
 																	placeholder="Enter Percentage"
 																/>
