@@ -1,4 +1,9 @@
-import { HiringRequestsAPI, MastersAPI, NetworkInfo, SubDomain } from 'constants/network';
+import {
+	HiringRequestsAPI,
+	MastersAPI,
+	NetworkInfo,
+	SubDomain,
+} from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
 import { errorDebug } from 'shared/utils/error_debug_utils';
@@ -470,7 +475,8 @@ export const MasterAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.HIRING +
-			HiringRequestsAPI.CHECK_SALES_USER_IS_PARTNER + `?salesPersonId=${getContactAndSaleID?.salesID}&ContactID=${getContactAndSaleID?.contactID}`
+			HiringRequestsAPI.CHECK_SALES_USER_IS_PARTNER +
+			`?salesPersonId=${getContactAndSaleID?.salesID}&ContactID=${getContactAndSaleID?.contactID}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -478,6 +484,19 @@ export const MasterAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.getDashboardCountRequest');
+		}
+	},
+	getCountryListRequest: async function (getContactAndSaleID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_COUNTRY_LIST;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCountryListRequest');
 		}
 	},
 };

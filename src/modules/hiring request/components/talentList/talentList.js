@@ -7,8 +7,7 @@ import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
 import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
-import { AddNewType, TalentOnboardStatus } from 'constants/application';
-import { MasterDAO } from 'core/master/masterDAO';
+import { TalentOnboardStatus } from 'constants/application';
 import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
 import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
 import InterviewFeedback from 'modules/interview/screens/interviewFeedback/interviewFeedback';
@@ -25,9 +24,7 @@ import EngagementReplaceTalent from 'modules/engagement/screens/engagementReplac
 import UpdateLegalTalentOnboardStatus from '../updateLegalTalentOnboardStatus/updateLegalTalentOnboardStatus';
 import UpdateKickOffOnboardStatus from '../updateKickOffOnboardStatus/updateKickOffOnboardStatus';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
-import { HttpStatusCode } from 'axios';
 import { HTTPStatusCode } from 'constants/network';
-import { useForm, Controller } from 'react-hook-form';
 import ConfirmSlotModal from '../cloneHR/confirmSlotModal';
 
 const TalentList = ({
@@ -80,33 +77,33 @@ const TalentList = ({
 	]);
 	const [getScheduleSlotInfomation, setScheduleSlotInformation] = useState([
 		{
-			slotID: 1,
-			slotDate: '',
-			startTime: '',
-			endTime: '',
-			strSlotDate: '',
-			strStartTime: '',
-			strEndTime: '',
+			SlotID: 1,
+			SlotDate: '',
+			StartTime: '',
+			EndTime: '',
+			STRSlotDate: '',
+			STRStartTime: '',
+			STREndTime: '',
 			iD_As_ShortListedID: '',
 		},
 		{
-			slotID: 2,
-			slotDate: '',
-			startTime: '',
-			endTime: '',
-			strSlotDate: '',
-			strStartTime: '',
-			strEndTime: '',
+			SlotID: 2,
+			SlotDate: '',
+			StartTime: '',
+			EndTime: '',
+			STRSlotDate: '',
+			STRStartTime: '',
+			STREndTime: '',
 			iD_As_ShortListedID: '',
 		},
 		{
-			slotID: 3,
-			slotDate: '',
-			startTime: '',
-			endTime: '',
-			strSlotDate: '',
-			strStartTime: '',
-			strEndTime: '',
+			SlotID: 3,
+			SlotDate: '',
+			StartTime: '',
+			EndTime: '',
+			STRSlotDate: '',
+			STRStartTime: '',
+			STREndTime: '',
 			iD_As_ShortListedID: '',
 		},
 	]);
@@ -120,33 +117,33 @@ const TalentList = ({
 	]);
 	const [getRescheduleSlotInfomation, setRescheduleSlotInformation] = useState([
 		{
-			slotID: 1,
-			slotDate: '',
-			startTime: '',
-			endTime: '',
-			strSlotDate: '',
-			strStartTime: '',
-			strEndTime: '',
+			SlotID: 1,
+			SlotDate: '',
+			StartTime: '',
+			EndTime: '',
+			STRSlotDate: '',
+			STRStartTime: '',
+			STREndTime: '',
 			iD_As_ShortListedID: '',
 		},
 		{
-			slotID: 2,
-			slotDate: '',
-			startTime: '',
-			endTime: '',
-			strSlotDate: '',
-			strStartTime: '',
-			strEndTime: '',
+			SlotID: 2,
+			SlotDate: '',
+			StartTime: '',
+			EndTime: '',
+			STRSlotDate: '',
+			STRStartTime: '',
+			STREndTime: '',
 			iD_As_ShortListedID: '',
 		},
 		{
-			slotID: 3,
-			slotDate: '',
-			startTime: '',
-			endTime: '',
-			strSlotDate: '',
-			strStartTime: '',
-			strEndTime: '',
+			SlotID: 3,
+			SlotDate: '',
+			StartTime: '',
+			EndTime: '',
+			STRSlotDate: '',
+			STRStartTime: '',
+			STREndTime: '',
 			iD_As_ShortListedID: '',
 		},
 	]);
@@ -166,33 +163,33 @@ const TalentList = ({
 		]);
 		setScheduleSlotInformation([
 			{
-				slotID: 1,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
+				SlotID: 1,
+				SlotDate: '',
+				StartTime: '',
+				EndTime: '',
+				STRSlotDate: '',
+				STRStartTime: '',
+				STREndTime: '',
 				iD_As_ShortListedID: '',
 			},
 			{
-				slotID: 2,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
+				SlotID: 2,
+				SlotDate: '',
+				StartTime: '',
+				EndTime: '',
+				STRSlotDate: '',
+				STRStartTime: '',
+				STREndTime: '',
 				iD_As_ShortListedID: '',
 			},
 			{
-				slotID: 3,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
+				SlotID: 3,
+				SlotDate: '',
+				StartTime: '',
+				EndTime: '',
+				STRSlotDate: '',
+				STRStartTime: '',
+				STREndTime: '',
 				iD_As_ShortListedID: '',
 			},
 		]);
@@ -207,33 +204,33 @@ const TalentList = ({
 		setRescheduleRadio('client');
 		setRescheduleSlotInformation([
 			{
-				slotID: 1,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
+				SlotID: 1,
+				SlotDate: '',
+				StartTime: '',
+				EndTime: '',
+				STRSlotDate: '',
+				STRStartTime: '',
+				STREndTime: '',
 				iD_As_ShortListedID: '',
 			},
 			{
-				slotID: 2,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
+				SlotID: 2,
+				SlotDate: '',
+				StartTime: '',
+				EndTime: '',
+				STRSlotDate: '',
+				STRStartTime: '',
+				STREndTime: '',
 				iD_As_ShortListedID: '',
 			},
 			{
-				slotID: 3,
-				slotDate: '',
-				startTime: '',
-				endTime: '',
-				strSlotDate: '',
-				strStartTime: '',
-				strEndTime: '',
+				SlotID: 3,
+				SlotDate: '',
+				StartTime: '',
+				EndTime: '',
+				STRSlotDate: '',
+				STRStartTime: '',
+				STREndTime: '',
 				iD_As_ShortListedID: '',
 			},
 		]);
@@ -281,15 +278,15 @@ const TalentList = ({
 					}
 					setScheduleSlotInformation(
 						getScheduleSlotInfomation.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return {
 									...item,
-									slotDate: secondDateFormate,
-									strSlotDate: firstDateFormate,
-									strStartTime: startTimeFirstFormate || null,
-									strEndTime: endTimeFirstFormate || null,
-									startTime: startTimeSecondFormate || null,
-									endTime: endTimeSecondFormate || null,
+									SlotDate: firstDateFormate || null,
+									STRSlotDate: firstDateFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
+									StartTime: startTimeSecondFormate || null,
+									EndTime: endTimeSecondFormate || null,
 								};
 							} else {
 								return item;
@@ -298,7 +295,7 @@ const TalentList = ({
 					);
 					setScheduleSlotDate(
 						getScheduleSlotDate.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return { ...item, slot1: date };
 							} else {
 								return item;
@@ -329,15 +326,15 @@ const TalentList = ({
 					}
 					setRescheduleSlotInformation(
 						getRescheduleSlotInfomation.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return {
 									...item,
-									slotDate: secondDateFormate,
-									strSlotDate: firstDateFormate,
-									strStartTime: startTimeFirstFormate || null,
-									strEndTime: endTimeFirstFormate || null,
-									startTime: startTimeSecondFormate || null,
-									endTime: endTimeSecondFormate || null,
+									SlotDate: firstDateFormate || null,
+									STRSlotDate: firstDateFormate || null,
+									StartTime: startTimeFirstFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
+									EndTime: endTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -346,7 +343,7 @@ const TalentList = ({
 					);
 					setRescheduleSlotDate(
 						getRescheduleSlotDate.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return { ...item, slot1: date };
 							} else {
 								return item;
@@ -375,11 +372,11 @@ const TalentList = ({
 					}
 					setScheduleSlotInformation(
 						getScheduleSlotInfomation.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return {
 									...item,
-									startTime: startTimeSecondFormate,
-									strStartTime: startTimeFirstFormate,
+									StartTime: startTimeFirstFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -389,7 +386,7 @@ const TalentList = ({
 
 					setScheduleSlotDate(
 						getScheduleSlotDate.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return { ...item, slot2: date };
 							} else {
 								return item;
@@ -415,11 +412,11 @@ const TalentList = ({
 					}
 					setRescheduleSlotInformation(
 						getRescheduleSlotInfomation.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return {
 									...item,
-									startTime: startTimeSecondFormate,
-									strStartTime: startTimeFirstFormate,
+									StartTime: startTimeFirstFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -428,7 +425,7 @@ const TalentList = ({
 					);
 					setRescheduleSlotDate(
 						getRescheduleSlotDate.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return { ...item, slot2: date };
 							} else {
 								return item;
@@ -457,11 +454,11 @@ const TalentList = ({
 					}
 					setScheduleSlotInformation(
 						getScheduleSlotInfomation.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return {
 									...item,
-									endTime: endTimeSecondFormate,
-									strEndTime: endTimeFirstFormate,
+									EndTime: endTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -471,7 +468,7 @@ const TalentList = ({
 
 					setScheduleSlotDate(
 						getScheduleSlotDate.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return { ...item, slot3: date };
 							} else {
 								return item;
@@ -497,11 +494,11 @@ const TalentList = ({
 					}
 					setRescheduleSlotInformation(
 						getRescheduleSlotInfomation.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return {
 									...item,
-									endTime: endTimeSecondFormate,
-									strEndTime: endTimeFirstFormate,
+									EndTime: endTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -510,7 +507,7 @@ const TalentList = ({
 					);
 					setRescheduleSlotDate(
 						getRescheduleSlotDate.map((item, index) => {
-							if (index == 0) {
+							if (index === 0) {
 								return { ...item, slot3: date };
 							} else {
 								return item;
@@ -543,15 +540,15 @@ const TalentList = ({
 					}
 					setScheduleSlotInformation(
 						getScheduleSlotInfomation.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return {
 									...item,
-									slotDate: secondDateFormate,
-									strSlotDate: firstDateFormate,
-									strStartTime: startTimeFirstFormate || null,
-									strEndTime: endTimeFirstFormate || null,
-									startTime: startTimeSecondFormate || null,
-									endTime: endTimeSecondFormate || null,
+									SlotDate: firstDateFormate || null,
+									STRSlotDate: firstDateFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
+									StartTime: startTimeSecondFormate || null,
+									EndTime: endTimeSecondFormate || null,
 								};
 							} else {
 								return item;
@@ -561,7 +558,7 @@ const TalentList = ({
 
 					setScheduleSlotDate(
 						getScheduleSlotDate.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return { ...item, slot1: date };
 							} else {
 								return item;
@@ -592,15 +589,15 @@ const TalentList = ({
 					}
 					setRescheduleSlotInformation(
 						getRescheduleSlotInfomation.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return {
 									...item,
-									slotDate: secondDateFormate,
-									strSlotDate: firstDateFormate,
-									strStartTime: startTimeFirstFormate || null,
-									strEndTime: endTimeFirstFormate || null,
-									startTime: startTimeSecondFormate || null,
-									endTime: endTimeSecondFormate || null,
+									SlotDate: firstDateFormate || null,
+									STRSlotDate: firstDateFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
+									StartTime: startTimeSecondFormate || null,
+									EndTime: endTimeSecondFormate || null,
 								};
 							} else {
 								return item;
@@ -610,7 +607,7 @@ const TalentList = ({
 
 					setRescheduleSlotDate(
 						getRescheduleSlotDate.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return { ...item, slot1: date };
 							} else {
 								return item;
@@ -639,11 +636,11 @@ const TalentList = ({
 					}
 					setScheduleSlotInformation(
 						getScheduleSlotInfomation.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return {
 									...item,
-									startTime: startTimeSecondFormate,
-									strStartTime: startTimeFirstFormate,
+									StartTime: startTimeFirstFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -653,7 +650,7 @@ const TalentList = ({
 
 					setScheduleSlotDate(
 						getScheduleSlotDate.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return { ...item, slot2: date };
 							} else {
 								return item;
@@ -679,11 +676,11 @@ const TalentList = ({
 					}
 					setRescheduleSlotInformation(
 						getRescheduleSlotInfomation.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return {
 									...item,
-									startTime: startTimeSecondFormate,
-									strStartTime: startTimeFirstFormate,
+									StartTime: startTimeFirstFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -693,7 +690,7 @@ const TalentList = ({
 
 					setRescheduleSlotDate(
 						getRescheduleSlotDate.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return { ...item, slot2: date };
 							} else {
 								return item;
@@ -723,11 +720,11 @@ const TalentList = ({
 
 					setScheduleSlotInformation(
 						getScheduleSlotInfomation.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return {
 									...item,
-									endTime: endTimeSecondFormate,
-									strEndTime: endTimeFirstFormate,
+									EndTime: endTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -736,7 +733,7 @@ const TalentList = ({
 					);
 					setScheduleSlotDate(
 						getScheduleSlotDate.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return { ...item, slot3: date };
 							} else {
 								return item;
@@ -762,11 +759,11 @@ const TalentList = ({
 					}
 					setRescheduleSlotInformation(
 						getRescheduleSlotInfomation.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return {
 									...item,
-									endTime: endTimeSecondFormate,
-									strEndTime: endTimeFirstFormate,
+									EndTime: endTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -776,7 +773,7 @@ const TalentList = ({
 
 					setRescheduleSlotDate(
 						getRescheduleSlotDate.map((item, index) => {
-							if (index == 1) {
+							if (index === 1) {
 								return { ...item, slot3: date };
 							} else {
 								return item;
@@ -812,12 +809,12 @@ const TalentList = ({
 							if (index === 2) {
 								return {
 									...item,
-									slotDate: secondDateFormate,
-									strSlotDate: firstDateFormate,
-									strStartTime: startTimeFirstFormate || null,
-									strEndTime: endTimeFirstFormate || null,
-									startTime: startTimeSecondFormate || null,
-									endTime: endTimeSecondFormate || null,
+									SlotDate: firstDateFormate || null,
+									STRSlotDate: firstDateFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
+									StartTime: startTimeSecondFormate || null,
+									EndTime: endTimeSecondFormate || null,
 								};
 							} else {
 								return item;
@@ -861,12 +858,12 @@ const TalentList = ({
 							if (index === 2) {
 								return {
 									...item,
-									slotDate: secondDateFormate,
-									strSlotDate: firstDateFormate,
-									strStartTime: startTimeFirstFormate || null,
-									strEndTime: endTimeFirstFormate || null,
-									startTime: startTimeSecondFormate || null,
-									endTime: endTimeSecondFormate || null,
+									SlotDate: firstDateFormate || null,
+									STRSlotDate: firstDateFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
+									StartTime: startTimeSecondFormate || null,
+									EndTime: endTimeSecondFormate || null,
 								};
 							} else {
 								return item;
@@ -908,8 +905,8 @@ const TalentList = ({
 							if (index === 2) {
 								return {
 									...item,
-									startTime: startTimeSecondFormate,
-									strStartTime: startTimeFirstFormate,
+									StartTime: startTimeFirstFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -948,8 +945,8 @@ const TalentList = ({
 							if (index === 2) {
 								return {
 									...item,
-									startTime: startTimeSecondFormate,
-									strStartTime: startTimeFirstFormate,
+									StartTime: startTimeFirstFormate || null,
+									STRStartTime: startTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -991,8 +988,8 @@ const TalentList = ({
 							if (index === 2) {
 								return {
 									...item,
-									endTime: endTimeSecondFormate,
-									strEndTime: endTimeFirstFormate,
+									EndTime: endTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -1030,8 +1027,8 @@ const TalentList = ({
 							if (index === 2) {
 								return {
 									...item,
-									endTime: endTimeSecondFormate,
-									strEndTime: endTimeFirstFormate,
+									EndTime: endTimeFirstFormate || null,
+									STREndTime: endTimeFirstFormate || null,
 								};
 							} else {
 								return item;
@@ -1070,16 +1067,18 @@ const TalentList = ({
 						getRescheduleSlotInfomation.map((item, index) => {
 							return {
 								...item,
-								slotDate: null,
-								strSlotDate: null,
-								startTime: null,
-								strStartTime: null,
-								endTime: null,
-								strEndTime: null,
+								SlotDate: null,
+								STRSlotDate: null,
+								StartTime: null,
+								STRStartTime: null,
+								EndTime: null,
+								STREndTime: null,
 							};
 						}),
 					);
 				}
+				break;
+			default:
 				break;
 		}
 	};

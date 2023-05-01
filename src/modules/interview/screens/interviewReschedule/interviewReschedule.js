@@ -55,7 +55,10 @@ const InterviewReschedule = ({
 		{ id: 3, value: 'Talent not available on given Slots' },
 		{ id: 4, value: 'Talent not available on selected Slot' },
 	];
-
+	console.log(
+		getRescheduleSlotInfomation.slice(0, 1),
+		'getRescheduleSlotInfomation',
+	);
 	const onRescheduleChange = (e) => {
 		setRescheduleRadio(e.target.value);
 	};
