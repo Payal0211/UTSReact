@@ -110,13 +110,14 @@ export class MastersAPI {
 	static YES_NO_OPTION = 'YesNoOption';
 	static BUDDY = 'Buddy';
 	static GET_DASHBOARD_COUNT_FOR_ENGAGEMENT = 'GetDashboardCountForEngagement';
+	static GET_COUNTRY_LIST = 'GetCountryList';
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
 	static UPDATE_TALENT_STATUS = 'UpdateTalentStatus';
-
 	static REMOVE_ONHOLD_STATUS = 'RemoveOnHoldStatus';
 }
+
 export class HRAcceptanceAPI {
 	static GET_HR_ACCEPTANCE = 'GetHRAcceptance';
 	static ADD_HR_ACCEPTANCE = 'AddHRAcceptance';

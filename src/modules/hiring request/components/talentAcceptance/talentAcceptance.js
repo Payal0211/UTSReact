@@ -35,7 +35,6 @@ const TalentAcceptance = ({
 	talentInfo,
 	closeModal,
 }) => {
-	console.log(talentInfo, '--talentInfo');
 	const switchLocation = useLocation();
 	let urlSplitter = switchLocation.pathname.split('/')[2];
 	const [talentAcceptanceResult, setTalentAcceptanceResult] = useState();
@@ -45,21 +44,12 @@ const TalentAcceptance = ({
 		useState(null);
 	const [postAcceptanceHowSoon, setPostAcceptanceHowSoon] = useState(null);
 	const onChangePostAcceptanceDetails = (e) => {
-		console.log(
-			e.target.value,
-			'---e.target.value  onChangePostAcceptanceDetails',
-		);
 		setPostAcceptanceValue(e.target.value);
 	};
 	const onChangePostAcceptanceDetailAvailability = (e) => {
-		console.log(
-			e.target.value,
-			'---e.target.value onChangePostAcceptanceDetailAvailability',
-		);
 		setPostAcceptanceAvailability(e.target.value);
 	};
 	const onChangePostAcceptanceDetailHowSoon = (e) => {
-		console.log(e.target.value, '---e.target.value post acceptance');
 		setPostAcceptanceHowSoon(e.target.value);
 	};
 
@@ -99,7 +89,6 @@ const TalentAcceptance = ({
 		talentInfo?.TalentID,
 	]);
 
-	console.log(talentAcceptanceResult, '--talenttalentAcceptanceResult');
 	const saveTalentAcceptanceHandler = useCallback(async () => {
 		setIsLoading(true);
 		let formattedResponse = {
