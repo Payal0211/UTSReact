@@ -20,12 +20,12 @@ export const allHRConfig = {
 					return response;
 				},
 			},
-			{
-				title: 'O/P',
-				dataIndex: 'adHocHR',
-				key: 'adHocHR',
-				align: 'left',
-			},
+			// {
+			// 	title: 'O/P',
+			// 	dataIndex: 'adHocHR',
+			// 	key: 'adHocHR',
+			// 	align: 'left',
+			// },
 			{
 				title: 'Date',
 				dataIndex: 'Date',
@@ -133,27 +133,27 @@ export const allHRConfig = {
 	},
 	hrFilterTypeConfig: (filterList) => {
 		return [
-			{
-				label: 'ODR/Pool',
-				name: 'isPoolODRBoth',
-				child: [
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '1',
-						value: 'ODR',
-					},
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '2',
-						value: 'Pool',
-					},
-				],
-				isSearch: false,
-			},
+			// {
+			// 	label: 'ODR/Pool',
+			// 	name: 'isPoolODRBoth',
+			// 	child: [
+			// 		{
+			// 			disabled: false,
+			// 			group: null,
+			// 			selected: false,
+			// 			text: '1',
+			// 			value: 'ODR',
+			// 		},
+			// 		{
+			// 			disabled: false,
+			// 			group: null,
+			// 			selected: false,
+			// 			text: '2',
+			// 			value: 'Pool',
+			// 		},
+			// 	],
+			// 	isSearch: false,
+			// },
 			{
 				label: 'Tenure',
 				name: 'tenure',

@@ -698,3 +698,7 @@ table{
   left: 5px;
   top: 9px;
 }
+
+.ant-switch-checked {
+  background-color: var(--color-sunlight) !important;
+}

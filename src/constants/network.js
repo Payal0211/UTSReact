@@ -48,6 +48,7 @@ export class UserAPI {
 export class ReportType {
 	static DEMAND_FUNNEL = 'DemandFunnel/';
 	static SUPPLY_FUNNEL = 'SupplyFunnel/';
+	static TEAM_DEMAND_FUNNEL = 'TeamDemandFunnel/';
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

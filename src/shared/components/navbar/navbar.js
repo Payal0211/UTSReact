@@ -53,7 +53,7 @@ const Navbar = ({ fullName }) => {
 					</div>
 				</div>
 				<div className={navbarStyles.navlink}>
-					<Badge count={4}>
+					{/* <Badge count={4}>
 						<BellSVG
 							style={{
 								width: '30px',
@@ -61,7 +61,7 @@ const Navbar = ({ fullName }) => {
 								cursor: 'pointer',
 							}}
 						/>
-					</Badge>
+					</Badge> */}
 
 					<img
 						src="https://www.w3schools.com/howto/img_avatar.png"

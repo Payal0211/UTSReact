@@ -227,4 +227,57 @@ export const ReportDAO = {
 			return errorDebug(error, 'ReportDAO.supplyFunnelHRDetailsRequestDAO');
 		}
 	},
+	/** ----------- TEAM DEMAND  FUNNEL ---------------- */
+	teamDemandFunnelListingRequestDAO: async function (reportData) {
+		try {
+			const teamDemandListingResponse =
+				await ReportAPI.teamDemandFunnelListingRequest(reportData);
+			if (teamDemandListingResponse) {
+				const statusCode = teamDemandListingResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = teamDemandListingResponse?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: JSON.parse(tempResult),
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return teamDemandListingResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return teamDemandListingResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.teamDemandFunnelListingRequestDAO');
+		}
+	},
+	teamDemandFunnelFiltersRequestDAO: async function () {
+		try {
+			const teamDemandFilterResponse =
+				await ReportAPI.teamDemandFunnelFilters();
+			if (teamDemandFilterResponse) {
+				const statusCode = teamDemandFilterResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = teamDemandFilterResponse?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return teamDemandFilterResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return teamDemandFilterResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.teamDemandFunnelFiltersRequestDAO');
+		}
+	},
 };
