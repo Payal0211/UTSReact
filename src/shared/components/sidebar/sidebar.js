@@ -6,6 +6,7 @@ import Dashboard from 'assets/svg/dashboard.svg';
 import EngagementList from 'assets/svg/engagement.svg';
 import DemandFunnel from 'assets/svg/demandFunnel.svg';
 import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
+import TeamDemandFunnel from 'assets/svg/teamDemandFunnel.svg';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -110,6 +111,13 @@ const getSideBar = () => {
 			isActive: false,
 			icon: SupplyFunnel,
 			navigateTo: UTSRoutes.SUPPLYFUNNELROUTE,
+		}),
+		new SideBarModels({
+			id: 'team_demand_funnel_report',
+			title: 'Team Demand Funnel',
+			isActive: false,
+			icon: TeamDemandFunnel,
+			navigateTo: UTSRoutes.TEAMDEMANDFUNNELROUTE,
 		}),
 	];
 

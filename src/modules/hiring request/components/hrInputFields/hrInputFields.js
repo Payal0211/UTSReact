@@ -83,7 +83,7 @@ const HRInputField = ({
 						placeholder={placeholder}
 						onClick={InputType.BUTTON && onClickHandler}
 						{...register(name, required && validationSchema)}
-						onChange={onChangeHandler}
+						// onChange={onChangeHandler}
 						id={name}
 						disabled={disabled}
 						required={required}

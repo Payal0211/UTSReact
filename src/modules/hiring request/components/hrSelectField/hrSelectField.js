@@ -27,7 +27,7 @@ const HRSelectField = ({
 			setValue(
 				name,
 				option.map((item) => ({
-					id: item?.id,
+					id: item?.id || item?.text,
 					value: item?.value,
 				})),
 			);
@@ -35,12 +35,12 @@ const HRSelectField = ({
 			isControlled && setControlledValue(option);
 		} else if (mode === 'id/value') {
 			setValue(name, {
-				id: option.id,
+				id: option.id || option.text,
 				value: option.value,
 			});
 			isControlled && setControlledValue(option.value);
 		} else {
-			setValue(name, option.id);
+			setValue(name, option.id || option?.text);
 		}
 	};
 
