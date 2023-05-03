@@ -1093,13 +1093,14 @@ const HRFields = ({
                     required
                     errors={errors}
                     validationSchema={{
+                      required: "please enter the months.",
                       max: {
                         value: 12,
                         message: `please don't enter the value more than 12`,
                       },
                       min: {
-                        value: 0,
-                        message: `please don't enter the value less than 0`,
+                        value: 1,
+                        message: `please don't enter the value less than 1`,
                       },
                     }}
                     name="months"
