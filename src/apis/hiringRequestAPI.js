@@ -632,14 +632,6 @@ export const HiringRequestAPI = {
 			return errorDebug(error, "hiringRequestAPI.getHRDetailsRequest");
 		}
 	},
-	// httpService.setAuthRequired = true;
-	// httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-	// try {
-	// 	let response = await httpService.sendGetRequest();
-	// 	return response;
-	// } catch(error) {
-	// 	return errorDebug(error, "HiringRequestAPI.getConfirmSlotDetailsRequest");
-	// }
 
 	saveConfirmSlotDetailsRequest: async (data) => {
 		let httpService = new HttpServices();
