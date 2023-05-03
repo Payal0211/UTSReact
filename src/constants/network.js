@@ -160,6 +160,8 @@ export class HiringRequestsAPI {
 	static SAVE_TALENT_CONTRACTUAL = "SaveTalentsContractualConversion";
 	static CALCULATE_HR_COST = "CalculateHRCost";
 	static GET_HR_CONTARCTUAL = "GetTalentsContractualConversion";
+	static GET_REMAINING_PRIORITY_COUNT = "GetRemainingPriorityCount";
+	static SET_HR_PRIORITY = "SetHrPriority";
 }
 
 export class UsersAPI {

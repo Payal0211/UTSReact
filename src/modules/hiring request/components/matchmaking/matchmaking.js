@@ -31,7 +31,7 @@ import PlusIcon from "../../../../assets/svg/plush-icon.svg";
 import MinusIcon from "../../../../assets/svg/minus-icon.svg";
 import { useParams } from "react-router-dom";
 import { _isNull } from "shared/utils/basic_utils";
-// import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO"
+
 
 const MatchmakingModal = ({
 	refreshedHRDetail,
@@ -247,8 +247,9 @@ const MatchmakingModal = ({
 			type: "",
 			message: "",
 		});
+		window.location.reload()
 	};
-	console.log(watch(`talentData[${3}].dpPercentage`), "watchdppercentage");
+
 	const saveDpConversion = async () => {
 		if (_isNull(watch("DpPercentage"))) {
 			return setError("DpPercentage", {
@@ -274,6 +275,7 @@ const MatchmakingModal = ({
 			type: "",
 			message: "",
 		});
+		window.location.reload()
 	};
 
 	const getTalentDPConversionAPIS = async () => {
@@ -386,6 +388,7 @@ const MatchmakingModal = ({
 		if (response.statusCode === HTTPStatusCode.OK) {
 			setConvertToDp(false);
 		}
+		window.location.reload()
 	};
 
 	const convertToContracualInfo = useCallback(async () => {
@@ -416,6 +419,7 @@ const MatchmakingModal = ({
 
 		const response = await hiringRequestDAO.saveTalentsContracualDAO(_list);
 		setConvertToContracual(false);
+		window.location.reload()
 	};
 
 	const getTalentCC = async () => {
@@ -619,7 +623,7 @@ const MatchmakingModal = ({
 				</div>
 			</Modal>
 			{/* dp */}
-			{modalFlag === false ? (
+			{modalFlag === true ? (
 				<>
 					<Modal
 						transitionName=""

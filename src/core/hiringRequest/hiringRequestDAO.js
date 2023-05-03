@@ -1225,4 +1225,70 @@ export const hiringRequestDAO = {
 			return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
 		}
 	},
+	getRemainingPriorityCountDAO: async () => {
+		try {
+			const getPriorityCount =
+				await HiringRequestAPI.getRemainingPriorityCount();
+
+			if (getPriorityCount) {
+				const statusCode = getPriorityCount["statusCode"];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getPriorityCount.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getPriorityCount;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getPriorityCount;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
+		}
+
+	},
+	setHrPriorityDAO: async (star, hrid, salesperson) => {
+		try {
+			const setHrPriority =
+				await HiringRequestAPI.setHrPriority(star, hrid, salesperson);
+
+			if (setHrPriority) {
+				const statusCode = setHrPriority["statusCode"];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = setHrPriority.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return setHrPriority;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return setHrPriority;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, "hiringRequestDAO.getConfirmSlotDetailsDAO()");
+		}
+
+	},
 };

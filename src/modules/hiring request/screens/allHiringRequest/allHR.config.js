@@ -11,12 +11,14 @@ export const allHRConfig = {
 				key: 'starStatus',
 				align: 'left',
 				render: (_, param) => {
+					console.log(param, "param");
 					let response = All_Hiring_Request_Utils.GETHRPRIORITY(
 						param.starStatus,
+						param.salesRep,
 						param.key,
 						togglePriority,
 					);
-
+					console.log(response, "startresponse");
 					return response;
 				},
 			},
