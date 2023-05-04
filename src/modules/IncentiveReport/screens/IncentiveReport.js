@@ -100,10 +100,7 @@ const IncentiveReportScreen = () => {
     const [getUserRoleValue, setUserRoleValue] = useState("Select");
     const [getManagerValue, setManagerValue] = useState("Select");
     const [getMonthYearValue, setMonthYearValue] = useState("Select");
-    const [managerRole, setManagerRole] = useState([]);
-    const [getManagerInfo, setManagerInfo] = useState([{
-        id: 0, value: "Select"
-    }])
+    const [managerDataInfo, setManagerDataInfo] = useState([])
 
 
     const [showLine, setShowLine] = useState(true);
@@ -312,8 +309,6 @@ const IncentiveReportScreen = () => {
             setMonthYearFilter(response?.responseBody?.MonthYear);
         }
     };
-
-    const [managerDataInfo, setManagerDataInfo] = useState([])
 
     const getSalesUserBasedOnUserRole = async () => {
         const response = await IncentiveReportDAO.getSalesUsersBasedOnUserRoleDAO(watchValueUserRoles?.id);
