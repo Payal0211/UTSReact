@@ -56,7 +56,7 @@ export const hrUtils = {
 	hrTogglePriority: (response, apiData) => {
 		if (response.responseBody) {
 			let index = apiData.findIndex(
-				(item) => item.key === response.responseBody,
+				(item) => item.key === JSON.parse(localStorage.getItem("hrid")),
 			);
 			let tempdata = apiData[index];
 			if (tempdata.starStatus === hiringRequestPriority.NO_PRIORITY) {

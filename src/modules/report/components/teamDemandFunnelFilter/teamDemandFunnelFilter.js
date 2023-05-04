@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Checkbox, Radio, Tag } from 'antd';
-import hiringFilterStyle from './demandFunnelFilter.module.css';
-import { AiOutlineSearch } from 'react-icons/ai';
+import { Checkbox, Tag } from 'antd';
+import SupplyFunnelFilterStyle from './teamDemandFunnelFIlter.module.css';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { ReactComponent as ArrowRightSVG } from 'assets/svg/arrowRight.svg';
 import { ReactComponent as CrossSVG } from 'assets/svg/cross.svg';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 
-const DemandFunnelFilter = ({
+const TeamDemandFunnelFilter = ({
 	setAppliedFilters,
 	appliedFilter,
 	setCheckedState,
@@ -30,12 +29,12 @@ const DemandFunnelFilter = ({
 		getHTMLFilter
 			? setTimeout(() => {
 					document
-						.querySelector(`.${hiringFilterStyle.aside}`)
-						.classList.add(`${hiringFilterStyle.closeFilter}`);
+						.querySelector(`.${SupplyFunnelFilterStyle.aside}`)
+						.classList.add(`${SupplyFunnelFilterStyle.closeFilter}`);
 			  }, 300)
 			: document
-					.querySelector(`.${hiringFilterStyle.aside}`)
-					.classList.remove(`${hiringFilterStyle.closeFilter}`);
+					.querySelector(`.${SupplyFunnelFilterStyle.aside}`)
+					.classList.remove(`${SupplyFunnelFilterStyle.closeFilter}`);
 	}, [getHTMLFilter]);
 
 	const toggleFilterSubChild = (item) => {
@@ -183,6 +182,7 @@ const DemandFunnelFilter = ({
 		tableFilteredState,
 	]);
 	const handleFilters = useCallback(() => {
+		console.log('hello');
 		let filters = {};
 		appliedFilter.forEach((item) => {
 			filters = {
@@ -213,12 +213,12 @@ const DemandFunnelFilter = ({
 	]);
 
 	return (
-		<aside className={hiringFilterStyle.aside}>
-			<div className={hiringFilterStyle.asideBody}>
-				<div className={toggleBack ? hiringFilterStyle.asideHead : ''}>
+		<aside className={SupplyFunnelFilterStyle.aside}>
+			<div className={SupplyFunnelFilterStyle.asideBody}>
+				<div className={toggleBack ? SupplyFunnelFilterStyle.asideHead : ''}>
 					{toggleBack && (
 						<span
-							className={hiringFilterStyle.goback}
+							className={SupplyFunnelFilterStyle.goback}
 							onClick={() => {
 								setToggleBack(false);
 								setSearchData(hrUtils.searchFiltersList);
@@ -242,21 +242,21 @@ const DemandFunnelFilter = ({
 					</span>
 				</div>
 
-				<div className={hiringFilterStyle.asideFilters}>
+				<div className={SupplyFunnelFilterStyle.asideFilters}>
 					{toggleBack ? (
 						<>
-							<span className={hiringFilterStyle.label}>
+							<span className={SupplyFunnelFilterStyle.label}>
 								{filterSubChild.label}
 							</span>
 							<br />
 
 							<br />
-							<div className={hiringFilterStyle.filtersListType}>
+							<div className={SupplyFunnelFilterStyle.filtersListType}>
 								{searchData && searchData.length > 0
 									? searchData.map((item, index) => {
 											return (
 												<div
-													className={hiringFilterStyle.filterItem}
+													className={SupplyFunnelFilterStyle.filterItem}
 													key={index}>
 													<Checkbox
 														checked={checkedState.get(
@@ -287,7 +287,7 @@ const DemandFunnelFilter = ({
 									: filterSubChild.child.map((item, index) => {
 											return (
 												<div
-													className={hiringFilterStyle.filterItem}
+													className={SupplyFunnelFilterStyle.filterItem}
 													key={index}>
 													<Checkbox
 														disabled={
@@ -325,16 +325,16 @@ const DemandFunnelFilter = ({
 						</>
 					) : (
 						<>
-							<span className={hiringFilterStyle.label}>Filters</span>
-							<div className={hiringFilterStyle.filtersChips}>
+							<span className={SupplyFunnelFilterStyle.label}>Filters</span>
+							<div className={SupplyFunnelFilterStyle.filtersChips}>
 								{filteredTags}
 							</div>
-							<div className={hiringFilterStyle.filtersListType}>
+							<div className={SupplyFunnelFilterStyle.filtersListType}>
 								{filtersType.map((item, index) => {
 									return (
 										<div
 											key={index}
-											className={hiringFilterStyle.filterItem}
+											className={SupplyFunnelFilterStyle.filterItem}
 											onClick={() => toggleFilterSubChild(item)}>
 											<span style={{ fontSize: '1rem' }}>{item.label}</span>
 											<ArrowRightSVG style={{ width: '26px' }} />
@@ -347,14 +347,14 @@ const DemandFunnelFilter = ({
 					<br />
 					<br />
 					<hr />
-					<div className={hiringFilterStyle.operationsFilters}>
+					<div className={SupplyFunnelFilterStyle.operationsFilters}>
 						<button
-							className={hiringFilterStyle.clearAll}
+							className={SupplyFunnelFilterStyle.clearAll}
 							onClick={clearFilters}>
 							Clear All
 						</button>
 						<button
-							className={hiringFilterStyle.applyFilters}
+							className={SupplyFunnelFilterStyle.applyFilters}
 							onClick={handleFilters}>
 							Apply Filters
 						</button>
@@ -365,4 +365,4 @@ const DemandFunnelFilter = ({
 	);
 };
 
-export default DemandFunnelFilter;
+export default TeamDemandFunnelFilter;

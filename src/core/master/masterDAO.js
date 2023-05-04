@@ -55,6 +55,33 @@ export const MasterDAO = {
 			return errorDebug(error, 'masterDAO.getGEORequestDAO');
 		}
 	},
+	getUsersHierarchyRequestDAO: async function (usersDetails) {
+		try {
+			const hierarchyResponse = await MasterAPI.getUsersHierarchyRequest(
+				usersDetails,
+			);
+			if (hierarchyResponse) {
+				const statusCode = hierarchyResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hierarchyResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return hierarchyResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return hierarchyResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'masterDAO.getUsersHierarchyRequestDAO');
+		}
+	},
 	getSkillsRequestDAO: async function () {
 		try {
 			const skillsResult = await MasterAPI.getSkillsRequest();

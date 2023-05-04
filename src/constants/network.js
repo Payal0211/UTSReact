@@ -112,6 +112,7 @@ export class MastersAPI {
 	static BUDDY = 'Buddy';
 	static GET_DASHBOARD_COUNT_FOR_ENGAGEMENT = 'GetDashboardCountForEngagement';
 	static GET_COUNTRY_LIST = 'GetCountryList';
+	static GET_USERS_HIERARCHY = 'GetUserHierarchy';
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
@@ -165,6 +166,8 @@ export class HiringRequestsAPI {
 	static CALCULATE_HR_COST = 'CalculateHRCost';
 	static GET_HR_CONTARCTUAL = 'GetTalentsContractualConversion';
 	static HRAccept = 'HRAccept';
+  static GET_REMAINING_PRIORITY_COUNT = "GetRemainingPriorityCount";
+	static SET_HR_PRIORITY = "SetHrPriority";
 }
 
 export class UsersAPI {

@@ -21,8 +21,11 @@ import Column from 'antd/lib/table/Column';
 import ColumnGroup from 'antd/lib/table/ColumnGroup';
 import SupplyFunnelModal from 'modules/report/components/supplyFunnelModal/supplyFunnelModal';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
-const SupplyFunnelFilterLazyComponent = React.lazy(() =>
-	import('modules/report/components/supplyFunnelFilter/supplyFunnelFilter'),
+import { MasterDAO } from 'core/master/masterDAO';
+const TeamDemandFunnelFilterLazyComponent = React.lazy(() =>
+	import(
+		'modules/report/components/teamDemandFunnelFilter/teamDemandFunnelFilter'
+	),
 );
 
 const TeamDemandFunnelScreen = () => {
@@ -46,6 +49,7 @@ const TeamDemandFunnelScreen = () => {
 		companyCategory: '',
 		isActionWise: false,
 	});
+
 	const [supplyFunnelValue, setSupplyFunnelValue] = useState({});
 	const [supplyFunnelHRDetailsState, setSupplyFunnelHRDetailsState] = useState({
 		newExistingType: '',
@@ -54,7 +58,7 @@ const TeamDemandFunnelScreen = () => {
 		isExport: false,
 		funnelFilter: tableFilteredState,
 	});
-	const [teamDemandFunnelModal, setTeamDemandFunnelModal] = useState(false);
+	const [teamDemandFunnelModal, setTeamDemandFunnelModal] = useState(true);
 	const [apiData, setApiData] = useState([]);
 	const [viewSummaryData, setSummaryData] = useState([]);
 	const [isSummary, setIsSummary] = useState(false);
@@ -71,9 +75,10 @@ const TeamDemandFunnelScreen = () => {
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 
-	const getDemandFunnelListingHandler = useCallback(async (tableData) => {
+	const getTeamDemandFunnelListingHandler = useCallback(async (tableData) => {
 		setLoading(true);
-		let response = await ReportDAO.teamDemandFunnelFiltersRequestDAO(tableData);
+		let response = await ReportDAO.teamDemandFunnelListingRequestDAO(tableData);
+		console.log(response, '--response-');
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
 			setApiData(response?.responseBody);
@@ -92,8 +97,8 @@ const TeamDemandFunnelScreen = () => {
 				item === 'Stage' ||
 				item === 'Duration' ||
 				item === 'Final Total' ||
-				item === 'New Total' ||
-				item === 'Exist Total'
+				item === 'Pool Total' ||
+				item === 'Odr Total'
 			) {
 				tempArray.push(item);
 			}
@@ -278,7 +283,7 @@ const TeamDemandFunnelScreen = () => {
 						.join('-'),
 				},
 			});
-			getDemandFunnelListingHandler({
+			getTeamDemandFunnelListingHandler({
 				...tableFilteredState,
 				startDate: new Date(start)
 					.toLocaleDateString('en-UK')
@@ -443,24 +448,26 @@ const TeamDemandFunnelScreen = () => {
 
 	const viewActionWiseHandler = useCallback(
 		async (d) => {
-			console.log(d);
-			setTableFilteredState({
-				...tableFilteredState,
-				salesManagerID: d.salesManager?.id,
-				isActionWise: true,
-			});
 			const actionWiseFormatter = {
 				...tableFilteredState,
 				salesManagerID: d.salesManager?.id,
 				isActionWise: true,
 			};
-
+			setTableFilteredState({
+				...tableFilteredState,
+				salesManagerID: d.salesManager?.id,
+				isActionWise: true,
+			});
 			setSelectedHierarchy(d.salesManager);
 
 			const response = await ReportDAO.teamDemandFunnelListingRequestDAO(
 				actionWiseFormatter,
 			);
+			const hierarchyResponse = await MasterDAO.getUsersHierarchyRequestDAO({
+				parentID: d.salesManager?.id,
+			});
 			console.log(response);
+			console.log(hierarchyResponse, '-hierarchyResponse--');
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setApiData(response?.responseBody);
 				setTeamDemandFunnelModal(false);
@@ -468,14 +475,8 @@ const TeamDemandFunnelScreen = () => {
 		},
 		[tableFilteredState],
 	);
-	console.log(selectedHierarchy, '--selectedHierarchy');
 	const hrWiseHandler = useCallback(
 		async (d) => {
-			setTableFilteredState({
-				...tableFilteredState,
-				salesManagerID: d.salesManager?.id,
-				isActionWise: true,
-			});
 			const actionWiseFormatter = {
 				...tableFilteredState,
 				salesManagerID: d.salesManager?.id,
@@ -488,70 +489,75 @@ const TeamDemandFunnelScreen = () => {
 		},
 		[tableFilteredState],
 	);
+
 	const onChange = useCallback(() => {
-		console.log('herehe--');
 		setTeamDemandFunnelModal(true);
 	}, []);
-	useEffect(() => {
-		getDemandFunnelListingHandler(tableFilteredState);
-	}, [getDemandFunnelListingHandler, tableFilteredState]);
+	// useEffect(() => {
+	// 	// getDemandFunnelListingHandler(tableFilteredState);
+	// }, [getDemandFunnelListingHandler, tableFilteredState]);
 	useEffect(() => {
 		getReportFilterHandler();
 	}, [getReportFilterHandler]);
 	return (
-		<div className={TeamDemandFunnelStyle.hiringRequestContainer}>
-			<div className={TeamDemandFunnelStyle.addnewHR}>
-				<div className={TeamDemandFunnelStyle.hiringRequest}>
-					Team Demand Funnel Report
-				</div>
-			</div>
-			{/*
-			 * --------- Filter Component Starts ---------
-			 * @Filter Part
-			 */}
-			<div className={TeamDemandFunnelStyle.filterContainer}>
-				<div className={TeamDemandFunnelStyle.filterSets}>
-					<div
-						className={TeamDemandFunnelStyle.addFilter}
-						onClick={toggleDemandReportFilter}>
-						<FunnelSVG style={{ width: '16px', height: '16px' }} />
-
-						<div className={TeamDemandFunnelStyle.filterLabel}>Add Filters</div>
-						<div className={TeamDemandFunnelStyle.filterCount}>
-							{filteredTagLength}
+		<>
+			{apiData?.length > 0 && selectedHierarchy && (
+				<div className={TeamDemandFunnelStyle.hiringRequestContainer}>
+					<div className={TeamDemandFunnelStyle.addnewHR}>
+						<div className={TeamDemandFunnelStyle.hiringRequest}>
+							Team Demand Funnel Report
 						</div>
 					</div>
-					<div className={TeamDemandFunnelStyle.filterRight}>
-						{
-							<div style={{ display: 'flex', alignItems: 'center' }}>
-								<div className={TeamDemandFunnelStyle.label}>
-									Toggle Sales Manager :
-								</div>
-								&nbsp;
-								<Switch
-									// defaultChecked
-									onChange={onChange}
-								/>
-							</div>
-						}
-						{selectedHierarchy && (
-							<div style={{ display: 'flex', alignItems: 'center' }}>
-								<div className={TeamDemandFunnelStyle.label}>
-									Selected Hierarchy :
-								</div>
-								&nbsp;
-								<div className={TeamDemandFunnelStyle.btnPrimary}>
-									{selectedHierarchy?.value}
-								</div>
-							</div>
-						)}
-						<div className={TeamDemandFunnelStyle.calendarFilterSet}>
-							<div className={TeamDemandFunnelStyle.label}>Date</div>
+					{/*
+					 * --------- Filter Component Starts ---------
+					 * @Filter Part
+					 */}
+					<div className={TeamDemandFunnelStyle.filterContainer}>
+						<div className={TeamDemandFunnelStyle.filterSets}>
+							<div
+								className={TeamDemandFunnelStyle.addFilter}
+								onClick={toggleDemandReportFilter}>
+								<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
-							<div className={TeamDemandFunnelStyle.calendarFilter}>
-								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
-								<Controller
-									render={({ ...props }) => (
+								<div className={TeamDemandFunnelStyle.filterLabel}>
+									Add Filters
+								</div>
+								<div className={TeamDemandFunnelStyle.filterCount}>
+									{filteredTagLength}
+								</div>
+							</div>
+							<div className={TeamDemandFunnelStyle.filterRight}>
+								{selectedHierarchy && (
+									<div style={{ display: 'flex', alignItems: 'center' }}>
+										<div className={TeamDemandFunnelStyle.label}>
+											Sales Manager :
+										</div>
+										&nbsp;
+										<Switch
+											checked={teamDemandFunnelModal}
+											// defaultChecked
+											onChange={onChange}
+										/>
+									</div>
+								)}
+								{selectedHierarchy && (
+									<div style={{ display: 'flex', alignItems: 'center' }}>
+										<div className={TeamDemandFunnelStyle.label}>
+											Selected Hierarchy :
+										</div>
+										&nbsp;
+										<div className={TeamDemandFunnelStyle.btnPrimary}>
+											{selectedHierarchy?.value}
+										</div>
+									</div>
+								)}
+								<div className={TeamDemandFunnelStyle.calendarFilterSet}>
+									<div className={TeamDemandFunnelStyle.label}>Date</div>
+
+									<div className={TeamDemandFunnelStyle.calendarFilter}>
+										<CalenderSVG
+											style={{ height: '16px', marginRight: '16px' }}
+										/>
 										<DatePicker
 											className={TeamDemandFunnelStyle.dateFilter}
 											onKeyDown={(e) => {
@@ -569,164 +575,186 @@ const TeamDemandFunnelScreen = () => {
 											endDate={endDate}
 											selectsRange
 										/>
-									)}
-									name="invoiceDate"
-									rules={{ required: true }}
-									control={control}
-								/>
+										{/* <Controller
+											render={({ ...props }) => (
+												<DatePicker
+													className={TeamDemandFunnelStyle.dateFilter}
+													onKeyDown={(e) => {
+														e.preventDefault();
+														e.stopPropagation();
+													}}
+													// selected={watch('invoiceDate')}
+													// onChange={(date) => {
+													// 	setValue('invoiceDate', date);
+													// }}
+													placeholderText="Start date - End date"
+													selected={startDate}
+													onChange={onCalenderFilter}
+													startDate={startDate}
+													endDate={endDate}
+													selectsRange
+												/>
+											)}
+											name="invoiceDate"
+											// rules={{ required: true }}
+											control={control}
+										/> */}
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
 
-			{/*
-			 * ------------ Table Starts-----------
-			 * @Table Part
-			 */}
-			{/* <div className={TeamDemandFunnelStyle.tableDetails}>
-				{isLoading ? (
-					<TableSkeleton />
-				) : (
-					<>
-						<Table
-							id="supplyFunnelListing"
-							bordered={false}
-							dataSource={[...apiData?.slice(1)]}
-							pagination={{
-								size: 'small',
-								pageSize: apiData?.length,
-							}}>
-							{unGroupedColumnDataMemo?.map((item) => (
-								<Column
-									title={item}
-									dataIndex={item}
-									key={item}
-									render={(text, param) => (
-										<Tooltip
-											placement="bottomLeft"
-											title={text}>
-											{item === 'Stage' || item === 'Duration' ? (
-												<p style={{ fontWeight: '550' }}>{text}</p>
-											) : (
-												<p
-													style={{
-														textDecoration: 'underline',
-														cursor: text === 0 ? 'no-drop' : 'pointer',
-													}}
-													onClick={
-														text === 0
-															? null
-															: () => {
-																	setSupplyFunnelModal(true);
-																	setSupplyFunnelValue({
-																		stage: param?.Stage,
-																		count: text,
-																	});
-																	setSupplyFunnelHRDetailsState({
-																		...supplyFunnelHRDetailsState,
-																		newExistingType:
-																			item === 'Final Total'
-																				? ''
-																				: item?.split(' ')[0],
-																		currentStage: param.Stage,
-																	});
-															  }
-													}>
-													{text}
-												</p>
+					{/*
+					 * ------------ Table Starts-----------
+					 * @Table Part
+					 */}
+					<div className={TeamDemandFunnelStyle.tableDetails}>
+						{isLoading ? (
+							<TableSkeleton />
+						) : (
+							<>
+								<Table
+									id="supplyFunnelListing"
+									bordered={false}
+									dataSource={[...apiData?.slice(1)]}
+									pagination={{
+										size: 'small',
+										pageSize: apiData?.length,
+									}}>
+									{unGroupedColumnDataMemo?.map((item) => (
+										<Column
+											title={item}
+											dataIndex={item}
+											key={item}
+											render={(text, param) => (
+												<Tooltip
+													placement="bottomLeft"
+													title={text}>
+													{item === 'Stage' || item === 'Duration' ? (
+														<p style={{ fontWeight: '550' }}>{text}</p>
+													) : (
+														<p
+															style={{
+																textDecoration: 'underline',
+																cursor: text === 0 ? 'no-drop' : 'pointer',
+															}}
+															onClick={
+																text === 0
+																	? null
+																	: () => {
+																			setSupplyFunnelModal(true);
+																			setSupplyFunnelValue({
+																				stage: param?.Stage,
+																				count: text,
+																			});
+																			setSupplyFunnelHRDetailsState({
+																				...supplyFunnelHRDetailsState,
+																				newExistingType:
+																					item === 'Final Total'
+																						? ''
+																						: item?.split(' ')[0],
+																				currentStage: param.Stage,
+																			});
+																	  }
+															}>
+															{text}
+														</p>
+													)}
+												</Tooltip>
 											)}
-										</Tooltip>
-									)}
-								/>
-							))}
-							{GroupedColumn()}
-						</Table>
-						<div className={TeamDemandFunnelStyle.formPanelAction}>
-							<button
-								type="submit"
-								onClick={viewSupplyFunnelSummaryHandler}
-								className={TeamDemandFunnelStyle.btnPrimary}>
-								View Summary
-							</button>
-						</div>
-					</>
-				)}
-			</div>
-			{isSummary && (
-				<div className={TeamDemandFunnelStyle.tableDetails}>
-					{isSummaryLoading ? (
-						<TableSkeleton />
-					) : (
-						<>
-							<Table
-								id="supplyFunnelViewSummary"
-								bordered={false}
-								dataSource={[...viewSummaryData?.slice(1)]}
-								pagination={{
-									size: 'small',
-									pageSize: viewSummaryData?.length,
-								}}>
-								{unGroupedViewSummaryColumnDataMemo?.map((item) => (
-									<Column
-										title={item}
-										dataIndex={item}
-										key={item}
-										render={(text, param) => (
-											<Tooltip
-												placement="bottomLeft"
-												title={text}>
-												{item === 'Stage' || item === 'Duration' ? (
-													<p style={{ fontWeight: '550' }}>{text}</p>
-												) : (
-													<p>{text}</p>
+										/>
+									))}
+									{/* {GroupedColumn()} */}
+								</Table>
+								<div className={TeamDemandFunnelStyle.formPanelAction}>
+									<button
+										type="submit"
+										onClick={viewSupplyFunnelSummaryHandler}
+										className={TeamDemandFunnelStyle.btnPrimary}>
+										View Summary
+									</button>
+								</div>
+							</>
+						)}
+					</div>
+					{/* {isSummary && (
+						<div className={TeamDemandFunnelStyle.tableDetails}>
+							{isSummaryLoading ? (
+								<TableSkeleton />
+							) : (
+								<>
+									<Table
+										id="supplyFunnelViewSummary"
+										bordered={false}
+										dataSource={[...viewSummaryData?.slice(1)]}
+										pagination={{
+											size: 'small',
+											pageSize: viewSummaryData?.length,
+										}}>
+										{unGroupedViewSummaryColumnDataMemo?.map((item) => (
+											<Column
+												title={item}
+												dataIndex={item}
+												key={item}
+												render={(text, param) => (
+													<Tooltip
+														placement="bottomLeft"
+														title={text}>
+														{item === 'Stage' || item === 'Duration' ? (
+															<p style={{ fontWeight: '550' }}>{text}</p>
+														) : (
+															<p>{text}</p>
+														)}
+													</Tooltip>
 												)}
-											</Tooltip>
-										)}
-									/>
-								))}
-								{ViewSummaryGroupedColumn()}
-							</Table>
-						</>
+											/>
+										))}
+										{ViewSummaryGroupedColumn()}
+									</Table>
+								</>
+							)}
+						</div>
+					)} */}
+
+					{isAllowFilters && (
+						<Suspense fallback={<div>Loading...</div>}>
+							<TeamDemandFunnelFilterLazyComponent
+								setAppliedFilters={setAppliedFilters}
+								appliedFilter={appliedFilter}
+								setCheckedState={setCheckedState}
+								checkedState={checkedState}
+								handleHRRequest={getTeamDemandFunnelListingHandler}
+								setTableFilteredState={setTableFilteredState}
+								tableFilteredState={tableFilteredState}
+								setFilteredTagLength={setFilteredTagLength}
+								onRemoveHRFilters={onRemoveFilters}
+								getHTMLFilter={getHTMLFilter}
+								hrFilterList={reportConfig.TeamDemandReportFilterListConfig()}
+								filtersType={reportConfig.TeamDemandReportFilterTypeConfig(
+									filtersList && filtersList,
+								)}
+							/>
+						</Suspense>
 					)}
+					{/* {supplyFunnelModal && (
+						<SupplyFunnelModal
+							supplyFunnelModal={supplyFunnelModal}
+							setSupplyFunnelModal={setSupplyFunnelModal}
+							demandFunnelHRDetailsState={supplyFunnelHRDetailsState}
+							setDemandFunnelHRDetailsState={setSupplyFunnelHRDetailsState}
+							demandFunnelValue={supplyFunnelValue}
+						/>
+					)} */}
 				</div>
 			)}
-
-			{isAllowFilters && (
-				<Suspense fallback={<div>Loading...</div>}>
-					<SupplyFunnelFilterLazyComponent
-						setAppliedFilters={setAppliedFilters}
-						appliedFilter={appliedFilter}
-						setCheckedState={setCheckedState}
-						checkedState={checkedState}
-						handleHRRequest={getDemandFunnelListingHandler}
-						setTableFilteredState={setTableFilteredState}
-						tableFilteredState={tableFilteredState}
-						setFilteredTagLength={setFilteredTagLength}
-						onRemoveHRFilters={onRemoveFilters}
-						getHTMLFilter={getHTMLFilter}
-						hrFilterList={reportConfig.SupplyReportFilterListConfig()}
-						filtersType={reportConfig.SupplyReportFilterTypeConfig(
-							filtersList && filtersList,
-						)}
-					/>
-				</Suspense>
-			)}
-			{supplyFunnelModal && (
-				<SupplyFunnelModal
-					supplyFunnelModal={supplyFunnelModal}
-					setSupplyFunnelModal={setSupplyFunnelModal}
-					demandFunnelHRDetailsState={supplyFunnelHRDetailsState}
-					setDemandFunnelHRDetailsState={setSupplyFunnelHRDetailsState}
-					demandFunnelValue={supplyFunnelValue}
-				/>
-			)} */}
 			{teamDemandFunnelModal && (
 				<Modal
 					width="1000px"
 					centered
 					footer={null}
 					open={teamDemandFunnelModal}
+					// onOk={() => setTeamDemandFunnelModal(false)}
 					onCancel={() => setTeamDemandFunnelModal(false)}>
 					<div className={TeamDemandFunnelStyle.container}>
 						<div className={TeamDemandFunnelStyle.modalTitle}>
@@ -750,8 +778,7 @@ const TeamDemandFunnelScreen = () => {
 
 							<div className={TeamDemandFunnelStyle.formPanelAction}>
 								<button
-									type="submit"
-									onClick={viewActionWiseHandler}
+									onClick={handleSubmit(viewActionWiseHandler)}
 									className={TeamDemandFunnelStyle.btnPrimary}>
 									View Action Wise Data
 								</button>
@@ -765,7 +792,7 @@ const TeamDemandFunnelScreen = () => {
 					</div>
 				</Modal>
 			)}
-		</div>
+		</>
 	);
 };
 

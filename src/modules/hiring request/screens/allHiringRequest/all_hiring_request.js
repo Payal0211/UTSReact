@@ -29,6 +29,9 @@ import { allHRConfig } from './allHR.config';
 import WithLoader from 'shared/components/loader/loader';
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
+import DownArrow from 'assets/svg/arrowDown.svg';
+import Prioritycount from 'assets/svg/priority-count.svg';
+import Remainingcount from 'assets/svg/remaining-count.svg';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -58,6 +61,9 @@ const AllHiringRequestScreen = () => {
 	const [filteredTagLength, setFilteredTagLength] = useState(0);
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
+	const [isOpen, setIsOpen] = useState(false);
+	const [priorityCount, setPriorityCount] = useState([]);
+	const [messageAPI, contextHolder] = message.useMessage();
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -65,8 +71,8 @@ const AllHiringRequestScreen = () => {
 		}, 300);
 		setHTMLFilter(false);
 	};
-	const [messageAPI, contextHolder] = message.useMessage();
-	const togglePriority = useCallback(
+
+	/* const togglePriority = useCallback(
 		async (payload) => {
 			setLoading(true);
 			let response = await hiringRequestDAO.sendHRPriorityForNextWeekRequestDAO(
@@ -83,6 +89,49 @@ const AllHiringRequestScreen = () => {
 				messageAPI.open({
 					type: 'success',
 					content: `${tempdata.HR_ID} priority has been changed.`,
+				});
+			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				setLoading(false);
+				return navigate(UTSRoutes.LOGINROUTE);
+			} else if (
+				response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+			) {
+				setLoading(false);
+				return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+			} else {
+				setLoading(false);
+				return 'NO DATA FOUND';
+			}
+		},
+		[apiData, messageAPI, navigate],
+	); */
+	const togglePriority = useCallback(
+		async (payload) => {
+			setLoading(true);
+			localStorage.setItem('hrid', payload.hRID);
+			let response = await hiringRequestDAO.setHrPriorityDAO(
+				payload.isNextWeekStarMarked,
+				payload.hRID,
+				payload.person,
+			);
+			if (response.statusCode === HTTPStatusCode.OK) {
+				getPriorityCount();
+				const { tempdata, index } = hrUtils.hrTogglePriority(response, apiData);
+				setAPIdata([
+					...apiData.slice(0, index),
+					tempdata,
+					...apiData.slice(index + 1),
+				]);
+				setLoading(false);
+				messageAPI.open({
+					type: 'success',
+					content: `${tempdata.HR_ID} priority has been changed.`,
+				});
+			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+				setLoading(false);
+				messageAPI.open({
+					type: 'error',
+					content: response.responseBody,
 				});
 			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 				setLoading(false);
@@ -129,7 +178,14 @@ const AllHiringRequestScreen = () => {
 		},
 		[navigate],
 	);
+	useEffect(() => {
+		getPriorityCount();
+	}, []);
 
+	let getPriorityCount = async () => {
+		let priorityCount = await hiringRequestDAO.getRemainingPriorityCountDAO();
+		setPriorityCount(priorityCount?.responseBody?.details);
+	};
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
@@ -196,38 +252,85 @@ const AllHiringRequestScreen = () => {
 			{contextHolder}
 			<div className={allHRStyles.addnewHR}>
 				<div className={allHRStyles.hiringRequest}>All Hiring Requests</div>
-
-				<HROperator
-					title="Add New HR"
-					icon={<ArrowDownSVG style={{ width: '16px' }} />}
-					backgroundColor={`var(--color-sunlight)`}
-					iconBorder={`1px solid var(--color-sunlight)`}
-					isDropdown={true}
-					listItem={[
-						{
-							label: 'Add New HR',
-							key: AddNewType.HR,
-						},
-						{
-							label: 'Add New Client',
-							key: AddNewType.CLIENT,
-						},
-					]}
-					menuAction={(item) => {
-						switch (item.key) {
-							case AddNewType.HR: {
-								navigate(UTSRoutes.ADDNEWHR);
-								break;
+				<div className={allHRStyles.btn_wrap}>
+					<div className={allHRStyles.priorities_drop_custom}>
+						{priorityCount?.length === 1 ? (
+							<button className={allHRStyles.togglebtn}>
+								<span className={allHRStyles.blank_btn}>
+									<img src={Prioritycount} /> Priority Count:{' '}
+									<b>{`${priorityCount[0].assignedCount}`}</b>{' '}
+								</span>
+								<span className={allHRStyles.blank_btn}>
+									<img src={Remainingcount} /> Remaining Count:{' '}
+									<b>{`${priorityCount[0].remainingCount}`}</b>{' '}
+								</span>
+							</button>
+						) : (
+							<button
+								className={allHRStyles.togglebtn}
+								onClick={() => {
+									setIsOpen(!isOpen);
+								}}>
+								Priorities <img src={DownArrow} />
+							</button>
+						)}
+						{isOpen && (
+							<div className={allHRStyles.toggle_content}>
+								<table>
+									<thead>
+										<tr>
+											<th>User</th>
+											<th>Priority Count</th>
+											<th>Remaining Count</th>
+										</tr>
+									</thead>
+									<tbody>
+										{priorityCount?.map((data) => {
+											return (
+												<tr>
+													<td>{data.fullName}</td>
+													<td>{data.assignedCount}</td>
+													<td>{data.remainingCount}</td>
+												</tr>
+											);
+										})}
+									</tbody>
+								</table>
+							</div>
+						)}
+					</div>
+					<HROperator
+						title="Add New HR"
+						icon={<ArrowDownSVG style={{ width: '16px' }} />}
+						backgroundColor={`var(--color-sunlight)`}
+						iconBorder={`1px solid var(--color-sunlight)`}
+						isDropdown={true}
+						listItem={[
+							{
+								label: 'Add New HR',
+								key: AddNewType.HR,
+							},
+							{
+								label: 'Add New Client',
+								key: AddNewType.CLIENT,
+							},
+						]}
+						menuAction={(item) => {
+							switch (item.key) {
+								case AddNewType.HR: {
+									navigate(UTSRoutes.ADDNEWHR);
+									break;
+								}
+								case AddNewType.CLIENT: {
+									navigate(UTSRoutes.ADDNEWCLIENT);
+									break;
+								}
+								default:
+									break;
 							}
-							case AddNewType.CLIENT: {
-								navigate(UTSRoutes.ADDNEWCLIENT);
-								break;
-							}
-							default:
-								break;
-						}
-					}}
-				/>
+						}}
+					/>
+				</div>
 			</div>
 			{/*
 			 * --------- Filter Component Starts ---------

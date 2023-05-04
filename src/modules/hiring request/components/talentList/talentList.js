@@ -331,9 +331,10 @@ const TalentList = ({
 									...item,
 									SlotDate: firstDateFormate || null,
 									STRSlotDate: firstDateFormate || null,
-									StartTime: startTimeFirstFormate || null,
+									StartTime: startTimeFirstFormate?.split(' ')[1] || null,
 									STRStartTime: startTimeFirstFormate || null,
-									EndTime: endTimeFirstFormate || null,
+									EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+
 									STREndTime: endTimeFirstFormate || null,
 								};
 							} else {
@@ -415,7 +416,7 @@ const TalentList = ({
 							if (index === 0) {
 								return {
 									...item,
-									StartTime: startTimeFirstFormate || null,
+									StartTime: startTimeFirstFormate?.split(' ')[1] || null,
 									STRStartTime: startTimeFirstFormate || null,
 								};
 							} else {
@@ -497,7 +498,7 @@ const TalentList = ({
 							if (index === 0) {
 								return {
 									...item,
-									EndTime: endTimeFirstFormate || null,
+									EndTime: endTimeFirstFormate?.split(' ')[1] || null,
 									STREndTime: endTimeFirstFormate || null,
 								};
 							} else {
@@ -596,8 +597,8 @@ const TalentList = ({
 									STRSlotDate: firstDateFormate || null,
 									STRStartTime: startTimeFirstFormate || null,
 									STREndTime: endTimeFirstFormate || null,
-									StartTime: startTimeSecondFormate || null,
-									EndTime: endTimeSecondFormate || null,
+									StartTime: startTimeFirstFormate?.split(' ')[1] || null,
+									EndTime: endTimeFirstFormate?.split(' ')[1] || null,
 								};
 							} else {
 								return item;
@@ -679,7 +680,7 @@ const TalentList = ({
 							if (index === 1) {
 								return {
 									...item,
-									StartTime: startTimeFirstFormate || null,
+									StartTime: startTimeFirstFormate?.split(' ')[1] || null,
 									STRStartTime: startTimeFirstFormate || null,
 								};
 							} else {
@@ -762,7 +763,7 @@ const TalentList = ({
 							if (index === 1) {
 								return {
 									...item,
-									EndTime: endTimeFirstFormate || null,
+									EndTime: endTimeFirstFormate?.split(' ')[1] || null,
 									STREndTime: endTimeFirstFormate || null,
 								};
 							} else {
@@ -862,8 +863,8 @@ const TalentList = ({
 									STRSlotDate: firstDateFormate || null,
 									STRStartTime: startTimeFirstFormate || null,
 									STREndTime: endTimeFirstFormate || null,
-									StartTime: startTimeSecondFormate || null,
-									EndTime: endTimeSecondFormate || null,
+									StartTime: startTimeFirstFormate?.split(' ')[1] || null,
+									EndTime: endTimeFirstFormate?.split(' ')[1] || null,
 								};
 							} else {
 								return item;
@@ -945,7 +946,7 @@ const TalentList = ({
 							if (index === 2) {
 								return {
 									...item,
-									StartTime: startTimeFirstFormate || null,
+									StartTime: startTimeFirstFormate?.split(' ')[1] || null,
 									STRStartTime: startTimeFirstFormate || null,
 								};
 							} else {
@@ -1027,7 +1028,7 @@ const TalentList = ({
 							if (index === 2) {
 								return {
 									...item,
-									EndTime: endTimeFirstFormate || null,
+									EndTime: endTimeFirstFormate?.split(' ')[1] || null,
 									STREndTime: endTimeFirstFormate || null,
 								};
 							} else {

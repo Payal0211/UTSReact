@@ -13,6 +13,7 @@ export const allHRConfig = {
 				render: (_, param) => {
 					let response = All_Hiring_Request_Utils.GETHRPRIORITY(
 						param.starStatus,
+						param.salesRep,
 						param.key,
 						togglePriority,
 					);

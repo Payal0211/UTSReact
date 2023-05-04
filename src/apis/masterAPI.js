@@ -499,4 +499,21 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getCountryListRequest');
 		}
 	},
+	getUsersHierarchyRequest: async function (userDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.GET_USERS_HIERARCHY +
+			`?Parentid=${userDetails?.parentID}&IsOpsUser=false
+`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getUsersHierarchyRequest');
+		}
+	},
 };
