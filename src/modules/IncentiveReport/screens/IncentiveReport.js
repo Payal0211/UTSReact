@@ -313,14 +313,16 @@ const IncentiveReportScreen = () => {
         }
     };
 
+    const [managerDataInfo, setManagerDataInfo] = useState([])
+
     const getSalesUserBasedOnUserRole = async () => {
         const response = await IncentiveReportDAO.getSalesUsersBasedOnUserRoleDAO(watchValueUserRoles?.id);
-        setManagerRole(response?.responseBody)
-        const updatedManagerData = managerRole?.map((item) => ({
+        // setManagerRole(response?.responseBody)
+        const managerData = response?.responseBody?.map((item) => ({
             id: item?.value,
             value: item?.text,
         }));
-        setManagerInfo(updatedManagerData);
+        setManagerDataInfo(managerData);
         console.log(updatedManagerData, "getManagerInfo")
     };
 
@@ -413,7 +415,7 @@ const IncentiveReportScreen = () => {
                         register={register}
                         name="manager"
                         mode={"id/value"}
-                        options={watchValueUserRoles === undefined ? getManagerEdit : getManagerInfo}
+                        options={watchValueUserRoles === undefined ? getManagerEdit : managerDataInfo}
                         // onClick={managerData}
                         required
                         isError={errors["manager"] && errors["manager"]}
