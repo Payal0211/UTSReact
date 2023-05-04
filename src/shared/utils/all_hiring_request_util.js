@@ -12,7 +12,7 @@ import { Tooltip } from 'antd';
 import { DateTimeUtils } from './basic_utils';
 
 export const All_Hiring_Request_Utils = {
-	GETHRPRIORITY: function (statusCode, hrID, togglePriority) {
+	GETHRPRIORITY: function (statusCode, person, hrID, togglePriority) {
 		switch (statusCode) {
 			case hiringRequestPriority.NO_PRIORITY:
 				return (
@@ -25,12 +25,13 @@ export const All_Hiring_Request_Utils = {
 								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
 									: () => {
-											let priorityObject = {
-												isNextWeekStarMarked: '1',
-												hRID: hrID,
-											};
-											togglePriority(priorityObject);
-									  }
+										let priorityObject = {
+											isNextWeekStarMarked: '1',
+											hRID: hrID,
+											person: person
+										};
+										togglePriority(priorityObject);
+									}
 							}
 						/>
 					</Tooltip>
@@ -55,12 +56,13 @@ export const All_Hiring_Request_Utils = {
 								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
 									: () => {
-											let priorityObject = {
-												isNextWeekStarMarked: '0',
-												hRID: hrID,
-											};
-											togglePriority(priorityObject);
-									  }
+										let priorityObject = {
+											isNextWeekStarMarked: '0',
+											hRID: hrID,
+											person: person
+										};
+										togglePriority(priorityObject);
+									}
 							}
 						/>
 					</Tooltip>

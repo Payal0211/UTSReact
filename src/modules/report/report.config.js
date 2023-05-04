@@ -1,6 +1,7 @@
 import { Tooltip } from 'antd';
 
 export const reportConfig = {
+	/**------------- DEMAND FUNNEL REPORT------------------  */
 	demandFunnelTable: (
 		demandTable,
 		demanFunnelModal,
@@ -61,7 +62,6 @@ export const reportConfig = {
 			};
 		});
 	},
-
 	viewSummaryDemandFunnel: (viewSummary) => {
 		let tableHeader = Object?.keys(viewSummary?.[0] || {});
 		return tableHeader?.map((item) => {
@@ -227,7 +227,7 @@ export const reportConfig = {
 			},
 		];
 	},
-
+	/**------------- SUPPLY FUNNEL REPORT------------------  */
 	supplyFunnelTable: (
 		demandTable,
 		demanFunnelModal,
@@ -374,6 +374,63 @@ export const reportConfig = {
 						value: 'HR Wise Data',
 					},
 				],
+			},
+		];
+	},
+	/**------------- TEAM DEMAND FUNNEL REPORT------------------  */
+	TeamDemandReportFilterListConfig: () => {
+		return [
+			{ name: 'Hiring Need' },
+			{ name: ' Working Mode' },
+			{ name: 'HR Type' },
+			{ name: 'Company Category' },
+		];
+	},
+	TeamDemandReportFilterTypeConfig: (filterList) => {
+		return [
+			{
+				label: 'Hiring Need',
+				name: 'isHiringNeedTemp',
+
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '1',
+						value: 'For limited project',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: '2',
+						value: 'For long project',
+					},
+				],
+				isSearch: false,
+			},
+			{
+				label: 'Working Mode',
+				name: 'modeOfWork',
+				child: filterList?.ModeOfWorking?.filter(
+					(item, index) => index !== 0 && item,
+				),
+			},
+
+			{
+				label: 'HR Type',
+				name: 'typeOfHR',
+				child: filterList?.TypeOfHR?.filter(
+					(item, index) => index !== 0 && item,
+				),
+			},
+			{
+				label: 'Company',
+				name: 'companyCategory',
+				child: filterList?.CompanyCategory?.filter(
+					(item, index) => index !== 0 && item,
+				),
 			},
 		];
 	},

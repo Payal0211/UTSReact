@@ -98,7 +98,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 
 					<div className={AcceptHRStyle.formPanelAction}>
 						<button
-							onClick={handleSubmit(acceptHRHandler)}
+							onClick={acceptHRHandler}
 							className={AcceptHRStyle.btn}>
 							Accept HR
 						</button>

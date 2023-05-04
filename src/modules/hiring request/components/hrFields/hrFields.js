@@ -410,7 +410,7 @@ const HRFields = ({
 	const addItem = useCallback(
 		(e) => {
 			e.preventDefault();
-			setItems([...items, name + ' months' || name]);
+			name && setItems([...items, name + ' months' || name]);
 			setName('');
 			setTimeout(() => {
 				inputRef.current?.focus();
@@ -1041,6 +1041,7 @@ const HRFields = ({
 													ref={inputRef}
 													value={name}
 													onChange={onNameChange}
+													required
 												/>
 												<Button
 													style={{
