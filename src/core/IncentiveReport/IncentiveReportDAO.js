@@ -54,4 +54,29 @@ export const IncentiveReportDAO = {
       return errorDebug(error, "IncentiveReportDAO.getMonthYearFilterDAO");
     }
   },
+  getSalesUsersBasedOnUserRoleDAO: async function (data) {
+    try {
+      const getSalesUserBasedOnUserRoleInfo = await IncentiveReportAPI.getSalesUsersBasedOnUserRole(data);
+      if (getSalesUserBasedOnUserRoleInfo) {
+        const statusCode = getSalesUserBasedOnUserRoleInfo["statusCode"];
+        if (statusCode === HTTPStatusCode.OK) {
+          const tempResult = getSalesUserBasedOnUserRoleInfo.responseBody;
+          return {
+            statusCode: statusCode,
+            responseBody: tempResult.details,
+          };
+        } else if (statusCode === HTTPStatusCode.NOT_FOUND)
+          return getSalesUserBasedOnUserRoleInfo;
+        else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+          return getSalesUserBasedOnUserRoleInfo;
+        else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+          let deletedResponse =
+            UserSessionManagementController.deleteAllSession();
+          if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+        }
+      }
+    } catch (error) {
+      return errorDebug(error, "IncentiveReportDAO.getSalesUsersBasedOnUserRoleDAO");
+    }
+  },
 };

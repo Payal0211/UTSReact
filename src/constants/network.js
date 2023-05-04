@@ -212,4 +212,5 @@ export class TalentReplaceAPI {
 export class IncentiveReport {
   static GET_USER_ROLE = "GetIncentiveReport";
   static MONTH_YEAR_FILER = "MonthYearFilter";
+  static GET_SALES_USERS_BASED_ON_USER_ROLE = "GetSalesUsersBasedOnUserRole";
 }
