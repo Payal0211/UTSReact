@@ -22,7 +22,6 @@ import { hrUtils } from "modules/hiring request/hrUtils";
 import { IoChevronDownOutline } from "react-icons/io5";
 import allHRStyles from "./all_hiring_request.module.css";
 import UTSRoutes from "constants/routes";
-
 import HROperator from "modules/hiring request/components/hroperator/hroperator";
 import { DateTimeUtils } from "shared/utils/basic_utils";
 import { allHRConfig } from "./allHR.config";
@@ -32,6 +31,7 @@ import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import DownArrow from "../../../../assets/svg/arrowDown.svg";
 import Prioritycount from "../../../../assets/svg/priority-count.svg";
 import Remainingcount from "../../../../assets/svg/remaining-count.svg";
+
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -47,7 +47,7 @@ const AllHiringRequestScreen = () => {
   });
   const [isLoading, setLoading] = useState(false);
   const pageSizeOptions = [100, 200, 300, 500, 1000];
-  // const hrQueryData = useAllHRQuery();
+
   const [totalRecords, setTotalRecords] = useState(0);
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(100);
@@ -63,6 +63,7 @@ const AllHiringRequestScreen = () => {
   const [checkedState, setCheckedState] = useState(new Map());
   const [isOpen, setIsOpen] = useState(false);
   const [priorityCount, setPriorityCount] = useState([]);
+  const [messageAPI, contextHolder] = message.useMessage();
 
   const onRemoveHRFilters = () => {
     setTimeout(() => {
@@ -72,25 +73,17 @@ const AllHiringRequestScreen = () => {
   };
 
 
-  // let tempData = async () => {
-  //   let response = await hiringRequestDAO.setHrPriorityDAO(
-  //     payload.isNextWeekStarMarked, payload.hRID, payload.person);
-  // }
-
-  // useEffect(() => {
-  //   tempData()
-  // }, [apiData])
-
-
-  const [messageAPI, contextHolder] = message.useMessage();
   const togglePriority = useCallback(
     async (payload) => {
       setLoading(true);
       localStorage.setItem("hrid", payload.hRID);
       let response = await hiringRequestDAO.setHrPriorityDAO(
-        payload.isNextWeekStarMarked, payload.hRID, payload.person);
+        payload.isNextWeekStarMarked,
+        payload.hRID,
+        payload.person
+      );
       if (response.statusCode === HTTPStatusCode.OK) {
-        getPriorityCount()
+        getPriorityCount();
         const { tempdata, index } = hrUtils.hrTogglePriority(response, apiData);
         setAPIdata([
           ...apiData.slice(0, index),
@@ -216,55 +209,68 @@ const AllHiringRequestScreen = () => {
   };
 
   useEffect(() => {
-    getPriorityCount()
-  }, [])
+    getPriorityCount();
+  }, []);
 
   let getPriorityCount = async () => {
-    let priorityCount = await hiringRequestDAO.getRemainingPriorityCountDAO()
-    setPriorityCount(priorityCount?.responseBody?.details)
-  }
-
-
+    let priorityCount = await hiringRequestDAO.getRemainingPriorityCountDAO();
+    setPriorityCount(priorityCount?.responseBody?.details);
+  };
 
   return (
     <div className={allHRStyles.hiringRequestContainer}>
       {contextHolder}
 
-
-
       <div className={allHRStyles.addnewHR}>
-
         <div className={allHRStyles.hiringRequest}>All Hiring Requests</div>
-
 
         <div className={allHRStyles.btn_wrap}>
           <div className={allHRStyles.priorities_drop_custom}>
-            {priorityCount?.length === 1 ? <button className={allHRStyles.togglebtn} >
-              <span className={allHRStyles.blank_btn}><img src={Prioritycount} /> Priority Count: <b>{`${priorityCount[0].assignedCount}`}</b> </span>
-              <span className={allHRStyles.blank_btn}><img src={Remainingcount} /> Remaining Count: <b>{`${priorityCount[0].remainingCount}`}</b>  </span>
-            </button> : <button className={allHRStyles.togglebtn} onClick={() => { setIsOpen(!isOpen) }}>Priorities <img src={DownArrow} /></button>}
-            {isOpen && (<div className={allHRStyles.toggle_content}>
-              <table>
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Priority Count</th>
-                    <th>Remaining Count</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {priorityCount?.map((data) => {
-                    return (
-                      <tr>
-                        <td>{data.fullName}</td>
-                        <td>{data.assignedCount}</td>
-                        <td>{data.remainingCount}</td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>)}
+            {priorityCount?.length === 1 ? (
+              <button className={allHRStyles.togglebtn}>
+                <span className={allHRStyles.blank_btn}>
+                  <img src={Prioritycount} /> Priority Count:{" "}
+                  <b>{`${priorityCount[0].assignedCount}`}</b>{" "}
+                </span>
+                <span className={allHRStyles.blank_btn}>
+                  <img src={Remainingcount} /> Remaining Count:{" "}
+                  <b>{`${priorityCount[0].remainingCount}`}</b>{" "}
+                </span>
+              </button>
+            ) : (
+              <button
+                className={allHRStyles.togglebtn}
+                onClick={() => {
+                  setIsOpen(!isOpen);
+                }}
+              >
+                Priorities <img src={DownArrow} />
+              </button>
+            )}
+            {isOpen && (
+              <div className={allHRStyles.toggle_content}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Priority Count</th>
+                      <th>Remaining Count</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {priorityCount?.map((data) => {
+                      return (
+                        <tr>
+                          <td>{data.fullName}</td>
+                          <td>{data.assignedCount}</td>
+                          <td>{data.remainingCount}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
 
           <HROperator
@@ -299,8 +305,6 @@ const AllHiringRequestScreen = () => {
             }}
           />
         </div>
-
-
       </div>
       {/*
        * --------- Filter Component Starts ---------
