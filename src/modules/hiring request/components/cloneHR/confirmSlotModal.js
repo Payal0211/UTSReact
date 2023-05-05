@@ -57,15 +57,15 @@ const ConfirmSlotModal = ({
 		];
 
 		const newDateFormate = getConfirmSlotDetails?.Slots?.map((item, index) => {
-			const date = new Date(`${item?.SlotDate}`);
+			const date = new Date(`${item?.slotDate}`);
 			return `Slot-${index + 1} ${days[date.getDay()]} ${
 				monthNames[date.getMonth()]
-			} ${date.getDate()}  ${date.getFullYear()} ${item?.STRStartTime} ${
-				item?.STRStartTime?.slice(0, item?.STRStartTime?.indexOf(':')) > 12
+			} ${date.getDate()}  ${date.getFullYear()} ${item?.strStartTime} ${
+				item?.strStartTime?.slice(0, item?.strStartTime?.indexOf(':')) > 12
 					? 'PM'
 					: 'AM'
-			} to ${item?.STREndTime}  ${
-				item?.STRStartTime?.slice(0, item?.STREndTime?.indexOf(':')) > 12
+			} to ${item?.strEndTime}  ${
+				item?.strStartTime?.slice(0, item?.strEndTime?.indexOf(':')) > 12
 					? 'PM'
 					: 'AM'
 			}`;

@@ -19,9 +19,10 @@ import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { Controller, useForm } from 'react-hook-form';
 import Column from 'antd/lib/table/Column';
 import ColumnGroup from 'antd/lib/table/ColumnGroup';
-import SupplyFunnelModal from 'modules/report/components/supplyFunnelModal/supplyFunnelModal';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
+import TeamDemandFunnelModal from 'modules/report/components/teamDemandFunnelModal/teamDemandFunnelModal';
+import WithLoader from 'shared/components/loader/loader';
 const TeamDemandFunnelFilterLazyComponent = React.lazy(() =>
 	import(
 		'modules/report/components/teamDemandFunnelFilter/teamDemandFunnelFilter'
@@ -45,20 +46,39 @@ const TeamDemandFunnelScreen = () => {
 		salesManagerID: '',
 		isHiringNeedTemp: '',
 		modeOfWork: '',
-		typeOfHR: '',
+		typeOfHR: '-1',
 		companyCategory: '',
 		isActionWise: false,
 	});
 
 	const [supplyFunnelValue, setSupplyFunnelValue] = useState({});
-	const [supplyFunnelHRDetailsState, setSupplyFunnelHRDetailsState] = useState({
-		newExistingType: '',
-		TeamManagerName: '',
-		currentStage: 'TR Accepted',
-		isExport: false,
-		funnelFilter: tableFilteredState,
-	});
+	// const [supplyFunnelHRDetailsState, setSupplyFunnelHRDetailsState] = useState({
+	// 	newExistingType: '',
+	// 	selectedRow_SalesUserName: '',
+	// 	currentStage: 'TR Accepted',
+	// 	isExport: false,
+	// 	funnelFilter: tableFilteredState,
+	// });
+	const [teamDemandFunnelHRDetailsState, setTeamDemandFunnelHRDetailsState] =
+		useState({
+			adhocType: '',
+			selectedRow_SalesUserName: '',
+			currentStage: 'TR Accepted',
+			IsExport: false,
+			hrFilter: {
+				hR_No: '',
+				salesPerson: '',
+				compnayName: '',
+				role: '',
+				managed_Self: '',
+				talentName: '',
+				availability: '',
+			},
+			funnelFilter: { ...tableFilteredState },
+		});
 	const [teamDemandFunnelModal, setTeamDemandFunnelModal] = useState(true);
+	const [teamDemandHRDetailsModal, setTeamDemandHRDetailsModal] =
+		useState(false);
 	const [apiData, setApiData] = useState([]);
 	const [viewSummaryData, setSummaryData] = useState([]);
 	const [isSummary, setIsSummary] = useState(false);
@@ -70,7 +90,7 @@ const TeamDemandFunnelScreen = () => {
 	const [filtersList, setFiltersList] = useState([]);
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
-	const [supplyFunnelModal, setSupplyFunnelModal] = useState(false);
+	// const [supplyFunnelModal, setSupplyFunnelModal] = useState(false);
 
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
@@ -116,8 +136,8 @@ const TeamDemandFunnelScreen = () => {
 				item !== 'Stage' &&
 				item !== 'Duration' &&
 				item !== 'Final Total' &&
-				item !== 'New Total' &&
-				item !== 'Exist Total'
+				item !== 'Pool Total' &&
+				item !== 'Odr Total'
 			) {
 				tempArray.push(item);
 			}
@@ -137,7 +157,7 @@ const TeamDemandFunnelScreen = () => {
 			let comp = (
 				<ColumnGroup title={groupedColumnDataMemo[i]}>
 					<Column
-						title="Exist"
+						title="Odr"
 						dataIndex={groupedColumnDataMemo[i + 1][0]}
 						key={groupedColumnDataMemo[i + 1][0]}
 						render={(text, param) => (
@@ -153,16 +173,16 @@ const TeamDemandFunnelScreen = () => {
 										text === 0
 											? null
 											: () => {
-													setSupplyFunnelModal(true);
+													setTeamDemandHRDetailsModal(true);
 													setSupplyFunnelValue({
 														stage: param?.Stage,
 														count: text,
 													});
-													setSupplyFunnelHRDetailsState({
-														...supplyFunnelHRDetailsState,
-														newExistingType: 'Exist',
+													setTeamDemandFunnelHRDetailsState({
+														...teamDemandFunnelHRDetailsState,
+														adhocType: 'Odr',
 														currentStage: param.Stage,
-														TeamManagerName: groupedColumnDataMemo[i],
+														selectedRow_SalesUserName: groupedColumnDataMemo[i],
 													});
 											  }
 									}>
@@ -172,7 +192,7 @@ const TeamDemandFunnelScreen = () => {
 						)}
 					/>
 					<Column
-						title="New"
+						title="Pool"
 						dataIndex={groupedColumnDataMemo[i + 1][1]}
 						key={groupedColumnDataMemo[i + 1][1]}
 						render={(text, param) => (
@@ -188,16 +208,16 @@ const TeamDemandFunnelScreen = () => {
 										text === 0
 											? null
 											: () => {
-													setSupplyFunnelModal(true);
+													setTeamDemandHRDetailsModal(true);
 													setSupplyFunnelValue({
 														stage: param?.Stage,
 														count: text,
 													});
-													setSupplyFunnelHRDetailsState({
-														...supplyFunnelHRDetailsState,
-														newExistingType: 'Exist',
+													setTeamDemandFunnelHRDetailsState({
+														...teamDemandFunnelHRDetailsState,
+														newExistingType: 'Pool',
 														currentStage: param.Stage,
-														TeamManagerName: groupedColumnDataMemo[i],
+														selectedRow_SalesUserName: groupedColumnDataMemo[i],
 													});
 											  }
 									}>
@@ -223,16 +243,16 @@ const TeamDemandFunnelScreen = () => {
 										text === 0
 											? null
 											: () => {
-													setSupplyFunnelModal(true);
+													setTeamDemandHRDetailsModal(true);
 													setSupplyFunnelValue({
 														stage: param?.Stage,
 														count: text,
 													});
-													setSupplyFunnelHRDetailsState({
-														...supplyFunnelHRDetailsState,
-														newExistingType: 'Exist',
+													setTeamDemandFunnelHRDetailsState({
+														...teamDemandFunnelHRDetailsState,
+														newExistingType: 'Total',
 														currentStage: param.Stage,
-														TeamManagerName: groupedColumnDataMemo[i],
+														selectedRow_SalesUserName: groupedColumnDataMemo[i],
 													});
 											  }
 									}>
@@ -246,7 +266,7 @@ const TeamDemandFunnelScreen = () => {
 			ColumnData.push(comp);
 		}
 		return ColumnData;
-	}, [groupedColumnDataMemo, supplyFunnelHRDetailsState]);
+	}, [groupedColumnDataMemo, teamDemandFunnelHRDetailsState]);
 
 	const onCalenderFilter = (dates) => {
 		const [start, end] = dates;
@@ -268,8 +288,8 @@ const TeamDemandFunnelScreen = () => {
 					.reverse()
 					.join('-'),
 			});
-			setSupplyFunnelHRDetailsState({
-				...supplyFunnelHRDetailsState,
+			setTeamDemandFunnelHRDetailsState({
+				...teamDemandFunnelHRDetailsState,
 				funnelFilter: {
 					startDate: new Date(start)
 						.toLocaleDateString('en-UK')
@@ -308,7 +328,7 @@ const TeamDemandFunnelScreen = () => {
 	const viewSupplyFunnelSummaryHandler = useCallback(async () => {
 		setIsSummary(true);
 		setSummaryLoading(true);
-		let response = await ReportDAO.supplyFunnelSummaryRequestDAO(
+		let response = await ReportDAO.teamDemandFunnelSummaryRequestDAO(
 			tableFilteredState,
 		);
 		if (response?.statusCode === HTTPStatusCode.OK) {
@@ -329,8 +349,8 @@ const TeamDemandFunnelScreen = () => {
 				item === 'Stage' ||
 				item === 'Duration' ||
 				item === 'Final Total' ||
-				item === 'New Total' ||
-				item === 'Exist Total'
+				item === 'Pool Total' ||
+				item === 'Odr Total'
 			) {
 				tempArray.push(item);
 			}
@@ -347,8 +367,8 @@ const TeamDemandFunnelScreen = () => {
 				item !== 'Stage' &&
 				item !== 'Duration' &&
 				item !== 'Final Total' &&
-				item !== 'New Total' &&
-				item !== 'Exist Total'
+				item !== 'Pool Total' &&
+				item !== 'Odr Total'
 			) {
 				tempArray.push(item);
 			}
@@ -423,8 +443,8 @@ const TeamDemandFunnelScreen = () => {
 				startDate: response?.responseBody?.Data?.StartDate,
 				endDate: response?.responseBody?.Data?.EndDate,
 			});
-			setSupplyFunnelHRDetailsState({
-				...supplyFunnelHRDetailsState,
+			setTeamDemandFunnelHRDetailsState({
+				...teamDemandFunnelHRDetailsState,
 
 				funnelFilter: {
 					startDate: response?.responseBody?.Data?.StartDate,
@@ -448,6 +468,7 @@ const TeamDemandFunnelScreen = () => {
 
 	const viewActionWiseHandler = useCallback(
 		async (d) => {
+			setLoading(true);
 			const actionWiseFormatter = {
 				...tableFilteredState,
 				salesManagerID: d.salesManager?.id,
@@ -457,6 +478,14 @@ const TeamDemandFunnelScreen = () => {
 				...tableFilteredState,
 				salesManagerID: d.salesManager?.id,
 				isActionWise: true,
+			});
+			setTeamDemandFunnelHRDetailsState({
+				...teamDemandFunnelHRDetailsState,
+				funnelFilter: {
+					...teamDemandFunnelHRDetailsState?.funnelFilter,
+					salesManagerID: d.salesManager?.id,
+					isActionWise: true,
+				},
 			});
 			setSelectedHierarchy(d.salesManager);
 
@@ -471,10 +500,14 @@ const TeamDemandFunnelScreen = () => {
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setApiData(response?.responseBody);
 				setTeamDemandFunnelModal(false);
+				setLoading(false);
 			}
 		},
-		[tableFilteredState],
+		[tableFilteredState, teamDemandFunnelHRDetailsState],
 	);
+
+	console.log(tableFilteredState, '---tablEFilter');
+	console.log(teamDemandFunnelHRDetailsState, '-teamDemandHRDetailsState');
 	const hrWiseHandler = useCallback(
 		async (d) => {
 			const actionWiseFormatter = {
@@ -643,18 +676,15 @@ const TeamDemandFunnelScreen = () => {
 																text === 0
 																	? null
 																	: () => {
-																			setSupplyFunnelModal(true);
+																			setTeamDemandHRDetailsModal(true);
 																			setSupplyFunnelValue({
 																				stage: param?.Stage,
 																				count: text,
 																			});
-																			setSupplyFunnelHRDetailsState({
-																				...supplyFunnelHRDetailsState,
-																				newExistingType:
-																					item === 'Final Total'
-																						? ''
-																						: item?.split(' ')[0],
+																			setTeamDemandFunnelHRDetailsState({
+																				...teamDemandFunnelHRDetailsState,
 																				currentStage: param.Stage,
+																				adhocType: param.adhocType,
 																			});
 																	  }
 															}>
@@ -665,7 +695,7 @@ const TeamDemandFunnelScreen = () => {
 											)}
 										/>
 									))}
-									{/* {GroupedColumn()} */}
+									{GroupedColumn()}
 								</Table>
 								<div className={TeamDemandFunnelStyle.formPanelAction}>
 									<button
@@ -678,7 +708,7 @@ const TeamDemandFunnelScreen = () => {
 							</>
 						)}
 					</div>
-					{/* {isSummary && (
+					{isSummary && (
 						<div className={TeamDemandFunnelStyle.tableDetails}>
 							{isSummaryLoading ? (
 								<TableSkeleton />
@@ -715,7 +745,7 @@ const TeamDemandFunnelScreen = () => {
 								</>
 							)}
 						</div>
-					)} */}
+					)}
 
 					{isAllowFilters && (
 						<Suspense fallback={<div>Loading...</div>}>
@@ -737,60 +767,62 @@ const TeamDemandFunnelScreen = () => {
 							/>
 						</Suspense>
 					)}
-					{/* {supplyFunnelModal && (
-						<SupplyFunnelModal
-							supplyFunnelModal={supplyFunnelModal}
-							setSupplyFunnelModal={setSupplyFunnelModal}
-							demandFunnelHRDetailsState={supplyFunnelHRDetailsState}
-							setDemandFunnelHRDetailsState={setSupplyFunnelHRDetailsState}
+					{teamDemandFunnelHRDetailsState && (
+						<TeamDemandFunnelModal
+							supplyFunnelModal={teamDemandHRDetailsModal}
+							setSupplyFunnelModal={setTeamDemandHRDetailsModal}
+							demandFunnelHRDetailsState={teamDemandFunnelHRDetailsState}
+							setDemandFunnelHRDetailsState={setTeamDemandFunnelHRDetailsState}
 							demandFunnelValue={supplyFunnelValue}
 						/>
-					)} */}
+					)}
 				</div>
 			)}
 			{teamDemandFunnelModal && (
-				<Modal
-					width="1000px"
-					centered
-					footer={null}
-					open={teamDemandFunnelModal}
-					// onOk={() => setTeamDemandFunnelModal(false)}
-					onCancel={() => setTeamDemandFunnelModal(false)}>
-					<div className={TeamDemandFunnelStyle.container}>
-						<div className={TeamDemandFunnelStyle.modalTitle}>
-							<h2>Team Demand Funnel</h2>
-						</div>
-						<div className={TeamDemandFunnelStyle.transparent}>
-							<div className={TeamDemandFunnelStyle.colMd12}>
-								<HRSelectField
-									mode={'id/value'}
-									setValue={setValue}
-									register={register}
-									name="salesManager"
-									label="Select Sales Manager"
-									defaultValue="Please Select"
-									options={filtersList?.SalesManager}
-									required
-									isError={errors['salesManager'] && errors['salesManager']}
-									errorMsg="Please select sales manager."
-								/>
+				<WithLoader showLoader={isLoading}>
+					<Modal
+						width="1000px"
+						centered
+						footer={null}
+						open={teamDemandFunnelModal}
+						// onOk={() => setTeamDemandFunnelModal(false)}
+						onCancel={() => setTeamDemandFunnelModal(false)}>
+						<div className={TeamDemandFunnelStyle.container}>
+							<div className={TeamDemandFunnelStyle.modalTitle}>
+								<h2>Team Demand Funnel</h2>
 							</div>
+							<div className={TeamDemandFunnelStyle.transparent}>
+								<div className={TeamDemandFunnelStyle.colMd12}>
+									<HRSelectField
+										mode={'id/value'}
+										setValue={setValue}
+										register={register}
+										name="salesManager"
+										label="Select Sales Manager"
+										defaultValue="Please Select"
+										options={filtersList?.SalesManager}
+										required
+										isError={errors['salesManager'] && errors['salesManager']}
+										errorMsg="Please select sales manager."
+									/>
+								</div>
 
-							<div className={TeamDemandFunnelStyle.formPanelAction}>
-								<button
-									onClick={handleSubmit(viewActionWiseHandler)}
-									className={TeamDemandFunnelStyle.btnPrimary}>
-									View Action Wise Data
-								</button>
-								<button
-									onClick={handleSubmit(hrWiseHandler)}
-									className={TeamDemandFunnelStyle.btn}>
-									View HR Wise Data
-								</button>
+								<div className={TeamDemandFunnelStyle.formPanelAction}>
+									<button
+										onClick={handleSubmit(viewActionWiseHandler)}
+										className={TeamDemandFunnelStyle.btnPrimary}>
+										View Action Wise Data
+									</button>
+									<button
+										onClick={handleSubmit(hrWiseHandler)}
+										className={TeamDemandFunnelStyle.btn}>
+										View HR Wise Data
+									</button>
+								</div>
 							</div>
 						</div>
-					</div>
-				</Modal>
+					</Modal>
+				</WithLoader>
 			)}
 		</>
 	);

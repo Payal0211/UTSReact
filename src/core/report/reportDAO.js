@@ -280,4 +280,61 @@ export const ReportDAO = {
 			return errorDebug(error, 'ReportDAO.teamDemandFunnelFiltersRequestDAO');
 		}
 	},
+	teamDemandFunnelSummaryRequestDAO: async function (reportData) {
+		try {
+			const teamDemandSummary = await ReportAPI.teamDemandFunnelSummaryRequest(
+				reportData,
+			);
+			if (teamDemandSummary) {
+				const statusCode = teamDemandSummary['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = teamDemandSummary?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: JSON.parse(tempResult),
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return teamDemandSummary;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return teamDemandSummary;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.teamDemandFunnelSummaryRequestDAOs');
+		}
+	},
+	teamDemandFunnelHRDetailsRequestDAO: async function (reportData) {
+		try {
+			const teamDemandHRDetailsResponse =
+				await ReportAPI.teamDemandFunnelHRDetailsRequest(reportData);
+
+			if (teamDemandHRDetailsResponse) {
+				const statusCode = teamDemandHRDetailsResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult =
+						teamDemandHRDetailsResponse?.responseBody?.details ||
+						teamDemandHRDetailsResponse?.responseBody;
+
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return teamDemandHRDetailsResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return teamDemandHRDetailsResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.teamDemandFunnelHRDetailsRequestDAO');
+		}
+	},
 };

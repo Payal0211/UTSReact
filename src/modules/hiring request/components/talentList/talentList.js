@@ -154,6 +154,7 @@ const TalentList = ({
 	const [getConfirmSlotDetails, setConfirmSlotDetails] = useState({});
 	const [confirmSlotRadio, setConfirmSlotRadio] = useState(1);
 	const [getDateNewFormate, setDateNewFormate] = useState([]);
+	console.log(getDateNewFormate, 'getDateNewFormategetDateNewFormate');
 
 	const scheuleResetDataHander = () => {
 		setScheduleSlotDate([
@@ -1156,6 +1157,7 @@ const TalentList = ({
 
 	const getConfirmSlotDetailsHandler = async (id) => {
 		const response = await hiringRequestDAO.getConfirmSlotDetailsDAO(id);
+
 		if (response?.responseBody?.statusCode === HTTPStatusCode.OK) {
 			setConfirmSlotDetails(response?.responseBody?.details?.Data);
 		}
@@ -1810,7 +1812,17 @@ const TalentList = ({
 				open={interviewFeedback}
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => setInterviewFeedback(false)}>
-				<InterviewFeedback />
+				<InterviewFeedback
+					clientDetail={clientDetail}
+					callAPI={callAPI}
+					talentInfo={filterTalentID}
+					talentName={filterTalentID?.Name}
+					HRStatusCode={HRStatusCode}
+					hiringRequestNumber={hiringRequestNumber}
+					starMarkedStatusCode={starMarkedStatusCode}
+					hrStatus={hrStatus}
+					closeModal={() => setTalentAcceptance(false)}
+				/>
 			</Modal>
 			{/** ============ MODAL FOR TALENT ACCEPTANCE ================ */}
 			<Modal

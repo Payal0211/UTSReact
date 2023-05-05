@@ -643,48 +643,40 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'hiringRequestAPI.getHRDetailsRequest');
 		}
 	},
-	// httpService.setAuthRequired = true;
-	// httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-	// try {
-	// 	let response = await httpService.sendGetRequest();
-	// 	return response;
-	// } catch(error) {
-	// 	return errorDebug(error, "HiringRequestAPI.getConfirmSlotDetailsRequest");
-	// }
 
-	saveConfirmSlotDetailsRequest: async (data) => {
-		let httpService = new HttpServices();
-		httpService.URL =
-			NetworkInfo.NETWORK +
-			SubDomain.INTERVIEW +
-			InterviewsAPI.SAVE_CONFIRM_INTERVIEW;
-		httpService.dataToSend = data;
-		httpService.setAuthRequired = true;
-		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-		try {
-			let response = await httpService.sendPostRequest();
-			return response;
-		} catch (error) {
-			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
-		}
-	},
-	convertToDirectPlacement: async (data) => {
-		let httpService = new HttpServices();
-		httpService.URL =
-			NetworkInfo.NETWORK +
-			SubDomain.INTERVIEW +
-			InterviewsAPI.CONVERT_DP +
-			`?HiringRequest_ID=${data}`;
-		httpService.dataToSend = data;
-		httpService.setAuthRequired = true;
-		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-		try {
-			let response = await httpService.sendPostRequest();
-			return response;
-		} catch (error) {
-			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
-		}
-	},
+	// saveConfirmSlotDetailsRequest: async (data) => {
+	// 	let httpService = new HttpServices();
+	// 	httpService.URL =
+	// 		NetworkInfo.NETWORK +
+	// 		SubDomain.INTERVIEW +
+	// 		InterviewsAPI.SAVE_CONFIRM_INTERVIEW;
+	// 	httpService.dataToSend = data;
+	// 	httpService.setAuthRequired = true;
+	// 	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	// 	try {
+	// 		let response = await httpService.sendPostRequest();
+	// 		return response;
+	// 	} catch (error) {
+	// 		return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
+	// 	}
+	// },
+	// convertToDirectPlacement: async (data) => {
+	// 	let httpService = new HttpServices();
+	// 	httpService.URL =
+	// 		NetworkInfo.NETWORK +
+	// 		SubDomain.INTERVIEW +
+	// 		InterviewsAPI.CONVERT_DP +
+	// 		`?HiringRequest_ID=${data}`;
+	// 	httpService.dataToSend = data;
+	// 	httpService.setAuthRequired = true;
+	// 	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	// 	try {
+	// 		let response = await httpService.sendPostRequest();
+	// 		return response;
+	// 	} catch (error) {
+	// 		return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
+	// 	}
+	// },
 	saveTalentContracual: async (data) => {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -749,12 +741,12 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.acceptHRRequest');
 		}
 	},
-  	getRemainingPriorityCount: async () => {
+	getRemainingPriorityCount: async () => {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.GET_REMAINING_PRIORITY_COUNT
+			HiringRequestsAPI.GET_REMAINING_PRIORITY_COUNT;
 
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -762,7 +754,7 @@ export const HiringRequestAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, "HiringRequestAPI.getRemainingPriorityCount");
+			return errorDebug(error, 'HiringRequestAPI.getRemainingPriorityCount');
 		}
 	},
 	setHrPriority: async (star, hrid, salesperson) => {
@@ -770,7 +762,8 @@ export const HiringRequestAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.SET_HR_PRIORITY + `?IsNextWeekStarMarked=${star}&HiringRequestID=${hrid}&SalesPerson=${salesperson}`;
+			HiringRequestsAPI.SET_HR_PRIORITY +
+			`?IsNextWeekStarMarked=${star}&HiringRequestID=${hrid}&SalesPerson=${salesperson}`;
 
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -778,7 +771,7 @@ export const HiringRequestAPI = {
 			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, "HiringRequestAPI.setHrPriority");
+			return errorDebug(error, 'HiringRequestAPI.setHrPriority');
 		}
 	},
 };
