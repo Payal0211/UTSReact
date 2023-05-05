@@ -29,7 +29,7 @@ const DemandFunnelScreen = () => {
 		endDate: '',
 		isHiringNeedTemp: '',
 		modeOfWork: '',
-		typeOfHR: '',
+		typeOfHR: '-1',
 		companyCategory: '',
 		replacement: '',
 		head: '',

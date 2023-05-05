@@ -164,23 +164,23 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.teamDemandFunnelListingRequest');
 		}
 	},
-	// supplyFunnelSummary: async function (reportData) {
-	// 	let httpService = new HttpServices();
-	// 	httpService.URL =
-	// 		NetworkInfo.NETWORK +
-	// 		SubDomain.REPORT +
-	// 		ReportType.SUPPLY_FUNNEL +
-	// 		ReportsAPI.SUMMARY;
-	// 	httpService.setAuthRequired = true;
-	// 	httpService.dataToSend = reportData;
-	// 	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-	// 	try {
-	// 		let response = await httpService.sendPostRequest();
-	// 		return response;
-	// 	} catch (error) {
-	// 		return errorDebug(error, 'ReportAPI.supplyFunnelSummary');
-	// 	}
-	// },
+	teamDemandFunnelSummaryRequest: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.TEAM_DEMAND_FUNNEL +
+			ReportsAPI.SUMMARY;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.teamDemandFunnelSummaryRequest');
+		}
+	},
 	teamDemandFunnelFilters: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -197,21 +197,21 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.teamDemandFunnelFilters');
 		}
 	},
-	// supplyFunnelHRDetailsRequest: async function (reportData) {
-	// 	let httpService = new HttpServices();
-	// 	httpService.URL =
-	// 		NetworkInfo.NETWORK +
-	// 		SubDomain.REPORT +
-	// 		ReportType.SUPPLY_FUNNEL +
-	// 		ReportsAPI.HRDETAILS;
-	// 	httpService.setAuthRequired = true;
-	// 	httpService.dataToSend = reportData;
-	// 	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-	// 	try {
-	// 		let response = await httpService.sendPostRequest();
-	// 		return response;
-	// 	} catch (error) {
-	// 		return errorDebug(error, 'ReportAPI.supplyFunnelHRDetailsRequest');
-	// 	}
-	// },
+	teamDemandFunnelHRDetailsRequest: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.TEAM_DEMAND_FUNNEL +
+			ReportsAPI.HRDETAILS;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.teamDemandFunnelHRDetailsRequest');
+		}
+	},
 };
