@@ -292,13 +292,13 @@ const IncentiveReportScreen = () => {
     const [incentiveBoosterList, setIncentiveBoosterList] = useState([])
 
     const onRowClick = async (record) => {
-        let response = await IncentiveReportDAO.getUserListInIncentiveDetailsDAO(splitvalue[0], record?.id, record?.SelfAchivedTarget, splitvalue[1])
-        let responseBooster = await IncentiveReportDAO.getIncentiveReportDetailsContractBoosterDAO(splitvalue[0], record?.id, record?.SelfAchivedTarget, splitvalue[1])
+        let response = await IncentiveReportDAO.getUserListInIncentiveDetailsDAO(splitvalue[0], record?.id, false, splitvalue[1])
+        let responseBooster = await IncentiveReportDAO.getIncentiveReportDetailsContractBoosterDAO(splitvalue[0], record?.id, false, splitvalue[1])
         setIncentiveReportInfo(response.responseBody)
         setIncentiveBoosterList(responseBooster.responseBody)
     }
 
-    const data = tableData.map((data) => ({
+    const data = tableData?.map((data) => ({
         id: data?.userId,
         UserRole: data?.userName,
         Self: data?.selfPercentage,
@@ -306,7 +306,7 @@ const IncentiveReportScreen = () => {
         SelfTarget: data?.selftarget,
         SelfAchivedTarget: data?.selfAchivedTarget
     }))
-    const incentiveInfoList = incentiveReportInfo.map((data) => ({
+    const incentiveInfoList = incentiveReportInfo?.map((data) => ({
         User: data?.userName,
         Company: data?.company,
         Client: data?.clientName,
@@ -327,7 +327,7 @@ const IncentiveReportScreen = () => {
         DPCalculatedAmt: data?.dP_CalculatedAmount,
         LeadType: data?.leadType,
     }))
-    const incentiveBooster = incentiveBoosterList.map((data) => ({
+    const incentiveBooster = incentiveBoosterList?.map((data) => ({
         User: data?.userName,
         Company: data?.company,
         Client: data?.clientName,
@@ -731,9 +731,12 @@ const IncentiveReportScreen = () => {
                     onClick: () => onRowClick(record, rowIndex)
                 }
             }} />
-            <div className={IncentiveReportStyle.hiringRequest}>
+            {incentiveReportInfo[0]?.userRole === "AM" || incentiveReportInfo[0]?.userRole === "AM Head"?(<div className={IncentiveReportStyle.hiringRequest}>
+                AM Target
+            </div>):(<div className={IncentiveReportStyle.hiringRequest}>
                 Based Fixed
-            </div>
+            </div>)}
+            
             <Table columns={incentiveReportColumn} dataSource={incentiveInfoList} size="small" />
             <div className={IncentiveReportStyle.hiringRequest}>
                 Contract Booster
