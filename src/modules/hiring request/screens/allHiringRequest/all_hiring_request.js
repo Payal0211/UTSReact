@@ -158,8 +158,8 @@ const AllHiringRequestScreen = () => {
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
-					setIsAllowFilters(!isAllowFilters);
-			  }, 300);
+				setIsAllowFilters(!isAllowFilters);
+			}, 300);
 		setHTMLFilter(!getHTMLFilter);
 	}, [getHRFilterRequest, getHTMLFilter, isAllowFilters]);
 

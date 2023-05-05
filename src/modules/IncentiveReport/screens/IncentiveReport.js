@@ -38,7 +38,6 @@ import { reportConfig } from "modules/report/report.config";
 import DemandFunnelModal from "modules/report/components/demandFunnelModal/demandFunnelModal";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { IncentiveReportDAO } from "core/IncentiveReport/IncentiveReportDAO";
-import { IoLogoCss3 } from "react-icons/io5";
 
 const DemandFunnelFilterLazyComponent = React.lazy(() =>
     import("modules/report/components/demandFunnelFilter/demandFunnelFilter")
@@ -106,101 +105,312 @@ const IncentiveReportScreen = () => {
     const [showLine, setShowLine] = useState(true);
     const [showIcon, setShowIcon] = useState(false);
     const [showLeafIcon, setShowLeafIcon] = useState(true);
+    const [tableData, setShowTableData] = useState([])
+    // const [gethierarachy, sethierarchy] = useState([])
 
-    const treeData = [
+
+    // let tempData = gethierarachy.map((item) => {
+    //     item?.child
+    //     return
+    // })
+
+
+    const columns = [
         {
-            title: "parent 1",
-            key: "0-0",
-            icon: <CarryOutOutlined />,
-            children: [
-                {
-                    title: "parent 1-0",
-                    key: "0-0-0",
-                    icon: <CarryOutOutlined />,
-                    children: [
-                        {
-                            title: "leaf",
-                            key: "0-0-0-0",
-                            icon: <CarryOutOutlined />,
-                        },
-                        {
-                            title: (
-                                <>
-                                    <div>multiple line title</div>
-                                    <div>multiple line title</div>
-                                </>
-                            ),
-                            key: "0-0-0-1",
-                            icon: <CarryOutOutlined />,
-                        },
-                        {
-                            title: "leaf",
-                            key: "0-0-0-2",
-                            icon: <CarryOutOutlined />,
-                        },
-                    ],
-                },
-                {
-                    title: "parent 1-1",
-                    key: "0-0-1",
-                    icon: <CarryOutOutlined />,
-                    children: [
-                        {
-                            title: "leaf",
-                            key: "0-0-1-0",
-                            icon: <CarryOutOutlined />,
-                        },
-                    ],
-                },
-                {
-                    title: "parent 1-2",
-                    key: "0-0-2",
-                    icon: <CarryOutOutlined />,
-                    children: [
-                        {
-                            title: "leaf",
-                            key: "0-0-2-0",
-                            icon: <CarryOutOutlined />,
-                        },
-                        {
-                            title: "leaf",
-                            key: "0-0-2-1",
-                            icon: <CarryOutOutlined />,
-                            switcherIcon: <FormOutlined />,
-                        },
-                    ],
-                },
-            ],
+            title: 'User(Role)',
+            dataIndex: 'UserRole',
         },
         {
-            title: "parent 2",
-            key: "0-1",
-            icon: <CarryOutOutlined />,
-            children: [
-                {
-                    title: "parent 2-0",
-                    key: "0-1-0",
-                    icon: <CarryOutOutlined />,
-                    children: [
-                        {
-                            title: "leaf",
-                            key: "0-1-0-0",
-                            icon: <CarryOutOutlined />,
-                        },
-                        {
-                            title: "leaf",
-                            key: "0-1-0-1",
-                            icon: <CarryOutOutlined />,
-                        },
-                    ],
-                },
-            ],
+            title: 'Self%',
+            dataIndex: 'Self',
+        },
+        {
+            title: 'Team Target',
+            dataIndex: 'TeamTarget',
+        },
+        {
+            title: 'Self Target',
+            dataIndex: 'SelfTarget',
+        },
+        {
+            title: 'Self Achived Target',
+            dataIndex: 'SelfAchivedTarget',
         },
     ];
+    const incentiveReportColumn = [
+        {
+            title: 'User',
+            dataIndex: 'User',
+        },
+        {
+            title: 'Company',
+            dataIndex: 'Company',
+        },
+        {
+            title: 'Client',
+            dataIndex: 'Client',
+        },
+        {
+            title: 'Category',
+            dataIndex: 'Category',
+        },
+        {
+            title: 'HR Number',
+            dataIndex: 'HRNumber',
+        },
+        {
+            title: 'Engagement ID',
+            dataIndex: 'EngagementID',
+        },
+        {
+            title: 'Talent Name',
+            dataIndex: 'TalentName',
+        },
+        {
+            title: 'Client Closure Date',
+            dataIndex: 'ClientClosureDate',
+        },
+        {
+            title: 'BR ($)',
+            dataIndex: 'BR',
+        },
+        {
+            title: 'PR ($)',
+            dataIndex: 'PR',
+        },
+        {
+            title: 'NR Value ($)',
+            dataIndex: 'NR',
+        },
+        {
+            title: 'AM NR Slab',
+            dataIndex: 'AMNRSlab',
+        },
+        {
+            title: 'AM NR %',
+            dataIndex: 'AMNRPercentage',
+        },
+        {
+            title: 'Calc Amt ($)',
+            dataIndex: 'CalcAmt',
+        },
+        {
+            title: 'NBD',
+            dataIndex: 'NBD',
+        },
+        {
+            title: 'DP Slab ($)',
+            dataIndex: 'DPSlab',
+        },
+        {
+            title: 'DP Slab Amt ($)',
+            dataIndex: 'DPSlabAmt',
+        },
+        {
+            title: 'DP CalculatedAmt',
+            dataIndex: 'DPCalculatedAmt',
+        },
+        {
+            title: 'Lead Type',
+            dataIndex: 'LeadType',
+        },
+    ];
+    const incentiveReportBoosterColumn = [
+        {
+            title: 'User',
+            dataIndex: 'User',
+        },
+        {
+            title: 'Company',
+            dataIndex: 'Company',
+        },
+        {
+            title: 'Client',
+            dataIndex: 'Client',
+        },
+        {
+            title: 'Category',
+            dataIndex: 'Category',
+        },
+        {
+            title: 'HR Number',
+            dataIndex: 'HRNumber',
+        },
+        {
+            title: 'Engagement ID',
+            dataIndex: 'EngagementID',
+        },
+        {
+            title: 'Talent Name',
+            dataIndex: 'TalentName',
+        },
+        {
+            title: 'Client Closure Date',
+            dataIndex: 'ClientClosureDate',
+        },
+        {
+            title: 'Contract Duration',
+            dataIndex: 'ContractDuration',
+        },
+        {
+            title: 'BR ($)',
+            dataIndex: 'BR',
+        },
+        {
+            title: 'PR ($)',
+            dataIndex: 'PR',
+        },
+        {
+            title: 'NR Value ($)',
+            dataIndex: 'NR',
+        },
+        {
+            title: 'CB Slab',
+            dataIndex: 'CBSlab',
+        },
+        {
+            title: 'Slab Amt',
+            dataIndex: 'SlabAmt',
+        },
+        {
+            title: 'CB Amt ($)',
+            dataIndex: 'CBAmt',
+        },
+        {
+            title: 'NBD',
+            dataIndex: 'NBD',
+        },
+        {
+            title: 'Lead Type',
+            dataIndex: 'LeadType',
+        },
 
-    const onSelect = (selectedKeys, info) => {
-        console.log("selected", selectedKeys, info);
-    };
+    ];
+
+
+    const [incentiveReportInfo, setIncentiveReportInfo] = useState([])
+    const [incentiveBoosterList, setIncentiveBoosterList] = useState([])
+
+    const onRowClick = async (record) => {
+        let response = await IncentiveReportDAO.getUserListInIncentiveDetailsDAO(splitvalue[0], record?.id, record?.SelfAchivedTarget, splitvalue[1])
+        let responseBooster = await IncentiveReportDAO.getIncentiveReportDetailsContractBoosterDAO(splitvalue[0], record?.id, record?.SelfAchivedTarget, splitvalue[1])
+        setIncentiveReportInfo(response.responseBody)
+        setIncentiveBoosterList(responseBooster.responseBody)
+    }
+
+    const data = tableData.map((data) => ({
+        id: data?.userId,
+        UserRole: data?.userName,
+        Self: data?.selfPercentage,
+        TeamTarget: data?.teamtarget,
+        SelfTarget: data?.selftarget,
+        SelfAchivedTarget: data?.selfAchivedTarget
+    }))
+    const incentiveInfoList = incentiveReportInfo.map((data) => ({
+        User: data?.userName,
+        Company: data?.company,
+        Client: data?.clientName,
+        Category: data?.companyCategory,
+        HRNumber: data?.hR_Number,
+        EngagementID: data?.EngagemenID,
+        TalentName: data?.talentName,
+        ClientClosureDate: data?.clientClosureDate,
+        BR: data?.br,
+        PR: data?.pr,
+        NR: data?.nrValue,
+        AMNRSlab: data?.aM_NR_Slab,
+        AMNRPercentage: data?.aM_NR_Percentage,
+        CalcAmt: data?.amount,
+        NBD: data?.nbdSalesPerson,
+        DPSlab: data?.dP_Slab,
+        DPSlabAmt: data?.dP_SlabAmount,
+        DPCalculatedAmt: data?.dP_CalculatedAmount,
+        LeadType: data?.leadType,
+    }))
+    const incentiveBooster = incentiveBoosterList.map((data) => ({
+        User: data?.userName,
+        Company: data?.company,
+        Client: data?.clientName,
+        Category: data?.companyCategory,
+        HRNumber: data?.hR_Number,
+        EngagementID: data?.engagemenID,
+        TalentName: data?.talentName,
+        ClientClosureDate: data?.clientClosureDate,
+        BR: data?.br,
+        PR: data?.pr,
+        NR: data?.nrValue,
+        CBSlab: data?.cB_Slab,
+        SlabAmt: data?.cB_SlabAmount,
+        CBAmt: data?.cB_CalculatedAmount,
+        NBD: data?.nbdSalesPerson,
+        LeadType: data?.leadType,
+    }))
+    // const treeData = [
+    //     {
+    //         title: "parent 1",
+    //         key: "0-0",
+    //         icon: <CarryOutOutlined />,
+    //         children: [
+    //             {
+    //                 title: "parent 1-0",
+    //                 key: "0-0-0",
+    //                 icon: <CarryOutOutlined />,
+    //                 children: [
+    //                     {
+    //                         title: "leaf",
+    //                         key: "0-0-0-0",
+    //                         icon: <CarryOutOutlined />,
+    //                     },
+    //                     {
+    //                         title: (
+    //                             <>
+    //                                 <div>multiple line title</div>
+    //                                 <div>multiple line title</div>
+    //                             </>
+    //                         ),
+    //                         key: "0-0-0-1",
+    //                         icon: <CarryOutOutlined />,
+    //                     },
+    //                     {
+    //                         title: "leaf",
+    //                         key: "0-0-0-2",
+    //                         icon: <CarryOutOutlined />,
+    //                     },
+    //                 ],
+    //             },
+    //             {
+    //                 title: "parent 1-1",
+    //                 key: "0-0-1",
+    //                 icon: <CarryOutOutlined />,
+    //                 children: [
+    //                     {
+    //                         title: "leaf",
+    //                         key: "0-0-1-0",
+    //                         icon: <CarryOutOutlined />,
+    //                     },
+    //                 ],
+    //             },
+    //             {
+    //                 title: "parent 1-2",
+    //                 key: "0-0-2",
+    //                 icon: <CarryOutOutlined />,
+    //                 children: [
+    //                     {
+    //                         title: "leaf",
+    //                         key: "0-0-2-0",
+    //                         icon: <CarryOutOutlined />,
+    //                     },
+    //                     {
+    //                         title: "leaf",
+    //                         key: "0-0-2-1",
+    //                         icon: <CarryOutOutlined />,
+    //                         switcherIcon: <FormOutlined />,
+    //                     },
+    //                 ],
+    //             },
+    //         ],
+    //     },
+    // ];
 
     const {
         register,
@@ -217,8 +427,9 @@ const IncentiveReportScreen = () => {
     });
 
     const watchValueUserRoles = watch("userRoleValue");
-
-    console.log(watchValueUserRoles, "watchValueUserRoles");
+    const watchManagerId = watch("manager")
+    const watchDate = watch("MonthYearFilter")
+    let splitvalue = watchDate?.id?.split("#")
 
     const onRemoveFilters = () => {
         setTimeout(() => {
@@ -318,7 +529,18 @@ const IncentiveReportScreen = () => {
             value: item?.text,
         }));
         setManagerDataInfo(managerData);
-        console.log(updatedManagerData, "getManagerInfo")
+    };
+
+    // const getUserHierarchy = async () => {
+    //     const response = await IncentiveReportDAO.getUserHierarchyDAO(watchManagerId?.id);
+    //     sethierarchy(response?.responseBody)
+    // };
+
+    const getList = async () => {
+        if (splitvalue || splitvalue === undefined) {
+            const response = await IncentiveReportDAO?.getUserListInIncentiveDAO(splitvalue[0], splitvalue[1], watchManagerId?.id);
+            setShowTableData(response?.responseBody)
+        }
     };
 
     useEffect(() => {
@@ -353,10 +575,8 @@ const IncentiveReportScreen = () => {
 
     useEffect(() => {
         getSalesUserBasedOnUserRole();
-    }, [watchValueUserRoles])
-
-
-
+        // getUserHierarchy();
+    }, [watchValueUserRoles, watchManagerId])
 
     return (
         <div className={IncentiveReportStyle.hiringRequestContainer}>
@@ -370,7 +590,7 @@ const IncentiveReportScreen = () => {
        * @Filter Part
        */}
             <div className={IncentiveReportStyle.filterContainer}>
-                <div className={IncentiveReportStyle.filterSets}>
+                {/* <div className={IncentiveReportStyle.filterSets}>
                     <div
                         className={IncentiveReportStyle.addFilter}
                         onClick={toggleDemandReportFilter}
@@ -382,7 +602,7 @@ const IncentiveReportScreen = () => {
                             {filteredTagLength}
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <div className={IncentiveReportStyle.row}>
@@ -433,12 +653,15 @@ const IncentiveReportScreen = () => {
                     />
                 </div>
             </div>
+
+            <button onClick={getList}>Search</button>
+            <button>Reset</button>
             {/*
        * ------------ Table Starts-----------
        * @Table Part
        */}
 
-            <div className={IncentiveReportStyle.tree_custom}>
+            {/* <div className={IncentiveReportStyle.tree_custom}>
                 <div>
                     <Tree
                         showLine={
@@ -454,9 +677,9 @@ const IncentiveReportScreen = () => {
                         treeData={treeData}
                     />
                 </div>
-            </div>
+            </div> */}
 
-            <div className={IncentiveReportStyle.tableDetails}>
+            {/* <div className={IncentiveReportStyle.tableDetails}>
                 {isLoading ? (
                     <TableSkeleton />
                 ) : (
@@ -502,7 +725,20 @@ const IncentiveReportScreen = () => {
                         </>
                     )}
                 </div>
-            )}
+            )} */}
+            <Table columns={columns} dataSource={data} size="small" onRow={(record, rowIndex) => {
+                return {
+                    onClick: () => onRowClick(record, rowIndex)
+                }
+            }} />
+            <div className={IncentiveReportStyle.hiringRequest}>
+                Based Fixed
+            </div>
+            <Table columns={incentiveReportColumn} dataSource={incentiveInfoList} size="small" />
+            <div className={IncentiveReportStyle.hiringRequest}>
+                Contract Booster
+            </div>
+            <Table columns={incentiveReportBoosterColumn} dataSource={incentiveBooster} size="small" />
 
             {isAllowFilters && (
                 <Suspense fallback={<div>Loading...</div>}>

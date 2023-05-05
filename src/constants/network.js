@@ -213,4 +213,10 @@ export class IncentiveReport {
   static GET_USER_ROLE = "GetIncentiveReport";
   static MONTH_YEAR_FILER = "MonthYearFilter";
   static GET_SALES_USERS_BASED_ON_USER_ROLE = "GetSalesUsersBasedOnUserRole";
+  static GET_USER_HIERARCHY = "GetUserHierarchy";
+  static GET_LIST = "List";
+  static GET_INCENTIVE_REPORT_DETAILS = "GetIncentiveReportDetails";
+  static GET_CONTRACT_BOOSTER = "GetIncentiveReportDetailsContractBooster";
+  static GET_CONTRACT_BOOSTER = "GetIncentiveReportDetailsContractBooster";
+  static GET_INCENTIVE_REPORT_AMNR = "GetIncentiveReportDetailsAMNR";
 }
