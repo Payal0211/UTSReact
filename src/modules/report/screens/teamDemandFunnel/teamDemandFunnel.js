@@ -510,17 +510,42 @@ const TeamDemandFunnelScreen = () => {
 	console.log(teamDemandFunnelHRDetailsState, '-teamDemandHRDetailsState');
 	const hrWiseHandler = useCallback(
 		async (d) => {
+			setLoading(true);
 			const actionWiseFormatter = {
 				...tableFilteredState,
 				salesManagerID: d.salesManager?.id,
 				isActionWise: false,
 			};
+			setTableFilteredState({
+				...tableFilteredState,
+				salesManagerID: d.salesManager?.id,
+				isActionWise: false,
+			});
+			setTeamDemandFunnelHRDetailsState({
+				...teamDemandFunnelHRDetailsState,
+				funnelFilter: {
+					...teamDemandFunnelHRDetailsState?.funnelFilter,
+					salesManagerID: d.salesManager?.id,
+					isActionWise: false,
+				},
+			});
 			setSelectedHierarchy(d.salesManager);
+
 			const response = await ReportDAO.teamDemandFunnelListingRequestDAO(
 				actionWiseFormatter,
 			);
+			const hierarchyResponse = await MasterDAO.getUsersHierarchyRequestDAO({
+				parentID: d.salesManager?.id,
+			});
+			console.log(response);
+			console.log(hierarchyResponse, '-hierarchyResponse--');
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				setApiData(response?.responseBody);
+				setTeamDemandFunnelModal(false);
+				setLoading(false);
+			}
 		},
-		[tableFilteredState],
+		[tableFilteredState, teamDemandFunnelHRDetailsState],
 	);
 
 	const onChange = useCallback(() => {
