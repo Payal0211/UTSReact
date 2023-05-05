@@ -455,22 +455,22 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.getConfirmSlotDetailsRequest');
 		}
 	},
-	saveConfirmSlotDetailsRequest: async (data) => {
-		let httpService = new HttpServices();
-		httpService.URL =
-			NetworkInfo.NETWORK +
-			SubDomain.INTERVIEW +
-			InterviewsAPI.SAVE_CONFIRM_INTERVIEW;
-		httpService.dataToSend = data;
-		httpService.setAuthRequired = true;
-		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-		try {
-			let response = await httpService.sendPostRequest();
-			return response;
-		} catch (error) {
-			return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
-		}
-	},
+	// saveConfirmSlotDetailsRequest: async (data) => {
+	// 	let httpService = new HttpServices();
+	// 	httpService.URL =
+	// 		NetworkInfo.NETWORK +
+	// 		SubDomain.INTERVIEW +
+	// 		InterviewsAPI.SAVE_CONFIRM_INTERVIEW;
+	// 	httpService.dataToSend = data;
+	// 	httpService.setAuthRequired = true;
+	// 	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	// 	try {
+	// 		let response = await httpService.sendPostRequest();
+	// 		return response;
+	// 	} catch (error) {
+	// 		return errorDebug(error, 'HiringRequestAPI.addHRAcceptanceRequest');
+	// 	}
+	// },
 	convertToDirectPlacement: async (data) => {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -649,23 +649,23 @@ export const HiringRequestAPI = {
 			return errorDebug(error, "HiringRequestAPI.addHRAcceptanceRequest");
 		}
 	},
-	convertToDirectPlacement: async (data) => {
-		let httpService = new HttpServices();
-		httpService.URL =
-			NetworkInfo.NETWORK +
-			SubDomain.INTERVIEW +
-			InterviewsAPI.CONVERT_DP +
-			`?HiringRequest_ID=${data}`;
-		httpService.dataToSend = data;
-		httpService.setAuthRequired = true;
-		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-		try {
-			let response = await httpService.sendPostRequest();
-			return response;
-		} catch (error) {
-			return errorDebug(error, "HiringRequestAPI.addHRAcceptanceRequest");
-		}
-	},
+	// convertToDirectPlacement: async (data) => {
+	// 	let httpService = new HttpServices();
+	// 	httpService.URL =
+	// 		NetworkInfo.NETWORK +
+	// 		SubDomain.INTERVIEW +
+	// 		InterviewsAPI.CONVERT_DP +
+	// 		`?HiringRequest_ID=${data}`;
+	// 	httpService.dataToSend = data;
+	// 	httpService.setAuthRequired = true;
+	// 	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	// 	try {
+	// 		let response = await httpService.sendPostRequest();
+	// 		return response;
+	// 	} catch (error) {
+	// 		return errorDebug(error, "HiringRequestAPI.addHRAcceptanceRequest");
+	// 	}
+	// },
 	saveTalentContracual: async (data) => {
 		let httpService = new HttpServices();
 		httpService.URL =
