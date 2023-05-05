@@ -318,7 +318,6 @@ const IncentiveReportScreen = () => {
             value: item?.text,
         }));
         setManagerDataInfo(managerData);
-        console.log(updatedManagerData, "getManagerInfo")
     };
 
     useEffect(() => {
