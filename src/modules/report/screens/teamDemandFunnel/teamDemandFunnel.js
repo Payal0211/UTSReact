@@ -789,10 +789,11 @@ const TeamDemandFunnelScreen = () => {
 								filtersType={reportConfig.TeamDemandReportFilterTypeConfig(
 									filtersList && filtersList,
 								)}
+								selectedHierarchy={selectedHierarchy}
 							/>
 						</Suspense>
 					)}
-					{teamDemandFunnelHRDetailsState && (
+					{teamDemandHRDetailsModal && (
 						<TeamDemandFunnelModal
 							supplyFunnelModal={teamDemandHRDetailsModal}
 							setSupplyFunnelModal={setTeamDemandHRDetailsModal}

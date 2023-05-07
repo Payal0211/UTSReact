@@ -165,12 +165,26 @@ const SupplyFunnelFilter = ({
 		setCheckedState(new Map());
 		setFilteredTagLength(0);
 		setTableFilteredState({
-			...tableFilteredState,
-			// filterFields_ViewAllHRs: {},
+			startDate: '',
+			endDate: '',
+			managed: '',
+			isHiringNeedTemp: '',
+			modeOfWork: '',
+			typeOfHR: '',
+			companyCategory: '',
+			replacement: '',
+			isActionWise: true,
 		});
 		const reqFilter = {
-			...tableFilteredState,
-			// filterFields_ViewAllHRs: {},
+			startDate: '',
+			endDate: '',
+			managed: '',
+			isHiringNeedTemp: '',
+			modeOfWork: '',
+			typeOfHR: '',
+			companyCategory: '',
+			replacement: '',
+			isActionWise: true,
 		};
 		handleHRRequest(reqFilter);
 	}, [
@@ -179,7 +193,6 @@ const SupplyFunnelFilter = ({
 		setCheckedState,
 		setFilteredTagLength,
 		setTableFilteredState,
-		tableFilteredState,
 	]);
 	const handleFilters = useCallback(() => {
 		let filters = {};

@@ -20,6 +20,7 @@ const TeamDemandFunnelFilter = ({
 	setTableFilteredState,
 	filtersType,
 	getHTMLFilter,
+	selectedHierarchy,
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -165,21 +166,33 @@ const TeamDemandFunnelFilter = ({
 		setCheckedState(new Map());
 		setFilteredTagLength(0);
 		setTableFilteredState({
-			...tableFilteredState,
-			// filterFields_ViewAllHRs: {},
+			startDate: '',
+			endDate: '',
+			salesManagerID: selectedHierarchy?.id,
+			isHiringNeedTemp: '',
+			modeOfWork: '',
+			typeOfHR: '-1',
+			companyCategory: '',
+			isActionWise: false,
 		});
 		const reqFilter = {
-			...tableFilteredState,
-			// filterFields_ViewAllHRs: {},
+			startDate: '',
+			endDate: '',
+			salesManagerID: selectedHierarchy?.id,
+			isHiringNeedTemp: '',
+			modeOfWork: '',
+			typeOfHR: '-1',
+			companyCategory: '',
+			isActionWise: false,
 		};
 		handleHRRequest(reqFilter);
 	}, [
 		handleHRRequest,
+		selectedHierarchy?.id,
 		setAppliedFilters,
 		setCheckedState,
 		setFilteredTagLength,
 		setTableFilteredState,
-		tableFilteredState,
 	]);
 	const handleFilters = useCallback(() => {
 		console.log('hello');
