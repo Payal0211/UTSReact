@@ -570,9 +570,9 @@ tr th:first-child {
     color: red;
 }
 
-[class*="ant-modal-close"]{
+/* [class*="ant-modal-close"]{
     visibility: hidden;
-}
+} */
 .error {
     color: var(--danger-color);
     font-size: var(--fontsize-tough);
