@@ -702,3 +702,6 @@ table{
 .ant-switch-checked {
   background-color: var(--color-sunlight) !important;
 }
+.selectSalesManagerModal .ant-modal-close{
+display: none;
+}

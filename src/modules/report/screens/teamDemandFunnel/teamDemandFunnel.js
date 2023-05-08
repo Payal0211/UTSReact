@@ -1,6 +1,6 @@
 import TeamDemandFunnelStyle from './teamDemandFunnel.module.css';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
-import { Modal, Switch, Table, Tooltip } from 'antd';
+import { Modal, Switch, Table, Tooltip, Tree } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -23,6 +23,7 @@ import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSel
 import { MasterDAO } from 'core/master/masterDAO';
 import TeamDemandFunnelModal from 'modules/report/components/teamDemandFunnelModal/teamDemandFunnelModal';
 import WithLoader from 'shared/components/loader/loader';
+import { TreeNode } from 'antd/lib/tree-select';
 const TeamDemandFunnelFilterLazyComponent = React.lazy(() =>
 	import(
 		'modules/report/components/teamDemandFunnelFilter/teamDemandFunnelFilter'
@@ -31,6 +32,8 @@ const TeamDemandFunnelFilterLazyComponent = React.lazy(() =>
 
 const TeamDemandFunnelScreen = () => {
 	const [selectedHierarchy, setSelectedHierarchy] = useState();
+	const [showSelectedHierarchyModal, setShowSelectedHierarchyModal] =
+		useState(false);
 	const {
 		register,
 		handleSubmit,
@@ -51,14 +54,8 @@ const TeamDemandFunnelScreen = () => {
 		isActionWise: false,
 	});
 
-	const [supplyFunnelValue, setSupplyFunnelValue] = useState({});
-	// const [supplyFunnelHRDetailsState, setSupplyFunnelHRDetailsState] = useState({
-	// 	newExistingType: '',
-	// 	selectedRow_SalesUserName: '',
-	// 	currentStage: 'TR Accepted',
-	// 	isExport: false,
-	// 	funnelFilter: tableFilteredState,
-	// });
+	const [teamDemandValue, setTeamDemandValue] = useState({});
+
 	const [teamDemandFunnelHRDetailsState, setTeamDemandFunnelHRDetailsState] =
 		useState({
 			adhocType: '',
@@ -76,6 +73,7 @@ const TeamDemandFunnelScreen = () => {
 			},
 			funnelFilter: { ...tableFilteredState },
 		});
+
 	const [teamDemandFunnelModal, setTeamDemandFunnelModal] = useState(true);
 	const [teamDemandHRDetailsModal, setTeamDemandHRDetailsModal] =
 		useState(false);
@@ -90,15 +88,14 @@ const TeamDemandFunnelScreen = () => {
 	const [filtersList, setFiltersList] = useState([]);
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
-	// const [supplyFunnelModal, setSupplyFunnelModal] = useState(false);
 
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
-
+	const [selectedHierarchyTree, setSelectedHierarchyTree] = useState([]);
 	const getTeamDemandFunnelListingHandler = useCallback(async (tableData) => {
 		setLoading(true);
 		let response = await ReportDAO.teamDemandFunnelListingRequestDAO(tableData);
-		console.log(response, '--response-');
+
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
 			setApiData(response?.responseBody);
@@ -174,7 +171,7 @@ const TeamDemandFunnelScreen = () => {
 											? null
 											: () => {
 													setTeamDemandHRDetailsModal(true);
-													setSupplyFunnelValue({
+													setTeamDemandValue({
 														stage: param?.Stage,
 														count: text,
 													});
@@ -209,7 +206,7 @@ const TeamDemandFunnelScreen = () => {
 											? null
 											: () => {
 													setTeamDemandHRDetailsModal(true);
-													setSupplyFunnelValue({
+													setTeamDemandValue({
 														stage: param?.Stage,
 														count: text,
 													});
@@ -244,7 +241,7 @@ const TeamDemandFunnelScreen = () => {
 											? null
 											: () => {
 													setTeamDemandHRDetailsModal(true);
-													setSupplyFunnelValue({
+													setTeamDemandValue({
 														stage: param?.Stage,
 														count: text,
 													});
@@ -495,8 +492,9 @@ const TeamDemandFunnelScreen = () => {
 			const hierarchyResponse = await MasterDAO.getUsersHierarchyRequestDAO({
 				parentID: d.salesManager?.id,
 			});
-			console.log(response);
 			console.log(hierarchyResponse, '-hierarchyResponse--');
+			setSelectedHierarchyTree(hierarchyResponse?.responseBody);
+
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setApiData(response?.responseBody);
 				setTeamDemandFunnelModal(false);
@@ -506,8 +504,6 @@ const TeamDemandFunnelScreen = () => {
 		[tableFilteredState, teamDemandFunnelHRDetailsState],
 	);
 
-	console.log(tableFilteredState, '---tablEFilter');
-	console.log(teamDemandFunnelHRDetailsState, '-teamDemandHRDetailsState');
 	const hrWiseHandler = useCallback(
 		async (d) => {
 			setLoading(true);
@@ -537,8 +533,8 @@ const TeamDemandFunnelScreen = () => {
 			const hierarchyResponse = await MasterDAO.getUsersHierarchyRequestDAO({
 				parentID: d.salesManager?.id,
 			});
-			console.log(response);
-			console.log(hierarchyResponse, '-hierarchyResponse--');
+			setSelectedHierarchyTree(hierarchyResponse?.responseBody?.details);
+
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setApiData(response?.responseBody);
 				setTeamDemandFunnelModal(false);
@@ -599,7 +595,9 @@ const TeamDemandFunnelScreen = () => {
 									</div>
 								)}
 								{selectedHierarchy && (
-									<div style={{ display: 'flex', alignItems: 'center' }}>
+									<div
+										style={{ display: 'flex', alignItems: 'center' }}
+										onClick={() => setShowSelectedHierarchyModal(true)}>
 										<div className={TeamDemandFunnelStyle.label}>
 											Selected Hierarchy :
 										</div>
@@ -622,10 +620,6 @@ const TeamDemandFunnelScreen = () => {
 												e.preventDefault();
 												e.stopPropagation();
 											}}
-											// selected={watch('invoiceDate')}
-											// onChange={(date) => {
-											// 	setValue('invoiceDate', date);
-											// }}
 											placeholderText="Start date - End date"
 											selected={startDate}
 											onChange={onCalenderFilter}
@@ -633,30 +627,6 @@ const TeamDemandFunnelScreen = () => {
 											endDate={endDate}
 											selectsRange
 										/>
-										{/* <Controller
-											render={({ ...props }) => (
-												<DatePicker
-													className={TeamDemandFunnelStyle.dateFilter}
-													onKeyDown={(e) => {
-														e.preventDefault();
-														e.stopPropagation();
-													}}
-													// selected={watch('invoiceDate')}
-													// onChange={(date) => {
-													// 	setValue('invoiceDate', date);
-													// }}
-													placeholderText="Start date - End date"
-													selected={startDate}
-													onChange={onCalenderFilter}
-													startDate={startDate}
-													endDate={endDate}
-													selectsRange
-												/>
-											)}
-											name="invoiceDate"
-											// rules={{ required: true }}
-											control={control}
-										/> */}
 									</div>
 								</div>
 							</div>
@@ -702,7 +672,7 @@ const TeamDemandFunnelScreen = () => {
 																	? null
 																	: () => {
 																			setTeamDemandHRDetailsModal(true);
-																			setSupplyFunnelValue({
+																			setTeamDemandValue({
 																				stage: param?.Stage,
 																				count: text,
 																			});
@@ -799,7 +769,7 @@ const TeamDemandFunnelScreen = () => {
 							setSupplyFunnelModal={setTeamDemandHRDetailsModal}
 							demandFunnelHRDetailsState={teamDemandFunnelHRDetailsState}
 							setDemandFunnelHRDetailsState={setTeamDemandFunnelHRDetailsState}
-							demandFunnelValue={supplyFunnelValue}
+							demandFunnelValue={teamDemandValue}
 						/>
 					)}
 				</div>
@@ -811,8 +781,12 @@ const TeamDemandFunnelScreen = () => {
 						centered
 						footer={null}
 						open={teamDemandFunnelModal}
+						// className={TeamDemandFunnelStyle.selectSalesManagerModal}
+						className={!selectedHierarchy && 'selectSalesManagerModal'}
 						// onOk={() => setTeamDemandFunnelModal(false)}
-						onCancel={() => setTeamDemandFunnelModal(false)}>
+						onCancel={
+							selectedHierarchy ? () => setTeamDemandFunnelModal(false) : null
+						}>
 						<div className={TeamDemandFunnelStyle.container}>
 							<div className={TeamDemandFunnelStyle.modalTitle}>
 								<h2>Team Demand Funnel</h2>
@@ -849,6 +823,34 @@ const TeamDemandFunnelScreen = () => {
 						</div>
 					</Modal>
 				</WithLoader>
+			)}
+
+			{showSelectedHierarchyModal && (
+				<Modal
+					width="1000px"
+					centered
+					footer={null}
+					open={showSelectedHierarchyModal}
+					// onOk={() => setTeamDemandFunnelModal(false)}
+					onCancel={() => setShowSelectedHierarchyModal(false)}>
+					<div className={TeamDemandFunnelStyle.container}>
+						<div className={TeamDemandFunnelStyle.modalTitle}>
+							<h2>{selectedHierarchy?.value} Hierarchy</h2>
+							<div>
+								<Tree>
+									<TreeNode
+										// icon={<Icon type="carry-out" />}
+										title="parent 1"
+										key="0-0">
+										{selectedHierarchyTree?.map((item) => (
+											<TreeNode title={item?.child}>Shekhar</TreeNode>
+										))}
+									</TreeNode>
+								</Tree>
+							</div>
+						</div>
+					</div>
+				</Modal>
 			)}
 		</>
 	);
