@@ -56,7 +56,7 @@ export const hrUtils = {
 	hrTogglePriority: (response, apiData) => {
 		if (response.responseBody) {
 			let index = apiData.findIndex(
-				(item) => item.key === JSON.parse(localStorage.getItem("hrid")),
+				(item) => item.key === JSON.parse(localStorage.getItem('hrid')),
 			);
 			let tempdata = apiData[index];
 			if (tempdata.starStatus === hiringRequestPriority.NO_PRIORITY) {
@@ -77,6 +77,7 @@ export const hrUtils = {
 		isHRDirectPlacement,
 		addHrResponse,
 		fileName,
+		jdDumpID,
 	) {
 		const hrFormDetails = {
 			en_Id: _isNull(addHrResponse) ? '' : addHrResponse.en_Id,
@@ -126,7 +127,7 @@ export const hrUtils = {
 					: d.jdURL,
 			jDFilename: fileName,
 			jDDescription: null,
-			jDDump_ID: null,
+			jDDump_ID: jdDumpID,
 			hdnSkills: null,
 			budget:
 				draft === SubmitType.SAVE_AS_DRAFT
