@@ -109,7 +109,7 @@ const IncentiveReportScreen = () => {
     const [tableData, setShowTableData] = useState([]);
     const [valueOfSelected, setValueOfSelected] = useState('');
     const [valueOfSelectedUserName, setValueOfSelectedUserName] = useState("");
-    const [errorMessage,setErrorMessage] = useState("") 
+    const [errorMessage, setErrorMessage] = useState("")
 
 
     // const [gethierarachy, sethierarchy] = useState([])
@@ -118,7 +118,7 @@ const IncentiveReportScreen = () => {
     //     item?.child
     //     return
     // })
-    
+
     const searchTableData = [
         {
             title: "User(Role)",
@@ -918,15 +918,15 @@ const IncentiveReportScreen = () => {
                 splitvalue[1],
                 watchManagerId?.id
             );
-        
+
             if (response.statusCode === HTTPStatusCode.OK) {
                 setShowTableData(response?.responseBody);
             }
-            if(response.statusCode === HTTPStatusCode.NOT_FOUND){
-              setErrorMessage("No Data Found")
-              setShowTableData([])
-              setIncentiveBoosterList([])
-              setIncentiveReportInfo([])
+            if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+                setErrorMessage("No Data Found")
+                setShowTableData([])
+                setIncentiveBoosterList([])
+                setIncentiveReportInfo([])
             }
         }
     };
@@ -1016,6 +1016,7 @@ const IncentiveReportScreen = () => {
                         name="userRoleValue"
                         mode={"id/value"}
                         options={getUserRoleEdit}
+                        label="User Role"
                         required
                         isError={errors["userRoleValue"] && errors["userRoleValue"]}
                         errorMsg="Please select a User Role."
@@ -1035,7 +1036,7 @@ const IncentiveReportScreen = () => {
                                 ? getManagerEdit
                                 : managerDataInfo
                         }
-                        // onClick={managerData}
+                        label="Manager"
                         required
                         isError={errors["manager"] && errors["manager"]}
                         errorMsg="Please select a Manager."
@@ -1052,6 +1053,7 @@ const IncentiveReportScreen = () => {
                         mode={"id/value"}
                         options={getMonthYearEdit}
                         required
+                        label="Month Year"
                         isError={errors["MonthYearFilter"] && errors["MonthYearFilter"]}
                         errorMsg="Please select a month."
                     />
@@ -1147,10 +1149,10 @@ const IncentiveReportScreen = () => {
                         };
                     }}
                 />
-            ):(
-              <h1>{errorMessage}</h1>
+            ) : (
+                <h1>{errorMessage}</h1>
             )}
-           
+
             {incentiveReportInfo.length !== 0 && (
                 incentiveReportInfo[0]?.userRole === "AM" ||
                     incentiveReportInfo[0]?.userRole === "AM Head" ? (
