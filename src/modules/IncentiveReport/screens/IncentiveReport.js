@@ -822,6 +822,7 @@ const IncentiveReportScreen = () => {
         unregister,
         getValues,
         watch,
+        resetField,
         formState: { errors },
     } = useForm({
         defaultValues: {},
@@ -985,6 +986,18 @@ const IncentiveReportScreen = () => {
         // getUserHierarchy();
     }, [watchValueUserRoles, watchManagerId]);
 
+    const [resetValue, setresetValue] = useState(false);
+
+    const resetButton = useCallback(() => {
+        resetField("userRoleValue");
+        setUserRoleValue("Select");
+        resetField("manager");
+        setManagerValue("Select");
+        resetField("MonthYearFilter");
+        setMonthYearValue("Select");
+        setresetValue(true)
+    }, [resetField])
+
     return (
         <div className={IncentiveReportStyle.hiringRequestContainer}>
             <div className={IncentiveReportStyle.addnewHR}>
@@ -1066,7 +1079,7 @@ const IncentiveReportScreen = () => {
             </div>
 
             <button onClick={getList}>Search</button>
-            <button>Reset</button>
+            <button onClick={resetButton}>Reset</button>
             {/*
        * ------------ Table Starts-----------
        * @Table Part
@@ -1150,6 +1163,7 @@ const IncentiveReportScreen = () => {
                     };
                 }}
             />
+
             {incentiveReportInfo[0]?.userRole === "AM" ||
                 incentiveReportInfo[0]?.userRole === "AM Head" ? (
                 <div className={IncentiveReportStyle.hiringRequest}>AM Target</div>
