@@ -705,3 +705,6 @@ table{
 .selectSalesManagerModal .ant-modal-close{
 display: none;
 }
+.teamDemandFunnelReport .ant-tree,.teamDemandFunnelReport .ant-tree-show-line,.teamDemandFunnelReport .ant-tree-switcher{
+  background-color: transparent;
+}

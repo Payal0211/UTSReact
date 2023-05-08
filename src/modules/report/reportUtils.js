@@ -36,3 +36,25 @@ export const downloadToExcel = (response) => {
 		errorDebug(error, '--Convert to excel---');
 	}
 };
+
+export const transformTeamDemandHierarchy = (data, key) => {
+	const transformedDataChildren = data?.map((item, index) => {
+		return {
+			title: item?.child,
+			key: `${key}-${index}`,
+
+			...(item.childExists > 0 && {
+				children: transformTeamDemandHierarchy(item?.children, key),
+			}),
+		};
+	});
+
+	return transformedDataChildren;
+	// return [
+	// 	{
+	// 		title: data?.[0]?.parent,
+	// 		key: key,
+	// 		children: [...transformedDataChildren],
+	// 	},
+	// ];
+};

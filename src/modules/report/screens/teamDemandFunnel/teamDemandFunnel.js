@@ -24,6 +24,7 @@ import { MasterDAO } from 'core/master/masterDAO';
 import TeamDemandFunnelModal from 'modules/report/components/teamDemandFunnelModal/teamDemandFunnelModal';
 import WithLoader from 'shared/components/loader/loader';
 import { TreeNode } from 'antd/lib/tree-select';
+import { transformTeamDemandHierarchy } from 'modules/report/reportUtils';
 const TeamDemandFunnelFilterLazyComponent = React.lazy(() =>
 	import(
 		'modules/report/components/teamDemandFunnelFilter/teamDemandFunnelFilter'
@@ -489,11 +490,23 @@ const TeamDemandFunnelScreen = () => {
 			const response = await ReportDAO.teamDemandFunnelListingRequestDAO(
 				actionWiseFormatter,
 			);
+
 			const hierarchyResponse = await MasterDAO.getUsersHierarchyRequestDAO({
 				parentID: d.salesManager?.id,
 			});
-			console.log(hierarchyResponse, '-hierarchyResponse--');
-			setSelectedHierarchyTree(hierarchyResponse?.responseBody);
+
+			const transformedResult = transformTeamDemandHierarchy(
+				hierarchyResponse?.responseBody,
+				'0',
+			);
+			const temp = [
+				{
+					title: hierarchyResponse?.responseBody?.[0]?.parent,
+					key: '0',
+					children: [...transformedResult],
+				},
+			];
+			setSelectedHierarchyTree(temp);
 
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setApiData(response?.responseBody);
@@ -533,7 +546,18 @@ const TeamDemandFunnelScreen = () => {
 			const hierarchyResponse = await MasterDAO.getUsersHierarchyRequestDAO({
 				parentID: d.salesManager?.id,
 			});
-			setSelectedHierarchyTree(hierarchyResponse?.responseBody?.details);
+			const transformedResult = transformTeamDemandHierarchy(
+				hierarchyResponse?.responseBody,
+				'0',
+			);
+			const temp = [
+				{
+					title: hierarchyResponse?.responseBody?.[0]?.parent,
+					key: '0',
+					children: [...transformedResult],
+				},
+			];
+			setSelectedHierarchyTree(temp);
 
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setApiData(response?.responseBody);
@@ -547,9 +571,7 @@ const TeamDemandFunnelScreen = () => {
 	const onChange = useCallback(() => {
 		setTeamDemandFunnelModal(true);
 	}, []);
-	// useEffect(() => {
-	// 	// getDemandFunnelListingHandler(tableFilteredState);
-	// }, [getDemandFunnelListingHandler, tableFilteredState]);
+
 	useEffect(() => {
 		getReportFilterHandler();
 	}, [getReportFilterHandler]);
@@ -827,26 +849,26 @@ const TeamDemandFunnelScreen = () => {
 
 			{showSelectedHierarchyModal && (
 				<Modal
-					width="1000px"
+					width="800px"
 					centered
 					footer={null}
 					open={showSelectedHierarchyModal}
-					// onOk={() => setTeamDemandFunnelModal(false)}
+					onOk={() => setShowSelectedHierarchyModal(false)}
 					onCancel={() => setShowSelectedHierarchyModal(false)}>
 					<div className={TeamDemandFunnelStyle.container}>
 						<div className={TeamDemandFunnelStyle.modalTitle}>
 							<h2>{selectedHierarchy?.value} Hierarchy</h2>
-							<div>
-								<Tree>
-									<TreeNode
-										// icon={<Icon type="carry-out" />}
-										title="parent 1"
-										key="0-0">
-										{selectedHierarchyTree?.map((item) => (
-											<TreeNode title={item?.child}>Shekhar</TreeNode>
-										))}
-									</TreeNode>
-								</Tree>
+
+							<div
+								className="teamDemandFunnelReport"
+								style={{ marginTop: '30px' }}>
+								<Tree
+									defaultExpandAll
+									// autoExpandParent
+									showLine={true}
+									showIcon={true}
+									treeData={selectedHierarchyTree}
+								/>
 							</div>
 						</div>
 					</div>
