@@ -166,12 +166,26 @@ const DemandFunnelFilter = ({
 		setCheckedState(new Map());
 		setFilteredTagLength(0);
 		setTableFilteredState({
-			...tableFilteredState,
-			// filterFields_ViewAllHRs: {},
+			startDate: '',
+			endDate: '',
+			isHiringNeedTemp: '',
+			modeOfWork: '',
+			typeOfHR: '-1',
+			companyCategory: '',
+			replacement: '',
+			head: '',
+			isActionWise: true,
 		});
 		const reqFilter = {
-			...tableFilteredState,
-			// filterFields_ViewAllHRs: {},
+			startDate: '',
+			endDate: '',
+			isHiringNeedTemp: '',
+			modeOfWork: '',
+			typeOfHR: '-1',
+			companyCategory: '',
+			replacement: '',
+			head: '',
+			isActionWise: true,
 		};
 		handleHRRequest(reqFilter);
 	}, [
@@ -180,7 +194,6 @@ const DemandFunnelFilter = ({
 		setCheckedState,
 		setFilteredTagLength,
 		setTableFilteredState,
-		tableFilteredState,
 	]);
 	const handleFilters = useCallback(() => {
 		let filters = {};
@@ -204,10 +217,10 @@ const DemandFunnelFilter = ({
 		if (reqFilter?.isActionWise === '1') reqFilter.isActionWise = true;
 		else reqFilter.isActionWise = false;
 		setTableFilteredState(reqFilter);
-		handleHRRequest(reqFilter);
+		// handleHRRequest(reqFilter);
 	}, [
 		appliedFilter,
-		handleHRRequest,
+		// handleHRRequest,
 		setTableFilteredState,
 		tableFilteredState,
 	]);
