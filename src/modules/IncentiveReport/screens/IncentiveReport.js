@@ -109,6 +109,7 @@ const IncentiveReportScreen = () => {
     const [tableData, setShowTableData] = useState([]);
     const [valueOfSelected, setValueOfSelected] = useState('');
     const [valueOfSelectedUserName, setValueOfSelectedUserName] = useState("");
+    const [errorMessage,setErrorMessage] = useState("") 
 
 
     // const [gethierarachy, sethierarchy] = useState([])
@@ -908,6 +909,9 @@ const IncentiveReportScreen = () => {
     //     sethierarchy(response?.responseBody)
     // };
 
+
+
+
     const getList = async () => {
         if (splitvalue || splitvalue === undefined) {
             const response = await IncentiveReportDAO?.getUserListInIncentiveDAO(
@@ -915,8 +919,15 @@ const IncentiveReportScreen = () => {
                 splitvalue[1],
                 watchManagerId?.id
             );
+        
             if (response.statusCode === HTTPStatusCode.OK) {
                 setShowTableData(response?.responseBody);
+            }
+            if(response.statusCode === HTTPStatusCode.NOT_FOUND){
+              setErrorMessage("No Data Found")
+              setShowTableData([])
+              setIncentiveBoosterList([])
+              setIncentiveReportInfo([])
             }
         }
     };
@@ -1124,7 +1135,7 @@ const IncentiveReportScreen = () => {
             {/* {(data.length === 0 || incentiveInfoList === 0) && (
                 <p>No Data Found</p>
             )} */}
-            {tableData?.length !== 0 && (
+            {tableData?.length !== 0 ? (
                 <Table
                     columns={columns}
                     dataSource={data}
@@ -1137,7 +1148,10 @@ const IncentiveReportScreen = () => {
                         };
                     }}
                 />
+            ):(
+              <h1>{errorMessage}</h1>
             )}
+           
             {incentiveReportInfo.length !== 0 && (
                 incentiveReportInfo[0]?.userRole === "AM" ||
                     incentiveReportInfo[0]?.userRole === "AM Head" ? (
@@ -1154,7 +1168,7 @@ const IncentiveReportScreen = () => {
                 ) : (
                     <>
                         <div className={IncentiveReportStyle.hiringRequest}>Based Fixed</div>
-                        < Table
+                        <Table
                             columns={(valueOfSelected === "AM Head" || valueOfSelected === "AM") ? test1 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant" || valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead" || valueOfSelected === "BDR Head" || valueOfSelected === "Marketing Team" || valueOfSelected === "Marketing Lead" || valueOfSelected === "Marketing Head") ? test2 : (valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead") ? test2 : (valueOfSelectedUserName === "(AM)") ? test4 : (valueOfSelectedUserName === "(NBD)") ? test5 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant") ? test6 : test7
                             }
                             dataSource={incentiveInfoList}
