@@ -39,6 +39,7 @@ import DemandFunnelModal from "modules/report/components/demandFunnelModal/deman
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { IncentiveReportDAO } from "core/IncentiveReport/IncentiveReportDAO";
 
+
 const DemandFunnelFilterLazyComponent = React.lazy(() =>
     import("modules/report/components/demandFunnelFilter/demandFunnelFilter")
 );
@@ -975,8 +976,24 @@ const IncentiveReportScreen = () => {
         setIncentiveReportInfo([])
     }, [resetField])
 
-    const onSelect = (selectedKeys, info) => {
-        console.log('selected', selectedKeys, info);
+    const [childHirerarchy,setChildHirerarchy] = useState([])
+    console.log(childHirerarchy,"childHirerarchy")
+    const onSelect =async (selectedKeys, info) => {
+      // for (const item in childHirerarchy) {
+      //   if(childHirerarchy?.[0]?.undeR_PARENT ===  selectedKeys?.[0]){
+          
+      //   }
+      // }
+      const response = await IncentiveReportDAO.getUserHierarchyDAO(selectedKeys?.[0]);
+      if(response.statusCode === HTTPStatusCode.OK){
+        setChildHirerarchy(response.responseBody);
+      }
+
+      const temp =  gethierarachy?.map((item,index)=>{
+        return Number(selectedKeys?.[0]) === Number(item?.userID) ? {...item,children:response.responseBody}:item
+      })
+        sethierarchy(temp);
+      console.log(temp,"temp");   
     };
 
     return (
@@ -1087,9 +1104,15 @@ const IncentiveReportScreen = () => {
                             return (
                                 <TreeNode title={item?.child
                                 } key={item?.userID
-                                }></TreeNode>
+                                }>{item?.children && item?.children?.map((child) => (
+                                  <TreeNode title={child.child
+                                  } key={child.userID}>
+                                  </TreeNode>
+                        ))}</TreeNode>
                             )
+                            
                         })}
+                  
                     </Tree>
                 </div>
             </div>
