@@ -906,7 +906,13 @@ const IncentiveReportScreen = () => {
 
     const getUserHierarchy = async () => {
         const response = await IncentiveReportDAO.getUserHierarchyDAO(watchManagerId?.id);
-        sethierarchy(response?.responseBody)
+        console.log(response, "responseeeadhgdh")
+        if (response.statusCode === HTTPStatusCode.OK) {
+
+            sethierarchy(response?.responseBody)
+        } else {
+            sethierarchy([])
+        }
     };
 
     const getList = async () => {
@@ -960,7 +966,9 @@ const IncentiveReportScreen = () => {
 
     useEffect(() => {
         getSalesUserBasedOnUserRole();
-        getUserHierarchy();
+        if (watchManagerId) {
+            getUserHierarchy();
+        }
     }, [watchValueUserRoles, watchManagerId]);
 
 
@@ -976,25 +984,25 @@ const IncentiveReportScreen = () => {
         setIncentiveReportInfo([])
     }, [resetField])
 
-    const [childHirerarchy,setChildHirerarchy] = useState([])
-    console.log(childHirerarchy,"childHirerarchy")
-    const onSelect =async (selectedKeys, info) => {
-      // for (const item in childHirerarchy) {
-      //   if(childHirerarchy?.[0]?.undeR_PARENT ===  selectedKeys?.[0]){
-          
-      //   }
-      // }
-      const response = await IncentiveReportDAO.getUserHierarchyDAO(selectedKeys?.[0]);
-      if(response.statusCode === HTTPStatusCode.OK){
-        setChildHirerarchy(response.responseBody);
-      }
+    const [childHirerarchy, setChildHirerarchy] = useState([])
+    // console.log(childHirerarchy, "childHirerarchy")
+    const onSelect = async (selectedKeys, info) => {
 
-      const temp =  gethierarachy?.map((item,index)=>{
-        return Number(selectedKeys?.[0]) === Number(item?.userID) ? {...item,children:response.responseBody}:item
-      })
+        const response = await IncentiveReportDAO.getUserHierarchyDAO(selectedKeys?.[0]);
+        console.log(response, "responseChild")
+        // if (response.statusCode === HTTPStatusCode.OK) {
+
+        setChildHirerarchy(response.responseBody);
+        // }
+
+
+        const temp = gethierarachy?.map((item, index) => {
+            return Number(selectedKeys?.[0]) === Number(item?.userID) ? { ...item, children: response.responseBody } : item
+        })
+        console.log(temp, "tempppppp")
         sethierarchy(temp);
-      console.log(temp,"temp");   
     };
+    console.log(gethierarachy, "gethierarachy");
 
     return (
         <div className={IncentiveReportStyle.hiringRequestContainer}>
@@ -1058,6 +1066,7 @@ const IncentiveReportScreen = () => {
                         required
                         isError={errors["manager"] && errors["manager"]}
                         errorMsg="Please select a Manager."
+                    // onClick={getUserHierarchy}
                     />
                 </div>
                 <div className={IncentiveReportStyle.colMd4}>
@@ -1084,38 +1093,43 @@ const IncentiveReportScreen = () => {
        * ------------ Table Starts-----------
        * @Table Part
        */}
+            {gethierarachy?.length === 0 && (
+                <h1>No data found</h1>
+            )}
+            {gethierarachy?.length !== 0 && (
 
-            <div className={IncentiveReportStyle.tree_custom}>
-                <div>
-                    <Tree
-                        showLine={
-                            showLine
-                                ? {
-                                    showLeafIcon,
-                                }
-                                : false
-                        }
-                        showIcon={showIcon}
-                        defaultExpandedKeys={["0-0-0"]}
-                        onSelect={onSelect}
-                    // treeData={gethierarachy}
-                    >
-                        {gethierarachy?.map((item, index) => {
-                            return (
-                                <TreeNode title={item?.child
-                                } key={item?.userID
-                                }>{item?.children && item?.children?.map((child) => (
-                                  <TreeNode title={child.child
-                                  } key={child.userID}>
-                                  </TreeNode>
-                        ))}</TreeNode>
-                            )
-                            
-                        })}
-                  
-                    </Tree>
+                <div className={IncentiveReportStyle.tree_custom}>
+                    <div>
+                        <Tree
+                            showLine={
+                                showLine
+                                    ? {
+                                        showLeafIcon,
+                                    }
+                                    : false
+                            }
+                            showIcon={showIcon}
+                            defaultExpandedKeys={["0-0-0"]}
+                            onSelect={onSelect}
+                        // treeData={gethierarachy}
+                        >
+                            {gethierarachy?.map((item, index) => {
+                                return (
+                                    <TreeNode title={item?.child
+                                    } key={item?.userID
+                                    }>{item?.children && item?.children?.map((child) => (
+                                        <TreeNode title={child.child
+                                        } key={child.userID}>
+                                        </TreeNode>
+                                    ))}</TreeNode>
+                                )
+
+                            })}
+
+                        </Tree>
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* <div className={IncentiveReportStyle.tableDetails}>
                 {isLoading ? (
