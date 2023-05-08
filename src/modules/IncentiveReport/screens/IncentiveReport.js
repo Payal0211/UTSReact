@@ -107,78 +107,10 @@ const IncentiveReportScreen = () => {
     const [showIcon, setShowIcon] = useState(false);
     const [showLeafIcon, setShowLeafIcon] = useState(true);
     const [tableData, setShowTableData] = useState([]);
-    const [incentiveReportColumn, setIncentiveReportColumn] = useState([
-        {
-            title: "User",
-            dataIndex: "User",
-        },
-        {
-            title: "Company",
-            dataIndex: "Company",
-        },
-        {
-            title: "Client",
-            dataIndex: "Client",
-        },
-        {
-            title: "Category",
-            dataIndex: "Category",
-        },
-        {
-            title: "HR Number",
-            dataIndex: "HRNumber",
-        },
-        {
-            title: "Engagement ID",
-            dataIndex: "EngagementID",
-        },
-        {
-            title: "Talent Name",
-            dataIndex: "TalentName",
-        },
-        {
-            title: "Client Closure Date",
-            dataIndex: "ClientClosureDate",
-        },
-        {
-            title: "BR ($)",
-            dataIndex: "BR",
-        },
-        {
-            title: "PR ($)",
-            dataIndex: "PR",
-        },
-        {
-            title: "NR Value ($)",
-            dataIndex: "NR",
-        },
-        {
-            title: "Calc Amt ($)",
-            dataIndex: "CalcAmt",
-        },
-        {
-            title: "NBD",
-            dataIndex: "NBD",
-        },
-        {
-            title: "DP Slab ($)",
-            dataIndex: "DPSlab",
-        },
-        {
-            title: "DP Slab Amt ($)",
-            dataIndex: "DPSlabAmt",
-        },
-        {
-            title: "DP CalculatedAmt",
-            dataIndex: "DPCalculatedAmt",
-        },
-        {
-            title: "Lead Type",
-            dataIndex: "LeadType",
-        },
-    ])
-
     const [valueOfSelected, setValueOfSelected] = useState('');
+    const [valueOfSelectedUserName, setValueOfSelectedUserName] = useState("");
+
+
     // const [gethierarachy, sethierarchy] = useState([])
 
     // let tempData = gethierarachy.map((item) => {
@@ -186,6 +118,7 @@ const IncentiveReportScreen = () => {
     //     return
     // })
     console.log(valueOfSelected, "valueOfSelected")
+    console.log(valueOfSelectedUserName, "valueOfSelectedUserName");
     const columns = [
         {
             title: "User(Role)",
@@ -337,6 +270,14 @@ const IncentiveReportScreen = () => {
             dataIndex: "DPSlabAmt",
         },
         {
+            title: "NBD",
+            dataIndex: "NBD",
+        },
+        {
+            title: "AM",
+            dataIndex: "AM",
+        },
+        {
             title: "DP CalculatedAmt",
             dataIndex: "DPCalculatedAmt",
         },
@@ -411,6 +352,14 @@ const IncentiveReportScreen = () => {
             dataIndex: "DPSlabAmt",
         },
         {
+            title: "NBD",
+            dataIndex: "NBD",
+        },
+        {
+            title: "AM",
+            dataIndex: "AM",
+        },
+        {
             title: "DP CalculatedAmt",
             dataIndex: "DPCalculatedAmt",
         },
@@ -477,16 +426,20 @@ const IncentiveReportScreen = () => {
             dataIndex: "CalcAmt",
         },
         {
-            title: "NBD",
-            dataIndex: "NBD",
-        },
-        {
             title: "DP Slab ($)",
             dataIndex: "DPSlab",
         },
         {
             title: "DP Slab Amt ($)",
             dataIndex: "DPSlabAmt",
+        },
+        {
+            title: "NBD",
+            dataIndex: "NBD",
+        },
+        {
+            title: "AM",
+            dataIndex: "AM",
         },
         {
             title: "DP CalculatedAmt",
@@ -551,6 +504,14 @@ const IncentiveReportScreen = () => {
             dataIndex: "DPSlab",
         },
         {
+            title: "NBD",
+            dataIndex: "NBD",
+        },
+        {
+            title: "AM",
+            dataIndex: "AM",
+        },
+        {
             title: "DP Slab Amt ($)",
             dataIndex: "DPSlabAmt",
         },
@@ -561,10 +522,6 @@ const IncentiveReportScreen = () => {
         {
             title: "Lead Type",
             dataIndex: "LeadType",
-        },
-        {
-            title: "AM",
-            dataIndex: "AM",
         },
     ];
 
@@ -626,6 +583,14 @@ const IncentiveReportScreen = () => {
             dataIndex: "DPSlabAmt",
         },
         {
+            title: "NBD",
+            dataIndex: "NBD",
+        },
+        {
+            title: "AM",
+            dataIndex: "AM",
+        },
+        {
             title: "DP CalculatedAmt",
             dataIndex: "DPCalculatedAmt",
         },
@@ -650,6 +615,7 @@ const IncentiveReportScreen = () => {
     const test7 = [{}]
 
     const onRowClick = async (record) => {
+        setValueOfSelected("")
         let response = await IncentiveReportDAO.getUserListInIncentiveDetailsDAO(
             splitvalue[0],
             record?.id,
@@ -663,9 +629,12 @@ const IncentiveReportScreen = () => {
                 false,
                 splitvalue[1]
             );
-        setIncentiveReportInfo(response.responseBody);
-        setIncentiveBoosterList(responseBooster.responseBody);
-
+        if (response.statusCode === HTTPStatusCode.OK) {
+            setIncentiveReportInfo(response.responseBody);
+        }
+        if (responseBooster.statusCode === HTTPStatusCode.OK) {
+            setIncentiveBoosterList(responseBooster.responseBody);
+        }
         if (response.responseBody[0]?.userRole === "AM" ||
             response.responseBody[0]?.userRole === "AM Head") {
             setValueOfSelected(response.responseBody[0]?.userRole);
@@ -681,10 +650,10 @@ const IncentiveReportScreen = () => {
             setValueOfSelected(response.responseBody[0]?.userRole);
         }
         if (response.responseBody[0]?.userName.split("\n")?.[1] === "(AM)") {
-            setValueOfSelected(response.responseBody[0]?.userName?.split("\n")?.[1]);
+            setValueOfSelectedUserName(response.responseBody[0]?.userName?.split("\n")?.[1]);
         }
         else if (response.responseBody[0]?.userName.split("\n")?.[1] === "(NBD)") {
-            setValueOfSelected(response.responseBody[0]?.userName?.split("\n")?.[1]);
+            setValueOfSelectedUserName(response.responseBody[0]?.userName?.split("\n")?.[1]);
         }
         if (response.responseBody[0]?.userRole === "POD Manager" || response.responseBody[0]?.userRole === "Sales Consultant") {
             setValueOfSelected(response.responseBody[0]?.userRole);
@@ -723,7 +692,7 @@ const IncentiveReportScreen = () => {
         LeadType: data?.leadType,
         Slab: data?.aM_NR_Slab,
         SlabAmt: data?.aM_NR_Percentage,
-        AM: data?.AMSalesPerson,
+        AM: data?.amSalesPerson,
         ItSlab: data?.IT_Slab,
         ItSlabAmount: data?.IT_SlabAmount,
         ItCalAmount: data?.IT_CalculatedAmount,
@@ -946,8 +915,9 @@ const IncentiveReportScreen = () => {
                 splitvalue[1],
                 watchManagerId?.id
             );
-            setShowTableData(response?.responseBody);
-
+            if (response.statusCode === HTTPStatusCode.OK) {
+                setShowTableData(response?.responseBody);
+            }
         }
     };
 
@@ -1154,7 +1124,7 @@ const IncentiveReportScreen = () => {
             {/* {(data.length === 0 || incentiveInfoList === 0) && (
                 <p>No Data Found</p>
             )} */}
-            {data?.length !== 0 && (
+            {tableData?.length !== 0 && (
                 <Table
                     columns={columns}
                     dataSource={data}
@@ -1168,15 +1138,13 @@ const IncentiveReportScreen = () => {
                     }}
                 />
             )}
-
-
-            {incentiveInfoList.length !== 0 && (
+            {incentiveReportInfo.length !== 0 && (
                 incentiveReportInfo[0]?.userRole === "AM" ||
                     incentiveReportInfo[0]?.userRole === "AM Head" ? (
                     <>
                         <div className={IncentiveReportStyle.hiringRequest}>AM Target</div>
                         < Table
-                            columns={(valueOfSelected === "AM Head" || valueOfSelected === "AM") ? test1 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant" || valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead" || valueOfSelected === "BDR Head" || valueOfSelected === "Marketing Team" || valueOfSelected === "Marketing Lead" || valueOfSelected === "Marketing Head") ? test2 : (valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead") ? test2 : (valueOfSelected === "(AM)") ? test4 : (valueOfSelected === "(NBD)") ? test5 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant") ? test6 : test7
+                            columns={(valueOfSelected === "AM Head" || valueOfSelected === "AM") ? test1 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant" || valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead" || valueOfSelected === "BDR Head" || valueOfSelected === "Marketing Team" || valueOfSelected === "Marketing Lead" || valueOfSelected === "Marketing Head") ? test2 : (valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead") ? test2 : (valueOfSelectedUserName === "(AM)") ? test4 : (valueOfSelectedUserName === "(NBD)") ? test5 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant") ? test6 : test7
                             }
                             dataSource={incentiveInfoList}
                             size="
@@ -1187,7 +1155,7 @@ const IncentiveReportScreen = () => {
                     <>
                         <div className={IncentiveReportStyle.hiringRequest}>Based Fixed</div>
                         < Table
-                            columns={(valueOfSelected === "AM Head" || valueOfSelected === "AM") ? test1 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant" || valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead" || valueOfSelected === "BDR Head" || valueOfSelected === "Marketing Team" || valueOfSelected === "Marketing Lead" || valueOfSelected === "Marketing Head") ? test2 : (valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead") ? test2 : (valueOfSelected === "(AM)") ? test4 : (valueOfSelected === "(NBD)") ? test5 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant") ? test6 : test7
+                            columns={(valueOfSelected === "AM Head" || valueOfSelected === "AM") ? test1 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant" || valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead" || valueOfSelected === "BDR Head" || valueOfSelected === "Marketing Team" || valueOfSelected === "Marketing Lead" || valueOfSelected === "Marketing Head") ? test2 : (valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead") ? test2 : (valueOfSelectedUserName === "(AM)") ? test4 : (valueOfSelectedUserName === "(NBD)") ? test5 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant") ? test6 : test7
                             }
                             dataSource={incentiveInfoList}
                             size="
@@ -1199,7 +1167,7 @@ const IncentiveReportScreen = () => {
             )
             }
             {
-                incentiveBooster.length !== 0 && (
+                incentiveBoosterList.length !== 0 && (
                     <>
                         <div className={IncentiveReportStyle.hiringRequest}>Contract Booster</div>
                         <Table
