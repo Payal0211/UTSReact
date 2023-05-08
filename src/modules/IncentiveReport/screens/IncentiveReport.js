@@ -668,7 +668,7 @@ const IncentiveReportScreen = () => {
 
         if (response.responseBody[0]?.userRole === "AM" ||
             response.responseBody[0]?.userRole === "AM Head") {
-            setValueOfSelected(response.responseBody[0]?.userRole); s
+            setValueOfSelected(response.responseBody[0]?.userRole); 
         }
         else if (response.responseBody[0]?.userRole === "POD Manager" ||
             response.responseBody[0]?.userRole === "Sales Consultant" ||
@@ -1137,6 +1137,11 @@ const IncentiveReportScreen = () => {
                     )}
                 </div>
             )} */}
+           
+{(data.length === 0 || incentiveInfoList === 0) && (
+  <p>No Data Found</p>
+)}
+{data?.length !== 0 &&  (
 
             <Table
                 columns={columns}
@@ -1150,25 +1155,33 @@ const IncentiveReportScreen = () => {
                     };
                 }}
             />
+)}
+
             {incentiveReportInfo[0]?.userRole === "AM" ||
                 incentiveReportInfo[0]?.userRole === "AM Head" ? (
                 <div className={IncentiveReportStyle.hiringRequest}>AM Target</div>
             ) : (
                 <div className={IncentiveReportStyle.hiringRequest}>Based Fixed</div>
             )}
+            {incentiveInfoList.length !==0&&(
             <Table
                 columns={(valueOfSelected === "AM Head" || valueOfSelected === "AM") ? test1 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant" || valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead" || valueOfSelected === "BDR Head" || valueOfSelected === "Marketing Team" || valueOfSelected === "Marketing Lead" || valueOfSelected === "Marketing Head") ? test2 : (valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead") ? test2 : (valueOfSelected === "(AM)") ? test4 : (valueOfSelected === "(NBD)") ? test5 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant") ? test6 : test7
                 }
                 dataSource={incentiveInfoList}
                 size="small"
             />
-
+            
+            )}
+{incentiveBooster.length!==0 &&(
+<>
             <div className={IncentiveReportStyle.hiringRequest}>Contract Booster</div>
             <Table
                 columns={incentiveReportBoosterColumn}
                 dataSource={incentiveBooster}
                 size="small"
             />
+            </>
+)}
 
             {isAllowFilters && (
                 <Suspense fallback={<div>Loading...</div>}>
