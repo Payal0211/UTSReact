@@ -118,9 +118,8 @@ const IncentiveReportScreen = () => {
     //     item?.child
     //     return
     // })
-    console.log(valueOfSelected, "valueOfSelected")
-    console.log(valueOfSelectedUserName, "valueOfSelectedUserName");
-    const columns = [
+    
+    const searchTableData = [
         {
             title: "User(Role)",
             dataIndex: "UserRole",
@@ -213,7 +212,7 @@ const IncentiveReportScreen = () => {
             dataIndex: "LeadType",
         },
     ];
-    const test1 = [
+    const Condition1 = [
         {
             title: "User",
             dataIndex: "User",
@@ -295,7 +294,7 @@ const IncentiveReportScreen = () => {
             dataIndex: "AMNRPercentage",
         },
     ];
-    const test2 = [
+    const Condition2 = [
         {
             title: "User",
             dataIndex: "User",
@@ -377,7 +376,7 @@ const IncentiveReportScreen = () => {
             dataIndex: "SlabAmt",
         },
     ];
-    const test4 = [
+    const Condition3 = [
         {
             title: "User",
             dataIndex: "User",
@@ -451,7 +450,7 @@ const IncentiveReportScreen = () => {
             dataIndex: "LeadType",
         },
     ];
-    const test5 = [
+    const Condition4 = [
         {
             title: "User",
             dataIndex: "User",
@@ -526,7 +525,7 @@ const IncentiveReportScreen = () => {
         },
     ];
 
-    const test6 = [
+    const Condition5 = [
         {
             title: "User",
             dataIndex: "User",
@@ -613,7 +612,7 @@ const IncentiveReportScreen = () => {
         },
     ]
 
-    const test7 = [{}]
+    const Condition6 = [{}]
 
     const onRowClick = async (record) => {
         setValueOfSelected("")
@@ -838,7 +837,7 @@ const IncentiveReportScreen = () => {
         }
     }, [tableFilteredState]);
 
-    const tableColumnsMemo = useMemo(
+    const tablesearchTableDataMemo = useMemo(
         () =>
             reportConfig.demandFunnelTable(
                 apiData && apiData,
@@ -1091,7 +1090,7 @@ const IncentiveReportScreen = () => {
                     <>
                         <Table
                             id="hrListingTable"
-                            columns={tableColumnsMemo}
+                            searchTableData={tablesearchTableDataMemo}
                             bordered={false}
                             dataSource={[...apiData?.slice(1)]}
                             pagination={{
@@ -1119,7 +1118,7 @@ const IncentiveReportScreen = () => {
                         <>
                             <Table
                                 id="hrListingTable"
-                                columns={viewSummaryMemo}
+                                searchTableData={viewSummaryMemo}
                                 bordered={false}
                                 dataSource={[...viewSummaryData?.slice(1)]}
                                 pagination={{
@@ -1137,7 +1136,7 @@ const IncentiveReportScreen = () => {
             )} */}
             {tableData?.length !== 0 ? (
                 <Table
-                    columns={columns}
+                    columns={searchTableData}
                     dataSource={data}
                     size="small"
                     onRow={(record, rowIndex) => {
@@ -1158,7 +1157,7 @@ const IncentiveReportScreen = () => {
                     <>
                         <div className={IncentiveReportStyle.hiringRequest}>AM Target</div>
                         < Table
-                            columns={(valueOfSelected === "AM Head" || valueOfSelected === "AM") ? test1 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant" || valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead" || valueOfSelected === "BDR Head" || valueOfSelected === "Marketing Team" || valueOfSelected === "Marketing Lead" || valueOfSelected === "Marketing Head") ? test2 : (valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead") ? test2 : (valueOfSelectedUserName === "(AM)") ? test4 : (valueOfSelectedUserName === "(NBD)") ? test5 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant") ? test6 : test7
+                            columns={(valueOfSelected === "AM Head" || valueOfSelected === "AM") ? Condition1 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant" || valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead" || valueOfSelected === "BDR Head" || valueOfSelected === "Marketing Team" || valueOfSelected === "Marketing Lead" || valueOfSelected === "Marketing Head") ? Condition2 : (valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead") ? Condition2 : (valueOfSelectedUserName === "(AM)") ? Condition3 : (valueOfSelectedUserName === "(NBD)") ? Condition4 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant") ? Condition5 : Condition6
                             }
                             dataSource={incentiveInfoList}
                             size="
@@ -1169,7 +1168,7 @@ const IncentiveReportScreen = () => {
                     <>
                         <div className={IncentiveReportStyle.hiringRequest}>Based Fixed</div>
                         <Table
-                            columns={(valueOfSelected === "AM Head" || valueOfSelected === "AM") ? test1 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant" || valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead" || valueOfSelected === "BDR Head" || valueOfSelected === "Marketing Team" || valueOfSelected === "Marketing Lead" || valueOfSelected === "Marketing Head") ? test2 : (valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead") ? test2 : (valueOfSelectedUserName === "(AM)") ? test4 : (valueOfSelectedUserName === "(NBD)") ? test5 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant") ? test6 : test7
+                            columns={(valueOfSelected === "AM Head" || valueOfSelected === "AM") ? Condition1 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant" || valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead" || valueOfSelected === "BDR Head" || valueOfSelected === "Marketing Team" || valueOfSelected === "Marketing Lead" || valueOfSelected === "Marketing Head") ? Condition2 : (valueOfSelected === "BDR Executive" || valueOfSelected === "BDR Lead") ? Condition2 : (valueOfSelectedUserName === "(AM)") ? Condition3 : (valueOfSelectedUserName === "(NBD)") ? Condition4 : (valueOfSelected === "POD Manager" || valueOfSelected === "Sales Consultant") ? Condition5 : Condition6
                             }
                             dataSource={incentiveInfoList}
                             size="
