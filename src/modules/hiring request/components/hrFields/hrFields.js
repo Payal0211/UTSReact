@@ -619,6 +619,7 @@ const HRFields = ({
 				isHRDirectPlacement,
 				addHRResponse,
 				getUploadFileData && getUploadFileData,
+				jdDumpID,
 			);
 
 			if (type === SubmitType.SAVE_AS_DRAFT) {
