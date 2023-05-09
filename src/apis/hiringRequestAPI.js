@@ -774,4 +774,72 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.setHrPriority');
 		}
 	},
+	calculateHRCostRequest: async (calculateHRData) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.CALCULATE_HR_COST +
+			`?HR_ID=${calculateHRData?.hrID}&ContactPriorityID=${calculateHRData?.ContactPriorityID}&Hr_Cost=${calculateHRData?.Hr_Cost}&HR_Percentage=${calculateHRData?.HR_Percentage}`;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.openPostAcceptanceRequest');
+		}
+	},
+	updateHRCostRequest: async (saveBillRatePayload) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.UPDATE_HR_COST +
+			`?ContactPriorityID=${saveBillRatePayload?.ContactPriorityID}&Hr_Cost=${saveBillRatePayload?.Hr_Cost}&HR_Percentage=${saveBillRatePayload?.HR_Percentage}`;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.openPostAcceptanceRequest');
+		}
+	},
+	getHRCostDetailsRequest: async (hrCostData) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.GET_HR_COST_DETAILS +
+			`?HR_ID=${hrCostData?.hrID}&ContactPriorityID=${hrCostData?.ContactPriorityID}&BillRate=${hrCostData?.BillRate}&PayRate=${hrCostData?.PayRate}`;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.openPostAcceptanceRequest');
+		}
+	},
+	updateTalentFeesRequest: async (savePayRatePayload) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.UPDATE_TALENT_FEES +
+			`?ContactPriorityID=${savePayRatePayload?.ContactPriorityID}&Cost_AfterAcceptance=${savePayRatePayload?.talentFees}`;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.openPostAcceptanceRequest');
+		}
+	},
 };

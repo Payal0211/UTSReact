@@ -98,7 +98,7 @@ const CompanyDetails = ({
 
 	/** To check Duplicate email exists Start */
 	//TODO:- Show loader on Duplicate email caption:- verifying email
-	const watchCompanyName = watch('companyName');
+	// const watchCompanyName = watch('companyName');
 
 	const getCompanyNameAlreadyExist = useCallback(
 		async (data) => {
@@ -118,16 +118,31 @@ const CompanyDetails = ({
 		[setError, setValue],
 	);
 
-	useEffect(() => {
-		let timer;
-		if (!_isNull(watchCompanyName)) {
-			timer = setTimeout(() => {
-				setIsLoading(true);
-				getCompanyNameAlreadyExist(watchCompanyName);
-			}, 2000);
-		}
-		return () => clearTimeout(timer);
-	}, [getCompanyNameAlreadyExist, watchCompanyName]);
+	const debounceDuplicateCompanyName = useCallback(
+		(data) => {
+			let timer;
+			if (!_isNull(data)) {
+				timer = setTimeout(() => {
+					setIsLoading(true);
+					getCompanyNameAlreadyExist(data);
+				}, 2000);
+			}
+			return () => clearTimeout(timer);
+		},
+		[getCompanyNameAlreadyExist],
+	);
+
+	/** based on  watchCompanyName-- */
+	// useEffect(() => {
+	// 	let timer;
+	// 	if (!_isNull(watchCompanyName)) {
+	// 		timer = setTimeout(() => {
+	// 			setIsLoading(true);
+	// 			getCompanyNameAlreadyExist(watchCompanyName);
+	// 		}, 2000);
+	// 	}
+	// 	return () => clearTimeout(timer);
+	// }, [getCompanyNameAlreadyExist, watchCompanyName]);
 
 	/** To check Duplicate email exists End */
 	useEffect(() => {
@@ -160,6 +175,9 @@ const CompanyDetails = ({
 								validationSchema={{
 									required: 'Please enter the company name.',
 								}}
+								onChangeHandler={(e) =>
+									debounceDuplicateCompanyName(e.target.value)
+								}
 								required
 							/>
 						</div>
