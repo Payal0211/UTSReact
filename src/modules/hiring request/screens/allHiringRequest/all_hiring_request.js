@@ -434,10 +434,11 @@ const AllHiringRequestScreen = () => {
 			)}
 
 			<Modal
-				width={'500px'}
+				width={'700px'}
 				centered
 				footer={false}
 				open={openCloneHR}
+				className='cloneHRConfWrap'
 				onCancel={() => setCloneHR(false)}>
 				<CloneHR cloneHRhandler={cloneHRhandler} onCancel={() => setCloneHR(false)} getHRnumber={getHRnumber} />
 			</Modal>
