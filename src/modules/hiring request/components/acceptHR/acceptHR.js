@@ -45,7 +45,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 		async (d) => {
 			let acceptHRObject = {
 				HRID: urlSplitter,
-				AcceptValue: '0',
+				AcceptValue: '2',
 				Reason: d.acceptHRDetails,
 			};
 

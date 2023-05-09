@@ -4,7 +4,7 @@ import { HTTPStatusCode } from 'constants/network';
 import { ClientDAO } from 'core/client/clientDAO';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { _isNull } from 'shared/utils/basic_utils';
 import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';
@@ -38,7 +38,7 @@ const AddNewClient = ({
 
 	/** To check Duplicate email exists Start */
 
-	const watchPrimaryEmail = watch('primaryClientEmailID');
+	// const watchPrimaryEmail = watch('primaryClientEmailID');
 	const getEmailALreadyExist = useCallback(
 		async (data) => {
 			let emailDuplicate = await ClientDAO.getDuplicateEmailRequestDAO(data);
@@ -54,19 +54,33 @@ const AddNewClient = ({
 		},
 		[setError, setValue],
 	);
-	useEffect(() => {
-		let timer;
-		if (
-			!_isNull(watchPrimaryEmail) &&
-			!ValidateInput.email(watchPrimaryEmail).isError
-		) {
-			timer = setTimeout(() => {
-				setIsLoading(true);
-				getEmailALreadyExist(watchPrimaryEmail);
-			}, 2000);
-		}
-		return () => clearTimeout(timer);
-	}, [getEmailALreadyExist, watchPrimaryEmail]);
+
+	const debounceDuplicateEmailCheckHandler = useCallback(
+		(email) => {
+			let timer;
+			if (!_isNull(email) && !ValidateInput.email(email).isError) {
+				timer = setTimeout(() => {
+					setIsLoading(true);
+					getEmailALreadyExist(email);
+				}, 2000);
+			}
+			return () => clearTimeout(timer);
+		},
+		[getEmailALreadyExist],
+	);
+	// useEffect(() => {
+	// 	let timer;
+	// 	if (
+	// 		!_isNull(watchPrimaryEmail) &&
+	// 		!ValidateInput.email(watchPrimaryEmail).isError
+	// 	) {
+	// 		timer = setTimeout(() => {
+	// 			setIsLoading(true);
+	// 			getEmailALreadyExist(watchPrimaryEmail);
+	// 		}, 2000);
+	// 	}
+	// 	return () => clearTimeout(timer);
+	// }, [getEmailALreadyExist, watchPrimaryEmail]);
 
 	/** To check Duplicate email exists End */
 
@@ -121,6 +135,9 @@ const AddNewClient = ({
 								name={'primaryClientEmailID'}
 								type={InputType.EMAIL}
 								placeholder="Enter Email ID "
+								onChangeHandler={(e) =>
+									debounceDuplicateEmailCheckHandler(e.target.value)
+								}
 								required
 							/>
 						</div>
