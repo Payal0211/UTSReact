@@ -985,6 +985,7 @@ const IncentiveReportScreen = () => {
     setShowTableData([]);
     setIncentiveBoosterList([]);
     setIncentiveReportInfo([]);
+    sethierarchy([]);
   }, [resetField]);
 
   const [childHirerarchy, setChildHirerarchy] = useState([]);
