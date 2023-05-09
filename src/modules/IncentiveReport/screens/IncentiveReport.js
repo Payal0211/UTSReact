@@ -873,8 +873,8 @@ const IncentiveReportScreen = () => {
     !getHTMLFilter
       ? setIsAllowFilters(!isAllowFilters)
       : setTimeout(() => {
-          setIsAllowFilters(!isAllowFilters);
-        }, 300);
+        setIsAllowFilters(!isAllowFilters);
+      }, 300);
     setHTMLFilter(!getHTMLFilter);
   }, [getHTMLFilter, getReportFilterHandler, isAllowFilters]);
   useEffect(() => {
@@ -1012,7 +1012,9 @@ console.log(watchManagerId,"watchManagerId?.id")
       for (let i = 0; i < data.length; i++) {
         if (data[i].userID === userID) {
           if (data[i]?.children) {
-            data[i].children.push(userData);
+            if (data[i]?.children?.length === 0) {
+              data[i].children.push(userData);
+            }
           } else {
             data[i].children = [userData];
           }
@@ -1022,6 +1024,7 @@ console.log(watchManagerId,"watchManagerId?.id")
         }
       }
     }
+    console.log(data, "data");
   };
 
   function generateTreeData(gethierarachy) {
@@ -1092,7 +1095,7 @@ console.log(watchManagerId,"watchManagerId?.id")
             required
             isError={errors["manager"] && errors["manager"]}
             errorMsg="Please select a Manager."
-            // onClick={getUserHierarchy}
+          // onClick={getUserHierarchy}
           />
         </div>
         <div className={IncentiveReportStyle.colMd4}>
@@ -1134,7 +1137,7 @@ console.log(watchManagerId,"watchManagerId?.id")
               onSelect={onSelect}
               treeData={treedata}
             >
-             </Tree>
+            </Tree>
           </div>
         </div>
       )}
@@ -1158,7 +1161,7 @@ console.log(watchManagerId,"watchManagerId?.id")
 
       {incentiveReportInfo.length !== 0 &&
         (incentiveReportInfo[0]?.userRole === "AM" ||
-        incentiveReportInfo[0]?.userRole === "AM Head" ? (
+          incentiveReportInfo[0]?.userRole === "AM Head" ? (
           <>
             <div className={IncentiveReportStyle.tableTitle}>AM Target</div>
             <Table
@@ -1173,18 +1176,18 @@ console.log(watchManagerId,"watchManagerId?.id")
                     valueOfSelected === "Marketing Team" ||
                     valueOfSelected === "Marketing Lead" ||
                     valueOfSelected === "Marketing Head"
-                  ? Condition2
-                  : valueOfSelected === "BDR Executive" ||
-                    valueOfSelected === "BDR Lead"
-                  ? Condition2
-                  : valueOfSelectedUserName === "(AM)"
-                  ? Condition3
-                  : valueOfSelectedUserName === "(NBD)"
-                  ? Condition4
-                  : valueOfSelected === "POD Manager" ||
-                    valueOfSelected === "Sales Consultant"
-                  ? Condition5
-                  : Condition6
+                    ? Condition2
+                    : valueOfSelected === "BDR Executive" ||
+                      valueOfSelected === "BDR Lead"
+                      ? Condition2
+                      : valueOfSelectedUserName === "(AM)"
+                        ? Condition3
+                        : valueOfSelectedUserName === "(NBD)"
+                          ? Condition4
+                          : valueOfSelected === "POD Manager" ||
+                            valueOfSelected === "Sales Consultant"
+                            ? Condition5
+                            : Condition6
               }
               dataSource={incentiveInfoList}
               size="
@@ -1208,18 +1211,18 @@ console.log(watchManagerId,"watchManagerId?.id")
                     valueOfSelected === "Marketing Team" ||
                     valueOfSelected === "Marketing Lead" ||
                     valueOfSelected === "Marketing Head"
-                  ? Condition2
-                  : valueOfSelected === "BDR Executive" ||
-                    valueOfSelected === "BDR Lead"
-                  ? Condition2
-                  : valueOfSelectedUserName === "(AM)"
-                  ? Condition3
-                  : valueOfSelectedUserName === "(NBD)"
-                  ? Condition4
-                  : valueOfSelected === "POD Manager" ||
-                    valueOfSelected === "Sales Consultant"
-                  ? Condition5
-                  : Condition6
+                    ? Condition2
+                    : valueOfSelected === "BDR Executive" ||
+                      valueOfSelected === "BDR Lead"
+                      ? Condition2
+                      : valueOfSelectedUserName === "(AM)"
+                        ? Condition3
+                        : valueOfSelectedUserName === "(NBD)"
+                          ? Condition4
+                          : valueOfSelected === "POD Manager" ||
+                            valueOfSelected === "Sales Consultant"
+                            ? Condition5
+                            : Condition6
               }
               dataSource={incentiveInfoList}
               size="
