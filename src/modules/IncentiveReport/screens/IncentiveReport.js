@@ -1032,7 +1032,7 @@ const IncentiveReportScreen = () => {
     });
   }
 
-  const tdata = generateTreeData(gethierarachy)
+  const treedata = generateTreeData(gethierarachy)
 
   return (
     <div className={IncentiveReportStyle.hiringRequestContainer}>
@@ -1119,7 +1119,7 @@ const IncentiveReportScreen = () => {
               showIcon={showIcon}
               defaultExpandedKeys={['0-0-0']}
               onSelect={onSelect}
-              treeData={tdata}
+              treeData={treedata}
             >
              </Tree>
           </div>
