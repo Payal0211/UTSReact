@@ -5,6 +5,7 @@ import { RiArrowDropDownLine } from 'react-icons/ri';
 import TalentListStyle from './talentList.module.css';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
+import { useForm } from 'react-hook-form';
 import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
 import { TalentOnboardStatus } from 'constants/application';
@@ -26,6 +27,9 @@ import UpdateKickOffOnboardStatus from '../updateKickOffOnboardStatus/updateKick
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
 import ConfirmSlotModal from '../cloneHR/confirmSlotModal';
+import EditPayRate from '../editBillAndPayRate/editPayRateModal';
+
+import EditBillRate from '../editBillAndPayRate/editBillRateModal';
 
 const TalentList = ({
 	talentCTA,
@@ -69,6 +73,8 @@ const TalentList = ({
 	const [showScheduleInterviewModal, setScheduleInterviewModal] =
 		useState(false);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
+	const [editBillRate, setEditBillRate] = useState(false);
+	const [editPayRate, setEditPayRate] = useState(false);
 
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
 		{ slot1: null, slot2: null, slot3: null },
@@ -236,7 +242,23 @@ const TalentList = ({
 			},
 		]);
 	};
-
+	const {
+		register,
+		handleSubmit,
+		setValue,
+		control,
+		setError,
+		getValues,
+		watch,
+		reset,
+		resetField,
+		formState: { errors },
+	} = useForm();
+	const filterTalentID = useMemo(
+		() =>
+			talentDetail?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
+		[talentDetail, talentIndex],
+	);
 	const getSlotInformationHandler = (date, type, interviewType) => {
 		const yyyy = date.getFullYear();
 		let mm = date.getMonth() + 1;
@@ -1084,6 +1106,93 @@ const TalentList = ({
 				break;
 		}
 	};
+	const [getBillRateInfo, setBillRateInfo] = useState({});
+
+	const hrCostDetailsHandler = useCallback(async () => {
+		const hrCostData = {
+			hrID: hrId,
+			BillRate: (filterTalentID?.BillRate).slice(
+				1,
+				(filterTalentID?.BillRate).indexOf('U'),
+			).trim(),
+			PayRate: (filterTalentID?.PayRate).slice(
+				1,
+				(filterTalentID?.PayRate).indexOf('U'),
+			).trim(),
+			ContactPriorityID: filterTalentID?.ContactPriorityID,
+		};
+		const response = await hiringRequestDAO.getHRCostDetalisRequestDAO(
+			hrCostData,
+		);
+		if (response.responseBody.statusCode === HTTPStatusCode.OK) {
+			setBillRateInfo(response?.responseBody?.details);
+		}
+	}, [
+		filterTalentID?.BillRate,
+		filterTalentID?.ContactPriorityID,
+		filterTalentID?.PayRate,
+		hrId,
+	]);
+
+	// const updateHRcostHandler = useCallback(async () => {
+	// 	const calculateHRData = {
+	// 		ContactPriorityID: filterTalentID?.ContactPriorityID,
+	// 		Hr_Cost: getBillRateInfo?.hrCost,
+	// 		HR_Percentage: watch('nrMarginPercentage'),
+	// 		hrID: hrId,
+	// 	};
+	// 	const response = await hiringRequestDAO.calculateHRCostRequestDAO(
+	// 		calculateHRData,
+	// 	);
+	// 	console.log(response, 'responsefhfgsdfjjh');
+	// 	if (response.responseBody.statusCode === HTTPStatusCode.OK) {
+	// 		setValue('hrCost', response?.responseBody?.details);
+	// 	}
+	// }, [
+	// 	filterTalentID?.ContactPriorityID,
+	// 	getBillRateInfo?.hrCost,
+	// 	hrId,
+	// 	setValue,
+	// 	watch,
+	// ]);
+
+	useEffect(() => {
+		if (Object.keys(filterTalentID).length > 0 && editBillRate) {
+			hrCostDetailsHandler();
+		}
+	}, [filterTalentID, editBillRate, hrCostDetailsHandler]);
+
+	useEffect(() => {
+		if (Object.keys(getBillRateInfo).length > 0 && editBillRate) {
+			setValue('nrMarginPercentage', getBillRateInfo?.hR_Percentage);
+		}
+	}, [getBillRateInfo, editBillRate, setValue]);
+	useEffect(() => {
+		if (Object.keys(getBillRateInfo).length > 0 && editBillRate) {
+			setValue('hrCost', getBillRateInfo?.hrCost);
+		}
+	}, [getBillRateInfo, editBillRate, setValue]);
+
+	useEffect(() => {
+		resetField('talentFees');
+	}, [editPayRate, resetField]);
+
+	useEffect(() => {
+		if (Object.keys(filterTalentID).length > 0 && editPayRate) {
+			setValue(
+				'talentFees',
+				(filterTalentID?.PayRate).slice(
+					1,
+					(filterTalentID?.PayRate).indexOf('U'),
+				).trim(),
+			);
+		}
+	}, [filterTalentID, editPayRate, setValue]);
+
+	// useEffect(() => {
+	// 	updateHRcostHandler();
+	// }, [updateHRcostHandler]);
+
 	const onProfileLogClickHandler = async (typeID, index, type) => {
 		setLogExpanded([]);
 		setActiveIndex(index);
@@ -1097,11 +1206,6 @@ const TalentList = ({
 		// );
 		// setLogExpanded(response && response?.responseBody?.details);
 	};
-	const filterTalentID = useMemo(
-		() =>
-			talentDetail?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
-		[talentDetail, talentIndex],
-	);
 
 	const getInterviewStatus = useCallback(() => {
 		switch (filterTalentID?.InterviewStatus) {
@@ -1352,7 +1456,9 @@ const TalentList = ({
 												</div>
 												<span
 													onClick={() => {
-														setEDITBRPRModal(true);
+														// setEDITBRPRModal(true);
+														setTalentIndex(item?.TalentID);
+														setEditBillRate(true);
 													}}
 													style={{
 														textDecoration: 'underline',
@@ -1364,12 +1470,19 @@ const TalentList = ({
 											</div>
 											<div className={TalentListStyle.payRate}>
 												<div>
-													<span>Pay Rate:</span>&nbsp;&nbsp;
+													<span onClick={() => setEditPayRate(true)}>
+														Pay Rate:
+													</span>
+													&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
 														{_isNull(item?.PayRate) ? 'NA' : item?.PayRate}
 													</span>
 												</div>
 												<span
+													onClick={() => {
+														setEditPayRate(true);
+														setTalentIndex(item?.TalentID);
+													}}
 													style={{
 														textDecoration: 'underline',
 														color: `var(--background-color-ebony)`,
@@ -1385,14 +1498,14 @@ const TalentList = ({
 														{_isNull(item?.NR) ? 'NA' : item?.NR}
 													</span>
 												</div>
-												<span
+												{/* <span
 													style={{
 														textDecoration: 'underline',
 														color: `var(--background-color-ebony)`,
 														cursor: 'pointer',
 													}}>
 													edit
-												</span>
+												</span> */}
 											</div>
 										</>
 									) : (
@@ -1922,20 +2035,71 @@ const TalentList = ({
 				/>
 			</Modal>
 			{/** ============ MODAL FOR UPDATE LEGAL TALENT ONBOARD STATUS ================ */}
-			<Modal
-				transitionName=""
-				width="1256px"
-				centered
-				footer={null}
-				open={updateLegalTalentOnboardModal}
-				onCancel={() => setLegalTalentOnboardModal(false)}>
-				<UpdateLegalTalentOnboardStatus
-					talentInfo={filterTalentID}
-					hrId={hrId}
-					callAPI={callAPI}
-					closeModal={() => setLegalTalentOnboardModal(false)}
-				/>
-			</Modal>
+			{updateLegalTalentOnboardModal && (
+				<Modal
+					transitionName=""
+					width="1256px"
+					centered
+					footer={null}
+					open={updateLegalTalentOnboardModal}
+					onCancel={() => setLegalTalentOnboardModal(false)}>
+					<UpdateLegalTalentOnboardStatus
+						talentInfo={filterTalentID}
+						hrId={hrId}
+						callAPI={callAPI}
+						closeModal={() => setLegalTalentOnboardModal(false)}
+					/>
+				</Modal>
+			)}
+
+			{/** ============ MODAL FOR EDIT BILL RATE ================ */}
+
+			{editBillRate && (
+				<Modal
+					transitionName=""
+					width="700px"
+					centered
+					footer={null}
+					open={editBillRate}
+					className="statusModalWrap"
+					onCancel={() => setEditBillRate(false)}>
+					<EditBillRate
+						callAPI={callAPI}
+						hrId={hrId}
+						filterTalentID={filterTalentID}
+						getBillRateInfo={getBillRateInfo}
+						handleSubmit={handleSubmit}
+						onCancel={() => setEditBillRate(false)}
+						register={register}
+						errors={errors}
+						setHRapiCall={setHRapiCall}
+						callHRapi={callHRapi}
+						talentInfo={filterTalentID}
+					/>
+				</Modal>
+			)}
+			{/** ============ MODAL FOR EDIT PAY RATE ================ */}
+			{editPayRate && (
+				<Modal
+					transitionName=""
+					width="700px"
+					centered
+					footer={null}
+					open={editPayRate}
+					className="statusModalWrap"
+					onCancel={() => setEditPayRate(false)}>
+					<EditPayRate
+						talentInfo={filterTalentID}
+						onCancel={() => setEditPayRate(false)}
+						handleSubmit={handleSubmit}
+						register={register}
+						errors={errors}
+						setHRapiCall={setHRapiCall}
+						callHRapi={callHRapi}
+					/>
+				</Modal>
+			)}
+
 			{/** ============ MODAL FOR UPDATE LEGAL TALENT ONBOARD STATUS ================ */}
 			<Modal
 				transitionName=""

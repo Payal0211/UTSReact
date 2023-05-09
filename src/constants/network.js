@@ -166,8 +166,11 @@ export class HiringRequestsAPI {
 	static CALCULATE_HR_COST = 'CalculateHRCost';
 	static GET_HR_CONTARCTUAL = 'GetTalentsContractualConversion';
 	static HRAccept = 'HRAccept';
-  static GET_REMAINING_PRIORITY_COUNT = "GetRemainingPriorityCount";
-	static SET_HR_PRIORITY = "SetHrPriority";
+	static GET_REMAINING_PRIORITY_COUNT = 'GetRemainingPriorityCount';
+	static SET_HR_PRIORITY = 'SetHrPriority';
+	static GET_HR_COST_DETAILS = 'GetHRCostDetails';
+	static UPDATE_HR_COST = 'UpdateHRCost';
+	static UPDATE_TALENT_FEES = 'UpdateTalentFees';
 }
 
 export class UsersAPI {

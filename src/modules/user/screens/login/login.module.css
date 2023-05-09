@@ -64,13 +64,20 @@ margin-top: 30px;
 .loginHeadline{
     width: 90%;
     margin: 0 auto;
+    position: relative;
+    height: 100%;
 }
 
 .loginHeadline h1{
-    margin-top: 800px;
     font-size: 2rem;
     font-weight: bolder;
     letter-spacing: 0.3rem;
+    margin: 0;
+    position: absolute;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 30px;
 }
 
 

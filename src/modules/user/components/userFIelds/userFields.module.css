@@ -69,6 +69,9 @@
     height: auto !important;
     padding: 16px 16px !important;
 }
+.formGroup.multiSelectGroup [class*="ant-select-selection-search-input"] {
+    padding: 0 !important;
+}
 
 .formGroup label {
     vertical-align: top;

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Divider, Modal, Tooltip } from 'antd';
+import { Divider, Modal, Tooltip, Spin } from 'antd';
 import { InputType, SubmitType, UserAccountRole } from 'constants/application';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import HRInputField from '../../../hiring request/components/hrInputFields/hrInputFields';
@@ -22,6 +22,7 @@ import { userUtils } from 'modules/user/userUtils';
 import { userAPI } from 'apis/userAPI';
 import { userDAO } from 'core/user/userDAO';
 import { HttpServices } from 'shared/services/http/http_service';
+import { LoadingOutlined } from '@ant-design/icons';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -29,6 +30,28 @@ export const secondaryInterviewer = {
 	linkedin: '',
 	designation: '',
 };
+
+const antIcon = (
+	<LoadingOutlined
+		className="custom-loader"
+		style={{
+			fontSize: 50,
+			display: 'flex',
+			flexDirection: 'row',
+			alignItems: 'center',
+			justifyContent: 'center',
+			marginLeft: '350px',
+			fontWeight: 0,
+			top: '50%',
+			right: '0',
+			left: '0',
+			position: 'fixed',
+			margin: '0 auto',
+			color: `var(--uplers-black)`,
+		}}
+		spin
+	/>
+);
 
 const UsersFields = ({ id, setLoading, loading }) => {
 	const [enableAllFields, setEnableAllFields] = useState(false);
@@ -45,7 +68,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const [controlledUserRole, setControlledUserRole] = useState('Select');
 	const [departMentTypeEdit, setDepartMentEdit] = useState('Select');
 	const [levelTypeEdit, setLevelEdit] = useState('Select');
-	const [teamTypeEdit, setTeamTypeEdit] = useState('Select');
+	const [teamTypeEdit, setTeamTypeEdit] = useState();
 	const [reportTypeEdit, setReportTypeEdit] = useState('Select');
 	const [getGEOType, setGEOType] = useState('');
 	const [specificGeo, setSpecificGEO] = useState('Select');
@@ -67,9 +90,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const [flagAndCode, setFlagAndCode] = useState([]);
 	const [getDepartment, setDepartment] = useState([{ id: 0, value: 'Select' }]);
 	const [getTeamList, setTeamList] = useState([]);
-	const [getTeamListEdit, setTeamListEdit] = useState([
-		{ id: 0, value: 'Select' },
-	]);
+	const [getTeamListEdit, setTeamListEdit] = useState([]);
 	const [getLevelList, seLevelList] = useState([{ id: 0, value: 'Select' }]);
 	const [getReportingList, setReportingList] = useState([
 		{ id: 0, value: 'Select' },
@@ -80,6 +101,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		{ id: 2, value: 'No' },
 	]);
 	const [getEmployementMessage, setEmploymentMessage] = useState('');
+	const [getTeamUserForm, setTeamUserForm] = useState([]);
+	const [getformLoading, setFormIsLoading] = useState(false);
 
 	const convertToBase64 = useCallback((file) => {
 		return new Promise((resolve, reject) => {
@@ -117,6 +140,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const watchTeamName = watch('team');
 	const watchLevelName = watch('level');
 	const watchReportingUser = watch('reportingUser');
+	const watchpriorityCount = watch('priorityCount');
 	const watchGEO = watch('geo');
 	const watchGEOSpecific = watch('geoSpecific');
 	const uploadFile = useRef(null);
@@ -151,7 +175,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			}
 			setIsLoading(false);
 		},
-		[id, setError, setValue],
+		[id, setError, setValue, watchEmployeeID],
 	);
 	const getEmployeeFullNameAlreadyExist = useCallback(
 		async (firstName, lastName) => {
@@ -177,7 +201,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				setValue('employeeFirstName', '');
 			setIsLoading(false);
 		},
-		[id, setError, setValue],
+		[id, setError, setValue, watchEmployeeFirstName],
 	);
 
 	useEffect(() => {
@@ -186,7 +210,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			timer = setTimeout(() => {
 				setIsLoading(true);
 				getEmployeeIDAlreadyExist(watchEmployeeID);
-			}, 2000);
+			}, 1000);
 		}
 		return () => clearTimeout(timer);
 	}, [getEmployeeIDAlreadyExist, watchEmployeeID]);
@@ -285,9 +309,18 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		setDepartment((prev) => [...prev, ...response?.responseBody?.details]);
 	}, []);
 
-	const getTeamType = useCallback(async () => {
+	// const getTeamType = useCallback(async () => {
+	//   let response = await MasterDAO.getTeamListRequestDAO();
+	//   setTeamList((prev) => [
+	//     ...prev,
+	//     ...(response && response?.responseBody?.details),
+	//   ]);
+	//   console.log(response, "responseteam");
+	// }, []);
+
+	const getTeamOfUserFrom = useCallback(async () => {
 		let response = await MasterDAO.getTeamListRequestDAO();
-		setTeamList(response && response?.responseBody?.details);
+		setTeamUserForm(response?.responseBody?.details);
 	}, []);
 
 	const getLevelType = useCallback(async () => {
@@ -322,8 +355,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 
 	useEffect(() => {
 		if (
-			watchDepartMentName?.value === 'Select' ||
-			watchDepartMentName?.value === 'Administration'
+			watchDepartMentName?.value === 'Select'
+			// || watchDepartMentName?.value === "Administration"
 		) {
 			resetField('level', { keepError: false });
 			resetField('reportingUser', { keepError: false });
@@ -334,7 +367,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			setGEOType('');
 			setSpecificGEO('Select');
 			setReportTypeEdit('Select');
-			setTeamTypeEdit('Select');
+			setTeamTypeEdit();
 			resetField('departMent');
 		}
 		if (
@@ -342,7 +375,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			watchDepartMentName?.value !== 'Select' &&
 			watchDepartMentName?.value !== 'Administration'
 		) {
-			setTeamTypeEdit('Select');
+			setTeamTypeEdit();
 			setReportTypeEdit('Select');
 			setLevelEdit('Select');
 			setGEOType('');
@@ -360,36 +393,39 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			resetField('reportingUser', { keepError: false });
 			resetField('geoSpecific', { keepError: false });
 			resetField('geo', { keepError: false });
+			// resetField("team");
 			setGEOType('');
 			setSpecificGEO('Select');
 			setReportTypeEdit('Select');
 			resetField('level');
+			resetField('priorityCount');
 		}
 		if (!enableALlFieldsMemo && watchLevelName?.value !== 'Select') {
 			resetField('reportingUser');
 			setReportTypeEdit('Select');
+			resetField('priorityCount');
 		}
 	}, [watchLevelName]);
 
 	useEffect(() => {
 		if (watchTeamName?.value === 'Select') {
-			resetField('level', { keepError: false });
+			// resetField("level", { keepError: false });
 			resetField('reportingUser', { keepError: false });
 			resetField('geoSpecific', { keepError: false });
 			resetField('geo', { keepError: false });
 			setReportTypeEdit('Select');
-			setLevelEdit('Select');
+			// setLevelEdit("Select");
 			setGEOType('');
 			setSpecificGEO('Select');
 			resetField('team');
 		}
 		if (!enableALlFieldsMemo && watchTeamName?.value !== 'Select') {
-			resetField('level');
+			// resetField("level");
 			resetField('reportingUser');
 			resetField('geoSpecific');
 			resetField('geo');
 			setReportTypeEdit('Select');
-			setLevelEdit('Select');
+			// setLevelEdit("Select");
 			setGEOType('');
 			setSpecificGEO('Select');
 		}
@@ -420,17 +456,20 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		}
 	}, [watchDepartMentName, watchLevelName]);
 
-	useEffect(() => {
-		if (watchDepartMentName?.value !== 'Select' && watchDepartMentName?.id) {
-			setTeamListEdit([{ id: 0, value: 'Select' }]);
-			setTeamListEdit((prev) => [
-				...prev,
-				...getTeamList?.filter(
-					(ele) => parseInt(ele?.text) === watchDepartMentName?.id,
-				),
-			]);
-		}
-	}, [watchDepartMentName]);
+	// useEffect(
+	//   () => {
+	//     // if (watchDepartMentName?.value !== "Select" && watchDepartMentName?.id) {
+	//     // setTeamListEdit([{ id: 0, value: "Select" }]);
+	//     setTeamListEdit((prev) => [
+	//       ...prev,
+	//       ...getTeamList?.filter(
+	//         (ele) => parseInt(ele?.text) === watchDepartMentName?.id
+	//       ),
+	//     ]);
+	//   },
+	//   // }
+	//   [userDetails, getTeamList]
+	// );
 
 	useEffect(() => {
 		setModifiedGEO([]);
@@ -459,13 +498,14 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		setDepartment([{ id: 0, value: 'Select' }]);
 		seLevelList([{ id: 0, value: 'Select' }]);
 		setReportingList([{ id: 0, value: 'Select' }]);
-		setTeamListEdit([{ id: 0, value: 'Select' }]);
+		setTeamListEdit([]);
 		setGEO([]);
 		setTeamList([]);
 		getDepartMentType();
-		getTeamType();
+		// getTeamType();
 		getLevelType();
 		getGEO();
+		getTeamOfUserFrom();
 	}, []);
 
 	useEffect(() => {
@@ -507,6 +547,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 
 	const userSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+			setFormIsLoading(true);
 			let userFormDetails = userUtils.userDataFormatter(
 				d,
 				id,
@@ -515,45 +556,11 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				modifiedGEO,
 			);
 			let userResponse = await userAPI.createUserRequest(userFormDetails);
-
+			setFormIsLoading(false);
 			if (userResponse.statusCode === HTTPStatusCode.OK) {
+				setFormIsLoading(false);
 				navigate(UTSRoutes.USERLISTROUTE);
 			}
-			/* let hrFormDetails = hrUtils.hrFormDataFormatter(
-			d,
-			type,
-			watch,
-			clientDetail?.contactId,
-			isHRDirectPlacement,
-			addHRResponse,
-		);
-	*/
-			/* if (type === SubmitType.SAVE_AS_DRAFT) {
-			if (_isNull(watch('clientName'))) {
-				return setError('clientName', {
-					type: 'emptyClientName',
-					message: 'Please enter the client name.',
-				});
-			}
-		} else if (type !== SubmitType.SAVE_AS_DRAFT) {
-			setType(SubmitType.SUBMIT);
-		}
-		const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails); */
-
-			/* if (addHRRequest.statusCode === HTTPStatusCode.OK) {
-			setAddHRResponse(addHRRequest?.responseBody?.details);
-			console.log(addHRRequest?.responseBody?.details?.en_Id, '---eniD');
-			setEnID(addHRRequest?.responseBody?.details?.en_Id);
-			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
-			type !== SubmitType.SAVE_AS_DRAFT &&
-				setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
-
-			type === SubmitType.SAVE_AS_DRAFT &&
-				messageAPI.open({
-					type: 'success',
-					content: 'HR details has been saved to draft.',
-				});
-		} */
 		},
 		[id, navigate, base64Image, getUploadFileData, modifiedGEO],
 	);
@@ -590,6 +597,17 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		[convertToBase64, getValidation],
 	);
 
+	// useEffect(() => {
+	//   if (
+	//     watchDepartMentName?.value === "Demand" &&
+	//     watchLevelName?.value === "Head"
+	//   ) {
+	//     setTeamListEdit([]);
+	//   } else {
+	//     setTeamListEdit([{ id: 0, value: "Select" }]);
+	//   }
+	// }, [watchDepartMentName, watchLevelName]);
+
 	useEffect(() => {
 		if (getDepartment.length > 1) {
 			getDepartment?.map((item) => {
@@ -602,15 +620,44 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	}, [userDetails, getDepartment]);
 
 	useEffect(() => {
-		if (getTeamListEdit.length > 1) {
-			getTeamListEdit?.map((item) => {
+		if (getTeamList.length > 1) {
+			getTeamList?.map((item) => {
 				if (item?.id === userDetails?.teamID) {
-					setTeamTypeEdit(item?.value);
+					setTeamListEdit(item?.value);
 					setValue('team', item);
 				}
 			});
 		}
-	}, [userDetails, getTeamListEdit]);
+	}, [userDetails, getTeamList]);
+
+	useEffect(() => {
+		if (getTeamUserForm.length > 1) {
+			console.log('called');
+			let _selectedValues = userDetails?.teamID?.split(',');
+			if (_selectedValues) {
+				let _allSelectedTeamData = [];
+				let _selectedTeamValue = [];
+				getTeamUserForm?.map((item) => {
+					if (_selectedValues.includes(item?.id?.toString())) {
+						let _forOptionObj = {};
+						_forOptionObj.id = item.id;
+						_forOptionObj.value = item.value;
+						_selectedTeamValue.push(item?.value);
+						_allSelectedTeamData.push(_forOptionObj);
+					}
+				});
+				setTeamTypeEdit(_selectedTeamValue);
+				setValue('team', _allSelectedTeamData);
+			} else {
+				getTeamUserForm?.map((item) => {
+					if (item?.id === userDetails?.teamID) {
+						setTeamTypeEdit(item?.value);
+						setValue('team', item);
+					}
+				});
+			}
+		}
+	}, [userDetails, getTeamUserForm]);
 
 	useEffect(() => {
 		if (getLevelList.length > 1) {
@@ -644,6 +691,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		setValue('geo', modifiedGeo);
 	}, [userDetails, GEO]);
 
+	console.log(userDetails?.fileUpload?.extenstion, 'userDetails?.profilePic');
+
 	useEffect(() => {
 		if (enableALlFieldsMemo) {
 			setValue('employeeLastName', userDetails?.fullName?.split(' ')[1]);
@@ -654,10 +703,19 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			setValue('primaryClientPhoneNumber', userDetails?.contactNumber);
 			setValue('employeeDesignation', userDetails?.designation);
 			setValue('description', userDetails?.description);
-			setUploadFileData({
-				name: userDetails?.profilePic,
-				type: userDetails?.fileUpload?.extenstion,
-			});
+			setValue('priorityCount', userDetails?.priorityCount);
+			if (userDetails?.profilePic) {
+				setUploadFileData({
+					name: userDetails?.profilePic,
+					type: userDetails?.fileUpload?.extenstion,
+				});
+			} else {
+				setUploadFileData({});
+			}
+			// setUploadFileData({
+			//   name: userDetails?.profilePic,
+			//   type: userDetails?.fileUpload?.extenstion,
+			// });
 			setBase64Image(userDetails?.fileUpload?.base64ProfilePic);
 
 			if (userDetails?.detail?.geoIDs?.length > 0) {
@@ -672,688 +730,477 @@ const UsersFields = ({ id, setLoading, loading }) => {
 
 	return (
 		<div className={UserFieldStyle.hrFieldContainer}>
-			<form id="hrForm">
-				<div className={UserFieldStyle.partOne}>
-					<div className={UserFieldStyle.hrFieldLeftPane}>
-						<h3>{id === 0 ? 'Add New User' : 'Edit User'}</h3>
-						<p>Please provide the necessary details</p>
-						{enableALlFieldsMemo && (
-							<div className={UserFieldStyle.formPanelAction}>
-								<button
-									style={{
-										cursor: type === SubmitType.SUBMIT ? 'no-drop' : 'pointer',
-									}}
-									disabled={type === SubmitType.SUBMIT}
-									className={UserFieldStyle.btnPrimary}
-									onClick={editButtonHandler}>
-									Edit User
-								</button>
+			{getformLoading ? (
+				<Spin indicator={antIcon} />
+			) : (
+				<>
+					<form id="hrForm">
+						<div className={UserFieldStyle.partOne}>
+							<div className={UserFieldStyle.hrFieldLeftPane}>
+								<h3>{id === 0 ? 'Add New User' : 'Edit User'}</h3>
+								<p>Please provide the necessary details</p>
+								{/* {enableALlFieldsMemo && (
+              <div className={UserFieldStyle.formPanelAction}>
+                <button
+                  style={{
+                    cursor: type === SubmitType.SUBMIT ? "no-drop" : "pointer",
+                  }}
+                  disabled={type === SubmitType.SUBMIT}
+                  className={UserFieldStyle.btnPrimary}
+                  onClick={editButtonHandler}
+                >
+                  Edit User
+                </button>
+              </div>
+            )} */}
 							</div>
-						)}
-					</div>
 
-					<div className={UserFieldStyle.hrFieldRightPane}>
-						<div className={UserFieldStyle.row}>
-							<div className={UserFieldStyle.colMd6}>
-								<HRInputField
-									disabled={enableALlFieldsMemo || isLoading}
-									register={register}
-									errors={errors}
-									validationSchema={{
-										validate: (value) => {
-											if (getEmployementMessage) {
-												return getEmployementMessage;
-											} else if (!value) {
-												return 'Please enter employee ID';
-											}
-										},
-									}}
-									label={'Employee ID'}
-									name="employeeId"
-									type={InputType.TEXT}
-									placeholder="Enter Employee ID"
-									required
-								/>
+							<div className={UserFieldStyle.hrFieldRightPane}>
+								<div className={UserFieldStyle.row}>
+									{/* Employee ID */}
+									<div className={UserFieldStyle.colMd6}>
+										<HRInputField
+											disabled={enableALlFieldsMemo || isLoading}
+											register={register}
+											errors={errors}
+											validationSchema={{
+												validate: (value) => {
+													if (getEmployementMessage) {
+														return getEmployementMessage;
+													} else if (!value) {
+														return 'Please enter employee ID';
+													}
+												},
+											}}
+											onChangeHandler={(e) => {
+												getEmployeeIDAlreadyExist(e.target.value);
+											}}
+											label={'Employee ID'}
+											name="employeeId"
+											type={InputType.TEXT}
+											placeholder="Enter Employee ID"
+											required
+										/>
+									</div>
+									{/* First Name */}
+									<div className={UserFieldStyle.colMd6}>
+										<HRInputField
+											// defaultValue={enableALlFieldsMemo ? userDetails?.fullName?.split(" ")[0] : null}
+											disabled={enableALlFieldsMemo || isLoading}
+											register={register}
+											errors={errors}
+											validationSchema={{
+												validate: (value) => {
+													if (!value.trim()) {
+														return 'Please enter first name';
+													} else if (!/^[a-zA-Z ]*$/.test(value.trim())) {
+														return 'Please enter only alphabets';
+													}
+												},
+											}}
+											label="First Name"
+											// onChangeHandler={(e) => {
+											//   getEmployeeFullNameAlreadyExist(e.target.value);
+											// }}
+											name="employeeFirstName"
+											type={InputType.TEXT}
+											placeholder="Enter First Name"
+											required
+										/>
+									</div>
+									{/* Last Name */}
+									<div className={UserFieldStyle.colMd6}>
+										<HRInputField
+											disabled={enableALlFieldsMemo || isLoading}
+											register={register}
+											errors={errors}
+											validationSchema={{
+												validate: (value) => {
+													if (!value.trim()) {
+														return 'Please enter last name';
+													} else if (!/^[a-zA-Z ]*$/.test(value.trim())) {
+														return 'Please enter only alphabets';
+													}
+												},
+											}}
+											label="Last Name"
+											name="employeeLastName"
+											// onChangeHandler={(e) => {
+											//   getEmployeeFullNameAlreadyExist(e.target.value);
+											// }}
+											type={InputType.TEXT}
+											placeholder="Enter Last Name"
+											required
+										/>
+									</div>
+
+									{/* Department */}
+									<div className={UserFieldStyle.colMd6}>
+										<div className={UserFieldStyle.formGroup}>
+											<HRSelectField
+												controlledValue={departMentTypeEdit}
+												setControlledValue={setDepartMentEdit}
+												isControlled={true}
+												mode="id/value"
+												setValue={setValue}
+												register={register}
+												label={'Department'}
+												defaultValue={'Select'}
+												onClickHandler={() => {
+													setTeamTypeEdit([]);
+												}}
+												options={getDepartment && getDepartment}
+												name="departMent"
+												isError={errors['departMent'] && errors['departMent']}
+												required
+												errorMsg={'Please select department'}
+											/>
+										</div>
+									</div>
+
+									{/* Level */}
+
+									{watchDepartMentName &&
+										watchDepartMentName?.value !== 'Administration' &&
+										watchDepartMentName?.value !== 'Select' && (
+											<div className={UserFieldStyle.colMd6}>
+												<div className={UserFieldStyle.formGroup}>
+													<HRSelectField
+														controlledValue={levelTypeEdit}
+														setControlledValue={setLevelEdit}
+														isControlled={true}
+														mode="id/value"
+														setValue={setValue}
+														register={register}
+														onClickHandler={() => {
+															setTeamTypeEdit([]);
+														}}
+														label={'Level'}
+														defaultValue={'Select'}
+														options={getLevelList && getLevelList}
+														name="level"
+														isError={errors['level'] && errors['level']}
+														required
+														errorMsg={'Please select level'}
+													/>
+												</div>
+											</div>
+										)}
+
+									{/* Team */}
+									{watchLevelName &&
+										watchDepartMentName?.value !== 'Administration' && (
+											<div className={UserFieldStyle.colMd6}>
+												<div
+													className={`${UserFieldStyle.formGroup} ${UserFieldStyle.multiSelectGroup}`}>
+													<HRSelectField
+														controlledValue={teamTypeEdit}
+														setControlledValue={setTeamTypeEdit}
+														isControlled={true}
+														mode={
+															watchDepartMentName?.value === 'Demand' &&
+															watchLevelName?.value === 'Head'
+																? 'multiple'
+																: 'id/value'
+														}
+														placeholder="Please select"
+														setValue={setValue}
+														register={register}
+														label={'Team'}
+														// defaultValue={
+														//   watchDepartMentName?.value === "Demand" &&
+														//   watchLevelName?.value === "Head"
+														//     ? ""
+														//     : "Select"
+														// }
+														options={getTeamUserForm && getTeamUserForm}
+														name="team"
+														isError={errors['team'] && errors['team']}
+														required
+														errorMsg={'Please select team'}
+													/>
+												</div>
+											</div>
+										)}
+
+									{watchDepartMentName?.value !== 'Select' &&
+										watchLevelName?.value !== 'Select' &&
+										watchDepartMentName?.value === 'Demand' &&
+										watchLevelName?.value === 'Head' && (
+											<div className={UserFieldStyle.colMd6}>
+												<HRInputField
+													register={register}
+													errors={errors}
+													validationSchema={{
+														validate: (value) => {
+															if (value === '') {
+																return 'Please enter priority count';
+															} else if (!/[^.?!-]/.test(value)) {
+																return 'Please enter valid priority count';
+															}
+														},
+													}}
+													setValue={setValue}
+													label="Priority Count"
+													name="priorityCount"
+													type={InputType.TEXT}
+													placeholder="Enter Priority Count"
+													required
+												/>
+											</div>
+										)}
+
+									{/* Is this Geo Specific? */}
+									{watchDepartMentName?.value !== 'Select' &&
+										watchLevelName?.value !== 'Select' && (
+											<div className={UserFieldStyle.colMd6}>
+												<div className={UserFieldStyle.formGroup}>
+													<HRSelectField
+														controlledValue={specificGeo}
+														setControlledValue={setSpecificGEO}
+														isControlled={true}
+														mode="id/value"
+														setValue={setValue}
+														register={register}
+														label={'Is this Geo Specific?'}
+														defaultValue={
+															'Select                                                               '
+														}
+														options={getGeoSpecificList && getGeoSpecificList}
+														name="geoSpecific"
+														isError={
+															errors['geoSpecific'] && errors['geoSpecific']
+														}
+														required
+														errorMsg={'Please select geo specific'}
+													/>
+												</div>
+											</div>
+										)}
+
+									{/* {watchDepartMentName?.value === "Administration" ? (
+                    <div className={UserFieldStyle.colMd6}>
+                      <div className={UserFieldStyle.formGroup}>
+                        <HRSelectField
+                          controlledValue={specificGeo}
+                          setControlledValue={setSpecificGEO}
+                          isControlled={true}
+                          mode="id/value"
+                          setValue={setValue}
+                          register={register}
+                          label={"Is this Geo Specific?"}
+                          defaultValue={
+                            "Select                                                               "
+                          }
+                          options={getGeoSpecificList && getGeoSpecificList}
+                          name="geoSpecific"
+                          isError={
+                            errors["geoSpecific"] && errors["geoSpecific"]
+                          }
+                          required
+                          errorMsg={"Please select geo specific"}
+                        />
+                      </div>
+                    </div>
+                  ) : null} */}
+
+									{/* Geo */}
+									{watchGEOSpecific?.value === 'Yes' &&
+										watchDepartMentName?.value !== 'Select' && (
+											<div className={UserFieldStyle.colMd6}>
+												<div className={UserFieldStyle.mb50}>
+													<HRSelectField
+														isControlled={true}
+														controlledValue={getGEOType}
+														setControlledValue={setGEOType}
+														mode="multiple"
+														setValue={setValue}
+														register={register}
+														label={'Geo'}
+														placeholder="Please Select"
+														options={GEO && GEO}
+														name="geo"
+													/>
+												</div>
+											</div>
+										)}
+									{/* Reporting User */}
+									{getReportingList?.length > 1 &&
+										watchLevelName &&
+										watchDepartMentName &&
+										watchDepartMentName?.value !== 'Administration' &&
+										watchLevelName?.value !== 'Select' &&
+										watchDepartMentName?.value !== 'Select' && (
+											<div className={UserFieldStyle.colMd6}>
+												<div className={UserFieldStyle.formGroup}>
+													<HRSelectField
+														controlledValue={reportTypeEdit}
+														setControlledValue={setReportTypeEdit}
+														isControlled={true}
+														mode="id/value"
+														setValue={setValue}
+														register={register}
+														label={'Reporting User'}
+														defaultValue={'Select'}
+														options={getReportingList && getReportingList}
+														name="reportingUser"
+													/>
+												</div>
+											</div>
+										)}
+								</div>
 							</div>
-							<div className={UserFieldStyle.colMd6}>
-								<HRInputField
-									// defaultValue={enableALlFieldsMemo ? userDetails?.fullName?.split(" ")[0] : null}
-									disabled={enableALlFieldsMemo || isLoading}
-									register={register}
-									errors={errors}
-									validationSchema={{
-										validate: (value) => {
-											if (!value.trim()) {
-												return 'Please enter first name';
-											} else if (!/^[a-zA-Z ]*$/.test(value.trim())) {
-												return 'Please enter only alphabets';
-											}
-										},
-									}}
-									label="First Name"
-									name="employeeFirstName"
-									type={InputType.TEXT}
-									placeholder="Enter First Name"
-									required
-								/>
-							</div>
-							<div className={UserFieldStyle.colMd6}>
-								<HRInputField
-									disabled={enableALlFieldsMemo || isLoading}
-									register={register}
-									errors={errors}
-									validationSchema={{
-										validate: (value) => {
-											if (!value.trim()) {
-												return 'Please enter last name';
-											} else if (!/^[a-zA-Z ]*$/.test(value.trim())) {
-												return 'Please enter only alphabets';
-											}
-										},
-									}}
-									label="Last Name"
-									name="employeeLastName"
-									type={InputType.TEXT}
-									placeholder="Enter Last Name"
-									required
-								/>
-							</div>
-							{/* {(watch('userType')?.id === UserAccountRole.SALES ||
-								watch('userType')?.id === UserAccountRole.SALES_MANAGER) && (
+						</div>
+
+						<Divider className={UserFieldStyle.midDivider} />
+						<div className={UserFieldStyle.partOne}>
+							<div className={UserFieldStyle.hrFieldLeftPane}></div>
+							<div className={UserFieldStyle.hrFieldRightPane}>
+								<div className={UserFieldStyle.row}>
 									<div className={UserFieldStyle.colMd12}>
-										<div className={UserFieldStyle.radioFormGroup}>
-											<label>
-												Is the User New?
-												<span className={UserFieldStyle.reqField}>*</span>
-											</label>
-											<label className={UserFieldStyle.container}>
-												<p>Yes</p>
-												<input
-													{...register('isNewUser')}
-													value={true}
-													type="radio"
-													checked
-													id="isNewUser"
-													name="isNewUser"
-												/>
-												<span className={UserFieldStyle.checkmark}></span>
-											</label>
-											<label className={UserFieldStyle.container}>
-												<p>No</p>
-												<input
-													{...register('isNewUser')}
-													value={false}
-													type="radio"
-													id="isNewUser"
-													name="isNewUser"
-												/>
-												<span className={UserFieldStyle.checkmark}></span>
-											</label>
+										<div className={UserFieldStyle.infoNotes}>
+											Note: The Below Information would be available to view for
+											you Talent/Client
 										</div>
 									</div>
-								)} */}
-							{/* <div className={UserFieldStyle.colMd6}>
-								<div className={UserFieldStyle.formGroup}>
-									<HRSelectField
-										controlledValue={userTypeEdit}
-										setControlledValue={setUserTypeEdit}
-										isControlled={true}
-										disabled={enableALlFieldsMemo}
-										mode="id/value"
-										setValue={setValue}
-										register={register}
-										label={'User Type'}
-										defaultValue={'Please select'}
-										options={userType && userType}
-										name="userType"
-										isError={errors['userType'] && errors['userType']}
-										required
-										errorMsg={'Please select user type'}
-									/>
 								</div>
-							</div> */}
 
-							<div className={UserFieldStyle.colMd6}>
-								<div className={UserFieldStyle.formGroup}>
-									<HRSelectField
-										controlledValue={departMentTypeEdit}
-										setControlledValue={setDepartMentEdit}
-										isControlled={true}
-										mode="id/value"
-										setValue={setValue}
-										register={register}
-										label={'Department'}
-										defaultValue={'Select'}
-										options={getDepartment && getDepartment}
-										name="departMent"
-										isError={errors['departMent'] && errors['departMent']}
-										required
-										errorMsg={'Please select department'}
-									/>
-								</div>
-							</div>
-
-							{watchDepartMentName &&
-								watchDepartMentName?.value !== 'Administration' &&
-								watchDepartMentName?.value !== 'Select' && (
+								<div className={UserFieldStyle.row}>
 									<div className={UserFieldStyle.colMd6}>
-										<div className={UserFieldStyle.formGroup}>
-											<HRSelectField
-												controlledValue={teamTypeEdit}
-												setControlledValue={setTeamTypeEdit}
-												isControlled={true}
-												mode="id/value"
-												setValue={setValue}
-												register={register}
-												label={'Team'}
-												defaultValue={'Select'}
-												options={getTeamListEdit && getTeamListEdit}
-												name="team"
-												isError={errors['team'] && errors['team']}
-												required
-												errorMsg={'Please select team'}
-											/>
-										</div>
-									</div>
-								)}
-
-							{watchTeamName &&
-								watchDepartMentName &&
-								watchDepartMentName?.value !== 'Administration' &&
-								watchTeamName?.value !== 'Select' &&
-								watchDepartMentName?.value !== 'Select' && (
-									<div className={UserFieldStyle.colMd6}>
-										<div className={UserFieldStyle.formGroup}>
-											<HRSelectField
-												controlledValue={levelTypeEdit}
-												setControlledValue={setLevelEdit}
-												isControlled={true}
-												mode="id/value"
-												setValue={setValue}
-												register={register}
-												label={'Level'}
-												defaultValue={'Select'}
-												options={getLevelList && getLevelList}
-												name="level"
-												isError={errors['level'] && errors['level']}
-												required
-												errorMsg={'Please select level'}
-											/>
-										</div>
-									</div>
-								)}
-
-							{watchLevelName &&
-								watchLevelName?.value !== 'Select' &&
-								watchDepartMentName?.value !== 'Administration' &&
-								watchDepartMentName?.value !== 'Select' && (
-									<div className={UserFieldStyle.colMd6}>
-										<div className={UserFieldStyle.formGroup}>
-											<HRSelectField
-												controlledValue={specificGeo}
-												setControlledValue={setSpecificGEO}
-												isControlled={true}
-												mode="id/value"
-												setValue={setValue}
-												register={register}
-												label={'Is this Geo Specific?'}
-												defaultValue={
-													'Select                                                               '
-												}
-												options={getGeoSpecificList && getGeoSpecificList}
-												name="geoSpecific"
-												isError={errors['geoSpecific'] && errors['geoSpecific']}
-												required
-												errorMsg={'Please select geo specific'}
-											/>
-										</div>
-									</div>
-								)}
-
-							{watchGEOSpecific?.value === 'Yes' &&
-								watchDepartMentName?.value !== 'Select' &&
-								watchDepartMentName?.value !== 'Administration' && (
-									<div className={UserFieldStyle.colMd6}>
-										{/* <div className={UserFieldStyle.formGroup}>
-									<HRSelectField
-										isControlled={true}
-										mode="multiple"
-										setValue={setValue}
-										register={register}
-										label={'Geo'}
-										defaultValue="Please Select"
-										options={GEO && GEO}
-										placeholderText="Please Select"
-										name="geo"
-										isError={errors['geo'] && errors['geo']}
-										required
-										errorMsg={'Please select GEO'}
-									/> */}
-										<div className={UserFieldStyle.mb50}>
-											<HRSelectField
-												isControlled={true}
-												controlledValue={getGEOType}
-												setControlledValue={setGEOType}
-												mode="multiple"
-												setValue={setValue}
-												register={register}
-												label={'Geo'}
-												placeholder="Please Select"
-												options={GEO && GEO}
-												name="geo"
-											/>
-										</div>
-									</div>
-								)}
-
-							{getReportingList?.length > 1 &&
-								watchLevelName &&
-								watchDepartMentName &&
-								watchDepartMentName?.value !== 'Administration' &&
-								watchLevelName?.value !== 'Select' &&
-								watchDepartMentName?.value !== 'Select' && (
-									<div className={UserFieldStyle.colMd6}>
-										<div className={UserFieldStyle.formGroup}>
-											<HRSelectField
-												controlledValue={reportTypeEdit}
-												setControlledValue={setReportTypeEdit}
-												isControlled={true}
-												mode="id/value"
-												setValue={setValue}
-												register={register}
-												label={'Reporting User'}
-												defaultValue={'Select'}
-												options={getReportingList && getReportingList}
-												name="reportingUser"
-											/>
-										</div>
-									</div>
-								)}
-
-							{/* {(watch('userType')?.id === UserAccountRole.SALES ||
-								watch('userType')?.id === UserAccountRole.SALES_MANAGER ||
-								watch('userType')?.id === UserAccountRole.BDR ||
-								watch('userType')?.id === UserAccountRole.MARKETING) && (
-									<div className={UserFieldStyle.colMd6}>
-										<div className={UserFieldStyle.formGroup}>
-											<HRSelectField
-												controlledValue={controlledUserRole}
-												setControlledValue={setControlledUserRole}
-												isControlled={true}
-												disabled={enableALlFieldsMemo}
-												setValue={setValue}
-												register={register}
-												label={'User Role'}
-												defaultValue="Please Select"
-												options={userRole && userRole}
-												placeholderText="Please Select"
-												name="userRole"
-												isError={errors['userRole'] && errors['userRole']}
-												required
-												errorMsg={'Please select user role'}
-											/>
-										</div>
-									</div>
-								)} */}
-							{/* {(watch('userType')?.id === UserAccountRole.TALENTOPS ||
-								watch('userType')?.id === UserAccountRole.OPS_TEAM_MANAGER) && (
-									<div className={UserFieldStyle.colMd6}>
-										<div className={UserFieldStyle.formGroup}>
-											<HRSelectField
-												disabled={enableALlFieldsMemo}
-												setValue={setValue}
-												register={register}
-												label={'Is ODR/Pool?'}
-												defaultValue="Please Select"
-												options={[
-													{
-														id: 0,
-														value: 'Yes',
-														text: null,
-														disabled: false,
-														group: null,
-														seletected: false,
-													},
-													{
-														id: 1,
-														value: 'No',
-														text: null,
-														disabled: false,
-														group: null,
-														seletected: false,
-													},
-												]}
-												placeholderText="Is ODR/Pool?"
-												name="odrPool"
-												isError={errors['odrPool'] && errors['odrPool']}
-												required
-												errorMsg={'Please select'}
-											/>
-										</div>
-									</div>
-								)} */}
-
-							{/* {watch('userType')?.id === UserAccountRole.BDR &&
-								watch('userRole') === 4 ? (
-								<div className={UserFieldStyle.colMd6}>
-									<div className={UserFieldStyle.formGroup}>
-										<HRSelectField
-											setValue={setValue}
+										<HRInputField
 											register={register}
-											label={'BDR Management'}
-											defaultValue="Please Select"
-											options={BDRManager && BDRManager}
-											placeholderText="Please Select"
-											name="bdrManagement"
-										/>
-									</div>
-								</div>
-							) : null} */}
-							{/* {watch('userType')?.id === UserAccountRole.BDR &&
-								watch('userRole') === 3 ? (
-								<div className={UserFieldStyle.colMd6}>
-									<div className={UserFieldStyle.formGroup}>
-										<HRSelectField
-											setValue={setValue}
-											register={register}
-											label={'BDR Lead'}
-											defaultValue="Please Select"
-											options={BDRManager && BDRManager}
-											placeholderText="Please Select"
-											name="bdrLead"
-										/>
-									</div>
-								</div>
-							) : null} */}
-							{/* {watch('userType')?.id === UserAccountRole.MARKETING &&
-								watch('userRole') === 6 ? (
-								<div className={UserFieldStyle.colMd6}>
-									<div className={UserFieldStyle.formGroup}>
-										<HRSelectField
-											setValue={setValue}
-											register={register}
-											label={'Marketing Lead'}
-											defaultValue="Please Select"
-											options={BDRManager && BDRManager}
-											placeholderText="Please Select"
-											name="marketingLead"
-										/>
-									</div>
-								</div>
-							) : null} */}
-							{/* {watch('userType')?.id === UserAccountRole.MARKETING &&
-								watch('userRole') === 7 ? (
-								<div className={UserFieldStyle.colMd6}>
-									<div className={UserFieldStyle.formGroup}>
-										<HRSelectField
-											setValue={setValue}
-											register={register}
-											label={'Marketing Manager'}
-											defaultValue="Please Select"
-											options={BDRManager && BDRManager}
-											placeholderText="Please Select"
-											name="marketingManager"
-										/>
-									</div>
-								</div>
-							) : null} */}
-							{/* {(watch('userType')?.id === UserAccountRole.SALES ||
-								watch('userType')?.id === UserAccountRole.SALES_MANAGER) && (
-									<div className={UserFieldStyle.colMd6}>
-										<div className={UserFieldStyle.formGroup}>
-											<HRSelectField
-												setValue={setValue}
-												register={register}
-												label={'Geo'}
-												defaultValue="Please Select"
-												options={GEO && GEO}
-												placeholderText="Please Select"
-												name="geo"
-												isError={errors['geo'] && errors['geo']}
-												required
-												errorMsg={'Please select GEO'}
-											/>
-										</div>
-									</div>)} */}
-
-							{/*
-
-							{watch('userType')?.id === UserAccountRole.SALES_MANAGER && (
-								<div className={UserFieldStyle.colMd6}>
-									<HRInputField
-										value={enableALlFieldsMemo ? userDetails?.fullName : null}
-										disabled={enableALlFieldsMemo && true}
-										register={register}
-										errors={errors}
-										validationSchema={{
-											required: 'please enter the priority count',
-										}}
-										label="Priority Count"
-										name="priorityCount"
-										type={InputType.Number}
-										placeholder="Enter Priority Count "
-										required
-									/>
-								</div>
-							)} */}
-							{/* {watch('userType')?.id === UserAccountRole.SALES && (
-								<div className={UserFieldStyle.colMd6}>
-									<div className={UserFieldStyle.formGroup}>
-										<HRSelectField
-											mode="id/value"
-											setValue={setValue}
-											register={register}
-											label={'Sales Manager'}
-											defaultValue="Please Select"
-											options={teamManager && teamManager}
-											placeholderText="Please Select"
-											name="salesManager"
-										// isError={errors['salesManager'] && errors['salesManager']}
-										// required
-										// errorMsg={'Please select manager'}
-										/>
-									</div>
-								</div>
-							)} */}
-							{/* {watch('userType')?.id === UserAccountRole.TALENTOPS && (
-								<div className={UserFieldStyle.colMd6}>
-									<div className={UserFieldStyle.formGroup}>
-										<HRSelectField
-											mode="id/value"
-											setValue={setValue}
-											register={register}
-											label={'Ops Team Manager'}
-											defaultValue="Please Select"
-											options={opsTeamManager && opsTeamManager}
-											placeholderText="Please Select"
-											name="opsTeamManager"
-										/>
-									</div>
-								</div>
-							)} */}
-							{/* {!_isNull(watch('salesManager')?.id) &&
-								watch('userType')?.id === UserAccountRole.SALES ? (
-								<div className={UserFieldStyle.colMd6}>
-									<div className={UserFieldStyle.formGroup}>
-										<HRSelectField
-											setValue={setValue}
-											register={register}
-											label={'Reportee User'}
-											defaultValue="Please Select"
-											options={reporteeManager && reporteeManager}
-											placeholderText="Please Select"
-											name="reporteeUser"
-										/>
-									</div>
-								</div>
-							) : null} */}
-							{/* {!_isNull(watch('opsTeamManager')?.id) &&
-								watch('userType')?.id === UserAccountRole.TALENTOPS ? (
-								<div className={UserFieldStyle.colMd6}>
-									<div className={UserFieldStyle.formGroup}>
-										<HRSelectField
-											setValue={setValue}
-											register={register}
-											label={'Reportee User'}
-											defaultValue="Please Select"
-											options={reporteeManager && reporteeManager}
-											placeholderText="Please Select"
-											name="reporteeUser"
-										/>
-									</div>
-								</div>
-							) : null} */}
-						</div>
-					</div>
-				</div>
-
-				<Divider className={UserFieldStyle.midDivider} />
-				<div className={UserFieldStyle.partOne}>
-					<div className={UserFieldStyle.hrFieldLeftPane}></div>
-					<div className={UserFieldStyle.hrFieldRightPane}>
-						<div className={UserFieldStyle.row}>
-							<div className={UserFieldStyle.colMd12}>
-								<div className={UserFieldStyle.infoNotes}>
-									Note: The Below Information would be available to view for you
-									Talent/Client
-								</div>
-							</div>
-						</div>
-
-						<div className={UserFieldStyle.row}>
-							<div className={UserFieldStyle.colMd6}>
-								<HRInputField
-									register={register}
-									defaultValue={
-										enableALlFieldsMemo ? userDetails?.skypeId : null
-									}
-									value={watch('skypeID')}
-									// errors={errors}
-									// validationSchema={{
-									// 	required: 'Please enter skype ID',
-									// }}
-									label={'Skype'}
-									name="skypeID"
-									type={InputType.TEXT}
-									placeholder="Enter Link"
-									// required={
-									// 	watch('userType')?.id === UserAccountRole.SALES ||
-									// 	watch('userType')?.id === UserAccountRole.TALENTOPS ||
-									// 	watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
-									// 	watch('userType')?.id === UserAccountRole.FINANCE_EXECUTIVE
-									// }
-								/>
-							</div>
-							<div className={UserFieldStyle.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										validate: (value) => {
-											if (!value.trim()) {
-												return 'Please enter email address';
-											} else if (
-												!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value.trim())
-											) {
-												return 'Please enter valid email';
+											defaultValue={
+												enableALlFieldsMemo ? userDetails?.skypeId : null
 											}
-										},
-									}}
-									label="Email"
-									name="emailID"
-									type={InputType.TEXT}
-									placeholder="Enter Link"
-									required
-								/>
-							</div>
-							<div className={UserFieldStyle.colMd6}>
-								<div
-									className={`${UserFieldStyle.formGroup} ${UserFieldStyle.phoneNoGroup}`}>
-									<label>
-										Contact
-										{/* {watch('userType')?.id === UserAccountRole.SALES ||
+											value={watch('skypeID')}
+											// errors={errors}
+											// validationSchema={{
+											// 	required: 'Please enter skype ID',
+											// }}
+											label={'Skype'}
+											name="skypeID"
+											type={InputType.TEXT}
+											placeholder="Enter Link"
+											// required={
+											// 	watch('userType')?.id === UserAccountRole.SALES ||
+											// 	watch('userType')?.id === UserAccountRole.TALENTOPS ||
+											// 	watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
+											// 	watch('userType')?.id === UserAccountRole.FINANCE_EXECUTIVE
+											// }
+										/>
+									</div>
+									<div className={UserFieldStyle.colMd6}>
+										<HRInputField
+											register={register}
+											errors={errors}
+											validationSchema={{
+												validate: (value) => {
+													if (!value.trim()) {
+														return 'Please enter email address';
+													} else if (
+														!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(
+															value.trim(),
+														)
+													) {
+														return 'Please enter valid email';
+													}
+												},
+											}}
+											label="Email"
+											name="emailID"
+											type={InputType.TEXT}
+											placeholder="Enter Link"
+											required
+										/>
+									</div>
+									<div className={UserFieldStyle.colMd6}>
+										<div
+											className={`${UserFieldStyle.formGroup} ${UserFieldStyle.phoneNoGroup}`}>
+											<label>
+												Contact
+												{/* {watch('userType')?.id === UserAccountRole.SALES ||
 											watch('userType')?.id === UserAccountRole.TALENTOPS ||
 											watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
 											watch('userType')?.id === UserAccountRole.FINANCE_EXECUTIVE
 											? '*'
 											: null} */}
-									</label>
-									<div className={UserFieldStyle.phoneNoCode}>
-										<HRSelectField
-											searchable={true}
-											setValue={setValue}
-											register={register}
-											name="primaryClientCountryCode"
-											defaultValue="+91"
-											options={flagAndCodeMemo}
-										/>
-									</div>
-									<div className={UserFieldStyle.phoneNoInput}>
-										<HRInputField
-											// required={watch('userType')?.id === UserAccountRole.SALES}
-											register={register}
-											name={'primaryClientPhoneNumber'}
-											type={InputType.NUMBER}
-											placeholder="Enter number"
-											// validationSchema={{
-											// 	required: 'Please enter contact number',
-											// }}
-										/>
-									</div>
-								</div>
-							</div>
-
-							<div className={UserFieldStyle.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'please enter designation',
-									}}
-									label="Designation"
-									name="employeeDesignation"
-									type={InputType.TEXT}
-									placeholder="Enter Designation"
-									required
-								/>
-							</div>
-							<div className={UserFieldStyle.colMd12}>
-								{Object.keys(getUploadFileData).length === 0 ? (
-									<HRInputField
-										// value={userDetails?.profilePic ? userDetails?.profilePic : 'Upload Profile Picture'}
-										buttonLabel="Upload Profile Picture"
-										register={register}
-										leadingIcon={<UploadSVG />}
-										label="Profile Picture"
-										name="profilePic"
-										type={InputType.BUTTON}
-										onClickHandler={() => setUploadModal(true)}
-									/>
-								) : (
-									<div className={UserFieldStyle.uploadedJDWrap}>
-										<label>Company Logo (JPG, PNG, SVG)</label>
-										<div className={UserFieldStyle.uploadedJDName}>
-											{getUploadFileData?.name}
-											<div
-												className={UserFieldStyle.uploadedImgPreview}
-												onClick={() => setToggleImagePreview(true)}>
-												<Tooltip
-													placement="top"
-													title={'Image Preview'}>
-													<MdOutlinePreview />
-												</Tooltip>
+											</label>
+											<div className={UserFieldStyle.phoneNoCode}>
+												<HRSelectField
+													searchable={true}
+													setValue={setValue}
+													register={register}
+													name="primaryClientCountryCode"
+													defaultValue="+91"
+													options={flagAndCodeMemo}
+												/>
 											</div>
-											<CloseSVG
-												className={UserFieldStyle.uploadedJDClose}
-												onClick={() => {
-													setUploadFileData({});
-												}}
-											/>
+											<div className={UserFieldStyle.phoneNoInput}>
+												<HRInputField
+													// required={watch('userType')?.id === UserAccountRole.SALES}
+													register={register}
+													name={'primaryClientPhoneNumber'}
+													type={InputType.NUMBER}
+													placeholder="Enter number"
+													// validationSchema={{
+													// 	required: 'Please enter contact number',
+													// }}
+												/>
+											</div>
 										</div>
 									</div>
-								)}
 
-								{/* {!getUploadFileData ? (
+									<div className={UserFieldStyle.colMd6}>
+										<HRInputField
+											register={register}
+											errors={errors}
+											validationSchema={{
+												required: 'please enter designation',
+											}}
+											label="Designation"
+											name="employeeDesignation"
+											type={InputType.TEXT}
+											placeholder="Enter Designation"
+											required
+										/>
+									</div>
+									<div className={UserFieldStyle.colMd12}>
+										{Object.keys(getUploadFileData).length === 0 ? (
+											<HRInputField
+												// value={userDetails?.profilePic ? userDetails?.profilePic : 'Upload Profile Picture'}
+												buttonLabel="Upload Profile Picture"
+												register={register}
+												leadingIcon={<UploadSVG />}
+												label="Profile Picture"
+												name="profilePic"
+												type={InputType.BUTTON}
+												onClickHandler={() => setUploadModal(true)}
+											/>
+										) : (
+											<div className={UserFieldStyle.uploadedJDWrap}>
+												<label>Company Logo (JPG, PNG, SVG)</label>
+												<div className={UserFieldStyle.uploadedJDName}>
+													{getUploadFileData?.name}
+													<div
+														className={UserFieldStyle.uploadedImgPreview}
+														onClick={() => setToggleImagePreview(true)}>
+														<Tooltip
+															placement="top"
+															title={'Image Preview'}>
+															<MdOutlinePreview />
+														</Tooltip>
+													</div>
+													<CloseSVG
+														className={UserFieldStyle.uploadedJDClose}
+														onClick={() => {
+															setUploadFileData({});
+															setBase64Image('');
+														}}
+													/>
+												</div>
+											</div>
+										)}
+										{/* {!getUploadFileData ? (
 									<HRInputField
 										disabled={!_isNull(watch('jdURL'))}
 										register={register}
@@ -1385,8 +1232,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 										</div>
 									</div>
 								)} */}
-							</div>
-							{/* {watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD && (
+									</div>
+									{/* {watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD && (
 								<div className={UserFieldStyle.colMd6}>
 									<div className={UserFieldStyle.formGroup}>
 										<HRSelectField
@@ -1405,88 +1252,92 @@ const UsersFields = ({ id, setLoading, loading }) => {
 								</div>
 							)} */}
 
-							<Modal
-								className={UserFieldStyle.imagePreviewModal}
-								width={'500px'}
-								centered
-								footer={false}
-								open={toggleImagePreview}
-								onCancel={() => setToggleImagePreview(false)}>
-								<img
-									src={base64Image}
-									alt="preview"
-								/>
-							</Modal>
-							<UploadModal
-								isFooter={false}
-								uploadFileRef={uploadFile}
-								uploadFileHandler={(e) => uploadFileHandler(e.target.files[0])}
-								modalTitle={'Add Profile Pic.'}
-								openModal={showUploadModal}
-								cancelModal={() => setUploadModal(false)}
-								setValidation={setValidation}
-								getValidation={getValidation}
-								isLoading={isLoading}
-								isGoogleDriveUpload={false}
-								imageSize={2}
-							/>
-							<div className={UserFieldStyle.colMd12}>
-								<HRInputField
-									// required={
-									// 	watch('userType')?.id === UserAccountRole.SALES ||
-									// 	watch('userType')?.id === UserAccountRole.TALENTOPS ||
-									// 	watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
-									// 	watch('userType')?.id === UserAccountRole.FINANCE_EXECUTIVE
-									// }
-									isTextArea={true}
-									// errors={
-									// 	(watch('userType')?.id === UserAccountRole.SALES ||
-									// 		watch('userType')?.id === UserAccountRole.TALENTOPS ||
-									// 		watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
-									// 		watch('userType')?.id ===
-									// 		UserAccountRole.FINANCE_EXECUTIVE) &&
-									// 	errors
-									// }
-									label={'Description'}
-									register={register}
-									name="description"
-									validationSchema={{
-										required: 'please enter description',
-									}}
-									type={InputType.TEXT}
-									placeholder="Enter Description"
-									rows={'4'}
-								/>
+									<Modal
+										className={UserFieldStyle.imagePreviewModal}
+										width={'500px'}
+										centered
+										footer={false}
+										open={toggleImagePreview}
+										onCancel={() => setToggleImagePreview(false)}>
+										<img
+											src={base64Image}
+											alt="preview"
+										/>
+									</Modal>
+									<UploadModal
+										isFooter={false}
+										uploadFileRef={uploadFile}
+										uploadFileHandler={(e) =>
+											uploadFileHandler(e.target.files[0])
+										}
+										modalTitle={'Add Profile Pic.'}
+										openModal={showUploadModal}
+										cancelModal={() => setUploadModal(false)}
+										setValidation={setValidation}
+										getValidation={getValidation}
+										isLoading={isLoading}
+										isGoogleDriveUpload={false}
+										imageSize={2}
+									/>
+									<div className={UserFieldStyle.colMd12}>
+										<HRInputField
+											// required={
+											// 	watch('userType')?.id === UserAccountRole.SALES ||
+											// 	watch('userType')?.id === UserAccountRole.TALENTOPS ||
+											// 	watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
+											// 	watch('userType')?.id === UserAccountRole.FINANCE_EXECUTIVE
+											// }
+											isTextArea={true}
+											// errors={
+											// 	(watch('userType')?.id === UserAccountRole.SALES ||
+											// 		watch('userType')?.id === UserAccountRole.TALENTOPS ||
+											// 		watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
+											// 		watch('userType')?.id ===
+											// 		UserAccountRole.FINANCE_EXECUTIVE) &&
+											// 	errors
+											// }
+											label={'Description'}
+											register={register}
+											name="description"
+											// validationSchema={{
+											//   required: "please enter description",
+											// }}
+											type={InputType.TEXT}
+											placeholder="Enter Description"
+											rows={'4'}
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+					<Divider className={UserFieldStyle.midDivider} />
+
+					<div className={UserFieldStyle.partOne}>
+						<div className={UserFieldStyle.hrFieldLeftPane}></div>
+						<div className={UserFieldStyle.hrFieldRightPane}>
+							<div className={UserFieldStyle.formPanelAction}>
+								<button
+									// style={{
+									// 	cursor: enableALlFieldsMemo? 'no-drop' : 'pointer',
+									// }}
+									// disabled={enableALlFieldsMemo && true}
+									className={UserFieldStyle.btnPrimary}
+									onClick={handleSubmit(userSubmitHandler)}>
+									Submit
+									{/* {isLoading ? <Spin indicator={antIcon} /> : "Submit"} */}
+								</button>
+
+								<button
+									onClick={() => navigate(UTSRoutes.USERLISTROUTE)}
+									className={UserFieldStyle.btn}>
+									Back to Users
+								</button>
 							</div>
 						</div>
 					</div>
-				</div>
-			</form>
-
-			<Divider className={UserFieldStyle.midDivider} />
-
-			<div className={UserFieldStyle.partOne}>
-				<div className={UserFieldStyle.hrFieldLeftPane}></div>
-				<div className={UserFieldStyle.hrFieldRightPane}>
-					<div className={UserFieldStyle.formPanelAction}>
-						<button
-							// style={{
-							// 	cursor: enableALlFieldsMemo? 'no-drop' : 'pointer',
-							// }}
-							// disabled={enableALlFieldsMemo && true}
-							className={UserFieldStyle.btnPrimary}
-							onClick={handleSubmit(userSubmitHandler)}>
-							Submit
-						</button>
-
-						<button
-							onClick={() => navigate(UTSRoutes.USERLISTROUTE)}
-							className={UserFieldStyle.btn}>
-							Back to Users
-						</button>
-					</div>
-				</div>
-			</div>
+				</>
+			)}
 		</div>
 	);
 };
