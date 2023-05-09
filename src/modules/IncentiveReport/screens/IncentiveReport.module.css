@@ -3,6 +3,17 @@
   /* margin: 0 auto; */
   margin: 25px 40px;
 }
+.hiringRequestContainer tr th[class*="ant-table-cell"]{
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  white-space: nowrap;
+}
+.hiringRequestContainer tr th[class*="ant-table-cell"]:first-child{
+  padding-left: 20px !important;
+}
+.hiringRequestContainer tr th[class*="ant-table-cell"]:last-child{
+  padding-right: 20px !important;
+}
 
 .addnewHR {
   display: flex;
@@ -450,14 +461,64 @@ tr th:first-child {
 
 /* Custome tree view */
 
-.tree_custom {
-  width: 32.33%;
-  border: 1px solid #fed452;
-  padding: 0px;
+.hierarchyTree {
   background: #fff;
-  padding: 20px 5px;
+  padding: 24px 16px;
+  border-radius: 8px;
+  margin: 0 0 32px;
+  width: 51.9%;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.tree_custom [class*="ant-tree-list"] {
-  /* background: red; */
+.hierarchyTree [class*="ant-tree-node-selected"]{
+  background: var(--color-sunlight) !important;
+}
+
+.reportFilterWrap{
+  position: relative;
+  padding-right: 255px;
+}
+
+.filterAction{
+  display: flex;
+  position: absolute;
+  right: 0;
+  top: 25px;
+}
+
+.filterAction button{
+  background: var(--text-color-purity);
+  border: 1px solid #CECCCC;
+  border-radius: 8px;
+  font-family: 'Montserrat';
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--uplers-black);
+  padding: 15px 16px;
+  outline: none;
+  cursor: pointer;
+  box-shadow: none;
+  min-width: 110px;
+  min-height: 54px;
+  display: inline-block;
+}
+
+.filterAction .filterSearchBtn{
+  margin-right: 18px;
+  background: var(--color-sunlight);
+  border-color: var(--color-sunlight);
+}
+.filterNoDataFound{
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  color: var(--uplers-black);
+}
+.tableTitle{
+  margin: 0 0 16px;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.25;
+  color: var(--uplers-black);
 }

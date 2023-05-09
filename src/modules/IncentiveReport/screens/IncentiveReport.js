@@ -113,7 +113,7 @@ const IncentiveReportScreen = () => {
 
   const { TreeNode } = Tree;
   const [gethierarachy, sethierarchy] = useState([]);
-
+  const [hierarchyDataNotFound,sethierarchyDataNotFound] = useState("")
   const searchTableData = [
     {
       title: "User(Role)",
@@ -897,6 +897,8 @@ const IncentiveReportScreen = () => {
     }
   };
 
+  
+
   const getSalesUserBasedOnUserRole = async () => {
     const response = await IncentiveReportDAO.getSalesUsersBasedOnUserRoleDAO(
       watchValueUserRoles?.id
@@ -907,13 +909,15 @@ const IncentiveReportScreen = () => {
     }));
     setManagerDataInfo(managerData);
   };
-
+console.log(watchManagerId,"watchManagerId?.id")
   const getUserHierarchy = async () => {
+    sethierarchyDataNotFound(watchManagerId?.id)
     const response = await IncentiveReportDAO.getUserHierarchyDAO(
       watchManagerId?.id
     );
     if (response.statusCode === HTTPStatusCode.OK) {
       sethierarchy(response?.responseBody);
+      sethierarchyDataNotFound("")
     } else {
       sethierarchy([]);
     }
@@ -986,18 +990,23 @@ const IncentiveReportScreen = () => {
     setIncentiveBoosterList([]);
     setIncentiveReportInfo([]);
     sethierarchy([]);
+    sethierarchyDataNotFound("")
   }, [resetField]);
 
   const [childHirerarchy, setChildHirerarchy] = useState([]);
+  
   const onSelect = async (selectedKeys, info) => {
+    
     const response = await IncentiveReportDAO.getUserHierarchyDAO(
       selectedKeys?.[0]
     );
+   
     setChildHirerarchy(response.responseBody);
     const data = gethierarachy;
     response.responseBody?.forEach((detail) => {
       insertUser(detail.undeR_PARENT, { ...detail }, data);
     });
+    
     sethierarchy(data);
     function insertUser(userID, userData, data) {
       for (let i = 0; i < data.length; i++) {
@@ -1048,7 +1057,7 @@ const IncentiveReportScreen = () => {
       <div className={IncentiveReportStyle.filterContainer}>
       </div>
 
-      <div className={IncentiveReportStyle.row}>
+      <div className={`${IncentiveReportStyle.row} ${IncentiveReportStyle.reportFilterWrap}`}>
         <div className={IncentiveReportStyle.colMd4}>
           <HRSelectField
             setControlledValue={setUserRoleValue}
@@ -1088,7 +1097,7 @@ const IncentiveReportScreen = () => {
         </div>
         <div className={IncentiveReportStyle.colMd4}>
           <HRSelectField
-            setControlledValue={setMonthYearValue}
+            setControlledValue={setMonthYearValue}  
             controlledValue={getMonthYearValue}
             isControlled={true}
             setValue={setValue}
@@ -1102,17 +1111,21 @@ const IncentiveReportScreen = () => {
             errorMsg="Please select a month."
           />
         </div>
+        <div className={IncentiveReportStyle.filterAction}>
+          <button onClick={getList} className={IncentiveReportStyle.filterSearchBtn}>Search</button>
+          <button onClick={resetButton}>Reset</button>
+        </div>
       </div>
 
-      <button onClick={getList}>Search</button>
-      <button onClick={resetButton}>Reset</button>
+      
       {/*
        * ------------ Table Starts-----------
        * @Table Part
        */}
-      {gethierarachy?.length === 0 && <h1>No data found</h1>}
+      {hierarchyDataNotFound!==""  && <div className={IncentiveReportStyle.filterNoDataFound}>No data found</div>}
+      {console.log(hierarchyDataNotFound,"gethierarachy")}
       {gethierarachy?.length !== 0 && (
-        <div className={IncentiveReportStyle.tree_custom}>
+        <div className={IncentiveReportStyle.hierarchyTree}>
           <div>
             <Tree
               showLine={showLine ? { showLeafIcon } : false}
@@ -1125,6 +1138,7 @@ const IncentiveReportScreen = () => {
           </div>
         </div>
       )}
+      
       {tableData?.length !== 0 ? (
         <Table
           columns={searchTableData}
@@ -1139,14 +1153,14 @@ const IncentiveReportScreen = () => {
           }}
         />
       ) : (
-        <h1>{errorMessage}</h1>
+        errorMessage  ? <div className={IncentiveReportStyle.filterNoDataFound}>{errorMessage}</div> : ''
       )}
 
       {incentiveReportInfo.length !== 0 &&
         (incentiveReportInfo[0]?.userRole === "AM" ||
         incentiveReportInfo[0]?.userRole === "AM Head" ? (
           <>
-            <div className={IncentiveReportStyle.hiringRequest}>AM Target</div>
+            <div className={IncentiveReportStyle.tableTitle}>AM Target</div>
             <Table
               columns={
                 valueOfSelected === "AM Head" || valueOfSelected === "AM"
@@ -1179,7 +1193,7 @@ const IncentiveReportScreen = () => {
           </>
         ) : (
           <>
-            <div className={IncentiveReportStyle.hiringRequest}>
+            <div className={IncentiveReportStyle.tableTitle}>
               Based Fixed
             </div>
             <Table
@@ -1215,7 +1229,7 @@ const IncentiveReportScreen = () => {
         ))}
       {incentiveBoosterList.length !== 0 && (
         <>
-          <div className={IncentiveReportStyle.hiringRequest}>
+          <div className={IncentiveReportStyle.tableTitle}>
             Contract Booster
           </div>
           <Table

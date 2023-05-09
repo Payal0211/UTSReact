@@ -115,22 +115,19 @@ input[type="file"] {
   margin-top: 30px !important;
   justify-content: center !important;
 }
+.ant-pagination-item a:hover{
+  color: var(--color-sunlight) !important;
+}
 
-
-.ant-pagination-item-active{
+.ant-pagination-item.ant-pagination-item-active{
   background-color: var(--color-sunlight) !important;
   border-radius: 8px;
   border: none;
   
 }
-.ant-pagination-item-active a{
+.ant-pagination-item.ant-pagination-item-active a{
   font-weight: 700;
   color: var(--uplers-black) !important;
-}
-
-
-.ant-pagination-item a:hover{
-  color: var(--color-sunlight) !important;
 }
 
 
