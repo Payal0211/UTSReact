@@ -1,0 +1,559 @@
+.hiringRequestContainer {
+  margin: 0 40px;
+  padding-bottom: 32px;
+}
+.hiringRequestContainer [class*="ant-pagination"] {
+  display: none;
+}
+.hiringRequestContainer [class*="ant-table-wrapper"] {
+  margin-bottom: 32px;
+}
+.hiringRequestContainer [class*="ant-table-wrapper"]:last-child {
+  margin-bottom: 0;
+}
+.hiringRequestContainer tr th[class*="ant-table-cell"] {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  white-space: nowrap;
+}
+.hiringRequestContainer tr th[class*="ant-table-cell"]:first-child {
+  padding-left: 20px !important;
+}
+.hiringRequestContainer tr th[class*="ant-table-cell"]:last-child {
+  padding-right: 20px !important;
+}
+
+.addnewHR {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.hiringRequest {
+  font-size: 32px;
+  font-weight: 500;
+}
+
+.newHR {
+  padding: 1px 0;
+  background-color: var(--color-sunlight);
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.newHR label {
+  padding: 0 20px;
+  font-weight: 500;
+  font-size: 0.8vw;
+}
+
+.iconDown {
+  height: 50px;
+  width: 50px;
+  margin-right: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background-color: var(--background-color-light);
+}
+
+.filterContainer {
+  /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
+  border-radius: 10px;
+  /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
+  margin: 50px auto 20px auto;
+  background-color: var(--background-color-light);
+}
+
+.filterSets {
+  width: 96%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 30px 0;
+  display: flex;
+  border-radius: 10px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  /* height: 92px; */
+}
+
+.addFilter {
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 167px;
+  height: 44px;
+  border: 1px solid var(--background-color-metal);
+}
+
+.filterLabel {
+  font-weight: 500;
+  font-size: 0.7vw;
+}
+
+.filterCount {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: var(--fontsize-uplers);
+  background-color: var(--color-sunlight);
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+.filterRight {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchFilterSet {
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  width: 250px;
+  height: 44px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  cursor: pointer;
+  width: 80%;
+  outline: none;
+  border: none;
+  color: var(--uplers-black);
+  font-weight: 500;
+}
+
+.calendarFilterSet {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 8px;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--uplers-lightBlack);
+}
+
+.calendarFilter {
+  width: 250px;
+  height: 44px;
+  border-radius: 8px;
+  padding: 2px 10px;
+  border: 1px solid var(--background-color-metal);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.calendarFilter [class*="react-datepicker-popper"] {
+  right: 0 !important;
+  left: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  margin: 40px 0 30px;
+}
+
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  > div
+  > [class*="react-datepicker"] {
+  margin-left: 0;
+  min-width: 100%;
+}
+
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  [class*="react-datepicker__navigation"]:before {
+  top: 14px;
+}
+
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  [class*="react-datepicker__day-names"] {
+  margin-top: 5px;
+}
+
+.calendarFilter
+  [class*="react-datepicker__month-container"]
+  [class*="react-datepicker__month"] {
+  margin-bottom: 10px;
+}
+
+.dateFilter {
+  cursor: pointer;
+  width: 102%;
+  outline: none;
+  border: none;
+  color: var(--uplers-black);
+  font-weight: 500;
+}
+
+.priorityFilterSet {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.priorityFilter {
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 44px;
+}
+
+.paginationFilter {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 71px;
+  height: 44px;
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tableDetails {
+  margin-top: 24px;
+}
+
+.formPanelAction {
+  padding: 32px 0;
+  justify-content: center;
+  display: flex;
+}
+
+.formPanelAction button {
+  background: var(--text-color-purity);
+  border: 1px solid var(--tabs-border-color);
+  border-radius: 8px;
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: var(--uplers-black);
+  padding: 12px 28px;
+  outline: none;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.formPanelAction .btnPrimary {
+  background: var(--color-sunlight);
+  border-color: var(--color-sunlight);
+}
+
+.formPanelAction button + button {
+  margin-left: 16px;
+}
+
+.hiringRequestPriority {
+  background-color: var(--background-color-light);
+  border: 2px solid var(--uplers-border-color);
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+
+.formPanelAction {
+  padding: 32px 0;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  /* width: 1176px */
+}
+
+.matchmakingLabel {
+  margin-top: 40px;
+  margin-left: 20px;
+  line-height: 39px;
+  font-weight: 500;
+  font-size: 32px;
+}
+.trReq {
+  margin-top: 10px;
+  margin-left: 20px;
+  line-height: 49px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.isSelectedBackground {
+  background: #f7f7f7 !important;
+}
+
+.selectedCell {
+  padding: 17px 12px;
+  font-weight: 600 !important;
+  text-align: start;
+  border-bottom: 2px solid var(--color-sunlight);
+}
+
+.isSelected {
+  background-color: var(--background-color-light);
+}
+
+.formPanelAction button {
+  background: #ffffff;
+  border: 1px solid #cecccc;
+  border-radius: 8px;
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #232323;
+  padding: 12px 28px;
+  outline: none;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.formPanelAction .btnPrimary {
+  background: #ffda30;
+  border-color: #ffda30;
+}
+
+.formPanelAction button + button {
+  margin-left: 16px;
+}
+
+.searchFilterSet {
+  margin-right: 25px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  width: 276px;
+  height: 44px;
+  background: transparent;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  cursor: pointer;
+  width: 80%;
+  outline: none;
+  border: none;
+  color: var(--uplers-black);
+  font-weight: 500;
+}
+
+.matchmakingTable {
+  cursor: pointer;
+  border-collapse: collapse;
+  width: 100%;
+
+  position: relative;
+}
+
+.td {
+  padding: 17px 12px;
+  text-align: start;
+  border-bottom: 1px solid var(--uplers-grey) !important;
+}
+
+tr .td:first-child {
+  padding-left: 20px;
+}
+
+.ellipsis {
+  white-space: nowrap;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.maxWidth164 {
+  max-width: 164px;
+}
+
+.maxWidth134 {
+  max-width: 134px;
+}
+
+.maxWidth170 {
+  max-width: 170px;
+}
+
+.ml5 {
+  width: 10px;
+  margin-left: 5px;
+}
+
+.th {
+  z-index: 1;
+  padding: 24px 12px;
+  text-align: start;
+  color: var(--background-color-light);
+  font-size: 14px !important;
+  font-weight: 600;
+  line-height: 17px !important;
+  color: var(--uplers-black);
+  position: sticky;
+  top: 0;
+  border-bottom: 1px dashed var(--uplers-grey);
+}
+
+tr th:first-child {
+  padding-left: 20px;
+}
+
+.btnPrimary {
+  background: #ffda30;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #232323;
+  padding: 12px 28px;
+  outline: none;
+  transition: all 0.35s ease 0s;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.btnPrimary:hover {
+  background: #232323;
+  color: #fff;
+  border-color: #232323;
+}
+
+.row {
+  margin: 0 -9px;
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.colMd12 {
+  width: 100%;
+  padding: 0 9px;
+}
+
+.colMd6 {
+  width: 50%;
+  padding: 0 9px;
+}
+
+.colMd4 {
+  width: 33.33%;
+  padding: 0 9px;
+}
+
+/* Custome tree view */
+.hierarchyTree [class*="ant-tree-node-selected"] {
+  background: var(--color-sunlight) !important;
+}
+
+.reportFilterWrap {
+  position: relative;
+  padding-right: 255px;
+}
+
+.filterAction {
+  display: flex;
+  position: absolute;
+  right: 0;
+  top: 25px;
+}
+
+.filterAction button {
+  background: var(--text-color-purity);
+  border: 1px solid #cecccc;
+  border-radius: 8px;
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--uplers-black);
+  padding: 15px 16px;
+  outline: none;
+  cursor: pointer;
+  box-shadow: none;
+  min-width: 110px;
+  min-height: 54px;
+  display: inline-block;
+}
+
+.filterAction .filterSearchBtn {
+  margin-right: 18px;
+  background: var(--color-sunlight);
+  border-color: var(--color-sunlight);
+}
+.filterNoDataFound {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  color: var(--uplers-black);
+}
+.tableTitle {
+  margin: 0 0 16px;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.25;
+  color: var(--uplers-black);
+}
+.hierarchyTree h2 {
+  border-bottom: 1px dashed #e8e8e8;
+  padding-bottom: 16px;
+  font-size: 24px;
+  line-height: 32px;
+  margin-bottom: 24px;
+}
+.selectHierarchyAction {
+  align-items: center;
+  display: flex;
+}
+.selectHierarchyAction label {
+  vertical-align: top;
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  color: #676767;
+  margin: 0 10px 0 0;
+  display: inline-block;
+}
+.selectHierarchyAction button {
+  background: #ffda30;
+  border: 1px solid #ffda30;
+  border-radius: 8px;
+  padding: 13px 16px;
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #232323;
+  cursor: pointer;
+  transition: all 0.35s ease 0s;
+  box-shadow: none;
+  outline: none;
+}

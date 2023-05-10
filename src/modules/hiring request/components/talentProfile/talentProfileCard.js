@@ -17,6 +17,7 @@ const TalentProfileCard = ({
 	hrStatus,
 	hrType,
 	callHRapi,
+	inteviewSlotDetails,
 	setHRapiCall,
 }) => {
 	return (
@@ -49,6 +50,7 @@ const TalentProfileCard = ({
 								clientDetail={clientDetail}
 								callHRapi={callHRapi}
 								setHRapiCall={setHRapiCall}
+								inteviewSlotDetails={inteviewSlotDetails}
 							/>
 						</Suspense>
 					) : (

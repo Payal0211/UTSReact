@@ -35,11 +35,12 @@ const DemandFunnelScreen = () => {
 		head: '',
 		isActionWise: true,
 	});
+
 	const [demandFunnelValue, setDemandFunnelValue] = useState({});
 	const [demandFunnelHRDetailsState, setDemandFunnelHRDetailsState] = useState({
 		adhocType: '',
 		TeamManagerName: '',
-		currentStage: 'TR Accepted',
+		currentStage: '',
 		IsExport: false,
 		hrFilter: {
 			hR_No: '',
@@ -50,7 +51,7 @@ const DemandFunnelScreen = () => {
 			talentName: '',
 			availability: '',
 		},
-		funnelFilter: tableFilteredState,
+		funnelFilter: { ...tableFilteredState },
 	});
 
 	const [apiData, setApiData] = useState([]);
@@ -103,7 +104,9 @@ const DemandFunnelScreen = () => {
 			});
 			setDemandFunnelHRDetailsState({
 				...demandFunnelHRDetailsState,
+
 				funnelFilter: {
+					...demandFunnelHRDetailsState?.funnelFilter,
 					startDate: new Date(start)
 						.toLocaleDateString('en-UK')
 						.split('/')
@@ -186,6 +189,8 @@ const DemandFunnelScreen = () => {
 				...demandFunnelHRDetailsState,
 
 				funnelFilter: {
+					...demandFunnelHRDetailsState?.funnelFilter,
+
 					startDate: response?.responseBody?.Data?.StartDate,
 					endDate: response?.responseBody?.Data?.EndDate,
 				},
@@ -352,6 +357,8 @@ const DemandFunnelScreen = () => {
 						filtersType={reportConfig.demandReportFilterTypeConfig(
 							filtersList && filtersList,
 						)}
+						setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
+						demandFunnelHRDetailsState={demandFunnelHRDetailsState}
 					/>
 				</Suspense>
 			)}

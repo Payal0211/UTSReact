@@ -117,21 +117,20 @@ input[type="file"] {
 }
 
 
-.ant-pagination-item-active{
+.ant-pagination-item a:hover {
+  color: var(--color-sunlight) !important;
+}
+
+.ant-pagination-item.ant-pagination-item-active {
   background-color: var(--color-sunlight) !important;
   border-radius: 8px;
   border: none;
-  
 }
-.ant-pagination-item-active a{
+.ant-pagination-item.ant-pagination-item-active a {
   font-weight: 700;
   color: var(--uplers-black) !important;
 }
 
-
-.ant-pagination-item a:hover{
-  color: var(--color-sunlight) !important;
-}
 
 
 th {
@@ -614,7 +613,7 @@ table{
 .engagementReplaceTalentModal .ant-modal-content,
 .statusModalWrap .ant-modal-content,
 .convert-dp-modal-wrap .ant-modal-content,
-.convert-contractual-modal-wrap .ant-modal-content{
+.convert-contractual-modal-wrap .ant-modal-content,.incentiveHierarchyModal .ant-modal-content{
   background: #FFFFFF !important;
   box-shadow: 0px 1.91653px 7.66613px rgba(204, 238, 204, 0.25) !important;
   border-radius: 8px !important;
@@ -627,7 +626,7 @@ table{
 .engagementReplaceTalentModal .ant-modal-body,
 .statusModalWrap .ant-modal-body,
 .convert-dp-modal-wrap .ant-modal-body,
-.convert-contractual-modal-wrap .ant-modal-body{
+.convert-contractual-modal-wrap .ant-modal-body,.incentiveHierarchyModal .ant-modal-body {
   padding: 0px;
 }
 

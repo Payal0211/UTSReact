@@ -643,4 +643,16 @@ export const hrUtils = {
 			);
 		}
 	},
+	formatInterviewSlots: (data) => {
+		return data?.map((item) => ({
+			label: item?.StrDateTime,
+			key: item?.StrDateTime,
+		}));
+	},
+	formatInteviewTime: (data) => {
+		return data?.map((item, index) => ({
+			label: item?.StartTime + ' - ' + item?.EndTime,
+			key: item?.StrDateTime + index,
+		}));
+	},
 };

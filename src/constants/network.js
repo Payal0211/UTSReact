@@ -23,6 +23,7 @@ export class SubDomain {
 	static ENGAGEMENT = 'Engagement/';
 	static TALENT_REPLACEMENT = 'TalentReplacement/';
 	static REPORT = 'Report/';
+ static INCENTIVE_REPORT = "IncentiveReport/";
 }
 export class APIType {
 	static USER = '/user';
@@ -229,4 +230,15 @@ export class TalentReplaceAPI {
 	static ENGAGEMENT_REPLACE_TALENT =
 		'GetEngagemetnsForReplacementBasedOnLWDOption';
 	static SAVE_REPLACED_TALENT = 'SaveReplaceTalent';
+}
+export class IncentiveReport {
+  static GET_USER_ROLE = "GetIncentiveReport";
+  static MONTH_YEAR_FILER = "MonthYearFilter";
+  static GET_SALES_USERS_BASED_ON_USER_ROLE = "GetSalesUsersBasedOnUserRole";
+  static GET_USER_HIERARCHY = "GetUserHierarchy";
+  static GET_LIST = "List";
+  static GET_INCENTIVE_REPORT_DETAILS = "GetIncentiveReportDetails";
+  static GET_CONTRACT_BOOSTER = "GetIncentiveReportDetailsContractBooster";
+  static GET_CONTRACT_BOOSTER = "GetIncentiveReportDetailsContractBooster";
+  static GET_INCENTIVE_REPORT_AMNR = "GetIncentiveReportDetailsAMNR";
 }

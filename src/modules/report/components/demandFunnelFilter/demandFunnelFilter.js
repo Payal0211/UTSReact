@@ -21,6 +21,8 @@ const DemandFunnelFilter = ({
 	setTableFilteredState,
 	filtersType,
 	getHTMLFilter,
+	setDemandFunnelHRDetailsState,
+	demandFunnelHRDetailsState,
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -176,6 +178,32 @@ const DemandFunnelFilter = ({
 			head: '',
 			isActionWise: true,
 		});
+		setDemandFunnelHRDetailsState({
+			adhocType: '',
+			TeamManagerName: '',
+			currentStage: '',
+			IsExport: false,
+			hrFilter: {
+				hR_No: '',
+				salesPerson: '',
+				compnayName: '',
+				role: '',
+				managed_Self: '',
+				talentName: '',
+				availability: '',
+			},
+			funnelFilter: {
+				startDate: '',
+				endDate: '',
+				isHiringNeedTemp: '',
+				modeOfWork: '',
+				typeOfHR: '-1',
+				companyCategory: '',
+				replacement: '',
+				head: '',
+				isActionWise: true,
+			},
+		});
 		const reqFilter = {
 			startDate: '',
 			endDate: '',
@@ -187,14 +215,16 @@ const DemandFunnelFilter = ({
 			head: '',
 			isActionWise: true,
 		};
-		handleHRRequest(reqFilter);
+
+		// handleHRRequest(reqFilter);
 	}, [
-		handleHRRequest,
 		setAppliedFilters,
 		setCheckedState,
+		setDemandFunnelHRDetailsState,
 		setFilteredTagLength,
 		setTableFilteredState,
 	]);
+
 	const handleFilters = useCallback(() => {
 		let filters = {};
 		appliedFilter.forEach((item) => {
@@ -208,6 +238,7 @@ const DemandFunnelFilter = ({
 			...tableFilteredState,
 			...filters,
 		});
+
 		const reqFilter = {
 			...tableFilteredState,
 			...filters,
@@ -216,11 +247,19 @@ const DemandFunnelFilter = ({
 
 		if (reqFilter?.isActionWise === '1') reqFilter.isActionWise = true;
 		else reqFilter.isActionWise = false;
+		setDemandFunnelHRDetailsState({
+			...demandFunnelHRDetailsState,
+			funnelFilter: {
+				...reqFilter,
+			},
+		});
 		setTableFilteredState(reqFilter);
-		// handleHRRequest(reqFilter);
+		handleHRRequest(reqFilter);
 	}, [
 		appliedFilter,
-		// handleHRRequest,
+		demandFunnelHRDetailsState,
+		handleHRRequest,
+		setDemandFunnelHRDetailsState,
 		setTableFilteredState,
 		tableFilteredState,
 	]);

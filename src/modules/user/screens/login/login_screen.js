@@ -34,7 +34,7 @@ const LoginScreen = () => {
 		const result = await userDAO.loginDAO(formValues);
 		if (result.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
-			navigate(UTSRoutes.HOMEROUTE);
+			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
 		} else if (result.statusCode === HTTPStatusCode.BAD_REQUEST) {
 			setLoading(false);
 			alert(result.responseBody);
@@ -60,7 +60,7 @@ const LoginScreen = () => {
 							/>
 						</span>
 						<div className={loginStyle.welcomePart}>
-							<h1 className={loginStyle.welcomeTitle}>Welcome Back !</h1>
+							<h1 className={loginStyle.welcomeTitle}>Welcome</h1>
 							<p className={loginStyle.welcomeSubtitle}>
 								Please enter your log in information and get started
 							</p>

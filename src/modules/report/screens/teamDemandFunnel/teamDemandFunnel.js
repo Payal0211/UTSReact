@@ -33,6 +33,7 @@ const TeamDemandFunnelFilterLazyComponent = React.lazy(() =>
 
 const TeamDemandFunnelScreen = () => {
 	const [selectedHierarchy, setSelectedHierarchy] = useState();
+	const [isActionWise, setActionWise] = useState(false);
 	const [showSelectedHierarchyModal, setShowSelectedHierarchyModal] =
 		useState(false);
 	const {
@@ -61,7 +62,7 @@ const TeamDemandFunnelScreen = () => {
 		useState({
 			adhocType: '',
 			selectedRow_SalesUserName: '',
-			currentStage: 'TR Accepted',
+			currentStage: '',
 			IsExport: false,
 			hrFilter: {
 				hR_No: '',
@@ -472,6 +473,7 @@ const TeamDemandFunnelScreen = () => {
 				salesManagerID: d.salesManager?.id,
 				isActionWise: true,
 			};
+			setActionWise(true);
 			setTableFilteredState({
 				...tableFilteredState,
 				salesManagerID: d.salesManager?.id,
@@ -530,6 +532,7 @@ const TeamDemandFunnelScreen = () => {
 				salesManagerID: d.salesManager?.id,
 				isActionWise: false,
 			});
+			setActionWise(false);
 			setTeamDemandFunnelHRDetailsState({
 				...teamDemandFunnelHRDetailsState,
 				funnelFilter: {
@@ -782,6 +785,11 @@ const TeamDemandFunnelScreen = () => {
 									filtersList && filtersList,
 								)}
 								selectedHierarchy={selectedHierarchy}
+								setTeamDemandFunnelHRDetailsState={
+									setTeamDemandFunnelHRDetailsState
+								}
+								isActionWise={isActionWise}
+								teamDemandFunnelHRDetailsState={teamDemandFunnelHRDetailsState}
 							/>
 						</Suspense>
 					)}
