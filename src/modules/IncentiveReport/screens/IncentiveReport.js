@@ -113,7 +113,7 @@ const IncentiveReportScreen = () => {
 
   const { TreeNode } = Tree;
   const [gethierarachy, sethierarchy] = useState([]);
-  const [hierarchyDataNotFound,sethierarchyDataNotFound] = useState("")
+  const [hierarchyDataNotFound, sethierarchyDataNotFound] = useState("")
   const searchTableData = [
     {
       title: "User(Role)",
@@ -897,7 +897,7 @@ const IncentiveReportScreen = () => {
     }
   };
 
-  
+
 
   const getSalesUserBasedOnUserRole = async () => {
     const response = await IncentiveReportDAO.getSalesUsersBasedOnUserRoleDAO(
@@ -909,7 +909,7 @@ const IncentiveReportScreen = () => {
     }));
     setManagerDataInfo(managerData);
   };
-console.log(watchManagerId,"watchManagerId?.id")
+
   const getUserHierarchy = async () => {
     sethierarchyDataNotFound(watchManagerId?.id)
     const response = await IncentiveReportDAO.getUserHierarchyDAO(
@@ -994,19 +994,19 @@ console.log(watchManagerId,"watchManagerId?.id")
   }, [resetField]);
 
   const [childHirerarchy, setChildHirerarchy] = useState([]);
-  
+
   const onSelect = async (selectedKeys, info) => {
-    
+
     const response = await IncentiveReportDAO.getUserHierarchyDAO(
       selectedKeys?.[0]
     );
-   
+
     setChildHirerarchy(response.responseBody);
     const data = gethierarachy;
     response.responseBody?.forEach((detail) => {
       insertUser(detail.undeR_PARENT, { ...detail }, data);
     });
-    
+
     sethierarchy(data);
     function insertUser(userID, userData, data) {
       for (let i = 0; i < data.length; i++) {
@@ -1100,7 +1100,7 @@ console.log(watchManagerId,"watchManagerId?.id")
         </div>
         <div className={IncentiveReportStyle.colMd4}>
           <HRSelectField
-            setControlledValue={setMonthYearValue}  
+            setControlledValue={setMonthYearValue}
             controlledValue={getMonthYearValue}
             isControlled={true}
             setValue={setValue}
@@ -1120,13 +1120,13 @@ console.log(watchManagerId,"watchManagerId?.id")
         </div>
       </div>
 
-      
+
       {/*
        * ------------ Table Starts-----------
        * @Table Part
        */}
-      {hierarchyDataNotFound!==""  && <div className={IncentiveReportStyle.filterNoDataFound}>No data found</div>}
-      {console.log(hierarchyDataNotFound,"gethierarachy")}
+      {hierarchyDataNotFound !== "" && <div className={IncentiveReportStyle.filterNoDataFound}>No data found</div>}
+
       {gethierarachy?.length !== 0 && (
         <div className={IncentiveReportStyle.hierarchyTree}>
           <div>
@@ -1141,7 +1141,7 @@ console.log(watchManagerId,"watchManagerId?.id")
           </div>
         </div>
       )}
-      
+
       {tableData?.length !== 0 ? (
         <Table
           columns={searchTableData}
@@ -1156,7 +1156,7 @@ console.log(watchManagerId,"watchManagerId?.id")
           }}
         />
       ) : (
-        errorMessage  ? <div className={IncentiveReportStyle.filterNoDataFound}>{errorMessage}</div> : ''
+        errorMessage ? <div className={IncentiveReportStyle.filterNoDataFound}>{errorMessage}</div> : ''
       )}
 
       {incentiveReportInfo.length !== 0 &&
