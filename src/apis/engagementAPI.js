@@ -2,6 +2,7 @@ import {
     EngagementAPI,
     NetworkInfo,
     SubDomain,
+    HiringRequestsAPI
 } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
