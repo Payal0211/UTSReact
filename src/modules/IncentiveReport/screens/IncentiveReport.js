@@ -910,6 +910,7 @@ const IncentiveReportScreen = () => {
     }));
     setManagerDataInfo(managerData);
   };
+  const [hierarchyButton, setHierarchyButton] = useState(false)
 
   const getUserHierarchy = async () => {
     sethierarchyDataNotFound(watchManagerId?.id)
@@ -919,9 +920,11 @@ const IncentiveReportScreen = () => {
     if (response.statusCode === HTTPStatusCode.OK) {
       sethierarchy(response?.responseBody);
       sethierarchyDataNotFound("")
-      setHierarchyModal(true)
+      // setHierarchyModal(true)
+      setHierarchyButton(true)
     } else {
       sethierarchy([]);
+      setHierarchyButton(false)
     }
   };
 
@@ -993,6 +996,7 @@ const IncentiveReportScreen = () => {
     setIncentiveReportInfo([]);
     sethierarchy([]);
     sethierarchyDataNotFound("")
+    setHierarchyButton(false)
   }, [resetField]);
 
   const [childHirerarchy, setChildHirerarchy] = useState([]);
@@ -1026,7 +1030,7 @@ const IncentiveReportScreen = () => {
         }
       }
     }
-    console.log(data, "data");
+
   };
 
   function generateTreeData(gethierarachy) {
@@ -1055,6 +1059,15 @@ const IncentiveReportScreen = () => {
           <div className={IncentiveReportStyle.hiringRequest}>
             Incentive Reports
           </div>
+
+          {hierarchyButton && (
+            <div className={IncentiveReportStyle.selectHierarchyAction}>
+              <label>Select Hierarchy:</label>
+              <button onClick={() => setHierarchyModal(true)}>{gethierarachy?.[0]?.parent}</button>
+            </div>
+
+          )
+          }
         </div>
 
         <div className={`${IncentiveReportStyle.row} ${IncentiveReportStyle.reportFilterWrap}`}>
