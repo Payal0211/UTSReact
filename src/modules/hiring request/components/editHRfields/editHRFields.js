@@ -523,7 +523,7 @@ const EditHRFields = ({
     ]);
 
     useEffect(() => {
-        !_isNull(prefRegion) && getTimeZonePreference();
+
         getAvailability();
         getTalentRole();
         getSalesPerson();
@@ -533,17 +533,24 @@ const EditHRFields = ({
         getHowSoon();
         getNRMarginHandler();
     }, [
-        getAvailability,
-        getSalesPerson,
-        getTalentRole,
-        getTimeZonePreference,
-        getRegion,
-        prefRegion,
-        getHowSoon,
-        getWorkingMode,
-        getCountry,
-        getNRMarginHandler,
+        // getAvailability,
+        // getSalesPerson,
+        // getTalentRole,
+        // getTimeZonePreference,
+        // getRegion,
+        // prefRegion,
+        // getHowSoon,
+        // getWorkingMode,
+        // getCountry,
+        // getNRMarginHandler,
     ]);
+
+
+    useEffect(() => {
+        !_isNull(prefRegion) && getTimeZonePreference();
+    }, [prefRegion])
+
+
     useEffect(() => {
         setValidation({
             systemFileUpload: '',
