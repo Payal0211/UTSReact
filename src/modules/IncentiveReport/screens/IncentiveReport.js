@@ -110,6 +110,7 @@ const IncentiveReportScreen = () => {
   const [valueOfSelected, setValueOfSelected] = useState("");
   const [valueOfSelectedUserName, setValueOfSelectedUserName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [hierarchyModal,setHierarchyModal] = useState(false);
 
   const { TreeNode } = Tree;
   const [gethierarachy, sethierarchy] = useState([]);
@@ -918,6 +919,7 @@ const IncentiveReportScreen = () => {
     if (response.statusCode === HTTPStatusCode.OK) {
       sethierarchy(response?.responseBody);
       sethierarchyDataNotFound("")
+      setHierarchyModal(true)
     } else {
       sethierarchy([]);
     }
@@ -1047,6 +1049,7 @@ const IncentiveReportScreen = () => {
   const treedata = generateTreeData(gethierarachy)
 
   return (
+    <>
     <div className={IncentiveReportStyle.hiringRequestContainer}>
       <div className={IncentiveReportStyle.addnewHR}>
         <div className={IncentiveReportStyle.hiringRequest}>
@@ -1127,7 +1130,7 @@ const IncentiveReportScreen = () => {
        */}
       {hierarchyDataNotFound !== "" && <div className={IncentiveReportStyle.filterNoDataFound}>No data found</div>}
 
-      {gethierarachy?.length !== 0 && (
+      {/* {gethierarachy?.length !== 0 && (
         <div className={IncentiveReportStyle.hierarchyTree}>
           <div>
             <Tree
@@ -1140,7 +1143,7 @@ const IncentiveReportScreen = () => {
             </Tree>
           </div>
         </div>
-      )}
+      )} */}
 
       {tableData?.length !== 0 ? (
         <Table
@@ -1272,6 +1275,29 @@ const IncentiveReportScreen = () => {
         />
       )}
     </div>
+    <Modal
+    transitionName=""
+    centered
+    open={hierarchyModal}
+    width="1256px"
+    footer={null}
+    onCancel={() => setHierarchyModal(false)}>
+      {gethierarachy?.length !== 0 && (
+        <div className={IncentiveReportStyle.hierarchyTree}>
+          <div>
+            <Tree
+              showLine={showLine ? { showLeafIcon } : false}
+              showIcon={showIcon}
+              defaultExpandedKeys={['0-0-0']}
+              onSelect={onSelect}
+              treeData={treedata}
+            >
+            </Tree>
+          </div>
+        </div>
+      )}
+  </Modal>
+  </>
   );
 };
 
