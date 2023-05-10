@@ -39,6 +39,7 @@ import EngagementReplaceTalent from '../engagementReplaceTalent/engagementReplac
 import EngagementBillRateAndPayRate from '../engagementBillAndPayRate/engagementBillRateAndPayRate';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
+import { userUtils } from 'modules/user/userUtils';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() =>
@@ -243,7 +244,7 @@ const EngagementList = () => {
                                 placeholder="Search Table"
                                 onChange={(e) => {
                                     return setDebouncedSearch(
-                                        userUtils.userListSearch(e, userList),
+                                        userUtils.userListSearch(e),
                                     );
                                 }}
                             />
@@ -280,12 +281,12 @@ const EngagementList = () => {
                                         <Menu
                                             onClick={(e) => {
                                                 setPageSize(parseInt(e.key));
-                                                if (pageSize !== parseInt(e.key)) {
-                                                    fetchUserList({
-                                                        pageNumber: pageIndex,
-                                                        totalRecord: parseInt(e.key),
-                                                    });
-                                                }
+                                                // if (pageSize !== parseInt(e.key)) {
+                                                //     fetchUserList({
+                                                //         pageNumber: pageIndex,
+                                                //         totalRecord: parseInt(e.key),
+                                                //     });
+                                                // }
                                             }}>
                                             {pageSizeOptions.map((item) => {
                                                 return <Menu.Item key={item}>{item}</Menu.Item>;

@@ -86,6 +86,8 @@ const EditHRFields = ({
     const [controlledTimeZoneValue, setControlledTimeZoneValue] = useState("Select time zone")
     const [controlledSoonValue, setControlledTimeSoonValue] = useState("Select how soon?")
     const [controlledCountryValue, setControlledCountryValue] = useState("Select country")
+    const [contractDurationValue, setContractDuration] = useState("")
+    const [clientNameValue, setClientName] = useState("")
 
     let controllerRef = useRef(null);
     const {
@@ -96,12 +98,16 @@ const EditHRFields = ({
         setError,
         unregister,
         control,
-        formState: { errors },
+        // defaultValue,
+        formState: { errors,defaultValue },
     } = useForm({
         defaultValues: {
             secondaryInterviewer: [],
+            autocompleteField: "abc",
         },
     });
+
+    // console.log(defaultValue,"defaultValues");
     /* const { fields, append, remove } = useFieldArray({
         control,
         name: 'secondaryInterviewer',
@@ -648,15 +654,15 @@ const EditHRFields = ({
 
 
     useEffect(() => {
-        setValue("clientName", getHRdetails?.ClientName)
+        setValue("clientName", getHRdetails?.clientName)
         setValue("companyName", getHRdetails?.company)
         setValue("hrTitle", getHRdetails?.addHiringRequest?.requestForTalent)
         setValue("jdURL", getHRdetails?.addHiringRequest?.jdurl)
         setValue("minimumBudget", getHRdetails?.salesHiringRequest_Details?.budgetFrom)
         setValue("maximumBudget", getHRdetails?.salesHiringRequest_Details?.budgetTo)
         setValue("NRMargin", getHRdetails?.addHiringRequest?.talentCostCalcPercentage)
-        setValue("months", getHRdetails?.ClientName)
-        setValue("years", getHRdetails?.noOfYears)
+        setValue("months", getHRdetails?.salesHiringRequest_Details?.specificMonth)
+        setValue("years", getHRdetails?.salesHiringRequest_Details?.yearOfExp)
         setValue("talentsNumber", getHRdetails?.addHiringRequest?.noofTalents)
         setValue("dealID", getHRdetails?.addHiringRequest?.dealId)
         setValue("bqFormLink", getHRdetails?.addHiringRequest?.bqlink)
@@ -667,7 +673,10 @@ const EditHRFields = ({
         setValue("state", getHRdetails?.directPlacement?.state)
         setValue("country", getHRdetails?.directPlacement?.country)
         setValue("address", getHRdetails?.directPlacement?.address)
-    }, [getHRdetails])
+        setValue("contractDuration",getHRdetails?.salesHiringRequest_Details?.durationType)
+        setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType)
+        setClientName(getHRdetails?.clientName)
+    }, [getHRdetails,clientNameValue])
 
 
     useEffect(() => {
@@ -783,6 +792,8 @@ const EditHRFields = ({
                                             }
                                             placeholder="Enter Client Email/Name"
                                             ref={controllerRef}
+                                            defaultValue={clientNameValue}
+                                            // value={clientNameValue}
                                         />
                                     )}
                                     {...register('clientName', {
@@ -1096,12 +1107,16 @@ const EditHRFields = ({
                                         label: item,
                                         value: item,
                                     }))}
+                                    controlledValue={contractDurationValue}
+                                    setControlledValue={setContractDuration}
+                                    isControlled={true}
                                     setValue={setValue}
                                     register={register}
                                     label={'Contract Duration (in months)'}
                                     defaultValue="Ex: 3,6,12..."
                                     inputRef={inputRef}
                                     addItem={addItem}
+                                    mode={'id/value'}
                                     onNameChange={onNameChange}
                                     name="contractDuration"
                                     isError={
