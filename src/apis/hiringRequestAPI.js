@@ -391,7 +391,7 @@ export const HiringRequestAPI = {
 			NetworkInfo.NETWORK +
 			SubDomain.HIRING +
 			HiringRequestsAPI.GET_HR_DETAILS +
-			`?HRId=${12717}`;
+			`?HRId=${hrId}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
