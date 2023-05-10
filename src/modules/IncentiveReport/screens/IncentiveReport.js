@@ -110,7 +110,7 @@ const IncentiveReportScreen = () => {
   const [valueOfSelected, setValueOfSelected] = useState("");
   const [valueOfSelectedUserName, setValueOfSelectedUserName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [hierarchyModal,setHierarchyModal] = useState(false);
+  const [hierarchyModal, setHierarchyModal] = useState(false);
 
   const { TreeNode } = Tree;
   const [gethierarachy, sethierarchy] = useState([]);
@@ -1050,87 +1050,81 @@ const IncentiveReportScreen = () => {
 
   return (
     <>
-    <div className={IncentiveReportStyle.hiringRequestContainer}>
-      <div className={IncentiveReportStyle.addnewHR}>
-        <div className={IncentiveReportStyle.hiringRequest}>
-          Incentive Reports
+      <div className={IncentiveReportStyle.hiringRequestContainer}>
+        <div className={IncentiveReportStyle.addnewHR}>
+          <div className={IncentiveReportStyle.hiringRequest}>
+            Incentive Reports
+          </div>
         </div>
-      </div>
-      {/*
-       * --------- Filter Component Starts ---------
-       * @Filter Part
-       */}
-      <div className={IncentiveReportStyle.filterContainer}>
-      </div>
 
-      <div className={`${IncentiveReportStyle.row} ${IncentiveReportStyle.reportFilterWrap}`}>
-        <div className={IncentiveReportStyle.colMd4}>
-          <HRSelectField
-            setControlledValue={setUserRoleValue}
-            controlledValue={getUserRoleValue}
-            isControlled={true}
-            setValue={setValue}
-            register={register}
-            name="userRoleValue"
-            mode={"id/value"}
-            options={getUserRoleEdit}
-            label="User Role"
-            required
-            isError={errors["userRoleValue"] && errors["userRoleValue"]}
-            errorMsg="Please select a User Role."
-          />
+        <div className={`${IncentiveReportStyle.row} ${IncentiveReportStyle.reportFilterWrap}`}>
+          <div className={IncentiveReportStyle.colMd4}>
+            <HRSelectField
+              setControlledValue={setUserRoleValue}
+              controlledValue={getUserRoleValue}
+              isControlled={true}
+              setValue={setValue}
+              register={register}
+              name="userRoleValue"
+              mode={"id/value"}
+              options={getUserRoleEdit}
+              label="User Role"
+              required
+              isError={errors["userRoleValue"] && errors["userRoleValue"]}
+              errorMsg="Please select a User Role."
+            />
+          </div>
+          <div className={IncentiveReportStyle.colMd4}>
+            <HRSelectField
+              controlledValue={getManagerValue}
+              setControlledValue={setManagerValue}
+              isControlled={true}
+              setValue={setValue}
+              register={register}
+              name="manager"
+              mode={"id/value"}
+              options={
+                watchValueUserRoles === undefined
+                  ? getManagerEdit
+                  : managerDataInfo
+              }
+              label="Manager"
+              required
+              isError={errors["manager"] && errors["manager"]}
+              errorMsg="Please select a Manager."
+            // onClick={getUserHierarchy}
+            />
+          </div>
+          <div className={IncentiveReportStyle.colMd4}>
+            <HRSelectField
+              setControlledValue={setMonthYearValue}
+              controlledValue={getMonthYearValue}
+              isControlled={true}
+              setValue={setValue}
+              register={register}
+              name="MonthYearFilter"
+              mode={"id/value"}
+              options={getMonthYearEdit}
+              required
+              label="Month Year"
+              isError={errors["MonthYearFilter"] && errors["MonthYearFilter"]}
+              errorMsg="Please select a month."
+            />
+          </div>
+          <div className={IncentiveReportStyle.filterAction}>
+            <button onClick={getList} className={IncentiveReportStyle.filterSearchBtn}>Search</button>
+            <button onClick={resetButton}>Reset</button>
+          </div>
         </div>
-        <div className={IncentiveReportStyle.colMd4}>
-          <HRSelectField
-            controlledValue={getManagerValue}
-            setControlledValue={setManagerValue}
-            isControlled={true}
-            setValue={setValue}
-            register={register}
-            name="manager"
-            mode={"id/value"}
-            options={
-              watchValueUserRoles === undefined
-                ? getManagerEdit
-                : managerDataInfo
-            }
-            label="Manager"
-            required
-            isError={errors["manager"] && errors["manager"]}
-            errorMsg="Please select a Manager."
-          // onClick={getUserHierarchy}
-          />
-        </div>
-        <div className={IncentiveReportStyle.colMd4}>
-          <HRSelectField
-            setControlledValue={setMonthYearValue}
-            controlledValue={getMonthYearValue}
-            isControlled={true}
-            setValue={setValue}
-            register={register}
-            name="MonthYearFilter"
-            mode={"id/value"}
-            options={getMonthYearEdit}
-            required
-            label="Month Year"
-            isError={errors["MonthYearFilter"] && errors["MonthYearFilter"]}
-            errorMsg="Please select a month."
-          />
-        </div>
-        <div className={IncentiveReportStyle.filterAction}>
-          <button onClick={getList} className={IncentiveReportStyle.filterSearchBtn}>Search</button>
-          <button onClick={resetButton}>Reset</button>
-        </div>
-      </div>
 
 
-      {/*
+        {/*
        * ------------ Table Starts-----------
        * @Table Part
        */}
-      {hierarchyDataNotFound !== "" && <div className={IncentiveReportStyle.filterNoDataFound}>No data found</div>}
+        {hierarchyDataNotFound !== "" && <div className={IncentiveReportStyle.filterNoDataFound}>No data found</div>}
 
-      {/* {gethierarachy?.length !== 0 && (
+        {/* {gethierarachy?.length !== 0 && (
         <div className={IncentiveReportStyle.hierarchyTree}>
           <div>
             <Tree
@@ -1145,146 +1139,148 @@ const IncentiveReportScreen = () => {
         </div>
       )} */}
 
-      {tableData?.length !== 0 ? (
-        <Table
-          columns={searchTableData}
-          dataSource={data}
-          size="small"
-          onRow={(record, rowIndex) => {
-            return {
-              onClick: () => {
-                onRowClick(record, rowIndex);
-              },
-            };
-          }}
-        />
-      ) : (
-        errorMessage ? <div className={IncentiveReportStyle.filterNoDataFound}>{errorMessage}</div> : ''
-      )}
-
-      {incentiveReportInfo.length !== 0 &&
-        (incentiveReportInfo[0]?.userRole === "AM" ||
-          incentiveReportInfo[0]?.userRole === "AM Head" ? (
-          <>
-            <div className={IncentiveReportStyle.tableTitle}>AM Target</div>
-            <Table
-              columns={
-                valueOfSelected === "AM Head" || valueOfSelected === "AM"
-                  ? Condition1
-                  : valueOfSelected === "POD Manager" ||
-                    valueOfSelected === "Sales Consultant" ||
-                    valueOfSelected === "BDR Executive" ||
-                    valueOfSelected === "BDR Lead" ||
-                    valueOfSelected === "BDR Head" ||
-                    valueOfSelected === "Marketing Team" ||
-                    valueOfSelected === "Marketing Lead" ||
-                    valueOfSelected === "Marketing Head"
-                    ? Condition2
-                    : valueOfSelected === "BDR Executive" ||
-                      valueOfSelected === "BDR Lead"
-                      ? Condition2
-                      : valueOfSelectedUserName === "(AM)"
-                        ? Condition3
-                        : valueOfSelectedUserName === "(NBD)"
-                          ? Condition4
-                          : valueOfSelected === "POD Manager" ||
-                            valueOfSelected === "Sales Consultant"
-                            ? Condition5
-                            : Condition6
-              }
-              dataSource={incentiveInfoList}
-              size="
-            small"
-            />
-          </>
+        {tableData?.length !== 0 ? (
+          <Table
+            columns={searchTableData}
+            dataSource={data}
+            size="small"
+            onRow={(record, rowIndex) => {
+              return {
+                onClick: () => {
+                  onRowClick(record, rowIndex);
+                },
+              };
+            }}
+          />
         ) : (
+          errorMessage ? <div className={IncentiveReportStyle.filterNoDataFound}>{errorMessage}</div> : ''
+        )}
+
+        {incentiveReportInfo.length !== 0 &&
+          (incentiveReportInfo[0]?.userRole === "AM" ||
+            incentiveReportInfo[0]?.userRole === "AM Head" ? (
+            <>
+              <div className={IncentiveReportStyle.tableTitle}>AM Target</div>
+              <Table
+                columns={
+                  valueOfSelected === "AM Head" || valueOfSelected === "AM"
+                    ? Condition1
+                    : valueOfSelected === "POD Manager" ||
+                      valueOfSelected === "Sales Consultant" ||
+                      valueOfSelected === "BDR Executive" ||
+                      valueOfSelected === "BDR Lead" ||
+                      valueOfSelected === "BDR Head" ||
+                      valueOfSelected === "Marketing Team" ||
+                      valueOfSelected === "Marketing Lead" ||
+                      valueOfSelected === "Marketing Head"
+                      ? Condition2
+                      : valueOfSelected === "BDR Executive" ||
+                        valueOfSelected === "BDR Lead"
+                        ? Condition2
+                        : valueOfSelectedUserName === "(AM)"
+                          ? Condition3
+                          : valueOfSelectedUserName === "(NBD)"
+                            ? Condition4
+                            : valueOfSelected === "POD Manager" ||
+                              valueOfSelected === "Sales Consultant"
+                              ? Condition5
+                              : Condition6
+                }
+                dataSource={incentiveInfoList}
+                size="
+            small"
+              />
+            </>
+          ) : (
+            <>
+              <div className={IncentiveReportStyle.tableTitle}>
+                Based Fixed
+              </div>
+              <Table
+                columns={
+                  valueOfSelected === "AM Head" || valueOfSelected === "AM"
+                    ? Condition1
+                    : valueOfSelected === "POD Manager" ||
+                      valueOfSelected === "Sales Consultant" ||
+                      valueOfSelected === "BDR Executive" ||
+                      valueOfSelected === "BDR Lead" ||
+                      valueOfSelected === "BDR Head" ||
+                      valueOfSelected === "Marketing Team" ||
+                      valueOfSelected === "Marketing Lead" ||
+                      valueOfSelected === "Marketing Head"
+                      ? Condition2
+                      : valueOfSelected === "BDR Executive" ||
+                        valueOfSelected === "BDR Lead"
+                        ? Condition2
+                        : valueOfSelectedUserName === "(AM)"
+                          ? Condition3
+                          : valueOfSelectedUserName === "(NBD)"
+                            ? Condition4
+                            : valueOfSelected === "POD Manager" ||
+                              valueOfSelected === "Sales Consultant"
+                              ? Condition5
+                              : Condition6
+                }
+                dataSource={incentiveInfoList}
+                size="
+    small"
+              />
+            </>
+          ))}
+        {incentiveBoosterList.length !== 0 && (
           <>
             <div className={IncentiveReportStyle.tableTitle}>
-              Based Fixed
+              Contract Booster
             </div>
             <Table
-              columns={
-                valueOfSelected === "AM Head" || valueOfSelected === "AM"
-                  ? Condition1
-                  : valueOfSelected === "POD Manager" ||
-                    valueOfSelected === "Sales Consultant" ||
-                    valueOfSelected === "BDR Executive" ||
-                    valueOfSelected === "BDR Lead" ||
-                    valueOfSelected === "BDR Head" ||
-                    valueOfSelected === "Marketing Team" ||
-                    valueOfSelected === "Marketing Lead" ||
-                    valueOfSelected === "Marketing Head"
-                    ? Condition2
-                    : valueOfSelected === "BDR Executive" ||
-                      valueOfSelected === "BDR Lead"
-                      ? Condition2
-                      : valueOfSelectedUserName === "(AM)"
-                        ? Condition3
-                        : valueOfSelectedUserName === "(NBD)"
-                          ? Condition4
-                          : valueOfSelected === "POD Manager" ||
-                            valueOfSelected === "Sales Consultant"
-                            ? Condition5
-                            : Condition6
-              }
-              dataSource={incentiveInfoList}
-              size="
-    small"
+              columns={incentiveReportBoosterColumn}
+              dataSource={incentiveBooster}
+              size="small"
             />
           </>
-        ))}
-      {incentiveBoosterList.length !== 0 && (
-        <>
-          <div className={IncentiveReportStyle.tableTitle}>
-            Contract Booster
-          </div>
-          <Table
-            columns={incentiveReportBoosterColumn}
-            dataSource={incentiveBooster}
-            size="small"
-          />
-        </>
-      )}
+        )}
 
-      {isAllowFilters && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <DemandFunnelFilterLazyComponent
-            setAppliedFilters={setAppliedFilters}
-            appliedFilter={appliedFilter}
-            setCheckedState={setCheckedState}
-            checkedState={checkedState}
-            handleHRRequest={getDemandFunnelListingHandler}
-            setTableFilteredState={setTableFilteredState}
-            tableFilteredState={tableFilteredState}
-            setFilteredTagLength={setFilteredTagLength}
-            onRemoveHRFilters={onRemoveFilters}
-            getHTMLFilter={getHTMLFilter}
-            hrFilterList={reportConfig.demandReportFilterListConfig()}
-            filtersType={reportConfig.demandReportFilterTypeConfig(
-              filtersList && filtersList
-            )}
+        {isAllowFilters && (
+          <Suspense fallback={<div>Loading...</div>}>
+            <DemandFunnelFilterLazyComponent
+              setAppliedFilters={setAppliedFilters}
+              appliedFilter={appliedFilter}
+              setCheckedState={setCheckedState}
+              checkedState={checkedState}
+              handleHRRequest={getDemandFunnelListingHandler}
+              setTableFilteredState={setTableFilteredState}
+              tableFilteredState={tableFilteredState}
+              setFilteredTagLength={setFilteredTagLength}
+              onRemoveHRFilters={onRemoveFilters}
+              getHTMLFilter={getHTMLFilter}
+              hrFilterList={reportConfig.demandReportFilterListConfig()}
+              filtersType={reportConfig.demandReportFilterTypeConfig(
+                filtersList && filtersList
+              )}
+            />
+          </Suspense>
+        )}
+        {demandFunnelModal && (
+          <DemandFunnelModal
+            demandFunnelModal={demandFunnelModal}
+            setDemandFunnelModal={setDemandFunnelModal}
+            demandFunnelHRDetailsState={demandFunnelHRDetailsState}
+            setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
           />
-        </Suspense>
-      )}
-      {demandFunnelModal && (
-        <DemandFunnelModal
-          demandFunnelModal={demandFunnelModal}
-          setDemandFunnelModal={setDemandFunnelModal}
-          demandFunnelHRDetailsState={demandFunnelHRDetailsState}
-          setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
-        />
-      )}
-    </div>
-    <Modal
-    transitionName=""
-    centered
-    open={hierarchyModal}
-    width="1256px"
-    footer={null}
-    onCancel={() => setHierarchyModal(false)}>
-      {gethierarachy?.length !== 0 && (
-        <div className={IncentiveReportStyle.hierarchyTree}>
-          <div>
+        )}
+      </div>
+      {console.log(gethierarachy, "gethierarachy")}
+      <Modal
+        transitionName=""
+        centered
+        open={hierarchyModal}
+        width="600px"
+        className="incentiveHierarchyModal"
+        footer={null}
+        onCancel={() => setHierarchyModal(false)}>
+        {gethierarachy?.length !== 0 && (
+          <div className={IncentiveReportStyle.hierarchyTree}>
+            <h2>{gethierarachy?.[0].parent}</h2>
             <Tree
               showLine={showLine ? { showLeafIcon } : false}
               showIcon={showIcon}
@@ -1293,11 +1289,11 @@ const IncentiveReportScreen = () => {
               treeData={treedata}
             >
             </Tree>
+
           </div>
-        </div>
-      )}
-  </Modal>
-  </>
+        )}
+      </Modal>
+    </>
   );
 };
 

@@ -1,17 +1,25 @@
 .hiringRequestContainer {
-  /* width: 95%; */
-  /* margin: 0 auto; */
-  margin: 25px 40px;
+  margin: 0 40px;
+  padding-bottom: 32px;
 }
-.hiringRequestContainer tr th[class*="ant-table-cell"]{
+.hiringRequestContainer [class*="ant-pagination"] {
+  display: none;
+}
+.hiringRequestContainer [class*="ant-table-wrapper"] {
+  margin-bottom: 32px;
+}
+.hiringRequestContainer [class*="ant-table-wrapper"]:last-child {
+  margin-bottom: 0;
+}
+.hiringRequestContainer tr th[class*="ant-table-cell"] {
   padding-top: 16px !important;
   padding-bottom: 16px !important;
   white-space: nowrap;
 }
-.hiringRequestContainer tr th[class*="ant-table-cell"]:first-child{
+.hiringRequestContainer tr th[class*="ant-table-cell"]:first-child {
   padding-left: 20px !important;
 }
-.hiringRequestContainer tr th[class*="ant-table-cell"]:last-child{
+.hiringRequestContainer tr th[class*="ant-table-cell"]:last-child {
   padding-right: 20px !important;
 }
 
@@ -20,6 +28,7 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  margin-bottom: 32px;
 }
 
 .hiringRequest {
@@ -460,37 +469,27 @@ tr th:first-child {
 }
 
 /* Custome tree view */
-
-.hierarchyTree {
-  background: #fff;
-  padding: 24px 16px;
-  border-radius: 8px;
-  margin: 0 0 32px;
-  width: 51.9%;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.hierarchyTree [class*="ant-tree-node-selected"]{
+.hierarchyTree [class*="ant-tree-node-selected"] {
   background: var(--color-sunlight) !important;
 }
 
-.reportFilterWrap{
+.reportFilterWrap {
   position: relative;
   padding-right: 255px;
 }
 
-.filterAction{
+.filterAction {
   display: flex;
   position: absolute;
   right: 0;
   top: 25px;
 }
 
-.filterAction button{
+.filterAction button {
   background: var(--text-color-purity);
-  border: 1px solid #CECCCC;
+  border: 1px solid #cecccc;
   border-radius: 8px;
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 500;
   font-size: 16px;
   line-height: 20px;
@@ -504,18 +503,18 @@ tr th:first-child {
   display: inline-block;
 }
 
-.filterAction .filterSearchBtn{
+.filterAction .filterSearchBtn {
   margin-right: 18px;
   background: var(--color-sunlight);
   border-color: var(--color-sunlight);
 }
-.filterNoDataFound{
+.filterNoDataFound {
   font-size: 18px;
   line-height: 24px;
   font-weight: 500;
   color: var(--uplers-black);
 }
-.tableTitle{
+.tableTitle {
   margin: 0 0 16px;
   font-weight: 500;
   font-size: 24px;
