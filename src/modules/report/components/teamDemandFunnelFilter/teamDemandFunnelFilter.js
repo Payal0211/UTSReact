@@ -21,6 +21,9 @@ const TeamDemandFunnelFilter = ({
 	filtersType,
 	getHTMLFilter,
 	selectedHierarchy,
+	setTeamDemandFunnelHRDetailsState,
+	teamDemandFunnelHRDetailsState,
+	isActionWise,
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -173,7 +176,7 @@ const TeamDemandFunnelFilter = ({
 			modeOfWork: '',
 			typeOfHR: '-1',
 			companyCategory: '',
-			isActionWise: false,
+			isActionWise: isActionWise,
 		});
 		const reqFilter = {
 			startDate: '',
@@ -183,11 +186,13 @@ const TeamDemandFunnelFilter = ({
 			modeOfWork: '',
 			typeOfHR: '-1',
 			companyCategory: '',
-			isActionWise: false,
+			isActionWise: isActionWise,
 		};
+
 		handleHRRequest(reqFilter);
 	}, [
 		handleHRRequest,
+		isActionWise,
 		selectedHierarchy?.id,
 		setAppliedFilters,
 		setCheckedState,

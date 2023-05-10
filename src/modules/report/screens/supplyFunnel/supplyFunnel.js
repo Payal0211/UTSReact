@@ -41,9 +41,9 @@ const SupplyFunnelScreen = () => {
 	const [supplyFunnelHRDetailsState, setSupplyFunnelHRDetailsState] = useState({
 		newExistingType: '',
 		TeamManagerName: '',
-		currentStage: 'TR Accepted',
+		currentStage: '',
 		isExport: false,
-		funnelFilter: tableFilteredState,
+		funnelFilter: { ...tableFilteredState },
 	});
 
 	const [apiData, setApiData] = useState([]);
@@ -146,6 +146,9 @@ const SupplyFunnelScreen = () => {
 													});
 													setSupplyFunnelHRDetailsState({
 														...supplyFunnelHRDetailsState,
+														funnelFilter: {
+															...supplyFunnelHRDetailsState?.funnelFilter,
+														},
 														newExistingType: 'Exist',
 														currentStage: param.Stage,
 														TeamManagerName: groupedColumnDataMemo[i],
@@ -181,6 +184,9 @@ const SupplyFunnelScreen = () => {
 													});
 													setSupplyFunnelHRDetailsState({
 														...supplyFunnelHRDetailsState,
+														funnelFilter: {
+															...supplyFunnelHRDetailsState?.funnelFilter,
+														},
 														newExistingType: 'Exist',
 														currentStage: param.Stage,
 														TeamManagerName: groupedColumnDataMemo[i],
@@ -216,6 +222,9 @@ const SupplyFunnelScreen = () => {
 													});
 													setSupplyFunnelHRDetailsState({
 														...supplyFunnelHRDetailsState,
+														funnelFilter: {
+															...supplyFunnelHRDetailsState?.funnelFilter,
+														},
 														newExistingType: 'Exist',
 														currentStage: param.Stage,
 														TeamManagerName: groupedColumnDataMemo[i],
@@ -257,6 +266,7 @@ const SupplyFunnelScreen = () => {
 			setSupplyFunnelHRDetailsState({
 				...supplyFunnelHRDetailsState,
 				funnelFilter: {
+					...supplyFunnelHRDetailsState?.funnelFilter,
 					startDate: new Date(start)
 						.toLocaleDateString('en-UK')
 						.split('/')
@@ -411,8 +421,8 @@ const SupplyFunnelScreen = () => {
 			});
 			setSupplyFunnelHRDetailsState({
 				...supplyFunnelHRDetailsState,
-
 				funnelFilter: {
+					...supplyFunnelHRDetailsState?.funnelFilter,
 					startDate: response?.responseBody?.Data?.StartDate,
 					endDate: response?.responseBody?.Data?.EndDate,
 				},
@@ -540,6 +550,9 @@ const SupplyFunnelScreen = () => {
 																	});
 																	setSupplyFunnelHRDetailsState({
 																		...supplyFunnelHRDetailsState,
+																		funnelFilter: {
+																			...supplyFunnelHRDetailsState?.funnelFilter,
+																		},
 																		newExistingType:
 																			item === 'Final Total'
 																				? ''
@@ -624,6 +637,8 @@ const SupplyFunnelScreen = () => {
 						filtersType={reportConfig.SupplyReportFilterTypeConfig(
 							filtersList && filtersList,
 						)}
+						setSupplyFunnelHRDetailsState={setSupplyFunnelHRDetailsState}
+						supplyFunnelHRDetailsState={supplyFunnelHRDetailsState}
 					/>
 				</Suspense>
 			)}

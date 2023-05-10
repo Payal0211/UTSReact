@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Divider, List, Modal, message } from 'antd';
+import { Dropdown, Menu, Divider, List, Modal, message, Space } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { RiArrowDropDownLine } from 'react-icons/ri';
@@ -28,7 +28,7 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
 import ConfirmSlotModal from '../cloneHR/confirmSlotModal';
 import EditPayRate from '../editBillAndPayRate/editPayRateModal';
-
+import { DownOutlined } from '@ant-design/icons';
 import EditBillRate from '../editBillAndPayRate/editBillRateModal';
 
 const TalentList = ({
@@ -45,7 +45,9 @@ const TalentList = ({
 	hrType,
 	setHRapiCall,
 	callHRapi,
+	inteviewSlotDetails,
 }) => {
+	console.log(talentDetail, '-talentDetails');
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
@@ -65,7 +67,7 @@ const TalentList = ({
 	const [updateLegalTalentOnboardModal, setLegalTalentOnboardModal] =
 		useState(false);
 	const [updateTalentKickOffModal, setTalentKickOffModal] = useState(false);
-	const [editBRPRModal, setEDITBRPRModal] = useState(false);
+
 	const [replaceTalentModal, setReplaceTalentModal] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [talentIndex, setTalentIndex] = useState(0);
@@ -160,7 +162,6 @@ const TalentList = ({
 	const [getConfirmSlotDetails, setConfirmSlotDetails] = useState({});
 	const [confirmSlotRadio, setConfirmSlotRadio] = useState(1);
 	const [getDateNewFormate, setDateNewFormate] = useState([]);
-	console.log(getDateNewFormate, 'getDateNewFormategetDateNewFormate');
 
 	const scheuleResetDataHander = () => {
 		setScheduleSlotDate([
@@ -1539,10 +1540,35 @@ const TalentList = ({
 										<span>Available Interview Slots:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
 											{item?.Slotconfirmed ? (
-												<>
-													{item?.Slotconfirmed.split(' ')[0]}
-													<RiArrowDropDownLine />
-												</>
+												<Dropdown
+													trigger={['click']}
+													placement="bottom"
+													overlay={
+														<Menu>
+															{hrUtils
+																?.formatInterviewSlots(
+																	inteviewSlotDetails[listIndex]?.SlotList,
+																)
+																?.map((item, index) => {
+																	return (
+																		<Menu.Item key={index}>
+																			{item?.label}
+																		</Menu.Item>
+																	);
+																})}
+														</Menu>
+													}>
+													<span>
+														<Space>
+															{
+																hrUtils?.formatInterviewSlots(
+																	inteviewSlotDetails[listIndex]?.SlotList,
+																)?.[0]?.label
+															}
+															<DownOutlined />
+														</Space>
+													</span>
+												</Dropdown>
 											) : (
 												'NA'
 											)}
@@ -1551,11 +1577,39 @@ const TalentList = ({
 									<div className={TalentListStyle.time}>
 										<span>Time:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{item?.Slotconfirmed
-												? item?.Slotconfirmed.split(' ')[1] +
-												  ' - ' +
-												  item?.Slotconfirmed.split(' ')[3]
-												: 'NA'}
+											{item?.Slotconfirmed ? (
+												<Dropdown
+													trigger={['click']}
+													placement="bottom"
+													overlay={
+														<Menu>
+															{hrUtils
+																?.formatInteviewTime(
+																	inteviewSlotDetails[listIndex]?.SlotList,
+																)
+																?.map((item, index) => {
+																	return (
+																		<Menu.Item key={index}>
+																			{item?.label}
+																		</Menu.Item>
+																	);
+																})}
+														</Menu>
+													}>
+													<span>
+														<Space>
+															{
+																hrUtils?.formatInteviewTime(
+																	inteviewSlotDetails[listIndex]?.SlotList,
+																)?.[0]?.label
+															}
+															<DownOutlined />
+														</Space>
+													</span>
+												</Dropdown>
+											) : (
+												'NA'
+											)}
 										</span>
 									</div>
 									<Divider

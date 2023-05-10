@@ -76,6 +76,7 @@ const HRDetailScreen = () => {
 		[navigate],
 	);
 
+	// console.log(apiData, '--apiData-');
 	const clientOnLossSubmitHandler = useCallback(
 		async (d) => {
 			_isNull(watch('hrDeleteLossReason')) &&
@@ -321,6 +322,7 @@ const HRDetailScreen = () => {
 									hrStatus={apiData?.HRStatus}
 									callHRapi={callHRapi}
 									setHRapiCall={setHRapiCall}
+									inteviewSlotDetails={apiData?.InterviewSlotDetails}
 								/>
 							</Suspense>
 						)}

@@ -20,6 +20,8 @@ const SupplyFunnelFilter = ({
 	setTableFilteredState,
 	filtersType,
 	getHTMLFilter,
+	setSupplyFunnelHRDetailsState,
+	supplyFunnelHRDetailsState,
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -175,6 +177,23 @@ const SupplyFunnelFilter = ({
 			replacement: '',
 			isActionWise: true,
 		});
+		setSupplyFunnelHRDetailsState({
+			newExistingType: '',
+			TeamManagerName: '',
+			currentStage: '',
+			isExport: false,
+			funnelFilter: {
+				startDate: '',
+				endDate: '',
+				managed: '',
+				isHiringNeedTemp: '',
+				modeOfWork: '',
+				typeOfHR: '',
+				companyCategory: '',
+				replacement: '',
+				isActionWise: true,
+			},
+		});
 		const reqFilter = {
 			startDate: '',
 			endDate: '',
@@ -192,6 +211,7 @@ const SupplyFunnelFilter = ({
 		setAppliedFilters,
 		setCheckedState,
 		setFilteredTagLength,
+		setSupplyFunnelHRDetailsState,
 		setTableFilteredState,
 	]);
 	const handleFilters = useCallback(() => {
@@ -215,9 +235,19 @@ const SupplyFunnelFilter = ({
 
 		if (reqFilter?.isActionWise === '1') reqFilter.isActionWise = true;
 		else reqFilter.isActionWise = false;
+		setSupplyFunnelHRDetailsState({
+			...supplyFunnelHRDetailsState,
+			funnelFilter: { ...reqFilter },
+		});
 		setTableFilteredState(reqFilter);
 		// handleHRRequest(reqFilter);
-	}, [appliedFilter, setTableFilteredState, tableFilteredState]);
+	}, [
+		appliedFilter,
+		setSupplyFunnelHRDetailsState,
+		setTableFilteredState,
+		supplyFunnelHRDetailsState,
+		tableFilteredState,
+	]);
 
 	return (
 		<aside className={SupplyFunnelFilterStyle.aside}>
