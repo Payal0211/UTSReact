@@ -925,6 +925,7 @@ const IncentiveReportScreen = () => {
     } else {
       sethierarchy([]);
       setHierarchyButton(false)
+      // sethierarchyDataNotFound("")
     }
   };
 
@@ -996,6 +997,7 @@ const IncentiveReportScreen = () => {
     setIncentiveReportInfo([]);
     sethierarchy([]);
     sethierarchyDataNotFound("")
+    setErrorMessage("")
     setHierarchyButton(false)
   }, [resetField]);
 
@@ -1135,7 +1137,8 @@ const IncentiveReportScreen = () => {
        * ------------ Table Starts-----------
        * @Table Part
        */}
-        {hierarchyDataNotFound !== "" && <div className={IncentiveReportStyle.filterNoDataFound}>No data found</div>}
+        {/* {console.log(hierarchyButton, "qwqwqwqwq")} */}
+        {/* {hierarchyDataNotFound !== "" && <div className={IncentiveReportStyle.filterNoDataFound}>No data found</div>} */}
 
         {/* {gethierarachy?.length !== 0 && (
         <div className={IncentiveReportStyle.hierarchyTree}>
