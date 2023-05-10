@@ -7,6 +7,8 @@ import EngagementList from 'assets/svg/engagement.svg';
 import DemandFunnel from 'assets/svg/demandFunnel.svg';
 import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
 import TeamDemandFunnel from 'assets/svg/teamDemandFunnel.svg';
+import IncentiveReport from 'assets/svg/Incentive.svg';
+
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -62,12 +64,19 @@ const Sidebar = () => {
 
 const getSideBar = () => {
 	let dataList = [
+		// new SideBarModels({
+		// 	id: 'UTS_dashboard',
+		// 	title: 'Dashboard',
+		// 	isActive: true,
+		// 	icon: Dashboard,
+		// 	navigateTo: UTSRoutes.HOMEROUTE,
+		// }),
 		new SideBarModels({
-			id: 'UTS_dashboard',
-			title: 'Dashboard',
-			isActive: true,
-			icon: Dashboard,
-			navigateTo: UTSRoutes.HOMEROUTE,
+			id: 'UTS_all_hiring_request',
+			title: 'Hiring Request',
+			isActive: false,
+			icon: HRList,
+			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 		}),
 		new SideBarModels({
 			id: 'UTS_DealList',
@@ -83,13 +92,7 @@ const getSideBar = () => {
 			icon: UserList,
 			navigateTo: UTSRoutes.USERLISTROUTE,
 		}),
-		new SideBarModels({
-			id: 'UTS_all_hiring_request',
-			title: 'Hiring Request',
-			isActive: false,
-			icon: HRList,
-			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
-		}),
+
 		new SideBarModels({
 			id: 'Engagement_List',
 			title: 'Engagement',
@@ -118,6 +121,13 @@ const getSideBar = () => {
 			isActive: false,
 			icon: TeamDemandFunnel,
 			navigateTo: UTSRoutes.TEAMDEMANDFUNNELROUTE,
+		}),
+		new SideBarModels({
+			id: 'incentive_report',
+			title: 'Incentive Report',
+			isActive: false,
+			icon: IncentiveReport,
+			navigateTo: UTSRoutes.INCENTIVEREPORTROUTE,
 		}),
 	];
 

@@ -66,6 +66,10 @@ const TeamDemandFunnelReport = React.lazy(() =>
 	import('modules/report/screens/teamDemandFunnel/teamDemandFunnel'),
 );
 
+const IncentiveReport = React.lazy(() =>
+	import('modules/IncentiveReport/screens/IncentiveReport'),
+);
+
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
@@ -93,6 +97,7 @@ export default class UTSRoutes {
 	static DEMANDFUNNELROUTE = '/demandfunnel';
 	static SUPPLYFUNNELROUTE = '/supplyfunnel';
 	static TEAMDEMANDFUNNELROUTE = '/teamdemandfunnel';
+  static INCENTIVEREPORTROUTE = '/report/incentive';
 }
 
 export const navigateToComponent = {
@@ -189,6 +194,11 @@ export const navigateToComponent = {
 	[UTSRoutes.TEAMDEMANDFUNNELROUTE]: (
 		<Suspense>
 			<TeamDemandFunnelReport />
+		</Suspense>
+	),
+  	[UTSRoutes.INCENTIVEREPORTROUTE]: (
+		<Suspense>
+			<IncentiveReport />
 		</Suspense>
 	),
 };

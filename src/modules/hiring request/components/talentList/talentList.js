@@ -1377,7 +1377,7 @@ const TalentList = ({
 										<span style={{ fontWeight: '500' }}>
 											<a
 												style={{ textDecoration: 'underline' }}
-												href={item?.ProfileURL}
+												href={item?.ATSTalentLiveURL}
 												target="_blank"
 												rel="noreferrer">
 												Click here
@@ -1574,44 +1574,44 @@ const TalentList = ({
 											)}
 										</span>
 									</div>
-									<div className={TalentListStyle.time}>
-										<span>Time:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500' }}>
-											{item?.Slotconfirmed ? (
-												<Dropdown
-													trigger={['click']}
-													placement="bottom"
-													overlay={
-														<Menu>
-															{hrUtils
-																?.formatInteviewTime(
-																	inteviewSlotDetails[listIndex]?.SlotList,
-																)
-																?.map((item, index) => {
-																	return (
-																		<Menu.Item key={index}>
-																			{item?.label}
-																		</Menu.Item>
-																	);
-																})}
-														</Menu>
-													}>
-													<span>
-														<Space>
-															{
-																hrUtils?.formatInteviewTime(
-																	inteviewSlotDetails[listIndex]?.SlotList,
-																)?.[0]?.label
-															}
-															<DownOutlined />
-														</Space>
-													</span>
-												</Dropdown>
-											) : (
-												'NA'
-											)}
-										</span>
-									</div>
+									{/* <div className={TalentListStyle.time}>
+											<span>Time:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.Slotconfirmed ? (
+													<Dropdown
+														trigger={['click']}
+														placement="bottom"
+														overlay={
+															<Menu>
+																{hrUtils
+																	?.formatInteviewTime(
+																		inteviewSlotDetails[listIndex]?.SlotList,
+																	)
+																	?.map((item, index) => {
+																		return (
+																			<Menu.Item key={index}>
+																				{item?.label}
+																			</Menu.Item>
+																		);
+																	})}
+															</Menu>
+														}>
+														<span>
+															<Space>
+																{
+																	hrUtils?.formatInteviewTime(
+																		inteviewSlotDetails[listIndex]?.SlotList,
+																	)?.[0]?.label
+																}
+																<DownOutlined />
+															</Space>
+														</span>
+													</Dropdown>
+												) : (
+													'NA'
+												)}
+											</span>
+										</div> */}
 									<Divider
 										style={{
 											margin: '10px 0',

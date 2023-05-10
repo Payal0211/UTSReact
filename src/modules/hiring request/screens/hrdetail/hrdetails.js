@@ -175,11 +175,6 @@ const HRDetailScreen = () => {
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
-							<AcceptHR
-								hrID={apiData?.ClientDetail?.HR_Number}
-								openModal={acceptHRModal}
-								cancelModal={() => setAcceptHRModal(false)}
-							/>{' '}
 							{/* {hrUtils.getAccpetMoreTR(
 								apiData?.IsAccepted,
 								miscData?.LoggedInUserTypeID,
@@ -201,12 +196,12 @@ const HRDetailScreen = () => {
 									Convert to contractual
 								</button>
 							)} */}
-							<AcceptHR
+							{/* <AcceptHR
 								hrID={apiData?.ClientDetail?.HR_Number}
 								openModal={acceptHRModal}
 								cancelModal={() => setAcceptHRModal(false)}
-							/>
-							{apiData?.FetchMissingAction !== null ? (
+							/> */}
+							{/* {apiData?.FetchMissingAction !== null ? (
 								<>
 									<span>
 										<h4>Next Action is </h4>
@@ -219,7 +214,8 @@ const HRDetailScreen = () => {
 										)}
 									</>
 								</>
-							) : null}
+							) : null} */}
+							{}
 							<HROperator
 								title={
 									hrUtils.handleAdHOC(apiData && apiData?.AdhocPoolValue)[0]
