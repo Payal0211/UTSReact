@@ -521,3 +521,10 @@ tr th:first-child {
   line-height: 1.25;
   color: var(--uplers-black);
 }
+.hierarchyTree h2 {
+  border-bottom: 1px dashed #e8e8e8;
+  padding-bottom: 16px;
+  font-size: 24px;
+  line-height: 32px;
+  margin-bottom: 24px;
+}

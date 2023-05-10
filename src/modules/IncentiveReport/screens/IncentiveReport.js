@@ -1269,7 +1269,7 @@ const IncentiveReportScreen = () => {
           />
         )}
       </div>
-      {console.log(gethierarachy, "gethierarachy")}
+
       <Modal
         transitionName=""
         centered
