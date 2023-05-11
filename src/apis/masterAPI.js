@@ -414,4 +414,20 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getDashboardCountRequest');
 		}
 	},
+	getDurationType: async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.GET_DURATION_TYPE;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getDashboardCountRequest');
+		}
+	},
 };

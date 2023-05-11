@@ -78,6 +78,7 @@ export class MastersAPI {
 	static CHECK_OTHER_ROLE = 'CheckOtherRole';
 	static ADD_OTHER_SKILL = 'AddOtherSkill';
 	static CLONE_HR = 'CloneHR'
+	static GET_DURATION_TYPE = "GetDurationType"
 }
 
 export class ClientsAPI {

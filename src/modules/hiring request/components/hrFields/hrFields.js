@@ -57,6 +57,7 @@ const HRFields = ({
 	const [type, setType] = useState('');
 	const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
 	const [getClientNameMessage, setClientNameMessage] = useState('');
+	const [getDurationType, setDurationType] = useState([]);
 
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
@@ -346,6 +347,12 @@ const HRFields = ({
 		]);
 	}, []);
 
+	const getDurationTypes = useCallback(async () => {
+		const durationTypes = await MasterDAO.getDurationTypeDAO();
+		setDurationType(durationTypes && durationTypes?.responseBody?.details);
+	}, []);
+
+
 	const getSalesPerson = useCallback(async () => {
 		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
 		setSalesPerson(
@@ -513,6 +520,7 @@ const HRFields = ({
 		getCountry();
 		getHowSoon();
 		getNRMarginHandler();
+		getDurationTypes();
 	}, [
 		getAvailability,
 		getSalesPerson,
@@ -524,6 +532,7 @@ const HRFields = ({
 		getWorkingMode,
 		getCountry,
 		getNRMarginHandler,
+		getDurationTypes,
 	]);
 	useEffect(() => {
 		setValidation({
@@ -611,7 +620,16 @@ const HRFields = ({
 		}
 	}, [errors?.clientName]);
 
+	const durationTypenfo = []
 
+	const durationData = getDurationType.map((item)=>{
+		return (
+			durationTypenfo.push({
+				id : item.value,
+				value : item.text
+			})
+		)
+	})
 
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
@@ -909,8 +927,23 @@ const HRFields = ({
 							</div>
 						</div>
 					</div>
-
 					<div className={HRFieldStyle.row}>
+					<div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Long Tearm/Short Tearm'}
+									defaultValue="Select Long Tearm/Short Tearm"
+									options={durationTypenfo && durationTypenfo}
+									name="getDurationType"
+									isError={errors['getDurationType'] && errors['getDurationType']}
+									required
+									// mode={'text/value'}
+									errorMsg={'Please select duration type'}
+								/>
+							</div>
+						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
@@ -985,7 +1018,7 @@ const HRFields = ({
 										type={InputType.NUMBER}
 										placeholder="Enter years"
 									/>
-									<HRInputField
+									{/* <HRInputField
 										register={register}
 										required
 										errors={errors}
@@ -1002,7 +1035,7 @@ const HRFields = ({
 										name="months"
 										type={InputType.NUMBER}
 										placeholder="Enter months"
-									/>
+									/> */}
 								</div>
 							</div>
 						</div>

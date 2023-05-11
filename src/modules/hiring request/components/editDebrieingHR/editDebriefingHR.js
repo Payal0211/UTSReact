@@ -51,7 +51,8 @@ const EditDebriefingHR = ({
 
 	const navigate = useNavigate();
 	const [controlledJDParsed, setControlledJDParsed] = useState(
-		JDParsedSkills?.Skills?.map((item) => item?.value),
+		getHRdetails?.skillmulticheckbox?.map((item) => item?.text
+		),
 	);
 	const [selectedItems, setSelectedItems] = useState([]);
 	const [skills, setSkills] = useState([]);
@@ -66,7 +67,6 @@ const EditDebriefingHR = ({
 
 	const combinedSkillsMemo = useMemo(
 		() => [
-			...JDParsedSkills?.Skills,
 			...skills,
 			...[
 				{
@@ -75,12 +75,12 @@ const EditDebriefingHR = ({
 				},
 			],
 		],
-		[JDParsedSkills?.Skills, skills],
+		[skills],
 	);
 
-	const filteredOptions = combinedSkillsMemo.filter(
-		(o) => !selectedItems.includes(o),
-	);
+	// const filteredOptions = combinedSkillsMemo.filter(
+	// 	(o) => !selectedItems.includes(o),
+	// );
 
 	const isOtherSkillExistMemo = useMemo(() => {
 		let response = watchSkills?.filter((item) => item?.skillsID === -1);
@@ -90,12 +90,12 @@ const EditDebriefingHR = ({
 	useEffect(() => {
 		setValue(
 			'skills',
-			JDParsedSkills?.Skills?.map((item) => ({
+			getHRdetails?.skillmulticheckbox?.map((item) => ({
 				skillsID: item?.id.toString(),
-				skillsName: item?.value,
+				skillsName: item?.text,
 			})),
 		);
-	}, [JDParsedSkills, setValue]);
+	}, [getHRdetails?.skillmulticheckbox, setValue]);
 
 	const getOtherSkillsRequest = useCallback(
 		async (data) => {
@@ -166,6 +166,7 @@ const EditDebriefingHR = ({
 	};
 
 	const needMoreInforSubmitHandler = async (d) => {
+		
 		let debriefFormDetails = {
 			isneedmore: true,
 			roleAndResponsibilites: d.roleAndResponsibilities,
@@ -192,11 +193,18 @@ const EditDebriefingHR = ({
 		}
 	};
 
+	useEffect(() => {
+	const skilsData = getHRdetails?.skillmulticheckbox?.filter((item)=>{	
+	})
+	setValue("skills",skilsData)
+	}, [getHRdetails])
+	
 
 	useEffect(() => {
 		setValue("aboutCompany", getHRdetails?.addHiringRequest?.aboutCompanyDesc)
 		setValue("requirements", getHRdetails?.salesHiringRequest_Details?.requirement)
 		setValue("roleAndResponsibilities", getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities)
+		// setValue("skills",getHRdetails?.skillmulticheckbox)
 	}, [getHRdetails])
 
 	return (
@@ -257,7 +265,7 @@ const EditDebriefingHR = ({
 								label={'Required Skills'}
 								placeholder="Type skills"
 								onChange={setSelectedItems}
-								options={filteredOptions}
+								options={combinedSkillsMemo}
 								name="skills"
 								isError={errors['skills'] && errors['skills']}
 								required

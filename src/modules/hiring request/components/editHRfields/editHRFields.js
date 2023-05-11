@@ -592,8 +592,11 @@ const EditHRFields = ({
                 filteredMemo[0]?.contactId,
                 isHRDirectPlacement,
                 addHRResponse,
-            );
+                );
 
+                setAddHRResponse(localStorage.getItem("hrID"));
+                console.log(addHRResponse,"addHRResponse");
+                
             if (type === SubmitType.SAVE_AS_DRAFT) {
                 if (_isNull(watch('clientName'))) {
                     return setError('clientName', {
@@ -605,9 +608,10 @@ const EditHRFields = ({
                 setType(SubmitType.SUBMIT);
             }
             const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
+            console.log(addHRRequest?.responseBody,"ajfahfgahfg");
 
             if (addHRRequest.statusCode === HTTPStatusCode.OK) {
-                setAddHRResponse(addHRRequest?.responseBody?.details);
+                // setAddHRResponse(addHRRequest?.responseBody?.details);
                 setEnID(addHRRequest?.responseBody?.details?.en_Id);
                 type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
                 type !== SubmitType.SAVE_AS_DRAFT &&
@@ -654,7 +658,7 @@ const EditHRFields = ({
 
 
     useEffect(() => {
-        setValue("clientName", getHRdetails?.clientName)
+        setValue("clientName", getHRdetails?.fullClientName)
         setValue("companyName", getHRdetails?.company)
         setValue("hrTitle", getHRdetails?.addHiringRequest?.requestForTalent)
         setValue("jdURL", getHRdetails?.addHiringRequest?.jdurl)
@@ -675,8 +679,13 @@ const EditHRFields = ({
         setValue("address", getHRdetails?.directPlacement?.address)
         setValue("contractDuration",getHRdetails?.salesHiringRequest_Details?.durationType)
         setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType)
-        setClientName(getHRdetails?.clientName)
-    }, [getHRdetails,clientNameValue])
+    }, [getHRdetails])
+
+    useEffect(() => {
+        setClientName(getHRdetails?.fullClientName)
+        // setClientNameSuggestion(getHRdetails?.clientName)
+    }, [getHRdetails])
+    
 
 
     useEffect(() => {
@@ -761,6 +770,8 @@ const EditHRFields = ({
         }
     }, [getHRdetails])
 
+    console.log(getClientNameSuggestion,"getClientNameSuggestion");
+
     return (
         <div className={HRFieldStyle.hrFieldContainer}>
             {contextHolder}
@@ -792,7 +803,7 @@ const EditHRFields = ({
                                             }
                                             placeholder="Enter Client Email/Name"
                                             ref={controllerRef}
-                                            defaultValue={clientNameValue}
+                                            // defaultValue={clientNameValue}
                                             // value={clientNameValue}
                                         />
                                     )}
@@ -1071,6 +1082,21 @@ const EditHRFields = ({
                     </div>
 
                     <div className={HRFieldStyle.row}>
+                    <div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Long Tearm/Short Tearm'}
+									defaultValue="Select sales Person"
+									options={salesPerson && salesPerson}
+									name="salesPerson"
+									isError={errors['salesPerson'] && errors['salesPerson']}
+									required
+									errorMsg={'Please select hiring request sales person'}
+								/>
+							</div>
+						</div>
                         <div className={HRFieldStyle.colMd6}>
                             <div className={HRFieldStyle.formGroup}>
                                 <HRSelectField
@@ -1149,7 +1175,7 @@ const EditHRFields = ({
                                         type={InputType.NUMBER}
                                         placeholder="Enter years"
                                     />
-                                    <HRInputField
+                                    {/* <HRInputField
                                         register={register}
                                         required
                                         errors={errors}
@@ -1166,7 +1192,7 @@ const EditHRFields = ({
                                         name="months"
                                         type={InputType.NUMBER}
                                         placeholder="Enter months"
-                                    />
+                                    /> */}
                                 </div>
                             </div>
                         </div>
