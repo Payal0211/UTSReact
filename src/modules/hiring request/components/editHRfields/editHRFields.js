@@ -22,6 +22,7 @@ import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
+import { MD5 } from 'crypto-js';
 export const secondaryInterviewer = {
     fullName: '',
     emailID: '',
@@ -88,6 +89,7 @@ const EditHRFields = ({
     const [controlledCountryValue, setControlledCountryValue] = useState("Select country")
     const [contractDurationValue, setContractDuration] = useState("")
     const [clientNameValue, setClientName] = useState("")
+    const [getDurationType, setDurationType] = useState([]);
 
     let controllerRef = useRef(null);
     const {
@@ -107,11 +109,6 @@ const EditHRFields = ({
         },
     });
 
-    // console.log(defaultValue,"defaultValues");
-    /* const { fields, append, remove } = useFieldArray({
-        control,
-        name: 'secondaryInterviewer',
-    }); */
 
     /* ------------------ Upload JD Starts Here ---------------------- */
     const [openPicker, authResponse] = useDrivePicker();
@@ -383,6 +380,11 @@ const EditHRFields = ({
         setRegion(response && response?.responseBody);
     }, []);
 
+    const getDurationTypes = useCallback(async () => {
+		const durationTypes = await MasterDAO.getDurationTypeDAO();
+		setDurationType(durationTypes && durationTypes?.responseBody?.details);
+	}, []);
+
     const getLocation = useLocation();
 
     const onNameChange = (event) => {
@@ -538,6 +540,7 @@ const EditHRFields = ({
         getCountry();
         getHowSoon();
         getNRMarginHandler();
+        getDurationTypes();
     }, [
         // getAvailability,
         // getSalesPerson,
@@ -593,10 +596,9 @@ const EditHRFields = ({
                 isHRDirectPlacement,
                 addHRResponse,
                 );
-
-                setAddHRResponse(localStorage.getItem("hrID"));
-                console.log(addHRResponse,"addHRResponse");
-                
+                const hrIDEncrypt = localStorage.getItem("hrID")
+                const hexHash = MD5(hrIDEncrypt.toString()).toString();
+                setAddHRResponse(hexHash);                
             if (type === SubmitType.SAVE_AS_DRAFT) {
                 if (_isNull(watch('clientName'))) {
                     return setError('clientName', {
@@ -678,6 +680,7 @@ const EditHRFields = ({
         setValue("country", getHRdetails?.directPlacement?.country)
         setValue("address", getHRdetails?.directPlacement?.address)
         setValue("contractDuration",getHRdetails?.salesHiringRequest_Details?.durationType)
+        setValue("getDurationType",getHRdetails?.contractDuration)
         setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType)
     }, [getHRdetails])
 
@@ -706,7 +709,6 @@ const EditHRFields = ({
     useEffect(() => {
         if (getHRdetails?.salesHiringRequest_Details?.currency) {
             const findCurrency = currencyResult.filter((item) => item?.value === getHRdetails?.salesHiringRequest_Details?.currency)
-            console.log(findCurrency, "findCurrency")
             setValue("budget", findCurrency)
             setControlledBudgetValue(findCurrency)
         }
@@ -715,7 +717,6 @@ const EditHRFields = ({
     useEffect(() => {
         if (getHRdetails?.addHiringRequest?.salesUserId) {
             const findSalesPerson = salesPerson.filter((item) => item?.id === getHRdetails?.addHiringRequest?.salesUserId)
-            console.log(findSalesPerson, "findSalesPerson")
             setValue("salesPerson", findSalesPerson[0])
             setControlledSalesValue(findSalesPerson[0]?.value)
         }
@@ -770,7 +771,16 @@ const EditHRFields = ({
         }
     }, [getHRdetails])
 
-    console.log(getClientNameSuggestion,"getClientNameSuggestion");
+    const durationTypenfo = []
+
+	const durationData = getDurationType.map((item)=>{
+		return (
+			durationTypenfo.push({
+				id : item.value,
+				value : item.text
+			})
+		)
+	})
 
     return (
         <div className={HRFieldStyle.hrFieldContainer}>
@@ -1088,12 +1098,12 @@ const EditHRFields = ({
 									setValue={setValue}
 									register={register}
 									label={'Long Tearm/Short Tearm'}
-									defaultValue="Select sales Person"
-									options={salesPerson && salesPerson}
-									name="salesPerson"
-									isError={errors['salesPerson'] && errors['salesPerson']}
+									defaultValue="Select Long Tearm/Short Tearm"
+									options={durationTypenfo && durationTypenfo}
+									name="getDurationType"
+									isError={errors['getDurationType'] && errors['getDurationType']}
 									required
-									errorMsg={'Please select hiring request sales person'}
+									errorMsg={'Please select duration type'}
 								/>
 							</div>
 						</div>

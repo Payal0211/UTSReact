@@ -77,7 +77,7 @@ export const hrUtils = {
 		addHrResponse,
 	) {
 		const hrFormDetails = {
-			en_Id: _isNull(addHrResponse) ? '' : addHrResponse.en_Id,
+			en_Id: _isNull(addHrResponse) ? '' : addHrResponse,
 			contactId: _isNull(contactID) ? 0 : contactID,
 			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 			clientName:
