@@ -1,21 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import confirmSlotStyle from './confirmSlot.module.css';
-import { Link } from 'react-router-dom';
-import UTSRoutes from 'constants/routes';
-import DatePicker from 'react-datepicker';
-import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { interviewUtils } from 'modules/interview/interviewUtils';
-import { InputType, InterviewStatus } from 'constants/application';
-import { Divider, Radio, message } from 'antd';
-import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
-import { useForm, Controller } from 'react-hook-form';
-import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
-import { MasterDAO } from 'core/master/masterDAO';
-import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
+import { Divider, Radio } from 'antd';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
-import { HttpStatusCode } from 'axios';
 
 const ConfirmSlotModal = ({
 	getConfirmSlotDetails,

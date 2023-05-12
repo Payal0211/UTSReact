@@ -207,12 +207,12 @@ export const hrUtils = {
 					: parseInt(d.years),
 			months:
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('months'))
+					? _isNull(watch('getDurationType'))
 						? 0
-						: parseInt(watch('months'))
-					: _isNull(d.months)
+						: parseInt(watch('getDurationType'))
+					: _isNull(d.getDurationType)
 					? 0
-					: parseInt(d.months),
+					: parseInt(d.getDurationType),
 			timeZone:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('region'))
@@ -603,10 +603,12 @@ export const hrUtils = {
 				{
 					label: 'Pass to ODR',
 					key: 'Pass to ODR',
+					isEnabled: true,
 				},
 				{
 					label: 'Keep it with me as well',
 					key: 'Keep it with me as well',
+					isEnabled: true,
 				},
 			];
 		} else if (adHOCValue === AdHOCHR.ODR) {
