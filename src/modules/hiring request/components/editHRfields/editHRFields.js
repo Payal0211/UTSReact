@@ -91,6 +91,7 @@ const EditHRFields = ({
     const [clientNameValue, setClientName] = useState("")
     const [getDurationType, setDurationType] = useState([]);
 
+    
     let controllerRef = useRef(null);
     const {
         watch,
@@ -108,6 +109,15 @@ const EditHRFields = ({
             autocompleteField: "abc",
         },
     });
+
+    //CLONE HR functionality
+    const getHRdetailsHandler = async (hrId) => {
+        const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId)
+        if (response.statusCode === HTTPStatusCode.OK) {
+            setHRdetails(response?.responseBody?.details)
+
+        }
+    }
 
 
     /* ------------------ Upload JD Starts Here ---------------------- */
@@ -410,6 +420,7 @@ const EditHRFields = ({
     }, []);
 
     const getClientNameValue = (clientName) => {
+        
         setValue('clientName', clientName);
         setError('clientName', {
             type: 'validate',
@@ -417,13 +428,36 @@ const EditHRFields = ({
         });
     };
 
+    // useEffect(() => {
+    //     if(getHRdetails?.fullClientName){
+    //         getListData(getHRdetails?.fullClientName);
+            
+    //     }
+    // }, [getHRdetails])
+
+
+    const getListData = async (clientName,shortclientName) => {
+        let response = await MasterDAO.getEmailSuggestionDAO(shortclientName);
+        if (response?.statusCode === HTTPStatusCode.OK) {
+            setClientNameSuggestion(response?.responseBody?.details);
+            setValue("clientName",clientName)
+            setClientNameMessage('');
+        } else if (
+            response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+            response?.statusCode === HTTPStatusCode.NOT_FOUND
+        ) {
+            setError('clientName', {
+                type: 'validate',
+                message: response?.responseBody,
+            });
+            setClientNameMessage(response?.responseBody);
+        }
+    }
     const getClientNameSuggestionHandler = useCallback(
         async (clientName) => {
             let response = await MasterDAO.getEmailSuggestionDAO(clientName);
-
             if (response?.statusCode === HTTPStatusCode.OK) {
                 setClientNameSuggestion(response?.responseBody?.details);
-
                 setClientNameMessage('');
             } else if (
                 response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
@@ -433,13 +467,13 @@ const EditHRFields = ({
                     type: 'validate',
                     message: response?.responseBody,
                 });
-                setClientNameSuggestion([]);
+                // setClientNameSuggestion([]);
                 setClientNameMessage(response?.responseBody);
             }
         },
         [setError],
     );
-
+    
     const validate = (clientName) => {
         if (!clientName) {
             return 'please enter the client email/name.';
@@ -454,6 +488,7 @@ const EditHRFields = ({
         );
         return filteredData;
     }, [getClientNameSuggestion, watchClientName]);
+    
     const getHRClientName = useCallback(async () => {
         let existingClientDetails =
             await hiringRequestDAO.getClientDetailRequestDAO(
@@ -465,8 +500,8 @@ const EditHRFields = ({
                 existingClientDetails?.statusCode === HTTPStatusCode.NOT_FOUND &&
                 'Client email does not exist.',
         });
-        existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
-            setValue('clientName', '');
+        // existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
+        //     setValue('clientName', '');
         existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
             setValue('companyName', '');
         existingClientDetails.statusCode === HTTPStatusCode.OK &&
@@ -518,8 +553,8 @@ const EditHRFields = ({
     useEffect(() => {
         let urlSplitter = `${getLocation.pathname.split('/')[2]}`;
         setPathName(urlSplitter);
-        pathName === ClientHRURL.ADD_NEW_CLIENT &&
-            setValue('clientName', clientDetail?.clientemail);
+        // pathName === ClientHRURL.ADD_NEW_CLIENT &&
+        //     setValue('clientName', clientDetail?.clientemail);
         pathName === ClientHRURL.ADD_NEW_CLIENT &&
             setValue('companyName', clientDetail?.companyname);
     }, [
@@ -610,7 +645,6 @@ const EditHRFields = ({
                 setType(SubmitType.SUBMIT);
             }
             const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
-            console.log(addHRRequest?.responseBody,"ajfahfgahfg");
 
             if (addHRRequest.statusCode === HTTPStatusCode.OK) {
                 // setAddHRResponse(addHRRequest?.responseBody?.details);
@@ -649,16 +683,6 @@ const EditHRFields = ({
         }
     }, [errors?.clientName]);
 
-    //CLONE HR functionality
-    const getHRdetailsHandler = async (hrId) => {
-        const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId)
-        if (response.statusCode === HTTPStatusCode.OK) {
-            setHRdetails(response?.responseBody?.details)
-
-        }
-    }
-
-
     useEffect(() => {
         setValue("clientName", getHRdetails?.fullClientName)
         setValue("companyName", getHRdetails?.company)
@@ -682,20 +706,16 @@ const EditHRFields = ({
         setValue("contractDuration",getHRdetails?.salesHiringRequest_Details?.durationType)
         setValue("getDurationType",getHRdetails?.contractDuration)
         setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType)
+        if(getHRdetails?.clientName){
+            getListData(getHRdetails?.clientName, getHRdetails?.clientName.substring(0,3));   
+            
+        }
     }, [getHRdetails])
-
-    useEffect(() => {
-        setClientName(getHRdetails?.fullClientName)
-        // setClientNameSuggestion(getHRdetails?.clientName)
-    }, [getHRdetails])
-    
-
-
     useEffect(() => {
         if (localStorage.getItem("hrID")) {
             getHRdetailsHandler(localStorage.getItem("hrID"))
         }
-    }, [localStorage.getItem("hrID")])
+    }, [])
 
 
     useEffect(() => {
@@ -781,6 +801,7 @@ const EditHRFields = ({
 			})
 		)
 	})
+  
 
     return (
         <div className={HRFieldStyle.hrFieldContainer}>
@@ -805,16 +826,17 @@ const EditHRFields = ({
                                             onSelect={(clientName) => getClientNameValue(clientName)}
                                             filterOption={true}
                                             onSearch={(searchValue) => {
-                                                setClientNameSuggestion([]);
+                                                // setClientNameSuggestion([]);
                                                 getClientNameSuggestionHandler(searchValue);
                                             }}
-                                            onChange={(clientName) =>
-                                                setValue('clientName', clientName)
+                                            onChange={(clientName) =>{
+                                                setValue('clientName', clientName)}
                                             }
                                             placeholder="Enter Client Email/Name"
                                             ref={controllerRef}
+                                            // name="clientName"
                                             // defaultValue={clientNameValue}
-                                            // value={clientNameValue}
+                                            value={watchClientName}
                                         />
                                     )}
                                     {...register('clientName', {
@@ -1092,13 +1114,13 @@ const EditHRFields = ({
                     </div>
 
                     <div className={HRFieldStyle.row}>
-                    <div className={HRFieldStyle.colMd6}>
+                        <div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
 									setValue={setValue}
 									register={register}
 									label={'Long Tearm/Short Tearm'}
-									defaultValue="Select Long Tearm/Short Tearm"
+									defaultValue="Select Tearm"
 									options={durationTypenfo && durationTypenfo}
 									name="getDurationType"
 									isError={errors['getDurationType'] && errors['getDurationType']}
@@ -1107,7 +1129,7 @@ const EditHRFields = ({
 								/>
 							</div>
 						</div>
-                        <div className={HRFieldStyle.colMd6}>
+                        <div className={HRFieldStyle.colMd4}>
                             <div className={HRFieldStyle.formGroup}>
                                 <HRSelectField
                                     dropdownRender={(menu) => (
@@ -1163,15 +1185,16 @@ const EditHRFields = ({
                                 />
                             </div>
                         </div>
-                        <div className={HRFieldStyle.colMd6}>
+                        <div className={HRFieldStyle.colMd4}>
                             <div className={HRFieldStyle.formGroup}>
-                                <label>
+                                {/* <label>
                                     Required Experience
                                     <span className={HRFieldStyle.reqField}>*</span>
-                                </label>
-                                <div className={HRFieldStyle.reqExperience}>
+                                </label> */}
+                                {/* <div className={HRFieldStyle.reqExperience}> */}
                                     <HRInputField
                                         required
+                                        label="Required Experience"
                                         errors={errors}
                                         validationSchema={{
                                             required: 'please enter the years.',
@@ -1203,7 +1226,7 @@ const EditHRFields = ({
                                         type={InputType.NUMBER}
                                         placeholder="Enter months"
                                     /> */}
-                                </div>
+                                {/* </div> */}
                             </div>
                         </div>
                     </div>
