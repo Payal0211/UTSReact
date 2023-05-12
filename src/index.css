@@ -719,3 +719,6 @@ table {
   left: 5px;
   top: 9px;
 }
+.textCenter {
+  text-align: center;
+}
