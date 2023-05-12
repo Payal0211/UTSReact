@@ -211,3 +211,15 @@
     color: #f2f2f2;
     cursor: pointer;
 }
+
+[class*="ant-select-dropdown"] [class*="ant-space-item"] input{
+    width: 100%;
+}
+[class*="ant-select-dropdown"] [class*="ant-space-item"] [class*="ant-btn-round"]{
+    height: 30px;
+    padding: 3px 12px;
+}
+
+[class*="ant-select-dropdown"] [class*="ant-space-item"] [class*="ant-btn-round"] [class*=".anticon"] + span{
+    margin-left: 6px;
+}

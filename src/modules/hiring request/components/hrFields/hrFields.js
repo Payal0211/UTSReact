@@ -928,13 +928,13 @@ const HRFields = ({
 						</div>
 					</div>
 					<div className={HRFieldStyle.row}>
-					<div className={HRFieldStyle.colMd6}>
+						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
 									setValue={setValue}
 									register={register}
 									label={'Long Tearm/Short Tearm'}
-									defaultValue="Select Long Tearm/Short Tearm"
+									defaultValue="Select Tearm"
 									options={durationTypenfo && durationTypenfo}
 									name="getDurationType"
 									isError={errors['getDurationType'] && errors['getDurationType']}
@@ -944,7 +944,7 @@ const HRFields = ({
 								/>
 							</div>
 						</div>
-						<div className={HRFieldStyle.colMd6}>
+						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
 									dropdownRender={(menu) => (
@@ -996,15 +996,16 @@ const HRFields = ({
 								/>
 							</div>
 						</div>
-						<div className={HRFieldStyle.colMd6}>
+						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>
+								{/* <label>
 									Required Experience
 									<span className={HRFieldStyle.reqField}>*</span>
-								</label>
-								<div className={HRFieldStyle.reqExperience}>
+								</label> */}
+								{/* <div className={HRFieldStyle.reqExperience}> */}
 									<HRInputField
 										required
+										label="Required Experience"
 										errors={errors}
 										validationSchema={{
 											required: 'please enter the years.',
@@ -1036,7 +1037,7 @@ const HRFields = ({
 										type={InputType.NUMBER}
 										placeholder="Enter months"
 									/> */}
-								</div>
+								{/* </div> */}
 							</div>
 						</div>
 					</div>
