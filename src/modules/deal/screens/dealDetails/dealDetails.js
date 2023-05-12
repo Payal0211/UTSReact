@@ -1,4 +1,4 @@
-import { Table, Tag } from 'antd';
+import { Modal, Table, Tag } from 'antd';
 import dealDetailsStyles from './dealDetailsStyle.module.css';
 import arrow from '../../../../assets/svg/trending.svg';
 import { useCallback, useEffect, useState } from 'react';
