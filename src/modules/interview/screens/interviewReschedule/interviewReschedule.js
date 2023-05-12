@@ -15,6 +15,8 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { HTTPStatusCode } from 'constants/network';
+import moment from 'moment';
+import { disabledWeekend } from 'shared/utils/basic_utils';
 
 const InterviewReschedule = ({
 	talentName,
@@ -55,10 +57,7 @@ const InterviewReschedule = ({
 		{ id: 3, value: 'Talent not available on given Slots' },
 		{ id: 4, value: 'Talent not available on selected Slot' },
 	];
-	console.log(
-		getRescheduleSlotInfomation.slice(0, 1),
-		'getRescheduleSlotInfomation',
-	);
+
 	const onRescheduleChange = (e) => {
 		setRescheduleRadio(e.target.value);
 	};
@@ -89,6 +88,7 @@ const InterviewReschedule = ({
 		resetField('slot3StartTime');
 		resetField('slot3EndTime');
 	}, [resetField]);
+
 	const reScheduleInterviewAPIHandler = useCallback(
 		async (data) => {
 			const reScheduleData = {
@@ -187,8 +187,8 @@ const InterviewReschedule = ({
 
 								<div className={InterviewScheduleStyle.cardTitle}>
 									{interviewUtils.GETINTERVIEWSTATUS(
-										'Scheduled',
-										InterviewStatus.INTERVIEW_SCHEDULED,
+										talentInfo?.InterviewStatus,
+										talentInfo?.InterViewStatusId,
 									)}
 								</div>
 							</div>
@@ -198,7 +198,9 @@ const InterviewReschedule = ({
 								<div className={InterviewScheduleStyle.cardLabel}>
 									Interview Round
 								</div>
-								<div className={InterviewScheduleStyle.cardTitle}>Round 1</div>
+								<div className={InterviewScheduleStyle.cardTitle}>
+									{talentInfo?.InterviewROUND || 'NA'}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -353,6 +355,7 @@ const InterviewReschedule = ({
 								<Controller
 									render={({ ...props }) => (
 										<DatePicker
+											filterDate={disabledWeekend}
 											selected={getRescheduleSlotDate[0].slot1}
 											placeholderText="Select Date"
 											onChange={(date) => {
@@ -458,6 +461,7 @@ const InterviewReschedule = ({
 										<Controller
 											render={({ ...props }) => (
 												<DatePicker
+													filterDate={disabledWeekend}
 													selected={getRescheduleSlotDate[1].slot1}
 													placeholderText="Select Date"
 													onChange={(date) => {
@@ -561,6 +565,7 @@ const InterviewReschedule = ({
 										<Controller
 											render={({ ...props }) => (
 												<DatePicker
+													filterDate={disabledWeekend}
 													placeholderText="Select Date"
 													selected={getRescheduleSlotDate[2].slot1}
 													onChange={(date) => {

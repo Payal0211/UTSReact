@@ -141,8 +141,8 @@ const ConfirmSlotModal = ({
 								</div>
 								<div className={confirmSlotStyle.cardTitle}>
 									{interviewUtils.GETINTERVIEWSTATUS(
-										`${getConfirmSlotDetails?.InterviewStatusName} `,
-										InterviewStatus.INTERVIEW_SCHEDULED,
+										talentInfo?.InterviewStatus,
+										talentInfo?.InterViewStatusId,
 									)}
 								</div>
 							</div>
@@ -154,7 +154,7 @@ const ConfirmSlotModal = ({
 									Interview Round
 								</div>
 								<div className={confirmSlotStyle.cardTitle}>
-									{getConfirmSlotDetails?.InterviewRound}
+									{talentInfo?.InterviewROUND || 'NA'}
 								</div>
 							</div>
 						</div>

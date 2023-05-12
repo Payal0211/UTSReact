@@ -162,9 +162,41 @@ tr th:first-child{
      cursor: pointer;
      box-shadow: none;
  }
- .btnPrimary:hover {
-     background: #232323;
-     color: #fff;
-     border-color: #232323;
+ 
+ .btnPrimaryDisabled{
+    background: #ffed9e;
+        border: 1px solid #FFDA30;
+        border-radius: 8px;
+        font-family: 'Montserrat';
+        font-weight: 500;
+        font-size: 15px;
+        line-height: 17px;
+        color: #4a4a4a;
+        padding: 17px 28px;
+        outline: none;
+        transition: all 0.35s ease 0s;
+        cursor: no-drop;
+        box-shadow: none;
  }
+.btnPrimaryOutline {
+    background: var(--background-color-light);
+    border: 1px solid #FFDA30;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 17px;
+    color: #232323;
+    padding: 17px 28px;
+    outline: none;
+    transition: all 0.35s ease 0s;
+    cursor: pointer;
+    box-shadow: none;
+}
 
+.btnPrimaryOutline:hover,
+.btnPrimary:hover {
+    background: #232323;
+    color: #fff;
+    border-color: #232323;
+}

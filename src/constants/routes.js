@@ -97,7 +97,7 @@ export default class UTSRoutes {
 	static DEMANDFUNNELROUTE = '/demandfunnel';
 	static SUPPLYFUNNELROUTE = '/supplyfunnel';
 	static TEAMDEMANDFUNNELROUTE = '/teamdemandfunnel';
-  static INCENTIVEREPORTROUTE = '/report/incentive';
+	static INCENTIVEREPORTROUTE = '/report/incentive';
 }
 
 export const navigateToComponent = {
@@ -196,7 +196,7 @@ export const navigateToComponent = {
 			<TeamDemandFunnelReport />
 		</Suspense>
 	),
-  	[UTSRoutes.INCENTIVEREPORTROUTE]: (
+	[UTSRoutes.INCENTIVEREPORTROUTE]: (
 		<Suspense>
 			<IncentiveReport />
 		</Suspense>
