@@ -60,6 +60,7 @@ const EditHRFields = ({
     const [type, setType] = useState('');
     const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
     const [getClientNameMessage, setClientNameMessage] = useState('');
+    const [disableButton,setDisableButton] = useState(true)
 
     const [getValidation, setValidation] = useState({
         systemFileUpload: '',
@@ -399,6 +400,12 @@ const EditHRFields = ({
 
     const onNameChange = (event) => {
         setName(event.target.value);
+        if(event.target.value){
+            setDisableButton(false)
+        }else{
+            setDisableButton(true)
+        }
+        
     };
     const addItem = useCallback(
         (e) => {
@@ -408,6 +415,7 @@ const EditHRFields = ({
             setTimeout(() => {
                 inputRef.current?.focus();
             }, 0);
+            setDisableButton(true)
         },
         [items, name],
     );
@@ -1135,6 +1143,7 @@ const EditHRFields = ({
                                     dropdownRender={(menu) => (
                                         <>
                                             {menu}
+                                            {console.log(menu,"meunuuuuuuugg")}
                                             <Divider style={{ margin: '8px 0' }} />
                                             <Space style={{ padding: '0 8px 4px' }}>
                                                 <label>Other:</label>
@@ -1146,10 +1155,12 @@ const EditHRFields = ({
                                                     value={name}
                                                     onChange={onNameChange}
                                                 />
+                                          {console.log(inputRef,"editttt")}
                                                 <Button
                                                     style={{
                                                         backgroundColor: `var(--uplers-grey)`,
                                                     }}
+                                                    disabled= {disableButton?true:false}
                                                     shape="round"
                                                     type="text"
                                                     icon={<PlusOutlined />}
@@ -1167,7 +1178,7 @@ const EditHRFields = ({
                                     }))}
                                     controlledValue={contractDurationValue}
                                     setControlledValue={setContractDuration}
-                                    isControlled={true}
+                                    // isControlled={true}
                                     setValue={setValue}
                                     register={register}
                                     label={'Contract Duration (in months)'}
