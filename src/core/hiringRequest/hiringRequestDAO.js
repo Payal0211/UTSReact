@@ -1459,7 +1459,7 @@ export const hiringRequestDAO = {
 		}
 	},
 	viewHRDetailsRequestDAO: async (HRId) => {
-		console.log(HRId, "HRIdDAO")
+
 		try {
 			const viewHRDetails = await HiringRequestAPI.viewHRDetailsRequest(HRId);
 			if (viewHRDetails) {
