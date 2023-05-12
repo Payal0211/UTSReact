@@ -34,7 +34,7 @@ const ViewHRDetails = () => {
 
                 <div className={ViewHRDetailsStyle.viewHRDetailsHead}>
                     <h1>
-                        HR ID -  HR123456789012
+                        {hiringDetails?.responseBody?.details?.hrNumber}
                     </h1>
                     <button>
                         Edit HR
@@ -56,12 +56,12 @@ const ViewHRDetails = () => {
                                             <li><span>Hiring Request Role:</span> {hiringDetails?.responseBody?.details?.hiringRequestRole}</li>
                                             <li><span>Job Description:</span> <a href="#" target="_blank">{hiringDetails?.responseBody?.details?.jobDescription ?? "Click Here"}</a></li>
                                             <li><span>Contract Type:</span> Direct Placement</li>
-                                            <li><span>NR Margin Percentage:</span>{hiringDetails?.responseBody?.details?.nrPercetange ?? "NA"} %</li>
+                                            <li><span>NR Margin Percentage:</span> {hiringDetails?.responseBody?.details?.nrPercetange ?? "NA"} %</li>
                                             <li><span>Contract Duration:</span> {hiringDetails?.responseBody?.details?.contractDuration} Months<i className={ViewHRDetailsStyle.blueDot} /></li>
                                             <li><span>How Many Talent Request:</span> 1</li>
-                                            <li><span>Region:</span>{hiringDetails?.responseBody?.details?.region}<i className={ViewHRDetailsStyle.blueDot} /></li>
+                                            <li><span>Region:</span> {hiringDetails?.responseBody?.details?.region}<i className={ViewHRDetailsStyle.blueDot} /></li>
                                             <li><span>NP:</span> 30 NP<i className={ViewHRDetailsStyle.blueDot} /></li>
-                                            <li><span>BQ Form Link:</span> <a href="#" target="_blank">{hiringDetails?.responseBody?.details?.bqLink === "" ? "Click Here" : hiringDetails?.responseBody?.details?.bqLink}</a></li>
+                                            <li><span>BQ Form Link:</span> <a href={hiringDetails?.responseBody?.details?.bqLink} target="_blank">Click Here</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -70,15 +70,15 @@ const ViewHRDetails = () => {
                                         <ul>
                                             <li><span>Company Name:</span> {hiringDetails?.responseBody?.details?.company}<i className={ViewHRDetailsStyle.blueDot} /></li>
                                             <li><span>Hiring Request Title:</span> {hiringDetails?.responseBody?.details?.hiringRequestTitle}<i className={ViewHRDetailsStyle.blueDot} /></li>
-                                            <li><span>JD URL:</span>{hiringDetails?.responseBody?.details?.jdurl == "" ? "NA" : hiringDetails?.responseBody?.details?.jdurl}</li>
+                                            <li><span>JD URL:</span> {hiringDetails?.responseBody?.details?.jdurl === null ? "NA" : hiringDetails?.responseBody?.details?.jdurl}</li>
                                             <li><span>Estimated Budget:</span> {hiringDetails?.responseBody?.details?.hiringCost}<i className={ViewHRDetailsStyle.blueDot} /></li>
                                             <li><span>Sales Person:</span> {hiringDetails?.responseBody?.details?.salesPerson}</li>
-                                            <li><span>Required Experience:</span>{hiringDetails?.responseBody?.details?.requiredExperienceYear} Years<i className={ViewHRDetailsStyle.blueDot} /></li>
-                                            <li><span>Availibilty:</span>{hiringDetails?.responseBody?.details?.availability ?? "NA"}</li>
-                                            <li><span>Time Zone:</span>{hiringDetails?.responseBody?.details?.timeZone}<i className={ViewHRDetailsStyle.blueDot} /></li>
-                                            <li><span>Deal ID:</span>{hiringDetails?.responseBody?.details?.dealID ?? "NA"}</li>
-                                            <li><span>How Soon:</span>{hiringDetails?.responseBody?.details?.howSoon ?? "NA"}</li>
-                                            <li><span>Discovery Form Link:</span> <a href="#" target="_blank">{hiringDetails?.responseBody?.details?.discoveryCall ?? "NA"}</a></li>
+                                            <li><span>Required Experience:</span> {hiringDetails?.responseBody?.details?.requiredExperienceYear} Years<i className={ViewHRDetailsStyle.blueDot} /></li>
+                                            <li><span>Availibilty:</span> {hiringDetails?.responseBody?.details?.availability ?? "NA"}</li>
+                                            <li><span>Time Zone:</span> {hiringDetails?.responseBody?.details?.timeZone}<i className={ViewHRDetailsStyle.blueDot} /></li>
+                                            <li><span>Deal ID:</span> {hiringDetails?.responseBody?.details?.dealID ?? "NA"}</li>
+                                            <li><span>How Soon:</span> {hiringDetails?.responseBody?.details?.howSoon ?? "NA"}</li>
+                                            <li><span>Discovery Form Link:</span> <a href={hiringDetails?.responseBody?.details?.discoveryCall} target="_blank">Click Here</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -93,23 +93,26 @@ const ViewHRDetails = () => {
                     </div>
                     <div className={ViewHRDetailsStyle.viewHRRightDetails}>
                         <div className={ViewHRDetailsStyle.row}>
-                            <div className={ViewHRDetailsStyle.colLg6}>
-                                <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
-                                    <h3>Interviewer 1</h3>
-                                    <ul>
-                                        {hiringDetails?.responseBody?.details?.interviewerlList?.map((item) => {
-                                            return (
+
+                            {hiringDetails?.responseBody?.details?.interviewerlList?.map((item) => {
+
+                                return (
+                                    <div className={ViewHRDetailsStyle.colLg6}>
+                                        <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+                                            <h3>Interviewer 1</h3>
+                                            <ul>
+
                                                 <>
-                                                    <li><span>Interviewer Name:</span>{item?.interviewerFullName}</li>
+                                                    <li><span>Interviewer Name:</span> {item?.interviewerFullName}</li>
                                                     <li><span>Interviewer Linkedin:</span> {item?.interviewerLinkedin === null ? "NA" : <a href={item?.interviewerLinkedin} target="_blank">Click Here</a>}</li>
-                                                    <li><span>Interviewer Email:</span>{item?.interviewerEmail}</li>
-                                                    <li><span>Interviewer Designation:</span>{item.interviewerDesignation}</li>
+                                                    <li><span>Interviewer Email:</span> {item?.interviewerEmail}</li>
+                                                    <li><span>Interviewer Designation:</span> {item.interviewerDesignation}</li>
                                                 </>
-                                            )
-                                        })}
-                                    </ul>
-                                </div>
-                            </div>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                )
+                            })}
                             {/* <div className={ViewHRDetailsStyle.colLg6}>
                                 <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
                                     <h3>Interviewer 1</h3>
