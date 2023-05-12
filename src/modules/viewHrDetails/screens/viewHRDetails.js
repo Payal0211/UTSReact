@@ -11,11 +11,9 @@ import { useState } from "react"
 const ViewHRDetails = () => {
     const [hiringDetails, setHiringDetails] = useState("")
     const id = useParams()
-    console.log(id, "hjdgashdgsaj")
-    console.log(hiringDetails, "hiringDetails")
+
     const getViewHrDetails = async () => {
         const response = await hiringRequestDAO.viewHRDetailsRequestDAO(id.id);
-        console.log(response, "response")
         setHiringDetails(response)
     }
     useEffect(() => {
