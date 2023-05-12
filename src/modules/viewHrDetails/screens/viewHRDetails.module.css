@@ -1,0 +1,190 @@
+.viewHRDetailsWrap {
+  padding: 0 40px 40px;
+}
+.goBack {
+  color: var(--uplers-black);
+  font-size: var(--fontsize-uplers);
+  font-weight: 500;
+  line-height: 18px;
+  display: flex;
+  margin-bottom: 27px;
+}
+.goBack a {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--uplers-black);
+}
+.goBack svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.viewHRDetailsHead {
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #cecccc;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+.viewHRDetailsHead h1 {
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 39px;
+  color: var(--uplers-black);
+  margin: 0;
+}
+.viewHRDetailsHead button {
+  background: #fff;
+  border: 1px solid #ffda30;
+  border-radius: 8px;
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--uplers-black);
+  padding: 12px 31px;
+  outline: none;
+  transition: all 0.35s ease 0s;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.row {
+  margin: 0 -12px;
+  display: flex;
+}
+.colLg6 {
+  width: 50%;
+  padding: 0 12px;
+}
+
+.viewHRDetailsItem {
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  gap: 24px;
+  border-bottom: 1px solid #cecccc;
+  display: flex;
+}
+.viewHRDetailsItem:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.viewHRLeftDetails {
+  width: 33.33%;
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: #7c7c7c;
+}
+.viewHRLeftDetails p {
+  margin-bottom: 0;
+}
+
+.viewHRLeftDetails h2 {
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29px;
+  color: #232323;
+  margin-bottom: 8px;
+}
+.viewHRLeftDetails h2:last-child {
+  margin-bottom: 0;
+}
+
+.viewHRRightDetails {
+  flex: 1;
+}
+.viewHRDetailsBoxWrap {
+  background: #ffffff;
+  border-radius: 8px;
+}
+.viewHRDetailsBoxWrap .viewHRDetailsBox {
+  background: transparent;
+  box-shadow: none;
+}
+.viewHRDetailsBox {
+  background: #ffffff;
+  box-shadow: 0px 2px 8px rgba(204, 238, 204, 0.25);
+  border-radius: 8px;
+  padding: 32px;
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #232323;
+}
+
+.viewHRDetailsBox p {
+  margin-bottom: 0;
+}
+
+.viewHRDetailsBox + .viewHRDetailsBox {
+  margin-top: 24px;
+}
+
+.viewHRDetailsBox h3 {
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  color: #232323;
+  margin: 0 0 16px;
+}
+
+.viewHRDetailsBox ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  color: #232323;
+}
+.viewHRDetailsBox ul li {
+  margin-bottom: 16px;
+}
+.viewHRDetailsBox ul li:last-child {
+  margin-bottom: 0;
+}
+.viewHRDetailsBox ul li span {
+  color: #7c7c7c;
+}
+.viewHRDetailsBox ul li a {
+  text-decoration-line: underline;
+  color: #0278e4;
+  cursor: pointer;
+}
+
+.blueDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 20px;
+  background: #405cc0;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.skillsList {
+  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.skillsList span {
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+  color: #ffffff;
+  display: inline-block;
+  background: #232323;
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: default;
+}

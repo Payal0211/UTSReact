@@ -19,7 +19,7 @@ const AddNewClient = React.lazy(() =>
 const InterviewList = React.lazy(() =>
 	import('modules/interview/screens/interviewList/interviewList'),
 );
-/* 
+/*
 
 const InterviewSchedule = React.lazy(() =>
 	import('modules/interview/screens/interviewReschedule/interviewReschedule'),
@@ -69,6 +69,9 @@ const TeamDemandFunnelReport = React.lazy(() =>
 const IncentiveReport = React.lazy(() =>
 	import('modules/IncentiveReport/screens/IncentiveReport'),
 );
+const ViewHrDetails = React.lazy(() =>
+	import('modules/viewHrDetails/screens/viewHRDetails'),
+);
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -97,7 +100,8 @@ export default class UTSRoutes {
 	static DEMANDFUNNELROUTE = '/demandfunnel';
 	static SUPPLYFUNNELROUTE = '/supplyfunnel';
 	static TEAMDEMANDFUNNELROUTE = '/teamdemandfunnel';
-  static INCENTIVEREPORTROUTE = '/report/incentive';
+	static INCENTIVEREPORTROUTE = '/report/incentive';
+	static VIEWHRDETAILS = "/viewHrDetails/:id";
 }
 
 export const navigateToComponent = {
@@ -196,9 +200,14 @@ export const navigateToComponent = {
 			<TeamDemandFunnelReport />
 		</Suspense>
 	),
-  	[UTSRoutes.INCENTIVEREPORTROUTE]: (
+	[UTSRoutes.INCENTIVEREPORTROUTE]: (
 		<Suspense>
 			<IncentiveReport />
+		</Suspense>
+	),
+	[UTSRoutes.VIEWHRDETAILS]: (
+		<Suspense>
+			<ViewHrDetails />
 		</Suspense>
 	),
 };

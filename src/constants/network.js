@@ -23,7 +23,7 @@ export class SubDomain {
 	static ENGAGEMENT = 'Engagement/';
 	static TALENT_REPLACEMENT = 'TalentReplacement/';
 	static REPORT = 'Report/';
- static INCENTIVE_REPORT = "IncentiveReport/";
+	static INCENTIVE_REPORT = "IncentiveReport/";
 }
 export class APIType {
 	static USER = '/user';
@@ -172,6 +172,7 @@ export class HiringRequestsAPI {
 	static GET_HR_COST_DETAILS = 'GetHRCostDetails';
 	static UPDATE_HR_COST = 'UpdateHRCost';
 	static UPDATE_TALENT_FEES = 'UpdateTalentFees';
+	static VIEW_HR_DETAILS = 'ViewHRDetails';
 }
 
 export class UsersAPI {
@@ -232,13 +233,13 @@ export class TalentReplaceAPI {
 	static SAVE_REPLACED_TALENT = 'SaveReplaceTalent';
 }
 export class IncentiveReport {
-  static GET_USER_ROLE = "GetIncentiveReport";
-  static MONTH_YEAR_FILER = "MonthYearFilter";
-  static GET_SALES_USERS_BASED_ON_USER_ROLE = "GetSalesUsersBasedOnUserRole";
-  static GET_USER_HIERARCHY = "GetUserHierarchy";
-  static GET_LIST = "List";
-  static GET_INCENTIVE_REPORT_DETAILS = "GetIncentiveReportDetails";
-  static GET_CONTRACT_BOOSTER = "GetIncentiveReportDetailsContractBooster";
-  static GET_CONTRACT_BOOSTER = "GetIncentiveReportDetailsContractBooster";
-  static GET_INCENTIVE_REPORT_AMNR = "GetIncentiveReportDetailsAMNR";
+	static GET_USER_ROLE = "GetIncentiveReport";
+	static MONTH_YEAR_FILER = "MonthYearFilter";
+	static GET_SALES_USERS_BASED_ON_USER_ROLE = "GetSalesUsersBasedOnUserRole";
+	static GET_USER_HIERARCHY = "GetUserHierarchy";
+	static GET_LIST = "List";
+	static GET_INCENTIVE_REPORT_DETAILS = "GetIncentiveReportDetails";
+	static GET_CONTRACT_BOOSTER = "GetIncentiveReportDetailsContractBooster";
+	static GET_CONTRACT_BOOSTER = "GetIncentiveReportDetailsContractBooster";
+	static GET_INCENTIVE_REPORT_AMNR = "GetIncentiveReportDetailsAMNR";
 }
