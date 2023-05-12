@@ -1,8 +1,6 @@
 import React, { useCallback } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import UTSRoutes from 'constants/routes';
+import { Link, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import ViewHRDetailsStyle from '../screens/viewHRDetails.module.css';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
@@ -11,11 +9,12 @@ import { useState } from 'react';
 const ViewHRDetails = () => {
 	const [hiringDetails, setHiringDetails] = useState('');
 	const id = useParams();
-	console.log(hiringDetails, 'hiringDetails');
+
 	const getViewHrDetails = useCallback(async () => {
 		const response = await hiringRequestDAO.viewHRDetailsRequestDAO(id.id);
 		setHiringDetails(response);
 	}, [id.id]);
+
 	useEffect(() => {
 		getViewHrDetails();
 	}, [getViewHrDetails]);
