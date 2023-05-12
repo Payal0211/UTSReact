@@ -118,6 +118,7 @@ export class MastersAPI {
 	static GET_DASHBOARD_COUNT_FOR_ENGAGEMENT = 'GetDashboardCountForEngagement';
 	static GET_COUNTRY_LIST = 'GetCountryList';
 	static GET_USERS_HIERARCHY = 'GetUserHierarchy';
+  static GET_DURATION_TYPE = "GetDurationType"
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';

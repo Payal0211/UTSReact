@@ -66,7 +66,7 @@ const HRFields = ({
 	});
 	const [childCompany, setChildCompany] = useState([]);
 	const [isSalesUserPartner, setIsSalesUserPartner] = useState(false);
-
+	const [getDurationType, setDurationType] = useState([]);
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
 		googleDriveFileUpload: '',
@@ -337,30 +337,44 @@ const HRFields = ({
 		);
 	}, []);
 
-	const CheckSalesUserIsPartner = useCallback(async (getContactAndSaleID) => {
-		const response = await MasterDAO.checkIsSalesPersonDAO(getContactAndSaleID);
-		if (response?.responseBody?.details?.SaleUserIsPartner) {
-			setIsSalesUserPartner(response?.responseBody?.details?.SaleUserIsPartner);
-			const newChildCompanyList =
-				response?.responseBody?.details?.ChildCompanyList.filter(
-					(ele, index) => index !== 0,
-				);
-			setChildCompany([]);
-			setChildCompany((prev) =>
-				newChildCompanyList.map(
-					({ childCompanyID, childCompanyName }) =>
-						childCompanyID !== -1 && {
-							id: childCompanyID,
-							value: childCompanyName,
-						},
-				),
+	const CheckSalesUserIsPartner = useCallback(
+		async (getContactAndSaleID) => {
+			const response = await MasterDAO.checkIsSalesPersonDAO(
+				getContactAndSaleID,
 			);
-			setChildCompany((prev) => [
-				...prev,
-				{ id: 0, value: 'Add Other Company' },
-			]);
-		}
-	}, []);
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				if (response?.responseBody?.details?.SaleUserIsPartner) {
+					setIsSalesUserPartner(
+						response?.responseBody?.details?.SaleUserIsPartner,
+					);
+					const newChildCompanyList =
+						response?.responseBody?.details?.ChildCompanyList.filter(
+							(ele, index) => index !== 0,
+						);
+					setChildCompany([]);
+					setChildCompany((prev) =>
+						newChildCompanyList.map(
+							({ childCompanyID, childCompanyName }) =>
+								childCompanyID !== -1 && {
+									id: childCompanyID,
+									value: childCompanyName,
+								},
+						),
+					);
+					setChildCompany((prev) => [
+						...prev,
+						{ id: 0, value: 'Add Other Company' },
+					]);
+				}
+			} else {
+				setError('salesPerson', {
+					type: 'validate',
+					message: 'Sales Person is not partner',
+				});
+			}
+		},
+		[setError],
+	);
 
 	const getHowSoon = useCallback(async () => {
 		const howSoonResponse = await MasterDAO.getHowSoonRequestDAO();
@@ -390,6 +404,10 @@ const HRFields = ({
 		]);
 	}, []);
 
+	const getDurationTypes = useCallback(async () => {
+		const durationTypes = await MasterDAO.getDurationTypeDAO();
+		setDurationType(durationTypes && durationTypes?.responseBody?.details);
+	}, []);
 	const getSalesPerson = useCallback(async () => {
 		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
 		setSalesPerson(
@@ -558,7 +576,7 @@ const HRFields = ({
 	useEffect(() => {
 		if (getContactAndSaleID?.contactID && getContactAndSaleID?.salesID)
 			CheckSalesUserIsPartner(getContactAndSaleID);
-	}, [getContactAndSaleID]);
+	}, [CheckSalesUserIsPartner, getContactAndSaleID]);
 
 	useEffect(() => {
 		!_isNull(prefRegion) && getTimeZonePreference();
@@ -570,6 +588,7 @@ const HRFields = ({
 		getCountry();
 		getHowSoon();
 		getNRMarginHandler();
+		getDurationTypes();
 	}, [
 		getAvailability,
 		getSalesPerson,
@@ -581,6 +600,7 @@ const HRFields = ({
 		getWorkingMode,
 		getCountry,
 		getNRMarginHandler,
+		getDurationTypes,
 	]);
 	useEffect(() => {
 		setValidation({
@@ -614,7 +634,7 @@ const HRFields = ({
 				d,
 				type,
 				watch,
-				// filteredMemo[0]?.contactId,
+
 				contactID || getContactAndSaleID?.contactID,
 				isHRDirectPlacement,
 				addHRResponse,
@@ -677,6 +697,19 @@ const HRFields = ({
 	useEffect(() => {
 		setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));
 	}, [watchSalesPerson]);
+
+	const durationDataMemo = useMemo(() => {
+		let formattedDuration = [];
+		getDurationType?.filter(
+			(item) =>
+				item?.value !== '0' &&
+				formattedDuration.push({
+					id: item?.value,
+					value: item?.text,
+				}),
+		);
+		return formattedDuration;
+	}, [getDurationType]);
 
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
@@ -785,7 +818,10 @@ const HRFields = ({
 									name="salesPerson"
 									isError={errors['salesPerson'] && errors['salesPerson']}
 									required
-									errorMsg={'Please select hiring request sales person'}
+									errorMsg={
+										errors?.salesPerson?.message ||
+										'Please select hiring request sales person'
+									}
 								/>
 							</div>
 						</div>
@@ -1027,7 +1063,25 @@ const HRFields = ({
 					</div>
 
 					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd6}>
+						<div className={HRFieldStyle.colMd4}>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									label={'Long Tearm/Short Tearm'}
+									defaultValue="Select Term"
+									options={durationDataMemo}
+									name="getDurationType"
+									isError={
+										errors['getDurationType'] && errors['getDurationType']
+									}
+									required
+									// mode={'text/value'}
+									errorMsg={'Please select duration type'}
+								/>
+							</div>
+						</div>
+						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
 									dropdownRender={(menu) => (
@@ -1080,29 +1134,30 @@ const HRFields = ({
 								/>
 							</div>
 						</div>
-						<div className={HRFieldStyle.colMd6}>
+						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>
+								{/* <label>
 									Required Experience
 									<span className={HRFieldStyle.reqField}>*</span>
-								</label>
-								<div className={HRFieldStyle.reqExperience}>
-									<HRInputField
-										required
-										errors={errors}
-										validationSchema={{
-											required: 'please enter the years.',
-											min: {
-												value: 0,
-												message: `please don't enter the value less than 0`,
-											},
-										}}
-										register={register}
-										name="years"
-										type={InputType.NUMBER}
-										placeholder="Enter years"
-									/>
-									<HRInputField
+								</label> */}
+								{/* <div className={HRFieldStyle.reqExperience}> */}
+								<HRInputField
+									required
+									label="Required Experience"
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the years.',
+										min: {
+											value: 0,
+											message: `please don't enter the value less than 0`,
+										},
+									}}
+									register={register}
+									name="years"
+									type={InputType.NUMBER}
+									placeholder="Enter years"
+								/>
+								{/* 	<HRInputField
 										register={register}
 										required
 										errors={errors}
@@ -1119,8 +1174,8 @@ const HRFields = ({
 										name="months"
 										type={InputType.NUMBER}
 										placeholder="Enter months"
-									/>
-								</div>
+									/> */}
+								{/* 	</div> */}
 							</div>
 						</div>
 					</div>

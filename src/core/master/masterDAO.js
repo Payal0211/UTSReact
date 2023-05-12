@@ -957,7 +957,7 @@ export const MasterDAO = {
 
 	checkIsSalesPersonDAO: async function (getContactAndSaleID) {
 		try {
-			const isCheckSales = await MasterAPI.checkIsSalesPersonDAO(
+			const isCheckSales = await MasterAPI.checkIsSalesPerson(
 				getContactAndSaleID,
 			);
 			if (isCheckSales) {
@@ -1003,6 +1003,31 @@ export const MasterDAO = {
 			}
 		} catch (error) {
 			return errorDebug(error, 'MasterDAO.getCountryListRequestDAO');
+		}
+	},
+	getDurationTypeDAO: async function (data) {
+		try {
+			const durationTypeResponse = await MasterAPI.getDurationType(data);
+			if (durationTypeResponse) {
+				const statusCode = durationTypeResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = durationTypeResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return durationTypeResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return durationTypeResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getDurationTypeDAO');
 		}
 	},
 };
