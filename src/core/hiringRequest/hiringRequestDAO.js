@@ -1491,4 +1491,34 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getAMDataSendRequestDAO()');
 		}
 	},
+  viewHRDetailsRequestDAO: async (HRId) => {
+
+		try {
+			const viewHRDetails = await HiringRequestAPI.viewHRDetailsRequest(HRId);
+			if (viewHRDetails) {
+				const statusCode = viewHRDetails['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = viewHRDetails.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return viewHRDetails;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return viewHRDetails;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.viewHRDetailsRequestDAO()');
+		}
+	},
 };

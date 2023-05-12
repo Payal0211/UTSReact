@@ -19,7 +19,9 @@
     justify-content: space-between;
     align-items: flex-start;
 }
-
+.partWiseList {
+  display: block;
+}
 .companyName,
 .companyURL,
 .pocName,
@@ -42,4 +44,18 @@
     align-items: center;
     /* justify-content: center; */
     padding-top:5px;
+}
+.TR button {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  text-decoration-line: underline;
+  color: #676767;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-left: auto;
+  cursor: pointer;
+  box-shadow: none;
 }

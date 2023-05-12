@@ -2,8 +2,11 @@ import CompanyProfileCardStyle from './companyProfile.module.css';
 import { BsThreeDots } from 'react-icons/bs';
 import { AiFillLinkedin } from 'react-icons/ai';
 import { Divider, Dropdown, Menu } from 'antd';
+import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const CompanyProfileCard = ({ clientDetail, talentLength }) => {
+	const id = useParams()
 	return (
 		<div className={CompanyProfileCardStyle.companyProfileContainer}>
 			<label>
@@ -100,13 +103,15 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 						}}
 					/>
 
-					<div className={CompanyProfileCardStyle.partWise}>
+					<div className={`${CompanyProfileCardStyle.partWise} ${CompanyProfileCardStyle.partWiseList}`}>
 						<div style={{ marginBottom: '10px' }}>
 							<div className={CompanyProfileCardStyle.TR}>
-								<span>TR:</span>&nbsp;&nbsp;
+								<span>Active TR:</span>&nbsp;&nbsp;
+
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 								</span>
+								<button>Update TR</button>
 							</div>
 							{/* <div className={CompanyProfileCardStyle.TRParked}>
 								<span>TR Parked:</span>&nbsp;&nbsp;
@@ -211,14 +216,15 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.TRParked}>
 								<span>Additional Information:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{/* <a
-										rel="noreferrer"
-										target="_blank"
-										href="#"
+									<Link
+										to={`/viewHrDetails/${id?.hrid}`}
+										// to={"/viewHrDetails"}
+										// rel="noreferrer"
+										// target="_blank"
+										// href="#"
 										style={{ textDecoration: 'underline' }}>
-										Click Here
-									</a> */}
-									NA
+										View Complete HR
+									</Link>
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.TRParked}>

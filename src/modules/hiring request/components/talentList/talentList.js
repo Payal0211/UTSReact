@@ -1462,7 +1462,7 @@ const TalentList = ({
 														color: `var(--background-color-ebony)`,
 														cursor: 'pointer',
 													}}>
-													edit
+													Edit
 												</span>
 											</div>
 											<div className={TalentListStyle.payRate}>
@@ -1485,7 +1485,7 @@ const TalentList = ({
 														color: `var(--background-color-ebony)`,
 														cursor: 'pointer',
 													}}>
-													edit
+													Edit
 												</span>
 											</div>
 											<div className={TalentListStyle.nr}>
@@ -1501,7 +1501,7 @@ const TalentList = ({
 														color: `var(--background-color-ebony)`,
 														cursor: 'pointer',
 													}}>
-													edit
+													Edit
 												</span> */}
 											</div>
 										</>
