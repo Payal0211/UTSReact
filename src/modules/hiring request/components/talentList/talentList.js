@@ -1,7 +1,6 @@
 import { Dropdown, Menu, Divider, List, Modal, message, Space } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
-import { RiArrowDropDownLine } from 'react-icons/ri';
 import TalentListStyle from './talentList.module.css';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
@@ -26,10 +25,10 @@ import UpdateLegalTalentOnboardStatus from '../updateLegalTalentOnboardStatus/up
 import UpdateKickOffOnboardStatus from '../updateKickOffOnboardStatus/updateKickOffOnboardStatus';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
-import ConfirmSlotModal from '../cloneHR/confirmSlotModal';
 import EditPayRate from '../editBillAndPayRate/editPayRateModal';
 import { DownOutlined } from '@ant-design/icons';
 import EditBillRate from '../editBillAndPayRate/editBillRateModal';
+import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
 
 const TalentList = ({
 	talentCTA,
@@ -47,7 +46,6 @@ const TalentList = ({
 	callHRapi,
 	inteviewSlotDetails,
 }) => {
-	console.log(talentDetail, '-talentDetails');
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
@@ -1289,8 +1287,6 @@ const TalentList = ({
 					},
 				}}
 				renderItem={(item, listIndex) => {
-					// console.log('---item---', item, '-----------', talentCTA);
-
 					return (
 						<div
 							key={item?.Name}
@@ -1574,44 +1570,7 @@ const TalentList = ({
 											)}
 										</span>
 									</div>
-									{/* <div className={TalentListStyle.time}>
-											<span>Time:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
-												{item?.Slotconfirmed ? (
-													<Dropdown
-														trigger={['click']}
-														placement="bottom"
-														overlay={
-															<Menu>
-																{hrUtils
-																	?.formatInteviewTime(
-																		inteviewSlotDetails[listIndex]?.SlotList,
-																	)
-																	?.map((item, index) => {
-																		return (
-																			<Menu.Item key={index}>
-																				{item?.label}
-																			</Menu.Item>
-																		);
-																	})}
-															</Menu>
-														}>
-														<span>
-															<Space>
-																{
-																	hrUtils?.formatInteviewTime(
-																		inteviewSlotDetails[listIndex]?.SlotList,
-																	)?.[0]?.label
-																}
-																<DownOutlined />
-															</Space>
-														</span>
-													</Dropdown>
-												) : (
-													'NA'
-												)}
-											</span>
-										</div> */}
+
 									<Divider
 										style={{
 											margin: '10px 0',
@@ -1915,7 +1874,7 @@ const TalentList = ({
 			{/** ============ MODAL FOR RESCHEDULING INTERVIEW ================ */}
 			<Modal
 				transitionName=""
-				width="930px"
+				width="1000px"
 				centered
 				footer={null}
 				open={showReScheduleInterviewModal}
@@ -1945,7 +1904,7 @@ const TalentList = ({
 			{/** ============ MODAL FOR SCHEDULING INTERVIEW ================ */}
 			<Modal
 				transitionName=""
-				width="930px"
+				width="1000px"
 				centered
 				footer={null}
 				open={showScheduleInterviewModal}
@@ -2190,7 +2149,7 @@ const TalentList = ({
 			{/** ============ MODAL FOR Confirm slot modal ================ */}
 			<Modal
 				transitionName=""
-				width="930px"
+				width="1000px"
 				centered
 				footer={null}
 				open={getConfirmSlotModal}

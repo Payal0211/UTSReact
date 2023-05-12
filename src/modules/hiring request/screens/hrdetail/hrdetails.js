@@ -1,4 +1,10 @@
-import React, { Suspense, useCallback, useEffect, useState } from 'react';
+import React, {
+	Suspense,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { Modal, Skeleton, Tabs } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
@@ -23,7 +29,6 @@ import { MasterDAO } from 'core/master/masterDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
-import { toast } from 'react-toastify';
 import AcceptHR from 'modules/hiring request/components/acceptHR/acceptHR';
 
 /** Lazy Loading the component */
@@ -49,6 +54,7 @@ const HRDetailScreen = () => {
 	const [deleteReason, setDeleteReason] = useState([]);
 	const [callHRapi, setHRapiCall] = useState(false);
 	const [acceptHRModal, setAcceptHRModal] = useState(false);
+	const [shareProfileModal, setShareProfileModal] = useState(false);
 	const {
 		register,
 		handleSubmit,
@@ -104,6 +110,38 @@ const HRDetailScreen = () => {
 		},
 		[navigate, setError, urlSplitter, watch],
 	);
+	const getNextActionMissingActionMemo = useMemo(
+		() =>
+			apiData?.activity_MissingAction_CTA?.length > 0 &&
+			apiData?.activity_MissingAction_CTA?.[0],
+		[apiData?.activity_MissingAction_CTA],
+	);
+	const AMAssignmentHandler = useCallback(() => {});
+	const nextMissingActionHandler = useCallback(() => {
+		const getMissingActionResult = getNextActionMissingActionMemo;
+		switch (getMissingActionResult?.key) {
+			case 'AcceptHR':
+				return (
+					<button
+						onClick={() => setAcceptHRModal(true)}
+						className={HRDetailStyle.btnPrimaryOutline}>
+						Accept HR
+					</button>
+				);
+
+			case 'AMAssignment':
+				return (
+					<button
+						onClick={null}
+						className={HRDetailStyle.btnPrimaryOutline}>
+						AM Assignment
+					</button>
+				);
+			default:
+				break;
+		}
+	}, [getNextActionMissingActionMemo]);
+
 	const clientOnHoldSubmitHandler = useCallback(
 		async (d) => {
 			let deleteObj = {
@@ -175,47 +213,33 @@ const HRDetailScreen = () => {
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
-							{/* {hrUtils.getAccpetMoreTR(
-								apiData?.IsAccepted,
-								miscData?.LoggedInUserTypeID,
-								apiData?.TR_Accepted,
-							)} */}
-							{hrUtils.showMatchmaking(
-								apiData,
-								miscData?.LoggedInUserTypeID,
-								callAPI,
-								urlSplitter,
-								updatedSplitter,
+							{apiData?.HRStatusCode !== HiringRequestHRStatus.CANCELLED &&
+								hrUtils.showMatchmaking(
+									apiData,
+									miscData?.LoggedInUserTypeID,
+									callAPI,
+									urlSplitter,
+									updatedSplitter,
+									getNextActionMissingActionMemo?.key, // only to hide matchmaking button in case of share Profile
+								)}
+
+							{acceptHRModal && (
+								<AcceptHR
+									hrID={apiData?.ClientDetail?.HR_Number}
+									openModal={acceptHRModal}
+									cancelModal={() => setAcceptHRModal(false)}
+								/>
 							)}
-							{/* {apiData?.DpFlag ? (
-								<button className={HRDetailStyle.btnPrimary}>
-									Convert to DP
-								</button>
-							) : (
-								<button className={HRDetailStyle.btnPrimary}>
-									Convert to contractual
-								</button>
-							)} */}
-							{/* <AcceptHR
-								hrID={apiData?.ClientDetail?.HR_Number}
-								openModal={acceptHRModal}
-								cancelModal={() => setAcceptHRModal(false)}
-							/> */}
-							{/* {apiData?.FetchMissingAction !== null ? (
-								<>
-									<span>
-										<h4>Next Action is </h4>
-									</span>
-									<>
-										{hrUtils.showNextAction(
-											apiData,
-											acceptHRModal,
-											setAcceptHRModal,
-										)}
-									</>
-								</>
-							) : null} */}
-							{}
+
+							{apiData?.activity_MissingAction_CTA?.length > 0 && (
+								<span>
+									<h4>
+										{getNextActionMissingActionMemo?.key !== 'ShareAProfile' &&
+											'Next Action'}{' '}
+										{nextMissingActionHandler()}{' '}
+									</h4>
+								</span>
+							)}
 							<HROperator
 								title={
 									hrUtils.handleAdHOC(apiData && apiData?.AdhocPoolValue)[0]

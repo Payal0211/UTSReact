@@ -1,5 +1,6 @@
 import { HTTPStatusCode } from 'constants/network';
 import UTSRoutes from 'constants/routes';
+import moment from 'moment';
 
 export const _isNull = function (value) {
 	if (value === null || value === undefined || value === '') return true;
@@ -86,4 +87,8 @@ export const lastWorkingDay = (startDate, endDate) => {
 	}
 
 	return duration;
+};
+
+export const disabledWeekend = (current) => {
+	return moment(current).day() !== 0 && moment(current).day() !== 6;
 };

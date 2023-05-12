@@ -434,8 +434,9 @@ export const hrUtils = {
 		callAPI,
 		urlSplitter,
 		updatedSplitter,
+		nextActionKey, // only to hide matchmaking button in case of share Profile
 	) {
-		if (apiData?.IsAccepted === 1 && apiData?.TR_Accepted >= 1) {
+		if (apiData?.IsAccepted === 1) {
 			if (
 				loggedInUserTypeID === UserAccountRole.TALENTOPS ||
 				loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
@@ -444,6 +445,7 @@ export const hrUtils = {
 			) {
 				return (
 					<MatchmakingModal
+						nextActionKey={nextActionKey}
 						apiData={apiData}
 						refreshedHRDetail={callAPI}
 						hrID={urlSplitter?.split('HR')[0]}
@@ -558,6 +560,7 @@ export const hrUtils = {
 			tempArray.push({
 				key: item?.label,
 				label: item?.label,
+				isEnabled: item?.IsEnabled,
 			}),
 		);
 

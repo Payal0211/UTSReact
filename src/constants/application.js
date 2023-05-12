@@ -111,8 +111,8 @@ export class TalentOnboardStatus {
 		'Update Legal Client On Board Status';
 	static UPDATE_KICKOFF_ONBOARD_STATUS = 'Update Kick Off On Board Status';
 	static REPLACE_TALENT = 'Replace Talent';
-	static CLONE_HR = 'Clone HR'
-	static CONFIRM_SLOT = 'Confirm Slot'
+	static CLONE_HR = 'Clone HR';
+	static CONFIRM_SLOT = 'Confirm Slot';
 }
 export class InputType {
 	static TEXT = 'text';
@@ -161,6 +161,15 @@ export class InterviewStatus {
 	static INTERVIEW_RESCHEDULES = 508;
 }
 
+export class HRInterviewStatus {
+	static SLOT_GIVEN = 1;
+	static CANCELLED = 3;
+	static INTERVIEW_SCHEDULED = 4;
+	static INTERVIEW_IN_PROCESS = 5;
+	static INTERVIEW_COMPLETED = 6;
+	static FEEDBACK_SUBMITTED = 7;
+	static INTERVIEW_RESCHEDULES = 8;
+}
 export class DealStageStatus {
 	static BOOKING = 101;
 	static BOOKING_WITHOUT_INVOICE = 102;

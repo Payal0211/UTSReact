@@ -1,4 +1,4 @@
-import { InterviewStatus } from 'constants/application';
+import { HRInterviewStatus } from 'constants/application';
 import HRStatusComponent from 'modules/hiring request/components/hrStatus/hrStatusComponent';
 import { _isNull } from 'shared/utils/basic_utils';
 
@@ -16,7 +16,7 @@ export const interviewUtils = {
 	},
 	GETINTERVIEWSTATUS: function (interviewStatus, interviewStatusCode) {
 		switch (interviewStatusCode) {
-			case InterviewStatus.SLOT_GIVEN:
+			case HRInterviewStatus.SLOT_GIVEN:
 				return (
 					<HRStatusComponent
 						title={interviewStatus}
@@ -24,7 +24,7 @@ export const interviewUtils = {
 						color={'#287016'}
 					/>
 				);
-			case InterviewStatus.CANCELLED:
+			case HRInterviewStatus.CANCELLED:
 				return (
 					<HRStatusComponent
 						title={interviewStatus}
@@ -32,7 +32,7 @@ export const interviewUtils = {
 						color={'#991717'}
 					/>
 				);
-			case InterviewStatus.INTERVIEW_SCHEDULED:
+			case HRInterviewStatus.INTERVIEW_SCHEDULED:
 				return (
 					<HRStatusComponent
 						title={interviewStatus}
@@ -40,7 +40,7 @@ export const interviewUtils = {
 						color={'#405CC0'}
 					/>
 				);
-			case InterviewStatus.INTERVIEW_IN_PROCESS:
+			case HRInterviewStatus.INTERVIEW_IN_PROCESS:
 				return (
 					<HRStatusComponent
 						title={interviewStatus}
@@ -48,7 +48,7 @@ export const interviewUtils = {
 						color={'#0B3A24'}
 					/>
 				);
-			case InterviewStatus.INTERVIEW_COMPLETED:
+			case HRInterviewStatus.INTERVIEW_COMPLETED:
 				return (
 					<HRStatusComponent
 						title={interviewStatus}
@@ -56,7 +56,7 @@ export const interviewUtils = {
 						color={'#2C3506'}
 					/>
 				);
-			case InterviewStatus.FEEDBACK_SUBMITTED:
+			case HRInterviewStatus.FEEDBACK_SUBMITTED:
 				return (
 					<HRStatusComponent
 						title={interviewStatus}
@@ -64,7 +64,7 @@ export const interviewUtils = {
 						color={'#287016'}
 					/>
 				);
-			case InterviewStatus.INTERVIEW_RESCHEDULES:
+			case HRInterviewStatus.INTERVIEW_RESCHEDULES:
 				return (
 					<HRStatusComponent
 						title={interviewStatus}
