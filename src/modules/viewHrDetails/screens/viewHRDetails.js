@@ -11,7 +11,7 @@ import { useState } from "react"
 const ViewHRDetails = () => {
     const [hiringDetails, setHiringDetails] = useState("")
     const id = useParams()
-
+    console.log(hiringDetails, "hiringDetails")
     const getViewHrDetails = async () => {
         const response = await hiringRequestDAO.viewHRDetailsRequestDAO(id.id);
         setHiringDetails(response)
@@ -52,7 +52,7 @@ const ViewHRDetails = () => {
                                         <ul>
                                             <li><span>Client Email/Name:</span> {hiringDetails?.responseBody?.details?.clientName ?? "NA"}</li>
                                             <li><span>Hiring Request Role:</span> {hiringDetails?.responseBody?.details?.hiringRequestRole ?? "NA"}</li>
-                                            <li><span>Job Description:</span> <a href={hiringDetails?.responseBody?.details?.jobDescription} target="_blank">Click Here</a></li>
+                                            <li><span>Job Description:</span> {hiringDetails?.responseBody?.details?.jobDescription ? <a href={hiringDetails?.responseBody?.details?.jobDescription} target="_blank">Click Here</a> : "NA"}</li>
                                             <li><span>Contract Type:</span> Direct Placement</li>
                                             <li><span>NR:</span> {hiringDetails?.responseBody?.details?.nrPercetange ?? "NA"} %</li>
                                             <li><span>Contract Duration:</span> {hiringDetails?.responseBody?.details?.contractDuration ?? "NA"} Months<i className={ViewHRDetailsStyle.blueDot} /></li>
@@ -60,7 +60,7 @@ const ViewHRDetails = () => {
                                             <li><span>Region:</span> {hiringDetails?.responseBody?.details?.region ?? "NA"}<i className={ViewHRDetailsStyle.blueDot} /></li>
                                             <li><span>How Soon:</span> {hiringDetails?.responseBody?.details?.howSoon ?? "NA"}</li>
                                             {/* <li><span>NP:</span> 30 NP<i className={ViewHRDetailsStyle.blueDot} /></li> */}
-                                            <li><span>BQ Form Link:</span> <a href={hiringDetails?.responseBody?.details?.bqLink ?? "NA"} target="_blank">Click Here</a></li>
+                                            <li><span>BQ Form Link:</span> {hiringDetails?.responseBody?.details?.bqLink ? <a href={hiringDetails?.responseBody?.details?.bqLink} target="_blank">Click Here</a> : "NA"} </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -77,7 +77,7 @@ const ViewHRDetails = () => {
                                             <li><span>Time Zone:</span> {hiringDetails?.responseBody?.details?.timeZone ?? "NA"}<i className={ViewHRDetailsStyle.blueDot} /></li>
                                             <li><span>Deal ID:</span> {hiringDetails?.responseBody?.details?.dealID ?? "NA"}</li>
 
-                                            <li><span>Discovery Form Link:</span> <a href={hiringDetails?.responseBody?.details?.discoveryCall} target="_blank">Click Here</a></li>
+                                            <li><span>Discovery Form Link:</span> {hiringDetails?.responseBody?.details?.discoveryCall ? <a href={hiringDetails?.responseBody?.details?.discoveryCall} target="_blank">Click Here</a> : "NA"} </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -94,13 +94,11 @@ const ViewHRDetails = () => {
                         <div className={ViewHRDetailsStyle.row}>
 
                             {hiringDetails?.responseBody?.details?.interviewerlList?.map((item) => {
-
                                 return (
                                     <div className={ViewHRDetailsStyle.colLg6}>
                                         <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
                                             <h3>Interviewer 1</h3>
                                             <ul>
-
                                                 <>
                                                     <li><span>Interviewer Name:</span> {item?.interviewerFullName ?? "NA"}</li>
                                                     <li><span>Interviewer Linkedin:</span> {item?.interviewerLinkedin === null ? "NA" : <a href={item?.interviewerLinkedin} target="_blank">Click Here</a>}</li>
