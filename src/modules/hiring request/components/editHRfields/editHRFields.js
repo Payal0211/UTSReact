@@ -22,7 +22,6 @@ import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
-import { MD5 } from 'crypto-js';
 export const secondaryInterviewer = {
     fullName: '',
     emailID: '',
@@ -60,7 +59,7 @@ const EditHRFields = ({
     const [type, setType] = useState('');
     const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
     const [getClientNameMessage, setClientNameMessage] = useState('');
-    const [disableButton,setDisableButton] = useState(true)
+    const [disableButton, setDisableButton] = useState(true)
 
     const [getValidation, setValidation] = useState({
         systemFileUpload: '',
@@ -92,7 +91,7 @@ const EditHRFields = ({
     const [clientNameValue, setClientName] = useState("")
     const [getDurationType, setDurationType] = useState([]);
 
-    
+
     let controllerRef = useRef(null);
     const {
         watch,
@@ -103,7 +102,7 @@ const EditHRFields = ({
         unregister,
         control,
         // defaultValue,
-        formState: { errors,defaultValue },
+        formState: { errors, defaultValue },
     } = useForm({
         defaultValues: {
             secondaryInterviewer: [],
@@ -392,20 +391,20 @@ const EditHRFields = ({
     }, []);
 
     const getDurationTypes = useCallback(async () => {
-		const durationTypes = await MasterDAO.getDurationTypeDAO();
-		setDurationType(durationTypes && durationTypes?.responseBody?.details);
-	}, []);
+        const durationTypes = await MasterDAO.getDurationTypeDAO();
+        setDurationType(durationTypes && durationTypes?.responseBody?.details);
+    }, []);
 
     const getLocation = useLocation();
 
     const onNameChange = (event) => {
         setName(event.target.value);
-        if(event.target.value){
+        if (event.target.value) {
             setDisableButton(false)
-        }else{
+        } else {
             setDisableButton(true)
         }
-        
+
     };
     const addItem = useCallback(
         (e) => {
@@ -428,7 +427,7 @@ const EditHRFields = ({
     }, []);
 
     const getClientNameValue = (clientName) => {
-        
+
         setValue('clientName', clientName);
         setError('clientName', {
             type: 'validate',
@@ -439,16 +438,16 @@ const EditHRFields = ({
     // useEffect(() => {
     //     if(getHRdetails?.fullClientName){
     //         getListData(getHRdetails?.fullClientName);
-            
+
     //     }
     // }, [getHRdetails])
 
 
-    const getListData = async (clientName,shortclientName) => {
+    const getListData = async (clientName, shortclientName) => {
         let response = await MasterDAO.getEmailSuggestionDAO(shortclientName);
         if (response?.statusCode === HTTPStatusCode.OK) {
             setClientNameSuggestion(response?.responseBody?.details);
-            setValue("clientName",clientName)
+            setValue("clientName", clientName)
             setClientNameMessage('');
         } else if (
             response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
@@ -481,7 +480,7 @@ const EditHRFields = ({
         },
         [setError],
     );
-    
+
     const validate = (clientName) => {
         if (!clientName) {
             return 'please enter the client email/name.';
@@ -496,7 +495,7 @@ const EditHRFields = ({
         );
         return filteredData;
     }, [getClientNameSuggestion, watchClientName]);
-    
+
     const getHRClientName = useCallback(async () => {
         let existingClientDetails =
             await hiringRequestDAO.getClientDetailRequestDAO(
@@ -638,10 +637,10 @@ const EditHRFields = ({
                 filteredMemo[0]?.contactId,
                 isHRDirectPlacement,
                 addHRResponse,
-                );
-                const hrIDEncrypt = localStorage.getItem("hrID")
-                const hexHash = MD5(hrIDEncrypt.toString()).toString();
-                setAddHRResponse(hexHash);                
+            );
+            // const hrIDEncrypt = localStorage.getItem("hrID")
+            // const hexHash = MD5(hrIDEncrypt.toString()).toString();
+            // setAddHRResponse(hexHash);
             if (type === SubmitType.SAVE_AS_DRAFT) {
                 if (_isNull(watch('clientName'))) {
                     return setError('clientName', {
@@ -711,12 +710,12 @@ const EditHRFields = ({
         setValue("state", getHRdetails?.directPlacement?.state)
         setValue("country", getHRdetails?.directPlacement?.country)
         setValue("address", getHRdetails?.directPlacement?.address)
-        setValue("contractDuration",getHRdetails?.salesHiringRequest_Details?.durationType)
-        setValue("getDurationType",getHRdetails?.contractDuration)
+        setValue("contractDuration", getHRdetails?.salesHiringRequest_Details?.durationType)
+        setValue("getDurationType", getHRdetails?.contractDuration)
         setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType)
-        if(getHRdetails?.clientName){
-            getListData(getHRdetails?.clientName, getHRdetails?.clientName.substring(0,3));   
-            
+        if (getHRdetails?.clientName) {
+            getListData(getHRdetails?.clientName, getHRdetails?.clientName.substring(0, 3));
+
         }
     }, [getHRdetails])
     useEffect(() => {
@@ -801,15 +800,15 @@ const EditHRFields = ({
 
     const durationTypenfo = []
 
-	const durationData = getDurationType.map((item)=>{
-		return (
-			durationTypenfo.push({
-				id : item.value,
-				value : item.text
-			})
-		)
-	})
-  
+    const durationData = getDurationType.map((item) => {
+        return (
+            durationTypenfo.push({
+                id: item.value,
+                value: item.text
+            })
+        )
+    })
+
 
     return (
         <div className={HRFieldStyle.hrFieldContainer}>
@@ -837,8 +836,9 @@ const EditHRFields = ({
                                                 // setClientNameSuggestion([]);
                                                 getClientNameSuggestionHandler(searchValue);
                                             }}
-                                            onChange={(clientName) =>{
-                                                setValue('clientName', clientName)}
+                                            onChange={(clientName) => {
+                                                setValue('clientName', clientName)
+                                            }
                                             }
                                             placeholder="Enter Client Email/Name"
                                             ref={controllerRef}
@@ -1123,27 +1123,27 @@ const EditHRFields = ({
 
                     <div className={HRFieldStyle.row}>
                         <div className={HRFieldStyle.colMd4}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									setValue={setValue}
-									register={register}
-									label={'Long Tearm/Short Tearm'}
-									defaultValue="Select Tearm"
-									options={durationTypenfo && durationTypenfo}
-									name="getDurationType"
-									isError={errors['getDurationType'] && errors['getDurationType']}
-									required
-									errorMsg={'Please select duration type'}
-								/>
-							</div>
-						</div>
+                            <div className={HRFieldStyle.formGroup}>
+                                <HRSelectField
+                                    setValue={setValue}
+                                    register={register}
+                                    label={'Long Tearm/Short Tearm'}
+                                    defaultValue="Select Tearm"
+                                    options={durationTypenfo && durationTypenfo}
+                                    name="getDurationType"
+                                    isError={errors['getDurationType'] && errors['getDurationType']}
+                                    required
+                                    errorMsg={'Please select duration type'}
+                                />
+                            </div>
+                        </div>
                         <div className={HRFieldStyle.colMd4}>
                             <div className={HRFieldStyle.formGroup}>
                                 <HRSelectField
                                     dropdownRender={(menu) => (
                                         <>
                                             {menu}
-                                            {console.log(menu,"meunuuuuuuugg")}
+                                            {console.log(menu, "meunuuuuuuugg")}
                                             <Divider style={{ margin: '8px 0' }} />
                                             <Space style={{ padding: '0 8px 4px' }}>
                                                 <label>Other:</label>
@@ -1155,12 +1155,12 @@ const EditHRFields = ({
                                                     value={name}
                                                     onChange={onNameChange}
                                                 />
-                                          {console.log(inputRef,"editttt")}
+                                                {console.log(inputRef, "editttt")}
                                                 <Button
                                                     style={{
                                                         backgroundColor: `var(--uplers-grey)`,
                                                     }}
-                                                    disabled= {disableButton?true:false}
+                                                    disabled={disableButton ? true : false}
                                                     shape="round"
                                                     type="text"
                                                     icon={<PlusOutlined />}
@@ -1203,23 +1203,23 @@ const EditHRFields = ({
                                     <span className={HRFieldStyle.reqField}>*</span>
                                 </label> */}
                                 {/* <div className={HRFieldStyle.reqExperience}> */}
-                                    <HRInputField
-                                        required
-                                        label="Required Experience"
-                                        errors={errors}
-                                        validationSchema={{
-                                            required: 'please enter the years.',
-                                            min: {
-                                                value: 0,
-                                                message: `please don't enter the value less than 0`,
-                                            },
-                                        }}
-                                        register={register}
-                                        name="years"
-                                        type={InputType.NUMBER}
-                                        placeholder="Enter years"
-                                    />
-                                    {/* <HRInputField
+                                <HRInputField
+                                    required
+                                    label="Required Experience"
+                                    errors={errors}
+                                    validationSchema={{
+                                        required: 'please enter the years.',
+                                        min: {
+                                            value: 0,
+                                            message: `please don't enter the value less than 0`,
+                                        },
+                                    }}
+                                    register={register}
+                                    name="years"
+                                    type={InputType.NUMBER}
+                                    placeholder="Enter years"
+                                />
+                                {/* <HRInputField
                                         register={register}
                                         required
                                         errors={errors}
