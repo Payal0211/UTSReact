@@ -367,12 +367,12 @@ const HRFields = ({
 					]);
 				}
 			}
-			// else {
-			// 	setError('salesPerson', {
-			// 		type: 'validate',
-			// 		message: 'Sales Person is not partner',
-			// 	});
-			// }
+			else {
+				setError('salesPerson', {
+					type: 'validate',
+					message: 'Sales Person is not partner',
+				});
+			}
 		},
 		[setError],
 	);

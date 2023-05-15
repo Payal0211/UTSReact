@@ -27,8 +27,8 @@ const HRSelectField = ({
 			setValue(
 				name,
 				option.map((item) => ({
-					id: item?.id || item?.text,
-					value: item?.value,
+					skillsID: item?.id,
+					skillsName: item?.value,
 				})),
 			);
 
