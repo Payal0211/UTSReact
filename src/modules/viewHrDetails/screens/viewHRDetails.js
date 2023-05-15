@@ -19,6 +19,10 @@ const ViewHRDetails = () => {
 		getViewHrDetails();
 	}, [getViewHrDetails]);
 
+	const editHr = () => {
+		localStorage.setItem('hrID', id?.id);
+	};
+
 	return (
 		<>
 			<div className={ViewHRDetailsStyle.viewHRDetailsWrap}>
@@ -32,6 +36,7 @@ const ViewHRDetails = () => {
 				<div className={ViewHRDetailsStyle.viewHRDetailsHead}>
 					<h1>HR ID - {hiringDetails?.responseBody?.details?.hrNumber}</h1>
 					<button>Edit HR</button>
+					{/* <Link to="/allhiringrequest/addnewhr"><button >Edit HR</button></Link> */}
 				</div>
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsItem}>
@@ -76,14 +81,26 @@ const ViewHRDetails = () => {
 												)}
 											</li>
 											<li>
-												<span>Contract Type:</span> Direct Placement
+												<span>Contract Type:</span>{' '}
+												{hiringDetails?.responseBody?.details?.contractType ??
+													'NA'}
 											</li>
-											<li>
-												<span>NR:</span>{' '}
-												{hiringDetails?.responseBody?.details?.nrPercetange ??
-													'NA'}{' '}
-												%
-											</li>
+											{hiringDetails?.responseBody?.details?.contractType ===
+											'Direct Placement' ? (
+												<li>
+													<span>DP:</span>{' '}
+													{hiringDetails?.responseBody?.details?.dpPercentage ??
+														'NA'}{' '}
+													%
+												</li>
+											) : (
+												<li>
+													<span>NR:</span>{' '}
+													{hiringDetails?.responseBody?.details?.nrPercetange ??
+														'NA'}{' '}
+													%
+												</li>
+											)}
 											<li>
 												<span>Contract Duration:</span>{' '}
 												{hiringDetails?.responseBody?.details
@@ -103,7 +120,7 @@ const ViewHRDetails = () => {
 												<span>How Soon:</span>{' '}
 												{hiringDetails?.responseBody?.details?.howSoon ?? 'NA'}
 											</li>
-											{/* <li><span>NP:</span> 30 NP<i className={ViewHRDetailsStyle.blueDot} /></li> */}
+
 											<li>
 												<span>BQ Form Link:</span>{' '}
 												{hiringDetails?.responseBody?.details?.bqLink ? (
@@ -201,14 +218,17 @@ const ViewHRDetails = () => {
 					<div className={ViewHRDetailsStyle.viewHRLeftDetails}>
 						<h2>Interviewer Details</h2>
 					</div>
-					<div className={ViewHRDetailsStyle.viewHRRightDetails}>
+					<div
+						className={`${ViewHRDetailsStyle.viewHRRightDetails} ${ViewHRDetailsStyle.viewHRIntList}`}>
 						<div className={ViewHRDetailsStyle.row}>
 							{hiringDetails?.responseBody?.details?.interviewerlList?.map(
 								(item) => {
 									return (
 										<div className={ViewHRDetailsStyle.colLg6}>
 											<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
-												<h3>Interviewer 1</h3>
+												<h3>
+													Interviewer: {item?.interviewerFullName ?? 'NA'}
+												</h3>
 												<ul>
 													<>
 														<li>
@@ -243,17 +263,6 @@ const ViewHRDetails = () => {
 									);
 								},
 							)}
-							{/* <div className={ViewHRDetailsStyle.colLg6}>
-                                <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
-                                    <h3>Interviewer 1</h3>
-                                    <ul>
-                                        <li><span>Interviewer Name:</span> Jhanvi Kapoor</li>
-                                        <li><span>Interviewer Linkedin:</span> <a href="#" target="_blank">Click Here</a></li>
-                                        <li><span>Interviewer Email:</span> jhanvikapoor@gmail.com</li>
-                                        <li><span>Interviewer Designation:</span> CEO</li>
-                                    </ul>
-                                </div>
-                            </div> */}
 						</div>
 					</div>
 				</div>
@@ -282,15 +291,6 @@ const ViewHRDetails = () => {
 							</h3>
 							{hiringDetails?.responseBody?.details?.rolesResponsibilites ??
 								'NA'}
-							{/* <p>Build web applications with web development best practices</p>
-                            <p>Transform app designs into front-end code with HTML, CSS, and JavaScript</p>
-                            <p>Work with back-end developers to integrate UI components with APIs and databases</p>
-                            <p>Gather and re ne speci cations and requirements based on technical requirements or UX design</p>
-                            <p>Debug errors, troubleshoot issues, and perform routine performance optimizations</p>
-                            <p>On-site search engine optimization (SEO)</p>
-                            <p>Write high-quality, scalable, and reusable code</p>
-                            <p>Stay plugged into emerging technologies and industry trends</p>
-                            <p>Job Quali cations and Skill Sets</p> */}
 						</div>
 
 						<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
@@ -299,22 +299,16 @@ const ViewHRDetails = () => {
 								<i className={ViewHRDetailsStyle.blueDot} />
 							</h3>
 							<div className={ViewHRDetailsStyle.skillsList}>
-								{hiringDetails?.responseBody?.details.requiredSkillList?.map(
-									(item) => {
-										return <span>{item?.text}</span>;
-									},
+								{hiringDetails?.responseBody?.details.requiredSkillList
+									?.length === 0 ? (
+									<p>NA</p>
+								) : (
+									hiringDetails?.responseBody?.details.requiredSkillList?.map(
+										(item) => {
+											return <span>{item?.text}</span>;
+										},
+									)
 								)}
-								{/* <span>Sr. Web Developer</span>
-                                <span>DevOps Jira</span>
-                                <span>Wordpress Developer</span>
-                                <span>Back End Python Developer</span>
-                                <span>Salesforce Developer</span>
-                                <span>Back End Python Developer</span>
-                                <span>Sr. Web Developer</span>
-                                <span>DevOps Jira</span>
-                                <span>Back End Python Developer</span>
-                                <span>Salesforce Developer</span>
-                                <span>Back End Python Developer</span> */}
 							</div>
 						</div>
 					</div>
