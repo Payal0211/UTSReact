@@ -89,6 +89,7 @@ const EditHRFields = ({
     const [controlledCountryValue, setControlledCountryValue] = useState("Select country")
     const [contractDurationValue, setContractDuration] = useState("")
     const [clientNameValue, setClientName] = useState("")
+    const [controlledDurationTypeValue, setControlledDurationTypeValue] = useState("Select Term")
     const [getDurationType, setDurationType] = useState([]);
 
 
@@ -690,6 +691,18 @@ const EditHRFields = ({
         }
     }, [errors?.clientName]);
 
+    const durationTypenfo = []
+
+    const durationData = getDurationType.map((item) => {
+        return (
+            durationTypenfo.push({
+                id: item.value,
+                value: item.text
+            })
+        )
+    })
+
+
     useEffect(() => {
         setValue("clientName", getHRdetails?.fullClientName)
         setValue("companyName", getHRdetails?.company)
@@ -798,16 +811,23 @@ const EditHRFields = ({
         }
     }, [getHRdetails])
 
-    const durationTypenfo = []
+    useEffect(() => {
+        if (getHRdetails?.months) {
+            const findDurationMode = durationTypenfo.filter((item) => item?.id === getHRdetails?.months)
+            setValue("getDurationType", findDurationMode[0])
+            setControlledDurationTypeValue(findDurationMode[0]?.value)
+        }
+    }, [getHRdetails, durationTypenfo])
 
-    const durationData = getDurationType.map((item) => {
-        return (
-            durationTypenfo.push({
-                id: item.value,
-                value: item.text
-            })
-        )
-    })
+    useEffect(() => {
+        if (getHRdetails?.salesHiringRequest_Details?.durationType) {
+            const findcontactMode = items.filter((item) => item === getHRdetails?.salesHiringRequest_Details?.durationType)
+            console.log(findcontactMode, "findDurationMode@@@@@@@@");
+            setValue("contractDuration", findcontactMode[0])
+            setContractDuration(findcontactMode[0])
+        }
+    }, [getHRdetails, items])
+
 
 
     return (
@@ -1142,12 +1162,15 @@ const EditHRFields = ({
                         <div className={HRFieldStyle.colMd4}>
                             <div className={HRFieldStyle.formGroup}>
                                 <HRSelectField
+                                    controlledValue={controlledDurationTypeValue}
+                                    setControlledValue={setControlledDurationTypeValue}
                                     setValue={setValue}
+                                    isControlled={true}
                                     register={register}
-                                    label={'Long Tearm/Short Tearm'}
-                                    defaultValue="Select Tearm"
+                                    label={'Long Term/Short Term'}
                                     options={durationTypenfo && durationTypenfo}
                                     name="getDurationType"
+                                    mode={'id/value'}
                                     isError={errors['getDurationType'] && errors['getDurationType']}
                                     required
                                     errorMsg={'Please select duration type'}
@@ -1195,7 +1218,7 @@ const EditHRFields = ({
                                     }))}
                                     controlledValue={contractDurationValue}
                                     setControlledValue={setContractDuration}
-                                    // isControlled={true}
+                                    isControlled={true}
                                     setValue={setValue}
                                     register={register}
                                     label={'Contract Duration (in months)'}
