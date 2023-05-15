@@ -309,10 +309,12 @@ const AllHiringRequestScreen = () => {
 							{
 								label: 'Add New HR',
 								key: AddNewType.HR,
+								isEnabled: true,
 							},
 							{
 								label: 'Add New Client',
 								key: AddNewType.CLIENT,
+								isEnabled: true,
 							},
 						]}
 						menuAction={(item) => {

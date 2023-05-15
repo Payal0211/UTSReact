@@ -15,6 +15,7 @@ import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
+import { disabledWeekend } from 'shared/utils/basic_utils';
 
 const InterviewSchedule = ({
 	talentName,
@@ -156,8 +157,8 @@ const InterviewSchedule = ({
 								</div>
 								<div className={InterviewScheduleStyle.cardTitle}>
 									{interviewUtils.GETINTERVIEWSTATUS(
-										'Scheduled',
-										InterviewStatus.INTERVIEW_SCHEDULED,
+										talentInfo?.InterviewStatus,
+										talentInfo?.InterViewStatusId,
 									)}
 								</div>
 							</div>
@@ -168,7 +169,9 @@ const InterviewSchedule = ({
 								<div className={InterviewScheduleStyle.cardLabel}>
 									Interview Round
 								</div>
-								<div className={InterviewScheduleStyle.cardTitle}>Round 1</div>
+								<div className={InterviewScheduleStyle.cardTitle}>
+									{talentInfo?.InterviewROUND || 'NA'}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -261,6 +264,7 @@ const InterviewSchedule = ({
 								<Controller
 									render={({ ...props }) => (
 										<DatePicker
+											filterDate={disabledWeekend}
 											selected={getScheduleSlotDate[0].slot1}
 											placeholderText="Select Date"
 											onChange={(date) => {
@@ -365,6 +369,7 @@ const InterviewSchedule = ({
 										<Controller
 											render={({ ...props }) => (
 												<DatePicker
+													filterDate={disabledWeekend}
 													selected={getScheduleSlotDate[1].slot1}
 													placeholderText="Select Date"
 													onChange={(date) => {
@@ -470,6 +475,7 @@ const InterviewSchedule = ({
 										<Controller
 											render={({ ...props }) => (
 												<DatePicker
+													filterDate={disabledWeekend}
 													placeholderText="Select Date"
 													selected={getScheduleSlotDate[2].slot1}
 													onChange={(date) => {

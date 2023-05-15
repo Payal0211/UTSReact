@@ -24,7 +24,10 @@ import { MasterDAO } from 'core/master/masterDAO';
 import TeamDemandFunnelModal from 'modules/report/components/teamDemandFunnelModal/teamDemandFunnelModal';
 import WithLoader from 'shared/components/loader/loader';
 import { TreeNode } from 'antd/lib/tree-select';
-import { transformTeamDemandHierarchy } from 'modules/report/reportUtils';
+import {
+	insertUser,
+	transformTeamDemandHierarchy,
+} from 'modules/report/reportUtils';
 const TeamDemandFunnelFilterLazyComponent = React.lazy(() =>
 	import(
 		'modules/report/components/teamDemandFunnelFilter/teamDemandFunnelFilter'
@@ -465,6 +468,18 @@ const TeamDemandFunnelScreen = () => {
 		setHTMLFilter(!getHTMLFilter);
 	}, [getHTMLFilter, isAllowFilters]);
 
+	const onHierarchySelect = async (selectedKeys, info) => {
+		const response = await MasterDAO.getUsersHierarchyRequestDAO({
+			parentID: selectedKeys?.[0],
+		});
+
+		let res = insertUser(
+			response?.responseBody?.[0]?.undeR_PARENT,
+			response?.responseBody,
+			selectedHierarchyTree,
+		);
+		setSelectedHierarchyTree(res);
+	};
 	const viewActionWiseHandler = useCallback(
 		async (d) => {
 			setLoading(true);
@@ -499,8 +514,8 @@ const TeamDemandFunnelScreen = () => {
 
 			const transformedResult = transformTeamDemandHierarchy(
 				hierarchyResponse?.responseBody,
-				'0',
 			);
+
 			const temp = [
 				{
 					title: hierarchyResponse?.responseBody?.[0]?.parent,
@@ -854,7 +869,6 @@ const TeamDemandFunnelScreen = () => {
 					</Modal>
 				</WithLoader>
 			)}
-
 			{showSelectedHierarchyModal && (
 				<Modal
 					width="800px"
@@ -872,7 +886,7 @@ const TeamDemandFunnelScreen = () => {
 								style={{ marginTop: '30px' }}>
 								<Tree
 									defaultExpandAll
-									// autoExpandParent
+									onSelect={onHierarchySelect}
 									showLine={true}
 									showIcon={true}
 									treeData={selectedHierarchyTree}

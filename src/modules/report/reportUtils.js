@@ -1,3 +1,4 @@
+import { MasterDAO } from 'core/master/masterDAO';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 import * as XLSX from 'xlsx';
 export const downloadFileUtil = (response) => {
@@ -36,25 +37,39 @@ export const downloadToExcel = (response) => {
 		errorDebug(error, '--Convert to excel---');
 	}
 };
+export function insertUser(userID, userData, data) {
+	const currentData = [...data];
 
-export const transformTeamDemandHierarchy = (data, key) => {
-	const transformedDataChildren = data?.map((item, index) => {
+	for (let i = 0; i < currentData.length; i++) {
+		if (currentData?.[i]?.key === userID) {
+			if (currentData[i]?.children) {
+				if (currentData[i]?.children?.length === 0) {
+					currentData[i].children.push(
+						...transformTeamDemandHierarchy(userData),
+					);
+				}
+			} else {
+				currentData[i].children = [...transformTeamDemandHierarchy(userData)];
+			}
+			return;
+		} else if (currentData[i].children?.length > 0) {
+			insertUser(userID, userData, currentData[i]?.children);
+		}
+	}
+	return currentData;
+}
+
+export const transformTeamDemandHierarchy = (data) => {
+	const transformedDataChildren = data?.map((item) => {
 		return {
 			title: item?.child,
-			key: `${key}-${index}`,
+			key: item?.userID,
 
 			...(item.childExists > 0 && {
-				children: transformTeamDemandHierarchy(item?.children, key),
+				children: transformTeamDemandHierarchy(item?.children),
 			}),
 		};
 	});
 
 	return transformedDataChildren;
-	// return [
-	// 	{
-	// 		title: data?.[0]?.parent,
-	// 		key: key,
-	// 		children: [...transformedDataChildren],
-	// 	},
-	// ];
 };

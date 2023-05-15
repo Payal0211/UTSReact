@@ -44,7 +44,7 @@ const LoginScreen = () => {
 
 	useEffect(() => {
 		let login = UserSessionManagementController.getAPIKey();
-		if (login) navigate(UTSRoutes.HOMEROUTE);
+		if (login) navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
 	}, [navigate]);
 
 	return (

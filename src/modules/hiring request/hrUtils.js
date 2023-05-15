@@ -207,12 +207,12 @@ export const hrUtils = {
 					: parseInt(d.years),
 			months:
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('months'))
+					? _isNull(watch('getDurationType'))
 						? 0
-						: parseInt(watch('months'))
-					: _isNull(d.months)
+						: parseInt(watch('getDurationType'))
+					: _isNull(d.getDurationType)
 					? 0
-					: parseInt(d.months),
+					: parseInt(d.getDurationType),
 			timeZone:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('region'))
@@ -434,8 +434,9 @@ export const hrUtils = {
 		callAPI,
 		urlSplitter,
 		updatedSplitter,
+		nextActionKey, // only to hide matchmaking button in case of share Profile
 	) {
-		if (apiData?.IsAccepted === 1 && apiData?.TR_Accepted >= 1) {
+		if (apiData?.IsAccepted === 1) {
 			if (
 				loggedInUserTypeID === UserAccountRole.TALENTOPS ||
 				loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
@@ -444,6 +445,7 @@ export const hrUtils = {
 			) {
 				return (
 					<MatchmakingModal
+						nextActionKey={nextActionKey}
 						apiData={apiData}
 						refreshedHRDetail={callAPI}
 						hrID={urlSplitter?.split('HR')[0]}
@@ -558,6 +560,7 @@ export const hrUtils = {
 			tempArray.push({
 				key: item?.label,
 				label: item?.label,
+				isEnabled: item?.IsEnabled,
 			}),
 		);
 
@@ -600,10 +603,12 @@ export const hrUtils = {
 				{
 					label: 'Pass to ODR',
 					key: 'Pass to ODR',
+					isEnabled: true,
 				},
 				{
 					label: 'Keep it with me as well',
 					key: 'Keep it with me as well',
+					isEnabled: true,
 				},
 			];
 		} else if (adHOCValue === AdHOCHR.ODR) {

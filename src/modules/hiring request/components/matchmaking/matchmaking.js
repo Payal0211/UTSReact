@@ -34,10 +34,8 @@ const MatchmakingModal = ({
 	hrStatusCode,
 	hrStatus,
 	hrPriority,
+	nextActionKey,
 }) => {
-	const switchLocation = useLocation();
-	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
-	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
 	const [matchmakingModal, setMatchmakingModal] = useState(false);
 	const [matchmakingData, setMatchmakingData] = useState([]);
 	const [filterMatchmakingData, setFilterMatchmakingData] = useState([]);
@@ -73,6 +71,7 @@ const MatchmakingModal = ({
 	const [getTelantCC, setTalentCC] = useState([]);
 
 	const param = useParams();
+
 	const {
 		watch,
 		register,
@@ -244,7 +243,7 @@ const MatchmakingModal = ({
 		convertToContracualAPIS();
 		getTalentDPConversionAPIS();
 		getHrDpConversion();
-		// getConvertToContractual()
+
 		setConvertToContracual(false);
 		setConvertToDp(false);
 	}, []);
@@ -389,6 +388,52 @@ const MatchmakingModal = ({
 	useEffect(() => {
 		getTalentCC();
 	}, []);
+	const getDPORContractalCTAsMemo = useMemo(
+		() => apiData?.hr_CTA?.filter((item) => item?.key === 'ConvertToDP'),
+		[apiData?.hr_CTA],
+	);
+	const getDPORContractualCTAsHandler = useCallback(() => {
+		const result = getDPORContractalCTAsMemo;
+
+		switch (result[0]?.key) {
+			case 'ConvertToDP':
+				return (
+					<button
+						disabled={result[0]?.IsEnabled}
+						onClick={
+							result[0]?.IsEnabled ? () => getTalentDPConversionAPIS() : null
+						}
+						className={
+							result[0]?.IsEnabled
+								? MatchMakingStyle.btnPrimary
+								: MatchMakingStyle.btnPrimaryDisabled
+						}>
+						Convert To Dp
+					</button>
+				);
+			case 'ConvertToContractual':
+				return (
+					<button
+						disabled={result[0]?.IsEnabled}
+						onClick={
+							result[0]?.IsEnabled ? () => convertToContracualInfo() : null
+						}
+						className={
+							result[0]?.IsEnabled
+								? MatchMakingStyle.btnPrimary
+								: MatchMakingStyle.btnPrimaryDisabled
+						}>
+						Convert To Contractual
+					</button>
+				);
+			default:
+				break;
+		}
+	}, [
+		convertToContracualInfo,
+		getDPORContractalCTAsMemo,
+		getTalentDPConversionAPIS,
+	]);
 
 	return (
 		<>
@@ -396,24 +441,19 @@ const MatchmakingModal = ({
 				<div onClick={() => fetchMatchmakingData()}>Explore Profiles</div>
 			) : (
 				<>
-					<button
-						onClick={() => fetchMatchmakingData()}
-						className={MatchMakingStyle.btnPrimary}>
-						Matchmaking
-					</button>
-					{apiData?.DpFlag ? (
-						<button
-							onClick={() => getTalentDPConversionAPIS()}
-							className={MatchMakingStyle.btnPrimary}>
-							Convert To Dp
-						</button>
-					) : (
-						<button
-							onClick={() => convertToContracualInfo()}
-							className={MatchMakingStyle.btnPrimary}>
-							Convert To Contractual
-						</button>
-					)}
+					{
+						<>
+							{nextActionKey === 'ShareAProfile' && 'Next Action is'}
+							<button
+								onClick={() => fetchMatchmakingData()}
+								className={MatchMakingStyle.btnPrimaryOutline}>
+								{nextActionKey !== 'ShareAProfile'
+									? 'Matchmaking'
+									: 'Share Profile'}
+							</button>
+						</>
+					}
+					{getDPORContractualCTAsHandler()}
 				</>
 			)}
 			{contextHolder}

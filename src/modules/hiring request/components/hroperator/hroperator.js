@@ -1,4 +1,4 @@
-import { Dropdown, Menu } from 'antd';
+import { Dropdown, Menu, Tooltip } from 'antd';
 import hroperatorStyle from './hroperator.module.css';
 
 const HROperator = ({
@@ -21,13 +21,29 @@ const HROperator = ({
 				<Menu
 					selectable={true}
 					defaultSelectedKeys={'0'}>
-					{listItem?.map((item) => (
-						<Menu.Item
-							key={item.label}
-							onClick={menuAction}>
-							{item.label}
-						</Menu.Item>
-					))}
+					{listItem?.map((item) =>
+						item?.isEnabled ? (
+							<Menu.Item
+								style={{ cursor: item?.isEnabled ? 'pointer' : 'no-drop' }}
+								disabled={!item?.isEnabled}
+								key={item.label}
+								onClick={menuAction}>
+								{item.label}
+							</Menu.Item>
+						) : (
+							<Tooltip
+								placement="bottom"
+								title="Unauthorized">
+								<Menu.Item
+									style={{ cursor: item?.isEnabled ? 'pointer' : 'no-drop' }}
+									disabled={!item?.isEnabled}
+									key={item.label}
+									onClick={menuAction}>
+									{item.label}
+								</Menu.Item>
+							</Tooltip>
+						),
+					)}
 				</Menu>
 			}>
 			<div

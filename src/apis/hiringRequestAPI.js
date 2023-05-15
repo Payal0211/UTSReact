@@ -1,4 +1,5 @@
 import {
+	AMAssignmentAPI,
 	AllHiringRequestAPI,
 	HRAcceptanceAPI,
 	HiringRequestsAPI,
@@ -840,6 +841,23 @@ export const HiringRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.openPostAcceptanceRequest');
+		}
+	},
+	getAMDataSendRequest: async (talentDetails) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.AM_ASSIGNMENT +
+			AMAssignmentAPI.AM_DATA_SEND +
+			`?Onboard_ID=${talentDetails?.onboardID}&EngagemenID=${talentDetails?.engagementID}`;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getAMDataSendRequest');
 		}
 	},
 	viewHRDetailsRequest: async (HRId) => {

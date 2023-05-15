@@ -470,7 +470,7 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getDashboardCountRequest');
 		}
 	},
-	checkIsSalesPersonDAO: async function (getContactAndSaleID) {
+	checkIsSalesPerson: async function (getContactAndSaleID) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
@@ -483,10 +483,10 @@ export const MasterAPI = {
 			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
-			return errorDebug(error, 'MasterAPI.getDashboardCountRequest');
+			return errorDebug(error, 'MasterAPI.checkIsSalesPerson');
 		}
 	},
-	getCountryListRequest: async function (getContactAndSaleID) {
+	getCountryListRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_COUNTRY_LIST;
@@ -514,6 +514,20 @@ export const MasterAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.getUsersHierarchyRequest');
+		}
+	},
+	getDurationType: async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_DURATION_TYPE;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getDashboardCountRequest');
 		}
 	},
 };

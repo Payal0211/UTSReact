@@ -7,8 +7,6 @@ import { useParams } from 'react-router-dom';
 
 const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 	const id = useParams()
-	console.log(id, "idddddddddd")
-
 	return (
 		<div className={CompanyProfileCardStyle.companyProfileContainer}>
 			<label>

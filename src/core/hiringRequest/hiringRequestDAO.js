@@ -1458,6 +1458,39 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.updateTalentFeesRequestDAO()');
 		}
 	},
+	getAMDataSendRequestDAO: async (talentDetails) => {
+		try {
+			const amDataResponse = await HiringRequestAPI.getAMDataSendRequest(
+				talentDetails,
+			);
+
+			if (amDataResponse) {
+				const statusCode = amDataResponse['statusCode'];
+
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = amDataResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return amDataResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return amDataResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getAMDataSendRequestDAO()');
+		}
+	},
 	viewHRDetailsRequestDAO: async (HRId) => {
 
 		try {
