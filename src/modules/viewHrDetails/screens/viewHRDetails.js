@@ -10,6 +10,7 @@ const ViewHRDetails = () => {
 	const [hiringDetails, setHiringDetails] = useState('');
 	const id = useParams();
 
+
 	const getViewHrDetails = useCallback(async () => {
 		const response = await hiringRequestDAO.viewHRDetailsRequestDAO(id.id);
 		setHiringDetails(response);
@@ -18,6 +19,12 @@ const ViewHRDetails = () => {
 	useEffect(() => {
 		getViewHrDetails();
 	}, [getViewHrDetails]);
+
+	const editHr = () => {
+		localStorage.setItem("hrID", id?.id)
+	}
+
+
 
 	return (
 		<>
@@ -31,7 +38,7 @@ const ViewHRDetails = () => {
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsHead}>
 					<h1>HR ID - {hiringDetails?.responseBody?.details?.hrNumber}</h1>
-					<button>Edit HR</button>
+					<Link to="/allhiringrequest/addnewhr"><button onClick={editHr}>Edit HR</button></Link>
 				</div>
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsItem}>
@@ -76,14 +83,24 @@ const ViewHRDetails = () => {
 												)}
 											</li>
 											<li>
-												<span>Contract Type:</span> Direct Placement
+												<span>Contract Type:</span> {hiringDetails?.responseBody?.details?.contractType ?? "NA"}
 											</li>
-											<li>
-												<span>NR:</span>{' '}
-												{hiringDetails?.responseBody?.details?.nrPercetange ??
-													'NA'}{' '}
-												%
-											</li>
+											{hiringDetails?.responseBody?.details?.contractType === "Direct Placement" ? (
+
+												<li>
+													<span>DP:</span>{' '}
+													{hiringDetails?.responseBody?.details?.dpPercentage ??
+														'NA'}{' '}
+													%
+												</li>
+											) : (
+												<li>
+													<span>NR:</span>{' '}
+													{hiringDetails?.responseBody?.details?.nrPercetange ??
+														'NA'}{' '}
+													%
+												</li>
+											)}
 											<li>
 												<span>Contract Duration:</span>{' '}
 												{hiringDetails?.responseBody?.details
@@ -201,7 +218,7 @@ const ViewHRDetails = () => {
 					<div className={ViewHRDetailsStyle.viewHRLeftDetails}>
 						<h2>Interviewer Details</h2>
 					</div>
-					<div className={ViewHRDetailsStyle.viewHRRightDetails}>
+					<div className={`${ViewHRDetailsStyle.viewHRRightDetails} ${ViewHRDetailsStyle.viewHRIntList}`}>
 						<div className={ViewHRDetailsStyle.row}>
 							{hiringDetails?.responseBody?.details?.interviewerlList?.map(
 								(item) => {

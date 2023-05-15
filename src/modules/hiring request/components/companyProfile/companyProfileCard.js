@@ -37,6 +37,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 										'NA'
 									)}
 								</span>
+								{console.log(clientDetail, "clientDetailclientDetail")}
 								&nbsp;&nbsp;
 								<a
 									href={clientDetail?.LinkedInProfile}
@@ -51,7 +52,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 									{clientDetail?.POCFullName ? clientDetail?.POCFullName : 'NA'}
 								</span>
 								&nbsp;&nbsp;
-								{/*  TODO:- 
+								{/*  TODO:-
 								<AiFillLinkedin style={{ color: '#006699' }} /> */}
 							</div>
 							<div className={CompanyProfileCardStyle.pocEmail}>

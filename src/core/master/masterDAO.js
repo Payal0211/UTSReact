@@ -1030,4 +1030,27 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getDurationTypeDAO');
 		}
 	},
+	getCloneHRDAO: async function (data) {
+		try {
+			const cloneResponse = await MasterAPI.cloneHRRequest(data);
+			if (cloneResponse) {
+				const statusCode = cloneResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = cloneResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return cloneResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return cloneResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getDashboardCountForEngagementDAO');
+		}
+	},
 };

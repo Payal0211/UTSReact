@@ -1491,7 +1491,7 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getAMDataSendRequestDAO()');
 		}
 	},
-  viewHRDetailsRequestDAO: async (HRId) => {
+	viewHRDetailsRequestDAO: async (HRId) => {
 
 		try {
 			const viewHRDetails = await HiringRequestAPI.viewHRDetailsRequest(HRId);
@@ -1519,6 +1519,36 @@ export const hiringRequestDAO = {
 			}
 		} catch (error) {
 			return errorDebug(error, 'hiringRequestDAO.viewHRDetailsRequestDAO()');
+		}
+	},
+	getHRDetailsRequestDAO: async (hrId) => {
+		try {
+			const uploadFileResponse =
+				await HiringRequestAPI.getNewHRDetailsRequest(hrId);
+			if (uploadFileResponse) {
+				const statusCode = uploadFileResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = uploadFileResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return uploadFileResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return uploadFileResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) Navigate(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
 		}
 	},
 };

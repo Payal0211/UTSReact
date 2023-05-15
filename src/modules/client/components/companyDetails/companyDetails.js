@@ -108,7 +108,7 @@ const CompanyDetails = ({
 				type: 'duplicateCompanyName',
 				message:
 					companyNameDuplicate?.statusCode ===
-						HTTPStatusCode.DUPLICATE_RECORD &&
+					HTTPStatusCode.DUPLICATE_RECORD &&
 					'This company name already exists. Please enter another company name.',
 			});
 			companyNameDuplicate.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&

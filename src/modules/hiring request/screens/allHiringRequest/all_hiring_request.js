@@ -5,7 +5,7 @@ import React, {
 	useMemo,
 	useCallback,
 } from 'react';
-import { Dropdown, Menu, message, Table, Tooltip } from 'antd';
+import { Dropdown, Menu, message, Table, Tooltip, Modal } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
@@ -32,6 +32,8 @@ import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import DownArrow from 'assets/svg/arrowDown.svg';
 import Prioritycount from 'assets/svg/priority-count.svg';
 import Remainingcount from 'assets/svg/remaining-count.svg';
+import CloneHR from './cloneHRModal';
+import { MasterDAO } from 'core/master/masterDAO';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -64,6 +66,9 @@ const AllHiringRequestScreen = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [priorityCount, setPriorityCount] = useState([]);
 	const [messageAPI, contextHolder] = message.useMessage();
+	const [openCloneHR, setCloneHR] = useState(false);
+	const [getHRnumber, setHRNumber] = useState("")
+	const [getHRID, setHRID] = useState("");
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -148,9 +153,19 @@ const AllHiringRequestScreen = () => {
 		},
 		[apiData, messageAPI, navigate],
 	);
-
+	const cloneHRhandler = async () => {
+		const data = {
+			hrid: getHRID
+		}
+		const response = data?.hrid && await MasterDAO.getCloneHRDAO(data);
+		if (response.statusCode === HTTPStatusCode.OK) {
+			setCloneHR(false)
+			localStorage.setItem("hrID", response?.responseBody?.details)
+			navigate("/allhiringrequest/addnewhr")
+		}
+	}
 	const tableColumnsMemo = useMemo(
-		() => allHRConfig.tableConfig(togglePriority),
+		() => allHRConfig.tableConfig(togglePriority, setCloneHR, setHRID, setHRNumber),
 		[togglePriority],
 	);
 	const handleHRRequest = useCallback(
@@ -214,8 +229,8 @@ const AllHiringRequestScreen = () => {
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
-					setIsAllowFilters(!isAllowFilters);
-			  }, 300);
+				setIsAllowFilters(!isAllowFilters);
+			}, 300);
 		setHTMLFilter(!getHTMLFilter);
 	}, [getHRFilterRequest, getHTMLFilter, isAllowFilters]);
 
@@ -246,6 +261,11 @@ const AllHiringRequestScreen = () => {
 			});
 		}
 	};
+
+
+	useEffect(() => {
+		localStorage.removeItem("hrID")
+	}, [])
 
 	return (
 		<div className={allHRStyles.hiringRequestContainer}>
@@ -513,6 +533,15 @@ const AllHiringRequestScreen = () => {
 					/>
 				</Suspense>
 			)}
+			<Modal
+				width={'700px'}
+				centered
+				footer={false}
+				open={openCloneHR}
+				className='cloneHRConfWrap'
+				onCancel={() => setCloneHR(false)}>
+				<CloneHR cloneHRhandler={cloneHRhandler} onCancel={() => setCloneHR(false)} getHRnumber={getHRnumber} />
+			</Modal>
 		</div>
 	);
 };

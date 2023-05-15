@@ -117,7 +117,7 @@ const HRFields = ({
 				fileData[0]?.mimeType !== 'image/png' &&
 				fileData[0]?.mimeType !== 'image/jpeg' &&
 				fileData[0]?.mimeType !==
-					'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 			) {
 				setValidation({
 					...getValidation,
@@ -168,7 +168,7 @@ const HRFields = ({
 				fileData?.type !== 'application/msword' &&
 				fileData?.type !== 'text/plain' &&
 				fileData?.type !==
-					'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
 				fileData?.type !== 'image/png' &&
 				fileData?.type !== 'image/jpeg'
 			) {
@@ -207,7 +207,7 @@ const HRFields = ({
 						fileData?.type === 'application/msword' ||
 						fileData?.type === 'text/plain' ||
 						fileData?.type ===
-							'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+						'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 					) {
 						setUploadFileData(fileData?.name);
 						setJDParsedSkills(
@@ -215,7 +215,7 @@ const HRFields = ({
 						);
 						setJDDumpID(
 							uploadFileResponse &&
-								uploadFileResponse?.responseBody?.details?.JDDumpID,
+							uploadFileResponse?.responseBody?.details?.JDDumpID,
 						);
 						setUploadModal(false);
 						setValidation({
@@ -333,7 +333,7 @@ const HRFields = ({
 		const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
 		setAvailability(
 			availabilityResponse &&
-				availabilityResponse.responseBody?.BindHiringAvailability,
+			availabilityResponse.responseBody?.BindHiringAvailability,
 		);
 	}, []);
 
@@ -366,12 +366,13 @@ const HRFields = ({
 						{ id: 0, value: 'Add Other Company' },
 					]);
 				}
-			} else {
-				setError('salesPerson', {
-					type: 'validate',
-					message: 'Sales Person is not partner',
-				});
 			}
+			// else {
+			// 	setError('salesPerson', {
+			// 		type: 'validate',
+			// 		message: 'Sales Person is not partner',
+			// 	});
+			// }
 		},
 		[setError],
 	);
