@@ -72,6 +72,7 @@ const HRFields = ({
 		googleDriveFileUpload: '',
 		linkValidation: '',
 	});
+	const [jdURLLink, setJDURLLink] = useState('');
 	const [getGoogleDriveLink, setGoogleDriveLink] = useState('');
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
 	let controllerRef = useRef(null);
@@ -653,7 +654,7 @@ const HRFields = ({
 				setType(SubmitType.SUBMIT);
 			}
 			const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
-
+			console.log(addHRRequest, '-addHRRe');
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 				setAddHRResponse(addHRRequest?.responseBody?.details);
 				setEnID(addHRRequest?.responseBody?.details?.en_Id);
@@ -684,6 +685,8 @@ const HRFields = ({
 			watch,
 		],
 	);
+
+	console.log(watch('jdURL'), '--watchJDIURL');
 	useEffect(() => {
 		setValue('hrTitle', hrRole?.value);
 	}, [hrRole?.value, setValue]);
@@ -693,7 +696,7 @@ const HRFields = ({
 			controllerRef.current.focus();
 		}
 	}, [errors?.clientName]);
-
+	console.log(errors, '--errirs');
 	useEffect(() => {
 		setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));
 	}, [watchSalesPerson]);
@@ -919,7 +922,7 @@ const HRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							{!getUploadFileData ? (
 								<HRInputField
-									disabled={!_isNull(watch('jdURL'))}
+									disabled={jdURLLink}
 									register={register}
 									leadingIcon={<UploadSVG />}
 									label="Job Description (PDF)"
@@ -932,7 +935,7 @@ const HRFields = ({
 									validationSchema={{
 										required: 'please select a file.',
 									}}
-									errors={errors}
+									errors={!jdURLLink && errors}
 								/>
 							) : (
 								<div className={HRFieldStyle.uploadedJDWrap}>
@@ -972,6 +975,9 @@ const HRFields = ({
 						<div className={HRFieldStyle.orLabel}>OR</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+								onChangeHandler={(e) => {
+									setJDURLLink(e.target.value);
+								}}
 								disabled={getUploadFileData}
 								label="Job Description URL"
 								name="jdURL"
