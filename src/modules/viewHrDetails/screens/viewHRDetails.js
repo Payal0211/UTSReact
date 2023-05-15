@@ -10,7 +10,6 @@ const ViewHRDetails = () => {
 	const [hiringDetails, setHiringDetails] = useState('');
 	const id = useParams();
 
-
 	const getViewHrDetails = useCallback(async () => {
 		const response = await hiringRequestDAO.viewHRDetailsRequestDAO(id.id);
 		setHiringDetails(response);
@@ -120,7 +119,7 @@ const ViewHRDetails = () => {
 												<span>How Soon:</span>{' '}
 												{hiringDetails?.responseBody?.details?.howSoon ?? 'NA'}
 											</li>
-											{/* <li><span>NP:</span> 30 NP<i className={ViewHRDetailsStyle.blueDot} /></li> */}
+
 											<li>
 												<span>BQ Form Link:</span>{' '}
 												{hiringDetails?.responseBody?.details?.bqLink ? (
@@ -260,17 +259,7 @@ const ViewHRDetails = () => {
 									);
 								},
 							)}
-							{/* <div className={ViewHRDetailsStyle.colLg6}>
-                                <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
-                                    <h3>Interviewer 1</h3>
-                                    <ul>
-                                        <li><span>Interviewer Name:</span> Jhanvi Kapoor</li>
-                                        <li><span>Interviewer Linkedin:</span> <a href="#" target="_blank">Click Here</a></li>
-                                        <li><span>Interviewer Email:</span> jhanvikapoor@gmail.com</li>
-                                        <li><span>Interviewer Designation:</span> CEO</li>
-                                    </ul>
-                                </div>
-                            </div> */}
+
 						</div>
 					</div>
 				</div>
@@ -299,15 +288,7 @@ const ViewHRDetails = () => {
 							</h3>
 							{hiringDetails?.responseBody?.details?.rolesResponsibilites ??
 								'NA'}
-							{/* <p>Build web applications with web development best practices</p>
-                            <p>Transform app designs into front-end code with HTML, CSS, and JavaScript</p>
-                            <p>Work with back-end developers to integrate UI components with APIs and databases</p>
-                            <p>Gather and re ne speci cations and requirements based on technical requirements or UX design</p>
-                            <p>Debug errors, troubleshoot issues, and perform routine performance optimizations</p>
-                            <p>On-site search engine optimization (SEO)</p>
-                            <p>Write high-quality, scalable, and reusable code</p>
-                            <p>Stay plugged into emerging technologies and industry trends</p>
-                            <p>Job Quali cations and Skill Sets</p> */}
+
 						</div>
 
 						<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
@@ -316,22 +297,12 @@ const ViewHRDetails = () => {
 								<i className={ViewHRDetailsStyle.blueDot} />
 							</h3>
 							<div className={ViewHRDetailsStyle.skillsList}>
-								{hiringDetails?.responseBody?.details.requiredSkillList?.map(
+
+								{hiringDetails?.responseBody?.details.requiredSkillList?.length === 0 ? (<p>NA</p>) : hiringDetails?.responseBody?.details.requiredSkillList?.map(
 									(item) => {
 										return <span>{item?.text}</span>;
 									},
 								)}
-								{/* <span>Sr. Web Developer</span>
-                                <span>DevOps Jira</span>
-                                <span>Wordpress Developer</span>
-                                <span>Back End Python Developer</span>
-                                <span>Salesforce Developer</span>
-                                <span>Back End Python Developer</span>
-                                <span>Sr. Web Developer</span>
-                                <span>DevOps Jira</span>
-                                <span>Back End Python Developer</span>
-                                <span>Salesforce Developer</span>
-                                <span>Back End Python Developer</span> */}
 							</div>
 						</div>
 					</div>
