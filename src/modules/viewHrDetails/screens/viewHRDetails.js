@@ -224,7 +224,7 @@ const ViewHRDetails = () => {
 									return (
 										<div className={ViewHRDetailsStyle.colLg6}>
 											<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
-												<h3>Interviewer 1</h3>
+												<h3>Interviewer: {item?.interviewerFullName ?? "NA"}</h3>
 												<ul>
 													<>
 														<li>
