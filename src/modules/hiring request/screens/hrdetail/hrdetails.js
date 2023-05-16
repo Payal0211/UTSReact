@@ -6,7 +6,7 @@ import React, {
 	useState,
 } from 'react';
 import { Modal, Skeleton, Tabs } from 'antd';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
@@ -56,7 +56,7 @@ const HRDetailScreen = () => {
 	const [callHRapi, setHRapiCall] = useState(false);
 	const [acceptHRModal, setAcceptHRModal] = useState(false);
 	const [shareProfileModal, setShareProfileModal] = useState(false);
-	const [editDebrifing,setEditDebring] = useState([])
+	const [editDebrifing, setEditDebring] = useState([])
 	const {
 		register,
 		handleSubmit,
@@ -68,6 +68,7 @@ const HRDetailScreen = () => {
 
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
+	console.log(updatedSplitter, "updatedSplitter")
 	const miscData = UserSessionManagementController.getUserSession();
 
 	const callAPI = useCallback(
@@ -84,8 +85,8 @@ const HRDetailScreen = () => {
 		[navigate],
 	);
 
-	
-  
+
+
 	const clientOnLossSubmitHandler = useCallback(
 		async (d) => {
 			_isNull(watch('hrDeleteLossReason')) &&
@@ -119,7 +120,7 @@ const HRDetailScreen = () => {
 			apiData?.activity_MissingAction_CTA?.[0],
 		[apiData?.activity_MissingAction_CTA],
 	);
-	const AMAssignmentHandler = useCallback(() => {});
+	const AMAssignmentHandler = useCallback(() => { });
 	const nextMissingActionHandler = useCallback(() => {
 		const getMissingActionResult = getNextActionMissingActionMemo;
 		switch (getMissingActionResult?.key) {
@@ -183,15 +184,34 @@ const HRDetailScreen = () => {
 		setLoading(true);
 		callAPI(urlSplitter?.split('HR')[0]);
 	}, [urlSplitter, callAPI, callHRapi]);
-	
+
 
 	useEffect(() => {
-	
-			const data = apiData?.hr_CTA?.filter((item)=>item.key === "DebriefingHR")
-			setEditDebring(data);
-		
-	  }, [apiData])
-	
+		const data = apiData?.hr_CTA?.filter((item) => item.key === "DebriefingHR")
+		setEditDebring(data);
+	}, [apiData])
+
+	const hrId = useParams()
+
+
+	// const [hrDetails, setHRDetails] = useState([{}])
+	let fromEditDeBriefing = true
+
+
+	const navigateToEditDebriefing = async () => {
+
+
+		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid)
+
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			// setHRDetails(response?.responseBody?.details)
+			localStorage.setItem("hrID", hrId.hrid)
+			localStorage.setItem("fromEditDeBriefing", fromEditDeBriefing)
+
+			navigate("/allhiringrequest/addnewhr")
+		}
+	}
+
 
 	return (
 		<WithLoader showLoader={isLoading}>
@@ -221,12 +241,12 @@ const HRDetailScreen = () => {
 						<button className={HRDetailStyle.btnPrimary}>
 							Clone - {updatedSplitter}
 						</button>
-						
-						{editDebrifing?.length>0 && editDebrifing?.[0]?.IsEnabled&&(
-							<button className={HRDetailStyle.btnPrimary}>
-							Edit Debriefing
-						</button>
-						)}  
+
+						{editDebrifing?.length > 0 && editDebrifing?.[0]?.IsEnabled && (
+							<button className={HRDetailStyle.btnPrimary} onClick={navigateToEditDebriefing}>
+								Edit Debriefing
+							</button>
+						)}
 					</div>
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (

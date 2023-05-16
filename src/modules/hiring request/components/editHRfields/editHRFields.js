@@ -116,7 +116,6 @@ const EditHRFields = ({
         const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId)
         if (response.statusCode === HTTPStatusCode.OK) {
             setHRdetails(response?.responseBody?.details)
-
         }
     }
 
@@ -698,6 +697,13 @@ const EditHRFields = ({
             })
         )
     })
+
+
+    useEffect(() => {
+        if (localStorage.getItem("fromEditDeBriefing")) {
+            setTitle('Debriefing HR')
+        }
+    }, [localStorage.getItem("fromEditDeBriefing")])
 
 
     useEffect(() => {
