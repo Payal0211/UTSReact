@@ -692,16 +692,30 @@ const EditHRFields = ({
         }
     }, [errors?.clientName]);
 
-    const durationTypenfo = []
+    // const durationTypenfo = []
 
-    const durationData = getDurationType.map((item) => {
-        return (
-            durationTypenfo.push({
-                id: item.value,
-                value: item.text
-            })
-        )
-    })
+    // const durationData = getDurationType.map((item) => {
+    //     return (
+    //         durationTypenfo.push({
+    //             id: item.value,
+    //             value: item.text
+    //         })
+    //     )
+    // })
+
+    const durationDataMemo = useMemo(() => {
+        let formattedDuration = [];
+        getDurationType?.filter(
+            (item) =>
+                item?.value !== '0' &&
+                formattedDuration.push({
+                    id: item?.value,
+                    value: item?.text,
+                }),
+        );
+        return formattedDuration;
+    }, [getDurationType]);
+
 
 
     useEffect(() => {
@@ -814,11 +828,11 @@ const EditHRFields = ({
 
     useEffect(() => {
         if (getHRdetails?.months) {
-            const findDurationMode = durationTypenfo.filter((item) => item?.id === getHRdetails?.months)
+            const findDurationMode = durationDataMemo.filter((item) => item?.id === getHRdetails?.months)
             setValue("getDurationType", findDurationMode[0])
             setControlledDurationTypeValue(findDurationMode[0]?.value)
         }
-    }, [getHRdetails, durationTypenfo])
+    }, [getHRdetails, durationDataMemo])
 
     useEffect(() => {
         if (getHRdetails?.salesHiringRequest_Details?.durationType) {
@@ -827,9 +841,6 @@ const EditHRFields = ({
             setContractDuration(findcontactMode[0])
         }
     }, [getHRdetails, items])
-
-    // console.log(watch("salesPerson"), "salesPerson");
-    console.log(watch("getDurationType"), "getDurationType");
 
     return (
         <div className={HRFieldStyle.hrFieldContainer}>
@@ -1169,7 +1180,7 @@ const EditHRFields = ({
                                     isControlled={true}
                                     register={register}
                                     label={'Long Term/Short Term'}
-                                    options={durationTypenfo && durationTypenfo}
+                                    options={durationDataMemo && durationDataMemo}
                                     name="getDurationType"
                                     mode={'id/value'}
                                     isError={errors['getDurationType'] && errors['getDurationType']}

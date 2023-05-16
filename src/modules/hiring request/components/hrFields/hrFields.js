@@ -711,8 +711,6 @@ const HRFields = ({
 		return formattedDuration;
 	}, [getDurationType]);
 
-
-
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
 			{contextHolder}
