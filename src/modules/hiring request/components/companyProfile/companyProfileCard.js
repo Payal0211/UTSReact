@@ -1,13 +1,24 @@
 import CompanyProfileCardStyle from './companyProfile.module.css';
 import { BsThreeDots } from 'react-icons/bs';
 import { AiFillLinkedin } from 'react-icons/ai';
-import { Divider, Dropdown, Menu } from 'antd';
+import { Divider, Dropdown, Menu,Modal } from 'antd';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import React,{useState} from "react";
+import { InputType } from 'constants/application';
+
+
+import UpdateTRModal from "../../components/updateTRModal/updateTRModal"
 
 const CompanyProfileCard = ({ clientDetail, talentLength }) => {
+
+
+
+	
+const [updateTR,setUpdateTR]= useState(false)
 	const id = useParams()
 	return (
+		<>
 		<div className={CompanyProfileCardStyle.companyProfileContainer}>
 			<label>
 				<h1>Company Details</h1>
@@ -112,14 +123,9 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 								</span>
-								<button>Update TR</button>
+								<button onClick={()=>setUpdateTR(true)}>Update TR</button>
 							</div>
-							{/* <div className={CompanyProfileCardStyle.TRParked}>
-								<span>TR Parked:</span>&nbsp;&nbsp;
-								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.TR_Accepted ? clientDetail?.TR_Accepted : 'NA'}
-								</span>
-							</div> */}
+						
 							<div className={CompanyProfileCardStyle.roleName}>
 								<span>Role Name:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
@@ -272,6 +278,75 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 				</div>
 			</div>
 		</div>
+
+
+		<Modal
+				width={'700px'}
+				centered
+				footer={false}
+				open={updateTR}
+				className='cloneHRConfWrap'
+				onCancel={() => setUpdateTR(false)}>
+					<UpdateTRModal updateTR = {updateTR} setUpdateTR = {()=>setUpdateTR(true)} onCancel={() => setUpdateTR(false)}/>
+				{/* <CloneHR cloneHRhandler={cloneHRhandler} onCancel={() => setCloneHR(false)} getHRnumber={getHRnumber} /> */}
+			</Modal>
+
+
+
+		
+
+		{/* <Modal
+		transitionName=""
+		centered
+		open={updateTRModal}
+		width="600px"
+		className="updateTRModal"
+		footer={null}
+		onCancel={()=>setUpdateTRModal(true)}>
+		<div className={CompanyProfileCardStyle.engagementModalContainer}
+        >
+            <div className={`${CompanyProfileCardStyle.headingContainer} ${CompanyProfileCardStyle.payRateContainer}`}>
+                <h2>Update TR</h2>
+				<p>HR150523191530</p>
+            </div>
+            <div className={CompanyProfileCardStyle.firstFeebackTableContainer}>
+                <div className={CompanyProfileCardStyle.row}>
+                    <div
+                        className={CompanyProfileCardStyle.colMd12}>
+                        <HRInputField
+                            register={register}
+                            errors={errors}
+                            validationSchema={{
+                                required: 'please enter Talent Fees.',
+                            }}
+                            label="Talent Fees"
+                            name="talentFees"
+                            type={InputType.NUMBER}
+                            placeholder="Enter Amount"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div className={CompanyProfileCardStyle.formPanelAction}>
+                    <button
+                        type="submit"
+                        className={CompanyProfileCardStyle.btnPrimary}
+                        onClick={handleSubmit(savePayRatehandler)}
+                    >
+                        Save
+                    </button>
+                    <button
+                        onClick={() => onCancel()}
+                        className={CompanyProfileCardStyle.btn}>
+                        Cancel
+                    </button>
+                </div>
+
+            </div>
+        </div>
+	</Modal> */}
+	</>
 	);
 };
 
