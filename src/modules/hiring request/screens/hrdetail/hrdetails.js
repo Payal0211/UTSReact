@@ -30,6 +30,7 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
 import AcceptHR from 'modules/hiring request/components/acceptHR/acceptHR';
+import { logDOM } from '@testing-library/react';
 
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
@@ -55,6 +56,7 @@ const HRDetailScreen = () => {
 	const [callHRapi, setHRapiCall] = useState(false);
 	const [acceptHRModal, setAcceptHRModal] = useState(false);
 	const [shareProfileModal, setShareProfileModal] = useState(false);
+	const [editDebrifing,setEditDebring] = useState([])
 	const {
 		register,
 		handleSubmit,
@@ -82,7 +84,8 @@ const HRDetailScreen = () => {
 		[navigate],
 	);
 
-	// console.log(apiData, '--apiData-');
+	
+  
 	const clientOnLossSubmitHandler = useCallback(
 		async (d) => {
 			_isNull(watch('hrDeleteLossReason')) &&
@@ -180,6 +183,15 @@ const HRDetailScreen = () => {
 		setLoading(true);
 		callAPI(urlSplitter?.split('HR')[0]);
 	}, [urlSplitter, callAPI, callHRapi]);
+	
+
+	useEffect(() => {
+	
+			const data = apiData?.hr_CTA?.filter((item)=>item.key === "DebriefingHR")
+			setEditDebring(data);
+		
+	  }, [apiData])
+	
 
 	return (
 		<WithLoader showLoader={isLoading}>
@@ -201,7 +213,7 @@ const HRDetailScreen = () => {
 						)}
 						{apiData && (
 							<div className={HRDetailStyle.hiringRequestPriority}>
-								{All_Hiring_Request_Utils.GETHRPRIORITY(
+								{All_Hiring_Request_Utils?.GETHRPRIORITY(
 									apiData?.StarMarkedStatusCode,
 								)}
 							</div>
@@ -209,6 +221,12 @@ const HRDetailScreen = () => {
 						<button className={HRDetailStyle.btnPrimary}>
 							Clone - {updatedSplitter}
 						</button>
+						
+						{editDebrifing?.length>0 && editDebrifing?.[0]?.IsEnabled&&(
+							<button className={HRDetailStyle.btnPrimary}>
+							Edit Debriefing
+						</button>
+						)}  
 					</div>
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
