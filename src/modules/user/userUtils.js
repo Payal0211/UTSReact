@@ -74,7 +74,7 @@ export const userUtils = {
           : "",
       },
       DeptID: d?.departMent?.id,
-      TeamID: d?.departMent?.id === 4 ? "0" : _itemVal,
+      TeamID: d?.departMent?.id?.toString() === 4 ? "0" : _itemVal.toString(),
       LevelID: d?.departMent?.id === 4 ? 0 : d?.level?.id,
       profilePic: "",
       geoIds: modifiedGEO ? modifiedGEO : [0],
