@@ -61,7 +61,7 @@ const DebriefingHR = ({
 		const response = await MasterDAO.getSkillsRequestDAO();
 		setSkills(response && response.responseBody);
 	}, []);
-	let watchOtherSkills = watch('otherSkill');
+
 	let watchSkills = watch('skills');
 
 	const combinedSkillsMemo = useMemo(
@@ -113,16 +113,16 @@ const DebriefingHR = ({
 		[setError],
 	);
 
-	useEffect(() => {
-		let timer;
-		if (!_isNull(watchOtherSkills)) {
-			timer = setTimeout(() => {
-				// setIsLoading(true);
-				getOtherSkillsRequest(watchOtherSkills);
-			}, 2000);
-		}
-		return () => clearTimeout(timer);
-	}, [getOtherSkillsRequest, watchOtherSkills]);
+	// useEffect(() => {
+	// 	let timer;
+	// 	if (!_isNull(watchOtherSkills)) {
+	// 		timer = setTimeout(() => {
+	// 			// setIsLoading(true);
+	// 			getOtherSkillsRequest(watchOtherSkills);
+	// 		}, 2000);
+	// 	}
+	// 	return () => clearTimeout(timer);
+	// }, [getOtherSkillsRequest, watchOtherSkills]);
 
 	useEffect(() => {
 		getSkills();
@@ -141,22 +141,26 @@ const DebriefingHR = ({
 	}, [JDParsedSkills, setValue]);
 
 	const debriefSubmitHandler = async (d) => {
+		let skillList = d.skills.map((item) => {
+			const obj = {
+				skillsID: item.id || item?.skillsID,
+				skillsName: item.value || item?.skillName,
+			};
+			return obj;
+		});
+
 		let debriefFormDetails = {
 			roleAndResponsibilites: d.roleAndResponsibilities,
 			requirements: d.requirements,
 			en_Id: enID,
-			skills: d.skills?.filter((item) => item?.skillsID !== -1),
-			// skills: d.skills.map((item) => {
-			// 	const obj = { skillsID: item.id, skillsName: item.value };
-			// 	return obj;
-			// }),
+			skills: skillList?.filter((item) => item?.skillsID !== -1),
 			aboutCompanyDesc: d.aboutCompany,
 			secondaryInterviewer: d.secondaryInterviewer,
 			interviewerFullName: d.interviewerFullName,
 			interviewerEmail: d.interviewerEmail,
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
-			JDDumpID: jdDumpID,
+			JDDumpID: jdDumpID || 0,
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -172,19 +176,27 @@ const DebriefingHR = ({
 	};
 
 	const needMoreInforSubmitHandler = async (d) => {
+		let skillList = d.skills.map((item) => {
+			const obj = {
+				skillsID: item.id || item?.skillsID,
+				skillsName: item.value || item?.skillName,
+			};
+			return obj;
+		});
+
 		let debriefFormDetails = {
 			isneedmore: true,
 			roleAndResponsibilites: d.roleAndResponsibilities,
 			requirements: d.requirements,
 			en_Id: enID,
-			skills: d.skills,
+			skills: skillList?.filter((item) => item?.skillsID !== -1),
 			aboutCompanyDesc: d.aboutCompany,
 			secondaryInterviewer: d.secondaryInterviewer,
 			interviewerFullName: d.interviewerFullName,
 			interviewerEmail: d.interviewerEmail,
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
-			JDDumpID: jdDumpID,
+			JDDumpID: jdDumpID || 0,
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -275,6 +287,12 @@ const DebriefingHR = ({
 											value: /^((?!other).)*$/,
 											message: 'Please remove "other" keyword.',
 										},
+									}}
+									onChangeHandler={(e) => {
+										setTimeout(
+											() => getOtherSkillsRequest(e.target.value),
+											3000,
+										);
 									}}
 									label="Other Skills"
 									name="otherSkill"
