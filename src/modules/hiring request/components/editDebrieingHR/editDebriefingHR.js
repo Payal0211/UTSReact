@@ -57,6 +57,7 @@ const EditDebriefingHR = ({
 	const [selectedItems, setSelectedItems] = useState([]);
 	const [skills, setSkills] = useState([]);
 
+
 	const [messageAPI, contextHolder] = message.useMessage();
 	const getSkills = useCallback(async () => {
 		const response = await MasterDAO.getSkillsRequestDAO();
@@ -166,7 +167,7 @@ const EditDebriefingHR = ({
 	};
 
 	const needMoreInforSubmitHandler = async (d) => {
-		
+
 		let debriefFormDetails = {
 			isneedmore: true,
 			roleAndResponsibilites: d.roleAndResponsibilities,
@@ -193,12 +194,12 @@ const EditDebriefingHR = ({
 		}
 	};
 
-	useEffect(() => {
-	const skilsData = getHRdetails?.skillmulticheckbox?.filter((item)=>{	
-	})
-	setValue("skills",skilsData)
-	}, [getHRdetails])
-	
+	// useEffect(() => {
+	// const skilsData = getHRdetails?.skillmulticheckbox?.filter((item)=>{
+	// })
+	// setValue("skills",skilsData)
+	// }, [getHRdetails])
+
 
 	useEffect(() => {
 		setValue("aboutCompany", getHRdetails?.addHiringRequest?.aboutCompanyDesc)

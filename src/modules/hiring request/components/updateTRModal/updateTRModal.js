@@ -6,19 +6,19 @@ import updateTRStyle from './updateTR.module.css';
 // import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 // import { HTTPStatusCode } from 'constants/network';
 
-const UpdateTR = ({updateTR,setUpdateTR,onCancel}) => {
-console.log(setUpdateTR,"setUpdateTR")
+const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
+
     const {
-		register,
-		handleSubmit,
-		setValue,
-		watch,
-		formState: { errors },
-	} = useForm();
+        register,
+        handleSubmit,
+        setValue,
+        watch,
+        formState: { errors },
+    } = useForm();
 
 
     const onSubmit = async (data) => {
-       console.log(data,"data")
+        console.log(data, "data")
     }
 
     return (
@@ -28,7 +28,7 @@ console.log(setUpdateTR,"setUpdateTR")
                 <h2>Update TR</h2>
                 <p>HR150523191530</p>
             </div>
-            
+
             <div className={updateTRStyle.firstFeebackTableContainer}>
                 <div className={updateTRStyle.row}>
                     <div
