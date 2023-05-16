@@ -1,5 +1,5 @@
 import { Tabs } from 'antd';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import DebriefingHR from 'modules/hiring request/components/debriefingHR/debriefingHR';
 import HRFields from 'modules/hiring request/components/hrFields/hrFields';
 import AddNewHRStyle from './add_new_HR.module.css';
@@ -21,7 +21,11 @@ const AddNewHR = () => {
 	});
 	const [enID, setEnID] = useState('');
 	const [getHRdetails, setHRdetails] = useState({})
-
+	console.log(enID);
+	useEffect(() => {
+		localStorage.setItem("enIDdata",enID);
+	}, [enID])
+	
 	return (
 		<div className={AddNewHRStyle.addNewContainer}>
 			<div className={AddNewHRStyle.addHRTitle}>{title}</div>

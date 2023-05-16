@@ -79,9 +79,9 @@ export const hrUtils = {
 		fileName,
 		jdDumpID,
 	) {
-	
+	let enIDdata = localStorage.getItem("enIDdata");
 		const hrFormDetails = {
-			en_Id: _isNull(addHrResponse) ? '' : addHrResponse,
+			en_Id: _isNull(enIDdata) ? '' : enIDdata,
 			contactId: contactID || 0,
 			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 			clientName:

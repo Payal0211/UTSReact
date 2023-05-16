@@ -628,6 +628,7 @@ const EditHRFields = ({
     /** To check Duplicate email exists End */
 
     const [messageAPI, contextHolder] = message.useMessage();
+    setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
     const hrSubmitHandler = useCallback(
         async (d, type = SubmitType.SUBMIT || SubmitType.SAVE_AS_DRAFT) => {
             let hrFormDetails = hrUtils.hrFormDataFormatter(
@@ -652,7 +653,6 @@ const EditHRFields = ({
 
             // if (addHRRequest.statusCode === HTTPStatusCode.OK) {
             setAddHRResponse(getHRdetails?.en_Id);
-            setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
             type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
             type !== SubmitType.SAVE_AS_DRAFT &&
                 setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
