@@ -193,11 +193,21 @@ const EditDebriefingHR = ({
 		}
 	};
 
+	let tempArr = []
+	tempArr.push(getHRdetails?.skillmulticheckbox)
+	
+	// useEffect(() => {
+	// 	const skilsData = getHRdetails?.skillmulticheckbox?.filter((item)=>{	
+	// })
+	// setValue("skills",getHRdetails?.skillmulticheckbox)
+	// console.log(skilsData,"tempaaaaaarr")
+	// console.log(errors["skills"]?.ref?.value.push(getHRdetails?.skillmulticheckbox),"Testtttt")
+	// }, [getHRdetails])
+
 	useEffect(() => {
-	const skilsData = getHRdetails?.skillmulticheckbox?.filter((item)=>{	
-	})
-	setValue("skills",skilsData)
-	}, [getHRdetails])
+	 errors['skills']?.ref?.value.push(tempArr)
+	}, [])
+	
 	
 
 	useEffect(() => {

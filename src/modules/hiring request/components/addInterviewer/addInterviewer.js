@@ -13,6 +13,7 @@ const AddInterviewer = ({
 	append,
 	setValue,
 	errors,
+	getHRdetails
 }) => {
 	/**Add Secondary Items*/
 	const onAddSecondaryInterviewer = useCallback(
@@ -30,18 +31,26 @@ const AddInterviewer = ({
 		[remove],
 	);
 
-	const autoFillInterviewDetailsHandler = useCallback(() => {
-		if (interviewDetails) {
-			setValue('interviewerFullName', interviewDetails?.fullName);
-			setValue('interviewerEmail', interviewDetails?.emailId);
-			setValue('interviewerLinkedin', interviewDetails?.linkedin);
-			setValue('interviewerDesignation', interviewDetails?.designation);
-		}
-	}, [interviewDetails, setValue]);
+	// const autoFillInterviewDetailsHandler = useCallback(() => {
+	// 	if (interviewDetails) {
+	// 		setValue('interviewerFullName', interviewDetails?.fullName);
+	// 		setValue('interviewerEmail', interviewDetails?.emailId);
+	// 		setValue('interviewerLinkedin', interviewDetails?.linkedin);
+	// 		setValue('interviewerDesignation', interviewDetails?.designation);
+	// 	}
+	// }, [interviewDetails, setValue]);
+
+	// useEffect(() => {
+	// 	if (interviewDetails) autoFillInterviewDetailsHandler();
+	// }, [autoFillInterviewDetailsHandler, interviewDetails]);
 
 	useEffect(() => {
-		if (interviewDetails) autoFillInterviewDetailsHandler();
-	}, [autoFillInterviewDetailsHandler, interviewDetails]);
+		setValue("interviewerFullName", getHRdetails?.salesHiringRequest_Details?.interviewerName)
+		setValue("interviewerEmail", getHRdetails?.salesHiringRequest_Details?.interviewerEmailId)
+		setValue("interviewerLinkedin", getHRdetails?.salesHiringRequest_Details?.interviewLinkedin)
+		setValue("interviewerDesignation", getHRdetails?.salesHiringRequest_Details?.interviewerDesignation)
+
+	}, [getHRdetails])
 	return (
 		<div>
 			<div className={AddInterviewerStyle.addInterviewContainer}>

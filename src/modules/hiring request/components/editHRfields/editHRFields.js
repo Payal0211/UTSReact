@@ -654,7 +654,7 @@ const EditHRFields = ({
             }
             const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
-            if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+            // if (addHRRequest.statusCode === HTTPStatusCode.OK) {
                 // setAddHRResponse(addHRRequest?.responseBody?.details);
                 setEnID(addHRRequest?.responseBody?.details?.en_Id);
                 type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
@@ -666,7 +666,7 @@ const EditHRFields = ({
                         type: 'success',
                         content: 'HR details has been saved to draft.',
                     });
-            }
+            // }
         },
         [
             addHRResponse,
