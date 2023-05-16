@@ -629,6 +629,7 @@ const EditHRFields = ({
 
     const [messageAPI, contextHolder] = message.useMessage();
 
+
     const hrSubmitHandler = useCallback(
         async (d, type = SubmitType.SAVE_AS_DRAFT) => {
             let hrFormDetails = hrUtils.hrFormDataFormatter(
@@ -639,9 +640,6 @@ const EditHRFields = ({
                 isHRDirectPlacement,
                 addHRResponse,
             );
-            // const hrIDEncrypt = localStorage.getItem("hrID")
-            // const hexHash = MD5(hrIDEncrypt.toString()).toString();
-            // setAddHRResponse(hexHash);
             if (type === SubmitType.SAVE_AS_DRAFT) {
                 if (_isNull(watch('clientName'))) {
                     return setError('clientName', {
@@ -654,19 +652,21 @@ const EditHRFields = ({
             }
             const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
-            if (addHRRequest.statusCode === HTTPStatusCode.OK) {
-                // setAddHRResponse(addHRRequest?.responseBody?.details);
-                setEnID(addHRRequest?.responseBody?.details?.en_Id);
-                type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
-                type !== SubmitType.SAVE_AS_DRAFT &&
-                    setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
 
-                type === SubmitType.SAVE_AS_DRAFT &&
-                    messageAPI.open({
-                        type: 'success',
-                        content: 'HR details has been saved to draft.',
-                    });
-            }
+            // if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+            setAddHRResponse(getHRdetails?.en_Id && getHRdetails?.en_Id);
+            setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
+
+            type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
+            type !== SubmitType.SAVE_AS_DRAFT &&
+                setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+
+            type === SubmitType.SAVE_AS_DRAFT &&
+                messageAPI.open({
+                    type: 'success',
+                    content: 'HR details has been saved to draft.',
+                });
+            // }
         },
         [
             addHRResponse,
@@ -679,6 +679,7 @@ const EditHRFields = ({
             setTitle,
             tabFieldDisabled,
             watch,
+            getHRdetails
         ],
     );
     useEffect(() => {
@@ -724,7 +725,7 @@ const EditHRFields = ({
         setValue("country", getHRdetails?.directPlacement?.country)
         setValue("address", getHRdetails?.directPlacement?.address)
         setValue("contractDuration", getHRdetails?.salesHiringRequest_Details?.durationType)
-        setValue("getDurationType", getHRdetails?.contractDuration)
+        setValue("getDurationType", getHRdetails?.months)
         setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType)
         if (getHRdetails?.clientName) {
             getListData(getHRdetails?.clientName, getHRdetails?.clientName.substring(0, 3));
@@ -822,13 +823,13 @@ const EditHRFields = ({
     useEffect(() => {
         if (getHRdetails?.salesHiringRequest_Details?.durationType) {
             const findcontactMode = items.filter((item) => item === getHRdetails?.salesHiringRequest_Details?.durationType)
-            console.log(findcontactMode, "findDurationMode@@@@@@@@");
             setValue("contractDuration", findcontactMode[0])
             setContractDuration(findcontactMode[0])
         }
     }, [getHRdetails, items])
 
-
+    // console.log(watch("salesPerson"), "salesPerson");
+    console.log(watch("getDurationType"), "getDurationType");
 
     return (
         <div className={HRFieldStyle.hrFieldContainer}>
@@ -1183,7 +1184,7 @@ const EditHRFields = ({
                                     dropdownRender={(menu) => (
                                         <>
                                             {menu}
-                                            {console.log(menu, "meunuuuuuuugg")}
+
                                             <Divider style={{ margin: '8px 0' }} />
                                             <Space style={{ padding: '0 8px 4px' }}>
                                                 <label>Other:</label>
@@ -1195,7 +1196,7 @@ const EditHRFields = ({
                                                     value={name}
                                                     onChange={onNameChange}
                                                 />
-                                                {console.log(inputRef, "editttt")}
+
                                                 <Button
                                                     style={{
                                                         backgroundColor: `var(--uplers-grey)`,

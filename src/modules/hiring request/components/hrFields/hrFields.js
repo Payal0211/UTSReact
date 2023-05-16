@@ -635,7 +635,6 @@ const HRFields = ({
 				d,
 				type,
 				watch,
-
 				contactID || getContactAndSaleID?.contactID,
 				isHRDirectPlacement,
 				addHRResponse,
@@ -711,6 +710,8 @@ const HRFields = ({
 		);
 		return formattedDuration;
 	}, [getDurationType]);
+
+
 
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
@@ -1077,7 +1078,7 @@ const HRFields = ({
 										errors['getDurationType'] && errors['getDurationType']
 									}
 									required
-									// mode={'text/value'}
+									mode={'text/value'}
 									errorMsg={'Please select duration type'}
 								/>
 							</div>
