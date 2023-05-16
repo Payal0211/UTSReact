@@ -84,6 +84,7 @@ const HRFields = ({
 		setError,
 		unregister,
 		control,
+		clearErrors,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
@@ -376,7 +377,13 @@ const HRFields = ({
 		},
 		[setError],
 	);
-
+	const toggleJDHandler = useCallback(
+		(e) => {
+			setJDURLLink(e.target.value);
+			clearErrors();
+		},
+		[clearErrors],
+	);
 	const getHowSoon = useCallback(async () => {
 		const howSoonResponse = await MasterDAO.getHowSoonRequestDAO();
 		setHowSoon(howSoonResponse && howSoonResponse.responseBody);
@@ -920,7 +927,18 @@ const HRFields = ({
 					</div>
 					<div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
 						<div className={HRFieldStyle.colMd6}>
-							{!getUploadFileData ? (
+							{jdURLLink && !getUploadFileData ? (
+								<HRInputField
+									disabled={jdURLLink}
+									register={register}
+									leadingIcon={<UploadSVG />}
+									label="Job Description (PDF)"
+									name="jdExport"
+									type={InputType.BUTTON}
+									buttonLabel="Upload JD File"
+									onClickHandler={() => setUploadModal(true)}
+								/>
+							) : !getUploadFileData ? (
 								<HRInputField
 									disabled={jdURLLink}
 									register={register}
@@ -939,13 +957,12 @@ const HRFields = ({
 								/>
 							) : (
 								<div className={HRFieldStyle.uploadedJDWrap}>
-									<label>Job Description (PDF)</label>
+									<label>Job Description (PDF) *</label>
 									<div className={HRFieldStyle.uploadedJDName}>
 										{getUploadFileData}{' '}
 										<CloseSVG
 											className={HRFieldStyle.uploadedJDClose}
 											onClick={() => {
-												// setJDParsedSkills({});
 												setUploadFileData('');
 											}}
 										/>
@@ -975,15 +992,14 @@ const HRFields = ({
 						<div className={HRFieldStyle.orLabel}>OR</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
-								onChangeHandler={(e) => {
-									setJDURLLink(e.target.value);
-								}}
+								onChangeHandler={(e) => toggleJDHandler(e)}
 								disabled={getUploadFileData}
 								label="Job Description URL"
 								name="jdURL"
 								type={InputType.TEXT}
 								placeholder="Add JD link"
 								register={register}
+								required
 							/>
 						</div>
 					</div>
@@ -1074,7 +1090,7 @@ const HRFields = ({
 								<HRSelectField
 									setValue={setValue}
 									register={register}
-									label={'Long Tearm/Short Tearm'}
+									label={'Long Term/Short Term'}
 									defaultValue="Select Term"
 									options={durationDataMemo}
 									name="getDurationType"
@@ -1082,7 +1098,6 @@ const HRFields = ({
 										errors['getDurationType'] && errors['getDurationType']
 									}
 									required
-									// mode={'text/value'}
 									errorMsg={'Please select duration type'}
 								/>
 							</div>
@@ -1142,11 +1157,6 @@ const HRFields = ({
 						</div>
 						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
-								{/* <label>
-									Required Experience
-									<span className={HRFieldStyle.reqField}>*</span>
-								</label> */}
-								{/* <div className={HRFieldStyle.reqExperience}> */}
 								<HRInputField
 									required
 									label="Required Experience"
@@ -1163,25 +1173,6 @@ const HRFields = ({
 									type={InputType.NUMBER}
 									placeholder="Enter years"
 								/>
-								{/* 	<HRInputField
-										register={register}
-										required
-										errors={errors}
-										validationSchema={{
-											max: {
-												value: 12,
-												message: `please don't enter the value more than 12`,
-											},
-											min: {
-												value: 0,
-												message: `please don't enter the value less than 0`,
-											},
-										}}
-										name="months"
-										type={InputType.NUMBER}
-										placeholder="Enter months"
-									/> */}
-								{/* 	</div> */}
 							</div>
 						</div>
 					</div>
