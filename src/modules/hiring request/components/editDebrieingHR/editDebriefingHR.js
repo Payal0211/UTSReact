@@ -154,6 +154,8 @@ const EditDebriefingHR = ({
 			interviewerDesignation: d.interviewerDesignation,
 		};
 
+		console.log(d,"debriefFormDetails");
+
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
 			debriefFormDetails,
 		);

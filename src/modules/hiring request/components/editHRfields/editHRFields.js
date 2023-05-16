@@ -55,7 +55,7 @@ const EditHRFields = ({
     const [pathName, setPathName] = useState('');
     const [showUploadModal, setUploadModal] = useState(false);
     const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
-    const [addHRResponse, setAddHRResponse] = useState(null);
+    const [addHRResponse, setAddHRResponse] = useState("");
     const [type, setType] = useState('');
     const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
     const [getClientNameMessage, setClientNameMessage] = useState('');
@@ -628,10 +628,8 @@ const EditHRFields = ({
     /** To check Duplicate email exists End */
 
     const [messageAPI, contextHolder] = message.useMessage();
-
-
     const hrSubmitHandler = useCallback(
-        async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+        async (d, type = SubmitType.SUBMIT || SubmitType.SAVE_AS_DRAFT) => {
             let hrFormDetails = hrUtils.hrFormDataFormatter(
                 d,
                 type,
@@ -652,11 +650,9 @@ const EditHRFields = ({
             }
             const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
-
             // if (addHRRequest.statusCode === HTTPStatusCode.OK) {
-            setAddHRResponse(getHRdetails?.en_Id && getHRdetails?.en_Id);
+            setAddHRResponse(getHRdetails?.en_Id);
             setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
-
             type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
             type !== SubmitType.SAVE_AS_DRAFT &&
                 setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
@@ -827,9 +823,6 @@ const EditHRFields = ({
             setContractDuration(findcontactMode[0])
         }
     }, [getHRdetails, items])
-
-    // console.log(watch("salesPerson"), "salesPerson");
-    console.log(watch("getDurationType"), "getDurationType");
 
     return (
         <div className={HRFieldStyle.hrFieldContainer}>

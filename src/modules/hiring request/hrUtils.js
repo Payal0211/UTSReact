@@ -79,10 +79,9 @@ export const hrUtils = {
 		fileName,
 		jdDumpID,
 	) {
-		console.log(addHrResponse, "addHrResponse");
-		// console.log(watch("salesPerson"), "salesPerson");
+	
 		const hrFormDetails = {
-			en_Id: _isNull(addHrResponse) ? '' : addHrResponse.en_Id,
+			en_Id: _isNull(addHrResponse) ? '' : addHrResponse,
 			contactId: contactID || 0,
 			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 			clientName:
