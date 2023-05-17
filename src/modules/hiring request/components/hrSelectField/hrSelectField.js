@@ -39,7 +39,13 @@ const HRSelectField = ({
 				value: option.value,
 			});
 			isControlled && setControlledValue(option.value);
-		} else {
+		}else if(mode === "value"){
+			setValue(name,option.value)
+			isControlled && setControlledValue(option.value);
+		} else if(mode === "id"){
+			setValue(name,option.id)
+			isControlled && setControlledValue(option.value);
+		}else {
 			setValue(name, option.id || option?.text);
 		}
 	};
