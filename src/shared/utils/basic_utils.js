@@ -117,3 +117,28 @@ export const defaultEndTime = () => {
 	defaultDate.setMinutes(0);
 	return defaultDate;
 };
+
+export const prefixZeroInTime = (hour) => (hour < 10 ? '0' + hour : hour);
+
+export const getTimeInHHMM = (time) =>
+	prefixZeroInTime(time.getHours()) + ':' + prefixZeroInTime(time.getMinutes());
+
+export const getDateInUsFormat = (date) =>
+	prefixZeroInTime(date.getMonth() + 1) +
+	'/' +
+	prefixZeroInTime(date.getDay()) +
+	'/' +
+	date.getFullYear();
+export const getInterviewSlotInfo = (interviewDate, startTime, endTime) => {
+	interviewDate = getDateInUsFormat(interviewDate);
+	startTime = getTimeInHHMM(new Date(startTime));
+	endTime = getTimeInHHMM(new Date(endTime));
+	return {
+		EndTime: endTime,
+		STREndTime: interviewDate + ' ' + endTime,
+		STRSlotDate: interviewDate,
+		STRStartTime: interviewDate + ' ' + startTime,
+		SlotDate: interviewDate,
+		StartTime: startTime,
+	};
+};
