@@ -31,7 +31,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
             hiringRequestId: Number(id?.hrid),
             addtionalRemarks: additionalComments,
             reasonForLossCancelled: "",
-            isFinalSubmit: true
+            isFinalSubmit: false
         }
         const response = await hiringRequestDAO.editTRDAO(data)
     }
