@@ -98,8 +98,8 @@ const AddNewHR = () => {
 							disabled: fromEditDeBriefing.addNewHiringRequest,
 						},
 						{
-							label: 'Debriefing HR',
-							key: 'Debriefing HR',
+							label: 'Edit Debriefing HR',
+							key: 'Edit Debriefing HR',
 							children: (
 								<EditDebriefingHR
 									setTitle={setTitle}
