@@ -1030,7 +1030,7 @@ const EditHRFields = ({
                                     label="Job Description (PDF)"
                                     name="jdExport"
                                     type={InputType.BUTTON}
-                                    value={getHRdetails?.addHiringRequest?.jdfilename}
+                                    value={getHRdetails?.addHiringRequest?.jdfilename ? getHRdetails?.addHiringRequest?.jdfilename : "Upload JD File"}
                                     setValue={setValue}
                                     onClickHandler={() => setUploadModal(true)}
                                 />
