@@ -15,6 +15,7 @@ const AddNewHR = () => {
 		Responsibility: '',
 		Requirements: '',
 	});
+
 	const [enID, setEnID] = useState('');
 	const [jdDumpID, setJDDumpID] = useState('');
 

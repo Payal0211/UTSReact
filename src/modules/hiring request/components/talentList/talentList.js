@@ -1535,39 +1535,35 @@ const TalentList = ({
 									<div className={TalentListStyle.interviewSlots}>
 										<span>Available Interview Slots:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{item?.Slotconfirmed ? (
-												<Dropdown
-													trigger={['click']}
-													placement="bottom"
-													overlay={
-														<Menu>
-															{hrUtils
-																?.formatInterviewSlots(
-																	inteviewSlotDetails[listIndex]?.SlotList,
-																)
-																?.map((item, index) => {
-																	return (
-																		<Menu.Item key={index}>
-																			{item?.label}
-																		</Menu.Item>
-																	);
-																})}
-														</Menu>
-													}>
-													<span>
-														<Space>
-															{
-																hrUtils?.formatInterviewSlots(
-																	inteviewSlotDetails[listIndex]?.SlotList,
-																)?.[0]?.label
-															}
-															<DownOutlined />
-														</Space>
-													</span>
-												</Dropdown>
-											) : (
-												'NA'
-											)}
+											<Dropdown
+												trigger={['click']}
+												placement="bottom"
+												overlay={
+													<Menu>
+														{hrUtils
+															?.formatInterviewSlots(
+																inteviewSlotDetails[listIndex]?.SlotList,
+															)
+															?.map((item, index) => {
+																return (
+																	<Menu.Item key={index}>
+																		{item?.label}a{' '}
+																	</Menu.Item>
+																);
+															})}
+													</Menu>
+												}>
+												<span>
+													<Space>
+														{
+															hrUtils?.formatInterviewSlots(
+																inteviewSlotDetails[listIndex]?.SlotList,
+															)?.[0]?.label
+														}
+														<DownOutlined />
+													</Space>
+												</span>
+											</Dropdown>
 										</span>
 									</div>
 
@@ -1872,63 +1868,67 @@ const TalentList = ({
 				</div>
 			</Modal>
 			{/** ============ MODAL FOR RESCHEDULING INTERVIEW ================ */}
-			<Modal
-				transitionName=""
-				width="1000px"
-				centered
-				footer={null}
-				open={showReScheduleInterviewModal}
-				// onOk={() => setVersantModal(false)}
-				onCancel={() => setReScheduleInterviewModal(false)}>
-				<InterviewReschedule
-					callAPI={callAPI}
-					closeModal={() => setReScheduleInterviewModal(false)}
-					talentName={filterTalentID?.Name}
-					hrId={hrId}
-					talentInfo={filterTalentID}
-					hiringRequestNumber={hiringRequestNumber}
-					reScheduleTimezone={reScheduleTimezone}
-					setRescheduleTimezone={setRescheduleTimezone}
-					getRescheduleSlotDate={getRescheduleSlotDate}
-					setRescheduleSlotDate={setRescheduleSlotDate}
-					getRescheduleSlotInfomation={getRescheduleSlotInfomation}
-					setRescheduleSlotInformation={setRescheduleSlotInformation}
-					reScheduleRadio={reScheduleRadio}
-					setRescheduleRadio={setRescheduleRadio}
-					reScheduleSlotRadio={reScheduleSlotRadio}
-					setRescheduleSlotRadio={setRescheduleSlotRadio}
-					getSlotInformationHandler={getSlotInformationHandler}
-					getInterviewStatus={getInterviewStatus}
-				/>
-			</Modal>
+			{showReScheduleInterviewModal && (
+				<Modal
+					transitionName=""
+					width="1000px"
+					centered
+					footer={null}
+					open={showReScheduleInterviewModal}
+					// onOk={() => setVersantModal(false)}
+					onCancel={() => setReScheduleInterviewModal(false)}>
+					<InterviewReschedule
+						callAPI={callAPI}
+						closeModal={() => setReScheduleInterviewModal(false)}
+						talentName={filterTalentID?.Name}
+						hrId={hrId}
+						talentInfo={filterTalentID}
+						hiringRequestNumber={hiringRequestNumber}
+						reScheduleTimezone={reScheduleTimezone}
+						setRescheduleTimezone={setRescheduleTimezone}
+						getRescheduleSlotDate={getRescheduleSlotDate}
+						setRescheduleSlotDate={setRescheduleSlotDate}
+						getRescheduleSlotInfomation={getRescheduleSlotInfomation}
+						setRescheduleSlotInformation={setRescheduleSlotInformation}
+						reScheduleRadio={reScheduleRadio}
+						setRescheduleRadio={setRescheduleRadio}
+						reScheduleSlotRadio={reScheduleSlotRadio}
+						setRescheduleSlotRadio={setRescheduleSlotRadio}
+						getSlotInformationHandler={getSlotInformationHandler}
+						getInterviewStatus={getInterviewStatus}
+					/>
+				</Modal>
+			)}
 			{/** ============ MODAL FOR SCHEDULING INTERVIEW ================ */}
-			<Modal
-				transitionName=""
-				width="1000px"
-				centered
-				footer={null}
-				open={showScheduleInterviewModal}
-				// onOk={() => setVersantModal(false)}
-				onCancel={() => setScheduleInterviewModal(false)}>
-				<InterviewSchedule
-					callAPI={callAPI}
-					talentName={filterTalentID?.Name}
-					talentInfo={filterTalentID}
-					hrId={hrId}
-					closeModal={() => setScheduleInterviewModal(false)}
-					hiringRequestNumber={hiringRequestNumber}
-					scheduleTimezone={scheduleTimezone}
-					setScheduleTimezone={setScheduleTimezone}
-					getScheduleSlotDate={getScheduleSlotDate}
-					setScheduleSlotDate={setScheduleSlotDate}
-					getScheduleSlotInfomation={getScheduleSlotInfomation}
-					setScheduleSlotInformation={setScheduleSlotInformation}
-					scheduleSlotRadio={scheduleSlotRadio}
-					setScheduleSlotRadio={setScheduleSlotRadio}
-					getSlotInformationHandler={getSlotInformationHandler}
-					getInterviewStatus={getInterviewStatus}
-				/>
-			</Modal>
+			{showScheduleInterviewModal && (
+				<Modal
+					transitionName=""
+					width="1000px"
+					centered
+					footer={null}
+					open={showScheduleInterviewModal}
+					// onOk={() => setVersantModal(false)}
+					onCancel={() => setScheduleInterviewModal(false)}>
+					<InterviewSchedule
+						callAPI={callAPI}
+						talentName={filterTalentID?.Name}
+						talentInfo={filterTalentID}
+						hrId={hrId}
+						closeModal={() => setScheduleInterviewModal(false)}
+						hiringRequestNumber={hiringRequestNumber}
+						scheduleTimezone={scheduleTimezone}
+						setScheduleTimezone={setScheduleTimezone}
+						getScheduleSlotDate={getScheduleSlotDate}
+						setScheduleSlotDate={setScheduleSlotDate}
+						getScheduleSlotInfomation={getScheduleSlotInfomation}
+						setScheduleSlotInformation={setScheduleSlotInformation}
+						scheduleSlotRadio={scheduleSlotRadio}
+						setScheduleSlotRadio={setScheduleSlotRadio}
+						getSlotInformationHandler={getSlotInformationHandler}
+						getInterviewStatus={getInterviewStatus}
+					/>
+				</Modal>
+			)}
 			{/** ============ MODAL FOR INTERVIEW FEEDBACK STATUS ================ */}
 			<Modal
 				transitionName=""

@@ -50,9 +50,7 @@ const DebriefingHR = ({
 	});
 
 	const navigate = useNavigate();
-	const [controlledJDParsed, setControlledJDParsed] = useState(
-		JDParsedSkills?.Skills?.map((item) => item?.value),
-	);
+	const [controlledJDParsed, setControlledJDParsed] = useState([]);
 	const [selectedItems, setSelectedItems] = useState([]);
 	const [skills, setSkills] = useState([]);
 
@@ -64,9 +62,9 @@ const DebriefingHR = ({
 
 	let watchSkills = watch('skills');
 
-	const combinedSkillsMemo = useMemo(
-		() => [
-			...JDParsedSkills?.Skills,
+	const combinedSkillsMemo = useMemo(() => {
+		const combinedData = [
+			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
 			...skills,
 			...[
 				{
@@ -74,13 +72,9 @@ const DebriefingHR = ({
 					value: 'Others',
 				},
 			],
-		],
-		[JDParsedSkills?.Skills, skills],
-	);
-
-	const filteredOptions = combinedSkillsMemo.filter(
-		(o) => !selectedItems.includes(o),
-	);
+		];
+		return combinedData.filter((o) => !selectedItems.includes(o));
+	}, [JDParsedSkills, selectedItems, skills]);
 
 	const isOtherSkillExistMemo = useMemo(() => {
 		let response = watchSkills?.filter((item) => item?.id === '-1');
@@ -96,8 +90,10 @@ const DebriefingHR = ({
 				skillsName: item?.value,
 			})),
 		);
+		setControlledJDParsed(JDParsedSkills?.Skills?.map((item) => item?.value));
 	}, [JDParsedSkills, setValue]);
-
+	const [search, setSearch] = useState('');
+	const [debouncedSearch, setDebouncedSearch] = useState('');
 	const getOtherSkillsRequest = useCallback(
 		async (data) => {
 			let response = await MasterDAO.getOtherSkillsRequestDAO({
@@ -128,6 +124,16 @@ const DebriefingHR = ({
 		getSkills();
 	}, [getSkills]);
 
+	useEffect(() => {
+		console.log(debouncedSearch, '---deboun');
+		const timer = setTimeout(() => {
+			setSearch(debouncedSearch);
+		}, 1000);
+		return () => clearTimeout(timer);
+	}, [debouncedSearch]);
+	useEffect(() => {
+		getOtherSkillsRequest(search);
+	}, [getOtherSkillsRequest, search]);
 	useEffect(() => {
 		JDParsedSkills &&
 			setValue('roleAndResponsibilities', JDParsedSkills?.Responsibility, {
@@ -223,7 +229,7 @@ const DebriefingHR = ({
 					<div className={DebriefingHRStyle.colMd12}>
 						<TextEditor
 							isControlled={true}
-							controlledValue={JDParsedSkills?.Responsibility}
+							controlledValue={JDParsedSkills?.Responsibility || ''}
 							label={'Roles & Responsibilities'}
 							placeholder={'Enter roles & responsibilities'}
 							required
@@ -248,7 +254,7 @@ const DebriefingHR = ({
 						/>
 						<TextEditor
 							isControlled={true}
-							controlledValue={JDParsedSkills?.Requirements}
+							controlledValue={JDParsedSkills?.Requirements || ''}
 							label={'Requirements'}
 							placeholder={'Enter Requirements'}
 							setValue={setValue}
@@ -269,7 +275,7 @@ const DebriefingHR = ({
 								label={'Required Skills'}
 								placeholder="Type skills"
 								onChange={setSelectedItems}
-								options={filteredOptions}
+								options={combinedSkillsMemo}
 								name="skills"
 								isError={errors['skills'] && errors['skills']}
 								required
@@ -289,10 +295,8 @@ const DebriefingHR = ({
 										},
 									}}
 									onChangeHandler={(e) => {
-										setTimeout(
-											() => getOtherSkillsRequest(e.target.value),
-											3000,
-										);
+										console.log(e.target.value);
+										setDebouncedSearch(e.target.value);
 									}}
 									label="Other Skills"
 									name="otherSkill"

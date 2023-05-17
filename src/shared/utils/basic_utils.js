@@ -92,3 +92,28 @@ export const lastWorkingDay = (startDate, endDate) => {
 export const disabledWeekend = (current) => {
 	return moment(current).day() !== 0 && moment(current).day() !== 6;
 };
+
+export const isSaturday = (date) => date.getDay() === 6;
+
+export const isSunday = (date) => date.getDay() === 0;
+
+export const getNthDateExcludingWeekend = (n = 0) => {
+	let nthDate = new Date();
+	nthDate.setDate(nthDate.getDate() + n);
+	if (isSaturday(nthDate)) nthDate.setDate(nthDate.getDate() + 2);
+	if (isSunday(nthDate)) nthDate.setDate(nthDate.getDate() + 1);
+	return nthDate;
+};
+
+export const defaultStartTime = () => {
+	const defaultDate = new Date();
+	defaultDate.setHours(10);
+	defaultDate.setMinutes(0);
+	return defaultDate;
+};
+export const defaultEndTime = () => {
+	const defaultDate = new Date();
+	defaultDate.setHours(11);
+	defaultDate.setMinutes(0);
+	return defaultDate;
+};

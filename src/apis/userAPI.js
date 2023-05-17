@@ -112,13 +112,13 @@ export const userAPI = {
 			return errorDebug(error, 'UserAPI.getDeparmentListRequest');
 		}
 	},
-	getTeamListRequest: async () => {
+	getTeamListRequest: async (departmentID) => {
 		try {
 			let httpService = new HttpServices();
 			httpService.URL =
 				NetworkInfo.NETWORK +
 				SubDomain.MASTERS +
-				UsersAPI.TEAM;
+				UsersAPI.TEAM + `?departmentID=${departmentID}`;
 			httpService.setAuthRequired = true;
 			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 			let response = await httpService.sendGetRequest();

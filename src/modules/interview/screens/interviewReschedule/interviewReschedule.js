@@ -16,7 +16,13 @@ import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { HTTPStatusCode } from 'constants/network';
 import moment from 'moment';
-import { disabledWeekend } from 'shared/utils/basic_utils';
+import {
+	defaultEndTime,
+	defaultStartTime,
+	defaultTime,
+	disabledWeekend,
+	getNthDateExcludingWeekend,
+} from 'shared/utils/basic_utils';
 import WithLoader from 'shared/components/loader/loader';
 
 const InterviewReschedule = ({
@@ -92,9 +98,12 @@ const InterviewReschedule = ({
 		resetField('slot3EndTime');
 	}, [resetField]);
 
+	console.log(getRescheduleSlotInfomation, '==----getRescheduleSlotInfomation');
+
 	const reScheduleInterviewAPIHandler = useCallback(
 		async (data) => {
 			setLoading(true);
+
 			const reScheduleData = {
 				rescheduleRequestBy: reScheduleRadio,
 				reasonforReschedule: data?.interviewRescheduleReason?.value,
@@ -359,11 +368,16 @@ const InterviewReschedule = ({
 								</div>
 								<div className={InterviewScheduleStyle.timeSlotItem}>
 									<CalenderSVG />
-									<Controller
+									{/* <Controller
 										render={({ ...props }) => (
 											<DatePicker
+												required
+												{...register('slot1Date')}
 												filterDate={disabledWeekend}
-												selected={getRescheduleSlotDate[0].slot1}
+												selected={
+													getRescheduleSlotDate[0].slot1 ||
+													getNthDateExcludingWeekend()
+												}
 												placeholderText="Select Date"
 												onChange={(date) => {
 													setValue('slot1Date', date);
@@ -378,6 +392,25 @@ const InterviewReschedule = ({
 										name="slot1Date"
 										rules={{ required: true }}
 										control={control}
+									/> */}
+									<DatePicker
+										required
+										{...register('slot1Date')}
+										filterDate={disabledWeekend}
+										selected={
+											getRescheduleSlotDate[0].slot1 ||
+											getNthDateExcludingWeekend()
+										}
+										placeholderText="Select Date"
+										onChange={(date) => {
+											setValue('slot1Date', date);
+											getSlotInformationHandler(
+												date,
+												'slot1Date',
+												'reschedule',
+											);
+										}}
+										name="slot1Date"
 									/>
 									{errors.slot1Date && (
 										<div className={InterviewScheduleStyle.error}>
@@ -388,10 +421,13 @@ const InterviewReschedule = ({
 								<div
 									className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
 									<ClockIconSVG />
-									<Controller
+
+									{/* <Controller
 										render={({ ...props }) => (
 											<DatePicker
-												selected={getRescheduleSlotDate[0].slot2}
+												selected={
+													getRescheduleSlotDate[0].slot2 || defaultStartTime()
+												}
 												onChange={(date) => {
 													setValue('slot1StartTime', date);
 													getSlotInformationHandler(
@@ -411,7 +447,29 @@ const InterviewReschedule = ({
 										)}
 										name="slot1StartTime"
 										rules={{ required: true }}
-										control={control}
+										control={control} }
+											/>*/}
+									<DatePicker
+										{...register('slot1StartTime')}
+										selected={
+											getRescheduleSlotDate[0].slot2 || defaultStartTime()
+										}
+										onChange={(date) => {
+											setValue('slot1StartTime', date);
+											getSlotInformationHandler(
+												date,
+												'slot1StartTime',
+												'reschedule',
+											);
+										}}
+										showTimeSelect
+										showTimeSelectOnly
+										timeIntervals={60}
+										timeCaption="Time"
+										timeFormat="h:mm a"
+										dateFormat="h:mm a"
+										placeholderText="Start Time"
+										name="slot1StartTime"
 									/>
 									{errors.slot1StartTime && (
 										<div className={InterviewScheduleStyle.error}>
@@ -422,10 +480,34 @@ const InterviewReschedule = ({
 								<div
 									className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
 									<ClockIconSVG />
-									<Controller
+									<DatePicker
+										{...register('slot1EndTime')}
+										selected={
+											getRescheduleSlotDate[0].slot3 || defaultEndTime()
+										}
+										onChange={(date) => {
+											setValue('slot1EndTime', date);
+											getSlotInformationHandler(
+												date,
+												'slot1EndTime',
+												'reschedule',
+											);
+										}}
+										showTimeSelect
+										showTimeSelectOnly
+										timeIntervals={60}
+										timeCaption="Time"
+										timeFormat="h:mm a"
+										dateFormat="h:mm a"
+										placeholderText="End Time"
+										name="slot1EndTime"
+									/>
+									{/* <Controller
 										render={({ ...props }) => (
 											<DatePicker
-												selected={getRescheduleSlotDate[0].slot3}
+												selected={
+													getRescheduleSlotDate[0].slot3 || defaultEndTime()
+												}
 												onChange={(date) => {
 													setValue('slot1EndTime', date);
 													getSlotInformationHandler(
@@ -446,7 +528,7 @@ const InterviewReschedule = ({
 										name="slot1EndTime"
 										rules={{ required: true }}
 										control={control}
-									/>
+									/> */}
 									{errors.slot1EndTime && (
 										<div className={InterviewScheduleStyle.error}>
 											Please select end time
@@ -465,11 +547,14 @@ const InterviewReschedule = ({
 										</div>
 										<div className={InterviewScheduleStyle.timeSlotItem}>
 											<CalenderSVG />
-											<Controller
+											{/* <Controller
 												render={({ ...props }) => (
 													<DatePicker
 														filterDate={disabledWeekend}
-														selected={getRescheduleSlotDate[1].slot1}
+														selected={
+															getRescheduleSlotDate[1].slot1 ||
+															getNthDateExcludingWeekend(1)
+														}
 														placeholderText="Select Date"
 														onChange={(date) => {
 															setValue('slot2Date', date);
@@ -484,6 +569,25 @@ const InterviewReschedule = ({
 												name="slot2Date"
 												rules={{ required: true }}
 												control={control}
+											/> */}
+											<DatePicker
+												required
+												{...register('slot2Date')}
+												filterDate={disabledWeekend}
+												selected={
+													getRescheduleSlotDate[1].slot1 ||
+													getNthDateExcludingWeekend(1)
+												}
+												placeholderText="Select Date"
+												onChange={(date) => {
+													setValue('slot2Date', date);
+													getSlotInformationHandler(
+														date,
+														'slot2Date',
+														'reschedule',
+													);
+												}}
+												name="slot2Date"
 											/>
 											{errors.slot2Date && (
 												<div className={InterviewScheduleStyle.error}>
@@ -494,10 +598,13 @@ const InterviewReschedule = ({
 										<div
 											className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
 											<ClockIconSVG />
-											<Controller
+											{/* <Controller
 												render={({ ...props }) => (
 													<DatePicker
-														selected={getRescheduleSlotDate[1].slot2}
+														selected={
+															getRescheduleSlotDate[1].slot2 ||
+															defaultStartTime()
+														}
 														onChange={(date) => {
 															setValue('slot2StartTime', date);
 															getSlotInformationHandler(
@@ -518,6 +625,28 @@ const InterviewReschedule = ({
 												name="slot2StartTime"
 												rules={{ required: true }}
 												control={control}
+											/> */}
+											<DatePicker
+												{...register('slot2StartTime')}
+												selected={
+													getRescheduleSlotDate[1].slot2 || defaultStartTime()
+												}
+												onChange={(date) => {
+													setValue('slot2StartTime', date);
+													getSlotInformationHandler(
+														date,
+														'slot2StartTime',
+														'reschedule',
+													);
+												}}
+												showTimeSelect
+												showTimeSelectOnly
+												timeIntervals={60}
+												timeCaption="Time"
+												timeFormat="h:mm a"
+												dateFormat="h:mm a"
+												placeholderText="Start Time"
+												name="slot2StartTime"
 											/>
 											{errors.slot2StartTime && (
 												<div className={InterviewScheduleStyle.error}>
@@ -528,10 +657,12 @@ const InterviewReschedule = ({
 										<div
 											className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
 											<ClockIconSVG />
-											<Controller
+											{/* <Controller
 												render={({ ...props }) => (
 													<DatePicker
-														selected={getRescheduleSlotDate[1].slot3}
+														selected={
+															getRescheduleSlotDate[1].slot3 || defaultEndTime()
+														}
 														onChange={(date) => {
 															setValue('slot2EndTime', date);
 															getSlotInformationHandler(
@@ -552,6 +683,28 @@ const InterviewReschedule = ({
 												name="slot2EndTime"
 												control={control}
 												rules={{ required: true }}
+											/> */}
+											<DatePicker
+												{...register('slot2EndTime')}
+												selected={
+													getRescheduleSlotDate[1].slot3 || defaultEndTime()
+												}
+												onChange={(date) => {
+													setValue('slot2EndTime', date);
+													getSlotInformationHandler(
+														date,
+														'slot2EndTime',
+														'reschedule',
+													);
+												}}
+												showTimeSelect
+												showTimeSelectOnly
+												timeIntervals={60}
+												timeCaption="Time"
+												timeFormat="h:mm a"
+												dateFormat="h:mm a"
+												placeholderText="End Time"
+												name="slot2EndTime"
 											/>
 											{errors.slot2EndTime && (
 												<div className={InterviewScheduleStyle.error}>
@@ -569,12 +722,15 @@ const InterviewReschedule = ({
 										</div>
 										<div className={InterviewScheduleStyle.timeSlotItem}>
 											<CalenderSVG />
-											<Controller
+											{/* <Controller
 												render={({ ...props }) => (
 													<DatePicker
 														filterDate={disabledWeekend}
 														placeholderText="Select Date"
-														selected={getRescheduleSlotDate[2].slot1}
+														selected={
+															getRescheduleSlotDate[2].slot1 ||
+															getNthDateExcludingWeekend(2)
+														}
 														onChange={(date) => {
 															setValue('slot3Date', date);
 															getSlotInformationHandler(
@@ -588,6 +744,25 @@ const InterviewReschedule = ({
 												name="slot3Date"
 												control={control}
 												rules={{ required: true }}
+											/> */}
+											<DatePicker
+												required
+												{...register('slot3Date')}
+												filterDate={disabledWeekend}
+												selected={
+													getRescheduleSlotDate[2].slot1 ||
+													getNthDateExcludingWeekend(2)
+												}
+												placeholderText="Select Date"
+												onChange={(date) => {
+													setValue('slot3Date', date);
+													getSlotInformationHandler(
+														date,
+														'slot3Date',
+														'reschedule',
+													);
+												}}
+												name="slot3Date"
 											/>
 											{errors.slot3Date && (
 												<div className={InterviewScheduleStyle.error}>
@@ -597,10 +772,13 @@ const InterviewReschedule = ({
 										</div>
 										<div
 											className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
-											<Controller
+											{/* <Controller
 												render={({ ...props }) => (
 													<DatePicker
-														selected={getRescheduleSlotDate[2].slot2}
+														selected={
+															getRescheduleSlotDate[2].slot2 ||
+															defaultStartTime()
+														}
 														onChange={(date) => {
 															setValue('slot3StartTime', date);
 															getSlotInformationHandler(
@@ -621,6 +799,28 @@ const InterviewReschedule = ({
 												name="slot3StartTime"
 												rules={{ required: true }}
 												control={control}
+											/> */}
+											<DatePicker
+												{...register('slot3StartTime')}
+												selected={
+													getRescheduleSlotDate[2].slot2 || defaultStartTime()
+												}
+												onChange={(date) => {
+													setValue('slot3StartTime', date);
+													getSlotInformationHandler(
+														date,
+														'slot3StartTime',
+														'reschedule',
+													);
+												}}
+												showTimeSelect
+												showTimeSelectOnly
+												timeIntervals={60}
+												timeCaption="Time"
+												timeFormat="h:mm a"
+												dateFormat="h:mm a"
+												placeholderText="Start Time"
+												name="slot3StartTime"
 											/>
 											{errors.slot3StartTime && (
 												<div className={InterviewScheduleStyle.error}>
@@ -632,10 +832,12 @@ const InterviewReschedule = ({
 										<div
 											className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
 											<ClockIconSVG />
-											<Controller
+											{/* <Controller
 												render={({ ...props }) => (
 													<DatePicker
-														selected={getRescheduleSlotDate[2].slot3}
+														selected={
+															getRescheduleSlotDate[2].slot3 || defaultEndTime()
+														}
 														onChange={(date) => {
 															setValue('slot3EndTime', date);
 															getSlotInformationHandler(
@@ -656,6 +858,28 @@ const InterviewReschedule = ({
 												name="slot3EndTime"
 												rules={{ required: true }}
 												control={control}
+											/> */}
+											<DatePicker
+												{...register('slot3StartTime')}
+												selected={
+													getRescheduleSlotDate[2].slot3 || defaultEndTime()
+												}
+												onChange={(date) => {
+													setValue('slot3EndTime', date);
+													getSlotInformationHandler(
+														date,
+														'slot3EndTime',
+														'reschedule',
+													);
+												}}
+												showTimeSelect
+												showTimeSelectOnly
+												timeIntervals={60}
+												timeCaption="Time"
+												timeFormat="h:mm a"
+												dateFormat="h:mm a"
+												placeholderText="End Time"
+												name="slot3EndTime"
 											/>
 											{errors.slot3EndTime && (
 												<div className={InterviewScheduleStyle.error}>
@@ -694,11 +918,6 @@ const InterviewReschedule = ({
 						Save
 					</button>
 					<button
-						/* style={{
-								cursor:
-									type === SubmitType.SAVE_AS_DRAFT ? 'no-drop' : 'pointer',
-							}} */
-						// disabled={type === SubmitType.SAVE_AS_DRAFT}
 						onClick={() => {
 							closeModal();
 						}}
