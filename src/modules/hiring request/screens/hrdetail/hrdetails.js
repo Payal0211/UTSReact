@@ -73,6 +73,7 @@ const HRDetailScreen = () => {
 			setLoading(true);
 			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
 			if (response.statusCode === HTTPStatusCode.OK) {
+				console.log(response, "responseeee")
 				setAPIdata(response && response?.responseBody);
 				setLoading(false);
 			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
@@ -116,7 +117,7 @@ const HRDetailScreen = () => {
 			apiData?.activity_MissingAction_CTA?.[0],
 		[apiData?.activity_MissingAction_CTA],
 	);
-	const AMAssignmentHandler = useCallback(() => {});
+	const AMAssignmentHandler = useCallback(() => { });
 	const nextMissingActionHandler = useCallback(() => {
 		const getMissingActionResult = getNextActionMissingActionMemo;
 		switch (getMissingActionResult?.key) {

@@ -3,16 +3,15 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import updateTRStyle from './updateTR.module.css';
-// import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
-// import { HTTPStatusCode } from 'constants/network';
 import { ReactComponent as MinusSVG } from 'assets/svg/minus.svg';
 import { ReactComponent as PlusSVG } from 'assets/svg/plus.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useParams } from 'react-router-dom';
+import { HTTPStatusCode } from 'constants/network';
 
 const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
     const [count, setCount] = useState(0)
-
+    console.log(count, "countcountcountcount")
     const {
         register,
         handleSubmit,
@@ -22,8 +21,12 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
     } = useForm();
 
     const currentTR = watch("currentTR")
+    console.log(currentTR, "currentTR")
     const additionalComments = watch("additionalComments")
     const id = useParams()
+
+    const [valueInfo, setValueInfo] = useState("")
+    // console.log(response.responseBody?.details.split(" ")?.[0], "dsds")
 
     const onSubmit = async () => {
         let data = {
@@ -31,13 +34,19 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
             hiringRequestId: Number(id?.hrid),
             addtionalRemarks: additionalComments,
             reasonForLossCancelled: "",
-            isFinalSubmit: false
+            isFinalSubmit: true
         }
         const response = await hiringRequestDAO.editTRDAO(data)
+        if (response.statusCode === HTTPStatusCode.OK) {
+            setValueInfo(response?.responseBody?.details)
+            onCancel()
+            window.location.reload()
+        }
     }
-
+    console.log(watch("additionalComments"), "valueInfo")
     useEffect(() => {
         setValue("currentTR", count)
+        // setValue("additionalComments", watch("additionalComments"))
     }, [count])
 
 
@@ -55,6 +64,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
             <div className={updateTRStyle.updateTRTitle}>
                 <h2>Update TR</h2>
                 <p>HR150523191530</p>
+                <p>Current TR</p>
             </div>
 
             <div className={updateTRStyle.firstFeebackTableContainer}>
@@ -108,14 +118,14 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
                         className={updateTRStyle.btn}>
                         Cancel
                     </button>
-                    {count ? (
+                    {count || currentTR || additionalComments ? (
 
                         <button
                             type="submit"
                             className={updateTRStyle.btnPrimary}
                             onClick={handleSubmit(onSubmit)}
                         >
-                            Increase TR
+                            Submit
                         </button>
                     ) : (
                         <button
