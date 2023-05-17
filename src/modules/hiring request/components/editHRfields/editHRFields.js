@@ -37,8 +37,11 @@ const EditHRFields = ({
     setTabFieldDisabled,
     setJDParsedSkills,
     getHRdetails,
-    setHRdetails
+    setHRdetails,
+    setFromEditDeBriefing,
+    fromEditDeBriefing,
 }) => {
+    console.log(fromEditDeBriefing, "fromEditDeBriefing")
     const inputRef = useRef(null);
     const [getUploadFileData, setUploadFileData] = useState('');
     const [availability, setAvailability] = useState([]);
@@ -656,6 +659,7 @@ const EditHRFields = ({
             type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
             type !== SubmitType.SAVE_AS_DRAFT &&
                 setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+            setFromEditDeBriefing({ ...fromEditDeBriefing, addNewHiringRequest: true });
 
             type === SubmitType.SAVE_AS_DRAFT &&
                 messageAPI.open({
@@ -837,6 +841,14 @@ const EditHRFields = ({
             setContractDuration(findcontactMode[0])
         }
     }, [getHRdetails, items])
+
+
+    useEffect(() => {
+        if (localStorage.getItem("fromEditDeBriefing")) {
+            setTitle('Debriefing HR')
+        }
+    }, [localStorage.getItem("fromEditDeBriefing")])
+
 
     return (
         <div className={HRFieldStyle.hrFieldContainer}>

@@ -265,6 +265,7 @@ const AllHiringRequestScreen = () => {
 
 	useEffect(() => {
 		localStorage.removeItem("hrID")
+		localStorage.removeItem("fromEditDeBriefing")
 	}, [])
 
 	return (
