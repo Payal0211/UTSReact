@@ -93,6 +93,8 @@ const HRFields = ({
 	const data = watch();
 	const watchSalesPerson = watch('salesPerson');
 	const watchChildCompany = watch('childCompany');
+	console.log(watchSalesPerson,"watchSalesPerson");
+	console.log(watch("budget"),"budget");
 
 	/* const { fields, append, remove } = useFieldArray({
 		control,

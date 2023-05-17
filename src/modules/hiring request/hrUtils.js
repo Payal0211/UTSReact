@@ -173,9 +173,9 @@ export const hrUtils = {
 						: parseInt(d.NRMargin),
 			salesPerson:
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('salesPerson'))
+					? _isNull(watch("salesPerson"))
 						? 0
-						: watch('salesPerson')
+						: watch("salesPerson")
 					: _isNull(d.salesPerson)
 						? 0
 						: d.salesPerson,
@@ -369,6 +369,7 @@ export const hrUtils = {
 					? watch('secondaryInterviewer')
 					: d.secondaryInterviewer, */
 		};
+		console.log(hrFormDetails,">>");
 		return hrFormDetails;
 	},
 

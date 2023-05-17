@@ -95,7 +95,7 @@ const EditHRFields = ({
     const [controlledDurationTypeValue, setControlledDurationTypeValue] = useState("Select Term")
     const [getDurationType, setDurationType] = useState([]);
 
-
+console.log(controlledBudgetValue,"controlledBudgetValue");
     let controllerRef = useRef(null);
     const {
         watch,
@@ -113,6 +113,11 @@ const EditHRFields = ({
             autocompleteField: "abc",
         },
     });
+
+    const watchSalesPerson = watch('salesPerson');
+	const watchChildCompany = watch('childCompany');
+	console.log(watchSalesPerson,"watchSalesPerson");
+	console.log(watch("budget"),"budget");
 
     //CLONE HR functionality
     const getHRdetailsHandler = async (hrId) => {
@@ -764,15 +769,15 @@ const EditHRFields = ({
     useEffect(() => {
         if (getHRdetails?.salesHiringRequest_Details?.currency) {
             const findCurrency = currencyResult.filter((item) => item?.value === getHRdetails?.salesHiringRequest_Details?.currency)
-            setValue("budget", findCurrency)
-            setControlledBudgetValue(findCurrency)
+            setValue("budget", findCurrency[0]?.value)
+            setControlledBudgetValue(findCurrency[0]?.value)
         }
     }, [getHRdetails, currencyResult])
 
     useEffect(() => {
         if (getHRdetails?.addHiringRequest?.salesUserId) {
             const findSalesPerson = salesPerson.filter((item) => item?.id === getHRdetails?.addHiringRequest?.salesUserId)
-            setValue("salesPerson", findSalesPerson[0])
+            setValue("salesPerson", findSalesPerson[0]?.id)
             setControlledSalesValue(findSalesPerson[0]?.value)
         }
     }, [getHRdetails, salesPerson])
@@ -945,7 +950,7 @@ const EditHRFields = ({
                                 setControlledValue={setControlledSalesValue}
                                 isControlled={true}
                                 setValue={setValue}
-                                mode={'id/value'}
+                                mode={'id'}
                                 register={register}
                                 label={'Sales Person'}
                                 options={salesPerson && salesPerson}
@@ -1087,7 +1092,7 @@ const EditHRFields = ({
                                     name="budget"
                                     isError={errors['budget'] && errors['budget']}
                                     required
-                                    mode={'id/value'}
+                                    mode={'value'}
                                     errorMsg={'Please select hiring request budget'}
                                 />
                             </div>
