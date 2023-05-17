@@ -395,7 +395,7 @@ const MatchmakingModal = ({
 	);
 	const getDPORContractualCTAsHandler = useCallback(() => {
 		const result = getDPORContractalCTAsMemo;
-		console.log(result, '');
+
 		switch (result[0]?.key) {
 			case 'ConvertToDP':
 				return (

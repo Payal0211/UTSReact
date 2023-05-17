@@ -16,6 +16,15 @@ export const interviewUtils = {
 	},
 	GETINTERVIEWSTATUS: function (interviewStatus, interviewStatusCode) {
 		switch (interviewStatusCode) {
+			case HRInterviewStatus.NA: {
+				return (
+					<HRStatusComponent
+						title={'NA'}
+						backgroundColor={'#FD8971'}
+						color={'#FFFFFF'}
+					/>
+				);
+			}
 			case HRInterviewStatus.SLOT_GIVEN:
 				return (
 					<HRStatusComponent

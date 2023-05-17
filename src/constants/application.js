@@ -169,6 +169,7 @@ export class HRInterviewStatus {
 	static INTERVIEW_COMPLETED = 6;
 	static FEEDBACK_SUBMITTED = 7;
 	static INTERVIEW_RESCHEDULES = 8;
+	static NA = 0;
 }
 export class DealStageStatus {
 	static BOOKING = 101;

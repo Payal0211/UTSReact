@@ -2,12 +2,9 @@ import UpdateLegalClientOnboardStatusStyle from './updateKickOffOnboardStatus.mo
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import HRSelectField from '../hrSelectField/hrSelectField';
-import HRInputField from '../hrInputFields/hrInputFields';
-import { InputType } from 'constants/application';
 import { OnboardDAO } from 'core/onboard/onboardDAO';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import DatePicker from 'react-datepicker';
-import { lastWorkingDay } from 'shared/utils/basic_utils';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 
 const UpdateKickOffOnboardStatus = ({
@@ -46,19 +43,13 @@ const UpdateKickOffOnboardStatus = ({
 				contactID: talentInfo?.ContactId,
 				action: 'KickOff',
 				onboardingClient: {},
-				legalTalent: {
-					talentLegalStatusID: d.onboardTalentStatus?.id, // dropdown selected id
-					talentLegalDate: d.talentLegalDate,
-					totalDuration: lastWorkingDay(
-						d.engagementStartDate,
-						d.engagementEndDate,
-					),
-					contractStartDate: d.engagementStartDate,
-					contractEndDate: d.engagementEndDate,
-					lastworkingdate: d.engagementEndDate,
-				},
+				legalTalent: {},
 				legalClient: {},
-				kickOff: null,
+				kickOff: {
+					kickoffStatusID: d.onboardTalentStatus?.id,
+					kickoffTimezonePreferenceId: d.timezone?.id,
+					kickoffDate: d.kickOffDate,
+				},
 			};
 
 			let response = await OnboardDAO.onboardStatusUpdatesRequestDAO(
@@ -204,9 +195,9 @@ const UpdateKickOffOnboardStatus = ({
 											<Controller
 												render={({ ...props }) => (
 													<DatePicker
-														selected={watch('kickOffDate')}
+														selected={watch('kickOffStartTime')}
 														onChange={(date) => {
-															setValue('kickOffDate', date);
+															setValue('kickOffStartTime', date);
 														}}
 														showTimeSelect
 														showTimeSelectOnly
@@ -217,14 +208,14 @@ const UpdateKickOffOnboardStatus = ({
 														placeholderText="Start Time"
 													/>
 												)}
-												name="kickOffDate"
+												name="kickOffStartTime"
 												rules={{ required: true }}
 												control={control}
 											/>
-											{errors.kickOffDate && (
+											{errors.kickOffStartTime && (
 												<div
 													className={UpdateLegalClientOnboardStatusStyle.error}>
-													Please select kick off date
+													Please select start time
 												</div>
 											)}
 										</div>
@@ -234,9 +225,9 @@ const UpdateKickOffOnboardStatus = ({
 											<Controller
 												render={({ ...props }) => (
 													<DatePicker
-														selected={watch('kickOffDate')}
+														selected={watch('kickOffEndTime')}
 														onChange={(date) => {
-															setValue('kickOffDate', date);
+															setValue('kickOffEndTime', date);
 														}}
 														placeholderText="End Time"
 														showTimeSelect
@@ -247,14 +238,14 @@ const UpdateKickOffOnboardStatus = ({
 														dateFormat="h:mm a"
 													/>
 												)}
-												name="kickOffDate"
+												name="kickOffEndTime"
 												rules={{ required: true }}
 												control={control}
 											/>
-											{errors.kickOffDate && (
+											{errors.kickOffEndTime && (
 												<div
 													className={UpdateLegalClientOnboardStatusStyle.error}>
-													Please select kick off date
+													Please select end time
 												</div>
 											)}
 										</div>
