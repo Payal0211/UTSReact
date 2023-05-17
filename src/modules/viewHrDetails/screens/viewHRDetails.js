@@ -35,8 +35,7 @@ const ViewHRDetails = () => {
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsHead}>
 					<h1>HR ID - {hiringDetails?.responseBody?.details?.hrNumber}</h1>
-					<button>Edit HR</button>
-					{/* <Link to="/allhiringrequest/addnewhr"><button >Edit HR</button></Link> */}
+					<Link to="/allhiringrequest/addnewhr"><button onClick={editHr}>Edit HR</button></Link>
 				</div>
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsItem}>

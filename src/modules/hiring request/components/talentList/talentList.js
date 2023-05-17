@@ -1534,37 +1534,41 @@ const TalentList = ({
 									/>
 									<div className={TalentListStyle.interviewSlots}>
 										<span>Available Interview Slots:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500' }}>
-											<Dropdown
-												trigger={['click']}
-												placement="bottom"
-												overlay={
-													<Menu>
-														{hrUtils
-															?.formatInterviewSlots(
-																inteviewSlotDetails[listIndex]?.SlotList,
-															)
-															?.map((item, index) => {
-																return (
-																	<Menu.Item key={index}>
-																		{item?.label}a{' '}
-																	</Menu.Item>
-																);
-															})}
-													</Menu>
-												}>
-												<span>
-													<Space>
-														{
-															hrUtils?.formatInterviewSlots(
-																inteviewSlotDetails[listIndex]?.SlotList,
-															)?.[0]?.label
-														}
-														<DownOutlined />
-													</Space>
-												</span>
-											</Dropdown>
-										</span>
+										{inteviewSlotDetails?.length > 0 ? (
+											<span style={{ fontWeight: '500' }}>
+												<Dropdown
+													trigger={['click']}
+													placement="bottom"
+													overlay={
+														<Menu>
+															{hrUtils
+																?.formatInterviewSlots(
+																	inteviewSlotDetails[listIndex]?.SlotList,
+																)
+																?.map((item, index) => {
+																	return (
+																		<Menu.Item key={index}>
+																			{item?.label}a{' '}
+																		</Menu.Item>
+																	);
+																})}
+														</Menu>
+													}>
+													<span>
+														<Space>
+															{
+																hrUtils?.formatInterviewSlots(
+																	inteviewSlotDetails[listIndex]?.SlotList,
+																)?.[0]?.label
+															}
+															<DownOutlined />
+														</Space>
+													</span>
+												</Dropdown>
+											</span>
+										) : (
+											'NA'
+										)}
 									</div>
 
 									<Divider

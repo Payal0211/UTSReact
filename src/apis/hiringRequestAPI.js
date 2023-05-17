@@ -876,4 +876,20 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.openPostAcceptanceRequest');
 		}
 	},
+	getNewHRDetailsRequest: async (hrId) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.GET_HR_DETAILS +
+			`?HRId=${hrId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.updateODRPOOLStatusRequest');
+		}
+	},
 };

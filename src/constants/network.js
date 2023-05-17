@@ -119,6 +119,7 @@ export class MastersAPI {
 	static GET_COUNTRY_LIST = 'GetCountryList';
 	static GET_USERS_HIERARCHY = 'GetUserHierarchy';
   static GET_DURATION_TYPE = "GetDurationType"
+static CLONE_HR = 'CloneHR'
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
@@ -178,6 +179,7 @@ export class HiringRequestsAPI {
 	static UPDATE_HR_COST = 'UpdateHRCost';
 	static UPDATE_TALENT_FEES = 'UpdateTalentFees';
 static VIEW_HR_DETAILS = 'ViewHRDetails';
+static GET_HR_DETAILS = 'GetHRDetails'
 }
 
 export class UsersAPI {

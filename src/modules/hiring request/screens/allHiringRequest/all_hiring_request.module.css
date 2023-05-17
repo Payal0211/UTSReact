@@ -242,6 +242,13 @@
   height: 250px;
   overflow-y: scroll;
 }
+.priorities_drop_custom .toggle_content table thead  {
+    
+    box-shadow: 0 0 1px 1px #cecccc;
+    position: sticky;
+    top: 0;
+    
+}
 
 .priorities_drop_custom .toggle_content table thead tr th {
   font-style: normal;
@@ -251,7 +258,8 @@
   text-align: left;
   color: #000000;
   padding: 15px;
-  border-bottom: 1px dashed #cecccc;
+  /* border-bottom: 1px dashed #cecccc; */
+
   white-space: nowrap;
 }
 

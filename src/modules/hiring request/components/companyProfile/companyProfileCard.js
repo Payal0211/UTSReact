@@ -4,9 +4,10 @@ import { AiFillLinkedin } from 'react-icons/ai';
 import { Divider, Dropdown, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { NetworkInfo } from 'constants/network';
 
 const CompanyProfileCard = ({ clientDetail, talentLength }) => {
-	const id = useParams()
+	const id = useParams();
 	return (
 		<div className={CompanyProfileCardStyle.companyProfileContainer}>
 			<label>
@@ -103,11 +104,11 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 						}}
 					/>
 
-					<div className={`${CompanyProfileCardStyle.partWise} ${CompanyProfileCardStyle.partWiseList}`}>
+					<div
+						className={`${CompanyProfileCardStyle.partWise} ${CompanyProfileCardStyle.partWiseList}`}>
 						<div style={{ marginBottom: '10px' }}>
 							<div className={CompanyProfileCardStyle.TR}>
 								<span>Active TR:</span>&nbsp;&nbsp;
-
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 								</span>
@@ -184,10 +185,14 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.jdLink}>
 								<span>JD Link:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.JobDetailURL ? (
+									{clientDetail?.JDFileOrURL === 'JDFILE' ? (
 										<a
 											rel="noreferrer"
-											href={clientDetail?.JobDetailURL}
+											href={
+												NetworkInfo.NETWORK +
+												'Media/JDParsing/JDFiles/' +
+												clientDetail?.JobDetailURL
+											}
 											style={{ textDecoration: 'underline' }}
 											target="_blank">
 											Click Here

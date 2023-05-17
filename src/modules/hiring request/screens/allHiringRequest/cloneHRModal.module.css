@@ -1,0 +1,25 @@
+.cloneHRConfContent h2 {
+  font-size: 24px;
+  line-height: 32px;
+  color: #232323;
+  margin: 0 0 24px;
+}
+.cloneHRConfContent button {
+  background: var(--text-color-purity);
+  border: 1px solid #cecccc;
+  border-radius: 8px;
+  box-shadow: none;
+  color: var(--uplers-black);
+  cursor: pointer;
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  outline: none;
+  padding: 12px 28px;
+}
+.cloneHRConfContent .btnPrimary {
+  background: var(--color-sunlight);
+  border-color: var(--color-sunlight);
+  margin-left: 24px;
+}
