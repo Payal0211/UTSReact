@@ -1183,7 +1183,7 @@ console.log(controlledBudgetValue,"controlledBudgetValue");
                                     label={'Long Term/Short Term'}
                                     options={durationDataMemo && durationDataMemo}
                                     name="getDurationType"
-                                    mode={'id/value'}
+                                    mode={'id'}
                                     isError={errors['getDurationType'] && errors['getDurationType']}
                                     required
                                     errorMsg={'Please select duration type'}
@@ -1238,7 +1238,7 @@ console.log(controlledBudgetValue,"controlledBudgetValue");
                                     defaultValue="Ex: 3,6,12..."
                                     inputRef={inputRef}
                                     addItem={addItem}
-                                    mode={'id/value'}
+                                    mode={'value'}
                                     onNameChange={onNameChange}
                                     name="contractDuration"
                                     isError={
