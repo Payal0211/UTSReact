@@ -8,6 +8,7 @@ import updateTRStyle from './updateTR.module.css';
 import { ReactComponent as MinusSVG } from 'assets/svg/minus.svg';
 import { ReactComponent as PlusSVG } from 'assets/svg/plus.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { useParams } from 'react-router-dom';
 
 const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
     const [count, setCount] = useState(0)
@@ -20,16 +21,17 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
         formState: { errors },
     } = useForm();
 
+    const currentTR = watch("currentTR")
+    const additionalComments = watch("additionalComments")
+    const id = useParams()
 
     const onSubmit = async () => {
-        console.log(data, "data")
-
         let data = {
-            noOfTR: 0,
-            hiringRequestId: 0,
-            addtionalRemarks: "",
+            noOfTR: currentTR,
+            hiringRequestId: Number(id?.hrid),
+            addtionalRemarks: additionalComments,
             reasonForLossCancelled: "",
-            isFinalSubmit: false
+            isFinalSubmit: true
         }
         const response = await hiringRequestDAO.editTRDAO(data)
     }
@@ -47,7 +49,6 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
             setCount(count - 1)
         }
     }
-
     return (
         <div className={updateTRStyle.engagementModalContainer}
         >
@@ -92,7 +93,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
                             isTextArea={true}
                             label={'Additional Comments'}
                             register={register}
-                            name="description"
+                            name="additionalComments"
                             type={InputType.TEXT}
                             placeholder="Enter Additional Comments"
                             rows={'4'}
@@ -107,13 +108,24 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
                         className={updateTRStyle.btn}>
                         Cancel
                     </button>
-                    <button
-                        type="submit"
-                        className={updateTRStyle.btnPrimary}
-                        onClick={handleSubmit(onSubmit)}
-                    >
-                        Increase TR
-                    </button>
+                    {count ? (
+
+                        <button
+                            type="submit"
+                            className={updateTRStyle.btnPrimary}
+                            onClick={handleSubmit(onSubmit)}
+                        >
+                            Increase TR
+                        </button>
+                    ) : (
+                        <button
+                            type="submit"
+                            className={updateTRStyle.btnPrimary}
+                            onClick={handleSubmit(onSubmit)}
+                        >
+                            Decrease TR
+                        </button>
+                    )}
 
                 </div>
 
