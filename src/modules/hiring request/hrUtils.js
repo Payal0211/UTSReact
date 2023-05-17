@@ -79,8 +79,9 @@ export const hrUtils = {
 		fileName,
 		jdDumpID,
 	) {
+	let enIDdata = localStorage.getItem("enIDdata");
 		const hrFormDetails = {
-			en_Id: _isNull(addHrResponse) ? '' : addHrResponse.en_Id,
+			en_Id: _isNull(enIDdata) ? '' : enIDdata,
 			contactId: contactID || 0,
 			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 			clientName:
@@ -209,10 +210,10 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('getDurationType'))
 						? 0
-						: parseInt(watch('getDurationType'))
-					: _isNull(d.getDurationType)
-					? 0
-					: parseInt(d.getDurationType),
+						: watch('getDurationType')
+					: _isNull(d.getDurationType.toString())
+						? 0
+						: d.getDurationType.toString(),
 			timeZone:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('region'))

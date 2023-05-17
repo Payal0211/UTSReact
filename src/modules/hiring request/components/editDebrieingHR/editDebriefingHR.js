@@ -21,15 +21,15 @@ export const secondaryInterviewer = {
 	designation: '',
 };
 
-const DebriefingHR = ({
+const EditDebriefingHR = ({
 	setTitle,
-	jdDumpID,
 	tabFieldDisabled,
 	setTabFieldDisabled,
 	enID,
 	JDParsedSkills,
-	interviewDetails,
 	setJDParsedSkills,
+	setHRdetails,
+	getHRdetails,
 }) => {
 	const {
 		watch,
@@ -50,50 +50,54 @@ const DebriefingHR = ({
 	});
 
 	const navigate = useNavigate();
-	const [controlledJDParsed, setControlledJDParsed] = useState([]);
+	const [controlledJDParsed, setControlledJDParsed] = useState(
+		getHRdetails?.skillmulticheckbox?.map((item) => item?.text
+		),
+	);
 	const [selectedItems, setSelectedItems] = useState([]);
 	const [skills, setSkills] = useState([]);
+
 
 	const [messageAPI, contextHolder] = message.useMessage();
 	const getSkills = useCallback(async () => {
 		const response = await MasterDAO.getSkillsRequestDAO();
 		setSkills(response && response.responseBody);
 	}, []);
-
+	let watchOtherSkills = watch('otherSkill');
 	let watchSkills = watch('skills');
 
-	const combinedSkillsMemo = useMemo(() => {
-		const combinedData = [
-			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
+	const combinedSkillsMemo = useMemo(
+		() => [
 			...skills,
 			...[
 				{
-					id: '-1',
+					id: -1,
 					value: 'Others',
 				},
 			],
-		];
-		return combinedData.filter((o) => !selectedItems.includes(o));
-	}, [JDParsedSkills, selectedItems, skills]);
+		],
+		[skills],
+	);
+
+	// const filteredOptions = combinedSkillsMemo.filter(
+	// 	(o) => !selectedItems.includes(o),
+	// );
 
 	const isOtherSkillExistMemo = useMemo(() => {
-		let response = watchSkills?.filter((item) => item?.id === '-1');
-
+		let response = watchSkills?.filter((item) => item?.skillsID === -1);
 		return response?.length > 0;
 	}, [watchSkills]);
 
 	useEffect(() => {
 		setValue(
 			'skills',
-			JDParsedSkills?.Skills?.map((item) => ({
+			getHRdetails?.skillmulticheckbox?.map((item) => ({
 				skillsID: item?.id.toString(),
-				skillsName: item?.value,
+				skillsName: item?.text,
 			})),
 		);
-		setControlledJDParsed(JDParsedSkills?.Skills?.map((item) => item?.value));
-	}, [JDParsedSkills, setValue]);
-	const [search, setSearch] = useState('');
-	const [debouncedSearch, setDebouncedSearch] = useState('');
+	}, [getHRdetails?.skillmulticheckbox, setValue]);
+
 	const getOtherSkillsRequest = useCallback(
 		async (data) => {
 			let response = await MasterDAO.getOtherSkillsRequestDAO({
@@ -109,31 +113,21 @@ const DebriefingHR = ({
 		[setError],
 	);
 
-	// useEffect(() => {
-	// 	let timer;
-	// 	if (!_isNull(watchOtherSkills)) {
-	// 		timer = setTimeout(() => {
-	// 			// setIsLoading(true);
-	// 			getOtherSkillsRequest(watchOtherSkills);
-	// 		}, 2000);
-	// 	}
-	// 	return () => clearTimeout(timer);
-	// }, [getOtherSkillsRequest, watchOtherSkills]);
+	useEffect(() => {
+		let timer;
+		if (!_isNull(watchOtherSkills)) {
+			timer = setTimeout(() => {
+				// setIsLoading(true);
+				getOtherSkillsRequest(watchOtherSkills);
+			}, 2000);
+		}
+		return () => clearTimeout(timer);
+	}, [getOtherSkillsRequest, watchOtherSkills]);
 
 	useEffect(() => {
 		getSkills();
 	}, [getSkills]);
 
-	useEffect(() => {
-		console.log(debouncedSearch, '---deboun');
-		const timer = setTimeout(() => {
-			setSearch(debouncedSearch);
-		}, 1000);
-		return () => clearTimeout(timer);
-	}, [debouncedSearch]);
-	useEffect(() => {
-		getOtherSkillsRequest(search);
-	}, [getOtherSkillsRequest, search]);
 	useEffect(() => {
 		JDParsedSkills &&
 			setValue('roleAndResponsibilities', JDParsedSkills?.Responsibility, {
@@ -147,27 +141,20 @@ const DebriefingHR = ({
 	}, [JDParsedSkills, setValue]);
 
 	const debriefSubmitHandler = async (d) => {
-		let skillList = d.skills.map((item) => {
-			const obj = {
-				skillsID: item.id || item?.skillsID,
-				skillsName: item.value || item?.skillName,
-			};
-			return obj;
-		});
-
 		let debriefFormDetails = {
 			roleAndResponsibilites: d.roleAndResponsibilities,
 			requirements: d.requirements,
 			en_Id: enID,
-			skills: skillList?.filter((item) => item?.skillsID !== -1),
+			skills: d.skills?.filter((item) => item?.skillsID !== -1),
 			aboutCompanyDesc: d.aboutCompany,
 			secondaryInterviewer: d.secondaryInterviewer,
 			interviewerFullName: d.interviewerFullName,
 			interviewerEmail: d.interviewerEmail,
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
-			JDDumpID: jdDumpID || 0,
 		};
+
+		console.log(d,"debriefFormDetails");
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
 			debriefFormDetails,
@@ -182,27 +169,19 @@ const DebriefingHR = ({
 	};
 
 	const needMoreInforSubmitHandler = async (d) => {
-		let skillList = d.skills.map((item) => {
-			const obj = {
-				skillsID: item.id || item?.skillsID,
-				skillsName: item.value || item?.skillName,
-			};
-			return obj;
-		});
 
 		let debriefFormDetails = {
 			isneedmore: true,
 			roleAndResponsibilites: d.roleAndResponsibilities,
 			requirements: d.requirements,
 			en_Id: enID,
-			skills: skillList?.filter((item) => item?.skillsID !== -1),
+			skills: d.skills,
 			aboutCompanyDesc: d.aboutCompany,
 			secondaryInterviewer: d.secondaryInterviewer,
 			interviewerFullName: d.interviewerFullName,
 			interviewerEmail: d.interviewerEmail,
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
-			JDDumpID: jdDumpID || 0,
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -217,6 +196,30 @@ const DebriefingHR = ({
 		}
 	};
 
+	let tempArr = []
+	tempArr.push(getHRdetails?.skillmulticheckbox)
+
+	// useEffect(() => {
+	// 	const skilsData = getHRdetails?.skillmulticheckbox?.filter((item)=>{
+	// })
+	// setValue("skills",getHRdetails?.skillmulticheckbox)
+	// console.log(skilsData,"tempaaaaaarr")
+	// console.log(errors["skills"]?.ref?.value.push(getHRdetails?.skillmulticheckbox),"Testtttt")
+	// }, [getHRdetails])
+
+	useEffect(() => {
+		errors['skills']?.ref?.value.push(tempArr)
+	}, [])
+
+
+
+	useEffect(() => {
+		setValue("aboutCompany", getHRdetails?.addHiringRequest?.aboutCompanyDesc)
+		setValue("requirements", getHRdetails?.salesHiringRequest_Details?.requirement)
+		setValue("roleAndResponsibilities", getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities)
+		// setValue("skills",getHRdetails?.skillmulticheckbox)
+	}, [getHRdetails])
+
 	return (
 		<div className={DebriefingHRStyle.debriefingHRContainer}>
 			{contextHolder}
@@ -229,7 +232,7 @@ const DebriefingHR = ({
 					<div className={DebriefingHRStyle.colMd12}>
 						<TextEditor
 							isControlled={true}
-							controlledValue={JDParsedSkills?.Responsibility || ''}
+							controlledValue={JDParsedSkills?.Responsibility || getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities}
 							label={'Roles & Responsibilities'}
 							placeholder={'Enter roles & responsibilities'}
 							required
@@ -254,7 +257,7 @@ const DebriefingHR = ({
 						/>
 						<TextEditor
 							isControlled={true}
-							controlledValue={JDParsedSkills?.Requirements || ''}
+							controlledValue={JDParsedSkills?.Requirements || getHRdetails?.salesHiringRequest_Details?.requirement}
 							label={'Requirements'}
 							placeholder={'Enter Requirements'}
 							setValue={setValue}
@@ -293,10 +296,6 @@ const DebriefingHR = ({
 											value: /^((?!other).)*$/,
 											message: 'Please remove "other" keyword.',
 										},
-									}}
-									onChangeHandler={(e) => {
-										console.log(e.target.value);
-										setDebouncedSearch(e.target.value);
 									}}
 									label="Other Skills"
 									name="otherSkill"
@@ -340,10 +339,10 @@ const DebriefingHR = ({
 				errors={errors}
 				append={append}
 				remove={remove}
-				setValue={setValue}
 				register={register}
-				interviewDetails={interviewDetails}
+				setValue={setValue}
 				fields={fields}
+				getHRdetails={getHRdetails}
 			/>
 			<Divider />
 			<div className={DebriefingHRStyle.formPanelAction}>
@@ -364,4 +363,4 @@ const DebriefingHR = ({
 	);
 };
 
-export default DebriefingHR;
+export default EditDebriefingHR;

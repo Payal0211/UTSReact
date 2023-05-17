@@ -130,6 +130,7 @@ const MatchmakingModal = ({
 
 	const toggleRowSelection = useCallback(
 		(id) => {
+			console.log(matchmakingData, '--matchmakingData');
 			if (id === 'selectAll') {
 				if (allSelected) {
 					setAllSelected(false);
@@ -394,12 +395,12 @@ const MatchmakingModal = ({
 	);
 	const getDPORContractualCTAsHandler = useCallback(() => {
 		const result = getDPORContractalCTAsMemo;
-
+		console.log(result, '');
 		switch (result[0]?.key) {
 			case 'ConvertToDP':
 				return (
 					<button
-						disabled={result[0]?.IsEnabled}
+						disabled={!result[0]?.IsEnabled}
 						onClick={
 							result[0]?.IsEnabled ? () => getTalentDPConversionAPIS() : null
 						}
@@ -414,7 +415,7 @@ const MatchmakingModal = ({
 			case 'ConvertToContractual':
 				return (
 					<button
-						disabled={result[0]?.IsEnabled}
+						disabled={!result[0]?.IsEnabled}
 						onClick={
 							result[0]?.IsEnabled ? () => convertToContracualInfo() : null
 						}

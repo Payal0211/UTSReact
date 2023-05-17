@@ -6,7 +6,7 @@ import React, {
 	useState,
 } from 'react';
 import { Modal, Skeleton, Tabs } from 'antd';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
@@ -55,6 +55,7 @@ const HRDetailScreen = () => {
 	const [callHRapi, setHRapiCall] = useState(false);
 	const [acceptHRModal, setAcceptHRModal] = useState(false);
 	const [shareProfileModal, setShareProfileModal] = useState(false);
+	const [editDebrifing, setEditDebring] = useState([])
 	const {
 		register,
 		handleSubmit,
@@ -181,6 +182,41 @@ const HRDetailScreen = () => {
 		callAPI(urlSplitter?.split('HR')[0]);
 	}, [urlSplitter, callAPI, callHRapi]);
 
+
+
+	useEffect(() => {
+		const data = apiData?.hr_CTA?.filter((item) => item.key === "DebriefingHR")
+		setEditDebring(data);
+	}, [apiData])
+
+	const hrId = useParams()
+
+
+	let fromEditDeBriefing = true;
+
+	const navigateToEditDebriefing = async () => {
+
+
+		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid)
+
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			localStorage.setItem("hrID", hrId.hrid)
+			localStorage.setItem("fromEditDeBriefing", fromEditDeBriefing)
+
+			navigate("/allhiringrequest/addnewhr")
+		}
+	}
+
+	const navigateToCloneHR = async () => {
+		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid)
+		if (response?.statusCode === HTTPStatusCode.OK) {
+
+			localStorage.setItem("hrID", hrId.hrid)
+
+			navigate("/allhiringrequest/addnewhr")
+		}
+	}
+
 	return (
 		<WithLoader showLoader={isLoading}>
 			<div className={HRDetailStyle.hiringRequestContainer}>
@@ -206,9 +242,16 @@ const HRDetailScreen = () => {
 								)}
 							</div>
 						)}
-						<button className={HRDetailStyle.btnPrimary}>
+						<button className={HRDetailStyle.btnPrimary} onClick={navigateToCloneHR}>
 							Clone - {updatedSplitter}
 						</button>
+
+						{editDebrifing?.length > 0 && editDebrifing?.[0]?.IsEnabled && (
+							<button className={HRDetailStyle.btnPrimary} onClick={navigateToEditDebriefing}>
+								Edit Debriefing
+							</button>
+						)}
+
 					</div>
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (

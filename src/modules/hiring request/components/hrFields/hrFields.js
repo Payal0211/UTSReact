@@ -75,6 +75,7 @@ const HRFields = ({
 	const [jdURLLink, setJDURLLink] = useState('');
 	const [getGoogleDriveLink, setGoogleDriveLink] = useState('');
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
+
 	let controllerRef = useRef(null);
 	const {
 		watch,
@@ -92,7 +93,6 @@ const HRFields = ({
 		},
 	});
 
-	const data = watch();
 	const watchSalesPerson = watch('salesPerson');
 	const watchChildCompany = watch('childCompany');
 
@@ -202,6 +202,9 @@ const HRFields = ({
 							...getValidation,
 							systemFileUpload: '',
 						});
+						setJDParsedSkills(
+							uploadFileResponse && uploadFileResponse?.responseBody?.details,
+						);
 						message.success('File uploaded successfully');
 					} else if (
 						fileData?.type === 'application/pdf' ||
@@ -377,13 +380,10 @@ const HRFields = ({
 		},
 		[setError],
 	);
-	const toggleJDHandler = useCallback(
-		(e) => {
-			setJDURLLink(e.target.value);
-			clearErrors();
-		},
-		[clearErrors],
-	);
+	const toggleJDHandler = useCallback((e) => {
+		setJDURLLink(e.target.value);
+		// clearErrors();
+	}, []);
 	const getHowSoon = useCallback(async () => {
 		const howSoonResponse = await MasterDAO.getHowSoonRequestDAO();
 		setHowSoon(howSoonResponse && howSoonResponse.responseBody);
@@ -642,7 +642,6 @@ const HRFields = ({
 				d,
 				type,
 				watch,
-
 				contactID || getContactAndSaleID?.contactID,
 				isHRDirectPlacement,
 				addHRResponse,
@@ -661,11 +660,18 @@ const HRFields = ({
 				setType(SubmitType.SUBMIT);
 			}
 			const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
-			console.log(addHRRequest, '-addHRRe');
+
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 				setAddHRResponse(addHRRequest?.responseBody?.details);
 				setEnID(addHRRequest?.responseBody?.details?.en_Id);
+				if (!!addHRRequest?.responseBody?.details?.jdURL)
+					setJDParsedSkills({
+						Skills: [],
+						Responsibility: '',
+						Requirements: '',
+					});
 				type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
+
 				type !== SubmitType.SAVE_AS_DRAFT &&
 					setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
 
@@ -686,6 +692,7 @@ const HRFields = ({
 			messageAPI,
 			setEnID,
 			setError,
+			setJDParsedSkills,
 			setTabFieldDisabled,
 			setTitle,
 			tabFieldDisabled,
@@ -693,7 +700,6 @@ const HRFields = ({
 		],
 	);
 
-	console.log(watch('jdURL'), '--watchJDIURL');
 	useEffect(() => {
 		setValue('hrTitle', hrRole?.value);
 	}, [hrRole?.value, setValue]);
@@ -703,7 +709,7 @@ const HRFields = ({
 			controllerRef.current.focus();
 		}
 	}, [errors?.clientName]);
-	console.log(errors, '--errirs');
+
 	useEffect(() => {
 		setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));
 	}, [watchSalesPerson]);
@@ -927,18 +933,7 @@ const HRFields = ({
 					</div>
 					<div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
 						<div className={HRFieldStyle.colMd6}>
-							{jdURLLink && !getUploadFileData ? (
-								<HRInputField
-									disabled={jdURLLink}
-									register={register}
-									leadingIcon={<UploadSVG />}
-									label="Job Description (PDF)"
-									name="jdExport"
-									type={InputType.BUTTON}
-									buttonLabel="Upload JD File"
-									onClickHandler={() => setUploadModal(true)}
-								/>
-							) : !getUploadFileData ? (
+							{!getUploadFileData ? (
 								<HRInputField
 									disabled={jdURLLink}
 									register={register}
@@ -949,11 +944,11 @@ const HRFields = ({
 									buttonLabel="Upload JD File"
 									// value="Upload JD File"
 									onClickHandler={() => setUploadModal(true)}
-									required
+									required={!jdURLLink && getUploadFileData}
 									validationSchema={{
 										required: 'please select a file.',
 									}}
-									errors={!jdURLLink && errors}
+									errors={errors}
 								/>
 							) : (
 								<div className={HRFieldStyle.uploadedJDWrap}>
@@ -999,7 +994,7 @@ const HRFields = ({
 								type={InputType.TEXT}
 								placeholder="Add JD link"
 								register={register}
-								required
+								required={!getUploadFileData}
 							/>
 						</div>
 					</div>
