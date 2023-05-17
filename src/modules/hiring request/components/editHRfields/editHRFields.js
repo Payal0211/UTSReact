@@ -41,7 +41,6 @@ const EditHRFields = ({
     setFromEditDeBriefing,
     fromEditDeBriefing,
 }) => {
-    console.log(fromEditDeBriefing, "fromEditDeBriefing")
     const inputRef = useRef(null);
     const [getUploadFileData, setUploadFileData] = useState('');
     const [availability, setAvailability] = useState([]);
@@ -95,7 +94,7 @@ const EditHRFields = ({
     const [controlledDurationTypeValue, setControlledDurationTypeValue] = useState("Select Term")
     const [getDurationType, setDurationType] = useState([]);
 
-console.log(controlledBudgetValue,"controlledBudgetValue");
+
     let controllerRef = useRef(null);
     const {
         watch,
@@ -116,8 +115,6 @@ console.log(controlledBudgetValue,"controlledBudgetValue");
 
     const watchSalesPerson = watch('salesPerson');
 	const watchChildCompany = watch('childCompany');
-	console.log(watchSalesPerson,"watchSalesPerson");
-	console.log(watch("budget"),"budget");
 
     //CLONE HR functionality
     const getHRdetailsHandler = async (hrId) => {
@@ -638,7 +635,7 @@ console.log(controlledBudgetValue,"controlledBudgetValue");
     const [messageAPI, contextHolder] = message.useMessage();
     setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
     const hrSubmitHandler = useCallback(
-        async (d, type = SubmitType.SUBMIT || SubmitType.SAVE_AS_DRAFT) => {
+        async (d, type = SubmitType.SAVE_AS_DRAFT) => {
             let hrFormDetails = hrUtils.hrFormDataFormatter(
                 d,
                 type,
@@ -657,8 +654,8 @@ console.log(controlledBudgetValue,"controlledBudgetValue");
                     });
                 }
             } else if (type !== SubmitType.SAVE_AS_DRAFT) {
-                setType(SubmitType.SUBMIT);
-            }
+				setType(SubmitType.SUBMIT);
+			}
             const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
             if (addHRRequest.statusCode === HTTPStatusCode.OK) {
@@ -666,7 +663,7 @@ console.log(controlledBudgetValue,"controlledBudgetValue");
             type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
             type !== SubmitType.SAVE_AS_DRAFT &&
                 setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
-            setFromEditDeBriefing({ ...fromEditDeBriefing, addNewHiringRequest: true });
+            // setFromEditDeBriefing({ ...fromEditDeBriefing, addNewHiringRequest: true });
 
             type === SubmitType.SAVE_AS_DRAFT &&
                 messageAPI.open({
