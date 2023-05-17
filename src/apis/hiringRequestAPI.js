@@ -860,7 +860,7 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.getAMDataSendRequest');
 		}
 	},
-  	viewHRDetailsRequest: async (HRId) => {
+	viewHRDetailsRequest: async (HRId) => {
 
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -871,6 +871,22 @@ export const HiringRequestAPI = {
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.openPostAcceptanceRequest');
+		}
+	},
+	editTR: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.VIEW_ALL_HR +
+			HiringRequestsAPI.UPDATE_TR_DETAIL;
+		httpService.dataToSend = data;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.openPostAcceptanceRequest');

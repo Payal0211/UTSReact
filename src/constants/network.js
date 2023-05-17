@@ -118,7 +118,7 @@ export class MastersAPI {
 	static GET_DASHBOARD_COUNT_FOR_ENGAGEMENT = 'GetDashboardCountForEngagement';
 	static GET_COUNTRY_LIST = 'GetCountryList';
 	static GET_USERS_HIERARCHY = 'GetUserHierarchy';
-  static GET_DURATION_TYPE = "GetDurationType"
+	static GET_DURATION_TYPE = "GetDurationType"
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
@@ -177,7 +177,8 @@ export class HiringRequestsAPI {
 	static GET_HR_COST_DETAILS = 'GetHRCostDetails';
 	static UPDATE_HR_COST = 'UpdateHRCost';
 	static UPDATE_TALENT_FEES = 'UpdateTalentFees';
-static VIEW_HR_DETAILS = 'ViewHRDetails';
+	static VIEW_HR_DETAILS = 'ViewHRDetails';
+	static UPDATE_TR_DETAIL = 'UpdateTR';
 }
 
 export class UsersAPI {

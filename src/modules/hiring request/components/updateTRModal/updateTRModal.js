@@ -7,8 +7,10 @@ import updateTRStyle from './updateTR.module.css';
 // import { HTTPStatusCode } from 'constants/network';
 import { ReactComponent as MinusSVG } from 'assets/svg/minus.svg';
 import { ReactComponent as PlusSVG } from 'assets/svg/plus.svg';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
 const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
+    const [count, setCount] = useState(0)
 
     const {
         register,
@@ -19,8 +21,31 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
     } = useForm();
 
 
-    const onSubmit = async (data) => {
+    const onSubmit = async () => {
         console.log(data, "data")
+
+        let data = {
+            noOfTR: 0,
+            hiringRequestId: 0,
+            addtionalRemarks: "",
+            reasonForLossCancelled: "",
+            isFinalSubmit: false
+        }
+        const response = await hiringRequestDAO.editTRDAO(data)
+    }
+
+    useEffect(() => {
+        setValue("currentTR", count)
+    }, [count])
+
+
+    const increment = () => {
+        setCount(count + 1)
+    }
+    const decrement = () => {
+        if (count > 0) {
+            setCount(count - 1)
+        }
     }
 
     return (
@@ -37,7 +62,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
                         className={updateTRStyle.colMd12}>
                         <div className={updateTRStyle.counterFieldGroup}>
                             <button
-                                className={updateTRStyle.minusButton}>
+                                className={updateTRStyle.minusButton} onClick={decrement}>
                                 <MinusSVG />
                             </button>
                             <HRInputField
@@ -48,12 +73,13 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel }) => {
                                 }}
                                 label="Update Current TR"
                                 name="currentTR"
+                                setValue={setValue}
                                 type={InputType.NUMBER}
                                 placeholder="Enter Current TR"
                                 required
                             />
                             <button
-                                className={updateTRStyle.plusButton}>
+                                className={updateTRStyle.plusButton} onClick={increment}>
                                 <PlusSVG />
                             </button>
                         </div>

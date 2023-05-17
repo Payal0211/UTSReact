@@ -6,10 +6,15 @@ import { Link, useParams } from 'react-router-dom';
 import React, { useState } from "react"
 import UpdateTRModal from "../../components/updateTRModal/updateTRModal"
 
+
 const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 	const [updateTR, setUpdateTR] = useState(false)
 
 	const id = useParams()
+
+
+
+
 	return (
 		<>
 			<div className={CompanyProfileCardStyle.companyProfileContainer}>
