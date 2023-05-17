@@ -208,6 +208,16 @@ const HRDetailScreen = () => {
 		}
 	}
 
+	const navigateToCloneHR = async () => {
+		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid)
+		if (response?.statusCode === HTTPStatusCode.OK) {
+
+			localStorage.setItem("hrID", hrId.hrid)
+
+			navigate("/allhiringrequest/addnewhr")
+		}
+	}
+
 	return (
 		<WithLoader showLoader={isLoading}>
 			<div className={HRDetailStyle.hiringRequestContainer}>
@@ -233,7 +243,7 @@ const HRDetailScreen = () => {
 								)}
 							</div>
 						)}
-						<button className={HRDetailStyle.btnPrimary}>
+						<button className={HRDetailStyle.btnPrimary} onClick={navigateToCloneHR}>
 							Clone - {updatedSplitter}
 						</button>
 
