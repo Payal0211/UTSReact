@@ -643,9 +643,11 @@ console.log(controlledBudgetValue,"controlledBudgetValue");
                 d,
                 type,
                 watch,
-                filteredMemo[0]?.contactId,
+                getHRdetails?.addHiringRequest?.contactId,
                 isHRDirectPlacement,
                 addHRResponse,
+                getHRdetails?.addHiringRequest?.jdfilename,
+                getHRdetails?.directPlacement?.jdURL
             );
             if (type === SubmitType.SAVE_AS_DRAFT) {
                 if (_isNull(watch('clientName'))) {
@@ -659,7 +661,7 @@ console.log(controlledBudgetValue,"controlledBudgetValue");
             }
             const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
-            // if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+            if (addHRRequest.statusCode === HTTPStatusCode.OK) {
             setAddHRResponse(getHRdetails?.en_Id);
             type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
             type !== SubmitType.SAVE_AS_DRAFT &&
@@ -671,7 +673,7 @@ console.log(controlledBudgetValue,"controlledBudgetValue");
                     type: 'success',
                     content: 'HR details has been saved to draft.',
                 });
-            // }
+            }
         },
         [
             addHRResponse,
@@ -743,6 +745,7 @@ console.log(controlledBudgetValue,"controlledBudgetValue");
         setValue("state", getHRdetails?.directPlacement?.state)
         setValue("country", getHRdetails?.directPlacement?.country)
         setValue("address", getHRdetails?.directPlacement?.address)
+        setValue("jdExport",getHRdetails?.addHiringRequest?.jdfilename)
         setValue("contractDuration", getHRdetails?.salesHiringRequest_Details?.durationType)
         setValue("getDurationType", getHRdetails?.months)
         setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType)
@@ -1030,7 +1033,8 @@ console.log(controlledBudgetValue,"controlledBudgetValue");
                                     label="Job Description (PDF)"
                                     name="jdExport"
                                     type={InputType.BUTTON}
-                                    value="Upload JD File"
+                                    value={getHRdetails?.addHiringRequest?.jdfilename}
+                                    setValue={setValue}
                                     onClickHandler={() => setUploadModal(true)}
                                 />
                             ) : (

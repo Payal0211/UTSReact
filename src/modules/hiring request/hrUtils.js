@@ -211,9 +211,9 @@ export const hrUtils = {
 					? _isNull(watch('getDurationType'))
 						? 0
 						: watch('getDurationType')
-					: _isNull(d.getDurationType)
+					: _isNull(d.getDurationType.toString())
 						? 0
-						: d.getDurationType,
+						: d.getDurationType.toString(),
 			timeZone:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('region'))
