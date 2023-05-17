@@ -144,7 +144,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const watchGEO = watch('geo');
 	const watchGEOSpecific = watch('geoSpecific');
 	const uploadFile = useRef(null);
-
+	
 	const getEmployeeIDAlreadyExist = useCallback(
 		async (data) => {
 			let companyNameDuplicate = await userDAO.getIsEmployeeIDExistRequestDAO({
@@ -319,9 +319,11 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	// }, []);
 
 	const getTeamOfUserFrom = useCallback(async () => {
-		let response = await MasterDAO.getTeamListRequestDAO();
+		if(watchDepartMentName?.id){
+		let response = await MasterDAO.getTeamListRequestDAO(watchDepartMentName?.id);
 		setTeamUserForm(response?.responseBody?.details);
-	}, []);
+		}
+	}, [watchDepartMentName?.id]);
 
 	const getLevelType = useCallback(async () => {
 		seLevelList([{ id: 0, value: 'Select' }]);
@@ -505,8 +507,12 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		// getTeamType();
 		getLevelType();
 		getGEO();
-		getTeamOfUserFrom();
 	}, []);
+
+	useEffect(() => {
+		getTeamOfUserFrom();
+	}, [watchDepartMentName?.id])
+	
 
 	useEffect(() => {
 		if (id !== 0) {
@@ -632,7 +638,6 @@ const UsersFields = ({ id, setLoading, loading }) => {
 
 	useEffect(() => {
 		if (getTeamUserForm.length > 1) {
-			console.log('called');
 			let _selectedValues = userDetails?.teamID?.split(',');
 			if (_selectedValues) {
 				let _allSelectedTeamData = [];
@@ -690,8 +695,6 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		setGEOType(modifiedGeo);
 		setValue('geo', modifiedGeo);
 	}, [userDetails, GEO]);
-
-	console.log(userDetails?.fileUpload?.extenstion, 'userDetails?.profilePic');
 
 	useEffect(() => {
 		if (enableALlFieldsMemo) {

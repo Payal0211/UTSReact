@@ -860,9 +860,9 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getDepartmentRequestDAO');
 		}
 	},
-	getTeamListRequestDAO: async function () {
+	getTeamListRequestDAO: async function (departmentID) {
 		try {
-			const teamListResult = await userAPI.getTeamListRequest();
+			const teamListResult = await userAPI.getTeamListRequest(departmentID);
 			if (teamListResult) {
 				const statusCode = teamListResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
