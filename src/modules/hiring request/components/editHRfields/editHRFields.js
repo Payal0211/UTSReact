@@ -114,7 +114,7 @@ const EditHRFields = ({
     });
 
     const watchSalesPerson = watch('salesPerson');
-	const watchChildCompany = watch('childCompany');
+    const watchChildCompany = watch('childCompany');
 
     //CLONE HR functionality
     const getHRdetailsHandler = async (hrId) => {
@@ -654,22 +654,22 @@ const EditHRFields = ({
                     });
                 }
             } else if (type !== SubmitType.SAVE_AS_DRAFT) {
-				setType(SubmitType.SUBMIT);
-			}
+                setType(SubmitType.SUBMIT);
+            }
             const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
             if (addHRRequest.statusCode === HTTPStatusCode.OK) {
-            setAddHRResponse(getHRdetails?.en_Id);
-            type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
-            type !== SubmitType.SAVE_AS_DRAFT &&
-                setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
-            // setFromEditDeBriefing({ ...fromEditDeBriefing, addNewHiringRequest: true });
+                setAddHRResponse(getHRdetails?.en_Id);
+                type !== SubmitType.SAVE_AS_DRAFT && setTitle('Edit Debriefing HR');
+                type !== SubmitType.SAVE_AS_DRAFT &&
+                    setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+                setFromEditDeBriefing({ ...fromEditDeBriefing, addNewHiringRequest: true });
 
-            type === SubmitType.SAVE_AS_DRAFT &&
-                messageAPI.open({
-                    type: 'success',
-                    content: 'HR details has been saved to draft.',
-                });
+                type === SubmitType.SAVE_AS_DRAFT &&
+                    messageAPI.open({
+                        type: 'success',
+                        content: 'HR details has been saved to draft.',
+                    });
             }
         },
         [
@@ -742,7 +742,7 @@ const EditHRFields = ({
         setValue("state", getHRdetails?.directPlacement?.state)
         setValue("country", getHRdetails?.directPlacement?.country)
         setValue("address", getHRdetails?.directPlacement?.address)
-        setValue("jdExport",getHRdetails?.addHiringRequest?.jdfilename)
+        setValue("jdExport", getHRdetails?.addHiringRequest?.jdfilename)
         setValue("contractDuration", getHRdetails?.salesHiringRequest_Details?.durationType)
         setValue("getDurationType", getHRdetails?.months)
         setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType)
@@ -850,7 +850,7 @@ const EditHRFields = ({
 
     useEffect(() => {
         if (localStorage.getItem("fromEditDeBriefing")) {
-            setTitle('Debriefing HR')
+            setTitle('Edit Debriefing HR')
         }
     }, [localStorage.getItem("fromEditDeBriefing")])
 
