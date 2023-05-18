@@ -174,7 +174,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
 
             <div className={updateTRStyle.formPanelAction}>
                 <button
-                    onClick={() => onCancel()}
+                    onClick={() => { onCancel(); window.location.reload() }}
                     className={updateTRStyle.btn}>
                     Cancel
                 </button>
