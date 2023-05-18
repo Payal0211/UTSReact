@@ -26,6 +26,8 @@ const CompanyDetails = ({
 	setBase64Image,
 	getUploadFileData,
 	setUploadFileData,
+	setCompanyName,
+	companyName,
 }) => {
 	const [GEO, setGEO] = useState([]);
 	const [leadSource, setLeadSource] = useState([]);
@@ -175,9 +177,10 @@ const CompanyDetails = ({
 								validationSchema={{
 									required: 'Please enter the company name.',
 								}}
-								onChangeHandler={(e) =>
-									debounceDuplicateCompanyName(e.target.value)
-								}
+								onChangeHandler={(e) => {
+									setCompanyName(e.target.value);
+									debounceDuplicateCompanyName(e.target.value);
+								}}
 								required
 							/>
 						</div>

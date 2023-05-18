@@ -15,6 +15,7 @@ export const interviewUtils = {
 		}
 	},
 	GETINTERVIEWSTATUS: function (interviewStatus, interviewStatusCode) {
+		console.log(interviewStatusCode, '--interviewstatus', interviewStatus);
 		switch (interviewStatusCode) {
 			case HRInterviewStatus.NA: {
 				return (

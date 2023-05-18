@@ -239,6 +239,24 @@ export const MasterAPI = {
 		}
 	},
 
+	getCountryByPostalCodeRequest: async function (postalData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			MastersAPI.GET_COUNTRY_LIST_BY_POSTALCODE +
+			`?countryCode=${postalData?.countryCode}&postalcode=${postalData?.postalCode}
+`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCountryByPostalCodeRequest');
+		}
+	},
+
 	getUserTypeRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -533,9 +551,7 @@ export const MasterAPI = {
 	cloneHRRequest: async function (data) {
 		let httpService = new HttpServices();
 		httpService.URL =
-			NetworkInfo.NETWORK +
-			SubDomain.HIRING +
-			MastersAPI.CLONE_HR;
+			NetworkInfo.NETWORK + SubDomain.HIRING + MastersAPI.CLONE_HR;
 		httpService.setAuthRequired = true;
 		httpService.dataToSend = data;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();

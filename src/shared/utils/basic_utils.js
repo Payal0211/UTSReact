@@ -142,3 +142,15 @@ export const getInterviewSlotInfo = (interviewDate, startTime, endTime) => {
 		StartTime: startTime,
 	};
 };
+
+export const getPayload = (flag, data) => {
+	if (flag === 'POSTAL_CODE') return { ...data, countryCode: '' };
+	if (flag === 'COUNTRY_CODE')
+		return {
+			...data,
+		};
+	return {
+		postalCode: '',
+		countryCode: '',
+	};
+};

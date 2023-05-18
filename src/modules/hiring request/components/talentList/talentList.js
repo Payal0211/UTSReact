@@ -1310,16 +1310,21 @@ const TalentList = ({
 											</Dropdown>
 										</div>
 									</div>
+									{console.log(item, '--item')}
 									<div className={TalentListStyle.profileURL}>
 										<span>profile URL:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											<a
-												style={{ textDecoration: 'underline' }}
-												href={item?.ATSTalentLiveURL}
-												target="_blank"
-												rel="noreferrer">
-												Click here
-											</a>
+											{item?.ATSTalentLiveURL ? (
+												<a
+													style={{ textDecoration: 'underline' }}
+													href={item?.ATSTalentLiveURL}
+													target="_blank"
+													rel="noreferrer">
+													Click here
+												</a>
+											) : (
+												'NA'
+											)}
 										</span>
 									</div>
 									<div className={TalentListStyle.experience}>
@@ -1477,7 +1482,7 @@ const TalentList = ({
 									<div className={TalentListStyle.interviewSlots}>
 										<span>Available Interview Slots:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{inteviewSlotDetails?.length === 0 ? (
+											{inteviewSlotDetails?.[0]?.SlotList?.length === 0 ? (
 												'NA'
 											) : (
 												<Dropdown
@@ -1512,6 +1517,14 @@ const TalentList = ({
 											)}
 										</span>
 									</div>
+									{item?.Slotconfirmed && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Slot Confirmed:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.Slotconfirmed}
+											</span>
+										</div>
+									)}
 
 									<Divider
 										style={{

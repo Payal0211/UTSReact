@@ -344,7 +344,8 @@ const EngagementList = () => {
 		<div className={allEngagementStyles.hiringRequestContainer}>
 			<div className={allEngagementStyles.userListTitle}>
 				<div className={allEngagementStyles.hiringRequest}>
-					Engagement Dashboard - January
+					Engagement Dashboard -{' '}
+					{new Date().toLocaleDateString('default', { month: 'long' })}
 				</div>
 			</div>
 

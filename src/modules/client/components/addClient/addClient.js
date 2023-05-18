@@ -18,7 +18,10 @@ const AddNewClient = ({
 	register,
 	setValue,
 	errors,
+	setPrimaryClientFullName,
 	flagAndCodeMemo,
+	setPrimaryClientEmail,
+	primaryClientEmail,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const onAddNewClient = useCallback(
@@ -116,6 +119,9 @@ const AddNewClient = ({
 								type={InputType.TEXT}
 								placeholder="Enter full name "
 								required
+								onChangeHandler={(e) => {
+									setPrimaryClientFullName(e.target.value);
+								}}
 							/>
 						</div>
 
@@ -135,9 +141,10 @@ const AddNewClient = ({
 								name={'primaryClientEmailID'}
 								type={InputType.EMAIL}
 								placeholder="Enter Email ID "
-								onChangeHandler={(e) =>
-									debounceDuplicateEmailCheckHandler(e.target.value)
-								}
+								onChangeHandler={(e) => {
+									setPrimaryClientEmail(e.target.value);
+									debounceDuplicateEmailCheckHandler(e.target.value);
+								}}
 								required
 							/>
 						</div>

@@ -76,11 +76,11 @@ const DebriefingHR = ({
 		return combinedData.filter((o) => !selectedItems.includes(o));
 	}, [JDParsedSkills, selectedItems, skills]);
 
-	const isOtherSkillExistMemo = useMemo(() => {
-		let response = watchSkills?.filter((item) => item?.id === '-1');
+	// const isOtherSkillExistMemo = useMemo(() => {
+	// 	let response = watchSkills?.filter((item) => item?.id === '-1');
 
-		return response?.length > 0;
-	}, [watchSkills]);
+	// 	return response?.length > 0;
+	// }, [watchSkills]);
 
 	useEffect(() => {
 		setValue(
@@ -125,15 +125,14 @@ const DebriefingHR = ({
 	}, [getSkills]);
 
 	useEffect(() => {
-		console.log(debouncedSearch, '---deboun');
 		const timer = setTimeout(() => {
 			setSearch(debouncedSearch);
 		}, 1000);
 		return () => clearTimeout(timer);
 	}, [debouncedSearch]);
-	useEffect(() => {
-		getOtherSkillsRequest(search);
-	}, [getOtherSkillsRequest, search]);
+	// useEffect(() => {
+	// 	getOtherSkillsRequest(search);
+	// }, [getOtherSkillsRequest, search]);
 	useEffect(() => {
 		JDParsedSkills &&
 			setValue('roleAndResponsibilities', JDParsedSkills?.Responsibility, {
@@ -282,7 +281,7 @@ const DebriefingHR = ({
 								errorMsg={'Please enter the skills.'}
 							/>
 						</div>
-						{isOtherSkillExistMemo && (
+						{/* {isOtherSkillExistMemo && (
 							<div className={DebriefingHRStyle.colMd12}>
 								<HRInputField
 									register={register}
@@ -303,10 +302,10 @@ const DebriefingHR = ({
 									type={InputType.TEXT}
 									placeholder="Enter other skill"
 									maxLength={50}
-									required
+									required={isOtherSkillExistMemo}
 								/>
 							</div>
-						)}
+						)} */}
 						{/* <div className={DebriefingHRStyle.mb50}>
 							<label
 								style={{
