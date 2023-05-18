@@ -1116,7 +1116,7 @@ const EditHRFields = ({
                                 validationSchema={{
                                     required: 'please enter the minimum budget.',
                                     min: {
-                                        value: 0,
+                                        value: 1,
                                         message: `please don't enter the value less than 0`,
                                     },
                                 }}
