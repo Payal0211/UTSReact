@@ -29,6 +29,18 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 					<div className={CompanyProfileCardStyle.companyCardBody}>
 						<div className={CompanyProfileCardStyle.partWise}>
 							<div style={{ marginBottom: '10px' }}>
+								<div className={CompanyProfileCardStyle.clientName}>
+									<span>Client Name:</span>&nbsp;&nbsp;
+									<span style={{ fontWeight: '500' }}>
+										{clientDetail?.ClientName ? clientDetail?.ClientName : 'NA'}
+									</span>
+								</div>
+								<div className={CompanyProfileCardStyle.clientEmail}>
+									<span>Client Email:</span>&nbsp;&nbsp;
+									<span style={{ fontWeight: '500' }}>
+										{clientDetail?.ClientEmail ? clientDetail?.ClientEmail : 'NA'}
+									</span>
+								</div>
 								<div className={CompanyProfileCardStyle.companyName}>
 									<span>Company Name:</span>&nbsp;&nbsp;
 									<span style={{ fontWeight: '500' }}>
@@ -120,7 +132,6 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 							<div style={{ marginBottom: '10px' }}>
 								<div className={CompanyProfileCardStyle.TR}>
 									<span>Active TR:</span>&nbsp;&nbsp;
-
 									<span style={{ fontWeight: '500' }}>
 										{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 									</span>
@@ -129,12 +140,6 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 										<button onClick={() => { setUpdateTR(true); getHRDetails() }}>Update TR</button>
 									)}
 								</div>
-								{/* <div className={CompanyProfileCardStyle.TRParked}>
-								<span>TR Parked:</span>&nbsp;&nbsp;
-								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.TR_Accepted ? clientDetail?.TR_Accepted : 'NA'}
-								</span>
-							</div> */}
 								<div className={CompanyProfileCardStyle.roleName}>
 									<span>Role Name:</span>&nbsp;&nbsp;
 									<span style={{ fontWeight: '500' }}>

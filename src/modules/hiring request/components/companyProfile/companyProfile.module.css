@@ -1,28 +1,30 @@
-.companyProfileContainer{
-    width: 100%;      
+.companyProfileContainer {
+  width: 100%;
 }
 
-.companyCard{
-    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
-    border-radius: 8px;
-    height: 50%;
-    background-color: var(--background-color-light);
+.companyCard {
+  /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
+  border-radius: 8px;
+  height: 50%;
+  background-color: var(--background-color-light);
 }
-.companyCardBody{
-    /* width: 90%; */
-    margin:0 auto;
-    font-size: 14px;
-    padding: 24px;
+.companyCardBody {
+  /* width: 90%; */
+  margin: 0 auto;
+  font-size: 14px;
+  padding: 24px;
 }
-.partWise{
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+.partWise {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 .partWiseList {
   display: block;
 }
 .companyName,
+.clientEmail,
+.clientName,
 .companyURL,
 .pocName,
 .pocEmail,
@@ -39,11 +41,12 @@
 .preferredTime,
 .jdLink,
 .salesPerson,
-.manager,.geo{
-    display: flex;
-    align-items: center;
-    /* justify-content: center; */
-    padding-top:5px;
+.manager,
+.geo {
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  padding-top: 5px;
 }
 .TR button {
   font-family: "Montserrat";
