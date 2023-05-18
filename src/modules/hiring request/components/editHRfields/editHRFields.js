@@ -633,6 +633,7 @@ const EditHRFields = ({
     /** To check Duplicate email exists End */
 
     const [messageAPI, contextHolder] = message.useMessage();
+    var watchJDUrl = watch("jdURL")
     setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
     const hrSubmitHandler = useCallback(
         async (d, type = SubmitType.SAVE_AS_DRAFT) => {
@@ -643,8 +644,8 @@ const EditHRFields = ({
                 getHRdetails?.addHiringRequest?.contactId,
                 isHRDirectPlacement,
                 addHRResponse,
-                getHRdetails?.addHiringRequest?.jdfilename,
-                getHRdetails?.directPlacement?.jdURL
+                getUploadFileData && getUploadFileData,
+                watchJDUrl
             );
             if (type === SubmitType.SAVE_AS_DRAFT) {
                 if (_isNull(watch('clientName'))) {
@@ -660,7 +661,7 @@ const EditHRFields = ({
 
             if (addHRRequest.statusCode === HTTPStatusCode.OK) {
             setAddHRResponse(getHRdetails?.en_Id);
-            type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
+            type !== SubmitType.SAVE_AS_DRAFT && setTitle('Edit Debriefing HR');
             type !== SubmitType.SAVE_AS_DRAFT &&
                 setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
             // setFromEditDeBriefing({ ...fromEditDeBriefing, addNewHiringRequest: true });
@@ -683,7 +684,7 @@ const EditHRFields = ({
             setTitle,
             tabFieldDisabled,
             watch,
-            getHRdetails
+            getHRdetails,getUploadFileData
         ],
     );
     useEffect(() => {
@@ -726,7 +727,7 @@ const EditHRFields = ({
         setValue("clientName", getHRdetails?.fullClientName)
         setValue("companyName", getHRdetails?.company)
         setValue("hrTitle", getHRdetails?.addHiringRequest?.requestForTalent)
-        setValue("jdURL", getHRdetails?.addHiringRequest?.jdurl)
+        setValue("jdURL", getHRdetails?.directPlacement?.jdURL)
         setValue("minimumBudget", getHRdetails?.salesHiringRequest_Details?.budgetFrom)
         setValue("maximumBudget", getHRdetails?.salesHiringRequest_Details?.budgetTo)
         setValue("NRMargin", getHRdetails?.addHiringRequest?.talentCostCalcPercentage)
@@ -750,7 +751,9 @@ const EditHRFields = ({
             getListData(getHRdetails?.clientName, getHRdetails?.clientName.substring(0, 3));
 
         }
+        setUploadFileData(getHRdetails?.addHiringRequest?.jdfilename)
     }, [getHRdetails])
+
     useEffect(() => {
         if (localStorage.getItem("hrID")) {
             getHRdetailsHandler(localStorage.getItem("hrID"))
@@ -1030,9 +1033,11 @@ const EditHRFields = ({
                                     label="Job Description (PDF)"
                                     name="jdExport"
                                     type={InputType.BUTTON}
-                                    value={getHRdetails?.addHiringRequest?.jdfilename}
+                                    buttonLabel="Upload JD File"
                                     setValue={setValue}
                                     onClickHandler={() => setUploadModal(true)}
+                                    
+									errors={errors}
                                 />
                             ) : (
                                 <div className={HRFieldStyle.uploadedJDWrap}>
@@ -1044,6 +1049,7 @@ const EditHRFields = ({
                                             onClick={() => {
                                                 // setJDParsedSkills({});
                                                 setUploadFileData('');
+                                                setValue("jdExport","");
                                             }}
                                         />
                                     </div>

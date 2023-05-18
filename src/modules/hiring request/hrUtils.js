@@ -76,7 +76,7 @@ export const hrUtils = {
 		contactID,
 		isHRDirectPlacement,
 		addHrResponse,
-		fileName,
+		getUploadFileData,
 		jdDumpID,
 	) {
 	let enIDdata = localStorage.getItem("enIDdata");
@@ -126,7 +126,7 @@ export const hrUtils = {
 					: _isNull(d.jdURL)
 						? null
 						: d.jdURL,
-			jDFilename: fileName,
+			jDFilename: getUploadFileData,
 			jDDescription: null,
 			jDDump_ID: jdDumpID,
 			hdnSkills: null,
