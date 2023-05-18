@@ -5,15 +5,19 @@ import { Divider, Dropdown, Menu, Modal } from 'antd';
 import { Link, useParams } from 'react-router-dom';
 import React, { useState } from "react"
 import UpdateTRModal from "../../components/updateTRModal/updateTRModal"
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+
 
 
 const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 	const [updateTR, setUpdateTR] = useState(false)
-
+	const [updateTRDetail, setUpdateTRDetails] = useState([])
 	const id = useParams()
 
-
-
+	const getHRDetails = async () => {
+		let response = await hiringRequestDAO.getViewHiringRequestDAO(id?.hrid);
+		setUpdateTRDetails(response?.responseBody)
+	}
 
 	return (
 		<>
@@ -120,7 +124,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 									<span style={{ fontWeight: '500' }}>
 										{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 									</span>
-									<button onClick={() => setUpdateTR(true)}>Update TR</button>
+									<button onClick={() => { setUpdateTR(true); getHRDetails() }}>Update TR</button>
 								</div>
 								{/* <div className={CompanyProfileCardStyle.TRParked}>
 								<span>TR Parked:</span>&nbsp;&nbsp;
@@ -287,7 +291,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 				open={updateTR}
 				className='updateTRModal'
 				onCancel={() => setUpdateTR(false)}>
-				<UpdateTRModal updateTR={updateTR} setUpdateTR={() => setUpdateTR(true)} onCancel={() => setUpdateTR(false)} />
+				<UpdateTRModal updateTR={updateTR} setUpdateTR={() => setUpdateTR(true)} onCancel={() => setUpdateTR(false)} updateTRDetail={updateTRDetail} />
 				{/* <CloneHR cloneHRhandler={cloneHRhandler} onCancel={() => setCloneHR(false)} getHRnumber={getHRnumber} /> */}
 			</Modal>
 		</>
