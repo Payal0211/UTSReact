@@ -200,7 +200,6 @@ const HRDetailScreen = () => {
 		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid)
 
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			// setHRDetails(response?.responseBody?.details)
 			localStorage.setItem("hrID", hrId.hrid)
 			localStorage.setItem("fromEditDeBriefing", fromEditDeBriefing)
 
