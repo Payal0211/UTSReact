@@ -68,7 +68,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const [controlledUserRole, setControlledUserRole] = useState('Select');
 	const [departMentTypeEdit, setDepartMentEdit] = useState('Select');
 	const [levelTypeEdit, setLevelEdit] = useState('Select');
-	const [teamTypeEdit, setTeamTypeEdit] = useState();
+	const [teamTypeEdit, setTeamTypeEdit] = useState([]);
 	const [reportTypeEdit, setReportTypeEdit] = useState('Select');
 	const [getGEOType, setGEOType] = useState('');
 	const [specificGeo, setSpecificGEO] = useState('Select');
@@ -649,7 +649,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 						_forOptionObj.value = item.value;
 						_selectedTeamValue.push(item?.value);
 						_allSelectedTeamData.push(_forOptionObj);
-					}
+					} 
 				});
 				setTeamTypeEdit(_selectedTeamValue);
 				setValue('team', _allSelectedTeamData);
@@ -664,6 +664,16 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		}
 	}, [userDetails, getTeamUserForm]);
 
+	const clearDropDown = () => {
+	 if(watchDepartMentName?.value !== "Demand" && watchLevelName?.value !== "Head"){
+		setTeamTypeEdit([]);
+		setValue("team","")
+	 }
+	 else{
+		setTeamTypeEdit([]);
+		setValue("team","")
+	 }
+	}
 	useEffect(() => {
 		if (getLevelList.length > 1) {
 			getLevelList?.map((item) => {
@@ -850,7 +860,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 												label={'Department'}
 												defaultValue={'Select'}
 												onClickHandler={() => {
-													setTeamTypeEdit([]);
+													clearDropDown()
 												}}
 												options={getDepartment && getDepartment}
 												name="departMent"
@@ -876,7 +886,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 														setValue={setValue}
 														register={register}
 														onClickHandler={() => {
-															setTeamTypeEdit([]);
+															clearDropDown()
 														}}
 														label={'Level'}
 														defaultValue={'Select'}
