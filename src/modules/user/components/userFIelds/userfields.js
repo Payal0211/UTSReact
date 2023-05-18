@@ -1085,7 +1085,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											defaultValue={
 												enableALlFieldsMemo ? userDetails?.skypeId : null
 											}
-											value={watch('skypeID')}
+											setValue={setValue}
 											// errors={errors}
 											// validationSchema={{
 											// 	required: 'Please enter skype ID',
