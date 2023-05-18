@@ -9,11 +9,11 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
 
 
-const CompanyProfileCard = ({ clientDetail, talentLength }) => {
+const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 	const [updateTR, setUpdateTR] = useState(false)
 	const [updateTRDetail, setUpdateTRDetails] = useState([])
 	const id = useParams()
-
+	console.log(apiData, "apiData")
 	const getHRDetails = async () => {
 		let response = await hiringRequestDAO.getViewHiringRequestDAO(id?.hrid);
 		setUpdateTRDetails(response?.responseBody)
@@ -124,7 +124,10 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 									<span style={{ fontWeight: '500' }}>
 										{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 									</span>
-									<button onClick={() => { setUpdateTR(true); getHRDetails() }}>Update TR</button>
+									{apiData === "Open" && (
+
+										<button onClick={() => { setUpdateTR(true); getHRDetails() }}>Update TR</button>
+									)}
 								</div>
 								{/* <div className={CompanyProfileCardStyle.TRParked}>
 								<span>TR Parked:</span>&nbsp;&nbsp;
@@ -294,6 +297,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 				<UpdateTRModal updateTR={updateTR} setUpdateTR={() => setUpdateTR(true)} onCancel={() => setUpdateTR(false)} updateTRDetail={updateTRDetail} />
 				{/* <CloneHR cloneHRhandler={cloneHRhandler} onCancel={() => setCloneHR(false)} getHRnumber={getHRnumber} /> */}
 			</Modal>
+
 		</>
 	);
 };

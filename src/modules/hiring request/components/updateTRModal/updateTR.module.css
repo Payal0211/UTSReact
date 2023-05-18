@@ -57,6 +57,10 @@
   line-height: 20px;
   color: #676767;
 }
+.updateTRTitle span {
+  color: #232323;
+  font-weight: 600;
+}
 
 .updateTRTitle h2 {
   font-family: "Montserrat";
@@ -71,6 +75,12 @@
 }
 .error {
   color: #fe0000;
+}
+.infoMsg {
+  color: #ff9900;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 20px;
 }
 
 .counterFieldGroup {
