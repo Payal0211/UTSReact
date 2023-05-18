@@ -22,8 +22,9 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail }) => {
     const currentTR = watch("currentTR")
 
     const additionalComments = watch("additionalComments")
-
+    console.log(additionalComments, "additionalComments")
     const reasonForLoss = watch("reasonForLoss")
+    console.log(reasonForLoss, "reasonForLoss")
 
     const id = useParams()
 
@@ -43,7 +44,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail }) => {
             if (response.responseBody.statusCode === HTTPStatusCode.OK) {
                 setValueInfo(response?.responseBody?.details)
                 onCancel()
-                window.location.reload()
+                // window.location.reload()
             }
         } else if (updateTRDetail?.ClientDetail?.NoOfTalents > count) {
             let data = {
@@ -51,19 +52,34 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail }) => {
                 hiringRequestId: Number(id?.hrid),
                 addtionalRemarks: "",
                 reasonForLossCancelled: reasonForLoss,
+                isFinalSubmit: false
+            }
+            const response = await hiringRequestDAO.editTRDAO(data)
+            if (response.responseBody.statusCode === HTTPStatusCode.OK) {
+                setValueInfo(response?.responseBody?.details)
+                // onCancel()
+                // window.location.reload()
+            }
+        }
+        else {
+            let data = {
+                noOfTR: count,
+                hiringRequestId: Number(id?.hrid),
+                addtionalRemarks: additionalComments,
+                reasonForLossCancelled: reasonForLoss,
                 isFinalSubmit: true
             }
             const response = await hiringRequestDAO.editTRDAO(data)
             if (response.responseBody.statusCode === HTTPStatusCode.OK) {
                 setValueInfo(response?.responseBody?.details)
-                onCancel()
-                window.location.reload()
+                // onCancel()
+                // window.location.reload()
             }
         }
+
     }
-    console.log(count, "countcount")
     useEffect(() => {
-        if (updateTRDetail?.ClientDetail?.NoOfTalents > count) {
+        if (updateTRDetail?.ClientDetail?.NoOfTalents > count || valueInfo) {
             setValue("currentTR", updateTRDetail?.ClientDetail?.NoOfTalents)
             setCount(updateTRDetail?.ClientDetail?.NoOfTalents)
         } else if (updateTRDetail?.ClientDetail?.NoOfTalents <= count) {
@@ -91,37 +107,45 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail }) => {
             </div>
 
             <div className={updateTRStyle.firstFeebackTableContainer}>
-                <div className={updateTRStyle.row}>
-                    <div
-                        className={updateTRStyle.colMd12}>
-                        <div className={updateTRStyle.counterFieldGroup}>
-                            <button
-                                className={updateTRStyle.minusButton} onClick={decrement}>
-                                <MinusSVG />
-                            </button>
-                            <HRInputField
-                                register={register}
-                                errors={errors}
-                                validationSchema={{
-                                    required: 'Please enter current TR',
-                                }}
-                                label="Update Current TR"
-                                name="currentTR"
-                                setValue={setValue}
-                                value={count}
-                                onChangeHandler={(e) => setCount(parseInt(e.target.value))}
-                                type={InputType.NUMBER}
-                                placeholder="Enter Current TR"
-                                required
-                            />
-                            <button
-                                className={updateTRStyle.plusButton} onClick={increment}>
-                                <PlusSVG />
-                            </button>
+                {!valueInfo && (
+
+                    <div className={updateTRStyle.row}>
+                        <div
+                            className={updateTRStyle.colMd12}>
+                            <div className={updateTRStyle.counterFieldGroup}>
+
+                                <button
+                                    className={updateTRStyle.minusButton} onClick={decrement}>
+                                    <MinusSVG />
+                                </button>
+
+                                <HRInputField
+                                    register={register}
+                                    errors={errors}
+                                    validationSchema={{
+                                        required: 'Please enter current TR',
+                                    }}
+                                    label="Update Current TR"
+                                    name="currentTR"
+                                    setValue={setValue}
+                                    value={count}
+                                    onChangeHandler={(e) => setCount(parseInt(e.target.value))}
+                                    type={InputType.NUMBER}
+                                    placeholder="Enter Current TR"
+                                    required
+                                />
+                                <button
+                                    className={updateTRStyle.plusButton} onClick={increment}>
+                                    <PlusSVG />
+                                </button>
+
+                            </div>
                         </div>
                     </div>
-                </div>
-                {(updateTRDetail?.ClientDetail?.NoOfTalents <= count || isNaN(count)) && (
+                )}
+
+
+                {(updateTRDetail?.ClientDetail?.NoOfTalents <= count || isNaN(count) || valueInfo) && (
                     <div className={updateTRStyle.row}>
                         <div
                             className={updateTRStyle.colMd12}>
@@ -138,8 +162,10 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail }) => {
                         </div>
                     </div>
                 )}
-                {updateTRDetail?.ClientDetail?.NoOfTalents > count && (
 
+
+
+                {(updateTRDetail?.ClientDetail?.NoOfTalents > count && !valueInfo) && (
                     <div className={updateTRStyle.row}>
                         <div
                             className={updateTRStyle.colMd12}>
@@ -156,6 +182,13 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail }) => {
                         </div>
                     </div>
                 )}
+
+
+
+
+
+
+
 
                 <div className={updateTRStyle.formPanelAction}>
                     <button
@@ -185,7 +218,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail }) => {
                 </div>
 
             </div>
-        </div>
+        </div >
     );
 };
 
