@@ -52,4 +52,24 @@ export const InterviewAPI = {
 			return errorDebug(error, 'InterviewAPI.updateInterviewStatus');
 		}
 	},
+	updateInterviewFeedbackRequest: async (clientFeedbackDetails) => {
+		try {
+			let httpService = new HttpServices();
+			const miscData =
+				UserSessionManagementController.getUserMiscellaneousData();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.INTERVIEW +
+				InterviewsAPI.FEEDBACK`?loggedinuserid=${miscData?.loggedInUserTypeID}`;
+
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			httpService.dataToSend = clientFeedbackDetails;
+			let response = await httpService.sendPostRequest();
+
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'InterviewAPI.updateInterviewFeedbackRequest');
+		}
+	},
 };

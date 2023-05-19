@@ -23,11 +23,14 @@ const JDDumpReportScreen = () => {
 		pageIndex: 1,
 		pageSize: 100,
 		sortExpression: 'HRCreatedDate',
+		hrNumber: null,
 		sortDirection: 'desc',
-		jdSkillPercentage: 0,
-		jdRolesResponsibilities: 0,
-		jdRequirement: 0,
-		overAllRowWise: 0,
+		jdSkillPercentage: null,
+		jdRolesResponsibilities: null,
+		jdRequirement: null,
+		overAllRowWise: null,
+		startDate: null,
+		endDate: null,
 	});
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
@@ -56,7 +59,7 @@ const JDDumpReportScreen = () => {
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
 			setApiData(formatJDDumpReport(response && response?.responseBody));
-			// setTotalRecords(response?.responseBody?.details?.rows); TODO:-
+			setTotalRecords(response?.responseBody?.totalrows);
 		} else {
 			setLoading(false);
 			setApiData([]);
@@ -228,7 +231,7 @@ const JDDumpReportScreen = () => {
 								pageSizeOptions: pageSizeOptions,
 								total: totalRecords,
 								showTotal: (total, range) =>
-									`${range[0]}-${range[1]} of ${100} items`,
+									`${range[0]}-${range[1]} of ${totalRecords} items`,
 								defaultCurrent: pageIndex,
 							}}
 						/>
