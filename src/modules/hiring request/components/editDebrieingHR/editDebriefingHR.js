@@ -247,7 +247,7 @@ const EditDebriefingHR = ({
 							isTextArea={true}
 							errors={errors}
 							validationSchema={{
-								required: 'please enter the years.',
+								required: 'please add somthing about the company',
 							}}
 							label={'About Company'}
 							register={register}

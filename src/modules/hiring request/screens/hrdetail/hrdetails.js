@@ -73,6 +73,7 @@ const HRDetailScreen = () => {
 		async (hrid) => {
 			setLoading(true);
 			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+			console.log(response,"responseeeee")
 			if (response.statusCode === HTTPStatusCode.OK) {
 				setAPIdata(response && response?.responseBody);
 				setLoading(false);
@@ -216,7 +217,6 @@ const HRDetailScreen = () => {
 			navigate("/allhiringrequest/addnewhr")
 		}
 	}
-
 	return (
 		<WithLoader showLoader={isLoading}>
 			<div className={HRDetailStyle.hiringRequestContainer}>
@@ -362,6 +362,7 @@ const HRDetailScreen = () => {
 								<CompanyProfileCard
 									clientDetail={apiData?.ClientDetail}
 									talentLength={apiData?.HRTalentDetails?.length}
+									apiData = {apiData}
 								/>
 							</Suspense>
 						)}
@@ -556,9 +557,11 @@ const HRDetailScreen = () => {
 														isTextArea={true}
 														register={register}
 														errors={errors}
-														validationSchema={{
-															required: 'please enter the HR Remark.',
-														}}
+														isError={
+															errors['hrDeleteLossRemark'] &&
+															errors['hrDeleteLossRemark']
+														}
+														errorMsg="please enter the Loss Remark."
 														label="Loss Remark"
 														name="hrDeleteLossRemark"
 														type={InputType.TEXT}
