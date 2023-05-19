@@ -41,16 +41,16 @@
 .welcomeTitle {
   font-family: "Montserrat";
   font-weight: 500;
-  font-size: 40px;
-  line-height: 48px;
+  font-size: 4.13vh;
+  line-height: 4.96vh;
   color: #000000;
-  margin-bottom: 16px;
+  margin-bottom: 1.66vh;
 }
 .welcomeSubtitle {
   font-family: "Montserrat";
   font-weight: 400;
-  font-size: 18px;
-  line-height: 26px;
+  font-size: 1.86vh;
+  line-height: 2.69vh;
   color: #000000;
   margin: 0;
 }
@@ -61,14 +61,10 @@
   color: var(--background-color-jade);
   margin: 25px 0 !important;
 }
-.loginFormPart {
-  margin-top: 30px;
-}
 
 .loginColumn_2 {
   width: 65%;
   background-color: var(--color-sunlight);
-  /* transition: all .6s ease; */
 }
 
 .loginHeadline {
