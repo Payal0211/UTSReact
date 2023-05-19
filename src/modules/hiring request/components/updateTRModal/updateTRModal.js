@@ -12,6 +12,7 @@ import { Modal } from 'antd';
 
 const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) => {
     const [count, setCount] = useState(0)
+    const [disable, setDisable] = useState(false)
 
     const {
         register,
@@ -26,9 +27,6 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
     const additionalComments = watch("additionalComments")
 
     const reasonForLoss = watch("reasonForLoss")
-
-
-
 
     const id = useParams()
 
@@ -45,7 +43,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                 isFinalSubmit: true
             }
             const response = await hiringRequestDAO.editTRDAO(data)
-            console.log(response, "responsssdsdsd")
+
             if (response.responseBody.statusCode === HTTPStatusCode.OK) {
                 setValueInfo(response?.responseBody?.details)
                 onCancel()
@@ -121,7 +119,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                                 name="currentTR"
                                 setValue={setValue}
                                 value={count}
-                                onChangeHandler={(e) => setCount(parseInt(e.target.value))}
+                                onChangeHandler={(e) => { setCount(parseInt(e.target.value)); setDisable(true); }}
                                 type={InputType.NUMBER}
                                 placeholder="Enter Current TR"
                                 required
@@ -184,6 +182,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                         type="submit"
                         className={updateTRStyle.btnPrimary}
                         onClick={handleSubmit(onSubmit)}
+                        disabled={disable === true ? true : false}
                     >
                         Submit
                     </button>

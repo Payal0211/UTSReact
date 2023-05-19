@@ -137,9 +137,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 										{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 									</span>
 
-
 									{apiData !== "Cancelled" && LoggedInUserTypeID === "2" && (
-
 										<button onClick={() => { setUpdateTR(true); getHRDetails() }}>Update TR</button>
 									)}
 								</div>
