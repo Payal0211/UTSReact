@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { NetworkInfo } from 'constants/network';
 
-const CompanyProfileCard = ({ clientDetail, talentLength }) => {
+const CompanyProfileCard = ({ clientDetail, talentLength,apiData}) => {
 	const id = useParams();
 	return (
 		<div className={CompanyProfileCardStyle.companyProfileContainer}>
@@ -93,7 +93,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.category}>
 								<span>Uplers Category:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.Category ? clientDetail?.Category : 'NA'}
+									{apiData?.companyCategory ? apiData?.companyCategory : 'NA'}
 								</span>
 							</div>
 						</div>
