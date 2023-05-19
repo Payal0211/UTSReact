@@ -1,15 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import InterviewScheduleStyle from '../../interviewStyle.module.css';
-import { Link } from 'react-router-dom';
-import UTSRoutes from 'constants/routes';
-import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
+
 import { interviewUtils } from 'modules/interview/interviewUtils';
-import { InputType, InterviewStatus } from 'constants/application';
+import { InputType } from 'constants/application';
 import { Checkbox, Divider, Radio } from 'antd';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import { useForm } from 'react-hook-form';
-import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
-import { MasterDAO } from 'core/master/masterDAO';
+import { InterviewDAO } from 'core/interview/interviewDAO';
+import { HTTPStatusCode } from 'constants/network';
 
 const InterviewFeedback = ({
 	hrId,
@@ -23,23 +21,19 @@ const InterviewFeedback = ({
 	hrStatus,
 	closeModal,
 }) => {
-	const [timezone, setTimezone] = useState([]);
 	const {
 		register,
 		handleSubmit,
-		setValue,
-		control,
-		setError,
-		getValues,
-		watch,
+
 		formState: { errors },
 	} = useForm();
-	const [value, setRadioValue] = useState(1);
-	const [radioValue2, setRadioValue2] = useState(1);
-	const [radioValue3, setRadioValue3] = useState(1);
-	const [radioValue4, setRadioValue4] = useState(1);
+	const [radioValue1, setRadioValue1] = useState('Hire');
+	const [radioValue2, setRadioValue2] = useState('EE (Exceeds Expectation)');
+	const [radioValue3, setRadioValue3] = useState('EE (Exceeds Expectation)');
+	const [radioValue4, setRadioValue4] = useState('EE (Exceeds Expectation)');
+	const [isClientNotification, setClientNotification] = useState(false);
 	const onChange = (e) => {
-		setRadioValue(e.target.value);
+		setRadioValue1(e.target.value);
 	};
 
 	const onChange2 = (e) => {
@@ -51,21 +45,58 @@ const InterviewFeedback = ({
 	const onChange4 = (e) => {
 		setRadioValue4(e.target.value);
 	};
-	const getTimeZone = useCallback(async () => {
-		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
-		setTimezone(response && response?.responseBody);
-	}, []);
-	useEffect(() => {
-		getTimeZone();
-	}, [getTimeZone]);
+
+	const clientFeedbackHandler = useCallback(
+		async (d) => {
+			const clientFeedback = {
+				role: talentInfo?.TalentRole || '',
+				talentName: talentInfo?.Name || '',
+				talentIDValue: talentInfo?.TalentID,
+				contactIDValue: talentInfo?.ContactId,
+				hiringRequestID: hiringRequestNumber,
+				shortlistedInterviewID: talentInfo?.Shortlisted_InterviewID,
+				hdnRadiovalue: radioValue1,
+				topSkill: '',
+				improvedSkill: '',
+				technicalSkillRating: radioValue2,
+				communicationSkillRating: radioValue3,
+				cognitiveSkillRating: radioValue4,
+				messageToTalent: d.interviewClientFeedback || '',
+				clientsDecision: d.interviewClientDecision || '',
+				comments: d.interviewComments || '',
+				en_Id: '',
+				IsClientNotificationSent: isClientNotification,
+			};
+
+			const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
+				clientFeedback,
+			);
+
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				closeModal();
+				callAPI(hrId);
+			}
+		},
+		[
+			callAPI,
+			closeModal,
+			hiringRequestNumber,
+			hrId,
+			isClientNotification,
+			radioValue1,
+			radioValue2,
+			radioValue3,
+			radioValue4,
+			talentInfo?.ContactId,
+			talentInfo?.Name,
+			talentInfo?.Shortlisted_InterviewID,
+			talentInfo?.TalentID,
+			talentInfo?.TalentRole,
+		],
+	);
+
 	return (
 		<div className={InterviewScheduleStyle.interviewContainer}>
-			{/* <Link to={UTSRoutes.INTERVIEWLISTROUTE}>
-				<div className={InterviewScheduleStyle.goback}>
-					<ArrowLeftSVG style={{ width: '16px' }} />
-					<span>Go Back</span>
-				</div>
-			</Link> */}
 			<div className={InterviewScheduleStyle.leftPane}>
 				<h3>Share Your Feedback</h3>
 			</div>
@@ -142,20 +173,20 @@ const InterviewFeedback = ({
 									<Radio.Group
 										className={InterviewScheduleStyle.radioGroup}
 										onChange={onChange}
-										value={value}>
-										<Radio value={1}>
+										value={radioValue1}>
+										<Radio value={'Hire'}>
 											Definitely, I would like to proceed for hiring this
 											talent.
 										</Radio>
-										<Radio value={2}>
+										<Radio value={'NoHire'}>
 											No, I would not like to move ahead with the hiring of this
 											talent.
 										</Radio>
-										<Radio value={3}>
+										<Radio value={'OnHold'}>
 											I liked the talent but feeling confused about the hiring
 											decision. Can I keep this talent on hold for now?
 										</Radio>
-										<Radio value={4}>
+										<Radio value={'AnotherRound'}>
 											Certainly, but would love to have another round of
 											interview
 										</Radio>
@@ -181,12 +212,18 @@ const InterviewFeedback = ({
 										className={InterviewScheduleStyle.radioGroup}
 										onChange={onChange2}
 										value={radioValue2}>
-										<Radio value={1}>EE (Exceeds Expectation)</Radio>
-										<Radio value={2}>ME (Meets Expectation)</Radio>
-										<Radio value={3}>
+										<Radio value={'EE (Exceeds Expectation)'}>
+											EE (Exceeds Expectation)
+										</Radio>
+										<Radio value={'ME (Meets Expectation)'}>
+											ME (Meets Expectation)
+										</Radio>
+										<Radio value={'IME (Inconsistently Meets Expectations)'}>
 											IME (Inconsistently Meets Expectations)
 										</Radio>
-										<Radio value={4}>DNME (Does not Meet Expectation)</Radio>
+										<Radio value={'DNME (Does not Meet Expectation)'}>
+											DNME (Does not Meet Expectation)
+										</Radio>
 									</Radio.Group>
 								</div>
 							</div>
@@ -209,12 +246,18 @@ const InterviewFeedback = ({
 										className={InterviewScheduleStyle.radioGroup}
 										onChange={onChange3}
 										value={radioValue3}>
-										<Radio value={1}>EE (Exceeds Expectation)</Radio>
-										<Radio value={2}>ME (Meets Expectation)</Radio>
-										<Radio value={3}>
+										<Radio value={'EE (Exceeds Expectation)'}>
+											EE (Exceeds Expectation)
+										</Radio>
+										<Radio value={'ME (Meets Expectation)'}>
+											ME (Meets Expectation)
+										</Radio>
+										<Radio value={'IME (Inconsistently Meets Expectations)'}>
 											IME (Inconsistently Meets Expectations)
 										</Radio>
-										<Radio value={4}>DNME (Does not Meet Expectation)</Radio>
+										<Radio value={'DNME (Does not Meet Expectation)'}>
+											DNME (Does not Meet Expectation)
+										</Radio>
 									</Radio.Group>
 								</div>
 							</div>
@@ -237,12 +280,18 @@ const InterviewFeedback = ({
 										className={InterviewScheduleStyle.radioGroup}
 										onChange={onChange4}
 										value={radioValue4}>
-										<Radio value={1}>EE (Exceeds Expectation)</Radio>
-										<Radio value={2}>ME (Meets Expectation)</Radio>
-										<Radio value={3}>
+										<Radio value={'EE (Exceeds Expectation)'}>
+											EE (Exceeds Expectation)
+										</Radio>
+										<Radio value={'ME (Meets Expectation)'}>
+											ME (Meets Expectation)
+										</Radio>
+										<Radio value={'IME (Inconsistently Meets Expectations)'}>
 											IME (Inconsistently Meets Expectations)
 										</Radio>
-										<Radio value={4}>DNME (Does not Meet Expectation)</Radio>
+										<Radio value={'DNME (Does not Meet Expectation)'}>
+											DNME (Does not Meet Expectation)
+										</Radio>
 									</Radio.Group>
 								</div>
 							</div>
@@ -280,7 +329,10 @@ const InterviewFeedback = ({
 								/>
 							</div>
 						</div>
-						<Checkbox>Send To Client</Checkbox>
+						<Checkbox
+							onChange={() => setClientNotification(!isClientNotification)}>
+							Send To Client
+						</Checkbox>
 					</form>
 				</div>
 			</div>
@@ -290,19 +342,13 @@ const InterviewFeedback = ({
 			/>
 			<div className={InterviewScheduleStyle.formPanelAction}>
 				<button
-					// disabled={isLoading}
 					type="submit"
-					// onClick={handleSubmit(clientSubmitHandler)}
+					onClick={handleSubmit(clientFeedbackHandler)}
 					className={InterviewScheduleStyle.btnPrimary}>
 					Save
 				</button>
 				<button
-					/* style={{
-								cursor:
-									type === SubmitType.SAVE_AS_DRAFT ? 'no-drop' : 'pointer',
-							}} */
-					// disabled={type === SubmitType.SAVE_AS_DRAFT}
-					// onClick={clientSubmitHandler}
+					onClick={() => closeModal()}
 					className={InterviewScheduleStyle.btn}>
 					Cancel
 				</button>

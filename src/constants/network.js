@@ -184,7 +184,7 @@ export class HiringRequestsAPI {
 	static UPDATE_TALENT_FEES = 'UpdateTalentFees';
 	static VIEW_HR_DETAILS = 'ViewHRDetails';
 	static GET_HR_DETAILS = 'GetHRDetails';
-  	static UPDATE_TR_DETAIL = 'UpdateTR';
+	static UPDATE_TR_DETAIL = 'UpdateTR';
 }
 
 export class UsersAPI {

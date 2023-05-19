@@ -2,7 +2,7 @@ import { InterviewAPI } from 'apis/interviewAPI';
 import { HTTPStatusCode } from 'constants/network';
 import UTSRoutes from 'constants/routes';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
-import { Navigate } from 'react-router-dom';
+
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const InterviewDAO = {
@@ -84,6 +84,36 @@ export const InterviewDAO = {
 			}
 		} catch (error) {
 			return errorDebug(error, 'InterviewDAO.updateInterviewStatusDAO');
+		}
+	},
+	updateInterviewFeedbackRequestDAO: async function (interviewData) {
+		try {
+			const clientFeedbackResponse =
+				await InterviewAPI.updateInterviewFeedbackRequest(interviewData);
+
+			if (clientFeedbackResponse) {
+				const statusCode = clientFeedbackResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = clientFeedbackResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return clientFeedbackResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return clientFeedbackResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'InterviewDAO.updateInterviewFeedbackRequestDAO',
+			);
 		}
 	},
 };
