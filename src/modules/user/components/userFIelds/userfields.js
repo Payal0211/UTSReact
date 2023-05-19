@@ -663,6 +663,16 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		}
 	}, [userDetails, getTeamUserForm]);
 
+	const clearDropDown = () => {
+	 if(watchDepartMentName?.value !== "Demand" && watchLevelName?.value !== "Head"){
+		setTeamTypeEdit([]);
+		setValue("team","")
+	 }
+	 else{
+		setTeamTypeEdit([]);
+		setValue("team","")
+	 }
+	}
 	useEffect(() => {
 		if (getLevelList.length > 1) {
 			getLevelList?.map((item) => {
@@ -851,7 +861,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 												label={'Department'}
 												defaultValue={'Select'}
 												onClickHandler={() => {
-													setTeamTypeEdit([]);
+													clearDropDown()
 												}}
 												options={getDepartment && getDepartment}
 												name="departMent"
@@ -877,7 +887,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 														setValue={setValue}
 														register={register}
 														onClickHandler={() => {
-															setTeamTypeEdit([]);
+															clearDropDown()
 														}}
 														label={'Level'}
 														defaultValue={'Select'}
@@ -1076,7 +1086,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											defaultValue={
 												enableALlFieldsMemo ? userDetails?.skypeId : null
 											}
-											value={watch('skypeID')}
+											setValue={setValue}
 											// errors={errors}
 											// validationSchema={{
 											// 	required: 'Please enter skype ID',
