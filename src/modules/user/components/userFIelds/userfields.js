@@ -319,9 +319,11 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	// }, []);
 
 	const getTeamOfUserFrom = useCallback(async () => {
-		if(watchDepartMentName?.id){
-		let response = await MasterDAO.getTeamListRequestDAO(watchDepartMentName?.id);
-		setTeamUserForm(response?.responseBody?.details);
+		if (watchDepartMentName?.id) {
+			let response = await MasterDAO.getTeamListRequestDAO(
+				watchDepartMentName?.id,
+			);
+			setTeamUserForm(response?.responseBody?.details);
 		}
 	}, [watchDepartMentName?.id]);
 
@@ -507,10 +509,10 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		// getTeamType();
 		getLevelType();
 		getGEO();
-    	}, []);
-  useEffect(() => {
+	}, []);
+	useEffect(() => {
 		getTeamOfUserFrom();
-	}, [watchDepartMentName?.id])
+	}, [watchDepartMentName?.id]);
 
 	useEffect(() => {
 		if (id !== 0) {
@@ -636,7 +638,6 @@ const UsersFields = ({ id, setLoading, loading }) => {
 
 	useEffect(() => {
 		if (getTeamUserForm.length > 1) {
-		
 			let _selectedValues = userDetails?.teamID?.split(',');
 			if (_selectedValues) {
 				let _allSelectedTeamData = [];
@@ -664,15 +665,17 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	}, [userDetails, getTeamUserForm]);
 
 	const clearDropDown = () => {
-	 if(watchDepartMentName?.value !== "Demand" && watchLevelName?.value !== "Head"){
-		setTeamTypeEdit([]);
-		setValue("team","")
-	 }
-	 else{
-		setTeamTypeEdit([]);
-		setValue("team","")
-	 }
-	}
+		if (
+			watchDepartMentName?.value !== 'Demand' &&
+			watchLevelName?.value !== 'Head'
+		) {
+			setTeamTypeEdit([]);
+			setValue('team', '');
+		} else {
+			setTeamTypeEdit([]);
+			setValue('team', '');
+		}
+	};
 	useEffect(() => {
 		if (getLevelList.length > 1) {
 			getLevelList?.map((item) => {
@@ -704,8 +707,6 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		setGEOType(modifiedGeo);
 		setValue('geo', modifiedGeo);
 	}, [userDetails, GEO]);
-
-
 
 	useEffect(() => {
 		if (enableALlFieldsMemo) {
@@ -861,7 +862,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 												label={'Department'}
 												defaultValue={'Select'}
 												onClickHandler={() => {
-													clearDropDown()
+													clearDropDown();
 												}}
 												options={getDepartment && getDepartment}
 												name="departMent"
@@ -887,7 +888,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 														setValue={setValue}
 														register={register}
 														onClickHandler={() => {
-															clearDropDown()
+															clearDropDown();
 														}}
 														label={'Level'}
 														defaultValue={'Select'}
@@ -1087,6 +1088,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 												enableALlFieldsMemo ? userDetails?.skypeId : null
 											}
 											setValue={setValue}
+											// value={watch('skypeID')}
 											// errors={errors}
 											// validationSchema={{
 											// 	required: 'Please enter skype ID',

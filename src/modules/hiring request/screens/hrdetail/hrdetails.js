@@ -362,6 +362,7 @@ const HRDetailScreen = () => {
 								<CompanyProfileCard
 									clientDetail={apiData?.ClientDetail}
 									talentLength={apiData?.HRTalentDetails?.length}
+									apiData={apiData?.HRStatus}
 								/>
 							</Suspense>
 						)}
