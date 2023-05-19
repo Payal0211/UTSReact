@@ -109,14 +109,16 @@
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
     width: 250px;
-    height: 44px;
+    height: 60px;
     display: flex;
+
     justify-content: space-evenly;
     align-items: center;
     flex-wrap: wrap;
 }
 
 .searchInput {
+    
     cursor: pointer;
     width: 80%;
     outline: none;
@@ -130,6 +132,7 @@
     justify-content: space-evenly;
     align-items: center;
     gap: 8px;
+    
 }
 
 .label {
@@ -142,7 +145,7 @@
     width: 250px;
     height: 44px;
     border-radius: 8px;
-    padding: 2px 10px;
+    padding: 25px 10px;
     border: 1px solid var(--background-color-metal);
     display: flex;
     justify-content: space-between;
@@ -216,9 +219,10 @@
 .tableDetails {
     margin-top: 24px;
 }
-.tableDetails [class*="ant-pagination"]{
+
+/* .tableDetails [class*="ant-pagination"] {
     display: none;
-}
+} */
 
 .formPanelAction {
     padding: 32px 0;
@@ -273,8 +277,16 @@
     margin-left: 20px;
     line-height: 39px;
     font-weight: 500;
-    font-size: 25px;
+    font-size: 32px;
 }
+.selectedTextModal{
+    
+        margin-left: 20px;
+        line-height: 39px;
+        font-weight: 500;
+        font-size: 18px;
+}
+
 .trReq {
     margin-top: 10px;
     margin-left: 20px;
@@ -383,6 +395,9 @@ tr .td:first-child {
     max-width: 170px;
 }
 
+.modalBody{
+    margin: 10px 5px;
+}
 .ml5 {
     width: 10px;
     margin-left: 5px;
@@ -401,21 +416,132 @@ tr .td:first-child {
     top: 0;
     border-bottom: 1px dashed var(--uplers-grey);
 }
+.row {
+    /* gap: 8px; */
+    margin: 0 9px;
+    flex-wrap: wrap;
+    display: flex;
+    /* justify-content: flex-start; */
+}
+
+.transparentTopCard {
+    border-radius: 8px;
+    padding: 16px;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    display: flex;
+}
+
+.cardBody {
+    padding: 16px 0 16px 16px;
+}
+
+
+.cardLabel {
+    font-size: 16px;
+    line-height: 15px;
+    font-weight: 500;
+    color: var(--uplers-black);
+    margin-bottom: 8px;
+}
+
+.mb8 {
+    margin-bottom: 8px;
+}
+
+.cardTitle {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 600;
+    color: var(--uplers-black)
+}
+
+.overAll{
+    border: 2px solid var(--color-success);
+}
+.skill{
+border: 2px solid var(--color-cyan);
+}
+.roleResp{
+    border: 2px solid var(--color-danger);
+}
+
+.req{
+    border: 2px solid var(--color-sunlight);
+}
+.colMd4 {
+    width: calc(25% - 6px);
+}
+
+.colMd12 {
+    width: 100%;
+    padding: 0 9px;
+}
+
+.colMd6 {
+    width: 50%;
+    padding: 0 9px;
+}
+
+.colMd3 {
+    width: 33.33%;
+    padding: 0 9px;
+}
+
+.colMd4 {
+    width: 25%;
+    padding: 0 9px;
+}
+.btnPrimaryOutline {
+    background: var(--background-color-light);
+    border: 1px solid #FFDA30;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 17px;
+    color: #232323;
+    padding: 17px 28px;
+    outline: none;
+    transition: all 0.35s ease 0s;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.btnPrimaryOutline:hover,
+.btnPrimary:hover {
+    background: #232323;
+    color: #fff;
+    border-color: #232323;
+}s
 
 tr th:first-child {
     padding-left: 20px;
 }
-
+.matchmakingLabel {
+    margin-top: 40px;
+    margin-left: 20px;
+    line-height: 39px;
+    font-weight: 500;
+    font-size: 32px;
+}
+.additonalInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
 .btnPrimary {
     background: #FFDA30;
     border: 1px solid transparent;
     border-radius: 8px;
     font-family: 'Montserrat';
-    font-weight: 500;
+    font-weight: 600;
     font-size: 14px;
     line-height: 17px;
     color: #232323;
-    padding: 12px 28px;
+    padding: 17px 28px;
     outline: none;
     transition: all 0.35s ease 0s;
     cursor: pointer;
@@ -535,6 +661,6 @@ tr th:first-child {
     right: auto !important;
 }
 
-.demandFunnelModal  [class*="ant-pagination"] {
+.demandFunnelModal [class*="ant-pagination"] {
     display: none;
 }

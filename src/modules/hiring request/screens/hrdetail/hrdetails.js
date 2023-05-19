@@ -55,7 +55,7 @@ const HRDetailScreen = () => {
 	const [callHRapi, setHRapiCall] = useState(false);
 	const [acceptHRModal, setAcceptHRModal] = useState(false);
 	const [shareProfileModal, setShareProfileModal] = useState(false);
-	const [editDebrifing, setEditDebring] = useState([])
+	const [editDebrifing, setEditDebring] = useState([]);
 	const {
 		register,
 		handleSubmit,
@@ -183,42 +183,39 @@ const HRDetailScreen = () => {
 		callAPI(urlSplitter?.split('HR')[0]);
 	}, [urlSplitter, callAPI, callHRapi]);
 
-
-
 	useEffect(() => {
-		const data = apiData?.hr_CTA?.filter((item) => item.key === "DebriefingHR")
+		const data = apiData?.hr_CTA?.filter((item) => item.key === 'DebriefingHR');
 		setEditDebring(data);
-	}, [apiData])
+	}, [apiData]);
 
-	const hrId = useParams()
-
+	const hrId = useParams();
 
 	let fromEditDeBriefing = true;
 
 	const navigateToEditDebriefing = async () => {
-
-
-		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid)
+		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid);
 
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			localStorage.setItem("hrID", hrId.hrid)
-			localStorage.setItem("fromEditDeBriefing", fromEditDeBriefing)
+			localStorage.setItem('hrID', hrId.hrid);
+			localStorage.setItem('fromEditDeBriefing', fromEditDeBriefing);
 
-			navigate("/allhiringrequest/addnewhr")
+			navigate('/allhiringrequest/addnewhr');
 		}
-	}
+	};
 
 	const navigateToCloneHR = async () => {
-		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid)
+		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid);
 		if (response?.statusCode === HTTPStatusCode.OK) {
+			localStorage.setItem('hrID', hrId.hrid);
 
-			localStorage.setItem("hrID", hrId.hrid)
-
-			navigate("/allhiringrequest/addnewhr")
+			navigate('/allhiringrequest/addnewhr');
 		}
-	}
+	};
+
 	return (
-		<WithLoader showLoader={isLoading}>
+		<WithLoader
+			showLoader={isLoading}
+			className="mainLoader">
 			<div className={HRDetailStyle.hiringRequestContainer}>
 				<Link to={UTSRoutes.ALLHIRINGREQUESTROUTE}>
 					<div className={HRDetailStyle.goback}>
@@ -242,16 +239,19 @@ const HRDetailScreen = () => {
 								)}
 							</div>
 						)}
-						<button className={HRDetailStyle.btnPrimary} onClick={navigateToCloneHR}>
+						<button
+							className={HRDetailStyle.btnPrimary}
+							onClick={navigateToCloneHR}>
 							Clone - {updatedSplitter}
 						</button>
 
 						{editDebrifing?.length > 0 && editDebrifing?.[0]?.IsEnabled && (
-							<button className={HRDetailStyle.btnPrimary} onClick={navigateToEditDebriefing}>
+							<button
+								className={HRDetailStyle.btnPrimary}
+								onClick={navigateToEditDebriefing}>
 								Edit Debriefing
 							</button>
 						)}
-
 					</div>
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
@@ -363,6 +363,7 @@ const HRDetailScreen = () => {
 									clientDetail={apiData?.ClientDetail}
 									talentLength={apiData?.HRTalentDetails?.length}
 									apiData = {apiData}
+									HRStatus={apiData?.HRStatus}
 								/>
 							</Suspense>
 						)}

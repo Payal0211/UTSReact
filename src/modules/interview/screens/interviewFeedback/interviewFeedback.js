@@ -11,7 +11,18 @@ import { useForm } from 'react-hook-form';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
 
-const InterviewFeedback = () => {
+const InterviewFeedback = ({
+	hrId,
+	clientDetail,
+	callAPI,
+	talentInfo,
+	talentName,
+	HRStatusCode,
+	hiringRequestNumber,
+	starMarkedStatusCode,
+	hrStatus,
+	closeModal,
+}) => {
 	const [timezone, setTimezone] = useState([]);
 	const {
 		register,
@@ -59,78 +70,53 @@ const InterviewFeedback = () => {
 				<h3>Share Your Feedback</h3>
 			</div>
 			<div className={InterviewScheduleStyle.panelBody}>
-				{/* <div className={InterviewScheduleStyle.leftPane}>
-					<h3>
-						Share Your Feedback for <br />
-						Manideep Koduri
-					</h3>
-					<p style={{ maxWidth: '334px' }}>
-						Thank you! We really appreciate the time you took to interview
-						Manideep Koduri. Hope you enjoyed the interaction with this talent.
-						Share your experience during the interview in the below feedback
-						form!
-					</p>
-				</div> */}
 				<div className={InterviewScheduleStyle.rightPane}>
 					<div className={InterviewScheduleStyle.row}>
-						<div
-							className={`${InterviewScheduleStyle.transparent} ${InterviewScheduleStyle.colMd4}`}>
-							<div className={InterviewScheduleStyle.cardBody}>
-								<div
-									className={`${InterviewScheduleStyle.cardLabel} ${InterviewScheduleStyle.mb8}`}>
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
 									Talent Name
 								</div>
 
 								<div className={InterviewScheduleStyle.cardTitle}>
-									Pandey Raghu
+									{talentName}
 								</div>
 							</div>
 						</div>
-						<div
-							className={`${InterviewScheduleStyle.transparent} ${InterviewScheduleStyle.colMd4}`}>
-							<div className={InterviewScheduleStyle.cardBody}>
-								<div
-									className={`${InterviewScheduleStyle.cardLabel} ${InterviewScheduleStyle.mb8}`}>
+
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
 									Hiring Request No
 								</div>
-
 								<div className={InterviewScheduleStyle.cardTitle}>
-									HR54906458963
+									{hiringRequestNumber}
 								</div>
 							</div>
 						</div>
-						<div
-							className={`${InterviewScheduleStyle.transparent} ${InterviewScheduleStyle.colMd4}`}>
-							<div className={InterviewScheduleStyle.cardBody}>
-								<div
-									className={`${InterviewScheduleStyle.cardLabel} ${InterviewScheduleStyle.mb8}`}>
+
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
 									Interview Status
 								</div>
-
 								<div className={InterviewScheduleStyle.cardTitle}>
-									<div
-										style={{
-											fontSize: '12px ',
-											fontWeight: '500',
-											width: '120px ',
-										}}>
-										{interviewUtils.GETINTERVIEWSTATUS(
-											'Scheduled',
-											InterviewStatus.INTERVIEW_SCHEDULED,
-										)}
-									</div>
+									{interviewUtils.GETINTERVIEWSTATUS(
+										talentInfo?.InterviewStatus,
+										talentInfo?.InterViewStatusId,
+									)}
 								</div>
 							</div>
 						</div>
-						<div
-							className={`${InterviewScheduleStyle.transparent} ${InterviewScheduleStyle.colMd4}`}>
-							<div className={InterviewScheduleStyle.cardBody}>
-								<div
-									className={`${InterviewScheduleStyle.cardLabel} ${InterviewScheduleStyle.mb8}`}>
+
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
 									Interview Round
 								</div>
-
-								<div className={InterviewScheduleStyle.cardTitle}>Round 1</div>
+								<div className={InterviewScheduleStyle.cardTitle}>
+									{talentInfo?.InterviewROUND || 'NA'}
+								</div>
 							</div>
 						</div>
 					</div>

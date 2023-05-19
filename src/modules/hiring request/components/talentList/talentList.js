@@ -1310,7 +1310,7 @@ const TalentList = ({
 											</Dropdown>
 										</div>
 									</div>
-									{console.log(item, '--item')}
+
 									<div className={TalentListStyle.profileURL}>
 										<span>profile URL:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
@@ -1371,12 +1371,7 @@ const TalentList = ({
 									/>
 									<div className={TalentListStyle.interviewStatus}>
 										<span>Interview Status:</span>&nbsp;&nbsp;
-										<span
-											style={{ fontWeight: '500', cursor: 'pointer' }}
-											onClick={() => {
-												setInterviewFeedback(true);
-												setTalentIndex(listIndex);
-											}}>
+										<span style={{ fontWeight: '500', cursor: 'pointer' }}>
 											{item?.InterviewStatus === ''
 												? 'NA'
 												: item?.InterviewStatus}
@@ -1602,9 +1597,15 @@ const TalentList = ({
 															setTalentIndex(item?.TalentID);
 															break;
 														}
+														case TalentOnboardStatus.SUBMIT_CLIENT_FEEDBACK: {
+															setInterviewFeedback(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
 														case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
 															setOnboardTalentModal(true);
 															setTalentIndex(item?.TalentID);
+
 															break;
 														}
 														case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
@@ -1891,13 +1892,13 @@ const TalentList = ({
 			{/** ============ MODAL FOR INTERVIEW FEEDBACK STATUS ================ */}
 			<Modal
 				transitionName=""
-				width="930px"
+				width="1000px"
 				centered
-				footer={null}
+				footer={false}
 				open={interviewFeedback}
-				// onOk={() => setVersantModal(false)}
 				onCancel={() => setInterviewFeedback(false)}>
 				<InterviewFeedback
+					hrId={hrId}
 					clientDetail={clientDetail}
 					callAPI={callAPI}
 					talentInfo={filterTalentID}
@@ -1906,7 +1907,7 @@ const TalentList = ({
 					hiringRequestNumber={hiringRequestNumber}
 					starMarkedStatusCode={starMarkedStatusCode}
 					hrStatus={hrStatus}
-					closeModal={() => setTalentAcceptance(false)}
+					closeModal={() => setInterviewFeedback(false)}
 				/>
 			</Modal>
 			{/** ============ MODAL FOR TALENT ACCEPTANCE ================ */}

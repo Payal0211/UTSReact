@@ -73,6 +73,9 @@ const ViewHrDetails = React.lazy(() =>
 	import('modules/viewHrDetails/screens/viewHRDetails'),
 );
 
+const JDDumpReport = React.lazy(() =>
+	import('modules/report/screens/jdDump/jdDumpReport'),
+);
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
@@ -101,7 +104,8 @@ export default class UTSRoutes {
 	static SUPPLYFUNNELROUTE = '/supplyfunnel';
 	static TEAMDEMANDFUNNELROUTE = '/teamdemandfunnel';
 	static INCENTIVEREPORTROUTE = '/report/incentive';
-static VIEWHRDETAILS = "/viewHrDetails/:id";
+	static VIEWHRDETAILS = '/viewHrDetails/:id';
+	static JDDUMPREPORTROUTE = '/jdDump';
 }
 
 export const navigateToComponent = {
@@ -208,6 +212,11 @@ export const navigateToComponent = {
 	[UTSRoutes.VIEWHRDETAILS]: (
 		<Suspense>
 			<ViewHrDetails />
+		</Suspense>
+	),
+	[UTSRoutes.JDDUMPREPORTROUTE]: (
+		<Suspense>
+			<JDDumpReport />
 		</Suspense>
 	),
 };
