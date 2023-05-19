@@ -459,6 +459,33 @@ export const MasterDAO = {
 		}
 	},
 
+	getCountryByPostalCodeRequestDAO: async function (postalData) {
+		try {
+			const hrCountryResponse = await MasterAPI.getCountryByPostalCodeRequest(
+				postalData,
+			);
+			if (hrCountryResponse) {
+				const statusCode = hrCountryResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hrCountryResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return hrCountryResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return hrCountryResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getCountryByPostalCodeRequestDAO');
+		}
+	},
 	getUserTypeRequestDAO: async function () {
 		try {
 			const userTypeResponse = await MasterAPI.getUserTypeRequest();
@@ -1041,8 +1068,10 @@ export const MasterDAO = {
 						statusCode: statusCode,
 						responseBody: tempResut,
 					};
-				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return cloneResponse;
-				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return cloneResponse;
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return cloneResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return cloneResponse;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();

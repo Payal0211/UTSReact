@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ReportDAO } from 'core/report/reportDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { reportConfig } from 'modules/report/report.config';
-import { downloadFileUtil, downloadToExcel } from 'modules/report/reportUtils';
+import { downloadToExcel } from 'modules/report/reportUtils';
 
 const DemandFunnelModal = ({
 	demandFunnelModal,
@@ -126,7 +126,9 @@ const DemandFunnelModal = ({
 					) : (
 						<Table
 							id="hrListingTable"
-							columns={reportConfig?.demandFunnelHRDetails}
+							columns={reportConfig?.demandFunnelHRDetails(
+								demandFunnelValue?.stage,
+							)}
 							bordered={false}
 							dataSource={
 								searchData && searchData?.length > 0

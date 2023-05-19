@@ -29,6 +29,7 @@ const HRInputField = ({
 		[HRInputFieldStyle.inputfield]: true,
 		[HRInputFieldStyle.disabled]: disabled,
 	});
+	const formatRegister = { ...register(name, required && validationSchema) };
 
 	return (
 		<div className={HRInputFieldStyle.formField}>
@@ -83,7 +84,10 @@ const HRInputField = ({
 						placeholder={placeholder}
 						onClick={InputType.BUTTON && onClickHandler}
 						{...register(name, required && validationSchema)}
-						onChange={onChangeHandler}
+						onChange={(e) => {
+							formatRegister.onChange(e);
+							onChangeHandler?.(e);
+						}}
 						id={name}
 						disabled={disabled}
 						required={required}

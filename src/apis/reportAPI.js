@@ -214,4 +214,21 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.teamDemandFunnelHRDetailsRequest');
 		}
 	},
+	jdParsingDumpReportRequest: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.JD_PARSING_DUMP +
+			ReportsAPI.JD_PARSING_DUMP_REPORT;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.jdParsingDumpReportRequest');
+		}
+	},
 };

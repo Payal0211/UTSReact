@@ -42,6 +42,9 @@ const ClientField = ({
 	setContactID,
 }) => {
 	const [messageAPI, contextHolder] = message.useMessage();
+	const [companyName, setCompanyName] = useState('');
+	const [primaryClientFullName, setPrimaryClientFullName] = useState('');
+	const [primaryClientEmail, setPrimaryClientEmail] = useState('');
 	/** ---- Useform()  Starts here --------- */
 	const {
 		register,
@@ -124,15 +127,18 @@ const ClientField = ({
 			addClientResponse,
 			base64Image,
 			getUploadFileData,
+			companyName,
+			primaryClientFullName,
+			primaryClientEmail,
 		);
 
 		if (type === SubmitType.SAVE_AS_DRAFT) {
-			if (_isNull(watch('companyName'))) {
+			if (_isNull(companyName)) {
 				return setError('companyName', {
 					type: 'emptyCompanyName',
 					message: 'please enter the company name.',
 				});
-			} else if (_isNull(watch('primaryClientName'))) {
+			} else if (_isNull(primaryClientFullName)) {
 				return setError('primaryClientName', {
 					type: 'emptyprimaryClientName',
 					message: 'please enter the client name.',
@@ -213,6 +219,8 @@ const ClientField = ({
 				setBase64Image={setBase64Image}
 				getUploadFileData={getUploadFileData}
 				setUploadFileData={setUploadFileData}
+				setCompanyName={setCompanyName}
+				companyName={companyName}
 			/>
 			<AddNewClient
 				setError={setError}
@@ -224,6 +232,9 @@ const ClientField = ({
 				register={register}
 				errors={errors}
 				flagAndCodeMemo={flagAndCodeMemo}
+				setPrimaryClientFullName={setPrimaryClientFullName}
+				setPrimaryClientEmail={setPrimaryClientEmail}
+				primaryClientEmail={primaryClientEmail}
 			/>
 			<div className={ClientFieldStyle.tabsFormItem}>
 				<div className={ClientFieldStyle.tabsFormItemInner}>

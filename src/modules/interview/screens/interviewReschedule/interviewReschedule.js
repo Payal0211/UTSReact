@@ -1,28 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import InterviewScheduleStyle from '../../interviewStyle.module.css';
-import { Link } from 'react-router-dom';
-import UTSRoutes from 'constants/routes';
-import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
+
 import DatePicker from 'react-datepicker';
 import { interviewUtils } from 'modules/interview/interviewUtils';
-import { InputType, InterviewStatus } from 'constants/application';
+import { InputType } from 'constants/application';
 import { Divider, Radio, message } from 'antd';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { HTTPStatusCode } from 'constants/network';
-import moment from 'moment';
-import {
-	defaultEndTime,
-	defaultStartTime,
-	defaultTime,
-	disabledWeekend,
-	getNthDateExcludingWeekend,
-} from 'shared/utils/basic_utils';
+
+import { disabledWeekend } from 'shared/utils/basic_utils';
 import WithLoader from 'shared/components/loader/loader';
 
 const InterviewReschedule = ({

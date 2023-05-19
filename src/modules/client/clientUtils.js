@@ -44,15 +44,15 @@ export function clientFormDataFormatter(
 	addClientResponse,
 	base64Image,
 	getUploadFileData,
+	companyName,
+	primaryClientFullName,
+	primaryClientEmail,
 ) {
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 		company: {
 			en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
-			company:
-				draft === SubmitType.SAVE_AS_DRAFT
-					? watch('companyName')
-					: d.companyName,
+			company: draft === SubmitType.SAVE_AS_DRAFT ? companyName : d.companyName,
 			fileUpload: {
 				base64ProfilePic: base64Image,
 				extenstion: getUploadFileData?.split('.')[1],
@@ -129,17 +129,17 @@ export function clientFormDataFormatter(
 				: addClientResponse?.primaryClient?.en_Id,
 			fullName:
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('primaryClientName'))
+					? _isNull(primaryClientFullName)
 						? null
-						: watch('primaryClientName')
+						: primaryClientFullName
 					: _isNull(d.primaryClientName)
 					? null
 					: d.primaryClientName,
 			emailId:
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('primaryClientEmailID'))
+					? _isNull(primaryClientEmail)
 						? null
-						: watch('primaryClientEmailID')
+						: primaryClientEmail
 					: _isNull(d.primaryClientEmailID)
 					? null
 					: d.primaryClientEmailID,

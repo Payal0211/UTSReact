@@ -54,12 +54,14 @@ export class ReportType {
 	static DEMAND_FUNNEL = 'DemandFunnel/';
 	static SUPPLY_FUNNEL = 'SupplyFunnel/';
 	static TEAM_DEMAND_FUNNEL = 'TeamDemandFunnel/';
+	static JD_PARSING_DUMP = 'JDParsingDump/';
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
 	static SUMMARY = 'Summary';
 	static FILTERS = 'Filters';
 	static HRDETAILS = 'HRDetails';
+	static JD_PARSING_DUMP_REPORT = 'JDParsingDumpReport';
 }
 export class EngagementAPI {
 	static FILTER = 'Filters';
@@ -118,8 +120,10 @@ export class MastersAPI {
 	static GET_DASHBOARD_COUNT_FOR_ENGAGEMENT = 'GetDashboardCountForEngagement';
 	static GET_COUNTRY_LIST = 'GetCountryList';
 	static GET_USERS_HIERARCHY = 'GetUserHierarchy';
-  static GET_DURATION_TYPE = "GetDurationType"
-static CLONE_HR = 'CloneHR'
+	static GET_DURATION_TYPE = 'GetDurationType';
+	static CLONE_HR = 'CloneHR';
+	static GET_COUNTRY_LIST_BY_POSTALCODE =
+		'GetCountryListByCountryCodeOrPostalcode';
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
@@ -178,8 +182,8 @@ export class HiringRequestsAPI {
 	static GET_HR_COST_DETAILS = 'GetHRCostDetails';
 	static UPDATE_HR_COST = 'UpdateHRCost';
 	static UPDATE_TALENT_FEES = 'UpdateTalentFees';
-static VIEW_HR_DETAILS = 'ViewHRDetails';
-static GET_HR_DETAILS = 'GetHRDetails'
+	static VIEW_HR_DETAILS = 'ViewHRDetails';
+	static GET_HR_DETAILS = 'GetHRDetails';
 }
 
 export class UsersAPI {
@@ -247,6 +251,6 @@ export class IncentiveReport {
 	static GET_LIST = 'List';
 	static GET_INCENTIVE_REPORT_DETAILS = 'GetIncentiveReportDetails';
 	static GET_CONTRACT_BOOSTER = 'GetIncentiveReportDetailsContractBooster';
-	static GET_CONTRACT_BOOSTER = 'GetIncentiveReportDetailsContractBooster';
+
 	static GET_INCENTIVE_REPORT_AMNR = 'GetIncentiveReportDetailsAMNR';
 }

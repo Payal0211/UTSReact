@@ -1,4 +1,12 @@
-import { Button, Checkbox, Divider, Space, message, AutoComplete } from 'antd';
+import {
+	Button,
+	Checkbox,
+	Divider,
+	Space,
+	message,
+	AutoComplete,
+	Modal,
+} from 'antd';
 import {
 	ClientHRURL,
 	GoogleDriveCredentials,
@@ -16,12 +24,13 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { useForm, Controller } from 'react-hook-form';
 import { HTTPStatusCode } from 'constants/network';
-import { _isNull } from 'shared/utils/basic_utils';
+import { _isNull, debounceUtils, getPayload } from 'shared/utils/basic_utils';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
+import useDebounce from 'shared/hooks/useDebounce';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -40,6 +49,7 @@ const HRFields = ({
 	setJDParsedSkills,
 	contactID,
 }) => {
+	const [controlledCountryName, setControlledCountryName] = useState('');
 	const inputRef = useRef(null);
 	const [getUploadFileData, setUploadFileData] = useState('');
 	const [availability, setAvailability] = useState([]);
@@ -75,7 +85,8 @@ const HRFields = ({
 	const [jdURLLink, setJDURLLink] = useState('');
 	const [getGoogleDriveLink, setGoogleDriveLink] = useState('');
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
-
+	const [isNewPostalCodeModal, setNewPostalCodeModal] = useState(false);
+	const [isPostalCodeNotFound, setPostalCodeNotFound] = useState(false);
 	let controllerRef = useRef(null);
 	const {
 		watch,
@@ -266,6 +277,7 @@ const HRFields = ({
 	}, [openPicker, setJDParsedSkills, uploadFileFromGoogleDriveValidator]);
 
 	const uploadFileFromGoogleDriveLink = useCallback(async () => {
+		console.log('uploadFileHandler');
 		setValidation({
 			...getValidation,
 			linkValidation: '',
@@ -342,6 +354,40 @@ const HRFields = ({
 		);
 	}, []);
 
+	const watchPostalCode = watch('postalCode');
+	console.log(errors, '-errors');
+	const postalCodeHandler = useCallback(
+		async (flag) => {
+			const countryResponse = await MasterDAO.getCountryByPostalCodeRequestDAO({
+				...getPayload(flag, {
+					countryCode: watch('country')?.id || '',
+					postalCode: watch('postalCode') || '',
+				}),
+			});
+			if (countryResponse?.statusCode === HTTPStatusCode.OK) {
+				const response = countryResponse?.responseBody?.details;
+				setCountry(countryResponse && response);
+				if (response?.stateCityData === 'postal code not find') {
+					setNewPostalCodeModal(true);
+					setValue('city', '');
+					setValue('state', '');
+				} else if (response.getCountry?.length === 1) {
+					setControlledCountryName(response?.getCountry?.[0]?.value);
+					setValue('city', response?.stateCityData?.province);
+					setValue('state', response?.stateCityData?.stateEn);
+					clearErrors('country');
+				} else {
+					setControlledCountryName('');
+					setValue('city', '');
+					setValue('state', '');
+				}
+			} else {
+				setCountry([]);
+			}
+		},
+		[clearErrors, setValue, watch],
+	);
+
 	const CheckSalesUserIsPartner = useCallback(
 		async (getContactAndSaleID) => {
 			const response = await MasterDAO.checkIsSalesPersonDAO(
@@ -395,10 +441,7 @@ const HRFields = ({
 			workingModeResponse && workingModeResponse?.responseBody?.details,
 		);
 	}, []);
-	const getCountry = useCallback(async () => {
-		const countryResponse = await MasterDAO.getCountryDAO();
-		setCountry(countryResponse && countryResponse?.responseBody?.details);
-	}, []);
+
 	const getTalentRole = useCallback(async () => {
 		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
 
@@ -466,7 +509,6 @@ const HRFields = ({
 
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setClientNameSuggestion(response?.responseBody?.details);
-
 				setClientNameMessage('');
 			} else if (
 				response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
@@ -552,6 +594,25 @@ const HRFields = ({
 		}
 		return () => clearTimeout(timer);
 	}, [getOtherRoleHandler, watchOtherRole]);
+	const watchCountry = watch('country');
+	const { isReady, debouncedFunction } = useDebounce(postalCodeHandler, 2000);
+	useEffect(() => {
+		// if (watchPostalCode < 0 || _isNull(watchPostalCode)) {
+		// 	setError('postalCode', {
+		// 		type: 'postalCode',
+		// 		message: 'Please enter valid postal code',
+		// 	});
+		// } else {
+		// 	clearErrors('postalCode');
+		// 	!isPostalCodeNotFound && debouncedFunction('POSTAL_CODE');
+		// }
+		!isPostalCodeNotFound && debouncedFunction('POSTAL_CODE');
+	}, [debouncedFunction, watchPostalCode, isPostalCodeNotFound]);
+	useEffect(() => {
+		if (country && country?.getCountry?.length > 1 && watchCountry) {
+			!isPostalCodeNotFound && debouncedFunction('COUNTRY_CODE');
+		}
+	}, [country, debouncedFunction, isPostalCodeNotFound, watchCountry]);
 
 	useEffect(() => {
 		let timer;
@@ -593,7 +654,7 @@ const HRFields = ({
 		getSalesPerson();
 		getRegion();
 		getWorkingMode();
-		getCountry();
+		// postalCodeHandler();
 		getHowSoon();
 		getNRMarginHandler();
 		getDurationTypes();
@@ -606,7 +667,7 @@ const HRFields = ({
 		prefRegion,
 		getHowSoon,
 		getWorkingMode,
-		getCountry,
+		// postalCodeHandler,
 		getNRMarginHandler,
 		getDurationTypes,
 	]);
@@ -938,7 +999,7 @@ const HRFields = ({
 									disabled={jdURLLink}
 									register={register}
 									leadingIcon={<UploadSVG />}
-									label="Job Description (PDF)"
+									label={`Job Description *`}
 									name="jdExport"
 									type={InputType.BUTTON}
 									buttonLabel="Upload JD File"
@@ -973,7 +1034,7 @@ const HRFields = ({
 								googleDriveFileUploader={() => googleDriveFileUploader()}
 								uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
 								modalTitle={'Upload JD'}
-								modalSubtitle={'Job Description (PDF)'}
+								modalSubtitle={'Job Description'}
 								isFooter={true}
 								openModal={showUploadModal}
 								setUploadModal={setUploadModal}
@@ -1394,27 +1455,38 @@ const HRFields = ({
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the postal code.',
+									min: {
+										value: 0,
+										message: `please don't enter the value less than 0`,
+									},
 								}}
 								label="Postal Code"
 								name="postalCode"
-								type={InputType.TEXT}
+								type={InputType.NUMBER}
 								placeholder="Enter the Postal Code"
+								// onChangeHandler={postalCodeHandler}
 								required
 							/>
 						</div>
 						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
-								register={register}
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the city.',
-								}}
-								label="City"
-								name="city"
-								type={InputType.TEXT}
-								placeholder="Enter the City"
-								required
-							/>
+							<div className={HRFieldStyle.formGroup}>
+								<HRSelectField
+									setControlledValue={setControlledCountryName}
+									controlledValue={controlledCountryName}
+									isControlled={true}
+									mode={'id/value'}
+									searchable={false}
+									setValue={setValue}
+									register={register}
+									label={'Country'}
+									defaultValue="Select country"
+									options={country?.getCountry || []}
+									name="country"
+									isError={errors['country'] && errors['country']}
+									required={!controlledCountryName}
+									errorMsg={'Please select the country.'}
+								/>
+							</div>
 						</div>
 					</div>
 
@@ -1434,21 +1506,18 @@ const HRFields = ({
 							/>
 						</div>
 						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									mode={'id/value'}
-									searchable={false}
-									setValue={setValue}
-									register={register}
-									label={'Country'}
-									defaultValue="Select country"
-									options={country && country}
-									name="country"
-									isError={errors['country'] && errors['country']}
-									required
-									errorMsg={'Please select the country.'}
-								/>
-							</div>
+							<HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required: 'please enter the city.',
+								}}
+								label="City"
+								name="city"
+								type={InputType.TEXT}
+								placeholder="Enter the City"
+								required
+							/>
 						</div>
 					</div>
 					<div className={HRFieldStyle.row}>
@@ -1468,6 +1537,42 @@ const HRFields = ({
 							/>
 						</div>
 					</div>
+					{isNewPostalCodeModal && (
+						<Modal
+							footer={false}
+							title="Postal Code Not Found"
+							open={isNewPostalCodeModal}
+							onCancel={() => setNewPostalCodeModal(false)}>
+							<div
+								style={{
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+								}}>
+								<h3>Are you sure you want to proceed?</h3>
+							</div>
+							<div className={HRFieldStyle.formPanelAction}>
+								<button
+									type="submit"
+									onClick={() => {
+										setPostalCodeNotFound(true);
+										setNewPostalCodeModal(false);
+									}}
+									className={HRFieldStyle.btnPrimary}>
+									Save
+								</button>
+								<button
+									onClick={() => {
+										setValue('postalCode', '');
+										setPostalCodeNotFound(false);
+										setNewPostalCodeModal(false);
+									}}
+									className={HRFieldStyle.btn}>
+									Cancel
+								</button>
+							</div>
+						</Modal>
+					)}
 				</>
 			);
 		}

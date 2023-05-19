@@ -129,6 +129,13 @@ const getSideBar = () => {
 			icon: IncentiveReport,
 			navigateTo: UTSRoutes.INCENTIVEREPORTROUTE,
 		}),
+		new SideBarModels({
+			id: 'jd_dump',
+			title: 'JD Dump',
+			isActive: false,
+			icon: IncentiveReport,
+			navigateTo: UTSRoutes.JDDUMPREPORTROUTE,
+		}),
 	];
 
 	return dataList;

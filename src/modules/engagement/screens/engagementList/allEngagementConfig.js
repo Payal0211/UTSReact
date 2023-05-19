@@ -1,4 +1,3 @@
-import { HiringRequestHRStatus, ProfileLog } from 'constants/application';
 import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { Link } from 'react-router-dom';

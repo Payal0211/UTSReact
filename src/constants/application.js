@@ -113,6 +113,7 @@ export class TalentOnboardStatus {
 	static REPLACE_TALENT = 'Replace Talent';
 	static CLONE_HR = 'Clone HR';
 	static CONFIRM_SLOT = 'Confirm Slot';
+	static SUBMIT_CLIENT_FEEDBACK = 'Submit Client Feedback';
 }
 export class InputType {
 	static TEXT = 'text';
@@ -158,6 +159,7 @@ export class InterviewStatus {
 	static INTERVIEW_IN_PROCESS = 505;
 	static INTERVIEW_COMPLETED = 506;
 	static FEEDBACK_SUBMITTED = 507;
+
 	static INTERVIEW_RESCHEDULES = 508;
 }
 
