@@ -32,7 +32,7 @@ const EngagementFeedback = ({
 			{isLoading ? (
 				<TableSkeleton />
 			) : (
-				<WithLoader>
+				<WithLoader className="mainLoader">
 					<Table
 						id="hrListingTable"
 						columns={feedbackTableColumnsMemo}

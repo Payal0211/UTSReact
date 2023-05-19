@@ -119,7 +119,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 							<div className={CompanyProfileCardStyle.category}>
 								<span>Uplers Category:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.Category ? clientDetail?.Category : 'NA'}
+									{apiData?.companyCategory ? apiData?.companyCategory : 'NA'}
 								</span>
 							</div>
 						</div>

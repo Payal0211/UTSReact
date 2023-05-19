@@ -127,60 +127,122 @@ const InterviewReschedule = ({
 	}, [setRescheduleRadio]);
 
 	return (
-		<WithLoader showLoader={isLoading}>
-			<div
-				className={InterviewScheduleStyle.interviewContainer}
-				id={key}>
-				<div className={InterviewScheduleStyle.interviewModalTitle}>
-					<h2>Reschedule Interview</h2>
-				</div>
-				{/* {{ contextHolder }} */}
-				<div className={InterviewScheduleStyle.panelBody}>
-					<div className={InterviewScheduleStyle.rightPane}>
-						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd4}>
-								<div className={InterviewScheduleStyle.transparentTopCard}>
-									<div className={InterviewScheduleStyle.cardLabel}>
-										Talent Name
-									</div>
-									<div className={InterviewScheduleStyle.cardTitle}>
-										{talentName}
-									</div>
+		<div
+			className={InterviewScheduleStyle.interviewContainer}
+			id={key}>
+			<div className={InterviewScheduleStyle.interviewModalTitle}>
+				<h2>Reschedule Interview</h2>
+			</div>
+			{/* {{ contextHolder }} */}
+			<div className={InterviewScheduleStyle.panelBody}>
+				<div className={InterviewScheduleStyle.rightPane}>
+					<div className={InterviewScheduleStyle.row}>
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
+									Talent Name
+								</div>
+								<div className={InterviewScheduleStyle.cardTitle}>
+									{talentName}
 								</div>
 							</div>
-							<div className={InterviewScheduleStyle.colMd4}>
-								<div className={InterviewScheduleStyle.transparentTopCard}>
-									<div className={InterviewScheduleStyle.cardLabel}>
-										Hiring Request No
-									</div>
-									<div className={InterviewScheduleStyle.cardTitle}>
-										{hiringRequestNumber}
-									</div>
+						</div>
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
+									Hiring Request No
+								</div>
+								<div className={InterviewScheduleStyle.cardTitle}>
+									{hiringRequestNumber}
 								</div>
 							</div>
-							<div className={InterviewScheduleStyle.colMd4}>
-								<div className={InterviewScheduleStyle.transparentTopCard}>
-									<div className={InterviewScheduleStyle.cardLabel}>
-										Interview Status
-									</div>
+						</div>
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
+									Interview Status
+								</div>
 
-									<div className={InterviewScheduleStyle.cardTitle}>
-										{interviewUtils.GETINTERVIEWSTATUS(
-											talentInfo?.InterviewStatus,
-											talentInfo?.InterViewStatusId,
-										)}
-									</div>
+								<div className={InterviewScheduleStyle.cardTitle}>
+									{interviewUtils.GETINTERVIEWSTATUS(
+										talentInfo?.InterviewStatus,
+										talentInfo?.InterViewStatusId,
+									)}
 								</div>
 							</div>
-							<div className={InterviewScheduleStyle.colMd4}>
-								<div className={InterviewScheduleStyle.transparentTopCard}>
-									<div className={InterviewScheduleStyle.cardLabel}>
-										Interview Round
-									</div>
-									<div className={InterviewScheduleStyle.cardTitle}>
-										{talentInfo?.InterviewROUND || 'NA'}
-									</div>
+						</div>
+						<div className={InterviewScheduleStyle.colMd4}>
+							<div className={InterviewScheduleStyle.transparentTopCard}>
+								<div className={InterviewScheduleStyle.cardLabel}>
+									Interview Round
 								</div>
+								<div className={InterviewScheduleStyle.cardTitle}>
+									{talentInfo?.InterviewROUND || 'NA'}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<Divider
+						className={InterviewScheduleStyle.topDivider}
+						dashed
+					/>
+
+					<form id="interviewReschedule">
+						<div className={InterviewScheduleStyle.row}>
+							<div className={InterviewScheduleStyle.colMd12}>
+								<div
+									className={`${InterviewScheduleStyle.radioFormGroup} ${InterviewScheduleStyle.requestByRadio} `}>
+									<label>
+										Reschedule Request By
+										<span className={InterviewScheduleStyle.reqField}>*</span>
+									</label>
+
+									<Radio.Group
+										defaultValue={'client'}
+										className={InterviewScheduleStyle.radioGroup}
+										onChange={onRescheduleChange}
+										value={reScheduleRadio}>
+										<Radio value={'client'}>Client</Radio>
+										<Radio value={'talent'}>Talent</Radio>
+									</Radio.Group>
+								</div>
+							</div>
+						</div>
+						<div className={InterviewScheduleStyle.row}>
+							<div className={InterviewScheduleStyle.colMd12}>
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									name="interviewRescheduleReason"
+									label="Reason for Reschedule"
+									defaultValue="Select reschedule reason"
+									options={rescheduleReason}
+									mode="id/value"
+									required
+									isError={
+										errors['interviewRescheduleReason'] &&
+										errors['interviewRescheduleReason']
+									}
+									errorMsg="Please select a reason."
+								/>
+							</div>
+						</div>
+						<div className={InterviewScheduleStyle.row}>
+							<div
+								className={`${InterviewScheduleStyle.colMd12} ${InterviewScheduleStyle.mB0}`}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the message.',
+									}}
+									label="Message to Appear"
+									name="interviewMessage"
+									type={InputType.TEXT}
+									placeholder="Enter message"
+									required
+								/>
 							</div>
 						</div>
 
@@ -189,463 +251,392 @@ const InterviewReschedule = ({
 							dashed
 						/>
 
-						<form id="interviewReschedule">
-							<div className={InterviewScheduleStyle.row}>
-								<div className={InterviewScheduleStyle.colMd12}>
-									<div
-										className={`${InterviewScheduleStyle.radioFormGroup} ${InterviewScheduleStyle.requestByRadio} `}>
-										<label>
-											Reschedule Request By
-											<span className={InterviewScheduleStyle.reqField}>*</span>
-										</label>
-
-										<Radio.Group
-											defaultValue={'client'}
-											className={InterviewScheduleStyle.radioGroup}
-											onChange={onRescheduleChange}
-											value={reScheduleRadio}>
-											<Radio value={'client'}>Client</Radio>
-											<Radio value={'talent'}>Talent</Radio>
-										</Radio.Group>
-									</div>
-								</div>
-							</div>
-							<div className={InterviewScheduleStyle.row}>
-								<div className={InterviewScheduleStyle.colMd12}>
-									<HRSelectField
-										setValue={setValue}
-										register={register}
-										name="interviewRescheduleReason"
-										label="Reason for Reschedule"
-										defaultValue="Select reschedule reason"
-										options={rescheduleReason}
-										mode="id/value"
-										required
-										isError={
-											errors['interviewRescheduleReason'] &&
-											errors['interviewRescheduleReason']
-										}
-										errorMsg="Please select a reason."
-									/>
-								</div>
-							</div>
-							<div className={InterviewScheduleStyle.row}>
+						<div className={InterviewScheduleStyle.row}>
+							<div className={InterviewScheduleStyle.colMd12}>
 								<div
-									className={`${InterviewScheduleStyle.colMd12} ${InterviewScheduleStyle.mB0}`}>
-									<HRInputField
-										register={register}
-										errors={errors}
-										validationSchema={{
-											required: 'please enter the message.',
-										}}
-										label="Message to Appear"
-										name="interviewMessage"
-										type={InputType.TEXT}
-										placeholder="Enter message"
-										required
-									/>
+									className={InterviewScheduleStyle.radioFormGroup}
+									style={{
+										display: 'flex',
+										flexDirection: 'column',
+									}}>
+									<Radio.Group
+										defaultValue={1}
+										className={InterviewScheduleStyle.radioGroup}
+										onChange={onSlotChange}
+										value={reScheduleSlotRadio}>
+										<Radio value={1}>Slot options provided by the client</Radio>
+										<Radio value={4}>Send a link shared by client</Radio>
+										<Radio value={2}>
+											Slot Directly Added for Final Interview Slot
+										</Radio>
+									</Radio.Group>
 								</div>
 							</div>
+						</div>
 
-							<Divider
-								className={InterviewScheduleStyle.topDivider}
-								dashed
-							/>
-
-							<div className={InterviewScheduleStyle.row}>
-								<div className={InterviewScheduleStyle.colMd12}>
-									<div
-										className={InterviewScheduleStyle.radioFormGroup}
-										style={{
-											display: 'flex',
-											flexDirection: 'column',
-										}}>
-										<Radio.Group
-											defaultValue={1}
-											className={InterviewScheduleStyle.radioGroup}
-											onChange={onSlotChange}
-											value={reScheduleSlotRadio}>
-											<Radio value={1}>
-												Slot options provided by the client
-											</Radio>
-											<Radio value={4}>Send a link shared by client</Radio>
-											<Radio value={2}>
-												Slot Directly Added for Final Interview Slot
-											</Radio>
-										</Radio.Group>
-									</div>
-								</div>
+						<div className={InterviewScheduleStyle.row}>
+							<div
+								className={
+									reScheduleSlotRadio === 4
+										? InterviewScheduleStyle.colMd6
+										: InterviewScheduleStyle.colMd12
+								}>
+								<HRSelectField
+									setValue={setValue}
+									register={register}
+									name="interviewTimezone"
+									label="Time Zone"
+									defaultValue="Select timezone"
+									options={reScheduleTimezone && reScheduleTimezone}
+									required
+									isError={
+										errors['interviewTimezone'] && errors['interviewTimezone']
+									}
+									errorMsg="Please select a timezone."
+								/>
 							</div>
-
-							<div className={InterviewScheduleStyle.row}>
+							{reScheduleSlotRadio === 4 && (
 								<div
 									className={
 										reScheduleSlotRadio === 4
 											? InterviewScheduleStyle.colMd6
 											: InterviewScheduleStyle.colMd12
 									}>
-									<HRSelectField
-										setValue={setValue}
+									<HRInputField
 										register={register}
-										name="interviewTimezone"
-										label="Time Zone"
-										defaultValue="Select timezone"
-										options={reScheduleTimezone && reScheduleTimezone}
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the interview call link.',
+										}}
+										label="Interview Call Link*"
+										name="interviewCallLink"
+										type={InputType.TEXT}
+										placeholder="Please Add a Meeting Link"
 										required
-										isError={
-											errors['interviewTimezone'] && errors['interviewTimezone']
-										}
-										errorMsg="Please select a timezone."
 									/>
 								</div>
-								{reScheduleSlotRadio === 4 && (
-									<div
-										className={
-											reScheduleSlotRadio === 4
-												? InterviewScheduleStyle.colMd6
-												: InterviewScheduleStyle.colMd12
-										}>
-										<HRInputField
-											register={register}
-											errors={errors}
-											validationSchema={{
-												required: 'please enter the interview call link.',
-											}}
-											label="Interview Call Link*"
-											name="interviewCallLink"
-											type={InputType.TEXT}
-											placeholder="Please Add a Meeting Link"
-											required
-										/>
+							)}
+						</div>
+
+						<div className={InterviewScheduleStyle.timeSlotRow}>
+							<div className={InterviewScheduleStyle.timeSlotLabel}>
+								<label>
+									{reScheduleSlotRadio === 1 ? 'Slot 1' : 'Slot'} <span>*</span>
+								</label>
+							</div>
+							<div className={InterviewScheduleStyle.timeSlotItem}>
+								<CalenderSVG />
+
+								<DatePicker
+									required
+									{...register('slot1Date')}
+									filterDate={disabledWeekend}
+									selected={getRescheduleSlotDate[0].slot1}
+									placeholderText="Select Date"
+									onChange={(date) => {
+										setValue('slot1Date', date);
+										getSlotInformationHandler(date, 'slot1Date', 'reschedule');
+									}}
+									name="slot1Date"
+								/>
+								{errors.slot1Date && (
+									<div className={InterviewScheduleStyle.error}>
+										Please select date
 									</div>
 								)}
 							</div>
+							<div
+								className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+								<ClockIconSVG />
 
-							<div className={InterviewScheduleStyle.timeSlotRow}>
-								<div className={InterviewScheduleStyle.timeSlotLabel}>
-									<label>
-										{reScheduleSlotRadio === 1 ? 'Slot 1' : 'Slot'}{' '}
-										<span>*</span>
-									</label>
+								<DatePicker
+									required
+									{...register('slot1StartTime')}
+									selected={getRescheduleSlotDate[0].slot2}
+									onChange={(date) => {
+										setValue('slot1StartTime', date);
+										getSlotInformationHandler(
+											date,
+											'slot1StartTime',
+											'reschedule',
+										);
+									}}
+									showTimeSelect
+									showTimeSelectOnly
+									timeIntervals={60}
+									timeCaption="Time"
+									timeFormat="h:mm a"
+									dateFormat="h:mm a"
+									placeholderText="Start Time"
+									name="slot1StartTime"
+								/>
+								{errors.slot1StartTime && (
+									<div className={InterviewScheduleStyle.error}>
+										Please select start time
+									</div>
+								)}
+							</div>
+							<div
+								className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+								<ClockIconSVG />
+								<DatePicker
+									required
+									{...register('slot1EndTime')}
+									selected={getRescheduleSlotDate[0].slot3}
+									onChange={(date) => {
+										setValue('slot1EndTime', date);
+										getSlotInformationHandler(
+											date,
+											'slot1EndTime',
+											'reschedule',
+										);
+									}}
+									showTimeSelect
+									showTimeSelectOnly
+									timeIntervals={60}
+									timeCaption="Time"
+									timeFormat="h:mm a"
+									dateFormat="h:mm a"
+									placeholderText="End Time"
+									name="slot1EndTime"
+								/>
+
+								{errors.slot1EndTime && (
+									<div className={InterviewScheduleStyle.error}>
+										Please select end time
+									</div>
+								)}
+							</div>
+						</div>
+
+						{reScheduleSlotRadio === 1 && (
+							<>
+								<div className={InterviewScheduleStyle.timeSlotRow}>
+									<div className={InterviewScheduleStyle.timeSlotLabel}>
+										<label>
+											Slot 2 <span>*</span>
+										</label>
+									</div>
+									<div className={InterviewScheduleStyle.timeSlotItem}>
+										<CalenderSVG />
+
+										<DatePicker
+											required
+											{...register('slot2Date')}
+											filterDate={disabledWeekend}
+											selected={getRescheduleSlotDate[1].slot1}
+											placeholderText="Select Date"
+											onChange={(date) => {
+												setValue('slot2Date', date);
+												getSlotInformationHandler(
+													date,
+													'slot2Date',
+													'reschedule',
+												);
+											}}
+											name="slot2Date"
+										/>
+										{errors.slot2Date && (
+											<div className={InterviewScheduleStyle.error}>
+												Please select date
+											</div>
+										)}
+									</div>
+									<div
+										className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+										<ClockIconSVG />
+
+										<DatePicker
+											required
+											{...register('slot2StartTime')}
+											selected={getRescheduleSlotDate[1].slot2}
+											onChange={(date) => {
+												setValue('slot2StartTime', date);
+												getSlotInformationHandler(
+													date,
+													'slot2StartTime',
+													'reschedule',
+												);
+											}}
+											showTimeSelect
+											showTimeSelectOnly
+											timeIntervals={60}
+											timeCaption="Time"
+											timeFormat="h:mm a"
+											dateFormat="h:mm a"
+											placeholderText="Start Time"
+											name="slot2StartTime"
+										/>
+										{errors.slot2StartTime && (
+											<div className={InterviewScheduleStyle.error}>
+												Please select start time
+											</div>
+										)}
+									</div>
+									<div
+										className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+										<ClockIconSVG />
+
+										<DatePicker
+											required
+											{...register('slot2EndTime')}
+											selected={getRescheduleSlotDate[1].slot3}
+											onChange={(date) => {
+												setValue('slot2EndTime', date);
+												getSlotInformationHandler(
+													date,
+													'slot2EndTime',
+													'reschedule',
+												);
+											}}
+											showTimeSelect
+											showTimeSelectOnly
+											timeIntervals={60}
+											timeCaption="Time"
+											timeFormat="h:mm a"
+											dateFormat="h:mm a"
+											placeholderText="End Time"
+											name="slot2EndTime"
+										/>
+										{errors.slot2EndTime && (
+											<div className={InterviewScheduleStyle.error}>
+												Please select end time
+											</div>
+										)}
+									</div>
 								</div>
-								<div className={InterviewScheduleStyle.timeSlotItem}>
-									<CalenderSVG />
 
-									<DatePicker
-										required
-										{...register('slot1Date')}
-										filterDate={disabledWeekend}
-										selected={getRescheduleSlotDate[0].slot1}
-										placeholderText="Select Date"
-										onChange={(date) => {
-											setValue('slot1Date', date);
-											getSlotInformationHandler(
-												date,
-												'slot1Date',
-												'reschedule',
-											);
-										}}
-										name="slot1Date"
-									/>
-									{errors.slot1Date && (
-										<div className={InterviewScheduleStyle.error}>
-											Please select date
-										</div>
-									)}
+								<div className={InterviewScheduleStyle.timeSlotRow}>
+									<div className={InterviewScheduleStyle.timeSlotLabel}>
+										<label>
+											Slot 3 <span>*</span>
+										</label>
+									</div>
+									<div className={InterviewScheduleStyle.timeSlotItem}>
+										<CalenderSVG />
+
+										<DatePicker
+											required
+											{...register('slot3Date')}
+											filterDate={disabledWeekend}
+											selected={getRescheduleSlotDate[2].slot1}
+											placeholderText="Select Date"
+											onChange={(date) => {
+												setValue('slot3Date', date);
+												getSlotInformationHandler(
+													date,
+													'slot3Date',
+													'reschedule',
+												);
+											}}
+											name="slot3Date"
+										/>
+										{errors.slot3Date && (
+											<div className={InterviewScheduleStyle.error}>
+												Please select date
+											</div>
+										)}
+									</div>
+									<div
+										className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+										<DatePicker
+											required
+											{...register('slot3StartTime')}
+											selected={getRescheduleSlotDate[2].slot2}
+											onChange={(date) => {
+												setValue('slot3StartTime', date);
+												getSlotInformationHandler(
+													date,
+													'slot3StartTime',
+													'reschedule',
+												);
+											}}
+											showTimeSelect
+											showTimeSelectOnly
+											timeIntervals={60}
+											timeCaption="Time"
+											timeFormat="h:mm a"
+											dateFormat="h:mm a"
+											placeholderText="Start Time"
+											name="slot3StartTime"
+										/>
+										{errors.slot3StartTime && (
+											<div className={InterviewScheduleStyle.error}>
+												Please select start time
+											</div>
+										)}
+										<ClockIconSVG />
+									</div>
+									<div
+										className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+										<ClockIconSVG />
+
+										<DatePicker
+											required
+											{...register('slot3StartTime')}
+											selected={getRescheduleSlotDate[2].slot3}
+											onChange={(date) => {
+												setValue('slot3EndTime', date);
+												getSlotInformationHandler(
+													date,
+													'slot3EndTime',
+													'reschedule',
+												);
+											}}
+											showTimeSelect
+											showTimeSelectOnly
+											timeIntervals={60}
+											timeCaption="Time"
+											timeFormat="h:mm a"
+											dateFormat="h:mm a"
+											placeholderText="End Time"
+											name="slot3EndTime"
+										/>
+										{errors.slot3EndTime && (
+											<div className={InterviewScheduleStyle.error}>
+												Please select end time
+											</div>
+										)}
+									</div>
 								</div>
-								<div
-									className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
-									<ClockIconSVG />
+							</>
+						)}
 
-									<DatePicker
-										required
-										{...register('slot1StartTime')}
-										selected={getRescheduleSlotDate[0].slot2}
-										onChange={(date) => {
-											setValue('slot1StartTime', date);
-											getSlotInformationHandler(
-												date,
-												'slot1StartTime',
-												'reschedule',
-											);
-										}}
-										showTimeSelect
-										showTimeSelectOnly
-										timeIntervals={60}
-										timeCaption="Time"
-										timeFormat="h:mm a"
-										dateFormat="h:mm a"
-										placeholderText="Start Time"
-										name="slot1StartTime"
+						{reScheduleSlotRadio === 4 && (
+							<div className={InterviewScheduleStyle.row}>
+								<div className={InterviewScheduleStyle.colMd12}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										label="Additional Notes"
+										name="additionalNotes"
+										type={InputType.TEXT}
+										placeholder="Add Notes"
 									/>
-									{errors.slot1StartTime && (
-										<div className={InterviewScheduleStyle.error}>
-											Please select start time
-										</div>
-									)}
-								</div>
-								<div
-									className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
-									<ClockIconSVG />
-									<DatePicker
-										required
-										{...register('slot1EndTime')}
-										selected={getRescheduleSlotDate[0].slot3}
-										onChange={(date) => {
-											setValue('slot1EndTime', date);
-											getSlotInformationHandler(
-												date,
-												'slot1EndTime',
-												'reschedule',
-											);
-										}}
-										showTimeSelect
-										showTimeSelectOnly
-										timeIntervals={60}
-										timeCaption="Time"
-										timeFormat="h:mm a"
-										dateFormat="h:mm a"
-										placeholderText="End Time"
-										name="slot1EndTime"
-									/>
-
-									{errors.slot1EndTime && (
-										<div className={InterviewScheduleStyle.error}>
-											Please select end time
-										</div>
-									)}
 								</div>
 							</div>
-
-							{reScheduleSlotRadio === 1 && (
-								<>
-									<div className={InterviewScheduleStyle.timeSlotRow}>
-										<div className={InterviewScheduleStyle.timeSlotLabel}>
-											<label>
-												Slot 2 <span>*</span>
-											</label>
-										</div>
-										<div className={InterviewScheduleStyle.timeSlotItem}>
-											<CalenderSVG />
-
-											<DatePicker
-												required
-												{...register('slot2Date')}
-												filterDate={disabledWeekend}
-												selected={getRescheduleSlotDate[1].slot1}
-												placeholderText="Select Date"
-												onChange={(date) => {
-													setValue('slot2Date', date);
-													getSlotInformationHandler(
-														date,
-														'slot2Date',
-														'reschedule',
-													);
-												}}
-												name="slot2Date"
-											/>
-											{errors.slot2Date && (
-												<div className={InterviewScheduleStyle.error}>
-													Please select date
-												</div>
-											)}
-										</div>
-										<div
-											className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
-											<ClockIconSVG />
-
-											<DatePicker
-												required
-												{...register('slot2StartTime')}
-												selected={getRescheduleSlotDate[1].slot2}
-												onChange={(date) => {
-													setValue('slot2StartTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot2StartTime',
-														'reschedule',
-													);
-												}}
-												showTimeSelect
-												showTimeSelectOnly
-												timeIntervals={60}
-												timeCaption="Time"
-												timeFormat="h:mm a"
-												dateFormat="h:mm a"
-												placeholderText="Start Time"
-												name="slot2StartTime"
-											/>
-											{errors.slot2StartTime && (
-												<div className={InterviewScheduleStyle.error}>
-													Please select start time
-												</div>
-											)}
-										</div>
-										<div
-											className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
-											<ClockIconSVG />
-
-											<DatePicker
-												required
-												{...register('slot2EndTime')}
-												selected={getRescheduleSlotDate[1].slot3}
-												onChange={(date) => {
-													setValue('slot2EndTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot2EndTime',
-														'reschedule',
-													);
-												}}
-												showTimeSelect
-												showTimeSelectOnly
-												timeIntervals={60}
-												timeCaption="Time"
-												timeFormat="h:mm a"
-												dateFormat="h:mm a"
-												placeholderText="End Time"
-												name="slot2EndTime"
-											/>
-											{errors.slot2EndTime && (
-												<div className={InterviewScheduleStyle.error}>
-													Please select end time
-												</div>
-											)}
-										</div>
-									</div>
-
-									<div className={InterviewScheduleStyle.timeSlotRow}>
-										<div className={InterviewScheduleStyle.timeSlotLabel}>
-											<label>
-												Slot 3 <span>*</span>
-											</label>
-										</div>
-										<div className={InterviewScheduleStyle.timeSlotItem}>
-											<CalenderSVG />
-
-											<DatePicker
-												required
-												{...register('slot3Date')}
-												filterDate={disabledWeekend}
-												selected={getRescheduleSlotDate[2].slot1}
-												placeholderText="Select Date"
-												onChange={(date) => {
-													setValue('slot3Date', date);
-													getSlotInformationHandler(
-														date,
-														'slot3Date',
-														'reschedule',
-													);
-												}}
-												name="slot3Date"
-											/>
-											{errors.slot3Date && (
-												<div className={InterviewScheduleStyle.error}>
-													Please select date
-												</div>
-											)}
-										</div>
-										<div
-											className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
-											<DatePicker
-												required
-												{...register('slot3StartTime')}
-												selected={getRescheduleSlotDate[2].slot2}
-												onChange={(date) => {
-													setValue('slot3StartTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot3StartTime',
-														'reschedule',
-													);
-												}}
-												showTimeSelect
-												showTimeSelectOnly
-												timeIntervals={60}
-												timeCaption="Time"
-												timeFormat="h:mm a"
-												dateFormat="h:mm a"
-												placeholderText="Start Time"
-												name="slot3StartTime"
-											/>
-											{errors.slot3StartTime && (
-												<div className={InterviewScheduleStyle.error}>
-													Please select start time
-												</div>
-											)}
-											<ClockIconSVG />
-										</div>
-										<div
-											className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
-											<ClockIconSVG />
-
-											<DatePicker
-												required
-												{...register('slot3StartTime')}
-												selected={getRescheduleSlotDate[2].slot3}
-												onChange={(date) => {
-													setValue('slot3EndTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot3EndTime',
-														'reschedule',
-													);
-												}}
-												showTimeSelect
-												showTimeSelectOnly
-												timeIntervals={60}
-												timeCaption="Time"
-												timeFormat="h:mm a"
-												dateFormat="h:mm a"
-												placeholderText="End Time"
-												name="slot3EndTime"
-											/>
-											{errors.slot3EndTime && (
-												<div className={InterviewScheduleStyle.error}>
-													Please select end time
-												</div>
-											)}
-										</div>
-									</div>
-								</>
-							)}
-
-							{reScheduleSlotRadio === 4 && (
-								<div className={InterviewScheduleStyle.row}>
-									<div className={InterviewScheduleStyle.colMd12}>
-										<HRInputField
-											register={register}
-											errors={errors}
-											label="Additional Notes"
-											name="additionalNotes"
-											type={InputType.TEXT}
-											placeholder="Add Notes"
-										/>
-									</div>
-								</div>
-							)}
-						</form>
-					</div>
-				</div>
-
-				<div className={InterviewScheduleStyle.formPanelAction}>
-					<button
-						// disabled={isLoading}
-						type="submit"
-						onClick={handleSubmit(reScheduleInterviewAPIHandler)}
-						className={InterviewScheduleStyle.btnPrimary}>
-						Save
-					</button>
-					<button
-						onClick={() => {
-							closeModal();
-						}}
-						className={InterviewScheduleStyle.btn}>
-						Cancel
-					</button>
+						)}
+					</form>
 				</div>
 			</div>
-		</WithLoader>
+
+			<div className={InterviewScheduleStyle.formPanelAction}>
+				<button
+					// disabled={isLoading}
+					type="submit"
+					onClick={handleSubmit(reScheduleInterviewAPIHandler)}
+					className={InterviewScheduleStyle.btnPrimary}>
+					Save
+				</button>
+				<button
+					onClick={() => {
+						closeModal();
+					}}
+					className={InterviewScheduleStyle.btn}>
+					Cancel
+				</button>
+			</div>
+		</div>
 	);
 };
 

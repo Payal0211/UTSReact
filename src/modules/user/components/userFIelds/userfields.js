@@ -574,11 +574,11 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const uploadFileHandler = useCallback(
 		async (fileData) => {
 			setIsLoading(true);
-			if (fileData?.type !== 'image/png' && fileData?.type !== 'image/jpeg') {
+			if (fileData?.type !== 'image/png' && fileData?.type !== 'image/jpeg'  && fileData?.type !== "image/svg+xml") {
 				setValidation({
 					...getValidation,
 					systemFileUpload:
-						'Uploaded file is not a valid, Only jpg, jpeg, png files are allowed',
+						'Uploaded file is not a valid, Only jpg, jpeg, png, svg files are allowed',
 				});
 				setIsLoading(false);
 			} else if (fileData?.size > 2000000) {

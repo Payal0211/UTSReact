@@ -183,7 +183,7 @@ const CompanyList = () => {
 			 */}
 			<div className={allCompanyStyles.tableDetails}>
 				{
-					<WithLoader>
+					<WithLoader c>
 						<Table
 							locale={{
 								emptyText: (
