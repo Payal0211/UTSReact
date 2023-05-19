@@ -5,9 +5,11 @@ import { BsThreeDots } from 'react-icons/bs';
 import { AiFillLinkedin } from 'react-icons/ai';
 import { Divider, Dropdown, Menu, Modal } from 'antd';
 import { Link, useParams } from 'react-router-dom';
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import UpdateTRModal from "../../components/updateTRModal/updateTRModal"
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import { UserAccountRole } from 'constants/application';
 
 
 
@@ -21,8 +23,8 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 	}
 
 
-	let LoggedInUserTypeID = JSON.parse(localStorage.getItem("LoggedInUserTypeID"))
 
+	const userSessionMemo = useMemo(() => UserSessionManagementController.getUserMiscellaneousData(), [])
 	return (
 		<>
 			<div className={CompanyProfileCardStyle.companyProfileContainer}>
@@ -140,7 +142,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 										{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 									</span>
 
-									{apiData !== "Cancelled" && parseInt(LoggedInUserTypeID) === 2 && (
+									{apiData !== "Cancelled" && userSessionMemo?.loggedInUserTypeID === UserAccountRole.DEVELOPER && (
 										<button onClick={() => { setUpdateTR(true); getHRDetails() }}>Update TR</button>
 									)}
 								</div>
