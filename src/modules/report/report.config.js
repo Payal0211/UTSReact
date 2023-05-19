@@ -1,4 +1,6 @@
 import { Tooltip } from 'antd';
+import { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 export const reportConfig = {
 	/**------------- DEMAND FUNNEL REPORT------------------  */
@@ -431,6 +433,219 @@ export const reportConfig = {
 				child: filterList?.CompanyCategory?.filter(
 					(item, index) => index !== 0 && item,
 				),
+			},
+		];
+	},
+	/**----------------- JD DUMP REPORT ------------------------------- */
+	JDDumpTableConfig: (
+		setJDSkillModal,
+		setHRSkillModal,
+		setJDRoleRespModal,
+		setHRRoleRespModal,
+		setJDReqModal,
+		setHRReqModal,
+		setSelectedRecord,
+	) => {
+		return [
+			{
+				title: 'HR Created Date',
+				dataIndex: 'hrCreatedDate',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'HR Number',
+				dataIndex: 'hrNumber',
+				key: 'hrNumber',
+				align: 'left',
+				render: (text) => <Fragment key={text}>{text ? text : 'NA'}</Fragment>,
+				// render: (text) => {
+				// 	return text ? (
+				// 		<Link
+				// 			to={`/deal/${text}`}
+				// 			style={{ color: 'black', textDecoration: 'underline' }}>
+				// 			{text}
+				// 		</Link>
+				// 	) : (
+				// 		'NA'
+				// 	);
+				// },
+			},
+			{
+				title: 'JD',
+				dataIndex: 'jd',
+				key: 'jd',
+				align: 'left',
+				render: (text) => {
+					return text ? (
+						<Link
+							to={`#`}
+							style={{ color: 'black', textDecoration: 'underline' }}>
+							View ID
+						</Link>
+					) : (
+						'NA'
+					);
+				},
+			},
+			{
+				title: 'Over All %',
+				dataIndex: 'overAllPercentage',
+				key: 'overAllPercentage',
+				align: 'left',
+				render: (text) => {
+					return text ? text : 'NA';
+				},
+			},
+			{
+				title: 'Skill %',
+				dataIndex: 'skillPercentage',
+				key: 'skillPercentage',
+				align: 'left',
+				render: (text) => {
+					return text ? text : 'NA';
+				},
+			},
+			{
+				title: 'Role Resp %',
+				dataIndex: 'rolesResponsibilitiesPercentage',
+				key: 'rolesResponsibilitiesPercentage',
+				align: 'left',
+				render: (text) => {
+					return text ? text : 'NA';
+				},
+			},
+			{
+				title: 'Req %',
+				dataIndex: 'requirementPercentage',
+				key: 'requirementPercentage',
+				align: 'left',
+				render: (text) => {
+					return text ? text : 'NA';
+				},
+			},
+			{
+				title: 'JD Skill',
+				dataIndex: 'jdDumpSkill',
+				key: 'jdDumpSkill',
+				align: 'left',
+				render: (text) => {
+					return text ? (
+						<p
+							onClick={() => {
+								setJDSkillModal(true);
+								setSelectedRecord(text);
+							}}
+							style={{ color: 'black', textDecoration: 'underline' }}>
+							View JD Skill
+						</p>
+					) : (
+						'NA'
+					);
+				},
+			},
+			{
+				title: 'HR Skill',
+				dataIndex: 'hrSkill',
+				key: 'hrSkill',
+				align: 'left',
+				render: (text) => {
+					return text ? (
+						<p
+							onClick={() => {
+								setHRSkillModal(true);
+								setSelectedRecord(text);
+							}}
+							style={{ color: 'black', textDecoration: 'underline' }}>
+							View HR Skill
+						</p>
+					) : (
+						'NA'
+					);
+				},
+			},
+			{
+				title: 'JD Roles & Resp',
+				dataIndex: 'jdDumpRolesResponsibilities',
+				key: 'jdDumpRolesResponsibilities',
+				align: 'left',
+				render: (text) => {
+					return text ? (
+						<p
+							onClick={() => {
+								setJDRoleRespModal(true);
+								setSelectedRecord(text);
+							}}
+							style={{ color: 'black', textDecoration: 'underline' }}>
+							View JD Roles & Responsibilities
+						</p>
+					) : (
+						'NA'
+					);
+				},
+			},
+			{
+				title: 'HR Roles & Resp',
+				dataIndex: 'hrRolesResponsibilities',
+				key: 'hrRolesResponsibilities',
+				align: 'left',
+				render: (text) => {
+					return text ? (
+						<p
+							onClick={() => {
+								setHRRoleRespModal(true);
+								setSelectedRecord(text);
+							}}
+							style={{ color: 'black', textDecoration: 'underline' }}>
+							View HR Roles & Responsibilities
+						</p>
+					) : (
+						'NA'
+					);
+				},
+			},
+			{
+				title: 'JD Req',
+				dataIndex: 'jdRequirement',
+				key: 'jdRequirement',
+				align: 'left',
+				render: (text) => {
+					return text ? (
+						<p
+							onClick={() => {
+								setJDReqModal(true);
+								setSelectedRecord(text);
+							}}
+							style={{ color: 'black', textDecoration: 'underline' }}>
+							View JD Requirement
+						</p>
+					) : (
+						'NA'
+					);
+				},
+			},
+			{
+				title: 'HR Req',
+				dataIndex: 'hrRequirement',
+				key: 'hrRequirement',
+				align: 'left',
+				render: (text) => {
+					return text ? (
+						<p
+							onClick={() => {
+								setHRReqModal(true);
+								setSelectedRecord(text);
+							}}
+							style={{ color: 'black', textDecoration: 'underline' }}>
+							View HR Requirement
+						</p>
+					) : (
+						'NA'
+					);
+				},
 			},
 		];
 	},

@@ -54,12 +54,14 @@ export class ReportType {
 	static DEMAND_FUNNEL = 'DemandFunnel/';
 	static SUPPLY_FUNNEL = 'SupplyFunnel/';
 	static TEAM_DEMAND_FUNNEL = 'TeamDemandFunnel/';
+	static JD_PARSING_DUMP = 'JDParsingDump/';
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
 	static SUMMARY = 'Summary';
 	static FILTERS = 'Filters';
 	static HRDETAILS = 'HRDetails';
+	static JD_PARSING_DUMP_REPORT = 'JDParsingDumpReport';
 }
 export class EngagementAPI {
 	static FILTER = 'Filters';
@@ -249,6 +251,6 @@ export class IncentiveReport {
 	static GET_LIST = 'List';
 	static GET_INCENTIVE_REPORT_DETAILS = 'GetIncentiveReportDetails';
 	static GET_CONTRACT_BOOSTER = 'GetIncentiveReportDetailsContractBooster';
-	static GET_CONTRACT_BOOSTER = 'GetIncentiveReportDetailsContractBooster';
+
 	static GET_INCENTIVE_REPORT_AMNR = 'GetIncentiveReportDetailsAMNR';
 }

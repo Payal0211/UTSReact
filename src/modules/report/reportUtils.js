@@ -73,3 +73,39 @@ export const transformTeamDemandHierarchy = (data) => {
 
 	return transformedDataChildren;
 };
+
+export const formatJDDumpReport = (jdDumpData) => {
+	return jdDumpData?.rows.map((item, index) => ({
+		key: `JD_Dump${index + 1}`,
+		hrCreatedDate: item.hrCreatedDate,
+		hrNumber: item.hrNumber,
+		jd: item.jd,
+		overAllPercentage: item.overAllRowWise,
+		skillPercentage: item.JDSkillPercentage,
+		rolesResponsibilitiesPercentage: item.JDRolesResponsibilities,
+		requirementPercentage: item.JDRequirement,
+		jdDumpSkill: item.jdDumpSkill,
+		hrSkill: item.hrSkill,
+		jdDumpRolesResponsibilities: item.jdDumpRolesResponsibilities,
+		hrRolesResponsibilities: item.hrRolesResponsibilities,
+		jdRequirement: item.jdRequirement,
+		hrRequirement: item.hrRequirement,
+		overAllPer: item?.overAllPercentage,
+		skillPer: item?.skillPercentage,
+		roleResPer: item?.rolesResponsibilitiesPercentage,
+		reqPer: item?.requirementPercentage,
+	}));
+};
+
+export const jdDumpSearch = (e, apiData) => {
+	let filteredData = apiData?.filter((val) => {
+		return val?.hrNumber.includes(e.target.value);
+		//  ||
+		// val?.overAllPercentage.includes(e.target.value) ||
+		// val?.skillPercentage.includes(e.target.value) ||
+		// val?.rolesResponsibilitiesPercentage.includes(e.target.value) ||
+		// val.requirementPercentage.includes(e.target.value)
+	});
+
+	return filteredData;
+};

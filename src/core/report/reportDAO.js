@@ -337,4 +337,35 @@ export const ReportDAO = {
 			return errorDebug(error, 'ReportDAO.teamDemandFunnelHRDetailsRequestDAO');
 		}
 	},
+	jdParsingDumpReportRequestDAO: async function (reportData) {
+		try {
+			const jdParsingDumpResponse = await ReportAPI.jdParsingDumpReportRequest(
+				reportData,
+			);
+
+			if (jdParsingDumpResponse) {
+				const statusCode = jdParsingDumpResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult =
+						jdParsingDumpResponse?.responseBody?.details ||
+						jdParsingDumpResponse?.responseBody;
+
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return jdParsingDumpResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return jdParsingDumpResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.jdParsingDumpReportRequestDAO');
+		}
+	},
 };

@@ -355,7 +355,7 @@ const HRFields = ({
 	}, []);
 
 	const watchPostalCode = watch('postalCode');
-
+	console.log(errors, '-errors');
 	const postalCodeHandler = useCallback(
 		async (flag) => {
 			const countryResponse = await MasterDAO.getCountryByPostalCodeRequestDAO({
@@ -1483,7 +1483,7 @@ const HRFields = ({
 									options={country?.getCountry || []}
 									name="country"
 									isError={errors['country'] && errors['country']}
-									required
+									required={!controlledCountryName}
 									errorMsg={'Please select the country.'}
 								/>
 							</div>
