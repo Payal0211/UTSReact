@@ -65,8 +65,6 @@ const LoginScreen = () => {
 								Please enter your log in information and get started
 							</p>
 						</div>
-						<br />
-						<hr />
 						<div className={loginStyle.loginFormPart}>
 							<InputField
 								/* onKeyDownHandler={(e) => {
