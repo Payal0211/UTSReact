@@ -90,57 +90,109 @@ export const reportConfig = {
 			};
 		});
 	},
-	demandFunnelHRDetails: [
-		{
-			title: 'HR#',
-			dataIndex: 'hR_No',
-			key: 'hR_No',
-			align: 'left',
-			width: 250,
-		},
-		{
-			title: 'Sales Person',
-			dataIndex: 'salesPerson',
-			key: 'salesPerson',
-			align: 'left',
-			width: 250,
-		},
-		{
-			title: 'Company Name',
-			dataIndex: 'compnayName',
-			key: 'compnayName',
-			align: 'left',
-			width: 250,
-		},
-		{
-			title: 'Role',
-			dataIndex: 'role',
-			key: 'role',
-			align: 'left',
-			width: 250,
-		},
-		{
-			title: 'Managed/Self',
-			dataIndex: 'managed_Self',
-			key: 'managed_Self',
-			align: 'left',
-			width: 250,
-		},
-		{
-			title: 'Availability',
-			dataIndex: 'availability',
-			key: 'availability',
-			align: 'left',
-			width: 250,
-		},
-		{
-			title: '# of TR',
-			dataIndex: 'talentName',
-			key: 'talentName',
-			align: 'left',
-			width: 250,
-		},
-	],
+	demandFunnelHRDetails: (stage) => {
+		return stage === 'HR Lost'
+			? [
+					{
+						title: 'HR#',
+						dataIndex: 'hR_No',
+						key: 'hR_No',
+						align: 'left',
+						width: 250,
+					},
+					{
+						title: 'Sales Person',
+						dataIndex: 'salesPerson',
+						key: 'salesPerson',
+						align: 'left',
+						width: 250,
+					},
+					{
+						title: 'Company Name',
+						dataIndex: 'compnayName',
+						key: 'compnayName',
+						align: 'left',
+						width: 250,
+					},
+					{
+						title: 'Role',
+						dataIndex: 'role',
+						key: 'role',
+						align: 'left',
+						width: 250,
+					},
+					{
+						title: 'Managed/Self',
+						dataIndex: 'managed_Self',
+						key: 'managed_Self',
+						align: 'left',
+						width: 250,
+					},
+					{
+						title: 'Availability',
+						dataIndex: 'availability',
+						key: 'availability',
+						align: 'left',
+						width: 250,
+					},
+			  ]
+			: [
+					{
+						title: 'HR#',
+						dataIndex: 'hR_No',
+						key: 'hR_No',
+						align: 'left',
+						width: 250,
+					},
+					{
+						title: 'Sales Person',
+						dataIndex: 'salesPerson',
+						key: 'salesPerson',
+						align: 'left',
+						width: 250,
+					},
+					{
+						title: 'Company Name',
+						dataIndex: 'compnayName',
+						key: 'compnayName',
+						align: 'left',
+						width: 250,
+					},
+					{
+						title: 'Role',
+						dataIndex: 'role',
+						key: 'role',
+						align: 'left',
+						width: 250,
+					},
+					{
+						title: 'Managed/Self',
+						dataIndex: 'managed_Self',
+						key: 'managed_Self',
+						align: 'left',
+						width: 250,
+					},
+					{
+						title: 'Availability',
+						dataIndex: 'availability',
+						key: 'availability',
+						align: 'left',
+						width: 250,
+					},
+					{
+						title:
+							stage === 'TR Required' ||
+							stage === 'TR Accepted' ||
+							stage === 'HR - Waiting For More Information'
+								? '# of TR'
+								: 'Talent Name',
+						dataIndex: 'talentName',
+						key: 'talentName',
+						align: 'left',
+						width: 250,
+					},
+			  ];
+	},
 	demandReportFilterListConfig: () => {
 		return [
 			{ name: 'Hiring Need' },
