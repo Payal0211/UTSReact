@@ -1,9 +1,11 @@
 import CompanyProfileCardStyle from './companyProfile.module.css';
+
+
 import { BsThreeDots } from 'react-icons/bs';
 import { AiFillLinkedin } from 'react-icons/ai';
 import { Divider, Dropdown, Menu, Modal } from 'antd';
 import { Link, useParams } from 'react-router-dom';
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import UpdateTRModal from "../../components/updateTRModal/updateTRModal"
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
@@ -18,7 +20,8 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 		setUpdateTRDetails(response?.responseBody)
 	}
 
-	let LoggedInUserTypeID = localStorage.getItem("LoggedInUserTypeID")
+
+	let LoggedInUserTypeID = JSON.parse(localStorage.getItem("LoggedInUserTypeID"))
 
 	return (
 		<>
@@ -137,7 +140,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 										{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 									</span>
 
-									{apiData !== "Cancelled" && LoggedInUserTypeID === "2" && (
+									{apiData !== "Cancelled" && parseInt(LoggedInUserTypeID) === 2 && (
 										<button onClick={() => { setUpdateTR(true); getHRDetails() }}>Update TR</button>
 									)}
 								</div>

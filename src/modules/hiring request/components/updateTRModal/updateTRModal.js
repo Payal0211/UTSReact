@@ -12,8 +12,8 @@ import { Modal } from 'antd';
 
 const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) => {
     const [count, setCount] = useState(0)
-    const [disable, setDisable] = useState(false)
-
+    const [disable, setDisable] = useState(true)
+    console.log(disable, "disable")
     const {
         register,
         handleSubmit,
@@ -81,10 +81,12 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
 
     const increment = () => {
         setCount(count + 1)
+        setDisable(false)
     }
     const decrement = () => {
         if (count > 0) {
             setCount(count - 1)
+            setDisable(false)
         }
     }
     return (
@@ -119,7 +121,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                                 name="currentTR"
                                 setValue={setValue}
                                 value={count}
-                                onChangeHandler={(e) => { setCount(parseInt(e.target.value)); setDisable(true); }}
+                                onChangeHandler={(e) => { setCount(parseInt(e.target.value)); setDisable(false); }}
                                 type={InputType.NUMBER}
                                 placeholder="Enter Current TR"
                                 required
