@@ -52,13 +52,13 @@ const LoginScreen = () => {
 			<div className={loginStyle.loginContainer}>
 				<div className={loginStyle.loginColumn_1}>
 					<div className={loginStyle.loginColumn_1_Body}>
-						<span>
+						<div className={loginStyle.loginLogo}>
 							<img
 								alt="avatar"
 								className={loginStyle.uplersTalentLogo}
 								src="https://staging.project-progress.net/html/uplers-talent-solutions/images/login-logo.svg"
 							/>
-						</span>
+						</div>
 						<div className={loginStyle.welcomePart}>
 							<h1 className={loginStyle.welcomeTitle}>Welcome</h1>
 							<p className={loginStyle.welcomeSubtitle}>

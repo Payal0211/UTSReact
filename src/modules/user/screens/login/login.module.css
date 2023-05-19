@@ -1,14 +1,14 @@
-.loginContainer{
-    display: flex;
-    background-color: var(--background-color-dim);
-    height: 100vh;
-    flex-wrap: wrap;
-    overflow-x  : hidden;
+.loginContainer {
+  display: flex;
+  background-color: var(--background-color-dim);
+  height: 100vh;
+  flex-wrap: wrap;
+  overflow-x: hidden;
 }
 
-.loginColumn_1{
-    width: 35%;
-    /* transition: all .6s ease; */
+.loginColumn_1 {
+  width: 35%;
+  /* transition: all .6s ease; */
 }
 
 /* .loginColumn_1:hover {
@@ -22,83 +22,84 @@
     background-color: var(--background-color-dim);
 } */
 
-.loginColumn_1_Body{
-    width: 90%;
-    margin-top: 15%;
-    margin-left:  auto;
-    margin-right: auto;
+.loginColumn_1_Body {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5vh 0;
 }
 
-.uplersTalentLogo{
-    width: 100%;
-    max-width: 250px;
-    height: auto;
-}
-.welcomePart{
-    margin-top: 50px;
-}
-.welcomeTitle{
-    font-weight: 500;
-    letter-spacing: 1px;
-}
-.welcomeSubtitle{
-    font-size: 1.1rem;
+.loginLogo {
 }
 
-.forgotpassword{
-    font-size: 1rem;
-    text-decoration: underline;
-    color: var(--background-color-jade);
-    margin:25px 0 !important;
+.uplersTalentLogo {
+  width: 100%;
+  max-width: 250px;
+  height: auto;
 }
-.loginFormPart{
-margin-top: 30px;
+.welcomePart {
+  margin-top: 50px;
 }
-
-.loginColumn_2{
-    width: 65%;
-    background-color: var(--color-sunlight);
-    /* transition: all .6s ease; */
+.welcomeTitle {
+  font-weight: 500;
+  letter-spacing: 1px;
 }
-
-.loginHeadline{
-    width: 90%;
-    margin: 0 auto;
-    position: relative;
-    height: 100%;
+.welcomeSubtitle {
+  font-size: 1.1rem;
 }
 
-.loginHeadline h1{
-    font-size: 2rem;
-    font-weight: bolder;
-    letter-spacing: 0.3rem;
-    margin: 0;
-    position: absolute;
-    top: auto;
-    left: 0;
-    right: 0;
-    bottom: 30px;
+.forgotpassword {
+  font-size: 1rem;
+  text-decoration: underline;
+  color: var(--background-color-jade);
+  margin: 25px 0 !important;
+}
+.loginFormPart {
+  margin-top: 30px;
 }
 
+.loginColumn_2 {
+  width: 65%;
+  background-color: var(--color-sunlight);
+  /* transition: all .6s ease; */
+}
+
+.loginHeadline {
+  width: 90%;
+  margin: 0 auto;
+  position: relative;
+  height: 100%;
+}
+
+.loginHeadline h1 {
+  font-size: 2rem;
+  font-weight: bolder;
+  letter-spacing: 0.3rem;
+  margin: 0;
+  position: absolute;
+  top: auto;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+}
 
 /*---------------------- FOR SCREEN LESS THAN 767PX ------------------- */
 @media screen and (max-width: 767px) {
-.uplersTalentLogo {
+  .uplersTalentLogo {
     width: 100%;
     max-width: 150px;
     height: auto;
-}
-.loginColumn_1 {
+  }
+  .loginColumn_1 {
     display: flex;
     align-items: center;
     width: 100%;
     margin-bottom: 10%;
-}
-.loginColumn_1_Body{
+  }
+  .loginColumn_1_Body {
     margin-top: 5%;
-}
-.loginColumn_2 {
+  }
+  .loginColumn_2 {
     display: none;
-}
-
+  }
 }
