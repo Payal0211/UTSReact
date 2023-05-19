@@ -633,6 +633,7 @@ const EditHRFields = ({
     /** To check Duplicate email exists End */
 
     const [messageAPI, contextHolder] = message.useMessage();
+    var watchJDUrl = watch("jdURL")
     setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
     const hrSubmitHandler = useCallback(
         async (d, type = SubmitType.SAVE_AS_DRAFT) => {
@@ -643,8 +644,8 @@ const EditHRFields = ({
                 getHRdetails?.addHiringRequest?.contactId,
                 isHRDirectPlacement,
                 addHRResponse,
-                getHRdetails?.addHiringRequest?.jdfilename,
-                getHRdetails?.directPlacement?.jdURL
+                getUploadFileData && getUploadFileData,
+                watchJDUrl
             );
             if (type === SubmitType.SAVE_AS_DRAFT) {
                 if (_isNull(watch('clientName'))) {
@@ -663,7 +664,7 @@ const EditHRFields = ({
                 type !== SubmitType.SAVE_AS_DRAFT && setTitle('Edit Debriefing HR');
                 type !== SubmitType.SAVE_AS_DRAFT &&
                     setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
-                setFromEditDeBriefing({ ...fromEditDeBriefing, addNewHiringRequest: true });
+                // setFromEditDeBriefing({ ...fromEditDeBriefing, addNewHiringRequest: true });
 
                 type === SubmitType.SAVE_AS_DRAFT &&
                     messageAPI.open({
@@ -683,7 +684,7 @@ const EditHRFields = ({
             setTitle,
             tabFieldDisabled,
             watch,
-            getHRdetails
+            getHRdetails, getUploadFileData
         ],
     );
     useEffect(() => {
@@ -726,7 +727,7 @@ const EditHRFields = ({
         setValue("clientName", getHRdetails?.fullClientName)
         setValue("companyName", getHRdetails?.company)
         setValue("hrTitle", getHRdetails?.addHiringRequest?.requestForTalent)
-        setValue("jdURL", getHRdetails?.addHiringRequest?.jdurl)
+        setValue("jdURL", getHRdetails?.directPlacement?.jdURL)
         setValue("minimumBudget", getHRdetails?.salesHiringRequest_Details?.budgetFrom)
         setValue("maximumBudget", getHRdetails?.salesHiringRequest_Details?.budgetTo)
         setValue("NRMargin", getHRdetails?.addHiringRequest?.talentCostCalcPercentage)
@@ -750,6 +751,7 @@ const EditHRFields = ({
             getListData(getHRdetails?.clientName, getHRdetails?.clientName.substring(0, 3));
 
         }
+        setUploadFileData(getHRdetails?.addHiringRequest?.jdfilename)
     }, [getHRdetails])
     useEffect(() => {
         if (localStorage.getItem("hrID")) {
@@ -1027,16 +1029,18 @@ const EditHRFields = ({
                                     disabled={!_isNull(watch('jdURL'))}
                                     register={register}
                                     leadingIcon={<UploadSVG />}
-                                    label="Job Description (PDF)"
+                                    label="Job Description"
                                     name="jdExport"
                                     type={InputType.BUTTON}
-                                    value={getHRdetails?.addHiringRequest?.jdfilename ? getHRdetails?.addHiringRequest?.jdfilename : "Upload JD File"}
+                                    buttonLabel="Upload JD File"
                                     setValue={setValue}
                                     onClickHandler={() => setUploadModal(true)}
+
+                                    errors={errors}
                                 />
                             ) : (
                                 <div className={HRFieldStyle.uploadedJDWrap}>
-                                    <label>Job Description (PDF)</label>
+                                    <label>Job Description</label>
                                     <div className={HRFieldStyle.uploadedJDName}>
                                         {getUploadFileData}{' '}
                                         <CloseSVG
@@ -1044,6 +1048,7 @@ const EditHRFields = ({
                                             onClick={() => {
                                                 // setJDParsedSkills({});
                                                 setUploadFileData('');
+                                                setValue("jdExport", "");
                                             }}
                                         />
                                     </div>
@@ -1110,8 +1115,8 @@ const EditHRFields = ({
                                 validationSchema={{
                                     required: 'please enter the minimum budget.',
                                     min: {
-                                        value: 0,
-                                        message: `please don't enter the value less than 0`,
+                                        value: 1,
+                                        message: `please don't enter the value less than 1`,
                                     },
                                 }}
                             />
@@ -1274,7 +1279,7 @@ const EditHRFields = ({
                                     label="Required Experience"
                                     errors={errors}
                                     validationSchema={{
-                                        required: 'please enter the years.',
+                                        required: 'please add somthing about the company',
                                         min: {
                                             value: 0,
                                             message: `please don't enter the value less than 0`,

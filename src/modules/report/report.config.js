@@ -588,7 +588,7 @@ export const reportConfig = {
 								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
-							View JD Skill
+							View
 						</p>
 					) : (
 						'NA'
@@ -608,7 +608,7 @@ export const reportConfig = {
 								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
-							View HR Skill
+							View
 						</p>
 					) : (
 						'NA'
@@ -628,7 +628,7 @@ export const reportConfig = {
 								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
-							View JD Roles & Responsibilities
+							View
 						</p>
 					) : (
 						'NA'
@@ -648,7 +648,7 @@ export const reportConfig = {
 								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
-							View HR Roles & Responsibilities
+							View
 						</p>
 					) : (
 						'NA'
@@ -668,7 +668,7 @@ export const reportConfig = {
 								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
-							View JD Requirement
+							View
 						</p>
 					) : (
 						'NA'
@@ -688,7 +688,7 @@ export const reportConfig = {
 								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
-							View HR Requirement
+							View
 						</p>
 					) : (
 						'NA'

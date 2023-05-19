@@ -51,9 +51,9 @@ const UserList = () => {
 				pageData
 					? pageData
 					: {
-						pageNumber: 1,
-						totalRecord: 100,
-					},
+							pageNumber: 1,
+							totalRecord: 100,
+					  },
 			);
 			if (response.statusCode === HTTPStatusCode.OK) {
 				setTotalRecords(response && response?.responseBody?.details?.totalrows);

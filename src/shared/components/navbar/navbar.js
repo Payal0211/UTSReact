@@ -33,7 +33,7 @@ const Navbar = ({ fullName }) => {
 				<div
 					id="logo"
 					className={navbarStyles.navHeading}>
-					<Link to={UTSRoutes.HOMEROUTE}>
+					<Link to={UTSRoutes.ALLHIRINGREQUESTROUTE}>
 						<img
 							alt="logo"
 							className={navbarStyles.uplersTalentLogo}

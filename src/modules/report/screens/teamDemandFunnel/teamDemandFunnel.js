@@ -820,7 +820,9 @@ const TeamDemandFunnelScreen = () => {
 				</div>
 			)}
 			{teamDemandFunnelModal && (
-				<WithLoader showLoader={isLoading}>
+				<WithLoader
+					showLoader={isLoading}
+					className="mainLoader">
 					<Modal
 						width="1000px"
 						centered

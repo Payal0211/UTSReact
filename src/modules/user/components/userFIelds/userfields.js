@@ -319,9 +319,11 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	// }, []);
 
 	const getTeamOfUserFrom = useCallback(async () => {
-		if(watchDepartMentName?.id){
-		let response = await MasterDAO.getTeamListRequestDAO(watchDepartMentName?.id);
-		setTeamUserForm(response?.responseBody?.details);
+		if (watchDepartMentName?.id) {
+			let response = await MasterDAO.getTeamListRequestDAO(
+				watchDepartMentName?.id,
+			);
+			setTeamUserForm(response?.responseBody?.details);
 		}
 	}, [watchDepartMentName?.id]);
 
@@ -507,10 +509,10 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		// getTeamType();
 		getLevelType();
 		getGEO();
-    	}, []);
-  useEffect(() => {
+	}, []);
+	useEffect(() => {
 		getTeamOfUserFrom();
-	}, [watchDepartMentName?.id])
+	}, [watchDepartMentName?.id]);
 
 	useEffect(() => {
 		if (id !== 0) {
@@ -572,11 +574,11 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const uploadFileHandler = useCallback(
 		async (fileData) => {
 			setIsLoading(true);
-			if (fileData?.type !== 'image/png' && fileData?.type !== 'image/jpeg') {
+			if (fileData?.type !== 'image/png' && fileData?.type !== 'image/jpeg'  && fileData?.type !== "image/svg+xml") {
 				setValidation({
 					...getValidation,
 					systemFileUpload:
-						'Uploaded file is not a valid, Only jpg, jpeg, png files are allowed',
+						'Uploaded file is not a valid, Only jpg, jpeg, png, svg files are allowed',
 				});
 				setIsLoading(false);
 			} else if (fileData?.size > 2000000) {
@@ -636,7 +638,6 @@ const UsersFields = ({ id, setLoading, loading }) => {
 
 	useEffect(() => {
 		if (getTeamUserForm.length > 1) {
-		
 			let _selectedValues = userDetails?.teamID?.split(',');
 			if (_selectedValues) {
 				let _allSelectedTeamData = [];
@@ -663,6 +664,18 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		}
 	}, [userDetails, getTeamUserForm]);
 
+	const clearDropDown = () => {
+		if (
+			watchDepartMentName?.value !== 'Demand' &&
+			watchLevelName?.value !== 'Head'
+		) {
+			setTeamTypeEdit([]);
+			setValue('team', '');
+		} else {
+			setTeamTypeEdit([]);
+			setValue('team', '');
+		}
+	};
 	useEffect(() => {
 		if (getLevelList.length > 1) {
 			getLevelList?.map((item) => {
@@ -694,8 +707,6 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		setGEOType(modifiedGeo);
 		setValue('geo', modifiedGeo);
 	}, [userDetails, GEO]);
-
-
 
 	useEffect(() => {
 		if (enableALlFieldsMemo) {
@@ -851,7 +862,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 												label={'Department'}
 												defaultValue={'Select'}
 												onClickHandler={() => {
-													setTeamTypeEdit([]);
+													clearDropDown();
 												}}
 												options={getDepartment && getDepartment}
 												name="departMent"
@@ -877,7 +888,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 														setValue={setValue}
 														register={register}
 														onClickHandler={() => {
-															setTeamTypeEdit([]);
+															clearDropDown();
 														}}
 														label={'Level'}
 														defaultValue={'Select'}
@@ -1076,7 +1087,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											defaultValue={
 												enableALlFieldsMemo ? userDetails?.skypeId : null
 											}
-											value={watch('skypeID')}
+											setValue={setValue}
+											// value={watch('skypeID')}
 											// errors={errors}
 											// validationSchema={{
 											// 	required: 'Please enter skype ID',

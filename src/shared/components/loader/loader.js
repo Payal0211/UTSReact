@@ -4,12 +4,12 @@ const antIcon = (
 	<LoadingOutlined
 		style={{
 			fontSize: 50,
-			display: 'flex',
-			flexDirection: 'row',
-			alignItems: 'center',
-			justifyContent: 'center',
-			marginTop: '300px',
-			marginLeft: '850px',
+			// display: 'flex',
+			// flexDirection: 'row',
+			// alignItems: 'center',
+			// justifyContent: 'center',
+			// marginTop: '300px',
+			// marginLeft: '850px',
 			fontWeight: 500,
 			color: `var(--uplers-black)`,
 		}}
@@ -17,8 +17,19 @@ const antIcon = (
 	/>
 );
 
-const WithLoader = ({ showLoader, children }) => {
-	return <>{showLoader ? <Spin indicator={antIcon} /> : children}</>;
+const WithLoader = ({ showLoader, children, className }) => {
+	return (
+		<>
+			{showLoader ? (
+				<Spin
+					indicator={antIcon}
+					className={className}
+				/>
+			) : (
+				children
+			)}
+		</>
+	);
 };
 
 export default WithLoader;

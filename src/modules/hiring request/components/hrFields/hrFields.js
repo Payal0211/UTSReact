@@ -355,7 +355,7 @@ const HRFields = ({
 	}, []);
 
 	const watchPostalCode = watch('postalCode');
-	console.log(errors, '-errors');
+
 	const postalCodeHandler = useCallback(
 		async (flag) => {
 			const countryResponse = await MasterDAO.getCountryByPostalCodeRequestDAO({
@@ -1096,8 +1096,8 @@ const HRFields = ({
 								validationSchema={{
 									required: 'please enter the minimum budget.',
 									min: {
-										value: 0,
-										message: `please don't enter the value less than 0`,
+										value: 1,
+										message: `please don't enter the value less than 1`,
 									},
 								}}
 							/>
@@ -1218,7 +1218,7 @@ const HRFields = ({
 									label="Required Experience"
 									errors={errors}
 									validationSchema={{
-										required: 'please enter the years.',
+										required: 'please add somthing about the company',
 										min: {
 											value: 0,
 											message: `please don't enter the value less than 0`,

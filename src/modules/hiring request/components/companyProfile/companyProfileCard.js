@@ -1,13 +1,27 @@
 import CompanyProfileCardStyle from './companyProfile.module.css';
+import React, { useState, useEffect, useMemo } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { AiFillLinkedin } from 'react-icons/ai';
-import { Divider, Dropdown, Menu } from 'antd';
-import { Link } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { Divider, Dropdown, Menu, Modal } from 'antd';
+import { Link, useParams } from 'react-router-dom';
+import UpdateTRModal from '../../components/updateTRModal/updateTRModal';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import { UserAccountRole } from 'constants/application';
 import { NetworkInfo } from 'constants/network';
 
-const CompanyProfileCard = ({ clientDetail, talentLength }) => {
+const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
+	const [updateTR, setUpdateTR] = useState(false);
+	const [updateTRDetail, setUpdateTRDetails] = useState([]);
 	const id = useParams();
+	const getHRDetails = async () => {
+		let response = await hiringRequestDAO.getViewHiringRequestDAO(id?.hrid);
+		setUpdateTRDetails(response?.responseBody);
+	};
+	const userSessionMemo = useMemo(
+		() => UserSessionManagementController.getUserMiscellaneousData(),
+		[],
+	);
 	return (
 		<div className={CompanyProfileCardStyle.companyProfileContainer}>
 			<label>
@@ -17,6 +31,18 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 				<div className={CompanyProfileCardStyle.companyCardBody}>
 					<div className={CompanyProfileCardStyle.partWise}>
 						<div style={{ marginBottom: '10px' }}>
+							<div className={CompanyProfileCardStyle.clientName}>
+								<span>Client Name:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									{clientDetail?.ClientName ? clientDetail?.ClientName : 'NA'}
+								</span>
+							</div>
+							<div className={CompanyProfileCardStyle.clientEmail}>
+								<span>Client Email:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									{clientDetail?.ClientEmail ? clientDetail?.ClientEmail : 'NA'}
+								</span>
+							</div>
 							<div className={CompanyProfileCardStyle.companyName}>
 								<span>Company Name:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
@@ -93,7 +119,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 							<div className={CompanyProfileCardStyle.category}>
 								<span>Uplers Category:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.Category ? clientDetail?.Category : 'NA'}
+									{apiData?.companyCategory ? apiData?.companyCategory : 'NA'}
 								</span>
 							</div>
 						</div>
@@ -112,7 +138,17 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 								</span>
-								<button>Update TR</button>
+								{apiData !== 'Cancelled' &&
+									userSessionMemo?.loggedInUserTypeID ===
+										UserAccountRole.DEVELOPER && (
+										<button
+											onClick={() => {
+												setUpdateTR(true);
+												getHRDetails();
+											}}>
+											Update TR
+										</button>
+									)}
 							</div>
 							{/* <div className={CompanyProfileCardStyle.TRParked}>
 								<span>TR Parked:</span>&nbsp;&nbsp;
@@ -275,6 +311,22 @@ const CompanyProfileCard = ({ clientDetail, talentLength }) => {
 					</div>
 				</div>
 			</div>
+			{updateTR && (
+				<Modal
+					width={'864px'}
+					centered
+					footer={false}
+					open={updateTR}
+					className="updateTRModal"
+					onCancel={() => setUpdateTR(false)}>
+					<UpdateTRModal
+						updateTR={updateTR}
+						setUpdateTR={() => setUpdateTR(true)}
+						onCancel={() => setUpdateTR(false)}
+						updateTRDetail={updateTRDetail}
+					/>
+				</Modal>
+			)}
 		</div>
 	);
 };

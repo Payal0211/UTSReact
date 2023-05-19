@@ -33,7 +33,7 @@ const EditBillRate = ({
 			const calculateHRData = {
 				ContactPriorityID: filterTalentID?.ContactPriorityID,
 				Hr_Cost: getBillRateInfo?.hrCost,
-				HR_Percentage: data,
+				HR_Percentage: Number(data?.split(" ")?.[0]),
 				hrID: hrId,
 			};
 			const response = await hiringRequestDAO.calculateHRCostRequestDAO(
@@ -55,7 +55,7 @@ const EditBillRate = ({
 		const saveBillRatePayload = {
 			ContactPriorityID: talentInfo?.ContactPriorityID,
 			Hr_Cost: data?.hrCost,
-			HR_Percentage: data?.nrMarginPercentage,
+			HR_Percentage: data?.nrMarginPercentage?.split(" ")?.[0],
 		};
 		const response = await hiringRequestDAO.updateHRCostRequestDAO(
 			saveBillRatePayload,

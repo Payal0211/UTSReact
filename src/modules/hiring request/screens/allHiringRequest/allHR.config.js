@@ -82,19 +82,19 @@ export const allHRConfig = {
 				dataIndex: 'Company',
 				key: 'company',
 				align: 'left',
-				render: (text) => {
-					return (
-						<a
-							target="_blank"
-							href=""
-							style={{
-								color: `var(--uplers-black)`,
-								textDecoration: 'underline',
-							}}>
-							{text}
-						</a>
-					);
-				},
+				// render: (text) => {
+				// 	return (
+				// 		<a
+				// 			target="_blank"
+				// 			href=""
+				// 			style={{
+				// 				color: `var(--uplers-black)`,
+				// 				textDecoration: 'underline',
+				// 			}}>
+				// 			{text}
+				// 		</a>
+				// 	);
+				// },
 			},
 			{
 				title: 'Time',

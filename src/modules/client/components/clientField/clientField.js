@@ -17,7 +17,6 @@ import { ClientDAO } from 'core/client/clientDAO';
 import { HTTPStatusCode } from 'constants/network';
 import CompanyDetails from '../companyDetails/companyDetails';
 import { _isNull } from 'shared/utils/basic_utils';
-import WithLoader from 'shared/components/loader/loader';
 
 export const secondaryClient = {
 	en_Id: '',

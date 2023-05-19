@@ -200,7 +200,9 @@ const DealDetails = () => {
 	}, [getDealDetails]);
 
 	return (
-		<WithLoader showLoader={isLoading}>
+		<WithLoader
+			showLoader={isLoading}
+			className="mainLoader">
 			<div className={dealDetailsStyles.dealDetailsWrap}>
 				<div className={dealDetailsStyles.dealDetailsBack}>
 					<Link to={UTSRoutes.DEALLISTROUTE}>
