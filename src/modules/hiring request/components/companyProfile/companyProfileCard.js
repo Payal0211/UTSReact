@@ -13,11 +13,12 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 	const [updateTR, setUpdateTR] = useState(false)
 	const [updateTRDetail, setUpdateTRDetails] = useState([])
 	const id = useParams()
-	console.log(apiData, "apiData")
 	const getHRDetails = async () => {
 		let response = await hiringRequestDAO.getViewHiringRequestDAO(id?.hrid);
 		setUpdateTRDetails(response?.responseBody)
 	}
+
+	let LoggedInUserTypeID = localStorage.getItem("LoggedInUserTypeID")
 
 	return (
 		<>
@@ -135,7 +136,9 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 									<span style={{ fontWeight: '500' }}>
 										{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 									</span>
-									{apiData === "Open" && (
+
+
+									{apiData !== "Cancelled" && LoggedInUserTypeID === "2" && (
 
 										<button onClick={() => { setUpdateTR(true); getHRDetails() }}>Update TR</button>
 									)}

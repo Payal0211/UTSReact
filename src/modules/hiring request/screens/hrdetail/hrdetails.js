@@ -49,6 +49,7 @@ const HRDetailScreen = () => {
 	const [deleteModal, setDeleteModal] = useState(false);
 	const [isLoading, setLoading] = useState(false);
 	const [apiData, setAPIdata] = useState([]);
+	console.log(apiData, "apidatatdad")
 	const navigate = useNavigate();
 	const switchLocation = useLocation();
 	const [deleteReason, setDeleteReason] = useState([]);

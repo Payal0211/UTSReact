@@ -32,6 +32,8 @@ const LoginScreen = () => {
 		onSubmitHandler();
 		setLoading(true);
 		const result = await userDAO.loginDAO(formValues);
+
+		localStorage.setItem("LoggedInUserTypeID", result?.responseBody?.LoggedInUserTypeID)
 		if (result.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
