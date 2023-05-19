@@ -343,7 +343,7 @@ export const reportConfig = {
 			{ name: 'Company Category' },
 			{ name: 'Managed' },
 			{ name: 'Replacement' },
-			{ name: 'Head' },
+
 			{ name: 'Action/HR' },
 		];
 	},
@@ -404,11 +404,7 @@ export const reportConfig = {
 				name: 'replacement',
 				child: filterList?.Replacement,
 			},
-			{
-				label: 'Head',
-				name: 'head',
-				child: filterList?.TeamManager,
-			},
+
 			{
 				label: 'Action/HR',
 				name: 'isActionWise',
