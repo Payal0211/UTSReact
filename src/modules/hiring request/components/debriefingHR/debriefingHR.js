@@ -12,7 +12,6 @@ import HRInputField from '../hrInputFields/hrInputFields';
 import { InputType } from 'constants/application';
 import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
-import { _isNull } from 'shared/utils/basic_utils';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -60,8 +59,6 @@ const DebriefingHR = ({
 		setSkills(response && response.responseBody);
 	}, []);
 
-	let watchSkills = watch('skills');
-
 	const combinedSkillsMemo = useMemo(() => {
 		const combinedData = [
 			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
@@ -92,22 +89,22 @@ const DebriefingHR = ({
 		);
 		setControlledJDParsed(JDParsedSkills?.Skills?.map((item) => item?.value));
 	}, [JDParsedSkills, setValue]);
-	const [search, setSearch] = useState('');
-	const [debouncedSearch, setDebouncedSearch] = useState('');
-	const getOtherSkillsRequest = useCallback(
-		async (data) => {
-			let response = await MasterDAO.getOtherSkillsRequestDAO({
-				skillName: data,
-			});
-			if (response?.statusCode === HTTPStatusCode?.BAD_REQUEST) {
-				return setError('otherSkill', {
-					type: 'otherSkill',
-					message: response?.responseBody,
-				});
-			}
-		},
-		[setError],
-	);
+	// const [search, setSearch] = useState('');
+	// const [debouncedSearch, setDebouncedSearch] = useState('');
+	// const getOtherSkillsRequest = useCallback(
+	// 	async (data) => {
+	// 		let response = await MasterDAO.getOtherSkillsRequestDAO({
+	// 			skillName: data,
+	// 		});
+	// 		if (response?.statusCode === HTTPStatusCode?.BAD_REQUEST) {
+	// 			return setError('otherSkill', {
+	// 				type: 'otherSkill',
+	// 				message: response?.responseBody,
+	// 			});
+	// 		}
+	// 	},
+	// 	[setError],
+	// );
 
 	// useEffect(() => {
 	// 	let timer;
@@ -124,12 +121,12 @@ const DebriefingHR = ({
 		getSkills();
 	}, [getSkills]);
 
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			setSearch(debouncedSearch);
-		}, 1000);
-		return () => clearTimeout(timer);
-	}, [debouncedSearch]);
+	// useEffect(() => {
+	// 	const timer = setTimeout(() => {
+	// 		setSearch(debouncedSearch);
+	// 	}, 1000);
+	// 	return () => clearTimeout(timer);
+	// }, [debouncedSearch]);
 	// useEffect(() => {
 	// 	getOtherSkillsRequest(search);
 	// }, [getOtherSkillsRequest, search]);

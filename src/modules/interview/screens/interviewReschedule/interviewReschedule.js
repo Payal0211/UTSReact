@@ -95,6 +95,7 @@ const InterviewReschedule = ({
 					? data?.interviewCallLink
 					: '',
 			};
+
 			let response = await hiringRequestDAO.getReSchduleInterviewInformation(
 				reScheduleData,
 			);

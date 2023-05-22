@@ -481,7 +481,7 @@ const AllHiringRequestScreen = () => {
 				{isLoading ? (
 					<TableSkeleton />
 				) : (
-					<WithLoader>
+					<WithLoader className="mainLoader">
 						<Table
 							id="hrListingTable"
 							columns={tableColumnsMemo}
