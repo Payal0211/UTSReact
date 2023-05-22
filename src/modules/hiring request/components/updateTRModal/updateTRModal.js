@@ -8,7 +8,6 @@ import { ReactComponent as PlusSVG } from 'assets/svg/plus.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useParams } from 'react-router-dom';
 import { HTTPStatusCode } from 'constants/network';
-import { Modal } from 'antd';
 
 const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) => {
 
@@ -134,6 +133,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                         </div>
                     </div>
                 </div>
+                
             )}
 
             {(updateTRDetail?.ClientDetail?.NoOfTalents <= count || isNaN(count) || valueInfo) && (
@@ -148,6 +148,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                             name="additionalComments"
                             type={InputType.TEXT}
                             placeholder="Enter Additional Comments"
+                          
                             validationSchema={{
                                 validate: (value) => {
                                     if (!value) {
@@ -156,7 +157,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                                 }
                             }}
                             rows={'4'}
-                            required
+                            required = {updateTRDetail?.ClientDetail?.NoOfTalents <= count?true:false}
                         />
                     </div>
                 </div>
@@ -201,7 +202,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                         type="submit"
                         className={updateTRStyle.btnPrimary}
                         onClick={handleSubmit(onSubmit)}
-                        disabled={disable === true ? true : false}
+                        disabled={updateTRDetail?.ClientDetail?.NoOfTalents === count ? true : false}
                     >
                         Increase TR
                     </button>
