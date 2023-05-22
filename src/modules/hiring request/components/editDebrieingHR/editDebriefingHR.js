@@ -49,6 +49,8 @@ const EditDebriefingHR = ({
 		name: 'secondaryInterviewer',
 	});
 
+	console.log(getHRdetails,"getHRdetails");
+
 	const navigate = useNavigate();
 	const [controlledJDParsed, setControlledJDParsed] = useState(
 		getHRdetails?.skillmulticheckbox?.map((item) => item?.text
@@ -152,6 +154,7 @@ const EditDebriefingHR = ({
 			interviewerEmail: d.interviewerEmail,
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
+			JDDumpID:getHRdetails?.addHiringRequest?.jddumpId,
 		};
 
 		console.log(d,"debriefFormDetails");
@@ -182,6 +185,7 @@ const EditDebriefingHR = ({
 			interviewerEmail: d.interviewerEmail,
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
+			JDDumpID:getHRdetails?.addHiringRequest?.jddumpId,
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
