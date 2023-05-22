@@ -1285,7 +1285,7 @@ const TalentList = ({
 											</div>
 										</div>
 										<div style={{ cursor: 'pointer' }}>
-											<Dropdown
+											{/* <Dropdown
 												trigger={['click']}
 												placement="bottom"
 												overlay={
@@ -1307,7 +1307,7 @@ const TalentList = ({
 													</Menu>
 												}>
 												<BsThreeDots style={{ fontSize: '1.5rem' }} />
-											</Dropdown>
+											</Dropdown> */}
 										</div>
 									</div>
 
@@ -1521,7 +1521,7 @@ const TalentList = ({
 										</div>
 									)}
 
-									<Divider
+									{/* <Divider
 										style={{
 											margin: '10px 0',
 											// border: `1px solid var(--uplers-border-color)`,
@@ -1543,7 +1543,7 @@ const TalentList = ({
 									<div
 										style={{ padding: '2px 0', textDecoration: 'underline' }}>
 										Skill Test Results
-									</div>
+									</div> */}
 									<Divider
 										style={{
 											margin: '10px 0',

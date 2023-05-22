@@ -150,7 +150,7 @@ const JDDumpReportScreen = () => {
 							<input
 								type={InputType.TEXT}
 								className={JDDUmpStyle.searchInput}
-								placeholder="Search Table"
+								placeholder="Search HR Number   "
 								onChange={(e) => {
 									return setDebouncedSearch(jdDumpSearch(e, apiData));
 								}}
