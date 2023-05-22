@@ -25,7 +25,7 @@
 .loginColumn_1_Body {
   margin-left: auto;
   margin-right: auto;
-  padding: 9.9vh 40px 32px;
+  padding: 9.9vh 2.09vw 3.31vh;
 }
 
 .loginLogo img {
@@ -55,11 +55,15 @@
   margin: 0;
 }
 
-.forgotpassword {
-  font-size: 1rem;
-  text-decoration: underline;
-  color: var(--background-color-jade);
-  margin: 25px 0 !important;
+.forgotPassword {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.45vh;
+  line-height: 2.28vh;
+  text-decoration-line: underline;
+  color: #7c7c7c;
+  margin-top: 1.66vh;
 }
 
 .loginFormPart {
@@ -76,14 +80,87 @@
   white-space: nowrap;
   font-family: "Montserrat";
   font-weight: 400;
-  font-size: 18px;
-  line-height: 26px;
+  font-size: 1.86vh;
+  line-height: 2.69vh;
   color: #000000;
-  margin-bottom: 8px;
+  margin-bottom: 0.83vh;
   display: inline-block;
 }
 .loginFormPart [class*="input_field_inputBox"] {
   margin: 0;
+  border: none;
+  position: relative;
+}
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"] {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  color: #000000;
+  background: #ffffff;
+  border: 1px solid #cecccc;
+  border-radius: 8px;
+  padding: 1.55vh 1.305vw;
+  max-height: 54px;
+  transition: all 0.35s ease 0s;
+}
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"]:focus {
+  border-color: #ffda30;
+  box-shadow: 0 0 0 1px #ffda30;
+}
+
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"]::-webkit-input-placeholder {
+  color: #7c7c7c;
+  opacity: 1;
+}
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"]::-moz-placeholder {
+  color: #7c7c7c;
+  opacity: 1;
+}
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"]:-ms-input-placeholder {
+  color: #7c7c7c;
+  opacity: 1;
+}
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"]:-moz-placeholder {
+  color: #7c7c7c;
+  opacity: 1;
+}
+.loginFormPart [class*="input_field_formField"] [class*="input_field_error"] {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 1.45vh;
+  line-height: 2vh;
+  margin: 0.83vh 0 0;
+  display: inline-block;
+}
+.loginPasswordField
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"] {
+  padding-right: 2.8vw;
+}
+.loginPasswordField [class*="input_field_trailingIcon"] {
+  position: absolute;
+  right: 1.305vw;
+  height: 25px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+.loginPasswordField [class*="input_field_trailingIcon"] svg {
+  margin-bottom: 0;
 }
 
 .loginColumn_2 {
@@ -92,22 +169,40 @@
 }
 
 .loginHeadline {
-  width: 90%;
-  margin: 0 auto;
+  margin: 0;
   position: relative;
   height: 100%;
+  padding: 2.5vh 2.92vw 5.78vh;
+  align-items: flex-end;
+  display: flex;
 }
 
 .loginHeadline h1 {
-  font-size: 2rem;
-  font-weight: bolder;
-  letter-spacing: 0.3rem;
+  font-family: "Montserrat";
+  font-weight: 700;
+  font-size: 4.96vh;
+  line-height: 8.26vh;
+  letter-spacing: 0.005em;
+  color: #0f2530;
   margin: 0;
-  position: absolute;
-  top: auto;
-  left: 0;
-  right: 0;
-  bottom: 30px;
+}
+
+.loginAction {
+  border-top: 1px solid #cecccc;
+  margin-top: 2.48vh;
+  padding-top: 2.48vh;
+}
+
+.loginAction button {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.86vh;
+  line-height: 2.69vh;
+  color: #000000;
+  margin: 0;
+  border-radius: 8px;
+  padding: 1.24vh 1vw;
 }
 
 /*---------------------- FOR SCREEN LESS THAN 767PX ------------------- */

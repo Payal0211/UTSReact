@@ -78,36 +78,42 @@ const LoginScreen = () => {
 								onChangeHandler={inputChangeHandler}
 								errorMsg={error['username']}
 							/>
-							<InputField
-								onKeyDownHandler={(e) => {
-									if (e.key === 'Enter') loginHandler();
-								}}
-								name="password"
-								label="Password"
-								type={
-									togglePasswordVisibility ? InputType.PASSWORD : InputType.TEXT
-								}
-								placeholder="Enter password"
-								onChangeHandler={inputChangeHandler}
-								value={formValues['password']}
-								errorMsg={error['password']}
-								onIconToggleHandler={onTogglePassword}
-								trailingIcon={
-									togglePasswordVisibility ? (
-										<PasswordIconAiFillEyeInvisible />
-									) : (
-										<PasswordIconAiFillEye />
-									)
-								}
-							/>
-							<div className={loginStyle.forgotpassword}>Forgot Password ?</div>
-							<hr />
-							<br />
-							<ButtonField
-								label="Log In"
-								backgroundColor={`var(--color-sunlight)`}
-								onClickHandler={(e) => loginHandler()}
-							/>
+							<div className={loginStyle.loginPasswordField}>
+								<InputField
+									onKeyDownHandler={(e) => {
+										if (e.key === 'Enter') loginHandler();
+									}}
+									name="password"
+									label="Password"
+									type={
+										togglePasswordVisibility ? InputType.PASSWORD : InputType.TEXT
+									}
+									placeholder="Enter password"
+									onChangeHandler={inputChangeHandler}
+									value={formValues['password']}
+									errorMsg={error['password']}
+									onIconToggleHandler={onTogglePassword}
+									trailingIcon={
+										togglePasswordVisibility ? (
+											<PasswordIconAiFillEyeInvisible />
+										) : (
+											<PasswordIconAiFillEye />
+										)
+									}
+								/>
+							</div>
+
+							<div className={loginStyle.forgotPassword}>Forgot Password ?</div>
+
+
+							<div className={loginStyle.loginAction}>
+								<ButtonField
+									label="Log In"
+									backgroundColor={`var(--color-sunlight)`}
+									onClickHandler={(e) => loginHandler()}
+								/>
+							</div>
+
 						</div>
 					</div>
 				</div>
