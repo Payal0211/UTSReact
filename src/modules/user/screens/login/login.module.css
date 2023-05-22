@@ -62,6 +62,30 @@
   margin: 25px 0 !important;
 }
 
+.loginFormPart {
+  margin: 0;
+}
+
+.loginFormPart [class*="input_field_formField"] {
+  margin-bottom: 2.48vh;
+}
+.loginFormPart [class*="input_field_formField"]:last-child {
+  margin-bottom: 0;
+}
+.loginFormPart [class*="input_field_inputLabel"] {
+  white-space: nowrap;
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 26px;
+  color: #000000;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+.loginFormPart [class*="input_field_inputBox"] {
+  margin: 0;
+}
+
 .loginColumn_2 {
   width: 65%;
   background-color: var(--color-sunlight);
