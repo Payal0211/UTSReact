@@ -1279,7 +1279,7 @@ const EditHRFields = ({
                                     label="Required Experience"
                                     errors={errors}
                                     validationSchema={{
-                                        required: 'please add somthing about the company',
+                                        required: 'please add something about the company',
                                         min: {
                                             value: 0,
                                             message: `please don't enter the value less than 0`,
