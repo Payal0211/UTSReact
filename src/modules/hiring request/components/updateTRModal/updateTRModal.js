@@ -144,9 +144,17 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                             isTextArea={true}
                             label={'Additional Comments'}
                             register={register}
+                            errors={errors}
                             name="additionalComments"
                             type={InputType.TEXT}
                             placeholder="Enter Additional Comments"
+                            validationSchema={{
+                                validate: (value) => {
+                                    if (!value) {
+                                        return 'Please enter the additional comments.';
+                                    }
+                                }
+                            }}
                             rows={'4'}
                             required
                         />
@@ -165,6 +173,14 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                             name="reasonForLoss"
                             type={InputType.TEXT}
                             placeholder="Enter Reason for Loss/Cancelled"
+                            errors={errors}
+                            validationSchema={{
+                                validate: (value) => {
+                                    if (!value) {
+                                        return 'Please enter the reason for loss.';
+                                    }
+                                }
+                            }}
                             rows={'4'}
                             required
                         />
