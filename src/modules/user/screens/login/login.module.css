@@ -145,6 +145,9 @@
   top: 0;
   bottom: 0;
   margin: auto;
+  align-items: center;
+  justify-content: center;
+  display: inline-flex;
 }
 .loginPasswordField [class*="input_field_trailingIcon"] svg {
   margin-bottom: 0;
@@ -209,6 +212,19 @@
   .loginColumn_2 {
     width: 55%;
   }
+  .loginFormPart
+    [class*="input_field_inputBox"]
+    [class*="input_field_inputfield"] {
+    padding: 13px 16px;
+  }
+  .loginPasswordField
+    [class*="input_field_inputBox"]
+    [class*="input_field_inputfield"] {
+    padding-right: 48px;
+  }
+  .loginPasswordField [class*="input_field_trailingIcon"] {
+    right: 16px;
+  }
 }
 
 @media screen and (max-width: 767px) {
@@ -228,9 +244,31 @@
   .loginFormPart [class*="input_field_inputLabel"] {
     font-size: 14px;
   }
-  .loginFormPart
-    [class*="input_field_inputBox"]
-    [class*="input_field_inputfield"] {
-    padding: 14px 20px;
+  .forgotPassword {
+    font-size: 14px;
+    line-height: 20px;
+    margin-top: 16px;
+  }
+  .loginAction {
+    margin-top: 24px;
+    padding-top: 24px;
+  }
+  .loginAction button {
+    padding: 14px 16px;
+    font-size: 16px;
+    line-height: 22px;
+  }
+  .welcomePart {
+    margin-top: 32px;
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+  }
+  .loginFormPart [class*="input_field_formField"] {
+    margin-bottom: 24px;
+  }
+  .loginFormPart [class*="input_field_formField"] [class*="input_field_error"] {
+    font-size: 13px;
+    line-height: 20px;
+    margin: 8px 0 0;
   }
 }
