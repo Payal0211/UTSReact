@@ -152,6 +152,7 @@ export const allHRConfig = {
 		];
 	},
 	hrFilterTypeConfig: (filterList) => {
+		
 		return [
 			// {
 			// 	label: 'ODR/Pool',
@@ -285,7 +286,7 @@ export const allHRConfig = {
 			},
 			{
 				label: 'Sales Representative',
-				name: 'Sales Representative',
+				name: 'salesRep',
 				child: filterList?.salesReps,
 				isSearch: true,
 			},
