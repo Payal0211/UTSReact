@@ -126,7 +126,9 @@ const TeamDemandFunnelModal = ({
 					) : (
 						<Table
 							id="hrListingTable"
-							columns={reportConfig?.demandFunnelHRDetails}
+							columns={reportConfig?.demandFunnelHRDetails(
+								demandFunnelValue?.stage,
+							)}
 							bordered={false}
 							dataSource={
 								searchData && searchData?.length > 0

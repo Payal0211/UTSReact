@@ -82,6 +82,7 @@ const InterviewSchedule = ({
 			additional_notes: data?.additionalNotes ? data?.additionalNotes : '',
 			interviewCallLink: data?.interviewCallLink ? data?.interviewCallLink : '',
 		};
+
 		let response = await hiringRequestDAO.getSchduleInterviewInformation(
 			scheduleData,
 		);
