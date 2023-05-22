@@ -11,9 +11,9 @@ import { HTTPStatusCode } from 'constants/network';
 import { Modal } from 'antd';
 
 const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) => {
+
     const [count, setCount] = useState(0)
     const [disable, setDisable] = useState(true)
-    console.log(disable, "disable")
     const {
         register,
         handleSubmit,
@@ -194,6 +194,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                     className={updateTRStyle.btn}>
                     Cancel
                 </button>
+
                 {updateTRDetail?.ClientDetail?.NoOfTalents <= count ? (
 
                     <button
@@ -202,7 +203,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
                         onClick={handleSubmit(onSubmit)}
                         disabled={disable === true ? true : false}
                     >
-                        Submit
+                        Increase TR
                     </button>
                 ) : (
                     <button
