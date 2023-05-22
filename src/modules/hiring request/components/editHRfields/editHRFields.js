@@ -4,6 +4,7 @@ import {
     GoogleDriveCredentials,
     InputType,
     SubmitType,
+    URLRegEx,
     WorkingMode,
 } from 'constants/application';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -1063,6 +1064,7 @@ const EditHRFields = ({
                             uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
                             modalTitle={'Upload JD'}
                             isFooter={true}
+                            modalSubtitle={'Job Description'}
                             openModal={showUploadModal}
                             setUploadModal={setUploadModal}
                             cancelModal={() => setUploadModal(false)}
@@ -1081,6 +1083,14 @@ const EditHRFields = ({
                                 type={InputType.TEXT}
                                 placeholder="Add JD link"
                                 register={register}
+                                errors={errors}
+                                required={!getUploadFileData}
+								validationSchema={{
+									pattern: {
+											value: URLRegEx.url,
+											message: 'Entered value does not match url format',
+										},
+								}}
                             />
                         </div>
                     </div>

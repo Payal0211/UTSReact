@@ -1,4 +1,4 @@
-import { EmailRegEx, InputType } from 'constants/application';
+import { EmailRegEx, InputType, URLRegEx } from 'constants/application';
 import { useCallback, useEffect } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import AddInterviewerStyle from './addInterviewer.module.css';
@@ -106,6 +106,10 @@ const AddInterviewer = ({
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the primary interviewer linkedin.',
+									pattern: {
+										value: URLRegEx.url,
+										message: 'Entered value does not match url format',
+									},
 								}}
 								required
 							/>

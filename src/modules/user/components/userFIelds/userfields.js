@@ -562,6 +562,14 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				modifiedGEO,
 			);
 			let userResponse = await userAPI.createUserRequest(userFormDetails);
+			if (userResponse?.statusCode === HTTPStatusCode.BAD_REQUEST) {
+				setError('employeeFirstName', {
+					type: 'duplicateEmployeeFullName',
+					message:
+					userResponse?.statusCode === HTTPStatusCode.BAD_REQUEST &&
+						'This employee name already exists. Please enter another one.',
+				});
+			}
 			setFormIsLoading(false);
 			if (userResponse.statusCode === HTTPStatusCode.OK) {
 				setFormIsLoading(false);
@@ -585,7 +593,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				setValidation({
 					...getValidation,
 					systemFileUpload:
-						'Upload file size more than 2MB, Please Upload file upto 2MB',
+						'File size must be less than 2 MB',
 				});
 				setIsLoading(false);
 			} else {
@@ -801,7 +809,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 									<div className={UserFieldStyle.colMd6}>
 										<HRInputField
 											// defaultValue={enableALlFieldsMemo ? userDetails?.fullName?.split(" ")[0] : null}
-											disabled={enableALlFieldsMemo || isLoading}
+											// disabled={enableALlFieldsMemo || isLoading}
 											register={register}
 											errors={errors}
 											validationSchema={{
@@ -826,7 +834,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 									{/* Last Name */}
 									<div className={UserFieldStyle.colMd6}>
 										<HRInputField
-											disabled={enableALlFieldsMemo || isLoading}
+											// disabled={enableALlFieldsMemo || isLoading}
 											register={register}
 											errors={errors}
 											validationSchema={{
@@ -1194,7 +1202,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											/>
 										) : (
 											<div className={UserFieldStyle.uploadedJDWrap}>
-												<label>Company Logo (JPG, PNG, SVG)</label>
+												<label>Profile Picture</label>
 												<div className={UserFieldStyle.uploadedJDName}>
 													{getUploadFileData?.name}
 													<div

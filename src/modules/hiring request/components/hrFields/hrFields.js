@@ -12,6 +12,7 @@ import {
 	GoogleDriveCredentials,
 	InputType,
 	SubmitType,
+	URLRegEx,
 	WorkingMode,
 } from 'constants/application';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -1056,6 +1057,13 @@ const HRFields = ({
 								placeholder="Add JD link"
 								register={register}
 								required={!getUploadFileData}
+								errors={errors}
+								validationSchema={{
+									pattern: {
+											value: URLRegEx.url,
+											message: 'Entered value does not match url format',
+										},
+								}}
 							/>
 						</div>
 					</div>
