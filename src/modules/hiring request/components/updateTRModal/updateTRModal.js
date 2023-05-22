@@ -10,7 +10,6 @@ import { useParams } from 'react-router-dom';
 import { HTTPStatusCode } from 'constants/network';
 
 const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) => {
-
     const [count, setCount] = useState(0)
     const [disable, setDisable] = useState(true)
     const {
@@ -69,16 +68,28 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
     }
     useEffect(() => {
         if (updateTRDetail?.ClientDetail?.NoOfTalents > count || valueInfo) {
-            setValue("currentTR", updateTRDetail?.ClientDetail?.NoOfTalents)
-            setCount(updateTRDetail?.ClientDetail?.NoOfTalents)
+            if(updateTRDetail?.ClientDetail?.Availability==="Part Time"){
+                setValue("currentTR", updateTRDetail?.ClientDetail?.NoOfTalents*2)
+                setCount(updateTRDetail?.ClientDetail?.NoOfTalents*2)
+            }else{
+                setValue("currentTR", updateTRDetail?.ClientDetail?.NoOfTalents)
+                setCount(updateTRDetail?.ClientDetail?.NoOfTalents)
+            }
         } else if (updateTRDetail?.ClientDetail?.NoOfTalents <= count) {
-            setValue("currentTR", updateTRDetail?.ClientDetail?.NoOfTalents)
-            setCount(updateTRDetail?.ClientDetail?.NoOfTalents)
+            if(updateTRDetail?.ClientDetail?.Availability==="Part Time"){
+                setValue("currentTR", updateTRDetail?.ClientDetail?.NoOfTalents*2)
+                setCount(updateTRDetail?.ClientDetail?.NoOfTalents*2)
+            }else{
+                setValue("currentTR", updateTRDetail?.ClientDetail?.NoOfTalents)
+                setCount(updateTRDetail?.ClientDetail?.NoOfTalents)
+            }
+           
         }
     }, [updateTRDetail?.ClientDetail?.NoOfTalents])
 
 
     const increment = () => {
+        
         setCount(count + 1)
         setDisable(false)
     }
@@ -93,7 +104,7 @@ const UpdateTR = ({ updateTR, setUpdateTR, onCancel, updateTRDetail, apiData }) 
         >
             <div className={updateTRStyle.updateTRTitle}>
                 <h2>Update TR</h2>
-                <p>HR ID - {updateTRDetail?.ClientDetail?.HR_Number} | Current TR: <span>{updateTRDetail?.ClientDetail?.NoOfTalents}</span></p>
+                <p>HR ID - {updateTRDetail?.ClientDetail?.HR_Number} | Current TR: {updateTRDetail?.ClientDetail?.Availability==="Part Time"?<span>{updateTRDetail?.ClientDetail?.NoOfTalents*2}</span>:<span>{updateTRDetail?.ClientDetail?.NoOfTalents}</span>}</p>
             </div>
 
             <h4 className={updateTRStyle.infoMsg}>{valueInfo}</h4>

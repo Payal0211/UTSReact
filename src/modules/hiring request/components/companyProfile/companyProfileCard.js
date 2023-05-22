@@ -23,7 +23,6 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 	}
 
 
-
 	const userSessionMemo = useMemo(() => UserSessionManagementController.getUserMiscellaneousData(), [])
 	return (
 		<>
