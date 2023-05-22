@@ -217,7 +217,7 @@ const TeamDemandFunnelScreen = () => {
 													});
 													setTeamDemandFunnelHRDetailsState({
 														...teamDemandFunnelHRDetailsState,
-														newExistingType: 'Pool',
+														adhocType: 'Pool',
 														currentStage: param.Stage,
 														selectedRow_SalesUserName: groupedColumnDataMemo[i],
 													});
@@ -252,7 +252,7 @@ const TeamDemandFunnelScreen = () => {
 													});
 													setTeamDemandFunnelHRDetailsState({
 														...teamDemandFunnelHRDetailsState,
-														newExistingType: 'Total',
+														adhocType: 'Total',
 														currentStage: param.Stage,
 														selectedRow_SalesUserName: groupedColumnDataMemo[i],
 													});
@@ -695,39 +695,41 @@ const TeamDemandFunnelScreen = () => {
 											title={item}
 											dataIndex={item}
 											key={item}
-											render={(text, param) => (
-												<Tooltip
-													placement="bottomLeft"
-													title={text}>
-													{item === 'Stage' || item === 'Duration' ? (
-														<p style={{ fontWeight: '550' }}>{text}</p>
-													) : (
-														<p
-															style={{
-																textDecoration: 'underline',
-																cursor: text === 0 ? 'no-drop' : 'pointer',
-															}}
-															onClick={
-																text === 0
-																	? null
-																	: () => {
-																			setTeamDemandHRDetailsModal(true);
-																			setTeamDemandValue({
-																				stage: param?.Stage,
-																				count: text,
-																			});
-																			setTeamDemandFunnelHRDetailsState({
-																				...teamDemandFunnelHRDetailsState,
-																				currentStage: param.Stage,
-																				adhocType: param.adhocType,
-																			});
-																	  }
-															}>
-															{text}
-														</p>
-													)}
-												</Tooltip>
-											)}
+											render={(text, param) => {
+												return (
+													<Tooltip
+														placement="bottomLeft"
+														title={text}>
+														{item === 'Stage' || item === 'Duration' ? (
+															<p style={{ fontWeight: '550' }}>{text}</p>
+														) : (
+															<p
+																style={{
+																	textDecoration: 'underline',
+																	cursor: text === 0 ? 'no-drop' : 'pointer',
+																}}
+																onClick={
+																	text === 0
+																		? null
+																		: () => {
+																				setTeamDemandHRDetailsModal(true);
+																				setTeamDemandValue({
+																					stage: param?.Stage,
+																					count: text,
+																				});
+																				setTeamDemandFunnelHRDetailsState({
+																					...teamDemandFunnelHRDetailsState,
+																					currentStage: param.Stage,
+																					adhocType: param.adhocType,
+																				});
+																		  }
+																}>
+																{text}
+															</p>
+														)}
+													</Tooltip>
+												);
+											}}
 										/>
 									))}
 									{GroupedColumn()}
@@ -820,9 +822,7 @@ const TeamDemandFunnelScreen = () => {
 				</div>
 			)}
 			{teamDemandFunnelModal && (
-				<WithLoader
-					showLoader={isLoading}
-					className="mainLoader">
+				<WithLoader className="mainLoader">
 					<Modal
 						width="1000px"
 						centered
