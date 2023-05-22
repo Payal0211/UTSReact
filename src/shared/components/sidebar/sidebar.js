@@ -130,8 +130,8 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.INCENTIVEREPORTROUTE,
 		}),
 		new SideBarModels({
-			id: 'jd_dump',
-			title: 'JD Dump',
+			id: 'JD_Efficiency_Report',
+			title: 'JD Efficiency Report',
 			isActive: false,
 			icon: IncentiveReport,
 			navigateTo: UTSRoutes.JDDUMPREPORTROUTE,

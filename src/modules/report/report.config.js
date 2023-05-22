@@ -1,4 +1,5 @@
 import { Tooltip } from 'antd';
+import { NetworkInfo } from 'constants/network';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -527,15 +528,20 @@ export const reportConfig = {
 				dataIndex: 'jd',
 				key: 'jd',
 				align: 'left',
-				render: (text) => {
-					return text ? (
-						<Link
-							to={`#`}
-							style={{ color: 'black', textDecoration: 'underline' }}>
-							View ID
-						</Link>
-					) : (
-						'NA'
+				render: (text, param) => {
+					console.log(param, '---param');
+					return (
+						<a
+							target="_blank"
+							href={
+								param?.jdFile
+									? `${NetworkInfo.FILENETWORK}ClientAttachments/${param?.jdFile}`
+									: param.jd
+							}
+							style={{ color: 'black', textDecoration: 'underline' }}
+							rel="noreferrer">
+							View
+						</a>
 					);
 				},
 			},
@@ -544,36 +550,24 @@ export const reportConfig = {
 				dataIndex: 'overAllPercentage',
 				key: 'overAllPercentage',
 				align: 'left',
-				render: (text) => {
-					return text ? text : 'NA';
-				},
 			},
 			{
 				title: 'Skill %',
 				dataIndex: 'skillPercentage',
 				key: 'skillPercentage',
 				align: 'left',
-				render: (text) => {
-					return text ? text : 'NA';
-				},
 			},
 			{
 				title: 'Role Resp %',
 				dataIndex: 'rolesResponsibilitiesPercentage',
 				key: 'rolesResponsibilitiesPercentage',
 				align: 'left',
-				render: (text) => {
-					return text ? text : 'NA';
-				},
 			},
 			{
 				title: 'Req %',
 				dataIndex: 'requirementPercentage',
 				key: 'requirementPercentage',
 				align: 'left',
-				render: (text) => {
-					return text ? text : 'NA';
-				},
 			},
 			{
 				title: 'JD Skill',
@@ -601,17 +595,17 @@ export const reportConfig = {
 				key: 'hrSkill',
 				align: 'left',
 				render: (text) => {
-					return text ? (
-						<p
-							onClick={() => {
-								setHRSkillModal(true);
-								setSelectedRecord(text);
-							}}
-							style={{ color: 'black', textDecoration: 'underline' }}>
-							View
-						</p>
-					) : (
-						'NA'
+					return (
+						text && (
+							<p
+								onClick={() => {
+									setHRSkillModal(true);
+									setSelectedRecord(text);
+								}}
+								style={{ color: 'black', textDecoration: 'underline' }}>
+								View
+							</p>
+						)
 					);
 				},
 			},
