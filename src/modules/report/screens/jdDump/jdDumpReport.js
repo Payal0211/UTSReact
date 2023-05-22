@@ -140,7 +140,7 @@ const JDDumpReportScreen = () => {
 						<button
 							className={JDDUmpStyle.btnPrimaryOutline}
 							onClick={() => setOverAllModal(true)}>
-							Over All %
+							Summary
 						</button>
 					</div>
 
@@ -247,7 +247,7 @@ const JDDumpReportScreen = () => {
 					onCancel={() => setOverAllModal(false)}>
 					<div className={JDDUmpStyle.modalBody}>
 						<label className={JDDUmpStyle.matchmakingLabel}>
-							Additional JD Dump Details
+							JD Efficiency Summary
 						</label>
 						<Divider />
 						<div className={JDDUmpStyle.row}>

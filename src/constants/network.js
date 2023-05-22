@@ -2,9 +2,11 @@ export class NetworkInfo {
 	static PROTOCOL = 'http://';
 	// static domain = 'localhost:5162/';
 	static DOMAIN = '3.218.6.134:9082/';
+	static FILEDOMAIN = '3.218.6.134:90/';
 	// static PROTOCOL = 'https://';
 	// static DOMAIN = '809c77bfbe78ce2d4010a080a425ea2b.loophole.site/';
 	static NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN;
+	static FILENETWORK = NetworkInfo.PROTOCOL + NetworkInfo.FILEDOMAIN;
 }
 export class SubDomain {
 	static USER_OPERATIONS = 'UserOperationsAPI/';
