@@ -660,17 +660,17 @@ const EditHRFields = ({
             const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
             if (addHRRequest.statusCode === HTTPStatusCode.OK) {
-            setAddHRResponse(getHRdetails?.en_Id);
-            type !== SubmitType.SAVE_AS_DRAFT && setTitle('Edit Debriefing HR');
-            type !== SubmitType.SAVE_AS_DRAFT &&
-                setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
-            // setFromEditDeBriefing({ ...fromEditDeBriefing, addNewHiringRequest: true });
+                setAddHRResponse(getHRdetails?.en_Id);
+                type !== SubmitType.SAVE_AS_DRAFT && setTitle('Edit Debriefing HR');
+                type !== SubmitType.SAVE_AS_DRAFT &&
+                    setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+                // setFromEditDeBriefing({ ...fromEditDeBriefing, addNewHiringRequest: true });
 
-            type === SubmitType.SAVE_AS_DRAFT &&
-                messageAPI.open({
-                    type: 'success',
-                    content: 'HR details has been saved to draft.',
-                });
+                type === SubmitType.SAVE_AS_DRAFT &&
+                    messageAPI.open({
+                        type: 'success',
+                        content: 'HR details has been saved to draft.',
+                    });
             }
         },
         [
@@ -684,7 +684,7 @@ const EditHRFields = ({
             setTitle,
             tabFieldDisabled,
             watch,
-            getHRdetails,getUploadFileData
+            getHRdetails, getUploadFileData
         ],
     );
     useEffect(() => {
@@ -1030,18 +1030,18 @@ const EditHRFields = ({
                                     disabled={!_isNull(watch('jdURL'))}
                                     register={register}
                                     leadingIcon={<UploadSVG />}
-                                    label="Job Description (PDF)"
+                                    label="Job Description"
                                     name="jdExport"
                                     type={InputType.BUTTON}
                                     buttonLabel="Upload JD File"
                                     setValue={setValue}
                                     onClickHandler={() => setUploadModal(true)}
-                                    
-									errors={errors}
+
+                                    errors={errors}
                                 />
                             ) : (
                                 <div className={HRFieldStyle.uploadedJDWrap}>
-                                    <label>Job Description (PDF)</label>
+                                    <label>Job Description</label>
                                     <div className={HRFieldStyle.uploadedJDName}>
                                         {getUploadFileData}{' '}
                                         <CloseSVG
@@ -1049,7 +1049,7 @@ const EditHRFields = ({
                                             onClick={() => {
                                                 // setJDParsedSkills({});
                                                 setUploadFileData('');
-                                                setValue("jdExport","");
+                                                setValue("jdExport", "");
                                             }}
                                         />
                                     </div>
