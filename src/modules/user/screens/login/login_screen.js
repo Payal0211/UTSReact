@@ -48,7 +48,10 @@ const LoginScreen = () => {
 	}, [navigate]);
 
 	return (
-		<WithLoader showLoader={isLoading}>
+		<WithLoader
+			showLoader={isLoading}
+			WithLoader
+			className="mainLoader">
 			<div className={loginStyle.loginContainer}>
 				<div className={loginStyle.loginColumn_1}>
 					<div className={loginStyle.loginColumn_1_Body}>

@@ -574,7 +574,11 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const uploadFileHandler = useCallback(
 		async (fileData) => {
 			setIsLoading(true);
-			if (fileData?.type !== 'image/png' && fileData?.type !== 'image/jpeg'  && fileData?.type !== "image/svg+xml") {
+			if (
+				fileData?.type !== 'image/png' &&
+				fileData?.type !== 'image/jpeg' &&
+				fileData?.type !== 'image/svg+xml'
+			) {
 				setValidation({
 					...getValidation,
 					systemFileUpload:

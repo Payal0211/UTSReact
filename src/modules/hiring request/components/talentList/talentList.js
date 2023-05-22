@@ -226,10 +226,10 @@ const TalentList = ({
 							getScheduleSlotInfomation[0]?.STRStartTime &&
 							getScheduleSlotInfomation[0]?.STREndTime
 						) {
-							startTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[0]?.STRStartTime.slice(
+							startTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[0]?.STRStartTime.slice(
 								10,
 							)}`;
-							endTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[0]?.STREndTime?.slice(
+							endTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[0]?.STREndTime?.slice(
 								10,
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
@@ -274,10 +274,10 @@ const TalentList = ({
 							getRescheduleSlotInfomation[0]?.STRStartTime &&
 							getRescheduleSlotInfomation[0]?.STREndTime
 						) {
-							startTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[0]?.STRStartTime.slice(
+							startTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[0]?.STRStartTime.slice(
 								10,
 							)}`;
-							endTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[0]?.STREndTime?.slice(
+							endTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[0]?.STREndTime?.slice(
 								10,
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
@@ -492,10 +492,10 @@ const TalentList = ({
 							getScheduleSlotInfomation[1]?.STRStartTime &&
 							getScheduleSlotInfomation[1]?.STREndTime
 						) {
-							startTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[1]?.STRStartTime.slice(
+							startTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[1]?.STRStartTime.slice(
 								10,
 							)}`;
-							endTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[1]?.STREndTime?.slice(
+							endTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[1]?.STREndTime?.slice(
 								10,
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
@@ -541,10 +541,10 @@ const TalentList = ({
 							getRescheduleSlotInfomation[1]?.STRStartTime &&
 							getRescheduleSlotInfomation[1]?.STREndTime
 						) {
-							startTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[1]?.STRStartTime.slice(
+							startTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[1]?.STRStartTime.slice(
 								10,
 							)}`;
-							endTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[1]?.STREndTime?.slice(
+							endTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[1]?.STREndTime?.slice(
 								10,
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
@@ -762,10 +762,10 @@ const TalentList = ({
 							getScheduleSlotInfomation[2]?.STRStartTime &&
 							getScheduleSlotInfomation[2]?.STREndTime
 						) {
-							startTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[2]?.STRStartTime.slice(
+							startTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[2]?.STRStartTime.slice(
 								10,
 							)}`;
-							endTimeFirstFormate = `${firstDateFormate} ${getScheduleSlotInfomation[2]?.STREndTime?.slice(
+							endTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[2]?.STREndTime?.slice(
 								10,
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
@@ -811,10 +811,10 @@ const TalentList = ({
 							getRescheduleSlotInfomation[2]?.STRStartTime &&
 							getRescheduleSlotInfomation[2]?.STREndTime
 						) {
-							startTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[2]?.STRStartTime.slice(
+							startTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[2]?.STRStartTime.slice(
 								10,
 							)}`;
-							endTimeFirstFormate = `${firstDateFormate} ${getRescheduleSlotInfomation[2]?.STREndTime?.slice(
+							endTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[2]?.STREndTime?.slice(
 								10,
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(

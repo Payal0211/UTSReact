@@ -51,12 +51,10 @@ const EditDebriefingHR = ({
 
 	const navigate = useNavigate();
 	const [controlledJDParsed, setControlledJDParsed] = useState(
-		getHRdetails?.skillmulticheckbox?.map((item) => item?.text
-		),
+		getHRdetails?.skillmulticheckbox?.map((item) => item?.text),
 	);
 	const [selectedItems, setSelectedItems] = useState([]);
 	const [skills, setSkills] = useState([]);
-
 
 	const [messageAPI, contextHolder] = message.useMessage();
 	const getSkills = useCallback(async () => {
@@ -154,7 +152,7 @@ const EditDebriefingHR = ({
 			interviewerDesignation: d.interviewerDesignation,
 		};
 
-		console.log(d,"debriefFormDetails");
+		console.log(d, 'debriefFormDetails');
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
 			debriefFormDetails,
@@ -169,7 +167,6 @@ const EditDebriefingHR = ({
 	};
 
 	const needMoreInforSubmitHandler = async (d) => {
-
 		let debriefFormDetails = {
 			isneedmore: true,
 			roleAndResponsibilites: d.roleAndResponsibilities,
@@ -196,8 +193,8 @@ const EditDebriefingHR = ({
 		}
 	};
 
-	let tempArr = []
-	tempArr.push(getHRdetails?.skillmulticheckbox)
+	let tempArr = [];
+	tempArr.push(getHRdetails?.skillmulticheckbox);
 
 	// useEffect(() => {
 	// 	const skilsData = getHRdetails?.skillmulticheckbox?.filter((item)=>{
@@ -208,17 +205,21 @@ const EditDebriefingHR = ({
 	// }, [getHRdetails])
 
 	useEffect(() => {
-		errors['skills']?.ref?.value.push(tempArr)
-	}, [])
-
-
+		errors['skills']?.ref?.value.push(tempArr);
+	}, []);
 
 	useEffect(() => {
-		setValue("aboutCompany", getHRdetails?.addHiringRequest?.aboutCompanyDesc)
-		setValue("requirements", getHRdetails?.salesHiringRequest_Details?.requirement)
-		setValue("roleAndResponsibilities", getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities)
+		setValue('aboutCompany', getHRdetails?.addHiringRequest?.aboutCompanyDesc);
+		setValue(
+			'requirements',
+			getHRdetails?.salesHiringRequest_Details?.requirement,
+		);
+		setValue(
+			'roleAndResponsibilities',
+			getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities,
+		);
 		// setValue("skills",getHRdetails?.skillmulticheckbox)
-	}, [getHRdetails])
+	}, [getHRdetails]);
 
 	return (
 		<div className={DebriefingHRStyle.debriefingHRContainer}>
@@ -232,7 +233,10 @@ const EditDebriefingHR = ({
 					<div className={DebriefingHRStyle.colMd12}>
 						<TextEditor
 							isControlled={true}
-							controlledValue={JDParsedSkills?.Responsibility || getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities}
+							controlledValue={
+								JDParsedSkills?.Responsibility ||
+								getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities
+							}
 							label={'Roles & Responsibilities'}
 							placeholder={'Enter roles & responsibilities'}
 							required
@@ -257,7 +261,10 @@ const EditDebriefingHR = ({
 						/>
 						<TextEditor
 							isControlled={true}
-							controlledValue={JDParsedSkills?.Requirements || getHRdetails?.salesHiringRequest_Details?.requirement}
+							controlledValue={
+								JDParsedSkills?.Requirements ||
+								getHRdetails?.salesHiringRequest_Details?.requirement
+							}
 							label={'Requirements'}
 							placeholder={'Enter Requirements'}
 							setValue={setValue}
