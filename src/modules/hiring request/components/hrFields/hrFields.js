@@ -14,7 +14,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import HRSelectField from '../hrSelectField/hrSelectField';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
@@ -22,6 +22,7 @@ import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
+import AddInterviewer from '../addInterviewer/addInterviewer';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -39,6 +40,8 @@ const HRFields = ({
 	setTabFieldDisabled,
 	setJDParsedSkills,
 	contactID,
+	interviewDetails,
+	companyName,
 }) => {
 	const inputRef = useRef(null);
 	const [getUploadFileData, setUploadFileData] = useState('');
@@ -517,6 +520,7 @@ const HRFields = ({
 			setValue('companyName', '');
 		existingClientDetails.statusCode === HTTPStatusCode.OK &&
 			setValue('companyName', existingClientDetails?.responseBody?.name);
+			companyName(existingClientDetails?.responseBody?.name);
 		existingClientDetails.statusCode === HTTPStatusCode.OK &&
 			setIsCompanyNameAvailable(true);
 		setIsLoading(false);
@@ -658,6 +662,7 @@ const HRFields = ({
 
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 				setAddHRResponse(addHRRequest?.responseBody?.details);
+				interviewDetails(addHRRequest?.responseBody?.details);
 				setEnID(addHRRequest?.responseBody?.details?.en_Id);
 				type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
 				type !== SubmitType.SAVE_AS_DRAFT &&

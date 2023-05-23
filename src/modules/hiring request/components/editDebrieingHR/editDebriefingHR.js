@@ -251,7 +251,13 @@ const EditDebriefingHR = ({
 							isTextArea={true}
 							errors={errors}
 							validationSchema={{
-								required: 'please enter the years.',
+								validate:(value) =>{
+									if(value.toLowerCase()===getHRdetails?.company.toLowerCase() && value.toUpperCase()===getHRdetails?.company.toUpperCase()){
+										return 'Please do not mention company name here';
+									}if(!value){
+										return "Please add something about the company";
+									}
+								}
 							}}
 							label={'About Company'}
 							register={register}

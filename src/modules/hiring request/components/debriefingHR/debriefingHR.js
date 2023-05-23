@@ -30,6 +30,8 @@ const DebriefingHR = ({
 	JDParsedSkills,
 	interviewDetails,
 	setJDParsedSkills,
+	getHRdetails,
+	getCompanyName,
 }) => {
 	const {
 		watch,
@@ -48,6 +50,7 @@ const DebriefingHR = ({
 		control,
 		name: 'secondaryInterviewer',
 	});
+	console.log(getCompanyName,"getCompanyName");
 
 	const navigate = useNavigate();
 	const [controlledJDParsed, setControlledJDParsed] = useState(
@@ -226,7 +229,13 @@ const DebriefingHR = ({
 							isTextArea={true}
 							errors={errors}
 							validationSchema={{
-								required: 'please enter the years.',
+								validate:(value) =>{
+									if(value.toLowerCase()===getCompanyName.toLowerCase() && value.toUpperCase()===getCompanyName.toUpperCase()){
+										return 'Please do not mention company name here';
+									}if(!value){
+										return "Please add something about the company";
+									}
+								}
 							}}
 							label={'About Company'}
 							register={register}
@@ -322,6 +331,7 @@ const DebriefingHR = ({
 				register={register}
 				interviewDetails={interviewDetails}
 				fields={fields}
+				getHRdetails={getHRdetails}
 			/>
 			<Divider />
 			<div className={DebriefingHRStyle.formPanelAction}>
