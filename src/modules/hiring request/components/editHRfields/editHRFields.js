@@ -836,8 +836,8 @@ const EditHRFields = ({
 
     useEffect(() => {
         if (getHRdetails?.months) {
-            const findDurationMode = durationDataMemo.filter((item) => item?.id === getHRdetails?.months)
-            setValue("getDurationType", findDurationMode[0])
+            const findDurationMode = durationDataMemo.filter((item) => Number(item?.id) === getHRdetails?.months)
+            setValue("getDurationType", findDurationMode[0]?.id)
             setControlledDurationTypeValue(findDurationMode[0]?.value)
         }
     }, [getHRdetails, durationDataMemo])
@@ -1289,10 +1289,10 @@ const EditHRFields = ({
                                     label="Required Experience"
                                     errors={errors}
                                     validationSchema={{
-                                        required: 'please add something about the company',
+                                        required: 'please enter the years.',
                                         min: {
-                                            value: 0,
-                                            message: `please don't enter the value less than 0`,
+                                            value: 1,
+                                            message: `please don't enter the value less than 1`,
                                         },
                                     }}
                                     register={register}
