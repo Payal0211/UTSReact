@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import confirmSlotStyle from './confirmSlot.module.css';
 import { interviewUtils } from 'modules/interview/interviewUtils';
 import { Divider, Radio } from 'antd';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
 const ConfirmSlotModal = ({
 	getConfirmSlotDetails,
@@ -19,6 +20,7 @@ const ConfirmSlotModal = ({
 	setHRapiCall,
 	callHRapi,
 }) => {
+	const [isLoading, setIsLoading] = useState(false);
 	const dateConverter = () => {
 		const monthNames = [
 			'January',
@@ -67,6 +69,7 @@ const ConfirmSlotModal = ({
 	}, [getConfirmSlotDetails]);
 
 	const saveConfirmSlotDetailsHandler = async (data) => {
+		setIsLoading(true);
 		const shortListId = getConfirmSlotDetails?.Slots.filter(
 			(item, index) => confirmSlotRadio === index + 1,
 		);
@@ -84,6 +87,7 @@ const ConfirmSlotModal = ({
 			confirmSlotPayload,
 		);
 		if (response?.statusCode === HTTPStatusCode.OK) {
+			setIsLoading(false);
 			onCancel();
 			setHRapiCall(!callHRapi);
 		}
@@ -152,48 +156,52 @@ const ConfirmSlotModal = ({
 						className={confirmSlotStyle.topDivider}
 						dashed
 					/>
-					<form id="interviewReschedule">
-						<div className={confirmSlotStyle.row}>
-							<div className={confirmSlotStyle.colMd12}>
-								<div
-									className={confirmSlotStyle.radioFormGroup}
-									style={{
-										display: 'flex',
-										flexDirection: 'column',
-									}}>
-									<label>
-										Select Date & Time Slot to Schedule Interview
-										<span className={confirmSlotStyle.reqField}>*</span>
-									</label>
-									<Radio.Group
-										defaultValue={1}
-										className={confirmSlotStyle.radioGroup}
-										onChange={onSlotChange}
-										value={confirmSlotRadio}>
-										<Radio value={1}>{getDateNewFormate?.[0]}</Radio>
+					{isLoading ? (
+						<SpinLoader />
+					) : (
+						<form id="interviewReschedule">
+							<div className={confirmSlotStyle.row}>
+								<div className={confirmSlotStyle.colMd12}>
+									<div
+										className={confirmSlotStyle.radioFormGroup}
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+										}}>
+										<label>
+											Select Date & Time Slot to Schedule Interview
+											<span className={confirmSlotStyle.reqField}>*</span>
+										</label>
+										<Radio.Group
+											defaultValue={1}
+											className={confirmSlotStyle.radioGroup}
+											onChange={onSlotChange}
+											value={confirmSlotRadio}>
+											<Radio value={1}>{getDateNewFormate?.[0]}</Radio>
 
-										<Radio value={2}>{getDateNewFormate?.[1]}</Radio>
-										<Radio value={3}>{getDateNewFormate?.[2]}</Radio>
-									</Radio.Group>
+											<Radio value={2}>{getDateNewFormate?.[1]}</Radio>
+											<Radio value={3}>{getDateNewFormate?.[2]}</Radio>
+										</Radio.Group>
+									</div>
+								</div>
+								<div className={confirmSlotStyle.formPanelAction}>
+									<button
+										// disabled={isLoading}
+										type="submit"
+										onClick={() => saveConfirmSlotDetailsHandler()}
+										className={confirmSlotStyle.btnPrimary}>
+										Save
+									</button>
+									<button
+										className={confirmSlotStyle.btn}
+										onClick={() => onCancel()}>
+										Cancel
+									</button>
 								</div>
 							</div>
-						</div>
-					</form>
+						</form>
+					)}
 				</div>
-			</div>
-			<div className={confirmSlotStyle.formPanelAction}>
-				<button
-					// disabled={isLoading}
-					type="submit"
-					onClick={() => saveConfirmSlotDetailsHandler()}
-					className={confirmSlotStyle.btnPrimary}>
-					Save
-				</button>
-				<button
-					className={confirmSlotStyle.btn}
-					onClick={() => onCancel()}>
-					Cancel
-				</button>
 			</div>
 		</div>
 	);

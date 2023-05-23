@@ -54,7 +54,7 @@ const InterviewFeedback = ({
 				talentName: talentInfo?.Name || '',
 				talentIDValue: talentInfo?.TalentID,
 				contactIDValue: talentInfo?.ContactId,
-				hiringRequestID: hiringRequestNumber,
+				hiringRequestID: hrId,
 				shortlistedInterviewID: talentInfo?.Shortlisted_InterviewID,
 				hdnRadiovalue: radioValue1,
 				topSkill: '',

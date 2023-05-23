@@ -23,6 +23,7 @@ import { Collapse } from 'antd';
 // import PlusIcon from '../../../../assets/svg/plush-icon.svg';
 // import MinusIcon from '../../../../assets/svg/minus-icon.svg';
 import { useParams } from 'react-router-dom';
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 // import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO"
 
 const MatchmakingModal = ({
@@ -327,6 +328,7 @@ const MatchmakingModal = ({
 	}, [matchmakingModal]);
 
 	const convertToDpCollapseModal = async () => {
+		setIsLoading(true);
 		let watchData = watch('talentData');
 		let _payloadList = [];
 		for (let singleData of watchData) {
@@ -344,6 +346,7 @@ const MatchmakingModal = ({
 			_payloadList,
 		);
 		if (response.statusCode === HTTPStatusCode.OK) {
+			setIsLoading(false);
 			setConvertToDp(false);
 		}
 	};
@@ -464,7 +467,10 @@ const MatchmakingModal = ({
 				open={matchmakingModal}
 				width="1256px"
 				footer={null}
-				onCancel={() => setMatchmakingModal(false)}>
+				onCancel={() => {
+					setIsLoading(false);
+					setMatchmakingModal(false);
+				}}>
 				<div>
 					<label className={MatchMakingStyle.matchmakingLabel}>
 						Search Talent
@@ -551,62 +557,68 @@ const MatchmakingModal = ({
 							</div>
 						</div>
 					</div>
-					<div
-						style={{
-							maxHeight: '581px',
-							overflowY: 'auto',
-							marginLeft: 'auto',
-							marginRight: 'auto',
-						}}>
-						{matchmakingData.length === 0 ? (
-							<Skeleton />
-						) : (
-							<MatchMakingTable
-								matchMakingData={
-									filterMatchmakingData.length > 0
-										? filterMatchmakingData
-										: matchmakingData?.rows
-								}
-								setTalentID={setTalentID}
-								setTalentCost={setTalentCost}
-								allSelected={allSelected}
-								toggleRowSelection={toggleRowSelection}
-								expandedRows={expandedRows}
-								handleExpandRow={handleExpandRow}
-								selectedRows={selectedRows}
-								currentExpandedCell={currentExpandedCell}
-								componentToRender={
-									expandedCellUI[tableFunctionData] &&
-									expandedCellUI[tableFunctionData]
-								}
-							/>
-						)}
-					</div>
+					{isLoading ? (
+						<SpinLoader />
+					) : (
+						<>
+							<div
+								style={{
+									maxHeight: '581px',
+									overflowY: 'auto',
+									marginLeft: 'auto',
+									marginRight: 'auto',
+								}}>
+								{matchmakingData.length === 0 ? (
+									<Skeleton />
+								) : (
+									<MatchMakingTable
+										matchMakingData={
+											filterMatchmakingData.length > 0
+												? filterMatchmakingData
+												: matchmakingData?.rows
+										}
+										setTalentID={setTalentID}
+										setTalentCost={setTalentCost}
+										allSelected={allSelected}
+										toggleRowSelection={toggleRowSelection}
+										expandedRows={expandedRows}
+										handleExpandRow={handleExpandRow}
+										selectedRows={selectedRows}
+										currentExpandedCell={currentExpandedCell}
+										componentToRender={
+											expandedCellUI[tableFunctionData] &&
+											expandedCellUI[tableFunctionData]
+										}
+									/>
+								)}
+							</div>
 
-					<div className={MatchMakingStyle.formPanelAction}>
-						<button
-							disabled={listOfTalents.length === 0}
-							style={{
-								cursor: listOfTalents.length === 0 ? 'no-drop' : 'pointer',
-							}}
-							onClick={() => {
-								getTalentPriorities();
+							<div className={MatchMakingStyle.formPanelAction}>
+								<button
+									disabled={listOfTalents.length === 0}
+									style={{
+										cursor: listOfTalents.length === 0 ? 'no-drop' : 'pointer',
+									}}
+									onClick={() => {
+										getTalentPriorities();
 
-								// callAPI(hrID);
-							}}
-							type="button"
-							className={MatchMakingStyle.btnPrimary}>
-							Select Talent
-						</button>
+										// callAPI(hrID);
+									}}
+									type="button"
+									className={MatchMakingStyle.btnPrimary}>
+									Select Talent
+								</button>
 
-						<button className={MatchMakingStyle.btn}>Cancel</button>
-						<div
-							style={{
-								position: 'absolute',
-								right: '0',
-								marginRight: '32px',
-							}}></div>
-					</div>
+								<button className={MatchMakingStyle.btn}>Cancel</button>
+								<div
+									style={{
+										position: 'absolute',
+										right: '0',
+										marginRight: '32px',
+									}}></div>
+							</div>
+						</>
+					)}
 				</div>
 			</Modal>
 			{/* dp */}
@@ -619,7 +631,10 @@ const MatchmakingModal = ({
 						width="864px"
 						footer={null}
 						className="convert-dp-modal-wrap"
-						onCancel={() => setConvertToDp(false)}>
+						onCancel={() => {
+							setIsLoading(false);
+							setConvertToDp(false);
+						}}>
 						<div className="convert-dp-modal">
 							<label className={MatchMakingStyle.matchmakingLabel}>
 								Convert to Direct Placement
@@ -636,131 +651,136 @@ const MatchmakingModal = ({
 									<h4>Talents Detail</h4>
 								)}
 
-								<div className={UserFieldStyle.hrFieldContainer}>
-									<Collapse accordion>
-										{talentDpConversion?.map((item, index) => {
-											return (
-												<Panel
-													header={watch(`talentData[${index}].talentname`)}
-													key={index}>
-													<div className={UserFieldStyle.hrFieldContainer}>
-														<div className={UserFieldStyle.row}>
-															<div className={UserFieldStyle.colMd6}>
-																<HRInputField
-																	disabled
-																	register={register}
-																	errors={errors}
-																	label="Talent Name"
-																	name={`talentData[${index}].talentname`}
-																	type={InputType.TEXT}
-																/>
-															</div>
-															<div className={UserFieldStyle.colMd6}>
-																<HRInputField
-																	register={register}
-																	errors={errors}
-																	label="Talent Current CTC"
-																	name={`talentData[${index}].currentCTC`}
-																	type={InputType.NUMBER}
-																	placeholder="Enter Percentage"
-																/>
-															</div>
+								{isLoading ? (
+									<SpinLoader />
+								) : (
+									<>
+										<div className={UserFieldStyle.hrFieldContainer}>
+											<Collapse accordion>
+												{talentDpConversion?.map((item, index) => {
+													return (
+														<Panel
+															header={watch(`talentData[${index}].talentname`)}
+															key={index}>
+															<div className={UserFieldStyle.hrFieldContainer}>
+																<div className={UserFieldStyle.row}>
+																	<div className={UserFieldStyle.colMd6}>
+																		<HRInputField
+																			disabled
+																			register={register}
+																			errors={errors}
+																			label="Talent Name"
+																			name={`talentData[${index}].talentname`}
+																			type={InputType.TEXT}
+																		/>
+																	</div>
+																	<div className={UserFieldStyle.colMd6}>
+																		<HRInputField
+																			register={register}
+																			errors={errors}
+																			label="Talent Current CTC"
+																			name={`talentData[${index}].currentCTC`}
+																			type={InputType.NUMBER}
+																			placeholder="Enter Percentage"
+																		/>
+																	</div>
 
-															<div className={UserFieldStyle.colMd6}>
-																<HRInputField
-																	register={register}
-																	errors={errors}
-																	label="Talent Expected CTC"
-																	name={`talentData[${index}].expectedCTC`}
-																	type={InputType.NUMBER}
-																	placeholder="Enter Percentage"
-																	onChangeHandler={async (e) => {
-																		let _dpValue = watch(
-																			`talentData[${index}].dpPercentage`,
-																		);
-																		let response =
-																			await hiringRequestDAO.calculateTalentDpConversion(
-																				item.hrid,
-																				item.contactTalentPriorityID,
-																				_dpValue,
-																				e.target.value,
-																			);
-																		setValue(
-																			`talentData[${index}].dpAmount`,
-																			response.responseBody.details,
-																		);
-																	}}
-																/>
+																	<div className={UserFieldStyle.colMd6}>
+																		<HRInputField
+																			register={register}
+																			errors={errors}
+																			label="Talent Expected CTC"
+																			name={`talentData[${index}].expectedCTC`}
+																			type={InputType.NUMBER}
+																			placeholder="Enter Percentage"
+																			onChangeHandler={async (e) => {
+																				let _dpValue = watch(
+																					`talentData[${index}].dpPercentage`,
+																				);
+																				let response =
+																					await hiringRequestDAO.calculateTalentDpConversion(
+																						item.hrid,
+																						item.contactTalentPriorityID,
+																						_dpValue,
+																						e.target.value,
+																					);
+																				setValue(
+																					`talentData[${index}].dpAmount`,
+																					response.responseBody.details,
+																				);
+																			}}
+																		/>
+																	</div>
+																	<div className={UserFieldStyle.colMd6}>
+																		<HRInputField
+																			register={register}
+																			label="DP Percentage"
+																			name={`talentData[${index}].dpPercentage`}
+																			type={InputType.NUMBER}
+																			placeholder="Enter Percentage"
+																			errors={errors}
+																			onChangeHandler={async (e) => {
+																				let _perValue = watch(
+																					`talentData[${index}].expectedCTC`,
+																				);
+																				let response =
+																					await hiringRequestDAO.calculateTalentDpConversion(
+																						item.hrid,
+																						item.contactTalentPriorityID,
+																						e.target.value,
+																						_perValue,
+																					);
+																				setValue(
+																					`talentData[${index}].dpAmount`,
+																					response.responseBody.details,
+																				);
+																			}}
+																		/>
+																	</div>
+
+																	<div className={UserFieldStyle.colMd6}>
+																		<HRInputField
+																			register={register}
+																			errors={errors}
+																			label="DP Amount"
+																			name={`talentData[${index}].dpAmount`}
+																			type={InputType.TEXT}
+																			placeholder="Enter Percentage"
+																			disabled={true}
+																		/>
+																	</div>
+																</div>
 															</div>
-															<div className={UserFieldStyle.colMd6}>
-																<HRInputField
-																	register={register}
-																	label="DP Percentage"
-																	name={`talentData[${index}].dpPercentage`}
-																	type={InputType.NUMBER}
-																	placeholder="Enter Percentage"
-																	errors={errors}
-																	onChangeHandler={async (e) => {
-																		let _perValue = watch(
-																			`talentData[${index}].expectedCTC`,
-																		);
-																		let response =
-																			await hiringRequestDAO.calculateTalentDpConversion(
-																				item.hrid,
-																				item.contactTalentPriorityID,
-																				e.target.value,
-																				_perValue,
-																			);
-																		setValue(
-																			`talentData[${index}].dpAmount`,
-																			response.responseBody.details,
-																		);
-																	}}
-																/>
-															</div>
+														</Panel>
+													);
+												})}
+											</Collapse>
+										</div>
+										<div className={MatchMakingStyle.formPanelAction}>
+											<button
+												className={MatchMakingStyle.btn}
+												onClick={() => setConvertToDp(false)}>
+												Cancel
+											</button>
 
-															<div className={UserFieldStyle.colMd6}>
-																<HRInputField
-																	register={register}
-																	errors={errors}
-																	label="DP Amount"
-																	name={`talentData[${index}].dpAmount`}
-																	type={InputType.TEXT}
-																	placeholder="Enter Percentage"
-																	disabled={true}
-																/>
-															</div>
-														</div>
-													</div>
-												</Panel>
-											);
-										})}
-									</Collapse>
-								</div>
-							</div>
+											<button
+												onClick={() => {
+													convertToDpCollapseModal();
+												}}
+												type="button"
+												className={MatchMakingStyle.btnPrimary}>
+												Convert to DP
+											</button>
 
-							<div className={MatchMakingStyle.formPanelAction}>
-								<button
-									className={MatchMakingStyle.btn}
-									onClick={() => setConvertToDp(false)}>
-									Cancel
-								</button>
-
-								<button
-									onClick={() => {
-										convertToDpCollapseModal();
-									}}
-									type="button"
-									className={MatchMakingStyle.btnPrimary}>
-									Convert to DP
-								</button>
-
-								<div
-									style={{
-										position: 'absolute',
-										right: '0',
-										marginRight: '32px',
-									}}></div>
+											<div
+												style={{
+													position: 'absolute',
+													right: '0',
+													marginRight: '32px',
+												}}></div>
+										</div>
+									</>
+								)}
 							</div>
 						</div>
 					</Modal>

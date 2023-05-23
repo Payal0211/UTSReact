@@ -12,6 +12,8 @@ import HRInputField from '../hrInputFields/hrInputFields';
 import { InputType } from 'constants/application';
 import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
+import WithLoader from 'shared/components/loader/loader';
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -43,11 +45,12 @@ const DebriefingHR = ({
 			secondaryInterviewer: [],
 		},
 	});
+
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
 	});
-
+	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
 	const [controlledJDParsed, setControlledJDParsed] = useState([]);
 	const [selectedItems, setSelectedItems] = useState([]);
@@ -143,6 +146,7 @@ const DebriefingHR = ({
 	}, [JDParsedSkills, setValue]);
 
 	const debriefSubmitHandler = async (d) => {
+		setIsLoading(true);
 		let skillList = d.skills.map((item) => {
 			const obj = {
 				skillsID: item.id || item?.skillsID,
@@ -169,6 +173,7 @@ const DebriefingHR = ({
 			debriefFormDetails,
 		);
 		if (debriefResult.statusCode === HTTPStatusCode.OK) {
+			setIsLoading(false);
 			messageAPI.open({
 				type: 'success',
 				content: 'HR Debriefing has been created successfully..',
@@ -178,6 +183,7 @@ const DebriefingHR = ({
 	};
 
 	const needMoreInforSubmitHandler = async (d) => {
+		setIsLoading(true);
 		let skillList = d.skills.map((item) => {
 			const obj = {
 				skillsID: item.id || item?.skillsID,
@@ -205,6 +211,7 @@ const DebriefingHR = ({
 			debriefFormDetails,
 		);
 		if (debriefResult.statusCode === HTTPStatusCode.OK) {
+			setIsLoading(false);
 			messageAPI.open({
 				type: 'success',
 				content: 'HR Debriefing has been created successfully..',
@@ -216,69 +223,72 @@ const DebriefingHR = ({
 	return (
 		<div className={DebriefingHRStyle.debriefingHRContainer}>
 			{contextHolder}
-			<div className={DebriefingHRStyle.partOne}>
-				<div className={DebriefingHRStyle.hrFieldLeftPane}>
-					<h3>Job Description</h3>
-					<p>Please provide the necessary details</p>
-				</div>
-				<div className={DebriefingHRStyle.hrFieldRightPane}>
-					<div className={DebriefingHRStyle.colMd12}>
-						<TextEditor
-							isControlled={true}
-							controlledValue={JDParsedSkills?.Responsibility || ''}
-							label={'Roles & Responsibilities'}
-							placeholder={'Enter roles & responsibilities'}
-							required
-							setValue={setValue}
-							watch={watch}
-							register={register}
-							errors={errors}
-							name="roleAndResponsibilities"
-						/>
-						<HRInputField
-							required
-							isTextArea={true}
-							errors={errors}
-							validationSchema={{
-								required: 'please add somthing about the company',
-							}}
-							label={'About Company'}
-							register={register}
-							name="aboutCompany"
-							type={InputType.TEXT}
-							placeholder="Please enter details about company."
-						/>
-						<TextEditor
-							isControlled={true}
-							controlledValue={JDParsedSkills?.Requirements || ''}
-							label={'Requirements'}
-							placeholder={'Enter Requirements'}
-							setValue={setValue}
-							watch={watch}
-							register={register}
-							errors={errors}
-							name="requirements"
-							required
-						/>
-						<div className={DebriefingHRStyle.mb50}>
-							<HRSelectField
+			<WithLoader
+				showLoader={isLoading}
+				className="mainLoader">
+				<div className={DebriefingHRStyle.partOne}>
+					<div className={DebriefingHRStyle.hrFieldLeftPane}>
+						<h3>Job Description</h3>
+						<p>Please provide the necessary details</p>
+					</div>
+					<div className={DebriefingHRStyle.hrFieldRightPane}>
+						<div className={DebriefingHRStyle.colMd12}>
+							<TextEditor
 								isControlled={true}
-								controlledValue={controlledJDParsed}
-								setControlledValue={setControlledJDParsed}
-								mode="multiple"
-								setValue={setValue}
-								register={register}
-								label={'Required Skills'}
-								placeholder="Type skills"
-								onChange={setSelectedItems}
-								options={combinedSkillsMemo}
-								name="skills"
-								isError={errors['skills'] && errors['skills']}
+								controlledValue={JDParsedSkills?.Responsibility || ''}
+								label={'Roles & Responsibilities'}
+								placeholder={'Enter roles & responsibilities'}
 								required
-								errorMsg={'Please enter the skills.'}
+								setValue={setValue}
+								watch={watch}
+								register={register}
+								errors={errors}
+								name="roleAndResponsibilities"
 							/>
-						</div>
-						{/* {isOtherSkillExistMemo && (
+							<HRInputField
+								required
+								isTextArea={true}
+								errors={errors}
+								validationSchema={{
+									required: 'please add somthing about the company',
+								}}
+								label={'About Company'}
+								register={register}
+								name="aboutCompany"
+								type={InputType.TEXT}
+								placeholder="Please enter details about company."
+							/>
+							<TextEditor
+								isControlled={true}
+								controlledValue={JDParsedSkills?.Requirements || ''}
+								label={'Requirements'}
+								placeholder={'Enter Requirements'}
+								setValue={setValue}
+								watch={watch}
+								register={register}
+								errors={errors}
+								name="requirements"
+								required
+							/>
+							<div className={DebriefingHRStyle.mb50}>
+								<HRSelectField
+									isControlled={true}
+									controlledValue={controlledJDParsed}
+									setControlledValue={setControlledJDParsed}
+									mode="multiple"
+									setValue={setValue}
+									register={register}
+									label={'Required Skills'}
+									placeholder="Type skills"
+									onChange={setSelectedItems}
+									options={combinedSkillsMemo}
+									name="skills"
+									isError={errors['skills'] && errors['skills']}
+									required
+									errorMsg={'Please enter the skills.'}
+								/>
+							</div>
+							{/* {isOtherSkillExistMemo && (
 							<div className={DebriefingHRStyle.colMd12}>
 								<HRInputField
 									register={register}
@@ -303,7 +313,7 @@ const DebriefingHR = ({
 								/>
 							</div>
 						)} */}
-						{/* <div className={DebriefingHRStyle.mb50}>
+							{/* <div className={DebriefingHRStyle.mb50}>
 							<label
 								style={{
 									fontSize: '12px',
@@ -327,35 +337,40 @@ const DebriefingHR = ({
 								}))}
 							/>
 						</div> */}
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<Divider />
-			<AddInterviewer
-				errors={errors}
-				append={append}
-				remove={remove}
-				setValue={setValue}
-				register={register}
-				interviewDetails={interviewDetails}
-				fields={fields}
-			/>
-			<Divider />
-			<div className={DebriefingHRStyle.formPanelAction}>
-				<button
-					type="button"
-					className={DebriefingHRStyle.btn}
-					onClick={handleSubmit(needMoreInforSubmitHandler)}>
-					Need More Info
-				</button>
-				<button
-					type="button"
-					className={DebriefingHRStyle.btnPrimary}
-					onClick={handleSubmit(debriefSubmitHandler)}>
-					Create
-				</button>
-			</div>
+				<Divider />
+				<AddInterviewer
+					errors={errors}
+					append={append}
+					remove={remove}
+					setValue={setValue}
+					register={register}
+					interviewDetails={interviewDetails}
+					fields={fields}
+				/>
+				<Divider />
+				{isLoading ? (
+					<SpinLoader />
+				) : (
+					<div className={DebriefingHRStyle.formPanelAction}>
+						<button
+							type="button"
+							className={DebriefingHRStyle.btn}
+							onClick={handleSubmit(needMoreInforSubmitHandler)}>
+							Need More Info
+						</button>
+						<button
+							type="button"
+							className={DebriefingHRStyle.btnPrimary}
+							onClick={handleSubmit(debriefSubmitHandler)}>
+							Create
+						</button>
+					</div>
+				)}
+			</WithLoader>
 		</div>
 	);
 };

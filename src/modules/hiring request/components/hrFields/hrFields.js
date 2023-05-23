@@ -31,6 +31,7 @@ import { hrUtils } from 'modules/hiring request/hrUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
 import useDebounce from 'shared/hooks/useDebounce';
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -49,6 +50,7 @@ const HRFields = ({
 	setJDParsedSkills,
 	contactID,
 }) => {
+	const [isSavedLoading, setIsSavedLoading] = useState(false);
 	const [controlledCountryName, setControlledCountryName] = useState('');
 	const inputRef = useRef(null);
 	const [getUploadFileData, setUploadFileData] = useState('');
@@ -699,6 +701,7 @@ const HRFields = ({
 
 	const hrSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+			setIsSavedLoading(true);
 			let hrFormDetails = hrUtils.hrFormDataFormatter(
 				d,
 				type,
@@ -723,6 +726,7 @@ const HRFields = ({
 			const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+				setIsSavedLoading(false);
 				setAddHRResponse(addHRRequest?.responseBody?.details);
 				setEnID(addHRRequest?.responseBody?.details?.en_Id);
 				if (!!addHRRequest?.responseBody?.details?.jdURL)
@@ -1420,21 +1424,27 @@ const HRFields = ({
 				fields={fields}
 			/> */}
 
-			<div className={HRFieldStyle.formPanelAction}>
-				<button
-					style={{ cursor: type === SubmitType.SUBMIT ? 'no-drop' : 'pointer' }}
-					disabled={type === SubmitType.SUBMIT}
-					className={HRFieldStyle.btn}
-					onClick={hrSubmitHandler}>
-					Save as Draft
-				</button>
+			{isSavedLoading ? (
+				<SpinLoader />
+			) : (
+				<div className={HRFieldStyle.formPanelAction}>
+					<button
+						style={{
+							cursor: type === SubmitType.SUBMIT ? 'no-drop' : 'pointer',
+						}}
+						disabled={type === SubmitType.SUBMIT}
+						className={HRFieldStyle.btn}
+						onClick={hrSubmitHandler}>
+						Save as Draft
+					</button>
 
-				<button
-					onClick={handleSubmit(hrSubmitHandler)}
-					className={HRFieldStyle.btnPrimary}>
-					Create HR
-				</button>
-			</div>
+					<button
+						onClick={handleSubmit(hrSubmitHandler)}
+						className={HRFieldStyle.btnPrimary}>
+						Create HR
+					</button>
+				</div>
+			)}
 		</div>
 	);
 
