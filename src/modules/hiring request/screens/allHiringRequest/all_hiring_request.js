@@ -179,6 +179,10 @@ const AllHiringRequestScreen = () => {
 				setTotalRecords(response?.responseBody?.totalrows);
 				setLoading(false);
 				setAPIdata(hrUtils.modifyHRRequestData(response && response));
+			} else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+				setLoading(false);
+				setTotalRecords(0);
+				setAPIdata([]);
 			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 				setLoading(false);
 				return navigate(UTSRoutes.LOGINROUTE);

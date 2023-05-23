@@ -1,4 +1,4 @@
-import { EmailRegEx, InputType } from 'constants/application';
+import { EmailRegEx, InputType, URLRegEx } from 'constants/application';
 import { useCallback, useEffect } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import AddInterviewerStyle from './addInterviewer.module.css';
@@ -13,6 +13,7 @@ const AddInterviewer = ({
 	append,
 	setValue,
 	errors,
+	getHRdetails,
 }) => {
 	/**Add Secondary Items*/
 	const onAddSecondaryInterviewer = useCallback(
@@ -29,19 +30,49 @@ const AddInterviewer = ({
 		},
 		[remove],
 	);
+	console.log(interviewDetails, '-interviewDetails');
+	console.log(getHRdetails, '--getHRDetail');
 
-	const autoFillInterviewDetailsHandler = useCallback(() => {
+	/*const autoFillInterviewDetailsHandler = useCallback(() => {
 		if (interviewDetails) {
 			setValue('interviewerFullName', interviewDetails?.fullName);
 			setValue('interviewerEmail', interviewDetails?.emailId);
 			setValue('interviewerLinkedin', interviewDetails?.linkedin);
 			setValue('interviewerDesignation', interviewDetails?.designation);
 		}
-	}, [interviewDetails, setValue]);
+	}, [interviewDetails, setValue]);*/
 
 	useEffect(() => {
-		if (interviewDetails) autoFillInterviewDetailsHandler();
-	}, [autoFillInterviewDetailsHandler, interviewDetails]);
+		if (localStorage.getItem('hrID')) {
+			setValue(
+				'interviewerFullName',
+				getHRdetails?.salesHiringRequest_Details?.interviewerName,
+			);
+			setValue(
+				'interviewerEmail',
+				getHRdetails?.salesHiringRequest_Details?.interviewerEmailId,
+			);
+			setValue(
+				'interviewerLinkedin',
+				getHRdetails?.salesHiringRequest_Details?.interviewLinkedin,
+			);
+			setValue(
+				'interviewerDesignation',
+				getHRdetails?.salesHiringRequest_Details?.interviewerDesignation,
+			);
+		} else if (interviewDetails) {
+			setValue('interviewerFullName', interviewDetails?.fullName);
+			setValue('interviewerEmail', interviewDetails?.emailId);
+			setValue('interviewerLinkedin', interviewDetails?.linkedin);
+			setValue('interviewerDesignation', interviewDetails?.designation);
+		} else {
+			setValue('interviewerFullName', getHRdetails?.interviewerFullName);
+			setValue('interviewerEmail', getHRdetails?.interviewerEmail);
+			setValue('interviewerLinkedin', getHRdetails?.interviewerLinkedin);
+			setValue('interviewerDesignation', getHRdetails?.interviewerDesignation);
+		}
+	}, [getHRdetails, interviewDetails, setValue]);
+
 	return (
 		<div>
 			<div className={AddInterviewerStyle.addInterviewContainer}>
@@ -106,6 +137,10 @@ const AddInterviewer = ({
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the primary interviewer linkedin.',
+									pattern: {
+										value: URLRegEx.url,
+										message: 'Entered value does not match url format',
+									},
 								}}
 								required
 							/>

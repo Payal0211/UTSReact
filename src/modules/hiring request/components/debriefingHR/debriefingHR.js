@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import WithLoader from 'shared/components/loader/loader';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
+import { _isNull } from 'shared/utils/basic_utils';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -31,6 +32,10 @@ const DebriefingHR = ({
 	JDParsedSkills,
 	interviewDetails,
 	setJDParsedSkills,
+	getHRdetails,
+	getCompanyName,
+	clientDetail,
+	params
 }) => {
 	const {
 		watch,
@@ -250,8 +255,23 @@ const DebriefingHR = ({
 								isTextArea={true}
 								errors={errors}
 								validationSchema={{
-									required: 'please add somthing about the company',
-								}}
+								validate:(value) =>{
+									if(params === "addnewhr"){
+										if(value.toLowerCase()===getCompanyName.toLowerCase() && value.toUpperCase()===getCompanyName.toUpperCase()){
+											return 'Please do not mention company name here';
+										}if(!value){
+											return "Please add something about the company";
+										}
+									}else{
+										if(value.toLowerCase()===clientDetail?.companyname
+										.toLowerCase() && value.toUpperCase()===clientDetail?.companyname.toUpperCase()){
+											return 'Please do not mention company name here';
+										}if(!value){
+											return "Please add something about the company";
+										}
+									}
+								}
+							}}
 								label={'About Company'}
 								register={register}
 								name="aboutCompany"
@@ -350,6 +370,7 @@ const DebriefingHR = ({
 					register={register}
 					interviewDetails={interviewDetails}
 					fields={fields}
+				getHRdetails={getHRdetails}
 				/>
 				<Divider />
 				{isLoading ? (

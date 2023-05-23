@@ -8,10 +8,12 @@ import {
 	Modal,
 } from 'antd';
 import {
+	AddNewType,
 	ClientHRURL,
 	GoogleDriveCredentials,
 	InputType,
 	SubmitType,
+	URLRegEx,
 	WorkingMode,
 } from 'constants/application';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -33,6 +35,7 @@ import useDrivePicker from 'react-google-drive-picker/dist';
 import useDebounce from 'shared/hooks/useDebounce';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import WithLoader from 'shared/components/loader/loader';
+
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -50,6 +53,9 @@ const HRFields = ({
 	setTabFieldDisabled,
 	setJDParsedSkills,
 	contactID,
+	interviewDetails,
+	companyName,
+	params,
 }) => {
 	const [isSavedLoading, setIsSavedLoading] = useState(false);
 	const [controlledCountryName, setControlledCountryName] = useState('');
@@ -358,7 +364,7 @@ const HRFields = ({
 	}, []);
 
 	const watchPostalCode = watch('postalCode');
-	console.log(errors, '-errors');
+
 	const postalCodeHandler = useCallback(
 		async (flag) => {
 			const countryResponse = await MasterDAO.getCountryByPostalCodeRequestDAO({
@@ -567,6 +573,7 @@ const HRFields = ({
 			setValue('companyName', '');
 		existingClientDetails.statusCode === HTTPStatusCode.OK &&
 			setValue('companyName', existingClientDetails?.responseBody?.name);
+		companyName(existingClientDetails?.responseBody?.name);
 		existingClientDetails.statusCode === HTTPStatusCode.OK &&
 			setIsCompanyNameAvailable(true);
 		setIsLoading(false);
@@ -729,6 +736,10 @@ const HRFields = ({
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 				setIsSavedLoading(false);
 				setAddHRResponse(addHRRequest?.responseBody?.details);
+				console.log(params === 'addnewhr', '--addnewhr');
+				if (params === 'addnewhr') {
+					interviewDetails(addHRRequest?.responseBody?.details);
+				}
 				setEnID(addHRRequest?.responseBody?.details?.en_Id);
 				if (!!addHRRequest?.responseBody?.details?.jdURL)
 					setJDParsedSkills({
@@ -1064,6 +1075,13 @@ const HRFields = ({
 									placeholder="Add JD link"
 									register={register}
 									required={!getUploadFileData}
+									errors={errors}
+									validationSchema={{
+										pattern: {
+											value: URLRegEx.url,
+											message: 'Entered value does not match url format',
+										},
+									}}
 								/>
 							</div>
 						</div>
@@ -1104,8 +1122,8 @@ const HRFields = ({
 									validationSchema={{
 										required: 'please enter the minimum budget.',
 										min: {
-											value: 0,
-											message: `please don't enter the value less than 0`,
+											value: 1,
+											message: `please don't enter the value less than 1`,
 										},
 									}}
 								/>

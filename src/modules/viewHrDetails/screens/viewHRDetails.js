@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import ViewHRDetailsStyle from '../screens/viewHRDetails.module.css';
@@ -9,7 +9,7 @@ import { useState } from 'react';
 const ViewHRDetails = () => {
 	const [hiringDetails, setHiringDetails] = useState('');
 	const id = useParams();
-
+const navigate = useNavigate()
 	const getViewHrDetails = useCallback(async () => {
 		const response = await hiringRequestDAO.viewHRDetailsRequestDAO(id.id);
 		setHiringDetails(response);
@@ -20,8 +20,9 @@ const ViewHRDetails = () => {
 	}, [getViewHrDetails]);
 
 	const editHr = () => {
-		localStorage.setItem('hrID', id?.id);
-	};
+		localStorage.setItem("hrID", id?.id)
+		navigate("/allhiringrequest/addnewhr")
+	}
 
 	return (
 		<>
@@ -35,7 +36,10 @@ const ViewHRDetails = () => {
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsHead}>
 					<h1>HR ID - {hiringDetails?.responseBody?.details?.hrNumber}</h1>
-					<Link to="/allhiringrequest/addnewhr"><button onClick={editHr}>Edit HR</button></Link>
+					{hiringDetails?.responseBody?.details?.hrStatus==="Open"&&(
+						<button onClick={editHr}>Edit HR</button>
+					)}
+					
 				</div>
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsItem}>

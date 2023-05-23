@@ -7,7 +7,11 @@ import EditHRFields from 'modules/hiring request/components/editHRfields/editHRF
 import EditDebriefingHR from 'modules/hiring request/components/editDebrieingHR/editDebriefingHR';
 
 const AddNewHR = () => {
-	const [title, setTitle] = useState(localStorage.getItem("hrID") ? 'Edit New Hiring Requests' : 'Add New Hiring Requests');
+	const [title, setTitle] = useState(
+		localStorage.getItem('hrID')
+			? 'Edit New Hiring Requests'
+			: 'Add New Hiring Requests',
+	);
 	const [tabFieldDisabled, setTabFieldDisabled] = useState({
 		addNewHiringRequest: false,
 		debriefingHR: true,
@@ -22,59 +26,78 @@ const AddNewHR = () => {
 		Requirements: '',
 	});
 
+	const params = window?.location?.pathname?.split('/')?.[2];
 	const [enID, setEnID] = useState('');
 	const [jdDumpID, setJDDumpID] = useState('');
-  	const [getHRdetails, setHRdetails] = useState({})
+	const [getHRdetails, setHRdetails] = useState({});
+	const [getCompanyName, setCompanyName] = useState();
 
-useEffect(() => {
-		localStorage.setItem("enIDdata", enID);
-	}, [enID])
+	useEffect(() => {
+		localStorage.setItem('enIDdata', enID);
+	}, [enID]);
+	const interviewDetails = (e) => {
+		console.log(e, 'eeeee');
+		setHRdetails(e);
+	};
+
+	const companyName = (e) => {
+		setCompanyName(e);
+	};
 	return (
 		<div className={AddNewHRStyle.addNewContainer}>
 			<div className={AddNewHRStyle.addHRTitle}>{title}</div>
-			{!localStorage.getItem("hrID") && <Tabs
-				onChange={(e) => setTitle(e)}
-				defaultActiveKey="1"
-				activeKey={title}
-				animated={true}
-				tabBarGutter={50}
-				tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
-				items={[
-					{
-						label: 'Add New Hiring Requests',
-						key: 'Add New Hiring Requests',
-						children: (
-							<HRFields
-								setTitle={setTitle}
-								tabFieldDisabled={tabFieldDisabled}
-								setTabFieldDisabled={setTabFieldDisabled}
-								setEnID={setEnID}
-								setJDParsedSkills={setJDParsedSkills}
-								setJDDumpID={setJDDumpID}
-								jdDumpID={jdDumpID}
-							/>
-						),
-					},
-					{
-						label: 'Debriefing HR',
-						key: 'Debriefing HR',
-						children: (
-							<DebriefingHR
-								setTitle={setTitle}
-								tabFieldDisabled={tabFieldDisabled}
-								setTabFieldDisabled={setTabFieldDisabled}
-								enID={enID}
-								setJDParsedSkills={setJDParsedSkills}
-								JDParsedSkills={JDParsedSkills}
-								jdDumpID={jdDumpID}
-							/>
-						),
-						disabled: tabFieldDisabled.debriefingHR,
-					},
-				]}
-			/>}
+			{!localStorage.getItem('hrID') && (
+				<Tabs
+					onChange={(e) => setTitle(e)}
+					defaultActiveKey="1"
+					activeKey={title}
+					animated={true}
+					tabBarGutter={50}
+					tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
+					items={[
+						{
+							label: 'Add New Hiring Requests',
+							key: 'Add New Hiring Requests',
+							children: (
+								<HRFields
+									setTitle={setTitle}
+									tabFieldDisabled={tabFieldDisabled}
+									setTabFieldDisabled={setTabFieldDisabled}
+									setEnID={setEnID}
+									setJDParsedSkills={setJDParsedSkills}
+									setJDDumpID={setJDDumpID}
+									jdDumpID={jdDumpID}
+									interviewDetails={interviewDetails}
+									companyName={companyName}
+									params={params}
+								/>
+							),
+						},
+						{
+							label: 'Debriefing HR',
+							key: 'Debriefing HR',
+							children: (
+								<DebriefingHR
+									setTitle={setTitle}
+									tabFieldDisabled={tabFieldDisabled}
+									setTabFieldDisabled={setTabFieldDisabled}
+									enID={enID}
+									setJDParsedSkills={setJDParsedSkills}
+									JDParsedSkills={JDParsedSkills}
+									jdDumpID={jdDumpID}
+									getHRdetails={getHRdetails}
+									setHRdetails={setHRdetails}
+									getCompanyName={getCompanyName}
+									params={params}
+								/>
+							),
+							disabled: tabFieldDisabled.debriefingHR,
+						},
+					]}
+				/>
+			)}
 
-			{localStorage.getItem("hrID") &&
+			{localStorage.getItem('hrID') && (
 				<Tabs
 					onChange={(e) => setTitle(e)}
 					defaultActiveKey="1"
@@ -116,9 +139,8 @@ useEffect(() => {
 							),
 						},
 					]}
-				/>}
-
-
+				/>
+			)}
 		</div>
 	);
 };

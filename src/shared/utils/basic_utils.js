@@ -99,9 +99,12 @@ export const isSunday = (date) => date.getDay() === 0;
 
 export const getNthDateExcludingWeekend = (n = 0) => {
 	let nthDate = new Date();
+
 	nthDate.setDate(nthDate.getDate() + n);
+
 	if (isSaturday(nthDate)) nthDate.setDate(nthDate.getDate() + 2);
 	if (isSunday(nthDate)) nthDate.setDate(nthDate.getDate() + 1);
+
 	return nthDate;
 };
 
@@ -126,7 +129,7 @@ export const getTimeInHHMM = (time) =>
 export const getDateInUsFormat = (date) =>
 	prefixZeroInTime(date.getMonth() + 1) +
 	'/' +
-	prefixZeroInTime(date.getDay()) +
+	prefixZeroInTime(date.getDate()) +
 	'/' +
 	date.getFullYear();
 export const getInterviewSlotInfo = (interviewDate, startTime, endTime) => {

@@ -4,6 +4,7 @@ import {
     GoogleDriveCredentials,
     InputType,
     SubmitType,
+    URLRegEx,
     WorkingMode,
 } from 'constants/application';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -835,8 +836,8 @@ const EditHRFields = ({
 
     useEffect(() => {
         if (getHRdetails?.months) {
-            const findDurationMode = durationDataMemo.filter((item) => item?.id === getHRdetails?.months)
-            setValue("getDurationType", findDurationMode[0])
+            const findDurationMode = durationDataMemo.filter((item) => Number(item?.id) === getHRdetails?.months)
+            setValue("getDurationType", findDurationMode[0]?.id)
             setControlledDurationTypeValue(findDurationMode[0]?.value)
         }
     }, [getHRdetails, durationDataMemo])
@@ -1063,6 +1064,7 @@ const EditHRFields = ({
                             uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
                             modalTitle={'Upload JD'}
                             isFooter={true}
+                            modalSubtitle={'Job Description'}
                             openModal={showUploadModal}
                             setUploadModal={setUploadModal}
                             cancelModal={() => setUploadModal(false)}
@@ -1081,6 +1083,14 @@ const EditHRFields = ({
                                 type={InputType.TEXT}
                                 placeholder="Add JD link"
                                 register={register}
+                                errors={errors}
+                                required={!getUploadFileData}
+								validationSchema={{
+									pattern: {
+											value: URLRegEx.url,
+											message: 'Entered value does not match url format',
+										},
+								}}
                             />
                         </div>
                     </div>
@@ -1279,10 +1289,10 @@ const EditHRFields = ({
                                     label="Required Experience"
                                     errors={errors}
                                     validationSchema={{
-                                        required: 'please add somthing about the company',
+                                        required: 'please enter the years.',
                                         min: {
-                                            value: 0,
-                                            message: `please don't enter the value less than 0`,
+                                            value: 1,
+                                            message: `please don't enter the value less than 1`,
                                         },
                                     }}
                                     register={register}

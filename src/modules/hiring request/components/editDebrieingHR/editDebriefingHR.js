@@ -174,6 +174,47 @@ const EditDebriefingHR = ({
 				interviewerEmail: d.interviewerEmail,
 				interviewerLinkedin: d.interviewerLinkedin,
 				interviewerDesignation: d.interviewerDesignation,
+				JDDumpID: getHRdetails?.addHiringRequest?.jddumpId,
+			};
+
+			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
+				debriefFormDetails,
+			);
+			if (debriefResult.statusCode === HTTPStatusCode.OK) {
+				window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
+				setIsLoading(false);
+				messageAPI.open({
+					type: 'success',
+					content: 'HR Debriefing has been updated successfully..',
+				});
+			}
+		},
+		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI],
+	);
+
+	const needMoreInforSubmitHandler = useCallback(
+		async (d) => {
+			setIsLoading(true);
+			let skillList = d.skills.map((item) => {
+				const obj = {
+					skillsID: item.id || item?.skillsID,
+					skillsName: item.value || item?.skillName,
+				};
+				return obj;
+			});
+			let debriefFormDetails = {
+				isneedmore: true,
+				roleAndResponsibilites: d.roleAndResponsibilities,
+				requirements: d.requirements,
+				en_Id: enID,
+				skills: skillList?.filter((item) => item?.skillsID !== -1),
+				aboutCompanyDesc: d.aboutCompany,
+				secondaryInterviewer: d.secondaryInterviewer,
+				interviewerFullName: d.interviewerFullName,
+				interviewerEmail: d.interviewerEmail,
+				interviewerLinkedin: d.interviewerLinkedin,
+				interviewerDesignation: d.interviewerDesignation,
+				JDDumpID: getHRdetails?.addHiringRequest?.jddumpId,
 			};
 
 			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -183,49 +224,13 @@ const EditDebriefingHR = ({
 				setIsLoading(false);
 				messageAPI.open({
 					type: 'success',
-					content: 'HR Debriefing has been created successfully..',
+					content: 'HR Debriefing has been updated successfully..',
 				});
 				window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
 			}
 		},
-		[enID, messageAPI],
+		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI, navigate],
 	);
-
-	const needMoreInforSubmitHandler = async (d) => {
-		setIsLoading(true);
-		let skillList = d.skills.map((item) => {
-			const obj = {
-				skillsID: item.id || item?.skillsID,
-				skillsName: item.value || item?.skillName,
-			};
-			return obj;
-		});
-		let debriefFormDetails = {
-			isneedmore: true,
-			roleAndResponsibilites: d.roleAndResponsibilities,
-			requirements: d.requirements,
-			en_Id: enID,
-			skills: skillList?.filter((item) => item?.skillsID !== -1),
-			aboutCompanyDesc: d.aboutCompany,
-			secondaryInterviewer: d.secondaryInterviewer,
-			interviewerFullName: d.interviewerFullName,
-			interviewerEmail: d.interviewerEmail,
-			interviewerLinkedin: d.interviewerLinkedin,
-			interviewerDesignation: d.interviewerDesignation,
-		};
-
-		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
-			debriefFormDetails,
-		);
-		if (debriefResult.statusCode === HTTPStatusCode.OK) {
-			setIsLoading(false);
-			messageAPI.open({
-				type: 'success',
-				content: 'HR Debriefing has been updated successfully..',
-			});
-			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
-		}
-	};
 
 	let tempArr = [];
 	tempArr.push(getHRdetails?.skillmulticheckbox);
@@ -289,7 +294,19 @@ const EditDebriefingHR = ({
 								isTextArea={true}
 								errors={errors}
 								validationSchema={{
-									required: 'please add somthing about the company',
+									validate: (value) => {
+										if (
+											value.toLowerCase() ===
+												getHRdetails?.company.toLowerCase() &&
+											value.toUpperCase() ===
+												getHRdetails?.company.toUpperCase()
+										) {
+											return 'Please do not mention company name here';
+										}
+										if (!value) {
+											return 'Please add something about the company';
+										}
+									},
 								}}
 								label={'About Company'}
 								register={register}

@@ -75,6 +75,10 @@ export const EmailRegEx = {
 	email:
 		/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
 };
+export const URLRegEx = {
+	url:
+	/^[a-zA-Z.:]+$/,
+};
 
 export const UsernameRegEx = {
 	length: '(?=.{4,15})',
