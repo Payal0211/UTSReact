@@ -32,6 +32,7 @@ import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
 import useDebounce from 'shared/hooks/useDebounce';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
+import WithLoader from 'shared/components/loader/loader';
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -793,20 +794,85 @@ const HRFields = ({
 	}, [getDurationType]);
 
 	return (
-		<div className={HRFieldStyle.hrFieldContainer}>
-			{contextHolder}
-			<div className={HRFieldStyle.partOne}>
-				<div className={HRFieldStyle.hrFieldLeftPane}>
-					<h3>Hiring Request Details</h3>
-					<p>Please provide the necessary details</p>
-				</div>
+		<WithLoader
+			showLoader={isSavedLoading}
+			className="mainLoader">
+			<div className={HRFieldStyle.hrFieldContainer}>
+				{contextHolder}
+				<div className={HRFieldStyle.partOne}>
+					<div className={HRFieldStyle.hrFieldLeftPane}>
+						<h3>Hiring Request Details</h3>
+						<p>Please provide the necessary details</p>
+					</div>
 
-				<form
-					id="hrForm"
-					className={HRFieldStyle.hrFieldRightPane}>
-					<div className={HRFieldStyle.row}>
-						{pathName === ClientHRURL.ADD_NEW_CLIENT ? (
-							<div className={HRFieldStyle.colMd12}>
+					<form
+						id="hrForm"
+						className={HRFieldStyle.hrFieldRightPane}>
+						<div className={HRFieldStyle.row}>
+							{pathName === ClientHRURL.ADD_NEW_CLIENT ? (
+								<div className={HRFieldStyle.colMd12}>
+									<HRInputField
+										disabled={
+											pathName === ClientHRURL.ADD_NEW_CLIENT ||
+											isCompanyNameAvailable ||
+											isLoading
+										}
+										register={register}
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the client name.',
+										}}
+										label="Client Email/Name"
+										name="clientName"
+										type={InputType.TEXT}
+										placeholder="Enter Client Email/Name"
+										required
+									/>
+								</div>
+							) : (
+								<div className={HRFieldStyle.colMd12}>
+									<div className={HRFieldStyle.formGroup}>
+										<label>
+											Client Email/Name <b style={{ color: 'black' }}>*</b>
+										</label>
+										<Controller
+											render={({ ...props }) => (
+												<AutoComplete
+													options={getClientNameSuggestion}
+													onSelect={(clientName) =>
+														getClientNameValue(clientName)
+													}
+													filterOption={true}
+													onSearch={(searchValue) => {
+														setClientNameSuggestion([]);
+														getClientNameSuggestionHandler(searchValue);
+													}}
+													onChange={(clientName) =>
+														setValue('clientName', clientName)
+													}
+													placeholder="Enter Client Email/Name"
+													ref={controllerRef}
+												/>
+											)}
+											{...register('clientName', {
+												validate,
+											})}
+											name="clientName"
+											// rules={{ required: true }}
+											control={control}
+										/>
+										{errors.clientName && (
+											<div className={HRFieldStyle.error}>
+												{errors.clientName?.message &&
+													`* ${errors?.clientName?.message}`}
+											</div>
+										)}
+									</div>
+								</div>
+							)}
+						</div>
+						<div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd6}>
 								<HRInputField
 									disabled={
 										pathName === ClientHRURL.ADD_NEW_CLIENT ||
@@ -816,607 +882,545 @@ const HRFields = ({
 									register={register}
 									errors={errors}
 									validationSchema={{
-										required: 'please enter the client name.',
+										required: 'please enter the company name.',
 									}}
-									label="Client Email/Name"
-									name="clientName"
+									label="Company Name"
+									name="companyName"
 									type={InputType.TEXT}
-									placeholder="Enter Client Email/Name"
+									placeholder="Enter Company Name"
 									required
 								/>
 							</div>
-						) : (
-							<div className={HRFieldStyle.colMd12}>
-								<div className={HRFieldStyle.formGroup}>
-									<label>
-										Client Email/Name <b style={{ color: 'black' }}>*</b>
-									</label>
-									<Controller
-										render={({ ...props }) => (
-											<AutoComplete
-												options={getClientNameSuggestion}
-												onSelect={(clientName) =>
-													getClientNameValue(clientName)
-												}
-												filterOption={true}
-												onSearch={(searchValue) => {
-													setClientNameSuggestion([]);
-													getClientNameSuggestionHandler(searchValue);
-												}}
-												onChange={(clientName) =>
-													setValue('clientName', clientName)
-												}
-												placeholder="Enter Client Email/Name"
-												ref={controllerRef}
-											/>
-										)}
-										{...register('clientName', {
-											validate,
-										})}
-										name="clientName"
-										// rules={{ required: true }}
-										control={control}
-									/>
-									{errors.clientName && (
-										<div className={HRFieldStyle.error}>
-											{errors.clientName?.message &&
-												`* ${errors?.clientName?.message}`}
-										</div>
-									)}
-								</div>
-							</div>
-						)}
-					</div>
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
-								disabled={
-									pathName === ClientHRURL.ADD_NEW_CLIENT ||
-									isCompanyNameAvailable ||
-									isLoading
-								}
-								register={register}
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the company name.',
-								}}
-								label="Company Name"
-								name="companyName"
-								type={InputType.TEXT}
-								placeholder="Enter Company Name"
-								required
-							/>
-						</div>
 
-						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									setValue={setValue}
-									register={register}
-									label={'Sales Person'}
-									defaultValue="Select sales Person"
-									options={salesPerson && salesPerson}
-									name="salesPerson"
-									isError={errors['salesPerson'] && errors['salesPerson']}
-									required
-									errorMsg={
-										errors?.salesPerson?.message ||
-										'Please select hiring request sales person'
-									}
-								/>
-							</div>
-						</div>
-
-						{isSalesUserPartner && (
 							<div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
 										setValue={setValue}
-										mode="id/value"
 										register={register}
-										label={'Child Companies'}
-										defaultValue="Select Company"
-										options={childCompany && childCompany}
-										name="childCompany"
-										isError={errors['childCompany'] && errors['childCompany']}
+										label={'Sales Person'}
+										defaultValue="Select sales Person"
+										options={salesPerson && salesPerson}
+										name="salesPerson"
+										isError={errors['salesPerson'] && errors['salesPerson']}
+										required
+										errorMsg={
+											errors?.salesPerson?.message ||
+											'Please select hiring request sales person'
+										}
 									/>
 								</div>
 							</div>
-						)}
 
-						{watchChildCompany?.id === 0 && (
+							{isSalesUserPartner && (
+								<div className={HRFieldStyle.colMd6}>
+									<div className={HRFieldStyle.formGroup}>
+										<HRSelectField
+											setValue={setValue}
+											mode="id/value"
+											register={register}
+											label={'Child Companies'}
+											defaultValue="Select Company"
+											options={childCompany && childCompany}
+											name="childCompany"
+											isError={errors['childCompany'] && errors['childCompany']}
+										/>
+									</div>
+								</div>
+							)}
+
+							{watchChildCompany?.id === 0 && (
+								<div className={HRFieldStyle.colMd6}>
+									<div className={HRFieldStyle.formGroup}>
+										<HRInputField
+											register={register}
+											errors={errors}
+											label={'Other Child Company Name'}
+											name="otherChildCompanyName"
+											type={InputType.TEXT}
+											placeholder="Child Company"
+										/>
+									</div>
+								</div>
+							)}
+
 							<div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										mode={'id/value'}
+										searchable={true}
+										setValue={setValue}
+										register={register}
+										label={'Hiring Request Role'}
+										defaultValue="Select Role"
+										options={talentRole && talentRole}
+										name="role"
+										isError={errors['role'] && errors['role']}
+										required
+										errorMsg={'Please select hiring request role'}
+									/>
+								</div>
+							</div>
+						</div>
+						{watch('role')?.id === -1 && (
+							<div className={HRFieldStyle.row}>
+								<div className={HRFieldStyle.colMd12}>
 									<HRInputField
 										register={register}
 										errors={errors}
-										label={'Other Child Company Name'}
-										name="otherChildCompanyName"
+										validationSchema={{
+											required: 'please enter the other role.',
+											pattern: {
+												value: /^((?!other).)*$/,
+												message: 'Please remove "other" keyword.',
+											},
+										}}
+										label="Other Role"
+										name="otherRole"
 										type={InputType.TEXT}
-										placeholder="Child Company"
+										placeholder="Enter Other role"
+										maxLength={50}
+										required
 									/>
 								</div>
 							</div>
 						)}
-
-						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									mode={'id/value'}
-									searchable={true}
-									setValue={setValue}
-									register={register}
-									label={'Hiring Request Role'}
-									defaultValue="Select Role"
-									options={talentRole && talentRole}
-									name="role"
-									isError={errors['role'] && errors['role']}
-									required
-									errorMsg={'Please select hiring request role'}
-								/>
-							</div>
-						</div>
-					</div>
-					{watch('role')?.id === -1 && (
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd12}>
 								<HRInputField
 									register={register}
 									errors={errors}
 									validationSchema={{
-										required: 'please enter the other role.',
-										pattern: {
-											value: /^((?!other).)*$/,
-											message: 'Please remove "other" keyword.',
-										},
+										required: 'please enter the hiring request title.',
 									}}
-									label="Other Role"
-									name="otherRole"
+									label={'Hiring Request Title'}
+									name="hrTitle"
 									type={InputType.TEXT}
-									placeholder="Enter Other role"
-									maxLength={50}
+									placeholder="Enter title"
 									required
 								/>
 							</div>
 						</div>
-					)}
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd12}>
-							<HRInputField
-								register={register}
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the hiring request title.',
-								}}
-								label={'Hiring Request Title'}
-								name="hrTitle"
-								type={InputType.TEXT}
-								placeholder="Enter title"
-								required
-							/>
-						</div>
-					</div>
-					<div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
-						<div className={HRFieldStyle.colMd6}>
-							{!getUploadFileData ? (
-								<HRInputField
-									disabled={jdURLLink}
-									register={register}
-									leadingIcon={<UploadSVG />}
-									label={`Job Description *`}
-									name="jdExport"
-									type={InputType.BUTTON}
-									buttonLabel="Upload JD File"
-									// value="Upload JD File"
-									onClickHandler={() => setUploadModal(true)}
-									required={!jdURLLink && getUploadFileData}
-									validationSchema={{
-										required: 'please select a file.',
-									}}
-									errors={errors}
-								/>
-							) : (
-								<div className={HRFieldStyle.uploadedJDWrap}>
-									<label>Job Description (PDF) *</label>
-									<div className={HRFieldStyle.uploadedJDName}>
-										{getUploadFileData}{' '}
-										<CloseSVG
-											className={HRFieldStyle.uploadedJDClose}
-											onClick={() => {
-												setUploadFileData('');
-											}}
-										/>
+						<div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
+							<div className={HRFieldStyle.colMd6}>
+								{!getUploadFileData ? (
+									<HRInputField
+										disabled={jdURLLink}
+										register={register}
+										leadingIcon={<UploadSVG />}
+										label={`Job Description *`}
+										name="jdExport"
+										type={InputType.BUTTON}
+										buttonLabel="Upload JD File"
+										// value="Upload JD File"
+										onClickHandler={() => setUploadModal(true)}
+										required={!jdURLLink && getUploadFileData}
+										validationSchema={{
+											required: 'please select a file.',
+										}}
+										errors={errors}
+									/>
+								) : (
+									<div className={HRFieldStyle.uploadedJDWrap}>
+										<label>Job Description (PDF) *</label>
+										<div className={HRFieldStyle.uploadedJDName}>
+											{getUploadFileData}{' '}
+											<CloseSVG
+												className={HRFieldStyle.uploadedJDClose}
+												onClick={() => {
+													setUploadFileData('');
+												}}
+											/>
+										</div>
 									</div>
-								</div>
+								)}
+							</div>
+							{showUploadModal && (
+								<UploadModal
+									isGoogleDriveUpload={true}
+									isLoading={isLoading}
+									uploadFileHandler={uploadFileHandler}
+									googleDriveFileUploader={() => googleDriveFileUploader()}
+									uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+									modalTitle={'Upload JD'}
+									modalSubtitle={'Job Description'}
+									isFooter={true}
+									openModal={showUploadModal}
+									setUploadModal={setUploadModal}
+									cancelModal={() => setUploadModal(false)}
+									setValidation={setValidation}
+									getValidation={getValidation}
+									getGoogleDriveLink={getGoogleDriveLink}
+									setGoogleDriveLink={setGoogleDriveLink}
+								/>
 							)}
-						</div>
-						{showUploadModal && (
-							<UploadModal
-								isGoogleDriveUpload={true}
-								isLoading={isLoading}
-								uploadFileHandler={uploadFileHandler}
-								googleDriveFileUploader={() => googleDriveFileUploader()}
-								uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
-								modalTitle={'Upload JD'}
-								modalSubtitle={'Job Description'}
-								isFooter={true}
-								openModal={showUploadModal}
-								setUploadModal={setUploadModal}
-								cancelModal={() => setUploadModal(false)}
-								setValidation={setValidation}
-								getValidation={getValidation}
-								getGoogleDriveLink={getGoogleDriveLink}
-								setGoogleDriveLink={setGoogleDriveLink}
-							/>
-						)}
-						<div className={HRFieldStyle.orLabel}>OR</div>
-						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
-								onChangeHandler={(e) => toggleJDHandler(e)}
-								disabled={getUploadFileData}
-								label="Job Description URL"
-								name="jdURL"
-								type={InputType.TEXT}
-								placeholder="Add JD link"
-								register={register}
-								required={!getUploadFileData}
-							/>
-						</div>
-					</div>
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd4}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									setValue={setValue}
-									register={register}
-									label={'Add your estimated budget'}
-									defaultValue="Select Budget"
-									options={[
-										{
-											value: 'USD',
-											id: 'USD',
-										},
-										{
-											value: 'INR',
-											id: 'INR',
-										},
-									]}
-									name="budget"
-									isError={errors['budget'] && errors['budget']}
-									required
-									errorMsg={'Please select hiring request budget'}
-								/>
-							</div>
-						</div>
-						<div className={HRFieldStyle.colMd4}>
-							<HRInputField
-								label={'Minimum Budget'}
-								register={register}
-								name="minimumBudget"
-								type={InputType.NUMBER}
-								placeholder="Minimum- Ex: 2300, 2000"
-								required
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the minimum budget.',
-									min: {
-										value: 0,
-										message: `please don't enter the value less than 0`,
-									},
-								}}
-							/>
-						</div>
-
-						<div className={HRFieldStyle.colMd4}>
-							<HRInputField
-								label={'Maximum Budget'}
-								register={register}
-								name="maximumBudget"
-								type={InputType.NUMBER}
-								placeholder="Maximum- Ex: 2300, 2000"
-								required
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the maximum budget.',
-									min: {
-										value: watch('minimumBudget'),
-										message: 'Budget should me more than minimum budget.',
-									},
-								}}
-							/>
-						</div>
-					</div>
-
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
-								register={register}
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the nr margin percentage.',
-								}}
-								label="NR Margin Percentage"
-								name="NRMargin"
-								type={InputType.TEXT}
-								placeholder="Select NR margin percentage"
-								required
-							/>
-						</div>
-					</div>
-
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd4}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									setValue={setValue}
-									register={register}
-									label={'Long Term/Short Term'}
-									defaultValue="Select Term"
-									options={durationDataMemo}
-									name="getDurationType"
-									isError={
-										errors['getDurationType'] && errors['getDurationType']
-									}
-									required
-									errorMsg={'Please select duration type'}
-								/>
-							</div>
-						</div>
-						<div className={HRFieldStyle.colMd4}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									dropdownRender={(menu) => (
-										<>
-											{menu}
-											<Divider style={{ margin: '8px 0' }} />
-											<Space style={{ padding: '0 8px 4px' }}>
-												<label>Other:</label>
-												<input
-													type={InputType.NUMBER}
-													className={HRFieldStyle.addSalesItem}
-													placeholder="Ex: 5,6,7..."
-													ref={inputRef}
-													value={name}
-													onChange={onNameChange}
-													required
-												/>
-												<Button
-													style={{
-														backgroundColor: `var(--uplers-grey)`,
-													}}
-													shape="round"
-													type="text"
-													icon={<PlusOutlined />}
-													onClick={addItem}>
-													Add item
-												</Button>
-											</Space>
-											<br />
-										</>
-									)}
-									options={items.map((item) => ({
-										id: item,
-										label: item,
-										value: item,
-									}))}
-									setValue={setValue}
-									register={register}
-									label={'Contract Duration (in months)'}
-									defaultValue="Ex: 3,6,12..."
-									inputRef={inputRef}
-									addItem={addItem}
-									onNameChange={onNameChange}
-									name="contractDuration"
-									isError={
-										errors['contractDuration'] && errors['contractDuration']
-									}
-									required
-									errorMsg={'Please select hiring request conrtact duration'}
-								/>
-							</div>
-						</div>
-						<div className={HRFieldStyle.colMd4}>
-							<div className={HRFieldStyle.formGroup}>
+							<div className={HRFieldStyle.orLabel}>OR</div>
+							<div className={HRFieldStyle.colMd6}>
 								<HRInputField
+									onChangeHandler={(e) => toggleJDHandler(e)}
+									disabled={getUploadFileData}
+									label="Job Description URL"
+									name="jdURL"
+									type={InputType.TEXT}
+									placeholder="Add JD link"
+									register={register}
+									required={!getUploadFileData}
+								/>
+							</div>
+						</div>
+						<div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd4}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										setValue={setValue}
+										register={register}
+										label={'Add your estimated budget'}
+										defaultValue="Select Budget"
+										options={[
+											{
+												value: 'USD',
+												id: 'USD',
+											},
+											{
+												value: 'INR',
+												id: 'INR',
+											},
+										]}
+										name="budget"
+										isError={errors['budget'] && errors['budget']}
+										required
+										errorMsg={'Please select hiring request budget'}
+									/>
+								</div>
+							</div>
+							<div className={HRFieldStyle.colMd4}>
+								<HRInputField
+									label={'Minimum Budget'}
+									register={register}
+									name="minimumBudget"
+									type={InputType.NUMBER}
+									placeholder="Minimum- Ex: 2300, 2000"
 									required
-									label="Required Experience"
 									errors={errors}
 									validationSchema={{
-										required: 'please enter the years.',
+										required: 'please enter the minimum budget.',
 										min: {
 											value: 0,
 											message: `please don't enter the value less than 0`,
 										},
 									}}
+								/>
+							</div>
+
+							<div className={HRFieldStyle.colMd4}>
+								<HRInputField
+									label={'Maximum Budget'}
 									register={register}
-									name="years"
+									name="maximumBudget"
 									type={InputType.NUMBER}
-									placeholder="Enter years"
-								/>
-							</div>
-						</div>
-					</div>
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
-								register={register}
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the number of talents.',
-									min: {
-										value: 1,
-										message: `please enter the value more than 0`,
-									},
-								}}
-								label="How many talents are needed."
-								name="talentsNumber"
-								type={InputType.NUMBER}
-								placeholder="Please enter number of talents needed"
-								required
-							/>
-						</div>
-						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									mode={'id/value'}
-									setValue={setValue}
-									register={register}
-									label={'Availability'}
-									defaultValue="Select availability"
-									options={availability}
-									name="availability"
-									isError={errors['availability'] && errors['availability']}
+									placeholder="Maximum- Ex: 2300, 2000"
 									required
-									errorMsg={'Please select the availability.'}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the maximum budget.',
+										min: {
+											value: watch('minimumBudget'),
+											message: 'Budget should me more than minimum budget.',
+										},
+									}}
 								/>
 							</div>
 						</div>
-					</div>
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									mode={'id/value'}
-									setValue={setValue}
-									register={register}
-									label={'Select Region'}
-									defaultValue="Select Region"
-									options={region && region}
-									name="region"
-									isError={errors['region'] && errors['region']}
-									required
-									errorMsg={'Please select the region.'}
-								/>
-							</div>
-						</div>
-						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									mode={'id/value'}
-									disabled={_isNull(prefRegion)}
-									setValue={setValue}
-									register={register}
-									label={'Select Time Zone'}
-									defaultValue="Select time zone"
-									options={timeZonePref}
-									name="timeZone"
-									isError={errors['timeZone'] && errors['timeZone']}
-									required
-									errorMsg={'Please select hiring request time zone.'}
-								/>
-							</div>
-						</div>
-					</div>
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									mode={'id/value'}
-									setValue={setValue}
-									register={register}
-									label={'How soon can they join?'}
-									defaultValue="Select how soon?"
-									options={howSoon}
-									name="howSoon"
-									isError={errors['howSoon'] && errors['howSoon']}
-									required
-									errorMsg={'Please select the how soon.'}
-								/>
-							</div>
-						</div>
-						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
-								register={register}
-								label="Deal ID"
-								name="dealID"
-								type={InputType.NUMBER}
-								placeholder="Enter ID"
-							/>
-						</div>
-					</div>
 
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
-								register={register}
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the BQ form link.',
-								}}
-								label="BQ Form Link"
-								name="bqFormLink"
-								type={InputType.TEXT}
-								placeholder="Enter the link for BQ form"
-								required
-							/>
-						</div>
-						<div className={HRFieldStyle.colMd6}>
-							<HRInputField
-								register={register}
-								errors={errors}
-								validationSchema={{
-									required: 'please enter the discovery call link.',
-								}}
-								label="Discovery Call Link"
-								name="discoveryCallLink"
-								type={InputType.TEXT}
-								placeholder="Enter the link for Discovery call"
-								required
-							/>
-						</div>
-					</div>
-
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd12}>
-							<div className={HRFieldStyle.checkBoxGroup}>
-								<Checkbox onClick={toggleHRDirectPlacement}>
-									Is this HR a Direct Placement?
-								</Checkbox>
-							</div>
-						</div>
-					</div>
-					<br />
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
-									mode={'id/value'}
-									searchable={false}
-									setValue={setValue}
-									register={register}
-									label={'Mode of Working?'}
-									defaultValue="Select working mode"
-									options={workingMode && workingMode}
-									name="workingMode"
-									isError={errors['workingMode'] && errors['workingMode']}
-									required
-									errorMsg={'Please select the working mode.'}
-								/>
-							</div>
-						</div>
-						{isHRDirectPlacement && (
+						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd6}>
 								<HRInputField
 									register={register}
 									errors={errors}
 									validationSchema={{
-										required: 'please enter the DP Percentage.',
+										required: 'please enter the nr margin percentage.',
 									}}
-									label="DP Percentage"
-									name="dpPercentage"
-									type={InputType.NUMBER}
-									placeholder="Enter the DP Percentage"
+									label="NR Margin Percentage"
+									name="NRMargin"
+									type={InputType.TEXT}
+									placeholder="Select NR margin percentage"
 									required
 								/>
 							</div>
-						)}
-					</div>
+						</div>
 
-					{getWorkingModelFields()}
-				</form>
-			</div>
-			<Divider />
-			{/* <AddInterviewer
+						<div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd4}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										setValue={setValue}
+										register={register}
+										label={'Long Term/Short Term'}
+										defaultValue="Select Term"
+										options={durationDataMemo}
+										name="getDurationType"
+										isError={
+											errors['getDurationType'] && errors['getDurationType']
+										}
+										required
+										errorMsg={'Please select duration type'}
+									/>
+								</div>
+							</div>
+							<div className={HRFieldStyle.colMd4}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										dropdownRender={(menu) => (
+											<>
+												{menu}
+												<Divider style={{ margin: '8px 0' }} />
+												<Space style={{ padding: '0 8px 4px' }}>
+													<label>Other:</label>
+													<input
+														type={InputType.NUMBER}
+														className={HRFieldStyle.addSalesItem}
+														placeholder="Ex: 5,6,7..."
+														ref={inputRef}
+														value={name}
+														onChange={onNameChange}
+														required
+													/>
+													<Button
+														style={{
+															backgroundColor: `var(--uplers-grey)`,
+														}}
+														shape="round"
+														type="text"
+														icon={<PlusOutlined />}
+														onClick={addItem}>
+														Add item
+													</Button>
+												</Space>
+												<br />
+											</>
+										)}
+										options={items.map((item) => ({
+											id: item,
+											label: item,
+											value: item,
+										}))}
+										setValue={setValue}
+										register={register}
+										label={'Contract Duration (in months)'}
+										defaultValue="Ex: 3,6,12..."
+										inputRef={inputRef}
+										addItem={addItem}
+										onNameChange={onNameChange}
+										name="contractDuration"
+										isError={
+											errors['contractDuration'] && errors['contractDuration']
+										}
+										required
+										errorMsg={'Please select hiring request conrtact duration'}
+									/>
+								</div>
+							</div>
+							<div className={HRFieldStyle.colMd4}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRInputField
+										required
+										label="Required Experience"
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the years.',
+											min: {
+												value: 0,
+												message: `please don't enter the value less than 0`,
+											},
+										}}
+										register={register}
+										name="years"
+										type={InputType.NUMBER}
+										placeholder="Enter years"
+									/>
+								</div>
+							</div>
+						</div>
+						<div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd6}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the number of talents.',
+										min: {
+											value: 1,
+											message: `please enter the value more than 0`,
+										},
+									}}
+									label="How many talents are needed."
+									name="talentsNumber"
+									type={InputType.NUMBER}
+									placeholder="Please enter number of talents needed"
+									required
+								/>
+							</div>
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										mode={'id/value'}
+										setValue={setValue}
+										register={register}
+										label={'Availability'}
+										defaultValue="Select availability"
+										options={availability}
+										name="availability"
+										isError={errors['availability'] && errors['availability']}
+										required
+										errorMsg={'Please select the availability.'}
+									/>
+								</div>
+							</div>
+						</div>
+						<div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										mode={'id/value'}
+										setValue={setValue}
+										register={register}
+										label={'Select Region'}
+										defaultValue="Select Region"
+										options={region && region}
+										name="region"
+										isError={errors['region'] && errors['region']}
+										required
+										errorMsg={'Please select the region.'}
+									/>
+								</div>
+							</div>
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										mode={'id/value'}
+										disabled={_isNull(prefRegion)}
+										setValue={setValue}
+										register={register}
+										label={'Select Time Zone'}
+										defaultValue="Select time zone"
+										options={timeZonePref}
+										name="timeZone"
+										isError={errors['timeZone'] && errors['timeZone']}
+										required
+										errorMsg={'Please select hiring request time zone.'}
+									/>
+								</div>
+							</div>
+						</div>
+						<div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										mode={'id/value'}
+										setValue={setValue}
+										register={register}
+										label={'How soon can they join?'}
+										defaultValue="Select how soon?"
+										options={howSoon}
+										name="howSoon"
+										isError={errors['howSoon'] && errors['howSoon']}
+										required
+										errorMsg={'Please select the how soon.'}
+									/>
+								</div>
+							</div>
+							<div className={HRFieldStyle.colMd6}>
+								<HRInputField
+									register={register}
+									label="Deal ID"
+									name="dealID"
+									type={InputType.NUMBER}
+									placeholder="Enter ID"
+								/>
+							</div>
+						</div>
+
+						<div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd6}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the BQ form link.',
+									}}
+									label="BQ Form Link"
+									name="bqFormLink"
+									type={InputType.TEXT}
+									placeholder="Enter the link for BQ form"
+									required
+								/>
+							</div>
+							<div className={HRFieldStyle.colMd6}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the discovery call link.',
+									}}
+									label="Discovery Call Link"
+									name="discoveryCallLink"
+									type={InputType.TEXT}
+									placeholder="Enter the link for Discovery call"
+									required
+								/>
+							</div>
+						</div>
+
+						<div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd12}>
+								<div className={HRFieldStyle.checkBoxGroup}>
+									<Checkbox onClick={toggleHRDirectPlacement}>
+										Is this HR a Direct Placement?
+									</Checkbox>
+								</div>
+							</div>
+						</div>
+						<br />
+						<div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										mode={'id/value'}
+										searchable={false}
+										setValue={setValue}
+										register={register}
+										label={'Mode of Working?'}
+										defaultValue="Select working mode"
+										options={workingMode && workingMode}
+										name="workingMode"
+										isError={errors['workingMode'] && errors['workingMode']}
+										required
+										errorMsg={'Please select the working mode.'}
+									/>
+								</div>
+							</div>
+							{isHRDirectPlacement && (
+								<div className={HRFieldStyle.colMd6}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the DP Percentage.',
+										}}
+										label="DP Percentage"
+										name="dpPercentage"
+										type={InputType.NUMBER}
+										placeholder="Enter the DP Percentage"
+										required
+									/>
+								</div>
+							)}
+						</div>
+
+						{getWorkingModelFields()}
+					</form>
+				</div>
+				<Divider />
+				{/* <AddInterviewer
 				errors={errors}
 				append={append}
 				remove={remove}
@@ -1424,9 +1428,6 @@ const HRFields = ({
 				fields={fields}
 			/> */}
 
-			{isSavedLoading ? (
-				<SpinLoader />
-			) : (
 				<div className={HRFieldStyle.formPanelAction}>
 					<button
 						style={{
@@ -1444,8 +1445,8 @@ const HRFields = ({
 						Create HR
 					</button>
 				</div>
-			)}
-		</div>
+			</div>
+		</WithLoader>
 	);
 
 	function getWorkingModelFields() {
