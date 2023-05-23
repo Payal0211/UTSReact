@@ -8,6 +8,7 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 import { useForm } from 'react-hook-form';
 import { InterviewDAO } from 'core/interview/interviewDAO';
 import { HTTPStatusCode } from 'constants/network';
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
 const InterviewFeedback = ({
 	hrId,
@@ -24,7 +25,6 @@ const InterviewFeedback = ({
 	const {
 		register,
 		handleSubmit,
-
 		formState: { errors },
 	} = useForm();
 	const [radioValue1, setRadioValue1] = useState('Hire');
@@ -35,7 +35,7 @@ const InterviewFeedback = ({
 	const onChange = (e) => {
 		setRadioValue1(e.target.value);
 	};
-
+	const [isLoading, setIsLoading] = useState(false);
 	const onChange2 = (e) => {
 		setRadioValue2(e.target.value);
 	};
@@ -48,6 +48,7 @@ const InterviewFeedback = ({
 
 	const clientFeedbackHandler = useCallback(
 		async (d) => {
+			setIsLoading(true);
 			const clientFeedback = {
 				role: talentInfo?.TalentRole || '',
 				talentName: talentInfo?.Name || '',
@@ -73,6 +74,7 @@ const InterviewFeedback = ({
 			);
 
 			if (response?.statusCode === HTTPStatusCode.OK) {
+				setIsLoading(false);
 				closeModal();
 				callAPI(hrId);
 			}
@@ -155,203 +157,207 @@ const InterviewFeedback = ({
 						style={{ margin: '40px 0' }}
 						dashed
 					/>
-					<form id="interviewReschedule">
-						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd12}>
-								<div
-									className={InterviewScheduleStyle.radioFormGroup}
-									style={{
-										display: 'flex',
-										flexDirection: 'column',
-									}}>
-									<label>
-										Would you like to proceed with the next steps of hiring this
-										talent?
-										<span className={InterviewScheduleStyle.reqField}>*</span>
-									</label>
+					{isLoading ? (
+						<SpinLoader />
+					) : (
+						<form id="interviewReschedule">
+							<div className={InterviewScheduleStyle.row}>
+								<div className={InterviewScheduleStyle.colMd12}>
+									<div
+										className={InterviewScheduleStyle.radioFormGroup}
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+										}}>
+										<label>
+											Would you like to proceed with the next steps of hiring
+											this talent?
+											<span className={InterviewScheduleStyle.reqField}>*</span>
+										</label>
 
-									<Radio.Group
-										className={InterviewScheduleStyle.radioGroup}
-										onChange={onChange}
-										value={radioValue1}>
-										<Radio value={'Hire'}>
-											Definitely, I would like to proceed for hiring this
-											talent.
-										</Radio>
-										<Radio value={'NoHire'}>
-											No, I would not like to move ahead with the hiring of this
-											talent.
-										</Radio>
-										<Radio value={'OnHold'}>
-											I liked the talent but feeling confused about the hiring
-											decision. Can I keep this talent on hold for now?
-										</Radio>
-										<Radio value={'AnotherRound'}>
-											Certainly, but would love to have another round of
-											interview
-										</Radio>
-									</Radio.Group>
+										<Radio.Group
+											className={InterviewScheduleStyle.radioGroup}
+											onChange={onChange}
+											value={radioValue1}>
+											<Radio value={'Hire'}>
+												Definitely, I would like to proceed for hiring this
+												talent.
+											</Radio>
+											<Radio value={'NoHire'}>
+												No, I would not like to move ahead with the hiring of
+												this talent.
+											</Radio>
+											<Radio value={'OnHold'}>
+												I liked the talent but feeling confused about the hiring
+												decision. Can I keep this talent on hold for now?
+											</Radio>
+											<Radio value={'AnotherRound'}>
+												Certainly, but would love to have another round of
+												interview
+											</Radio>
+										</Radio.Group>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd12}>
-								<div
-									className={InterviewScheduleStyle.radioFormGroup}
-									style={{
-										display: 'flex',
-										flexDirection: 'column',
-									}}>
-									<label>
-										How would you rate this talent in terms of technical skills
-										required for DevOps Engineer?
-										<span className={InterviewScheduleStyle.reqField}>*</span>
-									</label>
+							<div className={InterviewScheduleStyle.row}>
+								<div className={InterviewScheduleStyle.colMd12}>
+									<div
+										className={InterviewScheduleStyle.radioFormGroup}
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+										}}>
+										<label>
+											How would you rate this talent in terms of technical
+											skills required for DevOps Engineer?
+											<span className={InterviewScheduleStyle.reqField}>*</span>
+										</label>
 
-									<Radio.Group
-										className={InterviewScheduleStyle.radioGroup}
-										onChange={onChange2}
-										value={radioValue2}>
-										<Radio value={'EE (Exceeds Expectation)'}>
-											EE (Exceeds Expectation)
-										</Radio>
-										<Radio value={'ME (Meets Expectation)'}>
-											ME (Meets Expectation)
-										</Radio>
-										<Radio value={'IME (Inconsistently Meets Expectations)'}>
-											IME (Inconsistently Meets Expectations)
-										</Radio>
-										<Radio value={'DNME (Does not Meet Expectation)'}>
-											DNME (Does not Meet Expectation)
-										</Radio>
-									</Radio.Group>
+										<Radio.Group
+											className={InterviewScheduleStyle.radioGroup}
+											onChange={onChange2}
+											value={radioValue2}>
+											<Radio value={'EE (Exceeds Expectation)'}>
+												EE (Exceeds Expectation)
+											</Radio>
+											<Radio value={'ME (Meets Expectation)'}>
+												ME (Meets Expectation)
+											</Radio>
+											<Radio value={'IME (Inconsistently Meets Expectations)'}>
+												IME (Inconsistently Meets Expectations)
+											</Radio>
+											<Radio value={'DNME (Does not Meet Expectation)'}>
+												DNME (Does not Meet Expectation)
+											</Radio>
+										</Radio.Group>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd12}>
-								<div
-									className={InterviewScheduleStyle.radioFormGroup}
-									style={{
-										display: 'flex',
-										flexDirection: 'column',
-									}}>
-									<label>
-										How would you rate this talent in terms of Communication
-										skills required for DevOps Engineer?
-										<span className={InterviewScheduleStyle.reqField}>*</span>
-									</label>
+							<div className={InterviewScheduleStyle.row}>
+								<div className={InterviewScheduleStyle.colMd12}>
+									<div
+										className={InterviewScheduleStyle.radioFormGroup}
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+										}}>
+										<label>
+											How would you rate this talent in terms of Communication
+											skills required for DevOps Engineer?
+											<span className={InterviewScheduleStyle.reqField}>*</span>
+										</label>
 
-									<Radio.Group
-										className={InterviewScheduleStyle.radioGroup}
-										onChange={onChange3}
-										value={radioValue3}>
-										<Radio value={'EE (Exceeds Expectation)'}>
-											EE (Exceeds Expectation)
-										</Radio>
-										<Radio value={'ME (Meets Expectation)'}>
-											ME (Meets Expectation)
-										</Radio>
-										<Radio value={'IME (Inconsistently Meets Expectations)'}>
-											IME (Inconsistently Meets Expectations)
-										</Radio>
-										<Radio value={'DNME (Does not Meet Expectation)'}>
-											DNME (Does not Meet Expectation)
-										</Radio>
-									</Radio.Group>
+										<Radio.Group
+											className={InterviewScheduleStyle.radioGroup}
+											onChange={onChange3}
+											value={radioValue3}>
+											<Radio value={'EE (Exceeds Expectation)'}>
+												EE (Exceeds Expectation)
+											</Radio>
+											<Radio value={'ME (Meets Expectation)'}>
+												ME (Meets Expectation)
+											</Radio>
+											<Radio value={'IME (Inconsistently Meets Expectations)'}>
+												IME (Inconsistently Meets Expectations)
+											</Radio>
+											<Radio value={'DNME (Does not Meet Expectation)'}>
+												DNME (Does not Meet Expectation)
+											</Radio>
+										</Radio.Group>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd12}>
-								<div
-									className={InterviewScheduleStyle.radioFormGroup}
-									style={{
-										display: 'flex',
-										flexDirection: 'column',
-									}}>
-									<label>
-										How would you rate this talent in terms of the Cognitive
-										skills required for DevOps Engineer?
-										<span className={InterviewScheduleStyle.reqField}>*</span>
-									</label>
+							<div className={InterviewScheduleStyle.row}>
+								<div className={InterviewScheduleStyle.colMd12}>
+									<div
+										className={InterviewScheduleStyle.radioFormGroup}
+										style={{
+											display: 'flex',
+											flexDirection: 'column',
+										}}>
+										<label>
+											How would you rate this talent in terms of the Cognitive
+											skills required for DevOps Engineer?
+											<span className={InterviewScheduleStyle.reqField}>*</span>
+										</label>
 
-									<Radio.Group
-										className={InterviewScheduleStyle.radioGroup}
-										onChange={onChange4}
-										value={radioValue4}>
-										<Radio value={'EE (Exceeds Expectation)'}>
-											EE (Exceeds Expectation)
-										</Radio>
-										<Radio value={'ME (Meets Expectation)'}>
-											ME (Meets Expectation)
-										</Radio>
-										<Radio value={'IME (Inconsistently Meets Expectations)'}>
-											IME (Inconsistently Meets Expectations)
-										</Radio>
-										<Radio value={'DNME (Does not Meet Expectation)'}>
-											DNME (Does not Meet Expectation)
-										</Radio>
-									</Radio.Group>
+										<Radio.Group
+											className={InterviewScheduleStyle.radioGroup}
+											onChange={onChange4}
+											value={radioValue4}>
+											<Radio value={'EE (Exceeds Expectation)'}>
+												EE (Exceeds Expectation)
+											</Radio>
+											<Radio value={'ME (Meets Expectation)'}>
+												ME (Meets Expectation)
+											</Radio>
+											<Radio value={'IME (Inconsistently Meets Expectations)'}>
+												IME (Inconsistently Meets Expectations)
+											</Radio>
+											<Radio value={'DNME (Does not Meet Expectation)'}>
+												DNME (Does not Meet Expectation)
+											</Radio>
+										</Radio.Group>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd12}>
-								<HRInputField
-									register={register}
-									label="Any Feedback you want to share straight to the talent?"
-									name="interviewClientFeedback"
-									type={InputType.TEXT}
-									placeholder="Enter message"
-								/>
+							<div className={InterviewScheduleStyle.row}>
+								<div className={InterviewScheduleStyle.colMd12}>
+									<HRInputField
+										register={register}
+										label="Any Feedback you want to share straight to the talent?"
+										name="interviewClientFeedback"
+										type={InputType.TEXT}
+										placeholder="Enter message"
+									/>
+								</div>
 							</div>
-						</div>
-						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd12}>
-								<HRInputField
-									register={register}
-									label="Client's Decision"
-									name="interviewClientDecision"
-									type={InputType.TEXT}
-									placeholder="Enter message"
-								/>
+							<div className={InterviewScheduleStyle.row}>
+								<div className={InterviewScheduleStyle.colMd12}>
+									<HRInputField
+										register={register}
+										label="Client's Decision"
+										name="interviewClientDecision"
+										type={InputType.TEXT}
+										placeholder="Enter message"
+									/>
+								</div>
 							</div>
-						</div>
-						<div className={InterviewScheduleStyle.row}>
-							<div className={InterviewScheduleStyle.colMd12}>
-								<HRInputField
-									register={register}
-									label="Comments"
-									name="interviewComments"
-									type={InputType.TEXT}
-									placeholder="Enter message"
-								/>
+							<div className={InterviewScheduleStyle.row}>
+								<div className={InterviewScheduleStyle.colMd12}>
+									<HRInputField
+										register={register}
+										label="Comments"
+										name="interviewComments"
+										type={InputType.TEXT}
+										placeholder="Enter message"
+									/>
+								</div>
 							</div>
-						</div>
-						<Checkbox
-							onChange={() => setClientNotification(!isClientNotification)}>
-							Send To Client
-						</Checkbox>
-					</form>
+							<Checkbox
+								onChange={() => setClientNotification(!isClientNotification)}>
+								Send To Client
+							</Checkbox>
+							<Divider
+								style={{ margin: '40px 0' }}
+								dashed
+							/>
+							<div className={InterviewScheduleStyle.formPanelAction}>
+								<button
+									type="submit"
+									onClick={handleSubmit(clientFeedbackHandler)}
+									className={InterviewScheduleStyle.btnPrimary}>
+									Save
+								</button>
+								<button
+									onClick={() => closeModal()}
+									className={InterviewScheduleStyle.btn}>
+									Cancel
+								</button>
+							</div>
+						</form>
+					)}
 				</div>
-			</div>
-			<Divider
-				style={{ margin: '40px 0' }}
-				dashed
-			/>
-			<div className={InterviewScheduleStyle.formPanelAction}>
-				<button
-					type="submit"
-					onClick={handleSubmit(clientFeedbackHandler)}
-					className={InterviewScheduleStyle.btnPrimary}>
-					Save
-				</button>
-				<button
-					onClick={() => closeModal()}
-					className={InterviewScheduleStyle.btn}>
-					Cancel
-				</button>
 			</div>
 		</div>
 	);

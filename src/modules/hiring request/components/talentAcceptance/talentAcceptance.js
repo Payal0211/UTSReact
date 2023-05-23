@@ -4,25 +4,11 @@ import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { useCallback, useEffect, useState } from 'react';
 import { ReactComponent as NextArrowSVG } from 'assets/svg/nextArrow.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
-import { LoadingOutlined } from '@ant-design/icons';
+
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HTTPStatusCode } from 'constants/network';
 import { useLocation } from 'react-router-dom';
-const antIcon = (
-	<LoadingOutlined
-		style={{
-			fontSize: 50,
-			display: 'flex',
-			flexDirection: 'row',
-			alignItems: 'center',
-			justifyContent: 'center',
-			marginLeft: '350px',
-			fontWeight: 500,
-			color: `var(--uplers-black)`,
-		}}
-		spin
-	/>
-);
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
 const TalentAcceptance = ({
 	talentName,
@@ -141,7 +127,7 @@ const TalentAcceptance = ({
 			</div>
 			<div className={TalentAcceptanceStyle.panelBody}>
 				{isLoading ? (
-					<Spin indicator={antIcon} />
+					<SpinLoader />
 				) : (
 					<div className={TalentAcceptanceStyle.rightPane}>
 						<div className={TalentAcceptanceStyle.whitep16}>

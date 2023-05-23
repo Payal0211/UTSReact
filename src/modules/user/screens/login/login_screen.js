@@ -49,27 +49,24 @@ const LoginScreen = () => {
 
 	return (
 		<WithLoader
-			showLoader={isLoading}
-			WithLoader
-			className="mainLoader">
+			className="mainLoader"
+			showLoader={isLoading}>
 			<div className={loginStyle.loginContainer}>
 				<div className={loginStyle.loginColumn_1}>
 					<div className={loginStyle.loginColumn_1_Body}>
-						<span>
+						<div className={loginStyle.loginLogo}>
 							<img
 								alt="avatar"
 								className={loginStyle.uplersTalentLogo}
 								src="https://staging.project-progress.net/html/uplers-talent-solutions/images/login-logo.svg"
 							/>
-						</span>
+						</div>
 						<div className={loginStyle.welcomePart}>
 							<h1 className={loginStyle.welcomeTitle}>Welcome</h1>
 							<p className={loginStyle.welcomeSubtitle}>
 								Please enter your log in information and get started
 							</p>
 						</div>
-						<br />
-						<hr />
 						<div className={loginStyle.loginFormPart}>
 							<InputField
 								/* onKeyDownHandler={(e) => {
@@ -83,36 +80,42 @@ const LoginScreen = () => {
 								onChangeHandler={inputChangeHandler}
 								errorMsg={error['username']}
 							/>
-							<InputField
-								onKeyDownHandler={(e) => {
-									if (e.key === 'Enter') loginHandler();
-								}}
-								name="password"
-								label="Password"
-								type={
-									togglePasswordVisibility ? InputType.PASSWORD : InputType.TEXT
-								}
-								placeholder="Enter password"
-								onChangeHandler={inputChangeHandler}
-								value={formValues['password']}
-								errorMsg={error['password']}
-								onIconToggleHandler={onTogglePassword}
-								trailingIcon={
-									togglePasswordVisibility ? (
-										<PasswordIconAiFillEyeInvisible />
-									) : (
-										<PasswordIconAiFillEye />
-									)
-								}
-							/>
-							<div className={loginStyle.forgotpassword}>Forgot Password ?</div>
-							<hr />
-							<br />
-							<ButtonField
-								label="Log In"
-								backgroundColor={`var(--color-sunlight)`}
-								onClickHandler={(e) => loginHandler()}
-							/>
+							<div className={loginStyle.loginPasswordField}>
+								<InputField
+									onKeyDownHandler={(e) => {
+										if (e.key === 'Enter') loginHandler();
+									}}
+									name="password"
+									label="Password"
+									type={
+										togglePasswordVisibility
+											? InputType.PASSWORD
+											: InputType.TEXT
+									}
+									placeholder="Enter password"
+									onChangeHandler={inputChangeHandler}
+									value={formValues['password']}
+									errorMsg={error['password']}
+									onIconToggleHandler={onTogglePassword}
+									trailingIcon={
+										togglePasswordVisibility ? (
+											<PasswordIconAiFillEyeInvisible />
+										) : (
+											<PasswordIconAiFillEye />
+										)
+									}
+								/>
+							</div>
+
+							<div className={loginStyle.forgotPassword}>Forgot Password ?</div>
+
+							<div className={loginStyle.loginAction}>
+								<ButtonField
+									label="Log In"
+									backgroundColor={`var(--color-sunlight)`}
+									onClickHandler={(e) => loginHandler()}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
