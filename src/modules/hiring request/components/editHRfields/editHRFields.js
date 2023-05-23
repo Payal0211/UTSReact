@@ -739,7 +739,7 @@ const EditHRFields = ({
         setValue("bqFormLink", getHRdetails?.addHiringRequest?.bqlink)
         setValue("discoveryCallLink", getHRdetails?.addHiringRequest?.discoveryCall)
         setValue("dpPercentage", getHRdetails?.addHiringRequest?.dppercentage)
-        setValue("postalCode", getHRdetails?.directPlacement?.PostalCode)
+        setValue("postalCode", getHRdetails?.directPlacement?.postalCode)
         setValue("city", getHRdetails?.directPlacement?.city)
         setValue("state", getHRdetails?.directPlacement?.state)
         setValue("country", getHRdetails?.directPlacement?.country)
@@ -747,6 +747,7 @@ const EditHRFields = ({
         setValue("jdExport", getHRdetails?.addHiringRequest?.jdfilename)
         setValue("contractDuration", getHRdetails?.salesHiringRequest_Details?.durationType)
         setValue("getDurationType", getHRdetails?.months)
+        console.log("postalCode", getHRdetails?.directPlacement?.postalCode)
         setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType)
         if (getHRdetails?.clientName) {
             getListData(getHRdetails?.clientName, getHRdetails?.clientName.substring(0, 3));
@@ -1085,12 +1086,13 @@ const EditHRFields = ({
                                 register={register}
                                 errors={errors}
                                 required={!getUploadFileData}
-								validationSchema={{
-									pattern: {
-											value: URLRegEx.url,
-											message: 'Entered value does not match url format',
-										},
-								}}
+                                validationSchema={{
+                                    required: 'please enter the job description url',
+                                    pattern: {
+                                        value: URLRegEx.url,
+                                        message: 'Entered value does not match url format',
+                                    },
+                                }}
                             />
                         </div>
                     </div>
@@ -1591,6 +1593,20 @@ const EditHRFields = ({
                                 type={InputType.TEXT}
                                 placeholder="Enter the Postal Code"
                                 required
+
+
+
+                            // register={register}
+                            // errors={errors}
+                            // validationSchema={{
+                            //     required: 'please enter the city.',
+                            // }}
+                            // label="City"
+                            // name="city"
+                            // type={InputType.TEXT}
+                            // placeholder="Enter the City"
+                            // required
+
                             />
                         </div>
                         <div className={HRFieldStyle.colMd6}>

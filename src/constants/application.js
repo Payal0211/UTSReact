@@ -77,7 +77,7 @@ export const EmailRegEx = {
 };
 export const URLRegEx = {
 	url:
-	/^[a-zA-Z.:]+$/,
+		/^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.){1,}[a-zA-Z0-9]{2,}([\/\w\.-]*)*\/?$/,
 };
 
 export const UsernameRegEx = {

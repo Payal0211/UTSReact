@@ -1,4 +1,4 @@
-import { EmailRegEx, InputType,URLRegEx } from 'constants/application';
+import { EmailRegEx, InputType, URLRegEx } from 'constants/application';
 import { ValidateInput } from 'constants/inputValidators';
 import { HTTPStatusCode } from 'constants/network';
 import { ClientDAO } from 'core/client/clientDAO';
@@ -201,9 +201,9 @@ const AddNewClient = ({
 									required:
 										'please enter the primary client linkedin profile URL.',
 									pattern: {
-											value: URLRegEx.url,
-											message: 'Entered value does not match url format',
-										},
+										value: URLRegEx.url,
+										message: 'Entered value does not match url format',
+									},
 								}}
 								label="HS Client Linkedin Profile (Primary)"
 								name={'PrimaryClientLinkedinProfile'}

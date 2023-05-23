@@ -2,7 +2,7 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import CompanyDetailsStyle from './companyDetails.module.css';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
-import { InputType ,URLRegEx} from 'constants/application';
+import { InputType, URLRegEx } from 'constants/application';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { locationFormatter } from 'modules/client/clientUtils';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -110,7 +110,7 @@ const CompanyDetails = ({
 				type: 'duplicateCompanyName',
 				message:
 					companyNameDuplicate?.statusCode ===
-						HTTPStatusCode.DUPLICATE_RECORD &&
+					HTTPStatusCode.DUPLICATE_RECORD &&
 					'This company name already exists. Please enter another company name.',
 			});
 			companyNameDuplicate.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
