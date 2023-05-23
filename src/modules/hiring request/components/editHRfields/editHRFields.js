@@ -836,8 +836,8 @@ const EditHRFields = ({
 
     useEffect(() => {
         if (getHRdetails?.months) {
-            const findDurationMode = durationDataMemo.filter((item) => item?.id === getHRdetails?.months)
-            setValue("getDurationType", findDurationMode[0])
+            const findDurationMode = durationDataMemo.filter((item) => Number(item?.id) === getHRdetails?.months)
+            setValue("getDurationType", findDurationMode[0]?.id)
             setControlledDurationTypeValue(findDurationMode[0]?.value)
         }
     }, [getHRdetails, durationDataMemo])

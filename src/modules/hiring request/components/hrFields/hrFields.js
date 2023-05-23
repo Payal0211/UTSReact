@@ -1,5 +1,6 @@
 import { Button, Checkbox, Divider, Space, message, AutoComplete } from 'antd';
 import {
+	AddNewType,
 	ClientHRURL,
 	GoogleDriveCredentials,
 	InputType,
@@ -42,7 +43,9 @@ const HRFields = ({
 	contactID,
 	interviewDetails,
 	companyName,
+	params,
 }) => {
+	
 	const inputRef = useRef(null);
 	const [getUploadFileData, setUploadFileData] = useState('');
 	const [availability, setAvailability] = useState([]);
@@ -94,6 +97,7 @@ const HRFields = ({
 	});
 
 	const data = watch();
+	
 	const watchSalesPerson = watch('salesPerson');
 	const watchChildCompany = watch('childCompany');
 	console.log(watchSalesPerson,"watchSalesPerson");
@@ -662,7 +666,9 @@ const HRFields = ({
 
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 				setAddHRResponse(addHRRequest?.responseBody?.details);
-				interviewDetails(addHRRequest?.responseBody?.details);
+				if(params==="addnewhr"){
+					interviewDetails(addHRRequest?.responseBody?.details);
+				}
 				setEnID(addHRRequest?.responseBody?.details?.en_Id);
 				type !== SubmitType.SAVE_AS_DRAFT && setTitle('Debriefing HR');
 				type !== SubmitType.SAVE_AS_DRAFT &&

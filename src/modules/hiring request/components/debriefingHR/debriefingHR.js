@@ -32,6 +32,8 @@ const DebriefingHR = ({
 	setJDParsedSkills,
 	getHRdetails,
 	getCompanyName,
+	clientDetail,
+	params
 }) => {
 	const {
 		watch,
@@ -46,11 +48,12 @@ const DebriefingHR = ({
 			secondaryInterviewer: [],
 		},
 	});
+
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
 	});
-	console.log(getCompanyName,"getCompanyName");
+
 
 	const navigate = useNavigate();
 	const [controlledJDParsed, setControlledJDParsed] = useState(
@@ -159,7 +162,7 @@ const DebriefingHR = ({
 			interviewerEmail: d.interviewerEmail,
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
-			JDDumpID: jdDumpID,
+			// JDDumpID: jdDumpID,
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -230,10 +233,19 @@ const DebriefingHR = ({
 							errors={errors}
 							validationSchema={{
 								validate:(value) =>{
-									if(value.toLowerCase()===getCompanyName.toLowerCase() && value.toUpperCase()===getCompanyName.toUpperCase()){
-										return 'Please do not mention company name here';
-									}if(!value){
-										return "Please add something about the company";
+									if(params === "addnewhr"){
+										if(value.toLowerCase()===getCompanyName.toLowerCase() && value.toUpperCase()===getCompanyName.toUpperCase()){
+											return 'Please do not mention company name here';
+										}if(!value){
+											return "Please add something about the company";
+										}
+									}else{
+										if(value.toLowerCase()===clientDetail?.companyname
+										.toLowerCase() && value.toUpperCase()===clientDetail?.companyname.toUpperCase()){
+											return 'Please do not mention company name here';
+										}if(!value){
+											return "Please add something about the company";
+										}
 									}
 								}
 							}}

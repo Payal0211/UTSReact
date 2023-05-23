@@ -48,6 +48,11 @@ const AddInterviewer = ({
 				setValue("interviewerEmail", getHRdetails?.salesHiringRequest_Details?.interviewerEmailId)
 				setValue("interviewerLinkedin", getHRdetails?.salesHiringRequest_Details?.interviewLinkedin)
 				setValue("interviewerDesignation", getHRdetails?.salesHiringRequest_Details?.interviewerDesignation)
+			}else if (interviewDetails) {
+				setValue('interviewerFullName', interviewDetails?.fullName);
+				setValue('interviewerEmail', interviewDetails?.emailId);
+				setValue('interviewerLinkedin', interviewDetails?.linkedin);
+				setValue('interviewerDesignation', interviewDetails?.designation);
 			}else{
 				setValue("interviewerFullName", getHRdetails?.interviewerFullName
 				)
@@ -56,7 +61,7 @@ const AddInterviewer = ({
 				)
 				setValue("interviewerDesignation", getHRdetails?.interviewerDesignation)
 			}
-		}, [getHRdetails])
+		}, [getHRdetails,interviewDetails])
 	
 	return (
 		<div>

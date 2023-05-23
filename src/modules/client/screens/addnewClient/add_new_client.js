@@ -5,8 +5,12 @@ import HRFields from 'modules/hiring request/components/hrFields/hrFields';
 import AddNewClientStyle from './add_new_client.module.css';
 import ClientField from 'modules/client/components/clientField/clientField';
 
+
 const AddNewClientScreen = () => {
 	const [title, setTitle] = useState('Add New Client');
+
+
+	const params = window?.location?.pathname?.split("/")?.[2]
 
 	const [clientDetail, setClientDetails] = useState({});
 	const [interviewDetails, setInterviewDetails] = useState(null);
@@ -65,6 +69,7 @@ const AddNewClientScreen = () => {
 									contactID={contactID}
 									setJDDumpID={setJDDumpID}
 									jdDumpID={jdDumpID}
+									params={params}
 								/>
 							),
 							disabled: tabFieldDisabled.addNewHiringRequest,
@@ -82,6 +87,8 @@ const AddNewClientScreen = () => {
 									setJDParsedSkills={setJDParsedSkills}
 									JDParsedSkills={JDParsedSkills}
 									jdDumpID={jdDumpID}
+									clientDetail={clientDetail}
+									params={params}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,
