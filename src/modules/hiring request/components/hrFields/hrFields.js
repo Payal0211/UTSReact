@@ -12,6 +12,7 @@ import {
 	GoogleDriveCredentials,
 	InputType,
 	SubmitType,
+	URLRegEx,
 	WorkingMode,
 } from 'constants/application';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -358,7 +359,7 @@ const HRFields = ({
 	}, []);
 
 	const watchPostalCode = watch('postalCode');
-	console.log(errors, '-errors');
+	
 	const postalCodeHandler = useCallback(
 		async (flag) => {
 			const countryResponse = await MasterDAO.getCountryByPostalCodeRequestDAO({
@@ -1064,6 +1065,13 @@ const HRFields = ({
 									placeholder="Add JD link"
 									register={register}
 									required={!getUploadFileData}
+  	errors={errors}
+								validationSchema={{
+									pattern: {
+											value: URLRegEx.url,
+											message: 'Entered value does not match url format',
+										},
+								}}
 								/>
 							</div>
 						</div>
@@ -1104,8 +1112,8 @@ const HRFields = ({
 									validationSchema={{
 										required: 'please enter the minimum budget.',
 										min: {
-											value: 0,
-											message: `please don't enter the value less than 0`,
+											value: 1,
+											message: `please don't enter the value less than 1`,
 										},
 									}}
 								/>
