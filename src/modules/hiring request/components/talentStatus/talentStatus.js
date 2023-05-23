@@ -9,6 +9,7 @@ import HRInputField from '../hrInputFields/hrInputFields';
 import { InputType } from 'constants/application';
 import { _isNull } from 'shared/utils/basic_utils';
 import { HTTPStatusCode } from 'constants/network';
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
 const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 	const {
@@ -22,7 +23,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 		watch,
 		formState: { errors },
 	} = useForm({});
-
+	const [isLoading, setIsLoading] = useState(false);
 	const watchTalentStatus = watch('talentStatus');
 	const watchCancelReason = watch('cancelReason');
 	const watchRejectReason = watch('rejectReason');
@@ -55,6 +56,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 	}, [callAPI, hrId, talentInfo?.ContactPriorityID]);
 	const talentStatusSubmitHanlder = useCallback(
 		async (d) => {
+			setIsLoading(true);
 			let talentStatusObject = {
 				hrid: hrId,
 				hrDetailID: talentInfo?.HiringDetailID,
@@ -74,7 +76,10 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 			/* if (response?.statusCode === HTTPStatusCode.OK) {
 				callAPI(hrId);
 			} */
-			if (response) callAPI(hrId);
+			if (response) {
+				setIsLoading(false);
+				callAPI(hrId);
+			}
 		},
 		[callAPI, hrId, talentInfo?.HiringDetailID, talentInfo?.TalentID],
 	);
@@ -110,151 +115,156 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 				<h2>Change Talent Status</h2>
 			</div>
 
-			<div className={TalentStatusStyle.transparent}>
-				<div className={TalentStatusStyle.colMd12}>
-					<HRSelectField
-						mode={'id/value'}
-						setValue={setValue}
-						register={register}
-						name="talentStatus"
-						label="Select Talent Status"
-						defaultValue="Please Select"
-						options={talentStatus?.Data?.TalentStatusAfterClientSelections}
-						required
-						isError={errors['talentStatus'] && errors['talentStatus']}
-						errorMsg="Please select talent Status."
-					/>
-				</div>
-				{watch('talentStatus')?.id === 5 && (
+			{isLoading ? (
+				<SpinLoader />
+			) : (
+				<div className={TalentStatusStyle.transparent}>
 					<div className={TalentStatusStyle.colMd12}>
 						<HRSelectField
 							mode={'id/value'}
 							setValue={setValue}
 							register={register}
-							name="cancelReason"
-							label="Select Cancel Reason"
+							name="talentStatus"
+							label="Select Talent Status"
 							defaultValue="Please Select"
-							options={talentStatus?.Data?.TalentCancelledReason}
+							options={talentStatus?.Data?.TalentStatusAfterClientSelections}
 							required
-							isError={errors['cancelReason'] && errors['cancelReason']}
-							errorMsg="Please select Cancel Reason."
+							isError={errors['talentStatus'] && errors['talentStatus']}
+							errorMsg="Please select talent Status."
 						/>
 					</div>
-				)}
+					{watch('talentStatus')?.id === 5 && (
+						<div className={TalentStatusStyle.colMd12}>
+							<HRSelectField
+								mode={'id/value'}
+								setValue={setValue}
+								register={register}
+								name="cancelReason"
+								label="Select Cancel Reason"
+								defaultValue="Please Select"
+								options={talentStatus?.Data?.TalentCancelledReason}
+								required
+								isError={errors['cancelReason'] && errors['cancelReason']}
+								errorMsg="Please select Cancel Reason."
+							/>
+						</div>
+					)}
 
-				{watch('talentStatus')?.id === 7 && (
-					<>
-						<div className={TalentStatusStyle.colMd12}>
-							<HRSelectField
-								mode={'id/value'}
-								setValue={setValue}
-								register={register}
-								name="rejectReason"
-								label="Select Reject Reason"
-								defaultValue="Please Select"
-								options={talentStatus?.Data?.TalentRejectReason}
-								required
-								isError={errors['rejectReason'] && errors['rejectReason']}
-								errorMsg="Please select reject Reason."
-							/>
-						</div>
+					{watch('talentStatus')?.id === 7 && (
+						<>
+							<div className={TalentStatusStyle.colMd12}>
+								<HRSelectField
+									mode={'id/value'}
+									setValue={setValue}
+									register={register}
+									name="rejectReason"
+									label="Select Reject Reason"
+									defaultValue="Please Select"
+									options={talentStatus?.Data?.TalentRejectReason}
+									required
+									isError={errors['rejectReason'] && errors['rejectReason']}
+									errorMsg="Please select reject Reason."
+								/>
+							</div>
+							<div className={TalentStatusStyle.colMd12}>
+								<HRInputField
+									isTextArea={true}
+									register={register}
+									errors={errors}
+									label={'Loss Remarks'}
+									required
+									name="lossRemark"
+									type={InputType.TEXT}
+									placeholder="Loss Remark"
+									validationSchema={{
+										required: 'please enter the loss remark.',
+									}}
+								/>
+							</div>
+						</>
+					)}
+					{watch('talentStatus')?.id === 6 && (
+						<>
+							<div className={TalentStatusStyle.colMd12}>
+								<HRSelectField
+									mode={'id/value'}
+									setValue={setValue}
+									register={register}
+									name="onHoldReason"
+									label="Select OnHold Reason"
+									defaultValue="Please Select"
+									options={talentStatus?.Data?.TalentOnHoldReason}
+									required
+									isError={errors['onHoldReason'] && errors['onHoldReason']}
+									errorMsg="Please select on hold	 Reason."
+								/>
+							</div>
+							<div className={TalentStatusStyle.colMd12}>
+								<HRInputField
+									isTextArea={true}
+									register={register}
+									errors={errors}
+									label={'OnHold Remarks'}
+									required
+									name="onHoldRemark"
+									type={InputType.TEXT}
+									placeholder="OnHold Remark"
+									validationSchema={{
+										required: 'please enter the on hold remark.',
+									}}
+								/>
+							</div>
+						</>
+					)}
+					{(watch('cancelReason')?.id === -1 &&
+						watch('talentStatus')?.id === 5) ||
+					(watch('rejectReason')?.id === -1 &&
+						watch('talentStatus')?.id === 7) ||
+					(watch('onHoldReason')?.id === -1 &&
+						watch('talentStatus')?.id === 6) ? (
 						<div className={TalentStatusStyle.colMd12}>
 							<HRInputField
 								isTextArea={true}
 								register={register}
 								errors={errors}
-								label={'Loss Remarks'}
+								label={'Others Reason'}
 								required
-								name="lossRemark"
+								name="otherReason"
 								type={InputType.TEXT}
-								placeholder="Loss Remark"
+								placeholder="Other Reason"
 								validationSchema={{
-									required: 'please enter the loss remark.',
+									required: 'please enter the other reason.',
 								}}
 							/>
 						</div>
-					</>
-				)}
-				{watch('talentStatus')?.id === 6 && (
-					<>
-						<div className={TalentStatusStyle.colMd12}>
-							<HRSelectField
-								mode={'id/value'}
-								setValue={setValue}
-								register={register}
-								name="onHoldReason"
-								label="Select OnHold Reason"
-								defaultValue="Please Select"
-								options={talentStatus?.Data?.TalentOnHoldReason}
-								required
-								isError={errors['onHoldReason'] && errors['onHoldReason']}
-								errorMsg="Please select on hold	 Reason."
-							/>
+					) : null}
+					{talentStatus?.Data?.TalentStatus === 'On Hold' && (
+						<div className={TalentStatusStyle?.colMd12}>
+							<div className={TalentStatusStyle.formPanelAction}>
+								<button
+									type="submit"
+									onClick={removeOnHoldStatusHandler}
+									className={TalentStatusStyle.btnDanger}>
+									Remove OnHold Status
+								</button>
+							</div>
 						</div>
-						<div className={TalentStatusStyle.colMd12}>
-							<HRInputField
-								isTextArea={true}
-								register={register}
-								errors={errors}
-								label={'OnHold Remarks'}
-								required
-								name="onHoldRemark"
-								type={InputType.TEXT}
-								placeholder="OnHold Remark"
-								validationSchema={{
-									required: 'please enter the on hold remark.',
-								}}
-							/>
-						</div>
-					</>
-				)}
-				{(watch('cancelReason')?.id === -1 &&
-					watch('talentStatus')?.id === 5) ||
-				(watch('rejectReason')?.id === -1 && watch('talentStatus')?.id === 7) ||
-				(watch('onHoldReason')?.id === -1 &&
-					watch('talentStatus')?.id === 6) ? (
-					<div className={TalentStatusStyle.colMd12}>
-						<HRInputField
-							isTextArea={true}
-							register={register}
-							errors={errors}
-							label={'Others Reason'}
-							required
-							name="otherReason"
-							type={InputType.TEXT}
-							placeholder="Other Reason"
-							validationSchema={{
-								required: 'please enter the other reason.',
-							}}
-						/>
+					)}
+					<div className={TalentStatusStyle.formPanelAction}>
+						<button
+							type="submit"
+							onClick={handleSubmit(talentStatusSubmitHanlder)}
+							className={TalentStatusStyle.btnPrimary}>
+							Save
+						</button>
+						<button
+							onClick={closeModal}
+							className={TalentStatusStyle.btn}>
+							Cancel
+						</button>
 					</div>
-				) : null}
-				{talentStatus?.Data?.TalentStatus === 'On Hold' && (
-					<div className={TalentStatusStyle?.colMd12}>
-						<div className={TalentStatusStyle.formPanelAction}>
-							<button
-								type="submit"
-								onClick={removeOnHoldStatusHandler}
-								className={TalentStatusStyle.btnDanger}>
-								Remove OnHold Status
-							</button>
-						</div>
-					</div>
-				)}
-				<div className={TalentStatusStyle.formPanelAction}>
-					<button
-						type="submit"
-						onClick={handleSubmit(talentStatusSubmitHanlder)}
-						className={TalentStatusStyle.btnPrimary}>
-						Save
-					</button>
-					<button
-						onClick={closeModal}
-						className={TalentStatusStyle.btn}>
-						Cancel
-					</button>
 				</div>
-			</div>
+			)}
 		</div>
 	);
 };
