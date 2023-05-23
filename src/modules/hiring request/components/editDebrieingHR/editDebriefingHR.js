@@ -13,6 +13,7 @@ import { InputType } from 'constants/application';
 import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import { _isNull } from 'shared/utils/basic_utils';
+import WithLoader from 'shared/components/loader/loader';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -48,6 +49,7 @@ const EditDebriefingHR = ({
 		control,
 		name: 'secondaryInterviewer',
 	});
+	const [isLoading, setIsLoading] = useState(false);
 
 	const navigate = useNavigate();
 	const [controlledJDParsed, setControlledJDParsed] = useState(
@@ -61,10 +63,10 @@ const EditDebriefingHR = ({
 		const response = await MasterDAO.getSkillsRequestDAO();
 		setSkills(response && response.responseBody);
 	}, []);
-	let watchOtherSkills = watch('otherSkill');
+	// let watchOtherSkills = watch('otherSkill');
 	let watchSkills = watch('skills');
 
-	const combinedSkillsMemo = useMemo(
+	/* const combinedSkillsMemo = useMemo(
 		() => [
 			...skills,
 			...[
@@ -76,15 +78,28 @@ const EditDebriefingHR = ({
 		],
 		[skills],
 	);
-
+ */
+	const combinedSkillsMemo = useMemo(() => {
+		const combinedData = [
+			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
+			...skills,
+			...[
+				{
+					id: '-1',
+					value: 'Others',
+				},
+			],
+		];
+		return combinedData.filter((o) => !selectedItems.includes(o));
+	}, [JDParsedSkills, selectedItems, skills]);
 	// const filteredOptions = combinedSkillsMemo.filter(
 	// 	(o) => !selectedItems.includes(o),
 	// );
 
-	const isOtherSkillExistMemo = useMemo(() => {
-		let response = watchSkills?.filter((item) => item?.skillsID === -1);
-		return response?.length > 0;
-	}, [watchSkills]);
+	// const isOtherSkillExistMemo = useMemo(() => {
+	// 	let response = watchSkills?.filter((item) => item?.skillsID === -1);
+	// 	return response?.length > 0;
+	// }, [watchSkills]);
 
 	useEffect(() => {
 		setValue(
@@ -96,31 +111,31 @@ const EditDebriefingHR = ({
 		);
 	}, [getHRdetails?.skillmulticheckbox, setValue]);
 
-	const getOtherSkillsRequest = useCallback(
-		async (data) => {
-			let response = await MasterDAO.getOtherSkillsRequestDAO({
-				skillName: data,
-			});
-			if (response?.statusCode === HTTPStatusCode?.BAD_REQUEST) {
-				return setError('otherSkill', {
-					type: 'otherSkill',
-					message: response?.responseBody,
-				});
-			}
-		},
-		[setError],
-	);
+	// const getOtherSkillsRequest = useCallback(
+	// 	async (data) => {
+	// 		let response = await MasterDAO.getOtherSkillsRequestDAO({
+	// 			skillName: data,
+	// 		});
+	// 		if (response?.statusCode === HTTPStatusCode?.BAD_REQUEST) {
+	// 			return setError('otherSkill', {
+	// 				type: 'otherSkill',
+	// 				message: response?.responseBody,
+	// 			});
+	// 		}
+	// 	},
+	// 	[setError],
+	// );
 
-	useEffect(() => {
-		let timer;
-		if (!_isNull(watchOtherSkills)) {
-			timer = setTimeout(() => {
-				// setIsLoading(true);
-				getOtherSkillsRequest(watchOtherSkills);
-			}, 2000);
-		}
-		return () => clearTimeout(timer);
-	}, [getOtherSkillsRequest, watchOtherSkills]);
+	// useEffect(() => {
+	// 	let timer;
+	// 	if (!_isNull(watchOtherSkills)) {
+	// 		timer = setTimeout(() => {
+	// 			// setIsLoading(true);
+	// 			getOtherSkillsRequest(watchOtherSkills);
+	// 		}, 2000);
+	// 	}
+	// 	return () => clearTimeout(timer);
+	// }, [getOtherSkillsRequest, watchOtherSkills]);
 
 	useEffect(() => {
 		getSkills();
@@ -138,41 +153,59 @@ const EditDebriefingHR = ({
 			});
 	}, [JDParsedSkills, setValue]);
 
-	const debriefSubmitHandler = async (d) => {
-		let debriefFormDetails = {
-			roleAndResponsibilites: d.roleAndResponsibilities,
-			requirements: d.requirements,
-			en_Id: enID,
-			skills: d.skills?.filter((item) => item?.skillsID !== -1),
-			aboutCompanyDesc: d.aboutCompany,
-			secondaryInterviewer: d.secondaryInterviewer,
-			interviewerFullName: d.interviewerFullName,
-			interviewerEmail: d.interviewerEmail,
-			interviewerLinkedin: d.interviewerLinkedin,
-			interviewerDesignation: d.interviewerDesignation,
-		};
-
-		console.log(d, 'debriefFormDetails');
-
-		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
-			debriefFormDetails,
-		);
-		if (debriefResult.statusCode === HTTPStatusCode.OK) {
-			messageAPI.open({
-				type: 'success',
-				content: 'HR Debriefing has been created successfully..',
+	const debriefSubmitHandler = useCallback(
+		async (d) => {
+			setIsLoading(true);
+			let skillList = d.skills.map((item) => {
+				const obj = {
+					skillsID: item.id || item?.skillsID,
+					skillsName: item.value || item?.skillName,
+				};
+				return obj;
 			});
-			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
-		}
-	};
+			let debriefFormDetails = {
+				roleAndResponsibilites: d.roleAndResponsibilities,
+				requirements: d.requirements,
+				en_Id: enID,
+				skills: skillList?.filter((item) => item?.skillsID !== -1),
+				aboutCompanyDesc: d.aboutCompany,
+				secondaryInterviewer: d.secondaryInterviewer,
+				interviewerFullName: d.interviewerFullName,
+				interviewerEmail: d.interviewerEmail,
+				interviewerLinkedin: d.interviewerLinkedin,
+				interviewerDesignation: d.interviewerDesignation,
+			};
+
+			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
+				debriefFormDetails,
+			);
+			if (debriefResult.statusCode === HTTPStatusCode.OK) {
+				setIsLoading(false);
+				messageAPI.open({
+					type: 'success',
+					content: 'HR Debriefing has been created successfully..',
+				});
+				window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
+			}
+		},
+		[enID, messageAPI],
+	);
 
 	const needMoreInforSubmitHandler = async (d) => {
+		setIsLoading(true);
+		let skillList = d.skills.map((item) => {
+			const obj = {
+				skillsID: item.id || item?.skillsID,
+				skillsName: item.value || item?.skillName,
+			};
+			return obj;
+		});
 		let debriefFormDetails = {
 			isneedmore: true,
 			roleAndResponsibilites: d.roleAndResponsibilities,
 			requirements: d.requirements,
 			en_Id: enID,
-			skills: d.skills,
+			skills: skillList?.filter((item) => item?.skillsID !== -1),
 			aboutCompanyDesc: d.aboutCompany,
 			secondaryInterviewer: d.secondaryInterviewer,
 			interviewerFullName: d.interviewerFullName,
@@ -185,9 +218,10 @@ const EditDebriefingHR = ({
 			debriefFormDetails,
 		);
 		if (debriefResult.statusCode === HTTPStatusCode.OK) {
+			setIsLoading(false);
 			messageAPI.open({
 				type: 'success',
-				content: 'HR Debriefing has been created successfully..',
+				content: 'HR Debriefing has been updated successfully..',
 			});
 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
 		}
@@ -219,80 +253,84 @@ const EditDebriefingHR = ({
 			getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities,
 		);
 		// setValue("skills",getHRdetails?.skillmulticheckbox)
-	}, [getHRdetails]);
+	}, [getHRdetails, setValue]);
 
 	return (
-		<div className={DebriefingHRStyle.debriefingHRContainer}>
-			{contextHolder}
-			<div className={DebriefingHRStyle.partOne}>
-				<div className={DebriefingHRStyle.hrFieldLeftPane}>
-					<h3>Job Description</h3>
-					<p>Please provide the necessary details</p>
-				</div>
-				<div className={DebriefingHRStyle.hrFieldRightPane}>
-					<div className={DebriefingHRStyle.colMd12}>
-						<TextEditor
-							isControlled={true}
-							controlledValue={
-								JDParsedSkills?.Responsibility ||
-								getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities
-							}
-							label={'Roles & Responsibilities'}
-							placeholder={'Enter roles & responsibilities'}
-							required
-							setValue={setValue}
-							watch={watch}
-							register={register}
-							errors={errors}
-							name="roleAndResponsibilities"
-						/>
-						<HRInputField
-							required
-							isTextArea={true}
-							errors={errors}
-							validationSchema={{
-								required: 'please add somthing about the company',
-							}}
-							label={'About Company'}
-							register={register}
-							name="aboutCompany"
-							type={InputType.TEXT}
-							placeholder="Please enter details about company."
-						/>
-						<TextEditor
-							isControlled={true}
-							controlledValue={
-								JDParsedSkills?.Requirements ||
-								getHRdetails?.salesHiringRequest_Details?.requirement
-							}
-							label={'Requirements'}
-							placeholder={'Enter Requirements'}
-							setValue={setValue}
-							watch={watch}
-							register={register}
-							errors={errors}
-							name="requirements"
-							required
-						/>
-						<div className={DebriefingHRStyle.mb50}>
-							<HRSelectField
+		<WithLoader
+			showLoader={isLoading}
+			className="mainLoader">
+			<div className={DebriefingHRStyle.debriefingHRContainer}>
+				{contextHolder}
+				<div className={DebriefingHRStyle.partOne}>
+					<div className={DebriefingHRStyle.hrFieldLeftPane}>
+						<h3>Job Description</h3>
+						<p>Please provide the necessary details</p>
+					</div>
+					<div className={DebriefingHRStyle.hrFieldRightPane}>
+						<div className={DebriefingHRStyle.colMd12}>
+							<TextEditor
 								isControlled={true}
-								controlledValue={controlledJDParsed}
-								setControlledValue={setControlledJDParsed}
-								mode="multiple"
-								setValue={setValue}
-								register={register}
-								label={'Required Skills'}
-								placeholder="Type skills"
-								onChange={setSelectedItems}
-								options={combinedSkillsMemo}
-								name="skills"
-								isError={errors['skills'] && errors['skills']}
+								controlledValue={
+									JDParsedSkills?.Responsibility ||
+									getHRdetails?.salesHiringRequest_Details
+										?.rolesResponsibilities
+								}
+								label={'Roles & Responsibilities'}
+								placeholder={'Enter roles & responsibilities'}
 								required
-								errorMsg={'Please enter the skills.'}
+								setValue={setValue}
+								watch={watch}
+								register={register}
+								errors={errors}
+								name="roleAndResponsibilities"
 							/>
-						</div>
-						{isOtherSkillExistMemo && (
+							<HRInputField
+								required
+								isTextArea={true}
+								errors={errors}
+								validationSchema={{
+									required: 'please add somthing about the company',
+								}}
+								label={'About Company'}
+								register={register}
+								name="aboutCompany"
+								type={InputType.TEXT}
+								placeholder="Please enter details about company."
+							/>
+							<TextEditor
+								isControlled={true}
+								controlledValue={
+									JDParsedSkills?.Requirements ||
+									getHRdetails?.salesHiringRequest_Details?.requirement
+								}
+								label={'Requirements'}
+								placeholder={'Enter Requirements'}
+								setValue={setValue}
+								watch={watch}
+								register={register}
+								errors={errors}
+								name="requirements"
+								required
+							/>
+							<div className={DebriefingHRStyle.mb50}>
+								<HRSelectField
+									isControlled={true}
+									controlledValue={controlledJDParsed}
+									setControlledValue={setControlledJDParsed}
+									mode="multiple"
+									setValue={setValue}
+									register={register}
+									label={'Required Skills'}
+									placeholder="Type skills"
+									onChange={setSelectedItems}
+									options={combinedSkillsMemo}
+									name="skills"
+									isError={errors['skills'] && errors['skills']}
+									required
+									errorMsg={'Please enter the skills.'}
+								/>
+							</div>
+							{/* {isOtherSkillExistMemo && (
 							<div className={DebriefingHRStyle.colMd12}>
 								<HRInputField
 									register={register}
@@ -312,8 +350,8 @@ const EditDebriefingHR = ({
 									required
 								/>
 							</div>
-						)}
-						{/* <div className={DebriefingHRStyle.mb50}>
+						)} */}
+							{/* <div className={DebriefingHRStyle.mb50}>
 							<label
 								style={{
 									fontSize: '12px',
@@ -337,36 +375,37 @@ const EditDebriefingHR = ({
 								}))}
 							/>
 						</div> */}
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<Divider />
-			<AddInterviewer
-				errors={errors}
-				append={append}
-				remove={remove}
-				register={register}
-				setValue={setValue}
-				fields={fields}
-				getHRdetails={getHRdetails}
-			/>
-			<Divider />
-			<div className={DebriefingHRStyle.formPanelAction}>
-				<button
-					type="button"
-					className={DebriefingHRStyle.btn}
-					onClick={handleSubmit(needMoreInforSubmitHandler)}>
-					Need More Info
-				</button>
-				<button
-					type="button"
-					className={DebriefingHRStyle.btnPrimary}
-					onClick={handleSubmit(debriefSubmitHandler)}>
-					Create
-				</button>
+				<Divider />
+				<AddInterviewer
+					errors={errors}
+					append={append}
+					remove={remove}
+					register={register}
+					setValue={setValue}
+					fields={fields}
+					getHRdetails={getHRdetails}
+				/>
+				<Divider />
+				<div className={DebriefingHRStyle.formPanelAction}>
+					<button
+						type="button"
+						className={DebriefingHRStyle.btn}
+						onClick={handleSubmit(needMoreInforSubmitHandler)}>
+						Need More Info
+					</button>
+					<button
+						type="button"
+						className={DebriefingHRStyle.btnPrimary}
+						onClick={handleSubmit(debriefSubmitHandler)}>
+						Create
+					</button>
+				</div>
 			</div>
-		</div>
+		</WithLoader>
 	);
 };
 

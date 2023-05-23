@@ -34,11 +34,18 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 		const response = await engagementRequestDAO.getRenewEngagementRequestDAO({
 			onBoardId: talentInfo?.onboardID,
 		});
+
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setRenewEngagement(response?.responseBody?.details);
+			console.log(response, '-response--');
+			response?.responseBody?.details?.contarctDuration > 0 &&
+				setValue(
+					'contractDuration',
+					response?.responseBody?.details?.contarctDuration,
+				);
 			setValue(
-				'contractDuration',
-				response?.responseBody?.details?.contarctDuration,
+				'renewedStartDate',
+				new Date(response?.responseBody?.details?.contractStartDate),
 			);
 			setValue('billRate', response?.responseBody?.details?.billRate);
 			setValue('payRate', response?.responseBody?.details?.payRate);
@@ -196,6 +203,10 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 						errors={errors}
 						validationSchema={{
 							required: 'please enter the contract duration.',
+							min: {
+								value: 1,
+								message: `please don't enter the value less than 1`,
+							},
 						}}
 						required
 					/>

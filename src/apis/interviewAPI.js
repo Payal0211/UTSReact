@@ -60,7 +60,8 @@ export const InterviewAPI = {
 			httpService.URL =
 				NetworkInfo.NETWORK +
 				SubDomain.INTERVIEW +
-				InterviewsAPI.FEEDBACK`?loggedinuserid=${miscData?.loggedInUserTypeID}`;
+				InterviewsAPI.FEEDBACK +
+				`?loggedinuserid=${miscData?.loggedInUserTypeID}`;
 
 			httpService.setAuthRequired = true;
 			httpService.setAuthToken = UserSessionManagementController.getAPIKey();

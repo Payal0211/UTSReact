@@ -116,15 +116,14 @@ const EngagementInvoice = ({
 				onboardID: talentInfo?.onboardID,
 			});
 
+		console.log(response, '-response');
+
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setInvoiceDetails(response && response?.responseBody?.details);
 			// setValue('invoiceNumber', response?.responseBody?.details?.invoiceNumber);
-			// setValue(
-			// 	'invoiceDate',
-			// 	new Date(response?.responseBody?.details?.invoiceSentdate),
-			// );
+			setValue('invoiceDate', new Date());
 		}
-	}, [talentInfo?.onboardID]);
+	}, [setValue, talentInfo?.onboardID]);
 
 	useEffect(() => {
 		getContentForAddInvoiceHandler();

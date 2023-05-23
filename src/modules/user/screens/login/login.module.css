@@ -1,104 +1,274 @@
-.loginContainer{
-    display: flex;
-    background-color: var(--background-color-dim);
-    height: 100vh;
-    flex-wrap: wrap;
-    overflow-x  : hidden;
+.loginContainer {
+  display: flex;
+  background-color: var(--background-color-dim);
+  height: 100vh;
+  flex-wrap: wrap;
+  overflow-x: hidden;
 }
 
-.loginColumn_1{
-    width: 35%;
-    /* transition: all .6s ease; */
+.loginColumn_1 {
+  width: 35%;
 }
 
-/* .loginColumn_1:hover {
-    width: 43%;
-    cursor: pointer;
-    background-color: var(--color-sunlight);
+.loginColumn_1_Body {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 9.9vh 2.09vw 3.31vh;
+}
+.loginLogo img {
+  max-width: 20.235vw;
+  max-height: 13.315vh;
+}
+.welcomePart {
+  margin-top: 6.2vh;
+  border-bottom: 1px solid #cecccc;
+  margin-bottom: 2.48vh;
+  padding-bottom: 2.48vh;
+}
+.welcomeTitle {
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 4.13vh;
+  line-height: 4.96vh;
+  color: #000000;
+  margin-bottom: 1.66vh;
+}
+.welcomeSubtitle {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 1.86vh;
+  line-height: 2.69vh;
+  color: #000000;
+  margin: 0;
 }
 
-.loginColumn_1:hover + .loginColumn_2 {
-    width: 57%;
-    background-color: var(--background-color-dim);
-} */
-
-.loginColumn_1_Body{
-    width: 90%;
-    margin-top: 15%;
-    margin-left:  auto;
-    margin-right: auto;
+.forgotPassword {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.45vh;
+  line-height: 2.28vh;
+  text-decoration-line: underline;
+  color: #7c7c7c;
+  margin-top: 1.66vh;
 }
 
-.uplersTalentLogo{
-    width: 100%;
-    max-width: 250px;
-    height: auto;
-}
-.welcomePart{
-    margin-top: 50px;
-}
-.welcomeTitle{
-    font-weight: 500;
-    letter-spacing: 1px;
-}
-.welcomeSubtitle{
-    font-size: 1.1rem;
+.loginFormPart {
+  margin: 0;
 }
 
-.forgotpassword{
-    font-size: 1rem;
-    text-decoration: underline;
-    color: var(--background-color-jade);
-    margin:25px 0 !important;
+.loginFormPart [class*="input_field_formField"] {
+  margin-bottom: 2.48vh;
 }
-.loginFormPart{
-margin-top: 30px;
+.loginFormPart [class*="input_field_formField"]:last-child {
+  margin-bottom: 0;
+}
+.loginFormPart [class*="input_field_inputLabel"] {
+  white-space: nowrap;
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 1.86vh;
+  line-height: 2.69vh;
+  color: #000000;
+  margin-bottom: 0.83vh;
+  display: inline-block;
+}
+.loginFormPart [class*="input_field_inputBox"] {
+  margin: 0;
+  border: none;
+  position: relative;
+}
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"] {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  color: #000 !important;
+  background: #ffffff;
+  border: 1px solid #cecccc;
+  border-radius: 8px;
+  padding: 1.55vh 1.305vw;
+  max-height: 54px;
+  transition: all 0.35s ease 0s;
+}
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"]:focus {
+  border-color: #ffda30;
+  box-shadow: 0 0 0 1px #ffda30;
 }
 
-.loginColumn_2{
-    width: 65%;
-    background-color: var(--color-sunlight);
-    /* transition: all .6s ease; */
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"]::-webkit-input-placeholder {
+  color: #7c7c7c;
+  opacity: 1;
+}
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"]::-moz-placeholder {
+  color: #7c7c7c;
+  opacity: 1;
+}
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"]:-ms-input-placeholder {
+  color: #7c7c7c;
+  opacity: 1;
+}
+.loginFormPart
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"]:-moz-placeholder {
+  color: #7c7c7c;
+  opacity: 1;
+}
+.loginFormPart [class*="input_field_formField"] [class*="input_field_error"] {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 1.45vh;
+  line-height: 2vh;
+  margin: 0.83vh 0 0;
+  display: inline-block;
+}
+.loginPasswordField
+  [class*="input_field_inputBox"]
+  [class*="input_field_inputfield"] {
+  padding-right: 2.8vw;
+}
+.loginPasswordField [class*="input_field_trailingIcon"] {
+  position: absolute;
+  right: 1.305vw;
+  height: 25px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+  display: inline-flex;
+}
+.loginPasswordField [class*="input_field_trailingIcon"] svg {
+  margin-bottom: 0;
 }
 
-.loginHeadline{
-    width: 90%;
-    margin: 0 auto;
-    position: relative;
-    height: 100%;
+.loginColumn_2 {
+  width: 65%;
+  background-color: var(--color-sunlight);
 }
 
-.loginHeadline h1{
-    font-size: 2rem;
-    font-weight: bolder;
-    letter-spacing: 0.3rem;
-    margin: 0;
-    position: absolute;
-    top: auto;
-    left: 0;
-    right: 0;
-    bottom: 30px;
+.loginHeadline {
+  margin: 0;
+  position: relative;
+  height: 100%;
+  padding: 2.5vh 2.92vw 5.78vh;
+  align-items: flex-end;
+  display: flex;
 }
 
+.loginHeadline h1 {
+  font-family: "Montserrat";
+  font-weight: 700;
+  font-size: 2.5vw;
+  line-height: 4.17vw;
+  letter-spacing: 0.005em;
+  color: #0f2530;
+  margin: 0;
+}
+
+.loginAction {
+  border-top: 1px solid #cecccc;
+  margin-top: 2.48vh;
+  padding-top: 2.48vh;
+}
+
+.loginAction button {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.86vh;
+  line-height: 2.69vh;
+  color: #000000;
+  margin: 0;
+  border-radius: 8px;
+  padding: 1.24vh 1vw;
+}
 
 /*---------------------- FOR SCREEN LESS THAN 767PX ------------------- */
-@media screen and (max-width: 767px) {
-.uplersTalentLogo {
-    width: 100%;
-    max-width: 150px;
-    height: auto;
-}
-.loginColumn_1 {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 10%;
-}
-.loginColumn_1_Body{
-    margin-top: 5%;
-}
-.loginColumn_2 {
-    display: none;
+@media screen and (max-width: 1440px) {
+  .loginColumn_1_Body {
+    padding-top: 8vh;
+  }
+  .welcomePart {
+    margin-top: 5.2vh;
+  }
 }
 
+@media screen and (max-width: 991px) {
+  .loginColumn_1 {
+    width: 45%;
+  }
+  .loginColumn_2 {
+    width: 55%;
+  }
+  .loginFormPart
+    [class*="input_field_inputBox"]
+    [class*="input_field_inputfield"] {
+    padding: 13px 16px;
+  }
+  .loginPasswordField
+    [class*="input_field_inputBox"]
+    [class*="input_field_inputfield"] {
+    padding-right: 48px;
+  }
+  .loginPasswordField [class*="input_field_trailingIcon"] {
+    right: 16px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .loginColumn_1 {
+    width: 100%;
+  }
+  .loginColumn_2 {
+    display: none;
+  }
+  .loginColumn_1_Body {
+    padding: 30px 15px;
+  }
+  .loginLogo img {
+    max-width: 130px;
+    max-height: 60px;
+  }
+  .loginFormPart [class*="input_field_inputLabel"] {
+    font-size: 14px;
+  }
+  .forgotPassword {
+    font-size: 14px;
+    line-height: 20px;
+    margin-top: 16px;
+  }
+  .loginAction {
+    margin-top: 24px;
+    padding-top: 24px;
+  }
+  .loginAction button {
+    padding: 14px 16px;
+    font-size: 16px;
+    line-height: 22px;
+  }
+  .welcomePart {
+    margin-top: 32px;
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+  }
+  .loginFormPart [class*="input_field_formField"] {
+    margin-bottom: 24px;
+  }
+  .loginFormPart [class*="input_field_formField"] [class*="input_field_error"] {
+    font-size: 13px;
+    line-height: 20px;
+    margin: 8px 0 0;
+  }
 }
