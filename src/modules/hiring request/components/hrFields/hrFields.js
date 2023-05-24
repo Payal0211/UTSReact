@@ -1077,10 +1077,10 @@ const HRFields = ({
 									required={!getUploadFileData}
 									errors={errors}
 									validationSchema={{
-										pattern: {
-											value: URLRegEx.url,
-											message: 'Entered value does not match url format',
-										},
+										// pattern: {
+										// 	value: URLRegEx.url,
+										// 	message: 'Entered value does not match url format',
+										// },
 									}}
 								/>
 							</div>

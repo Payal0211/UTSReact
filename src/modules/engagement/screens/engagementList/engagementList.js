@@ -479,6 +479,16 @@ const EngagementList = () => {
 							<span>{apiData[0]?.avgDP ? apiData[0]?.avgDP : 0}</span>
 						</h2>
 					</div>
+					<div className={allEngagementStyles.filterType}>
+						<img
+							src={Briefcase}
+							alt="briefcase"
+						/>
+						<h2>
+							Total DP% -{' '}
+							<span>{apiData[0]?.s_TotalDP ? apiData[0]?.s_TotalDP: 0}</span>
+						</h2>
+					</div>
 				</div>
 				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 					{/* <a className='mr-2' onClick={() => setEngagementModal({ ...getEngagementModal, engagementFeedback: true })}>EngagementFeeback</a> */}

@@ -739,7 +739,7 @@ const EditHRFields = ({
         setValue("bqFormLink", getHRdetails?.addHiringRequest?.bqlink)
         setValue("discoveryCallLink", getHRdetails?.addHiringRequest?.discoveryCall)
         setValue("dpPercentage", getHRdetails?.addHiringRequest?.dppercentage)
-        setValue("postalCode", getHRdetails?.directPlacement?.PostalCode)
+        setValue("postalCode", getHRdetails?.directPlacement?.postalCode)
         setValue("city", getHRdetails?.directPlacement?.city)
         setValue("state", getHRdetails?.directPlacement?.state)
         setValue("country", getHRdetails?.directPlacement?.country)
@@ -1085,12 +1085,12 @@ const EditHRFields = ({
                                 register={register}
                                 errors={errors}
                                 required={!getUploadFileData}
-								validationSchema={{
-									pattern: {
-											value: URLRegEx.url,
-											message: 'Entered value does not match url format',
-										},
-								}}
+                                validationSchema={{
+                                    // pattern: {
+                                    //     value: URLRegEx.url,
+                                    //     message: 'Entered value does not match url format',
+                                    // },
+                                }}
                             />
                         </div>
                     </div>
