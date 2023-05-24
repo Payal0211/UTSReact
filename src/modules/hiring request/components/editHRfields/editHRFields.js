@@ -1453,6 +1453,10 @@ const EditHRFields = ({
                                 errors={errors}
                                 validationSchema={{
                                     required: 'please enter the BQ form link.',
+                                    pattern: {
+                                        value: URLRegEx.url,
+                                        message: 'Entered value does not match url format',
+                                    },
                                 }}
                                 label="BQ Form Link"
                                 name="bqFormLink"
@@ -1467,6 +1471,10 @@ const EditHRFields = ({
                                 errors={errors}
                                 validationSchema={{
                                     required: 'please enter the discovery call link.',
+                                    pattern: {
+                                        value: URLRegEx.url,
+                                        message: 'Entered value does not match url format',
+                                    },
                                 }}
                                 label="Discovery Call Link"
                                 name="discoveryCallLink"
