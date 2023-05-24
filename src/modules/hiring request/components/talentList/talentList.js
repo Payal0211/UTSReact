@@ -84,18 +84,18 @@ const TalentList = ({
 
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
 		{
-			slot1: getNthDateExcludingWeekend(),
+			slot1: getNthDateExcludingWeekend(1),
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
 		{
-			slot1: getNthDateExcludingWeekend(1),
+			slot1: getNthDateExcludingWeekend(2),
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
 
 		{
-			slot1: getNthDateExcludingWeekend(2),
+			slot1: getNthDateExcludingWeekend(3),
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
@@ -104,7 +104,7 @@ const TalentList = ({
 		{
 			SlotID: 1,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(),
+				getNthDateExcludingWeekend(1),
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -113,7 +113,7 @@ const TalentList = ({
 		{
 			SlotID: 2,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(1),
+				getNthDateExcludingWeekend(2),
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -122,7 +122,7 @@ const TalentList = ({
 		{
 			SlotID: 3,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(2),
+				getNthDateExcludingWeekend(3),
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -134,18 +134,18 @@ const TalentList = ({
 	const [reScheduleTimezone, setRescheduleTimezone] = useState([]);
 	const [getRescheduleSlotDate, setRescheduleSlotDate] = useState([
 		{
-			slot1: getNthDateExcludingWeekend(),
+			slot1: getNthDateExcludingWeekend(1),
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
 		{
-			slot1: getNthDateExcludingWeekend(1),
+			slot1: getNthDateExcludingWeekend(2),
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
 
 		{
-			slot1: getNthDateExcludingWeekend(2),
+			slot1: getNthDateExcludingWeekend(3),
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
@@ -155,7 +155,7 @@ const TalentList = ({
 		{
 			SlotID: 1,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(),
+				getNthDateExcludingWeekend(1),
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -164,7 +164,7 @@ const TalentList = ({
 		{
 			SlotID: 2,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(1),
+				getNthDateExcludingWeekend(2),
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -173,7 +173,7 @@ const TalentList = ({
 		{
 			SlotID: 3,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(2),
+				getNthDateExcludingWeekend(3),
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -1285,7 +1285,7 @@ const TalentList = ({
 											</div>
 										</div>
 										<div style={{ cursor: 'pointer' }}>
-											{/* <Dropdown
+											<Dropdown
 												trigger={['click']}
 												placement="bottom"
 												overlay={
@@ -1293,7 +1293,7 @@ const TalentList = ({
 														<Menu.Item
 															key={0}
 															onClick={() => {
-																// setProfileLogModal(true); // TODO:-
+																setProfileLogModal(true); // TODO:-
 																setTalentIndex(listIndex);
 															}}>
 															View Profile Log
@@ -1307,7 +1307,7 @@ const TalentList = ({
 													</Menu>
 												}>
 												<BsThreeDots style={{ fontSize: '1.5rem' }} />
-											</Dropdown> */}
+											</Dropdown>
 										</div>
 									</div>
 

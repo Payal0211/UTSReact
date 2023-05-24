@@ -185,14 +185,16 @@ export const HiringRequestAPI = {
 		let httpService = new HttpServices();
 		const miscData =
 			await UserSessionManagementController.getUserMiscellaneousData();
-
+		const emailURL =
+			matchMakingData?.emailID && `&EmailId=${matchMakingData?.emailID}`;
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.HIRING +
 			HiringRequestsAPI.SEARCHING_HIRING_REQUEST_DETAIL +
 			`?HiringRequestId=${matchMakingData.hrID}
 			&rows=${matchMakingData.rows}
-			&page=${matchMakingData.page}&LoggedInUserId=${miscData?.loggedInUserTypeID}`;
+			&page=${matchMakingData.page}&LoggedInUserId=${miscData?.loggedInUserTypeID}` +
+			emailURL;
 
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -860,13 +862,13 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.getAMDataSendRequest');
 		}
 	},
-  	viewHRDetailsRequest: async (HRId) => {
-
+	viewHRDetailsRequest: async (HRId) => {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.HIRING +
-			HiringRequestsAPI.VIEW_HR_DETAILS + `?HRId=${HRId}`;
+			HiringRequestsAPI.VIEW_HR_DETAILS +
+			`?HRId=${HRId}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -892,7 +894,7 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.updateODRPOOLStatusRequest');
 		}
 	},
-  editTR: async (data) => {
+	editTR: async (data) => {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +

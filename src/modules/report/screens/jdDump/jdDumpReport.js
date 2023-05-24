@@ -209,31 +209,39 @@ const JDDumpReportScreen = () => {
 							columns={tableColumnsMemo}
 							bordered={false}
 							dataSource={
-								search && search.length > 0 ? [...search] : [...apiData]
+								search && search?.length === 0
+									? []
+									: search && search.length > 0
+									? [...search]
+									: [...apiData]
 							}
-							pagination={{
-								onChange: (pageNum, pageSize) => {
-									setPageIndex(pageNum);
-									setPageSize(pageSize);
-									setTableFilteredState({
-										...tableFilteredState,
-										pageSize: pageSize,
-										pageIndex: pageNum,
-									});
-									getJDDumpReportHandler({
-										...tableFilteredState,
-										pageIndex: pageNum,
-										pageSize: pageSize,
-									});
-								},
-								size: 'small',
-								pageSize: pageSize,
-								pageSizeOptions: pageSizeOptions,
-								total: totalRecords,
-								showTotal: (total, range) =>
-									`${range[0]}-${range[1]} of ${totalRecords} items`,
-								defaultCurrent: pageIndex,
-							}}
+							pagination={
+								search && search?.length === 0
+									? null
+									: {
+											onChange: (pageNum, pageSize) => {
+												setPageIndex(pageNum);
+												setPageSize(pageSize);
+												setTableFilteredState({
+													...tableFilteredState,
+													pageSize: pageSize,
+													pageIndex: pageNum,
+												});
+												getJDDumpReportHandler({
+													...tableFilteredState,
+													pageIndex: pageNum,
+													pageSize: pageSize,
+												});
+											},
+											size: 'small',
+											pageSize: pageSize,
+											pageSizeOptions: pageSizeOptions,
+											total: totalRecords,
+											showTotal: (total, range) =>
+												`${range[0]}-${range[1]} of ${totalRecords} items`,
+											defaultCurrent: pageIndex,
+									  }
+							}
 						/>
 					</>
 				)}

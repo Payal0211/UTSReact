@@ -24,6 +24,7 @@ import { Collapse } from 'antd';
 // import MinusIcon from '../../../../assets/svg/minus-icon.svg';
 import { useParams } from 'react-router-dom';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
+import { ValidateInput } from 'constants/inputValidators';
 // import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO"
 
 const MatchmakingModal = ({
@@ -131,7 +132,6 @@ const MatchmakingModal = ({
 
 	const toggleRowSelection = useCallback(
 		(id) => {
-			console.log(matchmakingData, '--matchmakingData');
 			if (id === 'selectAll') {
 				if (allSelected) {
 					setAllSelected(false);
@@ -277,15 +277,11 @@ const MatchmakingModal = ({
 
 	/** Fetching the Modal Table API */
 
-	const fetchMatchmakingData = useCallback(async () => {
+	const fetchMatchmakingData = useCallback(async (data) => {
 		setMatchmakingModal(true);
-		const response = await hiringRequestDAO.getMatchmakingDAO({
-			hrID: hrID,
-			rows: 10,
-			page: 1,
-		});
+		const response = await hiringRequestDAO.getMatchmakingDAO(data);
 		setMatchmakingData(response?.responseBody.details);
-	}, [hrID]);
+	}, []);
 
 	const getTalentPriorities = useCallback(async () => {
 		setIsLoading(true);
@@ -449,7 +445,13 @@ const MatchmakingModal = ({
 						<>
 							{nextActionKey === 'ShareAProfile' && 'Next Action is'}
 							<button
-								onClick={() => fetchMatchmakingData()}
+								onClick={() =>
+									fetchMatchmakingData({
+										hrID: hrID,
+										rows: 10,
+										page: 1,
+									})
+								}
 								className={MatchMakingStyle.btnPrimaryOutline}>
 								{nextActionKey !== 'ShareAProfile'
 									? 'Matchmaking'
@@ -550,6 +552,24 @@ const MatchmakingModal = ({
 													.includes(e.target.value.toLowerCase())
 											);
 										});
+										if (e.target.value === '') {
+											fetchMatchmakingData({
+												hrID: hrID,
+												rows: 10,
+												page: 1,
+											});
+										}
+										if (
+											filteredData?.length === 0 &&
+											!ValidateInput.email(e.target.value).isError
+										) {
+											fetchMatchmakingData({
+												hrID: hrID,
+												rows: 10,
+												page: 1,
+												emailID: e.target.value,
+											});
+										}
 
 										setFilterMatchmakingData(filteredData);
 									}}

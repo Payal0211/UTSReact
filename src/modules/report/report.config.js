@@ -529,7 +529,6 @@ export const reportConfig = {
 				key: 'jd',
 				align: 'left',
 				render: (text, param) => {
-					console.log(param, '---param');
 					return (
 						<a
 							target="_blank"
