@@ -9,7 +9,7 @@ import { useState } from 'react';
 const ViewHRDetails = () => {
 	const [hiringDetails, setHiringDetails] = useState('');
 	const id = useParams();
-const navigate = useNavigate()
+	const navigate = useNavigate()
 	const getViewHrDetails = useCallback(async () => {
 		const response = await hiringRequestDAO.viewHRDetailsRequestDAO(id.id);
 		setHiringDetails(response);
@@ -36,10 +36,10 @@ const navigate = useNavigate()
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsHead}>
 					<h1>HR ID - {hiringDetails?.responseBody?.details?.hrNumber}</h1>
-					{hiringDetails?.responseBody?.details?.hrStatus==="Open"&&(
+					{hiringDetails?.responseBody?.details?.hrStatus === "Open" && (
 						<button onClick={editHr}>Edit HR</button>
 					)}
-					
+
 				</div>
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsItem}>
@@ -89,7 +89,7 @@ const navigate = useNavigate()
 													'NA'}
 											</li>
 											{hiringDetails?.responseBody?.details?.contractType ===
-											'Direct Placement' ? (
+												'Direct Placement' ? (
 												<li>
 													<span>DP:</span>{' '}
 													{hiringDetails?.responseBody?.details?.dpPercentage ??
@@ -156,7 +156,7 @@ const navigate = useNavigate()
 											</li>
 											<li>
 												<span>JD URL:</span>{' '}
-												{hiringDetails?.responseBody?.details?.jdurl === null
+												{hiringDetails?.responseBody?.details?.jdurl === ""
 													? 'NA'
 													: hiringDetails?.responseBody?.details?.jdurl}
 											</li>
