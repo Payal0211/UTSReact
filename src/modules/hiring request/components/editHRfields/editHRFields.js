@@ -747,7 +747,6 @@ const EditHRFields = ({
         setValue("jdExport", getHRdetails?.addHiringRequest?.jdfilename)
         setValue("contractDuration", getHRdetails?.salesHiringRequest_Details?.durationType)
         setValue("getDurationType", getHRdetails?.months)
-        console.log("postalCode", getHRdetails?.directPlacement?.postalCode)
         setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType)
         if (getHRdetails?.clientName) {
             getListData(getHRdetails?.clientName, getHRdetails?.clientName.substring(0, 3));
@@ -1594,52 +1593,11 @@ const EditHRFields = ({
                                 placeholder="Enter the Postal Code"
                                 required
 
-
-
-                            // register={register}
-                            // errors={errors}
-                            // validationSchema={{
-                            //     required: 'please enter the city.',
-                            // }}
-                            // label="City"
-                            // name="city"
-                            // type={InputType.TEXT}
-                            // placeholder="Enter the City"
-                            // required
-
                             />
                         </div>
-                        <div className={HRFieldStyle.colMd6}>
-                            <HRInputField
-                                register={register}
-                                errors={errors}
-                                validationSchema={{
-                                    required: 'please enter the city.',
-                                }}
-                                label="City"
-                                name="city"
-                                type={InputType.TEXT}
-                                placeholder="Enter the City"
-                                required
-                            />
-                        </div>
-                    </div>
 
-                    <div className={HRFieldStyle.row}>
-                        <div className={HRFieldStyle.colMd6}>
-                            <HRInputField
-                                register={register}
-                                errors={errors}
-                                validationSchema={{
-                                    required: 'please enter the state.',
-                                }}
-                                label="State"
-                                name="state"
-                                type={InputType.TEXT}
-                                placeholder="Enter the State"
-                                required
-                            />
-                        </div>
+
+
                         <div className={HRFieldStyle.colMd6}>
                             <div className={HRFieldStyle.formGroup}>
                                 <HRSelectField
@@ -1661,6 +1619,39 @@ const EditHRFields = ({
                             </div>
                         </div>
                     </div>
+
+                    <div className={HRFieldStyle.row}>
+
+                        <div className={HRFieldStyle.colMd6}>
+                            <HRInputField
+                                register={register}
+                                errors={errors}
+                                validationSchema={{
+                                    required: 'please enter the state.',
+                                }}
+                                label="State"
+                                name="state"
+                                type={InputType.TEXT}
+                                placeholder="Enter the State"
+                                required
+                            />
+                        </div>
+                        <div className={HRFieldStyle.colMd6}>
+                            <HRInputField
+                                register={register}
+                                errors={errors}
+                                validationSchema={{
+                                    required: 'please enter the city.',
+                                }}
+                                label="City"
+                                name="city"
+                                type={InputType.TEXT}
+                                placeholder="Enter the City"
+                                required
+                            />
+                        </div>
+                    </div>
+
                     <div className={HRFieldStyle.row}>
                         <div className={HRFieldStyle.colMd12}>
                             <HRInputField
