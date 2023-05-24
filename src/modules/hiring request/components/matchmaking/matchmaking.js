@@ -144,17 +144,17 @@ const MatchmakingModal = ({
 						: setSelectedRows(matchmakingData.rows?.map((a) => a.id));
 					filterMatchmakingData.length > 0
 						? setListOfTalents(
-								filterMatchmakingData?.map((a) => ({
-									talentId: a.id,
-									amount: parseInt(a?.talentCost.split(' ')[1]),
-								})),
-						  )
+							filterMatchmakingData?.map((a) => ({
+								talentId: a.id,
+								amount: parseInt(a?.talentCost.split(' ')[1]),
+							})),
+						)
 						: setListOfTalents(
-								matchmakingData?.rows?.map((a) => ({
-									talentId: a.id,
-									amount: parseInt(a?.talentCost.split(' ')[1]),
-								})),
-						  );
+							matchmakingData?.rows?.map((a) => ({
+								talentId: a.id,
+								amount: parseInt(a?.talentCost.split(' ')[1]),
+							})),
+						);
 				}
 			} else {
 				let tempObj = [];
@@ -274,6 +274,7 @@ const MatchmakingModal = ({
 		};
 		return tableFunctions;
 	}, [closeExpandedCell, talentCost, talentID]);
+
 
 	/** Fetching the Modal Table API */
 
@@ -734,7 +735,17 @@ const MatchmakingModal = ({
 																					`talentData[${index}].dpAmount`,
 																					response.responseBody.details,
 																				);
+
 																			}}
+																		// validationSchema={{
+
+																		// 	required:
+																		// 		'DP percentage can not be 0',
+																		// 	// pattern: {
+																		// 	// 	value: URLRegEx.url,
+																		// 	// 	message: 'Entered value does not match url format',
+																		// 	// },
+																		// }}
 																		/>
 																	</div>
 
