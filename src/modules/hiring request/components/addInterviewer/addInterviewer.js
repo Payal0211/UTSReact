@@ -137,10 +137,10 @@ const AddInterviewer = ({
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the primary interviewer linkedin.',
-									pattern: {
-										value: URLRegEx.url,
-										message: 'Entered value does not match url format',
-									},
+									// pattern: {
+									// 	value: URLRegEx.url,
+									// 	message: 'Entered value does not match url format',
+									// },
 								}}
 								required
 							/>

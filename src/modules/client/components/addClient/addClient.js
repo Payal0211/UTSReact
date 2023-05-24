@@ -200,10 +200,10 @@ const AddNewClient = ({
 								validationSchema={{
 									required:
 										'please enter the primary client linkedin profile URL.',
-									pattern: {
-										value: URLRegEx.url,
-										message: 'Entered value does not match url format',
-									},
+									// pattern: {
+									// 		value: URLRegEx.url,
+									// 		message: 'Entered value does not match url format',
+									// 	},
 								}}
 								label="HS Client Linkedin Profile (Primary)"
 								name={'PrimaryClientLinkedinProfile'}
