@@ -5,6 +5,8 @@ import { engagementUtils } from './engagementUtils';
 import allengagementStyles from '../engagementFeedback/engagementFeedback.module.css';
 export const allEngagementConfig = {
 	engagementFilterTypeConfig: (filterList) => {
+		console.log(filterList?.engagementTenure
+			,"filterList");
 		return [
 			{
 				label: 'Client Feedback',
@@ -39,13 +41,13 @@ export const allEngagementConfig = {
 			},
 			{
 				label: 'Position',
-				name: 'postion',
+				name: 'Position',
 				child: filterList?.postion,
 				isSearch: true,
 			},
 			{
 				label: 'Engagement Tenure',
-				name: 'engagementTenure',
+				name: 'EngagementTenure',
 				child: filterList?.engagementTenure,
 				isSearch: true,
 			},
@@ -64,28 +66,28 @@ export const allEngagementConfig = {
 
 			{
 				label: 'Lost',
-				name: 'lost',
+				name: 'Lost',
 				child: filterList?.lost,
 				isSearch: true,
 			},
-			{
-				label: 'Months',
-				name: 'months',
-				child: filterList?.months,
-				isSearch: true,
-			},
-			{
-				label: 'Search',
-				name: 'searchType',
-				child: filterList?.searchType,
-				isSearch: true,
-			},
-			{
-				label: 'Years',
-				name: 'years',
-				child: filterList?.years,
-				isSearch: true,
-			},
+			// {
+			// 	label: 'Months',
+			// 	name: 'months',
+			// 	child: filterList?.months,
+			// 	isSearch: true,
+			// },
+			// {
+			// 	label: 'Search',
+			// 	name: 'searchType',
+			// 	child: filterList?.searchType,
+			// 	isSearch: true,
+			// },
+			// {
+			// 	label: 'Years',
+			// 	name: 'years',
+			// 	child: filterList?.years,
+			// 	isSearch: true,
+			// },
 		];
 	},
 	tableConfig: (

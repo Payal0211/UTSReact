@@ -203,96 +203,99 @@ const EngagementFilerList = ({
     }, [appliedFilter, handleAppliedFilters]);
 
     return (
-        <aside className={engagementFilterStyle.aside}>
-            <div className={engagementFilterStyle.asideBody}>
-                <div className={toggleBack ? engagementFilterStyle.asideHead : ''}>
-                    {toggleBack && (
-                        <span
-                            className={engagementFilterStyle.goback}
-                            onClick={() => {
-                                setToggleBack(false);
-                                setSearchData([]);
-                            }}>
-                            <ArrowLeftSVG />
-                            &nbsp;&nbsp; Go back
-                        </span>
-                    )}
-                    <span
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'end',
-                            cursor: 'pointer',
-                        }}>
-                        <CrossSVG
-                            style={{ width: '26px' }}
-                            onClick={() => {
-                                onRemoveHRFilters()
-                            }
-                            }
-                        />
-                    </span>
-                </div>
+      <aside className={engagementFilterStyle.aside}>
+        <div className={engagementFilterStyle.asideBody}>
+          <div className={toggleBack ? engagementFilterStyle.asideHead : ""}>
+            {toggleBack && (
+              <span
+                className={engagementFilterStyle.goback}
+                onClick={() => {
+                  setToggleBack(false);
+                  setSearchData([]);
+                }}
+              >
+                <ArrowLeftSVG />
+                &nbsp;&nbsp; Go back
+              </span>
+            )}
+            <span
+              style={{
+                display: "flex",
+                justifyContent: "end",
+                cursor: "pointer",
+              }}
+            >
+              <CrossSVG
+                style={{ width: "26px" }}
+                onClick={() => {
+                  onRemoveHRFilters();
+                }}
+              />
+            </span>
+          </div>
 
-                <div className={engagementFilterStyle.asideFilters}>
-                    {toggleBack ? (
-                        <>
-                            <span className={engagementFilterStyle.label}>
-                                {filterSubChild?.label}
-                            </span>
-                            <br />
-                            {filterSubChild?.isSearch && (
-                                <div className={engagementFilterStyle.searchFiltersList}>
-                                    <AiOutlineSearch
-                                        style={{ fontSize: '20px', fontWeight: '800' }}
-                                    />
-                                    <input
-                                        className={engagementFilterStyle.searchInput}
-                                        type="text"
-                                        id="search"
-                                        placeholder={`Search ${filterSubChild?.name}`}
-                                        onChange={(e) => {
-                                            return setSearchData(
-                                                engagementFilterSearch(e, filterSubChild?.child),
-                                            );
-                                        }}
-                                    />
-                                </div>
+          <div className={engagementFilterStyle.asideFilters}>
+            {toggleBack ? (
+              <>
+                <span className={engagementFilterStyle.label}>
+                  {filterSubChild?.label}
+                </span>
+                <br />
+                {filterSubChild?.isSearch && (
+                  <div className={engagementFilterStyle.searchFiltersList}>
+                    <AiOutlineSearch
+                      style={{ fontSize: "20px", fontWeight: "800" }}
+                    />
+                    <input
+                      className={engagementFilterStyle.searchInput}
+                      type="text"
+                      id="search"
+                      placeholder={`Search ${filterSubChild?.label}`}
+                      onChange={(e) => {
+                        return setSearchData(
+                          engagementFilterSearch(e, filterSubChild?.child)
+                        );
+                      }}
+                    />
+                  </div>
+                )}
+                <br />
+
+                {console.log(filterSubChild?.label, "child")}
+
+                <div className={engagementFilterStyle.filtersListType}>
+                  {searchData && searchData.length > 0 ? (
+                    searchData.map((item, index) => {
+                      return (
+                        <div
+                          className={engagementFilterStyle.filterItem}
+                          key={index}
+                        >
+                          <Checkbox
+                            checked={checkedState.get(
+                              `${filterSubChild?.name}${item.text}`
                             )}
-                            <br />
-
-                            {console.log(filterSubChild?.child, "child")}
-
-                            <div className={engagementFilterStyle.filtersListType}>
-                                {searchData && searchData.length > 0
-                                    ? searchData.map((item, index) => {
-                                        return (
-                                            <div
-                                                className={engagementFilterStyle.filterItem}
-                                                key={index}>
-                                                <Checkbox
-                                                    checked={checkedState.get(
-                                                        `${filterSubChild?.name}${item.text}`,
-                                                    )}
-                                                    onChange={(e) =>
-                                                        handleAppliedFilters(e.target.checked, {
-                                                            filterType: filterSubChild?.name,
-                                                            value: item?.value,
-                                                            id: item?.text,
-                                                        })
-                                                    }
-                                                    id={item?.value + `/${index + 1}`}
-                                                    style={{
-                                                        fontSize: `${!item.label && '1rem'}`,
-                                                        fontWeight: '500',
-                                                    }}>
-                                                    {item.text}
-                                                </Checkbox>
-                                            </div>
-                                        );
-                                    })
-                                    :
-                                    <>
-                                        {filterSubChild?.child?.map((item, index) => {
+                            onChange={(e) =>
+                              handleAppliedFilters(e.target.checked, {
+                                filterType: filterSubChild?.name,
+                                value: item?.value,
+                                id: item?.text,
+                              })
+                            }
+                            id={item?.value + `/${index + 1}`}
+                            style={{
+                              fontSize: `${!item.label && "1rem"}`,
+                              fontWeight: "500",
+                            }}
+                          >
+                            {item.text}
+                          </Checkbox>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <>
+                      {filterSubChild?.child?.map((item, index) => {
                                             return (
                                                 <div
                                                     className={engagementFilterStyle.filterItem}
@@ -301,14 +304,13 @@ const EngagementFilerList = ({
                                                         checked={checkedState.get(
                                                             `${filterSubChild?.name}${item.text}`,
                                                         )}
-                                                        onChange={(e) =>
+                                                        onChange={(e) =>{
                                                             handleAppliedFilters(e.target.checked, {
                                                                 filterType: filterSubChild?.name,
                                                                 value: item?.value,
                                                                 id: item?.text,
                                                             })
-                                                        }
-
+                                                        }}
                                                         id={item?.value + `/${index + 1}`}
                                                         style={{
                                                             fontSize: `${!item.label && '1rem'}`,
@@ -319,7 +321,9 @@ const EngagementFilerList = ({
                                                 </div>
                                             );
                                         })}
-                                        {/* {filterSubChild?.child?.filteritem?.filterType === "engagementTenure" &&
+
+
+                      {/* {filterSubChild?.child?.filteritem?.filterType === "engagementTenure" &&
                                             <div
                                                 className={engagementFilterStyle.filterItem}
                                                 key={index}>
@@ -337,51 +341,52 @@ const EngagementFilerList = ({
                                                 </Radio.Group>
                                             </div>
                                         } */}
-                                    </>
-                                }
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <span className={engagementFilterStyle.label}>Filters</span>
-                            <div className={engagementFilterStyle.filtersChips}>
-                                {filteredTags}
-                            </div>
-                            <div className={engagementFilterStyle.filtersListType}>
-                                {filtersType.map((item, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className={engagementFilterStyle.filterItem}
-                                            onClick={() => toggleFilterSubChild(item)}>
-                                            <span style={{ fontSize: '1rem' }}>{item.label}</span>
-                                            <ArrowRightSVG style={{ width: '26px' }} />
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </>
-                    )}
-                    <br />
-                    <br />
-                    <hr />
-                    <div className={engagementFilterStyle.operationsFilters}>
-                        <button
-                            className={engagementFilterStyle.clearAll}
-                            onClick={clearFilters}
-                        >
-                            Clear All
-                        </button>
-                        <button
-                            className={engagementFilterStyle.applyFilters}
-                            onClick={handleFilters}
-                        >
-                            Apply Filters
-                        </button>
-                    </div>
+                    </>
+                  )}
                 </div>
+              </>
+            ) : (
+              <>
+                <span className={engagementFilterStyle.label}>Filters</span>
+                <div className={engagementFilterStyle.filtersChips}>
+                  {filteredTags}
+                </div>
+                <div className={engagementFilterStyle.filtersListType}>
+                  {filtersType.map((item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className={engagementFilterStyle.filterItem}
+                        onClick={() => toggleFilterSubChild(item)}
+                      >
+                        <span style={{ fontSize: "1rem" }}>{item.label}</span>
+                        <ArrowRightSVG style={{ width: "26px" }} />
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+            <br />
+            <br />
+            <hr />
+            <div className={engagementFilterStyle.operationsFilters}>
+              <button
+                className={engagementFilterStyle.clearAll}
+                onClick={clearFilters}
+              >
+                Clear All
+              </button>
+              <button
+                className={engagementFilterStyle.applyFilters}
+                onClick={handleFilters}
+              >
+                Apply Filters
+              </button>
             </div>
-        </aside>
+          </div>
+        </div>
+      </aside>
     );
 };
 
