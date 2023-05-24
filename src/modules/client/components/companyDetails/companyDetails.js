@@ -2,7 +2,7 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import CompanyDetailsStyle from './companyDetails.module.css';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
-import { InputType ,URLRegEx} from 'constants/application';
+import { InputType, URLRegEx } from 'constants/application';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { locationFormatter } from 'modules/client/clientUtils';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -110,7 +110,7 @@ const CompanyDetails = ({
 				type: 'duplicateCompanyName',
 				message:
 					companyNameDuplicate?.statusCode ===
-						HTTPStatusCode.DUPLICATE_RECORD &&
+					HTTPStatusCode.DUPLICATE_RECORD &&
 					'This company name already exists. Please enter another company name.',
 			});
 			companyNameDuplicate.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
@@ -194,10 +194,10 @@ const CompanyDetails = ({
 								type={InputType.TEXT}
 								validationSchema={{
 									required: 'Please enter the profile link.',
-									pattern: {
-										value: URLRegEx.url,
-										message: 'Entered value does not match url format',
-									},
+									// pattern: {
+									// 	value: URLRegEx.url,
+									// 	message: 'Entered value does not match url format',
+									// },
 								}}
 								placeholder="Enter profile link"
 								required
@@ -268,10 +268,10 @@ const CompanyDetails = ({
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the linkedin profile.',
-									pattern: {
-										value: URLRegEx.url,
-										message: 'Entered value does not match url format',
-									},
+									// pattern: {
+									// 	value: URLRegEx.url,
+									// 	message: 'Entered value does not match url format',
+									// },
 								}}
 								label="Linkedin Profile"
 								name={'companyLinkedinProfile'}
