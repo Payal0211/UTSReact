@@ -267,13 +267,19 @@ const EngagementFilerList = ({
               <br />
 
                 <div className={engagementFilterStyle.filtersListType}>
-                  {searchData && searchData.length > 0 ? (
+                  {filterSubChild?.label === "Engagement Tenure"? searchData && searchData.length > 0 ? (
                     searchData.map((item, index) => {
                       return (
                         <div
                           className={engagementFilterStyle.filterItem}
                           key={index}>
                           <Checkbox
+                          disabled={
+                            appliedFilter?.get(`${filterSubChild.name}`) &&
+                            !checkedState.get(
+                              `${filterSubChild.name}${item.text}`,
+                            )
+                          }
                             checked={checkedState.get(
                               `${filterSubChild?.name}${item.text}`,
                             )}
@@ -303,6 +309,12 @@ const EngagementFilerList = ({
                             key={index}
                           >
                             <Checkbox
+                            disabled={
+															appliedFilter?.get(`${filterSubChild.name}`) &&
+															!checkedState.get(
+																`${filterSubChild.name}${item.text}`,
+															)
+														}
                               checked={checkedState.get(
                                 `${filterSubChild?.name}${item.text}`
                               )}
@@ -344,7 +356,84 @@ const EngagementFilerList = ({
                                             </div>
                                         } */}
                   </>
-                )}
+                ): searchData && searchData.length > 0 ? (
+                  searchData.map((item, index) => {
+                    return (
+                      <div
+                        className={engagementFilterStyle.filterItem}
+                        key={index}>
+                        <Checkbox
+                          checked={checkedState.get(
+                            `${filterSubChild?.name}${item.text}`,
+                          )}
+                          onChange={(e) => {
+                            handleAppliedFilters(e.target.checked, {
+                              filterType: filterSubChild?.name,
+                              value: item?.value,
+                              id: item?.text,
+                            })
+                          }}
+                          id={item?.value + `/${index + 1}`}
+                          style={{
+                            fontSize: `${!item.label && '1rem'}`,
+                            fontWeight: '500',
+                          }}>
+                          {item.text}
+                        </Checkbox>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <>
+                    {filterSubChild?.child?.map((item, index) => {
+                      return (
+                        <div
+                          className={engagementFilterStyle.filterItem}
+                          key={index}
+                        >
+                          <Checkbox
+                            checked={checkedState.get(
+                              `${filterSubChild?.name}${item.text}`
+                            )}
+                            onChange={(e) => {
+                              handleAppliedFilters(e.target.checked, {
+                                filterType: filterSubChild?.name,
+                                value: item?.value,
+                                id: item?.text,
+                              });
+                            }}
+                            id={item?.value + `/${index + 1}`}
+                            style={{
+                              fontSize: `${!item.label && "1rem"}`,
+                              fontWeight: "500",
+                            }}
+                          >
+                            {item.text}
+                          </Checkbox>
+                        </div>
+                      );
+                    })}
+
+                  {/* {filterSubChild?.child?.filteritem?.filterType === "engagementTenure" &&
+                                          <div
+                                              className={engagementFilterStyle.filterItem}
+                                              key={index}>
+                                              <Radio.Group onChange={(e) =>
+                                                  handleAppliedFilters(e.target.checked, {
+                                                      filterType: filterSubChild?.name,
+                                                      value: item?.value,
+                                                      id: item?.text,
+                                                  })
+                                              } value={value} id={item?.value + `/${index + 1}`}>
+                                                  {filterSubChild?.child.map((item, index) => {
+                                                      <Radio value={item?.text}>{item?.text}</Radio>
+                                                  }
+                                                  )}
+                                              </Radio.Group>
+                                          </div>
+                                      } */}
+                </>
+              )}
               </div>
             </>
           ) : (
