@@ -5,8 +5,6 @@ import { engagementUtils } from './engagementUtils';
 import allengagementStyles from '../engagementFeedback/engagementFeedback.module.css';
 export const allEngagementConfig = {
 	engagementFilterTypeConfig: (filterList) => {
-		console.log(filterList?.engagementTenure
-			,"filterList");
 		return [
 			{
 				label: 'Client Feedback',

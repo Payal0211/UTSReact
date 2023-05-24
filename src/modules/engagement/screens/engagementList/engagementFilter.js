@@ -52,9 +52,15 @@ const EngagementFilerList = ({
             if (tempAppliedFilters.has(filterObj.filterType)) {
                 let filterAddress = tempAppliedFilters.get(filterObj.filterType);
                 if (isChecked) {
-                    filterAddress.value = filterAddress?.value + ',' + filterObj.value;
-                    filterAddress.id = filterAddress.id + ',' + filterObj.id;
-                    tempAppliedFilters.set(filterObj.filterType, filterAddress);
+                    if(filterSubChild?.label === "Engagement Tenure"){
+                        filterAddress.value = filterAddress?.value ;
+                        filterAddress.id = filterAddress.id;
+                        tempAppliedFilters.set(filterObj.filterType, filterAddress);
+                    }else{
+                        filterAddress.value = filterAddress?.value + ',' + filterObj.value;
+                        filterAddress.id = filterAddress.id + ',' + filterObj.id;
+                        tempAppliedFilters.set(filterObj.filterType, filterAddress);
+                    }
                 } else {
                     let splittedID = filterAddress.id.split(',');
                     let splittedIDIndex = splittedID.indexOf(filterObj.id);
@@ -62,7 +68,6 @@ const EngagementFilerList = ({
                         ...splittedID.slice(0, splittedIDIndex),
                         ...splittedID.slice(splittedIDIndex + 1),
                     ];
-
                     let splittedValue = filterAddress.value.split(',');
                     let splittedValueIndex = splittedValue.indexOf(filterObj.value);
                     splittedValue = [
@@ -261,8 +266,6 @@ const EngagementFilerList = ({
                 )}
                 <br />
 
-                {console.log(filterSubChild?.label, "child")}
-
                 <div className={engagementFilterStyle.filtersListType}>
                   {searchData && searchData.length > 0 ? (
                     searchData.map((item, index) => {
@@ -296,32 +299,33 @@ const EngagementFilerList = ({
                   ) : (
                     <>
                       {filterSubChild?.child?.map((item, index) => {
-                                            return (
-                                                <div
-                                                    className={engagementFilterStyle.filterItem}
-                                                    key={index}>
-                                                    <Checkbox
-                                                        checked={checkedState.get(
-                                                            `${filterSubChild?.name}${item.text}`,
-                                                        )}
-                                                        onChange={(e) =>{
-                                                            handleAppliedFilters(e.target.checked, {
-                                                                filterType: filterSubChild?.name,
-                                                                value: item?.value,
-                                                                id: item?.text,
-                                                            })
-                                                        }}
-                                                        id={item?.value + `/${index + 1}`}
-                                                        style={{
-                                                            fontSize: `${!item.label && '1rem'}`,
-                                                            fontWeight: '500',
-                                                        }}>
-                                                        {item.text}
-                                                    </Checkbox>
-                                                </div>
-                                            );
-                                        })}
-
+                        return (
+                          <div
+                            className={engagementFilterStyle.filterItem}
+                            key={index}
+                          >
+                            <Checkbox
+                              checked={checkedState.get(
+                                `${filterSubChild?.name}${item.text}`
+                              )}
+                              onChange={(e) => {
+                                handleAppliedFilters(e.target.checked, {
+                                  filterType: filterSubChild?.name,
+                                  value: item?.value,
+                                  id: item?.text,
+                                });
+                              }}
+                              id={item?.value + `/${index + 1}`}
+                              style={{
+                                fontSize: `${!item.label && "1rem"}`,
+                                fontWeight: "500",
+                              }}
+                            >
+                              {item.text}
+                            </Checkbox>
+                          </div>
+                        );
+                      })}
 
                       {/* {filterSubChild?.child?.filteritem?.filterType === "engagementTenure" &&
                                             <div
