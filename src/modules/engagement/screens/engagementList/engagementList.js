@@ -76,7 +76,6 @@ const EngagementList = () => {
 	const [getHTMLFilter, setHTMLFilter] = useState(false);
 	const [filtersList, setFiltersList] = useState([]);
 	const [apiData, setAPIdata] = useState([]);
-	console.log(apiData, "apiData")
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const navigate = useNavigate();
@@ -487,7 +486,7 @@ const EngagementList = () => {
 						/>
 						<h2>
 							Total DP% -{' '}
-							<span>{apiData[0]?.avgDP ? apiData[0]?.avgDP : 0}</span>
+							<span>{apiData[0]?.s_TotalDP ? apiData[0]?.s_TotalDP: 0}</span>
 						</h2>
 					</div>
 				</div>
