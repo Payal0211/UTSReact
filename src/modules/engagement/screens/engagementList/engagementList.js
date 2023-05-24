@@ -76,6 +76,7 @@ const EngagementList = () => {
 	const [getHTMLFilter, setHTMLFilter] = useState(false);
 	const [filtersList, setFiltersList] = useState([]);
 	const [apiData, setAPIdata] = useState([]);
+	console.log(apiData, "apiData")
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const navigate = useNavigate();
@@ -307,8 +308,8 @@ const EngagementList = () => {
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
-					setIsAllowFilters(!isAllowFilters);
-			  }, 300);
+				setIsAllowFilters(!isAllowFilters);
+			}, 300);
 		setHTMLFilter(!getHTMLFilter);
 	}, [getEngagementFilterList, getHTMLFilter, isAllowFilters]);
 
@@ -476,6 +477,16 @@ const EngagementList = () => {
 						/>
 						<h2>
 							Average DP% -{' '}
+							<span>{apiData[0]?.avgDP ? apiData[0]?.avgDP : 0}</span>
+						</h2>
+					</div>
+					<div className={allEngagementStyles.filterType}>
+						<img
+							src={Briefcase}
+							alt="briefcase"
+						/>
+						<h2>
+							Total DP% -{' '}
 							<span>{apiData[0]?.avgDP ? apiData[0]?.avgDP : 0}</span>
 						</h2>
 					</div>
