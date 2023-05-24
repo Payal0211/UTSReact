@@ -368,6 +368,7 @@ const HRDetailScreen = () => {
 									clientDetail={apiData?.ClientDetail}
 									talentLength={apiData?.HRTalentDetails?.length}
 									apiData={apiData?.HRStatus}
+									allApiData = {apiData}
 								/>
 							</Suspense>
 						)}

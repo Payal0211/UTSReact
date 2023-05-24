@@ -10,7 +10,7 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import { UserAccountRole } from 'constants/application';
 import { NetworkInfo } from 'constants/network';
 
-const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
+const CompanyProfileCard = ({ clientDetail, talentLength, apiData,allApiData }) => {
 	const [updateTR, setUpdateTR] = useState(false);
 	const [updateTRDetail, setUpdateTRDetails] = useState([]);
 	const id = useParams();
@@ -119,7 +119,7 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData }) => {
 							<div className={CompanyProfileCardStyle.category}>
 								<span>Uplers Category:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{apiData?.companyCategory ? apiData?.companyCategory : 'NA'}
+									{allApiData?.companyCategory ? allApiData?.companyCategory : 'NA'}
 								</span>
 							</div>
 						</div>
