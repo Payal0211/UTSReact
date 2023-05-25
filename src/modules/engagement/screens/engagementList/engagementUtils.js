@@ -105,8 +105,11 @@ export const engagementUtils = {
                 (val?.talentName &&
                     val?.talentName.toLowerCase().includes(e.target.value.toLowerCase())) ||
                 (val?.currentStatus &&
-                    val?.currentStatus.toLowerCase().includes(e.target.value.toLowerCase()))
-
+                    val?.currentStatus.toLowerCase().includes(e.target.value.toLowerCase())) ||
+				(val?.clientName &&
+					val?.clientName.toLowerCase().includes(e.target.value.toLowerCase())) ||
+				(val?.company &&
+					val?.company.toLowerCase().includes(e.target.value.toLowerCase()))
             );
         });
 
