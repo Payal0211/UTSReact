@@ -209,13 +209,17 @@ const HRDetailScreen = () => {
 		setCloneHR(true)
 	}
 	const navigateToCloneHR = async () => {
-		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid);
+		const data = {
+			hrid: hrId?.hrid,
+		};
+		localStorage.setItem('hrID', hrId.hrid);
+		const response =  await MasterDAO.getCloneHRDAO(data);
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			localStorage.setItem('hrID', hrId.hrid);
-	setCloneHR(false)
+		setCloneHR(false)
 			navigate('/allhiringrequest/addnewhr');
 		}
 	};
+	
 
 	return (
 		<WithLoader
