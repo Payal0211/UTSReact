@@ -144,17 +144,17 @@ const MatchmakingModal = ({
 						: setSelectedRows(matchmakingData.rows?.map((a) => a.id));
 					filterMatchmakingData.length > 0
 						? setListOfTalents(
-								filterMatchmakingData?.map((a) => ({
-									talentId: a.id,
-									amount: parseInt(a?.talentCost.split(' ')[1]),
-								})),
-						  )
+							filterMatchmakingData?.map((a) => ({
+								talentId: a.id,
+								amount: parseInt(a?.talentCost.split(' ')[1]),
+							})),
+						)
 						: setListOfTalents(
-								matchmakingData?.rows?.map((a) => ({
-									talentId: a.id,
-									amount: parseInt(a?.talentCost.split(' ')[1]),
-								})),
-						  );
+							matchmakingData?.rows?.map((a) => ({
+								talentId: a.id,
+								amount: parseInt(a?.talentCost.split(' ')[1]),
+							})),
+						);
 				}
 			} else {
 				let tempObj = [];
@@ -206,6 +206,7 @@ const MatchmakingModal = ({
 
 	const getHrDetailsAPIS = async () => {
 		const response = await hiringRequestDAO.getHrDetailsDAO(param.hrid);
+		console.log(JSON.parse(response.responseBody.details), "dsdsdsdds")
 		setModalFlag(JSON.parse(response.responseBody.details).DpFlag);
 	};
 
@@ -220,8 +221,14 @@ const MatchmakingModal = ({
 			param.hrid,
 			watch('ContractualPercentage'),
 		);
-		setContractualInfo(response.responseBody.details);
+		setContractualInfo(response?.responseBody?.details);
 		setValue('ContractualPercentage', saveContractualInfo);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			messageAPI.open({
+				type: 'success',
+				content: response?.responseBody?.message,
+			});
+		}
 	};
 	const saveDpConversion = async () => {
 		const response = await hiringRequestDAO.saveDpConversionDAO(
@@ -229,6 +236,12 @@ const MatchmakingModal = ({
 			watch('DpPercentage'),
 		);
 		setValue('DpPercentage', response.responseBody.details);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			messageAPI.open({
+				type: 'success',
+				content: response?.responseBody?.message,
+			});
+		}
 	};
 
 	const getTalentDPConversionAPIS = async () => {
@@ -346,8 +359,20 @@ const MatchmakingModal = ({
 			_payloadList,
 		);
 		if (response.statusCode === HTTPStatusCode.OK) {
+			messageAPI.open({
+				type: 'success',
+				content: response?.responseBody?.message
+			});
 			setIsLoading(false);
 			setConvertToDp(false);
+		}
+		if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+			messageAPI.open({
+				type: 'error',
+				content: response?.responseBody
+			});
+			setConvertToDp(false)
+			setIsLoading(false);
 		}
 	};
 
@@ -376,8 +401,14 @@ const MatchmakingModal = ({
 			obj.specificMonth = Number(_contactDuration);
 			_list.push(obj);
 		}
-
 		const response = await hiringRequestDAO.saveTalentsContracualDAO(_list);
+		if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+			messageAPI.open({
+				type: 'error',
+				content: response?.responseBody
+			});
+		}
+
 	};
 
 	const getTalentCC = async () => {
