@@ -64,7 +64,7 @@ export const allEngagementConfig = {
 
 			{
 				label: 'Lost',
-				name: 'Lost',
+				name: 'Islost',
 				child: filterList?.lost,
 				isSearch: true,
 			},
