@@ -194,7 +194,7 @@ const EditDebriefingHR = ({
 
 	const needMoreInforSubmitHandler = useCallback(
 		async (d) => {
-			setIsLoading(true);
+			// setIsLoading(true);
 			let skillList = d.skills.map((item) => {
 				const obj = {
 					skillsID: item.id || item?.skillsID,
@@ -221,12 +221,13 @@ const EditDebriefingHR = ({
 				debriefFormDetails,
 			);
 			if (debriefResult.statusCode === HTTPStatusCode.OK) {
-				setIsLoading(false);
+				// setIsLoading(false);
 				messageAPI.open({
 					type: 'success',
 					content: 'HR Debriefing has been updated successfully..',
 				});
-				window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
+				// window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
+				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE)
 			}
 		},
 		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI, navigate],
@@ -297,9 +298,9 @@ const EditDebriefingHR = ({
 									validate: (value) => {
 										if (
 											value.toLowerCase() ===
-												getHRdetails?.company.toLowerCase() &&
+											getHRdetails?.company.toLowerCase() &&
 											value.toUpperCase() ===
-												getHRdetails?.company.toUpperCase()
+											getHRdetails?.company.toUpperCase()
 										) {
 											return 'Please do not mention company name here';
 										}
