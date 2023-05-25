@@ -1,242 +1,252 @@
 .hiringRequestContainer {
-    /* width: 95%; */
-    /* margin: 0 auto; */
-    margin: 25px 40px;
+  /* width: 95%; */
+  /* margin: 0 auto; */
+  margin: 25px 40px;
 }
 .addnewHR {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .hiringRequest {
-    font-size: 32px;
-    font-weight: 500;
+  font-size: 32px;
+  font-weight: 500;
 }
 
 .newHR {
-    padding: 1px 0;
-    background-color: var(--color-sunlight);
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  padding: 1px 0;
+  background-color: var(--color-sunlight);
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .newHR label {
-    padding: 0 20px;
-    font-weight: 500;
-    font-size: .8vw;
+  padding: 0 20px;
+  font-weight: 500;
+  font-size: 0.8vw;
 }
 
 .iconDown {
-    height: 50px;
-    width: 50px;
-    margin-right: 1px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    background-color: var(--background-color-light);
+  height: 50px;
+  width: 50px;
+  margin-right: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background-color: var(--background-color-light);
 }
 
-.searchFilterSet{
-    border: 1px solid var(--background-color-metal);
-    border-radius: 8px;
-    width: 250px;
-    height: 44px;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    flex-wrap: wrap;
+.searchFilterSet {
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  width: 250px;
+  height: 44px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.searchInput{
-    cursor: pointer;
-    width: 80%;
-    outline: none;
-    border: none;
-    color: var(--uplers-black);
-    font-weight: 500;
+.searchInput {
+  cursor: pointer;
+  width: 80%;
+  outline: none;
+  border: none;
+  color: var(--uplers-black);
+  font-weight: 500;
 }
-.calendarFilterSet{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    gap: 8px;
+.calendarFilterSet {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 8px;
 }
-.label{
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--uplers-lightBlack);
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--uplers-lightBlack);
 }
-.calendarFilter{
-    width:250px ;
-    height: 44px;
-    border-radius: 8px;
-    padding: 2px 10px;
-    border: 1px solid var(--background-color-metal);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
+.calendarFilter {
+  width: 250px;
+  height: 44px;
+  border-radius: 8px;
+  padding: 2px 10px;
+  border: 1px solid var(--background-color-metal);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
 }
-.calendarFilter [class*="react-datepicker-popper"]{
-    right: 0 !important;
-    left: auto !important;
-    transform: none !important;
-    width: 100% !important;
-    margin: 40px 0 30px;
+.calendarFilter [class*="react-datepicker-popper"] {
+  right: 0 !important;
+  left: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  margin: 40px 0 30px;
 }
-.calendarFilter [class*="react-datepicker-popper"] > div > [class*="react-datepicker"] {
-        margin-left: 0;
-        min-width: 100%;
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  > div
+  > [class*="react-datepicker"] {
+  margin-left: 0;
+  min-width: 100%;
 }
-.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
-    top: 14px;
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  [class*="react-datepicker__navigation"]:before {
+  top: 14px;
 }
-.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__day-names"]{
-    margin-top: 5px;
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  [class*="react-datepicker__day-names"] {
+  margin-top: 5px;
 }
-.calendarFilter [class*="react-datepicker__month-container"] [class*="react-datepicker__month"]{
-    margin-bottom: 10px;
+.calendarFilter
+  [class*="react-datepicker__month-container"]
+  [class*="react-datepicker__month"] {
+  margin-bottom: 10px;
 }
 
-.dateFilter{
-    cursor: pointer;
-    width: 102%;
-    outline: none;
-    border:none;
-    color: var(--uplers-black);
-    font-weight: 500;
+.dateFilter {
+  cursor: pointer;
+  width: 102%;
+  outline: none;
+  border: none;
+  color: var(--uplers-black);
+  font-weight: 500;
 }
-.priorityFilterSet{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
+.priorityFilterSet {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
-.priorityFilter{
-    border: 1px solid var(--background-color-metal);
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 48px;
-    height: 44px;
+.priorityFilter {
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 44px;
 }
 
 .paginationFilter {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    width: 71px;
-    height: 44px;
-    border: 1px solid var(--background-color-metal);
-    border-radius: 8px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 71px;
+  height: 44px;
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  cursor: pointer;
 }
-.tableDetails{
-    margin-top: 24px;
+.tableDetails {
+  margin-top: 24px;
+}
+.tableDetails table tr th[class*="ant-table-cell"] {
+  white-space: nowrap;
 }
 
-.filterContainer{
-    border-radius: 10px;
-    margin: 50px auto 20px auto ;
+.filterContainer {
+  border-radius: 10px;
+  margin: 50px auto 20px auto;
 }
 
 .filterSetsContainer {
-    width: 96%;
+  width: 96%;
 }
-
 
 .filterType {
-    border: 1px solid var(--background-color-metal);
-    border-radius: 8px;
-    padding: 10px 16px;
-    text-align: center;
-    flex-wrap: wrap;
-    justify-content:center;
-    align-items: center;
-    display: inline-flex;
-    flex: 1;
+  border: 1px solid var(--background-color-metal);
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-align: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+  flex: 1;
 }
 
-.filterType img{
-    max-width: 24px;
-    margin-right: 8px;
+.filterType img {
+  max-width: 24px;
+  margin-right: 8px;
 }
 
 .filterType h2 {
-    font-family: 'Montserrat';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 20px;
-    color: #232323;
-    margin-bottom: 0px;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: #232323;
+  margin-bottom: 0px;
 }
 
 .filterType span {
-    font-weight: 600;
+  font-weight: 600;
 }
 
-
-.filterSets{
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding:24px 16px;
-    display: flex;
-    border-radius: 10px;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    background-color: var(--background-color-light);
+.filterSets {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 24px 16px;
+  display: flex;
+  border-radius: 10px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: var(--background-color-light);
 }
 
 .filterDescription {
-    margin: 35px auto 15px auto;
-    justify-content: inherit;
-    gap: 16px;
+  margin: 35px auto 15px auto;
+  justify-content: inherit;
+  gap: 16px;
 }
 
-.addFilter{
-    cursor: pointer;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    width: 167px;
-    height: 44px;
-    border: 1px solid var(--background-color-metal);
+.addFilter {
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 167px;
+  height: 44px;
+  border: 1px solid var(--background-color-metal);
 }
 
-.filterLabel{
-    font-weight: 500;
-    font-size: .7vw;
+.filterLabel {
+  font-weight: 500;
+  font-size: 0.7vw;
 }
 
-.filterCount{
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    font-size: var(--fontsize-uplers);
-    background-color: var(--color-sunlight);
-    border-radius: 50%;
-    font-weight: 700;
+.filterCount {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: var(--fontsize-uplers);
+  background-color: var(--color-sunlight);
+  border-radius: 50%;
+  font-weight: 700;
 }
 
-.filterRight{
-    display: flex;
-    justify-content: flex-end;
-    gap:24px;
-    align-items: center ;
-    flex-wrap: wrap;
+.filterRight {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
 }
