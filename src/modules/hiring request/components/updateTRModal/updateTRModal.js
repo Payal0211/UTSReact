@@ -315,7 +315,10 @@ const UpdateTR = ({
 						<button
 							onClick={() => {
 								onCancel();
-								window.location.reload();
+								// window.location.reload();
+								setCount(updateTRDetail?.ClientDetail?.NoOfTalents);
+								setValue('additionalComments', '');
+								setValue('reasonForLoss', '');
 							}}
 							className={updateTRStyle.btn}>
 							Cancel

@@ -194,10 +194,10 @@ const CompanyDetails = ({
 								type={InputType.TEXT}
 								validationSchema={{
 									required: 'Please enter the profile link.',
-									pattern: {
-										value: URLRegEx.url,
-										message: 'Entered value does not match url format',
-									},
+									// pattern: {
+									// 	value: URLRegEx.url,
+									// 	message: 'Entered value does not match url format',
+									// },
 								}}
 								placeholder="Enter profile link"
 								required
@@ -268,10 +268,10 @@ const CompanyDetails = ({
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the linkedin profile.',
-									pattern: {
-										value: URLRegEx.url,
-										message: 'Entered value does not match url format',
-									},
+									// pattern: {
+									// 	value: URLRegEx.url,
+									// 	message: 'Entered value does not match url format',
+									// },
 								}}
 								label="Linkedin Profile"
 								name={'companyLinkedinProfile'}
