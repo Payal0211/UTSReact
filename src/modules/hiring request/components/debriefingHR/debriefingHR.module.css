@@ -1,86 +1,110 @@
-.debriefingHRContainer{
-    width: 100%;
+.debriefingHRContainer {
+  width: 100%;
 }
 .partOne {
-    padding-top: 50px;
-    display: flex;
+  padding-top: 50px;
+  display: flex;
 }
 .hrFieldLeftPane {
-    width: 33.33%;
-    /* border: 1px solid red; */
+  width: 33.33%;
+  /* border: 1px solid red; */
 }
 .hrFieldLeftPane h3 {
-    font-size: var(--fontsize-doom);
-    font-weight: 500;
-    line-height: 29px;
-    color: var(--uplers-black);
+  font-size: var(--fontsize-doom);
+  font-weight: 500;
+  line-height: 29px;
+  color: var(--uplers-black);
 }
 
 .hrFieldLeftPane p {
-    font-size: var(--fontsize-brittle);
-    font-weight: 400;
-    line-height: 20px;
-    color: #7C7C7C;
+  font-size: var(--fontsize-brittle);
+  font-weight: 400;
+  line-height: 20px;
+  color: #7c7c7c;
 }
 .hrFieldRightPane {
-    flex: 1;
+  flex: 1;
 }
 
 .row {
-    margin: 0;
-    margin: 0 -9px;
-    display: flex;
+  margin: 0;
+  margin: 0 -9px;
+  display: flex;
 }
 
 .colMd4 {
-    margin: 0;
-    width: 33.33%;
-    padding: 0 9px;
+  margin: 0;
+  width: 33.33%;
+  padding: 0 9px;
 }
 
 .colMd6 {
-    margin: 0;
-    width: 50%;
-    padding: 0 9px;
+  margin: 0;
+  width: 50%;
+  padding: 0 9px;
 }
 
 .colMd12 {
-    margin: 0;
-    width: 100%;
+  margin: 0;
+  width: 100%;
 }
 
-.mb10{
-    margin-bottom: 10px;
+.mb10 {
+  margin-bottom: 10px;
 }
-.mb50{
-    margin-bottom: 50px;
+.mb50 {
+  margin-bottom: 50px;
 }
 .formPanelAction {
-    padding: 32px 0;
-    justify-content: center;
-    display: flex;
+  padding: 32px 0;
+  justify-content: center;
+  display: flex;
 }
 
 .formPanelAction button {
-    background: #FFFFFF;
-    border: 1px solid #CECCCC;
-    border-radius: 8px;
-    font-family: 'Montserrat';
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 17px;
-    color: #232323;
-    padding: 12px 28px;
-    outline: none;
-    cursor: pointer;
-    box-shadow: none;
+  background: #ffffff;
+  border: 1px solid #cecccc;
+  border-radius: 8px;
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #232323;
+  padding: 12px 28px;
+  outline: none;
+  cursor: pointer;
+  box-shadow: none;
 }
 
 .formPanelAction .btnPrimary {
-    background: #FFDA30;
-    border-color: #FFDA30;
+  background: #ffda30;
+  border-color: #ffda30;
 }
 
-.formPanelAction button+button {
-    margin-left: 16px;
+.formPanelAction button + button {
+  margin-left: 16px;
+}
+.aboutCompanyField {
+  position: relative;
+  margin: 0 0 22px;
+  padding-bottom: 45px;
+}
+.aboutCompanyField [class*="hrInputFields_formField"] {
+  margin: 0;
+}
+.aboutCompanyField [class*="hrInputFields_error"] {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+.aboutCompanyField p {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #ff9900;
+  margin: 0;
+  position: absolute;
+  bottom: 23px;
+  left: 0;
 }

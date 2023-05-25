@@ -23,6 +23,7 @@ import { userAPI } from 'apis/userAPI';
 import { userDAO } from 'core/user/userDAO';
 import { HttpServices } from 'shared/services/http/http_service';
 import { LoadingOutlined } from '@ant-design/icons';
+import { ReactComponent as LongArrowSVG } from 'assets/svg/longArrow.svg';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -566,7 +567,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				setError('employeeFirstName', {
 					type: 'duplicateEmployeeFullName',
 					message:
-					userResponse?.statusCode === HTTPStatusCode.BAD_REQUEST &&
+						userResponse?.statusCode === HTTPStatusCode.BAD_REQUEST &&
 						'This employee name already exists. Please enter another one.',
 				});
 			}
@@ -926,7 +927,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 														isControlled={true}
 														mode={
 															watchDepartMentName?.value === 'Demand' &&
-															watchLevelName?.value === 'Head'
+																watchLevelName?.value === 'Head'
 																? 'multiple'
 																: 'id/value'
 														}
@@ -1075,6 +1076,18 @@ const UsersFields = ({ id, setLoading, loading }) => {
 												</div>
 											</div>
 										)}
+									{id !== 0 && (
+										<div className={UserFieldStyle.colMd12}>
+											<div className={UserFieldStyle.reportHierarchy}>
+												<label>Reporting Hierarchy</label>
+												<ul>
+													<li><LongArrowSVG />Vikram Sahi QA</li>
+													<li><LongArrowSVG />Mukul Gupta QA</li>
+													<li><LongArrowSVG />Bhuvan Desai</li>
+												</ul>
+											</div>
+										</div>
+									)}
 								</div>
 							</div>
 						</div>
@@ -1109,12 +1122,12 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											name="skypeID"
 											type={InputType.TEXT}
 											placeholder="Enter Link"
-											// required={
-											// 	watch('userType')?.id === UserAccountRole.SALES ||
-											// 	watch('userType')?.id === UserAccountRole.TALENTOPS ||
-											// 	watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
-											// 	watch('userType')?.id === UserAccountRole.FINANCE_EXECUTIVE
-											// }
+										// required={
+										// 	watch('userType')?.id === UserAccountRole.SALES ||
+										// 	watch('userType')?.id === UserAccountRole.TALENTOPS ||
+										// 	watch('userType')?.id === UserAccountRole.PRACTIVE_HEAD ||
+										// 	watch('userType')?.id === UserAccountRole.FINANCE_EXECUTIVE
+										// }
 										/>
 									</div>
 									<div className={UserFieldStyle.colMd6}>
@@ -1170,9 +1183,9 @@ const UsersFields = ({ id, setLoading, loading }) => {
 													name={'primaryClientPhoneNumber'}
 													type={InputType.NUMBER}
 													placeholder="Enter number"
-													// validationSchema={{
-													// 	required: 'Please enter contact number',
-													// }}
+												// validationSchema={{
+												// 	required: 'Please enter contact number',
+												// }}
 												/>
 											</div>
 										</div>

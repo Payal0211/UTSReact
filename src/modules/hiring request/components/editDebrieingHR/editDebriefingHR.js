@@ -289,31 +289,34 @@ const EditDebriefingHR = ({
 								errors={errors}
 								name="roleAndResponsibilities"
 							/>
-							<HRInputField
-								required
-								isTextArea={true}
-								errors={errors}
-								validationSchema={{
-									validate: (value) => {
-										if (
-											value.toLowerCase() ===
+							<div className={DebriefingHRStyle.aboutCompanyField}>
+								<HRInputField
+									required
+									isTextArea={true}
+									errors={errors}
+									validationSchema={{
+										validate: (value) => {
+											if (
+												value.toLowerCase() ===
 												getHRdetails?.company.toLowerCase() &&
-											value.toUpperCase() ===
+												value.toUpperCase() ===
 												getHRdetails?.company.toUpperCase()
-										) {
-											return 'Please do not mention company name here';
-										}
-										if (!value) {
-											return 'Please add something about the company';
-										}
-									},
-								}}
-								label={'About Company'}
-								register={register}
-								name="aboutCompany"
-								type={InputType.TEXT}
-								placeholder="Please enter details about company."
-							/>
+											) {
+												return 'Please do not mention company name here';
+											}
+											if (!value) {
+												return 'Please add something about the company';
+											}
+										},
+									}}
+									label={'About Company'}
+									register={register}
+									name="aboutCompany"
+									type={InputType.TEXT}
+									placeholder="Please enter details about company."
+								/>
+								<p>* Please do not mention company name here</p>
+							</div>
 							<TextEditor
 								isControlled={true}
 								controlledValue={
