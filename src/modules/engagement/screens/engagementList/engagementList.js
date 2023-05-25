@@ -486,7 +486,7 @@ const EngagementList = () => {
 						/>
 						<h2>
 							Total DP% -{' '}
-							<span>{apiData[0]?.s_TotalDP ? apiData[0]?.s_TotalDP: 0}</span>
+							<span>{apiData[0]?.s_TotalDP ? apiData[0]?.s_TotalDP : 0}</span>
 						</h2>
 					</div>
 				</div>
@@ -513,7 +513,12 @@ const EngagementList = () => {
 								columns={tableColumnsMemo}
 								bordered={false}
 								dataSource={
-									search && search.length > 0 ? [...search] : [...apiData]
+									// search && search.length > 0 ? [...search] : [...apiData]
+									search && search?.length === 0
+										? []
+										: search && search.length > 0
+											? [...search]
+											: [...apiData]
 								}
 								pagination={{
 									onChange: (pageNum, pageSize) => {
