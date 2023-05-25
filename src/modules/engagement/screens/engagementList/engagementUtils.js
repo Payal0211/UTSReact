@@ -9,6 +9,8 @@ export const engagementUtils = {
 			engagementId_HRID: item?.engagementId_HRID,
 			talentName: item?.talentName,
 			company: item?.company,
+			tscName:item?.tscName,
+			deployedSource:item?.deployedSource,
 			currentStatus: item?.currentStatus,
 			clientLegal_StatusID: item?.clientLegal_StatusID,
 			onboardID: item?.onBoardID,

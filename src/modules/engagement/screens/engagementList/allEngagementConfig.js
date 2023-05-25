@@ -24,7 +24,12 @@ export const allEngagementConfig = {
 				child: filterList.currentStatus,
 				isSearch: false,
 			},
-
+			{
+				label: 'TSC Name',
+				name: 'TSCName',
+				child: filterList.tscName,
+				isSearch: true,
+			},
 			{
 				label: 'Company',
 				name: 'company',
@@ -61,11 +66,16 @@ export const allEngagementConfig = {
 				child: filterList?.amName,
 				isSearch: true,
 			},
-
 			{
 				label: 'Lost',
 				name: 'Islost',
 				child: filterList?.lost,
+				isSearch: true,
+			},
+			{
+				label: 'Deployed Source',
+				name: 'DeployedSource',
+				child: filterList.deployedSource,
 				isSearch: true,
 			},
 			// {
