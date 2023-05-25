@@ -30,8 +30,7 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
 import AcceptHR from 'modules/hiring request/components/acceptHR/acceptHR';
-import CloneHRModal from "../allHiringRequest/cloneHRModal.module.css"
-import CloneHR from '../allHiringRequest/cloneHRModal';
+import CloneHR from 'modules/hiring request/components/cloneHR/cloneHR';
 
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
@@ -58,7 +57,7 @@ const HRDetailScreen = () => {
 	const [acceptHRModal, setAcceptHRModal] = useState(false);
 	const [shareProfileModal, setShareProfileModal] = useState(false);
 	const [editDebrifing, setEditDebring] = useState([]);
-	const [openCloneHR, setCloneHR] = useState(false);
+
 	const {
 		register,
 		handleSubmit,
@@ -205,18 +204,6 @@ const HRDetailScreen = () => {
 		}
 	};
 
-	const cloneHRModalInfo = () => {
-		setCloneHR(true)
-	}
-	const navigateToCloneHR = async () => {
-		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid);
-		if (response?.statusCode === HTTPStatusCode.OK) {
-			localStorage.setItem('hrID', hrId.hrid);
-	setCloneHR(false)
-			navigate('/allhiringrequest/addnewhr');
-		}
-	};
-
 	return (
 		<WithLoader
 			showLoader={isLoading}
@@ -244,12 +231,13 @@ const HRDetailScreen = () => {
 								)}
 							</div>
 						)}
-						<button
-							className={HRDetailStyle.btnPrimary}
-						 onClick={cloneHRModalInfo}>
-							Clone - {updatedSplitter}
-						</button>
-
+						{/** ----Clone HR */}
+						{apiData?.dynamicCTA?.cloneHR && (
+							<CloneHR
+								updatedSplitter={updatedSplitter}
+								cloneHR={apiData?.dynamicCTA?.cloneHR}
+							/>
+						)}
 						{editDebrifing?.length > 0 && editDebrifing?.[0]?.IsEnabled && (
 							<button
 								className={HRDetailStyle.btnPrimary}
@@ -368,7 +356,7 @@ const HRDetailScreen = () => {
 									clientDetail={apiData?.ClientDetail}
 									talentLength={apiData?.HRTalentDetails?.length}
 									apiData={apiData?.HRStatus}
-									allApiData = {apiData}
+									allApiData={apiData}
 								/>
 							</Suspense>
 						)}
@@ -595,15 +583,6 @@ const HRDetailScreen = () => {
 						/>
 					</div>
 				</div>
-			</Modal>
-			<Modal
-				width={'700px'}
-				centered
-				footer={false}
-				open={openCloneHR}
-				className='cloneHRConfWrap'
-				onCancel={() => setCloneHR(false)}>
-				<CloneHR getHRnumber={updatedSplitter} onCancel={() => setCloneHR(false)} navigateToCloneHR={navigateToCloneHR} />
 			</Modal>
 		</WithLoader>
 	);
