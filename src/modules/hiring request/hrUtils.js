@@ -27,6 +27,7 @@ export const hrUtils = {
 			salesRep: item.salesRep,
 			hrStatus: item.hrStatus,
 			hrStatusCode: item.hrStatusCode,
+			userId:item?.userId,
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {

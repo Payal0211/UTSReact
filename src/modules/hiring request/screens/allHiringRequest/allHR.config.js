@@ -113,17 +113,15 @@ export const allHRConfig = {
 				dataIndex: 'salesRep',
 				key: 'sales_rep',
 				align: 'left',
-				render: (text) => {
+				render: (text,result) => {
 					return (
-						<a
-							target="_blank"
-							href="#"
+						<Link to = {`/user/${result?.userId}`}
 							style={{
 								color: `var(--uplers-black)`,
 								textDecoration: 'underline',
 							}}>
 							{text}
-						</a>
+						</Link>
 					);
 				},
 			},
