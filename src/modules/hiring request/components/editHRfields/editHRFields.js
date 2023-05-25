@@ -828,7 +828,7 @@ const EditHRFields = ({
 
     useEffect(() => {
         if (getHRdetails?.directPlacement?.country) {
-            const findCountryMode = country.filter((item) => item?.value === getHRdetails?.directPlacement?.country)
+            const findCountryMode = country.filter((item) => item?.id === Number(getHRdetails?.directPlacement?.country))
             setValue("country", findCountryMode[0])
             setControlledCountryValue(findCountryMode[0]?.value)
         }
