@@ -33,6 +33,7 @@ import { _isNull } from 'shared/utils/basic_utils';
 import AcceptHR from 'modules/hiring request/components/acceptHR/acceptHR';
 import CloneHR from 'modules/hiring request/components/cloneHR/cloneHR';
 import CTASlot1 from 'modules/hiring request/components/CTASlot1/CTASlot1';
+import CTASlot2 from 'modules/hiring request/components/CTASlot2/CTASlot2';
 
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
@@ -232,17 +233,13 @@ const HRDetailScreen = () => {
 								apiData={apiData}
 								miscData={miscData}
 							/>
-							<div>
-								<HROperator
-									icon={<AiOutlineDown />}
-									backgroundColor={`var(--color-sunlight)`}
-									iconBorder={`1px solid var(--color-sunlight)`}
-									isDropdown={true}
-									listItem={hrUtils.dynamicCTAsSlot2(
-										apiData?.dynamicCTA?.ctA_Set2,
-									)}
-								/>
-							</div>
+							<CTASlot2
+								callAPI={callAPI}
+								hrID={urlSplitter?.split('HR')[0]}
+								slotItem={apiData?.dynamicCTA?.CTA_Set2}
+								apiData={apiData}
+								miscData={miscData}
+							/>
 
 							{/* {apiData?.activity_MissingAction_CTA?.length > 0 && (
 								<span>

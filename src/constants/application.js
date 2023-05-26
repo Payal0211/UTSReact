@@ -129,7 +129,7 @@ export class HRCTA {
 	static ACCEPT_HR = 'Accept HR';
 	static UPDATE_TR = 'UpdateTR';
 	static SHARE_PROFILE = 'Share a Profile';
-	static ADD_NOTES = 'AddNotes';
+	static ADD_NOTES = 'Add Notes';
 }
 export class InputType {
 	static TEXT = 'text';
