@@ -145,7 +145,6 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const watchGEO = watch('geo');
 	const watchGEOSpecific = watch('geoSpecific');
 	const uploadFile = useRef(null);
-
 	const getEmployeeIDAlreadyExist = useCallback(
 		async (data) => {
 			let companyNameDuplicate = await userDAO.getIsEmployeeIDExistRequestDAO({
@@ -1081,9 +1080,11 @@ const UsersFields = ({ id, setLoading, loading }) => {
 											<div className={UserFieldStyle.reportHierarchy}>
 												<label>Reporting Hierarchy</label>
 												<ul>
-													<li><LongArrowSVG />Vikram Sahi QA</li>
-													<li><LongArrowSVG />Mukul Gupta QA</li>
-													<li><LongArrowSVG />Bhuvan Desai</li>
+													{userDetails?.reportingHierarchy?.map((item) => {
+														return (
+															<li><LongArrowSVG />{item?.userName}</li>
+														)
+													})}
 												</ul>
 											</div>
 										</div>
