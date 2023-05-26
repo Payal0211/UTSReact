@@ -102,6 +102,7 @@ const IncentiveReportScreen = () => {
 	const [managerDataInfo, setManagerDataInfo] = useState([]);
 	const [incentiveReportInfo, setIncentiveReportInfo] = useState([]);
 	const [incentiveBoosterList, setIncentiveBoosterList] = useState([]);
+	const [incentiveReportAMNR,setIncentiveReportAMNR] = useState([]);
 
 	const [showLine, setShowLine] = useState(true);
 	const [showIcon, setShowIcon] = useState(false);
@@ -676,6 +677,15 @@ const IncentiveReportScreen = () => {
 			response.responseBody[0]?.userRole === 'Sales Consultant'
 		) {
 			setValueOfSelected(response.responseBody[0]?.userRole);
+		}
+		if(response.responseBody[0]?.userRole === "AM"){
+			let responseOngoing = await IncentiveReportDAO.getIncentiveReportDetailsAMNRDAO(splitvalue[0],
+				record?.id,
+				false,
+				splitvalue[1]);
+			if(responseOngoing.statusCode === HTTPStatusCode.OK){
+				setIncentiveReportAMNR(responseOngoing);
+			}
 		}
 	};
 
