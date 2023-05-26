@@ -1,13 +1,13 @@
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
 
 * {
   word-wrap: break-word;
-  font-family: "Montserrat", sans-serif;  
+  font-family: "Montserrat", sans-serif;
 }
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--background-color-slate) ;
+  background-color: var(--background-color-slate);
   color: var(--uplers-black);
   overflow-y: auto;
   overflow-x: hidden;
@@ -26,38 +26,37 @@ body {
   --success-color: #28a745;
   --text-color-purity: #fff;
   --text-color-dark: #000;
-  --uplers-black:#232323;
-  --uplers-grey:#F5F5F5;
-  --uplers-lightBlack:#676767;
-  --uplers-dropUpHoverColor:#f6f6f6;
+  --uplers-black: #232323;
+  --uplers-grey: #f5f5f5;
+  --uplers-lightBlack: #676767;
+  --uplers-dropUpHoverColor: #f6f6f6;
   --background-color-light: #fff;
-  --input-border-color:#CECCCC;
-  --background-color-dim:#F9F9F9;
+  --input-border-color: #cecccc;
+  --background-color-dim: #f9f9f9;
   --background-color-dark: #000;
-  --background-color-slate:#f2f2f2;
+  --background-color-slate: #f2f2f2;
   --background-color-ebony: #5c5b5b;
   --background-color-metal: #bdbbbb;
   --background-color-jade: #313131;
   --background-color-raven: #050301;
   --background-color-leather: #0b0705;
   --background-color-pulp: #f7edc9;
-  --color-sunlight: #FFDA31;
-  --color-purple:#784FCD;
-  --color-cyan:#00DFDF;
-  --color-danger:#E41A1C;
-  --color-success:#85B844;
+  --color-sunlight: #ffda31;
+  --color-purple: #784fcd;
+  --color-cyan: #00dfdf;
+  --color-danger: #e41a1c;
+  --color-success: #85b844;
   --color-TealWithOpacity: #f5fcf9;
   --color-champagne: #ffe87f;
-  --uplers-border-color:#E8E8E8;
+  --uplers-border-color: #e8e8e8;
   --fontsize-strong: 32px;
   --fontsize-pearl: 28px;
-  --fontsize-doom:24px;
+  --fontsize-doom: 24px;
   --fontsize-trim: 22px;
   --fontsize-glossy: 18px;
   --fontsize-brittle: 16px;
-  --fontsize-tough:14px;
-  --fontsize-uplers:12px;
-
+  --fontsize-tough: 14px;
+  --fontsize-uplers: 12px;
 }
 
 ::selection {
@@ -68,7 +67,6 @@ body {
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
-  
 }
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -78,22 +76,21 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
 ::-webkit-scrollbar-track {
-  
   background: var(--color-TealWithOpacity);
 }
 
 ::-webkit-scrollbar-thumb {
   border-radius: 5px !important;
-  background: var(--color-sunlight)
+  background: var(--color-sunlight);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-sunlight)
+  background: var(--color-sunlight);
 }
 
 ::-webkit-file-upload-button {
@@ -116,7 +113,6 @@ input[type="file"] {
   justify-content: center !important;
 }
 
-
 .ant-pagination-item a:hover {
   color: var(--color-sunlight) !important;
 }
@@ -131,8 +127,6 @@ input[type="file"] {
   color: var(--uplers-black) !important;
 }
 
-
-
 th {
   border-top-left-radius: 10px !important;
   border-top-right-radius: 10px !important;
@@ -144,7 +138,6 @@ th {
 }
 
 td {
-  
   color: var(--uplers-black);
   cursor: pointer;
   font-size: 0.875rem;
@@ -152,9 +145,7 @@ td {
   font-family: "Montserrat", sans-serif !important;
 }
 
-
-
-table{
+table {
   line-height: 1.2;
   border-radius: 10px !important;
   background-color: var(--background-color-light) !important;
@@ -165,28 +156,27 @@ table{
   overflow-x: auto !important;
   box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
 }
-.ant-table-tbody>tr>td{
+.ant-table-tbody > tr > td {
   padding: 25px 20px !important;
 }
 
-
 /*-- React DatePicker--*/
-.react-datepicker{
+.react-datepicker {
   margin-left: -10%;
   border: none !important;
   box-shadow: -4px 4px 20px rgba(57, 57, 57, 0.09) !important;
 }
-.react-datepicker__header{
+.react-datepicker__header {
   background-color: var(--background-color-light) !important;
 }
-.react-datepicker__day--keyboard-selected{
+.react-datepicker__day--keyboard-selected {
   background-color: var(--color-sunlight) !important;
   border-radius: 50% !important;
   box-shadow: -4px 4px 20px rgba(57, 57, 57, 0.09) !important;
   color: var(--uplers-black) !important;
 }
 
-.react-datepicker__triangle{
+.react-datepicker__triangle {
   display: none;
 }
 
@@ -201,44 +191,43 @@ table{
 .react-datepicker__quarter-text--in-range,
 .react-datepicker__year-text--selected,
 .react-datepicker__year-text--in-selecting-range,
-.react-datepicker__year-text--in-range{
+.react-datepicker__year-text--in-range {
   background-color: var(--color-sunlight) !important;
   border-radius: 50% !important;
   box-shadow: -4px 4px 20px rgba(57, 57, 57, 0.09) !important;
-    color: var(--uplers-black) !important;
+  color: var(--uplers-black) !important;
 }
 
-.ant-checkbox-checked::after{
+.ant-checkbox-checked::after {
   border: none !important;
 }
 
-.ant-checkbox-checked .ant-checkbox-inner{
+.ant-checkbox-checked .ant-checkbox-inner {
   background-color: var(--color-sunlight);
-    border: none !important;
-    
+  border: none !important;
 }
 .ant-checkbox-wrapper:hover .ant-checkbox-inner,
 .ant-checkbox:hover .ant-checkbox-inner,
-.ant-checkbox-input:focus+.ant-checkbox-inner{
+.ant-checkbox-input:focus + .ant-checkbox-inner {
   border: 1px solid var(--background-color-metal);
 }
-.ant-row{
+.ant-row {
   flex-wrap: nowrap !important;
   gap: 2rem;
 }
 
 /*-- DropDown--*/
-.ant-dropdown{
+.ant-dropdown {
   z-index: 0 !important;
 }
-.ant-dropdown-menu{
+.ant-dropdown-menu {
   background-color: transparent;
   border-radius: 10px;
   text-align: center;
   background-color: var(--background-color-light);
 }
 
-.ant-dropdown-menu-item:hover{
+.ant-dropdown-menu-item:hover {
   border-radius: 8px;
   /* width: 100%; */
   margin: 0 auto;
@@ -250,16 +239,15 @@ table{
 }
 
 .ant-dropdown-menu-item-selected,
-.ant-dropdown-menu-submenu-title-selected{
-  background-color:var(--background-color-pulp);
+.ant-dropdown-menu-submenu-title-selected {
+  background-color: var(--background-color-pulp);
   font-size: var(--fontsize-tough);
   font-weight: 500;
   color: var(--uplers-black);
   border-radius: 8px;
   width: 95%;
-  margin:0 auto;
+  margin: 0 auto;
   white-space: nowrap;
-
 }
 
 /*Tabs*/
@@ -267,27 +255,27 @@ table{
   margin: 0;
 }
 
-.ant-tabs-top .ant-tabs-tab+.ant-tabs-tab {
+.ant-tabs-top .ant-tabs-tab + .ant-tabs-tab {
   margin: 0 0 0 55px;
 }
 
-.ant-tabs.ant-tabs-top>.ant-tabs-nav .ant-tabs-nav-wrap {
+.ant-tabs.ant-tabs-top > .ant-tabs-nav .ant-tabs-nav-wrap {
   padding-bottom: 2px;
 }
 
-.ant-tabs-top>.ant-tabs-nav::before {
+.ant-tabs-top > .ant-tabs-nav::before {
   border-bottom: 1px solid var(--tabs-border-color);
   bottom: 1px;
 }
 
-.ant-tabs-top>.ant-tabs-nav .ant-tabs-ink-bar {
+.ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar {
   background: var(--color-sunlight);
   height: 4px;
   bottom: -2px;
 }
 
 .ant-tabs-top .ant-tabs-tab {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 400;
   font-size: 18px;
   line-height: 22px;
@@ -318,7 +306,7 @@ table{
   background-color: var(--color-sunlight) !important;
 }
 .ant-tabs-top .ant-tabs-tab:before {
-  content: '';
+  content: "";
   position: absolute;
   right: 0;
   left: 0;
@@ -341,7 +329,7 @@ table{
 .ant-select {
   width: 100%;
   width: 100%;
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
@@ -353,7 +341,7 @@ table{
   height: 54px;
   padding: 16px 16px;
   border-radius: 8px;
-  border: 1px solid #CECCCC;
+  border: 1px solid #cecccc;
   transition: all 0.25s ease 0s;
 }
 
@@ -362,19 +350,21 @@ table{
   font-weight: inherit;
   font-size: inherit;
   color: inherit;
- 
 }
-.ant-select .ant-select-selector .ant-select-selection-item img{
-  margin-right:8px;
+.ant-select .ant-select-selector .ant-select-selection-item img {
+  margin-right: 8px;
   vertical-align: top;
 }
 
 .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
-  border-color: #CECCCC;
+  border-color: #cecccc;
 }
 
-.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
-  border-color: #FFDA30;
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(
+    .ant-select-customize-input
+  )
+  .ant-select-selector {
+  border-color: #ffda30;
   box-shadow: 0 0 0 1px #ffda30;
 }
 
@@ -385,7 +375,7 @@ table{
 }
 
 .ant-select .ant-select-arrow::before {
-  content: '';
+  content: "";
   width: 8px;
   height: 8px;
   transform: rotate(45deg);
@@ -402,14 +392,14 @@ table{
 
 .ant-select-dropdown {
   box-shadow: none;
-  border: 1px solid #FFDA30;
+  border: 1px solid #ffda30;
   padding: 0;
   border-radius: 8px;
   z-index: 99;
 }
 
 .ant-select-dropdown .ant-select-item {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 400;
   font-size: 12px;
   line-height: 16px;
@@ -436,14 +426,14 @@ table{
 
 .ant-select-item-option-selected:not(.ant-select-item-option-disabled),
 .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
-  background: #FFDA30;
+  background: #ffda30;
   color: #000000;
   font-weight: 500;
 }
 
 /*Radio Group*/
 .ant-radio-group .ant-radio-wrapper {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 500;
   font-size: 14px;
   line-height: 18px;
@@ -484,20 +474,26 @@ table{
   width: 12px;
   height: 12px;
   border-radius: 20px;
-  background: #FFDA30;
+  background: #ffda30;
   margin: auto;
   transform: scale(0);
 }
 
-.ant-radio-group .ant-radio-wrapper .ant-radio+* {
+.ant-radio-group .ant-radio-wrapper .ant-radio + * {
   padding: 0;
 }
 
-.ant-radio-group .ant-radio-wrapper .ant-radio.ant-radio-checked .ant-radio-inner {
+.ant-radio-group
+  .ant-radio-wrapper
+  .ant-radio.ant-radio-checked
+  .ant-radio-inner {
   border-color: #232323;
 }
 
-.ant-radio-group .ant-radio-wrapper .ant-radio.ant-radio-checked .ant-radio-inner::after {
+.ant-radio-group
+  .ant-radio-wrapper
+  .ant-radio.ant-radio-checked
+  .ant-radio-inner::after {
   transform: scale(1);
 }
 .ant-select-dropdown .ant-select-item img {
@@ -514,18 +510,21 @@ table{
 
 .ant-select .ant-select-selector .ant-select-selection-search {
   padding: 0;
-  top:0;
+  top: 0;
   left: 0;
   right: 40px;
   margin: 0;
 }
 
-.ant-select .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input {
+.ant-select
+  .ant-select-selector
+  .ant-select-selection-search
+  .ant-select-selection-search-input {
   height: 20px;
 }
 
 .ant-select .ant-select-selector .ant-select-selection-placeholder {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
@@ -533,13 +532,12 @@ table{
 }
 
 /**--MODAl---------*/
-.ant-modal-content{
- 
+.ant-modal-content {
   border-radius: 8px !important;
-  background-color: #F7F7F7 !important
+  background-color: #f7f7f7 !important;
 }
 
-.ant-table{
+.ant-table {
   box-shadow: none !important;
 }
 .ant-select-show-search.ant-select-multiple .ant-select-selector {
@@ -549,9 +547,11 @@ table{
   min-height: 54px;
 }
 
-.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item {
+.ant-select-show-search.ant-select-multiple
+  .ant-select-selection-overflow-item
+  .ant-select-selection-item {
   margin: 0;
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 500;
   font-size: 12px;
   line-height: 15px;
@@ -566,14 +566,20 @@ table{
   border: none;
 }
 
-.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-multiple .ant-select-selection-item-content{
+.ant-select-show-search.ant-select-multiple
+  .ant-select-selection-overflow-item
+  .ant-select-multiple
+  .ant-select-selection-item-content {
   color: inherit;
   font-size: inherit;
   line-height: inherit;
   padding: 0;
   border-radius: 0;
 }
-.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item .ant-select-selection-item-remove {
+.ant-select-show-search.ant-select-multiple
+  .ant-select-selection-overflow-item
+  .ant-select-selection-item
+  .ant-select-selection-item-remove {
   color: #fff;
   position: absolute;
   top: 7px;
@@ -588,7 +594,11 @@ table{
   line-height: 10px;
 }
 
-.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item .ant-select-selection-item-remove svg {
+.ant-select-show-search.ant-select-multiple
+  .ant-select-selection-overflow-item
+  .ant-select-selection-item
+  .ant-select-selection-item-remove
+  svg {
   width: 13px;
   height: 13px;
 }
@@ -599,7 +609,7 @@ table{
 
 /*antd model*/
 .engagementModalStyle .ant-modal-content {
-  background: #FFFFFF !important;
+  background: #ffffff !important;
   box-shadow: 0px 1.91653px 7.66613px rgba(204, 238, 204, 0.25);
 }
 
@@ -613,8 +623,10 @@ table{
 .engagementReplaceTalentModal .ant-modal-content,
 .statusModalWrap .ant-modal-content,
 .convert-dp-modal-wrap .ant-modal-content,
-.convert-contractual-modal-wrap .ant-modal-content,.incentiveHierarchyModal .ant-modal-content{
-  background: #FFFFFF !important;
+.convert-contractual-modal-wrap .ant-modal-content,
+.incentiveHierarchyModal .ant-modal-content,
+.commonModalWrap .ant-modal-content {
+  background: #ffffff !important;
   box-shadow: 0px 1.91653px 7.66613px rgba(204, 238, 204, 0.25) !important;
   border-radius: 8px !important;
   padding: 40px !important;
@@ -626,13 +638,19 @@ table{
 .engagementReplaceTalentModal .ant-modal-body,
 .statusModalWrap .ant-modal-body,
 .convert-dp-modal-wrap .ant-modal-body,
-.convert-contractual-modal-wrap .ant-modal-body,.incentiveHierarchyModal .ant-modal-body {
+.convert-contractual-modal-wrap .ant-modal-body,
+.incentiveHierarchyModal .ant-modal-body,
+.commonModalWrap .ant-modal-body {
   padding: 0px;
 }
 
-.engagementReplaceTalentModal .ant-radio-group .ant-radio-wrapper .ant-radio+* {
+.engagementReplaceTalentModal
+  .ant-radio-group
+  .ant-radio-wrapper
+  .ant-radio
+  + * {
   padding: 0;
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -641,7 +659,7 @@ table{
 }
 
 .engagementReplaceTalentModal .ant-tabs-nav {
-  border-bottom: 1px solid #CECCCC;
+  border-bottom: 1px solid #cecccc;
 }
 
 .engagementReplaceTalentModal .ant-tabs-content-holder {
@@ -653,7 +671,8 @@ table{
   padding: 30px 0;
 }
 
-.interviewFeedbackModal .ant-modal-body, .cloneHRModal .ant-modal-body {
+.interviewFeedbackModal .ant-modal-body,
+.cloneHRModal .ant-modal-body {
   padding: 40px;
 }
 
@@ -661,7 +680,7 @@ table{
 .interviewScheduleModal .ant-modal-content,
 .interviewRescheduleModal .ant-modal-content,
 .cloneHRModal .ant-modal-content {
-  background: #FFFFFF !important;
+  background: #ffffff !important;
 }
 
 .interviewFeedbackModal .ant-checkbox-wrapper {
@@ -684,8 +703,8 @@ table{
   border-color: var(--color-sunlight) !important;
 }
 
-.interviewFeedbackModal .ant-checkbox+span {
-  font-family: 'Montserrat';
+.interviewFeedbackModal .ant-checkbox + span {
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -701,18 +720,20 @@ table{
 .ant-switch-checked {
   background-color: var(--color-sunlight) !important;
 }
-.selectSalesManagerModal .ant-modal-close{
-display: none;
+.selectSalesManagerModal .ant-modal-close {
+  display: none;
 }
-.teamDemandFunnelReport .ant-tree,.teamDemandFunnelReport .ant-tree-show-line,.teamDemandFunnelReport .ant-tree-switcher{
+.teamDemandFunnelReport .ant-tree,
+.teamDemandFunnelReport .ant-tree-show-line,
+.teamDemandFunnelReport .ant-tree-switcher {
   background-color: transparent;
 }
 .textCenter {
   text-align: center;
 }
-.mainLoader{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: calc(100vh - 300px);
+.mainLoader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 300px);
 }

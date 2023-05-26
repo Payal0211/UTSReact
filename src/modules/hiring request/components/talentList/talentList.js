@@ -2,6 +2,7 @@ import { Dropdown, Menu, Divider, List, Modal, message, Space } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import TalentListStyle from './talentList.module.css';
+import ProfileLogStyle from './profileLog.module.css';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
@@ -1647,7 +1648,7 @@ const TalentList = ({
 				}}
 			/>
 			{/** ============ MODAL FOR PROFILE LOG ================ */}
-			<Modal
+			{/* <Modal
 				width="864px"
 				centered
 				footer={null}
@@ -1742,7 +1743,43 @@ const TalentList = ({
 						})}
 					</div>
 				</div>
+			</Modal> */}
+
+			<Modal
+				width="992"
+				centered
+				footer={null}
+				open={showProfileLogModal}
+				className="commonModalWrap"
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setProfileLogModal(false)}>
+
+				<div className={ProfileLogStyle.modalTitle}>
+					<h2>Profile Log</h2>
+				</div>
+
+				<div className={ProfileLogStyle.profileNameRoleDate}>
+					<div className={ProfileLogStyle.profileNameRole}>
+						<ul>
+							<li>
+								<span>Name:</span> <u>Lalit Shah</u>
+							</li>
+							<li>
+								<span>Role:</span> UI/UX Designer
+							</li>
+						</ul>
+					</div>
+
+					<div className={ProfileLogStyle.profileNameDate}>
+						Date here...
+					</div>
+				</div>
+
+
+
+
 			</Modal>
+
 			{/** ============ MODAL FOR VERSANT SCORE ================ */}
 			<Modal
 				width="864px"
