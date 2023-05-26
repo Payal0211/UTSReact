@@ -151,16 +151,16 @@ const ConvertToDP = ({
 					setIsLoading(false);
 					setIsConvertToDP(false);
 				}}>
-				<div className="convert-dp-modal">
-					<label className={ConvertToDPStyle.matchmakingLabel}>
-						Convert to Direct Placement
-					</label>
-					<p className={ConvertToDPStyle.test}>
-						Please add necessary details for converting this HR from Contractual
-						to Direct Placement
-					</p>
+				<div className={ConvertToDPStyle.convertDPModal}>
+					<div className={ConvertToDPStyle.convertModalTitle}>
+						<h2>Convert to Direct Placement</h2>
+						<p>
+							Please add necessary details for converting this HR from
+							Contractual to Direct Placement
+						</p>
+					</div>
 
-					<div className="talent-detail-part">
+					<div className={ConvertToDPStyle.talentDetailPart}>
 						{talentDpConversion?.length === 0 ? (
 							<p className="data-not-found">Talents Details Not Found</p>
 						) : (
@@ -353,12 +353,6 @@ const ConvertToDP = ({
 							className={ConvertToDPStyle.btnPrimary}>
 							Convert to DP
 						</button>
-						<div
-							style={{
-								position: 'absolute',
-								right: '0',
-								marginRight: '32px',
-							}}></div>
 					</div>
 				</div>
 			</Modal>

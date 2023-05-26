@@ -5,6 +5,25 @@
     border-radius: 8px;
 }
 
+.convertModalTitle {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;   
+    color: #232323;
+    margin-bottom: 40px;
+}
+.convertModalTitle h2{
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 39px;   
+    color: #232323;
+    margin-bottom: 16px;
+}
+
 .formPanelAction {
     padding: 0;
     margin-left: auto;
@@ -599,4 +618,65 @@ tr th:first-child {
 }
 .contractualLoader span[class*="anticon-loading"]{
     margin: 0 !important;
+}
+
+.talentDetailPart [class*="ant-collapse"] {
+    background-color: transparent;
+    border: 0px solid #d9d9d9;
+}
+
+.talentDetailPart {
+    border-top: 1px solid #CECCCC;
+    padding: 24px 0 0;
+    margin-bottom: 24px;
+}
+
+.talentDetailPart h4 {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 29px;
+    color: #232323;
+}
+
+.talentDetailPart [class*="ant-collapse-item"] {
+    border-bottom: 1px solid #d9d9d9;
+}
+.talentDetailPart [class*="ant-collapse"] [class*="ant-collapse-header"] {
+    padding: 20px 2px;
+}
+
+.talentDetailPart [class*="ant-collapse-item"] [class*="ant-collapse-header-text"] {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    color: #232323;
+    padding: 0 22px 0 0;
+}
+
+.talentDetailPart [class*="ant-collapse-content"] {
+    background-color: transparent;
+    border-top: 0px solid #d9d9d9;
+    padding: 0;
+}
+
+.talentDetailPart [class*="ant-collapse"] [class*="ant-collapse-item"] [class*="ant-collapse-header"]:after {
+    content: "";
+    position: absolute;
+    right: 2px;
+    top: 22px;
+    background-image: url('../../../../assets/svg/plush-icon.svg');
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 15px;
+    background-size: 100%;
+}
+
+.talentDetailPart [class*="ant-collapse"] [class*="ant-collapse-item"][class*="ant-collapse-item-active"] [class*="ant-collapse-header"]:after {
+    background-image: url('../../../../assets/svg/minus-icon.svg');
+}
+
+.talentDetailPart [class*="ant-collapse-arrow"] {
+    display: none !important;
 }

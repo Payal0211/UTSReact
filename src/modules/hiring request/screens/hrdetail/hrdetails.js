@@ -143,14 +143,16 @@ const HRDetailScreen = () => {
 		setDeleteReason(response && response?.responseBody?.details);
 	}, []);
 
-	const updateODRPoolStatusHandler = useCallback(
-		async (data) => {
-			await hiringRequestDAO.updateODRPOOLStatusRequestDAO(data);
+	/**  Put ON HOLD * */
 
-			callAPI(urlSplitter?.split('HR')[0]);
-		},
-		[callAPI, urlSplitter],
-	);
+	// const updateODRPoolStatusHandler = useCallback(
+	// 	async (data) => {
+	// 		await hiringRequestDAO.updateODRPOOLStatusRequestDAO(data);
+
+	// 		callAPI(urlSplitter?.split('HR')[0]);
+	// 	},
+	// 	[callAPI, urlSplitter],
+	// );
 
 	useEffect(() => {
 		setLoading(true);

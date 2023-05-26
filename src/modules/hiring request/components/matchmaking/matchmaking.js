@@ -18,6 +18,9 @@ import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import { ValidateInput } from 'constants/inputValidators';
 
 const MatchmakingModal = ({
+	isMatchmaking,
+	onCancel,
+	setMatchmakingModal,
 	apiData,
 	refreshedHRDetail,
 	talentLength,
@@ -28,7 +31,7 @@ const MatchmakingModal = ({
 	hrPriority,
 	nextActionKey,
 }) => {
-	const [matchmakingModal, setMatchmakingModal] = useState(false);
+	// const [matchmakingModal, setMatchmakingModal] = useState(false);
 	const [matchmakingData, setMatchmakingData] = useState([]);
 	const [filterMatchmakingData, setFilterMatchmakingData] = useState([]);
 	/** State variable to keep track of all the expanded rows*/
@@ -172,11 +175,14 @@ const MatchmakingModal = ({
 	}, [closeExpandedCell, talentCost, talentID]);
 
 	/** Fetching the Modal Table API */
-	const fetchMatchmakingData = useCallback(async (data) => {
-		setMatchmakingModal(true);
-		const response = await hiringRequestDAO.getMatchmakingDAO(data);
-		setMatchmakingData(response?.responseBody.details);
-	}, []);
+	const fetchMatchmakingData = useCallback(
+		async (data) => {
+			setMatchmakingModal(true);
+			const response = await hiringRequestDAO.getMatchmakingDAO(data);
+			setMatchmakingData(response?.responseBody.details);
+		},
+		[setMatchmakingModal],
+	);
 
 	const getTalentPriorities = useCallback(async () => {
 		setIsLoading(true);
@@ -203,12 +209,19 @@ const MatchmakingModal = ({
 			});
 			setIsLoading(false);
 		}
-	}, [hrID, listOfTalents, messageAPI, refreshedHRDetail]);
+	}, [hrID, listOfTalents, messageAPI, refreshedHRDetail, setMatchmakingModal]);
 
+	useEffect(() => {
+		fetchMatchmakingData({
+			hrID: hrID,
+			rows: 10,
+			page: 1,
+		});
+	}, [fetchMatchmakingData, hrID]);
 	/** Disposing the Modal State */
 	useEffect(() => {
 		return () => {
-			if (!matchmakingModal) {
+			if (!isMatchmaking) {
 				setExpandedRows([]);
 				setTableFunctionData('');
 				setCurrentExpandedCell('');
@@ -217,11 +230,11 @@ const MatchmakingModal = ({
 				setListOfTalents([]);
 			}
 		};
-	}, [matchmakingModal]);
+	}, [isMatchmaking]);
 
 	return (
 		<>
-			{talentLength === 0 ? (
+			{/* {talentLength === 0 ? (
 				<div onClick={() => fetchMatchmakingData()}>Explore Profiles</div>
 			) : (
 				<>
@@ -248,12 +261,12 @@ const MatchmakingModal = ({
 						</>
 					)}
 				</>
-			)}
+			)} */}
 			{contextHolder}
 			<Modal
 				transitionName=""
 				centered
-				open={matchmakingModal}
+				open={isMatchmaking}
 				width="1256px"
 				footer={null}
 				onCancel={() => {

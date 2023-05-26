@@ -5,13 +5,15 @@ import { HRCTA } from 'constants/application';
 import ConvertToDP from '../convertToDP/convertToDP';
 import ConvertToContractual from '../convertToContractual/convertToContractual';
 import AcceptHR from '../acceptHR/acceptHR';
-import { hrUtils } from 'modules/hiring request/hrUtils';
 import { useLocation } from 'react-router-dom';
+import MatchmakingModal from '../matchmaking/matchmaking';
+
 const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 	const [isConvertToContractual, setIsConvertToContractual] = useState(false);
 	const [isConvertToDP, setIsConvertToDP] = useState(false);
 	const [isAcceptHR, setIsAcceptHR] = useState(false);
 	const [isShareProfile, setIsShareProfile] = useState(false);
+	const [isAMAssignment, setIsAMAssignment] = useState(false);
 	const switchLocation = useLocation();
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
@@ -41,6 +43,10 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 							}
 							case HRCTA.SHARE_PROFILE: {
 								setIsShareProfile(true);
+								break;
+							}
+							case HRCTA.AM_ASSIGNMENT: {
+								setIsAMAssignment(true);
 								break;
 							}
 							default:
@@ -74,15 +80,20 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 					cancelModal={() => setIsAcceptHR(false)}
 				/>
 			)}
-			{isShareProfile &&
-				hrUtils.showMatchmaking(
-					apiData,
-					miscData?.LoggedInUserTypeID,
-					callAPI,
-					urlSplitter,
-					updatedSplitter,
-					HRCTA.SHARE_PROFILE, // only to hide matchmaking button in case of share Profile
-				)}
+			{isShareProfile && (
+				<MatchmakingModal
+					isMatchmaking={isShareProfile}
+					setMatchmakingModal={setIsShareProfile}
+					onCancel={() => setIsShareProfile(false)}
+					apiData={apiData}
+					refreshedHRDetail={callAPI}
+					hrID={urlSplitter?.split('HR')[0]}
+					hrNo={updatedSplitter}
+					hrStatusCode={apiData?.HRStatusCode}
+					hrStatus={apiData?.HRStatus}
+					hrPriority={apiData?.StarMarkedStatusCode}
+				/>
+			)}
 		</>
 	);
 };

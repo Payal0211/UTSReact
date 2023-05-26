@@ -429,36 +429,7 @@ export const hrUtils = {
 			}
 		}
 	},
-	showMatchmaking(
-		apiData,
-		loggedInUserTypeID,
-		callAPI,
-		urlSplitter,
-		updatedSplitter,
-		nextActionKey, // only to hide matchmaking button in case of share Profile
-	) {
-		if (apiData?.IsAccepted === 1) {
-			if (
-				loggedInUserTypeID === UserAccountRole.TALENTOPS ||
-				loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
-				loggedInUserTypeID === UserAccountRole.DEVELOPER ||
-				loggedInUserTypeID === UserAccountRole.ADMINISTRATOR
-			) {
-				return (
-					<MatchmakingModal
-						nextActionKey={nextActionKey}
-						apiData={apiData}
-						refreshedHRDetail={callAPI}
-						hrID={urlSplitter?.split('HR')[0]}
-						hrNo={updatedSplitter}
-						hrStatusCode={apiData?.HRStatusCode}
-						hrStatus={apiData?.HRStatus}
-						hrPriority={apiData?.StarMarkedStatusCode}
-					/>
-				);
-			}
-		} else return null;
-	},
+
 	handleScheduleInterview(item, miscData, HRStatusCode) {
 		if (
 			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&

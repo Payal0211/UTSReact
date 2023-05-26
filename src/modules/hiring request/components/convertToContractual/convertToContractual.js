@@ -25,6 +25,7 @@ const ConvertToContractual = ({
 		formState: { errors },
 	} = useForm({});
 	const param = useParams();
+	console.log(errors, '-errors');
 	const [saveContractualInfo, setContractualInfo] = useState('');
 	const [getTelantCC, setTalentCC] = useState([]);
 	// const [convertToContracual, setIsConvertToContractual] = useState(false);
@@ -92,7 +93,8 @@ const ConvertToContractual = ({
 		setValue('Contracual', response.responseBody.details);
 	};
 
-	const saveTalentContracual = async () => {
+	const saveTalentContractual = async () => {
+		setIsLoading(true);
 		const data = watch('Contracual');
 		const _hiringrequest = watch('hiringrequest');
 		const _longterm = watch('longterm');
@@ -158,14 +160,14 @@ const ConvertToContractual = ({
 				footer={null}
 				className="convert-contractual-modal-wrap"
 				onCancel={() => setIsConvertToContractual(false)}>
-				<div className="convert-contractual-modal">
-					<label className={ConvertToContractualStyle.matchmakingLabel}>
-						Convert to Contractual
-					</label>
-					<p className={ConvertToContractualStyle.test}>
-						Please add necessary details for converting this HR from Contractual
-						to Direct Placement
-					</p>
+				<div className={ConvertToContractualStyle.convertContractualModal}>
+					<div className={ConvertToContractualStyle.convertModalTitle}>
+						<h2>Convert to Contractual</h2>
+						<p>
+							Please add necessary details for converting this HR from
+							Contractual to Direct Placement
+						</p>
+					</div>
 
 					<div className={ConvertToContractualStyle.hrFieldContainer}>
 						<div className={ConvertToContractualStyle.row}>
@@ -196,7 +198,7 @@ const ConvertToContractual = ({
 									options={longTerm}
 									required
 									isError={errors['longterm'] && errors['longterm']}
-									errorMsg="Please select a longterm."
+									errorMsg="Please select a term."
 								/>
 								<HRInputField
 									register={register}
@@ -205,9 +207,9 @@ const ConvertToContractual = ({
 									name="contactDuration"
 									type={InputType.TEXT}
 									placeholder="Enter Months"
-									isError={
-										errors['contactDuration'] && errors['contactDuration']
-									}
+									validationSchema={{
+										required: 'Please enter Contact Duration',
+									}}
 									errorMsg="Please enter Contact Duration."
 									required
 								/>
@@ -215,7 +217,7 @@ const ConvertToContractual = ({
 						</div>
 					</div>
 
-					<div className="talent-detail-part">
+					<div className={ConvertToContractualStyle.talentDetailPart}>
 						{getTelantCC?.length === 0 ? (
 							<p className="data-not-found">Talents Details Not Found</p>
 						) : (
@@ -228,7 +230,7 @@ const ConvertToContractual = ({
 								{getTelantCC?.map((data, index) => {
 									return (
 										<Panel
-											header={`Talent ${index}`}
+											header={`Talent ${data.talentname}`}
 											key={index}>
 											<div
 												className={ConvertToContractualStyle.hrFieldContainer}>
@@ -278,6 +280,9 @@ const ConvertToContractual = ({
 																	response.responseBody.details,
 																);
 															}}
+															// validationSchema={{
+															// 	required: 'Please enter NR Margin Percentage',
+															// }}
 															// disabled={isSameAsPrimaryPOC}
 															required
 														/>
@@ -310,10 +315,7 @@ const ConvertToContractual = ({
 						</button>
 
 						<button
-							onClick={() => {
-								saveTalentContracual();
-								setIsConvertToContractual(false);
-							}}
+							onClick={handleSubmit(saveTalentContractual)}
 							type="button"
 							className={ConvertToContractualStyle.btnPrimary}>
 							Convert to Contractual
@@ -379,14 +381,8 @@ const ConvertToContractual = ({
 							onClick={handleSubmit(saveConvertToContractual)}
 							type="button"
 							className={ConvertToContractualStyle.btnPrimary}>
-							Convert to contractual
+							Convert to Contractual
 						</button>
-						<div
-							style={{
-								position: 'absolute',
-								right: '0',
-								marginRight: '32px',
-							}}></div>
 					</div>
 				</div>
 			</Modal>
