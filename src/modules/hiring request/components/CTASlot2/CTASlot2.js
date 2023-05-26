@@ -4,8 +4,6 @@ import { AiOutlineDown } from 'react-icons/ai';
 import { HRCTA } from 'constants/application';
 
 const CTASlot2 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
-	const [isNotes, setIsNotes] = useState(false);
-
 	const scrollToBottom = () => {
 		window.scroll({
 			top: document.body.scrollHeight,
