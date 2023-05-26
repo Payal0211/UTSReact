@@ -79,7 +79,7 @@ export const hrUtils = {
 		fileName,
 		jdDumpID,
 	) {
-	let enIDdata = localStorage.getItem("enIDdata");
+		let enIDdata = localStorage.getItem('enIDdata');
 		const hrFormDetails = {
 			en_Id: _isNull(enIDdata) ? '' : enIDdata,
 			contactId: contactID || 0,
@@ -212,8 +212,8 @@ export const hrUtils = {
 						? 0
 						: watch('getDurationType')
 					: _isNull(d.getDurationType.toString())
-						? 0
-						: d.getDurationType.toString(),
+					? 0
+					: d.getDurationType.toString(),
 			timeZone:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('region'))
@@ -429,36 +429,7 @@ export const hrUtils = {
 			}
 		}
 	},
-	showMatchmaking(
-		apiData,
-		loggedInUserTypeID,
-		callAPI,
-		urlSplitter,
-		updatedSplitter,
-		nextActionKey, // only to hide matchmaking button in case of share Profile
-	) {
-		if (apiData?.IsAccepted === 1) {
-			if (
-				loggedInUserTypeID === UserAccountRole.TALENTOPS ||
-				loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
-				loggedInUserTypeID === UserAccountRole.DEVELOPER ||
-				loggedInUserTypeID === UserAccountRole.ADMINISTRATOR
-			) {
-				return (
-					<MatchmakingModal
-						nextActionKey={nextActionKey}
-						apiData={apiData}
-						refreshedHRDetail={callAPI}
-						hrID={urlSplitter?.split('HR')[0]}
-						hrNo={updatedSplitter}
-						hrStatusCode={apiData?.HRStatusCode}
-						hrStatus={apiData?.HRStatus}
-						hrPriority={apiData?.StarMarkedStatusCode}
-					/>
-				);
-			}
-		} else return null;
-	},
+
 	handleScheduleInterview(item, miscData, HRStatusCode) {
 		if (
 			HRStatusCode !== HiringRequestHRStatus.ON_HOLD &&
@@ -561,7 +532,7 @@ export const hrUtils = {
 			tempArray.push({
 				key: item?.label,
 				label: item?.label,
-				isEnabled: item?.IsEnabled,
+				IsEnabled: item?.IsEnabled,
 			}),
 		);
 
@@ -661,4 +632,7 @@ export const hrUtils = {
 			key: item?.StrDateTime + index,
 		}));
 	},
+
+	dynamicCTAsSlot1: (item) => {},
+	dynamicCTAsSlot2: (item) => {},
 };

@@ -76,8 +76,7 @@ export const EmailRegEx = {
 		/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
 };
 export const URLRegEx = {
-	url:
-	/^[a-zA-Z.:]+$/,
+	url: /^[a-zA-Z.:]+$/,
 };
 
 export const UsernameRegEx = {
@@ -118,6 +117,19 @@ export class TalentOnboardStatus {
 	static CLONE_HR = 'Clone HR';
 	static CONFIRM_SLOT = 'Confirm Slot';
 	static SUBMIT_CLIENT_FEEDBACK = 'Submit Client Feedback';
+}
+
+export class HRCTA {
+	static EDIT_HR = 'EditHR';
+	static EDIT_DEBRIEFING_HR = 'DebriefingHR';
+	static DEBRIEFING_NR = 'DebriefingNR';
+	static CONVERT_TO_DP = 'Convert to DP';
+	static CONVERT_TO_CONTRACTUAL = 'Convert to Contractual';
+	static AM_ASSIGNMENT = 'AMAssignment';
+	static ACCEPT_HR = 'Accept HR';
+	static UPDATE_TR = 'UpdateTR';
+	static SHARE_PROFILE = 'Share a Profile';
+	static ADD_NOTES = 'Add Notes';
 }
 export class InputType {
 	static TEXT = 'text';

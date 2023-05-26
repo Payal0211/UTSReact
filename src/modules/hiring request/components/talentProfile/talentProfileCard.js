@@ -1,10 +1,14 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import EmptyTalentProfile from '../emptyTalentProfile/emptyTalentProfile';
 import TalentProfileCardStyle from './talentProfile.module.css';
+import { hrUtils } from 'modules/hiring request/hrUtils';
+import { HiringRequestHRStatus } from 'constants/application';
+import MatchmakingModal from '../matchmaking/matchmaking';
 
 const TalentList = React.lazy(() => import('../talentList/talentList'));
 
 const TalentProfileCard = ({
+	apiData,
 	talentCTA,
 	talentDetail,
 	miscData,
@@ -19,12 +23,51 @@ const TalentProfileCard = ({
 	callHRapi,
 	inteviewSlotDetails,
 	setHRapiCall,
+	urlSplitter,
+	getNextActionMissingActionMemo,
+	updatedSplitter,
 }) => {
+	const [isMatchmaking, setIsMatchMaking] = useState(false);
 	return (
 		<div className={TalentProfileCardStyle.talentProfileContainer}>
-			<label>
-				<h1>Profiles Shared</h1>
-			</label>
+			<div
+				style={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'flexStart',
+					gap: '24px',
+				}}>
+				<label>
+					<h1>Profiles Shared</h1>
+				</label>
+				{apiData?.dynamicCTA?.MatchMaking && (
+					<button
+						disabled={!apiData?.dynamicCTA?.MatchMaking?.IsEnabled}
+						onClick={() => setIsMatchMaking(true)}
+						className={
+							apiData?.dynamicCTA?.MatchMaking?.IsEnabled
+								? TalentProfileCardStyle.matchmakeButtonOutline
+								: TalentProfileCardStyle.disabledTransparentBtnGroup
+						}>
+						Matchmake Talent
+					</button>
+				)}
+				{isMatchmaking && (
+					<MatchmakingModal
+						isMatchmaking={isMatchmaking}
+						setMatchmakingModal={setIsMatchMaking}
+						onCancel={() => setIsMatchMaking(false)}
+						apiData={apiData}
+						refreshedHRDetail={callAPI}
+						hrID={urlSplitter?.split('HR')[0]}
+						hrNo={updatedSplitter}
+						hrStatusCode={apiData?.HRStatusCode}
+						hrStatus={apiData?.HRStatus}
+						hrPriority={apiData?.StarMarkedStatusCode}
+					/>
+				)}
+			</div>
+
 			<div
 				className={TalentProfileCardStyle.talentCard}
 				style={{

@@ -22,10 +22,10 @@ const HROperator = ({
 					selectable={true}
 					defaultSelectedKeys={'0'}>
 					{listItem?.map((item) =>
-						item?.isEnabled ? (
+						item?.IsEnabled ? (
 							<Menu.Item
-								style={{ cursor: item?.isEnabled ? 'pointer' : 'no-drop' }}
-								disabled={!item?.isEnabled}
+								style={{ cursor: item?.IsEnabled ? 'pointer' : 'no-drop' }}
+								disabled={!item?.IsEnabled}
 								key={item.label}
 								onClick={menuAction}>
 								{item.label}
@@ -35,8 +35,8 @@ const HROperator = ({
 								placement="bottom"
 								title="Unauthorized">
 								<Menu.Item
-									style={{ cursor: item?.isEnabled ? 'pointer' : 'no-drop' }}
-									disabled={!item?.isEnabled}
+									style={{ cursor: item?.IsEnabled ? 'pointer' : 'no-drop' }}
+									disabled={!item?.IsEnabled}
 									key={item.label}
 									onClick={menuAction}>
 									{item.label}

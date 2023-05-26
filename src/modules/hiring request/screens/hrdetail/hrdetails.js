@@ -13,6 +13,7 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import HRDetailStyle from './hrdetail.module.css';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
+import { AiOutlineDown } from 'react-icons/ai';
 import { ReactComponent as DeleteSVG } from 'assets/svg/delete.svg';
 import UTSRoutes from 'constants/routes';
 import { HTTPStatusCode } from 'constants/network';
@@ -30,8 +31,9 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
 import AcceptHR from 'modules/hiring request/components/acceptHR/acceptHR';
-import CloneHRModal from "../allHiringRequest/cloneHRModal.module.css"
-import CloneHR from '../allHiringRequest/cloneHRModal';
+import CloneHR from 'modules/hiring request/components/cloneHR/cloneHR';
+import CTASlot1 from 'modules/hiring request/components/CTASlot1/CTASlot1';
+import CTASlot2 from 'modules/hiring request/components/CTASlot2/CTASlot2';
 
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
@@ -58,7 +60,7 @@ const HRDetailScreen = () => {
 	const [acceptHRModal, setAcceptHRModal] = useState(false);
 	const [shareProfileModal, setShareProfileModal] = useState(false);
 	const [editDebrifing, setEditDebring] = useState([]);
-	const [openCloneHR, setCloneHR] = useState(false);
+
 	const {
 		register,
 		handleSubmit,
@@ -114,37 +116,8 @@ const HRDetailScreen = () => {
 		},
 		[navigate, setError, urlSplitter, watch],
 	);
-	const getNextActionMissingActionMemo = useMemo(
-		() =>
-			apiData?.activity_MissingAction_CTA?.length > 0 &&
-			apiData?.activity_MissingAction_CTA?.[0],
-		[apiData?.activity_MissingAction_CTA],
-	);
-	const AMAssignmentHandler = useCallback(() => {});
-	const nextMissingActionHandler = useCallback(() => {
-		const getMissingActionResult = getNextActionMissingActionMemo;
-		switch (getMissingActionResult?.key) {
-			case 'AcceptHR':
-				return (
-					<button
-						onClick={() => setAcceptHRModal(true)}
-						className={HRDetailStyle.btnPrimaryOutline}>
-						Accept HR
-					</button>
-				);
 
-			case 'AMAssignment':
-				return (
-					<button
-						onClick={null}
-						className={HRDetailStyle.btnPrimaryOutline}>
-						AM Assignment
-					</button>
-				);
-			default:
-				break;
-		}
-	}, [getNextActionMissingActionMemo]);
+	const AMAssignmentHandler = useCallback(() => {});
 
 	const clientOnHoldSubmitHandler = useCallback(
 		async (d) => {
@@ -171,14 +144,16 @@ const HRDetailScreen = () => {
 		setDeleteReason(response && response?.responseBody?.details);
 	}, []);
 
-	const updateODRPoolStatusHandler = useCallback(
-		async (data) => {
-			await hiringRequestDAO.updateODRPOOLStatusRequestDAO(data);
+	/**  Put ON HOLD * */
 
-			callAPI(urlSplitter?.split('HR')[0]);
-		},
-		[callAPI, urlSplitter],
-	);
+	// const updateODRPoolStatusHandler = useCallback(
+	// 	async (data) => {
+	// 		await hiringRequestDAO.updateODRPOOLStatusRequestDAO(data);
+
+	// 		callAPI(urlSplitter?.split('HR')[0]);
+	// 	},
+	// 	[callAPI, urlSplitter],
+	// );
 
 	useEffect(() => {
 		setLoading(true);
@@ -201,18 +176,6 @@ const HRDetailScreen = () => {
 			localStorage.setItem('hrID', hrId.hrid);
 			localStorage.setItem('fromEditDeBriefing', fromEditDeBriefing);
 
-			navigate('/allhiringrequest/addnewhr');
-		}
-	};
-
-	const cloneHRModalInfo = () => {
-		setCloneHR(true)
-	}
-	const navigateToCloneHR = async () => {
-		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid);
-		if (response?.statusCode === HTTPStatusCode.OK) {
-			localStorage.setItem('hrID', hrId.hrid);
-	setCloneHR(false)
 			navigate('/allhiringrequest/addnewhr');
 		}
 	};
@@ -244,11 +207,13 @@ const HRDetailScreen = () => {
 								)}
 							</div>
 						)}
-						<button
-							className={HRDetailStyle.btnPrimary}
-						 onClick={cloneHRModalInfo}>
-							Clone - {updatedSplitter}
-						</button>
+						{/** ----Clone HR */}
+						{apiData?.dynamicCTA?.CloneHR && (
+							<CloneHR
+								updatedSplitter={updatedSplitter}
+								cloneHR={apiData?.dynamicCTA?.CloneHR}
+							/>
+						)}
 
 						{editDebrifing?.length > 0 && editDebrifing?.[0]?.IsEnabled && (
 							<button
@@ -261,25 +226,22 @@ const HRDetailScreen = () => {
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
-							{apiData?.HRStatusCode !== HiringRequestHRStatus.CANCELLED &&
-								hrUtils.showMatchmaking(
-									apiData,
-									miscData?.LoggedInUserTypeID,
-									callAPI,
-									urlSplitter,
-									updatedSplitter,
-									getNextActionMissingActionMemo?.key, // only to hide matchmaking button in case of share Profile
-								)}
+							<CTASlot1
+								callAPI={callAPI}
+								hrID={urlSplitter?.split('HR')[0]}
+								slotItem={apiData?.dynamicCTA?.CTA_Set1}
+								apiData={apiData}
+								miscData={miscData}
+							/>
+							<CTASlot2
+								callAPI={callAPI}
+								hrID={urlSplitter?.split('HR')[0]}
+								slotItem={apiData?.dynamicCTA?.CTA_Set2}
+								apiData={apiData}
+								miscData={miscData}
+							/>
 
-							{acceptHRModal && (
-								<AcceptHR
-									hrID={apiData?.ClientDetail?.HR_Number}
-									openModal={acceptHRModal}
-									cancelModal={() => setAcceptHRModal(false)}
-								/>
-							)}
-
-							{apiData?.activity_MissingAction_CTA?.length > 0 && (
+							{/* {apiData?.activity_MissingAction_CTA?.length > 0 && (
 								<span>
 									<h4>
 										{getNextActionMissingActionMemo?.key !== 'ShareAProfile' &&
@@ -287,8 +249,9 @@ const HRDetailScreen = () => {
 										{nextMissingActionHandler()}{' '}
 									</h4>
 								</span>
-							)}
-							<HROperator
+							)} */}
+							{/**  As of No Put on HOLD */}
+							{/* <HROperator
 								title={
 									hrUtils.handleAdHOC(apiData && apiData?.AdhocPoolValue)[0]
 										?.label
@@ -329,7 +292,7 @@ const HRDetailScreen = () => {
 											break;
 									}
 								}}
-							/>
+							/> */}
 							<div
 								className={HRDetailStyle.hiringRequestPriority}
 								onClick={() => {
@@ -368,7 +331,7 @@ const HRDetailScreen = () => {
 									clientDetail={apiData?.ClientDetail}
 									talentLength={apiData?.HRTalentDetails?.length}
 									apiData={apiData?.HRStatus}
-									allApiData = {apiData}
+									allApiData={apiData}
 								/>
 							</Suspense>
 						)}
@@ -379,9 +342,12 @@ const HRDetailScreen = () => {
 						) : (
 							<Suspense>
 								<TalentProfileCard
+									urlSplitter={urlSplitter}
+									updatedSplitter={updatedSplitter}
+									apiData={apiData}
 									clientDetail={apiData?.ClientDetail}
 									callAPI={callAPI}
-									talentCTA={apiData?.talent_CTAs}
+									talentCTA={apiData?.dynamicCTA?.talent_CTAs}
 									HRStatusCode={apiData?.HRStatusCode}
 									talentDetail={apiData?.HRTalentDetails}
 									hrId={apiData.HR_Id}
@@ -595,15 +561,6 @@ const HRDetailScreen = () => {
 						/>
 					</div>
 				</div>
-			</Modal>
-			<Modal
-				width={'700px'}
-				centered
-				footer={false}
-				open={openCloneHR}
-				className='cloneHRConfWrap'
-				onCancel={() => setCloneHR(false)}>
-				<CloneHR getHRnumber={updatedSplitter} onCancel={() => setCloneHR(false)} navigateToCloneHR={navigateToCloneHR} />
 			</Modal>
 		</WithLoader>
 	);
