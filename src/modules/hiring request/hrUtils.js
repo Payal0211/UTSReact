@@ -79,7 +79,7 @@ export const hrUtils = {
 		fileName,
 		jdDumpID,
 	) {
-	let enIDdata = localStorage.getItem("enIDdata");
+		let enIDdata = localStorage.getItem('enIDdata');
 		const hrFormDetails = {
 			en_Id: _isNull(enIDdata) ? '' : enIDdata,
 			contactId: contactID || 0,
@@ -212,8 +212,8 @@ export const hrUtils = {
 						? 0
 						: watch('getDurationType')
 					: _isNull(d.getDurationType.toString())
-						? 0
-						: d.getDurationType.toString(),
+					? 0
+					: d.getDurationType.toString(),
 			timeZone:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('region'))
@@ -561,7 +561,7 @@ export const hrUtils = {
 			tempArray.push({
 				key: item?.label,
 				label: item?.label,
-				isEnabled: item?.IsEnabled,
+				IsEnabled: item?.IsEnabled,
 			}),
 		);
 
@@ -661,4 +661,7 @@ export const hrUtils = {
 			key: item?.StrDateTime + index,
 		}));
 	},
+
+	dynamicCTAsSlot1: (item) => {},
+	dynamicCTAsSlot2: (item) => {},
 };

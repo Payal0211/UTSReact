@@ -6,15 +6,13 @@
     cursor: pointer;
     
 }
-.disabledTransparentBtnGroup{
-    opacity: .5;
-    cursor: no-drop;
-}
+
 .btnLabel{
     text-decoration: underline;
     text-transform: uppercase;
     color: var(--uplers-black);
     font-size: 14px;
+    cursor: pointer;
     font-weight: 500;
 }
 .btnPrimary {

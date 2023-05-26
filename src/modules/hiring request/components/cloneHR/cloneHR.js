@@ -28,7 +28,7 @@ const CloneHR = ({ updatedSplitter, cloneHR }) => {
 	return (
 		<div
 			className={
-				cloneHR?.isEnabled
+				cloneHR?.IsEnabled
 					? CloneHRStyle.transparentBtnGroup
 					: CloneHRStyle.disabledTransparentBtnGroup
 			}

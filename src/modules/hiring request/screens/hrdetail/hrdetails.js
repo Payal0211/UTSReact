@@ -13,6 +13,7 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import HRDetailStyle from './hrdetail.module.css';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
+import { AiOutlineDown } from 'react-icons/ai';
 import { ReactComponent as DeleteSVG } from 'assets/svg/delete.svg';
 import UTSRoutes from 'constants/routes';
 import { HTTPStatusCode } from 'constants/network';
@@ -31,6 +32,7 @@ import { hrUtils } from 'modules/hiring request/hrUtils';
 import { _isNull } from 'shared/utils/basic_utils';
 import AcceptHR from 'modules/hiring request/components/acceptHR/acceptHR';
 import CloneHR from 'modules/hiring request/components/cloneHR/cloneHR';
+import CTASlot1 from 'modules/hiring request/components/CTASlot1/CTASlot1';
 
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
@@ -113,37 +115,8 @@ const HRDetailScreen = () => {
 		},
 		[navigate, setError, urlSplitter, watch],
 	);
-	const getNextActionMissingActionMemo = useMemo(
-		() =>
-			apiData?.activity_MissingAction_CTA?.length > 0 &&
-			apiData?.activity_MissingAction_CTA?.[0],
-		[apiData?.activity_MissingAction_CTA],
-	);
-	const AMAssignmentHandler = useCallback(() => {});
-	const nextMissingActionHandler = useCallback(() => {
-		const getMissingActionResult = getNextActionMissingActionMemo;
-		switch (getMissingActionResult?.key) {
-			case 'AcceptHR':
-				return (
-					<button
-						onClick={() => setAcceptHRModal(true)}
-						className={HRDetailStyle.btnPrimaryOutline}>
-						Accept HR
-					</button>
-				);
 
-			case 'AMAssignment':
-				return (
-					<button
-						onClick={null}
-						className={HRDetailStyle.btnPrimaryOutline}>
-						AM Assignment
-					</button>
-				);
-			default:
-				break;
-		}
-	}, [getNextActionMissingActionMemo]);
+	const AMAssignmentHandler = useCallback(() => {});
 
 	const clientOnHoldSubmitHandler = useCallback(
 		async (d) => {
@@ -232,12 +205,13 @@ const HRDetailScreen = () => {
 							</div>
 						)}
 						{/** ----Clone HR */}
-						{apiData?.dynamicCTA?.cloneHR && (
+						{apiData?.dynamicCTA?.CloneHR && (
 							<CloneHR
 								updatedSplitter={updatedSplitter}
-								cloneHR={apiData?.dynamicCTA?.cloneHR}
+								cloneHR={apiData?.dynamicCTA?.CloneHR}
 							/>
 						)}
+
 						{editDebrifing?.length > 0 && editDebrifing?.[0]?.IsEnabled && (
 							<button
 								className={HRDetailStyle.btnPrimary}
@@ -249,25 +223,26 @@ const HRDetailScreen = () => {
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
-							{apiData?.HRStatusCode !== HiringRequestHRStatus.CANCELLED &&
-								hrUtils.showMatchmaking(
-									apiData,
-									miscData?.LoggedInUserTypeID,
-									callAPI,
-									urlSplitter,
-									updatedSplitter,
-									getNextActionMissingActionMemo?.key, // only to hide matchmaking button in case of share Profile
-								)}
-
-							{acceptHRModal && (
-								<AcceptHR
-									hrID={apiData?.ClientDetail?.HR_Number}
-									openModal={acceptHRModal}
-									cancelModal={() => setAcceptHRModal(false)}
+							<CTASlot1
+								callAPI={callAPI}
+								hrID={urlSplitter?.split('HR')[0]}
+								slotItem={apiData?.dynamicCTA?.CTA_Set1}
+								apiData={apiData}
+								miscData={miscData}
+							/>
+							<div>
+								<HROperator
+									icon={<AiOutlineDown />}
+									backgroundColor={`var(--color-sunlight)`}
+									iconBorder={`1px solid var(--color-sunlight)`}
+									isDropdown={true}
+									listItem={hrUtils.dynamicCTAsSlot2(
+										apiData?.dynamicCTA?.ctA_Set2,
+									)}
 								/>
-							)}
+							</div>
 
-							{apiData?.activity_MissingAction_CTA?.length > 0 && (
+							{/* {apiData?.activity_MissingAction_CTA?.length > 0 && (
 								<span>
 									<h4>
 										{getNextActionMissingActionMemo?.key !== 'ShareAProfile' &&
@@ -275,8 +250,9 @@ const HRDetailScreen = () => {
 										{nextMissingActionHandler()}{' '}
 									</h4>
 								</span>
-							)}
-							<HROperator
+							)} */}
+							{/**  As of No Put on HOLD */}
+							{/* <HROperator
 								title={
 									hrUtils.handleAdHOC(apiData && apiData?.AdhocPoolValue)[0]
 										?.label
@@ -317,7 +293,7 @@ const HRDetailScreen = () => {
 											break;
 									}
 								}}
-							/>
+							/> */}
 							<div
 								className={HRDetailStyle.hiringRequestPriority}
 								onClick={() => {
@@ -367,9 +343,12 @@ const HRDetailScreen = () => {
 						) : (
 							<Suspense>
 								<TalentProfileCard
+									urlSplitter={urlSplitter}
+									updatedSplitter={updatedSplitter}
+									apiData={apiData}
 									clientDetail={apiData?.ClientDetail}
 									callAPI={callAPI}
-									talentCTA={apiData?.talent_CTAs}
+									talentCTA={apiData?.dynamicCTA?.talent_CTAs}
 									HRStatusCode={apiData?.HRStatusCode}
 									talentDetail={apiData?.HRTalentDetails}
 									hrId={apiData.HR_Id}

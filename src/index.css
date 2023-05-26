@@ -716,3 +716,7 @@ display: none;
       justify-content: center;
       height: calc(100vh - 300px);
 }
+.disabledTransparentBtnGroup {
+  opacity: .5;
+  cursor: no-drop;
+}
