@@ -38,6 +38,7 @@ import { DownOutlined } from '@ant-design/icons';
 import EditBillRate from '../editBillAndPayRate/editBillRateModal';
 import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
 import ProfileLogStyle from './profileLog.module.css';
+import { useParams } from 'react-router-dom';
 
 const TalentList = ({
 	talentCTA,
@@ -54,6 +55,7 @@ const TalentList = ({
 	setHRapiCall,
 	callHRapi,
 	inteviewSlotDetails,
+	talentID,
 }) => {
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
@@ -69,6 +71,7 @@ const TalentList = ({
 	const [showTalentStatus, setTalentStatus] = useState(false);
 	const [updateOnboardClientModal, setOnboardClientModal] = useState(false);
 	const [updateOnboardTalentModal, setOnboardTalentModal] = useState(false);
+	const [profileLog, setProfileLog] = useState(null);
 	const [updateLegalClientOnboardModal, setLegalClientOnboardModal] =
 		useState(false);
 	const [updateLegalTalentOnboardModal, setLegalTalentOnboardModal] =
@@ -1215,6 +1218,44 @@ const TalentList = ({
 		setConfirmSlotRadio(1);
 	}, [getConfirmSlotModal]);
 
+
+
+
+
+
+
+	const viewProfileInfo = async () => {
+		let response = await hiringRequestDAO.getTalentProfileLogDAO({
+			talentid: 10501,
+			fromDate: null,
+			toDate: null,
+		});
+		setProfileLog(response && response?.responseBody?.details);
+	}
+
+	useEffect(() => {
+		viewProfileInfo();
+	}, []);
+
+	const [profileShared, setProfileShared] = useState([])
+
+	const profileLogBox = async () => {
+
+		let profileObj = {
+			talentID: 10501,
+			typeID: 6,
+			// fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
+			// toDate: !!end && new Date(end).toLocaleDateString('en-US'),
+		};
+
+		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
+			profileObj,
+		);
+		setProfileShared(response)
+	}
+
+	console.log(profileShared, "profileShared")
+
 	return (
 		<div>
 			{contextHolder}
@@ -1232,6 +1273,7 @@ const TalentList = ({
 					},
 				}}
 				renderItem={(item, listIndex) => {
+
 					return (
 						<div
 							key={item?.Name}
@@ -1287,6 +1329,7 @@ const TalentList = ({
 												</div>
 											</div>
 										</div>
+
 										<div style={{ cursor: 'pointer' }}>
 											<Dropdown
 												trigger={['click']}
@@ -1298,6 +1341,7 @@ const TalentList = ({
 															onClick={() => {
 																setProfileLogModal(true); // TODO:-
 																setTalentIndex(listIndex);
+																viewProfileInfo()
 															}}>
 															View Profile Log
 														</Menu.Item>
@@ -1764,10 +1808,10 @@ const TalentList = ({
 					<div className={ProfileLogStyle.profileNameRole}>
 						<ul>
 							<li>
-								<span>Name:</span> <u>Lalit Shah</u>
+								<span>Name:</span> <u>{profileLog?.talentName}</u>
 							</li>
 							<li>
-								<span>Role:</span> UI/UX Designer
+								<span>Role:</span> {profileLog?.talentRole}
 							</li>
 						</ul>
 					</div>
@@ -1778,83 +1822,97 @@ const TalentList = ({
 				</div>
 
 				<div className={ProfileLogStyle.profileLogBox}>
-					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileShared} ${ProfileLogStyle.select}`}>
-						<h3>10</h3>
+					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileShared} ${ProfileLogStyle.select}`} onClick={profileLogBox}>
+						<h3>{profileLog?.profileSharedCount}</h3>
 						<p>Profile Shared</p>
 					</div>
 					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileReceived}`}>
-						<h3>08</h3>
+						<h3>{profileLog?.feedbackCount}</h3>
 						<p>Feedback Received</p>
 					</div>
 					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileRejected}`}>
-						<h3>04</h3>
+						<h3>{profileLog?.rejectedCount}</h3>
 						<p>Rejected</p>
 					</div>
 					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileSelFor}`}>
-						<h3>04</h3>
+						<h3>{profileLog?.selectedForCount}</h3>
 						<p>Selected For</p>
 					</div>
 				</div>
+				{profileShared?.length === 0 && (
+
+					<p>Select the stages to view thier HRs</p>
+				)}
+
+				{profileShared?.length !== 0 && (
+
+					<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
+						<div className={ProfileLogStyle.profileLogListHead}>
+							<h4>Rejected: 04 HRs</h4>
+							<div className={ProfileLogStyle.profileLogListAction}>
+								<button><LeftArrowSVG /></button>
+								<button><RightArrowSVG /></button>
+							</div>
+						</div>
+
+						<div className={ProfileLogStyle.profileLogList}>
 
 
-				<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
-					<div className={ProfileLogStyle.profileLogListHead}>
-						<h4>Rejected: 04 HRs</h4>
-						<div className={ProfileLogStyle.profileLogListAction}>
-							<button><LeftArrowSVG /></button>
-							<button><RightArrowSVG /></button>
+
+							<table>
+								<thead>
+									<tr>
+										<th>No.</th>
+										<th>HR ID</th>
+										<th>Position</th>
+										<th>Company</th>
+										<th>Feedback</th>
+										<th>Date</th>
+									</tr>
+								</thead>
+								<tbody>
+									{profileShared?.responseBody?.details?.map((item) => {
+										return (
+
+											<tr>
+												<td>HR 1</td>
+												<td><u>{item?.hrid}</u></td>
+												<td>{item?.position}</td>
+												<td><u>{item?.company}</u></td>
+												<td><a href="#">Profile Shared</a></td>
+												<td>{item?.sDate}</td>
+											</tr>
+										)
+									})}
+									{/* <tr>
+									<td>HR 1</td>
+									<td><u>HR123456789012</u></td>
+									<td>UX/UI Designer</td>
+									<td><u>Sun Spaces Solutions...</u></td>
+									<td><a href="#">Profile Rejected</a></td>
+									<td>21/10/2022</td>
+								</tr>
+								<tr>
+									<td>HR 1</td>
+									<td><u>HR123456789012</u></td>
+									<td>UX/UI Designer</td>
+									<td><u>Sun Spaces Solutions...</u></td>
+									<td><a href="#">Profile Rejected</a></td>
+									<td>21/10/2022</td>
+								</tr>
+								<tr>
+									<td>HR 1</td>
+									<td><u>HR123456789012</u></td>
+									<td>UX/UI Designer</td>
+									<td><u>Sun Spaces Solutions...</u></td>
+									<td><a href="#">Profile Rejected</a></td>
+									<td>21/10/2022</td>
+								</tr> */}
+								</tbody>
+							</table>
 						</div>
 					</div>
-
-					<div className={ProfileLogStyle.profileLogList}>
-						<table>
-							<thead>
-								<tr>
-									<th>No.</th>
-									<th>HR ID</th>
-									<th>Position</th>
-									<th>Company</th>
-									<th>Feedback</th>
-									<th>Date</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>HR 1</td>
-									<td><u>HR123456789012</u></td>
-									<td>UX/UI Designer</td>
-									<td><u>Sun Spaces Solutions...</u></td>
-									<td><a href="#">Profile Rejected</a></td>
-									<td>21/10/2022</td>
-								</tr>
-								<tr>
-									<td>HR 1</td>
-									<td><u>HR123456789012</u></td>
-									<td>UX/UI Designer</td>
-									<td><u>Sun Spaces Solutions...</u></td>
-									<td><a href="#">Profile Rejected</a></td>
-									<td>21/10/2022</td>
-								</tr>
-								<tr>
-									<td>HR 1</td>
-									<td><u>HR123456789012</u></td>
-									<td>UX/UI Designer</td>
-									<td><u>Sun Spaces Solutions...</u></td>
-									<td><a href="#">Profile Rejected</a></td>
-									<td>21/10/2022</td>
-								</tr>
-								<tr>
-									<td>HR 1</td>
-									<td><u>HR123456789012</u></td>
-									<td>UX/UI Designer</td>
-									<td><u>Sun Spaces Solutions...</u></td>
-									<td><a href="#">Profile Rejected</a></td>
-									<td>21/10/2022</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
+				)}
 			</Modal>
 
 
