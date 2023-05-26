@@ -1,0 +1,211 @@
+.modalTitle {
+  margin: 0 0 40px;
+}
+.modalTitle h2 {
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 39px;
+  color: #232323;
+}
+
+.profileNameRoleDate {
+  justify-content: space-between;
+  display: flex;
+  margin-bottom: 40px;
+}
+
+.profileNameRole {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 18px;
+  color: #232323;
+}
+.profileNameRole ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 16px;
+}
+.profileNameRole ul li {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 12px 24px;
+}
+.profileNameRole ul li span {
+  color: #676767;
+}
+.profileNameDate {
+  margin: 0;
+}
+
+.profileLogBox {
+  margin: 0 0 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.profileLogBoxItem {
+  /* border: 1px solid #cecccc; */
+  border-radius: 8px;
+  padding: 16px;
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #232323;
+  cursor: pointer;
+  flex: 1;
+  transition: all 0.35s ease 0s;
+  box-shadow: 0px 2px 8px rgba(204, 238, 204, 0.25);
+  box-shadow: 0 0 0 1px #cecccc;
+}
+.profileLogBoxItem h3 {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 27px;
+  color: #232323;
+  margin: 0 0 8px;
+}
+.profileLogBoxItem p {
+  margin-bottom: 0;
+}
+.profileLogListWrap {
+  border: 1px solid #cecccc;
+  border-radius: 8px;
+  transition: all 0.35s ease 0s;
+}
+.profileLogListHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 40px;
+  min-height: 70px;
+  border-bottom: 1px solid #cecccc;
+  border-radius: 8px 8px 0 0;
+  transition: all 0.35s ease 0s;
+}
+.profileLogListHead h4 {
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  color: #232323;
+  margin: 0;
+}
+
+.profileLogListAction {
+  display: flex;
+  gap: 16px;
+}
+.profileLogListAction button {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border-radius: 20px;
+  border: none;
+  align-items: center;
+  justify-content: center;
+  display: inline-flex;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+  cursor: pointer;
+}
+.profileLogListAction button svg {
+  width: 16px;
+  height: 16px;
+}
+.profileLogList {
+  overflow-x: auto;
+}
+.profileLogList table {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  color: #232323;
+  background: transparent;
+  margin: 0;
+}
+.profileLogList tr th {
+  font-family: Montserrat !important;
+  font-weight: 600 !important;
+  font-size: inherit;
+  line-height: inherit;
+  color: #232323 !important;
+  white-space: nowrap;
+  border: none;
+  border-bottom: 1px dashed #cecccc;
+  padding: 16px;
+  background: transparent;
+}
+.profileLogList tr td {
+  font-family: Montserrat !important;
+  font-weight: 400;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  padding: 16px;
+  border: none;
+  border-bottom: 1px solid #f7f7f7;
+  background: transparent;
+  cursor: default;
+}
+.profileLogList tr th:first-child,
+.profileLogList tr td:first-child {
+  padding-left: 40px;
+}
+.profileLogList tr th:last-child,
+.profileLogList tr td:last-child {
+  padding-right: 40px;
+}
+.profileLogList tr:last-child td {
+  border-bottom: none;
+}
+.profileLogList a {
+  text-decoration-line: underline;
+  color: #0278e4;
+  outline: none;
+}
+
+.profileLogBoxItem:hover {
+  background: rgba(245, 245, 245, 0.8);
+}
+
+.profileShared.select {
+  background: rgba(245, 245, 245, 0.8);
+  box-shadow: 0 0 0 2px #784fcd;
+}
+.profileReceived.select {
+  background: rgba(245, 245, 245, 0.8);
+  box-shadow: 0 0 0 2px #00dfdf;
+}
+.profileRejected.select {
+  background: rgba(245, 245, 245, 0.8);
+  box-shadow: 0 0 0 2px #e41a1c;
+}
+.profileSelFor.select {
+  background: rgba(245, 245, 245, 0.8);
+  box-shadow: 0 0 0 2px #85b844;
+}
+.profileLogListWrap.profileShared,
+.profileShared .profileLogListHead {
+  border-color: #784fcd;
+}
+.profileLogListWrap.profileReceived,
+.profileReceived .profileLogListHead {
+  border-color: #00dfdf;
+}
+.profileLogListWrap.profileRejected,
+.profileRejected .profileLogListHead {
+  border-color: #e41a1c;
+}
+.profileLogListWrap.profileSelFor,
+.profileSelFor .profileLogListHead {
+  border-color: #85b844;
+}

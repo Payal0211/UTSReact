@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Divider, List, Modal, message, Space } from 'antd';
+import { Dropdown, Menu, Divider, List, Modal, message, Space, Table } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import TalentListStyle from './talentList.module.css';
@@ -7,6 +7,8 @@ import { AiOutlineDown } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
 import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
+import { ReactComponent as LeftArrowSVG } from 'assets/svg/arrowLeft.svg';
+import { ReactComponent as RightArrowSVG } from 'assets/svg/arrowRight.svg';
 import { TalentOnboardStatus } from 'constants/application';
 import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
 import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
@@ -35,6 +37,7 @@ import EditPayRate from '../editBillAndPayRate/editPayRateModal';
 import { DownOutlined } from '@ant-design/icons';
 import EditBillRate from '../editBillAndPayRate/editBillRateModal';
 import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
+import ProfileLogStyle from './profileLog.module.css';
 
 const TalentList = ({
 	talentCTA,
@@ -1647,7 +1650,7 @@ const TalentList = ({
 				}}
 			/>
 			{/** ============ MODAL FOR PROFILE LOG ================ */}
-			<Modal
+			{/* <Modal
 				width="864px"
 				centered
 				footer={null}
@@ -1742,7 +1745,119 @@ const TalentList = ({
 						})}
 					</div>
 				</div>
+			</Modal> */}
+
+			<Modal
+				width="992px"
+				centered
+				footer={null}
+				open={showProfileLogModal}
+				className="commonModalWrap"
+				// onOk={() => setVersantModal(false)}
+				onCancel={() => setProfileLogModal(false)}>
+
+				<div className={ProfileLogStyle.modalTitle}>
+					<h2>Profile Log</h2>
+				</div>
+
+				<div className={ProfileLogStyle.profileNameRoleDate}>
+					<div className={ProfileLogStyle.profileNameRole}>
+						<ul>
+							<li>
+								<span>Name:</span> <u>Lalit Shah</u>
+							</li>
+							<li>
+								<span>Role:</span> UI/UX Designer
+							</li>
+						</ul>
+					</div>
+
+					<div className={ProfileLogStyle.profileNameDate}>
+						Date here...
+					</div>
+				</div>
+
+				<div className={ProfileLogStyle.profileLogBox}>
+					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileShared} ${ProfileLogStyle.select}`}>
+						<h3>10</h3>
+						<p>Profile Shared</p>
+					</div>
+					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileReceived}`}>
+						<h3>08</h3>
+						<p>Feedback Received</p>
+					</div>
+					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileRejected}`}>
+						<h3>04</h3>
+						<p>Rejected</p>
+					</div>
+					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileSelFor}`}>
+						<h3>04</h3>
+						<p>Selected For</p>
+					</div>
+				</div>
+
+
+				<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
+					<div className={ProfileLogStyle.profileLogListHead}>
+						<h4>Rejected: 04 HRs</h4>
+						<div className={ProfileLogStyle.profileLogListAction}>
+							<button><LeftArrowSVG /></button>
+							<button><RightArrowSVG /></button>
+						</div>
+					</div>
+
+					<div className={ProfileLogStyle.profileLogList}>
+						<table>
+							<thead>
+								<tr>
+									<th>No.</th>
+									<th>HR ID</th>
+									<th>Position</th>
+									<th>Company</th>
+									<th>Feedback</th>
+									<th>Date</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>HR 1</td>
+									<td><u>HR123456789012</u></td>
+									<td>UX/UI Designer</td>
+									<td><u>Sun Spaces Solutions...</u></td>
+									<td><a href="#">Profile Rejected</a></td>
+									<td>21/10/2022</td>
+								</tr>
+								<tr>
+									<td>HR 1</td>
+									<td><u>HR123456789012</u></td>
+									<td>UX/UI Designer</td>
+									<td><u>Sun Spaces Solutions...</u></td>
+									<td><a href="#">Profile Rejected</a></td>
+									<td>21/10/2022</td>
+								</tr>
+								<tr>
+									<td>HR 1</td>
+									<td><u>HR123456789012</u></td>
+									<td>UX/UI Designer</td>
+									<td><u>Sun Spaces Solutions...</u></td>
+									<td><a href="#">Profile Rejected</a></td>
+									<td>21/10/2022</td>
+								</tr>
+								<tr>
+									<td>HR 1</td>
+									<td><u>HR123456789012</u></td>
+									<td>UX/UI Designer</td>
+									<td><u>Sun Spaces Solutions...</u></td>
+									<td><a href="#">Profile Rejected</a></td>
+									<td>21/10/2022</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</Modal>
+
+
 			{/** ============ MODAL FOR VERSANT SCORE ================ */}
 			<Modal
 				width="864px"
@@ -1827,6 +1942,7 @@ const TalentList = ({
 					<div></div>
 				</div>
 			</Modal>
+
 			{/** ============ MODAL FOR RESCHEDULING INTERVIEW ================ */}
 			{showReScheduleInterviewModal && (
 				<Modal
@@ -1859,6 +1975,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR SCHEDULING INTERVIEW ================ */}
 			{showScheduleInterviewModal && (
 				<Modal
@@ -1889,6 +2006,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR INTERVIEW FEEDBACK STATUS ================ */}
 			<Modal
 				transitionName=""
@@ -1910,6 +2028,7 @@ const TalentList = ({
 					closeModal={() => setInterviewFeedback(false)}
 				/>
 			</Modal>
+
 			{/** ============ MODAL FOR TALENT ACCEPTANCE ================ */}
 			<Modal
 				transitionName=""
@@ -1931,6 +2050,7 @@ const TalentList = ({
 					closeModal={() => setTalentAcceptance(false)}
 				/>
 			</Modal>
+
 			{/** ============ MODAL FOR TALENT STATUS ================ */}
 			<Modal
 				transitionName=""
@@ -1946,6 +2066,7 @@ const TalentList = ({
 					closeModal={() => setTalentStatus(false)}
 				/>
 			</Modal>
+
 			{/** ============ MODAL FOR INTERVIEW STATUS ================ */}
 			<Modal
 				transitionName=""
@@ -1962,6 +2083,7 @@ const TalentList = ({
 					closeModal={() => setInterviewStatus(false)}
 				/>
 			</Modal>
+
 			{/** ============ MODAL FOR UPDATE CLIENT ONBOARD STATUS ================ */}
 			<Modal
 				transitionName=""
@@ -1977,6 +2099,7 @@ const TalentList = ({
 					closeModal={() => setOnboardClientModal(false)}
 				/>
 			</Modal>
+
 			{/** ============ MODAL FOR UPDATE TALENT ONBOARD STATUS ================ */}
 			<Modal
 				transitionName=""
@@ -1992,6 +2115,7 @@ const TalentList = ({
 					closeModal={() => setOnboardTalentModal(false)}
 				/>
 			</Modal>
+
 			{/** ============ MODAL FOR UPDATE LEGAL CLIENT ONBOARD STATUS ================ */}
 			<Modal
 				transitionName=""
@@ -2007,6 +2131,7 @@ const TalentList = ({
 					closeModal={() => setLegalClientOnboardModal(false)}
 				/>
 			</Modal>
+
 			{/** ============ MODAL FOR UPDATE LEGAL TALENT ONBOARD STATUS ================ */}
 			{updateLegalTalentOnboardModal && (
 				<Modal
@@ -2026,7 +2151,6 @@ const TalentList = ({
 			)}
 
 			{/** ============ MODAL FOR EDIT BILL RATE ================ */}
-
 			{editBillRate && (
 				<Modal
 					transitionName=""
@@ -2051,6 +2175,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR EDIT PAY RATE ================ */}
 			{editPayRate && (
 				<Modal
@@ -2089,6 +2214,7 @@ const TalentList = ({
 					closeModal={() => setTalentKickOffModal(false)}
 				/>
 			</Modal>
+
 			{/** ============ MODAL FOR TALENT REPLACEMENT ================ */}
 			<Modal
 				transitionName=""
