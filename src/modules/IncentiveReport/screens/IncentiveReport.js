@@ -173,7 +173,7 @@ const IncentiveReportScreen = () => {
 		},
 		{
 			title: 'Contract Duration',
-			dataIndex: 'ContractDuration',
+			dataIndex: 'contractPeriod',
 		},
 		{
 			title: 'BR ($)',
@@ -242,6 +242,10 @@ const IncentiveReportScreen = () => {
 			dataIndex: 'ClientClosureDate',
 		},
 		{
+			title: 'Contract Duration',
+			dataIndex: 'ContractDuration',
+		},
+		{
 			title: 'BR ($)',
 			dataIndex: 'BR',
 		},
@@ -268,10 +272,6 @@ const IncentiveReportScreen = () => {
 		{
 			title: 'NBD',
 			dataIndex: 'NBD',
-		},
-		{
-			title: 'AM',
-			dataIndex: 'AM',
 		},
 		{
 			title: 'DP CalculatedAmt',
@@ -324,6 +324,10 @@ const IncentiveReportScreen = () => {
 			dataIndex: 'ClientClosureDate',
 		},
 		{
+			title: 'Contract Duration',
+			dataIndex: 'ContractDuration',
+		},
+		{
 			title: 'BR ($)',
 			dataIndex: 'BR',
 		},
@@ -350,10 +354,6 @@ const IncentiveReportScreen = () => {
 		{
 			title: 'NBD',
 			dataIndex: 'NBD',
-		},
-		{
-			title: 'AM',
-			dataIndex: 'AM',
 		},
 		{
 			title: 'DP CalculatedAmt',
@@ -406,6 +406,10 @@ const IncentiveReportScreen = () => {
 			dataIndex: 'ClientClosureDate',
 		},
 		{
+			title: 'Contract Duration',
+			dataIndex: 'ContractDuration',
+		},
+		{
 			title: 'BR ($)',
 			dataIndex: 'BR',
 		},
@@ -432,10 +436,6 @@ const IncentiveReportScreen = () => {
 		{
 			title: 'NBD',
 			dataIndex: 'NBD',
-		},
-		{
-			title: 'AM',
-			dataIndex: 'AM',
 		},
 		{
 			title: 'DP CalculatedAmt',
@@ -478,6 +478,10 @@ const IncentiveReportScreen = () => {
 		{
 			title: 'Client Closure Date',
 			dataIndex: 'ClientClosureDate',
+		},
+		{
+			title: 'Contract Duration',
+			dataIndex: 'ContractDuration',
 		},
 		{
 			title: 'BR ($)',
@@ -555,6 +559,10 @@ const IncentiveReportScreen = () => {
 			dataIndex: 'ClientClosureDate',
 		},
 		{
+			title: 'Contract Duration',
+			dataIndex: 'ContractDuration',
+		},
+		{
 			title: 'BR ($)',
 			dataIndex: 'BR',
 		},
@@ -583,10 +591,6 @@ const IncentiveReportScreen = () => {
 			dataIndex: 'NBD',
 		},
 		{
-			title: 'AM',
-			dataIndex: 'AM',
-		},
-		{
 			title: 'DP CalculatedAmt',
 			dataIndex: 'DPCalculatedAmt',
 		},
@@ -595,16 +599,24 @@ const IncentiveReportScreen = () => {
 			dataIndex: 'LeadType',
 		},
 		{
-			title: 'IT_Slab',
+			title: 'TI_Slab',
 			dataIndex: 'ItSlab',
 		},
 		{
-			title: 'IT_SlabAmount',
+			title: 'TI_SlabAmount',
 			dataIndex: 'ItSlabAmount',
 		},
 		{
-			title: 'IT_CalculatedAmount',
+			title: 'TI_CalculatedAmount',
 			dataIndex: 'ItCalAmount',
+		},
+		{
+			title: 'Slab',
+			dataIndex: 'Slab',
+		},
+		{
+			title: 'Slab Amt ($)',
+			dataIndex: 'SlabAmt',
 		},
 	];
 
@@ -675,6 +687,7 @@ const IncentiveReportScreen = () => {
 		SelfTarget: <u>{data?.selftarget}</u>,
 		SelfAchivedTarget: <u>{data?.selfAchivedTarget}</u>,
 	}));
+// Based Fixed
 
 	const incentiveInfoList = incentiveReportInfo?.map((data) => ({
 		User: data?.userName || 'NA',
@@ -690,19 +703,54 @@ const IncentiveReportScreen = () => {
 		NR: data?.nrValue || 'NA',
 		AMNRSlab: data?.aM_NR_Slab || 'NA',
 		AMNRPercentage: data?.aM_NR_Percentage || 'NA',
-		CalcAmt: data?.amount || 'NA',
+		CalcAmt: data?.amount || 0,
 		NBD: data?.nbdSalesPerson || 'NA',
 		DPSlab: data?.dP_Slab || 'NA',
 		DPSlabAmt: data?.dP_SlabAmount || 'NA',
-		DPCalculatedAmt: data?.dP_CalculatedAmount || 'NA',
+		DPCalculatedAmt: data?.dP_CalculatedAmount || 0,
 		LeadType: data?.leadType || 'NA',
 		Slab: data?.aM_NR_Slab || 'NA',
 		SlabAmt: data?.aM_NR_Percentage || 'NA',
 		AM: data?.amSalesPerson || 'NA',
-		ItSlab: data?.IT_Slab || 'NA',
-		ItSlabAmount: data?.IT_SlabAmount || 'NA',
-		ItCalAmount: data?.IT_CalculatedAmount || 'NA',
+		ItSlab: data?.tI_Slab || 'NA',
+		ItSlabAmount: data?.tI_SlabAmount || 'NA',
+		ItCalAmount: data?.tI_CalculatedAmount || 0,
+		ContractDuration:data?.contractPeriod || "NA",
 	}));
+	
+	const [totalSum, setTotalSum] = useState(0);
+	const[calcAmount,setCalcAmount] = useState(0);
+	const[TICalcAmount,setTICalcAmount] = useState(0);
+	const[totalAMTarget,setTotalAmTarget] = useState(0);
+
+
+	useEffect(() => {
+	let dpAmt = 0;
+	let calcAmt = 0;
+	let tiAmt = 0;
+	// let AmTargetSUMTI = 0;
+	let AmTargetSUM = 0;
+
+
+		incentiveInfoList?.forEach(item => {
+			calcAmt += item?.CalcAmt;
+		  dpAmt += item?.DPCalculatedAmt; 
+		  tiAmt += item?.ItCalAmount;
+		});
+
+		if(valueOfSelected === 'POD Manager' ||
+		valueOfSelected === 'Sales Consultant'){
+			AmTargetSUM = dpAmt+calcAmt+tiAmt;
+		}else{
+			AmTargetSUM = dpAmt+calcAmt;
+		}
+
+		setCalcAmount(calcAmt);
+		setTotalAmTarget(AmTargetSUM)
+		setTotalSum(dpAmt);
+		setTICalcAmount(tiAmt);
+	  }, [incentiveInfoList]); 
+
 	const incentiveBooster = incentiveBoosterList?.map((data) => ({
 		User: data?.userName || 'NA',
 		Company: data?.company || 'NA',
@@ -720,6 +768,7 @@ const IncentiveReportScreen = () => {
 		CBAmt: data?.cB_CalculatedAmount || 'NA',
 		NBD: data?.nbdSalesPerson || 'NA',
 		LeadType: data?.leadType || 'NA',
+		contractPeriod:data?.contractPeriod||0,
 	}));
 	const treeData = [
 		{
@@ -1132,28 +1181,8 @@ const IncentiveReportScreen = () => {
 						<button onClick={resetButton}>Reset</button>
 					</div>
 				</div>
-
-				{/*
-				 * ------------ Table Starts-----------
-				 * @Table Part
-				 */}
-				{/* {console.log(hierarchyButton, "qwqwqwqwq")} */}
-				{/* {hierarchyDataNotFound !== "" && <div className={IncentiveReportStyle.filterNoDataFound}>No data found</div>} */}
-
-				{/* {gethierarachy?.length !== 0 && (
-        <div className={IncentiveReportStyle.hierarchyTree}>
-          <div>
-            <Tree
-              showLine={showLine ? { showLeafIcon } : false}
-              showIcon={showIcon}
-              defaultExpandedKeys={['0-0-0']}
-              onSelect={onSelect}
-              treeData={treedata}
-            >
-            </Tree>
-          </div>
-        </div>
-      )} */}
+				<h4>Total Amount ($) : {totalAMTarget}</h4>
+							
 
 				{tableData?.length !== 0 ? (
 					<Table
@@ -1185,8 +1214,7 @@ const IncentiveReportScreen = () => {
 								columns={
 									valueOfSelected === 'AM Head' || valueOfSelected === 'AM'
 										? Condition1
-										: valueOfSelected === 'POD Manager' ||
-										  valueOfSelected === 'Sales Consultant' ||
+										: 
 										  valueOfSelected === 'BDR Executive' ||
 										  valueOfSelected === 'BDR Lead' ||
 										  valueOfSelected === 'BDR Head' ||
@@ -1194,16 +1222,13 @@ const IncentiveReportScreen = () => {
 										  valueOfSelected === 'Marketing Lead' ||
 										  valueOfSelected === 'Marketing Head'
 										? Condition2
-										: valueOfSelected === 'BDR Executive' ||
-										  valueOfSelected === 'BDR Lead'
-										? Condition2
+										: valueOfSelected === 'POD Manager' ||
+										  valueOfSelected === 'Sales Consultant'
+										? Condition5
 										: valueOfSelectedUserName === '(AM)'
 										? Condition3
 										: valueOfSelectedUserName === '(NBD)'
 										? Condition4
-										: valueOfSelected === 'POD Manager' ||
-										  valueOfSelected === 'Sales Consultant'
-										? Condition5
 										: Condition6
 								}
 								dataSource={incentiveInfoList}
@@ -1214,12 +1239,12 @@ const IncentiveReportScreen = () => {
 					) : (
 						<>
 							<div className={IncentiveReportStyle.tableTitle}>Based Fixed</div>
+							{console.log(valueOfSelected,"valueOfSelected12213213")}
 							<Table
 								columns={
 									valueOfSelected === 'AM Head' || valueOfSelected === 'AM'
 										? Condition1
-										: valueOfSelected === 'POD Manager' ||
-										  valueOfSelected === 'Sales Consultant' ||
+										:
 										  valueOfSelected === 'BDR Executive' ||
 										  valueOfSelected === 'BDR Lead' ||
 										  valueOfSelected === 'BDR Head' ||
@@ -1227,21 +1252,17 @@ const IncentiveReportScreen = () => {
 										  valueOfSelected === 'Marketing Lead' ||
 										  valueOfSelected === 'Marketing Head'
 										? Condition2
-										: valueOfSelected === 'BDR Executive' ||
-										  valueOfSelected === 'BDR Lead'
-										? Condition2
+										: valueOfSelected === 'POD Manager' ||
+										  valueOfSelected === 'Sales Consultant'
+										? Condition5
 										: valueOfSelectedUserName === '(AM)'
 										? Condition3
 										: valueOfSelectedUserName === '(NBD)'
 										? Condition4
-										: valueOfSelected === 'POD Manager' ||
-										  valueOfSelected === 'Sales Consultant'
-										? Condition5
 										: Condition6
 								}
 								dataSource={incentiveInfoList}
-								size="
-    small"
+								size="small"
 							/>
 						</>
 					))}
