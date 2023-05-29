@@ -35,6 +35,7 @@ import EditPayRate from '../editBillAndPayRate/editPayRateModal';
 import { DownOutlined } from '@ant-design/icons';
 import EditBillRate from '../editBillAndPayRate/editBillRateModal';
 import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
+import FeedbackResponse from 'modules/interview/components/feedbackResponse/feedbackResponse';
 
 const TalentList = ({
 	talentCTA,
@@ -52,6 +53,7 @@ const TalentList = ({
 	callHRapi,
 	inteviewSlotDetails,
 }) => {
+	const [isShowFeedback, setShowFeedback] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
@@ -1371,7 +1373,9 @@ const TalentList = ({
 									/>
 									<div className={TalentListStyle.interviewStatus}>
 										<span>Interview Status:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500', cursor: 'pointer' }}>
+										<span
+											style={{ fontWeight: '500', cursor: 'pointer' }}
+											onClick={() => setShowFeedback(true)}>
 											{item?.InterviewStatus === ''
 												? 'NA'
 												: item?.InterviewStatus}
@@ -1890,123 +1894,137 @@ const TalentList = ({
 				</Modal>
 			)}
 			{/** ============ MODAL FOR INTERVIEW FEEDBACK STATUS ================ */}
-			<Modal
-				transitionName=""
-				width="1000px"
-				centered
-				footer={false}
-				open={interviewFeedback}
-				onCancel={() => setInterviewFeedback(false)}>
-				<InterviewFeedback
-					hrId={hrId}
-					clientDetail={clientDetail}
-					callAPI={callAPI}
-					talentInfo={filterTalentID}
-					talentName={filterTalentID?.Name}
-					HRStatusCode={HRStatusCode}
-					hiringRequestNumber={hiringRequestNumber}
-					starMarkedStatusCode={starMarkedStatusCode}
-					hrStatus={hrStatus}
-					closeModal={() => setInterviewFeedback(false)}
-				/>
-			</Modal>
+			{interviewFeedback && (
+				<Modal
+					transitionName=""
+					width="1000px"
+					centered
+					footer={false}
+					open={interviewFeedback}
+					onCancel={() => setInterviewFeedback(false)}>
+					<InterviewFeedback
+						hrId={hrId}
+						clientDetail={clientDetail}
+						callAPI={callAPI}
+						talentInfo={filterTalentID}
+						talentName={filterTalentID?.Name}
+						HRStatusCode={HRStatusCode}
+						hiringRequestNumber={hiringRequestNumber}
+						starMarkedStatusCode={starMarkedStatusCode}
+						hrStatus={hrStatus}
+						closeModal={() => setInterviewFeedback(false)}
+					/>
+				</Modal>
+			)}
 			{/** ============ MODAL FOR TALENT ACCEPTANCE ================ */}
-			<Modal
-				transitionName=""
-				width="1256px"
-				centered
-				footer={null}
-				open={showTalentAcceptance}
-				// onOk={() => setVersantModal(false)}
-				onCancel={() => setTalentAcceptance(false)}>
-				<TalentAcceptance
-					clientDetail={clientDetail}
-					callAPI={callAPI}
-					talentInfo={filterTalentID}
-					talentName={filterTalentID?.Name}
-					HRStatusCode={HRStatusCode}
-					hiringRequestNumber={hiringRequestNumber}
-					starMarkedStatusCode={starMarkedStatusCode}
-					hrStatus={hrStatus}
-					closeModal={() => setTalentAcceptance(false)}
-				/>
-			</Modal>
+			{showTalentAcceptance && (
+				<Modal
+					transitionName=""
+					width="1256px"
+					centered
+					footer={null}
+					open={showTalentAcceptance}
+					// onOk={() => setVersantModal(false)}
+					onCancel={() => setTalentAcceptance(false)}>
+					<TalentAcceptance
+						clientDetail={clientDetail}
+						callAPI={callAPI}
+						talentInfo={filterTalentID}
+						talentName={filterTalentID?.Name}
+						HRStatusCode={HRStatusCode}
+						hiringRequestNumber={hiringRequestNumber}
+						starMarkedStatusCode={starMarkedStatusCode}
+						hrStatus={hrStatus}
+						closeModal={() => setTalentAcceptance(false)}
+					/>
+				</Modal>
+			)}
 			{/** ============ MODAL FOR TALENT STATUS ================ */}
-			<Modal
-				transitionName=""
-				width="1256px"
-				centered
-				footer={null}
-				open={showTalentStatus}
-				onCancel={() => setTalentStatus(false)}>
-				<TalentStatus
-					talentInfo={filterTalentID}
-					hrId={hrId}
-					callAPI={callAPI}
-					closeModal={() => setTalentStatus(false)}
-				/>
-			</Modal>
+			{showTalentStatus && (
+				<Modal
+					transitionName=""
+					width="1256px"
+					centered
+					footer={null}
+					open={showTalentStatus}
+					onCancel={() => setTalentStatus(false)}>
+					<TalentStatus
+						talentInfo={filterTalentID}
+						hrId={hrId}
+						callAPI={callAPI}
+						closeModal={() => setTalentStatus(false)}
+					/>
+				</Modal>
+			)}
 			{/** ============ MODAL FOR INTERVIEW STATUS ================ */}
-			<Modal
-				transitionName=""
-				width="1256px"
-				centered
-				footer={null}
-				open={showInterviewStatus}
-				// onOk={() => setVersantModal(false)}
-				onCancel={() => setInterviewStatus(false)}>
-				<InterviewStatus
-					hrId={hrId}
-					talentInfo={filterTalentID}
-					callAPI={callAPI}
-					closeModal={() => setInterviewStatus(false)}
-				/>
-			</Modal>
+			{showInterviewStatus && (
+				<Modal
+					transitionName=""
+					width="1256px"
+					centered
+					footer={null}
+					open={showInterviewStatus}
+					// onOk={() => setVersantModal(false)}
+					onCancel={() => setInterviewStatus(false)}>
+					<InterviewStatus
+						hrId={hrId}
+						talentInfo={filterTalentID}
+						callAPI={callAPI}
+						closeModal={() => setInterviewStatus(false)}
+					/>
+				</Modal>
+			)}
 			{/** ============ MODAL FOR UPDATE CLIENT ONBOARD STATUS ================ */}
-			<Modal
-				transitionName=""
-				width="1256px"
-				centered
-				footer={null}
-				open={updateOnboardClientModal}
-				onCancel={() => setOnboardClientModal(false)}>
-				<UpdateClientOnBoardStatus
-					talentInfo={filterTalentID}
-					hrId={hrId}
-					callAPI={callAPI}
-					closeModal={() => setOnboardClientModal(false)}
-				/>
-			</Modal>
+			{updateOnboardClientModal && (
+				<Modal
+					transitionName=""
+					width="1256px"
+					centered
+					footer={null}
+					open={updateOnboardClientModal}
+					onCancel={() => setOnboardClientModal(false)}>
+					<UpdateClientOnBoardStatus
+						talentInfo={filterTalentID}
+						hrId={hrId}
+						callAPI={callAPI}
+						closeModal={() => setOnboardClientModal(false)}
+					/>
+				</Modal>
+			)}
 			{/** ============ MODAL FOR UPDATE TALENT ONBOARD STATUS ================ */}
-			<Modal
-				transitionName=""
-				width="1256px"
-				centered
-				footer={null}
-				open={updateOnboardTalentModal}
-				onCancel={() => setOnboardTalentModal(false)}>
-				<UpdateTalentOnboardStatus
-					talentInfo={filterTalentID}
-					hrId={hrId}
-					callAPI={callAPI}
-					closeModal={() => setOnboardTalentModal(false)}
-				/>
-			</Modal>
+			{updateOnboardTalentModal && (
+				<Modal
+					transitionName=""
+					width="1256px"
+					centered
+					footer={null}
+					open={updateOnboardTalentModal}
+					onCancel={() => setOnboardTalentModal(false)}>
+					<UpdateTalentOnboardStatus
+						talentInfo={filterTalentID}
+						hrId={hrId}
+						callAPI={callAPI}
+						closeModal={() => setOnboardTalentModal(false)}
+					/>
+				</Modal>
+			)}
 			{/** ============ MODAL FOR UPDATE LEGAL CLIENT ONBOARD STATUS ================ */}
-			<Modal
-				transitionName=""
-				width="1256px"
-				centered
-				footer={null}
-				open={updateLegalClientOnboardModal}
-				onCancel={() => setLegalClientOnboardModal(false)}>
-				<UpdateLegalClientOnboardStatus
-					talentInfo={filterTalentID}
-					hrId={hrId}
-					callAPI={callAPI}
-					closeModal={() => setLegalClientOnboardModal(false)}
-				/>
-			</Modal>
+			{updateLegalClientOnboardModal && (
+				<Modal
+					transitionName=""
+					width="1256px"
+					centered
+					footer={null}
+					open={updateLegalClientOnboardModal}
+					onCancel={() => setLegalClientOnboardModal(false)}>
+					<UpdateLegalClientOnboardStatus
+						talentInfo={filterTalentID}
+						hrId={hrId}
+						callAPI={callAPI}
+						closeModal={() => setLegalClientOnboardModal(false)}
+					/>
+				</Modal>
+			)}
 			{/** ============ MODAL FOR UPDATE LEGAL TALENT ONBOARD STATUS ================ */}
 			{updateLegalTalentOnboardModal && (
 				<Modal
@@ -2074,61 +2092,85 @@ const TalentList = ({
 			)}
 
 			{/** ============ MODAL FOR UPDATE LEGAL TALENT ONBOARD STATUS ================ */}
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				open={updateTalentKickOffModal}
-				className="statusModalWrap"
-				onCancel={() => setTalentKickOffModal(false)}>
-				<UpdateKickOffOnboardStatus
-					talentInfo={filterTalentID}
-					hrId={hrId}
-					callAPI={callAPI}
-					closeModal={() => setTalentKickOffModal(false)}
-				/>
-			</Modal>
+			{updateTalentKickOffModal && (
+				<Modal
+					transitionName=""
+					width="930px"
+					centered
+					footer={null}
+					open={updateTalentKickOffModal}
+					className="statusModalWrap"
+					onCancel={() => setTalentKickOffModal(false)}>
+					<UpdateKickOffOnboardStatus
+						talentInfo={filterTalentID}
+						hrId={hrId}
+						callAPI={callAPI}
+						closeModal={() => setTalentKickOffModal(false)}
+					/>
+				</Modal>
+			)}
 			{/** ============ MODAL FOR TALENT REPLACEMENT ================ */}
-			<Modal
-				transitionName=""
-				width="1256px"
-				centered
-				footer={null}
-				open={replaceTalentModal}
-				onCancel={() => setReplaceTalentModal(false)}>
-				<EngagementReplaceTalent
-					talentInfo={filterTalentID}
-					hrId={hrId}
-					callAPI={callAPI}
-					closeModal={() => setReplaceTalentModal(false)}
-					isEngagement={false}
-				/>
-			</Modal>
+			{replaceTalentModal && (
+				<Modal
+					transitionName=""
+					width="1256px"
+					centered
+					footer={null}
+					open={replaceTalentModal}
+					onCancel={() => setReplaceTalentModal(false)}>
+					<EngagementReplaceTalent
+						talentInfo={filterTalentID}
+						hrId={hrId}
+						callAPI={callAPI}
+						closeModal={() => setReplaceTalentModal(false)}
+						isEngagement={false}
+					/>
+				</Modal>
+			)}
 
 			{/** ============ MODAL FOR Confirm slot modal ================ */}
-			<Modal
-				transitionName=""
-				width="1000px"
-				centered
-				footer={null}
-				open={getConfirmSlotModal}
-				className="cloneHRModal"
-				onCancel={() => setConfirmSlotModal(false)}>
-				<ConfirmSlotModal
-					getConfirmSlotDetails={getConfirmSlotDetails}
-					onCancel={() => setConfirmSlotModal(false)}
-					confirmSlotRadio={confirmSlotRadio}
-					setConfirmSlotRadio={setConfirmSlotRadio}
-					talentInfo={filterTalentID}
-					hrId={hrId}
-					getDateNewFormate={getDateNewFormate}
-					setDateNewFormate={setDateNewFormate}
-					hiringRequestNumber={hiringRequestNumber}
-					setHRapiCall={setHRapiCall}
-					callHRapi={callHRapi}
-				/>
-			</Modal>
+			{getConfirmSlotModal && (
+				<Modal
+					transitionName=""
+					width="1000px"
+					centered
+					footer={null}
+					open={getConfirmSlotModal}
+					className="cloneHRModal"
+					onCancel={() => setConfirmSlotModal(false)}>
+					<ConfirmSlotModal
+						getConfirmSlotDetails={getConfirmSlotDetails}
+						onCancel={() => setConfirmSlotModal(false)}
+						confirmSlotRadio={confirmSlotRadio}
+						setConfirmSlotRadio={setConfirmSlotRadio}
+						talentInfo={filterTalentID}
+						hrId={hrId}
+						getDateNewFormate={getDateNewFormate}
+						setDateNewFormate={setDateNewFormate}
+						hiringRequestNumber={hiringRequestNumber}
+						setHRapiCall={setHRapiCall}
+						callHRapi={callHRapi}
+					/>
+				</Modal>
+			)}
+			{/** ============ MODAL TO SEE FEEDBACK ================ */}
+			{isShowFeedback && (
+				<Modal
+					transitionName=""
+					width="1000px"
+					centered
+					footer={null}
+					open={isShowFeedback}
+					className="seeFeedback"
+					onCancel={() => setShowFeedback(false)}>
+					<FeedbackResponse
+						onCancel={() => setShowFeedback(false)}
+						hrId={hrId}
+						callAPI={callAPI}
+						talentInfo={filterTalentID}
+					/>
+				</Modal>
+			)}
 		</div>
 	);
 };

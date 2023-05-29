@@ -720,3 +720,12 @@ display: none;
   opacity: .5;
   cursor: no-drop;
 }
+
+/**   See Feedback */
+.seeFeedback .ant-modal-content .ant-modal-body {
+  padding: 0 !important;
+}
+
+.seeFeedback .ant-modal-content .ant-modal-close{
+  margin-top: 10px;
+}
