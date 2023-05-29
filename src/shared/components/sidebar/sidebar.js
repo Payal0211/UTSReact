@@ -8,7 +8,7 @@ import DemandFunnel from 'assets/svg/demandFunnel.svg';
 import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
 import TeamDemandFunnel from 'assets/svg/teamDemandFunnel.svg';
 import IncentiveReport from 'assets/svg/Incentive.svg';
-
+import JDReport from 'assets/svg/JD.svg';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -133,7 +133,7 @@ const getSideBar = () => {
 			id: 'JD_Efficiency_Report',
 			title: 'JD Efficiency Report',
 			isActive: false,
-			icon: IncentiveReport,
+			icon: JDReport,
 			navigateTo: UTSRoutes.JDDUMPREPORTROUTE,
 		}),
 	];

@@ -226,7 +226,8 @@ const EditDebriefingHR = ({
 					type: 'success',
 					content: 'HR Debriefing has been updated successfully..',
 				});
-				window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
+				// window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
+				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE)
 			}
 		},
 		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI, navigate],
