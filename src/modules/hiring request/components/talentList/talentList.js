@@ -212,6 +212,7 @@ const TalentList = ({
 			talentDetail?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
 		[talentDetail, talentIndex],
 	);
+
 	const getSlotInformationHandler = useCallback(
 		(date, type, interviewType) => {
 			const yyyy = date.getFullYear();
@@ -1215,33 +1216,30 @@ const TalentList = ({
 
 	const [getHRDetailsItem, setGetHRDetailItem] = useState([])
 
-	const viewProfileInfo = async () => {
+	const viewProfileInfo = async (start = null, end = null) => {
 		let response = await hiringRequestDAO.getTalentProfileLogDAO({
 			talentid: getHRDetailsItem?.TalentID,
-			fromDate: null,
-			toDate: null,
+			fromDate: start ? new Date(start).toLocaleDateString('en-US') : null,
+			toDate: end ? new Date(end).toLocaleDateString('en-US') : null,
 		});
+
 		setProfileLog(response && response?.responseBody?.details);
 	}
-
-	// Profile Log
-
-	useEffect(() => {
-		viewProfileInfo();
-	}, []);
 
 	// For Add / Remove Class
 
 	const [profileShared, setProfileShared] = useState([])
 	const [showProfileShared, setShowProfileShared] = useState(false)
 	const [profileRejected, setProfileRejected] = useState([])
-	const [showProfileRejectClass, setShowProfileRejectClass] = useState()
+	const [showProfileRejectClass, setShowProfileRejectClass] = useState(false)
 	const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([])
 	const [feedbackReceivedClass, setFeedBackReceivedClass] = useState(false)
 	const [selectForClass, setSelectForClass] = useState(false)
 	const [selectForDetails, setSelectForDetails] = useState([])
-	console.log(profileRejected, "profileRejected")
-	const profileLogBox = async () => {
+	const [startDateDetails, setStartDateDetails] = useState()
+	const [endDateDetails, setEndDateDetails] = useState()
+
+	const profileLogBox = async (start = null, end = null) => {
 		setShowProfileShared(true)
 		setShowProfileRejectClass(false)
 		setFeedBackReceivedClass(false)
@@ -1249,10 +1247,10 @@ const TalentList = ({
 		setProfileRejected([])
 		setFeedbackReceivedDetails([])
 		let profileObj = {
-			talentID: getHRDetailsItem?.TalentID,
+			talentID: filterTalentID?.TalentID,
 			typeID: ProfileLog.PROFILE_SHARED,
-			// fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
-			// toDate: !!end && new Date(end).toLocaleDateString('en-US'),
+			// fromDate: startDateDetails,
+			// toDate: endDateDetails,
 		};
 
 		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
@@ -1268,7 +1266,7 @@ const TalentList = ({
 		setFeedBackReceivedClass(false)
 		setSelectForClass(false)
 		let profileReject = {
-			talentID: getHRDetailsItem?.TalentID,
+			talentID: filterTalentID?.TalentID,
 			typeID: ProfileLog.REJECTED,
 			// fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
 			// toDate: !!end && new Date(end).toLocaleDateString('en-US'),
@@ -1290,7 +1288,7 @@ const TalentList = ({
 		setProfileRejected([])
 		setProfileShared([])
 		let feedbackReceivedObj = {
-			talentID: getHRDetailsItem?.TalentID,
+			talentID: filterTalentID?.TalentID,
 			typeID: ProfileLog.FEEDBACK,
 			// fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
 			// toDate: !!end && new Date(end).toLocaleDateString('en-US'),
@@ -1305,7 +1303,7 @@ const TalentList = ({
 		setShowProfileRejectClass(false)
 		setShowProfileShared(false)
 		let selectForObj = {
-			talentID: getHRDetailsItem?.TalentID,
+			talentID: filterTalentID?.TalentID,
 			typeID: ProfileLog.SELECTED,
 			// fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
 			// toDate: !!end && new Date(end).toLocaleDateString('en-US'),
@@ -1314,17 +1312,18 @@ const TalentList = ({
 		setSelectForDetails(response?.responseBody?.details)
 	}
 
-
 	const onProfileLogClickHandler = useCallback(
-		async (typeID, index, type, start = null, end = null) => {
+		async (typeID, index, type, start = null, end = null, profileLog) => {
+			setStartDateDetails(!!start && new Date(start).toLocaleDateString('en-US'))
+			setEndDateDetails(!!end && new Date(end).toLocaleDateString('en-US'))
 			setLogExpanded([]);
 			setTypeId(typeID);
 			setActiveIndex(index);
 			setActiveType(type);
 
 			let profileObj = {
-				talentID: 10551,
-				typeID: 51,
+				talentID: filterTalentID?.TalentID,
+				typeID: ProfileLog?.SELECTED,
 				fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
 				toDate: !!end && new Date(end).toLocaleDateString('en-US'),
 			};
@@ -1341,7 +1340,7 @@ const TalentList = ({
 				setProfileLog([]);
 			}
 		},
-		[talentID],
+		[talentID, filterTalentID?.TalentID],
 	);
 
 	const onCalenderFilter = useCallback(
@@ -1350,11 +1349,20 @@ const TalentList = ({
 			setStartDate(start);
 			setEndDate(end);
 			if (start && end) {
+				viewProfileInfo(start, end)
 				onProfileLogClickHandler(typeId, activeIndex, activeType, start, end);
 			}
 		},
-		[activeIndex, activeType,onProfileLogClickHandler,typeId],
+		[activeIndex, activeType, onProfileLogClickHandler, typeId],
 	);
+
+	const rightArrowClick = () => {
+
+		feedbackReceived()
+
+		// profileRejectedDetails()
+
+	}
 
 
 	return (
@@ -1374,7 +1382,6 @@ const TalentList = ({
 					},
 				}}
 				renderItem={(item, listIndex) => {
-					console.log(item, "itemeemmeme")
 					setGetHRDetailItem(item)
 					return (
 						<div
@@ -1442,7 +1449,7 @@ const TalentList = ({
 															key={0}
 															onClick={() => {
 																setProfileLogModal(true); // TODO:-
-																setTalentIndex(listIndex);
+																setTalentIndex(item?.TalentID);
 																viewProfileInfo()
 															}}>
 															View Profile Log
@@ -1788,9 +1795,9 @@ const TalentList = ({
 					</div>
 
 					<div className={ProfileLogStyle.profileNameDate}>
-					<div className={ProfileLogStyle.label}>Date</div>
-						<div className={ProfileLogStyle.calendarFilter}>
-							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+						<label>Date</label>
+						<div className={ProfileLogStyle.profileCalendarFilter}>
+							<CalenderSVG />
 							<DatePicker
 								style={{ backgroundColor: 'red' }}
 								onKeyDown={(e) => {
@@ -1827,10 +1834,10 @@ const TalentList = ({
 						<p>Selected For</p>
 					</div>
 				</div>
-				{/* {profileShared?.length === 0 && (
+				{!(showProfileShared || feedbackReceivedClass || showProfileRejectClass || selectForClass) && (
 
-					<p>Select the stages to view thier HRs</p>
-				)} */}
+					<div className={ProfileLogStyle.selectBoxNote}>Select the stages to view their HRs</div>
+				)}
 				{showProfileShared === true && (
 					<>
 						{profileShared?.length !== 0 && (
@@ -1840,7 +1847,7 @@ const TalentList = ({
 									<h4>Profile Shared: 04 HRs</h4>
 									<div className={ProfileLogStyle.profileLogListAction}>
 										<button><LeftArrowSVG /></button>
-										<button><RightArrowSVG /></button>
+										<button><RightArrowSVG onClick={rightArrowClick} /></button>
 									</div>
 								</div>
 
@@ -1857,11 +1864,17 @@ const TalentList = ({
 											</tr>
 										</thead>
 										<tbody>
-											{profileShared?.responseBody?.details?.map((item) => {
+											{profileShared?.length === undefined || profileShared?.length === 0 && (
+												<tr>
+													<td colSpan={6} align='center'>
+														No data Found
+													</td>
+												</tr>
+											)}
+											{profileShared?.responseBody?.details?.map((item, index) => {
 												return (
-
 													<tr>
-														<td>HR 1</td>
+														<td>HR {index + 1}</td>
 														<td><u>{item?.hrid}</u></td>
 														<td>{item?.position}</td>
 														<td><u>{item?.company}</u></td>
@@ -1902,10 +1915,18 @@ const TalentList = ({
 											</tr>
 										</thead>
 										<tbody>
-											{feedbackReceivedDetails?.map((item) => {
+											{feedbackReceivedDetails?.length === undefined || feedbackReceivedDetails?.length === 0 && (
+												<tr>
+													<td colSpan={6} align='center'>
+														No data Found
+													</td>
+
+												</tr>
+											)}
+											{feedbackReceivedDetails?.map((item, index) => {
 												return (
 													<tr>
-														<td>HR 1</td>
+														<td>HR {index + 1}</td>
 														<td><u>{item?.hrid}</u></td>
 														<td>{item?.position}</td>
 														<td><u>{item?.company}</u></td>
@@ -1924,7 +1945,7 @@ const TalentList = ({
 				)}
 				{showProfileRejectClass === true && (
 					<>
-						{profileRejected?.length !== 0 || profileRejected === undefined && (
+						{profileRejected?.length !== 0 && (
 							<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileRejected}`}>
 								<div className={ProfileLogStyle.profileLogListHead}>
 									<h4>Profile Rejected : 05 HRs</h4>
@@ -1947,10 +1968,18 @@ const TalentList = ({
 											</tr>
 										</thead>
 										<tbody>
-											{profileRejected?.map((item) => {
+											{profileRejected?.length === undefined || profileRejected?.length === 0 && (
+												<tr>
+													<td colSpan={6} align='center'>
+														No data Found
+													</td>
+
+												</tr>
+											)}
+											{profileRejected?.map((item, index) => {
 												return (
 													<tr>
-														<td>HR 1</td>
+														<td>HR {index + 1}</td>
 														<td><u>{item?.hrid}</u></td>
 														<td>{item?.position}</td>
 														<td><u>{item?.company}</u></td>
@@ -1969,10 +1998,10 @@ const TalentList = ({
 				)}
 				{selectForClass === true && (
 					<>
-						{profileRejected?.length !== 0 && (
+						{selectForDetails?.length !== 0 && (
 							<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileSelFor}`}>
 								<div className={ProfileLogStyle.profileLogListHead}>
-									<h4>Select For : 04 HRs</h4>
+									<h4>Selected For : 04 HRs</h4>
 									<div className={ProfileLogStyle.profileLogListAction}>
 										<button><LeftArrowSVG /></button>
 										<button><RightArrowSVG /></button>
@@ -1992,14 +2021,22 @@ const TalentList = ({
 											</tr>
 										</thead>
 										<tbody>
-											{selectForDetails?.map((item) => {
+											{selectForDetails?.length === undefined && (
+												<tr>
+													<td colSpan={6} align='center'>
+														No data Found
+													</td>
+
+												</tr>
+											)}
+											{selectForDetails?.map((item, index) => {
 												return (
 													<tr>
-														<td>HR 1</td>
+														<td>HR {index + 1}</td>
 														<td><u>{item?.hrid}</u></td>
 														<td>{item?.position}</td>
 														<td><u>{item?.company}</u></td>
-														<td><a href="#">Profile Shared</a></td>
+														<td><a href={item?.feedbackurl}>Profile Shared</a></td>
 														<td>{item?.sDate}</td>
 													</tr>
 												)
