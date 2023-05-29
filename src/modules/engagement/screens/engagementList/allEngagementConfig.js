@@ -115,32 +115,32 @@ export const allEngagementConfig = {
 								{
 									label: 'Replace Engagement',
 									key: 'replaceEngagement',
-									isEnabled: true,
+									IsEnabled: true,
 								},
 								{
 									label: 'Renew Engagement',
 									key: 'reNewEngagement',
-									isEnabled: true,
+									IsEnabled: true,
 								},
 								{
 									label: 'End Engagement',
 									key: 'endEngagement',
-									isEnabled: true,
+									IsEnabled: true,
 								},
 								{
 									label: 'Edit Bill Rate',
 									key: 'editRateBillRate',
-									isEnabled: true,
+									IsEnabled: true,
 								},
 								{
 									label: 'Edit Pay Rate',
 									key: 'editPayRate',
-									isEnabled: true,
+									IsEnabled: true,
 								},
 								{
 									label: 'Add Invoice Details',
 									key: 'addInvoiceDetails',
-									isEnabled: true,
+									IsEnabled: true,
 								},
 							]}
 							menuAction={(item) => {
