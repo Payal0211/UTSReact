@@ -117,6 +117,7 @@ export class TalentOnboardStatus {
 	static CLONE_HR = 'Clone HR';
 	static CONFIRM_SLOT = 'Confirm Slot';
 	static SUBMIT_CLIENT_FEEDBACK = 'Submit Client Feedback';
+	static EDIT_CLIENT_FEEDBACK = 'Edit Client Feedback';
 }
 
 export class HRCTA {

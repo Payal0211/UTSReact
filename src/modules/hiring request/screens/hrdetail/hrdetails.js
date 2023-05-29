@@ -88,7 +88,7 @@ const HRDetailScreen = () => {
 		[navigate],
 	);
 
-	// console.log(apiData, '--apiData-');
+	console.log(apiData, '--apiData-');
 	const clientOnLossSubmitHandler = useCallback(
 		async (d) => {
 			_isNull(watch('hrDeleteLossReason')) &&

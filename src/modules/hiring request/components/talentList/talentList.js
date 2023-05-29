@@ -59,6 +59,7 @@ const TalentList = ({
 	const [logExpanded, setLogExpanded] = useState(null);
 	const [showVersantModal, setVersantModal] = useState(false);
 	const [interviewFeedback, setInterviewFeedback] = useState(false);
+	const [isEditFeedback, setEditFeedback] = useState(false);
 	const [showInterviewStatus, setInterviewStatus] = useState(false);
 	const profileData = allHRConfig.profileLogConfig();
 	const [showReScheduleInterviewModal, setReScheduleInterviewModal] =
@@ -1582,6 +1583,7 @@ const TalentList = ({
 														}
 														case TalentOnboardStatus.TALENT_ACCEPTANCE: {
 															setTalentAcceptance(true);
+
 															setTalentIndex(item?.TalentID);
 
 															break;
@@ -1604,6 +1606,12 @@ const TalentList = ({
 														case TalentOnboardStatus.SUBMIT_CLIENT_FEEDBACK: {
 															setInterviewFeedback(true);
 															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.EDIT_CLIENT_FEEDBACK: {
+															// setInterviewFeedback(true);
+															setTalentIndex(item?.TalentID);
+															setEditFeedback(true);
 															break;
 														}
 														case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
@@ -1916,6 +1924,30 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+			{/** =========== MODAL FOR EDIT FEEDBACK ============== */}
+			{isEditFeedback && (
+				<Modal
+					transitionName=""
+					width="1000px"
+					centered
+					footer={false}
+					open={isEditFeedback}
+					onCancel={() => setEditFeedback(false)}>
+					<InterviewFeedback
+						isEditFeedback={isEditFeedback}
+						hrId={hrId}
+						clientDetail={clientDetail}
+						callAPI={callAPI}
+						talentInfo={filterTalentID}
+						talentName={filterTalentID?.Name}
+						HRStatusCode={HRStatusCode}
+						hiringRequestNumber={hiringRequestNumber}
+						starMarkedStatusCode={starMarkedStatusCode}
+						hrStatus={hrStatus}
+						closeModal={() => setInterviewFeedback(false)}
+					/>
+				</Modal>
+			)}
 			{/** ============ MODAL FOR TALENT ACCEPTANCE ================ */}
 			{showTalentAcceptance && (
 				<Modal
@@ -2042,9 +2074,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
-
 			{/** ============ MODAL FOR EDIT BILL RATE ================ */}
-
 			{editBillRate && (
 				<Modal
 					transitionName=""
@@ -2090,7 +2120,6 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
-
 			{/** ============ MODAL FOR UPDATE LEGAL TALENT ONBOARD STATUS ================ */}
 			{updateTalentKickOffModal && (
 				<Modal
@@ -2127,7 +2156,6 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
-
 			{/** ============ MODAL FOR Confirm slot modal ================ */}
 			{getConfirmSlotModal && (
 				<Modal

@@ -116,4 +116,31 @@ export const InterviewDAO = {
 			);
 		}
 	},
+	getClientFeedbackRequestDAO: async function (clientFeedbackDetails) {
+		try {
+			const clientFeedbackResponse =
+				await InterviewAPI.getClientFeedbackRequest(clientFeedbackDetails);
+
+			if (clientFeedbackResponse) {
+				const statusCode = clientFeedbackResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = clientFeedbackResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return clientFeedbackResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return clientFeedbackResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'InterviewDAO.getClientFeedbackRequestDAO');
+		}
+	},
 };

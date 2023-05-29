@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import InterviewScheduleStyle from '../../interviewStyle.module.css';
 
 import { interviewUtils } from 'modules/interview/interviewUtils';
@@ -11,6 +11,7 @@ import { HTTPStatusCode } from 'constants/network';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
 const InterviewFeedback = ({
+	isEditFeedback,
 	hrId,
 	clientDetail,
 	callAPI,
@@ -22,9 +23,11 @@ const InterviewFeedback = ({
 	hrStatus,
 	closeModal,
 }) => {
+	const [feedbackDetails, setFeedbackDetails] = useState({});
 	const {
 		register,
 		handleSubmit,
+		setValue,
 		formState: { errors },
 	} = useForm();
 	const [radioValue1, setRadioValue1] = useState('Hire');
@@ -95,6 +98,41 @@ const InterviewFeedback = ({
 			talentInfo?.TalentRole,
 		],
 	);
+	console.log(feedbackDetails, '--feedbackDetails');
+
+	const getClientFeedbackHandler = useCallback(async () => {
+		const response = await InterviewDAO.getClientFeedbackRequestDAO({
+			clientFeedbackID: talentInfo?.ClientFeedbackID,
+		});
+		setFeedbackDetails(response?.responseBody?.details);
+	}, [talentInfo?.ClientFeedbackID]);
+
+	useEffect(() => {
+		isEditFeedback && getClientFeedbackHandler();
+	}, [getClientFeedbackHandler, isEditFeedback]);
+
+	useEffect(() => {
+		// isEditFeedback && setRadioValue1(feedbackDetails?.hdnRadiovalue);
+		isEditFeedback && setRadioValue2(feedbackDetails?.technicalSkillRating);
+		isEditFeedback && setRadioValue3(feedbackDetails?.communicationSkillRating);
+		isEditFeedback && setRadioValue3(feedbackDetails?.cognitiveSkillRating);
+		isEditFeedback &&
+			setValue('interviewClientFeedback', feedbackDetails?.messageToTalent);
+		isEditFeedback &&
+			setValue('interviewClientDecision', feedbackDetails?.clientsDecision);
+		isEditFeedback && setValue('interviewComments', feedbackDetails?.comments);
+	}, [
+		feedbackDetails?.clientsDecision,
+		feedbackDetails?.cognitiveSkillRating,
+		feedbackDetails?.comments,
+		feedbackDetails?.communicationSkillRating,
+		feedbackDetails.hdnRadiovalue,
+		feedbackDetails.isClientNotificationSent,
+		feedbackDetails?.messageToTalent,
+		feedbackDetails?.technicalSkillRating,
+		isEditFeedback,
+		setValue,
+	]);
 
 	return (
 		<div className={InterviewScheduleStyle.interviewContainer}>
@@ -186,10 +224,13 @@ const InterviewFeedback = ({
 												No, I would not like to move ahead with the hiring of
 												this talent.
 											</Radio>
-											<Radio value={'OnHold'}>
-												I liked the talent but feeling confused about the hiring
-												decision. Can I keep this talent on hold for now?
-											</Radio>
+											{!isEditFeedback && (
+												<Radio value={'OnHold'}>
+													I liked the talent but feeling confused about the
+													hiring decision. Can I keep this talent on hold for
+													now?
+												</Radio>
+											)}
 											<Radio value={'AnotherRound'}>
 												Certainly, but would love to have another round of
 												interview
