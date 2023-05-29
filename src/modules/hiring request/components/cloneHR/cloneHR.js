@@ -3,10 +3,10 @@ import CloneHRStyle from './cloneHR.module.css';
 import { ReactComponent as CloneHRSVG } from 'assets/svg/cloneHR.svg';
 import { Modal } from 'antd';
 import CloneHRModal from 'modules/hiring request/screens/allHiringRequest/cloneHRModal';
-import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { useNavigate, useParams } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
+import { MasterDAO } from 'core/master/masterDAO';
 
 const CloneHR = ({ updatedSplitter, cloneHR }) => {
 	const [isCloneHR, setCloneHR] = useState(false);
@@ -17,7 +17,11 @@ const CloneHR = ({ updatedSplitter, cloneHR }) => {
 	const hrId = useParams();
 	const navigate = useNavigate();
 	const navigateToCloneHR = useCallback(async () => {
-		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid);
+		const data = {
+			hrid: hrId?.hrid,
+		};
+
+		const response = await MasterDAO.getCloneHRDAO(data);
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			localStorage.setItem('hrID', hrId.hrid);
 			setCloneHR(false);

@@ -90,18 +90,27 @@
     width: 100% !important;
     margin: 40px 0 30px;
 }
-.calendarFilter [class*="react-datepicker-popper"] > div > [class*="react-datepicker"] {
-        margin-left: 0;
-        min-width: 100%;
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  > div
+  > [class*="react-datepicker"] {
+  margin-left: 0;
+  min-width: 100%;
 }
-.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
-    top: 14px;
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  [class*="react-datepicker__navigation"]:before {
+  top: 14px;
 }
-.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__day-names"]{
-    margin-top: 5px;
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  [class*="react-datepicker__day-names"] {
+  margin-top: 5px;
 }
-.calendarFilter [class*="react-datepicker__month-container"] [class*="react-datepicker__month"]{
-    margin-bottom: 10px;
+.calendarFilter
+  [class*="react-datepicker__month-container"]
+  [class*="react-datepicker__month"] {
+  margin-bottom: 10px;
 }
 
 .dateFilter{
@@ -141,6 +150,9 @@
 }
 .tableDetails{
     margin-top: 24px;
+}
+.tableDetails table tr th[class*="ant-table-cell"] {
+  white-space: nowrap;
 }
 
 .filterContainer{

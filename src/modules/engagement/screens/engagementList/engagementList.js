@@ -513,7 +513,12 @@ const EngagementList = () => {
 								columns={tableColumnsMemo}
 								bordered={false}
 								dataSource={
-									search && search.length > 0 ? [...search] : [...apiData]
+									// search && search.length > 0 ? [...search] : [...apiData]
+									search && search?.length === 0
+										? []
+										: search && search.length > 0
+											? [...search]
+											: [...apiData]
 								}
 								pagination={{
 									onChange: (pageNum, pageSize) => {

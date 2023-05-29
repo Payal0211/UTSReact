@@ -42,7 +42,7 @@ const EditDebriefingHR = ({
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			secondaryInterviewer: [],
+			secondaryInterviewer: getHRdetails?.secondaryInterviewerlist ? getHRdetails?.secondaryInterviewerlist : [],
 		},
 	});
 	const { fields, append, remove } = useFieldArray({
@@ -226,7 +226,8 @@ const EditDebriefingHR = ({
 					type: 'success',
 					content: 'HR Debriefing has been updated successfully..',
 				});
-				window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
+				// window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
+				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE)
 			}
 		},
 		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI, navigate],
@@ -289,14 +290,15 @@ const EditDebriefingHR = ({
 								errors={errors}
 								name="roleAndResponsibilities"
 							/>
-							<HRInputField
-								required
-								isTextArea={true}
-								errors={errors}
-								validationSchema={{
-									validate: (value) => {
-										if (
-											value.toLowerCase() ===
+							<div className={DebriefingHRStyle.aboutCompanyField}>
+								<HRInputField
+									required
+									isTextArea={true}
+									errors={errors}
+									validationSchema={{
+										validate: (value) => {
+											if (
+												value.toLowerCase() ===
 												getHRdetails?.company.toLowerCase() &&
 											value.toUpperCase() ===
 												getHRdetails?.company.toUpperCase()
@@ -314,6 +316,8 @@ const EditDebriefingHR = ({
 								type={InputType.TEXT}
 								placeholder="Please enter details about company."
 							/>
+								<p>* Please do not mention company name here</p>
+							</div>
 							<TextEditor
 								isControlled={true}
 								controlledValue={

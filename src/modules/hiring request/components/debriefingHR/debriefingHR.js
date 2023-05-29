@@ -250,34 +250,37 @@ const DebriefingHR = ({
 								errors={errors}
 								name="roleAndResponsibilities"
 							/>
-							<HRInputField
-								required
-								isTextArea={true}
-								errors={errors}
-								validationSchema={{
-								validate:(value) =>{
-									if(params === "addnewhr"){
-										if(value.toLowerCase()===getCompanyName.toLowerCase() && value.toUpperCase()===getCompanyName.toUpperCase()){
-											return 'Please do not mention company name here';
-										}if(!value){
-											return "Please add something about the company";
+							<div className={DebriefingHRStyle.aboutCompanyField}>
+								<HRInputField
+									required
+									isTextArea={true}
+									errors={errors}
+									validationSchema={{
+										validate: (value) => {
+											if (params === "addnewhr") {
+												if (value.toLowerCase() === getCompanyName.toLowerCase() && value.toUpperCase() === getCompanyName.toUpperCase()) {
+													return 'Please do not mention company name here';
+												} if (!value) {
+													return "Please add something about the company";
+												}
+											} else {
+												if (value.toLowerCase() === clientDetail?.companyname
+													.toLowerCase() && value.toUpperCase() === clientDetail?.companyname.toUpperCase()) {
+													return 'Please do not mention company name here';
+												} if (!value) {
+													return "Please add something about the company";
+												}
+											}
 										}
-									}else{
-										if(value.toLowerCase()===clientDetail?.companyname
-										.toLowerCase() && value.toUpperCase()===clientDetail?.companyname.toUpperCase()){
-											return 'Please do not mention company name here';
-										}if(!value){
-											return "Please add something about the company";
-										}
-									}
-								}
-							}}
-								label={'About Company'}
-								register={register}
-								name="aboutCompany"
-								type={InputType.TEXT}
-								placeholder="Please enter details about company."
-							/>
+									}}
+									label={'About Company'}
+									register={register}
+									name="aboutCompany"
+									type={InputType.TEXT}
+									placeholder="Please enter details about company."
+								/>
+								<p>* Please do not mention company name here</p>
+							</div>
 							<TextEditor
 								isControlled={true}
 								controlledValue={JDParsedSkills?.Requirements || ''}

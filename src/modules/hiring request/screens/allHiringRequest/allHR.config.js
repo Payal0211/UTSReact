@@ -1,13 +1,12 @@
 import { HiringRequestHRStatus, ProfileLog } from 'constants/application';
 import { Link } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
-import { FaRegClone } from "react-icons/fa";
-
+import { ReactComponent as CloneHRSVG } from 'assets/svg/cloneHR.svg';
 export const allHRConfig = {
 	tableConfig: (togglePriority, setCloneHR, setHRID, setHRNumber) => {
 		return [
 			{
-				title: '     ',
+				title: ' ',
 				dataIndex: 'starStatus',
 				key: 'starStatus',
 				align: 'left',
@@ -23,21 +22,25 @@ export const allHRConfig = {
 				},
 			},
 			{
-				title: "Clone HR",
+				title: 'Clone HR',
 				dataIndex: 'cloneHR',
 				key: 'cloneHR',
 				align: 'left',
 				render: (text, result) => {
 					return (
 						<>
-							<div className='textCenter'>
-								<FaRegClone style={{ fontSize: '16px' }} onClick={() => {
-									setCloneHR(true)
-									setHRID(result?.key)
-									setHRNumber(result?.HR_ID)
-								}} />
+							<div className="textCenter">
+								<CloneHRSVG
+									style={{ fontSize: '16px' }}
+									onClick={() => {
+										setCloneHR(true);
+										setHRID(result?.key);
+										setHRNumber(result?.HR_ID);
+									}}
+								/>
 							</div>
-						</>)
+						</>
+					);
 				},
 			},
 			// {
@@ -113,17 +116,16 @@ export const allHRConfig = {
 				dataIndex: 'salesRep',
 				key: 'sales_rep',
 				align: 'left',
-				render: (text) => {
+				render: (text, result) => {
 					return (
-						<a
-							target="_blank"
-							href="#"
+						<Link
+							to={`/user/${result?.userId}`}
 							style={{
 								color: `var(--uplers-black)`,
 								textDecoration: 'underline',
 							}}>
 							{text}
-						</a>
+						</Link>
 					);
 				},
 			},

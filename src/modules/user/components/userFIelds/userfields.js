@@ -23,6 +23,7 @@ import { userAPI } from 'apis/userAPI';
 import { userDAO } from 'core/user/userDAO';
 import { HttpServices } from 'shared/services/http/http_service';
 import { LoadingOutlined } from '@ant-design/icons';
+import { ReactComponent as LongArrowSVG } from 'assets/svg/longArrow.svg';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -1075,6 +1076,20 @@ const UsersFields = ({ id, setLoading, loading }) => {
 												</div>
 											</div>
 										)}
+									{id !== 0 && (
+										<div className={UserFieldStyle.colMd12}>
+											<div className={UserFieldStyle.reportHierarchy}>
+												<label>Reporting Hierarchy</label>
+												<ul>
+													{userDetails?.reportingHierarchy?.map((item) => {
+														return (
+															<li><LongArrowSVG />{item?.userName}</li>
+														)
+													})}
+												</ul>
+											</div>
+										</div>
+									)}
 								</div>
 							</div>
 						</div>

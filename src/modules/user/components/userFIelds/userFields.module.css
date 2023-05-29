@@ -220,14 +220,20 @@
     margin-bottom: 0;
 }
 
-.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"] {
-    width: 25px;
-    height: 25px;
+.radioGroup
+  [class*="ant-radio-wrapper"]
+  [class*="ant-radio"]
+  [class*="ant-radio-inner"] {
+  width: 25px;
+  height: 25px;
 }
 
-.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]:after {
-    width: 15px;
-    height: 15px;
+.radioGroup
+  [class*="ant-radio-wrapper"]
+  [class*="ant-radio"]
+  [class*="ant-radio-inner"]:after {
+  width: 15px;
+  height: 15px;
 }
 
 .radioFormGroup {
@@ -368,4 +374,51 @@
 .imagePreviewModal [class*="ant-modal-body"] {
     padding-top: 50px;
     text-align: center;
+}
+.reportHierarchy {
+  margin: 0 0 16px;
+}
+.reportHierarchy label {
+  vertical-align: top;
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #676767;
+  margin: 0 0 8px;
+  display: inline-block;
+}
+.reportHierarchy ul {
+  text-align: left;
+  width: 100%;
+  padding: 16px 16px;
+  background: var(--background-color-light);
+  border: 1px solid #cecccc;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--uplers-black);
+  outline: 1px solid transparent;
+  transition: all 0.25s ease 0s;
+  vertical-align: middle;
+  flex-wrap: wrap;
+  display: flex;
+  margin: 0;
+  list-style-type: none;
+}
+.reportHierarchy ul li {
+  padding: 0 16px 0 40px;
+  position: relative;
+}
+.reportHierarchy ul li:first-child {
+  padding-left: 0;
+}
+.reportHierarchy li svg {
+  position: absolute;
+  left: 0;
+  top: 6px;
+}
+.reportHierarchy ul li:first-child svg {
+  display: none;
 }
