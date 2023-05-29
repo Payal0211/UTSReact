@@ -205,6 +205,7 @@ export class InterviewsAPI {
 	static UPDATE_INTERVIEW_STATUS = 'UpdateInterviewStatus';
 	static FEEDBACK = 'Feedback';
 	static GET_SLOT_DETAILS = 'GetExistingSlotDetails';
+	static GET_CLIENT_FEEDBACK = 'GetClientFeedback';
 	static SAVE_CONFIRM_INTERVIEW = 'SaveConfirmInterviewSlot';
 }
 export class DealsAPI {
