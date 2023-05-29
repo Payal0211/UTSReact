@@ -39,6 +39,8 @@ import EditBillRate from '../editBillAndPayRate/editBillRateModal';
 import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
 import ProfileLogStyle from './profileLog.module.css';
 import { useParams } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 
 const TalentList = ({
 	talentCTA,
@@ -193,6 +195,10 @@ const TalentList = ({
 	const [getConfirmSlotDetails, setConfirmSlotDetails] = useState({});
 	const [confirmSlotRadio, setConfirmSlotRadio] = useState(1);
 	const [getDateNewFormate, setDateNewFormate] = useState([]);
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+	const [typeId, setTypeId] = useState(0);
+
 
 	const {
 		register,
@@ -1281,6 +1287,48 @@ const TalentList = ({
 	}
 	console.log(feedbackReceivedDetails, "response for feedback")
 
+	const onProfileLogClickHandler = useCallback(
+		async (typeID, index, type, start = null, end = null) => {
+			setLogExpanded([]);
+			setTypeId(typeID);
+			setActiveIndex(index);
+			setActiveType(type);
+
+			let profileObj = {
+				talentID: 10551,
+				typeID: 51,
+				fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
+				toDate: !!end && new Date(end).toLocaleDateString('en-US'),
+			};
+
+			const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
+				profileObj,
+			);
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				setLogExpanded(response && response?.responseBody?.details);
+				// setProfileLog()
+			}
+			if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+				setLogExpanded([]);
+				setProfileLog([]);
+			}
+		},
+		[talentID],
+	);
+
+	const onCalenderFilter = useCallback(
+		(dates) => {
+			const [start, end] = dates;
+			setStartDate(start);
+			setEndDate(end);
+			if (start && end) {
+				onProfileLogClickHandler(typeId, activeIndex, activeType, start, end);
+			}
+		},
+		[activeIndex, activeType,onProfileLogClickHandler,typeId],
+	);
+
+
 	return (
 		<div>
 			{contextHolder}
@@ -1711,7 +1759,24 @@ const TalentList = ({
 					</div>
 
 					<div className={ProfileLogStyle.profileNameDate}>
-						Date here...
+					<div className={ProfileLogStyle.label}>Date</div>
+						<div className={ProfileLogStyle.calendarFilter}>
+							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+							<DatePicker
+								style={{ backgroundColor: 'red' }}
+								onKeyDown={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+								}}
+								className={ProfileLogStyle.dateFilter}
+								placeholderText="Start date - End date"
+								selected={startDate}
+								onChange={onCalenderFilter}
+								startDate={startDate}
+								endDate={endDate}
+								selectsRange
+							/>
+						</div>
 					</div>
 				</div>
 
