@@ -6,6 +6,7 @@ import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { ReactComponent as ArrowRightSVG } from 'assets/svg/arrowRight.svg';
 import { ReactComponent as CrossSVG } from 'assets/svg/cross.svg';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
+import { InputType } from 'constants/application';
 
 const EngagementFilerList = ({
   setAppliedFilters,
@@ -253,7 +254,7 @@ const EngagementFilerList = ({
                   />
                   <input
                     className={engagementFilterStyle.searchInput}
-                    type="text"
+                    type={filterSubChild?.label === "Engagement Tenure"?InputType.NUMBER:InputType.TEXT}
                     id="search"
                     placeholder={`Search ${filterSubChild?.label}`}
                     onChange={(e) => {
