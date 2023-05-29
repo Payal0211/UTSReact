@@ -9,7 +9,7 @@ import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
 import { ReactComponent as LeftArrowSVG } from 'assets/svg/arrowLeft.svg';
 import { ReactComponent as RightArrowSVG } from 'assets/svg/arrowRight.svg';
-import { TalentOnboardStatus } from 'constants/application';
+import { ProfileLog, TalentOnboardStatus } from 'constants/application';
 import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
 import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
 import InterviewFeedback from 'modules/interview/screens/interviewFeedback/interviewFeedback';
@@ -1207,12 +1207,11 @@ const TalentList = ({
 
 	// Profile Log
 
-	const [sharedProfile, setSharedProfile] = useState(false)
+	const [getHRDetailsItem, setGetHRDetailItem] = useState([])
 
 	const viewProfileInfo = async () => {
-		setSharedProfile(true)
 		let response = await hiringRequestDAO.getTalentProfileLogDAO({
-			talentid: 10501,
+			talentid: getHRDetailsItem?.TalentID,
 			fromDate: null,
 			toDate: null,
 		});
@@ -1228,11 +1227,24 @@ const TalentList = ({
 	// For Add / Remove Class
 
 	const [profileShared, setProfileShared] = useState([])
-
+	const [showProfileShared, setShowProfileShared] = useState(false)
+	const [profileRejected, setProfileRejected] = useState([])
+	const [showProfileRejectClass, setShowProfileRejectClass] = useState()
+	const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([])
+	const [feedbackReceivedClass, setFeedBackReceivedClass] = useState(false)
+	const [selectForClass, setSelectForClass] = useState(false)
+	const [selectForDetails, setSelectForDetails] = useState([])
+	console.log(profileRejected, "profileRejected")
 	const profileLogBox = async () => {
+		setShowProfileShared(true)
+		setShowProfileRejectClass(false)
+		setFeedBackReceivedClass(false)
+		setSelectForClass(false)
+		setProfileRejected([])
+		setFeedbackReceivedDetails([])
 		let profileObj = {
-			talentID: 10501,
-			typeID: 6,
+			talentID: getHRDetailsItem?.TalentID,
+			typeID: ProfileLog.PROFILE_SHARED,
 			// fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
 			// toDate: !!end && new Date(end).toLocaleDateString('en-US'),
 		};
@@ -1244,13 +1256,14 @@ const TalentList = ({
 	}
 
 	//  Profile Rejected
-
-	const [profileRejected, setProfileRejected] = useState([])
-
 	const profileRejectedDetails = async () => {
+		setShowProfileRejectClass(true)
+		setShowProfileShared(false)
+		setFeedBackReceivedClass(false)
+		setSelectForClass(false)
 		let profileReject = {
-			talentID: 10501,
-			typeID: 22,
+			talentID: getHRDetailsItem?.TalentID,
+			typeID: ProfileLog.REJECTED,
 			// fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
 			// toDate: !!end && new Date(end).toLocaleDateString('en-US'),
 		};
@@ -1263,19 +1276,38 @@ const TalentList = ({
 
 	// Feedback Received
 
-	const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([])
-
 	const feedbackReceived = async () => {
+		setFeedBackReceivedClass(true)
+		setShowProfileRejectClass(false)
+		setShowProfileShared(false)
+		setSelectForClass(false)
+		setProfileRejected([])
+		setProfileShared([])
 		let feedbackReceivedObj = {
-			talentID: 10551,
-			typeID: 51,
+			talentID: getHRDetailsItem?.TalentID,
+			typeID: ProfileLog.FEEDBACK,
 			// fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
 			// toDate: !!end && new Date(end).toLocaleDateString('en-US'),
 		}
 		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(feedbackReceivedObj)
 		setFeedbackReceivedDetails(response?.responseBody?.details)
 	}
-	console.log(feedbackReceivedDetails, "response for feedback")
+
+
+	const selectFor = async () => {
+		setSelectForClass(true)
+		setShowProfileRejectClass(false)
+		setShowProfileShared(false)
+		let selectForObj = {
+			talentID: getHRDetailsItem?.TalentID,
+			typeID: ProfileLog.SELECTED,
+			// fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
+			// toDate: !!end && new Date(end).toLocaleDateString('en-US'),
+		}
+		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(selectForObj)
+		setSelectForDetails(response?.responseBody?.details)
+	}
+
 
 	return (
 		<div>
@@ -1294,7 +1326,8 @@ const TalentList = ({
 					},
 				}}
 				renderItem={(item, listIndex) => {
-
+					console.log(item, "itemeemmeme")
+					setGetHRDetailItem(item)
 					return (
 						<div
 							key={item?.Name}
@@ -1688,7 +1721,7 @@ const TalentList = ({
 				open={showProfileLogModal}
 				className="commonModalWrap"
 				// onOk={() => setVersantModal(false)}
-				onCancel={() => { setProfileLogModal(false); setProfileShared([]); setFeedbackReceivedDetails([]); setProfileRejected([]) }}>
+				onCancel={() => { setProfileLogModal(false); setProfileShared([]); setFeedbackReceivedDetails([]); setProfileRejected([]); setShowProfileShared(false); setShowProfileRejectClass(false); setFeedBackReceivedClass(false) }}>
 
 				<div className={ProfileLogStyle.modalTitle}>
 					<h2>Profile Log</h2>
@@ -1712,161 +1745,209 @@ const TalentList = ({
 				</div>
 
 				<div className={ProfileLogStyle.profileLogBox}>
-					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileShared} ${ProfileLogStyle.select}`} onClick={profileLogBox}>
+					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileShared} ${showProfileShared ? ProfileLogStyle.select : ""}`} onClick={profileLogBox}>
 						<h3>{profileLog?.profileSharedCount}</h3>
 						<p>Profile Shared</p>
 					</div>
-					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileReceived}`} onClick={feedbackReceived}>
+					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileReceived} ${feedbackReceivedClass ? ProfileLogStyle.select : ""}`} onClick={feedbackReceived}>
 						<h3>{profileLog?.feedbackCount}</h3>
 						<p>Feedback Received</p>
 					</div>
-					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileRejected}`} onClick={profileRejectedDetails}>
+					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileRejected} ${showProfileRejectClass ? ProfileLogStyle.select : ""}`} onClick={profileRejectedDetails}>
 						<h3>{profileLog?.rejectedCount}</h3>
 						<p>Rejected</p>
 					</div>
-					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileSelFor}`}>
+					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileSelFor} ${selectForClass ? ProfileLogStyle.select : ""}`} onClick={selectFor}>
 						<h3>{profileLog?.selectedForCount}</h3>
 						<p>Selected For</p>
 					</div>
 				</div>
-				{profileShared?.length === 0 && (
+				{/* {profileShared?.length === 0 && (
 
 					<p>Select the stages to view thier HRs</p>
-				)}
-				{profileShared?.length !== 0 && (
+				)} */}
+				{showProfileShared === true && (
+					<>
+						{profileShared?.length !== 0 && (
 
-					<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
-						<div className={ProfileLogStyle.profileLogListHead}>
-							<h4>Profile Shared: 04 HRs</h4>
-							<div className={ProfileLogStyle.profileLogListAction}>
-								<button><LeftArrowSVG /></button>
-								<button><RightArrowSVG /></button>
-							</div>
-						</div>
+							<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
+								<div className={ProfileLogStyle.profileLogListHead}>
+									<h4>Profile Shared: 04 HRs</h4>
+									<div className={ProfileLogStyle.profileLogListAction}>
+										<button><LeftArrowSVG /></button>
+										<button><RightArrowSVG /></button>
+									</div>
+								</div>
 
-						<div className={ProfileLogStyle.profileLogList}>
-							<table>
-								<thead>
-									<tr>
-										<th>No.</th>
-										<th>HR ID</th>
-										<th>Position</th>
-										<th>Company</th>
-										<th>Feedback</th>
-										<th>Date</th>
-									</tr>
-								</thead>
-								<tbody>
-									{profileShared?.responseBody?.details?.map((item) => {
-										return (
-
+								<div className={ProfileLogStyle.profileLogList}>
+									<table>
+										<thead>
 											<tr>
-												<td>HR 1</td>
-												<td><u>{item?.hrid}</u></td>
-												<td>{item?.position}</td>
-												<td><u>{item?.company}</u></td>
-												<td><a href="#">Profile Shared</a></td>
-												<td>{item?.sDate}</td>
+												<th>No.</th>
+												<th>HR ID</th>
+												<th>Position</th>
+												<th>Company</th>
+												<th>Feedback</th>
+												<th>Date</th>
 											</tr>
-										)
-									})}
-								</tbody>
-							</table>
-						</div>
-					</div>
-				)}
-				{feedbackReceivedDetails?.length === 0 && (
+										</thead>
+										<tbody>
+											{profileShared?.responseBody?.details?.map((item) => {
+												return (
 
-					<p>Select the stages to view thier HRs</p>
-				)}
-				{feedbackReceivedDetails?.length !== 0 && (
-					<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
-						<div className={ProfileLogStyle.profileLogListHead}>
-							<h4>Feedback Received : 04 HRs</h4>
-							<div className={ProfileLogStyle.profileLogListAction}>
-								<button><LeftArrowSVG /></button>
-								<button><RightArrowSVG /></button>
+													<tr>
+														<td>HR 1</td>
+														<td><u>{item?.hrid}</u></td>
+														<td>{item?.position}</td>
+														<td><u>{item?.company}</u></td>
+														<td><a href="#">Profile Shared</a></td>
+														<td>{item?.sDate}</td>
+													</tr>
+												)
+											})}
+										</tbody>
+									</table>
+								</div>
 							</div>
-						</div>
-
-						<div className={ProfileLogStyle.profileLogList}>
-							<table>
-								<thead>
-									<tr>
-										<th>No.</th>
-										<th>HR ID</th>
-										<th>Position</th>
-										<th>Company</th>
-										<th>Feedback</th>
-										<th>Date</th>
-									</tr>
-								</thead>
-								<tbody>
-									{profileRejected?.map((item) => {
-										return (
-											<tr>
-												<td>HR 1</td>
-												<td><u>{item?.hrid}</u></td>
-												<td>{item?.position}</td>
-												<td><u>{item?.company}</u></td>
-												<td><a href="#">Profile Shared</a></td>
-												<td>{item?.sDate}</td>
-											</tr>
-										)
-									})}
-
-								</tbody>
-							</table>
-						</div>
-					</div>
+						)}
+					</>
 				)}
-				{profileRejected?.length !== 0 && (
-					<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
-						<div className={ProfileLogStyle.profileLogListHead}>
-							<h4>Profile Rejected : 04 HRs</h4>
-							<div className={ProfileLogStyle.profileLogListAction}>
-								<button><LeftArrowSVG /></button>
-								<button><RightArrowSVG /></button>
+				{feedbackReceivedClass === true && (
+					<>
+						{feedbackReceivedDetails?.length !== 0 && (
+							<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileReceived}`}>
+								<div className={ProfileLogStyle.profileLogListHead}>
+									<h4>Feedback Received: 04 HRs</h4>
+									<div className={ProfileLogStyle.profileLogListAction}>
+										<button><LeftArrowSVG /></button>
+										<button><RightArrowSVG /></button>
+									</div>
+								</div>
+
+								<div className={ProfileLogStyle.profileLogList}>
+									<table>
+										<thead>
+											<tr>
+												<th>No.</th>
+												<th>HR ID</th>
+												<th>Position</th>
+												<th>Company</th>
+												<th>Feedback</th>
+												<th>Date</th>
+											</tr>
+										</thead>
+										<tbody>
+											{feedbackReceivedDetails?.map((item) => {
+												return (
+													<tr>
+														<td>HR 1</td>
+														<td><u>{item?.hrid}</u></td>
+														<td>{item?.position}</td>
+														<td><u>{item?.company}</u></td>
+														<td><a href="#">Profile Shared</a></td>
+														<td>{item?.sDate}</td>
+													</tr>
+												)
+											})}
+
+										</tbody>
+									</table>
+								</div>
 							</div>
-						</div>
-
-						<div className={ProfileLogStyle.profileLogList}>
-							<table>
-								<thead>
-									<tr>
-										<th>No.</th>
-										<th>HR ID</th>
-										<th>Position</th>
-										<th>Company</th>
-										<th>Feedback</th>
-										<th>Date</th>
-									</tr>
-								</thead>
-								<tbody>
-									{profileRejected?.map((item) => {
-										return (
-											<tr>
-												<td>HR 1</td>
-												<td><u>{item?.hrid}</u></td>
-												<td>{item?.position}</td>
-												<td><u>{item?.company}</u></td>
-												<td><a href="#">Profile Shared</a></td>
-												<td>{item?.sDate}</td>
-											</tr>
-										)
-									})}
-
-								</tbody>
-							</table>
-						</div>
-					</div>
+						)}
+					</>
 				)}
-				{profileRejected?.length === 0 && (
+				{showProfileRejectClass === true && (
+					<>
+						{profileRejected?.length !== 0 || profileRejected === undefined && (
+							<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileRejected}`}>
+								<div className={ProfileLogStyle.profileLogListHead}>
+									<h4>Profile Rejected : 05 HRs</h4>
+									<div className={ProfileLogStyle.profileLogListAction}>
+										<button><LeftArrowSVG /></button>
+										<button><RightArrowSVG /></button>
+									</div>
+								</div>
 
-					<p>Select the stages to view thier HRs</p>
+								<div className={ProfileLogStyle.profileLogList}>
+									<table>
+										<thead>
+											<tr>
+												<th>No.</th>
+												<th>HR ID</th>
+												<th>Position</th>
+												<th>Company</th>
+												<th>Feedback</th>
+												<th>Date</th>
+											</tr>
+										</thead>
+										<tbody>
+											{profileRejected?.map((item) => {
+												return (
+													<tr>
+														<td>HR 1</td>
+														<td><u>{item?.hrid}</u></td>
+														<td>{item?.position}</td>
+														<td><u>{item?.company}</u></td>
+														<td><a href="#">Profile Shared</a></td>
+														<td>{item?.sDate}</td>
+													</tr>
+												)
+											})}
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						)}
+					</>
+				)}
+				{selectForClass === true && (
+					<>
+						{profileRejected?.length !== 0 && (
+							<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileSelFor}`}>
+								<div className={ProfileLogStyle.profileLogListHead}>
+									<h4>Select For : 04 HRs</h4>
+									<div className={ProfileLogStyle.profileLogListAction}>
+										<button><LeftArrowSVG /></button>
+										<button><RightArrowSVG /></button>
+									</div>
+								</div>
+
+								<div className={ProfileLogStyle.profileLogList}>
+									<table>
+										<thead>
+											<tr>
+												<th>No.</th>
+												<th>HR ID</th>
+												<th>Position</th>
+												<th>Company</th>
+												<th>Feedback</th>
+												<th>Date</th>
+											</tr>
+										</thead>
+										<tbody>
+											{selectForDetails?.map((item) => {
+												return (
+													<tr>
+														<td>HR 1</td>
+														<td><u>{item?.hrid}</u></td>
+														<td>{item?.position}</td>
+														<td><u>{item?.company}</u></td>
+														<td><a href="#">Profile Shared</a></td>
+														<td>{item?.sDate}</td>
+													</tr>
+												)
+											})}
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						)}
+					</>
 				)}
 			</Modal>
-
 
 			{/** ============ MODAL FOR VERSANT SCORE ================ */}
 			<Modal
