@@ -1229,9 +1229,7 @@ const TalentList = ({
 
 	const [profileShared, setProfileShared] = useState([])
 
-
 	const profileLogBox = async () => {
-
 		let profileObj = {
 			talentID: 10501,
 			typeID: 6,
@@ -1244,8 +1242,6 @@ const TalentList = ({
 		);
 		setProfileShared(response)
 	}
-
-
 
 	//  Profile Rejected
 
@@ -1692,7 +1688,7 @@ const TalentList = ({
 				open={showProfileLogModal}
 				className="commonModalWrap"
 				// onOk={() => setVersantModal(false)}
-				onCancel={() => setProfileLogModal(false)}>
+				onCancel={() => { setProfileLogModal(false); setProfileShared([]); setFeedbackReceivedDetails([]); setProfileRejected([]) }}>
 
 				<div className={ProfileLogStyle.modalTitle}>
 					<h2>Profile Log</h2>
@@ -1737,7 +1733,6 @@ const TalentList = ({
 
 					<p>Select the stages to view thier HRs</p>
 				)}
-
 				{profileShared?.length !== 0 && (
 
 					<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
@@ -1866,7 +1861,10 @@ const TalentList = ({
 						</div>
 					</div>
 				)}
+				{profileRejected?.length === 0 && (
 
+					<p>Select the stages to view thier HRs</p>
+				)}
 			</Modal>
 
 
