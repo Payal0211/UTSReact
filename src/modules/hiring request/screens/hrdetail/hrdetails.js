@@ -1,36 +1,20 @@
-import React, {
-	Suspense,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
-import { Modal, Skeleton, Tabs } from 'antd';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
+import { Skeleton, Tooltip } from 'antd';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
-import HROperator from 'modules/hiring request/components/hroperator/hroperator';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import HRDetailStyle from './hrdetail.module.css';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
-import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
-import { AiOutlineDown } from 'react-icons/ai';
-import { ReactComponent as DeleteSVG } from 'assets/svg/delete.svg';
+import { ReactComponent as PowerSVG } from 'assets/svg/power.svg';
 import UTSRoutes from 'constants/routes';
 import { HTTPStatusCode } from 'constants/network';
 import WithLoader from 'shared/components/loader/loader';
 import { useForm } from 'react-hook-form';
-import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
-import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
-import {
-	HRDeleteType,
-	HiringRequestHRStatus,
-	InputType,
-} from 'constants/application';
-import { MasterDAO } from 'core/master/masterDAO';
+
+import { HRDeleteType, HiringRequestHRStatus } from 'constants/application';
+
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
-import { hrUtils } from 'modules/hiring request/hrUtils';
-import { _isNull } from 'shared/utils/basic_utils';
-import AcceptHR from 'modules/hiring request/components/acceptHR/acceptHR';
+
 import CloneHR from 'modules/hiring request/components/cloneHR/cloneHR';
 import CTASlot1 from 'modules/hiring request/components/CTASlot1/CTASlot1';
 import CTASlot2 from 'modules/hiring request/components/CTASlot2/CTASlot2';
@@ -50,15 +34,14 @@ const ActivityFeed = React.lazy(() =>
 );
 
 const HRDetailScreen = () => {
-	const [deleteModal, setDeleteModal] = useState(false);
+	// const [deleteModal, setDeleteModal] = useState(false);
 	const [isLoading, setLoading] = useState(false);
 	const [apiData, setAPIdata] = useState([]);
 	const navigate = useNavigate();
 	const switchLocation = useLocation();
-	const [deleteReason, setDeleteReason] = useState([]);
+	// const [deleteReason, setDeleteReason] = useState([]);
 	const [callHRapi, setHRapiCall] = useState(false);
-	const [acceptHRModal, setAcceptHRModal] = useState(false);
-	const [shareProfileModal, setShareProfileModal] = useState(false);
+
 	const [editDebrifing, setEditDebring] = useState([]);
 
 	const {
@@ -88,61 +71,61 @@ const HRDetailScreen = () => {
 		[navigate],
 	);
 
-	console.log(apiData, '--apiData-');
-	const clientOnLossSubmitHandler = useCallback(
-		async (d) => {
-			_isNull(watch('hrDeleteLossReason')) &&
-				setError('hrDeleteLossReason', 'Please select loss reason.');
+	// console.log(apiData, '--apiData-');
+	// const clientOnLossSubmitHandler = useCallback(
+	// 	async (d) => {
+	// 		_isNull(watch('hrDeleteLossReason')) &&
+	// 			setError('hrDeleteLossReason', 'Please select loss reason.');
 
-			_isNull(watch('hrDeleteLossRemark')) &&
-				setError('hrDeleteLossRemark', 'Please enter loss remark');
+	// 		_isNull(watch('hrDeleteLossRemark')) &&
+	// 			setError('hrDeleteLossRemark', 'Please enter loss remark');
 
-			let deleteObj = {
-				id: urlSplitter?.split('HR')[0],
-				deleteType: HRDeleteType.LOSS,
-				reasonId: watch('hrDeleteLossReason').id,
-				otherReason: _isNull(watch('hrLossDeleteOtherReason'))
-					? ''
-					: watch('hrLossDeleteOtherReason'),
-				reason: watch('hrDeleteLossReason').value,
-				remark: watch('hrDeleteLossRemark'),
-				onBoardId: 0,
-			};
+	// 		let deleteObj = {
+	// 			id: urlSplitter?.split('HR')[0],
+	// 			deleteType: HRDeleteType.LOSS,
+	// 			reasonId: watch('hrDeleteLossReason').id,
+	// 			otherReason: _isNull(watch('hrLossDeleteOtherReason'))
+	// 				? ''
+	// 				: watch('hrLossDeleteOtherReason'),
+	// 			reason: watch('hrDeleteLossReason').value,
+	// 			remark: watch('hrDeleteLossRemark'),
+	// 			onBoardId: 0,
+	// 		};
 
-			let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
-			if (deletedResponse && deletedResponse.statusCode === HTTPStatusCode.OK) {
-				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
-			}
-		},
-		[navigate, setError, urlSplitter, watch],
-	);
+	// 		let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
+	// 		if (deletedResponse && deletedResponse.statusCode === HTTPStatusCode.OK) {
+	// 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+	// 		}
+	// 	},
+	// 	[navigate, setError, urlSplitter, watch],
+	// );
 
 	const AMAssignmentHandler = useCallback(() => {});
 
-	const clientOnHoldSubmitHandler = useCallback(
-		async (d) => {
-			let deleteObj = {
-				id: urlSplitter?.split('HR')[0],
-				deleteType: HRDeleteType.ON_HOLD,
-				reasonId: d.hrDeleteReason.id,
-				otherReason: d.hrDeleteOtherReason,
-				reason: d.hrDeleteReason.value,
-				remark: d.hrDeleteRemark,
-				onBoardId: 0,
-			};
+	// const clientOnHoldSubmitHandler = useCallback(
+	// 	async (d) => {
+	// 		let deleteObj = {
+	// 			id: urlSplitter?.split('HR')[0],
+	// 			deleteType: HRDeleteType.ON_HOLD,
+	// 			reasonId: d.hrDeleteReason.id,
+	// 			otherReason: d.hrDeleteOtherReason,
+	// 			reason: d.hrDeleteReason.value,
+	// 			remark: d.hrDeleteRemark,
+	// 			onBoardId: 0,
+	// 		};
 
-			let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
-			if (deletedResponse && deletedResponse.statusCode === HTTPStatusCode.OK) {
-				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
-			}
-		},
-		[navigate, urlSplitter],
-	);
+	// 		let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
+	// 		if (deletedResponse && deletedResponse.statusCode === HTTPStatusCode.OK) {
+	// 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+	// 		}
+	// 	},
+	// 	[navigate, urlSplitter],
+	// );
 
-	const getHRDeleteReason = useCallback(async () => {
-		let response = await MasterDAO.getHRDeletReasonRequestDAO();
-		setDeleteReason(response && response?.responseBody?.details);
-	}, []);
+	// const getHRDeleteReason = useCallback(async () => {
+	// 	let response = await MasterDAO.getHRDeletReasonRequestDAO();
+	// 	setDeleteReason(response && response?.responseBody?.details);
+	// }, []);
 
 	// console.log(apiData, '-apiData');
 
@@ -295,16 +278,15 @@ const HRDetailScreen = () => {
 									}
 								}}
 							/> */}
-							<div
-								className={HRDetailStyle.hiringRequestPriority}
-								onClick={() => {
-									setDeleteModal(true);
-									getHRDeleteReason();
-								}}>
-								<DeleteSVG
-									style={{ width: '24px' }}
-									className={HRDetailStyle.deleteSVG}
-								/>
+							<div className={HRDetailStyle.hiringRequestPriority}>
+								<Tooltip
+									placement="bottom"
+									title="Close HR">
+									<PowerSVG
+										style={{ width: '24px' }}
+										className={HRDetailStyle.deleteSVG}
+									/>
+								</Tooltip>
 							</div>
 						</div>
 					)}
@@ -383,7 +365,7 @@ const HRDetailScreen = () => {
 			</div>
 
 			{/* ------------------ HR Delete Modal ---------------------- */}
-			<Modal
+			{/* <Modal
 				transitionName=""
 				centered
 				open={deleteModal}
@@ -563,7 +545,7 @@ const HRDetailScreen = () => {
 						/>
 					</div>
 				</div>
-			</Modal>
+			</Modal> */}
 		</WithLoader>
 	);
 };

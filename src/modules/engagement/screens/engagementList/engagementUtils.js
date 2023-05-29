@@ -9,6 +9,8 @@ export const engagementUtils = {
 			engagementId_HRID: item?.engagementId_HRID,
 			talentName: item?.talentName,
 			company: item?.company,
+			tscName:item?.tscName,
+			deployedSource:item?.deployedSource,
 			currentStatus: item?.currentStatus,
 			clientLegal_StatusID: item?.clientLegal_StatusID,
 			onboardID: item?.onBoardID,
@@ -103,8 +105,11 @@ export const engagementUtils = {
                 (val?.talentName &&
                     val?.talentName.toLowerCase().includes(e.target.value.toLowerCase())) ||
                 (val?.currentStatus &&
-                    val?.currentStatus.toLowerCase().includes(e.target.value.toLowerCase()))
-
+                    val?.currentStatus.toLowerCase().includes(e.target.value.toLowerCase())) ||
+				(val?.clientName &&
+					val?.clientName.toLowerCase().includes(e.target.value.toLowerCase())) ||
+				(val?.company &&
+					val?.company.toLowerCase().includes(e.target.value.toLowerCase()))
             );
         });
 

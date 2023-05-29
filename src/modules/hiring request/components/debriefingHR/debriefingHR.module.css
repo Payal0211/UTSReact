@@ -84,3 +84,27 @@
 .formPanelAction button+button {
     margin-left: 16px;
 }
+.aboutCompanyField {
+  position: relative;
+  margin: 0 0 22px;
+  padding-bottom: 45px;
+}
+.aboutCompanyField [class*="hrInputFields_formField"] {
+  margin: 0;
+}
+.aboutCompanyField [class*="hrInputFields_error"] {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+.aboutCompanyField p {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #ff9900;
+  margin: 0;
+  position: absolute;
+  bottom: 23px;
+  left: 0;
+}

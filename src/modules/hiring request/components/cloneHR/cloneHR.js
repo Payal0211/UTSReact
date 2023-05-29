@@ -3,7 +3,6 @@ import CloneHRStyle from './cloneHR.module.css';
 import { ReactComponent as CloneHRSVG } from 'assets/svg/cloneHR.svg';
 import { Modal } from 'antd';
 import CloneHRModal from 'modules/hiring request/screens/allHiringRequest/cloneHRModal';
-import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { useNavigate, useParams } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
