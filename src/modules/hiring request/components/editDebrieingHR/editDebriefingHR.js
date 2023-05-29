@@ -42,7 +42,7 @@ const EditDebriefingHR = ({
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			secondaryInterviewer: [],
+			secondaryInterviewer: getHRdetails?.secondaryInterviewerlist ? getHRdetails?.secondaryInterviewerlist : [],
 		},
 	});
 	const { fields, append, remove } = useFieldArray({
