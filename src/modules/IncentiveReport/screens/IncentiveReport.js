@@ -1,27 +1,5 @@
 import IncentiveReportStyle from './IncentiveReport.module.css';
-import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
-import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
-import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
-import { ReactComponent as LockSVG } from 'assets/svg/lock.svg';
-import { ReactComponent as UnlockSVG } from 'assets/svg/unlock.svg';
-import {
-	Dropdown,
-	Menu,
-	message,
-	Modal,
-	Table,
-	Tooltip,
-	Select,
-	Switch,
-	Tree,
-} from 'antd';
-import {
-	CarryOutOutlined,
-	CheckOutlined,
-	FormOutlined,
-} from '@ant-design/icons';
-import DatePicker from 'react-datepicker';
+import { Modal, Table, Tree } from 'antd';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useForm } from 'react-hook-form';
 import React, {
@@ -33,7 +11,6 @@ import React, {
 } from 'react';
 import { ReportDAO } from 'core/report/reportDAO';
 import { HTTPStatusCode } from 'constants/network';
-import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { reportConfig } from 'modules/report/report.config';
 import DemandFunnelModal from 'modules/report/components/demandFunnelModal/demandFunnelModal';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
@@ -58,7 +35,7 @@ const IncentiveReportScreen = () => {
 	const [demandFunnelHRDetailsState, setDemandFunnelHRDetailsState] = useState({
 		adhocType: '',
 		TeamManagerName: '',
-		currentStage: 'TR Accepted',
+		currentStage: '',
 		IsExport: false,
 		hrFilter: {
 			hR_No: '',
@@ -102,6 +79,7 @@ const IncentiveReportScreen = () => {
 	const [managerDataInfo, setManagerDataInfo] = useState([]);
 	const [incentiveReportInfo, setIncentiveReportInfo] = useState([]);
 	const [incentiveBoosterList, setIncentiveBoosterList] = useState([]);
+	const [incentiveReportAMNR, setIncentiveReportAMNR] = useState([]);
 
 	const [showLine, setShowLine] = useState(true);
 	const [showIcon, setShowIcon] = useState(false);
@@ -173,7 +151,7 @@ const IncentiveReportScreen = () => {
 		},
 		{
 			title: 'Contract Duration',
-			dataIndex: 'ContractDuration',
+			dataIndex: 'contractPeriod',
 		},
 		{
 			title: 'BR ($)',
@@ -208,6 +186,66 @@ const IncentiveReportScreen = () => {
 			dataIndex: 'LeadType',
 		},
 	];
+
+	const incentiveReportAMNRColumn = [
+		{
+			title: 'User',
+			dataIndex: 'UserName',
+		},
+		{
+			title: 'Company',
+			dataIndex: 'Company',
+		},
+		{
+			title: 'Client',
+			dataIndex: 'ClientName',
+		},
+		{
+			title: 'Category',
+			dataIndex: 'CompanyCategory',
+		},
+		{
+			title: 'HR Number',
+			dataIndex: 'HR_Number',
+		},
+		{
+			title: 'Engagemen ID',
+			dataIndex: 'EngagemenId',
+		},
+		{
+			title: 'Talent Name',
+			dataIndex: 'TalentName',
+		},
+		{
+			title: 'Client Closure Date',
+			dataIndex: 'ClientClosureDate',
+		},
+		{
+			title: 'Contract Duration',
+			dataIndex: 'ContractPeriod',
+		},
+		{
+			title: 'BR ($)',
+			dataIndex: 'Br',
+		},
+		{
+			title: 'PR ($)',
+			dataIndex: 'Pr',
+		},
+		{
+			title: 'NR Value ($)',
+			dataIndex: 'NRValue',
+		},
+		{
+			title: 'Cal Amt ($)',
+			dataIndex: 'Amount',
+		},
+		{
+			title: 'LeadType',
+			dataIndex: 'LeadType',
+		},
+	];
+
 	const Condition1 = [
 		{
 			title: 'User',
@@ -242,86 +280,8 @@ const IncentiveReportScreen = () => {
 			dataIndex: 'ClientClosureDate',
 		},
 		{
-			title: 'BR ($)',
-			dataIndex: 'BR',
-		},
-		{
-			title: 'PR ($)',
-			dataIndex: 'PR',
-		},
-		{
-			title: 'NR Value ($)',
-			dataIndex: 'NR',
-		},
-		{
-			title: 'Calc Amt ($)',
-			dataIndex: 'CalcAmt',
-		},
-		{
-			title: 'DP Slab ($)',
-			dataIndex: 'DPSlab',
-		},
-		{
-			title: 'DP Slab Amt ($)',
-			dataIndex: 'DPSlabAmt',
-		},
-		{
-			title: 'NBD',
-			dataIndex: 'NBD',
-		},
-		{
-			title: 'AM',
-			dataIndex: 'AM',
-		},
-		{
-			title: 'DP CalculatedAmt',
-			dataIndex: 'DPCalculatedAmt',
-		},
-		{
-			title: 'Lead Type',
-			dataIndex: 'LeadType',
-		},
-		{
-			title: 'AM NR Slab',
-			dataIndex: 'AMNRSlab',
-		},
-		{
-			title: 'AM NR %',
-			dataIndex: 'AMNRPercentage',
-		},
-	];
-	const Condition2 = [
-		{
-			title: 'User',
-			dataIndex: 'User',
-		},
-		{
-			title: 'Company',
-			dataIndex: 'Company',
-		},
-		{
-			title: 'Client',
-			dataIndex: 'Client',
-		},
-		{
-			title: 'Category',
-			dataIndex: 'Category',
-		},
-		{
-			title: 'HR Number',
-			dataIndex: 'HRNumber',
-		},
-		{
-			title: 'Engagement ID',
-			dataIndex: 'EngagementID',
-		},
-		{
-			title: 'Talent Name',
-			dataIndex: 'TalentName',
-		},
-		{
-			title: 'Client Closure Date',
-			dataIndex: 'ClientClosureDate',
+			title: 'Contract Duration',
+			dataIndex: 'ContractDuration',
 		},
 		{
 			title: 'BR ($)',
@@ -348,96 +308,6 @@ const IncentiveReportScreen = () => {
 			dataIndex: 'DPSlabAmt',
 		},
 		{
-			title: 'NBD',
-			dataIndex: 'NBD',
-		},
-		{
-			title: 'AM',
-			dataIndex: 'AM',
-		},
-		{
-			title: 'DP CalculatedAmt',
-			dataIndex: 'DPCalculatedAmt',
-		},
-		{
-			title: 'Lead Type',
-			dataIndex: 'LeadType',
-		},
-		{
-			title: 'Slab',
-			dataIndex: 'Slab',
-		},
-		{
-			title: 'Slab Amt ($)',
-			dataIndex: 'SlabAmt',
-		},
-	];
-	const Condition3 = [
-		{
-			title: 'User',
-			dataIndex: 'User',
-		},
-		{
-			title: 'Company',
-			dataIndex: 'Company',
-		},
-		{
-			title: 'Client',
-			dataIndex: 'Client',
-		},
-		{
-			title: 'Category',
-			dataIndex: 'Category',
-		},
-		{
-			title: 'HR Number',
-			dataIndex: 'HRNumber',
-		},
-		{
-			title: 'Engagement ID',
-			dataIndex: 'EngagementID',
-		},
-		{
-			title: 'Talent Name',
-			dataIndex: 'TalentName',
-		},
-		{
-			title: 'Client Closure Date',
-			dataIndex: 'ClientClosureDate',
-		},
-		{
-			title: 'BR ($)',
-			dataIndex: 'BR',
-		},
-		{
-			title: 'PR ($)',
-			dataIndex: 'PR',
-		},
-		{
-			title: 'NR Value ($)',
-			dataIndex: 'NR',
-		},
-		{
-			title: 'Calc Amt ($)',
-			dataIndex: 'CalcAmt',
-		},
-		{
-			title: 'DP Slab ($)',
-			dataIndex: 'DPSlab',
-		},
-		{
-			title: 'DP Slab Amt ($)',
-			dataIndex: 'DPSlabAmt',
-		},
-		{
-			title: 'NBD',
-			dataIndex: 'NBD',
-		},
-		{
-			title: 'AM',
-			dataIndex: 'AM',
-		},
-		{
 			title: 'DP CalculatedAmt',
 			dataIndex: 'DPCalculatedAmt',
 		},
@@ -446,169 +316,6 @@ const IncentiveReportScreen = () => {
 			dataIndex: 'LeadType',
 		},
 	];
-	const Condition4 = [
-		{
-			title: 'User',
-			dataIndex: 'User',
-		},
-		{
-			title: 'Company',
-			dataIndex: 'Company',
-		},
-		{
-			title: 'Client',
-			dataIndex: 'Client',
-		},
-		{
-			title: 'Category',
-			dataIndex: 'Category',
-		},
-		{
-			title: 'HR Number',
-			dataIndex: 'HRNumber',
-		},
-		{
-			title: 'Engagement ID',
-			dataIndex: 'EngagementID',
-		},
-		{
-			title: 'Talent Name',
-			dataIndex: 'TalentName',
-		},
-		{
-			title: 'Client Closure Date',
-			dataIndex: 'ClientClosureDate',
-		},
-		{
-			title: 'BR ($)',
-			dataIndex: 'BR',
-		},
-		{
-			title: 'PR ($)',
-			dataIndex: 'PR',
-		},
-		{
-			title: 'NR Value ($)',
-			dataIndex: 'NR',
-		},
-		{
-			title: 'Calc Amt ($)',
-			dataIndex: 'CalcAmt',
-		},
-		{
-			title: 'DP Slab ($)',
-			dataIndex: 'DPSlab',
-		},
-		{
-			title: 'NBD',
-			dataIndex: 'NBD',
-		},
-		{
-			title: 'AM',
-			dataIndex: 'AM',
-		},
-		{
-			title: 'DP Slab Amt ($)',
-			dataIndex: 'DPSlabAmt',
-		},
-		{
-			title: 'DP CalculatedAmt',
-			dataIndex: 'DPCalculatedAmt',
-		},
-		{
-			title: 'Lead Type',
-			dataIndex: 'LeadType',
-		},
-	];
-
-	const Condition5 = [
-		{
-			title: 'User',
-			dataIndex: 'User',
-		},
-		{
-			title: 'Company',
-			dataIndex: 'Company',
-		},
-		{
-			title: 'Client',
-			dataIndex: 'Client',
-		},
-		{
-			title: 'Category',
-			dataIndex: 'Category',
-		},
-		{
-			title: 'HR Number',
-			dataIndex: 'HRNumber',
-		},
-		{
-			title: 'Engagement ID',
-			dataIndex: 'EngagementID',
-		},
-		{
-			title: 'Talent Name',
-			dataIndex: 'TalentName',
-		},
-		{
-			title: 'Client Closure Date',
-			dataIndex: 'ClientClosureDate',
-		},
-		{
-			title: 'BR ($)',
-			dataIndex: 'BR',
-		},
-		{
-			title: 'PR ($)',
-			dataIndex: 'PR',
-		},
-		{
-			title: 'NR Value ($)',
-			dataIndex: 'NR',
-		},
-		{
-			title: 'Calc Amt ($)',
-			dataIndex: 'CalcAmt',
-		},
-		{
-			title: 'DP Slab ($)',
-			dataIndex: 'DPSlab',
-		},
-		{
-			title: 'DP Slab Amt ($)',
-			dataIndex: 'DPSlabAmt',
-		},
-		{
-			title: 'NBD',
-			dataIndex: 'NBD',
-		},
-		{
-			title: 'AM',
-			dataIndex: 'AM',
-		},
-		{
-			title: 'DP CalculatedAmt',
-			dataIndex: 'DPCalculatedAmt',
-		},
-		{
-			title: 'Lead Type',
-			dataIndex: 'LeadType',
-		},
-		{
-			title: 'IT_Slab',
-			dataIndex: 'ItSlab',
-		},
-		{
-			title: 'IT_SlabAmount',
-			dataIndex: 'ItSlabAmount',
-		},
-		{
-			title: 'IT_CalculatedAmount',
-			dataIndex: 'ItCalAmount',
-		},
-	];
-
-	const Condition6 = [{}];
 
 	const onRowClick = async (record) => {
 		setValueOfSelected('');
@@ -665,6 +372,18 @@ const IncentiveReportScreen = () => {
 		) {
 			setValueOfSelected(response.responseBody[0]?.userRole);
 		}
+		if (response.responseBody[0]?.userRole === 'AM') {
+			let responseOngoing =
+				await IncentiveReportDAO.getIncentiveReportDetailsAMNRDAO(
+					splitvalue[0],
+					record?.id,
+					false,
+					splitvalue[1],
+				);
+			if (responseOngoing.statusCode === HTTPStatusCode.OK) {
+				setIncentiveReportAMNR(responseOngoing?.responseBody);
+			}
+		}
 	};
 
 	const data = tableData?.map((data) => ({
@@ -675,6 +394,7 @@ const IncentiveReportScreen = () => {
 		SelfTarget: <u>{data?.selftarget}</u>,
 		SelfAchivedTarget: <u>{data?.selfAchivedTarget}</u>,
 	}));
+	// Based Fixed
 
 	const incentiveInfoList = incentiveReportInfo?.map((data) => ({
 		User: data?.userName || 'NA',
@@ -690,19 +410,54 @@ const IncentiveReportScreen = () => {
 		NR: data?.nrValue || 'NA',
 		AMNRSlab: data?.aM_NR_Slab || 'NA',
 		AMNRPercentage: data?.aM_NR_Percentage || 'NA',
-		CalcAmt: data?.amount || 'NA',
+		CalcAmt: data?.amount || 0,
 		NBD: data?.nbdSalesPerson || 'NA',
 		DPSlab: data?.dP_Slab || 'NA',
 		DPSlabAmt: data?.dP_SlabAmount || 'NA',
-		DPCalculatedAmt: data?.dP_CalculatedAmount || 'NA',
+		DPCalculatedAmt: data?.dP_CalculatedAmount || 0,
 		LeadType: data?.leadType || 'NA',
 		Slab: data?.aM_NR_Slab || 'NA',
 		SlabAmt: data?.aM_NR_Percentage || 'NA',
 		AM: data?.amSalesPerson || 'NA',
-		ItSlab: data?.IT_Slab || 'NA',
-		ItSlabAmount: data?.IT_SlabAmount || 'NA',
-		ItCalAmount: data?.IT_CalculatedAmount || 'NA',
+		ItSlab: data?.tI_Slab || 'NA',
+		ItSlabAmount: data?.tI_SlabAmount || 'NA',
+		ItCalAmount: data?.tI_CalculatedAmount || 0,
+		ContractDuration: data?.contractPeriod || 'NA',
 	}));
+
+	const [totalSum, setTotalSum] = useState(0);
+	const [calcAmount, setCalcAmount] = useState(0);
+	const [TICalcAmount, setTICalcAmount] = useState(0);
+	const [totalAMTarget, setTotalAmTarget] = useState(0);
+
+	useEffect(() => {
+		let dpAmt = 0;
+		let calcAmt = 0;
+		let tiAmt = 0;
+		// let AmTargetSUMTI = 0;
+		let AmTargetSUM = 0;
+
+		incentiveInfoList?.forEach((item) => {
+			calcAmt += item?.CalcAmt;
+			dpAmt += item?.DPCalculatedAmt;
+			tiAmt += item?.ItCalAmount;
+		});
+
+		if (
+			valueOfSelected === 'POD Manager' ||
+			valueOfSelected === 'Sales Consultant'
+		) {
+			AmTargetSUM = dpAmt + calcAmt + tiAmt;
+		} else {
+			AmTargetSUM = dpAmt + calcAmt;
+		}
+
+		setCalcAmount(calcAmt);
+		setTotalAmTarget(AmTargetSUM);
+		setTotalSum(dpAmt);
+		setTICalcAmount(tiAmt);
+	}, [incentiveInfoList]);
+
 	const incentiveBooster = incentiveBoosterList?.map((data) => ({
 		User: data?.userName || 'NA',
 		Company: data?.company || 'NA',
@@ -717,76 +472,61 @@ const IncentiveReportScreen = () => {
 		NR: data?.nrValue || 'NA',
 		CBSlab: data?.cB_Slab || 'NA',
 		SlabAmt: data?.cB_SlabAmount || 'NA',
-		CBAmt: data?.cB_CalculatedAmount || 'NA',
+		CBAmt: data?.cB_CalculatedAmount || 0,
 		NBD: data?.nbdSalesPerson || 'NA',
 		LeadType: data?.leadType || 'NA',
+		contractPeriod: data?.contractPeriod || 0,
 	}));
-	const treeData = [
-		{
-			title: 'parent 1',
-			key: '0-0',
-			icon: <CarryOutOutlined />,
-			children: [
-				{
-					title: 'parent 1-0',
-					key: '0-0-0',
-					icon: <CarryOutOutlined />,
-					children: [
-						{
-							title: 'leaf',
-							key: '0-0-0-0',
-							icon: <CarryOutOutlined />,
-						},
-						{
-							title: (
-								<>
-									<div>multiple line title</div>
-									<div>multiple line title</div>
-								</>
-							),
-							key: '0-0-0-1',
-							icon: <CarryOutOutlined />,
-						},
-						{
-							title: 'leaf',
-							key: '0-0-0-2',
-							icon: <CarryOutOutlined />,
-						},
-					],
-				},
-				{
-					title: 'parent 1-1',
-					key: '0-0-1',
-					icon: <CarryOutOutlined />,
-					children: [
-						{
-							title: 'leaf',
-							key: '0-0-1-0',
-							icon: <CarryOutOutlined />,
-						},
-					],
-				},
-				{
-					title: 'parent 1-2',
-					key: '0-0-2',
-					icon: <CarryOutOutlined />,
-					children: [
-						{
-							title: 'leaf',
-							key: '0-0-2-0',
-							icon: <CarryOutOutlined />,
-						},
-						{
-							title: 'leaf',
-							key: '0-0-2-1',
-							icon: <CarryOutOutlined />,
-							switcherIcon: <FormOutlined />,
-						},
-					],
-				},
-			],
-		},
-	];
+
+	const [boosterTotal, setboosterTotal] = useState(0);
+
+	useEffect(() => {
+		let cb_amt = 0;
+		incentiveBoosterList?.forEach((item) => {
+			cb_amt += item?.cB_CalculatedAmount;
+		});
+		setboosterTotal(cb_amt);
+	}, [incentiveBooster]);
+
+	const incentiveAMNR = incentiveReportAMNR?.map((data) => ({
+		UserName: data?.userName || 'NA',
+		Company: data?.company || 'NA',
+		ClientName: data?.clientName || 'NA',
+		CompanyCategory: data?.companyCategory || 'NA',
+		HR_Number: data?.hR_Number,
+		EngagemenId: data?.engagemenId || 'NA',
+		TalentName: data?.talentName || 'NA',
+		ClientClosureDate: data?.clientClosureDate || 'NA',
+		ContractPeriod: data?.contractPeriod || 'NA',
+		Br: data?.br || 'NA',
+		Pr: data?.pr || 'NA',
+		NRValue: data?.nrValue || 'NA',
+		AM_NR_Slab: data?.aM_NR_Slab || 'NA',
+		AM_NR_Percentge: data?.aM_NR_Percentage || 'NA',
+		Amount: data?.amount || 0,
+		LeadType: data?.leadType || 'NA',
+		NBD: data?.nbdSalesPerson || 'NA',
+		AM: data?.amSalesPerson || 'NA',
+		cB_Slab: data?.cB_Slab || 'NA',
+		cB_SlabAmount: data?.cB_SlabAmount || 'NA',
+	}));
+
+	const [amnrTotal, setAmnrTotal] = useState(0);
+	const [grandTotal, setGrandTotal] = useState(0);
+
+	useEffect(() => {
+		let amnrtotal = 0;
+		incentiveAMNR?.forEach((item) => {
+			amnrtotal += item?.Amount;
+		});
+		setAmnrTotal(amnrtotal);
+	}, [incentiveAMNR]);
+
+	useEffect(() => {
+		let _grandTotal = 0;
+		_grandTotal = totalAMTarget + boosterTotal + amnrTotal;
+		setGrandTotal(_grandTotal);
+	}, [amnrTotal, boosterTotal, totalAMTarget]);
 
 	const {
 		register,
@@ -843,41 +583,6 @@ const IncentiveReportScreen = () => {
 		}
 	}, [tableFilteredState]);
 
-	const tablesearchTableDataMemo = useMemo(
-		() =>
-			reportConfig.demandFunnelTable(
-				apiData && apiData,
-				demandFunnelModal,
-				setDemandFunnelModal,
-				setDemandFunnelHRDetailsState,
-				demandFunnelHRDetailsState,
-			),
-		[apiData, demandFunnelHRDetailsState, demandFunnelModal],
-	);
-
-	const viewSummaryMemo = useMemo(
-		() =>
-			reportConfig.viewSummaryDemandFunnel(viewSummaryData && viewSummaryData),
-		[viewSummaryData],
-	);
-	const getReportFilterHandler = useCallback(async () => {
-		const response = await ReportDAO.demandFunnelFiltersRequestDAO();
-		if (response?.statusCode === HTTPStatusCode.OK) {
-			setFiltersList(response && response?.responseBody?.Data);
-		} else {
-			setFiltersList([]);
-		}
-	}, []);
-
-	const toggleDemandReportFilter = useCallback(() => {
-		getReportFilterHandler();
-		!getHTMLFilter
-			? setIsAllowFilters(!isAllowFilters)
-			: setTimeout(() => {
-					setIsAllowFilters(!isAllowFilters);
-			  }, 300);
-		setHTMLFilter(!getHTMLFilter);
-	}, [getHTMLFilter, getReportFilterHandler, isAllowFilters]);
 	useEffect(() => {
 		getDemandFunnelListingHandler();
 	}, [getDemandFunnelListingHandler]);
@@ -943,6 +648,7 @@ const IncentiveReportScreen = () => {
 				setShowTableData([]);
 				setIncentiveBoosterList([]);
 				setIncentiveReportInfo([]);
+				setIncentiveReportAMNR([]);
 			}
 		}
 	};
@@ -993,6 +699,7 @@ const IncentiveReportScreen = () => {
 		setShowTableData([]);
 		setIncentiveBoosterList([]);
 		setIncentiveReportInfo([]);
+		setIncentiveReportAMNR([]);
 		sethierarchy([]);
 		sethierarchyDataNotFound('');
 		setErrorMessage('');
@@ -1049,6 +756,284 @@ const IncentiveReportScreen = () => {
 	}
 
 	const treedata = generateTreeData(gethierarachy);
+
+	const amTargetColumn = () => {
+		if (valueOfSelected === 'AM Head' || valueOfSelected === 'AM') {
+			if (valueOfSelectedUserName === '(AM)') {
+				Condition1.push(
+					{
+						title: 'AM NR Slab',
+						dataIndex: 'AMNRSlab',
+					},
+					{ title: 'AM NR %', dataIndex: 'AMNRPercentage' },
+					{
+						title: 'NBD',
+						dataIndex: 'NBD',
+					},
+				);
+				return Condition1;
+			} else if (valueOfSelectedUserName === '(NBD)') {
+				Condition1.push(
+					{
+						title: 'AM NR Slab',
+						dataIndex: 'AMNRSlab',
+					},
+					{ title: 'AM NR %', dataIndex: 'AMNRPercentage' },
+					{
+						title: 'AM',
+						dataIndex: 'AM',
+					},
+				);
+				return Condition1;
+			} else {
+				Condition1.push(
+					{
+						title: 'AM NR Slab',
+						dataIndex: 'AMNRSlab',
+					},
+					{ title: 'AM NR %', dataIndex: 'AMNRPercentage' },
+				);
+				return Condition1;
+			}
+		} else if (
+			valueOfSelected === 'BDR Executive' ||
+			valueOfSelected === 'BDR Lead' ||
+			valueOfSelected === 'BDR Head' ||
+			valueOfSelected === 'Marketing Team' ||
+			valueOfSelected === 'Marketing Lead' ||
+			valueOfSelected === 'Marketing Head'
+		) {
+			if (valueOfSelectedUserName === '(AM)') {
+				Condition1.push(
+					{
+						title: 'Slab',
+						dataIndex: 'Slab',
+					},
+					{
+						title: 'Slab Amt ($)',
+						dataIndex: 'SlabAmt',
+					},
+					{
+						title: 'NBD',
+						dataIndex: 'NBD',
+					},
+				);
+				return Condition1;
+			} else if (valueOfSelectedUserName === '(NBD)') {
+				Condition1.push(
+					{
+						title: 'Slab',
+						dataIndex: 'Slab',
+					},
+					{
+						title: 'Slab Amt ($)',
+						dataIndex: 'SlabAmt',
+					},
+					{
+						title: 'AM',
+						dataIndex: 'AM',
+					},
+				);
+				return Condition1;
+			} else {
+				Condition1.push(
+					{
+						title: 'Slab',
+						dataIndex: 'Slab',
+					},
+					{
+						title: 'Slab Amt ($)',
+						dataIndex: 'SlabAmt',
+					},
+				);
+				return Condition1;
+			}
+		} else if (
+			valueOfSelected === 'POD Manager' ||
+			valueOfSelected === 'Sales Consultant'
+		) {
+			if (valueOfSelectedUserName === '(AM)') {
+				Condition1.push(
+					{
+						title: 'TI_Slab',
+						dataIndex: 'ItSlab',
+					},
+					{
+						title: 'TI_SlabAmount',
+						dataIndex: 'ItSlabAmount',
+					},
+					{
+						title: 'TI_CalculatedAmount',
+						dataIndex: 'ItCalAmount',
+					},
+					{
+						title: 'NBD',
+						dataIndex: 'NBD',
+					},
+				);
+				return Condition1;
+			} else if (valueOfSelectedUserName === '(NBD)') {
+				Condition1.push(
+					{
+						title: 'TI_Slab',
+						dataIndex: 'ItSlab',
+					},
+					{
+						title: 'TI_SlabAmount',
+						dataIndex: 'ItSlabAmount',
+					},
+					{
+						title: 'TI_CalculatedAmount',
+						dataIndex: 'ItCalAmount',
+					},
+					{
+						title: 'AM',
+						dataIndex: 'AM',
+					},
+				);
+				return Condition1;
+			} else {
+				Condition1.push(
+					{
+						title: 'TI_Slab',
+						dataIndex: 'ItSlab',
+					},
+					{
+						title: 'TI_SlabAmount',
+						dataIndex: 'ItSlabAmount',
+					},
+					{
+						title: 'TI_CalculatedAmount',
+						dataIndex: 'ItCalAmount',
+					},
+				);
+				return Condition1;
+			}
+		}
+		if (valueOfSelectedUserName === '(AM)') {
+			Condition1.push({
+				title: 'NBD',
+				dataIndex: 'NBD',
+			});
+			return Condition1;
+		} else if (valueOfSelectedUserName === '(NBD)') {
+			Condition1.push({
+				title: 'AM',
+				dataIndex: 'AM',
+			});
+			return Condition1;
+		}
+	};
+
+	const onGoingColumn = () => {
+		if (valueOfSelected === 'AM Head' || valueOfSelected === 'AM') {
+			if (valueOfSelectedUserName === '(AM)') {
+				incentiveReportAMNRColumn.push(
+					{
+						title: 'AM NR Slab',
+						dataIndex: 'AM_NR_Slab',
+					},
+					{ title: 'AM NR %', dataIndex: 'AM_NR_Percentge' },
+					{
+						title: 'NBD',
+						dataIndex: 'NBD',
+					},
+				);
+				return incentiveReportAMNRColumn;
+			} else if (valueOfSelectedUserName === '(NBD)') {
+				incentiveReportAMNRColumn.push(
+					{
+						title: 'AM NR Slab',
+						dataIndex: 'AM_NR_Slab',
+					},
+					{ title: 'AM NR %', dataIndex: 'AM_NR_Percentge' },
+					{
+						title: 'AM',
+						dataIndex: 'AM',
+					},
+				);
+				return incentiveReportAMNRColumn;
+			} else {
+				incentiveReportAMNRColumn.push(
+					{
+						title: 'AM NR Slab',
+						dataIndex: 'AM_NR_Slab',
+					},
+					{ title: 'AM NR %', dataIndex: 'AM_NR_Percentge' },
+				);
+				return incentiveReportAMNRColumn;
+			}
+		} else if (
+			valueOfSelected === 'BDR Executive' ||
+			valueOfSelected === 'BDR Lead' ||
+			valueOfSelected === 'BDR Head' ||
+			valueOfSelected === 'Marketing Team' ||
+			valueOfSelected === 'Marketing Lead' ||
+			valueOfSelected === 'Marketing Head' ||
+			valueOfSelected === 'POD Manager' ||
+			valueOfSelected === 'Sales Consultant'
+		) {
+			if (valueOfSelectedUserName === '(AM)') {
+				incentiveReportAMNRColumn.push(
+					{
+						title: 'Slab',
+						dataIndex: 'cB_Slab',
+					},
+					{
+						title: 'Slab Amt ($)',
+						dataIndex: 'cB_SlabAmount',
+					},
+					{
+						title: 'NBD',
+						dataIndex: 'NBD',
+					},
+				);
+				return incentiveReportAMNRColumn;
+			} else if (valueOfSelectedUserName === '(NBD)') {
+				incentiveReportAMNRColumn.push(
+					{
+						title: 'Slab',
+						dataIndex: 'cB_Slab',
+					},
+					{
+						title: 'Slab Amt ($)',
+						dataIndex: 'cB_SlabAmount',
+					},
+					{
+						title: 'AM',
+						dataIndex: 'AM',
+					},
+				);
+				return incentiveReportAMNRColumn;
+			} else {
+				incentiveReportAMNRColumn.push(
+					{
+						title: 'Slab',
+						dataIndex: 'cB_Slab',
+					},
+					{
+						title: 'Slab Amt ($)',
+						dataIndex: 'cB_SlabAmount',
+					},
+				);
+				return incentiveReportAMNRColumn;
+			}
+		}
+
+		if (valueOfSelectedUserName === '(AM)') {
+			incentiveReportAMNRColumn.push({
+				title: 'NBD',
+				dataIndex: 'NBD',
+			});
+			return incentiveReportAMNRColumn;
+		} else if (valueOfSelectedUserName === '(NBD)') {
+			incentiveReportAMNRColumn.push({
+				title: 'AM',
+				dataIndex: 'AM',
+			});
+			return incentiveReportAMNRColumn;
+		}
+	};
 
 	return (
 		<>
@@ -1133,28 +1118,6 @@ const IncentiveReportScreen = () => {
 					</div>
 				</div>
 
-				{/*
-				 * ------------ Table Starts-----------
-				 * @Table Part
-				 */}
-				{/* {console.log(hierarchyButton, "qwqwqwqwq")} */}
-				{/* {hierarchyDataNotFound !== "" && <div className={IncentiveReportStyle.filterNoDataFound}>No data found</div>} */}
-
-				{/* {gethierarachy?.length !== 0 && (
-        <div className={IncentiveReportStyle.hierarchyTree}>
-          <div>
-            <Tree
-              showLine={showLine ? { showLeafIcon } : false}
-              showIcon={showIcon}
-              defaultExpandedKeys={['0-0-0']}
-              onSelect={onSelect}
-              treeData={treedata}
-            >
-            </Tree>
-          </div>
-        </div>
-      )} */}
-
 				{tableData?.length !== 0 ? (
 					<Table
 						columns={searchTableData}
@@ -1176,75 +1139,23 @@ const IncentiveReportScreen = () => {
 					''
 				)}
 
-				{incentiveReportInfo.length !== 0 &&
-					(incentiveReportInfo[0]?.userRole === 'AM' ||
-					incentiveReportInfo[0]?.userRole === 'AM Head' ? (
-						<>
-							<div className={IncentiveReportStyle.tableTitle}>AM Target</div>
-							<Table
-								columns={
-									valueOfSelected === 'AM Head' || valueOfSelected === 'AM'
-										? Condition1
-										: valueOfSelected === 'POD Manager' ||
-										  valueOfSelected === 'Sales Consultant' ||
-										  valueOfSelected === 'BDR Executive' ||
-										  valueOfSelected === 'BDR Lead' ||
-										  valueOfSelected === 'BDR Head' ||
-										  valueOfSelected === 'Marketing Team' ||
-										  valueOfSelected === 'Marketing Lead' ||
-										  valueOfSelected === 'Marketing Head'
-										? Condition2
-										: valueOfSelected === 'BDR Executive' ||
-										  valueOfSelected === 'BDR Lead'
-										? Condition2
-										: valueOfSelectedUserName === '(AM)'
-										? Condition3
-										: valueOfSelectedUserName === '(NBD)'
-										? Condition4
-										: valueOfSelected === 'POD Manager' ||
-										  valueOfSelected === 'Sales Consultant'
-										? Condition5
-										: Condition6
-								}
-								dataSource={incentiveInfoList}
-								size="
-            small"
-							/>
-						</>
-					) : (
-						<>
-							<div className={IncentiveReportStyle.tableTitle}>Based Fixed</div>
-							<Table
-								columns={
-									valueOfSelected === 'AM Head' || valueOfSelected === 'AM'
-										? Condition1
-										: valueOfSelected === 'POD Manager' ||
-										  valueOfSelected === 'Sales Consultant' ||
-										  valueOfSelected === 'BDR Executive' ||
-										  valueOfSelected === 'BDR Lead' ||
-										  valueOfSelected === 'BDR Head' ||
-										  valueOfSelected === 'Marketing Team' ||
-										  valueOfSelected === 'Marketing Lead' ||
-										  valueOfSelected === 'Marketing Head'
-										? Condition2
-										: valueOfSelected === 'BDR Executive' ||
-										  valueOfSelected === 'BDR Lead'
-										? Condition2
-										: valueOfSelectedUserName === '(AM)'
-										? Condition3
-										: valueOfSelectedUserName === '(NBD)'
-										? Condition4
-										: valueOfSelected === 'POD Manager' ||
-										  valueOfSelected === 'Sales Consultant'
-										? Condition5
-										: Condition6
-								}
-								dataSource={incentiveInfoList}
-								size="
-    small"
-							/>
-						</>
-					))}
+				{incentiveReportInfo.length !== 0 && (
+					<>
+						<div className={IncentiveReportStyle.tableTitle}>
+							{incentiveReportInfo[0]?.userRole === 'AM' ||
+							incentiveReportInfo[0]?.userRole === 'AM Head'
+								? 'AM Target'
+								: watch('userRoleValue')?.value
+								? 'Sales Target'
+								: 'Based Fixed'}
+						</div>
+						<Table
+							columns={amTargetColumn()}
+							dataSource={incentiveInfoList}
+							size="small"
+						/>
+					</>
+				)}
 				{incentiveBoosterList.length !== 0 && (
 					<>
 						<div className={IncentiveReportStyle.tableTitle}>
@@ -1257,6 +1168,21 @@ const IncentiveReportScreen = () => {
 						/>
 					</>
 				)}
+
+				{incentiveReportAMNR?.length !== 0 && (
+					<>
+						<div className={IncentiveReportStyle.tableTitle}>
+							Ongoing incentive on monthly NR value
+						</div>
+						<Table
+							columns={onGoingColumn()}
+							dataSource={incentiveAMNR}
+							size="small"
+						/>
+					</>
+				)}
+
+				<h4>Total Amount ($) : {grandTotal.toFixed(2)}</h4>
 
 				{isAllowFilters && (
 					<Suspense fallback={<div>Loading...</div>}>
