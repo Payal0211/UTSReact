@@ -1155,19 +1155,6 @@ const TalentList = ({
 		}
 	}, [filterTalentID, editPayRate, setValue]);
 
-	const onProfileLogClickHandler = async (typeID, index, type) => {
-		setLogExpanded([]);
-		setActiveIndex(index);
-		setActiveType(type);
-		const profileObj = {
-			// talentID: talentID,
-			typeID: typeID,
-		};
-		// const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
-		// 	profileObj,
-		// );
-		// setLogExpanded(response && response?.responseBody?.details);
-	};
 
 	const getInterviewStatus = useCallback(() => {
 		switch (filterTalentID?.InterviewStatus) {
@@ -1218,13 +1205,12 @@ const TalentList = ({
 		setConfirmSlotRadio(1);
 	}, [getConfirmSlotModal]);
 
+	// Profile Log
 
-
-
-
-
+	const [sharedProfile, setSharedProfile] = useState(false)
 
 	const viewProfileInfo = async () => {
+		setSharedProfile(true)
 		let response = await hiringRequestDAO.getTalentProfileLogDAO({
 			talentid: 10501,
 			fromDate: null,
@@ -1233,11 +1219,16 @@ const TalentList = ({
 		setProfileLog(response && response?.responseBody?.details);
 	}
 
+	// Profile Log
+
 	useEffect(() => {
 		viewProfileInfo();
 	}, []);
 
+	// For Add / Remove Class
+
 	const [profileShared, setProfileShared] = useState([])
+
 
 	const profileLogBox = async () => {
 
@@ -1254,7 +1245,41 @@ const TalentList = ({
 		setProfileShared(response)
 	}
 
-	console.log(profileShared, "profileShared")
+
+
+	//  Profile Rejected
+
+	const [profileRejected, setProfileRejected] = useState([])
+
+	const profileRejectedDetails = async () => {
+		let profileReject = {
+			talentID: 10501,
+			typeID: 22,
+			// fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
+			// toDate: !!end && new Date(end).toLocaleDateString('en-US'),
+		};
+
+		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
+			profileReject,
+		);
+		setProfileRejected(response?.responseBody?.details)
+	}
+
+	// Feedback Received
+
+	const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([])
+
+	const feedbackReceived = async () => {
+		let feedbackReceivedObj = {
+			talentID: 10551,
+			typeID: 51,
+			// fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
+			// toDate: !!end && new Date(end).toLocaleDateString('en-US'),
+		}
+		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(feedbackReceivedObj)
+		setFeedbackReceivedDetails(response?.responseBody?.details)
+	}
+	console.log(feedbackReceivedDetails, "response for feedback")
 
 	return (
 		<div>
@@ -1413,7 +1438,6 @@ const TalentList = ({
 									<Divider
 										style={{
 											margin: '10px 0',
-											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
 									<div className={TalentListStyle.interviewStatus}>
@@ -1427,7 +1451,6 @@ const TalentList = ({
 									<Divider
 										style={{
 											margin: '10px 0',
-											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
 
@@ -1484,14 +1507,6 @@ const TalentList = ({
 														{_isNull(item?.NR) ? 'NA' : item?.NR}
 													</span>
 												</div>
-												{/* <span
-													style={{
-														textDecoration: 'underline',
-														color: `var(--background-color-ebony)`,
-														cursor: 'pointer',
-													}}>
-													Edit
-												</span> */}
 											</div>
 										</>
 									) : (
@@ -1518,7 +1533,6 @@ const TalentList = ({
 									<Divider
 										style={{
 											margin: '10px 0',
-											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
 									<div className={TalentListStyle.interviewSlots}>
@@ -1567,30 +1581,6 @@ const TalentList = ({
 											</span>
 										</div>
 									)}
-
-									{/* <Divider
-										style={{
-											margin: '10px 0',
-											// border: `1px solid var(--uplers-border-color)`,
-										}}
-									/>
-									<div
-										style={{
-											padding: '2px 0',
-											textDecoration: 'underline',
-											cursor: 'pointer',
-										}}
-										onClick={() => {
-											// setVersantModal(true);-  //TODO:-
-											setTalentIndex(item?.TalentID);
-										}}>
-										Versant Test Results
-									</div>
-
-									<div
-										style={{ padding: '2px 0', textDecoration: 'underline' }}>
-										Skill Test Results
-									</div> */}
 									<Divider
 										style={{
 											margin: '10px 0',
@@ -1694,102 +1684,6 @@ const TalentList = ({
 				}}
 			/>
 			{/** ============ MODAL FOR PROFILE LOG ================ */}
-			{/* <Modal
-				width="864px"
-				centered
-				footer={null}
-				open={showProfileLogModal}
-				// onOk={() => setVersantModal(false)}
-				onCancel={() => setProfileLogModal(false)}>
-				<h1>Profile Log</h1>
-
-				<div
-					style={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-						marginTop: '50px',
-					}}>
-					<div
-						style={{
-							display: 'flex',
-							justifyContent: 'start',
-							alignItems: 'center',
-							gap: '16px',
-							flexWrap: 'wrap',
-						}}>
-						<div
-							style={{
-								borderRadius: '8px',
-								border: `1px solid var(--uplers-border-color)`,
-								padding: '10px 30px',
-							}}>
-							<span>Name: </span>
-							<span
-								style={{
-									fontWeight: 500,
-									textDecoration: 'underline',
-								}}>
-								{filterTalentID?.Name}
-							</span>
-						</div>
-						<div
-							style={{
-								borderRadius: '8px',
-								border: `1px solid var(--uplers-border-color)`,
-								padding: '10px 30px',
-							}}>
-							<span>Role:</span>
-							<span
-								style={{
-									fontWeight: 500,
-								}}>
-								{filterTalentID?.TalentRole}
-							</span>
-						</div>
-					</div>
-					<div
-						style={{
-							padding: '1px 10px',
-							borderRadius: '8px',
-							backgroundColor: `var(--uplers-grey)`,
-						}}>
-						<ExportSVG />
-					</div>
-				</div>
-				<Divider />
-				<div
-					style={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}>
-					<div className={TalentListStyle.profileDataContainer}>
-						{profileData?.map((item, index) => {
-							return (
-								<div
-									style={{
-										backgroundColor: index === activeIndex && '#F5F5F5',
-										border:
-											index === activeIndex &&
-											`1px solid ${profileData[activeIndex]?.activeColor}`,
-									}}
-									onClick={() =>
-										onProfileLogClickHandler(item?.typeID, index, item?.typeID)
-									}
-									key={item.id}
-									className={TalentListStyle.profileSets}>
-									<span className={TalentListStyle.scoreValue}>
-										{item?.score}
-									</span>
-									&nbsp;
-									{item?.label}
-								</div>
-							);
-						})}
-					</div>
-				</div>
-			</Modal> */}
 
 			<Modal
 				width="992px"
@@ -1826,11 +1720,11 @@ const TalentList = ({
 						<h3>{profileLog?.profileSharedCount}</h3>
 						<p>Profile Shared</p>
 					</div>
-					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileReceived}`}>
+					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileReceived}`} onClick={feedbackReceived}>
 						<h3>{profileLog?.feedbackCount}</h3>
 						<p>Feedback Received</p>
 					</div>
-					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileRejected}`}>
+					<div className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileRejected}`} onClick={profileRejectedDetails}>
 						<h3>{profileLog?.rejectedCount}</h3>
 						<p>Rejected</p>
 					</div>
@@ -1848,7 +1742,7 @@ const TalentList = ({
 
 					<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
 						<div className={ProfileLogStyle.profileLogListHead}>
-							<h4>Rejected: 04 HRs</h4>
+							<h4>Profile Shared: 04 HRs</h4>
 							<div className={ProfileLogStyle.profileLogListAction}>
 								<button><LeftArrowSVG /></button>
 								<button><RightArrowSVG /></button>
@@ -1856,9 +1750,6 @@ const TalentList = ({
 						</div>
 
 						<div className={ProfileLogStyle.profileLogList}>
-
-
-
 							<table>
 								<thead>
 									<tr>
@@ -1884,35 +1775,98 @@ const TalentList = ({
 											</tr>
 										)
 									})}
-									{/* <tr>
-									<td>HR 1</td>
-									<td><u>HR123456789012</u></td>
-									<td>UX/UI Designer</td>
-									<td><u>Sun Spaces Solutions...</u></td>
-									<td><a href="#">Profile Rejected</a></td>
-									<td>21/10/2022</td>
-								</tr>
-								<tr>
-									<td>HR 1</td>
-									<td><u>HR123456789012</u></td>
-									<td>UX/UI Designer</td>
-									<td><u>Sun Spaces Solutions...</u></td>
-									<td><a href="#">Profile Rejected</a></td>
-									<td>21/10/2022</td>
-								</tr>
-								<tr>
-									<td>HR 1</td>
-									<td><u>HR123456789012</u></td>
-									<td>UX/UI Designer</td>
-									<td><u>Sun Spaces Solutions...</u></td>
-									<td><a href="#">Profile Rejected</a></td>
-									<td>21/10/2022</td>
-								</tr> */}
 								</tbody>
 							</table>
 						</div>
 					</div>
 				)}
+				{feedbackReceivedDetails?.length === 0 && (
+
+					<p>Select the stages to view thier HRs</p>
+				)}
+				{feedbackReceivedDetails?.length !== 0 && (
+					<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
+						<div className={ProfileLogStyle.profileLogListHead}>
+							<h4>Feedback Received : 04 HRs</h4>
+							<div className={ProfileLogStyle.profileLogListAction}>
+								<button><LeftArrowSVG /></button>
+								<button><RightArrowSVG /></button>
+							</div>
+						</div>
+
+						<div className={ProfileLogStyle.profileLogList}>
+							<table>
+								<thead>
+									<tr>
+										<th>No.</th>
+										<th>HR ID</th>
+										<th>Position</th>
+										<th>Company</th>
+										<th>Feedback</th>
+										<th>Date</th>
+									</tr>
+								</thead>
+								<tbody>
+									{profileRejected?.map((item) => {
+										return (
+											<tr>
+												<td>HR 1</td>
+												<td><u>{item?.hrid}</u></td>
+												<td>{item?.position}</td>
+												<td><u>{item?.company}</u></td>
+												<td><a href="#">Profile Shared</a></td>
+												<td>{item?.sDate}</td>
+											</tr>
+										)
+									})}
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				)}
+				{profileRejected?.length !== 0 && (
+					<div className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
+						<div className={ProfileLogStyle.profileLogListHead}>
+							<h4>Profile Rejected : 04 HRs</h4>
+							<div className={ProfileLogStyle.profileLogListAction}>
+								<button><LeftArrowSVG /></button>
+								<button><RightArrowSVG /></button>
+							</div>
+						</div>
+
+						<div className={ProfileLogStyle.profileLogList}>
+							<table>
+								<thead>
+									<tr>
+										<th>No.</th>
+										<th>HR ID</th>
+										<th>Position</th>
+										<th>Company</th>
+										<th>Feedback</th>
+										<th>Date</th>
+									</tr>
+								</thead>
+								<tbody>
+									{profileRejected?.map((item) => {
+										return (
+											<tr>
+												<td>HR 1</td>
+												<td><u>{item?.hrid}</u></td>
+												<td>{item?.position}</td>
+												<td><u>{item?.company}</u></td>
+												<td><a href="#">Profile Shared</a></td>
+												<td>{item?.sDate}</td>
+											</tr>
+										)
+									})}
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				)}
+
 			</Modal>
 
 
