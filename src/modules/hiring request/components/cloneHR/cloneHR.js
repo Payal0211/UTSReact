@@ -32,7 +32,7 @@ const CloneHR = ({ updatedSplitter, cloneHR }) => {
 					? CloneHRStyle.transparentBtnGroup
 					: CloneHRStyle.disabledTransparentBtnGroup
 			}
-			onClick={cloneHRModalInfo}>
+			onClick={cloneHR?.IsEnabled ? cloneHRModalInfo : null}>
 			<CloneHRSVG style={{ fontSize: '16px' }} />{' '}
 			<span className={CloneHRStyle.btnLabel}>Clone HR</span>
 			{isCloneHR && (

@@ -144,6 +144,8 @@ const HRDetailScreen = () => {
 		setDeleteReason(response && response?.responseBody?.details);
 	}, []);
 
+	// console.log(apiData, '-apiData');
+
 	/**  Put ON HOLD * */
 
 	// const updateODRPoolStatusHandler = useCallback(
