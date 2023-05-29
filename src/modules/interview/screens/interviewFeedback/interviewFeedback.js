@@ -82,7 +82,6 @@ const InterviewFeedback = ({
 		[
 			callAPI,
 			closeModal,
-			hiringRequestNumber,
 			hrId,
 			isClientNotification,
 			radioValue1,
