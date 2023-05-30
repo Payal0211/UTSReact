@@ -231,4 +231,20 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.jdParsingDumpReportRequest');
 		}
 	},
+	OverAllSLASummaryRequest: async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.SLA_REPORT +
+			ReportsAPI.OVER_ALL_SLA_SUMMARY;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data;
+		httpService.setAuthToken = UserSessionManagementController?.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.OverAllSLASummaryRequest');
+		}
+	},
 };

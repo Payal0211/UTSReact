@@ -42,19 +42,19 @@ export const reportConfig = {
 										data === 0
 											? null
 											: () => {
-													setDemandFunnelHRDetailsState({
-														...demandFunnelHRDetailsState,
-														adhocType: item === 'Final Total' ? '' : 'Total',
-														TeamManagerName: item === 'Final Total' ? '' : item,
-														currentStage: param.Stage,
-														IsExport: false,
-													});
-													setDemandFunnelValue({
-														stage: param?.Stage,
-														count: data,
-													});
-													setDemandFunnelModal(true);
-											  }
+												setDemandFunnelHRDetailsState({
+													...demandFunnelHRDetailsState,
+													adhocType: item === 'Final Total' ? '' : 'Total',
+													TeamManagerName: item === 'Final Total' ? '' : item,
+													currentStage: param.Stage,
+													IsExport: false,
+												});
+												setDemandFunnelValue({
+													stage: param?.Stage,
+													count: data,
+												});
+												setDemandFunnelModal(true);
+											}
 									}>
 									{data}
 								</p>
@@ -94,105 +94,105 @@ export const reportConfig = {
 	demandFunnelHRDetails: (stage) => {
 		return stage === 'HR Lost'
 			? [
-					{
-						title: 'HR#',
-						dataIndex: 'hR_No',
-						key: 'hR_No',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Sales Person',
-						dataIndex: 'salesPerson',
-						key: 'salesPerson',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Company Name',
-						dataIndex: 'compnayName',
-						key: 'compnayName',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Role',
-						dataIndex: 'role',
-						key: 'role',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Managed/Self',
-						dataIndex: 'managed_Self',
-						key: 'managed_Self',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Availability',
-						dataIndex: 'availability',
-						key: 'availability',
-						align: 'left',
-						width: 250,
-					},
-			  ]
+				{
+					title: 'HR#',
+					dataIndex: 'hR_No',
+					key: 'hR_No',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Sales Person',
+					dataIndex: 'salesPerson',
+					key: 'salesPerson',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Company Name',
+					dataIndex: 'compnayName',
+					key: 'compnayName',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Role',
+					dataIndex: 'role',
+					key: 'role',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Managed/Self',
+					dataIndex: 'managed_Self',
+					key: 'managed_Self',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Availability',
+					dataIndex: 'availability',
+					key: 'availability',
+					align: 'left',
+					width: 250,
+				},
+			]
 			: [
-					{
-						title: 'HR#',
-						dataIndex: 'hR_No',
-						key: 'hR_No',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Sales Person',
-						dataIndex: 'salesPerson',
-						key: 'salesPerson',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Company Name',
-						dataIndex: 'compnayName',
-						key: 'compnayName',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Role',
-						dataIndex: 'role',
-						key: 'role',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Managed/Self',
-						dataIndex: 'managed_Self',
-						key: 'managed_Self',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Availability',
-						dataIndex: 'availability',
-						key: 'availability',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title:
-							stage === 'TR Required' ||
+				{
+					title: 'HR#',
+					dataIndex: 'hR_No',
+					key: 'hR_No',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Sales Person',
+					dataIndex: 'salesPerson',
+					key: 'salesPerson',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Company Name',
+					dataIndex: 'compnayName',
+					key: 'compnayName',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Role',
+					dataIndex: 'role',
+					key: 'role',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Managed/Self',
+					dataIndex: 'managed_Self',
+					key: 'managed_Self',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Availability',
+					dataIndex: 'availability',
+					key: 'availability',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title:
+						stage === 'TR Required' ||
 							stage === 'TR Accepted' ||
 							stage === 'HR - Waiting For More Information'
-								? '# of TR'
-								: 'Talent Name',
-						dataIndex: 'talentName',
-						key: 'talentName',
-						align: 'left',
-						width: 250,
-					},
-			  ];
+							? '# of TR'
+							: 'Talent Name',
+					dataIndex: 'talentName',
+					key: 'talentName',
+					align: 'left',
+					width: 250,
+				},
+			];
 	},
 	demandReportFilterListConfig: () => {
 		return [
@@ -688,6 +688,72 @@ export const reportConfig = {
 					);
 				},
 			},
+		];
+	},
+	/**----------------- JD DUMP REPORT ------------------------------- */
+	SLAReportConfig: () => {
+		return [
+			{
+				title: 'Stage',
+				dataIndex: 'summaryStage',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Version',
+				dataIndex: 'stageVersion',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Expected SLA',
+				dataIndex: 'slaDays',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Avg SLA',
+				dataIndex: 'avgSLAOverall',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Diff SLA',
+				dataIndex: 'diffOfSLAOverall',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+
+
+		];
+	},
+	slaReportFilterList: () => {
+		return [
+			{ name: 'Start Date' },
+			{ name: ' End Date' },
+			{ name: 'Stages' },
+			{ name: 'Action Filter' },
+			{ name: 'AM/NBD' },
+			{ name: 'Sales Manager' },
+			{ name: 'Sales Person' },
+			{ name: 'Role' },
+			{ name: 'HR Number' },
+			{ name: 'Company' },
 		];
 	},
 };

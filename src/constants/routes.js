@@ -19,7 +19,7 @@ const AddNewClient = React.lazy(() =>
 const InterviewList = React.lazy(() =>
 	import('modules/interview/screens/interviewList/interviewList'),
 );
-/* 
+/*
 
 const InterviewSchedule = React.lazy(() =>
 	import('modules/interview/screens/interviewReschedule/interviewReschedule'),
@@ -76,6 +76,10 @@ const ViewHrDetails = React.lazy(() =>
 const JDDumpReport = React.lazy(() =>
 	import('modules/report/screens/jdDump/jdDumpReport'),
 );
+const SlaReport = React.lazy(() =>
+	import('modules/report/screens/slaReport/demandFunnel'),
+);
+
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
@@ -106,6 +110,7 @@ export default class UTSRoutes {
 	static INCENTIVEREPORTROUTE = '/report/incentive';
 	static VIEWHRDETAILS = '/viewHrDetails/:id';
 	static JDDUMPREPORTROUTE = '/jdDump';
+	static SLA_REPORT = '/slaReport';
 }
 
 export const navigateToComponent = {
@@ -217,6 +222,11 @@ export const navigateToComponent = {
 	[UTSRoutes.JDDUMPREPORTROUTE]: (
 		<Suspense>
 			<JDDumpReport />
+		</Suspense>
+	),
+	[UTSRoutes.SLA_REPORT]: (
+		<Suspense>
+			<SlaReport />
 		</Suspense>
 	),
 };

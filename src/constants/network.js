@@ -27,6 +27,7 @@ export class SubDomain {
 	static REPORT = 'Report/';
 	static INCENTIVE_REPORT = 'IncentiveReport/';
 	static AM_ASSIGNMENT = 'AMAssignment/';
+	static SLA_REPORT = 'SLAReport/';
 }
 export class APIType {
 	static USER = '/user';
@@ -64,6 +65,7 @@ export class ReportsAPI {
 	static FILTERS = 'Filters';
 	static HRDETAILS = 'HRDetails';
 	static JD_PARSING_DUMP_REPORT = 'JDParsingDumpReport';
+	static OVER_ALL_SLA_SUMMARY = "OverAllSLASummary"
 }
 export class EngagementAPI {
 	static FILTER = 'Filters';
