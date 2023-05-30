@@ -239,6 +239,65 @@ export const MasterAPI = {
 		}
 	},
 
+	getCountryListRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_COUNTRY_LIST;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCountryListRequest');
+		}
+	},
+	checkCountryRegionRequest: async function (countryDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.CHECK_COUNTRY_REGION +
+			`?CountryRegion=${countryDetails.countryCode}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.checkCountryRegionRequest');
+		}
+	},
+	checkCountryNameRequest: async function (countryDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.CHECK_COUNTRY_NAME +
+			`?CountryName=${countryDetails.countryName}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.checkCountryNameRequest');
+		}
+	},
+	addCountryRequest: async function (countryDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.ADD_COUNTRY;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = countryDetails;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.addCountryRequest');
+		}
+	},
 	getCountryByPostalCodeRequest: async function (postalData) {
 		let httpService = new HttpServices();
 		httpService.URL =

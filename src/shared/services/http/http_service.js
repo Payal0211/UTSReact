@@ -9,7 +9,6 @@ export class HttpServices {
 		return this._dataToSend;
 	}
 
-
 	get URL() {
 		return this._URL;
 	}
@@ -66,7 +65,6 @@ export class HttpServices {
 		}
 	}
 
-
 	async sendFileDataPostRequest() {
 		try {
 			const response = await axios.post(
@@ -111,6 +109,7 @@ export class HttpServices {
 					Authorization: this._isAuthRequired && this._authToken,
 				},
 			});
+
 			return {
 				statusCode: response.status,
 				responseBody: response.data,
@@ -158,5 +157,5 @@ export class HttpServices {
 	}
 
 	//TODO:- Implementation
-	async sendDeleteRequest() { }
+	async sendDeleteRequest() {}
 }

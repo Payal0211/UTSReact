@@ -243,6 +243,7 @@ export const hiringRequestDAO = {
 			const getMatchmakingResult = await HiringRequestAPI.getMatchmakingRequest(
 				matchMakingData,
 			);
+
 			if (getMatchmakingResult) {
 				const statusCode = getMatchmakingResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
@@ -1491,8 +1492,7 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getAMDataSendRequestDAO()');
 		}
 	},
-  viewHRDetailsRequestDAO: async (HRId) => {
-
+	viewHRDetailsRequestDAO: async (HRId) => {
 		try {
 			const viewHRDetails = await HiringRequestAPI.viewHRDetailsRequest(HRId);
 			if (viewHRDetails) {
@@ -1523,8 +1523,9 @@ export const hiringRequestDAO = {
 	},
 	getHRDetailsRequestDAO: async (hrId) => {
 		try {
-			const uploadFileResponse =
-				await HiringRequestAPI.getNewHRDetailsRequest(hrId);
+			const uploadFileResponse = await HiringRequestAPI.getNewHRDetailsRequest(
+				hrId,
+			);
 			if (uploadFileResponse) {
 				const statusCode = uploadFileResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
@@ -1551,7 +1552,7 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
 		}
 	},
-  editTRDAO: async (data) => {
+	editTRDAO: async (data) => {
 		try {
 			const editTRRes = await HiringRequestAPI.editTR(data);
 			if (editTRRes) {
