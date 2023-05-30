@@ -311,11 +311,25 @@ export const EngagementRequestAPI = {
 			NetworkInfo.NETWORK +
 			SubDomain.ENGAGEMENT +
 			EngagementAPI.SAVE_FEEDBACK_CLIENT_ONBOARD;
-		httpService.dataToSend = addFeedBackData;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendPostRequest(addFeedBackData);
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.submitFeedBackForm');
+		}
+	},
+	calculateActualNRBRPR: async function (br,pr,currency) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.CALCULATE_ACTUAL_NR_BR_PR + `?BR=${br}&PR=${pr}&Currency=${currency}`;;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'EngagementRequestAPI.submitFeedBackForm');

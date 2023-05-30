@@ -52,7 +52,7 @@ const AddNewClient = ({
 					'This email already exists. Please enter another email.',
 			});
 			emailDuplicate.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
-				setValue('primaryClientEmailID', '');
+				// setValue('primaryClientEmailID', '');
 			setIsLoading(false);
 		},
 		[setError, setValue],
@@ -127,7 +127,7 @@ const AddNewClient = ({
 
 						<div className={AddClientStyle.colMd6}>
 							<HRInputField
-								disabled={isLoading}
+								// disabled={isLoading}
 								register={register}
 								errors={errors}
 								validationSchema={{

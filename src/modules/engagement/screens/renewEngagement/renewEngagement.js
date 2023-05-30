@@ -29,6 +29,10 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 	const [billRateValue, setBillRateValue] = useState(watchBillRate);
 	const [payRateValue, setPayRateValue] = useState(watchPayRate);
 	const [getRenewEngagement, setRenewEngagement] = useState(null);
+	const [currencyValue,setCurrencyValue] = useState("")
+	const [startDate,setStartDate] = useState();
+	const [endDate,setEndDate] = useState();
+
 
 	const getRenewEngagementHandler = useCallback(async () => {
 		const response = await engagementRequestDAO.getRenewEngagementRequestDAO({
@@ -38,26 +42,33 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setRenewEngagement(response?.responseBody?.details);
 			console.log(response, '-response--');
-			response?.responseBody?.details?.contarctDuration > 0 &&
-				setValue(
-					'contractDuration',
-					response?.responseBody?.details?.contarctDuration,
-				);
+			// response?.responseBody?.details?.contarctDuration > 0 &&
+			// 	setValue(
+			// 		'contractDuration',
+			// 		response?.responseBody?.details?.contarctDuration,
+			// 	);
 			setValue(
 				'renewedStartDate',
 				new Date(response?.responseBody?.details?.contractStartDate),
 			);
+			console.log(response?.responseBody?.details?.contractStartDate);
+			setStartDate(new Date(response?.responseBody?.details?.contractStartDate).getMonth())
 			setValue('billRate', response?.responseBody?.details?.billRate);
 			setValue('payRate', response?.responseBody?.details?.payRate);
 			setBillRateValue(response?.responseBody?.details?.billRate);
 			setPayRateValue(response?.responseBody?.details?.payRate);
-			setValue('nrMargin', response?.responseBody?.details?.nrPercentage);
+			setCurrencyValue(response?.responseBody?.details?.currency)
 			setValue(
 				'addReason',
 				response?.responseBody?.details?.reasonForBRPRChange,
-			);
-		}
-	}, [setValue, talentInfo?.onboardID]);
+				);
+			}
+			
+			const calresponse = await engagementRequestDAO.calculateActualNRBRPRDAO(response?.responseBody?.details?.billRate,response?.responseBody?.details?.payRate,response?.responseBody?.details?.currency)
+			setValue('nrMargin', calresponse?.responseBody?.details);
+
+		}, [setValue, talentInfo?.onboardID]);
+
 	const submitContractRenewalHandler = useCallback(
 		async (d) => {
 			let contractRenewalDataFormatter = {
@@ -105,6 +116,13 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 		}
 	}, [closeModal, resetField]);
 
+	let totalDuration = 0;
+	useEffect(() => {
+		totalDuration = endDate-startDate;
+		if(totalDuration>=0){
+			setValue("contractDuration",totalDuration);
+		}
+	}, [endDate,startDate])
 	return (
 		<div className={allengagementEnd.engagementModalWrap}>
 			<div
@@ -142,8 +160,9 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 										selected={watch('renewedStartDate')}
 										onChange={(date) => {
 											setValue('renewedStartDate', date);
+											setStartDate(date.getMonth())
 										}}
-										placeholderText="Last working date"
+										placeholderText="Renewed Start Date"
 									/>
 								)}
 								name="renewedStartDate"
@@ -175,8 +194,9 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 										selected={watch('renewedEndDate')}
 										onChange={(date) => {
 											setValue('renewedEndDate', date);
+											setEndDate(date.getMonth())
 										}}
-										placeholderText="Last working date"
+										placeholderText="Renewed End Date"
 									/>
 								)}
 								name="renewedEndDate"
@@ -194,6 +214,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 			</div>
 			<div className={allengagementEnd.row}>
 				<div className={allengagementEnd.colMd6}>
+					{console.log(errors,"errors")}
 					<HRInputField
 						register={register}
 						label="Contract Duration (Months)"
@@ -201,6 +222,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 						type={InputType.NUMBER}
 						placeholder="Enter contract duration                                                                                   "
 						errors={errors}
+						disabled={true}
 						validationSchema={{
 							required: 'please enter the contract duration.',
 							min: {
@@ -293,6 +315,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 							required: 'please enter the NR%.',
 						}}
 						required
+						disabled={true}
 					/>
 				</div>
 				<div className={allengagementEnd.colMd6}>

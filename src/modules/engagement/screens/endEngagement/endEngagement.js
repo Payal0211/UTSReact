@@ -11,6 +11,7 @@ import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
+import moment from 'moment/moment';
 
 const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 	const {
@@ -93,7 +94,8 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 				onboardID: talentInfo?.onboardID,
 			});
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			setEndEngagementDetails(response?.responseBody?.details);
+			setEndEngagementDetails(response?.responseBody?.details)
+			// setValue("lastWorkingDate",moment(response?.responseBody?.details?.contractEndDate).format("MM/DD/YYYY"))
 			/* let updatedDate = new Date(
 				new Date(
 					response?.responseBody?.details?.contractEndDate,
@@ -176,7 +178,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 				<div className={allengagementEnd.colMd6}>
 					<div className={allengagementEnd.timeSlotItemField}>
 						<div className={allengagementEnd.timeLabel}>
-							Please Select Date
+						Contract End Date
 							<span>
 								<b style={{ color: 'black' }}>*</b>
 							</span>
@@ -189,8 +191,10 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 										selected={watch('lastWorkingDate')}
 										onChange={(date) => {
 											setValue('lastWorkingDate', date);
+											console.log(date,"date");
 										}}
-										placeholderText="Last working date"
+										placeholderText="Contract End Date"
+										dateFormat="MM/DD/YYYY"
 									/>
 								)}
 								name="lastWorkingDate"

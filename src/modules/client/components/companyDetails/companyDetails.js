@@ -114,7 +114,7 @@ const CompanyDetails = ({
 					'This company name already exists. Please enter another company name.',
 			});
 			companyNameDuplicate.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
-				setValue('companyName', '');
+				// setValue('companyName', '');
 			setIsLoading(false);
 		},
 		[setError, setValue],
@@ -167,7 +167,7 @@ const CompanyDetails = ({
 					<div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd6}>
 							<HRInputField
-								disabled={isLoading}
+								// disabled={isLoading}
 								type={InputType.TEXT}
 								name="companyName"
 								label="HS Company Name"

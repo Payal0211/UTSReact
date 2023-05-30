@@ -695,6 +695,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				if (item?.id === userDetails?.levelID) {
 					setLevelEdit(item?.value);
 					setValue('level', item);
+					console.log(item,"getLevelList");
 				}
 			});
 		}

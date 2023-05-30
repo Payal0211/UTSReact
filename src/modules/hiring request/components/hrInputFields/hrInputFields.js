@@ -94,13 +94,22 @@ const HRInputField = ({
 						height={height && height}
 						maxLength={maxLength}
 						onWheel={(e) => e.target.blur()}
+						autoComplete="off"
 					/>
 					{trailingIcon && (
 						<div className={HRInputFieldStyle.trailingIcon}>{trailingIcon}</div>
 					)}
 				</div>
 			)}
-			{required && !disabled
+			{required && !disabled 
+				? errors &&
+				  errors[name] && (
+						<div className={HRInputFieldStyle.error}>
+							{errors[name]?.message && `* ${errors[name]?.message}`}
+						</div>
+				  )
+				: false}
+				{required && disabled 
 				? errors &&
 				  errors[name] && (
 						<div className={HRInputFieldStyle.error}>
