@@ -1,4 +1,4 @@
-import React, { useState,useCallback} from "react";
+import React, { useState, useCallback } from "react";
 import ProfileLogStyle from "./profileLog.module.css";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import DatePicker from "react-datepicker";
@@ -12,10 +12,10 @@ import { HTTPStatusCode } from 'constants/network';
 const ProfileLogDetails = ({
   profileLog,
   activeIndex,
-//   startDate,
+  //   startDate,
   filterTalentID,
   activeType,
-//   onCalenderFilter,
+  //   onCalenderFilter,
   endDate,
   setEndDate,
   getHRDetailsItem,
@@ -23,63 +23,48 @@ const ProfileLogDetails = ({
   setActiveIndex,
   setActiveType,
   talentID,
-
-//   showProfileShared,
-//   profileLogBox,
-//   feedbackReceivedClass,
-//   feedbackReceived,
-//   showProfileRejectClass,
-//   profileRejectedDetails,
-//   selectForClass,
-//   selectFor,
-//   profileShared,
-//   LeftArrowSVG,
-//   rightArrowClick,
-//   feedbackReceivedDetails,   
-//   profileRejected,
-//   selectForDetails,
-talentId
+  showProfileLogModal,
+  talentId
 }) => {
-    console.log(setProfileLog,"setProfileLog")
-    const [profileShared, setProfileShared] = useState([]);
-    const [showProfileShared, setShowProfileShared] = useState(false);
-    const [profileRejected, setProfileRejected] = useState([]);
-    const [showProfileRejectClass, setShowProfileRejectClass] = useState(false);
-    const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([]);
-    const [feedbackReceivedClass, setFeedBackReceivedClass] = useState(false);
-    const [selectForClass, setSelectForClass] = useState(false);
-    const [selectForDetails, setSelectForDetails] = useState([]);
-    const [startDateDetails, setStartDateDetails] = useState();
-    const [endDateDetails, setEndDateDetails] = useState();
-    const [typeIdPayload, setTypeIdPayload] = useState();
-    const [logExpanded, setLogExpanded] = useState(null);
-    const [typeId, setTypeId] = useState(0);
-    const [startDate, setStartDate] = useState(null);
+  const [profileShared, setProfileShared] = useState([]);
+  const [showProfileShared, setShowProfileShared] = useState(false);
+  const [profileRejected, setProfileRejected] = useState([]);
+  const [showProfileRejectClass, setShowProfileRejectClass] = useState(false);
+  const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([]);
+  const [feedbackReceivedClass, setFeedBackReceivedClass] = useState(false);
+  const [selectForClass, setSelectForClass] = useState(false);
+  const [selectForDetails, setSelectForDetails] = useState([]);
+  const [startDateDetails, setStartDateDetails] = useState();
+  const [endDateDetails, setEndDateDetails] = useState();
+  const [typeIdPayload, setTypeIdPayload] = useState();
+  const [logExpanded, setLogExpanded] = useState(null);
+  const [typeId, setTypeId] = useState(0);
+  const [startDate, setStartDate] = useState(null);
 
 
-    const profileLogBox = async () => {
-        setShowProfileShared(true);
-        setShowProfileRejectClass(false);
-        setFeedBackReceivedClass(false);
-        setSelectForClass(false);
-        setProfileRejected([]);
-        setFeedbackReceivedDetails([]);
-        let profileObj = {
-          talentID: talentId,
-          typeID: ProfileLog.PROFILE_SHARED,
-        //   fromDate: startDateDetails,
-        //   toDate: endDateDetails,
-        };
-    
-        const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
-          profileObj
-        );
-        setTypeIdPayload(ProfileLog.PROFILE_SHARED);
-        setProfileShared(response);
-      };
+  const profileLogBox = async () => {
+    setShowProfileShared(true);
+    setShowProfileRejectClass(false);
+    setFeedBackReceivedClass(false);
+    setSelectForClass(false);
+    setProfileRejected([]);
+    setFeedbackReceivedDetails([]);
+    let profileObj = {
+      talentID: talentId,
+      typeID: ProfileLog.PROFILE_SHARED,
+      //   fromDate: startDateDetails,
+      //   toDate: endDateDetails,
+    };
 
-//  Profile Rejected
-const profileRejectedDetails = async () => {
+    const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
+      profileObj
+    );
+    setTypeIdPayload(ProfileLog.PROFILE_SHARED);
+    setProfileShared(response);
+  };
+
+  //  Profile Rejected
+  const profileRejectedDetails = async () => {
     setShowProfileRejectClass(true);
     setShowProfileShared(false);
     setFeedBackReceivedClass(false);
@@ -154,13 +139,17 @@ const profileRejectedDetails = async () => {
         fromDate: !!start && new Date(start).toLocaleDateString("en-US"),
         toDate: !!end && new Date(end).toLocaleDateString("en-US"),
       };
-  
+
       const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
         profileObj
       );
       if (response?.statusCode === HTTPStatusCode.OK) {
         setLogExpanded(response && response?.responseBody?.details);
-        // setProfileLog()
+        setProfileShared(response);
+        setProfileRejected(response?.responseBody?.details);
+        setFeedbackReceivedDetails(response?.responseBody?.details);
+        setSelectForDetails(response?.responseBody?.details);
+
       }
       if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
         setLogExpanded([]);
@@ -175,27 +164,35 @@ const profileRejectedDetails = async () => {
       const [start, end] = dates;
       setStartDate(start);
       setEndDate(end);
-      if (start && end) {
-        // viewProfileInfo(start, end);
-        onProfileLogClickHandler(typeId, activeIndex, activeType, start, end);
-      }
+      // if (start && end) {
+      // viewProfileInfo(start, end);
+      onProfileLogClickHandler(typeId, activeIndex, activeType, start, end);
+      // }
     },
     [activeIndex, activeType, onProfileLogClickHandler, typeId]
   );
 
-  let tempFun = false
+  let feedback = false
+  let profileReject = false
+  let selected = false
 
-//   const rightArrowClick = () => {
-//     tempFun =true
-//     if(tempFun===true){
-//         feedbackReceived();
-//     }
-// // if(feedbackReceivedClass===true){
+  const rightArrowClick = () => {
+    feedback = true
+    if (feedback === true) {
+      console.log(feedback, "feedback");
+      feedbackReceived();
+      console.log(profileReject, "profileReject");
+    }
+    feedback = false;
+    profileReject = true;
+    if (profileReject === true) {
+      profileRejectedDetails()
+    }
+    // if(feedbackReceivedClass===true){
 
-// //      profileRejectedDetails()
-// // }
+    // }
 
-//   };
+  };
 
   return (
     <>
@@ -239,36 +236,32 @@ const profileRejectedDetails = async () => {
 
       <div className={ProfileLogStyle.profileLogBox}>
         <div
-          className={`${ProfileLogStyle.profileLogBoxItem} ${
-            ProfileLogStyle.profileShared
-          } ${showProfileShared ? ProfileLogStyle.select : ""}`}
+          className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileShared
+            } ${showProfileShared ? ProfileLogStyle.select : ""}`}
           onClick={profileLogBox}
         >
           <h3>{profileLog?.profileSharedCount}</h3>
           <p>Profile Shared</p>
         </div>
         <div
-          className={`${ProfileLogStyle.profileLogBoxItem} ${
-            ProfileLogStyle.profileReceived
-          } ${feedbackReceivedClass ? ProfileLogStyle.select : ""}`}
+          className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileReceived
+            } ${feedbackReceivedClass ? ProfileLogStyle.select : ""}`}
           onClick={feedbackReceived}
         >
           <h3>{profileLog?.feedbackCount}</h3>
           <p>Feedback Received</p>
         </div>
         <div
-          className={`${ProfileLogStyle.profileLogBoxItem} ${
-            ProfileLogStyle.profileRejected
-          } ${showProfileRejectClass ? ProfileLogStyle.select : ""}`}
+          className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileRejected
+            } ${showProfileRejectClass ? ProfileLogStyle.select : ""}`}
           onClick={profileRejectedDetails}
         >
           <h3>{profileLog?.rejectedCount}</h3>
           <p>Rejected</p>
         </div>
         <div
-          className={`${ProfileLogStyle.profileLogBoxItem} ${
-            ProfileLogStyle.profileSelFor
-          } ${selectForClass ? ProfileLogStyle.select : ""}`}
+          className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileSelFor
+            } ${selectForClass ? ProfileLogStyle.select : ""}`}
           onClick={selectFor}
         >
           <h3>{profileLog?.selectedForCount}</h3>
@@ -281,10 +274,10 @@ const profileRejectedDetails = async () => {
         showProfileRejectClass ||
         selectForClass
       ) && (
-        <div className={ProfileLogStyle.selectBoxNote}>
-          Select the stages to view their HRs
-        </div>
-      )}
+          <div className={ProfileLogStyle.selectBoxNote}>
+            Select the stages to view their HRs
+          </div>
+        )}
       {showProfileShared === true && (
         <>
           {profileShared?.length !== 0 && (
@@ -298,7 +291,7 @@ const profileRejectedDetails = async () => {
                     <LeftArrowSVG />
                   </button>
                   <button>
-                    <RightArrowSVG  />
+                    <RightArrowSVG onClick={rightArrowClick} />
                   </button>
                 </div>
               </div>
@@ -382,7 +375,7 @@ const profileRejectedDetails = async () => {
                     </tr>
                   </thead>
                   <tbody>
-                  {feedbackReceivedDetails?.length === undefined && (
+                    {feedbackReceivedDetails?.length === undefined && (
                       <tr>
                         <td colSpan={6} align="center">
                           No data Found
@@ -445,7 +438,7 @@ const profileRejectedDetails = async () => {
                     </tr>
                   </thead>
                   <tbody>
-                  {profileRejected?.length === undefined && (
+                    {profileRejected?.length === undefined && (
                       <tr>
                         <td colSpan={6} align="center">
                           No data Found

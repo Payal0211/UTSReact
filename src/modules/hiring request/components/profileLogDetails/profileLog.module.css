@@ -38,7 +38,78 @@
   color: #676767;
 }
 .profileNameDate {
-  margin: 0;
+  align-items: center;
+  display: flex;
+}
+
+.profileNameDate label {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #676767;
+  margin: 0 8px 0 0;
+}
+
+.profileCalendarFilter {
+  width: 209px;
+  position: relative;
+}
+.profileCalendarFilter svg {
+  width: 16px;
+  height: 16px;
+  color: #676767;
+  position: absolute;
+  z-index: 1;
+  left: 16px;
+  top: 14px;
+}
+.profileCalendarFilter svg path {
+  stroke: #676767;
+}
+.profileCalendarFilter [class*="react-datepicker-wrapper"] input {
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 13px 16px 13px 46px;
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #232323;
+  width: 100%;
+  outline: none;
+  transition: all 0.35s ease 0s;
+}
+
+.profileCalendarFilter
+  [class*="react-datepicker-wrapper"]
+  input::-webkit-input-placeholder {
+  color: #676767;
+  opacity: 1;
+}
+.profileCalendarFilter
+  [class*="react-datepicker-wrapper"]
+  input::-moz-placeholder {
+  color: #676767;
+  opacity: 1;
+}
+.profileCalendarFilter
+  [class*="react-datepicker-wrapper"]
+  input:-ms-input-placeholder {
+  color: #676767;
+  opacity: 1;
+}
+.profileCalendarFilter
+  [class*="react-datepicker-wrapper"]
+  input:-moz-placeholder {
+  color: #676767;
+  opacity: 1;
+}
+
+.profileCalendarFilter [class*="react-datepicker-wrapper"] input:focus {
+  border-color: #ffda30;
+  box-shadow: 0 0 0 1px #ffda30;
 }
 
 .profileLogBox {
@@ -121,7 +192,8 @@
   height: 16px;
 }
 .profileLogList {
-  overflow-x: auto;
+  overflow: auto;
+  max-height: 300px;
 }
 .profileLogList table {
   font-family: "Montserrat";
@@ -132,6 +204,11 @@
   background: transparent;
   margin: 0;
 }
+.profileLogList table thead {
+  position: sticky;
+  top: 0;
+  box-shadow: 0 0 0 1px #cecccc;
+}
 .profileLogList tr th {
   font-family: Montserrat !important;
   font-weight: 600 !important;
@@ -140,9 +217,10 @@
   color: #232323 !important;
   white-space: nowrap;
   border: none;
-  border-bottom: 1px dashed #cecccc;
+  /* border-bottom: 1px dashed #cecccc; */
   padding: 16px;
   background: transparent;
+  border-radius: 0 !important;
 }
 .profileLogList tr td {
   font-family: Montserrat !important;
@@ -208,4 +286,12 @@
 .profileLogListWrap.profileSelFor,
 .profileSelFor .profileLogListHead {
   border-color: #85b844;
+}
+.selectBoxNote {
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #676767;
+  text-align: center;
 }
