@@ -120,6 +120,7 @@ const ProfileLogDetails = ({
     setSelectForClass(true);
     setShowProfileRejectClass(false);
     setShowProfileShared(false);
+    setFeedBackReceivedClass(false)
     let selectForObj = {
       talentID: talentId,
       typeID: ProfileLog.SELECTED,
@@ -186,8 +187,6 @@ const ProfileLogDetails = ({
   useEffect(() => {
     viewProfileInfo()
   }, [])
-
-
 
   return (
     <>
