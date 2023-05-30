@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import InterviewScheduleStyle from '../../interviewStyle.module.css';
-
 import { interviewUtils } from 'modules/interview/interviewUtils';
 import { InputType } from 'constants/application';
 import { Checkbox, Divider, Radio } from 'antd';
@@ -9,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { InterviewDAO } from 'core/interview/interviewDAO';
 import { HTTPStatusCode } from 'constants/network';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
+import AnotherRound from '../anotherRound/anotherRound';
 
 const InterviewFeedback = ({
 	isEditFeedback,
@@ -23,6 +23,10 @@ const InterviewFeedback = ({
 	hrStatus,
 	closeModal,
 }) => {
+	/** For Fourth Round Start --- */
+	const [isAnotherRound, setAnotherRound] = useState(false);
+	const [interviewFeedbackResult, setInterviewFeedbackResult] = useState(null);
+	/** For Fourth Round End */
 	const [feedbackDetails, setFeedbackDetails] = useState({});
 	const {
 		register,
@@ -36,6 +40,7 @@ const InterviewFeedback = ({
 	const [radioValue4, setRadioValue4] = useState('EE (Exceeds Expectation)');
 	const [isClientNotification, setClientNotification] = useState(false);
 	const onChange = (e) => {
+		if (e.target.value === 'AnotherRound') setAnotherRound(true);
 		setRadioValue1(e.target.value);
 	};
 	const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +53,8 @@ const InterviewFeedback = ({
 	const onChange4 = (e) => {
 		setRadioValue4(e.target.value);
 	};
+
+	console.log(isAnotherRound, '----AnotherRound');
 
 	const clientFeedbackHandler = useCallback(
 		async (d) => {
@@ -71,21 +78,25 @@ const InterviewFeedback = ({
 				en_Id: '',
 				IsClientNotificationSent: isClientNotification,
 			};
+			if (isAnotherRound) {
+				setInterviewFeedbackResult(clientFeedback);
+			} else {
+				const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
+					clientFeedback,
+				);
 
-			const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
-				clientFeedback,
-			);
-
-			if (response?.statusCode === HTTPStatusCode.OK) {
-				setIsLoading(false);
-				closeModal();
-				callAPI(hrId);
+				if (response?.statusCode === HTTPStatusCode.OK) {
+					setIsLoading(false);
+					closeModal();
+					callAPI(hrId);
+				}
 			}
 		},
 		[
 			callAPI,
 			closeModal,
 			hrId,
+			isAnotherRound,
 			isClientNotification,
 			radioValue1,
 			radioValue2,
@@ -98,7 +109,6 @@ const InterviewFeedback = ({
 			talentInfo?.TalentRole,
 		],
 	);
-	console.log(feedbackDetails, '--feedbackDetails');
 
 	const getClientFeedbackHandler = useCallback(async () => {
 		const response = await InterviewDAO.getClientFeedbackRequestDAO({
@@ -134,7 +144,9 @@ const InterviewFeedback = ({
 		setValue,
 	]);
 
-	return (
+	return isAnotherRound && interviewFeedbackResult ? (
+		<AnotherRound />
+	) : (
 		<div className={InterviewScheduleStyle.interviewContainer}>
 			<div className={InterviewScheduleStyle.leftPane}>
 				<h3>Share Your Feedback</h3>

@@ -126,6 +126,9 @@ export class MastersAPI {
 	static CLONE_HR = 'CloneHR';
 	static GET_COUNTRY_LIST_BY_POSTALCODE =
 		'GetCountryListByCountryCodeOrPostalcode';
+	static CHECK_COUNTRY_REGION = 'CheckCountryRegion';
+	static CHECK_COUNTRY_NAME = 'CheckCountryName';
+	static ADD_COUNTRY = 'AddCountry';
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';

@@ -183,23 +183,30 @@ export const HiringRequestAPI = {
 	},
 	getMatchmakingRequest: async function (matchMakingData) {
 		let httpService = new HttpServices();
-		const miscData =
-			await UserSessionManagementController.getUserMiscellaneousData();
+		// const miscData =
+		// 	await UserSessionManagementController.getUserMiscellaneousData();
 		const emailURL =
 			matchMakingData?.emailID && `&EmailId=${matchMakingData?.emailID}`;
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.HIRING +
-			HiringRequestsAPI.SEARCHING_HIRING_REQUEST_DETAIL +
-			`?HiringRequestId=${matchMakingData.hrID}
-			&rows=${matchMakingData.rows}
-			&page=${matchMakingData.page}&LoggedInUserId=${miscData?.loggedInUserTypeID}` +
-			emailURL;
+			HiringRequestsAPI.SEARCHING_HIRING_REQUEST_DETAIL;
+		// `?HiringRequestId=${matchMakingData.hrID}
+		// &rows=${matchMakingData.rows}
+		// &page=${matchMakingData.page}&LoggedInUserId=${miscData?.loggedInUserTypeID}` +
+		// emailURL;
+		const formattedData = {
+			HiringRequestId: parseInt(matchMakingData?.hrID),
+			rows: matchMakingData?.rows,
+			page: matchMakingData?.page,
+			EmailId: emailURL ? emailURL : null,
+		};
 
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = formattedData;
 		try {
-			let response = await httpService.sendGetRequest();
+			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.getMatchmakingRequest');

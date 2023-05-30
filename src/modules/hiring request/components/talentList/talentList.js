@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Divider, List, Modal, message, Space } from 'antd';
+import { Dropdown, Menu, Divider, List, Modal, message, Space,Table } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import TalentListStyle from './talentList.module.css';
@@ -7,6 +7,8 @@ import { AiOutlineDown } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
 import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
+import { ReactComponent as LeftArrowSVG } from "assets/svg/arrowLeft.svg";
+import { ReactComponent as RightArrowSVG } from "assets/svg/arrowRight.svg";
 import { TalentOnboardStatus } from 'constants/application';
 import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
 import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
@@ -36,6 +38,9 @@ import { DownOutlined } from '@ant-design/icons';
 import EditBillRate from '../editBillAndPayRate/editBillRateModal';
 import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
 import FeedbackResponse from 'modules/interview/components/feedbackResponse/feedbackResponse';
+import DatePicker from "react-datepicker";
+import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
+import ProfileLogDetails from "../profileLogDetails/profileLog";
 
 const TalentList = ({
 	talentCTA,
@@ -52,6 +57,7 @@ const TalentList = ({
 	setHRapiCall,
 	callHRapi,
 	inteviewSlotDetails,
+	talentID,
 }) => {
 	const [isShowFeedback, setShowFeedback] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(-1);
@@ -69,6 +75,7 @@ const TalentList = ({
 	const [showTalentStatus, setTalentStatus] = useState(false);
 	const [updateOnboardClientModal, setOnboardClientModal] = useState(false);
 	const [updateOnboardTalentModal, setOnboardTalentModal] = useState(false);
+	const [profileLog, setProfileLog] = useState([]);
 	const [updateLegalClientOnboardModal, setLegalClientOnboardModal] =
 		useState(false);
 	const [updateLegalTalentOnboardModal, setLegalTalentOnboardModal] =
@@ -190,6 +197,9 @@ const TalentList = ({
 	const [getConfirmSlotDetails, setConfirmSlotDetails] = useState({});
 	const [confirmSlotRadio, setConfirmSlotRadio] = useState(1);
 	const [getDateNewFormate, setDateNewFormate] = useState([]);
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+	const [typeId, setTypeId] = useState(0);
 
 	const {
 		register,
@@ -1215,6 +1225,19 @@ const TalentList = ({
 		setConfirmSlotRadio(1);
 	}, [getConfirmSlotModal]);
 
+	// Profile Log
+
+
+
+
+	// For Add / Remove Class
+	const [profileShared, setProfileShared] = useState([]);
+	const [showProfileShared, setShowProfileShared] = useState(false);
+	const [profileRejected, setProfileRejected] = useState([]);
+	const [showProfileRejectClass, setShowProfileRejectClass] = useState(false);
+	const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([]);
+	const [feedbackReceivedClass, setFeedBackReceivedClass] = useState(false);
+
 	return (
 		<div>
 			{contextHolder}
@@ -1297,8 +1320,10 @@ const TalentList = ({
 															key={0}
 															onClick={() => {
 																setProfileLogModal(true); // TODO:-
-																setTalentIndex(listIndex);
-															}}>
+																setTalentIndex(item?.TalentID);
+																// viewProfileInfo();
+															}}
+														>
 															View Profile Log
 														</Menu.Item>
 														<Divider
@@ -1659,102 +1684,45 @@ const TalentList = ({
 				}}
 			/>
 			{/** ============ MODAL FOR PROFILE LOG ================ */}
-			<Modal
-				width="864px"
-				centered
-				footer={null}
-				open={showProfileLogModal}
-				// onOk={() => setVersantModal(false)}
-				onCancel={() => setProfileLogModal(false)}>
-				<h1>Profile Log</h1>
 
-				<div
-					style={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-						marginTop: '50px',
-					}}>
-					<div
-						style={{
-							display: 'flex',
-							justifyContent: 'start',
-							alignItems: 'center',
-							gap: '16px',
-							flexWrap: 'wrap',
-						}}>
-						<div
-							style={{
-								borderRadius: '8px',
-								border: `1px solid var(--uplers-border-color)`,
-								padding: '10px 30px',
-							}}>
-							<span>Name: </span>
-							<span
-								style={{
-									fontWeight: 500,
-									textDecoration: 'underline',
-								}}>
-								{filterTalentID?.Name}
-							</span>
-						</div>
-						<div
-							style={{
-								borderRadius: '8px',
-								border: `1px solid var(--uplers-border-color)`,
-								padding: '10px 30px',
-							}}>
-							<span>Role:</span>
-							<span
-								style={{
-									fontWeight: 500,
-								}}>
-								{filterTalentID?.TalentRole}
-							</span>
-						</div>
-					</div>
-					<div
-						style={{
-							padding: '1px 10px',
-							borderRadius: '8px',
-							backgroundColor: `var(--uplers-grey)`,
-						}}>
-						<ExportSVG />
-					</div>
-				</div>
-				<Divider />
-				<div
-					style={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}>
-					<div className={TalentListStyle.profileDataContainer}>
-						{profileData?.map((item, index) => {
-							return (
-								<div
-									style={{
-										backgroundColor: index === activeIndex && '#F5F5F5',
-										border:
-											index === activeIndex &&
-											`1px solid ${profileData[activeIndex]?.activeColor}`,
-									}}
-									onClick={() =>
-										onProfileLogClickHandler(item?.typeID, index, item?.typeID)
-									}
-									key={item.id}
-									className={TalentListStyle.profileSets}>
-									<span className={TalentListStyle.scoreValue}>
-										{item?.score}
-									</span>
-									&nbsp;
-									{item?.label}
-								</div>
-							);
-						})}
-					</div>
-				</div>
-			</Modal>
+			{showProfileLogModal && (
+				<Modal
+					width="992px"
+					centered
+					footer={null}
+					open={showProfileLogModal}
+					className="commonModalWrap"
+					// onOk={() => setVersantModal(false)}
+					onCancel={() => {
+						setProfileLogModal(false);
+						setProfileShared([]);
+						setFeedbackReceivedDetails([]);
+						setProfileRejected([]);
+						setShowProfileShared(false);
+						setShowProfileRejectClass(false);
+						setFeedBackReceivedClass(false);
+					}}
+				>
+					<ProfileLogDetails
+
+						activeIndex={activeIndex}
+						talentID={talentID}
+						activeType={activeType}
+						setActiveType={setActiveType}
+						setActiveIndex={setActiveIndex}
+						setEndDate={setEndDate}
+						setProfileLog={setProfileLog}
+						profileLog={profileLog}
+						startDate={startDate}
+						endDate={endDate}
+						showProfileShared={showProfileShared}
+						showProfileRejectClass={showProfileRejectClass}
+						talentId={filterTalentID?.TalentID}
+						talentInfo={filterTalentID}
+					/>
+				</Modal>
+			)}
+
 			{/** ============ MODAL FOR VERSANT SCORE ================ */}
 			<Modal
 				width="864px"

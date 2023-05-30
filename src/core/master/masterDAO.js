@@ -3,7 +3,6 @@ import { userAPI } from 'apis/userAPI';
 import { HTTPStatusCode } from 'constants/network';
 import UTSRoutes from 'constants/routes';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
-import { Navigate } from 'react-router-dom';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const MasterDAO = {
@@ -456,6 +455,115 @@ export const MasterDAO = {
 			}
 		} catch (error) {
 			return errorDebug(error, 'MasterDAO.getCountryDAO');
+		}
+	},
+	getCountryListRequestDAO: async function () {
+		try {
+			const countryListResponse = await MasterAPI.getCountryListRequest();
+			if (countryListResponse) {
+				const statusCode = countryListResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = countryListResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return countryListResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return countryListResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getCountryListRequestDAO');
+		}
+	},
+	checkCountryRegionRequestDAO: async function (countryDetails) {
+		try {
+			const duplicateCountryResponse =
+				await MasterAPI.checkCountryRegionRequest(countryDetails);
+			if (duplicateCountryResponse) {
+				const statusCode = duplicateCountryResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = duplicateCountryResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return duplicateCountryResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return duplicateCountryResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.checkCountryRegionRequestDAO');
+		}
+	},
+	checkCountryNameRequestDAO: async function (countryDetails) {
+		try {
+			const duplicateCountryResponse = await MasterAPI.checkCountryNameRequest(
+				countryDetails,
+			);
+			if (duplicateCountryResponse) {
+				const statusCode = duplicateCountryResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = duplicateCountryResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return duplicateCountryResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return duplicateCountryResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.checkCountryNameRequestDAO');
+		}
+	},
+	addCountryRequestDAO: async function (countryDetails) {
+		try {
+			const addCountryResponse = await MasterAPI.addCountryRequest(
+				countryDetails,
+			);
+			if (addCountryResponse) {
+				const statusCode = addCountryResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = addCountryResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return addCountryResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return addCountryResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.addCountryRequestDAO');
 		}
 	},
 
