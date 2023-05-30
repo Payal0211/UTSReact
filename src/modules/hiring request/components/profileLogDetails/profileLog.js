@@ -172,27 +172,27 @@ const ProfileLogDetails = ({
     [activeIndex, activeType, onProfileLogClickHandler, typeId]
   );
 
-  let feedback = false
-  let profileReject = false
-  let selected = false
+  // let feedback = false
+  // let profileReject = false
+  // let selected = false
 
-  const rightArrowClick = () => {
-    feedback = true
-    if (feedback === true) {
-      console.log(feedback, "feedback");
-      feedbackReceived();
-      console.log(profileReject, "profileReject");
-    }
-    feedback = false;
-    profileReject = true;
-    if (profileReject === true) {
-      profileRejectedDetails()
-    }
-    // if(feedbackReceivedClass===true){
+  // const rightArrowClick = () => {
+  //   feedback = true
+  //   if (feedback === true) {
+  //     console.log(feedback, "feedback");
+  //     feedbackReceived();
+  //     console.log(profileReject, "profileReject");
+  //   }
+  //   feedback = false;
+  //   profileReject = true;
+  //   if (profileReject === true) {
+  //     profileRejectedDetails()
+  //   }
+  //   // if(feedbackReceivedClass===true){
 
-    // }
+  //   // }
 
-  };
+  // };
 
   return (
     <>
@@ -291,7 +291,7 @@ const ProfileLogDetails = ({
                     <LeftArrowSVG />
                   </button>
                   <button>
-                    <RightArrowSVG onClick={rightArrowClick} />
+                    <RightArrowSVG />
                   </button>
                 </div>
               </div>
