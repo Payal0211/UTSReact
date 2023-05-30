@@ -179,7 +179,7 @@ const HRDetailScreen = () => {
 				<div className={HRDetailStyle.hrDetails}>
 					<div className={HRDetailStyle.hrDetailsLeftPart}>
 						<div className={HRDetailStyle.hiringRequestIdSets}>
-							HR ID - {updatedSplitter}
+							{updatedSplitter}
 						</div>
 						{All_Hiring_Request_Utils.GETHRSTATUS(
 							apiData?.HRStatusCode,

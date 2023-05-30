@@ -406,7 +406,7 @@ const AllHiringRequestScreen = () => {
 								/>
 							</div>
 						</div>
-						<div className={allHRStyles.priorityFilterSet}>
+						{/* <div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Set Priority</div>
 							<div
 								className={allHRStyles.priorityFilter}
@@ -439,7 +439,7 @@ const AllHiringRequestScreen = () => {
 									</Tooltip>
 								)}
 							</div>
-						</div>
+						</div> */}
 						<div className={allHRStyles.priorityFilterSet}>
 							<div className={allHRStyles.label}>Showing</div>
 

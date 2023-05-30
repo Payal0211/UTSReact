@@ -25,7 +25,7 @@ const ConvertToContractual = ({
 		formState: { errors },
 	} = useForm({});
 	const param = useParams();
-	console.log(errors, '-errors');
+
 	const [saveContractualInfo, setContractualInfo] = useState('');
 	const [getTelantCC, setTalentCC] = useState([]);
 	// const [convertToContracual, setIsConvertToContractual] = useState(false);
@@ -335,14 +335,14 @@ const ConvertToContractual = ({
 				footer={null}
 				className="convert-contractual-modal-wrap"
 				onCancel={() => setIsConvertToContractual(false)}>
-				<div className="convert-dp-modal">
-					<label className={ConvertToContractualStyle.matchmakingLabel}>
-						Convert to Contractual
-					</label>
-					<p className={ConvertToContractualStyle.test}>
-						Please add necessary details for converting this HR from Contractual
-						to Direct Placement
-					</p>
+				<div className={ConvertToContractualStyle.convertContractualModal}>
+					<div className={ConvertToContractualStyle.convertModalTitle}>
+						<h2>Convert to Contractual</h2>
+						<p>
+							Please add necessary details for converting this HR from
+							Contractual to Direct Placement
+						</p>
+					</div>
 
 					{isLoading ? (
 						<div className={ConvertToContractualStyle.contractualLoader}>
