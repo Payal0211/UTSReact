@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import ProfileLogStyle from "./profileLog.module.css";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import DatePicker from "react-datepicker";
@@ -24,7 +24,9 @@ const ProfileLogDetails = ({
   setActiveType,
   talentID,
   showProfileLogModal,
-  talentId
+  talentId,
+  talentInfo,
+
 }) => {
   const [profileShared, setProfileShared] = useState([]);
   const [showProfileShared, setShowProfileShared] = useState(false);
@@ -41,6 +43,14 @@ const ProfileLogDetails = ({
   const [typeId, setTypeId] = useState(0);
   const [startDate, setStartDate] = useState(null);
 
+  const viewProfileInfo = async (start = null, end = null) => {
+    let response = await hiringRequestDAO.getTalentProfileLogDAO({
+      talentid: talentInfo?.TalentID,
+      fromDate: start ? new Date(start).toLocaleDateString("en-US") : null,
+      toDate: end ? new Date(end).toLocaleDateString("en-US") : null,
+    });
+    setProfileLog(response?.responseBody?.details);
+  };
 
   const profileLogBox = async () => {
     setShowProfileShared(true);
@@ -52,13 +62,14 @@ const ProfileLogDetails = ({
     let profileObj = {
       talentID: talentId,
       typeID: ProfileLog.PROFILE_SHARED,
-      //   fromDate: startDateDetails,
-      //   toDate: endDateDetails,
+      fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
+      toDate: endDate ? new Date(endDate).toLocaleDateString("en-US") : null,
     };
 
     const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
       profileObj
     );
+
     setTypeIdPayload(ProfileLog.PROFILE_SHARED);
     setProfileShared(response);
   };
@@ -72,8 +83,8 @@ const ProfileLogDetails = ({
     let profileReject = {
       talentID: talentId,
       typeID: ProfileLog.REJECTED,
-      // fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
-      // toDate: !!end && new Date(end).toLocaleDateString('en-US'),
+      fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
+      toDate: endDate ? new Date(endDate).toLocaleDateString("en-US") : null,
     };
 
     const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
@@ -95,8 +106,8 @@ const ProfileLogDetails = ({
     let feedbackReceivedObj = {
       talentID: talentId,
       typeID: ProfileLog.FEEDBACK,
-      // fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
-      // toDate: !!end && new Date(end).toLocaleDateString('en-US'),
+      fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
+      toDate: endDate ? new Date(endDate).toLocaleDateString("en-US") : null,
     };
     const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
       feedbackReceivedObj
@@ -109,15 +120,17 @@ const ProfileLogDetails = ({
     setSelectForClass(true);
     setShowProfileRejectClass(false);
     setShowProfileShared(false);
+    setFeedBackReceivedClass(false)
     let selectForObj = {
       talentID: talentId,
       typeID: ProfileLog.SELECTED,
-      // fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
-      // toDate: !!end && new Date(end).toLocaleDateString('en-US'),
+      fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
+      toDate: endDate ? new Date(endDate).toLocaleDateString("en-US") : null,
     };
     const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
       selectForObj
     );
+
     setSelectForDetails(response?.responseBody?.details);
     setTypeIdPayload(ProfileLog.SELECTED);
   };
@@ -158,16 +171,15 @@ const ProfileLogDetails = ({
     },
     [talentID, filterTalentID?.TalentID, typeIdPayload]
   );
-
   const onCalenderFilter = useCallback(
     (dates) => {
       const [start, end] = dates;
       setStartDate(start);
       setEndDate(end);
-      // if (start && end) {
-      // viewProfileInfo(start, end);
-      onProfileLogClickHandler(typeId, activeIndex, activeType, start, end);
-      // }
+      if (start && end) {
+        viewProfileInfo(start, end);
+        typeId && onProfileLogClickHandler(typeId, activeIndex, activeType, start, end);
+      }
     },
     [activeIndex, activeType, onProfileLogClickHandler, typeId]
   );
@@ -233,10 +245,10 @@ if(profileSharedd){
         <div className={ProfileLogStyle.profileNameRole}>
           <ul>
             <li>
-              <span>Name:</span> <u>{profileLog?.talentName}</u>
+              <span>Name:</span> <u>{talentInfo?.Name}</u>
             </li>
             <li>
-              <span>Role:</span> {profileLog?.talentRole}
+              <span>Role:</span> {talentInfo?.TalentRole}
             </li>
           </ul>
         </div>
@@ -338,7 +350,8 @@ if(profileSharedd){
                     </tr>
                   </thead>
                   <tbody>
-                    {profileShared?.length === undefined ||
+
+                    {profileLog?.length === 0 ||
                       (profileShared?.length === 0 && (
                         <tr>
                           <td colSpan={6} align="center">
@@ -411,6 +424,7 @@ if(profileSharedd){
                         </td>
                       </tr>
                     )}
+
                     {feedbackReceivedDetails?.map((item, index) => {
                       return (
                         <tr>

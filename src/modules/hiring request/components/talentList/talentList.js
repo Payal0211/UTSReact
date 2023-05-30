@@ -1,46 +1,55 @@
-import { Dropdown, Menu, Divider, List, Modal, message, Space, Table } from 'antd';
-import { BsThreeDots } from 'react-icons/bs';
-import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
-import TalentListStyle from './talentList.module.css';
-import HROperator from '../hroperator/hroperator';
-import { AiOutlineDown } from 'react-icons/ai';
-import { useForm } from 'react-hook-form';
-import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
-import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
-import { ReactComponent as LeftArrowSVG } from 'assets/svg/arrowLeft.svg';
-import { ReactComponent as RightArrowSVG } from 'assets/svg/arrowRight.svg';
-import { ProfileLog, TalentOnboardStatus } from 'constants/application';
-import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
-import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
-import InterviewFeedback from 'modules/interview/screens/interviewFeedback/interviewFeedback';
-import { hrUtils } from 'modules/hiring request/hrUtils';
+import {
+	Dropdown,
+	Menu,
+	Divider,
+	List,
+	Modal,
+	message,
+	Space,
+	Table,
+} from "antd";
+import { BsThreeDots } from "react-icons/bs";
+import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
+import TalentListStyle from "./talentList.module.css";
+import HROperator from "../hroperator/hroperator";
+import { AiOutlineDown } from "react-icons/ai";
+import { useForm } from "react-hook-form";
+import { Fragment, useEffect, useState, useCallback, useMemo } from "react";
+import { ReactComponent as ExportSVG } from "assets/svg/export.svg";
+import { ReactComponent as LeftArrowSVG } from "assets/svg/arrowLeft.svg";
+import { ReactComponent as RightArrowSVG } from "assets/svg/arrowRight.svg";
+import { ProfileLog, TalentOnboardStatus } from "constants/application";
+import InterviewReschedule from "modules/interview/screens/interviewReschedule/interviewReschedule";
+import InterviewSchedule from "modules/interview/screens/interviewSchedule/interviewSchedule";
+import InterviewFeedback from "modules/interview/screens/interviewFeedback/interviewFeedback";
+import { hrUtils } from "modules/hiring request/hrUtils";
 import {
 	_isNull,
 	defaultEndTime,
 	defaultStartTime,
 	getInterviewSlotInfo,
 	getNthDateExcludingWeekend,
-} from 'shared/utils/basic_utils';
-import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
-import TalentAcceptance from '../talentAcceptance/talentAcceptance';
-import TalentStatus from '../talentStatus/talentStatus';
-import InterviewStatus from 'modules/interview/components/interviewStatus/interviewStatus';
-import UpdateClientOnBoardStatus from '../updateClientOnboardStatus/updateClientOnboardStatus';
-import UpdateTalentOnboardStatus from '../updateTalentOnboardStatus/updateTalentOnboardStatus';
-import UpdateLegalClientOnboardStatus from '../updateLegalClientOnboardStatus/updateLegalClientOnboardStatus';
-import EngagementReplaceTalent from 'modules/engagement/screens/engagementReplaceTalent/engagementReplaceTalent';
-import UpdateLegalTalentOnboardStatus from '../updateLegalTalentOnboardStatus/updateLegalTalentOnboardStatus';
-import UpdateKickOffOnboardStatus from '../updateKickOffOnboardStatus/updateKickOffOnboardStatus';
-import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
-import { HTTPStatusCode } from 'constants/network';
-import EditPayRate from '../editBillAndPayRate/editPayRateModal';
-import { DownOutlined } from '@ant-design/icons';
-import EditBillRate from '../editBillAndPayRate/editBillRateModal';
-import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
-import { useParams } from 'react-router-dom';
-import DatePicker from 'react-datepicker';
-import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import ProfileLogDetails from '../profileLogDetails/profileLog';
+} from "shared/utils/basic_utils";
+import { allHRConfig } from "modules/hiring request/screens/allHiringRequest/allHR.config";
+import TalentAcceptance from "../talentAcceptance/talentAcceptance";
+import TalentStatus from "../talentStatus/talentStatus";
+import InterviewStatus from "modules/interview/components/interviewStatus/interviewStatus";
+import UpdateClientOnBoardStatus from "../updateClientOnboardStatus/updateClientOnboardStatus";
+import UpdateTalentOnboardStatus from "../updateTalentOnboardStatus/updateTalentOnboardStatus";
+import UpdateLegalClientOnboardStatus from "../updateLegalClientOnboardStatus/updateLegalClientOnboardStatus";
+import EngagementReplaceTalent from "modules/engagement/screens/engagementReplaceTalent/engagementReplaceTalent";
+import UpdateLegalTalentOnboardStatus from "../updateLegalTalentOnboardStatus/updateLegalTalentOnboardStatus";
+import UpdateKickOffOnboardStatus from "../updateKickOffOnboardStatus/updateKickOffOnboardStatus";
+import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
+import { HTTPStatusCode } from "constants/network";
+import EditPayRate from "../editBillAndPayRate/editPayRateModal";
+import { DownOutlined } from "@ant-design/icons";
+import EditBillRate from "../editBillAndPayRate/editBillRateModal";
+import ConfirmSlotModal from "../confirmSlot/confirmSlotModal";
+import { useParams } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
+import ProfileLogDetails from "../profileLogDetails/profileLog";
 
 const TalentList = ({
 	talentCTA,
@@ -73,7 +82,7 @@ const TalentList = ({
 	const [showTalentStatus, setTalentStatus] = useState(false);
 	const [updateOnboardClientModal, setOnboardClientModal] = useState(false);
 	const [updateOnboardTalentModal, setOnboardTalentModal] = useState(false);
-	const [profileLog, setProfileLog] = useState(null);
+	const [profileLog, setProfileLog] = useState([]);
 	const [updateLegalClientOnboardModal, setLegalClientOnboardModal] =
 		useState(false);
 	const [updateLegalTalentOnboardModal, setLegalTalentOnboardModal] =
@@ -114,27 +123,27 @@ const TalentList = ({
 			...getInterviewSlotInfo(
 				getNthDateExcludingWeekend(1),
 				defaultStartTime(),
-				defaultEndTime(),
+				defaultEndTime()
 			),
-			iD_As_ShortListedID: '',
+			iD_As_ShortListedID: "",
 		},
 		{
 			SlotID: 2,
 			...getInterviewSlotInfo(
 				getNthDateExcludingWeekend(2),
 				defaultStartTime(),
-				defaultEndTime(),
+				defaultEndTime()
 			),
-			iD_As_ShortListedID: '',
+			iD_As_ShortListedID: "",
 		},
 		{
 			SlotID: 3,
 			...getInterviewSlotInfo(
 				getNthDateExcludingWeekend(3),
 				defaultStartTime(),
-				defaultEndTime(),
+				defaultEndTime()
 			),
-			iD_As_ShortListedID: '',
+			iD_As_ShortListedID: "",
 		},
 	]);
 	const [scheduleSlotRadio, setScheduleSlotRadio] = useState(1);
@@ -165,27 +174,27 @@ const TalentList = ({
 			...getInterviewSlotInfo(
 				getNthDateExcludingWeekend(1),
 				defaultStartTime(),
-				defaultEndTime(),
+				defaultEndTime()
 			),
-			iD_As_ShortListedID: '',
+			iD_As_ShortListedID: "",
 		},
 		{
 			SlotID: 2,
 			...getInterviewSlotInfo(
 				getNthDateExcludingWeekend(2),
 				defaultStartTime(),
-				defaultEndTime(),
+				defaultEndTime()
 			),
-			iD_As_ShortListedID: '',
+			iD_As_ShortListedID: "",
 		},
 		{
 			SlotID: 3,
 			...getInterviewSlotInfo(
 				getNthDateExcludingWeekend(3),
 				defaultStartTime(),
-				defaultEndTime(),
+				defaultEndTime()
 			),
-			iD_As_ShortListedID: '',
+			iD_As_ShortListedID: "",
 		},
 	]);
 	const [reScheduleRadio, setRescheduleRadio] = useState(1);
@@ -199,7 +208,6 @@ const TalentList = ({
 	const [endDate, setEndDate] = useState(null);
 	const [typeId, setTypeId] = useState(0);
 
-
 	const {
 		register,
 		handleSubmit,
@@ -210,7 +218,7 @@ const TalentList = ({
 	const filterTalentID = useMemo(
 		() =>
 			talentDetail?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
-		[talentDetail, talentIndex],
+		[talentDetail, talentIndex]
 	);
 
 	const getSlotInformationHandler = useCallback(
@@ -220,12 +228,12 @@ const TalentList = ({
 			let dd = date.getDate();
 			let hours = date.getHours();
 			let miniute = date.getMinutes();
-			if (dd < 10) dd = '0' + dd;
-			if (mm < 10) mm = '0' + mm;
-			if (hours < 10) hours = '0' + hours;
-			if (miniute < 10) miniute = '0' + miniute;
-			const timeFormate = hours + ':' + miniute;
-			const firstDateFormate = mm + '/' + dd + '/' + yyyy;
+			if (dd < 10) dd = "0" + dd;
+			if (mm < 10) mm = "0" + mm;
+			if (hours < 10) hours = "0" + hours;
+			if (miniute < 10) miniute = "0" + miniute;
+			const timeFormate = hours + ":" + miniute;
+			const firstDateFormate = mm + "/" + dd + "/" + yyyy;
 			const secondDateFormate = `${yyyy}-${mm}-${dd}T00:00:00.0000`;
 			let startTimeFirstFormate;
 			let endTimeFirstFormate;
@@ -233,27 +241,27 @@ const TalentList = ({
 			let endTimeSecondFormate;
 
 			switch (type) {
-				case 'slot1Date':
-					if (interviewType === 'schedule') {
+				case "slot1Date":
+					if (interviewType === "schedule") {
 						if (
 							getScheduleSlotInfomation[0]?.STRStartTime &&
 							getScheduleSlotInfomation[0]?.STREndTime
 						) {
 							startTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[0]?.STRStartTime.slice(
-								10,
+								10
 							)}`;
 							endTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[0]?.STREndTime?.slice(
-								10,
+								10
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getScheduleSlotInfomation[0]?.STRStartTime.slice(
-								11,
+								11
 							)}:00.0000`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getScheduleSlotInfomation[0]?.STREndTime.slice(11)}:00.0000`;
 						}
 						setScheduleSlotInformation(
@@ -265,13 +273,13 @@ const TalentList = ({
 										STRSlotDate: firstDateFormate || null,
 										STRStartTime: startTimeFirstFormate || null,
 										STREndTime: endTimeFirstFormate || null,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 						setScheduleSlotDate(
 							getScheduleSlotDate.map((item, index) => {
@@ -280,30 +288,30 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
-					} else if (interviewType === 'reschedule') {
+					} else if (interviewType === "reschedule") {
 						if (
 							getRescheduleSlotInfomation[0]?.STRStartTime &&
 							getRescheduleSlotInfomation[0]?.STREndTime
 						) {
 							startTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[0]?.STRStartTime.slice(
-								10,
+								10
 							)}`;
 							endTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[0]?.STREndTime?.slice(
-								10,
+								10
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getRescheduleSlotInfomation[0]?.STRStartTime.slice(
-								11,
+								11
 							)}:00.0000`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getRescheduleSlotInfomation[0]?.STREndTime.slice(
-								11,
+								11
 							)}:00.0000`;
 						}
 						setRescheduleSlotInformation(
@@ -313,15 +321,15 @@ const TalentList = ({
 										...item,
 										SlotDate: firstDateFormate || null,
 										STRSlotDate: firstDateFormate || null,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
 										STRStartTime: startTimeFirstFormate || null,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 										STREndTime: endTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 						setRescheduleSlotDate(
 							getRescheduleSlotDate.map((item, index) => {
@@ -330,12 +338,12 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 					}
 					break;
-				case 'slot1StartTime':
-					if (interviewType === 'schedule') {
+				case "slot1StartTime":
+					if (interviewType === "schedule") {
 						if (
 							getScheduleSlotInfomation[0]?.STRSlotDate &&
 							getScheduleSlotInfomation[0]?.SlotDate
@@ -343,13 +351,13 @@ const TalentList = ({
 							startTimeFirstFormate = `${getScheduleSlotInfomation[0]?.STRSlotDate} ${timeFormate}`;
 							startTimeSecondFormate = `${getScheduleSlotInfomation[0]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 						setScheduleSlotInformation(
@@ -357,13 +365,13 @@ const TalentList = ({
 								if (index === 0) {
 									return {
 										...item,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
 										STRStartTime: startTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setScheduleSlotDate(
@@ -373,9 +381,9 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
-					} else if (interviewType === 'reschedule') {
+					} else if (interviewType === "reschedule") {
 						if (
 							getRescheduleSlotInfomation[0]?.STRSlotDate &&
 							getRescheduleSlotInfomation[0]?.SlotDate
@@ -383,13 +391,13 @@ const TalentList = ({
 							startTimeFirstFormate = `${getRescheduleSlotInfomation[0]?.STRSlotDate} ${timeFormate}`;
 							startTimeSecondFormate = `${getRescheduleSlotInfomation[0]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 						setRescheduleSlotInformation(
@@ -397,13 +405,13 @@ const TalentList = ({
 								if (index === 0) {
 									return {
 										...item,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
 										STRStartTime: startTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 						setRescheduleSlotDate(
 							getRescheduleSlotDate.map((item, index) => {
@@ -412,12 +420,12 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 					}
 					break;
-				case 'slot1EndTime':
-					if (interviewType === 'schedule') {
+				case "slot1EndTime":
+					if (interviewType === "schedule") {
 						if (
 							getScheduleSlotInfomation[0]?.STRSlotDate &&
 							getScheduleSlotInfomation[0]?.SlotDate
@@ -425,13 +433,13 @@ const TalentList = ({
 							endTimeFirstFormate = `${getScheduleSlotInfomation[0]?.STRSlotDate} ${timeFormate}`;
 							endTimeSecondFormate = `${getScheduleSlotInfomation[0]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 						setScheduleSlotInformation(
@@ -439,13 +447,13 @@ const TalentList = ({
 								if (index === 0) {
 									return {
 										...item,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 										STREndTime: endTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setScheduleSlotDate(
@@ -455,9 +463,9 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
-					} else if (interviewType === 'reschedule') {
+					} else if (interviewType === "reschedule") {
 						if (
 							getRescheduleSlotInfomation[0]?.STRSlotDate &&
 							getRescheduleSlotInfomation[0]?.SlotDate
@@ -465,13 +473,13 @@ const TalentList = ({
 							endTimeFirstFormate = `${getRescheduleSlotInfomation[0]?.STRSlotDate} ${timeFormate}`;
 							endTimeSecondFormate = `${getRescheduleSlotInfomation[0]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 						setRescheduleSlotInformation(
@@ -479,13 +487,13 @@ const TalentList = ({
 								if (index === 0) {
 									return {
 										...item,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 										STREndTime: endTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 						setRescheduleSlotDate(
 							getRescheduleSlotDate.map((item, index) => {
@@ -494,32 +502,32 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 					}
 					break;
 
-				case 'slot2Date':
-					if (interviewType === 'schedule') {
+				case "slot2Date":
+					if (interviewType === "schedule") {
 						if (
 							getScheduleSlotInfomation[1]?.STRStartTime &&
 							getScheduleSlotInfomation[1]?.STREndTime
 						) {
 							startTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[1]?.STRStartTime.slice(
-								10,
+								10
 							)}`;
 							endTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[1]?.STREndTime?.slice(
-								10,
+								10
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getScheduleSlotInfomation[1]?.STRStartTime.slice(
-								11,
+								11
 							)}:00.0000`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getScheduleSlotInfomation[1]?.STREndTime.slice(11)}:00.0000`;
 						}
 						setScheduleSlotInformation(
@@ -531,13 +539,13 @@ const TalentList = ({
 										STRSlotDate: firstDateFormate || null,
 										STRStartTime: startTimeFirstFormate || null,
 										STREndTime: endTimeFirstFormate || null,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setScheduleSlotDate(
@@ -547,30 +555,30 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
-					} else if (interviewType === 'reschedule') {
+					} else if (interviewType === "reschedule") {
 						if (
 							getRescheduleSlotInfomation[1]?.STRStartTime &&
 							getRescheduleSlotInfomation[1]?.STREndTime
 						) {
 							startTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[1]?.STRStartTime.slice(
-								10,
+								10
 							)}`;
 							endTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[1]?.STREndTime?.slice(
-								10,
+								10
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getRescheduleSlotInfomation[1]?.STRStartTime.slice(
-								11,
+								11
 							)}:00.0000`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getRescheduleSlotInfomation[1]?.STREndTime.slice(
-								11,
+								11
 							)}:00.0000`;
 						}
 						setRescheduleSlotInformation(
@@ -582,13 +590,13 @@ const TalentList = ({
 										STRSlotDate: firstDateFormate || null,
 										STRStartTime: startTimeFirstFormate || null,
 										STREndTime: endTimeFirstFormate || null,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setRescheduleSlotDate(
@@ -598,12 +606,12 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 					}
 					break;
-				case 'slot2StartTime':
-					if (interviewType === 'schedule') {
+				case "slot2StartTime":
+					if (interviewType === "schedule") {
 						if (
 							getScheduleSlotInfomation[1]?.STRSlotDate &&
 							getScheduleSlotInfomation[1]?.SlotDate
@@ -611,13 +619,13 @@ const TalentList = ({
 							startTimeFirstFormate = `${getScheduleSlotInfomation[1]?.STRSlotDate} ${timeFormate}`;
 							startTimeSecondFormate = `${getScheduleSlotInfomation[1]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 						setScheduleSlotInformation(
@@ -625,13 +633,13 @@ const TalentList = ({
 								if (index === 1) {
 									return {
 										...item,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
 										STRStartTime: startTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setScheduleSlotDate(
@@ -641,9 +649,9 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
-					} else if (interviewType === 'reschedule') {
+					} else if (interviewType === "reschedule") {
 						if (
 							getRescheduleSlotInfomation[1]?.STRSlotDate &&
 							getRescheduleSlotInfomation[1]?.SlotDate
@@ -651,13 +659,13 @@ const TalentList = ({
 							startTimeFirstFormate = `${getRescheduleSlotInfomation[1]?.STRSlotDate} ${timeFormate}`;
 							startTimeSecondFormate = `${getRescheduleSlotInfomation[1]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 						setRescheduleSlotInformation(
@@ -665,13 +673,13 @@ const TalentList = ({
 								if (index === 1) {
 									return {
 										...item,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
 										STRStartTime: startTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setRescheduleSlotDate(
@@ -681,12 +689,12 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 					}
 					break;
-				case 'slot2EndTime':
-					if (interviewType === 'schedule') {
+				case "slot2EndTime":
+					if (interviewType === "schedule") {
 						if (
 							getScheduleSlotInfomation[1]?.STRSlotDate &&
 							getScheduleSlotInfomation[1]?.SlotDate
@@ -694,13 +702,13 @@ const TalentList = ({
 							endTimeFirstFormate = `${getScheduleSlotInfomation[1]?.STRSlotDate} ${timeFormate}`;
 							endTimeSecondFormate = `${getScheduleSlotInfomation[1]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 
@@ -709,13 +717,13 @@ const TalentList = ({
 								if (index === 1) {
 									return {
 										...item,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 										STREndTime: endTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 						setScheduleSlotDate(
 							getScheduleSlotDate.map((item, index) => {
@@ -724,9 +732,9 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
-					} else if (interviewType === 'reschedule') {
+					} else if (interviewType === "reschedule") {
 						if (
 							getRescheduleSlotInfomation[1]?.STRSlotDate &&
 							getRescheduleSlotInfomation[1]?.SlotDate
@@ -734,13 +742,13 @@ const TalentList = ({
 							endTimeFirstFormate = `${getRescheduleSlotInfomation[1]?.STRSlotDate} ${timeFormate}`;
 							endTimeSecondFormate = `${getRescheduleSlotInfomation[1]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 						setRescheduleSlotInformation(
@@ -748,13 +756,13 @@ const TalentList = ({
 								if (index === 1) {
 									return {
 										...item,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 										STREndTime: endTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setRescheduleSlotDate(
@@ -764,32 +772,32 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 					}
 					break;
 
-				case 'slot3Date':
-					if (interviewType === 'schedule') {
+				case "slot3Date":
+					if (interviewType === "schedule") {
 						if (
 							getScheduleSlotInfomation[2]?.STRStartTime &&
 							getScheduleSlotInfomation[2]?.STREndTime
 						) {
 							startTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[2]?.STRStartTime.slice(
-								10,
+								10
 							)}`;
 							endTimeFirstFormate = `${firstDateFormate}${getScheduleSlotInfomation[2]?.STREndTime?.slice(
-								10,
+								10
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getScheduleSlotInfomation[2]?.STRStartTime.slice(
-								11,
+								11
 							)}:00.0000`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getScheduleSlotInfomation[2]?.STREndTime.slice(11)}:00.0000`;
 						}
 						setScheduleSlotInformation(
@@ -801,13 +809,13 @@ const TalentList = ({
 										STRSlotDate: firstDateFormate || null,
 										STRStartTime: startTimeFirstFormate || null,
 										STREndTime: endTimeFirstFormate || null,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setScheduleSlotDate(
@@ -817,30 +825,30 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
-					} else if (interviewType === 'reschedule') {
+					} else if (interviewType === "reschedule") {
 						if (
 							getRescheduleSlotInfomation[2]?.STRStartTime &&
 							getRescheduleSlotInfomation[2]?.STREndTime
 						) {
 							startTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[2]?.STRStartTime.slice(
-								10,
+								10
 							)}`;
 							endTimeFirstFormate = `${firstDateFormate}${getRescheduleSlotInfomation[2]?.STREndTime?.slice(
-								10,
+								10
 							)}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getRescheduleSlotInfomation[2]?.STRStartTime.slice(
-								11,
+								11
 							)}:00.0000`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${getRescheduleSlotInfomation[2]?.STREndTime.slice(
-								11,
+								11
 							)}:00.0000`;
 						}
 						setRescheduleSlotInformation(
@@ -852,13 +860,13 @@ const TalentList = ({
 										STRSlotDate: firstDateFormate || null,
 										STRStartTime: startTimeFirstFormate || null,
 										STREndTime: endTimeFirstFormate || null,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setRescheduleSlotDate(
@@ -868,12 +876,12 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 					}
 					break;
-				case 'slot3StartTime':
-					if (interviewType === 'schedule') {
+				case "slot3StartTime":
+					if (interviewType === "schedule") {
 						if (
 							getScheduleSlotInfomation[2]?.STRSlotDate &&
 							getScheduleSlotInfomation[2]?.SlotDate
@@ -881,13 +889,13 @@ const TalentList = ({
 							startTimeFirstFormate = `${getScheduleSlotInfomation[2]?.STRSlotDate} ${timeFormate}`;
 							startTimeSecondFormate = `${getScheduleSlotInfomation[2]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 						setScheduleSlotInformation(
@@ -895,13 +903,13 @@ const TalentList = ({
 								if (index === 2) {
 									return {
 										...item,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
 										STRStartTime: startTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setScheduleSlotDate(
@@ -911,9 +919,9 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
-					} else if (interviewType === 'reschedule') {
+					} else if (interviewType === "reschedule") {
 						if (
 							getRescheduleSlotInfomation[2]?.STRSlotDate &&
 							getRescheduleSlotInfomation[2]?.SlotDate
@@ -921,13 +929,13 @@ const TalentList = ({
 							startTimeFirstFormate = `${getRescheduleSlotInfomation[2]?.STRSlotDate} ${timeFormate}`;
 							startTimeSecondFormate = `${getRescheduleSlotInfomation[2]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							startTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							startTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 						setRescheduleSlotInformation(
@@ -935,13 +943,13 @@ const TalentList = ({
 								if (index === 2) {
 									return {
 										...item,
-										StartTime: startTimeFirstFormate?.split(' ')[1] || null,
+										StartTime: startTimeFirstFormate?.split(" ")[1] || null,
 										STRStartTime: startTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setRescheduleSlotDate(
@@ -951,12 +959,12 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 					}
 					break;
-				case 'slot3EndTime':
-					if (interviewType === 'schedule') {
+				case "slot3EndTime":
+					if (interviewType === "schedule") {
 						if (
 							getScheduleSlotInfomation[2]?.STRSlotDate &&
 							getScheduleSlotInfomation[2]?.SlotDate
@@ -964,13 +972,13 @@ const TalentList = ({
 							endTimeFirstFormate = `${getScheduleSlotInfomation[2]?.STRSlotDate} ${timeFormate}`;
 							endTimeSecondFormate = `${getScheduleSlotInfomation[2]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 						setScheduleSlotInformation(
@@ -978,13 +986,13 @@ const TalentList = ({
 								if (index === 2) {
 									return {
 										...item,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 										STREndTime: endTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 						setScheduleSlotDate(
 							getScheduleSlotDate.map((item, index) => {
@@ -993,9 +1001,9 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
-					} else if (interviewType === 'reschedule') {
+					} else if (interviewType === "reschedule") {
 						if (
 							getRescheduleSlotInfomation[2]?.STRSlotDate &&
 							getRescheduleSlotInfomation[2]?.SlotDate
@@ -1003,13 +1011,13 @@ const TalentList = ({
 							endTimeFirstFormate = `${getRescheduleSlotInfomation[2]?.STRSlotDate} ${timeFormate}`;
 							endTimeSecondFormate = `${getRescheduleSlotInfomation[2]?.SlotDate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						} else {
 							endTimeFirstFormate = `${firstDateFormate} ${timeFormate}`;
 							endTimeSecondFormate = `${secondDateFormate.slice(
 								0,
-								11,
+								11
 							)}${timeFormate}:00.0000`;
 						}
 						setRescheduleSlotInformation(
@@ -1017,13 +1025,13 @@ const TalentList = ({
 								if (index === 2) {
 									return {
 										...item,
-										EndTime: endTimeFirstFormate?.split(' ')[1] || null,
+										EndTime: endTimeFirstFormate?.split(" ")[1] || null,
 										STREndTime: endTimeFirstFormate || null,
 									};
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 
 						setRescheduleSlotDate(
@@ -1033,12 +1041,12 @@ const TalentList = ({
 								} else {
 									return item;
 								}
-							}),
+							})
 						);
 					}
 					break;
-				case 'initial':
-					if (interviewType === 'schedule') {
+				case "initial":
+					if (interviewType === "schedule") {
 						setScheduleSlotInformation(
 							getScheduleSlotInfomation.map((item, index) => {
 								return {
@@ -1050,9 +1058,9 @@ const TalentList = ({
 									EndTime: null,
 									STREndTime: null,
 								};
-							}),
+							})
 						);
-					} else if (interviewType === 'reschedule') {
+					} else if (interviewType === "reschedule") {
 						setRescheduleSlotInformation(
 							getRescheduleSlotInfomation.map((item, index) => {
 								return {
@@ -1064,7 +1072,7 @@ const TalentList = ({
 									EndTime: null,
 									STREndTime: null,
 								};
-							}),
+							})
 						);
 					}
 					break;
@@ -1077,7 +1085,7 @@ const TalentList = ({
 			getRescheduleSlotInfomation,
 			getScheduleSlotDate,
 			getScheduleSlotInfomation,
-		],
+		]
 	);
 	const [getBillRateInfo, setBillRateInfo] = useState({});
 
@@ -1086,16 +1094,16 @@ const TalentList = ({
 			hrID: hrId,
 			BillRate: (filterTalentID?.BillRate).slice(
 				1,
-				(filterTalentID?.BillRate).indexOf('U'),
+				(filterTalentID?.BillRate).indexOf("U")
 			).trim(),
 			PayRate: (filterTalentID?.PayRate).slice(
 				1,
-				(filterTalentID?.PayRate).indexOf('U'),
+				(filterTalentID?.PayRate).indexOf("U")
 			).trim(),
 			ContactPriorityID: filterTalentID?.ContactPriorityID,
 		};
 		const response = await hiringRequestDAO.getHRCostDetalisRequestDAO(
-			hrCostData,
+			hrCostData
 		);
 		if (response.responseBody.statusCode === HTTPStatusCode.OK) {
 			setBillRateInfo(response?.responseBody?.details);
@@ -1107,27 +1115,6 @@ const TalentList = ({
 		hrId,
 	]);
 
-	// const updateHRcostHandler = useCallback(async () => {
-	// 	const calculateHRData = {
-	// 		ContactPriorityID: filterTalentID?.ContactPriorityID,
-	// 		Hr_Cost: getBillRateInfo?.hrCost,
-	// 		HR_Percentage: watch('nrMarginPercentage'),
-	// 		hrID: hrId,
-	// 	};
-	// 	const response = await hiringRequestDAO.calculateHRCostRequestDAO(
-	// 		calculateHRData,
-	// 	);
-	// 	console.log(response, 'responsefhfgsdfjjh');
-	// 	if (response.responseBody.statusCode === HTTPStatusCode.OK) {
-	// 		setValue('hrCost', response?.responseBody?.details);
-	// 	}
-	// }, [
-	// 	filterTalentID?.ContactPriorityID,
-	// 	getBillRateInfo?.hrCost,
-	// 	hrId,
-	// 	setValue,
-	// 	watch,
-	// ]);
 
 	useEffect(() => {
 		if (Object.keys(filterTalentID).length > 0 && editBillRate) {
@@ -1137,47 +1124,46 @@ const TalentList = ({
 
 	useEffect(() => {
 		if (Object.keys(getBillRateInfo).length > 0 && editBillRate) {
-			setValue('nrMarginPercentage', getBillRateInfo?.hR_Percentage);
+			setValue("nrMarginPercentage", getBillRateInfo?.hR_Percentage);
 		}
 	}, [getBillRateInfo, editBillRate, setValue]);
 	useEffect(() => {
 		if (Object.keys(getBillRateInfo).length > 0 && editBillRate) {
-			setValue('hrCost', getBillRateInfo?.hrCost);
+			setValue("hrCost", getBillRateInfo?.hrCost);
 		}
 	}, [getBillRateInfo, editBillRate, setValue]);
 
 	useEffect(() => {
-		resetField('talentFees');
+		resetField("talentFees");
 	}, [editPayRate, resetField]);
 
 	useEffect(() => {
 		if (Object.keys(filterTalentID).length > 0 && editPayRate) {
 			setValue(
-				'talentFees',
+				"talentFees",
 				(filterTalentID?.PayRate).slice(
 					1,
-					(filterTalentID?.PayRate).indexOf('U'),
-				).trim(),
+					(filterTalentID?.PayRate).indexOf("U")
+				).trim()
 			);
 		}
 	}, [filterTalentID, editPayRate, setValue]);
 
-
 	const getInterviewStatus = useCallback(() => {
 		switch (filterTalentID?.InterviewStatus) {
-			case 'Feedback Submitted':
+			case "Feedback Submitted":
 				return 7;
-			case 'Interview Scheduled':
+			case "Interview Scheduled":
 				return 4;
-			case 'Interview in Process':
+			case "Interview in Process":
 				return 5;
-			case 'Interview Completed':
+			case "Interview Completed":
 				return 6;
-			case 'Interview Rescheduled':
+			case "Interview Rescheduled":
 				return 8;
-			case 'Cancelled':
+			case "Cancelled":
 				return 3;
-			case 'Slot Given':
+			case "Slot Given":
 				return 1;
 			default:
 		}
@@ -1186,7 +1172,7 @@ const TalentList = ({
 	const filterTalentCTAs = useMemo(
 		() =>
 			talentCTA?.filter((item) => item?.TalentID === talentIndex)?.[0] || {},
-		[talentCTA, talentIndex],
+		[talentCTA, talentIndex]
 	);
 
 	useEffect(() => {
@@ -1214,25 +1200,16 @@ const TalentList = ({
 
 	// Profile Log
 
-	const [getHRDetailsItem, setGetHRDetailItem] = useState([])
 
-	const viewProfileInfo = async (start = null, end = null) => {
-		let response = await hiringRequestDAO.getTalentProfileLogDAO({
-			talentid: getHRDetailsItem?.TalentID,
-			fromDate: start ? new Date(start).toLocaleDateString('en-US') : null,
-			toDate: end ? new Date(end).toLocaleDateString('en-US') : null,
-		});
 
-		setProfileLog(response && response?.responseBody?.details);
-	}
 
 	// For Add / Remove Class
-	const [profileShared, setProfileShared] = useState([])
-	const [showProfileShared, setShowProfileShared] = useState(false)
-	const [profileRejected, setProfileRejected] = useState([])
-	const [showProfileRejectClass, setShowProfileRejectClass] = useState(false)
-	const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([])
-	const [feedbackReceivedClass, setFeedBackReceivedClass] = useState(false)
+	const [profileShared, setProfileShared] = useState([]);
+	const [showProfileShared, setShowProfileShared] = useState(false);
+	const [profileRejected, setProfileRejected] = useState([]);
+	const [showProfileRejectClass, setShowProfileRejectClass] = useState(false);
+	const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([]);
+	const [feedbackReceivedClass, setFeedBackReceivedClass] = useState(false);
 
 	return (
 		<div>
@@ -1243,64 +1220,67 @@ const TalentList = ({
 				dataSource={talentDetail && talentDetail}
 				pagination={{
 					className: TalentListStyle.paginate,
-					size: 'small',
+					size: "small",
 					pageSize: 2,
-					position: 'top',
+					position: "top",
 					onChange: (page, pageSize) => {
 						setPageIndex(pageIndex + 1);
 					},
 				}}
 				renderItem={(item, listIndex) => {
-					setGetHRDetailItem(item)
+					// setGetHRDetailItem(item?.TalentID);
 					return (
-						<div
-							key={item?.Name}
-							id={item?.TalentID}>
+						<div key={item?.Name} id={item?.TalentID}>
 							<div className={TalentListStyle.talentCard}>
 								<div className={TalentListStyle.talentCardBody}>
 									<div className={TalentListStyle.partWise}>
 										<div
 											style={{
-												marginBottom: '10px',
-												display: 'flex',
-											}}>
+												marginBottom: "10px",
+												display: "flex",
+											}}
+										>
 											<div
 												style={{
-													display: 'flex',
-													justifyContent: 'space-between',
-													alignItems: 'center',
-												}}>
+													display: "flex",
+													justifyContent: "space-between",
+													alignItems: "center",
+												}}
+											>
 												<img
 													src={
 														item?.ProfileURL
 															? item?.ProfileURL
-															: 'https://www.w3schools.com/howto/img_avatar.png'
+															: "https://www.w3schools.com/howto/img_avatar.png"
 													}
 													className={TalentListStyle.avatar}
 													alt="avatar"
 												/>
 												<div
 													style={{
-														position: 'absolute',
-														marginLeft: '50px',
-														top: '-30px',
-													}}>
+														position: "absolute",
+														marginLeft: "50px",
+														top: "-30px",
+													}}
+												>
 													{All_Hiring_Request_Utils.GETTALENTSTATUS(
 														item?.ProfileStatusCode,
-														item?.Status,
+														item?.Status
 													)}
 												</div>
 												<div
 													style={{
-														marginLeft: '50px',
-														marginTop: '20px',
-														fontSize: '.7vw',
-													}}>
+														marginLeft: "50px",
+														marginTop: "20px",
+														fontSize: ".7vw",
+													}}
+												>
 													<div
 														style={{
-															textDecoration: 'underline',
-															fontWeight: '600',
-														}}>
+															textDecoration: "underline",
+															fontWeight: "600",
+														}}
+													>
 														{item?.Name}
 													</div>
 													<div>{item?.TalentRole}</div>
@@ -1308,9 +1288,9 @@ const TalentList = ({
 											</div>
 										</div>
 
-										<div style={{ cursor: 'pointer' }}>
+										<div style={{ cursor: "pointer" }}>
 											<Dropdown
-												trigger={['click']}
+												trigger={["click"]}
 												placement="bottom"
 												overlay={
 													<Menu>
@@ -1319,91 +1299,94 @@ const TalentList = ({
 															onClick={() => {
 																setProfileLogModal(true); // TODO:-
 																setTalentIndex(item?.TalentID);
-																viewProfileInfo()
-															}}>
+																// viewProfileInfo();
+															}}
+														>
 															View Profile Log
 														</Menu.Item>
 														<Divider
 															style={{
-																margin: '3px 0',
+																margin: "3px 0",
 															}}
 														/>
 														<Menu.Item key={1}>Remove Profile</Menu.Item>
 													</Menu>
-												}>
-												<BsThreeDots style={{ fontSize: '1.5rem' }} />
+												}
+											>
+												<BsThreeDots style={{ fontSize: "1.5rem" }} />
 											</Dropdown>
 										</div>
 									</div>
 
 									<div className={TalentListStyle.profileURL}>
 										<span>profile URL:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500' }}>
+										<span style={{ fontWeight: "500" }}>
 											{item?.ATSTalentLiveURL ? (
 												<a
-													style={{ textDecoration: 'underline' }}
+													style={{ textDecoration: "underline" }}
 													href={item?.ATSTalentLiveURL}
 													target="_blank"
-													rel="noreferrer">
+													rel="noreferrer"
+												>
 													Click here
 												</a>
 											) : (
-												'NA'
+												"NA"
 											)}
 										</span>
 									</div>
 									<div className={TalentListStyle.experience}>
 										<span>Experience:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500' }}>
+										<span style={{ fontWeight: "500" }}>
 											{_isNull(item?.TotalExpYears)
-												? 'NA'
-												: item?.TotalExpYears + ' years'}
+												? "NA"
+												: item?.TotalExpYears + " years"}
 										</span>
 									</div>
 									<div className={TalentListStyle.noticePeriod}>
 										<span>Notice Period:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500' }}>
-											{_isNull(item?.NoticePeriod) ? 'NA' : item?.NoticePeriod}
+										<span style={{ fontWeight: "500" }}>
+											{_isNull(item?.NoticePeriod) ? "NA" : item?.NoticePeriod}
 										</span>
 									</div>
 									<div className={TalentListStyle.agreedShift}>
 										<span>Agreed Shift:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500' }}>
+										<span style={{ fontWeight: "500" }}>
 											{_isNull(item?.TalentTimeZone)
-												? 'NA'
+												? "NA"
 												: item?.TalentTimeZone}
 										</span>
 									</div>
 									<div className={TalentListStyle.availability}>
 										<span>Preferred Availability:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500' }}>
+										<span style={{ fontWeight: "500" }}>
 											{_isNull(item?.PreferredAvailability)
-												? 'NA'
+												? "NA"
 												: item?.PreferredAvailability}
 										</span>
 									</div>
 									<div className={TalentListStyle.profileSource}>
 										<span>Profile Source:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500' }}>
-											{_isNull(item?.TalentSource) ? 'NA' : item?.TalentSource}
+										<span style={{ fontWeight: "500" }}>
+											{_isNull(item?.TalentSource) ? "NA" : item?.TalentSource}
 										</span>
 									</div>
 									<Divider
 										style={{
-											margin: '10px 0',
+											margin: "10px 0",
 										}}
 									/>
 									<div className={TalentListStyle.interviewStatus}>
 										<span>Interview Status:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500', cursor: 'pointer' }}>
-											{item?.InterviewStatus === ''
-												? 'NA'
+										<span style={{ fontWeight: "500", cursor: "pointer" }}>
+											{item?.InterviewStatus === ""
+												? "NA"
 												: item?.InterviewStatus}
 										</span>
 									</div>
 									<Divider
 										style={{
-											margin: '10px 0',
+											margin: "10px 0",
 										}}
 									/>
 
@@ -1412,8 +1395,8 @@ const TalentList = ({
 											<div className={TalentListStyle.payRate}>
 												<div>
 													<span>Bill Rate:</span>&nbsp;&nbsp;
-													<span style={{ fontWeight: '500' }}>
-														{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
+													<span style={{ fontWeight: "500" }}>
+														{_isNull(item?.BillRate) ? "NA" : item?.BillRate}
 													</span>
 												</div>
 												<span
@@ -1423,10 +1406,11 @@ const TalentList = ({
 														setEditBillRate(true);
 													}}
 													style={{
-														textDecoration: 'underline',
+														textDecoration: "underline",
 														color: `var(--background-color-ebony)`,
-														cursor: 'pointer',
-													}}>
+														cursor: "pointer",
+													}}
+												>
 													Edit
 												</span>
 											</div>
@@ -1436,8 +1420,8 @@ const TalentList = ({
 														Pay Rate:
 													</span>
 													&nbsp;&nbsp;
-													<span style={{ fontWeight: '500' }}>
-														{_isNull(item?.PayRate) ? 'NA' : item?.PayRate}
+													<span style={{ fontWeight: "500" }}>
+														{_isNull(item?.PayRate) ? "NA" : item?.PayRate}
 													</span>
 												</div>
 												<span
@@ -1446,18 +1430,19 @@ const TalentList = ({
 														setTalentIndex(item?.TalentID);
 													}}
 													style={{
-														textDecoration: 'underline',
+														textDecoration: "underline",
 														color: `var(--background-color-ebony)`,
-														cursor: 'pointer',
-													}}>
+														cursor: "pointer",
+													}}
+												>
 													Edit
 												</span>
 											</div>
 											<div className={TalentListStyle.nr}>
 												<div>
 													<span>NR:</span>&nbsp;&nbsp;
-													<span style={{ fontWeight: '500' }}>
-														{_isNull(item?.NR) ? 'NA' : item?.NR}
+													<span style={{ fontWeight: "500" }}>
+														{_isNull(item?.NR) ? "NA" : item?.NR}
 													</span>
 												</div>
 											</div>
@@ -1466,16 +1451,16 @@ const TalentList = ({
 										<>
 											<div className={TalentListStyle.billRate}>
 												<span>DP Amount:</span>&nbsp;&nbsp;
-												<span style={{ fontWeight: '500' }}>
-													{_isNull(item?.DPAmount) ? 'NA' : item?.DPAmount}
+												<span style={{ fontWeight: "500" }}>
+													{_isNull(item?.DPAmount) ? "NA" : item?.DPAmount}
 												</span>
 											</div>
 											<div className={TalentListStyle.payRate}>
 												<div>
 													<span>DP Percetange:</span>&nbsp;&nbsp;
-													<span style={{ fontWeight: '500' }}>
+													<span style={{ fontWeight: "500" }}>
 														{_isNull(item?.DPPercentage)
-															? 'NA'
+															? "NA"
 															: item?.DPPercentage}
 													</span>
 												</div>
@@ -1485,38 +1470,39 @@ const TalentList = ({
 
 									<Divider
 										style={{
-											margin: '10px 0',
+											margin: "10px 0",
 										}}
 									/>
 									<div className={TalentListStyle.interviewSlots}>
 										<span>Available Interview Slots:</span>&nbsp;&nbsp;
-										<span style={{ fontWeight: '500' }}>
+										<span style={{ fontWeight: "500" }}>
 											{inteviewSlotDetails?.[0]?.SlotList?.length === 0 ? (
-												'NA'
+												"NA"
 											) : (
 												<Dropdown
-													trigger={['click']}
+													trigger={["click"]}
 													placement="bottom"
 													overlay={
 														<Menu>
 															{hrUtils
 																?.formatInterviewSlots(
-																	inteviewSlotDetails[listIndex]?.SlotList,
+																	inteviewSlotDetails[listIndex]?.SlotList
 																)
 																?.map((item, index) => {
 																	return (
 																		<Menu.Item key={index}>
-																			{item?.label}a{' '}
+																			{item?.label}a{" "}
 																		</Menu.Item>
 																	);
 																})}
 														</Menu>
-													}>
+													}
+												>
 													<span>
 														<Space>
 															{
 																hrUtils?.formatInterviewSlots(
-																	inteviewSlotDetails[listIndex]?.SlotList,
+																	inteviewSlotDetails[listIndex]?.SlotList
 																)?.[0]?.label
 															}
 															<DownOutlined />
@@ -1529,23 +1515,24 @@ const TalentList = ({
 									{item?.Slotconfirmed && (
 										<div className={TalentListStyle.interviewSlots}>
 											<span>Slot Confirmed:</span>&nbsp;&nbsp;
-											<span style={{ fontWeight: '500' }}>
+											<span style={{ fontWeight: "500" }}>
 												{item?.Slotconfirmed}
 											</span>
 										</div>
 									)}
 									<Divider
 										style={{
-											margin: '10px 0',
+											margin: "10px 0",
 										}}
 									/>
 									{talentCTA[listIndex]?.cTAInfoList?.length > 0 && (
 										<div
 											style={{
-												position: 'absolute',
-												marginTop: '10px',
-												textAlign: 'start !important',
-											}}>
+												position: "absolute",
+												marginTop: "10px",
+												textAlign: "start !important",
+											}}
+										>
 											<HROperator
 												onClickHandler={() => setTalentIndex(item?.TalentID)}
 												title={talentCTA?.[listIndex]?.cTAInfoList[0]?.label}
@@ -1638,17 +1625,43 @@ const TalentList = ({
 			/>
 			{/** ============ MODAL FOR PROFILE LOG ================ */}
 
-			<Modal
-				width="992px"
-				centered
-				footer={null}
-				open={showProfileLogModal}
-				className="commonModalWrap"
-				// onOk={() => setVersantModal(false)}
-				onCancel={() => { setProfileLogModal(false); setProfileShared([]); setFeedbackReceivedDetails([]); setProfileRejected([]); setShowProfileShared(false); setShowProfileRejectClass(false); setFeedBackReceivedClass(false) }}>
+			{showProfileLogModal && (
+				<Modal
+					width="992px"
+					centered
+					footer={null}
+					open={showProfileLogModal}
+					className="commonModalWrap"
+					// onOk={() => setVersantModal(false)}
+					onCancel={() => {
+						setProfileLogModal(false);
+						setProfileShared([]);
+						setFeedbackReceivedDetails([]);
+						setProfileRejected([]);
+						setShowProfileShared(false);
+						setShowProfileRejectClass(false);
+						setFeedBackReceivedClass(false);
+					}}
+				>
+					<ProfileLogDetails
 
-				<ProfileLogDetails viewProfileInfo={viewProfileInfo} activeIndex={activeIndex} talentID={talentID} activeType={activeType} setActiveType={setActiveType} setActiveIndex={setActiveIndex} setEndDate={setEndDate} setProfileLog={setProfileLog} profileLog={profileLog} startDate={startDate} endDate={endDate} showProfileShared={showProfileShared} showProfileRejectClass={showProfileRejectClass} talentId={filterTalentID?.TalentID} />
-			</Modal>
+						activeIndex={activeIndex}
+						talentID={talentID}
+						activeType={activeType}
+						setActiveType={setActiveType}
+						setActiveIndex={setActiveIndex}
+						setEndDate={setEndDate}
+						setProfileLog={setProfileLog}
+						profileLog={profileLog}
+						startDate={startDate}
+						endDate={endDate}
+						showProfileShared={showProfileShared}
+						showProfileRejectClass={showProfileRejectClass}
+						talentId={filterTalentID?.TalentID}
+						talentInfo={filterTalentID}
+					/>
+				</Modal>
+			)}
 
 			{/** ============ MODAL FOR VERSANT SCORE ================ */}
 			<Modal
@@ -1657,77 +1670,87 @@ const TalentList = ({
 				footer={null}
 				open={showVersantModal}
 				// onOk={() => setVersantModal(false)}
-				onCancel={() => setVersantModal(false)}>
+				onCancel={() => setVersantModal(false)}
+			>
 				<h1>Versant Test Results</h1>
 				<div
 					style={{
 						// border: '1px solid red',
-						display: 'flex',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-						marginTop: '50px',
-					}}>
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
+						marginTop: "50px",
+					}}
+				>
 					<div
 						style={{
-							display: 'flex',
-							justifyContent: 'space-between',
-							alignItems: 'center',
-							width: '60%',
-							flexWrap: 'wrap',
-						}}>
+							display: "flex",
+							justifyContent: "space-between",
+							alignItems: "center",
+							width: "60%",
+							flexWrap: "wrap",
+						}}
+					>
 						<div
 							style={{
-								borderRadius: '8px',
+								borderRadius: "8px",
 								border: `1px solid var(--uplers-border-color)`,
-								padding: '10px 30px',
-							}}>
+								padding: "10px 30px",
+							}}
+						>
 							<span>Name: </span>
 							<span
 								style={{
 									fontWeight: 500,
-									textDecoration: 'underline',
-								}}>
+									textDecoration: "underline",
+								}}
+							>
 								{filterTalentID?.Name}
 							</span>
 						</div>
 						<div
 							style={{
-								borderRadius: '8px',
+								borderRadius: "8px",
 								border: `1px solid var(--uplers-border-color)`,
-								padding: '10px 30px',
-							}}>
+								padding: "10px 30px",
+							}}
+						>
 							<span>Date of Test:</span>
 							<span
 								style={{
 									fontWeight: 500,
-								}}>
+								}}
+							>
 								10/09/2022
 							</span>
 						</div>
 					</div>
 					<div
 						style={{
-							padding: '1px 10px',
-							borderRadius: '8px',
+							padding: "1px 10px",
+							borderRadius: "8px",
 							backgroundColor: `var(--uplers-grey)`,
-						}}>
+						}}
+					>
 						<ExportSVG />
 					</div>
 				</div>
 				<Divider />
 				<div
 					style={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}>
-					<div style={{ width: '50%' }}>
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
+					}}
+				>
+					<div style={{ width: "50%" }}>
 						<div
 							style={{
-								fontWeight: '500',
-								fontSize: '18px',
-								textAlign: 'center',
-							}}>
+								fontWeight: "500",
+								fontSize: "18px",
+								textAlign: "center",
+							}}
+						>
 							Overall GSE Score
 						</div>
 					</div>
@@ -1744,7 +1767,8 @@ const TalentList = ({
 					footer={null}
 					open={showReScheduleInterviewModal}
 					// onOk={() => setVersantModal(false)}
-					onCancel={() => setReScheduleInterviewModal(false)}>
+					onCancel={() => setReScheduleInterviewModal(false)}
+				>
 					<InterviewReschedule
 						callAPI={callAPI}
 						closeModal={() => setReScheduleInterviewModal(false)}
@@ -1777,7 +1801,8 @@ const TalentList = ({
 					footer={null}
 					open={showScheduleInterviewModal}
 					// onOk={() => setVersantModal(false)}
-					onCancel={() => setScheduleInterviewModal(false)}>
+					onCancel={() => setScheduleInterviewModal(false)}
+				>
 					<InterviewSchedule
 						callAPI={callAPI}
 						talentName={filterTalentID?.Name}
@@ -1806,7 +1831,8 @@ const TalentList = ({
 				centered
 				footer={false}
 				open={interviewFeedback}
-				onCancel={() => setInterviewFeedback(false)}>
+				onCancel={() => setInterviewFeedback(false)}
+			>
 				<InterviewFeedback
 					hrId={hrId}
 					clientDetail={clientDetail}
@@ -1829,7 +1855,8 @@ const TalentList = ({
 				footer={null}
 				open={showTalentAcceptance}
 				// onOk={() => setVersantModal(false)}
-				onCancel={() => setTalentAcceptance(false)}>
+				onCancel={() => setTalentAcceptance(false)}
+			>
 				<TalentAcceptance
 					clientDetail={clientDetail}
 					callAPI={callAPI}
@@ -1850,7 +1877,8 @@ const TalentList = ({
 				centered
 				footer={null}
 				open={showTalentStatus}
-				onCancel={() => setTalentStatus(false)}>
+				onCancel={() => setTalentStatus(false)}
+			>
 				<TalentStatus
 					talentInfo={filterTalentID}
 					hrId={hrId}
@@ -1867,7 +1895,8 @@ const TalentList = ({
 				footer={null}
 				open={showInterviewStatus}
 				// onOk={() => setVersantModal(false)}
-				onCancel={() => setInterviewStatus(false)}>
+				onCancel={() => setInterviewStatus(false)}
+			>
 				<InterviewStatus
 					hrId={hrId}
 					talentInfo={filterTalentID}
@@ -1883,7 +1912,8 @@ const TalentList = ({
 				centered
 				footer={null}
 				open={updateOnboardClientModal}
-				onCancel={() => setOnboardClientModal(false)}>
+				onCancel={() => setOnboardClientModal(false)}
+			>
 				<UpdateClientOnBoardStatus
 					talentInfo={filterTalentID}
 					hrId={hrId}
@@ -1899,7 +1929,8 @@ const TalentList = ({
 				centered
 				footer={null}
 				open={updateOnboardTalentModal}
-				onCancel={() => setOnboardTalentModal(false)}>
+				onCancel={() => setOnboardTalentModal(false)}
+			>
 				<UpdateTalentOnboardStatus
 					talentInfo={filterTalentID}
 					hrId={hrId}
@@ -1915,7 +1946,8 @@ const TalentList = ({
 				centered
 				footer={null}
 				open={updateLegalClientOnboardModal}
-				onCancel={() => setLegalClientOnboardModal(false)}>
+				onCancel={() => setLegalClientOnboardModal(false)}
+			>
 				<UpdateLegalClientOnboardStatus
 					talentInfo={filterTalentID}
 					hrId={hrId}
@@ -1932,7 +1964,8 @@ const TalentList = ({
 					centered
 					footer={null}
 					open={updateLegalTalentOnboardModal}
-					onCancel={() => setLegalTalentOnboardModal(false)}>
+					onCancel={() => setLegalTalentOnboardModal(false)}
+				>
 					<UpdateLegalTalentOnboardStatus
 						talentInfo={filterTalentID}
 						hrId={hrId}
@@ -1951,7 +1984,8 @@ const TalentList = ({
 					footer={null}
 					open={editBillRate}
 					className="statusModalWrap"
-					onCancel={() => setEditBillRate(false)}>
+					onCancel={() => setEditBillRate(false)}
+				>
 					<EditBillRate
 						callAPI={callAPI}
 						hrId={hrId}
@@ -1977,7 +2011,8 @@ const TalentList = ({
 					footer={null}
 					open={editPayRate}
 					className="statusModalWrap"
-					onCancel={() => setEditPayRate(false)}>
+					onCancel={() => setEditPayRate(false)}
+				>
 					<EditPayRate
 						talentInfo={filterTalentID}
 						onCancel={() => setEditPayRate(false)}
@@ -1998,7 +2033,8 @@ const TalentList = ({
 				footer={null}
 				open={updateTalentKickOffModal}
 				className="statusModalWrap"
-				onCancel={() => setTalentKickOffModal(false)}>
+				onCancel={() => setTalentKickOffModal(false)}
+			>
 				<UpdateKickOffOnboardStatus
 					talentInfo={filterTalentID}
 					hrId={hrId}
@@ -2014,7 +2050,8 @@ const TalentList = ({
 				centered
 				footer={null}
 				open={replaceTalentModal}
-				onCancel={() => setReplaceTalentModal(false)}>
+				onCancel={() => setReplaceTalentModal(false)}
+			>
 				<EngagementReplaceTalent
 					talentInfo={filterTalentID}
 					hrId={hrId}
@@ -2032,7 +2069,8 @@ const TalentList = ({
 				footer={null}
 				open={getConfirmSlotModal}
 				className="cloneHRModal"
-				onCancel={() => setConfirmSlotModal(false)}>
+				onCancel={() => setConfirmSlotModal(false)}
+			>
 				<ConfirmSlotModal
 					getConfirmSlotDetails={getConfirmSlotDetails}
 					onCancel={() => setConfirmSlotModal(false)}
