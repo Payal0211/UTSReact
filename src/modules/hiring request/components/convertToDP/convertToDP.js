@@ -305,14 +305,14 @@ const ConvertToDP = ({
 				footer={null}
 				className="convert-dp-modal-wrap"
 				onCancel={() => setIsConvertToDP(false)}>
-				<div className="convert-dp-modal">
-					<label className={ConvertToDPStyle.matchmakingLabel}>
-						Convert to Direct Placement
-					</label>
-					<p className={ConvertToDPStyle.test}>
-						Please add necessary details for converting this HR from Contractual
-						to Direct Placement
-					</p>
+				<div className={ConvertToDPStyle.convertDPModal}>
+					<div className={ConvertToDPStyle.convertModalTitle}>
+						<h2>Convert to Direct Placement</h2>
+						<p>
+							Please add necessary details for converting this HR from
+							Contractual to Direct Placement
+						</p>
+					</div>
 
 					{isLoading ? (
 						<div className={ConvertToDPStyle.contractualLoader}>

@@ -55,6 +55,9 @@
   width: 209px;
   position: relative;
 }
+.profileCalendarFilter button [class*="react-datepicker__navigation-icon"]{
+  top: 7px;
+}
 .profileCalendarFilter svg {
   width: 16px;
   height: 16px;
