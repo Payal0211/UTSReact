@@ -41,6 +41,7 @@ import ProfileLogStyle from './profileLog.module.css';
 import { useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import ProfileLogDetails from '../profileLogDetails/profileLog';
 
 const TalentList = ({
 	talentCTA,
@@ -1227,7 +1228,6 @@ const TalentList = ({
 	}
 
 	// For Add / Remove Class
-
 	const [profileShared, setProfileShared] = useState([])
 	const [showProfileShared, setShowProfileShared] = useState(false)
 	const [profileRejected, setProfileRejected] = useState([])
@@ -1238,6 +1238,7 @@ const TalentList = ({
 	const [selectForDetails, setSelectForDetails] = useState([])
 	const [startDateDetails, setStartDateDetails] = useState()
 	const [endDateDetails, setEndDateDetails] = useState()
+	const [typeIdPayload,setTypeIdPayload] = useState()
 
 	const profileLogBox = async (start = null, end = null) => {
 		setShowProfileShared(true)
@@ -1256,6 +1257,7 @@ const TalentList = ({
 		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
 			profileObj,
 		);
+		setTypeIdPayload(ProfileLog.PROFILE_SHARED)
 		setProfileShared(response)
 	}
 
@@ -1275,6 +1277,7 @@ const TalentList = ({
 		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
 			profileReject,
 		);
+		setTypeIdPayload(ProfileLog.REJECTED)
 		setProfileRejected(response?.responseBody?.details)
 	}
 
@@ -1295,6 +1298,7 @@ const TalentList = ({
 		}
 		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(feedbackReceivedObj)
 		setFeedbackReceivedDetails(response?.responseBody?.details)
+		setTypeIdPayload(ProfileLog.FEEDBACK)
 	}
 
 
@@ -1310,7 +1314,9 @@ const TalentList = ({
 		}
 		const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(selectForObj)
 		setSelectForDetails(response?.responseBody?.details)
+		setTypeIdPayload(ProfileLog.SELECTED)
 	}
+
 
 	const onProfileLogClickHandler = useCallback(
 		async (typeID, index, type, start = null, end = null, profileLog) => {
@@ -1323,7 +1329,7 @@ const TalentList = ({
 
 			let profileObj = {
 				talentID: filterTalentID?.TalentID,
-				typeID: ProfileLog?.SELECTED,
+				typeID: typeIdPayload,
 				fromDate: !!start && new Date(start).toLocaleDateString('en-US'),
 				toDate: !!end && new Date(end).toLocaleDateString('en-US'),
 			};
@@ -1340,30 +1346,8 @@ const TalentList = ({
 				setProfileLog([]);
 			}
 		},
-		[talentID, filterTalentID?.TalentID],
+		[talentID, filterTalentID?.TalentID,typeIdPayload],
 	);
-
-	const onCalenderFilter = useCallback(
-		(dates) => {
-			const [start, end] = dates;
-			setStartDate(start);
-			setEndDate(end);
-			if (start && end) {
-				viewProfileInfo(start, end)
-				onProfileLogClickHandler(typeId, activeIndex, activeType, start, end);
-			}
-		},
-		[activeIndex, activeType, onProfileLogClickHandler, typeId],
-	);
-
-	const rightArrowClick = () => {
-
-		feedbackReceived()
-
-		// profileRejectedDetails()
-
-	}
-
 
 	return (
 		<div>
@@ -1778,7 +1762,7 @@ const TalentList = ({
 				// onOk={() => setVersantModal(false)}
 				onCancel={() => { setProfileLogModal(false); setProfileShared([]); setFeedbackReceivedDetails([]); setProfileRejected([]); setShowProfileShared(false); setShowProfileRejectClass(false); setFeedBackReceivedClass(false) }}>
 
-				<div className={ProfileLogStyle.modalTitle}>
+				{/* <div className={ProfileLogStyle.modalTitle}>
 					<h2>Profile Log</h2>
 				</div>
 
@@ -2048,7 +2032,8 @@ const TalentList = ({
 							</div>
 						)}
 					</>
-				)}
+				)} */}
+				<ProfileLogDetails selectForClass = {selectForClass}  viewProfileInfo = {viewProfileInfo}  selectFor={selectFor} activeIndex = {activeIndex}talentID= {talentID}   activeType = {activeType} setActiveType = {setActiveType}setActiveIndex = {setActiveIndex}  setEndDate = {setEndDate}  setProfileLog = {setProfileLog}   profileLog = {profileLog} startDate = {startDate}  endDate = {endDate} showProfileShared={showProfileShared} feedbackReceivedClass={feedbackReceivedClass} feedbackReceived={feedbackReceived} showProfileRejectClass = {showProfileRejectClass} profileRejectedDetails={profileRejectedDetails}talentId = {filterTalentID?.TalentID}/>
 			</Modal>
 
 			{/** ============ MODAL FOR VERSANT SCORE ================ */}
