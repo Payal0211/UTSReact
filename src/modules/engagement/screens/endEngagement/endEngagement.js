@@ -95,7 +95,11 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 			});
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setEndEngagementDetails(response?.responseBody?.details)
-			// setValue("lastWorkingDate",moment(response?.responseBody?.details?.contractEndDate).format("MM/DD/YYYY"))
+			let dateString = response?.responseBody?.details?.contractEndDate
+			let convertedDate = moment(dateString,'DD/MM/YYYY')
+
+			const formattedDate = convertedDate?.format('YYYY-MM-DDTHH:mm:ss');
+			setValue("lastWorkingDate",new Date(formattedDate));
 			/* let updatedDate = new Date(
 				new Date(
 					response?.responseBody?.details?.contractEndDate,
@@ -191,10 +195,8 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 										selected={watch('lastWorkingDate')}
 										onChange={(date) => {
 											setValue('lastWorkingDate', date);
-											console.log(date,"date");
 										}}
 										placeholderText="Contract End Date"
-										dateFormat="MM/DD/YYYY"
 									/>
 								)}
 								name="lastWorkingDate"
