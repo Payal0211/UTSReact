@@ -1393,14 +1393,27 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-									<div className={TalentListStyle.interviewStatus}>
-										<span>Interview Status:</span>&nbsp;&nbsp;
+									<div className={TalentListStyle.payRate}>
+										<div>
+											<span>Interview Status:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500', cursor: 'pointer' }}>
+												{item?.InterviewStatus === ''
+													? 'NA'
+													: item?.InterviewStatus}
+											</span>
+										</div>
 										<span
-											style={{ fontWeight: '500', cursor: 'pointer' }}
-											onClick={() => setShowFeedback(true)}>
-											{item?.InterviewStatus === ''
-												? 'NA'
-												: item?.InterviewStatus}
+											onClick={() => {
+												setTalentIndex(item?.TalentID);
+												setShowFeedback(true);
+											}}
+											style={{
+												textDecoration: 'underline',
+												color: `var(--background-color-ebony)`,
+												cursor: 'pointer',
+											}}>
+											{' '}
+											View
 										</span>
 									</div>
 									<Divider
@@ -1421,7 +1434,6 @@ const TalentList = ({
 												</div>
 												<span
 													onClick={() => {
-														// setEDITBRPRModal(true);
 														setTalentIndex(item?.TalentID);
 														setEditBillRate(true);
 													}}
@@ -2241,6 +2253,7 @@ const TalentList = ({
 						onCancel={() => setShowFeedback(false)}
 						hrId={hrId}
 						callAPI={callAPI}
+						clientDetail={clientDetail}
 						talentInfo={filterTalentID}
 					/>
 				</Modal>

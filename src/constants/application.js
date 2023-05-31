@@ -134,6 +134,10 @@ export class HRCTA {
 	static SHARE_PROFILE = 'Share a Profile';
 	static ADD_NOTES = 'Add Notes';
 }
+export class InterviewFeedbackStatus {
+	static HIRED = 'Hired';
+	static REJECTED = 'Rejected';
+}
 export class InputType {
 	static TEXT = 'text';
 	static NUMBER = 'number';
