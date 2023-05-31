@@ -100,11 +100,29 @@ const InterviewReschedule = ({
 			let response = await hiringRequestDAO.getReSchduleInterviewInformation(
 				reScheduleData,
 			);
-			if (response.statusCode === HTTPStatusCode.OK) {
-				message.success('Interview rescheduled successfully');
+
+			if (response?.statusCode === HTTPStatusCode.OK) {
 				setLoading(false);
-				closeModal();
-				callAPI(hrId);
+				messageAPI.open(
+					{
+						type: 'success',
+						content: 'Interview rescheduled successfully',
+					},
+					1000,
+				);
+				setTimeout(() => {
+					callAPI(hrId);
+					closeModal();
+				}, 1000);
+			} else {
+				setLoading(false);
+				messageAPI.open(
+					{
+						type: 'error',
+						content: 'Something went wrong',
+					},
+					1000,
+				);
 			}
 		},
 
@@ -115,6 +133,7 @@ const InterviewReschedule = ({
 			getRescheduleSlotInfomation,
 			hiringRequestNumber,
 			hrId,
+			messageAPI,
 			reScheduleRadio,
 			reScheduleSlotRadio,
 			talentInfo?.ContactId,
@@ -135,7 +154,7 @@ const InterviewReschedule = ({
 			<div className={InterviewScheduleStyle.interviewModalTitle}>
 				<h2>Reschedule Interview</h2>
 			</div>
-			{/* {{ contextHolder }} */}
+			{contextHolder}
 			<div className={InterviewScheduleStyle.panelBody}>
 				<div className={InterviewScheduleStyle.rightPane}>
 					<div className={InterviewScheduleStyle.row}>
@@ -637,9 +656,7 @@ const InterviewReschedule = ({
 									Save
 								</button>
 								<button
-									onClick={() => {
-										closeModal();
-									}}
+									onClick={closeModal}
 									className={InterviewScheduleStyle.btn}>
 									Cancel
 								</button>

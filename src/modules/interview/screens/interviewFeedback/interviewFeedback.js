@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import InterviewScheduleStyle from '../../interviewStyle.module.css';
 import { interviewUtils } from 'modules/interview/interviewUtils';
 import { InputType } from 'constants/application';
-import { Checkbox, Divider, Radio } from 'antd';
+import { Checkbox, Divider, Radio, message } from 'antd';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import { useForm } from 'react-hook-form';
 import { InterviewDAO } from 'core/interview/interviewDAO';
@@ -39,6 +39,7 @@ const InterviewFeedback = ({
 		setValue,
 		formState: { errors },
 	} = useForm();
+	const [messageAPI, contextHolder] = message.useMessage();
 	const [radioValue1, setRadioValue1] = useState('Hire');
 	const [radioValue2, setRadioValue2] = useState('EE (Exceeds Expectation)');
 	const [radioValue3, setRadioValue3] = useState('EE (Exceeds Expectation)');
@@ -98,8 +99,24 @@ const InterviewFeedback = ({
 
 				if (response?.statusCode === HTTPStatusCode.OK) {
 					setIsLoading(false);
-					closeModal();
-					callAPI(hrId);
+					messageAPI.open(
+						{
+							type: 'success',
+							content: 'Feedback submitted successfully',
+						},
+						1000,
+					);
+					setTimeout(() => {
+						callAPI(hrId);
+						closeModal();
+					}, 1000);
+				} else {
+					setIsLoading(false);
+					setIsLoading(false);
+					messageAPI.open({
+						type: 'error',
+						content: response?.responseBody,
+					});
 				}
 			}
 		},
@@ -109,6 +126,7 @@ const InterviewFeedback = ({
 			hrId,
 			isAnotherRound,
 			isClientNotification,
+			messageAPI,
 			radioValue1,
 			radioValue2,
 			radioValue3,
@@ -168,6 +186,7 @@ const InterviewFeedback = ({
 		/>
 	) : (
 		<div className={InterviewScheduleStyle.interviewContainer}>
+			{contextHolder}
 			<div className={InterviewScheduleStyle.leftPane}>
 				<h3>Share Your Feedback</h3>
 			</div>
