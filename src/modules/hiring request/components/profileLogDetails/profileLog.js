@@ -42,6 +42,14 @@ const ProfileLogDetails = ({
   const [logExpanded, setLogExpanded] = useState(null);
   const [typeId, setTypeId] = useState(0);
   const [startDate, setStartDate] = useState(null);
+  const [endDateData, setEndDateData] = useState(null)
+  const [feedbackReceivedDate, setFeedbackReceivedDate] = useState(false)
+  const [profileSharedDate, setProfileSharedDate] = useState(false)
+  const [rejectDate, setRejectDate] = useState(false)
+
+  const [selectedFor, setSelectedFor] = useState(false)
+
+
 
   const viewProfileInfo = async (start = null, end = null) => {
     let response = await hiringRequestDAO.getTalentProfileLogDAO({
@@ -52,19 +60,33 @@ const ProfileLogDetails = ({
     setProfileLog(response?.responseBody?.details);
   };
 
-  const profileLogBox = async () => {
+  const profileLogBox = async (start = null, end = null) => {
+    setSelectedFor(false)
+    setRejectDate(false)
+    setProfileSharedDate(true)
+    setFeedbackReceivedDate(false)
     setShowProfileShared(true);
     setShowProfileRejectClass(false);
     setFeedBackReceivedClass(false);
     setSelectForClass(false);
     setProfileRejected([]);
     setFeedbackReceivedDetails([]);
-    let profileObj = {
-      talentID: talentId,
-      typeID: ProfileLog.PROFILE_SHARED,
-      fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
-      toDate: endDate ? new Date(endDate).toLocaleDateString("en-US") : null,
-    };
+    let profileObj = {};
+    if (start && end) {
+      profileObj = {
+        talentID: talentId,
+        typeID: ProfileLog.PROFILE_SHARED,
+        fromDate: start ? new Date(start).toLocaleDateString("en-US") : null,
+        toDate: end ? new Date(end).toLocaleDateString("en-US") : null,
+      };
+    } else {
+      profileObj = {
+        talentID: talentId,
+        typeID: ProfileLog.PROFILE_SHARED,
+        fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
+        toDate: endDateData ? new Date(endDateData).toLocaleDateString("en-US") : null,
+      };
+    }
 
     const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
       profileObj
@@ -75,17 +97,33 @@ const ProfileLogDetails = ({
   };
 
   //  Profile Rejected
-  const profileRejectedDetails = async () => {
+  const profileRejectedDetails = async (start = null, end = null) => {
+    setSelectedFor(false)
+    setRejectDate(true)
+    setProfileSharedDate(false)
+    setFeedbackReceivedDate(false)
     setShowProfileRejectClass(true);
     setShowProfileShared(false);
     setFeedBackReceivedClass(false);
     setSelectForClass(false);
-    let profileReject = {
-      talentID: talentId,
-      typeID: ProfileLog.REJECTED,
-      fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
-      toDate: endDate ? new Date(endDate).toLocaleDateString("en-US") : null,
-    };
+    let profileReject = {};
+    if (start && end) {
+      profileReject = {
+        talentID: talentId,
+        typeID: ProfileLog.REJECTED,
+        fromDate: start ? new Date(start).toLocaleDateString("en-US") : null,
+        toDate: end ? new Date(end).toLocaleDateString("en-US") : null,
+      }
+    }
+    else {
+      profileReject = {
+        talentID: talentId,
+        typeID: ProfileLog.REJECTED,
+        fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
+        toDate: endDateData ? new Date(endDateData).toLocaleDateString("en-US") : null,
+      };
+
+    }
 
     const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
       profileReject
@@ -96,19 +134,35 @@ const ProfileLogDetails = ({
 
   // Feedback Received
 
-  const feedbackReceived = async () => {
+  const feedbackReceived = async (start = null, end = null) => {
+    setSelectedFor(false)
+    setRejectDate(false)
+    setProfileSharedDate(false)
+    setFeedbackReceivedDate(true)
     setFeedBackReceivedClass(true);
     setShowProfileRejectClass(false);
     setShowProfileShared(false);
     setSelectForClass(false);
     setProfileRejected([]);
     setProfileShared([]);
-    let feedbackReceivedObj = {
-      talentID: talentId,
-      typeID: ProfileLog.FEEDBACK,
-      fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
-      toDate: endDate ? new Date(endDate).toLocaleDateString("en-US") : null,
-    };
+
+    let feedbackReceivedObj = {};
+    if (start && end) {
+      feedbackReceivedObj = {
+        talentID: talentId,
+        typeID: ProfileLog.FEEDBACK,
+        fromDate: start ? new Date(start).toLocaleDateString("en-US") : null,
+        toDate: end ? new Date(end).toLocaleDateString("en-US") : null,
+      };
+    } else {
+      feedbackReceivedObj = {
+        talentID: talentId,
+        typeID: ProfileLog.FEEDBACK,
+        fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
+        toDate: endDateData ? new Date(endDateData).toLocaleDateString("en-US") : null,
+      };
+    }
+
     const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
       feedbackReceivedObj
     );
@@ -116,17 +170,31 @@ const ProfileLogDetails = ({
     setTypeIdPayload(ProfileLog.FEEDBACK);
   };
 
-  const selectFor = async () => {
+  const selectFor = async (start = null, end = null) => {
+    setSelectedFor(true)
+    setRejectDate(false)
+    setProfileSharedDate(false)
+    setFeedbackReceivedDate(false)
     setSelectForClass(true);
     setShowProfileRejectClass(false);
     setShowProfileShared(false);
     setFeedBackReceivedClass(false)
-    let selectForObj = {
-      talentID: talentId,
-      typeID: ProfileLog.SELECTED,
-      fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
-      toDate: endDate ? new Date(endDate).toLocaleDateString("en-US") : null,
-    };
+    let selectForObj = {};
+    if (start && end) {
+      selectForObj = {
+        talentID: talentId,
+        typeID: ProfileLog.SELECTED,
+        fromDate: start ? new Date(start).toLocaleDateString("en-US") : null,
+        toDate: end ? new Date(end).toLocaleDateString("en-US") : null,
+      };
+    } else {
+      selectForObj = {
+        talentID: talentId,
+        typeID: ProfileLog.SELECTED,
+        fromDate: startDate ? new Date(startDate).toLocaleDateString("en-US") : null,
+        toDate: endDateData ? new Date(endDateData).toLocaleDateString("en-US") : null,
+      };
+    }
     const response = await hiringRequestDAO.getTalentProfileSharedDetailDAO(
       selectForObj
     );
@@ -162,7 +230,6 @@ const ProfileLogDetails = ({
         setProfileRejected(response?.responseBody?.details);
         setFeedbackReceivedDetails(response?.responseBody?.details);
         setSelectForDetails(response?.responseBody?.details);
-
       }
       if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
         setLogExpanded([]);
@@ -175,9 +242,24 @@ const ProfileLogDetails = ({
     (dates) => {
       const [start, end] = dates;
       setStartDate(start);
+      setEndDateData(end)
       setEndDate(end);
       if (start && end) {
         viewProfileInfo(start, end);
+        if (profileSharedDate === true) {
+
+          profileLogBox(start, end)
+        }
+        if (feedbackReceivedDate === true) {
+
+          feedbackReceived(start, end)
+        }
+        if (rejectDate === true) {
+          profileRejectedDetails(start, end)
+        }
+        if (selectedFor === true) {
+          selectFor(start, end)
+        }
         typeId && onProfileLogClickHandler(typeId, activeIndex, activeType, start, end);
       }
     },
@@ -303,15 +385,13 @@ const ProfileLogDetails = ({
                     </tr>
                   </thead>
                   <tbody>
-
-                    {profileLog?.length === 0 ||
-                      (profileShared?.length === 0 && (
-                        <tr>
-                          <td colSpan={6} align="center">
-                            No data Found
-                          </td>
-                        </tr>
-                      ))}
+                    {!profileShared?.responseBody?.details && (
+                      <tr>
+                        <td colSpan={6} align="center">
+                          No data Found
+                        </td>
+                      </tr>
+                    )}
                     {profileShared?.responseBody?.details?.map(
                       (item, index) => {
                         return (
