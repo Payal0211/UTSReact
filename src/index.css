@@ -4,6 +4,7 @@
   word-wrap: break-word;
   font-family: "Montserrat", sans-serif;
 }
+
 body {
   margin: 0;
   padding: 0;
@@ -68,6 +69,7 @@ body {
   width: 5px;
   height: 5px;
 }
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -122,6 +124,7 @@ input[type="file"] {
   border-radius: 8px;
   border: none;
 }
+
 .ant-pagination-item.ant-pagination-item-active a {
   font-weight: 700;
   color: var(--uplers-black) !important;
@@ -150,12 +153,14 @@ table {
   border-radius: 10px !important;
   background-color: var(--background-color-light) !important;
 }
+
 /*-- Ant Table -*/
 .ant-table {
   border-radius: 10px !important;
   overflow-x: auto !important;
   box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
 }
+
 .ant-table-tbody > tr > td {
   padding: 25px 20px !important;
 }
@@ -166,9 +171,11 @@ table {
   border: none !important;
   box-shadow: -4px 4px 20px rgba(57, 57, 57, 0.09) !important;
 }
+
 .react-datepicker__header {
   background-color: var(--background-color-light) !important;
 }
+
 .react-datepicker__day--keyboard-selected {
   background-color: var(--color-sunlight) !important;
   border-radius: 50% !important;
@@ -206,11 +213,13 @@ table {
   background-color: var(--color-sunlight);
   border: none !important;
 }
+
 .ant-checkbox-wrapper:hover .ant-checkbox-inner,
 .ant-checkbox:hover .ant-checkbox-inner,
 .ant-checkbox-input:focus + .ant-checkbox-inner {
   border: 1px solid var(--background-color-metal);
 }
+
 .ant-row {
   flex-wrap: nowrap !important;
   gap: 2rem;
@@ -220,6 +229,7 @@ table {
 .ant-dropdown {
   z-index: 0 !important;
 }
+
 .ant-dropdown-menu {
   background-color: transparent;
   border-radius: 10px;
@@ -234,6 +244,7 @@ table {
   font-size: var(--fontsize-tough);
   font-weight: 500;
 }
+
 .ant-spin-dot-item {
   background-color: var(--color-sunlight);
 }
@@ -287,6 +298,7 @@ table {
 .ant-tabs-top .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: var(--uplers-black);
 }
+
 .ant-tabs-tab .ant-tabs-tab-btn {
   color: var(--uplers-lightBlack);
   font-size: var(--fontsize-glossy) !important;
@@ -305,6 +317,7 @@ table {
   height: 4px;
   background-color: var(--color-sunlight) !important;
 }
+
 .ant-tabs-top .ant-tabs-tab:before {
   content: "";
   position: absolute;
@@ -325,6 +338,7 @@ table {
   visibility: visible;
   width: 100%;
 }
+
 /*Select*/
 .ant-select {
   width: 100%;
@@ -496,6 +510,7 @@ table {
   .ant-radio-inner::after {
   transform: scale(1);
 }
+
 .ant-select-dropdown .ant-select-item img {
   margin-right: 8px;
 }
@@ -540,6 +555,7 @@ table {
 .ant-table {
   box-shadow: none !important;
 }
+
 .ant-select-show-search.ant-select-multiple .ant-select-selector {
   padding-top: 13px;
   padding-bottom: 13px;
@@ -576,6 +592,7 @@ table {
   padding: 0;
   border-radius: 0;
 }
+
 .ant-select-show-search.ant-select-multiple
   .ant-select-selection-overflow-item
   .ant-select-selection-item
@@ -722,23 +739,28 @@ table {
 .ant-switch-checked {
   background-color: var(--color-sunlight) !important;
 }
+
 .selectSalesManagerModal .ant-modal-close {
   display: none;
 }
+
 .teamDemandFunnelReport .ant-tree,
 .teamDemandFunnelReport .ant-tree-show-line,
 .teamDemandFunnelReport .ant-tree-switcher {
   background-color: transparent;
 }
+
 .textCenter {
   text-align: center;
 }
+
 .mainLoader {
   display: flex;
   align-items: center;
   justify-content: center;
   height: calc(100vh - 300px);
 }
+
 .disabledTransparentBtnGroup {
   opacity: 0.5;
   cursor: no-drop;

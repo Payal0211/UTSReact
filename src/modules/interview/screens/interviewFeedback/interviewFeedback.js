@@ -28,6 +28,7 @@ const InterviewFeedback = ({
 	const [interviewFeedbackResult, setInterviewFeedbackResult] = useState(null);
 	/** For Fourth Round End */
 	const [feedbackDetails, setFeedbackDetails] = useState({});
+
 	const {
 		register,
 		handleSubmit,
@@ -54,8 +55,6 @@ const InterviewFeedback = ({
 		setRadioValue4(e.target.value);
 	};
 
-	console.log(isAnotherRound, '----AnotherRound');
-
 	const clientFeedbackHandler = useCallback(
 		async (d) => {
 			setIsLoading(true);
@@ -78,8 +77,16 @@ const InterviewFeedback = ({
 				en_Id: '',
 				IsClientNotificationSent: isClientNotification,
 			};
+			console.log(clientFeedbackHandler, '-clientFeedbackHandler');
 			if (isAnotherRound) {
 				setInterviewFeedbackResult(clientFeedback);
+				// const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
+				// 	clientFeedback,
+				// );
+				// if (response?.statusCode === HTTPStatusCode.OK) {
+				// 	setIsLoading(false);
+				// 	setInterviewFeedbackResult(clientFeedback);
+				// }
 			} else {
 				const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
 					clientFeedback,

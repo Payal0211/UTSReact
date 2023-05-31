@@ -27,6 +27,7 @@ export class SubDomain {
 	static REPORT = 'Report/';
 	static INCENTIVE_REPORT = 'IncentiveReport/';
 	static AM_ASSIGNMENT = 'AMAssignment/';
+	static INTERVIEWER = 'Interviewer/';
 }
 export class APIType {
 	static USER = '/user';
@@ -65,6 +66,7 @@ export class ReportsAPI {
 	static HRDETAILS = 'HRDetails';
 	static JD_PARSING_DUMP_REPORT = 'JDParsingDumpReport';
 }
+
 export class EngagementAPI {
 	static FILTER = 'Filters';
 	static LIST = 'List';
@@ -210,6 +212,13 @@ export class InterviewsAPI {
 	static GET_SLOT_DETAILS = 'GetExistingSlotDetails';
 	static GET_CLIENT_FEEDBACK = 'GetClientFeedback';
 	static SAVE_CONFIRM_INTERVIEW = 'SaveConfirmInterviewSlot';
+	static CLIENT_CURRENT_DETAILS_FOR_ANOTHER_ROUND =
+		'ClientCurrentDetailsForAnotherRound';
+	static SAVE_ANOTHER_ROUND_FEEDBACK = 'SaveAnotherRoundFeedback';
+}
+export class InterviewersAPI {
+	static CHECK_LINKEDIN_URL = 'CheckLinkedinURL';
+	static CHECK_INTERVIEWER_EMAILID = 'CheckInterviewerEmailId';
 }
 export class DealsAPI {
 	static LIST = 'List';
@@ -258,6 +267,5 @@ export class IncentiveReport {
 	static GET_LIST = 'List';
 	static GET_INCENTIVE_REPORT_DETAILS = 'GetIncentiveReportDetails';
 	static GET_CONTRACT_BOOSTER = 'GetIncentiveReportDetailsContractBooster';
-
 	static GET_INCENTIVE_REPORT_AMNR = 'GetIncentiveReportDetailsAMNR';
 }
