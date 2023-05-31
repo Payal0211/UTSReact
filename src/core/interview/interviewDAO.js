@@ -143,4 +143,126 @@ export const InterviewDAO = {
 			return errorDebug(error, 'InterviewDAO.getClientFeedbackRequestDAO');
 		}
 	},
+	ClientCurrentDetailsForAnotherRoundRequestDAO: async function (
+		clientFeedbackDetails,
+	) {
+		try {
+			const clientFeedbackResponse =
+				await InterviewAPI.ClientCurrentDetailsForAnotherRoundRequest(
+					clientFeedbackDetails,
+				);
+
+			if (clientFeedbackResponse) {
+				const statusCode = clientFeedbackResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = clientFeedbackResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return clientFeedbackResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return clientFeedbackResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'InterviewDAO.ClientCurrentDetailsForAnotherRoundRequestDAO',
+			);
+		}
+	},
+	saveAnotherRoundFeedbackRequestDAO: async function (clientFeedbackDetails) {
+		try {
+			const clientAnotherRoundResponse =
+				await InterviewAPI.saveAnotherRoundFeedbackRequest(
+					clientFeedbackDetails,
+				);
+
+			if (clientAnotherRoundResponse) {
+				const statusCode = clientAnotherRoundResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = clientAnotherRoundResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return clientAnotherRoundResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return clientAnotherRoundResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'InterviewDAO.saveAnotherRoundFeedbackRequestDAO',
+			);
+		}
+	},
+	CheckLinkedinURLRequestDAO: async function (clientDetails) {
+		try {
+			const checkLinkedinURLResponse =
+				await InterviewAPI.CheckLinkedinURLRequest(clientDetails);
+
+			if (checkLinkedinURLResponse) {
+				const statusCode = checkLinkedinURLResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = checkLinkedinURLResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return checkLinkedinURLResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return checkLinkedinURLResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'InterviewDAO.CheckLinkedinURLRequestDAO');
+		}
+	},
+	CheckInterviewerEmailIdRequestDAO: async function (clientDetails) {
+		try {
+			const checkInterviewerEmailResponse =
+				await InterviewAPI.CheckInterviewerEmailIdRequest(clientDetails);
+			if (checkInterviewerEmailResponse) {
+				const statusCode = checkInterviewerEmailResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = checkInterviewerEmailResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return checkInterviewerEmailResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return checkInterviewerEmailResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'InterviewDAO.CheckInterviewerEmailIdRequestDAO',
+			);
+		}
+	},
 };

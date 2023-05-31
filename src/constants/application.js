@@ -118,6 +118,8 @@ export class TalentOnboardStatus {
 	static CONFIRM_SLOT = 'Confirm Slot';
 	static SUBMIT_CLIENT_FEEDBACK = 'Submit Client Feedback';
 	static EDIT_CLIENT_FEEDBACK = 'Edit Client Feedback';
+	static ANOTHER_ROUND_INTERVIEW = 'Another Round Interview';
+	static SCHEDULE_ANOTHER_ROUND_INTERVIEW = 'Schedule Another Interview Round';
 }
 
 export class HRCTA {
@@ -157,6 +159,17 @@ export class HiringRequestHRStatus {
 	static CANCELLED = 107;
 	static ON_HOLD = 108;
 	static OTHER = 201;
+}
+
+export class AnotherRoundInterviewOption {
+	static YES = 'Yes';
+	static APPEND = 'Append';
+	static ADD = 'Add';
+}
+
+export class AnotherRoundTimeSlotOption {
+	static NOW = 'Now';
+	static LATER = 'Later';
 }
 
 export class TalentRequestStatus {

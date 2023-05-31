@@ -1,4 +1,4 @@
-import { Checkbox, Skeleton, Tooltip } from 'antd';
+import { Checkbox, Empty, Skeleton, Tooltip } from 'antd';
 import MatchMakingStyle from './matchmaking.module.css';
 import { useMemo, useState } from 'react';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
@@ -27,21 +27,29 @@ const MatchMakingTable = ({
 				toggleRowSelection={toggleRowSelection}
 			/>
 			<tbody>
-				{matchMakingData.map((user) => (
-					<TrAPIData
-						disableAll={disableAll}
-						setTalentCost={setTalentCost}
-						setTalentID={setTalentID}
-						key={user.id}
-						user={user}
-						expandedRows={expandedRows}
-						toggleRowSelection={toggleRowSelection}
-						handleExpandRow={handleExpandRow}
-						selectedRows={selectedRows}
-						currentExpandedCell={currentExpandedCell}
-						componentToRender={componentToRender}
-					/>
-				))}
+				{matchMakingData?.length > 0 ? (
+					matchMakingData.map((user) => (
+						<TrAPIData
+							disableAll={disableAll}
+							setTalentCost={setTalentCost}
+							setTalentID={setTalentID}
+							key={user.id}
+							user={user}
+							expandedRows={expandedRows}
+							toggleRowSelection={toggleRowSelection}
+							handleExpandRow={handleExpandRow}
+							selectedRows={selectedRows}
+							currentExpandedCell={currentExpandedCell}
+							componentToRender={componentToRender}
+						/>
+					))
+				) : (
+					<tr>
+						<td colSpan={12}>
+							<Empty />
+						</td>
+					</tr>
+				)}
 			</tbody>
 		</table>
 	);

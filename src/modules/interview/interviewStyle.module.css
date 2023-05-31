@@ -1,45 +1,73 @@
-.interviewContainer{
-    /* padding:16px; */
-    
-margin: 25px 20px;
-    /* background: #fff; */
-    border-radius:8px;
-    box-shadow: 0px 2px 7px rgba(204, 238, 204, 0.25);
+.feedbackModalBody {
+    max-height: 58vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px 40px 2px;
+    margin: 0 -40px 30px;
 }
-.topDivider{
+
+.leftPane .feedbackHeadWrap {
+    border-bottom: 1px dashed #e8e8e8;
+    padding-bottom: 24px;
+    font-family: "Montserrat";
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: #232323;
+}
+
+.leftPane .feedbackHeadWrap p {
+    margin-bottom: 16px;
+    font-family: "Montserrat";
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: #232323;
+}
+
+.leftPane .feedbackHeadWrap p:last-child {
+    margin-bottom: 0;
+}
+
+.topDivider {
     margin: 40px 0;
-    border-color:#E8E8E8;
+    border-color: #e8e8e8;
 }
-.interviewModalTitle{
-    font-family: 'Montserrat';
+
+.interviewModalTitle {
+    font-family: "Montserrat";
     font-weight: 500;
     font-size: 32px;
     line-height: 39px;
     color: #232323;
     margin: 0 0 25px;
 }
-.interviewModalTitle h2{
+
+.interviewModalTitle h2 {
     font-size: inherit;
     line-height: inherit;
     color: inherit;
     margin: 0;
 }
-.header{
+
+.header {
     margin-bottom: 61px;
-    width:inherit;
+    width: inherit;
 }
-.allInterviewLabel{
+
+.allInterviewLabel {
     font-size: 32px;
     font-weight: 500;
     line-height: 40px;
 }
 
-.filterInterview{
+.filterInterview {
     height: 10vh;
     border-radius: 8px;
     background-color: var(--background-color-light);
     margin-bottom: 25px;
 }
+
 .filterContainer {
     /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
@@ -59,7 +87,6 @@ margin: 25px 20px;
     align-items: center;
     flex-wrap: wrap;
     /* height: 92px; */
-
 }
 
 .addFilter {
@@ -76,7 +103,7 @@ margin: 25px 20px;
 
 .filterLabel {
     font-weight: 500;
-    font-size: .7vw;
+    font-size: 0.7vw;
 }
 
 .filterCount {
@@ -169,7 +196,6 @@ margin: 25px 20px;
     margin-bottom: 10px;
 }
 
-
 .dateFilter {
     cursor: pointer;
     width: 102%;
@@ -207,28 +233,30 @@ margin: 25px 20px;
     border-radius: 8px;
     cursor: pointer;
 }
-.tableDetails{
-   overflow: auto;
+
+.tableDetails {
+    overflow: auto;
     /* margin-bottom: 24px; */
     border-radius: 8px;
     /* max-height: 1000px; */
-
 }
-table{
+
+table {
     width: 100%;
 }
-.thead{
+
+.thead {
     position: sticky !important;
     top: 0px !important;
-    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2)
+    box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
 }
+
 .theadLoading {
     position: sticky !important;
     top: 0px !important;
-
 }
-.th {
 
+.th {
     z-index: 1;
     padding: 24px 40px;
 
@@ -250,20 +278,21 @@ table{
     text-align: start;
     border-bottom: 1px solid var(--uplers-grey) !important;
 }
-.anchor{
+
+.anchor {
     text-decoration: underline;
     cursor: pointer;
 }
-.pagination{
+
+.pagination {
     text-align: center;
     margin: 24px auto;
     padding-bottom: 24px;
 }
+
 /* .pagination ul li:last-child{
     display: none !important;
 } */
-
-
 
 .goback {
     color: var(--uplers-black);
@@ -277,7 +306,7 @@ table{
     font-size: 12px;
 }
 
-.panelBody{
+.panelBody {
     display: flex;
 }
 
@@ -295,11 +324,13 @@ table{
     font-size: var(--fontsize-brittle);
     font-weight: 400;
     line-height: 20px;
-    color: #7C7C7C;
+    color: #7c7c7c;
 }
-.rightPane{
+
+.rightPane {
     flex: 1;
 }
+
 .row {
     /* gap: 8px; */
     margin: 0 -9px;
@@ -308,7 +339,7 @@ table{
     /* justify-content: flex-start; */
 }
 
-.transparentTopCard{
+.transparentTopCard {
     border-radius: 8px;
     border: 1px solid var(--uplers-border-color);
     padding: 16px;
@@ -318,29 +349,30 @@ table{
     display: flex;
 }
 
-.cardBody{
-    padding:16px 0 16px 16px;
+.cardBody {
+    padding: 16px 0 16px 16px;
 }
 
-
-.cardLabel{
+.cardLabel {
     font-size: 12px;
     line-height: 15px;
     font-weight: 400;
-    color:var(--uplers-black);
-    margin-bottom:8px;
-}
-.mb8{
+    color: var(--uplers-black);
     margin-bottom: 8px;
 }
-.cardTitle{
+
+.mb8 {
+    margin-bottom: 8px;
+}
+
+.cardTitle {
     font-size: 18px;
     line-height: 22px;
     font-weight: 600;
-    color:var(--uplers-black)
+    color: var(--uplers-black);
 }
 
-.cardTitle [class*="hrStatusComponent"]{
+.cardTitle [class*="hrStatusComponent"] {
     height: 23px;
     font-weight: 500;
     font-size: 12px;
@@ -349,8 +381,7 @@ table{
     padding: 0 8px;
 }
 
-
-.colMd4{
+.colMd4 {
     width: calc(25% - 6px);
 }
 
@@ -358,14 +389,17 @@ table{
     width: 100%;
     padding: 0 9px;
 }
+
 .colMd6 {
     width: 50%;
     padding: 0 9px;
 }
+
 .colMd3 {
     width: 33.33%;
     padding: 0 9px;
 }
+
 .colMd4 {
     width: 25%;
     padding: 0 9px;
@@ -378,27 +412,31 @@ table{
     margin-left: 4px;
 }
 
-.ml8{
+.ml8 {
     margin-left: 8px;
 }
-.radioGroup{
+
+.radioGroup {
     flex-direction: column;
     display: flex;
 }
-.radioGroup [class*="ant-radio-wrapper"]{
+
+.radioGroup [class*="ant-radio-wrapper"] {
     margin: 0 0 16px 0;
     min-height: 25px;
     padding-left: 35px;
 }
-.radioGroup [class*="ant-radio-wrapper"]:last-child{
-    margin-bottom:0;
+
+.radioGroup [class*="ant-radio-wrapper"]:last-child {
+    margin-bottom: 0;
 }
 
-.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]{
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"] {
     width: 25px;
     height: 25px;
 }
-.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]:after{
+
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]:after {
     width: 15px;
     height: 15px;
 }
@@ -408,7 +446,7 @@ table{
 }
 
 .radioFormGroup>label {
-    font-family: 'Montserrat';
+    font-family: "Montserrat";
     font-weight: 400;
     font-size: 12px;
     /* line-height: 16px; */
@@ -416,15 +454,16 @@ table{
     margin: 0 0 8px 0;
     display: inline-block;
 }
+
 .formPanelAction {
     display: flex;
 }
 
 .formPanelAction button {
     background: var(--text-color-purity);
-    border: 1px solid #CECCCC;
+    border: 1px solid #cecccc;
     border-radius: 8px;
-    font-family: 'Montserrat';
+    font-family: "Montserrat";
     font-weight: 500;
     font-size: 14px;
     line-height: 18px;
@@ -444,42 +483,47 @@ table{
     margin-left: 18px;
 }
 
-.timeSlotRow{
+.timeSlotRow {
     margin: 0 -9px 30px;
     flex-wrap: wrap;
     display: flex;
 }
-.timeSlotLabel{
+
+.timeSlotLabel {
     padding: 0 8px;
     width: 100%;
     margin: 0 0 7px;
     position: relative;
 }
-.timeSlotLabel label{
-    font-family: 'Montserrat';
+
+.timeSlotLabel label {
+    font-family: "Montserrat";
     font-weight: 400;
     font-size: 12px;
     line-height: 15px;
     color: #676767;
 }
-.timeSlotItem{
+
+.timeSlotItem {
     padding: 0 8px;
     width: 33.33%;
     position: relative;
 }
-.timeSlotItem svg{
+
+.timeSlotItem svg {
     position: absolute;
     top: 19px;
     right: 26px;
     z-index: 1;
     pointer-events: none;
 }
-.timeSlotItem [class*="react-datepicker__input-container"] input{
+
+.timeSlotItem [class*="react-datepicker__input-container"] input {
     text-align: left;
     width: 100%;
     padding: 16px 40px 16px 16px;
     background: var(--background-color-light);
-    border: 1px solid #CECCCC;
+    border: 1px solid #cecccc;
     border-radius: 8px;
     font-weight: 500;
     font-size: 14px;
@@ -513,65 +557,185 @@ table{
     outline-color: var(--color-sunlight);
     border-color: var(--color-sunlight);
 }
-.timeSlotItem [class="react-datepicker-popper"]{
+
+.timeSlotItem [class="react-datepicker-popper"] {
     right: 16px !important;
     left: 0 !important;
     z-index: 2;
-    background: #FFFFFF;
-    border: 1px solid #CECCCC;
+    background: #ffffff;
+    border: 1px solid #cecccc;
     border-radius: 8px;
     box-shadow: -4px 4px 20px rgba(57, 57, 57, 0.09);
     margin: -1px 0;
     padding: 4px 0;
 }
 
-.timeSlotItem [class="react-datepicker"],.timeSlotItem [class*="react-datepicker--time-only"] {
+.timeSlotItem [class="react-datepicker"],
+.timeSlotItem [class*="react-datepicker--time-only"] {
     margin-left: 0;
     width: 100%;
     box-shadow: none !important;
     vertical-align: middle;
 }
 
-.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-container"],.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-box"]{width:100%}
+.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-container"],
+.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-box"] {
+    width: 100%;
+}
 
 .timeSlotItem [class="react-datepicker__month-container"] {
     width: 100%;
 }
-.timeSlotItem [class*="react-datepicker__header "]{
-    border-bottom: 1px solid #E8E8E8;
+
+.timeSlotItem [class*="react-datepicker__header "] {
+    border-bottom: 1px solid #e8e8e8;
 }
+
 .timeSlotItem [class="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
     top: 14px;
 }
-.timePickerItem{
+
+.timePickerItem {
     margin: 0;
 }
-.timeSlotItem.timePickerItem [class="react-datepicker-popper"]{
+
+.timeSlotItem.timePickerItem [class="react-datepicker-popper"] {
     width: 60%;
     right: auto !important;
 }
-.requestByRadio{
+
+.requestByRadio {
     align-items: center;
     display: flex;
 }
-.requestByRadio > label{margin:0 16px 0 0;}
-.requestByRadio [class*="ant-radio-group "]{
+
+.requestByRadio>label {
+    margin: 0 16px 0 0;
+}
+
+.requestByRadio [class*="ant-radio-group "] {
     flex-direction: row;
     display: flex;
 }
-.requestByRadio [class*="ant-radio-group "] label{
+
+.requestByRadio [class*="ant-radio-group "] label {
     margin: 0 16px 0 0;
 }
-.mB0 [class*="hrInputFields"]{
+
+.mB0 [class*="hrInputFields"] {
     margin-bottom: 0 !important;
 }
 
-
-.ant-select .ant-select-selector .ant-select-selection-item{
+.ant-select .ant-select-selector .ant-select-selection-item {
     color: red;
 }
 
 .error {
     color: var(--danger-color);
     font-size: var(--fontsize-tough);
+}
+
+.row {
+    margin: 0 -12px;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 24px;
+}
+
+.colLg6 {
+    width: 50%;
+    padding: 0 12px;
+}
+
+.secondRoundIntBox {
+    background: #f5f5f5;
+    box-shadow: 0px 2px 8px rgba(204, 238, 204, 0.25);
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.secondRoundIntBox ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    font-family: "Montserrat";
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+}
+
+.secondRoundIntBox ul li {
+    margin-bottom: 16px;
+}
+
+.secondRoundIntBox ul li:last-child {
+    margin-bottom: 0;
+}
+
+.secondRoundIntBox ul li span {
+    color: #7c7c7c;
+}
+
+.radioDetailInfo {
+    padding-left: 35px;
+    margin-bottom: 40px;
+}
+
+.topFeedbackRadio {
+    margin-bottom: 24px;
+    padding-bottom: 40px;
+    border-bottom: 1px dashed #e8e8e8;
+}
+
+.topFeedbackRadio .radioFormGroup,
+.bottomFeedbackRadio .radioFormGroup {
+    margin-bottom: 0;
+}
+
+.topFeedbackRadio [class*="ant-radio-group"],
+.bottomFeedbackRadio [class*="ant-radio-group"] {
+    margin-bottom: 16px;
+}
+
+.topFeedbackRadio [class*="ant-radio-group"]:last-child,
+.bottomFeedbackRadio [class*="ant-radio-group"]:last-child {
+    margin-bottom: 0;
+}
+
+.secondRoundIntForm {
+    margin-top: 32px;
+}
+
+.secondRoundIntForm+.secondRoundIntForm {
+    border-top: 1px solid #e8e8e8;
+    padding-top: 28px;
+    margin-top: 0;
+}
+
+.secondRoundIntForm .row {
+    gap: inherit;
+}
+
+.secondRoundIntFormAction button {
+    background: var(--text-color-purity);
+    border: 1px solid #cecccc;
+    border-radius: 8px;
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.radioDetailInfo.stepFormWrap {
+    margin-bottom: 0;
+}
+
+.stepFormWrap .secondRoundIntForm {
+    margin-top: 0;
 }
