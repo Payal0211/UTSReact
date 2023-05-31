@@ -1247,8 +1247,12 @@ const HRFields = ({
 											required: 'please enter the years.',
 											min: {
 												value: 0,
-												message: `please don't enter the value less than 0`,
+												message: "please don't enter the value less than 0",
 											},
+											max:{
+												value:100,
+												message:"please don't enter the value more than 100"
+											}
 										}}
 										register={register}
 										name="years"
