@@ -266,9 +266,56 @@ const ProfileLogDetails = ({
     [activeIndex, activeType, onProfileLogClickHandler, typeId]
   );
 
-  useEffect(() => {
-    viewProfileInfo()
-  }, [])
+  const [feedback,setFeedback]=useState(true);
+  const [profileReject,setProfileReject]=useState(false);
+  const [selected,setSelected]=useState(false);
+  const [profileSharedd,setprofileShared] = useState(false);
+ 
+  const rightArrowClick = () => {
+    if(profileSharedd === true){
+      profileLogBox();
+      setprofileShared(false);
+      setFeedback(true)
+    }
+    else if (feedback === true) {
+      feedbackReceived();
+      setFeedback(false);
+      setProfileReject(true);
+    }
+   else if (profileReject === true) {
+      profileRejectedDetails()
+      setSelected(true);
+      setProfileReject(false);
+    }
+    else if(selected){
+      selectFor();
+    }
+  };
+  const leftArrowClick = () => {
+if(profileSharedd){
+  profileLogBox();
+  setFeedback(false);
+  setProfileReject(false);
+  setSelected(false);
+}
+    else if (feedback === true) {
+      feedbackReceived();
+      setFeedback(true);
+      setProfileReject(false);
+      setprofileShared(true);
+    }
+   else if (profileReject === true) {
+      profileRejectedDetails()
+      setSelected(false);
+      setProfileReject(true);
+      setFeedback(true);
+    }
+    else if(selected){
+      selectFor();
+      setSelected(false);
+      setProfileReject(true);
+    }
+  };
 
   return (
     <>
@@ -363,10 +410,10 @@ const ProfileLogDetails = ({
               <div className={ProfileLogStyle.profileLogListHead}>
                 <h4>Profile Shared: 04 HRs</h4>
                 <div className={ProfileLogStyle.profileLogListAction}>
-                  <button>
+                  <button onClick={leftArrowClick}>
                     <LeftArrowSVG />
                   </button>
-                  <button>
+                  <button onClick={rightArrowClick}>
                     <RightArrowSVG />
                   </button>
                 </div>
@@ -428,10 +475,10 @@ const ProfileLogDetails = ({
               <div className={ProfileLogStyle.profileLogListHead}>
                 <h4>Feedback Received: 04 HRs</h4>
                 <div className={ProfileLogStyle.profileLogListAction}>
-                  <button>
+                  <button onClick={leftArrowClick}>
                     <LeftArrowSVG />
                   </button>
-                  <button>
+                  <button onClick={rightArrowClick}>
                     <RightArrowSVG />
                   </button>
                 </div>
@@ -492,10 +539,10 @@ const ProfileLogDetails = ({
               <div className={ProfileLogStyle.profileLogListHead}>
                 <h4>Profile Rejected : 05 HRs</h4>
                 <div className={ProfileLogStyle.profileLogListAction}>
-                  <button>
+                  <button onClick={leftArrowClick}>
                     <LeftArrowSVG />
                   </button>
-                  <button>
+                  <button onClick={rightArrowClick}>
                     <RightArrowSVG />
                   </button>
                 </div>
@@ -555,10 +602,10 @@ const ProfileLogDetails = ({
               <div className={ProfileLogStyle.profileLogListHead}>
                 <h4>Selected For : 04 HRs</h4>
                 <div className={ProfileLogStyle.profileLogListAction}>
-                  <button>
+                  <button onClick={leftArrowClick}>
                     <LeftArrowSVG />
                   </button>
-                  <button>
+                  <button onClick={rightArrowClick}>
                     <RightArrowSVG />
                   </button>
                 </div>
