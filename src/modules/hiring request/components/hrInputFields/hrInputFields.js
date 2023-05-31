@@ -21,6 +21,7 @@ const HRInputField = ({
 	disabled,
 	type,
 	onChangeHandler,
+	onBlurHandler,
 	trailingIcon,
 	validationSchema,
 	rows,
@@ -87,6 +88,10 @@ const HRInputField = ({
 						onChange={(e) => {
 							formatRegister.onChange(e);
 							onChangeHandler?.(e);
+						}}
+						onBlur={(e) => {
+							formatRegister.onBlur(e);
+							onBlurHandler?.(e);
 						}}
 						id={name}
 						disabled={disabled}

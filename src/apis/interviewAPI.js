@@ -136,7 +136,7 @@ export const InterviewAPI = {
 			let httpService = new HttpServices();
 			httpService.URL =
 				NetworkInfo.NETWORK +
-				SubDomain.INTERVIEW +
+				SubDomain.INTERVIEWER +
 				InterviewersAPI.CHECK_LINKEDIN_URL +
 				`?linkedinurl=${clientDetails?.linkedinURL}&Hr_DetailID=${clientDetails?.HRDetailID}`;
 			httpService.setAuthRequired = true;
@@ -152,7 +152,7 @@ export const InterviewAPI = {
 			let httpService = new HttpServices();
 			httpService.URL =
 				NetworkInfo.NETWORK +
-				SubDomain.INTERVIEW +
+				SubDomain.INTERVIEWER +
 				InterviewersAPI.CHECK_INTERVIEWER_EMAILID +
 				`?EmailId=${clientDetails?.emailID}&Hr_DetailID=${clientDetails?.HRDetailID}`;
 			httpService.setAuthRequired = true;

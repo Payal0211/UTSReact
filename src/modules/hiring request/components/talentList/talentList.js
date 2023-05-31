@@ -1888,6 +1888,7 @@ const TalentList = ({
 					open={interviewFeedback}
 					onCancel={() => setInterviewFeedback(false)}>
 					<InterviewFeedback
+						getScheduleSlotInfomation={getScheduleSlotInfomation}
 						hrId={hrId}
 						clientDetail={clientDetail}
 						callAPI={callAPI}
@@ -1897,6 +1898,9 @@ const TalentList = ({
 						hiringRequestNumber={hiringRequestNumber}
 						starMarkedStatusCode={starMarkedStatusCode}
 						hrStatus={hrStatus}
+						getScheduleSlotDate={getScheduleSlotDate}
+						getSlotInformationHandler={getSlotInformationHandler}
+						scheduleSlotRadio={scheduleSlotRadio}
 						closeModal={() => setInterviewFeedback(false)}
 					/>
 				</Modal>
@@ -1912,6 +1916,7 @@ const TalentList = ({
 					open={isEditFeedback}
 					onCancel={() => setEditFeedback(false)}>
 					<InterviewFeedback
+						getScheduleSlotInfomation={getScheduleSlotInfomation}
 						isEditFeedback={isEditFeedback}
 						hrId={hrId}
 						clientDetail={clientDetail}
