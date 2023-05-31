@@ -1812,6 +1812,7 @@ const TalentList = ({
 				<Modal
 					transitionName=""
 					width="1000px"
+					className="commonModalWrap"
 					centered
 					footer={null}
 					open={showReScheduleInterviewModal}
@@ -1844,6 +1845,7 @@ const TalentList = ({
 				<Modal
 					transitionName=""
 					width="1000px"
+					className="commonModalWrap"
 					centered
 					footer={null}
 					open={showScheduleInterviewModal}

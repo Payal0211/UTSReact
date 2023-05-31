@@ -1,9 +1,9 @@
 .feedbackModalBody {
-  max-height: 56vh;
+  max-height: 58vh;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 24px 40px 0;
-  margin: 0 -40px 32px;
+  padding: 24px 40px 2px;
+  margin: 0 -40px 30px;
 }
 .leftPane .feedbackHeadWrap {
   border-bottom: 1px dashed #e8e8e8;
@@ -664,13 +664,16 @@ table {
   padding-bottom: 40px;
   border-bottom: 1px dashed #e8e8e8;
 }
-.topFeedbackRadio .radioFormGroup {
+.topFeedbackRadio .radioFormGroup,
+.bottomFeedbackRadio .radioFormGroup {
   margin-bottom: 0;
 }
-.topFeedbackRadio [class*="ant-radio-group"] {
+.topFeedbackRadio [class*="ant-radio-group"],
+.bottomFeedbackRadio [class*="ant-radio-group"] {
   margin-bottom: 16px;
 }
-.topFeedbackRadio [class*="ant-radio-group"]:last-child {
+.topFeedbackRadio [class*="ant-radio-group"]:last-child,
+.bottomFeedbackRadio [class*="ant-radio-group"]:last-child {
   margin-bottom: 0;
 }
 .secondRoundIntForm {

@@ -5,6 +5,9 @@ import { useState } from 'react';
 import { InputType } from 'constants/application';
 import { useForm } from 'react-hook-form';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import DatePicker from 'react-datepicker';
+import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 
 const AnotherRound = () => {
 
@@ -21,6 +24,7 @@ const AnotherRound = () => {
 		setRadioValue(e.target.value);
 	};
 	const slotLaterOnChange = (e) => {
+
 		setSlotLater(e.target.value);
 	};
 
@@ -330,8 +334,6 @@ const AnotherRound = () => {
 														defaultValue="Please Select"
 														options={options}
 														required
-													// isError={errors['talentStatus'] && errors['talentStatus']}
-													// errorMsg="Please select talent Status."
 													/>
 												</div>
 												<div className={InterviewScheduleStyle.colMd6}>
@@ -364,16 +366,307 @@ const AnotherRound = () => {
 					</div>
 
 
-					<div className={InterviewScheduleStyle.radioFormGroup}>
-						<Radio.Group
-							className={InterviewScheduleStyle.radioGroup}
-							onChange={slotLaterOnChange}
-							value={slotLater}>
-							<Radio value={1}>Share Interview Time Slots</Radio>
-							<Radio value={2}>I will add Time Slots Later</Radio>
-						</Radio.Group>
-					</div>
+					<div className={InterviewScheduleStyle.bottomFeedbackRadio}>
+						<div className={InterviewScheduleStyle.radioFormGroup}>
+							<Radio.Group
+								className={InterviewScheduleStyle.radioGroup}
+								onChange={slotLaterOnChange}
+								value={slotLater}>
+								<Radio value={1}>Share Interview Time Slots</Radio>
+							</Radio.Group>
 
+
+							{slotLater === 1 &&
+
+								<>
+									<div className={InterviewScheduleStyle.radioDetailInfo}>
+										<div className={InterviewScheduleStyle.row}>
+											<div className={InterviewScheduleStyle.colMd12}>
+												<HRSelectField
+													setValue={setValue}
+													register={register}
+													name="interviewTimezone"
+													label="Time Zone"
+													defaultValue="Select Timezone"
+													options={options}
+													required
+												/>
+											</div>
+										</div>
+
+										<div className={InterviewScheduleStyle.timeSlotRow}>
+											<div className={InterviewScheduleStyle.timeSlotLabel}>
+												<label>
+													Slot 1*
+												</label>
+											</div>
+											<div className={InterviewScheduleStyle.timeSlotItem}>
+												<CalenderSVG />
+
+												<DatePicker
+													name="slot1Date"
+													required
+													{...register('slot1Date')}
+													// filterDate={disabledWeekend}
+													// selected={getScheduleSlotDate[0].slot1}
+													placeholderText="Select Date"
+													onChange={(date) => {
+														setValue('slot1Date', date);
+														// getSlotInformationHandler(date, 'slot1Date', 'schedule');
+													}}
+												/>
+												{errors.slot1Date && (
+													<div className={InterviewScheduleStyle.error}>
+														Please select slot1 date
+													</div>
+												)}
+											</div>
+											<div
+												className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+												<ClockIconSVG />
+
+												<DatePicker
+													required
+													{...register('slot1StartTime')}
+													// selected={getScheduleSlotDate[0].slot2}
+													onChange={(date) => {
+														setValue('slot1StartTime', date);
+														// getSlotInformationHandler(
+														// 	date,
+														// 	'slot1StartTime',
+														// 	'schedule',
+														// );
+													}}
+													showTimeSelect
+													showTimeSelectOnly
+													timeIntervals={60}
+													timeCaption="Time"
+													timeFormat="h:mm a"
+													dateFormat="h:mm a"
+													placeholderText="Start Time"
+													name="slot1StartTime"
+												/>
+												{errors.slot1StartTime && (
+													<div className={InterviewScheduleStyle.error}>
+														Please select start time
+													</div>
+												)}
+											</div>
+											<div
+												className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+												<ClockIconSVG />
+												<DatePicker
+													required
+													{...register('slot1EndTime')}
+													// selected={getScheduleSlotDate[0].slot3}
+													onChange={(date) => {
+														setValue('slot1EndTime', date);
+														// getSlotInformationHandler(date, 'slot1EndTime', 'schedule');
+													}}
+													showTimeSelect
+													showTimeSelectOnly
+													timeIntervals={60}
+													timeCaption="Time"
+													dateFormat="h:mm a"
+													timeFormat="h:mm a"
+													placeholderText="End Time"
+													name="slot1EndTime"
+												/>
+												{errors.slot1EndTime && (
+													<div className={InterviewScheduleStyle.error}>
+														Please select end time
+													</div>
+												)}
+											</div>
+										</div>
+
+										<div className={InterviewScheduleStyle.timeSlotRow}>
+											<div className={InterviewScheduleStyle.timeSlotLabel}>
+												<label>
+													Slot 2*
+												</label>
+											</div>
+											<div className={InterviewScheduleStyle.timeSlotItem}>
+												<CalenderSVG />
+
+												<DatePicker
+													name="slot1Date"
+													required
+													{...register('slot1Date')}
+													// filterDate={disabledWeekend}
+													// selected={getScheduleSlotDate[0].slot1}
+													placeholderText="Select Date"
+													onChange={(date) => {
+														setValue('slot1Date', date);
+														// getSlotInformationHandler(date, 'slot1Date', 'schedule');
+													}}
+												/>
+												{errors.slot1Date && (
+													<div className={InterviewScheduleStyle.error}>
+														Please select slot1 date
+													</div>
+												)}
+											</div>
+											<div
+												className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+												<ClockIconSVG />
+
+												<DatePicker
+													required
+													{...register('slot1StartTime')}
+													// selected={getScheduleSlotDate[0].slot2}
+													onChange={(date) => {
+														setValue('slot1StartTime', date);
+														// getSlotInformationHandler(
+														// 	date,
+														// 	'slot1StartTime',
+														// 	'schedule',
+														// );
+													}}
+													showTimeSelect
+													showTimeSelectOnly
+													timeIntervals={60}
+													timeCaption="Time"
+													timeFormat="h:mm a"
+													dateFormat="h:mm a"
+													placeholderText="Start Time"
+													name="slot1StartTime"
+												/>
+												{errors.slot1StartTime && (
+													<div className={InterviewScheduleStyle.error}>
+														Please select start time
+													</div>
+												)}
+											</div>
+											<div
+												className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+												<ClockIconSVG />
+												<DatePicker
+													required
+													{...register('slot1EndTime')}
+													// selected={getScheduleSlotDate[0].slot3}
+													onChange={(date) => {
+														setValue('slot1EndTime', date);
+														// getSlotInformationHandler(date, 'slot1EndTime', 'schedule');
+													}}
+													showTimeSelect
+													showTimeSelectOnly
+													timeIntervals={60}
+													timeCaption="Time"
+													dateFormat="h:mm a"
+													timeFormat="h:mm a"
+													placeholderText="End Time"
+													name="slot1EndTime"
+												/>
+												{errors.slot1EndTime && (
+													<div className={InterviewScheduleStyle.error}>
+														Please select end time
+													</div>
+												)}
+											</div>
+										</div>
+
+										<div className={InterviewScheduleStyle.timeSlotRow}>
+											<div className={InterviewScheduleStyle.timeSlotLabel}>
+												<label>
+													Slot 3*
+												</label>
+											</div>
+											<div className={InterviewScheduleStyle.timeSlotItem}>
+												<CalenderSVG />
+
+												<DatePicker
+													name="slot1Date"
+													required
+													{...register('slot1Date')}
+													// filterDate={disabledWeekend}
+													// selected={getScheduleSlotDate[0].slot1}
+													placeholderText="Select Date"
+													onChange={(date) => {
+														setValue('slot1Date', date);
+														// getSlotInformationHandler(date, 'slot1Date', 'schedule');
+													}}
+												/>
+												{errors.slot1Date && (
+													<div className={InterviewScheduleStyle.error}>
+														Please select slot1 date
+													</div>
+												)}
+											</div>
+											<div
+												className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+												<ClockIconSVG />
+
+												<DatePicker
+													required
+													{...register('slot1StartTime')}
+													// selected={getScheduleSlotDate[0].slot2}
+													onChange={(date) => {
+														setValue('slot1StartTime', date);
+														// getSlotInformationHandler(
+														// 	date,
+														// 	'slot1StartTime',
+														// 	'schedule',
+														// );
+													}}
+													showTimeSelect
+													showTimeSelectOnly
+													timeIntervals={60}
+													timeCaption="Time"
+													timeFormat="h:mm a"
+													dateFormat="h:mm a"
+													placeholderText="Start Time"
+													name="slot1StartTime"
+												/>
+												{errors.slot1StartTime && (
+													<div className={InterviewScheduleStyle.error}>
+														Please select start time
+													</div>
+												)}
+											</div>
+											<div
+												className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
+												<ClockIconSVG />
+												<DatePicker
+													required
+													{...register('slot1EndTime')}
+													// selected={getScheduleSlotDate[0].slot3}
+													onChange={(date) => {
+														setValue('slot1EndTime', date);
+														// getSlotInformationHandler(date, 'slot1EndTime', 'schedule');
+													}}
+													showTimeSelect
+													showTimeSelectOnly
+													timeIntervals={60}
+													timeCaption="Time"
+													dateFormat="h:mm a"
+													timeFormat="h:mm a"
+													placeholderText="End Time"
+													name="slot1EndTime"
+												/>
+												{errors.slot1EndTime && (
+													<div className={InterviewScheduleStyle.error}>
+														Please select end time
+													</div>
+												)}
+											</div>
+										</div>
+									</div>
+								</>
+
+
+							}
+
+
+							<Radio.Group
+								className={InterviewScheduleStyle.radioGroup}
+								onChange={slotLaterOnChange}
+								value={slotLater}>
+								<Radio value={2}>I will add Time Slots Later</Radio>
+							</Radio.Group>
+
+						</div>
+					</div>
 				</div>
 
 				<div className={InterviewScheduleStyle.formPanelAction}>
