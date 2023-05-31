@@ -557,3 +557,6 @@ tr th:first-child {
   box-shadow: none;
   outline: none;
 }
+.error{
+  color:red
+}
