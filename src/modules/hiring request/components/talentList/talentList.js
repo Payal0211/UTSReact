@@ -1,4 +1,13 @@
-import { Dropdown, Menu, Divider, List, Modal, message, Space,Table } from 'antd';
+import {
+	Dropdown,
+	Menu,
+	Divider,
+	List,
+	Modal,
+	message,
+	Space,
+	Table,
+} from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import TalentListStyle from './talentList.module.css';
@@ -7,8 +16,7 @@ import { AiOutlineDown } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
 import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
-import { ReactComponent as LeftArrowSVG } from "assets/svg/arrowLeft.svg";
-import { ReactComponent as RightArrowSVG } from "assets/svg/arrowRight.svg";
+
 import { TalentOnboardStatus } from 'constants/application';
 import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
 import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
@@ -38,9 +46,8 @@ import { DownOutlined } from '@ant-design/icons';
 import EditBillRate from '../editBillAndPayRate/editBillRateModal';
 import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
 import FeedbackResponse from 'modules/interview/components/feedbackResponse/feedbackResponse';
-import DatePicker from "react-datepicker";
-import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
-import ProfileLogDetails from "../profileLogDetails/profileLog";
+
+import ProfileLogDetails from '../profileLogDetails/profileLog';
 
 const TalentList = ({
 	talentCTA,
@@ -60,6 +67,7 @@ const TalentList = ({
 	talentID,
 }) => {
 	const [isShowFeedback, setShowFeedback] = useState(false);
+	const [isAnotherRound, setAnotherRound] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [activeType, setActiveType] = useState(null);
 	const [logExpanded, setLogExpanded] = useState(null);
@@ -1227,9 +1235,6 @@ const TalentList = ({
 
 	// Profile Log
 
-
-
-
 	// For Add / Remove Class
 	const [profileShared, setProfileShared] = useState([]);
 	const [showProfileShared, setShowProfileShared] = useState(false);
@@ -1322,8 +1327,7 @@ const TalentList = ({
 																setProfileLogModal(true); // TODO:-
 																setTalentIndex(item?.TalentID);
 																// viewProfileInfo();
-															}}
-														>
+															}}>
 															View Profile Log
 														</Menu.Item>
 														<Divider
@@ -1608,9 +1612,7 @@ const TalentList = ({
 														}
 														case TalentOnboardStatus.TALENT_ACCEPTANCE: {
 															setTalentAcceptance(true);
-
 															setTalentIndex(item?.TalentID);
-
 															break;
 														}
 														case TalentOnboardStatus.TALENT_STATUS: {
@@ -1618,6 +1620,7 @@ const TalentList = ({
 															setTalentIndex(item?.TalentID);
 															break;
 														}
+
 														case TalentOnboardStatus.INTERVIEW_STATUS: {
 															setInterviewStatus(true);
 															setTalentIndex(item?.TalentID);
@@ -1637,6 +1640,11 @@ const TalentList = ({
 															// setInterviewFeedback(true);
 															setTalentIndex(item?.TalentID);
 															setEditFeedback(true);
+															break;
+														}
+														case TalentOnboardStatus.ANOTHER_ROUND_INTERVIEW: {
+															setAnotherRound(true);
+															setTalentIndex(item?.TalentID);
 															break;
 														}
 														case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
@@ -1701,10 +1709,8 @@ const TalentList = ({
 						setShowProfileShared(false);
 						setShowProfileRejectClass(false);
 						setFeedBackReceivedClass(false);
-					}}
-				>
+					}}>
 					<ProfileLogDetails
-
 						activeIndex={activeIndex}
 						talentID={talentID}
 						activeType={activeType}
@@ -1812,6 +1818,7 @@ const TalentList = ({
 				<Modal
 					transitionName=""
 					width="1000px"
+					className="commonModalWrap"
 					centered
 					footer={null}
 					open={showReScheduleInterviewModal}
@@ -1844,6 +1851,7 @@ const TalentList = ({
 				<Modal
 					transitionName=""
 					width="1000px"
+					className="commonModalWrap"
 					centered
 					footer={null}
 					open={showScheduleInterviewModal}
@@ -1874,11 +1882,13 @@ const TalentList = ({
 				<Modal
 					transitionName=""
 					width="1000px"
+					className="commonModalWrap"
 					centered
 					footer={false}
 					open={interviewFeedback}
 					onCancel={() => setInterviewFeedback(false)}>
 					<InterviewFeedback
+						getScheduleSlotInfomation={getScheduleSlotInfomation}
 						hrId={hrId}
 						clientDetail={clientDetail}
 						callAPI={callAPI}
@@ -1888,6 +1898,9 @@ const TalentList = ({
 						hiringRequestNumber={hiringRequestNumber}
 						starMarkedStatusCode={starMarkedStatusCode}
 						hrStatus={hrStatus}
+						getScheduleSlotDate={getScheduleSlotDate}
+						getSlotInformationHandler={getSlotInformationHandler}
+						scheduleSlotRadio={scheduleSlotRadio}
 						closeModal={() => setInterviewFeedback(false)}
 					/>
 				</Modal>
@@ -1897,11 +1910,13 @@ const TalentList = ({
 				<Modal
 					transitionName=""
 					width="1000px"
+					className="commonModalWrap"
 					centered
 					footer={false}
 					open={isEditFeedback}
 					onCancel={() => setEditFeedback(false)}>
 					<InterviewFeedback
+						getScheduleSlotInfomation={getScheduleSlotInfomation}
 						isEditFeedback={isEditFeedback}
 						hrId={hrId}
 						clientDetail={clientDetail}

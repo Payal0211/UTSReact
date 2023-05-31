@@ -14,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import WithLoader from 'shared/components/loader/loader';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
-import { _isNull } from 'shared/utils/basic_utils';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -35,7 +34,7 @@ const DebriefingHR = ({
 	getHRdetails,
 	getCompanyName,
 	clientDetail,
-	params
+	params,
 }) => {
 	const {
 		watch,
@@ -257,21 +256,31 @@ const DebriefingHR = ({
 									errors={errors}
 									validationSchema={{
 										validate: (value) => {
-											if (params === "addnewhr") {
-												if (value.toLowerCase() === getCompanyName.toLowerCase() && value.toUpperCase() === getCompanyName.toUpperCase()) {
+											if (params === 'addnewhr') {
+												if (
+													value.toLowerCase() ===
+														getCompanyName.toLowerCase() &&
+													value.toUpperCase() === getCompanyName.toUpperCase()
+												) {
 													return 'Please do not mention company name here';
-												} if (!value) {
-													return "Please add something about the company";
+												}
+												if (!value) {
+													return 'Please add something about the company';
 												}
 											} else {
-												if (value.toLowerCase() === clientDetail?.companyname
-													.toLowerCase() && value.toUpperCase() === clientDetail?.companyname.toUpperCase()) {
+												if (
+													value.toLowerCase() ===
+														clientDetail?.companyname.toLowerCase() &&
+													value.toUpperCase() ===
+														clientDetail?.companyname.toUpperCase()
+												) {
 													return 'Please do not mention company name here';
-												} if (!value) {
-													return "Please add something about the company";
+												}
+												if (!value) {
+													return 'Please add something about the company';
 												}
 											}
-										}
+										},
 									}}
 									label={'About Company'}
 									register={register}
@@ -373,7 +382,7 @@ const DebriefingHR = ({
 					register={register}
 					interviewDetails={interviewDetails}
 					fields={fields}
-				getHRdetails={getHRdetails}
+					getHRdetails={getHRdetails}
 				/>
 				<Divider />
 				{isLoading ? (

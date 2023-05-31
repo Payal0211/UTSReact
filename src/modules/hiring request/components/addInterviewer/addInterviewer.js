@@ -30,8 +30,6 @@ const AddInterviewer = ({
 		},
 		[remove],
 	);
-	console.log(interviewDetails, '-interviewDetails');
-	console.log(getHRdetails, '--getHRDetail');
 
 	/*const autoFillInterviewDetailsHandler = useCallback(() => {
 		if (interviewDetails) {

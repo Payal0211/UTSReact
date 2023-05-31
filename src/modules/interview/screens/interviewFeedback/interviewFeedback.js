@@ -22,12 +22,17 @@ const InterviewFeedback = ({
 	starMarkedStatusCode,
 	hrStatus,
 	closeModal,
+	getScheduleSlotDate,
+	getSlotInformationHandler,
+	scheduleSlotRadio,
+	getScheduleSlotInfomation,
 }) => {
 	/** For Fourth Round Start --- */
 	const [isAnotherRound, setAnotherRound] = useState(false);
 	const [interviewFeedbackResult, setInterviewFeedbackResult] = useState(null);
 	/** For Fourth Round End */
 	const [feedbackDetails, setFeedbackDetails] = useState({});
+
 	const {
 		register,
 		handleSubmit,
@@ -54,8 +59,6 @@ const InterviewFeedback = ({
 		setRadioValue4(e.target.value);
 	};
 
-	console.log(isAnotherRound, '----AnotherRound');
-
 	const clientFeedbackHandler = useCallback(
 		async (d) => {
 			setIsLoading(true);
@@ -78,8 +81,16 @@ const InterviewFeedback = ({
 				en_Id: '',
 				IsClientNotificationSent: isClientNotification,
 			};
+
 			if (isAnotherRound) {
-				setInterviewFeedbackResult(clientFeedback);
+				// setInterviewFeedbackResult(clientFeedback);
+				const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
+					clientFeedback,
+				);
+				if (response?.statusCode === HTTPStatusCode.OK) {
+					setIsLoading(false);
+					setInterviewFeedbackResult(clientFeedback);
+				}
 			} else {
 				const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
 					clientFeedback,
@@ -145,7 +156,16 @@ const InterviewFeedback = ({
 	]);
 
 	return isAnotherRound && interviewFeedbackResult ? (
-		<AnotherRound />
+		<AnotherRound
+			getScheduleSlotInfomation={getScheduleSlotInfomation}
+			talentInfo={talentInfo}
+			getScheduleSlotDate={getScheduleSlotDate}
+			getSlotInformationHandler={getSlotInformationHandler}
+			scheduleSlotRadio={scheduleSlotRadio}
+			callAPI={callAPI}
+			hrId={hrId}
+			closeModal={closeModal}
+		/>
 	) : (
 		<div className={InterviewScheduleStyle.interviewContainer}>
 			<div className={InterviewScheduleStyle.leftPane}>

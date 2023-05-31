@@ -414,30 +414,33 @@ const MatchmakingModal = ({
 								)}
 							</div>
 
-							<div className={MatchMakingStyle.formPanelAction}>
-								<button
-									disabled={listOfTalents.length === 0}
-									style={{
-										cursor: listOfTalents.length === 0 ? 'no-drop' : 'pointer',
-									}}
-									onClick={() => {
-										getTalentPriorities();
+							{matchmakingData?.rows?.length > 0 && (
+								<div className={MatchMakingStyle.formPanelAction}>
+									<button
+										disabled={listOfTalents.length === 0}
+										style={{
+											cursor:
+												listOfTalents.length === 0 ? 'no-drop' : 'pointer',
+										}}
+										onClick={() => {
+											getTalentPriorities();
 
-										// callAPI(hrID);
-									}}
-									type="button"
-									className={MatchMakingStyle.btnPrimary}>
-									Select Talent
-								</button>
+											// callAPI(hrID);
+										}}
+										type="button"
+										className={MatchMakingStyle.btnPrimary}>
+										Select Talent
+									</button>
 
-								<button className={MatchMakingStyle.btn}>Cancel</button>
-								<div
-									style={{
-										position: 'absolute',
-										right: '0',
-										marginRight: '32px',
-									}}></div>
-							</div>
+									<button className={MatchMakingStyle.btn}>Cancel</button>
+									<div
+										style={{
+											position: 'absolute',
+											right: '0',
+											marginRight: '32px',
+										}}></div>
+								</div>
+							)}
 						</>
 					)}
 				</div>
