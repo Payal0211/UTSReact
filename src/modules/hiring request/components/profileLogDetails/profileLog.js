@@ -266,13 +266,20 @@ const ProfileLogDetails = ({
     [activeIndex, activeType, onProfileLogClickHandler, typeId]
   );
 
-  const [feedback,setFeedback]=useState(true);
-  const [profileReject,setProfileReject]=useState(false);
-  const [selected,setSelected]=useState(false);
-  const [profileSharedd,setprofileShared] = useState(false);
- 
+  useEffect(() => {
+    viewProfileInfo()
+  }, [])
+
+
+
+
+  const [feedback, setFeedback] = useState(true);
+  const [profileReject, setProfileReject] = useState(false);
+  const [selected, setSelected] = useState(false);
+  const [profileSharedd, setprofileShared] = useState(false);
+
   const rightArrowClick = () => {
-    if(profileSharedd === true){
+    if (profileSharedd === true) {
       profileLogBox();
       setprofileShared(false);
       setFeedback(true)
@@ -282,40 +289,47 @@ const ProfileLogDetails = ({
       setFeedback(false);
       setProfileReject(true);
     }
-   else if (profileReject === true) {
+    else if (profileReject === true) {
       profileRejectedDetails()
       setSelected(true);
       setProfileReject(false);
     }
-    else if(selected){
+    else if (selected) {
       selectFor();
     }
   };
   const leftArrowClick = () => {
-  if(profileSharedd){
-    profileLogBox();
-    setFeedback(false);
-    setProfileReject(false);
-    setSelected(false);
-  }
+    if (profileSharedd) {
+      profileLogBox();
+      setFeedback(false);
+      setProfileReject(false);
+      setSelected(false);
+    }
     else if (feedback === true) {
       profileLogBox();
       setFeedback(true);
       setProfileReject(false);
       setprofileShared(true);
     }
-   else if (profileReject === true) {
-    feedbackReceived();
+    else if (profileReject === true) {
+      feedbackReceived();
       setSelected(false);
       setProfileReject(true);
       setFeedback(true);
     }
-    else if(selected){
+    else if (selected) {
       profileRejectedDetails()
       setSelected(false);
       setProfileReject(true);
     }
   };
+
+
+
+
+
+
+
 
   return (
     <>
