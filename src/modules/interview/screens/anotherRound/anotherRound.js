@@ -87,6 +87,7 @@ const AnotherRound = ({
 		// clearErrors();
 	};
 
+	console.log(clientDetailsForAnotherRound, '-clientDetailsForAnotherRound');
 	const checkDuplicateInterviewerEmailHandler = useCallback(
 		async (e) => {
 			const response = await InterviewDAO.CheckInterviewerEmailIdRequestDAO({
@@ -139,12 +140,10 @@ const AnotherRound = ({
 				anotherRoundTimeSlotOption: slotLater,
 			};
 
-			console.log(formattedData, '-formattedData');
 			let response = await InterviewDAO.saveAnotherRoundFeedbackRequestDAO(
 				formattedData,
 			);
 			if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
-				console.log(response, '-srespom');
 				setIsLoading(false);
 				messageAPI.open({
 					type: 'error',
@@ -152,10 +151,30 @@ const AnotherRound = ({
 				});
 			} else if (response?.statusCode === HTTPStatusCode.OK) {
 				setIsLoading(false);
+				messageAPI.open(
+					{
+						type: 'success',
+						content: 'Second round interview scheduled successfully.',
+					},
+					1000,
+				);
+				setTimeout(() => {
+					callAPI(hrId);
+					closeModal();
+				}, 1000);
+			} else {
+				setIsLoading(false);
+				messageAPI.open({
+					type: 'error',
+					content: 'Something went wrong',
+				});
 			}
 		},
 		[
+			callAPI,
+			closeModal,
 			getScheduleSlotInfomation,
+			hrId,
 			messageAPI,
 			param?.hrid,
 			radioValue,
@@ -224,52 +243,53 @@ const AnotherRound = ({
 											<div className={InterviewScheduleStyle.radioDetailInfo}>
 												<div className={InterviewScheduleStyle.row}>
 													{clientDetailsForAnotherRound
-														?.CurrentInterviewerDetails?.length > 0
-														? clientDetailsForAnotherRound?.CurrentInterviewerDetails?.map(
-																(item) => {
-																	return (
+														?.CurrentInterviewerDetails?.length > 0 ? (
+														clientDetailsForAnotherRound?.CurrentInterviewerDetails?.map(
+															(item, index) => {
+																return (
+																	<div
+																		key={`interviwerList_${index}`}
+																		className={InterviewScheduleStyle.colLg6}>
 																		<div
-																			className={InterviewScheduleStyle.colLg6}>
-																			<div
-																				className={
-																					InterviewScheduleStyle.secondRoundIntBox
-																				}>
-																				<ul>
-																					<li>
-																						<span>Interviewer Name:</span>{' '}
-																						Gayathri Srinivas
-																					</li>
-																					<li>
-																						<span>Interviewer Linkedin:</span>{' '}
-																						galepartners
-																					</li>
-																					<li>
-																						<span>
-																							Interviewer Years of Experience:
-																						</span>{' '}
-																						15
-																					</li>
-																					<li>
-																						<span>Type of Person:</span>{' '}
-																						Technical
-																					</li>
-																					<li>
-																						<span>
-																							Interviewer Designation:
-																						</span>{' '}
-																						General Manager
-																					</li>
-																					<li>
-																						<span>Interviewer Email Id:</span>{' '}
-																						gayathri.srinivas@galepartners.com
-																					</li>
-																				</ul>
-																			</div>
+																			className={
+																				InterviewScheduleStyle.secondRoundIntBox
+																			}>
+																			<ul>
+																				<li>
+																					<span>Interviewer Name:</span>{' '}
+																					{item?.interviewerName}
+																				</li>
+																				<li>
+																					<span>Interviewer Linkedin:</span>{' '}
+																					{item?.interviewLinkedin}
+																				</li>
+																				<li>
+																					<span>
+																						Interviewer Years of Experience:
+																					</span>{' '}
+																					{item?.interviewerYearofExperience}
+																				</li>
+																				<li>
+																					<span>Type of Person:</span>{' '}
+																					{item?.typeofInterviewer}
+																				</li>
+																				<li>
+																					<span>Interviewer Designation:</span>{' '}
+																					{item?.interviewerDesignation}
+																				</li>
+																				<li>
+																					<span>Interviewer Email Id:</span>{' '}
+																					{item?.interviewerEmailID}
+																				</li>
+																			</ul>
 																		</div>
-																	);
-																},
-														  )
-														: 'No Interviewer Found'}
+																	</div>
+																);
+															},
+														)
+													) : (
+														<b>No Interviewer Found</b>
+													)}
 												</div>
 											</div>
 										</>
@@ -289,52 +309,53 @@ const AnotherRound = ({
 											<div className={InterviewScheduleStyle.radioDetailInfo}>
 												<div className={InterviewScheduleStyle.row}>
 													{clientDetailsForAnotherRound
-														?.CurrentInterviewerDetails?.length > 0
-														? clientDetailsForAnotherRound?.CurrentInterviewerDetails?.map(
-																(item) => {
-																	return (
+														?.CurrentInterviewerDetails?.length > 0 ? (
+														clientDetailsForAnotherRound?.CurrentInterviewerDetails?.map(
+															(item, index) => {
+																return (
+																	<div
+																		key={`interviwerList_${index}`}
+																		className={InterviewScheduleStyle.colLg6}>
 																		<div
-																			className={InterviewScheduleStyle.colLg6}>
-																			<div
-																				className={
-																					InterviewScheduleStyle.secondRoundIntBox
-																				}>
-																				<ul>
-																					<li>
-																						<span>Interviewer Name:</span>{' '}
-																						Gayathri Srinivas
-																					</li>
-																					<li>
-																						<span>Interviewer Linkedin:</span>{' '}
-																						galepartners
-																					</li>
-																					<li>
-																						<span>
-																							Interviewer Years of Experience:
-																						</span>{' '}
-																						15
-																					</li>
-																					<li>
-																						<span>Type of Person:</span>{' '}
-																						Technical
-																					</li>
-																					<li>
-																						<span>
-																							Interviewer Designation:
-																						</span>{' '}
-																						General Manager
-																					</li>
-																					<li>
-																						<span>Interviewer Email Id:</span>{' '}
-																						gayathri.srinivas@galepartners.com
-																					</li>
-																				</ul>
-																			</div>
+																			className={
+																				InterviewScheduleStyle.secondRoundIntBox
+																			}>
+																			<ul>
+																				<li>
+																					<span>Interviewer Name:</span>{' '}
+																					{item?.interviewerName}
+																				</li>
+																				<li>
+																					<span>Interviewer Linkedin:</span>{' '}
+																					{item?.interviewLinkedin}
+																				</li>
+																				<li>
+																					<span>
+																						Interviewer Years of Experience:
+																					</span>{' '}
+																					{item?.interviewerYearofExperience}
+																				</li>
+																				<li>
+																					<span>Type of Person:</span>{' '}
+																					{item?.typeofInterviewer}
+																				</li>
+																				<li>
+																					<span>Interviewer Designation:</span>{' '}
+																					{item?.interviewerDesignation}
+																				</li>
+																				<li>
+																					<span>Interviewer Email Id:</span>{' '}
+																					{item?.interviewerEmailID}
+																				</li>
+																			</ul>
 																		</div>
-																	);
-																},
-														  )
-														: 'No Interviewer Found'}
+																	</div>
+																);
+															},
+														)
+													) : (
+														<b>No Interviewer Found</b>
+													)}
 												</div>
 
 												<div
@@ -979,7 +1000,6 @@ const AnotherRound = ({
 													</div>
 													<div className={InterviewScheduleStyle.timeSlotItem}>
 														<CalenderSVG />
-
 														<DatePicker
 															name="slot1Date"
 															required

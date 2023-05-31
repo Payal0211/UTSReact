@@ -123,16 +123,20 @@ export class TalentOnboardStatus {
 }
 
 export class HRCTA {
-	static EDIT_HR = 'EditHR';
-	static EDIT_DEBRIEFING_HR = 'DebriefingHR';
-	static DEBRIEFING_NR = 'DebriefingNR';
+	static EDIT_HR = 'Edit HR';
+	static EDIT_DEBRIEFING_HR = 'Debriefing HR';
+	static DEBRIEFING_NR = 'Debriefing NR';
 	static CONVERT_TO_DP = 'Convert to DP';
 	static CONVERT_TO_CONTRACTUAL = 'Convert to Contractual';
-	static AM_ASSIGNMENT = 'AMAssignment';
+	static AM_ASSIGNMENT = 'AM Assignment';
 	static ACCEPT_HR = 'Accept HR';
 	static UPDATE_TR = 'UpdateTR';
 	static SHARE_PROFILE = 'Share a Profile';
 	static ADD_NOTES = 'Add Notes';
+}
+export class InterviewFeedbackStatus {
+	static HIRED = 'Hired';
+	static REJECTED = 'Rejected';
 }
 export class InputType {
 	static TEXT = 'text';

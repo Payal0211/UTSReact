@@ -1,8 +1,20 @@
-.feedbackContainer{
+.feedbackRejectedontainer{
     height: 20px;
     border-top-right-radius: 8px;
     border-top-left-radius: 8px;
-    background-color: red;
+    background-color: var(--color-danger);
+}
+.feedbackHiredContainer{
+    height: 20px;
+        border-top-right-radius: 8px;
+        border-top-left-radius: 8px;
+        background-color: var(--color-success);
+}
+.feedbackContainer{
+    height: 20px;
+        border-top-right-radius: 8px;
+        border-top-left-radius: 8px;
+        /* background-color: var(--color-danger); */
 }
 .feedbackContainerBody{
     padding: 24px;

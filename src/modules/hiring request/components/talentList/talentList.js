@@ -1,13 +1,4 @@
-import {
-	Dropdown,
-	Menu,
-	Divider,
-	List,
-	Modal,
-	message,
-	Space,
-	Table,
-} from 'antd';
+import { Dropdown, Menu, Divider, List, Modal, message, Space } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import TalentListStyle from './talentList.module.css';
@@ -66,6 +57,8 @@ const TalentList = ({
 	inteviewSlotDetails,
 	talentID,
 }) => {
+	const [scheduleAnotherRoundInterview, setScheduleAnotherRoundInterview] =
+		useState(false);
 	const [isShowFeedback, setShowFeedback] = useState(false);
 	const [isAnotherRound, setAnotherRound] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(-1);
@@ -207,7 +200,6 @@ const TalentList = ({
 	const [getDateNewFormate, setDateNewFormate] = useState([]);
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
-	const [typeId, setTypeId] = useState(0);
 
 	const {
 		register,
@@ -1401,14 +1393,27 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-									<div className={TalentListStyle.interviewStatus}>
-										<span>Interview Status:</span>&nbsp;&nbsp;
+									<div className={TalentListStyle.payRate}>
+										<div>
+											<span>Interview Status:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500', cursor: 'pointer' }}>
+												{item?.InterviewStatus === ''
+													? 'NA'
+													: item?.InterviewStatus}
+											</span>
+										</div>
 										<span
-											style={{ fontWeight: '500', cursor: 'pointer' }}
-											onClick={() => setShowFeedback(true)}>
-											{item?.InterviewStatus === ''
-												? 'NA'
-												: item?.InterviewStatus}
+											onClick={() => {
+												setTalentIndex(item?.TalentID);
+												setShowFeedback(true);
+											}}
+											style={{
+												textDecoration: 'underline',
+												color: `var(--background-color-ebony)`,
+												cursor: 'pointer',
+											}}>
+											{' '}
+											View
 										</span>
 									</div>
 									<Divider
@@ -1429,7 +1434,6 @@ const TalentList = ({
 												</div>
 												<span
 													onClick={() => {
-														// setEDITBRPRModal(true);
 														setTalentIndex(item?.TalentID);
 														setEditBillRate(true);
 													}}
@@ -1647,6 +1651,11 @@ const TalentList = ({
 															setTalentIndex(item?.TalentID);
 															break;
 														}
+														case TalentOnboardStatus.SCHEDULE_ANOTHER_ROUND_INTERVIEW: {
+															setScheduleAnotherRoundInterview(true);
+															setTalentIndex(item?.TalentID);
+															break;
+														}
 														case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
 															setOnboardTalentModal(true);
 															setTalentIndex(item?.TalentID);
@@ -1822,11 +1831,77 @@ const TalentList = ({
 					centered
 					footer={null}
 					open={showReScheduleInterviewModal}
-					// onOk={() => setVersantModal(false)}
+					onOk={() => setReScheduleInterviewModal(false)}
 					onCancel={() => setReScheduleInterviewModal(false)}>
 					<InterviewReschedule
 						callAPI={callAPI}
 						closeModal={() => setReScheduleInterviewModal(false)}
+						talentName={filterTalentID?.Name}
+						hrId={hrId}
+						talentInfo={filterTalentID}
+						hiringRequestNumber={hiringRequestNumber}
+						reScheduleTimezone={reScheduleTimezone}
+						setRescheduleTimezone={setRescheduleTimezone}
+						getRescheduleSlotDate={getRescheduleSlotDate}
+						setRescheduleSlotDate={setRescheduleSlotDate}
+						getRescheduleSlotInfomation={getRescheduleSlotInfomation}
+						setRescheduleSlotInformation={setRescheduleSlotInformation}
+						reScheduleRadio={reScheduleRadio}
+						setRescheduleRadio={setRescheduleRadio}
+						reScheduleSlotRadio={reScheduleSlotRadio}
+						setRescheduleSlotRadio={setRescheduleSlotRadio}
+						getSlotInformationHandler={getSlotInformationHandler}
+						getInterviewStatus={getInterviewStatus}
+					/>
+				</Modal>
+			)}
+			{/** ============ MODAL FOR ANOTHER ROUND RESCHEDULING INTERVIEW ================ */}
+			{isAnotherRound && (
+				<Modal
+					transitionName=""
+					width="1000px"
+					className="commonModalWrap"
+					centered
+					footer={null}
+					open={isAnotherRound}
+					onOk={() => setAnotherRound(false)}
+					onCancel={() => setAnotherRound(false)}>
+					<InterviewReschedule
+						callAPI={callAPI}
+						closeModal={() => setAnotherRound(false)}
+						talentName={filterTalentID?.Name}
+						hrId={hrId}
+						talentInfo={filterTalentID}
+						hiringRequestNumber={hiringRequestNumber}
+						reScheduleTimezone={reScheduleTimezone}
+						setRescheduleTimezone={setRescheduleTimezone}
+						getRescheduleSlotDate={getRescheduleSlotDate}
+						setRescheduleSlotDate={setRescheduleSlotDate}
+						getRescheduleSlotInfomation={getRescheduleSlotInfomation}
+						setRescheduleSlotInformation={setRescheduleSlotInformation}
+						reScheduleRadio={reScheduleRadio}
+						setRescheduleRadio={setRescheduleRadio}
+						reScheduleSlotRadio={reScheduleSlotRadio}
+						setRescheduleSlotRadio={setRescheduleSlotRadio}
+						getSlotInformationHandler={getSlotInformationHandler}
+						getInterviewStatus={getInterviewStatus}
+					/>
+				</Modal>
+			)}
+			{/** ============ MODAL FOR SCHEDULE ANOTHER ROUND RESCHEDULING INTERVIEW ================ */}
+			{scheduleAnotherRoundInterview && (
+				<Modal
+					transitionName=""
+					width="1000px"
+					className="commonModalWrap"
+					centered
+					footer={null}
+					open={isAnotherRound}
+					onOk={() => setScheduleAnotherRoundInterview(false)}
+					onCancel={() => setScheduleAnotherRoundInterview(false)}>
+					<InterviewReschedule
+						callAPI={callAPI}
+						closeModal={() => setScheduleAnotherRoundInterview(false)}
 						talentName={filterTalentID?.Name}
 						hrId={hrId}
 						talentInfo={filterTalentID}
@@ -2178,6 +2253,7 @@ const TalentList = ({
 						onCancel={() => setShowFeedback(false)}
 						hrId={hrId}
 						callAPI={callAPI}
+						clientDetail={clientDetail}
 						talentInfo={filterTalentID}
 					/>
 				</Modal>

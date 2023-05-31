@@ -1,22 +1,37 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
 import { HRCTA } from 'constants/application';
 import ConvertToDP from '../convertToDP/convertToDP';
 import ConvertToContractual from '../convertToContractual/convertToContractual';
 import AcceptHR from '../acceptHR/acceptHR';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import MatchmakingModal from '../matchmaking/matchmaking';
+import UTSRoutes from 'constants/routes';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { HTTPStatusCode } from 'constants/network';
 
 const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
+	const navigate = useNavigate();
 	const [isConvertToContractual, setIsConvertToContractual] = useState(false);
 	const [isConvertToDP, setIsConvertToDP] = useState(false);
 	const [isAcceptHR, setIsAcceptHR] = useState(false);
 	const [isShareProfile, setIsShareProfile] = useState(false);
+
 	const [isAMAssignment, setIsAMAssignment] = useState(false);
 	const switchLocation = useLocation();
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
+	const navigateToEditDebriefing = useCallback(async () => {
+		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrID);
+
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			localStorage.setItem('hrID', hrID);
+			localStorage.setItem('fromEditDeBriefing', true);
+			navigate(UTSRoutes.ADDNEWHR);
+		}
+	}, [hrID, navigate]);
+
 	return (
 		<>
 			<div>
@@ -47,6 +62,10 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 							}
 							case HRCTA.AM_ASSIGNMENT: {
 								setIsAMAssignment(true);
+								break;
+							}
+							case HRCTA.EDIT_DEBRIEFING_HR: {
+								navigateToEditDebriefing();
 								break;
 							}
 							default:

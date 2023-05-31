@@ -150,21 +150,6 @@ const HRDetailScreen = () => {
 		setEditDebring(data);
 	}, [apiData]);
 
-	const hrId = useParams();
-
-	let fromEditDeBriefing = true;
-
-	const navigateToEditDebriefing = async () => {
-		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId.hrid);
-
-		if (response?.statusCode === HTTPStatusCode.OK) {
-			localStorage.setItem('hrID', hrId.hrid);
-			localStorage.setItem('fromEditDeBriefing', fromEditDeBriefing);
-
-			navigate('/allhiringrequest/addnewhr');
-		}
-	};
-
 	return (
 		<WithLoader
 			showLoader={isLoading}
@@ -198,14 +183,6 @@ const HRDetailScreen = () => {
 								updatedSplitter={updatedSplitter}
 								cloneHR={apiData?.dynamicCTA?.CloneHR}
 							/>
-						)}
-
-						{editDebrifing?.length > 0 && editDebrifing?.[0]?.IsEnabled && (
-							<button
-								className={HRDetailStyle.btnPrimary}
-								onClick={navigateToEditDebriefing}>
-								Edit Debriefing
-							</button>
 						)}
 					</div>
 
