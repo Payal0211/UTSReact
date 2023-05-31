@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Divider, List, Modal, message, Space,Table } from 'antd';
+import { Dropdown, Menu, Divider, List, Modal, message, Space, Table } from 'antd';
 import { BsThreeDots } from 'react-icons/bs';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import TalentListStyle from './talentList.module.css';
@@ -1874,10 +1874,12 @@ const TalentList = ({
 				<Modal
 					transitionName=""
 					width="1000px"
+					className="commonModalWrap"
 					centered
 					footer={false}
 					open={interviewFeedback}
 					onCancel={() => setInterviewFeedback(false)}>
+
 					<InterviewFeedback
 						hrId={hrId}
 						clientDetail={clientDetail}
@@ -1897,6 +1899,7 @@ const TalentList = ({
 				<Modal
 					transitionName=""
 					width="1000px"
+					className="commonModalWrap"
 					centered
 					footer={false}
 					open={isEditFeedback}
