@@ -83,6 +83,7 @@ const HRSelectField = ({
 				/>
 			) : (
 				<Select
+					getPopupContainer={(trigger) => trigger.parentElement}
 					id="selectedValue"
 					placeholder={placeholder}
 					mode={mode}
