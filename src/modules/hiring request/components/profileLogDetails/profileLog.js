@@ -292,26 +292,26 @@ const ProfileLogDetails = ({
     }
   };
   const leftArrowClick = () => {
-if(profileSharedd){
-  profileLogBox();
-  setFeedback(false);
-  setProfileReject(false);
-  setSelected(false);
-}
+  if(profileSharedd){
+    profileLogBox();
+    setFeedback(false);
+    setProfileReject(false);
+    setSelected(false);
+  }
     else if (feedback === true) {
-      feedbackReceived();
+      profileLogBox();
       setFeedback(true);
       setProfileReject(false);
       setprofileShared(true);
     }
    else if (profileReject === true) {
-      profileRejectedDetails()
+    feedbackReceived();
       setSelected(false);
       setProfileReject(true);
       setFeedback(true);
     }
     else if(selected){
-      selectFor();
+      profileRejectedDetails()
       setSelected(false);
       setProfileReject(true);
     }
