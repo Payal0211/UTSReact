@@ -126,7 +126,7 @@ const SupplyFunnelModal = ({
 					) : (
 						<Table
 							id="hrListingTable"
-							columns={reportConfig?.demandFunnelHRDetails}
+							columns={reportConfig?.demandFunnelHRDetails()}
 							bordered={false}
 							dataSource={
 								searchData && searchData?.length > 0

@@ -62,7 +62,7 @@ const SupplyFunnelScreen = () => {
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 
-	const getDemandFunnelListingHandler = useCallback(async (tableData) => {
+	const getSupplyReportListHandler = useCallback(async (tableData) => {
 		setLoading(true);
 		let response = await ReportDAO.supplyFunnelListingRequestDAO(tableData);
 		if (response?.statusCode === HTTPStatusCode.OK) {
@@ -279,7 +279,7 @@ const SupplyFunnelScreen = () => {
 						.join('-'),
 				},
 			});
-			getDemandFunnelListingHandler({
+			getSupplyReportListHandler({
 				...tableFilteredState,
 				startDate: new Date(start)
 					.toLocaleDateString('en-UK')
@@ -443,8 +443,8 @@ const SupplyFunnelScreen = () => {
 	}, [getHTMLFilter, isAllowFilters]);
 
 	useEffect(() => {
-		getDemandFunnelListingHandler(tableFilteredState);
-	}, [getDemandFunnelListingHandler, tableFilteredState]);
+		getSupplyReportListHandler(tableFilteredState);
+	}, [getSupplyReportListHandler, tableFilteredState]);
 	useEffect(() => {
 		getReportFilterHandler();
 	}, [getReportFilterHandler]);
@@ -627,7 +627,7 @@ const SupplyFunnelScreen = () => {
 						appliedFilter={appliedFilter}
 						setCheckedState={setCheckedState}
 						checkedState={checkedState}
-						handleHRRequest={getDemandFunnelListingHandler}
+						handleHRRequest={getSupplyReportListHandler}
 						setTableFilteredState={setTableFilteredState}
 						tableFilteredState={tableFilteredState}
 						setFilteredTagLength={setFilteredTagLength}

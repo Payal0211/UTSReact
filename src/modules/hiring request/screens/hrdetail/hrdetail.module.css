@@ -4,6 +4,7 @@
 }
 
 .goback{
+   
     color: var(--uplers-black);
     display: flex;
     justify-content: flex-start;
