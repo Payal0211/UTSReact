@@ -1,29 +1,24 @@
 import CountryListStyle from './countryList.module.css';
-import { Divider, Modal, Table } from 'antd';
-import DatePicker from 'react-datepicker';
+import { Modal, Table } from 'antd';
+
 import 'react-datepicker/dist/react-datepicker.css';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ReportDAO } from 'core/report/reportDAO';
+
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
-import { reportConfig } from 'modules/report/report.config';
-import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
-import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { Controller, useForm } from 'react-hook-form';
-import {
-	downloadToExcel,
-	formatJDDumpReport,
-	jdDumpSearch,
-} from 'modules/report/reportUtils';
-import { InputType } from 'constants/application';
+
 import { MasterDAO } from 'core/master/masterDAO';
+import { MasterConfig } from 'modules/masters/masterConfig';
+import { MasterUtils } from 'modules/masters/masterUtils';
+import AddCountry from 'modules/masters/components/addCountry/addCountry';
 
 const CountryList = () => {
+	const [isAddCountryModal, setAddCountryModal] = useState(false);
 	const [tableFilteredState, setTableFilteredState] = useState({
-		pageIndex: 1,
-		pageSize: 100,
-		sortExpression: '',
-		sortDirection: 'desc',
+		PageIndex: 1,
+		PageSize: 100,
+		SortExpression: '',
+		SortDirection: '',
 	});
 
 	const [apiData, setApiData] = useState([]);
@@ -33,43 +28,30 @@ const CountryList = () => {
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageSize, setPageSize] = useState(100);
 
-	const [startDate, setStartDate] = useState();
-	const [endDate, setEndDate] = useState(null);
-
-	const [jdSkillModal, setJDSkillModal] = useState(false);
-	const [hrSkillModal, setHRSkillModal] = useState(false);
-	const [jdRoleRespModal, setJDRoleRespModal] = useState(false);
-	const [hrRoleRespModal, setHRRoleRespModal] = useState(false);
-	const [jdReqModal, setJDReqModal] = useState(false);
-	const [hrReqModal, setHRReqModal] = useState(false);
-	const [selectedRecord, setSelectedRecord] = useState('');
 	const getCountryListHandler = useCallback(async (tableData) => {
+		console.log(tableData, '-tableData--');
 		setLoading(true);
 		let response = await MasterDAO.getCountryListRequestDAO(tableData);
 
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
-			setApiData(formatJDDumpReport(response && response?.responseBody));
-			setTotalRecords(response?.responseBody?.totalrows);
+			setApiData(
+				MasterUtils.countryListFormatter(
+					response && response?.responseBody?.details,
+				),
+			);
+			setTotalRecords(response?.responseBody?.details?.totalrows);
 		} else {
 			setLoading(false);
 			setApiData([]);
 		}
 	}, []);
 
-	const tableColumnsMemo = useMemo(
-		() =>
-			reportConfig.JDDumpTableConfig(
-				setJDSkillModal,
-				setHRSkillModal,
-				setJDRoleRespModal,
-				setHRRoleRespModal,
-				setJDReqModal,
-				setHRReqModal,
-				setSelectedRecord,
-			),
-		[],
-	);
+	const tableColumnsMemo = useMemo(() => MasterConfig.countryTable(), []);
+
+	useEffect(() => {
+		getCountryListHandler();
+	}, [getCountryListHandler]);
 
 	return (
 		<div className={CountryListStyle.hiringRequestContainer}>
@@ -86,7 +68,7 @@ const CountryList = () => {
 						<div>
 							<button
 								className={CountryListStyle.btnPrimary}
-								onClick={() => downloadToExcel(apiData)}>
+								onClick={() => setAddCountryModal(true)}>
 								Add Country
 							</button>
 						</div>
@@ -115,13 +97,13 @@ const CountryList = () => {
 									setPageSize(pageSize);
 									setTableFilteredState({
 										...tableFilteredState,
-										pageSize: pageSize,
-										pageIndex: pageNum,
+										PageSize: pageSize,
+										PageIndex: pageNum,
 									});
 									getCountryListHandler({
 										...tableFilteredState,
-										pageIndex: pageNum,
-										pageSize: pageSize,
+										PageIndex: pageNum,
+										PageSize: pageSize,
 									});
 								},
 								size: 'small',
@@ -136,6 +118,22 @@ const CountryList = () => {
 					</>
 				)}
 			</div>
+			{isAddCountryModal && (
+				<Modal
+					transitionName=""
+					width="700px"
+					centered
+					footer={null}
+					open={isAddCountryModal}
+					className="statusModalWrap"
+					onCancel={() => setAddCountryModal(false)}>
+					<AddCountry
+						onCancel={() => setAddCountryModal(false)}
+						callAPI={getCountryListHandler}
+						tableFilteredState={tableFilteredState}
+					/>
+				</Modal>
+			)}
 		</div>
 	);
 };
