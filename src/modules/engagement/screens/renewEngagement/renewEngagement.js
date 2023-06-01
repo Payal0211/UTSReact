@@ -64,9 +64,6 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 				);
 			}
 			
-			const calresponse = await engagementRequestDAO.calculateActualNRBRPRDAO(response?.responseBody?.details?.billRate,response?.responseBody?.details?.payRate,response?.responseBody?.details?.currency)
-			setValue('nrMargin', calresponse?.responseBody?.details);
-
 		}, [setValue, talentInfo?.onboardID]);
 
 	const submitContractRenewalHandler = useCallback(
@@ -123,6 +120,15 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 			setValue("contractDuration",totalDuration);
 		}
 	}, [endDate,startDate])
+
+
+const calulateNR =async() =>{
+	
+	const calresponse = await engagementRequestDAO.calculateActualNRBRPRDAO(billRateValue,payRateValue,currencyValue)
+			setValue('nrMargin', calresponse?.responseBody?.details);
+}
+
+
 	return (
 		<div className={allengagementEnd.engagementModalWrap}>
 			<div
@@ -242,9 +248,9 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 					<button
 						className={allengagementEnd.minusButton}
 						onClick={(e) =>
-							billRateValue > 0
+							{billRateValue > 0
 								? setBillRateValue(billRateValue - 1)
-								: e.preventDefault()
+								: e.preventDefault();calulateNR()}
 						}
 						disabled={billRateValue === 0 ? true : false}>
 						<MinusSVG />
@@ -265,7 +271,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 					/>
 					<button
 						className={allengagementEnd.plusButton}
-						onClick={() => setBillRateValue(billRateValue + 1)}>
+						onClick={()=>{setBillRateValue(billRateValue + 1); calulateNR();}}>
 						<PlusSVG />
 					</button>
 				</div>
@@ -273,10 +279,10 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 					className={`${allengagementEnd.colMd6} ${allengagementEnd.rateCounterField}`}>
 					<button
 						className={allengagementEnd.minusButton}
-						onClick={(e) =>
+						onClick={(e) =>{
 							payRateValue > 0
 								? setPayRateValue(payRateValue - 1)
-								: e.preventDefault()
+								: e.preventDefault(); calulateNR();}
 						}
 						disabled={payRateValue === 0 ? true : false}>
 						<MinusSVG />
@@ -297,7 +303,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 					/>
 					<button
 						className={allengagementEnd.plusButton}
-						onClick={() => setPayRateValue(payRateValue + 1)}>
+						onClick={() => {setPayRateValue(payRateValue + 1);calulateNR();}}>
 						<PlusSVG />
 					</button>
 				</div>
