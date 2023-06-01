@@ -47,10 +47,10 @@ const EngagementInvoice = ({
 				paymentDate: _isNull(watchInvoiceStatus?.id)
 					? null
 					: new Date(d?.paymentDate)
-							.toLocaleDateString('en-UK')
-							.split('/')
-							.reverse()
-							.join('-'),
+						.toLocaleDateString('en-UK')
+						.split('/')
+						.reverse()
+						.join('-'),
 				hrNumber: '',
 				talentName: '',
 				currencyDrp: [
@@ -138,7 +138,7 @@ const EngagementInvoice = ({
 			<div
 				className={`${engagementInvoice.headingContainer} ${engagementInvoice.addFeebackContainer}`}>
 				<h1>Add Invoice Details</h1>
-				<ul>
+				<ul className={engagementInvoice.engModalHeadList}>
 					<li>
 						<span>HR ID:</span>
 						{talentInfo?.hrNumber}

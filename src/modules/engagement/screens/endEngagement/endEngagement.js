@@ -55,7 +55,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 				fileData?.type !== 'application/msword' &&
 				fileData?.type !== 'text/plain' &&
 				fileData?.type !==
-					'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
 				fileData?.type !== 'image/png' &&
 				fileData?.type !== 'image/jpeg'
 			) {
@@ -96,10 +96,10 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setEndEngagementDetails(response?.responseBody?.details)
 			let dateString = response?.responseBody?.details?.contractEndDate
-			let convertedDate = moment(dateString,'DD/MM/YYYY')
+			let convertedDate = moment(dateString, 'DD/MM/YYYY')
 
 			const formattedDate = convertedDate?.format('YYYY-MM-DDTHH:mm:ss');
-			setValue("lastWorkingDate",new Date(formattedDate));
+			setValue("lastWorkingDate", new Date(formattedDate));
 			/* let updatedDate = new Date(
 				new Date(
 					response?.responseBody?.details?.contractEndDate,
@@ -160,7 +160,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 			<div
 				className={`${allengagementEnd.headingContainer} ${allengagementEnd.addFeebackContainer}`}>
 				<h1>End Engagement</h1>
-				<ul>
+				<ul className={allengagementEnd.engModalHeadList}>
 					<li>
 						<span>HR ID:</span>
 						{talentInfo?.hrNumber}
@@ -182,7 +182,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 				<div className={allengagementEnd.colMd6}>
 					<div className={allengagementEnd.timeSlotItemField}>
 						<div className={allengagementEnd.timeLabel}>
-						Contract End Date
+							Contract End Date
 							<span>
 								<b style={{ color: 'black' }}>*</b>
 							</span>
