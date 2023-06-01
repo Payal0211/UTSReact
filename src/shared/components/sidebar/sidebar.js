@@ -147,6 +147,13 @@ const getSideBar = () => {
 			icon: JDEfficiencyReport,
 			navigateTo: UTSRoutes.JDDUMPREPORTROUTE,
 		}),
+		new SideBarModels({
+			id: 'Master_Country_List',
+			title: 'Country',
+			isActive: false,
+			icon: JDEfficiencyReport,
+			navigateTo: UTSRoutes.MASTERCOUNTRYROUTE,
+		}),
 	];
 
 	return dataList;

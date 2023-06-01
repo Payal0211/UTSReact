@@ -1967,6 +1967,7 @@ const TalentList = ({
 						hrId={hrId}
 						clientDetail={clientDetail}
 						callAPI={callAPI}
+						setScheduleSlotInformation={setScheduleSlotInformation}
 						talentInfo={filterTalentID}
 						talentName={filterTalentID?.Name}
 						HRStatusCode={HRStatusCode}

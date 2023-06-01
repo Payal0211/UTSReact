@@ -15,7 +15,13 @@ import {
 	AnotherRoundTimeSlotOption,
 } from 'constants/application';
 import { HTTPStatusCode } from 'constants/network';
-import { disabledWeekend } from 'shared/utils/basic_utils';
+import {
+	defaultEndTime,
+	defaultStartTime,
+	disabledWeekend,
+	getInterviewSlotInfo,
+	getNthDateExcludingWeekend,
+} from 'shared/utils/basic_utils';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
 export const otherInterviewer = {
@@ -28,9 +34,10 @@ export const otherInterviewer = {
 };
 const AnotherRound = ({
 	talentInfo,
-	getScheduleSlotDate,
+	// getScheduleSlotDate,
 	getSlotInformationHandler,
 	getScheduleSlotInfomation,
+	setScheduleSlotInformation,
 	callAPI,
 	hrId,
 	closeModal,
@@ -48,6 +55,24 @@ const AnotherRound = ({
 			otherInterviewer: [],
 		},
 	});
+	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
+		{
+			slot1: getNthDateExcludingWeekend(1),
+			slot2: defaultStartTime(),
+			slot3: defaultEndTime(),
+		},
+		{
+			slot1: getNthDateExcludingWeekend(2),
+			slot2: defaultStartTime(),
+			slot3: defaultEndTime(),
+		},
+
+		{
+			slot1: getNthDateExcludingWeekend(3),
+			slot2: defaultStartTime(),
+			slot3: defaultEndTime(),
+		},
+	]);
 
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -75,19 +100,55 @@ const AnotherRound = ({
 	const param = useParams();
 	const [clientDetailsForAnotherRound, setClientDetailsForAnotherRound] =
 		useState(null);
-	const onChangeRadioBtn = (e) => {
-		setRadioValue(e.target.value);
-		remove();
-		clearErrors();
-		reset();
-	};
-	const slotLaterOnChange = (e) => {
-		setSlotLater(e.target.value);
-		// remove();
-		// clearErrors();
-	};
+	const onChangeRadioBtn = useCallback(
+		(e) => {
+			setRadioValue(e.target.value);
+			remove();
+			clearErrors();
+			reset();
+		},
+		[clearErrors, remove, reset],
+	);
+	const slotLaterOnChange = useCallback(
+		(e) => {
+			setSlotLater(e.target.value);
+			e.target.value === AnotherRoundTimeSlotOption.LATER
+				? setScheduleSlotInformation([])
+				: setScheduleSlotInformation([
+						{
+							SlotID: 1,
+							...getInterviewSlotInfo(
+								getNthDateExcludingWeekend(1),
+								defaultStartTime(),
+								defaultEndTime(),
+							),
+							iD_As_ShortListedID: '',
+						},
+						{
+							SlotID: 2,
+							...getInterviewSlotInfo(
+								getNthDateExcludingWeekend(2),
+								defaultStartTime(),
+								defaultEndTime(),
+							),
+							iD_As_ShortListedID: '',
+						},
+						{
+							SlotID: 3,
+							...getInterviewSlotInfo(
+								getNthDateExcludingWeekend(3),
+								defaultStartTime(),
+								defaultEndTime(),
+							),
+							iD_As_ShortListedID: '',
+						},
+				  ]);
+			// remove();
+			clearErrors();
+		},
+		[clearErrors, setScheduleSlotInformation],
+	);
 
-	console.log(clientDetailsForAnotherRound, '-clientDetailsForAnotherRound');
 	const checkDuplicateInterviewerEmailHandler = useCallback(
 		async (e) => {
 			const response = await InterviewDAO.CheckInterviewerEmailIdRequestDAO({
@@ -97,6 +158,7 @@ const AnotherRound = ({
 		},
 		[param?.hrid],
 	);
+
 	const checkDuplicateInterviewerLinkedinHandler = useCallback(
 		async (e) => {
 			const response = await InterviewDAO.CheckLinkedinURLRequestDAO({
@@ -130,8 +192,11 @@ const AnotherRound = ({
 				talentID: talentInfo?.TalentID,
 				contactID: talentInfo?.ContactId,
 				shortlistInterviewerID: talentInfo?.Shortlisted_InterviewID,
-				timeZoneId: d.interviewTimezone,
-				timeslot: getScheduleSlotInfomation,
+				timeZoneId: d?.interviewTimezone?.id,
+				timeslot:
+					getScheduleSlotInfomation?.length > 0
+						? getScheduleSlotInfomation
+						: [],
 				interviewerDetails:
 					formattedInterviewerDetails[0]?.interviewerName === undefined
 						? []
@@ -976,6 +1041,7 @@ const AnotherRound = ({
 												<div className={InterviewScheduleStyle.row}>
 													<div className={InterviewScheduleStyle.colMd12}>
 														<HRSelectField
+															mode={'id/value'}
 															setValue={setValue}
 															register={register}
 															name="interviewTimezone"
@@ -1005,7 +1071,7 @@ const AnotherRound = ({
 															required
 															{...register('slot1Date')}
 															filterDate={disabledWeekend}
-															selected={getScheduleSlotDate[0].slot1}
+															selected={getScheduleSlotDate?.[0]?.slot1}
 															placeholderText="Select Date"
 															onChange={(date) => {
 																setValue('slot1Date', date);
@@ -1029,7 +1095,7 @@ const AnotherRound = ({
 														<DatePicker
 															required
 															{...register('slot1StartTime')}
-															selected={getScheduleSlotDate[0].slot2}
+															selected={getScheduleSlotDate?.[0]?.slot2}
 															onChange={(date) => {
 																setValue('slot1StartTime', date);
 																getSlotInformationHandler(
@@ -1059,7 +1125,7 @@ const AnotherRound = ({
 														<DatePicker
 															required
 															{...register('slot1EndTime')}
-															selected={getScheduleSlotDate[0].slot3}
+															selected={getScheduleSlotDate?.[0]?.slot3}
 															onChange={(date) => {
 																setValue('slot1EndTime', date);
 																getSlotInformationHandler(
@@ -1097,7 +1163,7 @@ const AnotherRound = ({
 															required
 															{...register('slot2Date')}
 															filterDate={disabledWeekend}
-															selected={getScheduleSlotDate[1].slot1}
+															selected={getScheduleSlotDate?.[1]?.slot1}
 															placeholderText="Select Date"
 															onChange={(date) => {
 																setValue('slot2Date', date);
@@ -1121,7 +1187,7 @@ const AnotherRound = ({
 														<DatePicker
 															required
 															{...register('slot2StartTime')}
-															selected={getScheduleSlotDate[1].slot2}
+															selected={getScheduleSlotDate?.[1]?.slot2}
 															onChange={(date) => {
 																setValue('slot2StartTime', date);
 																getSlotInformationHandler(
@@ -1151,7 +1217,7 @@ const AnotherRound = ({
 														<DatePicker
 															required
 															{...register('slot2EndTime')}
-															selected={getScheduleSlotDate[1].slot3}
+															selected={getScheduleSlotDate?.[1]?.slot3}
 															onChange={(date) => {
 																setValue('slot2EndTime', date);
 																getSlotInformationHandler(
@@ -1189,7 +1255,7 @@ const AnotherRound = ({
 															required
 															{...register('slot3Date')}
 															filterDate={disabledWeekend}
-															selected={getScheduleSlotDate[2].slot1}
+															selected={getScheduleSlotDate?.[2]?.slot1}
 															placeholderText="Select Date"
 															onChange={(date) => {
 																setValue('slot3Date', date);
@@ -1213,7 +1279,7 @@ const AnotherRound = ({
 														<DatePicker
 															required
 															{...register('slot3StartTime')}
-															selected={getScheduleSlotDate[2].slot2}
+															selected={getScheduleSlotDate?.[2]?.slot2}
 															onChange={(date) => {
 																setValue('slot3StartTime', date);
 																getSlotInformationHandler(
@@ -1243,7 +1309,7 @@ const AnotherRound = ({
 														<DatePicker
 															required
 															{...register('slot3EndTime')}
-															selected={getScheduleSlotDate[2].slot3}
+															selected={getScheduleSlotDate?.[2]?.slot3}
 															onChange={(date) => {
 																setValue('slot3EndTime', date);
 																getSlotInformationHandler(

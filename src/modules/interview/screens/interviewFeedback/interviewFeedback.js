@@ -21,6 +21,7 @@ const InterviewFeedback = ({
 	hiringRequestNumber,
 	starMarkedStatusCode,
 	hrStatus,
+	setScheduleSlotInformation,
 	closeModal,
 	getScheduleSlotDate,
 	getSlotInformationHandler,
@@ -181,6 +182,7 @@ const InterviewFeedback = ({
 			getSlotInformationHandler={getSlotInformationHandler}
 			scheduleSlotRadio={scheduleSlotRadio}
 			callAPI={callAPI}
+			setScheduleSlotInformation={setScheduleSlotInformation}
 			hrId={hrId}
 			closeModal={closeModal}
 		/>
