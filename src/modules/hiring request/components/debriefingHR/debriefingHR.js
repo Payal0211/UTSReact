@@ -255,32 +255,23 @@ const DebriefingHR = ({
 									isTextArea={true}
 									errors={errors}
 									validationSchema={{
-										validate: (value) => {
-											if (params === 'addnewhr') {
-												if (
-													value.toLowerCase() ===
-														getCompanyName.toLowerCase() &&
-													value.toUpperCase() === getCompanyName.toUpperCase()
-												) {
+									validate: (value) => {
+											let index = value.search(new RegExp(getCompanyName, "i"));
+											let index1 = value.search(new RegExp(clientDetail?.companyname, "i"));
+											if (params === "addnewhr") {
+												if (index !== -1) {
 													return 'Please do not mention company name here';
-												}
-												if (!value) {
-													return 'Please add something about the company';
+												} if (!value) {
+													return "Please add something about the company";
 												}
 											} else {
-												if (
-													value.toLowerCase() ===
-														clientDetail?.companyname.toLowerCase() &&
-													value.toUpperCase() ===
-														clientDetail?.companyname.toUpperCase()
-												) {
+												if (index1 !== -1) {
 													return 'Please do not mention company name here';
-												}
-												if (!value) {
-													return 'Please add something about the company';
+												} if (!value) {
+													return "Please add something about the company";
 												}
 											}
-										},
+										}
 									}}
 									label={'About Company'}
 									register={register}

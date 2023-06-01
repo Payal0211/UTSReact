@@ -50,6 +50,8 @@ const EngagementBillRateAndPayRate = ({
 	}
 
 	const [currency, setCurrency] = useState([]);
+	const [currencyValue,setCurrencyValue] = useState("");
+	const [levelBillEdit, setBillEdit] = useState('Select');
 
 	const currencyHandler = useCallback(async () => {
 		const response = await MasterDAO.getCurrencyRequestDAO();
@@ -95,6 +97,7 @@ const EngagementBillRateAndPayRate = ({
 				'payNRRate',
 				editBPRateResponse?.responseBody?.details?.payRate_NR,
 			);
+			setCurrencyValue(editBPRateResponse?.responseBody?.details?.currency)
 		}
 	}, [month, setValue, talentInfo?.hrID, talentInfo?.onboardID, year]);
 
@@ -175,6 +178,19 @@ const EngagementBillRateAndPayRate = ({
 			resetField('payRateAdditionalComment');
 		}
 	}, [closeModal, resetField]);
+
+	useEffect(() => {
+		if (currency.length > 1) {
+			currency?.map((item) => {
+				if (item?.value === currencyValue) {
+					setBillEdit(item?.value);
+					setValue('billRateCurrency', item);
+					setValue("payRateCurrency",item);
+				}
+			});
+		}
+	}, [ currency,currencyValue]);
+
 	return (
 		<div className={allengagementBillAndPayRateStyles.engagementModalContainer}>
 			<div
@@ -197,18 +213,21 @@ const EngagementBillRateAndPayRate = ({
 							className={`${allengagementBillAndPayRateStyles.row} ${allengagementBillAndPayRateStyles.billRateWrapper}`}>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
+								controlledValue={levelBillEdit}
+								setControlledValue={setBillEdit}
+								isControlled={true}
 									mode={'id/value'}
 									setValue={setValue}
 									register={register}
 									name="billRateCurrency"
 									label="Select Currency"
-									defaultValue="Please Select"
-									options={currency}
-									required
-									isError={
-										errors['billRateCurrency'] && errors['billRateCurrency']
-									}
-									errorMsg="Please select a currency."
+									options={currency&&currency}
+									disabled={true}
+									// required
+									// isError={
+									// 	errors['billRateCurrency'] && errors['billRateCurrency']
+									// }
+									// errorMsg="Please select a currency."
 								/>
 							</div>
 							<div
@@ -220,7 +239,9 @@ const EngagementBillRateAndPayRate = ({
 											? setBillRateValue(billRateValue - 1)
 											: e.preventDefault()
 									}
-									disabled={billRateValue === 0 ? true : false}>
+									// disabled={billRateValue === 0 ? true : false}
+									disabled={true}
+									>
 									<MinusSVG />
 								</button>
 								<HRInputField
@@ -230,16 +251,18 @@ const EngagementBillRateAndPayRate = ({
 										required: 'Please enter bill rate.',
 										valueAsNumber: true,
 									}}
-									label="Bill Rate(USD)"
+									label={`Bill Rate (${currencyValue})`}
 									name="billRate"
 									type={InputType.NUMBER}
 									value={billRateValue}
 									placeholder="Enter Amount"
 									required
+									disabled={true}
 								/>
 								<button
 									className={allengagementBillAndPayRateStyles.plusButton}
-									onClick={() => setBillRateValue(billRateValue + 1)}>
+									onClick={() => setBillRateValue(billRateValue + 1)}
+									disabled={true}>
 									<PlusSVG />
 								</button>
 							</div>
@@ -342,18 +365,21 @@ const EngagementBillRateAndPayRate = ({
 							className={`${allengagementBillAndPayRateStyles.row} ${allengagementBillAndPayRateStyles.billRateWrapper}`}>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
+									controlledValue={levelBillEdit}
+									setControlledValue={setBillEdit}
+									isControlled={true}
 									mode={'id/value'}
 									setValue={setValue}
 									register={register}
 									name="payRateCurrency"
 									label="Select Currency"
-									defaultValue="Please Select"
+									disabled={true}
 									options={currency}
-									required
-									isError={
-										errors['payRateCurrency'] && errors['payRateCurrency']
-									}
-									errorMsg="Please select a currency."
+									// required
+									// isError={
+									// 	errors['payRateCurrency'] && errors['payRateCurrency']
+									// }
+									// errorMsg="Please select a currency."
 								/>
 							</div>
 
@@ -361,7 +387,8 @@ const EngagementBillRateAndPayRate = ({
 								className={`${allengagementBillAndPayRateStyles.colMd6} ${allengagementBillAndPayRateStyles.rateCounterField}`}>
 								<button
 									className={allengagementBillAndPayRateStyles.minusButton}
-									disabled={payRateValue === 0 ? true : false}
+									// disabled={payRateValue === 0 ? true : false}
+									disabled={true}
 									onClick={(e) =>
 										payRateValue > 0
 											? setPayRateValue(payRateValue - 1)
@@ -376,15 +403,17 @@ const EngagementBillRateAndPayRate = ({
 										required: 'Please enter pay rate.',
 										valueAsNumber: true,
 									}}
-									label="Pay Rate(USD)"
+									label={`Pay Rate (${currencyValue})`}
 									name="payRate"
 									value={payRateValue}
 									type={InputType.TEXT}
 									placeholder="Enter Amount"
 									required
+									disabled={true}
 								/>
 								<button
 									className={allengagementBillAndPayRateStyles.plusButton}
+									disabled={true}
 									onClick={(e) =>
 										payRateValue >= 0
 											? setPayRateValue(payRateValue + 1)

@@ -631,26 +631,33 @@ const IncentiveReportScreen = () => {
 			// sethierarchyDataNotFound("")
 		}
 	};
+	const [validation,setValidation] =useState("")
 
 	const getList = async () => {
-		if (splitvalue || splitvalue === undefined) {
-			const response = await IncentiveReportDAO?.getUserListInIncentiveDAO(
-				splitvalue[0],
-				splitvalue[1],
-				watchManagerId?.id,
-			);
-
-			if (response.statusCode === HTTPStatusCode.OK) {
-				setShowTableData(response?.responseBody);
+		const calresponse = await IncentiveReportDAO?.calculateValidationDAO(
+			splitvalue[0],
+			splitvalue[1],
+			watchManagerId?.id,
+		)
+		setValidation(calresponse?.responseBody?.message)
+			if (splitvalue || splitvalue === undefined) {
+				const response = await IncentiveReportDAO?.getUserListInIncentiveDAO(
+					splitvalue[0],
+					splitvalue[1],
+					watchManagerId?.id,
+				);
+	
+				if (response.statusCode === HTTPStatusCode.OK) {
+					setShowTableData(response?.responseBody);
+				}
+				if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+					setErrorMessage('No Data Found');
+					setShowTableData([]);
+					setIncentiveBoosterList([]);
+					setIncentiveReportInfo([]);
+					setIncentiveReportAMNR([]);
+				}
 			}
-			if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
-				setErrorMessage('No Data Found');
-				setShowTableData([]);
-				setIncentiveBoosterList([]);
-				setIncentiveReportInfo([]);
-				setIncentiveReportAMNR([]);
-			}
-		}
 	};
 
 	useEffect(() => {
@@ -704,6 +711,7 @@ const IncentiveReportScreen = () => {
 		sethierarchyDataNotFound('');
 		setErrorMessage('');
 		setHierarchyButton(false);
+		setValidation("")
 	}, [resetField]);
 
 	const [childHirerarchy, setChildHirerarchy] = useState([]);
@@ -1117,7 +1125,7 @@ const IncentiveReportScreen = () => {
 						<button onClick={resetButton}>Reset</button>
 					</div>
 				</div>
-
+				<p className={IncentiveReportStyle.error}>{validation}</p>
 				{tableData?.length !== 0 ? (
 					<Table
 						columns={searchTableData}

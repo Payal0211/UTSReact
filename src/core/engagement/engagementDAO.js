@@ -603,4 +603,35 @@ export const engagementRequestDAO = {
         }
     },
 
+	calculateActualNRBRPRDAO: async function (br,pr,currency) {
+        try {
+            const calculateActualNRBRPR = await EngagementRequestAPI.calculateActualNRBRPR(br,pr,currency);
+            if (calculateActualNRBRPR) {
+                const statusCode = calculateActualNRBRPR['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = calculateActualNRBRPR.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult,
+                    };
+                } else if (
+                    statusCode === HTTPStatusCode.NOT_FOUND ||
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+                )
+                    return calculateActualNRBRPR;
+                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return calculateActualNRBRPR;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    UserSessionManagementController.deleteAllSession();
+                    return (
+                        <Navigate
+                            replace
+                            to={UTSRoutes.LOGINROUTE}
+                        />
+                    );
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'engagementRequestDAO.calculateActualNRBRPRDAO');
+        }
+    },
 };
