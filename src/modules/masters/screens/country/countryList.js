@@ -29,7 +29,6 @@ const CountryList = () => {
 	const [pageSize, setPageSize] = useState(100);
 
 	const getCountryListHandler = useCallback(async (tableData) => {
-		console.log(tableData, '-tableData--');
 		setLoading(true);
 		let response = await MasterDAO.getCountryListRequestDAO(tableData);
 
