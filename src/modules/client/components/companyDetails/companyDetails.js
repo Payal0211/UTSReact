@@ -37,6 +37,16 @@ const CompanyDetails = ({
 		const geoLocationResponse = await MasterDAO.getGEORequestDAO();
 		setGEO(geoLocationResponse && geoLocationResponse.responseBody);
 	};
+	const[checkedValue,setCheckedValue] = useState(true);
+	const[checkednoValue,setCheckednoValue] = useState(false);
+	const checkedYes = (e) =>{
+		setCheckedValue(e.target.checked);
+		setCheckednoValue(false);
+	}
+	const checkedNo = (e) =>{
+		setCheckednoValue(e.target.checked);
+		setCheckedValue(false);
+	}
 
 	const [toggleImagePreview, setToggleImagePreview] = useState(false);
 	const [getValidation, setValidation] = useState({
@@ -323,7 +333,10 @@ const CompanyDetails = ({
 										{...register('remote')}
 										value={1}
 										type="radio"
-										checked
+										checked={checkedValue}
+										onChange={(e)=>{
+											checkedYes(e)
+										}}
 										id="remote"
 										name="remote"
 									/>
@@ -335,6 +348,10 @@ const CompanyDetails = ({
 										{...register('remote')}
 										value={0}
 										type="radio"
+										checked={checkednoValue}
+										onChange={(e)=>{
+											checkedNo(e)
+										}}
 										id="remote"
 										name="remote"
 									/>
