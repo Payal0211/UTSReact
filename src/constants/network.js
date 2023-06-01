@@ -269,4 +269,5 @@ export class IncentiveReport {
 	static GET_INCENTIVE_REPORT_DETAILS = 'GetIncentiveReportDetails';
 	static GET_CONTRACT_BOOSTER = 'GetIncentiveReportDetailsContractBooster';
 	static GET_INCENTIVE_REPORT_AMNR = 'GetIncentiveReportDetailsAMNR';
+	static CHECK_VALIDATION = "CheckValidationForNBDandAM";
 }

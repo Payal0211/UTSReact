@@ -130,4 +130,19 @@ export const IncentiveReportAPI = {
       return errorDebug(error, "ClientAPI.getPOCRequest");
     }
   },
+  calculateValidation: async function (userId,month,year) {
+    let httpService = new HttpServices();
+    httpService.URL =
+      NetworkInfo.NETWORK +
+      SubDomain.INCENTIVE_REPORT +
+      IncentiveReport.CHECK_VALIDATION + `?userId=${userId}&month=${month}&year=${year}`;
+    httpService.setAuthRequired = true;
+    httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+    try {
+      let response = await httpService.sendPostRequest();
+      return response;
+    } catch (error) {
+      return errorDebug(error, "ClientAPI.getPOCRequest");
+    }
+  },
 };
