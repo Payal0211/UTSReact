@@ -55,6 +55,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 			setStartDate(new Date(response?.responseBody?.details?.contractStartDate).getMonth())
 			setValue('billRate', response?.responseBody?.details?.billRate);
 			setValue('payRate', response?.responseBody?.details?.payRate);
+			setValue("nrMargin",response?.responseBody?.details?.nrPercentage)
 			setBillRateValue(response?.responseBody?.details?.billRate);
 			setPayRateValue(response?.responseBody?.details?.payRate);
 			setCurrencyValue(response?.responseBody?.details?.currency)
@@ -125,7 +126,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 const calulateNR =async() =>{
 	
 	const calresponse = await engagementRequestDAO.calculateActualNRBRPRDAO(billRateValue,payRateValue,currencyValue)
-			setValue('nrMargin', calresponse?.responseBody?.details);
+	setValue('nrMargin', calresponse?.responseBody?.details);
 }
 
 
