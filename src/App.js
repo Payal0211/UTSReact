@@ -25,6 +25,15 @@ function App() {
 					/>
 					<Route
 						path={UTSRoutes.HOMEROUTE}
+						element={
+							<Navigate
+								replace
+								to={UTSRoutes.ALLHIRINGREQUESTROUTE}
+							/>
+						}
+					/>
+					<Route
+						path={UTSRoutes.HOMEROUTE}
 						element={<ProtectedRoutes Component={Layout} />}>
 						{Object.entries(navigateToComponent).map(([path, component]) => {
 							return (
@@ -37,6 +46,7 @@ function App() {
 							);
 						})}
 					</Route>
+
 					<Route
 						path={UTSRoutes.SOMETHINGWENTWRONG}
 						element={<SomethingWentWrong />}
