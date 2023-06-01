@@ -22,7 +22,11 @@ const InterviewFeedback = ({
 	starMarkedStatusCode,
 	hrStatus,
 	closeModal,
+	getScheduleSlotDate,
+	getSlotInformationHandler,
+	scheduleSlotRadio,
 }) => {
+
 	/** For Fourth Round Start --- */
 	const [isAnotherRound, setAnotherRound] = useState(false);
 	const [interviewFeedbackResult, setInterviewFeedbackResult] = useState(null);
@@ -152,7 +156,7 @@ const InterviewFeedback = ({
 	]);
 
 	return isAnotherRound && interviewFeedbackResult ? (
-		<AnotherRound />
+		<AnotherRound getScheduleSlotDate={getScheduleSlotDate} getSlotInformationHandler={getSlotInformationHandler} scheduleSlotRadio={scheduleSlotRadio} />
 	) : (
 		<div className={InterviewScheduleStyle.interviewContainer}>
 			<div className={InterviewScheduleStyle.leftPane}>

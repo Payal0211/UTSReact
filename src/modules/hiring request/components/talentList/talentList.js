@@ -1877,6 +1877,13 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
+
+
+
+			{/* update modal */}
+
+
 			{/** ============ MODAL FOR INTERVIEW FEEDBACK STATUS ================ */}
 			{interviewFeedback && (
 				<Modal
@@ -1886,7 +1893,8 @@ const TalentList = ({
 					centered
 					footer={false}
 					open={interviewFeedback}
-					onCancel={() => setInterviewFeedback(false)}>
+					onCancel={() => setInterviewFeedback(false)}
+				>
 
 					<InterviewFeedback
 						hrId={hrId}
@@ -1898,7 +1906,10 @@ const TalentList = ({
 						hiringRequestNumber={hiringRequestNumber}
 						starMarkedStatusCode={starMarkedStatusCode}
 						hrStatus={hrStatus}
+						getScheduleSlotDate={getScheduleSlotDate}
 						closeModal={() => setInterviewFeedback(false)}
+						getSlotInformationHandler={getSlotInformationHandler}
+						scheduleSlotRadio={scheduleSlotRadio}
 					/>
 				</Modal>
 			)}

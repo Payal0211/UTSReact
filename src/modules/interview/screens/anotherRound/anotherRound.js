@@ -16,6 +16,8 @@ import {
 	AnotherRoundTimeSlotOption,
 } from 'constants/application';
 import { HTTPStatusCode } from 'constants/network';
+import { disabledWeekend } from 'shared/utils/basic_utils';
+
 
 export const otherInterviewer = {
 	fullName: '',
@@ -25,7 +27,7 @@ export const otherInterviewer = {
 	typeOfPerson: '',
 	experience: '',
 };
-const AnotherRound = () => {
+const AnotherRound = ({ getScheduleSlotDate, getSlotInformationHandler, scheduleSlotRadio }) => {
 	const {
 		register,
 		handleSubmit,
@@ -86,7 +88,7 @@ const AnotherRound = () => {
 			setClientDetailsForAnotherRound(response?.responseBody?.details);
 	}, [param?.hrid]);
 
-	console.log(clientDetailsForAnotherRound, '-clientDetailsForAnotherRound');
+
 	useEffect(() => {
 		clientCurrentDetailsForAnotherRoundHandler();
 	}, [clientCurrentDetailsForAnotherRoundHandler]);
@@ -842,6 +844,10 @@ const AnotherRound = () => {
 																defaultValue="Select Timezone"
 																options={clientDetailsForAnotherRound?.TimeZoneData}
 																required
+																isError={
+																	errors['interviewTimezone'] && errors['interviewTimezone']
+																}
+																errorMsg="Please select a timezone."
 															/>
 														</div>
 													</div>
@@ -857,12 +863,12 @@ const AnotherRound = () => {
 																name="slot1Date"
 																required
 																{...register('slot1Date')}
-																// filterDate={disabledWeekend}
-																// selected={getScheduleSlotDate[0].slot1}
+																filterDate={disabledWeekend}
+																selected={getScheduleSlotDate[0].slot1}
 																placeholderText="Select Date"
 																onChange={(date) => {
 																	setValue('slot1Date', date);
-																	// getSlotInformationHandler(date, 'slot1Date', 'schedule');
+																	getSlotInformationHandler(date, 'slot1Date', 'schedule');
 																}}
 															/>
 															{errors.slot1Date && (
@@ -878,14 +884,14 @@ const AnotherRound = () => {
 															<DatePicker
 																required
 																{...register('slot1StartTime')}
-																// selected={getScheduleSlotDate[0].slot2}
+																selected={getScheduleSlotDate[0].slot2}
 																onChange={(date) => {
 																	setValue('slot1StartTime', date);
-																	// getSlotInformationHandler(
-																	// 	date,
-																	// 	'slot1StartTime',
-																	// 	'schedule',
-																	// );
+																	getSlotInformationHandler(
+																		date,
+																		'slot1StartTime',
+																		'schedule',
+																	);
 																}}
 																showTimeSelect
 																showTimeSelectOnly
@@ -908,10 +914,10 @@ const AnotherRound = () => {
 															<DatePicker
 																required
 																{...register('slot1EndTime')}
-																// selected={getScheduleSlotDate[0].slot3}
+																selected={getScheduleSlotDate[0].slot3}
 																onChange={(date) => {
 																	setValue('slot1EndTime', date);
-																	// getSlotInformationHandler(date, 'slot1EndTime', 'schedule');
+																	getSlotInformationHandler(date, 'slot1EndTime', 'schedule');
 																}}
 																showTimeSelect
 																showTimeSelectOnly
@@ -928,7 +934,8 @@ const AnotherRound = () => {
 																</div>
 															)}
 														</div>
-													</div >
+													</div>
+
 
 													<div className={InterviewScheduleStyle.timeSlotRow}>
 														<div className={InterviewScheduleStyle.timeSlotLabel}>
@@ -938,18 +945,18 @@ const AnotherRound = () => {
 															<CalenderSVG />
 
 															<DatePicker
-																name="slot1Date"
+																name="slot2Date"
 																required
-																{...register('slot1Date')}
-																// filterDate={disabledWeekend}
-																// selected={getScheduleSlotDate[0].slot1}
+																{...register('slot2Date')}
+																filterDate={disabledWeekend}
+																selected={getScheduleSlotDate[1].slot1}
 																placeholderText="Select Date"
 																onChange={(date) => {
-																	setValue('slot1Date', date);
-																	// getSlotInformationHandler(date, 'slot1Date', 'schedule');
+																	setValue('slot2Date', date);
+																	getSlotInformationHandler(date, 'slot2Date', 'schedule');
 																}}
 															/>
-															{errors.slot1Date && (
+															{errors.slot2Date && (
 																<div className={InterviewScheduleStyle.error}>
 																	Please select slot1 date
 																</div>
@@ -961,15 +968,15 @@ const AnotherRound = () => {
 
 															<DatePicker
 																required
-																{...register('slot1StartTime')}
-																// selected={getScheduleSlotDate[0].slot2}
+																{...register('slot2StartTime')}
+																selected={getScheduleSlotDate[1].slot2}
 																onChange={(date) => {
-																	setValue('slot1StartTime', date);
-																	// getSlotInformationHandler(
-																	// 	date,
-																	// 	'slot1StartTime',
-																	// 	'schedule',
-																	// );
+																	setValue('slot2StartTime', date);
+																	getSlotInformationHandler(
+																		date,
+																		'slot2StartTime',
+																		'schedule',
+																	);
 																}}
 																showTimeSelect
 																showTimeSelectOnly
@@ -978,9 +985,9 @@ const AnotherRound = () => {
 																timeFormat="h:mm a"
 																dateFormat="h:mm a"
 																placeholderText="Start Time"
-																name="slot1StartTime"
+																name="slot2StartTime"
 															/>
-															{errors.slot1StartTime && (
+															{errors.slot2StartTime && (
 																<div className={InterviewScheduleStyle.error}>
 																	Please select start time
 																</div>
@@ -991,11 +998,11 @@ const AnotherRound = () => {
 															<ClockIconSVG />
 															<DatePicker
 																required
-																{...register('slot1EndTime')}
-																// selected={getScheduleSlotDate[0].slot3}
+																{...register('slot2EndTime')}
+																selected={getScheduleSlotDate[1].slot3}
 																onChange={(date) => {
-																	setValue('slot1EndTime', date);
-																	// getSlotInformationHandler(date, 'slot1EndTime', 'schedule');
+																	setValue('slot2EndTime', date);
+																	getSlotInformationHandler(date, 'slot2EndTime', 'schedule');
 																}}
 																showTimeSelect
 																showTimeSelectOnly
@@ -1004,15 +1011,15 @@ const AnotherRound = () => {
 																dateFormat="h:mm a"
 																timeFormat="h:mm a"
 																placeholderText="End Time"
-																name="slot1EndTime"
+																name="slot2EndTime"
 															/>
-															{errors.slot1EndTime && (
+															{errors.slot2EndTime && (
 																<div className={InterviewScheduleStyle.error}>
 																	Please select end time
 																</div>
 															)}
 														</div>
-													</div >
+													</div>
 
 													<div className={InterviewScheduleStyle.timeSlotRow}>
 														<div className={InterviewScheduleStyle.timeSlotLabel}>
@@ -1022,18 +1029,18 @@ const AnotherRound = () => {
 															<CalenderSVG />
 
 															<DatePicker
-																name="slot1Date"
+																name="slot3Date"
 																required
-																{...register('slot1Date')}
-																// filterDate={disabledWeekend}
-																// selected={getScheduleSlotDate[0].slot1}
+																{...register('slot3Date')}
+																filterDate={disabledWeekend}
+																selected={getScheduleSlotDate[2].slot1}
 																placeholderText="Select Date"
 																onChange={(date) => {
-																	setValue('slot1Date', date);
-																	// getSlotInformationHandler(date, 'slot1Date', 'schedule');
+																	setValue('slot3Date', date);
+																	getSlotInformationHandler(date, 'slot3Date', 'schedule');
 																}}
 															/>
-															{errors.slot1Date && (
+															{errors.slot3Date && (
 																<div className={InterviewScheduleStyle.error}>
 																	Please select slot1 date
 																</div>
@@ -1045,15 +1052,15 @@ const AnotherRound = () => {
 
 															<DatePicker
 																required
-																{...register('slot1StartTime')}
-																// selected={getScheduleSlotDate[0].slot2}
+																{...register('slot3StartTime')}
+																selected={getScheduleSlotDate[2].slot2}
 																onChange={(date) => {
-																	setValue('slot1StartTime', date);
-																	// getSlotInformationHandler(
-																	// 	date,
-																	// 	'slot1StartTime',
-																	// 	'schedule',
-																	// );
+																	setValue('slot3StartTime', date);
+																	getSlotInformationHandler(
+																		date,
+																		'slot3StartTime',
+																		'schedule',
+																	);
 																}}
 																showTimeSelect
 																showTimeSelectOnly
@@ -1062,9 +1069,9 @@ const AnotherRound = () => {
 																timeFormat="h:mm a"
 																dateFormat="h:mm a"
 																placeholderText="Start Time"
-																name="slot1StartTime"
+																name="slot3StartTime"
 															/>
-															{errors.slot1StartTime && (
+															{errors.slot3StartTime && (
 																<div className={InterviewScheduleStyle.error}>
 																	Please select start time
 																</div>
@@ -1075,11 +1082,11 @@ const AnotherRound = () => {
 															<ClockIconSVG />
 															<DatePicker
 																required
-																{...register('slot1EndTime')}
-																// selected={getScheduleSlotDate[0].slot3}
+																{...register('slot3EndTime')}
+																selected={getScheduleSlotDate[2].slot3}
 																onChange={(date) => {
-																	setValue('slot1EndTime', date);
-																	// getSlotInformationHandler(date, 'slot1EndTime', 'schedule');
+																	setValue('slot3EndTime', date);
+																	getSlotInformationHandler(date, 'slot3EndTime', 'schedule');
 																}}
 																showTimeSelect
 																showTimeSelectOnly
@@ -1088,15 +1095,18 @@ const AnotherRound = () => {
 																dateFormat="h:mm a"
 																timeFormat="h:mm a"
 																placeholderText="End Time"
-																name="slot1EndTime"
+																name="slot3EndTime"
 															/>
-															{errors.slot1EndTime && (
+															{errors.slot3EndTime && (
 																<div className={InterviewScheduleStyle.error}>
 																	Please select end time
 																</div>
 															)}
 														</div>
-													</div >
+													</div>
+
+
+
 												</div >
 											</>
 										)}
