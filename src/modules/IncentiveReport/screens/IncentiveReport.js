@@ -631,33 +631,33 @@ const IncentiveReportScreen = () => {
 			// sethierarchyDataNotFound("")
 		}
 	};
-	const [validation,setValidation] =useState("")
+	const [validation, setValidation] = useState('');
 
 	const getList = async () => {
 		const calresponse = await IncentiveReportDAO?.calculateValidationDAO(
+			watchManagerId?.id,
 			splitvalue[0],
 			splitvalue[1],
-			watchManagerId?.id,
-		)
-		setValidation(calresponse?.responseBody?.message)
-			if (splitvalue || splitvalue === undefined) {
-				const response = await IncentiveReportDAO?.getUserListInIncentiveDAO(
-					splitvalue[0],
-					splitvalue[1],
-					watchManagerId?.id,
-				);
-	
-				if (response.statusCode === HTTPStatusCode.OK) {
-					setShowTableData(response?.responseBody);
-				}
-				if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
-					setErrorMessage('No Data Found');
-					setShowTableData([]);
-					setIncentiveBoosterList([]);
-					setIncentiveReportInfo([]);
-					setIncentiveReportAMNR([]);
-				}
+		);
+		setValidation(calresponse?.responseBody?.message);
+		if (splitvalue || splitvalue === undefined) {
+			const response = await IncentiveReportDAO?.getUserListInIncentiveDAO(
+				splitvalue[0],
+				splitvalue[1],
+				watchManagerId?.id,
+			);
+
+			if (response.statusCode === HTTPStatusCode.OK) {
+				setShowTableData(response?.responseBody);
 			}
+			if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+				setErrorMessage('No Data Found');
+				setShowTableData([]);
+				setIncentiveBoosterList([]);
+				setIncentiveReportInfo([]);
+				setIncentiveReportAMNR([]);
+			}
+		}
 	};
 
 	useEffect(() => {
@@ -711,7 +711,7 @@ const IncentiveReportScreen = () => {
 		sethierarchyDataNotFound('');
 		setErrorMessage('');
 		setHierarchyButton(false);
-		setValidation("")
+		setValidation('');
 	}, [resetField]);
 
 	const [childHirerarchy, setChildHirerarchy] = useState([]);
@@ -1125,7 +1125,7 @@ const IncentiveReportScreen = () => {
 						<button onClick={resetButton}>Reset</button>
 					</div>
 				</div>
-				<p className={IncentiveReportStyle.error}>{validation}</p>
+				<p className={IncentiveReportStyle.validationNote}>{validation}</p>
 				{tableData?.length !== 0 ? (
 					<Table
 						columns={searchTableData}

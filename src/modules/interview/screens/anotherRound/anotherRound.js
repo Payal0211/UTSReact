@@ -231,7 +231,7 @@ const AnotherRound = ({
 				setIsLoading(false);
 				messageAPI.open({
 					type: 'error',
-					content: 'Something went wrong',
+					content: response?.responseBody?.message || 'Something Went Wrong',
 				});
 			}
 		},
