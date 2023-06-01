@@ -2,13 +2,24 @@ import { Link, useLocation } from 'react-router-dom';
 import HRList from 'assets/svg/HRList.svg';
 import DealList from 'assets/svg/DealList.svg';
 import UserList from 'assets/svg/UserList.svg';
-import Dashboard from 'assets/svg/dashboard.svg';
-import EngagementList from 'assets/svg/engagement.svg';
+import HR from 'assets/svg/hr.svg';
+import Handshake from 'assets/svg/handshake.svg';
+import HRDetails from 'assets/svg/HRDetails.svg';
+import AddHR from 'assets/svg/addHR.svg';
+import Briefcase from 'assets/svg/briefcase.svg';
 import DemandFunnel from 'assets/svg/demandFunnel.svg';
 import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
 import TeamDemandFunnel from 'assets/svg/teamDemandFunnel.svg';
+import Invoice from 'assets/svg/invoice.svg';
+import EngagementDashboard from 'assets/svg/engagementDashboard.svg';
+import JDEfficiencyReport from 'assets/svg/jdEfficiency.svg';
+import Masters from 'assets/svg/masters.svg';
+// import EngagementList from 'assets/svg/engagement.svg';
+// import DemandFunnel from 'assets/svg/demandFunnel.svg';
+// import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
+// import TeamDemandFunnel from 'assets/svg/teamDemandFunnel.svg';
 import IncentiveReport from 'assets/svg/Incentive.svg';
-import JDReport from 'assets/svg/JD.svg';
+// import JDReport from 'assets/svg/JD.svg';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -75,21 +86,21 @@ const getSideBar = () => {
 			id: 'UTS_all_hiring_request',
 			title: 'Hiring Request',
 			isActive: false,
-			icon: HRList,
+			icon: Briefcase,
 			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 		}),
 		new SideBarModels({
 			id: 'UTS_DealList',
 			title: 'Deal',
 			isActive: false,
-			icon: DealList,
+			icon: Handshake,
 			navigateTo: UTSRoutes.DEALLISTROUTE,
 		}),
 		new SideBarModels({
 			id: 'UTS_UserList',
 			title: 'Users',
 			isActive: false,
-			icon: UserList,
+			icon: HR,
 			navigateTo: UTSRoutes.USERLISTROUTE,
 		}),
 
@@ -97,7 +108,7 @@ const getSideBar = () => {
 			id: 'Engagement_List',
 			title: 'Engagement',
 			isActive: false,
-			icon: EngagementList,
+			icon: EngagementDashboard,
 			navigateTo: UTSRoutes.ENGAGEMENTRROUTE,
 		}),
 
@@ -126,14 +137,14 @@ const getSideBar = () => {
 			id: 'incentive_report',
 			title: 'Incentive Report',
 			isActive: false,
-			icon: IncentiveReport,
+			icon: Invoice,
 			navigateTo: UTSRoutes.INCENTIVEREPORTROUTE,
 		}),
 		new SideBarModels({
 			id: 'JD_Efficiency_Report',
 			title: 'JD Efficiency Report',
 			isActive: false,
-			icon: JDReport,
+			icon: JDEfficiencyReport,
 			navigateTo: UTSRoutes.JDDUMPREPORTROUTE,
 		}),
 	];
