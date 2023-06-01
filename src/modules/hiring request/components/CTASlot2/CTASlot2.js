@@ -2,8 +2,12 @@ import { useState } from 'react';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
 import { HRCTA } from 'constants/application';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const CTASlot2 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
+const params = useParams()
+
+const navigate = useNavigate()
 	const scrollToBottom = () => {
 		window.scroll({
 			top: document.body.scrollHeight,
@@ -12,6 +16,10 @@ const CTASlot2 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 			behavior: 'smooth',
 		});
 	};
+const editHR = () =>{
+	navigate("/allhiringrequest/addnewhr")
+	localStorage.setItem("hrID",params?.hrid)
+}
 	return (
 		<>
 			<div>
@@ -22,10 +30,14 @@ const CTASlot2 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 					iconBorder={`1px solid var(--color-sunlight)`}
 					isDropdown={true}
 					listItem={slotItem}
-					menuAction={(menuItem) => {
+					menuAction={(menuItem) => {					
 						switch (menuItem.key) {
 							case HRCTA.ADD_NOTES: {
 								scrollToBottom();
+								break;
+							}
+							case HRCTA.EDIT_HR: {
+								editHR();
 								break;
 							}
 							default:
