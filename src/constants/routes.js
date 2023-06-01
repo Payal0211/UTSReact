@@ -1,3 +1,4 @@
+// import CountryList from 'modules/masters/screens/country/countryList';
 import React, { Suspense } from 'react';
 
 const Dashboard = React.lazy(() =>
@@ -76,6 +77,11 @@ const ViewHrDetails = React.lazy(() =>
 const JDDumpReport = React.lazy(() =>
 	import('modules/report/screens/jdDump/jdDumpReport'),
 );
+
+const CountryList = React.lazy(() =>
+	import('modules/masters/screens/country/countryList'),
+);
+
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
@@ -106,6 +112,8 @@ export default class UTSRoutes {
 	static INCENTIVEREPORTROUTE = '/report/incentive';
 	static VIEWHRDETAILS = '/viewHrDetails/:id';
 	static JDDUMPREPORTROUTE = '/jdDump';
+	static MASTERCOUNTRYROUTE = '/master/country';
+	static MASTERCURRENCYROUTE = '/master/currency';
 }
 
 export const navigateToComponent = {
@@ -217,6 +225,11 @@ export const navigateToComponent = {
 	[UTSRoutes.JDDUMPREPORTROUTE]: (
 		<Suspense>
 			<JDDumpReport />
+		</Suspense>
+	),
+	[UTSRoutes.MASTERCOUNTRYROUTE]: (
+		<Suspense>
+			<CountryList />
 		</Suspense>
 	),
 };
