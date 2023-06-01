@@ -93,9 +93,9 @@ export const disabledWeekend = (current) => {
 	return moment(current).day() !== 0 && moment(current).day() !== 6;
 };
 
-export const isSaturday = (date) => date.getDay() === 6;
+export const isSaturday = (date) => date?.getDay() === 6;
 
-export const isSunday = (date) => date.getDay() === 0;
+export const isSunday = (date) => date?.getDay() === 0;
 
 export const getNthDateExcludingWeekend = (n = 0) => {
 	let nthDate = new Date();
@@ -106,6 +106,37 @@ export const getNthDateExcludingWeekend = (n = 0) => {
 	if (isSunday(nthDate)) nthDate.setDate(nthDate.getDate() + 1);
 
 	return nthDate;
+};
+export const getNextWorkingDay = (currDate) => {
+	const temp = new Date(currDate);
+	if (isSaturday(temp)) return temp.setDate(temp.getDate() + 2);
+	return temp.setDate(temp.getDate() + 1);
+};
+
+export const isSlotOverlapping = (slot1, slot2) => {
+	return (
+		slot1.getDate() === slot2.getDate() &&
+		slot1.getMonth() === slot2.getMonth() &&
+		slot1.getFullYear() === slot2.getFullYear()
+	);
+};
+export const getSlots = () => {
+	const slot1 = getNthDateExcludingWeekend(1);
+	const slot2 = isSlotOverlapping(slot1, getNthDateExcludingWeekend(2))
+		? getNextWorkingDay(slot1)
+		: getNthDateExcludingWeekend(2);
+
+	const slot3 = isSlotOverlapping(
+		getNthDateExcludingWeekend(2),
+		getNthDateExcludingWeekend(3),
+	)
+		? getNextWorkingDay(slot2)
+		: getNthDateExcludingWeekend(3);
+	return {
+		slot1,
+		slot2,
+		slot3,
+	};
 };
 
 export const defaultStartTime = () => {
@@ -132,8 +163,10 @@ export const getDateInUsFormat = (date) =>
 	prefixZeroInTime(date.getDate()) +
 	'/' +
 	date.getFullYear();
+
 export const getInterviewSlotInfo = (interviewDate, startTime, endTime) => {
-	interviewDate = getDateInUsFormat(interviewDate);
+	let formattedDate = new Date(interviewDate);
+	interviewDate = getDateInUsFormat(formattedDate);
 	startTime = getTimeInHHMM(new Date(startTime));
 	endTime = getTimeInHHMM(new Date(endTime));
 	return {

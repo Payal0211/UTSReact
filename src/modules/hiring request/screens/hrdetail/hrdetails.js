@@ -53,7 +53,6 @@ const HRDetailScreen = () => {
 		formState: { errors },
 	} = useForm();
 
-	console.log(apiData, '--apiData');
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
 	const miscData = UserSessionManagementController.getUserSession();

@@ -114,6 +114,7 @@ const CountryList = () => {
 					className="statusModalWrap"
 					onCancel={() => setAddCountryModal(false)}>
 					<AddCountry
+						setAddCountryModal={setAddCountryModal}
 						onCancel={() => setAddCountryModal(false)}
 						callAPI={getCountryListHandler}
 						tableFilteredState={tableFilteredState}
