@@ -126,7 +126,10 @@
 .addFeebackContainer h1,.replaceTalentWrapper h1{
     padding-bottom: 8px;
 }
-
+.addFeebackContainer .engModalHeadList {
+  flex-wrap: wrap;
+  gap: 10px 5px;
+}
 .addFeebackContainer ul {
     padding: 0;
     list-style: none;
@@ -284,6 +287,12 @@ background:#CECCCC ;
     padding-left: 60px;
     padding-right: 60px;
 }
+.rateCounterField
+  [class*="hrInputFields_inputBox"]
+  [class*="hrInputFields_inputfield"]:disabled,
+.engagementModalWrap [class*="hrInputFields_inputBox"] input:disabled {
+  background: #f5f5f5;
+}
 .rateCounterField button{
     position: absolute;
     height: 54px;
@@ -370,4 +379,9 @@ background:#CECCCC ;
 .contractBorderTitle{
     border-top: 1px dashed #E8E8E8;
     padding-top: 24px;
+}
+.firstFeebackTableContainer
+  .billRateWrapper
+  [class*="ant-select-selection-item"] {
+  color: #232323;
 }

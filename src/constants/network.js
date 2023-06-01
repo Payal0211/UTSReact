@@ -82,6 +82,7 @@ export class EngagementAPI {
 	static SAVE_BILL_RATE_PAY_RATE = 'SaveBillRatePayRate';
 	static GET_RENEW_ENGAGEMENT = 'GetRenewEngagement';
 	static SAVE_RENEW_ENGAGEMENT = 'SaveRenewEngagement';
+	static CALCULATE_ACTUAL_NR_BR_PR = "Calculate_ActualNR_From_BRPR";
 }
 
 export class AllHiringRequestAPI {

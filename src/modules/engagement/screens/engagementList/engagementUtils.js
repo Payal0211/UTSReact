@@ -58,7 +58,14 @@ export const engagementUtils = {
 			dateofPayment:item?.dateofPayment?item?.dateofPayment:'NA',
 			createdByDatetime:item?.createdByDatetime?item?.createdByDatetime:'NA',
 			typeOfHR:item?.typeOfHR?item?.typeOfHR:'NA',
-			h_Availability:item?.h_Availability?item?.h_Availability:'NA'
+			h_Availability:item?.h_Availability?item?.h_Availability:'NA',
+			talentLegal_StatusID:item?.talentLegal_StatusID,
+			clientLegal_StatusID:item?.clientLegal_StatusID,
+			isContractCompleted:item?.isContractCompleted,
+			isHRManaged :item?.isHRManaged,
+			currentStatus :item?.currentStatus,
+			isContractCompleted :item?.isContractCompleted,
+			isRenewalAvailable: item?.isRenewalAvailable,
 		}));
 	},
 	getClientFeedbackColor: (color) => {

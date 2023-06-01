@@ -138,7 +138,7 @@ const EngagementInvoice = ({
 			<div
 				className={`${engagementInvoice.headingContainer} ${engagementInvoice.addFeebackContainer}`}>
 				<h1>Add Invoice Details</h1>
-				<ul>
+				<ul className={engagementInvoice.engModalHeadList}>
 					<li>
 						<span>HR ID:</span>
 						{talentInfo?.hrNumber}
