@@ -66,6 +66,7 @@ const HRFields = ({
 	const [workingMode, setWorkingMode] = useState([]);
 	const [talentRole, setTalentRole] = useState([]);
 	const [country, setCountry] = useState([]);
+	const [currency, setCurrency] = useState([]);
 	const [salesPerson, setSalesPerson] = useState([]);
 	const [howSoon, setHowSoon] = useState([]);
 	const [region, setRegion] = useState([]);
@@ -607,15 +608,6 @@ const HRFields = ({
 	const watchCountry = watch('country');
 	const { isReady, debouncedFunction } = useDebounce(postalCodeHandler, 2000);
 	useEffect(() => {
-		// if (watchPostalCode < 0 || _isNull(watchPostalCode)) {
-		// 	setError('postalCode', {
-		// 		type: 'postalCode',
-		// 		message: 'Please enter valid postal code',
-		// 	});
-		// } else {
-		// 	clearErrors('postalCode');
-		// 	!isPostalCodeNotFound && debouncedFunction('POSTAL_CODE');
-		// }
 		!isPostalCodeNotFound && debouncedFunction('POSTAL_CODE');
 	}, [debouncedFunction, watchPostalCode, isPostalCodeNotFound]);
 	useEffect(() => {
@@ -651,6 +643,10 @@ const HRFields = ({
 		pathName,
 		setValue,
 	]);
+	const getCurrencyHandler = useCallback(async () => {
+		const response = await MasterDAO.getCurrencyRequestDAO();
+		setCurrency(response && response?.responseBody);
+	}, []);
 
 	useEffect(() => {
 		if (getContactAndSaleID?.contactID && getContactAndSaleID?.salesID)
@@ -665,10 +661,12 @@ const HRFields = ({
 		getRegion();
 		getWorkingMode();
 		// postalCodeHandler();
+		getCurrencyHandler();
 		getHowSoon();
 		getNRMarginHandler();
 		getDurationTypes();
 	}, [
+		getCurrencyHandler,
 		getAvailability,
 		getSalesPerson,
 		getTalentRole,
@@ -1076,12 +1074,14 @@ const HRFields = ({
 									register={register}
 									required={!getUploadFileData}
 									errors={errors}
-									validationSchema={{
-										// pattern: {
-										// 	value: URLRegEx.url,
-										// 	message: 'Entered value does not match url format',
-										// },
-									}}
+									validationSchema={
+										{
+											// pattern: {
+											// 	value: URLRegEx.url,
+											// 	message: 'Entered value does not match url format',
+											// },
+										}
+									}
 								/>
 							</div>
 						</div>
@@ -1089,20 +1089,12 @@ const HRFields = ({
 							<div className={HRFieldStyle.colMd4}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
+										mode={'id/value'}
 										setValue={setValue}
 										register={register}
 										label={'Add your estimated budget'}
 										defaultValue="Select Budget"
-										options={[
-											{
-												value: 'USD',
-												id: 'USD',
-											},
-											{
-												value: 'INR',
-												id: 'INR',
-											},
-										]}
+										options={currency}
 										name="budget"
 										isError={errors['budget'] && errors['budget']}
 										required
@@ -1249,10 +1241,10 @@ const HRFields = ({
 												value: 0,
 												message: "please don't enter the value less than 0",
 											},
-											max:{
-												value:100,
-												message:"please don't enter the value more than 100"
-											}
+											max: {
+												value: 100,
+												message: "please don't enter the value more than 100",
+											},
 										}}
 										register={register}
 										name="years"

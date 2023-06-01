@@ -9,7 +9,12 @@ import { Dropdown, Menu, message, Table, Tooltip, Modal } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
-import { AddNewType, DayName, InputType } from 'constants/application';
+import {
+	AddNewType,
+	DayName,
+	InputType,
+	UserAccountRole,
+} from 'constants/application';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
@@ -34,6 +39,7 @@ import Prioritycount from 'assets/svg/priority-count.svg';
 import Remainingcount from 'assets/svg/remaining-count.svg';
 import CloneHR from './cloneHRModal';
 import { MasterDAO } from 'core/master/masterDAO';
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -164,6 +170,8 @@ const AllHiringRequestScreen = () => {
 			navigate('/allhiringrequest/addnewhr');
 		}
 	};
+	const miscData = UserSessionManagementController.getUserMiscellaneousData();
+
 	const tableColumnsMemo = useMemo(
 		() =>
 			allHRConfig.tableConfig(togglePriority, setCloneHR, setHRID, setHRNumber),
@@ -329,18 +337,28 @@ const AllHiringRequestScreen = () => {
 						backgroundColor={`var(--color-sunlight)`}
 						iconBorder={`1px solid var(--color-sunlight)`}
 						isDropdown={true}
-						listItem={[
-							{
-								label: 'Add New HR',
-								key: AddNewType.HR,
-								IsEnabled: true,
-							},
-							{
-								label: 'Add New Client',
-								key: AddNewType.CLIENT,
-								IsEnabled: true,
-							},
-						]}
+						listItem={
+							miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS
+								? [
+										{
+											label: 'Add New HR',
+											key: AddNewType.HR,
+											IsEnabled: true,
+										},
+								  ]
+								: [
+										{
+											label: 'Add New HR',
+											key: AddNewType.HR,
+											IsEnabled: true,
+										},
+										{
+											label: 'Add New Client',
+											key: AddNewType.CLIENT,
+											IsEnabled: true,
+										},
+								  ]
+						}
 						menuAction={(item) => {
 							switch (item.key) {
 								case AddNewType.HR: {

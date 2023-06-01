@@ -108,7 +108,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 						<div className={AcceptHRStyle.formPanelAction}>
 							<button
 								onClick={acceptHRHandler}
-								className={AcceptHRStyle.btn}>
+								className={AcceptHRStyle.btnPrimary}>
 								Accept HR
 							</button>
 							{
@@ -119,7 +119,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 											? () => setMoreInfo(true)
 											: handleSubmit(waitForMoreInfoHandler)
 									}
-									className={AcceptHRStyle.btnPrimary}>
+									className={AcceptHRStyle.btn}>
 									Wait for more Information
 								</button>
 							}
