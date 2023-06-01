@@ -135,10 +135,10 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('budget'))
 						? null
-						: watch('budget')
+						: watch('budget')?.value
 					: _isNull(d.budget)
 					? null
-					: d.budget,
+					: d.budget?.value,
 			minimumBudget:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('minimumBudget'))
