@@ -27,7 +27,7 @@ export const hrUtils = {
 			salesRep: item.salesRep,
 			hrStatus: item.hrStatus,
 			hrStatusCode: item.hrStatusCode,
-			userId:item?.userId,
+			userId: item?.userId,
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {
@@ -576,12 +576,12 @@ export const hrUtils = {
 				{
 					label: 'Pass to ODR',
 					key: 'Pass to ODR',
-					isEnabled: true,
+					IsEnabled: true,
 				},
 				{
 					label: 'Keep it with me as well',
 					key: 'Keep it with me as well',
-					isEnabled: true,
+					IsEnabled: true,
 				},
 			];
 		} else if (adHOCValue === AdHOCHR.ODR) {
