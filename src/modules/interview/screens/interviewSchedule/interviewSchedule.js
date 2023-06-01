@@ -16,6 +16,7 @@ import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { disabledWeekend } from 'shared/utils/basic_utils';
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
 const InterviewSchedule = ({
 	talentName,
@@ -44,6 +45,7 @@ const InterviewSchedule = ({
 		formState: { errors },
 	} = useForm();
 	const [messageAPI, contextHolder] = message.useMessage();
+	const [isLoading, setLoading] = useState(false);
 	// const rescheduleReason = [
 	// 	{ id: 1, value: 'Client not available on given Slots' },
 	// 	{ id: 2, value: 'Client not available on selected Slot' },
@@ -64,6 +66,7 @@ const InterviewSchedule = ({
 	}, [getTimeZone]);
 
 	const scheduleInterviewAPIHandler = async (data) => {
+		setLoading(true);
 		const scheduleData = {
 			slotType: scheduleSlotRadio,
 			RecheduleSlots:
@@ -89,7 +92,7 @@ const InterviewSchedule = ({
 		if (response.statusCode === HTTPStatusCode.OK) {
 			message.success('Interview scheduled successfully');
 			closeModal();
-
+			setLoading(false);
 			callAPI(hrId);
 		}
 	};
@@ -158,6 +161,14 @@ const InterviewSchedule = ({
 						className={InterviewScheduleStyle.topDivider}
 						dashed
 					/>
+
+
+{isLoading ? (
+						<SpinLoader />
+					) : (
+
+
+
 					<form id="interviewReschedule">
 						<div className={InterviewScheduleStyle.row}>
 							<div className={InterviewScheduleStyle.colMd12}>
@@ -523,6 +534,7 @@ const InterviewSchedule = ({
 							</div>
 						)}
 					</form>
+					)}
 				</div>
 			</div>
 			{/* <Divider

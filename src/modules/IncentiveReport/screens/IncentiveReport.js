@@ -1189,8 +1189,13 @@ const IncentiveReportScreen = () => {
 						/>
 					</>
 				)}
+		{tableData?.length>0&&(
 
 				<h4>Total Amount ($) : {grandTotal.toFixed(2)}</h4>
+		)}
+
+
+
 
 				{isAllowFilters && (
 					<Suspense fallback={<div>Loading...</div>}>
