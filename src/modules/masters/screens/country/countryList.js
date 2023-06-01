@@ -1,12 +1,9 @@
 import CountryListStyle from './countryList.module.css';
 import { Modal, Table } from 'antd';
-
 import 'react-datepicker/dist/react-datepicker.css';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
-
 import { MasterDAO } from 'core/master/masterDAO';
 import { MasterConfig } from 'modules/masters/masterConfig';
 import { MasterUtils } from 'modules/masters/masterUtils';
@@ -56,25 +53,15 @@ const CountryList = () => {
 		<div className={CountryListStyle.hiringRequestContainer}>
 			<div className={CountryListStyle.addnewHR}>
 				<div className={CountryListStyle.hiringRequest}>Country List</div>
-			</div>
-			{/*
-			 * --------- Filter Component Starts ---------
-			 * @Filter Part
-			 */}
-			<div className={CountryListStyle.filterContainer}>
-				<div className={CountryListStyle.filterSets}>
-					<div className={CountryListStyle.filterRight}>
-						<div>
-							<button
-								className={CountryListStyle.btnPrimary}
-								onClick={() => setAddCountryModal(true)}>
-								Add Country
-							</button>
-						</div>
-					</div>
+				<div>
+					<button
+						className={CountryListStyle.btnPrimary}
+						onClick={() => setAddCountryModal(true)}>
+						Add Country
+					</button>
 				</div>
 			</div>
-
+			<br />
 			{/*
 			 * ------------ Table Starts-----------
 			 * @Table Part
