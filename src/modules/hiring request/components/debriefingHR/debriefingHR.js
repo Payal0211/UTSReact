@@ -1,4 +1,4 @@
-import { Divider, Select, message } from 'antd';
+import { Divider, message } from 'antd';
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import DebriefingHRStyle from './debriefingHR.module.css';
@@ -42,7 +42,6 @@ const DebriefingHR = ({
 		handleSubmit,
 		setValue,
 		control,
-		setError,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
@@ -255,23 +254,27 @@ const DebriefingHR = ({
 									isTextArea={true}
 									errors={errors}
 									validationSchema={{
-									validate: (value) => {
-											let index = value.search(new RegExp(getCompanyName, "i"));
-											let index1 = value.search(new RegExp(clientDetail?.companyname, "i"));
-											if (params === "addnewhr") {
+										validate: (value) => {
+											let index = value.search(new RegExp(getCompanyName, 'i'));
+											let index1 = value.search(
+												new RegExp(clientDetail?.companyname, 'i'),
+											);
+											if (params === 'addnewhr') {
 												if (index !== -1) {
 													return 'Please do not mention company name here';
-												} if (!value) {
-													return "Please add something about the company";
+												}
+												if (!value) {
+													return 'Please add something about the company';
 												}
 											} else {
 												if (index1 !== -1) {
 													return 'Please do not mention company name here';
-												} if (!value) {
-													return "Please add something about the company";
+												}
+												if (!value) {
+													return 'Please add something about the company';
 												}
 											}
-										}
+										},
 									}}
 									label={'About Company'}
 									register={register}

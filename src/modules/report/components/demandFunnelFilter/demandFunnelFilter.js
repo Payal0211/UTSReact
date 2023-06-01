@@ -304,76 +304,8 @@ const DemandFunnelFilter = ({
 
 							<br />
 							<div className={hiringFilterStyle.filtersListType}>
-								{console.log(filterSubChild?.label,"filterSubChild")}
-								{filterSubChild?.label === "Head"?searchData && searchData.length > 0
-									? searchData.map((item, index) => {
-											return (
-												<div
-													className={hiringFilterStyle.filterItem}
-													key={index}>
-													<Checkbox
-														checked={checkedState.get(
-															`${filterSubChild.name}${item.text}`,
-														)}
-														onChange={(e) =>
-															handleAppliedFilters(e.target.checked, {
-																filterType: filterSubChild.name,
-																value: item?.value,
-																id: item?.text,
-															})
-														}
-														id={item?.value + `/${index + 1}`}
-														style={{
-															fontSize: `${!item.label && '1rem'}`,
-															fontWeight: '500',
-														}}>
-														{item.label
-															? All_Hiring_Request_Utils.GETHRSTATUS(
-																	item.statusCode,
-																	item.label,
-															  )
-															: item?.value}
-													</Checkbox>
-												</div>
-											);
-									  })
-									: filterSubChild.child.map((item, index) => {
-											return (
-												<div
-													className={hiringFilterStyle.filterItem}
-													key={index}>
-													<Checkbox
-														// disabled={
-														// 	appliedFilter?.get(`${filterSubChild.name}`) &&
-														// 	!checkedState.get(
-														// 		`${filterSubChild.name}${item.text}`,
-														// 	)
-														// }
-														checked={checkedState.get(
-															`${filterSubChild.name}${item.text}`,
-														)}
-														onChange={(e) =>
-															handleAppliedFilters(e.target.checked, {
-																filterType: filterSubChild.name,
-																value: item?.value,
-																id: item?.text,
-															})
-														}
-														id={item?.value + `/${index + 1}`}
-														style={{
-															fontSize: `${!item.label && '1rem'}`,
-															fontWeight: '500',
-														}}>
-														{item.label
-															? All_Hiring_Request_Utils.GETHRSTATUS(
-																	item.statusCode,
-																	item.label,
-															  )
-															: item?.value}
-													</Checkbox>
-												</div>
-											);
-									  }):searchData && searchData.length > 0
+								{filterSubChild?.label === 'Head'
+									? searchData && searchData.length > 0
 										? searchData.map((item, index) => {
 												return (
 													<div
@@ -411,12 +343,12 @@ const DemandFunnelFilter = ({
 														className={hiringFilterStyle.filterItem}
 														key={index}>
 														<Checkbox
-															disabled={
-																appliedFilter?.get(`${filterSubChild.name}`) &&
-																!checkedState.get(
-																	`${filterSubChild.name}${item.text}`,
-																)
-															}
+															// disabled={
+															// 	appliedFilter?.get(`${filterSubChild.name}`) &&
+															// 	!checkedState.get(
+															// 		`${filterSubChild.name}${item.text}`,
+															// 	)
+															// }
 															checked={checkedState.get(
 																`${filterSubChild.name}${item.text}`,
 															)}
@@ -441,8 +373,76 @@ const DemandFunnelFilter = ({
 														</Checkbox>
 													</div>
 												);
-										  })}
-								
+										  })
+									: searchData && searchData.length > 0
+									? searchData.map((item, index) => {
+											return (
+												<div
+													className={hiringFilterStyle.filterItem}
+													key={index}>
+													<Checkbox
+														checked={checkedState.get(
+															`${filterSubChild.name}${item.text}`,
+														)}
+														onChange={(e) =>
+															handleAppliedFilters(e.target.checked, {
+																filterType: filterSubChild.name,
+																value: item?.value,
+																id: item?.text,
+															})
+														}
+														id={item?.value + `/${index + 1}`}
+														style={{
+															fontSize: `${!item.label && '1rem'}`,
+															fontWeight: '500',
+														}}>
+														{item.label
+															? All_Hiring_Request_Utils.GETHRSTATUS(
+																	item.statusCode,
+																	item.label,
+															  )
+															: item?.value}
+													</Checkbox>
+												</div>
+											);
+									  })
+									: filterSubChild.child.map((item, index) => {
+											return (
+												<div
+													className={hiringFilterStyle.filterItem}
+													key={index}>
+													<Checkbox
+														disabled={
+															appliedFilter?.get(`${filterSubChild.name}`) &&
+															!checkedState.get(
+																`${filterSubChild.name}${item.text}`,
+															)
+														}
+														checked={checkedState.get(
+															`${filterSubChild.name}${item.text}`,
+														)}
+														onChange={(e) =>
+															handleAppliedFilters(e.target.checked, {
+																filterType: filterSubChild.name,
+																value: item?.value,
+																id: item?.text,
+															})
+														}
+														id={item?.value + `/${index + 1}`}
+														style={{
+															fontSize: `${!item.label && '1rem'}`,
+															fontWeight: '500',
+														}}>
+														{item.label
+															? All_Hiring_Request_Utils.GETHRSTATUS(
+																	item.statusCode,
+																	item.label,
+															  )
+															: item?.value}
+													</Checkbox>
+												</div>
+											);
+									  })}
 							</div>
 						</>
 					) : (

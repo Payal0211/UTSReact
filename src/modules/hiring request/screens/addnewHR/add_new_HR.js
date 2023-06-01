@@ -36,7 +36,6 @@ const AddNewHR = () => {
 		localStorage.setItem('enIDdata', enID);
 	}, [enID]);
 	const interviewDetails = (e) => {
-		console.log(e, 'eeeee');
 		setHRdetails(e);
 	};
 
