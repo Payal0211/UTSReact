@@ -24,7 +24,7 @@ const AddCountry = ({ onCancel, callAPI, tableFilteredState }) => {
 				CountryRegion: d?.countryRegion,
 				IsActive: true,
 			});
-			if (response?.responseBody === HTTPStatusCode.OK) {
+			if (response?.statusCode === HTTPStatusCode.OK) {
 				setIsLoading(false);
 				messageAPI.open(
 					{
@@ -39,16 +39,17 @@ const AddCountry = ({ onCancel, callAPI, tableFilteredState }) => {
 				}, 1000);
 			} else {
 				setIsLoading(false);
+
 				messageAPI.open(
 					{
 						type: 'error',
-						content: 'Something went wrong.',
+						content: response?.responseBody || 'Something went wrong.',
 					},
 					1000,
 				);
 			}
 		},
-		[callAPI, messageAPI, onCancel, tableFilteredState],
+		[callAPI, messageAPI, tableFilteredState],
 	);
 	return (
 		<div className={AddCountryStyle.container}>

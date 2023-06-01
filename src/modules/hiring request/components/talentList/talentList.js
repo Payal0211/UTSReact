@@ -19,6 +19,7 @@ import {
 	defaultStartTime,
 	getInterviewSlotInfo,
 	getNthDateExcludingWeekend,
+	getSlots,
 } from 'shared/utils/basic_utils';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';
 import TalentAcceptance from '../talentAcceptance/talentAcceptance';
@@ -39,6 +40,8 @@ import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
 import FeedbackResponse from 'modules/interview/components/feedbackResponse/feedbackResponse';
 
 import ProfileLogDetails from '../profileLogDetails/profileLog';
+
+const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
 const TalentList = ({
 	talentCTA,
@@ -95,18 +98,18 @@ const TalentList = ({
 
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
 		{
-			slot1: getNthDateExcludingWeekend(1),
+			slot1: getSlots?.()?.slot1,
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
 		{
-			slot1: getNthDateExcludingWeekend(2),
+			slot1: getSlots()?.slot2,
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
 
 		{
-			slot1: getNthDateExcludingWeekend(3),
+			slot1: getSlots?.()?.slot3,
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
@@ -115,7 +118,7 @@ const TalentList = ({
 		{
 			SlotID: 1,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(1),
+				getSlots?.()?.slot1,
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -124,7 +127,7 @@ const TalentList = ({
 		{
 			SlotID: 2,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(2),
+				getSlots?.()?.slot2,
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -133,7 +136,7 @@ const TalentList = ({
 		{
 			SlotID: 3,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(3),
+				getSlots?.()?.slot3,
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -145,18 +148,18 @@ const TalentList = ({
 	const [reScheduleTimezone, setRescheduleTimezone] = useState([]);
 	const [getRescheduleSlotDate, setRescheduleSlotDate] = useState([
 		{
-			slot1: getNthDateExcludingWeekend(1),
+			slot1: getSlots?.()?.slot1,
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
 		{
-			slot1: getNthDateExcludingWeekend(2),
+			slot1: getSlots()?.slot2,
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
 
 		{
-			slot1: getNthDateExcludingWeekend(3),
+			slot1: getSlots?.()?.slot3,
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
@@ -166,7 +169,7 @@ const TalentList = ({
 		{
 			SlotID: 1,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(1),
+				getSlots?.()?.slot1,
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -175,7 +178,7 @@ const TalentList = ({
 		{
 			SlotID: 2,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(2),
+				getSlots?.()?.slot2,
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -184,7 +187,7 @@ const TalentList = ({
 		{
 			SlotID: 3,
 			...getInterviewSlotInfo(
-				getNthDateExcludingWeekend(3),
+				getSlots?.()?.slot3,
 				defaultStartTime(),
 				defaultEndTime(),
 			),
@@ -1245,10 +1248,10 @@ const TalentList = ({
 				pagination={{
 					className: TalentListStyle.paginate,
 					size: 'small',
-					pageSize: 2,
+					pageSize: ROW_SIZE,
 					position: 'top',
 					onChange: (page, pageSize) => {
-						setPageIndex(pageIndex + 1);
+						setPageIndex(page - 1);
 					},
 				}}
 				renderItem={(item, listIndex) => {
@@ -1596,7 +1599,10 @@ const TalentList = ({
 											}}>
 											<HROperator
 												onClickHandler={() => setTalentIndex(item?.TalentID)}
-												title={talentCTA?.[listIndex]?.cTAInfoList[0]?.label}
+												title={
+													talentCTA?.[ROW_SIZE * pageIndex + listIndex]
+														?.cTAInfoList[0]?.label
+												}
 												icon={<AiOutlineDown />}
 												backgroundColor={`var(--color-sunlight)`}
 												iconBorder={`1px solid var(--color-sunlight)`}

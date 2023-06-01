@@ -21,6 +21,7 @@ import {
 	disabledWeekend,
 	getInterviewSlotInfo,
 	getNthDateExcludingWeekend,
+	getSlots,
 } from 'shared/utils/basic_utils';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
@@ -34,7 +35,7 @@ export const otherInterviewer = {
 };
 const AnotherRound = ({
 	talentInfo,
-	// getScheduleSlotDate,
+	getScheduleSlotDate,
 	getSlotInformationHandler,
 	getScheduleSlotInfomation,
 	setScheduleSlotInformation,
@@ -55,24 +56,24 @@ const AnotherRound = ({
 			otherInterviewer: [],
 		},
 	});
-	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
-		{
-			slot1: getNthDateExcludingWeekend(1),
-			slot2: defaultStartTime(),
-			slot3: defaultEndTime(),
-		},
-		{
-			slot1: getNthDateExcludingWeekend(2),
-			slot2: defaultStartTime(),
-			slot3: defaultEndTime(),
-		},
+	// const [getScheduleSlotDate, setScheduleSlotDate] = useState([
+	// 	{
+	// 		slot1: getSlots?.()?.slot1,
+	// 		slot2: defaultStartTime(),
+	// 		slot3: defaultEndTime(),
+	// 	},
+	// 	{
+	// 		slot1: getSlots()?.slot2,
+	// 		slot2: defaultStartTime(),
+	// 		slot3: defaultEndTime(),
+	// 	},
 
-		{
-			slot1: getNthDateExcludingWeekend(3),
-			slot2: defaultStartTime(),
-			slot3: defaultEndTime(),
-		},
-	]);
+	// 	{
+	// 		slot1: getSlots?.()?.slot3,
+	// 		slot2: defaultStartTime(),
+	// 		slot3: defaultEndTime(),
+	// 	},
+	// ]);
 
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -118,7 +119,7 @@ const AnotherRound = ({
 						{
 							SlotID: 1,
 							...getInterviewSlotInfo(
-								getNthDateExcludingWeekend(1),
+								getSlots?.()?.slot1,
 								defaultStartTime(),
 								defaultEndTime(),
 							),
@@ -127,7 +128,7 @@ const AnotherRound = ({
 						{
 							SlotID: 2,
 							...getInterviewSlotInfo(
-								getNthDateExcludingWeekend(2),
+								getSlots?.()?.slot2,
 								defaultStartTime(),
 								defaultEndTime(),
 							),
@@ -136,7 +137,7 @@ const AnotherRound = ({
 						{
 							SlotID: 3,
 							...getInterviewSlotInfo(
-								getNthDateExcludingWeekend(3),
+								getSlots?.()?.slot3,
 								defaultStartTime(),
 								defaultEndTime(),
 							),
