@@ -23,6 +23,7 @@ const HRInputField = ({
 	onChangeHandler,
 	onBlurHandler,
 	trailingIcon,
+	onIconHandler,
 	validationSchema,
 	rows,
 }) => {
@@ -102,7 +103,11 @@ const HRInputField = ({
 						autoComplete="off"
 					/>
 					{trailingIcon && (
-						<div className={HRInputFieldStyle.trailingIcon}>{trailingIcon}</div>
+						<div
+							className={HRInputFieldStyle.trailingIcon}
+							onClick={trailingIcon && onIconHandler}>
+							{trailingIcon}
+						</div>
 					)}
 				</div>
 			)}
@@ -114,7 +119,7 @@ const HRInputField = ({
 						</div>
 				  )
 				: false}
-				{required && disabled 
+			{required && disabled
 				? errors &&
 				  errors[name] && (
 						<div className={HRInputFieldStyle.error}>
