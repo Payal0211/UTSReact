@@ -635,9 +635,9 @@ const IncentiveReportScreen = () => {
 
 	const getList = async () => {
 		const calresponse = await IncentiveReportDAO?.calculateValidationDAO(
+			watchManagerId?.id,
 			splitvalue[0],
 			splitvalue[1],
-			watchManagerId?.id,
 		)
 		setValidation(calresponse?.responseBody?.message)
 			if (splitvalue || splitvalue === undefined) {
