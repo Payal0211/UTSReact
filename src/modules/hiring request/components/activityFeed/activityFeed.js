@@ -118,7 +118,21 @@ const ActivityFeed = ({
 													: item?.ActionPerformedBy}
 											</span>
 										</div>
-
+										<br />
+										<div className={ActivityFeedStyle.activityAction}>
+											{item?.IsNotes ? <BsTag /> : ""}
+											&nbsp;&nbsp;
+											<span>
+												{item?.IsNotes === 1
+													? 'Comments : '
+													: ''}
+											</span>
+											<span>
+												{item?.IsNotes === 1
+													? item?.Comments
+													: ""}
+											</span>
+										</div>
 										<br />
 										<div className={ActivityFeedStyle.activityAction}>
 											{item?.IsNotes === 0 && (
