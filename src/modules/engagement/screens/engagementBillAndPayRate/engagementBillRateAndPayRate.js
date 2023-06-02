@@ -201,7 +201,6 @@ if(response?.statusCode===HTTPStatusCode?.OK){
 		type:"finalPayRate",
 	message:response.statusCode === HTTPStatusCode?.BAD_REQUEST && "Can't Calculate"})
 }
-console.log(errors,"errors");
 },[setValue,setError,watchBillRate,HTTPStatusCode])
 
 const nrPercentageBR = useCallback( async(e)=>{
