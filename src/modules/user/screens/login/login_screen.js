@@ -120,9 +120,9 @@ const LoginScreen = () => {
 									/>
 								</div>
 
-								<div className={loginStyle.forgotPassword}>
+								{/* <div className={loginStyle.forgotPassword}>
 									Forgot Password ?
-								</div>
+								</div> */}
 
 								<div className={loginStyle.loginAction}>
 									<ButtonField
