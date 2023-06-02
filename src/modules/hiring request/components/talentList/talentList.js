@@ -1336,7 +1336,7 @@ const TalentList = ({
 									</div>
 
 									<div className={TalentListStyle.profileURL}>
-										<span>profile URL:</span>&nbsp;&nbsp;
+										<span>Profile URL:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
 											{item?.ATSTalentLiveURL ? (
 												<a
