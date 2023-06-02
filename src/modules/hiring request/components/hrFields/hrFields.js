@@ -511,6 +511,7 @@ const HRFields = ({
 
 	const getClientNameSuggestionHandler = useCallback(
 		async (clientName) => {
+			console.log(clientName,"clientNmae");
 			let response = await MasterDAO.getEmailSuggestionDAO(clientName);
 
 			if (response?.statusCode === HTTPStatusCode.OK) {
@@ -551,7 +552,6 @@ const HRFields = ({
 			await hiringRequestDAO.getClientDetailRequestDAO(
 				filteredMemo[0]?.emailId,
 			);
-
 		existingClientDetails?.statusCode === HTTPStatusCode.OK &&
 			setContactAndSalesID((prev) => ({
 				...prev,
@@ -877,12 +877,14 @@ const HRFields = ({
 						</div>
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd6}>
+								{console.log(isCompanyNameAvailable,"isCompanyNameAvailable")}
 								<HRInputField
-									disabled={
-										pathName === ClientHRURL.ADD_NEW_CLIENT ||
-										isCompanyNameAvailable ||
-										isLoading
-									}
+									// disabled={
+									// 	pathName === ClientHRURL.ADD_NEW_CLIENT ||
+									// 	isCompanyNameAvailable ||
+									// 	isLoading
+									// }
+									disabled={isCompanyNameAvailable?true:false}
 									register={register}
 									errors={errors}
 									validationSchema={{

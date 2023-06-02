@@ -929,11 +929,12 @@ const EditHRFields = ({
                     <div className={HRFieldStyle.row}>
                         <div className={HRFieldStyle.colMd6}>
                             <HRInputField
-                                disabled={
-                                    pathName === ClientHRURL.ADD_NEW_CLIENT ||
-                                    isCompanyNameAvailable ||
-                                    isLoading
-                                }
+                                // disabled={
+                                //     pathName === ClientHRURL.ADD_NEW_CLIENT ||
+                                //     isCompanyNameAvailable ||
+                                //     isLoading
+                                // }
+                                disabled={isCompanyNameAvailable?true:false}
                                 register={register}
                                 errors={errors}
                                 validationSchema={{
