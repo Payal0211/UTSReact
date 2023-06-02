@@ -1,4 +1,4 @@
-import CountryListStyle from './countryList.module.css';
+import CurrencyListStyle from './currencyList.module.css';
 import { Modal, Table } from 'antd';
 import 'react-datepicker/dist/react-datepicker.css';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -8,9 +8,10 @@ import { MasterDAO } from 'core/master/masterDAO';
 import { MasterConfig } from 'modules/masters/masterConfig';
 import { MasterUtils } from 'modules/masters/masterUtils';
 import AddCountry from 'modules/masters/components/addCountry/addCountry';
+import UpdateExchangeRate from 'modules/masters/components/updateCurrencyExchangeRate/updateCurrencyExchangeRate';
 
-const CountryList = () => {
-	const [isAddCountryModal, setAddCountryModal] = useState(false);
+const CurrencyList = () => {
+	const [isEditExchangeRate, setEditExchangeRate] = useState(false);
 	const [tableFilteredState, setTableFilteredState] = useState({
 		PageIndex: 1,
 		PageSize: 100,
@@ -18,6 +19,7 @@ const CountryList = () => {
 		SortDirection: '',
 	});
 
+	const [exchangeRateToEdit, setExchangeRateToEdit] = useState(null);
 	const [apiData, setApiData] = useState([]);
 	const [isLoading, setLoading] = useState(false);
 	const pageSizeOptions = [100, 200, 300, 500];
@@ -25,14 +27,16 @@ const CountryList = () => {
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageSize, setPageSize] = useState(100);
 
-	const getCountryListHandler = useCallback(async (tableData) => {
+	const getCurrencyListHandler = useCallback(async (tableData) => {
 		setLoading(true);
-		let response = await MasterDAO.getCountryListRequestDAO(tableData);
+		let response = await MasterDAO.getCurrencyExchangeRateListRequestDAO(
+			tableData,
+		);
 
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
 			setApiData(
-				MasterUtils.countryListFormatter(
+				MasterUtils.currencyListFormatter(
 					response && response?.responseBody?.details,
 				),
 			);
@@ -43,27 +47,21 @@ const CountryList = () => {
 		}
 	}, []);
 
-	const tableColumnsMemo = useMemo(() => MasterConfig.countryTable(), []);
+	const tableColumnsMemo = useMemo(
+		() =>
+			MasterConfig.currencyTable(setEditExchangeRate, setExchangeRateToEdit),
+		[],
+	);
 
 	useEffect(() => {
-		getCountryListHandler({
-			PageIndex: 1,
-			PageSize: 100,
-			SortExpression: '',
-			SortDirection: '',
-		});
-	}, [getCountryListHandler]);
+		getCurrencyListHandler();
+	}, [getCurrencyListHandler]);
 
 	return (
-		<div className={CountryListStyle.hiringRequestContainer}>
-			<div className={CountryListStyle.addnewHR}>
-				<div className={CountryListStyle.hiringRequest}>Country List</div>
-				<div>
-					<button
-						className={CountryListStyle.btnPrimary}
-						onClick={() => setAddCountryModal(true)}>
-						Add Country
-					</button>
+		<div className={CurrencyListStyle.hiringRequestContainer}>
+			<div className={CurrencyListStyle.addnewHR}>
+				<div className={CurrencyListStyle.hiringRequest}>
+					Currency Exchange List
 				</div>
 			</div>
 			<br />
@@ -71,14 +69,14 @@ const CountryList = () => {
 			 * ------------ Table Starts-----------
 			 * @Table Part
 			 */}
-			<div className={CountryListStyle.tableDetails}>
+			<div className={CurrencyListStyle.tableDetails}>
 				{isLoading ? (
 					<TableSkeleton />
 				) : (
 					<>
 						<Table
-							className="jdDumpReport"
-							id="JDDumpReport"
+							className="currencyExchangeList"
+							id="currencyExchangeList"
 							columns={tableColumnsMemo}
 							bordered={false}
 							dataSource={[...apiData]}
@@ -91,7 +89,7 @@ const CountryList = () => {
 										PageSize: pageSize,
 										PageIndex: pageNum,
 									});
-									getCountryListHandler({
+									getCurrencyListHandler({
 										...tableFilteredState,
 										PageIndex: pageNum,
 										PageSize: pageSize,
@@ -109,20 +107,21 @@ const CountryList = () => {
 					</>
 				)}
 			</div>
-			{isAddCountryModal && (
+			{isEditExchangeRate && (
 				<Modal
 					transitionName=""
 					width="700px"
 					centered
 					footer={null}
-					open={isAddCountryModal}
+					open={isEditExchangeRate}
 					className="statusModalWrap"
-					onCancel={() => setAddCountryModal(false)}>
-					<AddCountry
-						setAddCountryModal={setAddCountryModal}
-						onCancel={() => setAddCountryModal(false)}
-						callAPI={getCountryListHandler}
+					onCancel={() => setEditExchangeRate(false)}>
+					<UpdateExchangeRate
+						setAddCountryModal={setEditExchangeRate}
+						onCancel={() => setEditExchangeRate(false)}
+						callAPI={getCurrencyListHandler}
 						tableFilteredState={tableFilteredState}
+						exchangeRateToEdit={exchangeRateToEdit}
 					/>
 				</Modal>
 			)}
@@ -130,4 +129,4 @@ const CountryList = () => {
 	);
 };
 
-export default CountryList;
+export default CurrencyList;

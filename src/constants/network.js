@@ -82,7 +82,7 @@ export class EngagementAPI {
 	static SAVE_BILL_RATE_PAY_RATE = 'SaveBillRatePayRate';
 	static GET_RENEW_ENGAGEMENT = 'GetRenewEngagement';
 	static SAVE_RENEW_ENGAGEMENT = 'SaveRenewEngagement';
-	static CALCULATE_ACTUAL_NR_BR_PR = "Calculate_ActualNR_From_BRPR";
+	static CALCULATE_ACTUAL_NR_BR_PR = 'Calculate_ActualNR_From_BRPR';
 }
 
 export class AllHiringRequestAPI {
@@ -132,6 +132,8 @@ export class MastersAPI {
 	static CHECK_COUNTRY_REGION = 'CheckCountryRegion';
 	static CHECK_COUNTRY_NAME = 'CheckCountryName';
 	static ADD_COUNTRY = 'AddCountry';
+	static GET_CURRENCY_EXCHANGE_RATE_LIST = 'GetCurrencyExchangeRateList';
+	static UPDATE_CURRENCY_EXCHANGE_RATE_LIST = 'UpdateCurrencyExchangeRate';
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
@@ -269,5 +271,5 @@ export class IncentiveReport {
 	static GET_INCENTIVE_REPORT_DETAILS = 'GetIncentiveReportDetails';
 	static GET_CONTRACT_BOOSTER = 'GetIncentiveReportDetailsContractBooster';
 	static GET_INCENTIVE_REPORT_AMNR = 'GetIncentiveReportDetailsAMNR';
-	static CHECK_VALIDATION = "CheckValidationForNBDandAM";
+	static CHECK_VALIDATION = 'CheckValidationForNBDandAM';
 }

@@ -1,3 +1,4 @@
+import { ReactComponent as EditSVG } from 'assets/svg/edit.svg';
 export const MasterConfig = {
 	countryTable: () => {
 		return [
@@ -11,6 +12,45 @@ export const MasterConfig = {
 				title: 'Country Region',
 				dataIndex: 'countryRegion',
 				key: 'countryRegion',
+				align: 'left',
+			},
+		];
+	},
+	currencyTable: (setEditExchangeRate, setExchangeRateToEdit) => {
+		return [
+			{
+				title: ' ',
+				dataIndex: 'id',
+				key: 'id',
+				align: 'left',
+				render: (data, param) => {
+					return (
+						<EditSVG
+							onClick={() => {
+								setEditExchangeRate(true);
+								setExchangeRateToEdit(param);
+							}}
+						/>
+					);
+				},
+			},
+
+			{
+				title: 'Currency Code',
+				dataIndex: 'currencyCode',
+				key: 'currencyCode',
+				align: 'left',
+			},
+			{
+				title: 'Currency Sign',
+				dataIndex: 'currencySign',
+				key: 'currencySign',
+				align: 'left',
+			},
+			{
+				title: 'Exchange Rate',
+				dataIndex: 'exchangeRate',
+				key: 'exchangeRate',
 				align: 'left',
 			},
 		];

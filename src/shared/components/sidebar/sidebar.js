@@ -154,6 +154,13 @@ const getSideBar = () => {
 			icon: JDEfficiencyReport,
 			navigateTo: UTSRoutes.MASTERCOUNTRYROUTE,
 		}),
+		new SideBarModels({
+			id: 'Master_Currency_List',
+			title: 'Currency Exchange List',
+			isActive: false,
+			icon: JDEfficiencyReport,
+			navigateTo: UTSRoutes.MASTERCURRENCYROUTE,
+		}),
 	];
 
 	return dataList;

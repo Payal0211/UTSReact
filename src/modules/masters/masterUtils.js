@@ -6,4 +6,13 @@ export const MasterUtils = {
 			countryRegion: item?.countryRegion,
 		}));
 	},
+	currencyListFormatter: (currencyData) => {
+		return currencyData?.rows?.map((item, index) => ({
+			key: `Currency${index + 1}`,
+			id: item?.id,
+			currencyCode: item?.currencyCode,
+			currencySign: item?.currencySign,
+			exchangeRate: item?.exchangeRate,
+		}));
+	},
 };
