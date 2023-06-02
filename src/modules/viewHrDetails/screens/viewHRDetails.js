@@ -35,7 +35,7 @@ const navigate = useNavigate()
 				</div>
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsHead}>
-					<h1>HR ID - {hiringDetails?.responseBody?.details?.hrNumber}</h1>
+					<h1>{hiringDetails?.responseBody?.details?.hrNumber}</h1>
 					{hiringDetails?.responseBody?.details?.hrStatus==="Open"&&(
 						<button onClick={editHr}>Edit HR</button>
 					)}
