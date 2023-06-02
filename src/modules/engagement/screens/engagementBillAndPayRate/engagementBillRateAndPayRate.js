@@ -195,6 +195,7 @@ let response = await engagementRequestDAO.calculateActualNRBRPRDAO(watchBillRate
 
 if(response?.statusCode===HTTPStatusCode?.OK){
 	setValue("payNRRate",response?.responseBody?.details)
+	setError("payNRRate",{})
 }else if(response.statusCode === HTTPStatusCode?.BAD_REQUEST){
 	setError("payNRRate",{
 		type:"finalPayRate",
@@ -205,9 +206,9 @@ console.log(errors,"errors");
 
 const nrPercentageBR = useCallback( async(e)=>{
 	let response = await engagementRequestDAO.calculateActualNRBRPRDAO(e.target.value,watchPayRate,currencyValue)
-	
 	if(response?.statusCode===HTTPStatusCode?.OK){
 		setValue("billNRRate",response?.responseBody?.details)
+		setError("billNRRate",{})
 	}else if(response.statusCode === HTTPStatusCode?.BAD_REQUEST){
 		setError("billNRRate",{
 			type:"finalBillRate",
