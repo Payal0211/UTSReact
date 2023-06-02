@@ -107,7 +107,6 @@ export const jdDumpSearch = (e, apiData) => {
 		// val?.rolesResponsibilitiesPercentage.includes(e.target.value) ||
 		// val.requirementPercentage.includes(e.target.value)
 	});
-	console.log(filteredData, '--filteredData');
 
 	return filteredData || [];
 };

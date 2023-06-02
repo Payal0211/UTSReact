@@ -1,4 +1,4 @@
-import { Divider, Spin } from 'antd';
+import { Divider } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import AcceptHRStyle from './acceptHR.module.css';
 import { useCallback, useState } from 'react';
@@ -15,11 +15,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 	const {
 		register,
 		handleSubmit,
-		setValue,
-		control,
-		setError,
-		getValues,
-		watch,
+
 		formState: { errors },
 	} = useForm({});
 	const switchLocation = useLocation();

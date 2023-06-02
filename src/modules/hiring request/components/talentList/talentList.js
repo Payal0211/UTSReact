@@ -18,7 +18,6 @@ import {
 	defaultEndTime,
 	defaultStartTime,
 	getInterviewSlotInfo,
-	getNthDateExcludingWeekend,
 	getSlots,
 } from 'shared/utils/basic_utils';
 import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/allHR.config';

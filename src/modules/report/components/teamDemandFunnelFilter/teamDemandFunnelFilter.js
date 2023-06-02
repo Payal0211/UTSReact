@@ -200,7 +200,6 @@ const TeamDemandFunnelFilter = ({
 		setTableFilteredState,
 	]);
 	const handleFilters = useCallback(() => {
-		console.log('hello');
 		let filters = {};
 		appliedFilter.forEach((item) => {
 			filters = {

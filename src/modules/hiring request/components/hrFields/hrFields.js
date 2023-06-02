@@ -8,12 +8,10 @@ import {
 	Modal,
 } from 'antd';
 import {
-	AddNewType,
 	ClientHRURL,
 	GoogleDriveCredentials,
 	InputType,
 	SubmitType,
-	URLRegEx,
 	WorkingMode,
 } from 'constants/application';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -26,14 +24,13 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { useForm, Controller } from 'react-hook-form';
 import { HTTPStatusCode } from 'constants/network';
-import { _isNull, debounceUtils, getPayload } from 'shared/utils/basic_utils';
+import { _isNull, getPayload } from 'shared/utils/basic_utils';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
 import useDebounce from 'shared/hooks/useDebounce';
-import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import WithLoader from 'shared/components/loader/loader';
 
 export const secondaryInterviewer = {
@@ -287,7 +284,6 @@ const HRFields = ({
 	}, [openPicker, setJDParsedSkills, uploadFileFromGoogleDriveValidator]);
 
 	const uploadFileFromGoogleDriveLink = useCallback(async () => {
-		console.log('uploadFileHandler');
 		setValidation({
 			...getValidation,
 			linkValidation: '',
@@ -734,7 +730,6 @@ const HRFields = ({
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 				setIsSavedLoading(false);
 				setAddHRResponse(addHRRequest?.responseBody?.details);
-				console.log(params === 'addnewhr', '--addnewhr');
 				if (params === 'addnewhr') {
 					interviewDetails(addHRRequest?.responseBody?.details);
 				}
