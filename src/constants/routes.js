@@ -1,4 +1,3 @@
-// import CountryList from 'modules/masters/screens/country/countryList';
 import React, { Suspense } from 'react';
 
 const Dashboard = React.lazy(() =>
@@ -80,6 +79,10 @@ const JDDumpReport = React.lazy(() =>
 
 const CountryList = React.lazy(() =>
 	import('modules/masters/screens/country/countryList'),
+);
+
+const CurrencyList = React.lazy(() =>
+	import('modules/masters/screens/currency/currencyList'),
 );
 
 export default class UTSRoutes {
@@ -230,6 +233,11 @@ export const navigateToComponent = {
 	[UTSRoutes.MASTERCOUNTRYROUTE]: (
 		<Suspense>
 			<CountryList />
+		</Suspense>
+	),
+	[UTSRoutes.MASTERCURRENCYROUTE]: (
+		<Suspense>
+			<CurrencyList />
 		</Suspense>
 	),
 };
