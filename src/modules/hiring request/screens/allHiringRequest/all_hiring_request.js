@@ -300,10 +300,15 @@ const AllHiringRequestScreen = () => {
 						) : (
 							<button
 								className={allHRStyles.togglebtn}
+								onBlur={() => setIsOpen(false)}
 								onClick={() => {
 									setIsOpen(!isOpen);
 								}}>
-								Priorities <img src={DownArrow} />
+								Priorities{' '}
+								<img
+									src={DownArrow}
+									alt="icon"
+								/>
 							</button>
 						)}
 						{isOpen && (
@@ -317,9 +322,9 @@ const AllHiringRequestScreen = () => {
 										</tr>
 									</thead>
 									<tbody>
-										{priorityCount?.map((data) => {
+										{priorityCount?.map((data, index) => {
 											return (
-												<tr>
+												<tr key={`Priorities_${index}`}>
 													<td>{data.fullName}</td>
 													<td>{data.assignedCount}</td>
 													<td>{data.remainingCount}</td>

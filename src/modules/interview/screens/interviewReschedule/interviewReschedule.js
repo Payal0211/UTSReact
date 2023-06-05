@@ -291,10 +291,14 @@ const InterviewReschedule = ({
 											<Radio value={1}>
 												Slot options provided by the client
 											</Radio>
-											<Radio value={4}>Send a link shared by client</Radio>
-											<Radio value={2}>
-												Slot Directly Added for Final Interview Slot
-											</Radio>
+											{talentInfo?.InterviewStatus !== 'Slot Given' && (
+												<>
+													<Radio value={4}>Send a link shared by client</Radio>
+													<Radio value={2}>
+														Slot Directly Added for Final Interview Slot
+													</Radio>
+												</>
+											)}
 										</Radio.Group>
 									</div>
 								</div>

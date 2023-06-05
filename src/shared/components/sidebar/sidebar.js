@@ -13,13 +13,10 @@ import TeamDemandFunnel from 'assets/svg/teamDemandFunnel.svg';
 import Invoice from 'assets/svg/invoice.svg';
 import EngagementDashboard from 'assets/svg/engagementDashboard.svg';
 import JDEfficiencyReport from 'assets/svg/jdEfficiency.svg';
-import Masters from 'assets/svg/masters.svg';
-// import EngagementList from 'assets/svg/engagement.svg';
-// import DemandFunnel from 'assets/svg/demandFunnel.svg';
-// import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
-// import TeamDemandFunnel from 'assets/svg/teamDemandFunnel.svg';
+import MedalIcon from 'assets/svg/medalIcon.svg';
+import GlobIcon from 'assets/svg/globIcon.svg';
+import MastersIcon from 'assets/svg/mastersIcon.svg';
 import IncentiveReport from 'assets/svg/Incentive.svg';
-// import JDReport from 'assets/svg/JD.svg';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
@@ -29,28 +26,28 @@ const Sidebar = () => {
 	const sidebarDataSets = getSideBar();
 	const switchLocation = useLocation();
 
+
 	let urlSplitter = `/${switchLocation.pathname.split('/')[1]}`;
 
 	return (
 		<div className={sideBarStyles.sidebar}>
 			<div className={sideBarStyles.sidebarBody}>
-				{sidebarDataSets?.map(({ navigateTo, icon, title }, index) => {
+				{sidebarDataSets?.map(({ navigateTo, icon, title, isChildren, branch }, index) => {
 					return (
 						<Tooltip
 							key={index}
 							placement="right"
-							title={title}>
+							title={!isChildren && title}>
 							<div
 								className={sideBarStyles.sidebarItem}
 								key={index}>
-								<Link to={navigateTo}>
+								<Link to={!isChildren && navigateTo}>
 									<div className={sideBarStyles.iconSet}>
 										<div
-											className={`${sideBarStyles.sidebarIcon} ${
-												switchLocation.pathname === navigateTo
-													? sideBarStyles.active
-													: ''
-											}`}>
+											className={`${sideBarStyles.sidebarIcon} ${switchLocation.pathname === navigateTo
+												? sideBarStyles.active
+												: ''
+												}`}>
 											<img
 												src={icon}
 												alt="mySvgImage"
@@ -59,11 +56,18 @@ const Sidebar = () => {
 									</div>
 								</Link>
 								<div
-									className={`${
-										urlSplitter === navigateTo
-											? sideBarStyles.indicator
-											: sideBarStyles.transparentIndicator
-									}`}></div>
+									className={`${urlSplitter === navigateTo
+										? sideBarStyles.indicator
+										: sideBarStyles.transparentIndicator
+										}`}></div>
+
+								{isChildren && <div className={sideBarStyles.sideBarSubmenu}>
+									<h3>Masters</h3>
+									{branch?.length > 0 && branch?.map((item) => {
+										return <Link to={item?.navigateTo}><img src={item?.icon} />{item?.title}</Link>
+									})}
+								</div>}
+
 							</div>
 						</Tooltip>
 					);
@@ -75,19 +79,15 @@ const Sidebar = () => {
 
 const getSideBar = () => {
 	let dataList = [
-		// new SideBarModels({
-		// 	id: 'UTS_dashboard',
-		// 	title: 'Dashboard',
-		// 	isActive: true,
-		// 	icon: Dashboard,
-		// 	navigateTo: UTSRoutes.HOMEROUTE,
-		// }),
+
 		new SideBarModels({
 			id: 'UTS_all_hiring_request',
 			title: 'Hiring Request',
 			isActive: false,
 			icon: Briefcase,
 			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
+			isChildren: false,
+			branch: []
 		}),
 		new SideBarModels({
 			id: 'UTS_DealList',
@@ -95,6 +95,8 @@ const getSideBar = () => {
 			isActive: false,
 			icon: Handshake,
 			navigateTo: UTSRoutes.DEALLISTROUTE,
+			isChildren: false,
+			branch: []
 		}),
 		new SideBarModels({
 			id: 'UTS_UserList',
@@ -102,6 +104,8 @@ const getSideBar = () => {
 			isActive: false,
 			icon: HR,
 			navigateTo: UTSRoutes.USERLISTROUTE,
+			isChildren: false,
+			branch: []
 		}),
 
 		new SideBarModels({
@@ -110,6 +114,8 @@ const getSideBar = () => {
 			isActive: false,
 			icon: EngagementDashboard,
 			navigateTo: UTSRoutes.ENGAGEMENTRROUTE,
+			isChildren: false,
+			branch: []
 		}),
 
 		new SideBarModels({
@@ -118,6 +124,8 @@ const getSideBar = () => {
 			isActive: false,
 			icon: DemandFunnel,
 			navigateTo: UTSRoutes.DEMANDFUNNELROUTE,
+			isChildren: false,
+			branch: []
 		}),
 		new SideBarModels({
 			id: 'supply_funnel_report',
@@ -125,13 +133,18 @@ const getSideBar = () => {
 			isActive: false,
 			icon: SupplyFunnel,
 			navigateTo: UTSRoutes.SUPPLYFUNNELROUTE,
+			isChildren: false,
+			branch: []
 		}),
+
 		new SideBarModels({
 			id: 'team_demand_funnel_report',
 			title: 'Team Demand Funnel',
 			isActive: false,
 			icon: TeamDemandFunnel,
 			navigateTo: UTSRoutes.TEAMDEMANDFUNNELROUTE,
+			isChildren: false,
+			branch: []
 		}),
 		new SideBarModels({
 			id: 'incentive_report',
@@ -139,6 +152,8 @@ const getSideBar = () => {
 			isActive: false,
 			icon: Invoice,
 			navigateTo: UTSRoutes.INCENTIVEREPORTROUTE,
+			isChildren: false,
+			branch: []
 		}),
 		new SideBarModels({
 			id: 'JD_Efficiency_Report',
@@ -146,21 +161,39 @@ const getSideBar = () => {
 			isActive: false,
 			icon: JDEfficiencyReport,
 			navigateTo: UTSRoutes.JDDUMPREPORTROUTE,
+			isChildren: false,
+			branch: []
 		}),
 		new SideBarModels({
-			id: 'Master_Country_List',
-			title: 'Country',
+			id: 'Master',
+			title: 'Master',
 			isActive: false,
-			icon: JDEfficiencyReport,
-			navigateTo: UTSRoutes.MASTERCOUNTRYROUTE,
+			icon: MastersIcon,
+			isChildren: true,
+			navigateTo: '/master',
+			branch: [
+				new SideBarModels({
+					id: 'Master_Country_List',
+					title: 'Country',
+					isActive: false,
+					icon: GlobIcon,
+					navigateTo: UTSRoutes.MASTERCOUNTRYROUTE,
+					isChildren: false,
+					branch: []
+				}),
+				new SideBarModels({
+					id: 'Master_Currency_List',
+					title: 'Currency',
+					isActive: false,
+					icon: MedalIcon,
+					navigateTo: UTSRoutes.MASTERCURRENCYROUTE,
+					isChildren: false,
+					branch: []
+				}),
+			]
 		}),
-		new SideBarModels({
-			id: 'Master_Currency_List',
-			title: 'Currency Exchange List',
-			isActive: false,
-			icon: JDEfficiencyReport,
-			navigateTo: UTSRoutes.MASTERCURRENCYROUTE,
-		}),
+
+
 	];
 
 	return dataList;

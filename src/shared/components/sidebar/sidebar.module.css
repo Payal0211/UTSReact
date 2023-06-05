@@ -1,55 +1,100 @@
 .sidebar {
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: rgb(255, 255, 255);
-    overflow-x: hidden;
-    width: 90px;
-    /* box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.09); */
-    /* box-shadow: 0 1px 3px rgba(91, 91, 91, 0.2), 0 1px 2px rgba(128, 128, 128, 0.24); */
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgb(255, 255, 255);
+  /* overflow-x: hidden; */
+  width: 90px;
+  z-index: 1;
+  /* box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.09); */
+  /* box-shadow: 0 1px 3px rgba(91, 91, 91, 0.2), 0 1px 2px rgba(128, 128, 128, 0.24); */
 }
 
 .sidebarBody {
-    margin-top: 110px;
+  margin-top: 110px;
 }
 
 .sidebarItem {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  position: relative;
 }
 
 .iconSet {
-    width: 80px;
-    text-align: center;
+  width: 80px;
+  text-align: center;
 }
 
 .sidebarIcon {
-    opacity: 0.9;
+  opacity: 0.9;
 }
 
 .indicator {
-    width: 5px;
-    height: 30px;
-    border-top-left-radius: .15rem;
-    border-bottom-left-radius: .15rem;
-    align-items: flex-end;
-    transition: all .5s ease;
-    background-color: var(--uplers-black);
+  width: 5px;
+  height: 30px;
+  border-top-left-radius: 0.15rem;
+  border-bottom-left-radius: 0.15rem;
+  align-items: flex-end;
+  transition: all 0.5s ease;
+  background-color: var(--uplers-black);
 }
-.transparentIndicator{
-    width: 5px;
-        height: 30px;
-        border-top-left-radius: .15rem;
-        border-bottom-left-radius: .15rem;
-        align-items: flex-end;
-        transition: all .5s ease;
-        background-color: transparent;
+.transparentIndicator {
+  width: 5px;
+  height: 30px;
+  border-top-left-radius: 0.15rem;
+  border-bottom-left-radius: 0.15rem;
+  align-items: flex-end;
+  transition: all 0.5s ease;
+  background-color: transparent;
 }
 
 .active {
-    opacity: 1 !important;
-    transition: all 0.5s ease;
+  opacity: 1 !important;
+  transition: all 0.5s ease;
+}
+
+.sideBarSubmenu {
+  background: #ffffff;
+  box-shadow: 2px 2px 10px rgba(103, 103, 103, 0.15);
+  border-radius: 8px;
+  padding: 16px 0;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  min-width: 185px;
+  display: none;
+  z-index: 2;
+}
+.sidebarItem:hover .sideBarSubmenu {
+  display: block;
+}
+.sideBarSubmenu h3 {
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: #000000;
+  padding: 0 16px;
+  margin: 0 0 8px;
+}
+.sideBarSubmenu a {
+  padding: 8px 16px;
+  align-items: center;
+  display: flex;
+  transition: all 0.35s ease 0s;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 18px;
+  color: #000000;
+}
+.sideBarSubmenu a img {
+  margin-right: 8px;
+}
+.sideBarSubmenu a:hover {
+  background: rgba(211, 233, 150, 0.2);
 }

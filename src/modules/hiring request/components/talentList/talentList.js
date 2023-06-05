@@ -8,7 +8,10 @@ import { useForm } from 'react-hook-form';
 import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
 
-import { TalentOnboardStatus } from 'constants/application';
+import {
+	InterviewFeedbackStatus,
+	TalentOnboardStatus,
+} from 'constants/application';
 import InterviewReschedule from 'modules/interview/screens/interviewReschedule/interviewReschedule';
 import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
 import InterviewFeedback from 'modules/interview/screens/interviewFeedback/interviewFeedback';
@@ -1338,7 +1341,7 @@ const TalentList = ({
 									</div>
 
 									<div className={TalentListStyle.profileURL}>
-										<span>profile URL:</span>&nbsp;&nbsp;
+										<span>Profile URL:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
 											{item?.ATSTalentLiveURL ? (
 												<a
@@ -1404,19 +1407,23 @@ const TalentList = ({
 													: item?.InterviewStatus}
 											</span>
 										</div>
-										<span
-											onClick={() => {
-												setTalentIndex(item?.TalentID);
-												setShowFeedback(true);
-											}}
-											style={{
-												textDecoration: 'underline',
-												color: `var(--background-color-ebony)`,
-												cursor: 'pointer',
-											}}>
-											{' '}
-											View
-										</span>
+										{(item?.ClientFeedback === InterviewFeedbackStatus.HIRED ||
+											item?.ClientFeedback ===
+												InterviewFeedbackStatus.REJECTED) && (
+											<span
+												onClick={() => {
+													setTalentIndex(item?.TalentID);
+													setShowFeedback(true);
+												}}
+												style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>
+												{' '}
+												View
+											</span>
+										)}
 									</div>
 									<Divider
 										style={{
@@ -1589,7 +1596,8 @@ const TalentList = ({
 											margin: '10px 0',
 										}}
 									/>
-									{talentCTA[listIndex]?.cTAInfoList?.length > 0 && (
+									{talentCTA[ROW_SIZE * pageIndex + listIndex]?.cTAInfoList
+										?.length > 0 && (
 										<div
 											style={{
 												position: 'absolute',
