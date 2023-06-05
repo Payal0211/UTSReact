@@ -5,5 +5,7 @@ export default class SideBarModels {
 		this.isActive = data.isActive;
 		this.icon = data.icon;
 		this.navigateTo = data.navigateTo;
+		this.isChildren = data.isChildren;
+		this.branch = data.branch;
 	}
 }
