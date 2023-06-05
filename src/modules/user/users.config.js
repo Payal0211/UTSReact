@@ -21,11 +21,11 @@ export const userConfig = {
 			},
 			{
 				title: 'Created on',
-				dataIndex: 'createdbyDatetime',
-				key: 'createdbyDatetime',
+				dataIndex: 'createdOn',
+				key: 'createdOn',
 				align: 'left',
 				render: (_, param) => {
-					let response = userUtils.dateFormatter(param.createdbyDatetime);
+					let response = userUtils.dateFormatter(param.createdOn);
 					return response;
 				},
 			},
@@ -40,8 +40,26 @@ export const userConfig = {
 			},
 			{
 				title: 'Name',
-				dataIndex: 'fullName',
-				key: 'fullName',
+				dataIndex: 'name',
+				key: 'name',
+				align: 'left',
+				render: (text) => {
+					return text ? text : 'NA';
+				},
+			},
+			{
+				title: 'Email',
+				dataIndex: 'email',
+				key: 'email',
+				align: 'left',
+				render: (text) => {
+					return text ? text : 'NA';
+				},
+			},
+			{
+				title: 'Designation',
+				dataIndex: 'designation',
+				key: 'designation',
 				align: 'left',
 				render: (text) => {
 					return text ? text : 'NA';
@@ -61,41 +79,50 @@ export const userConfig = {
 				},
 			},
 			{
+				title: 'User Level',
+				dataIndex: 'userLevel',
+				key: 'userLevel',
+				align: 'left',
+				render: (text) => {
+					return text ? text : 'NA';
+				},
+			},
+			{
+				title: 'Department',
+				dataIndex: 'department',
+				key: 'department',
+				align: 'left',
+				render: (text) => {
+					return text ? text : 'NA';
+				},
+			},
+			{
 				title: 'Manager',
-				dataIndex: 'teamManager',
-				key: 'teamManager',
+				dataIndex: 'manager',
+				key: 'manager',
 				align: 'left',
 				render: (text) => {
 					return text ? text : 'NA';
 				},
 			},
-			{
-				title: 'Email',
-				dataIndex: 'emailID',
-				key: 'emailID',
-				align: 'left',
-				render: (text) => {
-					return text ? text : 'NA';
-				},
-			},
-			{
-				title: 'Skype',
-				dataIndex: 'skypeID',
-				key: 'skypeID',
-				align: 'left',
-				render: (text) => {
-					return text ? text : 'NA';
-				},
-			},
-			{
-				title: 'Contact',
-				dataIndex: 'contactNumber',
-				key: 'contactNumber',
-				align: 'left',
-				render: (text) => {
-					return text ? text : 'NA';
-				},
-			},
+			// {
+			// 	title: 'Skype',
+			// 	dataIndex: 'skypeID',
+			// 	key: 'skypeID',
+			// 	align: 'left',
+			// 	render: (text) => {
+			// 		return text ? text : 'NA';
+			// 	},
+			// },
+			// {
+			// 	title: 'Contact',
+			// 	dataIndex: 'contactNumber',
+			// 	key: 'contactNumber',
+			// 	align: 'left',
+			// 	render: (text) => {
+			// 		return text ? text : 'NA';
+			// 	},
+			// },
 		];
 	},
 	userFilterListConfig: () => {
