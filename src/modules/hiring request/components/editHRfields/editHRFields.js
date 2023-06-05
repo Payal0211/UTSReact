@@ -1594,38 +1594,7 @@ const EditHRFields = ({
                             />
                         </div>
                         <div className={HRFieldStyle.colMd6}>
-                            <HRInputField
-                                register={register}
-                                errors={errors}
-                                validationSchema={{
-                                    required: 'please enter the city.',
-                                }}
-                                label="City"
-                                name="city"
-                                type={InputType.TEXT}
-                                placeholder="Enter the City"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className={HRFieldStyle.row}>
-                        <div className={HRFieldStyle.colMd6}>
-                            <HRInputField
-                                register={register}
-                                errors={errors}
-                                validationSchema={{
-                                    required: 'please enter the state.',
-                                }}
-                                label="State"
-                                name="state"
-                                type={InputType.TEXT}
-                                placeholder="Enter the State"
-                                required
-                            />
-                        </div>
-                        <div className={HRFieldStyle.colMd6}>
-                            <div className={HRFieldStyle.formGroup}>
+                        <div className={HRFieldStyle.formGroup}>
                                 <HRSelectField
                                     controlledValue={controlledCountryValue}
                                     setControlledValue={setControlledCountryValue}
@@ -1643,6 +1612,36 @@ const EditHRFields = ({
                                     errorMsg={'Please select the country.'}
                                 />
                             </div>
+                            </div>
+                    </div>
+                    <div className={HRFieldStyle.row}>
+                        <div className={HRFieldStyle.colMd6}>
+                            <HRInputField
+                                register={register}
+                                errors={errors}
+                                validationSchema={{
+                                    required: 'please enter the state.',
+                                }}
+                                label="State"
+                                name="state"
+                                type={InputType.TEXT}
+                                placeholder="Enter the State"
+                                required
+                            />
+                        </div>
+                        <div className={HRFieldStyle.colMd6}>
+                            <HRInputField
+                                register={register}
+                                errors={errors}
+                                validationSchema={{
+                                    required: 'please enter the city.',
+                                }}
+                                label="City"
+                                name="city"
+                                type={InputType.TEXT}
+                                placeholder="Enter the City"
+                                required
+                            />
                         </div>
                     </div>
                     <div className={HRFieldStyle.row}>
