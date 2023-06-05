@@ -457,9 +457,11 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getCountryDAO');
 		}
 	},
-	getCountryListRequestDAO: async function () {
+	getCountryListRequestDAO: async function (countryDetails) {
 		try {
-			const countryListResponse = await MasterAPI.getCountryListRequest();
+			const countryListResponse = await MasterAPI.getCountryListRequest(
+				countryDetails,
+			);
 			if (countryListResponse) {
 				const statusCode = countryListResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
@@ -1115,31 +1117,7 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getDashboardCountForEngagementDAO');
 		}
 	},
-	getCountryListRequestDAO: async function (getContactAndSaleID) {
-		try {
-			const getCountryListResponse = await MasterAPI.getCountryListRequest();
-			if (getCountryListResponse) {
-				const statusCode = getCountryListResponse['statusCode'];
-				if (statusCode === HTTPStatusCode.OK) {
-					const tempResut = getCountryListResponse?.responseBody;
-					return {
-						statusCode: statusCode,
-						responseBody: tempResut,
-					};
-				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
-					return getCountryListResponse;
-				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
-					return getCountryListResponse;
-				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
-					let deletedResponse =
-						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
-				}
-			}
-		} catch (error) {
-			return errorDebug(error, 'MasterDAO.getCountryListRequestDAO');
-		}
-	},
+
 	getDurationTypeDAO: async function (data) {
 		try {
 			const durationTypeResponse = await MasterAPI.getDurationType(data);
@@ -1188,6 +1166,64 @@ export const MasterDAO = {
 			}
 		} catch (error) {
 			return errorDebug(error, 'MasterDAO.getDashboardCountForEngagementDAO');
+		}
+	},
+	getCurrencyExchangeRateListRequestDAO: async function (data) {
+		try {
+			const currencyExchangeListResponse =
+				await MasterAPI.getCurrencyExchangeRateListRequest(data);
+			if (currencyExchangeListResponse) {
+				const statusCode = currencyExchangeListResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = currencyExchangeListResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return currencyExchangeListResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return currencyExchangeListResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.getCurrencyExchangeRateListRequestDAO',
+			);
+		}
+	},
+	updateCurrencyExchangeRateListRequestDAO: async function (data) {
+		try {
+			const currencyExchangeListResponse =
+				await MasterAPI.updateCurrencyExchangeRateListRequest(data);
+			if (currencyExchangeListResponse) {
+				const statusCode = currencyExchangeListResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = currencyExchangeListResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return currencyExchangeListResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return currencyExchangeListResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.updateCurrencyExchangeRateListRequestDAO',
+			);
 		}
 	},
 };

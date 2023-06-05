@@ -9,6 +9,7 @@ import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import 'react-datepicker/dist/react-datepicker.css';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
+import moment from 'moment';
 
 
 
@@ -35,6 +36,10 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
             setFeedbackSave(!feedBackSave)
         }
     }
+
+    useEffect(() => {
+        setValue('feedBackDate',new Date());
+    }, [getFeedbackFormContent])
 
     return (
         <div className={allengagementAddFeedbackStyles.engagementModalWrap}
@@ -83,6 +88,7 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                                     onChange={(date) => {
                                         setValue('feedBackDate', date);
                                     }}
+                                    dateFormat="yyyy/MM/dd H:mm:ss"
                                 />
                             )}
                             name="feedBackDate"

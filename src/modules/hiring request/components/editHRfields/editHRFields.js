@@ -1294,6 +1294,10 @@ const EditHRFields = ({
                                             value: 1,
                                             message: `please don't enter the value less than 1`,
                                         },
+                                        max:{
+                                            value:100,
+                                            message:"please don't enter the value more than 100"
+                                        }
                                     }}
                                     register={register}
                                     name="years"

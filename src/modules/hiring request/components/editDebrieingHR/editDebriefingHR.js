@@ -297,14 +297,20 @@ const EditDebriefingHR = ({
 									errors={errors}
 									validationSchema={{
 										validate: (value) => {
-											if (
-												value.toLowerCase() ===
-												getHRdetails?.company.toLowerCase() &&
-											value.toUpperCase() ===
-												getHRdetails?.company.toUpperCase()
-										) {
-											return 'Please do not mention company name here';
-										}
+											let index = value.search(new RegExp(getHRdetails?.company, "i"));
+											if(index !== -1) {
+												return 'Please do not mention company name here';
+											}
+										// 	if (
+										// 		value.toLowerCase() ===
+										// 		getHRdetails?.company.toLowerCase() &&
+										// 	value.toUpperCase() ===
+										// 		getHRdetails?.company.toUpperCase() 
+										// ) 
+										// {
+											
+										// 	return 'Please do not mention company name here';
+										// }
 										if (!value) {
 											return 'Please add something about the company';
 										}

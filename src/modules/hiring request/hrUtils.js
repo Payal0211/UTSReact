@@ -27,7 +27,7 @@ export const hrUtils = {
 			salesRep: item.salesRep,
 			hrStatus: item.hrStatus,
 			hrStatusCode: item.hrStatusCode,
-			userId:item?.userId,
+			userId: item?.userId,
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {
@@ -135,10 +135,10 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('budget'))
 						? null
-						: watch('budget')
+						: watch('budget')?.value
 					: _isNull(d.budget)
 					? null
-					: d.budget,
+					: d.budget?.value,
 			minimumBudget:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('minimumBudget'))
@@ -576,12 +576,12 @@ export const hrUtils = {
 				{
 					label: 'Pass to ODR',
 					key: 'Pass to ODR',
-					isEnabled: true,
+					IsEnabled: true,
 				},
 				{
 					label: 'Keep it with me as well',
 					key: 'Keep it with me as well',
-					isEnabled: true,
+					IsEnabled: true,
 				},
 			];
 		} else if (adHOCValue === AdHOCHR.ODR) {

@@ -204,4 +204,29 @@ export const IncentiveReportDAO = {
       return errorDebug(error, "IncentiveReportDAO.getIncentiveReportDetailsAMNRDAO");
     }
   },
+  calculateValidationDAO: async function (userId,month, year) {
+    try {
+      const calculateValidation = await IncentiveReportAPI.calculateValidation(userId,month, year);
+      if (calculateValidation) {
+        const statusCode = calculateValidation["statusCode"];
+        if (statusCode === HTTPStatusCode.OK) {
+          const tempResult = calculateValidation.responseBody;
+          return {
+            statusCode: statusCode,
+            responseBody: tempResult.details,
+          };
+        } else if (statusCode === HTTPStatusCode.NOT_FOUND)
+          return calculateValidation;
+        else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+          return calculateValidation;
+        else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+          let deletedResponse =
+            UserSessionManagementController.deleteAllSession();
+          if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+        }
+      }
+    } catch (error) {
+      return errorDebug(error, "IncentiveReportDAO.calculateValidationDAO");
+    }
+  },
 };

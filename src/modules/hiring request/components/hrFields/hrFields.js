@@ -8,12 +8,10 @@ import {
 	Modal,
 } from 'antd';
 import {
-	AddNewType,
 	ClientHRURL,
 	GoogleDriveCredentials,
 	InputType,
 	SubmitType,
-	URLRegEx,
 	WorkingMode,
 } from 'constants/application';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -26,14 +24,13 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { useForm, Controller } from 'react-hook-form';
 import { HTTPStatusCode } from 'constants/network';
-import { _isNull, debounceUtils, getPayload } from 'shared/utils/basic_utils';
+import { _isNull, getPayload } from 'shared/utils/basic_utils';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
 import useDebounce from 'shared/hooks/useDebounce';
-import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import WithLoader from 'shared/components/loader/loader';
 
 export const secondaryInterviewer = {
@@ -66,6 +63,7 @@ const HRFields = ({
 	const [workingMode, setWorkingMode] = useState([]);
 	const [talentRole, setTalentRole] = useState([]);
 	const [country, setCountry] = useState([]);
+	const [currency, setCurrency] = useState([]);
 	const [salesPerson, setSalesPerson] = useState([]);
 	const [howSoon, setHowSoon] = useState([]);
 	const [region, setRegion] = useState([]);
@@ -286,7 +284,6 @@ const HRFields = ({
 	}, [openPicker, setJDParsedSkills, uploadFileFromGoogleDriveValidator]);
 
 	const uploadFileFromGoogleDriveLink = useCallback(async () => {
-		console.log('uploadFileHandler');
 		setValidation({
 			...getValidation,
 			linkValidation: '',
@@ -607,15 +604,6 @@ const HRFields = ({
 	const watchCountry = watch('country');
 	const { isReady, debouncedFunction } = useDebounce(postalCodeHandler, 2000);
 	useEffect(() => {
-		// if (watchPostalCode < 0 || _isNull(watchPostalCode)) {
-		// 	setError('postalCode', {
-		// 		type: 'postalCode',
-		// 		message: 'Please enter valid postal code',
-		// 	});
-		// } else {
-		// 	clearErrors('postalCode');
-		// 	!isPostalCodeNotFound && debouncedFunction('POSTAL_CODE');
-		// }
 		!isPostalCodeNotFound && debouncedFunction('POSTAL_CODE');
 	}, [debouncedFunction, watchPostalCode, isPostalCodeNotFound]);
 	useEffect(() => {
@@ -651,6 +639,10 @@ const HRFields = ({
 		pathName,
 		setValue,
 	]);
+	const getCurrencyHandler = useCallback(async () => {
+		const response = await MasterDAO.getCurrencyRequestDAO();
+		setCurrency(response && response?.responseBody);
+	}, []);
 
 	useEffect(() => {
 		if (getContactAndSaleID?.contactID && getContactAndSaleID?.salesID)
@@ -665,10 +657,12 @@ const HRFields = ({
 		getRegion();
 		getWorkingMode();
 		// postalCodeHandler();
+		getCurrencyHandler();
 		getHowSoon();
 		getNRMarginHandler();
 		getDurationTypes();
 	}, [
+		getCurrencyHandler,
 		getAvailability,
 		getSalesPerson,
 		getTalentRole,
@@ -736,7 +730,6 @@ const HRFields = ({
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 				setIsSavedLoading(false);
 				setAddHRResponse(addHRRequest?.responseBody?.details);
-				console.log(params === 'addnewhr', '--addnewhr');
 				if (params === 'addnewhr') {
 					interviewDetails(addHRRequest?.responseBody?.details);
 				}
@@ -1076,12 +1069,14 @@ const HRFields = ({
 									register={register}
 									required={!getUploadFileData}
 									errors={errors}
-									validationSchema={{
-										// pattern: {
-										// 	value: URLRegEx.url,
-										// 	message: 'Entered value does not match url format',
-										// },
-									}}
+									validationSchema={
+										{
+											// pattern: {
+											// 	value: URLRegEx.url,
+											// 	message: 'Entered value does not match url format',
+											// },
+										}
+									}
 								/>
 							</div>
 						</div>
@@ -1089,20 +1084,12 @@ const HRFields = ({
 							<div className={HRFieldStyle.colMd4}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
+										mode={'id/value'}
 										setValue={setValue}
 										register={register}
 										label={'Add your estimated budget'}
 										defaultValue="Select Budget"
-										options={[
-											{
-												value: 'USD',
-												id: 'USD',
-											},
-											{
-												value: 'INR',
-												id: 'INR',
-											},
-										]}
+										options={currency}
 										name="budget"
 										isError={errors['budget'] && errors['budget']}
 										required
@@ -1247,7 +1234,11 @@ const HRFields = ({
 											required: 'please enter the years.',
 											min: {
 												value: 0,
-												message: `please don't enter the value less than 0`,
+												message: "please don't enter the value less than 0",
+											},
+											max: {
+												value: 100,
+												message: "please don't enter the value more than 100",
 											},
 										}}
 										register={register}

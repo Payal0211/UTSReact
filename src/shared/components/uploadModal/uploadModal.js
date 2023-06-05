@@ -48,8 +48,7 @@ const UploadModal = ({
 	// const uploadFileRef = useRef(null);
 	/* const modalFileHandler = useCallback(
 		(e) => {
-			console.log('--inside modal File handler---', e);
-			console.log(uploadFileHandler, '--UPLOADfilehandler--');
+		
 			uploadFileHandler(e);
 		},
 		[uploadFileHandler],

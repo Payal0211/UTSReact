@@ -239,12 +239,13 @@ export const MasterAPI = {
 		}
 	},
 
-	getCountryListRequest: async function () {
+	getCountryListRequest: async function (countryDetails) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_COUNTRY_LIST;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = countryDetails;
 		try {
 			let response = await httpService.sendGetRequest();
 			return response;
@@ -563,19 +564,7 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.checkIsSalesPerson');
 		}
 	},
-	getCountryListRequest: async function () {
-		let httpService = new HttpServices();
-		httpService.URL =
-			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_COUNTRY_LIST;
-		httpService.setAuthRequired = true;
-		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-		try {
-			let response = await httpService.sendGetRequest();
-			return response;
-		} catch (error) {
-			return errorDebug(error, 'MasterAPI.getCountryListRequest');
-		}
-	},
+
 	getUsersHierarchyRequest: async function (userDetails) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -619,6 +608,41 @@ export const MasterAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.getDashboardCountRequest');
+		}
+	},
+	getCurrencyExchangeRateListRequest: async function (currencyDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.GET_CURRENCY_EXCHANGE_RATE_LIST;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = currencyDetails;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCurrencyExchangeRateListRequest');
+		}
+	},
+	updateCurrencyExchangeRateListRequest: async function (currencyDetails) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.UPDATE_CURRENCY_EXCHANGE_RATE_LIST;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = currencyDetails;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterAPI.updateCurrencyExchangeRateListRequest',
+			);
 		}
 	},
 };

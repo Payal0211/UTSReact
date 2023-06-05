@@ -1,4 +1,4 @@
-import { Divider, Spin } from 'antd';
+import { Divider } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import AcceptHRStyle from './acceptHR.module.css';
 import { useCallback, useState } from 'react';
@@ -15,11 +15,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 	const {
 		register,
 		handleSubmit,
-		setValue,
-		control,
-		setError,
-		getValues,
-		watch,
+
 		formState: { errors },
 	} = useForm({});
 	const switchLocation = useLocation();
@@ -108,7 +104,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 						<div className={AcceptHRStyle.formPanelAction}>
 							<button
 								onClick={acceptHRHandler}
-								className={AcceptHRStyle.btn}>
+								className={AcceptHRStyle.btnPrimary}>
 								Accept HR
 							</button>
 							{
@@ -119,7 +115,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 											? () => setMoreInfo(true)
 											: handleSubmit(waitForMoreInfoHandler)
 									}
-									className={AcceptHRStyle.btnPrimary}>
+									className={AcceptHRStyle.btn}>
 									Wait for more Information
 								</button>
 							}
