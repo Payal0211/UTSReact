@@ -118,21 +118,25 @@ export const allEngagementConfig = {
         render: (_, param, index) => {
           let listItemData = [
             {
-              label: "Edit Bill Rate",
-              key: "editRateBillRate",
-              IsEnabled: true,
-            },
-            {
-              label: "Edit Pay Rate",
-              key: "editPayRate",
-              IsEnabled: true,
-            },
-            {
               label: "Add Invoice Details",
               key: "addInvoiceDetails",
               IsEnabled: true,
             },
           ];
+          if(param?.typeOfHR === "Contractual"){
+            listItemData.push(
+              {  
+                label: "Edit Bill Rate",
+                key: "editRateBillRate",
+                IsEnabled: true,
+              },
+              {
+                label: "Edit Pay Rate",
+                key: "editPayRate",
+                IsEnabled: true,
+              },
+            );
+          }
           if (param?.isRenewalAvailable === 1) {
             listItemData.push({
               label: "Renew Engagement",

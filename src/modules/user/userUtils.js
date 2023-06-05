@@ -52,10 +52,10 @@ export const userUtils = {
 
 		const userFormDetails = {
 			id: _isNull(id) ? 0 : id,
-			employeeId: d?.employeeId,
-			fullName: `${d?.employeeFirstName
+			employeeId: d?.employeeId ? d?.employeeId :"NA",
+			name: `${d?.name
 				?.split(' ')
-				?.join('')} ${d?.employeeLastName?.split(' ')?.join('')}`,
+				?.join('')} ${d?.name?.split(' ')?.join('')}`,
 			isNewUser: d.isNewUser === 'true' ? true : false,
 			userTypeId: d.userType?.id ? d.userType?.id : 0,
 			roleId: 0,
@@ -63,17 +63,19 @@ export const userUtils = {
 			managerID: d?.salesManager?.id ? d?.salesManager?.id : 0,
 			priorityCount: _isNull(d.priorityCount) ? 0 : parseInt(d.priorityCount),
 			skypeId: d?.skypeID ? d?.skypeID : '',
-			emailId: d?.emailID,
-			designation: d?.employeeDesignation,
+			email: d?.email ? d?.email : "NA",
+			designation: d?.designation ? d?.designation :"NA",
 			description: d?.description ? d?.description : '',
 			isActive: d?.isActive ? d?.isActive : true,
+			userLevel: d?.userLevel ? d?.userLevel : 'NA',
 			fileUpload: {
 				base64ProfilePic: base64Image ? base64Image : '',
 				extenstion: getUploadFileData?.type?.slice(6)
 					? getUploadFileData?.type?.slice(6)
 					: '',
 			},
-			DeptID: d?.departMent?.id,
+			manager:d?.manager?d?.manager:"NA",
+			department: d?.department ? d?.department:"NA" ,
 			TeamID: d?.departMent?.id?.toString() === '4' ? '0' : _itemVal.toString(),
 			LevelID: d?.departMent?.id === 4 ? 0 : d?.level?.id,
 			profilePic: '',
