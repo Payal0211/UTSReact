@@ -112,7 +112,7 @@ export default class UTSRoutes {
 	static DEMANDFUNNELROUTE = '/demandfunnel';
 	static SUPPLYFUNNELROUTE = '/supplyfunnel';
 	static TEAMDEMANDFUNNELROUTE = '/teamdemandfunnel';
-	static INCENTIVEREPORTROUTE = '/report/incentive';
+	static INCENTIVEREPORTROUTE = '/incentive';
 	static VIEWHRDETAILS = '/viewHrDetails/:id';
 	static JDDUMPREPORTROUTE = '/jdDump';
 	static MASTERCOUNTRYROUTE = '/master/country';

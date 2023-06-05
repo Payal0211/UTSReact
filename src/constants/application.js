@@ -135,8 +135,8 @@ export class HRCTA {
 	static ADD_NOTES = 'Add Notes';
 }
 export class InterviewFeedbackStatus {
-	static HIRED = 'Hired';
-	static REJECTED = 'Rejected';
+	static HIRED = 'Hire';
+	static REJECTED = 'Reject';
 }
 export class InputType {
 	static TEXT = 'text';
