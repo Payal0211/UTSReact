@@ -261,14 +261,14 @@ const DebriefingHR = ({
 											);
 											if (params === 'addnewhr') {
 												if (index !== -1) {
-													return 'Please do not mention company name here';
+													return `Please do not mention company name [${getCompanyName}] here`;
 												}
 												if (!value) {
 													return 'Please add something about the company';
 												}
 											} else {
 												if (index1 !== -1) {
-													return 'Please do not mention company name here';
+													return `Please do not mention company name [${clientDetail?.companyname}] here`;
 												}
 												if (!value) {
 													return 'Please add something about the company';
