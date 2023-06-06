@@ -299,7 +299,7 @@ const EditDebriefingHR = ({
 										validate: (value) => {
 											let index = value.search(new RegExp(getHRdetails?.company, "i"));
 											if(index !== -1) {
-												return 'Please do not mention company name here';
+												return `Please do not mention company name [${getHRdetails?.company}] here`;
 											}
 										// 	if (
 										// 		value.toLowerCase() ===

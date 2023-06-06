@@ -105,7 +105,7 @@ export const All_Hiring_Request_Utils = {
 						color={'#e41a1c'}
 					/>
 				);
-			case TalentRequestStatus.ON_HOLD:
+			case HiringRequestHRStatus.ON_HOLD:
 				return (
 					<HRStatusComponent
 						title={hrStatus}

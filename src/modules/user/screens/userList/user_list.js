@@ -1,19 +1,10 @@
-import React, {
-	useState,
-	useEffect,
-	Suspense,
-	useMemo,
-	useCallback,
-} from 'react';
-import { Dropdown, Menu, message, Skeleton, Table, Tooltip } from 'antd';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { AddNewType, DayName, InputType } from 'constants/application';
-import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
-import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { Dropdown, Menu, Table } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { InputType } from 'constants/application';
+
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { userDAO } from 'core/user/userDAO';
-import { useAllHRQuery } from 'shared/hooks/useAllHRQuery';
 
 import { IoChevronDownOutline } from 'react-icons/io5';
 import allUserStyles from './user_list.module.css';
@@ -38,8 +29,7 @@ const UserList = () => {
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
 	const [pageSize, setPageSize] = useState(100);
-	const [isAllowFilters, setIsAllowFilters] = useState(false);
-	const [filtersList, setFiltersList] = useState([]);
+
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const navigate = useNavigate();

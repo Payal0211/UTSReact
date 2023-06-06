@@ -120,6 +120,19 @@ const ActivityFeed = ({
 										</div>
 
 										<br />
+										{item?.Comments?<div className={ActivityFeedStyle.activityAction}>
+											{item?.IsNotes ? <BsTag /> : ""}
+											&nbsp;&nbsp;
+											<span>
+												Comments: 
+											</span>
+											&nbsp;
+											<span>
+											{item?.Comments}	
+											</span>
+										</div>:""}
+										
+										<br />
 										<div className={ActivityFeedStyle.activityAction}>
 											{item?.IsNotes === 0 && (
 												<span style={{ fontWeight: '500' }}>

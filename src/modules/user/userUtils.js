@@ -15,24 +15,20 @@ export const userUtils = {
 					val?.employeeID
 						.toLowerCase()
 						.includes(e.target.value.toLowerCase())) ||
-				(val?.fullName &&
-					val?.fullName.toLowerCase().includes(e.target.value.toLowerCase())) ||
+				(val?.name &&
+					val?.name.toLowerCase().includes(e.target.value.toLowerCase())) ||
 				(val?.userType &&
 					val?.userType.toLowerCase().includes(e.target.value.toLowerCase())) ||
 				(val?.nbD_AM &&
 					val?.nbD_AM.toLowerCase().includes(e.target.value.toLowerCase())) ||
-				(val?.teamManager &&
-					val?.teamManager
-						.toLowerCase()
-						.includes(e.target.value.toLowerCase())) ||
+				(val?.manager &&
+					val?.manager.toLowerCase().includes(e.target.value.toLowerCase())) ||
 				(val?.emailID &&
 					val?.emailID.toLowerCase().includes(e.target.value.toLowerCase())) ||
-				(val?.skypeID &&
-					val?.skypeID.toLowerCase().includes(e.target.value.toLowerCase())) ||
-				(val?.contactNumber &&
-					val?.contactNumber
-						.toLowerCase()
-						.includes(e.target.value.toLowerCase()))
+				(val?.skype &&
+					val?.skype.toLowerCase().includes(e.target.value.toLowerCase())) ||
+				(val?.contact &&
+					val?.contact.toLowerCase().includes(e.target.value.toLowerCase()))
 			);
 		});
 
@@ -52,10 +48,8 @@ export const userUtils = {
 
 		const userFormDetails = {
 			id: _isNull(id) ? 0 : id,
-			employeeId: d?.employeeId ? d?.employeeId :"NA",
-			name: `${d?.name
-				?.split(' ')
-				?.join('')} ${d?.name?.split(' ')?.join('')}`,
+			employeeId: d?.employeeId ? d?.employeeId : 'NA',
+			name: `${d?.name?.split(' ')?.join('')} ${d?.name?.split(' ')?.join('')}`,
 			isNewUser: d.isNewUser === 'true' ? true : false,
 			userTypeId: d.userType?.id ? d.userType?.id : 0,
 			roleId: 0,
@@ -63,8 +57,8 @@ export const userUtils = {
 			managerID: d?.salesManager?.id ? d?.salesManager?.id : 0,
 			priorityCount: _isNull(d.priorityCount) ? 0 : parseInt(d.priorityCount),
 			skypeId: d?.skypeID ? d?.skypeID : '',
-			email: d?.email ? d?.email : "NA",
-			designation: d?.designation ? d?.designation :"NA",
+			email: d?.email ? d?.email : 'NA',
+			designation: d?.designation ? d?.designation : 'NA',
 			description: d?.description ? d?.description : '',
 			isActive: d?.isActive ? d?.isActive : true,
 			userLevel: d?.userLevel ? d?.userLevel : 'NA',
@@ -74,8 +68,8 @@ export const userUtils = {
 					? getUploadFileData?.type?.slice(6)
 					: '',
 			},
-			manager:d?.manager?d?.manager:"NA",
-			department: d?.department ? d?.department:"NA" ,
+			manager: d?.manager ? d?.manager : 'NA',
+			department: d?.department ? d?.department : 'NA',
 			TeamID: d?.departMent?.id?.toString() === '4' ? '0' : _itemVal.toString(),
 			LevelID: d?.departMent?.id === 4 ? 0 : d?.level?.id,
 			profilePic: '',

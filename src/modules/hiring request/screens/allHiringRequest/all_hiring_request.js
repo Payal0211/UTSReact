@@ -514,9 +514,19 @@ const AllHiringRequestScreen = () => {
 							columns={tableColumnsMemo}
 							bordered={false}
 							dataSource={
-								search && search.length > 0 ? [...search] : [...apiData]
+								// search && search.length > 0 ? [...search] : [...apiData]
+
+								search && search?.length === 0
+								? []
+								: search && search.length > 0
+								? [...search]
+								: [...apiData]
+
+
 							}
-							pagination={{
+							pagination={search && search?.length === 0
+								? null
+								:{
 								onChange: (pageNum, pageSize) => {
 									setPageIndex(pageNum);
 									setPageSize(pageSize);
