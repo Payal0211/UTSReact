@@ -14,7 +14,7 @@ import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { HTTPStatusCode } from 'constants/network';
 
-import { disabledWeekend } from 'shared/utils/basic_utils';
+import { disabledWeekend, getTimeInHHMM } from 'shared/utils/basic_utils';
 import WithLoader from 'shared/components/loader/loader';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import moment from 'moment/moment';
@@ -72,48 +72,51 @@ const InterviewReschedule = ({
 		getTimeZone();
 	}, [getTimeZone]);
 
-	const slote1Change = useCallback(async (date) => {	
-			const data = moment(date,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
-			const newDate = data.add(1, 'hour');
-			const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
-			setValue('slot1EndTime',formattedDate);
+	const slote1Change = useCallback(async (date) => {
+		console.log(getTimeInHHMM(new Date(date)), "startDate")
+		const data = moment(date, 'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+		const newDate = data.add(1, 'hour');
+		const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+		setValue('slot1EndTime', formattedDate);
+		setRescheduleSlotDate({ ...getRescheduleSlotDate, slot1StartTime: getTimeInHHMM(new Date(date)), slot1EndTime: getTimeInHHMM(new Date(formattedDate)) })
 	}, [setValue]);
 
 	const slote2Change = useCallback(async (date) => {
-		const data = moment(date,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
-				const newDate = data.add(1, 'hour');
-				const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
-				setValue('slot2EndTime',formattedDate);
+		const data = moment(date, 'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+		const newDate = data.add(1, 'hour');
+		const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+		setValue('slot2EndTime', formattedDate);
 	}, [setValue]);
 
 	const slote3Change = useCallback(async (date) => {
-		const data = moment(date,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
-				const newDate = data.add(1, 'hour');
-				const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
-				setValue('slot3EndTime',formattedDate);
+		const data = moment(date, 'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+		const newDate = data.add(1, 'hour');
+		const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+		setValue('slot3EndTime', formattedDate);
+
 	}, [setValue]);
 
 	useEffect(() => {
-		if(getRescheduleSlotDate[0].slot2){
-			const data = moment(getRescheduleSlotDate[0].slot2,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+		if (getRescheduleSlotDate[0].slot2) {
+			const data = moment(getRescheduleSlotDate[0].slot2, 'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
 			const newDate = data.add(1, 'hour');
 			const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
-			setValue('slot1EndTime',formattedDate);
-		} if (getRescheduleSlotDate[1].slot2){
-			const data = moment(getRescheduleSlotDate[1].slot2,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
-		const newDate = data.add(1, 'hour');
-		const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
-		setValue('slot2EndTime',formattedDate);
-		}
-		 if(getRescheduleSlotDate[2].slot2){
-			const data = moment(getRescheduleSlotDate[2].slot2,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+			setValue('slot1EndTime', formattedDate);
+		} if (getRescheduleSlotDate[1].slot2) {
+			const data = moment(getRescheduleSlotDate[1].slot2, 'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
 			const newDate = data.add(1, 'hour');
 			const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
-			setValue('slot3EndTime',formattedDate);
+			setValue('slot2EndTime', formattedDate);
 		}
-	}, [getRescheduleSlotDate[0].slot2,getRescheduleSlotDate[1].slot2,getRescheduleSlotDate[2].slot2])
+		if (getRescheduleSlotDate[2].slot2) {
+			const data = moment(getRescheduleSlotDate[2].slot2, 'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+			const newDate = data.add(1, 'hour');
+			const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+			setValue('slot3EndTime', formattedDate);
+		}
+	}, [getRescheduleSlotDate[0].slot2, getRescheduleSlotDate[1].slot2, getRescheduleSlotDate[2].slot2])
 
-	
+
 
 	const reScheduleInterviewAPIHandler = useCallback(
 		async (data) => {
