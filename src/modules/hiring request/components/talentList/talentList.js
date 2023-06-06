@@ -312,6 +312,7 @@ const TalentList = ({
 						}
 						setRescheduleSlotInformation(
 							getRescheduleSlotInfomation.map((item, index) => {
+								console.log(endTimeFirstFormate,"endTimeFirstFormate");
 								if (index === 0) {
 									return {
 										...item,

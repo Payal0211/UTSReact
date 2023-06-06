@@ -17,6 +17,7 @@ import { HTTPStatusCode } from 'constants/network';
 import { disabledWeekend } from 'shared/utils/basic_utils';
 import WithLoader from 'shared/components/loader/loader';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
+import moment from 'moment/moment';
 
 const InterviewReschedule = ({
 	talentName,
@@ -42,6 +43,7 @@ const InterviewReschedule = ({
 		register,
 		handleSubmit,
 		setValue,
+		watch,
 		formState: { errors },
 	} = useForm();
 	const [messageAPI, contextHolder] = message.useMessage();
@@ -69,6 +71,49 @@ const InterviewReschedule = ({
 	useEffect(() => {
 		getTimeZone();
 	}, [getTimeZone]);
+
+	const slote1Change = useCallback(async (date) => {	
+			const data = moment(date,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+			const newDate = data.add(1, 'hour');
+			const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+			setValue('slot1EndTime',formattedDate);
+	}, [setValue]);
+
+	const slote2Change = useCallback(async (date) => {
+		const data = moment(date,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+				const newDate = data.add(1, 'hour');
+				const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+				setValue('slot2EndTime',formattedDate);
+	}, [setValue]);
+
+	const slote3Change = useCallback(async (date) => {
+		const data = moment(date,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+				const newDate = data.add(1, 'hour');
+				const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+				setValue('slot3EndTime',formattedDate);
+	}, [setValue]);
+
+	useEffect(() => {
+		if(getRescheduleSlotDate[0].slot2){
+			const data = moment(getRescheduleSlotDate[0].slot2,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+			const newDate = data.add(1, 'hour');
+			const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+			setValue('slot1EndTime',formattedDate);
+		} if (getRescheduleSlotDate[1].slot2){
+			const data = moment(getRescheduleSlotDate[1].slot2,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+		const newDate = data.add(1, 'hour');
+		const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+		setValue('slot2EndTime',formattedDate);
+		}
+		 if(getRescheduleSlotDate[2].slot2){
+			const data = moment(getRescheduleSlotDate[2].slot2,'ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+			const newDate = data.add(1, 'hour');
+			const formattedDate = newDate.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ (z)');
+			setValue('slot3EndTime',formattedDate);
+		}
+	}, [getRescheduleSlotDate[0].slot2,getRescheduleSlotDate[1].slot2,getRescheduleSlotDate[2].slot2])
+
+	
 
 	const reScheduleInterviewAPIHandler = useCallback(
 		async (data) => {
@@ -357,7 +402,6 @@ const InterviewReschedule = ({
 								</div>
 								<div className={InterviewScheduleStyle.timeSlotItem}>
 									<CalenderSVG />
-
 									<DatePicker
 										required
 										{...register('slot1Date')}
@@ -383,7 +427,6 @@ const InterviewReschedule = ({
 								<div
 									className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
 									<ClockIconSVG />
-
 									<DatePicker
 										required
 										{...register('slot1StartTime')}
@@ -395,6 +438,7 @@ const InterviewReschedule = ({
 												'slot1StartTime',
 												'reschedule',
 											);
+											slote1Change(date);
 										}}
 										showTimeSelect
 										showTimeSelectOnly
@@ -417,7 +461,8 @@ const InterviewReschedule = ({
 									<DatePicker
 										required
 										{...register('slot1EndTime')}
-										selected={getRescheduleSlotDate[0].slot3}
+										value={moment(watch("slot1EndTime")).format("hh:00 A")}
+										// selected={getRescheduleSlotDate[0].slot3}
 										onChange={(date) => {
 											setValue('slot1EndTime', date);
 											getSlotInformationHandler(
@@ -492,6 +537,7 @@ const InterviewReschedule = ({
 														'slot2StartTime',
 														'reschedule',
 													);
+													slote2Change(date);
 												}}
 												showTimeSelect
 												showTimeSelectOnly
@@ -516,6 +562,7 @@ const InterviewReschedule = ({
 												required
 												{...register('slot2EndTime')}
 												selected={getRescheduleSlotDate[1].slot3}
+												value={moment(watch("slot2EndTime")).format("hh:00 A")}
 												onChange={(date) => {
 													setValue('slot2EndTime', date);
 													getSlotInformationHandler(
@@ -585,6 +632,7 @@ const InterviewReschedule = ({
 														'slot3StartTime',
 														'reschedule',
 													);
+													slote3Change(date);
 												}}
 												showTimeSelect
 												showTimeSelectOnly
@@ -610,6 +658,7 @@ const InterviewReschedule = ({
 												required
 												{...register('slot3StartTime')}
 												selected={getRescheduleSlotDate[2].slot3}
+												value={moment(watch("slot3EndTime")).format("hh:00 A")}
 												onChange={(date) => {
 													setValue('slot3EndTime', date);
 													getSlotInformationHandler(
