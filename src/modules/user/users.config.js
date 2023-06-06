@@ -105,24 +105,24 @@ export const userConfig = {
 					return text ? text : 'NA';
 				},
 			},
-			// {
-			// 	title: 'Skype',
-			// 	dataIndex: 'skypeID',
-			// 	key: 'skypeID',
-			// 	align: 'left',
-			// 	render: (text) => {
-			// 		return text ? text : 'NA';
-			// 	},
-			// },
-			// {
-			// 	title: 'Contact',
-			// 	dataIndex: 'contactNumber',
-			// 	key: 'contactNumber',
-			// 	align: 'left',
-			// 	render: (text) => {
-			// 		return text ? text : 'NA';
-			// 	},
-			// },
+			{
+				title: 'Skype',
+				dataIndex: 'skype',
+				key: 'skype',
+				align: 'left',
+				render: (text) => {
+					return text ? text.replace(/(.{15})/g, "$1\n") : 'NA';
+				},
+			},
+			{
+				title: 'Contact',
+				dataIndex: 'contact',
+				key: 'contact',
+				align: 'left',
+				render: (text) => {
+					return text ? text : 'NA';
+				},
+			},
 		];
 	},
 	userFilterListConfig: () => {

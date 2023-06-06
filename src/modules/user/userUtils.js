@@ -62,7 +62,7 @@ export const userUtils = {
 			isOdr: d?.odrPool ? d?.odrPool : true,
 			managerID: d?.salesManager?.id ? d?.salesManager?.id : 0,
 			priorityCount: _isNull(d.priorityCount) ? 0 : parseInt(d.priorityCount),
-			skypeId: d?.skypeID ? d?.skypeID : '',
+			skype: d?.skype ? d?.skype : 'NA',
 			email: d?.email ? d?.email : "NA",
 			designation: d?.designation ? d?.designation :"NA",
 			description: d?.description ? d?.description : '',
@@ -81,9 +81,9 @@ export const userUtils = {
 			profilePic: '',
 			geoIds: modifiedGEO ? modifiedGEO : [0],
 			userHierarchyParentID: d?.reportingUser?.id ? d?.reportingUser?.id : 0,
-			contactNumber: d?.primaryClientPhoneNumber
-				? d?.primaryClientPhoneNumber
-				: '',
+			contact: d?.contact
+				? d?.contact
+				: 'NA',
 			detail: {
 				userTypeID: 0,
 				userTypeList: [
