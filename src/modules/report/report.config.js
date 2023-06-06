@@ -540,10 +540,20 @@ export const reportConfig = {
 
 		];
 	},
-
-
-
-
+	slaReportFilterList: () => {
+		return [
+			{ name: 'Start Date' },
+			{ name: ' End Date' },
+			{ name: 'Stages' },
+			{ name: 'Action Filter' },
+			{ name: 'AM/NBD' },
+			{ name: 'Sales Manager' },
+			{ name: 'Sales Person' },
+			{ name: 'Role' },
+			{ name: 'HR Number' },
+			{ name: 'Company' },
+		];
+	},
 	JDDumpTableConfig: (
 		setJDSkillModal,
 		setHRSkillModal,
