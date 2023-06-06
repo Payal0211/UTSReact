@@ -10,6 +10,7 @@ import { ReactComponent as PlusSVG } from 'assets/svg/plus.svg';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
+import { _isNull } from 'shared/utils/basic_utils';
 
 const EngagementBillRateAndPayRate = ({
 	month,
@@ -165,14 +166,14 @@ const EngagementBillRateAndPayRate = ({
 	useEffect(() => {
 		if (closeModal) {
 			resetField('billRateCurrency');
-			resetField('billRate');
+			// resetField('billRate');
 			// resetField('finalBillRate');
 			resetField('billRateReason');
 			resetField('billNRRate');
 			resetField('billRateAdditionalComment');
 			resetField('payRateCurrency');
-			resetField('payRate');
-			resetField('finalPayRate');
+			// resetField('payRate');
+			// resetField('finalPayRate');
 			resetField('payRateReason');
 			resetField('payNRRate');
 			resetField('payRateAdditionalComment');
@@ -190,6 +191,31 @@ const EngagementBillRateAndPayRate = ({
 			});
 		}
 	}, [ currency,currencyValue]);
+
+const nrPercentagePR =useCallback( async(e)=>{
+let response = await engagementRequestDAO.calculateActualNRBRPRDAO(watchBillRate,e,currencyValue)
+
+if(response?.statusCode===HTTPStatusCode?.OK){
+	setValue("payNRRate",response?.responseBody?.details)
+	setError("payNRRate",{})
+}else if(response.statusCode === HTTPStatusCode?.BAD_REQUEST){
+	setError("payNRRate",{
+		type:"finalPayRate",
+	message:response.statusCode === HTTPStatusCode?.BAD_REQUEST && "Can't Calculate"})
+}
+},[setValue,setError,watchBillRate,HTTPStatusCode])
+
+const nrPercentageBR = useCallback( async(e)=>{
+	let response = await engagementRequestDAO.calculateActualNRBRPRDAO(e.target.value,watchPayRate,currencyValue)
+	if(response?.statusCode===HTTPStatusCode?.OK){
+		setValue("billNRRate",response?.responseBody?.details)
+		setError("billNRRate",{})
+	}else if(response.statusCode === HTTPStatusCode?.BAD_REQUEST){
+		setError("billNRRate",{
+			type:"finalBillRate",
+		message:response.statusCode === HTTPStatusCode?.BAD_REQUEST && "Can't Calculate"})
+	}
+	},[setValue,setError,watchPayRate,HTTPStatusCode])
 
 	return (
 		<div className={allengagementBillAndPayRateStyles.engagementModalContainer}>
@@ -277,6 +303,7 @@ const EngagementBillRateAndPayRate = ({
 									}}
 									label="Final Actual Bill Rate"
 									name="finalBillRate"
+									onChangeHandler={(e)=>nrPercentageBR(e)}
 									type={InputType.TEXT}
 									placeholder="Enter Amount"
 									required
@@ -320,7 +347,8 @@ const EngagementBillRateAndPayRate = ({
 									name="billNRRate"
 									type={InputType.TEXT}
 									// value="10%"
-									disabled
+									disabled={true}
+									required
 								/>
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
@@ -434,6 +462,7 @@ const EngagementBillRateAndPayRate = ({
 									label="Final Actual Pay Rate"
 									name="finalPayRate"
 									type={InputType.TEXT}
+									onChangeHandler = {(e)=>{nrPercentagePR(e.target.value);}}
 									placeholder="Enter Amount"
 									required
 								/>
@@ -476,7 +505,8 @@ const EngagementBillRateAndPayRate = ({
 									name="payNRRate"
 									type={InputType.TEXT}
 									// value="10%"
-									disabled
+									disabled={true}
+									required
 								/>
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>

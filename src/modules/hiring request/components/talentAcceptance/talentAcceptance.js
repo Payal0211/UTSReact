@@ -135,10 +135,9 @@ const TalentAcceptance = ({
 								<div className={TalentAcceptanceStyle.colMd5}>
 									<div className={TalentAcceptanceStyle.transparentTopCard}>
 										<div className={TalentAcceptanceStyle.cardLabel}>
-											HR ID - {'  '}
+											HR ID - &nbsp;
 										</div>
 										<div className={TalentAcceptanceStyle.cardLabel}>
-											{'  '}
 											{hiringRequestNumber}
 										</div>
 									</div>

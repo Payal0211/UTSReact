@@ -109,7 +109,6 @@ const TalentList = ({
 			slot2: defaultStartTime(),
 			slot3: defaultEndTime(),
 		},
-
 		{
 			slot1: getSlots?.()?.slot3,
 			slot2: defaultStartTime(),
@@ -1731,6 +1730,7 @@ const TalentList = ({
 						setShowProfileShared(false);
 						setShowProfileRejectClass(false);
 						setFeedBackReceivedClass(false);
+						setEndDate(null);
 					}}>
 					<ProfileLogDetails
 						activeIndex={activeIndex}

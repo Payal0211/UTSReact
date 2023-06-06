@@ -148,7 +148,7 @@ const UpdateTR = ({
 			<div className={updateTRStyle.updateTRTitle}>
 				<h2>Update TR</h2>
 				<p>
-					HR ID - {updateTRDetail?.ClientDetail?.HR_Number} | Current TR:{' '}
+					{updateTRDetail?.ClientDetail?.HR_Number} | Current TR:{' '}
 					{updateTRDetail?.ClientDetail?.Availability === 'Part Time' ? (
 						<span>{updateTRDetail?.ClientDetail?.NoOfTalents * 2}</span>
 					) : (

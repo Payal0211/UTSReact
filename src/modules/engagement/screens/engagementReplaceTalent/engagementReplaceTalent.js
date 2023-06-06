@@ -164,6 +164,8 @@ const EngagementReplaceTalent = ({
 
 					<div className={allengagementReplceTalentStyles.colMd6}>
 						<div className={allengagementReplceTalentStyles.timeSlotItemField}>
+							{watch("replaceStage")?.id === 1 && (
+<>
 							<div className={allengagementReplceTalentStyles.timeLabel}>
 								Please Enter Date of Last Working Day{' '}
 								<span>
@@ -192,6 +194,9 @@ const EngagementReplaceTalent = ({
 									</div>
 								)}
 							</div>
+
+							</>
+							)}
 						</div>
 					</div>
 				</div>
