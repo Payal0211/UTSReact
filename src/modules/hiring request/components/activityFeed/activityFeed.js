@@ -120,18 +120,18 @@ const ActivityFeed = ({
 										</div>
 
 										<br />
-										{item?.Comments?<div className={ActivityFeedStyle.activityAction}>
+										{item?.Comments ? <div className={ActivityFeedStyle.activityAction}>
 											{item?.IsNotes ? <BsTag /> : ""}
 											&nbsp;&nbsp;
 											<span>
-												Comments: 
+												Comments:
 											</span>
 											&nbsp;
 											<span>
-											{item?.Comments}	
+												{item?.Comments}
 											</span>
-										</div>:""}
-										
+										</div> : ""}
+
 										<br />
 										<div className={ActivityFeedStyle.activityAction}>
 											{item?.IsNotes === 0 && (

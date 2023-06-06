@@ -67,6 +67,7 @@ export class ReportsAPI {
 	static HRDETAILS = 'HRDetails';
 	static JD_PARSING_DUMP_REPORT = 'JDParsingDumpReport';
 	static OVER_ALL_SLA_SUMMARY = "OverAllSLASummary"
+	static SLA_DETAILED_DATA = "GetSLAReport"
 }
 
 export class EngagementAPI {

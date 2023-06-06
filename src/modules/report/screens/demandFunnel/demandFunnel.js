@@ -205,8 +205,8 @@ const DemandFunnelScreen = () => {
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
-					setIsAllowFilters(!isAllowFilters);
-			  }, 300);
+				setIsAllowFilters(!isAllowFilters);
+			}, 300);
 		setHTMLFilter(!getHTMLFilter);
 	}, [getHTMLFilter, isAllowFilters]);
 

@@ -71,7 +71,6 @@ const SlaReports = () => {
 	const [endDate, setEndDate] = useState(null);
 
 	const [listData, setListData] = useState([])
-	console.log(listData, "listData")
 	// const getDemandFunnelListingHandler = useCallback(async (taleData) => {
 	// 	setLoading(true);
 	// 	let response = await ReportDAO.demandFunnelListingRequestDAO(taleData);
@@ -100,9 +99,44 @@ const SlaReports = () => {
 			actionFilter: 0,
 			ambdr: 0
 		}
-
+		setLoading(true);
 		let response = await ReportDAO.OverAllSLASummaryDAO(obj)
-		setListData(response?.responseBody)
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setLoading(false);
+			setListData(response?.responseBody)
+		} else {
+			setLoading(false);
+		}
+	}
+
+
+	const slaReportDetails = async () => {
+
+		let data = {
+			totalrecord: 10,
+			pagenumber: 1,
+			isExport: false,
+			filterFieldsSLA: {
+				startDate: "2023-04-01",
+				endDate: "2023-05-31",
+				hrid: 0,
+				sales_ManagerID: 0,
+				ops_Lead: 0,
+				salesPerson: 0,
+				stage: "",
+				isAdHoc: 0,
+				role: "",
+				slaType: 0,
+				type: 0,
+				hR_Number: "",
+				company: "",
+				actionFilter: 0,
+				// ambdr: 0
+			}
+		}
+		console.log(data, "datatdatdad")
+		// let response = await ReportDAO.slaDetailedDataDAO(data)
+		// console.log(response, "responsnsnssnsn")
 	}
 
 	const onCalenderFilter = (dates) => {
@@ -177,11 +211,88 @@ const SlaReports = () => {
 		[listData, demandFunnelHRDetailsState, demandFunnelModal],
 	);
 
-	const viewSummaryMemo = useMemo(
-		() =>
-			reportConfig.viewSummaryDemandFunnel(viewSummaryData && viewSummaryData),
-		[viewSummaryData],
-	);
+
+
+
+	// const viewSummaryMemo = useMemo(
+	// 	() =>
+	// 		reportConfig.slaReportTableData(viewSummaryData && viewSummaryData),
+	// 	[viewSummaryData],
+	// );
+
+
+	const viewSummaryMemo = [
+		{
+			title: 'HR#',
+			dataIndex: 'hr',
+		},
+		{
+			title: 'Role',
+			dataIndex: 'role',
+		},
+		{
+			title: 'Company',
+			dataIndex: 'company',
+		},
+		{
+			title: 'Client',
+			dataIndex: 'client',
+		},
+		{
+			title: 'Talent',
+			dataIndex: 'talent',
+		},
+		{
+			title: 'Odr/pool',
+			dataIndex: 'pool',
+		},
+		{
+			title: 'Stage',
+			dataIndex: 'stage',
+		},
+		{
+			title: 'Curr Action Date',
+			dataIndex: 'curractionDate',
+		},
+		{
+			title: 'Exp Next Action Date',
+			dataIndex: 'expNextActionDate',
+		},
+		{
+			title: 'Actual Next Action date',
+			dataIndex: 'actualNextActionDate',
+		},
+		{
+			title: 'Expected SLA',
+			dataIndex: 'expectedSLA',
+		},
+		{
+			title: 'Actual SLA',
+			dataIndex: 'ActualSLA',
+		},
+		{
+			title: 'SLA diff',
+			dataIndex: 'slaDiff',
+		},
+		{
+			title: 'Action',
+			dataIndex: 'action',
+		},
+		{
+			title: 'Sales Person',
+			dataIndex: 'salesPerson',
+		},
+		{
+			title: 'Sales Manager',
+			dataIndex: 'salesManager',
+		},
+		{
+			title: 'OPS Lead',
+			dataIndex: 'opsLead',
+		},
+	];
+
+
 	// const getReportFilterHandler = useCallback(async () => {
 	// 	const response = await ReportDAO.demandFunnelFiltersRequestDAO();
 	// 	if (response?.statusCode === HTTPStatusCode.OK) {
@@ -227,6 +338,7 @@ const SlaReports = () => {
 
 	useEffect(() => {
 		slaReportList()
+		slaReportDetails()
 	}, [])
 
 
@@ -334,26 +446,26 @@ const SlaReports = () => {
 					</>
 				)}
 			</div>
-			{isSummary && (
-				<div className={DemandFunnelStyle.tableDetails}>
-					{isSummaryLoading ? (
-						<TableSkeleton />
-					) : (
-						<>
-							<Table
-								id="hrListingTable"
-								columns={viewSummaryMemo}
-								bordered={false}
-								dataSource={[...viewSummaryData?.slice(1)]}
-								pagination={{
-									size: 'small',
-									pageSize: viewSummaryData?.length,
-								}}
-							/>
-						</>
-					)}
-				</div>
-			)}
+
+			<div className={DemandFunnelStyle.tableDetails}>
+				{isSummaryLoading ? (
+					<TableSkeleton />
+				) : (
+					<>
+						<Table
+							id="hrListingTable"
+							columns={viewSummaryMemo}
+							bordered={false}
+							dataSource={[...viewSummaryData?.slice(1)]}
+							pagination={{
+								size: 'small',
+								pageSize: viewSummaryData?.length,
+							}}
+						/>
+					</>
+				)}
+			</div>
+
 
 			{isAllowFilters && (
 				<Suspense fallback={<div>Loading...</div>}>

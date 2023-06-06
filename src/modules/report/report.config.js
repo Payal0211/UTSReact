@@ -42,19 +42,19 @@ export const reportConfig = {
 										data === 0
 											? null
 											: () => {
-													setDemandFunnelHRDetailsState({
-														...demandFunnelHRDetailsState,
-														adhocType: item === 'Final Total' ? '' : 'Total',
-														TeamManagerName: item === 'Final Total' ? '' : item,
-														currentStage: param.Stage,
-														IsExport: false,
-													});
-													setDemandFunnelValue({
-														stage: param?.Stage,
-														count: data,
-													});
-													setDemandFunnelModal(true);
-											  }
+												setDemandFunnelHRDetailsState({
+													...demandFunnelHRDetailsState,
+													adhocType: item === 'Final Total' ? '' : 'Total',
+													TeamManagerName: item === 'Final Total' ? '' : item,
+													currentStage: param.Stage,
+													IsExport: false,
+												});
+												setDemandFunnelValue({
+													stage: param?.Stage,
+													count: data,
+												});
+												setDemandFunnelModal(true);
+											}
 									}>
 									{data}
 								</p>
@@ -94,105 +94,105 @@ export const reportConfig = {
 	demandFunnelHRDetails: (stage) => {
 		return stage === 'HR Lost'
 			? [
-					{
-						title: 'HR#',
-						dataIndex: 'hR_No',
-						key: 'hR_No',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Sales Person',
-						dataIndex: 'salesPerson',
-						key: 'salesPerson',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Company Name',
-						dataIndex: 'compnayName',
-						key: 'compnayName',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Role',
-						dataIndex: 'role',
-						key: 'role',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Managed/Self',
-						dataIndex: 'managed_Self',
-						key: 'managed_Self',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Availability',
-						dataIndex: 'availability',
-						key: 'availability',
-						align: 'left',
-						width: 250,
-					},
-			  ]
+				{
+					title: 'HR#',
+					dataIndex: 'hR_No',
+					key: 'hR_No',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Sales Person',
+					dataIndex: 'salesPerson',
+					key: 'salesPerson',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Company Name',
+					dataIndex: 'compnayName',
+					key: 'compnayName',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Role',
+					dataIndex: 'role',
+					key: 'role',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Managed/Self',
+					dataIndex: 'managed_Self',
+					key: 'managed_Self',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Availability',
+					dataIndex: 'availability',
+					key: 'availability',
+					align: 'left',
+					width: 250,
+				},
+			]
 			: [
-					{
-						title: 'HR#',
-						dataIndex: 'hR_No',
-						key: 'hR_No',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Sales Person',
-						dataIndex: 'salesPerson',
-						key: 'salesPerson',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Company Name',
-						dataIndex: 'compnayName',
-						key: 'compnayName',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Role',
-						dataIndex: 'role',
-						key: 'role',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Managed/Self',
-						dataIndex: 'managed_Self',
-						key: 'managed_Self',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title: 'Availability',
-						dataIndex: 'availability',
-						key: 'availability',
-						align: 'left',
-						width: 250,
-					},
-					{
-						title:
-							stage === 'TR Required' ||
+				{
+					title: 'HR#',
+					dataIndex: 'hR_No',
+					key: 'hR_No',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Sales Person',
+					dataIndex: 'salesPerson',
+					key: 'salesPerson',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Company Name',
+					dataIndex: 'compnayName',
+					key: 'compnayName',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Role',
+					dataIndex: 'role',
+					key: 'role',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Managed/Self',
+					dataIndex: 'managed_Self',
+					key: 'managed_Self',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Availability',
+					dataIndex: 'availability',
+					key: 'availability',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title:
+						stage === 'TR Required' ||
 							stage === 'TR Accepted' ||
 							stage === 'HR - Waiting For More Information'
-								? '# of TR'
-								: 'Talent Name',
-						dataIndex: 'talentName',
-						key: 'talentName',
-						align: 'left',
-						width: 250,
-					},
-			  ];
+							? '# of TR'
+							: 'Talent Name',
+					dataIndex: 'talentName',
+					key: 'talentName',
+					align: 'left',
+					width: 250,
+				},
+			];
 	},
 	demandReportFilterListConfig: () => {
 		return [
@@ -536,10 +536,38 @@ export const reportConfig = {
 					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
 				},
 			},
-
-
 		];
 	},
+
+
+	// slaReportTableData: (viewSummary) => {
+	// 	let tableHeader = Object?.keys(viewSummary?.[0] || {});
+	// 	return tableHeader?.map((item) => {
+	// 		return {
+	// 			title: item,
+	// 			dataIndex: item,
+	// 			key: item,
+	// 			align: 'left',
+	// 			ellipsis: {
+	// 				showTitle: false,
+	// 			},
+	// 			width: 250,
+	// 			render: (data) => (
+	// 				<Tooltip
+	// 					placement="bottomLeft"
+	// 					title={data}>
+	// 					{item === 'Stage' || item === 'Duration' ? (
+	// 						<p style={{ fontWeight: '550' }}>{data}</p>
+	// 					) : (
+	// 						<p>{data}</p>
+	// 					)}
+	// 				</Tooltip>
+	// 			),
+	// 		};
+	// 	});
+	// },
+
+
 	slaReportFilterList: () => {
 		return [
 			{ name: 'Start Date' },

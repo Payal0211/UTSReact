@@ -157,5 +157,5 @@ export class HttpServices {
 	}
 
 	//TODO:- Implementation
-	async sendDeleteRequest() {}
+	async sendDeleteRequest() { }
 }
