@@ -84,6 +84,9 @@ const CountryList = React.lazy(() =>
 const CurrencyList = React.lazy(() =>
 	import('modules/masters/screens/currency/currencyList'),
 );
+const SlaReport = React.lazy(() =>
+	import('modules/report/screens/slaReport/demandFunnel'),
+);
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -117,6 +120,7 @@ export default class UTSRoutes {
 	static JDDUMPREPORTROUTE = '/jdDump';
 	static MASTERCOUNTRYROUTE = '/master/country';
 	static MASTERCURRENCYROUTE = '/master/currency';
+	static SLA_REPORT = '/slaReport';
 }
 
 export const navigateToComponent = {
@@ -228,6 +232,11 @@ export const navigateToComponent = {
 	[UTSRoutes.JDDUMPREPORTROUTE]: (
 		<Suspense>
 			<JDDumpReport />
+		</Suspense>
+	),
+	[UTSRoutes.SLA_REPORT]: (
+		<Suspense>
+			<SlaReport />
 		</Suspense>
 	),
 	[UTSRoutes.MASTERCOUNTRYROUTE]: (

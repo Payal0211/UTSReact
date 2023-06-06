@@ -368,4 +368,35 @@ export const ReportDAO = {
 			return errorDebug(error, 'ReportDAO.jdParsingDumpReportRequestDAO');
 		}
 	},
+	OverAllSLASummaryDAO: async function (data) {
+		try {
+			const overAllSummaryRequest = await ReportAPI.OverAllSLASummaryRequest(
+				data,
+			);
+
+			if (overAllSummaryRequest) {
+				const statusCode = overAllSummaryRequest['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult =
+						overAllSummaryRequest?.responseBody?.details ||
+						overAllSummaryRequest?.responseBody;
+
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return overAllSummaryRequest;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return overAllSummaryRequest;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.OverAllSLASummaryDAO');
+		}
+	},
 };

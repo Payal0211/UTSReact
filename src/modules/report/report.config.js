@@ -486,6 +486,64 @@ export const reportConfig = {
 		];
 	},
 	/**----------------- JD DUMP REPORT ------------------------------- */
+
+
+
+	SLAReportConfig: () => {
+		return [
+			{
+				title: 'Stage',
+				dataIndex: 'summaryStage',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Version',
+				dataIndex: 'stageVersion',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Expected SLA',
+				dataIndex: 'slaDays',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Avg SLA',
+				dataIndex: 'avgSLAOverall',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Diff SLA',
+				dataIndex: 'diffOfSLAOverall',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+
+
+		];
+	},
+
+
+
+
 	JDDumpTableConfig: (
 		setJDSkillModal,
 		setHRSkillModal,

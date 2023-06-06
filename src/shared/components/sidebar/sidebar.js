@@ -165,6 +165,13 @@ const getSideBar = () => {
 			branch: []
 		}),
 		new SideBarModels({
+			id: 'SLA_Report',
+			title: 'SLA Report',
+			isActive: false,
+			icon: JDEfficiencyReport,
+			navigateTo: UTSRoutes.SLA_REPORT,
+		}),
+		new SideBarModels({
 			id: 'Master',
 			title: 'Master',
 			isActive: false,
