@@ -1641,6 +1641,7 @@ const TalentList = ({
 						setShowProfileShared(false);
 						setShowProfileRejectClass(false);
 						setFeedBackReceivedClass(false);
+						setEndDate(null)
 					}}
 				>
 					<ProfileLogDetails
