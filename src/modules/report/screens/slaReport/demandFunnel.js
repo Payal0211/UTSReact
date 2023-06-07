@@ -135,7 +135,7 @@ const SlaReports = () => {
 			}
 		}
 		console.log(data, "datatdatdad")
-		// let response = await ReportDAO.slaDetailedDataDAO(data)
+		let response = await ReportDAO.slaDetailedDataDAO(data)
 		// console.log(response, "responsnsnssnsn")
 	}
 
