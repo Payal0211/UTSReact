@@ -1,4 +1,4 @@
-import DemandFunnelStyle from './demandFunnel.module.css';
+import SlaReportStyle from './slaReport.module.css';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { Table } from 'antd';
 import DatePicker from 'react-datepicker';
@@ -344,9 +344,9 @@ const SlaReports = () => {
 
 
 	return (
-		<div className={DemandFunnelStyle.hiringRequestContainer}>
-			<div className={DemandFunnelStyle.addnewHR}>
-				<div className={DemandFunnelStyle.hiringRequest}>
+		<div className={SlaReportStyle.hiringRequestContainer}>
+			<div className={SlaReportStyle.addnewHR}>
+				<div className={SlaReportStyle.hiringRequest}>
 					SLA Report
 				</div>
 			</div>
@@ -354,21 +354,21 @@ const SlaReports = () => {
 			 * --------- Filter Component Starts ---------
 			 * @Filter Part
 			 */}
-			<div className={DemandFunnelStyle.filterContainer}>
-				<div className={DemandFunnelStyle.filterSets}>
+			<div className={SlaReportStyle.filterContainer}>
+				<div className={SlaReportStyle.filterSets}>
 					<div
-						className={DemandFunnelStyle.addFilter}
+						className={SlaReportStyle.addFilter}
 						onClick={toggleDemandReportFilter}>
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
-						<div className={DemandFunnelStyle.filterLabel}>Add Filters</div>
-						<div className={DemandFunnelStyle.filterCount}>
+						<div className={SlaReportStyle.filterLabel}>Add Filters</div>
+						<div className={SlaReportStyle.filterCount}>
 							{filteredTagLength}
 						</div>
 					</div>
-					<div className={DemandFunnelStyle.calendarFilterSet}>
-						<div className={DemandFunnelStyle.label}>Date</div>
-						{/* <div className={DemandFunnelStyle.calendarFilter}>
+					<div className={SlaReportStyle.calendarFilterSet}>
+						<div className={SlaReportStyle.label}>Date</div>
+						{/* <div className={SlaReportStyle.calendarFilter}>
 							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
 							<DatePicker
 								style={{ backgroundColor: 'red' }}
@@ -376,7 +376,7 @@ const SlaReports = () => {
 									e.preventDefault();
 									e.stopPropagation();
 								}}
-								className={DemandFunnelStyle.dateFilter}
+								className={SlaReportStyle.dateFilter}
 								placeholderText="Start date - End date"
 								selected={startDate}
 								onChange={onCalenderFilter}
@@ -385,12 +385,12 @@ const SlaReports = () => {
 								selectsRange
 							/>
 						</div> */}
-						<div className={DemandFunnelStyle.calendarFilter}>
+						<div className={SlaReportStyle.calendarFilter}>
 							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
 							<Controller
 								render={({ ...props }) => (
 									<DatePicker
-										className={DemandFunnelStyle.dateFilter}
+										className={SlaReportStyle.dateFilter}
 										onKeyDown={(e) => {
 											e.preventDefault();
 											e.stopPropagation();
@@ -420,7 +420,7 @@ const SlaReports = () => {
 			 * ------------ Table Starts-----------
 			 * @Table Part
 			 */}
-			<div className={DemandFunnelStyle.tableDetails}>
+			<div className={SlaReportStyle.tableDetails}>
 				{isLoading ? (
 					<TableSkeleton />
 				) : (
@@ -435,11 +435,11 @@ const SlaReports = () => {
 								pageSize: listData?.length,
 							}}
 						/>
-						{/* <div className={DemandFunnelStyle.formPanelAction}>
+						{/* <div className={SlaReportStyle.formPanelAction}>
 							<button
 								type="submit"
 								onClick={viewDemandFunnelSummaryHandler}
-								className={DemandFunnelStyle.btnPrimary}>
+								className={SlaReportStyle.btnPrimary}>
 								View Summary
 							</button>
 						</div> */}
@@ -447,7 +447,7 @@ const SlaReports = () => {
 				)}
 			</div>
 
-			<div className={DemandFunnelStyle.tableDetails}>
+			<div className={SlaReportStyle.tableDetails}>
 				{isSummaryLoading ? (
 					<TableSkeleton />
 				) : (
