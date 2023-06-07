@@ -79,7 +79,7 @@ export const formatJDDumpReport = (jdDumpData) => {
 		key: `JD_Dump${index + 1}`,
 		hrCreatedDate: item.hrCreatedDate,
 		hrNumber: item.hrNumber,
-		jd: item.jd,
+		jd: item.jdLink,
 		jdFile: item?.jdFileName,
 		overAllPercentage: item.overAllRowWise,
 		skillPercentage: item.jdSkillPercentage,

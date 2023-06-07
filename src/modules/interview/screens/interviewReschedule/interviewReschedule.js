@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import InterviewScheduleStyle from '../../interviewStyle.module.css';
-
 import DatePicker from 'react-datepicker';
 import { interviewUtils } from 'modules/interview/interviewUtils';
 import { InputType } from 'constants/application';
@@ -13,9 +12,7 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { HTTPStatusCode } from 'constants/network';
-
-import { disabledWeekend } from 'shared/utils/basic_utils';
-import WithLoader from 'shared/components/loader/loader';
+import { addHours, disabledWeekend } from 'shared/utils/basic_utils';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
 const InterviewReschedule = ({
@@ -30,12 +27,10 @@ const InterviewReschedule = ({
 	setRescheduleTimezone,
 	getRescheduleSlotDate,
 	setRescheduleSlotDate,
-	getRescheduleSlotInfomation,
 	reScheduleRadio,
 	setRescheduleRadio,
 	reScheduleSlotRadio,
 	setRescheduleSlotRadio,
-	getSlotInformationHandler,
 	getInterviewStatus,
 }) => {
 	const {
@@ -51,6 +46,38 @@ const InterviewReschedule = ({
 		{ id: 3, value: 'Talent not available on given Slots' },
 		{ id: 4, value: 'Talent not available on selected Slot' },
 	];
+
+	const calenderDateHandler = useCallback(
+		(date, index, slotField) => {
+			const eleToUpdate = { ...getRescheduleSlotDate[index] };
+			eleToUpdate[slotField] = date;
+
+			setRescheduleSlotDate([
+				...getRescheduleSlotDate.slice(0, index),
+				{ ...eleToUpdate },
+				...getRescheduleSlotDate.slice(index + 1),
+			]);
+		},
+		[getRescheduleSlotDate, setRescheduleSlotDate],
+	);
+
+	const calenderTimeHandler = useCallback(
+		(date, index, slotField) => {
+			const eleToUpdate = { ...getRescheduleSlotDate[index] };
+			eleToUpdate[slotField] = date;
+
+			if (slotField === 'slot2') {
+				eleToUpdate['slot3'] = addHours(date, 1);
+			}
+
+			setRescheduleSlotDate([
+				...getRescheduleSlotDate.slice(0, index),
+				{ ...eleToUpdate },
+				...getRescheduleSlotDate.slice(index + 1),
+			]);
+		},
+		[getRescheduleSlotDate, setRescheduleSlotDate],
+	);
 
 	const [isLoading, setLoading] = useState(false);
 
@@ -80,8 +107,12 @@ const InterviewReschedule = ({
 				slotType: reScheduleSlotRadio,
 				RescheduleSlot:
 					reScheduleSlotRadio === 1
-						? getRescheduleSlotInfomation
-						: getRescheduleSlotInfomation.slice(0, 1),
+						? interviewUtils.formatInterviewDateSlotHandler(
+								getRescheduleSlotDate,
+						  )
+						: interviewUtils
+								.formatInterviewDateSlotHandler(getRescheduleSlotDate)
+								?.slice(0, 1),
 				hiringRequest_ID: hrId,
 				hiringRequest_Detail_ID: talentInfo?.HiringDetailID,
 				contactID: talentInfo?.ContactId,
@@ -130,7 +161,7 @@ const InterviewReschedule = ({
 			callAPI,
 			closeModal,
 			getInterviewStatus,
-			getRescheduleSlotInfomation,
+			getRescheduleSlotDate,
 			hiringRequestNumber,
 			hrId,
 			messageAPI,
@@ -366,11 +397,7 @@ const InterviewReschedule = ({
 										placeholderText="Select Date"
 										onChange={(date) => {
 											setValue('slot1Date', date);
-											getSlotInformationHandler(
-												date,
-												'slot1Date',
-												'reschedule',
-											);
+											calenderDateHandler(date, 0, 'slot1');
 										}}
 										name="slot1Date"
 									/>
@@ -390,11 +417,7 @@ const InterviewReschedule = ({
 										selected={getRescheduleSlotDate[0].slot2}
 										onChange={(date) => {
 											setValue('slot1StartTime', date);
-											getSlotInformationHandler(
-												date,
-												'slot1StartTime',
-												'reschedule',
-											);
+											calenderTimeHandler(date, 0, 'slot2');
 										}}
 										showTimeSelect
 										showTimeSelectOnly
@@ -420,11 +443,7 @@ const InterviewReschedule = ({
 										selected={getRescheduleSlotDate[0].slot3}
 										onChange={(date) => {
 											setValue('slot1EndTime', date);
-											getSlotInformationHandler(
-												date,
-												'slot1EndTime',
-												'reschedule',
-											);
+											calenderTimeHandler(date, 0, 'slot3');
 										}}
 										showTimeSelect
 										showTimeSelectOnly
@@ -463,11 +482,7 @@ const InterviewReschedule = ({
 												placeholderText="Select Date"
 												onChange={(date) => {
 													setValue('slot2Date', date);
-													getSlotInformationHandler(
-														date,
-														'slot2Date',
-														'reschedule',
-													);
+													calenderDateHandler(date, 1, 'slot1');
 												}}
 												name="slot2Date"
 											/>
@@ -487,11 +502,7 @@ const InterviewReschedule = ({
 												selected={getRescheduleSlotDate[1].slot2}
 												onChange={(date) => {
 													setValue('slot2StartTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot2StartTime',
-														'reschedule',
-													);
+													calenderTimeHandler(date, 1, 'slot2');
 												}}
 												showTimeSelect
 												showTimeSelectOnly
@@ -518,11 +529,7 @@ const InterviewReschedule = ({
 												selected={getRescheduleSlotDate[1].slot3}
 												onChange={(date) => {
 													setValue('slot2EndTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot2EndTime',
-														'reschedule',
-													);
+													calenderTimeHandler(date, 1, 'slot3');
 												}}
 												showTimeSelect
 												showTimeSelectOnly
@@ -558,11 +565,7 @@ const InterviewReschedule = ({
 												placeholderText="Select Date"
 												onChange={(date) => {
 													setValue('slot3Date', date);
-													getSlotInformationHandler(
-														date,
-														'slot3Date',
-														'reschedule',
-													);
+													calenderDateHandler(date, 2, 'slot1');
 												}}
 												name="slot3Date"
 											/>
@@ -580,11 +583,7 @@ const InterviewReschedule = ({
 												selected={getRescheduleSlotDate[2].slot2}
 												onChange={(date) => {
 													setValue('slot3StartTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot3StartTime',
-														'reschedule',
-													);
+													calenderTimeHandler(date, 2, 'slot2');
 												}}
 												showTimeSelect
 												showTimeSelectOnly
@@ -612,11 +611,7 @@ const InterviewReschedule = ({
 												selected={getRescheduleSlotDate[2].slot3}
 												onChange={(date) => {
 													setValue('slot3EndTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot3EndTime',
-														'reschedule',
-													);
+													calenderTimeHandler(date, 2, 'slot3');
 												}}
 												showTimeSelect
 												showTimeSelectOnly
@@ -653,7 +648,6 @@ const InterviewReschedule = ({
 							)}
 							<div className={InterviewScheduleStyle.formPanelAction}>
 								<button
-									// disabled={isLoading}
 									type="submit"
 									onClick={handleSubmit(reScheduleInterviewAPIHandler)}
 									className={InterviewScheduleStyle.btnPrimary}>

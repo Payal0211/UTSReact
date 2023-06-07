@@ -25,6 +25,7 @@ const HRInputField = ({
 	trailingIcon,
 	onIconHandler,
 	validationSchema,
+	onKeyDownHandler,
 	rows,
 }) => {
 	const formFieldClasses = classNames({
@@ -93,6 +94,10 @@ const HRInputField = ({
 						onBlur={(e) => {
 							formatRegister.onBlur(e);
 							onBlurHandler?.(e);
+						}}
+						onKeyDown={(e) => {
+							// formatRegister.onKeyDown(e);
+							onKeyDownHandler?.(e);
 						}}
 						id={name}
 						disabled={disabled}

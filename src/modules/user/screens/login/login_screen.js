@@ -24,9 +24,12 @@ const LoginScreen = () => {
 	const {
 		register,
 		handleSubmit,
+		setError,
+		watch,
 		formState: { errors },
 	} = useForm({});
 	const [messageAPI, contextHolder] = message.useMessage();
+
 	const loginHandler = useCallback(
 		async (d) => {
 			setLoading(true);
@@ -34,6 +37,7 @@ const LoginScreen = () => {
 				username: d?.username,
 				password: d?.password,
 			});
+
 			if (result.statusCode === HTTPStatusCode.OK) {
 				setLoading(false);
 				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
@@ -46,11 +50,19 @@ const LoginScreen = () => {
 					},
 					1000,
 				);
+
 				navigate(UTSRoutes.LOGINROUTE);
 			}
 		},
 		[messageAPI, navigate],
 	);
+	const handleKeyDown = (e) => {
+		if (e.key === 'Enter')
+			loginHandler({
+				username: watch('username'),
+				password: watch('password'),
+			});
+	};
 
 	useEffect(() => {
 		let login = UserSessionManagementController.getAPIKey();
@@ -95,6 +107,7 @@ const LoginScreen = () => {
 
 								<div className={loginStyle.loginPasswordField}>
 									<HRInputField
+										onKeyDownHandler={(e) => handleKeyDown(e)}
 										label="Password"
 										name="password"
 										type={

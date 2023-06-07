@@ -15,7 +15,7 @@ import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
-import { disabledWeekend } from 'shared/utils/basic_utils';
+import { addHours, disabledWeekend } from 'shared/utils/basic_utils';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
 const InterviewSchedule = ({
@@ -33,7 +33,7 @@ const InterviewSchedule = ({
 	setScheduleSlotInformation,
 	scheduleSlotRadio,
 	setScheduleSlotRadio,
-	getSlotInformationHandler,
+
 	getInterviewStatus,
 	callAPI,
 }) => {
@@ -49,6 +49,37 @@ const InterviewSchedule = ({
 	const onSlotChange = (e) => {
 		setScheduleSlotRadio(e.target.value);
 	};
+	const calenderDateHandler = useCallback(
+		(date, index, slotField) => {
+			const eleToUpdate = { ...getScheduleSlotDate[index] };
+			eleToUpdate[slotField] = date;
+
+			setScheduleSlotDate([
+				...getScheduleSlotDate.slice(0, index),
+				{ ...eleToUpdate },
+				...getScheduleSlotDate.slice(index + 1),
+			]);
+		},
+		[getScheduleSlotDate, setScheduleSlotDate],
+	);
+
+	const calenderTimeHandler = useCallback(
+		(date, index, slotField) => {
+			const eleToUpdate = { ...getScheduleSlotDate[index] };
+			eleToUpdate[slotField] = date;
+
+			if (slotField === 'slot2') {
+				eleToUpdate['slot3'] = addHours(date, 1);
+			}
+
+			setScheduleSlotDate([
+				...getScheduleSlotDate.slice(0, index),
+				{ ...eleToUpdate },
+				...getScheduleSlotDate.slice(index + 1),
+			]);
+		},
+		[getScheduleSlotDate, setScheduleSlotDate],
+	);
 
 	const getTimeZone = useCallback(async () => {
 		let response = await MasterDAO.getTimeZoneRequestDAO();
@@ -65,8 +96,10 @@ const InterviewSchedule = ({
 				slotType: scheduleSlotRadio,
 				RecheduleSlots:
 					scheduleSlotRadio === 1
-						? getScheduleSlotInfomation
-						: getScheduleSlotInfomation?.slice(0, 1),
+						? interviewUtils.formatInterviewDateSlotHandler(getScheduleSlotDate)
+						: interviewUtils
+								.formatInterviewDateSlotHandler(getScheduleSlotDate)
+								?.slice(0, 1),
 				hiringRequest_ID: hrId,
 				hiringRequest_Detail_ID: talentInfo?.HiringDetailID,
 				contactID: talentInfo?.ContactId,
@@ -114,7 +147,7 @@ const InterviewSchedule = ({
 			callAPI,
 			closeModal,
 			getInterviewStatus,
-			getScheduleSlotInfomation,
+			getScheduleSlotDate,
 			hiringRequestNumber,
 			hrId,
 			messageAPI,
@@ -286,7 +319,7 @@ const InterviewSchedule = ({
 										placeholderText="Select Date"
 										onChange={(date) => {
 											setValue('slot1Date', date);
-											getSlotInformationHandler(date, 'slot1Date', 'schedule');
+											calenderDateHandler(date, 0, 'slot1');
 										}}
 									/>
 									{errors.slot1Date && (
@@ -305,11 +338,7 @@ const InterviewSchedule = ({
 										selected={getScheduleSlotDate[0].slot2}
 										onChange={(date) => {
 											setValue('slot1StartTime', date);
-											getSlotInformationHandler(
-												date,
-												'slot1StartTime',
-												'schedule',
-											);
+											calenderTimeHandler(date, 0, 'slot2');
 										}}
 										showTimeSelect
 										showTimeSelectOnly
@@ -335,11 +364,7 @@ const InterviewSchedule = ({
 										selected={getScheduleSlotDate[0].slot3}
 										onChange={(date) => {
 											setValue('slot1EndTime', date);
-											getSlotInformationHandler(
-												date,
-												'slot1EndTime',
-												'schedule',
-											);
+											calenderTimeHandler(date, 0, 'slot3');
 										}}
 										showTimeSelect
 										showTimeSelectOnly
@@ -375,11 +400,7 @@ const InterviewSchedule = ({
 												placeholderText="Select Date"
 												onChange={(date) => {
 													setValue('slot2Date', date);
-													getSlotInformationHandler(
-														date,
-														'slot2Date',
-														'schedule',
-													);
+													calenderDateHandler(date, 1, 'slot1');
 												}}
 												name="slot2Date"
 											/>
@@ -399,11 +420,7 @@ const InterviewSchedule = ({
 												selected={getScheduleSlotDate[1].slot2}
 												onChange={(date) => {
 													setValue('slot2StartTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot2StartTime',
-														'schedule',
-													);
+													calenderTimeHandler(date, 1, 'slot2');
 												}}
 												showTimeSelect
 												showTimeSelectOnly
@@ -430,11 +447,7 @@ const InterviewSchedule = ({
 												selected={getScheduleSlotDate[1].slot3}
 												onChange={(date) => {
 													setValue('slot2EndTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot2EndTime',
-														'schedule',
-													);
+													calenderTimeHandler(date, 1, 'slot3');
 												}}
 												showTimeSelect
 												showTimeSelectOnly
@@ -469,11 +482,7 @@ const InterviewSchedule = ({
 												selected={getScheduleSlotDate[2].slot1}
 												onChange={(date) => {
 													setValue('slot3Date', date);
-													getSlotInformationHandler(
-														date,
-														'slot3Date',
-														'schedule',
-													);
+													calenderDateHandler(date, 2, 'slot1');
 												}}
 												name="slot3Date"
 											/>
@@ -493,11 +502,7 @@ const InterviewSchedule = ({
 												selected={getScheduleSlotDate[2].slot2}
 												onChange={(date) => {
 													setValue('slot3StartTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot3StartTime',
-														'schedule',
-													);
+													calenderTimeHandler(date, 2, 'slot2');
 												}}
 												showTimeSelect
 												showTimeSelectOnly
@@ -524,11 +529,7 @@ const InterviewSchedule = ({
 												selected={getScheduleSlotDate[2].slot3}
 												onChange={(date) => {
 													setValue('slot3EndTime', date);
-													getSlotInformationHandler(
-														date,
-														'slot3EndTime',
-														'schedule',
-													);
+													calenderTimeHandler(date, 2, 'slot3');
 												}}
 												showTimeSelect
 												showTimeSelectOnly

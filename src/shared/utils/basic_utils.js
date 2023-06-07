@@ -110,7 +110,7 @@ export const getNthDateExcludingWeekend = (n = 0) => {
 export const getNextWorkingDay = (currDate) => {
 	const temp = new Date(currDate);
 	if (isSaturday(temp)) return temp.setDate(temp.getDate() + 2);
-	return temp.setDate(temp.getDate() + 1);
+	return new Date(temp.setDate(temp.getDate() + 1));
 };
 
 export const isSlotOverlapping = (slot1, slot2) => {
@@ -164,18 +164,30 @@ export const getDateInUsFormat = (date) =>
 	'/' +
 	date.getFullYear();
 
-export const getInterviewSlotInfo = (interviewDate, startTime, endTime) => {
+export function addHours(date, hours) {
+	const dateToUpdate = new Date(date);
+	dateToUpdate.setTime(dateToUpdate.getTime() + hours * 60 * 60 * 1000);
+	return new Date(dateToUpdate);
+}
+export const getInterviewSlotInfo = (
+	interviewDate,
+	startTime,
+	endTime,
+	index,
+) => {
 	let formattedDate = new Date(interviewDate);
 	interviewDate = getDateInUsFormat(formattedDate);
 	startTime = getTimeInHHMM(new Date(startTime));
 	endTime = getTimeInHHMM(new Date(endTime));
 	return {
+		SlotID: index,
 		EndTime: endTime,
 		STREndTime: interviewDate + ' ' + endTime,
 		STRSlotDate: interviewDate,
 		STRStartTime: interviewDate + ' ' + startTime,
 		SlotDate: interviewDate,
 		StartTime: startTime,
+		iD_As_ShortListedID: '',
 	};
 };
 

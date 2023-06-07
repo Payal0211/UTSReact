@@ -10,7 +10,12 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import { UserAccountRole } from 'constants/application';
 import { NetworkInfo } from 'constants/network';
 
-const CompanyProfileCard = ({ clientDetail, talentLength, apiData,allApiData }) => {
+const CompanyProfileCard = ({
+	clientDetail,
+	talentLength,
+	apiData,
+	allApiData,
+}) => {
 	const [updateTR, setUpdateTR] = useState(false);
 	const [updateTRDetail, setUpdateTRDetails] = useState([]);
 	const id = useParams();
@@ -119,7 +124,9 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData,allApiData }) 
 							<div className={CompanyProfileCardStyle.category}>
 								<span>Uplers Category:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{allApiData?.companyCategory ? allApiData?.companyCategory : 'NA'}
+									{allApiData?.companyCategory
+										? allApiData?.companyCategory
+										: 'NA'}
 								</span>
 							</div>
 						</div>
@@ -222,17 +229,28 @@ const CompanyProfileCard = ({ clientDetail, talentLength, apiData,allApiData }) 
 								<span>JD Link:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.JDFileOrURL === 'JDFILE' ? (
-										<a
-											rel="noreferrer"
-											href={
-												NetworkInfo.NETWORK +
-												'Media/JDParsing/JDFiles/' +
-												clientDetail?.JobDetailURL
-											}
-											style={{ textDecoration: 'underline' }}
-											target="_blank">
-											Click Here
-										</a>
+										clientDetail?.JobDetailURL?.split(':')[0] === 'http' ||
+										clientDetail?.JobDetailURL?.split(':')[0] === 'https' ? (
+											<a
+												rel="noreferrer"
+												href={clientDetail?.JobDetailURL}
+												style={{ textDecoration: 'underline' }}
+												target="_blank">
+												Click Here
+											</a>
+										) : (
+											<a
+												rel="noreferrer"
+												href={
+													NetworkInfo.FILENETWORK +
+													'ClientAttachments/' +
+													clientDetail?.JobDetailURL
+												}
+												style={{ textDecoration: 'underline' }}
+												target="_blank">
+												Click Here
+											</a>
+										)
 									) : (
 										'NA'
 									)}

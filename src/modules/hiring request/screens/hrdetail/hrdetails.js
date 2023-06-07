@@ -44,15 +44,6 @@ const HRDetailScreen = () => {
 
 	const [editDebrifing, setEditDebring] = useState([]);
 
-	const {
-		register,
-		handleSubmit,
-		setValue,
-		watch,
-		setError,
-		formState: { errors },
-	} = useForm();
-
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
 	const miscData = UserSessionManagementController.getUserSession();

@@ -16,14 +16,15 @@ import {
 } from 'constants/application';
 import { HTTPStatusCode } from 'constants/network';
 import {
+	addHours,
 	defaultEndTime,
 	defaultStartTime,
 	disabledWeekend,
 	getInterviewSlotInfo,
-	getNthDateExcludingWeekend,
 	getSlots,
 } from 'shared/utils/basic_utils';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
+import { interviewUtils } from 'modules/interview/interviewUtils';
 
 export const otherInterviewer = {
 	interviewerName: '',
@@ -36,9 +37,7 @@ export const otherInterviewer = {
 const AnotherRound = ({
 	talentInfo,
 	getScheduleSlotDate,
-	getSlotInformationHandler,
-	getScheduleSlotInfomation,
-	setScheduleSlotInformation,
+	setScheduleSlotDate,
 	callAPI,
 	hrId,
 	closeModal,
@@ -56,24 +55,6 @@ const AnotherRound = ({
 			otherInterviewer: [],
 		},
 	});
-	// const [getScheduleSlotDate, setScheduleSlotDate] = useState([
-	// 	{
-	// 		slot1: getSlots?.()?.slot1,
-	// 		slot2: defaultStartTime(),
-	// 		slot3: defaultEndTime(),
-	// 	},
-	// 	{
-	// 		slot1: getSlots()?.slot2,
-	// 		slot2: defaultStartTime(),
-	// 		slot3: defaultEndTime(),
-	// 	},
-
-	// 	{
-	// 		slot1: getSlots?.()?.slot3,
-	// 		slot2: defaultStartTime(),
-	// 		slot3: defaultEndTime(),
-	// 	},
-	// ]);
 
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -97,7 +78,7 @@ const AnotherRound = ({
 	);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [radioValue, setRadioValue] = useState(AnotherRoundInterviewOption.YES);
-	const [slotLater, setSlotLater] = useState(AnotherRoundTimeSlotOption.NOW);
+	const [slotLater, setSlotLater] = useState(AnotherRoundTimeSlotOption.LATER);
 	const param = useParams();
 	const [clientDetailsForAnotherRound, setClientDetailsForAnotherRound] =
 		useState(null);
@@ -114,8 +95,8 @@ const AnotherRound = ({
 		(e) => {
 			setSlotLater(e.target.value);
 			e.target.value === AnotherRoundTimeSlotOption.LATER
-				? setScheduleSlotInformation([])
-				: setScheduleSlotInformation([
+				? setScheduleSlotDate([])
+				: setScheduleSlotDate([
 						{
 							SlotID: 1,
 							...getInterviewSlotInfo(
@@ -144,11 +125,44 @@ const AnotherRound = ({
 							iD_As_ShortListedID: '',
 						},
 				  ]);
-			// remove();
-			clearErrors();
+
+			clearErrors('interviewTimezone');
 		},
-		[clearErrors, setScheduleSlotInformation],
+		[clearErrors, setScheduleSlotDate],
 	);
+	const calenderDateHandler = useCallback(
+		(date, index, slotField) => {
+			const eleToUpdate = { ...getScheduleSlotDate[index] };
+			eleToUpdate[slotField] = date;
+
+			setScheduleSlotDate([
+				...getScheduleSlotDate.slice(0, index),
+				{ ...eleToUpdate },
+				...getScheduleSlotDate.slice(index + 1),
+			]);
+		},
+		[getScheduleSlotDate, setScheduleSlotDate],
+	);
+
+	const calenderTimeHandler = useCallback(
+		(date, index, slotField) => {
+			const eleToUpdate = { ...getScheduleSlotDate[index] };
+			eleToUpdate[slotField] = date;
+
+			if (slotField === 'slot2') {
+				eleToUpdate['slot3'] = addHours(date, 1);
+			}
+
+			setScheduleSlotDate([
+				...getScheduleSlotDate.slice(0, index),
+				{ ...eleToUpdate },
+				...getScheduleSlotDate.slice(index + 1),
+			]);
+		},
+		[getScheduleSlotDate, setScheduleSlotDate],
+	);
+
+	console.log(errors, '-errors');
 
 	const checkDuplicateInterviewerEmailHandler = useCallback(
 		async (e) => {
@@ -195,8 +209,9 @@ const AnotherRound = ({
 				shortlistInterviewerID: talentInfo?.Shortlisted_InterviewID,
 				timeZoneId: d?.interviewTimezone?.id,
 				timeslot:
-					getScheduleSlotInfomation?.length > 0
-						? getScheduleSlotInfomation
+					interviewUtils.formatInterviewDateSlotHandler(getScheduleSlotDate)
+						?.length > 0
+						? interviewUtils.formatInterviewDateSlotHandler(getScheduleSlotDate)
 						: [],
 				interviewerDetails:
 					formattedInterviewerDetails[0]?.interviewerName === undefined
@@ -239,7 +254,7 @@ const AnotherRound = ({
 		[
 			callAPI,
 			closeModal,
-			getScheduleSlotInfomation,
+			getScheduleSlotDate,
 			hrId,
 			messageAPI,
 			param?.hrid,
@@ -1076,11 +1091,7 @@ const AnotherRound = ({
 															placeholderText="Select Date"
 															onChange={(date) => {
 																setValue('slot1Date', date);
-																getSlotInformationHandler(
-																	date,
-																	'slot1Date',
-																	'schedule',
-																);
+																calenderDateHandler(date, 0, 'slot1');
 															}}
 														/>
 														{errors.slot1Date && (
@@ -1099,11 +1110,7 @@ const AnotherRound = ({
 															selected={getScheduleSlotDate?.[0]?.slot2}
 															onChange={(date) => {
 																setValue('slot1StartTime', date);
-																getSlotInformationHandler(
-																	date,
-																	'slot1StartTime',
-																	'schedule',
-																);
+																calenderTimeHandler(date, 0, 'slot2');
 															}}
 															showTimeSelect
 															showTimeSelectOnly
@@ -1129,11 +1136,7 @@ const AnotherRound = ({
 															selected={getScheduleSlotDate?.[0]?.slot3}
 															onChange={(date) => {
 																setValue('slot1EndTime', date);
-																getSlotInformationHandler(
-																	date,
-																	'slot1EndTime',
-																	'schedule',
-																);
+																calenderTimeHandler(date, 0, 'slot3');
 															}}
 															showTimeSelect
 															showTimeSelectOnly
@@ -1168,11 +1171,7 @@ const AnotherRound = ({
 															placeholderText="Select Date"
 															onChange={(date) => {
 																setValue('slot2Date', date);
-																getSlotInformationHandler(
-																	date,
-																	'slot2Date',
-																	'schedule',
-																);
+																calenderDateHandler(date, 1, 'slot1');
 															}}
 														/>
 														{errors.slot2Date && (
@@ -1191,11 +1190,7 @@ const AnotherRound = ({
 															selected={getScheduleSlotDate?.[1]?.slot2}
 															onChange={(date) => {
 																setValue('slot2StartTime', date);
-																getSlotInformationHandler(
-																	date,
-																	'slot2StartTime',
-																	'schedule',
-																);
+																calenderTimeHandler(date, 1, 'slot2');
 															}}
 															showTimeSelect
 															showTimeSelectOnly
@@ -1221,11 +1216,7 @@ const AnotherRound = ({
 															selected={getScheduleSlotDate?.[1]?.slot3}
 															onChange={(date) => {
 																setValue('slot2EndTime', date);
-																getSlotInformationHandler(
-																	date,
-																	'slot2EndTime',
-																	'schedule',
-																);
+																calenderTimeHandler(date, 1, 'slot3');
 															}}
 															showTimeSelect
 															showTimeSelectOnly
@@ -1260,11 +1251,7 @@ const AnotherRound = ({
 															placeholderText="Select Date"
 															onChange={(date) => {
 																setValue('slot3Date', date);
-																getSlotInformationHandler(
-																	date,
-																	'slot3Date',
-																	'schedule',
-																);
+																calenderDateHandler(date, 2, 'slot1');
 															}}
 														/>
 														{errors.slot3Date && (
@@ -1283,11 +1270,7 @@ const AnotherRound = ({
 															selected={getScheduleSlotDate?.[2]?.slot2}
 															onChange={(date) => {
 																setValue('slot3StartTime', date);
-																getSlotInformationHandler(
-																	date,
-																	'slot3StartTime',
-																	'schedule',
-																);
+																calenderTimeHandler(date, 2, 'slot2');
 															}}
 															showTimeSelect
 															showTimeSelectOnly
@@ -1313,11 +1296,7 @@ const AnotherRound = ({
 															selected={getScheduleSlotDate?.[2]?.slot3}
 															onChange={(date) => {
 																setValue('slot3EndTime', date);
-																getSlotInformationHandler(
-																	date,
-																	'slot3EndTime',
-																	'schedule',
-																);
+																calenderTimeHandler(date, 2, 'slot3');
 															}}
 															showTimeSelect
 															showTimeSelectOnly
