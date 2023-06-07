@@ -85,7 +85,7 @@ const CurrencyList = React.lazy(() =>
 	import('modules/masters/screens/currency/currencyList'),
 );
 const SlaReport = React.lazy(() =>
-	import('modules/report/screens/slaReport/demandFunnel'),
+	import('modules/report/screens/slaReport/slaReport'),
 );
 
 export default class UTSRoutes {
