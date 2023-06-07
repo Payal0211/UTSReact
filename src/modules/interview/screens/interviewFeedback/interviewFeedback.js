@@ -13,7 +13,6 @@ import AnotherRound from '../anotherRound/anotherRound';
 const InterviewFeedback = ({
 	isEditFeedback,
 	hrId,
-
 	callAPI,
 	talentInfo,
 	talentName,
@@ -151,7 +150,7 @@ const InterviewFeedback = ({
 		// isEditFeedback && setRadioValue1(feedbackDetails?.hdnRadiovalue);
 		isEditFeedback && setRadioValue2(feedbackDetails?.technicalSkillRating);
 		isEditFeedback && setRadioValue3(feedbackDetails?.communicationSkillRating);
-		isEditFeedback && setRadioValue3(feedbackDetails?.cognitiveSkillRating);
+		isEditFeedback && setRadioValue4(feedbackDetails?.cognitiveSkillRating);
 		isEditFeedback &&
 			setValue('interviewClientFeedback', feedbackDetails?.messageToTalent);
 		isEditFeedback &&

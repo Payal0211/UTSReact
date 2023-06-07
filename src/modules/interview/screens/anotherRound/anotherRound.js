@@ -15,14 +15,7 @@ import {
 	AnotherRoundTimeSlotOption,
 } from 'constants/application';
 import { HTTPStatusCode } from 'constants/network';
-import {
-	addHours,
-	defaultEndTime,
-	defaultStartTime,
-	disabledWeekend,
-	getInterviewSlotInfo,
-	getSlots,
-} from 'shared/utils/basic_utils';
+import { addHours, disabledWeekend } from 'shared/utils/basic_utils';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import { interviewUtils } from 'modules/interview/interviewUtils';
 
@@ -78,7 +71,7 @@ const AnotherRound = ({
 	);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [radioValue, setRadioValue] = useState(AnotherRoundInterviewOption.YES);
-	const [slotLater, setSlotLater] = useState(AnotherRoundTimeSlotOption.LATER);
+	const [slotLater, setSlotLater] = useState(AnotherRoundTimeSlotOption.NOW);
 	const param = useParams();
 	const [clientDetailsForAnotherRound, setClientDetailsForAnotherRound] =
 		useState(null);
@@ -94,41 +87,9 @@ const AnotherRound = ({
 	const slotLaterOnChange = useCallback(
 		(e) => {
 			setSlotLater(e.target.value);
-			e.target.value === AnotherRoundTimeSlotOption.LATER
-				? setScheduleSlotDate([])
-				: setScheduleSlotDate([
-						{
-							SlotID: 1,
-							...getInterviewSlotInfo(
-								getSlots?.()?.slot1,
-								defaultStartTime(),
-								defaultEndTime(),
-							),
-							iD_As_ShortListedID: '',
-						},
-						{
-							SlotID: 2,
-							...getInterviewSlotInfo(
-								getSlots?.()?.slot2,
-								defaultStartTime(),
-								defaultEndTime(),
-							),
-							iD_As_ShortListedID: '',
-						},
-						{
-							SlotID: 3,
-							...getInterviewSlotInfo(
-								getSlots?.()?.slot3,
-								defaultStartTime(),
-								defaultEndTime(),
-							),
-							iD_As_ShortListedID: '',
-						},
-				  ]);
-
 			clearErrors('interviewTimezone');
 		},
-		[clearErrors, setScheduleSlotDate],
+		[clearErrors],
 	);
 	const calenderDateHandler = useCallback(
 		(date, index, slotField) => {
@@ -161,8 +122,6 @@ const AnotherRound = ({
 		},
 		[getScheduleSlotDate, setScheduleSlotDate],
 	);
-
-	console.log(errors, '-errors');
 
 	const checkDuplicateInterviewerEmailHandler = useCallback(
 		async (e) => {
@@ -209,10 +168,11 @@ const AnotherRound = ({
 				shortlistInterviewerID: talentInfo?.Shortlisted_InterviewID,
 				timeZoneId: d?.interviewTimezone?.id,
 				timeslot:
-					interviewUtils.formatInterviewDateSlotHandler(getScheduleSlotDate)
-						?.length > 0
-						? interviewUtils.formatInterviewDateSlotHandler(getScheduleSlotDate)
-						: [],
+					AnotherRoundTimeSlotOption.LATER === slotLater
+						? []
+						: interviewUtils.formatInterviewDateSlotHandler(
+								getScheduleSlotDate,
+						  ),
 				interviewerDetails:
 					formattedInterviewerDetails[0]?.interviewerName === undefined
 						? []

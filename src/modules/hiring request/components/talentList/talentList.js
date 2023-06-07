@@ -65,6 +65,7 @@ const TalentList = ({
 }) => {
 	const [scheduleAnotherRoundInterview, setScheduleAnotherRoundInterview] =
 		useState(false);
+	console.log(scheduleAnotherRoundInterview, '-scheduleAnotherRoundInterview');
 	const [isShowFeedback, setShowFeedback] = useState(false);
 	const [isAnotherRound, setAnotherRound] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(-1);
@@ -1012,7 +1013,7 @@ const TalentList = ({
 					className="commonModalWrap"
 					centered
 					footer={null}
-					open={isAnotherRound}
+					open={scheduleAnotherRoundInterview}
 					onOk={() => setScheduleAnotherRoundInterview(false)}
 					onCancel={() => setScheduleAnotherRoundInterview(false)}>
 					<InterviewReschedule
@@ -1104,6 +1105,8 @@ const TalentList = ({
 					open={isEditFeedback}
 					onCancel={() => setEditFeedback(false)}>
 					<InterviewFeedback
+						getScheduleSlotDate={getScheduleSlotDate}
+						setScheduleSlotDate={setScheduleSlotDate}
 						isEditFeedback={isEditFeedback}
 						hrId={hrId}
 						clientDetail={clientDetail}
