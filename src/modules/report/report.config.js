@@ -538,34 +538,151 @@ export const reportConfig = {
 			},
 		];
 	},
+	SLAReportDetailListConfig: () => {
+		return [
+			{
+				title: 'HR#',
+				dataIndex: 'hR_NUmber',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Role',
+				dataIndex: 'role',
+				key: 'hrCreatedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Company',
+				dataIndex: 'company',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Client',
+				dataIndex: 'client',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Talent',
+				dataIndex: 'talentName',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Odr/pool',
+				dataIndex: 'isAdHocHR',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Stage',
+				dataIndex: 'currentStage',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Curr Action Date',
+				dataIndex: 'current_Action_date',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Exp Next Action Date',
+				dataIndex: 'expected_Next_action_date',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Actual Next Action date',
+				dataIndex: 'actual_Next_Action_date',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Expected SLA',
+				dataIndex: 'expected_SLA_day',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Actual SLA',
+				dataIndex: 'actual_SLA_day',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'SLA diff',
+				dataIndex: 'slA_diff',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Action',
+				dataIndex: 'actionFilter',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Sales Person',
+				dataIndex: 'sales_Person',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Sales Manager',
+				dataIndex: 'sales_Manager',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'OPS Lead',
+				dataIndex: 'ops_Lead',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+		];
+	},
 
 
-	// slaReportTableData: (viewSummary) => {
-	// 	let tableHeader = Object?.keys(viewSummary?.[0] || {});
-	// 	return tableHeader?.map((item) => {
-	// 		return {
-	// 			title: item,
-	// 			dataIndex: item,
-	// 			key: item,
-	// 			align: 'left',
-	// 			ellipsis: {
-	// 				showTitle: false,
-	// 			},
-	// 			width: 250,
-	// 			render: (data) => (
-	// 				<Tooltip
-	// 					placement="bottomLeft"
-	// 					title={data}>
-	// 					{item === 'Stage' || item === 'Duration' ? (
-	// 						<p style={{ fontWeight: '550' }}>{data}</p>
-	// 					) : (
-	// 						<p>{data}</p>
-	// 					)}
-	// 				</Tooltip>
-	// 			),
-	// 		};
-	// 	});
-	// },
+
 
 
 	slaReportFilterList: () => {

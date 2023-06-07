@@ -18,6 +18,12 @@ import { reportConfig } from 'modules/report/report.config';
 import DemandFunnelModal from 'modules/report/components/demandFunnelModal/demandFunnelModal';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { Controller, useForm } from 'react-hook-form';
+import {
+	downloadToExcel,
+	formatJDDumpReport,
+	jdDumpSearch,
+} from 'modules/report/reportUtils';
+
 const DemandFunnelFilterLazyComponent = React.lazy(() =>
 	import('modules/report/components/demandFunnelFilter/demandFunnelFilter'),
 );
@@ -109,11 +115,11 @@ const SlaReports = () => {
 		}
 	}
 
-
+	const [slaDetailsList, setSlaDetailsList] = useState([])
 	const slaReportDetails = async () => {
 
 		let data = {
-			totalrecord: 10,
+			totalrecord: 100,
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
@@ -134,9 +140,9 @@ const SlaReports = () => {
 				// ambdr: 0
 			}
 		}
-		console.log(data, "datatdatdad")
+
 		let response = await ReportDAO.slaDetailedDataDAO(data)
-		// console.log(response, "responsnsnssnsn")
+		setSlaDetailsList(response?.responseBody?.rows)
 	}
 
 	const onCalenderFilter = (dates) => {
@@ -197,7 +203,7 @@ const SlaReports = () => {
 		}, 300);
 		setHTMLFilter(false);
 	};
-
+	console.log(slaDetailsList, "slaDetailsList")
 	const tableColumnsMemo = useMemo(
 		() =>
 			reportConfig.SLAReportConfig(
@@ -210,7 +216,20 @@ const SlaReports = () => {
 			),
 		[listData, demandFunnelHRDetailsState, demandFunnelModal],
 	);
+	const slaDetailColumn = useMemo(
+		() =>
+			reportConfig.SLAReportDetailListConfig(
+				slaDetailsList && slaDetailsList,
+				// demandFunnelModal,
+				// setDemandFunnelModal,
+				// setDemandFunnelHRDetailsState,
+				// demandFunnelHRDetailsState,
+				// setDemandFunnelValue,
+			),
+		[slaDetailsList],
+	);
 
+	// slaDetailsList
 
 
 
@@ -220,77 +239,76 @@ const SlaReports = () => {
 	// 	[viewSummaryData],
 	// );
 
-
-	const viewSummaryMemo = [
-		{
-			title: 'HR#',
-			dataIndex: 'hr',
-		},
-		{
-			title: 'Role',
-			dataIndex: 'role',
-		},
-		{
-			title: 'Company',
-			dataIndex: 'company',
-		},
-		{
-			title: 'Client',
-			dataIndex: 'client',
-		},
-		{
-			title: 'Talent',
-			dataIndex: 'talent',
-		},
-		{
-			title: 'Odr/pool',
-			dataIndex: 'pool',
-		},
-		{
-			title: 'Stage',
-			dataIndex: 'stage',
-		},
-		{
-			title: 'Curr Action Date',
-			dataIndex: 'curractionDate',
-		},
-		{
-			title: 'Exp Next Action Date',
-			dataIndex: 'expNextActionDate',
-		},
-		{
-			title: 'Actual Next Action date',
-			dataIndex: 'actualNextActionDate',
-		},
-		{
-			title: 'Expected SLA',
-			dataIndex: 'expectedSLA',
-		},
-		{
-			title: 'Actual SLA',
-			dataIndex: 'ActualSLA',
-		},
-		{
-			title: 'SLA diff',
-			dataIndex: 'slaDiff',
-		},
-		{
-			title: 'Action',
-			dataIndex: 'action',
-		},
-		{
-			title: 'Sales Person',
-			dataIndex: 'salesPerson',
-		},
-		{
-			title: 'Sales Manager',
-			dataIndex: 'salesManager',
-		},
-		{
-			title: 'OPS Lead',
-			dataIndex: 'opsLead',
-		},
-	];
+	// const viewSummaryMemo = [
+	// 	{
+	// 		title: 'HR#',
+	// 		dataIndex: 'hr',
+	// 	},
+	// 	{
+	// 		title: 'Role',
+	// 		dataIndex: 'role',
+	// 	},
+	// 	{
+	// 		title: 'Company',
+	// 		dataIndex: 'company',
+	// 	},
+	// 	{
+	// 		title: 'Client',
+	// 		dataIndex: 'client',
+	// 	},
+	// 	{
+	// 		title: 'Talent',
+	// 		dataIndex: 'talent',
+	// 	},
+	// 	{
+	// 		title: 'Odr/pool',
+	// 		dataIndex: 'pool',
+	// 	},
+	// 	{
+	// 		title: 'Stage',
+	// 		dataIndex: 'stage',
+	// 	},
+	// 	{
+	// 		title: 'Curr Action Date',
+	// 		dataIndex: 'curractionDate',
+	// 	},
+	// 	{
+	// 		title: 'Exp Next Action Date',
+	// 		dataIndex: 'expNextActionDate',
+	// 	},
+	// 	{
+	// 		title: 'Actual Next Action date',
+	// 		dataIndex: 'actualNextActionDate',
+	// 	},
+	// 	{
+	// 		title: 'Expected SLA',
+	// 		dataIndex: 'expectedSLA',
+	// 	},
+	// 	{
+	// 		title: 'Actual SLA',
+	// 		dataIndex: 'ActualSLA',
+	// 	},
+	// 	{
+	// 		title: 'SLA diff',
+	// 		dataIndex: 'slaDiff',
+	// 	},
+	// 	{
+	// 		title: 'Action',
+	// 		dataIndex: 'action',
+	// 	},
+	// 	{
+	// 		title: 'Sales Person',
+	// 		dataIndex: 'salesPerson',
+	// 	},
+	// 	{
+	// 		title: 'Sales Manager',
+	// 		dataIndex: 'salesManager',
+	// 	},
+	// 	{
+	// 		title: 'OPS Lead',
+	// 		dataIndex: 'opsLead',
+	// 	},
+	// ];
 
 
 	// const getReportFilterHandler = useCallback(async () => {
@@ -412,6 +430,14 @@ const SlaReports = () => {
 								control={control}
 							/>
 						</div>
+
+						<div>
+							<button
+								className={SlaReportStyle.btnPrimary}
+								onClick={() => downloadToExcel(apiData)}>
+								Export
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -452,14 +478,22 @@ const SlaReports = () => {
 					<TableSkeleton />
 				) : (
 					<>
+						{/* {console.log(slaDetailsList, "slice")} */}
 						<Table
-							id="hrListingTable"
-							columns={viewSummaryMemo}
+							// id="hrListingTable"
+							// columns={slaDetailColumn}
+							// bordered={false}
+							// dataSource={slaDetailsList}
+							// pagination={{
+							// 	size: 'small',
+							// 	pageSize: slaDetailsList?.length,
+							// }}
+							columns={slaDetailColumn}
 							bordered={false}
-							dataSource={[...viewSummaryData?.slice(1)]}
+							dataSource={slaDetailsList}
 							pagination={{
 								size: 'small',
-								pageSize: viewSummaryData?.length,
+								pageSize: slaDetailsList?.length,
 							}}
 						/>
 					</>
