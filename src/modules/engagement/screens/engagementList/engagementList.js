@@ -307,8 +307,8 @@ const EngagementList = () => {
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
-					setIsAllowFilters(!isAllowFilters);
-			  }, 300);
+				setIsAllowFilters(!isAllowFilters);
+			}, 300);
 		setHTMLFilter(!getHTMLFilter);
 	}, [getEngagementFilterList, getHTMLFilter, isAllowFilters]);
 
@@ -486,7 +486,7 @@ const EngagementList = () => {
 						/>
 						<h2>
 							Total DP% -{' '}
-							<span>{apiData[0]?.s_TotalDP ? apiData[0]?.s_TotalDP: 0}</span>
+							<span>{apiData[0]?.s_TotalDP ? apiData[0]?.s_TotalDP : 0}</span>
 						</h2>
 					</div>
 				</div>

@@ -36,14 +36,15 @@ const UserList = () => {
 
 	const fetchUserList = useCallback(
 		async (pageData) => {
+			console.log(pageData, "pageData")
 			setLoading(true);
 			const response = await userDAO.getUserListRequestDAO(
 				pageData
 					? pageData
 					: {
-							pageNumber: 1,
-							totalRecord: 100,
-					  },
+						pageNumber: 1,
+						totalRecord: 100,
+					},
 			);
 			if (response.statusCode === HTTPStatusCode.OK) {
 				setTotalRecords(response && response?.responseBody?.details?.totalrows);
