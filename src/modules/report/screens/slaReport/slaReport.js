@@ -38,8 +38,8 @@ const SlaReports = () => {
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: "2023-05-01",
-				endDate: "2023-06-10",
+				startDate: "2023-06-01",
+				endDate: "2023-06-30",
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
@@ -99,14 +99,14 @@ const SlaReports = () => {
 			actionFilter: 0,
 			ambdr: 0
 		}
-		// setLoading(true);
-		// let response = await ReportDAO.OverAllSLASummaryDAO(obj)
-		// if (response?.statusCode === HTTPStatusCode.OK) {
-		// 	setLoading(false);
-		// 	// setListData(response?.responseBody)
-		// } else {
-		// 	setLoading(false);
-		// }
+		setLoading(true);
+		let response = await ReportDAO.OverAllSLASummaryDAO(obj)
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setLoading(false);
+			// setListData(response?.responseBody)
+		} else {
+			setLoading(false);
+		}
 	}
 
 	const [slaDetailsList, setSlaDetailsList] = useState([])
@@ -118,7 +118,7 @@ const SlaReports = () => {
 			isExport: false,
 			filterFieldsSLA: {
 				startDate: "2023-05-01",
-				endDate: "2023-06-10",
+				endDate: "2023-05-10",
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
@@ -134,21 +134,21 @@ const SlaReports = () => {
 				// ambdr: 0
 			}
 		}
-		// setSummaryLoading(true);
-		// let response = await ReportDAO.slaDetailedDataDAO(data)
-		// console.log(response, "responsndsnds")
-		// if (response?.statusCode === HTTPStatusCode?.OK) {
-		// 	// setPageNumber(response?.responseBody?.pagenumber)
-		// 	setTotalRecords(response?.responseBody?.totalrows)
-		// 	setSummaryLoading(false);
-		// 	setSlaDetailsList(
-		// 		slaUtils.slaListData(response && response),
-		// 	);
-		// } else {
-		// 	setApiData([]);
-		// 	setSummaryLoading(false);
-		// 	setTotalRecords(0);
-		// }
+		setSummaryLoading(true);
+		let response = await ReportDAO.slaDetailedDataDAO(data)
+		console.log(response, "responsndsnds")
+		if (response?.statusCode === HTTPStatusCode?.OK) {
+			// setPageNumber(response?.responseBody?.pagenumber)
+			setTotalRecords(response?.responseBody?.totalrows)
+			setSummaryLoading(false);
+			setSlaDetailsList(
+				slaUtils.slaListData(response && response),
+			);
+		} else {
+			setApiData([]);
+			setSummaryLoading(false);
+			setTotalRecords(0);
+		}
 	}
 
 
@@ -286,10 +286,11 @@ const SlaReports = () => {
 
 	const handleHRRequest = useCallback(
 		async (tableFilteredState) => {
-			console.log(tableFilteredState,"tableFilteredStateslaReport")
 			// setLoading(true);
 				let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
-				console.log(response,"response");
+				setSlaDetailsList(
+					slaUtils.slaListData(response && response),
+				);
 			// if (response?.statusCode === HTTPStatusCode.OK) {
 			// 	setTotalRecords(response?.responseBody?.totalrows);
 			// 	setLoading(false);

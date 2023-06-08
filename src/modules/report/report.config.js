@@ -691,7 +691,7 @@ slaReportFilterTypeConfig : (filterList) =>{
 		},
 		{
 			label: "Action Filter",
-			name: "actionFilterDrop",
+			name: "actionFilter",
 			child: filterList?.actionFilterDrop,
 			isSearch: true,
 		},

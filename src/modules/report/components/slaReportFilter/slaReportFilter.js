@@ -104,8 +104,8 @@ const SlaReportFilerList = ({
       pagenumber: 1,
       isExport: false,
       filterFieldsSLA: {
-          startDate: "2023-05-01",
-          endDate: "2023-06-10",
+          startDate: "2023-06-01",
+          endDate: "2023-06-30",
           hrid: 0,
           sales_ManagerID: 0,
           ops_Lead: 0,
@@ -126,8 +126,8 @@ const SlaReportFilerList = ({
         pagenumber: 1,
         isExport: false,
         filterFieldsSLA: {
-            startDate: "2023-05-01",
-            endDate: "2023-06-10",
+            startDate: "2023-06-01",
+            endDate: "2023-06-30",
             hrid: 0,
             sales_ManagerID: 0,
             ops_Lead: 0,
@@ -143,28 +143,6 @@ const SlaReportFilerList = ({
             // ambdr: 0
         }
     });
-    const reqFilter = {
-        totalrecord: 100,
-        pagenumber: 1,
-        isExport: false,
-        filterFieldsSLA: {
-            startDate: "2023-05-01",
-            endDate: "2023-06-10",
-            hrid: 0,
-            sales_ManagerID: 0,
-            ops_Lead: 0,
-            salesPerson: 0,
-            stages: "",
-            isAdHoc: 0,
-            role: "",
-            slaType: 0,
-            type: 0,
-            hR_Number: "",
-            company: "",
-            actionFilter: 0,
-            // ambdr: 0
-        }
-    };
     // setSlaReportDetailsState(reqFilter);
   }, [
     handleHRRequest,
@@ -182,20 +160,20 @@ const SlaReportFilerList = ({
     appliedFilter.forEach((item) => {
       filters = { ...filters, [item.filterType]: item?.value };
     });
-    setTableFilteredState({
-      ...tableFilteredState,
-      //  ...filters ,
-    });
-    const reqFilter = {
-      ...tableFilteredState,
-    };
-    console.log(reqFilter,"sasdasdasdasdasd")
-    handleHRRequest(reqFilter);
-
+    // setTableFilteredState({
+    //   ...tableFilteredState,
+    //   //  ...filters ,
+    // });
+    // const reqFilter = {
+    //   ...tableFilteredState,
+    // };
+    // console.log(reqFilter,"sasdasdasdasdasd")
+    
     for (let key in filters) {
       const newState = { ...slaReportDetailsState };
       newState.filterFieldsSLA[key] = filters[key];
       setSlaReportDetailsState(newState);
+      handleHRRequest(newState);
     }
 }, [
     appliedFilter,
@@ -341,7 +319,7 @@ const SlaReportFilerList = ({
               <br />
 
                 <div className={slaReportStyle.filtersListType}>
-                  {filterSubChild?.label === "Engagement Tenure"? searchData && searchData.length > 0 ? (
+                  { searchData && searchData.length > 0 ? (
                     searchData.map((item, index) => {
                       return (
                         <div
@@ -410,104 +388,8 @@ const SlaReportFilerList = ({
                           </div>
                         );
                       })}
-
-                    {/* {filterSubChild?.child?.filteritem?.filterType === "engagementTenure" &&
-                                            <div
-                                                className={slaReportStyle.filterItem}
-                                                key={index}>
-                                                <Radio.Group onChange={(e) =>
-                                                    handleAppliedFilters(e.target.checked, {
-                                                        filterType: filterSubChild?.name,
-                                                        value: item?.value,
-                                                        id: item?.text,
-                                                    })
-                                                } value={value} id={item?.value + `/${index + 1}`}>
-                                                    {filterSubChild?.child.map((item, index) => {
-                                                        <Radio value={item?.text}>{item?.text}</Radio>
-                                                    }
-                                                    )}
-                                                </Radio.Group>
-                                            </div>
-                                        } */}
                   </>
-                ): searchData && searchData.length > 0 ? (
-                  searchData.map((item, index) => {
-                    return (
-                      <div
-                        className={slaReportStyle.filterItem}
-                        key={index}>
-                        <Checkbox
-                          checked={checkedState.get(
-                            `${filterSubChild?.name}${item.text}`,
-                          )}
-                          onChange={(e) => {
-                            handleAppliedFilters(e.target.checked, {
-                              filterType: filterSubChild?.name,
-                              value: item?.value,
-                              id: item?.text,
-                            })
-                          }}
-                          id={item?.value + `/${index + 1}`}
-                          style={{
-                            fontSize: `${!item.label && '1rem'}`,
-                            fontWeight: '500',
-                          }}>
-                          {item.text}
-                        </Checkbox>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <>
-                    {filterSubChild?.child?.map((item, index) => {
-                      return (
-                        <div
-                          className={slaReportStyle.filterItem}
-                          key={index}
-                        >
-                          <Checkbox
-                            checked={checkedState.get(
-                              `${filterSubChild?.name}${item.text}`
-                            )}
-                            onChange={(e) => {
-                              handleAppliedFilters(e.target.checked, {
-                                filterType: filterSubChild?.name,
-                                value: item?.value,
-                                id: item?.text,
-                              });
-                            }}
-                            id={item?.value + `/${index + 1}`}
-                            style={{
-                              fontSize: `${!item.label && "1rem"}`,
-                              fontWeight: "500",
-                            }}
-                          >
-                            {item.text}
-                          </Checkbox>
-                        </div>
-                      );
-                    })}
-
-                  {/* {filterSubChild?.child?.filteritem?.filterType === "engagementTenure" &&
-                                          <div
-                                              className={slaReportStyle.filterItem}
-                                              key={index}>
-                                              <Radio.Group onChange={(e) =>
-                                                  handleAppliedFilters(e.target.checked, {
-                                                      filterType: filterSubChild?.name,
-                                                      value: item?.value,
-                                                      id: item?.text,
-                                                  })
-                                              } value={value} id={item?.value + `/${index + 1}`}>
-                                                  {filterSubChild?.child.map((item, index) => {
-                                                      <Radio value={item?.text}>{item?.text}</Radio>
-                                                  }
-                                                  )}
-                                              </Radio.Group>
-                                          </div>
-                                      } */}
-                </>
-              )}
+                  )}
               </div>
             </>
           ) : (

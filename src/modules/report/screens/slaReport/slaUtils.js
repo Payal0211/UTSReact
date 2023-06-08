@@ -4,6 +4,7 @@ export const slaUtils = {
 			hR_NUmber: item?.hR_NUmber ?? "NA",
 			role: item?.role ?? "NA",
 			company: item?.company ?? "NA",
+			client: item?.client ?? "NA",
 			talentName: item?.talentName ?? "NA",
 			isAdHocHR: item?.isAdHocHR ?? "NA",
 			currentStage: item?.currentStage ?? "NA",
