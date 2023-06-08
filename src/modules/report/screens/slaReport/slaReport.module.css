@@ -602,3 +602,13 @@ span.customCheck_Mark::after {
 label.radioCheck_Mark input:checked + span.customCheck_Mark:after {
   opacity: 1;
 }
+.calendarFilter_Wrap{
+  position: relative;
+}
+.calendarFilter_Wrap span{
+  color: var(--danger-color);
+  font-size: var(--fontsize-tough);
+  position: absolute;
+  left: 0;
+  bottom: -25px;
+}

@@ -416,51 +416,54 @@ const SlaReports = () => {
 								selectsRange
 							/>
 						</div> */}
-						<div className={SlaReportStyle.calendarFilter}>
-							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
-							{/* <Controller
-								render={({ ...props }) => (
-									<DatePicker
-										className={SlaReportStyle.dateFilter}
-										onKeyDown={(e) => {
-											e.preventDefault();
-											e.stopPropagation();
-										}}
-										// selected={watch('invoiceDate')}
-										// onChange={(date) => {
-										// 	setValue('invoiceDate', date);
-										// }}
-										placeholderText="Start date - End date"
-										selected={startDate}
-										onChange={onCalenderFilter}
-										startDate={startDate}
-										endDate={endDate}
-										selectsRange
-									/>
-								)}
-								name="invoiceDate"
-								rules={{ required: true }}
-								control={control}
-							/> */}
+						<div className={SlaReportStyle.calendarFilter_Wrap}>
+							<div className={SlaReportStyle.calendarFilter}>
+								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+								{/* <Controller
+									render={({ ...props }) => (
+										<DatePicker
+											className={SlaReportStyle.dateFilter}
+											onKeyDown={(e) => {
+												e.preventDefault();
+												e.stopPropagation();
+											}}
+											// selected={watch('invoiceDate')}
+											// onChange={(date) => {
+											// 	setValue('invoiceDate', date);
+											// }}
+											placeholderText="Start date - End date"
+											selected={startDate}
+											onChange={onCalenderFilter}
+											startDate={startDate}
+											endDate={endDate}
+											selectsRange
+										/>
+									)}
+									name="invoiceDate"
+									rules={{ required: true }}
+									control={control}
+								/> */}
 
-							<DatePicker
-								style={{ backgroundColor: 'red' }}
-								onKeyDown={(e) => {
-									e.preventDefault();
-									e.stopPropagation();
-								}}
-								className={SlaReportStyle.dateFilter}
-								placeholderText="Start date - End date"
-								selected={startDate}
-								onChange={onCalenderFilter}
-								startDate={startDate}
-								endDate={endDate}
-								selectsRange
-							/>
+								<DatePicker
+									style={{ backgroundColor: 'red' }}
+									onKeyDown={(e) => {
+										e.preventDefault();
+										e.stopPropagation();
+									}}
+									className={SlaReportStyle.dateFilter}
+									placeholderText="Start date - End date"
+									selected={startDate}
+									onChange={onCalenderFilter}
+									startDate={startDate}
+									endDate={endDate}
+									selectsRange
+								/>
 
+							</div>
+							
+							<span>*&nbsp;{dateError}</span>
 						</div>
-						
-						<span>{dateError}</span>
+
 						{/* <div className={SlaReportStyle.priorityFilterSet}>
 							<div className={SlaReportStyle.label}>Showing</div>
 							<div className={SlaReportStyle.paginationFilter}>
