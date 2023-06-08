@@ -63,6 +63,7 @@ const EditHRFields = ({
     const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
     const [getClientNameMessage, setClientNameMessage] = useState('');
     const [disableButton, setDisableButton] = useState(true)
+    const [currency, setCurrency] = useState([]);
 
     const [getValidation, setValidation] = useState({
         systemFileUpload: '',
@@ -579,8 +580,13 @@ const EditHRFields = ({
         setValue,
     ]);
 
-    useEffect(() => {
+    const getCurrencyHandler = useCallback(async () => {
+        const response = await MasterDAO.getCurrencyRequestDAO();
+        setCurrency(response && response?.responseBody);
+    }, []);
 
+    useEffect(() => {
+        getCurrencyHandler();
         getAvailability();
         getTalentRole();
         getSalesPerson();
@@ -771,11 +777,11 @@ const EditHRFields = ({
 
     useEffect(() => {
         if (getHRdetails?.salesHiringRequest_Details?.currency) {
-            const findCurrency = currencyResult.filter((item) => item?.value === getHRdetails?.salesHiringRequest_Details?.currency)
+            const findCurrency = currency.filter((item) => item?.value === getHRdetails?.salesHiringRequest_Details?.currency)
             setValue("budget", findCurrency[0]?.value)
             setControlledBudgetValue(findCurrency[0]?.value)
         }
-    }, [getHRdetails, currencyResult])
+    }, [getHRdetails, currency])
 
     useEffect(() => {
         if (getHRdetails?.addHiringRequest?.salesUserId) {
@@ -934,7 +940,7 @@ const EditHRFields = ({
                                 //     isCompanyNameAvailable ||
                                 //     isLoading
                                 // }
-                                disabled={isCompanyNameAvailable?true:false}
+                                disabled={isCompanyNameAvailable ? true : false}
                                 register={register}
                                 errors={errors}
                                 validationSchema={{
@@ -1105,7 +1111,7 @@ const EditHRFields = ({
                                     setValue={setValue}
                                     register={register}
                                     label={'Add your estimated budget'}
-                                    options={currencyResult && currencyResult}
+                                    options={currency && currency}
                                     name="budget"
                                     isError={errors['budget'] && errors['budget']}
                                     required
@@ -1295,9 +1301,9 @@ const EditHRFields = ({
                                             value: 1,
                                             message: `please don't enter the value less than 1`,
                                         },
-                                        max:{
-                                            value:100,
-                                            message:"please don't enter the value more than 100"
+                                        max: {
+                                            value: 100,
+                                            message: "please don't enter the value more than 100"
                                         }
                                     }}
                                     register={register}
@@ -1599,7 +1605,7 @@ const EditHRFields = ({
                             />
                         </div>
                         <div className={HRFieldStyle.colMd6}>
-                        <div className={HRFieldStyle.formGroup}>
+                            <div className={HRFieldStyle.formGroup}>
                                 <HRSelectField
                                     controlledValue={controlledCountryValue}
                                     setControlledValue={setControlledCountryValue}
@@ -1617,7 +1623,7 @@ const EditHRFields = ({
                                     errorMsg={'Please select the country.'}
                                 />
                             </div>
-                            </div>
+                        </div>
                     </div>
                     <div className={HRFieldStyle.row}>
                         <div className={HRFieldStyle.colMd6}>
