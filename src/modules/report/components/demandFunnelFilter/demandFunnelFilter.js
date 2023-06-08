@@ -254,6 +254,7 @@ const DemandFunnelFilter = ({
 			},
 		});
 		setTableFilteredState(reqFilter);
+		console.log(demandFunnelHRDetailsState,"demandFunnelHRDetailsState");
 		// handleHRRequest(reqFilter);
 	}, [
 		appliedFilter,

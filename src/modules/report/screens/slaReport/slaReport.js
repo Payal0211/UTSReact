@@ -3,6 +3,7 @@ import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { Dropdown, Menu, Table } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import SlaReportFilter from "../../../report/components/slaReportFilter/slaReportFilter"
 
 import React, {
 	Suspense,
@@ -33,34 +34,32 @@ const DemandFunnelFilterLazyComponent = React.lazy(() =>
 const SlaReports = () => {
 	const { control } = useForm();
 	const [tableFilteredState, setTableFilteredState] = useState({
-		startDate: '',
-		endDate: '',
-		isHiringNeedTemp: '',
-		modeOfWork: '',
-		typeOfHR: '-1',
-		companyCategory: '',
-		replacement: '',
-		head: '',
-		isActionWise: true,
+		totalrecord: 100,
+			pagenumber: 1,
+			isExport: false,
+			filterFieldsSLA: {
+				startDate: "2023-05-01",
+				endDate: "2023-06-10",
+				hrid: 0,
+				sales_ManagerID: 0,
+				ops_Lead: 0,
+				salesPerson: 0,
+				stages: "",
+				isAdHoc: 0,
+				role: "",
+				slaType: 0,
+				type: 0,
+				hR_Number: "",
+				company: "",
+				actionFilter: 0,
+				// ambdr: 0
+			}
 	});
 
+	// console.log(tableFilteredState,"tableFilteredStatetableFilteredState");
+
 	const [demandFunnelValue, setDemandFunnelValue] = useState({});
-	const [demandFunnelHRDetailsState, setDemandFunnelHRDetailsState] = useState({
-		adhocType: '',
-		TeamManagerName: '',
-		currentStage: '',
-		IsExport: false,
-		hrFilter: {
-			hR_No: '',
-			salesPerson: '',
-			compnayName: '',
-			role: '',
-			managed_Self: '',
-			talentName: '',
-			availability: '',
-		},
-		funnelFilter: { ...tableFilteredState },
-	});
+	const [slaReportDetailsState, setSlaReportDetailsState] = useState();
 
 	const [apiData, setApiData] = useState([]);
 	const [viewSummaryData, setSummaryData] = useState([]);
@@ -87,12 +86,12 @@ const SlaReports = () => {
 	const slaReportList = async () => {
 		let obj = {
 			startDate: "2023-05-01",
-			endDate: "2023-05-10",
+			endDate: "2023-06-10",
 			hrid: 0,
 			sales_ManagerID: 0,
 			ops_Lead: 0,
 			salesPerson: 0,
-			stage: "",
+			stages: "",
 			isAdHoc: 0,
 			role: "",
 			hR_Number: "",
@@ -113,14 +112,13 @@ const SlaReports = () => {
 	const [slaDetailsList, setSlaDetailsList] = useState([])
 
 	const slaReportDetails = async (pageData) => {
-		console.log(pageData, "pageData1")
 		let data = {
 			totalrecord: pageData?.totalRecord ? pageData?.totalRecord : 100,
 			pagenumber: pageData?.pageNumber ? pageData?.pageNumber : 1,
 			isExport: false,
 			filterFieldsSLA: {
 				startDate: "2023-05-01",
-				endDate: "2023-05-10",
+				endDate: "2023-06-10",
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
@@ -136,22 +134,43 @@ const SlaReports = () => {
 				// ambdr: 0
 			}
 		}
-		setSummaryLoading(true);
-		let response = await ReportDAO.slaDetailedDataDAO(data)
-		console.log(response, "responsndsnds")
-		if (response?.statusCode === HTTPStatusCode?.OK) {
-			// setPageNumber(response?.responseBody?.pagenumber)
-			setTotalRecords(response?.responseBody?.totalrows)
-			setSummaryLoading(false);
-			setSlaDetailsList(
-				slaUtils.slaListData(response && response),
-			);
-		} else {
-			setApiData([]);
-			setSummaryLoading(false);
-			setTotalRecords(0);
-		}
+		// setSummaryLoading(true);
+		// let response = await ReportDAO.slaDetailedDataDAO(data)
+		// console.log(response, "responsndsnds")
+		// if (response?.statusCode === HTTPStatusCode?.OK) {
+		// 	// setPageNumber(response?.responseBody?.pagenumber)
+		// 	setTotalRecords(response?.responseBody?.totalrows)
+		// 	setSummaryLoading(false);
+		// 	setSlaDetailsList(
+		// 		slaUtils.slaListData(response && response),
+		// 	);
+		// } else {
+		// 	setApiData([]);
+		// 	setSummaryLoading(false);
+		// 	setTotalRecords(0);
+		// }
 	}
+
+
+	const getEngagementFilterList = useCallback(async () => {
+		const response = await ReportDAO.slaFilterDAO();
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setFiltersList(response && response?.responseBody);
+		}
+		
+	}, []);
+
+
+	const toggleHRFilter = useCallback(() => {
+		getEngagementFilterList();
+		!getHTMLFilter
+			? setIsAllowFilters(!isAllowFilters)
+			: setTimeout(() => {
+				setIsAllowFilters(!isAllowFilters);
+			}, 300);
+		setHTMLFilter(!getHTMLFilter);
+	}, [getEngagementFilterList, getHTMLFilter, isAllowFilters]);
+
 
 	const onCalenderFilter = (dates) => {
 		console.log(dates, "datesss")
@@ -174,11 +193,11 @@ const SlaReports = () => {
 					.reverse()
 					.join('-'),
 			});
-			setDemandFunnelHRDetailsState({
-				...demandFunnelHRDetailsState,
+			setSlaReportDetailsState({
+				...slaReportDetailsState,
 
-				funnelFilter: {
-					...demandFunnelHRDetailsState?.funnelFilter,
+				filterFieldsSLA: {
+					...slaReportDetailsState?.filterFieldsSLA,
 					startDate: new Date(start)
 						.toLocaleDateString('en-UK')
 						.split('/')
@@ -217,13 +236,13 @@ const SlaReports = () => {
 		() =>
 			reportConfig.SLAReportConfig(
 				listData && listData,
-				demandFunnelModal,
-				setDemandFunnelModal,
-				setDemandFunnelHRDetailsState,
-				demandFunnelHRDetailsState,
-				setDemandFunnelValue,
+				// demandFunnelModal,
+				// setDemandFunnelModal,
+				// setDemandFunnelHRDetailsState,
+				// demandFunnelHRDetailsState,
+				// setDemandFunnelValue,
 			),
-		[listData, demandFunnelHRDetailsState, demandFunnelModal],
+		[listData],
 	);
 	const slaDetailColumn = useMemo(
 		() =>
@@ -265,6 +284,43 @@ const SlaReports = () => {
 		slaReportDetails()
 	}, [])
 
+	const handleHRRequest = useCallback(
+		async (tableFilteredState) => {
+			console.log(tableFilteredState,"tableFilteredStateslaReport")
+			// setLoading(true);
+				let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
+				console.log(response,"response");
+			// if (response?.statusCode === HTTPStatusCode.OK) {
+			// 	setTotalRecords(response?.responseBody?.totalrows);
+			// 	setLoading(false);
+			// 	setAPIdata(
+			// 		engagementUtils.modifyEngagementListData(response && response),
+			// 	);
+			// } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+			// 	setAPIdata([]);
+			// 	setLoading(false);
+			// 	setTotalRecords(0);
+			// } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			// 	setLoading(false);
+			// 	return navigate(UTSRoutes.LOGINROUTE);
+			// } else if (
+			// 	response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+			// ) {
+			// 	setLoading(false);
+			// 	return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+			// } else {
+			// 	setLoading(false);
+			// 	return 'NO DATA FOUND';
+			// }
+		},
+		[tableFilteredState],
+	);
+
+	useEffect(() => {
+		setSlaReportDetailsState(tableFilteredState);
+	}, [setSlaReportDetailsState, tableFilteredState]);
+
+
 
 
 	return (
@@ -282,7 +338,7 @@ const SlaReports = () => {
 				<div className={SlaReportStyle.filterSets}>
 					<div
 						className={SlaReportStyle.addFilter}
-						onClick={toggleDemandReportFilter}>
+						onClick={toggleHRFilter}>
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
 						<div className={SlaReportStyle.filterLabel}>Add Filters</div>
@@ -461,27 +517,27 @@ const SlaReports = () => {
 
 			{isAllowFilters && (
 				<Suspense fallback={<div>Loading...</div>}>
-					<DemandFunnelFilterLazyComponent
+					<SlaReportFilter
 						setAppliedFilters={setAppliedFilters}
 						appliedFilter={appliedFilter}
 						setCheckedState={setCheckedState}
 						checkedState={checkedState}
-						handleHRRequest={slaReportList}
+						handleHRRequest={handleHRRequest}
 						setTableFilteredState={setTableFilteredState}
 						tableFilteredState={tableFilteredState}
 						setFilteredTagLength={setFilteredTagLength}
 						onRemoveHRFilters={onRemoveFilters}
 						getHTMLFilter={getHTMLFilter}
 						hrFilterList={reportConfig.slaReportFilterList()}
-						filtersType={reportConfig.demandReportFilterTypeConfig(
+						filtersType={reportConfig.slaReportFilterTypeConfig(
 							filtersList && filtersList,
 						)}
-						setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
-						demandFunnelHRDetailsState={demandFunnelHRDetailsState}
+						setSlaReportDetailsState={setSlaReportDetailsState}
+						slaReportDetailsState={slaReportDetailsState}
 					/>
 				</Suspense>
 			)}
-			{demandFunnelModal && (
+			{/* {demandFunnelModal && (
 				<DemandFunnelModal
 					demandFunnelModal={demandFunnelModal}
 					setDemandFunnelModal={setDemandFunnelModal}
@@ -489,7 +545,7 @@ const SlaReports = () => {
 					setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
 					demandFunnelValue={demandFunnelValue}
 				/>
-			)}
+			)} */}
 		</div>
 	);
 };

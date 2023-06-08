@@ -265,5 +265,21 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.SlaDetailsData');
 		}
 	},
+	slaFilter: async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.SLA_REPORT +
+			ReportsAPI.SLA_FILTER;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data;
+		httpService.setAuthToken = UserSessionManagementController?.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.slaFilter');
+		}
+	},
 
 };
