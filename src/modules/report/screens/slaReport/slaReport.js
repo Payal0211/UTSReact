@@ -32,7 +32,7 @@ import moment from 'moment';
 // );
 
 const SlaReports = () => {
-	const { control,register,setValue,
+	const { control, register, setValue,
 		watch, } = useForm();
 
 
@@ -60,10 +60,10 @@ const SlaReports = () => {
 	const [listData, setListData] = useState([])
 	const [dateError,setDateError] = useState("")
 
-	const[checkedValue,setCheckedValue] = useState(true);
-	const[checkednoValue,setCheckednoValue] = useState(false);
+	const [checkedValue, setCheckedValue] = useState(true);
+	const [checkednoValue, setCheckednoValue] = useState(false);
 	const [slaValue, setslaValue] = useState(0);
-	const checkedYes = (e) =>{
+	const checkedYes = (e) => {
 		setCheckedValue(e.target.checked);
 		setCheckednoValue(false);
 		setslaValue(0);
@@ -90,7 +90,7 @@ const SlaReports = () => {
 			}
 		})
 	}
-	const checkedNo = (e) =>{
+	const checkedNo = (e) => {
 		setCheckednoValue(e.target.checked);
 		setCheckedValue(false);
 		setslaValue(1);
@@ -119,25 +119,25 @@ const SlaReports = () => {
 	}
 	const [tableFilteredState, setTableFilteredState] = useState({
 		totalrecord: 100,
-			pagenumber: 1,
-			isExport: false,
-			filterFieldsSLA: {
-				startDate: "2023-06-01",
-				endDate: "2023-06-30",
-				hrid: 0,
-				sales_ManagerID: 0,
-				ops_Lead: 0,
-				salesPerson: 0,
-				stages: "",
-				isAdHoc: 0,
-				role: "",
-				slaType: 0,
-				type: 0,
-				hR_Number: "",
-				company: "",
-				actionFilter: 0,
-				// ambdr: 0
-			}
+		pagenumber: 1,
+		isExport: false,
+		filterFieldsSLA: {
+			startDate: "2023-06-01",
+			endDate: "2023-06-30",
+			hrid: 0,
+			sales_ManagerID: 0,
+			ops_Lead: 0,
+			salesPerson: 0,
+			stages: "",
+			isAdHoc: 0,
+			role: "",
+			slaType: 0,
+			type: 0,
+			hR_Number: "",
+			company: "",
+			actionFilter: 0,
+			// ambdr: 0
+		}
 	});
 
 	const slaReportList = async (pageData) => {
@@ -175,7 +175,7 @@ const SlaReports = () => {
 			isExport: false,
 			filterFieldsSLA: {
 				startDate: moment(pageData?.filterFields_ViewAllHRs?.fromDate).format("YYYY-MM-DD"),
-			endDate: moment(pageData?.filterFields_ViewAllHRs?.toDate).format("YYYY-MM-DD"),
+				endDate: moment(pageData?.filterFields_ViewAllHRs?.toDate).format("YYYY-MM-DD"),
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
@@ -367,37 +367,37 @@ const SlaReports = () => {
 							{filteredTagLength}
 						</div>
 					</div>
-					<label >
-									<p>Overall SLA</p>
-									<input
-										{...register('remote')}
-										value={1}
-										type="radio"
-										checked={checkedValue}
-										onChange={(e)=>{
-											checkedYes(e)
-										}}
-										id="remote"
-										name="remote"
-									/>
-									<span ></span>
-								</label>
-								<label >
-									<p>SLA Missed</p>
-									<input
-										{...register('remote')}
-										value={0}
-										type="radio"
-										checked={checkednoValue}
-										onChange={(e)=>{
-											checkedNo(e)
-										}}
-										id="remote"
-										name="remote"
-									/>
-									<span ></span>
-								</label>
 					<div className={SlaReportStyle.calendarFilterSet}>
+						<label className={SlaReportStyle.radioCheck_Mark}>
+							<p>Overall SLA</p>
+							<input
+								{...register('remote')}
+								value={1}
+								type="radio"
+								checked={checkedValue}
+								onChange={(e) => {
+									checkedYes(e)
+								}}
+								id="remote"
+								name="remote"
+							/>
+							<span className={SlaReportStyle.customCheck_Mark}></span>
+						</label>
+						<label className={SlaReportStyle.radioCheck_Mark}>
+							<p>SLA Missed</p>
+							<input
+								{...register('remote')}
+								value={0}
+								type="radio"
+								checked={checkednoValue}
+								onChange={(e) => {
+									checkedNo(e)
+								}}
+								id="remote"
+								name="remote"
+							/>
+							<span className={SlaReportStyle.customCheck_Mark}></span>
+						</label>
 						<div className={SlaReportStyle.label}>Date</div>
 						{/* <div className={SlaReportStyle.calendarFilter}>
 							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
