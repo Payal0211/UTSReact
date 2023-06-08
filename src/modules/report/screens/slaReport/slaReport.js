@@ -258,6 +258,28 @@ const SlaReports = () => {
 				},
 			})
 			setDateError("")
+			setTableFilteredState({
+				totalrecord: 100,
+		pagenumber: 1,
+		isExport: false,
+		filterFieldsSLA: {
+			startDate: moment(new Date(start).toLocaleDateString('en-US')).format("YYYY-MM-DD"),
+			endDate: moment(new Date(end).toLocaleDateString('en-US')).format("YYYY-MM-DD"),
+			hrid: 0,
+			sales_ManagerID: 0,
+			ops_Lead: 0,
+			salesPerson: 0,
+			stages: "",
+			isAdHoc: 0,
+			role: "",
+			slaType: 0,
+			type: 0,
+			hR_Number: "",
+			company: "",
+			actionFilter: 0,
+			// ambdr: 0
+		}
+			})
 		}
 	};
 	const onRemoveFilters = () => {
@@ -292,7 +314,7 @@ const SlaReports = () => {
 	const handleHRRequest = useCallback(
 		async (tableFilteredState) => {
 			if(startDate===null){
-				setDateError("Please select date")
+				setDateError("* Please select date")
 			}else{
 
 				// setLoading(true);
@@ -461,7 +483,7 @@ const SlaReports = () => {
 
 							</div>
 							
-							<span>*&nbsp;{dateError}</span>
+							<span>{dateError}</span>
 						</div>
 
 						{/* <div className={SlaReportStyle.priorityFilterSet}>

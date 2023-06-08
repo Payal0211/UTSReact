@@ -338,7 +338,7 @@ const SlaReportFilerList = ({
                             onChange={(e) => {
                               handleAppliedFilters(e.target.checked, {
                                 filterType: filterSubChild?.name,
-                                value: item?.value,
+                                value: item?.text,
                                 id: item?.text,
                               })
                             }}
@@ -373,7 +373,7 @@ const SlaReportFilerList = ({
                               onChange={(e) => {
                                 handleAppliedFilters(e.target.checked, {
                                   filterType: filterSubChild?.name,
-                                  value: item?.value,
+                                  value: item?.text,
                                   id: item?.text,
                                 });
                               }}
