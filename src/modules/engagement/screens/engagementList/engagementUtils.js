@@ -34,19 +34,28 @@ export const engagementUtils = {
 			isLost: item?.isLost === 0 ? 'No' : 'Yes',
 			oldTalent: item?.oldTalent ? item?.oldTalent : 'NA',
 			replacementEng: item?.replacementEng ? item?.replacementEng : 'NA',
-			noticePeriod: item?.noticePeriod ? item?.noticePeriod : 'NA',
-			kickOff: item?.kickOff ? item?.kickOff : 'NA',
+			noticePeriod: item?.noticePeriod ? item?.noticePeriod + ' Months' : 'NA',
+			kickOff: item?.kickOff
+				? item?.kickOffStatus + ' - ' + item?.lastFeedbackDate
+				: 'NA',
 			billRate: item?.billRate ? item?.billRate : 'NA',
-			actualBillRate: item?.actualBillRate ? item?.actualBillRate : 'NA',
+			actualBillRate: item?.actualBillRate
+				? item?.actualBillRate + ' ' + item?.billRateCurrency
+				: 'NA',
 			payRate: item?.payRate ? item?.payRate : 'NA',
-			actualPayRate: item?.actualPayRate ? item?.actualPayRate : 'NA',
+			actualPayRate: item?.actualPayRate
+				? item?.actualPayRate + ' ' + item?.billRateCurrency
+				: 'NA',
 			contractStartDate: item?.contractStartDate
 				? item?.contractStartDate
 				: 'NA',
 			contractEndDate: item?.contractEndDate ? item?.contractEndDate : 'NA',
+			dpAmount: item?.dpAmount
+				? item?.dpAmount + ' ' + item?.billRateCurrency
+				: 'NA',
 			actualEndDate: item?.actualEndDate ? item?.actualEndDate : 'NA',
-			nr: item?.nr ? item?.nr : 'NA',
-			actualNR: item?.actualNR ? item?.actualNR : 'NA',
+			nr: item?.nr ? item?.nr + ' ' + item?.billRateCurrency : 'NA',
+			actualNR: item?.actualNR ? item?.actualNR + '%' : 'NA',
 			dP_Percentage: item?.dP_Percentage ? item?.dP_Percentage : 'NA',
 			renewalstartDate: item?.renewalstartDate ? item?.renewalstartDate : 'NA',
 			renewalendDate: item?.renewalendDate ? item?.renewalendDate : 'NA',

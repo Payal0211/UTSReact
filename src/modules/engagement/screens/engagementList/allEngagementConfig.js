@@ -548,9 +548,9 @@ export const allEngagementConfig = {
 				align: 'left',
 			},
 			{
-				title: 'DP Amount(USD)',
-				dataIndex: 'dP_Percentage',
-				key: 'dP_Percentage',
+				title: 'DP Amount',
+				dataIndex: 'dpAmount',
+				key: 'dpAmount',
 				align: 'left',
 			},
 			{
