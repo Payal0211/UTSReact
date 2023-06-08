@@ -289,12 +289,18 @@ const AllHiringRequestScreen = () => {
 						{priorityCount?.length === 1 ? (
 							<button className={allHRStyles.togglebtn}>
 								<span className={allHRStyles.blank_btn}>
-									<img src={Prioritycount} /> Priority Count:{' '}
-									<b>{`${priorityCount[0].assignedCount}`}</b>{' '}
+									<img
+										src={Prioritycount}
+										alt="assignedCount"
+									/>{' '}
+									Priority Count: <b>{`${priorityCount[0].assignedCount}`}</b>{' '}
 								</span>
 								<span className={allHRStyles.blank_btn}>
-									<img src={Remainingcount} /> Remaining Count:{' '}
-									<b>{`${priorityCount[0].remainingCount}`}</b>{' '}
+									<img
+										src={Remainingcount}
+										alt="remainingCount"
+									/>{' '}
+									Remaining Count: <b>{`${priorityCount[0].remainingCount}`}</b>{' '}
 								</span>
 							</button>
 						) : (
@@ -515,7 +521,6 @@ const AllHiringRequestScreen = () => {
 							bordered={false}
 							dataSource={
 								// search && search.length > 0 ? [...search] : [...apiData]
-
 								search && search?.length === 0
 									? []
 									: search && search.length > 0

@@ -188,10 +188,10 @@ const HiringFilters = ({
 			...tableFilteredState,
 			filterFields_ViewAllHRs: { ...filters },
 		};
-		handleHRRequest(reqFilter);
+		// handleHRRequest(reqFilter);
 	}, [
 		appliedFilter,
-		handleHRRequest,
+		// handleHRRequest,
 		setTableFilteredState,
 		tableFilteredState,
 	]);
