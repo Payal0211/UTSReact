@@ -100,7 +100,7 @@ const HRDetailScreen = () => {
 	// 	[navigate, setError, urlSplitter, watch],
 	// );
 
-	const AMAssignmentHandler = useCallback(() => {});
+	const AMAssignmentHandler = useCallback(() => { });
 
 	// const clientOnHoldSubmitHandler = useCallback(
 	// 	async (d) => {
