@@ -701,27 +701,6 @@ slaReportFilterTypeConfig : (filterList) =>{
 			child: filterList?.companies,
 			isSearch: true,
 		},
-		// {
-		// 	label: 'SLA Report',
-		// 	name: 'isSlaReprot',
-		// 	child: [
-		// 		{
-		// 			disabled: false,
-		// 			group: null,
-		// 			selected: false,
-		// 			text: 'Overall SLA',
-		// 			value: '0',
-		// 		},
-		// 		{
-		// 			disabled: false,
-		// 			group: null,
-		// 			selected: false,
-		// 			text: 'SLA Missed',
-		// 			value: '1',
-		// 		},
-		// 	],
-		// 	isSearch: false,
-		// },
 	]
 },
 

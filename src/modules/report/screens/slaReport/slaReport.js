@@ -32,29 +32,9 @@ const DemandFunnelFilterLazyComponent = React.lazy(() =>
 );
 
 const SlaReports = () => {
-	const { control } = useForm();
-	const [tableFilteredState, setTableFilteredState] = useState({
-		totalrecord: 100,
-			pagenumber: 1,
-			isExport: false,
-			filterFieldsSLA: {
-				startDate: "2023-06-01",
-				endDate: "2023-06-30",
-				hrid: 0,
-				sales_ManagerID: 0,
-				ops_Lead: 0,
-				salesPerson: 0,
-				stages: "",
-				isAdHoc: 0,
-				role: "",
-				slaType: 0,
-				type: 0,
-				hR_Number: "",
-				company: "",
-				actionFilter: 0,
-				// ambdr: 0
-			}
-	});
+	const { control,register,setValue,
+		watch, } = useForm();
+	
 
 	// console.log(tableFilteredState,"tableFilteredStatetableFilteredState");
 
@@ -82,6 +62,94 @@ const SlaReports = () => {
 
 	const [listData, setListData] = useState([])
 
+	const[checkedValue,setCheckedValue] = useState(true);
+	const[checkednoValue,setCheckednoValue] = useState(false);
+	const [slaValue, setslaValue] = useState(0);
+	const checkedYes = (e) =>{
+		setCheckedValue(e.target.checked);
+		setCheckednoValue(false);
+		setslaValue(0);
+		setTableFilteredState({
+			totalrecord: 100,
+			pagenumber: 1,
+			isExport: false,
+			filterFieldsSLA: {
+				startDate: "2023-06-01",
+				endDate: "2023-06-30",
+				hrid: 0,
+				sales_ManagerID: 0,
+				ops_Lead: 0,
+				salesPerson: 0,
+				stages: "",
+				isAdHoc: 0,
+				role: "",
+				slaType: 0,
+				type: 0,
+				hR_Number: "",
+				company: "",
+				actionFilter: 0,
+				// ambdr: 0
+			}
+		})
+	}
+	const checkedNo = (e) =>{
+		setCheckednoValue(e.target.checked);
+		setCheckedValue(false);
+		setslaValue(1);
+		setTableFilteredState({
+			totalrecord: 100,
+			pagenumber: 1,
+			isExport: false,
+			filterFieldsSLA: {
+				startDate: "2023-06-01",
+				endDate: "2023-06-30",
+				hrid: 0,
+				sales_ManagerID: 0,
+				ops_Lead: 0,
+				salesPerson: 0,
+				stages: "",
+				isAdHoc: 0,
+				role: "",
+				slaType: 1,
+				type: 0,
+				hR_Number: "",
+				company: "",
+				actionFilter: 0,
+				// ambdr: 0
+			}
+		})
+	}
+
+	console.log(watch("remote"),"remote");
+	const watchSLAValue = watch("remote");
+	console.log(typeof slaValue,"slaValue");
+
+	let data = slaValue;
+
+	const [tableFilteredState, setTableFilteredState] = useState({
+		totalrecord: 100,
+			pagenumber: 1,
+			isExport: false,
+			filterFieldsSLA: {
+				startDate: "2023-06-01",
+				endDate: "2023-06-30",
+				hrid: 0,
+				sales_ManagerID: 0,
+				ops_Lead: 0,
+				salesPerson: 0,
+				stages: "",
+				isAdHoc: 0,
+				role: "",
+				slaType: 0,
+				type: 0,
+				hR_Number: "",
+				company: "",
+				actionFilter: 0,
+				// ambdr: 0
+			}
+	});
+
+	console.log(tableFilteredState,"tableFilteredState");
 
 	const slaReportList = async () => {
 		let obj = {
@@ -347,6 +415,36 @@ const SlaReports = () => {
 							{filteredTagLength}
 						</div>
 					</div>
+					<label >
+									<p>Overall SLA</p>
+									<input
+										{...register('remote')}
+										value={1}
+										type="radio"
+										checked={checkedValue}
+										onChange={(e)=>{
+											checkedYes(e)
+										}}
+										id="remote"
+										name="remote"
+									/>
+									<span ></span>
+								</label>
+								<label >
+									<p>SLA Missed</p>
+									<input
+										{...register('remote')}
+										value={0}
+										type="radio"
+										checked={checkednoValue}
+										onChange={(e)=>{
+											checkedNo(e)
+										}}
+										id="remote"
+										name="remote"
+									/>
+									<span ></span>
+								</label>
 					<div className={SlaReportStyle.calendarFilterSet}>
 						<div className={SlaReportStyle.label}>Date</div>
 						{/* <div className={SlaReportStyle.calendarFilter}>
