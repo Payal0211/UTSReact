@@ -25,7 +25,6 @@ import WithLoader from 'shared/components/loader/loader';
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import EngagementFeedback from '../engagementFeedback/engagementFeedback';
-
 import EngagementOnboard from '../engagementOnboard/engagementOnboard';
 import EngagementAddFeedback from '../engagementAddFeedback/engagementAddFeedback';
 import EngagementReplaceTalent from '../engagementReplaceTalent/engagementReplaceTalent';
@@ -35,7 +34,7 @@ import { allHRConfig } from 'modules/hiring request/screens/allHiringRequest/all
 import { engagementUtils } from './engagementUtils';
 import EngagementEnd from '../endEngagement/endEngagement';
 import EngagementInvoice from '../engagementInvoice/engagementInvoice';
-import { userUtils } from 'modules/user/userUtils';
+
 import RenewEngagement from '../renewEngagement/renewEngagement';
 import { useForm, Controller } from 'react-hook-form';
 
@@ -486,7 +485,7 @@ const EngagementList = () => {
 						/>
 						<h2>
 							Total DP% -{' '}
-							<span>{apiData[0]?.s_TotalDP ? apiData[0]?.s_TotalDP: 0}</span>
+							<span>{apiData[0]?.s_TotalDP ? apiData[0]?.s_TotalDP : 0}</span>
 						</h2>
 					</div>
 				</div>
@@ -517,8 +516,8 @@ const EngagementList = () => {
 									search && search?.length === 0
 										? []
 										: search && search.length > 0
-											? [...search]
-											: [...apiData]
+										? [...search]
+										: [...apiData]
 								}
 								pagination={{
 									onChange: (pageNum, pageSize) => {

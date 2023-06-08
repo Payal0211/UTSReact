@@ -27,20 +27,20 @@ export const allEngagementConfig = {
 			{
 				label: 'Engagement ID',
 				name: 'engagementID',
-				child: [],
-				isSearch: false,
+				child: filterList?.engagementIds,
+				isSearch: true,
 			},
 			{
 				label: 'Client',
 				name: 'client',
-				child: [],
-				isSearch: false,
+				child: filterList?.clients,
+				isSearch: true,
 			},
 			{
 				label: 'Talent',
 				name: 'talent',
-				child: [],
-				isSearch: false,
+				child: filterList?.talents,
+				isSearch: true,
 			},
 			{
 				label: 'TSC Name',
@@ -548,6 +548,12 @@ export const allEngagementConfig = {
 				align: 'left',
 			},
 			{
+				title: 'DP Amount',
+				dataIndex: 'dpAmount',
+				key: 'dpAmount',
+				align: 'left',
+			},
+			{
 				title: 'DP (%)',
 				dataIndex: 'dP_Percentage',
 				key: 'dP_Percentage',
@@ -570,6 +576,7 @@ export const allEngagementConfig = {
 				dataIndex: 'engagementTenure',
 				key: 'engagementTenure',
 				align: 'left',
+				render: (text) => <p>{text + ' Months'}</p>,
 			},
 			{
 				title: 'SOW Signed Date',
