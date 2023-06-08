@@ -55,10 +55,10 @@ const SlaReports = () => {
 	const [pageSize, setPageSize] = useState(100);
 	const [pageIndex, setPageIndex] = useState(1);
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
-	const [startDate, setStartDate] = useState();
+	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
-
 	const [listData, setListData] = useState([])
+	const [dateError,setDateError] = useState("")
 
 	const[checkedValue,setCheckedValue] = useState(true);
 	const[checkednoValue,setCheckednoValue] = useState(false);
@@ -117,7 +117,6 @@ const SlaReports = () => {
 			}
 		})
 	}
-
 	const [tableFilteredState, setTableFilteredState] = useState({
 		totalrecord: 100,
 			pagenumber: 1,
@@ -140,7 +139,6 @@ const SlaReports = () => {
 				// ambdr: 0
 			}
 	});
-
 
 	const slaReportList = async (pageData) => {
 		let obj = {
@@ -170,6 +168,7 @@ const SlaReports = () => {
 
 	const [slaDetailsList, setSlaDetailsList] = useState([])
 	const slaReportDetails = async (pageData) => {
+		console.log(pageData,"pageData123")
 		let data = {
 			totalrecord: pageData?.totalRecord ? pageData?.totalRecord : 100,
 			pagenumber: pageData?.pageNumber ? pageData?.pageNumber : 1,
@@ -258,6 +257,7 @@ const SlaReports = () => {
 					toDate: new Date(end).toLocaleDateString('en-US'),
 				},
 			})
+			setDateError("")
 		}
 	};
 	const onRemoveFilters = () => {
@@ -287,13 +287,30 @@ const SlaReports = () => {
 		slaReportDetails()
 	}, [])
 
+	
+
 	const handleHRRequest = useCallback(
 		async (tableFilteredState) => {
-			// setLoading(true);
-			let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
-			setSlaDetailsList(
-				slaUtils.slaListData(response && response),
-			);
+			if(startDate===null){
+				setDateError("Please select date")
+			}else{
+
+				// setLoading(true);
+				let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
+				setSlaDetailsList(
+					slaUtils.slaListData(response && response),
+				);
+				// setLoading(true);
+			let responseList = await ReportDAO.OverAllSLASummaryDAO(tableFilteredState)
+			if (responseList?.statusCode === HTTPStatusCode.OK) {
+				// setLoading(false);
+				setListData(responseList?.responseBody)
+			} else {
+				// setLoading(false);
+				
+			}
+			setDateError("")
+			}
 			// if (response?.statusCode === HTTPStatusCode.OK) {
 			// 	setTotalRecords(response?.responseBody?.totalrows);
 			// 	setLoading(false);
@@ -440,7 +457,10 @@ const SlaReports = () => {
 								endDate={endDate}
 								selectsRange
 							/>
+
 						</div>
+						
+						<span>{dateError}</span>
 						{/* <div className={SlaReportStyle.priorityFilterSet}>
 							<div className={SlaReportStyle.label}>Showing</div>
 							<div className={SlaReportStyle.paginationFilter}>
