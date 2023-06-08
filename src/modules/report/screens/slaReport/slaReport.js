@@ -16,7 +16,6 @@ import { ReportDAO } from 'core/report/reportDAO';
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { reportConfig } from 'modules/report/report.config';
-import DemandFunnelModal from 'modules/report/components/demandFunnelModal/demandFunnelModal';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { Controller, useForm } from 'react-hook-form';
 import { slaUtils } from './slaUtils';
@@ -28,16 +27,14 @@ import {
 import { IoChevronDownOutline } from 'react-icons/io5';
 import moment from 'moment';
 
-const DemandFunnelFilterLazyComponent = React.lazy(() =>
-	import('modules/report/components/demandFunnelFilter/demandFunnelFilter'),
-);
+// const DemandFunnelFilterLazyComponent = React.lazy(() =>
+// 	import('modules/report/components/demandFunnelFilter/demandFunnelFilter'),
+// );
 
 const SlaReports = () => {
 	const { control,register,setValue,
 		watch, } = useForm();
-	
 
-	// console.log(tableFilteredState,"tableFilteredStatetableFilteredState");
 
 	const [demandFunnelValue, setDemandFunnelValue] = useState({});
 	const [slaReportDetailsState, setSlaReportDetailsState] = useState();
@@ -121,12 +118,6 @@ const SlaReports = () => {
 		})
 	}
 
-	console.log(watch("remote"),"remote");
-	const watchSLAValue = watch("remote");
-	console.log(typeof slaValue,"slaValue");
-
-	let data = slaValue;
-
 	const [tableFilteredState, setTableFilteredState] = useState({
 		totalrecord: 100,
 			pagenumber: 1,
@@ -150,7 +141,6 @@ const SlaReports = () => {
 			}
 	});
 
-	console.log(tableFilteredState,"tableFilteredState");
 
 	const slaReportList = async (pageData) => {
 		let obj = {
@@ -179,15 +169,14 @@ const SlaReports = () => {
 	}
 
 	const [slaDetailsList, setSlaDetailsList] = useState([])
-
 	const slaReportDetails = async (pageData) => {
 		let data = {
 			totalrecord: pageData?.totalRecord ? pageData?.totalRecord : 100,
 			pagenumber: pageData?.pageNumber ? pageData?.pageNumber : 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: "2023-05-01",
-				endDate: "2023-05-10",
+				startDate: moment(pageData?.filterFields_ViewAllHRs?.fromDate).format("YYYY-MM-DD"),
+			endDate: moment(pageData?.filterFields_ViewAllHRs?.toDate).format("YYYY-MM-DD"),
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
@@ -216,6 +205,7 @@ const SlaReports = () => {
 			setApiData([]);
 			setSummaryLoading(false);
 			setTotalRecords(0);
+			setSlaDetailsList([])
 		}
 	}
 
@@ -247,8 +237,6 @@ const SlaReports = () => {
 		setEndDate(end);
 
 		if (start && end) {
-			console.log(start, "start")
-			console.log(end, "endndnndnd")
 			setTableFilteredState({
 				...tableFilteredState,
 				filterFields_ViewAllHRs: {
@@ -263,6 +251,13 @@ const SlaReports = () => {
 					toDate: new Date(end).toLocaleDateString('en-US'),
 				},
 			});
+			slaReportDetails({
+				...tableFilteredState,
+				filterFields_ViewAllHRs: {
+					fromDate: new Date(start).toLocaleDateString('en-US'),
+					toDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			})
 		}
 	};
 	const onRemoveFilters = () => {
@@ -271,16 +266,10 @@ const SlaReports = () => {
 		}, 300);
 		setHTMLFilter(false);
 	};
-	console.log(slaDetailsList, "slaDetailsList")
 	const tableColumnsMemo = useMemo(
 		() =>
 			reportConfig.SLAReportConfig(
 				listData && listData,
-				// demandFunnelModal,
-				// setDemandFunnelModal,
-				// setDemandFunnelHRDetailsState,
-				// demandFunnelHRDetailsState,
-				// setDemandFunnelValue,
 			),
 		[listData],
 	);
@@ -288,36 +277,10 @@ const SlaReports = () => {
 		() =>
 			reportConfig.SLAReportDetailListConfig(
 				slaDetailsList && slaDetailsList,
-				// demandFunnelModal,
-				// setDemandFunnelModal,
-				// setDemandFunnelHRDetailsState,
-				// demandFunnelHRDetailsState,
-				// setDemandFunnelValue,
 			),
 		[slaDetailsList],
 	);
 
-	// const viewSummaryMemo = useMemo(
-	// 	() =>
-	// 		reportConfig.slaReportTableData(viewSummaryData && viewSummaryData),
-	// 	[viewSummaryData],
-	// );
-
-	// const toggleDemandReportFilter = useCallback(() => {
-	// 	!getHTMLFilter
-	// 		? setIsAllowFilters(!isAllowFilters)
-	// 		: setTimeout(() => {
-	// 			setIsAllowFilters(!isAllowFilters);
-	// 		}, 300);
-	// 	setHTMLFilter(!getHTMLFilter);
-	// }, [getHTMLFilter, isAllowFilters]);
-
-	// useEffect(() => {
-	// 	slaReportList(tableFilteredState);
-	// }, [slaReportList, tableFilteredState]);
-	// useEffect(() => {
-	// 	getReportFilterHandler();
-	// }, [getReportFilterHandler]);
 
 	useEffect(() => {
 		slaReportList()
