@@ -1,6 +1,6 @@
 import { HRInterviewStatus } from 'constants/application';
 import HRStatusComponent from 'modules/hiring request/components/hrStatus/hrStatusComponent';
-import { _isNull } from 'shared/utils/basic_utils';
+import { _isNull, getInterviewSlotInfo } from 'shared/utils/basic_utils';
 
 export const interviewUtils = {
 	dateFormatter: (date) => {
@@ -93,4 +93,8 @@ export const interviewUtils = {
 
 		return filteredData;
 	},
+	formatInterviewDateSlotHandler: (getSlotList) =>
+		getSlotList?.map((item, index) =>
+			getInterviewSlotInfo(item?.slot1, item?.slot2, item?.slot3, index + 1),
+		),
 };

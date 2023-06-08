@@ -13,20 +13,15 @@ import AnotherRound from '../anotherRound/anotherRound';
 const InterviewFeedback = ({
 	isEditFeedback,
 	hrId,
-	clientDetail,
 	callAPI,
 	talentInfo,
 	talentName,
-	HRStatusCode,
 	hiringRequestNumber,
-	starMarkedStatusCode,
-	hrStatus,
-	setScheduleSlotInformation,
 	closeModal,
 	getScheduleSlotDate,
+	setScheduleSlotDate,
 	getSlotInformationHandler,
 	scheduleSlotRadio,
-	getScheduleSlotInfomation,
 }) => {
 	/** For Fourth Round Start --- */
 	const [isAnotherRound, setAnotherRound] = useState(false);
@@ -155,7 +150,7 @@ const InterviewFeedback = ({
 		// isEditFeedback && setRadioValue1(feedbackDetails?.hdnRadiovalue);
 		isEditFeedback && setRadioValue2(feedbackDetails?.technicalSkillRating);
 		isEditFeedback && setRadioValue3(feedbackDetails?.communicationSkillRating);
-		isEditFeedback && setRadioValue3(feedbackDetails?.cognitiveSkillRating);
+		isEditFeedback && setRadioValue4(feedbackDetails?.cognitiveSkillRating);
 		isEditFeedback &&
 			setValue('interviewClientFeedback', feedbackDetails?.messageToTalent);
 		isEditFeedback &&
@@ -176,13 +171,12 @@ const InterviewFeedback = ({
 
 	return isAnotherRound && interviewFeedbackResult ? (
 		<AnotherRound
-			getScheduleSlotInfomation={getScheduleSlotInfomation}
-			talentInfo={talentInfo}
 			getScheduleSlotDate={getScheduleSlotDate}
+			setScheduleSlotDate={setScheduleSlotDate}
+			talentInfo={talentInfo}
 			getSlotInformationHandler={getSlotInformationHandler}
 			scheduleSlotRadio={scheduleSlotRadio}
 			callAPI={callAPI}
-			setScheduleSlotInformation={setScheduleSlotInformation}
 			hrId={hrId}
 			closeModal={closeModal}
 		/>

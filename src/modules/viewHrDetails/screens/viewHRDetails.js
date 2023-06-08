@@ -9,7 +9,7 @@ import { useState } from 'react';
 const ViewHRDetails = () => {
 	const [hiringDetails, setHiringDetails] = useState('');
 	const id = useParams();
-const navigate = useNavigate()
+	const navigate = useNavigate();
 	const getViewHrDetails = useCallback(async () => {
 		const response = await hiringRequestDAO.viewHRDetailsRequestDAO(id.id);
 		setHiringDetails(response);
@@ -20,9 +20,9 @@ const navigate = useNavigate()
 	}, [getViewHrDetails]);
 
 	const editHr = () => {
-		localStorage.setItem("hrID", id?.id)
-		navigate("/allhiringrequest/addnewhr")
-	}
+		localStorage.setItem('hrID', id?.id);
+		navigate('/allhiringrequest/addnewhr');
+	};
 
 	return (
 		<>
@@ -36,10 +36,9 @@ const navigate = useNavigate()
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsHead}>
 					<h1>{hiringDetails?.responseBody?.details?.hrNumber}</h1>
-					{hiringDetails?.responseBody?.details?.hrStatus==="Open"&&(
+					{hiringDetails?.responseBody?.details?.hrStatus === 'Open' && (
 						<button onClick={editHr}>Edit HR</button>
 					)}
-					
 				</div>
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsItem}>
@@ -156,9 +155,16 @@ const navigate = useNavigate()
 											</li>
 											<li>
 												<span>JD URL:</span>{' '}
-												{hiringDetails?.responseBody?.details?.jdurl === null
-													? 'NA'
-													: hiringDetails?.responseBody?.details?.jdurl}
+												<a
+													rel="noreferrer"
+													href={
+														hiringDetails?.responseBody?.details?.jdurl === null
+															? 'NA'
+															: hiringDetails?.responseBody?.details?.jdurl
+													}
+													target="_blank">
+													Click Here
+												</a>
 											</li>
 											<li>
 												<span>Estimated Budget:</span>{' '}

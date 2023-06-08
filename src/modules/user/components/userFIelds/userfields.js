@@ -176,34 +176,35 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			}
 			setIsLoading(false);
 		},
-		[id, setError, setValue, watchEmployeeID],
+		[clearErrors, id, setError, setValue],
 	);
-	const getEmployeeFullNameAlreadyExist = useCallback(
-		async (firstName, lastName) => {
-			let companyNameDuplicate = await userDAO.getIsEmployeeNameExistRequestDAO(
-				{
-					userID: id !== 0 ? id : 0,
-					employeeName: `${firstName} ${lastName}`,
-				},
-			);
-			if (companyNameDuplicate?.statusCode === HTTPStatusCode.OK) {
-				clearErrors('employeeFirstName');
-			}
+	// const getEmployeeFullNameAlreadyExist = useCallback(
+	// 	async (firstName, lastName) => {
+	// 		let companyNameDuplicate = await userDAO.getIsEmployeeNameExistRequestDAO(
+	// 			{
+	// 				userID: id !== 0 ? id : 0,
+	// 				employeeName: `${firstName} ${lastName}`,
+	// 			},
+	// 		);
+	// 		console.log(companyNameDuplicate, '-comoanyNameDuplicate');
+	// 		if (companyNameDuplicate?.statusCode === HTTPStatusCode.OK) {
+	// 			clearErrors('employeeFirstName');
+	// 		}
 
-			if (companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST) {
-				setError('employeeFirstName', {
-					type: 'duplicateEmployeeFullName',
-					message:
-						companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST &&
-						'This employee name already exists. Please enter another one.',
-				});
-			}
-			companyNameDuplicate.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
-				setValue('employeeFirstName', '');
-			setIsLoading(false);
-		},
-		[id, setError, setValue, watchEmployeeFirstName],
-	);
+	// 		if (companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST) {
+	// 			setError('employeeFirstName', {
+	// 				type: 'duplicateEmployeeFullName',
+	// 				message:
+	// 					companyNameDuplicate?.statusCode === HTTPStatusCode.BAD_REQUEST &&
+	// 					'This employee name already exists. Please enter another one.',
+	// 			});
+	// 		}
+	// 		companyNameDuplicate.statusCode === HTTPStatusCode.DUPLICATE_RECORD &&
+	// 			setValue('employeeFirstName', '');
+	// 		setIsLoading(false);
+	// 	},
+	// 	[clearErrors, id, setError, setValue],
+	// );
 
 	useEffect(() => {
 		let timer;
@@ -216,23 +217,23 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		return () => clearTimeout(timer);
 	}, [getEmployeeIDAlreadyExist, watchEmployeeID]);
 
-	useEffect(() => {
-		let timer;
-		if (!_isNull(watchEmployeeFirstName)) {
-			timer = setTimeout(() => {
-				setIsLoading(true);
-				getEmployeeFullNameAlreadyExist(
-					watchEmployeeFirstName,
-					watchEmployeeLastName,
-				);
-			}, 2000);
-		}
-		return () => clearTimeout(timer);
-	}, [
-		getEmployeeFullNameAlreadyExist,
-		watchEmployeeFirstName,
-		watchEmployeeLastName,
-	]);
+	// useEffect(() => {
+	// 	let timer;
+	// 	if (!_isNull(watchEmployeeFirstName)) {
+	// 		timer = setTimeout(() => {
+	// 			setIsLoading(true);
+	// 			getEmployeeFullNameAlreadyExist(
+	// 				watchEmployeeFirstName,
+	// 				watchEmployeeLastName,
+	// 			);
+	// 		}, 2000);
+	// 	}
+	// 	return () => clearTimeout(timer);
+	// }, [
+	// 	getEmployeeFullNameAlreadyExist,
+	// 	watchEmployeeFirstName,
+	// 	watchEmployeeLastName,
+	// ]);
 	const navigate = useNavigate();
 
 	const getCodeAndFlag = async () => {
@@ -513,7 +514,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	}, []);
 	useEffect(() => {
 		getTeamOfUserFrom();
-	}, [watchDepartMentName?.id]);
+	}, [getTeamOfUserFrom]);
 
 	useEffect(() => {
 		if (id !== 0) {
@@ -555,6 +556,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const userSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 			setFormIsLoading(true);
+
 			let userFormDetails = userUtils.userDataFormatter(
 				d,
 				id,
@@ -563,15 +565,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				modifiedGEO,
 			);
 			let userResponse = await userAPI.createUserRequest(userFormDetails);
-			if (userResponse?.statusCode === HTTPStatusCode.BAD_REQUEST) {
-				setError('employeeFirstName', {
-					type: 'duplicateEmployeeFullName',
-					message:
-					userResponse?.statusCode === HTTPStatusCode.BAD_REQUEST &&
-						'This employee name already exists. Please enter another one.',
-				});
-			}
-			setFormIsLoading(false);
+
 			if (userResponse.statusCode === HTTPStatusCode.OK) {
 				setFormIsLoading(false);
 				navigate(UTSRoutes.USERLISTROUTE);
@@ -597,8 +591,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			} else if (fileData?.size > 2000000) {
 				setValidation({
 					...getValidation,
-					systemFileUpload:
-						'File size must be less than 2 MB',
+					systemFileUpload: 'File size must be less than 2 MB',
 				});
 				setIsLoading(false);
 			} else {
@@ -800,9 +793,9 @@ const UsersFields = ({ id, setLoading, loading }) => {
 													}
 												},
 											}}
-											onChangeHandler={(e) => {
-												getEmployeeIDAlreadyExist(e.target.value);
-											}}
+											// onChangeHandler={(e) => {
+											// 	getEmployeeIDAlreadyExist(e.target.value);
+											// }}
 											label={'Employee ID'}
 											name="employeeId"
 											type={InputType.TEXT}
@@ -1083,8 +1076,11 @@ const UsersFields = ({ id, setLoading, loading }) => {
 												<ul>
 													{userDetails?.reportingHierarchy?.map((item) => {
 														return (
-															<li><LongArrowSVG />{item?.userName}</li>
-														)
+															<li>
+																<LongArrowSVG />
+																{item?.userName}
+															</li>
+														);
 													})}
 												</ul>
 											</div>
@@ -1102,7 +1098,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 									<div className={UserFieldStyle.colMd12}>
 										<div className={UserFieldStyle.infoNotes}>
 											Note: The Below Information would be available to view for
-											you Talent/Client
+											you Client
 										</div>
 									</div>
 								</div>

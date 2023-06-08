@@ -517,34 +517,37 @@ const AllHiringRequestScreen = () => {
 								// search && search.length > 0 ? [...search] : [...apiData]
 
 								search && search?.length === 0
-								? []
-								: search && search.length > 0
-								? [...search]
-								: [...apiData]
-
-
+									? []
+									: search && search.length > 0
+									? [...search]
+									: [...apiData]
 							}
-							pagination={search && search?.length === 0
-								? null
-								:{
-								onChange: (pageNum, pageSize) => {
-									setPageIndex(pageNum);
-									setPageSize(pageSize);
-									setTableFilteredState({
-										...tableFilteredState,
-										pagesize: pageSize,
-										pagenum: pageNum,
-									});
-									handleHRRequest({ pagesize: pageSize, pagenum: pageNum });
-								},
-								size: 'small',
-								pageSize: pageSize,
-								pageSizeOptions: pageSizeOptions,
-								total: totalRecords,
-								showTotal: (total, range) =>
-									`${range[0]}-${range[1]} of ${totalRecords} items`,
-								defaultCurrent: pageIndex,
-							}}
+							pagination={
+								search && search?.length === 0
+									? null
+									: {
+											onChange: (pageNum, pageSize) => {
+												setPageIndex(pageNum);
+												setPageSize(pageSize);
+												setTableFilteredState({
+													...tableFilteredState,
+													pagesize: pageSize,
+													pagenum: pageNum,
+												});
+												handleHRRequest({
+													pagesize: pageSize,
+													pagenum: pageNum,
+												});
+											},
+											size: 'small',
+											pageSize: pageSize,
+											pageSizeOptions: pageSizeOptions,
+											total: totalRecords,
+											showTotal: (total, range) =>
+												`${range[0]}-${range[1]} of ${totalRecords} items`,
+											defaultCurrent: pageIndex,
+									  }
+							}
 						/>
 					</WithLoader>
 				)}

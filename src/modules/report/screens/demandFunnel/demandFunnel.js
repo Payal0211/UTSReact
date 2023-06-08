@@ -216,6 +216,7 @@ const DemandFunnelScreen = () => {
 	useEffect(() => {
 		getReportFilterHandler();
 	}, [getReportFilterHandler]);
+
 	return (
 		<div className={DemandFunnelStyle.hiringRequestContainer}>
 			<div className={DemandFunnelStyle.addnewHR}>
@@ -299,6 +300,7 @@ const DemandFunnelScreen = () => {
 				) : (
 					<>
 						<Table
+							scroll={{ x: 150, y: 'calc(100vh - 220px)' }}
 							id="hrListingTable"
 							columns={tableColumnsMemo}
 							bordered={false}

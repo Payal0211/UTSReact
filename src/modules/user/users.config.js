@@ -1,6 +1,7 @@
 import { userUtils } from 'modules/user/userUtils';
 import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
 import { Link } from 'react-router-dom';
+import { Tooltip } from 'antd';
 export const userConfig = {
 	tableConfig: () => {
 		return [
@@ -9,6 +10,7 @@ export const userConfig = {
 				dataIndex: 'starStatus',
 				key: 'starStatus',
 				align: 'left',
+
 				render: (_, param) => {
 					return (
 						<Link
@@ -24,6 +26,7 @@ export const userConfig = {
 				dataIndex: 'createdOn',
 				key: 'createdOn',
 				align: 'left',
+
 				render: (_, param) => {
 					let response = userUtils.dateFormatter(param.createdOn);
 					return response;
@@ -33,6 +36,7 @@ export const userConfig = {
 				title: 'Employee ID',
 				dataIndex: 'employeeID',
 				key: 'employeeID',
+
 				align: 'left',
 				render: (text) => {
 					return text ? text : 'NA';
@@ -42,6 +46,7 @@ export const userConfig = {
 				title: 'Name',
 				dataIndex: 'name',
 				key: 'name',
+				// width: 200,
 				align: 'left',
 				render: (text) => {
 					return text ? text : 'NA';
@@ -51,6 +56,7 @@ export const userConfig = {
 				title: 'Email',
 				dataIndex: 'email',
 				key: 'email',
+				// width: 200,
 				align: 'left',
 				render: (text) => {
 					return text ? text : 'NA';
@@ -70,6 +76,7 @@ export const userConfig = {
 				dataIndex: 'userType',
 				key: 'userType',
 				align: 'left',
+
 				render: (_, param) => {
 					if (param?.userType && param?.nbD_AM) {
 						return param?.userType + ' | ' + param?.nbD_AM;
@@ -100,6 +107,10 @@ export const userConfig = {
 				title: 'Manager',
 				dataIndex: 'manager',
 				key: 'manager',
+				// ellipsis: {
+				// 	showTitle: true,
+				// },
+				// width: 200,
 				align: 'left',
 				render: (text) => {
 					return text ? text : 'NA';
@@ -108,19 +119,38 @@ export const userConfig = {
 			{
 				title: 'Skype',
 				dataIndex: 'skype',
+
 				key: 'skype',
+
 				align: 'left',
 				render: (text) => {
-					return text ? text : 'NA';
+					return text ? (
+						<Tooltip
+							title={text}
+							placement="bottom">
+							{text}
+						</Tooltip>
+					) : (
+						'NA'
+					);
 				},
 			},
 			{
 				title: 'Contact',
 				dataIndex: 'contact',
+
 				key: 'contact',
 				align: 'left',
 				render: (text) => {
-					return text ? text : 'NA';
+					return text ? (
+						<Tooltip
+							title={text}
+							placement="bottom">
+							{text}
+						</Tooltip>
+					) : (
+						'NA'
+					);
 				},
 			},
 		];
