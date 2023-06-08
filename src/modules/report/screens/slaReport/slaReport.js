@@ -26,6 +26,7 @@ import {
 	jdDumpSearch,
 } from 'modules/report/reportUtils';
 import { IoChevronDownOutline } from 'react-icons/io5';
+import moment from 'moment';
 
 const DemandFunnelFilterLazyComponent = React.lazy(() =>
 	import('modules/report/components/demandFunnelFilter/demandFunnelFilter'),
@@ -151,10 +152,10 @@ const SlaReports = () => {
 
 	console.log(tableFilteredState,"tableFilteredState");
 
-	const slaReportList = async () => {
+	const slaReportList = async (pageData) => {
 		let obj = {
-			startDate: "2023-05-01",
-			endDate: "2023-06-10",
+			startDate: moment(pageData?.filterFields_ViewAllHRs?.fromDate).format("YYYY-MM-DD"),
+			endDate: moment(pageData?.filterFields_ViewAllHRs?.toDate).format("YYYY-MM-DD"),
 			hrid: 0,
 			sales_ManagerID: 0,
 			ops_Lead: 0,
@@ -171,7 +172,7 @@ const SlaReports = () => {
 		let response = await ReportDAO.OverAllSLASummaryDAO(obj)
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
-			// setListData(response?.responseBody)
+			setListData(response?.responseBody)
 		} else {
 			setLoading(false);
 		}
@@ -204,7 +205,6 @@ const SlaReports = () => {
 		}
 		setSummaryLoading(true);
 		let response = await ReportDAO.slaDetailedDataDAO(data)
-		console.log(response, "responsndsnds")
 		if (response?.statusCode === HTTPStatusCode?.OK) {
 			// setPageNumber(response?.responseBody?.pagenumber)
 			setTotalRecords(response?.responseBody?.totalrows)
@@ -225,7 +225,7 @@ const SlaReports = () => {
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setFiltersList(response && response?.responseBody);
 		}
-		
+
 	}, []);
 
 
@@ -241,56 +241,28 @@ const SlaReports = () => {
 
 
 	const onCalenderFilter = (dates) => {
-		console.log(dates, "datesss")
 		const [start, end] = dates;
 
 		setStartDate(start);
 		setEndDate(end);
 
 		if (start && end) {
+			console.log(start, "start")
+			console.log(end, "endndnndnd")
 			setTableFilteredState({
 				...tableFilteredState,
-				startDate: new Date(start)
-					.toLocaleDateString('en-UK')
-					.split('/')
-					.reverse()
-					.join('-'),
-				endDate: new Date(end)
-					.toLocaleDateString('en-UK')
-					.split('/')
-					.reverse()
-					.join('-'),
-			});
-			setSlaReportDetailsState({
-				...slaReportDetailsState,
-
-				filterFieldsSLA: {
-					...slaReportDetailsState?.filterFieldsSLA,
-					startDate: new Date(start)
-						.toLocaleDateString('en-UK')
-						.split('/')
-						.reverse()
-						.join('-'),
-					endDate: new Date(end)
-						.toLocaleDateString('en-UK')
-						.split('/')
-						.reverse()
-						.join('-'),
+				filterFields_ViewAllHRs: {
+					fromDate: new Date(start).toLocaleDateString('en-US'),
+					toDate: new Date(end).toLocaleDateString('en-US'),
 				},
 			});
-			// slaReportList({
-			// 	...tableFilteredState,
-			// 	startDate: new Date(start)
-			// 		.toLocaleDateString('en-UK')
-			// 		.split('/')
-			// 		.reverse()
-			// 		.join('-'),
-			// 	endDate: new Date(end)
-			// 		.toLocaleDateString('en-UK')
-			// 		.split('/')
-			// 		.reverse()
-			// 		.join('-'),
-			// });
+			slaReportList({
+				...tableFilteredState,
+				filterFields_ViewAllHRs: {
+					fromDate: new Date(start).toLocaleDateString('en-US'),
+					toDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			});
 		}
 	};
 	const onRemoveFilters = () => {
@@ -331,14 +303,14 @@ const SlaReports = () => {
 	// 	[viewSummaryData],
 	// );
 
-	const toggleDemandReportFilter = useCallback(() => {
-		!getHTMLFilter
-			? setIsAllowFilters(!isAllowFilters)
-			: setTimeout(() => {
-				setIsAllowFilters(!isAllowFilters);
-			}, 300);
-		setHTMLFilter(!getHTMLFilter);
-	}, [getHTMLFilter, isAllowFilters]);
+	// const toggleDemandReportFilter = useCallback(() => {
+	// 	!getHTMLFilter
+	// 		? setIsAllowFilters(!isAllowFilters)
+	// 		: setTimeout(() => {
+	// 			setIsAllowFilters(!isAllowFilters);
+	// 		}, 300);
+	// 	setHTMLFilter(!getHTMLFilter);
+	// }, [getHTMLFilter, isAllowFilters]);
 
 	// useEffect(() => {
 	// 	slaReportList(tableFilteredState);
@@ -355,10 +327,10 @@ const SlaReports = () => {
 	const handleHRRequest = useCallback(
 		async (tableFilteredState) => {
 			// setLoading(true);
-				let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
-				setSlaDetailsList(
-					slaUtils.slaListData(response && response),
-				);
+			let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
+			setSlaDetailsList(
+				slaUtils.slaListData(response && response),
+			);
 			// if (response?.statusCode === HTTPStatusCode.OK) {
 			// 	setTotalRecords(response?.responseBody?.totalrows);
 			// 	setLoading(false);
@@ -562,7 +534,7 @@ const SlaReports = () => {
 							id="hrListingTable"
 							columns={tableColumnsMemo}
 							bordered={false}
-							dataSource={[...listData?.slice(1)]}
+							dataSource={listData}
 							pagination={{
 								size: 'small',
 								pageSize: listData?.length,
