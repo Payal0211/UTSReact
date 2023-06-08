@@ -94,14 +94,32 @@ const SlaReportFilerList = ({
         },
         [appliedFilter, checkedState, setFilteredTagLength],
     );
-
+// Clear filter
   const clearFilters = useCallback(() => {
     setAppliedFilters(new Map());
     setCheckedState(new Map());
     setFilteredTagLength(0);
     setTableFilteredState({
-      ...tableFilteredState,
-      filterFieldsSLA: {},
+      totalrecord: 100,
+      pagenumber: 1,
+      isExport: false,
+      filterFieldsSLA: {
+          startDate: "2023-05-01",
+          endDate: "2023-06-10",
+          hrid: 0,
+          sales_ManagerID: 0,
+          ops_Lead: 0,
+          salesPerson: 0,
+          stages: "",
+          isAdHoc: 0,
+          role: "",
+          slaType: 0,
+          type: 0,
+          hR_Number: "",
+          company: "",
+          actionFilter: 0,
+          // ambdr: 0
+      }
     });
     setSlaReportDetailsState({
         totalrecord: 100,
@@ -147,7 +165,7 @@ const SlaReportFilerList = ({
             // ambdr: 0
         }
     };
-    handleHRRequest(reqFilter);
+    // setSlaReportDetailsState(reqFilter);
   }, [
     handleHRRequest,
     setAppliedFilters,
@@ -157,40 +175,28 @@ const SlaReportFilerList = ({
     setSlaReportDetailsState,
     tableFilteredState,
   ]);
-
+// OnClick for apply filter
   const handleFilters = useCallback(() => {
+
     let filters = {};
-    console.log(appliedFilter,"appliedFilter");
     appliedFilter.forEach((item) => {
       filters = { ...filters, [item.filterType]: item?.value };
     });
     setTableFilteredState({
       ...tableFilteredState,
-       ...filters ,
+      //  ...filters ,
     });
     const reqFilter = {
       ...tableFilteredState,
-       ...filters ,
     };
-    console.log(filters,"filtersss")
+    console.log(reqFilter,"sasdasdasdasdasd")
     handleHRRequest(reqFilter);
 
     for (let key in filters) {
-        if (filters.hasOwnProperty(key)) {
-            setSlaReportDetailsState({
-                ...slaReportDetailsState,
-                filterFieldsSLA: {
-                    ...slaReportDetailsState.filterFieldsSLA,
-                    [key]:(filters[key])
-                },
-                // ...filters
-                // ...reqFilter,
-            });
-        //   console.log(key + ': ' + myObject[key]);
-        }
+      const newState = { ...slaReportDetailsState };
+      newState.filterFieldsSLA[key] = filters[key];
+      setSlaReportDetailsState(newState);
     }
-
-   
 }, [
     appliedFilter,
     handleHRRequest,
@@ -199,7 +205,6 @@ const SlaReportFilerList = ({
     slaReportDetailsState,
     tableFilteredState,
 ]);
-console.log(slaReportDetailsState,"slaReportDetailsState");
 
   const slaFilterSearch = (e, data) => {
     let filteredData = data.filter((val) => {

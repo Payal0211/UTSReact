@@ -44,7 +44,7 @@ const SlaReports = () => {
 				sales_ManagerID: 0,
 				ops_Lead: 0,
 				salesPerson: 0,
-				stage: "",
+				stages: "",
 				isAdHoc: 0,
 				role: "",
 				slaType: 0,
@@ -59,28 +59,7 @@ const SlaReports = () => {
 	// console.log(tableFilteredState,"tableFilteredStatetableFilteredState");
 
 	const [demandFunnelValue, setDemandFunnelValue] = useState({});
-	const [slaReportDetailsState, setSlaReportDetailsState] = useState({
-		totalrecord: 100,
-			pagenumber: 1,
-			isExport: false,
-			filterFieldsSLA: {
-				startDate: "2023-05-01",
-				endDate: "2023-06-10",
-				hrid: 0,
-				sales_ManagerID: 0,
-				ops_Lead: 0,
-				salesPerson: 0,
-				stage: "",
-				isAdHoc: 0,
-				role: "",
-				slaType: 0,
-				type: 0,
-				hR_Number: "",
-				company: "",
-				actionFilter: 0,
-				// ambdr: 0
-			}
-	});
+	const [slaReportDetailsState, setSlaReportDetailsState] = useState();
 
 	const [apiData, setApiData] = useState([]);
 	const [viewSummaryData, setSummaryData] = useState([]);
@@ -112,7 +91,7 @@ const SlaReports = () => {
 			sales_ManagerID: 0,
 			ops_Lead: 0,
 			salesPerson: 0,
-			stage: "",
+			stages: "",
 			isAdHoc: 0,
 			role: "",
 			hR_Number: "",
@@ -307,9 +286,10 @@ const SlaReports = () => {
 
 	const handleHRRequest = useCallback(
 		async (tableFilteredState) => {
-			setLoading(true);
-			let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
-			console.log(response,"response");
+			console.log(tableFilteredState,"tableFilteredStateslaReport")
+			// setLoading(true);
+				let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
+				console.log(response,"response");
 			// if (response?.statusCode === HTTPStatusCode.OK) {
 			// 	setTotalRecords(response?.responseBody?.totalrows);
 			// 	setLoading(false);
@@ -333,7 +313,7 @@ const SlaReports = () => {
 			// 	return 'NO DATA FOUND';
 			// }
 		},
-		[],
+		[tableFilteredState],
 	);
 
 	useEffect(() => {
