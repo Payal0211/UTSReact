@@ -17,61 +17,9 @@ export const slaUtils = {
 			actionFilter: item?.actionFilter ?? "NA",
 			sales_Person: item?.sales_Person ?? "NA",
 			sales_Manager: item?.sales_Manager ?? "NA",
-			ops_Lead: item?.ops_Lead ?? "NA"
+			ops_Lead: item?.ops_Lead ?? "NA",
+			isWeekEndSkip: item?.isWeekEndSkip
 		}))
 	},
-	// getClientFeedbackColor: (color) => {
-	// 	switch (color) {
-	// 		case '0': {
-	// 			return '#006699';
-	// 			break;
-	// 		}
-	// 		case 'Green': {
-	// 			return '#006D2C';
-	// 			break;
-	// 		}
-	// 		case 'Red': {
-	// 			return '#C80000';
-	// 			break;
-	// 		}
-	// 		case 'Orange': {
-	// 			return '#FD7021';
-	// 			break;
-	// 		}
-	// 		default:
-	// 			break;
-	// 	}
-	// },
-	// modifyEngagementFeedbackData: (response) => {
-	// 	return response?.responseBody?.details?.rows.map((item) => ({
-	// 		engagemenID: item?.engagemenID,
-	// 		feedbackActionToTake: item?.feedbackActionToTake,
-	// 		feedbackComment: item?.feedbackComment,
-	// 		feedbackCreatedDateTime: item?.feedbackCreatedDateTime ? item?.feedbackCreatedDateTime?.split(' ')[0] : 'NA',
-	// 		feedbackType: item?.feedbackType,
-	// 	}));
-	// },
 
-	// engagementListSearch: (e, apiData) => {
-	// 	let filteredData = apiData?.filter((val) => {
-	// 		return (
-	// 			(val?.lastFeedbackDate &&
-	// 				val?.lastFeedbackDate
-	// 					.toLowerCase()
-	// 					.includes(e.target.value.toLowerCase())) ||
-	// 			(val?.engagementId_HRID &&
-	// 				val?.engagementId_HRID.toLowerCase().includes(e.target.value.toLowerCase())) ||
-	// 			(val?.talentName &&
-	// 				val?.talentName.toLowerCase().includes(e.target.value.toLowerCase())) ||
-	// 			(val?.currentStatus &&
-	// 				val?.currentStatus.toLowerCase().includes(e.target.value.toLowerCase())) ||
-	// 			(val?.clientName &&
-	// 				val?.clientName.toLowerCase().includes(e.target.value.toLowerCase())) ||
-	// 			(val?.company &&
-	// 				val?.company.toLowerCase().includes(e.target.value.toLowerCase()))
-	// 		);
-	// 	});
-
-	// 	return filteredData;
-	// },
 };

@@ -51,7 +51,7 @@ const EngagementBillRateAndPayRate = ({
 	}
 
 	const [currency, setCurrency] = useState([]);
-	const [currencyValue,setCurrencyValue] = useState("");
+	const [currencyValue, setCurrencyValue] = useState("");
 	const [levelBillEdit, setBillEdit] = useState('Select');
 
 	const currencyHandler = useCallback(async () => {
@@ -83,11 +83,11 @@ const EngagementBillRateAndPayRate = ({
 			setPayRateValue(editBPRateResponse?.responseBody?.details?.finalPayRate);
 			setValue(
 				'billRate',
-				editBPRateResponse?.responseBody?.details?.finalBillRate,
+				editBPRateResponse?.responseBody?.details?.billRate,
 			);
 			setValue(
 				'payRate',
-				editBPRateResponse?.responseBody?.details?.finalPayRate,
+				editBPRateResponse?.responseBody?.details?.payRate,
 			);
 
 			setValue(
@@ -186,36 +186,38 @@ const EngagementBillRateAndPayRate = ({
 				if (item?.value === currencyValue) {
 					setBillEdit(item?.value);
 					setValue('billRateCurrency', item);
-					setValue("payRateCurrency",item);
+					setValue("payRateCurrency", item);
 				}
 			});
 		}
-	}, [ currency,currencyValue]);
+	}, [currency, currencyValue]);
 
-const nrPercentagePR =useCallback( async(e)=>{
-let response = await engagementRequestDAO.calculateActualNRBRPRDAO(watchBillRate,e,currencyValue)
+	const nrPercentagePR = useCallback(async (e) => {
+		let response = await engagementRequestDAO.calculateActualNRBRPRDAO(watchBillRate, e, currencyValue)
 
-if(response?.statusCode===HTTPStatusCode?.OK){
-	setValue("payNRRate",response?.responseBody?.details)
-	setError("payNRRate",{})
-}else if(response.statusCode === HTTPStatusCode?.BAD_REQUEST){
-	setError("payNRRate",{
-		type:"finalPayRate",
-	message:response.statusCode === HTTPStatusCode?.BAD_REQUEST && "Can't Calculate"})
-}
-},[setValue,setError,watchBillRate,HTTPStatusCode])
+		if (response?.statusCode === HTTPStatusCode?.OK) {
+			setValue("payNRRate", response?.responseBody?.details)
+			setError("payNRRate", {})
+		} else if (response.statusCode === HTTPStatusCode?.BAD_REQUEST) {
+			setError("payNRRate", {
+				type: "finalPayRate",
+				message: response.statusCode === HTTPStatusCode?.BAD_REQUEST && "Can't Calculate"
+			})
+		}
+	}, [setValue, setError, watchBillRate, HTTPStatusCode])
 
-const nrPercentageBR = useCallback( async(e)=>{
-	let response = await engagementRequestDAO.calculateActualNRBRPRDAO(e.target.value,watchPayRate,currencyValue)
-	if(response?.statusCode===HTTPStatusCode?.OK){
-		setValue("billNRRate",response?.responseBody?.details)
-		setError("billNRRate",{})
-	}else if(response.statusCode === HTTPStatusCode?.BAD_REQUEST){
-		setError("billNRRate",{
-			type:"finalBillRate",
-		message:response.statusCode === HTTPStatusCode?.BAD_REQUEST && "Can't Calculate"})
-	}
-	},[setValue,setError,watchPayRate,HTTPStatusCode])
+	const nrPercentageBR = useCallback(async (e) => {
+		let response = await engagementRequestDAO.calculateActualNRBRPRDAO(e.target.value, watchPayRate, currencyValue)
+		if (response?.statusCode === HTTPStatusCode?.OK) {
+			setValue("billNRRate", response?.responseBody?.details)
+			setError("billNRRate", {})
+		} else if (response.statusCode === HTTPStatusCode?.BAD_REQUEST) {
+			setError("billNRRate", {
+				type: "finalBillRate",
+				message: response.statusCode === HTTPStatusCode?.BAD_REQUEST && "Can't Calculate"
+			})
+		}
+	}, [setValue, setError, watchPayRate, HTTPStatusCode])
 
 	return (
 		<div className={allengagementBillAndPayRateStyles.engagementModalContainer}>
@@ -239,21 +241,21 @@ const nrPercentageBR = useCallback( async(e)=>{
 							className={`${allengagementBillAndPayRateStyles.row} ${allengagementBillAndPayRateStyles.billRateWrapper}`}>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
-								controlledValue={levelBillEdit}
-								setControlledValue={setBillEdit}
-								isControlled={true}
+									controlledValue={levelBillEdit}
+									setControlledValue={setBillEdit}
+									isControlled={true}
 									mode={'id/value'}
 									setValue={setValue}
 									register={register}
 									name="billRateCurrency"
 									label="Select Currency"
-									options={currency&&currency}
+									options={currency && currency}
 									disabled={true}
-									// required
-									// isError={
-									// 	errors['billRateCurrency'] && errors['billRateCurrency']
-									// }
-									// errorMsg="Please select a currency."
+								// required
+								// isError={
+								// 	errors['billRateCurrency'] && errors['billRateCurrency']
+								// }
+								// errorMsg="Please select a currency."
 								/>
 							</div>
 							<div
@@ -267,7 +269,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									}
 									// disabled={billRateValue === 0 ? true : false}
 									disabled={true}
-									>
+								>
 									<MinusSVG />
 								</button>
 								<HRInputField
@@ -280,7 +282,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									label={`Bill Rate (${currencyValue})`}
 									name="billRate"
 									type={InputType.NUMBER}
-									value={billRateValue}
+									// value={billRateValue}
 									placeholder="Enter Amount"
 									required
 									disabled={true}
@@ -303,7 +305,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									}}
 									label="Final Actual Bill Rate"
 									name="finalBillRate"
-									onChangeHandler={(e)=>nrPercentageBR(e)}
+									onChangeHandler={(e) => nrPercentageBR(e)}
 									type={InputType.TEXT}
 									placeholder="Enter Amount"
 									required
@@ -403,11 +405,11 @@ const nrPercentageBR = useCallback( async(e)=>{
 									label="Select Currency"
 									disabled={true}
 									options={currency}
-									// required
-									// isError={
-									// 	errors['payRateCurrency'] && errors['payRateCurrency']
-									// }
-									// errorMsg="Please select a currency."
+								// required
+								// isError={
+								// 	errors['payRateCurrency'] && errors['payRateCurrency']
+								// }
+								// errorMsg="Please select a currency."
 								/>
 							</div>
 
@@ -433,7 +435,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									}}
 									label={`Pay Rate (${currencyValue})`}
 									name="payRate"
-									value={payRateValue}
+									// value={payRateValue}
 									type={InputType.TEXT}
 									placeholder="Enter Amount"
 									required
@@ -462,7 +464,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									label="Final Actual Pay Rate"
 									name="finalPayRate"
 									type={InputType.TEXT}
-									onChangeHandler = {(e)=>{nrPercentagePR(e.target.value);}}
+									onChangeHandler={(e) => { nrPercentagePR(e.target.value); }}
 									placeholder="Enter Amount"
 									required
 								/>

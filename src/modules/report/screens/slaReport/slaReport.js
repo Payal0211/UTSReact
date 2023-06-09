@@ -58,7 +58,7 @@ const SlaReports = () => {
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 	const [listData, setListData] = useState([])
-	const [dateError,setDateError] = useState("")
+	const [dateError, setDateError] = useState("")
 
 	const [checkedValue, setCheckedValue] = useState(true);
 	const [checkednoValue, setCheckednoValue] = useState(false);
@@ -140,10 +140,15 @@ const SlaReports = () => {
 		}
 	});
 
+	var date = new Date();
+	var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+	var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
 	const slaReportList = async (pageData) => {
+		console.log(pageData, "pageData");
 		let obj = {
-			startDate: moment(pageData?.filterFields_ViewAllHRs?.fromDate).format("YYYY-MM-DD"),
-			endDate: moment(pageData?.filterFields_ViewAllHRs?.toDate).format("YYYY-MM-DD"),
+			startDate: pageData ? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format("YYYY-MM-DD") : moment(firstDay).format("YYYY-MM-DD"),
+			endDate: pageData ? moment(pageData?.filterFields_ViewAllHRs?.toDate).format("YYYY-MM-DD") : moment(lastDay).format("YYYY-MM-DD"),
 			hrid: 0,
 			sales_ManagerID: 0,
 			ops_Lead: 0,
@@ -168,14 +173,13 @@ const SlaReports = () => {
 
 	const [slaDetailsList, setSlaDetailsList] = useState([])
 	const slaReportDetails = async (pageData) => {
-		console.log(pageData,"pageData123")
 		let data = {
 			totalrecord: pageData?.totalRecord ? pageData?.totalRecord : 100,
 			pagenumber: pageData?.pageNumber ? pageData?.pageNumber : 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: moment(pageData?.filterFields_ViewAllHRs?.fromDate).format("YYYY-MM-DD"),
-				endDate: moment(pageData?.filterFields_ViewAllHRs?.toDate).format("YYYY-MM-DD"),
+				startDate: pageData ? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format("YYYY-MM-DD") : moment(firstDay).format("YYYY-MM-DD"),
+				endDate: pageData ? moment(pageData?.filterFields_ViewAllHRs?.toDate).format("YYYY-MM-DD") : moment(lastDay).format("YYYY-MM-DD"),
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
@@ -260,25 +264,25 @@ const SlaReports = () => {
 			setDateError("")
 			setTableFilteredState({
 				totalrecord: 100,
-		pagenumber: 1,
-		isExport: false,
-		filterFieldsSLA: {
-			startDate: moment(new Date(start).toLocaleDateString('en-US')).format("YYYY-MM-DD"),
-			endDate: moment(new Date(end).toLocaleDateString('en-US')).format("YYYY-MM-DD"),
-			hrid: 0,
-			sales_ManagerID: 0,
-			ops_Lead: 0,
-			salesPerson: 0,
-			stages: "",
-			isAdHoc: 0,
-			role: "",
-			slaType: 0,
-			type: 0,
-			hR_Number: "",
-			company: "",
-			actionFilter: 0,
-			// ambdr: 0
-		}
+				pagenumber: 1,
+				isExport: false,
+				filterFieldsSLA: {
+					startDate: moment(new Date(start).toLocaleDateString('en-US')).format("YYYY-MM-DD"),
+					endDate: moment(new Date(end).toLocaleDateString('en-US')).format("YYYY-MM-DD"),
+					hrid: 0,
+					sales_ManagerID: 0,
+					ops_Lead: 0,
+					salesPerson: 0,
+					stages: "",
+					isAdHoc: 0,
+					role: "",
+					slaType: 0,
+					type: 0,
+					hR_Number: "",
+					company: "",
+					actionFilter: 0,
+					// ambdr: 0
+				}
 			})
 		}
 	};
@@ -309,13 +313,13 @@ const SlaReports = () => {
 		slaReportDetails()
 	}, [])
 
-	
+
 
 	const handleHRRequest = useCallback(
 		async (tableFilteredState) => {
-			if(startDate===null){
+			if (startDate === null) {
 				setDateError("* Please select date")
-			}else{
+			} else {
 
 				// setLoading(true);
 				let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
@@ -323,15 +327,15 @@ const SlaReports = () => {
 					slaUtils.slaListData(response && response),
 				);
 				// setLoading(true);
-			let responseList = await ReportDAO.OverAllSLASummaryDAO(tableFilteredState)
-			if (responseList?.statusCode === HTTPStatusCode.OK) {
-				// setLoading(false);
-				setListData(responseList?.responseBody)
-			} else {
-				// setLoading(false);
-				
-			}
-			setDateError("")
+				let responseList = await ReportDAO.OverAllSLASummaryDAO(tableFilteredState)
+				if (responseList?.statusCode === HTTPStatusCode.OK) {
+					// setLoading(false);
+					setListData(responseList?.responseBody)
+				} else {
+					// setLoading(false);
+
+				}
+				setDateError("")
 			}
 			// if (response?.statusCode === HTTPStatusCode.OK) {
 			// 	setTotalRecords(response?.responseBody?.totalrows);
@@ -482,7 +486,7 @@ const SlaReports = () => {
 								/>
 
 							</div>
-							
+
 							<span>{dateError}</span>
 						</div>
 

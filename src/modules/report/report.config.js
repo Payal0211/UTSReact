@@ -1,4 +1,5 @@
 import { Tooltip } from 'antd';
+import { HiringRequestHRStatus } from 'constants/application';
 import { NetworkInfo } from 'constants/network';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
@@ -545,8 +546,8 @@ export const reportConfig = {
 				dataIndex: 'hR_NUmber',
 				key: 'hrCreatedDate',
 				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				render: (text, param) => {
+					return <p key={text} style={{ background: param?.isWeekEndSkip ? "#EE442D" : "transparent", color: param?.isWeekEndSkip ? "white" : "black" }}>{text ? text : 'NA'}</p>;
 				},
 			},
 			{
@@ -651,7 +652,7 @@ export const reportConfig = {
 				dataIndex: 'actionFilter',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <p key={text} style={{ background: text === "Before Time" ? "green" : text === "Running Late" ? "red" : text === "ON Time" ? "lightblue" : "transparent" }}>{text ? text : 'NA'}</p>;
 				},
 			},
 			{
@@ -681,28 +682,28 @@ export const reportConfig = {
 		];
 	},
 
-slaReportFilterTypeConfig : (filterList) =>{
-	return [
-		{
-			label: "Stages",
-			name: "stages",
-			child: filterList?.stages,
-			isSearch: true,
-		},
-		{
-			label: "Action Filter",
-			name: "actionFilter",
-			child: filterList?.actionFilterDrop,
-			isSearch: true,
-		},
-		{
-			label: "Company",
-			name: "companies",
-			child: filterList?.companies,
-			isSearch: true,
-		},
-	]
-},
+	slaReportFilterTypeConfig: (filterList) => {
+		return [
+			{
+				label: "Stages",
+				name: "stages",
+				child: filterList?.stages,
+				isSearch: true,
+			},
+			{
+				label: "Action Filter",
+				name: "actionFilter",
+				child: filterList?.actionFilterDrop,
+				isSearch: true,
+			},
+			{
+				label: "Company",
+				name: "companies",
+				child: filterList?.companies,
+				isSearch: true,
+			},
+		]
+	},
 
 
 
