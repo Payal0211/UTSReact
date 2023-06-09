@@ -368,4 +368,97 @@ export const ReportDAO = {
 			return errorDebug(error, 'ReportDAO.jdParsingDumpReportRequestDAO');
 		}
 	},
+	OverAllSLASummaryDAO: async function (data) {
+		try {
+			const overAllSummaryRequest = await ReportAPI.OverAllSLASummaryRequest(
+				data,
+			);
+
+			if (overAllSummaryRequest) {
+				const statusCode = overAllSummaryRequest['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult =
+						overAllSummaryRequest?.responseBody?.details ||
+						overAllSummaryRequest?.responseBody;
+
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return overAllSummaryRequest;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return overAllSummaryRequest;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.OverAllSLASummaryDAO');
+		}
+	},
+	slaDetailedDataDAO: async function (data) {
+		try {
+			const slaDetailedDataRequest = await ReportAPI.SlaDetailsData(
+				data,
+			);
+
+			if (slaDetailedDataRequest) {
+				const statusCode = slaDetailedDataRequest['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult =
+						slaDetailedDataRequest?.responseBody?.details ||
+						slaDetailedDataRequest?.responseBody;
+
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return slaDetailedDataRequest;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return slaDetailedDataRequest;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.slaDetailedDataDAO');
+		}
+	},
+	slaFilterDAO: async function (data) {
+		try {
+			const slaDetailedDataRequest = await ReportAPI.slaFilter(
+				data,
+			);
+
+			if (slaDetailedDataRequest) {
+				const statusCode = slaDetailedDataRequest['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult =
+						slaDetailedDataRequest?.responseBody?.details ||
+						slaDetailedDataRequest?.responseBody;
+
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return slaDetailedDataRequest;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return slaDetailedDataRequest;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.slaFilterDAO');
+		}
+	},
 };

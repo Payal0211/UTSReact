@@ -63,6 +63,7 @@ const EditHRFields = ({
     const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
     const [getClientNameMessage, setClientNameMessage] = useState('');
     const [disableButton, setDisableButton] = useState(true)
+    const [currency, setCurrency] = useState([]);
 
     const [getValidation, setValidation] = useState({
         systemFileUpload: '',
@@ -579,8 +580,13 @@ const EditHRFields = ({
         setValue,
     ]);
 
-    useEffect(() => {
+    const getCurrencyHandler = useCallback(async () => {
+        const response = await MasterDAO.getCurrencyRequestDAO();
+        setCurrency(response && response?.responseBody);
+    }, []);
 
+    useEffect(() => {
+        getCurrencyHandler();
         getAvailability();
         getTalentRole();
         getSalesPerson();
@@ -771,11 +777,11 @@ const EditHRFields = ({
 
     useEffect(() => {
         if (getHRdetails?.salesHiringRequest_Details?.currency) {
-            const findCurrency = currencyResult.filter((item) => item?.value === getHRdetails?.salesHiringRequest_Details?.currency)
+            const findCurrency = currency.filter((item) => item?.value === getHRdetails?.salesHiringRequest_Details?.currency)
             setValue("budget", findCurrency[0]?.value)
             setControlledBudgetValue(findCurrency[0]?.value)
         }
-    }, [getHRdetails, currencyResult])
+    }, [getHRdetails, currency])
 
     useEffect(() => {
         if (getHRdetails?.addHiringRequest?.salesUserId) {
@@ -1105,7 +1111,7 @@ const EditHRFields = ({
                                     setValue={setValue}
                                     register={register}
                                     label={'Add your estimated budget'}
-                                    options={currencyResult && currencyResult}
+                                    options={currency && currency}
                                     name="budget"
                                     isError={errors['budget'] && errors['budget']}
                                     required
