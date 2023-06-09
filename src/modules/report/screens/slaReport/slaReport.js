@@ -547,10 +547,11 @@ const SlaReports = () => {
 							columns={tableColumnsMemo}
 							bordered={false}
 							dataSource={listData}
-							pagination={{
-								size: 'small',
-								pageSize: listData?.length,
-							}}
+							// pagination={{
+							// 	size: 'small',
+							// 	pageSize: listData?.length,
+							// }}
+							pagination={false}
 						/>
 						{/* <div className={SlaReportStyle.formPanelAction}>
 							<button
@@ -563,6 +564,25 @@ const SlaReports = () => {
 					</>
 				)}
 			</div>
+
+			<ul className={SlaReportStyle.actionStatustab}>
+				<li>
+					<span className={SlaReportStyle.actionTab_On}></span>
+					ON Time
+				</li>
+				<li>
+					<span className={SlaReportStyle.actionTab_Before}></span>
+					Before Time
+				</li>
+				<li>
+					<span className={SlaReportStyle.actionTab_Exceeded}></span>
+					Exceeded SLA
+				</li>
+				<li>
+					<span className={SlaReportStyle.actionTab_Running}></span>
+					Running Late
+				</li>
+			</ul>
 
 			<div className={SlaReportStyle.tableDetails}>
 				{isSummaryLoading ? (
