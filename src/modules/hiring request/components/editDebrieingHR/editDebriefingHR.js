@@ -243,8 +243,7 @@ const EditDebriefingHR = ({
 	// 	const skilsData = getHRdetails?.skillmulticheckbox?.filter((item)=>{
 	// })
 	// setValue("skills",getHRdetails?.skillmulticheckbox)
-	// console.log(skilsData,"tempaaaaaarr")
-	// console.log(errors["skills"]?.ref?.value.push(getHRdetails?.skillmulticheckbox),"Testtttt")
+
 	// }, [getHRdetails])
 
 	useEffect(() => {
