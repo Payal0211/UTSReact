@@ -1,11 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
-import HRList from 'assets/svg/HRList.svg';
-import DealList from 'assets/svg/DealList.svg';
-import UserList from 'assets/svg/UserList.svg';
+
 import HR from 'assets/svg/hr.svg';
 import Handshake from 'assets/svg/handshake.svg';
-import HRDetails from 'assets/svg/HRDetails.svg';
-import AddHR from 'assets/svg/addHR.svg';
+
 import Briefcase from 'assets/svg/briefcase.svg';
 import DemandFunnel from 'assets/svg/demandFunnel.svg';
 import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
@@ -16,7 +13,7 @@ import JDEfficiencyReport from 'assets/svg/jdEfficiency.svg';
 import MedalIcon from 'assets/svg/medalIcon.svg';
 import GlobIcon from 'assets/svg/globIcon.svg';
 import MastersIcon from 'assets/svg/mastersIcon.svg';
-import IncentiveReport from 'assets/svg/Incentive.svg';
+
 import SLAReport from 'assets/svg/slaReport.svg';
 import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';

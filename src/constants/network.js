@@ -66,9 +66,9 @@ export class ReportsAPI {
 	static FILTERS = 'Filters';
 	static HRDETAILS = 'HRDetails';
 	static JD_PARSING_DUMP_REPORT = 'JDParsingDumpReport';
-	static OVER_ALL_SLA_SUMMARY = "OverAllSLASummary"
-	static SLA_DETAILED_DATA = "GetSLAReport"
-	static SLA_FILTER = "GETSLAFilters"
+	static OVER_ALL_SLA_SUMMARY = 'OverAllSLASummary';
+	static SLA_DETAILED_DATA = 'GetSLAReport';
+	static SLA_FILTER = 'GETSLAFilters';
 }
 
 export class EngagementAPI {
@@ -199,6 +199,7 @@ export class HiringRequestsAPI {
 	static VIEW_HR_DETAILS = 'ViewHRDetails';
 	static GET_HR_DETAILS = 'GetHRDetails';
 	static UPDATE_TR_DETAIL = 'UpdateTR';
+	static DELETE_INTERVIEW_DETAILS = 'DeleteInterviewDetails';
 }
 
 export class UsersAPI {

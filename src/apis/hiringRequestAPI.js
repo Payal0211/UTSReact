@@ -917,4 +917,23 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.editTR');
 		}
 	},
+	deleteInterviewRequest: async (interviewDetails) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.DELETE_INTERVIEW_DETAILS +
+			`?Id=${interviewDetails?.interviewID}
+			&HRId=${interviewDetails?.hrID}
+			&InterviewerName=${interviewDetails?.name}`;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.deleteInterviewRequest');
+		}
+	},
 };

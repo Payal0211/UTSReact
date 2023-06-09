@@ -5,6 +5,7 @@ import AddInterviewerStyle from './addInterviewer.module.css';
 import { secondaryInterviewer } from '../hrFields/hrFields';
 import { _isNull } from 'shared/utils/basic_utils';
 import { useLocation } from 'react-router-dom';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 
 const AddInterviewer = ({
 	interviewDetails,
@@ -32,8 +33,11 @@ const AddInterviewer = ({
 		},
 		[remove],
 	);
-
 	const clonedParams = useLocation();
+	/** TODO:-  */
+	const reomveSecondaryInterviewAPIHandler = useCallback(async () => {
+		const response = await hiringRequestDAO.deleteInterviewRequestDAO({});
+	}, []);
 
 	/*const autoFillInterviewDetailsHandler = useCallback(() => {
 		if (interviewDetails) {
