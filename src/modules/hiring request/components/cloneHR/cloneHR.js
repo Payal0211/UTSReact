@@ -25,7 +25,7 @@ const CloneHR = ({ updatedSplitter, cloneHR }) => {
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			localStorage.setItem('hrID', hrId.hrid);
 			setCloneHR(false);
-			navigate(UTSRoutes.ADDNEWHR);
+			navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 		}
 	}, [hrId.hrid, navigate]);
 

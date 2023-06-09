@@ -35,6 +35,7 @@ const DebriefingHR = ({
 	getCompanyName,
 	clientDetail,
 	params,
+	isCloned,
 }) => {
 	const {
 		watch,
@@ -213,6 +214,7 @@ const DebriefingHR = ({
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
 			debriefFormDetails,
 		);
+
 		if (debriefResult.statusCode === HTTPStatusCode.OK) {
 			setIsLoading(false);
 			messageAPI.open({

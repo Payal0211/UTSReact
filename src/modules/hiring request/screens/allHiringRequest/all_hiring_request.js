@@ -167,7 +167,7 @@ const AllHiringRequestScreen = () => {
 		if (response.statusCode === HTTPStatusCode.OK) {
 			setCloneHR(false);
 			localStorage.setItem('hrID', response?.responseBody?.details);
-			navigate('/allhiringrequest/addnewhr');
+			navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 		}
 	};
 	const miscData = UserSessionManagementController.getUserMiscellaneousData();

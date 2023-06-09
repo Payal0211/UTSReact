@@ -1,13 +1,13 @@
-import { useState } from 'react';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
 import { HRCTA } from 'constants/application';
 import { useNavigate, useParams } from 'react-router-dom';
+import UTSRoutes from 'constants/routes';
 
 const CTASlot2 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
-const params = useParams()
+	const params = useParams();
 
-const navigate = useNavigate()
+	const navigate = useNavigate();
 	const scrollToBottom = () => {
 		window.scroll({
 			top: document.body.scrollHeight,
@@ -16,10 +16,10 @@ const navigate = useNavigate()
 			behavior: 'smooth',
 		});
 	};
-const editHR = () =>{
-	navigate("/allhiringrequest/addnewhr")
-	localStorage.setItem("hrID",params?.hrid)
-}
+	const editHR = () => {
+		navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
+		localStorage.setItem('hrID', params?.hrid);
+	};
 	return (
 		<>
 			<div>
