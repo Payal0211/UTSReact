@@ -179,6 +179,13 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.SLA_REPORT,
 		}),
 		new SideBarModels({
+			id: 'I2SReport',
+			title: 'I2S Report',
+			isActive: false,
+			icon: SLAReport,
+			navigateTo: UTSRoutes.I2S_REPORT,
+		}),
+		new SideBarModels({
 			id: 'Master',
 			title: 'Master',
 			isActive: false,
