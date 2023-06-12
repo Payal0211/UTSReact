@@ -760,6 +760,7 @@ const HRFields = ({
 			isHRDirectPlacement,
 			jdDumpID,
 			messageAPI,
+			params,
 			setEnID,
 			setError,
 			setJDParsedSkills,
@@ -798,11 +799,9 @@ const HRFields = ({
 	}, [getDurationType]);
 
 	return (
-		<WithLoader
-			showLoader={isSavedLoading}
-			className="mainLoader">
+		<>
+			{contextHolder}
 			<div className={HRFieldStyle.hrFieldContainer}>
-				{contextHolder}
 				<div className={HRFieldStyle.partOne}>
 					<div className={HRFieldStyle.hrFieldLeftPane}>
 						<h3>Hiring Request Details</h3>
@@ -878,12 +877,12 @@ const HRFields = ({
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd6}>
 								<HRInputField
-								//	disabled={
+									//	disabled={
 									//	pathName === ClientHRURL.ADD_NEW_CLIENT ||
-										//isCompanyNameAvailable ||
-										//isLoading
+									//isCompanyNameAvailable ||
+									//isLoading
 									//}
-	disabled={isCompanyNameAvailable?true:false}
+									disabled={isCompanyNameAvailable ? true : false}
 									register={register}
 									errors={errors}
 									validationSchema={{
@@ -1085,7 +1084,7 @@ const HRFields = ({
 							<div className={HRFieldStyle.colMd4}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
-										mode={'id/value'}
+										mode={'value'}
 										setValue={setValue}
 										register={register}
 										label={'Add your estimated budget'}
@@ -1456,7 +1455,7 @@ const HRFields = ({
 					</button>
 				</div>
 			</div>
-		</WithLoader>
+		</>
 	);
 
 	function getWorkingModelFields() {

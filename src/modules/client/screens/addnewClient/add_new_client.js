@@ -8,8 +8,7 @@ import ClientField from 'modules/client/components/clientField/clientField';
 const AddNewClientScreen = () => {
 	const [title, setTitle] = useState('Add New Client');
 
-
-	const params = window?.location?.pathname?.split("/")?.[2]
+	const params = window?.location?.pathname?.split('/')?.[2];
 
 	const [clientDetail, setClientDetails] = useState({});
 	const [interviewDetails, setInterviewDetails] = useState(null);

@@ -39,6 +39,8 @@ const AddNewHR = () => {
 	useEffect(() => {
 		localStorage.setItem('enIDdata', enID);
 	}, [enID]);
+
+	/** This CODE I DONT HAVE IDEA WHY SUNDARAM BHAI HAS USED */
 	const interviewDetails = (e) => {
 		setHRdetails(e);
 	};
