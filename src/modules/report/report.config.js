@@ -94,6 +94,7 @@ export const reportConfig = {
 		});
 	},
 	demandFunnelHRDetails: (stage) => {
+		console.log(stage, '---stage');
 		return stage === 'HR Lost'
 			? [
 					{
@@ -489,8 +490,6 @@ export const reportConfig = {
 	},
 	/**----------------- JD DUMP REPORT ------------------------------- */
 
-
-
 	SLAReportConfig: () => {
 		return [
 			{
@@ -548,7 +547,16 @@ export const reportConfig = {
 				key: 'hrCreatedDate',
 				align: 'left',
 				render: (text, param) => {
-					return <p key={text} style={{ background: param?.isWeekEndSkip ? "#EE442D" : "transparent", color: param?.isWeekEndSkip ? "white" : "black" }}>{text ? text : 'NA'}</p>;
+					return (
+						<p
+							key={text}
+							style={{
+								background: param?.isWeekEndSkip ? '#EE442D' : 'transparent',
+								color: param?.isWeekEndSkip ? 'white' : 'black',
+							}}>
+							{text ? text : 'NA'}
+						</p>
+					);
 				},
 			},
 			{
@@ -653,7 +661,22 @@ export const reportConfig = {
 				dataIndex: 'actionFilter',
 				align: 'left',
 				render: (text) => {
-					return <p key={text} style={{ background: text === "Before Time" ? "green" : text === "Running Late" ? "red" : text === "ON Time" ? "lightblue" : "transparent" }}>{text ? text : 'NA'}</p>;
+					return (
+						<p
+							key={text}
+							style={{
+								background:
+									text === 'Before Time'
+										? 'green'
+										: text === 'Running Late'
+										? 'red'
+										: text === 'ON Time'
+										? 'lightblue'
+										: 'transparent',
+							}}>
+							{text ? text : 'NA'}
+						</p>
+					);
 				},
 			},
 			{
@@ -686,27 +709,25 @@ export const reportConfig = {
 	slaReportFilterTypeConfig: (filterList) => {
 		return [
 			{
-				label: "Stages",
-				name: "stages",
+				label: 'Stages',
+				name: 'stages',
 				child: filterList?.stages,
 				isSearch: true,
 			},
 			{
-				label: "Action Filter",
-				name: "actionFilter",
+				label: 'Action Filter',
+				name: 'actionFilter',
 				child: filterList?.actionFilterDrop,
 				isSearch: true,
 			},
 			{
-				label: "Company",
-				name: "companies",
+				label: 'Company',
+				name: 'companies',
 				child: filterList?.companies,
 				isSearch: true,
 			},
-		]
+		];
 	},
-
-
 
 	slaReportFilterList: () => {
 		return [
