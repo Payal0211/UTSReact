@@ -5,6 +5,7 @@ import HRFields from 'modules/hiring request/components/hrFields/hrFields';
 import AddNewHRStyle from './add_new_HR.module.css';
 import EditHRFields from 'modules/hiring request/components/editHRfields/editHRFields';
 import EditDebriefingHR from 'modules/hiring request/components/editDebrieingHR/editDebriefingHR';
+import { useLocation } from 'react-router-dom';
 
 const AddNewHR = () => {
 	const [title, setTitle] = useState(
@@ -16,6 +17,9 @@ const AddNewHR = () => {
 		addNewHiringRequest: false,
 		debriefingHR: true,
 	});
+
+	const navigateParams = useLocation();
+
 	const [fromEditDeBriefing, setFromEditDeBriefing] = useState({
 		addNewHiringRequest: true,
 		debriefingHR: false,
@@ -26,7 +30,7 @@ const AddNewHR = () => {
 		Requirements: '',
 	});
 
-	const params = window?.location?.pathname?.split('/')?.[2];
+	const paramsURL = window?.location?.pathname?.split('/')?.[2];
 	const [enID, setEnID] = useState('');
 	const [jdDumpID, setJDDumpID] = useState('');
 	const [getHRdetails, setHRdetails] = useState({});
@@ -35,6 +39,8 @@ const AddNewHR = () => {
 	useEffect(() => {
 		localStorage.setItem('enIDdata', enID);
 	}, [enID]);
+
+	/** This CODE I DONT HAVE IDEA WHY SUNDARAM BHAI HAS USED */
 	const interviewDetails = (e) => {
 		setHRdetails(e);
 	};
@@ -68,7 +74,8 @@ const AddNewHR = () => {
 									jdDumpID={jdDumpID}
 									interviewDetails={interviewDetails}
 									companyName={companyName}
-									params={params}
+									params={paramsURL}
+									isCloned={navigateParams?.isCloned || false}
 								/>
 							),
 						},
@@ -87,7 +94,8 @@ const AddNewHR = () => {
 									getHRdetails={getHRdetails}
 									setHRdetails={setHRdetails}
 									getCompanyName={getCompanyName}
-									params={params}
+									params={paramsURL}
+									isCloned={navigateParams?.isCloned || false}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,

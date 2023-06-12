@@ -83,11 +83,11 @@ const EngagementBillRateAndPayRate = ({
 			setPayRateValue(editBPRateResponse?.responseBody?.details?.finalPayRate);
 			setValue(
 				'billRate',
-				editBPRateResponse?.responseBody?.details?.finalBillRate,
+				editBPRateResponse?.responseBody?.details?.billRate,
 			);
 			setValue(
 				'payRate',
-				editBPRateResponse?.responseBody?.details?.finalPayRate,
+				editBPRateResponse?.responseBody?.details?.payRate,
 			);
 
 			setValue(
@@ -280,7 +280,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									label={`Bill Rate (${currencyValue})`}
 									name="billRate"
 									type={InputType.NUMBER}
-									value={billRateValue}
+									// value={billRateValue}
 									placeholder="Enter Amount"
 									required
 									disabled={true}
@@ -433,7 +433,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									}}
 									label={`Pay Rate (${currencyValue})`}
 									name="payRate"
-									value={payRateValue}
+									// value={payRateValue}
 									type={InputType.TEXT}
 									placeholder="Enter Amount"
 									required

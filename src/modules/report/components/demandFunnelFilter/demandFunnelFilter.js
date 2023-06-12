@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Checkbox, Radio, Tag } from 'antd';
+import { Checkbox, Tag } from 'antd';
 import hiringFilterStyle from './demandFunnelFilter.module.css';
-import { AiOutlineSearch } from 'react-icons/ai';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { ReactComponent as ArrowRightSVG } from 'assets/svg/arrowRight.svg';
 import { ReactComponent as CrossSVG } from 'assets/svg/cross.svg';

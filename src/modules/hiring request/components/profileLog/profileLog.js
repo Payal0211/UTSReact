@@ -214,13 +214,13 @@ const ProfileLogTable = ({ borderColor, logExpanded, activeType }) => {
 						<th className={ProfileStyle.th}>Position</th>
 						<th className={ProfileStyle.th}>Company</th>
 						{activeType === ProfileLog.FEEDBACK && (
-							<th className={ProfileStyle.th}>Feedback</th>
+							<th className={ProfileStyle.th}>Status</th>
 						)}
 						{activeType === ProfileLog.REJECTED && (
-							<th className={ProfileStyle.th}>Feedback</th>
+							<th className={ProfileStyle.th}>Status</th>
 						)}
 						{activeType === ProfileLog.SELECTED ? (
-							<th className={ProfileStyle.th}>Current Status</th>
+							<th className={ProfileStyle.th}>Status</th>
 						) : (
 							<th className={ProfileStyle.th}>Date</th>
 						)}
@@ -235,6 +235,7 @@ const ProfileLogTable = ({ borderColor, logExpanded, activeType }) => {
 						</tr>
 					) : (
 						logExpanded?.map((item, index) => {
+							console.log(item, '--item');
 							return (
 								<tr>
 									<td className={ProfileStyle.td}>HR {index + 1}</td>
@@ -242,25 +243,18 @@ const ProfileLogTable = ({ borderColor, logExpanded, activeType }) => {
 									<td className={ProfileStyle.td}>{item?.position}</td>
 									<td className={ProfileStyle.td}>{item?.company}</td>
 									{activeType === ProfileLog.FEEDBACK && (
-										<td className={ProfileStyle.td}>
-											<a
-												href="#"
-												style={{ textDecoration: 'underline' }}>
-												View here
-											</a>
-										</td>
+										<td className={ProfileStyle.td}>{item?.talentStatus}</td>
 									)}
 									{activeType === ProfileLog.REJECTED && (
-										<td className={ProfileStyle.td}>
-											<a href="#">View here</a>
-										</td>
+										<td className={ProfileStyle.td}>{item?.talentStatus}</td>
 									)}
 									{activeType === ProfileLog.SELECTED ? (
 										<td className={ProfileStyle.td}>
-											{All_Hiring_Request_Utils.GETTALENTSTATUS(
+											{/* {All_Hiring_Request_Utils.GETTALENTSTATUS(
 												item?.frontStatusID,
 												item?.talentStatus,
-											)}
+											)} */}
+											{item?.talentStatus}
 										</td>
 									) : (
 										<td className={ProfileStyle.td}>{item?.sDate}</td>

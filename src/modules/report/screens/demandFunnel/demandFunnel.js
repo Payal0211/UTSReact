@@ -300,7 +300,9 @@ const DemandFunnelScreen = () => {
 				) : (
 					<>
 						<Table
-							scroll={{ x: 150, y: 'calc(100vh - 220px)' }}
+							className="demandTable"
+							// scroll={{ x: 150, y: 'calc(100vh - 220px)' }}
+							// scrollToFirstRowOnChange
 							id="hrListingTable"
 							columns={tableColumnsMemo}
 							bordered={false}
