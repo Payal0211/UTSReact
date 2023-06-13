@@ -183,6 +183,12 @@ const SlaReports = () => {
 	}
 
 	const [slaDetailsList, setSlaDetailsList] = useState([])
+
+
+	useEffect(() => {
+		setslaValue(0)
+	}, [])
+
 	const slaReportDetails = async (pageData) => {
 		let data = {
 			totalrecord: pageData?.totalRecord ? pageData?.totalRecord : 100,
