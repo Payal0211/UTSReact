@@ -94,7 +94,6 @@ export const reportConfig = {
 		});
 	},
 	demandFunnelHRDetails: (stage) => {
-		console.log(stage, '---stage');
 		return stage === 'HR Lost'
 			? [
 					{
@@ -262,6 +261,7 @@ export const reportConfig = {
 				label: 'Head',
 				name: 'head',
 				child: filterList?.TeamManager,
+				isSearch: true,
 			},
 			{
 				label: 'Action/HR',

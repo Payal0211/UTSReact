@@ -6,6 +6,8 @@ import { ReactComponent as ArrowRightSVG } from 'assets/svg/arrowRight.svg';
 import { ReactComponent as CrossSVG } from 'assets/svg/cross.svg';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { hrUtils } from 'modules/hiring request/hrUtils';
+import { AiOutlineSearch } from 'react-icons/ai';
+import { InputType } from 'constants/application';
 
 const DemandFunnelFilter = ({
 	setAppliedFilters,
@@ -94,6 +96,13 @@ const DemandFunnelFilter = ({
 			setFilteredTagLength,
 		],
 	);
+
+	const demandFunnelSearchFilter = (e, data) => {
+		let filteredData = data.filter((val) => {
+			return val?.value?.toLowerCase().includes(e.target.value.toLowerCase());
+		});
+		return filteredData;
+	};
 
 	const filteredTags = useMemo(() => {
 		if (appliedFilter.size > 0) {
@@ -302,6 +311,24 @@ const DemandFunnelFilter = ({
 							<br />
 
 							<br />
+							{filterSubChild?.isSearch && (
+								<div className={hiringFilterStyle.searchFiltersList}>
+									<AiOutlineSearch
+										style={{ fontSize: '20px', fontWeight: '800' }}
+									/>
+									<input
+										className={hiringFilterStyle.searchInput}
+										type={InputType.TEXT}
+										id="search"
+										placeholder={`Search ${filterSubChild?.label}`}
+										onChange={(e) => {
+											return setSearchData(
+												demandFunnelSearchFilter(e, filterSubChild?.child),
+											);
+										}}
+									/>
+								</div>
+							)}
 							<div className={hiringFilterStyle.filtersListType}>
 								{filterSubChild?.label === 'Head'
 									? searchData && searchData.length > 0
@@ -311,6 +338,12 @@ const DemandFunnelFilter = ({
 														className={hiringFilterStyle.filterItem}
 														key={index}>
 														<Checkbox
+															disabled={
+																appliedFilter?.get(`${filterSubChild.name}`) &&
+																!checkedState.get(
+																	`${filterSubChild.name}${item.text}`,
+																)
+															}
 															checked={checkedState.get(
 																`${filterSubChild.name}${item.text}`,
 															)}

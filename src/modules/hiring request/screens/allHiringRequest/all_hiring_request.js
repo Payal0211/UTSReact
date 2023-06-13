@@ -164,6 +164,7 @@ const AllHiringRequestScreen = () => {
 			hrid: getHRID,
 		};
 		const response = data?.hrid && (await MasterDAO.getCloneHRDAO(data));
+		console.log(response, '--response');
 		if (response.statusCode === HTTPStatusCode.OK) {
 			setCloneHR(false);
 			localStorage.setItem('hrID', response?.responseBody?.details);
@@ -240,12 +241,12 @@ const AllHiringRequestScreen = () => {
 	const toggleHRFilter = useCallback(() => {
 		getHRFilterRequest();
 		!getHTMLFilter
-			? setIsAllowFilters(!isAllowFilters)
+			? setIsAllowFilters(true)
 			: setTimeout(() => {
-					setIsAllowFilters(!isAllowFilters);
+					setIsAllowFilters(true);
 			  }, 300);
 		setHTMLFilter(!getHTMLFilter);
-	}, [getHRFilterRequest, getHTMLFilter, isAllowFilters]);
+	}, [getHRFilterRequest, getHTMLFilter]);
 
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);
@@ -349,7 +350,8 @@ const AllHiringRequestScreen = () => {
 						iconBorder={`1px solid var(--color-sunlight)`}
 						isDropdown={true}
 						listItem={
-							miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS
+							miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS ||
+							miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
 								? [
 										{
 											label: 'Add New HR',
@@ -564,6 +566,7 @@ const AllHiringRequestScreen = () => {
 						setAppliedFilters={setAppliedFilters}
 						appliedFilter={appliedFilter}
 						setCheckedState={setCheckedState}
+						setIsAllowFilters={setIsAllowFilters}
 						checkedState={checkedState}
 						handleHRRequest={handleHRRequest}
 						setTableFilteredState={setTableFilteredState}
