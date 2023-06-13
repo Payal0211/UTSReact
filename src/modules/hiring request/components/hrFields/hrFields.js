@@ -728,6 +728,7 @@ const HRFields = ({
 			const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+				window.scrollTo(0, 0);
 				setIsSavedLoading(false);
 				setAddHRResponse(addHRRequest?.responseBody?.details);
 				if (params === 'addnewhr') {

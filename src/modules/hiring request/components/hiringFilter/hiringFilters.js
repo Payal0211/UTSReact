@@ -16,6 +16,7 @@ const HiringFilters = ({
 	setFilteredTagLength,
 	onRemoveHRFilters,
 	checkedState,
+	setIsAllowFilters,
 	hrFilterList,
 	tableFilteredState,
 	setTableFilteredState,
@@ -167,11 +168,13 @@ const HiringFilters = ({
 			filterFields_ViewAllHRs: {},
 		};
 		handleHRRequest(reqFilter);
+		setIsAllowFilters(false);
 	}, [
 		handleHRRequest,
 		setAppliedFilters,
 		setCheckedState,
 		setFilteredTagLength,
+		setIsAllowFilters,
 		setTableFilteredState,
 		tableFilteredState,
 	]);
@@ -189,9 +192,10 @@ const HiringFilters = ({
 			filterFields_ViewAllHRs: { ...filters },
 		};
 		// handleHRRequest(reqFilter);
+		setIsAllowFilters(false);
 	}, [
 		appliedFilter,
-		// handleHRRequest,
+		setIsAllowFilters,
 		setTableFilteredState,
 		tableFilteredState,
 	]);

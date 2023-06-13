@@ -37,6 +37,7 @@ import EngagementInvoice from '../engagementInvoice/engagementInvoice';
 
 import RenewEngagement from '../renewEngagement/renewEngagement';
 import { useForm, Controller } from 'react-hook-form';
+import { downloadToExcel } from 'modules/report/reportUtils';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() => import('./engagementFilter'));
@@ -341,10 +342,17 @@ const EngagementList = () => {
 
 	return (
 		<div className={allEngagementStyles.hiringRequestContainer}>
-			<div className={allEngagementStyles.userListTitle}>
+			<div className={allEngagementStyles.addnewHR}>
 				<div className={allEngagementStyles.hiringRequest}>
 					Engagement Dashboard -{' '}
 					{new Date().toLocaleDateString('default', { month: 'long' })}
+				</div>
+				<div>
+					<button
+						className={allEngagementStyles.btnPrimary}
+						onClick={() => downloadToExcel(apiData)}>
+						Export
+					</button>
 				</div>
 			</div>
 

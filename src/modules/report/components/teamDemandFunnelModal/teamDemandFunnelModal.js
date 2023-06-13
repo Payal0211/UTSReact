@@ -96,6 +96,9 @@ const TeamDemandFunnelModal = ({
 											.includes(e.target.value.toLowerCase()) ||
 										val.availability
 											.toLowerCase()
+											.includes(e.target.value.toLowerCase()) ||
+										val.talentName
+											.toLowerCase()
 											.includes(e.target.value.toLowerCase())
 									);
 								});

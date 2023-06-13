@@ -9,16 +9,27 @@ const CloneHRModal = ({
 	return (
 		<div className={CloneHRModalStyle.cloneHRConfContent}>
 			<h2>Are you sure want to clone HR {getHRnumber}</h2>
-			{cloneHRhandler ? (
-				<button onClick={() => cloneHRhandler()}>Ok</button>
-			) : (
-				<button onClick={() => navigateToCloneHR()}>Ok</button>
-			)}
-			<button
-				onClick={() => onCancel()}
-				className={CloneHRModalStyle.btnPrimary}>
-				Cancel
-			</button>
+
+			<div className={CloneHRModalStyle.formPanelAction}>
+				{cloneHRhandler ? (
+					<button
+						className={CloneHRModalStyle.btnPrimary}
+						onClick={() => cloneHRhandler()}>
+						Ok
+					</button>
+				) : (
+					<button
+						className={CloneHRModalStyle.btnPrimary}
+						onClick={() => navigateToCloneHR()}>
+						Ok
+					</button>
+				)}
+				<button
+					className={CloneHRModalStyle.btn}
+					onClick={() => onCancel()}>
+					Cancel
+				</button>
+			</div>
 		</div>
 	);
 };

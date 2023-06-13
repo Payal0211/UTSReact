@@ -96,6 +96,9 @@ const SupplyFunnelModal = ({
 											.includes(e.target.value.toLowerCase()) ||
 										val.availability
 											.toLowerCase()
+											.includes(e.target.value.toLowerCase()) ||
+										val.talentName
+											.toLowerCase()
 											.includes(e.target.value.toLowerCase())
 									);
 								});
@@ -126,7 +129,9 @@ const SupplyFunnelModal = ({
 					) : (
 						<Table
 							id="hrListingTable"
-							columns={reportConfig?.demandFunnelHRDetails()}
+							columns={reportConfig?.demandFunnelHRDetails(
+								demandFunnelValue?.stage,
+							)}
 							bordered={false}
 							dataSource={
 								searchData && searchData?.length > 0
