@@ -86,6 +86,9 @@ const SlaReports = () => {
 				hR_Number: "",
 				company: "",
 				actionFilter: 0,
+				stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 				// ambdr: 0
 			}
 		})
@@ -113,6 +116,9 @@ const SlaReports = () => {
 				hR_Number: "",
 				company: "",
 				actionFilter: 0,
+				stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 				// ambdr: 0
 			}
 		})
@@ -136,6 +142,9 @@ const SlaReports = () => {
 			hR_Number: "",
 			company: "",
 			actionFilter: 0,
+			stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 			// ambdr: 0
 		}
 	});
@@ -145,7 +154,6 @@ const SlaReports = () => {
 	var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
 	const slaReportList = async (pageData) => {
-		console.log(pageData, "pageData");
 		let obj = {
 			startDate: pageData ? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format("YYYY-MM-DD") : moment(firstDay).format("YYYY-MM-DD"),
 			endDate: pageData ? moment(pageData?.filterFields_ViewAllHRs?.toDate).format("YYYY-MM-DD") : moment(lastDay).format("YYYY-MM-DD"),
@@ -159,7 +167,10 @@ const SlaReports = () => {
 			hR_Number: "",
 			company: "",
 			actionFilter: 0,
-			ambdr: 0
+			ambdr: 0,
+			stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 		}
 		setLoading(true);
 		let response = await ReportDAO.OverAllSLASummaryDAO(obj)
@@ -187,11 +198,14 @@ const SlaReports = () => {
 				stage: "",
 				isAdHoc: 0,
 				role: "",
-				slaType: 0,
+				slaType: slaValue === 0 ?0:1,
 				type: 0,
 				hR_Number: "",
 				company: "",
 				actionFilter: 0,
+				stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 				// ambdr: 0
 			}
 		}
@@ -276,11 +290,14 @@ const SlaReports = () => {
 					stages: "",
 					isAdHoc: 0,
 					role: "",
-					slaType: 0,
+					slaType: slaValue === 0 ?0:1,
 					type: 0,
 					hR_Number: "",
 					company: "",
 					actionFilter: 0,
+					stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 					// ambdr: 0
 				}
 			})
@@ -309,6 +326,7 @@ const SlaReports = () => {
 
 
 	useEffect(() => {
+		setslaValue(0)
 		slaReportList()
 		slaReportDetails()
 	}, [])

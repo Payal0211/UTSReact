@@ -46,8 +46,6 @@ const SlaReportFilerList = ({
         (isChecked, filterObj) => {
             let tempAppliedFilters = new Map(appliedFilter);
             let tempCheckedState = new Map(checkedState);
-            console.log(isChecked,"filterObj");
-            console.log(tempCheckedState,"tempCheckedState");
             if (isChecked) {
                 tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, true);
                 setFilteredTagLength((prev) => prev + 1);
@@ -118,6 +116,9 @@ const SlaReportFilerList = ({
           hR_Number: "",
           company: "",
           actionFilter: 0,
+          stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
           // ambdr: 0
       }
     });
@@ -140,6 +141,9 @@ const SlaReportFilerList = ({
             hR_Number: "",
             company: "",
             actionFilter: 0,
+            stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
             // ambdr: 0
         }
     });
@@ -167,7 +171,6 @@ const SlaReportFilerList = ({
     // const reqFilter = {
     //   ...tableFilteredState,
     // };
-    // console.log(reqFilter,"sasdasdasdasdasd")
     
     for (let key in filters) {
       const newState = { ...slaReportDetailsState };
@@ -326,19 +329,19 @@ const SlaReportFilerList = ({
                           className={slaReportStyle.filterItem}
                           key={index}>
                           <Checkbox
-                          disabled={
-                            appliedFilter?.get(`${filterSubChild.name}`) &&
-                            !checkedState.get(
-                              `${filterSubChild.name}${item.text}`,
-                            )
-                          }
+                          // disabled={
+                          //   appliedFilter?.get(`${filterSubChild.name}`) &&
+                          //   !checkedState.get(
+                          //     `${filterSubChild.name}${item.text}`,
+                          //   )
+                          // }
                             checked={checkedState.get(
                               `${filterSubChild?.name}${item.text}`,
                             )}
                             onChange={(e) => {
                               handleAppliedFilters(e.target.checked, {
                                 filterType: filterSubChild?.name,
-                                value: item?.text,
+                                value: item?.value,
                                 id: item?.text,
                               })
                             }}
@@ -361,19 +364,19 @@ const SlaReportFilerList = ({
                             key={index}
                           >
                             <Checkbox
-                            disabled={
-															appliedFilter?.get(`${filterSubChild.name}`) &&
-															!checkedState.get(
-																`${filterSubChild.name}${item.text}`,
-															)
-														}
+                            // disabled={
+														// 	appliedFilter?.get(`${filterSubChild.name}`) &&
+														// 	!checkedState.get(
+														// 		`${filterSubChild.name}${item.text}`,
+														// 	)
+														// }
                               checked={checkedState.get(
                                 `${filterSubChild?.name}${item.text}`
                               )}
                               onChange={(e) => {
                                 handleAppliedFilters(e.target.checked, {
                                   filterType: filterSubChild?.name,
-                                  value: item?.text,
+                                  value: item?.value,
                                   id: item?.text,
                                 });
                               }}

@@ -94,7 +94,6 @@ export const reportConfig = {
 		});
 	},
 	demandFunnelHRDetails: (stage) => {
-		console.log(stage, '---stage');
 		return stage === 'HR Lost'
 			? [
 					{
@@ -672,9 +671,12 @@ export const reportConfig = {
 										? 'red'
 										: text === 'ON Time'
 										? 'lightblue'
+										:text === "Exceeded SLA" 
+										? "#ffda31"
 										: 'transparent',
-							}}>
-							{text ? text : 'NA'}
+							}}
+							>
+							{text}
 						</p>
 					);
 				},
@@ -710,19 +712,19 @@ export const reportConfig = {
 		return [
 			{
 				label: 'Stages',
-				name: 'stages',
+				name: 'stageIDs',
 				child: filterList?.stages,
 				isSearch: true,
 			},
 			{
 				label: 'Action Filter',
-				name: 'actionFilter',
+				name: 'actionFilterIDs',
 				child: filterList?.actionFilterDrop,
 				isSearch: true,
 			},
 			{
 				label: 'Company',
-				name: 'companies',
+				name: 'CompanyIDs',
 				child: filterList?.companies,
 				isSearch: true,
 			},
