@@ -1,4 +1,4 @@
-import { Dropdown, Menu, Table } from 'antd';
+import { Link } from 'react-router-dom';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
@@ -46,19 +46,6 @@ const I2sReport = () => {
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
 	const navigate = useNavigate();
-
-	// const onRemoveDealFilters = () => {
-	// 	setTimeout(() => {
-	// 		setIsAllowFilters(false);
-	// 	}, 300);
-	// 	setHTMLFilter(false);
-	// };
-	// const onChange = (dates) => {
-	// 	const [start, end] = dates;
-	// 	setStartDate(start);
-	// 	setEndDate(end);
-	// };
-	// const tableColumnsMemo = useMemo(() => DealConfig.tableConfig(), []);
 	const handleDealRequest = useCallback(
 		async (pageData) => {
 			setLoading(true);
@@ -107,16 +94,6 @@ const I2sReport = () => {
 		}
 	}, [navigate]);
 
-	// const toggleDealFilter = useCallback(() => {
-	// 	getDealFilterRequest();
-	// 	!getHTMLFilter
-	// 		? setIsAllowFilters(!isAllowFilters)
-	// 		: setTimeout(() => {
-	// 				setIsAllowFilters(!isAllowFilters);
-	// 		  }, 300);
-	// 	setHTMLFilter(!getHTMLFilter);
-	// }, [getDealFilterRequest, getHTMLFilter, isAllowFilters]);
-
 	useEffect(() => {
 		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
 		return () => clearTimeout(timer);
@@ -163,14 +140,6 @@ const I2sReport = () => {
 			 */}
 			<div className={I2SReport.filterContainer}>
 				<div className={I2SReport.filterSets}>
-					{/* <div
-						className={I2SReport.addFilter}
-						onClick={toggleDealFilter}>
-						<FunnelSVG style={{ width: '16px', height: '16px' }} />
-
-						<div className={I2SReport.filterLabel}>Add Filters</div>
-						<div className={I2SReport.filterCount}>{filteredTagLength}</div>
-					</div> */}
 					<div className={I2SReport.filterRight}>
 						<div className={I2SReport.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
@@ -205,108 +174,896 @@ const I2sReport = () => {
 								/>
 							</div>
 						</div>
-
-						{/* <div className={I2SReport.priorityFilterSet}>
-							<div className={I2SReport.label}>Showing</div>
-
-							<div className={I2SReport.paginationFilter}>
-								<Dropdown
-									trigger={['click']}
-									placement="bottom"
-									overlay={
-										<Menu
-											onClick={(e) => {
-												setPageSize(parseInt(e.key));
-
-												if (pageSize !== parseInt(e.key)) {
-													handleDealRequest({
-														...tableFilteredState,
-														pageNumber: pageIndex,
-														totalRecord: parseInt(e.key),
-													});
-												}
-											}}>
-											{pageSizeOptions.map((item) => {
-												return <Menu.Item key={item}>{item}</Menu.Item>;
-											})}
-										</Menu>
-									}>
-									<span>
-										{pageSize}
-										<IoChevronDownOutline
-											style={{ paddingTop: '5px', fontSize: '16px' }}
-										/>
-									</span>
-								</Dropdown>
-							</div>
-						</div> */}
 					</div>
 				</div>
 			</div>
-			{/*
-			 * ------------ Table Starts-----------
-			 * @Table Part
-			 */}
 
-			{/* <div className={I2SReport.tableDetails}>
-				{isLoading ? (
-					<TableSkeleton />
-				) : (
-					<WithLoader>
-						<Table
-							id="hrListingTable"
-							columns={tableColumnsMemo}
-							bordered={false}
-							dataSource={
-								search && search.length > 0 ? [...search] : [...dealList]
-							}
-							pagination={{
-								onChange: (pageNum, pageSize) => {
-									setPageIndex(pageNum);
-									setPageSize(pageSize);
-									setTableFilteredState({
-										...tableFilteredState,
-										totalRecord: pageSize,
-										pageNumber: pageNum,
-									});
-									handleDealRequest({
-										pageNumber: pageNum,
-										totalRecord: pageSize,
-									});
-								},
-								size: 'small',
-								pageSize: pageSize,
-								pageSizeOptions: pageSizeOptions,
-								total: totalRecords,
-								showTotal: (total, range) =>
-									`${range[0]}-${range[1]} of ${totalRecords} items`,
-								defaultCurrent: pageIndex,
-							}}
-						/>
-					</WithLoader>
-				)}
+			<div className={I2SReport.i2sContainer}>
+				<ul className={I2SReport.i2sListing}>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>Overall (NBD + AM + Partnership)</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											124
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											73
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											208
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											2
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											59%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>NBD - US/CA</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											12
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											9
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											44
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											1
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											75%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>Account Management</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											2
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											1
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											3
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											50%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>NBD - AU/NZ</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											3
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											0%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>NBD - DataTeam</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											0%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>NBD - UK/EU/ROW</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											0%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>AM india</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											0%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>Bhuvan UTS AM Team</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											84
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											53
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											133
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											1
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											63%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>Reshma B team</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											3
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											1
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											20
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											33%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>Ankit Pandya Team</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											7
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											2
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											1
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											29%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>Jaymin Bhuptani NBD Team</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											16
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											4
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											4
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											25%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>Attract - AU</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											0%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>Nurture - US</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											0%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div className={I2SReport.cardWrapper}>
+							<div className={I2SReport.cardTitle}>Partnership</div>
+							<ul className={I2SReport.cardInner}>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Total Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Hired</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Cancelled</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Interview Feedback Pending</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Feedback Submitted With AnotherRound/NoHire/OnHold</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>Profile Reject/OnHold/Cancelled After Interview Done</div>
+									<div className={I2SReport.rowValue}>
+										<Link className={I2SReport.textLink}>
+											0
+										</Link>
+									</div>
+								</li>
+								<li className={I2SReport.row}>
+									<div className={I2SReport.rowLabel}>I2S %</div>
+									<div className={I2SReport.rowValue}>
+										<div className={I2SReport.textLabel}>
+											0%
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
 			</div>
-
-			{isAllowFilters && (
-				<Suspense>
-					<DealListLazyComponents
-						setAppliedFilters={setAppliedFilters}
-						appliedFilter={appliedFilter}
-						setCheckedState={setCheckedState}
-						checkedState={checkedState}
-						handleDealRequest={handleDealRequest}
-						setTableFilteredState={setTableFilteredState}
-						tableFilteredState={tableFilteredState}
-						setFilteredTagLength={setFilteredTagLength}
-						onRemoveDealFilters={onRemoveDealFilters}
-						getHTMLFilter={getHTMLFilter}
-						hrFilterList={DealConfig.dealFiltersListConfig()}
-						filtersType={DealConfig.dealFilterTypeConfig(
-							filtersList && filtersList,
-						)}
-					/>
-				</Suspense>
-			)} */}
 		</div>
 	);
 };
