@@ -86,6 +86,9 @@ const SlaReports = () => {
 				hR_Number: "",
 				company: "",
 				actionFilter: 0,
+				stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 				// ambdr: 0
 			}
 		})
@@ -113,6 +116,9 @@ const SlaReports = () => {
 				hR_Number: "",
 				company: "",
 				actionFilter: 0,
+				stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 				// ambdr: 0
 			}
 		})
@@ -136,6 +142,9 @@ const SlaReports = () => {
 			hR_Number: "",
 			company: "",
 			actionFilter: 0,
+			stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 			// ambdr: 0
 		}
 	});
@@ -159,7 +168,10 @@ const SlaReports = () => {
 			hR_Number: "",
 			company: "",
 			actionFilter: 0,
-			ambdr: 0
+			ambdr: 0,
+			stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 		}
 		setLoading(true);
 		let response = await ReportDAO.OverAllSLASummaryDAO(obj)
@@ -172,6 +184,12 @@ const SlaReports = () => {
 	}
 
 	const [slaDetailsList, setSlaDetailsList] = useState([])
+
+
+	useEffect(() => {
+		setslaValue(0)
+	}, [])
+
 	const slaReportDetails = async (pageData) => {
 		let data = {
 			totalrecord: pageData?.totalRecord ? pageData?.totalRecord : 100,
@@ -187,11 +205,14 @@ const SlaReports = () => {
 				stage: "",
 				isAdHoc: 0,
 				role: "",
-				slaType: 0,
+				slaType: slaValue === 0 ?0:1,
 				type: 0,
 				hR_Number: "",
 				company: "",
 				actionFilter: 0,
+				stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 				// ambdr: 0
 			}
 		}
@@ -276,11 +297,14 @@ const SlaReports = () => {
 					stages: "",
 					isAdHoc: 0,
 					role: "",
-					slaType: 0,
+					slaType: slaValue === 0 ?0:1,
 					type: 0,
 					hR_Number: "",
 					company: "",
 					actionFilter: 0,
+					stageIDs:"",
+				actionFilterIDs:"",
+				CompanyIds:"",
 					// ambdr: 0
 				}
 			})
@@ -309,6 +333,7 @@ const SlaReports = () => {
 
 
 	useEffect(() => {
+		setslaValue(0)
 		slaReportList()
 		slaReportDetails()
 	}, [])
