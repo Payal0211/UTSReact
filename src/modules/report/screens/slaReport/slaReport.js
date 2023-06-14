@@ -141,8 +141,8 @@ const SlaReports = () => {
 	});
 
 	var date = new Date();
-	var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-	var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+	var firstDay = startDate !== null ? startDate : new Date(date.getFullYear(), date.getMonth(), 1);
+	var lastDay = endDate !== null ? endDate : new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
 	const slaReportList = async (pageData) => {
 		console.log(pageData, "pageData");
@@ -602,7 +602,10 @@ const SlaReports = () => {
 									// 	totalrecord: pageSize,
 									// 	pagenumber: pageNum,
 									// });
-									slaReportDetails({ pageNumber: pageNum, totalRecord: pageSize });
+									slaReportDetails({ pageNumber: pageNum, totalRecord: pageSize , filterFields_ViewAllHRs: {
+										fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+										toDate: new Date(lastDay).toLocaleDateString('en-US'),
+									} });
 								},
 								size: 'small',
 								pageSize: pageSize,
