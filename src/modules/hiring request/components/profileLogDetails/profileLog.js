@@ -278,56 +278,56 @@ const ProfileLogDetails = ({
 	useEffect(() => {
 		viewProfileInfo();
 	}, []);
-  const [feedback, setFeedback] = useState(true);
-  const [profileReject, setProfileReject] = useState(false);
-  const [selected, setSelected] = useState(false);
-  const [profileSharedd, setprofileShared] = useState(false);
+	const [feedback, setFeedback] = useState(true);
+	const [profileReject, setProfileReject] = useState(false);
+	const [selected, setSelected] = useState(false);
+	const [profileSharedd, setprofileShared] = useState(false);
 
-  const rightArrowClick = () => {
-    if (profileSharedd === true) {
-      profileLogBox();
-      setprofileShared(false);
-      setFeedback(true)
-    }
-    else if (feedback === true) {
-      feedbackReceived();
-      setFeedback(false);
-      setProfileReject(true);
-    }
-    else if (profileReject === true) {
-      profileRejectedDetails()
-      setSelected(true);
-      setProfileReject(false);
-    }
-    else if (selected) {
-      selectFor();
-    }
-  };
-  const leftArrowClick = () => {
-    if (profileSharedd) {
-      profileLogBox();
-      setFeedback(false);
-      setProfileReject(false);
-      setSelected(false);
-    }
-    else if (feedback === true) {
-      profileLogBox();
-      setFeedback(true);
-      setProfileReject(false);
-      setprofileShared(true);
-    }
-    else if (profileReject === true) {
-      feedbackReceived();
-      setSelected(false);
-      setProfileReject(true);
-      setFeedback(true);
-    }
-    else if (selected) {
-      profileRejectedDetails()
-      setSelected(false);
-      setProfileReject(true);
-    }
-  };
+	const rightArrowClick = () => {
+		if (profileSharedd === true) {
+			profileLogBox();
+			setprofileShared(false);
+			setFeedback(true)
+		}
+		else if (feedback === true) {
+			feedbackReceived();
+			setFeedback(false);
+			setProfileReject(true);
+		}
+		else if (profileReject === true) {
+			profileRejectedDetails()
+			setSelected(true);
+			setProfileReject(false);
+		}
+		else if (selected) {
+			selectFor();
+		}
+	};
+	const leftArrowClick = () => {
+		if (profileSharedd) {
+			profileLogBox();
+			setFeedback(false);
+			setProfileReject(false);
+			setSelected(false);
+		}
+		else if (feedback === true) {
+			profileLogBox();
+			setFeedback(true);
+			setProfileReject(false);
+			setprofileShared(true);
+		}
+		else if (profileReject === true) {
+			feedbackReceived();
+			setSelected(false);
+			setProfileReject(true);
+			setFeedback(true);
+		}
+		else if (selected) {
+			profileRejectedDetails()
+			setSelected(false);
+			setProfileReject(true);
+		}
+	};
 
 	return (
 		<>
@@ -371,33 +371,29 @@ const ProfileLogDetails = ({
 
 			<div className={ProfileLogStyle.profileLogBox}>
 				<div
-					className={`${ProfileLogStyle.profileLogBoxItem} ${
-						ProfileLogStyle.profileShared
-					} ${showProfileShared ? ProfileLogStyle.select : ''}`}
+					className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileShared
+						} ${showProfileShared ? ProfileLogStyle.select : ''}`}
 					onClick={profileLogBox}>
 					<h3>{profileLog?.profileSharedCount}</h3>
 					<p>Profile Shared</p>
 				</div>
 				<div
-					className={`${ProfileLogStyle.profileLogBoxItem} ${
-						ProfileLogStyle.profileReceived
-					} ${feedbackReceivedClass ? ProfileLogStyle.select : ''}`}
+					className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileReceived
+						} ${feedbackReceivedClass ? ProfileLogStyle.select : ''}`}
 					onClick={feedbackReceived}>
 					<h3>{profileLog?.feedbackCount}</h3>
 					<p>Feedback Received</p>
 				</div>
 				<div
-					className={`${ProfileLogStyle.profileLogBoxItem} ${
-						ProfileLogStyle.profileRejected
-					} ${showProfileRejectClass ? ProfileLogStyle.select : ''}`}
+					className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileRejected
+						} ${showProfileRejectClass ? ProfileLogStyle.select : ''}`}
 					onClick={profileRejectedDetails}>
 					<h3>{profileLog?.rejectedCount}</h3>
 					<p>Rejected</p>
 				</div>
 				<div
-					className={`${ProfileLogStyle.profileLogBoxItem} ${
-						ProfileLogStyle.profileSelFor
-					} ${selectForClass ? ProfileLogStyle.select : ''}`}
+					className={`${ProfileLogStyle.profileLogBoxItem} ${ProfileLogStyle.profileSelFor
+						} ${selectForClass ? ProfileLogStyle.select : ''}`}
 					onClick={selectFor}>
 					<h3>{profileLog?.selectedForCount}</h3>
 					<p>Selected For</p>
@@ -409,24 +405,24 @@ const ProfileLogDetails = ({
 				showProfileRejectClass ||
 				selectForClass
 			) && (
-				<div className={ProfileLogStyle.selectBoxNote}>
-					Select the stages to view their HRs
-				</div>
-			)}
+					<div className={ProfileLogStyle.selectBoxNote}>
+						Select the stages to view their HRs
+					</div>
+				)}
 			{showProfileShared === true && (
 				<>
 					{profileShared?.length !== 0 && (
 						<div
 							className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
 							<div className={ProfileLogStyle.profileLogListHead}>
-								<h4>Profile Shared: 04 HRs</h4>
+								<h4>Profile Shared: {profileLog?.profileSharedCount}</h4>
 								<div className={ProfileLogStyle.profileLogListAction}>
-                  <button onClick={leftArrowClick}>
-                    <LeftArrowSVG />
-                  </button>
-                  <button onClick={rightArrowClick}>
-                    <RightArrowSVG />
-                  </button>
+									<button onClick={leftArrowClick}>
+										<LeftArrowSVG />
+									</button>
+									<button onClick={rightArrowClick}>
+										<RightArrowSVG />
+									</button>
 								</div>
 							</div>
 
@@ -485,14 +481,14 @@ const ProfileLogDetails = ({
 						<div
 							className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileReceived}`}>
 							<div className={ProfileLogStyle.profileLogListHead}>
-								<h4>Feedback Received: 04 HRs</h4>
+								<h4>Feedback Received: {profileLog?.feedbackCount}</h4>
 								<div className={ProfileLogStyle.profileLogListAction}>
-                  <button onClick={leftArrowClick}>
-                    <LeftArrowSVG />
-                  </button>
-                  <button onClick={rightArrowClick}>
-                    <RightArrowSVG />
-                  </button>
+									<button onClick={leftArrowClick}>
+										<LeftArrowSVG />
+									</button>
+									<button onClick={rightArrowClick}>
+										<RightArrowSVG />
+									</button>
 								</div>
 							</div>
 
@@ -550,14 +546,14 @@ const ProfileLogDetails = ({
 						<div
 							className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileRejected}`}>
 							<div className={ProfileLogStyle.profileLogListHead}>
-								<h4>Profile Rejected : 05 HRs</h4>
+								<h4>Profile Rejected : {profileLog?.rejectedCount}</h4>
 								<div className={ProfileLogStyle.profileLogListAction}>
-                  <button onClick={leftArrowClick}>
-                    <LeftArrowSVG />
-                  </button>
-                  <button onClick={rightArrowClick}>
-                    <RightArrowSVG />
-                  </button>
+									<button onClick={leftArrowClick}>
+										<LeftArrowSVG />
+									</button>
+									<button onClick={rightArrowClick}>
+										<RightArrowSVG />
+									</button>
 								</div>
 							</div>
 
@@ -614,14 +610,14 @@ const ProfileLogDetails = ({
 						<div
 							className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileSelFor}`}>
 							<div className={ProfileLogStyle.profileLogListHead}>
-								<h4>Selected For : 04 HRs</h4>
+								<h4>Selected For : {profileLog?.selectedForCount}</h4>
 								<div className={ProfileLogStyle.profileLogListAction}>
-                  <button onClick={leftArrowClick}>
-                    <LeftArrowSVG />
-                  </button>
-                  <button onClick={rightArrowClick}>
-                    <RightArrowSVG />
-                  </button>
+									<button onClick={leftArrowClick}>
+										<LeftArrowSVG />
+									</button>
+									<button onClick={rightArrowClick}>
+										<RightArrowSVG />
+									</button>
 								</div>
 							</div>
 
