@@ -936,4 +936,20 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.deleteInterviewRequest');
 		}
 	},
+	closeHRValidation: async (id) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.CLOSE_HR_VALIDATION + `?hrId=${id}`;
+			httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.closeHRValidation');
+		}
+	}
+
 };
