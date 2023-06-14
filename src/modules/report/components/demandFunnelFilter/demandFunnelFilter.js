@@ -8,6 +8,7 @@ import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { InputType } from 'constants/application';
+import { demandFunnelDefault } from 'modules/report/screens/demandFunnel/demandFunnel';
 
 const DemandFunnelFilter = ({
 	setAppliedFilters,
@@ -22,6 +23,7 @@ const DemandFunnelFilter = ({
 	setTableFilteredState,
 	filtersType,
 	getHTMLFilter,
+	viewDemandFunnelSummaryHandler,
 	setDemandFunnelHRDetailsState,
 	demandFunnelHRDetailsState,
 }) => {
@@ -56,6 +58,7 @@ const DemandFunnelFilter = ({
 				tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, false);
 				setFilteredTagLength((prev) => prev - 1);
 			}
+
 			if (tempAppliedFilters.has(filterObj.filterType)) {
 				let filterAddress = tempAppliedFilters.get(filterObj.filterType);
 				if (isChecked) {
@@ -85,6 +88,7 @@ const DemandFunnelFilter = ({
 			} else {
 				tempAppliedFilters.set(filterObj.filterType, filterObj);
 			}
+
 			setAppliedFilters(tempAppliedFilters);
 			setCheckedState(tempCheckedState);
 		},
@@ -212,6 +216,7 @@ const DemandFunnelFilter = ({
 				isActionWise: true,
 			},
 		});
+		viewDemandFunnelSummaryHandler(demandFunnelDefault);
 		const reqFilter = {
 			startDate: '',
 			endDate: '',
@@ -231,6 +236,7 @@ const DemandFunnelFilter = ({
 		setDemandFunnelHRDetailsState,
 		setFilteredTagLength,
 		setTableFilteredState,
+		viewDemandFunnelSummaryHandler,
 	]);
 
 	const handleFilters = useCallback(() => {
@@ -242,19 +248,19 @@ const DemandFunnelFilter = ({
 					item?.filterType === 'companyCategory' ? item?.value : item.id,
 			};
 		});
+
 		setTableFilteredState({
-			...tableFilteredState,
+			...demandFunnelDefault,
 			...filters,
 		});
 
 		const reqFilter = {
-			...tableFilteredState,
+			...demandFunnelDefault,
 			...filters,
-			// filterFields_ViewAllHRs: { ...filters },
 		};
 
 		if (reqFilter?.isActionWise === '1') reqFilter.isActionWise = true;
-		else reqFilter.isActionWise = false;
+		else if (reqFilter?.isActionWise === '0') reqFilter.isActionWise = false;
 		setDemandFunnelHRDetailsState({
 			...demandFunnelHRDetailsState,
 			funnelFilter: {
@@ -262,14 +268,14 @@ const DemandFunnelFilter = ({
 			},
 		});
 		setTableFilteredState(reqFilter);
+		viewDemandFunnelSummaryHandler(reqFilter);
 		// handleHRRequest(reqFilter);
 	}, [
 		appliedFilter,
 		demandFunnelHRDetailsState,
-		// handleHRRequest,
 		setDemandFunnelHRDetailsState,
 		setTableFilteredState,
-		tableFilteredState,
+		viewDemandFunnelSummaryHandler,
 	]);
 
 	return (
@@ -338,12 +344,12 @@ const DemandFunnelFilter = ({
 														className={hiringFilterStyle.filterItem}
 														key={index}>
 														<Checkbox
-															disabled={
-																appliedFilter?.get(`${filterSubChild.name}`) &&
-																!checkedState.get(
-																	`${filterSubChild.name}${item.text}`,
-																)
-															}
+															// disabled={
+															// 	appliedFilter?.get(`${filterSubChild.name}`) &&
+															// 	!checkedState.get(
+															// 		`${filterSubChild.name}${item.text}`,
+															// 	)
+															// }
 															checked={checkedState.get(
 																`${filterSubChild.name}${item.text}`,
 															)}
@@ -406,38 +412,6 @@ const DemandFunnelFilter = ({
 													</div>
 												);
 										  })
-									: searchData && searchData.length > 0
-									? searchData.map((item, index) => {
-											return (
-												<div
-													className={hiringFilterStyle.filterItem}
-													key={index}>
-													<Checkbox
-														checked={checkedState.get(
-															`${filterSubChild.name}${item.text}`,
-														)}
-														onChange={(e) =>
-															handleAppliedFilters(e.target.checked, {
-																filterType: filterSubChild.name,
-																value: item?.value,
-																id: item?.text,
-															})
-														}
-														id={item?.value + `/${index + 1}`}
-														style={{
-															fontSize: `${!item.label && '1rem'}`,
-															fontWeight: '500',
-														}}>
-														{item.label
-															? All_Hiring_Request_Utils.GETHRSTATUS(
-																	item.statusCode,
-																	item.label,
-															  )
-															: item?.value}
-													</Checkbox>
-												</div>
-											);
-									  })
 									: filterSubChild.child.map((item, index) => {
 											return (
 												<div
