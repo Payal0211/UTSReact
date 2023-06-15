@@ -16,18 +16,19 @@ import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { reportConfig } from 'modules/report/report.config';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import Column from 'antd/lib/table/Column';
 import ColumnGroup from 'antd/lib/table/ColumnGroup';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
 import TeamDemandFunnelModal from 'modules/report/components/teamDemandFunnelModal/teamDemandFunnelModal';
 import WithLoader from 'shared/components/loader/loader';
-import { TreeNode } from 'antd/lib/tree-select';
 import {
 	insertUser,
 	transformTeamDemandHierarchy,
 } from 'modules/report/reportUtils';
+import { useNavigate } from 'react-router-dom';
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 const TeamDemandFunnelFilterLazyComponent = React.lazy(() =>
 	import(
 		'modules/report/components/teamDemandFunnelFilter/teamDemandFunnelFilter'
@@ -93,7 +94,7 @@ const TeamDemandFunnelScreen = () => {
 	const [filtersList, setFiltersList] = useState([]);
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
-
+	const navigate = useNavigate();
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 	const [selectedHierarchyTree, setSelectedHierarchyTree] = useState([]);
@@ -829,10 +830,15 @@ const TeamDemandFunnelScreen = () => {
 						footer={null}
 						open={teamDemandFunnelModal}
 						// className={TeamDemandFunnelStyle.selectSalesManagerModal}
-						className={!selectedHierarchy && 'selectSalesManagerModal'}
+						// className={!selectedHierarchy && 'selectSalesManagerModal'}
 						// onOk={() => setTeamDemandFunnelModal(false)}
 						onCancel={
-							selectedHierarchy ? () => setTeamDemandFunnelModal(false) : null
+							selectedHierarchy
+								? () => setTeamDemandFunnelModal(false)
+								: () => {
+										setTeamDemandFunnelModal(false);
+										navigate(-1);
+								  }
 						}>
 						<div className={TeamDemandFunnelStyle.container}>
 							<div className={TeamDemandFunnelStyle.modalTitle}>
@@ -854,18 +860,22 @@ const TeamDemandFunnelScreen = () => {
 									/>
 								</div>
 
-								<div className={TeamDemandFunnelStyle.formPanelAction}>
-									<button
-										onClick={handleSubmit(viewActionWiseHandler)}
-										className={TeamDemandFunnelStyle.btnPrimary}>
-										View Action Wise Data
-									</button>
-									<button
-										onClick={handleSubmit(hrWiseHandler)}
-										className={TeamDemandFunnelStyle.btn}>
-										View HR Wise Data
-									</button>
-								</div>
+								{isLoading ? (
+									<SpinLoader />
+								) : (
+									<div className={TeamDemandFunnelStyle.formPanelAction}>
+										<button
+											onClick={handleSubmit(viewActionWiseHandler)}
+											className={TeamDemandFunnelStyle.btnPrimary}>
+											View Action Wise Data
+										</button>
+										<button
+											onClick={handleSubmit(hrWiseHandler)}
+											className={TeamDemandFunnelStyle.btn}>
+											View HR Wise Data
+										</button>
+									</div>
+								)}
 							</div>
 						</div>
 					</Modal>

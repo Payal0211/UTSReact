@@ -1,25 +1,39 @@
 .cloneHRConfContent h2 {
   font-size: 24px;
   line-height: 32px;
-  color: #232323;
+  color: var(--uplers-black);
   margin: 0 0 24px;
 }
-.cloneHRConfContent button {
-  background: var(--text-color-purity);
-  border: 1px solid #cecccc;
-  border-radius: 8px;
-  box-shadow: none;
-  color: var(--uplers-black);
-  cursor: pointer;
-  font-family: Montserrat;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 18px;
-  outline: none;
-  padding: 12px 28px;
+.formPanelAction {
+  display: flex;
+  margin: 30px 0 0 0;
 }
-.cloneHRConfContent .btnPrimary {
+
+.formPanelAction button {
+  background: var(--text-color-purity);
+  border: 1px solid #CECCCC;
+  border-radius: 8px;
+  font-family: 'Montserrat';
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--uplers-black);
+  padding: 12px 28px;
+  outline: none;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.colMd12 {
+  width: 100%;
+
+}
+
+.formPanelAction .btnPrimary {
   background: var(--color-sunlight);
   border-color: var(--color-sunlight);
-  margin-left: 24px;
+}
+
+.formPanelAction button+button {
+  margin-left: 18px;
 }

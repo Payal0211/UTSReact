@@ -4,7 +4,6 @@ import { HTTPStatusCode } from 'constants/network';
 import UTSRoutes from 'constants/routes';
 import UserAccountModel from 'models/userAccountModels';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
-import { Navigate } from 'react-router-dom';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const userDAO = {

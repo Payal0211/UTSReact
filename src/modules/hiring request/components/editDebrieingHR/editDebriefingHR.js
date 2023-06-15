@@ -433,7 +433,7 @@ const EditDebriefingHR = ({
 							type="button"
 							className={DebriefingHRStyle.btnPrimary}
 							onClick={handleSubmit(debriefSubmitHandler)}>
-							Create
+							Edit Debriefing
 						</button>
 					</div>
 				</div>

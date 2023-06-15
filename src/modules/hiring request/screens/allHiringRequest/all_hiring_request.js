@@ -40,6 +40,7 @@ import Remainingcount from 'assets/svg/remaining-count.svg';
 import CloneHR from './cloneHRModal';
 import { MasterDAO } from 'core/master/masterDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import useDebounce from 'shared/hooks/useDebounce';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -52,8 +53,10 @@ const AllHiringRequestScreen = () => {
 		pagenum: 1,
 		sortdatafield: 'CreatedDateTime',
 		sortorder: 'desc',
+		searchText: '',
 	});
 	const [isLoading, setLoading] = useState(false);
+
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
 	// const hrQueryData = useAllHRQuery();
 	const [totalRecords, setTotalRecords] = useState(0);
@@ -164,6 +167,7 @@ const AllHiringRequestScreen = () => {
 			hrid: getHRID,
 		};
 		const response = data?.hrid && (await MasterDAO.getCloneHRDAO(data));
+		console.log(response, '--response');
 		if (response.statusCode === HTTPStatusCode.OK) {
 			setCloneHR(false);
 			localStorage.setItem('hrID', response?.responseBody?.details);
@@ -206,6 +210,7 @@ const AllHiringRequestScreen = () => {
 		},
 		[navigate],
 	);
+
 	useEffect(() => {
 		getPriorityCount();
 	}, []);
@@ -214,10 +219,23 @@ const AllHiringRequestScreen = () => {
 		let priorityCount = await hiringRequestDAO.getRemainingPriorityCountDAO();
 		setPriorityCount(priorityCount?.responseBody?.details);
 	};
-	useEffect(() => {
-		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
-		return () => clearTimeout(timer);
-	}, [debouncedSearch]);
+
+	const debouncedSearchHandler = useCallback(
+		(e) => {
+			const timer = setTimeout(() => {
+				setTableFilteredState({
+					...tableFilteredState,
+					searchText: e.target.value,
+				});
+				handleHRRequest({
+					...tableFilteredState,
+					searchText: e.target.value,
+				});
+			}, 1000);
+			return () => clearTimeout(timer);
+		},
+		[handleHRRequest, tableFilteredState],
+	);
 
 	useEffect(() => {
 		handleHRRequest(tableFilteredState);
@@ -240,12 +258,12 @@ const AllHiringRequestScreen = () => {
 	const toggleHRFilter = useCallback(() => {
 		getHRFilterRequest();
 		!getHTMLFilter
-			? setIsAllowFilters(!isAllowFilters)
+			? setIsAllowFilters(true)
 			: setTimeout(() => {
-					setIsAllowFilters(!isAllowFilters);
+					setIsAllowFilters(true);
 			  }, 300);
 		setHTMLFilter(!getHTMLFilter);
-	}, [getHRFilterRequest, getHTMLFilter, isAllowFilters]);
+	}, [getHRFilterRequest, getHTMLFilter]);
 
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);
@@ -349,7 +367,8 @@ const AllHiringRequestScreen = () => {
 						iconBorder={`1px solid var(--color-sunlight)`}
 						isDropdown={true}
 						listItem={
-							miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS
+							miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS ||
+							miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
 								? [
 										{
 											label: 'Add New HR',
@@ -408,11 +427,7 @@ const AllHiringRequestScreen = () => {
 								type={InputType.TEXT}
 								className={allHRStyles.searchInput}
 								placeholder="Search Table"
-								onChange={(e) => {
-									return setDebouncedSearch(
-										hrUtils.allHiringRequestSearch(e, apiData),
-									);
-								}}
+								onChange={debouncedSearchHandler}
 							/>
 						</div>
 						<div className={allHRStyles.calendarFilterSet}>
@@ -564,6 +579,7 @@ const AllHiringRequestScreen = () => {
 						setAppliedFilters={setAppliedFilters}
 						appliedFilter={appliedFilter}
 						setCheckedState={setCheckedState}
+						setIsAllowFilters={setIsAllowFilters}
 						checkedState={checkedState}
 						handleHRRequest={handleHRRequest}
 						setTableFilteredState={setTableFilteredState}

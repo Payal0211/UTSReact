@@ -4,7 +4,6 @@ import {
 	GoogleDriveCredentials,
 	InputType,
 	SubmitType,
-	URLRegEx,
 	WorkingMode,
 } from 'constants/application';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -72,16 +71,7 @@ const EditHRFields = ({
 	});
 	const [getGoogleDriveLink, setGoogleDriveLink] = useState('');
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
-	const [currencyResult, setCurrencyResult] = useState([
-		{
-			value: 'USD',
-			id: 'USD',
-		},
-		{
-			value: 'INR',
-			id: 'INR',
-		},
-	]);
+
 	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
 	const [controlledBudgetValue, setControlledBudgetValue] =
 		useState('Select Budget');
@@ -102,7 +92,7 @@ const EditHRFields = ({
 	const [controlledCountryValue, setControlledCountryValue] =
 		useState('Select country');
 	const [contractDurationValue, setContractDuration] = useState('');
-	const [clientNameValue, setClientName] = useState('');
+
 	const [controlledDurationTypeValue, setControlledDurationTypeValue] =
 		useState('Select Term');
 	const [getDurationType, setDurationType] = useState([]);
@@ -124,9 +114,6 @@ const EditHRFields = ({
 			autocompleteField: 'abc',
 		},
 	});
-
-	const watchSalesPerson = watch('salesPerson');
-	const watchChildCompany = watch('childCompany');
 
 	//CLONE HR functionality
 	const getHRdetailsHandler = async (hrId) => {
@@ -590,32 +577,19 @@ const EditHRFields = ({
 		setCurrency(response && response?.responseBody);
 	}, []);
 
-	useEffect(
-		() => {
-			getCurrencyHandler();
-			getAvailability();
-			getTalentRole();
-			getSalesPerson();
-			getRegion();
-			getWorkingMode();
-			getCountry();
-			getHowSoon();
-			getNRMarginHandler();
-			getDurationTypes();
-		},
-		[
-			// getAvailability,
-			// getSalesPerson,
-			// getTalentRole,
-			// getTimeZonePreference,
-			// getRegion,
-			// prefRegion,
-			// getHowSoon,
-			// getWorkingMode,
-			// getCountry,
-			// getNRMarginHandler,
-		],
-	);
+	useEffect(() => {
+		getCurrencyHandler();
+		getAvailability();
+		getTalentRole();
+		getSalesPerson();
+		getRegion();
+		getWorkingMode();
+		getCountry();
+		getHowSoon();
+		getNRMarginHandler();
+		getDurationTypes();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	useEffect(() => {
 		!_isNull(prefRegion) && getTimeZonePreference();
@@ -646,7 +620,7 @@ const EditHRFields = ({
 	/** To check Duplicate email exists End */
 
 	const [messageAPI, contextHolder] = message.useMessage();
-	var watchJDUrl = watch('jdURL');
+	let watchJDUrl = watch('jdURL');
 	setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
 	const hrSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
@@ -673,11 +647,11 @@ const EditHRFields = ({
 			const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+				window.scrollTo(0, 0);
 				setAddHRResponse(getHRdetails?.en_Id);
 				type !== SubmitType.SAVE_AS_DRAFT && setTitle('Edit Debriefing HR');
 				type !== SubmitType.SAVE_AS_DRAFT &&
 					setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
-				// setFromEditDeBriefing({ ...fromEditDeBriefing, addNewHiringRequest: true });
 
 				type === SubmitType.SAVE_AS_DRAFT &&
 					messageAPI.open({
@@ -687,18 +661,19 @@ const EditHRFields = ({
 			}
 		},
 		[
-			addHRResponse,
-			filteredMemo,
-			isHRDirectPlacement,
-			messageAPI,
-			setEnID,
-			setError,
-			setTabFieldDisabled,
-			setTitle,
-			tabFieldDisabled,
 			watch,
-			getHRdetails,
+			getHRdetails?.addHiringRequest?.contactId,
+			getHRdetails?.en_Id,
+			isHRDirectPlacement,
+			addHRResponse,
 			getUploadFileData,
+			watchJDUrl,
+			setError,
+			setTitle,
+			setTabFieldDisabled,
+			tabFieldDisabled,
+
+			messageAPI,
 		],
 	);
 	useEffect(() => {
@@ -712,15 +687,6 @@ const EditHRFields = ({
 	}, [errors?.clientName]);
 
 	// const durationTypenfo = []
-
-	// const durationData = getDurationType.map((item) => {
-	//     return (
-	//         durationTypenfo.push({
-	//             id: item.value,
-	//             value: item.text
-	//         })
-	//     )
-	// })
 
 	const durationDataMemo = useMemo(() => {
 		let formattedDuration = [];
@@ -776,12 +742,12 @@ const EditHRFields = ({
 		setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType);
 		if (getHRdetails?.clientName) {
 			getListData(
-				getHRdetails?.clientName,
+				getHRdetails?.fullClientName,
 				getHRdetails?.clientName.substring(0, 3),
 			);
 		}
 		setUploadFileData(getHRdetails?.addHiringRequest?.jdfilename);
-	}, [getHRdetails]);
+	}, [getHRdetails, setValue]);
 	useEffect(() => {
 		if (localStorage.getItem('hrID')) {
 			getHRdetailsHandler(localStorage.getItem('hrID'));
@@ -926,7 +892,9 @@ const EditHRFields = ({
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd12}>
 							<div className={HRFieldStyle.formGroup}>
-								<label>Client Email/Name</label>
+								<label>
+									Client Email/Name <b style={{ color: 'black' }}>*</b>
+								</label>
 								<Controller
 									render={({ ...props }) => (
 										<AutoComplete
@@ -1622,7 +1590,7 @@ const EditHRFields = ({
 				<button
 					onClick={handleSubmit(hrSubmitHandler)}
 					className={HRFieldStyle.btnPrimary}>
-					Create HR
+					Edit HR
 				</button>
 			</div>
 		</div>

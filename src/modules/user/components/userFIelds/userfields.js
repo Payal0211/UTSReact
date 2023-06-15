@@ -75,7 +75,6 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const [specificGeo, setSpecificGEO] = useState('Select');
 
 	const [isLoading, setIsLoading] = useState(false);
-	const [formLoading, setFormLoading] = useState(false);
 	const [userType, setUserType] = useState([]);
 	const [teamManager, setTeamManager] = useState([]);
 	const [opsTeamManager, setOpsTeamManager] = useState([]);
@@ -146,6 +145,10 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const watchGEOSpecific = watch('geoSpecific');
 	const uploadFile = useRef(null);
 
+	const enableALlFieldsMemo = useMemo(
+		() => id !== 0 && !enableAllFields,
+		[enableAllFields, id],
+	);
 	const getEmployeeIDAlreadyExist = useCallback(
 		async (data) => {
 			let companyNameDuplicate = await userDAO.getIsEmployeeIDExistRequestDAO({
@@ -545,10 +548,6 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		}
 	}, [id, setValue, userDetails?.roleId, userRole]);
 
-	const enableALlFieldsMemo = useMemo(
-		() => id !== 0 && !enableAllFields,
-		[enableAllFields, id],
-	);
 	const editButtonHandler = useCallback(() => {
 		setEnableAllFields(true);
 	}, []);
@@ -972,7 +971,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 										)}
 
 									{/* Is this Geo Specific? */}
-									{watchDepartMentName?.value !== 'Select' &&
+									{watchDepartMentName?.value !== 'Administration' &&
 										watchLevelName?.value !== 'Select' && (
 											<div className={UserFieldStyle.colMd6}>
 												<div className={UserFieldStyle.formGroup}>
@@ -1027,7 +1026,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 
 									{/* Geo */}
 									{watchGEOSpecific?.value === 'Yes' &&
-										watchDepartMentName?.value !== 'Select' && (
+										watchDepartMentName?.value !== 'Administration' && (
 											<div className={UserFieldStyle.colMd6}>
 												<div className={UserFieldStyle.mb50}>
 													<HRSelectField

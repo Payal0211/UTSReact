@@ -22,18 +22,21 @@ const DemandFunnelFilterLazyComponent = React.lazy(() =>
 	import('modules/report/components/demandFunnelFilter/demandFunnelFilter'),
 );
 
+export const demandFunnelDefault = {
+	startDate: '',
+	endDate: '',
+	isHiringNeedTemp: '',
+	modeOfWork: '',
+	typeOfHR: '-1',
+	companyCategory: '',
+	replacement: '',
+	head: '',
+	isActionWise: true,
+};
 const DemandFunnelScreen = () => {
 	const { control } = useForm();
 	const [tableFilteredState, setTableFilteredState] = useState({
-		startDate: '',
-		endDate: '',
-		isHiringNeedTemp: '',
-		modeOfWork: '',
-		typeOfHR: '-1',
-		companyCategory: '',
-		replacement: '',
-		head: '',
-		isActionWise: true,
+		...demandFunnelDefault,
 	});
 
 	const [demandFunnelValue, setDemandFunnelValue] = useState({});
@@ -141,12 +144,12 @@ const DemandFunnelScreen = () => {
 		setHTMLFilter(false);
 	};
 
-	const viewDemandFunnelSummaryHandler = useCallback(async () => {
+	const viewDemandFunnelSummaryHandler = useCallback(async (reqFilter) => {
+		console.log('--inside -summary');
 		setIsSummary(true);
 		setSummaryLoading(true);
-		let response = await ReportDAO.demandFunnelSummaryRequestDAO(
-			tableFilteredState,
-		);
+
+		let response = await ReportDAO.demandFunnelSummaryRequestDAO(reqFilter);
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setSummaryData(response?.responseBody);
 			setSummaryLoading(false);
@@ -154,7 +157,7 @@ const DemandFunnelScreen = () => {
 			setSummaryData([]);
 			setSummaryLoading(false);
 		}
-	}, [tableFilteredState]);
+	}, []);
 
 	const tableColumnsMemo = useMemo(
 		() =>
@@ -315,7 +318,9 @@ const DemandFunnelScreen = () => {
 						<div className={DemandFunnelStyle.formPanelAction}>
 							<button
 								type="submit"
-								onClick={viewDemandFunnelSummaryHandler}
+								onClick={() =>
+									viewDemandFunnelSummaryHandler(tableFilteredState)
+								}
 								className={DemandFunnelStyle.btnPrimary}>
 								View Summary
 							</button>
@@ -361,6 +366,7 @@ const DemandFunnelScreen = () => {
 						filtersType={reportConfig.demandReportFilterTypeConfig(
 							filtersList && filtersList,
 						)}
+						viewDemandFunnelSummaryHandler={viewDemandFunnelSummaryHandler}
 						setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
 						demandFunnelHRDetailsState={demandFunnelHRDetailsState}
 					/>

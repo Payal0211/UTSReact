@@ -20,10 +20,10 @@ const AddNewHR = () => {
 
 	const navigateParams = useLocation();
 
-	const [fromEditDeBriefing, setFromEditDeBriefing] = useState({
-		addNewHiringRequest: true,
-		debriefingHR: false,
-	});
+	// const [fromEditDeBriefing, setFromEditDeBriefing] = useState({
+	// 	addNewHiringRequest: false,
+	// 	debriefingHR: true,
+	// });
 	const [JDParsedSkills, setJDParsedSkills] = useState({
 		Skills: [],
 		Responsibility: '',
@@ -48,6 +48,7 @@ const AddNewHR = () => {
 	const companyName = (e) => {
 		setCompanyName(e);
 	};
+
 	return (
 		<div className={AddNewHRStyle.addNewContainer}>
 			<div className={AddNewHRStyle.addHRTitle}>{title}</div>
@@ -119,15 +120,15 @@ const AddNewHR = () => {
 							children: (
 								<EditHRFields
 									setTitle={setTitle}
-									fromEditDeBriefing={fromEditDeBriefing}
-									setFromEditDeBriefing={setFromEditDeBriefing}
+									tabFieldDisabled={tabFieldDisabled}
+									setTabFieldDisabled={setTabFieldDisabled}
 									setEnID={setEnID}
 									setJDParsedSkills={setJDParsedSkills}
 									getHRdetails={getHRdetails}
 									setHRdetails={setHRdetails}
 								/>
 							),
-							disabled: fromEditDeBriefing.addNewHiringRequest,
+							disabled: localStorage.getItem('fromEditDeBriefing') && true,
 						},
 						{
 							label: 'Edit Debriefing HR',
@@ -135,8 +136,8 @@ const AddNewHR = () => {
 							children: (
 								<EditDebriefingHR
 									setTitle={setTitle}
-									fromEditDeBriefing={fromEditDeBriefing}
-									setFromEditDeBriefing={setFromEditDeBriefing}
+									tabFieldDisabled={tabFieldDisabled}
+									setTabFieldDisabled={setTabFieldDisabled}
 									enID={enID}
 									setJDParsedSkills={setJDParsedSkills}
 									JDParsedSkills={JDParsedSkills}
@@ -144,6 +145,7 @@ const AddNewHR = () => {
 									setHRdetails={setHRdetails}
 								/>
 							),
+							disabled: tabFieldDisabled.debriefingHR,
 						},
 					]}
 				/>

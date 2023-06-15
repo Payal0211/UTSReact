@@ -34,6 +34,7 @@ export const ReportDAO = {
 	},
 	demandFunnelSummaryRequestDAO: async function (reportData) {
 		try {
+			console.log(reportData, '--reportData');
 			const demandFunnelSummary = await ReportAPI.demandFunnelSummary(
 				reportData,
 			);
@@ -401,9 +402,7 @@ export const ReportDAO = {
 	},
 	slaDetailedDataDAO: async function (data) {
 		try {
-			const slaDetailedDataRequest = await ReportAPI.SlaDetailsData(
-				data,
-			);
+			const slaDetailedDataRequest = await ReportAPI.SlaDetailsData(data);
 
 			if (slaDetailedDataRequest) {
 				const statusCode = slaDetailedDataRequest['statusCode'];
@@ -432,9 +431,7 @@ export const ReportDAO = {
 	},
 	slaFilterDAO: async function (data) {
 		try {
-			const slaDetailedDataRequest = await ReportAPI.slaFilter(
-				data,
-			);
+			const slaDetailedDataRequest = await ReportAPI.slaFilter(data);
 
 			if (slaDetailedDataRequest) {
 				const statusCode = slaDetailedDataRequest['statusCode'];
