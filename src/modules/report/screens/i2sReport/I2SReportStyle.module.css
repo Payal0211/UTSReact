@@ -73,6 +73,11 @@
     margin-bottom: 30px;
 }
 
+.error {
+    color: #fe0000;
+    margin: 0;
+  }
+
 @media screen and (min-width: 1441px){
     .i2sListing > li{
         max-width: 25%;
@@ -123,6 +128,8 @@
 
 .cardInner .textLink{
     text-decoration: underline;
+    color:#337ab7;
+    cursor: pointer;
 }
 
 .filterSets {

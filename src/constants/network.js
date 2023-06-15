@@ -238,7 +238,8 @@ export class DealsAPI {
 }
 
 export class I2SsAPI {
-	static LIST = 'InterviewToSuccessList?';
+	static LIST = 'InterviewToSuccessList';
+	static POPUP  ='GetInterviewToSuccessPopupDetails'
 }
 
 export class OnboardsAPI {

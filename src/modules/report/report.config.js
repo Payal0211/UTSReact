@@ -947,4 +947,71 @@ export const reportConfig = {
 			},
 		];
 	},
+	i2spopupReportConfig: () => {
+		return [
+			{
+				title: 'HR #',
+				dataIndex: 'hR_Number',
+				key: 'hR_Number',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Sales Person',
+				dataIndex: 'salesUser',
+				key: 'salesUser',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Company Name',
+				dataIndex: 'company',
+				key: 'company',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Role',
+				dataIndex: 'talentRole',
+				key: 'talentRole',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Managed/Self',
+				dataIndex: 'isManaged',
+				key: 'isManaged',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Name',
+				dataIndex: 'name',
+				key: 'name',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Availability',
+				dataIndex: 'availability',
+				key: 'availability',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+		];
+	},
 };
