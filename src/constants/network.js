@@ -202,6 +202,7 @@ export class HiringRequestsAPI {
 	static UPDATE_TR_DETAIL = 'UpdateTR';
 	static DELETE_INTERVIEW_DETAILS = 'DeleteInterviewDetails';
 	static CLOSE_HR_VALIDATION = 'CloseHRValidation'; 
+	static CLOSE_HR = 'CloseHR';
 }
 
 export class UsersAPI {

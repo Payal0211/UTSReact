@@ -3,7 +3,6 @@ import HRInputField from "modules/hiring request/components/hrInputFields/hrInpu
 import React, { useCallback, useEffect, useState } from "react";
 import { set, useForm } from "react-hook-form";
 import closeHRStyle from "./closeHRModal.module.css";
-import { useParams } from "react-router-dom";
 import { HTTPStatusCode } from "constants/network";
 import SpinLoader from "shared/components/spinLoader/spinLoader";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
@@ -15,10 +14,7 @@ const CloseHRModal = ({
   closeHRDetail,
   apiData,
 }) => {
-  const [count, setCount] = useState(0);
-  const [disable, setDisable] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [validationDetails, setValidationDetails] = useState([]);
   const {
     register,
     handleSubmit,
@@ -30,9 +26,18 @@ const CloseHRModal = ({
   const [valueInfo, setValueInfo] = useState("");
   const [btnText, setBtnText] = useState("");
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     setIsLoading(true);
     // call close HR API
+    let request ={
+      "id": closeHRDetail.HR_Id,
+      "remark": data.reasonForClose,
+    }
+    const response = await hiringRequestDAO.CloseHRDAO(request);
+    if (response?.statusCode === HTTPStatusCode.OK) {
+      onCancel()
+      window.location.reload()
+    }
     setIsLoading(false);
   };
 
@@ -43,7 +48,6 @@ const CloseHRModal = ({
 
       if (response?.statusCode === HTTPStatusCode.OK) {
         let HRResult = response.responseBody.details.close_HR_Result[0];
-        console.log("HR close validation", HRResult);
         setValueInfo(HRResult?.message);
         setBtnText(HRResult?.btnmessage);
       }
@@ -53,9 +57,7 @@ const CloseHRModal = ({
   );
 
   useEffect(() => {
-    // call for details with ID
     getHRCloseValidation(closeHRDetail.HR_Id);
-    return () => setIsLoading(false);
   }, [closeHRDetail.HR_Id]);
   return (
     <div className={closeHRStyle.engagementModalContainer}>
