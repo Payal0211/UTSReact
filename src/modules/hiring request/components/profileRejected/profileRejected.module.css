@@ -1,0 +1,98 @@
+.rejectionModalContainer::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 15px;
+    background-color: #E41A1C;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.headingContainer {
+    border-bottom: 1px solid #E8E8E8;
+    padding-bottom: 8px;
+    margin-bottom: 24px;
+}
+
+.headingContainer h2{
+    margin-bottom: 24px;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 39px;
+    color: #232323;
+}
+
+.headingContainer > div{
+    font-size: 14px;
+    line-height: normal;
+    margin-bottom: 16px;
+    color: #7C7C7C;
+}
+
+.headingContainer > div span{
+    color: #232323;
+}
+
+.headingContainer > div span.ModalLink{
+    color: #0278E4;
+    text-decoration: underline;
+}
+
+.rejectMessageContainer{
+    padding-bottom: 32px;
+}
+
+.row {
+    flex-wrap: wrap;
+    display: flex;
+}
+.colMd12 {
+    width: 100%;
+}
+
+.rejectMessageContainer label{
+    font-size: 14px;
+    color: #7C7C7C;
+    padding-bottom: 4px;
+    display: block;
+}
+
+.rejectMessageContainer p{
+    font-size: 18px;
+    line-height: normal;
+    color: #232323;
+    margin-bottom: 32px;
+}
+.rejectMessageContainer p:last-child{
+    margin-bottom: 0;
+}
+
+.formPanelAction {
+    display: flex;
+}
+
+.formPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.formPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+
+.formPanelAction button+button {
+    margin-left: 18px;
+}
