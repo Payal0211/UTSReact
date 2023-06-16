@@ -29,6 +29,7 @@ export class SubDomain {
 	static AM_ASSIGNMENT = 'AMAssignment/';
 	static INTERVIEWER = 'Interviewer/';
 	static SLA_REPORT = 'SLAReport/';
+	static I2S_REPORT = 'InterviewToSuccess/';
 }
 export class APIType {
 	static USER = '/user';
@@ -200,6 +201,8 @@ export class HiringRequestsAPI {
 	static GET_HR_DETAILS = 'GetHRDetails';
 	static UPDATE_TR_DETAIL = 'UpdateTR';
 	static DELETE_INTERVIEW_DETAILS = 'DeleteInterviewDetails';
+	static CLOSE_HR_VALIDATION = 'CloseHRValidation'; 
+	static CLOSE_HR = 'CloseHR';
 }
 
 export class UsersAPI {
@@ -232,6 +235,11 @@ export class DealsAPI {
 	static LIST = 'List';
 	static DETAIL = 'Detail';
 	static DEAL_FILTER = 'FilterCriterias';
+}
+
+export class I2SsAPI {
+	static LIST = 'InterviewToSuccessList';
+	static POPUP  ='GetInterviewToSuccessPopupDetails'
 }
 
 export class OnboardsAPI {

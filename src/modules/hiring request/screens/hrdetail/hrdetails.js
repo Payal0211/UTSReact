@@ -1,5 +1,5 @@
 import React, { Suspense, useCallback, useEffect, useState } from 'react';
-import { Skeleton, Tooltip } from 'antd';
+import { Skeleton, Tooltip,Modal } from 'antd';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
@@ -15,9 +15,10 @@ import { HRDeleteType, HiringRequestHRStatus } from 'constants/application';
 
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
-import CloneHR from 'modules/hiring request/components/cloneHR/cloneHR';
-import CTASlot1 from 'modules/hiring request/components/CTASlot1/CTASlot1';
-import CTASlot2 from 'modules/hiring request/components/CTASlot2/CTASlot2';
+import CloseHRModal from "../../components/closeHRModal/closeHRModal";
+import CloneHR from "modules/hiring request/components/cloneHR/cloneHR";
+import CTASlot1 from "modules/hiring request/components/CTASlot1/CTASlot1";
+import CTASlot2 from "modules/hiring request/components/CTASlot2/CTASlot2";
 
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
@@ -44,9 +45,11 @@ const HRDetailScreen = () => {
 
 	const [editDebrifing, setEditDebring] = useState([]);
 
-	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
-	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
-	const miscData = UserSessionManagementController.getUserSession();
+  const [closeHrModal, setCloseHrModal] = useState(false);
+
+  let urlSplitter = `${switchLocation.pathname.split("/")[2]}`;
+  const updatedSplitter = "HR" + apiData && apiData?.ClientDetail?.HR_Number;
+  const miscData = UserSessionManagementController.getUserSession();
 
 	const callAPI = useCallback(
 		async (hrid) => {
@@ -246,32 +249,56 @@ const HRDetailScreen = () => {
 									}
 								}}
 							/> */}
-							<div className={HRDetailStyle.hiringRequestPriority}>
-								<Tooltip
-									placement="bottom"
-									title="Close HR">
-									<PowerSVG
-										style={{ width: '24px' }}
-										className={HRDetailStyle.deleteSVG}
-									/>
-								</Tooltip>
-							</div>
-						</div>
-					)}
-				</div>
-				{isLoading ? (
-					<>
-						<br />
-						<Skeleton active />
-						<br />
-					</>
-				) : (
-					apiData?.NextActionsForTalent?.length > 0 && (
-						<Suspense>
-							<NextActionItem nextAction={apiData?.NextActionsForTalent} />
-						</Suspense>
-					)
-				)}
+
+              <div
+                className={HRDetailStyle.hiringRequestPriority}
+                onClick={() => {
+                  //open Close HR modal
+                  setCloseHrModal(true);
+                  //get close HR call
+                }}
+              >
+                <Tooltip placement="bottom" title="Close HR">
+                  <PowerSVG
+                    style={{ width: "24px" }}
+                    className={HRDetailStyle.deleteSVG}
+                  />
+                </Tooltip>
+              </div>
+
+              {closeHrModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={closeHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setCloseHrModal(false)}
+                >
+                  <CloseHRModal
+                    closeHR={() => {}}
+                    setUpdateTR={() => setCloseHrModal(true)}
+                    onCancel={() => setCloseHrModal(false)}
+                    closeHRDetail={apiData}
+                  />
+                </Modal>
+              )}
+            </div>
+          )}
+        </div>
+        {isLoading ? (
+          <>
+            <br />
+            <Skeleton active />
+            <br />
+          </>
+        ) : (
+          apiData?.NextActionsForTalent?.length > 0 && (
+            <Suspense>
+              <NextActionItem nextAction={apiData?.NextActionsForTalent} />
+            </Suspense>
+          )
+        )}
 
 				<div className={HRDetailStyle.portal}>
 					<div className={HRDetailStyle.clientPortal}>
