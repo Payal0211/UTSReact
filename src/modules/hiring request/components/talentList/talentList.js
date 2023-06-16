@@ -39,6 +39,7 @@ import { HTTPStatusCode } from 'constants/network';
 import EditPayRate from '../editBillAndPayRate/editPayRateModal';
 import { DownOutlined } from '@ant-design/icons';
 import EditBillRate from '../editBillAndPayRate/editBillRateModal';
+import ProfileRejectedModal from '../profileRejected/profileRejected';
 import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
 import FeedbackResponse from 'modules/interview/components/feedbackResponse/feedbackResponse';
 
@@ -98,6 +99,9 @@ const TalentList = ({
 		useState(false);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
 	const [editBillRate, setEditBillRate] = useState(false);
+
+	const [profileRejectedModal, setProfileRejectedModal] = useState(false);
+
 	const [editPayRate, setEditPayRate] = useState(false);
 
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
@@ -505,6 +509,37 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
+
+									{/* HTML for Rejection Status Starts */}
+									<div className={TalentListStyle.statusReject}>
+										<div className={TalentListStyle.statusRejectInner}>
+											<div>Rejection Reason: <span>Other</span></div>
+											<span
+												onClick={() => {
+													setProfileRejectedModal(true);
+												}}
+												style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>View</span>
+										</div>
+									</div>
+									{/* HTML for Rejection Status Ends */}
+
+									{/* HTML for Feedback Pending Starts */}
+									<div className={TalentListStyle.statusPending}>
+										<div className={TalentListStyle.statusPendingInner}>
+											<div>Interview Status: <span>Feedback Pending</span></div>
+											<span style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>Add</span>
+										</div>
+									</div>
+									{/* HTML for Feedback Pending Ends */}
+
 									<div className={TalentListStyle.payRate}>
 										<div>
 											<span>Interview Status:</span>&nbsp;&nbsp;
@@ -514,6 +549,7 @@ const TalentList = ({
 													: item?.InterviewStatus}
 											</span>
 										</div>
+
 										{(item?.ClientFeedback === InterviewFeedbackStatus.HIRED ||
 											item?.ClientFeedback ===
 												InterviewFeedbackStatus.REJECTED) && (
@@ -820,6 +856,32 @@ const TalentList = ({
 					);
 				}}
 			/>
+
+			{/** ============ MODAL FOR PROFILE REJECTED REASON ================ */}
+			<Modal
+				transitionName=""
+				width="926px"
+				centered
+				footer={null}
+				// open={editBillRate}
+				open={profileRejectedModal}
+				className="commonModalWrap rejectionModalWrap"
+				onCancel={() => setProfileRejectedModal(false)}>
+				<ProfileRejectedModal
+					// callAPI={callAPI}
+					// hrId={hrId}
+					// filterTalentID={filterTalentID}
+					// getBillRateInfo={getBillRateInfo}
+					handleSubmit={handleSubmit}
+					onCancel={() => setProfileRejectedModal(false)}
+					register={register}
+					errors={errors}
+					// setHRapiCall={setHRapiCall}
+					// callHRapi={callHRapi}
+					// talentInfo={filterTalentID}
+				/>
+			</Modal>
+
 			{/** ============ MODAL FOR PROFILE LOG ================ */}
 
 			{showProfileLogModal && (

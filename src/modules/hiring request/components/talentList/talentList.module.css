@@ -89,3 +89,38 @@
         height: 580px;
     }
 }
+
+
+/* Status Reject Reason Block Starts */
+.statusReject{
+    margin: 0 -24px;
+    padding: 16px 24px;
+    background-color: #FFF4F4;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.statusRejectInner{
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+}
+.statusRejectInner span{font-weight: 500;}
+/* Status Reject Reason Block Ends */
+
+/* Status Feedback Pending Block Starts */
+.statusPending{
+    margin: 0 -24px;
+    padding: 16px 24px;
+    background-color: #D8F3F2;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.statusPendingInner{
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+}
+.statusPendingInner span{font-weight: 500;}
+/* Status Feedback Pending Block Ends */
