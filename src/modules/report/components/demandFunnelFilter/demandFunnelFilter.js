@@ -228,7 +228,7 @@ const DemandFunnelFilter = ({
 			head: '',
 			isActionWise: true,
 		};
-
+		onRemoveHRFilters()
 		// handleHRRequest(reqFilter);
 	}, [
 		setAppliedFilters,
@@ -270,6 +270,7 @@ const DemandFunnelFilter = ({
 		setTableFilteredState(reqFilter);
 		viewDemandFunnelSummaryHandler(reqFilter);
 		// handleHRRequest(reqFilter);
+		onRemoveHRFilters()
 	}, [
 		appliedFilter,
 		demandFunnelHRDetailsState,

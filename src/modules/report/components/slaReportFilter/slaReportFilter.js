@@ -149,6 +149,7 @@ const SlaReportFilerList = ({
             // ambdr: 0
         }
     });
+    onRemoveHRFilters()
     // setSlaReportDetailsState(reqFilter);
   }, [
     handleHRRequest,
@@ -181,6 +182,7 @@ const SlaReportFilerList = ({
       setSlaReportDetailsState(newState);
       handleHRRequest(newState);
     }
+    onRemoveHRFilters()
 }, [
     appliedFilter,
     handleHRRequest,

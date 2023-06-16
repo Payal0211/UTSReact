@@ -190,6 +190,7 @@ const TeamDemandFunnelFilter = ({
 		};
 
 		handleHRRequest(reqFilter);
+		onRemoveHRFilters();
 	}, [
 		handleHRRequest,
 		isActionWise,
@@ -222,6 +223,7 @@ const TeamDemandFunnelFilter = ({
 		else reqFilter.isActionWise = false;
 		setTableFilteredState(reqFilter);
 		handleHRRequest(reqFilter);
+		onRemoveHRFilters();
 	}, [
 		appliedFilter,
 		handleHRRequest,
