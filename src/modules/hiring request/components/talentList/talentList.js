@@ -646,7 +646,7 @@ const TalentList = ({
 																?.map((item, index) => {
 																	return (
 																		<Menu.Item key={index}>
-																			{item?.label}a{' '}
+																			{item?.label}
 																		</Menu.Item>
 																	);
 																})}

@@ -87,6 +87,10 @@ const CurrencyList = React.lazy(() =>
 const SlaReport = React.lazy(() =>
 	import('modules/report/screens/slaReport/slaReport'),
 );
+const I2sReport = React.lazy(() =>
+	import('modules/report/screens/i2sReport/i2sReport'),
+);
+
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -121,6 +125,7 @@ export default class UTSRoutes {
 	static MASTERCOUNTRYROUTE = '/master/country';
 	static MASTERCURRENCYROUTE = '/master/currency';
 	static SLA_REPORT = '/slaReport';
+	static I2S_REPORT = "/i2sReport"
 }
 
 export const navigateToComponent = {
@@ -247,6 +252,11 @@ export const navigateToComponent = {
 	[UTSRoutes.MASTERCURRENCYROUTE]: (
 		<Suspense>
 			<CurrencyList />
+		</Suspense>
+	),
+	[UTSRoutes.I2S_REPORT]: (
+		<Suspense>
+			<I2sReport />
 		</Suspense>
 	),
 };
