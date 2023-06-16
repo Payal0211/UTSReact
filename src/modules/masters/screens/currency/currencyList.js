@@ -75,6 +75,7 @@ const CurrencyList = () => {
 				) : (
 					<>
 						<Table
+							scroll={{ x: '100vw', y: '100vh' }}
 							className="currencyExchangeList"
 							id="currencyExchangeList"
 							columns={tableColumnsMemo}

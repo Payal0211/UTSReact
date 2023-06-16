@@ -684,6 +684,7 @@ const TeamDemandFunnelScreen = () => {
 						) : (
 							<>
 								<Table
+									scroll={{ x: '70vw', y: '100vh' }}
 									id="supplyFunnelListing"
 									bordered={false}
 									dataSource={[...apiData?.slice(1)]}

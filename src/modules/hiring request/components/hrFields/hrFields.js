@@ -31,7 +31,6 @@ import { hrUtils } from 'modules/hiring request/hrUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
 import useDebounce from 'shared/hooks/useDebounce';
-import WithLoader from 'shared/components/loader/loader';
 
 export const secondaryInterviewer = {
 	fullName: '',

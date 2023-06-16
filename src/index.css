@@ -111,6 +111,9 @@ input[type="file"] {
 }
 
 /* -- Ant Table Pagination--*/
+.ant-table-tbody tr:first-child td {
+  padding: 0 !important;
+}
 .ant-table-pagination-right {
   margin-top: 30px !important;
   justify-content: center !important;

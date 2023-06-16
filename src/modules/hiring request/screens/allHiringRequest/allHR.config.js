@@ -10,6 +10,7 @@ export const allHRConfig = {
 				dataIndex: 'starStatus',
 				key: 'starStatus',
 				align: 'left',
+				width: 100,
 				render: (_, param) => {
 					let response = All_Hiring_Request_Utils.GETHRPRIORITY(
 						param.starStatus,
@@ -25,11 +26,12 @@ export const allHRConfig = {
 				title: 'Clone HR',
 				dataIndex: 'cloneHR',
 				key: 'cloneHR',
+				width: 100,
 				align: 'left',
 				render: (text, result) => {
 					return (
 						<>
-							<div className="textCenter">
+							<div>
 								<CloneHRSVG
 									style={{ fontSize: '16px' }}
 									onClick={() => {
@@ -337,9 +339,9 @@ export const allHRConfig = {
 						group: null,
 						selected: false,
 						statusCode: HiringRequestHRStatus.COMPLETED,
-						label: 'Completed',
+						label: 'Closed',
 						text: HiringRequestHRStatus.COMPLETED.toString(),
-						value: 'Completed',
+						value: 'Closed',
 					},
 
 					{
@@ -359,6 +361,15 @@ export const allHRConfig = {
 						label: 'Cancelled',
 						text: HiringRequestHRStatus.CANCELLED.toString(),
 						value: 'Cancelled',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						statusCode: HiringRequestHRStatus.CANCELLED,
+						label: 'Lost',
+						text: HiringRequestHRStatus.CANCELLED.toString(),
+						value: 'Lost',
 					},
 				],
 				isSearch: false,

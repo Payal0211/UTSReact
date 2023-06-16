@@ -3,7 +3,7 @@ import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { Dropdown, Menu, Table } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import SlaReportFilter from "../../../report/components/slaReportFilter/slaReportFilter"
+import SlaReportFilter from '../../../report/components/slaReportFilter/slaReportFilter';
 
 import React, {
 	Suspense,
@@ -32,9 +32,7 @@ import moment from 'moment';
 // );
 
 const SlaReports = () => {
-	const { control, register, setValue,
-		watch, } = useForm();
-
+	const { control, register, setValue, watch } = useForm();
 
 	const [demandFunnelValue, setDemandFunnelValue] = useState({});
 	const [slaReportDetailsState, setSlaReportDetailsState] = useState();
@@ -57,8 +55,8 @@ const SlaReports = () => {
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
-	const [listData, setListData] = useState([])
-	const [dateError, setDateError] = useState("")
+	const [listData, setListData] = useState([]);
+	const [dateError, setDateError] = useState('');
 
 	const [checkedValue, setCheckedValue] = useState(true);
 	const [checkednoValue, setCheckednoValue] = useState(false);
@@ -72,27 +70,27 @@ const SlaReports = () => {
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: "2023-06-01",
-				endDate: "2023-06-30",
+				startDate: '2023-06-01',
+				endDate: '2023-06-30',
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
 				salesPerson: 0,
-				stages: "",
+				stages: '',
 				isAdHoc: 0,
-				role: "",
+				role: '',
 				slaType: 0,
 				type: 0,
-				hR_Number: "",
-				company: "",
+				hR_Number: '',
+				company: '',
 				actionFilter: 0,
-				stageIDs:"",
-				actionFilterIDs:"",
-				CompanyIds:"",
+				stageIDs: '',
+				actionFilterIDs: '',
+				CompanyIds: '',
 				// ambdr: 0
-			}
-		})
-	}
+			},
+		});
+	};
 	const checkedNo = (e) => {
 		setCheckednoValue(e.target.checked);
 		setCheckedValue(false);
@@ -102,51 +100,51 @@ const SlaReports = () => {
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: "2023-06-01",
-				endDate: "2023-06-30",
+				startDate: '2023-06-01',
+				endDate: '2023-06-30',
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
 				salesPerson: 0,
-				stages: "",
+				stages: '',
 				isAdHoc: 0,
-				role: "",
+				role: '',
 				slaType: 1,
 				type: 0,
-				hR_Number: "",
-				company: "",
+				hR_Number: '',
+				company: '',
 				actionFilter: 0,
-				stageIDs:"",
-				actionFilterIDs:"",
-				CompanyIds:"",
+				stageIDs: '',
+				actionFilterIDs: '',
+				CompanyIds: '',
 				// ambdr: 0
-			}
-		})
-	}
+			},
+		});
+	};
 	const [tableFilteredState, setTableFilteredState] = useState({
 		totalrecord: 100,
 		pagenumber: 1,
 		isExport: false,
 		filterFieldsSLA: {
-			startDate: "2023-06-01",
-			endDate: "2023-06-30",
+			startDate: '2023-06-01',
+			endDate: '2023-06-30',
 			hrid: 0,
 			sales_ManagerID: 0,
 			ops_Lead: 0,
 			salesPerson: 0,
-			stages: "",
+			stages: '',
 			isAdHoc: 0,
-			role: "",
+			role: '',
 			slaType: 0,
 			type: 0,
-			hR_Number: "",
-			company: "",
+			hR_Number: '',
+			company: '',
 			actionFilter: 0,
-			stageIDs:"",
-				actionFilterIDs:"",
-				CompanyIds:"",
+			stageIDs: '',
+			actionFilterIDs: '',
+			CompanyIds: '',
 			// ambdr: 0
-		}
+		},
 	});
 
 	var date = new Date();
@@ -154,41 +152,46 @@ const SlaReports = () => {
 	var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
 	const slaReportList = async (pageData) => {
-		console.log(pageData, "pageData");
+		console.log(pageData, 'pageData');
 		let obj = {
-			startDate: pageData ? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format("YYYY-MM-DD") : moment(firstDay).format("YYYY-MM-DD"),
-			endDate: pageData ? moment(pageData?.filterFields_ViewAllHRs?.toDate).format("YYYY-MM-DD") : moment(lastDay).format("YYYY-MM-DD"),
+			startDate: pageData
+				? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format(
+						'YYYY-MM-DD',
+				  )
+				: moment(firstDay).format('YYYY-MM-DD'),
+			endDate: pageData
+				? moment(pageData?.filterFields_ViewAllHRs?.toDate).format('YYYY-MM-DD')
+				: moment(lastDay).format('YYYY-MM-DD'),
 			hrid: 0,
 			sales_ManagerID: 0,
 			ops_Lead: 0,
 			salesPerson: 0,
-			stages: "",
+			stages: '',
 			isAdHoc: 0,
-			role: "",
-			hR_Number: "",
-			company: "",
+			role: '',
+			hR_Number: '',
+			company: '',
 			actionFilter: 0,
 			ambdr: 0,
-			stageIDs:"",
-				actionFilterIDs:"",
-				CompanyIds:"",
-		}
+			stageIDs: '',
+			actionFilterIDs: '',
+			CompanyIds: '',
+		};
 		setLoading(true);
-		let response = await ReportDAO.OverAllSLASummaryDAO(obj)
+		let response = await ReportDAO.OverAllSLASummaryDAO(obj);
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
-			setListData(response?.responseBody)
+			setListData(response?.responseBody);
 		} else {
 			setLoading(false);
 		}
-	}
+	};
 
-	const [slaDetailsList, setSlaDetailsList] = useState([])
-
+	const [slaDetailsList, setSlaDetailsList] = useState([]);
 
 	useEffect(() => {
-		setslaValue(0)
-	}, [])
+		setslaValue(0);
+	}, []);
 
 	const slaReportDetails = async (pageData) => {
 		let data = {
@@ -196,63 +199,65 @@ const SlaReports = () => {
 			pagenumber: pageData?.pageNumber ? pageData?.pageNumber : 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: pageData ? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format("YYYY-MM-DD") : moment(firstDay).format("YYYY-MM-DD"),
-				endDate: pageData ? moment(pageData?.filterFields_ViewAllHRs?.toDate).format("YYYY-MM-DD") : moment(lastDay).format("YYYY-MM-DD"),
+				startDate: pageData
+					? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format(
+							'YYYY-MM-DD',
+					  )
+					: moment(firstDay).format('YYYY-MM-DD'),
+				endDate: pageData
+					? moment(pageData?.filterFields_ViewAllHRs?.toDate).format(
+							'YYYY-MM-DD',
+					  )
+					: moment(lastDay).format('YYYY-MM-DD'),
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
 				salesPerson: 0,
-				stage: "",
+				stage: '',
 				isAdHoc: 0,
-				role: "",
-				slaType: slaValue === 0 ?0:1,
+				role: '',
+				slaType: slaValue === 0 ? 0 : 1,
 				type: 0,
-				hR_Number: "",
-				company: "",
+				hR_Number: '',
+				company: '',
 				actionFilter: 0,
-				stageIDs:"",
-				actionFilterIDs:"",
-				CompanyIds:"",
+				stageIDs: '',
+				actionFilterIDs: '',
+				CompanyIds: '',
 				// ambdr: 0
-			}
-		}
+			},
+		};
 		setSummaryLoading(true);
-		let response = await ReportDAO.slaDetailedDataDAO(data)
+		let response = await ReportDAO.slaDetailedDataDAO(data);
 		if (response?.statusCode === HTTPStatusCode?.OK) {
 			// setPageNumber(response?.responseBody?.pagenumber)
-			setTotalRecords(response?.responseBody?.totalrows)
+			setTotalRecords(response?.responseBody?.totalrows);
 			setSummaryLoading(false);
-			setSlaDetailsList(
-				slaUtils.slaListData(response && response),
-			);
+			setSlaDetailsList(slaUtils.slaListData(response && response));
 		} else {
 			setApiData([]);
 			setSummaryLoading(false);
 			setTotalRecords(0);
-			setSlaDetailsList([])
+			setSlaDetailsList([]);
 		}
-	}
-
+	};
 
 	const getEngagementFilterList = useCallback(async () => {
 		const response = await ReportDAO.slaFilterDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setFiltersList(response && response?.responseBody);
 		}
-
 	}, []);
-
 
 	const toggleHRFilter = useCallback(() => {
 		getEngagementFilterList();
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
-				setIsAllowFilters(!isAllowFilters);
-			}, 300);
+					setIsAllowFilters(!isAllowFilters);
+			  }, 300);
 		setHTMLFilter(!getHTMLFilter);
 	}, [getEngagementFilterList, getHTMLFilter, isAllowFilters]);
-
 
 	const onCalenderFilter = (dates) => {
 		const [start, end] = dates;
@@ -281,33 +286,37 @@ const SlaReports = () => {
 					fromDate: new Date(start).toLocaleDateString('en-US'),
 					toDate: new Date(end).toLocaleDateString('en-US'),
 				},
-			})
-			setDateError("")
+			});
+			setDateError('');
 			setTableFilteredState({
 				totalrecord: 100,
 				pagenumber: 1,
 				isExport: false,
 				filterFieldsSLA: {
-					startDate: moment(new Date(start).toLocaleDateString('en-US')).format("YYYY-MM-DD"),
-					endDate: moment(new Date(end).toLocaleDateString('en-US')).format("YYYY-MM-DD"),
+					startDate: moment(new Date(start).toLocaleDateString('en-US')).format(
+						'YYYY-MM-DD',
+					),
+					endDate: moment(new Date(end).toLocaleDateString('en-US')).format(
+						'YYYY-MM-DD',
+					),
 					hrid: 0,
 					sales_ManagerID: 0,
 					ops_Lead: 0,
 					salesPerson: 0,
-					stages: "",
+					stages: '',
 					isAdHoc: 0,
-					role: "",
-					slaType: slaValue === 0 ?0:1,
+					role: '',
+					slaType: slaValue === 0 ? 0 : 1,
 					type: 0,
-					hR_Number: "",
-					company: "",
+					hR_Number: '',
+					company: '',
 					actionFilter: 0,
-					stageIDs:"",
-				actionFilterIDs:"",
-				CompanyIds:"",
+					stageIDs: '',
+					actionFilterIDs: '',
+					CompanyIds: '',
 					// ambdr: 0
-				}
-			})
+				},
+			});
 		}
 	};
 	const onRemoveFilters = () => {
@@ -317,50 +326,40 @@ const SlaReports = () => {
 		setHTMLFilter(false);
 	};
 	const tableColumnsMemo = useMemo(
-		() =>
-			reportConfig.SLAReportConfig(
-				listData && listData,
-			),
+		() => reportConfig.SLAReportConfig(listData && listData),
 		[listData],
 	);
 	const slaDetailColumn = useMemo(
 		() =>
-			reportConfig.SLAReportDetailListConfig(
-				slaDetailsList && slaDetailsList,
-			),
+			reportConfig.SLAReportDetailListConfig(slaDetailsList && slaDetailsList),
 		[slaDetailsList],
 	);
 
-
 	useEffect(() => {
-		setslaValue(0)
-		slaReportList()
-		slaReportDetails()
-	}, [])
-
-
+		setslaValue(0);
+		slaReportList();
+		slaReportDetails();
+	}, []);
 
 	const handleHRRequest = useCallback(
 		async (tableFilteredState) => {
 			if (startDate === null) {
-				setDateError("* Please select date")
+				setDateError('* Please select date');
 			} else {
-
 				// setLoading(true);
 				let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
-				setSlaDetailsList(
-					slaUtils.slaListData(response && response),
-				);
+				setSlaDetailsList(slaUtils.slaListData(response && response));
 				// setLoading(true);
-				let responseList = await ReportDAO.OverAllSLASummaryDAO(tableFilteredState)
+				let responseList = await ReportDAO.OverAllSLASummaryDAO(
+					tableFilteredState,
+				);
 				if (responseList?.statusCode === HTTPStatusCode.OK) {
 					// setLoading(false);
-					setListData(responseList?.responseBody)
+					setListData(responseList?.responseBody);
 				} else {
 					// setLoading(false);
-
 				}
-				setDateError("")
+				setDateError('');
 			}
 			// if (response?.statusCode === HTTPStatusCode.OK) {
 			// 	setTotalRecords(response?.responseBody?.totalrows);
@@ -392,15 +391,10 @@ const SlaReports = () => {
 		setSlaReportDetailsState(tableFilteredState);
 	}, [setSlaReportDetailsState, tableFilteredState]);
 
-
-
-
 	return (
 		<div className={SlaReportStyle.hiringRequestContainer}>
 			<div className={SlaReportStyle.addnewHR}>
-				<div className={SlaReportStyle.hiringRequest}>
-					SLA Report
-				</div>
+				<div className={SlaReportStyle.hiringRequest}>SLA Report</div>
 			</div>
 			{/*
 			 * --------- Filter Component Starts ---------
@@ -427,7 +421,7 @@ const SlaReports = () => {
 								type="radio"
 								checked={checkedValue}
 								onChange={(e) => {
-									checkedYes(e)
+									checkedYes(e);
 								}}
 								id="remote"
 								name="remote"
@@ -442,7 +436,7 @@ const SlaReports = () => {
 								type="radio"
 								checked={checkednoValue}
 								onChange={(e) => {
-									checkedNo(e)
+									checkedNo(e);
 								}}
 								id="remote"
 								name="remote"
@@ -509,7 +503,6 @@ const SlaReports = () => {
 									endDate={endDate}
 									selectsRange
 								/>
-
 							</div>
 
 							<span>{dateError}</span>
@@ -568,6 +561,7 @@ const SlaReports = () => {
 				) : (
 					<>
 						<Table
+							scroll={{ x: '100vw', y: '100vh' }}
 							id="hrListingTable"
 							columns={tableColumnsMemo}
 							bordered={false}
@@ -615,6 +609,7 @@ const SlaReports = () => {
 				) : (
 					<>
 						<Table
+							scroll={{ x: '200vw', y: '100vh' }}
 							columns={slaDetailColumn}
 							bordered={false}
 							dataSource={slaDetailsList}
@@ -627,7 +622,10 @@ const SlaReports = () => {
 									// 	totalrecord: pageSize,
 									// 	pagenumber: pageNum,
 									// });
-									slaReportDetails({ pageNumber: pageNum, totalRecord: pageSize });
+									slaReportDetails({
+										pageNumber: pageNum,
+										totalRecord: pageSize,
+									});
 								},
 								size: 'small',
 								pageSize: pageSize,
@@ -641,7 +639,6 @@ const SlaReports = () => {
 					</>
 				)}
 			</div>
-
 
 			{isAllowFilters && (
 				<Suspense fallback={<div>Loading...</div>}>

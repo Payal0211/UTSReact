@@ -204,6 +204,7 @@ const JDDumpReportScreen = () => {
 				) : (
 					<>
 						<Table
+							scroll={{ x: '100vw', y: '100vh' }}
 							className="jdDumpReport"
 							id="JDDumpReport"
 							columns={tableColumnsMemo}
