@@ -335,6 +335,7 @@ const DemandFunnelScreen = () => {
 					) : (
 						<>
 							<Table
+								scroll={{ x: '100vw', y: '100vh' }}
 								id="hrListingTable"
 								columns={viewSummaryMemo}
 								bordered={false}

@@ -515,6 +515,7 @@ const SupplyFunnelScreen = () => {
 				) : (
 					<>
 						<Table
+							scroll={{ x: '250vw', y: '100vh' }}
 							id="supplyFunnelListing"
 							bordered={false}
 							dataSource={[...apiData?.slice(1)]}
@@ -588,6 +589,7 @@ const SupplyFunnelScreen = () => {
 					) : (
 						<>
 							<Table
+								scroll={{ x: '100vw', y: '100vh' }}
 								id="supplyFunnelViewSummary"
 								bordered={false}
 								dataSource={[...viewSummaryData?.slice(1)]}

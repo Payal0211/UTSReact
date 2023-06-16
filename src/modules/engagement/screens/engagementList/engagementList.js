@@ -516,6 +516,7 @@ const EngagementList = () => {
 					) : (
 						<WithLoader className="mainLoader">
 							<Table
+								scroll={{ x: '500vw', y: '100vh' }}
 								id="hrListingTable"
 								columns={tableColumnsMemo}
 								bordered={false}

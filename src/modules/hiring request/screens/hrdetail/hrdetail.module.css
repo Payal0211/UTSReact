@@ -2,7 +2,9 @@
     width: 95%;
     margin: 0 auto;
 }
-
+.hrback{
+    display: inline-block;
+}
 .goback{
    
     color: var(--uplers-black);

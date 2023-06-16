@@ -162,7 +162,7 @@ export class HiringRequestHRStatus {
 	static IN_PROCESS = 106;
 	static CANCELLED = 107;
 	static ON_HOLD = 108;
-	static OTHER = 201;
+	static LOST = 201;
 }
 
 export class AnotherRoundInterviewOption {

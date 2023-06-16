@@ -25,13 +25,13 @@ export const All_Hiring_Request_Utils = {
 								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
 									: () => {
-										let priorityObject = {
-											isNextWeekStarMarked: '1',
-											hRID: hrID,
-											person: person
-										};
-										togglePriority(priorityObject);
-									}
+											let priorityObject = {
+												isNextWeekStarMarked: '1',
+												hRID: hrID,
+												person: person,
+											};
+											togglePriority(priorityObject);
+									  }
 							}
 						/>
 					</Tooltip>
@@ -56,13 +56,13 @@ export const All_Hiring_Request_Utils = {
 								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
 									: () => {
-										let priorityObject = {
-											isNextWeekStarMarked: '0',
-											hRID: hrID,
-											person: person
-										};
-										togglePriority(priorityObject);
-									}
+											let priorityObject = {
+												isNextWeekStarMarked: '0',
+												hRID: hrID,
+												person: person,
+											};
+											togglePriority(priorityObject);
+									  }
 							}
 						/>
 					</Tooltip>
@@ -130,6 +130,14 @@ export const All_Hiring_Request_Utils = {
 					/>
 				);
 			case HiringRequestHRStatus.CANCELLED:
+				return (
+					<HRStatusComponent
+						title={hrStatus}
+						backgroundColor={'#F0E2E2'}
+						color={'#810000'}
+					/>
+				);
+			case HiringRequestHRStatus.LOST:
 				return (
 					<HRStatusComponent
 						title={hrStatus}
