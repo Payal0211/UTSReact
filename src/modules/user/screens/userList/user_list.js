@@ -160,6 +160,7 @@ const UserList = () => {
 				) : (
 					<WithLoader>
 						<Table
+							scroll={{ x: '100vw', y: '100vh' }}
 							id="userListingTable"
 							columns={tableColumnsMemo}
 							bordered={false}
