@@ -137,6 +137,7 @@ export class HRCTA {
 export class InterviewFeedbackStatus {
 	static HIRED = 'Hire';
 	static REJECTED = 'Reject';
+	static NOHIRE = "NoHire"
 }
 export class InputType {
 	static TEXT = 'text';

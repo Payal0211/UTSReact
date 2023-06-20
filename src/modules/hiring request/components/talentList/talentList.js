@@ -44,6 +44,7 @@ import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
 import FeedbackResponse from 'modules/interview/components/feedbackResponse/feedbackResponse';
 
 import ProfileLogDetails from '../profileLogDetails/profileLog';
+import TalentInterviewStatus from '../talentInterviewStatus/talentInterviewStatus';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -222,7 +223,21 @@ const TalentList = ({
 		filterTalentID?.PayRate,
 		hrId,
 	]);
-
+console.log("talentList details",	{talentCTA,
+talentDetail,
+miscData,
+callAPI,
+clientDetail,
+HRStatusCode,
+hrId,
+starMarkedStatusCode,
+hrStatus,
+hiringRequestNumber,
+hrType,
+setHRapiCall,
+callHRapi,
+inteviewSlotDetails,
+talentID,})
 	// const updateHRcostHandler = useCallback(async () => {
 	// 	const calculateHRData = {
 	// 		ContactPriorityID: filterTalentID?.ContactPriorityID,
@@ -367,7 +382,7 @@ const TalentList = ({
 						setPageIndex(page - 1);
 					},
 				}}
-				renderItem={(item, listIndex) => {
+				renderItem={(item, listIndex) => {					
 					return (
 						<div
 							key={item?.Name}
@@ -510,8 +525,14 @@ const TalentList = ({
 										}}
 									/>
 
-									{/* HTML for Rejection Status Starts */}
-									<div className={TalentListStyle.statusReject}>
+									<TalentInterviewStatus 
+									item={item}  
+									setProfileRejectedModal={setProfileRejectedModal} 
+									setShowFeedback={setShowFeedback}  
+									setTalentIndex={setTalentIndex} />
+
+									{/* HTML for Rejection Status Starts  */}
+									{/* <div className={TalentListStyle.statusReject}>
 										<div className={TalentListStyle.statusRejectInner}>
 											<div>Rejection Reason: <span>Other</span></div>
 											<span
@@ -524,11 +545,11 @@ const TalentList = ({
 													cursor: 'pointer',
 												}}>View</span>
 										</div>
-									</div>
+									</div> */}
 									{/* HTML for Rejection Status Ends */}
 
 									{/* HTML for Feedback Pending Starts */}
-									<div className={TalentListStyle.statusPending}>
+									{/* <div className={TalentListStyle.statusPending}>
 										<div className={TalentListStyle.statusPendingInner}>
 											<div>Interview Status: <span>Feedback Pending</span></div>
 											<span style={{
@@ -537,10 +558,10 @@ const TalentList = ({
 													cursor: 'pointer',
 												}}>Add</span>
 										</div>
-									</div>
+									</div> */}
 									{/* HTML for Feedback Pending Ends */}
 
-									<div className={TalentListStyle.payRate}>
+									{/* <div className={TalentListStyle.payRate}>
 										<div>
 											<span>Interview Status:</span>&nbsp;&nbsp;
 											<span style={{ fontWeight: '500', cursor: 'pointer' }}>
@@ -567,7 +588,7 @@ const TalentList = ({
 												View
 											</span>
 										)}
-									</div>
+									</div> */}
 									<Divider
 										style={{
 											margin: '10px 0',
@@ -584,7 +605,7 @@ const TalentList = ({
 														{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
 													</span>
 												</div>
-												<span
+												{hrStatus !== 'Cancelled' && hrStatus !== 'Closed' &&  hrStatus !== "Lost" && <span
 													onClick={() => {
 														setTalentIndex(item?.TalentID);
 														setEditBillRate(true);
@@ -595,7 +616,8 @@ const TalentList = ({
 														cursor: 'pointer',
 													}}>
 													Edit
-												</span>
+												</span>}
+												
 											</div>
 											<div className={TalentListStyle.payRate}>
 												<div>
@@ -607,7 +629,7 @@ const TalentList = ({
 														{_isNull(item?.PayRate) ? 'NA' : item?.PayRate}
 													</span>
 												</div>
-												<span
+												{hrStatus !== 'Cancelled' && hrStatus !== 'Closed' &&  hrStatus !== "Lost" && <span
 													onClick={() => {
 														setEditPayRate(true);
 														setTalentIndex(item?.TalentID);
@@ -618,7 +640,8 @@ const TalentList = ({
 														cursor: 'pointer',
 													}}>
 													Edit
-												</span>
+												</span>}
+												
 											</div>
 											<div className={TalentListStyle.nr}>
 												<div>
@@ -875,7 +898,13 @@ const TalentList = ({
 					handleSubmit={handleSubmit}
 					onCancel={() => setProfileRejectedModal(false)}
 					register={register}
+					talentIndex={talentIndex}
 					errors={errors}
+					details={{
+						talentDetail,
+						clientDetail,
+						hiringRequestNumber,
+					}}
 					// setHRapiCall={setHRapiCall}
 					// callHRapi={callHRapi}
 					// talentInfo={filterTalentID}

@@ -145,7 +145,7 @@ const CompanyProfileCard = ({
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 								</span>
-								{apiData !== 'Cancelled' &&
+								{apiData !== 'Cancelled' && apiData !== 'Closed' && apiData !== "Lost" &&
 									userSessionMemo?.loggedInUserTypeID ===
 										UserAccountRole.DEVELOPER && (
 										<button
