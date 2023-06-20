@@ -42,59 +42,59 @@ const SlaReportFilerList = ({
     setFilterSubChild(item);
   };
 
-    const handleAppliedFilters = useCallback(
-        (isChecked, filterObj) => {
-            let tempAppliedFilters = new Map(appliedFilter);
-            let tempCheckedState = new Map(checkedState);
-            console.log(isChecked,"filterObj");
-            console.log(tempCheckedState,"tempCheckedState");
-            if (isChecked) {
-                tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, true);
-                setFilteredTagLength((prev) => prev + 1);
-            } else {
-                tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, false);
-                setFilteredTagLength((prev) => prev - 1);
-            }
-            if (tempAppliedFilters.has(filterObj.filterType)) {
-                let filterAddress = tempAppliedFilters.get(filterObj.filterType);
-                if (isChecked) {
-                    if(filterSubChild?.label === "Engagement Tenure"){
-                        filterAddress.value = filterAddress?.value ;
-                        filterAddress.id = filterAddress.id;
-                        tempAppliedFilters.set(filterObj.filterType, filterAddress);
-                    }else{
-                        filterAddress.value = filterAddress?.value + ',' + filterObj.value;
-                        filterAddress.id = filterAddress.id + ',' + filterObj.id;
-                        tempAppliedFilters.set(filterObj.filterType, filterAddress);
-                    }
-                } else {
-                    let splittedID = filterAddress.id.split(',');
-                    let splittedIDIndex = splittedID.indexOf(filterObj.id);
-                    splittedID = [
-                        ...splittedID.slice(0, splittedIDIndex),
-                        ...splittedID.slice(splittedIDIndex + 1),
-                    ];
-                    let splittedValue = filterAddress.value.split(',');
-                    let splittedValueIndex = splittedValue.indexOf(filterObj.value);
-                    splittedValue = [
-                        ...splittedValue.slice(0, splittedValueIndex),
-                        ...splittedValue.slice(splittedValueIndex + 1),
-                    ];
-                    filterAddress.value = splittedValue.toString();
-                    filterAddress.id = splittedID.toString();
-                    splittedID.length === 0
-                        ? tempAppliedFilters.delete(filterObj.filterType)
-                        : tempAppliedFilters.set(filterObj.filterType, filterAddress);
-                }
-            } else {
-                tempAppliedFilters.set(filterObj.filterType, filterObj);
-            }
-            setAppliedFilters(tempAppliedFilters);
-            setCheckedState(tempCheckedState);
-        },
-        [appliedFilter, checkedState, setFilteredTagLength],
-    );
-// Clear filter
+  const handleAppliedFilters = useCallback(
+    (isChecked, filterObj) => {
+      let tempAppliedFilters = new Map(appliedFilter);
+      let tempCheckedState = new Map(checkedState);
+      console.log(isChecked, "filterObj");
+      console.log(tempCheckedState, "tempCheckedState");
+      if (isChecked) {
+        tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, true);
+        setFilteredTagLength((prev) => prev + 1);
+      } else {
+        tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, false);
+        setFilteredTagLength((prev) => prev - 1);
+      }
+      if (tempAppliedFilters.has(filterObj.filterType)) {
+        let filterAddress = tempAppliedFilters.get(filterObj.filterType);
+        if (isChecked) {
+          if (filterSubChild?.label === "Engagement Tenure") {
+            filterAddress.value = filterAddress?.value;
+            filterAddress.id = filterAddress.id;
+            tempAppliedFilters.set(filterObj.filterType, filterAddress);
+          } else {
+            filterAddress.value = filterAddress?.value + ',' + filterObj.value;
+            filterAddress.id = filterAddress.id + ',' + filterObj.id;
+            tempAppliedFilters.set(filterObj.filterType, filterAddress);
+          }
+        } else {
+          let splittedID = filterAddress.id.split(',');
+          let splittedIDIndex = splittedID.indexOf(filterObj.id);
+          splittedID = [
+            ...splittedID.slice(0, splittedIDIndex),
+            ...splittedID.slice(splittedIDIndex + 1),
+          ];
+          let splittedValue = filterAddress.value.split(',');
+          let splittedValueIndex = splittedValue.indexOf(filterObj.value);
+          splittedValue = [
+            ...splittedValue.slice(0, splittedValueIndex),
+            ...splittedValue.slice(splittedValueIndex + 1),
+          ];
+          filterAddress.value = splittedValue.toString();
+          filterAddress.id = splittedID.toString();
+          splittedID.length === 0
+            ? tempAppliedFilters.delete(filterObj.filterType)
+            : tempAppliedFilters.set(filterObj.filterType, filterAddress);
+        }
+      } else {
+        tempAppliedFilters.set(filterObj.filterType, filterObj);
+      }
+      setAppliedFilters(tempAppliedFilters);
+      setCheckedState(tempCheckedState);
+    },
+    [appliedFilter, checkedState, setFilteredTagLength],
+  );
+  // Clear filter
   const clearFilters = useCallback(() => {
     setAppliedFilters(new Map());
     setCheckedState(new Map());
@@ -104,50 +104,50 @@ const SlaReportFilerList = ({
       pagenumber: 1,
       isExport: false,
       filterFieldsSLA: {
-          startDate: "2023-06-01",
-          endDate: "2023-06-30",
-          hrid: 0,
-          sales_ManagerID: 0,
-          ops_Lead: 0,
-          salesPerson: 0,
-          stages: "",
-          isAdHoc: 0,
-          role: "",
-          slaType: 0,
-          type: 0,
-          hR_Number: "",
-          company: "",
-          actionFilter: 0,
-          stageIDs:"",
-				actionFilterIDs:"",
-				CompanyIds:"",
-          // ambdr: 0
+        startDate: "2023-06-01",
+        endDate: "2023-06-30",
+        hrid: 0,
+        sales_ManagerID: 0,
+        ops_Lead: 0,
+        salesPerson: 0,
+        stages: "",
+        isAdHoc: 0,
+        role: "",
+        slaType: 0,
+        type: 0,
+        hR_Number: "",
+        company: "",
+        actionFilter: 0,
+        stageIDs: "",
+        actionFilterIDs: "",
+        CompanyIds: "",
+        // ambdr: 0
       }
     });
     setSlaReportDetailsState({
-        totalrecord: 100,
-        pagenumber: 1,
-        isExport: false,
-        filterFieldsSLA: {
-            startDate: "2023-06-01",
-            endDate: "2023-06-30",
-            hrid: 0,
-            sales_ManagerID: 0,
-            ops_Lead: 0,
-            salesPerson: 0,
-            stages: "",
-            isAdHoc: 0,
-            role: "",
-            slaType: 0,
-            type: 0,
-            hR_Number: "",
-            company: "",
-            actionFilter: 0,
-            stageIDs:"",
-				actionFilterIDs:"",
-				CompanyIds:"",
-            // ambdr: 0
-        }
+      totalrecord: 100,
+      pagenumber: 1,
+      isExport: false,
+      filterFieldsSLA: {
+        startDate: "2023-06-01",
+        endDate: "2023-06-30",
+        hrid: 0,
+        sales_ManagerID: 0,
+        ops_Lead: 0,
+        salesPerson: 0,
+        stages: "",
+        isAdHoc: 0,
+        role: "",
+        slaType: 0,
+        type: 0,
+        hR_Number: "",
+        company: "",
+        actionFilter: 0,
+        stageIDs: "",
+        actionFilterIDs: "",
+        CompanyIds: "",
+        // ambdr: 0
+      }
     });
     onRemoveHRFilters()
     // setSlaReportDetailsState(reqFilter);
@@ -160,7 +160,7 @@ const SlaReportFilerList = ({
     setSlaReportDetailsState,
     tableFilteredState,
   ]);
-// OnClick for apply filter
+  // OnClick for apply filter
   const handleFilters = useCallback(() => {
 
     let filters = {};
@@ -175,22 +175,23 @@ const SlaReportFilerList = ({
     //   ...tableFilteredState,
     // };
     // console.log(reqFilter,"sasdasdasdasdasd")
-    
+
     for (let key in filters) {
       const newState = { ...slaReportDetailsState };
       newState.filterFieldsSLA[key] = filters[key];
       setSlaReportDetailsState(newState);
       handleHRRequest(newState);
     }
-    onRemoveHRFilters()
-}, [
+
+    onRemoveHRFilters();
+  }, [
     appliedFilter,
     handleHRRequest,
     setTableFilteredState,
     setSlaReportDetailsState,
     slaReportDetailsState,
     tableFilteredState,
-]);
+  ]);
 
   const slaFilterSearch = (e, data) => {
     let filteredData = data.filter((val) => {
@@ -313,7 +314,7 @@ const SlaReportFilerList = ({
                   />
                   <input
                     className={slaReportStyle.searchInput}
-                    type={filterSubChild?.label === "Engagement Tenure"?InputType.NUMBER:InputType.TEXT}
+                    type={filterSubChild?.label === "Engagement Tenure" ? InputType.NUMBER : InputType.TEXT}
                     id="search"
                     placeholder={`Search ${filterSubChild?.label}`}
                     onChange={(e) => {
@@ -326,78 +327,78 @@ const SlaReportFilerList = ({
               )}
               <br />
 
-                <div className={slaReportStyle.filtersListType}>
-                  { searchData && searchData.length > 0 ? (
-                    searchData.map((item, index) => {
-                      return (
-                        <div
-                          className={slaReportStyle.filterItem}
-                          key={index}>
-                          <Checkbox
+              <div className={slaReportStyle.filtersListType}>
+                {searchData && searchData.length > 0 ? (
+                  searchData.map((item, index) => {
+                    return (
+                      <div
+                        className={slaReportStyle.filterItem}
+                        key={index}>
+                        <Checkbox
                           // disabled={
                           //   appliedFilter?.get(`${filterSubChild.name}`) &&
                           //   !checkedState.get(
                           //     `${filterSubChild.name}${item.text}`,
                           //   )
                           // }
+                          checked={checkedState.get(
+                            `${filterSubChild?.name}${item.text}`,
+                          )}
+                          onChange={(e) => {
+                            handleAppliedFilters(e.target.checked, {
+                              filterType: filterSubChild?.name,
+                              value: item?.value,
+                              id: item?.text,
+                            })
+                          }}
+                          id={item?.value + `/${index + 1}`}
+                          style={{
+                            fontSize: `${!item.label && '1rem'}`,
+                            fontWeight: '500',
+                          }}>
+                          {item.text}
+                        </Checkbox>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <>
+                    {filterSubChild?.child?.map((item, index) => {
+                      return (
+                        <div
+                          className={slaReportStyle.filterItem}
+                          key={index}
+                        >
+                          <Checkbox
+                            // disabled={
+                            // 	appliedFilter?.get(`${filterSubChild.name}`) &&
+                            // 	!checkedState.get(
+                            // 		`${filterSubChild.name}${item.text}`,
+                            // 	)
+                            // }
                             checked={checkedState.get(
-                              `${filterSubChild?.name}${item.text}`,
+                              `${filterSubChild?.name}${item.text}`
                             )}
                             onChange={(e) => {
                               handleAppliedFilters(e.target.checked, {
                                 filterType: filterSubChild?.name,
                                 value: item?.value,
                                 id: item?.text,
-                              })
+                              });
                             }}
                             id={item?.value + `/${index + 1}`}
                             style={{
-                              fontSize: `${!item.label && '1rem'}`,
-                              fontWeight: '500',
-                            }}>
+                              fontSize: `${!item.label && "1rem"}`,
+                              fontWeight: "500",
+                            }}
+                          >
                             {item.text}
                           </Checkbox>
                         </div>
                       );
-                    })
-                  ) : (
-                    <>
-                      {filterSubChild?.child?.map((item, index) => {
-                        return (
-                          <div
-                            className={slaReportStyle.filterItem}
-                            key={index}
-                          >
-                            <Checkbox
-                            // disabled={
-														// 	appliedFilter?.get(`${filterSubChild.name}`) &&
-														// 	!checkedState.get(
-														// 		`${filterSubChild.name}${item.text}`,
-														// 	)
-														// }
-                              checked={checkedState.get(
-                                `${filterSubChild?.name}${item.text}`
-                              )}
-                              onChange={(e) => {
-                                handleAppliedFilters(e.target.checked, {
-                                  filterType: filterSubChild?.name,
-                                  value: item?.value,
-                                  id: item?.text,
-                                });
-                              }}
-                              id={item?.value + `/${index + 1}`}
-                              style={{
-                                fontSize: `${!item.label && "1rem"}`,
-                                fontWeight: "500",
-                              }}
-                            >
-                              {item.text}
-                            </Checkbox>
-                          </div>
-                        );
-                      })}
+                    })}
                   </>
-                  )}
+                )}
               </div>
             </>
           ) : (

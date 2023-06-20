@@ -130,7 +130,7 @@ const CompanyProfileCard = ({
 								</span>
 							</div>
 						</div>
-					</div>
+					</div>	
 					<Divider
 						style={{
 							margin: '10px 0',

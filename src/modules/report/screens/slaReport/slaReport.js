@@ -184,8 +184,8 @@ const SlaReports = () => {
 		let obj = {
 			startDate: pageData
 				? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format(
-						'YYYY-MM-DD',
-				  )
+					'YYYY-MM-DD',
+				)
 				: moment(firstDay).format('YYYY-MM-DD'),
 			endDate: pageData
 				? moment(pageData?.filterFields_ViewAllHRs?.toDate).format('YYYY-MM-DD')
@@ -229,13 +229,13 @@ const SlaReports = () => {
 			filterFieldsSLA: {
 				startDate: pageData
 					? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format(
-							'YYYY-MM-DD',
-					  )
+						'YYYY-MM-DD',
+					)
 					: moment(firstDay).format('YYYY-MM-DD'),
 				endDate: pageData
 					? moment(pageData?.filterFields_ViewAllHRs?.toDate).format(
-							'YYYY-MM-DD',
-					  )
+						'YYYY-MM-DD',
+					)
 					: moment(lastDay).format('YYYY-MM-DD'),
 				hrid: 0,
 				sales_ManagerID: 0,
@@ -282,8 +282,8 @@ const SlaReports = () => {
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
-					setIsAllowFilters(!isAllowFilters);
-			  }, 300);
+				setIsAllowFilters(!isAllowFilters);
+			}, 300);
 		setHTMLFilter(!getHTMLFilter);
 	}, [getEngagementFilterList, getHTMLFilter, isAllowFilters]);
 
@@ -374,18 +374,18 @@ const SlaReports = () => {
 			if (startDate === null) {
 				setDateError('* Please select date');
 			} else {
-				// setLoading(true);
+				setSummaryLoading(true);
 				let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
 				setSlaDetailsList(slaUtils.slaListData(response && response));
-				// setLoading(true);
+				setLoading(true);
 				let responseList = await ReportDAO.OverAllSLASummaryDAO(
 					tableFilteredState,
 				);
 				if (responseList?.statusCode === HTTPStatusCode.OK) {
-					// setLoading(false);
+					setLoading(false);
 					setListData(responseList?.responseBody);
-				} else {
-					// setLoading(false);
+				} if (response?.statusCode === HTTPStatusCode.OK) {
+					setSummaryLoading(false);
 				}
 				setDateError('');
 			}
