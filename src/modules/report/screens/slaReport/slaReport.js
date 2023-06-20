@@ -134,6 +134,7 @@ const SlaReports = () => {
 				// ambdr: 0
 			},
 		});
+
 		slaReportList({
 			...tableFilteredState,
 			filterFields_ViewAllHRs: {
@@ -282,8 +283,8 @@ const SlaReports = () => {
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
-				setIsAllowFilters(!isAllowFilters);
-			}, 300);
+					setIsAllowFilters(!isAllowFilters);
+			  }, 300);
 		setHTMLFilter(!getHTMLFilter);
 	}, [getEngagementFilterList, getHTMLFilter, isAllowFilters]);
 
