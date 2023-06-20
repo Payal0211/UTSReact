@@ -170,7 +170,8 @@ const DealFilters = ({
 			...tableFilteredState,
 			filterFields_DealList: {},
 		};
-		handleDealRequest(reqFilter);
+		 handleDealRequest(reqFilter);
+		 onRemoveDealFilters()
 	}, [
 		handleDealRequest,
 		setAppliedFilters,
@@ -192,7 +193,8 @@ const DealFilters = ({
 			...tableFilteredState,
 			filterFields_DealList: { ...filters },
 		};
-		handleDealRequest(reqFilter);
+		// handleDealRequest(reqFilter);
+		onRemoveDealFilters()
 	}, [
 		appliedFilter,
 		handleDealRequest,

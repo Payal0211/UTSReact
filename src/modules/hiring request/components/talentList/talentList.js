@@ -39,10 +39,12 @@ import { HTTPStatusCode } from 'constants/network';
 import EditPayRate from '../editBillAndPayRate/editPayRateModal';
 import { DownOutlined } from '@ant-design/icons';
 import EditBillRate from '../editBillAndPayRate/editBillRateModal';
+import ProfileRejectedModal from '../profileRejected/profileRejected';
 import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
 import FeedbackResponse from 'modules/interview/components/feedbackResponse/feedbackResponse';
 
 import ProfileLogDetails from '../profileLogDetails/profileLog';
+import TalentInterviewStatus from '../talentInterviewStatus/talentInterviewStatus';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -98,6 +100,9 @@ const TalentList = ({
 		useState(false);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
 	const [editBillRate, setEditBillRate] = useState(false);
+
+	const [profileRejectedModal, setProfileRejectedModal] = useState(false);
+
 	const [editPayRate, setEditPayRate] = useState(false);
 
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
@@ -218,7 +223,21 @@ const TalentList = ({
 		filterTalentID?.PayRate,
 		hrId,
 	]);
-
+console.log("talentList details",	{talentCTA,
+talentDetail,
+miscData,
+callAPI,
+clientDetail,
+HRStatusCode,
+hrId,
+starMarkedStatusCode,
+hrStatus,
+hiringRequestNumber,
+hrType,
+setHRapiCall,
+callHRapi,
+inteviewSlotDetails,
+talentID,})
 	// const updateHRcostHandler = useCallback(async () => {
 	// 	const calculateHRData = {
 	// 		ContactPriorityID: filterTalentID?.ContactPriorityID,
@@ -363,7 +382,7 @@ const TalentList = ({
 						setPageIndex(page - 1);
 					},
 				}}
-				renderItem={(item, listIndex) => {
+				renderItem={(item, listIndex) => {					
 					return (
 						<div
 							key={item?.Name}
@@ -505,7 +524,44 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-									<div className={TalentListStyle.payRate}>
+
+									<TalentInterviewStatus 
+									item={item}  
+									setProfileRejectedModal={setProfileRejectedModal} 
+									setShowFeedback={setShowFeedback}  
+									setTalentIndex={setTalentIndex} />
+
+									{/* HTML for Rejection Status Starts  */}
+									{/* <div className={TalentListStyle.statusReject}>
+										<div className={TalentListStyle.statusRejectInner}>
+											<div>Rejection Reason: <span>Other</span></div>
+											<span
+												onClick={() => {
+													setProfileRejectedModal(true);
+												}}
+												style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>View</span>
+										</div>
+									</div> */}
+									{/* HTML for Rejection Status Ends */}
+
+									{/* HTML for Feedback Pending Starts */}
+									{/* <div className={TalentListStyle.statusPending}>
+										<div className={TalentListStyle.statusPendingInner}>
+											<div>Interview Status: <span>Feedback Pending</span></div>
+											<span style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>Add</span>
+										</div>
+									</div> */}
+									{/* HTML for Feedback Pending Ends */}
+
+									{/* <div className={TalentListStyle.payRate}>
 										<div>
 											<span>Interview Status:</span>&nbsp;&nbsp;
 											<span style={{ fontWeight: '500', cursor: 'pointer' }}>
@@ -514,6 +570,7 @@ const TalentList = ({
 													: item?.InterviewStatus}
 											</span>
 										</div>
+
 										{(item?.ClientFeedback === InterviewFeedbackStatus.HIRED ||
 											item?.ClientFeedback ===
 												InterviewFeedbackStatus.REJECTED) && (
@@ -531,7 +588,7 @@ const TalentList = ({
 												View
 											</span>
 										)}
-									</div>
+									</div> */}
 									<Divider
 										style={{
 											margin: '10px 0',
@@ -548,7 +605,7 @@ const TalentList = ({
 														{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
 													</span>
 												</div>
-												<span
+												{hrStatus !== 'Cancelled' && hrStatus !== 'Closed' &&  hrStatus !== "Lost" && <span
 													onClick={() => {
 														setTalentIndex(item?.TalentID);
 														setEditBillRate(true);
@@ -559,7 +616,8 @@ const TalentList = ({
 														cursor: 'pointer',
 													}}>
 													Edit
-												</span>
+												</span>}
+												
 											</div>
 											<div className={TalentListStyle.payRate}>
 												<div>
@@ -571,7 +629,7 @@ const TalentList = ({
 														{_isNull(item?.PayRate) ? 'NA' : item?.PayRate}
 													</span>
 												</div>
-												<span
+												{hrStatus !== 'Cancelled' && hrStatus !== 'Closed' &&  hrStatus !== "Lost" && <span
 													onClick={() => {
 														setEditPayRate(true);
 														setTalentIndex(item?.TalentID);
@@ -582,7 +640,8 @@ const TalentList = ({
 														cursor: 'pointer',
 													}}>
 													Edit
-												</span>
+												</span>}
+												
 											</div>
 											<div className={TalentListStyle.nr}>
 												<div>
@@ -820,6 +879,38 @@ const TalentList = ({
 					);
 				}}
 			/>
+
+			{/** ============ MODAL FOR PROFILE REJECTED REASON ================ */}
+			<Modal
+				transitionName=""
+				width="926px"
+				centered
+				footer={null}
+				// open={editBillRate}
+				open={profileRejectedModal}
+				className="commonModalWrap rejectionModalWrap"
+				onCancel={() => setProfileRejectedModal(false)}>
+				<ProfileRejectedModal
+					// callAPI={callAPI}
+					// hrId={hrId}
+					// filterTalentID={filterTalentID}
+					// getBillRateInfo={getBillRateInfo}
+					handleSubmit={handleSubmit}
+					onCancel={() => setProfileRejectedModal(false)}
+					register={register}
+					talentIndex={talentIndex}
+					errors={errors}
+					details={{
+						talentDetail,
+						clientDetail,
+						hiringRequestNumber,
+					}}
+					// setHRapiCall={setHRapiCall}
+					// callHRapi={callHRapi}
+					// talentInfo={filterTalentID}
+				/>
+			</Modal>
+
 			{/** ============ MODAL FOR PROFILE LOG ================ */}
 
 			{showProfileLogModal && (

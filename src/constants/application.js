@@ -137,6 +137,7 @@ export class HRCTA {
 export class InterviewFeedbackStatus {
 	static HIRED = 'Hire';
 	static REJECTED = 'Reject';
+	static NOHIRE = "NoHire"
 }
 export class InputType {
 	static TEXT = 'text';
@@ -162,7 +163,7 @@ export class HiringRequestHRStatus {
 	static IN_PROCESS = 106;
 	static CANCELLED = 107;
 	static ON_HOLD = 108;
-	static LOST = 201;
+	static LOST = 109;
 }
 
 export class AnotherRoundInterviewOption {

@@ -143,7 +143,7 @@ const HRDetailScreen = () => {
 		const data = apiData?.hr_CTA?.filter((item) => item.key === 'DebriefingHR');
 		setEditDebring(data);
 	}, [apiData]);
-
+console.log('apiData', apiData)
 	return (
 		<WithLoader
 			showLoader={isLoading}

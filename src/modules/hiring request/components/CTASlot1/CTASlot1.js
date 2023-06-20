@@ -94,6 +94,7 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 			)}
 			{isAcceptHR && (
 				<AcceptHR
+					apiData={apiData}
 					hrID={apiData?.ClientDetail?.HR_Number}
 					openModal={isAcceptHR}
 					cancelModal={() => setIsAcceptHR(false)}

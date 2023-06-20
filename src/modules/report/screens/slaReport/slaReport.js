@@ -90,6 +90,20 @@ const SlaReports = () => {
 				// ambdr: 0
 			},
 		});
+		slaReportList({
+			...tableFilteredState,
+			filterFields_ViewAllHRs: {
+				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+				toDate: new Date(lastDay).toLocaleDateString('en-US'),
+			},
+		});
+		slaReportDetails({
+			...tableFilteredState,
+			filterFields_ViewAllHRs: {
+				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+				toDate: new Date(lastDay).toLocaleDateString('en-US'),
+			},
+		});
 	};
 	const checkedNo = (e) => {
 		setCheckednoValue(e.target.checked);
@@ -120,6 +134,21 @@ const SlaReports = () => {
 				// ambdr: 0
 			},
 		});
+
+		slaReportList({
+			...tableFilteredState,
+			filterFields_ViewAllHRs: {
+				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+				toDate: new Date(lastDay).toLocaleDateString('en-US'),
+			},
+		});
+		slaReportDetails({
+			...tableFilteredState,
+			filterFields_ViewAllHRs: {
+				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+				toDate: new Date(lastDay).toLocaleDateString('en-US'),
+			},
+		});
 	};
 	const [tableFilteredState, setTableFilteredState] = useState({
 		totalrecord: 100,
@@ -148,16 +177,16 @@ const SlaReports = () => {
 	});
 
 	var date = new Date();
-	var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-	var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+	var firstDay = startDate !== null ? startDate : new Date(date.getFullYear(), date.getMonth(), 1);
+	var lastDay = endDate !== null ? endDate : new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
 	const slaReportList = async (pageData) => {
 		console.log(pageData, 'pageData');
 		let obj = {
 			startDate: pageData
 				? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format(
-						'YYYY-MM-DD',
-				  )
+					'YYYY-MM-DD',
+				)
 				: moment(firstDay).format('YYYY-MM-DD'),
 			endDate: pageData
 				? moment(pageData?.filterFields_ViewAllHRs?.toDate).format('YYYY-MM-DD')
@@ -195,19 +224,19 @@ const SlaReports = () => {
 
 	const slaReportDetails = async (pageData) => {
 		let data = {
-			totalrecord: pageData?.totalRecord ? pageData?.totalRecord : 100,
-			pagenumber: pageData?.pageNumber ? pageData?.pageNumber : 1,
+			totalrecord: pageData?.totalRecord ? pageData?.totalRecord : pageSize,
+			pagenumber: pageData?.pageNumber ? pageData?.pageNumber : pageIndex,
 			isExport: false,
 			filterFieldsSLA: {
 				startDate: pageData
 					? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format(
-							'YYYY-MM-DD',
-					  )
+						'YYYY-MM-DD',
+					)
 					: moment(firstDay).format('YYYY-MM-DD'),
 				endDate: pageData
 					? moment(pageData?.filterFields_ViewAllHRs?.toDate).format(
-							'YYYY-MM-DD',
-					  )
+						'YYYY-MM-DD',
+					)
 					: moment(lastDay).format('YYYY-MM-DD'),
 				hrid: 0,
 				sales_ManagerID: 0,
@@ -326,8 +355,8 @@ const SlaReports = () => {
 		setHTMLFilter(false);
 	};
 	const tableColumnsMemo = useMemo(
-		() => reportConfig.SLAReportConfig(listData && listData),
-		[listData],
+		() => reportConfig.SLAReportConfig(listData && listData, slaValue),
+		[listData,slaValue],
 	);
 	const slaDetailColumn = useMemo(
 		() =>
@@ -346,18 +375,18 @@ const SlaReports = () => {
 			if (startDate === null) {
 				setDateError('* Please select date');
 			} else {
-				// setLoading(true);
+				setSummaryLoading(true);
 				let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
 				setSlaDetailsList(slaUtils.slaListData(response && response));
-				// setLoading(true);
+				setLoading(true);
 				let responseList = await ReportDAO.OverAllSLASummaryDAO(
 					tableFilteredState,
 				);
 				if (responseList?.statusCode === HTTPStatusCode.OK) {
-					// setLoading(false);
+					setLoading(false);
 					setListData(responseList?.responseBody);
-				} else {
-					// setLoading(false);
+				} if (response?.statusCode === HTTPStatusCode.OK) {
+					setSummaryLoading(false);
 				}
 				setDateError('');
 			}
@@ -622,10 +651,10 @@ const SlaReports = () => {
 									// 	totalrecord: pageSize,
 									// 	pagenumber: pageNum,
 									// });
-									slaReportDetails({
-										pageNumber: pageNum,
-										totalRecord: pageSize,
-									});
+									slaReportDetails({ pageNumber: pageNum, totalRecord: pageSize , filterFields_ViewAllHRs: {
+										fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+										toDate: new Date(lastDay).toLocaleDateString('en-US'),
+									} });
 								},
 								size: 'small',
 								pageSize: pageSize,

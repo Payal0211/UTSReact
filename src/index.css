@@ -752,3 +752,7 @@ table {
   margin-top: 10px;
 }
 
+/* Profile Rejection Modal */
+.rejectionModalWrap .ant-modal-close{
+  top: 20px;
+}

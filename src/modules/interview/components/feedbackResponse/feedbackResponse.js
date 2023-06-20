@@ -22,8 +22,9 @@ const FeedbackResponse = ({ talentInfo, clientDetail }) => {
 				talentInfo?.ClientFeedback === InterviewFeedbackStatus.HIRED
 					? FeedbackResponseModule.feedbackHiredContainer
 					: talentInfo?.ClientFeedback === InterviewFeedbackStatus.REJECTED
-					? FeedbackResponseModule.feedbackRejectedontainer
-					: FeedbackResponseModule.feedbackContainer
+					? FeedbackResponseModule.feedbackRejectedontainer :
+					talentInfo?.ClientFeedback === InterviewFeedbackStatus.NOHIRE
+					? FeedbackResponseModule.feedbackRejectedontainer: FeedbackResponseModule.feedbackContainer
 			}>
 			<br />
 			<div className={FeedbackResponseModule.feedbackContainerBody}>

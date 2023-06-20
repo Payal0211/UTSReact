@@ -490,7 +490,7 @@ export const reportConfig = {
 	},
 	/**----------------- JD DUMP REPORT ------------------------------- */
 
-	SLAReportConfig: () => {
+	SLAReportConfig: (_, slaValue) => {
 		return [
 			{
 				title: 'Stage',
@@ -521,7 +521,7 @@ export const reportConfig = {
 			},
 			{
 				title: 'Avg SLA',
-				dataIndex: 'avgSLAOverall',
+				dataIndex: slaValue === 0 ? 'avgSLAOverall' : 'avgSLAMissed',
 				key: 'hrCreatedDate',
 				align: 'left',
 				render: (text) => {
@@ -530,7 +530,7 @@ export const reportConfig = {
 			},
 			{
 				title: 'Diff SLA',
-				dataIndex: 'diffOfSLAOverall',
+				dataIndex: slaValue === 0 ? 'diffOfSLAOverall' : 'diffOfSLAMissed',
 				key: 'hrCreatedDate',
 				align: 'left',
 				render: (text) => {

@@ -259,6 +259,13 @@ const EngagementReplaceTalent = ({
 									group: null,
 									seletected: false,
 								},
+								{
+									id: 'Behavioral',
+									value: 'Behavioral.',
+									disabled: false,
+									group: null,
+									seletected: false,
+								},
 							]}
 							required
 							isError={
