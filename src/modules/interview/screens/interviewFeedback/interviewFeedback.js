@@ -76,9 +76,11 @@ const InterviewFeedback = ({
 				clientsDecision: d.interviewClientDecision || '',
 				comments: d.interviewComments || '',
 				en_Id: '',
+				FeedbackId: talentInfo?.ClientFeedbackID || 0,
 				IsClientNotificationSent: isClientNotification,
 			};
 
+			console.log(clientFeedback, '-clientFeedback');
 			if (isAnotherRound) {
 				// setInterviewFeedbackResult(clientFeedback);
 				const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(
@@ -127,6 +129,7 @@ const InterviewFeedback = ({
 			radioValue2,
 			radioValue3,
 			radioValue4,
+			talentInfo?.ClientFeedbackID,
 			talentInfo?.ContactId,
 			talentInfo?.Name,
 			talentInfo?.Shortlisted_InterviewID,
