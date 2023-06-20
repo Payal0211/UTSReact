@@ -608,9 +608,9 @@ label.radioCheck_Mark input:checked + span.customCheck_Mark:after {
 .calendarFilter_Wrap span{
   color: var(--danger-color);
   font-size: var(--fontsize-tough);
-  position: absolute;
+  /* position: absolute;
   left: 0;
-  bottom: -25px;
+  bottom: -25px; */
 }
 .tableDetails [class*="ant-table-cell"] p{
   color: #ffffff;
