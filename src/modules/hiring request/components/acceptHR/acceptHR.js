@@ -10,12 +10,11 @@ import { HTTPStatusCode } from 'constants/network';
 import { useLocation } from 'react-router-dom';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 
-const AcceptHR = ({ hrID, openModal, cancelModal }) => {
+const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
 	const [showMoreInfo, setMoreInfo] = useState(false);
 	const {
 		register,
 		handleSubmit,
-
 		formState: { errors },
 	} = useForm({});
 	const switchLocation = useLocation();
@@ -107,7 +106,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 								className={AcceptHRStyle.btnPrimary}>
 								Accept HR
 							</button>
-							{
+							{apiData?.HRAction !== 'HR Wait For More Info' && (
 								<button
 									type="submit"
 									onClick={
@@ -118,7 +117,7 @@ const AcceptHR = ({ hrID, openModal, cancelModal }) => {
 									className={AcceptHRStyle.btn}>
 									Wait for more Information
 								</button>
-							}
+							)}
 						</div>
 					</div>
 				)}

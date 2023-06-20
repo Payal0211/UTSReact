@@ -40,7 +40,7 @@ import Remainingcount from 'assets/svg/remaining-count.svg';
 import CloneHR from './cloneHRModal';
 import { MasterDAO } from 'core/master/masterDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
-import useDebounce from 'shared/hooks/useDebounce';
+import _debounce from 'lodash/debounce';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -187,6 +187,7 @@ const AllHiringRequestScreen = () => {
 			let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
 				pageData,
 			);
+
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setTotalRecords(response?.responseBody?.totalrows);
 				setLoading(false);
@@ -220,22 +221,17 @@ const AllHiringRequestScreen = () => {
 		setPriorityCount(priorityCount?.responseBody?.details);
 	};
 
-	const debouncedSearchHandler = useCallback(
-		(e) => {
-			const timer = setTimeout(() => {
-				setTableFilteredState({
-					...tableFilteredState,
-					searchText: e.target.value,
-				});
-				handleHRRequest({
-					...tableFilteredState,
-					searchText: e.target.value,
-				});
-			}, 1000);
-			return () => clearTimeout(timer);
-		},
-		[handleHRRequest, tableFilteredState],
+	const debounceFun = useMemo(
+		(value) => _debounce(handleHRRequest, 4000),
+		[handleHRRequest],
 	);
+	const debouncedSearchHandler = (e) => {
+		setTableFilteredState({
+			...tableFilteredState,
+			searchText: e.target.value,
+		});
+		debounceFun(e.target.value);
+	};
 
 	useEffect(() => {
 		handleHRRequest(tableFilteredState);

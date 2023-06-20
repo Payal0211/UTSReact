@@ -6,6 +6,7 @@ import { secondaryInterviewer } from '../hrFields/hrFields';
 import { _isNull } from 'shared/utils/basic_utils';
 import { useLocation } from 'react-router-dom';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { HTTPStatusCode } from 'constants/network';
 
 const AddInterviewer = ({
 	interviewDetails,
@@ -36,9 +37,19 @@ const AddInterviewer = ({
 	const clonedParams = useLocation();
 
 	/** TODO:-  */
-	const reomveSecondaryInterviewAPIHandler = useCallback(async () => {
-		const response = await hiringRequestDAO.deleteInterviewRequestDAO({});
-	}, []);
+	const reomveSecondaryInterviewAPIHandler = useCallback(
+		async (e, index, interviewID, interviewerName) => {
+			const response = await hiringRequestDAO.deleteInterviewRequestDAO({
+				interviewID: interviewID,
+				hrID: parseInt(localStorage.getItem('hrID')),
+				name: interviewerName,
+			});
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				onRemoveSecondaryInterviewer(e, index);
+			}
+		},
+		[onRemoveSecondaryInterviewer],
+	);
 
 	/*const autoFillInterviewDetailsHandler = useCallback(() => {
 		if (interviewDetails) {
@@ -129,7 +140,20 @@ const AddInterviewer = ({
 											<button
 												type="button"
 												className={AddInterviewerStyle.btn}
-												onClick={(e) => onRemoveSecondaryInterviewer(e, index)}>
+												// onClick={(e) => onRemoveSecondaryInterviewer(e, index)}
+												onClick={(e) => {
+													return getHRdetails?.secondaryInterviewerlist?.[index]
+														?.interviewId
+														? reomveSecondaryInterviewAPIHandler(
+																e,
+																index,
+																getHRdetails?.secondaryInterviewerlist?.[index]
+																	?.interviewId,
+																getHRdetails?.secondaryInterviewerlist?.[index]
+																	?.fullName,
+														  )
+														: onRemoveSecondaryInterviewer(e, index);
+												}}>
 												Remove
 											</button>
 										</div>
