@@ -31,6 +31,8 @@ import { hrUtils } from 'modules/hiring request/hrUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
 import useDebounce from 'shared/hooks/useDebounce';
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import {UserAccountRole} from 'constants/application'
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -53,6 +55,16 @@ const HRFields = ({
 	companyName,
 	params,
 }) => {
+	const [userData, setUserData] = useState({});
+
+	useEffect(() => {
+		const getUserResult = async () => {
+			let userData = UserSessionManagementController.getUserSession();
+			if (userData) setUserData(userData);
+		};
+		getUserResult();
+	}, []);
+
 	const [isSavedLoading, setIsSavedLoading] = useState(false);
 	const [controlledCountryName, setControlledCountryName] = useState('');
 	const inputRef = useRef(null);
@@ -466,10 +478,15 @@ const HRFields = ({
 	}, []);
 	const getSalesPerson = useCallback(async () => {
 		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
+
 		setSalesPerson(
 			salesPersonResponse && salesPersonResponse?.responseBody?.details,
 		);
-	}, []);
+		if(userData.LoggedInUserTypeID === UserAccountRole.SALES){
+			const valueToSet = salesPersonResponse?.responseBody?.details.filter(detail => detail.value === userData.FullName)[0]
+			setValue('salesPerson', valueToSet.id)
+		}
+	}, [userData,setValue]);
 
 	const getRegion = useCallback(async () => {
 		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
@@ -898,11 +915,11 @@ const HRFields = ({
 
 							<div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>
-									<HRSelectField
+									{userData.LoggedInUserTypeID && <HRSelectField
 										setValue={setValue}
 										register={register}
-										label={'Sales Person'}
-										defaultValue="Select sales Person"
+										label={'Sales Person'}									
+										defaultValue={userData?.LoggedInUserTypeID === UserAccountRole.SALES ? userData?.FullName : "Select sales Persons"}
 										options={salesPerson && salesPerson}
 										name="salesPerson"
 										isError={errors['salesPerson'] && errors['salesPerson']}
@@ -911,7 +928,9 @@ const HRFields = ({
 											errors?.salesPerson?.message ||
 											'Please select hiring request sales person'
 										}
-									/>
+										 disabled={userData?.LoggedInUserTypeID === UserAccountRole.SALES}
+									/>}
+									
 								</div>
 							</div>
 
