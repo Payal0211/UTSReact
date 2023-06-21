@@ -458,7 +458,7 @@ talentID,})
 																margin: '3px 0',
 															}}
 														/>
-														<Menu.Item key={1}>Remove Profile</Menu.Item>
+														{/* <Menu.Item key={1}>Remove Profile</Menu.Item> */}
 													</Menu>
 												}>
 												<BsThreeDots style={{ fontSize: '1.5rem' }} />
