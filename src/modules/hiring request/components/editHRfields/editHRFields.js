@@ -22,6 +22,9 @@ import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import {UserAccountRole} from 'constants/application'
+
 export const secondaryInterviewer = {
 	fullName: '',
 	emailID: '',
@@ -42,6 +45,16 @@ const EditHRFields = ({
 	fromEditDeBriefing,
 }) => {
 	const inputRef = useRef(null);
+	const [userData, setUserData] = useState({});
+
+	useEffect(() => {
+		const getUserResult = async () => {
+			let userData = UserSessionManagementController.getUserSession();
+			if (userData) setUserData(userData);
+		};
+		getUserResult();
+	}, []);
+
 	const [getUploadFileData, setUploadFileData] = useState('');
 	const [availability, setAvailability] = useState([]);
 	const [timeZonePref, setTimeZonePref] = useState([]);
@@ -386,7 +399,11 @@ const EditHRFields = ({
 		setSalesPerson(
 			salesPersonResponse && salesPersonResponse?.responseBody?.details,
 		);
-	}, []);
+		if(userData.LoggedInUserTypeID === UserAccountRole.SALES){
+			const valueToSet = salesPersonResponse?.responseBody?.details.filter(detail => detail.value === userData.FullName)[0]
+			setValue('salesPerson', valueToSet.id)
+		}
+	}, [userData,setValue]);
 
 	const getRegion = useCallback(async () => {
 		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
@@ -969,7 +986,7 @@ const EditHRFields = ({
 						</div>
 
 						<div className={HRFieldStyle.colMd6}>
-							<HRSelectField
+						{userData.LoggedInUserTypeID && <HRSelectField
 								controlledValue={controlledSalesValue}
 								setControlledValue={setControlledSalesValue}
 								isControlled={true}
@@ -982,7 +999,9 @@ const EditHRFields = ({
 								isError={errors['salesPerson'] && errors['salesPerson']}
 								required
 								errorMsg={'Please select hiring request sales person'}
-							/>
+								disabled={userData?.LoggedInUserTypeID === UserAccountRole.SALES}
+							/>}
+							
 						</div>
 
 						<div className={HRFieldStyle.colMd6}>
