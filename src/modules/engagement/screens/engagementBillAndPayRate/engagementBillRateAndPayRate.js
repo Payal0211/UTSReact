@@ -24,6 +24,8 @@ const EngagementBillRateAndPayRate = ({
 	engagementListHandler,
 	talentInfo,
 	closeModal,
+	rateReason,
+	setRateReason
 }) => {
 	const { TabPane } = Tabs;
 
@@ -46,6 +48,22 @@ const EngagementBillRateAndPayRate = ({
 
 	const [billRateValue, setBillRateValue] = useState(watchBillRate);
 	const [payRateValue, setPayRateValue] = useState(watchPayRate);
+	
+
+	 const ManageRateReason = (value) => {
+		setRateReason(value);
+		setValue('billRateReason', value)
+		setValue('payRateReason', value)
+	 }
+
+	 
+	 useEffect(()=>{
+		if(rateReason){
+			setValue('payRateReason', rateReason)
+			setValue('billRateReason', rateReason)
+		}
+	 },[rateReason, setValue])
+
 	function callback(key) {
 		setEngagementBillAndPayRateTab(key);
 	}
@@ -114,8 +132,10 @@ const EngagementBillRateAndPayRate = ({
 				billrateCurrency: d.billRateCurrency?.value,
 				month: month === 0 ? new Date().getMonth() + 1 : month + 1,
 				year: year === 1970 ? new Date().getFullYear() : year,
-				billRateReason: d.billRateReason?.value,
-				payrateReason: d.payRateReason?.value || '',
+				// billRateReason: d.billRateReason?.value,
+				// payrateReason: d.payRateReason?.value || '',
+				billRateReason: d.billRateReason?? '',
+				payrateReason: d.payRateReason?? '',
 				isEditBillRate: true,
 			};
 
@@ -124,6 +144,7 @@ const EngagementBillRateAndPayRate = ({
 			);
 			if (response.statusCode === HTTPStatusCode.OK) {
 				closeModal();
+				resetFormFields();
 				engagementListHandler();
 			}
 		},
@@ -142,8 +163,8 @@ const EngagementBillRateAndPayRate = ({
 				billrateCurrency: d.payRateCurrency?.value,
 				month: month === 0 ? new Date().getMonth() + 1 : month + 1,
 				year: year === 1970 ? new Date().getFullYear() : year,
-				billRateReason: d.payRateReason?.value || '',
-				payrateReason: d.payRateReason?.value || '',
+				billRateReason: d.billRateReason?? '',
+				payrateReason: d.payRateReason?? '',
 				isEditBillRate: true,
 			};
 
@@ -152,6 +173,7 @@ const EngagementBillRateAndPayRate = ({
 			);
 			if (response.statusCode === HTTPStatusCode.OK) {
 				closeModal();
+				resetFormFields();
 				engagementListHandler();
 			}
 			// console.log(response, '-response---');
@@ -163,9 +185,13 @@ const EngagementBillRateAndPayRate = ({
 		currencyHandler();
 	}, [currencyHandler, editBillRatePayRateHandler]);
 
-	useEffect(() => {
-		if (closeModal) {
-			resetField('billRateCurrency');
+	const onModalClose = () => {
+		closeModal();
+		resetFormFields();
+	}
+
+	const resetFormFields = () => {
+		resetField('billRateCurrency');
 			// resetField('billRate');
 			// resetField('finalBillRate');
 			resetField('billRateReason');
@@ -177,8 +203,27 @@ const EngagementBillRateAndPayRate = ({
 			resetField('payRateReason');
 			resetField('payNRRate');
 			resetField('payRateAdditionalComment');
-		}
-	}, [closeModal, resetField]);
+	}
+
+	// useEffect(() => {
+	// 	console.log(closeModal, '-close')
+	// 	if (closeModal) {
+	// 		resetField('billRateCurrency');
+	// 		// resetField('billRate');
+	// 		// resetField('finalBillRate');
+	// 		resetField('billRateReason');
+	// 		resetField('billNRRate');
+	// 		resetField('billRateAdditionalComment');
+	// 		resetField('payRateCurrency');
+	// 		// resetField('payRate');
+	// 		// resetField('finalPayRate');
+	// 		resetField('payRateReason');
+	// 		resetField('payNRRate');
+	// 		resetField('payRateAdditionalComment');
+	// 	}
+	// }, [closeModal, resetField, rateReason]);
+
+
 
 	useEffect(() => {
 		if (currency.length > 1) {
@@ -311,6 +356,9 @@ const nrPercentageBR = useCallback( async(e)=>{
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
+								  	controlledValue={rateReason}
+									setControlledValue={ManageRateReason}
+									isControlled={true}
 									mode={'id/value'}
 									setValue={setValue}
 									register={register}
@@ -376,7 +424,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 							</button>
 							<button
 								className={allengagementBillAndPayRateStyles.btn}
-								onClick={closeModal}>
+								onClick={onModalClose}>
 								Cancel
 							</button>
 						</div>
@@ -469,6 +517,9 @@ const nrPercentageBR = useCallback( async(e)=>{
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
+									controlledValue={rateReason}
+									setControlledValue={ManageRateReason}
+									isControlled={true}
 									mode={'id/value'}
 									setValue={setValue}
 									register={register}
@@ -533,7 +584,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 							</button>
 							<button
 								className={allengagementBillAndPayRateStyles.btn}
-								onClick={closeModal}>
+								onClick={onModalClose}>
 								Cancel
 							</button>
 						</div>
