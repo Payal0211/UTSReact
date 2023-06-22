@@ -121,6 +121,7 @@ const EngagementList = () => {
 	const [getFeedbackFormContent, setFeedbackFormContent] = useState({});
 	const [feedBackSave, setFeedbackSave] = useState(false);
 	const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
+	const [rateReason, setRateReason] = useState(undefined);
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -755,20 +756,23 @@ const EngagementList = () => {
 						footer={null}
 						open={getEngagementModal.engagementBillRateAndPayRate}
 						className="engagementReplaceTalentModal"
-						onCancel={() =>
+						onCancel={() =>{
 							setEngagementModal({
 								...getEngagementModal,
 								engagementBillRateAndPayRate: false,
 							})
+							setRateReason(undefined)
+						}
 						}>
 						<EngagementBillRateAndPayRate
 							engagementListHandler={() => handleHRRequest(tableFilteredState)}
 							talentInfo={filteredData}
-							closeModal={() =>
+							closeModal={() =>{
 								setEngagementModal({
 									...getEngagementModal,
 									engagementBillRateAndPayRate: false,
 								})
+								setRateReason(undefined)}
 							}
 							month={new Date(startDate).getMonth()}
 							year={new Date(startDate).getFullYear()}
@@ -778,6 +782,8 @@ const EngagementList = () => {
 							setPayRate={setPayRate}
 							setEngagementBillAndPayRateTab={setEngagementBillAndPayRateTab}
 							engagementBillAndPayRateTab={engagementBillAndPayRateTab}
+							rateReason={rateReason}
+							setRateReason={setRateReason}
 						/>
 					</Modal>
 				)}
