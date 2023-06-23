@@ -55,7 +55,7 @@ const HROperator = ({
 				<div
 					className={hroperatorStyle.newHR}
 					style={{ backgroundColor: backgroundColor, border: labelBorder }}>
-					<label>{title}</label>
+					<label onClick={()=> menuAction({key: title})}>{title}</label>
 					<div
 						className={hroperatorStyle.iconDown}
 						style={{ borderLeft: iconBorder }}>

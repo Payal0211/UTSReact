@@ -10,7 +10,7 @@ import { useLocation } from 'react-router-dom';
 const AddNewHR = () => {
 	const [title, setTitle] = useState(
 		localStorage.getItem('hrID')
-			? 'Edit New Hiring Requests'
+			? 'Edit Hiring Requests'
 			: 'Add New Hiring Requests',
 	);
 	const [tabFieldDisabled, setTabFieldDisabled] = useState({
@@ -115,8 +115,8 @@ const AddNewHR = () => {
 					tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
 					items={[
 						{
-							label: 'Edit New Hiring Requests',
-							key: 'Edit New Hiring Requests',
+							label: 'Edit Hiring Requests',
+							key: 'Edit Hiring Requests',
 							children: (
 								<EditHRFields
 									setTitle={setTitle}
