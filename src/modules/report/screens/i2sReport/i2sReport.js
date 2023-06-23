@@ -283,7 +283,7 @@ const [dateError, setDateError] = useState(false);
                           {value.i2SLabel}
                         </div>
                         <div className={I2SReport.rowValue}>
-                          {value.i2SCount > 0 ? (
+                          {value.i2SCount > 0 && value.i2SLabel !== "I2S %" ? (
                             <p
                               className={I2SReport.textLink}
                               onClick={() => {
@@ -301,9 +301,9 @@ const [dateError, setDateError] = useState(false);
                             >
                               {value.i2SCount}
                             </p>
-                          ) : (
+                          ) :  value.i2SLabel === "I2S %" ? `${value.i2SPercent} %` :
                             value.i2SCount
-                          )}
+                          }
                         </div>
                       </li>
                     ))}
