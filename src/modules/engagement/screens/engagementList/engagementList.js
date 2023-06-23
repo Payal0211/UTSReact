@@ -598,6 +598,8 @@ const EngagementList = () => {
 							setFeedbackPagination={setFeedbackPagination}
 							setFeedBackData={setFeedBackData}
 							feedBackData={feedBackData}
+							setEngagementModal={setEngagementModal}
+							setHRAndEngagementId={setHRAndEngagementId}
 						/>
 					</Modal>
 				)}

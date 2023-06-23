@@ -327,7 +327,7 @@ export const allEngagementConfig = {
 									engagementReplaceTalent: false,
 								});
 							}}>
-							{'View'}
+							{'View/Add'}
 						</span>
 					),
 			},
