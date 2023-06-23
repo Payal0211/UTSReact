@@ -501,8 +501,12 @@ const HRFields = ({
 	const addItem = useCallback(
 		(e) => {
 			e.preventDefault();
-			name && setItems([...items, name + ' months' || name]);
-			setName('');
+			if(!items.includes(name + ' months')){
+				setItems([...items, name + ' months' || name]);
+				setName('');
+			}
+			// name && setItems([...items, name + ' months' || name]);
+			// setName('');
 			setTimeout(() => {
 				inputRef.current?.focus();
 			}, 0);
@@ -1215,7 +1219,9 @@ const HRFields = ({
 														shape="round"
 														type="text"
 														icon={<PlusOutlined />}
-														onClick={addItem}>
+														onClick={addItem}
+														disabled={items.includes(name + ' months')}
+														>
 														Add item
 													</Button>
 												</Space>
