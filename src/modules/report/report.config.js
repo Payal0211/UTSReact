@@ -3,6 +3,7 @@ import { HiringRequestHRStatus } from 'constants/application';
 import { NetworkInfo } from 'constants/network';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { removeHTMLTags} from './reportUtils'
 
 export const reportConfig = {
 	/**------------- DEMAND FUNNEL REPORT------------------  */
@@ -838,7 +839,7 @@ export const reportConfig = {
 						<p
 							onClick={() => {
 								setJDSkillModal(true);
-								setSelectedRecord(text);
+								setSelectedRecord(removeHTMLTags(text));
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -859,7 +860,7 @@ export const reportConfig = {
 							<p
 								onClick={() => {
 									setHRSkillModal(true);
-									setSelectedRecord(text);
+									setSelectedRecord(removeHTMLTags(text));
 								}}
 								style={{ color: 'black', textDecoration: 'underline' }}>
 								View
@@ -878,7 +879,8 @@ export const reportConfig = {
 						<p
 							onClick={() => {
 								setJDRoleRespModal(true);
-								setSelectedRecord(text);
+
+								setSelectedRecord(removeHTMLTags(text));
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -898,7 +900,7 @@ export const reportConfig = {
 						<p
 							onClick={() => {
 								setHRRoleRespModal(true);
-								setSelectedRecord(text);
+								setSelectedRecord(removeHTMLTags(text));
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -918,7 +920,7 @@ export const reportConfig = {
 						<p
 							onClick={() => {
 								setJDReqModal(true);
-								setSelectedRecord(text);
+								setSelectedRecord(removeHTMLTags(text));
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -938,7 +940,7 @@ export const reportConfig = {
 						<p
 							onClick={() => {
 								setHRReqModal(true);
-								setSelectedRecord(text);
+								setSelectedRecord(removeHTMLTags(text));
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View

@@ -14,11 +14,38 @@ const EngagementFeedback = ({
 	setFeedbackPagination,
 	feedBackData,
 	setFeedBackData,
+	setEngagementModal,
+	setHRAndEngagementId
 }) => {
 	return (
 		<div className={allengagementStyles.tableDetails}>
 			<div className={allengagementStyles.engagementModalTitle}>
-				<h1>Feedback for {getHRAndEngagementId?.talentName}</h1>
+				<div className={allengagementStyles.engagementModalTitleHeader}>
+				<h1>Feedback for {getHRAndEngagementId?.talentName}</h1> 
+				<button className={allengagementStyles.engagementModalHeaderAddBtn} 
+				  onClick={()=> {
+					setHRAndEngagementId({
+						talentName: getHRAndEngagementId?.talentName,
+						engagementID: getHRAndEngagementId?.engagementID,
+						hrNumber: getHRAndEngagementId?.hrNumber,
+						onBoardId: getHRAndEngagementId?.onBoardId,
+						hrId: getHRAndEngagementId?.hrId,
+					});
+					setEngagementModal({
+						engagementFeedback:false,
+						engagementBillRate: false,
+						engagementPayRate: false,
+						engagementOnboard: false,
+						engagementAddFeedback: true,
+						engagementBillRateAndPayRate: false,
+						engagementEnd: false,
+						engagementInvoice: false,
+						engagementReplaceTalent: false,
+					});
+				  }}
+				  >Add Feedback</button>
+				</div>
+				
 				<p>
 					<span>HR ID:</span>{' '}
 					{getHRAndEngagementId?.hrNumber ? getHRAndEngagementId?.hrNumber : ''}{' '}
