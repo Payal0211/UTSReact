@@ -169,6 +169,13 @@ table {
   padding: 25px 20px !important;
 }
 
+/* TO FIX TABLE BODY WITH AVAILABLE DISPLAY HEIGHT */
+.ant-table-body{
+  max-height: calc(100vh - 545px) !important;
+  min-height: 100px;
+}
+
+
 /*-- React DatePicker--*/
 .react-datepicker {
   margin-left: -10%;

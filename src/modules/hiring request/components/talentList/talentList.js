@@ -7,6 +7,7 @@ import { AiOutlineDown } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
 import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
+import { useNavigate } from 'react-router-dom' 
 
 import {
 	InterviewFeedbackStatus,
@@ -65,6 +66,7 @@ const TalentList = ({
 	inteviewSlotDetails,
 	talentID,
 }) => {
+	const navigate = useNavigate()
 	const [scheduleAnotherRoundInterview, setScheduleAnotherRoundInterview] =
 		useState(false);
 	console.log(scheduleAnotherRoundInterview, '-scheduleAnotherRoundInterview');
@@ -864,6 +866,12 @@ talentID,})
 														case TalentOnboardStatus.CONFIRM_SLOT: {
 															setConfirmSlotModal(true);
 															setTalentIndex(item?.TalentID);
+															break;
+														}
+														case TalentOnboardStatus.GO_TO_ONBOARD:{
+															let onboardID = item.OnBoardId
+															navigate(`/onboard/edit/${onboardID}`)
+															window.scrollTo(0, 0)
 															break;
 														}
 														default:

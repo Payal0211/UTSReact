@@ -120,6 +120,7 @@ export class TalentOnboardStatus {
 	static EDIT_CLIENT_FEEDBACK = 'Edit Client Feedback';
 	static ANOTHER_ROUND_INTERVIEW = 'Another Round Interview';
 	static SCHEDULE_ANOTHER_ROUND_INTERVIEW = 'Schedule Another Interview Round';
+	static GO_TO_ONBOARD = "Go to OnBoard"
 }
 
 export class HRCTA {

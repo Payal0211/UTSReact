@@ -204,6 +204,11 @@ export const navigateToComponent = {
 			<AddNewOnboard />
 		</Suspense>
 	),
+	[UTSRoutes.ONBOARDEDITROUTE]: (
+		<Suspense>
+			<AddNewOnboard />
+		</Suspense>
+	),
 	[UTSRoutes.ENGAGEMENTRROUTE]: (
 		<Suspense>
 			<EngagementOnboardList />

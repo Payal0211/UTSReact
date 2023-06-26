@@ -1135,6 +1135,83 @@ const EditHRFields = ({
 							/>
 						</div>
 					</div>
+								
+					<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd12}>
+							<div className={HRFieldStyle.checkBoxGroup}>
+								<Checkbox onClick={toggleHRDirectPlacement}>
+									Is this HR a Direct Placement?
+								</Checkbox>
+							</div>
+						</div>
+					</div>
+					<br />
+					<div className={HRFieldStyle.row}>
+						{isHRDirectPlacement ? (
+							<div className={HRFieldStyle.colMd6}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the DP Percentage.',
+									}}
+									label="DP Percentage"
+									name="dpPercentage"
+									type={InputType.NUMBER}
+									placeholder="Enter the DP Percentage"
+									required
+								/>
+							</div>
+						): <div className={HRFieldStyle.colMd6}>
+						<HRInputField
+							register={register}
+							errors={errors}
+							validationSchema={{
+								required: 'please enter the nr margin percentage.',
+							}}
+							label="NR Margin Percentage"
+							name="NRMargin"
+							type={InputType.TEXT}
+							placeholder="Select NR margin percentage"
+							required
+						/>
+					</div>}
+						<div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								{/* <HRSelectField
+                                    mode={'id/value'}
+                                    searchable={false}
+                                    setValue={setValue}
+                                    register={register}
+                                    label={'Mode of Working?'}
+                                    defaultValue="Select working mode"
+                                    options={workingMode && workingMode}
+                                    name="workingMode"
+                                    isError={errors['workingMode'] && errors['workingMode']}
+                                    required
+                                    errorMsg={'Please select the working mode.'}
+                                /> */}
+								<HRSelectField
+									controlledValue={controlledWorkingValue}
+									setControlledValue={setControlledWorkingValue}
+									isControlled={true}
+									mode={'id/value'}
+									searchable={false}
+									setValue={setValue}
+									register={register}
+									label={'Mode of Working?'}
+									defaultValue="Select working mode"
+									options={workingMode && workingMode}
+									name="workingMode"
+									isError={errors['workingMode'] && errors['workingMode']}
+									required
+									errorMsg={'Please select the working mode.'}
+								/>
+							</div>
+						</div>
+						
+					</div>
+
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
@@ -1194,7 +1271,7 @@ const EditHRFields = ({
 					</div>
 
 					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd6}>
+						{/* <div className={HRFieldStyle.colMd6}>
 							<HRInputField
 								register={register}
 								errors={errors}
@@ -1207,7 +1284,7 @@ const EditHRFields = ({
 								placeholder="Select NR margin percentage"
 								required
 							/>
-						</div>
+						</div> */}
 
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
@@ -1523,67 +1600,7 @@ const EditHRFields = ({
 						</div>
 					</div>
 
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd12}>
-							<div className={HRFieldStyle.checkBoxGroup}>
-								<Checkbox onClick={toggleHRDirectPlacement}>
-									Is this HR a Direct Placement?
-								</Checkbox>
-							</div>
-						</div>
-					</div>
-					<br />
-					<div className={HRFieldStyle.row}>
-						<div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								{/* <HRSelectField
-                                    mode={'id/value'}
-                                    searchable={false}
-                                    setValue={setValue}
-                                    register={register}
-                                    label={'Mode of Working?'}
-                                    defaultValue="Select working mode"
-                                    options={workingMode && workingMode}
-                                    name="workingMode"
-                                    isError={errors['workingMode'] && errors['workingMode']}
-                                    required
-                                    errorMsg={'Please select the working mode.'}
-                                /> */}
-								<HRSelectField
-									controlledValue={controlledWorkingValue}
-									setControlledValue={setControlledWorkingValue}
-									isControlled={true}
-									mode={'id/value'}
-									searchable={false}
-									setValue={setValue}
-									register={register}
-									label={'Mode of Working?'}
-									defaultValue="Select working mode"
-									options={workingMode && workingMode}
-									name="workingMode"
-									isError={errors['workingMode'] && errors['workingMode']}
-									required
-									errorMsg={'Please select the working mode.'}
-								/>
-							</div>
-						</div>
-						{isHRDirectPlacement && (
-							<div className={HRFieldStyle.colMd6}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'please enter the DP Percentage.',
-									}}
-									label="DP Percentage"
-									name="dpPercentage"
-									type={InputType.NUMBER}
-									placeholder="Enter the DP Percentage"
-									required
-								/>
-							</div>
-						)}
-					</div>
+					
 
 					{getWorkingModelFields()}
 				</form>
