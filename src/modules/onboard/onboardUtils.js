@@ -67,9 +67,9 @@ export const onboardUtils = {
 					? _isNull(watch('contractDuration'))
 						? 0
 						: watch('contractDuration')
-					: _isNull(d.contractDuration)
+					: _isNull(d.contractDuration.value)
 					? 0
-					: d.contractDuration,
+					: d.contractDuration.value,
 
 			contractStartDate:
 				draft === SubmitType.SAVE_AS_DRAFT

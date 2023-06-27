@@ -75,11 +75,12 @@ const HRFields = ({
 	const [talentRole, setTalentRole] = useState([]);
 	const [country, setCountry] = useState([]);
 	const [currency, setCurrency] = useState([]);
+	const [budgets, setBudgets] = useState([]);
 	const [salesPerson, setSalesPerson] = useState([]);
 	const [howSoon, setHowSoon] = useState([]);
 	const [region, setRegion] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [items, setItems] = useState(['3 months', '6 months', '12 months']);
+	const [contractDurations, setcontractDurations] = useState(['3 months', '6 months', '12 months']);
 	const [name, setName] = useState('');
 	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
@@ -502,17 +503,23 @@ const HRFields = ({
 	const addItem = useCallback(
 		(e) => {
 			e.preventDefault();
-			if(!items.includes(name + ' months')){
-				setItems([...items, name + ' months' || name]);
+			if(!contractDurations.includes(name + ' months')){
+				let newObj ={
+					disabled: false,
+					group: null,
+					selected: false,
+					text: `${name} months`,
+					value:`${name}`}
+				setcontractDurations([...contractDurations, newObj]);
 				setName('');
 			}
-			// name && setItems([...items, name + ' months' || name]);
+			// name && setcontractDurations([...contractDurations, name + ' months' || name]);
 			// setName('');
 			setTimeout(() => {
 				inputRef.current?.focus();
 			}, 0);
 		},
-		[items, name],
+		[contractDurations, name],
 	);
 
 	const watchClientName = watch('clientName');
@@ -665,6 +672,20 @@ const HRFields = ({
 		setCurrency(response && response?.responseBody);
 	}, []);
 
+	const getBudgetHandler = useCallback(async () => {
+		const response = await MasterDAO.getGetBudgetInformationDAO();
+		setBudgets(response && response?.responseBody.filter(
+			(item) =>
+				item?.value !== '0' 
+		));
+	}, []);
+
+	const contractDurationHandler = useCallback(async () => {
+		let response = await MasterDAO.getContractDurationRequestDAO();
+		console.log('Duration', response)
+		setcontractDurations(response && response?.responseBody)
+	},[])
+
 	useEffect(() => {
 		if (getContactAndSaleID?.contactID && getContactAndSaleID?.salesID)
 			CheckSalesUserIsPartner(getContactAndSaleID);
@@ -679,6 +700,8 @@ const HRFields = ({
 		getWorkingMode();
 		// postalCodeHandler();
 		getCurrencyHandler();
+		getBudgetHandler();
+		contractDurationHandler();
 		getHowSoon();
 		getNRMarginHandler();
 		getDurationTypes();
@@ -692,6 +715,8 @@ const HRFields = ({
 		prefRegion,
 		getHowSoon,
 		getWorkingMode,
+		contractDurationHandler,
+		getBudgetHandler,
 		// postalCodeHandler,
 		getNRMarginHandler,
 		getDurationTypes,
@@ -995,6 +1020,24 @@ const HRFields = ({
 									/>
 								</div>
 							</div>
+
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										mode={'id/value'}
+										searchable={true}
+										setValue={setValue}
+										register={register}
+										label={'Currency'}
+										defaultValue="Select Currency"
+										options={currency && currency}
+										name="currency"
+										isError={errors['currency'] && errors['currency']}
+										required
+										errorMsg={'Please select Currency'}
+									/>
+								</div>
+							</div>
 						</div>
 						{watch('role')?.id === -1 && (
 							<div className={HRFieldStyle.row}>
@@ -1177,12 +1220,16 @@ const HRFields = ({
 							<div className={HRFieldStyle.colMd4}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
-										mode={'value'}
+										mode={'id/value'}
 										setValue={setValue}
 										register={register}
 										label={'Add your estimated budget'}
 										defaultValue="Select Budget"
-										options={currency}
+										options={budgets.map((item) => ({
+											id: item.id,
+											label: item.text,
+											value: item.value,
+										}))}
 										name="budget"
 										isError={errors['budget'] && errors['budget']}
 										required
@@ -1192,12 +1239,31 @@ const HRFields = ({
 							</div>
 							<div className={HRFieldStyle.colMd4}>
 								<HRInputField
+									label={'Adhoc Budget'}
+									register={register}
+									name="adhocBudgetCost"
+									type={InputType.NUMBER}
+									placeholder="Adhoc- Ex: 2300, 2000"
+									required={watch('budget')?.value === '1'}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the Adhoc Budget.',
+										min: {
+											value: 1,
+											message: `please don't enter the value less than 1`,
+										},
+									}}
+									disabled={watch('budget')?.value !== '1'}
+								/>
+							</div>
+							<div className={HRFieldStyle.colMd4}>
+								<HRInputField
 									label={'Minimum Budget'}
 									register={register}
 									name="minimumBudget"
 									type={InputType.NUMBER}
 									placeholder="Minimum- Ex: 2300, 2000"
-									required
+									required={watch('budget')?.value === '2'}
 									errors={errors}
 									validationSchema={{
 										required: 'please enter the minimum budget.',
@@ -1206,6 +1272,7 @@ const HRFields = ({
 											message: `please don't enter the value less than 1`,
 										},
 									}}
+									disabled={ watch('budget')?.value !== '2'  }
 								/>
 							</div>
 
@@ -1216,7 +1283,7 @@ const HRFields = ({
 									name="maximumBudget"
 									type={InputType.NUMBER}
 									placeholder="Maximum- Ex: 2300, 2000"
-									required
+									required={watch('budget')?.value === '2'}
 									errors={errors}
 									validationSchema={{
 										required: 'please enter the maximum budget.',
@@ -1225,6 +1292,7 @@ const HRFields = ({
 											message: 'Budget should me more than minimum budget.',
 										},
 									}}
+									disabled={watch('budget')?.value !== '2'  }
 								/>
 							</div>
 						</div>
@@ -1290,7 +1358,7 @@ const HRFields = ({
 														type="text"
 														icon={<PlusOutlined />}
 														onClick={addItem}
-														disabled={items.includes(name + ' months')}
+														disabled={contractDurations.filter(duration=> duration.value == name ).length > 0}
 														>
 														Add item
 													</Button>
@@ -1298,11 +1366,12 @@ const HRFields = ({
 												<br />
 											</>
 										)}
-										options={items.map((item) => ({
-											id: item,
-											label: item,
-											value: item,
+										options={contractDurations.map((item) => ({
+											id: item.id,
+											label: item.text,
+											value: item.value,
 										}))}
+										mode={'id/value'}
 										setValue={setValue}
 										register={register}
 										label={'Contract Duration (in months)'}

@@ -61,6 +61,32 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getCurrencyRequest');
 		}
 	},
+	getContractDurationRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_CONTRACT_DURATION;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCurrencyRequest');
+		}
+	},
+	getGetBudgetInformationRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_BUDET_INFORMATION;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCurrencyRequest');
+		}
+	},
 	getTalentTimeZoneRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =

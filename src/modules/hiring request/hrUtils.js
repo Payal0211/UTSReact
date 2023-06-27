@@ -131,14 +131,28 @@ export const hrUtils = {
 			jDDescription: null,
 			jDDump_ID: jdDumpID,
 			hdnSkills: null,
-			budget:
+			budgetType:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('budget'))
 						? null
 						: watch('budget')?.value
-					: _isNull(d.budget)
+					: _isNull(d.budget.value)
 					? null
-					: d.budget,
+					: d.budget.value,
+			currency: draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('currency'))
+					? null
+					: watch('currency')?.value
+					: _isNull(d.currency.value)
+					? null
+					: d.currency.value,	
+			adhocBudgetCost: SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('adhocBudgetCost'))
+					? null
+					: watch('adhocBudgetCost')
+					: _isNull(d.adhocBudgetCost)
+					? null
+					: d.adhocBudgetCost,			
 			minimumBudget:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('minimumBudget'))
@@ -187,10 +201,10 @@ export const hrUtils = {
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('contractDuration'))
 						? null
-						: watch('contractDuration')
-					: _isNull(d.contractDuration)
+						: watch('contractDuration').value
+					: _isNull(d.contractDuration.value)
 					? null
-					: d.contractDuration,
+					: d.contractDuration.value,
 			howSoon:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('howSoon'))
@@ -207,7 +221,7 @@ export const hrUtils = {
 					: _isNull(d.years)
 					? 0
 					: parseInt(d.years),
-			months:
+			DurationType:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('getDurationType'))
 						? 0

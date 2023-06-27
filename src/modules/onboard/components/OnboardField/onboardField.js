@@ -61,24 +61,25 @@ const OnboardField = () => {
 const [getFieldsDisabled, setFieldsDisable] = useState(false)
 	const [controlledContractTypeValue, setControlledContractTypeValue] = useState('')
 	const [controlledTimeZoneValue, setControlledTimeZoneValue] = useState('')
+	const [controlledContractDurationValue, setControlledContractDurationValue] = useState('')
 
 	const navigate = useNavigate();
-	const [name, setName] = useState('');
+	const [name, setName] = useState({});
 	const inputRef = useRef(null);
-	const [items, setItems] = useState(['3 months', '6 months', '12 months']);
+	const [contractDurations, setcontractDurations] = useState([]);
 	const onNameChange = (event) => {
 		setName(event.target.value);
 	};
 	const addItem = useCallback(
 		(e) => {
 			e.preventDefault();
-			setItems([...items, name + ' months' || name]);
+			setcontractDurations([...contractDurations, name + ' months' || name]);
 			setName('');
 			setTimeout(() => {
 				inputRef.current?.focus();
 			}, 0);
 		},
-		[items, name],
+		[contractDurations, name],
 	);
 
 	const contractTypeHandler = useCallback(async () => {
@@ -91,8 +92,15 @@ const [getFieldsDisabled, setFieldsDisable] = useState(false)
 		setTalentTimeZone(response && response?.responseBody);
 	}, []);
 
+	const contractDurationHandler = useCallback(async () => {
+		let response = await MasterDAO.getContractDurationRequestDAO();
+		console.log('Duration', response)
+		setcontractDurations(response && response?.responseBody)
+	},[])
+
 	const netPaymentDaysHandler = useCallback(async () => {
 		let response = await MasterDAO.getNetPaymentDaysRequestDAO();
+		console.log('netpaymentDyas',netPaymentDays)
 		setNetPaymentDays(response && response?.responseBody?.details);
 	}, []);
 
@@ -115,15 +123,56 @@ const [getFieldsDisabled, setFieldsDisable] = useState(false)
 				d,
 				type,
 				watch,
-				0,
+				onboardID,
 				teamMembers,
 			);
 
+
+const onBoardBody = {
+	"onboardID": onboardDataFormatter.onboardID,
+  "contractType": onboardDataFormatter.contractType,
+  "contractStartDate": onboardDataFormatter.contractStartDate,
+  "contractEndDate": onboardDataFormatter.contractEndDate,
+  "contractDuration": onboardDataFormatter.contractDuration,
+  "talentOnBoardDate": onboardDataFormatter.talentOnBoardDate,
+  "talentOnBoardTime": onboardDataFormatter.talentOnBoardTime,
+  "punchStartTime": onboardDataFormatter.punchStartTime,
+  "punchEndTime": onboardDataFormatter.punchEndTime,
+  "timezone_Preference_ID": onboardDataFormatter.timezone_Preference_ID,
+  "firstClientBillingDate": onboardDataFormatter.firstClientBillingDate,
+  "netPaymentDays": onboardDataFormatter.netPaymentDays,
+  "contractRenewalSlot": onboardDataFormatter.contractRenewalSlot,
+  "client_Remark": onboardDataFormatter.client_Remark  , 
+  "clientName": onboardDataFormatter.clientName,
+  "clientemail": onboardDataFormatter.clientemail,
+  "engagemenID": onboardDataFormatter.engagemenID  ,
+  "hiringRequestNumber": onboardDataFormatter.hiringRequestNumber,
+  "talentName": onboardDataFormatter.talentName,
+  "talentEmailId": getOnboardFormDetails.onboardDetails.talentEmailId,
+  "startDay": onboardDataFormatter.contractStartDate,
+  "endDay": onboardDataFormatter.contractEndDate,
+  "teamMemebers": onboardDataFormatter.teamMemebers,
+  "wokringDays": "",
+  "talentWorkingTimeZone": "",
+  "devicesPoliciesOption": "",
+  "talentDeviceDetails": "",
+  "totalDurationInMonths": 0,
+  "expectationFromTalent_FirstWeek": "",
+  "expectationFromTalent_FirstMonth": "",
+  "proceedWithUplers_LeavePolicyOption": "",
+  "proceedWithClient_LeavePolicyFileUpload": "",
+  "proceedWithClient_LeavePolicyLink": "",
+  "proceedWithClient_LeavePolicyOption": "",
+  "proceedWithUplers_ExitPolicyOption": "",
+}
+console.log('onboard data formatter', onboardDataFormatter, onBoardBody);
 			const addOnboardResponse = await OnboardDAO.onboardTalentRequestDAO(
-				onboardDataFormatter,
+				onBoardBody,
 			);
+			console.log('onboard data formatter response', addOnboardResponse);
 			if (addOnboardResponse.statusCode === HTTPStatusCode.OK) {
-				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+				//navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+				
 			}
 		},
 		[navigate, teamMembers, watch],
@@ -133,12 +182,14 @@ const [getFieldsDisabled, setFieldsDisable] = useState(false)
 		contractTypeHandler();
 		talentTimeZoneHandler();
 		netPaymentDaysHandler();
+		contractDurationHandler()
 		return () => {
 			setContractType([]);
 			setTalentTimeZone([]);
 			setNetPaymentDays([]);
+			setcontractDurations([])
 		};
-	}, [contractTypeHandler, netPaymentDaysHandler, talentTimeZoneHandler]);
+	}, [contractTypeHandler, netPaymentDaysHandler, talentTimeZoneHandler,contractDurationHandler]);
 
 	const SETonboardingFormValue = (value) => {
 		setValue('companyName', value.compnayName)
@@ -160,6 +211,10 @@ const [getFieldsDisabled, setFieldsDisable] = useState(false)
 		// setValue('netPaymentDays', value.netPaymentDays)
 		setValue('contractRenewal', value.autoRenewContract)
 		setValue('clientFirstBillingDate', value.onboardDetails.clientFirstDate)
+
+		// for bill rate 
+		setValue('phoneNumber', value.billRate)
+
 		console.log({talentTimeZone})
 	}
 
@@ -177,10 +232,37 @@ const [getFieldsDisabled, setFieldsDisable] = useState(false)
 	useEffect(()=>{			
 		if(getOnboardFormDetails?.onboardDetails?.netPaymentDays && netPaymentDays.length > 0){
 		 const netPaymentDay = netPaymentDays.filter(item=> item.value === getOnboardFormDetails?.onboardDetails?.netPaymentDays)
-		console.log("netPaymentDays", getOnboardFormDetails?.onboardDetails?.netPaymentDays , netPaymentDays, netPaymentDay)
+	console.log("netPaymentDays", getOnboardFormDetails?.onboardDetails?.netPaymentDays , netPaymentDays)	
 		setValue('netPaymentDays', netPaymentDay[0])
 	}	
 	},[getOnboardFormDetails , netPaymentDays])
+
+
+	// contract duration 
+	useEffect(()=>{
+		console.log(" tiem", getOnboardFormDetails?.onboardDetails?.totalDuration , contractDurations)
+		if(getOnboardFormDetails?.onboardDetails?.totalDuration && contractDurations.length > 0){ 
+			const contract = contractDurations.filter((item)=> parseInt(item.value) === parseInt(getOnboardFormDetails?.onboardDetails?.totalDuration))
+			if(contract.length > 0){
+				setValue('contractDuration',contract[0])
+				setControlledContractDurationValue(contract[0].value)
+			}else{
+				if(getOnboardFormDetails?.onboardDetails?.totalDuration !== 0){
+					const object = {
+					disabled: false,
+					group: null,
+					selected: false,
+					text: `${getOnboardFormDetails?.onboardDetails?.totalDuration} months`,
+					value:`${getOnboardFormDetails?.onboardDetails?.totalDuration}`}
+
+					setcontractDurations(prev=> [...prev,object])
+					// this will trigger this Effect again and then go to if 
+				}
+				
+			}
+
+		}
+	},[getOnboardFormDetails,contractDurations])
 
 	// for timezone 
 	useEffect(()=>{			
@@ -391,11 +473,15 @@ console.log(onboardID, getOnboardFormDetails)
 												<br />
 											</>
 										)}
-										options={items.map((item) => ({
-											id: item,
-											label: item,
-											value: item,
+										options={contractDurations.map((item) => ({
+											id: item.id,
+											label: item.text,
+											value: item.value,
 										}))}
+										controlledValue={controlledContractDurationValue}
+										setControlledValue={setControlledContractDurationValue}
+										isControlled={true}
+										mode={'id/value'}
 										setValue={setValue}
 										register={register}
 										label={'Contract Duration (in months)'}
@@ -648,6 +734,7 @@ console.log(onboardID, getOnboardFormDetails)
 											name="companyCountryCode"
 											defaultValue="USD"
 											options={[]}
+											disabled={getFieldsDisabled}
 										/>
 									</div>
 									<div className={OnboardStyleModule.phoneNoInput}>
@@ -655,7 +742,8 @@ console.log(onboardID, getOnboardFormDetails)
 											register={register}
 											name={'phoneNumber'}
 											type={InputType.NUMBER}
-											placeholder="Enter Phone number"
+											placeholder="Enter Bill Rate"
+											disabled={getFieldsDisabled}
 										/>
 									</div>
 								</div>
@@ -761,7 +849,7 @@ console.log(onboardID, getOnboardFormDetails)
 										onChange={onChange}
 										value={value}>
 										<Radio value={1}>
-											Does the client have experience of hiring remotely?
+											Does the client have experience hiring remotely?
 										</Radio>
 										<Radio value={2}>
 											Client to buy a device and Uplers to Facilitate.

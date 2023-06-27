@@ -324,7 +324,7 @@ const CompanyDetails = ({
 						<div className={CompanyDetailsStyle.colMd12}>
 							<div className={CompanyDetailsStyle.radioFormGroup}>
 								<label>
-									Does the client have experience of hiring remotely?
+									Does the client have experience hiring remotely?
 									<span className={CompanyDetailsStyle.reqField}>*</span>
 								</label>
 								<label className={CompanyDetailsStyle.container}>
