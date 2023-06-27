@@ -146,8 +146,11 @@ const CompanyProfileCard = ({
 									{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 								</span>
 								{apiData !== 'Cancelled' && apiData !== 'Closed' && apiData !== "Lost" &&
-									userSessionMemo?.loggedInUserTypeID ===
-										UserAccountRole.DEVELOPER && (
+									(userSessionMemo?.loggedInUserTypeID ===
+										UserAccountRole.DEVELOPER || 
+										userSessionMemo?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR ||
+										userSessionMemo?.loggedInUserTypeID === UserAccountRole.SALES || 
+										userSessionMemo?.loggedInUserTypeID === UserAccountRole.SALES_MANAGER ) && (
 										<button
 											onClick={() => {
 												setUpdateTR(true);
