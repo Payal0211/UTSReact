@@ -339,9 +339,9 @@ export const allHRConfig = {
 						group: null,
 						selected: false,
 						statusCode: HiringRequestHRStatus.COMPLETED,
-						label: 'Closed',
+						label: 'Completed',
 						text: HiringRequestHRStatus.COMPLETED.toString(),
-						value: 'Closed',
+						value: 'Completed',
 					},
 
 					{

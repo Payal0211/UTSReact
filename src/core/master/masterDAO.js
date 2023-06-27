@@ -129,6 +129,56 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getCurrencyRequestDAO');
 		}
 	},
+	getContractDurationRequestDAO: async function () {
+		try {
+			const contractResult = await MasterAPI.getContractDurationRequest();
+			if (contractResult) {
+				const statusCode = contractResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = contractResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return contractResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return contractResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getContractDurationRequestDAO');
+		}
+	},
+	getGetBudgetInformationDAO: async function () {
+		try {
+			const budgetResult = await MasterAPI.getGetBudgetInformationRequest();
+			if (budgetResult) {
+				const statusCode = budgetResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = budgetResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return budgetResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return budgetResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getGetBudgetInformationDAO');
+		}
+	},
 	getTalentTimeZoneRequestDAO: async function () {
 		try {
 			const talentTimeZoneResult = await MasterAPI.getTalentTimeZoneRequest();
