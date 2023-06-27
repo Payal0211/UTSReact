@@ -105,6 +105,7 @@ const HRFields = ({
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
 	const [isNewPostalCodeModal, setNewPostalCodeModal] = useState(false);
 	const [isPostalCodeNotFound, setPostalCodeNotFound] = useState(false);
+	const [controlledTimeZoneValue, setControlledTimeZoneValue] = useState('Select time zone');
 	let controllerRef = useRef(null);
 	const {
 		watch,
@@ -806,6 +807,13 @@ const HRFields = ({
 		setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));
 	}, [watchSalesPerson]);
 
+	useEffect(() => {
+		if(timeZonePref.length > 0) {
+		setValue('timeZone',timeZonePref[0])
+		setControlledTimeZoneValue(timeZonePref[0].value)
+	}
+	},[timeZonePref, setValue])
+
 	const durationDataMemo = useMemo(() => {
 		let formattedDuration = [];
 		getDurationType?.filter(
@@ -1103,6 +1111,68 @@ const HRFields = ({
 								/>
 							</div>
 						</div>
+
+						<div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd12}>
+								<div className={HRFieldStyle.checkBoxGroup}>
+									<Checkbox onClick={toggleHRDirectPlacement}>
+										Is this HR a Direct Placement?
+									</Checkbox>
+								</div>
+							</div>
+						</div>
+						<br />
+						<div className={HRFieldStyle.row}>
+							{isHRDirectPlacement ? (
+								<div className={HRFieldStyle.colMd6}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the DP Percentage.',
+										}}
+										label="DP Percentage"
+										name="dpPercentage"
+										type={InputType.NUMBER}
+										placeholder="Enter the DP Percentage"
+										required
+									/>
+								</div>
+							) : 					
+							<div className={HRFieldStyle.colMd6}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the nr margin percentage.',
+									}}
+									label="NR Margin Percentage"
+									name="NRMargin"
+									type={InputType.TEXT}
+									placeholder="Select NR margin percentage"
+									required
+								/>
+							</div>
+						 }
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										mode={'id/value'}
+										searchable={false}
+										setValue={setValue}
+										register={register}
+										label={'Mode of Working?'}
+										defaultValue="Select working mode"
+										options={workingMode && workingMode}
+										name="workingMode"
+										isError={errors['workingMode'] && errors['workingMode']}
+										required
+										errorMsg={'Please select the working mode.'}
+									/>
+								</div>
+							</div>	
+						</div>
+
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd4}>
 								<div className={HRFieldStyle.formGroup}>
@@ -1159,7 +1229,7 @@ const HRFields = ({
 							</div>
 						</div>
 
-						<div className={HRFieldStyle.row}>
+						{/* <div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd6}>
 								<HRInputField
 									register={register}
@@ -1174,7 +1244,7 @@ const HRFields = ({
 									required
 								/>
 							</div>
-						</div>
+						</div> */}
 
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd4}>
@@ -1330,6 +1400,9 @@ const HRFields = ({
 							<div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
+										controlledValue={controlledTimeZoneValue}
+										setControlledValue={setControlledTimeZoneValue}
+										isControlled={true}
 										mode={'id/value'}
 										disabled={_isNull(prefRegion)}
 										setValue={setValue}
@@ -1404,51 +1477,7 @@ const HRFields = ({
 							</div>
 						</div>
 
-						<div className={HRFieldStyle.row}>
-							<div className={HRFieldStyle.colMd12}>
-								<div className={HRFieldStyle.checkBoxGroup}>
-									<Checkbox onClick={toggleHRDirectPlacement}>
-										Is this HR a Direct Placement?
-									</Checkbox>
-								</div>
-							</div>
-						</div>
-						<br />
-						<div className={HRFieldStyle.row}>
-							<div className={HRFieldStyle.colMd6}>
-								<div className={HRFieldStyle.formGroup}>
-									<HRSelectField
-										mode={'id/value'}
-										searchable={false}
-										setValue={setValue}
-										register={register}
-										label={'Mode of Working?'}
-										defaultValue="Select working mode"
-										options={workingMode && workingMode}
-										name="workingMode"
-										isError={errors['workingMode'] && errors['workingMode']}
-										required
-										errorMsg={'Please select the working mode.'}
-									/>
-								</div>
-							</div>
-							{isHRDirectPlacement && (
-								<div className={HRFieldStyle.colMd6}>
-									<HRInputField
-										register={register}
-										errors={errors}
-										validationSchema={{
-											required: 'please enter the DP Percentage.',
-										}}
-										label="DP Percentage"
-										name="dpPercentage"
-										type={InputType.NUMBER}
-										placeholder="Enter the DP Percentage"
-										required
-									/>
-								</div>
-							)}
-						</div>
+						
 
 						{getWorkingModelFields()}
 					</form>

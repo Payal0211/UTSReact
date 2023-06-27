@@ -14,6 +14,7 @@ import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { HTTPStatusCode } from 'constants/network';
 import { addHours, disabledWeekend } from 'shared/utils/basic_utils';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
+import moment from 'moment';
 
 const InterviewReschedule = ({
 	talentName,
@@ -46,6 +47,30 @@ const InterviewReschedule = ({
 		{ id: 3, value: 'Talent not available on given Slots' },
 		{ id: 4, value: 'Talent not available on selected Slot' },
 	];
+
+	const [slot1Timematch, setSlot1timematch] = useState(false);
+	const [slot2Timematch, setSlot2timematch] = useState(false);
+	const [slot3Timematch, setSlot3timematch] = useState(false);
+
+	useEffect(() => {
+		//Slot 1 data
+		setValue('slot1Date', getRescheduleSlotDate[0].slot1)
+		setValue('slot1StartTime', getRescheduleSlotDate[0].slot2);
+		setValue('slot1EndTime', getRescheduleSlotDate[0].slot3);
+
+		//slot 2 data
+
+		setValue('slot2Date', getRescheduleSlotDate[1].slot1)
+		setValue('slot2StartTime', getRescheduleSlotDate[1].slot2);
+		setValue('slot2EndTime', getRescheduleSlotDate[1].slot3);
+
+		//slot 3 data	
+
+		setValue('slot3Date', getRescheduleSlotDate[2].slot1)
+		setValue('slot3StartTime', getRescheduleSlotDate[2].slot2);
+		setValue('slot3EndTime', getRescheduleSlotDate[2].slot3);
+
+    },[getRescheduleSlotDate,setValue])
 
 	const calenderDateHandler = useCallback(
 		(date, index, slotField) => {
@@ -100,6 +125,32 @@ const InterviewReschedule = ({
 	const reScheduleInterviewAPIHandler = useCallback(
 		async (data) => {
 			setLoading(true);
+
+			
+			let timeError = false
+			setSlot1timematch(false)
+			setSlot2timematch(false)
+			setSlot3timematch(false)
+
+			if(moment(data.slot1StartTime).format('HH a') === moment(data.slot1EndTime).format('HH a')){
+					timeError = true;
+					setSlot1timematch(true)
+				}
+
+			if( reScheduleSlotRadio === 1 &&  moment(data.slot2StartTime).format('HH a') === moment(data.slot2EndTime).format('HH a')){
+					setSlot2timematch(true)
+					timeError = true;
+				}
+				
+			if( reScheduleSlotRadio === 1 && moment(data.slot3StartTime).format('HH a') === moment(data.slot3EndTime).format('HH a')){
+					setSlot3timematch(true)
+					timeError = true;
+				}	
+
+			if(timeError){
+				setLoading(false);
+					return
+				}
 
 			const reScheduleData = {
 				rescheduleRequestBy: reScheduleRadio,
@@ -433,6 +484,9 @@ const InterviewReschedule = ({
 											Please select start time
 										</div>
 									)}
+									{slot1Timematch && <div className={InterviewScheduleStyle.error}>
+													* Same times are given. Kindly update any one of these times.
+													</div>}
 								</div>
 								<div
 									className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -518,6 +572,9 @@ const InterviewReschedule = ({
 													Please select start time
 												</div>
 											)}
+											{slot2Timematch && <div className={InterviewScheduleStyle.error}>
+													* Same times are given. Kindly update any one of these times.
+													</div>}
 										</div>
 										<div
 											className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -599,6 +656,9 @@ const InterviewReschedule = ({
 													Please select start time
 												</div>
 											)}
+											{slot3Timematch && <div className={InterviewScheduleStyle.error}>
+													* Same times are given. Kindly update any one of these times.
+													</div>}
 											<ClockIconSVG />
 										</div>
 										<div

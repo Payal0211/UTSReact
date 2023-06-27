@@ -3,7 +3,7 @@ import UTSRoutes from 'constants/routes';
 import moment from 'moment';
 
 export const _isNull = function (value) {
-	if (value === null || value === undefined || value === '') return true;
+	if (value === null || value === undefined || value === '' || value === 0) return true;
 	else return false;
 };
 export const _isNotEmpty = function (value) {

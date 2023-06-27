@@ -17,6 +17,7 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { addHours, disabledWeekend } from 'shared/utils/basic_utils';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
+import moment from 'moment';
 
 const InterviewSchedule = ({
 	talentName,
@@ -46,9 +47,34 @@ const InterviewSchedule = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
 
+	const [slot1Timematch, setSlot1timematch] = useState(false);
+	const [slot2Timematch, setSlot2timematch] = useState(false);
+	const [slot3Timematch, setSlot3timematch] = useState(false);
+
 	const onSlotChange = (e) => {
 		setScheduleSlotRadio(e.target.value);
 	};
+
+	useEffect(() => {
+		//Slot 1 data
+		setValue('slot1Date', getScheduleSlotDate[0].slot1)
+		setValue('slot1StartTime', getScheduleSlotDate[0].slot2);
+		setValue('slot1EndTime', getScheduleSlotDate[0].slot3);
+
+		//slot 2 data
+
+		setValue('slot2Date', getScheduleSlotDate[1].slot1)
+		setValue('slot2StartTime', getScheduleSlotDate[1].slot2);
+		setValue('slot2EndTime', getScheduleSlotDate[1].slot3);
+
+		//slot 3 data	
+
+		setValue('slot3Date', getScheduleSlotDate[2].slot1)
+		setValue('slot3StartTime', getScheduleSlotDate[2].slot2);
+		setValue('slot3EndTime', getScheduleSlotDate[2].slot3);
+
+    },[getScheduleSlotDate,setValue])
+
 	const calenderDateHandler = useCallback(
 		(date, index, slotField) => {
 			const eleToUpdate = { ...getScheduleSlotDate[index] };
@@ -92,6 +118,32 @@ const InterviewSchedule = ({
 	const scheduleInterviewAPIHandler = useCallback(
 		async (data) => {
 			setIsLoading(true);
+
+			let timeError = false
+			setSlot1timematch(false)
+			setSlot2timematch(false)
+			setSlot3timematch(false)
+
+			if(moment(data.slot1StartTime).format('HH a') === moment(data.slot1EndTime).format('HH a')){
+					timeError = true;
+					setSlot1timematch(true)
+				}
+
+			if( scheduleSlotRadio === 1 &&  moment(data.slot2StartTime).format('HH a') === moment(data.slot2EndTime).format('HH a')){
+					setSlot2timematch(true)
+					timeError = true;
+				}
+				
+			if( scheduleSlotRadio === 1 && moment(data.slot3StartTime).format('HH a') === moment(data.slot3EndTime).format('HH a')){
+					setSlot3timematch(true)
+					timeError = true;
+				}	
+
+			if(timeError){
+				setIsLoading(false);
+					return
+				}
+
 			const scheduleData = {
 				slotType: scheduleSlotRadio,
 				RecheduleSlots:
@@ -114,6 +166,10 @@ const InterviewSchedule = ({
 					? data?.interviewCallLink
 					: '',
 			};
+
+			// console.log({data: data , scheduleData}) 
+			// setIsLoading(false)
+			// return
 
 			let response = await hiringRequestDAO.getSchduleInterviewInformation(
 				scheduleData,
@@ -354,6 +410,9 @@ const InterviewSchedule = ({
 											Please select start time
 										</div>
 									)}
+									{slot1Timematch && <div className={InterviewScheduleStyle.error}>
+													* Same times are given. Kindly update any one of these times.
+													</div>}
 								</div>
 								<div
 									className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -379,7 +438,7 @@ const InterviewSchedule = ({
 										<div className={InterviewScheduleStyle.error}>
 											Please select end time
 										</div>
-									)}
+									)}									
 								</div>
 							</div>
 							{scheduleSlotRadio === 1 && (
@@ -436,6 +495,9 @@ const InterviewSchedule = ({
 													Please select start time
 												</div>
 											)}
+											{slot2Timematch && <div className={InterviewScheduleStyle.error}>
+													* Same times are given. Kindly update any one of these times.
+												</div>}
 										</div>
 										<div
 											className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -518,6 +580,9 @@ const InterviewSchedule = ({
 													Please select start time
 												</div>
 											)}
+											{slot3Timematch && <div className={InterviewScheduleStyle.error}>
+													* Same times are given. Kindly update any one of these times.
+												</div>}
 										</div>
 										<div
 											className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>

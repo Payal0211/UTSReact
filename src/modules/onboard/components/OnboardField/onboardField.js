@@ -18,12 +18,14 @@ import { MasterDAO } from 'core/master/masterDAO';
 import AddTeamMemberModal from '../addTeamMembers/addTeamMemberModal';
 import TeamMembers from '../teamMembers/teamMembers';
 import { onboardUtils } from 'modules/onboard/onboardUtils';
+import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { OnboardDAO } from 'core/onboard/onboardDAO';
 import { HTTPStatusCode } from 'constants/network';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useParams} from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 
-const OnboardField = ({ onboardID }) => {
+const OnboardField = () => {
+	const { onboardID } = useParams()
 	const [value, setRadioValue] = useState(1);
 	const [showTextBox, setTextBox] = useState(true);
 	const [contractType, setContractType] = useState([]);
@@ -35,6 +37,9 @@ const OnboardField = ({ onboardID }) => {
 	const [indexOfMember, setIndexOfMember] = useState(null);
 	// const [startDate, setStartDate] = useState(null);
 	// const [endDate, setEndDate] = useState(null);
+
+	const [getOnboardFormDetails, setOnboardFormDetails] = useState({});
+
 	const {
 		watch,
 		register,
@@ -53,6 +58,9 @@ const OnboardField = ({ onboardID }) => {
 			setTextBox(false);
 		}
 	};
+const [getFieldsDisabled, setFieldsDisable] = useState(false)
+	const [controlledContractTypeValue, setControlledContractTypeValue] = useState('')
+	const [controlledTimeZoneValue, setControlledTimeZoneValue] = useState('')
 
 	const navigate = useNavigate();
 	const [name, setName] = useState('');
@@ -132,6 +140,87 @@ const OnboardField = ({ onboardID }) => {
 		};
 	}, [contractTypeHandler, netPaymentDaysHandler, talentTimeZoneHandler]);
 
+	const SETonboardingFormValue = (value) => {
+		setValue('companyName', value.compnayName)
+		setValue('clientName',value.onboardDetails.clientName)
+		setValue('clientEmail',value.onboardDetails.clientemail)
+		setValue('talentFullName',value.onboardDetails.talentName)
+		setValue('engagementID', value.onboardDetails.engagemenID) 
+		setValue('hiringID', value.hrid)
+		// const contract = contractType.filter(item=> item.value ===value.contractType)[0]
+		
+		// setValue('contractType', contract)
+		// setControlledContractTypeValue(contract.value)
+
+		setValue('contractStartDate',value.contractStartDate)
+		setValue('contractEndDate',value.contractEndDate)
+
+		setValue('talentOnboardingDate', value.onboardDetails.talentOnBoardDate)
+		setValue('talentOnboardingTime', value.onboardDetails.talentOnBoardTime)
+		// setValue('netPaymentDays', value.netPaymentDays)
+		setValue('contractRenewal', value.autoRenewContract)
+		setValue('clientFirstBillingDate', value.onboardDetails.clientFirstDate)
+		console.log({talentTimeZone})
+	}
+
+	// for ContractType 
+	useEffect(()=>{
+		if(getOnboardFormDetails.contractType && contractType.length > 0){
+		const contract = contractType.filter(item=> item.value ===getOnboardFormDetails.contractType)[0]
+		setValue('contractType', contract)
+		setControlledContractTypeValue(contract.value)
+	}
+		
+	},[getOnboardFormDetails , contractType])
+
+	// for netPayment
+	useEffect(()=>{			
+		if(getOnboardFormDetails?.onboardDetails?.netPaymentDays && netPaymentDays.length > 0){
+		 const netPaymentDay = netPaymentDays.filter(item=> item.value === getOnboardFormDetails?.onboardDetails?.netPaymentDays)
+		console.log("netPaymentDays", getOnboardFormDetails?.onboardDetails?.netPaymentDays , netPaymentDays, netPaymentDay)
+		setValue('netPaymentDays', netPaymentDay[0])
+	}	
+	},[getOnboardFormDetails , netPaymentDays])
+
+	// for timezone 
+	useEffect(()=>{			
+		if(getOnboardFormDetails.talentWorkingTimeZone && talentTimeZone.length > 0){
+		const time = talentTimeZone.filter(item=> item.id ===getOnboardFormDetails.talentWorkingTimeZone)[0]
+		console.log(getOnboardFormDetails.talentWorkingTimeZone , time)
+		setControlledTimeZoneValue(time.value)
+		setValue('timeZone',time)
+	}	
+	},[getOnboardFormDetails , talentTimeZone])
+
+	const getOnboardingForm = async (getOnboardID) => {
+		setOnboardFormDetails({});
+		// setLoading(true);
+		const response = await engagementRequestDAO.viewOnboardDetailsDAO(
+			getOnboardID,
+		);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setOnboardFormDetails(response?.responseBody?.details);
+			setFieldsDisable(true)
+			SETonboardingFormValue(response?.responseBody?.details)
+			
+			// setLoading(false);
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			// setLoading(false);
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			return 'NO DATA FOUND';
+		}
+	};
+
+
+	useEffect(()=>{
+		if(onboardID){
+			getOnboardingForm(onboardID)	
+	}
+	},[onboardID])
+console.log(onboardID, getOnboardFormDetails)
 	return (
 		<div className={OnboardStyleModule.hrFieldContainer}>
 			<div id="hrForm">
@@ -165,6 +254,7 @@ const OnboardField = ({ onboardID }) => {
 									type={InputType.TEXT}
 									placeholder="Enter Name "
 									required
+									disabled={getFieldsDisabled}
 								/>
 							</div>
 							<div className={OnboardStyleModule.colMd6}>
@@ -179,6 +269,7 @@ const OnboardField = ({ onboardID }) => {
 									type={InputType.EMAIL}
 									placeholder="Enter Email"
 									required
+									disabled={getFieldsDisabled}
 								/>
 							</div>
 						</div>
@@ -195,6 +286,7 @@ const OnboardField = ({ onboardID }) => {
 									type={InputType.TEXT}
 									placeholder="Enter Name "
 									required
+									disabled={getFieldsDisabled}
 								/>
 							</div>
 							<div className={OnboardStyleModule.colMd6}>
@@ -209,6 +301,7 @@ const OnboardField = ({ onboardID }) => {
 									type={InputType.TEXT}
 									placeholder="Enter Name"
 									required
+									disabled={getFieldsDisabled}
 								/>
 							</div>
 						</div>
@@ -225,6 +318,7 @@ const OnboardField = ({ onboardID }) => {
 									type={InputType.TEXT}
 									placeholder="Enter Engagement ID "
 									required
+									disabled={getFieldsDisabled}
 								/>
 							</div>
 							<div className={OnboardStyleModule.colMd6}>
@@ -239,6 +333,7 @@ const OnboardField = ({ onboardID }) => {
 									type={InputType.TEXT}
 									placeholder="Enter hiring ID"
 									required
+									disabled={getFieldsDisabled}
 								/>
 							</div>
 						</div>
@@ -248,6 +343,9 @@ const OnboardField = ({ onboardID }) => {
 								<div className={OnboardStyleModule.formGroup}>
 									<HRSelectField
 										// disabled={id !== 0 && true}
+										controlledValue={controlledContractTypeValue}
+										setControlledValue={setControlledContractTypeValue}
+										isControlled={true}
 										mode="id/value"
 										setValue={setValue}
 										register={register}
@@ -258,6 +356,7 @@ const OnboardField = ({ onboardID }) => {
 										isError={errors['contractType'] && errors['contractType']}
 										required
 										errorMsg={'Please select contract type'}
+										disabled={getFieldsDisabled}
 									/>
 								</div>
 							</div>
@@ -310,6 +409,7 @@ const OnboardField = ({ onboardID }) => {
 										}
 										required
 										errorMsg={'Please select hiring request conrtact duration'}
+										disabled={getFieldsDisabled}
 									/>
 								</div>
 							</div>
@@ -378,6 +478,9 @@ const OnboardField = ({ onboardID }) => {
 							<div className={OnboardStyleModule.colMd12}>
 								<div className={OnboardStyleModule.formGroup}>
 									<HRSelectField
+									controlledValue={controlledTimeZoneValue}
+									setControlledValue={setControlledTimeZoneValue}
+									isControlled={true}
 										mode="id/value"
 										setValue={setValue}
 										register={register}
@@ -388,6 +491,7 @@ const OnboardField = ({ onboardID }) => {
 										isError={errors['timeZone'] && errors['timeZone']}
 										required
 										errorMsg={'Please select the timezone'}
+										disabled={getFieldsDisabled}
 									/>
 								</div>
 							</div>
@@ -516,7 +620,7 @@ const OnboardField = ({ onboardID }) => {
 													timeCaption="Time"
 													timeFormat="h:mm a"
 													dateFormat="h:mm a"
-													placeholderText="End Time"
+													placeholderText="Talent Onboarding Time"
 												/>
 											)}
 											name="talentOnboardingTime"
