@@ -105,6 +105,7 @@ const HRFields = ({
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
 	const [isNewPostalCodeModal, setNewPostalCodeModal] = useState(false);
 	const [isPostalCodeNotFound, setPostalCodeNotFound] = useState(false);
+	const [controlledTimeZoneValue, setControlledTimeZoneValue] = useState('Select time zone');
 	let controllerRef = useRef(null);
 	const {
 		watch,
@@ -806,6 +807,13 @@ const HRFields = ({
 		setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));
 	}, [watchSalesPerson]);
 
+	useEffect(() => {
+		if(timeZonePref.length > 0) {
+		setValue('timeZone',timeZonePref[0])
+		setControlledTimeZoneValue(timeZonePref[0].value)
+	}
+	},[timeZonePref, setValue])
+
 	const durationDataMemo = useMemo(() => {
 		let formattedDuration = [];
 		getDurationType?.filter(
@@ -1392,6 +1400,9 @@ const HRFields = ({
 							<div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
+										controlledValue={controlledTimeZoneValue}
+										setControlledValue={setControlledTimeZoneValue}
+										isControlled={true}
 										mode={'id/value'}
 										disabled={_isNull(prefRegion)}
 										setValue={setValue}

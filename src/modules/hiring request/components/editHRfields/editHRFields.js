@@ -357,7 +357,7 @@ const EditHRFields = ({
 		const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO(
 			prefRegion && prefRegion?.id,
 		);
-		setTimeZonePref(timeZone && timeZone.responseBody);
+		setTimeZonePref(timeZone && timeZone.responseBody);	
 	}, [prefRegion]);
 	const getAvailability = useCallback(async () => {
 		const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
@@ -745,6 +745,9 @@ const EditHRFields = ({
 			getHRdetails?.addHiringRequest?.discoveryCall,
 		);
 		setValue('dpPercentage', getHRdetails?.addHiringRequest?.dppercentage);
+		if(!_isNull(getHRdetails?.addHiringRequest?.dppercentage)){
+			setHRDirectPlacement(true)
+		}
 		setValue('postalCode', getHRdetails?.directPlacement?.postalCode);
 		setValue('city', getHRdetails?.directPlacement?.city);
 		setValue('state', getHRdetails?.directPlacement?.state);
@@ -831,8 +834,15 @@ const EditHRFields = ({
 					item?.id ===
 					getHRdetails?.salesHiringRequest_Details?.timezonePreferenceId,
 			);
-			setValue('timeZone', findTimeZone[0]);
+			console.log('find timezone',findTimeZone)
+			if(findTimeZone.lenth > 0){
+				setValue('timeZone', findTimeZone[0]);
 			setControlledTimeZoneValue(findTimeZone[0]?.value);
+			}else{
+			setValue('timeZone', timeZonePref[0]);
+			setControlledTimeZoneValue(timeZonePref[0]?.value);
+			}
+			
 		}
 	}, [getHRdetails, timeZonePref]);
 
@@ -1139,7 +1149,7 @@ const EditHRFields = ({
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd12}>
 							<div className={HRFieldStyle.checkBoxGroup}>
-								<Checkbox onClick={toggleHRDirectPlacement}>
+								<Checkbox checked={isHRDirectPlacement} onClick={toggleHRDirectPlacement}>
 									Is this HR a Direct Placement?
 								</Checkbox>
 							</div>
