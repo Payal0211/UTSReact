@@ -282,8 +282,9 @@ const EditDebriefingHR = ({
 									isControlled={true}
 									controlledValue={
 										JDParsedSkills?.Responsibility ||
-										removeHTMLTags(getHRdetails?.salesHiringRequest_Details
-											?.rolesResponsibilities) 
+										(getHRdetails?.salesHiringRequest_Details
+											?.rolesResponsibilities && removeHTMLTags(getHRdetails?.salesHiringRequest_Details
+											?.rolesResponsibilities) )
 									}
 									label={'Roles & Responsibilities'}
 									placeholder={'Enter roles & responsibilities'}
@@ -334,7 +335,7 @@ const EditDebriefingHR = ({
 									isControlled={true}
 									controlledValue={
 										JDParsedSkills?.Requirements ||
-										removeHTMLTags(getHRdetails?.salesHiringRequest_Details?.requirement)
+										(getHRdetails?.salesHiringRequest_Details?.requirement && removeHTMLTags(getHRdetails?.salesHiringRequest_Details?.requirement))
 									}
 									label={'Requirements'}
 									placeholder={'Enter Requirements'}
