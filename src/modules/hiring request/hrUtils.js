@@ -152,7 +152,14 @@ export const hrUtils = {
 					: watch('adhocBudgetCost')
 					: _isNull(d.adhocBudgetCost)
 					? null
-					: d.adhocBudgetCost,			
+					: d.adhocBudgetCost,
+			IsHiringLimited: isHRDirectPlacement? null : SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('tempProject').value)
+					? null
+					: watch('tempProject').value
+					: _isNull(d.tempProject.value)
+					? null
+					: d.tempProject.value,					
 			minimumBudget:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('minimumBudget'))
@@ -178,7 +185,7 @@ export const hrUtils = {
 					: _isNull(d.availability)
 					? null
 					: d.availability?.value,
-			NRMargin:
+			NRMargin: isHRDirectPlacement ? 0 :
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('NRMargin'))
 						? 0
@@ -197,7 +204,7 @@ export const hrUtils = {
 			ChildCompanyName: watch('otherChildCompanyName')
 				? watch('otherChildCompanyName')
 				: watch('childCompany')?.value,
-			contractDuration:
+			contractDuration: isHRDirectPlacement ? null :
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('contractDuration'))
 						? null
@@ -205,6 +212,30 @@ export const hrUtils = {
 					: _isNull(d.contractDuration.value)
 					? null
 					: d.contractDuration.value,
+			TimeZoneFromTime: watch('region')?.value.includes('Overlapping') ? null :
+					draft === SubmitType.SAVE_AS_DRAFT
+						? _isNull(watch('fromTime')).value
+						? null
+						: watch('fromTime').value
+						: _isNull(d.fromTime.value)
+						? null
+						: d.fromTime.value,		
+			TimeZoneEndTime:  watch('region')?.value.includes('Overlapping') ? null :
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('endTime')).value
+					? null
+					: watch('endTime').value
+					: _isNull(d.endTime.value)
+					? null
+					: d.endTime.value,
+			OverlapingHours:watch('region')?.value.includes('Overlapping') ? 
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('overlappingHours'))
+					? null
+					: watch('overlappingHours')
+					: _isNull(d.overlappingHours)
+					? null
+					: d.overlappingHours : null,
 			howSoon:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('howSoon'))
@@ -221,14 +252,14 @@ export const hrUtils = {
 					: _isNull(d.years)
 					? 0
 					: parseInt(d.years),
-			DurationType:
+			DurationType: isHRDirectPlacement ? null :
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('getDurationType'))
+					? _isNull(watch('getDurationType').value)
 						? 0
-						: watch('getDurationType')
-					: _isNull(d.getDurationType.toString())
+						: watch('getDurationType').value
+					: _isNull(d.getDurationType.value)
 					? 0
-					: d.getDurationType.toString(),
+					: d.getDurationType.value,
 			timeZone:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('region'))

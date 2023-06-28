@@ -72,6 +72,18 @@ const HRFields = ({
 	const [availability, setAvailability] = useState([]);
 	const [timeZonePref, setTimeZonePref] = useState([]);
 	const [workingMode, setWorkingMode] = useState([]);
+	const [tempProjects, setTempProject] = useState([{
+		disabled: false,
+		group: null,
+		selected: false,
+		text: `Yes, it's for a limited Project`,
+		value:true},
+		 {
+			disabled: false,
+			group: null,
+			selected: false,
+			text: `No, They want to hire for long term`,
+			value:false}]);
 	const [talentRole, setTalentRole] = useState([]);
 	const [country, setCountry] = useState([]);
 	const [currency, setCurrency] = useState([]);
@@ -80,7 +92,7 @@ const HRFields = ({
 	const [howSoon, setHowSoon] = useState([]);
 	const [region, setRegion] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [contractDurations, setcontractDurations] = useState(['3 months', '6 months', '12 months']);
+	const [contractDurations, setcontractDurations] = useState([]);
 	const [name, setName] = useState('');
 	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
@@ -96,6 +108,7 @@ const HRFields = ({
 	const [childCompany, setChildCompany] = useState([]);
 	const [isSalesUserPartner, setIsSalesUserPartner] = useState(false);
 	const [getDurationType, setDurationType] = useState([]);
+	const [getStartEndTimes, setStaryEndTimes] = useState([]);
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
 		googleDriveFileUpload: '',
@@ -345,7 +358,7 @@ const HRFields = ({
 		setUploadModal,
 		setValidation,
 	]);
-
+console.log("errors",errors , watch('region') , watch('region')?.value.includes('Overlapping'));
 	/* ------------------ Upload JD Ends Here -------------------- */
 	let prefRegion = watch('region');
 	let modeOfWork = watch('workingMode');
@@ -476,8 +489,15 @@ const HRFields = ({
 
 	const getDurationTypes = useCallback(async () => {
 		const durationTypes = await MasterDAO.getDurationTypeDAO();
-		setDurationType(durationTypes && durationTypes?.responseBody?.details);
+		setDurationType(durationTypes && durationTypes?.responseBody?.details.filter(item=> item?.value !== '0'));
 	}, []);
+
+	const getStartEndTimeHandler= useCallback(async () => {
+		const durationTypes = await MasterDAO.getStartEndTimeDAO();
+		console.log('start end', durationTypes)
+		setStaryEndTimes(durationTypes && durationTypes?.responseBody);
+	}, [])
+
 	const getSalesPerson = useCallback(async () => {
 		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
 
@@ -705,6 +725,7 @@ const HRFields = ({
 		getHowSoon();
 		getNRMarginHandler();
 		getDurationTypes();
+		getStartEndTimeHandler()
 	}, [
 		getCurrencyHandler,
 		getAvailability,
@@ -720,6 +741,7 @@ const HRFields = ({
 		// postalCodeHandler,
 		getNRMarginHandler,
 		getDurationTypes,
+		getStartEndTimeHandler
 	]);
 	useEffect(() => {
 		setValidation({
@@ -839,18 +861,18 @@ const HRFields = ({
 	}
 	},[timeZonePref, setValue])
 
-	const durationDataMemo = useMemo(() => {
-		let formattedDuration = [];
-		getDurationType?.filter(
-			(item) =>
-				item?.value !== '0' &&
-				formattedDuration.push({
-					id: item?.value,
-					value: item?.text,
-				}),
-		);
-		return formattedDuration;
-	}, [getDurationType]);
+	// const durationDataMemo = useMemo(() => {
+	// 	let formattedDuration = [];
+	// 	getDurationType?.filter(
+	// 		(item) =>
+	// 			item?.value !== '0' &&
+	// 			formattedDuration.push({
+	// 				id: item?.value,
+	// 				value: item?.text,
+	// 			}),
+	// 	);
+	// 	return formattedDuration;
+	// }, [getDurationType]);
 
 	return (
 		<>
@@ -1179,7 +1201,7 @@ const HRFields = ({
 										name="dpPercentage"
 										type={InputType.NUMBER}
 										placeholder="Enter the DP Percentage"
-										required
+										required={isHRDirectPlacement}
 									/>
 								</div>
 							) : 					
@@ -1194,10 +1216,33 @@ const HRFields = ({
 									name="NRMargin"
 									type={InputType.TEXT}
 									placeholder="Select NR margin percentage"
-									required
+									required={!isHRDirectPlacement}
 								/>
 							</div>
 						 }
+
+						 {!isHRDirectPlacement &&	<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										mode={'id/value'}
+										searchable={false}
+										setValue={setValue}
+										register={register}
+										label={'Is this Hiring need Temporary for any project?'}
+										defaultValue="Select"
+										options={tempProjects.map((item) => ({
+											id: item.id,
+											label: item.text,
+											value: item.value,
+										}))}
+										name="tempProject"
+										isError={errors['tempProject'] && errors['tempProject']}
+										required={false}
+										errorMsg={'Please select the Temporary Project.'}
+									/>
+								</div>
+							</div>	 }
+						
 							<div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
@@ -1321,15 +1366,21 @@ const HRFields = ({
 									<HRSelectField
 										setValue={setValue}
 										register={register}
+										mode={'id/value'}
 										label={'Long Term/Short Term'}
 										defaultValue="Select Term"
-										options={durationDataMemo}
+										options={getDurationType.map((item) => ({
+											id: item.id,
+											label: item.text,
+											value: item.value,
+										}))}
 										name="getDurationType"
 										isError={
 											errors['getDurationType'] && errors['getDurationType']
 										}
-										required
+										required={!isHRDirectPlacement}
 										errorMsg={'Please select duration type'}
+										disabled={isHRDirectPlacement}
 									/>
 								</div>
 							</div>
@@ -1384,8 +1435,9 @@ const HRFields = ({
 										isError={
 											errors['contractDuration'] && errors['contractDuration']
 										}
-										required
+										required={!isHRDirectPlacement}
 										errorMsg={'Please select hiring request conrtact duration'}
+										disabled={isHRDirectPlacement}
 									/>
 								</div>
 							</div>
@@ -1488,6 +1540,81 @@ const HRFields = ({
 								</div>
 							</div>
 						</div>
+
+						<div className={HRFieldStyle.row}>
+						<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									disabled={watch('region')?.value.includes('Overlapping') ? false : true}
+									validationSchema={{
+										required: 'please enter the number of talents.',
+										min: {
+											value: 1,
+											message: `please enter the value more than 0`,
+										},
+									}}
+									label='Overlapping Hours.'
+									name="overlappingHours"
+									type={InputType.NUMBER}
+									placeholder="Please enter Overlapping Hours."
+									required={watch('region')?.value.includes('Overlapping') ? true : false}
+								/>
+								</div>
+							</div>
+
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										// controlledValue={controlledTimeZoneValue}
+										// setControlledValue={setControlledTimeZoneValue}
+										// isControlled={true}
+										mode={'id/value'}
+										disabled={watch('region')?.value.includes('Overlapping') ? true : false}
+										setValue={setValue}
+										register={register}
+										label={'From Time'}
+										defaultValue="Select From Time"
+										options={getStartEndTimes.map((item) => ({
+											id: item.id,
+											label: item.text,
+											value: item.value,
+										}))}
+										name="fromTime"
+										isError={errors['fromTime'] && errors['fromTime']}
+										required={watch('region')?.value.includes('Overlapping') ? false : true}
+										errorMsg={'Please select From Time.'}
+									/>
+								</div>
+							</div>
+
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										// controlledValue={controlledTimeZoneValue}
+										// setControlledValue={setControlledTimeZoneValue}
+										// isControlled={true}
+										mode={'id/value'}
+										disabled={watch('region')?.value.includes('Overlapping') ? true : false}
+										setValue={setValue}
+										register={register}
+										label={'End Time'}
+										defaultValue="Select End Time"
+										options={getStartEndTimes.map((item) => ({
+											id: item.id,
+											label: item.text,
+											value: item.value,
+										}))}
+										name="endTime"
+										isError={errors['endTime'] && errors['endTime']}
+										required={watch('region')?.value.includes('Overlapping') ? false : true}
+										errorMsg={'Please select End Time.'}
+									/>
+								</div>
+							</div>
+						</div>
+
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>

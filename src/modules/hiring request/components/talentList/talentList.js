@@ -607,7 +607,7 @@ talentID,})
 														{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
 													</span>
 												</div>
-												{hrStatus !== 'Cancelled' && hrStatus !== 'Closed' &&  hrStatus !== "Lost" && <span
+												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && <span
 													onClick={() => {
 														setTalentIndex(item?.TalentID);
 														setEditBillRate(true);
@@ -631,7 +631,7 @@ talentID,})
 														{_isNull(item?.PayRate) ? 'NA' : item?.PayRate}
 													</span>
 												</div>
-												{hrStatus !== 'Cancelled' && hrStatus !== 'Closed' &&  hrStatus !== "Lost" && <span
+												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && <span
 													onClick={() => {
 														setEditPayRate(true);
 														setTalentIndex(item?.TalentID);
