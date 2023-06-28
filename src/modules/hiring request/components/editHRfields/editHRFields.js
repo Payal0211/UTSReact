@@ -1004,6 +1004,7 @@ const EditHRFields = ({
 								mode={'id'}
 								register={register}
 								label={'Sales Person'}
+								searchable={true}
 								options={salesPerson && salesPerson}
 								name="salesPerson"
 								isError={errors['salesPerson'] && errors['salesPerson']}

@@ -954,6 +954,7 @@ const HRFields = ({
 								<div className={HRFieldStyle.formGroup}>
 									{userData.LoggedInUserTypeID && <HRSelectField
 										setValue={setValue}
+										searchable={true}
 										register={register}
 										label={'Sales Person'}									
 										defaultValue={userData?.LoggedInUserTypeID === UserAccountRole.SALES ? userData?.FullName : "Select sales Persons"}
