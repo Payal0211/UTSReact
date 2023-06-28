@@ -35,7 +35,7 @@ const HRInputField = ({
 	const formatRegister = { ...register(name, required && validationSchema) };
 
 	return (
-		<div className={HRInputFieldStyle.formField}>
+		<div className={HRInputFieldStyle.formField} key={`${label}-${name}`}>
 			{label && (
 				<label>
 					{label}

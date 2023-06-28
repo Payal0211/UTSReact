@@ -179,6 +179,31 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getGetBudgetInformationDAO');
 		}
 	},
+	getStartEndTimeDAO: async function () {
+		try {
+			const startEndTime = await MasterAPI.getStartEndTimeRequest();
+			if (startEndTime) {
+				const statusCode = startEndTime['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = startEndTime.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return startEndTime;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return startEndTime;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getGetBudgetInformationDAO');
+		}
+	},
 	getTalentTimeZoneRequestDAO: async function () {
 		try {
 			const talentTimeZoneResult = await MasterAPI.getTalentTimeZoneRequest();

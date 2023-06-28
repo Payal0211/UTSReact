@@ -65,7 +65,7 @@ const EditHRFields = ({
 	const [howSoon, setHowSoon] = useState([]);
 	const [region, setRegion] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [items, setItems] = useState(['3 months', '6 months', '12 months']);
+	const [contractDurations, setcontractDurations] = useState([]);
 	const [name, setName] = useState('');
 	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
@@ -88,6 +88,8 @@ const EditHRFields = ({
 	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
 	const [controlledBudgetValue, setControlledBudgetValue] =
 		useState('Select Budget');
+	const [controlledCurrencyValue, setControlledCurrencyValue] =
+		useState('Select Currency');
 	const [controlledSalesValue, setControlledSalesValue] = useState(
 		'Select sales Person',
 	);
@@ -109,6 +111,8 @@ const EditHRFields = ({
 	const [controlledDurationTypeValue, setControlledDurationTypeValue] =
 		useState('Select Term');
 	const [getDurationType, setDurationType] = useState([]);
+	
+	const [budgets, setBudgets] = useState([]);
 
 	let controllerRef = useRef(null);
 	const {
@@ -428,14 +432,14 @@ const EditHRFields = ({
 	const addItem = useCallback(
 		(e) => {
 			e.preventDefault();
-			setItems([...items, name + ' months' || name]);
+			setcontractDurations([...contractDurations, name + ' months' || name]);
 			setName('');
 			setTimeout(() => {
 				inputRef.current?.focus();
 			}, 0);
 			setDisableButton(true);
 		},
-		[items, name],
+		[contractDurations, name],
 	);
 
 	const watchClientName = watch('clientName');
@@ -594,6 +598,23 @@ const EditHRFields = ({
 		setCurrency(response && response?.responseBody);
 	}, []);
 
+	const getBudgetHandler = useCallback(async () => {
+		const response = await MasterDAO.getGetBudgetInformationDAO();
+		setBudgets(response && response?.responseBody.filter(
+			(item) =>
+				item?.value !== '0' 
+		));
+	}, []);
+
+	const contractDurationHandler = useCallback(async () => {
+		let response = await MasterDAO.getContractDurationRequestDAO();
+		console.log('Duration', response)
+		setcontractDurations(response && response?.responseBodyfilter(
+			(item) =>
+				item?.value !== '0' 
+		))
+	},[])
+
 	useEffect(() => {
 		getCurrencyHandler();
 		getAvailability();
@@ -605,6 +626,8 @@ const EditHRFields = ({
 		getHowSoon();
 		getNRMarginHandler();
 		getDurationTypes();
+		getBudgetHandler();
+		contractDurationHandler();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -745,7 +768,8 @@ const EditHRFields = ({
 			getHRdetails?.addHiringRequest?.discoveryCall,
 		);
 		setValue('dpPercentage', getHRdetails?.addHiringRequest?.dppercentage);
-		if(!_isNull(getHRdetails?.addHiringRequest?.dppercentage)){
+		console.log(getHRdetails)
+		if(getHRdetails?.addHiringRequest?.isHrtypeDp){
 			setHRDirectPlacement(true)
 		}
 		setValue('postalCode', getHRdetails?.directPlacement?.postalCode);
@@ -759,6 +783,7 @@ const EditHRFields = ({
 			getHRdetails?.salesHiringRequest_Details?.durationType,
 		);
 		setValue('getDurationType', getHRdetails?.months);
+		setValue('adhocBudgetCost', getHRdetails?.salesHiringRequest_Details?.adhocBudgetCost)
 		setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType);
 		if (getHRdetails?.clientName) {
 			getListData(
@@ -786,13 +811,24 @@ const EditHRFields = ({
 	}, [getHRdetails, talentRole]);
 
 	useEffect(() => {
+		if (getHRdetails?.budgetType) {
+			const findCurrency = budgets.filter(
+				(item) =>
+					item?.value === getHRdetails?.budgetType,
+			);
+			setValue('budget', findCurrency[0]);
+			setControlledBudgetValue(findCurrency[0]?.value);
+		}
+	}, [getHRdetails, budgets]);
+
+	useEffect(() => {
 		if (getHRdetails?.salesHiringRequest_Details?.currency) {
 			const findCurrency = currency.filter(
 				(item) =>
 					item?.value === getHRdetails?.salesHiringRequest_Details?.currency,
 			);
-			setValue('budget', findCurrency[0]?.value);
-			setControlledBudgetValue(findCurrency[0]?.value);
+			setValue('currency', findCurrency[0]);
+			setControlledCurrencyValue(findCurrency[0]?.value);
 		}
 	}, [getHRdetails, currency]);
 
@@ -878,25 +914,41 @@ const EditHRFields = ({
 	}, [getHRdetails]);
 
 	useEffect(() => {
-		if (getHRdetails?.months) {
+		if (getHRdetails?.salesHiringRequest_Details?.durationType) {
 			const findDurationMode = durationDataMemo.filter(
-				(item) => Number(item?.id) === getHRdetails?.months,
+				(item) => item?.value === getHRdetails?.salesHiringRequest_Details?.durationType,
 			);
-			setValue('getDurationType', findDurationMode[0]?.id);
+			setValue('getDurationType', findDurationMode[0]);
 			setControlledDurationTypeValue(findDurationMode[0]?.value);
 		}
 	}, [getHRdetails, durationDataMemo]);
 
 	useEffect(() => {
-		if (getHRdetails?.salesHiringRequest_Details?.durationType) {
-			const findcontactMode = items.filter(
+		if (getHRdetails?.contractDuration) {
+			const contract = contractDurations.filter(
 				(item) =>
-					item === getHRdetails?.salesHiringRequest_Details?.durationType,
+					item.value === getHRdetails?.contractDuration,
 			);
-			setValue('contractDuration', findcontactMode[0]);
-			setContractDuration(findcontactMode[0]);
+			
+			if(contract.length > 0){
+				setValue('contractDuration', contract[0]);
+			    setContractDuration(contract[0].value);
+			}else{
+				if(getHRdetails?.contractDuration !== 0){
+					const object = {
+					disabled: false,
+					group: null,
+					selected: false,
+					text: `${getHRdetails?.contractDuration} months`,
+					value:`${getHRdetails?.contractDuration}`}
+
+					setcontractDurations(prev=> [...prev,object])
+					// this will trigger this Effect again and then go to if 
+				}
+				
+			}
 		}
-	}, [getHRdetails, items]);
+	}, [getHRdetails, contractDurations]);
 
 	useEffect(() => {
 		if (localStorage.getItem('fromEditDeBriefing')) {
@@ -1004,6 +1056,7 @@ const EditHRFields = ({
 								mode={'id'}
 								register={register}
 								label={'Sales Person'}
+								searchable={true}
 								options={salesPerson && salesPerson}
 								name="salesPerson"
 								isError={errors['salesPerson'] && errors['salesPerson']}
@@ -1033,6 +1086,27 @@ const EditHRFields = ({
 								/>
 							</div>
 						</div>
+
+						<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										controlledValue={controlledCurrencyValue}
+										setControlledValue={setControlledCurrencyValue}
+										isControlled={true}
+										mode={'id/value'}
+										searchable={true}
+										setValue={setValue}
+										register={register}
+										label={'Currency'}
+										defaultValue="Select Currency"
+										options={currency && currency}
+										name="currency"
+										isError={errors['currency'] && errors['currency']}
+										required
+										errorMsg={'Please select Currency'}
+									/>
+								</div>
+							</div>
 					</div>
 					{watch('role')?.id === -1 && (
 						<div className={HRFieldStyle.row}>
@@ -1085,6 +1159,7 @@ const EditHRFields = ({
 									type={InputType.BUTTON}
 									buttonLabel="Upload JD File"
 									setValue={setValue}
+									required={!watch('jdURL') && !getUploadFileData}
 									onClickHandler={() => setUploadModal(true)}
 									errors={errors}
 								/>
@@ -1231,16 +1306,39 @@ const EditHRFields = ({
 									isControlled={true}
 									setValue={setValue}
 									register={register}
-									label={'Add your estimated budget'}
-									options={currency && currency}
+									label={'Add your estimated budget'}								
+									options={budgets.map((item) => ({
+										id: item.id,
+										label: item.text,
+										value: item.value,
+									}))}
 									name="budget"
 									isError={errors['budget'] && errors['budget']}
 									required
-									mode={'value'}
+									mode={'id/value'}
 									errorMsg={'Please select hiring request budget'}
 								/>
 							</div>
 						</div>
+						<div className={HRFieldStyle.colMd4}>
+								<HRInputField
+									label={'Adhoc Budget'}
+									register={register}
+									name="adhocBudgetCost"
+									type={InputType.NUMBER}
+									placeholder="Adhoc- Ex: 2300, 2000"
+									required={watch('budget')?.value === '1'}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the Adhoc Budget.',
+										min: {
+											value: 1,
+											message: `please don't enter the value less than 1`,
+										},
+									}}
+									disabled={watch('budget')?.value !== '1'}
+								/>
+							</div>
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
 								label={'Minimum Budget'}
@@ -1248,7 +1346,7 @@ const EditHRFields = ({
 								name="minimumBudget"
 								type={InputType.NUMBER}
 								placeholder="Minimum- Ex: 2300, 2000"
-								required
+								required={watch('budget')?.value === '2'}
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the minimum budget.',
@@ -1257,6 +1355,7 @@ const EditHRFields = ({
 										message: `please don't enter the value less than 1`,
 									},
 								}}
+								disabled={ watch('budget')?.value !== '2'  }
 							/>
 						</div>
 
@@ -1267,7 +1366,7 @@ const EditHRFields = ({
 								name="maximumBudget"
 								type={InputType.NUMBER}
 								placeholder="Maximum- Ex: 2300, 2000"
-								required
+								required={watch('budget')?.value === '2'}
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the maximum budget.',
@@ -1276,6 +1375,7 @@ const EditHRFields = ({
 										message: 'Budget should me more than minimum budget.',
 									},
 								}}
+								disabled={ watch('budget')?.value !== '2'  }
 							/>
 						</div>
 					</div>
@@ -1339,7 +1439,7 @@ const EditHRFields = ({
 									label={'Long Term/Short Term'}
 									options={durationDataMemo && durationDataMemo}
 									name="getDurationType"
-									mode={'id'}
+									mode={'id/value'}
 									isError={
 										errors['getDurationType'] && errors['getDurationType']
 									}
@@ -1382,10 +1482,10 @@ const EditHRFields = ({
 											<br />
 										</>
 									)}
-									options={items.map((item) => ({
-										id: item,
-										label: item,
-										value: item,
+									options={contractDurations.map((item) => ({
+										id: item.id,
+										label: item.text,
+										value: item.value,
 									}))}
 									controlledValue={contractDurationValue}
 									setControlledValue={setContractDuration}
@@ -1396,7 +1496,7 @@ const EditHRFields = ({
 									defaultValue="Ex: 3,6,12..."
 									inputRef={inputRef}
 									addItem={addItem}
-									mode={'value'}
+									mode={'id/value'}
 									onNameChange={onNameChange}
 									name="contractDuration"
 									isError={
