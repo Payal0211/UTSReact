@@ -385,12 +385,12 @@ const DebriefingHR = ({
 					<SpinLoader />
 				) : (
 					<div className={DebriefingHRStyle.formPanelAction}>
-						<button
+						{/* <button
 							type="button"
 							className={DebriefingHRStyle.btn}
 							onClick={handleSubmit(needMoreInforSubmitHandler)}>
 							Need More Info
-						</button>
+						</button> */}
 						<button
 							type="button"
 							className={DebriefingHRStyle.btnPrimary}

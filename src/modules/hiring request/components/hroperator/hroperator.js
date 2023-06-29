@@ -12,6 +12,12 @@ const HROperator = ({
 	listItem,
 	menuAction,
 }) => {
+
+	const controlledLabelMenuAction = (val) =>{
+		let clicked = listItem.filter(item => item.label === val)[0]
+		clicked.IsEnabled && menuAction({key: val})
+	}
+
 	return isDropdown ? (
 		<Dropdown
 			className={hroperatorStyle.dropdownMenu}
@@ -55,7 +61,7 @@ const HROperator = ({
 				<div
 					className={hroperatorStyle.newHR}
 					style={{ backgroundColor: backgroundColor, border: labelBorder }}>
-					<label onClick={()=> menuAction({key: title})}>{title}</label>
+					<label onClick={()=> controlledLabelMenuAction(title)}>{title}</label>
 					<div
 						className={hroperatorStyle.iconDown}
 						style={{ borderLeft: iconBorder }}>
