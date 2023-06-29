@@ -21,6 +21,7 @@ const HRSelectField = ({
 	isControlled,
 	disabled,
 	placeholder,
+	isControlledBoolean
 }) => {
 	const getChangeHandlerWithValue = (value, option) => {
 		if (mode === 'multiple') {
@@ -69,7 +70,17 @@ const HRSelectField = ({
 				</label>
 			)}
 
-			{isControlled ? (
+			{isControlledBoolean ? <Select
+					id="selectedValue"
+					placeholder={placeholder}
+					mode={mode}
+					className={disabled && HRSelectFieldStyle.disabled}
+					disabled={disabled}
+					value={controlledValue}
+					showSearch={searchable}
+					onChange={(value, option) => getChangeHandlerWithValue(value, option)}
+					options={options}
+				/> : isControlled ? (
 				<Select
 					id="selectedValue"
 					placeholder={placeholder}

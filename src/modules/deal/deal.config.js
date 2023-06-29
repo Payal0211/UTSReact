@@ -17,16 +17,17 @@ export const DealConfig = {
 			},
 			{
 				title: 'Deal ID',
-				dataIndex: 'deal_Id',
-				key: 'deal_Id',
+				dataIndex: 'dealID',
+				key: 'dealID',
 				align: 'left',
 				render: (text) => {
 					return text ? (
-						<Link
-							to={`/deal/${text}`}
-							style={{ color: 'black', textDecoration: 'underline' }}>
-							{text}
-						</Link>
+						// <Link
+						// 	to={`/deal/${text}`}
+						// 	style={{ color: 'black', textDecoration: 'underline' }}>
+						// 	{text}
+						// </Link>
+						text
 					) : (
 						'NA'
 					);
