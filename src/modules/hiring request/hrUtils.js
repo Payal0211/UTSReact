@@ -154,12 +154,12 @@ export const hrUtils = {
 					? null
 					: d.adhocBudgetCost,
 			IsHiringLimited: isHRDirectPlacement? null : SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('tempProject').value)
+					? _isNull(watch('tempProject')?.value)
 					? null
-					: watch('tempProject').value
-					: _isNull(d.tempProject.value)
+					: watch('tempProject')?.value
+					: _isNull(d.tempProject?.value)
 					? null
-					: d.tempProject.value,					
+					: d.tempProject?.value,					
 			minimumBudget:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('minimumBudget'))
