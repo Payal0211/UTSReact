@@ -13,6 +13,7 @@ export const dealUtils = {
 		return dealData?.rows.map((item) => ({
 			key: item.hR_ID,
 			deal_Id: item.deal_Id,
+			dealID:item.dealID,
 			lead_Type: item.lead_Type,
 			dealDate: item.dealDate?.split(' ')[0],
 			hR_ID: item.hR_ID,

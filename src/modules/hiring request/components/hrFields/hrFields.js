@@ -93,6 +93,7 @@ const HRFields = ({
 	const [region, setRegion] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [contractDurations, setcontractDurations] = useState([]);
+	const [partialEngagements,setPartialEngagements] = useState([]);
 	const [name, setName] = useState('');
 	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
@@ -120,6 +121,10 @@ const HRFields = ({
 	const [isNewPostalCodeModal, setNewPostalCodeModal] = useState(false);
 	const [isPostalCodeNotFound, setPostalCodeNotFound] = useState(false);
 	const [controlledTimeZoneValue, setControlledTimeZoneValue] = useState('Select time zone');
+	const [controlledFromTimeValue, setControlledFromTimeValue] =
+	useState('Select From Time');	
+const [controlledEndTimeValue, setControlledEndTimeValue] =
+	useState('Select End Time');	
 	let controllerRef = useRef(null);
 	const {
 		watch,
@@ -358,7 +363,7 @@ const HRFields = ({
 		setUploadModal,
 		setValidation,
 	]);
-console.log("errors",errors , watch('region') , watch('region')?.value.includes('Overlapping'));
+
 	/* ------------------ Upload JD Ends Here -------------------- */
 	let prefRegion = watch('region');
 	let modeOfWork = watch('workingMode');
@@ -701,8 +706,12 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 
 	const contractDurationHandler = useCallback(async () => {
 		let response = await MasterDAO.getContractDurationRequestDAO();
-		console.log('Duration', response)
 		setcontractDurations(response && response?.responseBody)
+	},[])
+
+	const getPartialEngHandler = useCallback(async () => {
+		let response = await MasterDAO.getPartialEngagementTypeRequestDAO();
+		setPartialEngagements(response && response?.responseBody)
 	},[])
 
 	useEffect(() => {
@@ -721,6 +730,7 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 		getCurrencyHandler();
 		getBudgetHandler();
 		contractDurationHandler();
+		getPartialEngHandler()
 		getHowSoon();
 		getNRMarginHandler();
 		getDurationTypes();
@@ -736,6 +746,7 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 		getHowSoon,
 		getWorkingMode,
 		contractDurationHandler,
+		getPartialEngHandler,
 		getBudgetHandler,
 		// postalCodeHandler,
 		getNRMarginHandler,
@@ -758,9 +769,12 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 
 	useEffect(()=>{
 		if(watch('budget')?.value === '2'){
-			unregister('adhocBudgetCost')
+			setValue('adhocBudgetCost','')
+			unregister('adhocBudgetCost')		
 		}
 		if(watch('budget')?.value === '1'){
+			setValue('maximumBudget', '')
+			setValue('minimumBudget','')
 			unregister('maximumBudget')
 			unregister('minimumBudget')
 		}
@@ -768,13 +782,31 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 			unregister('maximumBudget')
 			unregister('minimumBudget')
 			unregister('adhocBudgetCost')
+			setValue('maximumBudget', '')
+			setValue('minimumBudget','')
+			setValue('adhocBudgetCost','')
 		}
 	},[watch('budget'), unregister])
 
 	useEffect(()=>{
-		if(watch('region')?.value.includes('Overlapping')) {unregister(['fromTime', 'endTime'])}
-		else{unregister('overlappingHours')} 
+		if(watch('region')?.value.includes('Overlapping')) {
+			unregister(['fromTime', 'endTime'])
+			setValue('fromTime','')
+			setValue('endTime','')
+			setControlledFromTimeValue('Select From Time')
+			setControlledEndTimeValue('Select End Time')
+		}
+		else{
+			unregister('overlappingHours')
+			setValue('overlappingHours','')
+		} 
 	},[watch('region'), unregister])
+
+	useEffect(()=>{
+		if(watch("availability")?.value === 'Full Time'){
+			unregister('partialEngagement')
+		}
+	},[watch("availability"), unregister])
 
 	useEffect(()=>{
 		if(jdURLLink){unregister('jdExport')}
@@ -838,11 +870,13 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 				type !== SubmitType.SAVE_AS_DRAFT &&
 					setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
 
-				type === SubmitType.SAVE_AS_DRAFT &&
+				if(type === SubmitType.SAVE_AS_DRAFT){
 					messageAPI.open({
 						type: 'success',
 						content: 'HR details has been saved to draft.',
 					});
+					setTitle('Debriefing HR')
+				}
 			}
 		},
 		[
@@ -1526,6 +1560,50 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 								</div>
 							</div>
 						</div>
+
+						{watch("availability")?.value === 'Part Time' && <div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										mode={'id/value'}
+										setValue={setValue}
+										register={register}
+										label={'Partial Engagement Type'}
+										defaultValue="Select Partial Engagement Type"
+										options={partialEngagements.map((item) => ({
+											id: item.id,
+											label: item.text,
+											value: item.value,
+										}))}
+										name="partialEngagement"
+										isError={errors['partialEngagement'] && errors['partialEngagement']}
+										required={watch("availability")?.value === 'Part Time'}
+										errorMsg={'Please select partial engagement type.'}
+									/>
+								</div>
+							</div>
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the number of working hours.',
+										min: {
+											value: 1,
+											message: `please enter the value more than 0`,
+										},
+									}}
+									label='No Of Working Hours'
+									name="workingHours"
+									type={InputType.NUMBER}
+									placeholder="Please enter no of working hours."
+									required={watch("availability")?.value === 'Part Time'}
+								/>
+								</div>
+							</div>
+						</div>}
+
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>
@@ -1591,9 +1669,9 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 							<div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
-										// controlledValue={controlledTimeZoneValue}
-										// setControlledValue={setControlledTimeZoneValue}
-										// isControlled={true}
+										controlledValue={controlledFromTimeValue}
+										setControlledValue={setControlledFromTimeValue}
+										isControlled={true}	
 										mode={'id/value'}
 										disabled={watch('region')?.value.includes('Overlapping') ? true : false}
 										setValue={setValue}
@@ -1617,9 +1695,9 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 							<div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
-										// controlledValue={controlledTimeZoneValue}
-										// setControlledValue={setControlledTimeZoneValue}
-										// isControlled={true}
+										controlledValue={controlledEndTimeValue}
+										setControlledValue={setControlledEndTimeValue}
+										isControlled={true}
 										mode={'id/value'}
 										disabled={watch('region')?.value.includes('Overlapping') ? true : false}
 										setValue={setValue}

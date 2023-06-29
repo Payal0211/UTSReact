@@ -252,14 +252,32 @@ export const hrUtils = {
 					: _isNull(d.years)
 					? 0
 					: parseInt(d.years),
-			DurationType: isHRDirectPlacement ? null :
+			durationType: isHRDirectPlacement ? null :
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('getDurationType').value)
+					? _isNull(watch('getDurationType')?.value)
 						? 0
-						: watch('getDurationType').value
-					: _isNull(d.getDurationType.value)
+						: watch('getDurationType')?.value
+					: _isNull(d.getDurationType?.value)
 					? 0
-					: d.getDurationType.value,
+					: d.getDurationType?.value,
+			partialEngagementTypeId	: watch("availability")?.value === 'Part Time' ?
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('partialEngagement')?.id)
+						? 0
+						: watch('partialEngagement')?.id
+					: _isNull(d.partialEngagement?.id)
+					? 0
+					: d.partialEngagement?.id  
+					: null,
+			NoofHoursworking: watch("availability")?.value === 'Part Time' ?
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('workingHours'))
+						? 0
+						: parseInt(watch('workingHours'))
+					: _isNull(d.workingHours)
+					? 0
+					: parseInt(d.workingHours)
+					: null,
 			timeZone:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('region'))

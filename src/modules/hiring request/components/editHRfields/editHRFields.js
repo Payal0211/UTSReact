@@ -66,6 +66,7 @@ const EditHRFields = ({
 	const [region, setRegion] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [contractDurations, setcontractDurations] = useState([]);
+	const [partialEngagements,setPartialEngagements] = useState([]);
 	const [name, setName] = useState('');
 	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
@@ -115,6 +116,7 @@ const EditHRFields = ({
 	const [controlledEndTimeValue, setControlledEndTimeValue] =
 		useState('Select End Time');	
 	const [controlledTempProjectValue, setControlledTempProjectValue]= useState('Please select .')
+	const [controlledPartialEngagementValue,setControlledPartialEngagementValue] = useState('Select Partial Engagement Type')
 
 	const [getDurationType, setDurationType] = useState([]);
 	const [getStartEndTimes, setStaryEndTimes] = useState([]);
@@ -434,7 +436,7 @@ const EditHRFields = ({
 
 	const getDurationTypes = useCallback(async () => {
 		const durationTypes = await MasterDAO.getDurationTypeDAO();
-		setDurationType(durationTypes && durationTypes?.responseBody?.details);
+		setDurationType(durationTypes && durationTypes?.responseBody?.details.filter(item=> item?.value !== '0'));
 	}, []);
 
 	const getStartEndTimeHandler= useCallback(async () => {
@@ -479,7 +481,6 @@ const EditHRFields = ({
 			message: '',
 		});
 	};
-console.log(errors)
 	// useEffect(() => {
 	//     if(getHRdetails?.fullClientName){
 	//         getListData(getHRdetails?.fullClientName);
@@ -631,8 +632,12 @@ console.log(errors)
 
 	const contractDurationHandler = useCallback(async () => {
 		let response = await MasterDAO.getContractDurationRequestDAO();
-		console.log('Duration', response)
 		setcontractDurations(response && response?.responseBody)
+	},[])
+
+	const getPartialEngHandler = useCallback(async () => {
+		let response = await MasterDAO.getPartialEngagementTypeRequestDAO();
+		setPartialEngagements(response && response?.responseBody)
 	},[])
 
 	useEffect(() => {
@@ -649,6 +654,7 @@ console.log(errors)
 		getBudgetHandler();
 		contractDurationHandler();
 		getStartEndTimeHandler()
+		getPartialEngHandler()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -678,9 +684,12 @@ console.log(errors)
 
 	useEffect(()=>{
 		if(watch('budget')?.value === '2'){
-			unregister('adhocBudgetCost')
+			setValue('adhocBudgetCost','')
+			unregister('adhocBudgetCost')		
 		}
 		if(watch('budget')?.value === '1'){
+			setValue('maximumBudget', '')
+			setValue('minimumBudget','')
 			unregister('maximumBudget')
 			unregister('minimumBudget')
 		}
@@ -688,13 +697,31 @@ console.log(errors)
 			unregister('maximumBudget')
 			unregister('minimumBudget')
 			unregister('adhocBudgetCost')
+			setValue('maximumBudget', '')
+			setValue('minimumBudget','')
+			setValue('adhocBudgetCost','')
 		}
 	},[watch('budget'), unregister])
 
 	useEffect(()=>{
-		if(watch('region')?.value.includes('Overlapping')) {unregister(['fromTime', 'endTime'])}
-		else{unregister('overlappingHours')} 
+		if(watch('region')?.value.includes('Overlapping')) {
+			unregister(['fromTime', 'endTime'])
+			setValue('fromTime','')
+			setValue('endTime','')
+			setControlledFromTimeValue('Select From Time')
+			setControlledEndTimeValue('Select End Time')
+		}
+		else{
+			unregister('overlappingHours')
+			setValue('overlappingHours','')
+		} 
 	},[watch('region'), unregister])
+
+	useEffect(()=>{
+		if(watch("availability")?.value === 'Full Time'){
+			unregister('partialEngagement')
+		}
+	},[watch("availability"), unregister])
 
 	useEffect(() => {
 		hrRole !== 'others' && unregister('otherRole');
@@ -735,11 +762,13 @@ console.log(errors)
 				type !== SubmitType.SAVE_AS_DRAFT &&
 					setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
 
-				type === SubmitType.SAVE_AS_DRAFT &&
-					messageAPI.open({
-						type: 'success',
-						content: 'HR details has been saved to draft.',
-					});
+				if(type === SubmitType.SAVE_AS_DRAFT){
+						messageAPI.open({
+							type: 'success',
+							content: 'HR details has been saved to draft.',
+						});
+						setTitle('Edit Debriefing HR')
+				}
 			}
 		},
 		[
@@ -770,18 +799,18 @@ console.log(errors)
 
 	// const durationTypenfo = []
 
-	const durationDataMemo = useMemo(() => {
-		let formattedDuration = [];
-		getDurationType?.filter(
-			(item) =>
-				item?.value !== '0' &&
-				formattedDuration.push({
-					id: item?.value,
-					value: item?.text,
-				}),
-		);
-		return formattedDuration;
-	}, [getDurationType]);
+	// const durationDataMemo = useMemo(() => {
+	// 	let formattedDuration = [];
+	// 	getDurationType?.filter(
+	// 		(item) =>
+	// 			item?.value !== '0' &&
+	// 			formattedDuration.push({
+	// 				id: item?.value,
+	// 				value: item?.text,
+	// 			}),
+	// 	);
+	// 	return formattedDuration;
+	// }, [getDurationType]);
 
 	useEffect(() => {
 		setValue('clientName', getHRdetails?.fullClientName);
@@ -810,7 +839,6 @@ console.log(errors)
 			getHRdetails?.addHiringRequest?.discoveryCall,
 		);
 		setValue('dpPercentage', getHRdetails?.addHiringRequest?.dppercentage);
-		console.log(getHRdetails)
 		if(getHRdetails?.addHiringRequest?.isHrtypeDp){
 			setHRDirectPlacement(true)
 		}
@@ -824,6 +852,7 @@ console.log(errors)
 			'contractDuration',
 			getHRdetails?.salesHiringRequest_Details?.durationType,
 		);
+		setValue('workingHours',getHRdetails?.addHiringRequest?.noofHoursworking)
 		setValue('overlappingHours', getHRdetails?.salesHiringRequest_Details?.overlapingHours)
 		setValue('getDurationType', getHRdetails?.months);
 		setValue('adhocBudgetCost', getHRdetails?.salesHiringRequest_Details?.adhocBudgetCost)
@@ -913,7 +942,6 @@ console.log(errors)
 					item?.id ===
 					getHRdetails?.salesHiringRequest_Details?.timezonePreferenceId,
 			);
-			console.log('find timezone',findTimeZone)
 			if(findTimeZone.lenth > 0){
 				setValue('timeZone', findTimeZone[0]);
 			setControlledTimeZoneValue(findTimeZone[0]?.value);
@@ -957,14 +985,14 @@ console.log(errors)
 	}, [getHRdetails]);
 
 	useEffect(() => {
-		if (getHRdetails?.salesHiringRequest_Details?.durationType) {
-			const findDurationMode = durationDataMemo.filter(
+		if (getHRdetails?.salesHiringRequest_Details?.durationType && getDurationType.length > 0 ) {
+			const findDurationMode = getDurationType.filter(
 				(item) => item?.value === getHRdetails?.salesHiringRequest_Details?.durationType,
 			);
 			setValue('getDurationType', findDurationMode[0]);
 			setControlledDurationTypeValue(findDurationMode[0]?.value);
 		}
-	}, [getHRdetails, durationDataMemo]);
+	}, [getHRdetails, getDurationType]);
 
 	useEffect(() => {
 		if (getHRdetails?.salesHiringRequest_Details?.timeZoneFromTime) {
@@ -985,14 +1013,20 @@ console.log(errors)
 	useEffect(()=>{
 		if(getHRdetails?.addHiringRequest){
 			const findtempProject = tempProjects.filter(item => item.value === getHRdetails.addHiringRequest.isHiringLimited)
-			console.log({findtempProject,add: getHRdetails?.addHiringRequest})
 			if(findtempProject.length > 0){
 			setValue('tempProject', findtempProject[0])
 			setControlledTempProjectValue(findtempProject[0].value)
-			console.log('set is hiring', findtempProject[0])
 			}
 		}
 	},[getHRdetails, tempProjects, setValue ])
+
+	useEffect(()=>{
+		if(getHRdetails?.addHiringRequest?.partialEngagementTypeId){
+			const findPartialEngagement = partialEngagements.filter(item => item.id === getHRdetails?.addHiringRequest?.partialEngagementTypeId)
+			setValue('partialEngagement',findPartialEngagement[0])
+			setControlledPartialEngagementValue(findPartialEngagement[0].value)
+		}
+	},[getHRdetails,partialEngagements])
 
 	useEffect(() => {
 		if (getHRdetails?.contractDuration) {
@@ -1339,6 +1373,7 @@ console.log(errors)
 										controlledValue={controlledTempProjectValue}
 										setControlledValue={setControlledTempProjectValue}
 										isControlled={true}
+										isControlledBoolean={true}
 										mode={'id/value'}
 										searchable={false}
 										setValue={setValue}
@@ -1534,7 +1569,11 @@ console.log(errors)
 									isControlled={true}
 									register={register}
 									label={'Long Term/Short Term'}
-									options={durationDataMemo && durationDataMemo}
+									options={getDurationType.map((item) => ({
+										id: item.id,
+										label: item.text,
+										value: item.value,
+									}))}
 									name="getDurationType"
 									mode={'id/value'}
 									isError={
@@ -1706,6 +1745,53 @@ console.log(errors)
 							</div>
 						</div>
 					</div>
+
+						{watch("availability")?.value === 'Part Time' && <div className={HRFieldStyle.row}>
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+									controlledValue={controlledPartialEngagementValue}
+									setControlledValue={setControlledPartialEngagementValue}
+									isControlled={true}
+										mode={'id/value'}
+										setValue={setValue}
+										register={register}
+										label={'Partial Engagement Type'}
+										defaultValue="Select Partial Engagement Type"
+										options={partialEngagements.map((item) => ({
+											id: item.id,
+											label: item.text,
+											value: item.value,
+										}))}
+										name="partialEngagement"
+										isError={errors['partialEngagement'] && errors['partialEngagement']}
+										required={watch("availability")?.value === 'Part Time'}
+										errorMsg={'Please select partial engagement type.'}
+									/>
+								</div>
+							</div>
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the number of working hours.',
+										min: {
+											value: 1,
+											message: `please enter the value more than 0`,
+										},
+									}}
+									label='No Of Working Hours'
+									name="workingHours"
+									type={InputType.NUMBER}
+									placeholder="Please enter no of working hours."
+									required={watch("availability")?.value === 'Part Time'}
+								/>
+								</div>
+							</div>
+						</div>}
+
 					<div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
