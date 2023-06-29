@@ -44,7 +44,7 @@ const InterviewStatus = ({ hrId, talentInfo, callAPI, closeModal }) => {
 				messageAPI.open(
 					{
 						type: 'success',
-						content: 'Slot has been confirmed.',
+						content: 'Interview Status Updated.',
 					},
 					1000,
 				);
