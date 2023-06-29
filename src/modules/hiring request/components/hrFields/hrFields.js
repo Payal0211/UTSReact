@@ -494,7 +494,6 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 
 	const getStartEndTimeHandler= useCallback(async () => {
 		const durationTypes = await MasterDAO.getStartEndTimeDAO();
-		console.log('start end', durationTypes)
 		setStaryEndTimes(durationTypes && durationTypes?.responseBody);
 	}, [])
 
@@ -754,7 +753,32 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 
 	useEffect(() => {
 		isHRDirectPlacement === false && unregister('dpPercentage');
+		isHRDirectPlacement === true && unregister('tempProject');
 	}, [isHRDirectPlacement, unregister]);
+
+	useEffect(()=>{
+		if(watch('budget')?.value === '2'){
+			unregister('adhocBudgetCost')
+		}
+		if(watch('budget')?.value === '1'){
+			unregister('maximumBudget')
+			unregister('minimumBudget')
+		}
+		if(watch('budget')?.value === '3'){
+			unregister('maximumBudget')
+			unregister('minimumBudget')
+			unregister('adhocBudgetCost')
+		}
+	},[watch('budget'), unregister])
+
+	useEffect(()=>{
+		if(watch('region')?.value.includes('Overlapping')) {unregister(['fromTime', 'endTime'])}
+		else{unregister('overlappingHours')} 
+	},[watch('region'), unregister])
+
+	useEffect(()=>{
+		if(jdURLLink){unregister('jdExport')}
+	},[jdURLLink, unregister])
 
 	useEffect(() => {
 		if (modeOfWork?.value === 'Remote') {
@@ -1057,7 +1081,7 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 										name="currency"
 										isError={errors['currency'] && errors['currency']}
 										required
-										errorMsg={'Please select Currency'}
+										errorMsg={'Please select currency'}
 									/>
 								</div>
 							</div>
@@ -1114,7 +1138,7 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 										buttonLabel="Upload JD File"
 										// value="Upload JD File"
 										onClickHandler={() => setUploadModal(true)}
-										required={!jdURLLink && getUploadFileData}
+										required={!jdURLLink && !getUploadFileData}
 										validationSchema={{
 											required: 'please select a file.',
 										}}
@@ -1237,8 +1261,8 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 										}))}
 										name="tempProject"
 										isError={errors['tempProject'] && errors['tempProject']}
-										required={false}
-										errorMsg={'Please select the Temporary Project.'}
+										required={!isHRDirectPlacement}
+										errorMsg={'Please select.'}
 									/>
 								</div>
 							</div>	 }
@@ -1436,7 +1460,7 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 											errors['contractDuration'] && errors['contractDuration']
 										}
 										required={!isHRDirectPlacement}
-										errorMsg={'Please select hiring request conrtact duration'}
+										errorMsg={'Please select hiring request contract duration'}
 										disabled={isHRDirectPlacement}
 									/>
 								</div>
@@ -1575,6 +1599,7 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 										setValue={setValue}
 										register={register}
 										label={'From Time'}
+										searchable={true}
 										defaultValue="Select From Time"
 										options={getStartEndTimes.map((item) => ({
 											id: item.id,
@@ -1584,7 +1609,7 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 										name="fromTime"
 										isError={errors['fromTime'] && errors['fromTime']}
 										required={watch('region')?.value.includes('Overlapping') ? false : true}
-										errorMsg={'Please select From Time.'}
+										errorMsg={'Please select from time.'}
 									/>
 								</div>
 							</div>
@@ -1600,6 +1625,7 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 										setValue={setValue}
 										register={register}
 										label={'End Time'}
+										searchable={true}
 										defaultValue="Select End Time"
 										options={getStartEndTimes.map((item) => ({
 											id: item.id,
@@ -1609,7 +1635,7 @@ console.log("errors",errors , watch('region') , watch('region')?.value.includes(
 										name="endTime"
 										isError={errors['endTime'] && errors['endTime']}
 										required={watch('region')?.value.includes('Overlapping') ? false : true}
-										errorMsg={'Please select End Time.'}
+										errorMsg={'Please select end time.'}
 									/>
 								</div>
 							</div>
