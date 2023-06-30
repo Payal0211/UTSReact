@@ -4,9 +4,9 @@ import AddNewOnboardStyle from './addNewOnboard.module.css';
 const AddNewOnboard = () => {
 	return (
 		<div className={AddNewOnboardStyle.addNewContainer}>
-			<div className={AddNewOnboardStyle.onboardLabel}>
+			{/* <div className={AddNewOnboardStyle.onboardLabel}>
 				Pre - Onboarding For Anjali Arora
-			</div>
+			</div> */}
 			<OnboardField />
 		</div>
 	);
