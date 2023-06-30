@@ -372,20 +372,28 @@ const SlaReports = () => {
 
 	const handleHRRequest = useCallback(
 		async (tableFilteredState) => {
-			if (startDate === null) {
+			if (firstDay === null) {
 				setDateError('* Please select date');
 			} else {
 				setSummaryLoading(true);
+				setLoading(true)
 				let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
-				setSlaDetailsList(slaUtils.slaListData(response && response));
-				setLoading(true);
 				let responseList = await ReportDAO.OverAllSLASummaryDAO(
 					tableFilteredState,
 				);
+				console.log("FilterRes",{response,responseList})
 				if (responseList?.statusCode === HTTPStatusCode.OK) {
 					setLoading(false);
 					setListData(responseList?.responseBody);
 				} if (response?.statusCode === HTTPStatusCode.OK) {
+					setSummaryLoading(false);
+					setSlaDetailsList(slaUtils.slaListData(response && response));
+					setLoading(false);
+	
+				}
+				if(response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+					setSlaDetailsList([]);
+					setLoading(false);
 					setSummaryLoading(false);
 				}
 				setDateError('');

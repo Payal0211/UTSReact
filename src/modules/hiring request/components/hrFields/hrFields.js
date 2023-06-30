@@ -842,8 +842,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 				getUploadFileData && getUploadFileData,
 				jdDumpID,
 			);
-console.log('hrFormDetails',hrFormDetails)
-return
+
 			if (type === SubmitType.SAVE_AS_DRAFT) {
 				if (_isNull(watch('clientName'))) {
 					return setError('clientName', {
