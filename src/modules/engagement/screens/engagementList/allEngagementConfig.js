@@ -91,12 +91,12 @@ export const allEngagementConfig = {
 				child: filterList?.lost,
 				isSearch: true,
 			},
-			{
-				label: 'Deployed Source',
-				name: 'DeployedSource',
-				child: filterList.deployedSource,
-				isSearch: true,
-			},
+			// {
+			// 	label: 'Deployed Source',
+			// 	name: 'DeployedSource',
+			// 	child: filterList.deployedSource,
+			// 	isSearch: true,
+			// },
 			// {
 			// 	label: 'Months',
 			// 	name: 'months',
@@ -439,12 +439,12 @@ export const allEngagementConfig = {
 				key: 'currentStatus',
 				align: 'left',
 			},
-			{
-				title: 'Deployed Source',
-				dataIndex: 'deployedSource',
-				key: 'deployedSource',
-				align: 'left',
-			},
+			// {
+			// 	title: 'Deployed Source',
+			// 	dataIndex: 'deployedSource',
+			// 	key: 'deployedSource',
+			// 	align: 'left',
+			// },
 			{
 				title: 'TSC Name',
 				dataIndex: 'tscName',
