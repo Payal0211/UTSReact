@@ -18,6 +18,7 @@ import { HTTPStatusCode } from 'constants/network';
 import { addHours, disabledWeekend } from 'shared/utils/basic_utils';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import { interviewUtils } from 'modules/interview/interviewUtils';
+import moment from 'moment';
 
 export const otherInterviewer = {
 	interviewerName: '',
@@ -40,6 +41,8 @@ const AnotherRound = ({
 		handleSubmit,
 		setValue,
 		control,
+		watch,
+		unregister,
 		clearErrors,
 		reset,
 		formState: { errors },
@@ -73,6 +76,11 @@ const AnotherRound = ({
 	const [radioValue, setRadioValue] = useState(AnotherRoundInterviewOption.YES);
 	const [slotLater, setSlotLater] = useState(AnotherRoundTimeSlotOption.NOW);
 	const param = useParams();
+
+	const [slot1Timematch, setSlot1timematch] = useState(false);
+	const [slot2Timematch, setSlot2timematch] = useState(false);
+	const [slot3Timematch, setSlot3timematch] = useState(false);
+
 	const [clientDetailsForAnotherRound, setClientDetailsForAnotherRound] =
 		useState(null);
 	const onChangeRadioBtn = useCallback(
@@ -91,6 +99,13 @@ const AnotherRound = ({
 		},
 		[clearErrors],
 	);
+
+	useEffect(() => {
+		if(slotLater !== AnotherRoundTimeSlotOption.NOW){
+			unregister('interviewTimezone')
+		}
+	},[slotLater, unregister])
+
 	const calenderDateHandler = useCallback(
 		(date, index, slotField) => {
 			const eleToUpdate = { ...getScheduleSlotDate[index] };
@@ -123,6 +138,26 @@ const AnotherRound = ({
 		[getScheduleSlotDate, setScheduleSlotDate],
 	);
 
+	useEffect(() => {
+		//Slot 1 data
+		setValue('slot1Date', getScheduleSlotDate[0].slot1)
+		setValue('slot1StartTime', getScheduleSlotDate[0].slot2);
+		setValue('slot1EndTime', getScheduleSlotDate[0].slot3);
+
+		//slot 2 data
+
+		setValue('slot2Date', getScheduleSlotDate[1].slot1)
+		setValue('slot2StartTime', getScheduleSlotDate[1].slot2);
+		setValue('slot2EndTime', getScheduleSlotDate[1].slot3);
+
+		//slot 3 data	
+
+		setValue('slot3Date', getScheduleSlotDate[2].slot1)
+		setValue('slot3StartTime', getScheduleSlotDate[2].slot2);
+		setValue('slot3EndTime', getScheduleSlotDate[2].slot3);
+
+    },[getScheduleSlotDate,setValue])
+
 	const checkDuplicateInterviewerEmailHandler = useCallback(
 		async (e) => {
 			const response = await InterviewDAO.CheckInterviewerEmailIdRequestDAO({
@@ -146,6 +181,32 @@ const AnotherRound = ({
 	const anotherRoundHandler = useCallback(
 		async (d) => {
 			setIsLoading(true);
+
+			let timeError = false
+			setSlot1timematch(false)
+			setSlot2timematch(false)
+			setSlot3timematch(false)
+
+			if(moment(d.slot1StartTime).format('HH a') === moment(d.slot1EndTime).format('HH a')){
+					timeError = true;
+					setSlot1timematch(true)
+				}
+
+			if(moment(d.slot2StartTime).format('HH a') === moment(d.slot2EndTime).format('HH a')){
+					setSlot2timematch(true)
+					timeError = true;
+				}
+				
+			if(moment(d.slot3StartTime).format('HH a') === moment(d.slot3EndTime).format('HH a')){
+					setSlot3timematch(true)
+					timeError = true;
+				}	
+
+			if(timeError){
+				setIsLoading(false);
+					return
+				}
+
 			let formattedInterviewerDetails = [
 				{
 					interviewerName: d?.fullName,
@@ -184,6 +245,7 @@ const AnotherRound = ({
 			let response = await InterviewDAO.saveAnotherRoundFeedbackRequestDAO(
 				formattedData,
 			);
+
 			if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
 				setIsLoading(false);
 				messageAPI.open({
@@ -1086,6 +1148,9 @@ const AnotherRound = ({
 																Please select start time
 															</div>
 														)}
+														{slot1Timematch && <div className={InterviewScheduleStyle.error}>
+													* Same times are given. Kindly update any one of these times.
+													</div>}
 													</div>
 													<div
 														className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -1166,6 +1231,9 @@ const AnotherRound = ({
 																Please select start time
 															</div>
 														)}
+														{slot2Timematch && <div className={InterviewScheduleStyle.error}>
+													* Same times are given. Kindly update any one of these times.
+													</div>}
 													</div>
 													<div
 														className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>
@@ -1246,6 +1314,9 @@ const AnotherRound = ({
 																Please select start time
 															</div>
 														)}
+														{slot3Timematch && <div className={InterviewScheduleStyle.error}>
+													* Same times are given. Kindly update any one of these times.
+													</div>}
 													</div>
 													<div
 														className={`${InterviewScheduleStyle.timeSlotItem} ${InterviewScheduleStyle.timePickerItem}`}>

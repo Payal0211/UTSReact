@@ -27,10 +27,10 @@ const EngagementFilerList = ({
 	// useEffect(() => {
 	// 	getHTMLFilter
 	// 		? setTimeout(() => {
-	// 				document?.querySelector(`.${engagementFilterStyle.aside}`)
+	// 				document.querySelector(`.${engagementFilterStyle.aside}`)
 	// 					.classList.add(`${engagementFilterStyle.closeFilter}`);
 	// 		  }, 300)
-	// 		: document?.querySelector(`.${engagementFilterStyle.aside}`)
+	// 		: document.querySelector(`.${engagementFilterStyle.aside}`)
 	// 				.classList.remove(`${engagementFilterStyle.closeFilter}`);
 	// }, [getHTMLFilter]);
 
