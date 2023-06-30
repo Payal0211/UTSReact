@@ -29,17 +29,17 @@ const DealFilters = ({
 		setToggleBack(true);
 		setFilterSubChild(item);
 	};
-	useEffect(() => {
-		getHTMLFilter
-			? setTimeout(() => {
-					document
-						.querySelector(`.${DealFiltersStyle.aside}`)
-						.classList.add(`${DealFiltersStyle.closeFilter}`);
-			  }, 300)
-			: document
-					.querySelector(`.${DealFiltersStyle.aside}`)
-					.classList.remove(`${DealFiltersStyle.closeFilter}`);
-	}, [getHTMLFilter]);
+	// useEffect(() => {
+	// 	getHTMLFilter
+	// 		? setTimeout(() => {
+	// 				document
+	// 					.querySelector(`.${DealFiltersStyle.aside}`)
+	// 					.classList.add(`${DealFiltersStyle.closeFilter}`);
+	// 		  }, 300)
+	// 		: document
+	// 				.querySelector(`.${DealFiltersStyle.aside}`)
+	// 				.classList.remove(`${DealFiltersStyle.closeFilter}`);
+	// }, [getHTMLFilter]);
 
 	const handleAppliedFilters = useCallback(
 		(isChecked, filterObj) => {
@@ -202,7 +202,7 @@ const DealFilters = ({
 		tableFilteredState,
 	]);
 	return (
-		<aside className={DealFiltersStyle.aside}>
+		<aside className={`${DealFiltersStyle.aside} ${getHTMLFilter && DealFiltersStyle.closeFilter }`}>
 			<div className={DealFiltersStyle.asideBody}>
 				<div className={toggleBack ? DealFiltersStyle.asideHead : ''}>
 					{toggleBack && (

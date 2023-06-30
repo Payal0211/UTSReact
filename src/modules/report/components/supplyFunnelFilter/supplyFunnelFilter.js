@@ -27,17 +27,17 @@ const SupplyFunnelFilter = ({
 	const [searchData, setSearchData] = useState([]);
 	const [filterSubChild, setFilterSubChild] = useState(null);
 
-	useEffect(() => {
-		getHTMLFilter
-			? setTimeout(() => {
-					document
-						.querySelector(`.${SupplyFunnelFilterStyle.aside}`)
-						.classList.add(`${SupplyFunnelFilterStyle.closeFilter}`);
-			  }, 300)
-			: document
-					.querySelector(`.${SupplyFunnelFilterStyle.aside}`)
-					.classList.remove(`${SupplyFunnelFilterStyle.closeFilter}`);
-	}, [getHTMLFilter]);
+	// useEffect(() => {
+	// 	getHTMLFilter
+	// 		? setTimeout(() => {
+	// 				document
+	// 					.querySelector(`.${SupplyFunnelFilterStyle.aside}`)
+	// 					.classList.add(`${SupplyFunnelFilterStyle.closeFilter}`);
+	// 		  }, 300)
+	// 		: document
+	// 				.querySelector(`.${SupplyFunnelFilterStyle.aside}`)
+	// 				.classList.remove(`${SupplyFunnelFilterStyle.closeFilter}`);
+	// }, [getHTMLFilter]);
 
 	const toggleFilterSubChild = (item) => {
 		setToggleBack(true);
@@ -250,7 +250,7 @@ const SupplyFunnelFilter = ({
 	]);
 
 	return (
-		<aside className={SupplyFunnelFilterStyle.aside}>
+		<aside className={`${SupplyFunnelFilterStyle.aside} ${ getHTMLFilter && SupplyFunnelFilterStyle.closeFilter}`}>
 			<div className={SupplyFunnelFilterStyle.asideBody}>
 				<div className={toggleBack ? SupplyFunnelFilterStyle.asideHead : ''}>
 					{toggleBack && (

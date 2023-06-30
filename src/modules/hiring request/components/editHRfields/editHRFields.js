@@ -68,6 +68,7 @@ const EditHRFields = ({
 	const [contractDurations, setcontractDurations] = useState([]);
 	const [partialEngagements,setPartialEngagements] = useState([]);
 	const [name, setName] = useState('');
+	const [jdURLLink, setJDURLLink] = useState('');
 	const [pathName, setPathName] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
 	const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
@@ -487,6 +488,11 @@ const EditHRFields = ({
 
 	//     }
 	// }, [getHRdetails])
+
+	const toggleJDHandler = useCallback((e) => {
+		setJDURLLink(e.target.value);
+		// clearErrors();
+	}, []);
 
 	const getListData = async (clientName, shortclientName) => {
 		let response = await MasterDAO.getEmailSuggestionDAO(shortclientName);
@@ -1097,6 +1103,7 @@ const EditHRFields = ({
 											// name="clientName"
 											// defaultValue={clientNameValue}
 											value={watchClientName}
+											disabled={true}
 										/>
 									)}
 									{...register('clientName', {
@@ -1105,6 +1112,7 @@ const EditHRFields = ({
 									name="clientName"
 									// rules={{ required: true }}
 									control={control}
+									
 								/>
 								{errors.clientName && (
 									<div className={HRFieldStyle.error}>
@@ -1256,7 +1264,7 @@ const EditHRFields = ({
 						<div className={HRFieldStyle.colMd6}>
 							{!getUploadFileData ? (
 								<HRInputField
-									disabled={!_isNull(watch('jdURL'))}
+									disabled={jdURLLink}
 									register={register}
 									leadingIcon={<UploadSVG />}
 									label="Job Description"
@@ -1264,8 +1272,11 @@ const EditHRFields = ({
 									type={InputType.BUTTON}
 									buttonLabel="Upload JD File"
 									setValue={setValue}
-									required={!watch('jdURL') && !getUploadFileData}
+									required={!jdURLLink && !getUploadFileData}
 									onClickHandler={() => setUploadModal(true)}
+									validationSchema={{
+										required: 'please select a file.',
+									}}
 									errors={errors}
 								/>
 							) : (
@@ -1306,6 +1317,7 @@ const EditHRFields = ({
 						<div className={HRFieldStyle.orLabel}>OR</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+							onChangeHandler={(e) => toggleJDHandler(e)}
 								disabled={getUploadFileData}
 								label="Job Description URL"
 								name="jdURL"

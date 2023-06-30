@@ -7,5 +7,6 @@ export default class SideBarModels {
 		this.navigateTo = data.navigateTo;
 		this.isChildren = data.isChildren;
 		this.branch = data.branch;
+		this.isVisible = data.isVisible
 	}
 }

@@ -499,7 +499,7 @@ export const reportConfig = {
 				key: 'hrCreatedDate',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -508,7 +508,7 @@ export const reportConfig = {
 				key: 'hrCreatedDate',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -517,7 +517,7 @@ export const reportConfig = {
 				key: 'hrCreatedDate',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -526,7 +526,7 @@ export const reportConfig = {
 				key: 'hrCreatedDate',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -535,7 +535,7 @@ export const reportConfig = {
 				key: 'hrCreatedDate',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 		];
@@ -555,7 +555,7 @@ export const reportConfig = {
 								background: param?.isWeekEndSkip ? '#EE442D' : 'transparent',
 								color: param?.isWeekEndSkip ? 'white' : 'black',
 							}}>
-							{text ? text : 'NA'}
+							{text}
 						</p>
 					);
 				},
@@ -566,7 +566,7 @@ export const reportConfig = {
 				key: 'hrCreatedDate',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -574,7 +574,7 @@ export const reportConfig = {
 				dataIndex: 'company',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -582,7 +582,7 @@ export const reportConfig = {
 				dataIndex: 'client',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -590,7 +590,7 @@ export const reportConfig = {
 				dataIndex: 'talentName',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -598,7 +598,7 @@ export const reportConfig = {
 				dataIndex: 'isAdHocHR',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -606,7 +606,7 @@ export const reportConfig = {
 				dataIndex: 'currentStage',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -614,7 +614,7 @@ export const reportConfig = {
 				dataIndex: 'current_Action_date',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -622,7 +622,7 @@ export const reportConfig = {
 				dataIndex: 'expected_Next_action_date',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -630,7 +630,7 @@ export const reportConfig = {
 				dataIndex: 'actual_Next_Action_date',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -638,7 +638,7 @@ export const reportConfig = {
 				dataIndex: 'expected_SLA_day',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -646,7 +646,7 @@ export const reportConfig = {
 				dataIndex: 'actual_SLA_day',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -654,7 +654,7 @@ export const reportConfig = {
 				dataIndex: 'slA_diff',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -688,7 +688,7 @@ export const reportConfig = {
 				dataIndex: 'sales_Person',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -696,7 +696,7 @@ export const reportConfig = {
 				dataIndex: 'sales_Manager',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -704,7 +704,7 @@ export const reportConfig = {
 				dataIndex: 'ops_Lead',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 		];

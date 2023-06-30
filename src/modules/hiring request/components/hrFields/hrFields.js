@@ -721,6 +721,9 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 
 	useEffect(() => {
 		!_isNull(prefRegion) && getTimeZonePreference();
+	},[prefRegion,getTimeZonePreference])
+
+	useEffect(() => {
 		getAvailability();
 		getTalentRole();
 		getSalesPerson();
@@ -735,23 +738,24 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		getNRMarginHandler();
 		getDurationTypes();
 		getStartEndTimeHandler()
+		
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
-		getCurrencyHandler,
-		getAvailability,
-		getSalesPerson,
-		getTalentRole,
-		getTimeZonePreference,
-		getRegion,
-		prefRegion,
-		getHowSoon,
-		getWorkingMode,
-		contractDurationHandler,
-		getPartialEngHandler,
-		getBudgetHandler,
-		// postalCodeHandler,
-		getNRMarginHandler,
-		getDurationTypes,
-		getStartEndTimeHandler
+		// getCurrencyHandler,
+		// getAvailability,
+		// getSalesPerson,
+		// getTalentRole,
+		// getTimeZonePreference,
+		// getRegion,
+		// getHowSoon,
+		// getWorkingMode,
+		// contractDurationHandler,
+		// getPartialEngHandler,
+		// getBudgetHandler,
+		// // postalCodeHandler,
+		// getNRMarginHandler,
+		// getDurationTypes,
+		// getStartEndTimeHandler
 	]);
 	useEffect(() => {
 		setValidation({
@@ -838,7 +842,8 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 				getUploadFileData && getUploadFileData,
 				jdDumpID,
 			);
-
+console.log('hrFormDetails',hrFormDetails)
+return
 			if (type === SubmitType.SAVE_AS_DRAFT) {
 				if (_isNull(watch('clientName'))) {
 					return setError('clientName', {

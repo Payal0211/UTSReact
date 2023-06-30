@@ -27,17 +27,17 @@ const HiringFilters = ({
 	const [searchData, setSearchData] = useState([]);
 	const [filterSubChild, setFilterSubChild] = useState(null);
 
-	useEffect(() => {
-		getHTMLFilter
-			? setTimeout(() => {
-					document
-						.querySelector(`.${hiringFilterStyle.aside}`)
-						.classList.add(`${hiringFilterStyle.closeFilter}`);
-			  }, 300)
-			: document
-					.querySelector(`.${hiringFilterStyle.aside}`)
-					.classList.remove(`${hiringFilterStyle.closeFilter}`);
-	}, [getHTMLFilter]);
+	// useEffect(() => {
+	// 	getHTMLFilter
+	// 		? setTimeout(() => {
+	// 				document
+	// 					.querySelector(`.${hiringFilterStyle.aside}`)
+	// 					.classList.add(`${hiringFilterStyle.closeFilter}`);
+	// 		  }, 300)
+	// 		: document
+	// 				.querySelector(`.${hiringFilterStyle.aside}`)
+	// 				.classList.remove(`${hiringFilterStyle.closeFilter}`);
+	// }, [getHTMLFilter]);
 
 	const toggleFilterSubChild = (item) => {
 		setToggleBack(true);
@@ -201,7 +201,7 @@ const HiringFilters = ({
 	]);
 
 	return (
-		<aside className={hiringFilterStyle.aside}>
+		<aside className={`${hiringFilterStyle.aside} ${getHTMLFilter && hiringFilterStyle.closeFilter }`}>
 			<div className={hiringFilterStyle.asideBody}>
 				<div className={toggleBack ? hiringFilterStyle.asideHead : ''}>
 					{toggleBack && (

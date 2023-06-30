@@ -24,17 +24,15 @@ const EngagementFilerList = ({
 	const [searchData, setSearchData] = useState([]);
 	const [filterSubChild, setFilterSubChild] = useState(null);
 
-	useEffect(() => {
-		getHTMLFilter
-			? setTimeout(() => {
-					document
-						.querySelector(`.${engagementFilterStyle.aside}`)
-						.classList.add(`${engagementFilterStyle.closeFilter}`);
-			  }, 300)
-			: document
-					.querySelector(`.${engagementFilterStyle.aside}`)
-					.classList.remove(`${engagementFilterStyle.closeFilter}`);
-	}, [getHTMLFilter]);
+	// useEffect(() => {
+	// 	getHTMLFilter
+	// 		? setTimeout(() => {
+	// 				document.querySelector(`.${engagementFilterStyle.aside}`)
+	// 					.classList.add(`${engagementFilterStyle.closeFilter}`);
+	// 		  }, 300)
+	// 		: document.querySelector(`.${engagementFilterStyle.aside}`)
+	// 				.classList.remove(`${engagementFilterStyle.closeFilter}`);
+	// }, [getHTMLFilter]);
 
 	const toggleFilterSubChild = (item) => {
 		setToggleBack(true);
@@ -211,7 +209,7 @@ const EngagementFilerList = ({
 	}, [appliedFilter, handleAppliedFilters]);
 
 	return (
-		<aside className={engagementFilterStyle.aside}>
+		<aside className={`${engagementFilterStyle.aside} ${getHTMLFilter && engagementFilterStyle.closeFilter}`}>
 			<div className={engagementFilterStyle.asideBody}>
 				<div className={toggleBack ? engagementFilterStyle.asideHead : ''}>
 					{toggleBack && (

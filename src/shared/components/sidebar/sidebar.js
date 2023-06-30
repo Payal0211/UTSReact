@@ -1,3 +1,4 @@
+import {useState, useEffect} from 'react'
 import { Link, useLocation } from 'react-router-dom';
 
 import HR from 'assets/svg/hr.svg';
@@ -20,18 +21,33 @@ import SideBarModels from 'models/sidebar.model';
 import sideBarStyles from './sidebar.module.css';
 import UTSRoutes from 'constants/routes';
 import { Tooltip } from 'antd';
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
 const Sidebar = () => {
-	const sidebarDataSets = getSideBar();
-	const switchLocation = useLocation();
 
+	const switchLocation = useLocation();
+	const [userData, setUserData] = useState({});
+
+	useEffect(() => {
+		const getUserResult = async () => {
+			let userData = UserSessionManagementController.getUserSession();
+			if (userData) setUserData(userData);
+		};
+		getUserResult();
+	}, []);
+	let isMenuvisible = (userData?.LoggedInUserTypeID === 1 || userData?.LoggedInUserTypeID === 2) ? true: false;
+	
+	const sidebarDataSets = getSideBar(isMenuvisible);
 	let urlSplitter = `/${switchLocation.pathname.split('/')[1]}`;
 
 	return (
 		<div className={sideBarStyles.sidebar}>
 			<div className={sideBarStyles.sidebarBody}>
 				{sidebarDataSets?.map(
-					({ navigateTo, icon, title, isChildren, branch }, index) => {
+					({ navigateTo, icon, title, isChildren, branch , isVisible }, index) => {
+						if(isVisible === false){
+							return null
+						}
 						return (
 							<Tooltip
 								key={index}
@@ -86,7 +102,7 @@ const Sidebar = () => {
 	);
 };
 
-const getSideBar = () => {
+const getSideBar = (isMenuvisible) => {
 	let dataList = [
 		new SideBarModels({
 			id: 'UTS_all_hiring_request',
@@ -96,6 +112,7 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
 			isChildren: false,
 			branch: [],
+			isVisible: true
 		}),
 		new SideBarModels({
 			id: 'UTS_DealList',
@@ -105,6 +122,7 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.DEALLISTROUTE,
 			isChildren: false,
 			branch: [],
+			isVisible: true
 		}),
 		new SideBarModels({
 			id: 'UTS_UserList',
@@ -114,6 +132,7 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.USERLISTROUTE,
 			isChildren: false,
 			branch: [],
+			isVisible: isMenuvisible
 		}),
 
 		new SideBarModels({
@@ -124,6 +143,7 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.ENGAGEMENTRROUTE,
 			isChildren: false,
 			branch: [],
+			isVisible: true
 		}),
 
 		new SideBarModels({
@@ -134,6 +154,7 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.DEMANDFUNNELROUTE,
 			isChildren: false,
 			branch: [],
+			isVisible: true
 		}),
 		new SideBarModels({
 			id: 'supply_funnel_report',
@@ -143,6 +164,7 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.SUPPLYFUNNELROUTE,
 			isChildren: false,
 			branch: [],
+			isVisible: isMenuvisible
 		}),
 
 		new SideBarModels({
@@ -153,6 +175,7 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.TEAMDEMANDFUNNELROUTE,
 			isChildren: false,
 			branch: [],
+			isVisible: isMenuvisible
 		}),
 		new SideBarModels({
 			id: 'incentive_report',
@@ -162,6 +185,7 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.INCENTIVEREPORTROUTE,
 			isChildren: false,
 			branch: [],
+			isVisible: isMenuvisible
 		}),
 		new SideBarModels({
 			id: 'JD_Efficiency_Report',
@@ -171,6 +195,7 @@ const getSideBar = () => {
 			navigateTo: UTSRoutes.JDDUMPREPORTROUTE,
 			isChildren: false,
 			branch: [],
+			isVisible: isMenuvisible
 		}),
 		new SideBarModels({
 			id: 'SLA_Report',
@@ -178,6 +203,7 @@ const getSideBar = () => {
 			isActive: false,
 			icon: SLAReport,
 			navigateTo: UTSRoutes.SLA_REPORT,
+			isVisible: true
 		}),
 		new SideBarModels({
 			id: 'I2SReport',
@@ -185,6 +211,7 @@ const getSideBar = () => {
 			isActive: false,
 			icon: I2sIcon,
 			navigateTo: UTSRoutes.I2S_REPORT,
+			isVisible: true
 		}),
 		new SideBarModels({
 			id: 'Master',
@@ -193,6 +220,7 @@ const getSideBar = () => {
 			icon: MastersIcon,
 			isChildren: true,
 			navigateTo: '/master',
+			isVisible: isMenuvisible,
 			branch: [
 				new SideBarModels({
 					id: 'Master_Country_List',
