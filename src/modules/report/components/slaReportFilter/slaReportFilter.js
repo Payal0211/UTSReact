@@ -29,13 +29,13 @@ const SlaReportFilerList = ({
   const [filterSubChild, setFilterSubChild] = useState(null);
 
 
-  useEffect(() => {
-    getHTMLFilter ?
-      setTimeout(() => {
-        document.querySelector(`.${slaReportStyle.aside}`).classList.add(`${slaReportStyle.closeFilter}`)
-      }, 300) :
-      document.querySelector(`.${slaReportStyle.aside}`).classList.remove(`${slaReportStyle.closeFilter}`)
-  }, [getHTMLFilter])
+  // useEffect(() => {
+  //   getHTMLFilter ?
+  //     setTimeout(() => {
+  //       document.querySelector(`.${slaReportStyle.aside}`).classList.add(`${slaReportStyle.closeFilter}`)
+  //     }, 300) :
+  //     document.querySelector(`.${slaReportStyle.aside}`).classList.remove(`${slaReportStyle.closeFilter}`)
+  // }, [getHTMLFilter])
 
   const toggleFilterSubChild = (item) => {
     setToggleBack(true);
@@ -149,6 +149,33 @@ const SlaReportFilerList = ({
         // ambdr: 0
       }
     });
+   let newState = {
+    totalrecord: 100,
+    pagenumber: 1,
+    isExport: false,
+    filterFieldsSLA: {
+      startDate: "2023-06-01",
+      endDate: "2023-06-30",
+      hrid: 0,
+      sales_ManagerID: 0,
+      ops_Lead: 0,
+      salesPerson: 0,
+      stages: "",
+      isAdHoc: 0,
+      role: "",
+      slaType: 0,
+      type: 0,
+      hR_Number: "",
+      company: "",
+      actionFilter: 0,
+      stageIDs: "",
+      actionFilterIDs: "",
+      CompanyIds: "",
+      // ambdr: 0
+    }
+  }
+    setSlaReportDetailsState(newState);
+    handleHRRequest(newState);
     onRemoveHRFilters()
     // setSlaReportDetailsState(reqFilter);
   }, [
@@ -175,15 +202,14 @@ const SlaReportFilerList = ({
     //   ...tableFilteredState,
     // };
     // console.log(reqFilter,"sasdasdasdasdasd")
-
-    for (let key in filters) {
-      const newState = { ...slaReportDetailsState };
+    const newState = { ...slaReportDetailsState };
+    for (let key in filters) { 
       newState.filterFieldsSLA[key] = filters[key];
-      setSlaReportDetailsState(newState);
-      handleHRRequest(newState);
     }
-
-    onRemoveHRFilters();
+    console.log("Flirty filter outer", filters ,newState )
+    setSlaReportDetailsState(newState);
+    handleHRRequest(newState);
+     onRemoveHRFilters();
   }, [
     appliedFilter,
     handleHRRequest,
@@ -269,7 +295,7 @@ const SlaReportFilerList = ({
   }, [appliedFilter, handleAppliedFilters]);
 
   return (
-    <aside className={slaReportStyle.aside}>
+    <aside className={`${slaReportStyle.aside} ${getHTMLFilter && slaReportStyle.closeFilter}`}>
       <div className={slaReportStyle.asideBody}>
         <div className={toggleBack ? slaReportStyle.asideHead : ""}>
           {toggleBack && (

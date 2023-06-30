@@ -593,14 +593,14 @@ export const reportConfig = {
 					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
-			{
-				title: 'Odr/pool',
-				dataIndex: 'isAdHocHR',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text}</Fragment>;
-				},
-			},
+			// {
+			// 	title: 'Odr/pool',
+			// 	dataIndex: 'isAdHocHR',
+			// 	align: 'left',
+			// 	render: (text) => {
+			// 		return <Fragment key={text}>{text}</Fragment>;
+			// 	},
+			// },
 			{
 				title: 'Stage',
 				dataIndex: 'currentStage',
