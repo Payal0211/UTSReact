@@ -217,10 +217,11 @@ const OnboardField = () => {
       var firstDay = new Date();
       var lastDay = new Date(
         firstDay.getFullYear(),
-        firstDay.getMonth() + 1,
-        getOnboardFormDetails?.onboardDetails?.totalDuration
-          ? 30 * getOnboardFormDetails?.onboardDetails?.totalDuration
-          : 30
+        firstDay.getMonth() +
+          (getOnboardFormDetails?.onboardDetails?.totalDuration
+            ? 1 * getOnboardFormDetails?.onboardDetails?.totalDuration
+            : 1),
+        firstDay.getDate()
       );
       console.log({ firstDay: firstDay, lastDay: lastDay });
       setValue("contractStartDate", firstDay);
@@ -283,7 +284,7 @@ const OnboardField = () => {
       getOnboardFormDetails?.onboardDetails?.totalDuration &&
       contractDurations.length > 0
     ) {
-      const contract = contractDurations.filter(
+      let contract = contractDurations.filter(
         (item) =>
           parseInt(item.value) ===
           parseInt(getOnboardFormDetails?.onboardDetails?.totalDuration)
@@ -350,6 +351,54 @@ const OnboardField = () => {
       getOnboardingForm(onboardID);
     }
   }, [onboardID]);
+
+  const [endDateError, setEndDateError] = useState(false);
+
+  useEffect(() => {
+    let startDay = watch("contractStartDate");
+    let endDay = watch("contractEndDate");
+    setEndDateError(false);
+    if (startDay && endDay) {
+      var dateOne = new Date(
+        startDay.getFullYear(),
+        startDay.getMonth(),
+        startDay.getDay()
+      ); //Year, Month, Date
+      var dateTwo = new Date(
+        endDay.getFullYear(),
+        endDay.getMonth(),
+        endDay.getDay()
+      ); //Year, Month, Date
+      if (dateOne > dateTwo) {
+        setEndDateError(true);
+        setTimeout(() => setValue("contractEndDate", ""), 2000);
+        return;
+      }
+
+      var months;
+      months = (endDay.getFullYear() - startDay.getFullYear()) * 12;
+      months -= startDay.getMonth();
+      months += endDay.getMonth();
+      console.log("month gap", months <= 0 ? 0 : months, startDay, endDay);
+      if (months >= 0) {
+        const object = {
+          disabled: false,
+          group: null,
+          selected: false,
+          text: `${months} months`,
+          value: `${months}`,
+        };
+        //    if(contractDurations.filter(duration=> duration.value === `${months}` ).length === 0){
+        //   setcontractDurations((prev) => [...prev, object]);
+        //   return
+        // }
+        // setcontractDurations((prev) => [...prev, object]);
+        setValue("contractDuration", object);
+        setControlledContractDurationValue(object.value);
+      }
+    }
+  }, [watch("contractStartDate"), watch("contractEndDate"), setValue]);
+
   console.log(onboardID, getOnboardFormDetails);
   return (
     <div className={OnboardStyleModule.hrFieldContainer}>
@@ -606,6 +655,11 @@ const OnboardField = () => {
                     {errors.contractEndDate && (
                       <div className={OnboardStyleModule.error}>
                         Please select contract End date
+                      </div>
+                    )}
+                    {endDateError && (
+                      <div className={OnboardStyleModule.error}>
+                        End date must be greater than start date
                       </div>
                     )}
                   </div>
