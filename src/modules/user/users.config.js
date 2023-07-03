@@ -10,6 +10,7 @@ export const userConfig = {
 				dataIndex: 'starStatus',
 				key: 'starStatus',
 				align: 'left',
+				width: '40px',
 
 				render: (_, param) => {
 					return (
@@ -46,7 +47,7 @@ export const userConfig = {
 				title: 'Name',
 				dataIndex: 'name',
 				key: 'name',
-				// width: 200,
+				width: '12%',
 				align: 'left',
 				render: (text) => {
 					return text ? text : 'NA';
@@ -56,7 +57,7 @@ export const userConfig = {
 				title: 'Email',
 				dataIndex: 'email',
 				key: 'email',
-				// width: 200,
+				width: '18%',
 				align: 'left',
 				render: (text) => {
 					return text ? text : 'NA';
