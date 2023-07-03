@@ -3,6 +3,7 @@ import { HiringRequestHRStatus } from 'constants/application';
 import { NetworkInfo } from 'constants/network';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import infoIcon from 'assets/svg/info.svg'
 import { removeHTMLTags} from './reportUtils'
 
 export const reportConfig = {
@@ -186,7 +187,7 @@ export const reportConfig = {
 					{
 						title:
 							stage === 'TR Required' ||
-							stage === 'TR Accepted' ||
+							stage === 'TR Accepted' || stage === 'TR Cancelled' || stage === 'TR Lost' || stage === 'HR Accepted' ||
 							stage === 'HR - Waiting For More Information'
 								? '# of TR'
 								: 'Talent Name',
@@ -498,8 +499,15 @@ export const reportConfig = {
 				dataIndex: 'summaryStage',
 				key: 'hrCreatedDate',
 				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text}</Fragment>;
+				render: (text, result) => {
+					return <Fragment key={text}><div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+						 {text} 
+						 <Tooltip
+							placement="right"
+							title={result.extraActionsIncluded}>
+							<img src={infoIcon} alt='info' />
+						</Tooltip>
+						</div></Fragment>;
 				},
 			},
 			{

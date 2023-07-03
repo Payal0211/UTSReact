@@ -273,7 +273,7 @@ export const MasterAPI = {
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		httpService.dataToSend = countryDetails;
 		try {
-			let response = await httpService.sendGetRequest();
+			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.getCountryListRequest');

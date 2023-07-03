@@ -68,14 +68,14 @@ const Thead = ({
 			<tr>
 				<th className={MatchMakingStyle.th}></th>
 				<th className={MatchMakingStyle.th}>
-					<Checkbox
+					{/* <Checkbox
 						id="selectAll"
 						checked={allSelected}
 						onClick={() => {
 							toggleRowSelection('selectAll');
 							setDisableAll(!disableAll);
 						}}
-					/>
+					/> */}
 				</th>
 				<th className={MatchMakingStyle.th}>Name</th>
 				<th className={MatchMakingStyle.th}>Talent Cost</th>
