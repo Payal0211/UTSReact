@@ -70,7 +70,7 @@ const DemandFunnelScreen = () => {
 	const [checkedState, setCheckedState] = useState(new Map());
 	const [demandFunnelModal, setDemandFunnelModal] = useState(false);
 
-	const [startDate, setStartDate] = useState();
+	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 
 	const getDemandFunnelListingHandler = useCallback(async (taleData) => {

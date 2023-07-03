@@ -10,7 +10,7 @@ export const allHRConfig = {
 				dataIndex: 'starStatus',
 				key: 'starStatus',
 				align: 'left',
-				width: 100,
+				width: '50px',
 				render: (_, param) => {
 					let response = All_Hiring_Request_Utils.GETHRPRIORITY(
 						param.starStatus,
@@ -74,6 +74,7 @@ export const allHRConfig = {
 				title: 'TR',
 				dataIndex: 'TR',
 				key: 'TR',
+				width: '70px',
 				align: 'left',
 			},
 			{
@@ -106,6 +107,7 @@ export const allHRConfig = {
 				dataIndex: 'Time',
 				key: 'time',
 				align: 'left',
+				width: '100px',
 			},
 			{
 				title: 'FTE/PTE',

@@ -250,12 +250,14 @@ const DemandFunnelFilter = ({
 		});
 
 		setTableFilteredState({
-			...demandFunnelDefault,
+			// ...demandFunnelDefault,
+			...tableFilteredState,
 			...filters,
 		});
 
 		const reqFilter = {
-			...demandFunnelDefault,
+			// ...demandFunnelDefault,
+			...tableFilteredState,
 			...filters,
 		};
 
