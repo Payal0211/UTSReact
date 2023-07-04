@@ -626,6 +626,12 @@ export const allEngagementConfig = {
 				key: 'createdByDatetime',
 				align: 'left',
 			},
+			{
+				title: 'Engagement Status',
+				dataIndex: 'currentStatus',
+				key: 'currentStatus',
+				align: 'left',
+			},
 			// {
 			// 	title: 'Type Of HR',
 			// 	dataIndex: 'typeOfHR',
