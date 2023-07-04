@@ -91,6 +91,10 @@ const I2sReport = React.lazy(() =>
 	import('modules/report/screens/i2sReport/i2sReport'),
 );
 
+const ClientReport = React.lazy(() =>
+ 	import('modules/report/screens/clientReport/clientReport')
+);
+
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -125,7 +129,8 @@ export default class UTSRoutes {
 	static MASTERCOUNTRYROUTE = '/master/country';
 	static MASTERCURRENCYROUTE = '/master/currency';
 	static SLA_REPORT = '/slaReport';
-	static I2S_REPORT = "/i2sReport"
+	static I2S_REPORT = "/i2sReport";
+	static CLIENT_REPORT = "/clientReport";
 }
 
 export const navigateToComponent = {
@@ -264,4 +269,14 @@ export const navigateToComponent = {
 			<I2sReport />
 		</Suspense>
 	),
+	[UTSRoutes.CLIENT_REPORT]:(
+		<Suspense>
+			<ClientReport />
+		</Suspense>
+	)
 };
+
+export const isAccess = (ID) =>{	
+	let	isVisible = (ID === 1 || ID === 2 || ID === 4 || ID === 5 || ID === 9 || ID === 10  )  		
+	return isVisible
+}

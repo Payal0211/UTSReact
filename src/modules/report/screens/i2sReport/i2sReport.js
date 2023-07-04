@@ -53,64 +53,12 @@ const I2sReport = () => {
   const [popupData, setPopupData] = useState({});
 
   const navigate = useNavigate();
-  const handleDealRequest = useCallback(
-    async (pageData) => {
-      setLoading(true);
-      const response = await DealDAO.getDealListDAO(
-        pageData
-          ? pageData
-          : {
-              pagenumber: 1,
-              totalrecord: 100,
-            }
-      );
-      if (response.statusCode === HTTPStatusCode.OK) {
-        setTotalRecords(response?.responseBody?.details?.totalrows);
-        setDealList(
-          dealUtils.modifyDealRequestData(
-            response && response?.responseBody?.details
-          )
-        );
-        setLoading(false);
-      } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-        setLoading(false);
-        return navigate(UTSRoutes.LOGINROUTE);
-      } else if (
-        response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
-      ) {
-        setLoading(false);
-        return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-      } else {
-        setLoading(false);
-        return "NO DATA FOUND";
-      }
-    },
-    [navigate]
-  );
-
-  
-
-  const getDealFilterRequest = useCallback(async () => {
-    const response = await DealDAO.getAllFilterDataForDealRequestDAO();
-    if (response?.statusCode === HTTPStatusCode.OK) {
-      setFiltersList(response && response?.responseBody?.details?.Data);
-    } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-      return navigate(UTSRoutes.LOGINROUTE);
-    } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-      return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-    } else {
-      return "NO DATA FOUND";
-    }
-  }, [navigate]);
 
   useEffect(() => {
     const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
     return () => clearTimeout(timer);
   }, [debouncedSearch]);
-  useEffect(() => {
-    handleDealRequest(tableFilteredState);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableFilteredState]);
+
   /*--------- React DatePicker ---------------- */
   var date = new Date();
   const [startDate, setStartDate] = useState(null);

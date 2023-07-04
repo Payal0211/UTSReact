@@ -60,6 +60,17 @@ const I2SPopupModal = ({
   }, [popupData]);
 
 
+  const exportHandler = (listData) => {
+    let DataToExport =  listData.map(data => {
+      let obj = {}
+      tableColumnsMemo.map(val => obj[`${val.title}`] = data[`${val.key}`])
+    return obj;
+  }
+     )
+
+    downloadToExcel(DataToExport, `I2S_${moment().format('MMDDYYhhmm')}`)
+  }
+
   return (
     <div className={i2sPopupStyle.engagementModalContainer}>
       <div className={i2sPopupStyle.i2sPopupTitle}>
@@ -68,7 +79,7 @@ const I2SPopupModal = ({
           <button
             type="submit"
             className={i2sPopupStyle.btnPrimary}
-            onClick={() => { listData && downloadToExcel(listData, `I2S_${moment().format('MMDDYYhhmm')}`)}}
+            onClick={() => { listData && exportHandler(listData)}}
           >
             Export
           </button>
