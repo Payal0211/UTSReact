@@ -341,6 +341,17 @@ const EngagementList = () => {
 		}
 	};
 
+	const handleExport = (apiData) => {
+		let DataToExport =  apiData.map(data => {
+			let obj = {}
+			tableColumnsMemo.map(val => val.key !== "action" && (obj[`${val.title}`] = data[`${val.key}`]))
+		return obj;
+			}
+		 )
+		 downloadToExcel(DataToExport)
+
+	}
+
 	return (
 		<div className={allEngagementStyles.hiringRequestContainer}>
 			<div className={allEngagementStyles.addnewHR}>
@@ -351,7 +362,7 @@ const EngagementList = () => {
 				<div>
 					<button
 						className={allEngagementStyles.btnPrimary}
-						onClick={() => downloadToExcel(apiData)}>
+						onClick={() => handleExport(apiData)}>
 						Export
 					</button>
 				</div>
