@@ -193,7 +193,7 @@ const DealFilters = ({
 			...tableFilteredState,
 			filterFields_DealList: { ...filters },
 		};
-		// handleDealRequest(reqFilter);
+		 handleDealRequest(reqFilter);
 		onRemoveDealFilters()
 	}, [
 		appliedFilter,

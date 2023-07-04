@@ -1027,4 +1027,80 @@ export const reportConfig = {
 			},
 		];
 	},
+	clientPopupReportConfig: () => {
+		return [
+			{
+				title: 'Cient',
+				dataIndex: 'name',
+				key: 'name',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Company Name',
+				dataIndex: 'company',
+				key: 'company',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Sales Person',
+				dataIndex: 'salesUser',
+				key: 'salesUser',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			
+			{
+				title: 'HR #',
+				dataIndex: 'hr_Number',
+				key: 'hr_Number',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Talent',
+				dataIndex: 'fullName',
+				key: 'fullName',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Status',
+				dataIndex: 'status',
+				key: 'status',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+		];
+	},
+	clientReportFilterTypeConfig: (filtersList) => {
+		return [
+			{
+				label: 'Company Category',
+				name: 'CompanyCategory',
+				child: filtersList?.CompanyCategory,
+				isSearch: false,
+			},
+			{
+				label: 'Sales Manager',
+				name: 'SalesManager',
+				child: filtersList?.SalesManager,
+				isSearch: false,
+			},
+			
+		];
+	},
 };

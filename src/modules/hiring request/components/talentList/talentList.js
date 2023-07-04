@@ -1458,7 +1458,7 @@ talentID,})
 				<Modal
 					transitionName=""
 					width="1000px"
-					centered
+					//centered
 					footer={null}
 					open={isShowFeedback}
 					className="seeFeedback"

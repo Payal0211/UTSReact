@@ -428,6 +428,16 @@ const SlaReports = () => {
 		setSlaReportDetailsState(tableFilteredState);
 	}, [setSlaReportDetailsState, tableFilteredState]);
 
+	const exportHandler = (slaDetailsList) => {
+		let dataToDownload = slaDetailsList.map(data => ({
+			"HR#": data.hR_NUmber, 'Role' : data.role, 'Company': data.company , 'Client': data.client, 'Talent': data.talentName, 'Stage': data.currentStage,
+			'Curr Action Date': data.current_Action_date , 'Exp Next Action Date': data.expected_Next_action_date , 'Actual Next Action date': data.actual_Next_Action_date ,
+			'Expected SLA': data.expected_SLA_day, 'Actual SLA': data.actual_SLA_day , 'SLA diff': data.slA_diff, 'Action': data.actionFilter, 'Sales Person':data.sales_Person, 'Sales Manager':data.sales_Manager, 'OPS Lead':data.ops_Lead
+ 		}))
+
+		downloadToExcel(dataToDownload)
+	}
+
 	return (
 		<div className={SlaReportStyle.hiringRequestContainer}>
 			<div className={SlaReportStyle.addnewHR}>
@@ -580,7 +590,7 @@ const SlaReports = () => {
 						<div>
 							<button
 								className={SlaReportStyle.btnPrimary}
-								onClick={() => downloadToExcel(slaDetailsList)}>
+								onClick={() => exportHandler(slaDetailsList)}>
 								Export
 							</button>
 						</div>
