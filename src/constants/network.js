@@ -89,6 +89,7 @@ export class EngagementAPI {
 	static GET_RENEW_ENGAGEMENT = 'GetRenewEngagement';
 	static SAVE_RENEW_ENGAGEMENT = 'SaveRenewEngagement';
 	static CALCULATE_ACTUAL_NR_BR_PR = 'Calculate_ActualNR_From_BRPR';
+	static UPLOAD_FILE = 'UploadFile';
 }
 
 export class AllHiringRequestAPI {

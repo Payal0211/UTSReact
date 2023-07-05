@@ -1,4 +1,5 @@
-import { InputType } from 'constants/application';
+import {  message } from 'antd';
+import { InputType,	GoogleDriveCredentials } from 'constants/application';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -10,6 +11,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
 import moment from 'moment';
+import useDrivePicker from 'react-google-drive-picker/dist';
+import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
+import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
+import UploadModal from 'shared/components/uploadModal/uploadModal';
 
 
 
@@ -28,7 +33,8 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
             hrNumber: getFeedbackFormContent?.hrNumber,
             talentName: getFeedbackFormContent?.talentName,
             talentID: getFeedbackFormContent?.talentID,
-            engagemenID: getFeedbackFormContent?.engagementID
+            engagemenID: getFeedbackFormContent?.engagementID,
+            supportingFi1ename : getUploadFileData
         }
         const response = await engagementRequestDAO.saveFeedbackFormDAO(feedBackdata);
         if (response.statusCode === HTTPStatusCode.OK) {
@@ -36,6 +42,97 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
             setFeedbackSave(!feedBackSave)
         }
     }
+    const [getUploadFileData, setUploadFileData] = useState('');
+    const [showUploadModal, setUploadModal] = useState(false);
+    const [jdURLLink, setJDURLLink] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [getValidation, setValidation] = useState({
+		systemFileUpload: '',
+		googleDriveFileUpload: '',
+		linkValidation: '',
+	})
+console.log({getUploadFileData})
+    const uploadFileHandler = useCallback(
+		async (e) => {
+			setIsLoading(true);
+			let fileData = e.target.files[0];
+
+			if (
+				fileData?.type !== 'application/pdf' &&
+				fileData?.type !== 'application/docs' &&
+				fileData?.type !== 'application/msword' &&
+				fileData?.type !== 'text/plain' &&
+				fileData?.type !==
+					'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+				fileData?.type !== 'image/png' &&
+				fileData?.type !== 'image/jpeg'
+			) {
+				setValidation({
+					...getValidation,
+					systemFileUpload:
+						'Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed',
+				});
+				setIsLoading(false);
+			} else if (fileData?.size >= 500000) {
+				setValidation({
+					...getValidation,
+					systemFileUpload:
+						'Upload file size more than 500kb, Please Upload file upto 500kb',
+				});
+				setIsLoading(false);
+			} else {
+				let formData = new FormData();
+				formData.append('File', e.target.files[0]);
+                formData.append('File2', "fileData");
+                console.log({FD:formData.get('File')
+                    , fileData});
+				let uploadFileResponse = await engagementRequestDAO.uploadFeedbackSupportingFileDAO(formData);
+				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+					if (
+						fileData?.type === 'image/png' ||
+						fileData?.type === 'image/jpeg'
+					) {
+						setUploadFileData(fileData?.name);
+						setUploadModal(false);
+						setValidation({
+							...getValidation,
+							systemFileUpload: '',
+						});
+						// setJDParsedSkills(
+						// 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
+						// );
+						message.success('File uploaded successfully');
+					} else if (
+						fileData?.type === 'application/pdf' ||
+						fileData?.type === 'application/docs' ||
+						fileData?.type === 'application/msword' ||
+						fileData?.type === 'text/plain' ||
+						fileData?.type ===
+							'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+					) {
+						setUploadFileData(fileData?.name);
+						// setJDParsedSkills(
+						// 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
+						// );
+						// setJDDumpID(
+						// 	uploadFileResponse &&
+						// 		uploadFileResponse?.responseBody?.details?.JDDumpID,
+						// );
+						setUploadModal(false);
+						setValidation({
+							...getValidation,
+							systemFileUpload: '',
+						});
+						message.success('File uploaded successfully');
+					}
+				}
+				setIsLoading(false);
+			}
+		},
+		[getValidation,],
+	);
+
+   
 
     useEffect(() => {
         setValue('feedBackDate',new Date());
@@ -140,6 +237,63 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                         type={InputType.TEXT}
                         placeholder="Add the Next Action to Take"
                     />
+                </div>
+            </div>
+
+            <div className={allengagementAddFeedbackStyles.row}>
+                <div
+                    className={allengagementAddFeedbackStyles.colMd12}>
+                    {!getUploadFileData ? (
+									<HRInputField
+										disabled={jdURLLink}
+										register={register}
+										leadingIcon={<UploadSVG />}
+										label={`Supporting File`}
+										name="jdExport"
+										type={InputType.BUTTON}
+										buttonLabel="Supporting File"
+										// value="Upload JD File"
+										onClickHandler={() => setUploadModal(true)}
+										// required={!jdURLLink && getUploadFileData}
+										// validationSchema={{
+										// 	required: 'please select a file.',
+										// }}
+										errors={errors}
+									/>
+								) : (
+									<div className={allengagementAddFeedbackStyles.uploadedJDWrap}>
+										<label>Supporting File (PDF) </label>
+										<div className={allengagementAddFeedbackStyles.uploadedJDName}>
+											{getUploadFileData}{' '}
+											<CloseSVG
+												className={allengagementAddFeedbackStyles.uploadedJDClose}
+												onClick={() => {
+													setUploadFileData('');
+												}}
+											/>
+										</div>
+									</div>
+								)}
+
+                    {showUploadModal && (
+								<UploadModal
+									isGoogleDriveUpload={false}
+									isLoading={isLoading}
+									uploadFileHandler={uploadFileHandler}
+									// googleDriveFileUploader={() => googleDriveFileUploader()}
+									// uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+									modalTitle={'Supporting File'}
+									modalSubtitle={'File should be (JPG, PNG, PDF)'}
+									isFooter={false}
+									openModal={showUploadModal}
+									setUploadModal={setUploadModal}
+									cancelModal={() => setUploadModal(false)}
+									setValidation={setValidation}
+									getValidation={getValidation}
+									// getGoogleDriveLink={getGoogleDriveLink}
+									// setGoogleDriveLink={setGoogleDriveLink}
+								/>
+							)}
                 </div>
             </div>
 

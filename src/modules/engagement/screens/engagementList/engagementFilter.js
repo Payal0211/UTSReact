@@ -122,6 +122,7 @@ const EngagementFilerList = ({
 			filterFieldsEngagement: defaultFilters,
 		};
 		handleHRRequest(reqFilter);
+		onRemoveHRFilters();
 	}, [
 		handleHRRequest,
 		setAppliedFilters,
@@ -145,6 +146,7 @@ const EngagementFilerList = ({
 			filterFieldsEngagement: { ...tableFilteredState.filterFieldsEngagement , ...filters },
 		};
 		// handleHRRequest(reqFilter);
+		onRemoveHRFilters()
 	}, [
 		appliedFilter,
 		// handleHRRequest,

@@ -11,7 +11,9 @@ const EngagementOnboard = ({
 	getOnboardFormDetails,
 	getHRAndEngagementId,
 	isLoading,
+	scheduleTimezone
 }) => {
+	console.log("getOnboardFormDetails",getOnboardFormDetails, scheduleTimezone)
 	return (
 		<div className={allengagementOnboardStyles.engagementModalWrap}>
 			<div className={allengagementOnboardStyles.engagementModalTitle}>
@@ -60,6 +62,26 @@ const EngagementOnboard = ({
 						<li>
 							<span>Talent Full Name:</span>{' '}
 							{getOnboardFormDetails?.onboardDetails?.talentName}{' '}
+						</li>
+						<li>
+							<span>Talent Email:</span>{' '}
+							{getOnboardFormDetails?.onboardDetails?.talentEmailId}{' '}
+						</li>
+						<li>
+							<span>Punch Time:</span>{' '}
+							{getOnboardFormDetails?.onboardDetails?.punchTime}{' '}
+						</li>
+						<li>
+							<span>Working Day:</span>{' '}
+							{getOnboardFormDetails?.onboardDetails?.workingDay}{' '}
+						</li>
+						<li>
+							<span>Working TimeZone:</span>{' '}
+							{scheduleTimezone?.filter(timeZone => `${timeZone.id}` === getOnboardFormDetails?.workingTimeZone)[0].value }{' '}
+						</li>
+						<li>
+							<span>Talent TimeZone:</span>{' '}
+							{scheduleTimezone?.filter(timeZone => `${timeZone.id}` === getOnboardFormDetails?.onboardDetails?.timeZone)[0].value }{' '}
 						</li>
 						<li>
 							<span>Engagement ID:</span>{' '}

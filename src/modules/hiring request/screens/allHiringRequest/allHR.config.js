@@ -10,7 +10,7 @@ export const allHRConfig = {
 				dataIndex: 'starStatus',
 				key: 'starStatus',
 				align: 'left',
-				width: '50px',
+				width: '55px',
 				render: (_, param) => {
 					let response = All_Hiring_Request_Utils.GETHRPRIORITY(
 						param.starStatus,
@@ -31,7 +31,7 @@ export const allHRConfig = {
 				render: (text, result) => {
 					return (
 						<>
-							<div>
+							<a href="javascript:void(0);">
 								<CloneHRSVG
 									style={{ fontSize: '16px' }}
 									onClick={() => {
@@ -40,7 +40,7 @@ export const allHRConfig = {
 										setHRNumber(result?.HR_ID);
 									}}
 								/>
-							</div>
+							</a>
 						</>
 					);
 				},

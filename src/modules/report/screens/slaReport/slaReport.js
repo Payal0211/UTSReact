@@ -61,6 +61,11 @@ const SlaReports = () => {
 	const [checkedValue, setCheckedValue] = useState(true);
 	const [checkednoValue, setCheckednoValue] = useState(false);
 	const [slaValue, setslaValue] = useState(0);
+	
+	var date = new Date();
+	var firstDay = startDate !== null ? startDate : new Date(date.getFullYear(), date.getMonth(), 1);
+	var lastDay = endDate !== null ? endDate : new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
 	const checkedYes = (e) => {
 		setCheckedValue(e.target.checked);
 		setCheckednoValue(false);
@@ -70,8 +75,8 @@ const SlaReports = () => {
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: '2023-06-01',
-				endDate: '2023-06-30',
+				startDate: firstDay,
+				endDate: lastDay,
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
@@ -114,8 +119,8 @@ const SlaReports = () => {
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: '2023-06-01',
-				endDate: '2023-06-30',
+				startDate: firstDay,
+				endDate: lastDay,
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
@@ -155,8 +160,8 @@ const SlaReports = () => {
 		pagenumber: 1,
 		isExport: false,
 		filterFieldsSLA: {
-			startDate: '2023-06-01',
-			endDate: '2023-06-30',
+			startDate: firstDay,
+			endDate: lastDay,
 			hrid: 0,
 			sales_ManagerID: 0,
 			ops_Lead: 0,
@@ -176,9 +181,7 @@ const SlaReports = () => {
 		},
 	});
 
-	var date = new Date();
-	var firstDay = startDate !== null ? startDate : new Date(date.getFullYear(), date.getMonth(), 1);
-	var lastDay = endDate !== null ? endDate : new Date(date.getFullYear(), date.getMonth() + 1, 0);
+	
 
 	const slaReportList = async (pageData) => {
 		console.log(pageData, 'pageData');
@@ -706,6 +709,9 @@ const SlaReports = () => {
 						)}
 						setSlaReportDetailsState={setSlaReportDetailsState}
 						slaReportDetailsState={slaReportDetailsState}
+						firstDay={firstDay}
+						lastDay={lastDay}
+						slaValue={slaValue}
 					/>
 				</Suspense>
 			)}

@@ -321,6 +321,22 @@ export const EngagementRequestAPI = {
 			return errorDebug(error, 'EngagementRequestAPI.submitFeedBackForm');
 		}
 	},
+	uploadFile: async (file) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.ENGAGEMENT +
+			EngagementAPI.UPLOAD_FILE;
+		httpService.dataToSend = file;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendFileDataPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.uploadFile');
+		}
+	},
 	calculateActualNRBRPR: async function (br,pr,currency) {
 		let httpService = new HttpServices();
 		httpService.URL =
