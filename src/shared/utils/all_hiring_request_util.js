@@ -20,8 +20,7 @@ export const All_Hiring_Request_Utils = {
 						placement="bottom"
 						title="No Priority"
 						color={`var(--uplers-black)`}>
-						<NoPriorityStar
-							onClick={
+						<a href="javascript:void(0);" onClick={
 								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
 									: () => {
@@ -32,8 +31,8 @@ export const All_Hiring_Request_Utils = {
 											};
 											togglePriority(priorityObject);
 									  }
-							}
-						/>
+							}><NoPriorityStar />
+						</a>
 					</Tooltip>
 				);
 			case hiringRequestPriority.CURRENT_WEEK_PRIORITY:
@@ -51,8 +50,7 @@ export const All_Hiring_Request_Utils = {
 						placement="bottom"
 						title="Next Week Priority"
 						color={`var(--color-sunlight)`}>
-						<NextWeekPriorityStar
-							onClick={
+						<a href="javascript:void(0);" onClick={
 								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
 									: () => {
@@ -63,8 +61,8 @@ export const All_Hiring_Request_Utils = {
 											};
 											togglePriority(priorityObject);
 									  }
-							}
-						/>
+							}><NextWeekPriorityStar />
+						</a>
 					</Tooltip>
 				);
 			default:

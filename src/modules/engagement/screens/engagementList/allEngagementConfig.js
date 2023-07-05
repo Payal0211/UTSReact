@@ -132,6 +132,7 @@ export const allEngagementConfig = {
 				dataIndex: 'action',
 				key: 'action',
 				align: 'left',
+				width: '177px',
 				render: (_, param, index) => {
 					let listItemData = [
 						{
@@ -257,7 +258,7 @@ export const allEngagementConfig = {
 				width: '140px',
 				render: (text, result) =>
 					result?.clientFeedback === 0 && result?.onboardID && result?.hrID ? (
-						<span
+						<a href="javascript:void(0);"
 							style={{
 								color: engagementUtils.getClientFeedbackColor(
 									result?.feedbackType,
@@ -290,9 +291,9 @@ export const allEngagementConfig = {
 								});
 							}}>
 							{'Add'}
-						</span>
+						</a>
 					) : (
-						<span
+						<a href="javascript:void(0);"
 							style={{
 								color: engagementUtils.getClientFeedbackColor(
 									result?.feedbackType,
@@ -329,7 +330,7 @@ export const allEngagementConfig = {
 								});
 							}}>
 							{'View/Add'}
-						</span>
+						</a>
 					),
 			},
 			{
@@ -347,7 +348,7 @@ export const allEngagementConfig = {
 				width: '150px',
 				render: (text, result) =>
 					result?.clientLegal_StatusID === 2 && (
-						<span
+						<a href="javascript:void(0);"
 							style={{ color: '#006699', textDecoration: 'underline' }}
 							onClick={() => {
 								setHRAndEngagementId({
@@ -375,7 +376,7 @@ export const allEngagementConfig = {
 								});
 							}}>
 							{'View'}
-						</span>
+						</a>
 					),
 			},
 			{

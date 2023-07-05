@@ -25,12 +25,12 @@ export const MasterConfig = {
 				align: 'left',
 				render: (data, param) => {
 					return (
-						<EditSVG
-							onClick={() => {
-								setEditExchangeRate(true);
-								setExchangeRateToEdit(param);
-							}}
-						/>
+						<a href="javascript:void(0);" onClick={() => {
+							setEditExchangeRate(true);
+							setExchangeRateToEdit(param);
+						}}>
+							<EditSVG />
+						</a>
 					);
 				},
 			},
