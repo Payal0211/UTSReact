@@ -10,7 +10,7 @@ export const allHRConfig = {
 				dataIndex: 'starStatus',
 				key: 'starStatus',
 				align: 'left',
-				width: '50px',
+				width: '55px',
 				render: (_, param) => {
 					let response = All_Hiring_Request_Utils.GETHRPRIORITY(
 						param.starStatus,

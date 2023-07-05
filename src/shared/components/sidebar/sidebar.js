@@ -68,6 +68,7 @@ const Sidebar = () => {
 													src={icon}
 													alt="mySvgImage"
 												/>
+												<span>{title}</span>
 											</div>
 										</div>
 									</Link>
