@@ -42,7 +42,7 @@ function App() {
 						element={
 							<Navigate
 								replace
-								to={isAllowed ?  UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DEALLISTROUTE}
+								to={isAllowed ?  UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DASHBOARD}
 							/>
 						}
 					/>}

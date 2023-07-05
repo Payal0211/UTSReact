@@ -40,7 +40,7 @@ const LoginScreen = () => {
 
 			if (result.statusCode === HTTPStatusCode.OK) {
 				setLoading(false);
-				navigate(isAccess(result.responseBody.LoggedInUserTypeID) ? UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DEALLISTROUTE);
+				navigate(isAccess(result.responseBody.LoggedInUserTypeID) ? UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DASHBOARD);
 			
 			} else {
 				setLoading(false);

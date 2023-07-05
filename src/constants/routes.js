@@ -95,6 +95,10 @@ const ClientReport = React.lazy(() =>
  	import('modules/report/screens/clientReport/clientReport')
 );
 
+const DashboardScreen = React.lazy(() =>
+    import('modules/dashboard/screens/dashboard'),
+)
+
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -109,6 +113,7 @@ export default class UTSRoutes {
 	static INTERVIEWSCHEDULE = '/interview/scheduleinterview';
 	static INTERVIEWFEEDBACK = '/interview/feedback';
 	static DEALLISTROUTE = '/deal';
+	static DASHBOARD = '/dashboard';
 	static DEALDETAILS = '/deal/:dealID';
 	static ONBOARDROUTE = '/onboard';
 	static ONBOARDEDITROUTE = '/onboard/edit/:onboardID';
@@ -273,7 +278,12 @@ export const navigateToComponent = {
 		<Suspense>
 			<ClientReport />
 		</Suspense>
-	)
+	),
+[UTSRoutes.DASHBOARD]:(
+	<Suspense>
+			<DashboardScreen />
+	</Suspense>
+)
 };
 
 export const isAccess = (ID) =>{	

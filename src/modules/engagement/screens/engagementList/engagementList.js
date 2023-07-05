@@ -44,7 +44,7 @@ const EngagementFilerList = React.lazy(() => import('./engagementFilter'));
 
 const EngagementList = () => {
 	const [tableFilteredState, setTableFilteredState] = useState({
-		totalrecord: 100,
+		totalrecord: 0,
 		pagenumber: 1,
 		filterFieldsEngagement: {
 			clientFeedback: '',
@@ -58,8 +58,8 @@ const EngagementList = () => {
 			nbdName: '',
 			amName: '',
 			pending: '',
-			searchMonth: 0,
-			searchYear: 0,
+			searchMonth: new Date().getMonth() + 1,
+			searchYear: new Date().getFullYear(),
 			searchType: '',
 			islost: '',
 		},
@@ -314,31 +314,48 @@ const EngagementList = () => {
 	}, [getEngagementFilterList, getHTMLFilter, isAllowFilters]);
 
 	/*--------- React DatePicker ---------------- */
-	const [startDate, setStartDate] = useState(null);
+	const [startDate, setStartDate] = useState(new Date());
 	const [endDate, setEndDate] = useState(null);
 
 	const onCalenderFilter = (dates) => {
-		const [start, end] = dates;
-
-		setStartDate(start);
-		setEndDate(end);
-
-		if (start && end) {
+		// const [start, end] = dates;
+	const month = dates.getMonth() + 1
+	const year = dates.getFullYear()
+	 setStartDate(dates);
+		// setEndDate(end);
+		if (month && year) {
+			console.log( month, year)
 			setTableFilteredState({
 				...tableFilteredState,
-				filterFields_ViewAllHRs: {
-					fromDate: new Date(start).toLocaleDateString('en-US'),
-					toDate: new Date(end).toLocaleDateString('en-US'),
+				filterFieldsEngagement: {...tableFilteredState.filterFieldsEngagement ,
+					searchMonth: month,
+					searchYear: year,
 				},
 			});
 			handleHRRequest({
 				...tableFilteredState,
-				filterFields_ViewAllHRs: {
-					fromDate: new Date(start).toLocaleDateString('en-US'),
-					toDate: new Date(end).toLocaleDateString('en-US'),
+				filterFieldsEngagement: {...tableFilteredState.filterFieldsEngagement ,
+					searchMonth: month,
+					searchYear: year,
 				},
 			});
 		}
+		// if (start && end) {
+		// 	setTableFilteredState({
+		// 		...tableFilteredState,
+		// 		filterFields_ViewAllHRs: {
+		// 			fromDate: new Date(start).toLocaleDateString('en-US'),
+		// 			toDate: new Date(end).toLocaleDateString('en-US'),
+		// 		},
+		// 	});
+		// 	handleHRRequest({
+		// 		...tableFilteredState,
+		// 		filterFields_ViewAllHRs: {
+		// 			fromDate: new Date(start).toLocaleDateString('en-US'),
+		// 			toDate: new Date(end).toLocaleDateString('en-US'),
+		// 		},
+		// 	});
+		// }
 	};
 
 	const handleExport = (apiData) => {
@@ -359,13 +376,13 @@ const EngagementList = () => {
 					Engagement Dashboard -{' '}
 					{new Date().toLocaleDateString('default', { month: 'long' })}
 				</div>
-				<div>
+				{/* <div>
 					<button
 						className={allEngagementStyles.btnPrimary}
 						onClick={() => handleExport(apiData)}>
 						Export
 					</button>
-				</div>
+				</div> */}
 			</div>
 
 			<div className={allEngagementStyles.filterContainer}>
@@ -396,7 +413,7 @@ const EngagementList = () => {
 							/>
 						</div>
 						<div className={allEngagementStyles.calendarFilterSet}>
-							<div className={allEngagementStyles.label}>Date</div>
+							<div className={allEngagementStyles.label}>Month-Year</div>
 							<div className={allEngagementStyles.calendarFilter}>
 								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
 								<DatePicker
@@ -406,20 +423,28 @@ const EngagementList = () => {
 										e.stopPropagation();
 									}}
 									className={allEngagementStyles.dateFilter}
-									placeholderText="Start date - End date"
+									placeholderText="Month - Year"
 									selected={startDate}
 									onChange={onCalenderFilter}
-									startDate={startDate}
-									endDate={endDate}
-									selectsRange
+									// startDate={startDate}
+									// endDate={endDate}
+									dateFormat="MM-yyyy"
+									showMonthYearPicker
 								/>
 							</div>
 						</div>
 
 						<div className={allEngagementStyles.priorityFilterSet}>
-							<div className={allEngagementStyles.label}>Showing</div>
-							<div className={allEngagementStyles.paginationFilter}>
-								<Dropdown
+							{/* <div className={allEngagementStyles.label}>Showing</div> */}
+							<div className={allEngagementStyles.paginationFilter} style={{marginRight:'10px', marginLeft:'10px'}}>
+							<button
+								className={allEngagementStyles.btnPrimary}
+								
+								onClick={() => handleExport(apiData)}>
+								Export
+							</button>
+				
+								{/* <Dropdown
 									trigger={['click']}
 									placement="bottom"
 									overlay={
@@ -445,7 +470,7 @@ const EngagementList = () => {
 											style={{ paddingTop: '5px', fontSize: '16px' }}
 										/>
 									</span>
-								</Dropdown>
+								</Dropdown> */}
 							</div>
 						</div>
 					</div>
@@ -504,7 +529,7 @@ const EngagementList = () => {
 							alt="briefcase"
 						/>
 						<h2>
-							Total DP% -{' '}
+							Total DP -{' '}
 							<span>{apiData[0]?.s_TotalDP ? apiData[0]?.s_TotalDP : 0}</span>
 						</h2>
 					</div>
@@ -540,24 +565,25 @@ const EngagementList = () => {
 										? [...search]
 										: [...apiData]
 								}
-								pagination={{
-									onChange: (pageNum, pageSize) => {
-										setPageIndex(pageNum);
-										setPageSize(pageSize);
-										setTableFilteredState({
-											...tableFilteredState,
-											totalrecord: pageSize,
-											pagenumber: pageNum,
-										});
-									},
-									size: 'small',
-									pageSize: pageSize,
-									pageSizeOptions: pageSizeOptions,
-									total: totalRecords,
-									showTotal: (total, range) =>
-										`${range[0]}-${range[1]} of ${totalRecords} items`,
-									defaultCurrent: pageIndex,
-								}}
+								pagination={false} 
+								// pagination={{
+								// 	onChange: (pageNum, pageSize) => {
+								// 		setPageIndex(pageNum);
+								// 		setPageSize(pageSize);
+								// 		setTableFilteredState({
+								// 			...tableFilteredState,
+								// 			totalrecord: pageSize,
+								// 			pagenumber: pageNum,
+								// 		});
+								// 	},
+								// 	size: 'small',
+								// 	pageSize: pageSize,
+								// 	pageSizeOptions: pageSizeOptions,
+								// 	total: totalRecords,
+								// 	showTotal: (total, range) =>
+								// 		`${range[0]}-${range[1]} of ${totalRecords} items`,
+								// 	defaultCurrent: pageIndex,
+								// }}
 							/>
 						</WithLoader>
 					)}
