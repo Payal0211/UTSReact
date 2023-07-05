@@ -94,13 +94,32 @@ const EngagementFilerList = ({
 		setAppliedFilters(new Map());
 		setCheckedState(new Map());
 		setFilteredTagLength(0);
+
+		const defaultFilters ={		
+			clientFeedback: '',
+			typeOfHiring: '',
+			currentStatus: '',
+			tscName: '',
+			company: '',
+			geo: '',
+			position: '',
+			engagementTenure: 0,
+			nbdName: '',
+			amName: '',
+			pending: '',
+			searchMonth: new Date().getMonth() +1,
+			searchYear: new Date().getFullYear(),
+			searchType: '',
+			islost: '',
+		}
+		
 		setTableFilteredState({
 			...tableFilteredState,
-			filterFieldsEngagement: {},
+			filterFieldsEngagement: defaultFilters,
 		});
 		const reqFilter = {
 			...tableFilteredState,
-			filterFieldsEngagement: {},
+			filterFieldsEngagement: defaultFilters,
 		};
 		handleHRRequest(reqFilter);
 	}, [
@@ -119,11 +138,11 @@ const EngagementFilerList = ({
 		});
 		setTableFilteredState({
 			...tableFilteredState,
-			filterFieldsEngagement: { ...filters },
+			filterFieldsEngagement: { ...tableFilteredState.filterFieldsEngagement , ...filters },
 		});
 		const reqFilter = {
 			...tableFilteredState,
-			filterFieldsEngagement: { ...filters },
+			filterFieldsEngagement: { ...tableFilteredState.filterFieldsEngagement , ...filters },
 		};
 		// handleHRRequest(reqFilter);
 	}, [

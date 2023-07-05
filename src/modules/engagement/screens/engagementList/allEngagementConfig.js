@@ -254,6 +254,7 @@ export const allEngagementConfig = {
 				dataIndex: 'clientFeedback',
 				key: 'clientFeedback',
 				align: 'left',
+				width: '140px',
 				render: (text, result) =>
 					result?.clientFeedback === 0 && result?.onboardID && result?.hrID ? (
 						<span
@@ -336,12 +337,14 @@ export const allEngagementConfig = {
 				dataIndex: 'lastFeedbackDate',
 				key: 'lastFeedbackDate',
 				align: 'left',
+				width: '165px',
 			},
 			{
 				title: 'Onboarding Form',
 				dataIndex: 'ClientLegal_StatusID',
 				key: 'ClientLegal_StatusID',
 				align: 'left',
+				width: '150px',
 				render: (text, result) =>
 					result?.clientLegal_StatusID === 2 && (
 						<span
@@ -380,6 +383,7 @@ export const allEngagementConfig = {
 				dataIndex: 'engagementCount',
 				key: 'engagementCount',
 				align: 'left',
+				width:'100px'
 			},
 			{
 				title: 'Engagement ID/HR ID',
