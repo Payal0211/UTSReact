@@ -22,7 +22,7 @@ const Layout = () => {
 			<main
 				style={{
 					paddingTop: '131px',
-					paddingLeft: '92px',
+					paddingLeft: '60px',
 					width: '100%',
 				}}>
 				<Outlet />
