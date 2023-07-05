@@ -38,6 +38,7 @@ import EngagementInvoice from '../engagementInvoice/engagementInvoice';
 import RenewEngagement from '../renewEngagement/renewEngagement';
 import { useForm, Controller } from 'react-hook-form';
 import { downloadToExcel } from 'modules/report/reportUtils';
+import { MasterDAO } from 'core/master/masterDAO';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() => import('./engagementFilter'));
@@ -122,6 +123,7 @@ const EngagementList = () => {
 	const [feedBackSave, setFeedbackSave] = useState(false);
 	const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
 	const [rateReason, setRateReason] = useState(undefined);
+	const [scheduleTimezone, setScheduleTimezone] = useState([]);
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -159,6 +161,15 @@ const EngagementList = () => {
 		() => allEngagementConfig.clientFeedbackTypeConfig(),
 		[],
 	);
+
+	const getTimeZone = useCallback(async () => {
+		let response = await MasterDAO.getTimeZoneRequestDAO();
+		setScheduleTimezone(response && response?.responseBody);
+	}, [setScheduleTimezone]);
+
+	useEffect(() => {
+		getTimeZone();
+	}, [getTimeZone]);
 
 	const handleHRRequest = useCallback(
 		async (pageData) => {
@@ -374,7 +385,7 @@ const EngagementList = () => {
 			<div className={allEngagementStyles.addnewHR}>
 				<div className={allEngagementStyles.hiringRequest}>
 					Engagement Dashboard -{' '}
-					{new Date().toLocaleDateString('default', { month: 'long' })}
+					{startDate.toLocaleDateString('default', { month: 'long' })}
 				</div>
 				{/* <div>
 					<button
@@ -659,6 +670,7 @@ const EngagementList = () => {
 						<EngagementOnboard
 							getOnboardFormDetails={getOnboardFormDetails}
 							getHRAndEngagementId={getHRAndEngagementId}
+							scheduleTimezone={scheduleTimezone}
 						/>
 					</Modal>
 				)}

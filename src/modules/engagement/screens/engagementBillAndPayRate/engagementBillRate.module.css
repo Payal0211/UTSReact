@@ -385,3 +385,32 @@ background:#CECCCC ;
   [class*="ant-select-selection-item"] {
   color: #232323;
 }
+
+.uploadedJDWrap {
+    margin: 0 0 32px;
+}
+
+.uploadedJDName {
+    text-align: left;
+    width: 100%;
+    padding: 16px 45px 16px 16px;
+    background: var(--background-color-light);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--uplers-black);
+    outline: 1px solid transparent;
+    transition: all 0.25s ease 0s;
+    vertical-align: middle;
+    position: relative;
+}
+
+.uploadedJDClose {
+    position: absolute;
+    right: 12px;
+    top: 14px;
+    color: #f2f2f2;
+    cursor: pointer;
+}

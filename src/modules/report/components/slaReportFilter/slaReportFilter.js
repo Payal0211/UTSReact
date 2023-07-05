@@ -23,6 +23,9 @@ const SlaReportFilerList = ({
   setSlaReportDetailsState,
   slaReportDetailsState,
   getSlaReportDetailsState,
+  slaValue,
+  lastDay,
+  firstDay
 }) => {
   const [toggleBack, setToggleBack] = useState(false);
   const [searchData, setSearchData] = useState([]);
@@ -99,13 +102,14 @@ const SlaReportFilerList = ({
     setAppliedFilters(new Map());
     setCheckedState(new Map());
     setFilteredTagLength(0);
-    setTableFilteredState({
+
+    let defaultState = {
       totalrecord: 100,
       pagenumber: 1,
       isExport: false,
       filterFieldsSLA: {
-        startDate: "2023-06-01",
-        endDate: "2023-06-30",
+        startDate: firstDay,
+        endDate: lastDay,
         hrid: 0,
         sales_ManagerID: 0,
         ops_Lead: 0,
@@ -113,7 +117,7 @@ const SlaReportFilerList = ({
         stages: "",
         isAdHoc: 0,
         role: "",
-        slaType: 0,
+        slaType: slaValue,
         type: 0,
         hR_Number: "",
         company: "",
@@ -123,59 +127,10 @@ const SlaReportFilerList = ({
         CompanyIds: "",
         // ambdr: 0
       }
-    });
-    setSlaReportDetailsState({
-      totalrecord: 100,
-      pagenumber: 1,
-      isExport: false,
-      filterFieldsSLA: {
-        startDate: "2023-06-01",
-        endDate: "2023-06-30",
-        hrid: 0,
-        sales_ManagerID: 0,
-        ops_Lead: 0,
-        salesPerson: 0,
-        stages: "",
-        isAdHoc: 0,
-        role: "",
-        slaType: 0,
-        type: 0,
-        hR_Number: "",
-        company: "",
-        actionFilter: 0,
-        stageIDs: "",
-        actionFilterIDs: "",
-        CompanyIds: "",
-        // ambdr: 0
-      }
-    });
-   let newState = {
-    totalrecord: 100,
-    pagenumber: 1,
-    isExport: false,
-    filterFieldsSLA: {
-      startDate: "2023-06-01",
-      endDate: "2023-06-30",
-      hrid: 0,
-      sales_ManagerID: 0,
-      ops_Lead: 0,
-      salesPerson: 0,
-      stages: "",
-      isAdHoc: 0,
-      role: "",
-      slaType: 0,
-      type: 0,
-      hR_Number: "",
-      company: "",
-      actionFilter: 0,
-      stageIDs: "",
-      actionFilterIDs: "",
-      CompanyIds: "",
-      // ambdr: 0
     }
-  }
-    setSlaReportDetailsState(newState);
-    handleHRRequest(newState);
+    setTableFilteredState(defaultState);
+    setSlaReportDetailsState(defaultState);
+    handleHRRequest(defaultState);
     onRemoveHRFilters()
     // setSlaReportDetailsState(reqFilter);
   }, [
