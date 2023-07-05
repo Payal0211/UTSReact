@@ -844,14 +844,14 @@ export const reportConfig = {
 				align: 'left',
 				render: (text) => {
 					return text ? (
-						<p
+						<a href="javascript:void(0);"
 							onClick={() => {
 								setJDSkillModal(true);
 								setSelectedRecord(removeHTMLTags(text));
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
-						</p>
+						</a>
 					) : (
 						'NA'
 					);
@@ -865,14 +865,14 @@ export const reportConfig = {
 				render: (text) => {
 					return (
 						text && (
-							<p
+							<a href="javascript:void(0);"
 								onClick={() => {
 									setHRSkillModal(true);
 									setSelectedRecord(removeHTMLTags(text));
 								}}
 								style={{ color: 'black', textDecoration: 'underline' }}>
 								View
-							</p>
+							</a>
 						)
 					);
 				},
@@ -884,7 +884,7 @@ export const reportConfig = {
 				align: 'left',
 				render: (text) => {
 					return text ? (
-						<p
+						<a href="javascript:void(0);"
 							onClick={() => {
 								setJDRoleRespModal(true);
 
@@ -892,7 +892,7 @@ export const reportConfig = {
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
-						</p>
+						</a>
 					) : (
 						'NA'
 					);
@@ -905,14 +905,14 @@ export const reportConfig = {
 				align: 'left',
 				render: (text) => {
 					return text ? (
-						<p
+						<a href="javascript:void(0);"
 							onClick={() => {
 								setHRRoleRespModal(true);
 								setSelectedRecord(removeHTMLTags(text));
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
-						</p>
+						</a>
 					) : (
 						'NA'
 					);
@@ -925,14 +925,14 @@ export const reportConfig = {
 				align: 'left',
 				render: (text) => {
 					return text ? (
-						<p
+						<a href="javascript:void(0);"
 							onClick={() => {
 								setJDReqModal(true);
 								setSelectedRecord(removeHTMLTags(text));
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
-						</p>
+						</a>
 					) : (
 						'NA'
 					);
@@ -945,14 +945,14 @@ export const reportConfig = {
 				align: 'left',
 				render: (text) => {
 					return text ? (
-						<p
+						<a href="javascript:void(0);"
 							onClick={() => {
 								setHRReqModal(true);
 								setSelectedRecord(removeHTMLTags(text));
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
-						</p>
+						</a>
 					) : (
 						'NA'
 					);
