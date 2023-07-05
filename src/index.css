@@ -146,7 +146,7 @@ th {
 
 td {
   color: var(--uplers-black);
-  cursor: pointer;
+  /* cursor: pointer; */
   font-size: 0.875rem;
   font-weight: 500;
   font-family: "Montserrat", sans-serif !important;

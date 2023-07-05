@@ -31,7 +31,7 @@ export const allHRConfig = {
 				render: (text, result) => {
 					return (
 						<>
-							<div>
+							<a href="javascript:void(0);">
 								<CloneHRSVG
 									style={{ fontSize: '16px' }}
 									onClick={() => {
@@ -40,7 +40,7 @@ export const allHRConfig = {
 										setHRNumber(result?.HR_ID);
 									}}
 								/>
-							</div>
+							</a>
 						</>
 					);
 				},

@@ -256,7 +256,7 @@ export const allEngagementConfig = {
 				align: 'left',
 				render: (text, result) =>
 					result?.clientFeedback === 0 && result?.onboardID && result?.hrID ? (
-						<span
+						<a href="javascript:void(0);"
 							style={{
 								color: engagementUtils.getClientFeedbackColor(
 									result?.feedbackType,
@@ -289,9 +289,9 @@ export const allEngagementConfig = {
 								});
 							}}>
 							{'Add'}
-						</span>
+						</a>
 					) : (
-						<span
+						<a href="javascript:void(0);"
 							style={{
 								color: engagementUtils.getClientFeedbackColor(
 									result?.feedbackType,
@@ -328,7 +328,7 @@ export const allEngagementConfig = {
 								});
 							}}>
 							{'View/Add'}
-						</span>
+						</a>
 					),
 			},
 			{
@@ -344,7 +344,7 @@ export const allEngagementConfig = {
 				align: 'left',
 				render: (text, result) =>
 					result?.clientLegal_StatusID === 2 && (
-						<span
+						<a href="javascript:void(0);"
 							style={{ color: '#006699', textDecoration: 'underline' }}
 							onClick={() => {
 								setHRAndEngagementId({
@@ -372,7 +372,7 @@ export const allEngagementConfig = {
 								});
 							}}>
 							{'View'}
-						</span>
+						</a>
 					),
 			},
 			{
