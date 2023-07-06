@@ -372,7 +372,9 @@ console.log('client', reportList, appliedFilter)
         <TableSkeleton />
         </div>
       ) : (
-        <Table
+        <>
+        <h3 className={ClientReportStyle.cardTitle}>Client Report : {clientStage}</h3>
+          <Table
           id="clientReportTable"
           columns={tableColumnsMemo}
           bordered={false}
@@ -382,6 +384,8 @@ console.log('client', reportList, appliedFilter)
           }}
           pagination={false}
         />
+        </>
+      
       )}
         </div>}
 
