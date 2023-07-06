@@ -25,6 +25,7 @@ const EngagementReplaceTalent = ({
 	const [getRadio, setRadio] = useState('client');
 	const {
 		register,
+		unregister,
 		handleSubmit,
 		setValue,
 		control,
@@ -62,6 +63,16 @@ const EngagementReplaceTalent = ({
 		}
 	}, [isEngagement, setValue, talentInfo?.OnBoardId, talentInfo?.onboardID]);
 
+	useEffect(() => {
+		if(watch("replaceStage")?.id === 1){
+			setValue('lastWorkingDate', new Date())
+		}else{
+			unregister('lastWorkingDate')
+		}
+	},[watch("replaceStage"), setValue,unregister])
+
+	console.log({getTalentReplacementData,talentInfo})
+
 	const submitTalentReplacementHandler = useCallback(
 		async (d) => {
 			let talentReplacementDetails = {
@@ -80,6 +91,7 @@ const EngagementReplaceTalent = ({
 				engagementReplacementOnBoardID: 0,
 				replacementTalentId: null,
 			};
+
 			const response = await engagementRequestDAO.saveTalentReplacementDAO(
 				talentReplacementDetails,
 			);

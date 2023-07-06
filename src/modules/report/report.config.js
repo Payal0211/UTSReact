@@ -1030,12 +1030,12 @@ export const reportConfig = {
 	clientPopupReportConfig: () => {
 		return [
 			{
-				title: 'Cient',
-				dataIndex: 'name',
-				key: 'name',
+				title: 'Client',
+				dataIndex: 'fullName',
+				key: 'fullName',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
 			{
@@ -1044,7 +1044,7 @@ export const reportConfig = {
 				key: 'company',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text }</Fragment>;
 				},
 			},
 			{
@@ -1053,7 +1053,7 @@ export const reportConfig = {
 				key: 'salesUser',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text }</Fragment>;
 				},
 			},
 			
@@ -1063,16 +1063,16 @@ export const reportConfig = {
 				key: 'hr_Number',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text }</Fragment>;
 				},
 			},
 			{
 				title: 'Talent',
-				dataIndex: 'fullName',
-				key: 'fullName',
+				dataIndex: 'name',
+				key: 'name',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text }</Fragment>;
 				},
 			},
 			{
@@ -1081,7 +1081,7 @@ export const reportConfig = {
 				key: 'status',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+					return <Fragment key={text}>{text }</Fragment>;
 				},
 			},
 		];
