@@ -850,9 +850,22 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 						message: 'Please enter the client name.',
 					});
 				}
+				if (_isNull(watch('role'))) {
+					return setError('role', {
+						type: 'emptyrole',
+						message: 'Please enter the hiring role.',
+					});
+				}
+				if (_isNull(watch('hrTitle'))) {
+					return setError('hrTitle', {
+						type: 'emptyhrTitle',
+						message: 'please enter the hiring request title.',
+					});
+				}
 			} else if (type !== SubmitType.SAVE_AS_DRAFT) {
 				setType(SubmitType.SUBMIT);
 			}
+
 			const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {

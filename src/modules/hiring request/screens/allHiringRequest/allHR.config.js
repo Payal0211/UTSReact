@@ -26,7 +26,7 @@ export const allHRConfig = {
 				title: 'Clone HR',
 				dataIndex: 'cloneHR',
 				key: 'cloneHR',
-				width: 100,
+				width: '80px',
 				align: 'left',
 				render: (text, result) => {
 					return (
@@ -52,16 +52,18 @@ export const allHRConfig = {
 			// 	align: 'left',
 			// },
 			{
-				title: 'Date',
+				title: 'Created Date',
 				dataIndex: 'Date',
 				key: 'Date',
 				align: 'left',
+				width:'130px'
 			},
 			{
 				title: 'HR ID',
 				dataIndex: 'HR_ID',
 				key: 'HR_ID',
 				align: 'left',
+				width: '180px',
 				render: (text, result) => (
 					<Link
 						to={`/allhiringrequest/${result?.key}`}
@@ -82,12 +84,14 @@ export const allHRConfig = {
 				dataIndex: 'Position',
 				key: 'position',
 				align: 'left',
+				width: '100px',
 			},
 			{
 				title: 'Company',
 				dataIndex: 'Company',
 				key: 'company',
 				align: 'left',
+				width: '130px',
 				// render: (text) => {
 				// 	return (
 				// 		<a
@@ -107,19 +111,21 @@ export const allHRConfig = {
 				dataIndex: 'Time',
 				key: 'time',
 				align: 'left',
-				width: '100px',
+				width: '80px',
 			},
 			{
 				title: 'FTE/PTE',
 				dataIndex: 'typeOfEmployee',
 				key: 'fte_pte',
 				align: 'left',
+				width: '100px',
 			},
 			{
 				title: 'Sales Rep',
 				dataIndex: 'salesRep',
 				key: 'sales_rep',
 				align: 'left',
+				width: '160px',
 				render: (text, result) => {
 					return (
 						<Link
@@ -138,6 +144,7 @@ export const allHRConfig = {
 				dataIndex: 'hrStatus',
 				key: 'hr_status',
 				align: 'left',
+				width: '200px',
 				render: (_, param) => {
 					return All_Hiring_Request_Utils.GETHRSTATUS(
 						param.hrStatusCode,

@@ -16,7 +16,7 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { useForm, Controller } from 'react-hook-form';
 import { HTTPStatusCode } from 'constants/network';
-import { _isNull } from 'shared/utils/basic_utils';
+import { _isNull, getPayload } from 'shared/utils/basic_utils';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
@@ -24,6 +24,7 @@ import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import {UserAccountRole} from 'constants/application'
+import useDebounce from 'shared/hooks/useDebounce';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -118,6 +119,8 @@ const EditHRFields = ({
 		useState('Select End Time');	
 	const [controlledTempProjectValue, setControlledTempProjectValue]= useState('Please select .')
 	const [controlledPartialEngagementValue,setControlledPartialEngagementValue] = useState('Select Partial Engagement Type')
+	const [isNewPostalCodeModal, setNewPostalCodeModal] = useState(false);
+	const [isPostalCodeNotFound, setPostalCodeNotFound] = useState(false);
 
 	const [getDurationType, setDurationType] = useState([]);
 	const [getStartEndTimes, setStaryEndTimes] = useState([]);
@@ -144,6 +147,7 @@ const EditHRFields = ({
 		setError,
 		unregister,
 		control,
+		clearErrors,
 		// defaultValue,
 		formState: { errors, defaultValue },
 	} = useForm({
@@ -734,6 +738,47 @@ const EditHRFields = ({
 	}, [hrRole, unregister]);
 	/** To check Duplicate email exists End */
 
+	const watchPostalCode = watch('postalCode');
+
+	const postalCodeHandler = useCallback(
+		async (flag) => {
+			const countryResponse = await MasterDAO.getCountryByPostalCodeRequestDAO({
+				...getPayload(flag, {
+					countryCode: watch('country')?.id || '',
+					postalCode: watch('postalCode') || '',
+				}),
+			});
+			if (countryResponse?.statusCode === HTTPStatusCode.OK) {
+				const response = countryResponse?.responseBody?.details;
+				setCountry(countryResponse && response.getCountry);
+				if (response?.stateCityData === 'postal code not find') {
+					setNewPostalCodeModal(true);
+					setValue('city', '');
+					setValue('state', '');
+					setValue('country', '')
+				} else if (response.getCountry?.length === 1) {
+					setControlledCountryValue(response?.getCountry[0]?.value);
+					setValue('city', response?.stateCityData?.province);
+					setValue('state', response?.stateCityData?.stateEn);
+					setValue('country', response?.getCountry[0])
+				} else {
+					setControlledCountryValue('');
+					setValue('city', '');
+					setValue('state', '');
+					setValue('country', '')
+				}
+			} else {
+				setCountry([]);
+			}
+		},
+		[clearErrors, setValue, watch],
+	);
+
+	const { isReady, debouncedFunction } = useDebounce(postalCodeHandler, 2000);
+	useEffect(() => {
+		!isPostalCodeNotFound && debouncedFunction('POSTAL_CODE');
+	}, [debouncedFunction, watchPostalCode, isPostalCodeNotFound]);
+
 	const [messageAPI, contextHolder] = message.useMessage();
 	let watchJDUrl = watch('jdURL');
 	setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
@@ -754,6 +799,17 @@ const EditHRFields = ({
 					return setError('clientName', {
 						type: 'emptyClientName',
 						message: 'Please enter the client name.',
+					});
+				}if (_isNull(watch('role'))) {
+					return setError('role', {
+						type: 'emptyrole',
+						message: 'Please enter the hiring role.',
+					});
+				}
+				if (_isNull(watch('hrTitle'))) {
+					return setError('hrTitle', {
+						type: 'emptyhrTitle',
+						message: 'please enter the hiring request title.',
 					});
 				}
 			} else if (type !== SubmitType.SAVE_AS_DRAFT) {
@@ -823,6 +879,7 @@ const EditHRFields = ({
 		setValue('companyName', getHRdetails?.company);
 		setValue('hrTitle', getHRdetails?.addHiringRequest?.requestForTalent);
 		setValue('jdURL', getHRdetails?.addHiringRequest?.jdurl);
+		if(getHRdetails?.addHiringRequest?.jdurl){ setJDURLLink(getHRdetails?.addHiringRequest?.jdurl)}
 		setValue(
 			'minimumBudget',
 			getHRdetails?.salesHiringRequest_Details?.budgetFrom,
@@ -1009,7 +1066,7 @@ const EditHRFields = ({
 				(item) => item?.value === getHRdetails?.salesHiringRequest_Details?.timeZoneEndTime,
 			);
 			setValue('fromTime', findFromTime[0]);
-			setControlledFromTimeValue(findFromTime[0].value);
+			setControlledFromTimeValue(findFromTime[0]?.value);
 			setValue('endTime', findEndTime[0]);
 			setControlledEndTimeValue(findEndTime[0].value);
 			// setControlledDurationTypeValue(findDurationMode[0]?.value);

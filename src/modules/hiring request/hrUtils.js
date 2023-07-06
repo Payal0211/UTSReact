@@ -185,12 +185,12 @@ export const hrUtils = {
 					: _isNull(d.availability)
 					? null
 					: d.availability?.value,
-			NRMargin: isHRDirectPlacement ? 0 :
+			NRMargin: 
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('NRMargin'))
+					? isHRDirectPlacement ? 0 :_isNull(watch('NRMargin'))
 						? 0
 						: parseInt(watch('NRMargin'))
-					: _isNull(d.NRMargin)
+					: isHRDirectPlacement ? 0 : _isNull(d.NRMargin)
 					? 0
 					: parseInt(d.NRMargin),
 			salesPerson:
@@ -204,36 +204,36 @@ export const hrUtils = {
 			ChildCompanyName: watch('otherChildCompanyName')
 				? watch('otherChildCompanyName')
 				: watch('childCompany')?.value,
-			contractDuration: isHRDirectPlacement ? null :
+			contractDuration: 
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('contractDuration'))
+					? isHRDirectPlacement ? null : _isNull(watch('contractDuration'))
 						? null
 						: watch('contractDuration').value
-					: _isNull(d.contractDuration.value)
+					:isHRDirectPlacement ? null : _isNull(d.contractDuration.value)
 					? null
 					: d.contractDuration.value,
-			TimeZoneFromTime: watch('region')?.value.includes('Overlapping') ? null :
+			TimeZoneFromTime:  
 					draft === SubmitType.SAVE_AS_DRAFT
-						? _isNull(watch('fromTime')).value
+						? _isNull(watch('region')) ? null : watch('region')?.value?.includes('Overlapping') ? null : _isNull(watch('fromTime').value)
 						? null
 						: watch('fromTime').value
-						: _isNull(d.fromTime.value)
+						: watch('region')&& watch('region')?.value?.includes('Overlapping') ? null : _isNull(d.fromTime?.value)
 						? null
-						: d.fromTime.value,		
-			TimeZoneEndTime:  watch('region')?.value.includes('Overlapping') ? null :
+						: d.fromTime?.value,		
+			TimeZoneEndTime:  
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('endTime')).value
+					? _isNull(watch('region')) ? null : watch('region')?.value.includes('Overlapping') ? null : _isNull(watch('endTime').value)
 					? null
 					: watch('endTime').value
-					: _isNull(d.endTime.value)
+					: watch('region')?.value.includes('Overlapping') ? null : _isNull(d.endTime.value)
 					? null
 					: d.endTime.value,
-			OverlapingHours:watch('region')?.value.includes('Overlapping') ? 
+			OverlapingHours:
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('overlappingHours'))
+					? _isNull(watch('region')) ? null : watch('region')?.value.includes('Overlapping') ?  _isNull(watch('overlappingHours'))
 					? null
-					: watch('overlappingHours')
-					: _isNull(d.overlappingHours)
+					: watch('overlappingHours') : null
+					: watch('region')?.value.includes('Overlapping') ?  _isNull(d.overlappingHours)
 					? null
 					: d.overlappingHours : null,
 			howSoon:
@@ -252,29 +252,29 @@ export const hrUtils = {
 					: _isNull(d.years)
 					? 0
 					: parseInt(d.years),
-			durationType: isHRDirectPlacement ? null :
+			durationType: 
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('getDurationType')?.value)
+					?isHRDirectPlacement ? null : _isNull(watch('getDurationType')?.value)
 						? 0
 						: watch('getDurationType')?.value
-					: _isNull(d.getDurationType?.value)
+					:isHRDirectPlacement ? null :  _isNull(d.getDurationType?.value)
 					? 0
 					: d.getDurationType?.value,
-			partialEngagementTypeId	: watch("availability")?.value === 'Part Time' ?
+			partialEngagementTypeId	: 
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('partialEngagement')?.id)
+					? watch("availability")?.value === 'Part Time' ? _isNull(watch('partialEngagement')?.id)
 						? 0
-						: watch('partialEngagement')?.id
-					: _isNull(d.partialEngagement?.id)
+						: watch('partialEngagement')?.id : null
+					: watch("availability")?.value === 'Part Time' ? _isNull(d.partialEngagement?.id)
 					? 0
 					: d.partialEngagement?.id  
 					: null,
-			NoofHoursworking: watch("availability")?.value === 'Part Time' ?
+			NoofHoursworking: 
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('workingHours'))
+					? watch("availability")?.value === 'Part Time' ? _isNull(watch('workingHours'))
 						? 0
-						: parseInt(watch('workingHours'))
-					: _isNull(d.workingHours)
+						: parseInt(watch('workingHours')) : null
+					: watch("availability")?.value === 'Part Time' ? _isNull(d.workingHours)
 					? 0
 					: parseInt(d.workingHours)
 					: null,

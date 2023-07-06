@@ -48,7 +48,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 			// 	);
 			setValue(
 				'renewedStartDate',
-				new Date(response?.responseBody?.details?.contractStartDate),
+				new Date(response?.responseBody?.details?.contractEndDate),
 			);
 			console.log(response?.responseBody?.details?.contractStartDate);
 			setStartDate(new Date(response?.responseBody?.details?.contractStartDate).getMonth())
