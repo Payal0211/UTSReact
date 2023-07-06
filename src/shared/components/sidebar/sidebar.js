@@ -57,29 +57,46 @@ const Sidebar = () => {
 									className={sideBarStyles.sidebarItem}
 									key={index}>
 									<Link to={!isChildren && navigateTo}>
-										<div className={sideBarStyles.iconSet}>
+										{/* <div className={sideBarStyles.}> */}
+										<div className={`${sideBarStyles.iconSet} ${
+												switchLocation.pathname === navigateTo
+													? sideBarStyles.active
+													: ''
+											}`}>
 											<div
-												className={`${sideBarStyles.sidebarIcon} ${
-													switchLocation.pathname === navigateTo
-														? sideBarStyles.active
-														: ''
-												}`}>
+												className={sideBarStyles.sidebarIcon}>
 												<img
 													src={icon}
 													alt="mySvgImage"
 												/>
 												<span>{title}</span>
+												<div
+													className={`${
+														urlSplitter === navigateTo
+															? sideBarStyles.indicator
+															: sideBarStyles.transparentIndicator
+													}`}>
+												</div>
 											</div>
+											{isChildren && (
+												<div className={sideBarStyles.sideBarSubmenu}>
+													{/* <h3>Masters</h3> */}
+													{branch?.length > 0 &&
+														branch?.map((item) => {
+															return (
+																<Link to={item?.navigateTo}>
+																	<img src={item?.icon} />
+																	{item?.title}
+																</Link>
+															);
+														})}
+												</div>
+											)}
 										</div>
+										
 									</Link>
-									<div
-										className={`${
-											urlSplitter === navigateTo
-												? sideBarStyles.indicator
-												: sideBarStyles.transparentIndicator
-										}`}></div>
 
-									{isChildren && (
+									{/* {isChildren && (
 										<div className={sideBarStyles.sideBarSubmenu}>
 											<h3>Masters</h3>
 											{branch?.length > 0 &&
@@ -92,7 +109,7 @@ const Sidebar = () => {
 													);
 												})}
 										</div>
-									)}
+									)} */}
 								</div>
 							</Tooltip>
 						);
