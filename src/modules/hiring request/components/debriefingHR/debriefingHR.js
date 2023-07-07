@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import WithLoader from 'shared/components/loader/loader';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
+import { _isNull } from 'shared/utils/basic_utils';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -43,6 +44,9 @@ const DebriefingHR = ({
 		handleSubmit,
 		setValue,
 		control,
+		setError,
+		clearErrors,
+		unregister,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
@@ -66,7 +70,27 @@ const DebriefingHR = ({
 		setSkills(response && response.responseBody);
 	}, []);
 
-	const combinedSkillsMemo = useMemo(() => {
+	const [ showOtherSkill, setShowOtherSkill] = useState(false)
+
+	// const combinedSkillsMemo = useMemo(() => {
+	// 	const combinedData = [
+	// 		JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
+	// 		...skills,
+	// 		...[
+	// 			{
+	// 				id: '-1',
+	// 				value: 'Others',
+	// 			},
+	// 		],
+	// 	];
+	// 	return combinedData.filter((o) => !selectedItems.includes(o));
+	// }, [JDParsedSkills, selectedItems, skills]);
+
+	const watchSkills = watch("skills")
+	const watchOtherSkills = watch("otherSkill")
+
+	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
+	useEffect(()=>{
 		const combinedData = [
 			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
 			...skills,
@@ -77,14 +101,28 @@ const DebriefingHR = ({
 				},
 			],
 		];
-		return combinedData.filter((o) => !selectedItems.includes(o));
-	}, [JDParsedSkills, selectedItems, skills]);
+		setCombinedSkillsMemo(combinedData.filter((o) => !selectedItems.includes(o)))
+	},[JDParsedSkills, selectedItems, skills])
 
 	// const isOtherSkillExistMemo = useMemo(() => {
 	// 	let response = watchSkills?.filter((item) => item?.id === '-1');
 
 	// 	return response?.length > 0;
 	// }, [watchSkills]);
+
+	// useEffect(() => {
+	// 	let response = watchSkills?.filter((item) => item?.id === '-1');
+
+	// 	if(response?.length > 0){
+	// 		setShowOtherSkill(true)
+	// 	}else{
+	// 		setShowOtherSkill(false)
+	// 		unregister("otherSkill")
+	// 		clearErrors("otherSkill") 
+	// 	}
+	// },[watchSkills,unregister, clearErrors]);
+	// console.log('reeors',errors)
+
 
 	useEffect(() => {
 		setValue(
@@ -96,13 +134,32 @@ const DebriefingHR = ({
 		);
 		setControlledJDParsed(JDParsedSkills?.Skills?.map((item) => item?.value));
 	}, [JDParsedSkills, setValue]);
-	// const [search, setSearch] = useState('');
-	// const [debouncedSearch, setDebouncedSearch] = useState('');
+	const [search, setSearch] = useState('');
+	const [debouncedSearch, setDebouncedSearch] = useState('');
+	console.log(debouncedSearch)
 	// const getOtherSkillsRequest = useCallback(
 	// 	async (data) => {
 	// 		let response = await MasterDAO.getOtherSkillsRequestDAO({
 	// 			skillName: data,
 	// 		});
+	// 		if(response.statusCode === HTTPStatusCode.OK){
+	// 			let newSKill = {
+	// 				id: response.responseBody.details.tempSkill_ID,
+	// 				value: data,
+	// 			}
+
+	// 			let newSkillSet = watchSkills?.map((skill) => {
+	// 				if(skill.id === '-1'){
+	// 					return newSKill
+	// 				}
+	// 				return skill
+	// 			})
+	// 			setSkills(prevSkills => [...prevSkills, newSKill])
+	// 			setValue('skills', newSkillSet)
+	// 			setControlledJDParsed(newSkillSet)
+	// 			setValue('otherSkills', '')
+	// 			return setError('otherSkill',null)
+	// 		}
 	// 		if (response?.statusCode === HTTPStatusCode?.BAD_REQUEST) {
 	// 			return setError('otherSkill', {
 	// 				type: 'otherSkill',
@@ -110,7 +167,7 @@ const DebriefingHR = ({
 	// 			});
 	// 		}
 	// 	},
-	// 	[setError],
+	// 	[setError,watchSkills, setValue],
 	// );
 
 	// useEffect(() => {
@@ -128,12 +185,12 @@ const DebriefingHR = ({
 		getSkills();
 	}, [getSkills]);
 
-	// useEffect(() => {
-	// 	const timer = setTimeout(() => {
-	// 		setSearch(debouncedSearch);
-	// 	}, 1000);
-	// 	return () => clearTimeout(timer);
-	// }, [debouncedSearch]);
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setSearch(debouncedSearch);
+		}, 1000);
+		return () => clearTimeout(timer);
+	}, [debouncedSearch]);
 	// useEffect(() => {
 	// 	getOtherSkillsRequest(search);
 	// }, [getOtherSkillsRequest, search]);
@@ -148,7 +205,7 @@ const DebriefingHR = ({
 				shouldDirty: true,
 			});
 	}, [JDParsedSkills, setValue]);
-
+console.log("errors", errors);
 	const debriefSubmitHandler = async (d) => {
 		setIsLoading(true);
 		let skillList = d.skills.map((item) => {
@@ -316,7 +373,7 @@ const DebriefingHR = ({
 									errorMsg={'Please enter the skills.'}
 								/>
 							</div>
-							{/* {isOtherSkillExistMemo && (
+							{/* {showOtherSkill && (
 							<div className={DebriefingHRStyle.colMd12}>
 								<HRInputField
 									register={register}
@@ -337,7 +394,7 @@ const DebriefingHR = ({
 									type={InputType.TEXT}
 									placeholder="Enter other skill"
 									maxLength={50}
-									required={isOtherSkillExistMemo}
+									required={showOtherSkill} 
 								/>
 							</div>
 						)} */}
@@ -376,6 +433,7 @@ const DebriefingHR = ({
 					remove={remove}
 					setValue={setValue}
 					register={register}
+					watch={watch}
 					interviewDetails={interviewDetails}
 					fields={fields}
 					getHRdetails={getHRdetails}

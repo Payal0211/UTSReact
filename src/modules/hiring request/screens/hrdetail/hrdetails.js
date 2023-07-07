@@ -1,211 +1,247 @@
-import React, { Suspense, useCallback, useEffect, useState } from 'react';
-import { Skeleton, Tooltip, Modal } from 'antd';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
-import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
-import HRDetailStyle from './hrdetail.module.css';
-import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
-import { ReactComponent as PowerSVG } from 'assets/svg/power.svg';
-import UTSRoutes from 'constants/routes';
-import { HTTPStatusCode } from 'constants/network';
-import WithLoader from 'shared/components/loader/loader';
-import { useForm } from 'react-hook-form';
+import React, { Suspense, useCallback, useEffect, useState } from "react";
+import { Skeleton, Tooltip, Modal } from "antd";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
+import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
+import HRDetailStyle from "./hrdetail.module.css";
+import { ReactComponent as ArrowLeftSVG } from "assets/svg/arrowLeft.svg";
+import { ReactComponent as PowerSVG } from "assets/svg/power.svg";
+import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
+import UTSRoutes from "constants/routes";
+import { HTTPStatusCode } from "constants/network";
+import WithLoader from "shared/components/loader/loader";
+import { useForm } from "react-hook-form";
 
-import { HRDeleteType, HiringRequestHRStatus } from 'constants/application';
+import { HRDeleteType, HiringRequestHRStatus } from "constants/application";
 
-import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import { UserSessionManagementController } from "modules/user/services/user_session_services";
 
-import CloseHRModal from '../../components/closeHRModal/closeHRModal';
-import CloneHR from 'modules/hiring request/components/cloneHR/cloneHR';
-import CTASlot1 from 'modules/hiring request/components/CTASlot1/CTASlot1';
-import CTASlot2 from 'modules/hiring request/components/CTASlot2/CTASlot2';
+import CloseHRModal from "../../components/closeHRModal/closeHRModal";
+import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal";
+import CloneHR from "modules/hiring request/components/cloneHR/cloneHR";
+import CTASlot1 from "modules/hiring request/components/CTASlot1/CTASlot1";
+import CTASlot2 from "modules/hiring request/components/CTASlot2/CTASlot2";
 
 /** Lazy Loading the component */
 const NextActionItem = React.lazy(() =>
-	import('modules/hiring request/components/nextAction/nextAction.js'),
+  import("modules/hiring request/components/nextAction/nextAction.js")
 );
 const CompanyProfileCard = React.lazy(() =>
-	import('modules/hiring request/components/companyProfile/companyProfileCard'),
+  import("modules/hiring request/components/companyProfile/companyProfileCard")
 );
 const TalentProfileCard = React.lazy(() =>
-	import('modules/hiring request/components/talentProfile/talentProfileCard'),
+  import("modules/hiring request/components/talentProfile/talentProfileCard")
 );
 const ActivityFeed = React.lazy(() =>
-	import('modules/hiring request/components/activityFeed/activityFeed'),
+  import("modules/hiring request/components/activityFeed/activityFeed")
 );
 
 const HRDetailScreen = () => {
-	// const [deleteModal, setDeleteModal] = useState(false);
-	const [isLoading, setLoading] = useState(false);
-	const [apiData, setAPIdata] = useState([]);
-	const navigate = useNavigate();
-	const switchLocation = useLocation();
-	// const [deleteReason, setDeleteReason] = useState([]);
-	const [callHRapi, setHRapiCall] = useState(false);
+  // const [deleteModal, setDeleteModal] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [apiData, setAPIdata] = useState([]);
+  const navigate = useNavigate();
+  const switchLocation = useLocation();
+  // const [deleteReason, setDeleteReason] = useState([]);
+  const [callHRapi, setHRapiCall] = useState(false);
 
-	const [editDebrifing, setEditDebring] = useState([]);
+  const [editDebrifing, setEditDebring] = useState([]);
 
-	const [closeHrModal, setCloseHrModal] = useState(false);
+  const [closeHrModal, setCloseHrModal] = useState(false);
+  const [reopenHrModal, setReopenHrModal] = useState(false);
 
-	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
-	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
-	const miscData = UserSessionManagementController.getUserSession();
+  let urlSplitter = `${switchLocation.pathname.split("/")[2]}`;
+  const updatedSplitter = "HR" + apiData && apiData?.ClientDetail?.HR_Number;
+  const miscData = UserSessionManagementController.getUserSession();
 
-	const callAPI = useCallback(
-		async (hrid) => {
-			setLoading(true);
-			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
-			if (response.statusCode === HTTPStatusCode.OK) {
-				setAPIdata(response && response?.responseBody);
-				setLoading(false);
-			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
-				navigate(UTSRoutes.PAGENOTFOUNDROUTE);
-			}
-		},
-		[navigate],
-	);
+  const callAPI = useCallback(
+    async (hrid) => {
+      setLoading(true);
+      let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+      if (response.statusCode === HTTPStatusCode.OK) {
+        setAPIdata(response && response?.responseBody);
+        setLoading(false);
+      } else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+        navigate(UTSRoutes.PAGENOTFOUNDROUTE);
+      }
+    },
+    [navigate]
+  );
 
-	// console.log(apiData, '--apiData-');
-	// const clientOnLossSubmitHandler = useCallback(
-	// 	async (d) => {
-	// 		_isNull(watch('hrDeleteLossReason')) &&
-	// 			setError('hrDeleteLossReason', 'Please select loss reason.');
+  // console.log(apiData, '--apiData-');
+  // const clientOnLossSubmitHandler = useCallback(
+  // 	async (d) => {
+  // 		_isNull(watch('hrDeleteLossReason')) &&
+  // 			setError('hrDeleteLossReason', 'Please select loss reason.');
 
-	// 		_isNull(watch('hrDeleteLossRemark')) &&
-	// 			setError('hrDeleteLossRemark', 'Please enter loss remark');
+  // 		_isNull(watch('hrDeleteLossRemark')) &&
+  // 			setError('hrDeleteLossRemark', 'Please enter loss remark');
 
-	// 		let deleteObj = {
-	// 			id: urlSplitter?.split('HR')[0],
-	// 			deleteType: HRDeleteType.LOSS,
-	// 			reasonId: watch('hrDeleteLossReason').id,
-	// 			otherReason: _isNull(watch('hrLossDeleteOtherReason'))
-	// 				? ''
-	// 				: watch('hrLossDeleteOtherReason'),
-	// 			reason: watch('hrDeleteLossReason').value,
-	// 			remark: watch('hrDeleteLossRemark'),
-	// 			onBoardId: 0,
-	// 		};
+  // 		let deleteObj = {
+  // 			id: urlSplitter?.split('HR')[0],
+  // 			deleteType: HRDeleteType.LOSS,
+  // 			reasonId: watch('hrDeleteLossReason').id,
+  // 			otherReason: _isNull(watch('hrLossDeleteOtherReason'))
+  // 				? ''
+  // 				: watch('hrLossDeleteOtherReason'),
+  // 			reason: watch('hrDeleteLossReason').value,
+  // 			remark: watch('hrDeleteLossRemark'),
+  // 			onBoardId: 0,
+  // 		};
 
-	// 		let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
-	// 		if (deletedResponse && deletedResponse.statusCode === HTTPStatusCode.OK) {
-	// 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
-	// 		}
-	// 	},
-	// 	[navigate, setError, urlSplitter, watch],
-	// );
+  // 		let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
+  // 		if (deletedResponse && deletedResponse.statusCode === HTTPStatusCode.OK) {
+  // 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+  // 		}
+  // 	},
+  // 	[navigate, setError, urlSplitter, watch],
+  // );
 
-	const AMAssignmentHandler = useCallback(() => {});
+  const AMAssignmentHandler = useCallback(() => {});
 
-	// const clientOnHoldSubmitHandler = useCallback(
-	// 	async (d) => {
-	// 		let deleteObj = {
-	// 			id: urlSplitter?.split('HR')[0],
-	// 			deleteType: HRDeleteType.ON_HOLD,
-	// 			reasonId: d.hrDeleteReason.id,
-	// 			otherReason: d.hrDeleteOtherReason,
-	// 			reason: d.hrDeleteReason.value,
-	// 			remark: d.hrDeleteRemark,
-	// 			onBoardId: 0,
-	// 		};
+  // const clientOnHoldSubmitHandler = useCallback(
+  // 	async (d) => {
+  // 		let deleteObj = {
+  // 			id: urlSplitter?.split('HR')[0],
+  // 			deleteType: HRDeleteType.ON_HOLD,
+  // 			reasonId: d.hrDeleteReason.id,
+  // 			otherReason: d.hrDeleteOtherReason,
+  // 			reason: d.hrDeleteReason.value,
+  // 			remark: d.hrDeleteRemark,
+  // 			onBoardId: 0,
+  // 		};
 
-	// 		let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
-	// 		if (deletedResponse && deletedResponse.statusCode === HTTPStatusCode.OK) {
-	// 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
-	// 		}
-	// 	},
-	// 	[navigate, urlSplitter],
-	// );
+  // 		let deletedResponse = await hiringRequestDAO.deleteHRDAO(deleteObj);
+  // 		if (deletedResponse && deletedResponse.statusCode === HTTPStatusCode.OK) {
+  // 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+  // 		}
+  // 	},
+  // 	[navigate, urlSplitter],
+  // );
 
-	// const getHRDeleteReason = useCallback(async () => {
-	// 	let response = await MasterDAO.getHRDeletReasonRequestDAO();
-	// 	setDeleteReason(response && response?.responseBody?.details);
-	// }, []);
+  // const getHRDeleteReason = useCallback(async () => {
+  // 	let response = await MasterDAO.getHRDeletReasonRequestDAO();
+  // 	setDeleteReason(response && response?.responseBody?.details);
+  // }, []);
 
-	// console.log(apiData, '-apiData');
+  // console.log(apiData, '-apiData');
 
-	/**  Put ON HOLD * */
+  /**  Put ON HOLD * */
 
-	// const updateODRPoolStatusHandler = useCallback(
-	// 	async (data) => {
-	// 		await hiringRequestDAO.updateODRPOOLStatusRequestDAO(data);
+  // const updateODRPoolStatusHandler = useCallback(
+  // 	async (data) => {
+  // 		await hiringRequestDAO.updateODRPOOLStatusRequestDAO(data);
 
-	// 		callAPI(urlSplitter?.split('HR')[0]);
-	// 	},
-	// 	[callAPI, urlSplitter],
-	// );
+  // 		callAPI(urlSplitter?.split('HR')[0]);
+  // 	},
+  // 	[callAPI, urlSplitter],
+  // );
 
-	useEffect(() => {
-		setLoading(true);
-		callAPI(urlSplitter?.split('HR')[0]);
-	}, [urlSplitter, callAPI, callHRapi]);
+  useEffect(() => {
+    setLoading(true);
+    callAPI(urlSplitter?.split("HR")[0]);
+  }, [urlSplitter, callAPI, callHRapi]);
 
-	useEffect(() => {
-		const data = apiData?.hr_CTA?.filter((item) => item.key === 'DebriefingHR');
-		setEditDebring(data);
-	}, [apiData]);
-console.log('apiData', apiData)
-	return (
-		<WithLoader
-			showLoader={isLoading}
-			className="mainLoader">
-			<div className={HRDetailStyle.hiringRequestContainer}>
-				<Link
-					className={HRDetailStyle.hrback}
-					to={UTSRoutes.ALLHIRINGREQUESTROUTE}>
-					<div className={HRDetailStyle.goback}>
-						<ArrowLeftSVG style={{ width: '16px' }} />
-						<span>Go Back</span>
-					</div>
-				</Link>
-				<div className={HRDetailStyle.hrDetails}>
-					<div className={HRDetailStyle.hrDetailsLeftPart}>
-						<div className={HRDetailStyle.hiringRequestIdSets}>
-							{updatedSplitter}
-						</div>
-						{All_Hiring_Request_Utils.GETHRSTATUS(
-							apiData?.HRStatusCode,
-							apiData?.HRStatus,
-						)}
-						{apiData && (
-							<div className={HRDetailStyle.hiringRequestPriority}>
-								{All_Hiring_Request_Utils.GETHRPRIORITY(
-									apiData?.StarMarkedStatusCode,
-								)}
-							</div>
-						)}
-						{/** ----Clone HR */}
-						{apiData?.dynamicCTA?.CloneHR && (
-							<CloneHR
-								updatedSplitter={updatedSplitter}
-								cloneHR={apiData?.dynamicCTA?.CloneHR}
-							/>
-						)}
-					</div>
+  useEffect(() => {
+    const data = apiData?.hr_CTA?.filter((item) => item.key === "DebriefingHR");
+    setEditDebring(data);
+  }, [apiData]);
+  console.log("apiData", apiData, apiData?.dynamicCTA);
+  return (
+    <WithLoader showLoader={isLoading} className="mainLoader">
+      <div className={HRDetailStyle.hiringRequestContainer}>
+        <Link
+          className={HRDetailStyle.hrback}
+          to={UTSRoutes.ALLHIRINGREQUESTROUTE}
+        >
+          <div className={HRDetailStyle.goback}>
+            <ArrowLeftSVG style={{ width: "16px" }} />
+            <span>Go Back</span>
+          </div>
+        </Link>
+        <div className={HRDetailStyle.hrDetails}>
+          <div className={HRDetailStyle.hrDetailsLeftPart}>
+            <div className={HRDetailStyle.hiringRequestIdSets}>
+              {updatedSplitter}
+            </div>
+            {All_Hiring_Request_Utils.GETHRSTATUS(
+              apiData?.HRStatusCode,
+              apiData?.HRStatus
+            )}
+            {apiData && (
+              <div className={HRDetailStyle.hiringRequestPriority}>
+                {All_Hiring_Request_Utils.GETHRPRIORITY(
+                  apiData?.StarMarkedStatusCode
+                )}
+              </div>
+            )}
+            {/** ----Clone HR */}
+            {apiData?.dynamicCTA?.CloneHR && (
+              <CloneHR
+                updatedSplitter={updatedSplitter}
+                cloneHR={apiData?.dynamicCTA?.CloneHR}
+              />
+            )}
+          </div>
 
-					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
-						<div className={HRDetailStyle.hrDetailsRightPart}>
-							{apiData?.dynamicCTA?.CTA_Set1 &&
-								apiData?.dynamicCTA?.CTA_Set1?.length > 0 && (
-									<CTASlot1
-										callAPI={callAPI}
-										hrID={urlSplitter?.split('HR')[0]}
-										slotItem={apiData?.dynamicCTA?.CTA_Set1}
-										apiData={apiData}
-										miscData={miscData}
-									/>
-								)}
-							{apiData?.dynamicCTA?.CTA_Set2 &&
-								apiData?.dynamicCTA?.CTA_Set2?.length > 0 && (
-									<CTASlot2
-										callAPI={callAPI}
-										hrID={urlSplitter?.split('HR')[0]}
-										slotItem={apiData?.dynamicCTA?.CTA_Set2}
-										apiData={apiData}
-										miscData={miscData}
-									/>
-								)}
+          {apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? (
+            <>
+              {apiData?.dynamicCTA?.ReopenHR && (
+                <div
+                  className={HRDetailStyle.hiringRequestPriority}
+                  onClick={() => {
+                    setReopenHrModal(true);
+                  }}
+                >
+                  <Tooltip placement="bottom" title="Reopen HR">
+                    <ReopenHR
+                      style={{ width: "24px" }}
+                      className={HRDetailStyle.deleteSVG}
+                    />
+                  </Tooltip>
+                </div>
+              )}
 
-							{/* {apiData?.activity_MissingAction_CTA?.length > 0 && (
+              {reopenHrModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={reopenHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setReopenHrModal(false)}
+                >
+                  <ReopenHRModal
+                    onCancel={() => setReopenHrModal(false)}
+                    apiData={apiData}
+                  />
+                </Modal>
+              )}
+            </>
+          ) : (
+            <div className={HRDetailStyle.hrDetailsRightPart}>
+              {apiData?.dynamicCTA?.CTA_Set1 &&
+                apiData?.dynamicCTA?.CTA_Set1?.length > 0 && (
+                  <CTASlot1
+                    callAPI={callAPI}
+                    hrID={urlSplitter?.split("HR")[0]}
+                    slotItem={apiData?.dynamicCTA?.CTA_Set1}
+                    apiData={apiData}
+                    miscData={miscData}
+                  />
+                )}
+              {apiData?.dynamicCTA?.CTA_Set2 &&
+                apiData?.dynamicCTA?.CTA_Set2?.length > 0 && (
+                  <CTASlot2
+                    callAPI={callAPI}
+                    hrID={urlSplitter?.split("HR")[0]}
+                    slotItem={apiData?.dynamicCTA?.CTA_Set2}
+                    apiData={apiData}
+                    miscData={miscData}
+                  />
+                )}
+
+              {/* {apiData?.activity_MissingAction_CTA?.length > 0 && (
 								<span>
 									<h4>
 										{getNextActionMissingActionMemo?.key !== 'ShareAProfile' &&
@@ -214,8 +250,8 @@ console.log('apiData', apiData)
 									</h4>
 								</span>
 							)} */}
-							{/**  As of No Put on HOLD */}
-							{/* <HROperator
+              {/**  As of No Put on HOLD */}
+              {/* <HROperator
 								title={
 									hrUtils.handleAdHOC(apiData && apiData?.AdhocPoolValue)[0]
 										?.label
@@ -258,117 +294,149 @@ console.log('apiData', apiData)
 								}}
 							/> */}
 
-							{apiData?.dynamicCTA?.CloseHr && (
-								<div
-									className={HRDetailStyle.hiringRequestPriority}
-									onClick={() => {
-										setCloseHrModal(true);
-									}}>
-									<Tooltip
-										placement="bottom"
-										title="Close HR">
-										<PowerSVG
-											style={{ width: '24px' }}
-											className={HRDetailStyle.deleteSVG}
-										/>
-									</Tooltip>
-								</div>
-							)}
+              {apiData?.dynamicCTA?.CloseHr && (
+                <div
+                  className={HRDetailStyle.hiringRequestPriority}
+                  onClick={() => {
+                    setCloseHrModal(true);
+                  }}
+                >
+                  <Tooltip placement="bottom" title="Close HR">
+                    <PowerSVG
+                      style={{ width: "24px" }}
+                      className={HRDetailStyle.deleteSVG}
+                    />
+                  </Tooltip>
+                </div>
+              )}
 
-							{closeHrModal && (
-								<Modal
-									width={'864px'}
-									centered
-									footer={false}
-									open={closeHrModal}
-									className="updateTRModal"
-									onCancel={() => setCloseHrModal(false)}>
-									<CloseHRModal
-										closeHR={() => {}}
-										setUpdateTR={() => setCloseHrModal(true)}
-										onCancel={() => setCloseHrModal(false)}
-										closeHRDetail={apiData}
-									/>
-								</Modal>
-							)}
-						</div>
-					)}
-				</div>
-				{isLoading ? (
-					<>
-						<br />
-						<Skeleton active />
-						<br />
-					</>
-				) : (
-					apiData?.NextActionsForTalent?.length > 0 && (
-						<Suspense>
-							<NextActionItem nextAction={apiData?.NextActionsForTalent} />
-						</Suspense>
-					)
-				)}
+              {closeHrModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={closeHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setCloseHrModal(false)}
+                >
+                  <CloseHRModal
+                    closeHR={() => {}}
+                    setUpdateTR={() => setCloseHrModal(true)}
+                    onCancel={() => setCloseHrModal(false)}
+                    closeHRDetail={apiData}
+                  />
+                </Modal>
+              )}
 
-				<div className={HRDetailStyle.portal}>
-					<div className={HRDetailStyle.clientPortal}>
-						{isLoading ? (
-							<Skeleton active />
-						) : (
-							<Suspense>
-								<CompanyProfileCard
-									clientDetail={apiData?.ClientDetail}
-									talentLength={apiData?.HRTalentDetails?.length}
-									apiData={apiData?.HRStatus}
-									allApiData={apiData}
-								/>
-							</Suspense>
-						)}
-					</div>
-					<div className={HRDetailStyle.talentPortal}>
-						{isLoading ? (
-							<Skeleton active />
-						) : (
-							<Suspense>
-								<TalentProfileCard
-									urlSplitter={urlSplitter}
-									updatedSplitter={updatedSplitter}
-									apiData={apiData}
-									clientDetail={apiData?.ClientDetail}
-									callAPI={callAPI}
-									talentCTA={apiData?.dynamicCTA?.talent_CTAs || []}
-									HRStatusCode={apiData?.HRStatusCode}
-									talentDetail={apiData?.HRTalentDetails}
-									hrId={apiData.HR_Id}
-									miscData={miscData}
-									hiringRequestNumber={updatedSplitter}
-									hrType={apiData.Is_HRTypeDP}
-									starMarkedStatusCode={apiData?.StarMarkedStatusCode}
-									hrStatus={apiData?.HRStatus}
-									callHRapi={callHRapi}
-									setHRapiCall={setHRapiCall}
-									inteviewSlotDetails={apiData?.InterviewSlotDetails}
-								/>
-							</Suspense>
-						)}
-					</div>
-				</div>
-				<div className={HRDetailStyle.activityFeed}>
-					{isLoading ? (
-						<Skeleton active />
-					) : (
-						<Suspense>
-							<ActivityFeed
-								hrID={urlSplitter?.split('HR')[0]}
-								activityFeed={apiData?.HRHistory}
-								tagUsers={apiData?.UsersToTag}
-								callActivityFeedAPI={callAPI}
-							/>
-						</Suspense>
-					)}
-				</div>
-			</div>
+              {apiData?.dynamicCTA?.ReopenHR && (
+                <div
+                  className={HRDetailStyle.hiringRequestPriority}
+                  onClick={() => {
+                    setReopenHrModal(true);
+                  }}
+                >
+                  <Tooltip placement="bottom" title="Reopen HR">
+                    <ReopenHR
+                      style={{ width: "24px" }}
+                      className={HRDetailStyle.deleteSVG}
+                    />
+                  </Tooltip>
+                </div>
+              )}
 
-			{/* ------------------ HR Delete Modal ---------------------- */}
-			{/* <Modal
+              {reopenHrModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={reopenHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setReopenHrModal(false)}
+                >
+                  <ReopenHRModal
+                    onCancel={() => setReopenHrModal(false)}
+                    apiData={apiData}
+                  />
+                </Modal>
+              )}
+            </div>
+          )}
+        </div>
+        {isLoading ? (
+          <>
+            <br />
+            <Skeleton active />
+            <br />
+          </>
+        ) : (
+          apiData?.NextActionsForTalent?.length > 0 && (
+            <Suspense>
+              <NextActionItem nextAction={apiData?.NextActionsForTalent} />
+            </Suspense>
+          )
+        )}
+
+        <div className={HRDetailStyle.portal}>
+          <div className={HRDetailStyle.clientPortal}>
+            {isLoading ? (
+              <Skeleton active />
+            ) : (
+              <Suspense>
+                <CompanyProfileCard
+                  clientDetail={apiData?.ClientDetail}
+                  talentLength={apiData?.HRTalentDetails?.length}
+                  apiData={apiData?.HRStatus}
+                  allApiData={apiData}
+                />
+              </Suspense>
+            )}
+          </div>
+          <div className={HRDetailStyle.talentPortal}>
+            {isLoading ? (
+              <Skeleton active />
+            ) : (
+              <Suspense>
+                <TalentProfileCard
+                  urlSplitter={urlSplitter}
+                  updatedSplitter={updatedSplitter}
+                  apiData={apiData}
+                  clientDetail={apiData?.ClientDetail}
+                  callAPI={callAPI}
+                  talentCTA={apiData?.dynamicCTA?.talent_CTAs || []}
+                  HRStatusCode={apiData?.HRStatusCode}
+                  talentDetail={apiData?.HRTalentDetails}
+                  hrId={apiData.HR_Id}
+                  miscData={miscData}
+                  hiringRequestNumber={updatedSplitter}
+                  hrType={apiData.Is_HRTypeDP}
+                  starMarkedStatusCode={apiData?.StarMarkedStatusCode}
+                  hrStatus={apiData?.HRStatus}
+                  callHRapi={callHRapi}
+                  setHRapiCall={setHRapiCall}
+                  inteviewSlotDetails={apiData?.InterviewSlotDetails}
+                />
+              </Suspense>
+            )}
+          </div>
+        </div>
+        <div className={HRDetailStyle.activityFeed}>
+          {isLoading ? (
+            <Skeleton active />
+          ) : (
+            <Suspense>
+              <ActivityFeed
+                hrID={urlSplitter?.split("HR")[0]}
+                activityFeed={apiData?.HRHistory}
+                tagUsers={apiData?.UsersToTag}
+                callActivityFeedAPI={callAPI}
+              />
+            </Suspense>
+          )}
+        </div>
+      </div>
+
+      {/* ------------------ HR Delete Modal ---------------------- */}
+      {/* <Modal
 				transitionName=""
 				centered
 				open={deleteModal}
@@ -549,8 +617,8 @@ console.log('apiData', apiData)
 					</div>
 				</div>
 			</Modal> */}
-		</WithLoader>
-	);
+    </WithLoader>
+  );
 };
 
 export default HRDetailScreen;

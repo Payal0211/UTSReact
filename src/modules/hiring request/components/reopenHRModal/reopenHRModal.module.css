@@ -1,0 +1,155 @@
+.engagementModalWrap {
+  margin: 0;
+}
+.row {
+  margin: 10px  9px ;
+  flex-wrap: wrap;
+  display: flex;
+}
+.colMd12 {
+  width: 100%;
+  padding: 0 9px;
+}
+.colMd6 {
+  width: 50%;
+  padding: 0 9px;
+}
+.formPanelAction {
+  display: flex;
+}
+.formPanelAction button {
+  background: var(--text-color-purity);
+  border: 1px solid #cecccc;
+  border-radius: 8px;
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--uplers-black);
+  padding: 12px 28px;
+  outline: none;
+  cursor: pointer;
+  box-shadow: none;
+}
+.formPanelAction .btnPrimary {
+  background: var(--color-sunlight);
+  border-color: var(--color-sunlight);
+}
+.formPanelAction button:disabled {
+  background: #cecccc;
+  border: 1px solid #cecccc;
+  cursor: not-allowed;
+}
+
+.formPanelAction button + button {
+  margin-left: 24px;
+}
+
+.reqField {
+  color: var(--uplers-black);
+  font-weight: 700;
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+.updateTRTitle {
+  border-bottom: 1px solid #e8e8e8;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #676767;
+}
+.updateTRTitle span {
+  color: #232323;
+  font-weight: 600;
+}
+
+.updateTRTitle h2 {
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29px;
+  color: #232323;
+  margin: 0 0 16px;
+}
+.updateTRTitle p {
+  margin-bottom: 0;
+}
+.error {
+  color: #fe0000;
+}
+.infoMsg {
+  color: #ff9900;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 20px;
+}
+
+.counterFieldGroup {
+  position: relative;
+}
+.counterFieldGroup
+  [class*="hrInputFields_inputBox"]
+  [class*="hrInputFields_inputfield"] {
+  text-align: center;
+  padding-left: 70px;
+  padding-right: 70px;
+}
+.counterFieldGroup button {
+  position: absolute;
+  height: 52px;
+  top: 26px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  width: 63px;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
+}
+.counterFieldGroup button:hover {
+  background: #ffda30;
+}
+.counterFieldGroup .minusButton {
+  left: 1px;
+  border-right: 1px solid #cecccc;
+  border-radius: 7px 0 0 7px;
+}
+.counterFieldGroup .plusButton {
+  right: 1px;
+  border-left: 1px solid #cecccc;
+  border-radius: 0 7px 7px 0;
+}
+
+
+
+.radioGroup {
+  flex-direction: column;
+  display: flex;
+}
+
+.radioGroup [class*="ant-radio-wrapper"] {
+  margin: 0 0 16px 0;
+  min-height: 25px;
+  padding-left: 35px;
+}
+
+.radioGroup [class*="ant-radio-wrapper"]:last-child {
+  margin-bottom: 0;
+}
+
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"] {
+  width: 25px;
+  height: 25px;
+}
+
+.radioGroup [class*="ant-radio-wrapper"] [class*="ant-radio"] [class*="ant-radio-inner"]:after {
+  width: 15px;
+  height: 15px;
+}

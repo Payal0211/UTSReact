@@ -434,6 +434,14 @@ const EditHRFields = ({
 		}
 	}, [userData,setValue]);
 
+	// unregister JDExport 
+	useEffect(()=>{
+	if((!jdURLLink && !getUploadFileData)=== false){
+		unregister('jdExport')
+	clearErrors('jdExport')
+	}
+	}, [jdURLLink , getUploadFileData])
+
 	const getRegion = useCallback(async () => {
 		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
 		setRegion(response && response?.responseBody);
@@ -1068,7 +1076,7 @@ const EditHRFields = ({
 			setValue('fromTime', findFromTime[0]);
 			setControlledFromTimeValue(findFromTime[0]?.value);
 			setValue('endTime', findEndTime[0]);
-			setControlledEndTimeValue(findEndTime[0].value);
+			setControlledEndTimeValue(findEndTime[0]?.value);
 			// setControlledDurationTypeValue(findDurationMode[0]?.value);
 		}
 	}, [getHRdetails, getStartEndTimes,setValue]);
@@ -1078,7 +1086,7 @@ const EditHRFields = ({
 			const findtempProject = tempProjects.filter(item => item.value === getHRdetails.addHiringRequest.isHiringLimited)
 			if(findtempProject.length > 0){
 			setValue('tempProject', findtempProject[0])
-			setControlledTempProjectValue(findtempProject[0].value)
+			setControlledTempProjectValue(findtempProject[0]?.value)
 			}
 		}
 	},[getHRdetails, tempProjects, setValue ])
@@ -1087,7 +1095,7 @@ const EditHRFields = ({
 		if(getHRdetails?.addHiringRequest?.partialEngagementTypeId){
 			const findPartialEngagement = partialEngagements.filter(item => item.id === getHRdetails?.addHiringRequest?.partialEngagementTypeId)
 			setValue('partialEngagement',findPartialEngagement[0])
-			setControlledPartialEngagementValue(findPartialEngagement[0].value)
+			setControlledPartialEngagementValue(findPartialEngagement[0]?.value)
 		}
 	},[getHRdetails,partialEngagements])
 
@@ -1100,7 +1108,7 @@ const EditHRFields = ({
 			
 			if(contract.length > 0){
 				setValue('contractDuration', contract[0]);
-			    setContractDuration(contract[0].value);
+			    setContractDuration(contract[0]?.value);
 			}else{
 				if(getHRdetails?.contractDuration !== '0'){
 					const object = {
