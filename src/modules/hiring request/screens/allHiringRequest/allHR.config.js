@@ -2,6 +2,7 @@ import { HiringRequestHRStatus, ProfileLog } from 'constants/application';
 import { Link } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { ReactComponent as CloneHRSVG } from 'assets/svg/cloneHR.svg';
+import { Tooltip } from 'antd';
 export const allHRConfig = {
 	tableConfig: (togglePriority, setCloneHR, setHRID, setHRNumber) => {
 		return [
@@ -10,7 +11,7 @@ export const allHRConfig = {
 				dataIndex: 'starStatus',
 				key: 'starStatus',
 				align: 'left',
-				width: '55px',
+				width: '30px',
 				render: (_, param) => {
 					let response = All_Hiring_Request_Utils.GETHRPRIORITY(
 						param.starStatus,
@@ -23,15 +24,18 @@ export const allHRConfig = {
 				},
 			},
 			{
-				title: 'Clone HR',
+				title: ' ',
 				dataIndex: 'cloneHR',
 				key: 'cloneHR',
-				width: '80px',
+				width: '30px',
 				align: 'left',
 				render: (text, result) => {
 					return (
 						<>
-							<a href="javascript:void(0);">
+						<Tooltip
+							placement="right"
+							title={'Clone HR'}>
+								<a href="javascript:void(0);">
 								<CloneHRSVG
 									style={{ fontSize: '16px' }}
 									onClick={() => {
@@ -41,6 +45,8 @@ export const allHRConfig = {
 									}}
 								/>
 							</a>
+						</Tooltip>
+							
 						</>
 					);
 				},
@@ -56,14 +62,14 @@ export const allHRConfig = {
 				dataIndex: 'Date',
 				key: 'Date',
 				align: 'left',
-				width:'130px'
+				width:'100px'
 			},
 			{
 				title: 'HR ID',
 				dataIndex: 'HR_ID',
 				key: 'HR_ID',
 				align: 'left',
-				width: '180px',
+				width: '150px',
 				render: (text, result) => (
 					<Link
 						to={`/allhiringrequest/${result?.key}`}
@@ -76,7 +82,7 @@ export const allHRConfig = {
 				title: 'TR',
 				dataIndex: 'TR',
 				key: 'TR',
-				width: '70px',
+				width: '50px',
 				align: 'left',
 			},
 			{
@@ -91,7 +97,7 @@ export const allHRConfig = {
 				dataIndex: 'Company',
 				key: 'company',
 				align: 'left',
-				width: '130px',
+				width: '115px',
 				// render: (text) => {
 				// 	return (
 				// 		<a
@@ -111,21 +117,21 @@ export const allHRConfig = {
 				dataIndex: 'Time',
 				key: 'time',
 				align: 'left',
-				width: '80px',
+				width: '60px',
 			},
 			{
 				title: 'FTE/PTE',
 				dataIndex: 'typeOfEmployee',
 				key: 'fte_pte',
 				align: 'left',
-				width: '100px',
+				width: '65px',
 			},
 			{
 				title: 'Sales Rep',
 				dataIndex: 'salesRep',
 				key: 'sales_rep',
 				align: 'left',
-				width: '160px',
+				width: '130px',
 				render: (text, result) => {
 					return (
 						<Link
@@ -144,7 +150,7 @@ export const allHRConfig = {
 				dataIndex: 'hrStatus',
 				key: 'hr_status',
 				align: 'left',
-				width: '200px',
+				width: '100px',
 				render: (_, param) => {
 					return All_Hiring_Request_Utils.GETHRSTATUS(
 						param.hrStatusCode,

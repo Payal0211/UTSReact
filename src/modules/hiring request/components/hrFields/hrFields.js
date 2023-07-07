@@ -504,7 +504,6 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 
 	const getSalesPerson = useCallback(async () => {
 		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
-
 		setSalesPerson(
 			salesPersonResponse && salesPersonResponse?.responseBody?.details,
 		);
@@ -512,7 +511,8 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 			const valueToSet = salesPersonResponse?.responseBody?.details.filter(detail => detail.value === userData.FullName)[0]
 			setValue('salesPerson', valueToSet.id)
 		}
-	}, [userData,setValue]);
+		
+	}, [setValue,userData.LoggedInUserTypeID, userData.FullName]);
 
 	const getRegion = useCallback(async () => {
 		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
@@ -724,9 +724,16 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 	},[prefRegion,getTimeZonePreference])
 
 	useEffect(() => {
+		getSalesPerson();		
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		userData
+	]);
+
+	useEffect(() => {
 		getAvailability();
 		getTalentRole();
-		getSalesPerson();
+		// getSalesPerson();
 		getRegion();
 		getWorkingMode();
 		// postalCodeHandler();
@@ -737,8 +744,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		getHowSoon();
 		getNRMarginHandler();
 		getDurationTypes();
-		getStartEndTimeHandler()
-		
+		getStartEndTimeHandler()		
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		// getCurrencyHandler,
