@@ -4,6 +4,8 @@ import { Outlet } from 'react-router-dom';
 import Navbar from 'shared/components/navbar/navbar';
 import Sidebar from 'shared/components/sidebar/sidebar';
 
+import { ReactComponent as LoadingSVG } from 'assets/svg/loading.svg';
+
 const Layout = () => {
 	const [userData, setUserData] = useState({});
 
