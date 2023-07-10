@@ -208,6 +208,7 @@ export class HiringRequestsAPI {
 	static DELETE_INTERVIEW_DETAILS = 'DeleteInterviewDetails';
 	static CLOSE_HR_VALIDATION = 'CloseHRValidation'; 
 	static CLOSE_HR = 'CloseHR';
+	static REOPEN_HR = 'ReopenHR'
 }
 
 export class UsersAPI {

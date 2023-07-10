@@ -967,4 +967,17 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.CloseHR');
 		}
 	},
+	reopeneHR: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.REOPEN_HR + `?hrID=${data.hrID}${data.updatedTR ? '&updatedTR='+data.updatedTR : ''}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.reopeneHR');
+		}
+	},
 };

@@ -40,6 +40,7 @@ const EditDebriefingHR = ({
 		setValue,
 		control,
 		setError,
+		unregister,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
@@ -66,7 +67,7 @@ const EditDebriefingHR = ({
 		const response = await MasterDAO.getSkillsRequestDAO();
 		setSkills(response && response.responseBody);
 	}, []);
-	// let watchOtherSkills = watch('otherSkill');
+	let watchOtherSkills = watch('otherSkill');
 	let watchSkills = watch('skills');
 
 	/* const combinedSkillsMemo = useMemo(
@@ -82,7 +83,9 @@ const EditDebriefingHR = ({
 		[skills],
 	);
  */
-	const combinedSkillsMemo = useMemo(() => {
+
+	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
+	useEffect(()=>{
 		const combinedData = [
 			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
 			...skills,
@@ -93,16 +96,32 @@ const EditDebriefingHR = ({
 				},
 			],
 		];
-		return combinedData.filter((o) => !selectedItems.includes(o));
-	}, [JDParsedSkills, selectedItems, skills]);
+		setCombinedSkillsMemo(combinedData.filter((o) => !selectedItems.includes(o)))
+	},[JDParsedSkills, selectedItems, skills])
+
+	// const combinedSkillsMemo = useMemo(() => {
+	// 	const combinedData = [
+	// 		JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
+	// 		...skills,
+	// 		...[
+	// 			{
+	// 				id: '-1',
+	// 				value: 'Others',
+	// 			},
+	// 		],
+	// 	];
+	// 	return combinedData.filter((o) => !selectedItems.includes(o));
+	// }, [JDParsedSkills, selectedItems, skills]);
 	// const filteredOptions = combinedSkillsMemo.filter(
 	// 	(o) => !selectedItems.includes(o),
 	// );
 
-	// const isOtherSkillExistMemo = useMemo(() => {
-	// 	let response = watchSkills?.filter((item) => item?.skillsID === -1);
-	// 	return response?.length > 0;
-	// }, [watchSkills]);
+	const isOtherSkillExistMemo = useMemo(() => {
+		let response = watchSkills?.filter((item) => item?.id === '-1');
+		return response?.length > 0;
+	}, [watchSkills]);
+
+	useEffect(()=>{ isOtherSkillExistMemo === false && unregister('otherSkill') }, [isOtherSkillExistMemo, unregister])
 
 	useEffect(() => {
 		setValue(
@@ -114,31 +133,49 @@ const EditDebriefingHR = ({
 		);
 	}, [getHRdetails?.skillmulticheckbox, setValue]);
 
-	// const getOtherSkillsRequest = useCallback(
-	// 	async (data) => {
-	// 		let response = await MasterDAO.getOtherSkillsRequestDAO({
-	// 			skillName: data,
-	// 		});
-	// 		if (response?.statusCode === HTTPStatusCode?.BAD_REQUEST) {
-	// 			return setError('otherSkill', {
-	// 				type: 'otherSkill',
-	// 				message: response?.responseBody,
-	// 			});
-	// 		}
-	// 	},
-	// 	[setError],
-	// );
+	const getOtherSkillsRequest = useCallback(
+		async (data) => {
+			let response = await MasterDAO.getOtherSkillsRequestDAO({
+				skillName: data,
+			});
+			if(response.statusCode === HTTPStatusCode.OK){
+				let newSKill = {
+					id: response.responseBody.details.tempSkill_ID,
+					value: data,
+				}
 
-	// useEffect(() => {
-	// 	let timer;
-	// 	if (!_isNull(watchOtherSkills)) {
-	// 		timer = setTimeout(() => {
-	// 			// setIsLoading(true);
-	// 			getOtherSkillsRequest(watchOtherSkills);
-	// 		}, 2000);
-	// 	}
-	// 	return () => clearTimeout(timer);
-	// }, [getOtherSkillsRequest, watchOtherSkills]);
+				let newSkillSet = watchSkills?.map((skill) => {
+					if(skill.id === '-1'){
+						return newSKill
+					}
+					return skill
+				})
+				setSkills(prevSkills => [...prevSkills, newSKill])
+				setValue('skills', newSkillSet)
+				setControlledJDParsed(newSkillSet)
+				setValue('otherSkills', '')
+				return setError('otherSkill',null)
+			}
+			if (response?.statusCode === HTTPStatusCode?.BAD_REQUEST) {
+				return setError('otherSkill', {
+					type: 'otherSkill',
+					message: response?.responseBody,
+				});
+			}
+		},
+		[setError,watchSkills, setValue],
+	);
+
+	useEffect(() => {
+		let timer;
+		if (!_isNull(watchOtherSkills)) {
+			timer = setTimeout(() => {
+				// setIsLoading(true);
+				getOtherSkillsRequest(watchOtherSkills);
+			}, 2000);
+		}
+		return () => clearTimeout(timer);
+	}, [getOtherSkillsRequest, watchOtherSkills]);
 
 	useEffect(() => {
 		getSkills();
@@ -302,7 +339,7 @@ const EditDebriefingHR = ({
 										errors={errors}
 										validationSchema={{
 											validate: (value) => {
-												let index = value.search(
+												let index = value?.search(
 													new RegExp(getHRdetails?.company, 'i'),
 												);
 												if (index !== -1) {
@@ -364,7 +401,7 @@ const EditDebriefingHR = ({
 										errorMsg={'Please enter the skills.'}
 									/>
 								</div>
-								{/* {isOtherSkillExistMemo && (
+								{isOtherSkillExistMemo && (
 							<div className={DebriefingHRStyle.colMd12}>
 								<HRInputField
 									register={register}
@@ -384,7 +421,7 @@ const EditDebriefingHR = ({
 									required
 								/>
 							</div>
-						)} */}
+						)}
 								{/* <div className={DebriefingHRStyle.mb50}>
 							<label
 								style={{
@@ -420,6 +457,7 @@ const EditDebriefingHR = ({
 						remove={remove}
 						register={register}
 						setValue={setValue}
+						watch={watch}
 						fields={fields}
 						getHRdetails={getHRdetails}
 					/>
