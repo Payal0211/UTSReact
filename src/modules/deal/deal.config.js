@@ -22,12 +22,12 @@ export const DealConfig = {
 				align: 'left',
 				render: (text) => {
 					return text ? (
-						// <Link
-						// 	to={`/deal/${text}`}
-						// 	style={{ color: 'black', textDecoration: 'underline' }}>
-						// 	{text}
-						// </Link>
-						text
+						<Link
+							to={`/deal/${text}`}
+							style={{ color: 'black', textDecoration: 'underline' }}>
+							{text}
+						</Link>
+						// text
 					) : (
 						'NA'
 					);
