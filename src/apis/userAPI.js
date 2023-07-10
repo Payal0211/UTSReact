@@ -16,6 +16,20 @@ export const userAPI = {
 			return errorDebug(error, 'UserAPI.Login');
 		}
 	},
+	logOut: async function () {
+		try {
+			let httpservices = new HttpServices();
+		let userToken = UserSessionManagementController.getAPIKey()
+		httpservices.setAuthRequired = true;
+		httpservices.URL =
+			NetworkInfo.NETWORK + SubDomain.USER_OPERATIONS + UserAPI.LOGOUT + `?token=${userToken}`;
+		httpservices.setAuthToken = userToken
+			let response = await httpservices.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserAPI.LogOut');
+		}
+	},
 	getUserListRequest: async (userData) => {
 		try {
 			let httpService = new HttpServices();

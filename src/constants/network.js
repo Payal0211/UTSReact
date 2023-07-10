@@ -43,6 +43,7 @@ export class MethodType {
 }
 export class UserAPI {
 	static LOGIN = 'AdminLogin';
+	static LOGOUT = 'LogOut';
 	static SIGNUP = '/signup';
 	static FORGOTPASSWORD = '/forgotpassword';
 	static LIST = 'List';

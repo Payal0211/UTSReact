@@ -1,4 +1,4 @@
-import { Button, Checkbox, Divider, Space, message, AutoComplete } from 'antd';
+import { Button, Checkbox, Divider, Space, message, AutoComplete , Modal} from 'antd';
 import {
 	ClientHRURL,
 	GoogleDriveCredentials,
@@ -768,7 +768,7 @@ const EditHRFields = ({
 					setControlledCountryValue(response?.getCountry[0]?.value);
 					setValue('city', response?.stateCityData?.province);
 					setValue('state', response?.stateCityData?.stateEn);
-					setValue('country', response?.getCountry[0])
+					clearErrors('country');
 				} else {
 					setControlledCountryValue('');
 					setValue('city', '');
@@ -781,11 +781,17 @@ const EditHRFields = ({
 		},
 		[clearErrors, setValue, watch],
 	);
-
+    const watchCountry = watch('country');
 	const { isReady, debouncedFunction } = useDebounce(postalCodeHandler, 2000);
 	useEffect(() => {
 		!isPostalCodeNotFound && debouncedFunction('POSTAL_CODE');
 	}, [debouncedFunction, watchPostalCode, isPostalCodeNotFound]);
+
+	useEffect(() => {
+		if (country && country?.length > 1 && watchCountry) {
+			!isPostalCodeNotFound && debouncedFunction('COUNTRY_CODE');
+		}
+	}, [country, debouncedFunction, isPostalCodeNotFound, watchCountry]);
 
 	const [messageAPI, contextHolder] = message.useMessage();
 	let watchJDUrl = watch('jdURL');
@@ -2174,6 +2180,43 @@ const EditHRFields = ({
 							/>
 						</div>
 					</div>
+
+					{isNewPostalCodeModal && (
+						<Modal
+							footer={false}
+							title="Postal Code Not Found"
+							open={isNewPostalCodeModal}
+							onCancel={() => setNewPostalCodeModal(false)}>
+							<div
+								style={{
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+								}}>
+								<h3>Are you sure you want to proceed?</h3>
+							</div>
+							<div className={HRFieldStyle.formPanelAction}>
+								<button
+									type="submit"
+									onClick={() => {
+										setPostalCodeNotFound(true);
+										setNewPostalCodeModal(false);
+									}}
+									className={HRFieldStyle.btnPrimary}>
+									OK
+								</button>
+								<button
+									onClick={() => {
+										setValue('postalCode', '');
+										setPostalCodeNotFound(false);
+										setNewPostalCodeModal(false);
+									}}
+									className={HRFieldStyle.btn}>
+									Cancel
+								</button>
+							</div>
+						</Modal>
+					)}
 				</>
 			);
 		}

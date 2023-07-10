@@ -164,10 +164,19 @@ export const userDAO = {
 
 	logoutDAO: async function () {
 		try {
-			let response = UserSessionManagementController.deleteAllSession();
-			return response && response;
+			const logOutResult = await userAPI.logOut();
+
+			if (logOutResult) {
+				const statusCode = logOutResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					let response = UserSessionManagementController.deleteAllSession();
+				return response && response;
+				} 
+				return statusCode;
+			}
+			
 		} catch (error) {
-			return errorDebug(error, 'UserDAO.LoginDAO');
+			return errorDebug(error, 'UserDAO.LogoutDAO');
 		}
 	},
 };
