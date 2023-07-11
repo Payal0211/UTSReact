@@ -143,7 +143,7 @@ const AddNewHR = () => {
 						},
 						{
 							label: 'Debriefing HR',
-							key: 'Edit Debriefing HR',
+							key: `Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`,
 							children: (
 								<EditDebriefingHR
 									setTitle={setTitle}

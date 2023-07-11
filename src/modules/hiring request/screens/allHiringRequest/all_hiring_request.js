@@ -234,8 +234,10 @@ const AllHiringRequestScreen = () => {
 	const debouncedSearchHandler = (e) => {
 		setTableFilteredState({
 			...tableFilteredState,
+			pagenum:1,
 			searchText: e.target.value,
 		});
+		setPageIndex(1)
 		debounceFun(e.target.value);
 	};
 
