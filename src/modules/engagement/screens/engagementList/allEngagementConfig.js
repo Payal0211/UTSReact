@@ -132,7 +132,7 @@ export const allEngagementConfig = {
 				dataIndex: 'action',
 				key: 'action',
 				align: 'left',
-				width: '177px',
+				width: '180px',
 				render: (_, param, index) => {
 					let listItemData = [
 						{

@@ -232,11 +232,11 @@ const CompanyProfileCard = ({
 								<span>JD Link:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.JDFileOrURL === 'JDFILE' ? (
-										clientDetail?.JobDetailURL?.split(':')[0] === 'http' ||
-										clientDetail?.JobDetailURL?.split(':')[0] === 'https' ? (
+										clientDetail?.JobDetail?.split(':')[0] === 'http' ||
+										clientDetail?.JobDetail?.split(':')[0] === 'https' ? (
 											<a
 												rel="noreferrer"
-												href={clientDetail?.JobDetailURL}
+												href={clientDetail?.JobDetail}
 												style={{ textDecoration: 'underline' }}
 												target="_blank">
 												Click Here
@@ -245,9 +245,9 @@ const CompanyProfileCard = ({
 											<a
 												rel="noreferrer"
 												href={
-													NetworkInfo.FILENETWORK +
-													'ClientAttachments/' +
-													clientDetail?.JobDetailURL
+													NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN + 
+													'Media/JDParsing/JDfiles/' +
+													clientDetail?.JobDetail
 												}
 												style={{ textDecoration: 'underline' }}
 												target="_blank">

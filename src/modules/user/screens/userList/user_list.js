@@ -32,6 +32,7 @@ const UserList = () => {
 
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
+	const [ searchText , setSearchText] = useState('');
 	const navigate = useNavigate();
 
 	const fetchUserList = useCallback(
@@ -43,6 +44,7 @@ const UserList = () => {
 					: {
 							pageNumber: 1,
 							totalRecord: 100,
+							searchText: searchText
 					  },
 			);
 			if (response.statusCode === HTTPStatusCode.OK) {
@@ -62,13 +64,14 @@ const UserList = () => {
 				return 'NO DATA FOUND';
 			}
 		},
-		[navigate],
+		[navigate,searchText],
 	);
 
 	useEffect(() => {
-		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
+		const timer = setTimeout(() => {fetchUserList()
+		}, 1000);
 		return () => clearTimeout(timer);
-	}, [debouncedSearch]);
+	}, [debouncedSearch,fetchUserList]);
 	useEffect(() => {
 		fetchUserList();
 	}, [fetchUserList]);
@@ -105,9 +108,10 @@ const UserList = () => {
 							<input
 								type={InputType.TEXT}
 								className={allUserStyles.searchInput}
-								placeholder="Search Table"
+								placeholder="Search User Name, Email, Employee ID"
 								onChange={(e) => {
-									return setDebouncedSearch(
+									setSearchText(e.target.value)
+									setDebouncedSearch(
 										userUtils.userListSearch(e, userList),
 									);
 								}}
@@ -165,7 +169,7 @@ const UserList = () => {
 							columns={tableColumnsMemo}
 							bordered={false}
 							dataSource={
-								search && search.length > 0 ? [...search] : [...userList]
+								 [...userList]
 							}
 							pagination={{
 								onChange: (pageNum, pageSize) => {
@@ -176,7 +180,7 @@ const UserList = () => {
 										pageNumber: pageNum,
 										totalRecord: pageSize,
 									}); */
-									fetchUserList({ pageNumber: pageNum, totalRecord: pageSize });
+									fetchUserList({ pageNumber: pageNum, totalRecord: pageSize, searchText: searchText});
 								},
 								size: 'small',
 								pageSize: pageSize,

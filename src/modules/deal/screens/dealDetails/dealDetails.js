@@ -6,6 +6,7 @@ import { DealDAO } from 'core/deal/dealDAO';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
+import { ReactComponent as DeleteLightSVG } from 'assets/svg/deleteLight.svg';
 import { HTTPStatusCode } from 'constants/network';
 import WithLoader from 'shared/components/loader/loader';
 const columns = [
@@ -13,6 +14,7 @@ const columns = [
 		title: '',
 		dataIndex: '',
 		key: '',
+		width: '55px',
 		render: () => (
 			<svg
 				width="17"
@@ -191,7 +193,8 @@ const DealDetails = () => {
 			setDealDetails(response && response?.responseBody?.details);
 			setLoading(false);
 		} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
-			navigate(UTSRoutes.PAGENOTFOUNDROUTE);
+			//navigate(UTSRoutes.PAGENOTFOUNDROUTE);
+			setLoading(false);
 		}
 	}, [navigate, urlSplitter]);
 
@@ -218,9 +221,16 @@ const DealDetails = () => {
 							src="https://www.w3schools.com/howto/img_avatar.png"
 							alt="food network"
 						/>
-						{dealDetails?.dealName}
+						{/* {dealDetails?.dealName} */}
+						Save Eat Foods Pvt Ltd - New Deal
 					</h1>
-					<button type="button">View BQ Form</button>
+					<div className={dealDetailsStyles.dealDetailsRight}>
+						<button  className={dealDetailsStyles.yellowOutlinedButton} type="button">View BQ Form</button>
+						<button type="button">Create HR</button>
+						<div className={dealDetailsStyles.deleteButton}>
+							<DeleteLightSVG width="24" />
+						</div>
+					</div>
 				</div>
 
 				<div className={dealDetailsStyles.dealDetailsTopCard}>
@@ -277,6 +287,10 @@ const DealDetails = () => {
 								</li>
 
 								<li>
+									<span>Location:</span>
+									Australia
+								</li>
+								<li>
 									<span>Address:</span>
 									{dealDetails?.getDealCompanydetails[0]?.address
 										? dealDetails?.getDealCompanydetails[0]?.address
@@ -326,12 +340,12 @@ const DealDetails = () => {
 						<div className={dealDetailsStyles.dealLeftItem}>
 							<h2>Lead Details</h2>
 							<ul>
-								<li>
+								{/* <li>
 									<span>Deal ID:</span>{' '}
 									{dealDetails?.getDealLeadDetails[0]?.deal
 										? dealDetails?.getDealLeadDetails[0]?.deal
 										: 'NA'}
-								</li>
+								</li> */}
 								<li>
 									<span>Lead Source:</span>{' '}
 									{dealDetails?.getDealLeadDetails[0]?.leadSource
