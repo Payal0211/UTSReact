@@ -1137,7 +1137,7 @@ const EditHRFields = ({
 			setTitle('Edit Debriefing HR');
 		}
 	}, [localStorage.getItem('fromEditDeBriefing')]);
-console.log(getHRdetails.addHiringRequest.hrNumber)
+
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
 			{contextHolder}
