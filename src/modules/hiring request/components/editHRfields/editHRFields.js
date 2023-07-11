@@ -834,7 +834,7 @@ const EditHRFields = ({
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
 				window.scrollTo(0, 0);
 				setAddHRResponse(getHRdetails?.en_Id);
-				type !== SubmitType.SAVE_AS_DRAFT && setTitle('Edit Debriefing HR');
+				type !== SubmitType.SAVE_AS_DRAFT && setTitle(`Debriefing ${getHRdetails.addHiringRequest.hrNumber}`);
 				type !== SubmitType.SAVE_AS_DRAFT &&
 					setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
 
@@ -843,7 +843,7 @@ const EditHRFields = ({
 							type: 'success',
 							content: 'HR details has been saved to draft.',
 						});
-						setTitle('Edit Debriefing HR')
+						setTitle(`Debriefing ${getHRdetails.addHiringRequest.hrNumber}`);
 				}
 			}
 		},
@@ -859,7 +859,7 @@ const EditHRFields = ({
 			setTitle,
 			setTabFieldDisabled,
 			tabFieldDisabled,
-
+			getHRdetails.addHiringRequest.hrNumber,
 			messageAPI,
 		],
 	);
@@ -1137,7 +1137,7 @@ const EditHRFields = ({
 			setTitle('Edit Debriefing HR');
 		}
 	}, [localStorage.getItem('fromEditDeBriefing')]);
-
+console.log(getHRdetails.addHiringRequest.hrNumber)
 	return (
 		<div className={HRFieldStyle.hrFieldContainer}>
 			{contextHolder}

@@ -6,6 +6,7 @@ import ViewHRDetailsStyle from '../screens/viewHRDetails.module.css';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useState } from 'react';
 import { removeHTMLTags } from 'modules/report/reportUtils';
+import { NetworkInfo } from 'constants/network';
 
 const ViewHRDetails = () => {
 	const [hiringDetails, setHiringDetails] = useState('');
@@ -160,7 +161,8 @@ const ViewHRDetails = () => {
 													rel="noreferrer"
 													href={
 														hiringDetails?.responseBody?.details?.jdurl === null
-															? 'NA'
+															? NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN + 
+															'Media/JDParsing/JDfiles/' + hiringDetails?.responseBody?.details?.jobDescription
 															: hiringDetails?.responseBody?.details?.jdurl
 													}
 													target="_blank">
