@@ -287,6 +287,6 @@ export const navigateToComponent = {
 };
 
 export const isAccess = (ID) =>{	
-	let	isVisible = (ID === 1 || ID === 2 || ID === 4 || ID === 5 || ID === 9 || ID === 10  )  		
+	let	isVisible = (ID === 1 || ID === 2 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )  		
 	return isVisible
 }

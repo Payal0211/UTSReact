@@ -41,6 +41,8 @@ import CloneHR from './cloneHRModal';
 import { MasterDAO } from 'core/master/masterDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import _debounce from 'lodash/debounce';
+import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal";
+import CloseHRModal from "../../components/closeHRModal/closeHRModal";
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -78,6 +80,10 @@ const AllHiringRequestScreen = () => {
 	const [openCloneHR, setCloneHR] = useState(false);
 	const [getHRnumber, setHRNumber] = useState('');
 	const [getHRID, setHRID] = useState('');
+	const [reopenHrData, setReopenHRData] = useState({})
+	const [reopenHrModal, setReopenHrModal] = useState(false);
+	const [ closeHRDetail, setCloseHRDetail] = useState({});
+	const [closeHrModal, setCloseHrModal] = useState(false);
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -178,7 +184,7 @@ const AllHiringRequestScreen = () => {
 
 	const tableColumnsMemo = useMemo(
 		() =>
-			allHRConfig.tableConfig(togglePriority, setCloneHR, setHRID, setHRNumber),
+			allHRConfig.tableConfig(togglePriority, setCloneHR, setHRID, setHRNumber,setReopenHRData,setReopenHrModal,setCloseHRDetail,setCloseHrModal),
 		[togglePriority],
 	);
 	const handleHRRequest = useCallback(
@@ -604,6 +610,41 @@ const AllHiringRequestScreen = () => {
 					getHRnumber={getHRnumber}
 				/>
 			</Modal>
+
+			{reopenHrModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={reopenHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setReopenHrModal(false)}
+                >
+                  <ReopenHRModal
+                    onCancel={() => setReopenHrModal(false)}
+                    apiData={reopenHrData}
+                  />
+                </Modal>
+              )}
+
+			  
+			{closeHrModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={closeHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setCloseHrModal(false)}
+                >
+                  <CloseHRModal
+                    closeHR={() => {}}
+                    setUpdateTR={() => setCloseHrModal(true)}
+                    onCancel={() => setCloseHrModal(false)}
+                    closeHRDetail={closeHRDetail}
+                  />
+                </Modal>
+              )}
 		</div>
 	);
 };

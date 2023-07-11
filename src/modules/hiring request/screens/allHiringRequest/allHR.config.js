@@ -2,9 +2,11 @@ import { HiringRequestHRStatus, ProfileLog } from 'constants/application';
 import { Link } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { ReactComponent as CloneHRSVG } from 'assets/svg/cloneHR.svg';
+import { ReactComponent as ReopenHR } from 'assets/svg/reopen.svg';
+import { ReactComponent as CloseHR} from 'assets/svg/power.svg';
 import { Tooltip } from 'antd';
 export const allHRConfig = {
-	tableConfig: (togglePriority, setCloneHR, setHRID, setHRNumber) => {
+	tableConfig: (togglePriority, setCloneHR, setHRID, setHRNumber ,setReopenHRData,setReopenHrModal,setCloseHRDetail,setCloseHrModal) => {
 		return [
 			{
 				title: ' ',
@@ -25,6 +27,44 @@ export const allHRConfig = {
 			},
 			{
 				title: ' ',
+				dataIndex: 'reopenHR',
+				key: 'reopenHR',
+				width: '30px',
+				align: 'left',
+				render: (text, result) => {
+					return (
+						<>
+						{ result.reopenHR === 0 ? <Tooltip
+							placement="bottom"
+							title={'Close HR'}>
+								<a href="javascript:void(0);">
+								<CloseHR
+									style={{ fontSize: '16px' }}
+									onClick={() => {
+										setCloseHRDetail({ ...result , HR_Id:result.HRID})
+										setCloseHrModal(true)
+									}}
+								/>
+							</a>
+						</Tooltip> : <Tooltip
+							placement="bottom"
+							title={'Reopen HR'}>
+								<a href="javascript:void(0);">
+								<ReopenHR 
+									style={{ fontSize: '16px' }}
+									onClick={() => {
+										setReopenHRData({...result, HR_Id: result.HRID , ClientDetail: {NoOfTalents: result.TR} })
+										setReopenHrModal(true)
+									}}
+								/>
+							</a>
+						</Tooltip>}
+						</>
+					);
+				},
+			},
+			{
+				title: ' ',
 				dataIndex: 'cloneHR',
 				key: 'cloneHR',
 				width: '30px',
@@ -33,7 +73,7 @@ export const allHRConfig = {
 					return (
 						<>
 						<Tooltip
-							placement="right"
+							placement="bottom"
 							title={'Clone HR'}>
 								<a href="javascript:void(0);">
 								<CloneHRSVG
@@ -91,6 +131,13 @@ export const allHRConfig = {
 				key: 'position',
 				align: 'left',
 				width: '100px',
+			},
+			{
+				title: 'Cat',
+				dataIndex: 'companyCategory',
+				key: 'companyCategory',
+				align: 'left',
+				width: '50px',
 			},
 			{
 				title: 'Company',
@@ -196,72 +243,16 @@ export const allHRConfig = {
 			{
 				label: 'Tenure',
 				name: 'tenure',
-				child: [
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '1',
-						value: '3 Months',
-					},
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '2',
-						value: '6 Months',
-					},
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '3',
-						value: '12 Months',
-					},
-				],
+				child: [],
 				isSearch: false,
+				isNumber: true
 			},
 			{
 				label: 'Talent Request',
 				name: 'tr',
-				child: [
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '3',
-						value: '3',
-					},
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '4',
-						value: '4',
-					},
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '7',
-						value: '7',
-					},
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '9',
-						value: '9',
-					},
-					{
-						disabled: false,
-						group: null,
-						selected: false,
-						text: '10',
-						value: '10',
-					},
-				],
+				child: [],
 				isSearch: false,
+				isNumber: true
 			},
 			{
 				label: 'Position',

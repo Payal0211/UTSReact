@@ -5,6 +5,7 @@ import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import ViewHRDetailsStyle from '../screens/viewHRDetails.module.css';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useState } from 'react';
+import { removeHTMLTags } from 'modules/report/reportUtils';
 
 const ViewHRDetails = () => {
 	const [hiringDetails, setHiringDetails] = useState('');
@@ -290,7 +291,7 @@ const ViewHRDetails = () => {
 								Requirements
 								<i className={ViewHRDetailsStyle.blueDot} />
 							</h3>
-							<p>{hiringDetails?.responseBody?.details?.requirments ?? 'NA'}</p>
+							<p>{hiringDetails?.responseBody?.details?.requirments  ?  removeHTMLTags(hiringDetails?.responseBody?.details?.requirments) : 'NA'}</p>
 						</div>
 
 						<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
@@ -298,7 +299,7 @@ const ViewHRDetails = () => {
 								Roles & Responsibilities
 								<i className={ViewHRDetailsStyle.blueDot} />
 							</h3>
-							{hiringDetails?.responseBody?.details?.rolesResponsibilites ??
+							{hiringDetails?.responseBody?.details?.rolesResponsibilites ? removeHTMLTags(hiringDetails?.responseBody?.details?.rolesResponsibilites) :
 								'NA'}
 						</div>
 

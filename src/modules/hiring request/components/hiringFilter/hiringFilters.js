@@ -26,6 +26,7 @@ const HiringFilters = ({
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
 	const [filterSubChild, setFilterSubChild] = useState(null);
+	
 
 	// useEffect(() => {
 	// 	getHTMLFilter
@@ -47,6 +48,28 @@ const HiringFilters = ({
 		(isChecked, filterObj) => {
 			let tempAppliedFilters = new Map(appliedFilter);
 			let tempCheckedState = new Map(checkedState);
+
+			if(isChecked === "numberField"){				
+				if (tempAppliedFilters.has(filterObj.filterType)){
+						if(!filterObj.value){
+							setFilteredTagLength((prev) => prev - 1);
+							tempAppliedFilters.delete(filterObj.filterType)
+						}else{
+							tempAppliedFilters.set(filterObj.filterType, filterObj);
+							
+						}
+				}	
+				else{
+					setFilteredTagLength((prev) => prev + 1);
+						 tempAppliedFilters.set(filterObj.filterType, filterObj);	
+	
+				}	
+    		
+				setAppliedFilters(tempAppliedFilters);
+				setCheckedState(tempCheckedState);
+				return
+			}
+
 			if (isChecked) {
 				tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, true);
 				setFilteredTagLength((prev) => prev + 1);
@@ -255,6 +278,27 @@ const HiringFilters = ({
 									/>
 								</div>
 							)}
+
+							{filterSubChild.isNumber && (
+														<div className={hiringFilterStyle.searchFiltersList}>
+															<input
+																onChange={(e) => {
+																	handleAppliedFilters("numberField", {
+																		filterType: filterSubChild.name,
+																		value: e.target.value.substring(0, 2),
+																		id: e.target.value.substring(0, 2),
+																	})
+																}}
+																value={appliedFilter.get(filterSubChild?.name) ? appliedFilter.get(filterSubChild?.name).value : ''}
+																className={hiringFilterStyle.searchInput}
+																type="number"
+																id="NumberInput"
+																placeholder={`Enter ${filterSubChild?.name}`}
+																min="1" max="99" 
+															/>
+
+														</div>
+														)}
 							<br />
 							<div className={hiringFilterStyle.filtersListType}>
 								{searchData && searchData.length > 0

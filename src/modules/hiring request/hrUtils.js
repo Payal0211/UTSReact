@@ -28,6 +28,9 @@ export const hrUtils = {
 			hrStatus: item.hrStatus,
 			hrStatusCode: item.hrStatusCode,
 			userId: item?.userId,
+			reopenHR:item?.reopenHR,
+			companyCategory: item?.companyCategory,
+			HRID: item?.hrid
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {
