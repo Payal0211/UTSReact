@@ -51,7 +51,12 @@ const UserList = () => {
 				setTotalRecords(response && response?.responseBody?.details?.totalrows);
 				setUserList(response && response?.responseBody?.details?.rows);
 				setLoading(false);
-			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			}else if (response.statusCode === HTTPStatusCode.NOT_FOUND){
+				setTotalRecords(0);
+				setUserList([]);
+				setLoading(false);
+			}
+			 else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 				setLoading(false);
 				return navigate(UTSRoutes.LOGINROUTE);
 			} else if (
@@ -68,7 +73,9 @@ const UserList = () => {
 	);
 
 	useEffect(() => {
-		const timer = setTimeout(() => {fetchUserList()
+		const timer = setTimeout(() => {
+			fetchUserList()
+			setPageIndex(1)
 		}, 1000);
 		return () => clearTimeout(timer);
 	}, [debouncedSearch,fetchUserList]);
