@@ -136,7 +136,7 @@ const isAccess = (ID, title) =>{
 	title === 'Client Report' || 
 	title === 'I2S Report' || title === 'Master'){
 
-		isVisible = (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 )  
+		isVisible = (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 || ID === 6)  
 		
 	}else{ 
 		return false
