@@ -76,7 +76,7 @@ export default function ClientReport() {
         const response = await clientReport.getClienPopUpRequestList(params);
         if (response.statusCode === HTTPStatusCode.OK) {
           let details = response.responseBody.details;
-        console.log("popup data", details)
+       // console.log("popup data", details)
         setReportPopupList(details)
           setLoading(false);
         } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -96,7 +96,7 @@ export default function ClientReport() {
       const response = await clientReport.getClientReportFilters();
       if (response.statusCode === HTTPStatusCode.OK) {
         let details = response.responseBody.details.Data;
-      console.log("filter data", details)
+     // console.log("filter data", details)
       setFiltersList(details)
         setLoading(false);
       } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -119,7 +119,7 @@ export default function ClientReport() {
 
     let companyCategory = fd["CompanyCategory"] ? fd["CompanyCategory"] : ''
     let SalesManager = fd["SalesManager"] ? fd["SalesManager"] : ''
-     console.log("companyCategory", companyCategory , SalesManager, {reqFilter})
+   //  console.log("companyCategory", companyCategory , SalesManager, {reqFilter})
 
     let payload = {
       "startDate": firstDay.toLocaleDateString("en-US"),
@@ -158,7 +158,7 @@ if(clientStage){getClientPopUpReportList(params)}
           }
         getClientReportList(payload)
         getClientReportFilterList()
-        console.log( payload)
+     //  console.log( payload)
         setStartDate(firstDay)
         setEndDate(lastDay)
     }, []);
@@ -183,7 +183,7 @@ if(clientStage){getClientPopUpReportList(params)}
         if (start && end) {
           let filters = {}
           appliedFilter.forEach((item) => {
-            filters = { ...filters, [item.filterType]: item.id };
+            filters = { ...filters, [item.filterType]: item.filterType === "CompanyCategory" ? item.value : item.id };
           });
       
           let companyCategory = filters["CompanyCategory"] ? filters["CompanyCategory"] : ''
@@ -221,15 +221,15 @@ getClientReportList(payload)
         // getI2SReport(params);
     };
 
-    const setTableData = useCallback((reportData) => { 
+  const setTableData = useCallback((reportData) => { 
       let filters = {}
-    appliedFilter.forEach((item) => {
-			filters = { ...filters, [item.filterType]: item.id };
-		});
+       appliedFilter.forEach((item) => {
+			filters = { ...filters, [item.filterType]: item.filterType === "CompanyCategory" ? item.value : item.id };
+		    });
 
     let companyCategory = filters["CompanyCategory"] ? filters["CompanyCategory"] : ''
     let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : ''
-      console.log(reportData);
+     // console.log(reportData);
       setClientStage(reportData.stageName)
       let params ={
           "client": "",
@@ -273,7 +273,7 @@ const toggleClientFilter = useCallback(() => {
   setHTMLFilter(!getHTMLFilter);
 }, [ getHTMLFilter, isAllowFilters]);
 
-console.log('client', reportList, appliedFilter)
+//console.log('client', reportList, appliedFilter)
   return (
     <div className={ClientReportStyle.dealContainer}>
       <div className={ClientReportStyle.header}>
