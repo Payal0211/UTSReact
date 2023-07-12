@@ -2,6 +2,7 @@ import HRStatusComponent from 'modules/hiring request/components/hrStatus/hrStat
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { _isNull } from 'shared/utils/basic_utils';
+import UTSRoutes from 'constants/routes';
 
 export const DealConfig = {
 	tableConfig: () => {
@@ -67,6 +68,24 @@ export const DealConfig = {
 				align: 'left',
 				render: (text) => {
 					return text ? text : 'NA';
+				},
+			},
+			{
+				title: 'Convert to HR',
+				dataIndex: 'convert',
+				key: 'convert',
+				align: 'left',
+				render: (text, results) => {
+					return results.dealStage === "SAL Achieved" ? (
+						<Link
+							to={UTSRoutes.ADDNEWHR}
+							style={{ color: 'black', textDecoration: 'underline' }}
+							onClick={()=> localStorage.setItem('dealID',results.dealID)}
+							>
+							Convert To HR
+						</Link>
+						// text
+					) : null;
 				},
 			},
 			{

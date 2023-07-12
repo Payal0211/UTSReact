@@ -53,8 +53,7 @@ const SlaReports = () => {
 	const [pageSize, setPageSize] = useState(100);
 	const [pageIndex, setPageIndex] = useState(1);
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
+	
 	const [listData, setListData] = useState([]);
 	const [dateError, setDateError] = useState('');
 
@@ -63,6 +62,8 @@ const SlaReports = () => {
 	const [slaValue, setslaValue] = useState(0);
 	
 	var date = new Date();
+	const [startDate, setStartDate] = useState(new Date(date.getFullYear(), date.getMonth(), 1));
+	const [endDate, setEndDate] = useState(new Date(date.getFullYear(), date.getMonth() + 1, 0));
 	var firstDay = startDate !== null ? startDate : new Date(date.getFullYear(), date.getMonth(), 1);
 	var lastDay = endDate !== null ? endDate : new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
@@ -104,9 +105,11 @@ const SlaReports = () => {
 		});
 		slaReportDetails({
 			...tableFilteredState,
+			filterFieldsSLA:{...tableFilteredState.filterFieldsSLA, slaType: 0},
 			filterFields_ViewAllHRs: {
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
+				slaType: 0
 			},
 		});
 	};
@@ -149,9 +152,11 @@ const SlaReports = () => {
 		});
 		slaReportDetails({
 			...tableFilteredState,
+			filterFieldsSLA:{...tableFilteredState.filterFieldsSLA, slaType: 1},
 			filterFields_ViewAllHRs: {
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
+				slaType: 1
 			},
 		});
 	};
@@ -184,7 +189,7 @@ const SlaReports = () => {
 	
 
 	const slaReportList = async (pageData) => {
-		console.log(pageData, 'pageData');
+		// console.log(pageData, 'pageData');
 		let obj = {
 			startDate: pageData
 				? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format(
@@ -248,7 +253,7 @@ const SlaReports = () => {
 				stage: '',
 				isAdHoc: 0,
 				role: '',
-				slaType: slaValue === 0 ? 0 : 1,
+				slaType: (pageData?.filterFields_ViewAllHRs?.slaType === 0 || pageData?.filterFields_ViewAllHRs?.slaType === 1)  ? pageData?.filterFields_ViewAllHRs?.slaType  :  slaValue === 0 ? 0 : 1,
 				type: 0,
 				hR_Number: '',
 				company: '',
@@ -384,7 +389,7 @@ const SlaReports = () => {
 				let responseList = await ReportDAO.OverAllSLASummaryDAO(
 					tableFilteredState,
 				);
-				console.log("FilterRes",{response,responseList})
+				// console.log("FilterRes",{response,responseList})
 				if (responseList?.statusCode === HTTPStatusCode.OK) {
 					setLoading(false);
 					setListData(responseList?.responseBody);

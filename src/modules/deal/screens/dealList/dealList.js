@@ -37,6 +37,7 @@ const DealList = () => {
 	const [dealList, setDealList] = useState([]);
 	const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
+	const [ searchText , setSearchText] = useState('');
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
 	const [getHTMLFilter, setHTMLFilter] = useState(false);
@@ -70,6 +71,7 @@ const DealList = () => {
 					: {
 							pagenumber: 1,
 							totalrecord: 100,
+							searchText: searchText
 					  },
 			);
 			if (response.statusCode === HTTPStatusCode.OK) {
@@ -80,7 +82,12 @@ const DealList = () => {
 					),
 				);
 				setLoading(false);
-			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND){
+				setTotalRecords(0);
+				setDealList([]);
+				setLoading(false);
+			}
+			else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 				setLoading(false);
 				return navigate(UTSRoutes.LOGINROUTE);
 			} else if (
@@ -93,7 +100,7 @@ const DealList = () => {
 				return 'NO DATA FOUND';
 			}
 		},
-		[navigate],
+		[navigate,searchText],
 	);
 
 	const getDealFilterRequest = useCallback(async () => {
@@ -119,9 +126,10 @@ const DealList = () => {
 		setHTMLFilter(!getHTMLFilter);
 	}, [getDealFilterRequest, getHTMLFilter, isAllowFilters]);
 	useEffect(() => {
-		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
+		const timer = setTimeout(() => handleDealRequest(), 1000);
 		return () => clearTimeout(timer);
 	}, [debouncedSearch]);
+	//console.log("search", {debouncedSearch, search})
 	useEffect(() => {
 		handleDealRequest(tableFilteredState);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -180,6 +188,7 @@ const DealList = () => {
 								className={DealListStyle.searchInput}
 								placeholder="Search Table"
 								onChange={(e) => {
+									setSearchText(e.target.value)
 									return setDebouncedSearch(
 										dealUtils.dealListSearch(e, dealList),
 									);
@@ -273,6 +282,7 @@ const DealList = () => {
 									handleDealRequest({
 										pageNumber: pageNum,
 										totalRecord: pageSize,
+										searchText: searchText
 									});
 								},
 								size: 'small',
