@@ -74,7 +74,8 @@ const DemandFunnelScreen = () => {
 	const [endDate, setEndDate] = useState(null);
 
 	const getDemandFunnelListingHandler = useCallback(async (taleData) => {
-		setLoading(true);
+		if (taleData.startDate && taleData.endDate){
+			setLoading(true);
 		let response = await ReportDAO.demandFunnelListingRequestDAO(taleData);
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
@@ -83,6 +84,8 @@ const DemandFunnelScreen = () => {
 			setLoading(false);
 			setApiData([]);
 		}
+		}
+		
 	}, []);
 
 	const onCalenderFilter = (dates) => {
