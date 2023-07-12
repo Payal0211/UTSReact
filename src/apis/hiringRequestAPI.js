@@ -187,7 +187,7 @@ export const HiringRequestAPI = {
 		// const miscData =
 		// 	await UserSessionManagementController.getUserMiscellaneousData();
 		const emailURL =
-			matchMakingData?.emailID && `&EmailId=${matchMakingData?.emailID}`;
+			matchMakingData?.emailID && matchMakingData?.emailID;
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.HIRING +
@@ -900,6 +900,22 @@ export const HiringRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.updateODRPOOLStatusRequest');
+		}
+	},
+	getNewDealHRDetailsRequest: async (DId) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.GET_HR_DETAILS +
+			`?HRId=0&DealID=${DId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getNewDealHRDetailsRequest');
 		}
 	},
 	editTR: async (data) => {

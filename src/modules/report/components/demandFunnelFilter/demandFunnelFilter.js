@@ -229,7 +229,7 @@ const DemandFunnelFilter = ({
 			isActionWise: true,
 		};
 		onRemoveHRFilters()
-		// handleHRRequest(reqFilter);
+		handleHRRequest(reqFilter);
 	}, [
 		setAppliedFilters,
 		setCheckedState,

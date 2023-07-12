@@ -113,7 +113,8 @@ export const allHRConfig = {
 				render: (text, result) => (
 					<Link
 						to={`/allhiringrequest/${result?.key}`}
-						style={{ color: 'black', textDecoration: 'underline' }}>
+						style={{ color: 'black', textDecoration: 'underline' }}
+						onClick={()=> localStorage.removeItem('dealID')}>
 						{text}
 					</Link>
 				),
@@ -319,7 +320,7 @@ export const allHRConfig = {
 						selected: false,
 						statusCode: HiringRequestHRStatus.HR_ACCEPTED,
 						label: 'HR Aceepted',
-						value: 'Draft',
+						value: 'HR Aceepted',
 						text: HiringRequestHRStatus.HR_ACCEPTED.toString(),
 					},
 					{

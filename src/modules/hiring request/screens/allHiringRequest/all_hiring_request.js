@@ -59,7 +59,7 @@ const AllHiringRequestScreen = () => {
 	});
 	const [isLoading, setLoading] = useState(false);
 
-	const pageSizeOptions = [100, 200, 300, 500, 1000];
+	const pageSizeOptions = [100, 200, 300, 500, 1000,5000];
 	// const hrQueryData = useAllHRQuery();
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
@@ -397,6 +397,7 @@ const AllHiringRequestScreen = () => {
 							switch (item.key) {
 								case AddNewType.HR: {
 									navigate(UTSRoutes.ADDNEWHR);
+									localStorage.removeItem("dealId")
 									break;
 								}
 								case AddNewType.CLIENT: {

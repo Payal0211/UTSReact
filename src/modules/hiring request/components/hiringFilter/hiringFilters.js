@@ -283,6 +283,9 @@ const HiringFilters = ({
 														<div className={hiringFilterStyle.searchFiltersList}>
 															<input
 																onChange={(e) => {
+																	if(e.target.value === '0'){
+																		return
+																	}
 																	handleAppliedFilters("numberField", {
 																		filterType: filterSubChild.name,
 																		value: e.target.value.substring(0, 2),

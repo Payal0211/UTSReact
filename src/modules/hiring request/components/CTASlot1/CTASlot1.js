@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import {  message } from 'antd';
 import HROperator from '../hroperator/hroperator';
 import { AiOutlineDown } from 'react-icons/ai';
 import { HRCTA } from 'constants/application';
@@ -32,6 +33,17 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 		}
 	}, [hrID, navigate]);
 
+	const handleAssignments = async () => {
+		let data = {engagementID: apiData?.HRTalentDetails[0]?.EngagemenID, onboardID:apiData?.HRTalentDetails[0]?.OnBoardId }
+		//console.log(data)
+		let request = await hiringRequestDAO.getAMDataSendRequestDAO(data)
+			//console.log(request)
+		if(request?.statusCode === HTTPStatusCode.OK){
+			// message.success('File uploaded successfully');
+			window.location.reload()
+		}
+	}
+
 	return (
 		<>
 			<div>
@@ -62,6 +74,7 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 							}
 							case HRCTA.AM_ASSIGNMENT: {
 								setIsAMAssignment(true);
+								handleAssignments()
 								break;
 							}
 							case HRCTA.EDIT_DEBRIEFING_HR: {

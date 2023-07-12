@@ -183,7 +183,7 @@ const DealFilters = ({
 	const handleFilters = useCallback(() => {
 		let filters = {};
 		appliedFilter.forEach((item) => {
-			filters = { ...filters, [item.filterType]: item.id };
+			filters = { ...filters, [item.filterType]: item.filterType === "CompanyCategory" ? item.value : item.id };
 		});
 		setTableFilteredState({
 			...tableFilteredState,

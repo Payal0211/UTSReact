@@ -1091,7 +1091,9 @@ export const reportConfig = {
 			{
 				label: 'Company Category',
 				name: 'CompanyCategory',
-				child: filtersList?.CompanyCategory,
+				child: filtersList?.CompanyCategory.filter(
+					(item, index) => index !== 0 && item,
+				),
 				isSearch: false,
 			},
 			{
