@@ -63,6 +63,7 @@ const SupplyFunnelScreen = () => {
 	const [endDate, setEndDate] = useState(null);
 
 	const getSupplyReportListHandler = useCallback(async (tableData) => {
+		if (tableData.startDate && tableData.endDate){
 		setLoading(true);
 		let response = await ReportDAO.supplyFunnelListingRequestDAO(tableData);
 		if (response?.statusCode === HTTPStatusCode.OK) {
@@ -72,6 +73,8 @@ const SupplyFunnelScreen = () => {
 			setLoading(false);
 			setApiData([]);
 		}
+		}
+		
 	}, []);
 
 	const unGroupedColumnDataMemo = useMemo(() => {
