@@ -605,7 +605,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		if(watchClientName || filteredMemo){
 			let existingClientDetails =
 			await hiringRequestDAO.getClientDetailRequestDAO(
-				watchClientName? watchClientName : filteredMemo[0]?.emailId,
+				filteredMemo[0]?.emailId ? filteredMemo[0]?.emailId : watchClientName ,
 			);
 
 		existingClientDetails?.statusCode === HTTPStatusCode.OK &&

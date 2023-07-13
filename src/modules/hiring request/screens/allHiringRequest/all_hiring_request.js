@@ -43,6 +43,7 @@ import { UserSessionManagementController } from 'modules/user/services/user_sess
 import _debounce from 'lodash/debounce';
 import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal";
 import CloseHRModal from "../../components/closeHRModal/closeHRModal";
+import { downloadToExcel } from 'modules/report/reportUtils';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -128,7 +129,8 @@ const AllHiringRequestScreen = () => {
 	const togglePriority = useCallback(
 		async (payload) => {
 			setLoading(true);
-			localStorage.setItem('hrid', payload.hRID);
+			localStorage.setItem('hrID', payload.hRID);
+			localStorage.removeItem('dealID')
 			let response = await hiringRequestDAO.setHrPriorityDAO(
 				payload.isNextWeekStarMarked,
 				payload.hRID,
@@ -177,6 +179,7 @@ const AllHiringRequestScreen = () => {
 		if (response.statusCode === HTTPStatusCode.OK) {
 			setCloneHR(false);
 			localStorage.setItem('hrID', response?.responseBody?.details);
+			localStorage.removeItem('dealID')
 			navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 		}
 	};
@@ -301,6 +304,16 @@ const AllHiringRequestScreen = () => {
 		localStorage.removeItem('hrID');
 		localStorage.removeItem('fromEditDeBriefing');
 	}, []);
+
+	const handleExport = (apiData) => {
+		let DataToExport =  apiData.map(data => {
+			let obj = {}			
+			tableColumnsMemo.map(val => val.title !== ' ' && (obj[`${val.title}`] = data[`${val.dataIndex}`]))		
+		return obj;
+			}
+		 )
+		 downloadToExcel(DataToExport)
+	}
 	return (
 		<div className={allHRStyles.hiringRequestContainer}>
 			{contextHolder}
@@ -409,6 +422,12 @@ const AllHiringRequestScreen = () => {
 							}
 						}}
 					/>
+
+							<button
+								className={allHRStyles.btnPrimary}								
+								onClick={() => handleExport(apiData)}>
+								Export
+							</button>
 				</div>
 			</div>
 			{/*
