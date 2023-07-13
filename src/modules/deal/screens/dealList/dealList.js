@@ -61,7 +61,7 @@ const DealList = () => {
 		setStartDate(start);
 		setEndDate(end);
 	};
-	const tableColumnsMemo = useMemo(() => DealConfig.tableConfig(), []);
+	const tableColumnsMemo = useMemo(() => DealConfig.tableConfig(navigate), [navigate]);
 	const handleDealRequest = useCallback(
 		async (pageData) => {
 			setLoading(true);

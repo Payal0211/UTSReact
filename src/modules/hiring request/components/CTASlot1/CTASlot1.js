@@ -28,6 +28,7 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			localStorage.setItem('hrID', hrID);
+			localStorage.removeItem('dealID')
 			localStorage.setItem('fromEditDeBriefing', true);
 			navigate(UTSRoutes.ADDNEWHR);
 		}
@@ -37,11 +38,13 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 		let data = {engagementID: apiData?.HRTalentDetails[0]?.EngagemenID, onboardID:apiData?.HRTalentDetails[0]?.OnBoardId }
 		//console.log(data)
 		let request = await hiringRequestDAO.getAMDataSendRequestDAO(data)
-			//console.log(request)
 		if(request?.statusCode === HTTPStatusCode.OK){
-			// message.success('File uploaded successfully');
-			window.location.reload()
+			 message.success(request?.responseBody?.message);
+			 window.location.reload()
+		}else{
+			request?.responseBody?.message && message.error(request?.responseBody?.message);
 		}
+		
 	}
 
 	return (

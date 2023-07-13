@@ -139,6 +139,8 @@ export const userDAO = {
 		try {
 			const loginResult = await userAPI.login(userdata);
 
+			localStorage.setItem("UserDesignation", loginResult?.responseBody?.details?.Designation)
+
 			if (loginResult) {
 				const statusCode = loginResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
@@ -170,11 +172,11 @@ export const userDAO = {
 				const statusCode = logOutResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
 					let response = UserSessionManagementController.deleteAllSession();
-				return response && response;
-				} 
+					return response && response;
+				}
 				return statusCode;
 			}
-			
+
 		} catch (error) {
 			return errorDebug(error, 'UserDAO.LogoutDAO');
 		}

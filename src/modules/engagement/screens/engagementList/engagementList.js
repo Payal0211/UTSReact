@@ -78,6 +78,7 @@ const EngagementList = () => {
 	const [filtersList, setFiltersList] = useState([]);
 	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
+	const [ searchText , setSearchText] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const navigate = useNavigate();
 	const [filteredTagLength, setFilteredTagLength] = useState(0);
@@ -262,7 +263,7 @@ const EngagementList = () => {
 		}
 	};
 	useEffect(() => {
-		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
+		const timer = setTimeout(() => handleHRRequest({...tableFilteredState, 	searchText: searchText}) , 1000);
 		return () => clearTimeout(timer);
 	}, [debouncedSearch]);
 
@@ -338,6 +339,7 @@ const EngagementList = () => {
 			console.log( month, year)
 			setTableFilteredState({
 				...tableFilteredState,
+				searchText: searchText,
 				filterFieldsEngagement: {...tableFilteredState.filterFieldsEngagement ,
 					searchMonth: month,
 					searchYear: year,
@@ -345,6 +347,7 @@ const EngagementList = () => {
 			});
 			handleHRRequest({
 				...tableFilteredState,
+				searchText: searchText,
 				filterFieldsEngagement: {...tableFilteredState.filterFieldsEngagement ,
 					searchMonth: month,
 					searchYear: year,
@@ -417,6 +420,7 @@ const EngagementList = () => {
 								className={allEngagementStyles.searchInput}
 								placeholder="Search Table"
 								onChange={(e) => {
+									 setSearchText(e.target.value)
 									return setDebouncedSearch(
 										engagementUtils.engagementListSearch(e, apiData),
 									);

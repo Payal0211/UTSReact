@@ -2070,14 +2070,15 @@ const EditHRFields = ({
 			/> */}
 
 			<div className={HRFieldStyle.formPanelAction}>
-				<button
+				{ !getHRdetails?.addHiringRequest?.isActive && <button
 					style={{ cursor: type === SubmitType.SUBMIT ? 'no-drop' : 'pointer' }}
 					disabled={type === SubmitType.SUBMIT}
 					className={HRFieldStyle.btn}
 					onClick={hrSubmitHandler}>
 					Save as Draft
 				</button>
-
+}
+				
 				<button
 					onClick={handleSubmit(hrSubmitHandler)}
 					className={HRFieldStyle.btnPrimary}>

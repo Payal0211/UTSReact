@@ -258,10 +258,10 @@ export const hrUtils = {
 			durationType: 
 				draft === SubmitType.SAVE_AS_DRAFT
 					?isHRDirectPlacement ? null : _isNull(watch('getDurationType')?.value)
-						? 0
+						? ''
 						: watch('getDurationType')?.value
 					:isHRDirectPlacement ? null :  _isNull(d.getDurationType?.value)
-					? 0
+					? ''
 					: d.getDurationType?.value,
 			partialEngagementTypeId	: 
 				draft === SubmitType.SAVE_AS_DRAFT

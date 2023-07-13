@@ -23,6 +23,7 @@ const ViewHRDetails = () => {
 
 	const editHr = () => {
 		localStorage.setItem('hrID', id?.id);
+		localStorage.removeItem('dealID')
 		navigate('/allhiringrequest/addnewhr');
 	};
 

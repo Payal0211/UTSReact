@@ -3,12 +3,15 @@ import dealDetailsStyles from './dealDetailsStyle.module.css';
 import arrow from '../../../../assets/svg/trending.svg';
 import { useCallback, useEffect, useState } from 'react';
 import { DealDAO } from 'core/deal/dealDAO';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { ReactComponent as DeleteLightSVG } from 'assets/svg/deleteLight.svg';
 import { HTTPStatusCode } from 'constants/network';
 import WithLoader from 'shared/components/loader/loader';
+import moment from 'moment';
+import {NetworkInfo} from 'constants/network'
+
 const columns = [
 	{
 		title: '',
@@ -33,19 +36,17 @@ const columns = [
 		),
 	},
 	{
-		title: 'O/P',
-		dataIndex: 'op',
-		key: 'op',
-	},
-	{
-		title: 'Date',
-		dataIndex: 'date',
-		key: 'date',
+		title: 'Created Date',
+		dataIndex: 'createdDateTime',
+		key: 'createdDateTime',
+		render:(text)=>{
+			return text.split(' ')[0]
+		}
 	},
 	{
 		title: 'HR ID',
-		dataIndex: 'hr_id',
-		key: 'hr_id',
+		dataIndex: 'hr',
+		key: 'hr',
 		render: (text) => (
 			<a
 				href="#"
@@ -76,118 +77,44 @@ const columns = [
 	},
 	{
 		title: 'FTE/PTE',
-		dataIndex: 'fte_pte',
-		key: 'fte_pte',
+		dataIndex: 'typeOfEmployee',
+		key: 'typeOfEmployee',
 	},
-	{
-		title: 'HR Status',
-		key: 'tags',
-		dataIndex: 'tags',
-		render: (_, { tags }) => (
-			<>
-				{tags.map((tag) => {
-					let color = tag.length > 5 ? 'geekblue' : 'green';
-					if (tag === 'loser') {
-						color = 'volcano';
-					}
-					return (
-						<Tag
-							color={color}
-							key={tag}>
-							{tag.toUpperCase()}
-						</Tag>
-					);
-				})}
-			</>
-		),
-	},
+	// {
+	// 	title: 'HR Status',
+	// 	key: 'tags',
+	// 	dataIndex: 'tags',
+	// 	render: (_, { tags }) => (
+	// 		<>
+	// 			{tags.map((tag) => {
+	// 				let color = tag.length > 5 ? 'geekblue' : 'green';
+	// 				if (tag === 'loser') {
+	// 					color = 'volcano';
+	// 				}
+	// 				return (
+	// 					<Tag
+	// 						color={color}
+	// 						key={tag}>
+	// 						{tag.toUpperCase()}
+	// 					</Tag>
+	// 				);
+	// 			})}
+	// 		</>
+	// 	),
+	// },
 ];
-const data = [
-	{
-		op: 'O + P',
-		date: '04/03/22',
-		hr_id: 'HR123456789012',
-		tr: '07',
-		position: 'UX/UI Designer',
-		budgetmo: '1500 USD',
-		notice: '30 Days',
-		fte_pte: 'FTE',
-		hr_status: 'Profile Shared',
-		tags: ['Profile Shared'],
-	},
-	{
-		op: 'Pool',
-		date: '04/03/22',
-		hr_id: 'HR123456789012',
-		tr: '07',
-		position: 'Quality Analyst',
-		budgetmo: '1200 USD',
-		notice: '60 Days',
-		fte_pte: 'FTE',
-		hr_status: 'Profile Shared',
-		tags: ['Info Pending'],
-	},
-	{
-		op: 'O + P',
-		date: '04/03/22',
-		hr_id: 'HR123456789012',
-		tr: '07',
-		position: 'Search Engine Optimisation',
-		budgetmo: '900 USD',
-		notice: '40 Days',
-		fte_pte: 'FTE',
-		hr_status: 'Profile Shared',
-		tags: ['HR Accepted'],
-	},
-	{
-		op: 'Pool',
-		date: '04/03/22',
-		hr_id: 'HR123456789012',
-		tr: '07',
-		position: 'Search Engine Optimisation',
-		budgetmo: '1200 USD',
-		notice: '90 Days',
-		fte_pte: 'FTE',
-		hr_status: 'Profile Shared',
-		tags: ['Started Searching'],
-	},
-	{
-		op: 'ODR',
-		date: '04/03/22',
-		hr_id: 'HR123456789012',
-		tr: '07',
-		position: 'Front End Developer',
-		budgetmo: '1200 USD',
-		notice: '30 Days',
-		fte_pte: 'FTE',
-		hr_status: 'Profile Shared',
-		tags: ['In Process '],
-	},
-	{
-		op: 'O + P',
-		date: '04/03/22',
-		hr_id: 'HR123456789012',
-		tr: '07',
-		position: 'UX/UI Designer',
-		budgetmo: '900 USD',
-		notice: '40 Days',
-		fte_pte: 'FTE',
-		hr_status: 'Profile Shared',
-		tags: ['Hired'],
-	},
-];
+
 
 const DealDetails = () => {
 	const navigate = useNavigate();
 	const [isLoading, setLoading] = useState(false);
-	const switchLocation = useLocation();
 	const [dealDetails, setDealDetails] = useState(null);
-	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
+	const { dealID} = useParams()
 
-	const getDealDetails = useCallback(async () => {
+	const getDealDetails = useCallback(async (dealID) => {
 		setLoading(true);
 		const response = await DealDAO.getDealDetailRequestDAO({
-			dealID: urlSplitter,
+			dealID: dealID,
 		});
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setDealDetails(response && response?.responseBody?.details);
@@ -196,11 +123,11 @@ const DealDetails = () => {
 			//navigate(UTSRoutes.PAGENOTFOUNDROUTE);
 			setLoading(false);
 		}
-	}, [navigate, urlSplitter]);
+	}, [navigate, dealID]);
 
 	useEffect(() => {
-		getDealDetails();
-	}, [getDealDetails]);
+		getDealDetails(dealID);
+	}, [getDealDetails,dealID]);
 
 	return (
 		<WithLoader
@@ -218,18 +145,22 @@ const DealDetails = () => {
 				<div className={dealDetailsStyles.dealDetailsTitle}>
 					<h1>
 						<img
-							src="https://www.w3schools.com/howto/img_avatar.png"
-							alt="food network"
+							src={dealDetails?.getDealCompanydetails[0]?.companylogo ? `${NetworkInfo.PROTOCOL}${NetworkInfo.DOMAIN}Media/companylogo/${dealDetails?.getDealCompanydetails[0]?.companylogo}` : "https://www.w3schools.com/howto/img_avatar.png"}
+							alt="companylogo"
 						/>
-						{/* {dealDetails?.dealName} */}
-						Save Eat Foods Pvt Ltd - New Deal
+						{dealDetails?.getDealCompanydetails[0]?.company}
+						
 					</h1>
 					<div className={dealDetailsStyles.dealDetailsRight}>
-						<button  className={dealDetailsStyles.yellowOutlinedButton} type="button">View BQ Form</button>
-						<button type="button">Create HR</button>
-						<div className={dealDetailsStyles.deleteButton}>
+						{/* <button  className={dealDetailsStyles.yellowOutlinedButton} type="button">View BQ Form</button> */}
+						<button type="button" onClick={()=>{
+							localStorage.setItem('dealID',dealID)
+							localStorage.removeItem('hrID')
+							navigate(UTSRoutes.ADDNEWHR)
+						}}>Create HR</button>
+						{/* <div className={dealDetailsStyles.deleteButton}>
 							<DeleteLightSVG width="24" />
-						</div>
+						</div> */}
 					</div>
 				</div>
 
@@ -288,7 +219,9 @@ const DealDetails = () => {
 
 								<li>
 									<span>Location:</span>
-									Australia
+									{dealDetails?.getDealCompanydetails[0]?.location
+										? dealDetails?.getDealCompanydetails[0]?.location
+										: 'NA'}
 								</li>
 								<li>
 									<span>Address:</span>
@@ -376,16 +309,24 @@ const DealDetails = () => {
 							<h2>Primary Client</h2>
 							<ul>
 								<li>
-									<span>Name:</span> Rachel Green
+									<span>Name:</span> {dealDetails?.getDealPrimaryClient[0]?.name
+										? dealDetails?.getDealPrimaryClient[0]?.name
+										: 'NA'}
 								</li>
 								<li>
-									<span>Email:</span> rachel@gmail.com
+									<span>Email:</span> {dealDetails?.getDealPrimaryClient[0]?.emaiid
+										? dealDetails?.getDealPrimaryClient[0]?.emaiid
+										: 'NA'}
 								</li>
 								<li>
-									<span>Phone:</span> +61 6583 849643
+									<span>Phone:</span> {dealDetails?.getDealPrimaryClient[0]?.Phone
+										? dealDetails?.getDealPrimaryClient[0]?.Phone
+										: 'NA'}
 								</li>
 								<li>
-									<span>Linkedin:</span> Rachel Green
+									<span>Linkedin:</span> {dealDetails?.getDealPrimaryClient[0]?.linkedin
+										? dealDetails?.getDealPrimaryClient[0]?.linkedin
+										: 'NA'}
 								</li>
 							</ul>
 						</div>
@@ -393,16 +334,24 @@ const DealDetails = () => {
 							<h2>Secondary Client</h2>
 							<ul>
 								<li>
-									<span>Name:</span> Rachel Green
+									<span>Name:</span> {dealDetails?.getDealSecondaryClient[0]?.Name
+										? dealDetails?.getDealSecondaryClient[0]?.Name
+										: 'NA'}
 								</li>
 								<li>
-									<span>Email:</span> rachel@gmail.com
+									<span>Email:</span> {dealDetails?.getDealSecondaryClient[0]?.emaiid
+										? dealDetails?.getDealSecondaryClient[0]?.emaiid
+										: 'NA'}
 								</li>
 								<li>
-									<span>Phone:</span> +61 6583 849643
+									<span>Phone:</span> {dealDetails?.getDealSecondaryClient[0]?.phone
+										? dealDetails?.getDealSecondaryClient[0]?.phone
+										: 'NA'}
 								</li>
 								<li>
-									<span>Linkedin:</span> Rachel Green
+									<span>Linkedin:</span> {dealDetails?.getDealSecondaryClient[0]?.linkedin
+										? dealDetails?.getDealSecondaryClient[0]?.linkedin
+										: 'NA'}
 								</li>
 							</ul>
 						</div>
@@ -411,63 +360,24 @@ const DealDetails = () => {
 						<div className={dealDetailsStyles.dealActivity}>
 							<h2>Deal Activity</h2>
 							<ul>
-								<li>
+								{dealDetails?.getDealActivity.map(activity => 	<li key={activity.subscriptionType + activity.createdDateTime}> 
 									<div className={dealDetailsStyles.dealActivityTime}>
-										<span>Today</span>
+										<span>{  activity.createdDateTime.split(' ')[0] === moment().format('DD/MM/YYYY') ? 'Today' :  activity.createdDateTime.split(' ')[0]} </span>
 										<br />
-										<span>12:29 PM</span>
+										<span>{moment(activity.createdDateTime).format('HH:MM a') !== 'Invalid date' ? moment(activity.createdDateTime).format('HH:MM a') :  activity.createdDateTime.split(' ')[1]} </span>
 									</div>
 									<div className={dealDetailsStyles.dealActivityInfo}>
-										<p>
+										{/* <p>
 											<span>Note from</span> <a href="#">Prerna Dham</a>
-										</p>
+										</p> */}
 										<p>
-											“Call done in the month of Oct 2022, sent a couple of
-											emails and the client mentioned he is busy and will get
-											back to us. We will approach again in the month of Jan
-											2023.”
+											{activity.subscriptionType}
 										</p>
 									</div>
-								</li>
-								<li>
-									<div className={dealDetailsStyles.dealActivityTime}>
-										<span>Today</span>
-										<br />
-										<span>12:29 PM</span>
-									</div>
-									<div className={dealDetailsStyles.dealActivityInfo}>
-										<p>
-											<span>Moved deal from Prospect to Future Prospect.</span>
-										</p>
-										<p className={dealDetailsStyles.dealActivityAction}>
-											<img
-												src={arrow}
-												alt="arrow"
-											/>
-											Action by: Saptarshi Banerjee
-										</p>
-									</div>
-								</li>
-								<li>
-									<div className={dealDetailsStyles.dealActivityTime}>
-										<span>24/06/2022</span>
-										<br />
-										<span>01:56 AM</span>
-									</div>
-									<div className={dealDetailsStyles.dealActivityInfo}>
-										<p>
-											<span>Moved deal from Prospect to Future Prospect.</span>
-										</p>
-										<p className={dealDetailsStyles.dealActivityAction}>
-											<img
-												src={arrow}
-												alt="arrow"
-											/>
-											Action by: Saptarshi Banerjee
-										</p>
-									</div>
-								</li>
-								<li>
+								</li>)}
+								
+
+								{/* <li>
 									<div className={dealDetailsStyles.dealActivityTime}>
 										<span>22/06/2022</span>
 										<br />
@@ -488,135 +398,22 @@ const DealDetails = () => {
 											Action by: Saptarshi Banerjee
 										</p>
 									</div>
-								</li>
-								<li>
-									<div className={dealDetailsStyles.dealActivityTime}>
-										<span>22/06/2022</span>
-										<br />
-										<span>04:56 PM</span>
-									</div>
-									<div className={dealDetailsStyles.dealActivityInfo}>
-										<p>
-											<span>Moved deal to Discovery call Scheduled.</span>
-										</p>
-										<p className={dealDetailsStyles.dealActivityAction}>
-											<img
-												src={arrow}
-												alt="arrow"
-											/>
-											Action by: Ankit Pandya
-										</p>
-									</div>
-								</li>
-								<li>
-									<div className={dealDetailsStyles.dealActivityTime}>
-										<span>Today</span>
-										<br />
-										<span>12:29 PM</span>
-									</div>
-									<div className={dealDetailsStyles.dealActivityInfo}>
-										<p>
-											<span>Note from</span> <a href="#">Prerna Dham</a>
-										</p>
-										<p>
-											“Call done in the month of Oct 2022, sent a couple of
-											emails and the client mentioned he is busy and will get
-											back to us. We will approach again in the month of Jan
-											2023.”
-										</p>
-									</div>
-								</li>
-								<li>
-									<div className={dealDetailsStyles.dealActivityTime}>
-										<span>Today</span>
-										<br />
-										<span>12:29 PM</span>
-									</div>
-									<div className={dealDetailsStyles.dealActivityInfo}>
-										<p>
-											<span>Moved deal from Prospect to Future Prospect.</span>
-										</p>
-										<p className={dealDetailsStyles.dealActivityAction}>
-											<img
-												src={arrow}
-												alt="arrow"
-											/>
-											Action by: Saptarshi Banerjee
-										</p>
-									</div>
-								</li>
-								<li>
-									<div className={dealDetailsStyles.dealActivityTime}>
-										<span>24/06/2022</span>
-										<br />
-										<span>01:56 AM</span>
-									</div>
-									<div className={dealDetailsStyles.dealActivityInfo}>
-										<p>
-											<span>Moved deal from Prospect to Future Prospect.</span>
-										</p>
-										<p className={dealDetailsStyles.dealActivityAction}>
-											<img
-												src={arrow}
-												alt="arrow"
-											/>
-											Action by: Saptarshi Banerjee
-										</p>
-									</div>
-								</li>
-								<li>
-									<div className={dealDetailsStyles.dealActivityTime}>
-										<span>22/06/2022</span>
-										<br />
-										<span>04:56 PM</span>
-									</div>
-									<div className={dealDetailsStyles.dealActivityInfo}>
-										<p>
-											<span>
-												Moved deal from Discovery call Scheduled to Discover
-												call Rescheduled.
-											</span>
-										</p>
-										<p className={dealDetailsStyles.dealActivityAction}>
-											<img
-												src={arrow}
-												alt="arrow"
-											/>
-											Action by: Saptarshi Banerjee
-										</p>
-									</div>
-								</li>
-								<li>
-									<div className={dealDetailsStyles.dealActivityTime}>
-										<span>22/06/2022</span>
-										<br />
-										<span>04:56 PM</span>
-									</div>
-									<div className={dealDetailsStyles.dealActivityInfo}>
-										<p>
-											<span>Moved deal to Discovery call Scheduled.</span>
-										</p>
-										<p className={dealDetailsStyles.dealActivityAction}>
-											<img
-												src={arrow}
-												alt="arrow"
-											/>
-											Action by: Ankit Pandya
-										</p>
-									</div>
-								</li>
+								</li> */}
+
 							</ul>
 						</div>
 					</div>
 				</div>
 
+				{dealDetails?.getAllHRs?.length > 0 && 
 				<div className={dealDetailsStyles.dealDetailsTable}>
 					<Table
 						columns={columns}
-						dataSource={data}
+						dataSource={dealDetails?.getAllHRs}
 						pagination={false}
 					/>
 				</div>
+				}
 			</div>
 		</WithLoader>
 	);
