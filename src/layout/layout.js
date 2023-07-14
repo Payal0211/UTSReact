@@ -31,7 +31,7 @@ const Layout = () => {
 				}}>
 				<Outlet />
 			</main>
-			<ChatListing />
+			{userData?.LoggedInUserTypeID === 2 && <ChatListing />}
 			<div style={{
 				position: 'fixed',
 				left: '0',

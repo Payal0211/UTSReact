@@ -341,7 +341,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />
@@ -372,7 +372,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />
@@ -403,7 +403,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />
@@ -434,7 +434,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />
@@ -465,7 +465,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />
@@ -496,7 +496,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />

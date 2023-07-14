@@ -470,12 +470,19 @@ const EditHRFields = ({
 	const addItem = useCallback(
 		(e) => {
 			e.preventDefault();
-			setcontractDurations([...contractDurations, name + ' months' || name]);
-			setName('');
+			if(!contractDurations.includes(name + ' months')){
+				let newObj ={
+					disabled: false,
+					group: null,
+					selected: false,
+					text: `${name} months`,
+					value:`${name}`}
+				setcontractDurations([...contractDurations, newObj]);
+				setName('');
+			}
 			setTimeout(() => {
 				inputRef.current?.focus();
 			}, 0);
-			setDisableButton(true);
 		},
 		[contractDurations, name],
 	);
@@ -1671,37 +1678,37 @@ const EditHRFields = ({
 						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
-									dropdownRender={(menu) => (
-										<>
-											{menu}
-
-											<Divider style={{ margin: '8px 0' }} />
-											<Space style={{ padding: '0 8px 4px' }}>
-												<label>Other:</label>
-												<input
-													type={InputType.NUMBER}
-													className={HRFieldStyle.addSalesItem}
-													placeholder="Ex: 5,6,7..."
-													ref={inputRef}
-													value={name}
-													onChange={onNameChange}
-												/>
-
-												<Button
-													style={{
-														backgroundColor: `var(--uplers-grey)`,
-													}}
-													disabled={disableButton ? true : false}
-													shape="round"
-													type="text"
-													icon={<PlusOutlined />}
-													onClick={addItem}>
-													Add item
-												</Button>
-											</Space>
-											<br />
-										</>
-									)}
+							dropdownRender={(menu) => (
+								<>
+									{menu}
+									<Divider style={{ margin: '8px 0' }} />
+									<Space style={{ padding: '0 8px 4px' }}>
+										<label>Other:</label>
+										<input
+											type={InputType.NUMBER}
+											className={HRFieldStyle.addSalesItem}
+											placeholder="Ex: 5,6,7..."
+											ref={inputRef}
+											value={name}
+											onChange={onNameChange}
+											required
+										/>
+										<Button
+											style={{
+												backgroundColor: `var(--uplers-grey)`,
+											}}
+											shape="round"
+											type="text"
+											icon={<PlusOutlined />}
+											onClick={addItem}
+											disabled={contractDurations.filter(duration=> duration.value == name ).length > 0}
+											>
+											Add item
+										</Button>
+									</Space>
+									<br />
+								</>
+							)}
 									options={contractDurations.map((item) => ({
 										id: item.id,
 										label: item.text,
@@ -2015,6 +2022,7 @@ const EditHRFields = ({
 						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+							    disabled={true}
 								register={register}
 								label="Deal ID"
 								name="dealID"

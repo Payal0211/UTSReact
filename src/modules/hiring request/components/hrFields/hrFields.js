@@ -1822,6 +1822,7 @@ if(DID){
 							<div className={HRFieldStyle.colMd6}>
 								<HRInputField
 									register={register}
+									disabled={true}
 									label="Deal ID"
 									name="dealID"
 									type={InputType.NUMBER}

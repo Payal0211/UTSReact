@@ -14,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import { _isNull } from 'shared/utils/basic_utils';
 import WithLoader from 'shared/components/loader/loader';
-import { removeHTMLTags } from 'modules/report/reportUtils';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -300,7 +299,7 @@ const EditDebriefingHR = ({
 		);
 		// setValue("skills",getHRdetails?.skillmulticheckbox)
 	}, [getHRdetails, setValue]);
-	
+
 	return (
 		<>
 			{contextHolder}
@@ -320,8 +319,7 @@ const EditDebriefingHR = ({
 									controlledValue={
 										JDParsedSkills?.Responsibility ||
 										(getHRdetails?.salesHiringRequest_Details
-											?.rolesResponsibilities && removeHTMLTags(getHRdetails?.salesHiringRequest_Details
-											?.rolesResponsibilities) )
+											?.rolesResponsibilities )
 									}
 									label={'Roles & Responsibilities'}
 									placeholder={'Enter roles & responsibilities'}
@@ -372,7 +370,7 @@ const EditDebriefingHR = ({
 									isControlled={true}
 									controlledValue={
 										JDParsedSkills?.Requirements ||
-										(getHRdetails?.salesHiringRequest_Details?.requirement && removeHTMLTags(getHRdetails?.salesHiringRequest_Details?.requirement))
+										(getHRdetails?.salesHiringRequest_Details?.requirement)
 									}
 									label={'Requirements'}
 									placeholder={'Enter Requirements'}
