@@ -1701,7 +1701,7 @@ const EditHRFields = ({
 											type="text"
 											icon={<PlusOutlined />}
 											onClick={addItem}
-											disabled={contractDurations.filter(duration=> duration.value == name ).length > 0}
+											disabled={name? contractDurations.filter(duration=> duration.value == name ).length > 0 : true}
 											>
 											Add item
 										</Button>
