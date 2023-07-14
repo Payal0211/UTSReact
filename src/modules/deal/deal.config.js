@@ -153,12 +153,12 @@ export const DealConfig = {
 	},
 	dealFilterTypeConfig: (filtersList) => {
 		return [
-			{
-				label: 'Deal ID',
-				name: 'deal_Id',
-				child: filtersList?.DealId,
-				isSearch: false,
-			},
+			// {
+			// 	label: 'Deal ID',
+			// 	name: 'deal_Id',
+			// 	child: filtersList?.DealId,
+			// 	isSearch: false,
+			// },
 			{
 				label: 'Lead Source',
 				name: 'lead_Type',
@@ -171,12 +171,12 @@ export const DealConfig = {
 				child: filtersList?.Pipeline,
 				isSearch: false,
 			},
-			{
-				label: 'Company',
-				name: 'company',
-				child: filtersList?.Company,
-				isSearch: true,
-			},
+			// {
+			// 	label: 'Company',
+			// 	name: 'company',
+			// 	child: filtersList?.Company,
+			// 	isSearch: true,
+			// },
 			{ label: 'Geo', name: 'geo', child: filtersList?.Geo, isSearch: true },
 			{ label: 'BDR', name: 'bdr', child: filtersList?.BDR, isSearch: false },
 			{
