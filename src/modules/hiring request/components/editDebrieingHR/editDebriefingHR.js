@@ -214,7 +214,7 @@ const EditDebriefingHR = ({
 				interviewerLinkedin: d.interviewerLinkedin,
 				interviewerDesignation: d.interviewerDesignation,
 				JDDumpID: getHRdetails?.addHiringRequest?.jddumpId,
-				ActionType: "Edit"
+				ActionType: getHRdetails?.addHiringRequest?.isActive ? "Edit" : "Save"
 			};
 
 			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
