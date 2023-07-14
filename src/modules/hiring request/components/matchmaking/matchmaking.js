@@ -432,7 +432,7 @@ const MatchmakingModal = ({
 										Select Talent
 									</button>
 
-									<button className={MatchMakingStyle.btn}>Cancel</button>
+									<button className={MatchMakingStyle.btn} onClick={()=>onCancel() }>Cancel</button>
 									<div
 										style={{
 											position: 'absolute',

@@ -228,6 +228,7 @@ console.log("errors", errors);
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
 			JDDumpID: jdDumpID || 0,
+			ActionType: "Save"
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
