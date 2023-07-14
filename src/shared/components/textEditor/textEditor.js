@@ -39,7 +39,7 @@ const TextEditor = ({
 	});
 
 	useEffect(() => {
-		if (isControlled) document.getElementById(name).innerText = controlledValue;
+		if (isControlled) document.getElementById(name).innerHTML = controlledValue;
 	}, [controlledValue, isControlled, name]);
 
 	return (
@@ -145,7 +145,7 @@ const TextEditor = ({
 					placeholder={placeholder}
 					suppressContentEditableWarning={true}
 					onInput={(e) => {
-						setValue(name, e.currentTarget.textContent, {
+						setValue(name, e.currentTarget.innerHTML, {
 							shouldDirty: true,
 						});
 					}}></div>

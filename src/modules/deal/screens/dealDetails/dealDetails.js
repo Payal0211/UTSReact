@@ -153,11 +153,13 @@ const DealDetails = () => {
 					</h1>
 					<div className={dealDetailsStyles.dealDetailsRight}>
 						{/* <button  className={dealDetailsStyles.yellowOutlinedButton} type="button">View BQ Form</button> */}
-						<button type="button" onClick={()=>{
+
+						{ dealDetails?.dealStage === "SAL Achieved" && 	<button type="button" onClick={()=>{
 							localStorage.setItem('dealID',dealID)
 							localStorage.removeItem('hrID')
 							navigate(UTSRoutes.ADDNEWHR)
-						}}>Create HR</button>
+						}}>Create HR</button>}
+					
 						{/* <div className={dealDetailsStyles.deleteButton}>
 							<DeleteLightSVG width="24" />
 						</div> */}
@@ -202,12 +204,6 @@ const DealDetails = () => {
 									<span>URL:</span>
 									{dealDetails?.getDealCompanydetails[0]?.url
 										? dealDetails?.getDealCompanydetails[0]?.url
-										: 'NA'}
-								</li>
-								<li>
-									<span>Location:</span>
-									{dealDetails?.getDealCompanydetails[0]?.location
-										? dealDetails?.getDealCompanydetails[0]?.location
 										: 'NA'}
 								</li>
 								<li>

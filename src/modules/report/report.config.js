@@ -4,7 +4,6 @@ import { NetworkInfo } from 'constants/network';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import infoIcon from 'assets/svg/info.svg'
-import { removeHTMLTags} from './reportUtils'
 
 export const reportConfig = {
 	/**------------- DEMAND FUNNEL REPORT------------------  */
@@ -847,7 +846,7 @@ export const reportConfig = {
 						<a href="javascript:void(0);"
 							onClick={() => {
 								setJDSkillModal(true);
-								setSelectedRecord(removeHTMLTags(text));
+								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -868,7 +867,7 @@ export const reportConfig = {
 							<a href="javascript:void(0);"
 								onClick={() => {
 									setHRSkillModal(true);
-									setSelectedRecord(removeHTMLTags(text));
+									setSelectedRecord(text);
 								}}
 								style={{ color: 'black', textDecoration: 'underline' }}>
 								View
@@ -888,7 +887,7 @@ export const reportConfig = {
 							onClick={() => {
 								setJDRoleRespModal(true);
 
-								setSelectedRecord(removeHTMLTags(text));
+								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -908,7 +907,7 @@ export const reportConfig = {
 						<a href="javascript:void(0);"
 							onClick={() => {
 								setHRRoleRespModal(true);
-								setSelectedRecord(removeHTMLTags(text));
+								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -928,7 +927,7 @@ export const reportConfig = {
 						<a href="javascript:void(0);"
 							onClick={() => {
 								setJDReqModal(true);
-								setSelectedRecord(removeHTMLTags(text));
+								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -948,7 +947,7 @@ export const reportConfig = {
 						<a href="javascript:void(0);"
 							onClick={() => {
 								setHRReqModal(true);
-								setSelectedRecord(removeHTMLTags(text));
+								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View

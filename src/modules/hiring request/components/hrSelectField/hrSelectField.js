@@ -89,6 +89,7 @@ const HRSelectField = ({
 					disabled={disabled}
 					value={controlledValue || defaultValue}
 					showSearch={searchable}
+					dropdownRender={dropdownRender}
 					onChange={(value, option) => getChangeHandlerWithValue(value, option)}
 					options={options}
 				/>
