@@ -25,6 +25,7 @@ import useDrivePicker from 'react-google-drive-picker/dist';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import {UserAccountRole} from 'constants/application'
 import useDebounce from 'shared/hooks/useDebounce';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -85,6 +86,7 @@ const EditHRFields = ({
 		googleDriveFileUpload: '',
 		linkValidation: '',
 	});
+	const [isSavedLoading, setIsSavedLoading] = useState(false);
 	const [getGoogleDriveLink, setGoogleDriveLink] = useState('');
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
 
@@ -775,6 +777,7 @@ const EditHRFields = ({
 					setControlledCountryValue(response?.getCountry[0]?.value);
 					setValue('city', response?.stateCityData?.province);
 					setValue('state', response?.stateCityData?.stateEn);
+				    setValue('country', response?.getCountry[0])
 					clearErrors('country');
 				} else {
 					setControlledCountryValue('');
@@ -805,6 +808,7 @@ const EditHRFields = ({
 	setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
 	const hrSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+			setIsSavedLoading(true);
 			let hrFormDetails = hrUtils.hrFormDataFormatter(
 				d,
 				type,
@@ -833,12 +837,19 @@ const EditHRFields = ({
 						message: 'please enter the hiring request title.',
 					});
 				}
+				if(_isNull(watch('salesPerson'))){
+					return setError('salesPerson', {
+						type: 'emptysalesPersonTitle',
+						message: 'Please select hiring request sales person',
+					});
+				}	
 			} else if (type !== SubmitType.SAVE_AS_DRAFT) {
 				setType(SubmitType.SUBMIT);
 			}
 			const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+				setIsSavedLoading(false);
 				window.scrollTo(0, 0);
 				setAddHRResponse(getHRdetails?.en_Id);
 				type !== SubmitType.SAVE_AS_DRAFT && setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`);
@@ -2226,6 +2237,8 @@ const EditHRFields = ({
 							</div>
 						</Modal>
 					)}
+
+					<LogoLoader visible={isSavedLoading} />
 				</>
 			);
 		}
