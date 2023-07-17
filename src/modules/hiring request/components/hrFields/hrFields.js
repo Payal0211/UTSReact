@@ -33,6 +33,7 @@ import useDrivePicker from 'react-google-drive-picker/dist';
 import useDebounce from 'shared/hooks/useDebounce';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import {UserAccountRole} from 'constants/application'
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -872,6 +873,12 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 					return setError('hrTitle', {
 						type: 'emptyhrTitle',
 						message: 'please enter the hiring request title.',
+					});
+				}
+				if(_isNull(watch('salesPerson'))){
+					return setError('salesPerson', {
+						type: 'emptysalesPersonTitle',
+						message: 'Please select hiring request sales person',
 					});
 				}
 			} else if (type !== SubmitType.SAVE_AS_DRAFT) {
@@ -2032,6 +2039,7 @@ if(DID){
 							</div>
 						</Modal>
 					)}
+					<LogoLoader visible={isSavedLoading} />
 				</>
 			);
 		}

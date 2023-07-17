@@ -177,7 +177,7 @@ const DealDetails = () => {
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Deal Owner</span>
-								{dealDetails?.Owner ? dealDetails?.Owner : 'NA'}
+								{dealDetails?.dealOwner ? dealDetails?.dealOwner : 'NA'}
 							</div>
 						</li>
 						<li>
