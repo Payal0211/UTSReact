@@ -38,7 +38,7 @@ const ConvertToContractual = ({
 	const [longTerm, setLongTerm] = useState([
 		{ id: 0, value: 'Select' },
 		{ id: 1, value: 'Long Term' },
-		{ id: 2, value: 'Sort Term' },
+		{ id: 2, value: 'Short Term' },
 	]);
 	const [isLoading, setIsLoading] = useState(false);
 	const { Panel } = Collapse;

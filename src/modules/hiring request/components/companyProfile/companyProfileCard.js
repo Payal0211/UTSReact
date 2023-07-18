@@ -172,7 +172,7 @@ const CompanyProfileCard = ({
 									{clientDetail?.Role ? clientDetail?.Role : 'NA'}
 								</span>
 							</div>
-							<div className={CompanyProfileCardStyle.contactDuration}>
+							{!allApiData?.Is_HRTypeDP ? <div className={CompanyProfileCardStyle.contactDuration}>
 								<span>Contact Duration:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.SpecificMonth
@@ -180,7 +180,13 @@ const CompanyProfileCard = ({
 										: 0}{' '}
 									Months
 								</span>
-							</div>
+							</div> : <div className={CompanyProfileCardStyle.contactDuration}>
+								<span>Contract Type:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+								Direct Placement
+								</span>
+							</div> }
+							
 							<div className={CompanyProfileCardStyle.minExp}>
 								<span>Minimum Exp Required:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
