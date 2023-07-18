@@ -1764,8 +1764,8 @@ const EditHRFields = ({
 											message: `please don't enter the value less than 1`,
 										},
 										max: {
-											value: 100,
-											message: "please don't enter the value more than 100",
+											value: 60,
+											message: "please don't enter the value more than 60",
 										},
 									}}
 									register={register}
@@ -1805,6 +1805,10 @@ const EditHRFields = ({
 									min: {
 										value: 1,
 										message: `please enter the value more than 0`,
+									},
+									max: {
+										value: 99,
+										message: "please don't enter the value more than 99",
 									},
 								}}
 								label="How many talents are needed."
