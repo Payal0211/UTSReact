@@ -113,7 +113,7 @@ const ViewHRDetails = () => {
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li>
 											<li>
-												<span>How Many Talent Request:</span> 1
+												<span>How Many Talent Request:</span> {hiringDetails?.responseBody?.details?.noOfTalents ?? 'NA'}
 											</li>
 											<li>
 												<span>Region:</span>{' '}
