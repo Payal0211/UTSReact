@@ -63,10 +63,10 @@ export const hrUtils = {
 				(item) => item.key === JSON.parse(localStorage.getItem('hrid')),
 			);
 			let tempdata = apiData[index];
-			if (tempdata.starStatus === hiringRequestPriority.NO_PRIORITY) {
+			if (tempdata?.starStatus === hiringRequestPriority.NO_PRIORITY) {
 				tempdata.starStatus = hiringRequestPriority.NEXT_WEEK_PRIORITY;
 			} else if (
-				tempdata.starStatus === hiringRequestPriority.NEXT_WEEK_PRIORITY
+				tempdata?.starStatus === hiringRequestPriority.NEXT_WEEK_PRIORITY
 			) {
 				tempdata.starStatus = hiringRequestPriority.NO_PRIORITY;
 			}
