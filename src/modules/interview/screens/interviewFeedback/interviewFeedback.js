@@ -22,6 +22,7 @@ const InterviewFeedback = ({
 	setScheduleSlotDate,
 	getSlotInformationHandler,
 	scheduleSlotRadio,
+	clientDetail
 }) => {
 	/** For Fourth Round Start --- */
 	const [isAnotherRound, setAnotherRound] = useState(false);
@@ -299,7 +300,7 @@ const InterviewFeedback = ({
 										}}>
 										<label>
 											How would you rate this talent in terms of technical
-											skills required for DevOps Engineer?
+											skills required for {clientDetail?.Role}?
 											<span className={InterviewScheduleStyle.reqField}>*</span>
 										</label>
 
@@ -333,7 +334,7 @@ const InterviewFeedback = ({
 										}}>
 										<label>
 											How would you rate this talent in terms of Communication
-											skills required for DevOps Engineer?
+											skills required for {clientDetail?.Role}?
 											<span className={InterviewScheduleStyle.reqField}>*</span>
 										</label>
 
@@ -367,7 +368,7 @@ const InterviewFeedback = ({
 										}}>
 										<label>
 											How would you rate this talent in terms of the Cognitive
-											skills required for DevOps Engineer?
+											skills required for {clientDetail?.Role}?
 											<span className={InterviewScheduleStyle.reqField}>*</span>
 										</label>
 
