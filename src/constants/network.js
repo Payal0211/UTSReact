@@ -210,6 +210,8 @@ export class HiringRequestsAPI {
 	static CLOSE_HR_VALIDATION = 'CloseHRValidation'; 
 	static CLOSE_HR = 'CloseHR';
 	static REOPEN_HR = 'ReopenHR'
+	static GET_HR_DP_AMOUNT_DETAILS = 'GetHRDPAmountDetails'
+	static UPDATE_DP_AMOUNT = 'UpdateDPAmount'
 }
 
 export class UsersAPI {

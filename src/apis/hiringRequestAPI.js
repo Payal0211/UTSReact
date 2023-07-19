@@ -996,4 +996,31 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.reopeneHR');
 		}
 	},
+	hrDpAmounts: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.VIEW_ALL_HR + HiringRequestsAPI.GET_HR_DP_AMOUNT_DETAILS + `?hrID=${data.hrID}&contactPriorityID=${data.contactPriorityID}&talentId=${data.talentId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.hrDpAmounts');
+		}
+	},
+	updateDpAmounts: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.VIEW_ALL_HR + HiringRequestsAPI.UPDATE_DP_AMOUNT ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.updateDPAmount');
+		}
+	},
 };
