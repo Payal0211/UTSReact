@@ -129,8 +129,7 @@ const AllHiringRequestScreen = () => {
 	const togglePriority = useCallback(
 		async (payload) => {
 			setLoading(true);
-			localStorage.setItem('hrID', payload.hRID);
-			localStorage.removeItem('dealID')
+			localStorage.setItem('hrid', payload.hRID);
 			let response = await hiringRequestDAO.setHrPriorityDAO(
 				payload.isNextWeekStarMarked,
 				payload.hRID,
@@ -147,7 +146,7 @@ const AllHiringRequestScreen = () => {
 				setLoading(false);
 				messageAPI.open({
 					type: 'success',
-					content: `${tempdata.HR_ID} priority has been changed.`,
+					content: `${tempdata?.HR_ID} priority has been changed.`,
 				});
 			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
 				setLoading(false);
