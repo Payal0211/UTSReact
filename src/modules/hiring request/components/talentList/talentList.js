@@ -46,6 +46,7 @@ import FeedbackResponse from 'modules/interview/components/feedbackResponse/feed
 
 import ProfileLogDetails from '../profileLogDetails/profileLog';
 import TalentInterviewStatus from '../talentInterviewStatus/talentInterviewStatus';
+import EditDPRate from '../editDP/editDP';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -106,6 +107,8 @@ const TalentList = ({
 	const [profileRejectedModal, setProfileRejectedModal] = useState(false);
 
 	const [editPayRate, setEditPayRate] = useState(false);
+
+	const [editDPRate, setEditDPRate] = useState(false);
 
 	const [getScheduleSlotDate, setScheduleSlotDate] = useState([
 		{
@@ -184,7 +187,7 @@ const TalentList = ({
 	const [getDateNewFormate, setDateNewFormate] = useState([]);
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
-
+	const [DPData, setDPData] = useState({})
 	const {
 		register,
 		handleSubmit,
@@ -678,7 +681,21 @@ talentID,})
 															? 'NA'
 															: item?.DPPercentage}
 													</span>
+
 												</div>
+												
+												<span
+													onClick={() => {
+														setEditDPRate(true);
+														setDPData({ talentId:item?.TalentID , contactPriorityID: item?.ContactPriorityID});
+													}}
+													style={{
+														textDecoration: 'underline',
+														color: `var(--background-color-ebony)`,
+														cursor: 'pointer',
+													}}>
+													Edit
+												</span>
 											</div>
 										</>
 									)}
@@ -1392,6 +1409,21 @@ talentID,})
 					/>
 				</Modal>
 			)}
+
+			{/** ============ MODAL FOR DP RATE ================ */}
+			{editDPRate && (
+				<Modal
+					transitionName=""
+					width="700px"
+					centered
+					footer={null}
+					open={editDPRate}
+					className="statusModalWrap"
+					onCancel={() => setEditDPRate(false)}>
+						<EditDPRate onCancel={() => setEditDPRate(false)}  hrId={hrId} DPData={DPData} />
+				</Modal>
+			)}
+
 			{/** ============ MODAL FOR UPDATE LEGAL TALENT ONBOARD STATUS ================ */}
 			{updateTalentKickOffModal && (
 				<Modal

@@ -1727,7 +1727,65 @@ export const hiringRequestDAO = {
 				return statusCode;
 			}
 		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.closeHR()');
+			return errorDebug(error, 'hiringRequestDAO.reopenHR()');
 		}
-	}
+	},
+	GetHRDPAmountsDAO: async (data) => {
+		try {
+			const amountResponse = await HiringRequestAPI.hrDpAmounts(data);
+			if (amountResponse) {
+				const statusCode = amountResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = amountResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return amountResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return amountResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.GetHRDPAmountsDAO()');
+		}
+	},
+	UpdateHRDPAmountsDAO: async (data) => {
+		try {
+			const amountResponse = await HiringRequestAPI.updateDpAmounts(data);
+			if (amountResponse) {
+				const statusCode = amountResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = amountResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return amountResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return amountResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.UpdateHRDPAmountsDAO()');
+		}
+	},
 };
