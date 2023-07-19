@@ -16,9 +16,9 @@ export const allHRConfig = {
 				width: '30px',
 				render: (_, param) => {
 					let response = All_Hiring_Request_Utils.GETHRPRIORITY(
-						param.starStatus,
-						param.salesRep,
-						param.key,
+						param?.starStatus,
+						param?.salesRep,
+						param?.key,
 						togglePriority,
 					);
 
@@ -34,14 +34,14 @@ export const allHRConfig = {
 				render: (text, result) => {
 					return (
 						<>
-						{ result.reopenHR === 0 ? <Tooltip
+						{ result?.reopenHR === 0 ? <Tooltip
 							placement="bottom"
 							title={'Close HR'}>
 								<a href="javascript:void(0);">
 								<CloseHR
 									style={{ fontSize: '16px' }}
 									onClick={() => {
-										setCloseHRDetail({ ...result , HR_Id:result.HRID})
+										setCloseHRDetail({ ...result , HR_Id:result?.HRID})
 										setCloseHrModal(true)
 									}}
 								/>
@@ -53,7 +53,7 @@ export const allHRConfig = {
 								<ReopenHR 
 									style={{ fontSize: '16px' }}
 									onClick={() => {
-										setReopenHRData({...result, HR_Id: result.HRID , ClientDetail: {NoOfTalents: result.TR} })
+										setReopenHRData({...result, HR_Id: result?.HRID , ClientDetail: {NoOfTalents: result?.TR} })
 										setReopenHrModal(true)
 									}}
 								/>
@@ -201,8 +201,8 @@ export const allHRConfig = {
 				width: '100px',
 				render: (_, param) => {
 					return All_Hiring_Request_Utils.GETHRSTATUS(
-						param.hrStatusCode,
-						param.hrStatus,
+						param?.hrStatusCode,
+						param?.hrStatus,
 					);
 				},
 			},
