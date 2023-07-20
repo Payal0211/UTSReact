@@ -217,7 +217,7 @@ if(clientStage){getClientPopUpReportList(params)}
           "companyCategory": '',
           "salesManagerID": ''
         }
-getClientReportList(payload)
+        getClientReportList(payload)
         // getI2SReport(params);
     };
 
@@ -282,7 +282,8 @@ const toggleClientFilter = useCallback(() => {
 
       <div className={ClientReportStyle.filterContainer}>
         <div className={ClientReportStyle.filterSets}>
-        <div
+        <div className={ClientReportStyle.filterSetsInner} > 
+          <div
 						className={ClientReportStyle.addFilter}
 						onClick={toggleClientFilter}>
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
@@ -290,6 +291,9 @@ const toggleClientFilter = useCallback(() => {
 						<div className={ClientReportStyle.filterLabel}>Add Filters</div>
 						<div className={ClientReportStyle.filterCount}>{filteredTagLength}</div>
 					</div>
+          <p onClick={()=> resetFilter() }>Reset Filters</p>
+        </div>
+      
           <div className={ClientReportStyle.filterRight}>
             <div className={ClientReportStyle.calendarFilterSet}>
               {dateError &&  <p className={ClientReportStyle.error}>* Start and End dates can't be same </p>}
@@ -313,13 +317,13 @@ const toggleClientFilter = useCallback(() => {
                 />
               </div>
             </div>
-            <button
+            {/* <button
               type="submit"
               className={ClientReportStyle.btnPrimary}
               onClick={() => resetFilter()}
             >
               Reset
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

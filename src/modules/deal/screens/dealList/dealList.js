@@ -161,6 +161,32 @@ const DealList = () => {
 			});
 		}
 	};
+
+	const clearFilters = useCallback(() => {
+		setAppliedFilters(new Map());
+		setCheckedState(new Map());
+		setFilteredTagLength(0);
+		setTableFilteredState({
+			...tableFilteredState,
+			filterFields_DealList: {},
+		});
+		const reqFilter = {
+			...tableFilteredState,
+			filterFields_DealList: {},
+		};
+		 handleDealRequest(reqFilter);
+		 onRemoveDealFilters()
+		 setStartDate(null);
+		 setEndDate(null);
+	}, [
+		handleDealRequest,
+		setAppliedFilters,
+		setCheckedState,
+		setFilteredTagLength,
+		setTableFilteredState,
+		tableFilteredState,
+	]);
+
 	return (
 		<div className={DealListStyle.dealContainer}>
 			<div className={DealListStyle.header}>
@@ -172,6 +198,7 @@ const DealList = () => {
 			 */}
 			<div className={DealListStyle.filterContainer}>
 				<div className={DealListStyle.filterSets}>
+				<div className={DealListStyle.filterSetsInner} >
 					<div
 						className={DealListStyle.addFilter}
 						onClick={toggleDealFilter}>
@@ -180,6 +207,8 @@ const DealList = () => {
 						<div className={DealListStyle.filterLabel}>Add Filters</div>
 						<div className={DealListStyle.filterCount}>{filteredTagLength}</div>
 					</div>
+					<p onClick={()=> clearFilters() }>Reset Filters</p>
+				</div>	
 					<div className={DealListStyle.filterRight}>
 						<div className={DealListStyle.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
@@ -315,6 +344,7 @@ const DealList = () => {
 						filtersType={DealConfig.dealFilterTypeConfig(
 							filtersList && filtersList,
 						)}
+						clearFilters={clearFilters}
 					/>
 				</Suspense>
 			)}

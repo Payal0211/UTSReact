@@ -22,6 +22,7 @@ const HiringFilters = ({
 	setTableFilteredState,
 	filtersType,
 	getHTMLFilter,
+	clearFilters
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -178,29 +179,29 @@ const HiringFilters = ({
 		}
 	}, [appliedFilter, handleAppliedFilters]);
 
-	const clearFilters = useCallback(() => {
-		setAppliedFilters(new Map());
-		setCheckedState(new Map());
-		setFilteredTagLength(0);
-		setTableFilteredState({
-			...tableFilteredState,
-			filterFields_ViewAllHRs: {},
-		});
-		const reqFilter = {
-			...tableFilteredState,
-			filterFields_ViewAllHRs: {},
-		};
-		handleHRRequest(reqFilter);
-		setIsAllowFilters(false);
-	}, [
-		handleHRRequest,
-		setAppliedFilters,
-		setCheckedState,
-		setFilteredTagLength,
-		setIsAllowFilters,
-		setTableFilteredState,
-		tableFilteredState,
-	]);
+	// const clearFilters = useCallback(() => {
+	// 	setAppliedFilters(new Map());
+	// 	setCheckedState(new Map());
+	// 	setFilteredTagLength(0);
+	// 	setTableFilteredState({
+	// 		...tableFilteredState,
+	// 		filterFields_ViewAllHRs: {},
+	// 	});
+	// 	const reqFilter = {
+	// 		...tableFilteredState,
+	// 		filterFields_ViewAllHRs: {},
+	// 	};
+	// 	handleHRRequest(reqFilter);
+	// 	setIsAllowFilters(false);
+	// }, [
+	// 	handleHRRequest,
+	// 	setAppliedFilters,
+	// 	setCheckedState,
+	// 	setFilteredTagLength,
+	// 	setIsAllowFilters,
+	// 	setTableFilteredState,
+	// 	tableFilteredState,
+	// ]);
 	const handleFilters = useCallback(() => {
 		let filters = {};
 		appliedFilter.forEach((item) => {

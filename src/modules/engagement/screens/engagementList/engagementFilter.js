@@ -19,6 +19,7 @@ const EngagementFilerList = ({
 	handleHRRequest,
 	setTableFilteredState,
 	tableFilteredState,
+	clearFilters
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -90,47 +91,47 @@ const EngagementFilerList = ({
 		[appliedFilter, checkedState, setFilteredTagLength],
 	);
 
-	const clearFilters = useCallback(() => {
-		setAppliedFilters(new Map());
-		setCheckedState(new Map());
-		setFilteredTagLength(0);
+	// const clearFilters = useCallback(() => {
+	// 	setAppliedFilters(new Map());
+	// 	setCheckedState(new Map());
+	// 	setFilteredTagLength(0);
 
-		const defaultFilters ={		
-			clientFeedback: '',
-			typeOfHiring: '',
-			currentStatus: '',
-			tscName: '',
-			company: '',
-			geo: '',
-			position: '',
-			engagementTenure: 0,
-			nbdName: '',
-			amName: '',
-			pending: '',
-			searchMonth: new Date().getMonth() +1,
-			searchYear: new Date().getFullYear(),
-			searchType: '',
-			islost: '',
-		}
+	// 	const defaultFilters ={		
+	// 		clientFeedback: '',
+	// 		typeOfHiring: '',
+	// 		currentStatus: '',
+	// 		tscName: '',
+	// 		company: '',
+	// 		geo: '',
+	// 		position: '',
+	// 		engagementTenure: 0,
+	// 		nbdName: '',
+	// 		amName: '',
+	// 		pending: '',
+	// 		searchMonth: new Date().getMonth() +1,
+	// 		searchYear: new Date().getFullYear(),
+	// 		searchType: '',
+	// 		islost: '',
+	// 	}
 		
-		setTableFilteredState({
-			...tableFilteredState,
-			filterFieldsEngagement: defaultFilters,
-		});
-		const reqFilter = {
-			...tableFilteredState,
-			filterFieldsEngagement: defaultFilters,
-		};
-		handleHRRequest(reqFilter);
-		onRemoveHRFilters();
-	}, [
-		handleHRRequest,
-		setAppliedFilters,
-		setCheckedState,
-		setFilteredTagLength,
-		setTableFilteredState,
-		tableFilteredState,
-	]);
+	// 	setTableFilteredState({
+	// 		...tableFilteredState,
+	// 		filterFieldsEngagement: defaultFilters,
+	// 	});
+	// 	const reqFilter = {
+	// 		...tableFilteredState,
+	// 		filterFieldsEngagement: defaultFilters,
+	// 	};
+	// 	handleHRRequest(reqFilter);
+	// 	onRemoveHRFilters();
+	// }, [
+	// 	handleHRRequest,
+	// 	setAppliedFilters,
+	// 	setCheckedState,
+	// 	setFilteredTagLength,
+	// 	setTableFilteredState,
+	// 	tableFilteredState,
+	// ]);
 
 	const handleFilters = useCallback(() => {
 		let filters = {};

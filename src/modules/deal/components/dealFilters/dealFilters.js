@@ -21,6 +21,7 @@ const DealFilters = ({
 	tableFilteredState,
 	setFilteredTagLength,
 	getHTMLFilter,
+	clearFilters
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -158,28 +159,28 @@ const DealFilters = ({
 			});
 		}
 	}, [appliedFilter, handleAppliedFilters]);
-	const clearFilters = useCallback(() => {
-		setAppliedFilters(new Map());
-		setCheckedState(new Map());
-		setFilteredTagLength(0);
-		setTableFilteredState({
-			...tableFilteredState,
-			filterFields_DealList: {},
-		});
-		const reqFilter = {
-			...tableFilteredState,
-			filterFields_DealList: {},
-		};
-		 handleDealRequest(reqFilter);
-		 onRemoveDealFilters()
-	}, [
-		handleDealRequest,
-		setAppliedFilters,
-		setCheckedState,
-		setFilteredTagLength,
-		setTableFilteredState,
-		tableFilteredState,
-	]);
+	// const clearFilters = useCallback(() => {
+	// 	setAppliedFilters(new Map());
+	// 	setCheckedState(new Map());
+	// 	setFilteredTagLength(0);
+	// 	setTableFilteredState({
+	// 		...tableFilteredState,
+	// 		filterFields_DealList: {},
+	// 	});
+	// 	const reqFilter = {
+	// 		...tableFilteredState,
+	// 		filterFields_DealList: {},
+	// 	};
+	// 	 handleDealRequest(reqFilter);
+	// 	 onRemoveDealFilters()
+	// }, [
+	// 	handleDealRequest,
+	// 	setAppliedFilters,
+	// 	setCheckedState,
+	// 	setFilteredTagLength,
+	// 	setTableFilteredState,
+	// 	tableFilteredState,
+	// ]);
 	const handleFilters = useCallback(() => {
 		let filters = {};
 		appliedFilter.forEach((item) => {
