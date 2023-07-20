@@ -16,10 +16,10 @@ export const All_Hiring_Request_Utils = {
 		switch (statusCode) {
 			case hiringRequestPriority.NO_PRIORITY:
 				return (
-					<Tooltip
-						placement="bottom"
-						title="No Priority"
-						color={`var(--uplers-black)`}>
+					// <Tooltip
+					// 	placement="bottom"
+					// 	title="No Priority"
+					// 	color={`var(--uplers-black)`}>
 						<a href="javascript:void(0);" onClick={
 								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
@@ -33,23 +33,23 @@ export const All_Hiring_Request_Utils = {
 									  }
 							}><NoPriorityStar />
 						</a>
-					</Tooltip>
+					//  </Tooltip> 
 				);
 			case hiringRequestPriority.CURRENT_WEEK_PRIORITY:
 				return (
-					<Tooltip
-						placement="bottom"
-						title="Current Week Priority"
-						color={`var(--success-color)`}>
+					// <Tooltip
+					// 	placement="bottom"
+					// 	title="Current Week Priority"
+					// 	color={`var(--success-color)`}>
 						<CurrentWeekPriorityStar />
-					</Tooltip>
+					// </Tooltip>
 				);
 			case hiringRequestPriority.NEXT_WEEK_PRIORITY:
 				return (
-					<Tooltip
-						placement="bottom"
-						title="Next Week Priority"
-						color={`var(--color-sunlight)`}>
+					// <Tooltip
+					// 	placement="bottom"
+					// 	title="Next Week Priority"
+					// 	color={`var(--color-sunlight)`}>
 						<a href="javascript:void(0);" onClick={
 								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
@@ -63,7 +63,7 @@ export const All_Hiring_Request_Utils = {
 									  }
 							}><NextWeekPriorityStar />
 						</a>
-					</Tooltip>
+					// </Tooltip>
 				);
 			default:
 				break;

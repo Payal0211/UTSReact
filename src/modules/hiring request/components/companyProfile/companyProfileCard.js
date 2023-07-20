@@ -115,10 +115,19 @@ const CompanyProfileCard = ({
 					/>
 					<div className={CompanyProfileCardStyle.partWise}>
 						<div style={{ marginBottom: '10px' }}>
-							<div className={CompanyProfileCardStyle.EngagementType}>
+							{/* <div className={CompanyProfileCardStyle.EngagementType}>
 								<span>Engagement Type:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.Managed ? clientDetail?.Managed : 'NA'}
+								</span>
+							</div> */}
+							<div className={CompanyProfileCardStyle.EngagementType}>
+								<span>Engagement Type:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									{!allApiData?.Is_HRTypeDP ? `Contract - ${clientDetail?.SpecificMonth
+										? clientDetail?.SpecificMonth
+										: 0}
+									Months` : 'Direct Placement' }
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.category}>
@@ -172,7 +181,7 @@ const CompanyProfileCard = ({
 									{clientDetail?.Role ? clientDetail?.Role : 'NA'}
 								</span>
 							</div>
-							{!allApiData?.Is_HRTypeDP ? <div className={CompanyProfileCardStyle.contactDuration}>
+							{/* {!allApiData?.Is_HRTypeDP ? <div className={CompanyProfileCardStyle.contactDuration}>
 								<span>Contact Duration:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.SpecificMonth
@@ -185,7 +194,7 @@ const CompanyProfileCard = ({
 								<span style={{ fontWeight: '500' }}>
 								Direct Placement
 								</span>
-							</div> }
+							</div> } */}
 							
 							<div className={CompanyProfileCardStyle.minExp}>
 								<span>Minimum Exp Required:</span>&nbsp;&nbsp;

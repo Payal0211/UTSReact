@@ -683,8 +683,7 @@ talentID,})
 													</span>
 
 												</div>
-												
-												<span
+												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && <span
 													onClick={() => {
 														setEditDPRate(true);
 														setDPData({ talentId:item?.TalentID , contactPriorityID: item?.ContactPriorityID});
@@ -695,7 +694,8 @@ talentID,})
 														cursor: 'pointer',
 													}}>
 													Edit
-												</span>
+												</span>}
+											
 											</div>
 										</>
 									)}

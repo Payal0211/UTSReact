@@ -2104,7 +2104,9 @@ const EditHRFields = ({
 				
 				<button
 					onClick={handleSubmit(hrSubmitHandler)}
-					className={HRFieldStyle.btnPrimary}>
+					className={HRFieldStyle.btnPrimary}
+					disabled={isSavedLoading}
+					>
 					Edit HR
 				</button>
 			</div>

@@ -1,4 +1,4 @@
-import { Divider, message } from 'antd';
+import { Divider, message, Checkbox } from 'antd';
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import DebriefingHRStyle from './debriefingHR.module.css';
@@ -16,6 +16,7 @@ import WithLoader from 'shared/components/loader/loader';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import { _isNull } from 'shared/utils/basic_utils';
 import LogoLoader from 'shared/components/loader/logoLoader';
+import { ReactComponent as FocusRole } from 'assets/svg/FocusRole.svg';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -70,7 +71,7 @@ const DebriefingHR = ({
 		const response = await MasterDAO.getSkillsRequestDAO();
 		setSkills(response && response.responseBody);
 	}, []);
-
+	const [isFocusedRole, setIsFocusedRole] = useState(false)
 	// const combinedSkillsMemo = useMemo(() => {
 	// 	const combinedData = [
 	// 		JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
@@ -222,7 +223,8 @@ const DebriefingHR = ({
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
 			JDDumpID: jdDumpID || 0,
-			ActionType: "Save"
+			ActionType: "Save",
+			IsHrfocused: isFocusedRole
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -287,6 +289,15 @@ const DebriefingHR = ({
 					<div className={DebriefingHRStyle.hrFieldLeftPane}>
 						<h3>Job Description</h3>
 						<p>Please provide the necessary details</p>
+						<div className={DebriefingHRStyle.focusRole} >
+						<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)}>
+						  Make this a Focused Role
+						</Checkbox>	
+						  <FocusRole
+                      		style={{ width: "24px" }}                     
+                   		 />
+						</div>
+						
 					</div>
 					<div className={DebriefingHRStyle.hrFieldRightPane}>
 						<div className={DebriefingHRStyle.colMd12}>
@@ -447,7 +458,10 @@ const DebriefingHR = ({
 						<button
 							type="button"
 							className={DebriefingHRStyle.btnPrimary}
-							onClick={handleSubmit(debriefSubmitHandler)}>
+							onClick={handleSubmit(debriefSubmitHandler)}
+							disable={isLoading}	
+							>
+							
 							Create
 						</button>
 					</div>

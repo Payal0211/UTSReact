@@ -1,4 +1,4 @@
-import { Divider, Select, message } from 'antd';
+import { Divider, message,Checkbox } from 'antd';
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import DebriefingHRStyle from './debriefingHR.module.css';
@@ -14,6 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import { _isNull } from 'shared/utils/basic_utils';
 import WithLoader from 'shared/components/loader/loader';
+import LogoLoader from 'shared/components/loader/logoLoader';
+import { ReactComponent as FocusRole } from 'assets/svg/FocusRole.svg';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -66,6 +68,7 @@ const EditDebriefingHR = ({
 		const response = await MasterDAO.getSkillsRequestDAO();
 		setSkills(response && response.responseBody);
 	}, []);
+	const [isFocusedRole, setIsFocusedRole] = useState(false)
 	let watchOtherSkills = watch('otherSkill');
 	let watchSkills = watch('skills');
 
@@ -214,7 +217,8 @@ const EditDebriefingHR = ({
 				interviewerLinkedin: d.interviewerLinkedin,
 				interviewerDesignation: d.interviewerDesignation,
 				JDDumpID: getHRdetails?.addHiringRequest?.jddumpId,
-				ActionType: getHRdetails?.addHiringRequest?.isActive ? "Edit" : "Save"
+				ActionType: getHRdetails?.addHiringRequest?.isActive ? "Edit" : "Save",
+				IsHrfocused: isFocusedRole
 			};
 
 			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -229,7 +233,7 @@ const EditDebriefingHR = ({
 				});
 			}
 		},
-		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI],
+		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI,isFocusedRole],
 	);
 
 	const needMoreInforSubmitHandler = useCallback(
@@ -298,6 +302,7 @@ const EditDebriefingHR = ({
 			'roleAndResponsibilities',
 			getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities,
 		);
+		setIsFocusedRole(getHRdetails?.salesHiringRequest_Details?.isHrfocused)
 		// setValue("skills",getHRdetails?.skillmulticheckbox)
 	}, [getHRdetails, setValue]);
 
@@ -312,6 +317,14 @@ const EditDebriefingHR = ({
 						<div className={DebriefingHRStyle.hrFieldLeftPane}>
 							<h3>Job Description</h3>
 							<p>Please provide the necessary details</p>
+							<div className={DebriefingHRStyle.focusRole} >
+						<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)}>
+						  Make this a Focused Role
+						</Checkbox>	
+						  <FocusRole
+                      		style={{ width: "24px" }}                     
+                   		 />
+						</div>
 						</div>
 						<div className={DebriefingHRStyle.hrFieldRightPane}>
 							<div className={DebriefingHRStyle.colMd12}>
@@ -471,12 +484,15 @@ const EditDebriefingHR = ({
 						<button
 							type="button"
 							className={DebriefingHRStyle.btnPrimary}
-							onClick={handleSubmit(debriefSubmitHandler)}>
+							onClick={handleSubmit(debriefSubmitHandler)}
+							disable={isLoading}
+							>
 							Edit Debriefing
 						</button>
 					</div>
 				</div>
 			</WithLoader>
+			<LogoLoader visible={isLoading} />
 		</>
 	);
 };

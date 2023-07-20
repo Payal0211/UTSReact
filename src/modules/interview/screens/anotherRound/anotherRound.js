@@ -187,17 +187,17 @@ const AnotherRound = ({
 			setSlot2timematch(false)
 			setSlot3timematch(false)
 
-			if(moment(d.slot1StartTime).format('HH a') === moment(d.slot1EndTime).format('HH a')){
+			if(moment(d.slot1StartTime).format('HH mm a') === moment(d.slot1EndTime).format('HH mm a')){
 					timeError = true;
 					setSlot1timematch(true)
 				}
 
-			if(moment(d.slot2StartTime).format('HH a') === moment(d.slot2EndTime).format('HH a')){
+			if(moment(d.slot2StartTime).format('HH mm a') === moment(d.slot2EndTime).format('HH mm a')){
 					setSlot2timematch(true)
 					timeError = true;
 				}
 				
-			if(moment(d.slot3StartTime).format('HH a') === moment(d.slot3EndTime).format('HH a')){
+			if(moment(d.slot3StartTime).format('HH mm a') === moment(d.slot3EndTime).format('HH mm a')){
 					setSlot3timematch(true)
 					timeError = true;
 				}	
