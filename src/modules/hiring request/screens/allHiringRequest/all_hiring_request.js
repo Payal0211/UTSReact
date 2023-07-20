@@ -313,6 +313,33 @@ const AllHiringRequestScreen = () => {
 		 )
 		 downloadToExcel(DataToExport)
 	}
+
+	const clearFilters = useCallback(() => {
+		setAppliedFilters(new Map());
+		setCheckedState(new Map());
+		setFilteredTagLength(0);
+		setTableFilteredState({
+			...tableFilteredState,
+			filterFields_ViewAllHRs: {},
+		});
+		const reqFilter = {
+			...tableFilteredState,
+			filterFields_ViewAllHRs: {},
+		};
+		handleHRRequest(reqFilter);
+		setIsAllowFilters(false);
+		setEndDate(null)
+		setStartDate(null)
+	}, [
+		handleHRRequest,
+		setAppliedFilters,
+		setCheckedState,
+		setFilteredTagLength,
+		setIsAllowFilters,
+		setTableFilteredState,
+		tableFilteredState,
+	]);
+
 	return (
 		<div className={allHRStyles.hiringRequestContainer}>
 			{contextHolder}
@@ -435,6 +462,7 @@ const AllHiringRequestScreen = () => {
 			 */}
 			<div className={allHRStyles.filterContainer}>
 				<div className={allHRStyles.filterSets}>
+				<div className={allHRStyles.filterSetsInner} >
 					<div
 						className={allHRStyles.addFilter}
 						onClick={toggleHRFilter}>
@@ -443,6 +471,8 @@ const AllHiringRequestScreen = () => {
 						<div className={allHRStyles.filterLabel}>Add Filters</div>
 						<div className={allHRStyles.filterCount}>{filteredTagLength}</div>
 					</div>
+					<p onClick={()=> clearFilters() }>Reset Filters</p>
+			 	</div>
 					<div className={allHRStyles.filterRight}>
 						<div className={allHRStyles.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
@@ -615,6 +645,7 @@ const AllHiringRequestScreen = () => {
 						filtersType={allHRConfig.hrFilterTypeConfig(
 							filtersList && filtersList,
 						)}
+						clearFilters={clearFilters}
 					/>
 				</Suspense>
 			)}

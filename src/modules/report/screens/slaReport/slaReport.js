@@ -446,6 +446,53 @@ const SlaReports = () => {
 		downloadToExcel(dataToDownload)
 	}
 
+	const clearFilters = useCallback(() => {
+		setAppliedFilters(new Map());
+		setCheckedState(new Map());
+		setFilteredTagLength(0);
+	
+		let defaultState = {
+		  totalrecord: 100,
+		  pagenumber: 1,
+		  isExport: false,
+		  filterFieldsSLA: {
+			startDate: firstDay,
+			endDate: lastDay,
+			hrid: 0,
+			sales_ManagerID: 0,
+			ops_Lead: 0,
+			salesPerson: 0,
+			stages: "",
+			isAdHoc: 0,
+			role: "",
+			slaType: slaValue,
+			type: 0,
+			hR_Number: "",
+			company: "",
+			actionFilter: 0,
+			stageIDs: "",
+			actionFilterIDs: "",
+			CompanyIds: "",
+			// ambdr: 0
+		  }
+		}
+		setTableFilteredState(defaultState);
+		setSlaReportDetailsState(defaultState);
+		handleHRRequest(defaultState);
+		onRemoveFilters()
+		setEndDate(new Date(date.getFullYear(), date.getMonth() + 1, 0))
+		setStartDate(new Date(date.getFullYear(), date.getMonth(), 1))
+		// setSlaReportDetailsState(reqFilter);
+	  }, [
+		handleHRRequest,
+		setAppliedFilters,
+		setCheckedState,
+		setFilteredTagLength,
+		setTableFilteredState,
+		setSlaReportDetailsState,
+		tableFilteredState,setEndDate,setStartDate
+	  ]);
+
 	return (
 		<div className={SlaReportStyle.hiringRequestContainer}>
 			<div className={SlaReportStyle.addnewHR}>
@@ -457,6 +504,7 @@ const SlaReports = () => {
 			 */}
 			<div className={SlaReportStyle.filterContainer}>
 				<div className={SlaReportStyle.filterSets}>
+				<div className={SlaReportStyle.filterSetsInner} >
 					<div
 						className={SlaReportStyle.addFilter}
 						onClick={toggleHRFilter}>
@@ -466,6 +514,8 @@ const SlaReports = () => {
 						<div className={SlaReportStyle.filterCount}>
 							{filteredTagLength}
 						</div>
+					</div>
+					<p onClick={()=> clearFilters() }>Reset Filters</p>
 					</div>
 					<div className={SlaReportStyle.calendarFilterSet}>
 						<label className={SlaReportStyle.radioCheck_Mark}>
@@ -717,6 +767,7 @@ const SlaReports = () => {
 						firstDay={firstDay}
 						lastDay={lastDay}
 						slaValue={slaValue}
+						clearFilters={clearFilters}
 					/>
 				</Suspense>
 			)}

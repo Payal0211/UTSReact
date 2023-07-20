@@ -383,6 +383,49 @@ const EngagementList = () => {
 
 	}
 
+	const clearFilters = useCallback(() => {
+		setAppliedFilters(new Map());
+		setCheckedState(new Map());
+		setFilteredTagLength(0);
+
+		const defaultFilters ={		
+			clientFeedback: '',
+			typeOfHiring: '',
+			currentStatus: '',
+			tscName: '',
+			company: '',
+			geo: '',
+			position: '',
+			engagementTenure: 0,
+			nbdName: '',
+			amName: '',
+			pending: '',
+			searchMonth: new Date().getMonth() +1,
+			searchYear: new Date().getFullYear(),
+			searchType: '',
+			islost: '',
+		}
+		
+		setTableFilteredState({
+			...tableFilteredState,
+			filterFieldsEngagement: defaultFilters,
+		});
+		const reqFilter = {
+			...tableFilteredState,
+			filterFieldsEngagement: defaultFilters,
+		};
+		handleHRRequest(reqFilter);
+		onRemoveHRFilters();
+		setStartDate(new Date());
+	}, [
+		handleHRRequest,
+		setAppliedFilters,
+		setCheckedState,
+		setFilteredTagLength,
+		setTableFilteredState,
+		tableFilteredState,
+	]);
+
 	return (
 		<div className={allEngagementStyles.hiringRequestContainer}>
 			<div className={allEngagementStyles.addnewHR}>
@@ -401,6 +444,7 @@ const EngagementList = () => {
 
 			<div className={allEngagementStyles.filterContainer}>
 				<div className={allEngagementStyles.filterSets}>
+				<div className={allEngagementStyles.filterSetsInner} >
 					<div
 						className={allEngagementStyles.addFilter}
 						onClick={toggleHRFilter}>
@@ -411,7 +455,8 @@ const EngagementList = () => {
 							{filteredTagLength}
 						</div>
 					</div>
-
+					<p onClick={()=> clearFilters() }>Reset Filters</p>
+					</div>
 					<div className={allEngagementStyles.filterRight}>
 						<div className={allEngagementStyles.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
@@ -620,6 +665,7 @@ const EngagementList = () => {
 							filtersType={allEngagementConfig.engagementFilterTypeConfig(
 								filtersList && filtersList,
 							)}
+							clearFilters={clearFilters}
 						/>
 					</Suspense>
 				)}

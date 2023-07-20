@@ -1,6 +1,6 @@
 import DemandFunnelStyle from './demandFunnel.module.css';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
-import { Table } from 'antd';
+import { Table,Checkbox  } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -69,6 +69,7 @@ const DemandFunnelScreen = () => {
 	const [appliedFilter, setAppliedFilters] = useState(new Map());
 	const [checkedState, setCheckedState] = useState(new Map());
 	const [demandFunnelModal, setDemandFunnelModal] = useState(false);
+	const [isFocusedRole, setIsFocusedRole] = useState(false);
 
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
@@ -76,7 +77,7 @@ const DemandFunnelScreen = () => {
 	const getDemandFunnelListingHandler = useCallback(async (taleData) => {
 		if (taleData.startDate && taleData.endDate){
 			setLoading(true);
-		let response = await ReportDAO.demandFunnelListingRequestDAO(taleData);
+		let response = await ReportDAO.demandFunnelListingRequestDAO({...taleData,  "isHrfocused" : isFocusedRole});
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
 			setApiData(response?.responseBody);
@@ -86,7 +87,8 @@ const DemandFunnelScreen = () => {
 		}
 		}
 		
-	}, []);
+	}, [isFocusedRole]);
+
 
 	const onCalenderFilter = (dates) => {
 		const [start, end] = dates;
@@ -218,10 +220,77 @@ const DemandFunnelScreen = () => {
 
 	useEffect(() => {
 		getDemandFunnelListingHandler(tableFilteredState);
-	}, [getDemandFunnelListingHandler, tableFilteredState]);
+	}, [getDemandFunnelListingHandler, tableFilteredState,isFocusedRole]);
 	useEffect(() => {
 		getReportFilterHandler();
 	}, [getReportFilterHandler]);
+
+	const clearFilters = useCallback(() => {
+		setAppliedFilters(new Map());
+		setCheckedState(new Map());
+		setFilteredTagLength(0);
+		setTableFilteredState({
+			startDate: '',
+			endDate: '',
+			isHiringNeedTemp: '',
+			modeOfWork: '',
+			typeOfHR: '-1',
+			companyCategory: '',
+			replacement: '',
+			head: '',
+			isActionWise: true,
+		});
+		setDemandFunnelHRDetailsState({
+			adhocType: '',
+			TeamManagerName: '',
+			currentStage: '',
+			IsExport: false,
+			hrFilter: {
+				hR_No: '',
+				salesPerson: '',
+				compnayName: '',
+				role: '',
+				managed_Self: '',
+				talentName: '',
+				availability: '',
+			},
+			funnelFilter: {
+				startDate: '',
+				endDate: '',
+				isHiringNeedTemp: '',
+				modeOfWork: '',
+				typeOfHR: '-1',
+				companyCategory: '',
+				replacement: '',
+				head: '',
+				isActionWise: true,
+			},
+		});
+		viewDemandFunnelSummaryHandler(demandFunnelDefault);
+		const reqFilter = {
+			startDate: '',
+			endDate: '',
+			isHiringNeedTemp: '',
+			modeOfWork: '',
+			typeOfHR: '-1',
+			companyCategory: '',
+			replacement: '',
+			head: '',
+			isActionWise: true,
+		};
+		onRemoveFilters()
+		getReportFilterHandler()
+		getDemandFunnelListingHandler(reqFilter);
+	}, [
+		setAppliedFilters,
+		setCheckedState,
+		setDemandFunnelHRDetailsState,
+		setFilteredTagLength,
+		setTableFilteredState,
+		viewDemandFunnelSummaryHandler,
+		getDemandFunnelListingHandler,
+		getReportFilterHandler
+	]);
 
 	return (
 		<div className={DemandFunnelStyle.hiringRequestContainer}>
@@ -236,7 +305,8 @@ const DemandFunnelScreen = () => {
 			 */}
 			<div className={DemandFunnelStyle.filterContainer}>
 				<div className={DemandFunnelStyle.filterSets}>
-					<div
+					<div className={DemandFunnelStyle.filterSetsInner} >
+						<div
 						className={DemandFunnelStyle.addFilter}
 						onClick={toggleDemandReportFilter}>
 						<FunnelSVG style={{ width: '16px', height: '16px' }} />
@@ -246,7 +316,14 @@ const DemandFunnelScreen = () => {
 							{filteredTagLength}
 						</div>
 					</div>
+					<p onClick={()=> clearFilters() }>Reset Filters</p>
+					</div>
+					
 					<div className={DemandFunnelStyle.calendarFilterSet}>
+
+					<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)}>
+					Show only Focused Role
+						</Checkbox>	
 						<div className={DemandFunnelStyle.label}>Date</div>
 						{/* <div className={DemandFunnelStyle.calendarFilter}>
 							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
@@ -373,6 +450,7 @@ const DemandFunnelScreen = () => {
 						viewDemandFunnelSummaryHandler={viewDemandFunnelSummaryHandler}
 						setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
 						demandFunnelHRDetailsState={demandFunnelHRDetailsState}
+						clearFilters={clearFilters}
 					/>
 				</Suspense>
 			)}

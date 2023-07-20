@@ -150,6 +150,18 @@
     /* height: 92px; */
 }
 
+.filterSetsInner{
+    display: flex;
+    align-items: center;
+}
+
+.filterSetsInner p{
+    margin: 0 0 0 10px;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .filterRight {
     display: flex;
     justify-content: flex-end;
