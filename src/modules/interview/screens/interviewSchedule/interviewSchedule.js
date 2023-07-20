@@ -124,17 +124,17 @@ const InterviewSchedule = ({
 			setSlot2timematch(false)
 			setSlot3timematch(false)
 
-			if(moment(data.slot1StartTime).format('HH a') === moment(data.slot1EndTime).format('HH a')){
+			if(moment(data.slot1StartTime).format('HH mm a') === moment(data.slot1EndTime).format('HH mm a')){
 					timeError = true;
 					setSlot1timematch(true)
 				}
 
-			if( scheduleSlotRadio === 1 &&  moment(data.slot2StartTime).format('HH a') === moment(data.slot2EndTime).format('HH a')){
+			if( scheduleSlotRadio === 1 &&  moment(data.slot2StartTime).format('HH mm a') === moment(data.slot2EndTime).format('HH mm a')){
 					setSlot2timematch(true)
 					timeError = true;
 				}
 				
-			if( scheduleSlotRadio === 1 && moment(data.slot3StartTime).format('HH a') === moment(data.slot3EndTime).format('HH a')){
+			if( scheduleSlotRadio === 1 && moment(data.slot3StartTime).format('HH mm a') === moment(data.slot3EndTime).format('HH mm a')){
 					setSlot3timematch(true)
 					timeError = true;
 				}	

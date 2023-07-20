@@ -1900,7 +1900,9 @@ if(DID){
 
 					<button
 						onClick={handleSubmit(hrSubmitHandler)}
-						className={HRFieldStyle.btnPrimary}>
+						className={HRFieldStyle.btnPrimary}
+						disabled={isSavedLoading}
+						>
 						Create HR
 					</button>
 				</div>
