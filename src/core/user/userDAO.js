@@ -140,6 +140,7 @@ export const userDAO = {
 			const loginResult = await userAPI.login(userdata);
 
 			localStorage.setItem("UserDesignation", loginResult?.responseBody?.details?.Designation)
+			localStorage.setItem("EmployeeID", loginResult?.responseBody?.details?.EmployeeID)
 
 			if (loginResult) {
 				const statusCode = loginResult['statusCode'];

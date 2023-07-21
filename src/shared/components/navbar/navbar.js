@@ -48,7 +48,7 @@ const Navbar = ({ fullName }) => {
 								{dashboardCount && '/'}
 								{dashboardCount?.totalEnagagement}
 							</b>{' '}
-							Active Talent Deployed
+							Opportunities Captured
 						</div>
 					</div> */}
 				</div>

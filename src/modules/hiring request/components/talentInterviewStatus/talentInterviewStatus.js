@@ -59,7 +59,7 @@ export default function TalentInterviewStatus({
         >
           <div className={TalentListStyle.statusRejectInner}>
             <div>
-              {item?.Status} Reason:{" "}
+             Profile {item?.Status} Reason:{" "}
               <span>
                 {item?.Status === "Cancelled"
                   ? item?.CancelledReason

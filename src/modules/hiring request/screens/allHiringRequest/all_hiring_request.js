@@ -5,7 +5,7 @@ import React, {
 	useMemo,
 	useCallback,
 } from 'react';
-import { Dropdown, Menu, message, Table, Tooltip, Modal } from 'antd';
+import { Dropdown, Menu, message, Table, Tooltip, Modal,Checkbox } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
@@ -85,6 +85,7 @@ const AllHiringRequestScreen = () => {
 	const [reopenHrModal, setReopenHrModal] = useState(false);
 	const [ closeHRDetail, setCloseHRDetail] = useState({});
 	const [closeHrModal, setCloseHrModal] = useState(false);
+	const [isFocusedRole, setIsFocusedRole] = useState(false);
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -193,7 +194,7 @@ const AllHiringRequestScreen = () => {
 		async (pageData) => {
 			setLoading(true);
 			let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
-				pageData,
+				{...pageData, "isHrfocused":isFocusedRole},
 			);
 
 			if (response?.statusCode === HTTPStatusCode.OK) {
@@ -217,7 +218,7 @@ const AllHiringRequestScreen = () => {
 				return 'NO DATA FOUND';
 			}
 		},
-		[navigate],
+		[navigate,isFocusedRole],
 	);
 
 	useEffect(() => {
@@ -239,6 +240,7 @@ const AllHiringRequestScreen = () => {
 			pagenum:1,
 			searchText: e.target.value,
 		});
+		setDebouncedSearch(e.target.value)
 		setPageIndex(1)
 		debounceFun(e.target.value);
 	};
@@ -246,7 +248,7 @@ const AllHiringRequestScreen = () => {
 	useEffect(() => {
 		handleHRRequest(tableFilteredState);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [tableFilteredState]);
+	}, [tableFilteredState,isFocusedRole]);
 
 	const getHRFilterRequest = useCallback(async () => {
 		const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
@@ -319,17 +321,33 @@ const AllHiringRequestScreen = () => {
 		setCheckedState(new Map());
 		setFilteredTagLength(0);
 		setTableFilteredState({
-			...tableFilteredState,
+			tableFilteredState:{...tableFilteredState,...{
+				pagesize: 100,
+				pagenum: 1,
+				sortdatafield: 'CreatedDateTime',
+				sortorder: 'desc',
+				searchText: '',
+			}},
 			filterFields_ViewAllHRs: {},
 		});
 		const reqFilter = {
-			...tableFilteredState,
+			tableFilteredState:{...tableFilteredState,...{
+				pagesize: 100,
+				pagenum: 1,
+				sortdatafield: 'CreatedDateTime',
+				sortorder: 'desc',
+				searchText: '',
+			}},
 			filterFields_ViewAllHRs: {},
 		};
 		handleHRRequest(reqFilter);
 		setIsAllowFilters(false);
 		setEndDate(null)
 		setStartDate(null)
+		setDebouncedSearch('')
+		setIsFocusedRole(false)
+		setPageIndex(1);
+		setPageSize(100);
 	}, [
 		handleHRRequest,
 		setAppliedFilters,
@@ -474,6 +492,9 @@ const AllHiringRequestScreen = () => {
 					<p onClick={()=> clearFilters() }>Reset Filters</p>
 			 	</div>
 					<div className={allHRStyles.filterRight}>
+					<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)}>
+					Show only Focused Role
+						</Checkbox>	
 						<div className={allHRStyles.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
 							<input
@@ -481,6 +502,7 @@ const AllHiringRequestScreen = () => {
 								className={allHRStyles.searchInput}
 								placeholder="Search Table"
 								onChange={debouncedSearchHandler}
+								value={debouncedSearch}
 							/>
 						</div>
 						<div className={allHRStyles.calendarFilterSet}>
