@@ -134,7 +134,7 @@ const isAccess = (ID, title) =>{
 	title === 'Demand Funnel' || 
 	title === 'SLA Report' || 
 	title === 'Client Report' || 
-	title === 'I2S Report' || title === 'Master' || title === 'Deal'){
+	title === 'I2S Report' || title === 'Master' || title === 'Deal' || title === 'HR Report'){
 
 		isVisible = (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 || ID === 6)  
 		
@@ -254,6 +254,14 @@ const getSideBar = (usertypeID) => {
 			icon: clientReport,
 			navigateTo: UTSRoutes.CLIENT_REPORT,
 			isVisible: isAccess(usertypeID, 'Client Report')
+		}),
+		new SideBarModels({
+			id: 'HRReport',
+			title: 'HR Report',
+			isActive: false,
+			icon: clientReport,
+			navigateTo: UTSRoutes.HR_REPORT,
+			isVisible: isAccess(usertypeID, 'HR Report')
 		}),
 		new SideBarModels({
 			id: 'I2SReport',

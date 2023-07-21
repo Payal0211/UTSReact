@@ -13,7 +13,8 @@ export class SubDomain {
 	static VIEW_ALL_HR = 'ViewAllHR/';
 	static MASTERS = 'MastersAPI/';
 	static CLIENT = 'Client/';
-	static CLIENT_REPORT = 'ClientReport/'
+	static CLIENT_REPORT = 'ClientReport/';
+	static HR_REPORT = 'HRReport/';
 	static HIRING = 'Hiring/';
 	static MATCHMAKING = 'Matchmaking/';
 	static DEBRIEFING = 'Debriefing/';
@@ -255,6 +256,7 @@ export class ClientReportAPI {
 	static GET_CLIENT_REPORT = 'GetClientReport'
 	static GET_CLIENT_POPUP_REPORT = 'GeClientPopUpReport'
 	static GET_CLIENT_FILTERS = 'Filters'
+	static POPUP_FILTERS = 'Popup'
 }
 
 export class OnboardsAPI {

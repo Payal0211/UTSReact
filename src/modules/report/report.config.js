@@ -1129,6 +1129,37 @@ export const reportConfig = {
 			},
 		];
 	},
+	hrPopupReportConfig: () => {
+		return [
+			{
+				title: 'Client',
+				dataIndex: 'fullName',
+				key: 'fullName',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Company Name',
+				dataIndex: 'company',
+				key: 'company',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},		
+			{
+				title: 'HR #',
+				dataIndex: 'hR_NUMBER',
+				key: 'hR_NUMBER',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+		];
+	},
 	clientReportFilterTypeConfig: (filtersList) => {
 		return [
 			{
@@ -1146,6 +1177,34 @@ export const reportConfig = {
 				isSearch: false,
 			},
 			
+		];
+	},
+	HRReportFilterTypeConfig: (filterList) => {
+		return [
+			{
+				label: 'Hiring Status',
+				name: 'HiringStatus',
+				child: filterList?.HiringStatus,
+				isSearch: false,
+			},
+			{
+				label: 'Working Mode',
+				name: 'ModeOfWorking',
+				child: filterList?.ModeOfWorking.filter(val => val.text !== "0" ),
+				isSearch: false,
+			},
+			{
+				label: 'Head',
+				name: 'SalesManager',
+				child: filterList?.SalesManager,
+				isSearch: true,
+			},
+			{
+				label: 'HR Type',
+				name: 'TypeOfHR',
+				child: filterList?.TypeOfHR.filter(val => val.text !== "-1" ),
+				isSearch: false,
+			},
 		];
 	},
 };

@@ -80,5 +80,80 @@ export const clientReport = {
 		} catch (error) {
 			return errorDebug(error, 'clientReport.getClientReportFilters');
 		}
-	}
+	},
+	getHRReportList: async function (Data) {
+		try {
+			const HRListResult = await clientReportAPI.getHRReportRequest(Data);
+			if (HRListResult) {
+				const statusCode = HRListResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = HRListResult?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return HRListResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return HRListResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'clientReport.getHRReportList');
+		}
+	},
+	getHRReportFilters: async function (){
+		try {
+			const HRFilterResult = await clientReportAPI.getHRReportFiltersRequest()
+			if (HRFilterResult) {
+				const statusCode = HRFilterResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = HRFilterResult?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return HRFilterResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return HRFilterResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'clientReport.getHRReportFilters');
+		}
+	},
+	getHRPopUpRequestList: async function (Data) {
+		try {
+			const HRListResult = await clientReportAPI.getHRPopUPReportRequest(Data);
+			if (HRListResult) {
+				const statusCode = HRListResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = HRListResult?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return HRListResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return HRListResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'clientReport.getHRPopUpRequestList');
+		}
+	},
 }
