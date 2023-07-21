@@ -362,7 +362,7 @@ const toggleClientFilter = useCallback(() => {
                               {report.stageValue}
                             </p>
                           ) :  
-                          report.stageValue
+                         <p>{report.stageValue}</p> 
                           }
                         </div>
                       </li>)}               

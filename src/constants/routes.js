@@ -95,6 +95,10 @@ const ClientReport = React.lazy(() =>
  	import('modules/report/screens/clientReport/clientReport')
 );
 
+const HRReport = React.lazy(() =>
+	import('modules/report/screens/hrReport/hrReport')
+);
+
 const DashboardScreen = React.lazy(() =>
     import('modules/dashboard/screens/dashboard'),
 )
@@ -136,6 +140,7 @@ export default class UTSRoutes {
 	static SLA_REPORT = '/slaReport';
 	static I2S_REPORT = "/i2sReport";
 	static CLIENT_REPORT = "/clientReport";
+	static HR_REPORT = "/hrReport";
 }
 
 export const navigateToComponent = {
@@ -277,6 +282,11 @@ export const navigateToComponent = {
 	[UTSRoutes.CLIENT_REPORT]:(
 		<Suspense>
 			<ClientReport />
+		</Suspense>
+	),
+	[UTSRoutes.HR_REPORT]:(
+		<Suspense>
+			<HRReport />
 		</Suspense>
 	),
 [UTSRoutes.DASHBOARD]:(
