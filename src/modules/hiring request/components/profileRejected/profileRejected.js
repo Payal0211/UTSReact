@@ -33,7 +33,7 @@ const {
 			<div className={profileRejected.rejectMessageContainer}>
 				<div className={profileRejected.row}>
 					<div className={profileRejected.colMd12}>
-						<label>{currentTalent?.Status} Reason</label>
+						<label>Profile {currentTalent?.Status} Reason</label>
 						<p>{currentTalent?.Status === "Cancelled"
                   ? currentTalent?.CancelledReason
                   : currentTalent?.Status === "On Hold"

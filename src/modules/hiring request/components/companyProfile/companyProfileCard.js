@@ -76,22 +76,7 @@ const CompanyProfileCard = ({
 									rel="noreferrer">
 									<AiFillLinkedin style={{ color: '#006699' }} />
 								</a>
-							</div>
-							<div className={CompanyProfileCardStyle.pocName}>
-								<span>POC Name:</span>&nbsp;&nbsp;
-								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.POCFullName ? clientDetail?.POCFullName : 'NA'}
-								</span>
-								&nbsp;&nbsp;
-								{/*  TODO:- 
-								<AiFillLinkedin style={{ color: '#006699' }} /> */}
-							</div>
-							<div className={CompanyProfileCardStyle.pocEmail}>
-								<span>POC Email:</span>&nbsp;&nbsp;
-								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.POCEmailID ? clientDetail?.POCEmailID : 'NA'}
-								</span>
-							</div>
+							</div>							
 						</div>
 						<div style={{ cursor: 'pointer' }}>
 							{
@@ -329,6 +314,21 @@ const CompanyProfileCard = ({
 					/>
 					<div className={CompanyProfileCardStyle.partWise}>
 						<div>
+						<div className={CompanyProfileCardStyle.pocName}>
+								<span>POC Name:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									{clientDetail?.POCFullName ? clientDetail?.POCFullName : 'NA'}
+								</span>
+								&nbsp;&nbsp;
+								{/*  TODO:- 
+								<AiFillLinkedin style={{ color: '#006699' }} /> */}
+							</div>
+							<div className={CompanyProfileCardStyle.pocEmail}>
+								<span>POC Email:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									{clientDetail?.POCEmailID ? clientDetail?.POCEmailID : 'NA'}
+								</span>
+							</div>
 							<div className={CompanyProfileCardStyle.salesPerson}>
 								<span>Sales Person:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>

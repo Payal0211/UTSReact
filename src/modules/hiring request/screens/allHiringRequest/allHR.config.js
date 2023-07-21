@@ -4,10 +4,22 @@ import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { ReactComponent as CloneHRSVG } from 'assets/svg/cloneHR.svg';
 import { ReactComponent as ReopenHR } from 'assets/svg/reopen.svg';
 import { ReactComponent as CloseHR} from 'assets/svg/power.svg';
+import { ReactComponent as FocusedRole} from 'assets/svg/FocusRole.svg'
 import { Tooltip } from 'antd';
 export const allHRConfig = {
 	tableConfig: (togglePriority, setCloneHR, setHRID, setHRNumber ,setReopenHRData,setReopenHrModal,setCloseHRDetail,setCloseHrModal) => {
 		return [
+			{
+				title: ' ',
+				dataIndex: 'isHRFocused',
+				key: 'isHRFocused',
+				align: 'left',
+				width:'30px',
+				render:(val)=> {
+					return val ? <FocusedRole /> : null
+				}
+			},
+
 			{
 				title: ' ',
 				dataIndex: 'starStatus',
