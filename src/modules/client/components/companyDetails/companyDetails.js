@@ -371,6 +371,9 @@ const CompanyDetails = ({
 									label="Lead Source"
 									defaultValue="Select Lead Source"
 									options={leadSource?.BindLeadType}
+									required
+									isError={errors['companyLeadSource'] && errors['companyLeadSource']}
+									errorMsg={'Please select lead source'}
 								/>
 							</div>
 						</div>

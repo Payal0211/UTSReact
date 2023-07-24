@@ -10,8 +10,9 @@ import { clientReport } from 'core/clientReport/clientReportDAO'
 import { reportConfig } from 'modules/report/report.config';
 import { HTTPStatusCode } from "constants/network";
 import UTSRoutes from "constants/routes";
-import { Table } from "antd";
+import { Table,Checkbox } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
+import moment from 'moment';
 const DealListLazyComponents = React.lazy(() =>
 	import('modules/deal/components/dealFilters/dealFilters'),
 );
@@ -34,6 +35,7 @@ export default function ClientReport() {
     const [filteredTagLength, setFilteredTagLength] = useState(0);
     const [appliedFilter, setAppliedFilters] = useState(new Map());
     const [checkedState, setCheckedState] = useState(new Map());
+    const [isFocusedRole, setIsFocusedRole] = useState(false);
 
     const [tableFilteredState, setTableFilteredState] = useState({
       totalrecord: 100,
@@ -53,7 +55,7 @@ export default function ClientReport() {
 
     const getClientReportList = async (params) => {
         setLoading(true);
-        const response = await clientReport.getClientRequestList(params);
+        const response = await clientReport.getClientRequestList({...params,"isHrfocused" : isFocusedRole});
         if (response.statusCode === HTTPStatusCode.OK) {
           let details = response.responseBody.details;
           setReportList(details);
@@ -73,7 +75,7 @@ export default function ClientReport() {
 
     const getClientPopUpReportList = async (params) => {
         setLoading(true);
-        const response = await clientReport.getClienPopUpRequestList(params);
+        const response = await clientReport.getClienPopUpRequestList({...params,"isHrfocused" : isFocusedRole});
         if (response.statusCode === HTTPStatusCode.OK) {
           let details = response.responseBody.details;
        // console.log("popup data", details)
@@ -119,49 +121,86 @@ export default function ClientReport() {
 
     let companyCategory = fd["CompanyCategory"] ? fd["CompanyCategory"] : ''
     let SalesManager = fd["SalesManager"] ? fd["SalesManager"] : ''
+    let leadUserID = fd['LeadType'] ? parseInt(fd['LeadType']) : 0
    //  console.log("companyCategory", companyCategory , SalesManager, {reqFilter})
 
+    // let payload = {
+    //   "startDate": firstDay.toLocaleDateString("en-US"),
+    //   "endDate": lastDay.toLocaleDateString("en-US"),
+    //   "companyCategory": companyCategory,
+    //   "salesManagerID": SalesManager
+    // }
+
     let payload = {
-      "startDate": firstDay.toLocaleDateString("en-US"),
-      "endDate": lastDay.toLocaleDateString("en-US"),
+      "fromDate": firstDay.toLocaleDateString("en-US"),
+      "toDate": lastDay.toLocaleDateString("en-US"),
+      "geoId": 0,
       "companyCategory": companyCategory,
-      "salesManagerID": SalesManager
+      "salesMangerId": 0,
+      "salesManagerIds": SalesManager,
+      "leadUserId": leadUserID
     }
   getClientReportList(payload)
 
-  let params ={
-    "client": "",
-    "company": "",
-    "salesUser": "",
-    "hr_Number": "",
-    "talent": "",
-    "status": "",
-    "clientStage": clientStage,
-    "reportFilter": {
-      "startDate": firstDay.toLocaleDateString("en-US"),
-      "endDate": lastDay.toLocaleDateString("en-US"),
-      "companyCategory": companyCategory,
-      "salesManagerID": SalesManager
-  }    
+//   let params ={
+//     "client": "",
+//     "company": "",
+//     "salesUser": "",
+//     "hr_Number": "",
+//     "talent": "",
+//     "status": "",
+//     "clientStage": clientStage,
+//     "reportFilter": {
+//       "startDate": firstDay.toLocaleDateString("en-US"),
+//       "endDate": lastDay.toLocaleDateString("en-US"),
+//       "companyCategory": companyCategory,
+//       "salesManagerID": SalesManager
+//   }    
+// }
+
+let params = {
+  "fromDate": firstDay.toLocaleDateString("en-US"),
+  "toDate": lastDay.toLocaleDateString("en-US"),
+  "stageName": clientStage,
+  "fullName": "",
+  "company": "",
+  "geo": "",
+  "salesUser": "",
+  "hr_Number": "",
+  "name": "",
+  "companyCategory": companyCategory,
+  "salesManagerID": 0,
+  "status": "",
+  "salesManagerIDs": SalesManager,
+  "leadUserID": leadUserID
 }
 
 if(clientStage){getClientPopUpReportList(params)}
 
-  },[clientStage, firstDay, lastDay,appliedFilter])
+  },[clientStage, firstDay, lastDay,appliedFilter,isFocusedRole])
     
     useEffect(() => {
-        let payload = {
-            "startDate": firstDay.toLocaleDateString("en-US"),
-            "endDate": lastDay.toLocaleDateString("en-US"),
+        // let payload = {
+        //     "startDate": firstDay.toLocaleDateString("en-US"),
+        //     "endDate": lastDay.toLocaleDateString("en-US"),
+        //     "companyCategory": "",
+        //     "salesManagerID": ''
+        //   }
+          let payload = {
+            "fromDate": firstDay.toLocaleDateString("en-US"),
+            "toDate": lastDay.toLocaleDateString("en-US"),
+            "geoId": 0,
             "companyCategory": "",
-            "salesManagerID": ''
+            "salesMangerId": 0,
+            "salesManagerIds": "",
+            "leadUserId": 0
           }
         getClientReportList(payload)
         getClientReportFilterList()
      //  console.log( payload)
         setStartDate(firstDay)
         setEndDate(lastDay)
-    }, []);
+    },[]);
 
     const onCalenderFilter = useCallback((dates) => {
       const [start, end] = dates;
@@ -188,12 +227,22 @@ if(clientStage){getClientPopUpReportList(params)}
       
           let companyCategory = filters["CompanyCategory"] ? filters["CompanyCategory"] : ''
           let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : ''
-      let payload = {
-                  "startDate": start.toLocaleDateString("en-US"),
-                  "endDate": end.toLocaleDateString("en-US"),
-                  "companyCategory": companyCategory,
-                  "salesManagerID": SalesManager
-                }
+          let leadUserID = filters['LeadType'] ? parseInt(filters['LeadType']) : 0
+      // let payload = {
+      //             "startDate": start.toLocaleDateString("en-US"),
+      //             "endDate": end.toLocaleDateString("en-US"),
+      //             "companyCategory": companyCategory,
+      //             "salesManagerID": SalesManager
+      //           }
+        let payload = {
+          "fromDate": start.toLocaleDateString("en-US"),
+          "toDate": end.toLocaleDateString("en-US"),
+          "geoId": 0,
+          "companyCategory": companyCategory,
+          "salesMangerId": 0,
+          "salesManagerIds": SalesManager,
+          "leadUserId": leadUserID
+        }
       getClientReportList(payload)
       }
       }
@@ -211,13 +260,23 @@ if(clientStage){getClientPopUpReportList(params)}
         setAppliedFilters(new Map());
         setCheckedState(new Map());
         setFilteredTagLength(0);
+        // let payload = {
+        //   "startDate": params.fromDate,
+        //   "endDate": params.toDate,
+        //   "companyCategory": '',
+        //   "salesManagerID": ''
+        // }
         let payload = {
-          "startDate": params.fromDate,
-          "endDate": params.toDate,
-          "companyCategory": '',
-          "salesManagerID": ''
+          "fromDate": params.fromDate,
+          "toDate": params.toDate,
+          "geoId": 0,
+          "companyCategory": "",
+          "salesMangerId": 0,
+          "salesManagerIds": "",
+          "leadUserId": 0
         }
         getClientReportList(payload)
+        onRemoveDealFilters()
         // getI2SReport(params);
     };
 
@@ -229,23 +288,42 @@ if(clientStage){getClientPopUpReportList(params)}
 
     let companyCategory = filters["CompanyCategory"] ? filters["CompanyCategory"] : ''
     let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : ''
+    let leadUserID = filters['LeadType'] ? parseInt(filters['LeadType']) : 0
      // console.log(reportData);
       setClientStage(reportData.stageName)
-      let params ={
-          "client": "",
-          "company": "",
-          "salesUser": "",
-          "hr_Number": "",
-          "talent": "",
-          "status": "",
-          "clientStage": reportData.stageName,
-          "reportFilter": {
-            "startDate": firstDay.toLocaleDateString("en-US"),
-            "endDate": lastDay.toLocaleDateString("en-US"),
-            "companyCategory": companyCategory,
-            "salesManagerID": SalesManager
-        }    
+      // let params ={
+      //     "client": "",
+      //     "company": "",
+      //     "salesUser": "",
+      //     "hr_Number": "",
+      //     "talent": "",
+      //     "status": "",
+      //     "clientStage": reportData.stageName,
+      //     "reportFilter": {
+      //       "startDate": firstDay.toLocaleDateString("en-US"),
+      //       "endDate": lastDay.toLocaleDateString("en-US"),
+      //       "companyCategory": companyCategory,
+      //       "salesManagerID": SalesManager
+      //   }    
+      // }
+
+      let params = {
+        "fromDate":  moment(firstDay).format('yyyy-MM-DD') ,
+        "toDate": moment(lastDay).format('yyyy-MM-DD'),
+        "stageName": reportData.stageName,
+        "fullName": "",
+        "company": "",
+        "geo": "",
+        "salesUser": "",
+        "hr_Number": "",
+        "name": "",
+        "companyCategory": companyCategory,
+        "salesManagerID": 0,
+        "status": "",
+        "salesManagerIDs": SalesManager,
+        "leadUserID": leadUserID
       }
+
       getClientPopUpReportList(params)
   },[clientStage, firstDay, lastDay,appliedFilter])
 
@@ -295,6 +373,9 @@ const toggleClientFilter = useCallback(() => {
         </div>
       
           <div className={ClientReportStyle.filterRight}>
+          <Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)}>
+					Show only Focused Role
+						</Checkbox>	
             <div className={ClientReportStyle.calendarFilterSet}>
               {dateError &&  <p className={ClientReportStyle.error}>* Start and End dates can't be same </p>}
               <div className={ClientReportStyle.label}>Date</div>
@@ -411,6 +492,7 @@ const toggleClientFilter = useCallback(() => {
 						filtersType={reportConfig.clientReportFilterTypeConfig(
 							filtersList && filtersList,
 						)}
+            clearFilters={resetFilter}
 					/>
 				</Suspense>
 			)}
