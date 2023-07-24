@@ -254,7 +254,7 @@ const DealList = () => {
 				) : (
 					<WithLoader>
 						<Table
-							scroll={{ x: '100vw', y: '100vh' }}
+							scroll={{ x: '100%', y: '100vh' }}
 							id="hrListingTable"
 							columns={tableColumnsMemo}
 							bordered={false}
