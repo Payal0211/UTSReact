@@ -82,7 +82,7 @@ const EmptyTalentProfile = ({ talentLength }) => {
 						/>
 					</Suspense>
 				</div> */}
-				<button onClick={() => setMatchmakingData(true)} className={emptyTalentProfileStyle.exploreMore}>Explore Profiles</button>
+				{/* <button onClick={() => setMatchmakingData(true)} className={emptyTalentProfileStyle.exploreMore}>Explore Profiles</button> */}
 				<Modal
 					transitionName=""
 					className="matchMakingModal"

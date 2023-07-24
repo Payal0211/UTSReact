@@ -242,7 +242,7 @@ const AllHiringRequestScreen = () => {
 		});
 		setDebouncedSearch(e.target.value)
 		setPageIndex(1)
-		debounceFun(e.target.value);
+		// debounceFun(e.target.value);
 	};
 
 	useEffect(() => {

@@ -36,13 +36,14 @@ import { ReactComponent as BeforeKickOffSVG } from 'assets/svg/beforeKickOff.svg
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as AfterKickOffSVG } from 'assets/svg/AfterKickOff.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/TimeStartEnd.svg';
-
+import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
 
 import { HRDeleteType, HiringRequestHRStatus, InputType } from 'constants/application';
 
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
 import CloseHRModal from '../../components/closeHRModal/closeHRModal';
+import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal";
 import CloneHR from 'modules/hiring request/components/cloneHR/cloneHR';
 import CTASlot1 from 'modules/hiring request/components/CTASlot1/CTASlot1';
 import CTASlot2 from 'modules/hiring request/components/CTASlot2/CTASlot2';
@@ -80,6 +81,7 @@ const HRDetailScreen = () => {
 	const [editDebrifing, setEditDebring] = useState([]);
 
 	const [closeHrModal, setCloseHrModal] = useState(false);
+  const [reopenHrModal, setReopenHrModal] = useState(false);
 
 	const {
 		watch,
@@ -230,7 +232,7 @@ console.log('apiData', apiData)
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
-							<button onClick={() => setAssignAMData(true)} className={HRDetailStyle.primaryButton}>Assign AM</button>
+							{/* <button onClick={() => setAssignAMData(true)} className={HRDetailStyle.primaryButton}>Assign AM</button> */}
 
 							<Modal
 								transitionName=""

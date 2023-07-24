@@ -30,6 +30,7 @@ const MatchmakingModal = ({
 	hrStatus,
 	hrPriority,
 	nextActionKey,
+	currency
 }) => {
 	// const [matchmakingModal, setMatchmakingModal] = useState(false);
 	const [matchmakingData, setMatchmakingData] = useState([]);
@@ -421,6 +422,13 @@ const MatchmakingModal = ({
 										lineHeight: '19px',
 										fontWeight: 'bold',
 									}}>{matchmakingData?.headerDPNRPercentage}  </span>
+									{currency &&  <span
+									style={{
+										fontSize: '16px',
+										lineHeight: '19px',
+										fontWeight: 'bold',
+									}}>({currency})  </span>}
+									
 								</span>
 							</div>
 							<div
