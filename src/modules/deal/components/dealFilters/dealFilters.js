@@ -4,7 +4,7 @@ import { ReactComponent as ArrowRightSVG } from 'assets/svg/arrowRight.svg';
 import { ReactComponent as CrossSVG } from 'assets/svg/cross.svg';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { Checkbox, Tag } from 'antd';
+import { Checkbox, Tag, Select } from 'antd';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { dealUtils } from 'modules/deal/dealUtils';
 
@@ -294,7 +294,14 @@ const DealFilters = ({
 												<div
 													className={DealFiltersStyle.filterItem}
 													key={index}>
-													<Checkbox
+
+													{filterSubChild.isSingle ? <Checkbox
+													disabled={
+														appliedFilter?.get(`${filterSubChild.name}`) &&
+														!checkedState.get(
+															`${filterSubChild.name}${item.text}`,
+														)
+													}
 														checked={checkedState.get(
 															`${filterSubChild.name}${item.text}`,
 														)}
@@ -317,6 +324,30 @@ const DealFilters = ({
 															  )
 															: item?.value}
 													</Checkbox>
+													 : <Checkbox
+														checked={checkedState.get(
+															`${filterSubChild.name}${item.text}`,
+														)}
+														onChange={(e) =>
+															handleAppliedFilters(e.target.checked, {
+																filterType: filterSubChild.name,
+																value: item?.value,
+																id: item?.text,
+															})
+														}
+														id={item?.value + `/${index + 1}`}
+														style={{
+															fontSize: `${!item.label && '1rem'}`,
+															fontWeight: '500',
+														}}>
+														{item.label
+															? All_Hiring_Request_Utils.GETHRSTATUS(
+																	item.statusCode,
+																	item.label,
+															  )
+															: item?.value}
+													</Checkbox> }	
+													
 												</div>
 											);
 									  })}

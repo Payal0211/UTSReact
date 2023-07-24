@@ -32,6 +32,7 @@ export class SubDomain {
 	static INTERVIEWER = 'Interviewer/';
 	static SLA_REPORT = 'SLAReport/';
 	static I2S_REPORT = 'InterviewToSuccess/';
+	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/'
 }
 export class APIType {
 	static USER = '/user';
@@ -146,6 +147,7 @@ export class MastersAPI {
 	static ADD_COUNTRY = 'AddCountry';
 	static GET_CURRENCY_EXCHANGE_RATE_LIST = 'GetCurrencyExchangeRateList';
 	static UPDATE_CURRENCY_EXCHANGE_RATE_LIST = 'UpdateCurrencyExchangeRate';
+	static GET_LEAD_USER = 'GetLeadUsers'
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
@@ -254,7 +256,7 @@ export class I2SsAPI {
 
 export class ClientReportAPI {
 	static GET_CLIENT_REPORT = 'GetClientReport'
-	static GET_CLIENT_POPUP_REPORT = 'GeClientPopUpReport'
+	static GET_CLIENT_POPUP_REPORT = 'PopUpReport'
 	static GET_CLIENT_FILTERS = 'Filters'
 	static POPUP_FILTERS = 'Popup'
 }

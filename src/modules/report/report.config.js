@@ -309,6 +309,14 @@ export const reportConfig = {
 				isSearch: true,
 			},
 			{
+				label: 'Lead Type',
+				name: 'leadUserId',
+				child: filterList?.LeadTypeList.filter(
+					(item, index) => index !== 0 && item,
+				),
+				isSearch: false,
+			},
+			{
 				label: 'Action/HR',
 				name: 'isActionWise',
 				child: [
@@ -1169,6 +1177,7 @@ export const reportConfig = {
 					(item, index) => index !== 0 && item,
 				),
 				isSearch: false,
+				isSingle:true
 			},
 			{
 				label: 'Heads',
@@ -1176,7 +1185,13 @@ export const reportConfig = {
 				child: filtersList?.SalesManager,
 				isSearch: false,
 			},
-			
+			{
+				label: 'Lead Type',
+				name: 'LeadType',
+				child: filtersList?.LeadTypeList.filter(item=> item.value !== "0"),
+				isSearch: false,
+				isSingle:true
+			},
 		];
 	},
 	HRReportFilterTypeConfig: (filterList) => {

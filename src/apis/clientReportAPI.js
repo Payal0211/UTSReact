@@ -7,7 +7,7 @@ export const clientReportAPI = {
 	getClientReportRequest: async (Data) => {
 		try {
 			let httpService = new HttpServices();
-			httpService.URL = NetworkInfo.NETWORK + SubDomain.REPORT + SubDomain.CLIENT_REPORT + ClientReportAPI.GET_CLIENT_REPORT;
+			httpService.URL = NetworkInfo.NETWORK + SubDomain.REPORT + SubDomain.CLIENT_BASED_REPORT_WITHHUB_SPOT + UserAPI.LIST;
 			httpService.setAuthRequired = true;
 			httpService.dataToSend = Data;
 			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -20,7 +20,7 @@ export const clientReportAPI = {
 	getClientPopUPReportRequest: async (Data) => {
 		try {
 			let httpService = new HttpServices();
-			httpService.URL = NetworkInfo.NETWORK + SubDomain.REPORT + SubDomain.CLIENT_REPORT + ClientReportAPI.GET_CLIENT_POPUP_REPORT;
+			httpService.URL = NetworkInfo.NETWORK + SubDomain.REPORT + SubDomain.CLIENT_BASED_REPORT_WITHHUB_SPOT + ClientReportAPI.GET_CLIENT_POPUP_REPORT;
 			httpService.setAuthRequired = true;
 			httpService.dataToSend = Data;
 			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -33,7 +33,7 @@ export const clientReportAPI = {
 	getClientReportFiltersRequest: async () => {
 		try {
 			let httpService = new HttpServices();
-			httpService.URL = NetworkInfo.NETWORK + SubDomain.REPORT + SubDomain.CLIENT_REPORT + ClientReportAPI.GET_CLIENT_FILTERS;
+			httpService.URL = NetworkInfo.NETWORK + SubDomain.REPORT + SubDomain.CLIENT_BASED_REPORT_WITHHUB_SPOT + ClientReportAPI.GET_CLIENT_FILTERS;
 			httpService.setAuthRequired = true;
 			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 			let response = await httpService.sendGetRequest();
