@@ -179,7 +179,7 @@
 
 .colMd12 {
     width: 100%;
-    padding: 0 25px 0 0;
+    padding: 0 12px;
 }
 
 .reqField {
@@ -229,3 +229,505 @@
 [class*="ant-select-dropdown"] {
     z-index: 1000 !important;
 }
+
+
+/* Styles Added for  */
+.modalInnerWrapper{
+    padding: 16px;
+}
+.modalLabel{
+    padding-bottom: 16px;
+    line-height: 39px;
+    font-weight: 500;
+    font-size: 32px;
+}
+.modalLabelMsg{
+    padding-bottom: 20px;
+    color: #232323;
+}
+
+.modalFormWrapper{
+    margin: 0 -12px;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.modalFormCol{
+    width: 50%;
+    padding: 0 12px;
+}
+.formField{
+    margin-bottom: 24px;
+}
+
+.formPanelAction {
+    display: flex;
+}
+.formPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid #cecccc;
+    border-radius: 8px;
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+.formPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+.formPanelAction button:disabled {
+    background: #cecccc;
+    border: 1px solid #cecccc;
+    cursor: not-allowed;
+}
+
+
+
+/* Onboarding Process Css Start */
+
+.onboardingProcesspart{
+    background: #fff;
+    box-shadow:(0px 2px 8px 8px rgba(204, 238, 204, 0.25));
+    padding: 0 32px;
+    margin: 26px 0 32px;
+    border-radius: 8px;
+    max-height: 482px;
+    overflow-y: auto;
+}
+
+.onboardingProcesspart .onboardingProcesBox{
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(206, 204, 204, 0.50);
+    padding: 32px 0 0;
+}
+
+.onboardingProcesspart .onboardingProcesBox:last-child{
+    border-bottom: 0px solid rgba(206, 204, 204, 0.50);
+}
+
+.onboardingProcesspart .titleLeft{
+    color: #232323;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    max-width: 200px;
+    margin-top: 10px;
+}
+
+.onboardingProcesspart .onboardingProcessLeft{
+    width: 24%;
+}
+
+.onboardingProcesspart .onboardingProcessMid{
+    width: 76%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.onboardingProcesspart .onboardingDetailText{
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #676767;
+    width: 50%;
+    margin-bottom: 24px;
+}
+
+/* .onboardingProcesspart .onboardingDetailText:last-child{
+    margin-bottom: 0px;
+} */
+
+.onboardingProcesspart .onboardingDetailText span{
+    margin-bottom: 8px;
+}
+
+.onboardingProcesspart .onboardingTextBold{
+    font-weight: 500;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.onboardingTextUnderline{
+    color: #1B73BA;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-decoration-line: underline;
+}
+
+.onboardingDownload{
+    color: #1B73BA;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 0;
+    box-shadow: inherit;
+    cursor: pointer;
+    padding: 0;
+}
+
+.onboardingTextUnderline:hover{
+    text-decoration-line: underline;
+}
+
+.onboardingProcesspart .onboardingCondition{
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 32px;
+}
+
+.onboardingProcesspart .onboardingCondition h5{
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-right: 20px;
+}
+
+.onboardingCurrentTextWrap{
+    position: relative;
+    border-radius: 8px;
+    border: 1px solid#CECCCC;
+    background:  #F7F7F7;
+    padding: 15px 24px;
+    margin-bottom: 32px;
+}
+
+.onboardingCurrentTextWrap .onboardingCurrentText{
+    color: #7C7C7C;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+}
+
+.onboardingCurrentTextWrap .onboardingCurrentText .onboardingTextBold{
+    color: #232323;
+}
+
+
+.onbordingAssignMsgMain{
+    padding-bottom: 16px;
+    border-bottom: 1px solid #CECCCC;
+    margin-bottom: 24px;
+}
+
+.onbordingAssignMsgMain .onbordingAssignMsg{
+    background: #D3E8D9;
+    padding: 16px;
+    color:#232323;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+}
+
+.onbordingAssignMsgMain .onbordingAssignMsg .onbordingCurrentImg svg{
+    display: block;
+}
+
+
+.onboardingProcesBox .modalFormWrapper input:disabled{
+    background: #F7F7F7;
+}
+
+.onboardingProcesBox .trailingIcon{
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.onboardingProcessLeft .modalBtnWrap .btnPrimary{
+    margin-top: 10px;
+}
+
+.onboardingProcesBox .onboardingDotsDrop{
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+}
+
+.onboardingProcesBox .modalFormHide{
+    padding: 0px 0px 32px;
+}
+
+.onboardingProcesBox .modalBtnWrap{
+    display: flex;
+    gap: 15px;
+}
+
+.onboardingProcesBox .modalBtnWrap button{
+    padding: 12px 28px;
+}
+
+.onboardingProcesBox .modalFormEdited input{
+    padding: 16px 40px 16px 16px;
+}
+
+.onboardingProcesBox textarea{
+    min-height: 108px;
+}
+
+.ant-select.ant-select-focused .ant-select-selection-search-input{
+    height: auto !important;
+    padding: 16px 16px !important;
+}
+
+
+.onboardingProcesBox .reqFieldRed{
+    color: #E03A3A;
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 2px;
+}
+
+.onboardingProcesBox .onboardingFormAlign .modalFormWrapper{
+    align-items: center;
+}
+
+
+/* Time Start & End Time Start */
+
+.startEndDate{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.startEndDate .timeSlotItem{
+    width: 50%;
+}
+.startEndDate .timeSlotItem:first-child [class*="react-datepicker__input-container"] input{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.startEndDate .timeSlotItem:last-child [class*="react-datepicker__input-container"] input{
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: none;
+}
+
+/* Time Start & End Time end */
+
+/* Country Drop down */
+
+.phoneNoGroup {
+    margin: 0;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.phoneNoGroup label {
+    width: 100%;
+}
+
+.phoneNoCode {
+    width: 120px;
+}
+
+.phoneNoCode [class*="ant-select-selector"] {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.phoneNoInput {
+    flex: 1;
+}
+
+.phoneNoInput [class*="formField"] {
+    margin: 0;
+}
+
+.phoneNoInput input {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin: 0;
+}
+
+
+/* Country Drop down */
+
+/* Time Slot */
+
+.timeSlotItem{
+    width: 100%;
+    position: relative;
+    margin-bottom: 25px;
+}
+.timeSlotItem svg{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 26px;
+    z-index: 1;
+    pointer-events: none;
+}
+.timeLabel{
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 17px;
+    color: #676767;
+    margin: 0 0 8px;
+    display: inline-block;
+}
+.timeSlotItem [class*="react-datepicker__input-container"] input{
+    text-align: left;
+    width: 100%;
+    padding: 16px 40px 16px 16px;
+    background: var(--background-color-light);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--uplers-black);
+    outline: 1px solid transparent;
+    transition: all 0.25s ease 0s;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input::-webkit-input-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input::-moz-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input:-ms-input-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input:-moz-placeholder {
+    color: rgba(107, 107, 107, 0.6);
+    opacity: 1;
+}
+
+.timeSlotItem [class*="react-datepicker__input-container"] input:focus {
+    outline-color: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+.timeSlotItem [class="react-datepicker-popper"]{
+    right: 16px !important;
+    left: 0 !important;
+    z-index: 2;
+    background: #FFFFFF;
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    box-shadow: -4px 4px 20px rgba(57, 57, 57, 0.09);
+    margin: -1px 0;
+    padding: 4px 0;
+    width: 260px;
+}
+
+.timeSlotItem [class="react-datepicker"],.timeSlotItem [class*="react-datepicker--time-only"] {
+    margin-left: 0;
+    width: 100%;
+    box-shadow: none !important;
+    vertical-align: middle;
+}
+
+.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-container"],.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-box"]{width:100%}
+
+.timeSlotItem [class="react-datepicker__month-container"] {
+    width: 100%;
+}
+.timeSlotItem [class*="react-datepicker__header "]{
+    border-bottom: 1px solid #E8E8E8;
+}
+.timeSlotItem [class="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
+    top: 14px;
+}
+
+.timeSlotItem.timePickerItem [class="react-datepicker-popper"]{
+    width: 60%;
+    right: auto !important;
+}
+
+.timeSlotSvgWrap .timeSlotLeftIcon{
+    position: absolute;
+    left: 52%;
+    top: 50%;
+}
+
+/* Time Slot */
+
+label.radioCheck_Mark {
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: var(--fontsize-tough);
+    color: var(--uplers-black);
+    position: relative;
+    margin: 0 16px 0 0;
+    display: inline-block;
+    padding-left: 28px;
+    cursor: pointer;
+  }
+  span.customCheck_Mark {
+    position: absolute;
+    top: 1px;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    border: 1px solid #CECCCC;
+    border-radius: 50%;
+  }
+  label.radioCheck_Mark input {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  label.radioCheck_Mark p {
+    margin-bottom: 0;
+  }
+  span.customCheck_Mark::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-sunlight);
+    opacity: 0;
+  }
+  label.radioCheck_Mark input:checked + span.customCheck_Mark:after {
+    opacity: 1;
+  }

@@ -812,3 +812,166 @@ table {
 .rejectionModalWrap .ant-modal-close {
   top: 20px;
 }
+
+/* Match Making Talent - Modal */
+.matchMakingModal .ant-collapse-borderless{
+  background: transparent;
+  margin-bottom: 24px;
+}
+.matchMakingModal .ant-collapse-borderless > .ant-collapse-item{
+  border-color: #F7F7F7;
+}
+.matchMakingModal .ant-collapse-icon-position-end > .ant-collapse-item > .ant-collapse-header{
+  padding: 22px 0 22px 40px;
+}
+.matchMakingModal .ant-collapse-icon-position-end > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow{
+  right: 0;
+}
+.matchMakingModal .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-extra{
+  position: absolute;
+  left: 0;
+}
+.matchMakingModal .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-header-text{
+  font-size: 16px;
+  color: #232323;
+}
+.matchMakingModal .ant-collapse-content > .ant-collapse-content-box{
+  padding: 0 !important;
+}
+.matchMakingModal .formField{
+  margin-bottom: 24px;
+}
+.ant-checkbox-inner{
+  border-color: var(--uplers-black);
+  border-radius: 4px;
+}
+.ant-checkbox-checked .ant-checkbox-inner::after{
+  border-width: 1px;
+  border-color: var(--text-color-dark);
+  width: 4px;
+  height: 7px;
+  left: 32%;
+  top: 45%;
+}
+.ant-checkbox-wrapper:hover .ant-checkbox-inner,
+.ant-checkbox:hover .ant-checkbox-inner,
+.ant-checkbox-input:focus+.ant-checkbox-inner{
+  border-color: var(--text-color-dark);
+}
+/* */
+
+/* AM Handover (onborading process) - Modal */
+.assignAMModal .ant-modal-close{
+  display: none;
+}
+
+.assignAMModal .ant-dropdown-menu-title-content{
+  white-space: nowrap;
+}
+/* .assignAMModal .reqField{
+  color: #E03A3A;
+} */
+/* */
+
+
+/* Ant date picker custom Css Start */
+ 
+.ant-picker{
+  text-align: left;
+  width: 100%;
+  padding: 16px 16px;
+  background: var(--background-color-light);
+  border: 1px solid #CECCCC;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--uplers-black);
+  outline: 1px solid transparent;
+  transition: all 0.25s ease 0s;
+  vertical-align: middle;
+} 
+
+.ant-picker:hover{
+  border: 1px solid #CECCCC;
+}
+
+.ant-picker .ant-picker-input > input{
+  color: var(--uplers-black);
+  font-weight: 500;
+}
+
+.ant-picker.ant-picker-focused{
+  outline-color: var(--color-sunlight);
+  border-color: var(--color-sunlight);
+  border: 1px solid var(--color-sunlight);
+  box-shadow: inherit;
+}
+
+.ant-picker .ant-picker-suffix, .ant-picker .ant-picker-clear{
+  display: none;
+}
+
+.ant-picker-dropdown tr th:first-child{
+  padding-left: 0 !important;
+}
+
+.ant-picker-dropdown .ant-picker-footer{
+  display: none;
+}
+
+.ant-picker-cell-selected .ant-picker-cell-inner{
+  background-color: var(--color-sunlight) !important;
+  border-radius: 50% !important;
+  box-shadow: -4px 4px 20px rgba(57, 57, 57, 0.09) !important;
+  color: var(--uplers-black) !important;
+}
+
+.ant-picker-dropdown .ant-picker-cell .ant-picker-cell-today{
+  font-weight: bold;
+}
+
+.ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before{
+  border: 1px solid #fff !important;
+}
+
+.ant-picker.ant-picker-range::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    background: #CECCCC;
+    height: 100%;
+    width: 1px;
+}
+
+.ant-picker .ant-picker-active-bar, .ant-picker .ant-picker-range-separator svg{
+  display: none;
+}
+
+.ant-picker .ant-picker-input > input::placeholder {
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(107, 107, 107, 0.6);
+}
+
+.ant-picker .ant-picker-input > input::-webkit-input-placeholder { 
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(107, 107, 107, 0.6);
+}
+
+.ant-picker .ant-picker-input > input:-ms-input-placeholder { 
+  font-family: "Montserrat";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(107, 107, 107, 0.6);
+}
+
+
+/* Ant date Time picker custom Css End */
