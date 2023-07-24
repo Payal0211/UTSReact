@@ -24,6 +24,7 @@ const CloneHR = ({ updatedSplitter, cloneHR }) => {
 		const response = await MasterDAO.getCloneHRDAO(data);
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			localStorage.setItem('hrID', response?.responseBody?.details);
+			localStorage.removeItem('dealID')
 			setCloneHR(false);
 			navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 		}

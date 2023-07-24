@@ -17,6 +17,23 @@
     font-weight: 500;
 }
 
+.btnPrimary {
+    background: #FFDA30;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    padding: 17px 28px;
+    outline: none;
+    transition: all 0.35s ease 0s;
+    cursor: pointer;
+    box-shadow: none;
+    margin-left:10px
+}
+
 .newHR {
     padding: 1px 0;
     background-color: var(--color-sunlight);
@@ -65,6 +82,18 @@
     flex-wrap: wrap;
     /* height: 92px; */
     
+}
+
+.filterSetsInner{
+    display: flex;
+    align-items: center;
+}
+
+.filterSetsInner p{
+    margin: 0 0 0 10px;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .addFilter{

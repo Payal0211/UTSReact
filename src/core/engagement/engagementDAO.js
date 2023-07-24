@@ -634,4 +634,37 @@ export const engagementRequestDAO = {
             return errorDebug(error, 'engagementRequestDAO.calculateActualNRBRPRDAO');
         }
     },
+
+	uploadFeedbackSupportingFileDAO: async function (feedBackdata) {
+		console.log("DAO", feedBackdata)
+        try {
+            const submitFeedBackForm = await EngagementRequestAPI.uploadFile(feedBackdata);
+            if (submitFeedBackForm) {
+                const statusCode = submitFeedBackForm['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = submitFeedBackForm.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult,
+                    };
+                } else if (
+                    statusCode === HTTPStatusCode.NOT_FOUND ||
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+                )
+                    return submitFeedBackForm;
+                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return submitFeedBackForm;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    UserSessionManagementController.deleteAllSession();
+                    return (
+                        <Navigate
+                            replace
+                            to={UTSRoutes.LOGINROUTE}
+                        />
+                    );
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'engagementRequestDAO.saveFeedbackFormDAO');
+        }
+    },
 };

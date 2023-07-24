@@ -11,7 +11,7 @@ import loginStyle from './login.module.css';
 import { userDAO } from 'core/user/userDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { useNavigate } from 'react-router-dom';
-import UTSRoutes from 'constants/routes';
+import UTSRoutes, { isAccess } from 'constants/routes';
 import WithLoader from 'shared/components/loader/loader';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
@@ -38,9 +38,11 @@ const LoginScreen = () => {
 				password: d?.password,
 			});
 
+			console.log(result, "ddddddddddd")
 			if (result.statusCode === HTTPStatusCode.OK) {
 				setLoading(false);
-				navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+				navigate(isAccess(result.responseBody.LoggedInUserTypeID) ? UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DASHBOARD);
+
 			} else {
 				setLoading(false);
 				messageAPI.open(

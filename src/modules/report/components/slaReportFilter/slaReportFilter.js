@@ -23,6 +23,10 @@ const SlaReportFilerList = ({
   setSlaReportDetailsState,
   slaReportDetailsState,
   getSlaReportDetailsState,
+  slaValue,
+  lastDay,
+  firstDay,
+  clearFilters
 }) => {
   const [toggleBack, setToggleBack] = useState(false);
   const [searchData, setSearchData] = useState([]);
@@ -95,98 +99,50 @@ const SlaReportFilerList = ({
     [appliedFilter, checkedState, setFilteredTagLength],
   );
   // Clear filter
-  const clearFilters = useCallback(() => {
-    setAppliedFilters(new Map());
-    setCheckedState(new Map());
-    setFilteredTagLength(0);
-    setTableFilteredState({
-      totalrecord: 100,
-      pagenumber: 1,
-      isExport: false,
-      filterFieldsSLA: {
-        startDate: "2023-06-01",
-        endDate: "2023-06-30",
-        hrid: 0,
-        sales_ManagerID: 0,
-        ops_Lead: 0,
-        salesPerson: 0,
-        stages: "",
-        isAdHoc: 0,
-        role: "",
-        slaType: 0,
-        type: 0,
-        hR_Number: "",
-        company: "",
-        actionFilter: 0,
-        stageIDs: "",
-        actionFilterIDs: "",
-        CompanyIds: "",
-        // ambdr: 0
-      }
-    });
-    setSlaReportDetailsState({
-      totalrecord: 100,
-      pagenumber: 1,
-      isExport: false,
-      filterFieldsSLA: {
-        startDate: "2023-06-01",
-        endDate: "2023-06-30",
-        hrid: 0,
-        sales_ManagerID: 0,
-        ops_Lead: 0,
-        salesPerson: 0,
-        stages: "",
-        isAdHoc: 0,
-        role: "",
-        slaType: 0,
-        type: 0,
-        hR_Number: "",
-        company: "",
-        actionFilter: 0,
-        stageIDs: "",
-        actionFilterIDs: "",
-        CompanyIds: "",
-        // ambdr: 0
-      }
-    });
-   let newState = {
-    totalrecord: 100,
-    pagenumber: 1,
-    isExport: false,
-    filterFieldsSLA: {
-      startDate: "2023-06-01",
-      endDate: "2023-06-30",
-      hrid: 0,
-      sales_ManagerID: 0,
-      ops_Lead: 0,
-      salesPerson: 0,
-      stages: "",
-      isAdHoc: 0,
-      role: "",
-      slaType: 0,
-      type: 0,
-      hR_Number: "",
-      company: "",
-      actionFilter: 0,
-      stageIDs: "",
-      actionFilterIDs: "",
-      CompanyIds: "",
-      // ambdr: 0
-    }
-  }
-    setSlaReportDetailsState(newState);
-    handleHRRequest(newState);
-    onRemoveHRFilters()
-    // setSlaReportDetailsState(reqFilter);
-  }, [
-    handleHRRequest,
-    setAppliedFilters,
-    setCheckedState,
-    setFilteredTagLength,
-    setTableFilteredState,
-    setSlaReportDetailsState,
-    tableFilteredState,
-  ]);
+  // const clearFilters = useCallback(() => {
+  //   setAppliedFilters(new Map());
+  //   setCheckedState(new Map());
+  //   setFilteredTagLength(0);
+
+  //   let defaultState = {
+  //     totalrecord: 100,
+  //     pagenumber: 1,
+  //     isExport: false,
+  //     filterFieldsSLA: {
+  //       startDate: firstDay,
+  //       endDate: lastDay,
+  //       hrid: 0,
+  //       sales_ManagerID: 0,
+  //       ops_Lead: 0,
+  //       salesPerson: 0,
+  //       stages: "",
+  //       isAdHoc: 0,
+  //       role: "",
+  //       slaType: slaValue,
+  //       type: 0,
+  //       hR_Number: "",
+  //       company: "",
+  //       actionFilter: 0,
+  //       stageIDs: "",
+  //       actionFilterIDs: "",
+  //       CompanyIds: "",
+  //       // ambdr: 0
+  //     }
+  //   }
+  //   setTableFilteredState(defaultState);
+  //   setSlaReportDetailsState(defaultState);
+  //   handleHRRequest(defaultState);
+  //   onRemoveHRFilters()
+  //   // setSlaReportDetailsState(reqFilter);
+  // }, [
+  //   handleHRRequest,
+  //   setAppliedFilters,
+  //   setCheckedState,
+  //   setFilteredTagLength,
+  //   setTableFilteredState,
+  //   setSlaReportDetailsState,
+  //   tableFilteredState,
+  // ]);
   // OnClick for apply filter
   const handleFilters = useCallback(() => {
 

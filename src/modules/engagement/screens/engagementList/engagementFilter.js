@@ -19,6 +19,7 @@ const EngagementFilerList = ({
 	handleHRRequest,
 	setTableFilteredState,
 	tableFilteredState,
+	clearFilters
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -90,27 +91,47 @@ const EngagementFilerList = ({
 		[appliedFilter, checkedState, setFilteredTagLength],
 	);
 
-	const clearFilters = useCallback(() => {
-		setAppliedFilters(new Map());
-		setCheckedState(new Map());
-		setFilteredTagLength(0);
-		setTableFilteredState({
-			...tableFilteredState,
-			filterFieldsEngagement: {},
-		});
-		const reqFilter = {
-			...tableFilteredState,
-			filterFieldsEngagement: {},
-		};
-		handleHRRequest(reqFilter);
-	}, [
-		handleHRRequest,
-		setAppliedFilters,
-		setCheckedState,
-		setFilteredTagLength,
-		setTableFilteredState,
-		tableFilteredState,
-	]);
+	// const clearFilters = useCallback(() => {
+	// 	setAppliedFilters(new Map());
+	// 	setCheckedState(new Map());
+	// 	setFilteredTagLength(0);
+
+	// 	const defaultFilters ={		
+	// 		clientFeedback: '',
+	// 		typeOfHiring: '',
+	// 		currentStatus: '',
+	// 		tscName: '',
+	// 		company: '',
+	// 		geo: '',
+	// 		position: '',
+	// 		engagementTenure: 0,
+	// 		nbdName: '',
+	// 		amName: '',
+	// 		pending: '',
+	// 		searchMonth: new Date().getMonth() +1,
+	// 		searchYear: new Date().getFullYear(),
+	// 		searchType: '',
+	// 		islost: '',
+	// 	}
+		
+	// 	setTableFilteredState({
+	// 		...tableFilteredState,
+	// 		filterFieldsEngagement: defaultFilters,
+	// 	});
+	// 	const reqFilter = {
+	// 		...tableFilteredState,
+	// 		filterFieldsEngagement: defaultFilters,
+	// 	};
+	// 	handleHRRequest(reqFilter);
+	// 	onRemoveHRFilters();
+	// }, [
+	// 	handleHRRequest,
+	// 	setAppliedFilters,
+	// 	setCheckedState,
+	// 	setFilteredTagLength,
+	// 	setTableFilteredState,
+	// 	tableFilteredState,
+	// ]);
 
 	const handleFilters = useCallback(() => {
 		let filters = {};
@@ -119,13 +140,14 @@ const EngagementFilerList = ({
 		});
 		setTableFilteredState({
 			...tableFilteredState,
-			filterFieldsEngagement: { ...filters },
+			filterFieldsEngagement: { ...tableFilteredState.filterFieldsEngagement , ...filters },
 		});
 		const reqFilter = {
 			...tableFilteredState,
-			filterFieldsEngagement: { ...filters },
+			filterFieldsEngagement: { ...tableFilteredState.filterFieldsEngagement , ...filters },
 		};
 		// handleHRRequest(reqFilter);
+		onRemoveHRFilters()
 	}, [
 		appliedFilter,
 		// handleHRRequest,

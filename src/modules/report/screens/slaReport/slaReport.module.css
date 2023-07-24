@@ -64,6 +64,19 @@
   /* height: 92px; */
 }
 
+.filterSetsInner{
+  display: flex;
+  align-items: center;
+}
+
+.filterSetsInner p{
+  margin: 0 0 0 10px;
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
 .addFilter {
   cursor: pointer;
   border-radius: 8px;

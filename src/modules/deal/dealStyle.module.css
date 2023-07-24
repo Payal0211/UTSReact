@@ -48,6 +48,19 @@
 
 }
 
+.filterSetsInner{
+    display: flex;
+    align-items: center;
+}
+
+.filterSetsInner p{
+    margin: 0 0 0 10px;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
 .addFilter {
     cursor: pointer;
     border-radius: 8px;
@@ -436,4 +449,20 @@ table {
 
 .formPanelAction button+button {
     margin-left: 16px;
+}
+
+.createHR{
+    background: #FFDA30;
+    border: 1px solid #FFDA30;
+    border-radius: 8px;
+    padding: 13px 16px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    cursor: pointer;
+    transition: all 0.35s ease 0s;
+    box-shadow: none;
+    outline: none;
 }

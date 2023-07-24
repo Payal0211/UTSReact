@@ -54,8 +54,8 @@ export const engagementUtils = {
 				? item?.dpAmount + ' ' + item?.billRateCurrency
 				: '',
 			actualEndDate: item?.actualEndDate ? item?.actualEndDate : '',
-			nr: item?.nr ? item?.nr + ' ' + item?.billRateCurrency : '',
-			actualNR: item?.actualNR ? item?.actualNR + '%' : '',
+			nr: item?.nr ? item?.nr : '',
+			actualNR: item?.actualNR ? item?.actualNR + ' ' + item?.billRateCurrency  : '',
 			dP_Percentage: item?.dP_Percentage ? item?.dP_Percentage : '',
 			renewalstartDate: item?.renewalstartDate ? item?.renewalstartDate : '',
 			renewalendDate: item?.renewalendDate ? item?.renewalendDate : '',

@@ -620,7 +620,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	// }, [watchDepartMentName, watchLevelName]);
 
 	useEffect(() => {
-		if (getDepartment.length > 1) {
+		if (getDepartment?.length > 1) {
 			getDepartment?.map((item) => {
 				if (item?.id === userDetails?.deptID) {
 					setDepartMentEdit(item?.value);
@@ -631,7 +631,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	}, [userDetails, getDepartment]);
 
 	useEffect(() => {
-		if (getTeamList.length > 1) {
+		if (getTeamList?.length > 1) {
 			getTeamList?.map((item) => {
 				if (item?.id === userDetails?.teamID) {
 					setTeamListEdit(item?.value);
@@ -642,7 +642,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	}, [userDetails, getTeamList]);
 
 	useEffect(() => {
-		if (getTeamUserForm.length > 1) {
+		if (getTeamUserForm?.length > 1) {
 			let _selectedValues = userDetails?.teamID?.split(',');
 			if (_selectedValues) {
 				let _allSelectedTeamData = [];
@@ -682,7 +682,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		}
 	};
 	useEffect(() => {
-		if (getLevelList.length > 1) {
+		if (getLevelList?.length > 1) {
 			getLevelList?.map((item) => {
 				if (item?.id === userDetails?.levelID) {
 					setLevelEdit(item?.value);
@@ -693,7 +693,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	}, [userDetails, getLevelList]);
 
 	useEffect(() => {
-		if (getReportingList.length > 1) {
+		if (getReportingList?.length > 1) {
 			getReportingList?.map((item) => {
 				if (item?.id === userDetails?.userHierarchyParentID) {
 					setReportTypeEdit(item?.value);

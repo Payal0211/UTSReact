@@ -4,7 +4,6 @@ import { NetworkInfo } from 'constants/network';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import infoIcon from 'assets/svg/info.svg'
-import { removeHTMLTags} from './reportUtils'
 
 export const reportConfig = {
 	/**------------- DEMAND FUNNEL REPORT------------------  */
@@ -141,7 +140,7 @@ export const reportConfig = {
 						width: 250,
 					},
 			  ]
-			: [
+			: stage !== 'HR Accepted' ? [
 					{
 						title: 'HR#',
 						dataIndex: 'hR_No',
@@ -196,7 +195,51 @@ export const reportConfig = {
 						align: 'left',
 						width: 250,
 					},
-			  ];
+			  ] :
+			  [
+				{
+					title: 'HR#',
+					dataIndex: 'hR_No',
+					key: 'hR_No',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Sales Person',
+					dataIndex: 'salesPerson',
+					key: 'salesPerson',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Company Name',
+					dataIndex: 'compnayName',
+					key: 'compnayName',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Role',
+					dataIndex: 'role',
+					key: 'role',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Managed/Self',
+					dataIndex: 'managed_Self',
+					key: 'managed_Self',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Availability',
+					dataIndex: 'availability',
+					key: 'availability',
+					align: 'left',
+					width: 250,
+				},
+		  ]
 	},
 	demandReportFilterListConfig: () => {
 		return [
@@ -847,7 +890,7 @@ export const reportConfig = {
 						<a href="javascript:void(0);"
 							onClick={() => {
 								setJDSkillModal(true);
-								setSelectedRecord(removeHTMLTags(text));
+								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -868,7 +911,7 @@ export const reportConfig = {
 							<a href="javascript:void(0);"
 								onClick={() => {
 									setHRSkillModal(true);
-									setSelectedRecord(removeHTMLTags(text));
+									setSelectedRecord(text);
 								}}
 								style={{ color: 'black', textDecoration: 'underline' }}>
 								View
@@ -888,7 +931,7 @@ export const reportConfig = {
 							onClick={() => {
 								setJDRoleRespModal(true);
 
-								setSelectedRecord(removeHTMLTags(text));
+								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -908,7 +951,7 @@ export const reportConfig = {
 						<a href="javascript:void(0);"
 							onClick={() => {
 								setHRRoleRespModal(true);
-								setSelectedRecord(removeHTMLTags(text));
+								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -928,7 +971,7 @@ export const reportConfig = {
 						<a href="javascript:void(0);"
 							onClick={() => {
 								setJDReqModal(true);
-								setSelectedRecord(removeHTMLTags(text));
+								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -948,7 +991,7 @@ export const reportConfig = {
 						<a href="javascript:void(0);"
 							onClick={() => {
 								setHRReqModal(true);
-								setSelectedRecord(removeHTMLTags(text));
+								setSelectedRecord(text);
 							}}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							View
@@ -1024,6 +1067,143 @@ export const reportConfig = {
 				render: (text) => {
 					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
 				},
+			},
+		];
+	},
+	clientPopupReportConfig: () => {
+		return [
+			{
+				title: 'Client',
+				dataIndex: 'fullName',
+				key: 'fullName',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text}</Fragment>;
+				},
+			},
+			{
+				title: 'Company Name',
+				dataIndex: 'company',
+				key: 'company',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Sales Person',
+				dataIndex: 'salesUser',
+				key: 'salesUser',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			
+			{
+				title: 'HR #',
+				dataIndex: 'hr_Number',
+				key: 'hr_Number',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Talent',
+				dataIndex: 'name',
+				key: 'name',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Status',
+				dataIndex: 'status',
+				key: 'status',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+		];
+	},
+	hrPopupReportConfig: () => {
+		return [
+			{
+				title: 'Client',
+				dataIndex: 'fullName',
+				key: 'fullName',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Company Name',
+				dataIndex: 'company',
+				key: 'company',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},		
+			{
+				title: 'HR #',
+				dataIndex: 'hR_NUMBER',
+				key: 'hR_NUMBER',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+		];
+	},
+	clientReportFilterTypeConfig: (filtersList) => {
+		return [
+			{
+				label: 'Company Category',
+				name: 'CompanyCategory',
+				child: filtersList?.CompanyCategory.filter(
+					(item, index) => index !== 0 && item,
+				),
+				isSearch: false,
+			},
+			{
+				label: 'Sales Manager',
+				name: 'SalesManager',
+				child: filtersList?.SalesManager,
+				isSearch: false,
+			},
+			
+		];
+	},
+	HRReportFilterTypeConfig: (filterList) => {
+		return [
+			{
+				label: 'Hiring Status',
+				name: 'HiringStatus',
+				child: filterList?.HiringStatus,
+				isSearch: false,
+			},
+			{
+				label: 'Working Mode',
+				name: 'ModeOfWorking',
+				child: filterList?.ModeOfWorking.filter(val => val.text !== "0" ),
+				isSearch: false,
+			},
+			{
+				label: 'Head',
+				name: 'SalesManager',
+				child: filterList?.SalesManager,
+				isSearch: true,
+			},
+			{
+				label: 'HR Type',
+				name: 'TypeOfHR',
+				child: filterList?.TypeOfHR.filter(val => val.text !== "-1" ),
+				isSearch: false,
 			},
 		];
 	},

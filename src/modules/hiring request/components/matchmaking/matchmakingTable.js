@@ -16,6 +16,8 @@ const MatchMakingTable = ({
 	selectedRows,
 	currentExpandedCell,
 	componentToRender,
+	apiData,
+	handleUserValueChange
 }) => {
 	const [disableAll, setDisableAll] = useState(false);
 	return (
@@ -25,6 +27,7 @@ const MatchMakingTable = ({
 				setDisableAll={setDisableAll}
 				allSelected={allSelected}
 				toggleRowSelection={toggleRowSelection}
+				apiData={apiData}
 			/>
 			<tbody>
 				{matchMakingData?.length > 0 ? (
@@ -41,6 +44,8 @@ const MatchMakingTable = ({
 							selectedRows={selectedRows}
 							currentExpandedCell={currentExpandedCell}
 							componentToRender={componentToRender}
+							apiData={apiData}
+							handleUserValueChange={handleUserValueChange}
 						/>
 					))
 				) : (
@@ -62,6 +67,7 @@ const Thead = ({
 	toggleRowSelection,
 	setDisableAll,
 	disableAll,
+	apiData
 }) => {
 	return (
 		<thead className={MatchMakingStyle.thead}>
@@ -78,7 +84,14 @@ const Thead = ({
 					/> */}
 				</th>
 				<th className={MatchMakingStyle.th}>Name</th>
-				<th className={MatchMakingStyle.th}>Talent Cost</th>
+				{/* <th className={MatchMakingStyle.th}>Talent Cost</th> */}
+				<th className={MatchMakingStyle.th}>Expected Cost</th>
+			
+				{apiData?.Is_HRTypeDP && <>
+						<th className={MatchMakingStyle.th}>Current CTC</th>
+						<th className={MatchMakingStyle.th}>DP</th>
+				</>}
+				
 				<th className={MatchMakingStyle.th}>Role</th>
 				<th className={MatchMakingStyle.th}>Email ID</th>
 				<th className={MatchMakingStyle.th}>Status</th>
@@ -102,6 +115,8 @@ const TrAPIData = ({
 	selectedRows,
 	currentExpandedCell,
 	componentToRender,
+	apiData,
+	handleUserValueChange
 }) => {
 	const [activeCellMemo, expandedIconMemo] = useMemo(() => {
 		let iconObj = {
@@ -167,7 +182,7 @@ const TrAPIData = ({
 						{user.name}
 					</Tooltip>
 				</td>
-				<td
+				{/* <td
 					className={
 						activeCellMemo.talentCost
 							? `${MatchMakingStyle.selectedCell}`
@@ -189,7 +204,28 @@ const TrAPIData = ({
 					</span>{' '}
 					/ Month
 					{expandedIconMemo.talentCost}
-				</td>
+				</td> */}
+                {/* Expected  */}
+				<td>
+               <input className={MatchMakingStyle.userInput} type='number' value={user.expectedCost} 
+			   		onChange={(e)=>{
+					handleUserValueChange(user?.id,{expectedCost: e.target.value})
+			   }} />
+					</td>
+
+					{/* CTC */}
+				{apiData?.Is_HRTypeDP && <td>
+					<input className={MatchMakingStyle.userInput} type='number' value={user?.currentCTC} onChange={(e)=>{
+					handleUserValueChange(user?.id,{currentCTC: e.target.value})
+							   }}  />
+					</td> }
+				{/* DP */}
+				{apiData?.Is_HRTypeDP && <td>
+					<input className={MatchMakingStyle.userInput} type='number' value={user?.dpPercentage} onChange={(e)=>{
+					handleUserValueChange(user?.id,{dpPercentage: e.target.value})
+							   }} />
+					</td> }
+						
 				<td
 					className={`${MatchMakingStyle.td} ${MatchMakingStyle.ellipsis} ${MatchMakingStyle.maxWidth134}`}>
 					<Tooltip

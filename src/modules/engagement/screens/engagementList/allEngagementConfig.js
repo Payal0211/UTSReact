@@ -12,48 +12,48 @@ export const allEngagementConfig = {
 				child: filterList?.clientFeedback,
 				isSearch: true,
 			},
-			{
-				label: 'Hiring',
-				name: 'typeOfHiring',
-				child: filterList?.typeOfHiring,
-				isSearch: true,
-			},
+			// {
+			// 	label: 'Hiring',
+			// 	name: 'typeOfHiring',
+			// 	child: filterList?.typeOfHiring,
+			// 	isSearch: true,
+			// },
 			{
 				label: 'Current Status',
 				name: 'currentStatus',
 				child: filterList.currentStatus,
 				isSearch: false,
 			},
-			{
-				label: 'Engagement ID',
-				name: 'engagementID',
-				child: filterList?.engagementIds,
-				isSearch: true,
-			},
-			{
-				label: 'Client',
-				name: 'client',
-				child: filterList?.clients,
-				isSearch: true,
-			},
-			{
-				label: 'Talent',
-				name: 'talent',
-				child: filterList?.talents,
-				isSearch: true,
-			},
+			// {
+			// 	label: 'Engagement ID',
+			// 	name: 'engagementID',
+			// 	child: filterList?.engagementIds,
+			// 	isSearch: true,
+			// },
+			// {
+			// 	label: 'Client',
+			// 	name: 'client',
+			// 	child: filterList?.clients,
+			// 	isSearch: true,
+			// },
+			// {
+			// 	label: 'Talent',
+			// 	name: 'talent',
+			// 	child: filterList?.talents,
+			// 	isSearch: true,
+			// },
 			{
 				label: 'TSC Name',
 				name: 'TSCName',
 				child: filterList.tscName,
 				isSearch: true,
 			},
-			{
-				label: 'Company',
-				name: 'company',
-				child: filterList?.company,
-				isSearch: true,
-			},
+			// {
+			// 	label: 'Company',
+			// 	name: 'company',
+			// 	child: filterList?.company,
+			// 	isSearch: true,
+			// },
 			{
 				label: 'Geo',
 				name: 'geo',
@@ -255,6 +255,7 @@ export const allEngagementConfig = {
 				dataIndex: 'clientFeedback',
 				key: 'clientFeedback',
 				align: 'left',
+				width: '140px',
 				render: (text, result) =>
 					result?.clientFeedback === 0 && result?.onboardID && result?.hrID ? (
 						<a href="javascript:void(0);"
@@ -337,12 +338,14 @@ export const allEngagementConfig = {
 				dataIndex: 'lastFeedbackDate',
 				key: 'lastFeedbackDate',
 				align: 'left',
+				width: '165px',
 			},
 			{
 				title: 'Onboarding Form',
 				dataIndex: 'ClientLegal_StatusID',
 				key: 'ClientLegal_StatusID',
 				align: 'left',
+				width: '150px',
 				render: (text, result) =>
 					result?.clientLegal_StatusID === 2 && (
 						<a href="javascript:void(0);"
@@ -381,6 +384,7 @@ export const allEngagementConfig = {
 				dataIndex: 'engagementCount',
 				key: 'engagementCount',
 				align: 'left',
+				width:'100px'
 			},
 			{
 				title: 'Engagement ID/HR ID',
@@ -538,14 +542,14 @@ export const allEngagementConfig = {
 			},
 			{
 				title: 'NR',
-				dataIndex: 'nr',
-				key: 'nr',
+				dataIndex: 'actualNR',
+				key: 'actualNR',
 				align: 'left',
 			},
 			{
 				title: ' NR (%)',
-				dataIndex: 'actualNR',
-				key: 'actualNR',
+				dataIndex: 'nr',
+				key: 'nr',
 				align: 'left',
 			},
 			{
@@ -625,6 +629,12 @@ export const allEngagementConfig = {
 				title: 'Created Date',
 				dataIndex: 'createdByDatetime',
 				key: 'createdByDatetime',
+				align: 'left',
+			},
+			{
+				title: 'Engagement Status',
+				dataIndex: 'currentStatus',
+				key: 'currentStatus',
 				align: 'left',
 			},
 			// {

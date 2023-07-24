@@ -6,5 +6,7 @@ export default class UserAccountModel {
 		this.LoggedInUserProfilePic = data.LoggedInUserProfilePic;
 		this.LoggedInUserTypeID = data.LoggedInUserTypeID;
 		this.Token = data.Token;
+		this.EmployeeID = data.EmployeeID;
+		this.Designation = data.Designation;
 	}
 }

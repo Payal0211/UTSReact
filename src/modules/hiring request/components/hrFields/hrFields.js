@@ -33,6 +33,7 @@ import useDrivePicker from 'react-google-drive-picker/dist';
 import useDebounce from 'shared/hooks/useDebounce';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import {UserAccountRole} from 'constants/application'
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -125,6 +126,9 @@ const HRFields = ({
 	useState('Select From Time');	
 const [controlledEndTimeValue, setControlledEndTimeValue] =
 	useState('Select End Time');	
+	const [controlledCurrencyValue, setControlledCurrencyValue] =
+	useState('Select Currency');
+	const [DealHRData, setDealHRData]= useState({})
 	let controllerRef = useRef(null);
 	const {
 		watch,
@@ -504,7 +508,6 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 
 	const getSalesPerson = useCallback(async () => {
 		const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
-
 		setSalesPerson(
 			salesPersonResponse && salesPersonResponse?.responseBody?.details,
 		);
@@ -512,7 +515,8 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 			const valueToSet = salesPersonResponse?.responseBody?.details.filter(detail => detail.value === userData.FullName)[0]
 			setValue('salesPerson', valueToSet.id)
 		}
-	}, [userData,setValue]);
+		
+	}, [setValue,userData.LoggedInUserTypeID, userData.FullName]);
 
 	const getRegion = useCallback(async () => {
 		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
@@ -598,10 +602,11 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		);
 		return filteredData;
 	}, [getClientNameSuggestion, watchClientName]);
-	const getHRClientName = useCallback(async () => {
-		let existingClientDetails =
+	const getHRClientName = useCallback(async (watchClientName) => {
+		if(watchClientName || filteredMemo){
+			let existingClientDetails =
 			await hiringRequestDAO.getClientDetailRequestDAO(
-				filteredMemo[0]?.emailId,
+				filteredMemo[0]?.emailId ? filteredMemo[0]?.emailId : watchClientName ,
 			);
 
 		existingClientDetails?.statusCode === HTTPStatusCode.OK &&
@@ -626,7 +631,9 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		existingClientDetails.statusCode === HTTPStatusCode.OK &&
 			setIsCompanyNameAvailable(true);
 		setIsLoading(false);
-	}, [filteredMemo, setValue]);
+		}
+		
+	}, [filteredMemo, setValue,watchClientName]);
 
 	const getOtherRoleHandler = useCallback(
 		async (data) => {
@@ -671,12 +678,12 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 				pathName === ClientHRURL.ADD_NEW_HR &&
 				setTimeout(() => {
 					setIsLoading(true);
-					getHRClientName();
+					getHRClientName(watchClientName);
 				}, 2000);
 		}
 		return () => clearTimeout(timer);
 	}, [getHRClientName, watchClientName, pathName]);
-
+	//console.log("watchClientName",watchClientName);
 	useEffect(() => {
 		let urlSplitter = `${getLocation.pathname.split('/')[2]}`;
 		setPathName(urlSplitter);
@@ -724,9 +731,16 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 	},[prefRegion,getTimeZonePreference])
 
 	useEffect(() => {
+		getSalesPerson();		
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		userData
+	]);
+
+	useEffect(() => {
 		getAvailability();
 		getTalentRole();
-		getSalesPerson();
+		// getSalesPerson();
 		getRegion();
 		getWorkingMode();
 		// postalCodeHandler();
@@ -737,8 +751,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		getHowSoon();
 		getNRMarginHandler();
 		getDurationTypes();
-		getStartEndTimeHandler()
-		
+		getStartEndTimeHandler()		
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		// getCurrencyHandler,
@@ -850,9 +863,28 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 						message: 'Please enter the client name.',
 					});
 				}
+				if (_isNull(watch('role'))) {
+					return setError('role', {
+						type: 'emptyrole',
+						message: 'Please enter the hiring role.',
+					});
+				}
+				if (_isNull(watch('hrTitle'))) {
+					return setError('hrTitle', {
+						type: 'emptyhrTitle',
+						message: 'please enter the hiring request title.',
+					});
+				}
+				if(_isNull(watch('salesPerson'))){
+					return setError('salesPerson', {
+						type: 'emptysalesPersonTitle',
+						message: 'Please select hiring request sales person',
+					});
+				}
 			} else if (type !== SubmitType.SAVE_AS_DRAFT) {
 				setType(SubmitType.SUBMIT);
 			}
+
 			const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
@@ -936,6 +968,57 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 	// 	return formattedDuration;
 	// }, [getDurationType]);
 
+	const getdealHRdetailsHandler = async (DID) => {
+		const response = await hiringRequestDAO.getDealHRDetailsRequestDAO(DID);
+		if (response.statusCode === HTTPStatusCode.OK) {
+			let data = response.responseBody.details
+
+			//console.log(data)
+			let DataToPopulate = {company: data?.company, contact: data?.contact,currency: data?.salesHiringRequest_Details?.currency,
+				discoveryCall:	data?.addHiringRequest?.discoveryCall, dealID: DID
+
+			}
+			//console.log(DataToPopulate)
+			setDealHRData(DataToPopulate)
+			// DataToPopulate.company && setValue('companyName',DataToPopulate.company )
+			// DataToPopulate.contact && setValue('clientName', DataToPopulate.contact)
+			// DataToPopulate.discoveryCall && setValue('discoveryCallLink',DataToPopulate.discoveryCall)
+			// DataToPopulate.dealID && setValue('dealID',DataToPopulate.dealID)
+			// if (DataToPopulate?.currency) {
+			// 	const findCurrency = currency.filter(
+			// 		(item) =>
+			// 			item?.value === DataToPopulate?.currency,
+			// 	);
+			// 	console.log('findCurrency',{currency, findCurrency})
+			// 	setValue('currency', findCurrency[0]);
+			// 	setControlledCurrencyValue(findCurrency[0]?.value);
+			// }
+			// setHRdetails(response?.responseBody?.details);
+		}
+	}
+
+	useEffect(() => {
+		DealHRData.contact && setValue('clientName', DealHRData.contact)
+		DealHRData.discoveryCall && setValue('discoveryCallLink',DealHRData.discoveryCall)
+		DealHRData.dealID && setValue('dealID',DealHRData.dealID)
+		if (DealHRData?.currency) {
+			const findCurrency = currency.filter(
+				(item) =>
+					item?.value === DealHRData?.currency,
+			);
+			
+			setValue('currency', findCurrency[0]);
+			setControlledCurrencyValue(findCurrency[0]?.value);
+		}
+	},[DealHRData, currency, setValue])
+
+	useEffect(() => {
+const DID = localStorage.getItem('dealID')
+if(DID){
+	getdealHRdetailsHandler(DID)
+}
+	},[localStorage.getItem('dealID')])
+
 	return (
 		<>
 			{contextHolder}
@@ -966,7 +1049,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 										label="Client Email/Name"
 										name="clientName"
 										type={InputType.TEXT}
-										placeholder="Enter Client Email/Name"
+										placeholder={watchClientName ? watchClientName :"Enter Client Email/Name"}
 										required
 									/>
 								</div>
@@ -991,7 +1074,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 													onChange={(clientName) =>
 														setValue('clientName', clientName)
 													}
-													placeholder="Enter Client Email/Name"
+													placeholder={watchClientName ? watchClientName :"Enter Client Email/Name"}
 													ref={controllerRef}
 												/>
 											)}
@@ -1109,6 +1192,9 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 							<div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
+									controlledValue={controlledCurrencyValue}
+									setControlledValue={setControlledCurrencyValue}
+									isControlled={true}
 										mode={'id/value'}
 										searchable={true}
 										setValue={setValue}
@@ -1472,7 +1558,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 														type="text"
 														icon={<PlusOutlined />}
 														onClick={addItem}
-														disabled={contractDurations.filter(duration=> duration.value == name ).length > 0}
+														disabled={name? contractDurations.filter(duration=> duration.value == name ).length > 0 : true}
 														>
 														Add item
 													</Button>
@@ -1516,9 +1602,9 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 												message: "please don't enter the value less than 0",
 											},
 											max: {
-												value: 100,
-												message: "please don't enter the value more than 100",
-											},
+												value: 60,
+												message: "please don't enter the value more than 60",
+											},																			
 										}}
 										register={register}
 										name="years"
@@ -1538,6 +1624,10 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 										min: {
 											value: 1,
 											message: `please enter the value more than 0`,
+										},
+										max: {
+											value: 99,
+											message: "please don't enter the value more than 99",
 										},
 									}}
 									label="How many talents are needed."
@@ -1743,6 +1833,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 							<div className={HRFieldStyle.colMd6}>
 								<HRInputField
 									register={register}
+									disabled={true}
 									label="Deal ID"
 									name="dealID"
 									type={InputType.NUMBER}
@@ -1809,7 +1900,9 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 
 					<button
 						onClick={handleSubmit(hrSubmitHandler)}
-						className={HRFieldStyle.btnPrimary}>
+						className={HRFieldStyle.btnPrimary}
+						disabled={isSavedLoading}
+						>
 						Create HR
 					</button>
 				</div>
@@ -1952,6 +2045,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 							</div>
 						</Modal>
 					)}
+					<LogoLoader visible={isSavedLoading} />
 				</>
 			);
 		}

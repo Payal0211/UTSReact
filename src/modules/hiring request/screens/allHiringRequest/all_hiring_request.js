@@ -5,7 +5,7 @@ import React, {
 	useMemo,
 	useCallback,
 } from 'react';
-import { Dropdown, Menu, message, Table, Tooltip, Modal } from 'antd';
+import { Dropdown, Menu, message, Table, Tooltip, Modal,Checkbox } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
@@ -41,6 +41,9 @@ import CloneHR from './cloneHRModal';
 import { MasterDAO } from 'core/master/masterDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import _debounce from 'lodash/debounce';
+import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal";
+import CloseHRModal from "../../components/closeHRModal/closeHRModal";
+import { downloadToExcel } from 'modules/report/reportUtils';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -57,7 +60,7 @@ const AllHiringRequestScreen = () => {
 	});
 	const [isLoading, setLoading] = useState(false);
 
-	const pageSizeOptions = [100, 200, 300, 500, 1000];
+	const pageSizeOptions = [100, 200, 300, 500, 1000,5000];
 	// const hrQueryData = useAllHRQuery();
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
@@ -78,6 +81,11 @@ const AllHiringRequestScreen = () => {
 	const [openCloneHR, setCloneHR] = useState(false);
 	const [getHRnumber, setHRNumber] = useState('');
 	const [getHRID, setHRID] = useState('');
+	const [reopenHrData, setReopenHRData] = useState({})
+	const [reopenHrModal, setReopenHrModal] = useState(false);
+	const [ closeHRDetail, setCloseHRDetail] = useState({});
+	const [closeHrModal, setCloseHrModal] = useState(false);
+	const [isFocusedRole, setIsFocusedRole] = useState(false);
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -139,7 +147,7 @@ const AllHiringRequestScreen = () => {
 				setLoading(false);
 				messageAPI.open({
 					type: 'success',
-					content: `${tempdata.HR_ID} priority has been changed.`,
+					content: `${tempdata?.HR_ID} priority has been changed.`,
 				});
 			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
 				setLoading(false);
@@ -171,6 +179,7 @@ const AllHiringRequestScreen = () => {
 		if (response.statusCode === HTTPStatusCode.OK) {
 			setCloneHR(false);
 			localStorage.setItem('hrID', response?.responseBody?.details);
+			localStorage.removeItem('dealID')
 			navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 		}
 	};
@@ -178,14 +187,14 @@ const AllHiringRequestScreen = () => {
 
 	const tableColumnsMemo = useMemo(
 		() =>
-			allHRConfig.tableConfig(togglePriority, setCloneHR, setHRID, setHRNumber),
+			allHRConfig.tableConfig(togglePriority, setCloneHR, setHRID, setHRNumber,setReopenHRData,setReopenHrModal,setCloseHRDetail,setCloseHrModal),
 		[togglePriority],
 	);
 	const handleHRRequest = useCallback(
 		async (pageData) => {
 			setLoading(true);
 			let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
-				pageData,
+				{...pageData, "isHrfocused":isFocusedRole},
 			);
 
 			if (response?.statusCode === HTTPStatusCode.OK) {
@@ -209,7 +218,7 @@ const AllHiringRequestScreen = () => {
 				return 'NO DATA FOUND';
 			}
 		},
-		[navigate],
+		[navigate,isFocusedRole],
 	);
 
 	useEffect(() => {
@@ -228,15 +237,18 @@ const AllHiringRequestScreen = () => {
 	const debouncedSearchHandler = (e) => {
 		setTableFilteredState({
 			...tableFilteredState,
+			pagenum:1,
 			searchText: e.target.value,
 		});
+		setDebouncedSearch(e.target.value)
+		setPageIndex(1)
 		debounceFun(e.target.value);
 	};
 
 	useEffect(() => {
 		handleHRRequest(tableFilteredState);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [tableFilteredState]);
+	}, [tableFilteredState,isFocusedRole]);
 
 	const getHRFilterRequest = useCallback(async () => {
 		const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
@@ -293,6 +305,59 @@ const AllHiringRequestScreen = () => {
 		localStorage.removeItem('hrID');
 		localStorage.removeItem('fromEditDeBriefing');
 	}, []);
+
+	const handleExport = (apiData) => {
+		let DataToExport =  apiData.map(data => {
+			let obj = {}			
+			tableColumnsMemo.map(val => val.title !== ' ' && (obj[`${val.title}`] = data[`${val.dataIndex}`]))		
+		return obj;
+			}
+		 )
+		 downloadToExcel(DataToExport)
+	}
+
+	const clearFilters = useCallback(() => {
+		setAppliedFilters(new Map());
+		setCheckedState(new Map());
+		setFilteredTagLength(0);
+		setTableFilteredState({
+			tableFilteredState:{...tableFilteredState,...{
+				pagesize: 100,
+				pagenum: 1,
+				sortdatafield: 'CreatedDateTime',
+				sortorder: 'desc',
+				searchText: '',
+			}},
+			filterFields_ViewAllHRs: {},
+		});
+		const reqFilter = {
+			tableFilteredState:{...tableFilteredState,...{
+				pagesize: 100,
+				pagenum: 1,
+				sortdatafield: 'CreatedDateTime',
+				sortorder: 'desc',
+				searchText: '',
+			}},
+			filterFields_ViewAllHRs: {},
+		};
+		handleHRRequest(reqFilter);
+		setIsAllowFilters(false);
+		setEndDate(null)
+		setStartDate(null)
+		setDebouncedSearch('')
+		setIsFocusedRole(false)
+		setPageIndex(1);
+		setPageSize(100);
+	}, [
+		handleHRRequest,
+		setAppliedFilters,
+		setCheckedState,
+		setFilteredTagLength,
+		setIsAllowFilters,
+		setTableFilteredState,
+		tableFilteredState,
+	]);
+
 	return (
 		<div className={allHRStyles.hiringRequestContainer}>
 			{contextHolder}
@@ -389,6 +454,7 @@ const AllHiringRequestScreen = () => {
 							switch (item.key) {
 								case AddNewType.HR: {
 									navigate(UTSRoutes.ADDNEWHR);
+									localStorage.removeItem("dealId")
 									break;
 								}
 								case AddNewType.CLIENT: {
@@ -400,6 +466,12 @@ const AllHiringRequestScreen = () => {
 							}
 						}}
 					/>
+
+							<button
+								className={allHRStyles.btnPrimary}								
+								onClick={() => handleExport(apiData)}>
+								Export
+							</button>
 				</div>
 			</div>
 			{/*
@@ -408,6 +480,7 @@ const AllHiringRequestScreen = () => {
 			 */}
 			<div className={allHRStyles.filterContainer}>
 				<div className={allHRStyles.filterSets}>
+				<div className={allHRStyles.filterSetsInner} >
 					<div
 						className={allHRStyles.addFilter}
 						onClick={toggleHRFilter}>
@@ -416,7 +489,12 @@ const AllHiringRequestScreen = () => {
 						<div className={allHRStyles.filterLabel}>Add Filters</div>
 						<div className={allHRStyles.filterCount}>{filteredTagLength}</div>
 					</div>
+					<p onClick={()=> clearFilters() }>Reset Filters</p>
+			 	</div>
 					<div className={allHRStyles.filterRight}>
+					<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)}>
+					Show only Focused Role
+						</Checkbox>	
 						<div className={allHRStyles.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
 							<input
@@ -424,6 +502,7 @@ const AllHiringRequestScreen = () => {
 								className={allHRStyles.searchInput}
 								placeholder="Search Table"
 								onChange={debouncedSearchHandler}
+								value={debouncedSearch}
 							/>
 						</div>
 						<div className={allHRStyles.calendarFilterSet}>
@@ -588,6 +667,7 @@ const AllHiringRequestScreen = () => {
 						filtersType={allHRConfig.hrFilterTypeConfig(
 							filtersList && filtersList,
 						)}
+						clearFilters={clearFilters}
 					/>
 				</Suspense>
 			)}
@@ -604,6 +684,41 @@ const AllHiringRequestScreen = () => {
 					getHRnumber={getHRnumber}
 				/>
 			</Modal>
+
+			{reopenHrModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={reopenHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setReopenHrModal(false)}
+                >
+                  <ReopenHRModal
+                    onCancel={() => setReopenHrModal(false)}
+                    apiData={reopenHrData}
+                  />
+                </Modal>
+              )}
+
+			  
+			{closeHrModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={closeHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setCloseHrModal(false)}
+                >
+                  <CloseHRModal
+                    closeHR={() => {}}
+                    setUpdateTR={() => setCloseHrModal(true)}
+                    onCancel={() => setCloseHrModal(false)}
+                    closeHRDetail={closeHRDetail}
+                  />
+                </Modal>
+              )}
 		</div>
 	);
 };

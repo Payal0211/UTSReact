@@ -24,6 +24,7 @@ export const dealUtils = {
 			sales_Consultant: item.sales_Consultant,
 			dealStage: item.dealStage,
 			dealStageColorCode: item.dealStageColorCode,
+			dealName: item.dealName
 		}));
 	},
 	dealFilterSearch: (e, data) => {

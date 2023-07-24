@@ -35,7 +35,16 @@ const TeamDemandFunnelModal = ({
 			isExport: false,
 		});
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			downloadToExcel(response?.responseBody);
+			let DataToExport =  response?.responseBody.map(data => {
+				let obj = {}
+				reportConfig?.demandFunnelHRDetails(
+				demandFunnelValue?.stage,
+			).map(val => obj[`${val.title}`] = data[`${val.key}`])
+			return obj;
+		}
+			 )
+
+			downloadToExcel(DataToExport);
 			// setDemandFunnelModal(false);`
 		}
 	}, [demandFunnelHRDetailsState]);

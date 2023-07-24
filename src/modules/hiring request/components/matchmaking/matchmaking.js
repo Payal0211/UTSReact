@@ -45,6 +45,8 @@ const MatchmakingModal = ({
 	const [listOfTalents, setListOfTalents] = useState([]);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [isLoading, setIsLoading] = useState(false);
+	const [controlledMatchData, setControlledMatchData] = useState([]);
+	const [isValidationError, setIsValidationError] = useState(false);
 
 	/**
 	 * @Function handleExpandRow
@@ -101,16 +103,34 @@ const MatchmakingModal = ({
 						: setSelectedRows(matchmakingData.rows?.map((a) => a.id));
 					filterMatchmakingData.length > 0
 						? setListOfTalents(
-								filterMatchmakingData?.map((a) => ({
-									talentId: a.id,
-									amount: parseInt(a?.talentCost.split(' ')[1]),
-								})),
+								filterMatchmakingData?.map((a) => {
+									let newObj = {
+										talentId: a.id,
+										amount: parseInt(a?.talentCost.split(' ')[1]),
+									}
+
+									if(apiData?.Is_HRTypeDP){
+										newObj['currentCTC'] =  a.currentCTC 
+										newObj['dpPercentage'] = a.dpPercentage
+									}
+
+									return newObj
+								}),
 						  )
 						: setListOfTalents(
-								matchmakingData?.rows?.map((a) => ({
-									talentId: a.id,
-									amount: parseInt(a?.talentCost.split(' ')[1]),
-								})),
+							controlledMatchData?.map((a) => {
+									let newObj = {
+										talentId: a.id,
+										amount: parseInt(a?.talentCost.split(' ')[1]),
+									}
+
+									if(apiData?.Is_HRTypeDP){
+										newObj['currentCTC'] =  a.currentCTC 
+										newObj['dpPercentage'] = a.dpPercentage
+									}
+									
+									return newObj
+								}),
 						  );
 				}
 			} else {
@@ -125,13 +145,38 @@ const MatchmakingModal = ({
 					);
 				} else currentSelectedRows = currentSelectedRows.concat(id);
 
+				// for (let i = 0; i < currentSelectedRows.length; i++) {
+				// 	for (let j = 0; j < matchmakingData?.rows?.length; j++) {
+				// 		if (currentSelectedRows[i] === matchmakingData?.rows[j]?.id) {
+				// 			tempObj.push({
+				// 				talentId: currentSelectedRows[i],
+				// 				amount: parseInt(
+				// 					matchmakingData?.rows[j]?.talentCost.split(' ')[1],
+				// 				),
+				// 			});
+				// 		}
+				// 	}
+				// }
+
 				for (let i = 0; i < currentSelectedRows.length; i++) {
-					for (let j = 0; j < matchmakingData?.rows?.length; j++) {
-						if (currentSelectedRows[i] === matchmakingData?.rows[j]?.id) {
+					for (let j = 0; j < controlledMatchData?.length; j++) {
+						if (currentSelectedRows[i] === controlledMatchData[j]?.id) {
+							let newData = {
+								talentId: currentSelectedRows[i],
+								amount: parseInt(
+									controlledMatchData[j]?.expectedCost,
+								),
+							}
+
+							if(apiData?.Is_HRTypeDP){
+								newData['currentCTC'] =   controlledMatchData[j]?.currentCTC 
+								newData['dpPercentage'] =  controlledMatchData[j]?.dpPercentage 
+							}
+
 							tempObj.push({
 								talentId: currentSelectedRows[i],
 								amount: parseInt(
-									matchmakingData?.rows[j]?.talentCost.split(' ')[1],
+									controlledMatchData[j]?.expectedCost,
 								),
 							});
 						}
@@ -141,7 +186,7 @@ const MatchmakingModal = ({
 				setListOfTalents(tempObj);
 			}
 		},
-		[allSelected, filterMatchmakingData, matchmakingData.rows, selectedRows],
+		[allSelected, filterMatchmakingData, matchmakingData, selectedRows,controlledMatchData,apiData],
 	);
 
 	const closeExpandedCell = useCallback(() => {
@@ -181,15 +226,60 @@ const MatchmakingModal = ({
 			const response = await hiringRequestDAO.getMatchmakingDAO(data);
 
 			setMatchmakingData(response?.responseBody.details);
+
+			let controlledMatches = response?.responseBody.details.rows.map(row => ({...row, 
+			"dpPercentage": response?.responseBody.details.DPNRPercentage,
+			"expectedCost": row.talentCost.split(' ')[1].split('.')[0]
+			}) )
+
+			setControlledMatchData(controlledMatches)
 		},
 		[setMatchmakingModal],
 	);
 
 	const getTalentPriorities = useCallback(async () => {
 		setIsLoading(true);
+		let isNotValid =  false
+
+		// for get updated values after checked (dont have to toggleRowSelection every time ) 
+		let talentListData = listOfTalents.map(talent => {
+			if(apiData?.Is_HRTypeDP){
+				let talentObj = controlledMatchData.filter(val => val.id === talent.talentId)[0]
+				return	{ talentId: talentObj.id , amount: parseInt(
+					talentObj?.expectedCost,
+				) ,'dpPercentage' : parseInt(talentObj.dpPercentage) ,'currentCTC': parseInt(talentObj.currentCTC) }
+			}else{
+				let talentObj = controlledMatchData.filter(val => val.id === talent.talentId)[0]
+				return { talentId: talentObj.id , amount: parseInt(
+					talentObj?.expectedCost,
+				) ,'dpPercentage' :null ,'currentCTC':null }
+			}
+			
+		})
+
+		if(apiData?.Is_HRTypeDP){
+			talentListData.forEach(talent => {
+				if(talent.amount <= 0 || talent.currentCTC <= 0 || talent.dpPercentage <= 0){
+				   setIsValidationError(true)
+				   isNotValid = true
+				}
+			})
+		}else{
+			talentListData.forEach(talent => {
+				if(talent.amount <= 0 ){
+					 setIsValidationError(true)
+					 isNotValid = true
+				}
+			})
+		}
+
+		if(isNotValid){
+			return setIsLoading(false);
+		}
+		
 		const talentPrioritiesObj = {
 			hrId: parseInt(hrID),
-			listOfTalents: listOfTalents,
+			listOfTalents: talentListData
 		};
 		const response = await hiringRequestDAO.setTalentPrioritiesDAO(
 			talentPrioritiesObj,
@@ -210,7 +300,7 @@ const MatchmakingModal = ({
 			});
 			setIsLoading(false);
 		}
-	}, [hrID, listOfTalents, messageAPI, refreshedHRDetail, setMatchmakingModal]);
+	}, [hrID, listOfTalents, messageAPI, refreshedHRDetail, setMatchmakingModal, controlledMatchData, apiData]);
 
 	useEffect(() => {
 		fetchMatchmakingData({
@@ -232,6 +322,14 @@ const MatchmakingModal = ({
 			}
 		};
 	}, [isMatchmaking]);
+
+
+	const handleUserValueChange = (ID,value) => { 
+		let copyOFMatchmakingData = [...controlledMatchData]
+		let Index = controlledMatchData.findIndex(val => val.id === ID)
+		copyOFMatchmakingData[Index] = {...copyOFMatchmakingData[Index], ...value}	
+		setControlledMatchData(copyOFMatchmakingData)
+	}
 
 	return (
 		<>
@@ -317,7 +415,12 @@ const MatchmakingModal = ({
 										lineHeight: '19px',
 										fontWeight: '500',
 									}}>
-									{matchmakingData?.CompanyName && hrNo}
+									{matchmakingData?.CompanyName && hrNo}  <span
+									style={{
+										fontSize: '16px',
+										lineHeight: '19px',
+										fontWeight: 'bold',
+									}}>{matchmakingData?.headerDPNRPercentage}  </span>
 								</span>
 							</div>
 							<div
@@ -396,7 +499,7 @@ const MatchmakingModal = ({
 										matchMakingData={
 											filterMatchmakingData.length > 0
 												? filterMatchmakingData
-												: matchmakingData?.rows
+												: controlledMatchData
 										}
 										setTalentID={setTalentID}
 										setTalentCost={setTalentCost}
@@ -410,6 +513,8 @@ const MatchmakingModal = ({
 											expandedCellUI[tableFunctionData] &&
 											expandedCellUI[tableFunctionData]
 										}
+										apiData={apiData}
+										handleUserValueChange={handleUserValueChange}
 									/>
 								)}
 							</div>
@@ -430,9 +535,9 @@ const MatchmakingModal = ({
 										type="button"
 										className={MatchMakingStyle.btnPrimary}>
 										Select Talent
-									</button>
+									</button>																						
 
-									<button className={MatchMakingStyle.btn}>Cancel</button>
+									<button className={MatchMakingStyle.btn} onClick={()=>onCancel() }>Cancel</button>
 									<div
 										style={{
 											position: 'absolute',
@@ -441,6 +546,7 @@ const MatchmakingModal = ({
 										}}></div>
 								</div>
 							)}
+							{isValidationError && <p className={MatchMakingStyle.error}>* Invalid data, values cannot be 0 or less. </p>}
 						</>
 					)}
 				</div>

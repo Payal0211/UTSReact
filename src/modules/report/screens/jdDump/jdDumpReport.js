@@ -125,6 +125,17 @@ const JDDumpReportScreen = () => {
 		getJDDumpReportHandler(tableFilteredState);
 	}, [getJDDumpReportHandler, tableFilteredState]);
 
+	const exportHandler = (listData) => {
+		let DataToExport =  listData.map(data => {
+		  let obj = {}
+		  tableColumnsMemo.map(val => obj[`${val.title}`] = data[`${val.key}`])
+		return obj;
+	  }
+		 )
+	
+		downloadToExcel(DataToExport)
+	  }
+
 	return (
 		<div className={JDDUmpStyle.hiringRequestContainer}>
 			<div className={JDDUmpStyle.addnewHR}>
@@ -186,7 +197,7 @@ const JDDumpReportScreen = () => {
 						<div>
 							<button
 								className={JDDUmpStyle.btnPrimary}
-								onClick={() => downloadToExcel(apiData)}>
+								onClick={() => exportHandler(apiData)}>
 								Export
 							</button>
 						</div>
@@ -330,7 +341,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />
@@ -361,7 +372,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />
@@ -392,7 +403,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />
@@ -423,7 +434,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />
@@ -454,7 +465,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />
@@ -485,7 +496,7 @@ const JDDumpReportScreen = () => {
 							alignItems: 'center',
 						}}>
 						<label className={JDDUmpStyle.selectedTextModal}>
-							{selectedRecord}
+						<div  dangerouslySetInnerHTML={{ __html: selectedRecord}} />
 						</label>
 						<br />
 						<br />
