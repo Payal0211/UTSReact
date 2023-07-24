@@ -70,6 +70,8 @@ const Sidebar = () => {
 												<img
 													src={icon}
 													alt="mySvgImage"
+													width='24px'
+													height='24px'
 												/>
 												<span>{title}</span>
 												<div
@@ -87,7 +89,9 @@ const Sidebar = () => {
 														branch?.map((item) => {
 															return (
 																<Link to={item?.navigateTo}>
-																	<img src={item?.icon} />
+																	<img src={item?.icon} 
+																	 width='24px'
+																	 height='24px'/>
 																	{item?.title}
 																</Link>
 															);
