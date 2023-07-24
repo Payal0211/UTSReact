@@ -16,6 +16,7 @@ import GlobIcon from 'assets/svg/globIcon.svg';
 import MastersIcon from 'assets/svg/mastersIcon.svg';
 import I2sIcon from 'assets/svg/i2sIcon.svg';
 import clientReport from  'assets/svg/clientReport.svg';
+import HRReport from 'assets/svg/clientLogs.svg'
 
 import SLAReport from 'assets/svg/slaReport.svg';
 import SideBarModels from 'models/sidebar.model';
@@ -259,7 +260,7 @@ const getSideBar = (usertypeID) => {
 			id: 'HRReport',
 			title: 'HR Report',
 			isActive: false,
-			icon: clientReport,
+			icon: HRReport,
 			navigateTo: UTSRoutes.HR_REPORT,
 			isVisible: isAccess(usertypeID, 'HR Report')
 		}),

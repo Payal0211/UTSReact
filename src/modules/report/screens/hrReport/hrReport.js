@@ -264,6 +264,7 @@ export default function HRReport() {
       },
     };
     getHRReportList(payload);
+    onRemoveDealFilters()
     // getI2SReport(params);
   };
 
@@ -386,6 +387,44 @@ export default function HRReport() {
         </div>
       </div>
 
+      <div
+					className={`${hrReportStyle.filterSets} ${hrReportStyle.filterDescription}`}>
+				
+					<div className={hrReportStyle.filterType}>
+						{/* <img
+							src={Rocket}
+							alt="rocket"
+						/> */}
+						<h2>
+            No profiles shared % -{' '}
+							<span>{ reportList.length > 0 && ((reportList[3].stageValue/reportList[0].stageValue) * 100).toFixed(2) }</span>
+						</h2>
+					</div>
+			
+
+          <div className={hrReportStyle.filterType}>
+						{/* <img
+							src={Rocket}
+							alt="rocket"
+						/> */}
+						<h2>
+            3 profile shared % -{' '}
+							<span>{ reportList.length > 0 && ((reportList[4].stageValue/reportList[0].stageValue) * 100).toFixed(2)}</span>
+						</h2>
+					</div>
+
+          <div className={hrReportStyle.filterType}>
+						{/* <img
+							src={Rocket}
+							alt="rocket"
+						/> */}
+						<h2>
+            At least 1 profiles shared % -{' '}
+							<span>{ reportList.length > 0 && ((reportList[5].stageValue/reportList[0].stageValue) * 100).toFixed(2)}</span>
+						</h2>
+					</div>
+				</div>
+
       <div className={hrReportStyle.i2sContainer} style={{ width: "50%" }}>
         <div className={hrReportStyle.cardWrapper}>
           <div className={hrReportStyle.cardTitle}>
@@ -469,6 +508,7 @@ export default function HRReport() {
             filtersType={reportConfig.HRReportFilterTypeConfig(
               filtersList && filtersList
             )}
+            clearFilters={resetFilter}
           />
         </Suspense>
       )}

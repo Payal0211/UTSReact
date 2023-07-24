@@ -64,6 +64,7 @@ const TalentProfileCard = ({
 						hrStatusCode={apiData?.HRStatusCode}
 						hrStatus={apiData?.HRStatus}
 						hrPriority={apiData?.StarMarkedStatusCode}
+						currency={apiData?.HRDetails?.Currency}
 					/>
 				)}
 			</div>

@@ -105,14 +105,14 @@ export const hrUtils = {
 					? 0
 					: d.role?.id,
 			otherRole:
-				watch('role') === 'others'
+				watch('role')?.value === "Others"
 					? draft === SubmitType.SAVE_AS_DRAFT
 						? _isNull(watch('otherRole'))
 							? null
-							: watch('otherRole').trim()
-						: _isNull(d.otherRole)
+							: watch('otherRole')
+						: _isNull(watch('otherRole'))
 						? null
-						: d.otherRole.trim()
+						: watch('otherRole').trim()
 					: null,
 			hrTitle:
 				draft === SubmitType.SAVE_AS_DRAFT
