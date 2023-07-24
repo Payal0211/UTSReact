@@ -45,8 +45,8 @@ body {
   --color-sunlight: #ffda31;
   --color-purple: #784fcd;
   --color-cyan: #00dfdf;
-  --color-danger: #E41A1C;
-  --color-success: #006D2C;
+  --color-danger: #e41a1c;
+  --color-success: #006d2c;
   --color-TealWithOpacity: #f5fcf9;
   --color-champagne: #ffe87f;
   --uplers-border-color: #e8e8e8;
@@ -105,13 +105,13 @@ input[type="number"] {
   background-color: var(--color-champagne);
 }
 
-
 input[type="file"] {
   display: none;
 }
 
 /* -- Ant Table Pagination--*/
-.ant-table-tbody .first-row, .ant-table-body .ant-table-measure-row td {
+.ant-table-tbody .first-row,
+.ant-table-body .ant-table-measure-row td {
   padding: 0 !important;
 }
 .ant-table-pagination-right {
@@ -165,29 +165,28 @@ table {
   box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
 }
 
-.ant-table-tbody>tr>td {
+.ant-table-tbody > tr > td {
   padding: 18px 12px !important;
 }
-.ant-table-thead>tr>th{
+.ant-table-thead > tr > th {
   /* padding: 24px !important; */
   padding-left: 12px !important;
   padding-right: 12px !important;
 }
-.ant-table-thead>tr>th:first-child, 
-.ant-table-tbody>tr>td:first-child{
+.ant-table-thead > tr > th:first-child,
+.ant-table-tbody > tr > td:first-child {
   padding-left: 24px !important;
 }
 
-.ant-table-thead > tr > th{
-  border-bottom: 1px dashed #CECCCC;
+.ant-table-thead > tr > th {
+  border-bottom: 1px dashed #cecccc;
 }
 
 /* TO FIX TABLE BODY WITH AVAILABLE DISPLAY HEIGHT */
-.ant-table-body{
+.ant-table-body {
   max-height: calc(100vh - 545px) !important;
   min-height: 100px;
 }
-
 
 /*-- React DatePicker--*/
 .react-datepicker {
@@ -229,6 +228,15 @@ table {
   color: var(--uplers-black) !important;
 }
 
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__month-text--keyboard-selected,
+.react-datepicker__quarter-text--keyboard-selected,
+.react-datepicker__year-text--keyboard-selected {
+  border-radius: 0.3rem;
+  background-color: var(--color-sunlight) !important;
+  color: #fff;
+}
+
 .ant-checkbox-checked::after {
   border: none !important;
 }
@@ -240,7 +248,7 @@ table {
 
 .ant-checkbox-wrapper:hover .ant-checkbox-inner,
 .ant-checkbox:hover .ant-checkbox-inner,
-.ant-checkbox-input:focus+.ant-checkbox-inner {
+.ant-checkbox-input:focus + .ant-checkbox-inner {
   border: 1px solid var(--background-color-metal);
 }
 
@@ -250,9 +258,9 @@ table {
 }
 
 /*-- DropDown--*/
-.ant-dropdown {
+/* .ant-dropdown {
   z-index: 0 !important;
-}
+} */
 
 .ant-dropdown-menu {
   background-color: transparent;
@@ -290,20 +298,20 @@ table {
   margin: 0;
 }
 
-.ant-tabs-top .ant-tabs-tab+.ant-tabs-tab {
+.ant-tabs-top .ant-tabs-tab + .ant-tabs-tab {
   margin: 0 0 0 55px;
 }
 
-.ant-tabs.ant-tabs-top>.ant-tabs-nav .ant-tabs-nav-wrap {
+.ant-tabs.ant-tabs-top > .ant-tabs-nav .ant-tabs-nav-wrap {
   padding-bottom: 2px;
 }
 
-.ant-tabs-top>.ant-tabs-nav::before {
+.ant-tabs-top > .ant-tabs-nav::before {
   border-bottom: 1px solid var(--tabs-border-color);
   bottom: 1px;
 }
 
-.ant-tabs-top>.ant-tabs-nav .ant-tabs-ink-bar {
+.ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar {
   background: var(--color-sunlight);
   height: 4px;
   bottom: -2px;
@@ -399,7 +407,10 @@ table {
   border-color: #cecccc;
 }
 
-.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(
+    .ant-select-customize-input
+  )
+  .ant-select-selector {
   border-color: #ffda30;
   box-shadow: 0 0 0 1px #ffda30;
 }
@@ -515,15 +526,21 @@ table {
   transform: scale(0);
 }
 
-.ant-radio-group .ant-radio-wrapper .ant-radio+* {
+.ant-radio-group .ant-radio-wrapper .ant-radio + * {
   padding: 0;
 }
 
-.ant-radio-group .ant-radio-wrapper .ant-radio.ant-radio-checked .ant-radio-inner {
+.ant-radio-group
+  .ant-radio-wrapper
+  .ant-radio.ant-radio-checked
+  .ant-radio-inner {
   border-color: #232323;
 }
 
-.ant-radio-group .ant-radio-wrapper .ant-radio.ant-radio-checked .ant-radio-inner::after {
+.ant-radio-group
+  .ant-radio-wrapper
+  .ant-radio.ant-radio-checked
+  .ant-radio-inner::after {
   transform: scale(1);
 }
 
@@ -547,7 +564,10 @@ table {
   margin: 0;
 }
 
-.ant-select .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input {
+.ant-select
+  .ant-select-selector
+  .ant-select-selection-search
+  .ant-select-selection-search-input {
   height: 20px;
 }
 
@@ -576,7 +596,9 @@ table {
   min-height: 54px;
 }
 
-.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item {
+.ant-select-show-search.ant-select-multiple
+  .ant-select-selection-overflow-item
+  .ant-select-selection-item {
   margin: 0;
   font-family: "Montserrat";
   font-weight: 500;
@@ -593,7 +615,10 @@ table {
   border: none;
 }
 
-.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-multiple .ant-select-selection-item-content {
+.ant-select-show-search.ant-select-multiple
+  .ant-select-selection-overflow-item
+  .ant-select-multiple
+  .ant-select-selection-item-content {
   color: inherit;
   font-size: inherit;
   line-height: inherit;
@@ -601,7 +626,10 @@ table {
   border-radius: 0;
 }
 
-.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item .ant-select-selection-item-remove {
+.ant-select-show-search.ant-select-multiple
+  .ant-select-selection-overflow-item
+  .ant-select-selection-item
+  .ant-select-selection-item-remove {
   color: #fff;
   position: absolute;
   top: 7px;
@@ -616,7 +644,11 @@ table {
   line-height: 10px;
 }
 
-.ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item .ant-select-selection-item-remove svg {
+.ant-select-show-search.ant-select-multiple
+  .ant-select-selection-overflow-item
+  .ant-select-selection-item
+  .ant-select-selection-item-remove
+  svg {
   width: 13px;
   height: 13px;
 }
@@ -664,7 +696,11 @@ table {
   padding: 0px;
 }
 
-.engagementReplaceTalentModal .ant-radio-group .ant-radio-wrapper .ant-radio+* {
+.engagementReplaceTalentModal
+  .ant-radio-group
+  .ant-radio-wrapper
+  .ant-radio
+  + * {
   padding: 0;
   font-family: "Montserrat";
   font-style: normal;
@@ -719,7 +755,7 @@ table {
   border-color: var(--color-sunlight) !important;
 }
 
-.interviewFeedbackModal .ant-checkbox+span {
+.interviewFeedbackModal .ant-checkbox + span {
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 500;
@@ -773,7 +809,7 @@ table {
 }
 
 /* Profile Rejection Modal */
-.rejectionModalWrap .ant-modal-close{
+.rejectionModalWrap .ant-modal-close {
   top: 20px;
 }
 

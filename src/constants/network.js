@@ -13,6 +13,8 @@ export class SubDomain {
 	static VIEW_ALL_HR = 'ViewAllHR/';
 	static MASTERS = 'MastersAPI/';
 	static CLIENT = 'Client/';
+	static CLIENT_REPORT = 'ClientReport/';
+	static HR_REPORT = 'HRReport/';
 	static HIRING = 'Hiring/';
 	static MATCHMAKING = 'Matchmaking/';
 	static DEBRIEFING = 'Debriefing/';
@@ -42,6 +44,7 @@ export class MethodType {
 }
 export class UserAPI {
 	static LOGIN = 'AdminLogin';
+	static LOGOUT = 'LogOut';
 	static SIGNUP = '/signup';
 	static FORGOTPASSWORD = '/forgotpassword';
 	static LIST = 'List';
@@ -88,6 +91,7 @@ export class EngagementAPI {
 	static GET_RENEW_ENGAGEMENT = 'GetRenewEngagement';
 	static SAVE_RENEW_ENGAGEMENT = 'SaveRenewEngagement';
 	static CALCULATE_ACTUAL_NR_BR_PR = 'Calculate_ActualNR_From_BRPR';
+	static UPLOAD_FILE = 'UploadFile';
 }
 
 export class AllHiringRequestAPI {
@@ -206,6 +210,9 @@ export class HiringRequestsAPI {
 	static DELETE_INTERVIEW_DETAILS = 'DeleteInterviewDetails';
 	static CLOSE_HR_VALIDATION = 'CloseHRValidation'; 
 	static CLOSE_HR = 'CloseHR';
+	static REOPEN_HR = 'ReopenHR'
+	static GET_HR_DP_AMOUNT_DETAILS = 'GetHRDPAmountDetails'
+	static UPDATE_DP_AMOUNT = 'UpdateDPAmount'
 }
 
 export class UsersAPI {
@@ -243,6 +250,13 @@ export class DealsAPI {
 export class I2SsAPI {
 	static LIST = 'InterviewToSuccessList';
 	static POPUP  ='GetInterviewToSuccessPopupDetails'
+}
+
+export class ClientReportAPI {
+	static GET_CLIENT_REPORT = 'GetClientReport'
+	static GET_CLIENT_POPUP_REPORT = 'GeClientPopUpReport'
+	static GET_CLIENT_FILTERS = 'Filters'
+	static POPUP_FILTERS = 'Popup'
 }
 
 export class OnboardsAPI {

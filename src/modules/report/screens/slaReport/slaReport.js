@@ -53,14 +53,20 @@ const SlaReports = () => {
 	const [pageSize, setPageSize] = useState(100);
 	const [pageIndex, setPageIndex] = useState(1);
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
+	
 	const [listData, setListData] = useState([]);
 	const [dateError, setDateError] = useState('');
 
 	const [checkedValue, setCheckedValue] = useState(true);
 	const [checkednoValue, setCheckednoValue] = useState(false);
 	const [slaValue, setslaValue] = useState(0);
+	
+	var date = new Date();
+	const [startDate, setStartDate] = useState(new Date(date.getFullYear(), date.getMonth(), 1));
+	const [endDate, setEndDate] = useState(new Date(date.getFullYear(), date.getMonth() + 1, 0));
+	var firstDay = startDate !== null ? startDate : new Date(date.getFullYear(), date.getMonth(), 1);
+	var lastDay = endDate !== null ? endDate : new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
 	const checkedYes = (e) => {
 		setCheckedValue(e.target.checked);
 		setCheckednoValue(false);
@@ -70,8 +76,8 @@ const SlaReports = () => {
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: '2023-06-01',
-				endDate: '2023-06-30',
+				startDate: firstDay,
+				endDate: lastDay,
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
@@ -99,9 +105,11 @@ const SlaReports = () => {
 		});
 		slaReportDetails({
 			...tableFilteredState,
+			filterFieldsSLA:{...tableFilteredState.filterFieldsSLA, slaType: 0},
 			filterFields_ViewAllHRs: {
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
+				slaType: 0
 			},
 		});
 	};
@@ -114,8 +122,8 @@ const SlaReports = () => {
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: '2023-06-01',
-				endDate: '2023-06-30',
+				startDate: firstDay,
+				endDate: lastDay,
 				hrid: 0,
 				sales_ManagerID: 0,
 				ops_Lead: 0,
@@ -144,9 +152,11 @@ const SlaReports = () => {
 		});
 		slaReportDetails({
 			...tableFilteredState,
+			filterFieldsSLA:{...tableFilteredState.filterFieldsSLA, slaType: 1},
 			filterFields_ViewAllHRs: {
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
+				slaType: 1
 			},
 		});
 	};
@@ -155,8 +165,8 @@ const SlaReports = () => {
 		pagenumber: 1,
 		isExport: false,
 		filterFieldsSLA: {
-			startDate: '2023-06-01',
-			endDate: '2023-06-30',
+			startDate: firstDay,
+			endDate: lastDay,
 			hrid: 0,
 			sales_ManagerID: 0,
 			ops_Lead: 0,
@@ -176,12 +186,10 @@ const SlaReports = () => {
 		},
 	});
 
-	var date = new Date();
-	var firstDay = startDate !== null ? startDate : new Date(date.getFullYear(), date.getMonth(), 1);
-	var lastDay = endDate !== null ? endDate : new Date(date.getFullYear(), date.getMonth() + 1, 0);
+	
 
 	const slaReportList = async (pageData) => {
-		console.log(pageData, 'pageData');
+		// console.log(pageData, 'pageData');
 		let obj = {
 			startDate: pageData
 				? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format(
@@ -245,7 +253,7 @@ const SlaReports = () => {
 				stage: '',
 				isAdHoc: 0,
 				role: '',
-				slaType: slaValue === 0 ? 0 : 1,
+				slaType: (pageData?.filterFields_ViewAllHRs?.slaType === 0 || pageData?.filterFields_ViewAllHRs?.slaType === 1)  ? pageData?.filterFields_ViewAllHRs?.slaType  :  slaValue === 0 ? 0 : 1,
 				type: 0,
 				hR_Number: '',
 				company: '',
@@ -381,7 +389,7 @@ const SlaReports = () => {
 				let responseList = await ReportDAO.OverAllSLASummaryDAO(
 					tableFilteredState,
 				);
-				console.log("FilterRes",{response,responseList})
+				// console.log("FilterRes",{response,responseList})
 				if (responseList?.statusCode === HTTPStatusCode.OK) {
 					setLoading(false);
 					setListData(responseList?.responseBody);
@@ -428,6 +436,63 @@ const SlaReports = () => {
 		setSlaReportDetailsState(tableFilteredState);
 	}, [setSlaReportDetailsState, tableFilteredState]);
 
+	const exportHandler = (slaDetailsList) => {
+		let dataToDownload = slaDetailsList.map(data => ({
+			"HR#": data.hR_NUmber, 'Role' : data.role, 'Company': data.company , 'Client': data.client, 'Talent': data.talentName, 'Stage': data.currentStage,
+			'Curr Action Date': data.current_Action_date , 'Exp Next Action Date': data.expected_Next_action_date , 'Actual Next Action date': data.actual_Next_Action_date ,
+			'Expected SLA': data.expected_SLA_day, 'Actual SLA': data.actual_SLA_day , 'SLA diff': data.slA_diff, 'Action': data.actionFilter, 'Sales Person':data.sales_Person, 'Sales Manager':data.sales_Manager, 'OPS Lead':data.ops_Lead
+ 		}))
+
+		downloadToExcel(dataToDownload)
+	}
+
+	const clearFilters = useCallback(() => {
+		setAppliedFilters(new Map());
+		setCheckedState(new Map());
+		setFilteredTagLength(0);
+	
+		let defaultState = {
+		  totalrecord: 100,
+		  pagenumber: 1,
+		  isExport: false,
+		  filterFieldsSLA: {
+			startDate: firstDay,
+			endDate: lastDay,
+			hrid: 0,
+			sales_ManagerID: 0,
+			ops_Lead: 0,
+			salesPerson: 0,
+			stages: "",
+			isAdHoc: 0,
+			role: "",
+			slaType: slaValue,
+			type: 0,
+			hR_Number: "",
+			company: "",
+			actionFilter: 0,
+			stageIDs: "",
+			actionFilterIDs: "",
+			CompanyIds: "",
+			// ambdr: 0
+		  }
+		}
+		setTableFilteredState(defaultState);
+		setSlaReportDetailsState(defaultState);
+		handleHRRequest(defaultState);
+		onRemoveFilters()
+		setEndDate(new Date(date.getFullYear(), date.getMonth() + 1, 0))
+		setStartDate(new Date(date.getFullYear(), date.getMonth(), 1))
+		// setSlaReportDetailsState(reqFilter);
+	  }, [
+		handleHRRequest,
+		setAppliedFilters,
+		setCheckedState,
+		setFilteredTagLength,
+		setTableFilteredState,
+		setSlaReportDetailsState,
+		tableFilteredState,setEndDate,setStartDate
+	  ]);
+
 	return (
 		<div className={SlaReportStyle.hiringRequestContainer}>
 			<div className={SlaReportStyle.addnewHR}>
@@ -439,6 +504,7 @@ const SlaReports = () => {
 			 */}
 			<div className={SlaReportStyle.filterContainer}>
 				<div className={SlaReportStyle.filterSets}>
+				<div className={SlaReportStyle.filterSetsInner} >
 					<div
 						className={SlaReportStyle.addFilter}
 						onClick={toggleHRFilter}>
@@ -448,6 +514,8 @@ const SlaReports = () => {
 						<div className={SlaReportStyle.filterCount}>
 							{filteredTagLength}
 						</div>
+					</div>
+					<p onClick={()=> clearFilters() }>Reset Filters</p>
 					</div>
 					<div className={SlaReportStyle.calendarFilterSet}>
 						<label className={SlaReportStyle.radioCheck_Mark}>
@@ -580,7 +648,7 @@ const SlaReports = () => {
 						<div>
 							<button
 								className={SlaReportStyle.btnPrimary}
-								onClick={() => downloadToExcel(slaDetailsList)}>
+								onClick={() => exportHandler(slaDetailsList)}>
 								Export
 							</button>
 						</div>
@@ -696,6 +764,10 @@ const SlaReports = () => {
 						)}
 						setSlaReportDetailsState={setSlaReportDetailsState}
 						slaReportDetailsState={slaReportDetailsState}
+						firstDay={firstDay}
+						lastDay={lastDay}
+						slaValue={slaValue}
+						clearFilters={clearFilters}
 					/>
 				</Suspense>
 			)}

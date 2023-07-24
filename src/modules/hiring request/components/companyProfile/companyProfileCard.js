@@ -76,22 +76,7 @@ const CompanyProfileCard = ({
 									rel="noreferrer">
 									<AiFillLinkedin style={{ color: '#006699' }} />
 								</a>
-							</div>
-							<div className={CompanyProfileCardStyle.pocName}>
-								<span>POC Name:</span>&nbsp;&nbsp;
-								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.POCFullName ? clientDetail?.POCFullName : 'NA'}
-								</span>
-								&nbsp;&nbsp;
-								{/*  TODO:- 
-								<AiFillLinkedin style={{ color: '#006699' }} /> */}
-							</div>
-							<div className={CompanyProfileCardStyle.pocEmail}>
-								<span>POC Email:</span>&nbsp;&nbsp;
-								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.POCEmailID ? clientDetail?.POCEmailID : 'NA'}
-								</span>
-							</div>
+							</div>							
 						</div>
 						<div style={{ cursor: 'pointer' }}>
 							{
@@ -115,10 +100,19 @@ const CompanyProfileCard = ({
 					/>
 					<div className={CompanyProfileCardStyle.partWise}>
 						<div style={{ marginBottom: '10px' }}>
-							<div className={CompanyProfileCardStyle.EngagementType}>
+							{/* <div className={CompanyProfileCardStyle.EngagementType}>
 								<span>Engagement Type:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.Managed ? clientDetail?.Managed : 'NA'}
+								</span>
+							</div> */}
+							<div className={CompanyProfileCardStyle.EngagementType}>
+								<span>Engagement Type:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									{!allApiData?.Is_HRTypeDP ? `Contract - ${clientDetail?.SpecificMonth
+										? clientDetail?.SpecificMonth
+										: 0}
+									Months` : 'Direct Placement' }
 								</span>
 							</div>
 							<div className={CompanyProfileCardStyle.category}>
@@ -172,7 +166,7 @@ const CompanyProfileCard = ({
 									{clientDetail?.Role ? clientDetail?.Role : 'NA'}
 								</span>
 							</div>
-							<div className={CompanyProfileCardStyle.contactDuration}>
+							{/* {!allApiData?.Is_HRTypeDP ? <div className={CompanyProfileCardStyle.contactDuration}>
 								<span>Contact Duration:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.SpecificMonth
@@ -180,7 +174,13 @@ const CompanyProfileCard = ({
 										: 0}{' '}
 									Months
 								</span>
-							</div>
+							</div> : <div className={CompanyProfileCardStyle.contactDuration}>
+								<span>Contract Type:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+								Direct Placement
+								</span>
+							</div> } */}
+							
 							<div className={CompanyProfileCardStyle.minExp}>
 								<span>Minimum Exp Required:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
@@ -232,11 +232,11 @@ const CompanyProfileCard = ({
 								<span>JD Link:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.JDFileOrURL === 'JDFILE' ? (
-										clientDetail?.JobDetailURL?.split(':')[0] === 'http' ||
-										clientDetail?.JobDetailURL?.split(':')[0] === 'https' ? (
+										clientDetail?.JobDetail?.split(':')[0] === 'http' ||
+										clientDetail?.JobDetail?.split(':')[0] === 'https' ? (
 											<a
 												rel="noreferrer"
-												href={clientDetail?.JobDetailURL}
+												href={clientDetail?.JobDetail}
 												style={{ textDecoration: 'underline' }}
 												target="_blank">
 												Click Here
@@ -245,9 +245,9 @@ const CompanyProfileCard = ({
 											<a
 												rel="noreferrer"
 												href={
-													NetworkInfo.FILENETWORK +
-													'ClientAttachments/' +
-													clientDetail?.JobDetailURL
+													NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN + 
+													'Media/JDParsing/JDfiles/' +
+													clientDetail?.JobDetail
 												}
 												style={{ textDecoration: 'underline' }}
 												target="_blank">
@@ -314,6 +314,21 @@ const CompanyProfileCard = ({
 					/>
 					<div className={CompanyProfileCardStyle.partWise}>
 						<div>
+						<div className={CompanyProfileCardStyle.pocName}>
+								<span>POC Name:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									{clientDetail?.POCFullName ? clientDetail?.POCFullName : 'NA'}
+								</span>
+								&nbsp;&nbsp;
+								{/*  TODO:- 
+								<AiFillLinkedin style={{ color: '#006699' }} /> */}
+							</div>
+							<div className={CompanyProfileCardStyle.pocEmail}>
+								<span>POC Email:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									{clientDetail?.POCEmailID ? clientDetail?.POCEmailID : 'NA'}
+								</span>
+							</div>
 							<div className={CompanyProfileCardStyle.salesPerson}>
 								<span>Sales Person:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>

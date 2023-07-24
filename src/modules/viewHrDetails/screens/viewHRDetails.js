@@ -5,6 +5,8 @@ import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import ViewHRDetailsStyle from '../screens/viewHRDetails.module.css';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useState } from 'react';
+import { NetworkInfo } from 'constants/network';
+import UTSRoutes from 'constants/routes';
 
 const ViewHRDetails = () => {
 	const [hiringDetails, setHiringDetails] = useState('');
@@ -21,7 +23,8 @@ const ViewHRDetails = () => {
 
 	const editHr = () => {
 		localStorage.setItem('hrID', id?.id);
-		navigate('/allhiringrequest/addnewhr');
+		localStorage.removeItem('dealID')
+		navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 	};
 
 	return (
@@ -70,9 +73,8 @@ const ViewHRDetails = () => {
 												{hiringDetails?.responseBody?.details
 													?.jobDescription ? (
 													<a
-														href={
-															hiringDetails?.responseBody?.details
-																?.jobDescription
+														href={ NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN + 
+															'Media/JDParsing/JDfiles/' + hiringDetails?.responseBody?.details?.jobDescription																
 														}
 														target="_blank"
 														rel="noreferrer">
@@ -111,7 +113,7 @@ const ViewHRDetails = () => {
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li>
 											<li>
-												<span>How Many Talent Request:</span> 1
+												<span>How Many Talent Request:</span> {hiringDetails?.responseBody?.details?.noOfTalents ?? 'NA'}
 											</li>
 											<li>
 												<span>Region:</span>{' '}
@@ -155,16 +157,13 @@ const ViewHRDetails = () => {
 											</li>
 											<li>
 												<span>JD URL:</span>{' '}
-												<a
+												{hiringDetails?.responseBody?.details?.jdurl ? <a
 													rel="noreferrer"
-													href={
-														hiringDetails?.responseBody?.details?.jdurl === null
-															? 'NA'
-															: hiringDetails?.responseBody?.details?.jdurl
-													}
+													href={hiringDetails?.responseBody?.details?.jdurl}
 													target="_blank">
 													Click Here
-												</a>
+												</a> : 'NA'}
+												
 											</li>
 											<li>
 												<span>Estimated Budget:</span>{' '}
@@ -196,7 +195,7 @@ const ViewHRDetails = () => {
 											</li>
 											<li>
 												<span>Deal ID:</span>{' '}
-												{hiringDetails?.responseBody?.details?.dealID ?? 'NA'}
+												{hiringDetails?.responseBody?.details?.dealID !== 0  ? hiringDetails?.responseBody?.details?.dealID : 'NA'}
 											</li>
 
 											<li>
@@ -290,7 +289,7 @@ const ViewHRDetails = () => {
 								Requirements
 								<i className={ViewHRDetailsStyle.blueDot} />
 							</h3>
-							<p>{hiringDetails?.responseBody?.details?.requirments ?? 'NA'}</p>
+							<div className={ViewHRDetailsStyle.viewHrJDDetailsBox } dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.requirments}} />
 						</div>
 
 						<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
@@ -298,8 +297,7 @@ const ViewHRDetails = () => {
 								Roles & Responsibilities
 								<i className={ViewHRDetailsStyle.blueDot} />
 							</h3>
-							{hiringDetails?.responseBody?.details?.rolesResponsibilites ??
-								'NA'}
+							<div className={ViewHRDetailsStyle.viewHrJDDetailsBox } dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.rolesResponsibilites}} />
 						</div>
 
 						<div className={ViewHRDetailsStyle.viewHRDetailsBox}>

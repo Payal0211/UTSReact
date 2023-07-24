@@ -8,11 +8,7 @@ import EditDebriefingHR from 'modules/hiring request/components/editDebrieingHR/
 import { useLocation } from 'react-router-dom';
 
 const AddNewHR = () => {
-	const [title, setTitle] = useState(
-		localStorage.getItem('hrID')
-			? 'Edit Hiring Requests'
-			: 'Add New Hiring Requests',
-	);
+	
 	const [tabFieldDisabled, setTabFieldDisabled] = useState({
 		addNewHiringRequest: false,
 		debriefingHR: true,
@@ -35,6 +31,21 @@ const AddNewHR = () => {
 	const [jdDumpID, setJDDumpID] = useState('');
 	const [getHRdetails, setHRdetails] = useState({});
 	const [getCompanyName, setCompanyName] = useState();
+	const [ EditTitle, setEditTitle] = useState('Edit Hiring Requests')
+
+	useEffect(()=>{
+		if(getHRdetails?.addHiringRequest?.hrNumber){
+			setEditTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)
+			localStorage.getItem('hrID') &&	setTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)
+		}   
+	},[getHRdetails?.addHiringRequest?.hrNumber])
+
+
+	const [title, setTitle] = useState(
+		localStorage.getItem('hrID')
+			? EditTitle
+			: 'Add New Hiring Requests',
+	);
 
 	useEffect(() => {
 		localStorage.setItem('enIDdata', enID);
@@ -115,8 +126,8 @@ const AddNewHR = () => {
 					tabBarStyle={{ borderBottom: `1px solid var(--uplers-border-color)` }}
 					items={[
 						{
-							label: 'Edit Hiring Requests',
-							key: 'Edit Hiring Requests',
+							label: "Hiring Requests",
+							key: EditTitle,
 							children: (
 								<EditHRFields
 									setTitle={setTitle}
@@ -131,8 +142,8 @@ const AddNewHR = () => {
 							disabled: localStorage.getItem('fromEditDeBriefing') && true,
 						},
 						{
-							label: 'Edit Debriefing HR',
-							key: 'Edit Debriefing HR',
+							label: 'Debriefing HR',
+							key: `Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`,
 							children: (
 								<EditDebriefingHR
 									setTitle={setTitle}
@@ -145,7 +156,7 @@ const AddNewHR = () => {
 									setHRdetails={setHRdetails}
 								/>
 							),
-							disabled: tabFieldDisabled.debriefingHR,
+							disabled: false,
 						},
 					]}
 				/>

@@ -187,7 +187,7 @@ export const HiringRequestAPI = {
 		// const miscData =
 		// 	await UserSessionManagementController.getUserMiscellaneousData();
 		const emailURL =
-			matchMakingData?.emailID && `&EmailId=${matchMakingData?.emailID}`;
+			matchMakingData?.emailID && matchMakingData?.emailID;
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.HIRING +
@@ -902,6 +902,22 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.updateODRPOOLStatusRequest');
 		}
 	},
+	getNewDealHRDetailsRequest: async (DId) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.GET_HR_DETAILS +
+			`?HRId=0&DealID=${DId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getNewDealHRDetailsRequest');
+		}
+	},
 	editTR: async (data) => {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -965,6 +981,46 @@ export const HiringRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.CloseHR');
+		}
+	},
+	reopeneHR: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.REOPEN_HR + `?hrID=${data.hrID}${data.updatedTR ? '&updatedTR='+data.updatedTR : ''}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.reopeneHR');
+		}
+	},
+	hrDpAmounts: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.VIEW_ALL_HR + HiringRequestsAPI.GET_HR_DP_AMOUNT_DETAILS + `?hrID=${data.hrID}&contactPriorityID=${data.contactPriorityID}&talentId=${data.talentId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.hrDpAmounts');
+		}
+	},
+	updateDpAmounts: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.VIEW_ALL_HR + HiringRequestsAPI.UPDATE_DP_AMOUNT ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.updateDPAmount');
 		}
 	},
 };

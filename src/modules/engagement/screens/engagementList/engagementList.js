@@ -38,13 +38,14 @@ import EngagementInvoice from '../engagementInvoice/engagementInvoice';
 import RenewEngagement from '../renewEngagement/renewEngagement';
 import { useForm, Controller } from 'react-hook-form';
 import { downloadToExcel } from 'modules/report/reportUtils';
+import { MasterDAO } from 'core/master/masterDAO';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() => import('./engagementFilter'));
 
 const EngagementList = () => {
 	const [tableFilteredState, setTableFilteredState] = useState({
-		totalrecord: 100,
+		totalrecord: 0,
 		pagenumber: 1,
 		filterFieldsEngagement: {
 			clientFeedback: '',
@@ -58,8 +59,8 @@ const EngagementList = () => {
 			nbdName: '',
 			amName: '',
 			pending: '',
-			searchMonth: 0,
-			searchYear: 0,
+			searchMonth: new Date().getMonth() + 1,
+			searchYear: new Date().getFullYear(),
 			searchType: '',
 			islost: '',
 		},
@@ -77,6 +78,7 @@ const EngagementList = () => {
 	const [filtersList, setFiltersList] = useState([]);
 	const [apiData, setAPIdata] = useState([]);
 	const [search, setSearch] = useState('');
+	const [ searchText , setSearchText] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 	const navigate = useNavigate();
 	const [filteredTagLength, setFilteredTagLength] = useState(0);
@@ -122,6 +124,7 @@ const EngagementList = () => {
 	const [feedBackSave, setFeedbackSave] = useState(false);
 	const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
 	const [rateReason, setRateReason] = useState(undefined);
+	const [scheduleTimezone, setScheduleTimezone] = useState([]);
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -159,6 +162,15 @@ const EngagementList = () => {
 		() => allEngagementConfig.clientFeedbackTypeConfig(),
 		[],
 	);
+
+	const getTimeZone = useCallback(async () => {
+		let response = await MasterDAO.getTimeZoneRequestDAO();
+		setScheduleTimezone(response && response?.responseBody);
+	}, [setScheduleTimezone]);
+
+	useEffect(() => {
+		getTimeZone();
+	}, [getTimeZone]);
 
 	const handleHRRequest = useCallback(
 		async (pageData) => {
@@ -251,7 +263,7 @@ const EngagementList = () => {
 		}
 	};
 	useEffect(() => {
-		const timer = setTimeout(() => setSearch(debouncedSearch), 1000);
+		const timer = setTimeout(() => handleHRRequest({...tableFilteredState, 	searchText: searchText}) , 1000);
 		return () => clearTimeout(timer);
 	}, [debouncedSearch]);
 
@@ -314,51 +326,125 @@ const EngagementList = () => {
 	}, [getEngagementFilterList, getHTMLFilter, isAllowFilters]);
 
 	/*--------- React DatePicker ---------------- */
-	const [startDate, setStartDate] = useState(null);
+	const [startDate, setStartDate] = useState(new Date());
 	const [endDate, setEndDate] = useState(null);
 
 	const onCalenderFilter = (dates) => {
-		const [start, end] = dates;
-
-		setStartDate(start);
-		setEndDate(end);
-
-		if (start && end) {
+		// const [start, end] = dates;
+	const month = dates.getMonth() + 1
+	const year = dates.getFullYear()
+	 setStartDate(dates);
+		// setEndDate(end);
+		if (month && year) {
+			console.log( month, year)
 			setTableFilteredState({
 				...tableFilteredState,
-				filterFields_ViewAllHRs: {
-					fromDate: new Date(start).toLocaleDateString('en-US'),
-					toDate: new Date(end).toLocaleDateString('en-US'),
+				searchText: searchText,
+				filterFieldsEngagement: {...tableFilteredState.filterFieldsEngagement ,
+					searchMonth: month,
+					searchYear: year,
 				},
 			});
 			handleHRRequest({
 				...tableFilteredState,
-				filterFields_ViewAllHRs: {
-					fromDate: new Date(start).toLocaleDateString('en-US'),
-					toDate: new Date(end).toLocaleDateString('en-US'),
+				searchText: searchText,
+				filterFieldsEngagement: {...tableFilteredState.filterFieldsEngagement ,
+					searchMonth: month,
+					searchYear: year,
 				},
 			});
 		}
+		// if (start && end) {
+		// 	setTableFilteredState({
+		// 		...tableFilteredState,
+		// 		filterFields_ViewAllHRs: {
+		// 			fromDate: new Date(start).toLocaleDateString('en-US'),
+		// 			toDate: new Date(end).toLocaleDateString('en-US'),
+		// 		},
+		// 	});
+		// 	handleHRRequest({
+		// 		...tableFilteredState,
+		// 		filterFields_ViewAllHRs: {
+		// 			fromDate: new Date(start).toLocaleDateString('en-US'),
+		// 			toDate: new Date(end).toLocaleDateString('en-US'),
+		// 		},
+		// 	});
+		// }
 	};
+
+	const handleExport = (apiData) => {
+		let DataToExport =  apiData.map(data => {
+			let obj = {}
+			tableColumnsMemo.map(val => val.key !== "action" && (obj[`${val.title}`] = data[`${val.key}`]))
+		return obj;
+			}
+		 )
+		 downloadToExcel(DataToExport)
+
+	}
+
+	const clearFilters = useCallback(() => {
+		setAppliedFilters(new Map());
+		setCheckedState(new Map());
+		setFilteredTagLength(0);
+
+		const defaultFilters ={		
+			clientFeedback: '',
+			typeOfHiring: '',
+			currentStatus: '',
+			tscName: '',
+			company: '',
+			geo: '',
+			position: '',
+			engagementTenure: 0,
+			nbdName: '',
+			amName: '',
+			pending: '',
+			searchMonth: new Date().getMonth() +1,
+			searchYear: new Date().getFullYear(),
+			searchType: '',
+			islost: '',
+		}
+		
+		setTableFilteredState({
+			...tableFilteredState,
+			filterFieldsEngagement: defaultFilters,
+		});
+		const reqFilter = {
+			...tableFilteredState,
+			filterFieldsEngagement: defaultFilters,
+		};
+		handleHRRequest(reqFilter);
+		onRemoveHRFilters();
+		setStartDate(new Date());
+	}, [
+		handleHRRequest,
+		setAppliedFilters,
+		setCheckedState,
+		setFilteredTagLength,
+		setTableFilteredState,
+		tableFilteredState,
+	]);
 
 	return (
 		<div className={allEngagementStyles.hiringRequestContainer}>
 			<div className={allEngagementStyles.addnewHR}>
 				<div className={allEngagementStyles.hiringRequest}>
 					Engagement Dashboard -{' '}
-					{new Date().toLocaleDateString('default', { month: 'long' })}
+					{startDate.toLocaleDateString('default', { month: 'long' })}
 				</div>
-				<div>
+				{/* <div>
 					<button
 						className={allEngagementStyles.btnPrimary}
-						onClick={() => downloadToExcel(apiData)}>
+						onClick={() => handleExport(apiData)}>
 						Export
 					</button>
-				</div>
+				</div> */}
 			</div>
 
 			<div className={allEngagementStyles.filterContainer}>
 				<div className={allEngagementStyles.filterSets}>
+				<div className={allEngagementStyles.filterSetsInner} >
 					<div
 						className={allEngagementStyles.addFilter}
 						onClick={toggleHRFilter}>
@@ -369,7 +455,8 @@ const EngagementList = () => {
 							{filteredTagLength}
 						</div>
 					</div>
-
+					<p onClick={()=> clearFilters() }>Reset Filters</p>
+					</div>
 					<div className={allEngagementStyles.filterRight}>
 						<div className={allEngagementStyles.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
@@ -378,6 +465,7 @@ const EngagementList = () => {
 								className={allEngagementStyles.searchInput}
 								placeholder="Search Table"
 								onChange={(e) => {
+									 setSearchText(e.target.value)
 									return setDebouncedSearch(
 										engagementUtils.engagementListSearch(e, apiData),
 									);
@@ -385,7 +473,7 @@ const EngagementList = () => {
 							/>
 						</div>
 						<div className={allEngagementStyles.calendarFilterSet}>
-							<div className={allEngagementStyles.label}>Date</div>
+							<div className={allEngagementStyles.label}>Month-Year</div>
 							<div className={allEngagementStyles.calendarFilter}>
 								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
 								<DatePicker
@@ -395,20 +483,28 @@ const EngagementList = () => {
 										e.stopPropagation();
 									}}
 									className={allEngagementStyles.dateFilter}
-									placeholderText="Start date - End date"
+									placeholderText="Month - Year"
 									selected={startDate}
 									onChange={onCalenderFilter}
-									startDate={startDate}
-									endDate={endDate}
-									selectsRange
+									// startDate={startDate}
+									// endDate={endDate}
+									dateFormat="MM-yyyy"
+									showMonthYearPicker
 								/>
 							</div>
 						</div>
 
 						<div className={allEngagementStyles.priorityFilterSet}>
-							<div className={allEngagementStyles.label}>Showing</div>
-							<div className={allEngagementStyles.paginationFilter}>
-								<Dropdown
+							{/* <div className={allEngagementStyles.label}>Showing</div> */}
+							<div className={allEngagementStyles.paginationFilter} style={{marginRight:'10px', marginLeft:'10px'}}>
+							<button
+								className={allEngagementStyles.btnPrimary}
+								
+								onClick={() => handleExport(apiData)}>
+								Export
+							</button>
+				
+								{/* <Dropdown
 									trigger={['click']}
 									placement="bottom"
 									overlay={
@@ -434,7 +530,7 @@ const EngagementList = () => {
 											style={{ paddingTop: '5px', fontSize: '16px' }}
 										/>
 									</span>
-								</Dropdown>
+								</Dropdown> */}
 							</div>
 						</div>
 					</div>
@@ -493,7 +589,7 @@ const EngagementList = () => {
 							alt="briefcase"
 						/>
 						<h2>
-							Total DP% -{' '}
+							Total DP -{' '}
 							<span>{apiData[0]?.s_TotalDP ? apiData[0]?.s_TotalDP : 0}</span>
 						</h2>
 					</div>
@@ -529,24 +625,25 @@ const EngagementList = () => {
 										? [...search]
 										: [...apiData]
 								}
-								pagination={{
-									onChange: (pageNum, pageSize) => {
-										setPageIndex(pageNum);
-										setPageSize(pageSize);
-										setTableFilteredState({
-											...tableFilteredState,
-											totalrecord: pageSize,
-											pagenumber: pageNum,
-										});
-									},
-									size: 'small',
-									pageSize: pageSize,
-									pageSizeOptions: pageSizeOptions,
-									total: totalRecords,
-									showTotal: (total, range) =>
-										`${range[0]}-${range[1]} of ${totalRecords} items`,
-									defaultCurrent: pageIndex,
-								}}
+								pagination={false} 
+								// pagination={{
+								// 	onChange: (pageNum, pageSize) => {
+								// 		setPageIndex(pageNum);
+								// 		setPageSize(pageSize);
+								// 		setTableFilteredState({
+								// 			...tableFilteredState,
+								// 			totalrecord: pageSize,
+								// 			pagenumber: pageNum,
+								// 		});
+								// 	},
+								// 	size: 'small',
+								// 	pageSize: pageSize,
+								// 	pageSizeOptions: pageSizeOptions,
+								// 	total: totalRecords,
+								// 	showTotal: (total, range) =>
+								// 		`${range[0]}-${range[1]} of ${totalRecords} items`,
+								// 	defaultCurrent: pageIndex,
+								// }}
 							/>
 						</WithLoader>
 					)}
@@ -568,6 +665,7 @@ const EngagementList = () => {
 							filtersType={allEngagementConfig.engagementFilterTypeConfig(
 								filtersList && filtersList,
 							)}
+							clearFilters={clearFilters}
 						/>
 					</Suspense>
 				)}
@@ -622,6 +720,7 @@ const EngagementList = () => {
 						<EngagementOnboard
 							getOnboardFormDetails={getOnboardFormDetails}
 							getHRAndEngagementId={getHRAndEngagementId}
+							scheduleTimezone={scheduleTimezone}
 						/>
 					</Modal>
 				)}

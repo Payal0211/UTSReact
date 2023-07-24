@@ -40,7 +40,7 @@ const Navbar = ({ fullName }) => {
 							src="https://staging.project-progress.net/html/uplers-talent-solutions/images/login-logo.svg"
 						/>
 					</Link>
-					<div className={navbarStyles.activeTalent}>
+					{/* <div className={navbarStyles.activeTalent}>
 						<span className={navbarStyles.talentIndicator}></span>
 						<div>
 							<b>
@@ -48,9 +48,9 @@ const Navbar = ({ fullName }) => {
 								{dashboardCount && '/'}
 								{dashboardCount?.totalEnagagement}
 							</b>{' '}
-							Active Talent Deployed
+							Opportunities Captured
 						</div>
-					</div>
+					</div> */}
 				</div>
 				<div className={navbarStyles.navlink}>
 					{/* <Badge count={4}>

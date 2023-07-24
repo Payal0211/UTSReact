@@ -232,6 +232,18 @@
     background-color: var(--background-color-light);
 }
 
+.filterSetsInner{
+    display: flex;
+    align-items: center;
+}
+
+.filterSetsInner p{
+    margin: 0 0 0 10px;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .filterDescription {
     margin: 35px auto 15px auto;
     justify-content: inherit;

@@ -21,6 +21,7 @@ const DealFilters = ({
 	tableFilteredState,
 	setFilteredTagLength,
 	getHTMLFilter,
+	clearFilters
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -158,32 +159,32 @@ const DealFilters = ({
 			});
 		}
 	}, [appliedFilter, handleAppliedFilters]);
-	const clearFilters = useCallback(() => {
-		setAppliedFilters(new Map());
-		setCheckedState(new Map());
-		setFilteredTagLength(0);
-		setTableFilteredState({
-			...tableFilteredState,
-			filterFields_DealList: {},
-		});
-		const reqFilter = {
-			...tableFilteredState,
-			filterFields_DealList: {},
-		};
-		 handleDealRequest(reqFilter);
-		 onRemoveDealFilters()
-	}, [
-		handleDealRequest,
-		setAppliedFilters,
-		setCheckedState,
-		setFilteredTagLength,
-		setTableFilteredState,
-		tableFilteredState,
-	]);
+	// const clearFilters = useCallback(() => {
+	// 	setAppliedFilters(new Map());
+	// 	setCheckedState(new Map());
+	// 	setFilteredTagLength(0);
+	// 	setTableFilteredState({
+	// 		...tableFilteredState,
+	// 		filterFields_DealList: {},
+	// 	});
+	// 	const reqFilter = {
+	// 		...tableFilteredState,
+	// 		filterFields_DealList: {},
+	// 	};
+	// 	 handleDealRequest(reqFilter);
+	// 	 onRemoveDealFilters()
+	// }, [
+	// 	handleDealRequest,
+	// 	setAppliedFilters,
+	// 	setCheckedState,
+	// 	setFilteredTagLength,
+	// 	setTableFilteredState,
+	// 	tableFilteredState,
+	// ]);
 	const handleFilters = useCallback(() => {
 		let filters = {};
 		appliedFilter.forEach((item) => {
-			filters = { ...filters, [item.filterType]: item.id };
+			filters = { ...filters, [item.filterType]: item.filterType === "CompanyCategory" ? item.value : item.id };
 		});
 		setTableFilteredState({
 			...tableFilteredState,
@@ -193,7 +194,7 @@ const DealFilters = ({
 			...tableFilteredState,
 			filterFields_DealList: { ...filters },
 		};
-		// handleDealRequest(reqFilter);
+		 handleDealRequest(reqFilter);
 		onRemoveDealFilters()
 	}, [
 		appliedFilter,

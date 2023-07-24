@@ -35,7 +35,11 @@ const DemandFunnelModal = ({
 			IsExport: false,
 		});
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			downloadToExcel(response?.responseBody);
+			let downloadData = response?.responseBody
+			.map((data) => ({ "HR#": data.hR_No ,'Sales Person': data.salesPerson, 'Company Name': data.compnayName,
+			'Role': data.role, 'Managed/Self':data.managed_Self,'Availability': data.availability, '# of TR':data.talentName
+				}))
+			downloadToExcel(downloadData);
 			// setDemandFunnelModal(false);`
 		}
 	}, [demandFunnelHRDetailsState]);

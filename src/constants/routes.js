@@ -91,6 +91,18 @@ const I2sReport = React.lazy(() =>
 	import('modules/report/screens/i2sReport/i2sReport'),
 );
 
+const ClientReport = React.lazy(() =>
+ 	import('modules/report/screens/clientReport/clientReport')
+);
+
+const HRReport = React.lazy(() =>
+	import('modules/report/screens/hrReport/hrReport')
+);
+
+const DashboardScreen = React.lazy(() =>
+    import('modules/dashboard/screens/dashboard'),
+)
+
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -105,6 +117,7 @@ export default class UTSRoutes {
 	static INTERVIEWSCHEDULE = '/interview/scheduleinterview';
 	static INTERVIEWFEEDBACK = '/interview/feedback';
 	static DEALLISTROUTE = '/deal';
+	static DASHBOARD = '/dashboard';
 	static DEALDETAILS = '/deal/:dealID';
 	static ONBOARDROUTE = '/onboard';
 	static ONBOARDEDITROUTE = '/onboard/edit/:onboardID';
@@ -125,7 +138,9 @@ export default class UTSRoutes {
 	static MASTERCOUNTRYROUTE = '/master/country';
 	static MASTERCURRENCYROUTE = '/master/currency';
 	static SLA_REPORT = '/slaReport';
-	static I2S_REPORT = "/i2sReport"
+	static I2S_REPORT = "/i2sReport";
+	static CLIENT_REPORT = "/clientReport";
+	static HR_REPORT = "/hrReport";
 }
 
 export const navigateToComponent = {
@@ -264,4 +279,24 @@ export const navigateToComponent = {
 			<I2sReport />
 		</Suspense>
 	),
+	[UTSRoutes.CLIENT_REPORT]:(
+		<Suspense>
+			<ClientReport />
+		</Suspense>
+	),
+	[UTSRoutes.HR_REPORT]:(
+		<Suspense>
+			<HRReport />
+		</Suspense>
+	),
+[UTSRoutes.DASHBOARD]:(
+	<Suspense>
+			<DashboardScreen />
+	</Suspense>
+)
 };
+
+export const isAccess = (ID) =>{	
+	let	isVisible = (ID === 1 || ID === 2 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 || ID === 6 )  		
+	return isVisible
+}

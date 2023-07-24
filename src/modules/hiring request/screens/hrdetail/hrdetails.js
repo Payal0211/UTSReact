@@ -52,19 +52,22 @@ import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSel
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { BsThreeDots } from 'react-icons/bs';
 
+import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal"
+import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
+
 /** Lazy Loading the component */
 
 const NextActionItem = React.lazy(() =>
-	import('modules/hiring request/components/nextAction/nextAction.js'),
+  import("modules/hiring request/components/nextAction/nextAction.js")
 );
 const CompanyProfileCard = React.lazy(() =>
-	import('modules/hiring request/components/companyProfile/companyProfileCard'),
+  import("modules/hiring request/components/companyProfile/companyProfileCard")
 );
 const TalentProfileCard = React.lazy(() =>
-	import('modules/hiring request/components/talentProfile/talentProfileCard'),
+  import("modules/hiring request/components/talentProfile/talentProfileCard")
 );
 const ActivityFeed = React.lazy(() =>
-	import('modules/hiring request/components/activityFeed/activityFeed'),
+  import("modules/hiring request/components/activityFeed/activityFeed")
 );
 
 const HRDetailScreen = () => {
@@ -188,7 +191,7 @@ const HRDetailScreen = () => {
 console.log('apiData', apiData)
 
 	const [assignAMData, setAssignAMData] = useState(false);
-
+	const [reopenHrModal, setReopenHrModal] = useState(false);
 	return (
 		<WithLoader
 			showLoader={isLoading}
@@ -1373,8 +1376,8 @@ console.log('apiData', apiData)
 									</h4>
 								</span>
 							)} */}
-							{/**  As of No Put on HOLD */}
-							{/* <HROperator
+              {/**  As of No Put on HOLD */}
+              {/* <HROperator
 								title={
 									hrUtils.handleAdHOC(apiData && apiData?.AdhocPoolValue)[0]
 										?.label
@@ -1417,117 +1420,149 @@ console.log('apiData', apiData)
 								}}
 							/> */}
 
-							{apiData?.dynamicCTA?.CloseHr && (
-								<div
-									className={HRDetailStyle.hiringRequestPriority}
-									onClick={() => {
-										setCloseHrModal(true);
-									}}>
-									<Tooltip
-										placement="bottom"
-										title="Close HR">
-										<PowerSVG
-											style={{ width: '24px' }}
-											className={HRDetailStyle.deleteSVG}
-										/>
-									</Tooltip>
-								</div>
-							)}
+              {apiData?.dynamicCTA?.CloseHr && (
+                <div
+                  className={HRDetailStyle.hiringRequestPriority}
+                  onClick={() => {
+                    setCloseHrModal(true);
+                  }}
+                >
+                  <Tooltip placement="bottom" title="Close HR">
+                    <PowerSVG
+                      style={{ width: "24px" }}
+                      className={HRDetailStyle.deleteSVG}
+                    />
+                  </Tooltip>
+                </div>
+              )}
 
-							{closeHrModal && (
-								<Modal
-									width={'864px'}
-									centered
-									footer={false}
-									open={closeHrModal}
-									className="updateTRModal"
-									onCancel={() => setCloseHrModal(false)}>
-									<CloseHRModal
-										closeHR={() => {}}
-										setUpdateTR={() => setCloseHrModal(true)}
-										onCancel={() => setCloseHrModal(false)}
-										closeHRDetail={apiData}
-									/>
-								</Modal>
-							)}
-						</div>
-					)}
-				</div>
-				{isLoading ? (
-					<>
-						<br />
-						<Skeleton active />
-						<br />
-					</>
-				) : (
-					apiData?.NextActionsForTalent?.length > 0 && (
-						<Suspense>
-							<NextActionItem nextAction={apiData?.NextActionsForTalent} />
-						</Suspense>
-					)
-				)}
+              {closeHrModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={closeHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setCloseHrModal(false)}
+                >
+                  <CloseHRModal
+                    closeHR={() => {}}
+                    setUpdateTR={() => setCloseHrModal(true)}
+                    onCancel={() => setCloseHrModal(false)}
+                    closeHRDetail={apiData}
+                  />
+                </Modal>
+              )}
 
-				<div className={HRDetailStyle.portal}>
-					<div className={HRDetailStyle.clientPortal}>
-						{isLoading ? (
-							<Skeleton active />
-						) : (
-							<Suspense>
-								<CompanyProfileCard
-									clientDetail={apiData?.ClientDetail}
-									talentLength={apiData?.HRTalentDetails?.length}
-									apiData={apiData?.HRStatus}
-									allApiData={apiData}
-								/>
-							</Suspense>
-						)}
-					</div>
-					<div className={HRDetailStyle.talentPortal}>
-						{isLoading ? (
-							<Skeleton active />
-						) : (
-							<Suspense>
-								<TalentProfileCard
-									urlSplitter={urlSplitter}
-									updatedSplitter={updatedSplitter}
-									apiData={apiData}
-									clientDetail={apiData?.ClientDetail}
-									callAPI={callAPI}
-									talentCTA={apiData?.dynamicCTA?.talent_CTAs || []}
-									HRStatusCode={apiData?.HRStatusCode}
-									talentDetail={apiData?.HRTalentDetails}
-									hrId={apiData.HR_Id}
-									miscData={miscData}
-									hiringRequestNumber={updatedSplitter}
-									hrType={apiData.Is_HRTypeDP}
-									starMarkedStatusCode={apiData?.StarMarkedStatusCode}
-									hrStatus={apiData?.HRStatus}
-									callHRapi={callHRapi}
-									setHRapiCall={setHRapiCall}
-									inteviewSlotDetails={apiData?.InterviewSlotDetails}
-								/>
-							</Suspense>
-						)}
-					</div>
-				</div>
-				<div className={HRDetailStyle.activityFeed}>
-					{isLoading ? (
-						<Skeleton active />
-					) : (
-						<Suspense>
-							<ActivityFeed
-								hrID={urlSplitter?.split('HR')[0]}
-								activityFeed={apiData?.HRHistory}
-								tagUsers={apiData?.UsersToTag}
-								callActivityFeedAPI={callAPI}
-							/>
-						</Suspense>
-					)}
-				</div>
-			</div>
+              {apiData?.dynamicCTA?.ReopenHR && (
+                <div
+                  className={HRDetailStyle.hiringRequestPriority}
+                  onClick={() => {
+                    setReopenHrModal(true);
+                  }}
+                >
+                  <Tooltip placement="bottom" title="Reopen HR">
+                    <ReopenHR
+                      style={{ width: "24px" }}
+                      className={HRDetailStyle.deleteSVG}
+                    />
+                  </Tooltip>
+                </div>
+              )}
 
-			{/* ------------------ HR Delete Modal ---------------------- */}
-			{/* <Modal
+              {reopenHrModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={reopenHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setReopenHrModal(false)}
+                >
+                  <ReopenHRModal
+                    onCancel={() => setReopenHrModal(false)}
+                    apiData={apiData}
+                  />
+                </Modal>
+              )}
+            </div>
+          )}
+        </div>
+        {isLoading ? (
+          <>
+            <br />
+            <Skeleton active />
+            <br />
+          </>
+        ) : (
+          apiData?.NextActionsForTalent?.length > 0 && (
+            <Suspense>
+              <NextActionItem nextAction={apiData?.NextActionsForTalent} />
+            </Suspense>
+          )
+        )}
+
+        <div className={HRDetailStyle.portal}>
+          <div className={HRDetailStyle.clientPortal}>
+            {isLoading ? (
+              <Skeleton active />
+            ) : (
+              <Suspense>
+                <CompanyProfileCard
+                  clientDetail={apiData?.ClientDetail}
+                  talentLength={apiData?.HRTalentDetails?.length}
+                  apiData={apiData?.HRStatus}
+                  allApiData={apiData}
+                />
+              </Suspense>
+            )}
+          </div>
+          <div className={HRDetailStyle.talentPortal}>
+            {isLoading ? (
+              <Skeleton active />
+            ) : (
+              <Suspense>
+                <TalentProfileCard
+                  urlSplitter={urlSplitter}
+                  updatedSplitter={updatedSplitter}
+                  apiData={apiData}
+                  clientDetail={apiData?.ClientDetail}
+                  callAPI={callAPI}
+                  talentCTA={apiData?.dynamicCTA?.talent_CTAs || []}
+                  HRStatusCode={apiData?.HRStatusCode}
+                  talentDetail={apiData?.HRTalentDetails}
+                  hrId={apiData.HR_Id}
+                  miscData={miscData}
+                  hiringRequestNumber={updatedSplitter}
+                  hrType={apiData.Is_HRTypeDP}
+                  starMarkedStatusCode={apiData?.StarMarkedStatusCode}
+                  hrStatus={apiData?.HRStatus}
+                  callHRapi={callHRapi}
+                  setHRapiCall={setHRapiCall}
+                  inteviewSlotDetails={apiData?.InterviewSlotDetails}
+                />
+              </Suspense>
+            )}
+          </div>
+        </div>
+        <div className={HRDetailStyle.activityFeed}>
+          {isLoading ? (
+            <Skeleton active />
+          ) : (
+            <Suspense>
+              <ActivityFeed
+                hrID={urlSplitter?.split("HR")[0]}
+                activityFeed={apiData?.HRHistory}
+                tagUsers={apiData?.UsersToTag}
+                callActivityFeedAPI={callAPI}
+              />
+            </Suspense>
+          )}
+        </div>
+      </div>
+
+      {/* ------------------ HR Delete Modal ---------------------- */}
+      {/* <Modal
 				transitionName=""
 				centered
 				open={deleteModal}
@@ -1708,8 +1743,8 @@ console.log('apiData', apiData)
 					</div>
 				</div>
 			</Modal> */}
-		</WithLoader>
-	);
+    </WithLoader>
+  );
 };
 
 export default HRDetailScreen;

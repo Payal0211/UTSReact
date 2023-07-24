@@ -26,6 +26,7 @@ const DemandFunnelFilter = ({
 	viewDemandFunnelSummaryHandler,
 	setDemandFunnelHRDetailsState,
 	demandFunnelHRDetailsState,
+	clearFilters
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -175,69 +176,69 @@ const DemandFunnelFilter = ({
 		}
 	}, [appliedFilter, handleAppliedFilters]);
 
-	const clearFilters = useCallback(() => {
-		setAppliedFilters(new Map());
-		setCheckedState(new Map());
-		setFilteredTagLength(0);
-		setTableFilteredState({
-			startDate: '',
-			endDate: '',
-			isHiringNeedTemp: '',
-			modeOfWork: '',
-			typeOfHR: '-1',
-			companyCategory: '',
-			replacement: '',
-			head: '',
-			isActionWise: true,
-		});
-		setDemandFunnelHRDetailsState({
-			adhocType: '',
-			TeamManagerName: '',
-			currentStage: '',
-			IsExport: false,
-			hrFilter: {
-				hR_No: '',
-				salesPerson: '',
-				compnayName: '',
-				role: '',
-				managed_Self: '',
-				talentName: '',
-				availability: '',
-			},
-			funnelFilter: {
-				startDate: '',
-				endDate: '',
-				isHiringNeedTemp: '',
-				modeOfWork: '',
-				typeOfHR: '-1',
-				companyCategory: '',
-				replacement: '',
-				head: '',
-				isActionWise: true,
-			},
-		});
-		viewDemandFunnelSummaryHandler(demandFunnelDefault);
-		const reqFilter = {
-			startDate: '',
-			endDate: '',
-			isHiringNeedTemp: '',
-			modeOfWork: '',
-			typeOfHR: '-1',
-			companyCategory: '',
-			replacement: '',
-			head: '',
-			isActionWise: true,
-		};
-		onRemoveHRFilters()
-		// handleHRRequest(reqFilter);
-	}, [
-		setAppliedFilters,
-		setCheckedState,
-		setDemandFunnelHRDetailsState,
-		setFilteredTagLength,
-		setTableFilteredState,
-		viewDemandFunnelSummaryHandler,
-	]);
+	// const clearFilters = useCallback(() => {
+	// 	setAppliedFilters(new Map());
+	// 	setCheckedState(new Map());
+	// 	setFilteredTagLength(0);
+	// 	setTableFilteredState({
+	// 		startDate: '',
+	// 		endDate: '',
+	// 		isHiringNeedTemp: '',
+	// 		modeOfWork: '',
+	// 		typeOfHR: '-1',
+	// 		companyCategory: '',
+	// 		replacement: '',
+	// 		head: '',
+	// 		isActionWise: true,
+	// 	});
+	// 	setDemandFunnelHRDetailsState({
+	// 		adhocType: '',
+	// 		TeamManagerName: '',
+	// 		currentStage: '',
+	// 		IsExport: false,
+	// 		hrFilter: {
+	// 			hR_No: '',
+	// 			salesPerson: '',
+	// 			compnayName: '',
+	// 			role: '',
+	// 			managed_Self: '',
+	// 			talentName: '',
+	// 			availability: '',
+	// 		},
+	// 		funnelFilter: {
+	// 			startDate: '',
+	// 			endDate: '',
+	// 			isHiringNeedTemp: '',
+	// 			modeOfWork: '',
+	// 			typeOfHR: '-1',
+	// 			companyCategory: '',
+	// 			replacement: '',
+	// 			head: '',
+	// 			isActionWise: true,
+	// 		},
+	// 	});
+	// 	viewDemandFunnelSummaryHandler(demandFunnelDefault);
+	// 	const reqFilter = {
+	// 		startDate: '',
+	// 		endDate: '',
+	// 		isHiringNeedTemp: '',
+	// 		modeOfWork: '',
+	// 		typeOfHR: '-1',
+	// 		companyCategory: '',
+	// 		replacement: '',
+	// 		head: '',
+	// 		isActionWise: true,
+	// 	};
+	// 	onRemoveHRFilters()
+	// 	handleHRRequest(reqFilter);
+	// }, [
+	// 	setAppliedFilters,
+	// 	setCheckedState,
+	// 	setDemandFunnelHRDetailsState,
+	// 	setFilteredTagLength,
+	// 	setTableFilteredState,
+	// 	viewDemandFunnelSummaryHandler,
+	// ]);
 
 	const handleFilters = useCallback(() => {
 		let filters = {};

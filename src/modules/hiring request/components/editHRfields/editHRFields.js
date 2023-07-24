@@ -1,4 +1,4 @@
-import { Button, Checkbox, Divider, Space, message, AutoComplete } from 'antd';
+import { Button, Checkbox, Divider, Space, message, AutoComplete , Modal} from 'antd';
 import {
 	ClientHRURL,
 	GoogleDriveCredentials,
@@ -16,7 +16,7 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { useForm, Controller } from 'react-hook-form';
 import { HTTPStatusCode } from 'constants/network';
-import { _isNull } from 'shared/utils/basic_utils';
+import { _isNull, getPayload } from 'shared/utils/basic_utils';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useLocation } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
@@ -24,6 +24,8 @@ import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import {UserAccountRole} from 'constants/application'
+import useDebounce from 'shared/hooks/useDebounce';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -84,6 +86,7 @@ const EditHRFields = ({
 		googleDriveFileUpload: '',
 		linkValidation: '',
 	});
+	const [isSavedLoading, setIsSavedLoading] = useState(false);
 	const [getGoogleDriveLink, setGoogleDriveLink] = useState('');
 	const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
 
@@ -118,6 +121,8 @@ const EditHRFields = ({
 		useState('Select End Time');	
 	const [controlledTempProjectValue, setControlledTempProjectValue]= useState('Please select .')
 	const [controlledPartialEngagementValue,setControlledPartialEngagementValue] = useState('Select Partial Engagement Type')
+	const [isNewPostalCodeModal, setNewPostalCodeModal] = useState(false);
+	const [isPostalCodeNotFound, setPostalCodeNotFound] = useState(false);
 
 	const [getDurationType, setDurationType] = useState([]);
 	const [getStartEndTimes, setStaryEndTimes] = useState([]);
@@ -144,6 +149,7 @@ const EditHRFields = ({
 		setError,
 		unregister,
 		control,
+		clearErrors,
 		// defaultValue,
 		formState: { errors, defaultValue },
 	} = useForm({
@@ -430,6 +436,14 @@ const EditHRFields = ({
 		}
 	}, [userData,setValue]);
 
+	// unregister JDExport 
+	useEffect(()=>{
+	if((!jdURLLink && !getUploadFileData)=== false){
+		unregister('jdExport')
+	clearErrors('jdExport')
+	}
+	}, [jdURLLink , getUploadFileData])
+
 	const getRegion = useCallback(async () => {
 		let response = await MasterDAO.getTalentTimeZoneRequestDAO();
 		setRegion(response && response?.responseBody);
@@ -458,12 +472,19 @@ const EditHRFields = ({
 	const addItem = useCallback(
 		(e) => {
 			e.preventDefault();
-			setcontractDurations([...contractDurations, name + ' months' || name]);
-			setName('');
+			if(!contractDurations.includes(name + ' months')){
+				let newObj ={
+					disabled: false,
+					group: null,
+					selected: false,
+					text: `${name} months`,
+					value:`${name}`}
+				setcontractDurations([...contractDurations, newObj]);
+				setName('');
+			}
 			setTimeout(() => {
 				inputRef.current?.focus();
 			}, 0);
-			setDisableButton(true);
 		},
 		[contractDurations, name],
 	);
@@ -734,11 +755,60 @@ const EditHRFields = ({
 	}, [hrRole, unregister]);
 	/** To check Duplicate email exists End */
 
+	const watchPostalCode = watch('postalCode');
+
+	const postalCodeHandler = useCallback(
+		async (flag) => {
+			const countryResponse = await MasterDAO.getCountryByPostalCodeRequestDAO({
+				...getPayload(flag, {
+					countryCode: watch('country')?.id || '',
+					postalCode: watch('postalCode') || '',
+				}),
+			});
+			if (countryResponse?.statusCode === HTTPStatusCode.OK) {
+				const response = countryResponse?.responseBody?.details;
+				setCountry(countryResponse && response.getCountry);
+				if (response?.stateCityData === 'postal code not find') {
+					setNewPostalCodeModal(true);
+					setValue('city', '');
+					setValue('state', '');
+					setValue('country', '')
+				} else if (response.getCountry?.length === 1) {
+					setControlledCountryValue(response?.getCountry[0]?.value);
+					setValue('city', response?.stateCityData?.province);
+					setValue('state', response?.stateCityData?.stateEn);
+				    setValue('country', response?.getCountry[0])
+					clearErrors('country');
+				} else {
+					setControlledCountryValue('');
+					setValue('city', '');
+					setValue('state', '');
+					setValue('country', '')
+				}
+			} else {
+				setCountry([]);
+			}
+		},
+		[clearErrors, setValue, watch],
+	);
+    const watchCountry = watch('country');
+	const { isReady, debouncedFunction } = useDebounce(postalCodeHandler, 2000);
+	useEffect(() => {
+		!isPostalCodeNotFound && debouncedFunction('POSTAL_CODE');
+	}, [debouncedFunction, watchPostalCode, isPostalCodeNotFound]);
+
+	useEffect(() => {
+		if (country && country?.length > 1 && watchCountry) {
+			!isPostalCodeNotFound && debouncedFunction('COUNTRY_CODE');
+		}
+	}, [country, debouncedFunction, isPostalCodeNotFound, watchCountry]);
+
 	const [messageAPI, contextHolder] = message.useMessage();
 	let watchJDUrl = watch('jdURL');
 	setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
 	const hrSubmitHandler = useCallback(
 		async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+			setIsSavedLoading(true);
 			let hrFormDetails = hrUtils.hrFormDataFormatter(
 				d,
 				type,
@@ -755,16 +825,34 @@ const EditHRFields = ({
 						type: 'emptyClientName',
 						message: 'Please enter the client name.',
 					});
+				}if (_isNull(watch('role'))) {
+					return setError('role', {
+						type: 'emptyrole',
+						message: 'Please enter the hiring role.',
+					});
 				}
+				if (_isNull(watch('hrTitle'))) {
+					return setError('hrTitle', {
+						type: 'emptyhrTitle',
+						message: 'please enter the hiring request title.',
+					});
+				}
+				if(_isNull(watch('salesPerson'))){
+					return setError('salesPerson', {
+						type: 'emptysalesPersonTitle',
+						message: 'Please select hiring request sales person',
+					});
+				}	
 			} else if (type !== SubmitType.SAVE_AS_DRAFT) {
 				setType(SubmitType.SUBMIT);
 			}
 			const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
 			if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+				setIsSavedLoading(false);
 				window.scrollTo(0, 0);
 				setAddHRResponse(getHRdetails?.en_Id);
-				type !== SubmitType.SAVE_AS_DRAFT && setTitle('Edit Debriefing HR');
+				type !== SubmitType.SAVE_AS_DRAFT && setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`);
 				type !== SubmitType.SAVE_AS_DRAFT &&
 					setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
 
@@ -773,7 +861,7 @@ const EditHRFields = ({
 							type: 'success',
 							content: 'HR details has been saved to draft.',
 						});
-						setTitle('Edit Debriefing HR')
+						setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`);
 				}
 			}
 		},
@@ -789,7 +877,7 @@ const EditHRFields = ({
 			setTitle,
 			setTabFieldDisabled,
 			tabFieldDisabled,
-
+			getHRdetails?.addHiringRequest?.hrNumber,
 			messageAPI,
 		],
 	);
@@ -823,6 +911,7 @@ const EditHRFields = ({
 		setValue('companyName', getHRdetails?.company);
 		setValue('hrTitle', getHRdetails?.addHiringRequest?.requestForTalent);
 		setValue('jdURL', getHRdetails?.addHiringRequest?.jdurl);
+		if(getHRdetails?.addHiringRequest?.jdurl){ setJDURLLink(getHRdetails?.addHiringRequest?.jdurl)}
 		setValue(
 			'minimumBudget',
 			getHRdetails?.salesHiringRequest_Details?.budgetFrom,
@@ -1009,9 +1098,9 @@ const EditHRFields = ({
 				(item) => item?.value === getHRdetails?.salesHiringRequest_Details?.timeZoneEndTime,
 			);
 			setValue('fromTime', findFromTime[0]);
-			setControlledFromTimeValue(findFromTime[0].value);
+			setControlledFromTimeValue(findFromTime[0]?.value);
 			setValue('endTime', findEndTime[0]);
-			setControlledEndTimeValue(findEndTime[0].value);
+			setControlledEndTimeValue(findEndTime[0]?.value);
 			// setControlledDurationTypeValue(findDurationMode[0]?.value);
 		}
 	}, [getHRdetails, getStartEndTimes,setValue]);
@@ -1021,7 +1110,7 @@ const EditHRFields = ({
 			const findtempProject = tempProjects.filter(item => item.value === getHRdetails.addHiringRequest.isHiringLimited)
 			if(findtempProject.length > 0){
 			setValue('tempProject', findtempProject[0])
-			setControlledTempProjectValue(findtempProject[0].value)
+			setControlledTempProjectValue(findtempProject[0]?.value)
 			}
 		}
 	},[getHRdetails, tempProjects, setValue ])
@@ -1030,7 +1119,7 @@ const EditHRFields = ({
 		if(getHRdetails?.addHiringRequest?.partialEngagementTypeId){
 			const findPartialEngagement = partialEngagements.filter(item => item.id === getHRdetails?.addHiringRequest?.partialEngagementTypeId)
 			setValue('partialEngagement',findPartialEngagement[0])
-			setControlledPartialEngagementValue(findPartialEngagement[0].value)
+			setControlledPartialEngagementValue(findPartialEngagement[0]?.value)
 		}
 	},[getHRdetails,partialEngagements])
 
@@ -1043,7 +1132,7 @@ const EditHRFields = ({
 			
 			if(contract.length > 0){
 				setValue('contractDuration', contract[0]);
-			    setContractDuration(contract[0].value);
+			    setContractDuration(contract[0]?.value);
 			}else{
 				if(getHRdetails?.contractDuration !== '0'){
 					const object = {
@@ -1600,37 +1689,37 @@ const EditHRFields = ({
 						<div className={HRFieldStyle.colMd4}>
 							<div className={HRFieldStyle.formGroup}>
 								<HRSelectField
-									dropdownRender={(menu) => (
-										<>
-											{menu}
-
-											<Divider style={{ margin: '8px 0' }} />
-											<Space style={{ padding: '0 8px 4px' }}>
-												<label>Other:</label>
-												<input
-													type={InputType.NUMBER}
-													className={HRFieldStyle.addSalesItem}
-													placeholder="Ex: 5,6,7..."
-													ref={inputRef}
-													value={name}
-													onChange={onNameChange}
-												/>
-
-												<Button
-													style={{
-														backgroundColor: `var(--uplers-grey)`,
-													}}
-													disabled={disableButton ? true : false}
-													shape="round"
-													type="text"
-													icon={<PlusOutlined />}
-													onClick={addItem}>
-													Add item
-												</Button>
-											</Space>
-											<br />
-										</>
-									)}
+							dropdownRender={(menu) => (
+								<>
+									{menu}
+									<Divider style={{ margin: '8px 0' }} />
+									<Space style={{ padding: '0 8px 4px' }}>
+										<label>Other:</label>
+										<input
+											type={InputType.NUMBER}
+											className={HRFieldStyle.addSalesItem}
+											placeholder="Ex: 5,6,7..."
+											ref={inputRef}
+											value={name}
+											onChange={onNameChange}
+											required
+										/>
+										<Button
+											style={{
+												backgroundColor: `var(--uplers-grey)`,
+											}}
+											shape="round"
+											type="text"
+											icon={<PlusOutlined />}
+											onClick={addItem}
+											disabled={name? contractDurations.filter(duration=> duration.value == name ).length > 0 : true}
+											>
+											Add item
+										</Button>
+									</Space>
+									<br />
+								</>
+							)}
 									options={contractDurations.map((item) => ({
 										id: item.id,
 										label: item.text,
@@ -1675,8 +1764,8 @@ const EditHRFields = ({
 											message: `please don't enter the value less than 1`,
 										},
 										max: {
-											value: 100,
-											message: "please don't enter the value more than 100",
+											value: 60,
+											message: "please don't enter the value more than 60",
 										},
 									}}
 									register={register}
@@ -1716,6 +1805,10 @@ const EditHRFields = ({
 									min: {
 										value: 1,
 										message: `please enter the value more than 0`,
+									},
+									max: {
+										value: 99,
+										message: "please don't enter the value more than 99",
 									},
 								}}
 								label="How many talents are needed."
@@ -1944,6 +2037,7 @@ const EditHRFields = ({
 						</div>
 						<div className={HRFieldStyle.colMd6}>
 							<HRInputField
+							    disabled={true}
 								register={register}
 								label="Deal ID"
 								name="dealID"
@@ -1999,17 +2093,20 @@ const EditHRFields = ({
 			/> */}
 
 			<div className={HRFieldStyle.formPanelAction}>
-				<button
+				{ !getHRdetails?.addHiringRequest?.isActive && <button
 					style={{ cursor: type === SubmitType.SUBMIT ? 'no-drop' : 'pointer' }}
 					disabled={type === SubmitType.SUBMIT}
 					className={HRFieldStyle.btn}
 					onClick={hrSubmitHandler}>
 					Save as Draft
 				</button>
-
+}
+				
 				<button
 					onClick={handleSubmit(hrSubmitHandler)}
-					className={HRFieldStyle.btnPrimary}>
+					className={HRFieldStyle.btnPrimary}
+					disabled={isSavedLoading}
+					>
 					Edit HR
 				</button>
 			</div>
@@ -2109,6 +2206,45 @@ const EditHRFields = ({
 							/>
 						</div>
 					</div>
+
+					{isNewPostalCodeModal && (
+						<Modal
+							footer={false}
+							title="Postal Code Not Found"
+							open={isNewPostalCodeModal}
+							onCancel={() => setNewPostalCodeModal(false)}>
+							<div
+								style={{
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+								}}>
+								<h3>Are you sure you want to proceed?</h3>
+							</div>
+							<div className={HRFieldStyle.formPanelAction}>
+								<button
+									type="submit"
+									onClick={() => {
+										setPostalCodeNotFound(true);
+										setNewPostalCodeModal(false);
+									}}
+									className={HRFieldStyle.btnPrimary}>
+									OK
+								</button>
+								<button
+									onClick={() => {
+										setValue('postalCode', '');
+										setPostalCodeNotFound(false);
+										setNewPostalCodeModal(false);
+									}}
+									className={HRFieldStyle.btn}>
+									Cancel
+								</button>
+							</div>
+						</Modal>
+					)}
+
+					<LogoLoader visible={isSavedLoading} />
 				</>
 			);
 		}

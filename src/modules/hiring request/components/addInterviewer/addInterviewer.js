@@ -15,6 +15,7 @@ const AddInterviewer = ({
 	remove,
 	append,
 	setValue,
+	watch,
 	errors,
 	getHRdetails,
 }) => {
@@ -119,6 +120,17 @@ const AddInterviewer = ({
 			return (
 				fields?.length > 1 &&
 				fields?.map((_, index) => {
+					let allEmails = [watch('interviewerEmail')]
+				let allLinkedinIDs = [watch('interviewerLinkedin')]
+				fields.forEach((_, emailindex) => {
+				 if(emailindex !== index) {
+					allEmails.push(watch(`secondaryInterviewer.[${emailindex}].emailID`)) 
+					allLinkedinIDs.push(watch(`secondaryInterviewer.[${emailindex}].linkedin`))
+				} 
+				})
+
+				let emailInclude = allEmails.includes( watch(`secondaryInterviewer.[${index}].emailID`))
+				let linkedinInclide = allLinkedinIDs.includes(watch(`secondaryInterviewer.[${index}].linkedin`))
 					return (
 						index !== 0 && (
 							<div
@@ -182,10 +194,7 @@ const AddInterviewer = ({
 
 										<div className={AddInterviewerStyle.colMd6}>
 											<HRInputField
-												isError={
-													!!errors?.secondaryInterviewer?.[index]?.emailID
-												}
-												errorMsg="please enter the secondary interviewer email ID."
+												errorMsg={!!errors?.secondaryInterviewer?.[index]?.emailID && errors?.secondaryInterviewer?.[index]?.emailID.message}											
 												register={register}
 												label="Interviewer Email"
 												validationSchema={{
@@ -196,6 +205,11 @@ const AddInterviewer = ({
 														message:
 															'Entered value does not match email format',
 													},
+													validate: value => {
+														if(emailInclude){
+															return "Interviewer email id is already in use"
+														}
+													}
 												}}
 												name={`secondaryInterviewer.[${index}].emailID`}
 												type={InputType.EMAIL}
@@ -213,6 +227,11 @@ const AddInterviewer = ({
 												validationSchema={{
 													required:
 														'please enter secondary interviewer linkedin url.',
+														validate: value => {
+															if(linkedinInclide){
+																return "Interviewer linkedin is already in use"
+															}
+														}
 												}}
 												type={InputType.TEXT}
 												placeholder="Enter Linkedin Profile"
@@ -220,7 +239,7 @@ const AddInterviewer = ({
 												isError={
 													!!errors?.secondaryInterviewer?.[index]?.linkedin
 												}
-												errorMsg="please enter the secondary interviewer linkedin url."
+												errorMsg={!!errors?.secondaryInterviewer?.[index]?.linkedin && errors?.secondaryInterviewer?.[index]?.linkedin.message}
 											/>
 										</div>
 
@@ -251,6 +270,17 @@ const AddInterviewer = ({
 			);
 		} else
 			return fields?.map((_, index) => {
+				let allEmails = [watch('interviewerEmail')]
+				let allLinkedinIDs = [watch('interviewerLinkedin')]
+				fields.forEach((_, emailindex) => {
+				 if(emailindex !== index) {
+					allEmails.push(watch(`secondaryInterviewer.[${emailindex}].emailID`)) 
+					allLinkedinIDs.push(watch(`secondaryInterviewer.[${emailindex}].linkedin`))
+				} 
+				})
+
+				let emailInclude = allEmails.includes( watch(`secondaryInterviewer.[${index}].emailID`))
+				let linkedinInclide = allLinkedinIDs.includes(watch(`secondaryInterviewer.[${index}].linkedin`))
 				return (
 					<div
 						className={AddInterviewerStyle.addInterviewContainer}
@@ -299,7 +329,7 @@ const AddInterviewer = ({
 								<div className={AddInterviewerStyle.colMd6}>
 									<HRInputField
 										isError={!!errors?.secondaryInterviewer?.[index]?.emailID}
-										errorMsg="please enter the secondary interviewer email ID."
+										errorMsg={!!errors?.secondaryInterviewer?.[index]?.emailID && errors?.secondaryInterviewer?.[index]?.emailID.message}
 										register={register}
 										label="Interviewer Email"
 										validationSchema={{
@@ -309,6 +339,11 @@ const AddInterviewer = ({
 												value: EmailRegEx.email,
 												message: 'Entered value does not match email format',
 											},
+											validate: value => {
+												if(emailInclude){
+													return "Interviewer email id is already in use"
+												}
+											}
 										}}
 										name={`secondaryInterviewer.[${index}].emailID`}
 										type={InputType.EMAIL}
@@ -326,12 +361,17 @@ const AddInterviewer = ({
 										validationSchema={{
 											required:
 												'please enter secondary interviewer linkedin url.',
+											validate: value => {
+													if(linkedinInclide){
+														return "Interviewer linkedin is already in use"
+													}
+												}
 										}}
 										type={InputType.TEXT}
 										placeholder="Enter Linkedin Profile"
 										required
 										isError={!!errors?.secondaryInterviewer?.[index]?.linkedin}
-										errorMsg="please enter the secondary interviewer linkedin url."
+										errorMsg={!!errors?.secondaryInterviewer?.[index]?.linkedin && errors?.secondaryInterviewer?.[index]?.linkedin.message}
 									/>
 								</div>
 

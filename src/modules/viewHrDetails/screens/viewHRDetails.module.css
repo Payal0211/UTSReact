@@ -147,6 +147,14 @@
   list-style-type: none;
   color: #232323;
 }
+
+.viewHrJDDetailsBox  ul{
+  list-style-type: inherit !important;
+  padding-left: 40px;
+  margin: revert;
+  padding: revert;
+}
+
 .viewHRDetailsBox ul li {
   margin-bottom: 16px;
 }

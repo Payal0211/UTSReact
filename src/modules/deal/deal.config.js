@@ -2,9 +2,11 @@ import HRStatusComponent from 'modules/hiring request/components/hrStatus/hrStat
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { _isNull } from 'shared/utils/basic_utils';
+import UTSRoutes from 'constants/routes';
+import DealListStyle from './dealStyle.module.css';
 
 export const DealConfig = {
-	tableConfig: () => {
+	tableConfig: (navigate) => {
 		return [
 			{
 				title: 'Date',
@@ -14,6 +16,15 @@ export const DealConfig = {
 				width: '12%',
 				render: (text) => {
 					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
+				},
+			},
+			{
+				title: 'Deal Name',
+				dataIndex: 'dealName',
+				key: 'dealName',
+				align: 'left',
+				render: (text) => {
+					return text ? text : 'NA';
 				},
 			},
 			{
@@ -55,16 +66,15 @@ export const DealConfig = {
 					return text ? text : 'NA';
 				},
 			},
-			{
-				title: 'Company',
-				dataIndex: 'company',
-				key: 'company',
-				align: 'left',
-				width: '13%',
-				render: (text) => {
-					return text ? text : 'NA';
-				},
-			},
+			// {
+			// 	title: 'Company',
+			// 	dataIndex: 'company',
+			// 	key: 'company',
+			// 	align: 'left',
+			// 	render: (text) => {
+			// 		return text ? text : 'NA';
+			// 	},
+			// },
 			{
 				title: 'Geo',
 				dataIndex: 'geo',
@@ -104,7 +114,14 @@ export const DealConfig = {
 				render: (text, param) => {
 					return _isNull(text) ? (
 						'NA'
-					) : (
+					) : text === "SAL Achieved" ? 
+				<button
+				className={DealListStyle.createHR}
+				type="button"
+				onClick={() => {navigate(UTSRoutes.ADDNEWHR) ;localStorage.setItem('dealID',param.dealID); localStorage.removeItem('hrID') }}>
+				Create HR
+				</button>
+				: (
 						<HRStatusComponent
 							title={text}
 							backgroundColor={param.dealStageColorCode}
@@ -113,6 +130,24 @@ export const DealConfig = {
 					);
 				},
 			},
+			// {
+			// 	title: 'Convert to HR',
+			// 	dataIndex: 'convert',
+			// 	key: 'convert',
+			// 	align: 'left',
+			// 	render: (text, results) => {
+			// 		return results.dealStage === "SAL Achieved" ? (
+			// 			<Link
+			// 				to={UTSRoutes.ADDNEWHR}
+			// 				style={{ color: 'black', textDecoration: 'underline' }}
+			// 				onClick={()=> {localStorage.setItem('dealID',results.dealID); localStorage.removeItem('hrID')}}
+			// 				>
+			// 				Convert To HR
+			// 			</Link>
+			// 			// text
+			// 		) : null;
+			// 	},
+			// },
 		];
 	},
 	dealFiltersListConfig: () => {
@@ -126,12 +161,12 @@ export const DealConfig = {
 	},
 	dealFilterTypeConfig: (filtersList) => {
 		return [
-			{
-				label: 'Deal ID',
-				name: 'deal_Id',
-				child: filtersList?.DealId,
-				isSearch: false,
-			},
+			// {
+			// 	label: 'Deal ID',
+			// 	name: 'deal_Id',
+			// 	child: filtersList?.DealId,
+			// 	isSearch: false,
+			// },
 			{
 				label: 'Lead Source',
 				name: 'lead_Type',
@@ -144,12 +179,12 @@ export const DealConfig = {
 				child: filtersList?.Pipeline,
 				isSearch: false,
 			},
-			{
-				label: 'Company',
-				name: 'company',
-				child: filtersList?.Company,
-				isSearch: true,
-			},
+			// {
+			// 	label: 'Company',
+			// 	name: 'company',
+			// 	child: filtersList?.Company,
+			// 	isSearch: true,
+			// },
 			{ label: 'Geo', name: 'geo', child: filtersList?.Geo, isSearch: true },
 			{ label: 'BDR', name: 'bdr', child: filtersList?.BDR, isSearch: false },
 			{

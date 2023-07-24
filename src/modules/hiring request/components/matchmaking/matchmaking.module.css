@@ -79,6 +79,23 @@ border-bottom: 2px solid var(--color-sunlight);
     color: var(--uplers-black);
     font-weight: 500;
 }
+
+.userInput{
+    cursor: pointer;
+    width: 80%;
+    outline: none;
+    border: 1px solid #E8E8E8;
+    padding:5px;
+    color: var(--uplers-black);
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+.error {
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
+}
+
 .matchmakingTable {
    cursor: pointer;
     border-collapse: collapse;
