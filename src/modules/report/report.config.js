@@ -27,7 +27,7 @@ export const reportConfig = {
 				ellipsis: {
 					showTitle: false,
 				},
-				width: 250,
+				width: item === 'Additional Info' ? 125 : 250,
 				render: (data, param) => {
 					return (
 						<Tooltip
@@ -35,7 +35,7 @@ export const reportConfig = {
 							title={data}>
 							{item === 'Stage' || item === 'Duration' ? (
 								<p style={{ fontWeight: '550' }}>{data}</p>
-							) : (
+							) : item === 'Additional Info' ?  <img src={infoIcon} alt='info' /> : (
 								<p
 									style={{
 										textDecoration: 'underline',
@@ -1171,7 +1171,7 @@ export const reportConfig = {
 				isSearch: false,
 			},
 			{
-				label: 'Sales Manager',
+				label: 'Heads',
 				name: 'SalesManager',
 				child: filtersList?.SalesManager,
 				isSearch: false,
