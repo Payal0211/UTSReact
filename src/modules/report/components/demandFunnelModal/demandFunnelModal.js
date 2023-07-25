@@ -79,7 +79,7 @@ const DemandFunnelModal = ({
 						<input
 							type={InputType.TEXT}
 							className={DemandFunnelStyle.searchInput}
-							placeholder="Search Talent Details"
+							placeholder="Search Table Details"
 							onChange={(e) => {
 								let filteredData = apiData?.filter((val) => {
 									return (

@@ -154,7 +154,7 @@ const DemandFunnelScreen = () => {
 		setIsSummary(true);
 		setSummaryLoading(true);
 
-		let response = await ReportDAO.demandFunnelSummaryRequestDAO(reqFilter);
+		let response = await ReportDAO.demandFunnelSummaryRequestDAO({...reqFilter, "isHrfocused" : isFocusedRole});
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setSummaryData(response?.responseBody);
 			setSummaryLoading(false);
@@ -162,7 +162,7 @@ const DemandFunnelScreen = () => {
 			setSummaryData([]);
 			setSummaryLoading(false);
 		}
-	}, []);
+	}, [isFocusedRole]);
 
 	const tableColumnsMemo = useMemo(
 		() =>
@@ -280,6 +280,7 @@ const DemandFunnelScreen = () => {
 		};
 		onRemoveFilters()
 		getReportFilterHandler()
+		setIsFocusedRole(false)
 		getDemandFunnelListingHandler(reqFilter);
 	}, [
 		setAppliedFilters,
@@ -289,7 +290,8 @@ const DemandFunnelScreen = () => {
 		setTableFilteredState,
 		viewDemandFunnelSummaryHandler,
 		getDemandFunnelListingHandler,
-		getReportFilterHandler
+		getReportFilterHandler,
+		setIsFocusedRole
 	]);
 
 	return (
@@ -320,7 +322,10 @@ const DemandFunnelScreen = () => {
 					</div>
 					
 					<div className={DemandFunnelStyle.calendarFilterSet}>
-
+						<div style={{display:'flex',alignItems:'center'}}>
+							<span className={DemandFunnelStyle.actionTab_Exceeded}></span>
+							Stage Count without Dates Filter
+						</div>
 					<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)}>
 					Show only Focused Role
 						</Checkbox>	

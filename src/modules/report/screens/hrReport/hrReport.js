@@ -19,6 +19,7 @@ import UTSRoutes from "constants/routes";
 import { Table } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import moment from "moment";
+import { downloadToExcel } from 'modules/report/reportUtils';
 const DealListLazyComponents = React.lazy(() =>
   import("modules/deal/components/dealFilters/dealFilters")
 );
@@ -325,6 +326,17 @@ export default function HRReport() {
     setHTMLFilter(!getHTMLFilter);
   }, [getHTMLFilter, isAllowFilters]);
 
+  const handleExport = (apiData) => {
+		let DataToExport =  apiData.map(data => {
+			let obj = {}
+			tableColumnsMemo.map(val => val.key !== "action" && (obj[`${val.title}`] = data[`${val.key}`]))
+		return obj;
+			}
+		 )
+		 downloadToExcel(DataToExport,`HRReport: ${hrStage}`)
+
+	}
+
   //console.log('client', reportList, appliedFilter)
   return (
     <div className={hrReportStyle.dealContainer}>
@@ -473,9 +485,18 @@ export default function HRReport() {
             </div>
           ) : (
             <>
+            <div className={hrReportStyle.exportAction}>
               <h3 className={hrReportStyle.cardTitle}>
                 HR Report : {hrStage}
               </h3>
+
+              <button
+								className={hrReportStyle.btnPrimary}		
+								onClick={() => handleExport(reportPopupList)}>
+								Export
+							</button>
+            </div>
+          
               <Table
                 id="clientReportTable"
                 columns={tableColumnsMemo}

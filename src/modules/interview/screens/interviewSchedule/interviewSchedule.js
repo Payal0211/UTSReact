@@ -14,6 +14,7 @@ import { MasterDAO } from 'core/master/masterDAO';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { InterviewDAO } from 'core/interview/interviewDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { addHours, disabledWeekend } from 'shared/utils/basic_utils';
 import SpinLoader from 'shared/components/spinLoader/spinLoader';
@@ -42,6 +43,7 @@ const InterviewSchedule = ({
 		register,
 		handleSubmit,
 		setValue,
+		setError,
 		formState: { errors },
 	} = useForm();
 	const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +52,8 @@ const InterviewSchedule = ({
 	const [slot1Timematch, setSlot1timematch] = useState(false);
 	const [slot2Timematch, setSlot2timematch] = useState(false);
 	const [slot3Timematch, setSlot3timematch] = useState(false);
+
+	const [timeErrorMessage,setTimeErrorMessage] = useState('');
 
 	const onSlotChange = (e) => {
 		setScheduleSlotRadio(e.target.value);
@@ -144,6 +148,19 @@ const InterviewSchedule = ({
 					return
 				}
 
+			const timeResult = await InterviewDAO.CheckInterviewTimeSlotDAO(scheduleSlotRadio === 1
+				? interviewUtils.formatInterviewDateSlotHandler(getScheduleSlotDate)
+				: interviewUtils
+						.formatInterviewDateSlotHandler(getScheduleSlotDate)
+						?.slice(0, 1))	
+						
+			
+			if (timeResult?.statusCode !== HTTPStatusCode.OK) {
+				setTimeErrorMessage(timeResult.responseBody)
+				setIsLoading(false);
+				return
+			} 
+						
 			const scheduleData = {
 				slotType: scheduleSlotRadio,
 				RecheduleSlots:
@@ -614,7 +631,9 @@ const InterviewSchedule = ({
 									</div>
 								</>
 							)}
-
+                            
+							{timeErrorMessage && <p className={InterviewScheduleStyle.error}>{timeErrorMessage}</p>}
+							
 							{scheduleSlotRadio === 4 && (
 								<div className={InterviewScheduleStyle.row}>
 									<div className={InterviewScheduleStyle.colMd12}>
@@ -650,7 +669,7 @@ const InterviewSchedule = ({
 									className={InterviewScheduleStyle.btn}>
 									Cancel
 								</button>
-							</div>
+							</div>							
 						</form>
 					)}
 				</div>

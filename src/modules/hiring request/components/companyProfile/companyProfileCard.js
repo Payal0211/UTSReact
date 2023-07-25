@@ -70,12 +70,13 @@ const CompanyProfileCard = ({
 									)}
 								</span>
 								&nbsp;&nbsp;
-								<a
+								{clientDetail?.LinkedInProfile && (<a
 									href={clientDetail?.LinkedInProfile}
 									target="_blank"
 									rel="noreferrer">
 									<AiFillLinkedin style={{ color: '#006699' }} />
-								</a>
+								</a>)}
+								
 							</div>							
 						</div>
 						<div style={{ cursor: 'pointer' }}>
@@ -274,21 +275,7 @@ const CompanyProfileCard = ({
 										'NA'
 									)}
 								</span>
-							</div>
-							<div className={CompanyProfileCardStyle.TRParked}>
-								<span>Additional Information:</span>&nbsp;&nbsp;
-								<span style={{ fontWeight: '500' }}>
-									<Link
-										to={`/viewHrDetails/${id?.hrid}`}
-										// to={"/viewHrDetails"}
-										// rel="noreferrer"
-										// target="_blank"
-										// href="#"
-										style={{ textDecoration: 'underline' }}>
-										View Complete HR
-									</Link>
-								</span>
-							</div>
+							</div>						
 							<div className={CompanyProfileCardStyle.TRParked}>
 								<span>Discovery Call:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
@@ -303,6 +290,20 @@ const CompanyProfileCard = ({
 									) : (
 										'NA'
 									)}
+								</span>
+							</div>
+							<div className={CompanyProfileCardStyle.TRParked}>
+								<span>Additional Information:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									<Link
+										to={`/viewHrDetails/${id?.hrid}`}
+										// to={"/viewHrDetails"}
+										// rel="noreferrer"
+										// target="_blank"
+										// href="#"
+										style={{ textDecoration: 'underline' }}>
+										View Complete HR
+									</Link>
 								</span>
 							</div>
 						</div>

@@ -163,4 +163,18 @@ export const InterviewAPI = {
 			return errorDebug(error, 'InterviewAPI.CheckInterviewerEmailIdRequest');
 		}
 	},
+	CheckInterviewTimeSlotRequest: async (clientDetails) => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK + `interview/ValidateInterviewTimeSlots`;
+			httpService.setAuthRequired = true;
+			httpService.dataToSend = clientDetails
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'InterviewAPI.CheckInterviewTimeSlotRequest');
+		}
+	},
 };

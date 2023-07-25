@@ -265,4 +265,33 @@ export const InterviewDAO = {
 			);
 		}
 	},
+	CheckInterviewTimeSlotDAO: async function (clientDetails) {
+		try {
+			const checkInterviewerTimeSlotResponse =
+				await InterviewAPI.CheckInterviewTimeSlotRequest(clientDetails);
+			if (checkInterviewerTimeSlotResponse) {
+				const statusCode = checkInterviewerTimeSlotResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = checkInterviewerTimeSlotResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return checkInterviewerTimeSlotResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return checkInterviewerTimeSlotResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'InterviewDAO.CheckInterviewTimeSlotDAO',
+			);
+		}
+	}
 };

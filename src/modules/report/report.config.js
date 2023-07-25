@@ -22,19 +22,25 @@ export const reportConfig = {
 				title: item,
 				dataIndex: item,
 				key: item,
-				align: 'left',
+				align: item === 'Additional Info' ? 'center' :'left',
 
 				ellipsis: {
 					showTitle: false,
 				},
-				width: item === 'Additional Info' ? 125 : 250,
+				width: item === 'Additional Info' ? 150 : 250,
 				render: (data, param) => {
+					let heighlight =	param.Stage === 'HR Active' || param.Stage === 'TR Active' || param.Stage === 'Profile Feedback Pending' || param.Stage === 'Interview Feedback Pending'
+					if(item === 'Duration' && heighlight){
+						return 
+					}  
 					return (
 						<Tooltip
 							placement="bottomLeft"
 							title={data}>
 							{item === 'Stage' || item === 'Duration' ? (
-								<p style={{ fontWeight: '550' }}>{data}</p>
+								<p style={{ fontWeight: '550', padding: '5px', background: heighlight ?'rgb(255, 193, 7)' :'', borderRadius: heighlight? "8px": '' }}>
+									{data}
+									</p>
 							) : item === 'Additional Info' ?  <img src={infoIcon} alt='info' /> : (
 								<p
 									style={{
@@ -186,8 +192,8 @@ export const reportConfig = {
 					{
 						title:
 							stage === 'TR Required' ||
-							stage === 'TR Accepted' || stage === 'TR Cancelled' || stage === 'TR Lost' || stage === 'HR Accepted' ||
-							stage === 'HR - Waiting For More Information'
+							stage === 'TR Accepted' || stage === 'TR Cancelled' || stage === 'TR Lost' || stage === 'HR Accepted' || stage === 'TR Created' || 
+							stage === 'TR Active' || stage === 'HR Active' || stage === 'HR - Waiting For More Information' || stage === 'TR Information Pending'
 								? '# of TR'
 								: 'Talent Name',
 						dataIndex: 'talentName',
@@ -1207,6 +1213,7 @@ export const reportConfig = {
 				name: 'ModeOfWorking',
 				child: filterList?.ModeOfWorking.filter(val => val.text !== "0" ),
 				isSearch: false,
+				isSingle:true
 			},
 			{
 				label: 'Head',
@@ -1219,6 +1226,7 @@ export const reportConfig = {
 				name: 'TypeOfHR',
 				child: filterList?.TypeOfHR.filter(val => val.text !== "-1" ),
 				isSearch: false,
+				isSingle:true
 			},
 		];
 	},
