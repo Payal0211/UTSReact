@@ -14,13 +14,14 @@ const DemandFunnelModal = ({
 	demandFunnelHRDetailsState,
 	setDemandFunnelHRDetailsState,
 	demandFunnelValue,
+	isFocusedRole
 }) => {
 	const [apiData, setApiData] = useState([]);
 	const [searchData, setSearchData] = useState([]);
 	// const [isExport, setExport] = useState(false);
 	const getDemandFunnelHRDetailsHandler = useCallback(async () => {
 		const response = await ReportDAO.demandFunnelHRDetailsRequestDAO(
-			demandFunnelHRDetailsState,
+			{...demandFunnelHRDetailsState,funnelFilter:{...demandFunnelHRDetailsState.funnelFilter, "isHrfocused" : isFocusedRole}},
 		);
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setApiData(response && response?.responseBody);

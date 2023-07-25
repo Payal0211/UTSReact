@@ -466,6 +466,7 @@ const DemandFunnelScreen = () => {
 					demandFunnelHRDetailsState={demandFunnelHRDetailsState}
 					setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
 					demandFunnelValue={demandFunnelValue}
+					isFocusedRole={isFocusedRole}
 				/>
 			)}
 		</div>
