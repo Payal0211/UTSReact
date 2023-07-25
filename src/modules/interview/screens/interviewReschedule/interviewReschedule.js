@@ -8,6 +8,7 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 import { useForm } from 'react-hook-form';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
+import { InterviewDAO } from 'core/interview/interviewDAO';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/clock-icon.svg';
@@ -51,6 +52,7 @@ const InterviewReschedule = ({
 	const [slot1Timematch, setSlot1timematch] = useState(false);
 	const [slot2Timematch, setSlot2timematch] = useState(false);
 	const [slot3Timematch, setSlot3timematch] = useState(false);
+	const [timeErrorMessage,setTimeErrorMessage] = useState('');
 
 	useEffect(() => {
 		//Slot 1 data
@@ -151,6 +153,21 @@ const InterviewReschedule = ({
 				setLoading(false);
 					return
 				}
+
+			const timeResult = await InterviewDAO.CheckInterviewTimeSlotDAO(reScheduleSlotRadio === 1
+				? interviewUtils.formatInterviewDateSlotHandler(
+						getRescheduleSlotDate,
+				  )
+				: interviewUtils
+						.formatInterviewDateSlotHandler(getRescheduleSlotDate)
+						?.slice(0, 1))	
+				
+				
+			if (timeResult?.statusCode !== HTTPStatusCode.OK) {
+					setTimeErrorMessage(timeResult.responseBody)
+					setLoading(false);
+					return
+				} 
 
 			const reScheduleData = {
 				rescheduleRequestBy: reScheduleRadio,
@@ -691,6 +708,8 @@ const InterviewReschedule = ({
 									</div>
 								</>
 							)}
+
+							{timeErrorMessage && <p className={InterviewScheduleStyle.error}>{timeErrorMessage}</p>}
 
 							{reScheduleSlotRadio === 4 && (
 								<div className={InterviewScheduleStyle.row}>

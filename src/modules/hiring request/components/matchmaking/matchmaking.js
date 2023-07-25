@@ -422,12 +422,12 @@ const MatchmakingModal = ({
 										lineHeight: '19px',
 										fontWeight: 'bold',
 									}}>{matchmakingData?.headerDPNRPercentage}  </span>
-									{currency &&  <span
+									{matchmakingData?.HRCurrency &&  <span
 									style={{
 										fontSize: '16px',
 										lineHeight: '19px',
 										fontWeight: 'bold',
-									}}>({currency})  </span>}
+									}}>({matchmakingData?.HRCurrency})  </span>}
 									
 								</span>
 							</div>

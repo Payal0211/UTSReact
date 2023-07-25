@@ -29,6 +29,7 @@
     transition: all 0.35s ease 0s;
     box-shadow: none;
     outline: none;
+    margin:0 10px
 }
 
 .btnPrimary:hover{
@@ -99,7 +100,7 @@
 .cardTitle{
     font-size: 15px;
     font-weight: 600;
-    border-bottom: 1px solid #f0f0f0;
+    /* border-bottom: 1px solid #f0f0f0; */
     padding: 10px 15px;
     display: flex;
     justify-content: space-between;
@@ -328,4 +329,11 @@
 
 .filterType span {
     font-weight: 600;
+}
+
+.exportAction {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f0f0f0;
 }

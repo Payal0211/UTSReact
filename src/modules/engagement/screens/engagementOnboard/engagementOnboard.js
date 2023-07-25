@@ -77,11 +77,11 @@ const EngagementOnboard = ({
 						</li>
 						<li>
 							<span>Working TimeZone:</span>{' '}
-							{scheduleTimezone?.filter(timeZone => `${timeZone.id}` === getOnboardFormDetails?.workingTimeZone)[0].value }{' '}
+							{scheduleTimezone?.filter(timeZone => `${timeZone.id}` === getOnboardFormDetails?.workingTimeZone)[0]?.value }{' '}
 						</li>
 						<li>
 							<span>Talent TimeZone:</span>{' '}
-							{scheduleTimezone?.filter(timeZone => `${timeZone.id}` === getOnboardFormDetails?.onboardDetails?.timeZone)[0].value }{' '}
+							{scheduleTimezone?.filter(timeZone => `${timeZone.id}` === getOnboardFormDetails?.onboardDetails?.timeZone)[0]?.value }{' '}
 						</li>
 						<li>
 							<span>Engagement ID:</span>{' '}

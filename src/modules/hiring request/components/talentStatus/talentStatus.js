@@ -1,5 +1,6 @@
 import TalentStatusStyle from './talentStatus.module.css';
 import { useCallback, useEffect, useState } from 'react';
+import { Radio } from 'antd';
 
 import { useForm } from 'react-hook-form';
 
@@ -29,6 +30,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 	const watchRejectReason = watch('rejectReason');
 	const watchOnHoldReason = watch('onHoldReason');
 	const [talentStatus, setTalentStatus] = useState([]);
+	const [radioValue, setRadioValue] = useState('Before Interview');
 	const getTalentStatusHandler = useCallback(async () => {
 		const response = await TalentStatusDAO.getStatusDetailRequestDAO({
 			talentID: talentInfo?.TalentID,
@@ -119,6 +121,22 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 				<SpinLoader />
 			) : (
 				<div className={TalentStatusStyle.transparent}>
+
+					<div className={TalentStatusStyle.colMd12} style={{display:'flex'}}>
+						<p style={{marginRight:'5px'}}>Did this status change occur prior to the interview or following the interview?</p>
+
+						<Radio.Group
+										className={TalentStatusStyle.radioGroup}
+										onChange={e=> setRadioValue(e.target.value)}
+										value={radioValue}>
+										<Radio value={'Before Interview'}>
+										Before Interview
+										</Radio>
+										<Radio value={'After Interview'}>
+										After Interview
+										</Radio>
+									</Radio.Group>
+					</div>
 					<div className={TalentStatusStyle.colMd12}>
 						<HRSelectField
 							mode={'id/value'}

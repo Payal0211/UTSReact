@@ -550,3 +550,16 @@ tr th:first-child {
 .demandFunnelModal  [class*="ant-pagination"] {
     display: none;
 }
+
+.actionTab_Exceeded{
+    background-color: rgb(255, 193, 7);
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    margin-right: 5px;
+  }
+
+.actionTab_ExceededContainer {
+    display: flex;
+    align-items: center;
+}
