@@ -1174,8 +1174,8 @@ export const reportConfig = {
 			
 			{
 				title: 'HR #',
-				dataIndex: 'hr_Number',
-				key: 'hr_Number',
+				dataIndex: 'hR_Number',
+				key: 'hR_Number',
 				align: 'left',
 				render: (text) => {
 					return <Fragment key={text}>{text }</Fragment>;
