@@ -17,6 +17,7 @@ import { ClientDAO } from 'core/client/clientDAO';
 import { HTTPStatusCode } from 'constants/network';
 import CompanyDetails from '../companyDetails/companyDetails';
 import { _isNull } from 'shared/utils/basic_utils';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 export const secondaryClient = {
 	en_Id: '',
@@ -44,6 +45,7 @@ const ClientField = ({
 	const [companyName, setCompanyName] = useState('');
 	const [primaryClientFullName, setPrimaryClientFullName] = useState('');
 	const [primaryClientEmail, setPrimaryClientEmail] = useState('');
+	const [isSavedLoading, setIsSavedLoading] = useState(false);
 	/** ---- Useform()  Starts here --------- */
 	const {
 		register,
@@ -118,6 +120,7 @@ const ClientField = ({
 	/** Submit the client form Starts */
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 		// setIsLoading(true);
+		setIsSavedLoading(true)
 		let clientFormDetails = clientFormDataFormatter(
 			d,
 			type,
@@ -154,6 +157,7 @@ const ClientField = ({
 		const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
 
 		if (addClientResult.statusCode === HTTPStatusCode.OK) {
+			setIsSavedLoading(false)
 			setAddClientResponse(addClientResult?.responseBody?.details);
 			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Add New Hiring Requests');
 			type !== SubmitType.SAVE_AS_DRAFT &&
@@ -182,6 +186,7 @@ const ClientField = ({
 					content: 'Client details has been saved to draft.',
 				});
 		}
+			setIsSavedLoading(false)
 	};
 	/** Submit the client form Ends */
 	// console.log(addClientResponse, '--addClientResponse');
@@ -401,6 +406,7 @@ const ClientField = ({
 					Next Page
 				</button>
 			</div>
+			<LogoLoader visible={isSavedLoading} />
 		</div>
 	);
 };

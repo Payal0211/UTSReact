@@ -43,7 +43,7 @@ const UpdateLegalTalentOnboardStatus = ({
 				talentID: talentInfo?.TalentID,
 				hiringRequestID: hrId,
 				contactID: talentInfo?.ContactId,
-				action: 'LegalClient',
+				action: 'LegalTalent',
 				onboardingClient: {},
 				legalTalent: {
 					talentLegalStatusID: d.onboardTalentStatus?.id, // dropdown selected id
