@@ -30,20 +30,17 @@ const DemandFunnelModal = ({
 		}
 	}, [demandFunnelHRDetailsState]);
 
-	const exportHandler = useCallback(async () => {
-		const response = await ReportDAO.demandFunnelHRDetailsRequestDAO({
-			...demandFunnelHRDetailsState,
-			IsExport: false,
-		});
-		if (response?.statusCode === HTTPStatusCode.OK) {
-			let downloadData = response?.responseBody
-			.map((data) => ({ "HR#": data.hR_No ,'Sales Person': data.salesPerson, 'Company Name': data.compnayName,
-			'Role': data.role, 'Managed/Self':data.managed_Self,'Availability': data.availability, '# of TR':data.talentName
-				}))
-			downloadToExcel(downloadData);
-			// setDemandFunnelModal(false);`
-		}
-	}, [demandFunnelHRDetailsState]);
+	const exportHandler = useCallback(async (data) => {
+		let dataToDownload = data.map((data)=>{
+			let obj = {}
+			reportConfig?.demandFunnelHRDetails(
+				demandFunnelValue?.stage,
+			).map(val => obj[`${val.title}`] = data[`${val.key}`])
+		  return obj;
+		})
+		downloadToExcel(dataToDownload);
+		
+	}, [demandFunnelValue?.stage]);
 
 	useEffect(() => {
 		getDemandFunnelHRDetailsHandler();
@@ -80,7 +77,7 @@ const DemandFunnelModal = ({
 						<input
 							type={InputType.TEXT}
 							className={DemandFunnelStyle.searchInput}
-							placeholder="Search Table Details"
+							placeholder="Search Table"
 							onChange={(e) => {
 								let filteredData = apiData?.filter((val) => {
 									return (
@@ -104,7 +101,10 @@ const DemandFunnelModal = ({
 											.includes(e.target.value.toLowerCase()) ||
 										val.talentName
 											.toLowerCase()
-											.includes(e.target.value.toLowerCase())
+											.includes(e.target.value.toLowerCase()) ||
+										val.hrStatus
+											.toLowerCase()
+											.includes(e.target.value.toLowerCase())	
 									);
 								});
 
@@ -116,7 +116,9 @@ const DemandFunnelModal = ({
 						<button
 							className={DemandFunnelStyle.btnPrimary}
 							onClick={() => {
-								exportHandler();
+								exportHandler(searchData && searchData?.length > 0
+									? [...searchData]
+									: [...apiData]);
 							}}>
 							Export
 						</button>

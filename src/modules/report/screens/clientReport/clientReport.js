@@ -62,7 +62,7 @@ export default function ClientReport() {
       ...params,
       isHrfocused: isFocusedRole,
     });
-    if (response.statusCode === HTTPStatusCode.OK) {
+    if (response?.statusCode === HTTPStatusCode.OK) {
       let details = response.responseBody.details;
       setReportList(details);
       setReportPopupList([]);
@@ -79,13 +79,15 @@ export default function ClientReport() {
     }
   };
 
-  const getClientPopUpReportList = async (params) => {
+  const getClientPopUpReportList = useCallback(async (params) => {
+    console.log({isHrfocused: isFocusedRole})
     setLoading(true);
-    const response = await clientReport.getClienPopUpRequestList({
-      ...params,
-      isHrfocused: isFocusedRole,
-    });
-    if (response.statusCode === HTTPStatusCode.OK) {
+    // const response = await clientReport.getClienPopUpRequestList({
+    //   ...params,
+    //   isHrfocused: isFocusedRole,
+    // });
+     const response = await clientReport.getClienPopUpRequestList(params);
+    if (response?.statusCode === HTTPStatusCode.OK) {
       let details = response.responseBody.details;
       // console.log("popup data", details)
       setReportPopupList(details);
@@ -100,12 +102,12 @@ export default function ClientReport() {
       setLoading(false);
       return "NO DATA FOUND";
     }
-  };
+  },[isFocusedRole,navigate]) 
 
   const getClientReportFilterList = async (params) => {
     setLoading(true);
     const response = await clientReport.getClientReportFilters();
-    if (response.statusCode === HTTPStatusCode.OK) {
+    if (response?.statusCode === HTTPStatusCode.OK) {
       let details = response.responseBody.details.Data;
       // console.log("filter data", details)
       setFiltersList(details);
@@ -163,6 +165,7 @@ export default function ClientReport() {
       status: "",
       salesManagerIDs: SalesManager,
       leadUserID: leadUserID,
+      isHrfocused: isFocusedRole,
     };
 
     if (clientStage) {
@@ -228,6 +231,7 @@ export default function ClientReport() {
         status: "",
         salesManagerIDs: SalesManager,
         leadUserID: leadUserID,
+        isHrfocused: isFocusedRole,
       };
 
       if (clientStage) {
@@ -406,11 +410,12 @@ export default function ClientReport() {
         status: "",
         salesManagerIDs: SalesManager,
         leadUserID: leadUserID,
+        isHrfocused: isFocusedRole,
       };
 
       getClientPopUpReportList(params);
     },
-    [clientStage, firstDay, lastDay, appliedFilter]
+    [clientStage, firstDay, lastDay, appliedFilter,isFocusedRole,]
   );
 
   const tableColumnsMemo = useMemo(
