@@ -552,11 +552,12 @@ tr th:first-child {
 }
 
 .actionTab_Exceeded{
-    background-color: rgb(255, 193, 7);
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
-    margin-right: 5px;
+    /* background-color: #BDDFFE; */
+    /* width: 20px;
+    height: 20px; */
+    /* border-radius: 5px; */
+    border-bottom: 2px solid #BDDFFE ;
+    margin-right: 10px;
   }
 
 .actionTab_ExceededContainer {

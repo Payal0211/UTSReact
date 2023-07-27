@@ -81,6 +81,14 @@ const HRDetailScreen = () => {
 	const [editDebrifing, setEditDebring] = useState([]);
 
 	const [closeHrModal, setCloseHrModal] = useState(false);
+	const [userData, setUserData] = useState({});
+	useEffect(() => {
+		const getUserResult = async () => {
+			let userData = UserSessionManagementController.getUserSession();
+			if (userData) setUserData(userData);
+		};
+		getUserResult();
+	}, []);
 
 	const {
 		watch,
@@ -221,7 +229,7 @@ console.log('apiData', apiData)
 							</div>
 						)}
 						{/** ----Clone HR */}
-						{apiData?.dynamicCTA?.CloneHR && (
+						{userData?.LoggedInUserTypeID === 5 || userData?.LoggedInUserTypeID === 10 ? null : apiData?.dynamicCTA?.CloneHR &&  (
 							<CloneHR
 								updatedSplitter={updatedSplitter}
 								cloneHR={apiData?.dynamicCTA?.CloneHR}
@@ -229,7 +237,39 @@ console.log('apiData', apiData)
 						)}
 					</div>
 
-					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? null : (
+					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? <>
+						{apiData?.dynamicCTA?.ReopenHR && (
+                <div
+                  className={HRDetailStyle.hiringRequestPriority}
+                  onClick={() => {
+                    setReopenHrModal(true);
+                  }}
+                >
+                  <Tooltip placement="bottom" title="Reopen HR">
+                    <ReopenHR
+                      style={{ width: "24px" }}
+                      className={HRDetailStyle.deleteSVG}
+                    />
+                  </Tooltip>
+                </div>
+              )}
+			  
+			  {reopenHrModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={reopenHrModal}
+                  className="updateTRModal"
+                  onCancel={() => setReopenHrModal(false)}
+                >
+                  <ReopenHRModal
+                    onCancel={() => setReopenHrModal(false)}
+                    apiData={apiData}
+                  />
+                </Modal>
+              )}
+			  </> : (
 						<div className={HRDetailStyle.hrDetailsRightPart}>
 							{/* <button onClick={() => setAssignAMData(true)} className={HRDetailStyle.primaryButton}>Assign AM</button> */}
 

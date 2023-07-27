@@ -322,8 +322,8 @@ const DemandFunnelScreen = () => {
 					</div>
 					
 					<div className={DemandFunnelStyle.calendarFilterSet}>
-						<div style={{display:'flex',alignItems:'center'}}>
-							<span className={DemandFunnelStyle.actionTab_Exceeded}></span>
+						<div className={DemandFunnelStyle.actionTab_Exceeded} style={{display:'flex',alignItems:'center'}}>
+							{/* <span className={DemandFunnelStyle.actionTab_Exceeded}></span> */}
 							Stage Count without Dates Filter
 						</div>
 					<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)}>

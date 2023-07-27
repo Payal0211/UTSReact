@@ -15,7 +15,8 @@ export const reportConfig = {
 		demandFunnelHRDetailsState,
 		setDemandFunnelValue,
 	) => {
-		let tableHeader = Object?.keys(demandTable?.[0] || {});
+		let tableHeader = Object?.keys(demandTable?.[0] || {}).filter(item => item !== 'Additional Info');
+		
 
 		return tableHeader?.map((item) => {
 			return {
@@ -32,13 +33,30 @@ export const reportConfig = {
 					let heighlight =	param.Stage === 'HR Active' || param.Stage === 'TR Active' || param.Stage === 'Profile Feedback Pending' || param.Stage === 'Interview Feedback Pending'
 					if(item === 'Duration' && heighlight){
 						return 
-					}  
+					} 
+					if(item === 'Stage') {
+						return <div style={{display:'flex',alignItems:'center', justifyContent:'space-between'}}>
+							<Tooltip
+							placement="bottomLeft"
+							title={data}>
+								<p style={{ fontWeight: '550', padding: '5px', borderBottom: heighlight ?'2px solid #BDDFFE' :'' }}>
+									{data}
+								</p>							
+						</Tooltip>
+
+						<Tooltip
+							placement="bottomLeft"
+							title={param['Additional Info']}>
+								<img src={infoIcon} alt='info' />							
+						</Tooltip>
+						</div>
+					}
 					return (
 						<Tooltip
 							placement="bottomLeft"
 							title={data}>
 							{item === 'Stage' || item === 'Duration' ? (
-								<p style={{ fontWeight: '550', padding: '5px', background: heighlight ?'rgb(255, 193, 7)' :'', borderRadius: heighlight? "8px": '' }}>
+								<p style={{ fontWeight: '550', padding: '5px', borderBottom: heighlight ?'2px solid #BDDFFE' :'' }}>
 									{data}
 									</p>
 							) : item === 'Additional Info' ?  <img src={infoIcon} alt='info' /> : (
