@@ -116,15 +116,19 @@ const DealList = () => {
 		}
 	}, [navigate]);
 
-	const toggleDealFilter = useCallback(() => {
+	useEffect(()=>{
 		getDealFilterRequest();
+	},[getDealFilterRequest])
+
+	const toggleDealFilter = useCallback(() => {
+		
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
 					setIsAllowFilters(!isAllowFilters);
 			  }, 300);
 		setHTMLFilter(!getHTMLFilter);
-	}, [getDealFilterRequest, getHTMLFilter, isAllowFilters]);
+	}, [ getHTMLFilter, isAllowFilters]);
 	useEffect(() => {
 		const timer = setTimeout(() => handleDealRequest(), 1000);
 		return () => clearTimeout(timer);

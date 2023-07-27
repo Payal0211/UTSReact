@@ -11,7 +11,7 @@ import { MasterDAO } from 'core/master/masterDAO';
 
 const Navbar = ({ fullName }) => {
 	const navigation = useNavigate();
-	const [dashboardCount, setDashboardCount] = useState(null);
+	// const [dashboardCount, setDashboardCount] = useState(null);
 	const queryClient = useQueryClient();
 	const onLogoutHandler = async () => {
 		const res = await userDAO.logoutDAO();
@@ -19,14 +19,14 @@ const Navbar = ({ fullName }) => {
 		if (res) navigation(UTSRoutes.LOGINROUTE);
 	};
 
-	const getDashboardCountHandler = useCallback(async () => {
-		const response = await MasterDAO.getDashboardCountForEngagementDAO();
-		setDashboardCount(response && response.responseBody?.details);
-	}, []);
+	// const getDashboardCountHandler = useCallback(async () => {
+	// 	const response = await MasterDAO.getDashboardCountForEngagementDAO();
+	// 	setDashboardCount(response && response.responseBody?.details);
+	// }, []);
 
-	useEffect(() => {
-		getDashboardCountHandler();
-	}, [getDashboardCountHandler]);
+	// useEffect(() => {
+	// 	getDashboardCountHandler();
+	// }, [getDashboardCountHandler]);
 	return (
 		<div className={navbarStyles.navbarContainer}>
 			<nav className={navbarStyles.nav}>

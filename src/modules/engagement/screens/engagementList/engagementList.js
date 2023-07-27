@@ -315,15 +315,18 @@ const EngagementList = () => {
 		}
 	}, [navigate]);
 
-	const toggleHRFilter = useCallback(() => {
+	useEffect(()=>{
 		getEngagementFilterList();
+	},[getEngagementFilterList])
+
+	const toggleHRFilter = useCallback(() => {
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
 					setIsAllowFilters(!isAllowFilters);
 			  }, 300);
 		setHTMLFilter(!getHTMLFilter);
-	}, [getEngagementFilterList, getHTMLFilter, isAllowFilters]);
+	}, [getHTMLFilter, isAllowFilters]);
 
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(new Date());
