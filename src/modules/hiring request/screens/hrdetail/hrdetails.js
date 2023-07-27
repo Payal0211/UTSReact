@@ -53,6 +53,8 @@ import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSel
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { BsThreeDots } from 'react-icons/bs';
 
+import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal"
+import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
 
 /** Lazy Loading the component */
 
@@ -191,7 +193,7 @@ const HRDetailScreen = () => {
 console.log('apiData', apiData)
 
 	const [assignAMData, setAssignAMData] = useState(false);
-
+	const [reopenHrModal, setReopenHrModal] = useState(false);
 	return (
 		<WithLoader
 			showLoader={isLoading}
