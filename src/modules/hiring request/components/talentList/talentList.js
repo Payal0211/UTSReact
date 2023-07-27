@@ -204,18 +204,26 @@ const TalentList = ({
 	const [getBillRateInfo, setBillRateInfo] = useState({});
 
 	const hrCostDetailsHandler = useCallback(async () => {
+		// const hrCostData = {
+		// 	hrID: hrId,
+		// 	BillRate: (filterTalentID?.BillRate).slice(
+		// 		1,
+		// 		(filterTalentID?.BillRate).indexOf('U'),
+		// 	).trim(),
+		// 	PayRate: (filterTalentID?.PayRate).slice(
+		// 		1,
+		// 		(filterTalentID?.PayRate).indexOf('U'),
+		// 	).trim(),
+		// 	ContactPriorityID: filterTalentID?.ContactPriorityID,
+		// };
+
 		const hrCostData = {
 			hrID: hrId,
-			BillRate: (filterTalentID?.BillRate).slice(
-				1,
-				(filterTalentID?.BillRate).indexOf('U'),
-			).trim(),
-			PayRate: (filterTalentID?.PayRate).slice(
-				1,
-				(filterTalentID?.PayRate).indexOf('U'),
-			).trim(),
+			BillRate: filterTalentID?.BillRate,
+			PayRate: filterTalentID?.PayRate,
 			ContactPriorityID: filterTalentID?.ContactPriorityID,
 		};
+
 		const response = await hiringRequestDAO.getHRCostDetalisRequestDAO(
 			hrCostData,
 		);

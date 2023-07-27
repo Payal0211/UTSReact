@@ -39,7 +39,7 @@ export const reportConfig = {
 							<Tooltip
 							placement="bottomLeft"
 							title={data}>
-								<p style={{ fontWeight: '550', padding: '5px', borderBottom: heighlight ?'2px solid #BDDFFE' :'' }}>
+								<p style={{ fontWeight: '550', padding: '5px', borderBottom: heighlight ?'4px solid #6DBAFF' :'' }}>
 									{data}
 								</p>							
 						</Tooltip>
