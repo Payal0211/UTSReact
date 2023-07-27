@@ -89,7 +89,7 @@ const EditBillRate = ({
 						<p>
 							Talent Fees<span>*</span> :{' '}
 							{Object.keys(getBillRateInfo).length > 0 &&
-								`${getBillRateInfo?.talent_Fees} ${getBillRateInfo?.currency_Sign} / Month `}
+								`${getBillRateInfo?.talent_Fees} `}
 						</p>
 					</div>
 					<div className={editBillAndPayRate.colMd12}>
