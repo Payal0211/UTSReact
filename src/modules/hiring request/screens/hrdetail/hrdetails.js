@@ -53,8 +53,6 @@ import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSel
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { BsThreeDots } from 'react-icons/bs';
 
-import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal"
-import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
 
 /** Lazy Loading the component */
 
@@ -83,7 +81,6 @@ const HRDetailScreen = () => {
 	const [editDebrifing, setEditDebring] = useState([]);
 
 	const [closeHrModal, setCloseHrModal] = useState(false);
-  const [reopenHrModal, setReopenHrModal] = useState(false);
 
 	const {
 		watch,
