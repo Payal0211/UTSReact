@@ -7,7 +7,7 @@ import { ReactComponent as CloseHR} from 'assets/svg/power.svg';
 import { ReactComponent as FocusedRole} from 'assets/svg/FocusRole.svg'
 import { Tooltip } from 'antd';
 export const allHRConfig = {
-	tableConfig: (togglePriority, setCloneHR, setHRID, setHRNumber ,setReopenHRData,setReopenHrModal,setCloseHRDetail,setCloseHrModal) => {
+	tableConfig: (togglePriority, setCloneHR, setHRID, setHRNumber ,setReopenHRData,setReopenHrModal,setCloseHRDetail,setCloseHrModal,LoggedInUserTypeID) => {
 		return [
 			{
 				title: ' ',
@@ -82,6 +82,9 @@ export const allHRConfig = {
 				width: '30px',
 				align: 'left',
 				render: (text, result) => {
+					if(LoggedInUserTypeID === 5 || LoggedInUserTypeID === 10){
+						return
+					}
 					return (
 						<>
 						<Tooltip

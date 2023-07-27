@@ -86,6 +86,14 @@ const AllHiringRequestScreen = () => {
 	const [ closeHRDetail, setCloseHRDetail] = useState({});
 	const [closeHrModal, setCloseHrModal] = useState(false);
 	const [isFocusedRole, setIsFocusedRole] = useState(false);
+	const [userData, setUserData] = useState({});
+	useEffect(() => {
+		const getUserResult = async () => {
+			let userData = UserSessionManagementController.getUserSession();
+			if (userData) setUserData(userData);
+		};
+		getUserResult();
+	}, []);
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -187,8 +195,8 @@ const AllHiringRequestScreen = () => {
 
 	const tableColumnsMemo = useMemo(
 		() =>
-			allHRConfig.tableConfig(togglePriority, setCloneHR, setHRID, setHRNumber,setReopenHRData,setReopenHrModal,setCloseHRDetail,setCloseHrModal),
-		[togglePriority],
+			allHRConfig.tableConfig(togglePriority, setCloneHR, setHRID, setHRNumber,setReopenHRData,setReopenHrModal,setCloseHRDetail,setCloseHrModal, userData?.LoggedInUserTypeID),
+		[togglePriority,userData.LoggedInUserTypeID],
 	);
 	const handleHRRequest = useCallback(
 		async (pageData) => {
