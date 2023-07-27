@@ -124,6 +124,7 @@ export const allHRConfig = {
 				width: '150px',
 				render: (text, result) => (
 					<Link
+						target="_blank"
 						to={`/allhiringrequest/${result?.key}`}
 						style={{ color: 'black', textDecoration: 'underline' }}
 						onClick={()=> localStorage.removeItem('dealID')}>

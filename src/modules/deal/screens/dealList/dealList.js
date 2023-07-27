@@ -116,15 +116,19 @@ const DealList = () => {
 		}
 	}, [navigate]);
 
-	const toggleDealFilter = useCallback(() => {
+	useEffect(()=>{
 		getDealFilterRequest();
+	},[getDealFilterRequest])
+
+	const toggleDealFilter = useCallback(() => {
+		
 		!getHTMLFilter
 			? setIsAllowFilters(!isAllowFilters)
 			: setTimeout(() => {
 					setIsAllowFilters(!isAllowFilters);
 			  }, 300);
 		setHTMLFilter(!getHTMLFilter);
-	}, [getDealFilterRequest, getHTMLFilter, isAllowFilters]);
+	}, [ getHTMLFilter, isAllowFilters]);
 	useEffect(() => {
 		const timer = setTimeout(() => handleDealRequest(), 1000);
 		return () => clearTimeout(timer);
@@ -292,7 +296,7 @@ const DealList = () => {
 				) : (
 					<WithLoader>
 						<Table
-							scroll={{ x: '100vw', y: '100vh' }}
+							scroll={{ x: '100%', y: '100vh' }}
 							id="hrListingTable"
 							columns={tableColumnsMemo}
 							bordered={false}

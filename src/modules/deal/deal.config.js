@@ -13,6 +13,7 @@ export const DealConfig = {
 				dataIndex: 'dealDate',
 				key: 'dealDate',
 				align: 'left',
+				width: '12%',
 				render: (text) => {
 					return <Fragment key={text}>{text ? text : 'NA'}</Fragment>;
 				},
@@ -31,6 +32,7 @@ export const DealConfig = {
 				dataIndex: 'dealID',
 				key: 'dealID',
 				align: 'left',
+				width: '11%',
 				render: (text) => {
 					return text ? (
 						<Link
@@ -49,6 +51,7 @@ export const DealConfig = {
 				dataIndex: 'lead_Type',
 				key: 'lead_Type',
 				align: 'left',
+				width: '10%',
 				render: (text) => {
 					return text ? text : 'NA';
 				},
@@ -58,6 +61,7 @@ export const DealConfig = {
 				dataIndex: 'pipeline',
 				key: 'pipeline',
 				align: 'left',
+				width: '13%',
 				render: (text) => {
 					return text ? text : 'NA';
 				},
@@ -76,6 +80,7 @@ export const DealConfig = {
 				dataIndex: 'geo',
 				key: 'geo',
 				align: 'left',
+				width: '9%',
 				render: (text) => {
 					return text ? text : 'NA';
 				},
@@ -85,6 +90,7 @@ export const DealConfig = {
 				dataIndex: 'bdr',
 				key: 'bdr',
 				align: 'left',
+				width: '9%',
 				render: (text) => {
 					return text ? text : 'NA';
 				},
@@ -94,6 +100,7 @@ export const DealConfig = {
 				dataIndex: 'sales_consultant',
 				key: 'sales_consultant',
 				align: 'left',
+				width: '9%',
 				render: (text) => {
 					return text ? text : 'NA';
 				},
@@ -103,6 +110,7 @@ export const DealConfig = {
 				dataIndex: 'dealStage',
 				key: 'dealStage',
 				align: 'left',
+				width: '14%',
 				render: (text, param) => {
 					return _isNull(text) ? (
 						'NA'
@@ -117,7 +125,7 @@ export const DealConfig = {
 						<HRStatusComponent
 							title={text}
 							backgroundColor={param.dealStageColorCode}
-							color={'#4E5063'}
+							color={'#ffffff'}
 						/>
 					);
 				},

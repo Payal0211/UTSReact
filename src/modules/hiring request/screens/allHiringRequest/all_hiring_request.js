@@ -263,15 +263,18 @@ const AllHiringRequestScreen = () => {
 		}
 	}, [navigate]);
 
-	const toggleHRFilter = useCallback(() => {
+	useEffect(()=>{
 		getHRFilterRequest();
+	},[getHRFilterRequest])
+
+	const toggleHRFilter = useCallback(() => {		
 		!getHTMLFilter
 			? setIsAllowFilters(true)
 			: setTimeout(() => {
 					setIsAllowFilters(true);
 			  }, 300);
 		setHTMLFilter(!getHTMLFilter);
-	}, [getHRFilterRequest, getHTMLFilter]);
+	}, [getHTMLFilter]);
 
 	/*--------- React DatePicker ---------------- */
 	const [startDate, setStartDate] = useState(null);
@@ -500,7 +503,7 @@ const AllHiringRequestScreen = () => {
 							<input
 								type={InputType.TEXT}
 								className={allHRStyles.searchInput}
-								placeholder="Search Table"
+								placeholder="Search via HR#, Role , Company , Client , HR Type"
 								onChange={debouncedSearchHandler}
 								value={debouncedSearch}
 							/>

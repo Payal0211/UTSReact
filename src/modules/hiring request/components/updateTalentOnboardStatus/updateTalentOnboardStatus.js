@@ -41,8 +41,8 @@ const UpdateTalentOnboardStatus = ({
 				contactID: talentInfo?.ContactId,
 				action: 'OnboardingTalent',
 				onboardingTalent: {
-					clientOnBoardingStatusID: d.onboardTalentStatus?.id,
-					clientConcernRemark: d.concernRemark || '',
+					talentOnBoardingStatusID: d.onboardTalentStatus?.id,
+					talentConcernRemark: d.concernRemark || '',
 				},
 				onboardingClient: null,
 				legalTalent: null,

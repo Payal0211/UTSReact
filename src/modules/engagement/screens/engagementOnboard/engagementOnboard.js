@@ -88,8 +88,7 @@ const EngagementOnboard = ({
 							{getOnboardFormDetails?.onboardDetails?.engagemenID}
 						</li>
 						<li>
-							<span>Bill Rate:</span> {getOnboardFormDetails?.billRate} USD/
-							Month
+							<span>Bill Rate:</span> {getOnboardFormDetails?.billRate} {getOnboardFormDetails?.talentCurrencyCode}
 						</li>
 						<li>
 							<span>Hiring ID:</span>{' '}
@@ -97,14 +96,14 @@ const EngagementOnboard = ({
 						</li>
 						<li>
 							<span>Actual Bill Rate:</span>{' '}
-							{getOnboardFormDetails?.talentPayRate} USD/ Month
+							{`${getOnboardFormDetails?.talentPayRate} ${getOnboardFormDetails?.talentCurrencyCode}`} 
 						</li>
 						<li>
 							<span> Contract Type:</span> {getOnboardFormDetails?.contractType}
 						</li>
 						<li>
 							<span>Talent Pay Rate:</span>{' '}
-							{getOnboardFormDetails?.talentPayRate} USD/ Month
+							{getOnboardFormDetails?.talentPayRate} {getOnboardFormDetails?.talentCurrencyCode}
 						</li>
 						<li>
 							<span> Contract Duration:</span>{' '}
@@ -112,7 +111,7 @@ const EngagementOnboard = ({
 						</li>
 						<li>
 							<span>Actual Talent Pay Rate:</span>{' '}
-							{getOnboardFormDetails?.payRate} USD/ Month
+							{getOnboardFormDetails?.payRate} {getOnboardFormDetails?.talentCurrencyCode}
 						</li>
 						<li>
 							<span>Contract Start & End Date:</span>{' '}

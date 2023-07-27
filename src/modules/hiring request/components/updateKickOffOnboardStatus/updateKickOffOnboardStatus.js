@@ -116,16 +116,7 @@ const UpdateKickOffOnboardStatus = ({
 								name="timezone"
 								label="Time Zone"
 								defaultValue="Please Select"
-								options={[
-									{
-										id: 1,
-										value: 'Leave Deduction',
-									},
-									{
-										id: 2,
-										value: 'Add Bonus',
-									},
-								]}
+								options={talentStatus?.Timezonedata}
 								required
 								isError={errors['timezone'] && errors['timezone']}
 								errorMsg="Please select a timezone."

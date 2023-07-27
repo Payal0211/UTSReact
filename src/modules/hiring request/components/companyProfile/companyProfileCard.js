@@ -108,6 +108,34 @@ const CompanyProfileCard = ({
 								</span>
 							</div> */}
 							<div className={CompanyProfileCardStyle.EngagementType}>
+								<span>Lead Type:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									{allApiData?.ClientDetail?.LeadType ? allApiData?.ClientDetail?.LeadType : 'NA' }
+								</span>
+							</div>
+							<div className={CompanyProfileCardStyle.category}>
+								<span>Lead User:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+								{allApiData?.ClientDetail?.LeadUser ? allApiData?.ClientDetail?.LeadUser : 'NA' }
+								</span>
+							</div>
+						</div>
+					</div>	
+
+					<Divider
+						style={{
+							margin: '10px 0',
+						}}
+					/>
+					<div className={CompanyProfileCardStyle.partWise}>
+						<div style={{ marginBottom: '10px' }}>
+							{/* <div className={CompanyProfileCardStyle.EngagementType}>
+								<span>Engagement Type:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									{clientDetail?.Managed ? clientDetail?.Managed : 'NA'}
+								</span>
+							</div> */}
+							<div className={CompanyProfileCardStyle.EngagementType}>
 								<span>Engagement Type:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{!allApiData?.Is_HRTypeDP ? `Contract - ${clientDetail?.SpecificMonth

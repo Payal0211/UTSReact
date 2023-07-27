@@ -81,7 +81,6 @@ const HRDetailScreen = () => {
 	const [editDebrifing, setEditDebring] = useState([]);
 
 	const [closeHrModal, setCloseHrModal] = useState(false);
-  const [reopenHrModal, setReopenHrModal] = useState(false);
 
 	const {
 		watch,
@@ -191,7 +190,7 @@ const HRDetailScreen = () => {
 console.log('apiData', apiData)
 
 	const [assignAMData, setAssignAMData] = useState(false);
-
+	const [reopenHrModal, setReopenHrModal] = useState(false);
 	return (
 		<WithLoader
 			showLoader={isLoading}

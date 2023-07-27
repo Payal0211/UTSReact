@@ -24,6 +24,8 @@ import { OnboardDAO } from "core/onboard/onboardDAO";
 import { HTTPStatusCode } from "constants/network";
 import { useNavigate, useParams } from "react-router-dom";
 import UTSRoutes from "constants/routes";
+import moment from "moment";
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 const OnboardField = () => {
   const { onboardID } = useParams();
@@ -59,6 +61,7 @@ const OnboardField = () => {
       setTextBox(false);
     }
   };
+  const [isSavedLoading, setIsSavedLoading] = useState(false);
   const [getFieldsDisabled, setFieldsDisable] = useState(false);
   const [controlledContractTypeValue, setControlledContractTypeValue] =
     useState("");
@@ -124,6 +127,7 @@ const OnboardField = () => {
   console.log({ errors });
   const onboardSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
+      setIsSavedLoading(true)
       let onboardDataFormatter = onboardUtils.onboardDataFormatter(
         d,
         type,
@@ -179,7 +183,9 @@ const OnboardField = () => {
       console.log("onboard data formatter response", addOnboardResponse);
       if (addOnboardResponse.statusCode === HTTPStatusCode.OK) {
         navigate(-1);
+        setIsSavedLoading(false)
       }
+      setIsSavedLoading(false)
     },
     [navigate, teamMembers, watch,getOnboardFormDetails,onboardID]
   );
@@ -227,20 +233,19 @@ const OnboardField = () => {
       setValue("contractStartDate", firstDay);
       setValue("contractEndDate", lastDay);
     } else {
-      setValue("contractStartDate", value.contractStartDate);
-      setValue("contractEndDate", value.contractEndDate);
+      value?.contractStartDate &&  setValue("contractStartDate", new Date(value?.contractStartDate));
+      value?.contractEndDate && setValue("contractEndDate", new Date(value?.contractEndDate));
     }
 
-    setValue("talentOnboardingDate", value.onboardDetails.talentOnBoardDate);
-    setValue("talentOnboardingTime", value.onboardDetails.talentOnBoardTime);
+    value?.onboardDetails?.talentOnBoardDate && setValue("talentOnboardingDate", new Date(value?.onboardDetails?.talentOnBoardDate));
+    //  setValue("talentOnboardingTime", value?.onboardDetails?.talentOnBoardTime);
     // setValue('netPaymentDays', value.netPaymentDays)
-    setValue("contractRenewal", value.autoRenewContract);
-    setValue("clientFirstBillingDate", value.onboardDetails.clientFirstDate);
+   setValue("contractRenewal", value?.autoRenewContract);
+   value?.onboardDetails.clientFirstDate && setValue("clientFirstBillingDate", new Date(value?.onboardDetails.clientFirstDate));
 
     // for bill rate
     setValue("phoneNumber", value.billRate);
 
-    console.log({ talentTimeZone });
   };
 
   // for ContractType
@@ -1101,12 +1106,12 @@ const OnboardField = () => {
               Submit
             </button>
 
-            <button
+            {/* <button
               onClick={onboardSubmitHandler}
               className={OnboardStyleModule.btn}
             >
               Save as Draft
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -1120,6 +1125,7 @@ const OnboardField = () => {
         cancelModal={() => setAddTeamMemberModal(false)}
         modalTitle={"Add Team Members"}
       />
+      <LogoLoader visible={isSavedLoading} />
     </div>
   );
 };
