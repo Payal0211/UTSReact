@@ -503,7 +503,7 @@ const AllHiringRequestScreen = () => {
 							<input
 								type={InputType.TEXT}
 								className={allHRStyles.searchInput}
-								placeholder="Search Table"
+								placeholder="Search via HR#, Role , Company , Client , HR Type"
 								onChange={debouncedSearchHandler}
 								value={debouncedSearch}
 							/>

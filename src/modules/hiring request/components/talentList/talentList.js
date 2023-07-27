@@ -670,7 +670,7 @@ talentID,})
 											<div className={TalentListStyle.billRate}>
 												<span>DP Amount:</span>&nbsp;&nbsp;
 												<span style={{ fontWeight: '500' }}>
-													{_isNull(item?.DPAmount) ? 'NA' : item?.DPAmount}
+													{_isNull(item?.DPAmount) ? 'NA' : `${item?.DPAmount} ${item?.TalentCurrenyCode} One time Amount` }
 												</span>
 											</div>
 											<div className={TalentListStyle.payRate}>

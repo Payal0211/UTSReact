@@ -233,20 +233,19 @@ const OnboardField = () => {
       setValue("contractStartDate", firstDay);
       setValue("contractEndDate", lastDay);
     } else {
-      setValue("contractStartDate", value?.contractStartDate);
-      setValue("contractEndDate", value?.contractEndDate);
+      value?.contractStartDate &&  setValue("contractStartDate", new Date(value?.contractStartDate));
+      value?.contractEndDate && setValue("contractEndDate", new Date(value?.contractEndDate));
     }
 
-   setValue("talentOnboardingDate", value?.onboardDetails?.talentOnBoardDate);
-    setValue("talentOnboardingTime", value?.onboardDetails?.talentOnBoardTime);
+    value?.onboardDetails?.talentOnBoardDate && setValue("talentOnboardingDate", new Date(value?.onboardDetails?.talentOnBoardDate));
+    //  setValue("talentOnboardingTime", value?.onboardDetails?.talentOnBoardTime);
     // setValue('netPaymentDays', value.netPaymentDays)
    setValue("contractRenewal", value?.autoRenewContract);
-   setValue("clientFirstBillingDate", value?.onboardDetails.clientFirstDate);
+   value?.onboardDetails.clientFirstDate && setValue("clientFirstBillingDate", new Date(value?.onboardDetails.clientFirstDate));
 
     // for bill rate
     setValue("phoneNumber", value.billRate);
 
-    // console.log({ talentTimeZone },{contractStartDate:value?.contractStartDate ,clientFirstDate:value?.onboardDetails.clientFirstDate.split('-').reverse().join('/'),nd: moment(value?.onboardDetails.clientFirstDate.split('-').reverse().join('/')).format('DD-MM-YYYY'),ndat:new Date(value?.onboardDetails.clientFirstDate.split('-').reverse().join('/'))});
   };
 
   // for ContractType
