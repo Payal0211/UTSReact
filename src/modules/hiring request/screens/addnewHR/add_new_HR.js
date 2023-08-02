@@ -37,8 +37,13 @@ const AddNewHR = () => {
 		if(getHRdetails?.addHiringRequest?.hrNumber){
 			setEditTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)
 			localStorage.getItem('hrID') &&	setTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)
+			if(!getHRdetails?.addHiringRequest?.isActive){
+				setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: true })
+			}else{
+				setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false })
+			}
 		}   
-	},[getHRdetails?.addHiringRequest?.hrNumber])
+	},[getHRdetails?.addHiringRequest?.hrNumber,getHRdetails?.addHiringRequest?.isActive,tabFieldDisabled])
 
 
 	const [title, setTitle] = useState(
@@ -156,7 +161,7 @@ const AddNewHR = () => {
 									setHRdetails={setHRdetails}
 								/>
 							),
-							disabled: false,
+							disabled: tabFieldDisabled?.debriefingHR,
 						},
 					]}
 				/>
