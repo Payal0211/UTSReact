@@ -911,7 +911,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 						type: 'success',
 						content: 'HR details has been saved to draft.',
 					});
-					setTitle('Debriefing HR')
+					// setTitle('Debriefing HR')
 				}
 			}
 		},
