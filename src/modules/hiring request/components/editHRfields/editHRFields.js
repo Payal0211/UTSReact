@@ -861,7 +861,7 @@ const EditHRFields = ({
 							type: 'success',
 							content: 'HR details has been saved to draft.',
 						});
-						setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`);
+						// setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`);
 				}
 			}
 		},
