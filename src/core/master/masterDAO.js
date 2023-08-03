@@ -1218,6 +1218,31 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getDurationTypeDAO');
 		}
 	},
+	getLeadTypeDAO: async function (LeadType) {
+		try {
+			const leadTypeResponse = await MasterAPI.geLeadType(LeadType);
+			if (leadTypeResponse) {
+				const statusCode = leadTypeResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = leadTypeResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return leadTypeResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return leadTypeResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getLeadTypeDAO');
+		}
+	},
 	getCloneHRDAO: async function (data) {
 		try {
 			const cloneResponse = await MasterAPI.cloneHRRequest(data);

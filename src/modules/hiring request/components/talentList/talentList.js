@@ -47,6 +47,7 @@ import FeedbackResponse from 'modules/interview/components/feedbackResponse/feed
 import ProfileLogDetails from '../profileLogDetails/profileLog';
 import TalentInterviewStatus from '../talentInterviewStatus/talentInterviewStatus';
 import EditDPRate from '../editDP/editDP';
+import PreOnboardingTabModal from '../preOnboardingModals/preOnboardingTabModal';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -379,6 +380,11 @@ talentID,})
 	const [feedbackReceivedDetails, setFeedbackReceivedDetails] = useState([]);
 	const [feedbackReceivedClass, setFeedBackReceivedClass] = useState(false);
 
+	// start preONBoard states and controlers
+	const [showAMModal, setShowAMModal] = useState(false);
+	const [AMFlags, setAMFlags] = useState({})
+	// end preONBoard states and controlers
+
 	return (
 		<div>
 			{contextHolder}
@@ -678,7 +684,7 @@ talentID,})
 											<div className={TalentListStyle.billRate}>
 												<span>DP Amount:</span>&nbsp;&nbsp;
 												<span style={{ fontWeight: '500' }}>
-													{_isNull(item?.DPAmount) ? 'NA' : `${item?.DPAmount} ${item?.TalentCurrenyCode} One time Amount` }
+													{_isNull(item?.DPAmount) ? 'NA' : `${item?.CurrencySign} ${item?.DPAmount} ${item?.TalentCurrenyCode} One time Amount` }
 												</span>
 											</div>
 											<div className={TalentListStyle.payRate}>
@@ -874,13 +880,30 @@ talentID,})
 															break;
 														}
 														case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
-															setLegalClientOnboardModal(true);
-															setTalentIndex(item?.TalentID);
+															// setLegalClientOnboardModal(true);
+															// setTalentIndex(item?.TalentID);
+
+															setShowAMModal(true);
+															let Flags = {
+																talent: item,
+																tabLabel: 'Complete Legal',
+																forTalent: true,
+																hrID:hrId
+															}
+															setAMFlags(Flags)
 															break;
 														}
 														case TalentOnboardStatus.UPDATE_KICKOFF_ONBOARD_STATUS: {
-															setTalentKickOffModal(true);
-															setTalentIndex(item?.TalentID);
+															// setTalentKickOffModal(true);
+															// setTalentIndex(item?.TalentID);
+															setShowAMModal(true);
+															let Flags = {
+																talent: item,
+																tabLabel: 'Before Kick-off',
+																forTalent: true,
+																hrID:hrId
+															}
+															setAMFlags(Flags)
 															break;
 														}
 														case TalentOnboardStatus.REPLACE_TALENT: {
@@ -894,9 +917,18 @@ talentID,})
 															break;
 														}
 														case TalentOnboardStatus.GO_TO_ONBOARD:{
-															let onboardID = item.OnBoardId
-															navigate(`/onboard/edit/${onboardID}`)
-															window.scrollTo(0, 0)
+															// let onboardID = item.OnBoardId
+															// navigate(`/onboard/edit/${onboardID}`)
+															// window.scrollTo(0, 0)
+															setShowAMModal(true);
+															let Flags = {
+																talent: item,
+																tabLabel: 'Before Pre-Onboarding',
+																forTalent: true,
+																actionType: 'GotoOnboard',
+																hrID:hrId
+															}
+															setAMFlags(Flags)
 															break;
 														}
 														default:
@@ -912,6 +944,10 @@ talentID,})
 					);
 				}}
 			/>
+
+			{/** ============ MODAL FOR PROFILE REJECTED REASON ================ */}
+			<PreOnboardingTabModal showAMModal={showAMModal} setShowAMModal={setShowAMModal}  AMFlags={AMFlags} callAPI={callAPI}/>
+
 
 			{/** ============ MODAL FOR PROFILE REJECTED REASON ================ */}
 			<Modal
@@ -1384,6 +1420,7 @@ talentID,})
 					<EditBillRate
 						callAPI={callAPI}
 						hrId={hrId}
+						hrNO={hiringRequestNumber}
 						filterTalentID={filterTalentID}
 						getBillRateInfo={getBillRateInfo}
 						handleSubmit={handleSubmit}
@@ -1428,7 +1465,7 @@ talentID,})
 					open={editDPRate}
 					className="statusModalWrap"
 					onCancel={() => setEditDPRate(false)}>
-						<EditDPRate onCancel={() => setEditDPRate(false)}  hrId={hrId} DPData={DPData} />
+						<EditDPRate onCancel={() => setEditDPRate(false)}  hrId={hrId} DPData={DPData} hrNO={hiringRequestNumber} />
 				</Modal>
 			)}
 

@@ -148,6 +148,7 @@ export class MastersAPI {
 	static GET_CURRENCY_EXCHANGE_RATE_LIST = 'GetCurrencyExchangeRateList';
 	static UPDATE_CURRENCY_EXCHANGE_RATE_LIST = 'UpdateCurrencyExchangeRate';
 	static GET_LEAD_USER = 'GetLeadUsers'
+	static GET_LEAD_BY_TYPE = 'GetLeadByLeadType'
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
@@ -266,6 +267,13 @@ export class OnboardsAPI {
 	static GET_ONBOARDING_STATUS = 'GetOnboardingStatus';
 	static ONBOARDING_STATUS_UPDATES = 'OnBoardingStatusUpdates';
 	static VIEW_IN_DETAIL = 'ViewInDetail';
+	static FATCH_CLIENT_LEGAL_INFO = 'FetchClientLegalInfo'
+	static FEATCH_TALENT_ON_BOARD_INFO = 'FetchTalentOnBoardInfo'
+	static UPLOAD_FILE = "UploadSOWDocument"
+	static GET_PRE_ONBOARDING_DETAIL = 'GetPreOnBoardingDetailForAMAssignment'
+	static UPDATE_PRE_ON_BOARDING_DETAIL = 'UpdatePreOnBoardingDetailForAMAssignment'
+	static GET_DURING_ON_BOARD_DETAIL = 'GetOnBoardingDetailForSecondTabAMAssignment'
+	static UPDATE_PRE_ON_BOARD_2ND_TAB = 'UpdateOnBoardingDetailForSecondTabAMAssignment'
 }
 
 export class HTTPStatusCode {

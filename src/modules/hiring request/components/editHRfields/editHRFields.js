@@ -164,6 +164,12 @@ const EditHRFields = ({
 		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId);
 		if (response.statusCode === HTTPStatusCode.OK) {
 			setHRdetails(response?.responseBody?.details);
+			if(!response?.responseBody?.details?.addHiringRequest?.isActive){
+				setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: true })
+			}else{
+				setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false })
+			}
+			
 		}
 	};
 
@@ -853,8 +859,8 @@ const EditHRFields = ({
 				window.scrollTo(0, 0);
 				setAddHRResponse(getHRdetails?.en_Id);
 				type !== SubmitType.SAVE_AS_DRAFT && setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`);
-				type !== SubmitType.SAVE_AS_DRAFT &&
-					setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+				// type !== SubmitType.SAVE_AS_DRAFT &&
+				// 	setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
 
 				if(type === SubmitType.SAVE_AS_DRAFT){
 						messageAPI.open({
@@ -864,6 +870,7 @@ const EditHRFields = ({
 						// setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`);
 				}
 			}
+			setIsSavedLoading(false);
 		},
 		[
 			watch,
@@ -875,8 +882,8 @@ const EditHRFields = ({
 			watchJDUrl,
 			setError,
 			setTitle,
-			setTabFieldDisabled,
-			tabFieldDisabled,
+			// setTabFieldDisabled,
+			// tabFieldDisabled,
 			getHRdetails?.addHiringRequest?.hrNumber,
 			messageAPI,
 		],
@@ -1163,6 +1170,7 @@ const EditHRFields = ({
 				<div className={HRFieldStyle.hrFieldLeftPane}>
 					<h3>Hiring Request Details</h3>
 					<p>Please provide the necessary details</p>
+					<LogoLoader visible={isSavedLoading} />
 				</div>
 
 				<form
@@ -2244,7 +2252,7 @@ const EditHRFields = ({
 						</Modal>
 					)}
 
-					<LogoLoader visible={isSavedLoading} />
+					
 				</>
 			);
 		}

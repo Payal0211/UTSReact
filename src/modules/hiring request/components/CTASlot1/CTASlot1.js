@@ -11,6 +11,7 @@ import MatchmakingModal from '../matchmaking/matchmaking';
 import UTSRoutes from 'constants/routes';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
+import PreOnboardingTabModal from '../preOnboardingModals/preOnboardingTabModal';
 
 const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 	const navigate = useNavigate();
@@ -21,6 +22,10 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 
 	const [isAMAssignment, setIsAMAssignment] = useState(false);
 	const switchLocation = useLocation();
+
+	const [showAMModal, setShowAMModal] = useState(false);
+	const [AMFlags, setAMFlags] = useState({})
+
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
 	const navigateToEditDebriefing = useCallback(async () => {
@@ -76,8 +81,19 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 								break;
 							}
 							case HRCTA.AM_ASSIGNMENT: {
-								setIsAMAssignment(true);
-								handleAssignments()
+								// setIsAMAssignment(true);
+								// handleAssignments()
+								let talent = apiData.HRTalentDetails.filter(talent=> talent.OnBoardId === apiData.OnBoardID)
+								
+								setShowAMModal(true);
+															let Flags = {
+																talent: talent[0],
+																tabLabel: 'Before Pre-Onboarding',
+																forTalent: true,
+																actionType: 'AMAssignment',
+																hrID:apiData.HR_Id
+															}
+															setAMFlags(Flags)
 								break;
 							}
 							case HRCTA.EDIT_DEBRIEFING_HR: {
@@ -90,6 +106,8 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 					}}
 				/>
 			</div>
+
+			<PreOnboardingTabModal showAMModal={showAMModal} setShowAMModal={setShowAMModal}  AMFlags={AMFlags} callAPI={callAPI}/>
 			{isConvertToDP && (
 				<ConvertToDP
 					callAPI={callAPI}
