@@ -164,7 +164,7 @@ const CompanyProfileCard = ({
 						className={`${CompanyProfileCardStyle.partWise} ${CompanyProfileCardStyle.partWiseList}`}>
 						<div style={{ marginBottom: '10px' }}>
 							<div className={CompanyProfileCardStyle.TR}>
-								<span>Active TR:</span>&nbsp;&nbsp;
+								<span>Total TR:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 								</span>

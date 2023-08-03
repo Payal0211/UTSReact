@@ -622,6 +622,20 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getDashboardCountRequest');
 		}
 	},
+	geLeadType: async function (LeadType) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_LEAD_BY_TYPE + `?LeadType=${LeadType}`;
+		httpService.setAuthRequired = true;
+		
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.geLeadType');
+		}
+	},
 	cloneHRRequest: async function (data) {
 		let httpService = new HttpServices();
 		httpService.URL =

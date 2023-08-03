@@ -28,7 +28,7 @@ export const reportConfig = {
 				ellipsis: {
 					showTitle: false,
 				},
-				width: item === 'Additional Info' ? 150 : 250,
+				width: item === 'Stage' ? 300 : 250,
 				render: (data, param) => {
 					let heighlight =	param.Stage === 'HR Active' || param.Stage === 'TR Active' || param.Stage === 'Profile Feedback Pending' || param.Stage === 'Interview Feedback Pending'
 					if(item === 'Duration' && heighlight){

@@ -8,7 +8,7 @@ import { HTTPStatusCode } from 'constants/network';
 import SpinLoader from "shared/components/spinLoader/spinLoader";
 
 const EditDPRate = ({ onCancel
- , DPData, hrId
+ , DPData, hrId,hrNO
 
 }) => {
     const [isLoading, setIsLoading] = useState(false)
@@ -40,7 +40,7 @@ const EditDPRate = ({ onCancel
     useEffect(() => {
         getDpAmounts()
     },[hrId,talentId,contactPriorityID])
-
+console.log("DPData",DPData)
 
     let watchExpectedCTC  = watch('expectedCTC')
     let watchDPpercentage = watch('dpPercentage')
@@ -76,7 +76,7 @@ const EditDPRate = ({ onCancel
         <div className={editBillAndPayRate.engagementModalContainer}
         >
             <div className={`${editBillAndPayRate.headingContainer} ${editBillAndPayRate.payRateContainer}`}>
-                <h1>Edit DP Rate</h1>
+                <h1>Edit DP Rate ({hrNO})</h1>
             </div>
 
             {isLoading ? <SpinLoader /> : 

@@ -18,6 +18,7 @@ const EditBillRate = ({
 	talentInfo,
 	callAPI,
 	hrId,
+	hrNO,
 	filterTalentID,
 }) => {
 	const {
@@ -75,7 +76,7 @@ const EditBillRate = ({
 		<div className={editBillAndPayRate.engagementModalContainer}>
 			<div
 				className={` ${editBillAndPayRate.headingContainer} ${editBillAndPayRate.billRateContainer}`}>
-				<h1>Edit Bill Rate</h1>
+				<h1>Edit Bill Rate ({hrNO})</h1>
 			</div>
 			<div className={editBillAndPayRate.firstFeebackTableContainer}>
 				<div

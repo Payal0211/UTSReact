@@ -86,4 +86,191 @@ export const OnboardDAO = {
 			return errorDebug(error, 'userDAO.onboardStatusUpdatesRequestDAO');
 		}
 	},
+	getClientLegelInfoDAO: async function (HRID) {
+		try {
+			const clientLeagelinfo =
+				await OnboardAPI.getClientLegalInfo(HRID);
+			if (clientLeagelinfo) {
+				const statusCode = clientLeagelinfo['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = clientLeagelinfo?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return clientLeagelinfo;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return clientLeagelinfo;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.getClientLegelInfoDAO');
+		}
+	},
+	getTalentOnBoardInfoDAO: async function (ONBID) {
+		try {
+			const TalentOnBoardlinfo =
+				await OnboardAPI.getTalentOnBoardInfo(ONBID);
+			if (TalentOnBoardlinfo) {
+				const statusCode = TalentOnBoardlinfo['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = TalentOnBoardlinfo?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return TalentOnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return TalentOnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.getTalentOnBoardInfoDAO');
+		}
+	},
+	uploadSOWFileDAO: async function (feedBackdata) {
+		try {
+            const submitFeedBackForm = await OnboardAPI.submitSOWFile(feedBackdata);
+            if (submitFeedBackForm) {
+                const statusCode = submitFeedBackForm['statusCode'];
+                if (statusCode === HTTPStatusCode.OK) {
+                    const tempResult = submitFeedBackForm.responseBody;
+                    return {
+                        statusCode: statusCode,
+                        responseBody: tempResult,
+                    };
+                } else if (
+                    statusCode === HTTPStatusCode.NOT_FOUND ||
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+                )
+                    return submitFeedBackForm;
+                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return submitFeedBackForm;
+                else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+                    UserSessionManagementController.deleteAllSession();
+                    return (
+                        <Navigate
+                            replace
+                            to={UTSRoutes.LOGINROUTE}
+                        />
+                    );
+                }
+            }
+        } catch (error) {
+            return errorDebug(error, 'engagementRequestDAO.saveFeedbackFormDAO');
+        }
+	},
+	getBeforeOnBoardInfoDAO: async function (payload) {
+		try {
+			const OnBoardlinfo =
+				await OnboardAPI.getBeforeOnBoardInfo(payload);
+			if (OnBoardlinfo) {
+				const statusCode = OnBoardlinfo['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = OnBoardlinfo?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return OnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return OnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.getBeforeOnBoardInfoDAO');
+		}
+	},
+	getDuringOnBoardInfoDAO: async function (payload) {
+		try {
+			const OnBoardlinfo =
+				await OnboardAPI.getDuringOnBoardInfo(payload);
+			if (OnBoardlinfo) {
+				const statusCode = OnBoardlinfo['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = OnBoardlinfo?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return OnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return OnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.getDuringOnBoardInfoDAO');
+		}
+	},
+	updateBeforeOnBoardInfoDAO: async function (payload) {
+		try {
+			const OnBoardlinfo =
+				await OnboardAPI.updateBeforeOnBoardInfo(payload);
+			if (OnBoardlinfo) {
+				const statusCode = OnBoardlinfo['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = OnBoardlinfo?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return OnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return OnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.updateBeforeOnBoardInfoDAO');
+		}
+	},
+	updatePreOnBoardInfoDAO: async function (payload) {
+		try {
+			const OnBoardlinfo =
+				await OnboardAPI.updatePreOnBoardInfo(payload);
+			if (OnBoardlinfo) {
+				const statusCode = OnBoardlinfo['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = OnBoardlinfo?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return OnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return OnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.updatePreOnBoardInfoDAO');
+		}
+	},
 };

@@ -287,7 +287,10 @@
     cursor: not-allowed;
 }
 
-
+.error {
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
+}
 
 /* Onboarding Process Css Start */
 
@@ -583,6 +586,51 @@
     position: relative;
     margin-bottom: 25px;
 }
+
+.marginBottom0{
+    margin-bottom: 0 !important;
+}
+
+.uploadedJDWrap {
+    margin: 0 0 32px;
+}
+
+.uploadedJDWrap label {
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #676767;
+    margin: 0 0 8px;
+    display: inline-block;
+}
+
+.uploadedJDName {
+    text-align: left;
+    width: 100%;
+    padding: 16px 75px 16px 16px;
+    background: var(--background-color-light);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--uplers-black);
+    outline: 1px solid transparent;
+    transition: all 0.25s ease 0s;
+    vertical-align: middle;
+    position: relative;
+}
+
+.uploadedJDClose {
+    position: absolute;
+    right: 12px;
+    top: 14px;
+    color: #f2f2f2;
+    cursor: pointer;
+}
+
 .timeSlotItem svg{
     position: absolute;
     top: 50%;

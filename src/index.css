@@ -916,9 +916,9 @@ table {
   padding-left: 0 !important;
 }
 
-.ant-picker-dropdown .ant-picker-footer{
+/* .ant-picker-dropdown .ant-picker-footer{
   display: none;
-}
+} */
 
 .ant-picker-cell-selected .ant-picker-cell-inner{
   background-color: var(--color-sunlight) !important;
