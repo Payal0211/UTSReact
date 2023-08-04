@@ -29,7 +29,7 @@ export default function CompleteLegal({talentDeteils,HRID, setShowAMModal,callAP
 	} = useForm({});
 
     // console.log(`Complete Legal t data`,talentDeteils)
-
+    const [isTabDisabled, setTabDisabled] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [boardData, setBoardData] = useState({})
     const [showUploadModal, setUploadModal] = useState(false);
@@ -128,6 +128,7 @@ export default function CompleteLegal({talentDeteils,HRID, setShowAMModal,callAP
 
             if (result?.statusCode === HTTPStatusCode.OK){
                 setBoardData(result.responseBody.details)
+                setTabDisabled(result.responseBody.details.isThirdTabReadOnly)
             //    if(result.responseBody.details.kickoffStatusId === 4
             //     ){
             //         EnableNextTab(talentDeteils,HRID,'After Kick-off')
@@ -142,7 +143,12 @@ export default function CompleteLegal({talentDeteils,HRID, setShowAMModal,callAP
 if(boardData){
     // console.log({clientLegalDate:boardData.clientLegalDate    })
 
-    boardData?.clientLegalDate && setValue('sowDate', boardData?.clientLegalDate)
+    boardData?.genOnBoardTalent?.talentLegalDate
+    && setValue('sowDate', boardData?.genOnBoardTalent?.talentLegalDate)
+
+    if( boardData?.genOnBoardTalent?.sowdocument){
+        setUploadFileData(boardData?.genOnBoardTalent?.sowdocument)
+    }
 }
     },[boardData])
 
@@ -157,8 +163,8 @@ if(boardData){
         async function fetchData() {
             setIsLoading(true)
             let result = await OnboardDAO.getClientLegelInfoDAO(HRID)
-            // console.log("Fetching client",result,result.responseBody.details)
-            result.responseBody.details && setValue('msaDate', result.responseBody.details)
+             console.log("Fetching client msaDate",result,result.responseBody.details)
+            result.responseBody.details && setValue('msaDate', dayjs(result.responseBody.details).toDate())
             setIsLoading(false)
           }
          
@@ -166,7 +172,7 @@ if(boardData){
  fetchData();
         }
     },[HRID,setValue])
-    // console.log("MSA", watch('msaDate'), "sow",dayjs(watch('sowDate'), 'YYYY-MM-DD'))
+     console.log("MSA", watch('msaDate'), "sow",dayjs(watch('msaDate')).toDate())
 
     const submitClientLegal = useCallback(async (d)=>{
         setIsLoading(true)
@@ -222,14 +228,17 @@ if(boardData){
                             <Controller
                                 render={({ ...props }) => (
                                     <DatePicker
-                                        // value={new Date(watch('msaDate'))}
+                                    { ...props }
+                                        // value={props.value ? moment(props.value): null}
                                         selected={watch('msaDate')}
-                                        placeholderText="Select Date"
+                                        // placeholderText={props.value ? props.value :"Select Date 34"}
                                         onChange={(date) => {
                                             setValue('msaDate', date);
                                         }}
+                                        // defaultPickerValue={props.value ? moment(props.value): null}
                                         // defaultValue={dayjs(watch('msaDate'), 'YYYY-MM-DD')}
                                         // dateFormat="yyyy/MM/dd"
+                                        disabled={isTabDisabled}
                                     />
                                 )}
                                 name="msaDate"
@@ -258,6 +267,7 @@ if(boardData){
                                             setValue('sowDate', date);
                                         }}
                                         // dateFormat="yyyy/MM/dd"
+                                        disabled={isTabDisabled}
                                     />
                                 )}
                                 name="sowDate"
@@ -295,12 +305,12 @@ if(boardData){
                                 <label>SOW Document</label>
                                 <div className={HRDetailStyle.uploadedJDName}>
                                     {getUploadFileData}{' '}
-                                    <CloseSVG
+                                   { !isTabDisabled && <CloseSVG
                                         className={HRDetailStyle.uploadedJDClose}
                                         onClick={() => {
                                             setUploadFileData('');
                                         }}
-                                    />
+                                    />}
                                 </div>
                             </div>
                         )}
@@ -337,7 +347,7 @@ if(boardData){
     <div className={HRDetailStyle.formPanelAction}>
         <button type="submit" className={HRDetailStyle.btnPrimary} 
         onClick={handleSubmit(submitClientLegal)}
-        disabled={isLoading}
+        disabled={isTabDisabled ? isTabDisabled:isLoading}
         >Complete Client Legal</button>
 
 <button type="submit" className={HRDetailStyle.btnPrimaryOutline} onClick={()=>setShowAMModal(false)} >Cancel</button>

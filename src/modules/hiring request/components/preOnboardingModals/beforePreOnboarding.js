@@ -32,6 +32,7 @@ export default function BeforePreOnboarding({
   callAPI,
   EnableNextTab,
   actionType,
+  setMessage
 }) {
   const {
     watch,
@@ -59,7 +60,11 @@ export default function BeforePreOnboarding({
   const [hrAcceptedBys, setHrAcceptedBys] = useState([]);
   const [workManagement, setWorkManagement] = useState("");
 
+  const [controlledDealOwner, setControlledDealOwner] = useState()
+  const [controlledDealSource, setControlledDealSource] = useState()
+
   const [isLoading, setIsLoading] = useState(false);
+  const [isTabDisabled, setTabDisabled] = useState(false)
 
   function convertToValidDate(timeString, currentDate = new Date()) {
     // Step 1: Parse the time string into separate components
@@ -111,16 +116,12 @@ export default function BeforePreOnboarding({
     //   console.log("fatchpreOnBoardInfo", result.responseBody.details);
 
       if (result?.statusCode === HTTPStatusCode.OK) {
+        setTabDisabled(result.responseBody.details.isFirstTabReadOnly
+          )
         setPreONBoardingData(result.responseBody.details);
         setPreOnboardingDetailsForAMAssignment(
           result.responseBody.details.preOnboardingDetailsForAMAssignment
         );
-        setDealowner(
-          result.responseBody.details.drpLeadUsers.filter(
-            (item) => item.value !== "0"
-          )
-        );
-        setDealSource(result.responseBody.details.drpLeadTypes);
         setWorkManagement(
           result.responseBody.details.preOnboardingDetailsForAMAssignment
             .workForceManagement
@@ -165,8 +166,21 @@ export default function BeforePreOnboarding({
               result.responseBody.details.preOnboardingDetailsForAMAssignment
                 .shiftEndTime
             )
-          )
+          )    
         );
+        let {drpLeadTypes,drpLeadUsers} = result.responseBody.details
+        setDealowner(
+          drpLeadUsers.filter(
+            (item) => item.value !== "0"
+          ).map((item) => ({ ...item, text: item.value, value: item.text }))
+        );   
+        setDealSource(drpLeadTypes);
+        setControlledDealSource(result.responseBody.details.preOnboardingDetailsForAMAssignment.dealSource)
+        setControlledDealOwner(result.responseBody.details.preOnboardingDetailsForAMAssignment.deal_Owner)
+              setValue('dealOwner', drpLeadTypes?.drpLeadUsers?.filter(
+                (item) => item.value === result.responseBody.details.preOnboardingDetailsForAMAssignment.deal_Owner
+              )[0].map((item) => ({ ...item, text: item.value, value: item.text })))
+              setValue('dealSource',result.responseBody.details.preOnboardingDetailsForAMAssignment.dealSource )
         //    if(result.responseBody.details.kickoffStatusId === 4
         //     ){
         //         EnableNextTab(talentDeteils,HRID,'After Kick-off')
@@ -184,7 +198,7 @@ export default function BeforePreOnboarding({
       let req = {
         OnboardID: talentDeteils?.OnBoardId,
         HRID: HRID,
-        actionName: actionType,
+        actionName: actionType ? actionType : 'GotoOnboard',
       };
       fatchpreOnBoardInfo(req);
     }
@@ -221,13 +235,12 @@ export default function BeforePreOnboarding({
         deal_Source: d.dealSource.value, //Update
         onboard_ID: talentDeteils?.OnBoardId,
         engagemenID: preOnboardingDetailsForAMAssignment?.engagemenID,
-        //assignAM: preONBoardingData.assignAM, // when clicked from AMAssignment button pass this as true, you will get this value from 1st API’s response.
-        assignAM: false,
+        assignAM: preONBoardingData.assignAM, // when clicked from AMAssignment button pass this as true, you will get this value from 1st API’s response.
         talentID: talentDeteils?.TalentID,
         talentShiftStartTime: moment(d.shiftStartTime).format('HH:mm A') , //Update
         talentShiftEndTime: moment(d.shiftEndTime).format('HH:mm A'), //Update
         payRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
-          ? null
+          ? 0
           : extractNumberFromString(d.payRate), // pass as null if DP HR  // send numeric value //Update
         billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
           ? null
@@ -235,12 +248,14 @@ export default function BeforePreOnboarding({
         netPaymentDays: parseInt(d.netTerm.value), //Update
       };
 
-    //   console.log("payload", payload);
+      console.log("payload", payload);
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
         EnableNextTab(talentDeteils, HRID, "During Pre-Onboarding");
+        // callAPI(HRID)
+        setMessage(result?.responseBody.details)
         setIsLoading(false);
-      }
+      }  
       setIsLoading(false);
     },
     [
@@ -251,7 +266,7 @@ export default function BeforePreOnboarding({
       EnableNextTab,
     ]
   );
-//   console.log("form error", errors);
+   console.log("form error", errors);
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
       <div className={HRDetailStyle.onboardingProcesspart}>
@@ -421,6 +436,9 @@ export default function BeforePreOnboarding({
                 <div className={HRDetailStyle.modalFormWrapper}>
                   <div className={HRDetailStyle.modalFormCol}>
                     <HRSelectField
+                    controlledValue={controlledDealSource}
+                    setControlledValue={setControlledDealSource}
+                    isControlled={true}
                       mode="id/value"
                       setValue={setValue}
                       register={register}
@@ -431,10 +449,14 @@ export default function BeforePreOnboarding({
                       isError={errors["dealSource"] && errors["dealSource"]}
                       required
                       errorMsg={"Please select Deal Source"}
+                      disabled={isTabDisabled}
                     />
                   </div>
                   <div className={HRDetailStyle.modalFormCol}>
                     <HRSelectField
+                     controlledValue={controlledDealOwner}
+                     setControlledValue={setControlledDealOwner}
+                     isControlled={true}
                       mode="id/value"
                       setValue={setValue}
                       register={register}
@@ -445,6 +467,7 @@ export default function BeforePreOnboarding({
                       isError={errors["dealOwner"] && errors["dealOwner"]}
                       required
                       errorMsg={"Please select Deal Owner"}
+                      disabled={isTabDisabled}
                     />
                   </div>
                 </div>
@@ -514,7 +537,7 @@ export default function BeforePreOnboarding({
                         errorMsg={"Please select Payment Net Term"}
                       />
                     ) : (
-                      <HRInputField
+                       <HRInputField
                         register={register}
                         errors={errors}
                         label="Payment Net Term"
@@ -525,16 +548,18 @@ export default function BeforePreOnboarding({
                           required: "please enter the Payment Net Term.",
                           min: 1
                         }}
+                        isError={errors["netTerm"] && errors["netTerm"]}
+                        errorMsg={"Please select Payment Net Term"}
                         required
                         disabled
                         trailingIcon={
-                          <EditFieldSVG
+                        !isTabDisabled &&  <EditFieldSVG
                             width="16"
                             height="16"
                             onClick={() => setEditNetTerm(true)}
                           />
                         }
-                      />
+                      />                  
                     )}
                   </div>
                   <div className={HRDetailStyle.modalFormCol}>
@@ -543,7 +568,7 @@ export default function BeforePreOnboarding({
                         register={register}
                         errors={errors}
                         validationSchema={{
-                          required: "please enter the discovery call link.",
+                          required: "please enter the Pay Rate.",
                         }}
                         label="Pay Rate"
                         required
@@ -568,7 +593,7 @@ export default function BeforePreOnboarding({
                         register={register}
                         errors={errors}
                         validationSchema={{
-                          required: "please enter the discovery call link.",
+                          required: "please enter the Pay Rate.",
                         }}
                         required
                         label="Pay Rate"
@@ -578,7 +603,7 @@ export default function BeforePreOnboarding({
                         // value="USD 4000/Month"
                         disabled
                         trailingIcon={
-                          <EditFieldSVG
+                        !isTabDisabled &&  <EditFieldSVG
                             width="16"
                             height="16"
                             onClick={() => {
@@ -599,7 +624,7 @@ export default function BeforePreOnboarding({
                         register={register}
                         errors={errors}
                         validationSchema={{
-                          required: "please enter the discovery call link.",
+                          required: "please enter the Bill Rate.",
                         }}
                         required
                         label="Bill Rate"
@@ -620,7 +645,7 @@ export default function BeforePreOnboarding({
                         register={register}
                         errors={errors}
                         validationSchema={{
-                          required: "please enter the discovery call link.",
+                          required: "please enter the Bill Rate.",
                         }}
                         required
                         label="Bill Rate"
@@ -630,7 +655,7 @@ export default function BeforePreOnboarding({
                         // value={watch('billRate')}
                         disabled
                         trailingIcon={
-                          <EditFieldSVG
+                         !isTabDisabled && <EditFieldSVG
                             width="16"
                             height="16"
                             onClick={() => {
@@ -765,7 +790,7 @@ export default function BeforePreOnboarding({
                               <span>Open HR ID :</span>
                               <a
                                 target="_blank"
-                                href="#"
+                                href={`/allhiringrequest/${HR.hrid}`}
                                 rel="noreferrer"
                                 className={
                                   HRDetailStyle.onboardingTextUnderline
@@ -930,6 +955,7 @@ export default function BeforePreOnboarding({
                               timeFormat="h:mm a"
                               dateFormat="h:mm a"
                               placeholderText="Start Time"
+                              disabled={isTabDisabled}
                             />
                           )}
                           name="shiftStartTime"
@@ -966,6 +992,7 @@ export default function BeforePreOnboarding({
                               timeFormat="h:mm a"
                               dateFormat="h:mm a"
                               placeholderText="End Time"
+                              disabled={isTabDisabled}
                             />
                           )}
                           name="shiftEndTime"
@@ -992,7 +1019,7 @@ export default function BeforePreOnboarding({
           type="submit"
           className={HRDetailStyle.btnPrimary}
           onClick={handleSubmit(handleComplete)}
-          disabled={isLoading}
+          disabled={isTabDisabled ? isTabDisabled : isLoading}
         >
           {preONBoardingData?.dynamicOnBoardCTA?.gotoOnboard
             ? `${preONBoardingData?.dynamicOnBoardCTA?.gotoOnboard?.label}`

@@ -700,7 +700,7 @@ talentID,})
 												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && <span
 													onClick={() => {
 														setEditDPRate(true);
-														setDPData({ talentId:item?.TalentID , contactPriorityID: item?.ContactPriorityID});
+														setDPData({ talentId:item?.TalentID , contactPriorityID: item?.ContactPriorityID, allValues: item});
 													}}
 													style={{
 														textDecoration: 'underline',
@@ -843,8 +843,16 @@ talentID,})
 															break;
 														}
 														case TalentOnboardStatus.UPDATE_CLIENT_ON_BOARD_STATUS: {
-															setOnboardClientModal(true);
-															setTalentIndex(item?.TalentID);
+															// setOnboardClientModal(true);
+															// setTalentIndex(item?.TalentID);
+															setShowAMModal(true);
+															let Flags = {
+																talent: item,
+																tabLabel: 'During Pre-Onboarding',
+																forTalent: true,
+																hrID:hrId
+															}
+															setAMFlags(Flags)
 															break;
 														}
 														case TalentOnboardStatus.SUBMIT_CLIENT_FEEDBACK: {
@@ -1451,6 +1459,7 @@ talentID,})
 						errors={errors}
 						setHRapiCall={setHRapiCall}
 						callHRapi={callHRapi}
+						hrNO={hiringRequestNumber}
 					/>
 				</Modal>
 			)}
@@ -1465,7 +1474,7 @@ talentID,})
 					open={editDPRate}
 					className="statusModalWrap"
 					onCancel={() => setEditDPRate(false)}>
-						<EditDPRate onCancel={() => setEditDPRate(false)}  hrId={hrId} DPData={DPData} hrNO={hiringRequestNumber} />
+						<EditDPRate onCancel={() => setEditDPRate(false)}  hrId={hrId} DPData={DPData} hrNO={hiringRequestNumber}  />
 				</Modal>
 			)}
 

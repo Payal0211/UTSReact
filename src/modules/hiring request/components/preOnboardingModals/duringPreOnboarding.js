@@ -36,9 +36,62 @@ export default function DuringPreOnboarding({
 		formState: { errors },
 	} = useForm({});
 
+    const {
+		watch : memberWatch,
+		register:memberregister,
+		setValue:memberSetValue,
+		handleSubmit:memberHandleSubmit,
+        unregister: memberUnregister,
+		control: memberControl,
+		formState: { errors : memberErrors},
+	} = useForm({});
+
     const [tabData, setTabData] = useState({})
     const [clientTeamMembers, setClientTeamMembers] = useState([])
     const [addMoreTeamMember, setAddMoreTeamMember] = useState(false)
+
+    const [isTabDisabled, setTabDisabled] = useState(false)
+
+    const saveMember = (d) =>{
+        console.log("member data", d)
+        let newMember = {
+        "name": d.memberName,
+        "designation": d.memberDesignation,
+        "reportingTo": d.reportingTo,
+        "linkedin": d.linkedinLink,
+        "email": d.memberEmail,
+        "buddy": d.memberBuddy
+      }
+      setAddMoreTeamMember(false)
+      setClientTeamMembers(prev=> ([...prev, newMember]))
+      memberUnregister('reportingTo')
+      memberUnregister('memberName')
+      memberUnregister('memberEmail')
+      memberUnregister('memberDesignation')
+      memberUnregister('memberBuddy')
+      memberUnregister('linkedinLink')
+
+    }
+
+    const editMember = (member)=>{
+      setAddMoreTeamMember(true)
+      memberSetValue('reportingTo',member.reportingTo)
+      memberSetValue('memberName',member.name)
+      memberSetValue('memberEmail',member.email)
+      memberSetValue('memberDesignation',member.designation)
+      memberSetValue('memberBuddy',member.buddy)
+      memberSetValue('linkedinLink',member.linkedin)
+    }
+
+    const calcelMember = () =>{
+        setAddMoreTeamMember(false)
+        memberUnregister('reportingTo')
+        memberUnregister('memberName')
+        memberUnregister('memberEmail')
+        memberUnregister('memberDesignation')
+        memberUnregister('memberBuddy')
+        memberUnregister('linkedinLink')
+    }
 
     const fatchduringOnBoardInfo = useCallback(
         async (req) => {
@@ -47,6 +100,8 @@ export default function DuringPreOnboarding({
     
           if (result?.statusCode === HTTPStatusCode.OK) {
             let data = result.responseBody.details
+
+            setTabDisabled(data.isSecondTabReadOnly)
            setTabData(data.secondTabAMAssignmentOnBoardingDetails)
            setValue('invoiceRaisinfTo',data.secondTabAMAssignmentOnBoardingDetails.inVoiceRaiseTo)
            setValue('invoiceRaisingToEmail',data.secondTabAMAssignmentOnBoardingDetails.inVoiceRaiseToEmail)
@@ -80,6 +135,7 @@ export default function DuringPreOnboarding({
 
     const handleOnboarding = async (d) => {
 // console.log("form data",d)
+        setShowAMModal(true)
         let payload = {
             "hR_ID": HRID,
             "companyID": 11476,// to be dynamic
@@ -106,9 +162,9 @@ export default function DuringPreOnboarding({
             "totalCost": 0,
             "radio_LeavePolicies": d.leavePolicie.value,
             "leavePolicyPasteLinkName": "",
-            "teamMemebers": clientTeamMembers
+            "teamMembers": clientTeamMembers
           }
-
+console.log(payload)
           let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
 
         //   console.log("res",result,payload)
@@ -118,7 +174,7 @@ export default function DuringPreOnboarding({
         setShowAMModal(false)
         callAPI(HRID)
       }
-
+      setShowAMModal(false)
     }
 
 
@@ -158,6 +214,7 @@ export default function DuringPreOnboarding({
                                 type={InputType.TEXT}
                                 placeholder="Enter Name"
                                 required
+                                disabled={isTabDisabled}
                             />
                         </div>
 
@@ -173,6 +230,7 @@ export default function DuringPreOnboarding({
                                 type={InputType.TEXT}
                                 placeholder="Enter Email"
                                 required
+                                disabled={isTabDisabled}
                             />
                         </div>
 
@@ -222,6 +280,7 @@ export default function DuringPreOnboarding({
                             validationSchema={{
                                 required: 'please enter A Bit about company culture.',
                             }}
+                            disabled={isTabDisabled}
                         />
                     </div>
 
@@ -238,6 +297,7 @@ export default function DuringPreOnboarding({
                             validationSchema={{
                                 required: 'How does the first week look like?.',
                             }}
+                            disabled={isTabDisabled}
                         />
                     </div>
 
@@ -254,6 +314,7 @@ export default function DuringPreOnboarding({
                             validationSchema={{
                                 required: 'How does the first month look like?.',
                             }}
+                            disabled={isTabDisabled}
                         />
                     </div>
 
@@ -270,6 +331,7 @@ export default function DuringPreOnboarding({
                             validationSchema={{
                                 required: 'please enter Softwares & Tools Required.',
                             }}
+                            disabled={isTabDisabled}
                         />
                         {/* <HRSelectField
                             isControlled={true}
@@ -301,6 +363,7 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                             isError={errors['devicePolicy'] && errors['devicePolicy']}
                             required
                             errorMsg={'Please select Device Policy'}
+                            disabled={isTabDisabled}
                         />
                     </div>
 
@@ -319,6 +382,7 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                                 isError={errors['leavePolicie'] && errors['leavePolicie']}
                                 required
                                 errorMsg={'Please select Leave Polices'}
+                                disabled={isTabDisabled}
                             />
                         </div>
                     </div>
@@ -370,15 +434,59 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
             <div className={HRDetailStyle.onboardingProcessLeft}>
                 <div><ClientTeamMemberSVG width="51" height="26" /></div>
                 <h3 className={HRDetailStyle.titleLeft}>Client’s Team Members</h3>
-                <div className={HRDetailStyle.modalBtnWrap}>
-                    <button type="btn" className={HRDetailStyle.btnPrimary} onClick={()=> setAddMoreTeamMember(true)}>Add More</button>
-                </div>
+                {!isTabDisabled && <div className={HRDetailStyle.modalBtnWrap}>
+                    <button type="btn" className={HRDetailStyle.btnPrimary} onClick={()=> setAddMoreTeamMember(true)} disabled={isTabDisabled}  >Add More</button>
+                </div>}
             </div>
 
             <div className={HRDetailStyle.onboardingProcessMid}>
                 <div className={HRDetailStyle.modalFormWrapper}>
                     {clientTeamMembers.length > 0 ? <>
-                        <div className={HRDetailStyle.modalFormCol}>
+                    {clientTeamMembers.map(member=>  <div className={HRDetailStyle.modalFormCol}>
+                        <div className={HRDetailStyle.onboardingCurrentTextWrap}>
+                            <div className={HRDetailStyle.onboardingCurrentText}>
+                                <span>Name: </span>
+                                <span className={HRDetailStyle.onboardingTextBold}>{member.name}</span>
+                            </div>
+                            <div className={HRDetailStyle.onboardingCurrentText}>
+                                <span>Designation: </span>
+                                <span className={HRDetailStyle.onboardingTextBold}>{member.designation}</span>
+                            </div>
+                            <div className={HRDetailStyle.onboardingCurrentText}>
+                                <span>Reporting To:</span>
+                                <span className={HRDetailStyle.onboardingTextBold}>{member.reportingTo}</span>
+                            </div>
+                            <div className={HRDetailStyle.onboardingCurrentText}>
+                                <span>LinkedIn :</span>
+                                <span className={HRDetailStyle.onboardingTextBold}> {member.linkedin} <LinkedinClientSVG width="16" height="16"/></span>
+                            </div> 
+                            <div className={HRDetailStyle.onboardingCurrentText}>
+                                <span>Email:</span>
+                                <span className={HRDetailStyle.onboardingTextBold}>{member.email}</span>
+                            </div> 
+                            <div className={HRDetailStyle.onboardingCurrentText}>
+                                <span>Buddy:</span>
+                                <span className={HRDetailStyle.onboardingTextBold}>{member.buddy}</span>
+                            </div>
+
+                            {/* <div className={HRDetailStyle.onboardingDotsDrop}>
+                                {
+                                    <Dropdown
+                                        trigger={['click']}
+                                        placement="bottom"
+                                        getPopupContainer={trigger => trigger.parentElement}
+                                        overlay={
+                                            <Menu>
+                                                <Menu.Item key={0} onClick={()=>editMember(member)}>Edit Detail</Menu.Item>
+                                            </Menu>
+                                        }>
+                                        <BsThreeDots style={{ fontSize: '1.5rem' }} />
+                                    </Dropdown>
+                                }
+                            </div> */}
+                        </div>
+                    </div>)}
+                        {/* <div className={HRDetailStyle.modalFormCol}>
                         <div className={HRDetailStyle.onboardingCurrentTextWrap}>
                             <div className={HRDetailStyle.onboardingCurrentText}>
                                 <span>Name: </span>
@@ -465,7 +573,7 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                                 }
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     </> :  <h3 className={HRDetailStyle.titleLeft}>No Client’s Team Members Availability</h3> }
                     
                 </div>
@@ -475,78 +583,84 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                     <div className={HRDetailStyle.modalFormWrapper}>
                         <div className={HRDetailStyle.modalFormCol}>
                             <HRInputField
-                                register={register}
-                                errors={errors}
+                                register={memberregister}
+                                errors={memberErrors}
                                 validationSchema={{
                                     required: 'please enter the name.',
                                 }}
+                                required
                                 label="Name"
-                                name="EnterName"
+                                name="memberName"
                                 type={InputType.TEXT}
                                 placeholder="Enter Name"
                             />
                         </div>
                         <div className={HRDetailStyle.modalFormCol}>
                             <HRInputField
-                                register={register}
-                                errors={errors}
+                                 register={memberregister}
+                                 errors={memberErrors}
+                                 required
                                 validationSchema={{
                                     required: 'please enter the Designation name.',
                                 }}
                                 label="Designation"
-                                name="EnterDesignation"
+                                name="memberDesignation"
                                 type={InputType.TEXT}
                                 placeholder="Enter Designation"
                             />
                         </div>
                         <div className={HRDetailStyle.modalFormCol}>
                             <HRInputField
-                                register={register}
-                                errors={errors}
+                                 register={memberregister}
+                                 errors={memberErrors}
+                                 required
                                 validationSchema={{
                                     required: 'please enter the Reporting name.',
                                 }}
                                 label="Reporting to"
-                                name="EnterName"
+                                name="reportingTo"
                                 type={InputType.TEXT}
                                 placeholder="Enter Name"
                             />
                         </div>
                         <div className={HRDetailStyle.modalFormCol}>
                             <HRInputField
-                                register={register}
-                                errors={errors}
+                                register={memberregister}
+                                errors={memberErrors}
+                                required
                                 validationSchema={{
                                     required: 'please enter the Link.',
                                 }}
                                 label="Linkedin"
-                                name="Link"
+                                name="linkedinLink"
                                 type={InputType.TEXT}
                                 placeholder="Enter Link"
                             />
                         </div>
                         <div className={HRDetailStyle.modalFormCol}>
                             <HRInputField
-                                register={register}
-                                errors={errors}
+                                register={memberregister}
+                                errors={memberErrors}
+                                required
                                 validationSchema={{
                                     required: 'please enter the Email.',
                                 }}
                                 label="Email"
-                                name="Email"
+                                name="memberEmail"
                                 type={InputType.TEXT}
                                 placeholder="Enter Email"
                             />
                         </div>
                         <div className={HRDetailStyle.modalFormCol}>
                             <HRInputField
-                                register={register}
-                                errors={errors}
+                                 register={memberregister}
+                                 errors={memberErrors}
+                                 required
                                 validationSchema={{
-                                    required: 'please enter the Enter name.',
+                                    required: 'please enter the buddy name.',
                                 }}
                                 label="Buddy"
-                                name="EnterName"
+                                name="memberBuddy"
                                 type={InputType.TEXT}
                                 placeholder="Enter Name"
                             />
@@ -554,8 +668,8 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
 
                         <div className={HRDetailStyle.modalFormCol}>
                             <div className={HRDetailStyle.modalBtnWrap}>
-                                <button type="submit" className={HRDetailStyle.btnPrimary}>Save</button>
-                                <button className={HRDetailStyle.btnPrimaryOutline} onClick={()=> setAddMoreTeamMember(false)}>Cancel</button>
+                                <button type="submit" className={HRDetailStyle.btnPrimary} onClick={memberHandleSubmit(saveMember)}>Save</button>
+                                <button className={HRDetailStyle.btnPrimaryOutline} onClick={()=> calcelMember()}>Cancel</button>
                             </div>
                         </div>
                     </div>		
@@ -567,11 +681,12 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
     </div>
 
     <div className={HRDetailStyle.formPanelAction}>
-        <button type="submit" className={HRDetailStyle.btnPrimary} onClick={handleSubmit(handleOnboarding)}>Complete Client Pre-Onboarding</button>
+        <button type="submit" className={HRDetailStyle.btnPrimary} onClick={handleSubmit(handleOnboarding)} disabled={isTabDisabled}>Complete Client Pre-Onboarding</button>
         <button
           type="submit"
           className={HRDetailStyle.btnPrimaryOutline}
-          onClick={() => setShowAMModal(false)}
+        //   onClick={() => setShowAMModal(false)}
+            onClick={()=>callAPI(HRID)}
         >
           Cancel
         </button>
