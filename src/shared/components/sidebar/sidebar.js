@@ -8,6 +8,7 @@ import Briefcase from 'assets/svg/briefcase.svg';
 import DemandFunnel from 'assets/svg/demandFunnel.svg';
 import SupplyFunnel from 'assets/svg/supplyFunnel.svg';
 import TeamDemandFunnel from 'assets/svg/teamDemandFunnel.svg';
+import ClientHappinessSurveyFunnel from 'assets/svg/Clienthapppy.svg';
 import Invoice from 'assets/svg/invoice.svg';
 import EngagementDashboard from 'assets/svg/engagementDashboard.svg';
 import JDEfficiencyReport from 'assets/svg/jdEfficiency.svg';
@@ -139,7 +140,7 @@ const isAccess = (ID, title) =>{
 	title === 'Demand Funnel' || 
 	title === 'SLA Report' || 
 	title === 'Client Report' || 
-	title === 'I2S Report' || title === 'Master' || title === 'Deal' || title === 'HR Report'){
+	title === 'I2S Report' || title === 'Master' || title === 'Deal' || title === 'HR Report' || title === 'Client Happiness Survey'){
 
 		isVisible = (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 || ID === 6)  
 		
@@ -223,6 +224,16 @@ const getSideBar = (usertypeID) => {
 			isChildren: false,
 			branch: [],
 			isVisible:isAccess(usertypeID,'Team Demand Funnel')
+		}),
+		new SideBarModels({
+			id: 'client_happiness_survey',
+			title: 'Client Happiness Survey',
+			isActive: false,
+			icon: ClientHappinessSurveyFunnel,
+			navigateTo: UTSRoutes.CLIENT_HAPPINESS_SURVEY,
+			isChildren: false,
+			branch: [],
+			isVisible:isAccess(usertypeID,'Client Happiness Survey')
 		}),
 		new SideBarModels({
 			id: 'incentive_report',
