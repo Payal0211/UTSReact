@@ -7,7 +7,7 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { HTTPStatusCode } from 'constants/network';
 
 const EditPayRate = ({ talentInfo, onCancel
-    , register, errors, handleSubmit, setHRapiCall, callHRapi
+    , register, errors, handleSubmit, setHRapiCall, callHRapi,hrNO
 
 }) => {
 
@@ -27,7 +27,7 @@ const EditPayRate = ({ talentInfo, onCancel
         <div className={editBillAndPayRate.engagementModalContainer}
         >
             <div className={`${editBillAndPayRate.headingContainer} ${editBillAndPayRate.payRateContainer}`}>
-                <h1>Edit Pay Rate</h1>
+                <h1>Edit Pay Rate ({hrNO})</h1>
             </div>
             <div className={editBillAndPayRate.firstFeebackTableContainer}>
                 <div className={editBillAndPayRate.row}>

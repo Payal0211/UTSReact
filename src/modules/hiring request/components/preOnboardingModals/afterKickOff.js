@@ -23,6 +23,7 @@ export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI
 	} = useForm({});
 
     const [isLoading, setIsLoading] = useState(false)
+    const [isTabDisabled, setTabDisabled] = useState(false)
 
     useEffect(() => {
         setIsLoading(true)

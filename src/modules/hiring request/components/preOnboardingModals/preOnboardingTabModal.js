@@ -23,6 +23,7 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
     const [items, setItems] = useState([])
     const [activeKey , setActiveKey] = useState('Before Pre-Onboarding')
     const [actionType,setActionType] = useState('AMAssignment')
+    const [message, setMessage] = useState({})
 
 
 
@@ -31,7 +32,7 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
             {
                 label: 'Before Pre-Onboarding',
                 key: 'Before Pre-Onboarding',
-                children: <BeforePreOnboarding  talentDeteils={talentDeteil} HRID={HRID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={actionType}/>,
+                children: <BeforePreOnboarding  talentDeteils={talentDeteil} HRID={HRID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={actionType} setMessage={setMessage}/>,
             },
             {
                 label: 'During Pre-Onboarding',
@@ -57,10 +58,10 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
 
        let tabIndex = tabList.findIndex(tab => tab.label === tabLabel) 
        let ReqTabs = tabList.splice(0, tabIndex + 1)
-       let tabWithDisabledState =  ReqTabs.map((tab, index)=>{
-        return {...tab, disabled: index !== tabIndex}
-    })
-       setItems(tabWithDisabledState)
+    //    let tabWithDisabledState =  ReqTabs.map((tab, index)=>{
+    //     return {...tab, disabled: index !== tabIndex}
+    // })
+       setItems(ReqTabs)
        setActiveKey(tabLabel)
     },[actionType,setShowAMModal,callAPI])
 
@@ -74,7 +75,7 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
                 {
                     label: 'Before Pre-Onboarding',
                     key: 'Before Pre-Onboarding',
-                    children: <BeforePreOnboarding  talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} />,
+                    children: <BeforePreOnboarding  talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} />,
                 },
                 {
                     label: 'During Pre-Onboarding',
@@ -100,13 +101,13 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
 
            let tabIndex = tabList.findIndex(tab => tab.label === AMFlags.tabLabel) 
            let ReqTabs = tabList.splice(0, tabIndex + 1)
-            let tabWithDisabledState =  ReqTabs.map((tab, index)=>{
-                return {...tab, disabled:index !== tabIndex}
-            })
+            // let tabWithDisabledState =  ReqTabs.map((tab, index)=>{
+            //     return {...tab, disabled:index !== tabIndex}
+            // })
 //            console.log({tabIndex,AMFlags ,ReqTabs})
            
 // console.log(AMFlags.actionType,"AMFlags.actionType")
-           setItems(tabWithDisabledState)
+           setItems(ReqTabs)
            setActiveKey(AMFlags?.tabLabel)
            setTalentDetais(AMFlags.talent)
            setActionType(AMFlags.actionType)
@@ -128,14 +129,14 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
         setShowAMModal(false);
     }}>
     <div className={HRDetailStyle.modalInnerWrapper}>
-        {/* <div className={HRDetailStyle.onbordingAssignMsgMain}>
+       {/* {message.Message && <div className={HRDetailStyle.onbordingAssignMsgMain}>
             <div className={HRDetailStyle.onbordingAssignMsg}>
                 <div className={HRDetailStyle.onbordingCurrentImg}>
                     <AssignCurrectSVG width="24" height="24" />
                 </div>
-                Mukul Gupta assigned as an AM for HR587346725623
+                {message.Message }
             </div>
-        </div> */}
+        </div>} */}
         
 
         <div className={HRDetailStyle.modalLabel}>Onboarding Process</div>

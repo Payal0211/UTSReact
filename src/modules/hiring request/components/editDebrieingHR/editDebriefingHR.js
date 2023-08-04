@@ -225,12 +225,14 @@ const EditDebriefingHR = ({
 				debriefFormDetails,
 			);
 			if (debriefResult.statusCode === HTTPStatusCode.OK) {
-				window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
+				// window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
 				setIsLoading(false);
 				messageAPI.open({
 					type: 'success',
 					content: 'HR Debriefing has been updated successfully..',
 				});
+
+				navigate(`/allhiringrequest/${getHRdetails?.addHiringRequest?.id}`)
 			}
 		},
 		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI,isFocusedRole],

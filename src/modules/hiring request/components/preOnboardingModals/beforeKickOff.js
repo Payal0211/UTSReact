@@ -7,6 +7,7 @@ import { OnboardDAO } from 'core/onboard/onboardDAO';
 import { HTTPStatusCode } from 'constants/network';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import { HRDeleteType, HiringRequestHRStatus, InputType } from 'constants/application';
+import dayjs from 'dayjs'
 
 import { ReactComponent as BeforeKickOffSVG } from 'assets/svg/beforeKickOff.svg';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
@@ -27,6 +28,9 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
 
     const [isLoading, setIsLoading] = useState(false)
     const [talentStatus, setTalentStatus] = useState([]);
+    const [isTabDisabled, setTabDisabled] = useState(false)
+    const [TabData,setTabData] = useState({})
+    const [controlledTimeZone, setControlledTimeZone] = useState()
 
     const getTalentStatusHandler = useCallback(async () => {
         setIsLoading(true)
@@ -35,8 +39,8 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
 			onboardID: talentDeteils?.OnBoardId,
 			action: 'KickOff',
 		});
-
-		setTalentStatus(response && response?.responseBody?.details?.Data);
+console.log('status handler',response)
+		setTalentStatus(response && response?.responseBody?.details?.Data);       
         }	
         setIsLoading(false)
 	}, [talentDeteils]);
@@ -45,15 +49,29 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
 		getTalentStatusHandler();
 	}, [getTalentStatusHandler]);
 
+    useEffect(()=>{
+        if(talentStatus?.Timezonedata?.length && TabData.kickoffTimezonePreferenceId){
+            let tZ = talentStatus?.Timezonedata.filter(t => t.id === TabData.kickoffTimezonePreferenceId)[0]
+            console.log(tZ,'tz',talentStatus?.Timezonedata,TabData.kickoffTimezonePreferenceId);
+            setControlledTimeZone(tZ.value)
+            setValue('timeZone', tZ)
+        }
+    },[talentStatus,TabData,setValue,controlledTimeZone])
+
     const fatchOnBoardInfo = useCallback(async (ONBID) =>{
         let result = await OnboardDAO.getTalentOnBoardInfoDAO(ONBID)
-            // console.log("fatchOnBoardInfo",result.responseBody.details)
+            console.log("fatchOnBoardInfo",result.responseBody.details)
 
             if (result?.statusCode === HTTPStatusCode.OK){
-               if(result.responseBody.details.kickoffStatusId === 4
+               if(result.responseBody.details.genOnBoardTalent.kickoffStatusId === 4
                 ){
                     EnableNextTab(talentDeteils,HRID,'After Kick-off')
                 }  
+                setTabDisabled(result.responseBody.details.isFourthTabReadOnly)
+                result.responseBody.details.genOnBoardTalent.kickoffDate &&  setValue('callDate',result.responseBody.details.genOnBoardTalent.kickoffDate)
+
+               setTabData(result.responseBody.details.genOnBoardTalent)
+                // setValue('time',result.responseBody.details.genOnBoardTalent.kickoffTimezonePreferenceId)
             }
            
             // result.responseBody.details && setValue('msaDate', result.responseBody.details)
@@ -131,12 +149,14 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                             <Controller
                                 render={({ ...props }) => (
                                     <DatePicker
+                                    // value={dayjs(watch('callDate'))}
                                     selected={watch('callDate')}
-                                        placeholderText="Select Date"
+                                        placeholderText={watch('callDate') ? watch('callDate') : "Select Date"}
                                         onChange={(date) => {
                                             setValue('callDate', date);
                                         }}
                                         dateFormat="yyyy/MM/dd H:mm:ss"
+                                        disabled={isTabDisabled}
                                     />
                                 )}
                                 name="callDate"
@@ -190,7 +210,9 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
 
                     <div className={HRDetailStyle.modalFormCol}>
                         <HRSelectField
-                            // isControlled={true}
+                            isControlled={true}
+                            controlledValue={controlledTimeZone}
+                     setControlledValue={setControlledTimeZone}
                             mode="id/value"
                             setValue={setValue}
                             register={register}
@@ -202,6 +224,7 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                             isError={errors['timeZone'] && errors['timeZone']}
                             required
                             errorMsg={'Please select timezone'}
+                            disabled={isTabDisabled}
                         />
                     </div>
 
@@ -217,6 +240,7 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                             <Controller
                                 render={({ ...props }) => (
                                     <TimePicker.RangePicker 
+                                    disabled={isTabDisabled}
                                     use12Hours
                                     required
                                     suffixIcon={<ClockIconSVG />}
@@ -259,7 +283,7 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
     </div>
 
     <div className={HRDetailStyle.formPanelAction}>
-        <button type="submit" className={HRDetailStyle.btnPrimary} disabled={isLoading} onClick={handleSubmit(ScheduleKickOff)} >Schedule Kick-off</button>
+        <button type="submit" className={HRDetailStyle.btnPrimary} disabled={isTabDisabled? isTabDisabled:isLoading} onClick={handleSubmit(ScheduleKickOff)} >Schedule Kick-off</button>
         <button type="submit" className={HRDetailStyle.btnPrimaryOutline} onClick={()=> onCancel()} >Cancel</button>
     </div>
 </div>

@@ -8,7 +8,7 @@ import { HTTPStatusCode } from 'constants/network';
 import SpinLoader from "shared/components/spinLoader/spinLoader";
 
 const EditDPRate = ({ onCancel
- , DPData, hrId,hrNO
+ , DPData, hrId,hrNO,
 
 }) => {
     const [isLoading, setIsLoading] = useState(false)
@@ -71,7 +71,7 @@ console.log("DPData",DPData)
         }
         setIsLoading(false);
     }
-
+console.log('irem',DPData.allValues)
     return (
         <div className={editBillAndPayRate.engagementModalContainer}
         >
@@ -82,6 +82,13 @@ console.log("DPData",DPData)
             {isLoading ? <SpinLoader /> : 
             <>
              <div className={editBillAndPayRate.firstFeebackTableContainer}>
+             <div className={editBillAndPayRate.colMd12}>
+						<p>
+							Currency<span>*</span> :{' '}
+							{Object.keys(DPData?.allValues).length > 0 &&
+								DPData?.allValues?.TalentCurrenyCode}
+						</p>
+					</div>
                 <div className={editBillAndPayRate.row}>
                     <div
                         className={editBillAndPayRate.colMd12}>
