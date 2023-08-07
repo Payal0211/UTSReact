@@ -17,6 +17,8 @@ import InterviewReschedule from 'modules/interview/screens/interviewReschedule/i
 import InterviewSchedule from 'modules/interview/screens/interviewSchedule/interviewSchedule';
 import InterviewFeedback from 'modules/interview/screens/interviewFeedback/interviewFeedback';
 import { hrUtils } from 'modules/hiring request/hrUtils';
+import { engagementRequestDAO } from 'core/engagement/engagementDAO';
+import UTSRoutes from 'constants/routes';
 import {
 	_isNull,
 	addHours,
@@ -43,6 +45,7 @@ import EditBillRate from '../editBillAndPayRate/editBillRateModal';
 import ProfileRejectedModal from '../profileRejected/profileRejected';
 import ConfirmSlotModal from '../confirmSlot/confirmSlotModal';
 import FeedbackResponse from 'modules/interview/components/feedbackResponse/feedbackResponse';
+import EngagementOnboard from 'modules/engagement/screens/engagementOnboard/engagementOnboard';
 
 import ProfileLogDetails from '../profileLogDetails/profileLog';
 import TalentInterviewStatus from '../talentInterviewStatus/talentInterviewStatus';
@@ -203,6 +206,41 @@ const TalentList = ({
 	);
 
 	const [getBillRateInfo, setBillRateInfo] = useState({});
+
+	const [showengagementOnboard, setShowEngagementOnboard] = useState(false);
+	const [getHRAndEngagementId, setHRAndEngagementId] = useState({
+		hrNumber: '',
+		engagementID: '',
+		talentName: '',
+		onBoardId: '',
+		hrId: '',
+	});
+	const [getOnboardFormDetails, setOnboardFormDetails] = useState({});
+
+	const getOnboardingForm = async (getOnboardID) => {
+		setOnboardFormDetails({});
+		// setLoading(true);
+		const response = await engagementRequestDAO.viewOnboardDetailsDAO(
+			getOnboardID,
+		);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			setOnboardFormDetails(response?.responseBody?.details);
+			// setLoading(false);
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			// setLoading(false);
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			return 'NO DATA FOUND';
+		}
+	};
+
+	useEffect(() => {
+		showengagementOnboard &&
+			getHRAndEngagementId?.onBoardId &&
+			getOnboardingForm(getHRAndEngagementId?.onBoardId);
+	}, [showengagementOnboard]);
 
 	const hrCostDetailsHandler = useCallback(async () => {
 		// const hrCostData = {
@@ -939,6 +977,17 @@ talentID,})
 															setAMFlags(Flags)
 															break;
 														}
+														case TalentOnboardStatus.VIEW_ENGAGEMENT:{
+																setHRAndEngagementId({
+																						talentName: item.Name									,
+																						engagementID: item.EngagemenID,
+																						hrNumber: item.HR_Number,
+																						onBoardId: item.OnBoardId,
+																						hrId: hrId,
+																					})
+																setShowEngagementOnboard(true)
+															break
+														}
 														default:
 															break;
 													}
@@ -955,6 +1004,25 @@ talentID,})
 
 			{/** ============ MODAL FOR PROFILE REJECTED REASON ================ */}
 			<PreOnboardingTabModal showAMModal={showAMModal} setShowAMModal={setShowAMModal}  AMFlags={AMFlags} callAPI={callAPI}/>
+
+
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className="engagementPayRateModal"
+						open={showengagementOnboard}
+						onCancel={() =>
+							setShowEngagementOnboard(false)
+						}>
+						<EngagementOnboard
+							getOnboardFormDetails={getOnboardFormDetails}
+							getHRAndEngagementId={getHRAndEngagementId}
+							scheduleTimezone={scheduleTimezone}
+						/>
+					</Modal>
+				
 
 
 			{/** ============ MODAL FOR PROFILE REJECTED REASON ================ */}

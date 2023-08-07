@@ -277,12 +277,12 @@ export const allHRConfig = {
 				child: filterList?.positions,
 				isSearch: true,
 			},
-			{
-				label: 'Company',
-				name: 'company',
-				child: filterList?.companies,
-				isSearch: true,
-			},
+			// {
+			// 	label: 'Company',
+			// 	name: 'company',
+			// 	child: filterList?.companies,
+			// 	isSearch: true,
+			// },
 			{
 				label: 'FTE/PTE',
 				name: 'typeOfEmployee',

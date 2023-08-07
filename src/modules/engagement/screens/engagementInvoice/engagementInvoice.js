@@ -34,66 +34,80 @@ const EngagementInvoice = ({
 	const watchInvoiceStatus = watch('invoiceStatus');
 	const submitEndEngagementHandler = useCallback(
 		async (d) => {
+			// let formattedData = {
+			// 	onBoardID: talentInfo?.onboardID,
+			// 	invoiceNumber: d.invoiceNumber,
+			// 	invoiceSentdate: new Date(d.invoiceDate)
+			// 		.toLocaleDateString('en-UK')
+			// 		.split('/')
+			// 		.reverse()
+			// 		.join('-'),
+			// 	invoiceStatusId: d.invoiceStatus?.id,
+			// 	invoiceStatus: null,
+			// 	paymentDate: _isNull(watchInvoiceStatus?.id)
+			// 		? null
+			// 		: new Date(d?.paymentDate)
+			// 				.toLocaleDateString('en-UK')
+			// 				.split('/')
+			// 				.reverse()
+			// 				.join('-'),
+			// 	hrNumber: '',
+			// 	talentName: '',
+			// 	currencyDrp: [
+			// 		{
+			// 			disabled: true,
+			// 			group: {
+			// 				disabled: true,
+			// 				name: 'string',
+			// 			},
+			// 			selected: true,
+			// 			text: 'string',
+			// 			value: 'string',
+			// 		},
+			// 	],
+			// 	leaveType: {
+			// 		additionalProp1: 'string',
+			// 		additionalProp2: 'string',
+			// 		additionalProp3: 'string',
+			// 	},
+			// 	leaveDrp: [
+			// 		{
+			// 			disabled: true,
+			// 			group: {
+			// 				disabled: true,
+			// 				name: 'string',
+			// 			},
+			// 			selected: true,
+			// 			text: 'string',
+			// 			value: 'string',
+			// 		},
+			// 	],
+			// 	billRate: 0,
+			// 	payRate: 0,
+			// 	payRate_NR: 0,
+			// 	billRate_NR: 0,
+			// 	billRate_Comment: '',
+			// 	payRate_Comment: '',
+			// 	currency: '',
+			// 	currencyId: 0,
+			// 	payRateCurrencyId: 0,
+			// 	finalPayRate: 0,
+			// 	finalBillRate: 0,
+			// };
+
 			let formattedData = {
-				onBoardID: talentInfo?.onboardID,
-				invoiceNumber: d.invoiceNumber,
-				invoiceSentdate: new Date(d.invoiceDate)
-					.toLocaleDateString('en-UK')
-					.split('/')
-					.reverse()
-					.join('-'),
-				invoiceStatusId: d.invoiceStatus?.id,
-				invoiceStatus: null,
-				paymentDate: _isNull(watchInvoiceStatus?.id)
-					? null
-					: new Date(d?.paymentDate)
-							.toLocaleDateString('en-UK')
-							.split('/')
-							.reverse()
-							.join('-'),
-				hrNumber: '',
-				talentName: '',
-				currencyDrp: [
-					{
-						disabled: true,
-						group: {
-							disabled: true,
-							name: 'string',
-						},
-						selected: true,
-						text: 'string',
-						value: 'string',
-					},
-				],
-				leaveType: {
-					additionalProp1: 'string',
-					additionalProp2: 'string',
-					additionalProp3: 'string',
-				},
-				leaveDrp: [
-					{
-						disabled: true,
-						group: {
-							disabled: true,
-							name: 'string',
-						},
-						selected: true,
-						text: 'string',
-						value: 'string',
-					},
-				],
-				billRate: 0,
-				payRate: 0,
-				payRate_NR: 0,
-				billRate_NR: 0,
-				billRate_Comment: '',
-				payRate_Comment: '',
-				currency: '',
-				currencyId: 0,
-				payRateCurrencyId: 0,
-				finalPayRate: 0,
-				finalBillRate: 0,
-			};
+				"onBoardID":talentInfo?.onboardID ,
+				"invoiceSentdate": new Date(d.invoiceDate)
+				.toLocaleDateString('en-UK')
+				.split('/')
+				.reverse()
+				.join('-'),
+				"invoiceNumber": d.invoiceNumber ,
+				'invoiceStatusId': d.invoiceStatus?.id,
+				"paymentDate": _isNull(watchInvoiceStatus?.id)
+				? null
+				: d?.paymentDate
+			} 
 
 			const response = await engagementRequestDAO.saveInvoiceDetailsRequestDAO(
 				formattedData,

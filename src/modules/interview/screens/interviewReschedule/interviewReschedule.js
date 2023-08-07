@@ -199,7 +199,6 @@ const InterviewReschedule = ({
 			let response = await hiringRequestDAO.getReSchduleInterviewInformation(
 				reScheduleData,
 			);
-
 			if (response?.statusCode === HTTPStatusCode.OK) {
 				setLoading(false);
 				messageAPI.open(
@@ -213,6 +212,11 @@ const InterviewReschedule = ({
 					callAPI(hrId);
 					closeModal();
 				}, 1000);
+			}
+			else if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
+				setTimeErrorMessage(response.responseBody)
+				setLoading(false);
+
 			} else {
 				setLoading(false);
 				messageAPI.open(

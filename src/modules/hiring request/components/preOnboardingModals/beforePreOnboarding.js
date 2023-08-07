@@ -168,6 +168,12 @@ export default function BeforePreOnboarding({
             )
           )    
         );
+        
+        let preOnboardDetail = result.responseBody.details.preOnboardingDetailsForAMAssignment
+
+        preOnboardDetail?.dpAmount && setValue('dpAmount',preOnboardDetail?.dpAmount)
+        preOnboardDetail?.currentCTC && setValue('currentCTC',preOnboardDetail?.currentCTC)
+
         let {drpLeadTypes,drpLeadUsers} = result.responseBody.details
         setDealowner(
           drpLeadUsers.filter(
@@ -175,12 +181,16 @@ export default function BeforePreOnboarding({
           ).map((item) => ({ ...item, text: item.value, value: item.text }))
         );   
         setDealSource(drpLeadTypes);
+        let dealOwnerOBJ = drpLeadUsers?.filter(
+          (item) => item.text === result.responseBody.details.preOnboardingDetailsForAMAssignment.deal_Owner
+        ).map((item) => ({ ...item, text: item.value, value: item.text }))
         setControlledDealSource(result.responseBody.details.preOnboardingDetailsForAMAssignment.dealSource)
-        setControlledDealOwner(result.responseBody.details.preOnboardingDetailsForAMAssignment.deal_Owner)
-              setValue('dealOwner', drpLeadTypes?.drpLeadUsers?.filter(
-                (item) => item.value === result.responseBody.details.preOnboardingDetailsForAMAssignment.deal_Owner
-              )[0].map((item) => ({ ...item, text: item.value, value: item.text })))
-              setValue('dealSource',result.responseBody.details.preOnboardingDetailsForAMAssignment.dealSource )
+        if(dealOwnerOBJ.length){
+           setControlledDealOwner(result.responseBody.details.preOnboardingDetailsForAMAssignment.deal_Owner)
+           setValue('dealOwner', dealOwnerOBJ[0])
+        }
+       
+        setValue('dealSource',result.responseBody.details.preOnboardingDetailsForAMAssignment.dealSource )
         //    if(result.responseBody.details.kickoffStatusId === 4
         //     ){
         //         EnableNextTab(talentDeteils,HRID,'After Kick-off')
@@ -562,7 +572,22 @@ export default function BeforePreOnboarding({
                       />                  
                     )}
                   </div>
-                  <div className={HRDetailStyle.modalFormCol}>
+
+                  {preOnboardingDetailsForAMAssignment?.isHRTypeDP ? <div className={HRDetailStyle.modalFormCol}> 
+                  <HRInputField
+                        register={register}
+                        errors={errors}
+                        validationSchema={{
+                          required: "please enter the DP Amount.",
+                        }}
+                        required
+                        label="DP amount"
+                        name="dpAmount"
+                        type={InputType.TEXT}
+                        placeholder="USD 4000/Month"
+                        disabled                     
+                      /> 
+                      </div>: <div className={HRDetailStyle.modalFormCol}>
                     {editPayRate ? (
                       <HRInputField
                         register={register}
@@ -617,9 +642,26 @@ export default function BeforePreOnboarding({
                         }
                       />
                     )}
-                  </div>
+                  </div>}
+                  
+
+
                   <div className={HRDetailStyle.modalFormCol}>
-                    {editBillRate ? (
+                    {preOnboardingDetailsForAMAssignment?.isHRTypeDP ?  <HRInputField
+                        register={register}
+                        errors={errors}
+                        validationSchema={{
+                          required: "please enter the Current CTC.",
+                        }}
+                        required
+                        label="CurrentCTC"
+                        name="currentCTC"
+                        type={InputType.TEXT}
+                        placeholder="USD 4000/Month"
+                        // value={watch('billRate')}
+                        disabled
+                      /> : <>
+                      {editBillRate ? (
                       <HRInputField
                         register={register}
                         errors={errors}
@@ -669,6 +711,8 @@ export default function BeforePreOnboarding({
                         }
                       />
                     )}
+                      </>}
+                    
                   </div>
                   <div className={HRDetailStyle.modalFormCol}>
                     {editAcceptHR ? (
@@ -709,6 +753,15 @@ export default function BeforePreOnboarding({
                 </div>
 
                 <div className={HRDetailStyle.onboardingDetailText}>
+                  {preOnboardingDetailsForAMAssignment?.isHRTypeDP ? <>
+                    <span>DP Percentage</span>
+                  <span className={HRDetailStyle.onboardingTextBold}>
+                    {preOnboardingDetailsForAMAssignment?.dP_Percentage
+                      ? preOnboardingDetailsForAMAssignment?.dP_Percentage
+                      : "NA"}{" "}
+                    %
+                  </span>
+                  </> : <>
                   <span>NR Percentage</span>
                   <span className={HRDetailStyle.onboardingTextBold}>
                     {preOnboardingDetailsForAMAssignment?.nrPercentage
@@ -716,7 +769,19 @@ export default function BeforePreOnboarding({
                       : "NA"}{" "}
                     %
                   </span>
+                  </>}                 
                 </div>
+
+               
+                  {preOnboardingDetailsForAMAssignment?.isHRTypeDP &&  <div className={HRDetailStyle.onboardingDetailText}>
+                  <span>Expected Rate</span>
+                  <span className={HRDetailStyle.onboardingTextBold}>
+                    {preOnboardingDetailsForAMAssignment?.expectedSalary
+                      ? preOnboardingDetailsForAMAssignment?.expectedSalary
+                      : "NA"}
+                  </span>
+                </div>}                 
+           
                 <div className={HRDetailStyle.onboardingDetailText}>
                   <span>Role Title</span>
                   <span className={HRDetailStyle.onboardingTextBold}>

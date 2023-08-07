@@ -254,9 +254,9 @@ if(boardData){
 							)}
                     </div>
 
-                    <div className={HRDetailStyle.modalFormCol}>
+                 {!talentDeteils?.IsHRTypeDP && <div className={HRDetailStyle.modalFormCol}>
                         <label className={HRDetailStyle.timeLabel}>SOW Sign Date <span className={HRDetailStyle.reqFieldRed}>*</span></label>
-                        <div className={`${HRDetailStyle.timeSlotItem} ${HRDetailStyle.marginBottom0}`}>
+                        <div className={`${HRDetailStyle.timeSlotItem} ${errors.sowDate && HRDetailStyle.marginBottom0}`}>
                             <Controller
                                 render={({ ...props }) => (
                                     <DatePicker
@@ -271,7 +271,7 @@ if(boardData){
                                     />
                                 )}
                                 name="sowDate"
-                                rules={{ required: true }}
+                                rules={{ required: !talentDeteils?.IsHRTypeDP }}
                                 control={control}
                             />
                             <CalenderSVG />
@@ -281,7 +281,7 @@ if(boardData){
 									* Please select Date.
 								</div>
 							)}
-                    </div>
+                    </div>}   
 
                     <div className={HRDetailStyle.modalFormCol}>
                         {!getUploadFileData ?<HRInputField
