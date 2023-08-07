@@ -26,7 +26,6 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
     const [message, setMessage] = useState({})
 
 
-
     const EnableNextTab = useCallback((talentDeteil,HRID, tabLabel) =>{
         const tabList = [
             {
@@ -129,14 +128,14 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
         setShowAMModal(false);
     }}>
     <div className={HRDetailStyle.modalInnerWrapper}>
-       {/* {message.Message && <div className={HRDetailStyle.onbordingAssignMsgMain}>
-            <div className={HRDetailStyle.onbordingAssignMsg}>
+       {message?.Message && <div className={HRDetailStyle.onbordingAssignMsgMain}>
+            <div className={HRDetailStyle.onbordingAssignMsg} style={{background: message?.ColorCode}}>
                 <div className={HRDetailStyle.onbordingCurrentImg}>
                     <AssignCurrectSVG width="24" height="24" />
                 </div>
-                {message.Message }
+                {message?.Message }
             </div>
-        </div>} */}
+        </div>}
         
 
         <div className={HRDetailStyle.modalLabel}>Onboarding Process</div>

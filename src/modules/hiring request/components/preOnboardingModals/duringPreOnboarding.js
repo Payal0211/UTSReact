@@ -189,7 +189,7 @@ console.log(payload)
     //     "buddy": "1"
     //   }
     // console.log("err",errors)
-    
+
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
     <div className={HRDetailStyle.onboardingProcesspart}>
@@ -234,7 +234,7 @@ console.log(payload)
                             />
                         </div>
 
-                        <div className={HRDetailStyle.modalFormCol}>
+                        {!talentDeteils?.IsHRTypeDP && <div className={HRDetailStyle.modalFormCol}>
                             <HRInputField
                                     register={register}
                                     // errors={errors}
@@ -246,7 +246,7 @@ console.log(payload)
                                     disabled
                                     // trailingIcon= {<EditFieldSVG width="16" height="16" />}
                             />
-                        </div>
+                        </div>}
 
                         <div className={HRDetailStyle.modalFormCol}>
                             <div className={HRDetailStyle.onboardingDetailText}>
@@ -278,7 +278,7 @@ console.log(payload)
                             placeholder="Enter here"
                             required
                             validationSchema={{
-                                required: 'please enter A Bit about company culture.',
+                                required: 'please enter a bit about company culture.',
                             }}
                             disabled={isTabDisabled}
                         />
@@ -295,7 +295,7 @@ console.log(payload)
                             placeholder="Enter here"
                             required
                             validationSchema={{
-                                required: 'How does the first week look like?.',
+                                required: 'please enter how does the first week look like.',
                             }}
                             disabled={isTabDisabled}
                         />
@@ -312,12 +312,13 @@ console.log(payload)
                             placeholder="Enter here"
                             required
                             validationSchema={{
-                                required: 'How does the first month look like?.',
+                                required: 'please enter how does the first month look like.',
                             }}
                             disabled={isTabDisabled}
                         />
                     </div>
 
+                   {!talentDeteils?.IsHRTypeDP && <>
                     <div className={HRDetailStyle.colMd12}>
                     <HRInputField
                             isTextArea={true}
@@ -327,9 +328,9 @@ console.log(payload)
                             name="softwareToolsRequired"
                             type={InputType.TEXT}
                             placeholder='Enter Softwares and Tools which will be required'
-                            required
+                            required={!talentDeteils?.IsHRTypeDP}
                             validationSchema={{
-                                required: 'please enter Softwares & Tools Required.',
+                                required: 'please enter softwares and tools which will be required.',
                             }}
                             disabled={isTabDisabled}
                         />
@@ -347,8 +348,7 @@ console.log(payload)
                             errorMsg={'Please select department'}
                         /> */}
                     </div>
-
-                    <div className={HRDetailStyle.colMd12}>
+                   <div className={HRDetailStyle.colMd12}>
                         <HRSelectField
                             // isControlled={true}
                             mode="id/value"
@@ -361,12 +361,11 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                             placeholder={'Enter Device Policy'}
                             name="devicePolicy"
                             isError={errors['devicePolicy'] && errors['devicePolicy']}
-                            required
-                            errorMsg={'Please select Device Policy'}
+                            required={!talentDeteils?.IsHRTypeDP}
+                            errorMsg={'please select device policy.'}
                             disabled={isTabDisabled}
                         />
                     </div>
-
                     <div className={HRDetailStyle.modalFormCol}>
                         <div className={HRDetailStyle.modalFormLeaveUnderLine}>
                             <HRSelectField
@@ -380,14 +379,13 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                                 defaultValue={'Proceed with Uplers Policies'}
                                 name="leavePolicie"
                                 isError={errors['leavePolicie'] && errors['leavePolicie']}
-                                required
-                                errorMsg={'Please select Leave Polices'}
+                                required={!talentDeteils?.IsHRTypeDP}
+                                errorMsg={'please enter leave policy.'}
                                 disabled={isTabDisabled}
                             />
                         </div>
                     </div>
-                    
-                    <div className={HRDetailStyle.modalFormCol}>
+                      <div className={HRDetailStyle.modalFormCol}>
                         <div className={HRDetailStyle.modalFormEdited}>
                             <HRInputField
                                 register={register}
@@ -398,7 +396,7 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                                 placeholder="First Month"
                                 // value="First Month - 7 Days Second Month Onwards - 30 Days"
                                 disabled
-                                required
+                                required={!talentDeteils?.IsHRTypeDP}
                                 validationSchema={{
                                     required: 'please enter Exit Policy.',
                                 }}
@@ -406,6 +404,11 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                             />
                         </div>
                     </div>
+                   </>} 
+
+                    
+                    
+                  
                     <div className={HRDetailStyle.colMd12}>
                         <div className={HRDetailStyle.modalFormEdited}>
                             <HRInputField

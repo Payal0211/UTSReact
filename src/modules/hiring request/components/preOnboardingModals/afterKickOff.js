@@ -150,7 +150,8 @@ export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI
 							)}
                     </div>
 
-                    <div className={HRDetailStyle.modalFormCol}>
+                {!talentDeteils?.IsHRTypeDP && <>
+                  <div className={HRDetailStyle.modalFormCol}>
                         <label className={HRDetailStyle.timeLabel}>Engagement Start Date  <span className={HRDetailStyle.reqFieldRed}>*</span></label>
                         <div className={`${HRDetailStyle.timeSlotItem} ${errors.startDate ? HRDetailStyle.marginBottom0 : ''}`}>
                             <Controller
@@ -167,7 +168,7 @@ export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI
                                 name="startDate"
                                 rules={{ required: true }}
                                 control={control}
-                                required
+                                required={!talentDeteils?.IsHRTypeDP}
                             />
                             <CalenderSVG />
                         </div>
@@ -195,7 +196,7 @@ export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI
                                 name="endDate"
                                 rules={{ required: true }}
                                 control={control}
-                                required
+                                required={!talentDeteils?.IsHRTypeDP}
                             />
                             <CalenderSVG />
                         </div>
@@ -223,7 +224,7 @@ export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI
                                 name="talentDate"
                                 rules={{ required: true }}
                                 control={control}
-                                required
+                                required={!talentDeteils?.IsHRTypeDP}
                             />
                             <CalenderSVG />
                         </div>
@@ -234,9 +235,7 @@ export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI
 							)}
                     </div>
                     </>} 
-
-                
-                    
+                </>}                   
                 </div>
             </div>
 
