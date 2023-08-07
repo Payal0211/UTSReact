@@ -70,6 +70,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 				cancelReasonID: _isNull(d.cancelReason?.id) ? 0 : d.cancelReason?.id,
 				otherReason: _isNull(d.otherReason) ? null : d.otherReason,
 				remark: d.onHoldRemark || d.lossRemark,
+				ContactTalentPriorityID: talentStatus?.Data?.ContactTalentPriorityID
 			};
 
 			let response = await TalentStatusDAO.updateTalentStatusRequestDAO(
@@ -83,7 +84,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal }) => {
 				callAPI(hrId);
 			}
 		},
-		[callAPI, hrId, talentInfo?.HiringDetailID, talentInfo?.TalentID],
+		[callAPI, hrId, talentInfo?.HiringDetailID, talentInfo?.TalentID,talentStatus],
 	);
 
 	useEffect(() => {
