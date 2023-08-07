@@ -13,8 +13,8 @@ export const allHRConfig = {
 				title: ' ',
 				dataIndex: 'isHRFocused',
 				key: 'isHRFocused',
-				align: 'left',
-				width:'30px',
+				align: 'center',
+				width:'3%',
 				render:(val)=> {
 					return val ? <FocusedRole /> : null
 				}
@@ -24,8 +24,8 @@ export const allHRConfig = {
 				title: ' ',
 				dataIndex: 'starStatus',
 				key: 'starStatus',
-				align: 'left',
-				width: '30px',
+				align: 'center',
+				width:'3%',
 				render: (_, param) => {
 					let response = All_Hiring_Request_Utils.GETHRPRIORITY(
 						param?.starStatus,
@@ -41,8 +41,8 @@ export const allHRConfig = {
 				title: ' ',
 				dataIndex: 'reopenHR',
 				key: 'reopenHR',
-				width: '30px',
-				align: 'left',
+				width:'3%',
+				align: 'center',
 				render: (text, result) => {
 					return (
 						<>
@@ -79,8 +79,8 @@ export const allHRConfig = {
 				title: ' ',
 				dataIndex: 'cloneHR',
 				key: 'cloneHR',
-				width: '30px',
-				align: 'left',
+				width:'3%',
+				align: 'center',
 				render: (text, result) => {
 					if(LoggedInUserTypeID === 5 || LoggedInUserTypeID === 10){
 						return
@@ -117,14 +117,14 @@ export const allHRConfig = {
 				dataIndex: 'Date',
 				key: 'Date',
 				align: 'left',
-				width:'100px'
+				width:'8%'
 			},
 			{
 				title: 'HR ID',
 				dataIndex: 'HR_ID',
 				key: 'HR_ID',
 				align: 'left',
-				width: '150px',
+				width:'13%',
 				render: (text, result) => (
 					<Link
 						target="_blank"
@@ -139,7 +139,7 @@ export const allHRConfig = {
 				title: 'TR',
 				dataIndex: 'TR',
 				key: 'TR',
-				width: '50px',
+				width: '3%',
 				align: 'left',
 			},
 			{
@@ -181,7 +181,7 @@ export const allHRConfig = {
 				dataIndex: 'Time',
 				key: 'time',
 				align: 'left',
-				width: '60px',
+				width: '5%',
 			},
 			{
 				title: 'FTE/PTE',
@@ -195,7 +195,7 @@ export const allHRConfig = {
 				dataIndex: 'salesRep',
 				key: 'sales_rep',
 				align: 'left',
-				width: '130px',
+				width: '9%',
 				render: (text, result) => {
 					return (
 						<Link
@@ -214,7 +214,7 @@ export const allHRConfig = {
 				dataIndex: 'hrStatus',
 				key: 'hr_status',
 				align: 'left',
-				width: '100px',
+				width: '13%',
 				render: (_, param) => {
 					return All_Hiring_Request_Utils.GETHRSTATUS(
 						param?.hrStatusCode,
