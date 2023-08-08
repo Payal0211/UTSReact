@@ -631,8 +631,8 @@ table {
 }
 
 .error {
-    color: var(--danger-color);
-    font-size: var(--fontsize-tough);
+    color: var(--danger-color) !important;
+    font-size: var(--fontsize-tough) !important;
 }
 
 .row {

@@ -3,6 +3,7 @@ import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import { Link } from 'react-router-dom';
 import { engagementUtils } from './engagementUtils';
 import allengagementStyles from '../engagementFeedback/engagementFeedback.module.css';
+import moment from 'moment';
 export const allEngagementConfig = {
 	engagementFilterTypeConfig: (filterList) => {
 		return [
@@ -339,6 +340,9 @@ export const allEngagementConfig = {
 				key: 'lastFeedbackDate',
 				align: 'left',
 				width: '165px',
+				render:(text)=>{
+					return text ? moment(text).format('DD/MM/YYYY') : ''
+				}
 			},
 			{
 				title: 'Onboarding Form',
@@ -527,18 +531,27 @@ export const allEngagementConfig = {
 				dataIndex: 'contractStartDate',
 				key: 'contractStartDate',
 				align: 'left',
+				render:(text)=>{
+					return text ? moment(text).format('DD/MM/YYYY') : ''
+				}
 			},
 			{
 				title: 'Engagement End Date',
 				dataIndex: 'contractEndDate',
 				key: 'contractEndDate',
 				align: 'left',
+				render:(text)=>{
+					return text ? moment(text).format('DD/MM/YYYY') : ''
+				}
 			},
 			{
 				title: 'Actual End Date',
 				dataIndex: 'actualEndDate',
 				key: 'actualEndDate',
 				align: 'left',
+				render:(text)=>{
+					return text ? moment(text).format('DD/MM/YYYY') : ''
+				}
 			},
 			{
 				title: 'NR',
@@ -569,12 +582,18 @@ export const allEngagementConfig = {
 				dataIndex: 'renewalstartDate',
 				key: 'renewalstartDate',
 				align: 'left',
+				render:(text)=>{
+					return text ? moment(text).format('DD/MM/YYYY') : ''
+				}
 			},
 			{
 				title: 'Renewal End Date',
 				dataIndex: 'renewalendDate',
 				key: 'renewalendDate',
 				align: 'left',
+				render:(text)=>{
+					return text ? moment(text).format('DD/MM/YYYY') : ''
+				}
 			},
 			{
 				title: 'Engagement Tenture',
@@ -588,6 +607,9 @@ export const allEngagementConfig = {
 				dataIndex: 'sowSignedDate',
 				key: 'sowSignedDate',
 				align: 'left',
+				render:(text)=>{
+					return text ? moment(text).format('DD/MM/YYYY') : ''
+				}
 			},
 			{
 				title: 'NBD',
@@ -606,6 +628,9 @@ export const allEngagementConfig = {
 				dataIndex: 'invoiceSentDate',
 				key: 'invoiceSentDate',
 				align: 'left',
+				render:(text)=>{
+					return text ? moment(text).format('DD/MM/YYYY') : ''
+				}
 			},
 			{
 				title: 'Invoice Number',
@@ -624,6 +649,9 @@ export const allEngagementConfig = {
 				dataIndex: 'dateofPayment',
 				key: 'dateofPayment',
 				align: 'left',
+				render:(text)=>{
+					return text ? moment(text).format('DD/MM/YYYY') : ''
+				}
 			},
 			{
 				title: 'Created Date',

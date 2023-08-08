@@ -80,6 +80,7 @@ const AnotherRound = ({
 	const [slot1Timematch, setSlot1timematch] = useState(false);
 	const [slot2Timematch, setSlot2timematch] = useState(false);
 	const [slot3Timematch, setSlot3timematch] = useState(false);
+	const [timeErrorMessage,setTimeErrorMessage] = useState('');
 
 	const [clientDetailsForAnotherRound, setClientDetailsForAnotherRound] =
 		useState(null);
@@ -207,6 +208,19 @@ const AnotherRound = ({
 					return
 				}
 
+				const timeResult = await InterviewDAO.CheckInterviewTimeSlotDAO(AnotherRoundTimeSlotOption.LATER === slotLater
+					? []
+					: interviewUtils.formatInterviewDateSlotHandler(
+							getScheduleSlotDate,
+					  ))	
+					
+					
+				if (timeResult?.statusCode !== HTTPStatusCode.OK) {
+						setTimeErrorMessage(timeResult.responseBody)
+						setIsLoading(false);
+						return
+					} 
+
 			let formattedInterviewerDetails = [
 				{
 					interviewerName: d?.fullName,
@@ -265,6 +279,13 @@ const AnotherRound = ({
 					callAPI(hrId);
 					closeModal();
 				}, 1000);
+			}else if (response?.statusCode === HTTPStatusCode.BAD_REQUEST){
+				setTimeErrorMessage(response.responseBody)
+				// messageAPI.open({
+				// 	type: 'error',
+				// 	content: response?.responseBody ,
+				// });
+				setIsLoading(false);
 			} else {
 				setIsLoading(false);
 				messageAPI.open({
@@ -1360,7 +1381,7 @@ const AnotherRound = ({
 								</div>
 							</div>
 						</div>
-
+						{timeErrorMessage && <p className={InterviewScheduleStyle.error}>{timeErrorMessage}</p>}
 						<div className={InterviewScheduleStyle.formPanelAction}>
 							<button
 								type="submit"

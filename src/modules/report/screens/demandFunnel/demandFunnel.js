@@ -367,6 +367,7 @@ const DemandFunnelScreen = () => {
 										startDate={startDate}
 										endDate={endDate}
 										selectsRange
+										dateFormat={'dd/MM/yyyy'}
 									/>
 								)}
 								name="invoiceDate"

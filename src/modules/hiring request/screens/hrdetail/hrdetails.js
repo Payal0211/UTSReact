@@ -238,7 +238,7 @@ console.log('apiData', apiData)
 					</div>
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? <>
-						{apiData?.dynamicCTA?.ReopenHR && (
+						{apiData?.dynamicCTA?.ReopenHR?.IsEnabled && (
                 <div
                   className={HRDetailStyle.hiringRequestPriority}
                   onClick={() => {
@@ -384,7 +384,7 @@ console.log('apiData', apiData)
                 </Modal>
               )}
 
-              {apiData?.dynamicCTA?.ReopenHR && (
+              {apiData?.dynamicCTA?.ReopenHR?.IsEnabled && (
                 <div
                   className={HRDetailStyle.hiringRequestPriority}
                   onClick={() => {
