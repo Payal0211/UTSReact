@@ -58,9 +58,10 @@ export const allHRConfig = {
 									}}
 								/>
 							</a>
-						</Tooltip> : <Tooltip
+						</Tooltip> : (LoggedInUserTypeID !== 5 && LoggedInUserTypeID !== 10) ? <Tooltip
 							placement="bottom"
-							title={'Reopen HR'}>
+							title={'Reopen HR'} 
+							>
 								<a href="javascript:void(0);">
 								<ReopenHR 
 									style={{ fontSize: '16px' }}
@@ -70,7 +71,7 @@ export const allHRConfig = {
 									}}
 								/>
 							</a>
-						</Tooltip>}
+						</Tooltip> : ''}
 						</>
 					);
 				},

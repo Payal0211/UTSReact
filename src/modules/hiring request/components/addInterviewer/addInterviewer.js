@@ -142,7 +142,7 @@ const AddInterviewer = ({
 							className={AddInterviewerStyle.addInterviewContainer}
 							key={`addInterviewer_${index}`}>
 							<div className={AddInterviewerStyle.addInterviewLeftPane}>
-								<h3>Secondary Interview Details - {index}</h3>
+								<h3>Secondary Interview Details - {index + 1}</h3>
 								<p>Please provide the necessary details</p>
 								{fields.length - 1 === index && (
 									<div className={AddInterviewerStyle.leftPanelAction}>

@@ -7,6 +7,8 @@ import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { Divider } from 'antd';
 import { BsTag } from 'react-icons/bs';
 import DOMPurify from 'dompurify';
+import moment from 'moment';
+
 const Editor = React.lazy(() => import('../textEditor/editor'));
 const ActivityFeed = ({
 	hrID,
@@ -68,7 +70,7 @@ const ActivityFeed = ({
 								<div className={ActivityFeedStyle.activityFeedListItem}>
 									<div className={ActivityFeedStyle.activityFeedTimeDetails}>
 										<div>
-											{DateTimeUtils.getDateFromString(item?.ActionDate)}
+											{moment(item?.ActionDate).format('DD/MM/YYYY')}
 										</div>
 										<div>
 											{DateTimeUtils.getTimeFromString(item?.ActionDate)}
@@ -93,7 +95,7 @@ const ActivityFeed = ({
 											</div>
 										) : (
 											<div className={ActivityFeedStyle.profileStatus}>
-												<span>Note from </span>
+												<span style={{ fontWeight: '500' }}>Note from </span>
 												<span
 													style={{
 														textDecoration: 'underline',
@@ -104,10 +106,11 @@ const ActivityFeed = ({
 											</div>
 										)}
 										<br />
-										<div className={ActivityFeedStyle.activityAction}>
-											{item?.IsNotes ? <BsTag /> : <SlGraph />}
+										<div className={ActivityFeedStyle.activityAction} style={{display:'flex', justifyContent:'space-between', width:'100%' }}>
+											<div>
+												{item?.IsNotes ? <BsTag /> : <SlGraph />}
 											&nbsp;&nbsp;
-											<span>
+											<span style={{ fontWeight: '500' }}>
 												{item?.IsNotes === 1
 													? 'Assigned to : '
 													: 'Action by : '}
@@ -117,14 +120,42 @@ const ActivityFeed = ({
 													? item?.AssignedUsers
 													: item?.ActionPerformedBy}
 											</span>
+											</div>
+											
+											<div>
+											{item?.SLA_DueDate && <>
+												<span style={{marginRight: '14px'}}></span>
+											&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+											{'SLA Date : '}
+											</span>
+											<span>
+												{moment(item?.SLA_DueDate).format('DD/MM/YYYY')}
+											</span>
+											</>
+										
+										}
+											</div>
 										</div>
+
+										{item?.ActionName === "Interview Scheduled" && <div className={ActivityFeedStyle.activityAction}>
+											<span style={{marginRight: '14px'}}></span>
+										    &nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+											{'Interview Scheduled : '}
+											</span>
+											<span>
+												{item?.InterviewDateTime?.split('-').join('/')}
+											</span>
+										</div>}
+										
 
 										<br />
 										{item?.Comments?<div className={ActivityFeedStyle.activityAction}>
-											{item?.IsNotes ? <BsTag /> : ""}
+											{item?.IsNotes ? <BsTag /> : <span style={{marginRight: '14px'}}></span>}
 											&nbsp;&nbsp;
-											<span>
-												Comments: 
+											<span style={{ fontWeight: '500' }}>
+												{ item?.ActionName === "Talent Status Cancelled" ? "Cancel Reason : "  : item?.ActionName === "Talent Status On Hold" ? "Talent On Hold Reason : " :'Comments : '} 
 											</span>
 											&nbsp;
 											<span>
@@ -134,10 +165,19 @@ const ActivityFeed = ({
 										
 										<br />
 										<div className={ActivityFeedStyle.activityAction}>
-											{item?.IsNotes === 0 && (
-												<span style={{ fontWeight: '500' }}>
-													{item?.Remark && '“' + item?.Remark + '”'}
-												</span>
+										{item?.IsNotes === 0 && item?.ActionName === "Talent Status On Hold" && (<>
+												<span style={{marginRight: '14px'}}></span>
+												<span style={{ fontWeight: '500' }}>{'On Hold Remark : '}</span>
+												<span >
+													{item?.Remark &&   item?.Remark }
+												</span></>
+											)}
+											{item?.IsNotes === 0 && item?.ActionName === "Talent Status Rejected" && (<>
+												<span style={{marginRight: '14px'}}></span>
+												<span style={{ fontWeight: '500' }}>{'Reject Remark : '}</span>
+												<span >
+													{item?.Remark &&   item?.Remark }
+												</span></>
 											)}
 											{item?.IsNotes === 1 && (
 												<span

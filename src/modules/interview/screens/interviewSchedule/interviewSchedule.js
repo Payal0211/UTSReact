@@ -394,6 +394,7 @@ const InterviewSchedule = ({
 											setValue('slot1Date', date);
 											calenderDateHandler(date, 0, 'slot1');
 										}}
+										dateFormat={'dd/MM/yyyy'}
 									/>
 									{errors.slot1Date && (
 										<div className={InterviewScheduleStyle.error}>
@@ -479,6 +480,7 @@ const InterviewSchedule = ({
 													calenderDateHandler(date, 1, 'slot1');
 												}}
 												name="slot2Date"
+												dateFormat={'dd/MM/yyyy'}
 											/>
 											{errors.slot2Date && (
 												<div className={InterviewScheduleStyle.error}>
@@ -564,6 +566,7 @@ const InterviewSchedule = ({
 													calenderDateHandler(date, 2, 'slot1');
 												}}
 												name="slot3Date"
+												dateFormat={'dd/MM/yyyy'}
 											/>
 											{errors.slot3Date && (
 												<div className={InterviewScheduleStyle.error}>
