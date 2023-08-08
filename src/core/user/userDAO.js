@@ -141,6 +141,7 @@ export const userDAO = {
 
 			localStorage.setItem("UserDesignation", loginResult?.responseBody?.details?.Designation)
 			localStorage.setItem("EmployeeID", loginResult?.responseBody?.details?.EmployeeID)
+			localStorage.setItem("FullName", loginResult?.responseBody?.details?.FullName)
 
 			if (loginResult) {
 				const statusCode = loginResult['statusCode'];
