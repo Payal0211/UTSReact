@@ -164,7 +164,58 @@ export const reportConfig = {
 						width: 250,
 					},
 			  ]
-			: stage !== 'HR Accepted' ? (stage === 'HR Active' || stage === 'TR Active') ? [
+			: stage !== 'HR Accepted' ? stage === 'HR Active' ? [
+				{
+					title: 'HR#',
+					dataIndex: 'hR_No',
+					key: 'hR_No',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'HR Status',
+					dataIndex: 'hrStatus',
+					key: 'hrStatus',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Sales Person',
+					dataIndex: 'salesPerson',
+					key: 'salesPerson',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Company Name',
+					dataIndex: 'compnayName',
+					key: 'compnayName',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Role',
+					dataIndex: 'role',
+					key: 'role',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Managed/Self',
+					dataIndex: 'managed_Self',
+					key: 'managed_Self',
+					align: 'left',
+					width: 250,
+				},
+				{
+					title: 'Availability',
+					dataIndex: 'availability',
+					key: 'availability',
+					align: 'left',
+					width: 250,
+				},
+			
+		  ]: stage === 'TR Active' ? [
 				{
 					title: 'HR#',
 					dataIndex: 'hR_No',
