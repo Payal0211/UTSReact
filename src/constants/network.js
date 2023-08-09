@@ -32,7 +32,7 @@ export class SubDomain {
 	static INTERVIEWER = 'Interviewer/';
 	static SLA_REPORT = 'SLAReport/';
 	static I2S_REPORT = 'InterviewToSuccess/';
-	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/'
+	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/'	
 }
 export class APIType {
 	static USER = '/user';
@@ -312,4 +312,8 @@ export class IncentiveReport {
 	static GET_CONTRACT_BOOSTER = 'GetIncentiveReportDetailsContractBooster';
 	static GET_INCENTIVE_REPORT_AMNR = 'GetIncentiveReportDetailsAMNR';
 	static CHECK_VALIDATION = 'CheckValidationForNBDandAM';
+}
+export class ClientHappinessSurvey{
+	static LIST = 'List';
+	static GET_CLIENT_HAPPINESS_SURVEY_LIST = 'HappinessSurvey/'
 }
