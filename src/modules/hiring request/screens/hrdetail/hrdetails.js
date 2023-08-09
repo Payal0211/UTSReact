@@ -37,6 +37,7 @@ import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as AfterKickOffSVG } from 'assets/svg/AfterKickOff.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/TimeStartEnd.svg';
 import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
+import { ReactComponent as EditSVG } from 'assets/svg/pencil.svg';
 
 import { HRDeleteType, HiringRequestHRStatus, InputType } from 'constants/application';
 
@@ -197,6 +198,12 @@ const HRDetailScreen = () => {
 	}, [apiData]);
 console.log('apiData', apiData)
 
+const editHR = () => {
+	navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
+	localStorage.setItem('hrID', apiData?.HR_Id);
+	localStorage.removeItem('dealID')
+};
+
 	const [showAMModal, setShowAMModal] = useState(false);
 	const [reopenHrModal, setReopenHrModal] = useState(false);
 	return (
@@ -235,6 +242,9 @@ console.log('apiData', apiData)
 								cloneHR={apiData?.dynamicCTA?.CloneHR}
 							/>
 						)}
+						{apiData?.AllowSpecialEdit && <div onClick={()=> editHR()}>
+							<EditSVG style={{ fontSize: '16px' }} />{' '}
+							<span className={HRDetailStyle.btnLabel}>Edit HR</span></div>}
 					</div>
 
 					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? <>

@@ -333,15 +333,20 @@ talentID,})
 		resetField('talentFees');
 	}, [editPayRate, resetField]);
 
+	function extractNumberFromString(inputString) {
+		const regex = /\d+/;
+		const match = inputString.match(regex);
+		if (match && match.length > 0) {
+		  const number = parseInt(match[0], 10);
+		  return number;
+		}
+		return null;
+	  }
+
 	useEffect(() => {
 		if (Object.keys(filterTalentID).length > 0 && editPayRate) {
 			setValue(
-				'talentFees',
-				(filterTalentID?.PayRate).slice(
-					1,
-					(filterTalentID?.PayRate).indexOf('U'),
-				).trim(),
-			);
+				'talentFees',extractNumberFromString(filterTalentID?.PayRate));
 		}
 	}, [filterTalentID, editPayRate, setValue]);
 

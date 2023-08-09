@@ -58,7 +58,7 @@ export const userUtils = {
 			priorityCount: _isNull(d.priorityCount) ? 0 : parseInt(d.priorityCount),
 			skypeId: d?.skypeID ? d?.skypeID : '',
 			emailId: d?.emailID ? d?.emailID : 'NA',
-			designation: d?.designation ? d?.designation : 'NA',
+			designation: d?.employeeDesignation ? d?.employeeDesignation : 'NA',
 			description: d?.description ? d?.description : '',
 			isActive: d?.isActive ? d?.isActive : true,
 			userLevel: d?.level ? d?.level?.id : 'NA',

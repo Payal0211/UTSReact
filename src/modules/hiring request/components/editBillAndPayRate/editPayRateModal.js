@@ -32,19 +32,25 @@ const EditPayRate = ({ talentInfo, onCancel
             <div className={editBillAndPayRate.firstFeebackTableContainer}>
                 <div className={editBillAndPayRate.row}>
                     <div
-                        className={editBillAndPayRate.colMd12}>
-                        <HRInputField
-                            register={register}
-                            errors={errors}
-                            validationSchema={{
-                                required: 'please enter Talent Fees.',
-                            }}
-                            label="Talent Fees"
-                            name="talentFees"
-                            type={InputType.NUMBER}
-                            placeholder="Enter Amount"
-                            required
-                        />
+                        className={editBillAndPayRate.colMd12} style={{display:'flex', alignItems:'center'}}>
+                            <>
+                            {talentInfo?.CurrencySign}
+                            <div style={{width:'50%', margin:'0 5px'}}>
+                                <HRInputField
+                                    register={register}
+                                    errors={errors}
+                                    validationSchema={{
+                                        required: 'please enter Talent Fees.',
+                                    }}
+                                    label="Talent Fees"
+                                    name="talentFees"
+                                    type={InputType.NUMBER}
+                                    placeholder="Enter Amount"
+                                    required
+                                />
+                            </div>                         
+                        {talentInfo?.TalentCurrenyCode} /Month
+                            </>                       
                     </div>
                 </div>
 

@@ -67,9 +67,20 @@ const EditBillRate = ({
 			setHRapiCall(!callHRapi);
 		}
 	};
+
+	function extractNumberFromString(inputString) {
+		const regex = /\d+/;
+		const match = inputString.match(regex);
+		if (match && match.length > 0) {
+		  const number = parseInt(match[0], 10);
+		  return number;
+		}
+		return null;
+	  }
+	  
 	useEffect(() => {
-		setValue('hrCost', talentInfo?.BillRate);
-		setValue('nrMarginPercentage', talentInfo?.NR);
+		setValue('hrCost', extractNumberFromString(talentInfo?.BillRate));
+		setValue('nrMarginPercentage', extractNumberFromString(talentInfo?.NR));
 	}, [setValue, talentInfo, talentInfo?.BillRate]);
 
 	return (
@@ -93,8 +104,9 @@ const EditBillRate = ({
 								`${getBillRateInfo?.talent_Fees} `}
 						</p>
 					</div>
-					<div className={editBillAndPayRate.colMd12}>
-						<HRInputField
+					<div className={editBillAndPayRate.colMd12} style={{display:'flex', alignItems:'center'}}>
+					<div style={{width:'50%', margin:'0 14px'}}>
+							<HRInputField
 							register={register}
 							errors={errors}
 							validationSchema={{
@@ -107,8 +119,14 @@ const EditBillRate = ({
 							onChangeHandler={(e) => updateHRcostHandler(e.target.value)}
 							required
 						/>
+						</div>
+						%
+						
+						
 					</div>
-					<div className={editBillAndPayRate.colMd12}>
+					<div className={editBillAndPayRate.colMd12} style={{display:'flex', alignItems:'center'}}>
+					{talentInfo?.CurrencySign}
+                            <div style={{width:'50%', margin:'0 5px'}}>
 						<HRInputField
 							register={register}
 							errors={errors}
@@ -122,6 +140,8 @@ const EditBillRate = ({
 							disabled={true}
 							required
 						/>
+						</div>
+						{talentInfo?.TalentCurrenyCode} /Month
 					</div>
 				</div>
 				<div className={editBillAndPayRate.formPanelAction}>

@@ -15,7 +15,7 @@ const HROperator = ({
 
 	const controlledLabelMenuAction = (val) =>{
 		let clicked = listItem.filter(item => item.label === val)[0]
-		clicked.IsEnabled && menuAction({key: val})
+		clicked?.IsEnabled && menuAction({key: val})
 	}
 
 	return isDropdown ? (

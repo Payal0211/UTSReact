@@ -1027,6 +1027,7 @@ if(DID){
 					<div className={HRFieldStyle.hrFieldLeftPane}>
 						<h3>Hiring Request Details</h3>
 						<p>Please provide the necessary details</p>
+						<LogoLoader visible={isSavedLoading} />
 					</div>
 
 					<form
@@ -2044,8 +2045,7 @@ if(DID){
 								</button>
 							</div>
 						</Modal>
-					)}
-					<LogoLoader visible={isSavedLoading} />
+					)}					
 				</>
 			);
 		}

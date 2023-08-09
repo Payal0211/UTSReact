@@ -218,7 +218,8 @@ const EditDebriefingHR = ({
 				interviewerDesignation: d.interviewerDesignation,
 				JDDumpID: getHRdetails?.addHiringRequest?.jddumpId,
 				ActionType: getHRdetails?.addHiringRequest?.isActive ? "Edit" : "Save",
-				IsHrfocused: isFocusedRole
+				IsHrfocused: isFocusedRole,
+				allowSpecialEdit: getHRdetails?.allowSpecialEdit,
 			};
 
 			const debriefResult = await hiringRequestDAO.createDebriefingDAO(

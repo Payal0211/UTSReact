@@ -825,6 +825,9 @@ const EditHRFields = ({
 				getUploadFileData && getUploadFileData,
 				watchJDUrl,
 			);
+
+			hrFormDetails['allowSpecialEdit'] = getHRdetails?.allowSpecialEdit
+			
 			if (type === SubmitType.SAVE_AS_DRAFT) {
 				if (_isNull(watch('clientName'))) {
 					return setError('clientName', {
@@ -1200,7 +1203,7 @@ const EditHRFields = ({
 											// name="clientName"
 											// defaultValue={clientNameValue}
 											value={watchClientName}
-											disabled={true}
+											disabled={getHRdetails.allowSpecialEdit ? false : true}
 										/>
 									)}
 									{...register('clientName', {
