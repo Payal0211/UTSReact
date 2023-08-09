@@ -419,7 +419,7 @@ const ProfileLogDetails = ({
 						<div
 							className={`${ProfileLogStyle.profileLogListWrap} ${ProfileLogStyle.profileShared}`}>
 							<div className={ProfileLogStyle.profileLogListHead}>
-								<h4>Profile Shared: 04 HRs</h4>
+								<h4>Profile Shared: {profileLog?.profileSharedCount} HRs</h4>
 								<div className={ProfileLogStyle.profileLogListAction}>
                   <button onClick={leftArrowClick}>
                     <LeftArrowSVG />

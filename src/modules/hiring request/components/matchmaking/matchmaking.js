@@ -479,7 +479,7 @@ const MatchmakingModal = ({
 												hrID: hrID,
 												rows: 10,
 												page: 1,
-												emailID: e.target.value,
+												emailID: e.target.value.trim(),
 											});
 										}
 
