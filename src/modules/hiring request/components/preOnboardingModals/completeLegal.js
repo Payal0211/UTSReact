@@ -172,7 +172,7 @@ if(boardData){
  fetchData();
         }
     },[HRID,setValue])
-     console.log("MSA", watch('msaDate'), "sow",dayjs(watch('msaDate')).toDate())
+    //  console.log("MSA", watch('msaDate'), "sow",dayjs(watch('msaDate')).toDate())
 
     const submitClientLegal = useCallback(async (d)=>{
         setIsLoading(true)
@@ -225,7 +225,26 @@ if(boardData){
                     <div className={HRDetailStyle.modalFormCol}>                
                         <label className={HRDetailStyle.timeLabel}>MSA Sign Date <span className={HRDetailStyle.reqFieldRed}>*</span></label>
                         <div className={`${HRDetailStyle.timeSlotItem} ${HRDetailStyle.marginBottom0}`}>
-                            <Controller
+                            {isTabDisabled ?<Controller
+                                render={({ ...props }) => (
+                                    <DatePicker
+                                    { ...props }
+                                        value={dayjs(watch('msaDate'))}
+                                        selected={watch('msaDate')}
+                                        // placeholderText={props.value ? props.value :"Select Date 34"}
+                                        onChange={(date) => {
+                                            setValue('msaDate', date);
+                                        }}
+                                        // defaultPickerValue={props.value ? moment(props.value): null}
+                                        // defaultValue={dayjs(watch('msaDate'), 'YYYY-MM-DD')}
+                                        // dateFormat="yyyy/MM/dd"
+                                        disabled={isTabDisabled}
+                                    />
+                                )}
+                                name="msaDate"
+                                rules={{ required: true }}
+                                control={control}
+                            /> : <Controller
                                 render={({ ...props }) => (
                                     <DatePicker
                                     { ...props }
@@ -245,6 +264,8 @@ if(boardData){
                                 rules={{ required: true }}
                                 control={control}
                             />
+                            }
+                           
                             <CalenderSVG />
                         </div>
                         {errors.msaDate && (
@@ -257,7 +278,25 @@ if(boardData){
                  {!talentDeteils?.IsHRTypeDP && <div className={HRDetailStyle.modalFormCol}>
                         <label className={HRDetailStyle.timeLabel}>SOW Sign Date <span className={HRDetailStyle.reqFieldRed}>*</span></label>
                         <div className={`${HRDetailStyle.timeSlotItem} ${errors.sowDate && HRDetailStyle.marginBottom0}`}>
+                            {isTabDisabled?
                             <Controller
+                            render={({ ...props }) => (
+                                <DatePicker
+                                value={dayjs(watch('sowDate'))}
+                                    selected={watch('sowDate')}
+                                    placeholderText="Select Date"
+                                    // defaultValue={dayjs(watch('sowDate'), 'YYYY-MM-DD')}
+                                    onChange={(date) => {
+                                        setValue('sowDate', date);
+                                    }}
+                                    // dateFormat="yyyy/MM/dd"
+                                    disabled={isTabDisabled}
+                                />
+                            )}
+                            name="sowDate"
+                            rules={{ required: !talentDeteils?.IsHRTypeDP }}
+                            control={control}
+                        /> :<Controller
                                 render={({ ...props }) => (
                                     <DatePicker
                                         selected={watch('sowDate')}
@@ -274,6 +313,8 @@ if(boardData){
                                 rules={{ required: !talentDeteils?.IsHRTypeDP }}
                                 control={control}
                             />
+                            }
+                            
                             <CalenderSVG />
                         </div>
                         {errors.sowDate && (

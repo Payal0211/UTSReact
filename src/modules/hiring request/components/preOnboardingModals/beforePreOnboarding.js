@@ -94,19 +94,13 @@ export default function BeforePreOnboarding({
   }
 
   function extractNumberFromString(inputString) {
-    // Use a regular expression to match any sequence of digits
     const regex = /\d+/;
 
-    // Find the first match in the input string
     const match = inputString.match(regex);
-
-    // If a match is found, convert the matched string to a number and return it
     if (match && match.length > 0) {
       const number = parseInt(match[0], 10);
       return number;
     }
-
-    // Return null if no number is found in the input string
     return null;
   }
 
@@ -184,21 +178,18 @@ export default function BeforePreOnboarding({
         let dealOwnerOBJ = drpLeadUsers?.filter(
           (item) => item.text === result.responseBody.details.preOnboardingDetailsForAMAssignment.deal_Owner
         ).map((item) => ({ ...item, text: item.value, value: item.text }))
-        setControlledDealSource(result.responseBody.details.preOnboardingDetailsForAMAssignment.dealSource)
+        let dealSourceObj = drpLeadTypes.filter(item => item.value === result.responseBody.details.preOnboardingDetailsForAMAssignment.dealSource)
+       
         if(dealOwnerOBJ.length){
-           setControlledDealOwner(result.responseBody.details.preOnboardingDetailsForAMAssignment.deal_Owner)
+           setControlledDealOwner(dealOwnerOBJ[0].value)
            setValue('dealOwner', dealOwnerOBJ[0])
         }
-       
-        setValue('dealSource',result.responseBody.details.preOnboardingDetailsForAMAssignment.dealSource )
-        //    if(result.responseBody.details.kickoffStatusId === 4
-        //     ){
-        //         EnableNextTab(talentDeteils,HRID,'After Kick-off')
-        //     }
+        if(dealSourceObj.length){
+           setControlledDealSource(dealSourceObj[0].value)
+            setValue('dealSource',dealSourceObj[0])
+        }
+    
       }
-
-      // result.responseBody.details && setValue('msaDate', result.responseBody.details)
-      // setIsLoading(false)
     },
     [setValue]
   );
@@ -230,10 +221,15 @@ export default function BeforePreOnboarding({
   };
 
   useEffect(() => {
-    if (watchDealSource) {
+    if (watchDealSource?.value) {
       getLeadOwnerBytype(watchDealSource.value);
     }
   }, [watchDealSource]);
+
+  useEffect(() => {
+    let billRate =  watch('payRate') * 100 /(100- preOnboardingDetailsForAMAssignment?.nrPercentage) 
+    billRate && setValue('billRate',billRate.toFixed(2)) 
+  },[watch('payRate'),preOnboardingDetailsForAMAssignment])
 
   const handleComplete = useCallback(
     async (d) => {
@@ -258,13 +254,23 @@ export default function BeforePreOnboarding({
         netPaymentDays: parseInt(d.netTerm.value), //Update
       };
 
-      console.log("payload", payload);
+      // console.log("payload", payload,d.dealSource);
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
         EnableNextTab(talentDeteils, HRID, "During Pre-Onboarding");
         // callAPI(HRID)
         setMessage(result?.responseBody.details)
         setIsLoading(false);
+        setEditBillRate(false)
+        setEditPayRate(false)
+        setEditNetTerm(false)
+
+        let req = {
+          OnboardID: talentDeteils?.OnBoardId,
+          HRID: HRID,
+          actionName: actionType ? actionType : 'GotoOnboard',
+        };
+        fatchpreOnBoardInfo(req);
       }  
       setIsLoading(false);
     },
@@ -274,9 +280,10 @@ export default function BeforePreOnboarding({
       preONBoardingData,
       preOnboardingDetailsForAMAssignment,
       EnableNextTab,
+      actionType 
     ]
   );
-   console.log("form error", errors);
+  //  console.log("form error", errors);
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
       <div className={HRDetailStyle.onboardingProcesspart}>
@@ -696,19 +703,19 @@ export default function BeforePreOnboarding({
                         placeholder="USD 4000/Month"
                         // value={watch('billRate')}
                         disabled
-                        trailingIcon={
-                         !isTabDisabled && <EditFieldSVG
-                            width="16"
-                            height="16"
-                            onClick={() => {
-                              setEditBillRate(true);
-                              setValue(
-                                "billRate",
-                                extractNumberFromString(watch("billRate"))
-                              );
-                            }}
-                          />
-                        }
+                        // trailingIcon={
+                        //  !isTabDisabled && <EditFieldSVG
+                        //     width="16"
+                        //     height="16"
+                        //     onClick={() => {
+                        //       setEditBillRate(true);
+                        //       setValue(
+                        //         "billRate",
+                        //         extractNumberFromString(watch("billRate"))
+                        //       );
+                        //     }}
+                        //   />
+                        // }
                       />
                     )}
                       </>}
