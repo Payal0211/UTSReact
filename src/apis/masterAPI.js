@@ -485,10 +485,11 @@ export const MasterAPI = {
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
-			let response = await httpService.sendGetRequest();
+			let response = await httpService.sendGetRequestWithErrData();
 			return response;
 		} catch (error) {
-			return errorDebug(error, 'MasterAPI.getOtherSkillsRequest');
+			// return errorDebug(error, 'MasterAPI.getOtherSkillsRequest');
+			return error
 		}
 	},
 	getOtherRoleRequest: async function (roleData) {

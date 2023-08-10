@@ -47,6 +47,7 @@ export default function BeforePreOnboarding({
   const [editPayRate, setEditPayRate] = useState(false);
   const [editBillRate, setEditBillRate] = useState(false);
   const [editAcceptHR, setEditAcceptHR] = useState(false);
+  const [editNR, setEditNR] = useState(false);
 
   const [preONBoardingData, setPreONBoardingData] = useState({});
   const [
@@ -167,6 +168,7 @@ export default function BeforePreOnboarding({
 
         preOnboardDetail?.dpAmount && setValue('dpAmount',preOnboardDetail?.dpAmount)
         preOnboardDetail?.currentCTC && setValue('currentCTC',preOnboardDetail?.currentCTC)
+        preOnboardDetail?.nrPercentage && setValue('nrPercent',preOnboardDetail?.nrPercentage)
 
         let {drpLeadTypes,drpLeadUsers} = result.responseBody.details
         setDealowner(
@@ -227,9 +229,9 @@ export default function BeforePreOnboarding({
   }, [watchDealSource]);
 
   useEffect(() => {
-    let billRate =  watch('payRate') * 100 /(100- preOnboardingDetailsForAMAssignment?.nrPercentage) 
+    let billRate =  watch('payRate') * 100 /(100- watch('nrPercent')) 
     billRate && setValue('billRate',billRate.toFixed(2)) 
-  },[watch('payRate'),preOnboardingDetailsForAMAssignment])
+  },[watch('payRate'),preOnboardingDetailsForAMAssignment, watch('nrPercent')])
 
   const handleComplete = useCallback(
     async (d) => {
@@ -252,6 +254,7 @@ export default function BeforePreOnboarding({
           ? null
           : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
         netPaymentDays: parseInt(d.netTerm.value), //Update
+        nrMargin:d.nrPercent
       };
 
       // console.log("payload", payload,d.dealSource);
@@ -757,27 +760,71 @@ export default function BeforePreOnboarding({
                       />
                     )}
                   </div>
+
+               
+                  {/* <span>NR Percentage</span>
+                  <span className={HRDetailStyle.onboardingTextBold}>
+                    {preOnboardingDetailsForAMAssignment?.nrPercentage
+                      ? preOnboardingDetailsForAMAssignment?.nrPercentage
+                      : "NA"}{" "}
+                    %
+                  </span> */}
+                  {!preOnboardingDetailsForAMAssignment?.isHRTypeDP &&<div className={HRDetailStyle.modalFormCol}>
+                      {editNR ? (
+                     <HRInputField
+                     register={register}
+                     errors={errors}
+                     label="NR %"
+                     name="nrPercent"
+                     type={InputType.NUMBER}
+                     placeholder="Enter NR %"
+                     trailingIcon={
+                       <EditFieldSVG
+                         width="16"
+                         height="16"
+                         onClick={() => setEditNR(false)}
+                       />
+                     }
+                   />
+                    ) : (
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        label="NR %"
+                        name="nrPercent"
+                        type={InputType.NUMBER}
+                        placeholder="Enter NR %"
+                        disabled
+                        trailingIcon={
+                          <EditFieldSVG
+                            width="16"
+                            height="16"
+                            onClick={() => {setEditNR(true)
+                              setValue(
+                                "payRate",
+                                extractNumberFromString(watch("payRate"))
+                              );
+                            }}
+                          />
+                        }
+                      />
+                    )}
+                   </div>} 
+                
+               
                 </div>
 
-                <div className={HRDetailStyle.onboardingDetailText}>
-                  {preOnboardingDetailsForAMAssignment?.isHRTypeDP ? <>
+               
+                  {preOnboardingDetailsForAMAssignment?.isHRTypeDP && <div className={HRDetailStyle.onboardingDetailText}>
                     <span>DP Percentage</span>
                   <span className={HRDetailStyle.onboardingTextBold}>
                     {preOnboardingDetailsForAMAssignment?.dP_Percentage
                       ? preOnboardingDetailsForAMAssignment?.dP_Percentage
                       : "NA"}{" "}
                     %
-                  </span>
-                  </> : <>
-                  <span>NR Percentage</span>
-                  <span className={HRDetailStyle.onboardingTextBold}>
-                    {preOnboardingDetailsForAMAssignment?.nrPercentage
-                      ? preOnboardingDetailsForAMAssignment?.nrPercentage
-                      : "NA"}{" "}
-                    %
-                  </span>
-                  </>}                 
-                </div>
+                  </span></div>
+                 }                 
+                
 
                
                   {preOnboardingDetailsForAMAssignment?.isHRTypeDP &&  <div className={HRDetailStyle.onboardingDetailText}>

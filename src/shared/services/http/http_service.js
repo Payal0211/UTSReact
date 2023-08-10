@@ -126,6 +126,32 @@ export class HttpServices {
 		}
 	}
 
+	async sendGetRequestWithErrData() {
+		try {
+			const response = await axios.get(this._URL, {
+				headers: {
+					'Content-Type': this._contentType,
+					Authorization: this._isAuthRequired && this._authToken,
+				},
+			});
+
+			return {
+				statusCode: response.status,
+				responseBody: response.data,
+			};
+		} catch (error) {
+			const errorResult = errorDebug(
+				error.response.data,
+				'httpServices.sendGetRequest()',
+			);
+			return {
+				statusCode: errorResult.statusCode,
+				responseBody: error.response.data,
+			};
+		}
+	}
+
+
 	/**
 	 * @Function SEND_PUT_REQUEST()
 	 * @Methods axios.PUT()

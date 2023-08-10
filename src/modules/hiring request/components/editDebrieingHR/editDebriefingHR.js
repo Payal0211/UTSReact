@@ -159,9 +159,27 @@ const EditDebriefingHR = ({
 				return setError('otherSkill',null)
 			}
 			if (response?.statusCode === HTTPStatusCode?.BAD_REQUEST) {
+				if(response?.responseBody.message === "Temp Skill Exists"){
+					let newSKill = {
+						id: response.responseBody.details.tempSkill_ID,
+						value: data,
+					}
+	
+					let newSkillSet = watchSkills?.map((skill) => {
+						if(skill.id === '-1'){
+							return newSKill
+						}
+						return skill
+					})
+					setSkills(prevSkills => [...prevSkills, newSKill])
+					setValue('skills', newSkillSet)
+					setControlledJDParsed(newSkillSet)
+					setValue('otherSkills', '')
+					return setError('otherSkill',null)
+				}
 				return setError('otherSkill', {
 					type: 'otherSkill',
-					message: response?.responseBody,
+					message: response?.responseBody.message,
 				});
 			}
 		},

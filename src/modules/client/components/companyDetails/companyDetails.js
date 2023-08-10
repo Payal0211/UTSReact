@@ -165,6 +165,8 @@ const CompanyDetails = ({
 	useEffect(() => {
 		if (watchCompanyLeadSource?.id !== 1) unregister('companyLeadSource');
 	}, [unregister, watchCompanyLeadSource?.id]);
+
+	console.log('leadSource',leadSource)
 	return (
 		<div className={CompanyDetailsStyle.tabsFormItem}>
 			<div className={CompanyDetailsStyle.tabsFormItemInner}>
