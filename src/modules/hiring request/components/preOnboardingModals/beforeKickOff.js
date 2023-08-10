@@ -39,7 +39,7 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
 			onboardID: talentDeteils?.OnBoardId,
 			action: 'KickOff',
 		});
-console.log('status handler',response)
+        // console.log('status handler',response)
 		setTalentStatus(response && response?.responseBody?.details?.Data);       
         }	
         setIsLoading(false)
@@ -52,7 +52,7 @@ console.log('status handler',response)
     useEffect(()=>{
         if(talentStatus?.Timezonedata?.length && TabData.kickoffTimezonePreferenceId){
             let tZ = talentStatus?.Timezonedata.filter(t => t.id === TabData.kickoffTimezonePreferenceId)[0]
-            console.log(tZ,'tz',talentStatus?.Timezonedata,TabData.kickoffTimezonePreferenceId);
+            // console.log(tZ,'tz',talentStatus?.Timezonedata,TabData.kickoffTimezonePreferenceId);
             setControlledTimeZone(tZ.value)
             setValue('timeZone', tZ)
         }
@@ -60,7 +60,7 @@ console.log('status handler',response)
 
     const fatchOnBoardInfo = useCallback(async (ONBID) =>{
         let result = await OnboardDAO.getTalentOnBoardInfoDAO(ONBID)
-            console.log("fatchOnBoardInfo",result.responseBody.details)
+            // console.log("fatchOnBoardInfo",result.responseBody.details)
 
             if (result?.statusCode === HTTPStatusCode.OK){
                if(result.responseBody.details.genOnBoardTalent.kickoffStatusId === 4
@@ -120,6 +120,7 @@ console.log('status handler',response)
         if (response?.statusCode === HTTPStatusCode.OK) {
         setIsLoading(false)
         EnableNextTab(talentDeteils,HRID,'After Kick-off')
+        fatchOnBoardInfo(talentDeteils?.OnBoardId)
         }
          setIsLoading(false)
     },[talentDeteils, HRID,EnableNextTab])
@@ -146,7 +147,25 @@ console.log('status handler',response)
                     <div className={HRDetailStyle.modalFormCol}>
                         <label className={HRDetailStyle.timeLabel}>Kick off call Date  <span className={HRDetailStyle.reqFieldRed}>*</span></label>
                         <div className={`${HRDetailStyle.timeSlotItem} ${errors.callDate ? HRDetailStyle.marginBottom0 : ''}`}>
+                            {isTabDisabled ?
                             <Controller
+                            render={({ ...props }) => (
+                                <DatePicker
+                                value={dayjs(watch('callDate'))}
+                                selected={watch('callDate')}
+                                    placeholderText={watch('callDate') ? watch('callDate') : "Select Date"}
+                                    onChange={(date) => {
+                                        setValue('callDate', date);
+                                    }}
+                                    dateFormat="yyyy/MM/dd H:mm:ss"
+                                    disabled={isTabDisabled}
+                                />
+                            )}
+                            name="callDate"
+                            rules={{ required: true }}
+                            control={control}
+                            required
+                        /> :<Controller
                                 render={({ ...props }) => (
                                     <DatePicker
                                     // value={dayjs(watch('callDate'))}
@@ -164,6 +183,8 @@ console.log('status handler',response)
                                 control={control}
                                 required
                             />
+                            }
+                            
                             <CalenderSVG />
                         </div>
                         {errors.callDate && (

@@ -1,5 +1,5 @@
 import React, { useEffect , useState, useCallback} from "react";
-import {  Dropdown, Menu } from 'antd';
+import { Skeleton, Dropdown, Menu } from 'antd';
 import HRDetailStyle from '../../screens/hrdetail/hrdetail.module.css';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
@@ -51,17 +51,46 @@ export default function DuringPreOnboarding({
     const [addMoreTeamMember, setAddMoreTeamMember] = useState(false)
 
     const [isTabDisabled, setTabDisabled] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+
+    const [reportingTo, setReportingTo] = useState([]);
+    const [deviceMasters, setDeviceMasters] = useState([]);
+    const [buddy, setBuddy] = useState([]);
+    const devicePolices = [{id:1,value:'Talent to bring his own devices'},{id:2,value:'Client to buy a device and Uplers to Facilitate'},
+    {id:3,value:' Client can use remote desktop security option facilitated by Uplers (At additional cost of $100 per month)'},{id:4,value:'Add This Later'}]
+    const leavePolices =[{id:1,value:'Proceed with Uplers Policies'},{id:2,value:'Upload Your Policies'}]
+    const [controlledBuddy, setControlledBuddy] = useState('Please Select');
+    const [controlledDevicePolicy, setControlledDevicePolicy] = useState('Please Select')
+    const [controlledLeavePolicy, setControlledLeavePolicy] = useState('Please Select')
+    const [controlledReportingTo, setControlledReportingTo] =
+		useState('Please Select');
+        const [controlledDeviceType, setControlledDeviceType] = useState('Please Select')
+
+        const getReportingToHandler = useCallback(async () => {
+            const response = await MasterDAO.getYesNoOptionRequestDAO();
+            setReportingTo(response && response?.responseBody?.details);
+        }, []);
+        const getBuddyHandler = useCallback(async () => {
+            const response = await MasterDAO.getBuddyRequestDAO();
+            setBuddy(response && response?.responseBody?.details);
+        }, []);
+
+    useEffect(() => {
+        getReportingToHandler();
+		getBuddyHandler();
+    },[getReportingToHandler, getBuddyHandler])
 
     const saveMember = (d) =>{
-        console.log("member data", d)
+        // console.log("member data", d, watch('reportingTo'), watch('memberBuddy'))
         let newMember = {
         "name": d.memberName,
         "designation": d.memberDesignation,
-        "reportingTo": d.reportingTo,
+        "reportingTo": watch('reportingTo')? watch('reportingTo').value : '',
         "linkedin": d.linkedinLink,
         "email": d.memberEmail,
-        "buddy": d.memberBuddy
+        "buddy": watch('memberBuddy') ? watch('memberBuddy').value : ''
       }
+  
       setAddMoreTeamMember(false)
       setClientTeamMembers(prev=> ([...prev, newMember]))
       memberUnregister('reportingTo')
@@ -101,8 +130,9 @@ export default function DuringPreOnboarding({
           if (result?.statusCode === HTTPStatusCode.OK) {
             let data = result.responseBody.details
 
-            setTabDisabled(data.isSecondTabReadOnly)
+           setTabDisabled(data.isSecondTabReadOnly)
            setTabData(data.secondTabAMAssignmentOnBoardingDetails)
+           setDeviceMasters(data.deviceMaster)
            setValue('invoiceRaisinfTo',data.secondTabAMAssignmentOnBoardingDetails.inVoiceRaiseTo)
            setValue('invoiceRaisingToEmail',data.secondTabAMAssignmentOnBoardingDetails.inVoiceRaiseToEmail)
            setValue('contractDuration',data.secondTabAMAssignmentOnBoardingDetails.utsContractDuration)
@@ -117,11 +147,40 @@ export default function DuringPreOnboarding({
            setValue('feedbackProcess', data.feedback_Process)
 
            setClientTeamMembers(data.onBoardClientTeam)
+
+           if(data.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption){
+            let filteredDevicePolicy = devicePolices.filter(item=> item.value ===  data.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption)
+            setValue('devicePolicy',filteredDevicePolicy[0])
+            setControlledDevicePolicy(filteredDevicePolicy[0].value)
+            filteredDevicePolicy[0].id === 1 && setValue('standerdSpecifications',data.secondTabAMAssignmentOnBoardingDetails.talentDeviceDetails)
+            // console.log({filteredDevicePolicy})
+            if(filteredDevicePolicy[0].id === 2){
+                let deviceFilteredMaster = data.deviceMaster.filter(device=> device.deviceName === data.secondTabAMAssignmentOnBoardingDetails.device_Radio_Option)
+                // console.log('deviceFilteredMaster', deviceFilteredMaster,  data.secondTabAMAssignmentOnBoardingDetails.device_Radio_Option)
+               if(deviceFilteredMaster[0].id !== 3){
+                        setValue('deviceType',deviceFilteredMaster.map(device=> ({id: device.id, value: `${device.deviceName} $ ${device.deviceCost} USD `}))[0])
+                        setControlledDeviceType(deviceFilteredMaster.map(device=> ({id: device.id, value: `${device.deviceName} $ ${device.deviceCost} USD `}))[0].value)
+               }else {
+                        setValue('deviceType',deviceFilteredMaster.map(device=> ({id: device.id, value: device.deviceName}))[0])
+                        setControlledDeviceType(deviceFilteredMaster.map(device=> ({id: device.id, value: device.deviceName}))[0].value)
+                        setValue('otherDevice',data.secondTabAMAssignmentOnBoardingDetails.client_DeviceDescription)
+               }
+            } 
+
+           }
+           
+           if(data.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption){
+            let filteredLeavePolicy = leavePolices.filter(leavePolices => leavePolices.value === data.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption)
+            setValue('leavePolicie',filteredLeavePolicy[0])
+            setControlledLeavePolicy(filteredLeavePolicy[0].value)
+           }
       
           }
         },
         [setValue]
     );
+
+    const watchDevicePolicy = watch('devicePolicy')
 
     useEffect(() => {
         if (talentDeteils?.OnBoardId) {
@@ -136,6 +195,7 @@ export default function DuringPreOnboarding({
     const handleOnboarding = async (d) => {
 // console.log("form data",d)
         setShowAMModal(true)
+        setIsLoading(true)
         let payload = {
             "hR_ID": HRID,
             "companyID": 11476,// to be dynamic
@@ -148,7 +208,7 @@ export default function DuringPreOnboarding({
             "talent_FirstMonth": d.firstMonth,
             "softwareToolsRequired": d.softwareToolsRequired,
             "devicesPoliciesOption": d.devicePolicy.value,
-            // "talentDeviceDetails": "talent Device Details",
+            "talentDeviceDetails": d.devicePolicy.id === 1 ? d.standerdSpecifications : '' ,
             // "additionalCostPerMonth_RDPSecurity": "0",
             // "isRecurring": false,
             // "proceedWithUplers_LeavePolicyOption": 		"proceedWithUplers_LeavePolicyOption",
@@ -156,28 +216,29 @@ export default function DuringPreOnboarding({
             // "proceedWithClient_LeavePolicyLink": "",
             "leavePolicyFileName": "",
             "hdnRadioDevicesPolicies": d.devicePolicy.value,
-            "device_Radio_Option": "",
-            "deviceID": 0,
-            "client_DeviceDescription": "",
-            "totalCost": 0,
+            "device_Radio_Option":  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '',// device name
+            "deviceID": d.devicePolicy.id === 2 ? d.deviceType.id : 0,//device id
+            "client_DeviceDescription": d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' ,
+            "totalCost": d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0,//deviceCost
             "radio_LeavePolicies": d.leavePolicie.value,
             "leavePolicyPasteLinkName": "",
             "teamMembers": clientTeamMembers
           }
-console.log(payload)
+
           let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
 
         //   console.log("res",result,payload)
       if (result?.statusCode === HTTPStatusCode.OK) {
         // EnableNextTab(talentDeteils, HRID, "During Pre-Onboarding");
-        // setIsLoading(false);
+        setIsLoading(false);
         setShowAMModal(false)
         callAPI(HRID)
       }
       setShowAMModal(false)
+      setIsLoading(false)
     }
 
-
+// console.log("memberErrors",memberErrors,watchDevicePolicy,deviceMasters)
     
 // Team menber Object
     // {
@@ -350,15 +411,16 @@ console.log(payload)
                     </div>
                    <div className={HRDetailStyle.colMd12}>
                         <HRSelectField
-                            // isControlled={true}
+                        controlledValue={controlledDevicePolicy}
+                        setControlledValue={setControlledDevicePolicy}
+                            isControlled={true}
                             mode="id/value"
                             setValue={setValue}
                             register={register}
                             label={'Device Policy'}
                             // defaultValue={'Enter Device Policy'}
-options={[{id:1,value:'Talent to bring his own devices. (with comment box like in onboarding form)'},{id:2,value:'Client to buy a device and Uplers to Facilitate.'},
-{id:3,value:'Client can use remote desktop sercurity option facilitated by Uplers (At additional cost of $100 per month).'},{id:4,value:'Add This Later'}]}
-                            placeholder={'Enter Device Policy'}
+                            options={devicePolices}
+                            placeholder={'Select Device Policy'}
                             name="devicePolicy"
                             isError={errors['devicePolicy'] && errors['devicePolicy']}
                             required={!talentDeteils?.IsHRTypeDP}
@@ -366,21 +428,72 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                             disabled={isTabDisabled}
                         />
                     </div>
+
+                        {watchDevicePolicy?.id === 1 &&<div className={HRDetailStyle.colMd12}><HRInputField
+                            isTextArea={true}
+                            errors={errors}
+                            // label={'Softwares & Tools Required'}
+                            register={register}
+                            name="standerdSpecifications"
+                            type={InputType.TEXT}
+                            placeholder='Specify standard specifications, If any'
+                          required={watchDevicePolicy?.id === 1}
+                            disabled={isTabDisabled}
+                        /></div> }
+
+                        {watchDevicePolicy?.id === 2 && <div className={HRDetailStyle.colMd12}><HRSelectField
+                                 controlledValue={controlledDeviceType}
+                                 setControlledValue={setControlledDeviceType}
+                                     isControlled={true}
+                                mode="id/value"
+                                setValue={setValue}
+                                register={register}
+                                className="leavePolicylabel"
+                                // label={'Leave Polices'}
+                                options={deviceMasters.length ? deviceMasters.map(device=> {
+                                    if(device.id !== 3){
+                                        return {id: device.id, value: `${device.deviceName} $ ${device.deviceCost} USD `}
+                                    }
+                                    return {id: device.id, value: device.deviceName}
+                                }): []}
+                                defaultValue={'Select Device'}
+                                name="deviceType"
+                                isError={errors['deviceType'] && errors['deviceType']}
+                                // required={!talentDeteils?.IsHRTypeDP}
+                                errorMsg={'please select device.'}
+                                disabled={isTabDisabled}
+                            /></div> }
+
+{watchDevicePolicy?.id === 2 &&  watch('deviceType')?.id === 3 && <div className={HRDetailStyle.colMd12}><HRInputField
+                            isTextArea={true}
+                            errors={errors}
+                            // label={'Softwares & Tools Required'}
+                            register={register}
+                            name="otherDevice"
+                            type={InputType.TEXT}
+                            placeholder=''
+                          
+                            disabled={isTabDisabled}
+                        /></div>  }
+
                     <div className={HRDetailStyle.modalFormCol}>
                         <div className={HRDetailStyle.modalFormLeaveUnderLine}>
                             <HRSelectField
-                                // isControlled={true}
+                            controlledValue={controlledLeavePolicy}
+                            setControlledValue={setControlledLeavePolicy}
+                                isControlled={true}
                                 mode="id/value"
                                 setValue={setValue}
                                 register={register}
                                 className="leavePolicylabel"
                                 label={'Leave Polices'}
-                                options={[{id:1,value:'Proceed with Uplers Policies (Uplers Leave Policy to be attached)'},{id:2,value:'Upload Your Policies.'}]}
-                                defaultValue={'Proceed with Uplers Policies'}
+                                placeholder={'Select Leave Polices'}
+                                options={leavePolices}
+                                // defaultValue={'Proceed with Uplers Policies'}
                                 name="leavePolicie"
                                 isError={errors['leavePolicie'] && errors['leavePolicie']}
                                 required={!talentDeteils?.IsHRTypeDP}
-                                errorMsg={'please enter leave policy.'}
+                                errorMsg={'please select leave policy.'}
                                 disabled={isTabDisabled}
                             />
                         </div>
@@ -604,7 +717,7 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                                  errors={memberErrors}
                                  required
                                 validationSchema={{
-                                    required: 'please enter the Designation name.',
+                                    required: 'please enter the designation .',
                                 }}
                                 label="Designation"
                                 name="memberDesignation"
@@ -613,7 +726,7 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                             />
                         </div>
                         <div className={HRDetailStyle.modalFormCol}>
-                            <HRInputField
+                            {/* <HRInputField
                                  register={memberregister}
                                  errors={memberErrors}
                                  required
@@ -624,16 +737,34 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                                 name="reportingTo"
                                 type={InputType.TEXT}
                                 placeholder="Enter Name"
-                            />
+                            /> */}
+                            <HRSelectField
+									controlledValue={controlledReportingTo}
+									isControlled={true}
+									setControlledValue={setControlledReportingTo}
+									mode={'id/value'}
+									setValue={setValue}
+									register={register}
+									label={'Reporting To'}
+									defaultValue={'Reporting To'}
+									options={reportingTo}
+									name="reportingTo"
+									isError={
+										memberErrors['reportingTo'] &&
+										memberErrors['reportingTo']
+									}
+									// required
+									errorMsg={'Please select reporting to'}
+								/>
                         </div>
                         <div className={HRDetailStyle.modalFormCol}>
                             <HRInputField
                                 register={memberregister}
                                 errors={memberErrors}
-                                required
-                                validationSchema={{
-                                    required: 'please enter the Link.',
-                                }}
+                                // required
+                                // validationSchema={{
+                                //     required: 'please enter the Link.',
+                                // }}
                                 label="Linkedin"
                                 name="linkedinLink"
                                 type={InputType.TEXT}
@@ -655,7 +786,7 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                             />
                         </div>
                         <div className={HRDetailStyle.modalFormCol}>
-                            <HRInputField
+                            {/* <HRInputField
                                  register={memberregister}
                                  errors={memberErrors}
                                  required
@@ -666,7 +797,24 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
                                 name="memberBuddy"
                                 type={InputType.TEXT}
                                 placeholder="Enter Name"
-                            />
+                            /> */}
+                            	<HRSelectField
+									controlledValue={controlledBuddy}
+									isControlled={true}
+									setControlledValue={setControlledBuddy}
+									mode={'id/value'}
+									setValue={setValue}
+									register={register}
+									label={'Buddy'}
+									defaultValue={'Select Buddy'}
+									options={buddy}
+									name="memberBuddy"
+									isError={
+										memberErrors['memberBuddy'] && memberErrors['memberBuddy']
+									}
+									// required
+									errorMsg={'Please select buddy'}
+								/>
                         </div>
 
                         <div className={HRDetailStyle.modalFormCol}>
@@ -684,7 +832,7 @@ options={[{id:1,value:'Talent to bring his own devices. (with comment box like i
     </div>
 
     <div className={HRDetailStyle.formPanelAction}>
-        <button type="submit" className={HRDetailStyle.btnPrimary} onClick={handleSubmit(handleOnboarding)} disabled={isTabDisabled}>Complete Client Pre-Onboarding</button>
+        <button type="submit" className={HRDetailStyle.btnPrimary} onClick={handleSubmit(handleOnboarding)} disabled={isTabDisabled ? isTabDisabled : isLoading }>Complete Client Pre-Onboarding</button>
         <button
           type="submit"
           className={HRDetailStyle.btnPrimaryOutline}
