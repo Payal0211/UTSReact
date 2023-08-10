@@ -320,7 +320,7 @@ export default function BeforePreOnboarding({
                   <span>HR ID</span>
                   <a
                     target="_blank"
-                    href="#"
+                    href={`/allhiringrequest/${HRID}`}
                     rel="noreferrer"
                     className={HRDetailStyle.onboardingTextUnderline}
                   >
@@ -545,28 +545,28 @@ export default function BeforePreOnboarding({
                         mode="id/value"
                         setValue={setValue}
                         register={register}
-                        label={"Payment Net Term"}
-                        defaultValue={"Select Payment Net Term"}
+                        label={"Net Payment Term"}
+                        defaultValue={"Select Net Payment Term"}
                         name="netTerm"
                         options={netTerms && netTerms}
                         isError={errors["netTerm"] && errors["netTerm"]}
                         required
-                        errorMsg={"Please select Payment Net Term"}
+                        errorMsg={"Please select Net Payment Term"}
                       />
                     ) : (
                        <HRInputField
                         register={register}
                         errors={errors}
-                        label="Payment Net Term"
+                        label="Net Payment Term"
                         name="netTerm"
                         type={InputType.TEXT}
-                        placeholder="90 Days"
+                        placeholder="Net Payment Term"
                         validationSchema={{
-                          required: "please enter the Payment Net Term.",
+                          required: "please enter the Net Payment Term.",
                           min: 1
                         }}
                         isError={errors["netTerm"] && errors["netTerm"]}
-                        errorMsg={"Please select Payment Net Term"}
+                        errorMsg={"Please select Net Payment Term"}
                         required
                         disabled
                         trailingIcon={
