@@ -21,5 +21,19 @@ export const ClientHappinessSurveyRequestAPI = {
 			return errorDebug(error, 'ClientHappinessSurveyRequestAPI.getClientSurveyList');
 		}
 	},
+
+	getAutoCompleteCompany:async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL = NetworkInfo.NETWORK + SubDomain.CLIENT + ClientHappinessSurvey.GET_AUTO_COMPLETE_COMPANY+ClientHappinessSurvey.GET_COMPANY + `?Search=${data}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error,'ClientHappinessSurveyRequestAPI.getAutoCompleteCompany');
+		}
+		
+	}
 	
 };

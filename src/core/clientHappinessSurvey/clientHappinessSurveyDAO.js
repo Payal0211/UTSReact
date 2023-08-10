@@ -41,4 +41,41 @@ export const clientHappinessSurveyRequestDAO = {
 			return errorDebug(error, 'clientHappinessSurveyRequestDAO.getClientHappinessSurveyListDAO');
 		}
 	},
+
+	getAutoCompleteCompanyDAO:async function (data){
+		try {
+			const getAutoCompleteCompanyResult = await ClientHappinessSurveyRequestAPI.getAutoCompleteCompany(
+				data,
+			);
+			if (getAutoCompleteCompanyResult) {
+				const statusCode = getAutoCompleteCompanyResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getAutoCompleteCompanyResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getAutoCompleteCompanyResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return getAutoCompleteCompanyResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+
+
+		} catch (error) {
+			return errorDebug(error, 'clientHappinessSurveyRequestDAO.getAutoCompleteCompanyDAO');
+		}
+	}
 };

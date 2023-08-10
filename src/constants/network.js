@@ -315,5 +315,7 @@ export class IncentiveReport {
 }
 export class ClientHappinessSurvey{
 	static LIST = 'List';
-	static GET_CLIENT_HAPPINESS_SURVEY_LIST = 'HappinessSurvey/'
+	static GET_CLIENT_HAPPINESS_SURVEY_LIST = 'HappinessSurvey/';
+	static GET_AUTO_COMPLETE_COMPANY = 'AutoComplete/';
+	static GET_COMPANY = "Company";
 }

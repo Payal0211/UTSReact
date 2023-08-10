@@ -13,7 +13,7 @@ const SurveyFilters = ({
 	appliedFilter,
 	setCheckedState,
 	setFilteredTagLength,
-	onRemoveHRFilters,
+	onRemoveSurveyFilters,
 	checkedState,
 	setIsAllowFilters,
 	tableFilteredState,
@@ -26,11 +26,11 @@ const SurveyFilters = ({
 	const [searchData, setSearchData] = useState([]);
 	const [filterSubChild, setFilterSubChild] = useState(null);
 
-
-	// const toggleFilterSubChild = (item) => {
-	// 	setToggleBack(true);
-	// 	setFilterSubChild(item);
-	// };
+	const toggleFilterSubChild = (item) => {
+		setToggleBack(true);
+		setFilterSubChild(item);
+	};
+	
 	// const handleAppliedFilters = useCallback(
 	// 	(isChecked, filterObj) => {
 	// 		let tempAppliedFilters = new Map(appliedFilter);
@@ -194,10 +194,10 @@ const SurveyFilters = ({
 					{toggleBack && (
 						<span
 							className={surveyFilterStyle.goback}
-							// onClick={() => {
-							// 	setToggleBack(false);
-							// 	setSearchData(hrUtils.searchFiltersList);
-							// }}
+							onClick={() => {
+								setToggleBack(false);
+								// setSearchData(hrUtils.searchFiltersList);
+							}}
                             >
 							<ArrowLeftSVG />
 							&nbsp;&nbsp; Go back
@@ -211,15 +211,15 @@ const SurveyFilters = ({
 						}}>
 						<CrossSVG
 							style={{ width: '26px' }}
-							// onClick={() => {
-							// 	onRemoveHRFilters();
-							// }}
+							onClick={() => {
+								onRemoveSurveyFilters();
+							}}
 						/>
 					</span>
 				</div>
 
 				<div className={surveyFilterStyle.asideFilters}>
-					{/* {toggleBack ? (
+					{toggleBack ? (
 						<>
 							<span className={surveyFilterStyle.label}>
 								{filterSubChild.label}
@@ -231,11 +231,11 @@ const SurveyFilters = ({
 										style={{ fontSize: '20px', fontWeight: '800' }}
 									/>
 									<input
-										// onChange={(e) => {
-										// 	return setSearchData(
-										// 		hrUtils.hrFilterSearch(e, filterSubChild.child),
-										// 	);
-										// }}
+										onChange={(e) => {
+											return setSearchData(
+												hrUtils.hrFilterSearch(e, filterSubChild.child),
+											);
+										}}
 										className={surveyFilterStyle.searchInput}
 										type="text"
 										id="search"
@@ -245,28 +245,27 @@ const SurveyFilters = ({
 							)}
 
 							{filterSubChild.isNumber && (
-														<div className={surveyFilterStyle.searchFiltersList}>
-															<input
-																onChange={(e) => {
-																	if(e.target.value === '0'){
-																		return
-																	}
-																	handleAppliedFilters("numberField", {
-																		filterType: filterSubChild.name,
-																		value: e.target.value.substring(0, 2),
-																		id: e.target.value.substring(0, 2),
-																	})
-																}}
-																value={appliedFilter.get(filterSubChild?.name) ? appliedFilter.get(filterSubChild?.name).value : ''}
-																className={surveyFilterStyle.searchInput}
-																type="number"
-																id="NumberInput"
-																placeholder={`Enter ${filterSubChild?.name}`}
-																min="1" max="99" 
-															/>
-
-														</div>
-														)}
+								<div className={surveyFilterStyle.searchFiltersList}>
+									<input
+										// onChange={(e) => {
+										// 	if(e.target.value === '0'){
+										// 		return
+										// 	}
+										// 	handleAppliedFilters("numberField", {
+										// 		filterType: filterSubChild.name,
+										// 		value: e.target.value.substring(0, 2),
+										// 		id: e.target.value.substring(0, 2),
+										// 	})
+										// }}
+										value={appliedFilter?.get(filterSubChild?.name) ? appliedFilter?.get(filterSubChild?.name).value : ''}
+										className={surveyFilterStyle.searchInput}
+										type="number"
+										id="NumberInput"
+										placeholder={`Enter ${filterSubChild?.name}`}
+										min="1" max="99" 
+									/>
+								</div>
+							)}
 							<br />
 							<div className={surveyFilterStyle.filtersListType}>
 								{searchData && searchData.length > 0
@@ -276,16 +275,16 @@ const SurveyFilters = ({
 													className={surveyFilterStyle.filterItem}
 													key={index}>
 													<Checkbox
-														checked={checkedState.get(
+														checked={checkedState?.get(
 															`${filterSubChild.name}${item.text}`,
 														)}
-														onChange={(e) =>
-															handleAppliedFilters(e.target.checked, {
-																filterType: filterSubChild.name,
-																value: item?.value,
-																id: item?.text,
-															})
-														}
+														// onChange={(e) =>
+														// 	handleAppliedFilters(e.target.checked, {
+														// 		filterType: filterSubChild.name,
+														// 		value: item?.value,
+														// 		id: item?.text,
+														// 	})
+														// }
 														id={item?.value + `/${index + 1}`}
 														style={{
 															fontSize: `${!item.label && '1rem'}`,
@@ -301,22 +300,22 @@ const SurveyFilters = ({
 												</div>
 											);
 									  })
-									: filterSubChild.child.map((item, index) => {
+									: filterSubChild?.child?.map((item, index) => {
 											return (
 												<div
 													className={surveyFilterStyle.filterItem}
 													key={index}>
 													<Checkbox
-														checked={checkedState.get(
+														checked={checkedState?.get(
 															`${filterSubChild.name}${item.text}`,
 														)}
-														onChange={(e) =>
-															handleAppliedFilters(e.target.checked, {
-																filterType: filterSubChild.name,
-																value: item?.value,
-																id: item?.text,
-															})
-														}
+														// onChange={(e) =>
+														// 	handleAppliedFilters(e.target.checked, {
+														// 		filterType: filterSubChild.name,
+														// 		value: item?.value,
+														// 		id: item?.text,
+														// 	})
+														// }
 														id={item?.value + `/${index + 1}`}
 														style={{
 															fontSize: `${!item.label && '1rem'}`,
@@ -338,7 +337,7 @@ const SurveyFilters = ({
 						<>
 							<span className={surveyFilterStyle.label}>Filters</span>
 							<div className={surveyFilterStyle.filtersChips}>
-								{filteredTags}
+								{/* {filteredTags} */}
 							</div>
 							<div className={surveyFilterStyle.filtersListType}>
 								{filtersType.map((item, index) => {
@@ -354,7 +353,7 @@ const SurveyFilters = ({
 								})}
 							</div>
 						</>
-					)} */}
+					)}
 					<br />
 					<br />
 					<hr />

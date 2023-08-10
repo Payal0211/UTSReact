@@ -2,25 +2,16 @@ import React, {
 	useState,
 	useEffect,
 	Suspense,
-	useMemo,
 	useCallback,
 } from 'react';
-import { Dropdown, Menu, message, Table, Tooltip, Modal,Checkbox,Select } from 'antd';
+import { Dropdown, Menu, Table, Modal,Select, AutoComplete } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
-	AddNewType,
-	DayName,
 	InputType,
-	UserAccountRole,
 } from 'constants/application';
-import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import UTSRoutes from 'constants/routes';
 
-import { UserSessionManagementController } from 'modules/user/services/user_session_services';
-import HROperator from 'modules/hiring request/components/hroperator/hroperator';
-import { hrUtils } from 'modules/hiring request/hrUtils';
-// import HRSelectField from '../hrSelectField/hrSelectField';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import _debounce from 'lodash/debounce';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
@@ -30,11 +21,14 @@ import clienthappinessSurveyStyles from './client_happiness_survey.module.css';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import { useNavigate } from 'react-router-dom';
 import { clientHappinessSurveyRequestDAO } from 'core/clientHappinessSurvey/clientHappinessSurveyDAO';
 import { HTTPStatusCode } from 'constants/network';
+import { downloadToExcel } from 'modules/report/reportUtils';
+import { clientHappinessSurveyConfig } from 'modules/hiring request/screens/clientHappinessSurvey/clientHappinessSurvey.config';
+
 const SurveyFiltersLazyComponent = React.lazy(() =>
 	import('modules/survey/components/surveyFilter/surveyfilters'),
 );
@@ -57,20 +51,10 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 	} = useForm();   
 
     const pageSizeOptions = [100, 200, 300, 500, 1000,5000];
-    const [tableFilteredState, setTableFilteredState] = useState({
-		StartDate: "",
-        EndDate :"",
-        selectedFormat:"",
-        FeedbackStatus:"",
-        RatingFrom : 1,
-        RatingTo :3,
-        Company:"",
-        Client :"",
-        Email:"",
-        Rating: 5,
-        Question:"",
-        Options:"",
-        search: ""
+    const [tableFilteredState, setTableFilteredState] = useState({       
+        pagenumber:1,
+        totalrecord:100,
+        filterFields_HappinessSurvey:{}
 	});
     const [totalRecords, setTotalRecords] = useState(0);
     const [pageSize, setPageSize] = useState(100);    
@@ -83,44 +67,50 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
 
     const [filteredTagLength, setFilteredTagLength] = useState(0);
+    const [filtersList, setFiltersList] = useState([]);
     const [getHTMLFilter, setHTMLFilter] = useState(false);
     const [isAllowFilters, setIsAllowFilters] = useState(false);
 
     const [clientHappinessSurveyList,setClientHappinessSurveyList] = useState([]);
+    const [autoCompleteCompanyList,setAutoCompleteCompanyList] = useState([]);
 
-    // const dataSource = [
-    // {
-    //     key: '1',
-    //     date: '04/03/22',
-    //     feedbackdate: '04/03/22',
-    //     cat: 'A',
-    //     company: <a href='#'>Sun Spaces Solutions Pv...</a>,
-    //     email: <a href='#'>sv@nuecluesx.io</a>,
-    //     rating: '05',
-    //     feedbackstatus: <div className={clienthappinessSurveyStyles.StatusPending}>Feedback Pending</div>,
-    //     salesrep: <a href='#'>Hardik</a>,
-    //     question: 'What was the major costing ?',
-    //     options: 'Account manager need to be more comfortable and friendly',
-    //     comments: 'We will note that and keep it accountable',
-    //     link: <a href='#'>https://newbeta-admin.uplers.com/ClientHappinessSurvey/ClientHappinessSurveys#</a>,
-    // },
-    // {
-    //     key: '2',
-    //     date: '04/03/22',
-    //     feedbackdate: '04/03/22',
-    //     cat: 'A',
-    //     company: <a href='#'>Sun Spaces Solutions Pv...</a>,
-    //     email: <a href='#'>sv@nuecluesx.io</a>,
-    //     rating: '05',
-    //     feedbackstatus: <div className={clienthappinessSurveyStyles.StatusCompleted}>Completed</div>,
-    //     salesrep: <a href='#'>Hardik</a>,
-    //     question: 'What was the major costing ?',
-    //     options: 'Account manager need to be more comfortable and friendly',
-    //     comments: 'We will note that and keep it accountable',
-    //     link: <a href='#'>https://newbeta-admin.uplers.com/ClientHappinessSurvey/ClientHappinessSurveys#</a>,
-    // },    
-    // ];
-  
+    const watchCompany = watch('company');
+    const watchClient = watch('client');
+    const watchEmail = watch('email');
+
+    const [generateLinkData,setGenerateLinkData ] = useState({company: '',client: "",email: ""});
+
+    useEffect(() => {
+        let _generateLinkData = {...generateLinkData};
+        if (watchCompany) {
+            _generateLinkData.company = watchCompany;
+            getAutoCompleteComapany(watchCompany);
+        }
+        if(watchClient){
+            _generateLinkData.client = watchClient;
+        }
+        if(watchEmail) {
+            _generateLinkData.email = watchEmail;
+        }   
+        setGenerateLinkData(_generateLinkData);
+    },[watchCompany,watchClient,watchEmail])
+    
+
+    const getAutoCompleteComapany = useCallback(
+		async (watchCompany) => {
+			let response = await clientHappinessSurveyRequestDAO.getAutoCompleteCompanyDAO(watchCompany);
+			if (response?.statusCode === HTTPStatusCode.OK) {				
+                setAutoCompleteCompanyList(response?.responseBody ?? []);				
+			} else if (
+				response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+				response?.statusCode === HTTPStatusCode.NOT_FOUND
+			) {			
+				setAutoCompleteCompanyList([]);
+			}
+		},
+		[],
+	); 
+
     const columns = [
         {
             title: 'Date',
@@ -197,75 +187,124 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     ];
     
     useEffect(() => {
-        getClientHappinessSurveyList();
-    },[]);
+        getClientHappinessSurveyList(tableFilteredState);
+    },[tableFilteredState]);
 
-    const getClientHappinessSurveyList = async () => {
-        setLoading(true);
-			let response = await clientHappinessSurveyRequestDAO.getClientHappinessSurveyListDAO(
-                {
-                    "totalrecord": 10,
-                    "pagenumber": 1,
-                    "filterFields_HappinessSurvey": {
-                        "StartDate": "2023-08-01",
-                        "EndDate" :"2023-08-01"
-                        
-                    }
-                }
-            );
-			if (response?.statusCode === HTTPStatusCode.OK) {               
-                setClientHappinessSurveyList(response?.responseBody?.details?.rows ?? []);
-				setTotalRecords(response?.responseBody?.totalrows);
-				setLoading(false);
-				// setAPIdata(
-				// 	engagementUtils.modifyEngagementListData(response && response),
-				// );
-			} else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
-				// setAPIdata([]);
-				setLoading(false);
-				setTotalRecords(0);
-			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-				setLoading(false);
-				return navigate(UTSRoutes.LOGINROUTE);
-			} else if (
-				response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
-			) {
-				setLoading(false);
-				return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-			} else {
-				setLoading(false);
-				return 'NO DATA FOUND';
-			}
+    const modifyResponseData = (data) => {
+    return data.map((item) => ({...item,
+        addedDate:item.addedDate.split(' ')[0],
+        feedbackDate:item.feedbackDate.split(' ')[0]
+    }))
     }
+   
+    const getClientHappinessSurveyList = useCallback(async (requestData) => {
+        setLoading(true);
+        let response = await clientHappinessSurveyRequestDAO.getClientHappinessSurveyListDAO(requestData);
+        if (response?.statusCode === HTTPStatusCode.OK) {                 
+            setClientHappinessSurveyList(modifyResponseData(response?.responseBody?.rows));
+            setTotalRecords(response?.responseBody?.totalrows);
+            setLoading(false);
+          
+        } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+            setLoading(false);
+            setTotalRecords(0);
+        } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            setLoading(false);
+            return navigate(UTSRoutes.LOGINROUTE);
+        } else if (
+            response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+        ) {
+            setLoading(false);
+            return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+            setLoading(false);
+            return 'NO DATA FOUND';
+        }
+	}, [navigate]); 
 
-    const handleHRRequest = useCallback(
-        async (pageData) => {
-        
-        },
-        [navigate],
-    );
 
     const onCalenderFilter = (dates) => {
         const [start, end] = dates;
         setStartDate(start);
         setEndDate(end);    
+
+        if (start && end) {
+			setTableFilteredState({
+				...tableFilteredState,
+				filterFields_HappinessSurvey: {
+					StartDate: new Date(start).toLocaleDateString('en-US'),
+					EndDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			});
+			getClientHappinessSurveyList({
+				...tableFilteredState,
+				filterFields_HappinessSurvey: {
+					StartDate: new Date(start).toLocaleDateString('en-US'),
+					EndDate: new Date(end).toLocaleDateString('en-US'),
+				},
+			});
+		}
+
     };
 
     const debouncedSearchHandler = (e) => {
-        // setTableFilteredState({
-        //     ...tableFilteredState,
-        //     pagenum:1,
-        //     searchText: e.target.value,
-        // });
+        setTableFilteredState({
+            ...tableFilteredState,
+            pagenum:1,
+            filterFields_HappinessSurvey: {
+                search: e.target.value,
+            },
+        });
         setDebouncedSearch(e.target.value)
         // setPageIndex(1)  
     };
 
-    const clearFilters = () => {
-        setFilteredTagLength(0);
-    }
-
-    const toggleHRFilter = useCallback(() => {		
+  
+	const clearFilters = useCallback(() => {
+		// setAppliedFilters(new Map());
+		// setCheckedState(new Map());
+		setFilteredTagLength(0);
+		// setTableFilteredState({
+		// 	tableFilteredState:{...tableFilteredState,...{
+		// 		pagesize: 100,
+		// 		pagenum: 1,
+		// 		sortdatafield: 'CreatedDateTime',
+		// 		sortorder: 'desc',
+		// 		searchText: '',
+		// 	}},
+		// 	filterFields_ViewAllHRs: {},
+		// });
+		// const reqFilter = {
+		// 	tableFilteredState:{...tableFilteredState,...{
+		// 		pagesize: 100,
+		// 		pagenum: 1,
+		// 		sortdatafield: 'CreatedDateTime',
+		// 		sortorder: 'desc',
+		// 		searchText: '',
+		// 	}},
+		// 	filterFields_ViewAllHRs: {},
+		// };
+		// handleHRRequest(reqFilter);
+		setIsAllowFilters(false);
+		// setEndDate(null)
+		// setStartDate(null)
+		// setDebouncedSearch('')
+		// setIsFocusedRole(false)
+		// setPageIndex(1);
+		// setPageSize(100);
+	}, [
+		// handleHRRequest,
+		// setAppliedFilters,
+		// setCheckedState,
+		// setFilteredTagLength,
+		// setIsAllowFilters,
+		// setTableFilteredState,
+		// tableFilteredState,
+	]);
+    const onRemoveSurveyFilters = () => {
+		setIsAllowFilters(false);
+	};
+    const toggleSurveyFilter = useCallback(() => {		
         !getHTMLFilter
             ? setIsAllowFilters(true)
             : setTimeout(() => {
@@ -273,6 +312,10 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
             }, 300);
         setHTMLFilter(!getHTMLFilter);
     }, [getHTMLFilter]);
+
+    const handleExport = () => {
+		 downloadToExcel(clientHappinessSurveyList)
+	}
 
   return (
     <>
@@ -343,14 +386,14 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                     }}>
                     Generate Link
                 </button>
-                <button className={clienthappinessSurveyStyles.btnwhite}>Export</button>
+                <button className={clienthappinessSurveyStyles.btnwhite} onClick={() => handleExport()}>Export</button>
             </div>
 		</div>
 
         <div className={clienthappinessSurveyStyles.filterContainer}>
 				<div className={clienthappinessSurveyStyles.filterSets}>
                     <div className={clienthappinessSurveyStyles.filterSetsInner} >
-                        <div className={clienthappinessSurveyStyles.addFilter} onClick={toggleHRFilter}>
+                        <div className={clienthappinessSurveyStyles.addFilter} onClick={toggleSurveyFilter}>
                             <FunnelSVG style={{ width: '16px', height: '16px' }} />
 
                             <div className={clienthappinessSurveyStyles.filterLabel}>Add Filters</div>
@@ -394,14 +437,41 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                                         value: '03',
                                         label: '03',
                                     },
+                                    {
+                                        value: '04',
+                                        label: '04',
+                                    },
+                                    {
+                                        value: '05',
+                                        label: '05',
+                                    },
+                                    {
+                                        value: '06',
+                                        label: '06',
+                                    },
+                                    {
+                                        value: '07',
+                                        label: '07',
+                                    },
+                                    {
+                                        value: '08',
+                                        label: '08',
+                                    },
+                                    {
+                                        value: '09',
+                                        label: '09',
+                                    },
+                                    {
+                                        value: '10',
+                                        label: '10',
+                                    },
                                     ]}
                                 />  
 
                                 <Select
-                                    defaultValue="03"
+                                    defaultValue="10"
                                     style={{ width: 42 }}
                                     dropdownMatchSelectWidth={false}
-                                    // placement={placement}
                                     className="ratingNumber"
                                     options={[
                                     {
@@ -415,6 +485,34 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                                     {
                                         value: '03',
                                         label: '03',
+                                    },
+                                    {
+                                        value: '04',
+                                        label: '04',
+                                    },
+                                    {
+                                        value: '05',
+                                        label: '05',
+                                    },
+                                    {
+                                        value: '06',
+                                        label: '06',
+                                    },
+                                    {
+                                        value: '07',
+                                        label: '07',
+                                    },
+                                    {
+                                        value: '08',
+                                        label: '08',
+                                    },
+                                    {
+                                        value: '09',
+                                        label: '09',
+                                    },
+                                    {
+                                        value: '10',
+                                        label: '10',
                                     },
                                     ]}
                                 />
@@ -487,7 +585,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 										<Menu onClick={(e) => {
                                             setPageSize(parseInt(e.key));
                                             if (pageSize !== parseInt(e.key)) {
-                                                handleHRRequest();
+                                                getClientHappinessSurveyList();
                                             }
                                         }}>
                                             {pageSizeOptions.map((item) => {
@@ -547,11 +645,12 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     {isAllowFilters && (
 				<Suspense fallback={<div>Loading...</div>}>
 					<SurveyFiltersLazyComponent						
-						setIsAllowFilters={setIsAllowFilters}
-						handleHRRequest={handleHRRequest}
+						setIsAllowFilters={setIsAllowFilters}						
 						setFilteredTagLength={setFilteredTagLength}
 						getHTMLFilter={getHTMLFilter}
+                        filtersType={clientHappinessSurveyConfig.clientSurveyFilterTypeConfig()}
 						clearFilters={clearFilters}
+                        onRemoveSurveyFilters={onRemoveSurveyFilters}
 					/>
 				</Suspense>
 			)}
@@ -574,13 +673,38 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 			<div className={clienthappinessSurveyStyles.row}>
 				<div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
-                        <HRInputField
+                        {/* <HRInputField
                             register={register}
                             label={'Company'}
-                            name="feedbackComments"
+                            name="company"
                             type={InputType.TEXT}
                             placeholder="Suninda Solutions Pvt Ltd"
-                        />
+                        /> */}
+                                <label>
+                                    Company <b style={{ color: 'black' }}>*</b>
+								</label>
+								<Controller
+									render={({ ...props }) => (
+										<AutoComplete
+											options={autoCompleteCompanyList}
+											// onSelect={(clientName) => getClientNameValue(clientName)}
+											filterOption={true}
+											onSearch={(searchValue) => {
+												getAutoCompleteComapany(searchValue);
+											}}
+											onChange={(company) => {
+												setValue('company', company);
+											}}
+										/>
+									)}
+									// {...register('clientName', {
+									// 	validate,
+									// })}
+									name="company"
+									control={control}
+									
+								/>
+                    
                     </div>
 				</div>
                 <div className={clienthappinessSurveyStyles.colMd12}>
@@ -588,7 +712,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                         <HRInputField
                             register={register}
                             label={'Client'}
-                            name="feedbackComments"
+                            name="client"
                             type={InputType.TEXT}
                             placeholder="Velma Balaji Reddy"
                         />
@@ -600,7 +724,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                         <HRInputField
                             register={register}
                             label={'Email'}
-                            name="feedbackComments"
+                            name="email"
                             type={InputType.TEXT}
                             placeholder="sv@nuecluesx.io"                            
                         />
