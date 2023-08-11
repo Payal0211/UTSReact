@@ -318,4 +318,8 @@ export class ClientHappinessSurvey{
 	static GET_CLIENT_HAPPINESS_SURVEY_LIST = 'HappinessSurvey/';
 	static GET_AUTO_COMPLETE_COMPANY = 'AutoComplete/';
 	static GET_COMPANY = "Company";
+	static SEND_EMAIL_FOR_FEEDBACK = "SendEmailForFeedback";
+	static SAVE_CLIENT_HAPPINESS_SURVEYS= "SaveClientHappinessSurveys";
+	static CLIENT_HAPPINESS_SURVEY_OPTION = "ClientHappinessSurveysOption";
+
 }

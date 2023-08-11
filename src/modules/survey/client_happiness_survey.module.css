@@ -435,6 +435,9 @@
     border: none;
 }
 
+.emailSendBtn{
+   padding: 10px 10px;    
+}
 
 /* Custome Css End */
 
@@ -603,5 +606,14 @@
 /* Modal Css End */
 
 
+/* [class*='ant-select-dropdown']{
+    z-index: 9999 !important;
+} 
 
+ [class*='autocompletecustom']{
+    z-index: 9999 !important;
+} */
 
+.autocompletecustom{
+  z-index: 9999 !important;
+}

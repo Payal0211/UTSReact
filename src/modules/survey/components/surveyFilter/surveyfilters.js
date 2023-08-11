@@ -31,73 +31,71 @@ const SurveyFilters = ({
 		setFilterSubChild(item);
 	};
 	
-	// const handleAppliedFilters = useCallback(
-	// 	(isChecked, filterObj) => {
-	// 		let tempAppliedFilters = new Map(appliedFilter);
-	// 		let tempCheckedState = new Map(checkedState);
+	const handleAppliedFilters = useCallback(
+		(isChecked, filterObj) => {
+			let tempAppliedFilters = new Map(appliedFilter);
+			let tempCheckedState = new Map(checkedState);
 
-	// 		if(isChecked === "numberField"){				
-	// 			if (tempAppliedFilters.has(filterObj.filterType)){
-	// 					if(!filterObj.value){
-	// 						setFilteredTagLength((prev) => prev - 1);
-	// 						tempAppliedFilters.delete(filterObj.filterType)
-	// 					}else{
-	// 						tempAppliedFilters.set(filterObj.filterType, filterObj);
-							
-	// 					}
-	// 			}	
-	// 			else{
-	// 				setFilteredTagLength((prev) => prev + 1);
-	// 					 tempAppliedFilters.set(filterObj.filterType, filterObj);	
-	
-	// 			}	
-    		
-	// 			setAppliedFilters(tempAppliedFilters);
-	// 			setCheckedState(tempCheckedState);
-	// 			return
-	// 		}
+			if(isChecked === "numberField"){				
+				if (tempAppliedFilters.has(filterObj.filterType)){
+						if(!filterObj.value){
+							setFilteredTagLength((prev) => prev - 1);
+							tempAppliedFilters.delete(filterObj.filterType)
+						}else{
+							tempAppliedFilters.set(filterObj.filterType, filterObj);							
+						}
+				}	
+				else{
+					setFilteredTagLength((prev) => prev + 1);
+						 tempAppliedFilters.set(filterObj.filterType, filterObj);	
+				}	    		
+				setAppliedFilters(tempAppliedFilters);
+				setCheckedState(tempCheckedState);
+				return
+			}
+			
+			if (isChecked) {
+				tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, true);
+				setFilteredTagLength((prev) => prev + 1);
+			} else {
+				tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, false);
+				setFilteredTagLength((prev) => prev - 1);
+			}
+			if (tempAppliedFilters.has(filterObj.filterType)) {
+				let filterAddress = tempAppliedFilters.get(filterObj.filterType);
+				if (isChecked) {
+					filterAddress.value = filterAddress?.value + ',' + filterObj.value;
+					filterAddress.id = filterAddress.id + ',' + filterObj.id;
+					tempAppliedFilters.set(filterObj.filterType, filterAddress);
+				} else {
+					let splittedID = filterAddress.id.split(',');
+					let splittedIDIndex = splittedID.indexOf(filterObj.id);
+					splittedID = [
+						...splittedID.slice(0, splittedIDIndex),
+						...splittedID.slice(splittedIDIndex + 1),
+					];
 
-	// 		if (isChecked) {
-	// 			tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, true);
-	// 			setFilteredTagLength((prev) => prev + 1);
-	// 		} else {
-	// 			tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, false);
-	// 			setFilteredTagLength((prev) => prev - 1);
-	// 		}
-	// 		if (tempAppliedFilters.has(filterObj.filterType)) {
-	// 			let filterAddress = tempAppliedFilters.get(filterObj.filterType);
-	// 			if (isChecked) {
-	// 				filterAddress.value = filterAddress?.value + ',' + filterObj.value;
-	// 				filterAddress.id = filterAddress.id + ',' + filterObj.id;
-	// 				tempAppliedFilters.set(filterObj.filterType, filterAddress);
-	// 			} else {
-	// 				let splittedID = filterAddress.id.split(',');
-	// 				let splittedIDIndex = splittedID.indexOf(filterObj.id);
-	// 				splittedID = [
-	// 					...splittedID.slice(0, splittedIDIndex),
-	// 					...splittedID.slice(splittedIDIndex + 1),
-	// 				];
+					let splittedValue = filterAddress.value.split(',');
+					let splittedValueIndex = splittedValue.indexOf(filterObj.value);
+					splittedValue = [
+						...splittedValue.slice(0, splittedValueIndex),
+						...splittedValue.slice(splittedValueIndex + 1),
+					];
+					filterAddress.value = splittedValue.toString();
+					filterAddress.id = splittedID.toString();
+					splittedID.length === 0
+						? tempAppliedFilters.delete(filterObj.filterType)
+						: tempAppliedFilters.set(filterObj.filterType, filterAddress);
+				}
+			} else {
+				tempAppliedFilters.set(filterObj.filterType, filterObj);
+			}
+			setAppliedFilters(tempAppliedFilters);
+			setCheckedState(tempCheckedState);
+		},
+		[appliedFilter, checkedState, setFilteredTagLength],
+	);
 
-	// 				let splittedValue = filterAddress.value.split(',');
-	// 				let splittedValueIndex = splittedValue.indexOf(filterObj.value);
-	// 				splittedValue = [
-	// 					...splittedValue.slice(0, splittedValueIndex),
-	// 					...splittedValue.slice(splittedValueIndex + 1),
-	// 				];
-	// 				filterAddress.value = splittedValue.toString();
-	// 				filterAddress.id = splittedID.toString();
-	// 				splittedID.length === 0
-	// 					? tempAppliedFilters.delete(filterObj.filterType)
-	// 					: tempAppliedFilters.set(filterObj.filterType, filterAddress);
-	// 			}
-	// 		} else {
-	// 			tempAppliedFilters.set(filterObj.filterType, filterObj);
-	// 		}
-	// 		setAppliedFilters(tempAppliedFilters);
-	// 		setCheckedState(tempCheckedState);
-	// 	},
-	// 	[appliedFilter, checkedState, setFilteredTagLength],
-	// );
 	// const filteredTags = useMemo(() => {
 	// 	if (appliedFilter.size > 0) {
 	// 		return Array.from(appliedFilter?.values()).map((item) => {
@@ -166,26 +164,22 @@ const SurveyFilters = ({
 	// }, [appliedFilter, handleAppliedFilters]);
 
 	
-	// const handleFilters = useCallback(() => {
-	// 	let filters = {};
-	// 	appliedFilter.forEach((item) => {
-	// 		filters = { ...filters, [item.filterType]: item.id };
-	// 	});
-	// 	setTableFilteredState({
-	// 		...tableFilteredState,
-	// 		filterFields_ViewAllHRs: { ...filters },
-	// 	});
-	// 	const reqFilter = {
-	// 		...tableFilteredState,
-	// 		filterFields_ViewAllHRs: { ...filters },
-	// 	};
-	// 	setIsAllowFilters(false);
-	// }, [
-	// 	appliedFilter,
-	// 	setIsAllowFilters,
-	// 	setTableFilteredState,
-	// 	tableFilteredState,
-	// ]);
+	const handleFilters = useCallback(() => {
+		let filters = {};
+		appliedFilter.forEach((item) => {
+			filters = { ...filters, [item.filterType]: item.id };
+		});
+		setTableFilteredState({
+			...tableFilteredState,
+			filterFields_HappinessSurvey: { ...filters },
+		});		
+		setIsAllowFilters(false);
+	}, [
+		appliedFilter,
+		setIsAllowFilters,
+		setTableFilteredState,
+		tableFilteredState,
+	]);
 
 	return (
 		<aside className={`${surveyFilterStyle.aside} ${getHTMLFilter && surveyFilterStyle.closeFilter }`}>
@@ -266,6 +260,25 @@ const SurveyFilters = ({
 									/>
 								</div>
 							)}
+
+							{filterSubChild.isText && (
+								<div className={surveyFilterStyle.searchFiltersList}>
+								<input
+									onChange={(e) => {										
+										handleAppliedFilters("numberField", {
+											filterType: filterSubChild.name,
+											value: e.target.value,
+											id: e.target.value,
+										})
+									}}
+									value={appliedFilter?.get(filterSubChild?.name) ? appliedFilter?.get(filterSubChild?.name).value : ''}
+									className={surveyFilterStyle.searchInput}
+									type="text"
+									id="TextInput"
+									placeholder={`Enter ${filterSubChild?.name}`}									
+								/>
+							</div>
+							)}
 							<br />
 							<div className={surveyFilterStyle.filtersListType}>
 								{searchData && searchData.length > 0
@@ -309,13 +322,13 @@ const SurveyFilters = ({
 														checked={checkedState?.get(
 															`${filterSubChild.name}${item.text}`,
 														)}
-														// onChange={(e) =>
-														// 	handleAppliedFilters(e.target.checked, {
-														// 		filterType: filterSubChild.name,
-														// 		value: item?.value,
-														// 		id: item?.text,
-														// 	})
-														// }
+														onChange={(e) =>
+															handleAppliedFilters(e.target.checked, {
+																filterType: filterSubChild.name,
+																value: item?.value,
+																id: item?.text,
+															})
+														}
 														id={item?.value + `/${index + 1}`}
 														style={{
 															fontSize: `${!item.label && '1rem'}`,
@@ -326,7 +339,7 @@ const SurveyFilters = ({
 																	item.statusCode,
 																	item.label,
 															  )
-															: item?.value}
+															: item.text1 ? item.text1  : item?.value}
 													</Checkbox>
 												</div>
 											);
@@ -365,7 +378,7 @@ const SurveyFilters = ({
 						</button>
 						<button
 							className={surveyFilterStyle.applyFilters}
-							// `onClick={handleFilters}
+							onClick={handleFilters}
                             >
 							Apply Filters
 						</button>

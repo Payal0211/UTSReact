@@ -32,8 +32,54 @@ export const ClientHappinessSurveyRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error,'ClientHappinessSurveyRequestAPI.getAutoCompleteCompany');
-		}
-		
-	}
+		}	
+	},
 	
+	sendEmailForFeedback:async function (data){
+		let httpService = new HttpServices();
+		const miscellaneousData =
+			UserSessionManagementController.getUserMiscellaneousData();
+		httpService.URL = NetworkInfo.NETWORK + SubDomain.CLIENT + ClientHappinessSurvey.SEND_EMAIL_FOR_FEEDBACK+`?feedbackID=${data}&LoggedInUserId=${miscellaneousData?.loggedInUserTypeID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest(data);
+			return response;
+		} catch (error) {
+			return errorDebug(error,'ClientHappinessSurveyRequestAPI.sendEmailForFeedback');
+		}
+	}, 
+
+	saveClientHappinessSurveys:async function (data){
+		let httpService = new HttpServices();
+		const miscellaneousData =
+			UserSessionManagementController.getUserMiscellaneousData();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+            ClientHappinessSurvey.SAVE_CLIENT_HAPPINESS_SURVEYS+`?LoggedInUserId=${miscellaneousData?.loggedInUserTypeID}`;
+			
+		httpService.dataToSend = data;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest(data);
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientHappinessSurveyRequestAPI.saveClientHappinessSurveys');
+		}
+	},
+
+	ClientHappinessSurveysOption:async function () {
+		let httpService = new HttpServices();
+		httpService.URL = NetworkInfo.NETWORK + SubDomain.CLIENT + ClientHappinessSurvey.CLIENT_HAPPINESS_SURVEY_OPTION;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error,'ClientHappinessSurveyRequestAPI.getAutoCompleteCompany');
+		}
+	}
 };

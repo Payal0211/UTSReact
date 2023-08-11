@@ -72,10 +72,112 @@ export const clientHappinessSurveyRequestDAO = {
 					);
 				}
 			}
-
-
 		} catch (error) {
 			return errorDebug(error, 'clientHappinessSurveyRequestDAO.getAutoCompleteCompanyDAO');
+		}
+	},
+
+	SendEmailForFeedbackDAO:async function (data) {
+		try {
+			const sendEmailForFeedbackResult = await ClientHappinessSurveyRequestAPI.sendEmailForFeedback(
+				data,
+			);
+			if(sendEmailForFeedbackResult){
+				const statusCode = sendEmailForFeedbackResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = sendEmailForFeedbackResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return sendEmailForFeedbackResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return sendEmailForFeedbackResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'clientHappinessSurveyRequestDAO.SendEmailForFeedbackDAO');
+		}
+	},
+
+	SaveClientHappinessSurveysDAO:async function (data) {
+		try {
+			const saveClientHappinessSurveysResult = await ClientHappinessSurveyRequestAPI.saveClientHappinessSurveys(
+				data
+			);				
+			if(saveClientHappinessSurveysResult){
+				const statusCode = saveClientHappinessSurveysResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = saveClientHappinessSurveysResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return saveClientHappinessSurveysResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return saveClientHappinessSurveysResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'clientHappinessSurveyRequestDAO.SaveClientHappinessSurveysDAO');
+		}
+	},
+
+	ClientHappinessSurveysOptionDAO:async function () {
+		try {
+			const saveClientHappinessSurveysOptionResult = await ClientHappinessSurveyRequestAPI.ClientHappinessSurveysOption();
+			if (saveClientHappinessSurveysOptionResult) {
+				const statusCode = saveClientHappinessSurveysOptionResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = saveClientHappinessSurveysOptionResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return saveClientHappinessSurveysOptionResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return saveClientHappinessSurveysOptionResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+
+		} catch (error) {
+			return errorDebug(error, 'clientHappinessSurveyRequestDAO.ClientHappinessSurveysOptionDAO');
 		}
 	}
 };

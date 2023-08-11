@@ -3,6 +3,7 @@ import React, {
 	useEffect,
 	Suspense,
 	useCallback,
+    useMemo,
 } from 'react';
 import { Dropdown, Menu, Table, Modal,Select, AutoComplete } from 'antd';
 import DatePicker from 'react-datepicker';
@@ -38,15 +39,9 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     const [generateLink, setGenerateLink] = useState(false);
     const {
 		register,
-		handleSubmit,
 		setValue,
 		control,
-		setError,
-		getValues,
-		watch,
-		reset,
-		resetField,
-		unregister,
+		watch,		
 		formState: { errors },
 	} = useForm();   
 
@@ -54,7 +49,10 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     const [tableFilteredState, setTableFilteredState] = useState({       
         pagenumber:1,
         totalrecord:100,
-        filterFields_HappinessSurvey:{}
+        filterFields_HappinessSurvey:{
+            RatingFrom : 0,
+            RatingTo :10,
+        }
 	});
     const [totalRecords, setTotalRecords] = useState(0);
     const [pageSize, setPageSize] = useState(100);    
@@ -70,7 +68,8 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     const [filtersList, setFiltersList] = useState([]);
     const [getHTMLFilter, setHTMLFilter] = useState(false);
     const [isAllowFilters, setIsAllowFilters] = useState(false);
-
+    const [appliedFilter, setAppliedFilters] = useState(new Map());
+    const [checkedState, setCheckedState] = useState(new Map());
     const [clientHappinessSurveyList,setClientHappinessSurveyList] = useState([]);
     const [autoCompleteCompanyList,setAutoCompleteCompanyList] = useState([]);
 
@@ -96,11 +95,43 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     },[watchCompany,watchClient,watchEmail])
     
 
+    const getClientHappinessSurveysOption = useCallback(async () => {
+		const response = await clientHappinessSurveyRequestDAO.ClientHappinessSurveysOptionDAO();
+		if (response?.statusCode === HTTPStatusCode.OK) {
+            let _modifyList = [];
+            // for (let val of response?.responseBody) {
+            //     let obj = {};
+            //     obj.text = val.happynessSurvay_Option;
+            //     obj.text1 = val.happynessSurvay_Option;
+            //     obj.value = val.id;
+            //     obj.selected = false;
+            //     _modifyList.push(obj);
+            // }
+			setFiltersList(_modifyList);
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			return 'NO DATA FOUND';
+		}
+	}, [navigate]);
+
+	useEffect(()=>{
+		getClientHappinessSurveysOption();
+	},[getClientHappinessSurveysOption])
+
+
     const getAutoCompleteComapany = useCallback(
 		async (watchCompany) => {
 			let response = await clientHappinessSurveyRequestDAO.getAutoCompleteCompanyDAO(watchCompany);
-			if (response?.statusCode === HTTPStatusCode.OK) {				
-                setAutoCompleteCompanyList(response?.responseBody ?? []);				
+			if (response?.statusCode === HTTPStatusCode.OK) {		
+                let _modifyData = [];
+                for (let val of response?.responseBody) {
+                    val.value = val.company;
+                    _modifyData.push(val);
+                }		
+                setAutoCompleteCompanyList(_modifyData);				
 			} else if (
 				response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
 				response?.statusCode === HTTPStatusCode.NOT_FOUND
@@ -111,81 +142,26 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 		[],
 	); 
 
-    const columns = [
-        {
-            title: 'Date',
-            dataIndex: 'addedDate',
-            key: 'addedDate',
-            width: '130px',
-        },
-        {
-            title: 'Feedback Date',
-            dataIndex: 'feedbackDate',
-            key: 'feedbackDate',
-            width: '160px',
-        },
-        {
-            title: 'Category',
-            dataIndex: 'category',
-            key: 'category',
-            width: '100px',
-        },
-        {
-            title: 'Company',
-            dataIndex: 'company',
-            key: 'company',
-            width: '240px',
-        },
-        {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
-            width: '200px',
-        },
-        {
-            title: 'Rating',
-            dataIndex: 'rating',
-            key: 'rating',
-            width: '100px',
-        },
-        {
-            title: 'Feedback Status',
-            dataIndex: 'feedbackStatus',
-            key: 'feedbackStatus',
-            width: '160px',
-        },
-        {
-            title: 'Sales Rep',
-            dataIndex: 'sales',
-            key: 'sales',
-            width: '100px',
-        },
-        {
-            title: 'Question',
-            dataIndex: 'question',
-            key: 'question',
-            width: '250px',
-        },
-        {
-            title: 'Options',
-            dataIndex: 'options',
-            key: 'options',
-            width: '250px',
-        },
-        {
-            title: 'Comments',
-            dataIndex: 'comments',
-            key: 'comments',
-            width: '250px',
-        },
-        {
-            title: 'Link',
-            dataIndex: 'link',
-            key: 'link',
-            width: '400px',
-        },
-    ];
-    
+    const onEmailSend = useCallback(
+		async (id) => {
+			let response = await clientHappinessSurveyRequestDAO.SendEmailForFeedbackDAO(id);
+			if (response?.statusCode === HTTPStatusCode.OK) {
+                alert("Email sent successfully");
+                getClientHappinessSurveyList(tableFilteredState);
+			} else if (
+				response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+				response?.statusCode === HTTPStatusCode.NOT_FOUND
+			) {			
+
+			}
+		},
+		[],
+	);   
+    const surveyColumnsMemo = useMemo(
+		() => clientHappinessSurveyConfig.tableConfig(onEmailSend),
+		[],
+	); 
+        
     useEffect(() => {
         getClientHappinessSurveyList(tableFilteredState);
     },[tableFilteredState]);
@@ -208,6 +184,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
         } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
             setLoading(false);
             setTotalRecords(0);
+            setClientHappinessSurveyList([]);
         } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
             setLoading(false);
             return navigate(UTSRoutes.LOGINROUTE);
@@ -218,62 +195,56 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
             return navigate(UTSRoutes.SOMETHINGWENTWRONG);
         } else {
             setLoading(false);
+            setClientHappinessSurveyList([]);
             return 'NO DATA FOUND';
         }
 	}, [navigate]); 
 
-
     const onCalenderFilter = (dates) => {
         const [start, end] = dates;
         setStartDate(start);
-        setEndDate(end);    
-
+        setEndDate(end);  
         if (start && end) {
-			setTableFilteredState({
-				...tableFilteredState,
-				filterFields_HappinessSurvey: {
-					StartDate: new Date(start).toLocaleDateString('en-US'),
-					EndDate: new Date(end).toLocaleDateString('en-US'),
-				},
-			});
-			getClientHappinessSurveyList({
-				...tableFilteredState,
-				filterFields_HappinessSurvey: {
-					StartDate: new Date(start).toLocaleDateString('en-US'),
-					EndDate: new Date(end).toLocaleDateString('en-US'),
-				},
-			});
+            const startDate_parts = new Date(start).toLocaleDateString('en-US').split('/'); 
+            const sDate = `${startDate_parts[2]}-${startDate_parts[0].padStart(2, '0')}-${startDate_parts[1].padStart(2, '0')}`;
+            const endDate_parts = new Date(end).toLocaleDateString('en-US').split('/'); 
+            const eDate = `${endDate_parts[2]}-${endDate_parts[0].padStart(2, '0')}-${endDate_parts[1].padStart(2, '0')}`;
+            setTableFilteredState(prevState => ({
+                ...prevState,
+                filterFields_HappinessSurvey: {
+                  ...prevState.filterFields_HappinessSurvey,
+                  StartDate: sDate,
+                  EndDate: eDate,
+                }
+              }));			
 		}
-
     };
 
     const debouncedSearchHandler = (e) => {
-        setTableFilteredState({
-            ...tableFilteredState,
-            pagenum:1,
+        setTableFilteredState(prevState => ({
+            ...prevState,
+            pagenumber:1,
             filterFields_HappinessSurvey: {
-                search: e.target.value,
-            },
-        });
+              ...prevState.filterFields_HappinessSurvey,
+              search: e.target.value,
+            }
+          }));       
         setDebouncedSearch(e.target.value)
-        // setPageIndex(1)  
+        setPageIndex(1); 
     };
-
   
 	const clearFilters = useCallback(() => {
-		// setAppliedFilters(new Map());
-		// setCheckedState(new Map());
+		setAppliedFilters(new Map());
+		setCheckedState(new Map());
 		setFilteredTagLength(0);
-		// setTableFilteredState({
-		// 	tableFilteredState:{...tableFilteredState,...{
-		// 		pagesize: 100,
-		// 		pagenum: 1,
-		// 		sortdatafield: 'CreatedDateTime',
-		// 		sortorder: 'desc',
-		// 		searchText: '',
-		// 	}},
-		// 	filterFields_ViewAllHRs: {},
-		// });
+		setTableFilteredState({       
+            pagenumber:1,
+            totalrecord:100,
+            filterFields_HappinessSurvey:{
+                RatingFrom : 1,
+                RatingTo :10,
+            }
+        });
 		// const reqFilter = {
 		// 	tableFilteredState:{...tableFilteredState,...{
 		// 		pagesize: 100,
@@ -301,9 +272,11 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 		// setTableFilteredState,
 		// tableFilteredState,
 	]);
+
     const onRemoveSurveyFilters = () => {
 		setIsAllowFilters(false);
 	};
+
     const toggleSurveyFilter = useCallback(() => {		
         !getHTMLFilter
             ? setIsAllowFilters(true)
@@ -316,7 +289,6 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     const handleExport = () => {
 		 downloadToExcel(clientHappinessSurveyList)
 	}
-
   return (
     <>
     <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
@@ -399,9 +371,9 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                             <div className={clienthappinessSurveyStyles.filterLabel}>Add Filters</div>
                             <div className={clienthappinessSurveyStyles.filterCount}>{filteredTagLength}</div>                            
                         </div>
-                        {/* <p onClick={()=> clearFilters() }>Reset Filters</p> */}
+                         <p onClick={()=> clearFilters() }>Reset Filters</p>                        
                     </div>
-
+                   
 					<div className={clienthappinessSurveyStyles.filterRight}>
 
 						<div className={clienthappinessSurveyStyles.searchFilterSet}>
@@ -419,102 +391,37 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                             <div className={clienthappinessSurveyStyles.label}>Rating</div>
                             <div className={clienthappinessSurveyStyles.ratingFilter}>
                                 <Select
-                                    defaultValue="01"
+                                    defaultValue={0}
                                     style={{ width: 42 }}
                                     dropdownMatchSelectWidth={false}
                                     // placement={placement}
                                     className="ratingNumber"
-                                    options={[
-                                    {
-                                        value: '01',
-                                        label: '01',
-                                    },
-                                    {
-                                        value: '02',
-                                        label: '02',
-                                    },
-                                    {
-                                        value: '03',
-                                        label: '03',
-                                    },
-                                    {
-                                        value: '04',
-                                        label: '04',
-                                    },
-                                    {
-                                        value: '05',
-                                        label: '05',
-                                    },
-                                    {
-                                        value: '06',
-                                        label: '06',
-                                    },
-                                    {
-                                        value: '07',
-                                        label: '07',
-                                    },
-                                    {
-                                        value: '08',
-                                        label: '08',
-                                    },
-                                    {
-                                        value: '09',
-                                        label: '09',
-                                    },
-                                    {
-                                        value: '10',
-                                        label: '10',
-                                    },
-                                    ]}
+                                    options={clientHappinessSurveyConfig.ratingOptions()}
+                                    onChange={(value, option) => {
+                                        setTableFilteredState(prevState => ({
+                                            ...prevState,                                            
+                                            filterFields_HappinessSurvey: {
+                                              ...prevState.filterFields_HappinessSurvey,
+                                              RatingFrom : value,
+                                            }
+                                          }));
+                                    }}
                                 />  
-
                                 <Select
-                                    defaultValue="10"
+                                    defaultValue={10}
                                     style={{ width: 42 }}
                                     dropdownMatchSelectWidth={false}
                                     className="ratingNumber"
-                                    options={[
-                                    {
-                                        value: '01',
-                                        label: '01',
-                                    },
-                                    {
-                                        value: '02',
-                                        label: '02',
-                                    },
-                                    {
-                                        value: '03',
-                                        label: '03',
-                                    },
-                                    {
-                                        value: '04',
-                                        label: '04',
-                                    },
-                                    {
-                                        value: '05',
-                                        label: '05',
-                                    },
-                                    {
-                                        value: '06',
-                                        label: '06',
-                                    },
-                                    {
-                                        value: '07',
-                                        label: '07',
-                                    },
-                                    {
-                                        value: '08',
-                                        label: '08',
-                                    },
-                                    {
-                                        value: '09',
-                                        label: '09',
-                                    },
-                                    {
-                                        value: '10',
-                                        label: '10',
-                                    },
-                                    ]}
+                                    options={clientHappinessSurveyConfig.ratingOptions()}
+                                    onChange={(value, option) => {
+                                        setTableFilteredState(prevState => ({
+                                            ...prevState,                                            
+                                            filterFields_HappinessSurvey: {
+                                              ...prevState.filterFields_HappinessSurvey,
+                                              RatingTo : value,
+                                            }
+                                          }));
+                                    }}
                                 />
                             </div>
                         </div>
@@ -583,10 +490,15 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 									placement="bottom"
 									overlay={
 										<Menu onClick={(e) => {
-                                            setPageSize(parseInt(e.key));
+                                            setPageSize(parseInt(e.key));                                           
                                             if (pageSize !== parseInt(e.key)) {
-                                                getClientHappinessSurveyList();
+                                                setTableFilteredState(prevState => ({
+                                                    ...prevState,
+                                                    totalrecord: parseInt(e.key),
+                                                    pagenumber: pageIndex,
+                                                  }));                                             
                                             }
+
                                         }}>
                                             {pageSizeOptions.map((item) => {
                                                 return <Menu.Item key={item}>{item}</Menu.Item>;
@@ -616,15 +528,18 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                                 scroll={{ x: '100vw', y: '100vh' }} 
                                 bordered={false} 
                                 dataSource={clientHappinessSurveyList} 
-                                columns={columns} 
+                                columns={surveyColumnsMemo} 
                                 pagination={
                                     search && search?.length === 0
                                         ? null
                                         : {
                                                 onChange: (pageNum, pageSize) => {
                                                     setPageIndex(pageNum);
-                                                    setPageSize(pageSize);                                               
-                                                   
+                                                    setPageSize(pageSize);
+                                                    setTableFilteredState(prevState => ({
+                                                        ...prevState,                                                        
+                                                        pagenumber: pageNum,
+                                                      }));
                                                 },
                                                 size: 'small',
                                                 pageSize: pageSize,
@@ -635,8 +550,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                                                 defaultCurrent: pageIndex,
                                           }
                                 }                                
-                                />;
-
+                                />
                             </WithLoader>
                        )} 
          </div>
@@ -648,9 +562,16 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 						setIsAllowFilters={setIsAllowFilters}						
 						setFilteredTagLength={setFilteredTagLength}
 						getHTMLFilter={getHTMLFilter}
-                        filtersType={clientHappinessSurveyConfig.clientSurveyFilterTypeConfig()}
+                        filtersType={clientHappinessSurveyConfig.clientSurveyFilterTypeConfig(filtersList && filtersList)}
 						clearFilters={clearFilters}
                         onRemoveSurveyFilters={onRemoveSurveyFilters}
+                        setAppliedFilters={setAppliedFilters}
+						appliedFilter={appliedFilter}
+                        setCheckedState={setCheckedState}
+						checkedState={checkedState}
+                        setTableFilteredState={setTableFilteredState}
+                        tableFilteredState={tableFilteredState}
+                        
 					/>
 				</Suspense>
 			)}
@@ -673,36 +594,30 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 			<div className={clienthappinessSurveyStyles.row}>
 				<div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
-                        {/* <HRInputField
-                            register={register}
-                            label={'Company'}
-                            name="company"
-                            type={InputType.TEXT}
-                            placeholder="Suninda Solutions Pvt Ltd"
-                        /> */}
-                                <label>
-                                    Company <b style={{ color: 'black' }}>*</b>
-								</label>
+                                <label>Company</label>
 								<Controller
-									render={({ ...props }) => (
+									render={({ ...props }) => (                                        
 										<AutoComplete
 											options={autoCompleteCompanyList}
 											// onSelect={(clientName) => getClientNameValue(clientName)}
-											filterOption={true}
-											onSearch={(searchValue) => {
-												getAutoCompleteComapany(searchValue);
-											}}
+											filterOption={true}	
+                                            dropdownClassName={clienthappinessSurveyStyles.autocompletecustom}
+                                            // className={clienthappinessSurveyStyles.autocompletecustom}										
 											onChange={(company) => {
 												setValue('company', company);
 											}}
+                                            getOptionLabel={(option) => (
+                                                <div className={clienthappinessSurveyStyles.autocompletecustom}>{option}</div>
+                                            )}
+                                          
 										/>
 									)}
 									// {...register('clientName', {
 									// 	validate,
 									// })}
+                                    value={watchCompany}
 									name="company"
-									control={control}
-									
+									control={control}									
 								/>
                     
                     </div>
