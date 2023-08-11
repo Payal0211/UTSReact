@@ -254,7 +254,7 @@ export default function BeforePreOnboarding({
           ? null
           : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
         netPaymentDays: parseInt(d.netTerm.value), //Update
-        nrMargin:d.nrPercent
+        nrMargin:!preOnboardingDetailsForAMAssignment?.isHRTypeDP ? d.nrPercent : null
       };
 
       // console.log("payload", payload,d.dealSource);
