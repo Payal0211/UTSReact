@@ -2,17 +2,19 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import CompanyDetailsStyle from './companyDetails.module.css';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
-import { InputType ,URLRegEx} from 'constants/application';
+import { InputType ,URLRegEx,EmailRegEx} from 'constants/application';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { locationFormatter } from 'modules/client/clientUtils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { MasterDAO } from 'core/master/masterDAO';
+import { HubSpotDAO } from 'core/hubSpot/hubSpotDAO';
 import { ClientDAO } from 'core/client/clientDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import { MdOutlinePreview } from 'react-icons/md';
-import { Modal, Tooltip } from 'antd';
+import { Modal, Tooltip, AutoComplete, } from 'antd';
+import { Controller } from 'react-hook-form';
 
 const CompanyDetails = ({
 	register,
@@ -28,6 +30,7 @@ const CompanyDetails = ({
 	setUploadFileData,
 	setCompanyName,
 	companyName,
+	control
 }) => {
 	const [GEO, setGEO] = useState([]);
 	const [leadSource, setLeadSource] = useState([]);
@@ -54,7 +57,26 @@ const CompanyDetails = ({
 		googleDriveFileUpload: '',
 		linkValidation: '',
 	});
+
+	const [getCompanyNameSuggestion, setCompanyNameSuggestion] = useState([]);
+	const [getCompanyNameMessage, setCompanyNameMessage] = useState('');
+	const [companyDetail, setCompanyDetail] = useState({})
+	const [showCompanyEmail, setShowCompanyEmail] = useState(false)
+
+	const [controlledCompanyLoacation, setControlledCompanyLoacation] = useState('Please Select')
+	const [controlledLeadSource, setControlledLeadSource] = useState('Please Select')
+
+	let controllerRef = useRef(null);
+
+	useEffect(() => {
+		if (errors?.companyName?.message) {
+			controllerRef.current.focus();
+		}
+	}, [errors?.companyName]);
+
 	const watchCompanyLeadSource = watch('companyLeadSource');
+
+	const watchCompanyEmail = watch('companyEmail');
 
 	const convertToBase64 = useCallback((file) => {
 		return new Promise((resolve, reject) => {
@@ -130,19 +152,167 @@ const CompanyDetails = ({
 		[setError, setValue],
 	);
 
+	const getAutocompleteCompanyName = useCallback(
+		async (data) => {
+			let companyAutofillData =
+				await HubSpotDAO.getAutoCompleteCompanyDAO(data);
+
+				console.log({data, companyAutofillData})
+
+				if(companyAutofillData.statusCode === HTTPStatusCode.OK){
+					setShowCompanyEmail(false)
+					setCompanyNameSuggestion(companyAutofillData.responseBody.map(item => ({...item, value: item.company})))
+				}
+				if(companyAutofillData.statusCode === HTTPStatusCode.NOT_FOUND){
+					setShowCompanyEmail(true)
+				}
+			setIsLoading(false);
+		},
+		[setError, setValue],
+	);
+
+	const getCompanyDetails = async (ID) => {
+		let companyDetailsData = await HubSpotDAO.getCompanyDetailsDAO(ID)
+		console.log({companyDetailsData})
+
+		if(companyDetailsData.statusCode === HTTPStatusCode.OK){
+			const {companyDetails} = companyDetailsData.responseBody
+			companyDetail && setCompanyDetail(companyDetails)
+			companyDetails?.website && setValue('companyURL',companyDetails?.website)
+			companyDetails?.linkedInProfile	&& setValue('companyLinkedinProfile',companyDetails?.linkedInProfile)
+			companyDetails?.address	&& setValue('companyAddress',companyDetails?.address)
+			companyDetails?.companySize && setValue('companySize',companyDetails?.companySize)
+		}
+	}
+
+	useEffect(()=>{
+		if(companyDetail.geO_ID){
+			let location = locationFormatter(GEO.filter(loc=> loc.id === companyDetail.geO_ID))
+			setValue('companyLocation', location[0].value)
+			setControlledCompanyLoacation(location[0].value)
+		}
+	},[GEO , companyDetail,setValue])
+
+
+	useEffect(()=>{
+		if(companyDetail.leadType){
+			let lead = leadSource?.BindLeadType?.filter(loc=> loc.value === companyDetail.leadType)
+			setValue('companyLeadSource', lead[0])
+			setControlledLeadSource(lead[0].value)
+		}
+	},[leadSource?.BindLeadType , companyDetail,setValue])
+
+	const getCompanyDetailsByEmail = async (email)=> {
+
+		let response = await HubSpotDAO.getContactsByEmailDAO(email)
+
+		console.log("company email response", response)
+
+		if(response.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR){
+			setError('companyEmail',{
+				type: 'validate',
+				message: 'This email id not exist in Hubspot. Please create Client email id with Company',
+			})
+		}
+
+	}
+
+	//when company Email changed 
+	// useEffect(()=>{
+	// 	if(watchCompanyEmail){
+	// 		if(watchCompanyEmail.match(EmailRegEx.email)){
+	// 			// get company details by email
+	// 			console.log('watch Email', watchCompanyEmail)
+	// 			getCompanyDetailsByEmail(watchCompanyEmail)
+	// 		}
+	// 	}
+	// },[watchCompanyEmail])
+
+	const handlefetchWithEmail =() => {
+		if(watchCompanyEmail){
+			if(watchCompanyEmail.match(EmailRegEx.email)){
+				// get company details by email
+				console.log('watch Email', watchCompanyEmail)
+				getCompanyDetailsByEmail(watchCompanyEmail)
+			}else{
+				setError('companyEmail',{
+					type: 'validate',
+					message: 'Entered value does not match email format',
+				})
+			}
+		}else{
+			setError('companyEmail',{
+				type: 'validate',
+				message: 'Please enter the Company Email.',
+			})
+		}
+	}
+
 	const debounceDuplicateCompanyName = useCallback(
 		(data) => {
 			let timer;
 			if (!_isNull(data)) {
 				timer = setTimeout(() => {
 					setIsLoading(true);
-					getCompanyNameAlreadyExist(data);
+					// getCompanyNameAlreadyExist(data);
+					getAutocompleteCompanyName(data)
 				}, 2000);
 			}
 			return () => clearTimeout(timer);
 		},
-		[getCompanyNameAlreadyExist],
+		[getAutocompleteCompanyName],
 	);
+
+	const watchcompanyName = watch('companyName')
+
+	const getCompanyValue = (clientName, data) => {
+		console.log({clientName, data})
+		setValue('companyName', clientName);
+		setError('companyName', {
+			type: 'validate',
+			message: '',
+		});
+
+		// get company name
+		getCompanyDetails(data.companyID)
+
+	};
+
+	const validate = (clientName) => {
+		if (!clientName) {
+			return 'please enter the company name.';
+		} else if (getCompanyNameMessage !== '' && clientName) {
+			return getCompanyNameMessage;
+		}
+		return true;
+	};
+
+	const getClientNameSuggestionHandler = useCallback(
+		async (clientName) => {
+			console.log("companyDetails", clientName)
+			setCompanyName(clientName);
+			debounceDuplicateCompanyName(clientName);
+		// 	let response = await MasterDAO.getEmailSuggestionDAO(clientName);
+
+		// 	if (response?.statusCode === HTTPStatusCode.OK) {
+		// 		setCompanyNameSuggestion(response?.responseBody?.details);
+		// 		setCompanyNameMessage('');
+		// 	} else if (
+		// 		response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+		// 		response?.statusCode === HTTPStatusCode.NOT_FOUND
+		// 	) {
+		// 		setError('clientName', {
+		// 			type: 'validate',
+		// 			message: response?.responseBody,
+		// 		});
+		// 		setCompanyNameSuggestion([]);
+		// 		setCompanyNameMessage(response?.responseBody);
+		// 		//TODO:- JD Dump ID
+		// 	}
+		},
+		[setError],
+	);
+
 
 	/** based on  watchCompanyName-- */
 	// useEffect(() => {
@@ -166,7 +336,7 @@ const CompanyDetails = ({
 		if (watchCompanyLeadSource?.id !== 1) unregister('companyLeadSource');
 	}, [unregister, watchCompanyLeadSource?.id]);
 
-	console.log('leadSource',leadSource)
+	// console.log('leadSource',leadSource)
 	return (
 		<div className={CompanyDetailsStyle.tabsFormItem}>
 			<div className={CompanyDetailsStyle.tabsFormItemInner}>
@@ -177,7 +347,7 @@ const CompanyDetails = ({
 
 				<div className={CompanyDetailsStyle.tabsRightPanel}>
 					<div className={CompanyDetailsStyle.row}>
-						<div className={CompanyDetailsStyle.colMd6}>
+						{/* <div className={CompanyDetailsStyle.colMd6}>
 							<HRInputField
 								// disabled={isLoading}
 								type={InputType.TEXT}
@@ -195,6 +365,46 @@ const CompanyDetails = ({
 								}}
 								required
 							/>
+						</div> */}
+
+						<div className={CompanyDetailsStyle.colMd6}>
+							<div className={CompanyDetailsStyle.formGroup}>
+											<label>
+												Company Name <b style={{ color: 'red' }}>*</b>
+											</label>
+											<Controller
+												render={({ ...props }) => (
+													<AutoComplete
+														options={getCompanyNameSuggestion}
+														onSelect={(clientName, data) =>
+															getCompanyValue(clientName,data)
+														}
+														filterOption={true}
+														onSearch={(searchValue) => {
+															setCompanyNameSuggestion([]);
+															getClientNameSuggestionHandler(searchValue);
+														}}
+														onChange={(clientName) =>
+															setValue('companyName', clientName)
+														}
+														placeholder={watchcompanyName ? watchcompanyName :"Enter Company Name"}
+														ref={controllerRef}
+													/>
+												)}
+												{...register('companyName', {
+													validate,
+												})}
+												name="companyName"
+												// rules={{ required: true }}
+												control={control}
+											/>
+											{errors.clientName && (
+												<div className={CompanyDetailsStyle.error}>
+													{errors.clientName?.message &&
+														`* ${errors?.clientName?.message}`}
+												</div>
+											)}
+							</div>
 						</div>
 
 						<div className={CompanyDetailsStyle.colMd6}>
@@ -215,12 +425,46 @@ const CompanyDetails = ({
 								required
 							/>
 						</div>
+						
+						{showCompanyEmail && <><div className={CompanyDetailsStyle.colMd6}>
+							<HRInputField
+								register={register}
+								errors={errors}
+								label="Company Email"
+								name="companyEmail"
+								type={InputType.TEXT}
+								validationSchema={{
+									required: 'Please enter the Company Email.',
+									pattern: {
+										value: EmailRegEx.email,
+										message: 'Entered value does not match email format',
+									},
+								}}
+								placeholder="Enter Company Email"
+								required
+							/>
+						</div>
+						
+						<div className={CompanyDetailsStyle.colMd6} style={{display:'flex', alignItems:'flex-start',paddingTop:'25px'}}>
+						
+							<button
+								// disabled={isLoading}
+								type="submit"
+								onClick={()=>handlefetchWithEmail()}
+								className={CompanyDetailsStyle.btnHubSpot}>
+								Fetch Details from HubSpot
+							</button>
+						</div>
+						</> }
 					</div>
 
 					<div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd6}>
 							<div className={CompanyDetailsStyle.formGroup}>
 								<HRSelectField
+									isControlled={true}
+									controlledValue={controlledCompanyLoacation}
+									setControlledValue={setControlledCompanyLoacation}
 									setValue={setValue}
 									register={register}
 									name="companyLocation"
@@ -366,6 +610,9 @@ const CompanyDetails = ({
 						<div className={CompanyDetailsStyle.colMd6}>
 							<div className={CompanyDetailsStyle.formGroup}>
 								<HRSelectField
+									isControlled={true}
+									controlledValue={controlledLeadSource}
+									setControlledValue={setControlledLeadSource}
 									mode={'id/value'}
 									setValue={setValue}
 									register={register}
