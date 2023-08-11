@@ -32,7 +32,8 @@ export class SubDomain {
 	static INTERVIEWER = 'Interviewer/';
 	static SLA_REPORT = 'SLAReport/';
 	static I2S_REPORT = 'InterviewToSuccess/';
-	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/'
+	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/';
+	static HUB_SPOT = 'Hubspot/'
 }
 export class APIType {
 	static USER = '/user';
@@ -76,6 +77,12 @@ export class ReportsAPI {
 	static SLA_FILTER = 'GETSLAFilters';
 }
 
+export class HubspotsAPI {
+	static GET_AUTOCOMPLETE_COMPANY = 'GetAutoCompleteHubSpotCompany'
+	static GET_COMPANY_DETAILS = 'GetCompanyDetails'
+	static GET_CONTACTS_BY_EMAIL = 'GetHubSpotContactsByEmail'
+}
+
 export class EngagementAPI {
 	static FILTER = 'Filters';
 	static LIST = 'List';
@@ -102,6 +109,7 @@ export class MastersAPI {
 	static GET_FIXED_VALUE = 'GetFixedValues';
 	static GET_GEO = 'GetGeo';
 	static GET_SKILLS = 'GetSkills';
+	static GET_HR_SKILLS = 'GetHRSkills'
 	static GET_CURRENCY = 'GetCurrency';
 	static GET_CONTRACT_DURATION = 'GetContractDuration';
 	static GET_BUDET_INFORMATION = 'GetBudgetInformation';

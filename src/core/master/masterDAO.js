@@ -104,6 +104,29 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getSkillsRequestDAO');
 		}
 	},
+	getHRSkillsRequestDAO: async function (HRID) {
+		try {
+			const skillsResult = await MasterAPI.getHRSkillsRequest(HRID);
+			if (skillsResult) {
+				const statusCode = skillsResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = skillsResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return skillsResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return skillsResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getHRSkillsRequestDAO');
+		}
+	},
 	getCurrencyRequestDAO: async function () {
 		try {
 			const currencyResult = await MasterAPI.getCurrencyRequest();

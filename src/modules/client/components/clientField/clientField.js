@@ -225,6 +225,7 @@ const ClientField = ({
 				setUploadFileData={setUploadFileData}
 				setCompanyName={setCompanyName}
 				companyName={companyName}
+				control={control}
 			/>
 			<AddNewClient
 				setError={setError}

@@ -48,6 +48,19 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getSkillsRequest');
 		}
 	},
+	getHRSkillsRequest: async function (HRID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_HR_SKILLS + `?hrId=${HRID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getHRSkillsRequest');
+		}
+	},
 	getCurrencyRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =

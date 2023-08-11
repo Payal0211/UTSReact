@@ -64,8 +64,8 @@ const EditDebriefingHR = ({
 	const [skills, setSkills] = useState([]);
 
 	const [messageAPI, contextHolder] = message.useMessage();
-	const getSkills = useCallback(async () => {
-		const response = await MasterDAO.getSkillsRequestDAO();
+	const getSkills = useCallback(async (ID) => {
+		const response = await MasterDAO.getHRSkillsRequestDAO(ID);
 		setSkills(response && response.responseBody);
 	}, []);
 	const [isFocusedRole, setIsFocusedRole] = useState(false)
@@ -198,8 +198,11 @@ const EditDebriefingHR = ({
 	}, [getOtherSkillsRequest, watchOtherSkills]);
 
 	useEffect(() => {
-		getSkills();
-	}, [getSkills]);
+		if(getHRdetails?.addHiringRequest.id){
+			getSkills(getHRdetails?.addHiringRequest.id);
+		}
+		
+	}, [getSkills,getHRdetails?.addHiringRequest.id]);
 
 	useEffect(() => {
 		JDParsedSkills &&
