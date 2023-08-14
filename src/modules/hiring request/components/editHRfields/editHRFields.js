@@ -830,28 +830,39 @@ const EditHRFields = ({
 			
 			if (type === SubmitType.SAVE_AS_DRAFT) {
 				if (_isNull(watch('clientName'))) {
+					setIsSavedLoading(false);
 					return setError('clientName', {
 						type: 'emptyClientName',
 						message: 'Please enter the client name.',
 					});
 				}if (_isNull(watch('role'))) {
+					setIsSavedLoading(false);
 					return setError('role', {
 						type: 'emptyrole',
 						message: 'Please enter the hiring role.',
 					});
 				}
 				if (_isNull(watch('hrTitle'))) {
+					setIsSavedLoading(false);
 					return setError('hrTitle', {
 						type: 'emptyhrTitle',
 						message: 'please enter the hiring request title.',
 					});
 				}
 				if(_isNull(watch('salesPerson'))){
+					setIsSavedLoading(false);
 					return setError('salesPerson', {
 						type: 'emptysalesPersonTitle',
 						message: 'Please select hiring request sales person',
 					});
 				}	
+				if(watch('talentsNumber') < 1 || watch('talentsNumber') > 99){
+					setIsSavedLoading(false);
+					return setError('talentsNumber', {
+						type: 'emptytalentsNumber',
+						message: 'Please enter valid talents number',
+					});
+				}
 			} else if (type !== SubmitType.SAVE_AS_DRAFT) {
 				setType(SubmitType.SUBMIT);
 			}

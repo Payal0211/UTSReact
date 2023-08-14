@@ -203,6 +203,7 @@ const EngagementInvoice = ({
 											setValue('invoiceDate', date);
 										}}
 										placeholderText="Invoice sent date"
+										dateFormat="dd/MM/yyyy"
 									/>
 								)}
 								name="invoiceDate"

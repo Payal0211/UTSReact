@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import allengagementOnboardStyles from '../engagementOnboard/engagementOnboard.module.css';
 import { ReactComponent as LinkedInSVG } from 'assets/svg/linkedin.svg';
 import WithLoader from 'shared/components/loader/loader';
+import moment from 'moment';
 
 const EngagementOnboard = ({
 	getOnboardFormDetails,
@@ -53,7 +54,7 @@ const EngagementOnboard = ({
 						</li>
 						<li>
 							<span>Talent Onboarding Date:</span>{' '}
-							{getOnboardFormDetails?.onboardDetails?.talentOnBoardDate}
+							{getOnboardFormDetails?.onboardDetails?.talentOnBoardDate && moment(getOnboardFormDetails?.onboardDetails?.talentOnBoardDate).format('DD/MM/yyyy')}
 						</li>
 						<li>
 							<span>Talent Onboarding Time:</span>{' '}
@@ -115,12 +116,12 @@ const EngagementOnboard = ({
 						</li>
 						<li>
 							<span>Contract Start & End Date:</span>{' '}
-							{getOnboardFormDetails?.contractStartDate} to{' '}
-							{getOnboardFormDetails?.contractEndDate}
+							{ getOnboardFormDetails?.contractStartDate && moment(getOnboardFormDetails?.contractStartDate).format('DD/MM/yyyy')} to{' '}
+							{getOnboardFormDetails?.contractEndDate && moment(getOnboardFormDetails?.contractEndDate).format('DD/MM/yyyy')}
 						</li>
 						<li>
 							<span>Client’s First Date:</span>{' '}
-							{getOnboardFormDetails?.onboardDetails?.clientFirstDate}
+							{getOnboardFormDetails?.onboardDetails?.clientFirstDate && moment(getOnboardFormDetails?.onboardDetails?.clientFirstDate).format('DD/MM/yyyy') }
 						</li>
 						<li>
 							<span>AM Name:</span> {getOnboardFormDetails?.amUser}

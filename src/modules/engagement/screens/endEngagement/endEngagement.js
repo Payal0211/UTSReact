@@ -197,6 +197,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 											setValue('lastWorkingDate', date);
 										}}
 										placeholderText="Contract End Date"
+										dateFormat="dd/MM/yyyy"
 									/>
 								)}
 								name="lastWorkingDate"

@@ -185,7 +185,7 @@ console.log({getUploadFileData})
                                     onChange={(date) => {
                                         setValue('feedBackDate', date);
                                     }}
-                                    dateFormat="yyyy/MM/dd H:mm:ss"
+                                    dateFormat="dd/MM/yyyy H:mm:ss"
                                 />
                             )}
                             name="feedBackDate"
