@@ -37,7 +37,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 
  const ClienthappinessSurvey =()=> {
     const navigate = useNavigate();
-    const[selecteDateOption,setSelectDateOption] = useState(true);
+    // const[selecteDateOption,setSelectDateOption] = useState(true);
     const [generateLink, setGenerateLink] = useState(false);
     const {
 		register,
@@ -74,6 +74,10 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     const [checkedState, setCheckedState] = useState(new Map());
     const [clientHappinessSurveyList,setClientHappinessSurveyList] = useState([]);
     const [autoCompleteCompanyList,setAutoCompleteCompanyList] = useState([]);
+    const[selectedCompany,setSelectedCompany] = useState({});
+    const[isOtherClient,setIsOtherClient] = useState(false);
+    const [clientOption,setClientOption] = useState(["","other"]);
+    const[selectedClientVal,setSelectedClientVal] = useState(clientOption[0]);
 
     const watchCompany = watch('company');
     const watchClient = watch('client');
@@ -149,8 +153,9 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
         		if (response?.statusCode === HTTPStatusCode.OK) {		
                     let _modifyData = [];
                     for (let val of response?.responseBody) {
-                        val.value = val.company;
-                        _modifyData.push(val);
+                        let _val = {...val};
+                        _val.value = val.company;                        
+                        _modifyData.push(_val);
                     }		
                     setAutoCompleteCompanyList(_modifyData);				
         		} else if (
@@ -252,10 +257,21 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
         setPageIndex(1); 
     };
 
-    // const submitGenerateLinkData = () => {
-    //     console.log("handleSubmit");
-    //     // submitGenerateLink();
-    // }
+    const submitGenerateLinkData = () => {
+        let _reqBody = {};
+        _reqBody.Client_ID = ""
+        _reqBody.Client_Name =selectedCompany.client; 
+        _reqBody.Company = selectedCompany.company;
+        _reqBody.Company_ID = selectedCompany.companyID;
+        _reqBody.Email = selectedCompany.emailID;
+
+        _reqBody.other_clientemail = 
+        _reqBody.Other_Company_Name =
+        _reqBody.Other_Client_Name = 
+
+     
+        submitGenerateLink();
+    }
 
     const submitGenerateLink = useCallback(async (requestData) => {
         setLoading(true);
@@ -336,8 +352,22 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 		 downloadToExcel(clientHappinessSurveyList)
 	}
 
-    const getClientNameValue = (name) => {
-        console.log(name,"nameee");
+    const getClientNameValue = (data) => {
+        let _data = [...autoCompleteCompanyList];
+        let _index = _data.findIndex((val) => val.value === data);
+        if(_data[_index].client){
+            setValue("client",_data[_index].client);
+            setValue("company",_data[_index].company);
+            setValue("email",_data[_index].emailID);
+            setSelectedCompany(_data[_index]);
+            setIsOtherClient(false);
+            let _val = [...clientOption];
+            _val[0] = _data[_index].client;
+            setClientOption(_val);
+        }else{
+            setIsOtherClient(true);
+        }
+        
     }
   return (
     <>
@@ -648,7 +678,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 									render={({ ...props }) => (                                        
 										<AutoComplete
 											options={autoCompleteCompanyList}
-											onSelect={(clientName) => getClientNameValue(clientName)}
+											onSelect={(data) => getClientNameValue(data)}
 											filterOption={true}	
                                             dropdownClassName={clienthappinessSurveyStyles.autocompletecustom}
                                             // className={clienthappinessSurveyStyles.autocompletecustom}										
@@ -658,18 +688,18 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                                             getOptionLabel={(option) => (
                                                 <div className={clienthappinessSurveyStyles.autocompletecustom}>{option}</div>
                                             )}                                          
-										/>
+										/>                                       
 									)}
 									// {...register('clientName', {
 									// 	validate,
 									// })}
-                                    value={watchCompany}
+                                    // value={watchCompany}
 									name="company"
 									control={control}									
 								/>                    
                     </div>
 				</div>
-                <div className={clienthappinessSurveyStyles.colMd12}>
+                {/* <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
                         <HRInputField
                             register={register}
@@ -684,24 +714,71 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                             required
                         />
                     </div>
+				</div> */}
+
+                <div className={clienthappinessSurveyStyles.colMd12}>
+                    <div className={clienthappinessSurveyStyles.InputGroup}>
+                        <div style={{display:"flex"}}>
+                            {isOtherClient ?  <HRInputField
+                            register={register}
+                            label={'Client'}
+                            name="client"
+                            type={InputType.TEXT}
+                            placeholder="Velma Balaji Reddy"
+                            errors={errors}
+                            validationSchema={{
+                                required: 'please select client name',
+                            }}
+                            required
+                        /> :
+                            <Dropdown
+                                trigger={['click']}
+                                placement="bottom"       
+                                overlay={
+                                    <Menu
+                                        onClick={(e) => {
+                                        	console.log(e.key,">>>>>>>>>");
+                                            setSelectedClientVal(e.key);
+                                            if (e.key === 'other') {
+                                                setIsOtherClient(true);
+                                                setValue("client","");
+                                                setValue("email","");
+                                            }
+                                        }}
+                                        >
+                                        {clientOption.map((item) => {
+                                            return <Menu.Item key={item}>{item}</Menu.Item>;
+                                        })}
+                                    </Menu>
+                                }>
+                                <span>         
+                                    {clientOption[0]}                       
+                                    <IoChevronDownOutline
+                                        style={{ paddingTop: '5px', fontSize: '16px' }}
+                                    />
+                                </span>
+                            </Dropdown>}
+                    </div>
+                </div>
 				</div>
 
                 <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
-                        <HRInputField
-                            register={register}
-                            label={'Email'}
-                            name="email"
-                            errors={errors}
-                            type={InputType.TEXT}
-                            placeholder="sv@nuecluesx.io"     
-                            required
-                            validationSchema={{
-                                required: 'please enter email',
-                            }}                   
-                        />
+                    <HRInputField
+                                register={register}
+                                label={'Email'}
+                                name="email"
+                                errors={errors}
+                                type={InputType.TEXT}
+                                placeholder="sv@nuecluesx.io"     
+                                required
+                                validationSchema={{
+                                    required: 'please enter email',
+                                }}                   
+                            />
                     </div>
 				</div>
+
 			</div>
 			<div className={clienthappinessSurveyStyles.formPanelAction}>
 				<button
@@ -712,14 +789,14 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 				</button>
                 <button
 					type="submit"
-					// onClick={submitGenerateLinkData}
+					onClick={submitGenerateLinkData}
 					className={clienthappinessSurveyStyles.btnPrimary}>
 					Generate Link
 				</button>
 			</div>
 		</div>
     </Modal>
-    <Modal 
+    {/* <Modal 
         transitionName=""
         className="commonModalWrap"
         centered
@@ -749,7 +826,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 			</div>
 			
 		</div>
-    </Modal>
+    </Modal> */}
     </>
   )
 }
