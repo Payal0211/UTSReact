@@ -654,6 +654,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 					/>
 				</Suspense>
 			)}
+
     <Modal 
         transitionName=""
         className="commonModalWrap"
@@ -680,8 +681,10 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 											options={autoCompleteCompanyList}
 											onSelect={(data) => getClientNameValue(data)}
 											filterOption={true}	
-                                            dropdownClassName={clienthappinessSurveyStyles.autocompletecustom}
-                                            // className={clienthappinessSurveyStyles.autocompletecustom}										
+                                            // label={'ttttttttt'}
+                                            // dropdownClassName={clienthappinessSurveyStyles.autocompletecustom}
+                                            dropdownClassName='GenerateautocompleteField'
+                                            className={clienthappinessSurveyStyles.autocompletedBox}										
 											onChange={(company) => {
 												setValue('company', company);
 											}}
@@ -699,7 +702,8 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 								/>                    
                     </div>
 				</div>
-                {/* <div className={clienthappinessSurveyStyles.colMd12}>
+
+                <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
                         <HRInputField
                             register={register}
@@ -714,7 +718,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                             required
                         />
                     </div>
-				</div> */}
+				</div> 
 
                 <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
@@ -796,12 +800,13 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 			</div>
 		</div>
     </Modal>
-    {/* <Modal 
+
+    <Modal 
         transitionName=""
         className="commonModalWrap"
         centered
         open={selecteDateOption}
-        width="904px"
+        width="440px"
         footer={null}
         onCancel={() => {
             setSelectDateOption(false);
@@ -812,21 +817,22 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 				<h1>Select Date Type</h1>
 			</div>
 
-			<div className={clienthappinessSurveyStyles.row}>
-            <Radio.Group
-                    defaultValue={1}
-                    // className={InterviewScheduleStyle.radioGroup}
-                    // onChange={onSlotChange}
-                   >
-                    <Radio value={1}>
-                    Created date
-                    </Radio>
-                    <Radio value={2}>Feedback date</Radio>                    
-            </Radio.Group>
+			<div className={clienthappinessSurveyStyles.FeedbackDatedetail}>
+                <Radio.Group
+                        defaultValue={1}
+                        className={clienthappinessSurveyStyles.radioCustomModal}
+                        // onChange={onSlotChange}
+                    >
+                        <Radio value={1}  className={clienthappinessSurveyStyles.radioCustomGroup}>
+                        Created date
+                        </Radio>
+                        <Radio value={2}  className={clienthappinessSurveyStyles.radioCustomGroup}>Feedback date</Radio>                    
+                </Radio.Group>
 			</div>
 			
 		</div>
-    </Modal> */}
+    </Modal>
+
     </>
   )
 }
