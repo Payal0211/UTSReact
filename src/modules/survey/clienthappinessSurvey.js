@@ -2,25 +2,17 @@ import React, {
 	useState,
 	useEffect,
 	Suspense,
-	useMemo,
 	useCallback,
+    useMemo,
 } from 'react';
-import { Dropdown, Menu, message, Table, Tooltip, Modal,Checkbox,Select } from 'antd';
+import { Dropdown, Menu, Table, Modal,Select, AutoComplete } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
-	AddNewType,
-	DayName,
 	InputType,
-	UserAccountRole,
 } from 'constants/application';
-import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
 import UTSRoutes from 'constants/routes';
 
-import { UserSessionManagementController } from 'modules/user/services/user_session_services';
-import HROperator from 'modules/hiring request/components/hroperator/hroperator';
-import { hrUtils } from 'modules/hiring request/hrUtils';
-// import HRSelectField from '../hrSelectField/hrSelectField';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import _debounce from 'lodash/debounce';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
@@ -30,143 +22,356 @@ import clienthappinessSurveyStyles from './client_happiness_survey.module.css';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
+import { useNavigate } from 'react-router-dom';
+import { clientHappinessSurveyRequestDAO } from 'core/clientHappinessSurvey/clientHappinessSurveyDAO';
+import { HTTPStatusCode } from 'constants/network';
+import { downloadToExcel } from 'modules/report/reportUtils';
+import { clientHappinessSurveyConfig } from 'modules/hiring request/screens/clientHappinessSurvey/clientHappinessSurvey.config';
+import { Radio } from 'antd';
+import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 
-
-
-
-
+const SurveyFiltersLazyComponent = React.lazy(() =>
+	import('modules/survey/components/surveyFilter/surveyfilters'),
+);
 
  const ClienthappinessSurvey =()=> {
-
+    const navigate = useNavigate();
+    const[selecteDateOption,setSelectDateOption] = useState(true);
     const [generateLink, setGenerateLink] = useState(false);
-    //const miscData = UserSessionManagementController.getUserMiscellaneousData();
     const {
 		register,
-		handleSubmit,
 		setValue,
 		control,
-		setError,
-		getValues,
-		watch,
-		reset,
-		resetField,
-		unregister,
+		watch,		
 		formState: { errors },
-	} = useForm();
+	} = useForm();   
+
+    const pageSizeOptions = [100, 200, 300, 500, 1000,5000];
+    const [tableFilteredState, setTableFilteredState] = useState({       
+        pagenumber:1,
+        totalrecord:100,
+        filterFields_HappinessSurvey:{
+            RatingFrom : 0,
+            RatingTo :10,
+        }
+	});
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [pageSize, setPageSize] = useState(100);    
+	const [pageIndex, setPageIndex] = useState(1);
+	const [isLoading, setLoading] = useState(false);
+    /*--------- React DatePicker ---------------- */
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+    const [search, setSearch] = useState('');
+	const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+    const [filteredTagLength, setFilteredTagLength] = useState(0);
+    const [filtersList, setFiltersList] = useState([]);
+    const [getHTMLFilter, setHTMLFilter] = useState(false);
+    const [isAllowFilters, setIsAllowFilters] = useState(false);
+    const [appliedFilter, setAppliedFilters] = useState(new Map());
+    const [checkedState, setCheckedState] = useState(new Map());
+    const [clientHappinessSurveyList,setClientHappinessSurveyList] = useState([]);
+    const [autoCompleteCompanyList,setAutoCompleteCompanyList] = useState([]);
+    const[selectedCompany,setSelectedCompany] = useState({});
+    const[isOtherClient,setIsOtherClient] = useState(false);
+    const [clientOption,setClientOption] = useState([{label : "" ,value:""},{label :"Client",value:"other"}]);
+    const[selectedClientVal,setSelectedClientVal] = useState(clientOption[0].value);
+
+    const watchCompany = watch('company');
+    const watchClient = watch('client');
+    const watchEmail = watch('email');
+
+    const [generateLinkData,setGenerateLinkData ] = useState({company: '',client: "",email: ""});
+
+    console.log(clientOption,"clientOption");
+    useEffect(() => {
+        let _generateLinkData = {...generateLinkData};
+        if (watchCompany) {
+            _generateLinkData.company = watchCompany;
+            getAutoCompleteComapany(watchCompany);
+        }
+        if(watchClient){
+            _generateLinkData.client = watchClient;
+        }
+        if(watchEmail) {
+            _generateLinkData.email = watchEmail;
+        }   
+        setGenerateLinkData(_generateLinkData);
+    },[watchCompany,watchClient,watchEmail])
+    
+
+    const getClientHappinessSurveysOption = useCallback(async () => {
+		const response = await clientHappinessSurveyRequestDAO.ClientHappinessSurveysOptionDAO();
+		if (response?.statusCode === HTTPStatusCode.OK) {
+            let _modifyList = [];
+            for (let val of response?.responseBody) {
+                let modifyObj = {};
+                modifyObj.label = val.happynessSurvay_Option;
+                modifyObj.value = val.id;
+                modifyObj.selected = false;
+                modifyObj.text = val.id;
+                _modifyList.push(modifyObj);
+            }
+			setFiltersList(_modifyList);
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			return 'NO DATA FOUND';
+		}
+	}, [navigate]);
+
+	useEffect(()=>{
+		getClientHappinessSurveysOption();
+	},[getClientHappinessSurveysOption])
+
+
+    // const getAutoCompleteComapany = useCallback(
+	// 	async (watchCompany) => {
+	// 		let response = await clientHappinessSurveyRequestDAO.getAutoCompleteCompanyDAO(watchCompany);
+	// 		if (response?.statusCode === HTTPStatusCode.OK) {		
+    //             let _modifyData = [];
+    //             for (let val of response?.responseBody) {
+    //                 val.value = val.company;
+    //                 _modifyData.push(val);
+    //             }		
+    //             setAutoCompleteCompanyList(_modifyData);				
+	// 		} else if (
+	// 			response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+	// 			response?.statusCode === HTTPStatusCode.NOT_FOUND
+	// 		) {			
+	// 			setAutoCompleteCompanyList([]);
+	// 		}
+	// 	},
+	// 	[],
+	// ); 
+
+    const getAutoCompleteComapany = async (watchCompany) => {
+        let response = await clientHappinessSurveyRequestDAO.getAutoCompleteCompanyDAO(watchCompany);
+        		if (response?.statusCode === HTTPStatusCode.OK) {		
+                    let _modifyData = [];
+                    for (let val of response?.responseBody) {
+                        let _val = {...val};
+                        _val.value = val.company;                        
+                        _modifyData.push(_val);
+                    }		
+                    setAutoCompleteCompanyList(_modifyData);				
+        		} else if (
+        			response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+        			response?.statusCode === HTTPStatusCode.NOT_FOUND
+        		) {			
+        			setAutoCompleteCompanyList([]);
+        		}
+    }
+
+    const onEmailSend = useCallback(
+		async (id) => {
+			let response = await clientHappinessSurveyRequestDAO.SendEmailForFeedbackDAO(id);
+			if (response?.statusCode === HTTPStatusCode.OK) {
+                alert("Email sent successfully");
+                getClientHappinessSurveyList(tableFilteredState);
+			} else if (
+				response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+				response?.statusCode === HTTPStatusCode.NOT_FOUND
+			) {			
+
+			}
+		},
+		[],
+	);   
+    const surveyColumnsMemo = useMemo(
+		() => clientHappinessSurveyConfig.tableConfig(onEmailSend),
+		[],
+	); 
+        
+    useEffect(() => {
+        getClientHappinessSurveyList(tableFilteredState);
+    },[tableFilteredState]);
+
+    const modifyResponseData = (data) => {
+    return data.map((item) => ({...item,
+        addedDate:item.addedDate.split(' ')[0],
+        feedbackDate:item.feedbackDate.split(' ')[0]
+    }))
+    }
    
+    const getClientHappinessSurveyList = useCallback(async (requestData) => {
+        setLoading(true);
+        let response = await clientHappinessSurveyRequestDAO.getClientHappinessSurveyListDAO(requestData);
+        if (response?.statusCode === HTTPStatusCode.OK) {                 
+            setClientHappinessSurveyList(modifyResponseData(response?.responseBody?.rows));
+            setTotalRecords(response?.responseBody?.totalrows);
+            setLoading(false);
+          
+        } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+            setLoading(false);
+            setTotalRecords(0);
+            setClientHappinessSurveyList([]);
+        } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            setLoading(false);
+            return navigate(UTSRoutes.LOGINROUTE);
+        } else if (
+            response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+        ) {
+            setLoading(false);
+            return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+            setLoading(false);
+            setClientHappinessSurveyList([]);
+            return 'NO DATA FOUND';
+        }
+	}, [navigate]); 
 
+    const onCalenderFilter = (dates) => {
+        const [start, end] = dates;
+        setStartDate(start);
+        setEndDate(end);  
+        if (start && end) {
+            const startDate_parts = new Date(start).toLocaleDateString('en-US').split('/'); 
+            const sDate = `${startDate_parts[2]}-${startDate_parts[0].padStart(2, '0')}-${startDate_parts[1].padStart(2, '0')}`;
+            const endDate_parts = new Date(end).toLocaleDateString('en-US').split('/'); 
+            const eDate = `${endDate_parts[2]}-${endDate_parts[0].padStart(2, '0')}-${endDate_parts[1].padStart(2, '0')}`;
+            setTableFilteredState(prevState => ({
+                ...prevState,
+                filterFields_HappinessSurvey: {
+                  ...prevState.filterFields_HappinessSurvey,
+                  StartDate: sDate,
+                  EndDate: eDate,
+                }
+              }));			
+		}
+    };
 
- const dataSource = [
-    {
-        key: '1',
-        date: '04/03/22',
-        feedbackdate: '04/03/22',
-        cat: 'A',
-        company: <a href='#'>Sun Spaces Solutions Pv...</a>,
-        email: <a href='#'>sv@nuecluesx.io</a>,
-        rating: '05',
-        feedbackstatus: <div className={clienthappinessSurveyStyles.StatusPending}>Feedback Pending</div>,
-        salesrep: <a href='#'>Hardik</a>,
-        question: 'What was the major costing ?',
-        options: 'Account manager need to be more comfortable and friendly',
-        comments: 'We will note that and keep it accountable',
-        link: <a href='#'>https://newbeta-admin.uplers.com/ClientHappinessSurvey/ClientHappinessSurveys#</a>,
-    },
-    {
-        key: '1',
-        date: '04/03/22',
-        feedbackdate: '04/03/22',
-        cat: 'A',
-        company: <a href='#'>Sun Spaces Solutions Pv...</a>,
-        email: <a href='#'>sv@nuecluesx.io</a>,
-        rating: '05',
-        feedbackstatus: <div className={clienthappinessSurveyStyles.StatusCompleted}>Completed</div>,
-        salesrep: <a href='#'>Hardik</a>,
-        question: 'What was the major costing ?',
-        options: 'Account manager need to be more comfortable and friendly',
-        comments: 'We will note that and keep it accountable',
-        link: <a href='#'>https://newbeta-admin.uplers.com/ClientHappinessSurvey/ClientHappinessSurveys#</a>,
-    },
-  ];
+    const debouncedSearchHandler = (e) => {
+        setTableFilteredState(prevState => ({
+            ...prevState,
+            pagenumber:1,
+            filterFields_HappinessSurvey: {
+              ...prevState.filterFields_HappinessSurvey,
+              search: e.target.value,
+            }
+          }));       
+        setDebouncedSearch(e.target.value)
+        setPageIndex(1); 
+    };
+
+    const submitGenerateLinkData = () => {
+        let _reqBody = {};       
+        if(isOtherClient){
+            _reqBody.other_clientemail = watchEmail;
+            _reqBody.Other_Company_Name =watchCompany;
+            _reqBody.Other_Client_Name = watchClient;
+        }else{
+            _reqBody.Client_Name =selectedCompany.client; 
+            _reqBody.Company = selectedCompany.company;
+            _reqBody.Company_ID = selectedCompany.companyID;
+            _reqBody.Email = selectedCompany.emailID;
+            _reqBody.Client_ID = selectedCompany.contactID;
+        }      
+        submitGenerateLink(_reqBody);
+    }
+
+    const submitGenerateLink = useCallback(async (requestData) => {
+        setLoading(true);
+        let response = await clientHappinessSurveyRequestDAO.SaveClientHappinessSurveysDAO(requestData);
+        if (response?.statusCode === HTTPStatusCode.OK) {                 
+            setGenerateLink(false);
+            setLoading(false);          
+        } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+            setLoading(false);          
+        } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            setLoading(false);
+            return navigate(UTSRoutes.LOGINROUTE);
+        } else if (
+            response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+        ) {
+            setLoading(false);
+            return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+            setLoading(false);
+            return 'NO DATA FOUND';
+        }
+	}, []);
   
-  const columns = [
-    {
-        title: 'Date',
-        dataIndex: 'date',
-        key: 'date',
-        width: '130px',
-    },
-    {
-        title: 'Feedback Date',
-        dataIndex: 'feedbackdate',
-        key: 'feedbackdate',
-        width: '160px',
-    },
-    {
-        title: 'Cat',
-        dataIndex: 'cat',
-        key: 'cat',
-        width: '50px',
-    },
-    {
-        title: 'Company',
-        dataIndex: 'company',
-        key: 'company',
-        width: '240px',
-    },
-    {
-        title: 'Email',
-        dataIndex: 'email',
-        key: 'email',
-        width: '200px',
-    },
-    {
-        title: 'Rating',
-        dataIndex: 'rating',
-        key: 'rating',
-        width: '100px',
-    },
-    {
-        title: 'Feedback Status',
-        dataIndex: 'feedbackstatus',
-        key: 'feedbackstatus',
-        width: '160px',
-    },
-    {
-        title: 'Sales Rep',
-        dataIndex: 'salesrep',
-        key: 'salesrep',
-        width: '100px',
-    },
-    {
-        title: 'Question',
-        dataIndex: 'question',
-        key: 'question',
-        width: '250px',
-    },
-    {
-        title: 'Options',
-        dataIndex: 'options',
-        key: 'options',
-        width: '250px',
-    },
-    {
-        title: 'Comments',
-        dataIndex: 'comments',
-        key: 'comments',
-        width: '250px',
-    },
-    {
-        title: 'Link',
-        dataIndex: 'link',
-        key: 'link',
-        width: '400px',
-    },
-  ];
+	const clearFilters = useCallback(() => {
+		setAppliedFilters(new Map());
+		setCheckedState(new Map());
+		setFilteredTagLength(0);
+		setTableFilteredState({       
+            pagenumber:1,
+            totalrecord:100,
+            filterFields_HappinessSurvey:{
+                RatingFrom : 1,
+                RatingTo :10,
+            }
+        });
+		// const reqFilter = {
+		// 	tableFilteredState:{...tableFilteredState,...{
+		// 		pagesize: 100,
+		// 		pagenum: 1,
+		// 		sortdatafield: 'CreatedDateTime',
+		// 		sortorder: 'desc',
+		// 		searchText: '',
+		// 	}},
+		// 	filterFields_ViewAllHRs: {},
+		// };
+		// handleHRRequest(reqFilter);
+		setIsAllowFilters(false);
+		setEndDate(null)
+		setStartDate(null)
+		// setDebouncedSearch('')
+		// setIsFocusedRole(false)
+		// setPageIndex(1);
+		// setPageSize(100);
+	}, [
+		// handleHRRequest,
+		// setAppliedFilters,
+		// setCheckedState,
+		// setFilteredTagLength,
+		// setIsAllowFilters,
+		// setTableFilteredState,
+		// tableFilteredState,
+	]);
 
+    const onRemoveSurveyFilters = () => {
+		setIsAllowFilters(false);
+	};
 
+    const toggleSurveyFilter = useCallback(() => {		
+        !getHTMLFilter
+            ? setIsAllowFilters(true)
+            : setTimeout(() => {
+                    setIsAllowFilters(true);
+            }, 300);
+        setHTMLFilter(!getHTMLFilter);
+    }, [getHTMLFilter]);
+
+    const handleExport = () => {
+		 downloadToExcel(clientHappinessSurveyList)
+	}
+
+    const getClientNameValue = (data) => {
+        let _data = [...autoCompleteCompanyList];
+        let _index = _data.findIndex((val) => val.value === data);
+        if(_data[_index].client){
+            setValue("client",_data[_index].client);
+            setValue("company",_data[_index].company);
+            setValue("email",_data[_index].emailID);
+            setSelectedCompany(_data[_index]);
+            setIsOtherClient(false);
+            let _val = [...clientOption];
+            _val[0].label = _data[_index].client;
+            _val[0].value = _data[_index].client;
+            setClientOption(_val);
+        }else{
+            setIsOtherClient(true);
+        }
+        
+    }
   return (
     <>
     <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
@@ -236,21 +441,22 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
                     }}>
                     Generate Link
                 </button>
-                <button className={clienthappinessSurveyStyles.btnwhite}>Export</button>
+                <button className={clienthappinessSurveyStyles.btnwhite} onClick={() => handleExport()}>Export</button>
             </div>
 		</div>
 
         <div className={clienthappinessSurveyStyles.filterContainer}>
 				<div className={clienthappinessSurveyStyles.filterSets}>
                     <div className={clienthappinessSurveyStyles.filterSetsInner} >
-                        <div className={clienthappinessSurveyStyles.addFilter}>
+                        <div className={clienthappinessSurveyStyles.addFilter} onClick={toggleSurveyFilter}>
                             <FunnelSVG style={{ width: '16px', height: '16px' }} />
 
                             <div className={clienthappinessSurveyStyles.filterLabel}>Add Filters</div>
-                            <div className={clienthappinessSurveyStyles.filterCount}>1</div>
+                            <div className={clienthappinessSurveyStyles.filterCount}>{filteredTagLength}</div>                            
                         </div>
+                         <p onClick={()=> clearFilters() }>Reset Filters</p>                        
                     </div>
-
+                   
 					<div className={clienthappinessSurveyStyles.filterRight}>
 
 						<div className={clienthappinessSurveyStyles.searchFilterSet}>
@@ -259,8 +465,8 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 								type={InputType.TEXT}
 								className={clienthappinessSurveyStyles.searchInput}
 								placeholder="Search Table"
-								// onChange={debouncedSearchHandler}
-								// value={debouncedSearch}
+								onChange={debouncedSearchHandler}
+								value={debouncedSearch}
 							/>
 						</div>
 
@@ -268,47 +474,37 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
                             <div className={clienthappinessSurveyStyles.label}>Rating</div>
                             <div className={clienthappinessSurveyStyles.ratingFilter}>
                                 <Select
-                                    defaultValue="01"
+                                    defaultValue={0}
                                     style={{ width: 42 }}
                                     dropdownMatchSelectWidth={false}
                                     // placement={placement}
                                     className="ratingNumber"
-                                    options={[
-                                    {
-                                        value: '01',
-                                        label: '01',
-                                    },
-                                    {
-                                        value: '02',
-                                        label: '02',
-                                    },
-                                    {
-                                        value: '03',
-                                        label: '03',
-                                    },
-                                    ]}
+                                    options={clientHappinessSurveyConfig.ratingOptions()}
+                                    onChange={(value, option) => {
+                                        setTableFilteredState(prevState => ({
+                                            ...prevState,                                            
+                                            filterFields_HappinessSurvey: {
+                                              ...prevState.filterFields_HappinessSurvey,
+                                              RatingFrom : value,
+                                            }
+                                          }));
+                                    }}
                                 />  
-
                                 <Select
-                                    defaultValue="03"
+                                    defaultValue={10}
                                     style={{ width: 42 }}
                                     dropdownMatchSelectWidth={false}
-                                    // placement={placement}
                                     className="ratingNumber"
-                                    options={[
-                                    {
-                                        value: '01',
-                                        label: '01',
-                                    },
-                                    {
-                                        value: '02',
-                                        label: '02',
-                                    },
-                                    {
-                                        value: '03',
-                                        label: '03',
-                                    },
-                                    ]}
+                                    options={clientHappinessSurveyConfig.ratingOptions()}
+                                    onChange={(value, option) => {
+                                        setTableFilteredState(prevState => ({
+                                            ...prevState,                                            
+                                            filterFields_HappinessSurvey: {
+                                              ...prevState.filterFields_HappinessSurvey,
+                                              RatingTo : value,
+                                            }
+                                          }));
+                                    }}
                                 />
                             </div>
                         </div>
@@ -318,7 +514,7 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 							<div className={clienthappinessSurveyStyles.label}>Date</div>
 							<div className={clienthappinessSurveyStyles.calendarFilter}>
 								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
-								<DatePicker
+							    <DatePicker
 									style={{ backgroundColor: 'red' }}
 									onKeyDown={(e) => {
 										e.preventDefault();
@@ -326,10 +522,10 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 									}}
 									className={clienthappinessSurveyStyles.dateFilter}
 									placeholderText="Start date - End date"
-									// selected={startDate}
-									// onChange={onCalenderFilter}
-									// startDate={startDate}
-									// endDate={endDate}
+									selected={startDate}
+									onChange={onCalenderFilter}
+									startDate={startDate}
+									endDate={endDate}
 									selectsRange
 								/>
 							</div>
@@ -376,16 +572,28 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 									trigger={['click']}
 									placement="bottom"
 									overlay={
-										<Menu>
+										<Menu onClick={(e) => {
+                                            setPageSize(parseInt(e.key));                                           
+                                            if (pageSize !== parseInt(e.key)) {
+                                                setTableFilteredState(prevState => ({
+                                                    ...prevState,
+                                                    totalrecord: parseInt(e.key),
+                                                    pagenumber: pageIndex,
+                                                  }));                                             
+                                            }
 
+                                        }}>
+                                            {pageSizeOptions.map((item) => {
+                                                return <Menu.Item key={item}>{item}</Menu.Item>;
+                                            })}
 										</Menu>
 									}>
-									<span>
-									
-										<IoChevronDownOutline
-											style={{ paddingTop: '5px', fontSize: '16px' }}
-										/>
-									</span>
+                                    <span>
+                                        {pageSize}
+                                        <IoChevronDownOutline
+                                            style={{ paddingTop: '5px', fontSize: '16px' }}
+                                        />
+                                    </span>									
 								</Dropdown>
 							</div>
 						</div>
@@ -395,25 +603,60 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 		</div>    
 
          <div className={clienthappinessSurveyStyles.tableDetails}>
-                        {/* {isLoading ? ( */}
-                            {/* <TableSkeleton /> */}
-                        {/* ) : ( */}
-                            <WithLoader className="mainLoader">
-                                {/* <Table
-                                    scroll={{ x: '100vw', y: '100vh' }}
-                                    id="hrListingTable"
-                                    // columns={tableColumnsMemo}
-                                    bordered={false}
-                                    
-                                /> */}
-
-                                <Table  scroll={{ x: '100vw', y: '100vh' }} bordered={false} dataSource={dataSource} columns={columns} />;
-
+                        {isLoading ? (
+                            <TableSkeleton />
+                        ) : (
+                            <WithLoader className="mainLoader">                              
+                                <Table  
+                                scroll={{ x: '100vw', y: '100vh' }} 
+                                bordered={false} 
+                                dataSource={clientHappinessSurveyList} 
+                                columns={surveyColumnsMemo} 
+                                pagination={
+                                    search && search?.length === 0
+                                        ? null
+                                        : {
+                                                onChange: (pageNum, pageSize) => {
+                                                    setPageIndex(pageNum);
+                                                    setPageSize(pageSize);
+                                                    setTableFilteredState(prevState => ({
+                                                        ...prevState,                                                        
+                                                        pagenumber: pageNum,
+                                                      }));
+                                                },
+                                                size: 'small',
+                                                pageSize: pageSize,
+                                                pageSizeOptions: pageSizeOptions,
+                                                total: totalRecords,
+                                                showTotal: (total, range) =>
+                                                    `${range[0]}-${range[1]} of ${totalRecords} items`,
+                                                defaultCurrent: pageIndex,
+                                          }
+                                }                                
+                                />
                             </WithLoader>
-                        {/* )} */}
-         </div>               
-      
+                       )} 
+         </div>
     </div>
+
+    {isAllowFilters && (
+				<Suspense fallback={<div>Loading...</div>}>
+					<SurveyFiltersLazyComponent						
+						setIsAllowFilters={setIsAllowFilters}						
+						setFilteredTagLength={setFilteredTagLength}
+						getHTMLFilter={getHTMLFilter}
+                        filtersType={clientHappinessSurveyConfig.clientSurveyFilterTypeConfig(filtersList && filtersList)}
+						clearFilters={clearFilters}
+                        onRemoveSurveyFilters={onRemoveSurveyFilters}
+                        setAppliedFilters={setAppliedFilters}
+						appliedFilter={appliedFilter}
+                        setCheckedState={setCheckedState}
+						checkedState={checkedState}
+                        setTableFilteredState={setTableFilteredState}
+                        tableFilteredState={tableFilteredState}                        
+					/>
+				</Suspense>
+			)}
 
     <Modal 
         transitionName=""
@@ -423,7 +666,6 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
         width="904px"
         footer={null}
         onCancel={() => {
-            // setIsLoading(false);
             setGenerateLink(false);
         }}>
 
@@ -435,58 +677,182 @@ import HRInputField from 'modules/hiring request/components/hrInputFields/hrInpu
 			<div className={clienthappinessSurveyStyles.row}>
 				<div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
-                        <HRInputField
-                            register={register}
-                            label={'Company'}
-                            name="feedbackComments"
-                            type={InputType.TEXT}
-                            placeholder="Suninda Solutions Pvt Ltd"
-                        />
+                                <label>Company</label>
+								<Controller
+									render={({ ...props }) => (                                        
+										<AutoComplete
+											options={autoCompleteCompanyList}
+											onSelect={(data) => getClientNameValue(data)}
+											filterOption={true}	
+                                            // label={'ttttttttt'}
+                                            // dropdownClassName={clienthappinessSurveyStyles.autocompletecustom}
+                                            dropdownClassName='GenerateautocompleteField'
+                                            className={clienthappinessSurveyStyles.autocompletedBox}										
+											onChange={(company) => {
+												setValue('company', company);
+											}}
+                                            getOptionLabel={(option) => (
+                                                <div className={clienthappinessSurveyStyles.autocompletecustom}>{option}</div>
+                                            )}                                          
+										/>                                       
+									)}
+									// {...register('clientName', {
+									// 	validate,
+									// })}
+                                    // value={watchCompany}
+									name="company"
+									control={control}									
+								/>                    
                     </div>
 				</div>
-                <div className={clienthappinessSurveyStyles.colMd12}>
+
+                {/* <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
                         <HRInputField
                             register={register}
                             label={'Client'}
-                            name="feedbackComments"
+                            name="client"
                             type={InputType.TEXT}
                             placeholder="Velma Balaji Reddy"
+                            errors={errors}
+                            validationSchema={{
+                                required: 'please select client name',
+                            }}
+                            required
                         />
                     </div>
-				</div>
+				</div>  */}
 
                 <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
-                        <HRInputField
+                       
+                            {isOtherClient ?  <HRInputField
                             register={register}
-                            label={'Email'}
-                            name="feedbackComments"
+                            label={'Client'}
+                            name="client"
                             type={InputType.TEXT}
-                            placeholder="sv@nuecluesx.io"
-                        />
+                            placeholder="Velma Balaji Reddy"
+                            errors={errors}
+                            validationSchema={{
+                                required: 'please select client name',
+                            }}
+                            required
+                        /> :
+                            // <Dropdown
+                            //     trigger={['click']}
+                            //     placement="bottom"       
+                            //     overlay={
+                            //         <Menu
+                            //             onClick={(e) => {
+                            //                 setSelectedClientVal(e.key);
+                            //                 if (e.key === 'other') {
+                            //                     setIsOtherClient(true);
+                            //                     setValue("client","");
+                            //                     setValue("email","");
+                            //                 }
+                            //             }}
+                            //             >
+                            //             {clientOption.map((item) => {
+                            //                 return <Menu.Item key={item}>{item}</Menu.Item>;
+                            //             })}
+                            //         </Menu>
+                            //     }>
+                            //     <span>         
+                            //         {clientOption[0]}                       
+                            //         <IoChevronDownOutline
+                            //             style={{ paddingTop: '5px', fontSize: '16px' }}
+                            //         />
+                            //     </span>
+                            // </Dropdown>}
+
+                            <HRSelectField
+								// controlledValue={selectedClientVal}
+								// setControlledValue={setSelectedClientVal}
+                                isControlled={true}
+                                mode={'value'}
+                                setValue={setValue}
+                                register={register}
+                                name="client"
+                                label="Client"
+                                className={clienthappinessSurveyStyles.generatLinkSelect}
+                                options={clientOption}
+                                // disabled={true}
+                                // required
+                                // isError={
+                                // 	errors['billRateCurrency'] && errors['billRateCurrency']
+                                // }
+                                // errorMsg="Please select a currency."                               
+								/>}                    
+                        </div>
+                    </div>
+
+                <div className={clienthappinessSurveyStyles.colMd12}>
+                    <div className={clienthappinessSurveyStyles.InputGroup}>
+                    <HRInputField
+                                register={register}
+                                label={'Email'}
+                                name="email"
+                                errors={errors}
+                                type={InputType.TEXT}
+                                placeholder="sv@nuecluesx.io"     
+                                required
+                                validationSchema={{
+                                    required: 'please enter email',
+                                }}                   
+                            />
                     </div>
 				</div>
 
-				
 			</div>
-
 			<div className={clienthappinessSurveyStyles.formPanelAction}>
 				<button
-					className={clienthappinessSurveyStyles.btn}>
+					className={clienthappinessSurveyStyles.btn} 
+                    onClick={() => setGenerateLink(false)}
+                    >
 					Cancel
 				</button>
                 <button
 					type="submit"
-					// onClick={handleSubmit(submitEndEngagementHandler)}
+					onClick={submitGenerateLinkData}
 					className={clienthappinessSurveyStyles.btnPrimary}>
 					Generate Link
 				</button>
 			</div>
 		</div>
-
     </Modal>
-    
+
+    <Modal 
+        transitionName=""
+        className="commonModalWrap"
+        centered
+        open={selecteDateOption}
+        width="440px"
+        footer={null}
+        onCancel={() => {
+            setSelectDateOption(false);
+        }}>
+
+        <div className={`${clienthappinessSurveyStyles.engagementModalWrap} ${clienthappinessSurveyStyles.generateLinkModal}`}>
+			<div className={`${clienthappinessSurveyStyles.headingContainer} ${clienthappinessSurveyStyles.addFeebackContainer}`}>
+				<h1>Select Date Type</h1>
+			</div>
+
+			<div className={clienthappinessSurveyStyles.FeedbackDatedetail}>
+                <Radio.Group
+                        defaultValue={1}
+                        className={clienthappinessSurveyStyles.radioCustomModal}
+                        // onChange={onSlotChange}
+                    >
+                        <Radio value={1}  className={clienthappinessSurveyStyles.radioCustomGroup}>
+                        Created date
+                        </Radio>
+                        <Radio value={2}  className={clienthappinessSurveyStyles.radioCustomGroup}>Feedback date</Radio>                    
+                </Radio.Group>
+			</div>
+			
+		</div>
+    </Modal>
+
     </>
   )
 }

@@ -435,6 +435,9 @@
     border: none;
 }
 
+.emailSendBtn{
+   padding: 10px 10px;    
+}
 
 /* Custome Css End */
 
@@ -579,7 +582,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    margin: 0 0 16px;
+    margin: 0px;
 }
 
 .generateLinkModal .InputGroup [class*="formField"] label {
@@ -600,8 +603,43 @@
     width: 498px;
 }
 
+
+.generateLinkModal .InputGroup{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 0 16px;
+}
+
+.generateLinkModal .InputGroup label{
+    color: #676767;
+    font-family: Montserrat;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    min-width: 80px;
+}
+
+.generateLinkModal .autocompletedBox [class*="ant-select-selector"]{
+    height: 44px !important;
+    padding: 11px 16px !important;
+    max-width: 498px !important;
+}
+
+
 /* Modal Css End */
 
+.autocompletedBox [class*="ant-select-selector"] [class*="ant-select-selection-search"]{
+    position: relative;
+}
 
+/* custome radio */
 
+.FeedbackDatedetail{
+    padding: 10px 0;
+}
 
+ .generatLinkSelect{
+    max-width: 498px;
+} 
