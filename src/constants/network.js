@@ -32,8 +32,8 @@ export class SubDomain {
 	static INTERVIEWER = 'Interviewer/';
 	static SLA_REPORT = 'SLAReport/';
 	static I2S_REPORT = 'InterviewToSuccess/';
-	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/';
-	static HUB_SPOT = 'Hubspot/'
+	static HUB_SPOT = 'Hubspot/';
+	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/'	
 }
 export class APIType {
 	static USER = '/user';
@@ -320,4 +320,14 @@ export class IncentiveReport {
 	static GET_CONTRACT_BOOSTER = 'GetIncentiveReportDetailsContractBooster';
 	static GET_INCENTIVE_REPORT_AMNR = 'GetIncentiveReportDetailsAMNR';
 	static CHECK_VALIDATION = 'CheckValidationForNBDandAM';
+}
+export class ClientHappinessSurvey{
+	static LIST = 'List';
+	static GET_CLIENT_HAPPINESS_SURVEY_LIST = 'HappinessSurvey/';
+	static GET_AUTO_COMPLETE_COMPANY = 'AutoComplete/';
+	static GET_COMPANY = "Company";
+	static SEND_EMAIL_FOR_FEEDBACK = "SendEmailForFeedback";
+	static SAVE_CLIENT_HAPPINESS_SURVEYS= "SaveClientHappinessSurveys";
+	static CLIENT_HAPPINESS_SURVEY_OPTION = "ClientHappinessSurveysOption";
+
 }

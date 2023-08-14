@@ -975,3 +975,10 @@ table {
 
 
 /* Ant date Time picker custom Css End */
+
+
+[class*="ant-select-dropdown"][class*="GenerateautocompleteField"]{
+  z-index: 9999 !important;
+  width: 500px !important;
+  min-width: 500px !important;
+}
