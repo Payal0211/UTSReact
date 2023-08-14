@@ -30,6 +30,7 @@ import { HTTPStatusCode } from 'constants/network';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import { clientHappinessSurveyConfig } from 'modules/hiring request/screens/clientHappinessSurvey/clientHappinessSurvey.config';
 import { Radio } from 'antd';
+import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 
 const SurveyFiltersLazyComponent = React.lazy(() =>
 	import('modules/survey/components/surveyFilter/surveyfilters'),
@@ -37,7 +38,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 
  const ClienthappinessSurvey =()=> {
     const navigate = useNavigate();
-    // const[selecteDateOption,setSelectDateOption] = useState(true);
+    const[selecteDateOption,setSelectDateOption] = useState(true);
     const [generateLink, setGenerateLink] = useState(false);
     const {
 		register,
@@ -76,8 +77,8 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     const [autoCompleteCompanyList,setAutoCompleteCompanyList] = useState([]);
     const[selectedCompany,setSelectedCompany] = useState({});
     const[isOtherClient,setIsOtherClient] = useState(false);
-    const [clientOption,setClientOption] = useState(["","other"]);
-    const[selectedClientVal,setSelectedClientVal] = useState(clientOption[0]);
+    const [clientOption,setClientOption] = useState([{label : "" ,value:""},{label :"Client",value:"other"}]);
+    const[selectedClientVal,setSelectedClientVal] = useState(clientOption[0].value);
 
     const watchCompany = watch('company');
     const watchClient = watch('client');
@@ -85,6 +86,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 
     const [generateLinkData,setGenerateLinkData ] = useState({company: '',client: "",email: ""});
 
+    console.log(clientOption,"clientOption");
     useEffect(() => {
         let _generateLinkData = {...generateLinkData};
         if (watchCompany) {
@@ -258,19 +260,19 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     };
 
     const submitGenerateLinkData = () => {
-        let _reqBody = {};
-        _reqBody.Client_ID = ""
-        _reqBody.Client_Name =selectedCompany.client; 
-        _reqBody.Company = selectedCompany.company;
-        _reqBody.Company_ID = selectedCompany.companyID;
-        _reqBody.Email = selectedCompany.emailID;
-
-        _reqBody.other_clientemail = 
-        _reqBody.Other_Company_Name =
-        _reqBody.Other_Client_Name = 
-
-     
-        submitGenerateLink();
+        let _reqBody = {};       
+        if(isOtherClient){
+            _reqBody.other_clientemail = watchEmail;
+            _reqBody.Other_Company_Name =watchCompany;
+            _reqBody.Other_Client_Name = watchClient;
+        }else{
+            _reqBody.Client_Name =selectedCompany.client; 
+            _reqBody.Company = selectedCompany.company;
+            _reqBody.Company_ID = selectedCompany.companyID;
+            _reqBody.Email = selectedCompany.emailID;
+            _reqBody.Client_ID = selectedCompany.contactID;
+        }      
+        submitGenerateLink(_reqBody);
     }
 
     const submitGenerateLink = useCallback(async (requestData) => {
@@ -362,7 +364,8 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
             setSelectedCompany(_data[_index]);
             setIsOtherClient(false);
             let _val = [...clientOption];
-            _val[0] = _data[_index].client;
+            _val[0].label = _data[_index].client;
+            _val[0].value = _data[_index].client;
             setClientOption(_val);
         }else{
             setIsOtherClient(true);
@@ -703,7 +706,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                     </div>
 				</div>
 
-                <div className={clienthappinessSurveyStyles.colMd12}>
+                {/* <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
                         <HRInputField
                             register={register}
@@ -718,11 +721,11 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                             required
                         />
                     </div>
-				</div> 
+				</div>  */}
 
                 <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
-                        <div style={{display:"flex"}}>
+                       
                             {isOtherClient ?  <HRInputField
                             register={register}
                             label={'Client'}
@@ -735,36 +738,53 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                             }}
                             required
                         /> :
-                            <Dropdown
-                                trigger={['click']}
-                                placement="bottom"       
-                                overlay={
-                                    <Menu
-                                        onClick={(e) => {
-                                        	console.log(e.key,">>>>>>>>>");
-                                            setSelectedClientVal(e.key);
-                                            if (e.key === 'other') {
-                                                setIsOtherClient(true);
-                                                setValue("client","");
-                                                setValue("email","");
-                                            }
-                                        }}
-                                        >
-                                        {clientOption.map((item) => {
-                                            return <Menu.Item key={item}>{item}</Menu.Item>;
-                                        })}
-                                    </Menu>
-                                }>
-                                <span>         
-                                    {clientOption[0]}                       
-                                    <IoChevronDownOutline
-                                        style={{ paddingTop: '5px', fontSize: '16px' }}
-                                    />
-                                </span>
-                            </Dropdown>}
+                            // <Dropdown
+                            //     trigger={['click']}
+                            //     placement="bottom"       
+                            //     overlay={
+                            //         <Menu
+                            //             onClick={(e) => {
+                            //                 setSelectedClientVal(e.key);
+                            //                 if (e.key === 'other') {
+                            //                     setIsOtherClient(true);
+                            //                     setValue("client","");
+                            //                     setValue("email","");
+                            //                 }
+                            //             }}
+                            //             >
+                            //             {clientOption.map((item) => {
+                            //                 return <Menu.Item key={item}>{item}</Menu.Item>;
+                            //             })}
+                            //         </Menu>
+                            //     }>
+                            //     <span>         
+                            //         {clientOption[0]}                       
+                            //         <IoChevronDownOutline
+                            //             style={{ paddingTop: '5px', fontSize: '16px' }}
+                            //         />
+                            //     </span>
+                            // </Dropdown>}
+
+                            <HRSelectField
+								// controlledValue={selectedClientVal}
+								// setControlledValue={setSelectedClientVal}
+                                isControlled={true}
+                                mode={'value'}
+                                setValue={setValue}
+                                register={register}
+                                name="client"
+                                label="Client"
+                                className={clienthappinessSurveyStyles.generatLinkSelect}
+                                options={clientOption}
+                                // disabled={true}
+                                // required
+                                // isError={
+                                // 	errors['billRateCurrency'] && errors['billRateCurrency']
+                                // }
+                                // errorMsg="Please select a currency."                               
+								/>}                    
+                        </div>
                     </div>
-                </div>
-				</div>
 
                 <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
