@@ -83,15 +83,16 @@ export default function BeforePreOnboarding({
     currentDate.setMinutes(parseInt(minuteString, 10));
 
     // Step 4: Format the resulting Date object as a valid date string
-    const formattedDate = currentDate.toLocaleString([], {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    return formattedDate;
+    // const formattedDate = currentDate.toLocaleString([], {
+    //   year: "numeric",
+    //   month: "2-digit",
+    //   day: "2-digit",
+    //   hour: "2-digit",
+    //   minute: "2-digit",
+    // });
+    // const formattedDate = currentDate.toLocaleString();
+    // return formattedDate;
+    return currentDate
   }
 
   function extractNumberFromString(inputString) {
@@ -147,21 +148,21 @@ export default function BeforePreOnboarding({
 
         setValue(
           "shiftStartTime",
-          new Date(
+          // new Date(
             convertToValidDate(
               result.responseBody.details.preOnboardingDetailsForAMAssignment
                 .shiftStartTime
             )
-          )
+          // )
         );
         setValue(
           "shiftEndTime",
-          new Date(
+          // new Date(
             convertToValidDate(
               result.responseBody.details.preOnboardingDetailsForAMAssignment
                 .shiftEndTime
             )
-          )    
+          // )    
         );
         
         let preOnboardDetail = result.responseBody.details.preOnboardingDetailsForAMAssignment
