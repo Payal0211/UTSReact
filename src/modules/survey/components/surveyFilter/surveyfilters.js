@@ -333,13 +333,10 @@ const SurveyFilters = ({
 														style={{
 															fontSize: `${!item.label && '1rem'}`,
 															fontWeight: '500',
-														}}>
+														}}>														
 														{item.label
-															? All_Hiring_Request_Utils.GETHRSTATUS(
-																	item.statusCode,
-																	item.label,
-															  )
-															: item.text1 ? item.text1  : item?.value}
+															? item.label
+															: item?.value}
 													</Checkbox>
 												</div>
 											);

@@ -29,6 +29,7 @@ import { clientHappinessSurveyRequestDAO } from 'core/clientHappinessSurvey/clie
 import { HTTPStatusCode } from 'constants/network';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import { clientHappinessSurveyConfig } from 'modules/hiring request/screens/clientHappinessSurvey/clientHappinessSurvey.config';
+import { Radio } from 'antd';
 
 const SurveyFiltersLazyComponent = React.lazy(() =>
 	import('modules/survey/components/surveyFilter/surveyfilters'),
@@ -36,6 +37,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 
  const ClienthappinessSurvey =()=> {
     const navigate = useNavigate();
+    const[selecteDateOption,setSelectDateOption] = useState(true);
     const [generateLink, setGenerateLink] = useState(false);
     const {
 		register,
@@ -99,14 +101,14 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 		const response = await clientHappinessSurveyRequestDAO.ClientHappinessSurveysOptionDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
             let _modifyList = [];
-            // for (let val of response?.responseBody) {
-            //     let obj = {};
-            //     obj.text = val.happynessSurvay_Option;
-            //     obj.text1 = val.happynessSurvay_Option;
-            //     obj.value = val.id;
-            //     obj.selected = false;
-            //     _modifyList.push(obj);
-            // }
+            for (let val of response?.responseBody) {
+                let modifyObj = {};
+                modifyObj.label = val.happynessSurvay_Option;
+                modifyObj.value = val.id;
+                modifyObj.selected = false;
+                modifyObj.text = val.id;
+                _modifyList.push(modifyObj);
+            }
 			setFiltersList(_modifyList);
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 			return navigate(UTSRoutes.LOGINROUTE);
@@ -122,25 +124,42 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 	},[getClientHappinessSurveysOption])
 
 
-    const getAutoCompleteComapany = useCallback(
-		async (watchCompany) => {
-			let response = await clientHappinessSurveyRequestDAO.getAutoCompleteCompanyDAO(watchCompany);
-			if (response?.statusCode === HTTPStatusCode.OK) {		
-                let _modifyData = [];
-                for (let val of response?.responseBody) {
-                    val.value = val.company;
-                    _modifyData.push(val);
-                }		
-                setAutoCompleteCompanyList(_modifyData);				
-			} else if (
-				response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
-				response?.statusCode === HTTPStatusCode.NOT_FOUND
-			) {			
-				setAutoCompleteCompanyList([]);
-			}
-		},
-		[],
-	); 
+    // const getAutoCompleteComapany = useCallback(
+	// 	async (watchCompany) => {
+	// 		let response = await clientHappinessSurveyRequestDAO.getAutoCompleteCompanyDAO(watchCompany);
+	// 		if (response?.statusCode === HTTPStatusCode.OK) {		
+    //             let _modifyData = [];
+    //             for (let val of response?.responseBody) {
+    //                 val.value = val.company;
+    //                 _modifyData.push(val);
+    //             }		
+    //             setAutoCompleteCompanyList(_modifyData);				
+	// 		} else if (
+	// 			response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+	// 			response?.statusCode === HTTPStatusCode.NOT_FOUND
+	// 		) {			
+	// 			setAutoCompleteCompanyList([]);
+	// 		}
+	// 	},
+	// 	[],
+	// ); 
+
+    const getAutoCompleteComapany = async (watchCompany) => {
+        let response = await clientHappinessSurveyRequestDAO.getAutoCompleteCompanyDAO(watchCompany);
+        		if (response?.statusCode === HTTPStatusCode.OK) {		
+                    let _modifyData = [];
+                    for (let val of response?.responseBody) {
+                        val.value = val.company;
+                        _modifyData.push(val);
+                    }		
+                    setAutoCompleteCompanyList(_modifyData);				
+        		} else if (
+        			response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+        			response?.statusCode === HTTPStatusCode.NOT_FOUND
+        		) {			
+        			setAutoCompleteCompanyList([]);
+        		}
+    }
 
     const onEmailSend = useCallback(
 		async (id) => {
@@ -232,6 +251,33 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
         setDebouncedSearch(e.target.value)
         setPageIndex(1); 
     };
+
+    // const submitGenerateLinkData = () => {
+    //     console.log("handleSubmit");
+    //     // submitGenerateLink();
+    // }
+
+    const submitGenerateLink = useCallback(async (requestData) => {
+        setLoading(true);
+        let response = await clientHappinessSurveyRequestDAO.SaveClientHappinessSurveysDAO(requestData);
+        if (response?.statusCode === HTTPStatusCode.OK) {                 
+            setGenerateLink(false);
+            setLoading(false);          
+        } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
+            setLoading(false);          
+        } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            setLoading(false);
+            return navigate(UTSRoutes.LOGINROUTE);
+        } else if (
+            response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+        ) {
+            setLoading(false);
+            return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+            setLoading(false);
+            return 'NO DATA FOUND';
+        }
+	}, []);
   
 	const clearFilters = useCallback(() => {
 		setAppliedFilters(new Map());
@@ -257,8 +303,8 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 		// };
 		// handleHRRequest(reqFilter);
 		setIsAllowFilters(false);
-		// setEndDate(null)
-		// setStartDate(null)
+		setEndDate(null)
+		setStartDate(null)
 		// setDebouncedSearch('')
 		// setIsFocusedRole(false)
 		// setPageIndex(1);
@@ -289,6 +335,10 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     const handleExport = () => {
 		 downloadToExcel(clientHappinessSurveyList)
 	}
+
+    const getClientNameValue = (name) => {
+        console.log(name,"nameee");
+    }
   return (
     <>
     <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
@@ -570,8 +620,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                         setCheckedState={setCheckedState}
 						checkedState={checkedState}
                         setTableFilteredState={setTableFilteredState}
-                        tableFilteredState={tableFilteredState}
-                        
+                        tableFilteredState={tableFilteredState}                        
 					/>
 				</Suspense>
 			)}
@@ -599,7 +648,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 									render={({ ...props }) => (                                        
 										<AutoComplete
 											options={autoCompleteCompanyList}
-											// onSelect={(clientName) => getClientNameValue(clientName)}
+											onSelect={(clientName) => getClientNameValue(clientName)}
 											filterOption={true}	
                                             dropdownClassName={clienthappinessSurveyStyles.autocompletecustom}
                                             // className={clienthappinessSurveyStyles.autocompletecustom}										
@@ -608,8 +657,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 											}}
                                             getOptionLabel={(option) => (
                                                 <div className={clienthappinessSurveyStyles.autocompletecustom}>{option}</div>
-                                            )}
-                                          
+                                            )}                                          
 										/>
 									)}
 									// {...register('clientName', {
@@ -618,8 +666,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                                     value={watchCompany}
 									name="company"
 									control={control}									
-								/>
-                    
+								/>                    
                     </div>
 				</div>
                 <div className={clienthappinessSurveyStyles.colMd12}>
@@ -630,6 +677,11 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                             name="client"
                             type={InputType.TEXT}
                             placeholder="Velma Balaji Reddy"
+                            errors={errors}
+                            validationSchema={{
+                                required: 'please select client name',
+                            }}
+                            required
                         />
                     </div>
 				</div>
@@ -640,15 +692,17 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                             register={register}
                             label={'Email'}
                             name="email"
+                            errors={errors}
                             type={InputType.TEXT}
-                            placeholder="sv@nuecluesx.io"                            
+                            placeholder="sv@nuecluesx.io"     
+                            required
+                            validationSchema={{
+                                required: 'please enter email',
+                            }}                   
                         />
                     </div>
 				</div>
-
-				
 			</div>
-
 			<div className={clienthappinessSurveyStyles.formPanelAction}>
 				<button
 					className={clienthappinessSurveyStyles.btn} 
@@ -658,15 +712,44 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 				</button>
                 <button
 					type="submit"
-					// onClick={handleSubmit(submitEndEngagementHandler)}
+					// onClick={submitGenerateLinkData}
 					className={clienthappinessSurveyStyles.btnPrimary}>
 					Generate Link
 				</button>
 			</div>
 		</div>
-
     </Modal>
-    
+    <Modal 
+        transitionName=""
+        className="commonModalWrap"
+        centered
+        open={selecteDateOption}
+        width="904px"
+        footer={null}
+        onCancel={() => {
+            setSelectDateOption(false);
+        }}>
+
+        <div className={`${clienthappinessSurveyStyles.engagementModalWrap} ${clienthappinessSurveyStyles.generateLinkModal}`}>
+			<div className={`${clienthappinessSurveyStyles.headingContainer} ${clienthappinessSurveyStyles.addFeebackContainer}`}>
+				<h1>Select Date Type</h1>
+			</div>
+
+			<div className={clienthappinessSurveyStyles.row}>
+            <Radio.Group
+                    defaultValue={1}
+                    // className={InterviewScheduleStyle.radioGroup}
+                    // onChange={onSlotChange}
+                   >
+                    <Radio value={1}>
+                    Created date
+                    </Radio>
+                    <Radio value={2}>Feedback date</Radio>                    
+            </Radio.Group>
+			</div>
+			
+		</div>
+    </Modal>
     </>
   )
 }
