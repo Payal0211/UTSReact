@@ -194,11 +194,12 @@ const EngagementReplaceTalent = ({
 												setValue('lastWorkingDate', date);
 											}}
 											placeholderText="Last working date"
+											dateFormat="dd/MM/yyyy"
 										/>
 									)}
 									name="lastWorkingDate"
 									rules={{ required: true }}
-									control={control}
+									control={control}									
 								/>
 								{errors.lastWorkingDate && (
 									<div className={allengagementReplceTalentStyles.error}>

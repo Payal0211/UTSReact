@@ -364,6 +364,7 @@ const ProfileLogDetails = ({
 							startDate={startDate}
 							endDate={endDate}
 							selectsRange
+							dateFormat="dd/MM/yyyy"
 						/>
 					</div>
 				</div>

@@ -167,6 +167,7 @@ const calulateNR =async() =>{
 											setStartDate(date.getMonth())
 										}}
 										placeholderText="Renewed Start Date"
+										dateFormat="dd/MM/yyyy"
 									/>
 								)}
 								name="renewedStartDate"
@@ -201,6 +202,7 @@ const calulateNR =async() =>{
 											setEndDate(date.getMonth())
 										}}
 										placeholderText="Renewed End Date"
+										dateFormat="dd/MM/yyyy"
 									/>
 								)}
 								name="renewedEndDate"
