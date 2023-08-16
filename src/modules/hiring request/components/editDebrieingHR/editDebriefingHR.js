@@ -71,7 +71,8 @@ const EditDebriefingHR = ({
 	const [isFocusedRole, setIsFocusedRole] = useState(false)
 	let watchOtherSkills = watch('otherSkill');
 	let watchSkills = watch('skills');
-
+	const [talentRole, setTalentRole] = useState([]);
+	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
 	/* const combinedSkillsMemo = useMemo(
 		() => [
 			...skills,
@@ -204,6 +205,38 @@ const EditDebriefingHR = ({
 		
 	}, [getSkills,getHRdetails?.addHiringRequest.id]);
 
+
+	const getTalentRole = useCallback(async () => {
+		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
+
+		setTalentRole(talentRole && talentRole.responseBody);
+	}, []);
+
+	useEffect(() => {
+		getTalentRole()
+	},[getTalentRole])
+
+	useEffect(() => {		
+		setValue('hrTitle', getHRdetails?.addHiringRequest?.requestForTalent);
+	},[
+		getHRdetails?.addHiringRequest?.requestForTalent,setValue
+	])
+	let hrRole = watch('role');
+	useEffect(() => {
+		setValue('hrTitle', hrRole?.value);
+	}, [hrRole?.value, setValue]);
+
+	useEffect(() => {
+		if (getHRdetails?.addHiringRequest?.requestForTalent) {
+			const findRole = talentRole.filter(
+				(item) =>
+					item?.value === getHRdetails?.addHiringRequest?.requestForTalent,
+			);
+			setValue('role', findRole[0]);
+			setControlledRoleValue(findRole[0]?.value);
+		}
+	}, [getHRdetails, talentRole]);
+
 	useEffect(() => {
 		JDParsedSkills &&
 			setValue('roleAndResponsibilities', JDParsedSkills?.Responsibility, {
@@ -241,6 +274,8 @@ const EditDebriefingHR = ({
 				ActionType: getHRdetails?.addHiringRequest?.isActive ? "Edit" : "Save",
 				IsHrfocused: isFocusedRole,
 				allowSpecialEdit: getHRdetails?.allowSpecialEdit,
+				role: d.role.id,
+				hrTitle: d.hrTitle
 			};
 
 			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -419,6 +454,38 @@ const EditDebriefingHR = ({
 									name="requirements"
 									required
 								/>
+								<div className={DebriefingHRStyle.mb50}>
+											<HRSelectField
+												controlledValue={controlledRoleValue}
+												setControlledValue={setControlledRoleValue}
+												isControlled={true}
+												mode={'id/value'}
+												searchable={true}
+												setValue={setValue}
+												register={register}
+												label={'Hiring Request Role'}
+												options={talentRole && talentRole}
+												name="role"
+												isError={errors['role'] && errors['role']}
+												required
+												errorMsg={'Please select hiring request role'}
+											/>
+								</div>
+								<div className={DebriefingHRStyle.mb50}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the hiring request title.',
+										}}
+										label={'Hiring Request Title'}
+										name="hrTitle"
+										type={InputType.TEXT}
+										placeholder="Enter title"
+										required
+									/>	
+							</div>	
+								
 								<div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
 										isControlled={true}

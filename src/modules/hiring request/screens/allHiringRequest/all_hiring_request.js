@@ -269,7 +269,7 @@ const AllHiringRequestScreen = () => {
 			handleHRRequest(tableFilteredState)
 		}
 		
-},[tableFilteredState,endDate,startDate])
+	},[tableFilteredState,endDate,startDate,isFocusedRole])
 
 	useEffect(() => {
 		// handleHRRequest(tableFilteredState);

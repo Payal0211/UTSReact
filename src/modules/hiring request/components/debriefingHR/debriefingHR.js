@@ -72,6 +72,7 @@ const DebriefingHR = ({
 		setSkills(response && response.responseBody);
 	}, []);
 	const [isFocusedRole, setIsFocusedRole] = useState(false)
+	const [talentRole, setTalentRole] = useState([]);
 	// const combinedSkillsMemo = useMemo(() => {
 	// 	const combinedData = [
 	// 		JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
@@ -116,6 +117,27 @@ const DebriefingHR = ({
 	}  }
 	, [isOtherSkillExistMemo, unregister,watchSkills,clearErrors])
 
+	let hrRole = watch('role');
+	useEffect(() => {
+		setValue('hrTitle', hrRole?.value);
+	}, [hrRole?.value, setValue]);
+
+	const getTalentRole = useCallback(async () => {
+		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
+
+		setTalentRole(talentRole && talentRole.responseBody);
+		// setTalentRole((preValue) => [
+		// 	...preValue,
+		// 	{
+		// 		id: -1,
+		// 		value: 'Others',
+		// 	},
+		// ]);
+	}, []);
+
+	useEffect(()=> {
+		getTalentRole()
+	},[getTalentRole])
 
 	useEffect(() => {
 		setValue(
@@ -242,7 +264,9 @@ const DebriefingHR = ({
 			interviewerDesignation: d.interviewerDesignation,
 			JDDumpID: jdDumpID || 0,
 			ActionType: "Save",
-			IsHrfocused: isFocusedRole
+			IsHrfocused: isFocusedRole,
+			role: d.role.id,
+			hrTitle: d.hrTitle
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -379,6 +403,35 @@ const DebriefingHR = ({
 								name="requirements"
 								required
 							/>
+								<div className={DebriefingHRStyle.mb50}>
+									<HRSelectField
+										mode={'id/value'}
+										searchable={true}
+										setValue={setValue}
+										register={register}
+										label={'Hiring Request Role'}
+										defaultValue="Select Role"
+										options={talentRole && talentRole}
+										name="role"
+										isError={errors['role'] && errors['role']}
+										required
+										errorMsg={'Please select hiring request role'}
+									/>
+								</div>
+								<div className={DebriefingHRStyle.mb50}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter the hiring request title.',
+									}}
+									label={'Hiring Request Title'}
+									name="hrTitle"
+									type={InputType.TEXT}
+									placeholder="Enter title"
+									required
+								/>
+							</div>
 							<div className={DebriefingHRStyle.mb50}>
 								<HRSelectField
 									isControlled={true}
