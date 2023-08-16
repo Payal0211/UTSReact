@@ -11,7 +11,7 @@ export const clientHappinessSurveyConfig = {
 						disabled: false,
 						group: null,
 						selected: false,
-						text: 'Feedback Pending',
+						text: 'Pending',
 						value: 'Feedback Pending',
 					},
 					{

@@ -79,31 +79,28 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     const[selectedCompany,setSelectedCompany] = useState({});
     const[isOtherClient,setIsOtherClient] = useState(false);
     const [clientOption,setClientOption] = useState([{label : "" ,value:""},{label :"Other",value:"other"}]);
+    const [formErrors,setFormErrors] = useState({company :"" ,client:"", email:""});
     const watchCompany = watch('company');
     const watchClient = watch('client');
     const watchEmail = watch('email');
-    const [generateLinkData,setGenerateLinkData ] = useState({company: '',client: "",email: ""});
+    useEffect(() => {     
+        if(watchClient === "other"){
+            setIsOtherClient(true);
+            setValue("client","");
+            setValue("email","");
+        }
+        setFormErrors({...formErrors,['client']:""});
+    },[watchClient])
+
     useEffect(() => {
-        let _generateLinkData = {...generateLinkData};
         if (watchCompany) {
-            _generateLinkData.company = watchCompany;
             getAutoCompleteComapany(watchCompany);
         }
-        if(watchClient){
-            if(watchClient === "other"){
-                setIsOtherClient(true);
-                setValue("client","");
-                setValue("email","");
-            }         
-            _generateLinkData.client = watchClient;
-        }
-        if(watchEmail) {
-            _generateLinkData.email = watchEmail;
-        }   
-        setGenerateLinkData(_generateLinkData);
-    },[watchCompany,watchClient,watchEmail])
+    },[watchCompany]);
     
-
+    useEffect(() => {
+        if(watchEmail) setFormErrors({...formErrors,['email']:""});
+    },[watchEmail]);
     const getClientHappinessSurveysOption = useCallback(async () => {
 		const response = await clientHappinessSurveyRequestDAO.ClientHappinessSurveysOptionDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
@@ -242,6 +239,22 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     };
 
     const submitGenerateLinkData = () => {
+        let _errors = {...formErrors};
+        let isValid = true;
+        if (!watchCompany) {
+            _errors.company = "Please select company";
+            isValid =false;
+        }
+        if(!watchClient){
+            _errors.client = "Please select client";
+            isValid = false;
+        }
+        if(!watchEmail){
+            _errors.email = "Please enter email";
+            isValid = false;
+        }
+        setFormErrors(_errors);
+        if(isValid){
         let _reqBody = {};       
         if(isOtherClient){
             _reqBody.other_clientemail = watchEmail;
@@ -255,6 +268,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
             _reqBody.Client_ID = selectedCompany.contactID;
         }      
         submitGenerateLink(_reqBody);
+    }
     }
 
     const submitGenerateLink = useCallback(async (requestData) => {
@@ -339,19 +353,20 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     const getClientNameValue = (data) => {
         let _data = [...autoCompleteCompanyList];
         let _index = _data.findIndex((val) => val.value === data);
-        if(_data[_index].client){
-            setValue("client",_data[_index].client);
-            setValue("company",_data[_index].company);
-            setValue("email",_data[_index].emailID);
+        if(_data[_index].client){            
             setSelectedCompany(_data[_index]);
             setIsOtherClient(false);
             let _val = [...clientOption];
             _val[0].label = _data[_index].client;
             _val[0].value = _data[_index].client;            
             setClientOption(_val);
+            setValue("client",_data[_index].client);
+            setValue("company",_data[_index].company);
+            setValue("email",_data[_index].emailID);            
         }else{
             setIsOtherClient(true);
-        }        
+        }
+        setFormErrors({...formErrors,["client"]: ""})        
     }
   return (
     <>
@@ -418,10 +433,11 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                 </div>
                 <button type="button" className={clienthappinessSurveyStyles.btnPrimary}	
                     onClick={() => {                                        
-                        setValue("client","");
-                        setValue("email","");
                         setValue("company","");
-                        setGenerateLinkData({client:"",company:"",email:""});
+                        setValue("client","");
+                        setValue("email","");                        
+                        setClientOption([{label : "" ,value:""},{label :"Other",value:"other"}]);  
+                        setAutoCompleteCompanyList([]);                                          
                         setGenerateLink(true);       
                     }}>
                     Generate Link
@@ -551,7 +567,6 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 						</div> */}
 						<div className={clienthappinessSurveyStyles.priorityFilterSet}>
 							<div className={clienthappinessSurveyStyles.label}>Showing</div>
-
 							<div className={clienthappinessSurveyStyles.paginationFilter}>
 								<Dropdown
 									trigger={['click']}
@@ -666,63 +681,45 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 								<Controller
 									render={({ ...props }) => (                                        
 										<AutoComplete
+                                            value={watchCompany}
 											options={autoCompleteCompanyList}
 											onSelect={(data) => getClientNameValue(data)}
-											filterOption={true}	
-                                            // label={'ttttttttt'}
-                                            // dropdownClassName={clienthappinessSurveyStyles.autocompletecustom}
+											filterOption={true}	                                            
                                             dropdownClassName='GenerateautocompleteField'
                                             className={clienthappinessSurveyStyles.autocompletedBox}										
 											onChange={(company) => {
 												setValue('company', company);
+                                                setFormErrors({...formErrors,['company']:""});
 											}}
                                             getOptionLabel={(option) => (
                                                 <div className={clienthappinessSurveyStyles.autocompletecustom}>{option}</div>
                                             )}                                          
 										/>                                       
-									)}
-									// {...register('clientName', {
-									// 	validate,
-									// })}
-                                    value={generateLinkData.company}
+									)}                                    
 									name="company"
 									control={control}									
 								/>                    
                     </div>
+                    <div style={{color:"red"}}>{formErrors.company}</div> 
 				</div>
 
-                {/* <div className={clienthappinessSurveyStyles.colMd12}>
-                    <div className={clienthappinessSurveyStyles.InputGroup}>
+                <div className={clienthappinessSurveyStyles.colMd12}>
+                    <div className={clienthappinessSurveyStyles.InputGroup}>                       
+                            {isOtherClient ? 
                         <HRInputField
                             register={register}
                             label={'Client'}
                             name="client"
                             type={InputType.TEXT}
                             placeholder="Velma Balaji Reddy"
-                            errors={errors}
-                            validationSchema={{
-                                required: 'please select client name',
-                            }}
-                            required
-                        />
-                    </div>
-				</div>  */}
-
-                <div className={clienthappinessSurveyStyles.colMd12}>
-                    <div className={clienthappinessSurveyStyles.InputGroup}>                       
-                            {isOtherClient ?  <HRInputField
-                            register={register}
-                            label={'Client'}
-                            name="client"
-                            type={InputType.TEXT}
-                            placeholder="Velma Balaji Reddy"
-                            errors={errors}
+                            errors={errors}                            
                             validationSchema={{
                                 required: 'please select client name',
                             }}
                             required
                         /> :
-                            <HRSelectField
+                            <HRSelectField            
+                                // controlledValue={generateLinkData.client}                    
 								isControlled={false}
                                 mode={'value'}
                                 setValue={setValue}
@@ -730,9 +727,9 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                                 name="client"
                                 label="Client"
                                 className={clienthappinessSurveyStyles.generatLinkSelect}
-                                defaultValue={generateLinkData.client}
+                                defaultValue={watchClient}
                                 options={clientOption}
-                                required
+                                required                               
                                 isError={
                                 	errors['client'] && errors['client']
                                 }
@@ -740,30 +737,31 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 								/>
                             }                    
                         </div>
+                        <div style={{color:"red"}}>{formErrors.client}</div>       
                     </div>
                 <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
-                    <HRInputField
-                                register={register}
-                                label={'Email'}
-                                name="email"
-                                errors={errors}
-                                type={InputType.TEXT}
-                                placeholder="sv@nuecluesx.io"     
-                                required
-                                validationSchema={{
-                                    required: 'please enter email',
-                                }}               
-                                value={generateLinkData.email}    
-                            />
-                    </div>
+                        <HRInputField
+                                    register={register}
+                                    label={'Email'}
+                                    name="email"
+                                    errors={errors}
+                                    type={InputType.TEXT}
+                                    placeholder="sv@nuecluesx.io"     
+                                    required
+                                    validationSchema={{
+                                        required: 'please enter email',
+                                    }}               
+                        />                    
+                    </div>             
+                    <div style={{color:"red"}}>{formErrors.email}</div>       
 				</div>
 
 			</div>
 			<div className={clienthappinessSurveyStyles.formPanelAction}>
 				<button
 					className={clienthappinessSurveyStyles.btn} 
-                    onClick={() => setGenerateLink(false)}
+                    onClick={() => {setGenerateLink(false);setAutoCompleteCompanyList([]);}}
                     >
 					Cancel
 				</button>
