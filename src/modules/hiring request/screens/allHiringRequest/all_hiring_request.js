@@ -87,6 +87,11 @@ const AllHiringRequestScreen = () => {
 	const [closeHrModal, setCloseHrModal] = useState(false);
 	const [isFocusedRole, setIsFocusedRole] = useState(false);
 	const [userData, setUserData] = useState({});
+
+
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+
 	useEffect(() => {
 		const getUserResult = async () => {
 			let userData = UserSessionManagementController.getUserSession();
@@ -253,8 +258,22 @@ const AllHiringRequestScreen = () => {
 		// debounceFun(e.target.value);
 	};
 
+	const handleRequetWithDates = useCallback(()=>{ 
+		if(startDate && endDate){
+			handleHRRequest({...tableFilteredState, filterFields_ViewAllHRs: {
+				...tableFilteredState.filterFields_ViewAllHRs,
+		fromDate: new Date(startDate).toLocaleDateString('en-US'),
+		toDate: new Date(endDate).toLocaleDateString('en-US'),
+	}})
+		}else {
+			handleHRRequest(tableFilteredState)
+		}
+		
+},[tableFilteredState,endDate,startDate])
+
 	useEffect(() => {
-		handleHRRequest(tableFilteredState);
+		// handleHRRequest(tableFilteredState);
+		handleRequetWithDates()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [tableFilteredState,isFocusedRole]);
 
@@ -285,8 +304,7 @@ const AllHiringRequestScreen = () => {
 	}, [getHTMLFilter]);
 
 	/*--------- React DatePicker ---------------- */
-	const [startDate, setStartDate] = useState(null);
-	const [endDate, setEndDate] = useState(null);
+	
 
 	const onCalenderFilter = (dates) => {
 		const [start, end] = dates;
@@ -298,6 +316,7 @@ const AllHiringRequestScreen = () => {
 			setTableFilteredState({
 				...tableFilteredState,
 				filterFields_ViewAllHRs: {
+					...tableFilteredState.filterFields_ViewAllHRs,
 					fromDate: new Date(start).toLocaleDateString('en-US'),
 					toDate: new Date(end).toLocaleDateString('en-US'),
 				},
@@ -305,6 +324,7 @@ const AllHiringRequestScreen = () => {
 			handleHRRequest({
 				...tableFilteredState,
 				filterFields_ViewAllHRs: {
+					...tableFilteredState.filterFields_ViewAllHRs,
 					fromDate: new Date(start).toLocaleDateString('en-US'),
 					toDate: new Date(end).toLocaleDateString('en-US'),
 				},
