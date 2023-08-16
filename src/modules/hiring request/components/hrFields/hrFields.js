@@ -371,7 +371,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 	/* ------------------ Upload JD Ends Here -------------------- */
 	let prefRegion = watch('region');
 	let modeOfWork = watch('workingMode');
-	let hrRole = watch('role');
+	// let hrRole = watch('role');
 	let watchOtherRole = watch('otherRole');
 
 	const getNRMarginHandler = useCallback(async () => {
@@ -835,9 +835,9 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		}
 	}, [modeOfWork, unregister]);
 
-	useEffect(() => {
-		hrRole !== 'others' && unregister('otherRole');
-	}, [hrRole, unregister]);
+	// useEffect(() => {
+	// 	hrRole !== 'others' && unregister('otherRole');
+	// }, [hrRole, unregister]);
 	/** To check Duplicate email exists End */
 
 	const [messageAPI, contextHolder] = message.useMessage();
@@ -864,20 +864,20 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 						message: 'Please enter the client name.',
 					});
 				}
-				if (_isNull(watch('role'))) {
-					setIsSavedLoading(false);
-					return setError('role', {
-						type: 'emptyrole',
-						message: 'Please enter the hiring role.',
-					});
-				}
-				if (_isNull(watch('hrTitle'))) {
-					setIsSavedLoading(false);
-					return setError('hrTitle', {
-						type: 'emptyhrTitle',
-						message: 'please enter the hiring request title.',
-					});
-				}
+				// if (_isNull(watch('role'))) {
+				// 	setIsSavedLoading(false);
+				// 	return setError('role', {
+				// 		type: 'emptyrole',
+				// 		message: 'Please enter the hiring role.',
+				// 	});
+				// }
+				// if (_isNull(watch('hrTitle'))) {
+				// 	setIsSavedLoading(false);
+				// 	return setError('hrTitle', {
+				// 		type: 'emptyhrTitle',
+				// 		message: 'please enter the hiring request title.',
+				// 	});
+				// }
 				if(_isNull(watch('salesPerson'))){
 					setIsSavedLoading(false);
 					return setError('salesPerson', {
@@ -945,9 +945,9 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		],
 	);
 
-	useEffect(() => {
-		setValue('hrTitle', hrRole?.value);
-	}, [hrRole?.value, setValue]);
+	// useEffect(() => {
+	// 	setValue('hrTitle', hrRole?.value);
+	// }, [hrRole?.value, setValue]);
 
 	useEffect(() => {
 		if (errors?.clientName?.message) {
@@ -1183,7 +1183,7 @@ if(DID){
 								</div>
 							)}
 
-							<div className={HRFieldStyle.colMd6}>
+							{/* <div className={HRFieldStyle.colMd6}>
 								<div className={HRFieldStyle.formGroup}>
 									<HRSelectField
 										mode={'id/value'}
@@ -1197,6 +1197,24 @@ if(DID){
 										isError={errors['role'] && errors['role']}
 										required
 										errorMsg={'Please select hiring request role'}
+									/>
+								</div>
+							</div> */}
+
+							<div className={HRFieldStyle.colMd6}>
+								<div className={HRFieldStyle.formGroup}>
+									<HRSelectField
+										mode={'id/value'}
+										searchable={false}
+										setValue={setValue}
+										register={register}
+										label={'Mode of Working?'}
+										defaultValue="Select working mode"
+										options={workingMode && workingMode}
+										name="workingMode"
+										isError={errors['workingMode'] && errors['workingMode']}
+										required
+										errorMsg={'Please select the working mode.'}
 									/>
 								</div>
 							</div>
@@ -1222,7 +1240,8 @@ if(DID){
 								</div>
 							</div>
 						</div>
-						{watch('role')?.id === -1 && (
+						{getWorkingModelFields()}
+						{/* {watch('role')?.id === -1 && (
 							<div className={HRFieldStyle.row}>
 								<div className={HRFieldStyle.colMd12}>
 									<HRInputField
@@ -1244,8 +1263,8 @@ if(DID){
 									/>
 								</div>
 							</div>
-						)}
-						<div className={HRFieldStyle.row}>
+						)} */}
+						{/* <div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd12}>
 								<HRInputField
 									register={register}
@@ -1260,7 +1279,7 @@ if(DID){
 									required
 								/>
 							</div>
-						</div>
+						</div> */}
 						<div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
 							<div className={HRFieldStyle.colMd6}>
 								{!getUploadFileData ? (
@@ -1402,24 +1421,7 @@ if(DID){
 									/>
 								</div>
 							</div>	 }
-						
-							<div className={HRFieldStyle.colMd6}>
-								<div className={HRFieldStyle.formGroup}>
-									<HRSelectField
-										mode={'id/value'}
-										searchable={false}
-										setValue={setValue}
-										register={register}
-										label={'Mode of Working?'}
-										defaultValue="Select working mode"
-										options={workingMode && workingMode}
-										name="workingMode"
-										isError={errors['workingMode'] && errors['workingMode']}
-										required
-										errorMsg={'Please select the working mode.'}
-									/>
-								</div>
-							</div>	
+							
 						</div>
 
 						<div className={HRFieldStyle.row}>
@@ -1887,7 +1889,6 @@ if(DID){
 
 						
 
-						{getWorkingModelFields()}
 					</form>
 				</div>
 				<Divider />

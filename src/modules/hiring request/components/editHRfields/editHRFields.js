@@ -835,20 +835,21 @@ const EditHRFields = ({
 						type: 'emptyClientName',
 						message: 'Please enter the client name.',
 					});
-				}if (_isNull(watch('role'))) {
-					setIsSavedLoading(false);
-					return setError('role', {
-						type: 'emptyrole',
-						message: 'Please enter the hiring role.',
-					});
 				}
-				if (_isNull(watch('hrTitle'))) {
-					setIsSavedLoading(false);
-					return setError('hrTitle', {
-						type: 'emptyhrTitle',
-						message: 'please enter the hiring request title.',
-					});
-				}
+				// if (_isNull(watch('role'))) {
+				// 	setIsSavedLoading(false);
+				// 	return setError('role', {
+				// 		type: 'emptyrole',
+				// 		message: 'Please enter the hiring role.',
+				// 	});
+				// }
+				// if (_isNull(watch('hrTitle'))) {
+				// 	setIsSavedLoading(false);
+				// 	return setError('hrTitle', {
+				// 		type: 'emptyhrTitle',
+				// 		message: 'please enter the hiring request title.',
+				// 	});
+				// }
 				if(_isNull(watch('salesPerson'))){
 					setIsSavedLoading(false);
 					return setError('salesPerson', {
@@ -1293,7 +1294,7 @@ const EditHRFields = ({
 
 						<div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
-								<HRSelectField
+								{/* <HRSelectField
 									controlledValue={controlledRoleValue}
 									setControlledValue={setControlledRoleValue}
 									isControlled={true}
@@ -1307,6 +1308,22 @@ const EditHRFields = ({
 									isError={errors['role'] && errors['role']}
 									required
 									errorMsg={'Please select hiring request role'}
+								/> */}
+									<HRSelectField
+									controlledValue={controlledWorkingValue}
+									setControlledValue={setControlledWorkingValue}
+									isControlled={true}
+									mode={'id/value'}
+									searchable={false}
+									setValue={setValue}
+									register={register}
+									label={'Mode of Working?'}
+									defaultValue="Select working mode"
+									options={workingMode && workingMode}
+									name="workingMode"
+									isError={errors['workingMode'] && errors['workingMode']}
+									required
+									errorMsg={'Please select the working mode.'}
 								/>
 							</div>
 						</div>
@@ -1332,7 +1349,8 @@ const EditHRFields = ({
 								</div>
 							</div>
 					</div>
-					{watch('role')?.id === -1 && (
+					{getWorkingModelFields()}
+					{/* {watch('role')?.id === -1 && (
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd12}>
 								<HRInputField
@@ -1354,8 +1372,8 @@ const EditHRFields = ({
 								/>
 							</div>
 						</div>
-					)}
-					<div className={HRFieldStyle.row}>
+					)} */}
+					{/* <div className={HRFieldStyle.row}>
 						<div className={HRFieldStyle.colMd12}>
 							<HRInputField
 								register={register}
@@ -1370,7 +1388,7 @@ const EditHRFields = ({
 								required
 							/>
 						</div>
-					</div>
+					</div> */}
 					<div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
 						<div className={HRFieldStyle.colMd6}>
 							{!getUploadFileData ? (
@@ -1516,7 +1534,7 @@ const EditHRFields = ({
 								</div>
 							</div> : null	 }
 
-						<div className={HRFieldStyle.colMd6}>
+						{/* <div className={HRFieldStyle.colMd6}>
 							<div className={HRFieldStyle.formGroup}>
 								{/* <HRSelectField
                                     mode={'id/value'}
@@ -1530,8 +1548,9 @@ const EditHRFields = ({
                                     isError={errors['workingMode'] && errors['workingMode']}
                                     required
                                     errorMsg={'Please select the working mode.'}
-                                /> */}
-								<HRSelectField
+                                /> 
+								*/}
+								{/* <HRSelectField
 									controlledValue={controlledWorkingValue}
 									setControlledValue={setControlledWorkingValue}
 									isControlled={true}
@@ -1548,7 +1567,7 @@ const EditHRFields = ({
 									errorMsg={'Please select the working mode.'}
 								/>
 							</div>
-						</div>
+						</div> */}
 						
 					</div>
 
@@ -2102,7 +2121,6 @@ const EditHRFields = ({
 
 					
 
-					{getWorkingModelFields()}
 				</form>
 			</div>
 			<Divider />
