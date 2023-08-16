@@ -55,6 +55,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
         filterFields_HappinessSurvey:{
             RatingFrom : 0,
             RatingTo :10,
+            selectedFormat:"c",
         }
 	});
     const [totalRecords, setTotalRecords] = useState(0);
@@ -77,16 +78,11 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     const [autoCompleteCompanyList,setAutoCompleteCompanyList] = useState([]);
     const[selectedCompany,setSelectedCompany] = useState({});
     const[isOtherClient,setIsOtherClient] = useState(false);
-    const [clientOption,setClientOption] = useState([{label : "" ,value:""},{label :"Client",value:"other"}]);
-    const[selectedClientVal,setSelectedClientVal] = useState(clientOption[0].value);
-
+    const [clientOption,setClientOption] = useState([{label : "" ,value:""},{label :"Other",value:"other"}]);
     const watchCompany = watch('company');
     const watchClient = watch('client');
     const watchEmail = watch('email');
-
     const [generateLinkData,setGenerateLinkData ] = useState({company: '',client: "",email: ""});
-
-    console.log(clientOption,"clientOption");
     useEffect(() => {
         let _generateLinkData = {...generateLinkData};
         if (watchCompany) {
@@ -94,6 +90,11 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
             getAutoCompleteComapany(watchCompany);
         }
         if(watchClient){
+            if(watchClient === "other"){
+                setIsOtherClient(true);
+                setValue("client","");
+                setValue("email","");
+            }         
             _generateLinkData.client = watchClient;
         }
         if(watchEmail) {
@@ -129,27 +130,6 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 		getClientHappinessSurveysOption();
 	},[getClientHappinessSurveysOption])
 
-
-    // const getAutoCompleteComapany = useCallback(
-	// 	async (watchCompany) => {
-	// 		let response = await clientHappinessSurveyRequestDAO.getAutoCompleteCompanyDAO(watchCompany);
-	// 		if (response?.statusCode === HTTPStatusCode.OK) {		
-    //             let _modifyData = [];
-    //             for (let val of response?.responseBody) {
-    //                 val.value = val.company;
-    //                 _modifyData.push(val);
-    //             }		
-    //             setAutoCompleteCompanyList(_modifyData);				
-	// 		} else if (
-	// 			response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
-	// 			response?.statusCode === HTTPStatusCode.NOT_FOUND
-	// 		) {			
-	// 			setAutoCompleteCompanyList([]);
-	// 		}
-	// 	},
-	// 	[],
-	// ); 
-
     const getAutoCompleteComapany = async (watchCompany) => {
         let response = await clientHappinessSurveyRequestDAO.getAutoCompleteCompanyDAO(watchCompany);
         		if (response?.statusCode === HTTPStatusCode.OK) {		
@@ -170,16 +150,19 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 
     const onEmailSend = useCallback(
 		async (id) => {
+            setLoading(true);
 			let response = await clientHappinessSurveyRequestDAO.SendEmailForFeedbackDAO(id);
 			if (response?.statusCode === HTTPStatusCode.OK) {
                 alert("Email sent successfully");
                 getClientHappinessSurveyList(tableFilteredState);
-			} else if (
+                setLoading(false);
+            } else if (
 				response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
 				response?.statusCode === HTTPStatusCode.NOT_FOUND
 			) {			
-
-			}
+                alert("Email not sent,something went wrong");
+                setLoading(false);
+			}            
 		},
 		[],
 	);   
@@ -205,8 +188,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
         if (response?.statusCode === HTTPStatusCode.OK) {                 
             setClientHappinessSurveyList(modifyResponseData(response?.responseBody?.rows));
             setTotalRecords(response?.responseBody?.totalrows);
-            setLoading(false);
-          
+            setLoading(false);          
         } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
             setLoading(false);
             setTotalRecords(0);
@@ -365,12 +347,11 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
             setIsOtherClient(false);
             let _val = [...clientOption];
             _val[0].label = _data[_index].client;
-            _val[0].value = _data[_index].client;
+            _val[0].value = _data[_index].client;            
             setClientOption(_val);
         }else{
             setIsOtherClient(true);
-        }
-        
+        }        
     }
   return (
     <>
@@ -436,8 +417,12 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                     )} */}
                 </div>
                 <button type="button" className={clienthappinessSurveyStyles.btnPrimary}	
-                    onClick={() => {
-                        setGenerateLink(true);
+                    onClick={() => {                                        
+                        setValue("client","");
+                        setValue("email","");
+                        setValue("company","");
+                        setGenerateLinkData({client:"",company:"",email:""});
+                        setGenerateLink(true);       
                     }}>
                     Generate Link
                 </button>
@@ -699,7 +684,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 									// {...register('clientName', {
 									// 	validate,
 									// })}
-                                    // value={watchCompany}
+                                    value={generateLinkData.company}
 									name="company"
 									control={control}									
 								/>                    
@@ -724,8 +709,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 				</div>  */}
 
                 <div className={clienthappinessSurveyStyles.colMd12}>
-                    <div className={clienthappinessSurveyStyles.InputGroup}>
-                       
+                    <div className={clienthappinessSurveyStyles.InputGroup}>                       
                             {isOtherClient ?  <HRInputField
                             register={register}
                             label={'Client'}
@@ -738,54 +722,25 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                             }}
                             required
                         /> :
-                            // <Dropdown
-                            //     trigger={['click']}
-                            //     placement="bottom"       
-                            //     overlay={
-                            //         <Menu
-                            //             onClick={(e) => {
-                            //                 setSelectedClientVal(e.key);
-                            //                 if (e.key === 'other') {
-                            //                     setIsOtherClient(true);
-                            //                     setValue("client","");
-                            //                     setValue("email","");
-                            //                 }
-                            //             }}
-                            //             >
-                            //             {clientOption.map((item) => {
-                            //                 return <Menu.Item key={item}>{item}</Menu.Item>;
-                            //             })}
-                            //         </Menu>
-                            //     }>
-                            //     <span>         
-                            //         {clientOption[0]}                       
-                            //         <IoChevronDownOutline
-                            //             style={{ paddingTop: '5px', fontSize: '16px' }}
-                            //         />
-                            //     </span>
-                            // </Dropdown>}
-
                             <HRSelectField
-								// controlledValue={selectedClientVal}
-								// setControlledValue={setSelectedClientVal}
-                                isControlled={true}
+								isControlled={false}
                                 mode={'value'}
                                 setValue={setValue}
                                 register={register}
                                 name="client"
                                 label="Client"
                                 className={clienthappinessSurveyStyles.generatLinkSelect}
+                                defaultValue={generateLinkData.client}
                                 options={clientOption}
-                                // disabled={true}
-                                // required
-                                // isError={
-                                // 	errors['billRateCurrency'] && errors['billRateCurrency']
-                                // }
-                                // errorMsg="Please select a currency."                               
-								/>}                    
+                                required
+                                isError={
+                                	errors['client'] && errors['client']
+                                }
+                                errorMsg="Please select a client."                               
+								/>
+                            }                    
                         </div>
                     </div>
-
                 <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>
                     <HRInputField
@@ -798,7 +753,8 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                                 required
                                 validationSchema={{
                                     required: 'please enter email',
-                                }}                   
+                                }}               
+                                value={generateLinkData.email}    
                             />
                     </div>
 				</div>
@@ -839,14 +795,29 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 
 			<div className={clienthappinessSurveyStyles.FeedbackDatedetail}>
                 <Radio.Group
-                        defaultValue={1}
-                        className={clienthappinessSurveyStyles.radioCustomModal}
-                        // onChange={onSlotChange}
+                        defaultValue={"c"}
+                        className={clienthappinessSurveyStyles.radioCustomModal}                        
                     >
-                        <Radio value={1}  className={clienthappinessSurveyStyles.radioCustomGroup}>
+                        <Radio value={"c"}  className={clienthappinessSurveyStyles.radioCustomGroup} onChange={() => {
+                            setTableFilteredState(prevState => ({
+                                ...prevState,
+                                filterFields_HappinessSurvey: {
+                                  ...prevState.filterFields_HappinessSurvey,
+                                  selectedFormat:"c"
+                                }
+                              }));
+                        }}>
                         Created date
                         </Radio>
-                        <Radio value={2}  className={clienthappinessSurveyStyles.radioCustomGroup}>Feedback date</Radio>                    
+                        <Radio value={"f"}  className={clienthappinessSurveyStyles.radioCustomGroup} onChange={() => {
+                            setTableFilteredState(prevState => ({
+                                ...prevState,
+                                filterFields_HappinessSurvey: {
+                                  ...prevState.filterFields_HappinessSurvey,
+                                  selectedFormat:"f"
+                                }
+                              }));
+                        }}>Feedback date</Radio>                    
                 </Radio.Group>
 			</div>
 			
