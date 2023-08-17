@@ -47,11 +47,14 @@ export function clientFormDataFormatter(
 	companyName,
 	primaryClientFullName,
 	primaryClientEmail,
+	primaryClientEN_ID,
+	companyDetail
 ) {
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 		company: {
-			en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
+			// en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
+			en_Id : companyDetail.en_Id,
 			company: draft === SubmitType.SAVE_AS_DRAFT ? companyName : d.companyName,
 			fileUpload: {
 				base64ProfilePic: base64Image,
@@ -72,7 +75,7 @@ export function clientFormDataFormatter(
 						: watch('companyLocation')
 					: _isNull(d.companyLocation)
 					? null
-					: d.companyLocation,
+					: d.companyLocation.value,
 			companySize:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('companySize'))
@@ -122,11 +125,20 @@ export function clientFormDataFormatter(
 					: d.companyLeadSource?.id === 1
 					? d.companyInboundType?.value
 					: d.companyLeadSource?.value,
+			leadUserID: 
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('companyLeadOwner'))
+						? null
+						: watch('companyLeadOwner').id
+					: _isNull(d.companyLeadOwner)
+					? null
+					: parseInt(d.companyLeadOwner.id),
 		},
 		primaryClient: {
-			en_Id: _isNull(addClientResponse)
-				? ''
-				: addClientResponse?.primaryClient?.en_Id,
+			// en_Id: _isNull(addClientResponse)
+			// 	? ''
+			// 	: addClientResponse?.primaryClient?.en_Id,
+			en_Id : primaryClientEN_ID,
 			fullName:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(primaryClientFullName)

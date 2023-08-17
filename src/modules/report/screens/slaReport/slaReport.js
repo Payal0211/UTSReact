@@ -1,6 +1,6 @@
 import SlaReportStyle from './slaReport.module.css';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
-import { Dropdown, Menu, Table } from 'antd';
+import { Dropdown, Menu, Table, Checkbox } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import SlaReportFilter from '../../../report/components/slaReportFilter/slaReportFilter';
@@ -53,6 +53,7 @@ const SlaReports = () => {
 	const [pageSize, setPageSize] = useState(100);
 	const [pageIndex, setPageIndex] = useState(1);
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
+	const [isFocusedRole, setIsFocusedRole] = useState(false);
 	
 	const [listData, setListData] = useState([]);
 	const [dateError, setDateError] = useState('');
@@ -93,6 +94,7 @@ const SlaReports = () => {
 				stageIDs: '',
 				actionFilterIDs: '',
 				CompanyIds: '',
+				isHrfocused: isFocusedRole,
 				// ambdr: 0
 			},
 		});
@@ -101,6 +103,7 @@ const SlaReports = () => {
 			filterFields_ViewAllHRs: {
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
+				isHrfocused: isFocusedRole,
 			},
 		});
 		slaReportDetails({
@@ -109,7 +112,8 @@ const SlaReports = () => {
 			filterFields_ViewAllHRs: {
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
-				slaType: 0
+				slaType: 0,
+				isHrfocused: isFocusedRole,
 			},
 		});
 	};
@@ -138,6 +142,7 @@ const SlaReports = () => {
 				actionFilter: 0,
 				stageIDs: '',
 				actionFilterIDs: '',
+				isHrfocused: isFocusedRole,
 				CompanyIds: '',
 				// ambdr: 0
 			},
@@ -148,6 +153,7 @@ const SlaReports = () => {
 			filterFields_ViewAllHRs: {
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
+				isHrfocused: isFocusedRole,
 			},
 		});
 		slaReportDetails({
@@ -156,7 +162,8 @@ const SlaReports = () => {
 			filterFields_ViewAllHRs: {
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
-				slaType: 1
+				slaType: 1,
+				isHrfocused: isFocusedRole,
 			},
 		});
 	};
@@ -213,6 +220,7 @@ const SlaReports = () => {
 			stageIDs: '',
 			actionFilterIDs: '',
 			CompanyIds: '',
+			isHrfocused: isFocusedRole,
 		};
 		setLoading(true);
 		let response = await ReportDAO.OverAllSLASummaryDAO(obj);
@@ -261,6 +269,7 @@ const SlaReports = () => {
 				stageIDs: '',
 				actionFilterIDs: '',
 				CompanyIds: '',
+				isHrfocused: isFocusedRole,
 				// ambdr: 0
 			},
 		};
@@ -311,6 +320,7 @@ const SlaReports = () => {
 				filterFields_ViewAllHRs: {
 					fromDate: new Date(start).toLocaleDateString('en-US'),
 					toDate: new Date(end).toLocaleDateString('en-US'),
+					isHrfocused: isFocusedRole,
 				},
 			});
 			slaReportList({
@@ -318,6 +328,7 @@ const SlaReports = () => {
 				filterFields_ViewAllHRs: {
 					fromDate: new Date(start).toLocaleDateString('en-US'),
 					toDate: new Date(end).toLocaleDateString('en-US'),
+					isHrfocused: isFocusedRole,
 				},
 			});
 			slaReportDetails({
@@ -325,6 +336,7 @@ const SlaReports = () => {
 				filterFields_ViewAllHRs: {
 					fromDate: new Date(start).toLocaleDateString('en-US'),
 					toDate: new Date(end).toLocaleDateString('en-US'),
+					isHrfocused: isFocusedRole,
 				},
 			});
 			setDateError('');
@@ -353,6 +365,7 @@ const SlaReports = () => {
 					actionFilter: 0,
 					stageIDs: '',
 					actionFilterIDs: '',
+					isHrfocused: isFocusedRole,
 					CompanyIds: '',
 					// ambdr: 0
 				},
@@ -381,6 +394,11 @@ const SlaReports = () => {
 		slaReportDetails();
 	}, []);
 
+	useEffect(() => {
+		slaReportList();
+		slaReportDetails();
+	}, [isFocusedRole]);
+
 	const handleHRRequest = useCallback(
 		async (tableFilteredState) => {
 			if (firstDay === null) {
@@ -388,9 +406,9 @@ const SlaReports = () => {
 			} else {
 				setSummaryLoading(true);
 				setLoading(true)
-				let response = await ReportDAO.slaDetailedDataDAO(tableFilteredState);
+				let response = await ReportDAO.slaDetailedDataDAO({...tableFilteredState,filterFieldsSLA:{...tableFilteredState.filterFieldsSLA,  isHrfocused: isFocusedRole}});
 				let responseList = await ReportDAO.OverAllSLASummaryDAO(
-					tableFilteredState,
+					{...tableFilteredState,filterFieldsSLA:{...tableFilteredState.filterFieldsSLA,  isHrfocused: isFocusedRole}},
 				);
 				// console.log("FilterRes",{response,responseList})
 				if (responseList?.statusCode === HTTPStatusCode.OK) {
@@ -432,7 +450,7 @@ const SlaReports = () => {
 			// 	return 'NO DATA FOUND';
 			// }
 		},
-		[tableFilteredState],
+		[tableFilteredState, isFocusedRole],
 	);
 
 	useEffect(() => {
@@ -476,9 +494,11 @@ const SlaReports = () => {
 			stageIDs: "",
 			actionFilterIDs: "",
 			CompanyIds: "",
+			isHrfocused: false,
 			// ambdr: 0
 		  }
 		}
+		setIsFocusedRole(false)
 		setTableFilteredState(defaultState);
 		setSlaReportDetailsState(defaultState);
 		handleHRRequest(defaultState);
@@ -521,6 +541,12 @@ const SlaReports = () => {
 					<p onClick={()=> clearFilters() }>Reset Filters</p>
 					</div>
 					<div className={SlaReportStyle.calendarFilterSet}>
+					<Checkbox
+              checked={isFocusedRole}
+              onClick={() => setIsFocusedRole((prev) => !prev)}
+            >
+              Show only Focused Role
+            </Checkbox>
 						<label className={SlaReportStyle.radioCheck_Mark}>
 							<p>Overall SLA</p>
 							<input
@@ -733,6 +759,7 @@ const SlaReports = () => {
 									slaReportDetails({ pageNumber: pageNum, totalRecord: pageSize , filterFields_ViewAllHRs: {
 										fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 										toDate: new Date(lastDay).toLocaleDateString('en-US'),
+										isHrfocused: isFocusedRole,
 									} });
 								},
 								size: 'small',

@@ -7,7 +7,7 @@ export const I2SAPI = {
 	getI2SListRequest: async (i2sData) => {
 		try {
 			let httpService = new HttpServices();
-			httpService.URL = NetworkInfo.NETWORK + SubDomain.I2S_REPORT + I2SsAPI.LIST + `?startDate=${i2sData.startDate}&endDate=${i2sData.endDate}`;
+			httpService.URL = NetworkInfo.NETWORK + SubDomain.I2S_REPORT + I2SsAPI.LIST + `?startDate=${i2sData.startDate}&endDate=${i2sData.endDate}&isHrfocused=${i2sData.isHrfocused}`;
 			httpService.setAuthRequired = true;
 			// httpService.dataToSend = dealData;
 			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
@@ -20,7 +20,7 @@ export const I2SAPI = {
 	getI2SpopupRequest: async (i2sData) => {
 		try {
 			let httpService = new HttpServices();
-			httpService.URL = NetworkInfo.NETWORK + SubDomain.I2S_REPORT + I2SsAPI.POPUP + `?teamID=${i2sData.teamID}&I2SLabel=${i2sData.i2SLabel}&fromDate=${i2sData.fromDate}&toDate=${i2sData.toDate}`;
+			httpService.URL = NetworkInfo.NETWORK + SubDomain.I2S_REPORT + I2SsAPI.POPUP + `?teamID=${i2sData.teamID}&I2SLabel=${i2sData.i2SLabel}&fromDate=${i2sData.fromDate}&toDate=${i2sData.toDate}&isHrfocused=${i2sData.isHrfocused}`;
 			httpService.setAuthRequired = true;
 			// httpService.dataToSend = dealData;
 			httpService.setAuthToken = UserSessionManagementController.getAPIKey();

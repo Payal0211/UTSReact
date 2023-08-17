@@ -4,7 +4,7 @@ import { ReactComponent as FunnelSVG } from "assets/svg/funnel.svg";
 import { ReactComponent as SearchSVG } from "assets/svg/search.svg";
 import { IoChevronDownOutline } from "react-icons/io5";
 import I2SReport from "./I2SReportStyle.module.css";
-import { Modal } from "antd";
+import { Modal, Checkbox } from "antd";
 import I2SPopupModal from "modules/report/components/i2sPopupModal/i2sPopupModal";
 
 import DatePicker from "react-datepicker";
@@ -51,6 +51,7 @@ const I2sReport = () => {
   const [checkedState, setCheckedState] = useState(new Map());
   const [i2sPopupModal, seti2sPopupModal] = useState(false);
   const [popupData, setPopupData] = useState({});
+  const [isFocusedRole, setIsFocusedRole] = useState(false);
 
   const navigate = useNavigate();
 
@@ -85,13 +86,15 @@ const [dateError, setDateError] = useState(false);
     let params = {
       fromDate: new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()),
       toDate: new Date(date),
+      isHrfocused: false,
     }
+    setIsFocusedRole(false)
     setStartDate(params.fromDate);
     setEndDate(params.toDate);
     getI2SReport(params);
   };
 
-  const getI2SReport = async (params) => {
+  const getI2SReport = useCallback(async (params) => {
     setLoading(true);
     let data = {
       startDate: params?.fromDate
@@ -100,6 +103,7 @@ const [dateError, setDateError] = useState(false);
       endDate: params?.toDate
         ? params?.toDate.toLocaleDateString("en-US")
         : new Date(lastDay).toLocaleDateString("en-US"),
+      isHrfocused: isFocusedRole,
     };
     const response = await I2SReports.getI2SRepoetList(data);
     if (response.statusCode === HTTPStatusCode.OK) {
@@ -127,7 +131,11 @@ const [dateError, setDateError] = useState(false);
       setLoading(false);
       return "NO DATA FOUND";
     }
-  };
+  },[isFocusedRole])
+
+  useEffect(()=>{
+    getI2SReport()
+  },[isFocusedRole,getI2SReport])
 
   const onCalenderFilter = (dates) => {
     const [start, end] = dates;
@@ -181,6 +189,12 @@ const [dateError, setDateError] = useState(false);
       <div className={I2SReport.filterContainer}>
         <div className={I2SReport.filterSets}>
           <div className={I2SReport.filterRight}>
+          <Checkbox
+              checked={isFocusedRole}
+              onClick={() => setIsFocusedRole((prev) => !prev)}
+            >
+              Show only Focused Role
+            </Checkbox>
             <div className={I2SReport.calendarFilterSet}>
               {dateError &&  <p className={I2SReport.error}>* Start and End dates can't be same </p>}
               <div className={I2SReport.label}>Date</div>
@@ -244,6 +258,7 @@ const [dateError, setDateError] = useState(false);
                                   toDate: new Date(lastDay).toLocaleDateString(
                                     "en-US"
                                   ),
+                                  isHrfocused: isFocusedRole,
                                 });
                               }}
                             >

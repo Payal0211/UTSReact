@@ -179,6 +179,13 @@ const ActivityFeed = ({
 													{item?.Remark &&   item?.Remark }
 												</span></>
 											)}
+											{item?.Remark && (<>
+												<span style={{marginRight: '14px'}}></span>
+												<span style={{ fontWeight: '500' }}>{'Remark : '}</span>
+												<span >
+													{item?.Remark &&   item?.Remark }
+												</span></>
+											)}
 											{item?.IsNotes === 1 && (
 												<span
 													dangerouslySetInnerHTML={{

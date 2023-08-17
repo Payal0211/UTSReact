@@ -16,7 +16,7 @@ import { clientReport } from "core/clientReport/clientReportDAO";
 import { reportConfig } from "modules/report/report.config";
 import { HTTPStatusCode } from "constants/network";
 import UTSRoutes from "constants/routes";
-import { Table } from "antd";
+import { Table, Checkbox } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import moment from "moment";
 import { downloadToExcel } from 'modules/report/reportUtils';
@@ -42,6 +42,7 @@ export default function HRReport() {
   const [filteredTagLength, setFilteredTagLength] = useState(0);
   const [appliedFilter, setAppliedFilters] = useState(new Map());
   const [checkedState, setCheckedState] = useState(new Map());
+  const [isFocusedRole, setIsFocusedRole] = useState(false);
 
   const [tableFilteredState, setTableFilteredState] = useState({
     totalrecord: 100,
@@ -135,6 +136,7 @@ export default function HRReport() {
           modeOfWorkId: ModeOfWorking,
           heads: SalesManager,
           hrStatusID: HiringStatus,
+          isHrfocused: isFocusedRole,
         },
       };
       getHRReportList(payload);
@@ -149,6 +151,7 @@ export default function HRReport() {
         modeOfWorkId: ModeOfWorking,
         heads: SalesManager,
         hrStatusID: HiringStatus,
+        isHrfocused: isFocusedRole,
         "stages": hrStage
         }
       }
@@ -157,7 +160,7 @@ export default function HRReport() {
         getHRPopUpReportList(params);
       }
     },
-    [hrStage, firstDay, lastDay, appliedFilter]
+    [hrStage, firstDay, lastDay, appliedFilter,isFocusedRole]
   );
 
   useEffect(() => {
@@ -171,6 +174,7 @@ export default function HRReport() {
         modeOfWorkId: "",
         heads: "",
         hrStatusID: "",
+        isHrfocused: isFocusedRole,
       },
     };
     getHRReportList(payload);
@@ -178,6 +182,40 @@ export default function HRReport() {
     setStartDate(firstDay);
     setEndDate(lastDay);
   }, []);
+
+
+  useEffect(()=>{
+    let filters = {};
+    appliedFilter.forEach((item) => {
+      filters = {
+        ...filters,
+        [item.filterType]:
+          item.filterType === "CompanyCategory" ? item.value : item.id,
+      };
+    });
+
+    let TypeOfHR = filters["TypeOfHR"] ? filters["TypeOfHR"] : "";
+    let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : "";
+    let ModeOfWorking = filters["ModeOfWorking"] ? filters["ModeOfWorking"] : "";
+    let HiringStatus = filters["HiringStatus"] ? filters["HiringStatus"] : "";
+
+    let payload = {
+      pageIndex: 1,
+      pageSize: 0,
+      hiringRequestReportFilter: {
+        fromDate: firstDay.toLocaleDateString("en-US"),
+        toDate: lastDay.toLocaleDateString("en-US"),
+        typeOfHR: TypeOfHR,
+        modeOfWorkId: ModeOfWorking,
+        heads: SalesManager,
+        hrStatusID: HiringStatus,
+        isHrfocused: isFocusedRole,
+      },
+    };
+    getHRReportList(payload);
+  
+
+  },[isFocusedRole])
 
   const onCalenderFilter = useCallback(
     (dates) => {
@@ -211,12 +249,10 @@ export default function HRReport() {
             };
           });
 
-          let companyCategory = filters["CompanyCategory"]
-            ? filters["CompanyCategory"]
-            : "";
-          let SalesManager = filters["SalesManager"]
-            ? filters["SalesManager"]
-            : "";
+          let TypeOfHR = filters["TypeOfHR"] ? filters["TypeOfHR"] : "";
+          let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : "";
+          let ModeOfWorking = filters["ModeOfWorking"] ? filters["ModeOfWorking"] : "";
+          let HiringStatus = filters["HiringStatus"] ? filters["HiringStatus"] : "";
 
           let payload = {
             pageIndex: 1,
@@ -224,17 +260,18 @@ export default function HRReport() {
             hiringRequestReportFilter: {
               fromDate: moment(start).format("YYYY-MM-DD"),
               toDate: moment(end).format("YYYY-MM-DD"),
-              typeOfHR: "",
-              modeOfWorkId: "",
-              heads: "",
-              hrStatusID: "",
+              typeOfHR: TypeOfHR,
+              modeOfWorkId: ModeOfWorking,
+              heads: SalesManager,
+              hrStatusID: HiringStatus,
+              isHrfocused: isFocusedRole,
             },
           };
           getHRReportList(payload);
         }
       }
     },
-    [hrStage, appliedFilter]
+    [hrStage, appliedFilter,isFocusedRole]
   );
   const resetFilter = () => {
     let params = {
@@ -251,6 +288,7 @@ export default function HRReport() {
     setAppliedFilters(new Map());
     setCheckedState(new Map());
     setFilteredTagLength(0);
+    setIsFocusedRole(false)
 
     let payload = {
       pageIndex: 1,
@@ -262,6 +300,7 @@ export default function HRReport() {
         modeOfWorkId: "",
         heads: "",
         hrStatusID: "",
+        isHrfocused: isFocusedRole,
       },
     };
     getHRReportList(payload);
@@ -296,12 +335,13 @@ export default function HRReport() {
         modeOfWorkId: ModeOfWorking,
         heads: SalesManager,
         hrStatusID: HiringStatus,
-        "stages": reportData.stageName
+        "stages": reportData.stageName,
+        isHrfocused: isFocusedRole,
         }
       }
       getHRPopUpReportList(params);
     },
-    [hrStage, firstDay, lastDay, appliedFilter]
+    [hrStage, firstDay, lastDay, appliedFilter,isFocusedRole]
   );
 
   const tableColumnsMemo = useMemo(
@@ -362,6 +402,12 @@ export default function HRReport() {
           </div>
 
           <div className={hrReportStyle.filterRight}>
+          <Checkbox
+              checked={isFocusedRole}
+              onClick={() => setIsFocusedRole((prev) => !prev)}
+            >
+              Show only Focused Role
+            </Checkbox>
             <div className={hrReportStyle.calendarFilterSet}>
               {dateError && (
                 <p className={hrReportStyle.error}>

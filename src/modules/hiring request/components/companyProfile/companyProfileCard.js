@@ -168,6 +168,13 @@ const CompanyProfileCard = ({
 								<span style={{ fontWeight: '500' }}>
 									{clientDetail?.NoOfTalents ? clientDetail?.NoOfTalents : 'NA'}
 								</span>
+							</div>
+
+							<div className={CompanyProfileCardStyle.TR}>
+								<span>Active TR:</span>&nbsp;&nbsp;
+								<span style={{ fontWeight: '500' }}>
+									{clientDetail?.ActiveTR ? clientDetail?.ActiveTR: 'NA'}
+								</span>
 								{apiData !== 'Cancelled' && apiData !== 'Completed' && apiData !== "Lost" &&
 									(userSessionMemo?.loggedInUserTypeID ===
 										UserAccountRole.DEVELOPER || 
@@ -182,7 +189,7 @@ const CompanyProfileCard = ({
 											Update TR
 										</button>
 									)}
-							</div>
+							</div>							
 							{/* <div className={CompanyProfileCardStyle.TRParked}>
 								<span>TR Parked:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
