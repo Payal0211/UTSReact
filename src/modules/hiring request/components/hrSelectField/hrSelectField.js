@@ -105,7 +105,6 @@ const HRSelectField = ({
 					defaultValue={defaultValue}
 					onChange={(value, option) => getChangeHandlerWithValue(value, option)}
 					options={options}
-					value={defaultValue}
 				/>
 			)}
 			{errorDetail}
