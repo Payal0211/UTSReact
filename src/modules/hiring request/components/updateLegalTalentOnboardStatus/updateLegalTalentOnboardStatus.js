@@ -31,7 +31,14 @@ const UpdateLegalTalentOnboardStatus = ({
 			onboardID: talentInfo?.OnBoardId,
 			action: 'LegalClient',
 		});
-
+		if(response?.responseBody?.details?.Data?.ContractStartDate){
+			let sDateParts = response?.responseBody?.details?.Data?.ContractStartDate.split('/');
+			setValue('engagementStartDate',  new Date(sDateParts[2], sDateParts[1] - 1, sDateParts[0]));
+		}
+		if(response?.responseBody?.details?.Data?.ContractEndDate){
+			let eDateParts = response?.responseBody?.details?.Data?.ContractEndDate.split('/');
+			setValue('engagementEndDate',  new Date(eDateParts[2], eDateParts[1] - 1, eDateParts[0]));
+		}
 		setTalentStatus(response && response?.responseBody?.details?.Data);
 	}, [talentInfo?.OnBoardId]);
 	const watchOnboardTalentStatus = watch('onboardTalentStatus');
@@ -121,7 +128,7 @@ const UpdateLegalTalentOnboardStatus = ({
 										className={
 											UpdateLegalClientOnboardStatusStyle.timeSlotLabel
 										}>
-										Client Legal Date <span>*</span>
+										Talent Legal Date <span>*</span>
 									</div>
 									<div
 										className={

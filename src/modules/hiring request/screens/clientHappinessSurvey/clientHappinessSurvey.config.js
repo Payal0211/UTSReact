@@ -41,6 +41,10 @@ export const clientHappinessSurveyConfig = {
 	ratingOptions:() => {
 		return [
 			{
+				value: 0,
+				label: '00',
+			},
+			{
 				value: 1,
 				label: '01',
 			},

@@ -30,10 +30,12 @@ const CompanyDetails = ({
 	setUploadFileData,
 	setCompanyName,
 	companyName,
-	control
+	control,
+	companyDetail, setCompanyDetail,getCompanyDetails
 }) => {
 	const [GEO, setGEO] = useState([]);
 	const [leadSource, setLeadSource] = useState([]);
+	const [leadOwner, setLeadOwner] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [showUploadModal, setUploadModal] = useState(false);
 	const getGEO = async () => {
@@ -60,13 +62,35 @@ const CompanyDetails = ({
 
 	const [getCompanyNameSuggestion, setCompanyNameSuggestion] = useState([]);
 	const [getCompanyNameMessage, setCompanyNameMessage] = useState('');
-	const [companyDetail, setCompanyDetail] = useState({})
 	const [showCompanyEmail, setShowCompanyEmail] = useState(false)
 
 	const [controlledCompanyLoacation, setControlledCompanyLoacation] = useState('Please Select')
 	const [controlledLeadSource, setControlledLeadSource] = useState('Please Select')
+	const [controlledLeadOwner, setControlledLeadOwner] = useState('Please Select')
+	const [controlledLeadType, setControlledLeadType] = useState('Please Select')
 
 	let controllerRef = useRef(null);
+
+	const getLeadOwnerBytype = async (type) => {
+		let result = await MasterDAO.getLeadTypeDAO(type);
+		// console.log("fatchpreOnBoardInfo", result.responseBody.details);
+	
+		if (result?.statusCode === HTTPStatusCode.OK) {
+		  setLeadOwner(
+			result.responseBody.details.Data.LeadTypeList.filter(
+			  (item) => item.value !== "0"
+			).map((item) => ({ ...item, text: item.value, value: item.text }))
+		  );
+		}
+	  };
+
+	const watchLeadSource = watch("companyLeadSource"); 
+
+	useEffect(() => {
+		if (watchLeadSource?.value) {
+			getLeadOwnerBytype(watchLeadSource.value);
+		}
+	}, [watchLeadSource]);
 
 	useEffect(() => {
 		if (errors?.companyName?.message) {
@@ -154,10 +178,11 @@ const CompanyDetails = ({
 
 	const getAutocompleteCompanyName = useCallback(
 		async (data) => {
-			let companyAutofillData =
+			if(data.length >= 4){
+				let companyAutofillData =
 				await HubSpotDAO.getAutoCompleteCompanyDAO(data);
 
-				console.log({data, companyAutofillData})
+				// console.log({data, companyAutofillData})
 
 				if(companyAutofillData.statusCode === HTTPStatusCode.OK){
 					setShowCompanyEmail(false)
@@ -167,46 +192,80 @@ const CompanyDetails = ({
 					setShowCompanyEmail(true)
 				}
 			setIsLoading(false);
+			}
+			
 		},
 		[setError, setValue],
 	);
 
-	const getCompanyDetails = async (ID) => {
-		let companyDetailsData = await HubSpotDAO.getCompanyDetailsDAO(ID)
-		console.log({companyDetailsData})
 
-		if(companyDetailsData.statusCode === HTTPStatusCode.OK){
-			const {companyDetails} = companyDetailsData.responseBody
-			companyDetail && setCompanyDetail(companyDetails)
-			companyDetails?.website && setValue('companyURL',companyDetails?.website)
-			companyDetails?.linkedInProfile	&& setValue('companyLinkedinProfile',companyDetails?.linkedInProfile)
-			companyDetails?.address	&& setValue('companyAddress',companyDetails?.address)
-			companyDetails?.companySize && setValue('companySize',companyDetails?.companySize)
-		}
-	}
 
 	useEffect(()=>{
-		if(companyDetail.geO_ID){
-			let location = locationFormatter(GEO.filter(loc=> loc.id === companyDetail.geO_ID))
-			setValue('companyLocation', location[0].value)
-			setControlledCompanyLoacation(location[0].value)
+		if(companyDetail?.geO_ID){
+			let location = locationFormatter(GEO.filter(loc=> loc.id === companyDetail?.geO_ID))
+			setValue('companyLocation', location[0])
+			setControlledCompanyLoacation(location[0]?.value)
 		}
 	},[GEO , companyDetail,setValue])
 
 
 	useEffect(()=>{
-		if(companyDetail.leadType){
-			let lead = leadSource?.BindLeadType?.filter(loc=> loc.value === companyDetail.leadType)
-			setValue('companyLeadSource', lead[0])
-			setControlledLeadSource(lead[0].value)
+		if(companyDetail?.leadType){
+			let regForInbound = /Inbound/g
+			let Inboundincludes = companyDetail?.leadType.includes('Inbound')
+			
+
+			if(Inboundincludes){
+				let lead = leadSource?.BindLeadType?.filter(loc=> loc.value === 'InBound')
+				let leadType = leadSource?.BindInBoundDrp?.filter(loc=> loc.value === companyDetail?.leadType)
+				
+				if(lead?.length){
+					setValue('companyLeadSource', lead[0])
+					setControlledLeadSource(lead[0].value)
+				}
+				if(leadType?.length){
+					setValue('companyInboundType',leadType[0])
+					setControlledLeadType(leadType[0].value)
+				}
+		}else{
+			let lead = leadSource?.BindLeadType?.filter(loc=> loc.value === companyDetail?.leadType)
+			if(lead?.length){
+				setValue('companyLeadSource', lead[0])
+				setControlledLeadSource(lead[0].value)
+			}
+		}
+			
 		}
 	},[leadSource?.BindLeadType , companyDetail,setValue])
+
+	useEffect(() => {
+		if(companyDetail.leadUserID && leadOwner.length	> 0){
+			let filteredOwner = leadOwner?.filter(owner => owner.text == companyDetail.leadUserID)
+			if(filteredOwner.length){
+				setValue('companyLeadOwner',filteredOwner[0])
+				setControlledLeadOwner(filteredOwner[0].value)
+			}
+					}
+	},[companyDetail,leadOwner])
 
 	const getCompanyDetailsByEmail = async (email)=> {
 
 		let response = await HubSpotDAO.getContactsByEmailDAO(email)
 
-		console.log("company email response", response)
+		if(response.statusCode === HTTPStatusCode.OK){
+				let companyAutofillData =
+				await HubSpotDAO.getAutoCompleteCompanyDAO(email);
+
+
+				if(companyAutofillData.statusCode === HTTPStatusCode.OK){
+					setShowCompanyEmail(false)
+					getCompanyDetails(companyAutofillData.responseBody[0].companyID)
+					// setShowCompanyEmail(false)
+					// setCompanyNameSuggestion(companyAutofillData.responseBody.map(item => ({...item, value: item.company})))
+				}
+			// setValue('companyName',response.det)
+			// getCompanyDetails()
+		}
 
 		if(response.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR){
 			setError('companyEmail',{
@@ -232,7 +291,6 @@ const CompanyDetails = ({
 		if(watchCompanyEmail){
 			if(watchCompanyEmail.match(EmailRegEx.email)){
 				// get company details by email
-				console.log('watch Email', watchCompanyEmail)
 				getCompanyDetailsByEmail(watchCompanyEmail)
 			}else{
 				setError('companyEmail',{
@@ -266,7 +324,6 @@ const CompanyDetails = ({
 	const watchcompanyName = watch('companyName')
 
 	const getCompanyValue = (clientName, data) => {
-		console.log({clientName, data})
 		setValue('companyName', clientName);
 		setError('companyName', {
 			type: 'validate',
@@ -289,7 +346,6 @@ const CompanyDetails = ({
 
 	const getClientNameSuggestionHandler = useCallback(
 		async (clientName) => {
-			console.log("companyDetails", clientName)
 			setCompanyName(clientName);
 			debounceDuplicateCompanyName(clientName);
 		// 	let response = await MasterDAO.getEmailSuggestionDAO(clientName);
@@ -379,6 +435,7 @@ const CompanyDetails = ({
 														onSelect={(clientName, data) =>
 															getCompanyValue(clientName,data)
 														}
+														value={watch('companyName')}
 														filterOption={true}
 														onSearch={(searchValue) => {
 															setCompanyNameSuggestion([]);
@@ -441,7 +498,7 @@ const CompanyDetails = ({
 									},
 								}}
 								placeholder="Enter Company Email"
-								required
+								required={showCompanyEmail}
 							/>
 						</div>
 						
@@ -466,6 +523,7 @@ const CompanyDetails = ({
 									controlledValue={controlledCompanyLoacation}
 									setControlledValue={setControlledCompanyLoacation}
 									setValue={setValue}
+									mode={'id/value'}
 									register={register}
 									name="companyLocation"
 									label="Company Location"
@@ -627,10 +685,33 @@ const CompanyDetails = ({
 							</div>
 						</div>
 
+						{leadOwner.length > 0 && <div className={CompanyDetailsStyle.colMd6}>
+							<div className={CompanyDetailsStyle.formGroup}>
+								<HRSelectField
+									isControlled={true}
+									controlledValue={controlledLeadOwner}
+									setControlledValue={setControlledLeadOwner}
+									mode={'id/value'}
+									setValue={setValue}
+									register={register}
+									name="companyLeadOwner"
+									label="Lead Owner"
+									defaultValue="Select Lead Owner"
+									options={leadOwner}
+									required={leadOwner.length > 0}
+									isError={errors['companyLeadOwner'] && errors['companyLeadOwner']}
+									errorMsg={'Please select lead source'}
+								/>
+							</div>
+						</div>}
+
 						{watch('companyLeadSource')?.id === 1 && (
 							<div className={CompanyDetailsStyle.colMd6}>
 								<div className={CompanyDetailsStyle.formGroup}>
 									<HRSelectField
+									isControlled={true}
+									controlledValue={controlledLeadType}
+									setControlledValue={setControlledLeadType}
 										mode={'id/value'}
 										setValue={setValue}
 										register={register}

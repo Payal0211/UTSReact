@@ -1287,7 +1287,7 @@ if(DID){
 										disabled={jdURLLink}
 										register={register}
 										leadingIcon={<UploadSVG />}
-										label={`Job Description *`}
+										label={`Job Description`}
 										name="jdExport"
 										type={InputType.BUTTON}
 										buttonLabel="Upload JD File"

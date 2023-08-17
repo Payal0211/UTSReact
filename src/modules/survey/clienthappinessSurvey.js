@@ -108,9 +108,9 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
             for (let val of response?.responseBody) {
                 let modifyObj = {};
                 modifyObj.label = val.happynessSurvay_Option;
-                modifyObj.value = val.id;
+                modifyObj.value = val.id.toString();
                 modifyObj.selected = false;
-                modifyObj.text = val.id;
+                modifyObj.text = val.id.toString();
                 _modifyList.push(modifyObj);
             }
 			setFiltersList(_modifyList);
@@ -301,7 +301,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
             pagenumber:1,
             totalrecord:100,
             filterFields_HappinessSurvey:{
-                RatingFrom : 1,
+                RatingFrom :0,
                 RatingTo :10,
             }
         });

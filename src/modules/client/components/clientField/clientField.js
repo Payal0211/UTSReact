@@ -13,6 +13,7 @@ import {
 	clientFormDataFormatter,
 	getFlagAndCodeOptions,
 } from 'modules/client/clientUtils';
+import { HubSpotDAO } from 'core/hubSpot/hubSpotDAO';
 import { ClientDAO } from 'core/client/clientDAO';
 import { HTTPStatusCode } from 'constants/network';
 import CompanyDetails from '../companyDetails/companyDetails';
@@ -44,6 +45,7 @@ const ClientField = ({
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [companyName, setCompanyName] = useState('');
 	const [primaryClientFullName, setPrimaryClientFullName] = useState('');
+	const [primaryClientEN_ID, setPrimaryClientEN_ID] = useState('');
 	const [primaryClientEmail, setPrimaryClientEmail] = useState('');
 	const [isSavedLoading, setIsSavedLoading] = useState(false);
 	/** ---- Useform()  Starts here --------- */
@@ -94,6 +96,9 @@ const ClientField = ({
 	]);
 	/** -------- UseForm Ends here --------------- */
 
+	const [companyDetail, setCompanyDetail] = useState({})
+	const [clientDetailCheckList,setClientDetailCheckList] = useState([])
+
 	const [isSameAsPrimaryPOC, setSameAsPrimaryPOC] = useState(false);
 
 	const [flagAndCode, setFlagAndCode] = useState([]);
@@ -132,6 +137,8 @@ const ClientField = ({
 			companyName,
 			primaryClientFullName,
 			primaryClientEmail,
+			primaryClientEN_ID,
+			companyDetail
 		);
 
 		if (type === SubmitType.SAVE_AS_DRAFT) {
@@ -208,6 +215,47 @@ const ClientField = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isSameAsPrimaryPOC]);
 
+
+	const getCompanyDetails = async (ID) => {
+		let companyDetailsData = await HubSpotDAO.getCompanyDetailsDAO(ID)
+	
+
+		if(companyDetailsData.statusCode === HTTPStatusCode.OK){
+			const {companyDetails,contactDetails			} = companyDetailsData.responseBody
+			companyDetail && setCompanyDetail(companyDetails)  
+			companyDetails?.companyName && setValue('companyName',companyDetails?.companyName)
+			companyDetails?.website && setValue('companyURL',companyDetails?.website)
+			companyDetails?.linkedInProfile	&& setValue('companyLinkedinProfile',companyDetails?.linkedInProfile)
+			companyDetails?.address	&& setValue('companyAddress',companyDetails?.address)
+			companyDetails?.companySize && setValue('companySize',companyDetails?.companySize)
+			if(companyDetails?.companyLogo){
+				setUploadFileData(companyDetails?.companyLogo)
+			}  
+	
+			if(contactDetails){
+				if(contactDetails.length === 1){
+					let contactDetailobj = contactDetails[0]
+					contactDetailobj?.en_Id && setPrimaryClientEN_ID(contactDetailobj?.en_Id)
+					contactDetailobj?.fullName && setValue('primaryClientName',contactDetailobj?.fullName)
+					contactDetailobj?.emailID && setValue('primaryClientEmailID',contactDetailobj?.emailID)
+					contactDetailobj?.designation && setValue('primaryDesignation',contactDetailobj?.designation)
+					contactDetailobj?.linkedIn && setValue('PrimaryClientLinkedinProfile',contactDetailobj?.linkedIn)					
+				}
+
+				if(contactDetails.length > 0 ){
+					let contactDetailobj = contactDetails[0]
+					contactDetailobj?.en_Id && setPrimaryClientEN_ID(contactDetailobj?.en_Id)
+					contactDetailobj?.fullName && setValue('primaryClientName',contactDetailobj?.fullName)
+					contactDetailobj?.emailID && setValue('primaryClientEmailID',contactDetailobj?.emailID)
+					contactDetailobj?.designation && setValue('primaryDesignation',contactDetailobj?.designation)
+					contactDetailobj?.linkedIn && setValue('PrimaryClientLinkedinProfile',contactDetailobj?.linkedIn)
+
+					setClientDetailCheckList(contactDetails)
+				}
+			}
+		}
+	}
+
 	return (
 		<div className={ClientFieldStyle.tabsBody}>
 			{contextHolder}
@@ -226,6 +274,9 @@ const ClientField = ({
 				setCompanyName={setCompanyName}
 				companyName={companyName}
 				control={control}
+				companyDetail={companyDetail}
+				setCompanyDetail={setCompanyDetail}
+				getCompanyDetails={getCompanyDetails}
 			/>
 			<AddNewClient
 				setError={setError}
@@ -240,6 +291,7 @@ const ClientField = ({
 				setPrimaryClientFullName={setPrimaryClientFullName}
 				setPrimaryClientEmail={setPrimaryClientEmail}
 				primaryClientEmail={primaryClientEmail}
+				clientDetailCheckList={clientDetailCheckList}
 			/>
 			<div className={ClientFieldStyle.tabsFormItem}>
 				<div className={ClientFieldStyle.tabsFormItemInner}>
@@ -388,9 +440,10 @@ const ClientField = ({
 				remove={removePOC}
 				register={register}
 				errors={errors}
+				watch={watch}
 			/>
 			<div className={ClientFieldStyle.formPanelAction}>
-				<button
+				{/* <button
 					style={{
 						cursor: type === SubmitType.SAVE_AS_DRAFT ? 'no-drop' : 'pointer',
 					}}
@@ -398,7 +451,7 @@ const ClientField = ({
 					onClick={clientSubmitHandler}
 					className={ClientFieldStyle.btn}>
 					Save as Draft
-				</button>
+				</button> */}
 				<button
 					// disabled={isLoading}
 					type="submit"

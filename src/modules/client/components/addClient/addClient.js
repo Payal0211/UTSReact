@@ -8,7 +8,7 @@ import React, { useCallback, useState } from 'react';
 import { _isNull } from 'shared/utils/basic_utils';
 import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';
-
+import { Checkbox } from 'antd'
 const AddNewClient = ({
 	setError,
 	watch,
@@ -22,8 +22,10 @@ const AddNewClient = ({
 	flagAndCodeMemo,
 	setPrimaryClientEmail,
 	primaryClientEmail,
+	clientDetailCheckList
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
+	const [ checkedClients, setCheckedClients] = useState([])
 	const onAddNewClient = useCallback(
 		(e) => {
 			e.preventDefault();
@@ -33,6 +35,11 @@ const AddNewClient = ({
 	);
 	const onRemoveAddedClient = useCallback(
 		(e, index) => {
+			setCheckedClients(prev=>{
+				let newClients = [...prev]
+				newClients.pop()
+				return newClients
+			})
 			e.preventDefault();
 			remove(index);
 		},
@@ -106,6 +113,36 @@ const AddNewClient = ({
 					</div>
 				</div>
 				<div className={AddClientStyle.tabsRightPanel}>
+					{clientDetailCheckList.length > 0 && <div className={AddClientStyle.row} style={{marginBottom:'15px'}}>
+					<div className={AddClientStyle.colMd12}>
+						{clientDetailCheckList.map((list, index) => <Checkbox checked={index === 0 ? true : checkedClients.includes(list.id)}  
+							onClick={()=> {
+								if(index === 0) {
+									return
+								}
+								if(checkedClients.includes(list.id)){
+									setCheckedClients(prev=>(prev.filter(item => item !== list.id)))
+									let index = fields.findIndex(field => field.en_Id === list.en_Id);
+									remove(index)
+								}else{
+									setCheckedClients(prev=> ([...prev,list.id]));
+									
+									append({ ...secondaryClient, ...{
+										en_Id: list.en_Id,
+										fullName: list.fullName,
+										emailID: list.emailID,
+										id: list.id,
+										phoneNumber: list.contactNo,
+										designation: list.designation,
+										linkedinProfile: list.linkedIn,
+									} })
+								}
+								
+								}}>
+						  {list.emailID}
+						</Checkbox>	)}
+						</div>
+						</div>}
 					<div className={AddClientStyle.row}>
 						<div className={AddClientStyle.colMd6}>
 							<HRInputField
@@ -331,7 +368,7 @@ const AddNewClient = ({
 										label="HS Client Linkedin Profile (Secondary)"
 										name={`secondaryClient.[${index}].linkedinProfile`}
 										type={InputType.TEXT}
-										isError={!!errors?.secondaryClient?.[index]?.emailID}
+										isError={!!errors?.secondaryClient?.[index]?.linkedinProfile}
 										errorMsg="please enter the secondary client linkedin profile URL."
 										placeholder="Add Linkedin profile link  "
 										required

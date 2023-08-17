@@ -42,7 +42,7 @@ const UpdateTR = ({
 	const onSubmit = async () => {
 		setIsLoading(true);
 		if (updateTRDetail?.ClientDetail?.Availability === 'Part Time') {
-			if (updateTRDetail?.ClientDetail?.NoOfTalents * 2 <= count) {
+			if (updateTRDetail?.ClientDetail?.ActiveTR * 2 <= count) {
 				let data = {
 					noOfTR: count,
 					hiringRequestId: Number(id?.hrid),
@@ -56,7 +56,7 @@ const UpdateTR = ({
 					onCancel();
 					window.location.reload();
 				}
-			} else if (updateTRDetail?.ClientDetail?.NoOfTalents * 2 > count) {
+			} else if (updateTRDetail?.ClientDetail?.ActiveTR * 2 > count) {
 				let data = {
 					noOfTR: count,
 					hiringRequestId: Number(id?.hrid),
@@ -74,7 +74,7 @@ const UpdateTR = ({
 				}
 			}
 		} else {
-			if (updateTRDetail?.ClientDetail?.NoOfTalents <= count) {
+			if (updateTRDetail?.ClientDetail?.ActiveTR <= count) {
 				let data = {
 					noOfTR: count,
 					hiringRequestId: Number(id?.hrid),
@@ -89,7 +89,7 @@ const UpdateTR = ({
 					onCancel();
 					window.location.reload();
 				}
-			} else if (updateTRDetail?.ClientDetail?.NoOfTalents > count) {
+			} else if (updateTRDetail?.ClientDetail?.ActiveTR > count) {
 				let data = {
 					noOfTR: count,
 					hiringRequestId: Number(id?.hrid),
@@ -111,24 +111,24 @@ const UpdateTR = ({
 	};
 
 	useEffect(() => {
-		if (updateTRDetail?.ClientDetail?.NoOfTalents > count || valueInfo) {
+		if (updateTRDetail?.ClientDetail?.ActiveTR > count || valueInfo) {
 			if (updateTRDetail?.ClientDetail?.Availability === 'Part Time') {
-				setValue('currentTR', updateTRDetail?.ClientDetail?.NoOfTalents * 2);
-				setCount(updateTRDetail?.ClientDetail?.NoOfTalents * 2);
+				setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR * 2);
+				setCount(updateTRDetail?.ClientDetail?.ActiveTR * 2);
 			} else {
-				setValue('currentTR', updateTRDetail?.ClientDetail?.NoOfTalents);
-				setCount(updateTRDetail?.ClientDetail?.NoOfTalents);
+				setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR);
+				setCount(updateTRDetail?.ClientDetail?.ActiveTR);
 			}
-		} else if (updateTRDetail?.ClientDetail?.NoOfTalents <= count) {
+		} else if (updateTRDetail?.ClientDetail?.ActiveTR <= count) {
 			if (updateTRDetail?.ClientDetail?.Availability === 'Part Time') {
-				setValue('currentTR', updateTRDetail?.ClientDetail?.NoOfTalents * 2);
-				setCount(updateTRDetail?.ClientDetail?.NoOfTalents * 2);
+				setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR * 2);
+				setCount(updateTRDetail?.ClientDetail?.ActiveTR * 2);
 			} else {
-				setValue('currentTR', updateTRDetail?.ClientDetail?.NoOfTalents);
-				setCount(updateTRDetail?.ClientDetail?.NoOfTalents);
+				setValue('currentTR', updateTRDetail?.ClientDetail?.ActiveTR);
+				setCount(updateTRDetail?.ClientDetail?.ActiveTR);
 			}
 		}
-	}, [updateTRDetail?.ClientDetail?.NoOfTalents]);
+	}, [updateTRDetail?.ClientDetail?.ActiveTR]);
 
 	const increment = () => {
 		setCount(count + 1);
@@ -150,9 +150,9 @@ const UpdateTR = ({
 				<p>
 					{updateTRDetail?.ClientDetail?.HR_Number} | Current TR:{' '}
 					{updateTRDetail?.ClientDetail?.Availability === 'Part Time' ? (
-						<span>{updateTRDetail?.ClientDetail?.NoOfTalents * 2}</span>
+						<span>{updateTRDetail?.ClientDetail?.ActiveTR * 2}</span>
 					) : (
-						<span>{updateTRDetail?.ClientDetail?.NoOfTalents}</span>
+						<span>{updateTRDetail?.ClientDetail?.ActiveTR}</span>
 					)}
 				</p>
 			</div>
@@ -201,7 +201,7 @@ const UpdateTR = ({
 						</div>
 					)}
 					{updateTRDetail?.ClientDetail?.Availability === 'Part Time'
-						? (updateTRDetail?.ClientDetail?.NoOfTalents * 2 <= count ||
+						? (updateTRDetail?.ClientDetail?.ActiveTR * 2 <= count ||
 								isNaN(count) ||
 								valueInfo) && (
 								<div className={updateTRStyle.row}>
@@ -224,7 +224,7 @@ const UpdateTR = ({
 											rows={'4'}
 											required
 											// required={
-											//     updateTRDetail?.ClientDetail?.NoOfTalents <= count
+											//     updateTRDetail?.ClientDetail?.ActiveTR <= count
 											//         ? true
 											//         : false
 											// }
@@ -233,7 +233,7 @@ const UpdateTR = ({
 									</div>
 								</div>
 						  )
-						: (updateTRDetail?.ClientDetail?.NoOfTalents <= count ||
+						: (updateTRDetail?.ClientDetail?.ActiveTR <= count ||
 								isNaN(count) ||
 								valueInfo) && (
 								<div className={updateTRStyle.row}>
@@ -260,7 +260,7 @@ const UpdateTR = ({
 								</div>
 						  )}
 					{updateTRDetail?.ClientDetail?.Availability === 'Part Time'
-						? updateTRDetail?.ClientDetail?.NoOfTalents * 2 > count &&
+						? updateTRDetail?.ClientDetail?.ActiveTR * 2 > count &&
 						  !valueInfo && (
 								<div className={updateTRStyle.row}>
 									<div className={updateTRStyle.colMd12}>
@@ -285,7 +285,7 @@ const UpdateTR = ({
 									</div>
 								</div>
 						  )
-						: updateTRDetail?.ClientDetail?.NoOfTalents > count &&
+						: updateTRDetail?.ClientDetail?.ActiveTR > count &&
 						  !valueInfo && (
 								<div className={updateTRStyle.row}>
 									<div className={updateTRStyle.colMd12}>
@@ -316,7 +316,7 @@ const UpdateTR = ({
 							onClick={() => {
 								onCancel();
 								// window.location.reload();
-								setCount(updateTRDetail?.ClientDetail?.NoOfTalents);
+								setCount(updateTRDetail?.ClientDetail?.ActiveTR);
 								setValue('additionalComments', '');
 								setValue('reasonForLoss', '');
 							}}
@@ -325,7 +325,7 @@ const UpdateTR = ({
 						</button>
 
 						{updateTRDetail?.ClientDetail?.Availability === 'Part Time' ? (
-							updateTRDetail?.ClientDetail?.NoOfTalents * 2 === count ? (
+							updateTRDetail?.ClientDetail?.ActiveTR * 2 === count ? (
 								<button
 									type="submit"
 									className={updateTRStyle.btnPrimary}
@@ -333,13 +333,13 @@ const UpdateTR = ({
 									onClick={handleSubmit(onSubmit)}>
 									Submit
 								</button>
-							) : updateTRDetail?.ClientDetail?.NoOfTalents * 2 < count ? (
+							) : updateTRDetail?.ClientDetail?.ActiveTR * 2 < count ? (
 								<button
 									type="submit"
 									className={updateTRStyle.btnPrimary}
 									onClick={handleSubmit(onSubmit)}
 									// disabled={
-									//     updateTRDetail?.ClientDetail?.NoOfTalents * 2 === count
+									//     updateTRDetail?.ClientDetail?.ActiveTR * 2 === count
 									//         ? true
 									//         : false
 									// }
@@ -354,7 +354,7 @@ const UpdateTR = ({
 									Decrease TR
 								</button>
 							)
-						) : updateTRDetail?.ClientDetail?.NoOfTalents === count ? (
+						) : updateTRDetail?.ClientDetail?.ActiveTR === count ? (
 							<button
 								type="submit"
 								className={updateTRStyle.btnPrimary}
@@ -362,13 +362,13 @@ const UpdateTR = ({
 								onClick={handleSubmit(onSubmit)}>
 								Submit
 							</button>
-						) : updateTRDetail?.ClientDetail?.NoOfTalents < count ? (
+						) : updateTRDetail?.ClientDetail?.ActiveTR < count ? (
 							<button
 								type="submit"
 								className={updateTRStyle.btnPrimary}
 								onClick={handleSubmit(onSubmit)}
 								// disabled={
-								//     updateTRDetail?.ClientDetail?.NoOfTalents === count ? true : false
+								//     updateTRDetail?.ClientDetail?.ActiveTR === count ? true : false
 								// }
 							>
 								Increase TR
