@@ -152,6 +152,11 @@
     color: var(--uplers-lightBlack);
 }
 
+.actionTab_Exceeded{
+    border-bottom: 4px solid #6DBAFF ;
+    margin-right: 10px;
+}
+
 .calendarFilter {
     width: 250px;
     height: 44px;
