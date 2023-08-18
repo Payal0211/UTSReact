@@ -622,6 +622,10 @@ const TeamDemandFunnelScreen = () => {
 								</div>
 							</div>
 							<div className={TeamDemandFunnelStyle.filterRight}>
+							<div className={TeamDemandFunnelStyle.actionTab_Exceeded} style={{display:'flex',alignItems:'center'}}>
+							{/* <span className={DemandFunnelStyle.actionTab_Exceeded}></span> */}
+							Stage Count without Dates Filter
+						</div>
 								{selectedHierarchy && (
 									<div style={{ display: 'flex', alignItems: 'center' }}>
 										<div className={TeamDemandFunnelStyle.label}>
@@ -698,6 +702,21 @@ const TeamDemandFunnelScreen = () => {
 											dataIndex={item}
 											key={item}
 											render={(text, param) => {
+
+												if(text === "TR Active" || text === "HR Active" || text === "Profile Feedback Pending"|| text === 'Interview Feedback Pending'){
+													return <Tooltip
+													placement="bottomLeft"
+													title={text}>
+													
+														<p style={{ fontWeight: '550', padding: '5px',
+														// , borderBottom: '4px solid #6DBAFF',
+														textDecoration: "underline",
+														textDecorationColor: "#6DBAFF",
+														textDecorationThickness:"4px"
+														}}>{text}</p>
+													
+													</Tooltip>
+												}
 												return (
 													<Tooltip
 														placement="bottomLeft"
