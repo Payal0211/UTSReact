@@ -28,7 +28,7 @@ export const clientHappinessSurveyConfig = {
 				label: 'Options',
 				name: 'options',
 				child: filterList,
-				isSearch: true,
+				isSearch: false,
 			},
             {
 				label: 'Question',
@@ -176,16 +176,17 @@ export const clientHappinessSurveyConfig = {
 				dataIndex: 'link',
 				key: 'link',
 				width: '400px',
-				render:(text) => {
+				render:(text,val) => {
 					return(
-						<Link
-							to={text}
-							style={{
-								color: `var(--uplers-black)`,
-								textDecoration: 'underline',
-							}}>
-							{text}
-						</Link>
+						<p>{val.feedbackDate ? text : ""}</p>
+						// <Link
+						// 	to={text}
+						// 	style={{
+						// 		color: `var(--uplers-black)`,
+						// 		textDecoration: 'underline',
+						// 	}}>
+						// 	{text}
+						// </Link>
 					)
 				}
 			},

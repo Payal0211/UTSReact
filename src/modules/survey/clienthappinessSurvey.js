@@ -151,7 +151,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 			let response = await clientHappinessSurveyRequestDAO.SendEmailForFeedbackDAO(id);
 			if (response?.statusCode === HTTPStatusCode.OK) {
                 alert("Email sent successfully");
-                getClientHappinessSurveyList(tableFilteredState);
+                getClientHappinessSurveyList(tableFilteredState,false);
                 setLoading(false);
             } else if (
 				response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
@@ -169,7 +169,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 	); 
         
     useEffect(() => {
-        getClientHappinessSurveyList(tableFilteredState);
+        getClientHappinessSurveyList(tableFilteredState,false);
     },[tableFilteredState]);
 
     const modifyResponseData = (data) => {
@@ -179,10 +179,16 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
     }))
     }
    
-    const getClientHappinessSurveyList = useCallback(async (requestData) => {
+    const getClientHappinessSurveyList = useCallback(async (requestData,isExport) => {
         setLoading(true);
-        let response = await clientHappinessSurveyRequestDAO.getClientHappinessSurveyListDAO(requestData);
+        let response = await clientHappinessSurveyRequestDAO.getClientHappinessSurveyListDAO(requestData,isExport);
         if (response?.statusCode === HTTPStatusCode.OK) {                 
+            if(isExport){
+                setLoading(false); 
+                let _data = modifyResponseData(response?.responseBody?.rows);
+                downloadToExcel(_data);
+                return 
+            }
             setClientHappinessSurveyList(modifyResponseData(response?.responseBody?.rows));
             setTotalRecords(response?.responseBody?.totalrows);
             setLoading(false);          
@@ -260,6 +266,8 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
             _reqBody.other_clientemail = watchEmail;
             _reqBody.Other_Company_Name =watchCompany;
             _reqBody.Other_Client_Name = watchClient;
+            _reqBody.Company_ID = selectedCompany.companyID;
+            _reqBody.Client_ID = selectedCompany.contactID;
         }else{
             _reqBody.Client_Name =selectedCompany.client; 
             _reqBody.Company = selectedCompany.company;
@@ -276,7 +284,16 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
         let response = await clientHappinessSurveyRequestDAO.SaveClientHappinessSurveysDAO(requestData);
         if (response?.statusCode === HTTPStatusCode.OK) {                 
             setGenerateLink(false);
-            setLoading(false);          
+            setLoading(false);     
+            getClientHappinessSurveyList({       
+                pagenumber:1,
+                totalrecord:100,
+                filterFields_HappinessSurvey:{
+                    RatingFrom : 0,
+                    RatingTo :10,
+                    selectedFormat:"c",
+                }
+            },false);     
         } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
             setLoading(false);          
         } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -297,6 +314,9 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 		setAppliedFilters(new Map());
 		setCheckedState(new Map());
 		setFilteredTagLength(0);
+        setPageSize(100);
+        setPageIndex(1);
+        setDebouncedSearch(search);
 		setTableFilteredState({       
             pagenumber:1,
             totalrecord:100,
@@ -346,10 +366,11 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
         setHTMLFilter(!getHTMLFilter);
     }, [getHTMLFilter]);
 
-    const handleExport = () => {
-		 downloadToExcel(clientHappinessSurveyList)
+    const handleExport = async () => {
+        // getClientHappinessSurveyList(tableFilteredState,true);
+		downloadToExcel(clientHappinessSurveyList);
 	}
-
+  
     const getClientNameValue = (data) => {
         let _data = [...autoCompleteCompanyList];
         let _index = _data.findIndex((val) => val.value === data);
@@ -368,6 +389,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
         }
         setFormErrors({...formErrors,["client"]: ""})        
     }
+
   return (
     <>
     <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
@@ -474,8 +496,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                         <div className={clienthappinessSurveyStyles.ratingFilterWrap}>
                             <div className={clienthappinessSurveyStyles.label}>Rating</div>
                             <div className={clienthappinessSurveyStyles.ratingFilter}>
-                                <Select
-                                    defaultValue={0}
+                                <Select                                    
                                     style={{ width: 42 }}
                                     dropdownMatchSelectWidth={false}
                                     // placement={placement}
@@ -490,6 +511,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                                             }
                                           }));
                                     }}
+                                    value={tableFilteredState.filterFields_HappinessSurvey.RatingFrom}
                                 />  
                                 <Select
                                     defaultValue={10}
@@ -506,11 +528,11 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                                             }
                                           }));
                                     }}
+                                    value={tableFilteredState.filterFields_HappinessSurvey.RatingTo}
                                 />
                             </div>
                         </div>
                        
-
 						<div className={clienthappinessSurveyStyles.calendarFilterSet}>
 							<div className={clienthappinessSurveyStyles.label}>Date</div>
 							<div className={clienthappinessSurveyStyles.calendarFilter}>
@@ -705,7 +727,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 
                 <div className={clienthappinessSurveyStyles.colMd12}>
                     <div className={clienthappinessSurveyStyles.InputGroup}>                       
-                            {isOtherClient ? 
+                    {isOtherClient ? 
                         <HRInputField
                             register={register}
                             label={'Client'}
@@ -720,7 +742,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                         /> :
                             <HRSelectField            
                                 // controlledValue={generateLinkData.client}                    
-								isControlled={false}
+                        	    isControlled={false}
                                 mode={'value'}
                                 setValue={setValue}
                                 register={register}
@@ -733,8 +755,9 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                                 isError={
                                 	errors['client'] && errors['client']
                                 }
-                                errorMsg="Please select a client."                               
-								/>
+                                errorMsg="Please select a client." 
+                                isValue={true}                              
+								/>                            
                             }                    
                         </div>
                         <div style={{color:"red"}}>{formErrors.client}</div>       

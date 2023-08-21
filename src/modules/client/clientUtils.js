@@ -48,6 +48,7 @@ export function clientFormDataFormatter(
 	primaryClientFullName,
 	primaryClientEmail,
 	primaryClientEN_ID,
+	legelInfoEN_ID,
 	companyDetail
 ) {
 	const clientFormDetails = {
@@ -125,7 +126,8 @@ export function clientFormDataFormatter(
 					: d.companyLeadSource?.id === 1
 					? d.companyInboundType?.value
 					: d.companyLeadSource?.value,
-			leadUserID: 
+		},
+		leadUserID: 
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('companyLeadOwner'))
 						? null
@@ -133,7 +135,6 @@ export function clientFormDataFormatter(
 					: _isNull(d.companyLeadOwner)
 					? null
 					: parseInt(d.companyLeadOwner.id),
-		},
 		primaryClient: {
 			// en_Id: _isNull(addClientResponse)
 			// 	? ''
@@ -194,9 +195,10 @@ export function clientFormDataFormatter(
 						d.secondaryClient,
 				  ),
 		legalInfo: {
-			en_Id: _isNull(addClientResponse)
-				? ''
-				: addClientResponse?.legalInfo?.en_Id,
+			// en_Id: _isNull(addClientResponse)
+			// 	? ''
+			// 	: addClientResponse?.legalInfo?.en_Id,
+			en_Id: !_isNull(legelInfoEN_ID) ? legelInfoEN_ID : '',
 			name:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('legalClientFullName'))
@@ -248,22 +250,22 @@ export function clientFormDataFormatter(
 					: d.legalCompanyAddress,
 			isAcceptPolicy: true,
 		},
-		pocList:
-			draft === SubmitType.SAVE_AS_DRAFT
-				? watch('pocList')
-				: _isNull(addClientResponse)
-				? d.pocList
-				: enIDFieldsFormatter(addClientResponse.pocList, d.pocList),
+		// pocList:
+		// 	draft === SubmitType.SAVE_AS_DRAFT
+		// 		? watch('pocList')
+		// 		: _isNull(addClientResponse)
+		// 		? d.pocList
+		// 		: enIDFieldsFormatter(addClientResponse.pocList, d.pocList),
 		primaryContactName: _isNull(d.primaryContactName)
 			? null
 			: draft === SubmitType.SAVE_AS_DRAFT
-			? watch('primaryContactName').toString()
-			: d.primaryContactName.toString(),
+			? watch('primaryContactName').id.toString()
+			: d.primaryContactName.id.toString(),
 		secondaryContactName: _isNull(d.secondaryContactName)
 			? null
 			: draft === SubmitType.SAVE_AS_DRAFT
-			? watch('secondaryContactName').toString()
-			: d.secondaryContactName.toString(),
+			? watch('secondaryContactName').id.toString()
+			: d.secondaryContactName.id.toString(),
 	};
 	return clientFormDetails;
 }

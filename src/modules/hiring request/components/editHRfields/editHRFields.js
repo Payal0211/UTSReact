@@ -540,21 +540,24 @@ const EditHRFields = ({
 	};
 	const getClientNameSuggestionHandler = useCallback(
 		async (clientName) => {
-			let response = await MasterDAO.getEmailSuggestionDAO(clientName);
-			if (response?.statusCode === HTTPStatusCode.OK) {
-				setClientNameSuggestion(response?.responseBody?.details);
-				setClientNameMessage('');
-			} else if (
-				response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
-				response?.statusCode === HTTPStatusCode.NOT_FOUND
-			) {
-				setError('clientName', {
-					type: 'validate',
-					message: response?.responseBody,
-				});
-				// setClientNameSuggestion([]);
-				setClientNameMessage(response?.responseBody);
+			if(clientName.length){
+				let response = await MasterDAO.getEmailSuggestionDAO(clientName);
+				if (response?.statusCode === HTTPStatusCode.OK) {
+					setClientNameSuggestion(response?.responseBody?.details);
+					setClientNameMessage('');
+				} else if (
+					response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+					response?.statusCode === HTTPStatusCode.NOT_FOUND
+				) {
+					setError('clientName', {
+						type: 'validate',
+						message: response?.responseBody,
+					});
+					// setClientNameSuggestion([]);
+					setClientNameMessage(response?.responseBody);
+				}
 			}
+			
 		},
 		[setError],
 	);

@@ -21,7 +21,8 @@ const HRSelectField = ({
 	isControlled,
 	disabled,
 	placeholder,
-	isControlledBoolean
+	isControlledBoolean,
+	isValue
 }) => {
 	const getChangeHandlerWithValue = (value, option) => {
 		if (mode === 'multiple') {
@@ -93,7 +94,20 @@ const HRSelectField = ({
 					onChange={(value, option) => getChangeHandlerWithValue(value, option)}
 					options={options}
 				/>
-			) : (
+			) : isValue ? 
+			<Select
+				getPopupContainer={(trigger) => trigger.parentElement}
+				id="selectedValue"
+				placeholder={placeholder}
+				mode={mode}
+				dropdownRender={dropdownRender}
+				disabled={disabled}
+				showSearch={searchable}
+				defaultValue={defaultValue}
+				onChange={(value, option) => getChangeHandlerWithValue(value, option)}
+				options={options}
+				value={defaultValue}
+			/>:  (
 				<Select
 					getPopupContainer={(trigger) => trigger.parentElement}
 					id="selectedValue"
