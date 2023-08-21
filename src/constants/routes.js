@@ -84,6 +84,10 @@ const CountryList = React.lazy(() =>
 const CurrencyList = React.lazy(() =>
 	import('modules/masters/screens/currency/currencyList'),
 );
+
+const RoleList = React.lazy(() => 
+	import ('modules/masters/screens/role/roleList'),
+)
 const SlaReport = React.lazy(() =>
 	import('modules/report/screens/slaReport/slaReport'),
 );
@@ -141,6 +145,7 @@ export default class UTSRoutes {
 	static JDDUMPREPORTROUTE = '/jdDump';
 	static MASTERCOUNTRYROUTE = '/master/country';
 	static MASTERCURRENCYROUTE = '/master/currency';
+	static MASTERROLE = '/master/role';
 	static SLA_REPORT = '/slaReport';
 	static I2S_REPORT = "/i2sReport";
 	static CLIENT_REPORT = "/clientReport";
@@ -277,6 +282,11 @@ export const navigateToComponent = {
 	[UTSRoutes.MASTERCURRENCYROUTE]: (
 		<Suspense>
 			<CurrencyList />
+		</Suspense>
+	),
+	[UTSRoutes.MASTERROLE]: (
+		<Suspense>
+			<RoleList />
 		</Suspense>
 	),
 	[UTSRoutes.I2S_REPORT]: (

@@ -674,3 +674,25 @@ s tr th:first-child {
 .demandFunnelModal [class*="ant-pagination"] {
     display: none;
 }
+
+/* for search in Role  */
+
+.searchFilterSet{
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    width: 250px;
+    height: 44px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.searchInput{
+    cursor: pointer;
+    width: 80%;
+    outline: none;
+    border: none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}

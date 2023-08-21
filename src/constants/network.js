@@ -155,8 +155,10 @@ export class MastersAPI {
 	static ADD_COUNTRY = 'AddCountry';
 	static GET_CURRENCY_EXCHANGE_RATE_LIST = 'GetCurrencyExchangeRateList';
 	static UPDATE_CURRENCY_EXCHANGE_RATE_LIST = 'UpdateCurrencyExchangeRate';
-	static GET_LEAD_USER = 'GetLeadUsers'
-	static GET_LEAD_BY_TYPE = 'GetLeadByLeadType'
+	static GET_LEAD_USER = 'GetLeadUsers';
+	static GET_LEAD_BY_TYPE = 'GetLeadByLeadType';
+	static GET_ROLES_LIST = 'GetTalentRoleMaster';
+	static UPDATE_TALENT_ROLE_STATUS = 'UpdateTalentRoleStatus';
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';

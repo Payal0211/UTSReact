@@ -34,7 +34,6 @@ export const MasterConfig = {
 					);
 				},
 			},
-
 			{
 				title: 'Currency Code',
 				dataIndex: 'currencyCode',
@@ -55,4 +54,31 @@ export const MasterConfig = {
 			},
 		];
 	},
+	roleTable:(onIsActiveSelect) => {
+		return [
+			{
+				title: 'Pitch Me Role',
+				dataIndex: 'pitchMeRole',
+				key: 'pitchMeRole',
+				align: 'left',
+			},
+			{
+				title: 'Role',
+				dataIndex: 'talentRole',
+				key: 'talentRole',
+				align: 'left',
+			},
+			{
+				title: 'Is Active',
+				dataIndex: 'isActive',
+				key: 'isActive',
+				align: 'left',
+				render: (data, param) => {	
+					return (						
+						!data ? <a onClick={() => onIsActiveSelect(param.id , true)}>Yes</a> : <a onClick={() => onIsActiveSelect(param.id , false)}>No</a>
+					);
+				},
+			},
+		];
+	}
 };
