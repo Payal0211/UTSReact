@@ -31,8 +31,9 @@ const CompanyDetails = ({
 	setCompanyName,
 	companyName,
 	control,
-	companyDetail, setCompanyDetail,getCompanyDetails
+	companyDetail, setCompanyDetail,getCompanyDetails, controlledFieldsProp
 }) => {
+	let {controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType} = controlledFieldsProp
 	const [GEO, setGEO] = useState([]);
 	const [leadSource, setLeadSource] = useState([]);
 	const [leadOwner, setLeadOwner] = useState([]);
@@ -64,10 +65,7 @@ const CompanyDetails = ({
 	const [getCompanyNameMessage, setCompanyNameMessage] = useState('');
 	const [showCompanyEmail, setShowCompanyEmail] = useState(false)
 
-	const [controlledCompanyLoacation, setControlledCompanyLoacation] = useState('Please Select')
-	const [controlledLeadSource, setControlledLeadSource] = useState('Please Select')
-	const [controlledLeadOwner, setControlledLeadOwner] = useState('Please Select')
-	const [controlledLeadType, setControlledLeadType] = useState('Please Select')
+	
 
 	let controllerRef = useRef(null);
 
@@ -181,9 +179,7 @@ const CompanyDetails = ({
 			if(data.length >= 4){
 				let companyAutofillData =
 				await HubSpotDAO.getAutoCompleteCompanyDAO(data);
-
-				// console.log({data, companyAutofillData})
-
+				setCompanyNameSuggestion([])
 				if(companyAutofillData.statusCode === HTTPStatusCode.OK){
 					setShowCompanyEmail(false)
 					setCompanyNameSuggestion(companyAutofillData.responseBody.map(item => ({...item, value: item.company})))
@@ -197,6 +193,12 @@ const CompanyDetails = ({
 		},
 		[setError, setValue],
 	);
+
+	// useEffect(() => {
+	// 	if(companyDetail.phone){
+	// 		setValue('phoneNumber',companyDetail.phone.slice(3))
+	// 	}
+	// },[companyDetail.phone,setValue])
 
 
 
@@ -242,7 +244,7 @@ const CompanyDetails = ({
 		if(companyDetail.leadUserID && leadOwner.length	> 0){
 			let filteredOwner = leadOwner?.filter(owner => owner.text == companyDetail.leadUserID)
 			if(filteredOwner.length){
-				setValue('companyLeadOwner',filteredOwner[0])
+				setValue('companyLeadOwner',{...filteredOwner[0], id: filteredOwner[0].text})
 				setControlledLeadOwner(filteredOwner[0].value)
 			}
 					}
@@ -392,7 +394,6 @@ const CompanyDetails = ({
 		if (watchCompanyLeadSource?.id !== 1) unregister('companyLeadSource');
 	}, [unregister, watchCompanyLeadSource?.id]);
 
-	// console.log('leadSource',leadSource)
 	return (
 		<div className={CompanyDetailsStyle.tabsFormItem}>
 			<div className={CompanyDetailsStyle.tabsFormItemInner}>
@@ -431,7 +432,7 @@ const CompanyDetails = ({
 											<Controller
 												render={({ ...props }) => (
 													<AutoComplete
-														options={getCompanyNameSuggestion}
+														options={getCompanyNameSuggestion.length > 0 ? getCompanyNameSuggestion : []}
 														onSelect={(clientName, data) =>
 															getCompanyValue(clientName,data)
 														}

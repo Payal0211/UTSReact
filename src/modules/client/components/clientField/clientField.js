@@ -47,7 +47,10 @@ const ClientField = ({
 	const [primaryClientFullName, setPrimaryClientFullName] = useState('');
 	const [primaryClientEN_ID, setPrimaryClientEN_ID] = useState('');
 	const [primaryClientEmail, setPrimaryClientEmail] = useState('');
+	const [legelInfoEN_ID, setLegelInfoEN_ID] = useState('')
 	const [isSavedLoading, setIsSavedLoading] = useState(false);
+
+	const [clientPOCs, setClientPOCs]  = useState([])
 	/** ---- Useform()  Starts here --------- */
 	const {
 		register,
@@ -57,6 +60,7 @@ const ClientField = ({
 		setError,
 		unregister,
 		getValues,
+		resetField,
 		watch,
 		formState: { errors },
 	} = useForm({
@@ -95,6 +99,18 @@ const ClientField = ({
 		'primaryClientCountryCode',
 	]);
 	/** -------- UseForm Ends here --------------- */
+
+	//** controlled fields */
+
+	const [controlledCompanyLoacation, setControlledCompanyLoacation] = useState('Please Select')
+	const [controlledLeadSource, setControlledLeadSource] = useState('Please Select')
+	const [controlledLeadOwner, setControlledLeadOwner] = useState('Please Select')
+	const [controlledLeadType, setControlledLeadType] = useState('Please Select')
+
+	const [controlledprimaryContactName, setControlledprimaryContactName] = useState('Please Select')
+	const [controlledsecondaryContactName, setControlledsecondaryContactName] = useState('Please Select')
+	const [controlledsecondaryONEContactName, setControlledsecondaryONEContactName] = useState('Please Select')
+	const [controlledsecondaryTWOContactName, setControlledsecondaryTWOContactName] = useState('Please Select')
 
 	const [companyDetail, setCompanyDetail] = useState({})
 	const [clientDetailCheckList,setClientDetailCheckList] = useState([])
@@ -138,8 +154,22 @@ const ClientField = ({
 			primaryClientFullName,
 			primaryClientEmail,
 			primaryClientEN_ID,
+			legelInfoEN_ID,
 			companyDetail
 		);
+
+		let newPOClist = d.pocList.map(contact => {
+			return {contactName: contact.contactName.id}
+		})
+		
+		if(d.secondaryContactName?.id){
+			newPOClist.unshift({contactName: d.secondaryContactName.id}) 
+		}
+		if(d.primaryContactName?.id){
+			newPOClist.unshift({contactName: d.primaryContactName.id}) 
+		}
+
+		clientFormDetails['pocList'] = newPOClist
 
 		if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(companyName)) {
@@ -215,19 +245,71 @@ const ClientField = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isSameAsPrimaryPOC]);
 
+	const resetAllFields = () => {
+
+		setCompanyDetail({})  
+		resetField('companyName')
+		resetField('companyURL')
+		resetField('companyLinkedinProfile')
+		resetField('companyAddress')
+		resetField('companySize')
+		resetField('phoneNumber')
+		setUploadFileData('')
+		setControlledCompanyLoacation('Please Select')
+		resetField('companyLocation')
+		setControlledLeadSource('Please Select')
+		resetField('companyLeadSource')
+		setControlledLeadType('Please Select')
+		resetField('companyInboundType')
+		setControlledLeadOwner('Please Select')
+		resetField('companyLeadOwner')
+
+		setPrimaryClientEN_ID('')
+		resetField('primaryClientName')
+		resetField('primaryClientEmailID')
+		resetField('primaryDesignation')
+		resetField('PrimaryClientLinkedinProfile')	
+		resetField('primaryClientPhoneNumber')
+		setClientDetailCheckList([])
+		fields.forEach((_, ind)=> remove(ind))
+
+   		setLegelInfoEN_ID('')
+		resetField('legalClientFullName')
+		resetField('legalClientEmailID')
+		resetField('legalClientDesignation')
+		resetField('legalCompanyFullName')
+		resetField('legalCompanyAddress')
+
+
+		setClientPOCs([])
+		pocFields.forEach((_,ind)=> removePOC(ind))
+		setControlledprimaryContactName('Please Select')
+		resetField('primaryContactName')
+		setControlledsecondaryContactName('Please Select')
+		resetField('secondaryContactName')
+		setControlledsecondaryONEContactName('Please Select')
+		setControlledsecondaryTWOContactName('Please Select')		
+			
+    }
 
 	const getCompanyDetails = async (ID) => {
+		resetAllFields()
 		let companyDetailsData = await HubSpotDAO.getCompanyDetailsDAO(ID)
 	
-
 		if(companyDetailsData.statusCode === HTTPStatusCode.OK){
-			const {companyDetails,contactDetails			} = companyDetailsData.responseBody
-			companyDetail && setCompanyDetail(companyDetails)  
+			const {companyDetails,contactDetails, companyContract ,contactPoc} = companyDetailsData.responseBody
+
+			companyDetails && setCompanyDetail(companyDetails)  
 			companyDetails?.companyName && setValue('companyName',companyDetails?.companyName)
 			companyDetails?.website && setValue('companyURL',companyDetails?.website)
 			companyDetails?.linkedInProfile	&& setValue('companyLinkedinProfile',companyDetails?.linkedInProfile)
 			companyDetails?.address	&& setValue('companyAddress',companyDetails?.address)
 			companyDetails?.companySize && setValue('companySize',companyDetails?.companySize)
+			// companyDetails?.phone && setValue('phoneNumber',companyDetails?.phone)
+			if(companyDetails?.phone){
+				setValue('phoneNumber',companyDetails?.phone?.slice(3))
+			}
+
 			if(companyDetails?.companyLogo){
 				setUploadFileData(companyDetails?.companyLogo)
 			}  
@@ -239,7 +321,14 @@ const ClientField = ({
 					contactDetailobj?.fullName && setValue('primaryClientName',contactDetailobj?.fullName)
 					contactDetailobj?.emailID && setValue('primaryClientEmailID',contactDetailobj?.emailID)
 					contactDetailobj?.designation && setValue('primaryDesignation',contactDetailobj?.designation)
-					contactDetailobj?.linkedIn && setValue('PrimaryClientLinkedinProfile',contactDetailobj?.linkedIn)					
+					contactDetailobj?.linkedIn && setValue('PrimaryClientLinkedinProfile',contactDetailobj?.linkedIn)	
+					if(contactDetailobj?.contactNo){
+						if(contactDetailobj?.contactNo.includes('+91')){
+							setValue('primaryClientPhoneNumber',contactDetailobj?.contactNo.slice(3))
+						}else{
+							setValue('primaryClientPhoneNumber',contactDetailobj?.contactNo)
+						}								
+					}						
 				}
 
 				if(contactDetails.length > 0 ){
@@ -249,9 +338,28 @@ const ClientField = ({
 					contactDetailobj?.emailID && setValue('primaryClientEmailID',contactDetailobj?.emailID)
 					contactDetailobj?.designation && setValue('primaryDesignation',contactDetailobj?.designation)
 					contactDetailobj?.linkedIn && setValue('PrimaryClientLinkedinProfile',contactDetailobj?.linkedIn)
-
+					if(contactDetailobj?.contactNo){
+						if(contactDetailobj?.contactNo.includes('+91')){
+							setValue('primaryClientPhoneNumber',contactDetailobj?.contactNo.slice(3))
+						}else{
+							setValue('primaryClientPhoneNumber',contactDetailobj?.contactNo)
+						}								
+					}	
 					setClientDetailCheckList(contactDetails)
 				}
+			}
+
+			if(companyContract.id){
+				companyContract?.en_Id && setLegelInfoEN_ID(companyContract?.en_Id)
+				companyContract?.signingAuthorityName && setValue('legalClientFullName',companyContract?.signingAuthorityName)
+				companyContract?.signingAuthorityEmail && setValue('legalClientEmailID',companyContract?.signingAuthorityEmail)
+				companyContract?.signingAuthorityDesignation && setValue('legalClientDesignation',companyContract?.signingAuthorityDesignation)
+				companyContract?.legalCompanyName && setValue('legalCompanyFullName',companyContract?.legalCompanyName)
+				companyContract?.legalCompanyAddress && setValue('legalCompanyAddress',companyContract?.legalCompanyAddress)
+			}
+
+			if(contactPoc){
+				setClientPOCs(contactPoc)
 			}
 		}
 	}
@@ -277,6 +385,7 @@ const ClientField = ({
 				companyDetail={companyDetail}
 				setCompanyDetail={setCompanyDetail}
 				getCompanyDetails={getCompanyDetails}
+				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>
 			<AddNewClient
 				setError={setError}
@@ -441,6 +550,9 @@ const ClientField = ({
 				register={register}
 				errors={errors}
 				watch={watch}
+				clientPOCs={clientPOCs}
+				controlledFieldsProp={{controlledprimaryContactName, setControlledprimaryContactName,controlledsecondaryContactName, setControlledsecondaryContactName,
+					controlledsecondaryONEContactName, setControlledsecondaryONEContactName,controlledsecondaryTWOContactName, setControlledsecondaryTWOContactName }}
 			/>
 			<div className={ClientFieldStyle.formPanelAction}>
 				{/* <button
