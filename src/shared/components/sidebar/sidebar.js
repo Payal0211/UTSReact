@@ -314,6 +314,15 @@ const getSideBar = (usertypeID) => {
 					isChildren: false,
 					branch: [],
 				}),
+				new SideBarModels({
+					id: 'Master_Currency_List',
+					title: 'Role',
+					isActive: false,
+					icon: GlobIcon,
+					navigateTo: UTSRoutes.MASTERROLE,
+					isChildren: false,
+					branch: [],
+				}),
 			],
 		}),
 	];

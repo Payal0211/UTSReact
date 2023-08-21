@@ -711,5 +711,38 @@ export const MasterAPI = {
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.getCurrencyRequest');
 		}
+	},
+	getRolesListRequest:async function (rolesDetails){
+		let httpService = new HttpServices();
+		// httpService.URL =
+		// 	NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_START_END_TIME;
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.GET_ROLES_LIST;	
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = rolesDetails;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCurrencyRequest');
+		}
+	},
+	updateRoleStatus:async function(id,isActive){
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.UPDATE_TALENT_ROLE_STATUS+ `?id=${id}&status=${isActive}`;	
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCurrencyRequest');
+		}
 	}
 };

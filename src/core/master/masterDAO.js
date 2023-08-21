@@ -1349,4 +1349,64 @@ export const MasterDAO = {
 			);
 		}
 	},
+
+	getRolesListRequestDAO :async function (data) {
+		try {
+			const rolesListResponse =
+				await MasterAPI.getRolesListRequest(data);
+			if (rolesListResponse) {
+				const statusCode = rolesListResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = rolesListResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return rolesListResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return rolesListResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.getRolesListRequestDAO',
+			);
+		}
+	},
+
+	updateTalentRoleStatus :async function (id,isActive){
+		try {
+			const roleStatusResponse =
+				await MasterAPI.updateRoleStatus(id,isActive);
+			if (roleStatusResponse) {
+				const statusCode = roleStatusResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = roleStatusResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.updateTalentRoleStatus',
+			);
+		}
+	}
 };
