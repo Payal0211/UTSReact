@@ -7,10 +7,10 @@ import { Navigate } from 'react-router-dom';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const clientHappinessSurveyRequestDAO = {
-	getClientHappinessSurveyListDAO: async function (data) {
+	getClientHappinessSurveyListDAO: async function (data,isExport) {
 		try {
 			const clientHappinessSurveyListResult = await ClientHappinessSurveyRequestAPI.getClientSurveyList(
-				data,
+				data,isExport
 			);
 			if (clientHappinessSurveyListResult) {
 				const statusCode = clientHappinessSurveyListResult['statusCode'];
