@@ -44,18 +44,18 @@ export const engagementUtils = {
 				: '',
 			payRate: item?.payRate ? item?.payRate : '',
 			actualPayRate: item?.actualPayRate
-				? item?.actualPayRate + ' ' + item?.billRateCurrency
+				? item?.actualPayRate + ' ' + item?.payRateCurrency
 				: '',
 			contractStartDate: item?.contractStartDate
 				? item?.contractStartDate
 				: '',
 			contractEndDate: item?.contractEndDate ? item?.contractEndDate : '',
 			dpAmount: item?.dpAmount
-				? item?.dpAmount + ' ' + item?.billRateCurrency
+				? item?.dpAmount + ' ' + item?.payRateCurrency
 				: '',
 			actualEndDate: item?.actualEndDate ? item?.actualEndDate : '',
 			nr: item?.nr ? item?.nr : '',
-			actualNR: item?.actualNR ? item?.actualNR + ' ' + item?.billRateCurrency  : '',
+			actualNR: item?.actualNR ? item?.actualNR + ' ' + item?.payRateCurrency  : '',
 			dP_Percentage: item?.dP_Percentage ? item?.dP_Percentage : '',
 			renewalstartDate: item?.renewalstartDate ? item?.renewalstartDate : '',
 			renewalendDate: item?.renewalendDate ? item?.renewalendDate : '',

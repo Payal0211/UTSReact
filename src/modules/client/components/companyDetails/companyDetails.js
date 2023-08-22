@@ -453,13 +453,13 @@ const CompanyDetails = ({
 													validate,
 												})}
 												name="companyName"
-												// rules={{ required: true }}
+												rules={{ required: true }}
 												control={control}
 											/>
-											{errors.clientName && (
+											{errors.companyName && (
 												<div className={CompanyDetailsStyle.error}>
-													{errors.clientName?.message &&
-														`* ${errors?.clientName?.message}`}
+													{errors.companyName?.message ?
+														`* ${errors?.companyName?.message}` : '* please select a company.' }
 												</div>
 											)}
 							</div>

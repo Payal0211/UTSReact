@@ -38,7 +38,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 
  const ClienthappinessSurvey =()=> {
     const navigate = useNavigate();
-    const[selecteDateOption,setSelectDateOption] = useState(true);
+    // const[selecteDateOption,setSelectDateOption] = useState(true);
     const [generateLink, setGenerateLink] = useState(false);
     const {
 		register,
@@ -492,6 +492,33 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 								value={debouncedSearch}
 							/>
 						</div>
+                        <div className={clienthappinessSurveyStyles.FeedbackDatedetail}>
+                <Radio.Group
+                        defaultValue={"c"}
+                        className={clienthappinessSurveyStyles.radioCustomModal}                        
+                    >
+                        <Radio value={"c"}  className={clienthappinessSurveyStyles.radioCustomGroup} onChange={() => {
+                            setTableFilteredState(prevState => ({
+                                ...prevState,
+                                filterFields_HappinessSurvey: {
+                                  ...prevState.filterFields_HappinessSurvey,
+                                  selectedFormat:"c"
+                                }
+                              }));
+                        }}>
+                        Created date
+                        </Radio>
+                        <Radio value={"f"}  className={clienthappinessSurveyStyles.radioCustomGroup} onChange={() => {
+                            setTableFilteredState(prevState => ({
+                                ...prevState,
+                                filterFields_HappinessSurvey: {
+                                  ...prevState.filterFields_HappinessSurvey,
+                                  selectedFormat:"f"
+                                }
+                              }));
+                        }}>Feedback date</Radio>                    
+                </Radio.Group>
+			</div>
 
                         <div className={clienthappinessSurveyStyles.ratingFilterWrap}>
                             <div className={clienthappinessSurveyStyles.label}>Rating</div>
@@ -798,52 +825,6 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 		</div>
     </Modal>
 
-    <Modal 
-        transitionName=""
-        className="commonModalWrap"
-        centered
-        open={selecteDateOption}
-        width="440px"
-        footer={null}
-        onCancel={() => {
-            setSelectDateOption(false);
-        }}>
-
-        <div className={`${clienthappinessSurveyStyles.engagementModalWrap} ${clienthappinessSurveyStyles.generateLinkModal}`}>
-			<div className={`${clienthappinessSurveyStyles.headingContainer} ${clienthappinessSurveyStyles.addFeebackContainer}`}>
-				<h1>Select Date Type</h1>
-			</div>
-
-			<div className={clienthappinessSurveyStyles.FeedbackDatedetail}>
-                <Radio.Group
-                        defaultValue={"c"}
-                        className={clienthappinessSurveyStyles.radioCustomModal}                        
-                    >
-                        <Radio value={"c"}  className={clienthappinessSurveyStyles.radioCustomGroup} onChange={() => {
-                            setTableFilteredState(prevState => ({
-                                ...prevState,
-                                filterFields_HappinessSurvey: {
-                                  ...prevState.filterFields_HappinessSurvey,
-                                  selectedFormat:"c"
-                                }
-                              }));
-                        }}>
-                        Created date
-                        </Radio>
-                        <Radio value={"f"}  className={clienthappinessSurveyStyles.radioCustomGroup} onChange={() => {
-                            setTableFilteredState(prevState => ({
-                                ...prevState,
-                                filterFields_HappinessSurvey: {
-                                  ...prevState.filterFields_HappinessSurvey,
-                                  selectedFormat:"f"
-                                }
-                              }));
-                        }}>Feedback date</Radio>                    
-                </Radio.Group>
-			</div>
-			
-		</div>
-    </Modal>
 
     </>
   )

@@ -105,7 +105,9 @@
 .formGroup .ant-select {
     width: 100%;
 }
-
+.error{
+    color:red
+}
 .reqField {
     color: var(--uplers-black);
     font-weight: 700;
