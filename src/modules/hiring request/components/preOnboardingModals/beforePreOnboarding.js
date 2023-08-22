@@ -146,7 +146,8 @@ export default function BeforePreOnboarding({
             .utS_HRAcceptedBy
         );
 
-        setValue(
+        result.responseBody.details.preOnboardingDetailsForAMAssignment
+                .shiftStartTime && setValue(
           "shiftStartTime",
           // new Date(
             convertToValidDate(
@@ -155,7 +156,8 @@ export default function BeforePreOnboarding({
             )
           // )
         );
-        setValue(
+        result.responseBody.details.preOnboardingDetailsForAMAssignment
+        .shiftEndTime && setValue(
           "shiftEndTime",
           // new Date(
             convertToValidDate(
@@ -566,7 +568,7 @@ export default function BeforePreOnboarding({
                         type={InputType.TEXT}
                         placeholder="Net Payment Term"
                         validationSchema={{
-                          required: "please enter the Net Payment Term.",
+                          required: "please select Net Payment Term.",
                           min: 1
                         }}
                         isError={errors["netTerm"] && errors["netTerm"]}

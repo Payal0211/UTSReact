@@ -146,129 +146,212 @@ const TeamDemandFunnelScreen = () => {
 			}
 		});
 
-		for (let i = tempArray.length - 1; i >= 1; i = i - 3) {
-			finalArray.push(tempArray[i]);
-			finalArray.push(tempArray.slice(i - 2, i));
-		}
-		return finalArray.slice(1);
+		// for (let i = tempArray.length - 1; i >= 1; i = i - 3) {
+		// 	finalArray.push(tempArray[i]);
+		// 	finalArray.push(tempArray.slice(i - 2, i))
+		// 	//  tempArray.slice(i - 2, i).length && finalArray.push(tempArray.slice(i - 2, i)) ;
+		// }
+		// return finalArray.slice(1);
+		return tempArray.slice(1)
 	}, [apiData]);
 
 	/** Grouped Column Table */
 	const GroupedColumn = useCallback(() => {
-		let ColumnData = [];
-		for (let i = 0; i < groupedColumnDataMemo?.length - 1; i = i + 2) {
-			let comp = (
-				<ColumnGroup title={groupedColumnDataMemo[i]}>
-					<Column
-						title="Odr"
-						dataIndex={groupedColumnDataMemo[i + 1][0]}
-						key={groupedColumnDataMemo[i + 1][0]}
-						render={(text, param) => (
-							<Tooltip
-								placement="bottomLeft"
-								title={text}>
-								<p
-									style={{
-										textDecoration: 'underline',
-										cursor: text === 0 ? 'no-drop' : 'pointer',
-									}}
-									onClick={
-										text === 0
-											? null
-											: () => {
-													setTeamDemandHRDetailsModal(true);
-													setTeamDemandValue({
-														stage: param?.Stage,
-														count: text,
-													});
-													setTeamDemandFunnelHRDetailsState({
-														...teamDemandFunnelHRDetailsState,
-														adhocType: 'Odr',
-														currentStage: param.Stage,
-														selectedRow_SalesUserName: groupedColumnDataMemo[i],
-													});
-											  }
-									}>
-									{text}
-								</p>
-							</Tooltip>
-						)}
-					/>
-					<Column
-						title="Pool"
-						dataIndex={groupedColumnDataMemo[i + 1][1]}
-						key={groupedColumnDataMemo[i + 1][1]}
-						render={(text, param) => (
-							<Tooltip
-								placement="bottomLeft"
-								title={text}>
-								<p
-									style={{
-										textDecoration: 'underline',
-										cursor: text === 0 ? 'no-drop' : 'pointer',
-									}}
-									onClick={
-										text === 0
-											? null
-											: () => {
-													setTeamDemandHRDetailsModal(true);
-													setTeamDemandValue({
-														stage: param?.Stage,
-														count: text,
-													});
-													setTeamDemandFunnelHRDetailsState({
-														...teamDemandFunnelHRDetailsState,
-														adhocType: 'Pool',
-														currentStage: param.Stage,
-														selectedRow_SalesUserName: groupedColumnDataMemo[i],
-													});
-											  }
-									}>
-									{text}
-								</p>
-							</Tooltip>
-						)}
-					/>
-					<Column
-						title="Total"
-						dataIndex={groupedColumnDataMemo[i]}
-						key={groupedColumnDataMemo[i]}
-						render={(text, param) => (
-							<Tooltip
-								placement="bottomLeft"
-								title={text}>
-								<p
-									style={{
-										textDecoration: 'underline',
-										cursor: text === 0 ? 'no-drop' : 'pointer',
-									}}
-									onClick={
-										text === 0
-											? null
-											: () => {
-													setTeamDemandHRDetailsModal(true);
-													setTeamDemandValue({
-														stage: param?.Stage,
-														count: text,
-													});
-													setTeamDemandFunnelHRDetailsState({
-														...teamDemandFunnelHRDetailsState,
-														adhocType: 'Total',
-														currentStage: param.Stage,
-														selectedRow_SalesUserName: groupedColumnDataMemo[i],
-													});
-											  }
-									}>
-									{text}
-								</p>
-							</Tooltip>
-						)}
-					/>
-				</ColumnGroup>
-			);
-			ColumnData.push(comp);
-		}
-		return ColumnData;
+		// let ColumnData = [];
+		// for (let i = 0; i < groupedColumnDataMemo?.length ; i = i + 2) {
+		// 	let comp = groupedColumnDataMemo.map(title => (
+		// 		<Column
+		// 				title={title}
+		// 				dataIndex={title}
+		// 				key={title}
+		// 				render={(text, param) => {
+							
+		// 					return (
+		// 					<Tooltip
+		// 						placement="bottomLeft"
+		// 						title={text}>
+		// 						<p
+		// 							style={{
+		// 								textDecoration: 'underline',
+		// 								cursor: text === 0 ? 'no-drop' : 'pointer',
+		// 							}}
+		// 							onClick={
+		// 								text === 0
+		// 									? null
+		// 									: () => {
+		// 											setTeamDemandHRDetailsModal(true);
+		// 											setTeamDemandValue({
+		// 												stage: param?.Stage,
+		// 												count: text,
+		// 											});
+		// 											setTeamDemandFunnelHRDetailsState({
+		// 												...teamDemandFunnelHRDetailsState,
+		// 												adhocType: 'Odr',
+		// 												currentStage: param.Stage,
+		// 												selectedRow_SalesUserName: groupedColumnDataMemo[i],
+		// 											});
+		// 									  }
+		// 							}>
+		// 							{text}
+		// 						</p>
+		// 					</Tooltip>
+		// 				)}}
+		// 			/>
+		// 		// <ColumnGroup title={groupedColumnDataMemo[i]}>
+		// 		// 	{/* <Column
+		// 		// 		title="Odr"
+		// 		// 		dataIndex={groupedColumnDataMemo[i + 1][0]}
+		// 		// 		key={groupedColumnDataMemo[i + 1][0]?groupedColumnDataMemo[i + 1][0] : "Additional Info" }
+		// 		// 		render={(text, param) => {
+		// 		// 			return (
+		// 		// 			<Tooltip
+		// 		// 				placement="bottomLeft"
+		// 		// 				title={text}>
+		// 		// 				<p
+		// 		// 					style={{
+		// 		// 						textDecoration: 'underline',
+		// 		// 						cursor: text === 0 ? 'no-drop' : 'pointer',
+		// 		// 					}}
+		// 		// 					onClick={
+		// 		// 						text === 0
+		// 		// 							? null
+		// 		// 							: () => {
+		// 		// 									setTeamDemandHRDetailsModal(true);
+		// 		// 									setTeamDemandValue({
+		// 		// 										stage: param?.Stage,
+		// 		// 										count: text,
+		// 		// 									});
+		// 		// 									setTeamDemandFunnelHRDetailsState({
+		// 		// 										...teamDemandFunnelHRDetailsState,
+		// 		// 										adhocType: 'Odr',
+		// 		// 										currentStage: param.Stage,
+		// 		// 										selectedRow_SalesUserName: groupedColumnDataMemo[i],
+		// 		// 									});
+		// 		// 							  }
+		// 		// 					}>
+		// 		// 					{text}
+		// 		// 				</p>
+		// 		// 			</Tooltip>
+		// 		// 		)}}
+		// 		// 	/>
+		// 		// 	<Column
+		// 		// 		title="Pool"
+		// 		// 		dataIndex={groupedColumnDataMemo[i + 1][1]}
+		// 		// 		key={groupedColumnDataMemo[i + 1][1]}
+		// 		// 		render={(text, param) => {
+		// 		// 			return (
+		// 		// 			<Tooltip
+		// 		// 				placement="bottomLeft"
+		// 		// 				title={text}>
+		// 		// 				<p
+		// 		// 					style={{
+		// 		// 						textDecoration: 'underline',
+		// 		// 						cursor: text === 0 ? 'no-drop' : 'pointer',
+		// 		// 					}}
+		// 		// 					onClick={
+		// 		// 						text === 0
+		// 		// 							? null
+		// 		// 							: () => {
+		// 		// 									setTeamDemandHRDetailsModal(true);
+		// 		// 									setTeamDemandValue({
+		// 		// 										stage: param?.Stage,
+		// 		// 										count: text,
+		// 		// 									});
+		// 		// 									setTeamDemandFunnelHRDetailsState({
+		// 		// 										...teamDemandFunnelHRDetailsState,
+		// 		// 										adhocType: 'Pool',
+		// 		// 										currentStage: param.Stage,
+		// 		// 										selectedRow_SalesUserName: groupedColumnDataMemo[i],
+		// 		// 									});
+		// 		// 							  }
+		// 		// 					}>
+		// 		// 					{text}
+		// 		// 				</p>
+		// 		// 			</Tooltip>
+		// 		// 		)}}
+		// 		// 	/>
+		// 		// 	<Column
+		// 		// 		title="Total"
+		// 		// 		dataIndex={groupedColumnDataMemo[i]}
+		// 		// 		key={groupedColumnDataMemo[i]}
+		// 		// 		render={(text, param) => {
+		// 		// 			return (
+		// 		// 			<Tooltip
+		// 		// 				placement="bottomLeft"
+		// 		// 				title={text}>
+		// 		// 				<p
+		// 		// 					style={{
+		// 		// 						textDecoration: 'underline',
+		// 		// 						cursor: text === 0 ? 'no-drop' : 'pointer',
+		// 		// 					}}
+		// 		// 					onClick={
+		// 		// 						text === 0
+		// 		// 							? null
+		// 		// 							: () => {
+		// 		// 									setTeamDemandHRDetailsModal(true);
+		// 		// 									setTeamDemandValue({
+		// 		// 										stage: param?.Stage,
+		// 		// 										count: text,
+		// 		// 									});
+		// 		// 									setTeamDemandFunnelHRDetailsState({
+		// 		// 										...teamDemandFunnelHRDetailsState,
+		// 		// 										adhocType: 'Total',
+		// 		// 										currentStage: param.Stage,
+		// 		// 										selectedRow_SalesUserName: groupedColumnDataMemo[i],
+		// 		// 									});
+		// 		// 							  }
+		// 		// 					}>
+		// 		// 					{text}
+		// 		// 				</p>
+		// 		// 			</Tooltip>
+		// 		// 		)}}
+		// 		// 	/> */}
+		// 		// </ColumnGroup>
+		// 	)) 
+		// 	ColumnData.push(comp);
+		// }
+		// return ColumnData;
+		let comp = groupedColumnDataMemo.map(title => (
+			<Column
+					title={title}
+					dataIndex={title}
+					key={title}
+					render={(text, param) => {
+						
+						return (
+						<Tooltip
+							placement="bottomLeft"
+							title={text}>
+							<p
+								style={{
+									textDecoration: 'underline',
+									cursor: text === 0 ? 'no-drop' : 'pointer',
+								}}
+								onClick={
+									text === 0
+										? null
+										: () => {
+												setTeamDemandHRDetailsModal(true);
+												setTeamDemandValue({
+													stage: param?.Stage,
+													count: text,
+												});
+												setTeamDemandFunnelHRDetailsState({
+													...teamDemandFunnelHRDetailsState,
+													adhocType: 'Odr',
+													currentStage: param.Stage,
+													selectedRow_SalesUserName: title,
+												});
+										  }
+								}>
+								{text}
+							</p>
+						</Tooltip>
+					)}}
+				/>
+			
+		)) 
+		return comp
 	}, [groupedColumnDataMemo, teamDemandFunnelHRDetailsState]);
 
 	const onCalenderFilter = (dates) => {
@@ -594,6 +677,7 @@ const TeamDemandFunnelScreen = () => {
 	useEffect(() => {
 		getReportFilterHandler();
 	}, [getReportFilterHandler]);
+
 	return (
 		<>
 			{apiData?.length > 0 && selectedHierarchy && (
