@@ -345,8 +345,8 @@ export default function HRReport() {
   );
 
   const tableColumnsMemo = useMemo(
-    () => reportConfig.hrPopupReportConfig(),
-    []
+    () => reportConfig.hrPopupReportConfig(hrStage),
+    [hrStage]
   );
 
   const onRemoveDealFilters = () => {

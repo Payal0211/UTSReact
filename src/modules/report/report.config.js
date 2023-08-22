@@ -1270,7 +1270,56 @@ export const reportConfig = {
 			},
 		];
 	},
-	hrPopupReportConfig: () => {
+	hrPopupReportConfig: (hrStage) => {
+		if(hrStage === 'HR where at least 1 profiles is shared in 5 days' || hrStage === 'HR where 3 profiles are shared in 5 days' || hrStage === 'HR where no profiles are shared' ){
+		return	[
+				{
+					title: 'Client',
+					dataIndex: 'fullName',
+					key: 'fullName',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Company Name',
+					dataIndex: 'company',
+					key: 'company',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},		
+				{
+					title: 'HR #',
+					dataIndex: 'hR_NUMBER',
+					key: 'hR_NUMBER',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'role',
+					dataIndex: 'role',
+					key: 'role',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'HR Status',
+					dataIndex: 'hR_Status',
+					key: 'hR_Status',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+			]
+		}
 		return [
 			{
 				title: 'Client',
