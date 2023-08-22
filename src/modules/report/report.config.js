@@ -1301,7 +1301,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'role',
+					title: 'HR Role',
 					dataIndex: 'role',
 					key: 'role',
 					align: 'left',
