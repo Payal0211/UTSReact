@@ -8,6 +8,7 @@ import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { InputType } from 'constants/application';
+import { downloadToExcel } from 'modules/report/reportUtils';
 
 const RoleList = () => {	
     const [isLoading, setLoading] = useState(false);
@@ -66,6 +67,15 @@ const RoleList = () => {
         setTableFilteredState({...tableFilteredState,searchText:e.target.value});
         setPageIndex(1);        
     } 
+	const handleExport = (apiData) => {
+		let DataToExport =  apiData.map(data => {
+			let obj = {}			
+			tableColumnsMemo.map(val => val.title !== ' ' && (obj[`${val.title}`] = data[`${val.dataIndex}`]))		
+			return obj;
+			}
+		 )
+		downloadToExcel(DataToExport);
+	}
 
 	return (
 		<div className={CurrencyListStyle.hiringRequestContainer}>
@@ -73,18 +83,25 @@ const RoleList = () => {
 				<div className={CurrencyListStyle.hiringRequest}>
 					Roles List
 				</div>
-                <div>              
-                <div className={CurrencyListStyle.searchFilterSet}>
-                    <SearchSVG style={{ width: '16px', height: '16px' }} />
-                    <input
-                        type={InputType.TEXT}
-                        placeholder="Search via role"
-                        onChange={onSearch}
-                        value={tableFilteredState.searchText}
-                        className={CurrencyListStyle.searchInput}
-                    />
-				</div>
-            </div>
+                <div className={CurrencyListStyle.headerContainer}>              
+					<div className={CurrencyListStyle.searchFilterSet}>
+						<SearchSVG style={{ width: '16px', height: '16px' }} />
+						<input
+							type={InputType.TEXT}
+							placeholder="Search via role"
+							onChange={onSearch}
+							value={tableFilteredState.searchText}
+							className={CurrencyListStyle.searchInput}
+						/>
+					</div>
+					<div>
+						<button
+							className={CurrencyListStyle.btnPrimary}								
+							onClick={() => handleExport(apiData)}>
+							Export
+						</button>
+					</div>
+            	</div>				
 			</div>
          
 			<br />			
