@@ -57,9 +57,9 @@ export const MasterConfig = {
 	roleTable:(onIsActiveSelect) => {
 		return [
 			{
-				title: 'Pitch Me Role',
-				dataIndex: 'pitchMeRole',
-				key: 'pitchMeRole',
+				title: 'Pitch Me RoleID',
+				dataIndex: 'pitchMeRoleID',
+				key: 'pitchMeRoleID',
 				align: 'left',
 			},
 			{
