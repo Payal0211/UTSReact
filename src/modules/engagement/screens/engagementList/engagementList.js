@@ -11,6 +11,11 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
 import allEngagementStyles from './engagement.module.css';
 import { InputType } from 'constants/application';
+
+import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
+import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
+import allengagementAddFeedbackStyles from '../engagementBillAndPayRate/engagementBillRate.module.css';
+
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
@@ -125,6 +130,9 @@ const EngagementList = () => {
 	const [feedBackTypeEdit, setFeedbackTypeEdit] = useState('Please select');
 	const [rateReason, setRateReason] = useState(undefined);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
+
+	const [isOpen,setOpen] = useState(false);
+	const [isOpenAdd,setOpenAdd] = useState(false);
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -648,6 +656,11 @@ const EngagementList = () => {
 								// 	defaultCurrent: pageIndex,
 								// }}
 							/>
+
+							<div className=''>
+								<button onClick={()=>{setOpenAdd(true)}}>Add TSC</button>
+								<button onClick={()=>{setOpen(true)}}>Edit TSC</button>
+							</div>
 						</WithLoader>
 					)}
 				</div>
@@ -919,6 +932,180 @@ const EngagementList = () => {
 						/>
 					</Modal>
 				)}
+
+				{/** ============ MODAL FOR ADD TSC  ================ */}
+				{isOpenAdd && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className={allEngagementStyles.engagementaddtscModal}
+						open={isOpenAdd}
+						onCancel={() =>
+							setOpenAdd(false)
+						}
+						>
+						{/* <EngagementOnboard
+							getOnboardFormDetails={getOnboardFormDetails}
+							getHRAndEngagementId={getHRAndEngagementId}
+							scheduleTimezone={scheduleTimezone}
+						/> */}
+						<div className={allengagementAddFeedbackStyles.engagementModalWrap}>
+							<div className={` ${allengagementAddFeedbackStyles.headingContainer} ${allengagementAddFeedbackStyles.payRateAndBillrateWrapper} `}>
+								<div className="tableaddTitle">
+									<h2>Add TSC Name</h2>
+									<p>Engagement ID : <b>EN123456789012</b>  | Talent Name : <b>Velma Balaji Reddy</b></p>
+								</div>
+							</div>
+						
+						<div className={allengagementAddFeedbackStyles.row}>
+							<div className={allengagementAddFeedbackStyles.colMd6}>
+								<HRSelectField
+										// mode='id/value'
+										// controlledValue={feedBackTypeEdit}
+										// setControlledValue={setFeedbackTypeEdit}
+										// isControlled={true}
+										// setValue={setValue}
+										register={register}
+										name="Add TSC"
+										label="Add TSC Name "
+										defaultValue="Sushma"
+										// options={getFeedbackFormContent.drpFeedbackType?.filter((item) => item?.value !== "0")}
+										required
+										// isError={
+										// 	errors['feedbackType'] && errors['feedbackType']
+										// }
+										// errorMsg="Please select a feedbacktype."
+									/>
+							</div>
+						</div>
+
+						<div className={allengagementAddFeedbackStyles.formPanelAction}>
+							<button
+								// disabled={isLoading}
+								type="submit"
+								// onClick={handleSubmit(submitFeedbacHandler)}
+								className={allengagementAddFeedbackStyles.btnPrimary}>
+								Add TSC
+							</button>
+							<button
+								// onClick={() => {
+
+								// 	onCancel()
+								// }}
+								className={allengagementAddFeedbackStyles.btn}>
+								NO
+							</button>
+						</div>
+						
+					  </div>
+					</Modal>
+				)}
+
+				{/** ============ MODAL FOR Edit TSC  ================ */}
+				{isOpen && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className={allEngagementStyles.engagementaddtscModal}
+						open={isOpen}
+						onCancel={() =>
+							setOpen(false)
+						}
+						>
+						{/* <EngagementOnboard
+							getOnboardFormDetails={getOnboardFormDetails}
+							getHRAndEngagementId={getHRAndEngagementId}
+							scheduleTimezone={scheduleTimezone}
+						/> */}
+						<div className={allengagementAddFeedbackStyles.engagementModalWrap}>
+							<div className={` ${allengagementAddFeedbackStyles.headingContainer} ${allengagementAddFeedbackStyles.payRateAndBillrateWrapper} `}>
+								<div className="tableaddTitle">
+									<h2>Edit TSC Name</h2>
+									<p>Engagement ID : <b>EN123456789012</b>  | Talent Name : <b>Velma Balaji Reddy</b></p>
+								</div>
+							</div>
+						
+						<div className={allengagementAddFeedbackStyles.row}>
+							<div className={allengagementAddFeedbackStyles.colMd6}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter bill rate manually.',
+									}}
+									label="Current TSC Name"
+									name="finalBillRate"
+									// onChangeHandler={(e)=>nrPercentageBR(e)}
+									type={InputType.TEXT}
+									placeholder="Roma"
+									required
+									disabled
+								/>
+							</div>
+
+							<div className={allengagementAddFeedbackStyles.colMd6}>
+								<HRSelectField
+									// mode='id/value'
+									// controlledValue={feedBackTypeEdit}
+									// setControlledValue={setFeedbackTypeEdit}
+									// isControlled={true}
+									// setValue={setValue}
+									register={register}
+									name="TSC Name"
+									label="Select New TSC Name"
+									defaultValue="Sushma"
+									// options={getFeedbackFormContent.drpFeedbackType?.filter((item) => item?.value !== "0")}
+									required
+									// isError={
+									// 	errors['feedbackType'] && errors['feedbackType']
+									// }
+									// errorMsg="Please select a feedbacktype."
+								/>
+							</div>
+
+							<div className={allengagementAddFeedbackStyles.colMd12}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: 'please enter bill rate manually.',
+									}}
+									label="Reason for editing TSC Name"
+									name="TSCName"
+									// onChangeHandler={(e)=>nrPercentageBR(e)}
+									type={InputType.TEXT}
+									placeholder="Roma is going on casual leave for 10 days."
+									required
+								/>
+							</div>
+
+						</div>
+
+						<div className={allengagementAddFeedbackStyles.formPanelAction}>
+							<button
+								// disabled={isLoading}
+								type="submit"
+								// onClick={handleSubmit(submitFeedbacHandler)}
+								className={allengagementAddFeedbackStyles.btnPrimary}>
+								Save TSC Name
+							</button>
+							<button
+								// onClick={() => {
+
+								// 	onCancel()
+								// }}
+								className={allengagementAddFeedbackStyles.btn}>
+								Cancel
+							</button>
+						</div>
+					 </div>					
+					</Modal>
+				)}
+
 			</div>
 		</div>
 	);
