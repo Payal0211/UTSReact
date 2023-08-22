@@ -1431,7 +1431,7 @@ if(DID){
 										mode={'id/value'}
 										setValue={setValue}
 										register={register}
-										label={'Add your estimated budget'}
+										label={'Add your estimated budget (Monthly)'}
 										defaultValue="Select Budget"
 										options={budgets.map((item) => ({
 											id: item.id,

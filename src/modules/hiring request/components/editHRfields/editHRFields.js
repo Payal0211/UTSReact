@@ -1583,7 +1583,7 @@ const EditHRFields = ({
 									isControlled={true}
 									setValue={setValue}
 									register={register}
-									label={'Add your estimated budget'}								
+									label={'Add your estimated budget (Monthly)'}								
 									options={budgets.map((item) => ({
 										id: item.id,
 										label: item.text,
