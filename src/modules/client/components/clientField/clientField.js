@@ -225,6 +225,7 @@ const ClientField = ({
 				});
 		}
 		}else{
+			setIsSavedLoading(false)
 			return setError('companyName', {
 				type: 'emptyCompanyName',
 				message: 'please select a company.',
