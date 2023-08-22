@@ -169,7 +169,7 @@ const ClientField = ({
 			newPOClist.unshift({contactName: d.primaryContactName.id}) 
 		}
 
-		clientFormDetails['pocList'] = newPOClist
+		clientFormDetails['pocList'] = newPOClist		
 
 		if (type === SubmitType.SAVE_AS_DRAFT) {
 			if (_isNull(companyName)) {
@@ -191,7 +191,8 @@ const ClientField = ({
 		} else if (type !== SubmitType.SAVE_AS_DRAFT) {
 			setType(SubmitType.SAVE_AS_DRAFT);
 		}
-		const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
+		if(companyDetail.en_Id){
+        	const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
 
 		if (addClientResult.statusCode === HTTPStatusCode.OK) {
 			setIsSavedLoading(false)
@@ -223,6 +224,13 @@ const ClientField = ({
 					content: 'Client details has been saved to draft.',
 				});
 		}
+		}else{
+			return setError('companyName', {
+				type: 'emptyCompanyName',
+				message: 'please select a company.',
+			})
+		}
+		
 			setIsSavedLoading(false)
 	};
 	/** Submit the client form Ends */
