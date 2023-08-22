@@ -286,3 +286,43 @@
     align-items: center ;
     flex-wrap: wrap;
 }
+
+
+/* add tsc modal css */
+
+.engagementaddtscModal  [class*="ant-modal-content"]{
+    background-color: #fff !important;
+}
+
+.engagementaddtscModal  [class*="ant-modal-body"]{
+    padding:40px;
+}
+
+.engagementaddtscModal h2{
+    color: #232323;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-bottom: 10px;
+}
+
+.engagementaddtscModal p{
+    color: #7C7C7C;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-bottom: 25px;
+}
+
+
+.engagementaddtscModal p b{
+    color: #232323;
+    font-weight: 400;
+}
+
+.engagementaddtscModal  [class*="tableaddTitle"]{
+    border-bottom: 1px dashed #E8E8E8;
+    margin-bottom: 26px;
+}
