@@ -1431,7 +1431,7 @@ if(DID){
 										mode={'id/value'}
 										setValue={setValue}
 										register={register}
-										label={'Add your estimated budget'}
+										label={'Add your estimated budget (Monthly)'}
 										defaultValue="Select Budget"
 										options={budgets.map((item) => ({
 											id: item.id,
@@ -1466,7 +1466,7 @@ if(DID){
 							</div>
 							<div className={HRFieldStyle.colMd4}>
 								<HRInputField
-									label={'Minimum Budget'}
+									label={'Minimum Budget (Monthly)'}
 									register={register}
 									name="minimumBudget"
 									type={InputType.NUMBER}
@@ -1486,7 +1486,7 @@ if(DID){
 
 							<div className={HRFieldStyle.colMd4}>
 								<HRInputField
-									label={'Maximum Budget'}
+									label={'Maximum Budget (Monthly)'}
 									register={register}
 									name="maximumBudget"
 									type={InputType.NUMBER}

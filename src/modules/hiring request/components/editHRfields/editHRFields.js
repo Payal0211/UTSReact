@@ -1583,7 +1583,7 @@ const EditHRFields = ({
 									isControlled={true}
 									setValue={setValue}
 									register={register}
-									label={'Add your estimated budget'}								
+									label={'Add your estimated budget (Monthly)'}								
 									options={budgets.map((item) => ({
 										id: item.id,
 										label: item.text,
@@ -1618,7 +1618,7 @@ const EditHRFields = ({
 							</div>
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
-								label={'Minimum Budget'}
+								label={'Minimum Budget (Monthly)'}
 								register={register}
 								name="minimumBudget"
 								type={InputType.NUMBER}
@@ -1638,7 +1638,7 @@ const EditHRFields = ({
 
 						<div className={HRFieldStyle.colMd4}>
 							<HRInputField
-								label={'Maximum Budget'}
+								label={'Maximum Budget (Monthly)'}
 								register={register}
 								name="maximumBudget"
 								type={InputType.NUMBER}
