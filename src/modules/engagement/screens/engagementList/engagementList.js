@@ -11,6 +11,11 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
 import allEngagementStyles from './engagement.module.css';
 import { InputType } from 'constants/application';
+
+import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
+import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
+import allengagementAddFeedbackStyles from '../engagementBillAndPayRate/engagementBillRate.module.css';
+
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as FunnelSVG } from 'assets/svg/funnel.svg';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
@@ -126,6 +131,11 @@ const EngagementList = () => {
 	const [rateReason, setRateReason] = useState(undefined);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
 
+	const [TSCusers, setTSCusers] = useState([])
+	const [isEditTSC,setISEditTSC] = useState(false);
+	const [TSCONBoardData,setTSCONBoardData] = useState({})
+	const [isAddTSC,setIsAddTSC] = useState(false);
+
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
 			setIsAllowFilters(false);
@@ -145,6 +155,15 @@ const EngagementList = () => {
 		resetField,
 		formState: { errors },
 	} = useForm();
+
+	const {
+		register:TSCregister,
+		handleSubmit:TSChandleSubmit,
+		setValue:TSCsetValue,
+		resetField:resetTSCField,	
+		formState: { errors:TSCErrors },
+	} = useForm();
+
 	const tableColumnsMemo = useMemo(
 		() =>
 			allEngagementConfig.tableConfig(
@@ -155,6 +174,9 @@ const EngagementList = () => {
 				setOnbaordId,
 				setFeedBackData,
 				setHRAndEngagementId,
+				setIsAddTSC,
+				setTSCONBoardData,
+				setISEditTSC
 			),
 		[getEngagementModal],
 	);
@@ -201,6 +223,63 @@ const EngagementList = () => {
 		},
 		[navigate],
 	);
+
+
+	useEffect(()=>{
+		const getTSCUSERS = async(ID)=> {
+				let response = await engagementRequestDAO.getTSCUserListDAO(ID);
+				if (response?.statusCode === HTTPStatusCode.OK) {
+					// setTSCusers()
+					setTSCusers(response.responseBody.drpTSCUserList.map(item=> ({...item, id:item.value , value: item.text, })))
+				} 
+			}
+
+		if(TSCONBoardData.onboardID){
+			getTSCUSERS(TSCONBoardData.onboardID)
+		}		
+
+	},[TSCONBoardData.onboardID])
+	
+	const submitTSC = async (d)=>{
+		let payload = {
+			"onBoardID": TSCONBoardData.onboardID,
+			"tscUserId": +d.AddTSCName,
+			"tscEditReason": d.tscReason ? d.tscReason : ''
+		  }
+		let response = await engagementRequestDAO.updateTSCNameDAO(payload);
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				setIsAddTSC(false)
+				setISEditTSC(false)
+				resetTSCField('AddTSCName')
+				resetTSCField('tscReason')
+				setTSCONBoardData({})
+				handleHRRequest({...tableFilteredState})
+			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				setLoading(false);
+				return navigate(UTSRoutes.LOGINROUTE);
+			} else if (
+				response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+			) {
+				setLoading(false);
+				return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+			} else {
+				setLoading(false);
+				return 'NO DATA FOUND';
+			}
+	}
+
+	const closeAddTSC = () =>{
+		setIsAddTSC(false)
+		resetTSCField('AddTSCName')
+		setTSCONBoardData({})
+	}
+
+	const closeEditTSC = () =>{
+		setISEditTSC(false)
+		resetTSCField('AddTSCName')
+		resetTSCField('tscReason')
+		setTSCONBoardData({})
+	}
 
 	const getFeedbackList = async (feedBackData) => {
 		setLoading(true);
@@ -919,6 +998,168 @@ const EngagementList = () => {
 						/>
 					</Modal>
 				)}
+
+				{/** ============ MODAL FOR ADD TSC  ================ */}
+				{isAddTSC && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className={allEngagementStyles.engagementaddtscModal}
+						open={isAddTSC}
+						onCancel={() =>
+							closeAddTSC()
+							
+						}
+						>
+						<div className={allengagementAddFeedbackStyles.engagementModalWrap}>
+							<div className={` ${allengagementAddFeedbackStyles.headingContainer} ${allengagementAddFeedbackStyles.payRateAndBillrateWrapper} `}>
+								<div className="tableaddTitle">
+									<h2>Add TSC Name</h2>
+									<p>Engagement ID : <b>{TSCONBoardData?.engagementID}</b>  | Talent Name : <b>{TSCONBoardData?.talentName}</b></p>
+								</div>
+							</div>
+						
+						<div className={allengagementAddFeedbackStyles.row}>
+							<div className={allengagementAddFeedbackStyles.colMd6}>
+								<HRSelectField
+										// mode='id/value'
+										// controlledValue={feedBackTypeEdit}
+										// setControlledValue={setFeedbackTypeEdit}
+										// isControlled={true}
+										setValue={TSCsetValue}
+										register={TSCregister}
+										name="AddTSCName"
+										label="Add TSC Name "
+										defaultValue="Select TSC Name"
+										options={TSCusers}
+										required={isAddTSC}
+										isError={
+										TSCErrors['AddTSCName'] && 	TSCErrors['AddTSCName']
+										}
+										errorMsg="Please select TSC Name."
+									/>
+							</div>
+						</div>
+
+						<div className={allengagementAddFeedbackStyles.formPanelAction}>
+							<button
+								// disabled={isLoading}
+								type="submit"
+								onClick={TSChandleSubmit(submitTSC)}
+								className={allengagementAddFeedbackStyles.btnPrimary}>
+								Add TSC
+							</button>
+							<button
+								onClick={() => {
+									closeAddTSC()
+								}}
+								className={allengagementAddFeedbackStyles.btn}>
+								NO
+							</button>
+						</div>
+						
+					  </div>
+					</Modal>
+				)}
+
+				{/** ============ MODAL FOR Edit TSC  ================ */}
+				{isEditTSC && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className={allEngagementStyles.engagementaddtscModal}
+						open={isEditTSC}
+						onCancel={() =>
+							closeEditTSC()
+						}
+						>
+						<div className={allengagementAddFeedbackStyles.engagementModalWrap}>
+							<div className={` ${allengagementAddFeedbackStyles.headingContainer} ${allengagementAddFeedbackStyles.payRateAndBillrateWrapper} `}>
+								<div className="tableaddTitle">
+									<h2>Edit TSC Name</h2>
+									<p>Engagement ID : <b>{TSCONBoardData?.engagementID}</b>  | Talent Name : <b>{TSCONBoardData?.talentName}</b></p>
+								</div>
+							</div>
+						
+						<div className={allengagementAddFeedbackStyles.row}>
+							<div className={allengagementAddFeedbackStyles.colMd6}>
+								<HRInputField
+									register={TSCsetValue}
+									// errors={errors}
+									// validationSchema={{
+									// 	required: 'please enter bill rate manually.',
+									// }}
+									label="Current TSC Name"
+									name="finalBillRate"
+									// onChangeHandler={(e)=>nrPercentageBR(e)}
+									type={InputType.TEXT}
+									placeholder={TSCONBoardData?.tscName ? TSCONBoardData?.tscName : 'Select TSC Name' }
+									disabled
+								/>
+							</div>
+
+							<div className={allengagementAddFeedbackStyles.colMd6}>
+								<HRSelectField
+									// mode='id/value'
+									// controlledValue={feedBackTypeEdit}
+									// setControlledValue={setFeedbackTypeEdit}
+									// isControlled={true}
+									setValue={TSCsetValue}
+									register={TSCregister}
+									name="AddTSCName"
+									label="Select New TSC Name"
+									defaultValue="Select TSC Name"
+									options={TSCusers}
+									required={isEditTSC}
+									isError={
+									TSCErrors['AddTSCName'] && 	TSCErrors['AddTSCName']
+									}
+									errorMsg="Please select TSC Name."
+								/>
+							</div>
+
+							<div className={allengagementAddFeedbackStyles.colMd12}>
+								<HRInputField
+									register={TSCregister}
+									errors={TSCErrors}
+									validationSchema={{
+										required: 'please enter edit reason.',
+									}}
+									label="Reason for editing TSC Name"
+									name="tscReason"
+									// onChangeHandler={(e)=>nrPercentageBR(e)}
+									type={InputType.TEXT}
+									placeholder="enter edit reason."
+									required={isEditTSC}
+								/>
+							</div>
+
+						</div>
+
+						<div className={allengagementAddFeedbackStyles.formPanelAction}>
+							<button
+								// disabled={isLoading}
+								type="submit"
+								onClick={TSChandleSubmit(submitTSC)}
+								className={allengagementAddFeedbackStyles.btnPrimary}>
+								Save TSC Name
+							</button>
+							<button
+								onClick={() => {
+									closeEditTSC()
+								}}
+								className={allengagementAddFeedbackStyles.btn}>
+								Cancel
+							</button>
+						</div>
+					 </div>					
+					</Modal>
+				)}
+
 			</div>
 		</div>
 	);

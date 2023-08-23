@@ -126,6 +126,9 @@ export const allEngagementConfig = {
 		setOnbaordId,
 		setFeedBackData,
 		setHRAndEngagementId,
+		setIsAddTSC,
+		setTSCONBoardData,
+		setISEditTSC
 	) => {
 		return [
 			{
@@ -142,6 +145,15 @@ export const allEngagementConfig = {
 							IsEnabled: true,
 						},
 					];
+					if(param?.tscName){
+						listItemData.push(
+							{
+								label: 'Edit TSC Name',
+								key: 'editTSCName',
+								IsEnabled: true,
+							},
+						);
+					}
 					if (param?.typeOfHR === 'Contractual') {
 						listItemData.push(
 							{
@@ -199,6 +211,11 @@ export const allEngagementConfig = {
 											engagementReplaceTalent: true,
 										});
 										setFilteredData(param);
+										break;
+									}
+									case 'Edit TSC Name':{
+										setISEditTSC(true)
+										setTSCONBoardData({onboardID :param.onboardID, engagementID:param.engagementID, talentName: param.talentName, tscName: param.tscName})
 										break;
 									}
 									case 'Renew Engagement': {
@@ -459,6 +476,22 @@ export const allEngagementConfig = {
 				dataIndex: 'tscName',
 				key: 'tscName',
 				align: 'left',
+				render:(text, data)=>{
+					if(text){
+						return text
+					}else{
+					return	<a href="javascript:void(0);"
+							style={{ color: '#006699', textDecoration: 'underline' }}
+							onClick={()=>{
+								// console.log(data.onboardID)
+								setIsAddTSC(true)
+								setTSCONBoardData({onboardID :data.onboardID, engagementID:data.engagementID, talentName: data.talentName})
+							}}
+							>
+								ADD
+							</a>
+					}
+				}
 			},
 			{
 				title: 'GEO',

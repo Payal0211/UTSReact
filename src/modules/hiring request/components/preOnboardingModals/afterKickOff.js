@@ -91,7 +91,7 @@ export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI
                             register={register}
                             errors={errors}
                             validationSchema={{
-                                required: 'please enter the company name.',
+                                required: 'please enter zoho invoice number.',
                             }}
                             label="Zoho Invoice Number"
                             name="zohoInvoiceNumber"

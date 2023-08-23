@@ -667,4 +667,72 @@ export const engagementRequestDAO = {
             return errorDebug(error, 'engagementRequestDAO.saveFeedbackFormDAO');
         }
     },
+	getTSCUserListDAO: async function (id) {
+		try {
+			const userListResult = await EngagementRequestAPI.getTSCUserList(
+				id,
+			);
+			if (userListResult) {
+				const statusCode = userListResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = userListResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return userListResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return userListResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getTSCUserListDAO');
+		}
+	},
+	updateTSCNameDAO: async function (data) {
+		try {
+			const updateResult = await EngagementRequestAPI.updateTSCName(
+				data
+			);
+			if (updateResult) {
+				const statusCode = updateResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = updateResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return updateResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return updateResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.updateTSCNameDAO');
+		}
+	},
 };

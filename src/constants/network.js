@@ -100,6 +100,8 @@ export class EngagementAPI {
 	static SAVE_RENEW_ENGAGEMENT = 'SaveRenewEngagement';
 	static CALCULATE_ACTUAL_NR_BR_PR = 'Calculate_ActualNR_From_BRPR';
 	static UPLOAD_FILE = 'UploadFile';
+	static GET_TSC_USERS_DETAIL = 'GetTSCUsersDetail';
+	static UPDATE_TSC_NAME = 'UpdateTSCName'
 }
 
 export class AllHiringRequestAPI {
