@@ -131,8 +131,10 @@ const EngagementList = () => {
 	const [rateReason, setRateReason] = useState(undefined);
 	const [scheduleTimezone, setScheduleTimezone] = useState([]);
 
-	const [isOpen,setOpen] = useState(false);
-	const [isOpenAdd,setOpenAdd] = useState(false);
+	const [TSCusers, setTSCusers] = useState([])
+	const [isEditTSC,setISEditTSC] = useState(false);
+	const [TSCONBoardData,setTSCONBoardData] = useState({})
+	const [isAddTSC,setIsAddTSC] = useState(false);
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -153,6 +155,15 @@ const EngagementList = () => {
 		resetField,
 		formState: { errors },
 	} = useForm();
+
+	const {
+		register:TSCregister,
+		handleSubmit:TSChandleSubmit,
+		setValue:TSCsetValue,
+		resetField:resetTSCField,	
+		formState: { errors:TSCErrors },
+	} = useForm();
+
 	const tableColumnsMemo = useMemo(
 		() =>
 			allEngagementConfig.tableConfig(
@@ -163,6 +174,9 @@ const EngagementList = () => {
 				setOnbaordId,
 				setFeedBackData,
 				setHRAndEngagementId,
+				setIsAddTSC,
+				setTSCONBoardData,
+				setISEditTSC
 			),
 		[getEngagementModal],
 	);
@@ -209,6 +223,63 @@ const EngagementList = () => {
 		},
 		[navigate],
 	);
+
+
+	useEffect(()=>{
+		const getTSCUSERS = async(ID)=> {
+				let response = await engagementRequestDAO.getTSCUserListDAO(ID);
+				if (response?.statusCode === HTTPStatusCode.OK) {
+					// setTSCusers()
+					setTSCusers(response.responseBody.drpTSCUserList.map(item=> ({...item, id:item.value , value: item.text, })))
+				} 
+			}
+
+		if(TSCONBoardData.onboardID){
+			getTSCUSERS(TSCONBoardData.onboardID)
+		}		
+
+	},[TSCONBoardData.onboardID])
+	
+	const submitTSC = async (d)=>{
+		let payload = {
+			"onBoardID": TSCONBoardData.onboardID,
+			"tscUserId": +d.AddTSCName,
+			"tscEditReason": d.tscReason ? d.tscReason : ''
+		  }
+		let response = await engagementRequestDAO.updateTSCNameDAO(payload);
+			if (response?.statusCode === HTTPStatusCode.OK) {
+				setIsAddTSC(false)
+				setISEditTSC(false)
+				resetTSCField('AddTSCName')
+				resetTSCField('tscReason')
+				setTSCONBoardData({})
+				handleHRRequest({...tableFilteredState})
+			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				setLoading(false);
+				return navigate(UTSRoutes.LOGINROUTE);
+			} else if (
+				response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+			) {
+				setLoading(false);
+				return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+			} else {
+				setLoading(false);
+				return 'NO DATA FOUND';
+			}
+	}
+
+	const closeAddTSC = () =>{
+		setIsAddTSC(false)
+		resetTSCField('AddTSCName')
+		setTSCONBoardData({})
+	}
+
+	const closeEditTSC = () =>{
+		setISEditTSC(false)
+		resetTSCField('AddTSCName')
+		resetTSCField('tscReason')
+		setTSCONBoardData({})
+	}
 
 	const getFeedbackList = async (feedBackData) => {
 		setLoading(true);
@@ -656,11 +727,6 @@ const EngagementList = () => {
 								// 	defaultCurrent: pageIndex,
 								// }}
 							/>
-
-							<div className=''>
-								<button onClick={()=>{setOpenAdd(true)}}>Add TSC</button>
-								<button onClick={()=>{setOpen(true)}}>Edit TSC</button>
-							</div>
 						</WithLoader>
 					)}
 				</div>
@@ -934,28 +1000,24 @@ const EngagementList = () => {
 				)}
 
 				{/** ============ MODAL FOR ADD TSC  ================ */}
-				{isOpenAdd && (
+				{isAddTSC && (
 					<Modal
 						transitionName=""
 						width="930px"
 						centered
 						footer={null}
 						className={allEngagementStyles.engagementaddtscModal}
-						open={isOpenAdd}
+						open={isAddTSC}
 						onCancel={() =>
-							setOpenAdd(false)
+							closeAddTSC()
+							
 						}
 						>
-						{/* <EngagementOnboard
-							getOnboardFormDetails={getOnboardFormDetails}
-							getHRAndEngagementId={getHRAndEngagementId}
-							scheduleTimezone={scheduleTimezone}
-						/> */}
 						<div className={allengagementAddFeedbackStyles.engagementModalWrap}>
 							<div className={` ${allengagementAddFeedbackStyles.headingContainer} ${allengagementAddFeedbackStyles.payRateAndBillrateWrapper} `}>
 								<div className="tableaddTitle">
 									<h2>Add TSC Name</h2>
-									<p>Engagement ID : <b>EN123456789012</b>  | Talent Name : <b>Velma Balaji Reddy</b></p>
+									<p>Engagement ID : <b>{TSCONBoardData?.engagementID}</b>  | Talent Name : <b>{TSCONBoardData?.talentName}</b></p>
 								</div>
 							</div>
 						
@@ -966,17 +1028,17 @@ const EngagementList = () => {
 										// controlledValue={feedBackTypeEdit}
 										// setControlledValue={setFeedbackTypeEdit}
 										// isControlled={true}
-										// setValue={setValue}
-										register={register}
-										name="Add TSC"
+										setValue={TSCsetValue}
+										register={TSCregister}
+										name="AddTSCName"
 										label="Add TSC Name "
-										defaultValue="Sushma"
-										// options={getFeedbackFormContent.drpFeedbackType?.filter((item) => item?.value !== "0")}
-										required
-										// isError={
-										// 	errors['feedbackType'] && errors['feedbackType']
-										// }
-										// errorMsg="Please select a feedbacktype."
+										defaultValue="Select TSC Name"
+										options={TSCusers}
+										required={isAddTSC}
+										isError={
+										TSCErrors['AddTSCName'] && 	TSCErrors['AddTSCName']
+										}
+										errorMsg="Please select TSC Name."
 									/>
 							</div>
 						</div>
@@ -985,15 +1047,14 @@ const EngagementList = () => {
 							<button
 								// disabled={isLoading}
 								type="submit"
-								// onClick={handleSubmit(submitFeedbacHandler)}
+								onClick={TSChandleSubmit(submitTSC)}
 								className={allengagementAddFeedbackStyles.btnPrimary}>
 								Add TSC
 							</button>
 							<button
-								// onClick={() => {
-
-								// 	onCancel()
-								// }}
+								onClick={() => {
+									closeAddTSC()
+								}}
 								className={allengagementAddFeedbackStyles.btn}>
 								NO
 							</button>
@@ -1004,45 +1065,39 @@ const EngagementList = () => {
 				)}
 
 				{/** ============ MODAL FOR Edit TSC  ================ */}
-				{isOpen && (
+				{isEditTSC && (
 					<Modal
 						transitionName=""
 						width="930px"
 						centered
 						footer={null}
 						className={allEngagementStyles.engagementaddtscModal}
-						open={isOpen}
+						open={isEditTSC}
 						onCancel={() =>
-							setOpen(false)
+							closeEditTSC()
 						}
 						>
-						{/* <EngagementOnboard
-							getOnboardFormDetails={getOnboardFormDetails}
-							getHRAndEngagementId={getHRAndEngagementId}
-							scheduleTimezone={scheduleTimezone}
-						/> */}
 						<div className={allengagementAddFeedbackStyles.engagementModalWrap}>
 							<div className={` ${allengagementAddFeedbackStyles.headingContainer} ${allengagementAddFeedbackStyles.payRateAndBillrateWrapper} `}>
 								<div className="tableaddTitle">
 									<h2>Edit TSC Name</h2>
-									<p>Engagement ID : <b>EN123456789012</b>  | Talent Name : <b>Velma Balaji Reddy</b></p>
+									<p>Engagement ID : <b>{TSCONBoardData?.engagementID}</b>  | Talent Name : <b>{TSCONBoardData?.talentName}</b></p>
 								</div>
 							</div>
 						
 						<div className={allengagementAddFeedbackStyles.row}>
 							<div className={allengagementAddFeedbackStyles.colMd6}>
 								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'please enter bill rate manually.',
-									}}
+									register={TSCsetValue}
+									// errors={errors}
+									// validationSchema={{
+									// 	required: 'please enter bill rate manually.',
+									// }}
 									label="Current TSC Name"
 									name="finalBillRate"
 									// onChangeHandler={(e)=>nrPercentageBR(e)}
 									type={InputType.TEXT}
-									placeholder="Roma"
-									required
+									placeholder={TSCONBoardData?.tscName ? TSCONBoardData?.tscName : 'Select TSC Name' }
 									disabled
 								/>
 							</div>
@@ -1053,33 +1108,33 @@ const EngagementList = () => {
 									// controlledValue={feedBackTypeEdit}
 									// setControlledValue={setFeedbackTypeEdit}
 									// isControlled={true}
-									// setValue={setValue}
-									register={register}
-									name="TSC Name"
+									setValue={TSCsetValue}
+									register={TSCregister}
+									name="AddTSCName"
 									label="Select New TSC Name"
-									defaultValue="Sushma"
-									// options={getFeedbackFormContent.drpFeedbackType?.filter((item) => item?.value !== "0")}
-									required
-									// isError={
-									// 	errors['feedbackType'] && errors['feedbackType']
-									// }
-									// errorMsg="Please select a feedbacktype."
+									defaultValue="Select TSC Name"
+									options={TSCusers}
+									required={isEditTSC}
+									isError={
+									TSCErrors['AddTSCName'] && 	TSCErrors['AddTSCName']
+									}
+									errorMsg="Please select TSC Name."
 								/>
 							</div>
 
 							<div className={allengagementAddFeedbackStyles.colMd12}>
 								<HRInputField
-									register={register}
-									errors={errors}
+									register={TSCregister}
+									errors={TSCErrors}
 									validationSchema={{
-										required: 'please enter bill rate manually.',
+										required: 'please enter edit reason.',
 									}}
 									label="Reason for editing TSC Name"
-									name="TSCName"
+									name="tscReason"
 									// onChangeHandler={(e)=>nrPercentageBR(e)}
 									type={InputType.TEXT}
-									placeholder="Roma is going on casual leave for 10 days."
-									required
+									placeholder="enter edit reason."
+									required={isEditTSC}
 								/>
 							</div>
 
@@ -1089,15 +1144,14 @@ const EngagementList = () => {
 							<button
 								// disabled={isLoading}
 								type="submit"
-								// onClick={handleSubmit(submitFeedbacHandler)}
+								onClick={TSChandleSubmit(submitTSC)}
 								className={allengagementAddFeedbackStyles.btnPrimary}>
 								Save TSC Name
 							</button>
 							<button
-								// onClick={() => {
-
-								// 	onCancel()
-								// }}
+								onClick={() => {
+									closeEditTSC()
+								}}
 								className={allengagementAddFeedbackStyles.btn}>
 								Cancel
 							</button>

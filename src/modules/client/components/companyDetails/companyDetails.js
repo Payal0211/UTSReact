@@ -400,6 +400,7 @@ const CompanyDetails = ({
 				<div className={CompanyDetailsStyle.tabsLeftPanel}>
 					<h3>Company Details</h3>
 					<p>Please provide the necessary details</p>
+					<p>Fetch new company details along with associated all the contacts from the Hubspot. For Existing Client use Add HR CTA to create a HR.</p>
 				</div>
 
 				<div className={CompanyDetailsStyle.tabsRightPanel}>
