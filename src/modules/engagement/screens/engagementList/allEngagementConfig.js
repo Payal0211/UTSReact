@@ -140,6 +140,11 @@ export const allEngagementConfig = {
 				render: (_, param, index) => {
 					let listItemData = [
 						{
+							label: param.engagementId_HRID,
+							key: 'HRDetails',
+							IsEnabled: false,
+						},
+						{
 							label: 'Add Invoice Details',
 							key: 'addInvoiceDetails',
 							IsEnabled: true,
