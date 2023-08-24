@@ -387,4 +387,23 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	autoUpdateTSCName: async function (ID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.AUTO_UPDATE_TSC_NAME + `?OnBoardId=${ID}`;
+		// httpService.dataToSend = data;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.autoUpdateTSCName',
+			);
+		}
+	},
 };

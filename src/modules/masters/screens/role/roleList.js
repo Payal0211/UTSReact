@@ -70,7 +70,14 @@ const RoleList = () => {
 	const handleExport = (apiData) => {
 		let DataToExport =  apiData.map(data => {
 			let obj = {}			
-			tableColumnsMemo.map(val => val.title !== ' ' && (obj[`${val.title}`] = data[`${val.dataIndex}`]))		
+			tableColumnsMemo.forEach(val => {
+				if(val.dataIndex !== 'isActive'){
+					obj[`${val.title}`] = data[`${val.dataIndex}`]
+				}else{
+					obj[`${val.title}`] = data[`${val.dataIndex}`] ? 'Yes' : 'No';
+				}
+				
+			})		
 			return obj;
 			}
 		 )
@@ -111,7 +118,7 @@ const RoleList = () => {
 				) : (
 					<>
 						<Table                            
-							scroll={{ x: '100vw', y: '100vh' }}
+							scroll={{  y: '100vh' }}
 							className="currencyExchangeList"
 							id="currencyExchangeList"
 							columns={tableColumnsMemo}

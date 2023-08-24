@@ -474,33 +474,8 @@ const TeamDemandFunnelScreen = () => {
 			i = i + 2
 		) {
 			let comp = (
-				<ColumnGroup title={ViewSummaryGroupedColumnDataMemo[i]}>
-					<Column
-						title="Exist"
-						dataIndex={ViewSummaryGroupedColumnDataMemo[i + 1][0]}
-						key={ViewSummaryGroupedColumnDataMemo[i + 1][0]}
-						render={(text, param) => (
-							<Tooltip
-								placement="bottomLeft"
-								title={text}>
-								<p>{text}</p>
-							</Tooltip>
-						)}
-					/>
-					<Column
-						title="New"
-						dataIndex={ViewSummaryGroupedColumnDataMemo[i + 1][1]}
-						key={ViewSummaryGroupedColumnDataMemo[i + 1][1]}
-						render={(text, param) => (
-							<Tooltip
-								placement="bottomLeft"
-								title={text}>
-								<p>{text}</p>
-							</Tooltip>
-						)}
-					/>
-					<Column
-						title="Total"
+						<Column
+						title={ViewSummaryGroupedColumnDataMemo[i]}
 						dataIndex={ViewSummaryGroupedColumnDataMemo[i]}
 						key={ViewSummaryGroupedColumnDataMemo[i]}
 						render={(text, param) => (
@@ -511,7 +486,44 @@ const TeamDemandFunnelScreen = () => {
 							</Tooltip>
 						)}
 					/>
-				</ColumnGroup>
+				// <ColumnGroup title={ViewSummaryGroupedColumnDataMemo[i]}>
+				// 	<Column
+				// 		title="Exist"
+				// 		dataIndex={ViewSummaryGroupedColumnDataMemo[i + 1][0]}
+				// 		key={ViewSummaryGroupedColumnDataMemo[i + 1][0]}
+				// 		render={(text, param) => (
+				// 			<Tooltip
+				// 				placement="bottomLeft"
+				// 				title={text}>
+				// 				<p>{text}</p>
+				// 			</Tooltip>
+				// 		)}
+				// 	/>
+				// 	<Column
+				// 		title="New"
+				// 		dataIndex={ViewSummaryGroupedColumnDataMemo[i + 1][1]}
+				// 		key={ViewSummaryGroupedColumnDataMemo[i + 1][1]}
+				// 		render={(text, param) => (
+				// 			<Tooltip
+				// 				placement="bottomLeft"
+				// 				title={text}>
+				// 				<p>{text}</p>
+				// 			</Tooltip>
+				// 		)}
+				// 	/>
+				// 	<Column
+				// 		title="Total"
+				// 		dataIndex={ViewSummaryGroupedColumnDataMemo[i]}
+				// 		key={ViewSummaryGroupedColumnDataMemo[i]}
+				// 		render={(text, param) => (
+				// 			<Tooltip
+				// 				placement="bottomLeft"
+				// 				title={text}>
+				// 				<p>{text}</p>
+				// 			</Tooltip>
+				// 		)}
+				// 	/>
+				// </ColumnGroup>
 			);
 			ColumnData.push(comp);
 		}
