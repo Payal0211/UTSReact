@@ -60,18 +60,24 @@ export const MasterConfig = {
 				title: 'Pitch Me RoleID',
 				dataIndex: 'pitchMeRoleID',
 				key: 'pitchMeRoleID',
+				width:'10%',
 				align: 'left',
+				render:(text)=>{
+					return text ? text : 'NA'
+				}
 			},
 			{
 				title: 'Role',
 				dataIndex: 'talentRole',
 				key: 'talentRole',
+				width:'50%',
 				align: 'left',
 			},
 			{
 				title: 'Is Active',
 				dataIndex: 'isActive',
 				key: 'isActive',
+				width:'10%',
 				align: 'left',
 				render: (data, param) => {	
 					return (						

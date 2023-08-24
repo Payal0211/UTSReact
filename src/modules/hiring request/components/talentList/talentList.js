@@ -364,6 +364,21 @@ talentID,})
 		// setLogExpanded(response && response?.responseBody?.details);
 	};
 
+	const autoAssignTSC = async (ID) => {
+		const response = await engagementRequestDAO.autoUpdateTSCNameDAO(
+			ID,
+		);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			callAPI(hrId)		
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			return 'NO DATA FOUND';
+		}
+	}
+
 	const getInterviewStatus = useCallback(() => {
 		switch (filterTalentID?.InterviewStatus) {
 			case 'Feedback Submitted':
@@ -858,11 +873,16 @@ talentID,})
 												isDropdown={true}
 												listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
 												menuAction={(menuItem) => {
+													console.log({menuItem})
 													switch (menuItem.key) {
 														case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 															setScheduleInterviewModal(true);
 															setTalentIndex(item?.TalentID);
 															break;
+														}
+														case TalentOnboardStatus.ASSIGN_TSC :{
+															autoAssignTSC(item.OnBoardId)
+															break
 														}
 														case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
 															setReScheduleInterviewModal(true);
