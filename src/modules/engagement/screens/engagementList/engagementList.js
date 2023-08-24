@@ -253,7 +253,7 @@ const EngagementList = () => {
 				resetTSCField('AddTSCName')
 				resetTSCField('tscReason')
 				setTSCONBoardData({})
-				handleHRRequest({...tableFilteredState})
+				handleHRRequest({...tableFilteredState, searchText: searchText})
 			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 				setLoading(false);
 				return navigate(UTSRoutes.LOGINROUTE);

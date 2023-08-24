@@ -197,7 +197,7 @@ export const clientHappinessSurveyConfig = {
 				width: '150px',
 				render: (text,result) => {
 					return (
-						text ? <span>Already Sent</span> : <button className={`${clienthappinessSurveyStyles.btnPrimary} ${clienthappinessSurveyStyles.emailSendBtn}`} onClick={() => onEmailSend(result.id)}>Send Email</button>						
+						result.feedbackStatus  === 'Completed'? null : text ? <span>Already Sent</span> : <button className={`${clienthappinessSurveyStyles.btnPrimary} ${clienthappinessSurveyStyles.emailSendBtn}`} onClick={() => onEmailSend(result.id)}>Send Email</button>						
 					);
 				},
 			},
