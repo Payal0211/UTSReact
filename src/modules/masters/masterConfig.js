@@ -81,7 +81,7 @@ export const MasterConfig = {
 				align: 'left',
 				render: (data, param) => {	
 					return (						
-						!data ? <a onClick={() => onIsActiveSelect(param.id , true)}>Yes</a> : <a onClick={() => onIsActiveSelect(param.id , false)}>No</a>
+						data ? <a onClick={() => onIsActiveSelect(param.id , false)}>Yes</a> : <a onClick={() => onIsActiveSelect(param.id , true)}>No</a>
 					);
 				},
 			},
