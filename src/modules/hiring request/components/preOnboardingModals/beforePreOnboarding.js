@@ -263,7 +263,10 @@ export default function BeforePreOnboarding({
       // console.log("payload", payload,d.dealSource);
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
-        EnableNextTab(talentDeteils, HRID, "During Pre-Onboarding");
+        if(result?.responseBody.details.IsAMAssigned){
+            EnableNextTab(talentDeteils, HRID, "During Pre-Onboarding");
+        }
+      
         // callAPI(HRID)
         setMessage(result?.responseBody.details)
         setIsLoading(false);

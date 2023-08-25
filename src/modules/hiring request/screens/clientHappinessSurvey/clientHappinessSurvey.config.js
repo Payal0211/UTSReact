@@ -178,15 +178,13 @@ export const clientHappinessSurveyConfig = {
 				width: '400px',
 				render:(text,val) => {
 					return(
-						<p>{val.feedbackDate ? text : ""}</p>
-						// <Link
-						// 	to={text}
-						// 	style={{
-						// 		color: `var(--uplers-black)`,
-						// 		textDecoration: 'underline',
-						// 	}}>
-						// 	{text}
-						// </Link>
+
+						<a href={text} target="blank" 
+						style={{
+									color: `var(--uplers-black)`,
+									textDecoration: 'underline',
+								}}
+						>{text}</a>
 					)
 				}
 			},
@@ -197,7 +195,7 @@ export const clientHappinessSurveyConfig = {
 				width: '150px',
 				render: (text,result) => {
 					return (
-						result.feedbackStatus  === 'Completed'? null : text ? <span>Already Sent</span> : <button className={`${clienthappinessSurveyStyles.btnPrimary} ${clienthappinessSurveyStyles.emailSendBtn}`} onClick={() => onEmailSend(result.id)}>Send Email</button>						
+						 text ? <span>Already Sent</span> : result.feedbackStatus  === 'Completed'? null : <button className={`${clienthappinessSurveyStyles.btnPrimary} ${clienthappinessSurveyStyles.emailSendBtn}`} onClick={() => onEmailSend(result.id)}>Send Email</button>						
 					);
 				},
 			},

@@ -79,7 +79,7 @@ const EngagementReplaceTalent = ({
 				onboardId: talentInfo?.onboardID || talentInfo?.OnBoardId,
 				replacementID:
 					hrId || getTalentReplacementData?.onBoardTalents?.hiringRequestId,
-				talentId: talentInfo?.talentID,
+				talentId: talentInfo?.talentID || talentInfo?.TalentID,
 				lastWorkingDay: new Date(d.lastWorkingDate).toLocaleDateString('en-US'),
 				lastWorkingDateOption: d.replaceStage?.id,
 				noticePeriod: 0,

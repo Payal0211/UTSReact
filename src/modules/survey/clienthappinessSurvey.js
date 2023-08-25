@@ -368,7 +368,20 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 
     const handleExport = async () => {
         // getClientHappinessSurveyList(tableFilteredState,true);
-		downloadToExcel(clientHappinessSurveyList);
+        let DataToExport =  clientHappinessSurveyList.map(data => {
+			let obj = {}			
+			surveyColumnsMemo.map(val => {
+                if(val.dataIndex !== 'is_EmailSend'){
+					obj[`${val.title}`] = data[`${val.dataIndex}`]
+				}else{
+					obj[`${val.title}`] = data[`${val.dataIndex}`] ? 'Already Send' : '';
+				}
+            })		
+		return obj;
+			}
+		 )
+		 downloadToExcel(DataToExport)
+		// downloadToExcel(clientHappinessSurveyList);
 	}
   
     const getClientNameValue = (data) => {
@@ -574,6 +587,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 									placeholderText="Start date - End date"
 									selected={startDate}
 									onChange={onCalenderFilter}
+                                    dateFormat='dd/MM/yyyy'
 									startDate={startDate}
 									endDate={endDate}
 									selectsRange

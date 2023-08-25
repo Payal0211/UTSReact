@@ -173,7 +173,7 @@ const CompanyProfileCard = ({
 							<div className={CompanyProfileCardStyle.TR}>
 								<span>Active TR:</span>&nbsp;&nbsp;
 								<span style={{ fontWeight: '500' }}>
-									{clientDetail?.ActiveTR ? clientDetail?.ActiveTR: 'NA'}
+									{clientDetail?.ActiveTR}
 								</span>
 								{apiData !== 'Cancelled' && apiData !== 'Completed' && apiData !== "Lost" &&
 									(userSessionMemo?.loggedInUserTypeID ===
