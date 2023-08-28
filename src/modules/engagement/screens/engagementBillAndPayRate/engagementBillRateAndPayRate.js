@@ -48,13 +48,16 @@ const EngagementBillRateAndPayRate = ({
 
 	const [billRateValue, setBillRateValue] = useState(watchBillRate);
 	const [payRateValue, setPayRateValue] = useState(watchPayRate);
+	const [reasons, setReasons] = useState([])
+	const [controlledBillRateReason,setControlledBillRateReason] = useState('');
+	const [controlledPayRateReason, setControlledPayRateReason] = useState('');
 	
 
-	 const ManageRateReason = (value) => {
-		setRateReason(value);
-		setValue('billRateReason', value)
-		setValue('payRateReason', value)
-	 }
+	//  const ManageRateReason = (value) => {
+	// 	setRateReason(value);
+	// 	setValue('billRateReason', value)
+	// 	setValue('payRateReason', value)
+	//  }
 
 	 
 	 useEffect(()=>{
@@ -117,6 +120,17 @@ const EngagementBillRateAndPayRate = ({
 				editBPRateResponse?.responseBody?.details?.payRate_NR,
 			);
 			setCurrencyValue(editBPRateResponse?.responseBody?.details?.currency)
+
+			setReasons(editBPRateResponse?.responseBody?.details?.reasonDrp)
+
+			setValue('billRateReason',editBPRateResponse?.responseBody?.details?.billRateReason)
+			setControlledBillRateReason(editBPRateResponse?.responseBody?.details?.billRateReason)
+			editBPRateResponse?.responseBody?.details?.billRateReason === "Others" && setValue('otherbillRateReason',editBPRateResponse?.responseBody?.details?.billRateOtherReason)
+
+			setValue('payRateReason',editBPRateResponse?.responseBody?.details.payRateReason)
+			setControlledPayRateReason(editBPRateResponse?.responseBody?.details.payRateReason)
+			editBPRateResponse?.responseBody?.details.payRateReason === "Others" && setValue('otherpayRateReason',editBPRateResponse?.responseBody?.details?.payRateOtherReason)
+			
 		}
 	}, [month, setValue, talentInfo?.hrID, talentInfo?.onboardID, year]);
 
@@ -134,8 +148,8 @@ const EngagementBillRateAndPayRate = ({
 				year: year === 1970 ? new Date().getFullYear() : year,
 				// billRateReason: d.billRateReason?.value,
 				// payrateReason: d.payRateReason?.value || '',
-				billRateReason: d.billRateReason?? '',
-				payrateReason: d.payRateReason?? '',
+				billRateReason: d.billRateReason === "Others" ? d.otherbillRateReason : d.billRateReason?? '',
+				payrateReason: d.payRateReason === "Others" ? d.otherpayRateReason : d.payRateReason?? '',
 				isEditBillRate: true,
 			};
 
@@ -163,9 +177,9 @@ const EngagementBillRateAndPayRate = ({
 				billrateCurrency: d.payRateCurrency?.value,
 				month: month === 0 ? new Date().getMonth() + 1 : month + 1,
 				year: year === 1970 ? new Date().getFullYear() : year,
-				billRateReason: d.billRateReason?? '',
-				payrateReason: d.payRateReason?? '',
-				isEditBillRate: true,
+				billRateReason: d.billRateReason === "Others" ? d.otherbillRateReason : d.billRateReason?? '',
+				payrateReason: d.payRateReason === "Others" ? d.otherpayRateReason : d.payRateReason?? '',
+				isEditBillRate: false,
 			};
 
 			const response = await engagementRequestDAO.saveEditBillPayRateRequestDAO(
@@ -356,30 +370,37 @@ const nrPercentageBR = useCallback( async(e)=>{
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
-								  	controlledValue={rateReason}
-									setControlledValue={ManageRateReason}
+								  	controlledValue={controlledBillRateReason}
+									setControlledValue={setControlledBillRateReason}
 									isControlled={true}
-									mode={'id/value'}
+									mode={'value'}
 									setValue={setValue}
 									register={register}
 									name="billRateReason"
 									label="Reason"
 									defaultValue="Please Select"
-									options={[
-										{
-											id: 1,
-											value: 'Leave Deduction',
-										},
-										{
-											id: 2,
-											value: 'Add Bonus',
-										},
-									]}
+									options={reasons.map(reason=> ({id: reason.value, value: reason.text}))}
 									required
 									isError={errors['billRateReason'] && errors['billRateReason']}
 									errorMsg="Please select a reason."
 								/>
 							</div>
+							{watch('billRateReason') === "Others" && 
+								<div className={allengagementBillAndPayRateStyles.colMd12}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										validationSchema={{
+											required: 'please enter other reason.',
+										}}
+										required={watch('billRateReason') === "Others"}
+										label="Other Reason"
+										name="otherbillRateReason"
+										type={InputType.TEXT}
+										placeholder="Enter Other Reason"
+									/>
+								</div>
+							}
 						</div>
 
 						<div className={allengagementBillAndPayRateStyles.row}>
@@ -517,30 +538,39 @@ const nrPercentageBR = useCallback( async(e)=>{
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
-									controlledValue={rateReason}
-									setControlledValue={ManageRateReason}
+									controlledValue={controlledPayRateReason}
+									setControlledValue={setControlledPayRateReason}
 									isControlled={true}
-									mode={'id/value'}
+									mode={'value'}
 									setValue={setValue}
 									register={register}
 									name="payRateReason"
 									label="Reason"
 									defaultValue="Please Select"
-									options={[
-										{
-											id: 1,
-											value: 'Leave Deduction',
-										},
-										{
-											id: 2,
-											value: 'Add Bonus',
-										},
-									]}
+									options={reasons.map(reason=> ({id: reason.value, value: reason.text}))}
 									required
 									isError={errors['payRateReason'] && errors['payRateReason']}
 									errorMsg="Please select a reason."
 								/>
+
 							</div>
+
+							{watch('payRateReason') === "Others" && 
+								<div className={allengagementBillAndPayRateStyles.colMd12}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										validationSchema={{
+											required: 'please enter other reason.',
+										}}
+										required={watch('payRateReason') === "Others"}
+										label="Other Reason"
+										name="otherpayRateReason"
+										type={InputType.TEXT}
+										placeholder="Enter Other Reason"
+									/>
+								</div>
+							}
 						</div>
 
 						<div className={allengagementBillAndPayRateStyles.row}>
