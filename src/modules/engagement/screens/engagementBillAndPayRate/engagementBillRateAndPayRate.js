@@ -365,7 +365,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									onChangeHandler={(e)=>nrPercentageBR(e)}
 									type={InputType.TEXT}
 									placeholder="Enter Amount"
-									required
+									required={engagementBillAndPayRateTab === '1'}
 								/>
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
@@ -380,7 +380,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									label="Reason"
 									defaultValue="Please Select"
 									options={reasons.map(reason=> ({id: reason.value, value: reason.text}))}
-									required
+									required={engagementBillAndPayRateTab === "1"}
 									isError={errors['billRateReason'] && errors['billRateReason']}
 									errorMsg="Please select a reason."
 								/>
@@ -417,7 +417,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									type={InputType.TEXT}
 									// value="10%"
 									disabled={true}
-									required
+									required={engagementBillAndPayRateTab === '1'}
 								/>
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
@@ -533,7 +533,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									type={InputType.TEXT}
 									onChangeHandler = {(e)=>{nrPercentagePR(e.target.value);}}
 									placeholder="Enter Amount"
-									required
+									required={engagementBillAndPayRateTab === '2'}
 								/>
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
@@ -548,7 +548,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									label="Reason"
 									defaultValue="Please Select"
 									options={reasons.map(reason=> ({id: reason.value, value: reason.text}))}
-									required
+									required={engagementBillAndPayRateTab === '2'}
 									isError={errors['payRateReason'] && errors['payRateReason']}
 									errorMsg="Please select a reason."
 								/>
@@ -587,7 +587,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									type={InputType.TEXT}
 									// value="10%"
 									disabled={true}
-									required
+									required={engagementBillAndPayRateTab === '2'}
 								/>
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
