@@ -1028,7 +1028,8 @@ export default function BeforePreOnboarding({
                     ?.talentProfileLink ? (
                     <a
                       target="_blank"
-                      href="#"
+                      href={preONBoardingData?.preOnboardingDetailsForAMAssignment
+                        ?.talentProfileLink}
                       rel="noreferrer"
                       className={HRDetailStyle.onboardingTextUnderline}
                     >
