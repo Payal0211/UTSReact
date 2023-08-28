@@ -1289,7 +1289,25 @@ export const reportConfig = {
 				render: (text) => {
 					return <Fragment key={text}>{text }</Fragment>;
 				},
-			},		
+			},	
+			{
+				title: 'Sales Person',
+				dataIndex: 'salesPerson',
+				key: 'salesPerson',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: '# Profile Shared',
+				dataIndex: 'noOfProfileShared',
+				key: 'noOfProfileShared',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},	
 			{
 				title: 'HR #',
 				dataIndex: 'hR_NUMBER',
