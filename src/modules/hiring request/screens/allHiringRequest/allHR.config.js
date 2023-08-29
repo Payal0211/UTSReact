@@ -140,7 +140,7 @@ export const allHRConfig = {
 				title: 'TR',
 				dataIndex: 'TR',
 				key: 'TR',
-				width: '3%',
+				width: '5%',
 				align: 'left',
 			},
 			{
