@@ -593,10 +593,10 @@ export default function BeforePreOnboarding({
                   <HRInputField
                         register={register}
                         errors={errors}
-                        validationSchema={{
-                          required: "please enter the DP Amount.",
-                        }}
-                        required
+                        // validationSchema={{
+                        //   required: "please enter the DP Amount.",
+                        // }}
+                        // required
                         label="DP amount"
                         name="dpAmount"
                         type={InputType.TEXT}
@@ -666,10 +666,10 @@ export default function BeforePreOnboarding({
                     {preOnboardingDetailsForAMAssignment?.isHRTypeDP ?  <HRInputField
                         register={register}
                         errors={errors}
-                        validationSchema={{
-                          required: "please enter the Current CTC.",
-                        }}
-                        required
+                        // validationSchema={{
+                        //   required: "please enter the Current CTC.",
+                        // }}
+                        // required
                         label="CurrentCTC"
                         name="currentCTC"
                         type={InputType.TEXT}
