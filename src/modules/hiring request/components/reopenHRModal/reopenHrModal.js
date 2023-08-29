@@ -16,6 +16,7 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
     handleSubmit,
     setValue,
     clearErrors,
+    setError,
     remove,
     reset,
     formState: { errors },
@@ -30,6 +31,9 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
     if (response?.statusCode === HTTPStatusCode.OK) {
       onCancel();
       window.location.reload();
+    }
+    if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
+      setError('talent',{message: response?.responseBody } )
     }
     setIsLoading(false);
   };
