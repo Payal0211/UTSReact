@@ -71,4 +71,36 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getDuplicateCompanyNameRequest');
 		}
 	},
+
+	getAllClients : async function (clientReqData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.GET_ALL_CLIENTS_LIST ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = clientReqData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getAllClients');
+		}
+	},
+	getClientFilterList : async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.FILTER_LIST ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getClientFilterList');
+		}
+	}
 };
