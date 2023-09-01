@@ -144,6 +144,8 @@ const AddNewHR = () => {
 									setJDParsedSkills={setJDParsedSkills}
 									getHRdetails={getHRdetails}
 									setHRdetails={setHRdetails}
+									setJDDumpID={setJDDumpID}
+									jdDumpID={jdDumpID}
 								/>
 							),
 							disabled: localStorage.getItem('fromEditDeBriefing') && true,
@@ -161,6 +163,7 @@ const AddNewHR = () => {
 									JDParsedSkills={JDParsedSkills}
 									getHRdetails={getHRdetails}
 									setHRdetails={setHRdetails}
+									jdDumpID={jdDumpID}
 								/>
 							),
 							disabled: tabFieldDisabled?.debriefingHR,

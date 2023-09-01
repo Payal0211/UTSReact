@@ -35,6 +35,7 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import { UserAccountRole } from "constants/application";
 import useDebounce from "shared/hooks/useDebounce";
 import LogoLoader from "shared/components/loader/logoLoader";
+import { NetworkInfo } from 'constants/network';
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -44,6 +45,8 @@ export const secondaryInterviewer = {
 };
 
 const EditHRFields = ({
+  setJDDumpID,
+  jdDumpID,
   setTitle,
   clientDetail,
   setEnID,
@@ -239,6 +242,7 @@ const EditHRFields = ({
         if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
           setUploadModal(false);
           setUploadFileData(fileName);
+          setJDDumpID(uploadFileResponse?.responseBody?.details?.JDDumpID);
           message.success("File uploaded successfully");
         }
       }
@@ -299,6 +303,10 @@ const EditHRFields = ({
             setJDParsedSkills(
               uploadFileResponse && uploadFileResponse?.responseBody?.details
             );
+            setJDDumpID(
+							uploadFileResponse &&
+								uploadFileResponse?.responseBody?.details?.JDDumpID,
+						);
             setUploadModal(false);
             setValidation({
               ...getValidation,
@@ -847,7 +855,7 @@ const EditHRFields = ({
         isHRDirectPlacement,
         addHRResponse,
         getUploadFileData && getUploadFileData,
-        watchJDUrl
+        watchJDUrl ? watchJDUrl : jdDumpID
       );
 
       hrFormDetails["allowSpecialEdit"] = getHRdetails?.allowSpecialEdit;
@@ -1471,8 +1479,21 @@ const EditHRFields = ({
                           }}
                         />
                       </div>
+                      {getHRdetails.addHiringRequest.jdfilename &&  <span style={{ fontWeight: '500' }}>
+											<a
+												rel="noreferrer"
+												href={
+													NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN + 
+													'Media/JDParsing/JDfiles/' +
+													getHRdetails.addHiringRequest.jdfilename
+												}
+												style={{ textDecoration: 'underline' }}
+												target="_blank">
+												{getHRdetails.addHiringRequest.jdfilename}
+											</a>									
+						    		</span>}
                     </div>
-                  )}
+                  )}                
                 </div>
                 <UploadModal
                   isLoading={isLoading}
