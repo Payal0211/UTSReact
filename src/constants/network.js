@@ -179,6 +179,8 @@ export class ClientsAPI {
 	static CHECK_DUPLICATE_COMPANY_NAME = 'CheckDuplicateCompanyName';
 	static CHECK_DUPLICATE_EMAIL = 'CheckDuplicateEmail';
 	static GET_POINT_OF_CONTACT = 'GetPointOfContact';
+	static GET_ALL_CLIENTS_LIST = 'List';
+	static FILTER_LIST = 'FilterList';
 }
 
 export class HiringRequestsAPI {
