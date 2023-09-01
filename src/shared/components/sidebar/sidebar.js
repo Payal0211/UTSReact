@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 import HR from 'assets/svg/hr.svg';
 import Handshake from 'assets/svg/handshake.svg';
+import AllClients from 'assets/svg/allClients.svg';
 
 import Briefcase from 'assets/svg/briefcase.svg';
 import DemandFunnel from 'assets/svg/demandFunnel.svg';
@@ -140,7 +141,7 @@ const isAccess = (ID, title) =>{
 	title === 'Demand Funnel' || 
 	title === 'SLA Report' || 
 	title === 'Client Report' || 
-	title === 'I2S Report' || title === 'Master' || title === 'Deal' || title === 'HR Report' || title === 'Client Happiness Survey' || title === 'Team Demand Funnel'){
+	title === 'I2S Report' || title === 'Master' || title === 'Deal' || title === 'HR Report' || title === 'Client Happiness Survey' || title === 'Team Demand Funnel' || title === 'Clients'){
 
 		isVisible = (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 || ID === 6)  
 		
@@ -171,6 +172,16 @@ const getSideBar = (usertypeID) => {
 			isChildren: false,
 			branch: [],
 			isVisible: isAccess(usertypeID,'Deal')
+		}),
+		new SideBarModels({
+			id: 'UTS_AllClients',
+			title: 'Clients',
+			isActive: false,
+			icon:AllClients,
+			navigateTo: UTSRoutes.ALLCLIENTS,
+			isChildren: false,
+			branch: [],
+			isVisible: isAccess(usertypeID,'Clients')
 		}),
 		new SideBarModels({
 			id: 'UTS_UserList',

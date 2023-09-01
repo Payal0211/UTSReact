@@ -108,9 +108,12 @@ const DashboardScreen = React.lazy(() =>
 )
 
 const ClienthappinessSurvey = React.lazy(() =>
-import('modules/survey/clienthappinessSurvey'),
+	import('modules/survey/clienthappinessSurvey'),
 )
 
+const AllClients = React.lazy(() =>
+	import('modules/allClients/allClients')
+)
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
@@ -150,7 +153,8 @@ export default class UTSRoutes {
 	static I2S_REPORT = "/i2sReport";
 	static CLIENT_REPORT = "/clientReport";
 	static HR_REPORT = "/hrReport";
-	static CLIENT_HAPPINESS_SURVEY = '/ClientHappinessSurvey'
+	static CLIENT_HAPPINESS_SURVEY = '/ClientHappinessSurvey';
+	static ALLCLIENTS = '/allClients'
 }
 
 export const navigateToComponent = {
@@ -312,6 +316,11 @@ export const navigateToComponent = {
 [UTSRoutes.CLIENT_HAPPINESS_SURVEY]:(
 	<Suspense>
 			<ClienthappinessSurvey />
+	</Suspense>
+),
+[UTSRoutes.ALLCLIENTS]:(
+	<Suspense>
+			<AllClients />
 	</Suspense>
 ),
 };

@@ -418,6 +418,81 @@
     box-shadow: -4px 4px 20px rgba(0,0,0,0.09);
 }
 
+
+
+.StatusCustomer{
+    background-color: #D4EAEB;
+    color: #232323;
+    text-align: center;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    padding: 0 10px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: transform 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.StatusCustomer:hover{
+    transform: scale(1.18);
+    font-weight: 600;
+    box-shadow: -4px 4px 20px rgba(0,0,0,0.09);
+}
+
+.StatusPotential{
+    background-color: #F8E0E4;
+    color: #232323;
+    text-align: center;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    padding: 0 10px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: transform 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.StatusPotential:hover{
+    transform: scale(1.18);
+    font-weight: 600;
+    box-shadow: -4px 4px 20px rgba(0,0,0,0.09);
+}
+
+.StatusOpportunity{
+    background-color: #FADECB;
+    color: #232323;
+    text-align: center;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    padding: 0 10px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: transform 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.StatusOpportunity:hover{
+    transform: scale(1.18);
+    font-weight: 600;
+    box-shadow: -4px 4px 20px rgba(0,0,0,0.09);
+}
+
+
 .ratingFilter{
     border-radius: 8px;
     border: 1px solid #cecccc;
