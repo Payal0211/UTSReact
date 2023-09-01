@@ -227,9 +227,11 @@ export default function BeforePreOnboarding({
 
   useEffect(() => {
     if (watchDealSource?.value) {
+      setValue('dealOwner','')
+      setControlledDealOwner()
       getLeadOwnerBytype(watchDealSource.value);
     }
-  }, [watchDealSource]);
+  }, [watchDealSource, setValue]);
 
   useEffect(() => {
     let billRate =  watch('payRate') * 100 /(100- watch('nrPercent')) 
@@ -487,7 +489,7 @@ export default function BeforePreOnboarding({
                       setValue={setValue}
                       register={register}
                       label={"Deal Owner"}
-                      defaultValue={"Select Deal Source"}
+                      defaultValue={"Select Deal Owner"}
                       name="dealOwner"
                       options={dealOwner && dealOwner}
                       isError={errors["dealOwner"] && errors["dealOwner"]}
