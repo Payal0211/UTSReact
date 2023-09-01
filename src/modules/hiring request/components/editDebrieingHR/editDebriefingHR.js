@@ -32,6 +32,7 @@ const EditDebriefingHR = ({
 	JDParsedSkills,
 	setJDParsedSkills,
 	setHRdetails,
+	jdDumpID,
 	getHRdetails,
 }) => {
 	const {
@@ -270,7 +271,7 @@ const EditDebriefingHR = ({
 				interviewerEmail: d.interviewerEmail,
 				interviewerLinkedin: d.interviewerLinkedin,
 				interviewerDesignation: d.interviewerDesignation,
-				JDDumpID: getHRdetails?.addHiringRequest?.jddumpId,
+				JDDumpID: jdDumpID? jdDumpID : getHRdetails?.addHiringRequest?.jddumpId  ,
 				ActionType: getHRdetails?.addHiringRequest?.isActive ? "Edit" : "Save",
 				IsHrfocused: isFocusedRole,
 				allowSpecialEdit: getHRdetails?.allowSpecialEdit,

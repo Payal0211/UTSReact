@@ -23,8 +23,9 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
   } = useForm();
   const [radioValue, setRadioValue] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [apiError, setAPIError] = useState('')
   const handleReopen = async (d) => {
+    setAPIError('')
     let data = { hrID: apiData.HR_Id, updatedTR: apiData?.HRStatusCode === HiringRequestHRStatus.COMPLETED ? d.talent : radioValue ? d.talent : apiData.ClientDetail.NoOfTalents };
     setIsLoading(true);
     const response = await hiringRequestDAO.ReopenHRDAO(data);
@@ -33,7 +34,8 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
       window.location.reload();
     }
     if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
-      setError('talent',{message: response?.responseBody } )
+      setAPIError(response?.responseBody)
+      // setError('talent',{message: response?.responseBody } )
     }
     setIsLoading(false);
   };
@@ -126,7 +128,7 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
           )}
         </>
       )}
-
+      {apiError && <p className={reopenHRStyle.error}>{apiError}</p>}
       <div className={reopenHRStyle.formPanelAction}>
         <button
           onClick={() => {
