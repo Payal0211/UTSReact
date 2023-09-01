@@ -1,4 +1,3 @@
-import AllClients from 'modules/allClients/allClients';
 import React, { Suspense } from 'react';
 
 const Dashboard = React.lazy(() =>
@@ -112,7 +111,7 @@ const ClienthappinessSurvey = React.lazy(() =>
 	import('modules/survey/clienthappinessSurvey'),
 )
 
-const allClients = React.lazy(() =>
+const AllClients = React.lazy(() =>
 	import('modules/allClients/allClients')
 )
 
