@@ -106,7 +106,7 @@ function AllClients() {
     }
    
     const getAllClientsList = useCallback(async (requestData) => {
-        // setLoading(true);
+        setLoading(true);
         let response = await allClientRequestDAO.getAllClientsListDAO(requestData);
         if (response?.statusCode === HTTPStatusCode.OK) {                 
             // if(isExport){
@@ -227,6 +227,7 @@ function AllClients() {
     }, [getHTMLFilter]);
 
     const handleExport = async () => {      
+       
 		downloadToExcel(allClientsList);
     }
 
@@ -254,10 +255,8 @@ function AllClients() {
                                     <div className={clienthappinessSurveyStyles.filterCount}>{filteredTagLength}</div>                            
                                 </div>
                                 <p onClick={()=> clearFilters() }>Reset Filters</p>                        
-                            </div>
-                        
+                            </div>                        
                             <div className={clienthappinessSurveyStyles.filterRight}>
-
                                 <div className={clienthappinessSurveyStyles.searchFilterSet}>
                                     <SearchSVG style={{ width: '16px', height: '16px' }} />
                                     <input
@@ -332,7 +331,10 @@ function AllClients() {
                                     <TableSkeleton />
                                 ) : (
                                     <WithLoader className="mainLoader">
-                                        <Table dataSource={allClientsList} columns={allClientsColumnsMemo}
+                                        <Table 
+                                        scroll={{ x: '100vw', y: '100vh' }} 
+                                        dataSource={allClientsList} 
+                                        columns={allClientsColumnsMemo}
                                         pagination={
                                             search && search?.length === 0
                                                 ? null
@@ -359,6 +361,7 @@ function AllClients() {
                                     </WithLoader>
                             )} 
                 </div>
+
             </div>
 
             {isAllowFilters && (
