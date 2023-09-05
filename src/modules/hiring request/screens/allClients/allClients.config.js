@@ -61,18 +61,18 @@ export const allClientsConfig = {
                 title: 'Company',
                 dataIndex: 'companyName',
                 key: 'companyName',
-                render: (text, result) => {
-					return (
-						<Link
-							to={`/allclients`}
-							style={{
-								color: `var(--uplers-black)`,
-								textDecoration: 'underline',
-							}}>
-							{text}
-						</Link>
-					);
-				},
+                // render: (text, result) => {
+				// 	return (
+				// 		<Link
+				// 			to={`/allclients`}
+				// 			style={{
+				// 				color: `var(--uplers-black)`,
+				// 				textDecoration: 'underline',
+				// 			}}>
+				// 			{text}
+				// 		</Link>
+				// 	);
+				// },
             },
             {
                 title: 'Client Name',
@@ -88,18 +88,18 @@ export const allClientsConfig = {
                 title: 'POC',
                 dataIndex: 'poc',
                 key: 'poc',
-                render: (text, result) => {
-					return (
-						<Link
-							to={`/allclients`}
-							style={{
-								color: `var(--uplers-black)`,
-								textDecoration: 'underline',
-							}}>
-							{text}
-						</Link>
-					);
-				},
+                // render: (text, result) => {
+				// 	return (
+				// 		<Link
+				// 			to={`/allclients`}
+				// 			style={{
+				// 				color: `var(--uplers-black)`,
+				// 				textDecoration: 'underline',
+				// 			}}>
+				// 			{text}
+				// 		</Link>
+				// 	);
+				// },
             },
             {
                 title: 'Geo',
@@ -112,7 +112,9 @@ export const allClientsConfig = {
                 key: 'status',
                 render: (text,result) => {
 					return (
-						 <span className={`${text === "Opportunity"? clienthappinessSurveyStyles.StatusOpportunity : text === "Potential Lead" ? clienthappinessSurveyStyles.StatusPotential  : text === "Customer" ?  clienthappinessSurveyStyles.StatusCustomer : "" }`}>{text}</span>					
+						text && <span 
+                         className={clienthappinessSurveyStyles.StatusOpportunity} 
+                         style={{backgroundColor:`${result.statusColor}`}} >{text}</span>			
 					);
 				},
             }
