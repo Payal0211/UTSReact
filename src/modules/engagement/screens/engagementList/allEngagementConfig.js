@@ -150,7 +150,7 @@ export const allEngagementConfig = {
 							IsEnabled: true,
 						},
 					];
-					if(param?.tscName){
+					if(param?.tscName && (param?.currentStatus !== "In Replacement")){
 						listItemData.push(
 							{
 								label: 'Edit TSC Name',
@@ -485,7 +485,8 @@ export const allEngagementConfig = {
 					if(text){
 						return text
 					}else{
-					return	<a href="javascript:void(0);"
+						if(data.currentStatus !== "In Replacement"){
+							return	<a href="javascript:void(0);"
 							style={{ color: '#006699', textDecoration: 'underline' }}
 							onClick={()=>{
 								// console.log(data.onboardID)
@@ -495,6 +496,8 @@ export const allEngagementConfig = {
 							>
 								ADD
 							</a>
+						}
+						return ''
 					}
 				}
 			},
