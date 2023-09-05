@@ -289,13 +289,13 @@ const AllClientFilters = ({
 														checked={checkedState?.get(
 															`${filterSubChild.name}${item.text}`,
 														)}
-														// onChange={(e) =>
-														// 	handleAppliedFilters(e.target.checked, {
-														// 		filterType: filterSubChild.name,
-														// 		value: item?.value,
-														// 		id: item?.text,
-														// 	})
-														// }
+														onChange={(e) =>
+															handleAppliedFilters(e.target.checked, {
+																filterType: filterSubChild.name,
+																value: item?.value,
+																id: item?.text,
+															})
+														}
 														id={item?.value + `/${index + 1}`}
 														style={{
 															fontSize: `${!item.label && '1rem'}`,
