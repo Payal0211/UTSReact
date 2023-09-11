@@ -1,3 +1,4 @@
+import ViewClientDetails from 'modules/viewClient/viewClientDetails';
 import React, { Suspense } from 'react';
 
 const Dashboard = React.lazy(() =>
@@ -115,6 +116,9 @@ const AllClients = React.lazy(() =>
 	import('modules/allClients/allClients')
 )
 
+const ViewClient = React.lazy(() => 
+import('modules/viewClient/viewClientDetails'))
+
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
 	static SIGNUPROUTE = '/signup';
@@ -154,7 +158,8 @@ export default class UTSRoutes {
 	static CLIENT_REPORT = "/clientReport";
 	static HR_REPORT = "/hrReport";
 	static CLIENT_HAPPINESS_SURVEY = '/ClientHappinessSurvey';
-	static ALLCLIENTS = '/allClients'
+	static ALLCLIENTS = '/allClients';
+	static VIEWCLIENT = '/viewClient';
 }
 
 export const navigateToComponent = {
@@ -321,6 +326,11 @@ export const navigateToComponent = {
 [UTSRoutes.ALLCLIENTS]:(
 	<Suspense>
 			<AllClients />
+	</Suspense>
+),
+[UTSRoutes.VIEWCLIENT]: (
+	<Suspense>
+		<ViewClientDetails />
 	</Suspense>
 ),
 };
