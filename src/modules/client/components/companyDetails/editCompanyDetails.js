@@ -490,11 +490,15 @@ const EditCompanyDetails = ({
                   )}
                 </div>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <EditSVG
+                    <div style={{background:'var(--color-sunlight)',marginTop:'-25px',marginRight:'11px',display:'flex',padding:'2px',borderRadius:'50%',cursor:'pointer'}}>
+                       <EditSVG
+                  
                     width={24}
                     height={24}
                     onClick={() => setUploadModal(true)}
-                  />
+                  /> 
+                    </div>
+                  
                 </div>
               </div>
             </div>
