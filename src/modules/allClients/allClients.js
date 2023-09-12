@@ -22,7 +22,6 @@ import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { clientHappinessSurveyConfig } from 'modules/hiring request/screens/clientHappinessSurvey/clientHappinessSurvey.config';
 import { allClientRequestDAO } from 'core/allClients/allClientsDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { allClientsConfig } from 'modules/hiring request/screens/allClients/allClients.config';
@@ -226,15 +225,19 @@ function AllClients() {
         setHTMLFilter(!getHTMLFilter);
     }, [getHTMLFilter]);
 
-    const handleExport = async () => {      
-       
-		downloadToExcel(allClientsList);
-    }
-
     const allClientsColumnsMemo = useMemo(
 		() => allClientsConfig.tableConfig(),
 		[],
 	); 
+
+    const handleExport = async () => {          
+        let DataToExport =  allClientsList.map(data => {
+            let obj = {}
+            allClientsColumnsMemo.map(val => val.title !== ' ' && (obj[`${val.title}`] = data[`${val.key}`]))
+            return obj;
+        })
+    		downloadToExcel(DataToExport);
+    }
     return(
         <>
             <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
