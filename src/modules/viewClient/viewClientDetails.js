@@ -4,7 +4,7 @@ import { Table, Tag } from 'antd';
 
 import dealDetailsStyles from './viewClientDetails.module.css';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DealDAO } from 'core/deal/dealDAO';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
@@ -18,196 +18,36 @@ import { HTTPStatusCode } from 'constants/network';
 import moment from 'moment';
 import {NetworkInfo} from 'constants/network'
 import HROperator from "modules/hiring request/components/hroperator/hroperator";
-const columns = [
-	{
-		title: '',
-		dataIndex: '',
-		key: '',
-		width: '55px',
-		render: () => (
-			<svg
-				width="17"
-				height="16"
-				viewBox="0 0 17 16"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg">
-				{' '}
-				<path
-					d="M8.5 0.560127L10.9028 5.37762C10.9394 5.45097 11.0096 5.50173 11.0907 5.51346L16.4589 6.29L12.5765 10.0324C12.5168 10.09 12.4895 10.1734 12.5037 10.2551L13.4204 15.5451L8.61542 13.0443C8.54308 13.0066 8.45692 13.0066 8.38458 13.0443L3.57956 15.5451L4.49633 10.2551C4.51049 10.1734 4.48321 10.09 4.4235 10.0324L0.541081 6.29L5.90929 5.51346C5.99042 5.50173 6.06063 5.45097 6.09722 5.37762L8.5 0.560127Z"
-					stroke="#232323"
-					stroke-width="0.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"></path>
-			</svg>
-		),
-	},
-	{
-		title: 'Created Date',
-		dataIndex: 'createdDateTime',
-		key: 'createdDateTime',
-		render:(text)=>{
-			return text.split(' ')[0]
-		}
-	},
-	{
-		title: 'HR ID',
-		dataIndex: 'hr',
-		key: 'hr',
-		render: (text) => (
-			<a
-				href="#"
-				style={{ color: 'black', textDecoration: 'underline' }}>
-				{text}
-			</a>
-		),
-	},
-	{
-		title: 'TR',
-		dataIndex: 'tr',
-		key: 'tr',
-	},
-	{
-		title: 'Position',
-		dataIndex: 'position',
-		key: 'position',
-	},
-	{
-		title: 'Budget/Mo',
-		dataIndex: 'budgetmo',
-		key: 'budgetmo',
-	},
-	{
-		title: 'Notice',
-		dataIndex: 'notice',
-		key: 'notice',
-	},
-	{
-		title: 'FTE/PTE',
-		dataIndex: 'typeOfEmployee',
-		key: 'typeOfEmployee',
-	},
-	// {
-	// 	title: 'HR Status',
-	// 	key: 'tags',
-	// 	dataIndex: 'tags',
-	// 	render: (_, { tags }) => (
-	// 		<>
-	// 			{tags.map((tag) => {
-	// 				let color = tag.length > 5 ? 'geekblue' : 'green';
-	// 				if (tag === 'loser') {
-	// 					color = 'volcano';
-	// 				}
-	// 				return (
-	// 					<Tag
-	// 						color={color}
-	// 						key={tag}>
-	// 						{tag.toUpperCase()}
-	// 					</Tag>
-	// 				);
-	// 			})}
-	// 		</>
-	// 	),
-	// },
-];
+import { allClientRequestDAO } from "core/allClients/allClientsDAO";
+import { allClientsConfig } from "modules/hiring request/screens/allClients/allClients.config";
 
 function ViewClientDetails() {
-    const navigate = useNavigate();
 	const [isLoading, setLoading] = useState(false);
-	const [dealDetails, setDealDetails] = useState(null);
-	const { dealID} = useParams()
+	const [viewDetails,setViewDetails] = useState({});
+	const { id } = useParams();
+	const [isExpanded, setIsExpanded] = useState(false);
 
-	const getDealDetails = useCallback(async (dealID) => {
-		// setLoading(true);
-		const response = await DealDAO.getDealDetailRequestDAO({
-			dealID: dealID,
-		});
-		if (response?.statusCode === HTTPStatusCode.OK) {
-			setDealDetails(response && response?.responseBody?.details);
-			setLoading(false);
-		} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
-			//navigate(UTSRoutes.PAGENOTFOUNDROUTE);
-			setLoading(false);
-		}
-	}, [navigate, dealID]);
+	const columns = useMemo(
+		() => allClientsConfig.ViewClienttableConfig(),
+		[],
+	); 
 
 	useEffect(() => {
-		getDealDetails(dealID);
-	}, [getDealDetails,dealID]);
+		getDataForViewClient();
+	},[]);
 
-    const dataSource = [
-        {
-            key: '1',
-            createddate: '28/07/2023',
-            hrid: 'HR280723215352',
-            TR: '01',
-            position: 'Email Marketing Specialist',
-            budgetmo: 'USD 2000 - 5000',
-            Notice: '30 Days',
-            ftepte: 'Full Time',
-        },
-        {
-            key: '2',
-            createddate: '28/07/2023',
-            hrid: 'HR280723215352',
-            TR: '01',
-            position: 'Email Marketing Specialist',
-            budgetmo: 'USD 2000 - 5000',
-            Notice: '30 Days',
-            ftepte: 'Full Time',
-        },
-      
-    ];
-       
-    const columns = [
-    {
-        title: '',
-        dataIndex: '',
-        key: '',
-    },
-    {
-        title: 'Created Date',
-        dataIndex: 'createddate',
-        key: 'createddate',
-    },
-    {
-        title: 'HR ID',
-        dataIndex: 'hrid',
-        key: 'hrid',
-    },
-    {
-        title: 'TR',
-        dataIndex: 'TR',
-        key: 'TR',
-    },
-    {
-        title: 'Position',
-        dataIndex: 'position',
-        key: 'position',
-    },
-    {
-        title: 'Budget/Mo',
-        dataIndex: 'budgetmo',
-        key: 'budgetmo',
-    },
-    {
-        title: 'Notice',
-        dataIndex: 'Notice',
-        key: 'Notice',
-    },
-    {
-        title: 'FTE/PTE',
-        dataIndex: 'ftepte',
-        key: 'ftepte',
-    },
-    ];
-
+	const getDataForViewClient = async () => {
+		let _ids = id.split("~");		
+		let response = await allClientRequestDAO.getClientDetailsForViewDAO(_ids[0],_ids[1]);	
+		setViewDetails(response?.responseBody);	
+	}
     return(
         <WithLoader
 			showLoader={isLoading}
 			className="mainLoader">
 			<div className={dealDetailsStyles.dealDetailsWrap}>
 				<div className={dealDetailsStyles.dealDetailsBack}>
-					<Link to={UTSRoutes.DEALLISTROUTE}>
+					<Link to={UTSRoutes.ALLCLIENTS}>
 						<div className={dealDetailsStyles.goback}>
 							<ArrowLeftSVG style={{ width: '16px' }} />
 							<span>Go Back</span>
@@ -221,8 +61,7 @@ function ViewClientDetails() {
 							src={viewClient}
 							alt="companylogo"
 						/>
-						Lunar Solar Group
-						
+						{viewDetails?.clientDetails?.clientName}						
 					</h1>
 					<div className={dealDetailsStyles.dealDetailsRight}>
 						{/* <button  className={dealDetailsStyles.yellowOutlinedButton} type="button">View BQ Form</button>  */}
@@ -250,25 +89,25 @@ function ViewClientDetails() {
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Client Name</span>
-								Emily Page
+								{viewDetails?.clientDetails?.clientName}
 							</div>
 						</li>
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Client Source</span>
-								Self - Sign Up
+								{viewDetails?.clientDetails?.clientSource}
 							</div>
 						</li>
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Status</span>
-								Customer
+								{viewDetails?.clientDetails?.clientStatus}
 							</div>
 						</li>
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Uplers POC</span>
-								Sachin Shendre
+								{viewDetails?.clientDetails?.uplersPOC}
 							</div>
 						</li>
 					</ul>
@@ -281,20 +120,20 @@ function ViewClientDetails() {
 							<ul>
 								<li>
 									<span>Client Email:</span>
-									epage@lunarsolargroup.com
+									{viewDetails?.clientDetails?.clientEmail}
 								</li>
                                 <li>
 									<span>Lead Source : </span>
-									Inbound
+									{viewDetails?.clientDetails?.leadSource}
 								</li>
 								<li>
 									<span>Client Linkedin : -</span>
                                     <a
-										href="#"
+										href={viewDetails?.clientDetails?.clientLinkedIn}
 										target="_blank"
-										className={dealDetailsStyles.dealItemLink}>Emily Page
+										className={dealDetailsStyles.dealItemLink}>{viewDetails?.clientDetails?.clientLinkedIn}
                                         <svg
-											width="16"
+											width="30"
 											height="16"
 											viewBox="0 0 16 16"
 											fill="none"
@@ -313,28 +152,28 @@ function ViewClientDetails() {
 								</li>
                                 <li>
 									<span>Lead User: </span>
-									Omkar Ghone
+									{viewDetails?.clientDetails?.leadUser}
 								</li>
 								<li>
 									<span>Company URL : </span>
                                     <a
-										href="#"
+										href={viewDetails?.clientDetails?.companyURL}
 										target="_blank"
-										className={dealDetailsStyles.dealItemLink}> Click Here</a>
+										className={dealDetailsStyles.dealItemLink}>{viewDetails?.clientDetails?.companyURL}</a>
 								</li>
                                 <li>
 									<span>GEO: </span>
-									US
+									{viewDetails?.clientDetails?.geo}
 								</li>
 								<li>
 									<span>Company Linkedin : </span>
                                     <a
-										href="#"
+										href={viewDetails?.clientDetails?.companyLinkedIn}
 										target="_blank"
 										className={dealDetailsStyles.dealItemLink}>
-                                        Linkedin
+                                        {viewDetails?.clientDetails?.companyLinkedIn}
 										<svg
-											width="16"
+											width="30"
 											height="16"
 											viewBox="0 0 16 16"
 											fill="none"
@@ -353,11 +192,10 @@ function ViewClientDetails() {
 								</li>
                                 <li>
 									<span>Active TRs:</span>
-                                    2
+                                    {viewDetails?.clientDetails?.tr}
 								</li>
 							</ul>
-						</div>
-					
+						</div>					
 					</div>
 					<div className={dealDetailsStyles.dealRightCard}>
 						<div className={dealDetailsStyles.dealLeftItem}>
@@ -365,27 +203,35 @@ function ViewClientDetails() {
 							<ul>
 								<li>
 									<span>Industry : </span>
-									Marketing Solutions
+									{viewDetails?.clientDetails?.industry}
 								</li>
 								<li>
 									<span>Company Size : </span>
-									200 
+									{viewDetails?.clientDetails?.companySize}
 								</li>
                                 <li>
 									<span>Do the client have experience hiring talent outside of home country, especially from offshore locations like India?: 	</span>
-                                    Yes
+                                    {viewDetails?.clientDetails?.allowOffshore}
 								</li>
 								<li>
-									<span>About Company: </span>
-                                    <p>The Lunar Solar Group provides ecommerce and digital marketing services that drive transformational growth for our clients. We’re a globally recognized growth consultancy, technology studio, and full service <a href="#" className={dealDetailsStyles.viewClientReadMore}>read more</a> </p>
+									<span>About Company: </span>							
+									{viewDetails?.clientDetails?.aboutCompany && <p>
+										{isExpanded ? viewDetails?.clientDetails?.aboutCompany : `${viewDetails?.clientDetails?.aboutCompany.slice(0, 150)}...`}
+										{!isExpanded && (
+											<a onClick={() => setIsExpanded(true)} className={dealDetailsStyles.viewClientReadMore}>read more</a>
+										)}
+									</p>}
 								</li>
 							</ul>
 						</div>
 					</div>
 				</div>
-
-                <Table dataSource={dataSource} columns={columns} />;
-
+                <Table 
+				scroll={{  y: '100vh' }}
+				dataSource={viewDetails.hrList ? viewDetails?.hrList : []} 
+				columns={columns} 
+				pagination={false}
+				/>
 			</div>
 		</WithLoader>
     )

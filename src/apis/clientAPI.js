@@ -71,7 +71,6 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getDuplicateCompanyNameRequest');
 		}
 	},
-
 	getAllClients : async function (clientReqData) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -94,6 +93,21 @@ export const ClientAPI = {
 			NetworkInfo.NETWORK +
 			SubDomain.CLIENT +
 			ClientsAPI.FILTER_LIST ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getClientFilterList');
+		}
+	},
+	getViewclientDetailsRequest:async function (CompanyID,ClientID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.VIEW_CLIENT + "?CompanyID=" + CompanyID + "&ClientID=" + ClientID ;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {

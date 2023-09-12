@@ -138,21 +138,32 @@
     font-size: 14px;
     line-height: 17px;
     color: #232323;
+    word-break: break-word;
 }
+
+
+.dealRightCard ul li span{
+    white-space: pre-wrap;
+}
+
 .dealLeftCard ul li:last-child , .dealRightCard ul li:last-child{
     margin-bottom: 0;
 }
+
 .dealLeftCard ul li span, .dealRightCard ul li span {
     color: #7C7C7C;
     margin-right: 5px;
 }
+
+.dealLeftCard ul li span{white-space: nowrap;}
+
 .dealLeftCard ul li a, .dealRightCard ul li a{
     text-decoration-line: underline;
     color: #0278E4;
 }
 .dealItemLink{
     display: inline-flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 5px;
     color: #0278E4 !important;
     font-size: 14px;
@@ -170,14 +181,17 @@
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
+    gap: 15px;
 }
 
 .dealLeftCard ul li:nth-child(2n + 1){
     width: 60%;
+    display: flex;
 }
 
 .dealLeftCard ul li:nth-child(2n){
-    width: 40%;
+    width: calc(40% - 15px);
+    display: flex;
 }
 
 .viewClientReadMore{
@@ -309,5 +323,3 @@ button.yellowOutlinedButton {
     border: 1px solid var(--color-sunlight);
     background-color: #fff;
 }
-
-  
