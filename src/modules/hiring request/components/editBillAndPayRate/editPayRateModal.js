@@ -47,7 +47,7 @@ const EditPayRate = ({ talentInfo, onCancel
                                     validationSchema={{
                                         required: 'please enter Talent Fees.',
                                         min: {
-                                            value: 0,
+                                            value: 1,
                                             message: `please don't enter 0 & negative value`,
                                         }
                                     }}
