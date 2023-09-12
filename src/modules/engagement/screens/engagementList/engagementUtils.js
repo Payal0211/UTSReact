@@ -36,7 +36,7 @@ export const engagementUtils = {
 			replacementEng: item?.replacementEng ? item?.replacementEng : '',
 			noticePeriod: item?.noticePeriod ? item?.noticePeriod + ' Months' : '',
 			kickOff: item?.kickOff
-				? item?.kickOffStatus + ' - ' + item?.lastFeedbackDate
+				? item?.kickOffStatus + ' - ' + item?.kickOff
 				: '',
 			billRate: item?.billRate ? item?.billRate : '',
 			actualBillRate: item?.actualBillRate

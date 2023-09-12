@@ -1,4 +1,5 @@
 import { InputType } from 'constants/application';
+import { Skeleton } from 'antd';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -28,9 +29,12 @@ const EditBillRate = ({
 		watch,
 		formState: { errors },
 	} = useForm();
+	const [isCalculating,setIsCalculating] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 
-	const updateHRcostHandler = useCallback(
+	const updateHRcostHandler = useCallback(	
 		async (data) => {
+			setIsCalculating(true)
 			const calculateHRData = {
 				ContactPriorityID: filterTalentID?.ContactPriorityID,
 				Hr_Cost: getBillRateInfo?.hrCost,
@@ -43,7 +47,9 @@ const EditBillRate = ({
 
 			if (response.responseBody.statusCode === HTTPStatusCode.OK) {
 				setValue('hrCost', response?.responseBody?.details);
+				setIsCalculating(false)
 			}
+			setIsCalculating(false)
 		},
 		[
 			filterTalentID?.ContactPriorityID,
@@ -53,6 +59,7 @@ const EditBillRate = ({
 		],
 	);
 	const saveBillRatehandler = async (data) => {
+		setIsLoading(true)
 		const saveBillRatePayload = {
 			ContactPriorityID: talentInfo?.ContactPriorityID,
 			Hr_Cost: data?.hrCost,
@@ -65,7 +72,9 @@ const EditBillRate = ({
 		if (response.responseBody.statusCode === HTTPStatusCode.OK) {
 			onCancel();
 			setHRapiCall(!callHRapi);
+			setIsLoading(false)
 		}
+		setIsLoading(false)
 	};
 
 	function extractNumberFromString(inputString) {
@@ -82,14 +91,15 @@ const EditBillRate = ({
 		setValue('hrCost', extractNumberFromString(talentInfo?.BillRate));
 		setValue('nrMarginPercentage', extractNumberFromString(talentInfo?.NR));
 	}, [setValue, talentInfo, talentInfo?.BillRate]);
-
+console.log(isCalculating,'isCalculating')
 	return (
 		<div className={editBillAndPayRate.engagementModalContainer}>
 			<div
 				className={` ${editBillAndPayRate.headingContainer} ${editBillAndPayRate.billRateContainer}`}>
 				<h1>Edit Bill Rate ({hrNO})</h1>
 			</div>
-			<div className={editBillAndPayRate.firstFeebackTableContainer}>
+
+			{isLoading ? <Skeleton /> : <div className={editBillAndPayRate.firstFeebackTableContainer}>
 				<div
 					className={`${editBillAndPayRate.row} ${editBillAndPayRate.billRateWrapper}`}>
 					<div className={editBillAndPayRate.colMd12}>
@@ -148,7 +158,9 @@ const EditBillRate = ({
 					<button
 						type="submit"
 						onClick={handleSubmit(saveBillRatehandler)}
-						className={editBillAndPayRate.btnPrimary}>
+						className={editBillAndPayRate.btnPrimary}
+						disabled={isCalculating}
+						>
 						Save
 					</button>
 					<button
@@ -157,7 +169,8 @@ const EditBillRate = ({
 						Cancel
 					</button>
 				</div>
-			</div>
+			</div>}
+			
 		</div>
 	);
 };
