@@ -42,10 +42,11 @@ export const allClientsConfig = {
                 title: '',
                 dataIndex: 'Edit',
                 key: 'edit',
-                render:() => {
+                width:"60px",
+                render:(_,result) => {
                     return (
                         <Link
-                        to={`/allhiringrequest/addnewclient`}
+                        to={`/editclient/${result.companyID}`}
                         style={{ color: 'black', textDecoration: 'underline' }}>
                         <PencilSVG />
                     </Link>

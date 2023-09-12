@@ -49,7 +49,9 @@ export function clientFormDataFormatter(
 	primaryClientEmail,
 	primaryClientEN_ID,
 	legelInfoEN_ID,
-	companyDetail
+	companyDetail,
+	base64ClientImage,
+	getUploadClientFileData,
 ) {
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
@@ -140,6 +142,10 @@ export function clientFormDataFormatter(
 			// 	? ''
 			// 	: addClientResponse?.primaryClient?.en_Id,
 			en_Id : primaryClientEN_ID,
+			fileUpload: {
+				base64ProfilePic: base64ClientImage,
+				extenstion: getUploadClientFileData?.split('.')[1],
+			},
 			fullName:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(primaryClientFullName)

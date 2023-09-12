@@ -16,6 +16,9 @@ const AddNewHR = React.lazy(() =>
 const AddNewClient = React.lazy(() =>
 	import('modules/client/screens/addnewClient/add_new_client'),
 );
+const EditClient = React.lazy(() =>
+	import('modules/client/screens/addnewClient/edit_client'),
+);
 const InterviewList = React.lazy(() =>
 	import('modules/interview/screens/interviewList/interviewList'),
 );
@@ -124,6 +127,7 @@ export default class UTSRoutes {
 	static ALLHIRINGREQUESTSUBROUTE = '/allhiringrequest/:hrid';
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
+	static EDITCLIENT = '/editclient/:CompanyID';
 	static INTERVIEWLISTROUTE = '/interview';
 	static INTERVIEWSCHEDULE = '/interview/scheduleinterview';
 	static INTERVIEWFEEDBACK = '/interview/feedback';
@@ -321,6 +325,11 @@ export const navigateToComponent = {
 [UTSRoutes.ALLCLIENTS]:(
 	<Suspense>
 			<AllClients />
+	</Suspense>
+),
+[UTSRoutes.EDITCLIENT]:(
+	<Suspense>
+			<EditClient />
 	</Suspense>
 ),
 };
