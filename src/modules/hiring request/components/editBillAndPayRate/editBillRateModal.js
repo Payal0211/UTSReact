@@ -34,7 +34,8 @@ const EditBillRate = ({
 
 	const updateHRcostHandler = useCallback(	
 		async (data) => {
-			setIsCalculating(true)
+			if(data > 0){
+				setIsCalculating(true)
 			const calculateHRData = {
 				ContactPriorityID: filterTalentID?.ContactPriorityID,
 				Hr_Cost: getBillRateInfo?.hrCost,
@@ -50,6 +51,8 @@ const EditBillRate = ({
 				setIsCalculating(false)
 			}
 			setIsCalculating(false)
+			}
+			
 		},
 		[
 			filterTalentID?.ContactPriorityID,
@@ -91,7 +94,7 @@ const EditBillRate = ({
 		setValue('hrCost', extractNumberFromString(talentInfo?.BillRate));
 		setValue('nrMarginPercentage', extractNumberFromString(talentInfo?.NR));
 	}, [setValue, talentInfo, talentInfo?.BillRate]);
-console.log(isCalculating,'isCalculating')
+
 	return (
 		<div className={editBillAndPayRate.engagementModalContainer}>
 			<div
@@ -121,10 +124,14 @@ console.log(isCalculating,'isCalculating')
 							errors={errors}
 							validationSchema={{
 								required: 'please enter NR margin percentage.',
+								min: {
+									value: 1,
+									message: `please don't enter 0 & negative value`,
+								}
 							}}
 							label="NR margin percentage"
 							name="nrMarginPercentage"
-							type={InputType.TEXT}
+							type={InputType.NUMBER}
 							placeholder="Enter"
 							onChangeHandler={(e) => updateHRcostHandler(e.target.value)}
 							required

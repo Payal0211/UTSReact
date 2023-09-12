@@ -181,6 +181,8 @@ export class ClientsAPI {
 	static GET_POINT_OF_CONTACT = 'GetPointOfContact';
 	static GET_ALL_CLIENTS_LIST = 'List';
 	static FILTER_LIST = 'FilterList';
+	static VIEW_CLIENT = 'ViewClient';
+
 }
 
 export class HiringRequestsAPI {

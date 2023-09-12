@@ -1,4 +1,5 @@
 import { InputType } from 'constants/application';
+import { Skeleton } from 'antd';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -10,8 +11,10 @@ const EditPayRate = ({ talentInfo, onCancel
     , register, errors, handleSubmit, setHRapiCall, callHRapi,hrNO
 
 }) => {
+    const [isLoading, setIsLoading] = useState(false)
 
     const savePayRatehandler = async (data) => {
+        setIsLoading(true)
         const savePayRatePayload = {
             ContactPriorityID: talentInfo?.ContactPriorityID,
             talentFees: data?.talentFees
@@ -20,7 +23,9 @@ const EditPayRate = ({ talentInfo, onCancel
         if (response.responseBody.statusCode === HTTPStatusCode.OK) {
             onCancel()
             setHRapiCall(!callHRapi)
+            setIsLoading(false)
         }
+        setIsLoading(false)
     }
 
     return (
@@ -29,7 +34,7 @@ const EditPayRate = ({ talentInfo, onCancel
             <div className={`${editBillAndPayRate.headingContainer} ${editBillAndPayRate.payRateContainer}`}>
                 <h1>Edit Pay Rate ({hrNO})</h1>
             </div>
-            <div className={editBillAndPayRate.firstFeebackTableContainer}>
+            {isLoading ? <Skeleton/> : <div className={editBillAndPayRate.firstFeebackTableContainer}>
                 <div className={editBillAndPayRate.row}>
                     <div
                         className={editBillAndPayRate.colMd12} style={{display:'flex', alignItems:'center'}}>
@@ -41,6 +46,10 @@ const EditPayRate = ({ talentInfo, onCancel
                                     errors={errors}
                                     validationSchema={{
                                         required: 'please enter Talent Fees.',
+                                        min: {
+                                            value: 0,
+                                            message: `please don't enter 0 & negative value`,
+                                        }
                                     }}
                                     label="Talent Fees"
                                     name="talentFees"
@@ -69,7 +78,8 @@ const EditPayRate = ({ talentInfo, onCancel
                     </button>
                 </div>
 
-            </div>
+            </div> }
+            
         </div>
     );
 };

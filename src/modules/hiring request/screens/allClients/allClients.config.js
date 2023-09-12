@@ -42,16 +42,19 @@ export const allClientsConfig = {
                 title: '',
                 dataIndex: 'Edit',
                 key: 'edit',
-                render:() => {
+                align: 'left',
+				width: '55px',
+                render:(_,result) => {
                     return (
                         <Link
-                        to={`/allhiringrequest/addnewclient`}
+                        to={`/editclient/${result.companyID}`}
                         style={{ color: 'black', textDecoration: 'underline' }}>
                         <PencilSVG />
                     </Link>
                     )
                 }
             },
+            
             {
                 title: 'Added Date',
                 dataIndex: 'addedDate',
@@ -61,18 +64,18 @@ export const allClientsConfig = {
                 title: 'Company',
                 dataIndex: 'companyName',
                 key: 'companyName',
-                // render: (text, result) => {
-				// 	return (
-				// 		<Link
-				// 			to={`/allclients`}
-				// 			style={{
-				// 				color: `var(--uplers-black)`,
-				// 				textDecoration: 'underline',
-				// 			}}>
-				// 			{text}
-				// 		</Link>
-				// 	);
-				// },
+                render: (text, result) => {
+					return (
+						<Link
+							to={`/viewClient/${result.companyID}~${result.clientID}`}
+							style={{
+								color: `var(--uplers-black)`,
+								textDecoration: 'underline',
+							}}>
+							{text}
+						</Link>
+					);
+				},
             },
             {
                 title: 'Client Name',
@@ -119,5 +122,52 @@ export const allClientsConfig = {
 				},
             }
           ]; 
+    },
+    ViewClienttableConfig : () => {
+        return [
+            // {
+            //     title: '',
+            //     dataIndex: '',
+            //     key: '',
+            // },
+            {
+                title: 'Created Date',
+                dataIndex: 'createdDateTime',
+                key: 'createdDateTime',
+                render: (text, result) =>{                     
+                    return (text.split('T')[0])
+                },
+            },
+            {
+                title: 'HR ID',
+                dataIndex: 'hR_ID',
+                key: 'hR_ID',
+            },
+            {
+                title: 'TR',
+                dataIndex: 'totalTR',
+                key: 'totalTR',
+            },
+            {
+                title: 'Position',
+                dataIndex: 'position',
+                key: 'position',
+            },
+            {
+                title: 'Budget/Mo',
+                dataIndex: 'cost',
+                key: 'cost',
+            },
+            {
+                title: 'Notice',
+                dataIndex: 'notice',
+                key: 'notice',
+            },
+            {
+                title: 'FTE/PTE',
+                dataIndex: 'ftE_PTE',
+                key: 'ftE_PTE',
+            },
+            ]
     }
 }
