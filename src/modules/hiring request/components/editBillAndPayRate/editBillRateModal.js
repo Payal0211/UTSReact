@@ -66,8 +66,9 @@ const EditBillRate = ({
 		const saveBillRatePayload = {
 			ContactPriorityID: talentInfo?.ContactPriorityID,
 			Hr_Cost: data?.hrCost,
-			HR_Percentage: data?.nrMarginPercentage?.split(" ")?.[0],
+			HR_Percentage: typeof data?.nrMarginPercentage === "number" ? data?.nrMarginPercentage : Number(data?.nrMarginPercentage?.split(" ")?.[0]),
 		};
+
 		const response = await hiringRequestDAO.updateHRCostRequestDAO(
 			saveBillRatePayload,
 		);

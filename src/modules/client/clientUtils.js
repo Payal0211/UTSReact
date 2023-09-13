@@ -63,6 +63,14 @@ export function clientFormDataFormatter(
 				base64ProfilePic: base64Image,
 				extenstion: getUploadFileData?.split('.')[1],
 			},
+			aboutCompanyDesc: 
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('aboutCompany'))
+						? null
+						: watch('aboutCompany')
+					: _isNull(d.aboutCompany)
+					? null
+					: d.aboutCompany,
 			website:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('companyURL'))
