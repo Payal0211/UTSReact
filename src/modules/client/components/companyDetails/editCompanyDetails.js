@@ -505,44 +505,22 @@ const EditCompanyDetails = ({
 
             <div className={CompanyDetailsStyle.colMd6}>
               <div className={CompanyDetailsStyle.formGroup}>
-                <label>
-                  Company Name <b style={{ color: "red" }}>*</b>
-                </label>
-                <Controller
-                  render={({ ...props }) => (
-                    <AutoComplete
-                      options={
-                        getCompanyNameSuggestion.length > 0
-                          ? getCompanyNameSuggestion
-                          : []
-                      }
-                      onSelect={(clientName, data) =>
-                        getCompanyValue(clientName, data)
-                      }
-                      value={watch("companyName")}
-                      filterOption={true}
-                      onSearch={(searchValue) => {
-                        setCompanyNameSuggestion([]);
-                        getClientNameSuggestionHandler(searchValue);
-                      }}
-                      onChange={(clientName) =>
-                        setValue("companyName", clientName)
-                      }
-                      placeholder={
-                        watchcompanyName
-                          ? watchcompanyName
-                          : "Enter Company Name"
-                      }
-                      ref={controllerRef}
-                    />
-                  )}
-                  {...register("companyName", {
-                    validate,
-                  })}
-                  name="companyName"
-                  rules={{ required: true }}
-                  control={control}
-                />
+                <HRInputField
+                register={register}
+                errors={errors}
+                label="Company Name"
+                name="companyName"
+                type={InputType.TEXT}
+                validationSchema={{
+                  required: "Please enter the Company Name",
+                  // pattern: {
+                  // 	value: URLRegEx.url,
+                  // 	message: 'Entered value does not match url format',
+                  // },
+                }}
+                placeholder="Enter Company Name"
+                required
+              />
                 {errors.companyName && (
                   <div className={CompanyDetailsStyle.error}>
                     {errors.companyName?.message
@@ -834,9 +812,16 @@ const EditCompanyDetails = ({
             <div className={CompanyDetailsStyle.colMd12}>
               <HRInputField
                 register={register}
+                errors={errors}
+                validationSchema={{
+                  required: "Please enter the about company.",
+                }}
+                isTextArea={true}
                 label="About Company"
                 name="aboutCompany"
                 type={InputType.TEXT}
+                placeholder="About Company"
+                required
               />
               {/* {!getUploadFileData ? (
 								<HRInputField

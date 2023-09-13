@@ -321,6 +321,8 @@ const EditClientField = ({
 			companyDetails?.linkedInProfile	&& setValue('companyLinkedinProfile',companyDetails?.linkedInProfile)
 			companyDetails?.address	&& setValue('companyAddress',companyDetails?.address)
 			companyDetails?.companySize && setValue('companySize',companyDetails?.companySize)
+			companyDetails?.aboutCompanyDesc && setValue('aboutCompany',companyDetails?.aboutCompanyDesc)
+
 			// companyDetails?.phone && setValue('phoneNumber',companyDetails?.phone)
 			if(companyDetails?.phone){
 				setValue('phoneNumber',companyDetails?.phone?.slice(3))
