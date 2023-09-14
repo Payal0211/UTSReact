@@ -310,9 +310,9 @@ const EditClientField = ({
 
 	const getCompanyDetails = async (ID) => {
 		resetAllFields()
-		let companyDetailsData = await HubSpotDAO.getCompanyDetailsDAO(ID)
+		let companyDetailsData = await HubSpotDAO.getCompanyForEditDetailsDAO(ID)
 	
-		if(companyDetailsData.statusCode === HTTPStatusCode.OK){
+		if(companyDetailsData?.statusCode === HTTPStatusCode.OK){
 			const {companyDetails,contactDetails, companyContract ,contactPoc} = companyDetailsData.responseBody
 
 			companyDetails && setCompanyDetail(companyDetails)  
@@ -333,7 +333,7 @@ const EditClientField = ({
 			}  
 	
 			if(contactDetails){
-				if(contactDetails.length === 1){
+				if(contactDetails?.length === 1){
 					let contactDetailobj = contactDetails[0]
 					contactDetailobj?.en_Id && setPrimaryClientEN_ID(contactDetailobj?.en_Id)
 					contactDetailobj?.fullName && setValue('primaryClientName',contactDetailobj?.fullName)
@@ -350,7 +350,7 @@ const EditClientField = ({
 					}						
 				}
 
-				if(contactDetails.length > 0 ){
+				if(contactDetails?.length > 0 ){
 					let contactDetailobj = contactDetails[0]
 					contactDetailobj?.en_Id && setPrimaryClientEN_ID(contactDetailobj?.en_Id)
 					contactDetailobj?.fullName && setValue('primaryClientName',contactDetailobj?.fullName)
@@ -369,7 +369,7 @@ const EditClientField = ({
 				}
 			}
 
-			if(companyContract.id){
+			if(companyContract?.id){
 				companyContract?.en_Id && setLegelInfoEN_ID(companyContract?.en_Id)
 				companyContract?.signingAuthorityName && setValue('legalClientFullName',companyContract?.signingAuthorityName)
 				companyContract?.signingAuthorityEmail && setValue('legalClientEmailID',companyContract?.signingAuthorityEmail)

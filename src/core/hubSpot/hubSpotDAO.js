@@ -58,6 +58,31 @@ export const HubSpotDAO = {
 			return errorDebug(error, 'HubSpotDAO.getCompanyDetailsDAO');
 		}
     },
+	getCompanyForEditDetailsDAO :async (companyId)=>{
+        try {
+            const autocompleteResult = await HubSpotAPI.getCompanyForEditDetails(companyId)
+			if (autocompleteResult) {
+				const statusCode = autocompleteResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = autocompleteResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return autocompleteResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return autocompleteResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'HubSpotDAO.getCompanyForEditDetailsDAO');
+		}
+    },
     getContactsByEmailDAO :async (Email)=>{
         try {
             const contactsResult = await HubSpotAPI.getContactsByEmail(Email)
