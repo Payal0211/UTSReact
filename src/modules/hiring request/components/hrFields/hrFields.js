@@ -1497,7 +1497,7 @@ if(DID){
 										required: 'please enter the maximum budget.',
 										min: {
 											value: watch('minimumBudget'),
-											message: 'Budget should me more than minimum budget.',
+											message: 'Budget should be more than minimum budget.',
 										},
 									}}
 									disabled={watch('budget')?.value !== '2'  }
