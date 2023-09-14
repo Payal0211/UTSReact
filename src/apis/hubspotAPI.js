@@ -35,6 +35,19 @@ export const HubSpotAPI = {
 			return errorDebug(error, 'HubSpotAPI.getCompanyDetails');
 		}
     },
+	getCompanyForEditDetails: async (companyId) => {
+        let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HUB_SPOT + HubspotsAPI.GET_COMPANT_DETAILS_FOR_EDIT + `?CompanyId=${companyId}` ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HubSpotAPI.getCompanyForEditDetails');
+		}
+    },
     getContactsByEmail: async (EMAIL) => {
         let httpService = new HttpServices();
 		httpService.URL =

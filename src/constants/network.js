@@ -81,6 +81,7 @@ export class HubspotsAPI {
 	static GET_AUTOCOMPLETE_COMPANY = 'GetAutoCompleteHubSpotCompany'
 	static GET_COMPANY_DETAILS = 'GetCompanyDetails'
 	static GET_CONTACTS_BY_EMAIL = 'GetHubSpotContactsByEmail'
+	static GET_COMPANT_DETAILS_FOR_EDIT = 'GetCompanyDetailsForEditClient'
 }
 
 export class EngagementAPI {

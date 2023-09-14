@@ -101,11 +101,11 @@ const EditCompanyDetails = ({
     }
   }, [watchLeadSource]);
 
-  useEffect(() => {
-    if (errors?.companyName?.message) {
-      controllerRef.current.focus();
-    }
-  }, [errors?.companyName]);
+  // useEffect(() => {
+  //   if (errors?.companyName?.message) {
+  //     controllerRef.current.focus();
+  //   }
+  // }, [errors?.companyName]);
 
   const watchCompanyLeadSource = watch("companyLeadSource");
 
@@ -518,16 +518,13 @@ const EditCompanyDetails = ({
                   // 	message: 'Entered value does not match url format',
                   // },
                 }}
+                onChangeHandler={(e) => {
+									setCompanyName(e.target.value);
+									// debounceDuplicateCompanyName(e.target.value);
+								}}
                 placeholder="Enter Company Name"
                 required
               />
-                {errors.companyName && (
-                  <div className={CompanyDetailsStyle.error}>
-                    {errors.companyName?.message
-                      ? `* ${errors?.companyName?.message}`
-                      : "* please select a company."}
-                  </div>
-                )}
               </div>
             </div>
 
