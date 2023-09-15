@@ -27,6 +27,18 @@ const ViewHRDetails = () => {
 		navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 	};
 
+	function testJSON(text) {
+		if (typeof text !== "string") {
+			return false;
+		}
+		try {
+			JSON.parse(text);
+			return true;
+		} catch (error) {
+			return false;
+		}
+	}
+
 	return (
 		<>
 			<div className={ViewHRDetailsStyle.viewHRDetailsWrap}>
@@ -289,7 +301,14 @@ const ViewHRDetails = () => {
 								Requirements
 								<i className={ViewHRDetailsStyle.blueDot} />
 							</h3>
-							<div className={ViewHRDetailsStyle.viewHrJDDetailsBox } dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.requirments}} />
+							{ hiringDetails?.responseBody?.details?.guid ? testJSON(hiringDetails?.responseBody?.details?.requirments) ? <div className={ViewHRDetailsStyle.viewHrJDDetailsBox } > 
+									<ul>
+										{JSON.parse(hiringDetails?.responseBody?.details?.requirments).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />)}
+									</ul>
+								</div>: <div className={ViewHRDetailsStyle.viewHrJDDetailsBox } dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.requirments}} />:
+								<div className={ViewHRDetailsStyle.viewHrJDDetailsBox } dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.requirments}} />
+							}
+							
 						</div>
 
 						<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
@@ -297,7 +316,14 @@ const ViewHRDetails = () => {
 								Roles & Responsibilities
 								<i className={ViewHRDetailsStyle.blueDot} />
 							</h3>
-							<div className={ViewHRDetailsStyle.viewHrJDDetailsBox } dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.rolesResponsibilites}} />
+							{ hiringDetails?.responseBody?.details?.guid ? testJSON(hiringDetails?.responseBody?.details?.rolesResponsibilites) ? <div className={ViewHRDetailsStyle.viewHrJDDetailsBox } > 
+									<ul>
+										{JSON.parse(hiringDetails?.responseBody?.details?.rolesResponsibilites).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />)}
+									</ul>
+								</div> :<div className={ViewHRDetailsStyle.viewHrJDDetailsBox } dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.rolesResponsibilites}} /> :
+								<div className={ViewHRDetailsStyle.viewHrJDDetailsBox } dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.rolesResponsibilites}} />
+							}
+							
 						</div>
 
 						<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
