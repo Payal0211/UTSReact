@@ -261,8 +261,8 @@ const EditDebriefingHR = ({
 				return obj;
 			});
 			let debriefFormDetails = {
-				roleAndResponsibilites: d.roleAndResponsibilities,
-				requirements: d.requirements,
+				roleAndResponsibilites:  d.roleAndResponsibilities,
+				requirements:  d.requirements,
 				en_Id: enID,
 				skills: skillList?.filter((item) => item?.skillsID !== -1),
 				aboutCompanyDesc: d.aboutCompany,
@@ -366,6 +366,32 @@ const EditDebriefingHR = ({
 		// setValue("skills",getHRdetails?.skillmulticheckbox)
 	}, [getHRdetails, setValue]);
 
+	function testJSON(text) {
+		if (typeof text !== "string") {
+			return false;
+		}
+		try {
+			JSON.parse(text);
+			return true;
+		} catch (error) {
+			return false;
+		}
+	}
+
+	const createListMarkup = (list) => {
+		if(list?.length){
+			  let listText = "<ul class='rolesText'>"
+	
+		list?.forEach((item) => {
+		  listText += `<li>${item}</li>`
+		})
+	
+		return listText + "</ul>";
+		}
+	
+	  }
+
+
 	return (
 		<>
 			{contextHolder}
@@ -390,7 +416,10 @@ const EditDebriefingHR = ({
 							<div className={DebriefingHRStyle.colMd12}>
 								<TextEditor
 									isControlled={true}
-									controlledValue={
+									controlledValue={ getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details
+										?.rolesResponsibilities)? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details
+										?.rolesResponsibilities)) : getHRdetails?.salesHiringRequest_Details
+										?.rolesResponsibilities :
 										JDParsedSkills?.Responsibility ||
 										(getHRdetails?.salesHiringRequest_Details
 											?.rolesResponsibilities )
@@ -442,7 +471,7 @@ const EditDebriefingHR = ({
 								</div>
 								<TextEditor
 									isControlled={true}
-									controlledValue={
+									controlledValue={getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.requirement)) :getHRdetails?.salesHiringRequest_Details?.requirement :
 										JDParsedSkills?.Requirements ||
 										(getHRdetails?.salesHiringRequest_Details?.requirement)
 									}
