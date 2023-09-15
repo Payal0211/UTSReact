@@ -22,7 +22,8 @@ const HRSelectField = ({
 	disabled,
 	placeholder,
 	isControlledBoolean,
-	isValue
+	isValue,
+	extraAction
 }) => {
 	const getChangeHandlerWithValue = (value, option) => {
 		if (mode === 'multiple') {
@@ -41,6 +42,7 @@ const HRSelectField = ({
 				value: option.value,
 			});
 			isControlled && setControlledValue(option.value);
+			extraAction && extraAction()
 		} else if (mode === 'value') {
 			setValue(name, option.value);
 			isControlled && setControlledValue(option.value);

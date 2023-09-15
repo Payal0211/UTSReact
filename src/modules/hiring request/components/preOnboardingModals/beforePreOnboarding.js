@@ -184,7 +184,7 @@ export default function BeforePreOnboarding({
           (item) => item.text === result.responseBody.details.preOnboardingDetailsForAMAssignment.deal_Owner
         ).map((item) => ({ ...item, text: item.value, value: item.text }))
         let dealSourceObj = drpLeadTypes.filter(item => item.value === result.responseBody.details.preOnboardingDetailsForAMAssignment.dealSource)
-       
+
         if(dealOwnerOBJ.length){
            setControlledDealOwner(dealOwnerOBJ[0].value)
            setValue('dealOwner', dealOwnerOBJ[0])
@@ -227,8 +227,6 @@ export default function BeforePreOnboarding({
 
   useEffect(() => {
     if (watchDealSource?.value) {
-      setValue('dealOwner','')
-      setControlledDealOwner()
       getLeadOwnerBytype(watchDealSource.value);
     }
   }, [watchDealSource, setValue]);
@@ -243,7 +241,7 @@ export default function BeforePreOnboarding({
       setIsLoading(true);
       let payload = {
         hR_ID: HRID,
-        companyID: 11476,
+        companyID: preOnboardingDetailsForAMAssignment?.companyID,
         deal_Owner: d.dealOwner.value, //Update
         deal_Source: d.dealSource.value, //Update
         onboard_ID: talentDeteils?.OnBoardId,
@@ -471,6 +469,8 @@ export default function BeforePreOnboarding({
                       setValue={setValue}
                       register={register}
                       label={"Deal Source"}
+                      extraAction={()=>{setValue('dealOwner','');
+                      setControlledDealOwner()}}
                       defaultValue={"Select Deal Source"}
                       name="dealSource"
                       options={dealSource && dealSource}
