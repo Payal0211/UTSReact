@@ -53,7 +53,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
         pagenumber:1,
         totalrecord:100,
         filterFields_HappinessSurvey:{
-            RatingFrom : 1,
+            RatingFrom : 0,
             RatingTo :10,
             selectedFormat:"c",
         }
@@ -289,7 +289,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                 pagenumber:1,
                 totalrecord:100,
                 filterFields_HappinessSurvey:{
-                    RatingFrom : 1,
+                    RatingFrom : 0,
                     RatingTo :10,
                     selectedFormat:"c",
                 }
@@ -321,7 +321,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
             pagenumber:1,
             totalrecord:100,
             filterFields_HappinessSurvey:{
-                RatingFrom :1,
+                RatingFrom :0,
                 RatingTo :10,
             }
         });
