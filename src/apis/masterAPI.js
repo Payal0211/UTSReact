@@ -744,5 +744,46 @@ export const MasterAPI = {
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.getCurrencyRequest');
 		}
-	}
+	},
+	getRightsForAdd: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.ROLE + MastersAPI.CHECK_RIGHTS_FOR_ADD_OPRATION;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getRightsForAdd');
+		}
+	},
+	uploadRoalIcon: async function (fileData) {
+		console.log("uploadRoalIcon file get",fileData.get('file'))
+		let httpService = new HttpServices();
+		httpService.URL = NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.ROLE + MastersAPI.UPLOAD_ICON;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = fileData && fileData;
+		console.log("httpService.dataToSend",httpService.dataToSend , httpService.dataToSend.get('file'))
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.uploadRoalIcon');
+		}
+	},
+	addRole: async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.ROLE + MastersAPI.ADD_ROLE + `?RoleName=${data.roleName}${data.fileName && `&UploadIconFileName=${data.fileName}`}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.addRole');
+		}
+	},
 };

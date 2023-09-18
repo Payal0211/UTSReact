@@ -1408,5 +1408,93 @@ export const MasterDAO = {
 				'MasterDAO.updateTalentRoleStatus',
 			);
 		}
+	},
+	getRightsForAddDAO :async function (){
+		try {
+			const roleStatusResponse =
+				await MasterAPI.getRightsForAdd();
+			if (roleStatusResponse) {
+				const statusCode = roleStatusResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = roleStatusResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.getRightsForAddDAO',
+			);
+		}
+	},
+	uploadRoalIconDAO :async function (data){
+		console.log("uploadRoalIcon DAO file get",data.get('file'))
+		try {
+			const roleStatusResponse =
+				await MasterAPI.uploadRoalIcon(data);
+			if (roleStatusResponse) {
+				const statusCode = roleStatusResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = roleStatusResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.uploadRoalIconDAO',
+			);
+		}
+	},
+	addRoleDAO :async function (data){
+		try {
+			const roleStatusResponse =
+				await MasterAPI.addRole(data);
+			if (roleStatusResponse) {
+				const statusCode = roleStatusResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = roleStatusResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.addRoleDAO',
+			);
+		}
 	}
 };

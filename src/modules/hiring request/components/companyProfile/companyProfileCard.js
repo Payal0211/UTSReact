@@ -544,7 +544,7 @@ const CompanyProfileCard = ({
           className="changeDateModal"
           onCancel={() => setUpdateDate(false)}
         >
-          <ChangeDate allApiData={allApiData} />
+          <ChangeDate allApiData={allApiData}  onCancel={()=>setUpdateDate(false)}/>
         </Modal>
       )}
     </div>

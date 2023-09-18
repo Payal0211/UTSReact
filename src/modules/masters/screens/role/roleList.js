@@ -2,13 +2,14 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import CurrencyListStyle from '../currency/currencyList.module.css';
 import { MasterConfig } from 'modules/masters/masterConfig';
-import { Table } from 'antd';
+import { Table,Modal } from 'antd';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { InputType } from 'constants/application';
 import { downloadToExcel } from 'modules/report/reportUtils';
+import AddNewRole from './addRoleModal';
 
 const RoleList = () => {	
     const [isLoading, setLoading] = useState(false);
@@ -23,6 +24,8 @@ const RoleList = () => {
 		SortDirection: 'DESC',
         searchText: ''
 	});
+	const [isCanAddRole,setIsCanAddRole] = useState(false)
+	const [addRole,setAddRole] = useState(false)
 
     const _tableFilteredStateRef = useRef();
     _tableFilteredStateRef.current = tableFilteredState;
@@ -63,6 +66,17 @@ const RoleList = () => {
 		getRolesListHandler(tableFilteredState);
 	}, [getRolesListHandler,tableFilteredState]);
 
+	const getAddPermission = async ()=>{
+		let result = await MasterDAO.getRightsForAddDAO()
+		if(result.statusCode === 200){
+			setIsCanAddRole(result.responseBody.details)
+		}
+	}
+
+	useEffect(()=>{
+		getAddPermission()
+	},[])
+
     const onSearch = (e) => {
         setTableFilteredState({...tableFilteredState,searchText:e.target.value});
         setPageIndex(1);        
@@ -101,6 +115,13 @@ const RoleList = () => {
 							className={CurrencyListStyle.searchInput}
 						/>
 					</div>
+					{isCanAddRole && <div>
+						<button
+							className={CurrencyListStyle.btnPrimary}								
+							onClick={() =>setAddRole(true)}>
+							Add New Role
+						</button>
+					</div>}
 					<div>
 						<button
 							className={CurrencyListStyle.btnPrimary}								
@@ -150,7 +171,18 @@ const RoleList = () => {
 						/>
 					</>
 				)}
-			</div>			
+			</div>		
+
+			<Modal
+          width={"864px"}
+          centered
+          footer={false}
+          open={addRole}
+          className="changeDateModal"
+          onCancel={() => setAddRole(false)}
+        >
+			<AddNewRole onCancel={()=> setAddRole(false)}/>
+		</Modal>	
 		</div>
 	);
 };
