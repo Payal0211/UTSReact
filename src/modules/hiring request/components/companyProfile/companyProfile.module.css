@@ -59,3 +59,189 @@
   cursor: pointer;
   box-shadow: none;
 }
+
+.btnPrimary {
+    background: #FFDA30;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    padding: 8px;
+    outline: none;
+    transition: all 0.35s ease 0s;
+    cursor: pointer;
+    box-shadow: none;
+    margin-left:10px
+}
+
+
+
+/* Custom Step css */
+
+
+.telentJobStep{
+    padding:24px 0;
+}
+
+  .telentJobStepProgressbar {
+    display: flex;
+    align-items: baseline;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .telentJobStepProgressbar li {
+    list-style: none;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: auto;
+    position: relative;
+    text-align: center;
+    cursor: pointer;
+    padding-bottom: 40px;
+  }
+
+  .telentJobStepProgressbar li .telentJobStepIcon img{
+    opacity: 1;
+  }
+
+  .telentJobStepProgressbar li:after {
+    content: "";
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    background-color: #FFDA30;
+    top: -45px;
+    left: 15px;
+    z-index : 1;
+  }
+  .telentJobStepProgressbar li:first-child:after {
+    content: none;
+  }
+  .telentJobStepProgressbar li.check {
+    color: green;
+  }
+  .telentJobStepProgressbar li.check:before {
+    border-color: #FFDA30;
+  } 
+  .telentJobStepProgressbar li.check + li:after {
+    background-color: #FFDA30;
+  }
+
+  
+
+   .telentJobStepProgressbar li.check .telentJobStepIcon:after{
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: block;
+        text-align: center;
+        background-color: #32936F;
+        position: absolute;
+        top: 0;
+        right: 0;
+  }
+
+  .telentJobStepProgressbar li.check .telentJobStepIcon:before{
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-right-style: solid;
+    border-right-width: 1px;
+    content: "";
+    display: inline-block;
+    height: 5px;
+    width: 3px;
+    position: absolute;
+    right: 2px;
+    top: 1px;
+    z-index: 6;
+    color: #fff;
+    transform: rotate(45deg);
+  }
+
+  .telentJobStepProgressbar li.check .telentJobStepIcon, .telentJobStepProgressbar li.readActive .telentJobStepIcon{
+    background: #FFFDF1;
+    border: 1px solid #FFDA30;
+  }
+
+  .telentJobStepProgressbar li.active p{
+    color: #232323;
+    font-weight: 500;
+  }
+
+  .telentJobStepProgressbar .telentJobStepIcon{
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    background: #FFFDF1;
+    border: 1px solid #FFDA30;
+    border-radius: 50%;
+    margin: 0 auto;
+    margin-right: 10px;
+  }
+
+  .telentJobStepProgressbar li p{
+    color: #232323;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-align: left;
+    margin: 0;
+  }
+
+  .jobStepTextWrap .StepscreeningBox{
+    border-radius: 4px;
+    border: 1px solid rgba(107, 107, 107, 0.20);
+    background: #FFF;
+
+    color: #232323;
+    text-align: center;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 4px 8px;
+  }
+
+  .screeningColorGreen{
+    color: #287016;
+    font-weight: 700;
+  }
+
+  .screeningColorOrange{
+    color: #C06F10;
+    font-weight: 500;
+  }
+
+  .jobStepTextBtnWrap{
+    display: flex;
+    gap: 16px;
+    margin-top: 5px;
+  }
+
+  .jobStepTextWrap.jobStepTextWrapTop .jobStepTextBtnWrap{
+    justify-content: space-between;
+  }
+
+  .jobStepTextWrap.jobStepTextWrapTop .StepscreeningBox{
+    display: inline-flex;
+    padding: 6px 8px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .jobStepTextWrap.jobStepTextWrapTop .spinTimeImg{
+    margin-left: 8px;
+  }

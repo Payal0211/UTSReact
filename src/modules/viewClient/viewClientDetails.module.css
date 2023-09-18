@@ -323,3 +323,19 @@ button.yellowOutlinedButton {
     border: 1px solid var(--color-sunlight);
     background-color: #fff;
 }
+
+.viewClientUser{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    min-width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 22px;
+}
+
+.viewClientUser{
+    background-image: url('../../assets/svg/viewClientUser.png');
+}

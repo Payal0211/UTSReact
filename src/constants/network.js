@@ -163,6 +163,10 @@ export class MastersAPI {
 	static GET_LEAD_BY_TYPE = 'GetLeadByLeadType';
 	static GET_ROLES_LIST = 'GetTalentRoleMaster';
 	static UPDATE_TALENT_ROLE_STATUS = 'UpdateTalentRoleStatus';
+	static ROLE = 'Role/';
+	static CHECK_RIGHTS_FOR_ADD_OPRATION ='CheckUserRightsForAddOperation';
+	static UPLOAD_ICON ='UploadIcon'
+	static ADD_ROLE = 'Add'
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
@@ -231,9 +235,10 @@ export class HiringRequestsAPI {
 	static DELETE_INTERVIEW_DETAILS = 'DeleteInterviewDetails';
 	static CLOSE_HR_VALIDATION = 'CloseHRValidation'; 
 	static CLOSE_HR = 'CloseHR';
-	static REOPEN_HR = 'ReopenHR'
-	static GET_HR_DP_AMOUNT_DETAILS = 'GetHRDPAmountDetails'
-	static UPDATE_DP_AMOUNT = 'UpdateDPAmount'
+	static REOPEN_HR = 'ReopenHR';
+	static GET_HR_DP_AMOUNT_DETAILS = 'GetHRDPAmountDetails';
+	static UPDATE_DP_AMOUNT = 'UpdateDPAmount';
+	static GET_HR_SLA_DETAILS = 'GetHiringRequestSLADetails'
 }
 
 export class UsersAPI {

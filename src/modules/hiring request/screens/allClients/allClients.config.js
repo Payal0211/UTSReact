@@ -43,7 +43,7 @@ export const allClientsConfig = {
                 dataIndex: 'Edit',
                 key: 'edit',
                 align: 'left',
-				width: '55px',
+				width: '60px',
                 render:(_,result) => {
                     return (
                         <Link
@@ -59,15 +59,18 @@ export const allClientsConfig = {
                 title: 'Added Date',
                 dataIndex: 'addedDate',
                 key: 'addedDate',
+                width: '120px',
             },
             {
                 title: 'Company',
                 dataIndex: 'companyName',
                 key: 'companyName',
+                width: '210px',
                 render: (text, result) => {
 					return (
 						<Link
-							to={`/viewClient/${result.companyID}~${result.clientID}`}
+							// to={`/viewClient/${result.companyID}~${result.clientID}`}
+                            to={`/viewClient/${result.companyID}/${result.clientID}`}
 							style={{
 								color: `var(--uplers-black)`,
 								textDecoration: 'underline',
@@ -78,19 +81,22 @@ export const allClientsConfig = {
 				},
             },
             {
-                title: 'Client Name',
+                title: 'Client',
                 dataIndex: 'clientName',
                 key: 'clientName',
+                width: '150px',
             },
             {
                 title: 'Client Email',
                 dataIndex: 'clientEmail',
                 key: 'clientEmail',
+                width: '200px',
             },
             {
                 title: 'POC',
                 dataIndex: 'poc',
                 key: 'poc',
+                width: '150px',
                 // render: (text, result) => {
 				// 	return (
 				// 		<Link
@@ -108,11 +114,13 @@ export const allClientsConfig = {
                 title: 'Geo',
                 dataIndex: 'geo',
                 key: 'geo',
+                width: '100px',
             },
             {
                 title: 'Status',
                 dataIndex: 'status',
                 key: 'status',
+                width: '150px',
                 render: (text,result) => {
 					return (
 						text && <span 
@@ -140,8 +148,8 @@ export const allClientsConfig = {
             },
             {
                 title: 'HR ID',
-                dataIndex: 'hR_ID',
-                key: 'hR_ID',
+                dataIndex: 'hrNumber',
+                key: 'hrNumber',
             },
             {
                 title: 'TR',
