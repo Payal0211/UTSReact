@@ -1943,6 +1943,7 @@ const EditHRFields = ({
                     type={InputType.NUMBER}
                     placeholder="Please enter number of talents needed"
                     required
+                    disabled={true}
                   />
                 </div>
                 <div className={HRFieldStyle.colMd6}>

@@ -1023,4 +1023,17 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.updateDPAmount');
 		}
 	},
+	getHRSLADetails: async (hrID) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.VIEW_ALL_HR + HiringRequestsAPI.GET_HR_SLA_DETAILS + `?HRID=${hrID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getHRSLADetails');
+		}
+	},
 };
