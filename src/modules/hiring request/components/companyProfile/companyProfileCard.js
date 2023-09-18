@@ -11,6 +11,20 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import { UserAccountRole } from "constants/application";
 import { NetworkInfo } from "constants/network";
 
+import IconApplicationSVG from "assets/svg/postStepIconApplication.svg";
+import IconDebriefingSVG from "assets/svg/postStepIconDebriefing.svg";
+import IconHireSVG from "assets/svg/postStepIconHire.svg";
+import IconInterviewSVG from "assets/svg/postStepIconInterview.svg";
+import IconMatcherSVG from "assets/svg/postStepIconMatcher.svg";
+import IconOnbordingSVG from "assets/svg/postStepIconOnbording.svg";
+import IconPublishedSVG from "assets/svg/postStepIconPublished.svg";
+import IconScreeningSVG from "assets/svg/postStepIconScreening.svg";
+import IconShortlistSVG from "assets/svg/postStepIconShortlist.svg";
+import IconVettingSVG from "assets/svg/postStepIconVetting.svg";
+
+import jobPostSLATimeSVG from "assets/svg/jobPostSLATime.svg";
+
+
 const CompanyProfileCard = ({
   clientDetail,
   talentLength,
@@ -473,21 +487,26 @@ const CompanyProfileCard = ({
         style={{ marginTop: "10px" }}
       >
         <div className={CompanyProfileCardStyle.companyCardBody}>
-          <div>
-			<div>Profile Review ETA:<span>16th sept -2023</span> <span>Deployed</span></div>
-            <button
-              className={CompanyProfileCardStyle.btnPrimary}
-              onClick={() => setUpdateDate(true)}
-            >
-              Change Date
-            </button>
+
+          <div className={`${CompanyProfileCardStyle.jobStepTextWrap} ${CompanyProfileCardStyle.jobStepTextWrapTop}`}>
+            <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+              <div>
+                <div className={CompanyProfileCardStyle.StepscreeningBox}>Profile Review ETA:<b>16th sept -2023</b> <span className={CompanyProfileCardStyle.screeningColorGreen}>Deployed</span></div>
+                <span className={CompanyProfileCardStyle.spinTimeImg}> <img src={jobPostSLATimeSVG} alt="time" /></span>
+              </div>
+              <button className={CompanyProfileCardStyle.btnPrimary} onClick={() => setUpdateDate(true)}>
+                  Change Date
+              </button>
+            </div>
           </div>
+
           <Divider
             style={{
               margin: "10px 0",
             }}
           />
-          <ul>
+          
+          {/* <ul>
             {hrSLADetails.length &&
               hrSLADetails.map((detail) => <li><div>
 				{detail.stageName}
@@ -496,7 +515,133 @@ const CompanyProfileCard = ({
 					<div><p>Date- {detail.slaDate?? 'NA'}</p></div>
 				</div>
 				</div></li>)}
-          </ul>
+          </ul> */}
+
+          <div className={CompanyProfileCardStyle.telentJobStep}>
+                <ul className={CompanyProfileCardStyle.telentJobStepProgressbar}>
+                  <li className={CompanyProfileCardStyle.check}>
+                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Debriefing your job">
+                          <img src={IconDebriefingSVG} alt="icon" />
+                      </div>
+                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
+                        <p>Debriefing your job</p>
+                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
+                        </div>
+                      </div>
+                  </li>
+                  <li className={CompanyProfileCardStyle.check}>
+                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Job published to talents">
+                          <img src={IconPublishedSVG} alt="icon" />
+                      </div>
+                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
+                        <p>Job published to talents</p>
+                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
+                        </div>
+                      </div>
+                  </li>
+                  <li className={CompanyProfileCardStyle.check}>
+                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Applications">
+                          <img src={IconApplicationSVG} alt="icon" />
+                      </div>
+                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
+                        <p>Applications</p>
+                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
+                        </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Screening">
+                          <img src={IconScreeningSVG} alt="icon" />
+                      </div>
+                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
+                        <p>Screening</p>
+                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorOrange}> 277 Talents in Screening</span> </div>
+                        </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Vetting">
+                          <img src={IconVettingSVG} alt="icon" />
+                      </div>
+                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
+                        <p>Vetting</p>
+                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}><span className={CompanyProfileCardStyle.screeningColorOrange}> 25 Talents Vetted</span> </div>
+                        </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Matcher Interviewed">
+                          <img src={IconMatcherSVG} alt="icon" />
+                      </div>
+                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
+                        <p>Matcher Interviewed</p>
+                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}> <span className={CompanyProfileCardStyle.screeningColorOrange}> 12 Hours</span> </div>
+                        </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Shortlist">
+                          <img src={IconShortlistSVG} alt="icon" />
+                      </div>
+                      
+                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
+                        <p>Shortlist</p>
+                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
+                        </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Interview">
+                          <img src={IconInterviewSVG} alt="icon" />
+                      </div>
+                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
+                        <p>Interview</p>
+                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
+                        </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Hire">
+                          {/* <img src="images/svg/postStepIconHire.svg" alt="postStepIconHire">     */}
+                          <img src={IconHireSVG} alt="icon" />
+                      </div>
+                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
+                        <p>Hire</p>
+                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
+                        </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Onboarding">
+                          <img src={IconOnbordingSVG} alt="icon" />
+                      </div>
+                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
+                        <p>Onboarding</p>
+                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
+                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
+                        </div>
+                      </div>
+                  </li>
+                </ul>    
+          </div>
+
+
         </div>
       </div>
     );
