@@ -107,11 +107,15 @@ export const ClientAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.CLIENT +
-			ClientsAPI.VIEW_CLIENT + "?CompanyID=" + CompanyID + "&ClientID=" + ClientID ;
+			ClientsAPI.VIEW_CLIENT ;
 		httpService.setAuthRequired = true;
+		httpService.dataToSend = {
+			'CompanyID':CompanyID,
+			'ClientID':ClientID
+		};
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
-			let response = await httpService.sendGetRequest();
+			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'ClientAPI.getClientFilterList');
