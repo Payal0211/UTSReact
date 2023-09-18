@@ -119,8 +119,8 @@ const AllClients = React.lazy(() =>
 	import('modules/allClients/allClients')
 )
 
-const ViewClient = React.lazy(() => 
-import('modules/viewClient/viewClientDetails'))
+// const ViewClient = React.lazy(() => 
+// import('modules/viewClient/viewClientDetails'))
 
 export default class UTSRoutes {
 	static HOMEROUTE = '/';
