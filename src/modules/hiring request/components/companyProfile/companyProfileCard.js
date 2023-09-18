@@ -52,7 +52,7 @@ const CompanyProfileCard = ({
   const getHRSLA = async (id) => {
     const result = await hiringRequestDAO.getHRSLADetailsDAO(id);
     if (result?.statusCode === 200) {
-      sethrSLADetails(result?.responseBody?.details);
+      sethrSLADetails(result?.responseBody?.details.hrSLADetails);
       setAvalableTabs([
         {
           label: "Company Details",
@@ -62,7 +62,7 @@ const CompanyProfileCard = ({
         {
           label: "Job Post SLA",
           key: "Job Post SLA",
-          children: <JOBPostSLA hrSLADetails={result?.responseBody?.details} />,
+          children: <JOBPostSLA hrSLADetails={result?.responseBody?.details.hrSLADetails} />,
         },
       ]);
     }

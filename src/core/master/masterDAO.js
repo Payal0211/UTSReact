@@ -1439,10 +1439,8 @@ export const MasterDAO = {
 		}
 	},
 	uploadRoalIconDAO :async function (data){
-		console.log("uploadRoalIcon DAO file get",data.get('file'))
 		try {
-			const roleStatusResponse =
-				await MasterAPI.uploadRoalIcon(data);
+			const roleStatusResponse = await MasterAPI.uploadRoalIcon(data);
 			if (roleStatusResponse) {
 				const statusCode = roleStatusResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {

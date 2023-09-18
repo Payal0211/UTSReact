@@ -759,15 +759,14 @@ export const MasterAPI = {
 		}
 	},
 	uploadRoalIcon: async function (fileData) {
-		console.log("uploadRoalIcon file get",fileData.get('file'))
 		let httpService = new HttpServices();
-		httpService.URL = NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.ROLE + MastersAPI.UPLOAD_ICON;
+		httpService.URL =
+		NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.ROLE + MastersAPI.UPLOAD_ICON;
 		httpService.setAuthRequired = true;
 		httpService.dataToSend = fileData && fileData;
-		console.log("httpService.dataToSend",httpService.dataToSend , httpService.dataToSend.get('file'))
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
-			let response = await httpService.sendPostRequest();
+			let response = await httpService.sendFileDataPostRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.uploadRoalIcon');

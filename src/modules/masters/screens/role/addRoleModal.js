@@ -48,9 +48,10 @@ const AddNewRole = ({
     setIsLoading(true);
     let payload = { roleName: d.roleName, fileName: getUploadFileData };
     let result = await MasterDAO.addRoleDAO(payload);
-    console.log("add res", result);
-    if (result.statusCode === HTTPStatusCode.ok) {
-      window.location.reload();
+   
+    if (result.statusCode === HTTPStatusCode.OK) {
+       window.location.reload()
+
     }
 
     if (result.statusCode === HTTPStatusCode.BAD_REQUEST) {
@@ -64,15 +65,11 @@ const AddNewRole = ({
       setIsLoading(true);
       let fileData = e.target.files[0];
 
-      if (
-        fileData?.type !== "image/png" &&
-        fileData?.type !== "image/jpeg" &&
-        fileData?.type !== "image/jpg"
-      ) {
+      if (fileData?.type !== "image/png" && fileData?.type !== "image/jpeg") {
         setValidation({
           ...getValidation,
           systemFileUpload:
-            "Uploaded file is not a valid, Only  jpg, jpeg, png files are allowed",
+            "Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed",
         });
         setIsLoading(false);
       } else if (fileData?.size >= 500000) {
@@ -83,36 +80,19 @@ const AddNewRole = ({
         });
         setIsLoading(false);
       } else {
-        console.log("file", e.target.files[0]);
         let formData = new FormData();
-        formData.append("file", e.target.files[0]);
-
+        formData.append("file", e.target.files[0], e.target.files[0].name);
+        
+        console.log({ FD: formData.get("file"), fileData });
         let uploadFileResponse = await MasterDAO.uploadRoalIconDAO(formData);
+
+        console.log('file response', uploadFileResponse)
         if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
           if (
             fileData?.type === "image/png" ||
             fileData?.type === "image/jpeg"
           ) {
-            setUploadFileData(fileData?.name);
-            setUploadModal(false);
-            setValidation({
-              ...getValidation,
-              systemFileUpload: "",
-            });
-            // setJDParsedSkills(
-            // 	uploadFileResponse && uploadFileResponse?.responseBody?.details,
-            // );
-            message.success("File uploaded successfully");
-          } else if (
-            fileData?.type === "application/pdf" ||
-            fileData?.type === "application/docs" ||
-            fileData?.type === "application/msword" ||
-            fileData?.type === "text/plain" ||
-            fileData?.type ===
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-          ) {
-            setUploadFileData(fileData?.name);
-            setValue("sowDocumentLink", fileData?.name);
+            setUploadFileData(uploadFileResponse.responseBody.details.FileName);
             setUploadModal(false);
             setValidation({
               ...getValidation,
@@ -162,27 +142,23 @@ const AddNewRole = ({
             <div className={addRoleStyle.colMd12}>
               {!getUploadFileData ? (
                 <HRInputField
-                  // disabled={jdURLLink}
                   register={register}
-                  leadingIcon={
-                    <UploadSVG onClick={() => setUploadModal(true)} />
-                  }
+                  leadingIcon={<UploadSVG />}
                   label="Front Icon Image"
                   name="roalIcon"
-                  type={InputType.TEXT}
-                  // buttonLabel="Upload Document or Add Link"
-                  placeholder="Upload Icon"
-                  setValue={setValue}
-                  // required={!jdURLLink && !getUploadFileData}
-                  // onClickHandler={() => setUploadModal(true)}
+                  type={InputType.BUTTON}
+                  buttonLabel="Front Icon Image"
+                  // value="Upload JD File"
+                  onClickHandler={() => setUploadModal(true)}
+                  // required={!jdURLLink && getUploadFileData}
                   // validationSchema={{
-                  //     required: 'please select a file.',
+                  // 	required: 'please select a file.',
                   // }}
                   errors={errors}
                 />
               ) : (
                 <div className={addRoleStyle.uploadedJDWrap}>
-                  <label>Front Icon Image</label>
+                  <label>Front Icon Image </label>
                   <div className={addRoleStyle.uploadedJDName}>
                     {getUploadFileData}{" "}
                     <CloseSVG
