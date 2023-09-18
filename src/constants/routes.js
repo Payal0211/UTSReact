@@ -163,7 +163,7 @@ export default class UTSRoutes {
 	static HR_REPORT = "/hrReport";
 	static CLIENT_HAPPINESS_SURVEY = '/ClientHappinessSurvey';
 	static ALLCLIENTS = '/allClients';
-	static VIEWCLIENT = '/viewClient/:id';
+	static VIEWCLIENT = '/viewClient/:companyID/:clientID';
 }
 
 export const navigateToComponent = {

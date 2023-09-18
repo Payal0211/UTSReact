@@ -1,5 +1,5 @@
 import WithLoader from "shared/components/loader/loader";
-import { Table, Tag } from 'antd';
+import { Button, Table, Tag } from 'antd';
 // import dealDetailsStyles from './dealDetailsStyle.module.css';
 
 import dealDetailsStyles from './viewClientDetails.module.css';
@@ -24,21 +24,21 @@ import { allClientsConfig } from "modules/hiring request/screens/allClients/allC
 function ViewClientDetails() {
 	const [isLoading, setLoading] = useState(false);
 	const [viewDetails,setViewDetails] = useState({});
-	const { id } = useParams();
+	const {companyID,clientID} = useParams();
 	const [isExpanded, setIsExpanded] = useState(false);
-
+	const navigate = useNavigate();
 	const columns = useMemo(
 		() => allClientsConfig.ViewClienttableConfig(),
 		[],
 	); 
-
 	useEffect(() => {
 		getDataForViewClient();
 	},[]);
 
 	const getDataForViewClient = async () => {
-		let _ids = id.split("~");		
-		let response = await allClientRequestDAO.getClientDetailsForViewDAO(_ids[0],_ids[1]);	
+		setLoading(true)
+		let response = await allClientRequestDAO.getClientDetailsForViewDAO(companyID,clientID);	
+		setLoading(false);
 		setViewDetails(response?.responseBody);	
 	}
     return(
@@ -57,16 +57,19 @@ function ViewClientDetails() {
 
 				<div className={dealDetailsStyles.dealDetailsTitle}>
 					<h1>
-						<img
+						{/* <img
 							src={viewClient}
-							alt="companylogo"
-						/>
-						{viewDetails?.clientDetails?.clientName}						
+							alt={viewDetails?.clientDetails?.companyInitial}
+						/> */}
+						<span className={dealDetailsStyles.viewClientUser} style={{backgroundImage: viewClient}}>
+							{viewDetails?.clientDetails?.companyInitial}							
+						</span>
+						&nbsp;{viewDetails?.clientDetails?.clientName}						
 					</h1>
 					<div className={dealDetailsStyles.dealDetailsRight}>
 						{/* <button  className={dealDetailsStyles.yellowOutlinedButton} type="button">View BQ Form</button>  */}
 
-                        <HROperator
+                        {/* <HROperator
                             title="Edit Company"
                             icon={<ArrowDownSVG style={{ width: '16px' }} />}
                             backgroundColor={`#fff`}
@@ -74,13 +77,13 @@ function ViewClientDetails() {
                             isDropdown={true}
                             overlayClassName={dealDetailsStyles.viewClientdrop}
                             className={dealDetailsStyles.viewClientdrop}
-                        />
-
-						<button type="button">Create HR</button>
+                        /> */}						
+						<button type="button" onClick={() => navigate(`/editclient/${companyID}`)}>Edit Company</button>
+						<button type="button" onClick={() => navigate('/allhiringrequest/addnewhr')} >Create HR</button>
 					
-						<div className={dealDetailsStyles.deleteButton}>
+						{/* <div className={dealDetailsStyles.deleteButton}>
 							<DeleteLightSVG width="24" />
-						</div>
+						</div> */}
 					</div>
 				</div>
 
@@ -89,25 +92,25 @@ function ViewClientDetails() {
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Client Name</span>
-								{viewDetails?.clientDetails?.clientName}
+								{viewDetails?.clientDetails?.clientName ? viewDetails?.clientDetails?.clientName : "NA"}
 							</div>
 						</li>
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Client Source</span>
-								{viewDetails?.clientDetails?.clientSource}
+								{viewDetails?.clientDetails?.clientSource ? viewDetails?.clientDetails?.clientSource : "NA"}
 							</div>
 						</li>
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Status</span>
-								{viewDetails?.clientDetails?.clientStatus}
+								{viewDetails?.clientDetails?.clientStatus ? viewDetails?.clientDetails?.clientStatus : "NA"}
 							</div>
 						</li>
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Uplers POC</span>
-								{viewDetails?.clientDetails?.uplersPOC}
+								{viewDetails?.clientDetails?.uplersPOC ? viewDetails?.clientDetails?.uplersPOC : "NA"}
 							</div>
 						</li>
 					</ul>
@@ -120,15 +123,15 @@ function ViewClientDetails() {
 							<ul>
 								<li>
 									<span>Client Email:</span>
-									{viewDetails?.clientDetails?.clientEmail}
+									{viewDetails?.clientDetails?.clientEmail ? viewDetails?.clientDetails?.clientEmail : "NA"}
 								</li>
                                 <li>
 									<span>Lead Source : </span>
-									{viewDetails?.clientDetails?.leadSource}
+									{viewDetails?.clientDetails?.leadSource ? viewDetails?.clientDetails?.leadSource : "NA"}
 								</li>
 								<li>
 									<span>Client Linkedin : -</span>
-                                    <a
+                                    {viewDetails?.clientDetails?.clientLinkedIn ? <a
 										href={viewDetails?.clientDetails?.clientLinkedIn}
 										target="_blank"
 										className={dealDetailsStyles.dealItemLink}>{viewDetails?.clientDetails?.clientLinkedIn}
@@ -148,26 +151,26 @@ function ViewClientDetails() {
 												d="M6.23438 5.99809H8.50916V7.04186H8.54172C8.85822 6.44158 9.63251 5.80859 10.787 5.80859C13.1899 5.80859 13.6339 7.38952 13.6339 9.44588V13.6335H11.2611V9.92039C11.2611 9.03495 11.2457 7.89582 10.0279 7.89582C8.79311 7.89582 8.60468 8.86096 8.60468 9.85697V13.6335H6.23438V5.99809Z"
 												fill="white"></path>
 										</svg>
-                                        </a>
+                                        </a> : "NA"}
 								</li>
                                 <li>
 									<span>Lead User: </span>
-									{viewDetails?.clientDetails?.leadUser}
+									{viewDetails?.clientDetails?.leadUser ? viewDetails?.clientDetails?.leadUser : "NA"}
 								</li>
 								<li>
 									<span>Company URL : </span>
-                                    <a
+                                    {viewDetails?.clientDetails?.companyURL ? <a
 										href={viewDetails?.clientDetails?.companyURL}
 										target="_blank"
-										className={dealDetailsStyles.dealItemLink}>{viewDetails?.clientDetails?.companyURL}</a>
+										className={dealDetailsStyles.dealItemLink}>{viewDetails?.clientDetails?.companyURL}</a> : "NA"}
 								</li>
                                 <li>
 									<span>GEO: </span>
-									{viewDetails?.clientDetails?.geo}
+									{viewDetails?.clientDetails?.geo ? viewDetails?.clientDetails?.geo : "NA"}
 								</li>
 								<li>
 									<span>Company Linkedin : </span>
-                                    <a
+                                    {viewDetails?.clientDetails?.companyLinkedIn ? <a
 										href={viewDetails?.clientDetails?.companyLinkedIn}
 										target="_blank"
 										className={dealDetailsStyles.dealItemLink}>
@@ -188,11 +191,11 @@ function ViewClientDetails() {
 												d="M6.23438 5.99809H8.50916V7.04186H8.54172C8.85822 6.44158 9.63251 5.80859 10.787 5.80859C13.1899 5.80859 13.6339 7.38952 13.6339 9.44588V13.6335H11.2611V9.92039C11.2611 9.03495 11.2457 7.89582 10.0279 7.89582C8.79311 7.89582 8.60468 8.86096 8.60468 9.85697V13.6335H6.23438V5.99809Z"
 												fill="white"></path>
 										</svg>
-									</a>
+									</a> : "NA"}
 								</li>
                                 <li>
-									<span>Active TRs:</span>
-                                    {viewDetails?.clientDetails?.tr}
+									<span>Total TR:</span>
+                                    {viewDetails?.clientDetails?.tr ? viewDetails?.clientDetails?.tr : "NA"}
 								</li>
 							</ul>
 						</div>					
@@ -203,24 +206,25 @@ function ViewClientDetails() {
 							<ul>
 								<li>
 									<span>Industry : </span>
-									{viewDetails?.clientDetails?.industry}
+									{viewDetails?.clientDetails?.industry ? viewDetails?.clientDetails?.industry : "NA"}
 								</li>
 								<li>
 									<span>Company Size : </span>
-									{viewDetails?.clientDetails?.companySize}
+									{viewDetails?.clientDetails?.companySize ? viewDetails?.clientDetails?.companySize :"NA"}
 								</li>
                                 <li>
-									<span>Do the client have experience hiring talent outside of home country, especially from offshore locations like India?: 	</span>
-                                    {viewDetails?.clientDetails?.allowOffshore}
+									<span>Do the client have experience hiring talent outside of home country, especially from offshore locations like India?:</span>
+                                    {viewDetails?.clientDetails?.allowOffshore ? 'Yes' : 'No'} 
 								</li>
 								<li>
 									<span>About Company: </span>							
-									{viewDetails?.clientDetails?.aboutCompany && <p>
-										{isExpanded ? viewDetails?.clientDetails?.aboutCompany : `${viewDetails?.clientDetails?.aboutCompany.slice(0, 150)}...`}
-										{!isExpanded && (
-											<a onClick={() => setIsExpanded(true)} className={dealDetailsStyles.viewClientReadMore}>read more</a>
-										)}
-									</p>}
+									{!isExpanded ?  (viewDetails?.clientDetails?.aboutCompany.length  > 150 ?
+									<><span>{viewDetails?.clientDetails?.aboutCompany.slice(0, 150)}...</span>
+									<a onClick={() => setIsExpanded(true)} className={dealDetailsStyles.viewClientReadMore}>read more</a></>
+									 : viewDetails?.clientDetails?.aboutCompany.length === 0 ? "NA" : viewDetails?.clientDetails?.aboutCompany) : 
+
+									 viewDetails?.clientDetails?.aboutCompany  ? viewDetails?.clientDetails?.aboutCompany : "NA"}
+									{/* {(isExpanded) ? viewDetails?.clientDetails?.aboutCompany : <>{viewDetails?.clientDetails?.aboutCompany.slice(0, 150)}...<a onClick={() => setIsExpanded(true)} className={dealDetailsStyles.viewClientReadMore}>read more</a></>} */}
 								</li>
 							</ul>
 						</div>

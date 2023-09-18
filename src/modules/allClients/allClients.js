@@ -236,7 +236,7 @@ function AllClients() {
             allClientsColumnsMemo.map(val => val.title !== ' ' && (obj[`${val.title}`] = data[`${val.key}`]))
             return obj;
         })
-    		downloadToExcel(DataToExport);
+    		downloadToExcel(DataToExport,'AllClient_CurrentDate');
     }
     return(
         <>
@@ -335,7 +335,7 @@ function AllClients() {
                                 ) : (
                                     <WithLoader className="mainLoader">
                                         <Table 
-                                        scroll={{ x: '100vw', y: '100vh' }} 
+                                        scroll={{  y: '100vh' }} 
                                         dataSource={allClientsList} 
                                         columns={allClientsColumnsMemo}
                                         pagination={
