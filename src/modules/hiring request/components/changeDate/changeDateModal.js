@@ -45,7 +45,7 @@ const ChangeDate = ({
 			"hrId": allApiData.HR_Id,
 			"reasonId": d.Reason.id, // For other reason, pass id 4 and resaon in otherReason key
 			"otherReason": d.Reason.value === 'Other' ? d.otherReason : '',
-			"slaRevisedDate": d.newDate
+			"slaRevisedDate": moment(d.newDate).format() ,
 		  }
 		  console.log("payload to send", payload)
 		  updateSlaDateHandler(payload,setIsLoading)
@@ -59,8 +59,8 @@ const ChangeDate = ({
 	// 	}
 	// }, [hrSLADetails[6].slaDate]);
 
-	console.log('watch',watch('Reason'), watch('newDate'))
-	console.log('watch date', watch('newDate'))
+	// console.log('watch',watch('Reason'), watch('newDate'))
+	// console.log('watch date', watch('newDate'))
 	return (
 		<div className={changeDateStyle.engagementModalContainer}>
 			<div className={changeDateStyle.updateTRTitle}>
@@ -92,13 +92,13 @@ const ChangeDate = ({
 							{...props}
                               selected={watch("newDate")}
                               onChange={(date) => {
-								console.log(date);
                                 setValue("newDate", date);
 								setDateToChange(date)
                               }}
 							  value={dateToChange}
-                               dateFormat="dd/MM/yyyy"
+                              dateFormat="dd/MM/yyyy"
                               placeholderText="Select Date"
+							  minDate={new Date()}
                              
                             />
                           )}
