@@ -23,6 +23,7 @@ import IconShortlistSVG from "assets/svg/postStepIconShortlist.svg";
 import IconVettingSVG from "assets/svg/postStepIconVetting.svg";
 
 import jobPostSLATimeSVG from "assets/svg/jobPostSLATime.svg";
+import JOBPostSLA from "./jobPostSLA";
 
 
 const CompanyProfileCard = ({
@@ -33,7 +34,7 @@ const CompanyProfileCard = ({
 }) => {
   const [updateTR, setUpdateTR] = useState(false);
   const [updateTRDetail, setUpdateTRDetails] = useState([]);
-  const [hrSLADetails, sethrSLADetails] = useState([]);
+
   const [title, setTitle] = useState("Company Details");
   const [updateDate, setUpdateDate] = useState(false);
   const id = useParams();
@@ -45,14 +46,13 @@ const CompanyProfileCard = ({
     () => UserSessionManagementController.getUserMiscellaneousData(),
     []
   );
-  console.log({ allApiData, guid: allApiData.Guid, hrSLADetails });
+
 
   const [avalableTabs, setAvalableTabs] = useState([]);
 
-  const getHRSLA = async (id) => {
-    const result = await hiringRequestDAO.getHRSLADetailsDAO(id);
-    if (result?.statusCode === 200) {
-      sethrSLADetails(result?.responseBody?.details.hrSLADetails);
+
+  useEffect(() => {
+    if (allApiData.Guid) {
       setAvalableTabs([
         {
           label: "Company Details",
@@ -62,28 +62,9 @@ const CompanyProfileCard = ({
         {
           label: "Job Post SLA",
           key: "Job Post SLA",
-          children: <JOBPostSLA hrSLADetails={result?.responseBody?.details.hrSLADetails} />,
+          children: <JOBPostSLA allApiData={allApiData} />,
         },
       ]);
-    }
-  };
-
-  useEffect(() => {
-    if (allApiData.Guid) {
-      //   setAvalableTabs([
-      //     {
-      //       label: "Company Details",
-      //       key: "Company Details",
-      //       children: <CompanyProfileCardComp />,
-      //     },
-      //     {
-      //       label: "Job Post SLA",
-      //       key: "Job Post SLA",
-      //       children: <JOBPostSLA />,
-      //     },
-      //   ]);
-
-      getHRSLA(allApiData.HR_Id);
     } else {
       setAvalableTabs([
         {
@@ -479,173 +460,6 @@ const CompanyProfileCard = ({
     );
   };
 
-  const JOBPostSLA = ({ hrSLADetails }) => {
-    console.log("hrSLADetails", hrSLADetails);
-    return (
-      <div
-        className={CompanyProfileCardStyle.companyCard}
-        style={{ marginTop: "10px" }}
-      >
-        <div className={CompanyProfileCardStyle.companyCardBody}>
-
-          <div className={`${CompanyProfileCardStyle.jobStepTextWrap} ${CompanyProfileCardStyle.jobStepTextWrapTop}`}>
-            <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
-              <div>
-                <div className={CompanyProfileCardStyle.StepscreeningBox}>Profile Review ETA:<b>16th sept -2023</b> <span className={CompanyProfileCardStyle.screeningColorGreen}>Deployed</span></div>
-                <span className={CompanyProfileCardStyle.spinTimeImg}> <img src={jobPostSLATimeSVG} alt="time" /></span>
-              </div>
-              <button className={CompanyProfileCardStyle.btnPrimary} onClick={() => setUpdateDate(true)}>
-                  Change Date
-              </button>
-            </div>
-          </div>
-
-          <Divider
-            style={{
-              margin: "10px 0",
-            }}
-          />
-          
-          {/* <ul>
-            {hrSLADetails.length &&
-              hrSLADetails.map((detail) => <li><div>
-				{detail.stageName}
-				<div style={{display:'flex', justifyContent:'space-between'}}>
-					<div><p>SLA- <span>20h</span></p></div>
-					<div><p>Date- {detail.slaDate?? 'NA'}</p></div>
-				</div>
-				</div></li>)}
-          </ul> */}
-
-          <div className={CompanyProfileCardStyle.telentJobStep}>
-                <ul className={CompanyProfileCardStyle.telentJobStepProgressbar}>
-                  <li className={CompanyProfileCardStyle.check}>
-                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Debriefing your job">
-                          <img src={IconDebriefingSVG} alt="icon" />
-                      </div>
-                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
-                        <p>Debriefing your job</p>
-                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
-                        </div>
-                      </div>
-                  </li>
-                  <li className={CompanyProfileCardStyle.check}>
-                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Job published to talents">
-                          <img src={IconPublishedSVG} alt="icon" />
-                      </div>
-                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
-                        <p>Job published to talents</p>
-                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
-                        </div>
-                      </div>
-                  </li>
-                  <li className={CompanyProfileCardStyle.check}>
-                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Applications">
-                          <img src={IconApplicationSVG} alt="icon" />
-                      </div>
-                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
-                        <p>Applications</p>
-                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
-                        </div>
-                      </div>
-                  </li>
-                  <li>
-                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Screening">
-                          <img src={IconScreeningSVG} alt="icon" />
-                      </div>
-                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
-                        <p>Screening</p>
-                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorOrange}> 277 Talents in Screening</span> </div>
-                        </div>
-                      </div>
-                  </li>
-                  <li>
-                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Vetting">
-                          <img src={IconVettingSVG} alt="icon" />
-                      </div>
-                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
-                        <p>Vetting</p>
-                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}><span className={CompanyProfileCardStyle.screeningColorOrange}> 25 Talents Vetted</span> </div>
-                        </div>
-                      </div>
-                  </li>
-                  <li>
-                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Matcher Interviewed">
-                          <img src={IconMatcherSVG} alt="icon" />
-                      </div>
-                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
-                        <p>Matcher Interviewed</p>
-                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}> <span className={CompanyProfileCardStyle.screeningColorOrange}> 12 Hours</span> </div>
-                        </div>
-                      </div>
-                  </li>
-                  <li>
-                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Shortlist">
-                          <img src={IconShortlistSVG} alt="icon" />
-                      </div>
-                      
-                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
-                        <p>Shortlist</p>
-                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
-                        </div>
-                      </div>
-                  </li>
-                  <li>
-                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Interview">
-                          <img src={IconInterviewSVG} alt="icon" />
-                      </div>
-                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
-                        <p>Interview</p>
-                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
-                        </div>
-                      </div>
-                  </li>
-                  <li>
-                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Hire">
-                          {/* <img src="images/svg/postStepIconHire.svg" alt="postStepIconHire">     */}
-                          <img src={IconHireSVG} alt="icon" />
-                      </div>
-                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
-                        <p>Hire</p>
-                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
-                        </div>
-                      </div>
-                  </li>
-                  <li>
-                      <div className={CompanyProfileCardStyle.telentJobStepIcon} data-toggle="tooltip" data-placement="top" title="Onboarding">
-                          <img src={IconOnbordingSVG} alt="icon" />
-                      </div>
-                      <div className={CompanyProfileCardStyle.jobStepTextWrap}>
-                        <p>Onboarding</p>
-                        <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
-                          <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div>
-                        </div>
-                      </div>
-                  </li>
-                </ul>    
-          </div>
-
-
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className={CompanyProfileCardStyle.companyProfileContainer}>

@@ -25,6 +25,7 @@ const AddNewRole = ({
   onCancel,
   apiData,
   allApiData,
+  reloadList
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -33,6 +34,7 @@ const AddNewRole = ({
     setValue,
     watch,
     control,
+    resetField,
     formState: { errors },
   } = useForm();
 
@@ -44,14 +46,22 @@ const AddNewRole = ({
     linkValidation: "",
   });
 
+  const handleCancel = ()=>{
+    onCancel()
+    resetField('roleName')
+    setUploadFileData('')
+  }
+
   const onSubmit = async (d) => {
     setIsLoading(true);
     let payload = { roleName: d.roleName, fileName: getUploadFileData };
     let result = await MasterDAO.addRoleDAO(payload);
    
     if (result.statusCode === HTTPStatusCode.OK) {
-       window.location.reload()
-
+      message.success(result.responseBody.message)
+      // setTimeout(() =>  window.location.reload(),2000)
+      reloadList()
+      handleCancel()
     }
 
     if (result.statusCode === HTTPStatusCode.BAD_REQUEST) {
@@ -69,7 +79,7 @@ const AddNewRole = ({
         setValidation({
           ...getValidation,
           systemFileUpload:
-            "Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed",
+            "Uploaded file is not a valid, Only jpeg, png files are allowed",
         });
         setIsLoading(false);
       } else if (fileData?.size >= 500000) {
@@ -196,7 +206,7 @@ const AddNewRole = ({
           <div className={addRoleStyle.formPanelAction}>
             <button
               onClick={() => {
-                onCancel();
+                handleCancel();
               }}
               className={addRoleStyle.btn}
             >

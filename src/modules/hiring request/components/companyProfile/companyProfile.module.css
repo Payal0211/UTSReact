@@ -244,4 +244,5 @@
 
   .jobStepTextWrap.jobStepTextWrapTop .spinTimeImg{
     margin-left: 8px;
+    cursor: pointer;
   }

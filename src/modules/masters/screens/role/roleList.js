@@ -66,6 +66,10 @@ const RoleList = () => {
 		getRolesListHandler(tableFilteredState);
 	}, [getRolesListHandler,tableFilteredState]);
 
+	const reloadList = () => {
+		getRolesListHandler(tableFilteredState);
+	}
+
 	const getAddPermission = async ()=>{
 		let result = await MasterDAO.getRightsForAddDAO()
 		if(result.statusCode === 200){
@@ -181,7 +185,7 @@ const RoleList = () => {
           className="changeDateModal"
           onCancel={() => setAddRole(false)}
         >
-			<AddNewRole onCancel={()=> setAddRole(false)}/>
+			<AddNewRole onCancel={()=> setAddRole(false)} reloadList={reloadList}/>
 		</Modal>	
 		</div>
 	);
