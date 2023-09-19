@@ -239,6 +239,7 @@ export class HiringRequestsAPI {
 	static GET_HR_DP_AMOUNT_DETAILS = 'GetHRDPAmountDetails';
 	static UPDATE_DP_AMOUNT = 'UpdateDPAmount';
 	static GET_HR_SLA_DETAILS = 'GetHiringRequestSLADetails'
+	static UPDATE_SLA_DATE = 'UpdateSLADate'
 }
 
 export class UsersAPI {

@@ -166,3 +166,63 @@
   margin-bottom: 10px;
 }
 
+.secondHeadindAllignment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.StepscreeningBox{
+  border-radius: 4px;
+  border: 1px solid rgba(107, 107, 107, 0.20);
+  background: #FFF;
+
+  color: #232323;
+  text-align: center;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  padding: 4px 8px;
+}
+
+.screeningColorGreen{
+  color: #287016 !important;
+  font-weight: 700;
+}
+
+.screeningColorOrange{
+  color: #C06F10 !important;
+  font-weight: 500;
+}
+
+.historyContainer{
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  /* justify-content: space-around; */
+}
+
+.historyInnerContainer{
+  border-left: 2px solid var(--uplers-border-color);
+  padding-left: 5px;
+  margin-left: 20px;
+}
+
+.historyInnerContainer p {
+  margin-bottom: 5px;
+ }
+
+.historyInnerContainer :first-child {
+ font-weight: 600;
+}
+
+/* .historyInnerContainer :second-child {
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+
+.historyInnerContainer :third-child {
+  font-weight: 300;
+  margin-bottom: 5px;
+} */

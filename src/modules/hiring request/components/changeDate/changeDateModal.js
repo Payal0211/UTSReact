@@ -13,13 +13,17 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import moment from 'moment';
 
 const ChangeDate = ({
 	updateTR,
 	setUpdateTR,
 	onCancel,
 	apiData,
-	allApiData
+	allApiData,
+	slaReasons,
+	hrSLADetails,
+	updateSlaDateHandler
 }) => {
 	const [count, setCount] = useState(0);
 	const [disable, setDisable] = useState(true);
@@ -33,31 +37,43 @@ const ChangeDate = ({
 		formState: { errors },
 	} = useForm();
 
+	 const [dateToChange, setDateToChange] = useState(hrSLADetails.length ?  hrSLADetails[6].slaDate : '')
 
-	const [valueInfo, setValueInfo] = useState('');
-
-	const onSubmit = async () => {
+	const onSubmit = async (d) => {
 		setIsLoading(true);
-		
-		setIsLoading(false);
+		let payload = {
+			"hrId": allApiData.HR_Id,
+			"reasonId": d.Reason.id, // For other reason, pass id 4 and resaon in otherReason key
+			"otherReason": d.Reason.value === 'Other' ? d.otherReason : '',
+			"slaRevisedDate": d.newDate
+		  }
+		  console.log("payload to send", payload)
+		  updateSlaDateHandler(payload,setIsLoading)
+		;
 	};
 
 
-	useEffect(() => {
-		return () => setIsLoading(false);
-	}, []);
+	// useEffect(() => {
+	// 	if(hrSLADetails[6]?.slaDate){
+	// 		setValue('newDate',hrSLADetails[6]?.slaDate)
+	// 	}
+	// }, [hrSLADetails[6].slaDate]);
 
-	console.log('watch',watch('Reason'))
+	console.log('watch',watch('Reason'), watch('newDate'))
+	console.log('watch date', watch('newDate'))
 	return (
 		<div className={changeDateStyle.engagementModalContainer}>
 			<div className={changeDateStyle.updateTRTitle}>
 				<h2>Edit SLA - Share Shortlisted Profiles</h2>
-				<p>
+				<div className={changeDateStyle.secondHeadindAllignment}>
+					<p>
 					{ allApiData?.ClientDetail?.HR_Number} | Senior Front End Developer
 				</p>
+				<div className={changeDateStyle.StepscreeningBox}>Date - {hrSLADetails.length && hrSLADetails[0].slaDate}</div>
+				</div>
+				
 			</div>
 
-			<h4 className={changeDateStyle.infoMsg}>{valueInfo}</h4>
 			<p>The default setting for this stage is to initiate after 5 working days from publishing the job post.</p>
 
 			{isLoading ? (
@@ -73,17 +89,16 @@ const ChangeDate = ({
 						<Controller
                           render={({ ...props }) => (
                             <DatePicker
-                              selected={watch("shiftStartTime")}
+							{...props}
+                              selected={watch("newDate")}
                               onChange={(date) => {
-                                setValue("shiftStartTime", date);
+								console.log(date);
+                                setValue("newDate", date);
+								setDateToChange(date)
                               }}
-                            //   showTimeSelect
-                            //   showTimeSelectOnly
-                            //   timeIntervals={60}
-                            //   timeCaption="Time"
-                            //   timeFormat="h:mm a"
-                            //   dateFormat="h:mm a"
-                              placeholderText="Start Time"
+							  value={dateToChange}
+                               dateFormat="dd/MM/yyyy"
+                              placeholderText="Select Date"
                              
                             />
                           )}
@@ -96,7 +111,7 @@ const ChangeDate = ({
 						</div>
 						{errors.newDate && (
                           <div className={changeDateStyle.error}>
-                            Please enter Date
+                            Please Select new Date
                           </div>
                         )}
 						</div>
@@ -107,10 +122,9 @@ const ChangeDate = ({
                         setValue={setValue}
                         register={register}
                         label={"Reason For Changing the SLA"}
-                        defaultValue={"Select Net Payment Term"}
+                        defaultValue={"Select Reason"}
                         name="Reason"
-                        options={[{id:1, value:'Niche role/position' },{id:2, value:'Budget constraint' },{id:3, value:'Need more clarity for position/role' },
-						{id:4, value:'Other' }]}
+                        options={slaReasons.length && slaReasons.map(reson => ({id:reson.value, value:reson.text }))}
                         isError={errors["Reason"] && errors["Reason"]}
                         required
                         errorMsg={"Please select Reason"}
