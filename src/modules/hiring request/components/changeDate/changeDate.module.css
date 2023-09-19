@@ -217,6 +217,12 @@
  font-weight: 600;
 }
 
+.historyContainerMain{
+max-height: 300px;
+overflow-y: scroll;
+margin-bottom: 10px;
+}
+
 /* .historyInnerContainer :second-child {
   font-weight: 400;
   margin-bottom: 5px;

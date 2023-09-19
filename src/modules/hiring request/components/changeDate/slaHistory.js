@@ -26,7 +26,7 @@ const SLAHistory = ({ history, onCancel, hrSLADetails }) => {
       </div>
 
       <>
-        <div>
+        <div className={changeDateStyle.historyContainerMain}>
           {history.length ? (
             history.map((data) => (
               <div className={changeDateStyle.historyContainer}>
