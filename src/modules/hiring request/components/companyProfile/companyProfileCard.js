@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { AiFillLinkedin } from 'react-icons/ai';
 import { Divider, Dropdown, Menu, Modal } from 'antd';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import UpdateTRModal from '../../components/updateTRModal/updateTRModal';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
@@ -16,6 +16,7 @@ const CompanyProfileCard = ({
 	apiData,
 	allApiData,
 }) => {
+	const navigate = useNavigate();
 	const [updateTR, setUpdateTR] = useState(false);
 	const [updateTRDetail, setUpdateTRDetails] = useState([]);
 	const id = useParams();
@@ -86,7 +87,7 @@ const CompanyProfileCard = ({
 									placement="bottom"
 									overlay={
 										<Menu>
-											<Menu.Item key={0}>View Company </Menu.Item>
+											<Menu.Item key={0} onClick={() => navigate(`/viewClient/${clientDetail?.CompanyId}/${clientDetail?.ContactId}`)}>View Company </Menu.Item>
 										</Menu>
 									}>
 									<BsThreeDots style={{ fontSize: '1.5rem' }} />

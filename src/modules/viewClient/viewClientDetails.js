@@ -64,7 +64,7 @@ function ViewClientDetails() {
 						<span className={dealDetailsStyles.viewClientUser} style={{backgroundImage: viewClient}}>
 							{viewDetails?.clientDetails?.companyInitial}							
 						</span>
-						&nbsp;{viewDetails?.clientDetails?.clientName}						
+						&nbsp;{viewDetails?.clientDetails?.companyName}						
 					</h1>
 					<div className={dealDetailsStyles.dealDetailsRight}>
 						{/* <button  className={dealDetailsStyles.yellowOutlinedButton} type="button">View BQ Form</button>  */}
