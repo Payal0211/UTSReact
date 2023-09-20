@@ -128,6 +128,10 @@ const EditBillRate = ({
 								min: {
 									value: 1,
 									message: `please don't enter 0 & negative value`,
+								},
+								max:{
+									value: 99.99,
+									message: `please don't enter 100 & grater value`,
 								}
 							}}
 							label="NR margin percentage"
