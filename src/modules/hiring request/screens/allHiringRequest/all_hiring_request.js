@@ -248,14 +248,17 @@ const AllHiringRequestScreen = () => {
 		[handleHRRequest],
 	);
 	const debouncedSearchHandler = (e) => {
-		setTableFilteredState({
+		setTimeout(()=>{
+			setTableFilteredState({
 			...tableFilteredState,
 			pagenum:1,
 			searchText: e.target.value,
 		});
+		
+		},2000)
 		setDebouncedSearch(e.target.value)
 		setPageIndex(1)
-		// debounceFun(e.target.value);
+		//debounceFun(e.target.value);
 	};
 
 	const handleRequetWithDates = useCallback(()=>{ 
@@ -452,6 +455,7 @@ const AllHiringRequestScreen = () => {
 							</div>
 						)}
 					</div>
+					{console.log("mis",miscData)}
 					<HROperator
 						title="Add New HR"
 						icon={<ArrowDownSVG style={{ width: '16px' }} />}
@@ -465,14 +469,22 @@ const AllHiringRequestScreen = () => {
 										{
 											label: 'Add New HR',
 											key: AddNewType.HR,
-											IsEnabled: true,
+											IsEnabled: miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR || 
+											miscData?.loggedInUserTypeID === UserAccountRole.SALES ||
+											miscData?.loggedInUserTypeID === UserAccountRole.SALES_MANAGER ||
+											miscData?.loggedInUserTypeID === UserAccountRole.BDR || 
+											miscData?.loggedInUserTypeID === UserAccountRole.MARKETING ? true : false ,
 										},
 								  ]
 								: [
 										{
 											label: 'Add New HR',
 											key: AddNewType.HR,
-											IsEnabled: true,
+											IsEnabled: miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR || 
+											miscData?.loggedInUserTypeID === UserAccountRole.SALES ||
+											miscData?.loggedInUserTypeID === UserAccountRole.SALES_MANAGER ||
+											miscData?.loggedInUserTypeID === UserAccountRole.BDR || 
+											miscData?.loggedInUserTypeID === UserAccountRole.MARKETING ? true : false ,
 										},
 										{
 											label: 'Add New Client',
