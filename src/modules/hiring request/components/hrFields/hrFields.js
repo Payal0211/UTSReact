@@ -385,7 +385,9 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO(
 			prefRegion && prefRegion?.id,
 		);
-		setTimeZonePref(timeZone && timeZone.responseBody);
+		if(timeZone.statusCode === HTTPStatusCode.OK){
+			setTimeZonePref(timeZone && timeZone.responseBody);
+		}		
 	}, [prefRegion]);
 	const getAvailability = useCallback(async () => {
 		const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
