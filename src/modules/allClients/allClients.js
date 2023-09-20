@@ -236,7 +236,7 @@ function AllClients() {
             allClientsColumnsMemo.map(val => val.title !== ' ' && (obj[`${val.title}`] = data[`${val.key}`]))
             return obj;
         })
-    		downloadToExcel(DataToExport,'AllClient_CurrentDate');
+    	downloadToExcel(DataToExport,"AllClient");
     }
     return(
         <>
