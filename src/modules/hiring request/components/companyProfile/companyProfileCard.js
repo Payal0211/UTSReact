@@ -3,28 +3,14 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { AiFillLinkedin } from "react-icons/ai";
 import { Divider, Dropdown, Menu, Modal, Tabs } from "antd";
-import { Link, useParams } from "react-router-dom";
+import { Link,useNavigate,  useParams } from "react-router-dom";
 import UpdateTRModal from "../../components/updateTRModal/updateTRModal";
 import ChangeDate from "../changeDate/changeDateModal";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import { UserAccountRole } from "constants/application";
 import { NetworkInfo } from "constants/network";
-
-import IconApplicationSVG from "assets/svg/postStepIconApplication.svg";
-import IconDebriefingSVG from "assets/svg/postStepIconDebriefing.svg";
-import IconHireSVG from "assets/svg/postStepIconHire.svg";
-import IconInterviewSVG from "assets/svg/postStepIconInterview.svg";
-import IconMatcherSVG from "assets/svg/postStepIconMatcher.svg";
-import IconOnbordingSVG from "assets/svg/postStepIconOnbording.svg";
-import IconPublishedSVG from "assets/svg/postStepIconPublished.svg";
-import IconScreeningSVG from "assets/svg/postStepIconScreening.svg";
-import IconShortlistSVG from "assets/svg/postStepIconShortlist.svg";
-import IconVettingSVG from "assets/svg/postStepIconVetting.svg";
-
-import jobPostSLATimeSVG from "assets/svg/jobPostSLATime.svg";
 import JOBPostSLA from "./jobPostSLA";
-
 
 const CompanyProfileCard = ({
   clientDetail,
@@ -32,6 +18,7 @@ const CompanyProfileCard = ({
   apiData,
   allApiData,
 }) => {
+  const navigate = useNavigate();
   const [updateTR, setUpdateTR] = useState(false);
   const [updateTRDetail, setUpdateTRDetails] = useState([]);
 
@@ -138,7 +125,7 @@ const CompanyProfileCard = ({
                   placement="bottom"
                   overlay={
                     <Menu>
-                      <Menu.Item key={0}>View Company </Menu.Item>
+                      <Menu.Item key={0}  onClick={() => navigate(`/viewClient/${clientDetail?.CompanyId}/${clientDetail?.ContactId}`)}>View Company </Menu.Item>
                     </Menu>
                   }
                 >
