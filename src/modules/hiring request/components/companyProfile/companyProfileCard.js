@@ -10,21 +10,7 @@ import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import { UserAccountRole } from "constants/application";
 import { NetworkInfo } from "constants/network";
-
-import IconApplicationSVG from "assets/svg/postStepIconApplication.svg";
-import IconDebriefingSVG from "assets/svg/postStepIconDebriefing.svg";
-import IconHireSVG from "assets/svg/postStepIconHire.svg";
-import IconInterviewSVG from "assets/svg/postStepIconInterview.svg";
-import IconMatcherSVG from "assets/svg/postStepIconMatcher.svg";
-import IconOnbordingSVG from "assets/svg/postStepIconOnbording.svg";
-import IconPublishedSVG from "assets/svg/postStepIconPublished.svg";
-import IconScreeningSVG from "assets/svg/postStepIconScreening.svg";
-import IconShortlistSVG from "assets/svg/postStepIconShortlist.svg";
-import IconVettingSVG from "assets/svg/postStepIconVetting.svg";
-
-import jobPostSLATimeSVG from "assets/svg/jobPostSLATime.svg";
 import JOBPostSLA from "./jobPostSLA";
-
 
 const CompanyProfileCard = ({
   clientDetail,
