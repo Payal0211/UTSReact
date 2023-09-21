@@ -63,7 +63,9 @@ const DebriefingHR = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
 	const [controlledJDParsed, setControlledJDParsed] = useState([]);
+	const [controlledGoodToHave, setControlledGoodToHave] = useState([])
 	const [selectedItems, setSelectedItems] = useState([]);
+	const [selectedGoodToHaveItems, setSelectGoodToHaveItems] = useState([]);
 	const [skills, setSkills] = useState([]);
 
 	const [messageAPI, contextHolder] = message.useMessage();
@@ -91,6 +93,7 @@ const DebriefingHR = ({
 	const watchOtherSkills = watch("otherSkill")
 
 	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
+	const [SkillMemo, setSkillMemo] = useState([])
 	useEffect(()=>{
 		const combinedData = [
 			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
@@ -102,8 +105,14 @@ const DebriefingHR = ({
 				},
 			],
 		];
-		setCombinedSkillsMemo(combinedData.filter((o) => !selectedItems.includes(o)))
-	},[JDParsedSkills, selectedItems, skills])
+		const combinewithoutOther = [
+			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
+			...skills,
+		];
+		// remove selected skill for other skill list 
+		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed.map(s=> s.value).includes(o.value)))
+		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave.map(s=> s.value).includes(o.value)))
+	},[JDParsedSkills, controlledJDParsed, skills,controlledGoodToHave])
 
 	const isOtherSkillExistMemo = useMemo(() => {
 		let response = watchSkills?.filter((item) => item?.id === '-1');
@@ -250,6 +259,13 @@ const DebriefingHR = ({
 			};
 			return obj;
 		});
+		let goodToSkillList =  d.goodToHaveSkills.map((item) => {
+			const obj = {
+				skillsID: item.id || item?.skillsID,
+				skillsName: item.value || item?.skillName,
+			};
+			return obj;
+		});
 
 		let debriefFormDetails = {
 			roleAndResponsibilites: d.roleAndResponsibilities,
@@ -266,7 +282,8 @@ const DebriefingHR = ({
 			ActionType: "Save",
 			IsHrfocused: isFocusedRole,
 			role: d.role.id,
-			hrTitle: d.hrTitle
+			hrTitle: d.hrTitle,
+			allSkills:goodToSkillList
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -440,7 +457,7 @@ const DebriefingHR = ({
 									mode="multiple"
 									setValue={setValue}
 									register={register}
-									label={'Required Skills'}
+									label={'Must have Skills'}
 									placeholder="Type skills"
 									onChange={setSelectedItems}
 									options={combinedSkillsMemo}
@@ -475,6 +492,25 @@ const DebriefingHR = ({
 								/>
 							</div>
 						)}
+
+						<div className={DebriefingHRStyle.mb50}>
+								<HRSelectField
+									isControlled={true}
+									controlledValue={controlledGoodToHave}
+									setControlledValue={setControlledGoodToHave}
+									mode="multiple"
+									setValue={setValue}
+									register={register}
+									label={'Good to have Skills'}
+									placeholder="Type skills"
+									onChange={setSelectGoodToHaveItems}
+									options={SkillMemo}
+									name="goodToHaveSkills"
+									isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
+									required
+									errorMsg={'Please enter the skills.'}
+								/>
+						</div>
 							{/* <div className={DebriefingHRStyle.mb50}>
 							<label
 								style={{

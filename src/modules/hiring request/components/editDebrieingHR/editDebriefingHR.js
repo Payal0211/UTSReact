@@ -58,10 +58,10 @@ const EditDebriefingHR = ({
 	const [isLoading, setIsLoading] = useState(false);
 
 	const navigate = useNavigate();
-	const [controlledJDParsed, setControlledJDParsed] = useState(
-		getHRdetails?.skillmulticheckbox?.map((item) => item?.text),
-	);
+	const [controlledJDParsed, setControlledJDParsed] = useState([]);
+	const [controlledGoodToHave, setControlledGoodToHave] = useState([])
 	const [selectedItems, setSelectedItems] = useState([]);
+	const [selectedGoodToHaveItems, setSelectGoodToHaveItems] = useState([]);
 	const [skills, setSkills] = useState([]);
 
 	const [messageAPI, contextHolder] = message.useMessage();
@@ -74,6 +74,16 @@ const EditDebriefingHR = ({
 	let watchSkills = watch('skills');
 	const [talentRole, setTalentRole] = useState([]);
 	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
+
+	//to set skills and control
+	useEffect(()=>{
+		setControlledJDParsed(getHRdetails?.skillmulticheckbox?.map((item) => ({id:item?.id, value:item?.text})))
+		setValue('skills',getHRdetails?.skillmulticheckbox?.map((item) => ({id:item?.id, value:item?.text})))
+		setControlledGoodToHave(getHRdetails?.allSkillmulticheckbox?.map((item) => ({id:item?.id, value:item?.text})))
+		setValue('goodToHaveSkills',getHRdetails?.allSkillmulticheckbox?.map((item) => ({id:item?.id, value:item?.text})))
+	},[getHRdetails?.allSkillmulticheckbox,getHRdetails?.skillmulticheckbox,setValue])
+
+
 	/* const combinedSkillsMemo = useMemo(
 		() => [
 			...skills,
@@ -87,8 +97,8 @@ const EditDebriefingHR = ({
 		[skills],
 	);
  */
-
 	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
+	const [SkillMemo, setSkillMemo] = useState([])
 	useEffect(()=>{
 		const combinedData = [
 			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
@@ -100,8 +110,14 @@ const EditDebriefingHR = ({
 				},
 			],
 		];
-		setCombinedSkillsMemo(combinedData.filter((o) => !selectedItems.includes(o)))
-	},[JDParsedSkills, selectedItems, skills])
+		const combinewithoutOther = [
+			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
+			...skills,
+		];
+		// remove selected skill for other skill list 
+		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed.map(s=> s.value).includes(o.value)))
+		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave.map(s=> s.value).includes(o.value)))
+	},[JDParsedSkills, controlledJDParsed, skills,controlledGoodToHave])
 
 	// const combinedSkillsMemo = useMemo(() => {
 	// 	const combinedData = [
@@ -260,6 +276,14 @@ const EditDebriefingHR = ({
 				};
 				return obj;
 			});
+			let goodToSkillList =  d.goodToHaveSkills.map((item) => {
+				const obj = {
+					skillsID: item.id || item?.skillsID,
+					skillsName: item.value || item?.skillName,
+				};
+				return obj;
+			});
+
 			let debriefFormDetails = {
 				roleAndResponsibilites:  d.roleAndResponsibilities,
 				requirements:  d.requirements,
@@ -276,9 +300,10 @@ const EditDebriefingHR = ({
 				IsHrfocused: isFocusedRole,
 				allowSpecialEdit: getHRdetails?.allowSpecialEdit,
 				role: d.role.id,
-				hrTitle: d.hrTitle
+				hrTitle: d.hrTitle,
+				allSkills:goodToSkillList
 			};
-
+					
 			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
 				debriefFormDetails,
 			);
@@ -524,8 +549,8 @@ const EditDebriefingHR = ({
 										mode="multiple"
 										setValue={setValue}
 										register={register}
-										label={'Required Skills'}
-										placeholder="Type skills"
+										label={'Must have Skills'}
+										placeholder="Type skills" 
 										onChange={setSelectedItems}
 										options={combinedSkillsMemo}
 										name="skills"
@@ -555,6 +580,25 @@ const EditDebriefingHR = ({
 								/>
 							</div>
 						)}
+
+						<div className={DebriefingHRStyle.mb50}>
+									<HRSelectField
+										isControlled={true}
+										controlledValue={controlledGoodToHave}
+										setControlledValue={setControlledGoodToHave}
+										mode="multiple"
+										setValue={setValue}
+										register={register}
+										label={'Good to have Skills'}
+										placeholder="Type skills"
+										onChange={setSelectGoodToHaveItems}
+										options={SkillMemo}
+										name="goodToHaveSkills"
+										isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
+										required
+										errorMsg={'Please enter the skills.'}
+									/>
+								</div>
 								{/* <div className={DebriefingHRStyle.mb50}>
 							<label
 								style={{
