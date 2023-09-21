@@ -683,7 +683,7 @@ talentID,})
 													</span>
 												</div>
 												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" &&
-												 item?.Status !== 'Selected' && item?.Status !== 'Shortlisted' && item?.Status !== 'In Interview' && item?.Status !== 'Replacement' && <span
+												 (item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && <span
 													onClick={() => {
 														setTalentIndex(item?.TalentID);
 														setEditBillRate(true);
@@ -708,7 +708,7 @@ talentID,})
 													</span>
 												</div>
 												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && 
-												item?.Status !== 'Selected' && item?.Status !== 'Shortlisted' && item?.Status !== 'In Interview' && item?.Status !== 'Replacement' && <span
+												(item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && <span
 													onClick={() => {
 														setEditPayRate(true);
 														setTalentIndex(item?.TalentID);
