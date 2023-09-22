@@ -185,7 +185,7 @@ const ConvertToDP = ({
 																	disabled
 																	register={register}
 																	errors={errors}
-																	label="Talent Name"
+																	label="Talent"
 																	name={`talentData[${index}].talentname`}
 																	type={InputType.TEXT}
 																/>
@@ -205,7 +205,7 @@ const ConvertToDP = ({
 																<HRInputField
 																	register={register}
 																	errors={errors}
-																	label="Talent Expected CTC"
+																	label="Talent Expected CTC Monthly"
 																	name={`talentData[${index}].expectedCTC`}
 																	type={InputType.NUMBER}
 																	placeholder="Enter Percentage"
@@ -258,7 +258,7 @@ const ConvertToDP = ({
 																<HRInputField
 																	register={register}
 																	errors={errors}
-																	label="DP Amount"
+																	label="DP One time Amount"
 																	name={`talentData[${index}].dpAmount`}
 																	type={InputType.TEXT}
 																	placeholder="Enter Percentage"

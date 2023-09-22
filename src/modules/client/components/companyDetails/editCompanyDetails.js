@@ -536,13 +536,13 @@ const EditCompanyDetails = ({
                 name="companyURL"
                 type={InputType.TEXT}
                 validationSchema={{
-                  required: "Please enter the profile link.",
-                  // pattern: {
-                  // 	value: URLRegEx.url,
-                  // 	message: 'Entered value does not match url format',
-                  // },
+                  required: "Please enter the Company link.",
+                  pattern: {
+                  	value: URLRegEx.url,
+                  	message: 'Entered value does not match url format',
+                  },
                 }}
-                placeholder="Enter profile link"
+                placeholder="Enter link"
                 required
               />
             </div>
