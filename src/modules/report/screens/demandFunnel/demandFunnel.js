@@ -150,7 +150,7 @@ const DemandFunnelScreen = () => {
 	};
 
 	const viewDemandFunnelSummaryHandler = useCallback(async (reqFilter) => {
-		console.log('--inside -summary');
+		// console.log('--inside -summary');
 		setIsSummary(true);
 		setSummaryLoading(true);
 

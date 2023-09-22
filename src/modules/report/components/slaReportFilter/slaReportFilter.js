@@ -50,8 +50,6 @@ const SlaReportFilerList = ({
     (isChecked, filterObj) => {
       let tempAppliedFilters = new Map(appliedFilter);
       let tempCheckedState = new Map(checkedState);
-      console.log(isChecked, "filterObj");
-      console.log(tempCheckedState, "tempCheckedState");
       if (isChecked) {
         tempCheckedState.set(`${filterObj.filterType}${filterObj.id}`, true);
         setFilteredTagLength((prev) => prev + 1);
@@ -162,7 +160,7 @@ const SlaReportFilerList = ({
     for (let key in filters) { 
       newState.filterFieldsSLA[key] = filters[key];
     }
-    console.log("Flirty filter outer", filters ,newState )
+    // console.log("Flirty filter outer", filters ,newState )
     setSlaReportDetailsState(newState);
     handleHRRequest(newState);
      onRemoveHRFilters();

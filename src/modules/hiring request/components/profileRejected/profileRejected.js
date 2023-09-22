@@ -17,7 +17,7 @@ const {
 } = details
 
 	const currentTalent = talentDetail.filter(talent => talent.TalentID === talentIndex)[0]
-	console.log({currentTalent , talentIndex})
+	// console.log({currentTalent , talentIndex})
 	return (
 		<div className={currentTalent?.Status === "On Hold"
 		? profileRejected.rejectionModalContainerOnHold  :profileRejected.rejectionModalContainerCancelled

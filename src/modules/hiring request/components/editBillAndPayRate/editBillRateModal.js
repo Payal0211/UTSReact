@@ -85,16 +85,18 @@ const EditBillRate = ({
 		const regex = /\d+/;
 		const match = inputString.match(regex);
 		if (match && match.length > 0) {
-		  const number = parseInt(match[0], 10);
+		  const number = parseFloat(match[0], 10);
 		  return number;
 		}
 		return null;
 	  }
 	  
 	useEffect(() => {
-		setValue('hrCost', extractNumberFromString(talentInfo?.BillRate));
-		setValue('nrMarginPercentage', extractNumberFromString(talentInfo?.NR));
-	}, [setValue, talentInfo, talentInfo?.BillRate]);
+		// setValue('hrCost', extractNumberFromString(talentInfo?.BillRate));
+		// setValue('nrMarginPercentage', extractNumberFromString(talentInfo?.NR));
+		setValue('hrCost', getBillRateInfo?.finalHRCost ? getBillRateInfo?.finalHRCost : '') ;
+		setValue('nrMarginPercentage', getBillRateInfo.hR_Percentage)
+	}, [setValue, talentInfo, talentInfo?.BillRate, getBillRateInfo]);
 
 	return (
 		<div className={editBillAndPayRate.engagementModalContainer}>
@@ -163,7 +165,7 @@ const EditBillRate = ({
 							required
 						/>
 						</div>
-						{talentInfo?.TalentCurrenyCode} /Month
+						{talentInfo?.TalentCurrenyCode} / Month
 					</div>
 				</div>
 				<div className={editBillAndPayRate.formPanelAction}>

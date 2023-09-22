@@ -74,7 +74,7 @@ const TalentList = ({
 	const navigate = useNavigate()
 	const [scheduleAnotherRoundInterview, setScheduleAnotherRoundInterview] =
 		useState(false);
-	console.log(scheduleAnotherRoundInterview, '-scheduleAnotherRoundInterview');
+	// console.log(scheduleAnotherRoundInterview, '-scheduleAnotherRoundInterview');
 	const [isShowFeedback, setShowFeedback] = useState(false);
 	const [isAnotherRound, setAnotherRound] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(-1);
@@ -275,21 +275,21 @@ const TalentList = ({
 		filterTalentID?.PayRate,
 		hrId,
 	]);
-console.log("talentList details",	{talentCTA,
-talentDetail,
-miscData,
-callAPI,
-clientDetail,
-HRStatusCode,
-hrId,
-starMarkedStatusCode,
-hrStatus,
-hiringRequestNumber,
-hrType,
-setHRapiCall,
-callHRapi,
-inteviewSlotDetails,
-talentID,})
+// console.log("talentList details",	{talentCTA,
+// talentDetail,
+// miscData,
+// callAPI,
+// clientDetail,
+// HRStatusCode,
+// hrId,
+// starMarkedStatusCode,
+// hrStatus,
+// hiringRequestNumber,
+// hrType,
+// setHRapiCall,
+// callHRapi,
+// inteviewSlotDetails,
+// talentID,})
 	// const updateHRcostHandler = useCallback(async () => {
 	// 	const calculateHRData = {
 	// 		ContactPriorityID: filterTalentID?.ContactPriorityID,
@@ -318,16 +318,16 @@ talentID,})
 		}
 	}, [filterTalentID, editBillRate, hrCostDetailsHandler]);
 
-	useEffect(() => {
-		if (Object.keys(getBillRateInfo).length > 0 && editBillRate) {
-			setValue('nrMarginPercentage', getBillRateInfo?.hR_Percentage);
-		}
-	}, [getBillRateInfo, editBillRate, setValue]);
-	useEffect(() => {
-		if (Object.keys(getBillRateInfo).length > 0 && editBillRate) {
-			setValue('hrCost', getBillRateInfo?.hrCost);
-		}
-	}, [getBillRateInfo, editBillRate, setValue]);
+	// useEffect(() => {
+	// 	if (Object.keys(getBillRateInfo).length > 0 && editBillRate) {
+	// 		setValue('nrMarginPercentage', getBillRateInfo?.hR_Percentage);
+	// 	}
+	// }, [getBillRateInfo, editBillRate, setValue]);
+	// useEffect(() => {
+	// 	if (Object.keys(getBillRateInfo).length > 0 && editBillRate) {
+	// 		setValue('hrCost', getBillRateInfo?.hrCost);
+	// 	}
+	// }, [getBillRateInfo, editBillRate, setValue]);
 
 	useEffect(() => {
 		resetField('talentFees');
@@ -412,9 +412,9 @@ talentID,})
 
 	// confirm slot functionality
 	useEffect(() => {
-		filterTalentID?.MasterId !== undefined &&
+		filterTalentID?.MasterId !== undefined && getConfirmSlotModal &&
 			getConfirmSlotDetailsHandler(filterTalentID?.MasterId);
-	}, [filterTalentID]);
+	}, [filterTalentID,getConfirmSlotModal]);
 
 	const getConfirmSlotDetailsHandler = async (id) => {
 		const response = await hiringRequestDAO.getConfirmSlotDetailsDAO(id);
@@ -875,7 +875,7 @@ talentID,})
 												isDropdown={true}
 												listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
 												menuAction={(menuItem) => {
-													console.log({menuItem})
+													// console.log({menuItem})
 													switch (menuItem.key) {
 														case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
 															setScheduleInterviewModal(true);
@@ -1006,7 +1006,7 @@ talentID,})
 														}
 														case TalentOnboardStatus.VIEW_ENGAGEMENT:{
 																setHRAndEngagementId({
-																						talentName: item.Name									,
+																						talentName: item.Name,
 																						engagementID: item.EngagemenID,
 																						hrNumber: item.HR_Number,
 																						onBoardId: item.OnBoardId,

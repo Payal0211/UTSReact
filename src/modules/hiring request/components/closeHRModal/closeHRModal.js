@@ -22,7 +22,7 @@ const CloseHRModal = ({
     formState: { errors },
   } = useForm();
 
-  console.log("HR details", closeHRDetail.HR_Id);
+  // console.log("HR details", closeHRDetail.HR_Id);
   const [valueInfo, setValueInfo] = useState("");
   const [btnText, setBtnText] = useState("");
 

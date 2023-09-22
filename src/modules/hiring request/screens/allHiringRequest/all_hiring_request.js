@@ -188,7 +188,7 @@ const AllHiringRequestScreen = () => {
 			hrid: getHRID,
 		};
 		const response = data?.hrid && (await MasterDAO.getCloneHRDAO(data));
-		console.log(response, '--response');
+		// console.log(response, '--response');
 		if (response.statusCode === HTTPStatusCode.OK) {
 			setCloneHR(false);
 			localStorage.setItem('hrID', response?.responseBody?.details);
