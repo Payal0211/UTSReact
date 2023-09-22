@@ -40,7 +40,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setRenewEngagement(response?.responseBody?.details);
-			console.log(response, '-response--');
+			// console.log(response, '-response--');
 			// response?.responseBody?.details?.contarctDuration > 0 &&
 			// 	setValue(
 			// 		'contractDuration',
@@ -50,7 +50,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 				'renewedStartDate',
 				new Date(response?.responseBody?.details?.contractEndDate),
 			);
-			console.log(response?.responseBody?.details?.contractStartDate);
+			// console.log(response?.responseBody?.details?.contractStartDate);
 			setStartDate(new Date(response?.responseBody?.details?.contractStartDate).getMonth())
 			setValue('billRate', response?.responseBody?.details?.billRate);
 			setValue('payRate', response?.responseBody?.details?.payRate);

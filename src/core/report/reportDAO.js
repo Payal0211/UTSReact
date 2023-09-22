@@ -34,7 +34,7 @@ export const ReportDAO = {
 	},
 	demandFunnelSummaryRequestDAO: async function (reportData) {
 		try {
-			console.log(reportData, '--reportData');
+			// console.log(reportData, '--reportData');
 			const demandFunnelSummary = await ReportAPI.demandFunnelSummary(
 				reportData,
 			);

@@ -100,13 +100,13 @@ const OnboardField = () => {
 
   const contractDurationHandler = useCallback(async () => {
     let response = await MasterDAO.getContractDurationRequestDAO();
-    console.log("Duration", response);
+    // console.log("Duration", response);
     setcontractDurations(response && response?.responseBody);
   }, []);
 
   const netPaymentDaysHandler = useCallback(async () => {
     let response = await MasterDAO.getNetPaymentDaysRequestDAO();
-    console.log("netpaymentDyas", netPaymentDays);
+    // console.log("netpaymentDyas", netPaymentDays);
     setNetPaymentDays(response && response?.responseBody?.details);
   }, []);
 
@@ -124,7 +124,7 @@ const OnboardField = () => {
     [teamMembers]
   );
 
-  console.log({ errors });
+  // console.log({ errors });
   const onboardSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true)
@@ -176,11 +176,11 @@ const OnboardField = () => {
         proceedWithUplers_ExitPolicyOption:
           onboardDataFormatter.proceedWithUplers_ExitPolicyOption,
       };
-      console.log("onboard data formatter", onboardDataFormatter, onBoardBody);
+      // console.log("onboard data formatter", onboardDataFormatter, onBoardBody);
       const addOnboardResponse = await OnboardDAO.onboardTalentRequestDAO(
         onBoardBody
       );
-      console.log("onboard data formatter response", addOnboardResponse);
+      // console.log("onboard data formatter response", addOnboardResponse);
       if (addOnboardResponse.statusCode === HTTPStatusCode.OK) {
         navigate(-1);
         setIsSavedLoading(false)
@@ -229,7 +229,7 @@ const OnboardField = () => {
             : 1),
         firstDay.getDate()
       );
-      console.log({ firstDay: firstDay, lastDay: lastDay });
+      // console.log({ firstDay: firstDay, lastDay: lastDay });
       setValue("contractStartDate", firstDay);
       setValue("contractEndDate", lastDay);
     } else {
@@ -269,22 +269,22 @@ const OnboardField = () => {
         (item) =>
           item.value === getOnboardFormDetails?.onboardDetails?.netPaymentDays
       );
-      console.log(
-        "netPaymentDays",
-        getOnboardFormDetails?.onboardDetails?.netPaymentDays,
-        netPaymentDays
-      );
+      // console.log(
+      //   "netPaymentDays",
+      //   getOnboardFormDetails?.onboardDetails?.netPaymentDays,
+      //   netPaymentDays
+      // );
       setValue("netPaymentDays", netPaymentDay[0]);
     }
   }, [getOnboardFormDetails, netPaymentDays]);
 
   // contract duration
   useEffect(() => {
-    console.log(
-      " tiem",
-      getOnboardFormDetails?.onboardDetails?.totalDuration,
-      contractDurations
-    );
+    // console.log(
+    //   " tiem",
+    //   getOnboardFormDetails?.onboardDetails?.totalDuration,
+    //   contractDurations
+    // );
     if (
       getOnboardFormDetails?.onboardDetails?.totalDuration &&
       contractDurations.length > 0
@@ -323,7 +323,7 @@ const OnboardField = () => {
       const time = talentTimeZone.filter(
         (item) => item.id === getOnboardFormDetails.talentWorkingTimeZone
       )[0];
-      console.log(getOnboardFormDetails.talentWorkingTimeZone, time);
+      // console.log(getOnboardFormDetails.talentWorkingTimeZone, time);
       setControlledTimeZoneValue(time.value);
       setValue("timeZone", time);
     }
@@ -384,7 +384,7 @@ const OnboardField = () => {
       months = (endDay.getFullYear() - startDay.getFullYear()) * 12;
       months -= startDay.getMonth();
       months += endDay.getMonth();
-      console.log("month gap", months <= 0 ? 0 : months, startDay, endDay);
+      // console.log("month gap", months <= 0 ? 0 : months, startDay, endDay);
       if (months >= 0) {
         const object = {
           disabled: false,
@@ -404,7 +404,7 @@ const OnboardField = () => {
     }
   }, [watch("contractStartDate"), watch("contractEndDate"), setValue]);
 
-  console.log(onboardID, getOnboardFormDetails);
+  // console.log(onboardID, getOnboardFormDetails);
   return (
     <div className={OnboardStyleModule.hrFieldContainer}>
       <div className={AddNewOnboardStyle.onboardLabel}>

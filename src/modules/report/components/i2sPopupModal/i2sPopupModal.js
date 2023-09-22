@@ -40,7 +40,7 @@ const I2SPopupModal = ({
     if (response.statusCode === HTTPStatusCode.OK) {
       let details = response.responseBody.details;
 
-      console.log("popup report", details);
+      // console.log("popup report", details);
       setListData(details)
       setIsLoading(false);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {

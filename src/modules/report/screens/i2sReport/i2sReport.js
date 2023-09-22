@@ -118,7 +118,7 @@ const [dateError, setDateError] = useState(false);
       let teamArray = teamNames.map((teamName) => ({
         [teamName]: details.filter((team) => team.teamName === teamName),
       }));
-      console.log(teamArray);
+      // console.log(teamArray);
       setI2SList(teamArray);
       setLoading(false);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {

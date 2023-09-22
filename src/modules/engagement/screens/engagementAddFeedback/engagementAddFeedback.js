@@ -51,7 +51,7 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
 		googleDriveFileUpload: '',
 		linkValidation: '',
 	})
-console.log({getUploadFileData})
+// console.log({getUploadFileData})
     const uploadFileHandler = useCallback(
 		async (e) => {
 			setIsLoading(true);
@@ -84,8 +84,8 @@ console.log({getUploadFileData})
 				let formData = new FormData();
 				formData.append('File', e.target.files[0]);
                 formData.append('File2', "fileData");
-                console.log({FD:formData.get('File')
-                    , fileData});
+                // console.log({FD:formData.get('File')
+                //     , fileData});
 				let uploadFileResponse = await engagementRequestDAO.uploadFeedbackSupportingFileDAO(formData);
 				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 					if (

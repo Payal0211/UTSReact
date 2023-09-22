@@ -71,7 +71,7 @@ const EngagementReplaceTalent = ({
 		}
 	},[watch("replaceStage"), setValue,unregister])
 
-	console.log({getTalentReplacementData,talentInfo})
+	// console.log({getTalentReplacementData,talentInfo})
 
 	const submitTalentReplacementHandler = useCallback(
 		async (d) => {
