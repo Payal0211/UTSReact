@@ -58,7 +58,7 @@ const EditPayRate = ({ talentInfo, onCancel
                                     required
                                 />
                             </div>                         
-                        {talentInfo?.TalentCurrenyCode} /Month
+                        {talentInfo?.TalentCurrenyCode} / Month
                             </>                       
                     </div>
                 </div>
