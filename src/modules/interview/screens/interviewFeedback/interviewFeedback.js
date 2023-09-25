@@ -81,7 +81,6 @@ const InterviewFeedback = ({
 				IsClientNotificationSent: isClientNotification,
 			};
 
-			console.log(clientFeedback, '-clientFeedback');
 			if (isAnotherRound) {
 				// setInterviewFeedbackResult(clientFeedback);
 				const response = await InterviewDAO.updateInterviewFeedbackRequestDAO(

@@ -93,10 +93,8 @@ const AddNewRole = ({
         let formData = new FormData();
         formData.append("file", e.target.files[0], e.target.files[0].name);
         
-        console.log({ FD: formData.get("file"), fileData });
         let uploadFileResponse = await MasterDAO.uploadRoalIconDAO(formData);
 
-        console.log('file response', uploadFileResponse)
         if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
           if (
             fileData?.type === "image/png" ||

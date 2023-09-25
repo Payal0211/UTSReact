@@ -1050,4 +1050,16 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.updateSLADate');
 		}
 	},
+	extractTextUsingPythonApi : async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL = NetworkInfo.NETWORK + SubDomain.HIRING +  HiringRequestsAPI.EXTRACTTEXTUSINGPYTHON +`?clientEmail=${data.clientEmail}&psUrl=${data.psUrl}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error,'HiringRequestAPI.extractTextUsingPythonApi');
+		}
+	}
 };

@@ -80,7 +80,6 @@ export default function ClientReport() {
   };
 
   const getClientPopUpReportList = useCallback(async (params) => {
-    console.log({isHrfocused: isFocusedRole})
     setLoading(true);
     // const response = await clientReport.getClienPopUpRequestList({
     //   ...params,

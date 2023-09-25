@@ -36,6 +36,7 @@ import { UserAccountRole } from "constants/application";
 import useDebounce from "shared/hooks/useDebounce";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { NetworkInfo } from 'constants/network';
+import { HttpStatusCode } from "axios";
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -1217,7 +1218,6 @@ const EditHRFields = ({
             text: `${getHRdetails?.contractDuration} months`,
             value: `${getHRdetails?.contractDuration}`,
           };
-
           setcontractDurations((prev) => [...prev, object]);
           // this will trigger this Effect again and then go to if
         }
@@ -1231,6 +1231,22 @@ const EditHRFields = ({
     }
   }, [localStorage.getItem("fromEditDeBriefing")]);
 
+const onHandleFocusOut = async (e) => {
+  const regex = /\(([^)]+)\)/;
+  const match = watchClientName.match(regex);
+  let email = "";
+  if (match && match.length > 1) {
+    email = match[1];
+  }
+  const response = await hiringRequestDAO.extractTextUsingPythonDAO({
+    clientEmail:email,
+    psUrl:e.target.value
+  })
+  if (response.statusCode === HTTPStatusCode.OK && response?.responseBody?.statusCode === HttpStatusCode.Ok) {
+    setHRdetails(response?.responseBody?.details);
+  }
+}
+  
   return (
     <div className={HRFieldStyle.hrFieldContainer}>
       {contextHolder}
@@ -1529,6 +1545,7 @@ const EditHRFields = ({
                     register={register}
                     errors={errors}
                     required={!getUploadFileData}
+                    onBlurHandler={(e) => onHandleFocusOut(e)}
                     validationSchema={
                       {
                         // pattern: {
@@ -1537,6 +1554,7 @@ const EditHRFields = ({
                         // },
                       }
                     }
+                                        
                   />
                 </div>
               </div>

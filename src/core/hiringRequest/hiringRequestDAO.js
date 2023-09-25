@@ -1845,5 +1845,35 @@ export const hiringRequestDAO = {
 		} catch (error) {
 			return errorDebug(error, 'hiringRequestDAO.updateSLADateDAO()');
 		}
+	},
+	extractTextUsingPythonDAO :async (data) => {
+		try {
+			const extTextResponse = await HiringRequestAPI.extractTextUsingPythonApi(data);
+			if (extTextResponse) {
+				const statusCode = extTextResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = extTextResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return extTextResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return extTextResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error,'hiringRequestDAO.extractTextUsingPythonDAO()');
+		}
 	}
+
 };
