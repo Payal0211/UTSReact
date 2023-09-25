@@ -579,6 +579,8 @@ const TeamDemandFunnelScreen = () => {
 	const viewActionWiseHandler = useCallback(
 		async (d) => {
 			setLoading(true);
+			setSummaryData([]);
+			setIsSummary(false);
 			const actionWiseFormatter = {
 				...tableFilteredState,
 				salesManagerID: d.salesManager?.id,
@@ -633,6 +635,8 @@ const TeamDemandFunnelScreen = () => {
 	const hrWiseHandler = useCallback(
 		async (d) => {
 			setLoading(true);
+			setSummaryData([]);
+			setIsSummary(false);
 			const actionWiseFormatter = {
 				...tableFilteredState,
 				salesManagerID: d.salesManager?.id,

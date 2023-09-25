@@ -346,7 +346,7 @@ const TalentList = ({
 	useEffect(() => {
 		if (Object.keys(filterTalentID).length > 0 && editPayRate) {
 			setValue(
-				'talentFees',extractNumberFromString(filterTalentID?.PayRate));
+				'talentFees',filterTalentID?.CTP_TalentCost);
 		}
 	}, [filterTalentID, editPayRate, setValue]);
 
