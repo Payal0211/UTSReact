@@ -235,7 +235,7 @@ const ProfileLogTable = ({ borderColor, logExpanded, activeType }) => {
 						</tr>
 					) : (
 						logExpanded?.map((item, index) => {
-							console.log(item, '--item');
+							// console.log(item, '--item');
 							return (
 								<tr>
 									<td className={ProfileStyle.td}>HR {index + 1}</td>

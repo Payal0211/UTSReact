@@ -130,7 +130,7 @@ const EngagementInvoice = ({
 				onboardID: talentInfo?.onboardID,
 			});
 
-		console.log(response, '-response');
+		// console.log(response, '-response');
 
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setInvoiceDetails(response && response?.responseBody?.details);

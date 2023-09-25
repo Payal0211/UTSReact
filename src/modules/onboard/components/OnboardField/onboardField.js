@@ -100,13 +100,13 @@ const OnboardField = () => {
 
   const contractDurationHandler = useCallback(async () => {
     let response = await MasterDAO.getContractDurationRequestDAO();
-    console.log("Duration", response);
+    // console.log("Duration", response);
     setcontractDurations(response && response?.responseBody);
   }, []);
 
   const netPaymentDaysHandler = useCallback(async () => {
     let response = await MasterDAO.getNetPaymentDaysRequestDAO();
-    console.log("netpaymentDyas", netPaymentDays);
+    // console.log("netpaymentDyas", netPaymentDays);
     setNetPaymentDays(response && response?.responseBody?.details);
   }, []);
 
@@ -124,7 +124,7 @@ const OnboardField = () => {
     [teamMembers]
   );
 
-  console.log({ errors });
+  // console.log({ errors });
   const onboardSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true)

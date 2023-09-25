@@ -339,7 +339,7 @@ export const HiringRequestAPI = {
 	uploadFile: async (file) => {
 		let httpService = new HttpServices();
 		httpService.URL =
-			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_FILE;
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_FILE + `?clientEmail=${file.get('clientemail')}`;
 		httpService.dataToSend = file;
 
 		httpService.setAuthRequired = true;

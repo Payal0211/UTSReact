@@ -196,7 +196,7 @@ const HRDetailScreen = () => {
 		const data = apiData?.hr_CTA?.filter((item) => item.key === 'DebriefingHR');
 		setEditDebring(data);
 	}, [apiData]);
-console.log('apiData', apiData)
+// console.log('apiData', apiData)
 
 const editHR = () => {
 	navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });

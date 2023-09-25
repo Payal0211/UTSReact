@@ -154,6 +154,15 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		name: 'secondaryInterviewer',
 	}); */
 
+	const watchClientName = watch('clientName');
+
+	let filteredMemo = useMemo(() => {
+		let filteredData = getClientNameSuggestion?.filter(
+			(item) => item?.value === watchClientName,
+		);
+		return filteredData;
+	}, [getClientNameSuggestion, watchClientName]);
+
 	/* ------------------ Upload JD Starts Here ---------------------- */
 	const [openPicker, authResponse] = useDrivePicker();
 
@@ -243,6 +252,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 			} else {
 				let formData = new FormData();
 				formData.append('File', fileData);
+				formData.append('clientemail',filteredMemo[0]?.emailId)
 				let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
 				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 					if (
@@ -286,7 +296,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 				setIsLoading(false);
 			}
 		},
-		[getValidation, setJDDumpID, setJDParsedSkills],
+		[getValidation, setJDDumpID, setJDParsedSkills,filteredMemo],
 	);
 
 	const googleDriveFileUploader = useCallback(() => {
@@ -552,7 +562,6 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		[contractDurations, name],
 	);
 
-	const watchClientName = watch('clientName');
 
 	const toggleHRDirectPlacement = useCallback((e) => {
 		// e.preventDefault();
@@ -598,12 +607,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		}
 		return true;
 	};
-	let filteredMemo = useMemo(() => {
-		let filteredData = getClientNameSuggestion?.filter(
-			(item) => item?.value === watchClientName,
-		);
-		return filteredData;
-	}, [getClientNameSuggestion, watchClientName]);
+	
 	const getHRClientName = useCallback(async (watchClientName) => {
 		if(watchClientName || filteredMemo){
 			let existingClientDetails =
@@ -1286,7 +1290,7 @@ if(DID){
 							<div className={HRFieldStyle.colMd6}>
 								{!getUploadFileData ? (
 									<HRInputField
-										disabled={jdURLLink}
+										disabled={!isCompanyNameAvailable ? true : jdURLLink}
 										register={register}
 										leadingIcon={<UploadSVG />}
 										label={`Job Description`}
@@ -1339,7 +1343,7 @@ if(DID){
 							<div className={HRFieldStyle.colMd6}>
 								<HRInputField
 									onChangeHandler={(e) => toggleJDHandler(e)}
-									disabled={getUploadFileData}
+									disabled={!isCompanyNameAvailable ? true : getUploadFileData}
 									label="Job Description URL"
 									name="jdURL"
 									type={InputType.TEXT}

@@ -328,7 +328,7 @@ const ViewHRDetails = () => {
 
 						<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
 							<h3>
-								Skills
+								Must have skills 
 								<i className={ViewHRDetailsStyle.blueDot} />
 							</h3>
 							<div className={ViewHRDetailsStyle.skillsList}>
@@ -337,6 +337,25 @@ const ViewHRDetails = () => {
 									<p>NA</p>
 								) : (
 									hiringDetails?.responseBody?.details.requiredSkillList?.map(
+										(item) => {
+											return <span>{item?.text}</span>;
+										},
+									)
+								)}
+							</div>
+						</div>
+
+						<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+							<h3>
+								Good To Have Skills
+								<i className={ViewHRDetailsStyle.blueDot} />
+							</h3>
+							<div className={ViewHRDetailsStyle.skillsList}>
+								{hiringDetails?.responseBody?.details.goodToHaveSkillList
+									?.length === 0 ? (
+									<p>NA</p>
+								) : (
+									hiringDetails?.responseBody?.details.goodToHaveSkillList?.map(
 										(item) => {
 											return <span>{item?.text}</span>;
 										},

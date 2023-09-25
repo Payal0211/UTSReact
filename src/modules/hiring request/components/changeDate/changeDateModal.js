@@ -47,7 +47,7 @@ const ChangeDate = ({
 			"otherReason": d.Reason.value === 'Other' ? d.otherReason : '',
 			"slaRevisedDate": moment(d.newDate).format() ,
 		  }
-		  console.log("payload to send", payload)
+		//   console.log("payload to send", payload)
 		  updateSlaDateHandler(payload,setIsLoading)
 		;
 	};

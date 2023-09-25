@@ -188,7 +188,7 @@ const AllHiringRequestScreen = () => {
 			hrid: getHRID,
 		};
 		const response = data?.hrid && (await MasterDAO.getCloneHRDAO(data));
-		console.log(response, '--response');
+		// console.log(response, '--response');
 		if (response.statusCode === HTTPStatusCode.OK) {
 			setCloneHR(false);
 			localStorage.setItem('hrID', response?.responseBody?.details);
@@ -455,8 +455,12 @@ const AllHiringRequestScreen = () => {
 							</div>
 						)}
 					</div>
-					{console.log("mis",miscData)}
-					<HROperator
+					
+					{(miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR || 
+											miscData?.loggedInUserTypeID === UserAccountRole.SALES ||
+											miscData?.loggedInUserTypeID === UserAccountRole.SALES_MANAGER ||
+											miscData?.loggedInUserTypeID === UserAccountRole.BDR || 
+											miscData?.loggedInUserTypeID === UserAccountRole.MARKETING) && <HROperator
 						title="Add New HR"
 						icon={<ArrowDownSVG style={{ width: '16px' }} />}
 						backgroundColor={`var(--color-sunlight)`}
@@ -469,22 +473,14 @@ const AllHiringRequestScreen = () => {
 										{
 											label: 'Add New HR',
 											key: AddNewType.HR,
-											IsEnabled: miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR || 
-											miscData?.loggedInUserTypeID === UserAccountRole.SALES ||
-											miscData?.loggedInUserTypeID === UserAccountRole.SALES_MANAGER ||
-											miscData?.loggedInUserTypeID === UserAccountRole.BDR || 
-											miscData?.loggedInUserTypeID === UserAccountRole.MARKETING ? true : false ,
+											IsEnabled: true  ,
 										},
 								  ]
 								: [
 										{
 											label: 'Add New HR',
 											key: AddNewType.HR,
-											IsEnabled: miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR || 
-											miscData?.loggedInUserTypeID === UserAccountRole.SALES ||
-											miscData?.loggedInUserTypeID === UserAccountRole.SALES_MANAGER ||
-											miscData?.loggedInUserTypeID === UserAccountRole.BDR || 
-											miscData?.loggedInUserTypeID === UserAccountRole.MARKETING ? true : false ,
+											IsEnabled: true ,
 										},
 										{
 											label: 'Add New Client',
@@ -508,7 +504,8 @@ const AllHiringRequestScreen = () => {
 									break;
 							}
 						}}
-					/>
+					/>}
+					
 
 							<button
 								className={allHRStyles.btnPrimary}								

@@ -163,7 +163,7 @@ if(boardData){
         async function fetchData() {
             setIsLoading(true)
             let result = await OnboardDAO.getClientLegelInfoDAO(HRID)
-             console.log("Fetching client msaDate",result,result.responseBody.details)
+            //  console.log("Fetching client msaDate",result,result.responseBody.details)
             result.responseBody.details && setValue('msaDate', dayjs(result.responseBody.details).toDate())
             setIsLoading(false)
           }

@@ -40,7 +40,6 @@ const EditDPRate = ({ onCancel
     useEffect(() => {
         getDpAmounts()
     },[hrId,talentId,contactPriorityID])
-console.log("DPData",DPData)
 
     let watchExpectedCTC  = watch('expectedCTC')
     let watchDPpercentage = watch('dpPercentage')
@@ -71,7 +70,7 @@ console.log("DPData",DPData)
         }
         setIsLoading(false);
     }
-console.log('irem',DPData.allValues)
+
     return (
         <div className={editBillAndPayRate.engagementModalContainer}
         >
@@ -116,7 +115,7 @@ console.log('irem',DPData.allValues)
                             validationSchema={{
                                 required: 'please enter Talent Expected CTC.',
                             }}
-                            label="Talent Expected CTC"
+                            label="Talent Expected CTC Monthly"
                             name="expectedCTC"
                             type={InputType.NUMBER}
                             placeholder="Enter Amount"
@@ -157,7 +156,7 @@ console.log('irem',DPData.allValues)
                                     }
                                   },
                             }}
-                            label="DP Amount"
+                            label="DP One time Amount"
                             name="dpAmount"
                             type={InputType.NUMBER}
                             placeholder="Enter Amount"
