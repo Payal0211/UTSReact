@@ -4,6 +4,10 @@
     margin: 25px 40px;
 }
 
+.AMNAME{
+    text-decoration: underline;
+    cursor: pointer;
+}
 
 .addnewHR {
     display: flex;

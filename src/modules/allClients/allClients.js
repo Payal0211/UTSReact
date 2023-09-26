@@ -26,6 +26,7 @@ import { allClientRequestDAO } from 'core/allClients/allClientsDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { allClientsConfig } from 'modules/hiring request/screens/allClients/allClients.config';
 import { downloadToExcel } from 'modules/report/reportUtils';
+import EditAMModal from './components/allClients/editAMModal/editAMModal';
 
 const AllClientFiltersLazy = React.lazy(() =>
 	import('modules/allClients/components/allClients/allClientsFilter'),
@@ -73,6 +74,8 @@ function AllClients() {
     const [appliedFilter, setAppliedFilters] = useState(new Map());
     const [checkedState, setCheckedState] = useState(new Map());
     const [allClientsList,setAllClientList] = useState([]);
+    const [editAM,setEditAM]= useState(false)
+    const [amToFetch,setAMToFetch] = useState({})
      
 	const getFilterRequest = useCallback(async () => {
 		// const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
@@ -97,6 +100,10 @@ function AllClients() {
     useEffect(() => {
         getAllClientsList(tableFilteredState);
     },[tableFilteredState]);
+
+    const reloadClientList = ()=>{
+        getAllClientsList(tableFilteredState);
+    }
 
     const modifyResponseData = (data) => {
     return data.map((item) => ({...item,
@@ -157,14 +164,18 @@ function AllClients() {
     };
 
     const debouncedSearchHandler = (e) => {
-        setTableFilteredState(prevState => ({
-            ...prevState,
-            pagenumber:1,
-            filterFields_Client: {
-              ...prevState.filterFields_Client,
-              searchText: e.target.value,
-            }
-          }));       
+        if(e.target.value.length > 3 || e.target.value === ''){
+            setTimeout(()=>{
+                setTableFilteredState(prevState => ({
+                ...prevState,
+                pagenumber:1,
+                filterFields_Client: {
+                ...prevState.filterFields_Client,
+                searchText: e.target.value,
+                }
+                }));  
+            },2000)         
+        }           
         setDebouncedSearch(e.target.value)
         setPageIndex(1); 
     };
@@ -225,8 +236,13 @@ function AllClients() {
         setHTMLFilter(!getHTMLFilter);
     }, [getHTMLFilter]);
 
+    const editAMHandler = (data)=>{
+        setEditAM(true)
+        setAMToFetch(data)
+    }
+
     const allClientsColumnsMemo = useMemo(
-		() => allClientsConfig.tableConfig(),
+		() => allClientsConfig.tableConfig(editAMHandler),
 		[],
 	); 
 
@@ -384,7 +400,19 @@ function AllClients() {
                                 tableFilteredState={tableFilteredState}                        
 					        />
 				        </Suspense>
-			)}   
+			)}
+
+            {editAM && 
+            	<Modal
+                transitionName=""
+                width="1256px"
+                centered
+                footer={null}
+                open={editAM}
+                // onOk={() => setVersantModal(false)}
+                onCancel={() => setEditAM(false)}>
+               <EditAMModal amToFetch={amToFetch} closeModal={() => setEditAM(false)} reloadClientList={reloadClientList} />
+            </Modal>}  
         </>
     )
 }

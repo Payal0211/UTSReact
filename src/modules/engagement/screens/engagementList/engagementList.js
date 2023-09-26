@@ -93,6 +93,7 @@ const EngagementList = () => {
 	const [getPayRate, setPayRate] = useState(0);
 	const [engagementBillAndPayRateTab, setEngagementBillAndPayRateTab] =
 		useState('1');
+	const [activeTab, setActiveTab] = useState('')	
 	const [getEngagementModal, setEngagementModal] = useState({
 		engagementFeedback: false,
 		engagementRenew: false,
@@ -176,7 +177,8 @@ const EngagementList = () => {
 				setHRAndEngagementId,
 				setIsAddTSC,
 				setTSCONBoardData,
-				setISEditTSC
+				setISEditTSC,
+				setActiveTab
 			),
 		[getEngagementModal],
 	);
@@ -966,6 +968,7 @@ const EngagementList = () => {
 							setEngagementBillAndPayRateTab={setEngagementBillAndPayRateTab}
 							engagementBillAndPayRateTab={engagementBillAndPayRateTab}
 							rateReason={rateReason}
+							activeTab={activeTab}
 							setRateReason={setRateReason}
 						/>
 					</Modal>

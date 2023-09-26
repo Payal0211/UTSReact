@@ -128,7 +128,8 @@ export const allEngagementConfig = {
 		setHRAndEngagementId,
 		setIsAddTSC,
 		setTSCONBoardData,
-		setISEditTSC
+		setISEditTSC,
+		setActiveTab
 	) => {
 		return [
 			{
@@ -245,6 +246,7 @@ export const allEngagementConfig = {
 											engagementBillRateAndPayRate: true,
 										});
 										setEngagementBillAndPayRateTab('1');
+										setActiveTab('1')
 										setFilteredData(param);
 										break;
 									}
@@ -254,6 +256,7 @@ export const allEngagementConfig = {
 											engagementBillRateAndPayRate: true,
 										});
 										setEngagementBillAndPayRateTab('2');
+										setActiveTab('2')
 										setFilteredData(param);
 										break;
 									}

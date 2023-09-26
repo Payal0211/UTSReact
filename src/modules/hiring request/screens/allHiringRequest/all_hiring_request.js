@@ -248,7 +248,8 @@ const AllHiringRequestScreen = () => {
 		[handleHRRequest],
 	);
 	const debouncedSearchHandler = (e) => {
-		setTimeout(()=>{
+		if(e.target.value.length > 3 || e.target.value === ''){
+			setTimeout(()=>{
 			setTableFilteredState({
 			...tableFilteredState,
 			pagenum:1,
@@ -256,6 +257,8 @@ const AllHiringRequestScreen = () => {
 		});
 		
 		},2000)
+		}
+		
 		setDebouncedSearch(e.target.value)
 		setPageIndex(1)
 		//debounceFun(e.target.value);

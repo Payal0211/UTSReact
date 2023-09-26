@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import clienthappinessSurveyStyles from "../../../survey/client_happiness_survey.module.css";
 import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
+import { ReactComponent as NextWeekPriorityStar } from 'assets/svg/nextWeekPriorityStar.svg';
+import { ReactComponent as NoPriorityStar } from 'assets/svg/noPriorityStar.svg';
+
 export const allClientsConfig = {
     allClientsTypeConfig : (filterList) => {
         return [
@@ -36,7 +39,7 @@ export const allClientsConfig = {
             }            		
 		];
     },
-    tableConfig : () => {
+    tableConfig : (editAMHandler) => {
         return [
             {
                 title: '',
@@ -111,6 +114,17 @@ export const allClientsConfig = {
 				// },
             },
             {
+                title: 'AM',
+                dataIndex: 'aM_UserName',
+                key: 'aM_UserName',
+                width: '300px',
+                render:(text,result)=>{
+                    console.log(result)
+                    let data = {clientID: result?.clientID, companyID: result?.companyID }
+                    return text ? <div className={clienthappinessSurveyStyles.AMNAME}  onClick={()=>editAMHandler(data)}>{text}</div> : null
+                }
+            },
+            {
                 title: 'Geo',
                 dataIndex: 'geo',
                 key: 'geo',
@@ -131,17 +145,45 @@ export const allClientsConfig = {
             }
           ]; 
     },
-    ViewClienttableConfig : () => {
+    ViewClienttableConfig : (togglePriority) => {
         return [
-            // {
-            //     title: '',
-            //     dataIndex: '',
-            //     key: '',
-            // },
+            {
+                title: '',
+                dataIndex: 'starMarked',
+                key: 'starMarked',
+                width:'100px',
+                render:(isMarked, result) => {
+                if(isMarked === true) {
+                     return  <a href="javascript:void(0);" onClick={() => {
+                                    let priorityObject = {
+                                        isNextWeekStarMarked: '0',
+                                        hRID: result.hR_ID,
+                                        person: result.salesUserName,
+                                    };
+                                    togglePriority(priorityObject);
+                              }
+                    }><NextWeekPriorityStar />
+                </a>
+                }else {
+                 return 	<a href="javascript:void(0);" onClick={() => {
+                                    let priorityObject = {
+                                        isNextWeekStarMarked: '1',
+                                        hRID: result.hR_ID,
+                                        person: result.salesUserName,
+                                    };
+                                    togglePriority(priorityObject);
+                              }
+                    }>
+                        <NoPriorityStar />
+                </a>
+                }
+                }
+            },
             {
                 title: 'Created Date',
                 dataIndex: 'createdDateTime',
                 key: 'createdDateTime',
+                width:'200px',
                 render: (text, result) =>{                     
                     return (text.split('T')[0])
                 },
@@ -155,6 +197,7 @@ export const allClientsConfig = {
                 title: 'TR',
                 dataIndex: 'totalTR',
                 key: 'totalTR',
+                width:'100px'
             },
             {
                 title: 'Position',
@@ -170,11 +213,13 @@ export const allClientsConfig = {
                 title: 'Notice',
                 dataIndex: 'notice',
                 key: 'notice',
+                width:'100px'
             },
             {
                 title: 'FTE/PTE',
                 dataIndex: 'ftE_PTE',
                 key: 'ftE_PTE',
+                width:'100px'
             },
             ]
     }

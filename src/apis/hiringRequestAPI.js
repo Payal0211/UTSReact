@@ -6,11 +6,13 @@ import {
 	InterviewsAPI,
 	NetworkInfo,
 	SubDomain,
+	ClientsAPI
 } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
 import { makeURLParamsFromPayload } from 'shared/utils/basic_utils';
 import { errorDebug } from 'shared/utils/error_debug_utils';
+
 
 export const HiringRequestAPI = {
 	getPaginatedHiringRequest: async function (hrData) {
@@ -1034,6 +1036,33 @@ export const HiringRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.getHRSLADetails');
+		}
+	},
+	getAMDetails: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.CLIENT+ ClientsAPI.GET_AM_DETAIL + `?companyID=${data.companyID}&clientID=${data.clientID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getAMDetails');
+		}
+	},
+	updateAMNameDate: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.CLIENT+ ClientsAPI.UPDATE_AM_FOR_COMPANY ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.updateAMNameDate');
 		}
 	},
 	updateSLADate: async (data) => {
