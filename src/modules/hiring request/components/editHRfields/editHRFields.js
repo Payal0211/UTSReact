@@ -1228,11 +1228,11 @@ const EditHRFields = ({
     }
   }, [getHRdetails, contractDurations]);
 
-  useEffect(() => {
-    if (localStorage.getItem("fromEditDeBriefing")) {
-      setTitle("Edit Debriefing HR");
-    }
-  }, [localStorage.getItem("fromEditDeBriefing")]);
+  // useEffect(() => {
+  //   if (localStorage.getItem("fromEditDeBriefing")) {
+  //     setTitle("Edit Debriefing HR");
+  //   }
+  // }, [localStorage.getItem("fromEditDeBriefing")]);
 
   return (
     <div className={HRFieldStyle.hrFieldContainer}>

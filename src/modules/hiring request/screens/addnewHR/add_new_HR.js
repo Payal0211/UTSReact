@@ -36,7 +36,12 @@ const AddNewHR = () => {
 	useEffect(()=>{
 		if(getHRdetails?.addHiringRequest?.hrNumber){
 			setEditTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)
-			localStorage.getItem('hrID') &&	setTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)		
+			if(localStorage.getItem('hrID') && localStorage.getItem('fromEditDeBriefing')){
+				setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`)
+			}
+			if(localStorage.getItem('hrID') && !localStorage.getItem('fromEditDeBriefing')) {			
+				setTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)
+			}	
 		}   
 	},[getHRdetails?.addHiringRequest?.hrNumber,getHRdetails?.addHiringRequest?.isActive,tabFieldDisabled])
 
