@@ -38,7 +38,6 @@ const LoginScreen = () => {
 				password: d?.password,
 			});
 
-			// console.log(result, "ddddddddddd")
 			if (result.statusCode === HTTPStatusCode.OK) {
 				setLoading(false);
 				navigate(isAccess(result.responseBody.LoggedInUserTypeID) ? UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DASHBOARD);

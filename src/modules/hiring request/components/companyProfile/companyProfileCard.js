@@ -440,6 +440,14 @@ const CompanyProfileCard = ({
                     : "NA"}
                 </span>
               </div>
+              <div className={CompanyProfileCardStyle.manager}>
+                <span>AM Name:</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                  {clientDetail?.AM_UserName
+                    ? clientDetail?.AM_UserName
+                    : "NA"}
+                </span>
+              </div>
             </div>
           </div>
         </div>

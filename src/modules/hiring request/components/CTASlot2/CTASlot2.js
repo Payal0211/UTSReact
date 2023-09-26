@@ -20,6 +20,7 @@ const CTASlot2 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 		navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 		localStorage.setItem('hrID', params?.hrid);
 		localStorage.removeItem('dealID')
+		localStorage.removeItem('fromEditDeBriefing');
 	};
 	return (
 		<>

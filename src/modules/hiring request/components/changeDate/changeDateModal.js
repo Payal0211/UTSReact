@@ -60,7 +60,6 @@ const ChangeDate = ({
 	// }, [hrSLADetails[6].slaDate]);
 
 	// console.log('watch',watch('Reason'), watch('newDate'))
-	// console.log('watch date', watch('newDate'))
 	return (
 		<div className={changeDateStyle.engagementModalContainer}>
 			<div className={changeDateStyle.updateTRTitle}>
@@ -98,8 +97,11 @@ const ChangeDate = ({
 							  value={dateToChange}
                               dateFormat="dd/MM/yyyy"
                               placeholderText="Select Date"
-							  minDate={new Date()}
-                             
+							  minDate={hrSLADetails[6].slaDate ?  new Date(hrSLADetails[6].slaDate?.split('/').reverse().join('-')) : new Date()}
+							  filterDate={date => {
+								// Disable weekends (Saturday and Sunday)
+								return date.getDay() !== 0 && date.getDay() !== 6;
+							  }}
                             />
                           )}
                           name="newDate"

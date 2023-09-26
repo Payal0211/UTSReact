@@ -160,7 +160,6 @@ const SlaReportFilerList = ({
     for (let key in filters) { 
       newState.filterFieldsSLA[key] = filters[key];
     }
-    // console.log("Flirty filter outer", filters ,newState )
     setSlaReportDetailsState(newState);
     handleHRRequest(newState);
      onRemoveHRFilters();

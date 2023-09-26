@@ -133,7 +133,7 @@ export const hrUtils = {
 					: d.jdURL,
 			jDFilename: fileName,
 			jDDescription: null,
-			jDDump_ID: jdDumpID,
+			jDDump_ID: typeof jdDumpID === 'number' ? jdDumpID : null,
 			hdnSkills: null,
 			budgetType:
 				draft === SubmitType.SAVE_AS_DRAFT

@@ -13,6 +13,7 @@ const AddNewHR = () => {
 		addNewHiringRequest: false,
 		debriefingHR: true,
 	});
+	const [addData,setAddData] = useState({});
 
 	const navigateParams = useLocation();
 
@@ -36,7 +37,12 @@ const AddNewHR = () => {
 	useEffect(()=>{
 		if(getHRdetails?.addHiringRequest?.hrNumber){
 			setEditTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)
-			localStorage.getItem('hrID') &&	setTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)		
+			if(localStorage.getItem('hrID') && localStorage.getItem('fromEditDeBriefing')){
+				setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`)
+			}
+			if(localStorage.getItem('hrID') && !localStorage.getItem('fromEditDeBriefing')) {			
+				setTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)
+			}	
 		}   
 	},[getHRdetails?.addHiringRequest?.hrNumber,getHRdetails?.addHiringRequest?.isActive,tabFieldDisabled])
 
@@ -95,6 +101,9 @@ const AddNewHR = () => {
 									companyName={companyName}
 									params={paramsURL}
 									isCloned={navigateParams?.isCloned || false}
+									getHRdetails={getHRdetails}
+									setHRdetails={setHRdetails}
+									setAddData={setAddData}
 								/>
 							),
 						},
@@ -115,6 +124,7 @@ const AddNewHR = () => {
 									getCompanyName={getCompanyName}
 									params={paramsURL}
 									isCloned={navigateParams?.isCloned || false}
+									addData={addData}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,

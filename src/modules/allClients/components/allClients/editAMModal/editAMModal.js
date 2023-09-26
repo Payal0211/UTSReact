@@ -136,6 +136,7 @@ const EditAMModal = ({ amToFetch ,closeModal,reloadClientList}) => {
 						type={InputType.TEXT}
 						placeholder="Enter Note/Comment"
 						isTextArea
+						rows={5}
 						required
 						validationSchema={{
 							required: 'please enter Note/Comments.',

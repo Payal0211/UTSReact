@@ -31,6 +31,7 @@ const JOBPostSLA = ({ allApiData }) => {
   const [hrSLADetails, sethrSLADetails] = useState([]);
   const [slaReasons, setSLAReasons] = useState([]);
   const [slaHistory, setSLAHistory] = useState([]);
+  const ws = new WebSocket(`ws://${NetworkInfo.DOMAIN}//`)
 
   const getHRSLA = async (id) => {
     const result = await hiringRequestDAO.getHRSLADetailsDAO(id);
@@ -44,6 +45,33 @@ const JOBPostSLA = ({ allApiData }) => {
   useEffect(() => {
     getHRSLA(allApiData.HR_Id);
   }, [allApiData.HR_Id]);
+
+  ws.onopen = () => {
+    console.log('WebSocket connection opened');
+  };
+
+  ws.onmessage = (event) => {
+    const newMessage = event.data;
+    if(JSON.parse(newMessage)[0].HrID === allApiData.HR_Id){
+      let NewHRList = JSON.parse(newMessage).map(val=> ({hrID: val.HrID,
+        jobTitle: val.JobTitle,
+        noOfTalents: val.NoOfTalents,
+        requiredTalents:val.RequiredTalents,
+        rowNo :  val.RowNo,
+        slaDate: val.SLADate,
+        slaStatus:val.SLAStatus,
+        stageID:val.StageID,
+        stageName:val.StageName
+      }))
+      sethrSLADetails(NewHRList);
+    }
+
+  };
+
+ ws.onclose = () => {
+    console.log('WebSocket connection closed');
+  };
+
 
   const updateSlaDateHandler = async (paylpoad, setIsLoading) => {
     let result = await hiringRequestDAO.updateSLADateDAO(paylpoad);
