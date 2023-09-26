@@ -39,6 +39,7 @@ const DebriefingHR = ({
 	clientDetail,
 	params,
 	isCloned,
+	addData
 }) => {
 	const {
 		watch,
@@ -92,9 +93,26 @@ const DebriefingHR = ({
 
 	const watchSkills = watch("skills")
 	const watchOtherSkills = watch("otherSkill")
-
+	
+	
 	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
 	const [SkillMemo, setSkillMemo] = useState([])
+
+	useEffect(() => {
+		setValue('aboutCompany', addData?.addHiringRequest?.aboutCompanyDesc);
+		setValue(
+			'requirements',
+			addData?.salesHiringRequest_Details?.requirement,
+		);
+		setValue(
+			'roleAndResponsibilities',
+			addData?.salesHiringRequest_Details?.rolesResponsibilities,
+		);
+		setIsFocusedRole(addData?.salesHiringRequest_Details?.isHrfocused);
+		setGoodSuggestedSkills(addData?.chatGptSkills?.split(","));
+		setAllSuggestedSkills(addData?.chatGptAllSkills?.split(","));
+	}, [addData]);
+
 	useEffect(()=>{
 		const combinedData = [
 			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
@@ -358,6 +376,30 @@ const DebriefingHR = ({
 		}
 		setControlledGoodToHave(_controlledGoodToHave);
 		setValue('goodToHaveSkills',_controlledGoodToHave)
+	}	
+	function testJSON(text) {
+		if (typeof text !== "string") {
+			return false;
+		}
+		try {
+			JSON.parse(text);
+			return true;
+		} catch (error) {
+			return false;
+		}
+	}
+
+	const createListMarkup = (list) => {
+		if(list?.length){
+			  let listText = "<ul class='rolesText'>"
+	
+		list?.forEach((item) => {
+		  listText += `<li>${item}</li>`
+		})
+	
+		return listText + "</ul>";
+		}
+	
 	}
 
 	return (
@@ -384,7 +426,15 @@ const DebriefingHR = ({
 						<div className={DebriefingHRStyle.colMd12}>
 							<TextEditor
 								isControlled={true}
-								controlledValue={JDParsedSkills?.Responsibility || ''}
+								// controlledValue={JDParsedSkills?.Responsibility || ''}
+								controlledValue={ addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
+									?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
+									?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
+									?.rolesResponsibilities :
+									JDParsedSkills?.Responsibility ||
+									(addData?.salesHiringRequest_Details
+										?.rolesResponsibilities )
+								}
 								label={'Roles & Responsibilities'}
 								placeholder={'Enter roles & responsibilities'}
 								required
@@ -432,7 +482,11 @@ const DebriefingHR = ({
 							</div>
 							<TextEditor
 								isControlled={true}
-								controlledValue={JDParsedSkills?.Requirements || ''}
+								// controlledValue={JDParsedSkills?.Requirements || ''}
+								controlledValue={addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
+									JDParsedSkills?.Requirements ||
+									(addData?.salesHiringRequest_Details?.requirement)
+								}
 								label={'Requirements'}
 								placeholder={'Enter Requirements'}
 								setValue={setValue}

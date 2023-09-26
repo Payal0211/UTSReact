@@ -13,6 +13,7 @@ const AddNewHR = () => {
 		addNewHiringRequest: false,
 		debriefingHR: true,
 	});
+	const [addData,setAddData] = useState({});
 
 	const navigateParams = useLocation();
 
@@ -95,6 +96,9 @@ const AddNewHR = () => {
 									companyName={companyName}
 									params={paramsURL}
 									isCloned={navigateParams?.isCloned || false}
+									getHRdetails={getHRdetails}
+									setHRdetails={setHRdetails}
+									setAddData={setAddData}
 								/>
 							),
 						},
@@ -115,6 +119,7 @@ const AddNewHR = () => {
 									getCompanyName={getCompanyName}
 									params={paramsURL}
 									isCloned={navigateParams?.isCloned || false}
+									addData={addData}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,

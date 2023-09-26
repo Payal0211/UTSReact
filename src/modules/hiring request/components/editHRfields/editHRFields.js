@@ -1247,7 +1247,7 @@ const onHandleFocusOut = async (e) => {
   setValue("jdURL",e.target.value);
   setJDURLLink(e.target.value);
   const response = await hiringRequestDAO.extractTextUsingPythonDAO({
-    clientEmail:email,
+    clientEmail:email.trim(),
     psUrl:e.target.value
   })
   
