@@ -1846,6 +1846,7 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.updateSLADateDAO()');
 		}
 	},
+
 	extractTextUsingPythonDAO :async (data) => {
 		try {
 			const extTextResponse = await HiringRequestAPI.extractTextUsingPythonApi(data);
@@ -1875,6 +1876,7 @@ export const hiringRequestDAO = {
 			return errorDebug(error,'hiringRequestDAO.extractTextUsingPythonDAO()');
 		}
 	},
+
 	getAMDetailsDAO:async (data) => {
 		try {
 			const AMRES = await HiringRequestAPI.getAMDetails(data);
@@ -1933,5 +1935,4 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.updateAMNameeDAO()');
 		}
 	},
-
 };
