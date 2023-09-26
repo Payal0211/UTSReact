@@ -254,6 +254,12 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 				formData.append('File', fileData);
 				formData.append('clientemail',filteredMemo[0]?.emailId)
 				let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
+				if(uploadFileResponse.statusCode === 400){
+					setValidation({
+					 ...getValidation,
+					 systemFileUpload: uploadFileResponse?.responseBody,
+				   });
+				 }
 				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 					if (
 						fileData?.type === 'image/png' ||
@@ -835,6 +841,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		if(jdURLLink){unregister('jdExport')}
 	},[jdURLLink, unregister])
 
+
 	useEffect(() => {
 		if (modeOfWork?.value === 'Remote') {
 			unregister(['address', 'city', 'state', 'country', 'postalCode']);
@@ -1030,11 +1037,42 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 	},[DealHRData, currency, setValue])
 
 	useEffect(() => {
-const DID = localStorage.getItem('dealID')
-if(DID){
-	getdealHRdetailsHandler(DID)
-}
+	const DID = localStorage.getItem('dealID')
+	if(DID){
+		getdealHRdetailsHandler(DID)
+	}
 	},[localStorage.getItem('dealID')])
+
+	const onHandleFocusOut = async (e) => {
+		const regex = /\(([^)]+)\)/;
+		const match = watchClientName.match(regex);
+		let email = "";
+		if (match && match.length > 1) {
+		  email = match[1];
+		}
+		setIsLoading(true);		
+		const response = await hiringRequestDAO.extractTextUsingPythonDAO({
+		  clientEmail:email,
+		  psUrl:e.target.value
+		});		
+		setIsLoading(false);		
+		setValue('talentsNumber',response?.responseBody?.details?.addHiringRequest?.noofTalents);
+		setValue('Availability',response?.responseBody?.details?.addHiringRequest?.Availability);		
+		setValue(
+		  "minimumBudget",
+		  response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom
+		);
+		setValue(
+		  "maximumBudget",
+		  response?.responseBody?.details?.salesHiringRequest_Details?.budgetTo
+		);
+		setValue("years", response?.responseBody?.details?.salesHiringRequest_Details?.yearOfExp);
+		setValue("months", response?.responseBody?.details?.salesHiringRequest_Details?.specificMonth);
+		setValue(
+		  "contractDuration",
+		  response?.responseBody?.details?.salesHiringRequest_Details?.durationType
+		);
+	}
 
 	return (
 		<>
@@ -1091,7 +1129,7 @@ if(DID){
 													}}
 													onChange={(clientName) =>
 														setValue('clientName', clientName)
-													}
+													}													
 													placeholder={watchClientName ? watchClientName :"Enter Client Email/Name"}
 													ref={controllerRef}
 												/>
@@ -1351,6 +1389,7 @@ if(DID){
 									register={register}
 									required={!getUploadFileData}
 									errors={errors}
+									onBlurHandler={(e) => onHandleFocusOut(e)}
 									validationSchema={
 										{
 											// pattern: {

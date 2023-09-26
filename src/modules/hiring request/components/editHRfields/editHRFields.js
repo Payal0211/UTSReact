@@ -290,6 +290,12 @@ const EditHRFields = ({
         formData.append("File", fileData);
         formData.append('clientemail',getHRdetails?.contact)
         let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
+        if(uploadFileResponse.statusCode === 400){
+           setValidation({
+            ...getValidation,
+            systemFileUpload: uploadFileResponse?.responseBody,
+          });
+        }
         if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
           if (
             fileData?.type === "image/png" ||
@@ -424,7 +430,6 @@ const EditHRFields = ({
       setValue("NRMargin", response && response?.responseBody?.details?.value);
     }
   }, [setValue]);
-
   const getTimeZonePreference = useCallback(async () => {
     const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO(
       prefRegion && prefRegion?.id
@@ -444,7 +449,6 @@ const EditHRFields = ({
     const howSoonResponse = await MasterDAO.getHowSoonRequestDAO();
     setHowSoon(howSoonResponse && howSoonResponse.responseBody);
   }, []);
-
   const getWorkingMode = useCallback(async () => {
     const workingModeResponse = await MasterDAO.getModeOfWorkDAO();
     setWorkingMode(
@@ -467,7 +471,6 @@ const EditHRFields = ({
       },
     ]);
   }, []);
-
   const getSalesPerson = useCallback(async () => {
     const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
     setSalesPerson(
@@ -539,7 +542,6 @@ const EditHRFields = ({
     },
     [contractDurations, name]
   );
-
 
   const toggleHRDirectPlacement = useCallback((e) => {
     // e.preventDefault();
@@ -1241,15 +1243,57 @@ const onHandleFocusOut = async (e) => {
   if (match && match.length > 1) {
     email = match[1];
   }
+  setIsLoading(true);
+  setValue("jdURL",e.target.value);
+  setJDURLLink(e.target.value);
   const response = await hiringRequestDAO.extractTextUsingPythonDAO({
     clientEmail:email,
     psUrl:e.target.value
   })
-  if (response.statusCode === HTTPStatusCode.OK && response?.responseBody?.statusCode === HttpStatusCode.Ok) {
-    setHRdetails(response?.responseBody?.details);
-  }
-}
   
+  if (response.statusCode === HTTPStatusCode.OK && response?.responseBody?.statusCode === HttpStatusCode.Ok) {
+    let _getHrValues = {...getHRdetails};
+    _getHrValues.addHiringRequest.noofTalents = response?.responseBody?.details?.addHiringRequest?.noofTalents;
+    _getHrValues.addHiringRequest.requestForTalent = response?.responseBody?.details?.addHiringRequest?.requestForTalent;
+    _getHrValues.addHiringRequest.availability = response?.responseBody?.details?.addHiringRequest?.availability;
+    _getHrValues.addHiringRequest.isHiringLimited = response?.responseBody?.details?.addHiringRequest?.isHiringLimited;
+    _getHrValues.addHiringRequest.guid = response?.responseBody?.details?.addHiringRequest?.guid;
+    _getHrValues.addHiringRequest.jdurl = e.target.value;
+    _getHrValues.addHiringRequest.jdfilename = "";
+    _getHrValues.salesHiringRequest_Details.budgetFrom = response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom;
+    _getHrValues.salesHiringRequest_Details.budgetTo = response?.responseBody?.details?.salesHiringRequest_Details?.budgetTo;
+    _getHrValues.salesHiringRequest_Details.timeZoneFromTime = response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime;
+    _getHrValues.salesHiringRequest_Details.timeZoneEndTime = response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime;
+    _getHrValues.salesHiringRequest_Details.currency = response?.responseBody?.details?.salesHiringRequest_Details?.currency;
+    _getHrValues.salesHiringRequest_Details.yearOfExp = response?.responseBody?.details?.salesHiringRequest_Details?.yearOfExp;
+    _getHrValues.salesHiringRequest_Details.specificMonth = response?.responseBody?.details?.salesHiringRequest_Details?.specificMonth;
+    _getHrValues.salesHiringRequest_Details.durationType = response?.responseBody?.details?.salesHiringRequest_Details?.durationType;
+    _getHrValues.salesHiringRequest_Details.requirements = response?.responseBody?.details?.salesHiringRequest_Details?.requirements;
+    _getHrValues.salesHiringRequest_Details.roleAndResponsibilities = response?.responseBody?.details?.salesHiringRequest_Details?.roleAndResponsibilities;
+    _getHrValues.chatGptSkills = response?.responseBody?.details?.chatGptSkills;
+    _getHrValues.chatGptAllSkills = response?.responseBody?.details?.chatGptAllSkills;
+    setValue("jdExport", "");
+    setHRdetails(_getHrValues);
+    setValue("talentsNumber", response?.responseBody?.details?.addHiringRequest?.noofTalents);
+    setValue("availability", response?.responseBody?.details?.addHiringRequest?.availability);
+    setValue(
+      "minimumBudget",
+      response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom
+    );
+    setValue(
+      "maximumBudget",
+      response?.responseBody?.details?.salesHiringRequest_Details?.budgetTo
+    );
+    setValue("years", response?.responseBody?.details?.salesHiringRequest_Details?.yearOfExp);
+    setValue("months", response?.responseBody?.details?.salesHiringRequest_Details?.specificMonth);
+    setValue(
+      "contractDuration",
+      response?.responseBody?.details?.salesHiringRequest_Details?.durationType
+    );
+    setContractDuration(response?.responseBody?.details?.salesHiringRequest_Details?.durationType);
+  }
+  setIsLoading(false);
+}  
   return (
     <div className={HRFieldStyle.hrFieldContainer}>
       {contextHolder}

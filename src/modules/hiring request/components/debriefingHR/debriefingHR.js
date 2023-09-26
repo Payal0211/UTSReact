@@ -67,7 +67,8 @@ const DebriefingHR = ({
 	const [selectedItems, setSelectedItems] = useState([]);
 	const [selectedGoodToHaveItems, setSelectGoodToHaveItems] = useState([]);
 	const [skills, setSkills] = useState([]);
-
+	const [goodSuggestedSkills, setGoodSuggestedSkills] = useState([]);
+	const [allSuggestedSkills,setAllSuggestedSkills] = useState([]);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const getSkills = useCallback(async () => {
 		const response = await MasterDAO.getSkillsRequestDAO();
@@ -338,6 +339,27 @@ const DebriefingHR = ({
 		}
 	};
 
+	const onSelectSkill = (skill) => {
+		let _selected = combinedSkillsMemo.filter((val) => val.value === skill);
+		let _controlledJDParsed = [...controlledJDParsed];		
+		let _index = _controlledJDParsed.findIndex((obj) => obj.id === _selected[0].id);
+		if(_index === -1){
+			_controlledJDParsed.push(_selected[0]);
+		}
+		setControlledJDParsed(_controlledJDParsed);
+		setValue('skills',_controlledJDParsed)		
+	}
+	const onSelectGoodSkill = (skill) => {
+		let _selected = SkillMemo.filter((val) => val.value === skill?.trim());
+		let _controlledGoodToHave = [...controlledGoodToHave];
+		let _index = _controlledGoodToHave.findIndex((obj) => obj.id === _selected[0].id);
+		if(_index === -1){
+			_controlledGoodToHave.push(_selected[0]);
+		}
+		setControlledGoodToHave(_controlledGoodToHave);
+		setValue('goodToHaveSkills',_controlledGoodToHave)
+	}
+
 	return (
 		<div className={DebriefingHRStyle.debriefingHRContainer}>
 			{contextHolder}
@@ -467,6 +489,23 @@ const DebriefingHR = ({
 									errorMsg={'Please enter the skills.'}
 								/>
 							</div>
+
+							<div className="selectFieldBox">
+							{goodSuggestedSkills?.map((skill) => (
+								    //  onClick={() =>
+									// addtopSkillFromSuggestion(skill, top5Skills)
+									// }									
+									<button key={skill} onClick={() => onSelectSkill(skill)}>                      
+										{skill}
+										{/* <img
+										// src={plusImage}                          
+										loading="lazy"
+										alt="star"
+										/> */}
+									</button>									
+								))}
+							</div>
+
 							{isOtherSkillExistMemo && (
 							<div className={DebriefingHRStyle.colMd12}>
 								<HRInputField
@@ -511,6 +550,21 @@ const DebriefingHR = ({
 									errorMsg={'Please enter the skills.'}
 								/>
 						</div>
+						<div className="selectFieldBox">
+						{allSuggestedSkills?.map((skill) => (
+									//  onClick={() =>
+									// addtopSkillFromSuggestion(skill, top5Skills)
+									// }									
+									<button key={skill} onClick={() => onSelectGoodSkill(skill)}>                      
+										{skill}
+										{/* <img
+										// src={plusImage}                          
+										loading="lazy"
+										alt="star"
+										/> */}
+									</button>									
+								))}
+							</div>
 							{/* <div className={DebriefingHRStyle.mb50}>
 							<label
 								style={{
