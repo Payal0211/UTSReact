@@ -187,7 +187,8 @@ export class ClientsAPI {
 	static GET_ALL_CLIENTS_LIST = 'List';
 	static FILTER_LIST = 'FilterList';
 	static VIEW_CLIENT = 'ViewClient';
-
+	static GET_AM_DETAIL = 'GetAMDetails';
+	static UPDATE_AM_FOR_COMPANY = 'UpdateAMForCompany'
 }
 
 export class HiringRequestsAPI {

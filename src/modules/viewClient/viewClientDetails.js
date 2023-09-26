@@ -1,5 +1,5 @@
 import WithLoader from "shared/components/loader/loader";
-import { Button, Table, Tag } from 'antd';
+import { Button, Table, Tag, message } from 'antd';
 // import dealDetailsStyles from './dealDetailsStyle.module.css';
 
 import dealDetailsStyles from './viewClientDetails.module.css';
@@ -13,6 +13,7 @@ import { ReactComponent as DeleteLightSVG } from 'assets/svg/deleteLight.svg';
 import viewClient from 'assets/viewClient.png'
 
 import { ReactComponent as ArrowDownSVG } from 'assets/svg/arrowDown.svg';
+import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 
 import { HTTPStatusCode } from 'constants/network';
 import moment from 'moment';
@@ -23,14 +24,56 @@ import { allClientsConfig } from "modules/hiring request/screens/allClients/allC
 
 function ViewClientDetails() {
 	const [isLoading, setLoading] = useState(false);
+	const [messageAPI, contextHolder] = message.useMessage();
 	const [viewDetails,setViewDetails] = useState({});
 	const {companyID,clientID} = useParams();
 	const [isExpanded, setIsExpanded] = useState(false);
 	const navigate = useNavigate();
+
+
+   const togglePriority = useCallback(
+		async (payload) => {
+			setLoading(true);
+
+			let response = await hiringRequestDAO.setHrPriorityDAO(
+				payload.isNextWeekStarMarked,
+				payload.hRID,
+				payload.person,
+			);
+			if (response.statusCode === HTTPStatusCode.OK) {
+				// const { tempdata, index } = hrUtils.hrTogglePriority(response, viewDetails?.hrList);
+				// setAPIdata([
+				// 	...viewDetails?.hrList.slice(0, index),
+				// 	tempdata,
+				// 	...viewDetails?.hrList.slice(index + 1),
+				// ]);
+				getDataForViewClient();
+				message.success(`priority has been changed.`)
+				setLoading(false);
+			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+				message.error(response.responseBody)
+				setLoading(false);
+			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+				setLoading(false);
+				return navigate(UTSRoutes.LOGINROUTE);
+			} else if (
+				response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+			) {
+				setLoading(false);
+				return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+			} else {
+				setLoading(false);
+				return 'NO DATA FOUND';
+			}
+		},
+		[ messageAPI, navigate],
+	);
+
+
 	const columns = useMemo(
-		() => allClientsConfig.ViewClienttableConfig(),
-		[],
-	); 
+		() => allClientsConfig.ViewClienttableConfig(togglePriority),
+		[]); 
+
 	useEffect(() => {
 		getDataForViewClient();
 	},[]);
@@ -41,6 +84,10 @@ function ViewClientDetails() {
 		setLoading(false);
 		setViewDetails(response?.responseBody);	
 	}
+
+	
+ 
+
     return(
         <WithLoader
 			showLoader={isLoading}
@@ -56,6 +103,7 @@ function ViewClientDetails() {
 				</div>
 
 				<div className={dealDetailsStyles.dealDetailsTitle}>
+				{contextHolder}
 					<h1>
 						{/* <img
 							src={viewClient}
@@ -111,6 +159,12 @@ function ViewClientDetails() {
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Uplers POC</span>
 								{viewDetails?.clientDetails?.uplersPOC ? viewDetails?.clientDetails?.uplersPOC : "NA"}
+							</div>
+						</li>
+						<li>
+							<div className={dealDetailsStyles.topCardItem}>
+								<span>AM Name</span>
+								{viewDetails?.clientDetails?.aM_UserName ? viewDetails?.clientDetails?.aM_UserName : "NA"}
 							</div>
 						</li>
 					</ul>

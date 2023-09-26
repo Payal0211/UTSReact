@@ -25,7 +25,8 @@ const EngagementBillRateAndPayRate = ({
 	talentInfo,
 	closeModal,
 	rateReason,
-	setRateReason
+	setRateReason,
+	activeTab
 }) => {
 	const { TabPane } = Tabs;
 
@@ -366,6 +367,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									type={InputType.TEXT}
 									placeholder="Enter Amount"
 									required={engagementBillAndPayRateTab === '1'}
+									disabled={activeTab !== '1'}
 								/>
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
@@ -383,6 +385,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									required={engagementBillAndPayRateTab === "1"}
 									isError={errors['billRateReason'] && errors['billRateReason']}
 									errorMsg="Please select a reason."
+									disabled={activeTab !== '1'}
 								/>
 							</div>
 							{watch('billRateReason') === "Others" && 
@@ -431,6 +434,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									name="billRateAdditionalComment"
 									type={InputType.TEXT}
 									placeholder="Enter"
+									disabled={activeTab !== '1'}
 								/>
 							</div>
 						</div>
@@ -440,7 +444,9 @@ const nrPercentageBR = useCallback( async(e)=>{
 								// disabled={isLoading}
 								type="submit"
 								onClick={handleSubmit(submitBillRateHandler)}
-								className={allengagementBillAndPayRateStyles.btnPrimary}>
+								className={allengagementBillAndPayRateStyles.btnPrimary}
+								disabled={activeTab !== '1'}
+								>
 								Save
 							</button>
 							<button
@@ -534,6 +540,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									onChangeHandler = {(e)=>{nrPercentagePR(e.target.value);}}
 									placeholder="Enter Amount"
 									required={engagementBillAndPayRateTab === '2'}
+									disabled={activeTab !== '2'}
 								/>
 							</div>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
@@ -551,6 +558,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									required={engagementBillAndPayRateTab === '2'}
 									isError={errors['payRateReason'] && errors['payRateReason']}
 									errorMsg="Please select a reason."
+									disabled={activeTab !== '2'}
 								/>
 
 							</div>
@@ -601,6 +609,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									name="payRateAdditionalComment"
 									type={InputType.TEXT}
 									placeholder="Enter"
+									disabled={activeTab !== '2'}
 								/>
 							</div>
 						</div>
@@ -609,7 +618,9 @@ const nrPercentageBR = useCallback( async(e)=>{
 							<button
 								type="submit"
 								onClick={handleSubmit(submitPayRateHandler)}
-								className={allengagementBillAndPayRateStyles.btnPrimary}>
+								className={allengagementBillAndPayRateStyles.btnPrimary}
+								disabled={activeTab !== '2'}
+								>
 								Save
 							</button>
 							<button

@@ -1845,5 +1845,63 @@ export const hiringRequestDAO = {
 		} catch (error) {
 			return errorDebug(error, 'hiringRequestDAO.updateSLADateDAO()');
 		}
-	}
+	},
+	getAMDetailsDAO:async (data) => {
+		try {
+			const AMRES = await HiringRequestAPI.getAMDetails(data);
+			if (AMRES) {
+				const statusCode = AMRES['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = AMRES.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return AMRES;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return AMRES;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getAMDetailsDAO()');
+		}
+	},
+	updateAMNameeDAO:async (data) => {
+		try {
+			const AMRESPONSE = await HiringRequestAPI.updateAMNameDate(data);
+			if (AMRESPONSE) {
+				const statusCode = AMRESPONSE['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = AMRESPONSE.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return AMRESPONSE;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return AMRESPONSE;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.updateAMNameeDAO()');
+		}
+	},
 };
