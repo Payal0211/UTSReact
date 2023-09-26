@@ -55,6 +55,9 @@ const HRFields = ({
 	interviewDetails,
 	companyName,
 	params,
+	getHRdetails,
+	setHRdetails,
+	setAddData
 }) => {
 	const [userData, setUserData] = useState({});
 
@@ -254,6 +257,12 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 				formData.append('File', fileData);
 				formData.append('clientemail',filteredMemo[0]?.emailId)
 				let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
+				if(uploadFileResponse.statusCode === 400){
+					setValidation({
+					 ...getValidation,
+					 systemFileUpload: uploadFileResponse?.responseBody,
+				   });
+				 }
 				if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
 					if (
 						fileData?.type === 'image/png' ||
@@ -835,6 +844,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		if(jdURLLink){unregister('jdExport')}
 	},[jdURLLink, unregister])
 
+
 	useEffect(() => {
 		if (modeOfWork?.value === 'Remote') {
 			unregister(['address', 'city', 'state', 'country', 'postalCode']);
@@ -1030,11 +1040,67 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 	},[DealHRData, currency, setValue])
 
 	useEffect(() => {
-const DID = localStorage.getItem('dealID')
-if(DID){
-	getdealHRdetailsHandler(DID)
-}
+	const DID = localStorage.getItem('dealID')
+	if(DID){
+		getdealHRdetailsHandler(DID)
+	}
 	},[localStorage.getItem('dealID')])
+
+	const onHandleFocusOut = async (e) => {
+		const regex = /\(([^)]+)\)/;
+		const match = watchClientName.match(regex);
+		let email = "";
+		if (match && match.length > 1) {
+		  email = match[1];
+		}
+		setIsLoading(true);	
+		const response = await hiringRequestDAO.extractTextUsingPythonDAO({
+		  clientEmail:email.trim(),
+		  psUrl:e.target.value
+		});		
+		setHRdetails(response?.responseBody?.details);
+		setAddData(response?.responseBody?.details);
+		setIsLoading(false);	
+		// let _getHrValues = {...getHRdetails};
+		// _getHrValues?.addHiringRequest?.noofTalents = response?.responseBody?.details?.addHiringRequest?.noofTalents;
+		// _getHrValues?.addHiringRequest?.requestForTalent = response?.responseBody?.details?.addHiringRequest?.requestForTalent;
+		// _getHrValues?.addHiringRequest?.availability = response?.responseBody?.details?.addHiringRequest?.availability;
+		// _getHrValues.addHiringRequest.isHiringLimited = response?.responseBody?.details?.addHiringRequest?.isHiringLimited;
+		// _getHrValues.addHiringRequest.guid = response?.responseBody?.details?.addHiringRequest?.guid;
+		// _getHrValues.addHiringRequest.jdurl = e.target.value;
+		// _getHrValues.addHiringRequest.jdfilename = "";
+		// _getHrValues.salesHiringRequest_Details.budgetFrom = response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom;
+		// _getHrValues.salesHiringRequest_Details.budgetTo = response?.responseBody?.details?.salesHiringRequest_Details?.budgetTo;
+		// _getHrValues.salesHiringRequest_Details.timeZoneFromTime = response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime;
+		// _getHrValues.salesHiringRequest_Details.timeZoneEndTime = response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime;
+		// _getHrValues.salesHiringRequest_Details.currency = response?.responseBody?.details?.salesHiringRequest_Details?.currency;
+		// _getHrValues.salesHiringRequest_Details.yearOfExp = response?.responseBody?.details?.salesHiringRequest_Details?.yearOfExp;
+		// _getHrValues.salesHiringRequest_Details.specificMonth = response?.responseBody?.details?.salesHiringRequest_Details?.specificMonth;
+		// _getHrValues.salesHiringRequest_Details.durationType = response?.responseBody?.details?.salesHiringRequest_Details?.durationType;
+		// _getHrValues?.salesHiringRequest_Details?.requirements = response?.responseBody?.details?.salesHiringRequest_Details?.requirements;
+		// _getHrValues?.salesHiringRequest_Details?.roleAndResponsibilities = response?.responseBody?.details?.salesHiringRequest_Details?.roleAndResponsibilities;
+		// _getHrValues?.chatGptSkills = response?.responseBody?.details?.chatGptSkills;
+		// _getHrValues?.chatGptAllSkills = response?.responseBody?.details?.chatGptAllSkills;
+		setValue("jdExport", "");
+		
+		setValue('talentsNumber',response?.responseBody?.details?.addHiringRequest?.noofTalents);
+		setValue('Availability',response?.responseBody?.details?.addHiringRequest?.Availability);		
+		setValue(
+		  "minimumBudget",
+		  response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom
+		);
+		setValue(
+		  "maximumBudget",
+		  response?.responseBody?.details?.salesHiringRequest_Details?.budgetTo
+		);
+		setValue("years", response?.responseBody?.details?.salesHiringRequest_Details?.yearOfExp);
+		setValue("months", response?.responseBody?.details?.salesHiringRequest_Details?.specificMonth);
+		setValue(
+		  "contractDuration",
+		  response?.responseBody?.details?.salesHiringRequest_Details?.durationType
+		);
+		
+	}
 
 	return (
 		<>
@@ -1091,7 +1157,7 @@ if(DID){
 													}}
 													onChange={(clientName) =>
 														setValue('clientName', clientName)
-													}
+													}													
 													placeholder={watchClientName ? watchClientName :"Enter Client Email/Name"}
 													ref={controllerRef}
 												/>
@@ -1351,6 +1417,7 @@ if(DID){
 									register={register}
 									required={!getUploadFileData}
 									errors={errors}
+									onBlurHandler={(e) => onHandleFocusOut(e)}
 									validationSchema={
 										{
 											// pattern: {

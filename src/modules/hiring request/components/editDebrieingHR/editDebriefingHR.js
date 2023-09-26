@@ -63,7 +63,8 @@ const EditDebriefingHR = ({
 	const [selectedItems, setSelectedItems] = useState([]);
 	const [selectedGoodToHaveItems, setSelectGoodToHaveItems] = useState([]);
 	const [skills, setSkills] = useState([]);
-
+	const [goodSuggestedSkills, setGoodSuggestedSkills] = useState([]);
+	const[allSuggestedSkills,setAllSuggestedSkills] = useState([]);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const getSkills = useCallback(async (ID) => {
 		const response = await MasterDAO.getHRSkillsRequestDAO(ID);
@@ -83,7 +84,12 @@ const EditDebriefingHR = ({
 		setValue('goodToHaveSkills',getHRdetails?.allSkillmulticheckbox?.map((item) => ({id:item?.id, value:item?.text})))
 	},[getHRdetails?.allSkillmulticheckbox,getHRdetails?.skillmulticheckbox,setValue])
 
-
+	useEffect(() => {
+		if(getHRdetails){
+			setGoodSuggestedSkills(getHRdetails?.chatGptSkills?.split(","));
+			setAllSuggestedSkills(getHRdetails?.chatGptAllSkills?.split(","));
+		}
+	},[getHRdetails]);
 	/* const combinedSkillsMemo = useMemo(
 		() => [
 			...skills,
@@ -152,6 +158,28 @@ const EditDebriefingHR = ({
 			})),
 		);
 	}, [getHRdetails?.skillmulticheckbox, setValue]);
+
+	const onSelectSkill = (skill) => {
+		let _selected = combinedSkillsMemo.filter((val) => val.value === skill);
+		let _controlledJDParsed = [...controlledJDParsed];		
+		let _index = _controlledJDParsed.findIndex((obj) => obj.id === _selected[0].id);
+		if(_index === -1){
+			_controlledJDParsed.push(_selected[0]);
+		}
+		setControlledJDParsed(_controlledJDParsed);
+		setValue('skills',_controlledJDParsed)		
+	}
+	const onSelectGoodSkill = (skill) => {
+		let _selected = SkillMemo.filter((val) => val.value === skill?.trim());
+		let _controlledGoodToHave = [...controlledGoodToHave];
+		let _index = _controlledGoodToHave.findIndex((obj) => obj.id === _selected[0].id);
+		if(_index === -1){
+			_controlledGoodToHave.push(_selected[0]);
+		}
+		setControlledGoodToHave(_controlledGoodToHave);
+		setValue('goodToHaveSkills',_controlledGoodToHave)
+	}
+
 
 	const getOtherSkillsRequest = useCallback(
 		async (data) => {
@@ -225,7 +253,6 @@ const EditDebriefingHR = ({
 
 	const getTalentRole = useCallback(async () => {
 		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
-
 		setTalentRole(talentRole && talentRole.responseBody);
 	}, []);
 
@@ -414,7 +441,7 @@ const EditDebriefingHR = ({
 		return listText + "</ul>";
 		}
 	
-	  }
+	}
 
 
 	return (
@@ -510,21 +537,21 @@ const EditDebriefingHR = ({
 									required
 								/>
 								<div className={DebriefingHRStyle.mb50}>
-											<HRSelectField
-												controlledValue={controlledRoleValue}
-												setControlledValue={setControlledRoleValue}
-												isControlled={true}
-												mode={'id/value'}
-												searchable={true}
-												setValue={setValue}
-												register={register}
-												label={'Hiring Request Role'}
-												options={talentRole && talentRole}
-												name="role"
-												isError={errors['role'] && errors['role']}
-												required
-												errorMsg={'Please select hiring request role'}
-											/>
+									<HRSelectField
+										controlledValue={controlledRoleValue}
+										setControlledValue={setControlledRoleValue}
+										isControlled={true}
+										mode={'id/value'}
+										searchable={true}
+										setValue={setValue}
+										register={register}
+										label={'Hiring Request Role'}
+										options={talentRole && talentRole}
+										name="role"
+										isError={errors['role'] && errors['role']}
+										required
+										errorMsg={'Please select hiring request role'}
+									/>
 								</div>
 								<div className={DebriefingHRStyle.mb50}>
 									<HRInputField
@@ -539,7 +566,7 @@ const EditDebriefingHR = ({
 										placeholder="Enter title"
 										required
 									/>	
-							</div>	
+								</div>	
 								
 								<div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
@@ -559,26 +586,44 @@ const EditDebriefingHR = ({
 										errorMsg={'Please enter the skills.'}
 									/>
 								</div>
-								{isOtherSkillExistMemo && (
-							<div className={DebriefingHRStyle.colMd12}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: 'please enter the other skills.',
-										pattern: {
-											value: /^((?!other).)*$/,
-											message: 'Please remove "other" keyword.',
-										},
-									}}
-									label="Other Skills"
-									name="otherSkill"
-									type={InputType.TEXT}
-									placeholder="Enter other skill"
-									maxLength={50}
-									required
-								/>
+								<div className="selectFieldBox">
+								{goodSuggestedSkills?.map((skill) => (
+								    //  onClick={() =>
+									// addtopSkillFromSuggestion(skill, top5Skills)
+									// }									
+									<button key={skill} className={DebriefingHRStyle.mb50} onClick={() => onSelectSkill(skill)}>                      
+										{skill}
+										{/* <img
+										// src={plusImage}                          
+										loading="lazy"
+										alt="star"
+										/> */}
+									</button>									
+								))}
 							</div>
+								{isOtherSkillExistMemo && (
+									<>
+									<div className={DebriefingHRStyle.colMd12}>
+									<HRInputField
+										register={register}
+										errors={errors}
+										validationSchema={{
+											required: 'please enter the other skills.',
+											pattern: {
+												value: /^((?!other).)*$/,
+												message: 'Please remove "other" keyword.',
+											},
+										}}
+										label="Other Skills"
+										name="otherSkill"
+										type={InputType.TEXT}
+										placeholder="Enter other skill"
+										maxLength={50}
+										required
+									/>
+								</div>									
+							</>
+														
 						)}
 
 						<div className={DebriefingHRStyle.mb50}>
@@ -598,6 +643,21 @@ const EditDebriefingHR = ({
 										required
 										errorMsg={'Please enter the skills.'}
 									/>
+								</div>
+								<div className="selectFieldBox">
+								{allSuggestedSkills?.map((skill) => (
+									//  onClick={() =>
+									// addtopSkillFromSuggestion(skill, top5Skills)
+									// }									
+									<button key={skill} onClick={() => onSelectGoodSkill(skill)}>                      
+										{skill}
+										{/* <img
+										// src={plusImage}                          
+										loading="lazy"
+										alt="star"
+										/> */}
+									</button>									
+								))}
 								</div>
 								{/* <div className={DebriefingHRStyle.mb50}>
 							<label
