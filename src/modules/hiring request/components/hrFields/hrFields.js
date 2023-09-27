@@ -158,7 +158,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 	}); */
 
 	const watchClientName = watch('clientName');
-
+	const _endTime  = watch('endTime');
 	let filteredMemo = useMemo(() => {
 		let filteredData = getClientNameSuggestion?.filter(
 			(item) => item?.value === watchClientName,
@@ -1060,31 +1060,10 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		});		
 		setHRdetails(response?.responseBody?.details);
 		setAddData(response?.responseBody?.details);
-		setIsLoading(false);	
-		// let _getHrValues = {...getHRdetails};
-		// _getHrValues?.addHiringRequest?.noofTalents = response?.responseBody?.details?.addHiringRequest?.noofTalents;
-		// _getHrValues?.addHiringRequest?.requestForTalent = response?.responseBody?.details?.addHiringRequest?.requestForTalent;
-		// _getHrValues?.addHiringRequest?.availability = response?.responseBody?.details?.addHiringRequest?.availability;
-		// _getHrValues.addHiringRequest.isHiringLimited = response?.responseBody?.details?.addHiringRequest?.isHiringLimited;
-		// _getHrValues.addHiringRequest.guid = response?.responseBody?.details?.addHiringRequest?.guid;
-		// _getHrValues.addHiringRequest.jdurl = e.target.value;
-		// _getHrValues.addHiringRequest.jdfilename = "";
-		// _getHrValues.salesHiringRequest_Details.budgetFrom = response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom;
-		// _getHrValues.salesHiringRequest_Details.budgetTo = response?.responseBody?.details?.salesHiringRequest_Details?.budgetTo;
-		// _getHrValues.salesHiringRequest_Details.timeZoneFromTime = response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime;
-		// _getHrValues.salesHiringRequest_Details.timeZoneEndTime = response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime;
-		// _getHrValues.salesHiringRequest_Details.currency = response?.responseBody?.details?.salesHiringRequest_Details?.currency;
-		// _getHrValues.salesHiringRequest_Details.yearOfExp = response?.responseBody?.details?.salesHiringRequest_Details?.yearOfExp;
-		// _getHrValues.salesHiringRequest_Details.specificMonth = response?.responseBody?.details?.salesHiringRequest_Details?.specificMonth;
-		// _getHrValues.salesHiringRequest_Details.durationType = response?.responseBody?.details?.salesHiringRequest_Details?.durationType;
-		// _getHrValues?.salesHiringRequest_Details?.requirements = response?.responseBody?.details?.salesHiringRequest_Details?.requirements;
-		// _getHrValues?.salesHiringRequest_Details?.roleAndResponsibilities = response?.responseBody?.details?.salesHiringRequest_Details?.roleAndResponsibilities;
-		// _getHrValues?.chatGptSkills = response?.responseBody?.details?.chatGptSkills;
-		// _getHrValues?.chatGptAllSkills = response?.responseBody?.details?.chatGptAllSkills;
-		setValue("jdExport", "");
-		
+		setIsLoading(false);		
+		setValue("jdExport", "");		
 		setValue('talentsNumber',response?.responseBody?.details?.addHiringRequest?.noofTalents);
-		setValue('Availability',response?.responseBody?.details?.addHiringRequest?.Availability);		
+		setValue('availability',response?.responseBody?.details?.addHiringRequest?.availability);		
 		setValue(
 		  "minimumBudget",
 		  response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom
@@ -1099,9 +1078,20 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		  "contractDuration",
 		  response?.responseBody?.details?.salesHiringRequest_Details?.durationType
 		);
-		
+		setValue('currency', response?.responseBody?.details?.salesHiringRequest_Details?.currency);
+		const findWorkingMode = workingMode.filter(
+			(item) => item?.value === response?.responseBody?.details?.modeOfWorkingId
+		);
+		setValue("workingMode", findWorkingMode[0]);
+		// setControlledWorkingValue(findWorkingMode[0]?.value);
+		setControlledCurrencyValue(response?.responseBody?.details?.salesHiringRequest_Details?.currency);
+		setControlledFromTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
+		setControlledEndTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
+		setValue("fromTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
+		setValue("endTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
+		setValue('budget',"2");
 	}
-
+	
 	return (
 		<>
 			{contextHolder}
@@ -1958,10 +1948,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 									required
 								/>
 							</div>
-						</div>
-
-						
-
+						</div>			
 					</form>
 				</div>
 				<Divider />

@@ -1272,6 +1272,12 @@ const onHandleFocusOut = async (e) => {
     _getHrValues.salesHiringRequest_Details.roleAndResponsibilities = response?.responseBody?.details?.salesHiringRequest_Details?.roleAndResponsibilities;
     _getHrValues.chatGptSkills = response?.responseBody?.details?.chatGptSkills;
     _getHrValues.chatGptAllSkills = response?.responseBody?.details?.chatGptAllSkills;
+    
+    const findWorkingMode = workingMode.filter(
+      (item) => item?.value === response?.responseBody?.details?.modeOfWorkingId
+    );
+    setValue("workingMode", findWorkingMode[0]);
+    setControlledWorkingValue(findWorkingMode[0]?.value);
     setValue("jdExport", "");
     setHRdetails(_getHrValues);
     setValue("talentsNumber", response?.responseBody?.details?.addHiringRequest?.noofTalents);
@@ -1291,6 +1297,12 @@ const onHandleFocusOut = async (e) => {
       response?.responseBody?.details?.salesHiringRequest_Details?.durationType
     );
     setContractDuration(response?.responseBody?.details?.salesHiringRequest_Details?.durationType);
+    setControlledCurrencyValue(response?.responseBody?.details?.salesHiringRequest_Details?.currency);
+		setControlledFromTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
+		setControlledEndTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
+		setValue("fromTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
+		setValue("endTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
+    setValue('budget',"2");
   }
   setIsLoading(false);
 }  
