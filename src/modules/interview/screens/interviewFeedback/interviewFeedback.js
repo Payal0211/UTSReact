@@ -44,6 +44,7 @@ const InterviewFeedback = ({
 	const [isClientNotification, setClientNotification] = useState(false);
 	const onChange = (e) => {
 		if (e.target.value === 'AnotherRound') setAnotherRound(true);
+		if (e.target.value !== 'AnotherRound') setAnotherRound(false);
 		setRadioValue1(e.target.value);
 	};
 	const [isLoading, setIsLoading] = useState(false);

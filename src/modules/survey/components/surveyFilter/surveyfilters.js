@@ -20,7 +20,8 @@ const SurveyFilters = ({
 	setTableFilteredState,
 	filtersType,
 	getHTMLFilter,
-	clearFilters
+	clearFilters,
+	filtersList
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -96,72 +97,100 @@ const SurveyFilters = ({
 		[appliedFilter, checkedState, setFilteredTagLength],
 	);
 
-	// const filteredTags = useMemo(() => {
-	// 	if (appliedFilter.size > 0) {
-	// 		return Array.from(appliedFilter?.values()).map((item) => {
-	// 			const splittedTags = item?.value.split(',');
-	// 			const splittedIDs = item?.id.split(',');
-	// 			if (splittedTags.length > 0) {
-	// 				return splittedTags?.map((splittedItem, index) => {
-	// 					return (
-	// 						<Tag
-	// 							key={`${item.filterType}_${splittedIDs[index]}`}
-	// 							closable={true}
-	// 							onClose={(e) => {
-	// 								e.preventDefault();
-	// 								handleAppliedFilters(false, {
-	// 									filterType: item?.filterType,
-	// 									value: splittedItem,
-	// 									id: splittedIDs[index],
-	// 								});
-	// 							}}
-	// 							style={{
-	// 								display: 'flex',
-	// 								justifyContent: 'space-around',
-	// 								alignItems: 'center',
-	// 								backgroundColor: `var(--color-sunlight)`,
-	// 								border: 'none',
-	// 								borderRadius: '10px',
-	// 								fontSize: '.8rem',
-	// 								margin: '10px 10px 10px 0',
-	// 								fontWeight: '600',
-	// 								padding: '10px 20px',
-	// 							}}>
-	// 							{splittedItem}&nbsp;
-	// 						</Tag>
-	// 					);
-	// 				});
-	// 			}
-	// 			return (
-	// 				<Tag
-	// 					key={`${item.filterType}_${item?.id}`}
-	// 					closable={true}
-	// 					onClose={(e) => {
-	// 						e.preventDefault();
-	// 						handleAppliedFilters(false, {
-	// 							filterType: item?.filterType,
-	// 							value: item.value,
-	// 							id: item.id,
-	// 						});
-	// 					}}
-	// 					style={{
-	// 						display: 'flex',
-	// 						justifyContent: 'space-around',
-	// 						alignItems: 'center',
-	// 						backgroundColor: `var(--color-sunlight)`,
-	// 						border: 'none',
-	// 						borderRadius: '10px',
-	// 						fontSize: '.8rem',
-	// 						margin: '10px 10px 10px 0',
-	// 						fontWeight: '600',
-	// 						padding: '10px 20px',
-	// 					}}>
-	// 					{item?.value}&nbsp;
-	// 				</Tag>
-	// 			);
-	// 		});
-	// 	}
-	// }, [appliedFilter, handleAppliedFilters]);
+	const filteredTags = useMemo(() => {
+		if (appliedFilter.size > 0) {
+			return Array.from(appliedFilter?.values()).map((item) => {
+				const splittedTags = item?.value.split(',');
+				const splittedIDs = item?.id.split(',');			
+				if (splittedTags.length > 0) {
+					return splittedTags?.map((splittedItem, index) => {
+						if(item.filterType=== 'options'){
+							let optObj = filtersList.filter(item => item.value === splittedItem)[0] 
+							return <Tag
+								key={`${item.filterType}_${splittedIDs[index]}`}
+								closable={true}
+								onClose={(e) => {
+									e.preventDefault();
+									handleAppliedFilters(false, {
+										filterType: item?.filterType,
+										value: splittedItem,
+										id: splittedIDs[index],
+									});
+								}}
+								style={{
+									display: 'flex',
+									justifyContent: 'space-around',
+									alignItems: 'center',
+									backgroundColor: `var(--color-sunlight)`,
+									border: 'none',
+									borderRadius: '10px',
+									fontSize: '.8rem',
+									margin: '10px 10px 10px 0',
+									fontWeight: '600',
+									padding: '10px 20px',
+								}}>
+								{optObj.label}&nbsp;
+							</Tag>
+						}
+						return (
+							<Tag
+								key={`${item.filterType}_${splittedIDs[index]}`}
+								closable={true}
+								onClose={(e) => {
+									e.preventDefault();
+									handleAppliedFilters(false, {
+										filterType: item?.filterType,
+										value: splittedItem,
+										id: splittedIDs[index],
+									});
+								}}
+								style={{
+									display: 'flex',
+									justifyContent: 'space-around',
+									alignItems: 'center',
+									backgroundColor: `var(--color-sunlight)`,
+									border: 'none',
+									borderRadius: '10px',
+									fontSize: '.8rem',
+									margin: '10px 10px 10px 0',
+									fontWeight: '600',
+									padding: '10px 20px',
+								}}>
+								{splittedItem}&nbsp;
+							</Tag>
+						);
+					});
+				}
+				return (
+					<Tag
+						key={`${item.filterType}_${item?.id}`}
+						closable={true}
+						onClose={(e) => {
+							e.preventDefault();
+							handleAppliedFilters(false, {
+								filterType: item?.filterType,
+								value: item.value,
+								id: item.id,
+							});
+						}}
+						style={{
+							display: 'flex',
+							justifyContent: 'space-around',
+							alignItems: 'center',
+							backgroundColor: `var(--color-sunlight)`,
+							border: 'none',
+							borderRadius: '10px',
+							fontSize: '.8rem',
+							margin: '10px 10px 10px 0',
+							fontWeight: '600',
+							padding: '10px 20px',
+						}}>
+						{item?.value}&nbsp;
+					</Tag>
+				);
+			});
+		}
+	}, [appliedFilter, handleAppliedFilters]);
 
 	
 	const handleFilters = useCallback(() => {
@@ -347,7 +376,7 @@ const SurveyFilters = ({
 						<>
 							<span className={surveyFilterStyle.label}>Filters</span>
 							<div className={surveyFilterStyle.filtersChips}>
-								{/* {filteredTags} */}
+								{filteredTags}
 							</div>
 							<div className={surveyFilterStyle.filtersListType}>
 								{filtersType.map((item, index) => {
