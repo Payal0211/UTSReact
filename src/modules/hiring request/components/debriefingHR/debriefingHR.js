@@ -682,7 +682,7 @@ const DebriefingHR = ({
 					</div>
 				)}
 			</WithLoader>
-			<LogoLoader visible={isLoading} />
+			{/* <LogoLoader visible={isLoading} /> */}
 		</div>
 	);
 };

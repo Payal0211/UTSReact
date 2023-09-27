@@ -717,7 +717,7 @@ const EditDebriefingHR = ({
 					</div>
 				</div>
 			</WithLoader>
-			<LogoLoader visible={isLoading} />
+			{/* <LogoLoader visible={isLoading} /> */}
 		</>
 	);
 };
