@@ -655,7 +655,10 @@ const DebriefingHR = ({
 					setValue={setValue}
 					register={register}
 					watch={watch}
-					interviewDetails={interviewDetails}
+					interviewDetails={{fullName:getHRdetails.interviewerFullName
+						,emailId:getHRdetails.interviewerEmail
+						,linkedin:getHRdetails.interviewerLinkedin,designation:getHRdetails.interviewerDesignation
+					}}
 					fields={fields}
 					getHRdetails={getHRdetails}
 				/>
