@@ -710,6 +710,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 						getHTMLFilter={getHTMLFilter}
                         filtersType={clientHappinessSurveyConfig.clientSurveyFilterTypeConfig(filtersList && filtersList)}
 						clearFilters={clearFilters}
+                        filtersList={filtersList}
                         onRemoveSurveyFilters={onRemoveSurveyFilters}
                         setAppliedFilters={setAppliedFilters}
 						appliedFilter={appliedFilter}

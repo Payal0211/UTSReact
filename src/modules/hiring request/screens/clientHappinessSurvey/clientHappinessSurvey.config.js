@@ -166,6 +166,12 @@ export const clientHappinessSurveyConfig = {
 				width: '250px',
 			},
 			{
+				title: 'Testimonial Options',
+				dataIndex: 'testimonialOptions',
+				key: 'testimonialOptions',
+				width: '250px',
+			},
+			{
 				title: 'Comments',
 				dataIndex: 'comments',
 				key: 'comments',
