@@ -23,7 +23,8 @@ const HRSelectField = ({
 	placeholder,
 	isControlledBoolean,
 	isValue,
-	extraAction
+	extraAction,
+	setOptions
 }) => {
 	const getChangeHandlerWithValue = (value, option) => {
 		if (mode === 'multiple') {
@@ -36,7 +37,7 @@ const HRSelectField = ({
 			);
 
 			isControlled && setControlledValue(option);
-		} else if (mode === 'id/value') {
+		} else if (mode === 'id/value') {			
 			setValue(name, {
 				id: option.id || option.text,
 				value: option.value,
@@ -49,7 +50,29 @@ const HRSelectField = ({
 		} else if (mode === 'id') {
 			setValue(name, option.id);
 			isControlled && setControlledValue(option.value);
-		} else {
+		} else if(mode === 'tags'){						
+			if(Object.keys(option[value.length-1]).length>0){
+				setValue(name,option.map((item) => ({
+					id: item?.id || item?.text || "0",
+					value: item?.value,
+				})),);				
+			}else{							
+				setValue(name,option.map((item) => ({
+					id: "0",
+					value: item?.value,
+				})),);
+				option[value.length - 1] = { ...option[value.length - 1], id: "0" };
+				option[value.length - 1] = { ...option[value.length - 1], value: value[value.length - 1] };
+				let _opt = [...options];
+				let obj = {};
+				obj.id = "0";
+				obj.value = value[value.length - 1];
+				_opt.push(obj);
+				setOptions(_opt);
+			}		
+			isControlled && setControlledValue(option);			
+		}
+		else {
 			setValue(name, option.id || option?.text);
 		}
 	};
