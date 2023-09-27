@@ -92,8 +92,7 @@ const DebriefingHR = ({
 	// }, [JDParsedSkills, selectedItems, skills]);
 
 	const watchSkills = watch("skills")
-	const watchOtherSkills = watch("otherSkill")
-	
+	const watchOtherSkills = watch("otherSkill")	
 	
 	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
 	const [SkillMemo, setSkillMemo] = useState([])
@@ -111,6 +110,7 @@ const DebriefingHR = ({
 		setIsFocusedRole(addData?.salesHiringRequest_Details?.isHrfocused);
 		setGoodSuggestedSkills(addData?.chatGptSkills?.split(","));
 		setAllSuggestedSkills(addData?.chatGptAllSkills?.split(","));
+		setValue('role',addData?.addHiringRequest?.requestForTalent);
 	}, [addData]);
 
 	useEffect(()=>{
@@ -530,13 +530,14 @@ const DebriefingHR = ({
 									isControlled={true}
 									controlledValue={controlledJDParsed}
 									setControlledValue={setControlledJDParsed}
-									mode="multiple"
+									mode="tags"
 									setValue={setValue}
 									register={register}
 									label={'Must have Skills'}
 									placeholder="Type skills"
 									onChange={setSelectedItems}
 									options={combinedSkillsMemo}
+									setOptions={setCombinedSkillsMemo}
 									name="skills"
 									isError={errors['skills'] && errors['skills']}
 									required
@@ -591,13 +592,15 @@ const DebriefingHR = ({
 									isControlled={true}
 									controlledValue={controlledGoodToHave}
 									setControlledValue={setControlledGoodToHave}
-									mode="multiple"
+									// mode="multiple"
+									mode="tags"
 									setValue={setValue}
 									register={register}
 									label={'Good to have Skills'}
 									placeholder="Type skills"
 									onChange={setSelectGoodToHaveItems}
 									options={SkillMemo}
+									setOptions={setSkillMemo}
 									name="goodToHaveSkills"
 									isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
 									required
@@ -655,7 +658,10 @@ const DebriefingHR = ({
 					setValue={setValue}
 					register={register}
 					watch={watch}
-					interviewDetails={interviewDetails}
+					interviewDetails={{fullName:getHRdetails.interviewerFullName
+						,emailId:getHRdetails.interviewerEmail
+						,linkedin:getHRdetails.interviewerLinkedin,designation:getHRdetails.interviewerDesignation
+					}}
 					fields={fields}
 					getHRdetails={getHRdetails}
 				/>

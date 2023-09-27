@@ -551,7 +551,7 @@ const AddInterviewer = ({
 					<div className={AddInterviewerStyle.row}>
 						<div className={AddInterviewerStyle.colMd6}>
 							<HRInputField
-								disabled={!_isNull(interviewDetails)}
+								// disabled={!_isNull(interviewDetails.fullName)}
 								register={register}
 								label="Interviewer Full Name"
 								name="interviewerFullName"
@@ -567,7 +567,7 @@ const AddInterviewer = ({
 
 						<div className={AddInterviewerStyle.colMd6}>
 							<HRInputField
-								disabled={!_isNull(interviewDetails)}
+								// disabled={!_isNull(interviewDetails.emailId)}
 								register={register}
 								label="Interviewer Email"
 								name="interviewerEmail"
@@ -588,7 +588,7 @@ const AddInterviewer = ({
 					<div className={AddInterviewerStyle.row}>
 						<div className={AddInterviewerStyle.colMd6}>
 							<HRInputField
-								disabled={!_isNull(interviewDetails)}
+								// disabled={!_isNull(interviewDetails.linkedin)}
 								register={register}
 								label="Interviewer Linkedin"
 								name="interviewerLinkedin"
@@ -608,7 +608,7 @@ const AddInterviewer = ({
 
 						<div className={AddInterviewerStyle.colMd6}>
 							<HRInputField
-								disabled={!_isNull(interviewDetails)}
+								// disabled={!_isNull(interviewDetails.designation)}
 								required
 								errors={errors}
 								validationSchema={{

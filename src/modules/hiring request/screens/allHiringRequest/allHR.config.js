@@ -336,8 +336,8 @@ export const allHRConfig = {
 						group: null,
 						selected: false,
 						statusCode: HiringRequestHRStatus.HR_ACCEPTED,
-						label: 'HR Aceepted',
-						value: 'HR Aceepted',
+						label: 'HR Accepted',
+						value: 'HR Accepted',
 						text: HiringRequestHRStatus.HR_ACCEPTED.toString(),
 					},
 					{

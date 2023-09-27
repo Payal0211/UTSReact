@@ -124,7 +124,6 @@ const EditDebriefingHR = ({
 		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed.map(s=> s.value).includes(o.value)))
 		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave.map(s=> s.value).includes(o.value)))
 	},[JDParsedSkills, controlledJDParsed, skills,controlledGoodToHave])
-
 	// const combinedSkillsMemo = useMemo(() => {
 	// 	const combinedData = [
 	// 		JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
@@ -262,6 +261,7 @@ const EditDebriefingHR = ({
 
 	useEffect(() => {		
 		setValue('hrTitle', getHRdetails?.addHiringRequest?.requestForTalent);
+		setValue('role',getHRdetails?.addHiringRequest?.requestForTalent);	
 	},[
 		getHRdetails?.addHiringRequest?.requestForTalent,setValue
 	])
@@ -573,13 +573,15 @@ const EditDebriefingHR = ({
 										isControlled={true}
 										controlledValue={controlledJDParsed}
 										setControlledValue={setControlledJDParsed}
-										mode="multiple"
+										// mode="multiple"
+										mode="tags"
 										setValue={setValue}
 										register={register}
 										label={'Must have Skills'}
 										placeholder="Type skills" 
 										onChange={setSelectedItems}
 										options={combinedSkillsMemo}
+										setOptions = {setCombinedSkillsMemo}
 										name="skills"
 										isError={errors['skills'] && errors['skills']}
 										required
@@ -631,13 +633,15 @@ const EditDebriefingHR = ({
 										isControlled={true}
 										controlledValue={controlledGoodToHave}
 										setControlledValue={setControlledGoodToHave}
-										mode="multiple"
+										// mode="multiple"
+										mode="tags"
 										setValue={setValue}
 										register={register}
 										label={'Good to have Skills'}
 										placeholder="Type skills"
 										onChange={setSelectGoodToHaveItems}
 										options={SkillMemo}
+										setOptions = {setSkillMemo}
 										name="goodToHaveSkills"
 										isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
 										required
