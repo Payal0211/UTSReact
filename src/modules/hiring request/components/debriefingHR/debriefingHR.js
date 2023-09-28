@@ -17,6 +17,7 @@ import SpinLoader from 'shared/components/spinLoader/spinLoader';
 import { _isNull } from 'shared/utils/basic_utils';
 import LogoLoader from 'shared/components/loader/logoLoader';
 import { ReactComponent as FocusRole } from 'assets/svg/FocusRole.svg';
+import plusSkill from "../../../../assets/svg/plusSkill.svg";
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -543,23 +544,12 @@ const DebriefingHR = ({
 									required
 									errorMsg={'Please enter the skills.'}
 								/>
-							</div>
-
-							<div className="selectFieldBox">
-							{goodSuggestedSkills?.map((skill) => (
-								    //  onClick={() =>
-									// addtopSkillFromSuggestion(skill, top5Skills)
-									// }									
-									<button key={skill} onClick={() => onSelectSkill(skill)}>                      
-										{skill}
-										{/* <img
-										// src={plusImage}                          
-										loading="lazy"
-										alt="star"
-										/> */}
-									</button>									
-								))}
-							</div>
+								<ul className={DebriefingHRStyle.selectFieldBox}>
+									{goodSuggestedSkills?.map((skill) => (																	
+										<li key={skill} onClick={() => onSelectSkill(skill)}><span>{skill}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
+									))}	
+								</ul>
+							</div>							
 
 							{isOtherSkillExistMemo && (
 							<div className={DebriefingHRStyle.colMd12}>
