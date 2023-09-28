@@ -1544,7 +1544,7 @@ const onHandleFocusOut = async (e) => {
                     />
                   ) : (
                     <div className={HRFieldStyle.uploadedJDWrap}>
-                      <label>Job Description</label>
+                      <label>Job Description *</label>
                       <div className={HRFieldStyle.uploadedJDName}>
                         {getUploadFileData}{" "}
                         <CloseSVG
