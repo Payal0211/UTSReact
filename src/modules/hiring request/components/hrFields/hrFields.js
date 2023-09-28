@@ -1363,7 +1363,7 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 									/>
 								) : (
 									<div className={HRFieldStyle.uploadedJDWrap}>
-										<label>Job Description (PDF) *</label>
+										<label>Job Description *</label>
 										<div className={HRFieldStyle.uploadedJDName}>
 											{getUploadFileData}{' '}
 											<CloseSVG
