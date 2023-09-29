@@ -56,19 +56,21 @@ const HRSelectField = ({
 					id: item?.id || item?.text || "0",
 					value: item?.value,
 				})),);				
-			}else{							
-				setValue(name,option.map((item) => ({
-					id: "0",
-					value: item?.value,
-				})),);
-				option[value.length - 1] = { ...option[value.length - 1], id: "0" };
-				option[value.length - 1] = { ...option[value.length - 1], value: value[value.length - 1] };
-				let _opt = [...options];
-				let obj = {};
-				obj.id = "0";
-				obj.value = value[value.length - 1];
-				_opt.push(obj);
-				setOptions(_opt);
+			}else{
+				if(value[value.length - 1]){					
+					option[value.length - 1] = { ...option[value.length - 1], id: null };
+					option[value.length - 1] = { ...option[value.length - 1], value: value[value.length - 1] };
+					let _opt = [...options];
+					let obj = {};
+					obj.id = "0";
+					obj.value = value[value.length - 1];
+					_opt.push(obj);
+					setOptions(_opt);
+					setValue(name,option.map((item) => ({
+						id: item.id,
+						value: item?.value,
+					})),);
+				}
 			}		
 			isControlled && setControlledValue(option);			
 		}
