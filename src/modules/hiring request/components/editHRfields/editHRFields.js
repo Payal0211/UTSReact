@@ -1244,6 +1244,7 @@ const onHandleFocusOut = async (e) => {
     email = match[1];
   }
   setIsLoading(true);
+  setIsSavedLoading(true)
   setValue("jdURL",e.target.value);
   setJDURLLink(e.target.value);
   const response = await hiringRequestDAO.extractTextUsingPythonDAO({
@@ -1305,6 +1306,7 @@ const onHandleFocusOut = async (e) => {
     setValue('budget',"2");
   }
   setIsLoading(false);
+  setIsSavedLoading(false)
 }  
   return (
     <div className={HRFieldStyle.hrFieldContainer}>
