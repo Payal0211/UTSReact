@@ -207,6 +207,7 @@
   border-left: 2px solid var(--uplers-border-color);
   padding-left: 5px;
   margin-left: 20px;
+  width:80%;
 }
 
 .historyInnerContainer p {
