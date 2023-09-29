@@ -1054,13 +1054,14 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		  email = match[1];
 		}
 		setIsLoading(true);	
+		setIsSavedLoading(true)
 		const response = await hiringRequestDAO.extractTextUsingPythonDAO({
 		  clientEmail:email.trim(),
 		  psUrl:e.target.value
 		});		
-		setHRdetails(response?.responseBody?.details);
-		setAddData(response?.responseBody?.details);
-		setIsLoading(false);		
+		if(response.statusCode === HTTPStatusCode.OK){
+			setHRdetails(response?.responseBody?.details);
+		setAddData(response?.responseBody?.details);		
 		setValue("jdExport", "");		
 		setValue('talentsNumber',response?.responseBody?.details?.addHiringRequest?.noofTalents);
 		setValue('availability',response?.responseBody?.details?.addHiringRequest?.availability);		
@@ -1090,6 +1091,10 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 		setValue("fromTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
 		setValue("endTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
 		setValue('budget',"2");
+		}
+		
+		setIsSavedLoading(false)
+		setIsLoading(false);	
 	}
 	
 	return (
