@@ -144,7 +144,7 @@ const JOBPostSLA = ({ allApiData }) => {
 
         <div className={CompanyProfileCardStyle.telentJobStep}>
           <ul className={CompanyProfileCardStyle.telentJobStepProgressbar}>
-            <li className={CompanyProfileCardStyle.check}>
+            <li className={hrSLADetails[0]?.completedStageID > hrSLADetails[0]?.stageID && CompanyProfileCardStyle.check}>
               <div
                 className={CompanyProfileCardStyle.telentJobStepIcon}
                 data-toggle="tooltip"
@@ -161,7 +161,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 </div>
               </div>
             </li>
-            <li className={CompanyProfileCardStyle.check}>
+            <li className={hrSLADetails[1]?.completedStageID > hrSLADetails[1]?.stageID && CompanyProfileCardStyle.check}>
               <div
                 className={CompanyProfileCardStyle.telentJobStepIcon}
                 data-toggle="tooltip"
@@ -178,12 +178,12 @@ const JOBPostSLA = ({ allApiData }) => {
                 </div>
               </div>
             </li>
-            <li className={CompanyProfileCardStyle.check}>
+            <li className={hrSLADetails[2]?.completedStageID > hrSLADetails[2]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
                 title={
                   hrSLADetails.length &&
-                  `${hrSLADetails[2].noOfTalents} Applicents`
+                  `${hrSLADetails[2].noOfTalents} Applicants`
                 }
               >
                 <div
@@ -210,7 +210,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 </div>
               </div>
             </li>
-            <li>
+            <li className={hrSLADetails[3]?.completedStageID > hrSLADetails[3]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
                 title={
@@ -242,7 +242,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 </div>
               </div>
             </li>
-            <li>
+            <li className={hrSLADetails[4]?.completedStageID > hrSLADetails[4]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
                 title={
@@ -274,7 +274,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 </div>
               </div>
             </li>
-            <li>
+            <li className={hrSLADetails[5]?.completedStageID > hrSLADetails[5]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
                 title={
@@ -307,7 +307,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 </div>
               </div>
             </li>
-            <li>
+            <li className={hrSLADetails[6]?.completedStageID > hrSLADetails[6]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
                 title={hrSLADetails.length && `${hrSLADetails[6].noOfTalents} Talents Shortlisted`}
@@ -330,7 +330,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 </div>
               </div>
             </li>
-            <li>
+            <li className={hrSLADetails[7]?.completedStageID > hrSLADetails[7]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
                 title={
@@ -356,7 +356,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 </div>
               </div>
             </li>
-            <li>
+            <li className={hrSLADetails[8]?.completedStageID > hrSLADetails[8]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
                 title={
@@ -386,7 +386,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 </div>
               </div>
             </li>
-            <li>
+            <li className={hrSLADetails[9]?.completedStageID > hrSLADetails[9]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
                 title={
