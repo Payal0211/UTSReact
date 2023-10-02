@@ -568,7 +568,8 @@ const EditHRFields = ({
   }, []);
 
   const getListData = async (clientName, shortclientName) => {
-    let response = await MasterDAO.getEmailSuggestionDAO(shortclientName);
+    if (shortclientName?.trim().length > 0) {
+        let response = await MasterDAO.getEmailSuggestionDAO(shortclientName);
     if (response?.statusCode === HTTPStatusCode.OK) {
       setClientNameSuggestion(response?.responseBody?.details);
       setValue("clientName", clientName);
@@ -583,10 +584,12 @@ const EditHRFields = ({
       });
       setClientNameMessage(response?.responseBody);
     }
+    }
+  
   };
   const getClientNameSuggestionHandler = useCallback(
     async (clientName) => {
-      if (clientName.length) {
+      if (clientName.length > 0) {
         let response = await MasterDAO.getEmailSuggestionDAO(clientName);
         if (response?.statusCode === HTTPStatusCode.OK) {
           setClientNameSuggestion(response?.responseBody?.details);
@@ -970,7 +973,7 @@ const EditHRFields = ({
   // }, [getDurationType]);
 
   useEffect(() => {
-    setValue("clientName", getHRdetails?.fullClientName);
+    setValue("clientName", getHRdetails?.fullClientName?.trim());
     setValue("companyName", getHRdetails?.company);
     setValue("hrTitle", getHRdetails?.addHiringRequest?.requestForTalent);
     setValue("jdURL", getHRdetails?.addHiringRequest?.jdurl);
@@ -1025,7 +1028,7 @@ const EditHRFields = ({
     setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType);
     if (getHRdetails?.clientName) {
       getListData(
-        getHRdetails?.fullClientName,
+        getHRdetails?.fullClientName?.trim(),
         getHRdetails?.clientName.substring(0, 3)
       );
     }
@@ -1337,7 +1340,7 @@ const onHandleFocusOut = async (e) => {
                           filterOption={true}
                           onSearch={(searchValue) => {
                             // setClientNameSuggestion([]);
-                            getClientNameSuggestionHandler(searchValue);
+                            getClientNameSuggestionHandler(searchValue.trim());
                           }}
                           onChange={(clientName) => {
                             setValue("clientName", clientName);
