@@ -7,6 +7,7 @@ export class NetworkInfo {
 	// static DOMAIN = '809c77bfbe78ce2d4010a080a425ea2b.loophole.site/';
 	static NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN;
 	static FILENETWORK = NetworkInfo.PROTOCOL + NetworkInfo.FILEDOMAIN;
+	static ENV = "QA";
 }
 export class SubDomain {
 	static USER_OPERATIONS = 'UserOperationsAPI/';
