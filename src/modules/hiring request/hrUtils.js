@@ -218,17 +218,17 @@ export const hrUtils = {
 					: d.contractDuration.value,
 			TimeZoneFromTime:  
 					draft === SubmitType.SAVE_AS_DRAFT
-						? _isNull(watch('region')) ? null : watch('region')?.value?.includes('Overlapping') ? null : _isNull(watch('fromTime').value)
+						? _isNull(watch('region')) ? null : watch('region')?.value?.includes('Overlapping') ? null : _isNull(watch('fromTime')?.value)
 						? null
-						: watch('fromTime').value
+						: watch('fromTime')?.value
 						: watch('region')&& watch('region')?.value?.includes('Overlapping') ? null : _isNull(d.fromTime?.value)
 						? null
 						: d.fromTime?.value,		
 			TimeZoneEndTime:  
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('region')) ? null : watch('region')?.value.includes('Overlapping') ? null : _isNull(watch('endTime').value)
+					? _isNull(watch('region')) ? null : watch('region')?.value.includes('Overlapping') ? null : _isNull(watch('endTime')?.value)
 					? null
-					: watch('endTime').value
+					: watch('endTime')?.value
 					: watch('region')?.value.includes('Overlapping') ? null : _isNull(d.endTime.value)
 					? null
 					: d.endTime.value,

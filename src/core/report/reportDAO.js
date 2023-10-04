@@ -458,4 +458,58 @@ export const ReportDAO = {
 			return errorDebug(error, 'ReportDAO.slaFilterDAO');
 		}
 	},
+
+	// HR Lost Report 
+	getHRLostReportDRO: async function (reportData) {
+		try {
+			const hrLostResult = await ReportAPI.getLostHRReport(
+				reportData,
+			);
+			if (hrLostResult) {
+				const statusCode = hrLostResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hrLostResult?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return hrLostResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return hrLostResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.getHRLostReportDRO');
+		}
+	},
+	getLostHRTalentDetailDRO: async function (ID) {
+		try {
+			const hrLostResult = await ReportAPI.getLostHRTalentDetails(ID);
+			if (hrLostResult) {
+				const statusCode = hrLostResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hrLostResult?.responseBody?.details;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return hrLostResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return hrLostResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ReportDAO.getLostHRTalentDetailDRO');
+		}
+	},
 };

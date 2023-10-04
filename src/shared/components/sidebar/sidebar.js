@@ -19,6 +19,7 @@ import MastersIcon from 'assets/svg/mastersIcon.svg';
 import I2sIcon from 'assets/svg/i2sIcon.svg';
 import clientReport from  'assets/svg/clientReport.svg';
 import HRReport from 'assets/svg/clientLogs.svg'
+import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
 
 import SLAReport from 'assets/svg/slaReport.svg';
 import SideBarModels from 'models/sidebar.model';
@@ -141,7 +142,9 @@ const isAccess = (ID, title) =>{
 	title === 'Demand Funnel' || 
 	title === 'SLA Report' || 
 	title === 'Client Report' || 
-	title === 'I2S Report' || title === 'Master' || title === 'Deal' || title === 'HR Report' || title === 'Client Happiness Survey' || title === 'Team Demand Funnel' || title === 'Clients'){
+	title === 'I2S Report' || title === 'Master' || title === 'Deal' || title === 'HR Report' || 
+	title === 'Client Happiness Survey' || title === 'Team Demand Funnel'
+	|| title === 'Clients' || title=== 'HR Lost Report'){
 
 		isVisible = (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 || ID === 6)  
 		
@@ -297,6 +300,14 @@ const getSideBar = (usertypeID) => {
 			icon: I2sIcon,
 			navigateTo: UTSRoutes.I2S_REPORT,
 			isVisible: isAccess(usertypeID, 'I2S Report')
+		}),
+		new SideBarModels({
+			id: 'HRLostReport',
+			title: 'HR Lost Report',
+			isActive: false,
+			icon: HRLOSTReoprt,
+			navigateTo: UTSRoutes.HRLostReoprt,
+			isVisible: isAccess(usertypeID, 'HR Lost Report')
 		}),
 		new SideBarModels({
 			id: 'Master',
