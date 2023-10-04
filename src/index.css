@@ -982,3 +982,24 @@ table {
   width: 500px !important;
   min-width: 500px !important;
 }
+
+
+
+/* jobpostDraftModal css start */
+.jobpostDraftModal .ant-modal-header{
+  display: none;
+}
+
+.jobpostDraftModal .ant-modal-body{
+  background: #fff;
+  padding: 40px;
+} 
+
+.jobpostDraftModal h2 {
+  font-size: 32px;
+  line-height: 32px;
+  color: #232323;
+  margin: 0 0 24px;
+}
+
+/* jobpostDraftModal css End */

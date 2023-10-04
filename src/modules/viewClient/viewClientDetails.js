@@ -1,5 +1,5 @@
 import WithLoader from "shared/components/loader/loader";
-import { Button, Table, Tag, message } from 'antd';
+import { Button, Table, Tag, message, Modal } from 'antd';
 // import dealDetailsStyles from './dealDetailsStyle.module.css';
 
 import dealDetailsStyles from './viewClientDetails.module.css';
@@ -22,6 +22,11 @@ import HROperator from "modules/hiring request/components/hroperator/hroperator"
 import { allClientRequestDAO } from "core/allClients/allClientsDAO";
 import { allClientsConfig } from "modules/hiring request/screens/allClients/allClients.config";
 
+import ArrowClose from 'assets/svg/close.svg';
+import Star from 'assets/svg/selectStarFill.svg';
+
+import { AiOutlineClose } from 'react-icons/ai';
+
 function ViewClientDetails() {
 	const [isLoading, setLoading] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
@@ -29,6 +34,8 @@ function ViewClientDetails() {
 	const {companyID,clientID} = useParams();
 	const [isExpanded, setIsExpanded] = useState(false);
 	const navigate = useNavigate();
+
+	const [jobpostDraft, setModaljobpostDraft] = useState(false);
 
 
    const togglePriority = useCallback(
@@ -291,7 +298,195 @@ function ViewClientDetails() {
 				pagination={false}
 				/>
 			</div>
+
+			<Button type="primary" className={dealDetailsStyles.viewJobBtn} onClick={() => setModaljobpostDraft(true)}>
+				View Job Post in Draft
+			</Button>
+
+			<Modal
+				width={'864px'}
+				centered
+				footer={false}
+				open={jobpostDraft}
+				className="jobpostDraftModal"
+				onOk={() => setModaljobpostDraft(false)}
+				onCancel={() => setModaljobpostDraft(false)}
+			>
+
+				<h2>Job Post in Draft</h2>
+
+				 <div className={dealDetailsStyles.jobPostDraftContent}>
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Role and type of hiring</h4>
+							<span>Last Edited on: 2-10-2023</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={dealDetailsStyles.jobRoleTypeBox}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Please enter title for this position</p>
+									<h5>Frontend Develper</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Number of Talents Required</p>
+									<h5>5</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Enter contract duration (In Months)</p>
+									<h5>12 Months</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Years of Experience needed</p>
+									<h5>5</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Is this a temporary or permenant hiring?</p>
+									<h5>Permanent</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Is this is a remote opportunity</p>
+									<h5>Yes</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Skills and Budget</h4>
+							<span>Last Edited on: 2-10-2023</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Please add top 5 must have skills</p>
+									<ul className={dealDetailsStyles.SkillWrapBox}>
+										<li><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> Angular <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> HTML <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> Python <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> CSS <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+									</ul>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Please add the good to have skills</p>
+									<ul className={dealDetailsStyles.SkillWrapBox}>
+										<li>TypeScript <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>NgRx <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>Akita <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>RxJS <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>PrimeNG <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>Karma <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>Protractor <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>Akita <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>ESLint <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>Cypress <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>Prettier <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>Husky <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>SVN <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>RxJS <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+									</ul>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Do you have a budget in mind (Monthly)</p>
+									<h5>USD 1950 - 2500/month</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Employment details</h4>
+							<span>Last Edited on: 2-10-2023</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.employDetailWrap}`}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Please select employment type </p>
+									<h5>Full-time</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Select Timezone - Shift Time</p>
+									<h5>Select Timezone - Shift Time</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>When do you want the talent to start? </p>
+									<h5>15 Days</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>What are you trying to achieve with Uplers?</p>
+									<h5>I want to hire a vetted contractor from India</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>JD/Responsibilities & requirements</h4>
+							<span>Last Edited on: 2-10-2023</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>JD Link</p>
+									<a href="#">docs.google.com/spreadsheets/d/1CVpdGbkwFDNELnxBDJ9Oj9pBYiGhSLLpx6Tco2MBR5E/edit#</a>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Roles & Responsibilities </p>
+									<ul className={dealDetailsStyles.jdRequrementText}>
+										<li>Design and implement scalable and maintainable frontend solutions that meet business requirements.</li>
+										<li>Develop, test, and deploy high-quality code and libraries for future use for data-heavy applications.</li>
+										<li>Collaborate with cross-functional teams including UI/UX designers, backend developers, and product managers to deliver effective solutions.</li>
+										<li>Lead the development of technical specifications and documentation.</li>
+										<li>Analyze and troubleshoot complex frontend issues to identify root causes and develop solutions.</li>
+										<li>ptimize application for maximum speed and scalability</li>
+										<li>Continuously improve the quality of the front-end codebase through code reviews, automated testing, and other best practices.</li>
+										<li>Stay up-to-date with emerging trends and technologies in front-end development.</li>
+										<li>Mentor and coach junior developers</li>
+									</ul>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Requirements</p>
+									<ul className={dealDetailsStyles.jdRequrementText}>
+										<li>At least 5 years of professional experience as a front-end developer, working with Angular and other web technologies.</li>
+										<li>Strong knowledge of HTML, CSS, JavaScript and TypeScript, as well as Angular concepts and features such as components, directives, services, pipes, modules, routing, etc.</li>
+										<li>Experience with state management libraries such as NgRx or Akita and reactive programming using RxJS.</li>
+										<li>Experience with UI frameworks such as Bootstrap or Material Design, as well as UI components libraries such as Angular Material or PrimeNG.</li>
+										<li> Experience with testing tools and frameworks such as Jasmine, Karma, Protractor or Cypress.</li>
+										<li>Experience with code quality tools and practices such as ESLint, Prettier, Husky or SonarQube.</li>
+										<li>Experience with version control systems such as Git or SVN, as well as CI/CD tools and platforms such as Jenkins, GitHub Actions or Azure DevOps.</li>
+										<li>Experience with agile methodologies such as Scrum or Kanban, as well as tools such as Jira or Trello.</li>
+										<li>Excellent communication and collaboration skills, as well as a positive attitude and a growth mindset.</li>
+										<li>A portfolio or a GitHub profile that showcases your previous work and projects. If you're passionate about developing user-friendly and visually appealing web applications and have a strong background in enterprise-style applications and data-heavy applications, we encourage you to apply.</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Job Description</h4>
+							<span>Last Edited on: 2-10-2023</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Upload your JD</p>
+									<a href="#">Download JD</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</Modal>
 		</WithLoader>
+
+		
+		
     )
 }
 
