@@ -136,7 +136,7 @@
 .searchFilterSet{
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
-    width: 250px;
+    width: 450px;
     height: 44px;
     display: flex;
     justify-content: space-evenly;
