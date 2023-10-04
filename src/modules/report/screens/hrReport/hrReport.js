@@ -370,11 +370,10 @@ export default function HRReport() {
 		let DataToExport =  apiData.map(data => {
 			let obj = {}
 			tableColumnsMemo.map(val => val.key !== "action" && (obj[`${val.title}`] = data[`${val.key}`]))
-		return obj;
+		    return obj;
 			}
 		 )
-		 downloadToExcel(DataToExport,`HRReport: ${hrStage}`)
-
+		 downloadToExcel(DataToExport,`HRReport: ${hrStage}.xlsx`)
 	}
 
   //console.log('client', reportList, appliedFilter)

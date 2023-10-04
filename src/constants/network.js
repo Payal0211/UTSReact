@@ -189,7 +189,8 @@ export class ClientsAPI {
 	static FILTER_LIST = 'FilterList';
 	static VIEW_CLIENT = 'ViewClient';
 	static GET_AM_DETAIL = 'GetAMDetails';
-	static UPDATE_AM_FOR_COMPANY = 'UpdateAMForCompany'
+	static UPDATE_AM_FOR_COMPANY = 'UpdateAMForCompany';
+	static DRAFTJOBDETAILS = 'GetDraftJobDetails';
 }
 
 export class HiringRequestsAPI {

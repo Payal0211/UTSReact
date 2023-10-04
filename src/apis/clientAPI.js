@@ -120,5 +120,21 @@ export const ClientAPI = {
 		} catch (error) {
 			return errorDebug(error, 'ClientAPI.getClientFilterList');
 		}
+	},
+	getJobDetails:async function (guid,clientID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.DRAFTJOBDETAILS +
+			`?contactId=${clientID}&guid=${guid}`; ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getClientFilterList');
+		}
 	}
 };

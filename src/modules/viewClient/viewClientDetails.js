@@ -26,6 +26,8 @@ import ArrowClose from 'assets/svg/close.svg';
 import Star from 'assets/svg/selectStarFill.svg';
 
 import { AiOutlineClose } from 'react-icons/ai';
+import { HttpStatusCode } from "axios";
+import { DateTimeUtils } from "shared/utils/basic_utils";
 
 function ViewClientDetails() {
 	const [isLoading, setLoading] = useState(false);
@@ -34,9 +36,25 @@ function ViewClientDetails() {
 	const {companyID,clientID} = useParams();
 	const [isExpanded, setIsExpanded] = useState(false);
 	const navigate = useNavigate();
-
 	const [jobpostDraft, setModaljobpostDraft] = useState(false);
-
+	const [guid,setGuid] = useState('');
+	const [draftJObPostDetails,setDraftJobPostDetails] = useState({});
+	useEffect(() => {
+		if(jobpostDraft){
+			getJobPostDraftData();
+		}else{
+			setGuid("");
+		}
+	},[jobpostDraft]);
+	
+	const getJobPostDraftData = async () => {
+		setLoading(true)
+		let response = await allClientRequestDAO.getDraftJobDetailsDAO(guid,clientID);	
+		if(response.statusCode === HttpStatusCode.Ok){
+			setDraftJobPostDetails(response.responseBody);
+		}
+		setLoading(false);
+	}
 
    const togglePriority = useCallback(
 		async (payload) => {
@@ -76,10 +94,9 @@ function ViewClientDetails() {
 		[ messageAPI, navigate],
 	);
 
-
 	const columns = useMemo(
-		() => allClientsConfig.ViewClienttableConfig(togglePriority),
-		[]); 
+		() => allClientsConfig.ViewClienttableConfig(togglePriority,setModaljobpostDraft,setGuid),
+	[]); 
 
 	useEffect(() => {
 		getDataForViewClient();
@@ -91,9 +108,6 @@ function ViewClientDetails() {
 		setLoading(false);
 		setViewDetails(response?.responseBody);	
 	}
-
-	
- 
 
     return(
         <WithLoader
@@ -298,11 +312,7 @@ function ViewClientDetails() {
 				pagination={false}
 				/>
 			</div>
-
-			<Button type="primary" className={dealDetailsStyles.viewJobBtn} onClick={() => setModaljobpostDraft(true)}>
-				View Job Post in Draft
-			</Button>
-
+			
 			<Modal
 				width={'864px'}
 				centered
@@ -314,38 +324,37 @@ function ViewClientDetails() {
 			>
 
 				<h2>Job Post in Draft</h2>
-
 				 <div className={dealDetailsStyles.jobPostDraftContent}>
 					<div className={dealDetailsStyles.jobPostDraftBox}>
 						<div className={dealDetailsStyles.jobPostTopHeading}>
 							<h4>Role and type of hiring</h4>
-							<span>Last Edited on: 2-10-2023</span>
+							<span>Last Edited on: {DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.firstTabDate)}</span>
 						</div>
 						<div className={dealDetailsStyles.draftInnerContent}>
 							<div className={dealDetailsStyles.jobRoleTypeBox}>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>Please enter title for this position</p>
-									<h5>Frontend Develper</h5>
+									<p>Title for this position</p>
+									<h5>{draftJObPostDetails?.JobDetails?.roleName ? draftJObPostDetails?.JobDetails?.roleName : "-"}</h5>
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>Number of Talents Required</p>
-									<h5>5</h5>
+									<p>Number of Talents</p>
+									<h5>{draftJObPostDetails?.JobDetails?.noOfTalents ? draftJObPostDetails?.JobDetails?.noOfTalents : "-"}</h5>
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>Enter contract duration (In Months)</p>
-									<h5>12 Months</h5>
+									<p>Contract duration (In Months)</p>
+									<h5>{draftJObPostDetails?.JobDetails?.contractDuration ? draftJObPostDetails?.JobDetails?.contractDuration : '-'}</h5>
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>Years of Experience needed</p>
-									<h5>5</h5>
+									<p>Years of Experience</p>
+									<h5>{draftJObPostDetails?.JobDetails?.experienceYears ? draftJObPostDetails?.JobDetails?.experienceYears : "-"}</h5>
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>Is this a temporary or permenant hiring?</p>
-									<h5>Permanent</h5>
+									<p>Temporary or permenant hiring</p>
+									<h5>{draftJObPostDetails?.JobDetails?.isHiringLimited ? draftJObPostDetails?.JobDetails?.isHiringLimited : "-"}</h5>
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
 									<p>Is this is a remote opportunity</p>
-									<h5>Yes</h5>
+									<h5>{draftJObPostDetails?.JobDetails?.modeOfWorking === 'Remote' ? 'Yes' : 'No'}</h5>
 								</div>
 							</div>
 						</div>
@@ -354,24 +363,31 @@ function ViewClientDetails() {
 					<div className={dealDetailsStyles.jobPostDraftBox}>
 						<div className={dealDetailsStyles.jobPostTopHeading}>
 							<h4>Skills and Budget</h4>
-							<span>Last Edited on: 2-10-2023</span>
+							<span>Last Edited on: {DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.secondTabDate)}</span>
 						</div>
 						<div className={dealDetailsStyles.draftInnerContent}>
 							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>Please add top 5 must have skills</p>
+									<p>Top 5 must have skills</p>
 									<ul className={dealDetailsStyles.SkillWrapBox}>
-										<li><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> Angular <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
-										<li><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> HTML <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
-										<li><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> Python <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
-										<li><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> CSS <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
-									</ul>
+										{draftJObPostDetails?.JobDetails?.skills.split(",").map((skill,index) => {
+											return <li key={index}><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> {skill} </li>
+										})}								
+									</ul>	
+									{/* <li><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> HTML <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+									<li><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> Python <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+									<li><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> CSS <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li> */}
+									
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>Please add the good to have skills</p>
+									<p>Good to have skills</p>
 									<ul className={dealDetailsStyles.SkillWrapBox}>
-										<li>TypeScript <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
-										<li>NgRx <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										{draftJObPostDetails?.JobDetails?.allSkills?.split(",").map((skill,index) => {
+											return (
+												<li key={index}>{skill}</li>
+											)
+										})}										
+										{/* <li>NgRx <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
 										<li>Akita <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
 										<li>RxJS <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
 										<li>PrimeNG <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
@@ -383,12 +399,12 @@ function ViewClientDetails() {
 										<li>Prettier <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
 										<li>Husky <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
 										<li>SVN <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
-										<li>RxJS <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li>
+										<li>RxJS <span className={dealDetailsStyles.close}><AiOutlineClose /></span></li> */}
 									</ul>
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>Do you have a budget in mind (Monthly)</p>
-									<h5>USD 1950 - 2500/month</h5>
+									<p>Budget in mind (Monthly)</p>
+									<h5>{draftJObPostDetails?.JobDetails?.currency} {draftJObPostDetails?.JobDetails?.budgetTo} - {draftJObPostDetails?.JobDetails?.budgetFrom}/month</h5>
 								</div>
 							</div>
 						</div>
@@ -397,25 +413,25 @@ function ViewClientDetails() {
 					<div className={dealDetailsStyles.jobPostDraftBox}>
 						<div className={dealDetailsStyles.jobPostTopHeading}>
 							<h4>Employment details</h4>
-							<span>Last Edited on: 2-10-2023</span>
+							<span>Last Edited on: {DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.thirdTabDate)}</span>
 						</div>
 						<div className={dealDetailsStyles.draftInnerContent}>
 							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.employDetailWrap}`}>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>Please select employment type </p>
-									<h5>Full-time</h5>
+									<p>Employment type </p>
+									<h5>{draftJObPostDetails?.JobDetails?.employmentType ? draftJObPostDetails?.JobDetails?.employmentType : "-"}</h5>
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>Select Timezone - Shift Time</p>
-									<h5>Select Timezone - Shift Time</h5>
+									<p>Timezone - Shift Time</p>
+									<h5>{draftJObPostDetails?.JobDetails?.timeZone} - {draftJObPostDetails?.JobDetails?.timeZone_FromTime}-{draftJObPostDetails?.JobDetails?.timeZone_EndTime}</h5>
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>When do you want the talent to start? </p>
-									<h5>15 Days</h5>
+									<p>Talent to start</p>
+									<h5>{draftJObPostDetails?.JobDetails?.howSoon ? draftJObPostDetails?.JobDetails?.howSoon : "-"}</h5>
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>What are you trying to achieve with Uplers?</p>
-									<h5>I want to hire a vetted contractor from India</h5>
+									<p>Achieve with Uplers</p>
+									<h5>{draftJObPostDetails?.JobDetails?.reason ? draftJObPostDetails?.JobDetails?.reason : "-"}</h5>
 								</div>
 							</div>
 						</div>
@@ -424,13 +440,13 @@ function ViewClientDetails() {
 					<div className={dealDetailsStyles.jobPostDraftBox}>
 						<div className={dealDetailsStyles.jobPostTopHeading}>
 							<h4>JD/Responsibilities & requirements</h4>
-							<span>Last Edited on: 2-10-2023</span>
+							<span>Last Edited on:{DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.fourthTabDate)}</span>
 						</div>
 						<div className={dealDetailsStyles.draftInnerContent}>
 							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
 									<p>JD Link</p>
-									<a href="#">docs.google.com/spreadsheets/d/1CVpdGbkwFDNELnxBDJ9Oj9pBYiGhSLLpx6Tco2MBR5E/edit#</a>
+									<a href={draftJObPostDetails?.JDLink} target="_blank">{draftJObPostDetails?.JDLink}</a>
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
 									<p>Roles & Responsibilities </p>
@@ -479,9 +495,7 @@ function ViewClientDetails() {
 							</div>
 						</div>
 					</div>
-
 				</div>
-
 			</Modal>
 		</WithLoader>
 

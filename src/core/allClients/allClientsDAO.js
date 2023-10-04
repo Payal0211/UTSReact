@@ -102,5 +102,38 @@ export const allClientRequestDAO  = {
 		} catch (error) {
 			return errorDebug(error,'allClientRequestDAO.getClientDetailsForViewDAO');
 		}
+	},
+	getDraftJobDetailsDAO : async function (guid,clientID) {
+		try {
+			const draftJobDetails = await ClientAPI.getJobDetails(guid,clientID);
+			if(draftJobDetails){
+				const statusCode = draftJobDetails['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = draftJobDetails.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return draftJobDetails;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return draftJobDetails;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error,'allClientRequestDAO.getDraftJobDetailsDAO');
+		}
 	}
+
 }
