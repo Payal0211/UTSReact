@@ -26,7 +26,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { HTTPStatusCode } from 'constants/network';
 import { _isNull, getPayload } from 'shared/utils/basic_utils';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { hrUtils } from 'modules/hiring request/hrUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import useDrivePicker from 'react-google-drive-picker/dist';
@@ -60,7 +60,7 @@ const HRFields = ({
 	setAddData
 }) => {
 	const [userData, setUserData] = useState({});
-
+	const navigate = useNavigate()
 	useEffect(() => {
 		const getUserResult = async () => {
 			let userData = UserSessionManagementController.getUserSession();
@@ -938,6 +938,9 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 						type: 'success',
 						content: 'HR details has been saved to draft.',
 					});
+					setTimeout(()=> {
+						navigate('/allhiringrequest')
+					}, 1000)
 					// setTitle('Debriefing HR')
 				}
 			}

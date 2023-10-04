@@ -66,6 +66,7 @@ export class ReportType {
 	static SUPPLY_FUNNEL = 'SupplyFunnel/';
 	static TEAM_DEMAND_FUNNEL = 'TeamDemandFunnel/';
 	static JD_PARSING_DUMP = 'JDParsingDump/';
+	static HR_LOST_REPORT = 'HRLostReport/'
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
@@ -76,6 +77,7 @@ export class ReportsAPI {
 	static OVER_ALL_SLA_SUMMARY = 'OverAllSLASummary';
 	static SLA_DETAILED_DATA = 'GetSLAReport';
 	static SLA_FILTER = 'GETSLAFilters';
+	static TALENT_DETAIL_POPUP = 'TalentDetailPopup';
 }
 
 export class HubspotsAPI {

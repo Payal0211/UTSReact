@@ -1,3 +1,4 @@
+import HRLostReport from 'modules/report/screens/hrLostReport/hrLostReport';
 import ViewClientDetails from 'modules/viewClient/viewClientDetails';
 import React, { Suspense } from 'react';
 
@@ -160,6 +161,7 @@ export default class UTSRoutes {
 	static SLA_REPORT = '/slaReport';
 	static I2S_REPORT = "/i2sReport";
 	static CLIENT_REPORT = "/clientReport";
+	static HRLostReoprt = '/hrlostreport'
 	static HR_REPORT = "/hrReport";
 	static CLIENT_HAPPINESS_SURVEY = '/ClientHappinessSurvey';
 	static ALLCLIENTS = '/allClients';
@@ -305,6 +307,11 @@ export const navigateToComponent = {
 	[UTSRoutes.I2S_REPORT]: (
 		<Suspense>
 			<I2sReport />
+		</Suspense>
+	),
+	[UTSRoutes.HRLostReoprt]: (
+		<Suspense>
+			<HRLostReport/>
 		</Suspense>
 	),
 	[UTSRoutes.CLIENT_REPORT]:(

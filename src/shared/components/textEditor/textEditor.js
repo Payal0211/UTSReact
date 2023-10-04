@@ -39,7 +39,12 @@ const TextEditor = ({
 	});
 
 	useEffect(() => {
-		if (isControlled) document.getElementById(name).innerHTML = controlledValue;
+		if (isControlled){
+			document.getElementById(name).innerHTML = controlledValue;
+			setValue(name, controlledValue, {
+				shouldDirty: true,
+			});
+		}
 	}, [controlledValue, isControlled, name]);
 
 	return (

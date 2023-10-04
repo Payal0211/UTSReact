@@ -4,6 +4,7 @@ import {
 	ReportsAPI,
 	ReportsType,
 	SubDomain,
+	UserAPI,
 } from 'constants/network';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import { HttpServices } from 'shared/services/http/http_service';
@@ -279,6 +280,42 @@ export const ReportAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'ReportAPI.slaFilter');
+		}
+	},
+	// lost HR Report 
+
+	getLostHRReport: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.HR_LOST_REPORT + UserAPI.LIST
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getLostHRReport');
+		}
+	},
+	getLostHRTalentDetails: async function (ID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.REPORT +
+			ReportType.HR_LOST_REPORT + ReportsAPI.TALENT_DETAIL_POPUP + `?HRID=${ID}`
+
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = {}
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getLostHRTalentDetails');
 		}
 	},
 
