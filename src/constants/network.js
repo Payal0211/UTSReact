@@ -170,6 +170,8 @@ export class MastersAPI {
 	static CHECK_RIGHTS_FOR_ADD_OPRATION ='CheckUserRightsForAddOperation';
 	static UPLOAD_ICON ='UploadIcon'
 	static ADD_ROLE = 'Add'
+	static EDIT_ROLE = 'EditRole'
+	static UPDATE_ROLE = 'UpdateRole'
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
@@ -191,7 +193,8 @@ export class ClientsAPI {
 	static FILTER_LIST = 'FilterList';
 	static VIEW_CLIENT = 'ViewClient';
 	static GET_AM_DETAIL = 'GetAMDetails';
-	static UPDATE_AM_FOR_COMPANY = 'UpdateAMForCompany'
+	static UPDATE_AM_FOR_COMPANY = 'UpdateAMForCompany';
+	static DRAFTJOBDETAILS = 'GetDraftJobDetails';
 }
 
 export class HiringRequestsAPI {

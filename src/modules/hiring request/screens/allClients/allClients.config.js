@@ -3,7 +3,8 @@ import clienthappinessSurveyStyles from "../../../survey/client_happiness_survey
 import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
 import { ReactComponent as NextWeekPriorityStar } from 'assets/svg/nextWeekPriorityStar.svg';
 import { ReactComponent as NoPriorityStar } from 'assets/svg/noPriorityStar.svg';
-
+import { Button } from "antd";
+import dealDetailsStyles from "../../../../modules/viewClient/viewClientDetails.module.css";
 export const allClientsConfig = {
     allClientsTypeConfig : (filterList) => {
         return [
@@ -74,6 +75,7 @@ export const allClientsConfig = {
 						<Link
 							// to={`/viewClient/${result.companyID}~${result.clientID}`}
                             to={`/viewClient/${result.companyID}/${result.clientID}`}
+                            target="_blank"
 							style={{
 								color: `var(--uplers-black)`,
 								textDecoration: 'underline',
@@ -145,7 +147,7 @@ export const allClientsConfig = {
             }
           ]; 
     },
-    ViewClienttableConfig : (togglePriority) => {
+    ViewClienttableConfig : (togglePriority,setModaljobpostDraft,setGuid) => {
         return [
             {
                 title: '',
@@ -183,7 +185,7 @@ export const allClientsConfig = {
                 title: 'Created Date',
                 dataIndex: 'createdDateTime',
                 key: 'createdDateTime',
-                width:'200px',
+                width:'150px',
                 render: (text, result) =>{                     
                     return (text.split('T')[0])
                 },
@@ -192,6 +194,12 @@ export const allClientsConfig = {
                 title: 'HR ID',
                 dataIndex: 'hrNumber',
                 key: 'hrNumber',
+                width:'200px',
+                render:(text,result) => {
+                    return result.hR_ID === 0 ? <Button type="primary" className={dealDetailsStyles.viewJobBtn} onClick={() => {setModaljobpostDraft(true);setGuid(result.guid)}}>
+                    View Job Post in Draft
+                </Button> : text
+                }
             },
             {
                 title: 'TR',

@@ -1,4 +1,5 @@
 import { ReactComponent as EditSVG } from 'assets/svg/edit.svg';
+import { useState } from 'react';
 export const MasterConfig = {
 	countryTable: () => {
 		return [
@@ -54,7 +55,7 @@ export const MasterConfig = {
 			},
 		];
 	},
-	roleTable:(onIsActiveSelect) => {
+	roleTable:(onIsActiveSelect,ControlledRoleComp,isCanAddRole,handleInactiveRole) => {
 		return [
 			{
 				title: 'Pitch Me RoleID',
@@ -67,11 +68,14 @@ export const MasterConfig = {
 				}
 			},
 			{
-				title: 'Role',
+				title: <div style={{paddingLeft:'40px'}}>Role</div>,
 				dataIndex: 'talentRole',
 				key: 'talentRole',
 				width:'50%',
 				align: 'left',
+				render:(text,values)=>{
+					return <ControlledRoleComp text={text} values={values} />
+				}
 			},
 			{
 				title: 'Is Active',
@@ -80,9 +84,12 @@ export const MasterConfig = {
 				width:'10%',
 				align: 'left',
 				render: (data, param) => {	
-					return (						
-						data ? <a onClick={() => onIsActiveSelect(param.id , false)}>Yes</a> : <a onClick={() => onIsActiveSelect(param.id , true)}>No</a>
-					);
+					if(isCanAddRole){
+						return (						
+						data ? <a onClick={() => handleInactiveRole(param)}>Yes</a> : <a onClick={() => onIsActiveSelect(param.id , true)}>No</a>
+					)
+					}
+					return data ? "Yes" : "No";
 				},
 			},
 		];

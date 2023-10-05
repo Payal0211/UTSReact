@@ -785,4 +785,30 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.addRole');
 		}
 	},
+	editRole: async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.ROLE + MastersAPI.EDIT_ROLE  + `?RoleName=${data.roleName}&ID=${data.id}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.editRole');
+		}
+	},
+	updateRole: async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.ROLE + MastersAPI.UPDATE_ROLE  + `?ID=${data.id}&UpdatedRoleID=${data.newId}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.updateRole');
+		}
+	},
 };
