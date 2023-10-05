@@ -384,7 +384,7 @@ if(talentID?.id){
 							<input
 								type={InputType.TEXT}
 								className={allHRStyles.searchInput}
-								placeholder="Search via HR#, Role , Company , Client , HR Type"
+								placeholder="Search via HR#, Company , Client"
 								onChange={debouncedSearchHandler}
 								value={debouncedSearch}
 							/>

@@ -504,7 +504,7 @@ export const allHRConfig = {
 		width:'60px'
       },
       {
-        title: "Createddate,",
+        title: "Created Date",
         dataIndex: "hrCreatedDate",
         key: "hrCreatedDate",
         align: "center",

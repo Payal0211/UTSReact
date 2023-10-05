@@ -1494,5 +1494,63 @@ export const MasterDAO = {
 				'MasterDAO.addRoleDAO',
 			);
 		}
+	},
+	editRoleDAO :async function (data){
+		try {
+			const roleStatusResponse =
+				await MasterAPI.editRole(data);
+			if (roleStatusResponse) {
+				const statusCode = roleStatusResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = roleStatusResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.editRoleDAO',
+			);
+		}
+	},
+	updateRoleDAO :async function (data){
+		try {
+			const roleStatusResponse =
+				await MasterAPI.updateRole(data);
+			if (roleStatusResponse) {
+				const statusCode = roleStatusResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = roleStatusResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return roleStatusResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.updateRoleDAO',
+			);
+		}
 	}
 };

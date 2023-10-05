@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import CurrencyListStyle from '../currency/currencyList.module.css';
 import { MasterConfig } from 'modules/masters/masterConfig';
-import { Table,Modal } from 'antd';
+import { Table,Modal, message } from 'antd';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
@@ -10,6 +10,11 @@ import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { InputType } from 'constants/application';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import AddNewRole from './addRoleModal';
+import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
+import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
+import { ReactComponent as Close } from "assets/svg/close.svg";
+import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
+import { useForm } from 'react-hook-form';
 
 const RoleList = () => {	
     const [isLoading, setLoading] = useState(false);
@@ -27,6 +32,19 @@ const RoleList = () => {
 	const [isCanAddRole,setIsCanAddRole] = useState(false)
 	const [addRole,setAddRole] = useState(false)
 
+	const [showInactiveModal,setShowInactiveModal] = useState(false)
+	const [inactiveRoleDetails,setInactiveRoleDetails] = useState(null)
+	const [talentRole, setTalentRole] = useState([]);
+
+	const {
+		watch,
+		register,
+		handleSubmit,
+		setValue,
+		resetField,
+		formState: { errors },
+	} = useForm();
+
     const _tableFilteredStateRef = useRef();
     _tableFilteredStateRef.current = tableFilteredState;
     const pageSizeOptions = [100, 200, 300, 500];
@@ -41,10 +59,90 @@ const RoleList = () => {
         }
         setLoading(false);	
     }
+
+	const getTalentRole = useCallback(async () => {
+		const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
+		setTalentRole(talentRole && talentRole.responseBody);
+	}, []);
+
+	useEffect(() => {
+		getTalentRole()
+	},[getTalentRole])
+
+	const ControlledRoleComp = ({text,values})=> {
+		const [isEdit,setIsEdit] = useState(false)
+		const [role,setRole] = useState(text)
+
+		const saveEditRole = async () =>{
+			if(role){
+				const result = await MasterDAO.editRoleDAO({roleName:role,id:values.id})
+				if(result.statusCode === HTTPStatusCode.OK){
+					message.success(result.responseBody.message)
+					setIsEdit(false)
+				}else{
+					message.error(result.responseBody)
+					setRole(text)
+					setIsEdit(false)
+				}	
+			}
+			
+
+	    }
+
+		if(isEdit){
+			return <div style={{display:'flex', alignItems:'center'}}>
+			<TickMark
+				width={24}
+				height={24}
+				style={{marginRight:'10px',cursor:'pointer'}}
+				onClick={() => saveEditRole()}
+			/>
+			  <input className={CurrencyListStyle.editRoalField} style={{ border: role ? '1px solid #CECCCC' : '1px solid red'}} type ='text' value={role} onChange={e=> setRole(e.target.value)} />  
+			<Close 
+			width={24}
+			height={24}
+			style={{marginLeft:'10px',cursor:'pointer'}}
+			onClick={() => {setIsEdit(false);setRole(text)}} />
+			</div>
+		}else {
+			return <div style={{display:'flex', alignItems:'center'}}>
+				<EditSVG
+					width={24}
+					height={24}
+					style={{marginRight:'10px',cursor:'pointer'}}
+					onClick={() => setIsEdit(true)}
+				/> 
+				{role}
+		  </div>
+		}
+	}
+
+	const handleInactiveRole = (roleParam) => {
+		// add code for inactive modal
+		setInactiveRoleDetails(roleParam)
+		setShowInactiveModal(true)
+	}
+
+	const inactiveRoleHandler = async (d)=>{
+		let payload = { id:inactiveRoleDetails.id, newId: d.role.id}
+		const result = await MasterDAO.updateRoleDAO(payload)
+		if(result.statusCode === HTTPStatusCode.OK){
+			message.success(result.responseBody.message)
+			setShowInactiveModal(false)
+			resetField('role')
+			reloadList()
+		}else{
+			message.error(result.responseBody)
+			// setRole(text)
+			// setIsEdit(false)
+		}	
+
+	}
+
     const tableColumnsMemo = useMemo(
 		() =>
-			MasterConfig.roleTable(onIsActiveSelect),
-		[],
+			MasterConfig.roleTable(onIsActiveSelect,ControlledRoleComp,isCanAddRole,handleInactiveRole),
+		[isCanAddRole],
 	);
 
     const getRolesListHandler = useCallback(async (tableData) => {
@@ -187,6 +285,52 @@ const RoleList = () => {
         >
 			<AddNewRole onCancel={()=> setAddRole(false)} reloadList={reloadList}/>
 		</Modal>	
+
+		<Modal
+          width={"864px"}
+          centered
+          footer={false}
+          open={showInactiveModal}
+          className="changeDateModal"
+          onCancel={() => {setShowInactiveModal(false);resetField('role')}}
+        >
+			<div>
+				<h3>Are you Sure You want to Inactive <b>{inactiveRoleDetails?.talentRole}</b> ? </h3>
+				<div>
+					<h4>Select New Role to Active</h4>
+				<HRSelectField
+					// controlledValue={controlledRoleValue}
+					// setControlledValue={setControlledRoleValue}
+					// isControlled={true}
+					key={inactiveRoleDetails?.talentRole}
+					mode={'id/value'}
+					searchable={true}
+					setValue={setValue}
+					register={register}
+					label={'New Role'}
+					options={talentRole && talentRole}
+					placeholder={"Select Role"}
+					name="role"
+					isError={errors['role'] && errors['role']}
+					required
+					errorMsg={'Please select role'}
+				/>
+				</div>
+				<div className={CurrencyListStyle.formPanelAction} style={{justifyContent:'flex-start', padding:'6px 0'}}>
+				<button
+							className={CurrencyListStyle.btnPrimary}								
+							onClick={handleSubmit(inactiveRoleHandler)}>
+							Save
+						</button>
+
+						<button
+							className={CurrencyListStyle.btn}								
+							onClick={() =>{setShowInactiveModal(false);resetField('role')}}>
+							Cancel
+						</button>
+				</div>
+			</div>
+		</Modal>
 		</div>
 	);
 };
