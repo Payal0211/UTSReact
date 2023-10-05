@@ -1,5 +1,5 @@
 import WithLoader from "shared/components/loader/loader";
-import { Button, Table, Tag, message } from 'antd';
+import { Button, Table, Tag, message, Modal } from 'antd';
 // import dealDetailsStyles from './dealDetailsStyle.module.css';
 
 import dealDetailsStyles from './viewClientDetails.module.css';
@@ -22,6 +22,13 @@ import HROperator from "modules/hiring request/components/hroperator/hroperator"
 import { allClientRequestDAO } from "core/allClients/allClientsDAO";
 import { allClientsConfig } from "modules/hiring request/screens/allClients/allClients.config";
 
+import ArrowClose from 'assets/svg/close.svg';
+import Star from 'assets/svg/selectStarFill.svg';
+
+import { AiOutlineClose } from 'react-icons/ai';
+import { HttpStatusCode } from "axios";
+import { DateTimeUtils } from "shared/utils/basic_utils";
+
 function ViewClientDetails() {
 	const [isLoading, setLoading] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
@@ -29,7 +36,25 @@ function ViewClientDetails() {
 	const {companyID,clientID} = useParams();
 	const [isExpanded, setIsExpanded] = useState(false);
 	const navigate = useNavigate();
-
+	const [jobpostDraft, setModaljobpostDraft] = useState(false);
+	const [guid,setGuid] = useState('');
+	const [draftJObPostDetails,setDraftJobPostDetails] = useState({});
+	useEffect(() => {
+		if(jobpostDraft){
+			getJobPostDraftData();
+		}else{
+			setGuid("");
+		}
+	},[jobpostDraft]);
+	
+	const getJobPostDraftData = async () => {
+		setLoading(true)
+		let response = await allClientRequestDAO.getDraftJobDetailsDAO(guid,clientID);	
+		if(response.statusCode === HttpStatusCode.Ok){
+			setDraftJobPostDetails(response.responseBody);
+		}
+		setLoading(false);
+	}
 
    const togglePriority = useCallback(
 		async (payload) => {
@@ -69,10 +94,9 @@ function ViewClientDetails() {
 		[ messageAPI, navigate],
 	);
 
-
 	const columns = useMemo(
-		() => allClientsConfig.ViewClienttableConfig(togglePriority),
-		[]); 
+		() => allClientsConfig.ViewClienttableConfig(togglePriority,setModaljobpostDraft,setGuid),
+	[]); 
 
 	useEffect(() => {
 		getDataForViewClient();
@@ -84,9 +108,6 @@ function ViewClientDetails() {
 		setLoading(false);
 		setViewDetails(response?.responseBody);	
 	}
-
-	
- 
 
     return(
         <WithLoader
@@ -291,7 +312,170 @@ function ViewClientDetails() {
 				pagination={false}
 				/>
 			</div>
+			
+			<Modal
+				width={'864px'}
+				centered
+				footer={false}
+				open={jobpostDraft}
+				className="jobpostDraftModal"
+				onOk={() => setModaljobpostDraft(false)}
+				onCancel={() => setModaljobpostDraft(false)}
+			>
+				<h2>Job Post in Draft</h2>
+				 <div className={dealDetailsStyles.jobPostDraftContent}>
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Role and type of hiring</h4>
+							<span>Last Edited on: { draftJObPostDetails?.JobDetails?.firstTabDate ? DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.firstTabDate) : "-"}</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={dealDetailsStyles.jobRoleTypeBox}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Title for this position</p>
+									<h5>{draftJObPostDetails?.JobDetails?.roleName ? draftJObPostDetails?.JobDetails?.roleName : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Number of Talents</p>
+									<h5>{draftJObPostDetails?.JobDetails?.noOfTalents ? draftJObPostDetails?.JobDetails?.noOfTalents : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Contract duration (In Months)</p>
+									<h5>{draftJObPostDetails?.JobDetails?.contractDuration ? draftJObPostDetails?.JobDetails?.contractDuration : '-'}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Years of Experience</p>
+									<h5>{draftJObPostDetails?.JobDetails?.experienceYears ? draftJObPostDetails?.JobDetails?.experienceYears : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Temporary or permenant hiring</p>
+									<h5>{draftJObPostDetails?.JobDetails?.isHiringLimited ? draftJObPostDetails?.JobDetails?.isHiringLimited : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Is this is a remote opportunity</p>
+									<h5>{draftJObPostDetails?.JobDetails?.modeOfWorking === 'Remote' ? 'Yes' : 'No'}</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Skills and Budget</h4>
+							<span>Last Edited on: {draftJObPostDetails?.JobDetails?.secondTabDate ? DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.secondTabDate) : "-"}</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Top 5 must have skills</p>
+									<ul className={dealDetailsStyles.SkillWrapBox}>
+										{draftJObPostDetails?.JobDetails?.skills.split(",").map((skill,index) => {
+											return <li key={index}><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> {skill} </li>
+										})}								
+									</ul>									
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Good to have skills</p>
+									<ul className={dealDetailsStyles.SkillWrapBox}>
+										{draftJObPostDetails?.JobDetails?.allSkills?.split(",").map((skill,index) => {
+											return (
+												<li key={index}>{skill}</li>
+											)
+										})}								
+									</ul>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Budget in mind (Monthly)</p>
+									<h5>{draftJObPostDetails?.JobDetails?.currency} {draftJObPostDetails?.JobDetails?.budgetTo} - {draftJObPostDetails?.JobDetails?.budgetFrom}/month</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Employment details</h4>
+							<span>Last Edited on: {draftJObPostDetails?.JobDetails?.thirdTabDate ? DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.thirdTabDate) : "-"}</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.employDetailWrap}`}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Employment type </p>
+									<h5>{draftJObPostDetails?.JobDetails?.employmentType ? draftJObPostDetails?.JobDetails?.employmentType : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Timezone - Shift Time</p>
+									<h5>{draftJObPostDetails?.JobDetails?.timeZone} - {draftJObPostDetails?.JobDetails?.timeZone_FromTime}-{draftJObPostDetails?.JobDetails?.timeZone_EndTime}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Talent to start</p>
+									<h5>{draftJObPostDetails?.JobDetails?.howSoon ? draftJObPostDetails?.JobDetails?.howSoon : "-"}</h5>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Achieve with Uplers</p>
+									<h5>{draftJObPostDetails?.JobDetails?.reason ? draftJObPostDetails?.JobDetails?.reason : "-"}</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>JD/Responsibilities & requirements</h4>
+							<span>Last Edited on: {draftJObPostDetails?.JobDetails?.fourthTabDate ? DateTimeUtils.getDateFromString(draftJObPostDetails?.JobDetails?.fourthTabDate) : "-"}</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
+								{draftJObPostDetails?.JobDetails?.processType === "Manual" ? "": 
+								draftJObPostDetails?.JobDetails?.processType === "URL_Parsing" ?
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>JD Link</p>
+									<a href={draftJObPostDetails?.JDLink} target="_blank">{draftJObPostDetails?.JobDetails?.jdLink}</a>
+								</div> : 
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Upload your JD</p>
+									<a href={draftJObPostDetails?.JDLink} target="_blank">Download JD</a>
+								</div>
+								}
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Roles & Responsibilities </p>										
+									<ul className={dealDetailsStyles.jdRequrementText}>
+									{draftJObPostDetails?.JobDetails?.rolesResponsibilities ?
+									JSON.parse(draftJObPostDetails?.JobDetails?.rolesResponsibilities).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />)
+									: "-"}									
+									</ul>
+								</div>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Requirements</p>
+									<ul className={dealDetailsStyles.jdRequrementText}>
+										{draftJObPostDetails?.JobDetails?.requirements ? 
+										JSON.parse(draftJObPostDetails?.JobDetails?.requirements).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />): "-"}										
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{/* <div className={dealDetailsStyles.jobPostDraftBox}>
+						<div className={dealDetailsStyles.jobPostTopHeading}>
+							<h4>Job Description</h4>
+							<span>Last Edited on: 2-10-2023</span>
+						</div>
+						<div className={dealDetailsStyles.draftInnerContent}>
+							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>Upload your JD</p>
+									<a href="#">Download JD</a>
+								</div>
+							</div>
+						</div>
+					</div> */}
+				</div>
+			</Modal>
 		</WithLoader>
+
+		
+		
     )
 }
 
