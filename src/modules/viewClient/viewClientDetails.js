@@ -386,7 +386,7 @@ function ViewClientDetails() {
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
 									<p>Budget in mind (Monthly)</p>
-									<h5>{draftJObPostDetails?.JobDetails?.currency} {draftJObPostDetails?.JobDetails?.budgetTo} - {draftJObPostDetails?.JobDetails?.budgetFrom}/month</h5>
+									<h5>{draftJObPostDetails?.JobDetails?.currency} {draftJObPostDetails?.JobDetails?.budgetFrom} - {draftJObPostDetails?.JobDetails?.budgetTo}/month</h5>
 								</div>
 							</div>
 						</div>
@@ -426,16 +426,16 @@ function ViewClientDetails() {
 						</div>
 						<div className={dealDetailsStyles.draftInnerContent}>
 							<div className={`${dealDetailsStyles.jobRoleTypeBox} ${dealDetailsStyles.SkillBudget}`}>
-								{draftJObPostDetails?.JobDetails?.processType === "Manual" ? "": 
-								draftJObPostDetails?.JobDetails?.processType === "URL_Parsing" ?
-								<div className={dealDetailsStyles.jobRoleTypePart}>
-									<p>JD Link</p>
-									<a href={draftJObPostDetails?.JDLink} target="_blank">{draftJObPostDetails?.JobDetails?.jdLink}</a>
-								</div> : 
+								{draftJObPostDetails?.JobDetails?.processType === "JDFileUpload"  ? 
 								<div className={dealDetailsStyles.jobRoleTypePart}>
 									<p>Upload your JD</p>
 									<a href={draftJObPostDetails?.JDLink} target="_blank">Download JD</a>
-								</div>
+								</div>: 
+								(draftJObPostDetails?.JobDetails?.processType === "URL_Parsing"  || draftJObPostDetails?.JobDetails?.processType === "JDURLParsingGenerated")?
+								<div className={dealDetailsStyles.jobRoleTypePart}>
+									<p>JD Link</p>
+									<a href={draftJObPostDetails?.JDLink} target="_blank">{draftJObPostDetails?.JobDetails?.jdLink}</a>
+								</div> : ""								
 								}
 								<div className={dealDetailsStyles.jobRoleTypePart}>
 									<p>Roles & Responsibilities </p>										
@@ -448,8 +448,8 @@ function ViewClientDetails() {
 								<div className={dealDetailsStyles.jobRoleTypePart}>
 									<p>Requirements</p>
 									<ul className={dealDetailsStyles.jdRequrementText}>
-										{draftJObPostDetails?.JobDetails?.requirements ? 
-										JSON.parse(draftJObPostDetails?.JobDetails?.requirements).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />): "-"}										
+										{(!draftJObPostDetails?.JobDetails?.requirements || draftJObPostDetails?.JobDetails?.requirements === "[]") ?  
+										"-" : JSON.parse(draftJObPostDetails?.JobDetails?.requirements).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />)}										
 									</ul>
 								</div>
 							</div>

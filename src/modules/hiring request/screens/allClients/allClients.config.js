@@ -155,29 +155,32 @@ export const allClientsConfig = {
                 key: 'starMarked',
                 width:'100px',
                 render:(isMarked, result) => {
-                if(isMarked === true) {
-                     return  <a href="javascript:void(0);" onClick={() => {
-                                    let priorityObject = {
-                                        isNextWeekStarMarked: '0',
-                                        hRID: result.hR_ID,
-                                        person: result.salesUserName,
-                                    };
-                                    togglePriority(priorityObject);
-                              }
-                    }><NextWeekPriorityStar />
-                </a>
-                }else {
-                 return 	<a href="javascript:void(0);" onClick={() => {
-                                    let priorityObject = {
-                                        isNextWeekStarMarked: '1',
-                                        hRID: result.hR_ID,
-                                        person: result.salesUserName,
-                                    };
-                                    togglePriority(priorityObject);
-                              }
-                    }>
-                        <NoPriorityStar />
-                </a>
+                if(result.hR_ID !== 0) 
+                {
+                    if(isMarked === true) {
+                        return  <a href="javascript:void(0);" onClick={() => {
+                                        let priorityObject = {
+                                            isNextWeekStarMarked: '0',
+                                            hRID: result.hR_ID,
+                                            person: result.salesUserName,
+                                        };
+                                        togglePriority(priorityObject);
+                                }
+                        }><NextWeekPriorityStar />
+                    </a>
+                    }else {
+                    return 	<a href="javascript:void(0);" onClick={() => {
+                                        let priorityObject = {
+                                            isNextWeekStarMarked: '1',
+                                            hRID: result.hR_ID,
+                                            person: result.salesUserName,
+                                        };
+                                        togglePriority(priorityObject);
+                                }
+                        }>
+                            <NoPriorityStar />
+                    </a>
+                    }
                 }
                 }
             },

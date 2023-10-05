@@ -285,15 +285,32 @@ const EditDebriefingHR = ({
 	}, [getHRdetails, talentRole]);
 
 	useEffect(() => {
+		// JDParsedSkills &&
+		// 	setValue('roleAndResponsibilities', JDParsedSkills?.Responsibility, {
+		// 		shouldDirty: true,
+		// 	});
 		JDParsedSkills &&
-			setValue('roleAndResponsibilities', JDParsedSkills?.Responsibility, {
-				shouldDirty: true,
-			});
+		setValue('roleAndResponsibilities', getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details
+			?.rolesResponsibilities)? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details
+			?.rolesResponsibilities)) : getHRdetails?.salesHiringRequest_Details
+			?.rolesResponsibilities :
+			JDParsedSkills?.Responsibility ||
+			(getHRdetails?.salesHiringRequest_Details
+				?.rolesResponsibilities ), {
+			shouldDirty: true,
+		});
 
+		// JDParsedSkills &&
+		// 	setValue('requirements', JDParsedSkills?.Requirements, {
+		// 		shouldDirty: true,
+		// 	});
 		JDParsedSkills &&
-			setValue('requirements', JDParsedSkills?.Requirements, {
+			setValue('requirements', getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.requirement)) :getHRdetails?.salesHiringRequest_Details?.requirement :
+			JDParsedSkills?.Requirements ||
+			(getHRdetails?.salesHiringRequest_Details?.requirement), {
 				shouldDirty: true,
 			});
+		
 	}, [JDParsedSkills, setValue]);
 
 	const debriefSubmitHandler = useCallback(
@@ -409,14 +426,30 @@ const EditDebriefingHR = ({
 
 	useEffect(() => {
 		setValue('aboutCompany', getHRdetails?.addHiringRequest?.aboutCompanyDesc);
+		// setValue(
+		// 	'requirements',
+		// 	getHRdetails?.salesHiringRequest_Details?.requirement,
+		// );
 		setValue(
-			'requirements',
-			getHRdetails?.salesHiringRequest_Details?.requirement,
-		);
+				'requirements',
+				getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.requirement)) :getHRdetails?.salesHiringRequest_Details?.requirement :
+										JDParsedSkills?.Requirements ||
+										(getHRdetails?.salesHiringRequest_Details?.requirement),
+			);
+		// setValue(
+		// 	'roleAndResponsibilities',
+		// 	getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities,
+		// );
 		setValue(
-			'roleAndResponsibilities',
-			getHRdetails?.salesHiringRequest_Details?.rolesResponsibilities,
-		);
+				'roleAndResponsibilities',
+				getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details
+					?.rolesResponsibilities)? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details
+					?.rolesResponsibilities)) : getHRdetails?.salesHiringRequest_Details
+					?.rolesResponsibilities :
+					JDParsedSkills?.Responsibility ||
+					(getHRdetails?.salesHiringRequest_Details
+						?.rolesResponsibilities ),
+			);
 		setIsFocusedRole(getHRdetails?.salesHiringRequest_Details?.isHrfocused)
 		// setValue("skills",getHRdetails?.skillmulticheckbox)
 	}, [getHRdetails, setValue]);
