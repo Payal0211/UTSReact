@@ -68,13 +68,16 @@ export const MasterConfig = {
 				}
 			},
 			{
-				title: <div style={{paddingLeft:'40px'}}>Role</div>,
+				title: isCanAddRole ? <div style={{paddingLeft:'40px'}}>Role</div> : 'Role',
 				dataIndex: 'talentRole',
 				key: 'talentRole',
 				width:'50%',
 				align: 'left',
 				render:(text,values)=>{
-					return <ControlledRoleComp text={text} values={values} />
+					if(isCanAddRole){
+						return <ControlledRoleComp text={text} values={values} />
+					}
+					return text
 				}
 			},
 			{
