@@ -481,7 +481,7 @@ export const allHRConfig = {
         dataIndex: "client",
         key: "client",
         align: "left",
-		width:'200px'
+		width:'250px'
       },
       {
         title: "Company",
