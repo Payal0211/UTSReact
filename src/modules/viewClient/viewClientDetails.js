@@ -369,7 +369,7 @@ function ViewClientDetails() {
 								<div className={dealDetailsStyles.jobRoleTypePart}>
 									<p>Top 5 must have skills</p>
 									<ul className={dealDetailsStyles.SkillWrapBox}>
-										{draftJObPostDetails?.JobDetails?.skills.split(",").map((skill,index) => {
+										{draftJObPostDetails?.JobDetails?.skills?.split(",")?.map((skill,index) => {
 											return <li key={index}><img className={dealDetailsStyles.starIcon} src={Star} alt="star"/> {skill} </li>
 										})}								
 									</ul>									
@@ -377,7 +377,7 @@ function ViewClientDetails() {
 								<div className={dealDetailsStyles.jobRoleTypePart}>
 									<p>Good to have skills</p>
 									<ul className={dealDetailsStyles.SkillWrapBox}>
-										{draftJObPostDetails?.JobDetails?.allSkills?.split(",").map((skill,index) => {
+										{draftJObPostDetails?.JobDetails?.allSkills?.split(",")?.map((skill,index) => {
 											return (
 												<li key={index}>{skill}</li>
 											)

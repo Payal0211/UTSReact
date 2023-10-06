@@ -96,5 +96,44 @@ export const MasterConfig = {
 				},
 			},
 		];
+	},
+	timeZoneTable:() => {
+		return [
+			{
+				title: 'Country Code',
+				dataIndex: 'countryCode',
+				key: 'countryCode',
+			},
+			{
+				title: 'Short Name',
+				dataIndex: 'shortName',
+				key: 'shortName',
+				// width:'10%',
+				// align: 'left',				
+			},
+			{
+				title: 'Time zone Title',
+				dataIndex: 'timeZoneTitle',
+				key: 'timeZoneTitle',
+			},
+			{
+				title: 'Description',
+				dataIndex: 'description',
+				key: 'description',
+			},
+			// {
+			// 	title: 'IST Time DiffMin',
+			// 	dataIndex: '',
+			// 	key: '',
+			// },			
+			{
+				title: 'Is Active',
+				dataIndex: 'isActive',
+				key: 'isActive',
+				render: (data, param) => {	
+					return data ? "Yes" : "No";
+				},
+			}
+		]
 	}
 };

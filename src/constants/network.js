@@ -172,6 +172,7 @@ export class MastersAPI {
 	static ADD_ROLE = 'Add'
 	static EDIT_ROLE = 'EditRole'
 	static UPDATE_ROLE = 'UpdateRole'
+	static TIMEZONEMASTER = 'GetTimeZoneMaster'
 }
 export class TalentStatus {
 	static GET_TALENT_STATUS_DETAIL = 'GetStatusDetail';
