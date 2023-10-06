@@ -458,7 +458,7 @@ export const allHRConfig = {
         title: "HR #",
         dataIndex: "hR_Number",
         key: "hR_Number",
-        align: "center",
+        align: "left",
         // render:(val)=> {
         // 	return val ? <FocusedRole /> : null
         // }
@@ -467,47 +467,47 @@ export const allHRConfig = {
         title: "Sales User",
         dataIndex: "salesUser",
         key: "salesUser",
-        align: "center",
+        align: "left",
       },
       {
         title: "Client Type",
         dataIndex: "clientType",
         key: "clientType",
-        align: "center",
+        align: "left",
 		width:'120px'
       },
       {
         title: "Client Email",
         dataIndex: "client",
         key: "client",
-        align: "center",
+        align: "left",
 		width:'200px'
       },
       {
         title: "Company",
         dataIndex: "company",
         key: "company",
-        align: "center",
+        align: "left",
       },
       {
         title: "Total TR",
         dataIndex: "totalTR",
         key: "totalTR",
-        align: "center",
+        align: "left",
 		width:'60px'
       },
       {
         title: "Lost TR",
         dataIndex: "trLostCount",
         key: "trLostCount",
-        align: "center",
+        align: "left",
 		width:'60px'
       },
       {
         title: "Created Date",
         dataIndex: "hrCreatedDate",
         key: "hrCreatedDate",
-        align: "center",
+        align: "left",
         render: (val) => {
           return moment(val).format("DD-MM-yyyy");
         },
@@ -516,7 +516,7 @@ export const allHRConfig = {
         title: "Lost Date",
         dataIndex: "lostDate",
         key: "lostDate",
-        align: "center",
+        align: "left",
         render: (val) => {
           return moment(val).format("DD-MM-yyyy");
         },
@@ -525,19 +525,19 @@ export const allHRConfig = {
         title: "Lost Reason",
         dataIndex: "lostReason",
         key: "lostReason",
-        align: "center",
+        align: "left",
       },
       {
         title: "Lost Done By",
         dataIndex: "lostDoneBy",
         key: "lostDoneBy",
-        align: "center",
+        align: "left",
       },
       {
         title: "Talent Details",
         dataIndex: ' ',
         key: ' ',
-        align: "center",
+        align: "left",
         render: (_, values) => {
           return (
             <button
@@ -566,19 +566,19 @@ export const allHRConfig = {
         title: "Talent Name",
         dataIndex: "talentName",
         key: "talentName",
-        align: "center",
+        align: "left",
       },
       {
         title: "Talent Email",
         dataIndex: "talentEmail",
         key: "talentEmail",
-        align: "center",
+        align: "left",
       },
       {
         title: "Talent Status",
         dataIndex: "talentStatus",
         key: "talentStatus",
-        align: "center",
+        align: "left",
       },
     ];
   },
