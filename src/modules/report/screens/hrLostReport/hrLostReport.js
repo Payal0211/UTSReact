@@ -190,7 +190,7 @@ if(talentID?.id){
 		[handleHRRequest],
 	);
 	const debouncedSearchHandler = (e) => {
-		if(e.target.value.length > 3 || e.target.value === ''){
+		if(e.target.value.length >= 3 || e.target.value === ''){
 			setTimeout(()=>{
 			setTableFilteredState({
 			...tableFilteredState,
