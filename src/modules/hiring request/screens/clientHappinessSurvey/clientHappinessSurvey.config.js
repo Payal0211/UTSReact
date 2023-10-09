@@ -183,7 +183,6 @@ export const clientHappinessSurveyConfig = {
 				key: 'link',
 				width: '400px',
 				render:(text,val) => {
-					console.log(val, text)
 					return val.feedbackStatus === 'Completed' ?  text :(
 
 						<a href={text} target="blank" 
