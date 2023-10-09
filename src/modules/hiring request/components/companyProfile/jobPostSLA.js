@@ -31,7 +31,7 @@ const JOBPostSLA = ({ allApiData }) => {
   const [hrSLADetails, sethrSLADetails] = useState([]);
   const [slaReasons, setSLAReasons] = useState([]);
   const [slaHistory, setSLAHistory] = useState([]);
-  const ws =  new WebSocket(`${NetworkInfo.ENV === "QA" ? 'ws' : 'wss' }://${NetworkInfo.DOMAIN}//`) 
+  // const ws =  new WebSocket(`${NetworkInfo.ENV === "QA" ? 'ws' : 'wss' }://${NetworkInfo.DOMAIN}//`) 
 
   const getHRSLA = async (id) => {
     const result = await hiringRequestDAO.getHRSLADetailsDAO(id);
@@ -42,35 +42,51 @@ const JOBPostSLA = ({ allApiData }) => {
     }
   };
 
+
+  const getWSSLA = async (id)=>{  
+    const result = await hiringRequestDAO.wsJOBPOSTSLADAO(id);
+    if (result?.statusCode === 200) {
+      if(result.responseBody?.details !== null){
+        sethrSLADetails(result.responseBody?.details)
+      }
+    }
+  }
+
   useEffect(() => {
     getHRSLA(allApiData.HR_Id);
+
+    const interval = setInterval(() => { 
+      getWSSLA(allApiData.HR_Id)
+    }, 7000); 
+
+  return () => clearInterval(interval); 
   }, [allApiData.HR_Id]);
 
-  ws.onopen = () => {
-    console.log('WebSocket connection opened');
-  };
+//   ws.onopen = () => {
+//     console.log('WebSocket connection opened');
+//   };
 
-  ws.onmessage = (event) => {
-    const newMessage = event.data;
-    if(JSON.parse(newMessage)[0].HrID === allApiData.HR_Id){
-      let NewHRList = JSON.parse(newMessage).map(val=> ({hrID: val.HrID,
-        jobTitle: val.JobTitle,
-        noOfTalents: val.NoOfTalents,
-        requiredTalents:val.RequiredTalents,
-        rowNo :  val.RowNo,
-        slaDate: val.SLADate,
-        slaStatus:val.SLAStatus,
-        stageID:val.StageID,
-        stageName:val.StageName
-      }))
-      sethrSLADetails(NewHRList);
-    }
+//   ws.onmessage = (event) => {
+//     const newMessage = event.data;
+//     if(JSON.parse(newMessage)[0].HrID === allApiData.HR_Id){
+//       let NewHRList = JSON.parse(newMessage).map(val=> ({hrID: val.HrID,
+//         jobTitle: val.JobTitle,
+//         noOfTalents: val.NoOfTalents,
+//         requiredTalents:val.RequiredTalents,
+//         rowNo :  val.RowNo,
+//         slaDate: val.SLADate,
+//         slaStatus:val.SLAStatus,
+//         stageID:val.StageID,
+//         stageName:val.StageName
+//       }))
+//       sethrSLADetails(NewHRList);
+//     }
 
-  };
+//   };
 
- ws.onclose = () => {
-    console.log('WebSocket connection closed');
-  };
+//  ws.onclose = () => {
+//     console.log('WebSocket connection closed');
+//   };
 
 
   const updateSlaDateHandler = async (paylpoad, setIsLoading) => {
