@@ -88,11 +88,11 @@
     border-radius: 8px;
 }
 
-.hiringRequestPriority:hover{
+/* .hiringRequestPriority:hover{
     border: 2px solid var(--background-color-light);
     background-color: var(--color-sunlight);
     transition: all .2s ease;
-}
+} */
 .hiringRequestPriority:hover>.deleteSVG{
    transform: scale(.9);
    transition: all .2s ease;

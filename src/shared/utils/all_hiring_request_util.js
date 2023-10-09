@@ -41,7 +41,8 @@ export const All_Hiring_Request_Utils = {
 					// 	placement="bottom"
 					// 	title="Current Week Priority"
 					// 	color={`var(--success-color)`}>
-						<CurrentWeekPriorityStar />
+						// <CurrentWeekPriorityStar />
+						<NextWeekPriorityStar />
 					// </Tooltip>
 				);
 			case hiringRequestPriority.NEXT_WEEK_PRIORITY:
