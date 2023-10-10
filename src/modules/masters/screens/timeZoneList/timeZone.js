@@ -23,6 +23,8 @@ const TimeZoneList = () => {
         searchText: ''
 	});
 	const [search,setSearch] = useState('');
+	const[isEdit,setIsEdit] = useState(false);
+	const[updatedTitle,setUpdatedTitle] = useState('');
     const pageSizeOptions = [100, 200, 300, 500];
     const getTimezoneListHandler = useCallback(async (tableData) => {
 		setLoading(true);       
@@ -51,10 +53,17 @@ const TimeZoneList = () => {
         setPageIndex(1);        
     } 
 
+	const onEditTitle = () => {
+		setIsEdit(true);
+	}
+
+	const onChangeTitle = (e) => {
+		setUpdatedTitle(e.target.value);
+	}
     const tableColumnsMemo = useMemo(
 		() =>
-			MasterConfig.timeZoneTable(),
-		[],
+			MasterConfig.timeZoneTable(isEdit,onEditTitle,onChangeTitle,updatedTitle),
+		[isEdit],
 	);
 
 
@@ -141,53 +150,7 @@ const TimeZoneList = () => {
 						/>
 					</>
 				)}
-			</div>				
-
-		{/* <Modal
-          width={"864px"}
-          centered
-          footer={false}
-          open={showInactiveModal}
-          className="changeDateModal"
-          onCancel={() => {setShowInactiveModal(false);resetField('role')}}
-        >
-			<div>
-				<h3>Are you Sure You want to Inactive <b>{inactiveRoleDetails?.talentRole}</b> ? </h3>
-				<div>
-					<h4>Select New Role to Active</h4>
-				<HRSelectField
-					// controlledValue={controlledRoleValue}
-					// setControlledValue={setControlledRoleValue}
-					// isControlled={true}
-					key={inactiveRoleDetails?.talentRole}
-					mode={'id/value'}
-					searchable={true}
-					setValue={setValue}
-					register={register}
-					label={'New Role'}
-					options={talentRole && talentRole}
-					placeholder={"Select Role"}
-					name="role"
-					isError={errors['role'] && errors['role']}
-					required
-					errorMsg={'Please select role'}
-				/>
-				</div>
-				<div className={CurrencyListStyle.formPanelAction} style={{justifyContent:'flex-start', padding:'6px 0'}}>
-				<button
-							className={CurrencyListStyle.btnPrimary}								
-							onClick={handleSubmit(inactiveRoleHandler)}>
-							Save
-						</button>
-
-						<button
-							className={CurrencyListStyle.btn}								
-							onClick={() =>{setShowInactiveModal(false);resetField('role')}}>
-							Cancel
-						</button>
-				</div>
-			</div>
-		</Modal> */}
+			</div>						
 		</div>
     )
 }

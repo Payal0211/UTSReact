@@ -1,5 +1,7 @@
+import { Button } from 'antd';
 import { ReactComponent as EditSVG } from 'assets/svg/edit.svg';
-import { useState } from 'react';
+import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
+
 export const MasterConfig = {
 	countryTable: () => {
 		return [
@@ -97,7 +99,7 @@ export const MasterConfig = {
 			},
 		];
 	},
-	timeZoneTable:() => {
+	timeZoneTable:(isEdit,onEditTitle,onChangeTitle,updatedTitle) => {
 		return [
 			{
 				title: 'Country Code',
@@ -115,6 +117,18 @@ export const MasterConfig = {
 				title: 'Time zone Title',
 				dataIndex: 'timeZoneTitle',
 				key: 'timeZoneTitle',
+				render: (data, param) => {	
+					let val = data;
+
+					return (
+						<>
+							{/* <Button style={{ color: 'black', textDecoration: 'underline' }}> */}
+								<PencilSVG  onClick={onEditTitle}/>
+							{/* </Button> */} &nbsp;&nbsp;
+						{isEdit ? <input  onChange={(e) => onChangeTitle(e)} type='text'/> :  data }
+						</>
+					);
+				},		
 			},
 			{
 				title: 'Description',
