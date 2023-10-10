@@ -306,6 +306,7 @@ export class OnboardsAPI {
 	static UPDATE_PRE_ON_BOARDING_DETAIL = 'UpdatePreOnBoardingDetailForAMAssignment'
 	static GET_DURING_ON_BOARD_DETAIL = 'GetOnBoardingDetailForSecondTabAMAssignment'
 	static UPDATE_PRE_ON_BOARD_2ND_TAB = 'UpdateOnBoardingDetailForSecondTabAMAssignment'
+	static UPLOAD_LEAVE_POLICY = 'UploadLeavePolicy'
 }
 
 export class HTTPStatusCode {

@@ -96,12 +96,14 @@ export default function BeforePreOnboarding({
   }
 
   function extractNumberFromString(inputString) {
-    const regex = /\d+/;
-
-    const match = inputString.match(regex);
+    // const regex = /\d+/;
+    const match = inputString.match(/\d+\.\d+/);
+    // const match = inputString.match(regex);
     if (match && match.length > 0) {
-      const number = parseInt(match[0], 10);
-      return number;
+      // const number = parseInt(match[0], 10);
+      const extractedNumber = parseFloat(match[0]);
+      // return number;
+      return extractedNumber
     }
     return null;
   }
@@ -133,12 +135,13 @@ export default function BeforePreOnboarding({
         setValue(
           "payRate",
           result.responseBody.details.preOnboardingDetailsForAMAssignment
-            .payRate
+            .talentCost
+
         );
         setValue(
           "billRate",
           result.responseBody.details.preOnboardingDetailsForAMAssignment
-            .billRate
+            .finalHrCost
         );
         setValue(
           "hrAcceptedBy",
@@ -252,15 +255,17 @@ export default function BeforePreOnboarding({
         talentShiftEndTime: moment(d.shiftEndTime).format('HH:mm A'), //Update
         payRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
           ? 0
-          : extractNumberFromString(d.payRate), // pass as null if DP HR  // send numeric value //Update
+          :  parseFloat(d.payRate) , // pass as null if DP HR  // send numeric value //Update
+        // billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
+        //   ? null
+        //   : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
         billRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
           ? null
-          : `${preOnboardingDetailsForAMAssignment?.currencySign + extractNumberFromString(d.billRate)} ${preOnboardingDetailsForAMAssignment?.talent_CurrencyCode}` , // pass as null if DP HR  //send value with currency and symbol  //Update
+          : parseFloat(d.billRate) , //,
         netPaymentDays: parseInt(d.netTerm.value), //Update
         nrMargin:!preOnboardingDetailsForAMAssignment?.isHRTypeDP ? d.nrPercent : null
       };
 
-      // console.log("payload", payload,d.dealSource);
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(payload);
       if (result?.statusCode === HTTPStatusCode.OK) {
         if(result?.responseBody.details.IsAMAssigned){
@@ -289,7 +294,7 @@ export default function BeforePreOnboarding({
       preONBoardingData,
       preOnboardingDetailsForAMAssignment,
       EnableNextTab,
-      actionType 
+      actionType ,editPayRate
     ]
   );
   //  console.log("form error", errors);
@@ -612,14 +617,21 @@ export default function BeforePreOnboarding({
                         errors={errors}
                         validationSchema={{
                           required: "please enter the Pay Rate.",
+                          min:{
+                            value:0,
+                            message:"Please enter greter then 0"
+                          }
                         }}
                         label="Pay Rate"
                         required
                         name="payRate"
                         type={InputType.NUMBER}
                         placeholder="USD 4000/Month"
+                        leadingIcon={preONBoardingData?.preOnboardingDetailsForAMAssignment?.currencySign}
                         // value="USD 4000/Month"
                         trailingIcon={
+                          <div className={HRDetailStyle.infotextWrapper} >
+                            {`${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
                           <EditFieldSVG
                             width="16"
                             height="16"
@@ -629,6 +641,7 @@ export default function BeforePreOnboarding({
                               // setValue('netTerm',extractNumberFromString(watch('netTerm')))
                             }}
                           />
+                          </div>
                         }
                       />
                     ) : (
@@ -645,18 +658,24 @@ export default function BeforePreOnboarding({
                         placeholder="USD 4000/Month"
                         // value="USD 4000/Month"
                         disabled
+                        leadingIcon={preONBoardingData?.preOnboardingDetailsForAMAssignment?.currencySign}
                         trailingIcon={
-                        !isTabDisabled &&  <EditFieldSVG
+                           <div className={HRDetailStyle.infotextWrapper} >
+                        {`${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}
+                        {!isTabDisabled && <EditFieldSVG
                             width="16"
                             height="16"
                             onClick={() => {
                               setEditPayRate(true);
-                              setValue(
-                                "payRate",
-                                extractNumberFromString(watch("payRate"))
-                              );
+                              // setValue(
+                              //   "payRate",
+                              //   extractNumberFromString(watch("payRate"))
+                              // );
+                              // console.log(" extractNumberFromString(watch(payRate))", extractNumberFromString(watch("payRate")))
                             }}
-                          />
+                          />}
+                        
+                          </div>
                         }
                       />
                     )}
@@ -692,6 +711,7 @@ export default function BeforePreOnboarding({
                         type={InputType.NUMBER}
                         placeholder="USD 4000/Month"
                         // value={watch('billRate')}
+                        leadingIcon={preONBoardingData?.preOnboardingDetailsForAMAssignment?.currencySign}
                         trailingIcon={
                           <EditFieldSVG
                             width="16"
@@ -713,6 +733,7 @@ export default function BeforePreOnboarding({
                         type={InputType.TEXT}
                         placeholder="USD 4000/Month"
                         // value={watch('billRate')}
+                        leadingIcon={preONBoardingData?.preOnboardingDetailsForAMAssignment?.currencySign}
                         disabled
                         // trailingIcon={
                         //  !isTabDisabled && <EditFieldSVG
@@ -727,6 +748,7 @@ export default function BeforePreOnboarding({
                         //     }}
                         //   />
                         // }
+                        trailingIcon={<div>{`${preONBoardingData?.preOnboardingDetailsForAMAssignment?.talent_CurrencyCode} / Month`}</div>}
                       />
                     )}
                       </>}
@@ -810,7 +832,7 @@ export default function BeforePreOnboarding({
                             onClick={() => {setEditNR(true)
                               setValue(
                                 "payRate",
-                                extractNumberFromString(watch("payRate"))
+                                watch("payRate")
                               );
                             }}
                           />

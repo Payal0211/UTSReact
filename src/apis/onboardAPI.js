@@ -152,4 +152,20 @@ export const OnboardAPI = {
 			return errorDebug(error, 'OnboardAPI.updatePreOnBoardInfo');
 		}
 	},
+	uploadPolicyFile: async (file,id) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.ONBOARD +
+			OnboardsAPI.UPLOAD_LEAVE_POLICY  + `?OnBoardId=${id}`;
+		httpService.dataToSend = file;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendFileDataPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.uploadPolicyFile');
+		}
+	},
 };

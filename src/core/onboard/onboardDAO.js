@@ -273,4 +273,30 @@ export const OnboardDAO = {
 			return errorDebug(error, 'userDAO.updatePreOnBoardInfoDAO');
 		}
 	},
+	uploadPolicyDAO: async function (formData,id) {
+		try {
+			const OnBoardlinfo =
+				await OnboardAPI.uploadPolicyFile(formData,id);
+			if (OnBoardlinfo) {
+				const statusCode = OnBoardlinfo['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = OnBoardlinfo?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return OnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return OnBoardlinfo;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'userDAO.uploadPolicyDAO');
+		}
+	},
 };
