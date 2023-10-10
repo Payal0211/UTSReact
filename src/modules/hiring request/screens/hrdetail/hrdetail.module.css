@@ -99,6 +99,13 @@
 }
 
 
+.infotextWrapper{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
 .newHR {
     padding: 1px 0;
     background-color: var(--color-sunlight);

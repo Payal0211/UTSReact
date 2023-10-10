@@ -65,8 +65,34 @@ const SlaReports = () => {
 	var date = new Date();
 	const [startDate, setStartDate] = useState(new Date(date.getFullYear(), date.getMonth(), 1));
 	const [endDate, setEndDate] = useState(new Date(date.getFullYear(), date.getMonth() + 1, 0));
-	var firstDay = startDate !== null ? startDate : new Date(date.getFullYear(), date.getMonth(), 1);
-	var lastDay = endDate !== null ? endDate : new Date(date.getFullYear(), date.getMonth() + 1, 0);
+	var firstDay = startDate !== null ? moment(startDate).format('YYYY-MM-DD') : new Date(date.getFullYear(), date.getMonth(), 1);
+	var lastDay = endDate !== null ?  moment(endDate).format('YYYY-MM-DD') : new Date(date.getFullYear(), date.getMonth() + 1, 0);
+	
+	const [tableFilteredState, setTableFilteredState] = useState({
+		totalrecord: 100,
+		pagenumber: 1,
+		isExport: false,
+		filterFieldsSLA: {
+			startDate: firstDay,
+			endDate: lastDay,
+			hrid: 0,
+			sales_ManagerID: 0,
+			ops_Lead: 0,
+			salesPerson: 0,
+			stages: '',
+			isAdHoc: 0,
+			role: '',
+			slaType: 0,
+			type: 0,
+			hR_Number: '',
+			company: '',
+			actionFilter: 0,
+			stageIDs: '',
+			actionFilterIDs: '',
+			CompanyIds: '',
+			// ambdr: 0
+		},
+	});
 
 	const checkedYes = (e) => {
 		setCheckedValue(e.target.checked);
@@ -100,7 +126,7 @@ const SlaReports = () => {
 		});
 		slaReportList({
 			...tableFilteredState,
-			filterFields_ViewAllHRs: {
+			filterFieldsSLA: {
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
 				isHrfocused: isFocusedRole,
@@ -108,8 +134,8 @@ const SlaReports = () => {
 		});
 		slaReportDetails({
 			...tableFilteredState,
-			filterFieldsSLA:{...tableFilteredState.filterFieldsSLA, slaType: 0},
-			filterFields_ViewAllHRs: {
+			filterFieldsSLA: {
+				...tableFilteredState.filterFieldsSLA,
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
 				slaType: 0,
@@ -150,7 +176,7 @@ const SlaReports = () => {
 
 		slaReportList({
 			...tableFilteredState,
-			filterFields_ViewAllHRs: {
+			filterFieldsSLA: {
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
 				isHrfocused: isFocusedRole,
@@ -158,8 +184,8 @@ const SlaReports = () => {
 		});
 		slaReportDetails({
 			...tableFilteredState,
-			filterFieldsSLA:{...tableFilteredState.filterFieldsSLA, slaType: 1},
-			filterFields_ViewAllHRs: {
+			filterFieldsSLA: {
+				...tableFilteredState.filterFieldsSLA,
 				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 				toDate: new Date(lastDay).toLocaleDateString('en-US'),
 				slaType: 1,
@@ -167,44 +193,20 @@ const SlaReports = () => {
 			},
 		});
 	};
-	const [tableFilteredState, setTableFilteredState] = useState({
-		totalrecord: 100,
-		pagenumber: 1,
-		isExport: false,
-		filterFieldsSLA: {
-			startDate: firstDay,
-			endDate: lastDay,
-			hrid: 0,
-			sales_ManagerID: 0,
-			ops_Lead: 0,
-			salesPerson: 0,
-			stages: '',
-			isAdHoc: 0,
-			role: '',
-			slaType: 0,
-			type: 0,
-			hR_Number: '',
-			company: '',
-			actionFilter: 0,
-			stageIDs: '',
-			actionFilterIDs: '',
-			CompanyIds: '',
-			// ambdr: 0
-		},
-	});
+	
 
 	
 
-	const slaReportList = async (pageData) => {
-		// console.log(pageData, 'pageData');
+	const slaReportList = useCallback(async (pageData) => {
+	
 		let obj = {
 			startDate: pageData
-				? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format(
+				? moment(pageData?.filterFieldsSLA?.fromDate).format(
 					'YYYY-MM-DD',
 				)
 				: moment(firstDay).format('YYYY-MM-DD'),
 			endDate: pageData
-				? moment(pageData?.filterFields_ViewAllHRs?.toDate).format('YYYY-MM-DD')
+				? moment(pageData?.filterFieldsSLA?.toDate).format('YYYY-MM-DD')
 				: moment(lastDay).format('YYYY-MM-DD'),
 			hrid: 0,
 			sales_ManagerID: 0,
@@ -230,7 +232,7 @@ const SlaReports = () => {
 		} else {
 			setLoading(false);
 		}
-	};
+	},[isFocusedRole,lastDay,firstDay])
 
 	const [slaDetailsList, setSlaDetailsList] = useState([]);
 
@@ -239,40 +241,50 @@ const SlaReports = () => {
 	}, []);
 
 	const slaReportDetails = async (pageData) => {
-		let data = {
-			totalrecord: pageData?.totalRecord ? pageData?.totalRecord : pageSize,
-			pagenumber: pageData?.pageNumber ? pageData?.pageNumber : pageIndex,
-			isExport: false,
-			filterFieldsSLA: {
-				startDate: pageData
-					? moment(pageData?.filterFields_ViewAllHRs?.fromDate).format(
-						'YYYY-MM-DD',
-					)
-					: moment(firstDay).format('YYYY-MM-DD'),
-				endDate: pageData
-					? moment(pageData?.filterFields_ViewAllHRs?.toDate).format(
-						'YYYY-MM-DD',
-					)
-					: moment(lastDay).format('YYYY-MM-DD'),
-				hrid: 0,
-				sales_ManagerID: 0,
-				ops_Lead: 0,
-				salesPerson: 0,
-				stage: '',
-				isAdHoc: 0,
-				role: '',
-				slaType: (pageData?.filterFields_ViewAllHRs?.slaType === 0 || pageData?.filterFields_ViewAllHRs?.slaType === 1)  ? pageData?.filterFields_ViewAllHRs?.slaType  :  slaValue === 0 ? 0 : 1,
-				type: 0,
-				hR_Number: '',
-				company: '',
-				actionFilter: 0,
-				stageIDs: '',
-				actionFilterIDs: '',
-				CompanyIds: '',
-				isHrfocused: isFocusedRole,
-				// ambdr: 0
-			},
-		};
+		let data = {...tableFilteredState,filterFieldsSLA:{...tableFilteredState.filterFieldsSLA,  isHrfocused: isFocusedRole ,startDate: pageData
+						? moment(pageData?.filterFieldsSLA?.fromDate).format(
+							'YYYY-MM-DD',
+						)
+						: moment(firstDay).format('YYYY-MM-DD'),
+					endDate: pageData
+						? moment(pageData?.filterFieldsSLA?.toDate).format(
+							'YYYY-MM-DD',
+						)
+						: moment(lastDay).format('YYYY-MM-DD'),}}
+		// let data = {
+		// 	totalrecord: pageData?.totalRecord ? pageData?.totalRecord : pageSize,
+		// 	pagenumber: pageData?.pageNumber ? pageData?.pageNumber : pageIndex,
+		// 	isExport: false,
+		// 	filterFieldsSLA: {
+		// 		startDate: pageData
+		// 			? moment(pageData?.filterFieldsSLA?.fromDate).format(
+		// 				'YYYY-MM-DD',
+		// 			)
+		// 			: moment(firstDay).format('YYYY-MM-DD'),
+		// 		endDate: pageData
+		// 			? moment(pageData?.filterFieldsSLA?.toDate).format(
+		// 				'YYYY-MM-DD',
+		// 			)
+		// 			: moment(lastDay).format('YYYY-MM-DD'),
+		// 		hrid: 0,
+		// 		sales_ManagerID: 0,
+		// 		ops_Lead: 0,
+		// 		salesPerson: 0,
+		// 		stage: '',
+		// 		isAdHoc: 0,
+		// 		role: '',
+		// 		slaType: (pageData?.filterFieldsSLA?.slaType === 0 || pageData?.filterFieldsSLA?.slaType === 1)  ? pageData?.filterFieldsSLA?.slaType  :  slaValue === 0 ? 0 : 1,
+		// 		type: 0,
+		// 		hR_Number: '',
+		// 		company: '',
+		// 		actionFilter: 0,
+		// 		stageIDs: '',
+		// 		actionFilterIDs: '',
+		// 		CompanyIds: '',
+		// 		isHrfocused: isFocusedRole,
+		// 		// ambdr: 0
+		// 	},
+		// };
 		setSummaryLoading(true);
 		let response = await ReportDAO.slaDetailedDataDAO(data);
 		if (response?.statusCode === HTTPStatusCode?.OK) {
@@ -317,7 +329,8 @@ const SlaReports = () => {
 		if (start && end) {
 			setTableFilteredState({
 				...tableFilteredState,
-				filterFields_ViewAllHRs: {
+				filterFieldsSLA: {
+					...tableFilteredState.filterFieldsSLA,
 					fromDate: new Date(start).toLocaleDateString('en-US'),
 					toDate: new Date(end).toLocaleDateString('en-US'),
 					isHrfocused: isFocusedRole,
@@ -325,7 +338,8 @@ const SlaReports = () => {
 			});
 			slaReportList({
 				...tableFilteredState,
-				filterFields_ViewAllHRs: {
+				filterFieldsSLA: {
+					...tableFilteredState.filterFieldsSLA,
 					fromDate: new Date(start).toLocaleDateString('en-US'),
 					toDate: new Date(end).toLocaleDateString('en-US'),
 					isHrfocused: isFocusedRole,
@@ -333,43 +347,44 @@ const SlaReports = () => {
 			});
 			slaReportDetails({
 				...tableFilteredState,
-				filterFields_ViewAllHRs: {
+				filterFieldsSLA: {
+					...tableFilteredState.filterFieldsSLA,
 					fromDate: new Date(start).toLocaleDateString('en-US'),
 					toDate: new Date(end).toLocaleDateString('en-US'),
 					isHrfocused: isFocusedRole,
 				},
 			});
 			setDateError('');
-			setTableFilteredState({
-				totalrecord: 100,
-				pagenumber: 1,
-				isExport: false,
-				filterFieldsSLA: {
-					startDate: moment(new Date(start).toLocaleDateString('en-US')).format(
-						'YYYY-MM-DD',
-					),
-					endDate: moment(new Date(end).toLocaleDateString('en-US')).format(
-						'YYYY-MM-DD',
-					),
-					hrid: 0,
-					sales_ManagerID: 0,
-					ops_Lead: 0,
-					salesPerson: 0,
-					stages: '',
-					isAdHoc: 0,
-					role: '',
-					slaType: slaValue === 0 ? 0 : 1,
-					type: 0,
-					hR_Number: '',
-					company: '',
-					actionFilter: 0,
-					stageIDs: '',
-					actionFilterIDs: '',
-					isHrfocused: isFocusedRole,
-					CompanyIds: '',
-					// ambdr: 0
-				},
-			});
+			// setTableFilteredState({
+			// 	totalrecord: 100,
+			// 	pagenumber: 1,
+			// 	isExport: false,
+			// 	filterFieldsSLA: {
+			// 		startDate: moment(new Date(start).toLocaleDateString('en-US')).format(
+			// 			'YYYY-MM-DD',
+			// 		),
+			// 		endDate: moment(new Date(end).toLocaleDateString('en-US')).format(
+			// 			'YYYY-MM-DD',
+			// 		),
+			// 		hrid: 0,
+			// 		sales_ManagerID: 0,
+			// 		ops_Lead: 0,
+			// 		salesPerson: 0,
+			// 		stages: '',
+			// 		isAdHoc: 0,
+			// 		role: '',
+			// 		slaType: slaValue === 0 ? 0 : 1,
+			// 		type: 0,
+			// 		hR_Number: '',
+			// 		company: '',
+			// 		actionFilter: 0,
+			// 		stageIDs: '',
+			// 		actionFilterIDs: '',
+			// 		isHrfocused: isFocusedRole,
+			// 		CompanyIds: '',
+			// 		// ambdr: 0
+			// 	},
+			// });
 		}
 	};
 	const onRemoveFilters = () => {
@@ -407,8 +422,9 @@ const SlaReports = () => {
 				setSummaryLoading(true);
 				setLoading(true)
 				let response = await ReportDAO.slaDetailedDataDAO({...tableFilteredState,filterFieldsSLA:{...tableFilteredState.filterFieldsSLA,  isHrfocused: isFocusedRole}});
+				let obj = {...tableFilteredState.filterFieldsSLA,  isHrfocused: isFocusedRole};
 				let responseList = await ReportDAO.OverAllSLASummaryDAO(
-					{...tableFilteredState,filterFieldsSLA:{...tableFilteredState.filterFieldsSLA,  isHrfocused: isFocusedRole}},
+					obj,
 				);
 				// console.log("FilterRes",{response,responseList})
 				if (responseList?.statusCode === HTTPStatusCode.OK) {
@@ -417,11 +433,13 @@ const SlaReports = () => {
 				} if (response?.statusCode === HTTPStatusCode.OK) {
 					setSummaryLoading(false);
 					setSlaDetailsList(slaUtils.slaListData(response && response));
+					setTotalRecords(response?.responseBody?.totalrows);
 					setLoading(false);
 	
 				}
 				if(response?.statusCode === HTTPStatusCode.NOT_FOUND) {
 					setSlaDetailsList([]);
+					setTotalRecords(0);
 					setLoading(false);
 					setSummaryLoading(false);
 				}
@@ -502,6 +520,9 @@ const SlaReports = () => {
 		setTableFilteredState(defaultState);
 		setSlaReportDetailsState(defaultState);
 		handleHRRequest(defaultState);
+		setslaValue(0);
+		setCheckedValue(true);
+		setCheckednoValue(false);
 		onRemoveFilters()
 		setEndDate(new Date(date.getFullYear(), date.getMonth() + 1, 0))
 		setStartDate(new Date(date.getFullYear(), date.getMonth(), 1))
@@ -756,7 +777,7 @@ const SlaReports = () => {
 									// 	totalrecord: pageSize,
 									// 	pagenumber: pageNum,
 									// });
-									slaReportDetails({ pageNumber: pageNum, totalRecord: pageSize , filterFields_ViewAllHRs: {
+									slaReportDetails({ pageNumber: pageNum, totalRecord: pageSize , filterFieldsSLA: {
 										fromDate: new Date(firstDay).toLocaleDateString('en-US'),
 										toDate: new Date(lastDay).toLocaleDateString('en-US'),
 										isHrfocused: isFocusedRole,
@@ -766,8 +787,10 @@ const SlaReports = () => {
 								pageSize: pageSize,
 								pageSizeOptions: pageSizeOptions,
 								total: totalRecords,
-								showTotal: (total, range) =>
-									`${range[0]}-${range[1]} of ${totalRecords} items`,
+								showTotal: (total, range) => {
+									return `${range[0]}-${range[1]} of ${totalRecords} items`
+								}
+									,
 								defaultCurrent: pageIndex,
 							}}
 						/>

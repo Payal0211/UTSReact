@@ -1,5 +1,5 @@
-import React, { useEffect , useState, useCallback} from "react";
-import { Skeleton, Dropdown, Menu } from 'antd';
+import React, { useEffect , useState, useCallback, useRef} from "react";
+import { Skeleton, Dropdown, Menu, message } from 'antd';
 import HRDetailStyle from '../../screens/hrdetail/hrdetail.module.css';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
@@ -8,6 +8,9 @@ import { HRDeleteType, HiringRequestHRStatus, InputType } from 'constants/applic
 import { OnboardDAO } from "core/onboard/onboardDAO";
 import { MasterDAO } from "core/master/masterDAO";
 import { HTTPStatusCode } from "constants/network";
+import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
+import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
+import UploadModal from "shared/components/uploadModal/uploadModal";
 
 
 import { ReactComponent as GeneralInformationSVG } from 'assets/svg/generalInformation.svg';
@@ -52,6 +55,15 @@ export default function DuringPreOnboarding({
 
     const [isTabDisabled, setTabDisabled] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+
+    const [getUploadFileData, setUploadFileData] = useState("");
+    const [showUploadModal, setUploadModal] = useState(false);
+    const [getValidation, setValidation] = useState({
+        systemFileUpload: "",
+        googleDriveFileUpload: "",
+        linkValidation: "",
+      });
+      const uploadFile = useRef(null);
 
     const [reportingTo, setReportingTo] = useState([]);
     const [deviceMasters, setDeviceMasters] = useState([]);
@@ -140,8 +152,8 @@ export default function DuringPreOnboarding({
            setValue('firstWeek',data.secondTabAMAssignmentOnBoardingDetails.talent_FirstWeek)
            setValue('firstMonth',data.secondTabAMAssignmentOnBoardingDetails.talent_FirstMonth)
            setValue('softwareToolsRequired',data.secondTabAMAssignmentOnBoardingDetails.softwareToolsRequired)
-           setValue('devicePolicy',data.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption)
-           setValue('leavePolicie',data.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption)
+        //    setValue('devicePolicy',data.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption)
+        //    setValue('leavePolicie',data.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption)
 
            setValue('exitPolicy',data.exit_Policy)
            setValue('feedbackProcess', data.feedback_Process)
@@ -173,6 +185,12 @@ export default function DuringPreOnboarding({
             let filteredLeavePolicy = leavePolices.filter(leavePolices => leavePolices.value === data.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption)
             setValue('leavePolicie',filteredLeavePolicy[0])
             setControlledLeavePolicy(filteredLeavePolicy[0].value)
+            if(filteredLeavePolicy[0].id === 1){
+                setValue('policyLink',data.secondTabAMAssignmentOnBoardingDetails.proceedWithClient_LeavePolicyLink)
+            }
+            if(filteredLeavePolicy[0].id === 2){
+                setUploadFileData(data.secondTabAMAssignmentOnBoardingDetails.leavePolicyFileName)
+            }
            }
       
           }
@@ -211,17 +229,17 @@ export default function DuringPreOnboarding({
             "talentDeviceDetails": d.devicePolicy.id === 1 ? d.standerdSpecifications : '' ,
             // "additionalCostPerMonth_RDPSecurity": "0",
             // "isRecurring": false,
-            // "proceedWithUplers_LeavePolicyOption": 		"proceedWithUplers_LeavePolicyOption",
+            // "proceedWithUplers_LeavePolicyOption": 		"proceedWithUplers_LeavePolicyOption", // dropdown selected option
             // "proceedWithClient_LeavePolicyOption": "No",
-            // "proceedWithClient_LeavePolicyLink": "",
-            "leavePolicyFileName": "",
+            "proceedWithClient_LeavePolicyLink": d.leavePolicie.id === 1 ? d.policyLink : '', // link from text box
+            "leavePolicyFileName":d.leavePolicie.id === 2 ? getUploadFileData : '', // file name
             "hdnRadioDevicesPolicies": d.devicePolicy.value,
             "device_Radio_Option":  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '',// device name
             "deviceID": d.devicePolicy.id === 2 ? d.deviceType.id : 0,//device id
             "client_DeviceDescription": d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' ,
             "totalCost": d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0,//deviceCost
             "radio_LeavePolicies": d.leavePolicie.value,
-            "leavePolicyPasteLinkName": "",
+            "leavePolicyPasteLinkName": d.leavePolicie.id === 1 ? d.policyLink : '',
             "teamMembers": clientTeamMembers
           }
 
@@ -238,6 +256,15 @@ export default function DuringPreOnboarding({
       setIsLoading(false)
     }
 
+    function isValidUrl(string) {
+        try {
+          new URL(string);
+          return true;
+        } catch (err) {
+          return false;
+        }
+      }
+
 // console.log("memberErrors",memberErrors,watchDevicePolicy,deviceMasters)
     
 // Team menber Object
@@ -250,6 +277,83 @@ export default function DuringPreOnboarding({
     //     "buddy": "1"
     //   }
     // console.log("err",errors)
+
+    const uploadFileHandler = useCallback(
+        async (fileData) => {
+          setIsLoading(true);
+          if (
+            // fileData?.type !== "application/pdf" &&
+            // fileData?.type !== "application/docs" &&
+            // fileData?.type !== "application/msword" &&
+            fileData?.type !== "text/plain" &&
+            fileData?.type !==
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
+          ) {
+            setValidation({
+              ...getValidation,
+              systemFileUpload:
+                "Uploaded file is not a valid, Only pdf, docs, text and rtf files are allowed",
+            });
+            setIsLoading(false);
+          } else if (fileData?.size >= 500000) {
+            setValidation({
+              ...getValidation,
+              systemFileUpload:
+                "Upload file size more than 500kb, Please Upload file upto 500kb",
+            });
+            setIsLoading(false);
+          } else {
+            let formData = new FormData();
+            formData.append("File", fileData);
+            let uploadFileResponse = await OnboardDAO.uploadPolicyDAO(formData,talentDeteils?.OnBoardId);
+            if(uploadFileResponse.statusCode === 400){
+               setValidation({
+                ...getValidation,
+                systemFileUpload: uploadFileResponse?.responseBody,
+              });
+            }
+            if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
+              if (
+                fileData?.type === "image/png" ||
+                fileData?.type === "image/jpeg"
+              ) {
+                setUploadFileData(fileData?.name);
+                setUploadModal(false);
+                setValidation({
+                  ...getValidation,
+                  systemFileUpload: "",
+                });
+                message.success("File uploaded successfully");
+              } else if (
+                fileData?.type === "application/pdf" ||
+                fileData?.type === "application/docs" ||
+                fileData?.type === "application/msword" ||
+                fileData?.type === "text/plain" ||
+                fileData?.type ===
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              ) {
+                setUploadFileData(fileData?.name);
+                // setJDParsedSkills(
+                //   uploadFileResponse && uploadFileResponse?.responseBody?.details
+                // );
+                // setJDDumpID(
+                //                 uploadFileResponse &&
+                //                     uploadFileResponse?.responseBody?.details?.JDDumpID,
+                //             );
+                setUploadModal(false);
+                setValidation({
+                  ...getValidation,
+                  systemFileUpload: "",
+                });
+                message.success("File uploaded successfully");
+              }
+            }
+            setIsLoading(false);
+          }
+        //   uploadFile.current.value = "";
+        },
+        [getValidation]
+      );
 
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
@@ -498,6 +602,7 @@ export default function DuringPreOnboarding({
                             />
                         </div>
                     </div>
+                    
                       <div className={HRDetailStyle.modalFormCol}>
                         <div className={HRDetailStyle.modalFormEdited}>
                             <HRInputField
@@ -519,8 +624,98 @@ export default function DuringPreOnboarding({
                     </div>
                    </>} 
 
-                    
-                    
+                   {watch('leavePolicie')?.id === 1 &&  <div className={HRDetailStyle.colMd12}>
+                        <div className={HRDetailStyle.modalFormEdited}>
+                        <HRInputField
+                                register={register}
+                                errors={errors}
+                                validationSchema={{
+                                    required: 'please enter the Invoice Raising to.',
+                                    validate: (value) => {
+                                        if(!isValidUrl(value)){
+                                            return 'Please Enter valid URL'
+                                        }
+                                        // if(apiData?.ClientDetail?.Availability === "Full Time"){
+                                        //   if (`${value}` <= apiData.ClientDetail.NoOfTalents) {
+                                        //   return "TR cannot be reduced";
+                                        //   }
+                                        // }else{
+                                        //   if (`${value}` <= apiData.ClientDetail.NoOfTalents * 2) {
+                                        //     return "TR cannot be reduced";
+                                        //   }
+                                        // }
+                                      },
+                                }}
+                                label="Leave Polices Link"
+                                name="policyLink"
+                                type={InputType.TEXT}
+                                placeholder="Enter Policy Link"
+                                required={watch('leavePolicie')?.id === 1}
+                                disabled={isTabDisabled}
+                            />
+                        </div>
+                        </div>
+                    }
+
+                    {watch('leavePolicie')?.id === 2 &&  <div className={HRDetailStyle.colMd12}>
+                        <div className={HRDetailStyle.modalFormEdited}>
+                        {!getUploadFileData ? (
+                    <HRInputField
+                      register={register}
+                      leadingIcon={<UploadSVG />}
+                      label="Leave Polices"
+                      name="policyFile"
+                      type={InputType.BUTTON}
+                      buttonLabel="Leave Polices"
+                      setValue={setValue}
+                      required={watch('leavePolicie')?.id === 2}
+                      onClickHandler={() => setUploadModal(true)}
+                      validationSchema={{
+                        required: "please select a file.",
+                      }}
+                      errors={errors}
+                    />
+                  ) : (
+                    <div className={HRDetailStyle.uploadedJDWrap}>
+                      <label>Upload Policy *</label>
+                      <div className={HRDetailStyle.uploadedJDName}>
+                        {getUploadFileData}{" "}
+                        {!isTabDisabled && <CloseSVG
+                          className={HRDetailStyle.uploadedJDClose}
+                          onClick={() => {
+                            // setJDParsedSkills({});
+                            setUploadFileData("");
+                            setValue("jdExport", "");
+                          }}
+                        />}
+                        
+                      </div>
+                    </div>
+                  )}       
+                        </div>
+                        <UploadModal
+                        isGoogleDriveUpload={false}
+                  isLoading={isLoading}
+                  uploadFileRef={uploadFile}
+                  uploadFileHandler={(e) =>
+                    uploadFileHandler(e.target.files[0])
+                  }
+                //   googleDriveFileUploader={() => googleDriveFileUploader()}
+                //   uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+                  modalTitle={"Upload Leave Polices"}
+                  isFooter={false}
+                  modalSubtitle={" "}
+                  openModal={showUploadModal}
+                  setUploadModal={setUploadModal}
+                  cancelModal={() => setUploadModal(false)}
+                  setValidation={setValidation}
+                  getValidation={getValidation}
+                //   getGoogleDriveLink={getGoogleDriveLink}
+                //   setGoogleDriveLink={setGoogleDriveLink}
+                  setUploadFileData={setUploadFileData}
+                />
+                    </div>}
+                      
                   
                     <div className={HRDetailStyle.colMd12}>
                         <div className={HRDetailStyle.modalFormEdited}>
