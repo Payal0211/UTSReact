@@ -1,5 +1,7 @@
+import { Button } from 'antd';
 import { ReactComponent as EditSVG } from 'assets/svg/edit.svg';
-import { useState } from 'react';
+import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
+
 export const MasterConfig = {
 	countryTable: () => {
 		return [
@@ -96,5 +98,56 @@ export const MasterConfig = {
 				},
 			},
 		];
+	},
+	timeZoneTable:(ControlledTitleComp) => {
+		return [
+			{
+				title: 'Country Code',
+				dataIndex: 'countryCode',
+				key: 'countryCode',
+			},
+			{
+				title: 'Short Name',
+				dataIndex: 'shortName',
+				key: 'shortName',
+				// width:'10%',
+				// align: 'left',				
+			},
+			{
+				title: 'Time zone Title',
+				dataIndex: 'timeZoneTitle',
+				key: 'timeZoneTitle',
+				render: (data, param) => {	
+					
+					return <ControlledTitleComp text={data} values={param} />
+					// return (
+					// 	<>
+					// 		{/* <Button style={{ color: 'black', textDecoration: 'underline' }}> */}
+					// 			<PencilSVG  onClick={onEditTitle}/>
+					// 		{/* </Button> */} &nbsp;&nbsp;
+					// 	{isEdit ? <input  onChange={(e) => onChangeTitle(e)} type='text'/> :  data }
+					// 	</>
+					// );
+				},		
+			},
+			// {
+			// 	title: 'Description',
+			// 	dataIndex: 'description',
+			// 	key: 'description',
+			// },
+			// {
+			// 	title: 'IST Time DiffMin',
+			// 	dataIndex: '',
+			// 	key: '',
+			// },			
+			{
+				title: 'Is Active',
+				dataIndex: 'isActive',
+				key: 'isActive',
+				render: (data, param) => {	
+					return data ? "Yes" : "No";
+				},
+			}
+		]
 	}
 };

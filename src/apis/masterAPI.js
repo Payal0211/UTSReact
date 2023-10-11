@@ -811,4 +811,23 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.updateRole');
 		}
 	},
+	getTimeZoneMaster:async function (timezoneDetails) {
+		let httpService = new HttpServices();		
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.TIMEZONEMASTER;	
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+
+		let _reqData = timezoneDetails;
+        _reqData.searchText = _reqData.searchText === "yes" ? 'true' : _reqData.searchText === "no" ? 'false' : _reqData.searchText
+		httpService.dataToSend = _reqData;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getTimeZoneMaster');
+		}
+	}
 };

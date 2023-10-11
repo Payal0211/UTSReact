@@ -42,6 +42,12 @@
   margin: 0;
 }
 
+.forgotPasswordAction {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .forgotPassword {
   font-family: "Montserrat";
   font-style: normal;
@@ -50,7 +56,47 @@
   line-height: 2.28vh;
   text-decoration-line: underline;
   color: #7c7c7c;
-  margin-top: 1.66vh;
+  /* margin-top: 1.66vh; */
+  cursor: pointer;
+  width: fit-content;
+}
+
+.forgotPassBtnWrap{
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.forgotPassBtnWrap .btnPrimary{
+  font-size: 14px;
+  text-transform: uppercase;
+  background: #ffda30;
+    border: 0;
+    border-radius: 27px;
+    color: #232323;
+    display: inline-block;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    min-height: 46px;
+    overflow: hidden;
+    padding: 0 25px;
+    position: relative;
+    text-align: center;
+    text-transform: uppercase;
+    transition: all .5s;
+    z-index: 2;
+}
+
+.forgotPassBtnWrap a{
+  color:#232323;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-decoration-line: underline;
+  text-transform: capitalize;
 }
 
 .loginFormPart {

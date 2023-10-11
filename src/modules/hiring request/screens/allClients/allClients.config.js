@@ -50,7 +50,7 @@ export const allClientsConfig = {
 				width: '60px',
                 render:(_,result) => {
                     return (
-                        <Link
+                    <Link
                         to={`/editclient/${result.companyID}`}
                         style={{ color: 'black', textDecoration: 'underline' }}>
                         <PencilSVG />
