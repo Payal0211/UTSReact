@@ -1,3 +1,4 @@
+import TimeZoneList from 'modules/masters/screens/timeZoneList/timeZone';
 import HRLostReport from 'modules/report/screens/hrLostReport/hrLostReport';
 import ViewClientDetails from 'modules/viewClient/viewClientDetails';
 import React, { Suspense } from 'react';
@@ -158,6 +159,7 @@ export default class UTSRoutes {
 	static MASTERCOUNTRYROUTE = '/master/country';
 	static MASTERCURRENCYROUTE = '/master/currency';
 	static MASTERROLE = '/master/role';
+	static MASTERTIMEZONE = '/master/timezone';
 	static SLA_REPORT = '/slaReport';
 	static I2S_REPORT = "/i2sReport";
 	static CLIENT_REPORT = "/clientReport";
@@ -304,6 +306,12 @@ export const navigateToComponent = {
 			<RoleList />
 		</Suspense>
 	),
+	[UTSRoutes.MASTERTIMEZONE]: (
+		<Suspense>
+			<TimeZoneList />
+		</Suspense>
+	),
+	
 	[UTSRoutes.I2S_REPORT]: (
 		<Suspense>
 			<I2sReport />
