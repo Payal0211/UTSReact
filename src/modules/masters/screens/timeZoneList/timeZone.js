@@ -8,6 +8,9 @@ import { Table } from 'antd';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
+import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
+import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
+import { ReactComponent as Close } from "assets/svg/close.svg";
 
 const TimeZoneList = () => {
     const [isLoading, setLoading] = useState(false);
@@ -60,10 +63,59 @@ const TimeZoneList = () => {
 	const onChangeTitle = (e) => {
 		setUpdatedTitle(e.target.value);
 	}
+
+	const ControlledTitleComp = ({text,values})=> {
+		const [isEdit,setIsEdit] = useState(false)
+		const [role,setRole] = useState(text)
+
+		const saveEditRole = async () =>{
+			if(role){
+				// const result = await MasterDAO.editRoleDAO({roleName:role,id:values.id})
+				// if(result.statusCode === HTTPStatusCode.OK){
+				// 	// message.success(result.responseBody.message)
+				// 	setIsEdit(false)
+				// }else{
+				// 	// message.error(result.responseBody)
+				// 	setRole(text)
+				// 	setIsEdit(false)
+				// }	
+			}
+			
+
+	    }
+
+		if(isEdit){
+			return <div style={{display:'flex', alignItems:'center'}}>
+			<TickMark
+				width={24}
+				height={24}
+				style={{marginRight:'10px',cursor:'pointer'}}
+				onClick={() => saveEditRole()}
+			/>
+			  <input className={CurrencyListStyle.editRoalField} style={{ border: role ? '1px solid #CECCCC' : '1px solid red'}} type ='text' value={role} onChange={e=> setRole(e.target.value)} />  
+			<Close 
+			width={24}
+			height={24}
+			style={{marginLeft:'10px',cursor:'pointer'}}
+			onClick={() => {setIsEdit(false);setRole(text)}} />
+			</div>
+		}else {
+			return <div style={{display:'flex', alignItems:'center'}}>
+				<EditSVG
+					width={24}
+					height={24}
+					style={{marginRight:'10px',cursor:'pointer'}}
+					onClick={() => setIsEdit(true)}
+				/> 
+				{role}
+		  </div>
+		}
+	}
+
     const tableColumnsMemo = useMemo(
 		() =>
-			MasterConfig.timeZoneTable(isEdit,onEditTitle,onChangeTitle,updatedTitle),
-		[isEdit],
+			MasterConfig.timeZoneTable(ControlledTitleComp),
+		[],
 	);
 
 

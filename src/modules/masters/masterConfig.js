@@ -99,7 +99,7 @@ export const MasterConfig = {
 			},
 		];
 	},
-	timeZoneTable:(isEdit,onEditTitle,onChangeTitle,updatedTitle) => {
+	timeZoneTable:(ControlledTitleComp) => {
 		return [
 			{
 				title: 'Country Code',
@@ -118,23 +118,23 @@ export const MasterConfig = {
 				dataIndex: 'timeZoneTitle',
 				key: 'timeZoneTitle',
 				render: (data, param) => {	
-					let val = data;
-
-					return (
-						<>
-							{/* <Button style={{ color: 'black', textDecoration: 'underline' }}> */}
-								<PencilSVG  onClick={onEditTitle}/>
-							{/* </Button> */} &nbsp;&nbsp;
-						{isEdit ? <input  onChange={(e) => onChangeTitle(e)} type='text'/> :  data }
-						</>
-					);
+					
+					return <ControlledTitleComp text={data} values={param} />
+					// return (
+					// 	<>
+					// 		{/* <Button style={{ color: 'black', textDecoration: 'underline' }}> */}
+					// 			<PencilSVG  onClick={onEditTitle}/>
+					// 		{/* </Button> */} &nbsp;&nbsp;
+					// 	{isEdit ? <input  onChange={(e) => onChangeTitle(e)} type='text'/> :  data }
+					// 	</>
+					// );
 				},		
 			},
-			{
-				title: 'Description',
-				dataIndex: 'description',
-				key: 'description',
-			},
+			// {
+			// 	title: 'Description',
+			// 	dataIndex: 'description',
+			// 	key: 'description',
+			// },
 			// {
 			// 	title: 'IST Time DiffMin',
 			// 	dataIndex: '',

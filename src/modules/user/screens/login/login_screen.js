@@ -148,9 +148,9 @@ const LoginScreen = () => {
 									/>
 								</div>
 								
-									<div className={loginStyle.forgotPassword} onClick={()=>setShowForgotPassword(true)}>
+									{/* <div className={loginStyle.forgotPassword} onClick={()=>setShowForgotPassword(true)}>
 										Forgot Password ?
-									</div>							
+									</div>							 */}
 
 								<div className={loginStyle.loginAction}>
 									<ButtonField
