@@ -1,4 +1,4 @@
-import { message } from 'antd';
+import { message , Modal} from 'antd';
 import { useEffect, useState, useCallback, Fragment } from 'react';
 import { InputType } from 'constants/application';
 import ButtonField from 'modules/user/components/buttonField/button_field';
@@ -28,7 +28,16 @@ const LoginScreen = () => {
 		watch,
 		formState: { errors },
 	} = useForm({});
+
+	const {
+		register:forgotEmailRegister,
+		handleSubmit:forgotEmailHandler,
+		setError:forgotEmailSetError,
+		watch:forgotEmailWatch,
+		formState: { errors: forgotEmailErrors },
+	} = useForm({});
 	const [messageAPI, contextHolder] = message.useMessage();
+	const [showForgotPassword,setShowForgotPassword] = useState(false)
 
 	const loginHandler = useCallback(
 		async (d) => {
@@ -69,6 +78,11 @@ const LoginScreen = () => {
 		let login = UserSessionManagementController.getAPIKey();
 		if (login) navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
 	}, [navigate]);
+
+
+	const sendResetLink = async (d) =>{
+		console.log("link to send reset",d)
+	}
 
 	return (
 		<Fragment>
@@ -133,10 +147,10 @@ const LoginScreen = () => {
 										required
 									/>
 								</div>
-
-								{/* <div className={loginStyle.forgotPassword}>
-									Forgot Password ?
-								</div> */}
+								
+									<div className={loginStyle.forgotPassword} onClick={()=>setShowForgotPassword(true)}>
+										Forgot Password ?
+									</div>							
 
 								<div className={loginStyle.loginAction}>
 									<ButtonField
@@ -157,6 +171,55 @@ const LoginScreen = () => {
 						</div>
 					</div>
 				</div>
+				<Modal
+                centered
+                open={showForgotPassword} 
+                // onOk={handleOk} 
+                onCancel={() => setShowForgotPassword(false)}
+                width={716}
+				footer={false}
+                className="customModal forgotPassModal"
+            >
+            <div className="modalContent">
+                <div className='termConditionTopText'>
+                    <h1>Forgot password? Reset it</h1>
+                    <h4>Fear not we’ll email you instructions and the link to reset your password on your registered email address</h4>
+                </div>
+                <form className="formFields">
+                    <div className="row">
+                        <div className="col-12">
+                            <div  className={`form-group ${errors.forgotEmail ? "error" : ""}`}>                                
+                                {/* <label>Enter your registered email address to receive your password reset link</label> */}
+								<HRInputField
+									label="Enter your registered email address to receive your password reset link"
+									name="userEmail"
+									type={InputType.EMAIL}
+									register={forgotEmailRegister}
+									placeholder="Enter Email"
+									errors={forgotEmailErrors}
+									validationSchema={{
+										required: 'please enter the email.',
+										validate: (value) => {
+											let emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+											if(!emailRegex.test(value)){
+												return "Please enter valid email address"
+											}
+										  },
+									}}
+									required
+								/>
+                                {/* <input type="text" className="form-control" name="email" />
+                                {errors?.forgotEmail && <span className='error'>{errors.forgotEmail}</span>} */}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div className={loginStyle.forgotPassBtnWrap}>
+                    <a className={loginStyle.forgotLink} onClick={() => setShowForgotPassword(false)}>GO BACK TO LOGIN</a>
+                    <button type="button" className={loginStyle.btnPrimary} onClick={forgotEmailHandler(sendResetLink)}>Send Password Reset link</button>
+                </div>                
+            </div>            
+            </Modal>          
 			</WithLoader>
 		</Fragment>
 	);
