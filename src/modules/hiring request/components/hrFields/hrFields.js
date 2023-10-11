@@ -1932,28 +1932,28 @@ const [controlledEndTimeValue, setControlledEndTimeValue] =
 								<HRInputField
 									register={register}
 									errors={errors}
-									validationSchema={{
-										required: 'please enter the BQ form link.',
-									}}
+									// validationSchema={{
+									// 	required: 'please enter the BQ form link.',
+									// }}
 									label="BQ Form Link"
 									name="bqFormLink"
 									type={InputType.TEXT}
 									placeholder="Enter the link for BQ form"
-									required
+									// required
 								/>
 							</div>
 							<div className={HRFieldStyle.colMd6}>
 								<HRInputField
 									register={register}
 									errors={errors}
-									validationSchema={{
-										required: 'please enter the discovery call link.',
-									}}
+									// validationSchema={{
+									// 	required: 'please enter the discovery call link.',
+									// }}
 									label="Discovery Call Link"
 									name="discoveryCallLink"
 									type={InputType.TEXT}
 									placeholder="Enter the link for Discovery call"
-									required
+									// required
 								/>
 							</div>
 						</div>			
