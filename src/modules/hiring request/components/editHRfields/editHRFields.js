@@ -1011,10 +1011,10 @@ const EditHRFields = ({
     setValue("country", getHRdetails?.directPlacement?.country);
     setValue("address", getHRdetails?.directPlacement?.address);
     setValue("jdExport", getHRdetails?.addHiringRequest?.jdfilename);
-    setValue(
-      "contractDuration",
-      getHRdetails?.salesHiringRequest_Details?.durationType
-    );
+    // setValue(
+    //   "contractDuration",
+    //   getHRdetails?.salesHiringRequest_Details?.durationType
+    // );
     setValue("workingHours", getHRdetails?.addHiringRequest?.noofHoursworking);
     setValue(
       "overlappingHours",
@@ -1025,7 +1025,7 @@ const EditHRFields = ({
       "adhocBudgetCost",
       getHRdetails?.salesHiringRequest_Details?.adhocBudgetCost
     );
-    setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType);
+    // setContractDuration(getHRdetails?.salesHiringRequest_Details?.durationType);
     if (getHRdetails?.clientName) {
       getListData(
         getHRdetails?.fullClientName?.trim(),
