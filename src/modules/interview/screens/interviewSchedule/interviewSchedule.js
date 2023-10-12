@@ -345,6 +345,7 @@ const InterviewSchedule = ({
 										defaultValue="Select timezone"
 										options={scheduleTimezone && scheduleTimezone}
 										required
+										searchable={true}
 										isError={
 											errors['interviewTimezone'] && errors['interviewTimezone']
 										}
