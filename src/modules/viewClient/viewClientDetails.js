@@ -234,10 +234,10 @@ function ViewClientDetails() {
 								</li>
 								<li>
 									<span>Company URL : </span>
-                                    {viewDetails?.clientDetails?.companyURL ? <a
+                                    {viewDetails?.clientDetails?.viewCompanyURL ? <a
 										href={viewDetails?.clientDetails?.companyURL}
 										target="_blank"
-										className={dealDetailsStyles.dealItemLink}>{viewDetails?.clientDetails?.companyURL}</a> : "NA"}
+										className={dealDetailsStyles.dealItemLink}>{viewDetails?.clientDetails?.viewCompanyURL}</a> : "NA"}
 								</li>
                                 <li>
 									<span>GEO: </span>
