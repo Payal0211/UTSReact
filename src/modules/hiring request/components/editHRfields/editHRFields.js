@@ -35,7 +35,7 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import { UserAccountRole } from "constants/application";
 import useDebounce from "shared/hooks/useDebounce";
 import LogoLoader from "shared/components/loader/logoLoader";
-import { NetworkInfo } from 'constants/network';
+import { NetworkInfo } from "constants/network";
 import { HttpStatusCode } from "axios";
 
 export const secondaryInterviewer = {
@@ -84,6 +84,7 @@ const EditHRFields = ({
   const [partialEngagements, setPartialEngagements] = useState([]);
   const [name, setName] = useState("");
   const [jdURLLink, setJDURLLink] = useState("");
+  const [prevJDURLLink, setPrevJDURLLink] = useState("");
   const [pathName, setPathName] = useState("");
   const [showUploadModal, setUploadModal] = useState(false);
   const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
@@ -144,6 +145,11 @@ const EditHRFields = ({
   const [getDurationType, setDurationType] = useState([]);
   const [getStartEndTimes, setStaryEndTimes] = useState([]);
   const [budgets, setBudgets] = useState([]);
+
+  const [showGPTModal, setShowGPTModal] = useState(false);
+  const [gptDetails, setGPTDetails] = useState({});
+  const [gptFileDetails, setGPTFileDetails] = useState({});
+
   const [tempProjects, setTempProject] = useState([
     {
       disabled: false,
@@ -288,10 +294,10 @@ const EditHRFields = ({
       } else {
         let formData = new FormData();
         formData.append("File", fileData);
-        formData.append('clientemail',getHRdetails?.contact)
+        formData.append("clientemail", getHRdetails?.contact);
         let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
-        if(uploadFileResponse.statusCode === 400){
-           setValidation({
+        if (uploadFileResponse.statusCode === 400) {
+          setValidation({
             ...getValidation,
             systemFileUpload: uploadFileResponse?.responseBody,
           });
@@ -317,18 +323,23 @@ const EditHRFields = ({
               "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           ) {
             setUploadFileData(fileData?.name);
-            setJDParsedSkills(
-              uploadFileResponse && uploadFileResponse?.responseBody?.details
-            );
-            setJDDumpID(
-							uploadFileResponse &&
-								uploadFileResponse?.responseBody?.details?.JDDumpID,
-						);
+            // setJDParsedSkills(
+            //   uploadFileResponse && uploadFileResponse?.responseBody?.details
+            // );
+
+            // setJDDumpID(
+            // 	uploadFileResponse &&
+            // 		uploadFileResponse?.responseBody?.details?.JDDumpID,
+            // );
             setUploadModal(false);
             setValidation({
               ...getValidation,
               systemFileUpload: "",
             });
+            setShowGPTModal(true);
+            setGPTFileDetails(
+              uploadFileResponse && uploadFileResponse?.responseBody?.details
+            );
             message.success("File uploaded successfully");
           }
         }
@@ -336,7 +347,7 @@ const EditHRFields = ({
       }
       uploadFile.current.value = "";
     },
-    [getValidation,setJDDumpID, setJDParsedSkills,getHRdetails?.contact]
+    [getValidation, setJDDumpID, setJDParsedSkills, getHRdetails?.contact]
   );
 
   const googleDriveFileUploader = useCallback(() => {
@@ -434,9 +445,9 @@ const EditHRFields = ({
     const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO(
       prefRegion && prefRegion?.id
     );
-    if(timeZone.statusCode === HTTPStatusCode.OK){
+    if (timeZone.statusCode === HTTPStatusCode.OK) {
       setTimeZonePref(timeZone && timeZone.responseBody);
-    }  
+    }
   }, [prefRegion]);
   const getAvailability = useCallback(async () => {
     const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
@@ -569,23 +580,22 @@ const EditHRFields = ({
 
   const getListData = async (clientName, shortclientName) => {
     if (shortclientName?.trim().length > 0) {
-        let response = await MasterDAO.getEmailSuggestionDAO(shortclientName);
-    if (response?.statusCode === HTTPStatusCode.OK) {
-      setClientNameSuggestion(response?.responseBody?.details);
-      setValue("clientName", clientName);
-      setClientNameMessage("");
-    } else if (
-      response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
-      response?.statusCode === HTTPStatusCode.NOT_FOUND
-    ) {
-      setError("clientName", {
-        type: "validate",
-        message: response?.responseBody,
-      });
-      setClientNameMessage(response?.responseBody);
+      let response = await MasterDAO.getEmailSuggestionDAO(shortclientName);
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        setClientNameSuggestion(response?.responseBody?.details);
+        setValue("clientName", clientName);
+        setClientNameMessage("");
+      } else if (
+        response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+        response?.statusCode === HTTPStatusCode.NOT_FOUND
+      ) {
+        setError("clientName", {
+          type: "validate",
+          message: response?.responseBody,
+        });
+        setClientNameMessage(response?.responseBody);
+      }
     }
-    }
-  
   };
   const getClientNameSuggestionHandler = useCallback(
     async (clientName) => {
@@ -1239,78 +1249,213 @@ const EditHRFields = ({
   //   }
   // }, [localStorage.getItem("fromEditDeBriefing")]);
 
-const onHandleFocusOut = async (e) => {
-  const regex = /\(([^)]+)\)/;
-  const match = watchClientName.match(regex);
-  let email = "";
-  if (match && match.length > 1) {
-    email = match[1];
+
+  function testJSON(text) {
+    if (typeof text !== "string") {
+      return false;
+    }
+    try {
+      JSON.parse(text);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
-  setIsLoading(true);
-  setIsSavedLoading(true)
-  setValue("jdURL",e.target.value);
-  setJDURLLink(e.target.value);
-  const response = await hiringRequestDAO.extractTextUsingPythonDAO({
-    clientEmail:email.trim(),
-    psUrl:e.target.value
-  })
-  
-  if (response.statusCode === HTTPStatusCode.OK && response?.responseBody?.statusCode === HttpStatusCode.Ok) {
-    let _getHrValues = {...getHRdetails};
-    _getHrValues.addHiringRequest.noofTalents = response?.responseBody?.details?.addHiringRequest?.noofTalents;
-    _getHrValues.addHiringRequest.requestForTalent = response?.responseBody?.details?.addHiringRequest?.requestForTalent;
-    _getHrValues.addHiringRequest.availability = response?.responseBody?.details?.addHiringRequest?.availability;
-    _getHrValues.addHiringRequest.isHiringLimited = response?.responseBody?.details?.addHiringRequest?.isHiringLimited;
-    _getHrValues.addHiringRequest.guid = response?.responseBody?.details?.addHiringRequest?.guid;
-    _getHrValues.addHiringRequest.jdurl = e.target.value;
-    _getHrValues.addHiringRequest.jdfilename = "";
-    _getHrValues.salesHiringRequest_Details.budgetFrom = response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom;
-    _getHrValues.salesHiringRequest_Details.budgetTo = response?.responseBody?.details?.salesHiringRequest_Details?.budgetTo;
-    _getHrValues.salesHiringRequest_Details.timeZoneFromTime = response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime;
-    _getHrValues.salesHiringRequest_Details.timeZoneEndTime = response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime;
-    _getHrValues.salesHiringRequest_Details.currency = response?.responseBody?.details?.salesHiringRequest_Details?.currency;
-    _getHrValues.salesHiringRequest_Details.yearOfExp = response?.responseBody?.details?.salesHiringRequest_Details?.yearOfExp;
-    _getHrValues.salesHiringRequest_Details.specificMonth = response?.responseBody?.details?.salesHiringRequest_Details?.specificMonth;
-    _getHrValues.salesHiringRequest_Details.durationType = response?.responseBody?.details?.salesHiringRequest_Details?.durationType;
-    _getHrValues.salesHiringRequest_Details.requirements = response?.responseBody?.details?.salesHiringRequest_Details?.requirements;
-    _getHrValues.salesHiringRequest_Details.roleAndResponsibilities = response?.responseBody?.details?.salesHiringRequest_Details?.roleAndResponsibilities;
-    _getHrValues.chatGptSkills = response?.responseBody?.details?.chatGptSkills;
-    _getHrValues.chatGptAllSkills = response?.responseBody?.details?.chatGptAllSkills;
-    
-    const findWorkingMode = workingMode.filter(
-      (item) => item?.value === response?.responseBody?.details?.modeOfWorkingId
-    );
-    setValue("workingMode", findWorkingMode[0]);
-    setControlledWorkingValue(findWorkingMode[0]?.value);
-    setValue("jdExport", "");
-    setHRdetails(_getHrValues);
-    setValue("talentsNumber", response?.responseBody?.details?.addHiringRequest?.noofTalents);
-    setValue("availability", response?.responseBody?.details?.addHiringRequest?.availability);
-    setValue(
-      "minimumBudget",
-      response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom
-    );
-    setValue(
-      "maximumBudget",
-      response?.responseBody?.details?.salesHiringRequest_Details?.budgetTo
-    );
-    setValue("years", response?.responseBody?.details?.salesHiringRequest_Details?.yearOfExp);
-    setValue("months", response?.responseBody?.details?.salesHiringRequest_Details?.specificMonth);
-    setValue(
-      "contractDuration",
-      response?.responseBody?.details?.salesHiringRequest_Details?.durationType
-    );
-    setContractDuration(response?.responseBody?.details?.salesHiringRequest_Details?.durationType);
-    setControlledCurrencyValue(response?.responseBody?.details?.salesHiringRequest_Details?.currency);
-		setControlledFromTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
-		setControlledEndTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
-		setValue("fromTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
-		setValue("endTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
-    setValue('budget',"2");
-  }
-  setIsLoading(false);
-  setIsSavedLoading(false)
-}  
+
+  const continueWithGPTres = () => {
+    //when file uploaded
+    if (gptFileDetails?.JDDumpID) {
+      setUploadFileData(gptFileDetails.FileName);
+      setJDParsedSkills(gptFileDetails);
+
+      setJDDumpID(gptFileDetails.JDDumpID);
+      setGPTFileDetails({});
+      setShowGPTModal(false);
+
+      let _getHrValues = { ...getHRdetails };
+
+      _getHrValues.salesHiringRequest_Details.requirement =
+        gptFileDetails.Requirements;
+      _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
+        gptFileDetails.Responsibility;
+      _getHrValues.salesHiringRequest_Details.rolesResponsibilities =
+        gptFileDetails.Responsibility;
+      _getHrValues.addHiringRequest.jdurl = "";
+      _getHrValues.addHiringRequest.jdfilename = gptFileDetails.FileName;
+
+      setHRdetails(_getHrValues);
+    } else {
+      //when URL
+
+      let _getHrValues = { ...getHRdetails };
+      _getHrValues.addHiringRequest.noofTalents = gptDetails?.addHiringRequest
+        ?.noofTalents
+        ? gptDetails?.addHiringRequest?.noofTalents
+        : watch("talentsNumber");
+      _getHrValues.addHiringRequest.requestForTalent = gptDetails
+        ?.addHiringRequest?.requestForTalent
+        ? gptDetails?.addHiringRequest?.requestForTalent
+        : watch("hrTitle");
+      _getHrValues.addHiringRequest.availability = gptDetails?.addHiringRequest
+        ?.availability
+        ? gptDetails?.addHiringRequest?.availability
+        : watch("availability");
+      _getHrValues.addHiringRequest.isHiringLimited = gptDetails
+        ?.addHiringRequest?.isHiringLimited
+        ? gptDetails?.addHiringRequest?.isHiringLimited
+        : getHRdetails?.addHiringRequest?.isHiringLimited;
+      _getHrValues.addHiringRequest.guid = gptDetails?.addHiringRequest?.guid;
+      _getHrValues.addHiringRequest.jdurl = jdURLLink;
+      _getHrValues.addHiringRequest.jdfilename = "";
+      _getHrValues.salesHiringRequest_Details.budgetFrom =
+        gptDetails?.salesHiringRequest_Details?.budgetFrom > 0
+          ? gptDetails?.salesHiringRequest_Details?.budgetFrom
+          : watch("minimumBudget");
+      _getHrValues.salesHiringRequest_Details.budgetTo =
+        gptDetails?.salesHiringRequest_Details?.budgetTo > 0
+          ? gptDetails?.salesHiringRequest_Details?.budgetTo
+          : watch("maximumBudget");
+      _getHrValues.salesHiringRequest_Details.timeZoneFromTime = gptDetails
+        ?.salesHiringRequest_Details?.timeZoneFromTime
+        ? gptDetails?.salesHiringRequest_Details?.timeZoneFromTime
+        : controlledFromTimeValue;
+      _getHrValues.salesHiringRequest_Details.timeZoneEndTime = gptDetails
+        ?.salesHiringRequest_Details?.timeZoneEndTime
+        ? gptDetails?.salesHiringRequest_Details?.timeZoneEndTime
+        : controlledEndTimeValue;
+      _getHrValues.salesHiringRequest_Details.currency = gptDetails
+        ?.salesHiringRequest_Details?.currency
+        ? gptDetails?.salesHiringRequest_Details?.currency
+        : controlledCurrencyValue;
+      _getHrValues.salesHiringRequest_Details.yearOfExp = gptDetails
+        ?.salesHiringRequest_Details?.yearOfExp
+        ? gptDetails?.salesHiringRequest_Details?.yearOfExp
+        : watch("years");
+      _getHrValues.salesHiringRequest_Details.specificMonth = gptDetails
+        ?.salesHiringRequest_Details?.specificMonth
+        ? gptDetails?.salesHiringRequest_Details?.specificMonth
+        : watch("months");
+      _getHrValues.salesHiringRequest_Details.durationType = gptDetails
+        ?.salesHiringRequest_Details?.durationType
+        ? gptDetails?.salesHiringRequest_Details?.durationType
+        : controlledDurationTypeValue;
+      _getHrValues.salesHiringRequest_Details.requirement =
+        gptDetails?.salesHiringRequest_Details?.requirement;
+      _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
+        gptDetails?.salesHiringRequest_Details?.rolesResponsibilities;
+      _getHrValues.salesHiringRequest_Details.rolesResponsibilities =
+        gptDetails?.salesHiringRequest_Details?.rolesResponsibilities; // not sure with roles key name
+      _getHrValues.chatGptSkills = gptDetails?.chatGptSkills;
+      _getHrValues.chatGptAllSkills = gptDetails?.chatGptAllSkills;
+
+      const findWorkingMode = workingMode.filter(
+        (item) => item?.value === gptDetails?.modeOfWorkingId
+      );
+
+      setValue("workingMode", findWorkingMode[0]);
+      setControlledWorkingValue(findWorkingMode[0]?.value);
+      setValue("jdExport", "");
+      setHRdetails(_getHrValues);
+      gptDetails?.addHiringRequest?.noofTalents &&
+        setValue("talentsNumber", gptDetails?.addHiringRequest?.noofTalents);
+      gptDetails?.addHiringRequest?.availability &&
+        setValue("availability", gptDetails?.addHiringRequest?.availability);
+      gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 &&
+        setValue(
+          "minimumBudget",
+          gptDetails?.salesHiringRequest_Details?.budgetFrom
+        );
+      gptDetails?.salesHiringRequest_Details?.budgetTo > 0 &&
+        setValue(
+          "maximumBudget",
+          gptDetails?.salesHiringRequest_Details?.budgetTo
+        );
+      gptDetails?.salesHiringRequest_Details?.yearOfExp &&
+        setValue("years", gptDetails?.salesHiringRequest_Details?.yearOfExp);
+      gptDetails?.salesHiringRequest_Details?.specificMonth &&
+        setValue(
+          "months",
+          gptDetails?.salesHiringRequest_Details?.specificMonth
+        );
+      gptDetails?.salesHiringRequest_Details?.durationType &&
+        setValue(
+          "contractDuration",
+          gptDetails?.salesHiringRequest_Details?.durationType
+        );
+      gptDetails?.salesHiringRequest_Details?.durationType &&
+        setContractDuration(
+          gptDetails?.salesHiringRequest_Details?.durationType
+        );
+      gptDetails?.salesHiringRequest_Details?.currency &&
+        setControlledCurrencyValue(
+          gptDetails?.salesHiringRequest_Details?.currency
+        );
+      gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
+        setControlledFromTimeValue(
+          gptDetails?.salesHiringRequest_Details?.timeZoneFromTime
+        );
+      gptDetails?.salesHiringRequest_Details?.timeZoneEndTime &&
+        setControlledEndTimeValue(
+          gptDetails?.salesHiringRequest_Details?.timeZoneEndTime
+        );
+      gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
+        setValue(
+          "fromTime",
+          gptDetails?.salesHiringRequest_Details?.timeZoneFromTime
+        );
+      gptDetails?.salesHiringRequest_Details?.timeZoneEndTime &&
+        setValue(
+          "endTime",
+          gptDetails?.salesHiringRequest_Details?.timeZoneEndTime
+        );
+      setValue("budget", "2");
+
+      setGPTDetails({});
+      setShowGPTModal(false);
+    }
+  };
+
+  const onHandleFocusOut = async (e) => {
+    const regex = /\(([^)]+)\)/;
+    const match = watchClientName.match(regex);
+    let email = "";
+    if (match && match.length > 1) {
+      email = match[1];
+    }
+    setIsLoading(true);
+    setIsSavedLoading(true);
+    setValue("jdURL", e.target.value);
+    setJDURLLink(e.target.value);
+
+    const getResponse = async () => {
+      const response = await hiringRequestDAO.extractTextUsingPythonDAO({
+        clientEmail: email.trim(),
+        psUrl: e.target.value,
+      });
+
+      if (
+        response.statusCode === HTTPStatusCode.OK &&
+        response?.responseBody?.statusCode === HttpStatusCode.Ok
+      ) {
+        setShowGPTModal(true);
+        setGPTDetails(response?.responseBody?.details);
+        setIsLoading(false);
+        setIsSavedLoading(false);
+      }
+    };
+    setPrevJDURLLink((prev) => {
+      if (prev !== e.target.value && e.target.value !== "") {
+        getResponse();
+      } else {
+        setIsLoading(false);
+        setIsSavedLoading(false);
+      }
+
+      return e.target.value;
+    });
+  };
+
+
   return (
     <div className={HRFieldStyle.hrFieldContainer}>
       {contextHolder}
@@ -1532,7 +1677,7 @@ const onHandleFocusOut = async (e) => {
                 <div className={HRFieldStyle.colMd6}>
                   {!getUploadFileData ? (
                     <HRInputField
-                      disabled={!isCompanyNameAvailable ? true :jdURLLink}
+                      disabled={!isCompanyNameAvailable ? true : jdURLLink}
                       register={register}
                       leadingIcon={<UploadSVG />}
                       label="Job Description"
@@ -1561,21 +1706,25 @@ const onHandleFocusOut = async (e) => {
                           }}
                         />
                       </div>
-                      {getHRdetails.addHiringRequest.jdfilename &&  <span style={{ fontWeight: '500' }}>
-											<a
-												rel="noreferrer"
-												href={
-													NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN + 
-													'Media/JDParsing/JDfiles/' +
-													getHRdetails.addHiringRequest.jdfilename
-												}
-												style={{ textDecoration: 'underline' }}
-												target="_blank">
-												{getHRdetails.addHiringRequest.jdfilename}
-											</a>									
-						    		</span>}
+                      {getHRdetails.addHiringRequest.jdfilename && (
+                        <span style={{ fontWeight: "500" }}>
+                          <a
+                            rel="noreferrer"
+                            href={
+                              NetworkInfo.PROTOCOL +
+                              NetworkInfo.DOMAIN +
+                              "Media/JDParsing/JDfiles/" +
+                              getHRdetails.addHiringRequest.jdfilename
+                            }
+                            style={{ textDecoration: "underline" }}
+                            target="_blank"
+                          >
+                            {getHRdetails.addHiringRequest.jdfilename}
+                          </a>
+                        </span>
+                      )}
                     </div>
-                  )}                
+                  )}
                 </div>
                 <UploadModal
                   isLoading={isLoading}
@@ -1601,7 +1750,9 @@ const onHandleFocusOut = async (e) => {
                 <div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     onChangeHandler={(e) => toggleJDHandler(e)}
-                    disabled={!isCompanyNameAvailable ? true : getUploadFileData}
+                    disabled={
+                      !isCompanyNameAvailable ? true : getUploadFileData
+                    }
                     label="Job Description URL"
                     name="jdURL"
                     type={InputType.TEXT}
@@ -1618,7 +1769,6 @@ const onHandleFocusOut = async (e) => {
                         // },
                       }
                     }
-                                        
                   />
                 </div>
               </div>
@@ -2352,6 +2502,286 @@ const onHandleFocusOut = async (e) => {
               Edit HR
             </button>
           </div>
+
+          {showGPTModal && (
+            <Modal
+              footer={false}
+              title="GPT Response"
+              open={showGPTModal}
+              onCancel={() => {
+                setShowGPTModal(false);
+                setGPTFileDetails({});
+                setGPTDetails({});
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  // justifyContent: "center",
+                  // alignItems: "center",
+                }}
+              >
+                <div>
+                  {gptDetails?.addHiringRequest?.noofTalents && (
+                    <p>
+                      NO of talents :{" "}
+                      <b>{gptDetails?.addHiringRequest?.noofTalents}</b>
+                    </p>
+                  )}
+                  {gptDetails?.addHiringRequest?.requestForTalent && (
+                    <p>
+                      Requirenments talents :{" "}
+                      <b>{gptDetails?.addHiringRequest?.requestForTalent}</b>
+                    </p>
+                  )}
+                  {gptDetails?.addHiringRequest?.availability && (
+                    <p>
+                      Availability :{" "}
+                      <b>{gptDetails?.addHiringRequest?.availability}</b>
+                    </p>
+                  )}
+                  {gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 && (
+                    <p>
+                      Budget From ?? :{" "}
+                      <b>
+                        {gptDetails?.salesHiringRequest_Details?.budgetFrom}
+                      </b>
+                    </p>
+                  )}
+                  {gptDetails?.salesHiringRequest_Details?.budgetTo > 0 && (
+                    <p>
+                      Budget To:{" "}
+                      <b>{gptDetails?.salesHiringRequest_Details?.budgetTo}</b>
+                    </p>
+                  )}
+                  {gptDetails?.salesHiringRequest_Details?.timeZoneFromTime && (
+                    <p>
+                      From Time :{" "}
+                      <b>
+                        {
+                          gptDetails?.salesHiringRequest_Details
+                            ?.timeZoneFromTime
+                        }
+                      </b>
+                    </p>
+                  )}
+                  {gptDetails?.salesHiringRequest_Details?.timeZoneEndTime && (
+                    <p>
+                      To Time :{" "}
+                      <b>
+                        {
+                          gptDetails?.salesHiringRequest_Details
+                            ?.timeZoneEndTime
+                        }
+                      </b>
+                    </p>
+                  )}
+                  {gptDetails?.salesHiringRequest_Details?.currency && (
+                    <p>
+                      Currency:{" "}
+                      <b>{gptDetails?.salesHiringRequest_Details?.currency}</b>
+                    </p>
+                  )}
+                  {gptDetails?.salesHiringRequest_Details?.yearOfExp && (
+                    <p>
+                      Years of Experience :{" "}
+                      <b>{gptDetails?.salesHiringRequest_Details?.yearOfExp}</b>
+                    </p>
+                  )}
+                  {gptDetails?.salesHiringRequest_Details?.durationType && (
+                    <p>
+                      Duration Type :{" "}
+                      <b>
+                        {gptDetails?.salesHiringRequest_Details?.durationType}
+                      </b>
+                    </p>
+                  )}
+                  {gptDetails?.modeOfWorkingId && (
+                    <p>
+                      Mode of Working :{" "}
+                      <b>
+                        {
+                          workingMode.filter(
+                            (item) => item?.id == gptDetails?.modeOfWorkingId
+                          )[0]?.value
+                        }
+                      </b>
+                    </p>
+                  )}
+
+                  {gptDetails?.chatGptSkills && (
+                    <>
+                      <h3 style={{ marginTop: "10px" }}>Must Have Skills :</h3>
+                      <div className={HRFieldStyle.skillsList}>
+                        {gptFileDetails.Skills?.length === 0 ? (
+                          <p>NA</p>
+                        ) : (
+                          gptDetails?.chatGptSkills?.split(",").map((item) => {
+                            return <span>{item}</span>;
+                          })
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  {gptDetails?.chatGptAllSkills && (
+                    <>
+                      <h3 style={{ marginTop: "10px" }}>
+                        Good To Have Skills :
+                      </h3>
+                      <div className={HRFieldStyle.skillsList}>
+                        {gptDetails?.chatGptAllSkills?.length === 0 ? (
+                          <p>NA</p>
+                        ) : (
+                          gptDetails?.chatGptAllSkills
+                            ?.split(",")
+                            .map((item) => {
+                              return <span>{item}</span>;
+                            })
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  {gptDetails?.salesHiringRequest_Details?.requirement && (
+                    <>
+                      <h3 style={{ marginTop: "10px" }}>Requirements :</h3>
+                      {testJSON(
+                        gptDetails?.salesHiringRequest_Details?.requirement
+                      ) ? (
+                        <div className={HRFieldStyle.viewHrJDDetailsBox}>
+                          <ul>
+                            {JSON.parse(
+                              gptDetails?.salesHiringRequest_Details
+                                ?.requirement
+                            ).map((text) => (
+                              <li dangerouslySetInnerHTML={{ __html: text }} />
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <div
+                          className={HRFieldStyle.viewHrJDDetailsBox}
+                          dangerouslySetInnerHTML={{
+                            __html:
+                              gptDetails?.salesHiringRequest_Details
+                                ?.requirement,
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+
+                  {gptDetails?.salesHiringRequest_Details
+                    ?.rolesResponsibilities && (
+                    <>
+                      <h3 style={{ marginTop: "10px" }}>
+                        Roles And Responsibilities :
+                      </h3>
+                      {testJSON(
+                        gptDetails?.salesHiringRequest_Details
+                          ?.rolesResponsibilities
+                      ) ? (
+                        <div className={HRFieldStyle.viewHrJDDetailsBox}>
+                          <ul>
+                            {JSON.parse(
+                              gptDetails?.salesHiringRequest_Details
+                                ?.rolesResponsibilities
+                            ).map((text) => (
+                              <li dangerouslySetInnerHTML={{ __html: text }} />
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <div
+                          className={HRFieldStyle.viewHrJDDetailsBox}
+                          dangerouslySetInnerHTML={{
+                            __html:
+                              gptDetails?.salesHiringRequest_Details
+                                ?.rolesResponsibilities,
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+
+                  {/*  For JD File  */}
+                  {gptFileDetails.JDDumpID && (
+                    <div>
+                      <h3>File Name : {gptFileDetails?.FileName}</h3>
+
+                      {gptFileDetails?.Skills.length > 0 && (
+                        <>
+                          <h3 style={{ marginTop: "10px" }}>Skills :</h3>
+                          <div className={HRFieldStyle.skillsList}>
+                            {gptFileDetails.Skills?.length === 0 ? (
+                              <p>NA</p>
+                            ) : (
+                              gptFileDetails.Skills?.map((item) => {
+                                return <span>{item?.value}</span>;
+                              })
+                            )}
+                          </div>
+                        </>
+                      )}
+
+                      {gptFileDetails?.Requirements && (
+                        <>
+                          <h3 style={{ marginTop: "10px" }}>Requirenments :</h3>
+                          <div className={HRFieldStyle.viewHrJDDetailsBox}>
+                            {/* <ul>
+                    {gptFileDetails?.Requirements?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
+                  </ul> */}
+                            {gptFileDetails?.Requirements}
+                          </div>
+                        </>
+                      )}
+
+                      {gptFileDetails?.Responsibility && (
+                        <>
+                          <h3 style={{ marginTop: "10px" }}>
+                            Responsibility :
+                          </h3>
+                          <div className={HRFieldStyle.viewHrJDDetailsBox}>
+                            {/* <ul>
+                    {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
+                  </ul> */}
+                            {gptFileDetails?.Responsibility}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <h3 style={{ marginTop: "10px" }}>
+                  Are you sure you want to proceed with this?
+                </h3>
+              </div>
+              <div className={HRFieldStyle.formPanelAction}>
+                <button
+                  type="submit"
+                  onClick={() => {
+                    continueWithGPTres();
+                  }}
+                  className={HRFieldStyle.btnPrimary}
+                >
+                  OK
+                </button>
+                <button
+                  onClick={() => {
+                    setShowGPTModal(false);
+                    setGPTFileDetails({});
+                    setGPTDetails({});
+                  }}
+                  className={HRFieldStyle.btn}
+                >
+                  Cancel
+                </button>
+              </div>
+            </Modal>
+          )}
         </>
       ) : (
         <Skeleton />

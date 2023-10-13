@@ -1,5 +1,6 @@
 import TimeZoneList from 'modules/masters/screens/timeZoneList/timeZone';
 import HRLostReport from 'modules/report/screens/hrLostReport/hrLostReport';
+import ChangePassword from 'modules/user/screens/changePassword/changePassword';
 import ViewClientDetails from 'modules/viewClient/viewClientDetails';
 import React, { Suspense } from 'react';
 
@@ -168,6 +169,7 @@ export default class UTSRoutes {
 	static CLIENT_HAPPINESS_SURVEY = '/ClientHappinessSurvey';
 	static ALLCLIENTS = '/allClients';
 	static VIEWCLIENT = '/viewClient/:companyID/:clientID';
+	static CHANGE_PASSOWRD = '/changepassword'
 }
 
 export const navigateToComponent = {
@@ -356,6 +358,11 @@ export const navigateToComponent = {
 [UTSRoutes.VIEWCLIENT]: (
 	<Suspense>
 		<ViewClientDetails />
+	</Suspense>
+),
+[UTSRoutes.CHANGE_PASSOWRD]: (
+	<Suspense>
+		<ChangePassword />
 	</Suspense>
 ),
 };

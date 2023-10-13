@@ -211,3 +211,22 @@
     color: #f2f2f2;
     cursor: pointer;
 }
+
+.skillsList {
+    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+.skillsList span {
+font-family: "Montserrat";
+font-weight: 500;
+font-size: 12px;
+line-height: 15px;
+text-align: center;
+color: #ffffff;
+display: inline-block;
+background: #232323;
+border-radius: 4px;
+padding: 6px 8px;
+cursor: default;
+}
