@@ -1547,21 +1547,21 @@ const HRFields = ({
               </div>
               {showUploadModal && (
                 <UploadModal
-                  isGoogleDriveUpload={true}
+                //   isGoogleDriveUpload={true}
                   isLoading={isLoading}
                   uploadFileHandler={uploadFileHandler}
-                  googleDriveFileUploader={() => googleDriveFileUploader()}
-                  uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+                //   googleDriveFileUploader={() => googleDriveFileUploader()}
+                //   uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
                   modalTitle={"Upload JD"}
                   modalSubtitle={"Job Description"}
-                  isFooter={true}
+                  isFooter={false}
                   openModal={showUploadModal}
                   setUploadModal={setUploadModal}
                   cancelModal={() => setUploadModal(false)}
                   setValidation={setValidation}
                   getValidation={getValidation}
-                  getGoogleDriveLink={getGoogleDriveLink}
-                  setGoogleDriveLink={setGoogleDriveLink}
+                //   getGoogleDriveLink={getGoogleDriveLink}
+                //   setGoogleDriveLink={setGoogleDriveLink}
                 />
               )}
               <div className={HRFieldStyle.orLabel}>OR</div>

@@ -1732,18 +1732,18 @@ const EditHRFields = ({
                   uploadFileHandler={(e) =>
                     uploadFileHandler(e.target.files[0])
                   }
-                  googleDriveFileUploader={() => googleDriveFileUploader()}
-                  uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+                  // googleDriveFileUploader={() => googleDriveFileUploader()}
+                  // uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
                   modalTitle={"Upload JD"}
-                  isFooter={true}
+                  isFooter={false}
                   modalSubtitle={"Job Description"}
                   openModal={showUploadModal}
                   setUploadModal={setUploadModal}
                   cancelModal={() => setUploadModal(false)}
                   setValidation={setValidation}
                   getValidation={getValidation}
-                  getGoogleDriveLink={getGoogleDriveLink}
-                  setGoogleDriveLink={setGoogleDriveLink}
+                  // getGoogleDriveLink={getGoogleDriveLink}
+                  // setGoogleDriveLink={setGoogleDriveLink}
                   setUploadFileData={setUploadFileData}
                 />
                 <div className={HRFieldStyle.orLabel}>OR</div>
@@ -2440,31 +2440,32 @@ const EditHRFields = ({
 
               <div className={HRFieldStyle.row}>
                 <div className={HRFieldStyle.colMd6}>
+                  {console.log(getHRdetails)}
                   <HRInputField
                     register={register}
                     errors={errors}
-                    // validationSchema={{
-                    //   required: "please enter the BQ form link.",
-                    // }}
+                    validationSchema={{
+                      required: "please enter the BQ form link.",
+                    }}
                     label="BQ Form Link"
                     name="bqFormLink"
                     type={InputType.TEXT}
                     placeholder="Enter the link for BQ form"
-                    // required
+                    required={getHRdetails?.addHiringRequest?.guid !== null}
                   />
                 </div>
                 <div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     register={register}
                     errors={errors}
-                    // validationSchema={{
-                    //   required: "please enter the discovery call link.",
-                    // }}
+                    validationSchema={{
+                      required: "please enter the discovery call link.",
+                    }}
                     label="Discovery Call Link"
                     name="discoveryCallLink"
                     type={InputType.TEXT}
                     placeholder="Enter the link for Discovery call"
-                    // required
+                    required={getHRdetails?.addHiringRequest?.guid !== null}
                   />
                 </div>
               </div>
