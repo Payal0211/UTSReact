@@ -68,6 +68,7 @@ const AddNewClientScreen = () => {
 									setJDDumpID={setJDDumpID}
 									jdDumpID={jdDumpID}
 									params={params}
+									fromClientflow={true}
 								/>
 							),
 							disabled: tabFieldDisabled.addNewHiringRequest,

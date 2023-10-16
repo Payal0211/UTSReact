@@ -58,6 +58,7 @@ const HRFields = ({
   getHRdetails,
   setHRdetails,
   setAddData,
+  fromClientflow
 }) => {
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
@@ -106,6 +107,13 @@ const HRFields = ({
   const [pathName, setPathName] = useState("");
   const [showUploadModal, setUploadModal] = useState(false);
   const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
+// from add client flow to enadle JD fields 
+  useEffect(()=>{
+    if(fromClientflow === true){
+      setIsCompanyNameAvailable(true)
+    }
+  },[fromClientflow])
+
   const [addHRResponse, setAddHRResponse] = useState(null);
   const [type, setType] = useState("");
   const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
