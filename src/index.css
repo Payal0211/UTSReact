@@ -1012,6 +1012,12 @@ table {
 /* jobpostDraftModal css End */
 
 
+#interviewReschedule .ant-select .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input{
+  padding: 15px;
+  height: 50px;
+}
+
+
 
 /* Responsive css start */
 

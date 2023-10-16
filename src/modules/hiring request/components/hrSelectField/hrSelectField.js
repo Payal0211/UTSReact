@@ -138,6 +138,7 @@ const HRSelectField = ({
 				<Select
 					getPopupContainer={(trigger) => trigger.parentElement}
 					id="selectedValue"
+					className={HRSelectFieldStyle.searchSelectCustom}
 					placeholder={placeholder}
 					mode={mode}
 					dropdownRender={dropdownRender}
