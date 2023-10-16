@@ -1223,6 +1223,12 @@ const HRFields = ({
     if (match && match.length > 1) {
       email = match[1];
     }
+
+    //set email when page open from client flow
+    if(fromClientflow === true){
+      email = watchClientName
+    }
+  
     setIsLoading(true);
     setIsSavedLoading(true);
 
