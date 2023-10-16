@@ -722,3 +722,178 @@
  .generatLinkSelect{
     max-width: 498px;
 } 
+
+
+
+
+/* Responsive css start */
+
+@media only screen and (max-width: 1640px) {
+
+    .calendarFilter{
+        width:185px;
+        height: 35px;
+    }
+
+    .calendarFilter svg{
+        margin-right: 5px !important;
+    }
+  
+    .calendarFilter .dateFilter{
+        font-size: 12px;
+    }
+  
+    .searchInput{
+        font-size: 12px;
+    }  
+
+    .hiringRequest {
+        font-size: 28px;
+    }
+  
+    .filterRight .focusCheckBox{
+        max-width: 115px;
+        align-items: center;
+    }
+
+    .filterRight .focusCheckBox span{
+        font-size: 12px;
+        line-height: 16px;
+    }
+  
+    .filterSetsInner p{
+        font-size: 12px;
+    }
+
+    .priorityFilterSet{
+        gap: 5px;
+    }
+  
+    .addFilter{
+        width: 125px;
+        gap: 8px;
+    }
+
+    .filterRight{
+        gap:15px;
+    }
+
+    .searchFilterSet{
+        width: 160px;
+        padding-left: 5px;
+    }
+
+    .paginationFilter{
+        width: 65px;
+    }
+
+    .filterSets .label{
+        font-size: 12px;
+    }
+
+    .filterSets{
+        padding: 15px 0;
+        width: 98%;
+    }
+
+    .calendarFilter{
+        width: 180px;
+        height: 35px;
+    }
+
+
+    .label {
+        font-size: 12px;
+    }
+
+
+    .filterContainer{
+        margin: 30px auto 20px auto;
+    }
+
+    .btnPrimary {
+        font-size: 12px;
+        line-height: 16px;
+        padding: 12px 25px;
+    }
+
+    .togglebtn {
+        height: 40px
+    }
+
+    .filterSets{
+        padding: 15px 0;
+        width: 98%;
+    }
+
+    .filterRight{
+        gap: 15px;
+    }
+  
+    .addFilter{
+        width: 125px;
+        gap: 8px;
+    }
+
+    .searchFilterSet{
+        width: 200px;
+        height: 35px;
+    }
+
+    .searchInput{
+        font-size: 10px;
+    }   
+
+    .paginationFilter {
+        width: 65px;
+        height: 35px;
+    }
+   
+    .addFilter{
+        height: 35px;
+    }
+
+    .filterCount{
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+
+
+
+    .ratingFilter [class*="ratingNumber"] [class*="ant-select-selector"]{
+        border: none;
+        height: 35px;
+        padding: 8px 10px;
+        align-items: center;
+    }
+
+    .ratingFilter:after{
+        top: 17px;
+    }
+
+
+  }
+
+  @media only screen and (max-width: 1360px) {
+        .searchFilterSet{
+            width: 120px;
+            padding-left: 5px;
+            margin-left: 5px;
+        }
+
+        .filterRight{
+            gap:10px;
+        }
+    
+        .calendarFilter{
+            width: 180px;
+        }
+
+        .calendarFilter svg{
+            margin-right: 5px !important;
+        }
+  }
+  
+  
+  /* Responsive css End */

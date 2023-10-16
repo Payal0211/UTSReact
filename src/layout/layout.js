@@ -25,7 +25,7 @@ const Layout = () => {
 			<Sidebar />
 			<main
 				style={{
-					paddingTop: '131px',
+					paddingTop: '80px',
 					paddingLeft: '60px',
 					width: '100%',
 				}}>
