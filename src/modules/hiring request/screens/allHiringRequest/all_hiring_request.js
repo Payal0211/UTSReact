@@ -86,6 +86,7 @@ const AllHiringRequestScreen = () => {
 	const [ closeHRDetail, setCloseHRDetail] = useState({});
 	const [closeHrModal, setCloseHrModal] = useState(false);
 	const [isFocusedRole, setIsFocusedRole] = useState(false);
+	const [isOnlyPriority, setIsOnlyPriority] = useState(false);
 	const [userData, setUserData] = useState({});
 
 
@@ -207,7 +208,7 @@ const AllHiringRequestScreen = () => {
 		async (pageData) => {
 			setLoading(true);
 			let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
-				{...pageData, "isHrfocused":isFocusedRole},
+				{...pageData, "isHrfocused":isFocusedRole, "StarNextWeek":isOnlyPriority},
 			);
 
 			if (response?.statusCode === HTTPStatusCode.OK) {
@@ -231,7 +232,7 @@ const AllHiringRequestScreen = () => {
 				return 'NO DATA FOUND';
 			}
 		},
-		[navigate,isFocusedRole],
+		[navigate,isFocusedRole,isOnlyPriority],
 	);
 
 	useEffect(() => {
@@ -275,13 +276,13 @@ const AllHiringRequestScreen = () => {
 			handleHRRequest(tableFilteredState)
 		}
 		
-	},[tableFilteredState,endDate,startDate,isFocusedRole])
+	},[tableFilteredState,endDate,startDate,isFocusedRole,isOnlyPriority])
 
 	useEffect(() => {
 		// handleHRRequest(tableFilteredState);
 		handleRequetWithDates()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [tableFilteredState,isFocusedRole]);
+	}, [tableFilteredState,isFocusedRole,isOnlyPriority]);
 
 	const getHRFilterRequest = useCallback(async () => {
 		const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
@@ -383,6 +384,7 @@ const AllHiringRequestScreen = () => {
 		setStartDate(null)
 		setDebouncedSearch('')
 		setIsFocusedRole(false)
+		setIsOnlyPriority(false)
 		setPageIndex(1);
 		setPageSize(100);
 	}, [
@@ -535,6 +537,9 @@ const AllHiringRequestScreen = () => {
 					<p onClick={()=> clearFilters() }>Reset Filters</p>
 			 	</div>
 					<div className={allHRStyles.filterRight}>
+					<Checkbox checked={isOnlyPriority} onClick={()=> setIsOnlyPriority(prev=> !prev)}>
+					Show only Priority
+						</Checkbox>	
 					<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)}>
 					Show only Focused Role
 						</Checkbox>	
