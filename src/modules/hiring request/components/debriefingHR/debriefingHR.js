@@ -144,8 +144,8 @@ const DebriefingHR = ({
 			...skills,
 		];
 		// remove selected skill for other skill list 
-		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed.map(s=> s.value).includes(o.value)))
-		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave.map(s=> s.value).includes(o.value)))
+		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed.map(s=> s?.value).includes(o?.value)))
+		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave.map(s=> s?.value).includes(o?.value)))
 	},[JDParsedSkills, controlledJDParsed, skills,controlledGoodToHave])
 
 	const isOtherSkillExistMemo = useMemo(() => {
@@ -401,21 +401,25 @@ const DebriefingHR = ({
 	};
 
 	const onSelectSkill = (skill) => {
-		let _selected = combinedSkillsMemo.filter((val) => val.value === skill);
+		
+		let _selected = combinedSkillsMemo.filter((val) => val?.value === skill);
 		let _controlledJDParsed = [...controlledJDParsed];		
 		let _index = _controlledJDParsed.findIndex((obj) => obj.id === _selected[0].id);
 		if(_index === -1){
-			_controlledJDParsed.push(_selected[0]);
+			_controlledJDParsed.push({id: '0', value: skill});
 		}
+		// console.log({skill, combinedSkillsMemo,_selected,_index ,_controlledJDParsed,controlledJDParsed})
 		setControlledJDParsed(_controlledJDParsed);
 		setValue('skills',_controlledJDParsed)		
 	}
+	console.log("skills",watch('skills'))
 	const onSelectGoodSkill = (skill) => {
-		let _selected = SkillMemo.filter((val) => val.value === skill?.trim());
+		let _selected = SkillMemo.filter((val) => val?.value === skill?.trim());
 		let _controlledGoodToHave = [...controlledGoodToHave];
 		let _index = _controlledGoodToHave.findIndex((obj) => obj.id === _selected[0].id);
 		if(_index === -1){
-			_controlledGoodToHave.push(_selected[0]);
+			// _controlledGoodToHave.push(_selected[0]);
+			_controlledGoodToHave.push({id: '0', value: skill});
 		}
 		setControlledGoodToHave(_controlledGoodToHave);
 		setValue('goodToHaveSkills',_controlledGoodToHave)
@@ -640,19 +644,11 @@ const DebriefingHR = ({
 								/>
 						</div>
 						<div className="selectFieldBox">
-						{allSuggestedSkills?.map((skill) => (
-									//  onClick={() =>
-									// addtopSkillFromSuggestion(skill, top5Skills)
-									// }									
-									<button key={skill} onClick={() => onSelectGoodSkill(skill)}>                      
-										{skill}
-										{/* <img
-										// src={plusImage}                          
-										loading="lazy"
-										alt="star"
-										/> */}
-									</button>									
-								))}
+						<ul className={DebriefingHRStyle.selectFieldBox}>
+										{allSuggestedSkills?.map((skill) => (																	
+											<li key={skill} onClick={() => onSelectGoodSkill(skill)}><span>{skill}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
+										))}	
+								</ul>
 							</div>
 							{/* <div className={DebriefingHRStyle.mb50}>
 							<label

@@ -160,23 +160,25 @@ const EditDebriefingHR = ({
 	}, [getHRdetails?.skillmulticheckbox, setValue]);
 
 	const onSelectSkill = (skill) => {		
-		let _selected = combinedSkillsMemo.filter((val) => val.value === skill);
+		let _selected = combinedSkillsMemo.filter((val) => val?.value === skill);
 		if(!_selected) return
 		let _controlledJDParsed = [...controlledJDParsed];		
 		let _index = _controlledJDParsed.findIndex((obj) => obj.id === _selected[0]?.id);
 		if(_index === -1){
-			_controlledJDParsed.push(_selected[0]);
+			// _controlledJDParsed.push(_selected[0]);
+			_controlledJDParsed.push({id: '0', value: skill});
 		}
 		setControlledJDParsed(_controlledJDParsed);
 		setValue('skills',_controlledJDParsed);		
 	}
 	
 	const onSelectGoodSkill = (skill) => {
-		let _selected = SkillMemo.filter((val) => val.value === skill?.trim());
+		let _selected = SkillMemo.filter((val) => val?.value === skill?.trim());
 		let _controlledGoodToHave = [...controlledGoodToHave];
 		let _index = _controlledGoodToHave.findIndex((obj) => obj.id === _selected[0].id);
 		if(_index === -1){
-			_controlledGoodToHave.push(_selected[0]);
+			// _controlledGoodToHave.push(_selected[0]);
+			_controlledGoodToHave.push({id: '0', value: skill});
 		}
 		setControlledGoodToHave(_controlledGoodToHave);
 		setValue('goodToHaveSkills',_controlledGoodToHave)
