@@ -165,7 +165,6 @@ export const userDAO = {
 			return errorDebug(error, 'UserDAO.LoginDAO');
 		}
 	},
-
 	logoutDAO: async function () {
 		try {
 			const logOutResult = await userAPI.logOut();
@@ -183,4 +182,29 @@ export const userDAO = {
 			return errorDebug(error, 'UserDAO.LogoutDAO');
 		}
 	},
+	changePasswordDAO : async function (data) {
+		try {
+			const changePassResult = await userAPI.changePasswordRequest(data);
+			if (changePassResult) {
+				const statusCode = changePassResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = changePassResult?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return changePassResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return changePassResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error,'UserDAO.changePasswordDAO');
+		}		
+	}
 };

@@ -153,12 +153,18 @@ const AllHiringRequestScreen = () => {
 			if (response.statusCode === HTTPStatusCode.OK) {
 				getPriorityCount();
 				const { tempdata, index } = hrUtils.hrTogglePriority(response, apiData);
-				setAPIdata([
+				//if priprity filter enable then remove priority from list otherwise update
+				if(isOnlyPriority){
+					handleHRRequest(tableFilteredState)
+				}else{
+					setAPIdata([
 					...apiData.slice(0, index),
 					tempdata,
 					...apiData.slice(index + 1),
 				]);
 				setLoading(false);
+				}
+				
 				messageAPI.open({
 					type: 'success',
 					content: `${tempdata?.HR_ID} priority has been changed.`,
