@@ -33,9 +33,9 @@ const Navbar = ({ fullName }) => {
 		{
 		  key: '1',
 		  label: (
-			<a  rel="noopener noreferrer" href="/changepassword">
+			<Link  to="/changepassword">
 			  Change Password
-			</a>
+			</Link>
 		  ),
 		},
 	
