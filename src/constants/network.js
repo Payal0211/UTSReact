@@ -56,6 +56,7 @@ export class UserAPI {
 	static UPDATEPASSWORD = '/updatepassword';
 	static IS_EMPLOYEE_ID_EXIST = 'IsEmployeeIDExist';
 	static IS_EMPLOYEE_NAME_EXIST = 'IsEmployeeFullNameExist';
+	static CHANGE_PASSWORD = 'ChangePassword';
 }
 
 export class AMAssignmentAPI {
