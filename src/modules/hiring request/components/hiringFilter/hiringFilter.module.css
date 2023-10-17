@@ -115,3 +115,20 @@
     padding-right: 15px !important;
     font-size: 0.9rem !important;
 }
+
+
+/* Responsive css start */
+
+@media only screen and (max-width: 1440px) {
+    .clearAll{
+        font-size: 14px;
+        padding: 8px 15px !important;
+    }
+
+    .applyFilters{
+        font-size: 14px;
+        padding: 8px 15px !important;
+    }
+}
+
+/* Responsive css End */

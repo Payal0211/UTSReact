@@ -1349,7 +1349,7 @@ const EditHRFields = ({
       _getHrValues.chatGptAllSkills = gptDetails?.chatGptAllSkills;
 
       const findWorkingMode = workingMode.filter(
-        (item) => item?.value === gptDetails?.modeOfWorkingId
+        (item) => item?.id === gptDetails?.modeOfWorkingId
       );
 
       setValue("workingMode", findWorkingMode[0]);
@@ -2544,7 +2544,7 @@ const EditHRFields = ({
                   )}
                   {gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 && (
                     <p>
-                      Budget From ?? :{" "}
+                      Budget From  :{" "}
                       <b>
                         {gptDetails?.salesHiringRequest_Details?.budgetFrom}
                       </b>

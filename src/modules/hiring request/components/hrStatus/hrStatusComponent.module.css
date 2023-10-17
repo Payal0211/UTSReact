@@ -9,8 +9,9 @@
     font-weight: 600;
     transition: transform 0.2s;
     white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-flex;
 }
 
 .hrStatusContainer:hover{

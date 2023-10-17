@@ -329,3 +329,103 @@
 .blank_btn b {
   margin-left: 5px;
 }
+
+
+
+
+/* Responsive css start */
+
+@media only screen and (max-width: 1440px) {
+
+    .calendarFilter{
+        width:185px;
+        height: 35px;
+    }
+
+    .calendarFilter svg{
+        margin-right: 5px !important;
+    }
+  
+    .calendarFilter .dateFilter{
+        font-size: 12px;
+    }
+  
+    .hiringRequest {
+        font-size: 28px;
+    }
+  
+    .filterRight .focusCheckBox{
+        max-width: 115px;
+        align-items: center;
+    }
+
+    .filterRight .focusCheckBox span{
+        font-size: 10px;
+        line-height: 12px;
+    }
+  
+    .filterSetsInner p{
+        font-size: 12px;
+    }
+
+    .label {
+        font-size: 12px;
+    }
+
+
+    .filterContainer{
+        margin: 30px auto 20px auto;
+    }
+
+    .btnPrimary {
+        font-size: 12px;
+        line-height: 16px;
+        padding: 12px 25px;
+    }
+
+    .togglebtn {
+        height: 40px
+    }
+
+    .filterSets{
+        padding: 15px 0;
+        width: 98%;
+    }
+
+    .filterRight{
+        gap: 15px;
+    }
+  
+    .addFilter{
+        width: 125px;
+        gap: 8px;
+    }
+
+    .searchFilterSet{
+        width: 200px;
+        height: 35px;
+    }
+
+    .searchInput{
+        font-size: 10px;
+    }   
+
+    .paginationFilter {
+        width: 65px;
+        height: 35px;
+    }
+   
+    .addFilter{
+        height: 35px;
+    }
+
+    .filterCount{
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+
+  }
+  
+  
+  /* Responsive css End */

@@ -70,18 +70,16 @@ const TimeZoneList = () => {
 
 		const saveEditRole = async () =>{
 			if(role){
-				// const result = await MasterDAO.editRoleDAO({roleName:role,id:values.id})
-				// if(result.statusCode === HTTPStatusCode.OK){
-				// 	// message.success(result.responseBody.message)
-				// 	setIsEdit(false)
-				// }else{
-				// 	// message.error(result.responseBody)
-				// 	setRole(text)
-				// 	setIsEdit(false)
-				// }	
-			}
-			
-
+				const result = await MasterDAO.timeZoneTitleDAO({TimeZone:role,id:values.id})
+				if(result?.statusCode === HTTPStatusCode.OK){
+					// message.success(result.responseBody.message)
+					setIsEdit(false);
+				}else{
+					// message.error(result.responseBody)
+					setRole(text);
+					setIsEdit(false)
+				}	
+			}	
 	    }
 
 		if(isEdit){

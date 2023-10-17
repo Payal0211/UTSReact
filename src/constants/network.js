@@ -171,6 +171,7 @@ export class MastersAPI {
 	static UPLOAD_ICON ='UploadIcon'
 	static ADD_ROLE = 'Add'
 	static EDIT_ROLE = 'EditRole'
+	static EDIT_TIMEZONE = 'EditTimeZone'
 	static UPDATE_ROLE = 'UpdateRole'
 	static TIMEZONEMASTER = 'GetTimeZoneMaster'
 }

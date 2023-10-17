@@ -661,3 +661,136 @@ label.radioCheck_Mark input:checked + span.customCheck_Mark:after {
 .actionStatustab li span.actionTab_Running{
   background-color: rgb(255, 0, 0);
 }
+
+
+
+
+
+/* Responsive css start */
+
+@media only screen and (max-width: 1440px) {
+
+  .calendarFilter{
+      width:185px;
+      height: 35px;
+  }
+
+  .calendarFilter svg{
+      margin-right: 5px !important;
+  }
+
+  .calendarFilter .dateFilter{
+      font-size: 12px;
+  }
+
+  .searchInput{
+      font-size: 12px;
+  }  
+
+  .hiringRequest {
+      font-size: 28px;
+  }
+
+  .filterRight .focusCheckBox{
+      max-width: 115px;
+      align-items: center;
+  }
+
+  .filterRight .focusCheckBox span{
+      font-size: 12px;
+      line-height: 16px;
+  }
+
+  .filterSetsInner p{
+      font-size: 12px;
+  }
+
+  .priorityFilterSet{
+      gap: 5px;
+  }
+
+  .addFilter{
+      width: 125px;
+      gap: 8px;
+  }
+
+  .filterRight{
+      gap:15px;
+  }
+
+  .searchFilterSet{
+      width: 160px;
+      padding-left: 5px;
+  }
+
+  .paginationFilter{
+      width: 65px;
+  }
+
+  .filterSets .label{
+      font-size: 12px;
+  }
+
+
+  .label {
+    font-size: 12px;
+}
+
+
+.filterContainer{
+    margin: 30px auto 20px auto;
+}
+
+.btnPrimary {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 10px 25px;
+}
+
+.togglebtn {
+    height: 40px
+}
+
+.filterSets{
+    padding: 15px 0;
+    width: 98%;
+}
+
+.filterRight{
+    gap: 15px;
+}
+
+.addFilter{
+    width: 125px;
+    gap: 8px;
+}
+
+.searchFilterSet{
+    width: 200px;
+    height: 35px;
+}
+
+.searchInput{
+    font-size: 10px;
+}   
+
+.paginationFilter {
+    width: 65px;
+    height: 35px;
+}
+
+.addFilter{
+    height: 35px;
+}
+
+.filterCount{
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+}
+
+
+}
+
+
+/* Responsive css End */
