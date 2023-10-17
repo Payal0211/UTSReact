@@ -798,6 +798,19 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.editRole');
 		}
 	},
+	editTimezone : async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.EDIT_TIMEZONE  + `?TimeZone=${data.TimeZone}&ID=${data.id}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.editTimezone');
+		}
+	},
 	updateRole: async function (data) {
 		let httpService = new HttpServices();
 		httpService.URL =
