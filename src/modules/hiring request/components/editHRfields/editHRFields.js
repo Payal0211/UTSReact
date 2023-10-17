@@ -2544,7 +2544,7 @@ const EditHRFields = ({
                   )}
                   {gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 && (
                     <p>
-                      Budget From ?? :{" "}
+                      Budget From  :{" "}
                       <b>
                         {gptDetails?.salesHiringRequest_Details?.budgetFrom}
                       </b>

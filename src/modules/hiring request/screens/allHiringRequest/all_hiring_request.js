@@ -537,6 +537,9 @@ const AllHiringRequestScreen = () => {
 					<p onClick={()=> clearFilters() }>Reset Filters</p>
 			 	</div>
 					<div className={allHRStyles.filterRight}>
+					<Checkbox checked={isOnlyPriority} onClick={()=> setIsOnlyPriority(prev=> !prev)}>
+					Show only Priority
+						</Checkbox>
 					<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)} className={allHRStyles.focusCheckBox}>
 					Show only Focused Role
 						</Checkbox>	
