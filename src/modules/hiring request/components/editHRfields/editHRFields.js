@@ -1349,7 +1349,7 @@ const EditHRFields = ({
       _getHrValues.chatGptAllSkills = gptDetails?.chatGptAllSkills;
 
       const findWorkingMode = workingMode.filter(
-        (item) => item?.value === gptDetails?.modeOfWorkingId
+        (item) => item?.id === gptDetails?.modeOfWorkingId
       );
 
       setValue("workingMode", findWorkingMode[0]);

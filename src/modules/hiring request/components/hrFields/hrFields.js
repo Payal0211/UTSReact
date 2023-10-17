@@ -36,6 +36,7 @@ import { UserAccountRole } from "constants/application";
 import LogoLoader from "shared/components/loader/logoLoader";
 
 export const secondaryInterviewer = {
+  interviewerId:"0",
   fullName: "",
   emailID: "",
   linkedin: "",
@@ -77,6 +78,9 @@ const HRFields = ({
   const [availability, setAvailability] = useState([]);
   const [timeZonePref, setTimeZonePref] = useState([]);
   const [workingMode, setWorkingMode] = useState([]);
+  const [controlledWorkingValue, setControlledWorkingValue] = useState(
+    "Select working mode"
+  );
   const [tempProjects, setTempProject] = useState([
     {
       disabled: false,
@@ -1122,10 +1126,11 @@ const HRFields = ({
       //when URL
 
       const findWorkingMode = workingMode.filter(
-        (item) => item?.value === gptDetails?.modeOfWorkingId
+        (item) => item?.id == gptDetails?.modeOfWorkingId
       );
 
       setValue("workingMode", findWorkingMode[0]);
+      setControlledWorkingValue(findWorkingMode[0]?.value);
       setValue("jdExport", "");
       gptDetails?.addHiringRequest?.noofTalents &&
         setValue("talentsNumber", gptDetails?.addHiringRequest?.noofTalents);
@@ -1449,6 +1454,9 @@ const HRFields = ({
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
+                    controlledValue={controlledWorkingValue}
+                    setControlledValue={setControlledWorkingValue}
+                    isControlled={true}
                     mode={"id/value"}
                     searchable={false}
                     setValue={setValue}
@@ -2240,7 +2248,7 @@ const HRFields = ({
                   )}
                   {gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 && (
                     <p>
-                      Budget From ?? :{" "}
+                      Budget From :{" "}
                       <b>
                         {gptDetails?.salesHiringRequest_Details?.budgetFrom}
                       </b>

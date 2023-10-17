@@ -47,8 +47,8 @@ const EditDebriefingHR = ({
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			secondaryInterviewer: getHRdetails?.secondaryInterviewerlist
-				? getHRdetails?.secondaryInterviewerlist
+			secondaryInterviewer: getHRdetails?.interviewerDetails?.secondaryinterviewerList
+				? getHRdetails?.interviewerDetails?.secondaryinterviewerList
 				: [],
 		},
 	});
@@ -337,7 +337,7 @@ const EditDebriefingHR = ({
 				en_Id: enID,
 				skills: skillList?.filter((item) => item?.skillsID !== -1),
 				aboutCompanyDesc: d.aboutCompany,
-				secondaryInterviewer: d.secondaryInterviewer,
+				// secondaryInterviewer: d.secondaryInterviewer,
 				interviewerFullName: d.interviewerFullName,
 				interviewerEmail: d.interviewerEmail,
 				interviewerLinkedin: d.interviewerLinkedin,
@@ -348,9 +348,19 @@ const EditDebriefingHR = ({
 				allowSpecialEdit: getHRdetails?.allowSpecialEdit,
 				role: d.role.id,
 				hrTitle: d.hrTitle,
-				allSkills:goodToSkillList
+				allSkills:goodToSkillList,
+				"interviewerDetails":{
+					"primaryInterviewer": {
+						"interviewerId": d.interviewerId,
+						"fullName": d.interviewerFullName,
+						"emailID": d.interviewerEmail,
+						"linkedin": d.interviewerLinkedin,
+						"designation": d.interviewerDesignation,
+						"isUserAddMore": false
+					},
+					"secondaryinterviewerList": d.secondaryInterviewer
+				}
 			};
-					
 			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
 				debriefFormDetails,
 			);

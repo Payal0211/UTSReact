@@ -100,14 +100,28 @@ const DebriefingHR = ({
 
 	useEffect(() => {
 		setValue('aboutCompany', addData?.addHiringRequest?.aboutCompanyDesc);
-		setValue(
-			'requirements',
-			addData?.salesHiringRequest_Details?.requirement,
-		);
-		setValue(
-			'roleAndResponsibilities',
-			addData?.salesHiringRequest_Details?.rolesResponsibilities,
-		);
+		// setValue(
+		// 	'requirements',
+		// 	addData?.salesHiringRequest_Details?.requirement,
+		// );
+		// setValue(
+		// 	'roleAndResponsibilities',
+		// 	addData?.salesHiringRequest_Details?.rolesResponsibilities,
+		// );
+		setValue('requirements', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
+		JDParsedSkills?.Requirements ||
+		(addData?.salesHiringRequest_Details?.requirement), {
+				shouldDirty: true,
+			});
+		setValue('roleAndResponsibilities', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
+			?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
+			?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
+			?.rolesResponsibilities :
+			JDParsedSkills?.Responsibility ||
+			(addData?.salesHiringRequest_Details
+				?.rolesResponsibilities ), {
+			shouldDirty: true,
+		});
 		setIsFocusedRole(addData?.salesHiringRequest_Details?.isHrfocused);
 		setGoodSuggestedSkills(addData?.chatGptSkills?.split(","));
 		setAllSuggestedSkills(addData?.chatGptAllSkills?.split(","));
@@ -257,13 +271,30 @@ const DebriefingHR = ({
 	// 	getOtherSkillsRequest(search);
 	// }, [getOtherSkillsRequest, search]);
 	useEffect(() => {
-		JDParsedSkills &&
-			setValue('roleAndResponsibilities', JDParsedSkills?.Responsibility, {
+		// JDParsedSkills &&
+		// 	setValue('roleAndResponsibilities', JDParsedSkills?.Responsibility, {
+		// 		shouldDirty: true,
+		// 	});
+
+		// JDParsedSkills &&
+		// 	setValue('requirements', JDParsedSkills?.Requirements, {
+		// 		shouldDirty: true,
+		// 	});
+
+		JDParsedSkills &&  setValue('requirements', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
+		JDParsedSkills?.Requirements ||
+		(addData?.salesHiringRequest_Details?.requirement), {
 				shouldDirty: true,
 			});
 
-		JDParsedSkills &&
-			setValue('requirements', JDParsedSkills?.Requirements, {
+
+		JDParsedSkills &&	setValue('roleAndResponsibilities', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
+			?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
+			?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
+			?.rolesResponsibilities :
+			JDParsedSkills?.Responsibility ||
+			(addData?.salesHiringRequest_Details
+				?.rolesResponsibilities ), {
 				shouldDirty: true,
 			});
 	}, [JDParsedSkills, setValue]);
@@ -293,7 +324,7 @@ const DebriefingHR = ({
 			en_Id: enID,
 			skills: skillList?.filter((item) => item?.skillsID !== -1),
 			aboutCompanyDesc: d.aboutCompany,
-			secondaryInterviewer: d.secondaryInterviewer,
+			// secondaryInterviewer: d.secondaryInterviewer,
 			interviewerFullName: d.interviewerFullName,
 			interviewerEmail: d.interviewerEmail,
 			interviewerLinkedin: d.interviewerLinkedin,
@@ -303,7 +334,18 @@ const DebriefingHR = ({
 			IsHrfocused: isFocusedRole,
 			role: d.role.id,
 			hrTitle: d.hrTitle,
-			allSkills:goodToSkillList
+			allSkills:goodToSkillList,
+			"interviewerDetails":{
+				"primaryInterviewer": {
+					"interviewerId": d.interviewerId,
+					"fullName": d.interviewerFullName,
+					"emailID": d.interviewerEmail,
+					"linkedin": d.interviewerLinkedin,
+					"designation": d.interviewerDesignation,
+					"isUserAddMore": false
+				},
+				"secondaryinterviewerList": d.secondaryInterviewer
+			}
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
