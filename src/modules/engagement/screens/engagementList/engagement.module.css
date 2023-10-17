@@ -172,6 +172,7 @@
 }
 .tableDetails{
     margin-top: 24px;
+    padding-bottom: 40px;
 }
 .tableDetails table tr th[class*="ant-table-cell"] {
   white-space: nowrap;
@@ -196,7 +197,7 @@
     justify-content:center;
     align-items: center;
     display: inline-flex;
-    flex: 1;
+    /* flex: 1; */
 }
 
 .filterType img{
@@ -326,3 +327,127 @@
     border-bottom: 1px dashed #E8E8E8;
     margin-bottom: 26px;
 }
+
+
+
+/* Responsive css start */
+
+@media only screen and (max-width: 1440px) {
+
+    .calendarFilter{
+        width:220px;
+    }
+  
+    .calendarFilter .dateFilter{
+        font-size: 12px;
+    }
+
+    .filterType{
+        padding: 10px 10px;
+    }
+
+    .filterType h2 {
+        font-size: 14px;
+        line-height: 16px;
+    }
+  
+    .searchInput{
+        font-size: 12px;
+    }  
+
+    .hiringRequest {
+        font-size: 28px;
+    }
+  
+    .filterRight .focusCheckBox{
+        max-width: 115px;
+        align-items: center;
+    }
+
+    .filterRight .focusCheckBox span{
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    .calendarFilter svg{
+        margin-right: 5px !important;
+    }
+  
+    .filterSetsInner p{
+        font-size: 12px;
+    }
+  
+    .addFilter{
+        width: 125px;
+        gap: 8px;
+    }
+
+
+    .calendarFilter{
+        width:200px;
+        height: 35px;
+    }
+
+    .label {
+        font-size: 12px;
+    }
+
+
+    .filterContainer{
+        margin: 30px auto 20px auto;
+    }
+
+    .btnPrimary {
+        font-size: 12px;
+        line-height: 16px;
+        padding: 12px 25px;
+    }
+
+    .togglebtn {
+        height: 40px
+    }
+
+    .filterSets{
+        padding: 15px 15px;
+        width: 100%;
+    }
+
+    .filterRight{
+        gap: 15px;
+    }
+  
+    .addFilter{
+        width: 125px;
+        gap: 8px;
+    }
+
+    .searchFilterSet{
+        width: 200px;
+        height: 35px;
+    }
+
+    .searchInput{
+        font-size: 10px;
+    }   
+
+    .paginationFilter {
+        width: 65px;
+        height: 35px;
+    }
+   
+    .addFilter{
+        height: 35px;
+    }
+
+    .filterCount{
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+
+
+
+  }
+  
+  
+  /* Responsive css End */

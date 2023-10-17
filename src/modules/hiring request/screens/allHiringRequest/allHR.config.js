@@ -462,52 +462,56 @@ export const allHRConfig = {
         // render:(val)=> {
         // 	return val ? <FocusedRole /> : null
         // }
+        width: '12%',
       },
       {
         title: "Sales User",
         dataIndex: "salesUser",
         key: "salesUser",
         align: "left",
+        width:'120px'
       },
       {
         title: "Client Type",
         dataIndex: "clientType",
         key: "clientType",
         align: "left",
-		width:'120px'
+        width:'100px'
       },
       {
         title: "Client Email",
         dataIndex: "client",
         key: "client",
         align: "left",
-		width:'250px'
+		    width:'16%',
       },
       {
         title: "Company",
         dataIndex: "company",
         key: "company",
         align: "left",
+        width:'10%',
       },
       {
         title: "Total TR",
         dataIndex: "totalTR",
         key: "totalTR",
         align: "left",
-		width:'60px'
+		    width:'70px',
       },
       {
         title: "Lost TR",
         dataIndex: "trLostCount",
         key: "trLostCount",
         align: "left",
-		width:'60px'
+		    width:'60px'
       },
       {
         title: "Created Date",
         dataIndex: "hrCreatedDate",
         key: "hrCreatedDate",
         align: "left",
+        width: '8%',
         render: (val) => {
           return moment(val).format("DD-MM-yyyy");
         },
@@ -517,6 +521,7 @@ export const allHRConfig = {
         dataIndex: "lostDate",
         key: "lostDate",
         align: "left",
+        width:'8%',
         render: (val) => {
           return moment(val).format("DD-MM-yyyy");
         },
@@ -526,21 +531,25 @@ export const allHRConfig = {
         dataIndex: "lostReason",
         key: "lostReason",
         align: "left",
+        width:'100px'
       },
       {
         title: "Lost Done By",
         dataIndex: "lostDoneBy",
         key: "lostDoneBy",
         align: "left",
+        width:'100px'
       },
       {
         title: "Talent Details",
         dataIndex: ' ',
         key: ' ',
         align: "left",
+        width: '10%',
         render: (_, values) => {
           return (
             <button
+              className="telentDetailBtn"
               style={{
                 background: "#FFDA30",
                 border: "1px solid transparent",

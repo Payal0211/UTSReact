@@ -157,3 +157,15 @@
     margin: 0 0 8px 0;
     display: inline-block;
 }
+
+
+
+/* Responsive css start */
+
+@media only screen and (max-width: 1440px) {
+    .clearAll, .applyFilters{
+        padding: 10px 5% !important;
+    }
+}
+
+/* Responsive css End */

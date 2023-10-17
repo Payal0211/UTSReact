@@ -114,6 +114,7 @@ input[type="file"] {
 .ant-table-body .ant-table-measure-row td {
   padding: 0 !important;
 }
+
 .ant-table-pagination-right {
   margin-top: 30px !important;
   justify-content: center !important;
@@ -180,6 +181,10 @@ table {
 
 .ant-table-thead > tr > th {
   border-bottom: 1px dashed #cecccc;
+}
+
+.ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before{
+      content: none;
 }
 
 /* TO FIX TABLE BODY WITH AVAILABLE DISPLAY HEIGHT */
@@ -721,6 +726,7 @@ table {
 /*Share Feedback Modal*/
 .ant-modal-centered {
   padding: 30px 0;
+  z-index: 6666;
 }
 
 .interviewFeedbackModal .ant-modal-body,
@@ -1004,3 +1010,113 @@ table {
 }
 
 /* jobpostDraftModal css End */
+
+
+#interviewReschedule .ant-select .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input{
+  padding: 15px;
+  height: 50px;
+}
+
+
+
+/* Responsive css start */
+
+@media only screen and (max-width: 1440px) {
+
+  .ant-table-thead > tr > th {
+      font-size: 10px;
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+  }
+
+  .ant-table-tbody > tr > td{
+    padding: 10px 10px !important;
+    font-size: 10px;
+  }
+
+  .ant-radio-group .ant-radio-wrapper{
+    font-size: 12px;
+    padding-left: 25px;
+    margin: 0 10px 0 0;
+  }
+
+  .ant-radio-group .ant-radio-wrapper:nth-child:last-child{
+    margin: 0px;
+  }
+
+  .ant-table-body{
+    max-height: calc(100vh - 400px) !important;
+  }
+
+  .telentDetailBtn{
+      font-size: 12px !important;
+      padding: 5px 8px !important;
+  }
+
+  .ant-table-pagination-right {
+    margin-top: 16px !important;
+  }
+
+  .ant-table-pagination-right .ant-pagination-total-text{
+    font-size: 12px;
+  }
+
+  .ant-pagination.ant-pagination-mini .ant-pagination-item{
+    font-size: 12px;
+    min-width: 22px;
+    height: 22px;
+  }
+
+  .ant-pagination .ant-select-selector .ant-select-selection-item{
+    font-size: 12px;
+    padding-right: 26px !important;
+  }
+
+  [class*="react-datepicker-popper"]{
+    z-index: 9999 !important;
+  }
+
+
+}
+
+
+@media only screen and (max-width: 1340px) {
+  [class*="FeedbackDatedetail"] .ant-radio-group .ant-radio-wrapper {
+      font-size: 10px;
+      padding-left: 20px;
+      margin: 0 5px 0 0;
+      /* width: 70px; */
+      line-height: 12px;  
+  }
+
+  [class*="FeedbackDatedetail"] .ant-radio-group .ant-radio-wrapper .ant-radio .ant-radio-inner {
+    width: 15px;
+    height: 15px;
+  }
+
+  [class*="FeedbackDatedetail"] .ant-radio-group .ant-radio-wrapper .ant-radio{
+    top: 1px;
+  }
+
+
+  /* .ant-table-thead > tr > th{
+    white-space: nowrap;
+  } */
+  /* .ant-table-tbody > tr > td{
+    white-space: nowrap;
+  } */
+
+  .telentDetailBtn{
+      font-size: 10px !important;
+      padding: 5px 8px !important;
+  }
+
+
+
+}
+
+/* Responsive css End */
+
+
+
+
