@@ -2,7 +2,7 @@ import navbarStyles from './navbar.module.css';
 import { userDAO } from 'core/user/userDAO';
 import { Link, useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
-import { Badge, Tooltip } from 'antd';
+import { Badge, Dropdown, Tooltip } from 'antd';
 import { ReactComponent as BellSVG } from 'assets/svg/bell.svg';
 import { ReactComponent as LogoutSVG } from 'assets/svg/logout.svg';
 import { useQueryClient } from '@tanstack/react-query';
@@ -27,6 +27,20 @@ const Navbar = ({ fullName }) => {
 	// useEffect(() => {
 	// 	getDashboardCountHandler();
 	// }, [getDashboardCountHandler]);
+
+
+	const items = [
+		{
+		  key: '1',
+		  label: (
+			<a  rel="noopener noreferrer" href="/changepassword">
+			  Change Password
+			</a>
+		  ),
+		},
+	
+		
+	  ];
 	return (
 		<div className={navbarStyles.navbarContainer}>
 			<nav className={navbarStyles.nav}>
@@ -62,7 +76,7 @@ const Navbar = ({ fullName }) => {
 							}}
 						/>
 					</Badge> */}
-
+					<Dropdown menu={{ items }} placement="bottomLeft" arrow>
 					<img
 						src="https://www.w3schools.com/howto/img_avatar.png"
 						className={navbarStyles.avatar}
@@ -71,6 +85,7 @@ const Navbar = ({ fullName }) => {
 							cursor: 'pointer',
 						}}
 					/>
+					</Dropdown>
 					<div className={navbarStyles.avatarDetails}>{fullName}</div>
 					<Tooltip
 						placement="bottom"

@@ -157,7 +157,6 @@ export const userAPI = {
 		}
 	},
 	getReportingListRequest: async (deptId, levelId) => {
-
 		try {
 			let httpService = new HttpServices();
 			httpService.URL =
@@ -172,4 +171,17 @@ export const userAPI = {
 			return errorDebug(error, 'UserAPI.getReportingListRequest');
 		}
 	},
+	changePasswordRequest:async (data) => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL = NetworkInfo.NETWORK + SubDomain.USER_OPERATIONS + UserAPI.CHANGE_PASSWORD;
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			httpService.dataToSend = data;
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error,'UserAPI.changePasswordRequest');
+		}
+	}
 };
