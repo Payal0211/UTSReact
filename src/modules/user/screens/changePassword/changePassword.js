@@ -12,9 +12,12 @@ import { HttpServices } from "shared/services/http/http_service";
 import { HttpStatusCode } from "axios";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+import UTSRoutes from "constants/routes";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ChangePassword() {
-  const navigate = useNavigate();
+  const navigation = useNavigate();
+  const queryClient = useQueryClient();
   const [isValid, setIsValid] = useState({
     min8Char: "",
     oneLoweCase: "",
@@ -135,7 +138,9 @@ export default function ChangePassword() {
       
       if (result.statusCode === HttpStatusCode.Ok) {
         message.success(result.responseBody.message);
-        navigate('allhiringrequest');
+        const res = await userDAO.logoutDAO();
+        queryClient.removeQueries();
+        if (res) navigation(UTSRoutes.LOGINROUTE);
       }else if(result.statusCode === HttpStatusCode.BadRequest){
         message.error(result.responseBody)
       }
