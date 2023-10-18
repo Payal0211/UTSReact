@@ -803,7 +803,7 @@ export const MasterAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.EDIT_TIMEZONE  + `?TimeZone=${data.TimeZone}&ID=${data.id}`;
 		httpService.setAuthRequired = true;
-		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();		
 		try {
 			let response = await httpService.sendPostRequest();
 			return response;
