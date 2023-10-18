@@ -20,8 +20,6 @@ const SlaReportFilerList = ({
   handleHRRequest,
   setTableFilteredState,
   tableFilteredState,
-  setSlaReportDetailsState,
-  slaReportDetailsState,
   getSlaReportDetailsState,
   slaValue,
   lastDay,
@@ -128,17 +126,14 @@ const SlaReportFilerList = ({
   //     }
   //   }
   //   setTableFilteredState(defaultState);
-  //   setSlaReportDetailsState(defaultState);
   //   handleHRRequest(defaultState);
   //   onRemoveHRFilters()
-  //   // setSlaReportDetailsState(reqFilter);
   // }, [
   //   handleHRRequest,
   //   setAppliedFilters,
   //   setCheckedState,
   //   setFilteredTagLength,
   //   setTableFilteredState,
-  //   setSlaReportDetailsState,
   //   tableFilteredState,
   // ]);
   // OnClick for apply filter
@@ -156,19 +151,21 @@ const SlaReportFilerList = ({
     //   ...tableFilteredState,
     // };
     // console.log(reqFilter,"sasdasdasdasdasd")
-    const newState = { ...slaReportDetailsState };
-    for (let key in filters) { 
-      newState.filterFieldsSLA[key] = filters[key];
-    }
-    setSlaReportDetailsState(newState);
-    handleHRRequest(newState);
+    const newState = { ...tableFilteredState};
+
+ 
+    newState.filterFieldsSLA['stageIDs'] =  filters['stageIDs'] ?  filters['stageIDs'] : '' ;
+    newState.filterFieldsSLA['actionFilterIDs'] =  filters['actionFilterIDs'] ?  filters['actionFilterIDs'] : '' ;
+    newState.filterFieldsSLA['CompanyIDs'] =  filters['CompanyIDs'] ?  filters['CompanyIDs'] : '' ;
+ 
+
+    // handleHRRequest(newState);
+    setTableFilteredState(newState);
      onRemoveHRFilters();
   }, [
     appliedFilter,
     handleHRRequest,
     setTableFilteredState,
-    setSlaReportDetailsState,
-    slaReportDetailsState,
     tableFilteredState,
   ]);
 

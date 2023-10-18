@@ -35,7 +35,6 @@ const SlaReports = () => {
 	const { control, register, setValue, watch } = useForm();
 
 	const [demandFunnelValue, setDemandFunnelValue] = useState({});
-	const [slaReportDetailsState, setSlaReportDetailsState] = useState();
 
 	const [apiData, setApiData] = useState([]);
 	const [viewSummaryData, setSummaryData] = useState([]);
@@ -103,45 +102,30 @@ const SlaReports = () => {
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: firstDay,
-				endDate: lastDay,
-				hrid: 0,
-				sales_ManagerID: 0,
-				ops_Lead: 0,
-				salesPerson: 0,
-				stages: '',
-				isAdHoc: 0,
-				role: '',
+				...tableFilteredState.filterFieldsSLA,		
 				slaType: 0,
-				type: 0,
-				hR_Number: '',
-				company: '',
-				actionFilter: 0,
-				stageIDs: '',
-				actionFilterIDs: '',
-				CompanyIds: '',
 				isHrfocused: isFocusedRole,
 				// ambdr: 0
 			},
 		});
-		slaReportList({
-			...tableFilteredState,
-			filterFieldsSLA: {
-				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
-				toDate: new Date(lastDay).toLocaleDateString('en-US'),
-				isHrfocused: isFocusedRole,
-			},
-		});
-		slaReportDetails({
-			...tableFilteredState,
-			filterFieldsSLA: {
-				...tableFilteredState.filterFieldsSLA,
-				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
-				toDate: new Date(lastDay).toLocaleDateString('en-US'),
-				slaType: 0,
-				isHrfocused: isFocusedRole,
-			},
-		});
+		// slaReportList({
+		// 	...tableFilteredState,
+		// 	filterFieldsSLA: {
+		// 		fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+		// 		toDate: new Date(lastDay).toLocaleDateString('en-US'),
+		// 		isHrfocused: isFocusedRole,
+		// 	},
+		// });
+		// slaReportDetails({
+		// 	...tableFilteredState,
+		// 	filterFieldsSLA: {
+		// 		...tableFilteredState.filterFieldsSLA,
+		// 		fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+		// 		toDate: new Date(lastDay).toLocaleDateString('en-US'),
+		// 		slaType: 0,
+		// 		isHrfocused: isFocusedRole,
+		// 	},
+		// });
 	};
 	const checkedNo = (e) => {
 		setCheckednoValue(e.target.checked);
@@ -152,46 +136,30 @@ const SlaReports = () => {
 			pagenumber: 1,
 			isExport: false,
 			filterFieldsSLA: {
-				startDate: firstDay,
-				endDate: lastDay,
-				hrid: 0,
-				sales_ManagerID: 0,
-				ops_Lead: 0,
-				salesPerson: 0,
-				stages: '',
-				isAdHoc: 0,
-				role: '',
+				...tableFilteredState.filterFieldsSLA,
 				slaType: 1,
-				type: 0,
-				hR_Number: '',
-				company: '',
-				actionFilter: 0,
-				stageIDs: '',
-				actionFilterIDs: '',
 				isHrfocused: isFocusedRole,
-				CompanyIds: '',
-				// ambdr: 0
 			},
 		});
 
-		slaReportList({
-			...tableFilteredState,
-			filterFieldsSLA: {
-				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
-				toDate: new Date(lastDay).toLocaleDateString('en-US'),
-				isHrfocused: isFocusedRole,
-			},
-		});
-		slaReportDetails({
-			...tableFilteredState,
-			filterFieldsSLA: {
-				...tableFilteredState.filterFieldsSLA,
-				fromDate: new Date(firstDay).toLocaleDateString('en-US'),
-				toDate: new Date(lastDay).toLocaleDateString('en-US'),
-				slaType: 1,
-				isHrfocused: isFocusedRole,
-			},
-		});
+		// slaReportList({
+		// 	...tableFilteredState,
+		// 	filterFieldsSLA: {
+		// 		fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+		// 		toDate: new Date(lastDay).toLocaleDateString('en-US'),
+		// 		isHrfocused: isFocusedRole,
+		// 	},
+		// });
+		// slaReportDetails({
+		// 	...tableFilteredState,
+		// 	filterFieldsSLA: {
+		// 		...tableFilteredState.filterFieldsSLA,
+		// 		fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+		// 		toDate: new Date(lastDay).toLocaleDateString('en-US'),
+		// 		slaType: 1,
+		// 		isHrfocused: isFocusedRole,
+		// 	},
+		// });
 	};
 	
 
@@ -240,7 +208,7 @@ const SlaReports = () => {
 		setslaValue(0);
 	}, []);
 
-	const slaReportDetails = async (pageData) => {
+	const slaReportDetails = useCallback(async (pageData) => {
 		let data = {...tableFilteredState,filterFieldsSLA:{...tableFilteredState.filterFieldsSLA,  isHrfocused: isFocusedRole ,startDate: pageData
 						? moment(pageData?.filterFieldsSLA?.fromDate).format(
 							'YYYY-MM-DD',
@@ -298,7 +266,7 @@ const SlaReports = () => {
 			setTotalRecords(0);
 			setSlaDetailsList([]);
 		}
-	};
+	},[firstDay, isFocusedRole, lastDay, tableFilteredState])
 
 	const getEngagementFilterList = useCallback(async () => {
 		const response = await ReportDAO.slaFilterDAO();
@@ -331,29 +299,29 @@ const SlaReports = () => {
 				...tableFilteredState,
 				filterFieldsSLA: {
 					...tableFilteredState.filterFieldsSLA,
-					fromDate: new Date(start).toLocaleDateString('en-US'),
-					toDate: new Date(end).toLocaleDateString('en-US'),
+					startDate: new Date(start).toLocaleDateString('en-US'),
+					endDate: new Date(end).toLocaleDateString('en-US'),
 					isHrfocused: isFocusedRole,
 				},
 			});
-			slaReportList({
-				...tableFilteredState,
-				filterFieldsSLA: {
-					...tableFilteredState.filterFieldsSLA,
-					fromDate: new Date(start).toLocaleDateString('en-US'),
-					toDate: new Date(end).toLocaleDateString('en-US'),
-					isHrfocused: isFocusedRole,
-				},
-			});
-			slaReportDetails({
-				...tableFilteredState,
-				filterFieldsSLA: {
-					...tableFilteredState.filterFieldsSLA,
-					fromDate: new Date(start).toLocaleDateString('en-US'),
-					toDate: new Date(end).toLocaleDateString('en-US'),
-					isHrfocused: isFocusedRole,
-				},
-			});
+			// slaReportList({
+			// 	...tableFilteredState,
+			// 	filterFieldsSLA: {
+			// 		...tableFilteredState.filterFieldsSLA,
+			// 		fromDate: new Date(start).toLocaleDateString('en-US'),
+			// 		toDate: new Date(end).toLocaleDateString('en-US'),
+			// 		isHrfocused: isFocusedRole,
+			// 	},
+			// });
+			// slaReportDetails({
+			// 	...tableFilteredState,
+			// 	filterFieldsSLA: {
+			// 		...tableFilteredState.filterFieldsSLA,
+			// 		fromDate: new Date(start).toLocaleDateString('en-US'),
+			// 		toDate: new Date(end).toLocaleDateString('en-US'),
+			// 		isHrfocused: isFocusedRole,
+			// 	},
+			// });
 			setDateError('');
 			// setTableFilteredState({
 			// 	totalrecord: 100,
@@ -405,17 +373,23 @@ const SlaReports = () => {
 
 	useEffect(() => {
 		setslaValue(0);
-		slaReportList();
-		slaReportDetails();
+		// slaReportList();
+		// slaReportDetails();
+		handleHRRequest()
 	}, []);
 
 	useEffect(() => {
-		slaReportList();
-		slaReportDetails();
+		// slaReportList();
+		// slaReportDetails();
+		handleHRRequest()
 	}, [isFocusedRole]);
 
+	useEffect(()=>{
+		handleHRRequest()
+	},[tableFilteredState])
+
 	const handleHRRequest = useCallback(
-		async (tableFilteredState) => {
+		async () => {
 			if (firstDay === null) {
 				setDateError('* Please select date');
 			} else {
@@ -471,9 +445,6 @@ const SlaReports = () => {
 		[tableFilteredState, isFocusedRole],
 	);
 
-	useEffect(() => {
-		setSlaReportDetailsState(tableFilteredState);
-	}, [setSlaReportDetailsState, tableFilteredState]);
 
 	const exportHandler = (slaDetailsList) => {
 		let dataToDownload = slaDetailsList.map(data => ({
@@ -495,8 +466,8 @@ const SlaReports = () => {
 		  pagenumber: 1,
 		  isExport: false,
 		  filterFieldsSLA: {
-			startDate: firstDay,
-			endDate: lastDay,
+			startDate: moment(new Date(date.getFullYear(), date.getMonth(), 1).toLocaleDateString('en-US')).format('YYYY-MM-DD') ,
+			endDate: moment(new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleDateString('en-US')).format('YYYY-MM-DD'),
 			hrid: 0,
 			sales_ManagerID: 0,
 			ops_Lead: 0,
@@ -504,7 +475,7 @@ const SlaReports = () => {
 			stages: "",
 			isAdHoc: 0,
 			role: "",
-			slaType: slaValue,
+			slaType: 0,
 			type: 0,
 			hR_Number: "",
 			company: "",
@@ -518,22 +489,19 @@ const SlaReports = () => {
 		}
 		setIsFocusedRole(false)
 		setTableFilteredState(defaultState);
-		setSlaReportDetailsState(defaultState);
-		handleHRRequest(defaultState);
+		// handleHRRequest(defaultState);
 		setslaValue(0);
 		setCheckedValue(true);
 		setCheckednoValue(false);
 		onRemoveFilters()
 		setEndDate(new Date(date.getFullYear(), date.getMonth() + 1, 0))
 		setStartDate(new Date(date.getFullYear(), date.getMonth(), 1))
-		// setSlaReportDetailsState(reqFilter);
 	  }, [
 		handleHRRequest,
 		setAppliedFilters,
 		setCheckedState,
 		setFilteredTagLength,
 		setTableFilteredState,
-		setSlaReportDetailsState,
 		tableFilteredState,setEndDate,setStartDate
 	  ]);
 
@@ -777,11 +745,11 @@ const SlaReports = () => {
 									// 	totalrecord: pageSize,
 									// 	pagenumber: pageNum,
 									// });
-									slaReportDetails({ pageNumber: pageNum, totalRecord: pageSize , filterFieldsSLA: {
-										fromDate: new Date(firstDay).toLocaleDateString('en-US'),
-										toDate: new Date(lastDay).toLocaleDateString('en-US'),
-										isHrfocused: isFocusedRole,
-									} });
+									// slaReportDetails({ pageNumber: pageNum, totalRecord: pageSize , filterFieldsSLA: {
+									// 	fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+									// 	toDate: new Date(lastDay).toLocaleDateString('en-US'),
+									// 	isHrfocused: isFocusedRole,
+									// } });
 								},
 								size: 'small',
 								pageSize: pageSize,
@@ -815,8 +783,6 @@ const SlaReports = () => {
 						filtersType={reportConfig.slaReportFilterTypeConfig(
 							filtersList && filtersList,
 						)}
-						setSlaReportDetailsState={setSlaReportDetailsState}
-						slaReportDetailsState={slaReportDetailsState}
 						firstDay={firstDay}
 						lastDay={lastDay}
 						slaValue={slaValue}
