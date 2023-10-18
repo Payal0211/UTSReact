@@ -4,7 +4,7 @@ import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { InputType } from 'constants/application';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import { MasterConfig } from 'modules/masters/masterConfig';
-import { Table } from 'antd';
+import { Table, message } from 'antd';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
@@ -70,12 +70,13 @@ const TimeZoneList = () => {
 
 		const saveEditRole = async () =>{
 			if(role){
-				const result = await MasterDAO.timeZoneTitleDAO({TimeZone:role,id:values.id})
+				let e = encodeURIComponent(role)
+				const result = await MasterDAO.timeZoneTitleDAO({TimeZone:e,id:values.id})
 				if(result?.statusCode === HTTPStatusCode.OK){
-					// message.success(result.responseBody.message)
+					message.success(result.responseBody.message)
 					setIsEdit(false);
 				}else{
-					// message.error(result.responseBody)
+					message.error(result.responseBody)
 					setRole(text);
 					setIsEdit(false)
 				}	
