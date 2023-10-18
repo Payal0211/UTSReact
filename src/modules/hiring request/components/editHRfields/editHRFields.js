@@ -2451,7 +2451,7 @@ const EditHRFields = ({
                     name="bqFormLink"
                     type={InputType.TEXT}
                     placeholder="Enter the link for BQ form"
-                    required={getHRdetails?.addHiringRequest?.guid !== null}
+                    required={getHRdetails?.addHiringRequest?.guid === null}
                   />
                 </div>
                 <div className={HRFieldStyle.colMd6}>
@@ -2465,7 +2465,7 @@ const EditHRFields = ({
                     name="discoveryCallLink"
                     type={InputType.TEXT}
                     placeholder="Enter the link for Discovery call"
-                    required={getHRdetails?.addHiringRequest?.guid !== null}
+                    required={getHRdetails?.addHiringRequest?.guid === null}
                   />
                 </div>
               </div>
