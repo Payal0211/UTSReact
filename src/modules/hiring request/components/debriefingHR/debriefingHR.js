@@ -94,7 +94,7 @@ const DebriefingHR = ({
 
 	const watchSkills = watch("skills")
 	const watchOtherSkills = watch("otherSkill")	
-	
+	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
 	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
 	const [SkillMemo, setSkillMemo] = useState([])
 
@@ -127,6 +127,17 @@ const DebriefingHR = ({
 		setAllSuggestedSkills(addData?.chatGptAllSkills?.split(","));
 		setValue('role',addData?.addHiringRequest?.requestForTalent);
 	}, [addData]);
+
+	useEffect(() => {
+		if (addData?.addHiringRequest?.requestForTalent) {
+			const findRole = talentRole.filter(
+				(item) =>
+					item?.value === addData?.addHiringRequest?.requestForTalent,
+			);
+			setValue('role', findRole[0]);
+			setControlledRoleValue(findRole[0]?.value);
+		}
+	}, [addData, talentRole]);
 
 	useEffect(()=>{
 		const combinedData = [
@@ -402,24 +413,49 @@ const DebriefingHR = ({
 
 	const onSelectSkill = (skill) => {
 		
-		let _selected = combinedSkillsMemo.filter((val) => val?.value === skill);
-		let _controlledJDParsed = [...controlledJDParsed];		
-		let _index = _controlledJDParsed.findIndex((obj) => obj.id === _selected[0].id);
+		// let _selected = combinedSkillsMemo.filter((val) => val?.value === skill);
+		// let _controlledJDParsed = [...controlledJDParsed];		
+		// let _index = _controlledJDParsed.findIndex((obj) => obj.id === _selected[0].id);
+		// if(_index === -1){
+		// 	_controlledJDParsed.push({id: '0', value: skill});
+		// }
+		// // console.log({skill, combinedSkillsMemo,_selected,_index ,_controlledJDParsed,controlledJDParsed})
+		// setControlledJDParsed(_controlledJDParsed);
+		// setValue('skills',_controlledJDParsed)		
+		let _controlledJDParsed = [...controlledJDParsed];	
+		let _index = _controlledJDParsed.findIndex((obj) => obj.value === skill.trim());
 		if(_index === -1){
-			_controlledJDParsed.push({id: '0', value: skill});
-		}
-		// console.log({skill, combinedSkillsMemo,_selected,_index ,_controlledJDParsed,controlledJDParsed})
+				// _controlledJDParsed.push(_selected[0]);
+				_controlledJDParsed.push({id: '0', value: skill.trim()});
+				setCombinedSkillsMemo(prev=> [...prev,{id: '0', value: skill.trim()}])
+			}else{
+				return
+			}
+
 		setControlledJDParsed(_controlledJDParsed);
-		setValue('skills',_controlledJDParsed)		
+		setValue('skills',_controlledJDParsed);
 	}
-	console.log("skills",watch('skills'))
+
 	const onSelectGoodSkill = (skill) => {
-		let _selected = SkillMemo.filter((val) => val?.value === skill?.trim());
+		// let _selected = SkillMemo.filter((val) => val?.value === skill?.trim());
+		// let _controlledGoodToHave = [...controlledGoodToHave];
+		// let _index = _controlledGoodToHave.findIndex((obj) => obj.id === _selected[0].id);
+		// if(_index === -1){
+		// 	// _controlledGoodToHave.push(_selected[0]);
+		// 	_controlledGoodToHave.push({id: '0', value: skill});
+		// }
+		// setControlledGoodToHave(_controlledGoodToHave);
+		// setValue('goodToHaveSkills',_controlledGoodToHave)
+
 		let _controlledGoodToHave = [...controlledGoodToHave];
-		let _index = _controlledGoodToHave.findIndex((obj) => obj.id === _selected[0].id);
+		let _index = _controlledGoodToHave.findIndex((obj) => obj.value === skill.trim());
+
 		if(_index === -1){
 			// _controlledGoodToHave.push(_selected[0]);
-			_controlledGoodToHave.push({id: '0', value: skill});
+			_controlledGoodToHave.push({id: '0', value: skill.trim()});
+			setSkillMemo(prev=> [...prev, {id: '0', value: skill.trim()}])
+		}else{
+			return
 		}
 		setControlledGoodToHave(_controlledGoodToHave);
 		setValue('goodToHaveSkills',_controlledGoodToHave)
@@ -498,6 +534,9 @@ const DebriefingHR = ({
 									errors={errors}
 									validationSchema={{
 										validate: (value) => {
+											if (!value) {
+												return 'Please add something about the company';
+											}
 											let index = value.search(new RegExp(getCompanyName, 'i'));
 											let index1 = value.search(
 												new RegExp(clientDetail?.companyname, 'i'),
@@ -545,6 +584,9 @@ const DebriefingHR = ({
 							/>
 								<div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
+									controlledValue={controlledRoleValue}
+									setControlledValue={setControlledRoleValue}
+									isControlled={true}
 										mode={'id/value'}
 										searchable={true}
 										setValue={setValue}
@@ -573,23 +615,24 @@ const DebriefingHR = ({
 								/>
 							</div>
 							<div className={DebriefingHRStyle.mb50}>
-								<HRSelectField
-									isControlled={true}
-									controlledValue={controlledJDParsed}
-									setControlledValue={setControlledJDParsed}
-									mode="tags"
-									setValue={setValue}
-									register={register}
-									label={'Must have Skills'}
-									placeholder="Type skills"
-									onChange={setSelectedItems}
-									options={combinedSkillsMemo}
-									setOptions={setCombinedSkillsMemo}
-									name="skills"
-									isError={errors['skills'] && errors['skills']}
-									required
-									errorMsg={'Please enter the skills.'}
-								/>
+							<HRSelectField
+										isControlled={true}
+										controlledValue={controlledJDParsed}
+										setControlledValue={setControlledJDParsed}
+										// mode="multiple"
+										mode="tags"
+										setValue={setValue}
+										register={register}
+										label={'Must have Skills'}
+										placeholder="Type skills" 
+										onChange={setSelectedItems}
+										options={combinedSkillsMemo}
+										setOptions = {setCombinedSkillsMemo}
+										name="skills"
+										isError={errors['skills'] && errors['skills']}
+										required
+										errorMsg={'Please enter the skills.'}
+									/>
 								<ul className={DebriefingHRStyle.selectFieldBox}>
 									{goodSuggestedSkills?.map((skill) => (																	
 										<li key={skill} onClick={() => onSelectSkill(skill)}><span>{skill}<img src={plusSkill} loading="lazy" alt="star" /></span></li>

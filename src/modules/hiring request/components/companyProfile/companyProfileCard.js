@@ -300,7 +300,7 @@ const CompanyProfileCard = ({
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.preferredShift}>
-                <span>Preferred Shift:</span>&nbsp;&nbsp;
+                <span>Preferred Time Zone:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.TimeZone ? clientDetail?.TimeZone : "NA"}
                 </span>

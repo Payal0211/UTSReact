@@ -127,9 +127,14 @@ const ViewHRDetails = () => {
 											<li>
 												<span>How Many Talent Request:</span> {hiringDetails?.responseBody?.details?.noOfTalents ?? 'NA'}
 											</li>
-											<li>
+											{/* <li>
 												<span>Region:</span>{' '}
 												{hiringDetails?.responseBody?.details?.region ?? 'NA'}
+												<i className={ViewHRDetailsStyle.blueDot} />
+											</li> */}
+												<li>
+												<span>Time Zone:</span>{' '}
+												{hiringDetails?.responseBody?.details?.timeZone ?? 'NA'}
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li>
 											<li>
@@ -199,11 +204,6 @@ const ViewHRDetails = () => {
 												<span>Availibilty:</span>{' '}
 												{hiringDetails?.responseBody?.details?.availability ??
 													'NA'}
-											</li>
-											<li>
-												<span>Time Zone:</span>{' '}
-												{hiringDetails?.responseBody?.details?.timeZone ?? 'NA'}
-												<i className={ViewHRDetailsStyle.blueDot} />
 											</li>
 											<li>
 												<span>Deal ID:</span>{' '}
