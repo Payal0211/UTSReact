@@ -79,7 +79,7 @@ const FeedbackResponse = ({ talentInfo, clientDetail }) => {
 					</div>
 					<div>
 						<p>Any Feedback you want to share straight to the talent?</p>
-						<h3>{feedbackDetails?.comments || 'NA'}</h3>
+						<h3>{feedbackDetails?.messageToTalent || 'NA'}</h3>
 					</div>
 					<br />
 				</div>

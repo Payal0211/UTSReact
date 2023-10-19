@@ -218,28 +218,44 @@ export const hrUtils = {
 					: d.contractDuration.value,
 			TimeZoneFromTime:  
 					draft === SubmitType.SAVE_AS_DRAFT
-						? _isNull(watch('region')) ? null : watch('region')?.value?.includes('Overlapping') ? null : _isNull(watch('fromTime')?.value)
+						?  _isNull(watch('fromTime')?.value)
 						? null
 						: watch('fromTime')?.value
-						: watch('region')&& watch('region')?.value?.includes('Overlapping') ? null : _isNull(d.fromTime?.value)
+						: _isNull(d.fromTime?.value)
 						? null
 						: d.fromTime?.value,		
 			TimeZoneEndTime:  
 				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('region')) ? null : watch('region')?.value.includes('Overlapping') ? null : _isNull(watch('endTime')?.value)
+					?  _isNull(watch('endTime')?.value)
 					? null
 					: watch('endTime')?.value
-					: watch('region')?.value.includes('Overlapping') ? null : _isNull(d.endTime.value)
+					: _isNull(d.endTime.value)
 					? null
 					: d.endTime.value,
-			OverlapingHours:
-				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('region')) ? null : watch('region')?.value.includes('Overlapping') ?  _isNull(watch('overlappingHours'))
-					? null
-					: watch('overlappingHours') : null
-					: watch('region')?.value.includes('Overlapping') ?  _isNull(d.overlappingHours)
-					? null
-					: d.overlappingHours : null,
+			// TimeZoneFromTime:  
+			// 		draft === SubmitType.SAVE_AS_DRAFT
+			// 			? _isNull(watch('region')) ? null : watch('region')?.value?.includes('Overlapping') ? null : _isNull(watch('fromTime')?.value)
+			// 			? null
+			// 			: watch('fromTime')?.value
+			// 			: watch('region')&& watch('region')?.value?.includes('Overlapping') ? null : _isNull(d.fromTime?.value)
+			// 			? null
+			// 			: d.fromTime?.value,		
+			// TimeZoneEndTime:  
+			// 	draft === SubmitType.SAVE_AS_DRAFT
+			// 		? _isNull(watch('region')) ? null : watch('region')?.value.includes('Overlapping') ? null : _isNull(watch('endTime')?.value)
+			// 		? null
+			// 		: watch('endTime')?.value
+			// 		: watch('region')?.value.includes('Overlapping') ? null : _isNull(d.endTime.value)
+			// 		? null
+			// 		: d.endTime.value,
+			// OverlapingHours:
+			// 	draft === SubmitType.SAVE_AS_DRAFT
+			// 		? _isNull(watch('region')) ? null : watch('region')?.value.includes('Overlapping') ?  _isNull(watch('overlappingHours'))
+			// 		? null
+			// 		: watch('overlappingHours') : null
+			// 		: watch('region')?.value.includes('Overlapping') ?  _isNull(d.overlappingHours)
+			// 		? null
+			// 		: d.overlappingHours : null,
 			howSoon:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('howSoon'))
@@ -282,30 +298,46 @@ export const hrUtils = {
 					? 0
 					: parseInt(d.workingHours)
 					: null,
+			// timeZone:
+			// 	draft === SubmitType.SAVE_AS_DRAFT
+			// 		? _isNull(watch('region'))
+			// 			? 0
+			// 			: watch('region')?.id
+			// 		: _isNull(d.region)
+			// 		? 0
+			// 		: d.region?.id,
 			timeZone:
-				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('region'))
-						? 0
-						: watch('region')?.id
-					: _isNull(d.region)
-					? 0
-					: d.region?.id,
-			timeZonePreferenceId:
-				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('timeZone'))
-						? 0
-						: watch('timeZone')?.id
-					: _isNull(d.timeZone)
-					? 0
-					: d.timeZone?.id,
-			timezone_Preference:
-				draft === SubmitType.SAVE_AS_DRAFT
-					? _isNull(watch('timeZone'))
-						? ' '
-						: watch('region')?.value + watch('timeZone')?.value
-					: _isNull(d.timeZone)
-					? ' '
-					: d.region?.value + d.timeZone?.value,
+			draft === SubmitType.SAVE_AS_DRAFT
+			? _isNull(watch('timeZone'))
+				? 0
+				: watch('timeZone')?.id
+			: _isNull(d.timeZone)
+			? 0
+			: d.timeZone?.id,
+			// timeZonePreferenceId:
+			// 	draft === SubmitType.SAVE_AS_DRAFT
+			// 		? _isNull(watch('timeZone'))
+			// 			? 0
+			// 			: watch('timeZone')?.id
+			// 		: _isNull(d.timeZone)
+			// 		? 0
+			// 		: d.timeZone?.id,
+			// timezone_Preference:
+			// 	draft === SubmitType.SAVE_AS_DRAFT
+			// 		? _isNull(watch('timeZone'))
+			// 			? ' '
+			// 			: watch('timeZone')?.value
+			// 		: _isNull(d.timeZone)
+			// 		? ' '
+			// 		: d.timeZone?.value,
+			// timezone_Preference:
+			// 	draft === SubmitType.SAVE_AS_DRAFT
+			// 		? _isNull(watch('timeZone'))
+			// 			? ' '
+			// 			: watch('region')?.value + watch('timeZone')?.value
+			// 		: _isNull(d.timeZone)
+			// 		? ' '
+			// 		: d.region?.value + d.timeZone?.value,
 
 			talentsNumber:
 				draft === SubmitType.SAVE_AS_DRAFT
