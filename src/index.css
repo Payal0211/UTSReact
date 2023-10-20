@@ -724,9 +724,14 @@ table {
 }
 
 /*Share Feedback Modal*/
+
 .ant-modal-centered {
   padding: 30px 0;
   z-index: 6666;
+}
+
+.ant-picker-dropdown{
+  z-index: 7777;
 }
 
 .interviewFeedbackModal .ant-modal-body,
