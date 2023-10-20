@@ -32,26 +32,27 @@
     font-weight: 500;
 }
 
-.activityFeedList{
+/* .activityFeedList{
     box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2);
     background-color: var(--background-color-light);
     border-radius: 8px;
-}
+}*/
 
 .activityFeedListBody{
-    margin-top: 10px;
+    /* margin-top: 10px;
     max-height: 428px;
-    overflow-y: scroll;
-}
+    overflow-y: scroll; */
+    font-size: 14px;
+} 
 
 .activityFeedListItem{
-    width: 95%;
-    padding: 20px;
-    margin: 20px auto;
+    /* width: 95%; */
+    padding: 10px;
+    margin: 0px auto;
     display: flex;
     gap: 1%;
     justify-content: flex-start;
-    align-items: center;
+    /* align-items: center; */
     
 }
 
@@ -71,3 +72,275 @@
     align-items: flex-start;
 }
 
+.activityFeedListBody .profileStatus{
+    margin-bottom: 10px;
+}
+
+.activityFeedListBody .activityAction{
+    margin-bottom: 10px;
+}
+
+
+/* channel tabs style start */
+
+.activityChannelLibrary{
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.activityChannelTabs .ant-tabs-nav{ 
+  border-bottom: 1px solid #E8E8E8;
+}
+
+
+.channelLibTabsTitle{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    border-bottom: 1px solid #E8E8E8;
+    padding-bottom: 8px;
+}
+
+.channelLibTabsTitle [class*="react-tabs__tab"]{
+    position: relative;
+    width: auto;
+    padding: 0;
+    margin-left: 30px;
+}
+
+.channelLibTabsTitle [class*="react-tabs__tab"]:first-child{
+    margin-left: 0px;
+}
+
+.channelLibTabsTitle [class*="react-tabs__tab--selected"]{
+    background: transparent;
+    /* border-bottom: 1px solid #ffda31; */
+}
+
+.channelLibTabsTitle [class*="react-tabs__tab--selected"]::after{
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    background: #ffda31;
+    width: 100%;
+    height: 2px;
+}
+
+.activityChannelLibrary [class*="react-tabs__tab-panel--selected"]{
+    border-radius: 8px;
+    background: #FFF;
+    box-shadow: 0px 2px 8px 0px rgba(204, 238, 204, 0.25);
+    padding: 24px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes .dividerText{
+    color: #232323;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    text-align: left;
+    margin-right: 0;
+    margin-bottom: 8px;
+    flex: 0 0 100%;
+    margin-top: 20px;
+ }
+
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes .dividerText:first-child{
+   margin-top: 0px;
+ }
+
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes li span{
+    color: #676767;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    margin-bottom: 3px;
+ }
+
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes li{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-right: 30px;
+ }
+
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes li a{
+    color: #0278E4;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    text-decoration-line: underline;
+    display: inline-block;
+    margin-top: 5px;
+ }
+
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes .channelLibTabImg{
+    width: 168px;
+    min-width: 168px;
+    height: 168px;
+    border-radius: 8px;
+    background: #D9D9D9;
+    overflow: hidden;
+ }
+
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes .channelLibTabImg img{
+    width: 100%;
+    height: 100%;
+ }
+
+
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes.channelLibVideoBoxes .channelLibTabImg{
+    position: relative;
+ }  
+
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes.channelLibVideoBoxes .channelLibTabImg::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 98;
+    background-color: rgba(0, 0, 0, 0.64);
+ }  
+
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes.channelLibVideoBoxes .channelLibTabImg span{
+    position: absolute;
+    left: 8px;
+    bottom: 4px;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    line-height: 18px;
+    font-size: 10px;
+    font-weight: 500;
+    color: #fff;
+ }
+
+ 
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes.channelLibVideoBoxes .channelLibTabImg span img{
+    width: 13px;
+    margin-right: 3px;
+ }
+
+
+ /* Link css start */
+
+ .gridContentLeft{
+    display: flex;
+ }
+
+ .gridContentLeft .iconLink{
+    background: #FFF2C2;
+    border-radius: 4px;
+    min-width: 28px;
+    width: 28px;
+    height: 31px;
+    margin-right: 12px;
+    padding-right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ }
+
+ .gridContentLeft .assetDetails span{
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 18px;
+ }
+
+ .gridContentLeft .assetDetails .assetName{
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    flex: 0 0 100%;
+ }
+
+ .gridContentLeft .iconLink svg{
+    margin-right: 0;
+    display: block;
+ }
+
+ .iconCopy{
+    width: 26px;
+    height: 26px;
+    background: #F5F5F5;
+    border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+    cursor: pointer;
+    float: right;
+ }
+
+ .iconCopy svg{
+    margin-right: 0;
+    display: block;
+ }
+
+
+
+.LinkTableWrap .ant-table-thead tr th:first-child, .ant-table-tbody > tr > td:first-child{
+    padding-left: 0px !important;
+}
+
+
+.downloadLink{
+    color: #0278E4;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; 
+    text-decoration-line: underline;
+    float: right;
+}
+
+.documentassetImg img{
+    margin-right: 10px;
+}
+
+.documentassetDetails{
+    display: flex;
+    flex-wrap: wrap;
+    color: #000000;
+}
+
+.documentassetDetails .assetName{
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    flex: 0 0 100%;
+}
+
+.documentassetDetails span:not(:last-child){
+    padding-right: 5px;
+}
+
+.documentassetDetails span{
+    color: #000;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+}
+
+
+ /* Link css End */
+
+
+/* channel tabs style End */

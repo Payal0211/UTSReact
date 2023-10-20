@@ -251,6 +251,7 @@ export class HiringRequestsAPI {
 	static GET_HR_SLA_DETAILS = 'GetHiringRequestSLADetails';
 	static UPDATE_SLA_DATE = 'UpdateSLADate';
 	static EXTRACTTEXTUSINGPYTHON = 'ExtractTextUsingPython';
+	static GET_CHANNEL_LIBRARY = 'GetChannelLibrary'
 }
 
 export class UsersAPI {
