@@ -1018,6 +1018,25 @@ table {
 }
 
 
+[class*="LinkTableWrap"] .ant-table-tbody > tr > td {
+  padding: 10px 12px !important;
+}
+
+[class*="LinkTableWrap"] .ant-table-thead > tr > th:first-child, .ant-table-tbody > tr > td:first-child{
+  padding-left: 0px !important;
+}
+
+
+.personTaggedValue {
+  border-radius: 10px;
+  padding: 5px 5px;
+  font-weight: 600;
+  background-color: var(--color-champagne);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+
 
 /* Responsive css start */
 
