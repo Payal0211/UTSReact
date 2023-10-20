@@ -1173,7 +1173,7 @@ const HRFields = ({
         setControlledCurrencyValue(
           gptDetails?.salesHiringRequest_Details?.currency
         );
-		gptDetails?.salesHiringRequest_Details?.currency && setValue('currency',gptDetails?.salesHiringRequest_Details?.currency)
+		gptDetails?.salesHiringRequest_Details?.currency && setValue('currency',{id:"",value:gptDetails?.salesHiringRequest_Details?.currency})
       gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
         setControlledFromTimeValue(
           gptDetails?.salesHiringRequest_Details?.timeZoneFromTime
@@ -1184,12 +1184,12 @@ const HRFields = ({
         );
       gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
         setValue(
-          "fromTime",{id: undefined, value: gptDetails?.salesHiringRequest_Details?.timeZoneFromTime}
+          "fromTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneFromTime}
           
         );
       gptDetails?.salesHiringRequest_Details?.timeZoneEndTime &&
         setValue(
-          "endTime",{id: undefined, value: gptDetails?.salesHiringRequest_Details?.timeZoneEndTime}
+          "endTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneEndTime}
           
         );
      	setValue("budget", "2");
