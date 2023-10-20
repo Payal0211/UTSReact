@@ -94,17 +94,25 @@ const AddInterviewer = ({
 			// setValue('interviewerDesignation', getHRdetails?.salesHiringRequest_Details?.interviewerDesignation);
 
 
-		} else if (interviewDetails) {
-			interviewDetails?.fullName && setValue('interviewerFullName', interviewDetails?.fullName);
-			interviewDetails?.emailId && setValue('interviewerEmail', interviewDetails?.emailId);
-			interviewDetails?.linkedin && setValue('interviewerLinkedin', interviewDetails?.linkedin);
-			interviewDetails?.designation && setValue('interviewerDesignation', interviewDetails?.designation);
-		} else {
+		} else  {
+			// interviewDetails?.fullName && setValue('interviewerFullName', interviewDetails?.fullName);
+			// interviewDetails?.emailId && setValue('interviewerEmail', interviewDetails?.emailId);
+			// interviewDetails?.linkedin && setValue('interviewerLinkedin', interviewDetails?.linkedin);
+			// interviewDetails?.designation && setValue('interviewerDesignation', interviewDetails?.designation);
+			let primaryInterviewerDetails = getHRdetails?.interviewerDetails?.primaryInterviewer
+			setValue('interviewerFullName', primaryInterviewerDetails?.fullName);
+			setValue('interviewerEmail', primaryInterviewerDetails?.emailID);
+			setValue('interviewerLinkedin', primaryInterviewerDetails?.linkedin);
+			setValue('interviewerDesignation', primaryInterviewerDetails?.designation);
+			setValue('interviewerId', primaryInterviewerDetails?.interviewerId);
+		} 
+		// else {
 			// setValue('interviewerFullName', getHRdetails?.salesHiringRequest_Details?.interviewerFullName);
 			// setValue('interviewerEmail', getHRdetails?.salesHiringRequest_Details?.interviewerEmail);
 			// setValue('interviewerLinkedin', getHRdetails?.salesHiringRequest_Details?.interviewLinkedin);
 			// setValue('interviewerDesignation', getHRdetails?.salesHiringRequest_Details?.interviewerDesignation);
-		}
+			
+		// }
 	}, [getHRdetails, interviewDetails, setValue]);
 
 	const addInterviewerBasedOnIsCloned = () => {
