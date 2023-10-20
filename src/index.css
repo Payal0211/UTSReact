@@ -1023,13 +1023,14 @@ table {
 }
 
 
-[class*="LinkTableWrap"] .ant-table-tbody > tr > td {
+/* [class*="LinkTableWrap"] .ant-table-tbody > tr > td {
   padding: 10px 12px !important;
 }
 
 [class*="LinkTableWrap"] .ant-table-thead > tr > th:first-child, .ant-table-tbody > tr > td:first-child{
   padding-left: 0px !important;
-}
+} */
+
 
 
 .personTaggedValue {
