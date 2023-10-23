@@ -9,7 +9,7 @@ export const userConfig = {
 				title: '     ',
 				dataIndex: 'starStatus',
 				key: 'starStatus',
-				align: 'left',
+				align: 'center',
 				width: '55px',
 
 				render: (_, param) => {
