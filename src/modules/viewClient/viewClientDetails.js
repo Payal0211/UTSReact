@@ -289,7 +289,8 @@ function ViewClientDetails() {
 								</li>
                                 <li>
 									<span>Do the client have experience hiring talent outside of home country, especially from offshore locations like India?:</span>
-                                    {viewDetails?.clientDetails?.allowOffshore ? 'Yes' : 'No'} 
+                                    {/* {viewDetails?.clientDetails?.allowOffshore ? 'Yes' : 'No'}  */}
+									NA
 								</li>
 								<li>
 									<span>About Company: </span>							
