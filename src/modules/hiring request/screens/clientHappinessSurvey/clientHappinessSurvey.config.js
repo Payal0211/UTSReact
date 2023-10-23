@@ -116,7 +116,7 @@ export const clientHappinessSurveyConfig = {
 				title: 'Email',
 				dataIndex: 'email',
 				key: 'email',
-				width: '200px',
+				width: '250px',
 			},
 			{
 				title: 'Rating',
@@ -139,7 +139,7 @@ export const clientHappinessSurveyConfig = {
 				title: 'Sales Rep',
 				dataIndex: 'sales',
 				key: 'sales',
-				width: '100px',
+				width: '150px',
 				render: (text, result) => {
 					return (
 						<Link
