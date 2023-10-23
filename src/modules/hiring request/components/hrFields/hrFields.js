@@ -149,6 +149,8 @@ const HRFields = ({
     useState("Select End Time");
   const [controlledCurrencyValue, setControlledCurrencyValue] =
     useState("Select Currency");
+    const [controlledAvailabilityValue, setControlledAvailabilityValue] =
+    useState("Select availability");
   const [DealHRData, setDealHRData] = useState({});
   let controllerRef = useRef(null);
   const {
@@ -1144,8 +1146,14 @@ const HRFields = ({
       setValue("jdExport", "");
       gptDetails?.addHiringRequest?.noofTalents &&
         setValue("talentsNumber", gptDetails?.addHiringRequest?.noofTalents);
-      gptDetails?.addHiringRequest?.availability &&
-        setValue("availability", gptDetails?.addHiringRequest?.availability);
+      // gptDetails?.addHiringRequest?.availability &&
+      //   setValue("availability", gptDetails?.addHiringRequest?.availability);
+      if(gptDetails?.addHiringRequest?.availability){
+        let findAvailability = availability.filter(item=> item.value === gptDetails?.addHiringRequest?.availability)
+        setValue("availability", findAvailability[0]);
+        setControlledAvailabilityValue(findAvailability[0].value)
+      }
+
       gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 &&
         setValue(
           "minimumBudget",
@@ -1925,6 +1933,9 @@ const HRFields = ({
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
+                   controlledValue={controlledAvailabilityValue}
+                   setControlledValue={setControlledAvailabilityValue}
+                   isControlled={true}
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}

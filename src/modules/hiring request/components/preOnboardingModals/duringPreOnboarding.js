@@ -144,7 +144,7 @@ export default function DuringPreOnboarding({
           if (result?.statusCode === HTTPStatusCode.OK) {
             let data = result.responseBody.details
 
-           setTabDisabled(data.isSecondTabReadOnly)
+        //    setTabDisabled(data.isSecondTabReadOnly)
            setTabData(data.secondTabAMAssignmentOnBoardingDetails)
            setUplersLeavePolicyLink(data.uplersLeavePolicy)
            setDeviceMasters(data.deviceMaster)
@@ -225,23 +225,23 @@ export default function DuringPreOnboarding({
             "talent_FirstWeek": d.firstWeek,
             "talent_FirstMonth": d.firstMonth,
             "softwareToolsRequired": d.softwareToolsRequired,
-            "devicesPoliciesOption": d.devicePolicy.value,
-            "talentDeviceDetails": d.devicePolicy.id === 1 ? d.standerdSpecifications : '' ,
+            "devicesPoliciesOption": !talentDeteils?.IsHRTypeDP ? d.devicePolicy.value : "",
+            "talentDeviceDetails": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 1 ? d.standerdSpecifications : '' : "",
             // "additionalCostPerMonth_RDPSecurity": "0",
             // "isRecurring": false,
             // "proceedWithUplers_LeavePolicyOption": 		"proceedWithUplers_LeavePolicyOption", // dropdown selected option
             // "proceedWithClient_LeavePolicyOption": "No",
             // "proceedWithClient_LeavePolicyLink": d.leavePolicie.id === 1 ? d.policyLink : '', // link from text box
             // "leavePolicyFileName":d.leavePolicie.id === 2 ? getUploadFileData : '', // file name
-            "proceedWithClient_LeavePolicyLink":d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" , // link from text box
-            "leavePolicyFileName": d.leavePolicie.id === 2 ? getUploadFileData ? getUploadFileData : "" : "" , // file name
-            "hdnRadioDevicesPolicies": d.devicePolicy.value,
-            "device_Radio_Option":  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '',// device name
-            "deviceID": d.devicePolicy.id === 2 ? d.deviceType.id : 0,//device id
-            "client_DeviceDescription": d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' ,
-            "totalCost": d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0,//deviceCost
-            "radio_LeavePolicies": d.leavePolicie.value,
-            "leavePolicyPasteLinkName": d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" ,
+            "proceedWithClient_LeavePolicyLink":!talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "" , // link from text box
+            "leavePolicyFileName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ? getUploadFileData ? getUploadFileData : "" : "" : "" , // file name
+            "hdnRadioDevicesPolicies": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.value : "",
+            "device_Radio_Option": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '' : "",// device name
+            "deviceID":!talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ? d.deviceType.id : 0 : 0,//device id
+            "client_DeviceDescription":!talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' :"" ,
+            "totalCost": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0 : 0,//deviceCost
+            "radio_LeavePolicies":!talentDeteils?.IsHRTypeDP ?  d.leavePolicie.value : "",
+            "leavePolicyPasteLinkName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
             "teamMembers": clientTeamMembers
           }
 
@@ -278,7 +278,7 @@ export default function DuringPreOnboarding({
     //     "email": "riya.a@uplers.com",
     //     "buddy": "1"
     //   }
-    // console.log("err",errors)
+    console.log("err",errors)
     useEffect(()=>{
         if(getUploadFileData){
             clearErrors('policyLink')

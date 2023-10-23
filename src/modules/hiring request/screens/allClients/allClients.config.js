@@ -46,7 +46,7 @@ export const allClientsConfig = {
                 title: '',
                 dataIndex: 'Edit',
                 key: 'edit',
-                align: 'left',
+                align: 'center',
 				width: '60px',
                 render:(_,result) => {
                     return (
@@ -121,7 +121,6 @@ export const allClientsConfig = {
                 key: 'aM_UserName',
                 width: '300px',
                 render:(text,result)=>{
-                    console.log(result)
                     let data = {clientID: result?.clientID, companyID: result?.companyID }
                     return text ? <div className={clienthappinessSurveyStyles.AMNAME}  onClick={()=>editAMHandler(data)}>{text}</div> : null
                 }
