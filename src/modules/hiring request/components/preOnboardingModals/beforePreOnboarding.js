@@ -1076,6 +1076,23 @@ export default function BeforePreOnboarding({
                       : "NA"}
                   </span>
                 </div>
+                
+                <div className={HRDetailStyle.onboardingDetailText}>
+                  <span>Talent IST Shift Start Time </span>
+                  <span className={HRDetailStyle.onboardingTextBold}>
+                    {preONBoardingData?.preOnboardingDetailsForAMAssignment?.istShiftStartTime
+                      ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.istShiftStartTime
+                      : "NA"}
+                  </span>
+                </div>
+                <div className={HRDetailStyle.onboardingDetailText}>
+                  <span>Talent IST Shift End Time</span>
+                  <span className={HRDetailStyle.onboardingTextBold}>
+                    {preONBoardingData?.preOnboardingDetailsForAMAssignment?.istShiftEndTime
+                      ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.istShiftEndTime
+                      : "NA"}
+                  </span>
+                </div>
 
                 {/* <div className={HRDetailStyle.onboardingDetailText}>
                     <span>Talent Shift Start/End Time</span>

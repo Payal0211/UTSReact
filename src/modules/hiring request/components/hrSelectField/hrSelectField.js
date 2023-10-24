@@ -50,28 +50,35 @@ const HRSelectField = ({
 		} else if (mode === 'id') {
 			setValue(name, option.id);
 			isControlled && setControlledValue(option.value);
-		} else if(mode === 'tags'){						
-			if(Object.keys(option[value.length-1]).length>0){
+		} else if(mode === 'tags'){	
+			if(option.length){
+				if(Object.keys(option[value.length-1]).length>0){
 				setValue(name,option.map((item) => ({
 					id: item?.id || item?.text || "0",
 					value: item?.value,
-				})),);				
-			}else{
-				if(value[value.length - 1]){					
-					option[value.length - 1] = { ...option[value.length - 1], id: null };
-					option[value.length - 1] = { ...option[value.length - 1], value: value[value.length - 1] };
-					let _opt = [...options];
-					let obj = {};
-					obj.id = "0";
-					obj.value = value[value.length - 1];
-					_opt.push(obj);
-					setOptions(_opt);
-					setValue(name,option.map((item) => ({
-						id: item.id,
-						value: item?.value,
-					})),);
+				})),);	
+				setOptions(options);	
+				}else{
+					if(value[value.length - 1]){					
+						option[value.length - 1] = { ...option[value.length - 1], id: '0' };
+						option[value.length - 1] = { ...option[value.length - 1], value: value[value.length - 1] };
+						let _opt = [...options];
+						let obj = {};
+						obj.id = "0";
+						obj.value = value[value.length - 1];
+						_opt.push(obj);
+						setOptions(_opt);
+						setValue(name,option.map((item) => ({
+							id: item.id,
+							value: item?.value,
+						})),);
+					}
 				}
-			}		
+			}else{
+				setOptions(options);
+				setValue(name,option);
+			}				
+					
 			isControlled && setControlledValue(option);			
 		}
 		else {

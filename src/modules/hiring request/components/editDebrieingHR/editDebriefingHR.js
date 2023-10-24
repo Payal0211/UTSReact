@@ -47,8 +47,8 @@ const EditDebriefingHR = ({
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			secondaryInterviewer: getHRdetails?.secondaryInterviewerlist
-				? getHRdetails?.secondaryInterviewerlist
+			secondaryInterviewer: getHRdetails?.interviewerDetails?.secondaryinterviewerList
+				? getHRdetails?.interviewerDetails?.secondaryinterviewerList
 				: [],
 		},
 	});
@@ -160,23 +160,59 @@ const EditDebriefingHR = ({
 	}, [getHRdetails?.skillmulticheckbox, setValue]);
 
 	const onSelectSkill = (skill) => {		
-		let _selected = combinedSkillsMemo.filter((val) => val.value === skill);
-		if(!_selected) return
-		let _controlledJDParsed = [...controlledJDParsed];		
-		let _index = _controlledJDParsed.findIndex((obj) => obj.id === _selected[0]?.id);
+		// let _selected = combinedSkillsMemo.filter((val) => val?.value === skill);
+		// // if(!_selected) return
+		// let _controlledJDParsed = [...controlledJDParsed];	
+		// if(selectedGoodToHaveItems.length > 0){
+		// 	console.log("selected",skill, _selected,_controlledJDParsed);
+		// let _index = _controlledJDParsed.findIndex((obj) => obj.value === _selected[0]?.value);
+		// console.log("index", _index)
+		// if(_index === -1){
+		// 	// _controlledJDParsed.push(_selected[0]);
+		// 	_controlledJDParsed.push({id: '0', value: skill});
+		// }else{
+		// 	return
+		// }
+		// setControlledJDParsed(_controlledJDParsed);
+		// setValue('skills',_controlledJDParsed);		
+		// }else{
+		// 	return
+		// }
+
+		let _controlledJDParsed = [...controlledJDParsed];	
+		let _index = _controlledJDParsed.findIndex((obj) => obj.value === skill.trim());
 		if(_index === -1){
-			_controlledJDParsed.push(_selected[0]);
-		}
+				// _controlledJDParsed.push(_selected[0]);
+				_controlledJDParsed.push({id: '0', value: skill.trim()});
+				setCombinedSkillsMemo(prev=> [...prev,{id: '0', value: skill.trim()}])
+			}else{
+				return
+			}
+
 		setControlledJDParsed(_controlledJDParsed);
-		setValue('skills',_controlledJDParsed);		
+		setValue('skills',_controlledJDParsed);
 	}
 	
 	const onSelectGoodSkill = (skill) => {
-		let _selected = SkillMemo.filter((val) => val.value === skill?.trim());
+		// let _selected = SkillMemo.filter((val) => val?.value === skill?.trim());
+		// let _controlledGoodToHave = [...controlledGoodToHave];
+		// let _index = _controlledGoodToHave.findIndex((obj) => obj.id === _selected[0].id);
+		// if(_index === -1){
+		// 	// _controlledGoodToHave.push(_selected[0]);
+		// 	_controlledGoodToHave.push({id: '0', value: skill});
+		// }
+		// setControlledGoodToHave(_controlledGoodToHave);
+		// setValue('goodToHaveSkills',_controlledGoodToHave)
+
 		let _controlledGoodToHave = [...controlledGoodToHave];
-		let _index = _controlledGoodToHave.findIndex((obj) => obj.id === _selected[0].id);
+		let _index = _controlledGoodToHave.findIndex((obj) => obj.value === skill.trim());
+
 		if(_index === -1){
-			_controlledGoodToHave.push(_selected[0]);
+			// _controlledGoodToHave.push(_selected[0]);
+			_controlledGoodToHave.push({id: '0', value: skill.trim()});
+			setSkillMemo(prev=> [...prev, {id: '0', value: skill.trim()}])
+		}else{
+			return
 		}
 		setControlledGoodToHave(_controlledGoodToHave);
 		setValue('goodToHaveSkills',_controlledGoodToHave)
@@ -337,7 +373,7 @@ const EditDebriefingHR = ({
 				en_Id: enID,
 				skills: skillList?.filter((item) => item?.skillsID !== -1),
 				aboutCompanyDesc: d.aboutCompany,
-				secondaryInterviewer: d.secondaryInterviewer,
+				// secondaryInterviewer: d.secondaryInterviewer,
 				interviewerFullName: d.interviewerFullName,
 				interviewerEmail: d.interviewerEmail,
 				interviewerLinkedin: d.interviewerLinkedin,
@@ -348,9 +384,19 @@ const EditDebriefingHR = ({
 				allowSpecialEdit: getHRdetails?.allowSpecialEdit,
 				role: d.role.id,
 				hrTitle: d.hrTitle,
-				allSkills:goodToSkillList
+				allSkills:goodToSkillList,
+				"interviewerDetails":{
+					"primaryInterviewer": {
+						"interviewerId": d.interviewerId,
+						"fullName": d.interviewerFullName,
+						"emailID": d.interviewerEmail,
+						"linkedin": d.interviewerLinkedin,
+						"designation": d.interviewerDesignation,
+						"isUserAddMore": false
+					},
+					"secondaryinterviewerList": d.secondaryInterviewer
+				}
 			};
-					
 			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
 				debriefFormDetails,
 			);

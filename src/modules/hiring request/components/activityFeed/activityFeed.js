@@ -24,7 +24,11 @@ import FiExternalLinkSVG from '../../../../assets/svg/fiExternalLink.svg';
 
 
 const Editor = React.lazy(() => import('../textEditor/editor'));
-
+class ChannelType {
+	static images = 1
+	static videos = 2
+	static documents = 3
+}
 
 const Documentsdata = [
 	{
@@ -164,6 +168,8 @@ const ActivityFeed = ({
 }) => {
 	const [search, setSearch] = useState('');
 
+	const [activeTabType,setActiveTabType] = useState()
+
 	const sanitizer = DOMPurify.sanitize;
 	const searchMemo = useMemo(() => {
 		if (search) return search;
@@ -212,14 +218,15 @@ const ActivityFeed = ({
 			<div className={ActivityFeedStyle.activityChannelLibrary}>
 
 				<Tabs className={ActivityFeedStyle.channelLibTabs}>
-					<TabList className={ActivityFeedStyle.channelLibTabsTitle}>
-						<Tab>Activity</Tab>
-						<Tab>Images</Tab>
-						<Tab>Documents</Tab>
-						<Tab>Videos</Tab>
-						<Tab>Links</Tab>
-					</TabList>
+					{/* <TabList className={ActivityFeedStyle.channelLibTabsTitle}>
+						<Tab >Activity</Tab>
+						<Tab onClick={()=> setActiveTabType(ChannelType.images)}>Images</Tab>
+						<Tab onClick={()=>{ setActiveTabType(ChannelType.documents)}}>Documents</Tab>
+						<Tab onClick={()=>{ setActiveTabType(ChannelType.videos)}}>Videos</Tab>
+						{/* <Tab onClick={()=>{ console.log("Links")}}>Links</Tab> 
+					</TabList> */}
 
+						{/* Activity  */}
 					<TabPanel className={ActivityFeedStyle.tabContent}>
 						<div className={ActivityFeedStyle.contentGrid}>
 							<div className={ActivityFeedStyle.activityFeedList}>
@@ -366,12 +373,13 @@ const ActivityFeed = ({
 						</div>
 					</TabPanel>
 
+{/* Images tab */}
 					<TabPanel className={ActivityFeedStyle.tabContent}>
 						<div className={ActivityFeedStyle.contentGrid}>
 							<ul className={ActivityFeedStyle.channelLibImagesBoxes}>
 								<li className={ActivityFeedStyle.dividerText}>Today</li>
 								<li>
-									<span>Anjali, 12:58 PM</span>
+									<span>Anjali,Image 12:58 PM</span>
 									<div className={ActivityFeedStyle.channelLibTabImg}>
 										<img src="https://i.pravatar.cc/95" width="95" height="95" />
 									</div>
@@ -413,18 +421,20 @@ const ActivityFeed = ({
 						</div>
 					</TabPanel>
 
+					{/* Documents tab */}
 					<TabPanel className={ActivityFeedStyle.tabContent}>
 						<div className={ActivityFeedStyle.assetGrid}>
 							<Table className={ActivityFeedStyle.LinkTableWrap} dataSource={Documentsdata} columns={Documentcolumns} pagination={false}  />
 						</div>
 					</TabPanel>
 
+									{/* Video Tab  */}
 					<TabPanel className={ActivityFeedStyle.tabContent}>
 						<div className={ActivityFeedStyle.contentGrid}>
 							<ul className={`${ActivityFeedStyle.channelLibImagesBoxes} ${ActivityFeedStyle.channelLibVideoBoxes}`}>
 								<li className={ActivityFeedStyle.dividerText}>Today</li>
 								<li>
-									<span>Anjali, 12:58 PM</span>
+									<span>Anjali,Video 12:58 PM</span>
 									<div className={ActivityFeedStyle.channelLibTabImg}>
 										<img src="https://i.pravatar.cc/95" alt='img' />
 										<span>

@@ -1576,5 +1576,35 @@ export const MasterDAO = {
 		} catch (error) {
 			return errorDebug(error,'MasterDAO.timeZoneDAO')
 		}
+	},
+	timeZoneTitleDAO : async function (data){
+		try {
+			const titleResponse =
+				await MasterAPI.editTimezone(data);
+			if (titleResponse) {
+				const statusCode = titleResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = titleResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return titleResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return titleResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.editRoleDAO',
+			);
+		}
+
 	}
 };

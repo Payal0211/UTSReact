@@ -166,7 +166,7 @@
 }
 
 [class*="ant-select-dropdown"] {
-    z-index: 99 !important;
+    z-index: 99999 !important;
 }
 
 .phoneNoGroup {

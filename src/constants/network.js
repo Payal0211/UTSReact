@@ -56,6 +56,7 @@ export class UserAPI {
 	static UPDATEPASSWORD = '/updatepassword';
 	static IS_EMPLOYEE_ID_EXIST = 'IsEmployeeIDExist';
 	static IS_EMPLOYEE_NAME_EXIST = 'IsEmployeeFullNameExist';
+	static CHANGE_PASSWORD = 'ChangePassword';
 }
 
 export class AMAssignmentAPI {
@@ -171,6 +172,7 @@ export class MastersAPI {
 	static UPLOAD_ICON ='UploadIcon'
 	static ADD_ROLE = 'Add'
 	static EDIT_ROLE = 'EditRole'
+	static EDIT_TIMEZONE = 'EditTimeZone'
 	static UPDATE_ROLE = 'UpdateRole'
 	static TIMEZONEMASTER = 'GetTimeZoneMaster'
 }
@@ -249,6 +251,7 @@ export class HiringRequestsAPI {
 	static GET_HR_SLA_DETAILS = 'GetHiringRequestSLADetails';
 	static UPDATE_SLA_DATE = 'UpdateSLADate';
 	static EXTRACTTEXTUSINGPYTHON = 'ExtractTextUsingPython';
+	static GET_CHANNEL_LIBRARY = 'GetChannelLibrary'
 }
 
 export class UsersAPI {

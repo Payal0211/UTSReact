@@ -78,7 +78,7 @@ const EditHRFields = ({
   const [country, setCountry] = useState([]);
   const [salesPerson, setSalesPerson] = useState([]);
   const [howSoon, setHowSoon] = useState([]);
-  const [region, setRegion] = useState([]);
+  // const [region, setRegion] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [contractDurations, setcontractDurations] = useState([]);
   const [partialEngagements, setPartialEngagements] = useState([]);
@@ -117,8 +117,8 @@ const EditHRFields = ({
   const [controlledWorkingValue, setControlledWorkingValue] = useState(
     "Select working mode"
   );
-  const [controlledRegionValue, setControlledRegionValue] =
-    useState("Select Region");
+  // const [controlledRegionValue, setControlledRegionValue] =
+  //   useState("Select Region");
   const [controlledTimeZoneValue, setControlledTimeZoneValue] =
     useState("Select time zone");
   const [controlledSoonValue, setControlledTimeSoonValue] =
@@ -166,6 +166,8 @@ const EditHRFields = ({
       value: false,
     },
   ]);
+
+  const [timeZoneList,setTimezoneList] = useState([]);
 
   let controllerRef = useRef(null);
   const {
@@ -430,7 +432,7 @@ const EditHRFields = ({
   ]);
 
   /* ------------------ Upload JD Ends Here -------------------- */
-  let prefRegion = watch("region");
+  // let prefRegion = watch("region");
   let modeOfWork = watch("workingMode");
   let hrRole = watch("role");
   let watchOtherRole = watch("otherRole");
@@ -441,14 +443,14 @@ const EditHRFields = ({
       setValue("NRMargin", response && response?.responseBody?.details?.value);
     }
   }, [setValue]);
-  const getTimeZonePreference = useCallback(async () => {
-    const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO(
-      prefRegion && prefRegion?.id
-    );
-    if (timeZone.statusCode === HTTPStatusCode.OK) {
-      setTimeZonePref(timeZone && timeZone.responseBody);
-    }
-  }, [prefRegion]);
+  // const getTimeZonePreference = useCallback(async () => {
+  //   const timeZone = await MasterDAO.getTimeZonePreferenceRequestDAO(
+  //     prefRegion && prefRegion?.id
+  //   );
+  //   if (timeZone.statusCode === HTTPStatusCode.OK) {
+  //     setTimeZonePref(timeZone && timeZone.responseBody);
+  //   }
+  // }, [prefRegion]);
   const getAvailability = useCallback(async () => {
     const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
     setAvailability(
@@ -503,10 +505,15 @@ const EditHRFields = ({
     }
   }, [jdURLLink, getUploadFileData]);
 
-  const getRegion = useCallback(async () => {
-    let response = await MasterDAO.getTalentTimeZoneRequestDAO();
-    setRegion(response && response?.responseBody);
-  }, []);
+  // const getRegion = useCallback(async () => {
+  //   let response = await MasterDAO.getTalentTimeZoneRequestDAO();
+  //   setRegion(response && response?.responseBody);
+  // }, []);
+
+  const getTimeZoneList = useCallback(async () => {
+		let response = await MasterDAO.getTimeZoneRequestDAO();
+		setTimezoneList(response && response?.responseBody);
+	}, [setTimezoneList]);
 
   const getDurationTypes = useCallback(async () => {
     const durationTypes = await MasterDAO.getDurationTypeDAO();
@@ -732,7 +739,8 @@ const EditHRFields = ({
     getAvailability();
     getTalentRole();
     getSalesPerson();
-    getRegion();
+    // getRegion();
+    getTimeZoneList()
     getWorkingMode();
     getCountry();
     getHowSoon();
@@ -745,9 +753,9 @@ const EditHRFields = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    !_isNull(prefRegion) && getTimeZonePreference();
-  }, [prefRegion]);
+  // useEffect(() => {
+  //   !_isNull(prefRegion) && getTimeZonePreference();
+  // }, [prefRegion]);
 
   useEffect(() => {
     setValidation({
@@ -790,18 +798,18 @@ const EditHRFields = ({
     }
   }, [watch("budget"), unregister]);
 
-  useEffect(() => {
-    if (watch("region")?.value.includes("Overlapping")) {
-      unregister(["fromTime", "endTime"]);
-      setValue("fromTime", "");
-      setValue("endTime", "");
-      setControlledFromTimeValue("Select From Time");
-      setControlledEndTimeValue("Select End Time");
-    } else {
-      unregister("overlappingHours");
-      setValue("overlappingHours", "");
-    }
-  }, [watch("region"), unregister]);
+  // useEffect(() => {
+  //   if (watch("region")?.value.includes("Overlapping")) {
+  //     unregister(["fromTime", "endTime"]);
+  //     setValue("fromTime", "");
+  //     setValue("endTime", "");
+  //     setControlledFromTimeValue("Select From Time");
+  //     setControlledEndTimeValue("Select End Time");
+  //   } else {
+  //     unregister("overlappingHours");
+  //     setValue("overlappingHours", "");
+  //   }
+  // }, [watch("region"), unregister]);
 
   useEffect(() => {
     if (watch("availability")?.value === "Full Time") {
@@ -1102,33 +1110,34 @@ const EditHRFields = ({
     }
   }, [getHRdetails, availability]);
 
-  useEffect(() => {
-    if (getHRdetails?.salesHiringRequest_Details?.timezoneId) {
-      const findRegion = region.filter(
-        (item) =>
-          item?.id === getHRdetails?.salesHiringRequest_Details?.timezoneId
-      );
-      setValue("region", findRegion[0]);
-      setControlledRegionValue(findRegion[0]?.value);
-    }
-  }, [getHRdetails, region]);
+  // useEffect(() => {
+  //   if (getHRdetails?.salesHiringRequest_Details?.timezoneId) {
+  //     const findRegion = region.filter(
+  //       (item) =>
+  //         item?.id === getHRdetails?.salesHiringRequest_Details?.timezoneId
+  //     );
+  //     setValue("region", findRegion[0]);
+  //     setControlledRegionValue(findRegion[0]?.value);
+  //   }
+  // }, [getHRdetails, region]);
 
   useEffect(() => {
-    if (getHRdetails?.salesHiringRequest_Details?.timezonePreferenceId) {
-      const findTimeZone = timeZonePref.filter(
+    if (getHRdetails?.salesHiringRequest_Details?.timezoneId) {
+      const findTimeZone = timeZoneList.filter(
         (item) =>
           item?.id ===
-          getHRdetails?.salesHiringRequest_Details?.timezonePreferenceId
+          getHRdetails?.salesHiringRequest_Details?.timezoneId
       );
-      if (findTimeZone.lenth > 0) {
+      if (findTimeZone.length) {
         setValue("timeZone", findTimeZone[0]);
         setControlledTimeZoneValue(findTimeZone[0]?.value);
-      } else {
-        setValue("timeZone", timeZonePref[0]);
-        setControlledTimeZoneValue(timeZonePref[0]?.value);
       }
+      //  else {
+      //   setValue("timeZone", timeZonePref[0]);
+      //   setControlledTimeZoneValue(timeZonePref[0]?.value);
+      // }
     }
-  }, [getHRdetails, timeZonePref]);
+  }, [getHRdetails, timeZoneList]);
 
   useEffect(() => {
     if (getHRdetails?.salesHiringRequest_Details?.howSoon) {
@@ -1347,19 +1356,25 @@ const EditHRFields = ({
         gptDetails?.salesHiringRequest_Details?.rolesResponsibilities; // not sure with roles key name
       _getHrValues.chatGptSkills = gptDetails?.chatGptSkills;
       _getHrValues.chatGptAllSkills = gptDetails?.chatGptAllSkills;
-
+     
       const findWorkingMode = workingMode.filter(
-        (item) => item?.value === gptDetails?.modeOfWorkingId
+        (item) => item?.id === parseInt(gptDetails?.modeOfWorkingId)
       );
 
       setValue("workingMode", findWorkingMode[0]);
       setControlledWorkingValue(findWorkingMode[0]?.value);
       setValue("jdExport", "");
+       _getHrValues.hdnModeOfWork = findWorkingMode[0]?.value ? findWorkingMode[0]?.value : watch('workingMode').value
       setHRdetails(_getHrValues);
       gptDetails?.addHiringRequest?.noofTalents &&
         setValue("talentsNumber", gptDetails?.addHiringRequest?.noofTalents);
-      gptDetails?.addHiringRequest?.availability &&
-        setValue("availability", gptDetails?.addHiringRequest?.availability);
+      // gptDetails?.addHiringRequest?.availability &&
+      //   setValue("availability", gptDetails?.addHiringRequest?.availability);
+        if(gptDetails?.addHiringRequest?.availability){
+          let findAvailability = availability.filter(item=> item.value === gptDetails?.addHiringRequest?.availability)
+          setValue("availability", findAvailability[0]);
+          setControlledAvailabilityValue(findAvailability[0].value)
+        }
       gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 &&
         setValue(
           "minimumBudget",
@@ -2265,7 +2280,7 @@ const EditHRFields = ({
               )}
 
               <div className={HRFieldStyle.row}>
-                <div className={HRFieldStyle.colMd6}>
+               {/*  <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                       controlledValue={controlledRegionValue}
@@ -2283,7 +2298,7 @@ const EditHRFields = ({
                       errorMsg={"Please select the region."}
                     />
                   </div>
-                </div>
+                </div>*/}
                 <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
@@ -2291,12 +2306,13 @@ const EditHRFields = ({
                       setControlledValue={setControlledTimeZoneValue}
                       isControlled={true}
                       mode={"id/value"}
-                      disabled={_isNull(prefRegion)}
+                      // disabled={_isNull(prefRegion)}
                       setValue={setValue}
                       register={register}
                       label={"Select Time Zone"}
                       defaultValue="Select time zone"
-                      options={timeZonePref}
+                      // options={timeZonePref}
+                      options={timeZoneList}
                       name="timeZone"
                       isError={errors["timeZone"] && errors["timeZone"]}
                       required
@@ -2304,10 +2320,10 @@ const EditHRFields = ({
                     />
                   </div>
                 </div>
-              </div>
+              </div> 
 
               <div className={HRFieldStyle.row}>
-                <div className={HRFieldStyle.colMd6}>
+                {/* <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRInputField
                       register={register}
@@ -2335,7 +2351,7 @@ const EditHRFields = ({
                       }
                     />
                   </div>
-                </div>
+                </div> */}
 
                 <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
@@ -2344,11 +2360,11 @@ const EditHRFields = ({
                       setControlledValue={setControlledFromTimeValue}
                       isControlled={true}
                       mode={"id/value"}
-                      disabled={
-                        watch("region")?.value.includes("Overlapping")
-                          ? true
-                          : false
-                      }
+                      // disabled={
+                      //   watch("region")?.value.includes("Overlapping")
+                      //     ? true
+                      //     : false
+                      // }
                       setValue={setValue}
                       register={register}
                       label={"From Time"}
@@ -2361,11 +2377,7 @@ const EditHRFields = ({
                       }))}
                       name="fromTime"
                       isError={errors["fromTime"] && errors["fromTime"]}
-                      required={
-                        watch("region")?.value.includes("Overlapping")
-                          ? false
-                          : true
-                      }
+                      required={true}
                       errorMsg={"Please select from time."}
                     />
                   </div>
@@ -2378,11 +2390,11 @@ const EditHRFields = ({
                       setControlledValue={setControlledEndTimeValue}
                       isControlled={true}
                       mode={"id/value"}
-                      disabled={
-                        watch("region")?.value.includes("Overlapping")
-                          ? true
-                          : false
-                      }
+                      // disabled={
+                      //   watch("region")?.value.includes("Overlapping")
+                      //     ? true
+                      //     : false
+                      // }
                       setValue={setValue}
                       register={register}
                       label={"End Time"}
@@ -2395,11 +2407,7 @@ const EditHRFields = ({
                       }))}
                       name="endTime"
                       isError={errors["endTime"] && errors["endTime"]}
-                      required={
-                        watch("region")?.value.includes("Overlapping")
-                          ? false
-                          : true
-                      }
+                      required={true}
                       errorMsg={"Please select end time."}
                     />
                   </div>
@@ -2440,7 +2448,6 @@ const EditHRFields = ({
 
               <div className={HRFieldStyle.row}>
                 <div className={HRFieldStyle.colMd6}>
-                  {console.log(getHRdetails)}
                   <HRInputField
                     register={register}
                     errors={errors}
@@ -2451,7 +2458,7 @@ const EditHRFields = ({
                     name="bqFormLink"
                     type={InputType.TEXT}
                     placeholder="Enter the link for BQ form"
-                    required={getHRdetails?.addHiringRequest?.guid !== null}
+                    required={getHRdetails?.addHiringRequest?.guid === null}
                   />
                 </div>
                 <div className={HRFieldStyle.colMd6}>
@@ -2465,7 +2472,7 @@ const EditHRFields = ({
                     name="discoveryCallLink"
                     type={InputType.TEXT}
                     placeholder="Enter the link for Discovery call"
-                    required={getHRdetails?.addHiringRequest?.guid !== null}
+                    required={getHRdetails?.addHiringRequest?.guid === null}
                   />
                 </div>
               </div>
@@ -2532,7 +2539,7 @@ const EditHRFields = ({
                   )}
                   {gptDetails?.addHiringRequest?.requestForTalent && (
                     <p>
-                      Requirenments talents :{" "}
+                      Title/Role :{" "}
                       <b>{gptDetails?.addHiringRequest?.requestForTalent}</b>
                     </p>
                   )}
@@ -2544,7 +2551,7 @@ const EditHRFields = ({
                   )}
                   {gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 && (
                     <p>
-                      Budget From ?? :{" "}
+                      Budget From  :{" "}
                       <b>
                         {gptDetails?.salesHiringRequest_Details?.budgetFrom}
                       </b>
@@ -2729,7 +2736,7 @@ const EditHRFields = ({
 
                       {gptFileDetails?.Requirements && (
                         <>
-                          <h3 style={{ marginTop: "10px" }}>Requirenments :</h3>
+                          <h3 style={{ marginTop: "10px" }}>Requirements :</h3>
                           <div className={HRFieldStyle.viewHrJDDetailsBox}>
                             {/* <ul>
                     {gptFileDetails?.Requirements?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}

@@ -35,6 +35,7 @@ export default function DuringPreOnboarding({
 		register,
 		setValue,
 		handleSubmit,
+        clearErrors,
 		control,
 		formState: { errors },
 	} = useForm({});
@@ -50,6 +51,7 @@ export default function DuringPreOnboarding({
 	} = useForm({});
 
     const [tabData, setTabData] = useState({})
+    const [uplersLeavePolicyLink,setUplersLeavePolicyLink] = useState('')
     const [clientTeamMembers, setClientTeamMembers] = useState([])
     const [addMoreTeamMember, setAddMoreTeamMember] = useState(false)
 
@@ -142,8 +144,9 @@ export default function DuringPreOnboarding({
           if (result?.statusCode === HTTPStatusCode.OK) {
             let data = result.responseBody.details
 
-           setTabDisabled(data.isSecondTabReadOnly)
+        //    setTabDisabled(data.isSecondTabReadOnly)
            setTabData(data.secondTabAMAssignmentOnBoardingDetails)
+           setUplersLeavePolicyLink(data.uplersLeavePolicy)
            setDeviceMasters(data.deviceMaster)
            setValue('invoiceRaisinfTo',data.secondTabAMAssignmentOnBoardingDetails.inVoiceRaiseTo)
            setValue('invoiceRaisingToEmail',data.secondTabAMAssignmentOnBoardingDetails.inVoiceRaiseToEmail)
@@ -185,12 +188,9 @@ export default function DuringPreOnboarding({
             let filteredLeavePolicy = leavePolices.filter(leavePolices => leavePolices.value === data.secondTabAMAssignmentOnBoardingDetails.proceedWithUplers_LeavePolicyOption)
             setValue('leavePolicie',filteredLeavePolicy[0])
             setControlledLeavePolicy(filteredLeavePolicy[0].value)
-            if(filteredLeavePolicy[0].id === 1){
-                setValue('policyLink',data.secondTabAMAssignmentOnBoardingDetails.proceedWithClient_LeavePolicyLink)
-            }
-            if(filteredLeavePolicy[0].id === 2){
-                setUploadFileData(data.secondTabAMAssignmentOnBoardingDetails.leavePolicyFileName)
-            }
+            data.secondTabAMAssignmentOnBoardingDetails.proceedWithClient_LeavePolicyLink && setValue('policyLink',data.secondTabAMAssignmentOnBoardingDetails.proceedWithClient_LeavePolicyLink)
+            data.secondTabAMAssignmentOnBoardingDetails.leavePolicyFileName && setUploadFileData(data.secondTabAMAssignmentOnBoardingDetails.leavePolicyFileName)
+    
            }
       
           }
@@ -225,27 +225,29 @@ export default function DuringPreOnboarding({
             "talent_FirstWeek": d.firstWeek,
             "talent_FirstMonth": d.firstMonth,
             "softwareToolsRequired": d.softwareToolsRequired,
-            "devicesPoliciesOption": d.devicePolicy.value,
-            "talentDeviceDetails": d.devicePolicy.id === 1 ? d.standerdSpecifications : '' ,
+            "devicesPoliciesOption": !talentDeteils?.IsHRTypeDP ? d.devicePolicy.value : "",
+            "talentDeviceDetails": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 1 ? d.standerdSpecifications : '' : "",
             // "additionalCostPerMonth_RDPSecurity": "0",
             // "isRecurring": false,
             // "proceedWithUplers_LeavePolicyOption": 		"proceedWithUplers_LeavePolicyOption", // dropdown selected option
             // "proceedWithClient_LeavePolicyOption": "No",
-            "proceedWithClient_LeavePolicyLink": d.leavePolicie.id === 1 ? d.policyLink : '', // link from text box
-            "leavePolicyFileName":d.leavePolicie.id === 2 ? getUploadFileData : '', // file name
-            "hdnRadioDevicesPolicies": d.devicePolicy.value,
-            "device_Radio_Option":  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '',// device name
-            "deviceID": d.devicePolicy.id === 2 ? d.deviceType.id : 0,//device id
-            "client_DeviceDescription": d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' ,
-            "totalCost": d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0,//deviceCost
-            "radio_LeavePolicies": d.leavePolicie.value,
-            "leavePolicyPasteLinkName": d.leavePolicie.id === 1 ? d.policyLink : '',
+            // "proceedWithClient_LeavePolicyLink": d.leavePolicie.id === 1 ? d.policyLink : '', // link from text box
+            // "leavePolicyFileName":d.leavePolicie.id === 2 ? getUploadFileData : '', // file name
+            "proceedWithClient_LeavePolicyLink":!talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "" , // link from text box
+            "leavePolicyFileName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ? getUploadFileData ? getUploadFileData : "" : "" : "" , // file name
+            "hdnRadioDevicesPolicies": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.value : "",
+            "device_Radio_Option": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceName : '' : "",// device name
+            "deviceID":!talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ? d.deviceType.id : 0 : 0,//device id
+            "client_DeviceDescription":!talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 &&  d.deviceType.id === 3 ? d.otherDevice : '' :"" ,
+            "totalCost": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0 : 0,//deviceCost
+            "radio_LeavePolicies":!talentDeteils?.IsHRTypeDP ?  d.leavePolicie.value : "",
+            "leavePolicyPasteLinkName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
             "teamMembers": clientTeamMembers
           }
 
           let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
 
-        //   console.log("res",result,payload)
+        //   console.log("res",payload)
       if (result?.statusCode === HTTPStatusCode.OK) {
         // EnableNextTab(talentDeteils, HRID, "During Pre-Onboarding");
         setIsLoading(false);
@@ -276,15 +278,23 @@ export default function DuringPreOnboarding({
     //     "email": "riya.a@uplers.com",
     //     "buddy": "1"
     //   }
-    // console.log("err",errors)
+    console.log("err",errors)
+    useEffect(()=>{
+        if(getUploadFileData){
+            clearErrors('policyLink')
+        }
+        if(watch("policyLink")){
+            clearErrors('policyFile')
+        }
+    },[watch("policyLink"),getUploadFileData])
 
     const uploadFileHandler = useCallback(
         async (fileData) => {
           setIsLoading(true);
           if (
-            // fileData?.type !== "application/pdf" &&
-            // fileData?.type !== "application/docs" &&
-            // fileData?.type !== "application/msword" &&
+            fileData?.type !== "application/pdf" &&
+            fileData?.type !== "application/docs" &&
+            fileData?.type !== "application/msword" &&
             fileData?.type !== "text/plain" &&
             fileData?.type !==
               "application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
@@ -624,55 +634,52 @@ export default function DuringPreOnboarding({
                     </div>
                    </>} 
 
-                   {watch('leavePolicie')?.id === 1 &&  <div className={HRDetailStyle.colMd12}>
+                   {watch('leavePolicie')?.id === 1 && <a href={uplersLeavePolicyLink} target="_blank" rel="noreferrer" style={{padding:'0px 10px 20px 10px'}}>{uplersLeavePolicyLink}</a>
+                    }
+
+                    {watch('leavePolicie')?.id === 2 && <>
+                    <div className={HRDetailStyle.colMd12}>
                         <div className={HRDetailStyle.modalFormEdited}>
                         <HRInputField
                                 register={register}
                                 errors={errors}
                                 validationSchema={{
-                                    required: 'please enter the Invoice Raising to.',
+                                    // required: 'please enter Link URL.',
                                     validate: (value) => {
                                         if(!isValidUrl(value)){
                                             return 'Please Enter valid URL'
                                         }
-                                        // if(apiData?.ClientDetail?.Availability === "Full Time"){
-                                        //   if (`${value}` <= apiData.ClientDetail.NoOfTalents) {
-                                        //   return "TR cannot be reduced";
-                                        //   }
-                                        // }else{
-                                        //   if (`${value}` <= apiData.ClientDetail.NoOfTalents * 2) {
-                                        //     return "TR cannot be reduced";
-                                        //   }
-                                        // }
                                       },
                                 }}
+                                errorMsg={'please enter Link URL.'}
                                 label="Leave Polices Link"
                                 name="policyLink"
                                 type={InputType.TEXT}
                                 placeholder="Enter Policy Link"
-                                required={watch('leavePolicie')?.id === 1}
-                                disabled={isTabDisabled}
-                            />
+                                required={getUploadFileData ?  false : true}
+                                disabled={isTabDisabled === true ? isTabDisabled : getUploadFileData ? true : false} 
+                            />                          
                         </div>
+                        <h5 style={{textAlign:'center',fontSize:'18px',fontWeight:600}}>OR</h5>
                         </div>
-                    }
-
-                    {watch('leavePolicie')?.id === 2 &&  <div className={HRDetailStyle.colMd12}>
+                    <div className={HRDetailStyle.colMd12}>
                         <div className={HRDetailStyle.modalFormEdited}>
                         {!getUploadFileData ? (
                     <HRInputField
+                      disabled={isTabDisabled === true ? isTabDisabled : watch("policyLink") ? true : false}
                       register={register}
                       leadingIcon={<UploadSVG />}
-                      label="Leave Polices"
+                      label="Upload Polices"
                       name="policyFile"
                       type={InputType.BUTTON}
-                      buttonLabel="Leave Polices"
+                      buttonLabel="Upload Polices"
                       setValue={setValue}
-                      required={watch('leavePolicie')?.id === 2}
+                      required={watch("policyLink") ? false : true}
                       onClickHandler={() => setUploadModal(true)}
-                      validationSchema={{
-                        required: "please select a file.",
-                      }}
+                    //   validationSchema={{
+                    //     required: "please select a file.",
+                    //   }}
+                    errorMsg={"please select a file."}
                       errors={errors}
                     />
                   ) : (
@@ -714,7 +721,8 @@ export default function DuringPreOnboarding({
                 //   setGoogleDriveLink={setGoogleDriveLink}
                   setUploadFileData={setUploadFileData}
                 />
-                    </div>}
+                    </div>
+                    </>  }
                       
                   
                     <div className={HRDetailStyle.colMd12}>

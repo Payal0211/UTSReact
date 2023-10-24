@@ -94,25 +94,50 @@ const DebriefingHR = ({
 
 	const watchSkills = watch("skills")
 	const watchOtherSkills = watch("otherSkill")	
-	
+	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
 	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
 	const [SkillMemo, setSkillMemo] = useState([])
 
 	useEffect(() => {
 		setValue('aboutCompany', addData?.addHiringRequest?.aboutCompanyDesc);
-		setValue(
-			'requirements',
-			addData?.salesHiringRequest_Details?.requirement,
-		);
-		setValue(
-			'roleAndResponsibilities',
-			addData?.salesHiringRequest_Details?.rolesResponsibilities,
-		);
+		// setValue(
+		// 	'requirements',
+		// 	addData?.salesHiringRequest_Details?.requirement,
+		// );
+		// setValue(
+		// 	'roleAndResponsibilities',
+		// 	addData?.salesHiringRequest_Details?.rolesResponsibilities,
+		// );
+		setValue('requirements', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
+		JDParsedSkills?.Requirements ||
+		(addData?.salesHiringRequest_Details?.requirement), {
+				shouldDirty: true,
+			});
+		setValue('roleAndResponsibilities', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
+			?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
+			?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
+			?.rolesResponsibilities :
+			JDParsedSkills?.Responsibility ||
+			(addData?.salesHiringRequest_Details
+				?.rolesResponsibilities ), {
+			shouldDirty: true,
+		});
 		setIsFocusedRole(addData?.salesHiringRequest_Details?.isHrfocused);
 		setGoodSuggestedSkills(addData?.chatGptSkills?.split(","));
 		setAllSuggestedSkills(addData?.chatGptAllSkills?.split(","));
 		setValue('role',addData?.addHiringRequest?.requestForTalent);
 	}, [addData]);
+
+	useEffect(() => {
+		if (addData?.addHiringRequest?.requestForTalent) {
+			const findRole = talentRole.filter(
+				(item) =>
+					item?.value === addData?.addHiringRequest?.requestForTalent,
+			);
+			setValue('role', findRole[0]);
+			setControlledRoleValue(findRole[0]?.value);
+		}
+	}, [addData, talentRole]);
 
 	useEffect(()=>{
 		const combinedData = [
@@ -130,8 +155,8 @@ const DebriefingHR = ({
 			...skills,
 		];
 		// remove selected skill for other skill list 
-		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed.map(s=> s.value).includes(o.value)))
-		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave.map(s=> s.value).includes(o.value)))
+		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed.map(s=> s?.value).includes(o?.value)))
+		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave.map(s=> s?.value).includes(o?.value)))
 	},[JDParsedSkills, controlledJDParsed, skills,controlledGoodToHave])
 
 	const isOtherSkillExistMemo = useMemo(() => {
@@ -257,13 +282,30 @@ const DebriefingHR = ({
 	// 	getOtherSkillsRequest(search);
 	// }, [getOtherSkillsRequest, search]);
 	useEffect(() => {
-		JDParsedSkills &&
-			setValue('roleAndResponsibilities', JDParsedSkills?.Responsibility, {
+		// JDParsedSkills &&
+		// 	setValue('roleAndResponsibilities', JDParsedSkills?.Responsibility, {
+		// 		shouldDirty: true,
+		// 	});
+
+		// JDParsedSkills &&
+		// 	setValue('requirements', JDParsedSkills?.Requirements, {
+		// 		shouldDirty: true,
+		// 	});
+
+		JDParsedSkills &&  setValue('requirements', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
+		JDParsedSkills?.Requirements ||
+		(addData?.salesHiringRequest_Details?.requirement), {
 				shouldDirty: true,
 			});
 
-		JDParsedSkills &&
-			setValue('requirements', JDParsedSkills?.Requirements, {
+
+		JDParsedSkills &&	setValue('roleAndResponsibilities', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
+			?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
+			?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
+			?.rolesResponsibilities :
+			JDParsedSkills?.Responsibility ||
+			(addData?.salesHiringRequest_Details
+				?.rolesResponsibilities ), {
 				shouldDirty: true,
 			});
 	}, [JDParsedSkills, setValue]);
@@ -293,7 +335,7 @@ const DebriefingHR = ({
 			en_Id: enID,
 			skills: skillList?.filter((item) => item?.skillsID !== -1),
 			aboutCompanyDesc: d.aboutCompany,
-			secondaryInterviewer: d.secondaryInterviewer,
+			// secondaryInterviewer: d.secondaryInterviewer,
 			interviewerFullName: d.interviewerFullName,
 			interviewerEmail: d.interviewerEmail,
 			interviewerLinkedin: d.interviewerLinkedin,
@@ -303,7 +345,18 @@ const DebriefingHR = ({
 			IsHrfocused: isFocusedRole,
 			role: d.role.id,
 			hrTitle: d.hrTitle,
-			allSkills:goodToSkillList
+			allSkills:goodToSkillList,
+			"interviewerDetails":{
+				"primaryInterviewer": {
+					"interviewerId": d.interviewerId,
+					"fullName": d.interviewerFullName,
+					"emailID": d.interviewerEmail,
+					"linkedin": d.interviewerLinkedin,
+					"designation": d.interviewerDesignation,
+					"isUserAddMore": false
+				},
+				"secondaryinterviewerList": d.secondaryInterviewer
+			}
 		};
 
 		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -359,21 +412,50 @@ const DebriefingHR = ({
 	};
 
 	const onSelectSkill = (skill) => {
-		let _selected = combinedSkillsMemo.filter((val) => val.value === skill);
-		let _controlledJDParsed = [...controlledJDParsed];		
-		let _index = _controlledJDParsed.findIndex((obj) => obj.id === _selected[0].id);
+		
+		// let _selected = combinedSkillsMemo.filter((val) => val?.value === skill);
+		// let _controlledJDParsed = [...controlledJDParsed];		
+		// let _index = _controlledJDParsed.findIndex((obj) => obj.id === _selected[0].id);
+		// if(_index === -1){
+		// 	_controlledJDParsed.push({id: '0', value: skill});
+		// }
+		// // console.log({skill, combinedSkillsMemo,_selected,_index ,_controlledJDParsed,controlledJDParsed})
+		// setControlledJDParsed(_controlledJDParsed);
+		// setValue('skills',_controlledJDParsed)		
+		let _controlledJDParsed = [...controlledJDParsed];	
+		let _index = _controlledJDParsed.findIndex((obj) => obj.value === skill.trim());
 		if(_index === -1){
-			_controlledJDParsed.push(_selected[0]);
-		}
+				// _controlledJDParsed.push(_selected[0]);
+				_controlledJDParsed.push({id: '0', value: skill.trim()});
+				setCombinedSkillsMemo(prev=> [...prev,{id: '0', value: skill.trim()}])
+			}else{
+				return
+			}
+
 		setControlledJDParsed(_controlledJDParsed);
-		setValue('skills',_controlledJDParsed)		
+		setValue('skills',_controlledJDParsed);
 	}
+
 	const onSelectGoodSkill = (skill) => {
-		let _selected = SkillMemo.filter((val) => val.value === skill?.trim());
+		// let _selected = SkillMemo.filter((val) => val?.value === skill?.trim());
+		// let _controlledGoodToHave = [...controlledGoodToHave];
+		// let _index = _controlledGoodToHave.findIndex((obj) => obj.id === _selected[0].id);
+		// if(_index === -1){
+		// 	// _controlledGoodToHave.push(_selected[0]);
+		// 	_controlledGoodToHave.push({id: '0', value: skill});
+		// }
+		// setControlledGoodToHave(_controlledGoodToHave);
+		// setValue('goodToHaveSkills',_controlledGoodToHave)
+
 		let _controlledGoodToHave = [...controlledGoodToHave];
-		let _index = _controlledGoodToHave.findIndex((obj) => obj.id === _selected[0].id);
+		let _index = _controlledGoodToHave.findIndex((obj) => obj.value === skill.trim());
+
 		if(_index === -1){
-			_controlledGoodToHave.push(_selected[0]);
+			// _controlledGoodToHave.push(_selected[0]);
+			_controlledGoodToHave.push({id: '0', value: skill.trim()});
+			setSkillMemo(prev=> [...prev, {id: '0', value: skill.trim()}])
+		}else{
+			return
 		}
 		setControlledGoodToHave(_controlledGoodToHave);
 		setValue('goodToHaveSkills',_controlledGoodToHave)
@@ -452,6 +534,9 @@ const DebriefingHR = ({
 									errors={errors}
 									validationSchema={{
 										validate: (value) => {
+											if (!value) {
+												return 'Please add something about the company';
+											}
 											let index = value.search(new RegExp(getCompanyName, 'i'));
 											let index1 = value.search(
 												new RegExp(clientDetail?.companyname, 'i'),
@@ -499,6 +584,9 @@ const DebriefingHR = ({
 							/>
 								<div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
+									controlledValue={controlledRoleValue}
+									setControlledValue={setControlledRoleValue}
+									isControlled={true}
 										mode={'id/value'}
 										searchable={true}
 										setValue={setValue}
@@ -527,23 +615,24 @@ const DebriefingHR = ({
 								/>
 							</div>
 							<div className={DebriefingHRStyle.mb50}>
-								<HRSelectField
-									isControlled={true}
-									controlledValue={controlledJDParsed}
-									setControlledValue={setControlledJDParsed}
-									mode="tags"
-									setValue={setValue}
-									register={register}
-									label={'Must have Skills'}
-									placeholder="Type skills"
-									onChange={setSelectedItems}
-									options={combinedSkillsMemo}
-									setOptions={setCombinedSkillsMemo}
-									name="skills"
-									isError={errors['skills'] && errors['skills']}
-									required
-									errorMsg={'Please enter the skills.'}
-								/>
+							<HRSelectField
+										isControlled={true}
+										controlledValue={controlledJDParsed}
+										setControlledValue={setControlledJDParsed}
+										// mode="multiple"
+										mode="tags"
+										setValue={setValue}
+										register={register}
+										label={'Must have Skills'}
+										placeholder="Type skills" 
+										onChange={setSelectedItems}
+										options={combinedSkillsMemo}
+										setOptions = {setCombinedSkillsMemo}
+										name="skills"
+										isError={errors['skills'] && errors['skills']}
+										required
+										errorMsg={'Please enter the skills.'}
+									/>
 								<ul className={DebriefingHRStyle.selectFieldBox}>
 									{goodSuggestedSkills?.map((skill) => (																	
 										<li key={skill} onClick={() => onSelectSkill(skill)}><span>{skill}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
@@ -598,19 +687,11 @@ const DebriefingHR = ({
 								/>
 						</div>
 						<div className="selectFieldBox">
-						{allSuggestedSkills?.map((skill) => (
-									//  onClick={() =>
-									// addtopSkillFromSuggestion(skill, top5Skills)
-									// }									
-									<button key={skill} onClick={() => onSelectGoodSkill(skill)}>                      
-										{skill}
-										{/* <img
-										// src={plusImage}                          
-										loading="lazy"
-										alt="star"
-										/> */}
-									</button>									
-								))}
+						<ul className={DebriefingHRStyle.selectFieldBox}>
+										{allSuggestedSkills?.map((skill) => (																	
+											<li key={skill} onClick={() => onSelectGoodSkill(skill)}><span>{skill}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
+										))}	
+								</ul>
 							</div>
 							{/* <div className={DebriefingHRStyle.mb50}>
 							<label
