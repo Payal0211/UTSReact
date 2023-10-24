@@ -1356,19 +1356,25 @@ const EditHRFields = ({
         gptDetails?.salesHiringRequest_Details?.rolesResponsibilities; // not sure with roles key name
       _getHrValues.chatGptSkills = gptDetails?.chatGptSkills;
       _getHrValues.chatGptAllSkills = gptDetails?.chatGptAllSkills;
-
+     
       const findWorkingMode = workingMode.filter(
-        (item) => item?.id === gptDetails?.modeOfWorkingId
+        (item) => item?.id === parseInt(gptDetails?.modeOfWorkingId)
       );
 
       setValue("workingMode", findWorkingMode[0]);
       setControlledWorkingValue(findWorkingMode[0]?.value);
       setValue("jdExport", "");
+       _getHrValues.hdnModeOfWork = findWorkingMode[0]?.value ? findWorkingMode[0]?.value : watch('workingMode').value
       setHRdetails(_getHrValues);
       gptDetails?.addHiringRequest?.noofTalents &&
         setValue("talentsNumber", gptDetails?.addHiringRequest?.noofTalents);
-      gptDetails?.addHiringRequest?.availability &&
-        setValue("availability", gptDetails?.addHiringRequest?.availability);
+      // gptDetails?.addHiringRequest?.availability &&
+      //   setValue("availability", gptDetails?.addHiringRequest?.availability);
+        if(gptDetails?.addHiringRequest?.availability){
+          let findAvailability = availability.filter(item=> item.value === gptDetails?.addHiringRequest?.availability)
+          setValue("availability", findAvailability[0]);
+          setControlledAvailabilityValue(findAvailability[0].value)
+        }
       gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 &&
         setValue(
           "minimumBudget",
