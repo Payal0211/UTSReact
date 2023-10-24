@@ -1032,7 +1032,6 @@ table {
 } */
 
 
-
 .personTaggedValue {
   border-radius: 10px;
   padding: 5px 5px;
@@ -1042,6 +1041,9 @@ table {
   text-align: center;
 }
 
+.ant-pagination.ant-pagination-mini .ant-pagination-item{
+  min-width: auto;
+}
 
 
 /* Responsive css start */
