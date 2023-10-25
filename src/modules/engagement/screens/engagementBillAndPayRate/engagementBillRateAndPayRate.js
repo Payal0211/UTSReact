@@ -299,9 +299,9 @@ const nrPercentageBR = useCallback( async(e)=>{
 							className={`${allengagementBillAndPayRateStyles.row} ${allengagementBillAndPayRateStyles.billRateWrapper}`}>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
-								controlledValue={levelBillEdit}
-								setControlledValue={setBillEdit}
-								isControlled={true}
+									controlledValue={levelBillEdit}
+									setControlledValue={setBillEdit}
+									isControlled={true}
 									mode={'id/value'}
 									setValue={setValue}
 									register={register}
