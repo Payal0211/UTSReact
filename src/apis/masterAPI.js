@@ -842,5 +842,19 @@ export const MasterAPI = {
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.getTimeZoneMaster');
 		}
-	}
+	},
+	getChatGPTResponse: async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + 'ChatGPTResonse/ChatGPTResponseForUrlParsing' ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = data
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getChatGPTResponse');
+		}
+	},
 };

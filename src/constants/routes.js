@@ -3,6 +3,7 @@ import HRLostReport from 'modules/report/screens/hrLostReport/hrLostReport';
 import ChangePassword from 'modules/user/screens/changePassword/changePassword';
 import ViewClientDetails from 'modules/viewClient/viewClientDetails';
 import React, { Suspense } from 'react';
+import ChatGPTResponse from 'modules/report/screens/chatGPTResponse/chatGPTResponse';
 
 const Dashboard = React.lazy(() =>
 	import('modules/dashboard/screens/dashboard'),
@@ -122,6 +123,7 @@ const AllClients = React.lazy(() =>
 	import('modules/allClients/allClients')
 )
 
+
 // const ViewClient = React.lazy(() => 
 // import('modules/viewClient/viewClientDetails'))
 
@@ -170,6 +172,7 @@ export default class UTSRoutes {
 	static ALLCLIENTS = '/allClients';
 	static VIEWCLIENT = '/viewClient/:companyID/:clientID';
 	static CHANGE_PASSOWRD = '/changepassword'
+	static CHAT_GPT_RESPONSE = '/chatGPTResponse'
 }
 
 export const navigateToComponent = {
@@ -363,6 +366,11 @@ export const navigateToComponent = {
 [UTSRoutes.CHANGE_PASSOWRD]: (
 	<Suspense>
 		<ChangePassword />
+	</Suspense>
+),
+[UTSRoutes.CHAT_GPT_RESPONSE]: (
+	<Suspense>
+		<ChatGPTResponse />
 	</Suspense>
 ),
 };

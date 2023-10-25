@@ -81,7 +81,7 @@ const AnotherRound = ({
 	const [slot2Timematch, setSlot2timematch] = useState(false);
 	const [slot3Timematch, setSlot3timematch] = useState(false);
 	const [timeErrorMessage,setTimeErrorMessage] = useState('');
-
+	const [interviewTimezone,setInterviewTimezone] = useState('');
 	const [clientDetailsForAnotherRound, setClientDetailsForAnotherRound] =
 		useState(null);
 	const onChangeRadioBtn = useCallback(
@@ -1100,6 +1100,9 @@ const AnotherRound = ({
 												<div className={InterviewScheduleStyle.row}>
 													<div className={InterviewScheduleStyle.colMd12}>
 														<HRSelectField
+															controlledValue={interviewTimezone}
+															setControlledValue={setInterviewTimezone}
+															isControlled={true}
 															mode={'id/value'}
 															setValue={setValue}
 															register={register}

@@ -36,6 +36,7 @@ const InterviewReschedule = ({
 	getInterviewStatus,
 }) => {
 	const {
+		watch,
 		register,
 		handleSubmit,
 		setValue,
@@ -53,7 +54,7 @@ const InterviewReschedule = ({
 	const [slot2Timematch, setSlot2timematch] = useState(false);
 	const [slot3Timematch, setSlot3timematch] = useState(false);
 	const [timeErrorMessage,setTimeErrorMessage] = useState('');
-
+	const [interviewTimezone,setInterviewTimezone] = useState('');
 	useEffect(() => {
 		//Slot 1 data
 		setValue('slot1Date', getRescheduleSlotDate[0].slot1)
@@ -123,11 +124,10 @@ const InterviewReschedule = ({
 	useEffect(() => {
 		getTimeZone();
 	}, [getTimeZone]);
-
+	
 	const reScheduleInterviewAPIHandler = useCallback(
 		async (data) => {
 			setLoading(true);
-
 			
 			let timeError = false
 			setSlot1timematch(false)
@@ -216,7 +216,6 @@ const InterviewReschedule = ({
 			else if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
 				setTimeErrorMessage(response.responseBody)
 				setLoading(false);
-
 			} else {
 				setLoading(false);
 				messageAPI.open(
@@ -414,14 +413,19 @@ const InterviewReschedule = ({
 											? InterviewScheduleStyle.colMd6
 											: InterviewScheduleStyle.colMd12
 									}>
-									<HRSelectField
+									<HRSelectField		
+										controlledValue={interviewTimezone}
+										setControlledValue={setInterviewTimezone}
+										isControlled={true}
 										setValue={setValue}
 										register={register}
 										name="interviewTimezone"
 										label="Time Zone"
+										mode="id"
 										defaultValue="Select timezone"
+										// placeholder="Select timezone"
 										options={reScheduleTimezone && reScheduleTimezone}
-										required
+										required										
 										isError={
 											errors['interviewTimezone'] && errors['interviewTimezone']
 										}
