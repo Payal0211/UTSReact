@@ -1,0 +1,449 @@
+.hiringRequestContainer {
+    /* width: 95%; */
+    /* margin: 0 auto; */
+    margin: 25px 40px;
+}
+
+
+.addnewHR {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.hiringRequest {
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.btnPrimary {
+    background: #FFDA30;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    padding: 17px 28px;
+    outline: none;
+    transition: all 0.35s ease 0s;
+    cursor: pointer;
+    box-shadow: none;
+    margin-left:10px
+}
+
+.newHR {
+    padding: 1px 0;
+    background-color: var(--color-sunlight);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.newHR label {
+    padding: 0 20px;
+    font-weight: 500;
+    font-size: .8vw;
+}
+
+.iconDown {
+    height: 50px;
+    width: 50px;
+    margin-right: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color: var(--background-color-light);
+}
+.filterContainer{
+    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
+    border-radius: 10px;
+    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
+    margin: 40px auto 20px auto ;
+    background-color: var(--background-color-light);
+}
+
+
+
+.filterSets{
+    width: 96%;
+    margin-left: auto;
+    margin-right: auto;
+    padding:30px 0;
+    display: flex;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    /* height: 92px; */
+    
+}
+
+.filterSetsInner{
+    display: flex;
+    align-items: center;
+}
+
+.filterSetsInner p{
+    margin: 0 0 0 10px;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.addFilter{
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 167px;
+    height: 44px;
+    border: 1px solid var(--background-color-metal);
+}
+
+.filterLabel{
+    font-weight: 500;
+    font-size: .7vw;
+}
+
+.filterCount{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    font-size: var(--fontsize-uplers);
+    background-color: var(--color-sunlight);
+    border-radius: 50%;
+    font-weight: 700;
+}
+
+.filterRight{
+    display: flex;
+    justify-content: flex-end;
+    gap:24px;
+    align-items: center ; 
+    flex-wrap: wrap;
+}
+
+.searchFilterSet{
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    width: 350px;
+    height: 44px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.searchInput{
+    cursor: pointer;
+    width: 80%;
+    outline: none;
+    border: none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}
+.calendarFilterSet{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 8px;
+}
+.label{
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--uplers-lightBlack);
+}
+.calendarFilter{
+    width:250px ;
+    height: 44px;
+    border-radius: 8px;
+    padding: 2px 10px;
+    border: 1px solid var(--background-color-metal);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+.calendarFilter [class*="react-datepicker-popper"]{
+    right: 0 !important;
+        left: auto !important;
+        transform: none !important;
+        width: 100% !important;
+        margin: 40px 0 30px;
+}
+.calendarFilter [class*="react-datepicker-popper"] > div > [class*="react-datepicker"] {
+        margin-left: 0;
+        min-width: 100%;
+}
+.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
+    top: 14px;
+}
+.calendarFilter [class*="react-datepicker-popper"] [class*="react-datepicker__day-names"]{
+    margin-top: 5px;
+}
+.calendarFilter [class*="react-datepicker__month-container"] [class*="react-datepicker__month"]{
+    margin-bottom: 10px;
+}
+
+.dateFilter{
+    cursor: pointer;
+    width: 102%;
+    outline: none;
+    border:none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}
+.priorityFilterSet{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.priorityFilter{
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 44px;
+}
+
+.paginationFilter {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 71px;
+    height: 44px;
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    cursor: pointer;
+}
+.tableDetails{
+    margin-top: 24px;
+}
+/* Custome Dropdown */
+
+.priorities_drop_custom {
+  margin-right: 15px;
+  position: relative;
+}
+
+.togglebtn {
+  min-width: 138px;
+  height: 52px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #232323;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  cursor: pointer;
+}
+
+.priorities_drop_custom .toggle_content {
+  position: absolute;
+  right: 0;
+  z-index: 88;
+}
+
+.priorities_drop_custom .toggle_content table {
+  display: block;
+  width: 410px;
+  filter: drop-shadow(-4px 4px 15px rgba(0, 0, 0, 0.1));
+  height: 250px;
+  overflow-y: scroll;
+}
+.priorities_drop_custom .toggle_content table thead  {
+    
+    box-shadow: 0 0 1px 1px #cecccc;
+    position: sticky;
+    top: 0;
+    
+}
+
+.priorities_drop_custom .toggle_content table thead tr th {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: left;
+  color: #000000;
+  padding: 15px;
+  /* border-bottom: 1px dashed #cecccc; */
+
+  white-space: nowrap;
+}
+
+.priorities_drop_custom .toggle_content table tbody tr td {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: #000000;
+  padding: 15px;
+  border-bottom: 1px solid #f7f7f7;
+}
+
+.priorities_drop_custom .toggle_content table tbody tr:hover td {
+  background: rgba(206, 204, 204, 0.12);
+}
+
+.btn_wrap {
+  display: flex;
+  align-items: center;
+}
+
+.blank_btn {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #676767;
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+}
+
+.blank_btn img {
+  margin: 0 10px;
+}
+
+.blank_btn b {
+  margin-left: 5px;
+}
+
+
+
+@media only screen and (max-width: 1440px) {
+
+    .calendarFilter{
+        width:185px;
+        height: 35px;
+    }
+
+    .calendarFilter svg{
+        margin-right: 5px !important;
+    }
+  
+    .calendarFilter .dateFilter{
+        font-size: 12px;
+    }
+  
+    .searchInput{
+        font-size: 12px;
+    }  
+
+    .hiringRequest {
+        font-size: 28px;
+    }
+  
+    .filterRight .focusCheckBox{
+        max-width: 115px;
+        align-items: center;
+    }
+
+    .filterRight .focusCheckBox span{
+        font-size: 12px;
+        line-height: 16px;
+    }
+  
+    .filterSetsInner p{
+        font-size: 12px;
+    }
+  
+    .filterSets{
+        padding: 15px 0;
+        width: 98%;
+    }
+  
+    .addFilter{
+        width: 125px;
+        gap: 8px;
+    }
+
+    .header {
+        margin-bottom: 30px;
+    }
+
+    .filterContainer{
+        margin: 30px auto 20px auto;
+    }
+
+    .btnPrimary {
+        font-size: 12px;
+        line-height: 16px;
+        padding: 12px 25px;
+    }
+
+    .togglebtn {
+        height: 40px
+    }
+
+    .filterSets{
+        padding: 15px 0;
+        width: 98%;
+    }
+
+    .filterRight{
+        gap: 15px;
+    }
+  
+    .addFilter{
+        width: 125px;
+        gap: 8px;
+    }
+
+    .searchFilterSet{
+        width: 200px;
+        height: 35px;
+    }
+
+    .searchInput{
+        font-size: 10px;
+    }   
+
+    .paginationFilter {
+        width: 65px;
+        height: 35px;
+    }
+   
+    .addFilter{
+        height: 35px;
+    }
+
+    .filterCount{
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+
+    .label {
+        font-size: 12px;
+    }
+
+    .filterDescription {
+       padding: 15px !important;
+    }
+
+
+  }
+
+

@@ -1108,7 +1108,7 @@ export const HiringRequestAPI = {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.GET_CHANNEL_LIBRARY + `?Type=${data.type}&ChannelID=${data.channelID}}` ;
+			HiringRequestsAPI.GET_CHANNEL_LIBRARY + `?Type=${data.type}&ChannelID=${data.channelID}` ;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {

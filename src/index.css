@@ -120,6 +120,10 @@ input[type="file"] {
   justify-content: center !important;
 }
 
+.ant-pagination-item a {
+  padding: 0;
+}
+
 .ant-pagination-item a:hover {
   color: var(--color-sunlight) !important;
 }
