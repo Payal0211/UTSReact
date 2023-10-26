@@ -223,7 +223,7 @@ if(activeTabType){
 					) {
 						dateString = "Yesterday";
 					} else {
-						dateString = messageDate.toDateString();
+						dateString = moment(messageDate.toDateString()).format("MMM D,YYYY");
 					}
 					}
 
@@ -471,9 +471,9 @@ if(activeTabType){
 									} else if (
 									  messageDate.toDateString() === yesterday.toDateString()
 									) {
-									  dateString = "Yesterday";
+										dateString = "Yesterday";
 									} else {
-									  dateString = messageDate.toDateString();
+									  	dateString = moment(messageDate.toDateString()).format("MMM D,YYYY");
 									}
 								  }
 				  
@@ -531,7 +531,7 @@ if(activeTabType){
 								) {
 								  dateString = "Yesterday";
 								} else {
-								  dateString = messageDate.toDateString();
+								  dateString = moment(messageDate.toDateString()).format("MMM D,YYYY");
 								}
 							  }
 			  
