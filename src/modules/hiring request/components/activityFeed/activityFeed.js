@@ -2,9 +2,10 @@ import { InputType } from 'constants/application';
 import ActivityFeedStyle from './activityFeed.module.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { SlGraph } from 'react-icons/sl';
-import React, { Fragment, useState, useMemo, Suspense } from 'react';
+import React, { Fragment, useState, useMemo, Suspense, useEffect } from 'react';
 import { DateTimeUtils } from 'shared/utils/basic_utils';
 import { Divider, TabsProps, Space, Table, Tag} from 'antd';
+import ReactPlayer from 'react-player';
 
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -21,6 +22,9 @@ import FiIconWord  from '../../../../assets/svg/fiIconWord.svg';
 import FiDownloadSVG  from '../../../../assets/svg/fiDownload.svg';
 import FiLinkSVG from '../../../../assets/svg/fiLink.svg';
 import FiExternalLinkSVG from '../../../../assets/svg/fiExternalLink.svg';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { HTTPStatusCode } from 'constants/network';
+import { render } from '@testing-library/react';
 
 
 const Editor = React.lazy(() => import('../textEditor/editor'));
@@ -29,72 +33,6 @@ class ChannelType {
 	static videos = 2
 	static documents = 3
 }
-
-const Documentsdata = [
-	{
-		key: '1',
-		link: 'John Brown',
-		addedby: 'You',
-		dateadded: 'Today',
-		tags: ['nice', 'developer'],
-	  },
-	  {
-		key: '2',
-		link: 'Jim Green',
-		addedby: 'You',
-		dateadded: 'Today',
-		tags: ['loser'],
-	  },
-	  {
-		key: '3',
-		link: 'Joe Black',
-		addedby: 'You',
-		dateadded: 'Today',
-		tags: ['cool', 'teacher'],
-	  },
-];
-
-const Documentcolumns = [
-
-{
-	title: 'Filename',
-	dataIndex: 'filename',
-	key: 'filename',
-	render: (_, record) => (
-		
-		<div className={ActivityFeedStyle.gridContentLeft}>
-			<div className={ActivityFeedStyle.documentassetImg}>
-				<img src={FiIconPDF} alt='img' />
-			</div>
-			<div className={ActivityFeedStyle.documentassetDetails}>
-				<div className={ActivityFeedStyle.assetName}>Andela x Uplers</div>
-				<span>1 page</span><span>PDF</span>
-			</div>
-		</div>
-		
-		),
-	},
-	{
-	title: 'Added by',
-	dataIndex: 'addedby',
-	key: 'addedby',
-	},
-	{
-	title: 'Date added',
-	dataIndex: 'dateadded',
-	key: 'dateadded',
-	},
-	{
-	title: '',
-	key: 'action',
-	render: (_, record) => (
-		<span className={ActivityFeedStyle.downloadLink}>Download</span>
-	),
-	},
-
-];
-
-
 
 const dataSource = [
 	{
@@ -165,8 +103,11 @@ const ActivityFeed = ({
 	activityFeed,
 	tagUsers,
 	callActivityFeedAPI,
+	ChannelID
 }) => {
 	const [search, setSearch] = useState('');
+	const [activityFeedList,setActivityFeedList] = useState([]);
+	const [activityFeedMessage,setActivityFeedMessage] = useState();
 
 	const [activeTabType,setActiveTabType] = useState()
 
@@ -180,6 +121,143 @@ const ActivityFeed = ({
 		const notesTemplate = new DOMParser().parseFromString(notes, 'text/html');
 		return notesTemplate.body;
 	};
+
+	const getChannelData = async (data)=>{
+		let result = await hiringRequestDAO.getChannelLibraryDAO(data)
+		console.log('channel response', result);
+		setActivityFeedList(result?.responseBody?.details)
+		setActivityFeedMessage(result?.responseBody?.message)
+		if(result.statusCode === HTTPStatusCode.OK){
+
+		}
+	}
+
+	useEffect(()=> {
+if(activeTabType){
+	let	payload = {
+		type: activeTabType,
+		channelID: ChannelID
+	}
+	console.log('channel payload', payload,ChannelID);
+	getChannelData(payload)
+}
+	},[activeTabType,ChannelID])
+
+	const Documentsdata = activityFeedList?.slice()?.reverse()?.map((data)=>({
+				key: '1',
+				imageUrl : data?.fileUrl,
+				filename: data?.name,
+				dateadded: data?.createdDateTime,
+	}))
+
+	const DocumentcolumnsConfig = (activityFeedList)=>{
+		return[
+		{
+			title: 'Filename',
+			dataIndex: 'filename',
+			key: 'filename',
+			render: (_, record) => {
+				const fileType = record?.filename.split(".")[1];
+				return(
+				<div className={ActivityFeedStyle.gridContentLeft}>
+					<div className={ActivityFeedStyle.documentassetImg}>
+						{fileType === "docx" && (
+						<img src={FiIconWord} alt='img' />
+						)}
+						{fileType === "xls" && (
+						<img src={FiIconWord} alt='img' />
+						)}
+						{fileType === "xlsx" && (
+						<img src={FiIconWord} alt='img' />
+						)}
+						{fileType === "csv" && (
+						<img src={FiIconWord} alt='img' />
+						)}
+						{fileType === "doc" && (
+						<img src={FiIconWord} alt='img' />
+						)}
+						{fileType === "txt" && (
+						<img src={FiIconWord} alt='img' />
+						)}
+						{fileType === "pdf" && (
+                            <img src={FiIconPDF} alt='img' />
+                        )}
+					</div>
+					<div className={ActivityFeedStyle.documentassetDetails}>
+						<div className={ActivityFeedStyle.assetName}>{record?.filename}</div>
+						{/*<span>1 page</span>*/}{fileType === "docx" && (<span>DOC</span>)}
+						{fileType === "xls" && (<span>DOC</span>)}
+						{fileType === "xlsx" && (<span>DOC</span>)}
+						{fileType === "csv" && (<span>DOC</span>)}
+						{fileType === "doc" && (<span>DOC</span>)}
+						{fileType === "txt" && (<span>DOC</span>)}
+						{fileType === "pdf" && (<span>PDF</span>)}
+					</div>
+				</div>)}
+				},
+			// {
+			// title: 'Added by',
+			// dataIndex: 'addedby',
+			// key: 'addedby',
+			// },
+			{
+			title: 'Date added',
+			dataIndex: 'dateadded',
+			key: 'dateadded',
+			render:(_,record)=>{
+				const messageDate = 
+					record?.dateadded
+					? new Date(record?.dateadded)
+					: null;
+
+					const today = new Date();
+					const yesterday = new Date(today);
+					yesterday.setDate(today.getDate() - 1);
+
+					let dateString = "";
+					if (messageDate) {
+					if (messageDate.toDateString() === today.toDateString()) {
+						dateString = "Today";
+					} else if (
+						messageDate.toDateString() === yesterday.toDateString()
+					) {
+						dateString = "Yesterday";
+					} else {
+						dateString = messageDate.toDateString();
+					}
+					}
+
+					const showDateSeparator = dateString !== currentChatDate;
+					currentChatDate = dateString;
+				return <span>{dateString}</span>
+			}
+			},
+			{
+			title: '',
+			key: 'action',
+			render: (_, record) => {
+				return	<a href={record.imageUrl} download>
+					<span className={ActivityFeedStyle.downloadLink}>Download</span>
+					</a>
+			},
+			},
+		]};
+
+			const columns = DocumentcolumnsConfig(activityFeedList);
+			let currentChatDate = null;
+	
+			const formatTime = (time) => {
+				var dateString = time;
+				var date = new Date(dateString);
+
+				// Format the date as "12:58 PM"
+				var formattedTime = date.toLocaleTimeString('en-US', {
+				hour: 'numeric',
+				minute: '2-digit',
+				hour12: true
+				});
+				return formattedTime
+			};
 
 	return (
 		<div className={ActivityFeedStyle.activityContainer}>
@@ -218,13 +296,13 @@ const ActivityFeed = ({
 			<div className={ActivityFeedStyle.activityChannelLibrary}>
 
 				<Tabs className={ActivityFeedStyle.channelLibTabs}>
-					{/* <TabList className={ActivityFeedStyle.channelLibTabsTitle}>
+					<TabList className={ActivityFeedStyle.channelLibTabsTitle}>
 						<Tab >Activity</Tab>
 						<Tab onClick={()=> setActiveTabType(ChannelType.images)}>Images</Tab>
 						<Tab onClick={()=>{ setActiveTabType(ChannelType.documents)}}>Documents</Tab>
 						<Tab onClick={()=>{ setActiveTabType(ChannelType.videos)}}>Videos</Tab>
-						{/* <Tab onClick={()=>{ console.log("Links")}}>Links</Tab> 
-					</TabList> */}
+						{/* <Tab onClick={()=>{ console.log("Links")}}>Links</Tab>  */}
+					</TabList>
 
 						{/* Activity  */}
 					<TabPanel className={ActivityFeedStyle.tabContent}>
@@ -377,54 +455,57 @@ const ActivityFeed = ({
 					<TabPanel className={ActivityFeedStyle.tabContent}>
 						<div className={ActivityFeedStyle.contentGrid}>
 							<ul className={ActivityFeedStyle.channelLibImagesBoxes}>
-								<li className={ActivityFeedStyle.dividerText}>Today</li>
-								<li>
-									<span>Anjali,Image 12:58 PM</span>
-									<div className={ActivityFeedStyle.channelLibTabImg}>
-										<img src="https://i.pravatar.cc/95" width="95" height="95" />
-									</div>
-									<a href='#'>View in conversation</a>
-								</li>
-								<li>
-									<span>Anjali, 12:58 PM</span>
-									<div className={ActivityFeedStyle.channelLibTabImg}>
-										<img src="https://i.pravatar.cc/95" width="95" height="95" />
-									</div>
-									<a href='#'>View in conversation</a>
-								</li>
-								
-								<li>
-									<span>Anjali, 12:58 PM</span>
-									<div className={ActivityFeedStyle.channelLibTabImg}>
-										<img src="https://i.pravatar.cc/95" width="95" height="95" />
-									</div>
-									<a href='#'>View in conversation</a>
-								</li>
-								
-								
-								<li className={ActivityFeedStyle.dividerText}>Yesterday</li>
-								<li>
-									<span>Anjali, 12:58 PM</span>
-									<div className={ActivityFeedStyle.channelLibTabImg}>
-										<img src="https://i.pravatar.cc/95" width="95" height="95" />
-									</div>
-									<a href='#'>View in conversation</a>
-								</li>
-								<li>
-									<span>Anjali, 12:58 PM</span>
-									<div className={ActivityFeedStyle.channelLibTabImg}>
-										<img src="https://i.pravatar.cc/95" width="95" height="95" />
-									</div>
-									<a href='#'>View in conversation</a>
-								</li>
-							</ul>
+								{activityFeedList && activityFeedList?.slice()?.reverse()?.map((data)=>{
+									const messageDate = data?.createdDateTime
+									? new Date(data?.createdDateTime )
+									: null;
+				  
+								  const today = new Date();
+								  const yesterday = new Date(today);
+								  yesterday.setDate(today.getDate() - 1);
+				  
+								  let dateString = "";
+								  if (messageDate) {
+									if (messageDate.toDateString() === today.toDateString()) {
+									  dateString = "Today";
+									} else if (
+									  messageDate.toDateString() === yesterday.toDateString()
+									) {
+									  dateString = "Yesterday";
+									} else {
+									  dateString = messageDate.toDateString();
+									}
+								  }
+				  
+								  const showDateSeparator = dateString !== currentChatDate;
+								  currentChatDate = dateString; // Update currentDate
+									return(
+									<>
+									 {showDateSeparator && (
+											<li className={ActivityFeedStyle.dividerText}>{dateString}</li>
+                    				)}
+										<li>
+											{/* <span>Anjali,Image 12:58 PM</span> */}
+											<span>{formatTime(data?.createdDateTime)}</span>
+											<div className={ActivityFeedStyle.channelLibTabImg}>
+												<img src={data?.fileUrl} width="95" height="95" onClick={() => window.open(data?.fileUrl, "_blank")}/>
+											</div>
+											{/* <a href='#'>View in conversation</a> */}
+										</li>
+									</>
+									)
+								})}	
+								{activityFeedList===null && (
+									<h6>{activityFeedMessage}</h6>
+								)}
+							</ul>		
 						</div>
 					</TabPanel>
 
 					{/* Documents tab */}
 					<TabPanel className={ActivityFeedStyle.tabContent}>
 						<div className={ActivityFeedStyle.assetGrid}>
-							<Table className={ActivityFeedStyle.LinkTableWrap} dataSource={Documentsdata} columns={Documentcolumns} pagination={false}  />
+							<Table className={ActivityFeedStyle.LinkTableWrap} dataSource={Documentsdata} columns={columns} pagination={false}  />
 						</div>
 					</TabPanel>
 
@@ -432,66 +513,53 @@ const ActivityFeed = ({
 					<TabPanel className={ActivityFeedStyle.tabContent}>
 						<div className={ActivityFeedStyle.contentGrid}>
 							<ul className={`${ActivityFeedStyle.channelLibImagesBoxes} ${ActivityFeedStyle.channelLibVideoBoxes}`}>
-								<li className={ActivityFeedStyle.dividerText}>Today</li>
-								<li>
-									<span>Anjali,Video 12:58 PM</span>
-									<div className={ActivityFeedStyle.channelLibTabImg}>
-										<img src="https://i.pravatar.cc/95" alt='img' />
-										<span>
-											<img src={FiVideoSVG} alt='video'/>
-											02:21
-										</span>
-									</div>
-									<a href='#'>View in conversation</a>
-								</li>
-								<li>
-									<span>Anjali, 12:58 PM</span>
-									<div className={ActivityFeedStyle.channelLibTabImg}>
-										<img src="https://i.pravatar.cc/95" alt='img' />.
-										<span>
-											<img src={FiVideoSVG} alt='video'/>
-											02:21
-										</span>
-									</div>
-									<a href='#'>View in conversation</a>
-								</li>
-								
-								<li>
-									<span>Anjali, 12:58 PM</span>
-									<div className={ActivityFeedStyle.channelLibTabImg}>
-										<img src="https://i.pravatar.cc/95" alt='img' />
-										<span>
-											<img src={FiVideoSVG} alt='video'/>
-											02:21
-										</span>
-									</div>
-									<a href='#'>View in conversation</a>
-								</li>
-								
-								
-								<li className={ActivityFeedStyle.dividerText}>Yesterday</li>
-								<li>
-									<span>Anjali, 12:58 PM</span>
-									<div className={ActivityFeedStyle.channelLibTabImg}>
-										<img src="https://i.pravatar.cc/95" alt='img' />
-										<span>
-											<img src={FiVideoSVG} alt='video'/>
-											02:21
-										</span>
-									</div>
-									<a href='#'>View in conversation</a>
-								</li>
-								<li>
-									<span>Anjali, 12:58 PM</span>
-									<div className={ActivityFeedStyle.channelLibTabImg}>
-										<img src="https://i.pravatar.cc/95" alt='img' />
-										<span>
-											<img src={FiVideoSVG} alt='video'/>
-											02:21
-										</span>
-									</div>
-									<a href='#'>View in conversation</a>
-								</li>
+							{activityFeedList && activityFeedList?.slice()?.reverse()?.map((data)=>{
+								const messageDate = data?.createdDateTime
+								? new Date(data?.createdDateTime )
+								: null;
+			  
+							  const today = new Date();
+							  const yesterday = new Date(today);
+							  yesterday.setDate(today.getDate() - 1);
+			  
+							  let dateString = "";
+							  if (messageDate) {
+								if (messageDate.toDateString() === today.toDateString()) {
+								  dateString = "Today";
+								} else if (
+								  messageDate.toDateString() === yesterday.toDateString()
+								) {
+								  dateString = "Yesterday";
+								} else {
+								  dateString = messageDate.toDateString();
+								}
+							  }
+			  
+							  const showDateSeparator = dateString !== currentChatDate;
+							  currentChatDate = dateString; // Update currentDate
+
+									return(
+										<>
+											<li className={ActivityFeedStyle.dividerText}>{dateString}</li>
+											<li>
+											<span>{formatTime(data?.createdDateTime)}</span>
+												<div className={ActivityFeedStyle.channelLibTabImg}>
+													<ReactPlayer
+                                                            url={data?.fileUrl} 
+                                                            width="20"
+                                                            height="20"
+                                                            onClick={() => window.open(data?.fileUrl)}
+															controls={true}
+                                                        />
+												</div>
+												{/* <a href='#'>View in conversation</a> */}
+											</li>
+										</>
+									)
+							})}	
+							{activityFeedList===null && (
+									<h6>{activityFeedMessage}</h6>
+								)}
 							</ul>
 						</div>
 					</TabPanel>
