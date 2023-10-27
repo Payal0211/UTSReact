@@ -236,7 +236,7 @@ if(activeTabType){
 			title: '',
 			key: 'action',
 			render: (_, record) => {
-				return	<a href={record.imageUrl} download>
+				return	<a href={record.imageUrl} download target="_blank">
 					<span className={ActivityFeedStyle.downloadLink}>Download</span>
 					</a>
 			},
