@@ -14,6 +14,7 @@ import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import { Divider } from 'antd';
 import { ReactComponent as MinusSVG } from 'assets/svg/minus.svg';
 import { ReactComponent as PlusSVG } from 'assets/svg/plus.svg';
+import moment from 'moment';
 const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 	const {
 		register,
@@ -51,7 +52,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 				new Date(response?.responseBody?.details?.contractEndDate),
 			);
 			// console.log(response?.responseBody?.details?.contractStartDate);
-			setStartDate(new Date(response?.responseBody?.details?.contractStartDate).getMonth())
+			setStartDate(new Date(response?.responseBody?.details?.contractEndDate).getMonth())
 			setValue('billRate', response?.responseBody?.details?.billRate);
 			setValue('payRate', response?.responseBody?.details?.payRate);
 			setValue("nrMargin",response?.responseBody?.details?.nrPercentage)
@@ -113,11 +114,17 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 
 	let totalDuration = 0;
 	useEffect(() => {
-		totalDuration = endDate-startDate;
-		if(totalDuration>=0){
-			setValue("contractDuration",totalDuration);
+		const date1 = new Date(watch('renewedStartDate'));
+		const date2 = new Date(watch('renewedEndDate'));
+		const monthDiff = (date2.getFullYear() - date1.getFullYear()) * 12 + (date2.getMonth() - date1.getMonth());
+		// totalDuration = endDate-startDate;
+		// if(totalDuration>=0){
+		// 	setValue("contractDuration",totalDuration);
+		// }
+		if(monthDiff>=0){
+			setValue("contractDuration",monthDiff);
 		}
-	}, [endDate,startDate])
+	}, [watch('renewedStartDate'),watch('renewedEndDate')])
 
 
 const calulateNR =async() =>{

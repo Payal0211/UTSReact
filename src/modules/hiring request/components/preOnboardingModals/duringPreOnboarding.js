@@ -144,7 +144,7 @@ export default function DuringPreOnboarding({
           if (result?.statusCode === HTTPStatusCode.OK) {
             let data = result.responseBody.details
 
-        //    setTabDisabled(data.isSecondTabReadOnly)
+           setTabDisabled(data.isSecondTabReadOnly)
            setTabData(data.secondTabAMAssignmentOnBoardingDetails)
            setUplersLeavePolicyLink(data.uplersLeavePolicy)
            setDeviceMasters(data.deviceMaster)

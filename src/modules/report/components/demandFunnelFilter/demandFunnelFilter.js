@@ -250,17 +250,34 @@ const DemandFunnelFilter = ({
 			};
 		});
 
-		setTableFilteredState({
-			// ...demandFunnelDefault,
-			...tableFilteredState,
-			...filters,
-		});
+		const newfilterState = {...tableFilteredState}
 
-		const reqFilter = {
-			// ...demandFunnelDefault,
-			...tableFilteredState,
-			...filters,
-		};
+		newfilterState.isHiringNeedTemp = filters.isHiringNeedTemp ? filters.isHiringNeedTemp : ''
+		newfilterState.modeOfWork = filters.modeOfWork ? filters.modeOfWork : ''
+		newfilterState.typeOfHR = filters.typeOfHR ? filters.typeOfHR : ''
+		newfilterState.companyCategory = filters.companyCategory? filters.companyCategory: ''
+		newfilterState.replacement = filters.replacement ? filters.replacement : ''
+		newfilterState.head = filters.head ? filters.head : ''
+		if(filters.leadUserId){
+			newfilterState.leadUserId = filters.leadUserId 
+		} 
+		newfilterState.isActionWise = filters.isActionWise ? filters.isActionWise : '1'
+
+
+		// setTableFilteredState({
+		// 	// ...demandFunnelDefault,
+		// 	...tableFilteredState,
+		// 	...filters,
+		// });
+
+		// const reqFilter = {
+		// 	// ...demandFunnelDefault,
+		// 	...tableFilteredState,
+		// 	...filters,
+		// };
+
+		setTableFilteredState(newfilterState)
+		const reqFilter = newfilterState
 
 		if (reqFilter?.isActionWise === '1') reqFilter.isActionWise = true;
 		else if (reqFilter?.isActionWise === '0') reqFilter.isActionWise = false;
