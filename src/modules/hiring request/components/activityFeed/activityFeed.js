@@ -540,7 +540,9 @@ if(activeTabType){
 
 									return(
 										<>
+											{showDateSeparator && (
 											<li className={ActivityFeedStyle.dividerText}>{dateString}</li>
+                    				)}
 											<li>
 											<span>{formatTime(data?.createdDateTime)}</span>
 												<div className={ActivityFeedStyle.channelLibTabImg}>
@@ -549,7 +551,7 @@ if(activeTabType){
                                                             width="20"
                                                             height="20"
                                                             onClick={() => window.open(data?.fileUrl)}
-															controls={true}
+															controls={false}
                                                         />
 												</div>
 												{/* <a href='#'>View in conversation</a> */}
