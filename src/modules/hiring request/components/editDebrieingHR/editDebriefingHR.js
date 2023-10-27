@@ -106,6 +106,7 @@ const EditDebriefingHR = ({
  */
 	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
 	const [SkillMemo, setSkillMemo] = useState([])
+	const [sameSkillErrors, setSameSkillError] = useState(false)
 	useEffect(()=>{
 		const combinedData = [
 			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
@@ -352,10 +353,12 @@ const EditDebriefingHR = ({
 	const debriefSubmitHandler = useCallback(
 		async (d) => {
 			setIsLoading(true);
+			setSameSkillError(false)
+			let sameSkillIssue = false
 			let skillList = d.skills.map((item) => {
 				const obj = {
 					skillsID: item.id || item?.skillsID,
-					skillsName: item.value || item?.skillName,
+					skillsName: item.value || item?.skillsName,
 				};
 				return obj;
 			});
@@ -366,6 +369,20 @@ const EditDebriefingHR = ({
 				};
 				return obj;
 			});
+
+			let goodtoonlySkillsList = goodToSkillList.map((item) => item.skillsName.toLowerCase())
+			let skillonlyList = skillList.map((item) => item.skillsName.toLowerCase() )
+
+			goodtoonlySkillsList.forEach(item => {
+				if(skillonlyList.includes(item)){
+					setError('goodToHaveSkills', {
+						type: 'otherSkill',
+						message: 'Same skills are not allowed',
+					});
+					setSameSkillError(true)
+					sameSkillIssue = true
+				}
+			})
 
 			let debriefFormDetails = {
 				roleAndResponsibilites:  d.roleAndResponsibilities,
@@ -397,7 +414,9 @@ const EditDebriefingHR = ({
 					"secondaryinterviewerList": d.secondaryInterviewer
 				}
 			};
-			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
+
+			if(!sameSkillIssue){
+				const debriefResult = await hiringRequestDAO.createDebriefingDAO(
 				debriefFormDetails,
 			);
 			if (debriefResult.statusCode === HTTPStatusCode.OK) {
@@ -410,6 +429,10 @@ const EditDebriefingHR = ({
 
 				navigate(`/allhiringrequest/${getHRdetails?.addHiringRequest?.id}`)
 			}
+			}else{
+				setIsLoading(false);
+			}
+			
 		},
 		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI,isFocusedRole],
 	);
@@ -734,7 +757,7 @@ const EditDebriefingHR = ({
 										name="goodToHaveSkills"
 										isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
 										required
-										errorMsg={'Please enter the skills.'}
+										errorMsg={sameSkillErrors ? 'Same Skills are not allowed!' : 'Please enter the skills.'}
 									/>
 								</div>
 								{/* <div className="selectFieldBox">
