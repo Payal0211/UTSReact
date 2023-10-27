@@ -124,7 +124,7 @@ const ActivityFeed = ({
 
 	const getChannelData = async (data)=>{
 		let result = await hiringRequestDAO.getChannelLibraryDAO(data)
-		console.log('channel response', result);
+		// console.log('channel response', result);
 		setActivityFeedList(result?.responseBody?.details)
 		setActivityFeedMessage(result?.responseBody?.message)
 		if(result.statusCode === HTTPStatusCode.OK){
@@ -138,7 +138,7 @@ if(activeTabType){
 		type: activeTabType,
 		channelID: ChannelID
 	}
-	console.log('channel payload', payload,ChannelID);
+	// console.log('channel payload', payload,ChannelID);
 	getChannelData(payload)
 }
 	},[activeTabType,ChannelID])
