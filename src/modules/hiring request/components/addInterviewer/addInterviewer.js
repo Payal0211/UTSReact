@@ -113,7 +113,7 @@ const AddInterviewer = ({
 			// setValue('interviewerDesignation', getHRdetails?.salesHiringRequest_Details?.interviewerDesignation);
 			
 		// }
-	}, [getHRdetails, interviewDetails, setValue]);
+	}, [getHRdetails,  setValue]);
 
 	const addInterviewerBasedOnIsCloned = () => {
 	
@@ -257,6 +257,12 @@ const AddInterviewer = ({
 												if(linkedinInclide){
 													return "Interviewer linkedin is already in use"
 												}
+												try {
+													new URL(value);
+													return true;
+													} catch (error) {
+													return 'Entered value does not match url format';
+													}											
 											}
 									}}
 									type={InputType.TEXT}
@@ -769,10 +775,14 @@ const AddInterviewer = ({
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the primary interviewer linkedin.',
-									// pattern: {
-									// 	value: URLRegEx.url,
-									// 	message: 'Entered value does not match url format',
-									// },
+									validate: (value) =>{
+										try {
+											new URL(value);
+											return true;
+										  } catch (error) {
+											return 'Entered value does not match url format';
+										  }
+									}
 								}}
 								required
 							/>

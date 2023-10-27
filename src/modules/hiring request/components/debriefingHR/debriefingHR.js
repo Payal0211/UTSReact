@@ -97,6 +97,7 @@ const DebriefingHR = ({
 	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
 	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
 	const [SkillMemo, setSkillMemo] = useState([])
+	const [sameSkillErrors, setSameSkillError] = useState(false)
 
 	useEffect(() => {
 		setValue('aboutCompany', addData?.addHiringRequest?.aboutCompanyDesc);
@@ -314,6 +315,8 @@ const DebriefingHR = ({
 	
 	const debriefSubmitHandler = async (d) => {
 		setIsLoading(true);
+		setSameSkillError(false)
+		let sameSkillIssue = false
 		let skillList = d.skills.map((item) => {
 			const obj = {
 				skillsID: item.id || item?.skillsID,
@@ -328,6 +331,20 @@ const DebriefingHR = ({
 			};
 			return obj;
 		});
+
+		let goodtoonlySkillsList = goodToSkillList.map((item) => item.skillsName.toLowerCase())
+		let skillonlyList = skillList.map((item) => item.skillsName.toLowerCase() )
+
+		goodtoonlySkillsList.forEach(item => {
+			if(skillonlyList.includes(item)){
+				setError('goodToHaveSkills', {
+					type: 'otherSkill',
+					message: 'Same skills are not allowed',
+				});
+				setSameSkillError(true)
+				sameSkillIssue = true
+			}
+		})
 
 		let debriefFormDetails = {
 			roleAndResponsibilites: d.roleAndResponsibilities,
@@ -359,7 +376,8 @@ const DebriefingHR = ({
 			}
 		};
 
-		const debriefResult = await hiringRequestDAO.createDebriefingDAO(
+		if(!sameSkillIssue){
+			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
 			debriefFormDetails,
 		);
 		if (debriefResult.statusCode === HTTPStatusCode.OK) {
@@ -370,6 +388,10 @@ const DebriefingHR = ({
 			});
 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
 		}
+		}else{
+			setIsLoading(false);
+		}
+		
 	};
 
 	const needMoreInforSubmitHandler = async (d) => {
@@ -683,7 +705,7 @@ const DebriefingHR = ({
 									name="goodToHaveSkills"
 									isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
 									required
-									errorMsg={'Please enter the skills.'}
+									errorMsg={sameSkillErrors ? 'Same Skills are not allowed!' : 'Please enter the skills.'}
 								/>
 						</div>
 						<div className="selectFieldBox">
@@ -729,10 +751,10 @@ const DebriefingHR = ({
 					setValue={setValue}
 					register={register}
 					watch={watch}
-					interviewDetails={{fullName:getHRdetails.interviewerFullName
-						,emailId:getHRdetails.interviewerEmail
-						,linkedin:getHRdetails.interviewerLinkedin,designation:getHRdetails.interviewerDesignation
-					}}
+					// interviewDetails={{fullName:getHRdetails.interviewerFullName
+					// 	,emailId:getHRdetails.interviewerEmail
+					// 	,linkedin:getHRdetails.interviewerLinkedin,designation:getHRdetails.interviewerDesignation
+					// }}
 					fields={fields}
 					getHRdetails={getHRdetails}
 				/>

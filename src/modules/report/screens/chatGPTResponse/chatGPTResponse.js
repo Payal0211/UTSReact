@@ -14,9 +14,17 @@ const gptTabelConfig = (setModalJDText,setJDTextModal,setModalJDResponse,setResp
         key: "parsingJDText",
         align: "left",
         render:(text)=>{
+            const setModalValue = ()=>{
+              if(text.includes('~')){
+                setModalJDText(text.split('~'))
+              }
+              else{
+                setModalJDText(text)
+              }
+            }
             return <p style={{color: "rgb(0, 102, 153)",
                 textDecoration: 'underline', cursor:'pointer'}} 
-                onClick={()=>{setJDTextModal(true) ; setModalJDText(text.split('~'))}}
+                onClick={()=>{setJDTextModal(true) ; setModalValue()}}
                 >View</p>
         }
       },
@@ -151,10 +159,13 @@ export default function ChatGPTResponse() {
 				className="cloneHRConfWrap"
 				onCancel={() => {setJDTextModal(false);setModalJDText([])}}>
                    <div>
-                   {modalJDText.map(text=> {
+                   {typeof modalJDText === 'string' ? <p>{modalJDText}</p> :  modalJDText.map(text=> {
+                    let str = "You are a Job Description Parser system which sends an output by extracting Job Description as per format mentioned below by analyzing the text provided. Here's the format: {`Requirements` : max 5,  `Roles_And_Responsibilities` : max 5,  `Years_Of_Experience` : integer. Should be greater than 0 and less than 20. If not present: display 0,  `Budget_From` : `decimal. starting salary`,  `Budget_To` : `decimal. ending salary`,  `Max_Salary` : `decimal`,  `Salary_Currency` : `if salary is mentioned, bring currency code else ''`,  `Working_Zone_With_Time_Zone` : `Get Working Zone with Time and Time Zone. If not present: display ''`,  `Type_Of_Job` : `Either 'Part Time' or 'Full Time'`,  'Opportunity_Type` : `whether the job is 'Remote' or 'Hybrid' or 'On Site'`,  `Skills` : `Include comma separated Primary Skills. Also add Skills Mentioned in Roles, Responsibilities, Requirements`,  `Job_Title` : `Job Title`,  `Suggested Skills` : `get comma separated based on job title. Should not repeat from Skills object` }  It should Bring Technical Skills when Job Title is for Technical JOb Posioning otherwise bring Primary Skills based on JOb Title(For Non-tech Roles). The output should be given in Proper and Complete json and it should have proper indentation. In case, there comes multiple Job Title or the text contains more than 1 job, only consider 1 and don't parse other job. Here's the text:There are no recommended jobs Woops! The job that you are trying to apply to has expired For now, there are no recommended jobs for your profile. Find Jobs Footer Need Help? Contact Us Browse All Jobs Search by Location Job Categories Jobs By Company Add your Resume Terms & Conditions Privacy Policy © 2023 CareerBuilder, LLC. All rights reserved. This site uses cookies. To find out more, see our Cookie Policy. Ok"
                             let arr = text.split(':')
                             return <p>{arr[0]} : <b>{arr[1]}</b></p>
                     })} 
+
+
                    </div>
             </Modal>    
 
