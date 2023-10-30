@@ -92,6 +92,21 @@
     color: #7C7C7C;
 }
 
+.engagementContentList {
+    /* width: 50%; */
+    padding: 0 0 16px 0;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: #232323;
+}
+
+.engagementContentList span{
+    font-weight:400;
+    color: #7C7C7C;
+}
+
 .engagementContentGroup{
     color: #232323;
 }
