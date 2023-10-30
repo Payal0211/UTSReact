@@ -55,6 +55,7 @@ const InterviewReschedule = ({
 	const [slot3Timematch, setSlot3timematch] = useState(false);
 	const [timeErrorMessage,setTimeErrorMessage] = useState('');
 	const [interviewTimezone,setInterviewTimezone] = useState('');
+	const [interviewRescheduleReason,setInterviewRescheduleReason] = useState('');
 	useEffect(() => {
 		//Slot 1 data
 		setValue('slot1Date', getRescheduleSlotDate[0].slot1)
@@ -338,6 +339,9 @@ const InterviewReschedule = ({
 							<div className={InterviewScheduleStyle.row}>
 								<div className={InterviewScheduleStyle.colMd12}>
 									<HRSelectField
+										controlledValue={interviewRescheduleReason}
+										setControlledValue={setInterviewRescheduleReason}
+										isControlled={true}
 										setValue={setValue}
 										register={register}
 										name="interviewRescheduleReason"
