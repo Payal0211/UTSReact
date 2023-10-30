@@ -254,7 +254,7 @@ const DemandFunnelFilter = ({
 
 		newfilterState.isHiringNeedTemp = filters.isHiringNeedTemp ? filters.isHiringNeedTemp : ''
 		newfilterState.modeOfWork = filters.modeOfWork ? filters.modeOfWork : ''
-		newfilterState.typeOfHR = filters.typeOfHR ? filters.typeOfHR : ''
+		newfilterState.typeOfHR = filters.typeOfHR ? filters.typeOfHR : '-1'
 		newfilterState.companyCategory = filters.companyCategory? filters.companyCategory: ''
 		newfilterState.replacement = filters.replacement ? filters.replacement : ''
 		newfilterState.head = filters.head ? filters.head : ''
