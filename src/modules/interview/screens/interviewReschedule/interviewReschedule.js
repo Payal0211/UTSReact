@@ -250,6 +250,7 @@ const InterviewReschedule = ({
 		setRescheduleRadio('client');
 	}, [setRescheduleRadio]);
 
+	console.log(watch('interviewRescheduleReason'),"interviewRescheduleReason");
 	return (
 		<div
 			className={InterviewScheduleStyle.interviewContainer}
