@@ -4,7 +4,7 @@ import { HTTPStatusCode } from 'constants/network';
 import gptStyles from './chatGpt.module.css'
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import WithLoader from 'shared/components/loader/loader';
-import { Table,Modal } from 'antd';
+import { Table,Modal, Checkbox } from 'antd';
 
 const gptTabelConfig = (setModalJDText,setJDTextModal,setModalJDResponse,setResponseModal) => {
     return [
@@ -75,7 +75,7 @@ export default function ChatGPTResponse() {
 
     const [modalJDResponse,setModalJDResponse] = useState({})
     const [responseModal,setResponseModal] = useState(false)
- 
+    const [isOnlyURLParsing, setisOnlyURLParsing] = useState(false);
 
     const getGPTDetails = async (data)=>{
         setLoading(true)
@@ -96,11 +96,23 @@ export default function ChatGPTResponse() {
     }
 
     useEffect(()=>{   
+      let payload ={
+    "pageIndex": 1,
+    "pageSize": 100,
+    "sortExpression": "CreatedDateTime",
+    "sortDirection": "desc",
+    "IsParsingURL":isOnlyURLParsing
+  }    
+  getGPTDetails(payload)      
+  },[isOnlyURLParsing])
+
+    useEffect(()=>{   
         let payload ={
 			"pageIndex": pageIndex,
 			"pageSize": pageSize,
 			"sortExpression": "CreatedDateTime",
-			"sortDirection": "desc"
+			"sortDirection": "desc",
+      "IsParsingURL":false
 		}    
     getGPTDetails(payload)      
     },[pageIndex,pageSize])
@@ -119,6 +131,20 @@ export default function ChatGPTResponse() {
                
                 </div>
         </div>
+
+        <div className={gptStyles.filterContainer}>
+				<div className={gptStyles.filterSets}>
+
+					<div className={gptStyles.filterRight}>
+					
+            <Checkbox checked={isOnlyURLParsing} onClick={()=> setisOnlyURLParsing(prev=> !prev)}>
+					 Only URL Parsing Records
+						</Checkbox>
+						
+						
+						</div>
+				</div>
+			</div>
 
         <div className={gptStyles.tableDetails}>
 				{isLoading ? (

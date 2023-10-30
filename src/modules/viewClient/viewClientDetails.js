@@ -294,13 +294,24 @@ function ViewClientDetails() {
 								</li>
 								<li>
 									<span>About Company: </span>							
-									{!isExpanded ?  (viewDetails?.clientDetails?.aboutCompany.length  > 150 ?
-									<><span>{viewDetails?.clientDetails?.aboutCompany.slice(0, 150)}...</span>
-									<a onClick={() => setIsExpanded(true)} className={dealDetailsStyles.viewClientReadMore}>read more</a></>
-									 : viewDetails?.clientDetails?.aboutCompany.length === 0 ? "NA" : viewDetails?.clientDetails?.aboutCompany) : 
-
-									 viewDetails?.clientDetails?.aboutCompany  ? viewDetails?.clientDetails?.aboutCompany : "NA"}
-									{/* {(isExpanded) ? viewDetails?.clientDetails?.aboutCompany : <>{viewDetails?.clientDetails?.aboutCompany.slice(0, 150)}...<a onClick={() => setIsExpanded(true)} className={dealDetailsStyles.viewClientReadMore}>read more</a></>} */}
+									{
+										!isExpanded ? (
+											viewDetails?.clientDetails?.aboutCompany.length > 150 ? (
+											<>
+												<span dangerouslySetInnerHTML={{ __html: viewDetails?.clientDetails?.aboutCompany?.slice(0, 150) }}></span>
+												...<a onClick={() => setIsExpanded(true)} className={dealDetailsStyles.viewClientReadMore}> read more</a>
+											</>
+											) : viewDetails?.clientDetails?.aboutCompany.length === 0 ? (
+											"NA"
+											) : (
+											<span dangerouslySetInnerHTML={{ __html: viewDetails?.clientDetails?.aboutCompany }}></span>
+											)
+										) : viewDetails?.clientDetails?.aboutCompany ? (
+											<span dangerouslySetInnerHTML={{ __html: viewDetails?.clientDetails?.aboutCompany }}></span>
+										) : (
+											"NA"
+										)
+										}
 								</li>
 							</ul>
 						</div>

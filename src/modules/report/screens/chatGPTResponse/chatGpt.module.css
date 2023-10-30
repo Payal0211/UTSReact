@@ -131,6 +131,7 @@
     gap:24px;
     align-items: center ; 
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .searchFilterSet{
