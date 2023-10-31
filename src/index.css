@@ -1061,6 +1061,12 @@ table {
   font-size: 0.875rem;
   text-align: center;
 }
+
+.ant-pagination.ant-pagination-mini .ant-pagination-item{
+  min-width: auto;
+}
+
+
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {
