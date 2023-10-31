@@ -19,7 +19,7 @@ import UTSRoutes from "constants/routes";
 import { Table, Checkbox } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import moment from "moment";
-import { downloadToExcel } from 'modules/report/reportUtils';
+import { downloadToExcel } from "modules/report/reportUtils";
 const DealListLazyComponents = React.lazy(() =>
   import("modules/deal/components/dealFilters/dealFilters")
 );
@@ -142,25 +142,25 @@ export default function HRReport() {
       getHRReportList(payload);
 
       let params = {
-        "pageIndex": 1,
-        "pageSize": 0,
-        "hiringRequestReportPopupFilter": {
-        "fromDate": moment(firstDay).format("YYYY-MM-DD"),
-        "toDate": moment(lastDay).format("YYYY-MM-DD"),
-        typeOfHR: TypeOfHR,
-        modeOfWorkId: ModeOfWorking,
-        heads: SalesManager,
-        hrStatusID: HiringStatus,
-        isHrfocused: isFocusedRole,
-        "stages": hrStage
-        }
-      }
+        pageIndex: 1,
+        pageSize: 0,
+        hiringRequestReportPopupFilter: {
+          fromDate: moment(firstDay).format("YYYY-MM-DD"),
+          toDate: moment(lastDay).format("YYYY-MM-DD"),
+          typeOfHR: TypeOfHR,
+          modeOfWorkId: ModeOfWorking,
+          heads: SalesManager,
+          hrStatusID: HiringStatus,
+          isHrfocused: isFocusedRole,
+          stages: hrStage,
+        },
+      };
 
       if (hrStage) {
         getHRPopUpReportList(params);
       }
     },
-    [hrStage, firstDay, lastDay, appliedFilter,isFocusedRole]
+    [hrStage, firstDay, lastDay, appliedFilter, isFocusedRole]
   );
 
   useEffect(() => {
@@ -183,8 +183,7 @@ export default function HRReport() {
     setEndDate(lastDay);
   }, []);
 
-
-  useEffect(()=>{
+  useEffect(() => {
     let filters = {};
     appliedFilter.forEach((item) => {
       filters = {
@@ -196,7 +195,9 @@ export default function HRReport() {
 
     let TypeOfHR = filters["TypeOfHR"] ? filters["TypeOfHR"] : "";
     let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : "";
-    let ModeOfWorking = filters["ModeOfWorking"] ? filters["ModeOfWorking"] : "";
+    let ModeOfWorking = filters["ModeOfWorking"]
+      ? filters["ModeOfWorking"]
+      : "";
     let HiringStatus = filters["HiringStatus"] ? filters["HiringStatus"] : "";
 
     let payload = {
@@ -213,9 +214,7 @@ export default function HRReport() {
       },
     };
     getHRReportList(payload);
-  
-
-  },[isFocusedRole])
+  }, [isFocusedRole]);
 
   const onCalenderFilter = useCallback(
     (dates) => {
@@ -250,9 +249,15 @@ export default function HRReport() {
           });
 
           let TypeOfHR = filters["TypeOfHR"] ? filters["TypeOfHR"] : "";
-          let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : "";
-          let ModeOfWorking = filters["ModeOfWorking"] ? filters["ModeOfWorking"] : "";
-          let HiringStatus = filters["HiringStatus"] ? filters["HiringStatus"] : "";
+          let SalesManager = filters["SalesManager"]
+            ? filters["SalesManager"]
+            : "";
+          let ModeOfWorking = filters["ModeOfWorking"]
+            ? filters["ModeOfWorking"]
+            : "";
+          let HiringStatus = filters["HiringStatus"]
+            ? filters["HiringStatus"]
+            : "";
 
           let payload = {
             pageIndex: 1,
@@ -271,7 +276,7 @@ export default function HRReport() {
         }
       }
     },
-    [hrStage, appliedFilter,isFocusedRole]
+    [hrStage, appliedFilter, isFocusedRole]
   );
   const resetFilter = () => {
     let params = {
@@ -288,7 +293,7 @@ export default function HRReport() {
     setAppliedFilters(new Map());
     setCheckedState(new Map());
     setFilteredTagLength(0);
-    setIsFocusedRole(false)
+    setIsFocusedRole(false);
 
     let payload = {
       pageIndex: 1,
@@ -304,7 +309,7 @@ export default function HRReport() {
       },
     };
     getHRReportList(payload);
-    onRemoveDealFilters()
+    onRemoveDealFilters();
     // getI2SReport(params);
   };
 
@@ -321,27 +326,29 @@ export default function HRReport() {
 
       let TypeOfHR = filters["TypeOfHR"] ? filters["TypeOfHR"] : "";
       let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : "";
-      let ModeOfWorking = filters["ModeOfWorking"] ? filters["ModeOfWorking"] : "";
+      let ModeOfWorking = filters["ModeOfWorking"]
+        ? filters["ModeOfWorking"]
+        : "";
       let HiringStatus = filters["HiringStatus"] ? filters["HiringStatus"] : "";
       // console.log(reportData);
       setHRStage(reportData.stageName);
-      let params =  {
-        "pageIndex": 1,
-        "pageSize": 0,
-        "hiringRequestReportPopupFilter": {
-        "fromDate": moment(firstDay).format("YYYY-MM-DD"),
-        "toDate": moment(lastDay).format("YYYY-MM-DD"),
-        typeOfHR: TypeOfHR,
-        modeOfWorkId: ModeOfWorking,
-        heads: SalesManager,
-        hrStatusID: HiringStatus,
-        "stages": reportData.stageName,
-        isHrfocused: isFocusedRole,
-        }
-      }
+      let params = {
+        pageIndex: 1,
+        pageSize: 0,
+        hiringRequestReportPopupFilter: {
+          fromDate: moment(firstDay).format("YYYY-MM-DD"),
+          toDate: moment(lastDay).format("YYYY-MM-DD"),
+          typeOfHR: TypeOfHR,
+          modeOfWorkId: ModeOfWorking,
+          heads: SalesManager,
+          hrStatusID: HiringStatus,
+          stages: reportData.stageName,
+          isHrfocused: isFocusedRole,
+        },
+      };
       getHRPopUpReportList(params);
     },
-    [hrStage, firstDay, lastDay, appliedFilter,isFocusedRole]
+    [hrStage, firstDay, lastDay, appliedFilter, isFocusedRole]
   );
 
   const tableColumnsMemo = useMemo(
@@ -367,16 +374,18 @@ export default function HRReport() {
   }, [getHTMLFilter, isAllowFilters]);
 
   const handleExport = (apiData) => {
-		let DataToExport =  apiData.map(data => {
-			let obj = {}
-			tableColumnsMemo.map(val => val.key !== "action" && (obj[`${val.title}`] = data[`${val.key}`]))
-		    return obj;
-			}
-		 )
-		 downloadToExcel(DataToExport,`HRReport: ${hrStage}.xlsx`)
-	}
+    let DataToExport = apiData.map((data) => {
+      let obj = {};
+      tableColumnsMemo.map(
+        (val) =>
+          val.key !== "action" && (obj[`${val.title}`] = data[`${val.key}`])
+      );
+      return obj;
+    });
+    downloadToExcel(DataToExport, `HRReport: ${hrStage}.xlsx`);
+  };
 
-  //console.log('client', reportList, appliedFilter)
+  // console.log('client', reportList, appliedFilter)
   return (
     <div className={hrReportStyle.dealContainer}>
       <div className={hrReportStyle.header}>
@@ -401,7 +410,7 @@ export default function HRReport() {
           </div>
 
           <div className={hrReportStyle.filterRight}>
-          <Checkbox
+            <Checkbox
               checked={isFocusedRole}
               onClick={() => setIsFocusedRole((prev) => !prev)}
             >
@@ -445,42 +454,116 @@ export default function HRReport() {
       </div>
 
       <div
-					className={`${hrReportStyle.filterSets} ${hrReportStyle.filterDescription}`}>
-				
-					<div className={hrReportStyle.filterType}>
-						{/* <img
+        className={`${hrReportStyle.filterSets} ${hrReportStyle.filterDescription}`}
+        style={{ marginBottom: "5px" }}
+      >
+        <div className={hrReportStyle.filterType}>
+          {/* <img
 							src={Rocket}
 							alt="rocket"
 						/> */}
-						<h2>
-            No profiles shared % -{' '}
-							<span>{ reportList.length > 0 && ((reportList[3].stageValue/reportList[0].stageValue) * 100).toFixed(2) }</span>
-						</h2>
-					</div>
-			
+          <h2>
+            No profiles shared % -{" "}
+            <span>
+              {reportList.length > 0 &&
+                (
+                  (reportList[4].stageValue / reportList[0].stageValue) *
+                  100
+                ).toFixed(2)}
+            </span>
+          </h2>
+        </div>
 
-          <div className={hrReportStyle.filterType}>
-						{/* <img
+        <div className={hrReportStyle.filterType}>
+          {/* <img
 							src={Rocket}
 							alt="rocket"
 						/> */}
-						<h2>
-            3 profile shared % -{' '}
-							<span>{ reportList.length > 0 && ((reportList[4].stageValue/reportList[0].stageValue) * 100).toFixed(2)}</span>
-						</h2>
-					</div>
+          <h2>
+            3 profile shared % -{" "}
+            <span>
+              {reportList.length > 0 &&
+                (
+                  (reportList[5].stageValue / reportList[0].stageValue) *
+                  100
+                ).toFixed(2)}
+            </span>
+          </h2>
+        </div>
 
-          <div className={hrReportStyle.filterType}>
-						{/* <img
+        <div className={hrReportStyle.filterType}>
+          {/* <img
 							src={Rocket}
 							alt="rocket"
 						/> */}
-						<h2>
-            At least 1 profiles shared % -{' '}
-							<span>{ reportList.length > 0 && ((reportList[5].stageValue/reportList[0].stageValue) * 100).toFixed(2)}</span>
-						</h2>
-					</div>
-				</div>
+          <h2>
+            At least 1 profiles shared in 2 days % -{" "}
+            <span>
+              {reportList.length > 0 &&
+                (
+                  (reportList[9].stageValue / reportList[0].stageValue) *
+                  100
+                ).toFixed(2)}
+            </span>
+          </h2>
+        </div>
+
+        <div className={hrReportStyle.filterType}>
+          <h2>
+            6 profiles shared in 10 days % -{" "}
+            <span>
+              {reportList.length > 0 &&
+                (
+                  (reportList[6].stageValue / reportList[0].stageValue) *
+                  100
+                ).toFixed(2)}
+            </span>
+          </h2>
+        </div>
+      </div>
+
+      <div
+        className={`${hrReportStyle.filterSets} ${hrReportStyle.filterDescription}`}
+        style={{ marginTop: "0" }}
+      >
+        <div className={hrReportStyle.filterType}>
+          <h2>
+            5 profiles are shared in 5 days -{" "}
+            <span>
+              {reportList.length > 0 &&
+                (
+                  (reportList[7].stageValue / reportList[0].stageValue) *
+                  100
+                ).toFixed(2)}
+            </span>
+          </h2>
+        </div>
+
+        <div className={hrReportStyle.filterType}>
+          <h2>
+            10 profiles are shared in 10 days % -{" "}
+            <span>
+              {reportList.length > 0 &&
+                (
+                  (reportList[8].stageValue / reportList[0].stageValue) *
+                  100
+                ).toFixed(2)}
+            </span>
+          </h2>
+        </div>
+        <div className={hrReportStyle.filterType}>
+          <h2>
+            At least 1 profiles shared in 5 days % -{" "}
+            <span>
+              {reportList.length > 0 &&
+                (
+                  (reportList[10].stageValue / reportList[0].stageValue) *
+                  100
+                ).toFixed(2)}
+            </span>
+          </h2>
+        </div>
+      </div>
 
       <div className={hrReportStyle.i2sContainer} style={{ width: "50%" }}>
         <div className={hrReportStyle.cardWrapper}>
@@ -513,7 +596,7 @@ export default function HRReport() {
                       {report.stageValue}
                     </p>
                   ) : (
-                   <p>{report.stageValue}</p> 
+                    <p>{report.stageValue}</p>
                   )}
                 </div>
               </li>
@@ -530,18 +613,19 @@ export default function HRReport() {
             </div>
           ) : (
             <>
-            <div className={hrReportStyle.exportAction}>
-              <h3 className={hrReportStyle.cardTitle}>
-                HR Report : {hrStage}
-              </h3>
+              <div className={hrReportStyle.exportAction}>
+                <h3 className={hrReportStyle.cardTitle}>
+                  HR Report : {hrStage}
+                </h3>
 
-              <button
-								className={hrReportStyle.btnPrimary}		
-								onClick={() => handleExport(reportPopupList)}>
-								Export
-							</button>
-            </div>
-          
+                <button
+                  className={hrReportStyle.btnPrimary}
+                  onClick={() => handleExport(reportPopupList)}
+                >
+                  Export
+                </button>
+              </div>
+
               <Table
                 id="clientReportTable"
                 columns={tableColumnsMemo}

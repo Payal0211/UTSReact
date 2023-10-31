@@ -531,7 +531,7 @@ export const allHRConfig = {
         dataIndex: "lostReason",
         key: "lostReason",
         align: "left",
-        width:'100px'
+        width:'400px'
       },
       {
         title: "Lost Done By",
