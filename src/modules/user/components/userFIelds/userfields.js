@@ -24,6 +24,7 @@ import { userDAO } from 'core/user/userDAO';
 import { HttpServices } from 'shared/services/http/http_service';
 import { LoadingOutlined } from '@ant-design/icons';
 import { ReactComponent as LongArrowSVG } from 'assets/svg/longArrow.svg';
+import LogoLoader from "shared/components/loader/logoLoader";
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -103,6 +104,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	const [getEmployementMessage, setEmploymentMessage] = useState('');
 	const [getTeamUserForm, setTeamUserForm] = useState([]);
 	const [getformLoading, setFormIsLoading] = useState(false);
+	const [userDataLoading,setUserDataLoading] = useState(false)
 
 	const convertToBase64 = useCallback((file) => {
 		return new Promise((resolve, reject) => {
@@ -287,8 +289,10 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	}, []);
 
 	const getUserDetails = useCallback(async () => {
-		const response = await userDAO.getUserDetailsRequestDAO({ userID: id });
+		setUserDataLoading(true)
+		const response = await userDAO.getUserDetailsRequestDAO({ userID: id });	
 		setUserDetails(response && response?.responseBody?.details);
+		setUserDataLoading(false)
 	}, []);
 
 	const getBDRMarketingOnUserType = useCallback(async () => {
@@ -759,6 +763,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 							<div className={UserFieldStyle.hrFieldLeftPane}>
 								<h3>{id === 0 ? 'Add New User' : 'Edit User'}</h3>
 								<p>Please provide the necessary details</p>
+								<LogoLoader visible={userDataLoading} />
 								{/* {enableALlFieldsMemo && (
               <div className={UserFieldStyle.formPanelAction}>
                 <button
