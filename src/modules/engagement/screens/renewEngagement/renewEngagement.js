@@ -210,6 +210,7 @@ const calulateNR =async() =>{
 										}}
 										placeholderText="Renewed End Date"
 										dateFormat="dd/MM/yyyy"
+										minDate={watch('renewedStartDate')}
 									/>
 								)}
 								name="renewedEndDate"

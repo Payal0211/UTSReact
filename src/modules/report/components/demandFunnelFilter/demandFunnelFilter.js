@@ -260,6 +260,8 @@ const DemandFunnelFilter = ({
 		newfilterState.head = filters.head ? filters.head : ''
 		if(filters.leadUserId){
 			newfilterState.leadUserId = filters.leadUserId 
+		}else{
+		   delete newfilterState.leadUserId 
 		} 
 		newfilterState.isActionWise = filters.isActionWise ? filters.isActionWise : '1'
 
