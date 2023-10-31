@@ -217,6 +217,9 @@ export default function ChatGPTResponse() {
                             <p>Role : <b>{choice.message.role}</b></p>
                             {Object.keys(content).map(key=>{
                               if(key === 'Requirements' || key === 'Roles/Responsibilities' || key === 'Roles_And_Responsibilities'){
+                                if(typeof content[key] === 'string'){
+                                  return <p>{key.replace(/_/g, " ")} : <b>{content[key]}</b> </p>
+                                }
                                 return <>
                                 <p>{key.replace(/_/g, " ")} :</p>
                                {content[key] && <ul>{content[key]?.map(item=> <li>{item}</li>)}</ul>}

@@ -16,7 +16,6 @@ const EngagementOnboard = ({
   isLoading,
   scheduleTimezone,
 }) => {
-  console.log("getOnboardFormDetails",getOnboardFormDetails, scheduleTimezone)
 
   return (
     <div className={allengagementOnboardStyles.engagementModalWrap}>

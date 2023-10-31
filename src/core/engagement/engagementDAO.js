@@ -521,10 +521,10 @@ export const engagementRequestDAO = {
                     };
                 } else if (
                     statusCode === HTTPStatusCode.NOT_FOUND ||
-                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+                    statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR || statusCode === HTTPStatusCode.BAD_REQUEST
                 )
                     return onBoardDetails;
-                else if (statusCode === HTTPStatusCode.BAD_REQUEST) return onBoardDetails;
+                // else if (statusCode === HTTPStatusCode.BAD_REQUEST) return onBoardDetails;
                 else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
                     UserSessionManagementController.deleteAllSession();
                     return (

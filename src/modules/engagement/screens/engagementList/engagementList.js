@@ -317,7 +317,11 @@ const EngagementList = () => {
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setOnboardFormDetails(response?.responseBody?.details);
 			setLoading(false);
-		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+		}else if (response?.statusCode === HTTPStatusCode.BAD_REQUEST) {
+			setOnboardFormDetails({});
+			setLoading(false);
+		}
+		 else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
 			setLoading(false);
