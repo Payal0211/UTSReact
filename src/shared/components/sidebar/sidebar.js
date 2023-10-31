@@ -17,6 +17,7 @@ import MedalIcon from 'assets/svg/medalIcon.svg';
 import GlobIcon from 'assets/svg/globIcon.svg';
 import MastersIcon from 'assets/svg/mastersIcon.svg';
 import I2sIcon from 'assets/svg/i2sIcon.svg';
+import GPTIcon from 'assets/svg/GPT.svg'
 import clientReport from  'assets/svg/clientReport.svg';
 import HRReport from 'assets/svg/clientLogs.svg'
 import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
@@ -133,6 +134,10 @@ const isAccess = (ID, title) =>{
 	let isVisible = false;
 
 	if(ID === 2){
+		return true
+	}
+
+	if (title === 'Chat GPT Response' || ID === 1){
 		return true
 	}
 
@@ -308,6 +313,14 @@ const getSideBar = (usertypeID) => {
 			icon: HRLOSTReoprt,
 			navigateTo: UTSRoutes.HRLostReoprt,
 			isVisible: isAccess(usertypeID, 'HR Lost Report')
+		}),
+		new SideBarModels({
+			id: 'chatGPTResponse',
+			title: 'Chat GPT Response',
+			isActive: false,
+			icon: GPTIcon,
+			navigateTo: UTSRoutes.CHAT_GPT_RESPONSE,
+			isVisible: isAccess(usertypeID, 'Chat GPT Response')
 		}),
 		new SideBarModels({
 			id: 'Master',

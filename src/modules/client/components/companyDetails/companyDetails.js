@@ -711,9 +711,9 @@ const CompanyDetails = ({
 							<div className={CompanyDetailsStyle.colMd6}>
 								<div className={CompanyDetailsStyle.formGroup}>
 									<HRSelectField
-									isControlled={true}
-									controlledValue={controlledLeadType}
-									setControlledValue={setControlledLeadType}
+										isControlled={true}
+										controlledValue={controlledLeadType}
+										setControlledValue={setControlledLeadType}
 										mode={'id/value'}
 										setValue={setValue}
 										register={register}

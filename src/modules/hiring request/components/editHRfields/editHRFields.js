@@ -889,7 +889,15 @@ const EditHRFields = ({
 
       hrFormDetails["allowSpecialEdit"] = getHRdetails?.allowSpecialEdit;
 
-      if (type === SubmitType.SAVE_AS_DRAFT) {
+      if(watch('fromTime').value === watch('endTime').value){
+        setIsSavedLoading(false);
+        return setError("fromTime", {
+          type: "validate",
+          message: "Start & End Time is same.",
+        });
+      }     
+
+      if (type === SubmitType.SAVE_AS_DRAFT) {        
         if (_isNull(watch("clientName"))) {
           setIsSavedLoading(false);
           return setError("clientName", {
@@ -2377,8 +2385,8 @@ const EditHRFields = ({
                       }))}
                       name="fromTime"
                       isError={errors["fromTime"] && errors["fromTime"]}
-                      required={true}
-                      errorMsg={"Please select from time."}
+                      required={true}                      
+                      errorMsg={errors["fromTime"] ?  errors["fromTime"].message : "Please select from time."}
                     />
                   </div>
                 </div>

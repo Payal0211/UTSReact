@@ -495,6 +495,7 @@ const editHR = () => {
                 activityFeed={apiData?.HRHistory}
                 tagUsers={apiData?.UsersToTag}
                 callActivityFeedAPI={callAPI}
+				ChannelID={apiData?.ChannelID}
               />
             </Suspense>
           )}

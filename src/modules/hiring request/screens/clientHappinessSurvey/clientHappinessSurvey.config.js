@@ -143,7 +143,7 @@ export const clientHappinessSurveyConfig = {
 				render: (text, result) => {
 					return (
 						<Link
-							to={`/user/${result?.id}`}
+							to={`/user/${result?.saleUserId}`}
 							style={{
 								color: `var(--uplers-black)`,
 								textDecoration: 'underline',

@@ -52,7 +52,7 @@ const InterviewSchedule = ({
 	const [slot1Timematch, setSlot1timematch] = useState(false);
 	const [slot2Timematch, setSlot2timematch] = useState(false);
 	const [slot3Timematch, setSlot3timematch] = useState(false);
-
+	const [interviewTimezone,setInterviewTimezone] = useState('');
 	const [timeErrorMessage,setTimeErrorMessage] = useState('');
 
 	const onSlotChange = (e) => {
@@ -338,9 +338,13 @@ const InterviewSchedule = ({
 											: InterviewScheduleStyle.colMd12
 									}>
 									<HRSelectField
+										controlledValue={interviewTimezone}
+										setControlledValue={setInterviewTimezone}
+										isControlled={true}
 										setValue={setValue}
 										register={register}
 										name="interviewTimezone"
+										mode="id"
 										label="Time Zone"
 										defaultValue="Select timezone"
 										options={scheduleTimezone && scheduleTimezone}

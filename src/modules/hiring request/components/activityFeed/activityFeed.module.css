@@ -207,7 +207,19 @@
     position: relative;
  }  
 
- .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes.channelLibVideoBoxes .channelLibTabImg::after{
+ 
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes.channelLibVideoBoxes .channelLibTabImg > div{
+    width: 100%;
+    height: 100%;
+ }  
+ 
+ .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes.channelLibVideoBoxes .channelLibTabImg video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+ } 
+
+ /* .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes.channelLibVideoBoxes .channelLibTabImg::after{
     content: "";
     position: absolute;
     left: 0;
@@ -216,7 +228,7 @@
     height: 100%;
     z-index: 98;
     background-color: rgba(0, 0, 0, 0.64);
- }  
+ }   */
 
  .activityChannelLibrary [class*="react-tabs__tab-panel--selected"] .channelLibImagesBoxes.channelLibVideoBoxes .channelLibTabImg span{
     position: absolute;

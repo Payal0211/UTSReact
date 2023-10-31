@@ -257,7 +257,7 @@ const ViewHRDetails = () => {
 														</li>
 														<li>
 															<span>Interviewer Linkedin:</span>{' '}
-															{item?.interviewerLinkedin === null ? (
+															{(item?.interviewerLinkedin === null || !item?.interviewerLinkedin || item?.interviewerLinkedin === 'NA') ? (
 																'NA'
 															) : (
 																<a
