@@ -597,36 +597,7 @@ export default function AddHR({
   
     const getLocation = useLocation();
   
-    const onNameChange = (event) => {
-      setName(event.target.value);
-    };
-    const addItem = useCallback(
-      (e) => {
-        e.preventDefault();
-        if (!contractDurations.includes(name + " months")) {
-          let newObj = {
-            disabled: false,
-            group: null,
-            selected: false,
-            text: `${name} months`,
-            value: `${name}`,
-          };
-          setcontractDurations([...contractDurations, newObj]);
-          setName("");
-        }
-        // name && setcontractDurations([...contractDurations, name + ' months' || name]);
-        // setName('');
-        setTimeout(() => {
-          inputRef.current?.focus();
-        }, 0);
-      },
-      [contractDurations, name]
-    );
-  
-    const toggleHRDirectPlacement = useCallback((e) => {
-      // e.preventDefault();
-      setHRDirectPlacement(e.target.checked);
-    }, []);
+   
   
     const getClientNameValue = (clientName) => {
       setValue("clientName", clientName);
@@ -917,16 +888,16 @@ export default function AddHR({
     const hrSubmitHandler = useCallback(
       async (d, type = SubmitType.SAVE_AS_DRAFT) => {
         setIsSavedLoading(true);
-        let hrFormDetails = hrUtils.hrFormDataFormatter(
-          d,
-          type,
-          watch,
-          contactID || getContactAndSaleID?.contactID,
-          isHRDirectPlacement,
-          addHRResponse,
-          getUploadFileData && getUploadFileData,
-          jdDumpID
-        );
+        // let hrFormDetails = hrUtils.hrFormDataFormatter(
+        //   d,
+        //   type,
+        //   watch,
+        //   contactID || getContactAndSaleID?.contactID,
+        //   isHRDirectPlacement,
+        //   addHRResponse,
+        //   getUploadFileData && getUploadFileData,
+        //   jdDumpID
+        // );
   
         if(watch('fromTime').value === watch('endTime').value){
           setIsSavedLoading(false);
@@ -976,39 +947,39 @@ export default function AddHR({
           setType(SubmitType.SUBMIT);
         }
   
+  console.log("payload",d)
+        // const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
   
-        const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
+        // if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+        //   window.scrollTo(0, 0);
+        //   setIsSavedLoading(false);
+        //   setAddHRResponse(addHRRequest?.responseBody?.details);
+        //   if (params === "addnewhr") {
+        //     interviewDetails(addHRRequest?.responseBody?.details);
+        //   }
+        //   setEnID(addHRRequest?.responseBody?.details?.en_Id);
+        //   if (!!addHRRequest?.responseBody?.details?.jdURL)
+        //     setJDParsedSkills({
+        //       Skills: [],
+        //       Responsibility: "",
+        //       Requirements: "",
+        //     });
+        //   type !== SubmitType.SAVE_AS_DRAFT && setTitle("Debriefing HR");
   
-        if (addHRRequest.statusCode === HTTPStatusCode.OK) {
-          window.scrollTo(0, 0);
-          setIsSavedLoading(false);
-          setAddHRResponse(addHRRequest?.responseBody?.details);
-          if (params === "addnewhr") {
-            interviewDetails(addHRRequest?.responseBody?.details);
-          }
-          setEnID(addHRRequest?.responseBody?.details?.en_Id);
-          if (!!addHRRequest?.responseBody?.details?.jdURL)
-            setJDParsedSkills({
-              Skills: [],
-              Responsibility: "",
-              Requirements: "",
-            });
-          type !== SubmitType.SAVE_AS_DRAFT && setTitle("Debriefing HR");
+        //   type !== SubmitType.SAVE_AS_DRAFT &&
+        //     setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
   
-          type !== SubmitType.SAVE_AS_DRAFT &&
-            setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
-  
-          if (type === SubmitType.SAVE_AS_DRAFT) {
-            messageAPI.open({
-              type: "success",
-              content: "HR details has been saved to draft.",
-            });
-            setTimeout(() => {
-              navigate("/allhiringrequest");
-            }, 1000);
-            // setTitle('Debriefing HR')
-          }
-        }
+        //   if (type === SubmitType.SAVE_AS_DRAFT) {
+        //     messageAPI.open({
+        //       type: "success",
+        //       content: "HR details has been saved to draft.",
+        //     });
+        //     setTimeout(() => {
+        //       navigate("/allhiringrequest");
+        //     }, 1000);
+        //     // setTitle('Debriefing HR')
+        //   }
+        // }
         setIsSavedLoading(false);
       },
       [
@@ -1030,9 +1001,7 @@ export default function AddHR({
       ]
     );
   
-    // useEffect(() => {
-    // 	setValue('hrTitle', hrRole?.value);
-    // }, [hrRole?.value, setValue]);
+
   
     useEffect(() => {
       if (errors?.clientName?.message) {
@@ -1044,25 +1013,7 @@ export default function AddHR({
       setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));
     }, [watchSalesPerson]);
   
-    // useEffect(() => {
-    //   if (timeZonePref.length > 0) {
-    //     setValue("timeZone", timeZonePref[0]);
-    //     setControlledTimeZoneValue(timeZonePref[0].value);
-    //   }
-    // }, [timeZonePref, setValue]);
-  
-    // const durationDataMemo = useMemo(() => {
-    // 	let formattedDuration = [];
-    // 	getDurationType?.filter(
-    // 		(item) =>
-    // 			item?.value !== '0' &&
-    // 			formattedDuration.push({
-    // 				id: item?.value,
-    // 				value: item?.text,
-    // 			}),
-    // 	);
-    // 	return formattedDuration;
-    // }, [getDurationType]);
+
   
     const getdealHRdetailsHandler = async (DID) => {
       const response = await hiringRequestDAO.getDealHRDetailsRequestDAO(DID);
@@ -1222,35 +1173,6 @@ export default function AddHR({
   
           setHRdetails(gptDetails);
           setAddData(gptDetails);
-          //   setValue("jdExport", "");
-          //   setValue('talentsNumber',response?.responseBody?.details?.addHiringRequest?.noofTalents);
-          //   setValue('availability',response?.responseBody?.details?.addHiringRequest?.availability);
-          //   setValue(
-          // 	"minimumBudget",
-          // 	response?.responseBody?.details?.salesHiringRequest_Details?.budgetFrom
-          //   );
-          //   setValue(
-          // 	"maximumBudget",
-          // 	response?.responseBody?.details?.salesHiringRequest_Details?.budgetTo
-          //   );
-          //   setValue("years", response?.responseBody?.details?.salesHiringRequest_Details?.yearOfExp);
-          //   setValue("months", response?.responseBody?.details?.salesHiringRequest_Details?.specificMonth);
-          //   setValue(
-          // 	"contractDuration",
-          // 	response?.responseBody?.details?.salesHiringRequest_Details?.durationType
-          //   );
-          //   setValue('currency', response?.responseBody?.details?.salesHiringRequest_Details?.currency);
-          //   const findWorkingMode = workingMode.filter(
-          // 	  (item) => item?.value === response?.responseBody?.details?.modeOfWorkingId
-          //   );
-          //   setValue("workingMode", findWorkingMode[0]);
-          //   // setControlledWorkingValue(findWorkingMode[0]?.value);
-          //   setControlledCurrencyValue(response?.responseBody?.details?.salesHiringRequest_Details?.currency);
-          //   setControlledFromTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
-          //   setControlledEndTimeValue(response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
-          //   setValue("fromTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneFromTime);
-          //   setValue("endTime",response?.responseBody?.details?.salesHiringRequest_Details?.timeZoneEndTime);
-          //   setValue('budget',"2");
   
         setGPTDetails({});
         setShowGPTModal(false);
@@ -1419,10 +1341,10 @@ export default function AddHR({
                     register={register}
                     errors={errors}
                     validationSchema={{
-                        required: "please enter the company name.",
+                        required: "please enter the company URL.",
                     }}
                     label="Company URL"
-                    name="companyName"
+                    name="companyURL"
                     type={InputType.TEXT}
                     placeholder="Enter company url"
                     required
@@ -1443,7 +1365,7 @@ export default function AddHR({
                         required: "Years of Experience",
                     }}
                     label="Years of Experience"
-                    name="companyName"
+                    name="reqExp"
                     type={InputType.TEXT}
                     placeholder="6"
                     required
@@ -1464,7 +1386,7 @@ export default function AddHR({
                         required: "Hiring Request Title",
                     }}
                     label="Hiring Request Title"
-                    name="title"
+                    name="requestTitle"
                     type={InputType.TEXT}
                     placeholder="Enter title"
                     required
@@ -1473,7 +1395,7 @@ export default function AddHR({
 
                 <div className={HRFieldStyle.colMd12}>
                     <div className={HRFieldStyle.addHrProvideLinkWrap}>
-                        <HRInputField
+                        {/* <HRInputField
                             // disabled={!isCompanyNameAvailable ? true : jdURLLink}
                             register={register}
                             leadingIcon={<UploadSVG />}
@@ -1488,10 +1410,10 @@ export default function AddHR({
                             required: "please select a file.",
                             }}
                             errors={errors}
-                        />
+                        /> */}
 
                         <div className={HRFieldStyle.addHrProvideLink}>
-                            You can also <a href="#">provide a link</a>
+                            You can also <p > provide a link</p>
                         </div>
                     </div>
                 </div>

@@ -305,10 +305,14 @@ cursor: default;
     line-height: normal;
     position: relative;
     top: -25px;
+    display: flex;
 }
 
-.addHrProvideLinkWrap .addHrProvideLink a{
+.addHrProvideLinkWrap .addHrProvideLink p{
     color: #0278E4;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-left: 5px;
 }
 
 .radioFormGroupWrap{
