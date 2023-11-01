@@ -1391,6 +1391,13 @@ export const reportConfig = {
 				isSearch: false,
 				isSingle:true
 			},
+			{
+				label: 'Client Type',
+				name: 'ClientType',
+				child: filterList?.ClientType.filter(val => val.text !== "0" ),
+				isSearch: false,
+				isSingle:true
+			},
 		];
 	},
 };
