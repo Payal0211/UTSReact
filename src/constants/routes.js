@@ -127,6 +127,9 @@ const AddHR = React.lazy(() =>
 import('modules/hiring request/components/directHR/add_hr')
 )
 
+const EditNewHR = React.lazy(() =>
+import('modules/hiring request/components/editdirectHR/Edit_new_HR')
+)
 
 // const ViewClient = React.lazy(() => 
 // import('modules/viewClient/viewClientDetails'))
@@ -178,6 +181,7 @@ export default class UTSRoutes {
 	static CHANGE_PASSOWRD = '/changepassword'
 	static CHAT_GPT_RESPONSE = '/chatGPTResponse'
 	static ADD_HR = '/addHR'
+	static Edit_HR = '/EditNewHR'
 }
 
 export const navigateToComponent = {
@@ -381,6 +385,11 @@ export const navigateToComponent = {
 [UTSRoutes.ADD_HR]: (
 	<Suspense>
 		<AddHR />
+	</Suspense>
+),
+[UTSRoutes.Edit_HR]: (
+	<Suspense>
+		<EditNewHR />
 	</Suspense>
 ),
 };
