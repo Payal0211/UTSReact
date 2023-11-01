@@ -264,7 +264,7 @@ export default function HRReport() {
           let HiringStatus = filters["HiringStatus"]
             ? filters["HiringStatus"]
             : "";
-            let ClientType = filters["ClientType"] ? filters["ClientType"] : "0"
+          let ClientType = filters["ClientType"] ? filters["ClientType"] : "0"
 
           let payload = {
             pageIndex: 1,
