@@ -20,6 +20,7 @@ import { Table, Checkbox } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import moment from "moment";
 import { downloadToExcel } from "modules/report/reportUtils";
+import LogoLoader from "shared/components/loader/logoLoader";
 const DealListLazyComponents = React.lazy(() =>
   import("modules/deal/components/dealFilters/dealFilters")
 );
@@ -401,6 +402,7 @@ export default function HRReport() {
     <div className={hrReportStyle.dealContainer}>
       <div className={hrReportStyle.header}>
         <div className={hrReportStyle.dealLable}>HR Report</div>
+        <LogoLoader visible={isLoading} />
       </div>
 
       <div className={hrReportStyle.filterContainer}>
