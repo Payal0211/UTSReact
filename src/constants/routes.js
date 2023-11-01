@@ -123,6 +123,10 @@ const AllClients = React.lazy(() =>
 	import('modules/allClients/allClients')
 )
 
+const AddHR = React.lazy(() =>
+import('modules/hiring request/components/directHR/add_hr')
+)
+
 
 // const ViewClient = React.lazy(() => 
 // import('modules/viewClient/viewClientDetails'))
@@ -173,6 +177,7 @@ export default class UTSRoutes {
 	static VIEWCLIENT = '/viewClient/:companyID/:clientID';
 	static CHANGE_PASSOWRD = '/changepassword'
 	static CHAT_GPT_RESPONSE = '/chatGPTResponse'
+	static ADD_HR = '/addHR'
 }
 
 export const navigateToComponent = {
@@ -371,6 +376,11 @@ export const navigateToComponent = {
 [UTSRoutes.CHAT_GPT_RESPONSE]: (
 	<Suspense>
 		<ChatGPTResponse />
+	</Suspense>
+),
+[UTSRoutes.ADD_HR]: (
+	<Suspense>
+		<AddHR />
 	</Suspense>
 ),
 };
