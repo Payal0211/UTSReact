@@ -2309,7 +2309,7 @@ const HRFields = ({
                       <b>{gptDetails?.salesHiringRequest_Details?.currency}</b>
                     </p>
                   )}
-                  {gptDetails?.salesHiringRequest_Details?.yearOfExp && (
+                  {gptDetails?.salesHiringRequest_Details?.yearOfExp > 0 && (
                     <p>
                       Years of Experience :{" "}
                       <b>{gptDetails?.salesHiringRequest_Details?.yearOfExp}</b>

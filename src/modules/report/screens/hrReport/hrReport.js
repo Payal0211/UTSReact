@@ -20,6 +20,7 @@ import { Table, Checkbox } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import moment from "moment";
 import { downloadToExcel } from "modules/report/reportUtils";
+import LogoLoader from "shared/components/loader/logoLoader";
 const DealListLazyComponents = React.lazy(() =>
   import("modules/deal/components/dealFilters/dealFilters")
 );
@@ -401,6 +402,7 @@ export default function HRReport() {
     <div className={hrReportStyle.dealContainer}>
       <div className={hrReportStyle.header}>
         <div className={hrReportStyle.dealLable}>HR Report</div>
+        <LogoLoader visible={isLoading} />
       </div>
 
       <div className={hrReportStyle.filterContainer}>
@@ -491,7 +493,7 @@ export default function HRReport() {
 							alt="rocket"
 						/> */}
           <h2>
-            3 profile shared % -{" "}
+          At least 3 profile shared % -{" "}
             <span>
               {reportList.length > 0 &&
                 (
@@ -521,7 +523,7 @@ export default function HRReport() {
 
         <div className={hrReportStyle.filterType}>
           <h2>
-            6 profiles shared in 10 days % -{" "}
+          At least 6 profiles shared in 10 days % -{" "}
             <span>
               {reportList.length > 0 &&
                 (
@@ -539,7 +541,7 @@ export default function HRReport() {
       >
         <div className={hrReportStyle.filterType}>
           <h2>
-            5 profiles are shared in 5 days -{" "}
+          At least 5 profiles are shared in 5 days % -{" "}
             <span>
               {reportList.length > 0 &&
                 (
@@ -552,7 +554,7 @@ export default function HRReport() {
 
         <div className={hrReportStyle.filterType}>
           <h2>
-            10 profiles are shared in 10 days % -{" "}
+          At least 10 profiles are shared in 10 days % -{" "}
             <span>
               {reportList.length > 0 &&
                 (
