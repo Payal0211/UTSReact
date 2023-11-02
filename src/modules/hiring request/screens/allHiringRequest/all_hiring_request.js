@@ -88,7 +88,7 @@ const AllHiringRequestScreen = () => {
 	const [isFocusedRole, setIsFocusedRole] = useState(false);
 	const [isOnlyPriority, setIsOnlyPriority] = useState(false);
 	const [userData, setUserData] = useState({});
-
+	const [isShowDirectHRChecked,setIsShowDirectHRChecked] = useState(false);
 
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
@@ -391,6 +391,7 @@ const AllHiringRequestScreen = () => {
 		setDebouncedSearch('')
 		setIsFocusedRole(false)
 		setIsOnlyPriority(false)
+		setIsShowDirectHRChecked(false)
 		setPageIndex(1);
 		setPageSize(100);
 	}, [
@@ -545,7 +546,7 @@ const AllHiringRequestScreen = () => {
 					<div className={allHRStyles.filterRight}>
 					<Checkbox checked={isOnlyPriority} onClick={()=> setIsOnlyPriority(prev=> !prev)}>
 					Show only Priority
-						</Checkbox>
+					</Checkbox>
 					<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)} className={allHRStyles.focusCheckBox}>
 					Show only Focused Role
 						</Checkbox>	
@@ -717,10 +718,12 @@ const AllHiringRequestScreen = () => {
 						setFilteredTagLength={setFilteredTagLength}
 						onRemoveHRFilters={onRemoveHRFilters}
 						getHTMLFilter={getHTMLFilter}
+						isShowDirectHRChecked={isShowDirectHRChecked}
+						setIsShowDirectHRChecked={setIsShowDirectHRChecked}
 						hrFilterList={allHRConfig.hrFilterListConfig()}
 						filtersType={allHRConfig.hrFilterTypeConfig(
 							filtersList && filtersList,
-						)}
+						)}						
 						clearFilters={clearFilters}
 					/>
 				</Suspense>

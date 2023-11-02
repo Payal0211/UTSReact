@@ -22,12 +22,14 @@ const HiringFilters = ({
 	setTableFilteredState,
 	filtersType,
 	getHTMLFilter,
-	clearFilters
+	clearFilters,
+	setIsShowDirectHRChecked,
+	isShowDirectHRChecked
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
 	const [filterSubChild, setFilterSubChild] = useState(null);
-	
+
 
 	// useEffect(() => {
 	// 	getHTMLFilter
@@ -202,19 +204,21 @@ const HiringFilters = ({
 	// 	setTableFilteredState,
 	// 	tableFilteredState,
 	// ]);
+
 	const handleFilters = useCallback(() => {
 		let filters = {};
 		appliedFilter.forEach((item) => {
 			filters = { ...filters, [item.filterType]: item.id };
 		});
 		setTableFilteredState({
-			...tableFilteredState,
+			...tableFilteredState,		
+			IsDirectHR:	isShowDirectHRChecked,
 			filterFields_ViewAllHRs: { ...filters },
 		});
 		const reqFilter = {
 			...tableFilteredState,
 			filterFields_ViewAllHRs: { ...filters },
-		};
+		};		
 		// handleHRRequest(reqFilter);
 		setIsAllowFilters(false);
 	}, [
@@ -222,8 +226,9 @@ const HiringFilters = ({
 		setIsAllowFilters,
 		setTableFilteredState,
 		tableFilteredState,
-	]);
+		isShowDirectHRChecked,
 
+	]);
 	return (
 		<aside className={`${hiringFilterStyle.aside} ${getHTMLFilter && hiringFilterStyle.closeFilter }`}>
 			<div className={hiringFilterStyle.asideBody}>
@@ -281,28 +286,28 @@ const HiringFilters = ({
 							)}
 
 							{filterSubChild.isNumber && (
-														<div className={hiringFilterStyle.searchFiltersList}>
-															<input
-																onChange={(e) => {
-																	if(e.target.value === '0'){
-																		return
-																	}
-																	handleAppliedFilters("numberField", {
-																		filterType: filterSubChild.name,
-																		value: e.target.value.substring(0, 2),
-																		id: e.target.value.substring(0, 2),
-																	})
-																}}
-																value={appliedFilter.get(filterSubChild?.name) ? appliedFilter.get(filterSubChild?.name).value : ''}
-																className={hiringFilterStyle.searchInput}
-																type="number"
-																id="NumberInput"
-																placeholder={`Enter ${filterSubChild?.name}`}
-																min="1" max="99" 
-															/>
+								<div className={hiringFilterStyle.searchFiltersList}>
+									<input
+										onChange={(e) => {
+											if(e.target.value === '0'){
+												return
+											}
+											handleAppliedFilters("numberField", {
+												filterType: filterSubChild.name,
+												value: e.target.value.substring(0, 2),
+												id: e.target.value.substring(0, 2),
+											})
+										}}
+										value={appliedFilter.get(filterSubChild?.name) ? appliedFilter.get(filterSubChild?.name).value : ''}
+										className={hiringFilterStyle.searchInput}
+										type="number"
+										id="NumberInput"
+										placeholder={`Enter ${filterSubChild?.name}`}
+										min="1" max="99" 
+									/>
 
-														</div>
-														)}
+								</div>
+								)}
 							<br />
 							<div className={hiringFilterStyle.filtersListType}>
 								{searchData && searchData.length > 0
@@ -377,6 +382,13 @@ const HiringFilters = ({
 								{filteredTags}
 							</div>
 							<div className={hiringFilterStyle.filtersListType}>
+								<Checkbox checked={isShowDirectHRChecked} onClick={(e)=> {
+									if(e.target.checked) setFilteredTagLength(prev => prev + 1)
+									else setFilteredTagLength(prev => prev - 1)
+									setIsShowDirectHRChecked(e.target.checked);
+									}}>
+									Show Direct HR 
+								</Checkbox>
 								{filtersType.map((item, index) => {
 									return (
 										<div
