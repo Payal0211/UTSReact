@@ -24,6 +24,7 @@ import { Radio} from 'antd';
   import HRFieldStyle from "./addHr.module.css";
   import { PlusOutlined } from "@ant-design/icons";
   import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
+  import { ReactComponent as LinkSVG } from "assets/svg/link.svg";
   import UploadModal from "shared/components/uploadModal/uploadModal";
   import HRSelectField from "../hrSelectField/hrSelectField";
   import { useForm, Controller } from "react-hook-form";
@@ -187,12 +188,22 @@ export default function AddHR({
     const [showGPTModal, setShowGPTModal] = useState(false);
     const [gptDetails, setGPTDetails] = useState({});
     const [gptFileDetails, setGPTFileDetails] = useState({});
+
+    const [isJDURL,setISJDURL] = useState(false);
+    const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
+    const [controlledJDParsed, setControlledJDParsed] = useState([]);
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [skills, setSkills] = useState([]);
   
     /* const { fields, append, remove } = useFieldArray({
           control,
           name: 'secondaryInterviewer',
       }); */
-  
+    const getSkills = useCallback(async () => {
+        const response = await MasterDAO.getSkillsRequestDAO();
+        setSkills(response && response.responseBody);
+    }, []);
+    
     const watchClientName = watch("clientName");
     const _endTime = watch("endTime");
     let filteredMemo = useMemo(() => {
@@ -792,6 +803,7 @@ export default function AddHR({
         getNRMarginHandler();
         getDurationTypes();
         getStartEndTimeHandler();
+        getSkills()
         // eslint-disable-next-line react-hooks/exhaustive-deps
       },
       [
@@ -1225,6 +1237,14 @@ export default function AddHR({
       
     };
 
+    const toogleJDType =()=>{
+      setISJDURL(prev=> {
+        if(prev){
+
+        }
+        
+        return !prev})
+    }
 
     
 
@@ -1395,7 +1415,28 @@ export default function AddHR({
 
                 <div className={HRFieldStyle.colMd12}>
                     <div className={HRFieldStyle.addHrProvideLinkWrap}>
-                        {/* <HRInputField
+
+                      {isJDURL ? <HRInputField
+                            // disabled={!isCompanyNameAvailable ? true : jdURLLink}
+                            register={register}
+                            leadingIcon={<LinkSVG />}
+                            label={`Job Description`}
+                            name="jdURL"
+                            type={InputType.TEXT}
+                            
+                            // value="Upload JD File"
+                            onClickHandler={() => setUploadModal(true)}
+                            required={isJDURL}
+                            validationSchema={{
+                            required: "please Enter URL.",
+                            }}
+                            placeholder="Past JD link"
+                            trailingIcon={<div className={HRFieldStyle.linksubmit}>
+                            <button className={HRFieldStyle.linksubmitbutton}>Submit</button>
+                            </div>}
+                            errors={errors}
+                        /> :
+                       <HRInputField
                             // disabled={!isCompanyNameAvailable ? true : jdURLLink}
                             register={register}
                             leadingIcon={<UploadSVG />}
@@ -1405,22 +1446,43 @@ export default function AddHR({
                             buttonLabel="Upload JD file (doc, docx, pdf)"
                             // value="Upload JD File"
                             onClickHandler={() => setUploadModal(true)}
-                            required={!jdURLLink && !getUploadFileData}
+                            required={!isJDURL}
                             validationSchema={{
                             required: "please select a file.",
                             }}
                             errors={errors}
-                        /> */}
+                        />
+                      }
+                       
 
                         <div className={HRFieldStyle.addHrProvideLink}>
-                            You can also <p > provide a link</p>
+                            You can also <p onClick={()=> toogleJDType()} > provide a link</p>
                         </div>
                     </div>
                 </div>
 
                 <div className={HRFieldStyle.colMd12}>
                     <div className={HRFieldStyle.skillAddCustom}>
-                        <HRInputField
+
+                    <HRSelectField
+										isControlled={true}
+										controlledValue={controlledJDParsed}
+										setControlledValue={setControlledJDParsed}
+										// mode="multiple"
+										mode="tags"
+										setValue={setValue}
+										register={register}
+										label={'Top 5 must have skils'}
+										placeholder="Select skills" 
+										onChange={setSelectedItems}
+										options={skills}
+										setOptions = {setSkills}
+										name="skills"
+										isError={errors['skills'] && errors['skills']}
+										required
+										errorMsg={'Please enter the skills.'}
+									/>
+                        {/* <HRInputField
                             register={register}
                             errors={errors}
                             
@@ -1430,7 +1492,7 @@ export default function AddHR({
                             placeholder="Type skills"
                             maxLength={50}
                             required
-                        />
+                        /> */}
 
                         <ul className={HRFieldStyle.selectFieldBox}>
                             <li>
@@ -1586,9 +1648,10 @@ export default function AddHR({
                             setValue={setValue}
                             register={register}
                             mode={"id/value"}
+                            options={howSoon}
                             label={"Notice period"}
-                            defaultValue="30 Days"
-                            name="getDurationType"
+                            defaultValue="Select how soon?"
+                            name="noticePeriod"
                         />
                     </div>
                 </div>
