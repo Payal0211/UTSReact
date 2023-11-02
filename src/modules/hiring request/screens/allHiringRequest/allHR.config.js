@@ -410,6 +410,28 @@ export const allHRConfig = {
             text: HiringRequestHRStatus.LOST.toString(),
             value: "Lost",
           },
+          
+        ],
+        isSearch: false,
+      },
+      {
+        label: "Type of HR",
+        name: "HRType",
+        child: [
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "Contractual",
+            value: "Contractual",
+          },
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "Direct Placement",
+            value: "Direct Placement",
+          },
         ],
         isSearch: false,
       },
