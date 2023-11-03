@@ -121,7 +121,8 @@
 
 /* Responsive css start */
 
-@media only screen and (max-width: 1440px) {
+
+@media only screen and (max-width: 1700px) {
     .clearAll{
         font-size: 14px;
         padding: 8px 15px !important;
@@ -130,6 +131,20 @@
     .applyFilters{
         font-size: 14px;
         padding: 8px 15px !important;
+    }
+
+    .filtersListType {
+        margin-top: 3%;
+        max-height:280px;
+    }
+    
+}
+
+
+@media only screen and (max-width: 1440px) {
+    .filtersListType {
+        margin-top: 3%;
+        max-height:200px;
     }
 }
 
