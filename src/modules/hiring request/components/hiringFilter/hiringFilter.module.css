@@ -119,7 +119,7 @@
 
 /* Responsive css start */
 
-@media only screen and (max-width: 1440px) {
+@media only screen and (max-width: 1600px) {
     .clearAll{
         font-size: 14px;
         padding: 8px 15px !important;
