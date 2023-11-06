@@ -480,7 +480,7 @@ const AllHiringRequestScreen = () => {
 						isDropdown={true}
 						listItem={
 							miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS ||
-							miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER
+							miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER 
 								? [
 										{
 											label: 'Add New HR',
@@ -488,7 +488,16 @@ const AllHiringRequestScreen = () => {
 											IsEnabled: true  ,
 										},
 								  ]
-								: [
+								: miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
+								miscData?.loggedInUserTypeID === UserAccountRole.MARKETING 
+									? [
+										
+										{
+											label: 'Add New Direct HR',
+											key: AddNewType.DIRECT_HR,
+											IsEnabled: true ,
+										},
+								  ] : [
 										{
 											label: 'Add New HR',
 											key: AddNewType.HR,
@@ -507,6 +516,10 @@ const AllHiringRequestScreen = () => {
 									navigate(UTSRoutes.ADDNEWHR);
 									localStorage.removeItem("dealId")
 									break;
+								}
+								case AddNewType.DIRECT_HR:{
+
+									break
 								}
 								case AddNewType.CLIENT: {
 									navigate(UTSRoutes.ADDNEWCLIENT);

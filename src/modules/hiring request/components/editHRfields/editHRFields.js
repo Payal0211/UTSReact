@@ -177,6 +177,7 @@ const EditHRFields = ({
     setValue,
     setError,
     unregister,
+    resetField,
     control,
     clearErrors,
     // defaultValue,
@@ -1309,6 +1310,7 @@ const EditHRFields = ({
         ?.noofTalents
         ? gptDetails?.addHiringRequest?.noofTalents
         : watch("talentsNumber");
+        _getHrValues.salesHiringRequest_Details.roleId = null;
       _getHrValues.addHiringRequest.requestForTalent = gptDetails
         ?.addHiringRequest?.requestForTalent
         ? gptDetails?.addHiringRequest?.requestForTalent
@@ -1440,6 +1442,14 @@ const EditHRFields = ({
 
   const onHandleFocusOut = async (e) => {
     const regex = /\(([^)]+)\)/;
+    if(!watchClientName){   
+      setError('jdURL',{message:'Please Select client Email/Name '})
+    setTimeout(()=> { clearErrors('jdURL');
+      resetField('jdURL')
+      setJDURLLink('')
+      },3000)
+      return
+    }
     const match = watchClientName.match(regex);
     let email = "";
     if (match && match.length > 1) {
@@ -1700,7 +1710,7 @@ const EditHRFields = ({
                 <div className={HRFieldStyle.colMd6}>
                   {!getUploadFileData ? (
                     <HRInputField
-                      disabled={!isCompanyNameAvailable ? true : jdURLLink}
+                      disabled={jdURLLink}
                       register={register}
                       leadingIcon={<UploadSVG />}
                       label="Job Description"
@@ -1773,9 +1783,7 @@ const EditHRFields = ({
                 <div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     onChangeHandler={(e) => toggleJDHandler(e)}
-                    disabled={
-                      !isCompanyNameAvailable ? true : getUploadFileData
-                    }
+                    disabled={getUploadFileData}
                     label="Job Description URL"
                     name="jdURL"
                     type={InputType.TEXT}
