@@ -126,13 +126,13 @@ function ViewClientDetails() {
 				<div className={dealDetailsStyles.dealDetailsTitle}>
 				{contextHolder}
 					<h1>
-						{/* <img
-							src={viewClient}
+						{viewDetails?.clientDetails?.companyLogo ? <img
+							src={`${NetworkInfo.PROTOCOL}${NetworkInfo.DOMAIN}Media/companylogo/${viewDetails?.clientDetails?.companyLogo}`}
 							alt={viewDetails?.clientDetails?.companyInitial}
-						/> */}
+						/> : 
 						<span className={dealDetailsStyles.viewClientUser} style={{backgroundImage: viewClient}}>
 							{viewDetails?.clientDetails?.companyInitial}							
-						</span>
+						</span>}
 						&nbsp;{viewDetails?.clientDetails?.companyName}						
 					</h1>
 					<div className={dealDetailsStyles.dealDetailsRight}>
