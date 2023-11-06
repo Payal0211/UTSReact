@@ -161,6 +161,7 @@ const HRFields = ({
     setError,
     unregister,
     control,
+    resetField,
     clearErrors,
     formState: { errors },
   } = useForm({
@@ -281,7 +282,7 @@ const HRFields = ({
       } else {
         let formData = new FormData();
         formData.append("File", fileData);
-        formData.append("clientemail", filteredMemo[0]?.emailId);
+        formData.append("clientemail", filteredMemo[0]?.emailId?? '');
         let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
         if (uploadFileResponse.statusCode === 400) {
           setValidation({
@@ -620,6 +621,8 @@ const HRFields = ({
 
   const getClientNameValue = (clientName) => {
     setValue("clientName", clientName);
+    // to unfocus or blur client name field
+    document.activeElement.blur();
     setError("clientName", {
       type: "validate",
       message: "",
@@ -1249,6 +1252,15 @@ const HRFields = ({
 
   const onHandleFocusOut = async (e) => {
     const regex = /\(([^)]+)\)/;
+
+    if(!watchClientName){   
+      setError('jdURL',{message:'Please Select client Email/Name '})
+    setTimeout(()=> { clearErrors('jdURL');
+      resetField('jdURL')
+      setJDURLLink('')
+      },3000)
+      return
+    }
     const match = watchClientName.match(regex);
     let email = "";
     if (match && match.length > 1) {
@@ -1340,9 +1352,7 @@ const HRFields = ({
                       render={({ ...props }) => (
                         <AutoComplete
                           options={getClientNameSuggestion}
-                          onSelect={(clientName) =>
-                            getClientNameValue(clientName)
-                          }
+                          onSelect={(clientName) => getClientNameValue(clientName)}
                           filterOption={true}
                           onSearch={(searchValue) => {
                             setClientNameSuggestion([]);
@@ -1563,7 +1573,7 @@ const HRFields = ({
               <div className={HRFieldStyle.colMd6}>
                 {!getUploadFileData ? (
                   <HRInputField
-                    disabled={!isCompanyNameAvailable ? true : jdURLLink}
+                    disabled={jdURLLink}
                     register={register}
                     leadingIcon={<UploadSVG />}
                     label={`Job Description`}
@@ -1616,7 +1626,7 @@ const HRFields = ({
               <div className={HRFieldStyle.colMd6}>
                 <HRInputField
                   onChangeHandler={(e) => toggleJDHandler(e)}
-                  disabled={!isCompanyNameAvailable ? true : getUploadFileData}
+                  disabled={getUploadFileData}
                   label="Job Description URL"
                   name="jdURL"
                   type={InputType.TEXT}

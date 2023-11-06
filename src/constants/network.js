@@ -35,9 +35,14 @@ export class SubDomain {
 	static I2S_REPORT = 'InterviewToSuccess/';
 	static HUB_SPOT = 'Hubspot/';
 	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/'	
+	static DIRECT_HR = 'DirectHR/'
 }
 export class APIType {
 	static USER = '/user';
+}
+
+export class DirectHR {
+	static GET_MASTER_FOR_DIRECTHR = 'GetMastersForDirectHR'
 }
 export class MethodType {
 	static GET = '/get';

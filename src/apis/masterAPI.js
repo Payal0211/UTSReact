@@ -1,4 +1,5 @@
 import {
+	DirectHR,
 	HiringRequestsAPI,
 	MastersAPI,
 	NetworkInfo,
@@ -153,6 +154,19 @@ export const MasterAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.getTimeZoneRequest');
+		}
+	},
+	getMasterDirectHRRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.DIRECT_HR + DirectHR.GET_MASTER_FOR_DIRECTHR;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getMasterDirectHRRequest');
 		}
 	},
 	getPartialEngagementTypeRequest: async function () {

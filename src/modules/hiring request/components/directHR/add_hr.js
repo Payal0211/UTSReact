@@ -42,32 +42,26 @@ import { Radio} from 'antd';
 
   import AddPlus from "assets/svg/AddPlus.svg";
   
-  export const secondaryInterviewer = {
-    interviewerId:"0",
-    fullName: "",
-    emailID: "",
-    linkedin: "",
-    designation: "",
-  };
+
 
 
 export default function AddHR({
-    setJDDumpID,
-    jdDumpID,
-    setTitle,
-    clientDetail,
-    setEnID,
-    tabFieldDisabled,
-    setTabFieldDisabled,
-    setJDParsedSkills,
-    contactID,
-    interviewDetails,
-    companyName,
-    params,
-    getHRdetails,
-    setHRdetails,
-    setAddData,
-    fromClientflow
+    // setJDDumpID,
+    // jdDumpID,
+    // setTitle,
+    // clientDetail,
+    // setEnID,
+    // tabFieldDisabled,
+    // setTabFieldDisabled,
+    // setJDParsedSkills,
+    // contactID,
+    // interviewDetails,
+    // companyName,
+    // params,
+    // getHRdetails,
+    // setHRdetails,
+    // setAddData,
+    // fromClientflow
   })  {
 
     const [userData, setUserData] = useState({});
@@ -81,17 +75,15 @@ export default function AddHR({
     }, []);
 
    
-  
+    const [isHRRemote,setIsHRRemote] = useState(true)
     const [isSavedLoading, setIsSavedLoading] = useState(false);
     const [controlledCountryName, setControlledCountryName] = useState("");
     const inputRef = useRef(null);
     const [getUploadFileData, setUploadFileData] = useState("");
-    const [availability, setAvailability] = useState([]);
     // const [timeZonePref, setTimeZonePref] = useState([]);
     const [workingMode, setWorkingMode] = useState([]);
-    const [controlledWorkingValue, setControlledWorkingValue] = useState(
-      "Select working mode"
-    );
+    const [skillSuggestionList,setSkillSuggestionList] = useState([])
+ 
     const [tempProjects, setTempProject] = useState([
       {
         disabled: false,
@@ -112,7 +104,6 @@ export default function AddHR({
     const [country, setCountry] = useState([]);
     const [currency, setCurrency] = useState([]);
     const [budgets, setBudgets] = useState([]);
-    const [salesPerson, setSalesPerson] = useState([]);
     const [howSoon, setHowSoon] = useState([]);
     // const [region, setRegion] = useState([]); // removed 
     const [isLoading, setIsLoading] = useState(false);
@@ -122,13 +113,9 @@ export default function AddHR({
     const [pathName, setPathName] = useState("");
     const [showUploadModal, setUploadModal] = useState(false);
     const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
-  // from add client flow to enadle JD fields 
-    useEffect(()=>{
-      if(fromClientflow === true){
-        setIsCompanyNameAvailable(true)
-      }
-    },[fromClientflow])
-  
+    const [controlledRequirenments,setControlledRequirements] = useState('');
+    const [controlledRolesAndResponsibilities,setControlledRolesAndResponsibilities] = useState('');
+
     const [addHRResponse, setAddHRResponse] = useState(null);
     const [type, setType] = useState("");
     const [isHRDirectPlacement, setHRDirectPlacement] = useState(false);
@@ -149,7 +136,7 @@ export default function AddHR({
     const [jdURLLink, setJDURLLink] = useState("");
     const [prevJDURLLink, setPrevJDURLLink] = useState("");
     const [getGoogleDriveLink, setGoogleDriveLink] = useState("");
-    const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
+    const [getClientEmailSuggestion, setClientEmailSuggestion] = useState([]);
     const [isNewPostalCodeModal, setNewPostalCodeModal] = useState(false);
     const [isPostalCodeNotFound, setPostalCodeNotFound] = useState(false);
     const [controlledTimeZoneValue, setControlledTimeZoneValue] =
@@ -158,10 +145,7 @@ export default function AddHR({
       useState("Select From Time");
     const [controlledEndTimeValue, setControlledEndTimeValue] =
       useState("Select End Time");
-    const [controlledCurrencyValue, setControlledCurrencyValue] =
-      useState("Select Currency");
-      const [controlledAvailabilityValue, setControlledAvailabilityValue] =
-      useState("Select availability");
+ 
     const [DealHRData, setDealHRData] = useState({});
     let controllerRef = useRef(null);
     const {
@@ -171,34 +155,32 @@ export default function AddHR({
       setValue,
       setError,
       unregister,
+      resetField,
       control,
       clearErrors,
       formState: { errors },
-    } = useForm({
-      defaultValues: {
-        secondaryInterviewer: [],
-      },
-    });
+    } = useForm();
   
     const [timeZoneList,setTimezoneList] = useState([]);
   
-    const watchSalesPerson = watch("salesPerson");
+    const [controlledCurrencyValue, setControlledCurrencyValue] =
+    useState("Select Currency");
     const watchChildCompany = watch("childCompany");
   
     const [showGPTModal, setShowGPTModal] = useState(false);
     const [gptDetails, setGPTDetails] = useState({});
     const [gptFileDetails, setGPTFileDetails] = useState({});
+    const[jdDumpID,setJDDumpID] = useState(0)
 
     const [isJDURL,setISJDURL] = useState(false);
     const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
     const [controlledJDParsed, setControlledJDParsed] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const [skills, setSkills] = useState([]);
+    const [leadSource,setLeadSource] = useState([]);
+    const [leadOwner,setLeadOwner] = useState([]);
+    const [controlledDealSource, setControlledDealSource] = useState()
   
-    /* const { fields, append, remove } = useFieldArray({
-          control,
-          name: 'secondaryInterviewer',
-      }); */
     const getSkills = useCallback(async () => {
         const response = await MasterDAO.getSkillsRequestDAO();
         setSkills(response && response.responseBody);
@@ -207,11 +189,11 @@ export default function AddHR({
     const watchClientName = watch("clientName");
     const _endTime = watch("endTime");
     let filteredMemo = useMemo(() => {
-      let filteredData = getClientNameSuggestion?.filter(
+      let filteredData = getClientEmailSuggestion?.filter(
         (item) => item?.value === watchClientName
       );
       return filteredData;
-    }, [getClientNameSuggestion, watchClientName]);
+    }, [getClientEmailSuggestion, watchClientName]);
   
     /* ------------------ Upload JD Starts Here ---------------------- */
     const [openPicker, authResponse] = useDrivePicker();
@@ -263,12 +245,12 @@ export default function AddHR({
           if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
             setUploadModal(false);
             setUploadFileData(fileName);
-            setJDDumpID(uploadFileResponse?.responseBody?.details?.JDDumpID);
+      
             message.success("File uploaded successfully");
           }
         }
       },
-      [getValidation, setJDDumpID]
+      [getValidation]
     );
   
     const uploadFileHandler = useCallback(
@@ -356,87 +338,21 @@ export default function AddHR({
           setIsLoading(false);
         }
       },
-      [getValidation, setJDDumpID, setJDParsedSkills, filteredMemo]
+      [getValidation, filteredMemo]
     );
-  
-    const googleDriveFileUploader = useCallback(() => {
-      openPicker({
-        clientId: GoogleDriveCredentials.clientID,
-        developerKey: GoogleDriveCredentials.developerKey,
-        viewId: "DOCS",
-        // token: token, // pass oauth token in case you already have one
-        showUploadView: true,
-        showUploadFolders: true,
-        supportDrives: true,
-        multiselect: true,
-        // customViews: customViewsArray, // custom view
-        callbackFunction: (data) => {
-          if (data?.action === "cancel") {
-          } else {
-            if (data?.docs) {
-              let uploadFileResponse = uploadFileFromGoogleDriveValidator(
-                data?.docs
-              );
-              setUploadFileData(uploadFileResponse?.responseBody?.FileName);
-              setJDParsedSkills(
-                uploadFileResponse && uploadFileResponse?.responseBody?.details
-              );
-              setUploadModal(false);
-            }
-          }
-        },
-      });
-    }, [openPicker, setJDParsedSkills, uploadFileFromGoogleDriveValidator]);
-  
-    const uploadFileFromGoogleDriveLink = useCallback(async () => {
-      setValidation({
-        ...getValidation,
-        linkValidation: "",
-      });
-      if (!getGoogleDriveLink) {
-        setValidation({
-          ...getValidation,
-          linkValidation: "Please Enter Google Docs/Drive URL",
-        });
-      } else if (
-        !/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
-          getGoogleDriveLink
-        ) &&
-        !/https:\/\/drive\.google\.com\/file\/d\/(.*?)\/.*?/g.test(
-          getGoogleDriveLink
-        )
-      ) {
-        setValidation({
-          ...getValidation,
-          linkValidation: "Please Enter Google Docs/Drive URL",
-        });
-      } /* else if (
-              !/https:\/\/docs\.google\.com\/document\/d\/(.*?)\/.*?/g.test(
-                  getGoogleDriveLink,
-              )
-          ) {
-              setValidation({
-                  ...getValidation,
-                  linkValidation: 'Please Enter Google Docs/Drive URL',
-              });
-          }  */ else {
-        let uploadFileResponse =
-          await hiringRequestDAO.uploadFileFromGoogleDriveLinkDAO(
-            getGoogleDriveLink
-          );
-        if (uploadFileResponse.statusCode === HTTPStatusCode.OK) {
-          setUploadModal(false);
-          setGoogleDriveLink("");
-          message.success("File uploaded successfully");
-        }
+
+    const createListMarkup = (list) => {
+      if(list?.length){
+          let listText = "<ul class='rolesText'>"
+    
+      list?.forEach((item) => {
+        listText += `<li>${item}</li>`
+      })
+    
+      return listText + "</ul>";
       }
-    }, [
-      getGoogleDriveLink,
-      getValidation,
-      setGoogleDriveLink,
-      setUploadModal,
-      setValidation,
-    ]);
+    
+    }
   
     /* ------------------ Upload JD Ends Here -------------------- */
     // let prefRegion = watch("region");
@@ -459,13 +375,7 @@ export default function AddHR({
     //     setTimeZonePref(timeZone && timeZone.responseBody);
     //   }
     // }, [prefRegion]);
-    const getAvailability = useCallback(async () => {
-      const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
-      setAvailability(
-        availabilityResponse &&
-          availabilityResponse.responseBody?.BindHiringAvailability
-      );
-    }, []);
+
   
     const watchPostalCode = watch("postalCode");
   
@@ -501,48 +411,8 @@ export default function AddHR({
       [clearErrors, setValue, watch]
     );
   
-    const CheckSalesUserIsPartner = useCallback(
-      async (getContactAndSaleID) => {
-        const response = await MasterDAO.checkIsSalesPersonDAO(
-          getContactAndSaleID
-        );
-        if (response?.statusCode === HTTPStatusCode.OK) {
-          if (response?.responseBody?.details?.SaleUserIsPartner) {
-            setIsSalesUserPartner(
-              response?.responseBody?.details?.SaleUserIsPartner
-            );
-            const newChildCompanyList =
-              response?.responseBody?.details?.ChildCompanyList.filter(
-                (ele, index) => index !== 0
-              );
-            setChildCompany([]);
-            setChildCompany((prev) =>
-              newChildCompanyList.map(
-                ({ childCompanyID, childCompanyName }) =>
-                  childCompanyID !== -1 && {
-                    id: childCompanyID,
-                    value: childCompanyName,
-                  }
-              )
-            );
-            setChildCompany((prev) => [
-              ...prev,
-              { id: 0, value: "Add Other Company" },
-            ]);
-          }
-        } else {
-          setError("salesPerson", {
-            type: "validate",
-            message: "Sales Person is not partner",
-          });
-        }
-      },
-      [setError]
-    );
-    const toggleJDHandler = useCallback((e) => {
-      setJDURLLink(e.target.value);
-      // clearErrors();
-    }, []);
+
+
     const getHowSoon = useCallback(async () => {
       const howSoonResponse = await MasterDAO.getHowSoonRequestDAO();
       setHowSoon(howSoonResponse && howSoonResponse.responseBody);
@@ -583,23 +453,47 @@ export default function AddHR({
       setStaryEndTimes(durationTypes && durationTypes?.responseBody);
     }, []);
   
-    const getSalesPerson = useCallback(async () => {
-      const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
-      setSalesPerson(
-        salesPersonResponse && salesPersonResponse?.responseBody?.details
-      );
-      if (userData.LoggedInUserTypeID === UserAccountRole.SALES) {
-        const valueToSet = salesPersonResponse?.responseBody?.details.filter(
-          (detail) => detail.value === userData.FullName
-        )[0];
-        setValue("salesPerson", valueToSet.id);
-      }
-    }, [setValue, userData.LoggedInUserTypeID, userData.FullName]);
   
     // const getRegion = useCallback(async () => {
     //   let response = await MasterDAO.getTalentTimeZoneRequestDAO();
     //   setRegion(response && response?.responseBody);
     // }, []);
+    const getDirectHR = useCallback(async () => {
+      let response = await MasterDAO.getMasterDirectHRRequestDAO();
+      console.log("Direct hr res",response)
+      // setTimezoneList(response && response?.responseBody);
+      if(response.statusCode === HTTPStatusCode.OK){
+        let data = response.responseBody.Data
+        setLeadOwner(data.DRPLeadUsers.filter(
+          (item) => item.value !== "0"
+        ).map((item) => ({ ...item, text: item.value, value: item.text })))
+        setLeadSource(data.LeadSource)
+      }
+
+  }, []);
+
+  let watchLeadSource = watch('leadType')
+
+  const getLeadOwnerBytype = async (type) => {
+    let result = await MasterDAO.getLeadTypeDAO(type);
+    // console.log("fatchpreOnBoardInfo", result.responseBody.details);
+
+    if (result?.statusCode === HTTPStatusCode.OK) {
+      resetField('leadOwner')
+      setControlledDealSource()
+      setLeadOwner(result.responseBody.details.Data.LeadTypeList.filter(
+        (item) => item.value !== "0"
+      ).map((item) => ({ ...item, text: item.value, value: item.text })))
+    }
+  };
+
+  useEffect(() => {
+    if (watchLeadSource?.value) {
+      getLeadOwnerBytype(watchLeadSource.value);
+      resetField('leadOwner')
+      setControlledDealSource()
+    }
+  }, [watchLeadSource, setValue,resetField]);
   
     const getTimeZoneList = useCallback(async () => {
           let response = await MasterDAO.getTimeZoneRequestDAO();
@@ -608,32 +502,54 @@ export default function AddHR({
   
     const getLocation = useLocation();
   
-   
-  
-    const getClientNameValue = (clientName) => {
-      setValue("clientName", clientName);
-      setError("clientName", {
-        type: "validate",
-        message: "",
-      });
+   const getContentID = async (emailID)=>{
+    let existingClientDetails =
+    await hiringRequestDAO.getClientDetailRequestDAO(emailID);
+
+  existingClientDetails?.statusCode === HTTPStatusCode.OK &&
+    setContactAndSalesID((prev) => ({
+      ...prev,
+      contactID: existingClientDetails?.responseBody?.contactid,
+    }));
+
+   }
+console.log(getContactAndSaleID)
+    const getClientNameValue = (clientName,_) => {
+      console.log(clientName,_)
+      setValue("clientEmail", _.emailId); 
+      setValue("clientName", clientName);    
+      setValue('companyName',_.company)
+      getContentID(_.emailId)
+      // setError("clientEmail", {
+      //   type: "validate",
+      //   message: "",
+      // });
+      // setError("companyName", {
+      //   type: "validate",
+      //   message: "",
+      // });
+      // setError("clientName", {
+      //   type: "validate",
+      //   message: "",
+      // });
     };
-  
+
     const getClientNameSuggestionHandler = useCallback(
-      async (clientName) => {
-        let response = await MasterDAO.getEmailSuggestionDAO(clientName);
-  
+      async (clientEmail) => {
+        let response = await MasterDAO.getEmailSuggestionDAO(clientEmail);
         if (response?.statusCode === HTTPStatusCode.OK) {
-          setClientNameSuggestion(response?.responseBody?.details);
+          setClientEmailSuggestion(response?.responseBody?.details);
           setClientNameMessage("");
+          clearErrors('clientEmail')
         } else if (
           response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
           response?.statusCode === HTTPStatusCode.NOT_FOUND
         ) {
-          setError("clientName", {
+          setError("clientEmail", {
             type: "validate",
             message: response?.responseBody,
           });
-          setClientNameSuggestion([]);
+          setClientEmailSuggestion([]);
           setClientNameMessage(response?.responseBody);
           //TODO:- JD Dump ID
         }
@@ -650,42 +566,7 @@ export default function AddHR({
       return true;
     };
   
-    const getHRClientName = useCallback(
-      async (watchClientName) => {
-        if (watchClientName || filteredMemo) {
-          let existingClientDetails =
-            await hiringRequestDAO.getClientDetailRequestDAO(
-              filteredMemo[0]?.emailId
-                ? filteredMemo[0]?.emailId
-                : watchClientName
-            );
   
-          existingClientDetails?.statusCode === HTTPStatusCode.OK &&
-            setContactAndSalesID((prev) => ({
-              ...prev,
-              contactID: existingClientDetails?.responseBody?.contactid,
-            }));
-  
-          /* setError('clientName', {
-              type: 'duplicateCompanyName',
-              message:
-                  existingClientDetails?.statusCode === HTTPStatusCode.NOT_FOUND &&
-                  'Client email does not exist.',
-          }); */
-          existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
-            setValue("clientName", "");
-          existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
-            setValue("companyName", "");
-          existingClientDetails.statusCode === HTTPStatusCode.OK &&
-            setValue("companyName", existingClientDetails?.responseBody?.name);
-          companyName(existingClientDetails?.responseBody?.name);
-          existingClientDetails.statusCode === HTTPStatusCode.OK &&
-            setIsCompanyNameAvailable(true);
-          setIsLoading(false);
-        }
-      },
-      [filteredMemo, setValue, watchClientName]
-    );
   
     const getOtherRoleHandler = useCallback(
       async (data) => {
@@ -723,33 +604,30 @@ export default function AddHR({
       }
     }, [country, debouncedFunction, isPostalCodeNotFound, watchCountry]);
   
-    useEffect(() => {
-      let timer;
-      if (!_isNull(watchClientName)) {
-        timer =
-          pathName === ClientHRURL.ADD_NEW_HR &&
-          setTimeout(() => {
-            setIsLoading(true);
-            getHRClientName(watchClientName);
-          }, 2000);
-      }
-      return () => clearTimeout(timer);
-    }, [getHRClientName, watchClientName, pathName]);
-    //console.log("watchClientName",watchClientName);
-    useEffect(() => {
-      let urlSplitter = `${getLocation.pathname.split("/")[2]}`;
-      setPathName(urlSplitter);
-      pathName === ClientHRURL.ADD_NEW_CLIENT &&
-        setValue("clientName", clientDetail?.clientemail);
-      pathName === ClientHRURL.ADD_NEW_CLIENT &&
-        setValue("companyName", clientDetail?.companyname);
-    }, [
-      getLocation.pathname,
-      clientDetail?.clientemail,
-      clientDetail?.companyname,
-      pathName,
-      setValue,
-    ]);
+    // useEffect(() => {
+    //   let timer;
+    //   if (!_isNull(watchClientName)) {
+    //     timer = setTimeout(() => {
+    //         getHRClientName(watchClientName);
+    //       }, 2000);
+    //   }
+    //   return () => clearTimeout(timer);
+    // }, [getHRClientName, watchClientName]);
+    // //console.log("watchClientName",watchClientName);
+    // useEffect(() => {
+    //   let urlSplitter = `${getLocation.pathname.split("/")[2]}`;
+    //   setPathName(urlSplitter);
+    //   pathName === ClientHRURL.ADD_NEW_CLIENT &&
+    //     setValue("clientName", clientDetail?.clientemail);
+    //   pathName === ClientHRURL.ADD_NEW_CLIENT &&
+    //     setValue("companyName", clientDetail?.companyname);
+    // }, [
+    //   getLocation.pathname,
+    //   clientDetail?.clientemail,
+    //   clientDetail?.companyname,
+    //   pathName,
+    //   setValue,
+    // ]);
     const getCurrencyHandler = useCallback(async () => {
       const response = await MasterDAO.getCurrencyRequestDAO();
       setCurrency(response && response?.responseBody);
@@ -772,27 +650,21 @@ export default function AddHR({
       setPartialEngagements(response && response?.responseBody);
     }, []);
   
-    useEffect(() => {
-      if (getContactAndSaleID?.contactID && getContactAndSaleID?.salesID)
-        CheckSalesUserIsPartner(getContactAndSaleID);
-    }, [CheckSalesUserIsPartner, getContactAndSaleID]);
+
   
     // useEffect(() => {
     //   !_isNull(prefRegion) && getTimeZonePreference();
     // }, [prefRegion, getTimeZonePreference]);
   
-    useEffect(() => {
-      getSalesPerson();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userData]);
+
   
     useEffect(
       () => {
-        getAvailability();
         getTalentRole();
         // getSalesPerson();
         // getRegion();
         getTimeZoneList()
+        getDirectHR()
         getWorkingMode();
         // postalCodeHandler();
         getCurrencyHandler();
@@ -838,26 +710,6 @@ export default function AddHR({
       isHRDirectPlacement === true && unregister("tempProject");
     }, [isHRDirectPlacement, unregister]);
   
-    useEffect(() => {
-      if (watch("budget")?.value === "2") {
-        setValue("adhocBudgetCost", "");
-        unregister("adhocBudgetCost");
-      }
-      if (watch("budget")?.value === "1") {
-        setValue("maximumBudget", "");
-        setValue("minimumBudget", "");
-        unregister("maximumBudget");
-        unregister("minimumBudget");
-      }
-      if (watch("budget")?.value === "3") {
-        unregister("maximumBudget");
-        unregister("minimumBudget");
-        unregister("adhocBudgetCost");
-        setValue("maximumBudget", "");
-        setValue("minimumBudget", "");
-        setValue("adhocBudgetCost", "");
-      }
-    }, [watch("budget"), unregister]);
   
     // useEffect(() => {
     //   if (watch("region")?.value.includes("Overlapping")) {
@@ -872,11 +724,7 @@ export default function AddHR({
     //   }
     // }, [watch("region"), unregister]);
   
-    useEffect(() => {
-      if (watch("availability")?.value === "Full Time") {
-        unregister("partialEngagement");
-      }
-    }, [watch("availability"), unregister]);
+
   
     useEffect(() => {
       if (jdURLLink) {
@@ -884,11 +732,30 @@ export default function AddHR({
       }
     }, [jdURLLink, unregister]);
   
-    useEffect(() => {
-      if (modeOfWork?.value === "Remote") {
-        unregister(["address", "city", "state", "country", "postalCode"]);
-      }
-    }, [modeOfWork, unregister]);
+    const onSelectSkill = (skill) => {
+		
+      // let _selected = combinedSkillsMemo.filter((val) => val?.value === skill);
+      // let _controlledJDParsed = [...controlledJDParsed];		
+      // let _index = _controlledJDParsed.findIndex((obj) => obj.id === _selected[0].id);
+      // if(_index === -1){
+      // 	_controlledJDParsed.push({id: '0', value: skill});
+      // }
+      // // console.log({skill, combinedSkillsMemo,_selected,_index ,_controlledJDParsed,controlledJDParsed})
+      // setControlledJDParsed(_controlledJDParsed);
+      // setValue('skills',_controlledJDParsed)		
+      let _controlledJDParsed = [...controlledJDParsed];	
+      let _index = _controlledJDParsed.findIndex((obj) => obj.value === skill.trim());
+      if(_index === -1){
+          // _controlledJDParsed.push(_selected[0]);
+          _controlledJDParsed.push({id: '0', value: skill.trim()});
+          setCombinedSkillsMemo(prev=> [...prev,{id: '0', value: skill.trim()}])
+        }else{
+          return
+        }
+  
+      setControlledJDParsed(_controlledJDParsed);
+      setValue('skills',_controlledJDParsed);
+    }
   
     // useEffect(() => {
     // 	hrRole !== 'others' && unregister('otherRole');
@@ -896,7 +763,7 @@ export default function AddHR({
     /** To check Duplicate email exists End */
   
     const [messageAPI, contextHolder] = message.useMessage();
-  
+  console.log('err',errors)
     const hrSubmitHandler = useCallback(
       async (d, type = SubmitType.SAVE_AS_DRAFT) => {
         setIsSavedLoading(true);
@@ -910,6 +777,45 @@ export default function AddHR({
         //   getUploadFileData && getUploadFileData,
         //   jdDumpID
         // );
+
+        let skillList = d.skills.map((item) => {
+          const obj = {
+            skillsID: item.id ,
+            skillsName: item.value,
+          };
+          return obj;
+        });
+
+        let payload = {
+          "hrid": 0,
+          "contactID": getContactAndSaleID.contactID,
+          "clientEmailID": d.clientEmail,
+          "clientName": d.clientName.split('(')[0].trim(),
+          "companyURL": d.companyURL,
+          "yoe": d.reqExp,
+          "hiringRequestTitle": d.requestTitle,
+          "hrRoleId": 0,
+          "jdFileName": getUploadFileData,
+          "jdurl": d.jdURL,
+          "mustHaveSkillsArray": skillList,
+          "mustHaveSkills": d.skills.map(skill=> skill.value).join(','),
+          "currency": d.currency.value,
+          "minimumBudget": d.minimumBudget,
+          "maximumBudget": d.maximumBudget,
+          "isRemote": isHRRemote,
+          "leadTypeId": d.leadType.id,
+          "leadOwnerId": d.leadOwner.id,
+          "noticePeriodId": d.noticePeriod.id,
+          "timezoneId": d.timeZone.id,
+          "shiftStartTime": d.fromTime.value,
+          "shiftEndTime": d.endTime.value,
+          "rolesResponsibilities": d.roleAndResponsibilities,
+          "requirements": d.requirements,
+          "aboutCompany": d.aboutCompany,
+          "jdDumpId": jdDumpID,
+          "en_Id": "",
+          "isSpecialEdit": true
+        }
   
         if(watch('fromTime').value === watch('endTime').value){
           setIsSavedLoading(false);
@@ -941,75 +847,57 @@ export default function AddHR({
           // 		message: 'please enter the hiring request title.',
           // 	});
           // }
-          if (_isNull(watch("salesPerson"))) {
-            setIsSavedLoading(false);
-            return setError("salesPerson", {
-              type: "emptysalesPersonTitle",
-              message: "Please select hiring request sales person",
-            });
-          }
-          if (watch("talentsNumber") < 1 || watch("talentsNumber") > 99) {
-            setIsSavedLoading(false);
-            return setError("talentsNumber", {
-              type: "emptytalentsNumber",
-              message: "Please enter valid talents number",
-            });
-          }
+        
         } else if (type !== SubmitType.SAVE_AS_DRAFT) {
           setType(SubmitType.SUBMIT);
         }
   
-  console.log("payload",d)
-        // const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
+  console.log("payload",{d,payload,})
+        const addHRRequest = await hiringRequestDAO.createDirectHRDAO(payload);
   
-        // if (addHRRequest.statusCode === HTTPStatusCode.OK) {
-        //   window.scrollTo(0, 0);
-        //   setIsSavedLoading(false);
-        //   setAddHRResponse(addHRRequest?.responseBody?.details);
-        //   if (params === "addnewhr") {
-        //     interviewDetails(addHRRequest?.responseBody?.details);
-        //   }
-        //   setEnID(addHRRequest?.responseBody?.details?.en_Id);
-        //   if (!!addHRRequest?.responseBody?.details?.jdURL)
-        //     setJDParsedSkills({
-        //       Skills: [],
-        //       Responsibility: "",
-        //       Requirements: "",
-        //     });
-        //   type !== SubmitType.SAVE_AS_DRAFT && setTitle("Debriefing HR");
+        if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+          navigate("/allhiringrequest");
+          // window.scrollTo(0, 0);
+          // setIsSavedLoading(false);
+          // setAddHRResponse(addHRRequest?.responseBody?.details);
+          // if (params === "addnewhr") {
+          //   interviewDetails(addHRRequest?.responseBody?.details);
+          // }
+          // setEnID(addHRRequest?.responseBody?.details?.en_Id);
+          // if (!!addHRRequest?.responseBody?.details?.jdURL)
+          //   setJDParsedSkills({
+          //     Skills: [],
+          //     Responsibility: "",
+          //     Requirements: "",
+          //   });
+          // type !== SubmitType.SAVE_AS_DRAFT && setTitle("Debriefing HR");
   
-        //   type !== SubmitType.SAVE_AS_DRAFT &&
-        //     setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
+          // type !== SubmitType.SAVE_AS_DRAFT &&
+          //   setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: false });
   
-        //   if (type === SubmitType.SAVE_AS_DRAFT) {
-        //     messageAPI.open({
-        //       type: "success",
-        //       content: "HR details has been saved to draft.",
-        //     });
-        //     setTimeout(() => {
-        //       navigate("/allhiringrequest");
-        //     }, 1000);
-        //     // setTitle('Debriefing HR')
-        //   }
-        // }
+          // if (type === SubmitType.SAVE_AS_DRAFT) {
+          //   messageAPI.open({
+          //     type: "success",
+          //     content: "HR details has been saved to draft.",
+          //   });
+          //   setTimeout(() => {
+          //     navigate("/allhiringrequest");
+          //   }, 1000);
+            // setTitle('Debriefing HR')
+          // }
+        }
         setIsSavedLoading(false);
       },
       [
         addHRResponse,
-        contactID,
+        isHRRemote,
         getContactAndSaleID?.contactID,
         getUploadFileData,
         isHRDirectPlacement,
-        jdDumpID,
         messageAPI,
-        params,
-        setEnID,
         setError,
-        setJDParsedSkills,
-        setTabFieldDisabled,
-        setTitle,
-        tabFieldDisabled,
         watch,
+        jdDumpID
       ]
     );
   
@@ -1021,9 +909,7 @@ export default function AddHR({
       }
     }, [errors?.clientName]);
   
-    useEffect(() => {
-      setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));
-    }, [watchSalesPerson]);
+  
   
 
   
@@ -1097,44 +983,29 @@ export default function AddHR({
       //when file uploaded
       if (gptFileDetails?.JDDumpID) {
         setUploadFileData(gptFileDetails.FileName);
-        setJDParsedSkills(gptFileDetails);
-  
+    
+        setShowGPTModal(false);
+        setControlledRequirements(gptFileDetails.Requirements)
+        setValue('requirements',gptFileDetails.Requirements)
+        setControlledRolesAndResponsibilities(gptFileDetails.Responsibility)
+        setValue('roleAndResponsibilities',gptFileDetails.Responsibility)
         setJDDumpID(gptFileDetails.JDDumpID);
         setGPTFileDetails({});
-        setShowGPTModal(false);
+        // let _getHrValues = { ...getHRdetails };
   
-        let _getHrValues = { ...getHRdetails };
+        // _getHrValues.salesHiringRequest_Details.requirement =
+        //   gptFileDetails.Requirements;
+        // _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
+        //   gptFileDetails.Responsibility;
+        // _getHrValues.salesHiringRequest_Details.rolesResponsibilities =
+        //   gptFileDetails.Responsibility;
+        // _getHrValues.addHiringRequest.jdurl = "";
+        // _getHrValues.addHiringRequest.jdfilename = gptFileDetails.FileName;
   
-        _getHrValues.salesHiringRequest_Details.requirement =
-          gptFileDetails.Requirements;
-        _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
-          gptFileDetails.Responsibility;
-        _getHrValues.salesHiringRequest_Details.rolesResponsibilities =
-          gptFileDetails.Responsibility;
-        _getHrValues.addHiringRequest.jdurl = "";
-        _getHrValues.addHiringRequest.jdfilename = gptFileDetails.FileName;
-  
-        setHRdetails(_getHrValues);
+        // setHRdetails(_getHrValues);
       } else {
         //when URL
-  
-        const findWorkingMode = workingMode.filter(
-          (item) => item?.id == gptDetails?.modeOfWorkingId
-        );
-  
-        setValue("workingMode", findWorkingMode[0]);
-        setControlledWorkingValue(findWorkingMode[0]?.value);
-        setValue("jdExport", "");
-        gptDetails?.addHiringRequest?.noofTalents &&
-          setValue("talentsNumber", gptDetails?.addHiringRequest?.noofTalents);
-        // gptDetails?.addHiringRequest?.availability &&
-        //   setValue("availability", gptDetails?.addHiringRequest?.availability);
-        if(gptDetails?.addHiringRequest?.availability){
-          let findAvailability = availability.filter(item=> item.value === gptDetails?.addHiringRequest?.availability)
-          setValue("availability", findAvailability[0]);
-          setControlledAvailabilityValue(findAvailability[0].value)
-        }
-  
+console.log(gptDetails)
         gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 &&
           setValue(
             "minimumBudget",
@@ -1146,52 +1017,64 @@ export default function AddHR({
             gptDetails?.salesHiringRequest_Details?.budgetTo
           );
         gptDetails?.salesHiringRequest_Details?.yearOfExp &&
-          setValue("years", gptDetails?.salesHiringRequest_Details?.yearOfExp);
-        gptDetails?.salesHiringRequest_Details?.specificMonth &&
-          setValue(
-            "months",
-            gptDetails?.salesHiringRequest_Details?.specificMonth
-          );
-        gptDetails?.salesHiringRequest_Details?.durationType &&
-          setValue(
-            "contractDuration",
-            gptDetails?.salesHiringRequest_Details?.durationType
-          );
-  
+        setValue("reqExp", gptDetails?.salesHiringRequest_Details?.yearOfExp);
+
+        // time set if available
+        gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
+        setControlledFromTimeValue(
+          gptDetails?.salesHiringRequest_Details?.timeZoneFromTime
+        );
+      gptDetails?.salesHiringRequest_Details?.timeZoneEndTime &&
+        setControlledEndTimeValue(
+          gptDetails?.salesHiringRequest_Details?.timeZoneEndTime
+        );
+        gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
+        setValue(
+          "fromTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneFromTime}
+          
+        );
+      gptDetails?.salesHiringRequest_Details?.timeZoneEndTime &&
+        setValue(
+          "endTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneEndTime}
+          
+        );
+
         gptDetails?.salesHiringRequest_Details?.currency &&
-          setControlledCurrencyValue(
-            gptDetails?.salesHiringRequest_Details?.currency
-          );
-          gptDetails?.salesHiringRequest_Details?.currency && setValue('currency',{id:"",value:gptDetails?.salesHiringRequest_Details?.currency})
-        gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
-          setControlledFromTimeValue(
-            gptDetails?.salesHiringRequest_Details?.timeZoneFromTime
-          );
-        gptDetails?.salesHiringRequest_Details?.timeZoneEndTime &&
-          setControlledEndTimeValue(
-            gptDetails?.salesHiringRequest_Details?.timeZoneEndTime
-          );
-        gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
-          setValue(
-            "fromTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneFromTime}
-            
-          );
-        gptDetails?.salesHiringRequest_Details?.timeZoneEndTime &&
-          setValue(
-            "endTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneEndTime}
-            
-          );
-           setValue("budget", "2");
+        setControlledCurrencyValue(
+          gptDetails?.salesHiringRequest_Details?.currency
+        );
+		    gptDetails?.salesHiringRequest_Details?.currency && setValue('currency',{id:"",value:gptDetails?.salesHiringRequest_Details?.currency})
+
+        if(gptDetails?.modeOfWorkingId == "1"){
+          setIsHRRemote(true)
+        }else{
+          setIsHRRemote(false)
+        }
   
-          setHRdetails(gptDetails);
-          setAddData(gptDetails);
+        setValue('requestTitle',gptDetails?.addHiringRequest?.requestForTalent)
+        gptDetails?.chatGptSkills && setSkillSuggestionList(gptDetails?.chatGptSkills?.split(","))
+  
+        if(gptDetails?.salesHiringRequest_Details?.rolesResponsibilities){
+          setControlledRolesAndResponsibilities(testJSON(gptDetails?.salesHiringRequest_Details?.rolesResponsibilities) ? createListMarkup(JSON.parse(gptDetails?.salesHiringRequest_Details?.rolesResponsibilities)) : gptDetails?.salesHiringRequest_Details?.rolesResponsibilities)
+          setValue('roleAndResponsibilities',testJSON(gptDetails?.salesHiringRequest_Details?.rolesResponsibilities) ? createListMarkup(JSON.parse(gptDetails?.salesHiringRequest_Details?.rolesResponsibilities)) : gptDetails?.salesHiringRequest_Details?.rolesResponsibilities)
+        }
+        if(gptDetails?.salesHiringRequest_Details?.requirement){
+          setControlledRequirements(testJSON(gptDetails?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(gptDetails?.salesHiringRequest_Details?.requirement)) : gptDetails?.salesHiringRequest_Details?.requirement )
+          setValue('requirements',testJSON(gptDetails?.salesHiringRequest_Details?.requirement) ?  createListMarkup(JSON.parse(gptDetails?.salesHiringRequest_Details?.requirement)) : gptDetails?.salesHiringRequest_Details?.requirement)
+        }
+       
+        setValue("jdExport", "");       
+    
+  
+          // setHRdetails(gptDetails);
+          // setAddData(gptDetails);
   
         setGPTDetails({});
         setShowGPTModal(false);
       }
     };
-  
-    const onHandleFocusOut = async (e) => {
+  console.log({controlledRolesAndResponsibilities,controlledRequirenments})
+    const onHandlJDLinkSubmit = async (value) => {
       const regex = /\(([^)]+)\)/;
       const match = watchClientName.match(regex);
       let email = "";
@@ -1199,10 +1082,6 @@ export default function AddHR({
         email = match[1];
       }
   
-      //set email when page open from client flow
-      if(fromClientflow === true){
-        email = watchClientName
-      }
     
       setIsLoading(true);
       setIsSavedLoading(true);
@@ -1210,7 +1089,7 @@ export default function AddHR({
       const getResponse = async () => {
         const response = await hiringRequestDAO.extractTextUsingPythonDAO({
           clientEmail: email.trim(),
-          psUrl: e.target.value,
+          psUrl: value,
         });
         if (response.statusCode === HTTPStatusCode.OK) {
           setShowGPTModal(true);
@@ -1224,14 +1103,14 @@ export default function AddHR({
       };
   
       setPrevJDURLLink((prev) => {
-        if (prev !== e.target.value && e.target.value !== "") {
+        if (prev !== value && value !== "") {
           getResponse();
         } else {
           setIsLoading(false);
           setIsSavedLoading(false);
         }
   
-        return e.target.value;
+        return value;
       });
   
       
@@ -1273,9 +1152,9 @@ export default function AddHR({
                         register={register}
                         errors={errors}
                         validationSchema={{
-                        required: "Enter client email",
+                        required: "Enter client email/name",
                         }}
-                        label="Client Email"
+                        label="Client Name/Email"
                         name="clientName"
                         type={InputType.TEXT}
                        
@@ -1286,44 +1165,44 @@ export default function AddHR({
                     <div className={HRFieldStyle.colMd12}>
                     <div className={HRFieldStyle.formGroup}>
                         <label>
-                            Enter client email <span className={HRFieldStyle.required}>*</span>
+                            Enter client Email/Name <span className={HRFieldStyle.required}>*</span>
                         </label>
                         <Controller
-                        render={({ ...props }) => (
-                            <AutoComplete
-                            options={getClientNameSuggestion}
-                            onSelect={(clientName) =>
-                                getClientNameValue(clientName)
-                            }
-                            filterOption={true}
-                            onSearch={(searchValue) => {
-                                setClientNameSuggestion([]);
-                                getClientNameSuggestionHandler(searchValue);
-                            }}
-                            onChange={(clientName) =>
-                                setValue("clientName", clientName)
-                            }
-                            placeholder={
-                                watchClientName
-                                ? watchClientName
-                                : "Enter client email"
-                            }
-                            ref={controllerRef}
-                            />
-                        )}
-                        {...register("clientName", {
-                            validate,
-                        })}
-                        name="clientName"
-                        // rules={{ required: true }}
-                        control={control}
-                        />
-                        {errors.clientName && (
-                        <div className={HRFieldStyle.error}>
-                            {errors.clientName?.message &&
-                            `* ${errors?.clientName?.message}`}
-                        </div>
-                        )}
+														render={({ ...props }) => (
+															<AutoComplete
+															options={getClientEmailSuggestion}
+															onSelect={(clientName,_) =>
+																getClientNameValue(clientName,_)
+															}
+															filterOption={true}
+															onSearch={(searchValue) => {
+																setClientEmailSuggestion([]);
+																getClientNameSuggestionHandler(searchValue);
+															}}
+															onChange={(clientName) =>
+																setValue("clientName", clientName)
+															}
+															placeholder={
+																watchClientName
+																? watchClientName
+																: "Enter client Name/Email"
+															}
+															ref={controllerRef}
+															/>
+														)}
+														{...register("clientName", {
+															validate,
+														})}
+														name="clientName"
+														// rules={{ required: true }}
+														control={control}
+														/>
+														{errors.clientName && (
+														<div className={HRFieldStyle.error}>
+															{errors.clientName?.message &&
+															`* ${errors?.clientName?.message}`}
+														</div>
+														)}
                     </div>
                     </div>
                 )}
@@ -1342,10 +1221,10 @@ export default function AddHR({
                     validationSchema={{
                         required: "please enter the company name.",
                     }}
-                    label="Client Name"
+                    label="Company Name"
                     name="companyName"
                     type={InputType.TEXT}
-                    placeholder="Enter client name"
+                    placeholder="Enter company name"
                     required
                     />
                 </div>
@@ -1362,6 +1241,14 @@ export default function AddHR({
                     errors={errors}
                     validationSchema={{
                         required: "please enter the company URL.",
+                        validate: (value) =>{
+                          try {
+                            new URL(value);
+                            return true;
+                            } catch (error) {
+                            return 'Entered value does not match url format';
+                            }
+                        }
                     }}
                     label="Company URL"
                     name="companyURL"
@@ -1383,11 +1270,19 @@ export default function AddHR({
                     errors={errors}
                     validationSchema={{
                         required: "Years of Experience",
+                        min: {
+                          value: 0,
+                          message: "please don't enter the value less than 0",
+                        },
+                        max: {
+                          value: 60,
+                          message: "please don't enter the value more than 60",
+                        },
                     }}
                     label="Years of Experience"
                     name="reqExp"
-                    type={InputType.TEXT}
-                    placeholder="6"
+                    type={InputType.NUMBER}
+                    placeholder="Enter years"
                     required
                     />
                 </div>
@@ -1417,27 +1312,25 @@ export default function AddHR({
                     <div className={HRFieldStyle.addHrProvideLinkWrap}>
 
                       {isJDURL ? <HRInputField
-                            // disabled={!isCompanyNameAvailable ? true : jdURLLink}
+                            disabled={!watch('clientEmail')}
                             register={register}
                             leadingIcon={<LinkSVG />}
                             label={`Job Description`}
                             name="jdURL"
                             type={InputType.TEXT}
-                            
-                            // value="Upload JD File"
-                            onClickHandler={() => setUploadModal(true)}
                             required={isJDURL}
                             validationSchema={{
                             required: "please Enter URL.",
                             }}
                             placeholder="Past JD link"
                             trailingIcon={<div className={HRFieldStyle.linksubmit}>
-                            <button className={HRFieldStyle.linksubmitbutton}>Submit</button>
+                            <button className={HRFieldStyle.linksubmitbutton}  disabled={!watch('clientEmail')} onClick={()=>onHandlJDLinkSubmit(watch('jdURL'))}>Submit</button>
                             </div>}
                             errors={errors}
-                        /> :
-                       <HRInputField
-                            // disabled={!isCompanyNameAvailable ? true : jdURLLink}
+                        /> : <>
+                        {!getUploadFileData ? 
+                          <HRInputField
+                            disabled={!watch('clientEmail')}
                             register={register}
                             leadingIcon={<UploadSVG />}
                             label={`Job Description`}
@@ -1452,11 +1345,46 @@ export default function AddHR({
                             }}
                             errors={errors}
                         />
+                        : (
+                          <div className={HRFieldStyle.uploadedJDWrap}>
+                            <label>Job Description *</label>
+                            <div className={HRFieldStyle.uploadedJDName}>
+                              {getUploadFileData}{" "}
+                              <CloseSVG
+                                className={HRFieldStyle.uploadedJDClose}
+                                onClick={() => {
+                                  setUploadFileData("");
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      
+                        </>
+                       
                       }
                        
-
+                       {showUploadModal && (
+                <UploadModal
+                //   isGoogleDriveUpload={true}
+                  isLoading={isLoading}
+                  uploadFileHandler={uploadFileHandler}
+                //   googleDriveFileUploader={() => googleDriveFileUploader()}
+                //   uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+                  modalTitle={"Upload JD"}
+                  modalSubtitle={"Job Description"}
+                  isFooter={false}
+                  openModal={showUploadModal}
+                  setUploadModal={setUploadModal}
+                  cancelModal={() => setUploadModal(false)}
+                  setValidation={setValidation}
+                  getValidation={getValidation}
+                //   getGoogleDriveLink={getGoogleDriveLink}
+                //   setGoogleDriveLink={setGoogleDriveLink}
+                />
+              )}
                         <div className={HRFieldStyle.addHrProvideLink}>
-                            You can also <p onClick={()=> toogleJDType()} > provide a link</p>
+                            You can also <p onClick={()=> toogleJDType()} >{isJDURL ? 'upload JD File' : 'provide a link'} </p>
                         </div>
                     </div>
                 </div>
@@ -1495,36 +1423,9 @@ export default function AddHR({
                         /> */}
 
                         <ul className={HRFieldStyle.selectFieldBox}>
-                            <li>
-                                <span> SQL
+                          {skillSuggestionList.map(item=> <li key={item} onClick={() => onSelectSkill(item)}><span> {item}
                                     <img src={AddPlus} loading="lazy" alt="star" /> 
-                                </span>
-                            </li>
-                            <li>
-                                <span> HTML
-                                    <img src={AddPlus} loading="lazy" alt="star" /> 
-                                </span>
-                            </li>
-                            <li>
-                                <span> Python
-                                    <img src={AddPlus} loading="lazy" alt="star" /> 
-                                </span>
-                            </li>
-                            <li>
-                                <span> CSS
-                                    <img src={AddPlus} loading="lazy" alt="star" /> 
-                                </span>
-                            </li>
-                            <li>
-                                <span> MongoDB
-                                    <img src={AddPlus} loading="lazy" alt="star" /> 
-                                </span>
-                            </li>
-                            <li>
-                                <span> React.js
-                                    <img src={AddPlus} loading="lazy" alt="star" /> 
-                                </span>
-                            </li>
+                                </span></li>)}
                         </ul>
                     </div>
                 </div>
@@ -1535,20 +1436,23 @@ export default function AddHR({
                     <div className={HRFieldStyle.colMd4}>
                         <div className={HRFieldStyle.formGroup}>
                         <HRSelectField
+                            controlledValue={controlledCurrencyValue}
+                            setControlledValue={setControlledCurrencyValue}
+                            isControlled={true}
                             mode={"id/value"}
                             setValue={setValue}
                             register={register}
                             label={"Add your estimated budget (Monthly)"}
                             defaultValue="Select Currency"
-                            options={budgets.map((item) => ({
+                            options={currency.map((item) => ({
                             id: item.id,
                             label: item.text,
                             value: item.value,
                             }))}
-                            name="budget"
-                            isError={errors["budget"] && errors["budget"]}
+                            name="currency"
+                            isError={errors["currency"] && errors["currency"]}
                             required
-                            errorMsg={"Please select hiring request budget"}
+                            errorMsg={"Please select Currency"}
                         />
                         </div>
                     </div>
@@ -1561,7 +1465,7 @@ export default function AddHR({
                             name="minimumBudget"
                             type={InputType.NUMBER}
                             placeholder="Minimum- Ex: 2300, 2000"
-                            required={watch("budget")?.value === "2"}
+                            required
                             labelClassName="minimumCustom"
                             errors={errors}
                             validationSchema={{
@@ -1580,7 +1484,7 @@ export default function AddHR({
                             name="maximumBudget"
                             type={InputType.NUMBER}
                             placeholder="Maximum- Ex: 2300, 2000"
-                            required={watch("budget")?.value === "2"}
+                            required
                             errors={errors}
                             validationSchema={{
                                 required: "please enter the maximum budget.",
@@ -1589,7 +1493,7 @@ export default function AddHR({
                                 message: "Budget should be more than minimum budget.",
                                 },
                             }}
-                            
+                           
                             />
                         </div>
                     </div>
@@ -1598,17 +1502,18 @@ export default function AddHR({
                         <div className={HRFieldStyle.radioFormGroupWrap}>
                             <label>Is this remote opportunity <span className={HRFieldStyle.reqField}>*</span></label>
                             <div className={HRFieldStyle.radioFormGroup}>
-                                <Radio.Group className={HRFieldStyle.radioGroup}>
-                                    <Radio>
+                                <Radio.Group className={HRFieldStyle.radioGroup} value={isHRRemote}>
+                                    <Radio onClick={()=>setIsHRRemote(true)} value={true}>
                                     Yes
                                     </Radio>
-                                </Radio.Group>
-
-                                <Radio.Group className={HRFieldStyle.radioGroup}>
-                                    <Radio>
+                                     <Radio onClick={()=>setIsHRRemote(false)} value={false}>
                                         No
                                     </Radio>
                                 </Radio.Group>
+
+                                {/* <Radio.Group className={HRFieldStyle.radioGroup}>
+                                   
+                                </Radio.Group> */}
                             </div>
                         </div>
                     </div>
@@ -1625,20 +1530,31 @@ export default function AddHR({
                             register={register}
                             mode={"id/value"}
                             label={"Lead Type"}
-                            defaultValue="Inbound"
-                            name="getDurationType"
+                            defaultValue="Select Lead Type"
+                            name="leadType"
+                            options={leadSource}
+                            required
+                            isError={errors["leadType"] && errors["leadType"]}
+                            errorMsg={"Please select Lead Type"}
                         />
                     </div>
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                     <div className={HRFieldStyle.formGroup}>
                             <HRSelectField
+                             controlledValue={controlledDealSource}
+                             setControlledValue={setControlledDealSource}
+                             isControlled={true}
                             setValue={setValue}
                             register={register}
                             mode={"id/value"}
                             label={"Lead Owner"}
-                            defaultValue="Anjali Baliyan"
-                            name="getDurationType"
+                            defaultValue="Select Lead Owner"
+                            name="leadOwner"
+                            options={leadOwner}
+                            required
+                            isError={errors["leadOwner"] && errors["leadOwner"]}
+                            errorMsg={"Please select Lead Owner"}
                         />
                     </div>
                 </div>
@@ -1652,6 +1568,9 @@ export default function AddHR({
                             label={"Notice period"}
                             defaultValue="Select how soon?"
                             name="noticePeriod"
+                            required
+                            isError={errors["noticePeriod"] && errors["noticePeriod"]}
+                            errorMsg={"Please select Notice period"}
                         />
                     </div>
                 </div>
@@ -1746,6 +1665,7 @@ export default function AddHR({
                     <div className={HRFieldStyle.colMd12}>
                             <TextEditor
 								isControlled={true}
+                controlledValue={controlledRolesAndResponsibilities}
 								// controlledValue={JDParsedSkills?.Responsibility || ''}
 								// controlledValue={ addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
 								// 	?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
@@ -1756,7 +1676,7 @@ export default function AddHR({
 								// 		?.rolesResponsibilities )
 								// }
 								label={'Roles & Responsibilities'}
-								placeholder={'Enter requirements'}
+								placeholder={'Enter Roles & Responsibilities'}
 								required
 								setValue={setValue}
 								watch={watch}
@@ -1769,7 +1689,7 @@ export default function AddHR({
                     <div className={HRFieldStyle.colMd12}>
                             <TextEditor
 								isControlled={true}
-								// controlledValue={JDParsedSkills?.Responsibility || ''}
+								controlledValue={controlledRequirenments}
 								// controlledValue={ addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
 								// 	?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
 								// 	?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
@@ -1785,14 +1705,14 @@ export default function AddHR({
 								watch={watch}
 								register={register}
 								errors={errors}
-								name="roleAndResponsibilities"
+								name="requirements"
 							/>
                     </div>
 
                     <div className={HRFieldStyle.colMd12}>
                             <TextEditor
-								isControlled={true}
-								// controlledValue={JDParsedSkills?.Responsibility || ''}
+								// isControlled={true}
+							
 								// controlledValue={ addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
 								// 	?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
 								// 	?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
@@ -1808,7 +1728,7 @@ export default function AddHR({
 								watch={watch}
 								register={register}
 								errors={errors}
-								name="roleAndResponsibilities"
+								name="aboutCompany"
 							/>
                     </div>
                 </div>
@@ -2129,147 +2049,5 @@ export default function AddHR({
 	</div>
   );
 
-  function getWorkingModelFields() {
-    if (
-      watch("workingMode") === undefined ||
-      watch("workingMode").value === undefined ||
-      watch("workingMode").value === WorkingMode.REMOTE
-    ) {
-      return null;
-    } else {
-      return (
-        <>
-          <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd6}>
-              <HRInputField
-                register={register}
-                errors={errors}
-                validationSchema={{
-                  required: "please enter the postal code.",
-                  min: {
-                    value: 0,
-                    message: `please don't enter the value less than 0`,
-                  },
-                }}
-                label="Postal Code"
-                name="postalCode"
-                type={InputType.NUMBER}
-                placeholder="Enter the Postal Code"
-                // onChangeHandler={postalCodeHandler}
-                required
-              />
-            </div>
-            <div className={HRFieldStyle.colMd6}>
-              <div className={HRFieldStyle.formGroup}>
-                <HRSelectField
-                  setControlledValue={setControlledCountryName}
-                  controlledValue={controlledCountryName}
-                  isControlled={true}
-                  mode={"id/value"}
-                  searchable={false}
-                  setValue={setValue}
-                  register={register}
-                  label={"Country"}
-                  defaultValue="Select country"
-                  options={country?.getCountry || []}
-                  name="country"
-                  isError={errors["country"] && errors["country"]}
-                  required={!controlledCountryName}
-                  errorMsg={"Please select the country."}
-                />
-              </div>
-            </div>
-          </div>
 
-          <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd6}>
-              <HRInputField
-                register={register}
-                errors={errors}
-                validationSchema={{
-                  required: "please enter the state.",
-                }}
-                label="State"
-                name="state"
-                type={InputType.TEXT}
-                placeholder="Enter the State"
-                required
-              />
-            </div>
-            <div className={HRFieldStyle.colMd6}>
-              <HRInputField
-                register={register}
-                errors={errors}
-                validationSchema={{
-                  required: "please enter the city.",
-                }}
-                label="City"
-                name="city"
-                type={InputType.TEXT}
-                placeholder="Enter the City"
-                required
-              />
-            </div>
-          </div>
-          <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd12}>
-              <HRInputField
-                isTextArea={true}
-                register={register}
-                errors={errors}
-                validationSchema={{
-                  required: "please enter the address.",
-                }}
-                label="Address"
-                name="address"
-                type={InputType.TEXT}
-                placeholder="Enter the Address"
-                required
-              />
-            </div>
-          </div>
-          {isNewPostalCodeModal && (
-            <Modal
-              footer={false}
-              title="Postal Code Not Found"
-              open={isNewPostalCodeModal}
-              onCancel={() => setNewPostalCodeModal(false)}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <h3>Are you sure you want to proceed?</h3>
-              </div>
-              <div className={HRFieldStyle.formPanelAction}>
-                <button
-                  type="submit"
-                  onClick={() => {
-                    setPostalCodeNotFound(true);
-                    setNewPostalCodeModal(false);
-                  }}
-                  className={HRFieldStyle.btnPrimary}
-                >
-                  OK
-                </button>
-                <button
-                  onClick={() => {
-                    setValue("postalCode", "");
-                    setPostalCodeNotFound(false);
-                    setNewPostalCodeModal(false);
-                  }}
-                  className={HRFieldStyle.btn}
-                >
-                  Cancel
-                </button>
-              </div>
-            </Modal>
-          )}
-        </>
-      );
-    }
-  }
 }

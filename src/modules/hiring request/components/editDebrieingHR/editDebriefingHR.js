@@ -301,25 +301,40 @@ const EditDebriefingHR = ({
 
 	useEffect(() => {		
 		setValue('hrTitle', getHRdetails?.addHiringRequest?.requestForTalent);
-		setValue('role',getHRdetails?.addHiringRequest?.requestForTalent);	
+		// setValue('role',getHRdetails?.addHiringRequest?.requestForTalent);	
 	},[
 		getHRdetails?.addHiringRequest?.requestForTalent,setValue
 	])
-	let hrRole = watch('role');
-	useEffect(() => {
-		setValue('hrTitle', hrRole?.value);
-	}, [hrRole?.value, setValue]);
+	// let hrRole = watch('role');
+	// useEffect(() => {
+	// 	setValue('hrTitle', hrRole?.value);
+	// }, [hrRole?.value, setValue]);  
+
+	const ControlledRoleChangeHandler = (role)=>{
+		// set role and title if selected from Dropdown
+		setControlledRoleValue(role)
+		setValue('hrTitle', role);
+	}
 
 	useEffect(() => {
-		if (getHRdetails?.addHiringRequest?.requestForTalent) {
+		if (getHRdetails?.salesHiringRequest_Details?.roleId !== null) {
 			const findRole = talentRole.filter(
 				(item) =>
-					item?.value === getHRdetails?.addHiringRequest?.requestForTalent,
+					item?.id === getHRdetails?.salesHiringRequest_Details?.roleId,
 			);
 			setValue('role', findRole[0]);
 			setControlledRoleValue(findRole[0]?.value);
+		}else{
+			if(getHRdetails?.addHiringRequest?.requestForTalent){
+				const findRole = talentRole.filter(
+					(item) =>
+						item?.value === getHRdetails?.addHiringRequest?.requestForTalent,
+				);
+				setValue('role', findRole[0]);
+				setControlledRoleValue(findRole[0]?.value);
+			}
 		}
-	}, [getHRdetails, talentRole]);
+	}, [getHRdetails?.salesHiringRequest_Details?.roleId,getHRdetails?.addHiringRequest?.requestForTalent, talentRole,setValue]);
 
 	useEffect(() => {
 		// JDParsedSkills &&
@@ -644,7 +659,7 @@ const EditDebriefingHR = ({
 								<div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
 										controlledValue={controlledRoleValue}
-										setControlledValue={setControlledRoleValue}
+										setControlledValue={ControlledRoleChangeHandler}
 										isControlled={true}
 										mode={'id/value'}
 										searchable={true}

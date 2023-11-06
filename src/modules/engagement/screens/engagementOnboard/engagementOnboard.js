@@ -11,12 +11,17 @@ import { NetworkInfo } from "constants/network";
 import { ReactComponent as DownloadJDSVG } from "assets/svg/downloadJD.svg";
 
 const EngagementOnboard = ({
-  getOnboardFormDetails,
+  getOnboardFormDetails : gOBFD,
   getHRAndEngagementId,
   isLoading,
   scheduleTimezone,
 }) => {
 
+  let getOnboardFormDetails = gOBFD?.onboardContractDetails
+  let teamMembersDetails = gOBFD?.onBoardClientTeamMembers
+
+// console.log({getOnboardFormDetails,
+//   getHRAndEngagementId,})
   return (
     <div className={allengagementOnboardStyles.engagementModalWrap}>
       <div className={allengagementOnboardStyles.engagementModalTitle}>
@@ -172,7 +177,7 @@ const EngagementOnboard = ({
                 ? getOnboardFormDetails?.deal_Owner
                 : "NA"}
             </li>
-            {console.log("getOnboardFormDetails", getOnboardFormDetails)}
+
             {/* <li>
 							<span>Client Name:</span>{' '}
 						

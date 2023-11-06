@@ -94,6 +94,7 @@ export class FormType {
 export class AddNewType {
 	static CLIENT = 'Add New Client';
 	static HR = 'Add New HR';
+	static DIRECT_HR = 'ADD New Direct HR'
 	static DEBRIEFING = 'debriefingHR';
 }
 
