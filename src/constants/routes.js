@@ -185,7 +185,7 @@ export default class UTSRoutes {
 	static CHANGE_PASSOWRD = '/changepassword'
 	static CHAT_GPT_RESPONSE = '/chatGPTResponse'
 	static ADD_HR = '/addHR'
-	static Edit_HR = '/EditNewHR'
+	static Edit_HR = '/EditNewHR/:hrID'
 	static ABOUT_CLIENT = '/userDetails';
 }
 

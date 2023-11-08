@@ -22,6 +22,10 @@ const CTASlot2 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 		localStorage.removeItem('dealID')
 		localStorage.removeItem('fromEditDeBriefing');
 	};
+	const editDirectHR= () =>{
+		navigate(`/EditNewHR/${params?.hrid}`)
+	}
+
 	return (
 		<>
 			<div>
@@ -40,6 +44,10 @@ const CTASlot2 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 							}
 							case HRCTA.EDIT_HR: {
 								editHR();
+								break;
+							}
+							case HRCTA.EDIT_DIRECT_HR:{
+								editDirectHR()
 								break;
 							}
 							default:

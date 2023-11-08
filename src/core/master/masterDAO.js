@@ -302,6 +302,31 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getMasterDirectHRRequestDAO');
 		}
 	},
+	getMasterDirectHRDetailsRequestDAO: async function (hrID) {
+		try {
+			const directHRresult = await MasterAPI.getMasterDirectHRDetailsRequest(hrID);
+			if (directHRresult) {
+				const statusCode = directHRresult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = directHRresult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return directHRresult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return directHRresult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getMasterDirectHRDetailsRequestDAO');
+		}
+	},
 	getHowSoonRequestDAO: async function () {
 		try {
 			const howSoonResult = await MasterAPI.getHowSoonRequest();

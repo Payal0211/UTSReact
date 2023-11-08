@@ -43,6 +43,7 @@ export class APIType {
 
 export class DirectHR {
 	static GET_MASTER_FOR_DIRECTHR = 'GetMastersForDirectHR'
+	static GET_HR_DETAILS =  'GetDetail'
 }
 export class MethodType {
 	static GET = '/get';
