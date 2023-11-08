@@ -43,6 +43,7 @@ export class APIType {
 
 export class DirectHR {
 	static GET_MASTER_FOR_DIRECTHR = 'GetMastersForDirectHR'
+	static GET_HR_DETAILS =  'GetDetail'
 }
 export class MethodType {
 	static GET = '/get';
@@ -203,6 +204,7 @@ export class ClientsAPI {
 	static GET_AM_DETAIL = 'GetAMDetails';
 	static UPDATE_AM_FOR_COMPANY = 'UpdateAMForCompany';
 	static DRAFTJOBDETAILS = 'GetDraftJobDetails';
+	static ADD_CLIENT_WITH_CREDITS= 'AddClientwithCredits';
 }
 
 export class HiringRequestsAPI {

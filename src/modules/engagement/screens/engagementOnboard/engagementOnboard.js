@@ -9,6 +9,7 @@ import WithLoader from "shared/components/loader/loader";
 import moment from "moment";
 import { NetworkInfo } from "constants/network";
 import { ReactComponent as DownloadJDSVG } from "assets/svg/downloadJD.svg";
+import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
 
 const EngagementOnboard = ({
   getOnboardFormDetails : gOBFD,
@@ -599,6 +600,40 @@ const EngagementOnboard = ({
             </li>
           </ul>
         </div>
+
+          {teamMembersDetails?.length > 0 &&  <div className={allengagementOnboardStyles.engagementContent}>
+          <h2>Client’s Team Members</h2>
+
+          {teamMembersDetails.map(member=>  <div className={allengagementOnboardStyles.modalFormCol}>
+                        <div className={allengagementOnboardStyles.onboardingCurrentTextWrap}>
+                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                                <span>Name: </span>
+                                <span className={allengagementOnboardStyles.onboardingTextBold}>{member.teamName}</span>
+                            </div>
+                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                                <span>Designation: </span>
+                                <span className={allengagementOnboardStyles.onboardingTextBold}>{member.designation}</span>
+                            </div>
+                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                                <span>Reporting To:</span>
+                                <span className={allengagementOnboardStyles.onboardingTextBold}>{member.reportingTo}</span>
+                            </div>
+                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                                <span>LinkedIn :</span>
+                                <span className={allengagementOnboardStyles.onboardingTextBold}><a href={member.linkedin} target="_blank" rel="noreferrer" >{member.linkedin}</a>  <LinkedinClientSVG width="16" height="16"/></span>
+                            </div> 
+                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                                <span>Email:</span>
+                                <span className={allengagementOnboardStyles.onboardingTextBold}>{member.email}</span>
+                            </div> 
+                            <div className={allengagementOnboardStyles.onboardingCurrentText}>
+                                <span>Buddy:</span>
+                                <span className={allengagementOnboardStyles.onboardingTextBold}>{member.buddy}</span>
+                            </div>
+                        </div>
+                    </div>)}
+        </div>}
+       
 
         <div className={allengagementOnboardStyles.engagementContent}>
           <h2>During Legal</h2>

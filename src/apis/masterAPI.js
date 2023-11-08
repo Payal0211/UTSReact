@@ -169,6 +169,19 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getMasterDirectHRRequest');
 		}
 	},
+	getMasterDirectHRDetailsRequest: async function (hrID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.DIRECT_HR + DirectHR.GET_HR_DETAILS + `?HRID=${hrID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getMasterDirectHRRequest');
+		}
+	},
 	getPartialEngagementTypeRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =

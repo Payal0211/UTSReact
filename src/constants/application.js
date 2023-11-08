@@ -94,7 +94,7 @@ export class FormType {
 export class AddNewType {
 	static CLIENT = 'Add New Client';
 	static HR = 'Add New HR';
-	static DIRECT_HR = 'ADD New Direct HR'
+	static DIRECT_HR = 'Add New Direct HR'
 	static DEBRIEFING = 'debriefingHR';
 }
 
@@ -137,6 +137,7 @@ export class HRCTA {
 	static UPDATE_TR = 'UpdateTR';
 	static SHARE_PROFILE = 'Share a Profile';
 	static ADD_NOTES = 'Add Notes';
+	static EDIT_DIRECT_HR = "Edit Direct HR"
 }
 export class InterviewFeedbackStatus {
 	static HIRED = 'Hire';

@@ -84,22 +84,6 @@ export default function AddHR({
     const [workingMode, setWorkingMode] = useState([]);
     const [skillSuggestionList,setSkillSuggestionList] = useState([])
  
-    const [tempProjects, setTempProject] = useState([
-      {
-        disabled: false,
-        group: null,
-        selected: false,
-        text: `Yes, it's for a limited Project`,
-        value: true,
-      },
-      {
-        disabled: false,
-        group: null,
-        selected: false,
-        text: `No, They want to hire for long term`,
-        value: false,
-      },
-    ]);
     const [talentRole, setTalentRole] = useState([]);
     const [country, setCountry] = useState([]);
     const [currency, setCurrency] = useState([]);
@@ -513,7 +497,7 @@ export default function AddHR({
     }));
 
    }
-console.log(getContactAndSaleID)
+
     const getClientNameValue = (clientName,_) => {
       console.log(clientName,_)
       setValue("clientEmail", _.emailId); 
@@ -744,11 +728,11 @@ console.log(getContactAndSaleID)
       // setControlledJDParsed(_controlledJDParsed);
       // setValue('skills',_controlledJDParsed)		
       let _controlledJDParsed = [...controlledJDParsed];	
-      let _index = _controlledJDParsed.findIndex((obj) => obj.value === skill.trim());
+      let _index = _controlledJDParsed.findIndex((obj) => obj.id === skill.id);
       if(_index === -1){
           // _controlledJDParsed.push(_selected[0]);
-          _controlledJDParsed.push({id: '0', value: skill.trim()});
-          setCombinedSkillsMemo(prev=> [...prev,{id: '0', value: skill.trim()}])
+          _controlledJDParsed.push({id: skill.id, value: skill.value.trim()});
+          setSkills(prev=> [...prev,{id: skill.id, value: skill.value.trim()}])
         }else{
           return
         }
@@ -790,6 +774,7 @@ console.log(getContactAndSaleID)
           "hrid": 0,
           "contactID": getContactAndSaleID.contactID,
           "clientEmailID": d.clientEmail,
+          "companyName": d.companyName,
           "clientName": d.clientName.split('(')[0].trim(),
           "companyURL": d.companyURL,
           "yoe": d.reqExp,
@@ -804,6 +789,7 @@ console.log(getContactAndSaleID)
           "maximumBudget": d.maximumBudget,
           "isRemote": isHRRemote,
           "leadTypeId": d.leadType.id,
+          "leadType":d.leadType.value,
           "leadOwnerId": d.leadOwner.id,
           "noticePeriodId": d.noticePeriod.id,
           "timezoneId": d.timeZone.id,
@@ -856,6 +842,7 @@ console.log(getContactAndSaleID)
         const addHRRequest = await hiringRequestDAO.createDirectHRDAO(payload);
   
         if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+          message.success('Direct HR Creates')
           navigate("/allhiringrequest");
           // window.scrollTo(0, 0);
           // setIsSavedLoading(false);
@@ -990,6 +977,7 @@ console.log(getContactAndSaleID)
         setControlledRolesAndResponsibilities(gptFileDetails.Responsibility)
         setValue('roleAndResponsibilities',gptFileDetails.Responsibility)
         setJDDumpID(gptFileDetails.JDDumpID);
+        gptFileDetails.Skills.length > 0 &&   setSkillSuggestionList(gptFileDetails.Skills)
         setGPTFileDetails({});
         // let _getHrValues = { ...getHRdetails };
   
@@ -1073,7 +1061,7 @@ console.log(gptDetails)
         setShowGPTModal(false);
       }
     };
-  console.log({controlledRolesAndResponsibilities,controlledRequirenments})
+
     const onHandlJDLinkSubmit = async (value) => {
       const regex = /\(([^)]+)\)/;
       const match = watchClientName.match(regex);
@@ -1120,8 +1108,7 @@ console.log(gptDetails)
       setISJDURL(prev=> {
         if(prev){
 
-        }
-        
+        }       
         return !prev})
     }
 
@@ -1354,6 +1341,7 @@ console.log(gptDetails)
                                 className={HRFieldStyle.uploadedJDClose}
                                 onClick={() => {
                                   setUploadFileData("");
+                                  jdDumpID(0)
                                 }}
                               />
                             </div>
@@ -1383,9 +1371,9 @@ console.log(gptDetails)
                 //   setGoogleDriveLink={setGoogleDriveLink}
                 />
               )}
-                        <div className={HRFieldStyle.addHrProvideLink}>
+                   {(!watch('jdURL') && !getUploadFileData) &&  <div className={HRFieldStyle.addHrProvideLink}>
                             You can also <p onClick={()=> toogleJDType()} >{isJDURL ? 'upload JD File' : 'provide a link'} </p>
-                        </div>
+                        </div>}     
                     </div>
                 </div>
 
@@ -1423,7 +1411,7 @@ console.log(gptDetails)
                         /> */}
 
                         <ul className={HRFieldStyle.selectFieldBox}>
-                          {skillSuggestionList.map(item=> <li key={item} onClick={() => onSelectSkill(item)}><span> {item}
+                          {skillSuggestionList.map(item=> <li key={item.id} onClick={() => onSelectSkill(item)}><span> {item.value}
                                     <img src={AddPlus} loading="lazy" alt="star" /> 
                                 </span></li>)}
                         </ul>
@@ -1746,7 +1734,7 @@ console.log(gptDetails)
                 /> */}
 
             <div className={HRFieldStyle.formPanelAction}>
-            <button
+            {/* <button
                 style={{
                 cursor: type === SubmitType.SUBMIT ? "no-drop" : "pointer",
                 }}
@@ -1755,7 +1743,7 @@ console.log(gptDetails)
                 onClick={hrSubmitHandler}
             >
                 Save as Draft
-            </button>
+            </button> */}
 
             <button
                 onClick={handleSubmit(hrSubmitHandler)}
