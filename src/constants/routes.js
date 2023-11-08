@@ -131,6 +131,10 @@ const EditNewHR = React.lazy(() =>
 import('modules/hiring request/components/editdirectHR/Edit_new_HR')
 )
 
+const UserDetails = React.lazy(() =>
+import('modules/allClients/components/clientDetails/userDetails')
+)
+
 // const ViewClient = React.lazy(() => 
 // import('modules/viewClient/viewClientDetails'))
 
@@ -182,6 +186,7 @@ export default class UTSRoutes {
 	static CHAT_GPT_RESPONSE = '/chatGPTResponse'
 	static ADD_HR = '/addHR'
 	static Edit_HR = '/EditNewHR'
+	static ABOUT_CLIENT = '/userDetails';
 }
 
 export const navigateToComponent = {
@@ -390,6 +395,11 @@ export const navigateToComponent = {
 [UTSRoutes.Edit_HR]: (
 	<Suspense>
 		<EditNewHR />
+	</Suspense>
+),
+[UTSRoutes.ABOUT_CLIENT]: (
+	<Suspense>
+		<UserDetails />
 	</Suspense>
 ),
 };

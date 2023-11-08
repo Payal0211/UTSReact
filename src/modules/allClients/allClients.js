@@ -76,7 +76,8 @@ function AllClients() {
     const [allClientsList,setAllClientList] = useState([]);
     const [editAM,setEditAM]= useState(false)
     const [amToFetch,setAMToFetch] = useState({})
-     
+    const[isShowAddClientCredit,setIsShowAddClientCredit] =  useState(false); 
+
 	const getFilterRequest = useCallback(async () => {
 		// const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
         const  response = await allClientRequestDAO.getClientFilterDAO();
@@ -121,8 +122,9 @@ function AllClients() {
             //     downloadToExcel(_data);
             //     return 
             // }
-            setAllClientList(modifyResponseData(response?.responseBody?.rows));
-            setTotalRecords(response?.responseBody?.totalrows);
+            setAllClientList(modifyResponseData(response?.responseBody?.Data?.rows));
+            setIsShowAddClientCredit(response?.responseBody?.ShowAddClient);
+            setTotalRecords(response?.responseBody?.Data?.totalrows);
             setLoading(false);          
         } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
             setLoading(false);
@@ -260,6 +262,7 @@ function AllClients() {
                 <div className={clienthappinessSurveyStyles.addnewHR}>
                     <div className={clienthappinessSurveyStyles.hiringRequest}>All Clients</div>
                     <div className={clienthappinessSurveyStyles.btn_wrap}>
+                       {isShowAddClientCredit && <button className={clienthappinessSurveyStyles.btnwhite} onClick={() => navigate(UTSRoutes.ABOUT_CLIENT)}>Add Client with Credit</button>}
                         <button className={clienthappinessSurveyStyles.btnwhite} onClick={() => handleExport()}>Export</button>
                     </div>
                 </div>

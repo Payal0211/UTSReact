@@ -1,0 +1,40 @@
+.hrFieldRightPane {
+    flex: 1;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+}
+.colMd6 {
+    margin: 0;
+    width: 50%;
+    padding: 0 9px;
+}
+.row {
+    margin: 0;
+    margin: 0 -9px;
+    display: flex;
+}
+.btn{
+    cursor: pointer;
+    background: #FFDA30;
+    border: 1px solid#FFDA30;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #232323;
+    padding: 12px 20px;
+    /* outline: none; */
+    transition: all 0.35s ease 0s;
+    box-shadow: none;
+    margin-left: 20px;
+}
+.spin{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

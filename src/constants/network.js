@@ -203,6 +203,7 @@ export class ClientsAPI {
 	static GET_AM_DETAIL = 'GetAMDetails';
 	static UPDATE_AM_FOR_COMPANY = 'UpdateAMForCompany';
 	static DRAFTJOBDETAILS = 'GetDraftJobDetails';
+	static ADD_CLIENT_WITH_CREDITS= 'AddClientwithCredits';
 }
 
 export class HiringRequestsAPI {
