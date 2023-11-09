@@ -184,6 +184,23 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.createDirectHiringRequest');
 		}
 	},
+	createDirectDebriefingRequest: async function (hrData) {
+		let httpService = new HttpServices();
+
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.DIRECT_HR +
+			HiringRequestsAPI.CREATE_DEBRIEFING
+		httpService.dataToSend = hrData;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.createDirectDebriefingRequest');
+		}
+	},
 	createDebriefingRequest: async function (debriefData) {
 		let httpService = new HttpServices();
 		httpService.URL =

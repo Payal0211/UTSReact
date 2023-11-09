@@ -210,6 +210,7 @@ export class ClientsAPI {
 export class HiringRequestsAPI {
 	static GET_ALL_HIRING_REQUEST = 'GetAllHiringRequests';
 	static CREATE_HR = 'Create';
+	static CREATE_DEBRIEFING = 'Debriefing'
 	static CHECK_CLIENT_EMAIL = 'CheckClientEmail';
 	static SEARCHING_HIRING_REQUEST_DETAIL = 'SearchHiringRequestDetail';
 	static GET_HR_DETAIL = 'GetHRDetail';

@@ -7,10 +7,15 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { useState } from 'react';
 import { NetworkInfo } from 'constants/network';
 import UTSRoutes from 'constants/routes';
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import {
+	UserAccountRole,
+} from 'constants/application';
 
 const ViewHRDetails = () => {
 	const [hiringDetails, setHiringDetails] = useState('');
 	const id = useParams();
+	const miscData = UserSessionManagementController.getUserMiscellaneousData();
 	const navigate = useNavigate();
 	const getViewHrDetails = useCallback(async () => {
 		const response = await hiringRequestDAO.viewHRDetailsRequestDAO(id.id);
@@ -47,13 +52,14 @@ const ViewHRDetails = () => {
 						<ArrowLeftSVG />
 						Go Back
 					</Link>
-				</div>
+				</div> 
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsHead}>
 					<h1>{hiringDetails?.responseBody?.details?.hrNumber}</h1>
-					{hiringDetails?.responseBody?.details?.hrStatus === 'Open' && (
-						<button onClick={editHr}>Edit HR</button>
-					)}
+					{hiringDetails?.responseBody?.details?.hrStatus === 'Open' &&  
+					(hiringDetails?.isDirectHR || miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS ||
+					miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER) ? <button onClick={()=>navigate(`/EditNewHR/${id.id}`)}>Edit Direct HR</button> 
+					 : <button onClick={editHr}>Edit HR</button> }
 				</div>
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsItem}>
