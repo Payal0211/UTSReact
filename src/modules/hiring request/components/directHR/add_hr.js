@@ -71,6 +71,7 @@ export default function AddHR(
     };
     getUserResult();
   }, []);
+
   const [isSpecialEdit, setIsSpacialEdit] = useState(false)
   const [isHRRemote, setIsHRRemote] = useState(true);
   const [isSavedLoading, setIsSavedLoading] = useState(false);
@@ -736,6 +737,7 @@ export default function AddHR(
       return;
     }
 
+
     setControlledJDParsed(_controlledJDParsed);
     setValue("skills", _controlledJDParsed);
   };
@@ -1142,7 +1144,6 @@ export default function AddHR(
         setIsLoading(false);
         setIsSavedLoading(false);
       }
-
       return value;
     });
   };
@@ -1340,6 +1341,7 @@ export default function AddHR(
                   />
                 </div>
               </div>
+
 
               <div className={HRFieldStyle.colMd6}>
                 <HRInputField

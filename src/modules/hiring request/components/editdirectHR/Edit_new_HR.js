@@ -66,6 +66,7 @@ const EditNewHR = () => {
     };
     getUserResult();
   }, []);
+
   const [isSpecialEdit, setIsSpacialEdit] = useState(false)
   const [isHRRemote, setIsHRRemote] = useState(true);
   const [isSavedLoading, setIsSavedLoading] = useState(false);
@@ -953,7 +954,6 @@ const EditNewHR = () => {
       } else if (type !== SubmitType.SAVE_AS_DRAFT) {
         setType(SubmitType.SUBMIT);
       }
-
   
       const addHRRequest = await hiringRequestDAO.createDirectHRDAO(payload);
 
@@ -1001,6 +1001,7 @@ const EditNewHR = () => {
     }
     return false;
 }
+
 
   const debrefSubmitHandler = useCallback(
     async (d) => {
@@ -1075,8 +1076,6 @@ const EditNewHR = () => {
       if (!sameSkillIssue && !RatingError) {
         const addHRDEBRequest =
           await hiringRequestDAO.createDirectDebriefingDAO(payload);
-
-  
         if (addHRDEBRequest.statusCode === HTTPStatusCode.OK) {
           message.success("Details has been saved .");
           navigate(`/allhiringrequest/${hrID}`);
@@ -1758,6 +1757,7 @@ const EditNewHR = () => {
                         },
                       }}
                     />
+
 
                     <HRInputField
                       // label={"Maximum Budget (Monthly)"}
@@ -2618,6 +2618,7 @@ const EditNewHR = () => {
                     errorMsg={'rating must be 0-5'}
                   />
                </div>
+
                 <div className={EditNewHRStyle.colMd6}>
                   <HRInputField
                     register={register}
