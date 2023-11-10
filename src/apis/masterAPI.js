@@ -884,4 +884,18 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getChatGPTResponse');
 		}
 	},
+	getOnBoardListData : async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + 'Onboard/OnboardList' ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = data
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getOnBoardListData');
+		}
+	}
 };
