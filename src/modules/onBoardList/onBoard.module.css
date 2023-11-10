@@ -1,0 +1,55 @@
+.hiringRequestContainer {
+    margin: 25px 40px;
+}
+.addnewHR {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.hiringRequest {
+    font-size: 32px;
+    font-weight: 500;
+}
+.filterContainer{
+    border-radius: 10px;
+    margin: 40px auto 20px auto ;
+    background-color: var(--background-color-light);
+}
+.filterSets{
+    width: 96%;
+    margin-left: auto;
+    margin-right: auto;
+    padding:30px 0;
+    display: flex;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;    
+}
+.filterRight{
+    display: flex;
+    justify-content: flex-end;
+    gap:24px;
+    align-items: center ; 
+    flex-wrap: wrap;
+    width: 100%;
+}
+.searchFilterSet{
+    border: 1px solid var(--background-color-metal);
+    border-radius: 8px;
+    width: 350px;
+    height: 44px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.searchInput{
+    cursor: pointer;
+    width: 80%;
+    outline: none;
+    border: none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}

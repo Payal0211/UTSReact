@@ -72,6 +72,7 @@ export default function AddHR(
     getUserResult();
   }, []);
 
+  const [isSpecialEdit, setIsSpacialEdit] = useState(false)
   const [isHRRemote, setIsHRRemote] = useState(true);
   const [isSavedLoading, setIsSavedLoading] = useState(false);
   const [controlledCountryName, setControlledCountryName] = useState("");
@@ -443,6 +444,7 @@ export default function AddHR(
     // setTimezoneList(response && response?.responseBody);
     if (response.statusCode === HTTPStatusCode.OK) {
       let data = response.responseBody.Data;
+      setIsSpacialEdit(data.AllowSpecialEdit)
       setLeadOwner(
         data.DRPLeadUsers.filter((item) => item.value !== "0").map((item) => ({
           ...item,
@@ -735,6 +737,7 @@ export default function AddHR(
       return;
     }
 
+
     setControlledJDParsed(_controlledJDParsed);
     setValue("skills", _controlledJDParsed);
   };
@@ -745,7 +748,7 @@ export default function AddHR(
   /** To check Duplicate email exists End */
 
   const [messageAPI, contextHolder] = message.useMessage();
-  console.log("err", errors);
+
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
@@ -798,7 +801,7 @@ export default function AddHR(
         aboutCompany: d.aboutCompany,
         jdDumpId: jdDumpID,
         en_Id: "",
-        isSpecialEdit: true,
+        isSpecialEdit: isSpecialEdit,
       };
 
       if (watch("fromTime").value === watch("endTime").value) {
@@ -835,11 +838,11 @@ export default function AddHR(
         setType(SubmitType.SUBMIT);
       }
 
-      console.log("payload", { d, payload });
+
       const addHRRequest = await hiringRequestDAO.createDirectHRDAO(payload);
 
       if (addHRRequest.statusCode === HTTPStatusCode.OK) {
-        message.success("Direct HR Creates");
+        message.success("Direct HR Created");
         navigate("/allhiringrequest");
         // window.scrollTo(0, 0);
         // setIsSavedLoading(false);
@@ -882,6 +885,7 @@ export default function AddHR(
       setError,
       watch,
       jdDumpID,
+      isSpecialEdit
     ]
   );
 
@@ -985,7 +989,6 @@ export default function AddHR(
       // setHRdetails(_getHrValues);
     } else {
       //when URL
-      console.log(gptDetails);
       gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 &&
         setValue(
           "minimumBudget",
@@ -1141,7 +1144,6 @@ export default function AddHR(
         setIsLoading(false);
         setIsSavedLoading(false);
       }
-
       return value;
     });
   };
@@ -1244,7 +1246,7 @@ export default function AddHR(
                   //isCompanyNameAvailable ||
                   //isLoading
                   //}
-                  disabled={isCompanyNameAvailable ? true : false}
+                  disabled={true}
                   register={register}
                   errors={errors}
                   validationSchema={{
@@ -1315,7 +1317,11 @@ export default function AddHR(
                   required
                 />
               </div>
-              <div className={HRFieldStyle.colMd12}>
+
+              <div className={HRFieldStyle.colMd6}></div>
+
+
+              <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     controlledValue={controlledRoleValue}
@@ -1336,7 +1342,8 @@ export default function AddHR(
                 </div>
               </div>
 
-              <div className={HRFieldStyle.colMd12}>
+
+              <div className={HRFieldStyle.colMd6}>
                 <HRInputField
                   //	disabled={
                   //	pathName === ClientHRURL.ADD_NEW_CLIENT ||

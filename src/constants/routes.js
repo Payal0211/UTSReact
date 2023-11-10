@@ -135,6 +135,10 @@ const UserDetails = React.lazy(() =>
 import('modules/allClients/components/clientDetails/userDetails')
 )
 
+const OnBoardList = React.lazy(() => 
+import('modules/onBoardList/onBoardList')
+)
+
 // const ViewClient = React.lazy(() => 
 // import('modules/viewClient/viewClientDetails'))
 
@@ -187,6 +191,7 @@ export default class UTSRoutes {
 	static ADD_HR = '/addHR'
 	static Edit_HR = '/EditNewHR/:hrID'
 	static ABOUT_CLIENT = '/userDetails';
+	static ONBOARD = '/onBoardList';
 }
 
 export const navigateToComponent = {
@@ -402,6 +407,11 @@ export const navigateToComponent = {
 		<UserDetails />
 	</Suspense>
 ),
+[UTSRoutes.ONBOARD] : (
+	<Suspense>
+		<OnBoardList />
+	</Suspense>
+)
 };
 
 export const isAccess = (ID) =>{	

@@ -44,6 +44,22 @@ const ViewHRDetails = () => {
 		}
 	}
 
+	const ShowEditCTA = () =>{
+		if(hiringDetails?.responseBody?.details?.hrStatus === 'Open'){
+			if(hiringDetails?.responseBody?.details?.isDirectHR === false){
+ 				return <button onClick={editHr}>Edit HR</button>
+			}else{
+				if( miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS ||
+						miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER || miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR  ){
+							return <button onClick={()=>navigate(`/EditNewHR/${id.id}`)}>Edit Direct HR</button>
+						}
+						else{
+							return <button disabled>Edit Direct HR</button>
+						}
+			}
+		}
+	}
+
 	return (
 		<>
 			<div className={ViewHRDetailsStyle.viewHRDetailsWrap}>
@@ -56,10 +72,12 @@ const ViewHRDetails = () => {
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsHead}>
 					<h1>{hiringDetails?.responseBody?.details?.hrNumber}</h1>
-					{hiringDetails?.responseBody?.details?.hrStatus === 'Open' &&  
-					(hiringDetails?.isDirectHR || miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS ||
-					miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER) ? <button onClick={()=>navigate(`/EditNewHR/${id.id}`)}>Edit Direct HR</button> 
-					 : <button onClick={editHr}>Edit HR</button> }
+					{ShowEditCTA()}
+					{/* {hiringDetails?.responseBody?.details?.hrStatus === 'Open' &&  
+					(hiringDetails?.isDirectHR && (miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS ||
+					miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER)) ? <button onClick={()=>navigate(`/EditNewHR/${id.id}`)}>Edit Direct HR</button> 
+					 : (hiringDetails?.isDirectHR && (miscData?.loggedInUserTypeID !== UserAccountRole.TALENTOPS ||
+						miscData?.loggedInUserTypeID !== UserAccountRole.OPS_TEAM_MANAGER) ) ? null : <button onClick={editHr}>Edit HR</button> } */}
 				</div>
 
 				<div className={ViewHRDetailsStyle.viewHRDetailsItem}>

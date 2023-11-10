@@ -1142,6 +1142,13 @@ const EngagementList = () => {
 									type={InputType.TEXT}
 									placeholder="enter edit reason."
 									required={isEditTSC}
+									onKeyDownHandler={
+										(e) => {										
+											if (/\d/.test(e.key)) {
+											  e.preventDefault();
+											}
+										}
+									}
 								/>
 							</div>
 

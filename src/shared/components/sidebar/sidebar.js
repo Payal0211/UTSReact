@@ -323,6 +323,14 @@ const getSideBar = (usertypeID) => {
 			isVisible: isAccess(usertypeID, 'Chat GPT Response')
 		}),
 		new SideBarModels({
+			id: 'onBoardList',
+			title: 'OnBoard List',
+			isActive: false,
+			icon: EngagementDashboard,
+			navigateTo: UTSRoutes.ONBOARD,
+			isVisible: isAccess(usertypeID, 'OnBoard List')
+		}),
+		new SideBarModels({
 			id: 'Master',
 			title: 'Master',
 			isActive: false,
