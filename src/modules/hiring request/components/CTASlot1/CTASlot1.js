@@ -39,6 +39,14 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 		}
 	}, [hrID, navigate]);
 
+	const navigateToEditDirectDebriefing = useCallback(async () => {
+		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrID);
+		if (response?.statusCode === HTTPStatusCode.OK) {
+			localStorage.setItem('fromEditDirectDeBriefing', true);
+			navigate(`/EditNewHR/${hrID}`);
+		}
+	}, [hrID, navigate]);
+
 	const handleAssignments = async () => {
 		let data = {engagementID: apiData?.HRTalentDetails[0]?.EngagemenID, onboardID:apiData?.HRTalentDetails[0]?.OnBoardId }
 		//console.log(data)
@@ -98,6 +106,10 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 							}
 							case HRCTA.EDIT_DEBRIEFING_HR: {
 								navigateToEditDebriefing();
+								break;
+							}
+							case HRCTA.EDIT_DEBRIEFING_DIRECT_HR: {
+								navigateToEditDirectDebriefing();
 								break;
 							}
 							default:

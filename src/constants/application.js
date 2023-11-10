@@ -129,6 +129,7 @@ export class TalentOnboardStatus {
 export class HRCTA {
 	static EDIT_HR = 'Edit HR';
 	static EDIT_DEBRIEFING_HR = 'Debriefing HR';
+	static EDIT_DEBRIEFING_DIRECT_HR = 'Debriefing Direct HR';
 	static DEBRIEFING_NR = 'Debriefing NR';
 	static CONVERT_TO_DP = 'Convert to DP';
 	static CONVERT_TO_CONTRACTUAL = 'Convert to Contractual';

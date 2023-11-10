@@ -66,7 +66,7 @@ const EditNewHR = () => {
     };
     getUserResult();
   }, []);
-
+  const [isSpecialEdit, setIsSpacialEdit] = useState(false)
   const [isHRRemote, setIsHRRemote] = useState(true);
   const [isSavedLoading, setIsSavedLoading] = useState(false);
   const [controlledCountryName, setControlledCountryName] = useState("");
@@ -373,6 +373,7 @@ const EditNewHR = () => {
     // setTimezoneList(response && response?.responseBody);
     if (response.statusCode === HTTPStatusCode.OK) {
       let data = response.responseBody.Data;
+      setIsSpacialEdit(data.AllowSpecialEdit)
       setLeadOwner(
         data.DRPLeadUsers.filter((item) => item.value !== "0").map((item) => ({
           ...item,
@@ -482,6 +483,12 @@ const EditNewHR = () => {
         }
 
         setValue("companySize", HRDetail.companySize);
+
+
+        if(localStorage.getItem('fromEditDirectDeBriefing') === "true") {
+          setTitle(`Edit Debriefing Direct HR`)
+          localStorage.removeItem('fromEditDirectDeBriefing')
+        }
       }
 
       setIsLoading(false);
@@ -858,7 +865,7 @@ const EditNewHR = () => {
   /** To check Duplicate email exists End */
 
   const [messageAPI, contextHolder] = message.useMessage();
-  console.log("err", errors);
+
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
@@ -910,7 +917,7 @@ const EditNewHR = () => {
         aboutCompany: d.aboutCompany,
         jdDumpId: jdDumpID,
         en_Id: HRDetails.en_Id,
-        isSpecialEdit: true,
+        isSpecialEdit: isSpecialEdit,
       };
 
       if (watch("fromTime").value === watch("endTime").value) {
@@ -947,11 +954,11 @@ const EditNewHR = () => {
         setType(SubmitType.SUBMIT);
       }
 
-      console.log("payload", { d, payload });
+  
       const addHRRequest = await hiringRequestDAO.createDirectHRDAO(payload);
 
       if (addHRRequest.statusCode === HTTPStatusCode.OK) {
-        setTitle("Debriefing HR");
+        setTitle("Edit Debriefing Direct HR");
         message.success("Details has been saved .");
         window.scrollTo(0, 0);
         setIsSavedLoading(false);
@@ -980,11 +987,36 @@ const EditNewHR = () => {
     ]
   );
 
+  function checkRating(number) {
+    if (number >= 0 && number <= 5) {
+        if (Number.isInteger(number)) {
+            return true;
+        } else {
+            // Check if it's a decimal with one digit after the dot
+            const decimalPart = number.toString().split('.')[1];
+            if (decimalPart && decimalPart.length === 1) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
   const debrefSubmitHandler = useCallback(
     async (d) => {
       setIsLoading(true);
       setSameSkillError(false);
       let sameSkillIssue = false;
+      let RatingError = false;
+
+      if(!checkRating(parseFloat(d.ambitionBoxRating))){
+        RatingError= true
+
+      }
+      if(!checkRating(parseFloat(d.glassdoorRating))){
+        RatingError= true
+      }
+
       let skillList = d.skills.map((item) => {
         const obj = {
           skillsID: item.id,
@@ -1037,14 +1069,14 @@ const EditNewHR = () => {
         goodToHaveSkills: "",
         glassdoorRating: +d.glassdoorRating,
         ambinaceBoxRating: +d.ambitionBoxRating,
-        isSpecialEdit: false,
+        isSpecialEdit: isSpecialEdit,
       };
 
-      if (!sameSkillIssue) {
+      if (!sameSkillIssue && !RatingError) {
         const addHRDEBRequest =
           await hiringRequestDAO.createDirectDebriefingDAO(payload);
 
-        setIsLoading(false);
+  
         if (addHRDEBRequest.statusCode === HTTPStatusCode.OK) {
           message.success("Details has been saved .");
           navigate(`/allhiringrequest/${hrID}`);
@@ -1156,7 +1188,7 @@ const EditNewHR = () => {
       // setHRdetails(_getHrValues);
     } else {
       //when URL
-      console.log(gptDetails);
+
       gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 &&
         setValue(
           "minimumBudget",
@@ -1363,8 +1395,8 @@ const EditNewHR = () => {
             children: <></>,
           },
           {
-            label: "Debriefing HR",
-            key: "Debriefing HR",
+            label: "Edit Debriefing Direct HR",
+            key: "Edit Debriefing Direct HR",
             children: <></>,
           },
         ]}
@@ -2285,7 +2317,7 @@ const EditNewHR = () => {
         </div>
       )}
 
-      {title === "Debriefing HR" && (
+      {title === "Edit Debriefing Direct HR" && (
         <div className={EditNewHRStyle.hrFieldContainer}>
           <div className={EditNewHRStyle.partOne}>
             <div className={EditNewHRStyle.hrFieldLeftPane}>
@@ -2582,8 +2614,10 @@ const EditNewHR = () => {
                     name="glassdoorRating"
                     type={InputType.NUMBER}
                     placeholder="4"
+                    isError={!checkRating(parseFloat(watch('glassdoorRating')))}
+                    errorMsg={'rating must be 0-5'}
                   />
-                </div>
+               </div>
                 <div className={EditNewHRStyle.colMd6}>
                   <HRInputField
                     register={register}
@@ -2592,6 +2626,8 @@ const EditNewHR = () => {
                     name="ambitionBoxRating"
                     type={InputType.NUMBER}
                     placeholder="4.5"
+                    isError={!checkRating(parseFloat(watch('ambitionBoxRating')))}
+                    errorMsg={'rating must be 0-5'}
                   />
                 </div>
               </div>
