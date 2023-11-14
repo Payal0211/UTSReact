@@ -473,7 +473,7 @@ const AllHiringRequestScreen = () => {
 											miscData?.loggedInUserTypeID === UserAccountRole.SALES_MANAGER ||
 											miscData?.loggedInUserTypeID === UserAccountRole.BDR || 
 											miscData?.loggedInUserTypeID === UserAccountRole.MARKETING) && <HROperator
-						title={miscData?.loggedInUserTypeID === UserAccountRole.BDR ||miscData?.loggedInUserTypeID === UserAccountRole.MARKETING  ||miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR? 'Add New Direct HR' :"Add New HR" }
+						title={miscData?.loggedInUserTypeID === UserAccountRole.BDR ||miscData?.loggedInUserTypeID === UserAccountRole.MARKETING  ? 'Add New Direct HR' :"Add New HR" }
 						icon={<ArrowDownSVG style={{ width: '16px' }} />}
 						backgroundColor={`var(--color-sunlight)`}
 						iconBorder={`1px solid var(--color-sunlight)`}
