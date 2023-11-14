@@ -39,12 +39,9 @@ const CTASlot1 = ({ miscData, slotItem, apiData, callAPI, hrID }) => {
 		}
 	}, [hrID, navigate]);
 
-	const navigateToEditDirectDebriefing = useCallback(async () => {
-		const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrID);
-		if (response?.statusCode === HTTPStatusCode.OK) {
+	const navigateToEditDirectDebriefing = useCallback(async () => {	
 			localStorage.setItem('fromEditDirectDeBriefing', true);
 			navigate(`/EditNewHR/${hrID}`);
-		}
 	}, [hrID, navigate]);
 
 	const handleAssignments = async () => {

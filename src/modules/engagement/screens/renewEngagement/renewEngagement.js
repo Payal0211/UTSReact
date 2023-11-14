@@ -23,6 +23,8 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 		control,
 		watch,
 		resetField,
+		setError,
+		clearErrors,
 		formState: { errors },
 	} = useForm();
 	const watchBillRate = watch('billRate');
@@ -134,6 +136,20 @@ const calulateNR =async() =>{
 }
 
 
+useEffect(()=>{
+	if(billRateValue && payRateValue && currencyValue  ){
+		if(billRateValue > payRateValue){
+			calulateNR()
+		}else{
+			setTimeout(()=>{
+				clearErrors('billRate')
+			},3000)
+			setError('billRate',{message:'bill rate must be greater then pay rate'})
+		}
+		
+	}	
+},[billRateValue,payRateValue,currencyValue])
+
 	return (
 		<div className={allengagementEnd.engagementModalWrap}>
 			<div
@@ -233,7 +249,7 @@ const calulateNR =async() =>{
 						label="Contract Duration (Months)"
 						name="contractDuration"
 						type={InputType.NUMBER}
-						placeholder="Enter contract duration                                                                                   "
+						placeholder="Enter contract duration"
 						errors={errors}
 						disabled={true}
 						validationSchema={{
@@ -255,11 +271,11 @@ const calulateNR =async() =>{
 					<button
 						className={allengagementEnd.minusButton}
 						onClick={(e) =>
-							{billRateValue > 0
-								? setBillRateValue(billRateValue - 1)
-								: e.preventDefault();calulateNR()}
+							{billRateValue - 1 > 1 
+								? setBillRateValue(parseFloat((billRateValue - 1).toFixed(2)))
+								: e.preventDefault()}
 						}
-						disabled={billRateValue === 0 ? true : false}>
+						disabled={billRateValue === 1 ? true : false}>
 						<MinusSVG />
 					</button>
 					<HRInputField
@@ -269,8 +285,19 @@ const calulateNR =async() =>{
 							required: 'Please enter bill rate.',
 							valueAsNumber: true,
 						}}
-						label="Bill Rate(USD)"
+						label={`Bill Rate(${currencyValue})`}
+						onChangeHandler={e=> {
+							let value = e.target.value
+							if(value > 0){
+							setBillRateValue(parseFloat(e.target.value))
+							}else{
+								setTimeout(()=>{
+									clearErrors('billRate')
+								},3000)
+								setError('billRate',{message:'bill rate can not less then 0'})
+							}}}
 						name="billRate"
+						disabled={false}
 						type={InputType.NUMBER}
 						value={billRateValue}
 						placeholder="Enter Amount"
@@ -278,7 +305,9 @@ const calulateNR =async() =>{
 					/>
 					<button
 						className={allengagementEnd.plusButton}
-						onClick={()=>{setBillRateValue(billRateValue + 1); calulateNR();}}>
+						onClick={()=>{
+							let newVal = billRateValue + 1
+							setBillRateValue(parseFloat(newVal.toFixed(2)))}}>
 						<PlusSVG />
 					</button>
 				</div>
@@ -287,21 +316,35 @@ const calulateNR =async() =>{
 					<button
 						className={allengagementEnd.minusButton}
 						onClick={(e) =>{
-							payRateValue > 0
-								? setPayRateValue(payRateValue - 1)
-								: e.preventDefault(); calulateNR();}
+							payRateValue - 1 > 0
+								? setPayRateValue(parseFloat((payRateValue - 1).toFixed(2)))
+								: e.preventDefault()}
 						}
-						disabled={payRateValue === 0 ? true : false}>
+						disabled={payRateValue - 1 < 0 ? true : false}>
 						<MinusSVG />
 					</button>
 					<HRInputField
 						register={register}
 						errors={errors}
+						// isError={errors['payRate']}
+						// errorMsg={errors['payRate']?.message ? errors['payRate'].message : 'Please enter pay rate.'}
 						validationSchema={{
 							required: 'Please enter pay rate.',
 							valueAsNumber: true,
 						}}
-						label="Pay Rate(USD)"
+						onChangeHandler={e=> { 
+							let value = e.target.value
+							if(value > 0 && payRateValue < billRateValue ){
+								setPayRateValue(parseFloat(e.target.value))
+							}else{
+								setTimeout(()=>{
+									clearErrors('payRate')
+								},3000)
+								setError('payRate',{message:'pay rate can not less then 0 and gerter then bill rate'})
+								}
+							}
+							}
+						label={`Pay Rate(${currencyValue})`}
 						name="payRate"
 						type={InputType.NUMBER}
 						value={payRateValue}
@@ -310,7 +353,10 @@ const calulateNR =async() =>{
 					/>
 					<button
 						className={allengagementEnd.plusButton}
-						onClick={() => {setPayRateValue(payRateValue + 1);calulateNR();}}>
+						onClick={(e) => {
+							let newVal = payRateValue + 1
+							
+							newVal < billRateValue ? setPayRateValue(parseFloat(newVal.toFixed(2))) : e.preventDefault()}}>
 						<PlusSVG />
 					</button>
 				</div>
@@ -322,7 +368,7 @@ const calulateNR =async() =>{
 						label="NR%"
 						name="nrMargin"
 						type={InputType.NUMBER}
-						placeholder="Enter NR%                                                                                                "
+						placeholder="Enter NR%"
 						errors={errors}
 						validationSchema={{
 							required: 'please enter the NR%.',
