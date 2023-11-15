@@ -12,7 +12,7 @@ import { Tooltip } from 'antd';
 import { DateTimeUtils } from './basic_utils';
 
 export const All_Hiring_Request_Utils = {
-	GETHRPRIORITY: function (statusCode, person, hrID, togglePriority) {
+	GETHRPRIORITY: function (statusCode, person, hrID, togglePriority,disabled) {
 		switch (statusCode) {
 			case hiringRequestPriority.NO_PRIORITY:
 				return (
@@ -21,7 +21,7 @@ export const All_Hiring_Request_Utils = {
 					// 	title="No Priority"
 					// 	color={`var(--uplers-black)`}>
 						<a href="javascript:void(0);" onClick={
-								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
+							disabled === 'disabled'? null :	DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
 									: () => {
 											let priorityObject = {
@@ -52,7 +52,7 @@ export const All_Hiring_Request_Utils = {
 					// 	title="Next Week Priority"
 					// 	color={`var(--color-sunlight)`}>
 						<a href="javascript:void(0);" onClick={
-								DateTimeUtils.getTodaysDay() === DayName.FRIDAY
+							disabled === 'disabled'? null :	DateTimeUtils.getTodaysDay() === DayName.FRIDAY
 									? null
 									: () => {
 											let priorityObject = {
