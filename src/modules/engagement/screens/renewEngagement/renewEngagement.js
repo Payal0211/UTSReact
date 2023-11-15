@@ -73,8 +73,8 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 				onBoardId: talentInfo?.onboardID,
 				contractStartDate: d.renewedStartDate,
 				contractEndDate: d.renewedEndDate,
-				billRate: d.billRate,
-				payRate: d.payRate,
+				billRate: billRateValue,
+				payRate: payRateValue,
 				engagementId: getRenewEngagement?.engagementId,
 				contactName: getRenewEngagement?.contactName,
 				company: getRenewEngagement?.company,
@@ -99,6 +99,8 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 			getRenewEngagement?.engagementId,
 			getRenewEngagement?.talentName,
 			talentInfo?.onboardID,
+			billRateValue,
+			payRateValue
 		],
 	);
 	useEffect(() => {
@@ -138,14 +140,29 @@ const calulateNR =async() =>{
 
 useEffect(()=>{
 	if(billRateValue && payRateValue && currencyValue  ){
-		if(billRateValue > payRateValue){
+		if(billRateValue < payRateValue){
 			calulateNR()
-		}else{
-			setTimeout(()=>{
+				setTimeout(()=>{
 				clearErrors('billRate')
 			},3000)
 			setError('billRate',{message:'bill rate must be greater then pay rate'})
+			return
 		}
+
+		if(payRateValue > billRateValue){
+			setTimeout(()=>{
+				clearErrors('payRate')
+			},3000)
+			setError('payRate',{message:'pay rate must be less then bill rate'})
+			return
+		}
+		calulateNR()
+		// else{
+		// 	setTimeout(()=>{
+		// 		clearErrors('billRate')
+		// 	},3000)
+		// 	setError('billRate',{message:'bill rate must be greater then pay rate'})
+		// }
 		
 	}	
 },[billRateValue,payRateValue,currencyValue])
@@ -191,6 +208,7 @@ useEffect(()=>{
 										}}
 										placeholderText="Renewed Start Date"
 										dateFormat="dd/MM/yyyy"
+										minDate={new Date(getRenewEngagement?.contractEndDate)}
 									/>
 								)}
 								name="renewedStartDate"
@@ -271,9 +289,17 @@ useEffect(()=>{
 					<button
 						className={allengagementEnd.minusButton}
 						onClick={(e) =>
-							{billRateValue - 1 > 1 
+							{ if(billRateValue - 1 > payRateValue){
+								billRateValue - 1 > 1 
 								? setBillRateValue(parseFloat((billRateValue - 1).toFixed(2)))
-								: e.preventDefault()}
+								: e.preventDefault()
+							}else{
+								setTimeout(()=>{
+									clearErrors('billRate')
+								},3000)
+								setError('billRate',{message:'bill rate must be greater then pay rate'})
+							}
+							}
 						}
 						disabled={billRateValue === 1 ? true : false}>
 						<MinusSVG />
@@ -286,16 +312,16 @@ useEffect(()=>{
 							valueAsNumber: true,
 						}}
 						label={`Bill Rate(${currencyValue})`}
-						onChangeHandler={e=> {
-							let value = e.target.value
-							if(value > 0){
-							setBillRateValue(parseFloat(e.target.value))
-							}else{
-								setTimeout(()=>{
-									clearErrors('billRate')
-								},3000)
-								setError('billRate',{message:'bill rate can not less then 0'})
-							}}}
+						// onChangeHandler={e=> {
+						// 	let value = e.target.value
+						// 	if(value > 0 && value < payRateValue){
+						// 	setBillRateValue(parseFloat(e.target.value))
+						// 	}else{
+						// 		setTimeout(()=>{
+						// 			clearErrors('billRate')
+						// 		},3000)
+						// 		setError('billRate',{message:'bill rate can not less then 0 and pay rate'})
+						// 	}}}
 						name="billRate"
 						disabled={false}
 						type={InputType.NUMBER}
@@ -332,18 +358,18 @@ useEffect(()=>{
 							required: 'Please enter pay rate.',
 							valueAsNumber: true,
 						}}
-						onChangeHandler={e=> { 
-							let value = e.target.value
-							if(value > 0 && payRateValue < billRateValue ){
-								setPayRateValue(parseFloat(e.target.value))
-							}else{
-								setTimeout(()=>{
-									clearErrors('payRate')
-								},3000)
-								setError('payRate',{message:'pay rate can not less then 0 and gerter then bill rate'})
-								}
-							}
-							}
+						// onChangeHandler={e=> { 
+						// 	let value = e.target.value
+						// 	if(value > 0 && payRateValue < billRateValue ){
+						// 		setPayRateValue(parseFloat(e.target.value))
+						// 	}else{
+						// 		setTimeout(()=>{
+						// 			clearErrors('payRate')
+						// 		},3000)
+						// 		setError('payRate',{message:'pay rate can not less then 0 and gerter then bill rate'})
+						// 		}
+						// 	}
+						// 	}
 						label={`Pay Rate(${currencyValue})`}
 						name="payRate"
 						type={InputType.NUMBER}
@@ -355,8 +381,17 @@ useEffect(()=>{
 						className={allengagementEnd.plusButton}
 						onClick={(e) => {
 							let newVal = payRateValue + 1
-							
-							newVal < billRateValue ? setPayRateValue(parseFloat(newVal.toFixed(2))) : e.preventDefault()}}>
+							if(newVal < billRateValue){
+								setPayRateValue(parseFloat(newVal.toFixed(2)))
+							}else{
+								setTimeout(()=>{
+									clearErrors('payRate')
+								},3000)
+								setError('payRate',{message:'pay rate can not gerter then bill rate'})
+								
+							}
+							// newVal < billRateValue ? setPayRateValue(parseFloat(newVal.toFixed(2))) : e.preventDefault()
+							}}>
 						<PlusSVG />
 					</button>
 				</div>

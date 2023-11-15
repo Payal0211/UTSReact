@@ -278,7 +278,7 @@ export default function DuringPreOnboarding({
     //     "email": "riya.a@uplers.com",
     //     "buddy": "1"
     //   }
-    console.log("err",errors)
+
     useEffect(()=>{
         if(getUploadFileData){
             clearErrors('policyLink')
@@ -364,6 +364,12 @@ export default function DuringPreOnboarding({
         },
         [getValidation]
       );
+
+      useEffect(()=>{
+        if(watchDevicePolicy?.id !== 2){
+            clearErrors('deviceType')
+        }
+      },[watchDevicePolicy,clearErrors])
 
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
@@ -573,7 +579,7 @@ export default function DuringPreOnboarding({
                                 defaultValue={'Select Device'}
                                 name="deviceType"
                                 isError={errors['deviceType'] && errors['deviceType']}
-                                // required={!talentDeteils?.IsHRTypeDP}
+                                required={watchDevicePolicy?.id === 2 ? true : false}
                                 errorMsg={'please select device.'}
                                 disabled={isTabDisabled}
                             /></div> }

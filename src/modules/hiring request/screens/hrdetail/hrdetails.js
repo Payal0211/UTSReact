@@ -1,5 +1,5 @@
 import React, { Suspense, useCallback, useEffect, useState } from 'react';
-import { Skeleton, Tooltip, Modal, DatePicker,TimePicker, Tabs, Dropdown, Menu } from 'antd';
+import { Skeleton, Tooltip, Modal, DatePicker,TimePicker, Tabs, Dropdown, Menu , message} from 'antd';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
@@ -198,6 +198,39 @@ const HRDetailScreen = () => {
 	}, [apiData]);
 // console.log('apiData', apiData)
 
+const togglePriority = useCallback(
+	async (payload) => {
+		setLoading(true);
+		localStorage.setItem('hrid', payload.hRID);
+		let response = await hiringRequestDAO.setHrPriorityDAO(
+			payload.isNextWeekStarMarked,
+			payload.hRID,
+			payload.person,
+		);
+	
+		if (response.statusCode === HTTPStatusCode.OK) {
+			setLoading(false);
+			message.success('priority has been changed.')
+			callAPI(payload.hRID);
+		} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+			setLoading(false);
+			message.error(response.responseBody)
+		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			setLoading(false);
+			return navigate(UTSRoutes.LOGINROUTE);
+		} else if (
+			response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+		) {
+			setLoading(false);
+			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+		} else {
+			setLoading(false);
+			return 'NO DATA FOUND';
+		}
+	},
+	[apiData, navigate],
+);
+
 const editHR = () => {
 	navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 	localStorage.setItem('hrID', apiData?.HR_Id);
@@ -231,7 +264,7 @@ const editHR = () => {
 						{apiData && (
 							<div className={HRDetailStyle.hiringRequestPriority}>
 								{All_Hiring_Request_Utils.GETHRPRIORITY(
-									apiData?.StarMarkedStatusCode,
+									apiData?.StarMarkedStatusCode,apiData?.ClientDetail?.SalesPerson,apiData?.HRDetails?.HiringRequestId,togglePriority,"disabled"
 								)}
 							</div>
 						)}

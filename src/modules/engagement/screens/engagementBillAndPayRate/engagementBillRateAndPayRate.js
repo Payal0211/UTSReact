@@ -319,7 +319,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 							<div
 								className={`${allengagementBillAndPayRateStyles.colMd6} ${allengagementBillAndPayRateStyles.rateCounterField}`}>
 								<button
-									className={allengagementBillAndPayRateStyles.minusButton}
+									className={`${allengagementBillAndPayRateStyles.minusButton}  ${allengagementBillAndPayRateStyles.disabled}`}
 									onClick={(e) =>
 										billRateValue > 0
 											? setBillRateValue(billRateValue - 1)
@@ -346,7 +346,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									disabled={true}
 								/>
 								<button
-									className={allengagementBillAndPayRateStyles.plusButton}
+									className={`${allengagementBillAndPayRateStyles.plusButton}  ${allengagementBillAndPayRateStyles.disabled}`}
 									onClick={() => setBillRateValue(billRateValue + 1)}
 									disabled={true}>
 									<PlusSVG />
@@ -489,7 +489,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 							<div
 								className={`${allengagementBillAndPayRateStyles.colMd6} ${allengagementBillAndPayRateStyles.rateCounterField}`}>
 								<button
-									className={allengagementBillAndPayRateStyles.minusButton}
+									className={`${allengagementBillAndPayRateStyles.minusButton}  ${allengagementBillAndPayRateStyles.disabled}`}
 									// disabled={payRateValue === 0 ? true : false}
 									disabled={true}
 									onClick={(e) =>
@@ -515,7 +515,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 									disabled={true}
 								/>
 								<button
-									className={allengagementBillAndPayRateStyles.plusButton}
+									className={`${allengagementBillAndPayRateStyles.plusButton}  ${allengagementBillAndPayRateStyles.disabled}`}
 									disabled={true}
 									onClick={(e) =>
 										payRateValue >= 0

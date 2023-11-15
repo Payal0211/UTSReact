@@ -20,6 +20,11 @@
     display: flex;
 }
 
+.disabled{
+    opacity:.7;
+    cursor:not-allowed !important;
+}
+
 .formPanelAction button {
     background: var(--text-color-purity);
     border: 1px solid #CECCCC;
