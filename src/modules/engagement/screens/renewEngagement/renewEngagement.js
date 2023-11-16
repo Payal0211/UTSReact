@@ -312,16 +312,16 @@ useEffect(()=>{
 							valueAsNumber: true,
 						}}
 						label={`Bill Rate(${currencyValue})`}
-						// onChangeHandler={e=> {
-						// 	let value = e.target.value
-						// 	if(value > 0 && value < payRateValue){
-						// 	setBillRateValue(parseFloat(e.target.value))
-						// 	}else{
-						// 		setTimeout(()=>{
-						// 			clearErrors('billRate')
-						// 		},3000)
-						// 		setError('billRate',{message:'bill rate can not less then 0 and pay rate'})
-						// 	}}}
+						onChangeHandler={e=> {
+							let value = e.target.value
+							if(value > 0 && value < payRateValue){
+							setBillRateValue(parseFloat(e.target.value))
+							}else{
+								setTimeout(()=>{
+									clearErrors('billRate')
+								},3000)
+								setError('billRate',{message:'bill rate can not less then 0 and pay rate'})
+							}}}
 						name="billRate"
 						disabled={false}
 						type={InputType.NUMBER}
@@ -358,18 +358,18 @@ useEffect(()=>{
 							required: 'Please enter pay rate.',
 							valueAsNumber: true,
 						}}
-						// onChangeHandler={e=> { 
-						// 	let value = e.target.value
-						// 	if(value > 0 && payRateValue < billRateValue ){
-						// 		setPayRateValue(parseFloat(e.target.value))
-						// 	}else{
-						// 		setTimeout(()=>{
-						// 			clearErrors('payRate')
-						// 		},3000)
-						// 		setError('payRate',{message:'pay rate can not less then 0 and gerter then bill rate'})
-						// 		}
-						// 	}
-						// 	}
+						onChangeHandler={e=> { 
+							let value = e.target.value
+							if(value > 0 && payRateValue < billRateValue ){
+								setPayRateValue(parseFloat(e.target.value))
+							}else{
+								setTimeout(()=>{
+									clearErrors('payRate')
+								},3000)
+								setError('payRate',{message:'pay rate can not less then 0 and grater then bill rate'})
+								}
+							}
+							}
 						label={`Pay Rate(${currencyValue})`}
 						name="payRate"
 						type={InputType.NUMBER}
@@ -387,7 +387,7 @@ useEffect(()=>{
 								setTimeout(()=>{
 									clearErrors('payRate')
 								},3000)
-								setError('payRate',{message:'pay rate can not gerter then bill rate'})
+								setError('payRate',{message:'pay rate can not grater then bill rate'})
 								
 							}
 							// newVal < billRateValue ? setPayRateValue(parseFloat(newVal.toFixed(2))) : e.preventDefault()
