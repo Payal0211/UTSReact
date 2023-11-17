@@ -21,7 +21,8 @@ const DealFilters = ({
 	tableFilteredState,
 	setFilteredTagLength,
 	getHTMLFilter,
-	clearFilters
+	clearFilters,
+	setPageIndex
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -189,10 +190,13 @@ const DealFilters = ({
 		setTableFilteredState({
 			...tableFilteredState,
 			filterFields_DealList: { ...filters },
+			pageNumber:1
 		});
+		setPageIndex(1)
 		const reqFilter = {
 			...tableFilteredState,
 			filterFields_DealList: { ...filters },
+			pageNumber:1
 		};
 		 handleDealRequest(reqFilter);
 		onRemoveDealFilters()

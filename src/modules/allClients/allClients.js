@@ -397,6 +397,7 @@ function AllClients() {
                                 onRemoveSurveyFilters={onRemoveSurveyFilters}
                                 setAppliedFilters={setAppliedFilters}
                                 appliedFilter={appliedFilter}
+                                setPageIndex={setPageIndex}
                                 setCheckedState={setCheckedState}
                                 checkedState={checkedState}
                                 setTableFilteredState={setTableFilteredState}

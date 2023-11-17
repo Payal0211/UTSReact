@@ -85,7 +85,7 @@ const AllHiringRequestScreen = () => {
 	const [reopenHrModal, setReopenHrModal] = useState(false);
 	const [ closeHRDetail, setCloseHRDetail] = useState({});
 	const [closeHrModal, setCloseHrModal] = useState(false);
-	const [isFocusedRole, setIsFocusedRole] = useState(false);
+	const [isFrontEndHR, setIsFrontEndHR] = useState(false);
 	const [isOnlyPriority, setIsOnlyPriority] = useState(false);
 	const [userData, setUserData] = useState({});
 	const [isShowDirectHRChecked,setIsShowDirectHRChecked] = useState(false);
@@ -213,8 +213,13 @@ const AllHiringRequestScreen = () => {
 	const handleHRRequest = useCallback(
 		async (pageData) => {
 			setLoading(true);
+			// save filter value in localstorage
+			if(pageData.filterFields_ViewAllHRs){
+				localStorage.setItem('filterFields_ViewAllHRs', JSON.stringify(pageData.filterFields_ViewAllHRs))
+			}
+
 			let response = await hiringRequestDAO.getPaginatedHiringRequestDAO(
-				{...pageData, "isHrfocused":isFocusedRole, "StarNextWeek":isOnlyPriority},
+				{...pageData, "isFrontEndHR":isFrontEndHR, "StarNextWeek":isOnlyPriority},
 			);
 
 			if (response?.statusCode === HTTPStatusCode.OK) {
@@ -238,7 +243,7 @@ const AllHiringRequestScreen = () => {
 				return 'NO DATA FOUND';
 			}
 		},
-		[navigate,isFocusedRole,isOnlyPriority],
+		[navigate,isFrontEndHR,isOnlyPriority],
 	);
 
 	useEffect(() => {
@@ -282,13 +287,13 @@ const AllHiringRequestScreen = () => {
 			handleHRRequest(tableFilteredState)
 		}
 		
-	},[tableFilteredState,endDate,startDate,isFocusedRole,isOnlyPriority])
+	},[tableFilteredState,endDate,startDate,isFrontEndHR,isOnlyPriority])
 
 	useEffect(() => {
 		// handleHRRequest(tableFilteredState);
 		handleRequetWithDates()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [tableFilteredState,isFocusedRole,isOnlyPriority]);
+	}, [tableFilteredState,isFrontEndHR,isOnlyPriority]);
 
 	const getHRFilterRequest = useCallback(async () => {
 		const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
@@ -348,6 +353,38 @@ const AllHiringRequestScreen = () => {
 	useEffect(() => {
 		localStorage.removeItem('hrID');
 		localStorage.removeItem('fromEditDeBriefing');
+
+		// console.log("filter list",response?.responseBody?.details?.Data)
+			let appliedFilter = localStorage.getItem('filterFields_ViewAllHRs')
+			let filterList = localStorage.getItem('appliedHRfilters')
+			let checkedState = localStorage.getItem('HRFilterCheckedState')
+
+			if(appliedFilter?.length > 0 && filterList?.length > 0  ){
+				setTableFilteredState(prev => ({...prev, filterFields_ViewAllHRs: JSON.parse(appliedFilter)}))
+				let mapData = JSON.parse(filterList)
+				let checkedData = JSON.parse(checkedState)
+				
+				let newMap = new Map()
+				let newCheckedmap = new Map()
+				let filterCount = mapData.reduce((total, item)=>{
+					return total + item.value.split(',').length
+				},0)
+				mapData.forEach((item) => {
+			newMap.set(item.filterType, item)
+		})
+		if(checkedData?.length > 0){
+			checkedData.forEach((item)=>{
+			newCheckedmap.set(item.key,item.value)
+		})
+		}
+		
+				setTimeout(()=>{
+					setFilteredTagLength(filterCount)
+				setAppliedFilters(newMap)
+				setCheckedState(newCheckedmap)
+				},5000)
+				
+			}
 	}, []);
 
 	const handleExport = (apiData) => {
@@ -364,32 +401,33 @@ const AllHiringRequestScreen = () => {
 		setAppliedFilters(new Map());
 		setCheckedState(new Map());
 		setFilteredTagLength(0);
-		setTableFilteredState({
-			tableFilteredState:{...tableFilteredState,...{
+		setTableFilteredState(
+			{...tableFilteredState,...{
 				pagesize: 100,
 				pagenum: 1,
 				sortdatafield: 'CreatedDateTime',
 				sortorder: 'desc',
 				searchText: '',
-			}},
-			filterFields_ViewAllHRs: {},
-		});
-		const reqFilter = {
-			tableFilteredState:{...tableFilteredState,...{
+				filterFields_ViewAllHRs: {},
+			}},			
+		);
+		const reqFilter = {...tableFilteredState,...{
 				pagesize: 100,
 				pagenum: 1,
 				sortdatafield: 'CreatedDateTime',
 				sortorder: 'desc',
 				searchText: '',
-			}},
-			filterFields_ViewAllHRs: {},
-		};
+				filterFields_ViewAllHRs: {}
+			}}
+		localStorage.removeItem('filterFields_ViewAllHRs')
+		localStorage.removeItem('appliedHRfilters')
+		localStorage.removeItem('HRFilterCheckedState')
 		handleHRRequest(reqFilter);
 		setIsAllowFilters(false);
 		setEndDate(null)
 		setStartDate(null)
 		setDebouncedSearch('')
-		setIsFocusedRole(false)
+		setIsFrontEndHR(false)
 		setIsOnlyPriority(false)
 		setIsShowDirectHRChecked(false)
 		setPageIndex(1);
@@ -575,8 +613,8 @@ const AllHiringRequestScreen = () => {
 					<Checkbox checked={isOnlyPriority} onClick={()=> setIsOnlyPriority(prev=> !prev)}>
 					Show only Priority
 					</Checkbox>
-					<Checkbox checked={isFocusedRole} onClick={()=> setIsFocusedRole(prev=> !prev)} className={allHRStyles.focusCheckBox}>
-					Show only Focused Role
+					<Checkbox checked={isFrontEndHR} onClick={()=> setIsFrontEndHR(prev=> !prev)} className={allHRStyles.focusCheckBox}>
+					Show Self Sign Up Only
 						</Checkbox>	
 						<div className={allHRStyles.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
@@ -741,6 +779,7 @@ const AllHiringRequestScreen = () => {
 						setIsAllowFilters={setIsAllowFilters}
 						checkedState={checkedState}
 						handleHRRequest={handleHRRequest}
+						setPageIndex={setPageIndex}
 						setTableFilteredState={setTableFilteredState}
 						tableFilteredState={tableFilteredState}
 						setFilteredTagLength={setFilteredTagLength}

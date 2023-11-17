@@ -344,6 +344,7 @@ const DealList = () => {
 						setFilteredTagLength={setFilteredTagLength}
 						onRemoveDealFilters={onRemoveDealFilters}
 						getHTMLFilter={getHTMLFilter}
+						setPageIndex={setPageIndex}
 						hrFilterList={DealConfig.dealFiltersListConfig()}
 						filtersType={DealConfig.dealFilterTypeConfig(
 							filtersList && filtersList,
