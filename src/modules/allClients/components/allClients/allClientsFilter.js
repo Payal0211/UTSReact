@@ -20,7 +20,8 @@ const AllClientFilters = ({
 	setTableFilteredState,
 	filtersType,
 	getHTMLFilter,
-	clearFilters
+	clearFilters,
+	setPageIndex
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -102,9 +103,11 @@ const AllClientFilters = ({
 		appliedFilter.forEach((item) => {
 			filters = { ...filters, [item.filterType]: item.id };
 		});
+		setPageIndex(1)
 		setTableFilteredState({
 			...tableFilteredState,
 			filterFields_Client: { ...filters },
+			pagenumber:1
 		});		
 		setIsAllowFilters(false);
 	}, [

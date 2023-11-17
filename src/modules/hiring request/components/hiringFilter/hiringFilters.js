@@ -24,7 +24,8 @@ const HiringFilters = ({
 	getHTMLFilter,
 	clearFilters,
 	setIsShowDirectHRChecked,
-	isShowDirectHRChecked
+	isShowDirectHRChecked,
+	setPageIndex
 }) => {
 	const [toggleBack, setToggleBack] = useState(false);
 	const [searchData, setSearchData] = useState([]);
@@ -210,14 +211,32 @@ const HiringFilters = ({
 		appliedFilter.forEach((item) => {
 			filters = { ...filters, [item.filterType]: item.id };
 		});
+		let filArr = []
+		let checkedArray = [...checkedState.keys()]
+		appliedFilter.forEach((item) => {
+			// filArr.push({key: item.filterType, value: item})
+			filArr.push(item)
+		})
+		// checkedState.keys().forEach((item) => {checkedArray.push(item)});
+		let checked = checkedArray.map(key=> ({key:key,value:checkedState.get(key)}))
+		let newMap = new Map()
+		filArr.forEach((item) => {
+			newMap.set(item.filterType, item)
+		})
+
+		 localStorage.setItem('appliedHRfilters', JSON.stringify(filArr))
+		 localStorage.setItem('HRFilterCheckedState',JSON.stringify(checked))
+		 setPageIndex(1)
 		setTableFilteredState({
 			...tableFilteredState,		
 			IsDirectHR:	isShowDirectHRChecked,
 			filterFields_ViewAllHRs: { ...filters },
+			pagenum: 1,
 		});
 		const reqFilter = {
 			...tableFilteredState,
 			filterFields_ViewAllHRs: { ...filters },
+			pagenum: 1,
 		};		
 		// handleHRRequest(reqFilter);
 		setIsAllowFilters(false);
