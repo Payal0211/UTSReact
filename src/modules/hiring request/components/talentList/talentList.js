@@ -559,6 +559,14 @@ const TalentList = ({
 											)}
 										</span>
 									</div>
+
+									<div className={TalentListStyle.EmailID}>
+										<span>Talent Email:</span>&nbsp;&nbsp;
+										<span style={{ fontWeight: '500' }}>
+											{item?.EmailID ? item?.EmailID:"-"}
+										</span>
+									</div>
+
 									<div className={TalentListStyle.experience}>
 										<span>Experience:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>

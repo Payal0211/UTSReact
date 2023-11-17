@@ -14,29 +14,32 @@ const onBoardListConfig = () => {
         title: "Created Date",
         dataIndex: "createdByDatetime",
         key: "createdByDatetime",
-        align: "left",        
+        align: "left",  
+        width: '120px',          
         render:(text)=>{
             let dateArr = text.split(" ")
             return dateArr[0]
         }
       },
       {
-        title: "EngagemenID",
+        title: "Engagement ID",
         dataIndex: "engagemenID",
         key: "engagemenID",
         align: "left",
+        width: '180px',
       },
-      {
-        title: "HR_Number",
-        dataIndex: "hR_Number",
-        key: "hR_Number",
-        align: "left",
-      },
+      // {
+      //   title: "HR #",
+      //   dataIndex: "hR_Number",
+      //   key: "hR_Number",
+      //   align: "left",
+      // },
       {
         title: "Position",
         dataIndex: "position",
         key: "position",
         align: "left",
+        width: '180px',
       },
       {
         title: "Client",
@@ -93,105 +96,103 @@ const onBoardListConfig = () => {
         align: "left",
       },
       {
-        title: "KickOff",
+        title: "Kick Off",
         dataIndex: "kickOff",
         key: "kickOff",
         align: "left",
       },
       {
-        title: "TypeOfHR",
+        title: "Type Of HR",
         dataIndex: "typeOfHR",
         key: "typeOfHR",
         align: "left",
       },
       {
-        title: "Final_HR_Cost",
+        title: "Final HR Cost",
         dataIndex: "final_HR_Cost",
         key: "final_HR_Cost",
         align: "left",
       },
       {
-        title: "Talent_Cost",
+        title: "Talent Cost",
         dataIndex: "talent_Cost",
         key: "talent_Cost",
         align: "left",
       },
       {
-        title: "NRPercentage",
+        title: "NR (%)",
         dataIndex: "nrPercentage",
         key: "nrPercentage",
         align: "left",
       },
       {
-        title: "DPAmount",
+        title: "DP Amount",
         dataIndex: "dpAmount",
         key: "dpAmount",
         align: "left",
       },
       {
-        title: "DP_Percentage",
+        title: "DP (%)",
         dataIndex: "dP_Percentage",
         key: "dP_Percentage",
         align: "left",
       },
       {
-        title: "OldTalent",
+        title: "Old Talent",
         dataIndex: "oldTalent",
         key: "oldTalent",
         align: "left",
       },
-
-
       {
-        title: "ReplacementEng",
+        title: "Replacement Eng",
         dataIndex: "replacementEng",
         key: "replacementEng",
         align: "left",
       },
       {
-        title: "ReplacementDate",
+        title: "Replacement Date",
         dataIndex: "replacementDate",
         key: "replacementDate",
         align: "left",
       },
       {
-        title: "NoticePeriod",
+        title: "Notice Period",
         dataIndex: "noticePeriod",
         key: "noticePeriod",
         align: "left",
       },
       {
-        title: "LastWorkingDate",
+        title: "LastWorking Date",
         dataIndex: "lastWorkingDate",
         key: "lastWorkingDate",
         align: "left",
       },
       {
-        title: "IsLost",
+        title: "Is Lost",
         dataIndex: "isLost",
         key: "isLost",
         align: "left",
       },
       {
-        title: "ContractStatus",
+        title: "Contract Status",
         dataIndex: "contractStatus",
         key: "contractStatus",
         align: "left",
       },
       {
-        title: "ContractDuration",
+        title: "Contract Duration",
         dataIndex: "contractDuration",
         key: "contractDuration",
         align: "left",
       },
       {
-        title: "ContractStartDate",
+        title: "Contract StartDate",
         dataIndex: "contractStartDate",
         key: "contractStartDate",
         align: "left",
       },
       {
-        title: "ContractEndDate",
+        title: "Contract EndDate",
         dataIndex: "contractEndDate",
         key: "contractEndDate",
         align: "left",
@@ -277,22 +278,22 @@ function OnBoardList() {
 							columns={tableColumnsMemo}
 							bordered={false}
 							dataSource={onBoardListData}
-              pagination={false}
-							// pagination={
-							// 	{
-              //                       onChange: (pageNum, pageSize) => {
-              //                           setPageIndex(pageNum);
-              //                           setPageSize(pageSize);
-              //                       },
-              //                       size: 'small',
-              //                       pageSize: pageSize,
-              //                       pageSizeOptions: pageSizeOptions,
-              //                       total: totalRecords,
-              //                       showTotal: (total, range) =>
-              //                           `${range[0]}-${range[1]} of ${totalRecords} items`,
-              //                       defaultCurrent: pageIndex,
-							// 	}
-							// }
+              // pagination={false}
+							pagination={
+								{
+                  // onChange: (pageNum, pageSize) => {
+                  //     setPageIndex(pageNum);
+                  //     setPageSize(pageSize);
+                  // },
+                  size: 'small',
+                  // pageSize: pageSize,
+                  // pageSizeOptions: pageSizeOptions,
+                  total: totalRecords,
+                  // showTotal: (total, range) =>
+                  //     `${range[0]}-${range[1]} of ${totalRecords} items`,
+                  // defaultCurrent: pageIndex,
+								}
+							}
 						/>
 					</WithLoader>
 				)}
