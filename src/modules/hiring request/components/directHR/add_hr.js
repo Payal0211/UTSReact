@@ -410,7 +410,8 @@ export default function AddHR(
   const getTalentRole = useCallback(async () => {
     const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
 
-    setTalentRole(talentRole && talentRole.responseBody);
+    if(talentRole.statusCode === HTTPStatusCode.OK){
+       setTalentRole(talentRole && talentRole.responseBody);
     setTalentRole((preValue) => [
       ...preValue,
       {
@@ -418,6 +419,8 @@ export default function AddHR(
         value: "Others",
       },
     ]);
+    }
+   
   }, []);
 
   const getDurationTypes = useCallback(async () => {
@@ -1038,7 +1041,7 @@ export default function AddHR(
         setIsHRRemote(false);
       }
 
-      setValue("requestTitle", gptDetails?.addHiringRequest?.requestForTalent);
+      gptDetails?.addHiringRequest?.requestForTalent && setValue("requestTitle", gptDetails?.addHiringRequest?.requestForTalent);
       // gptDetails?.chatGptSkills && setSkillSuggestionList(gptDetails?.chatGptSkills?.split(","))
       //add skill suggestion
       gptDetails?.skillmulticheckbox.length &&
@@ -1703,7 +1706,7 @@ export default function AddHR(
                       name="fromTime"
                       isError={errors["fromTime"] && errors["fromTime"]}
                       required={true}
-                      errorMsg={"Please select from time."}
+                      errorMsg={errors["fromTime"] ? errors["fromTime"].message : "Please select from time."}
                     />
                   </div>
                   <div className={HRFieldStyle.formGroup}>
@@ -1786,9 +1789,9 @@ export default function AddHR(
               </div>
 
               <div className={HRFieldStyle.colMd12}>
-                <TextEditor
+                <HRInputField
                   // isControlled={true}
-
+                  isTextArea={true}
                   // controlledValue={ addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
                   // 	?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
                   // 	?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
@@ -1797,6 +1800,26 @@ export default function AddHR(
                   // 	(addData?.salesHiringRequest_Details
                   // 		?.rolesResponsibilities )
                   // }
+                  type={InputType.TEXT}
+                  validationSchema={{
+										validate: (value) => {
+											if (!value) {
+												return 'Please add something about the company';
+											}
+											let companyName = watch('companyName')
+											let index1 = value.search(
+												new RegExp(companyName, 'i'),
+											);
+										
+												if (index1 !== -1) {
+													return `Please do not mention company name [${companyName}] here`;
+												}
+												if (!value) {
+													return 'Please add something about the company';
+												}
+											}
+										
+									}}
                   label={"About Company"}
                   placeholder={"Enter about company"}
                   required

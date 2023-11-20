@@ -2110,7 +2110,7 @@ const HRFields = ({
                       value: item.value,
                     }))}
                     name="fromTime"
-                    isError={errors["fromTime"] && errors["fromTime"]}
+                    isError={errors["fromTime"] ? errors["fromTime"].message : "Please select from time."}
                     required={true}
                     errorMsg={"Please select from time."}
                   />
