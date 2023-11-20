@@ -321,12 +321,13 @@ if(activeTabType){
 															{DateTimeUtils.getTimeFromString(item?.ActionDate)}
 														</div>
 													</div>
+													{console.log(item)}
 													<div className={ActivityFeedStyle.activityFeedActivities}>
 														{item?.IsNotes === 0 ? (
 															<div className={ActivityFeedStyle.profileStatus}>
 																<span>
-																	{item?.DisplayName
-																		? item?.DisplayName
+																	{item?.DisplayName 
+																		? item?.DisplayName === "TSC Auto Assignment" ? `TSC ${item?.TSCPerson} Auto Assignment`: item?.DisplayName
 																		: item?.ActionName}{' '}
 																</span>
 																<span>{item?.TalentName && ' for '}</span>
