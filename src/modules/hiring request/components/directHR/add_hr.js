@@ -1706,7 +1706,7 @@ export default function AddHR(
                       name="fromTime"
                       isError={errors["fromTime"] && errors["fromTime"]}
                       required={true}
-                      errorMsg={errors["fromTime"] ? errors["fromTime"].message : "Please select from time."}
+                      errorMsg={errors["fromTime"] ? errors["fromTime"].message.length > 0 ? errors["fromTime"].message : "Please select from time." : "Please select from time."}
                     />
                   </div>
                   <div className={HRFieldStyle.formGroup}>

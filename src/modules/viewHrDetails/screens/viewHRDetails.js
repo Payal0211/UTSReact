@@ -250,6 +250,12 @@ const ViewHRDetails = () => {
 													'NA'
 												)}
 											</li>
+											{(hiringDetails?.responseBody?.details?.directHRModeOfWork === "Office" || hiringDetails?.responseBody?.details?.directHRModeOfWork === "Hybrid") &&  <>										
+											<li>
+												<span>Company Address:</span>{' '}
+												{`${hiringDetails?.responseBody?.details?.address } ${hiringDetails?.responseBody?.details?.city} ${hiringDetails?.responseBody?.details?.state} ${hiringDetails?.responseBody?.details?.country} ${hiringDetails?.responseBody?.details?.postalCode}`}
+											</li>		
+											</>}
 										</ul>
 									</div>
 								</div>
