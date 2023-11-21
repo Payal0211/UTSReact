@@ -335,7 +335,8 @@ const ViewHRDetails = () => {
 									<ul>
 										{JSON.parse(hiringDetails?.responseBody?.details?.requirments).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />)}
 									</ul>
-								</div>: <div className={ViewHRDetailsStyle.viewHrJDDetailsBox } dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.requirments}} />:
+								</div>: 
+								<div className={ViewHRDetailsStyle.viewHrJDDetailsBox } dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.requirments}} />:
 								<div className={ViewHRDetailsStyle.viewHrJDDetailsBox } dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.requirments}} />
 							}
 							
@@ -395,6 +396,127 @@ const ViewHRDetails = () => {
 						</div>
 					</div>
 				</div>
+
+				{hiringDetails?.responseBody?.details?.additionalDetails && 
+				<>
+					<div className={ViewHRDetailsStyle.viewHRDetailsItem}>
+						<div className={ViewHRDetailsStyle.viewHRLeftDetails}>
+							<h3>Additional Questions</h3>
+							<p>The Talents would be able to see fields highlighted in blue bullets.</p>
+						</div>	
+						
+						<div className={ViewHRDetailsStyle.viewHRRightDetails}>
+							<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+							<ul>
+								<li>
+									<span>Does this role require line management responsibilities?:</span>{' '}	
+									{hiringDetails?.responseBody?.details?.additionalDetails?.isLineManagerReq ? "Yes" : "No"}	
+								</li>
+								<li>
+									<span>Is it a replacement for your existing team member or is it a new position?:</span>{' '}
+								{hiringDetails?.responseBody?.details?.additionalDetails?.isTeamMemberReplacement ? "This is a replacement" : "This is a new position"}
+								</li>
+							</ul>
+							</div>
+							<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+								<h3>
+									What is the career progression path of this role?
+								</h3>
+								<div className={ViewHRDetailsStyle.viewHrJDDetailsBox }>
+									{hiringDetails?.responseBody?.details?.additionalDetails?.careerProgressionPath}
+								</div>
+							</div>
+							<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+								<h3>
+									What were the benefits and challenges of it. 
+								</h3>
+								<div className={ViewHRDetailsStyle.viewHrJDDetailsBox }>
+									{hiringDetails?.responseBody?.details?.additionalDetails?.benefitsandChallenges}
+								</div>
+							</div>
+							<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+								<h3>
+									What is an Interview process? Will there be any assessments? 
+								</h3>
+								<div className={ViewHRDetailsStyle.viewHrJDDetailsBox }>
+									{hiringDetails?.responseBody?.details?.additionalDetails?.interviewProcess}
+								</div>
+							</div>
+						</div>	
+					</div>
+
+					<div className={ViewHRDetailsStyle.viewHRDetailsItem}>
+
+						<div className={ViewHRDetailsStyle.viewHRLeftDetails}>
+							<h3>About Company</h3>
+							<p>The Talents would be able to see fields highlighted in blue bullets.</p>
+						</div>
+
+						<div className={ViewHRDetailsStyle.viewHRRightDetails}>
+							<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+								<div className={ViewHRDetailsStyle.row}>								
+									<div className={ViewHRDetailsStyle.colLg6}>
+										<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+											<ul>
+												<li>
+													<span>Industry:</span>{' '}	
+													{hiringDetails?.responseBody?.details?.additionalDetails?.industry_Type}	
+													<i className={ViewHRDetailsStyle.blueDot} />																					
+												</li>																
+												<li>
+													<span>Client’s Linkedin:</span>{' '}
+													<a
+															href={hiringDetails?.responseBody?.details?.additionalDetails?.contactsLinkedInProfile}
+															target="_blank"
+															rel="noreferrer">
+															Click Here
+													</a>
+												</li>												
+												<li>
+													<span>Does client have experience hiring talent outside of their home country, especially from offshore locations like India?:</span>{' '}
+													{hiringDetails?.responseBody?.details?.additionalDetails?.isOffShoreLocationExp ? "Yes" : "No"}
+												</li>							
+											</ul>
+										</div>
+									</div>
+
+									<div className={ViewHRDetailsStyle.colLg6}>
+									<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+											<ul>							
+												<li>
+													<span>Company Size:</span>{' '}
+													{hiringDetails?.responseBody?.details?.additionalDetails?.companySize} employees	
+													<i className={ViewHRDetailsStyle.blueDot} />											
+												</li>													
+												
+												<li>
+													<span>Company’s Linkedin:</span>{' '}
+													<a
+															href={hiringDetails?.responseBody?.details?.additionalDetails?.companysLinkedInProfile}
+															target="_blank"
+															rel="noreferrer">
+															Click Here
+														</a>
+												</li>		
+																	
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+										<h3>
+											About Company
+										</h3>
+										<div className={ViewHRDetailsStyle.viewHrJDDetailsBox }>
+											{hiringDetails?.responseBody?.details?.additionalDetails?.about_Company_desc}
+										</div>
+							</div>
+						</div>
+
+					</div>
+				</>
+				}
 			</div>
 		</>
 	);
