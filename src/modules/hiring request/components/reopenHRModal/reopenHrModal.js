@@ -61,7 +61,7 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
 
       {isLoading ? (
         <SpinLoader />
-      ) : apiData?.HRStatusCode === HiringRequestHRStatus.COMPLETED ? (
+      ) : (apiData?.HRStatusCode || apiData?.hrStatusCode) === HiringRequestHRStatus.COMPLETED ? (
         <div className={reopenHRStyle.row}>
           <div className={reopenHRStyle.colMd12}>
             <HRInputField

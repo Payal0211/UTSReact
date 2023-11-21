@@ -35,6 +35,7 @@ export default function DuringPreOnboarding({
 		register,
 		setValue,
 		handleSubmit,
+        unregister,
         clearErrors,
 		control,
 		formState: { errors },
@@ -282,6 +283,7 @@ export default function DuringPreOnboarding({
     useEffect(()=>{
         if(getUploadFileData){
             clearErrors('policyLink')
+            unregister('policyLink')
         }
         if(watch("policyLink")){
             clearErrors('policyFile')
@@ -374,7 +376,9 @@ export default function DuringPreOnboarding({
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
     <div className={HRDetailStyle.onboardingProcesspart}>
-        <div className={HRDetailStyle.onboardingProcesBox}>
+
+        {isLoading ? <Skeleton /> : <>
+          <div className={HRDetailStyle.onboardingProcesBox}>
             <div className={HRDetailStyle.onboardingProcessLeft}>
                 <div><GeneralInformationSVG width="27" height="32" /></div>
                 <h3 className={HRDetailStyle.titleLeft}>Invoicing and Contract</h3>
@@ -662,7 +666,7 @@ export default function DuringPreOnboarding({
                                 name="policyLink"
                                 type={InputType.TEXT}
                                 placeholder="Enter Policy Link"
-                                required={getUploadFileData ?  false : true}
+                                required={getUploadFileData ? false : true}
                                 disabled={isTabDisabled === true ? isTabDisabled : getUploadFileData ? true : false} 
                             />                          
                         </div>
@@ -1038,6 +1042,8 @@ export default function DuringPreOnboarding({
 
             </div>
         </div>
+        </>}
+      
     </div>
 
     <div className={HRDetailStyle.formPanelAction}>
