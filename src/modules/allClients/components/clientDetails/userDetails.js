@@ -108,8 +108,15 @@ const UserDetails = () => {
             companyName: company_name,
             freeCredit: Number(free_credits)
           });
-          if (response.statusCode === HTTPStatusCode.OK) {
-            navigate(UTSRoutes.ALLCLIENTS);            
+          if (response.statusCode === HTTPStatusCode.OK) {           
+            toast.success("Client added successfully",{
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 1000, 
+            })
+            setTimeout(() => {
+                navigate(UTSRoutes.ALLCLIENTS); 
+            }, 1000);
+                       
           }else if(response.statusCode === HTTPStatusCode.BAD_REQUEST){
             toast.error(response.responseBody, {
                 position: toast.POSITION.TOP_RIGHT,
