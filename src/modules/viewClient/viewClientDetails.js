@@ -319,7 +319,7 @@ function ViewClientDetails() {
 				</div>
                 <Table 
 				scroll={{  y: '100vh' }}
-				dataSource={viewDetails.hrList ? viewDetails?.hrList : []} 
+				dataSource={viewDetails?.hrList ? viewDetails?.hrList : []} 
 				columns={columns} 
 				pagination={false}
 				/>

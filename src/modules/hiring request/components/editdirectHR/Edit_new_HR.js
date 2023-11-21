@@ -232,7 +232,8 @@ const EditNewHR = () => {
       } else {
         let formData = new FormData();
         formData.append("File", fileData);
-        formData.append("clientemail", filteredMemo[0]?.emailId);
+        // console.log('file',watchClientName, filteredMemo, watch('clientEmail'))
+        formData.append("clientemail", watch('clientEmail'));
         let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
         if (uploadFileResponse.statusCode === 400) {
           setValidation({
@@ -286,7 +287,7 @@ const EditNewHR = () => {
         setIsLoading(false);
       }
     },
-    [getValidation, filteredMemo]
+    [getValidation, filteredMemo,watchClientName]
   );
 
   const createListMarkup = (list) => {
@@ -1357,21 +1358,16 @@ const EditNewHR = () => {
   // useEffect(() => {
   //   console.log('aboutCompany',watch('aboutCompany'))
   // },[watch('aboutCompany')])
-  const AboutCompanyField = () => {
-    return (
-      <TextEditor
-        isControlled={true}
-        controlledValue={controlledAboutCompany}
-        label={"About Company"}
-        placeholder={"Enter about company"}
-        required
-        setValue={setValue}
-        register={register}
-        errors={errors}
-        name="aboutCompany"
-      />
-    );
-  };
+ 
+
+  //unregister debref fields on tab state
+  useEffect(() => {
+    if(title === "Edit Direct Hiring Request" ){
+      unregister('industry')
+      unregister('location')
+      unregister('goodToHaveSkills')
+    }
+  },[title,unregister])
 
   return (
     <div className={EditNewHRStyle.addNewContainer}>
@@ -1924,7 +1920,7 @@ const EditNewHR = () => {
                         name="fromTime"
                         isError={errors["fromTime"] && errors["fromTime"]}
                         required={true}
-                        errorMsg={"Please select from time."}
+                        errorMsg={errors["fromTime"] ? errors["fromTime"].message.length > 0 ? errors["fromTime"].message : "Please select from time." : "Please select from time."}
                       />
                     </div>
                     <div className={EditNewHRStyle.formGroup}>
@@ -1990,9 +1986,30 @@ const EditNewHR = () => {
                 </div>
 
                 <div className={EditNewHRStyle.colMd12}>
-                  <TextEditor
+                  <HRInputField
+                      isTextArea={true}
+                       type={InputType.TEXT}
+                       validationSchema={{
+                         validate: (value) => {
+                           if (!value) {
+                             return 'Please add something about the company';
+                           }
+                           let companyName = watch('companyName')
+                           let index1 = value.search(
+                             new RegExp(companyName, 'i'),
+                           );
+                         
+                             if (index1 !== -1) {
+                               return `Please do not mention company name [${companyName}] here`;
+                             }
+                             if (!value) {
+                               return 'Please add something about the company';
+                             }
+                           }
+                         
+                       }}
                     isControlled={true}
-                    controlledValue={controlledAboutCompany}
+                    // controlledValue={controlledAboutCompany}
                     label={"About Company"}
                     placeholder={"Enter about company"}
                     required
@@ -2404,9 +2421,31 @@ const EditNewHR = () => {
                 </div>
 
                 <div className={EditNewHRStyle.colMd12}>
-                  <TextEditor
+                <HRInputField
+                      isTextArea={true}
+                       type={InputType.TEXT}
+                       validationSchema={{
+                         validate: (value) => {
+                           if (!value) {
+                             return 'Please add something about the company';
+                           }
+                           let companyName = watch('companyName')
+                           let index1 = value.search(
+                             new RegExp(companyName, 'i'),
+                           );
+                         
+                             if (index1 !== -1) {
+                               return `Please do not mention company name [${companyName}] here`;
+                             }
+                             if (!value) {
+                               return 'Please add something about the company';
+                             }
+                           }
+                         
+                       }}
                     isControlled={true}
-                    controlledValue={controlledAboutCompany}
+                    // controlledValue={controlledAboutCompany}
+                    setControlledV
                     label={"About Company"}
                     placeholder={"Enter about company"}
                     required
