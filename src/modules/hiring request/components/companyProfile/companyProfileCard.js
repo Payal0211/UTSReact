@@ -260,7 +260,6 @@ const CompanyProfileCard = ({
                <div className={CompanyProfileCardStyle.roleName}>
                 <span>Role Title:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
-                  {console.log('Role Title',clientDetail)}
                   {clientDetail?.HRTitle ? clientDetail?.HRTitle : "NA"}
                 </span>
               </div>
