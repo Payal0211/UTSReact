@@ -409,6 +409,7 @@ const AllHiringRequestScreen = () => {
 				sortorder: 'desc',
 				searchText: '',
 				filterFields_ViewAllHRs: {},
+				IsDirectHR:false,
 			}},			
 		);
 		const reqFilter = {...tableFilteredState,...{
@@ -417,7 +418,8 @@ const AllHiringRequestScreen = () => {
 				sortdatafield: 'CreatedDateTime',
 				sortorder: 'desc',
 				searchText: '',
-				filterFields_ViewAllHRs: {}
+				filterFields_ViewAllHRs: {},
+				IsDirectHR:false,
 			}}
 		localStorage.removeItem('filterFields_ViewAllHRs')
 		localStorage.removeItem('appliedHRfilters')

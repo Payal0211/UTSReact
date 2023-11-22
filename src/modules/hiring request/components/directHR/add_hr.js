@@ -766,6 +766,14 @@ export default function AddHR(
       //   jdDumpID
       // );
 
+      if(d.skills.length > 5){
+        setError('skills',{message:"Must have Skills can not be more then 5 "})
+        setIsSavedLoading(false)
+        return
+      }else{
+        clearErrors('skills');
+      }
+
       let skillList = d.skills.map((item) => {
         const obj = {
           skillsID: item.id,
@@ -1480,7 +1488,7 @@ export default function AddHR(
                     name="skills"
                     isError={errors["skills"] && errors["skills"]}
                     required
-                    errorMsg={"Please enter the skills."}
+                    errorMsg={errors["skills"]?.message ? 'More then 5 skills not allowed!' :"Please enter the skills."}
                   />
                   {/* <HRInputField
                             register={register}

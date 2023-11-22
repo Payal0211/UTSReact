@@ -882,6 +882,14 @@ const EditNewHR = () => {
       //   jdDumpID
       // );
 
+      if(d.skills.length > 5){
+        setError('skills',{message:"Must have Skills can not be more then 5 "})
+        setIsSavedLoading(false)
+        return
+      }else{
+        clearErrors('skills');
+      }
+
       let skillList = d.skills.map((item) => {
         const obj = {
           skillsID: item.id,
@@ -1017,6 +1025,14 @@ const EditNewHR = () => {
       }
       if(!checkRating(parseFloat(d.glassdoorRating))){
         RatingError= true
+      }
+
+      if(d.skills.length > 5){
+        setError('skills',{message:"Must have Skills can not be more then 5 "})
+        setIsLoading(false);
+        return
+      }else{
+        clearErrors('skills');
       }
 
       let skillList = d.skills.map((item) => {
@@ -1684,7 +1700,7 @@ const EditNewHR = () => {
                       mode="tags"
                       setValue={setValue}
                       register={register}
-                      label={"Must have Skills"}
+                      label={"Top 5 Must have Skills"}
                       placeholder="Type skills"
                       // onChange={setSelectedItems}
                       options={combinedSkillsMemo}
@@ -1692,7 +1708,7 @@ const EditNewHR = () => {
                       name="skills"
                       isError={errors["skills"] && errors["skills"]}
                       required
-                      errorMsg={"Please enter the skills."}
+                      errorMsg={errors["skills"]?.message ? 'More then 5 skills not allowed!' :"Please enter the skills."}
                     />
                     <ul className={EditNewHRStyle.selectFieldBox}>
                       {skillSuggestionList.map((item) => (
@@ -2575,7 +2591,7 @@ const EditNewHR = () => {
                       mode="tags"
                       setValue={setValue}
                       register={register}
-                      label={"Must have Skills"}
+                      label={"Top 5 Must have Skills"}
                       placeholder="Type skills"
                       // onChange={setSelectedItems}
                       options={combinedSkillsMemo}
@@ -2583,7 +2599,7 @@ const EditNewHR = () => {
                       name="skills"
                       isError={errors["skills"] && errors["skills"]}
                       required
-                      errorMsg={"Please enter the skills."}
+                      errorMsg={errors["skills"]?.message ? 'More then 5 skills not allowed!' :"Please enter the skills."}
                     />
 
                     <ul className={EditNewHRStyle.selectFieldBox}>

@@ -456,7 +456,7 @@ const ViewHRDetails = () => {
 							<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
 								<div className={ViewHRDetailsStyle.row}>								
 									<div className={ViewHRDetailsStyle.colLg6}>
-										<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+										
 											<ul>
 												<li>
 													<span>Industry:</span>{' '}	
@@ -474,14 +474,15 @@ const ViewHRDetails = () => {
 												</li>												
 												<li>
 													<span>Does client have experience hiring talent outside of their home country, especially from offshore locations like India?:</span>{' '}
-													{hiringDetails?.responseBody?.details?.additionalDetails?.isOffShoreLocationExp ? "Yes" : "No"}
+													{/* {hiringDetails?.responseBody?.details?.additionalDetails?.isOffShoreLocationExp ? "Yes" : "No"} */}
+													NA
 												</li>							
 											</ul>
-										</div>
+	
 									</div>
 
 									<div className={ViewHRDetailsStyle.colLg6}>
-									<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+									
 											<ul>							
 												<li>
 													<span>Company Size:</span>{' '}
@@ -501,7 +502,7 @@ const ViewHRDetails = () => {
 																	
 											</ul>
 										</div>
-									</div>
+									
 								</div>
 							</div>
 							<div className={ViewHRDetailsStyle.viewHRDetailsBox}>
