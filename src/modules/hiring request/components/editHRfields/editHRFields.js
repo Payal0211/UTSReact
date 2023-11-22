@@ -1300,6 +1300,7 @@ const EditHRFields = ({
         gptFileDetails.Responsibility;
       _getHrValues.addHiringRequest.jdurl = "";
       _getHrValues.addHiringRequest.jdfilename = gptFileDetails.FileName;
+      if(gptFileDetails.Skills.length > 0){_getHrValues.chatGptSkills = gptFileDetails.Skills.map(item=> item.value).join(',');}  
 
       setHRdetails(_getHrValues);
     } else {
