@@ -250,11 +250,18 @@ const CompanyProfileCard = ({
 				<span style={{ fontWeight: '500' }}>
 					{clientDetail?.TR_Accepted ? clientDetail?.TR_Accepted : 'NA'}
 				</span>
-			</div> */}
+			</div> */} 
               <div className={CompanyProfileCardStyle.roleName}>
                 <span>Role Name:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.Role ? clientDetail?.Role : "NA"}
+                </span>
+              </div>
+               <div className={CompanyProfileCardStyle.roleName}>
+                <span>Role Title:</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                  {console.log('Role Title',clientDetail)}
+                  {clientDetail?.HRTitle ? clientDetail?.HRTitle : "NA"}
                 </span>
               </div>
               {/* {!allApiData?.Is_HRTypeDP ? <div className={CompanyProfileCardStyle.contactDuration}>
