@@ -99,11 +99,11 @@ const ViewHRDetails = () => {
 												{hiringDetails?.responseBody?.details?.clientName ??
 													'NA'}
 											</li>
-											<li>
+											{/* <li>
 												<span>Hiring Request Role:</span>{' '}
 												{hiringDetails?.responseBody?.details
 													?.hiringRequestRole ?? 'NA'}
-											</li>
+											</li> */}
 											<li>
 												<span>Job Description:</span>{' '}
 												{hiringDetails?.responseBody?.details
@@ -191,9 +191,12 @@ const ViewHRDetails = () => {
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li>
 											<li>
-												<span>Hiring Request Title:</span>{' '}
+												<span>Role Title:</span>{' '}
 												{hiringDetails?.responseBody?.details
-													?.hiringRequestTitle ?? 'NA'}
+													?.hiringRequestTitle ? miscData?.loggedInUserTypeID === UserAccountRole.DEVELOPER || miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR  ? `${hiringDetails?.responseBody?.details
+														?.hiringRequestTitle} ( ${hiringDetails?.responseBody?.details
+														?.hiringRequestRole} )` : hiringDetails?.responseBody?.details
+														?.hiringRequestTitle : 'NA'}
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li>
 											<li>
