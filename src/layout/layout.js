@@ -31,7 +31,7 @@ const Layout = () => {
 				}}>
 				<Outlet />
 			</main>
-			{userData?.LoggedInUserTypeID === 2 && <ChatListing />}
+			{(userData?.LoggedInUserTypeID === 2 || userData?.EmployeeID === "UP1302AM") && <ChatListing />}
 		</div>
 	);
 };

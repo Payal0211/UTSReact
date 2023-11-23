@@ -134,28 +134,36 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 const calulateNR =async() =>{
 	
 	const calresponse = await engagementRequestDAO.calculateActualNRBRPRDAO(billRateValue,payRateValue,currencyValue)
-	setValue('nrMargin', calresponse?.responseBody?.details);
+	if(calresponse.statusCode === HTTPStatusCode.OK){
+		setValue('nrMargin', calresponse?.responseBody?.details);
+		clearErrors('billRate')
+	}
+	if(calresponse.statusCode === HTTPStatusCode.BAD_REQUEST){
+		setError('billRate',{message:calresponse?.responseBody})
+		resetField('nrMargin')
+	}
+	
 }
 
 
 useEffect(()=>{
 	if(billRateValue && payRateValue && currencyValue  ){
-		if(billRateValue < payRateValue){
-			calulateNR()
-				setTimeout(()=>{
-				clearErrors('billRate')
-			},3000)
-			setError('billRate',{message:'bill rate must be greater then pay rate'})
-			return
-		}
+		// if(billRateValue < payRateValue){
+		// 	calulateNR()
+		// 		setTimeout(()=>{
+		// 		clearErrors('billRate')
+		// 	},3000)
+		// 	setError('billRate',{message:'bill rate must be greater then pay rate'})
+		// 	return
+		// }
 
-		if(payRateValue > billRateValue){
-			setTimeout(()=>{
-				clearErrors('payRate')
-			},3000)
-			setError('payRate',{message:'pay rate must be less then bill rate'})
-			return
-		}
+		// if(payRateValue > billRateValue){
+		// 	setTimeout(()=>{
+		// 		clearErrors('payRate')
+		// 	},3000)
+		// 	setError('payRate',{message:'pay rate must be less then bill rate'})
+		// 	return
+		// }
 		calulateNR()
 		// else{
 		// 	setTimeout(()=>{
@@ -312,16 +320,19 @@ useEffect(()=>{
 							valueAsNumber: true,
 						}}
 						label={`Bill Rate(${currencyValue})`}
-						// onChangeHandler={e=> {
-						// 	let value = e.target.value
-						// 	if(value > 0 && value < payRateValue){
-						// 	setBillRateValue(parseFloat(e.target.value))
-						// 	}else{
-						// 		setTimeout(()=>{
-						// 			clearErrors('billRate')
-						// 		},3000)
-						// 		setError('billRate',{message:'bill rate can not less then 0 and pay rate'})
-						// 	}}}
+						onChangeHandler={e=> {
+							setBillRateValue(parseFloat(e.target.value))
+							// let value = e.target.value
+							// if(value > 0 && value < payRateValue){
+							// setBillRateValue(parseFloat(e.target.value))
+							// }else{
+							// 	setTimeout(()=>{
+							// 		clearErrors('billRate')
+							// 	},3000)
+							// 	setError('billRate',{message:'bill rate can not less then 0 and pay rate'})
+							// }
+						}
+						}
 						name="billRate"
 						disabled={false}
 						type={InputType.NUMBER}
@@ -358,18 +369,19 @@ useEffect(()=>{
 							required: 'Please enter pay rate.',
 							valueAsNumber: true,
 						}}
-						// onChangeHandler={e=> { 
-						// 	let value = e.target.value
-						// 	if(value > 0 && payRateValue < billRateValue ){
-						// 		setPayRateValue(parseFloat(e.target.value))
-						// 	}else{
-						// 		setTimeout(()=>{
-						// 			clearErrors('payRate')
-						// 		},3000)
-						// 		setError('payRate',{message:'pay rate can not less then 0 and grater then bill rate'})
-						// 		}
-						// 	}
-						// 	}
+						onChangeHandler={e=> { 
+							setPayRateValue(parseFloat(e.target.value))
+							// let value = e.target.value
+							// if(value > 0 && payRateValue < billRateValue ){
+							// 	setPayRateValue(parseFloat(e.target.value))
+							// }else{
+							// 	setTimeout(()=>{
+							// 		clearErrors('payRate')
+							// 	},3000)
+							// 	setError('payRate',{message:'pay rate can not less then 0 and grater then bill rate'})
+							// 	}
+							}
+							}
 						label={`Pay Rate(${currencyValue})`}
 						name="payRate"
 						type={InputType.NUMBER}

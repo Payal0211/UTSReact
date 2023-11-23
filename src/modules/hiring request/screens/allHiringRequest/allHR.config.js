@@ -287,12 +287,12 @@ export const allHRConfig = {
         isSearch: false,
         isNumber: true,
       },
-      {
-        label: "Position",
-        name: "position",
-        child: filterList?.positions,
-        isSearch: true,
-      },
+      // {
+      //   label: "Position",
+      //   name: "position",
+      //   child: filterList?.positions,
+      //   isSearch: true,
+      // },
       // {
       // 	label: 'Company',
       // 	name: 'company',

@@ -43,7 +43,7 @@ const Sidebar = () => {
 	}, []);
 	//let isMenuvisible = (userData?.LoggedInUserTypeID === 1 || userData?.LoggedInUserTypeID === 2) ? true: false;
 	
-	const sidebarDataSets = getSideBar(userData?.LoggedInUserTypeID);
+	const sidebarDataSets = getSideBar(userData?.LoggedInUserTypeID,userData?.EmployeeID);
 	let urlSplitter = `/${switchLocation.pathname.split('/')[1]}`;
 
 	return (
@@ -159,8 +159,17 @@ const isAccess = (ID, title) =>{
 	return isVisible
 }
 
-const getSideBar = (usertypeID) => {
-	let dataList = [
+const getSideBar = (usertypeID,EmployeeID) => {
+	let dataList = EmployeeID === "UP1302AM" ? [new SideBarModels({
+		id: 'UTS_all_hiring_request',
+		title: 'Hiring Request',
+		isActive: false,
+		icon: Briefcase,                                                                                                                    
+		navigateTo: UTSRoutes.ALLHIRINGREQUESTROUTE,
+		isChildren: false,
+		branch: [],
+		isVisible: isAccess(usertypeID,'Hiring Request')
+	})] : [
 		new SideBarModels({
 			id: 'UTS_all_hiring_request',
 			title: 'Hiring Request',

@@ -50,14 +50,18 @@ const HiringFiltersLazyComponent = React.lazy(() =>
   import("modules/hiring request/components/hiringFilter/hiringFilters")
 );
 
+
+let defaaultFilterState = {  pagesize: 100,
+	pagenum: 1,
+	sortdatafield: "CreatedDateTime",
+	sortorder: "desc",
+	searchText: "",
+	IsDirectHR: false,
+}
+
 const AllHiringRequestScreen = () => {
-  const [tableFilteredState, setTableFilteredState] = useState({
-    pagesize: 100,
-    pagenum: 1,
-    sortdatafield: "CreatedDateTime",
-    sortorder: "desc",
-    searchText: "",
-  });
+  const [tableFilteredState, setTableFilteredState] = useState(defaaultFilterState);
+
   const [isLoading, setLoading] = useState(false);
 
   const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
@@ -229,7 +233,9 @@ const AllHiringRequestScreen = () => {
           "filterFields_ViewAllHRs",
           JSON.stringify(pageData.filterFields_ViewAllHRs)
         );
-      }
+      }else{
+		localStorage.removeItem('filterFields_ViewAllHRs');
+	  }
 
       let response = await hiringRequestDAO.getPaginatedHiringRequestDAO({
         ...pageData,
@@ -427,34 +433,24 @@ const AllHiringRequestScreen = () => {
     setAppliedFilters(new Map());
     setCheckedState(new Map());
     setFilteredTagLength(0);
-    setTableFilteredState({
-      ...tableFilteredState,
-      ...{
-        pagesize: 100,
-        pagenum: 1,
-        sortdatafield: "CreatedDateTime",
-        sortorder: "desc",
-        searchText: "",
-        filterFields_ViewAllHRs: {},
-        IsDirectHR: false,
-      },
-    });
-    const reqFilter = {
-      ...tableFilteredState,
-      ...{
-        pagesize: 100,
-        pagenum: 1,
-        sortdatafield: "CreatedDateTime",
-        sortorder: "desc",
-        searchText: "",
-        filterFields_ViewAllHRs: {},
-        IsDirectHR: false,
-      },
-    };
+    setTableFilteredState(defaaultFilterState);
+    // const reqFilter = {
+    //   ...tableFilteredState,
+    //   ...{
+    //     pagesize: 100,
+    //     pagenum: 1,
+    //     sortdatafield: "CreatedDateTime",
+    //     sortorder: "desc",
+    //     searchText: "",
+    //     // filterFields_ViewAllHRs: {},
+    //     IsDirectHR: false,
+    //   },
+    // };
+
     localStorage.removeItem("filterFields_ViewAllHRs");
     localStorage.removeItem("appliedHRfilters");
     localStorage.removeItem("HRFilterCheckedState");
-    handleHRRequest(reqFilter);
+    handleHRRequest(defaaultFilterState);
     setIsAllowFilters(false);
     setEndDate(null);
     setStartDate(null);
@@ -471,7 +467,7 @@ const AllHiringRequestScreen = () => {
     setFilteredTagLength,
     setIsAllowFilters,
     setTableFilteredState,
-    tableFilteredState,
+    // tableFilteredState,
   ]);
 
   return (
