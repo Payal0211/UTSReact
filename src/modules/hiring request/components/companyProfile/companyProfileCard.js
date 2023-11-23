@@ -251,16 +251,19 @@ const CompanyProfileCard = ({
 					{clientDetail?.TR_Accepted ? clientDetail?.TR_Accepted : 'NA'}
 				</span>
 			</div> */} 
-              <div className={CompanyProfileCardStyle.roleName}>
+              {/* <div className={CompanyProfileCardStyle.roleName}>
                 <span>Role Name:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.Role ? clientDetail?.Role : "NA"}
                 </span>
-              </div>
+              </div> */}
                <div className={CompanyProfileCardStyle.roleName}>
                 <span>Role Title:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
-                  {clientDetail?.HRTitle ? clientDetail?.HRTitle : "NA"}
+                  {clientDetail?.HRTitle ? userSessionMemo?.loggedInUserTypeID ===
+                    UserAccountRole.DEVELOPER ||
+                    userSessionMemo?.loggedInUserTypeID ===
+                      UserAccountRole.ADMINISTRATOR ? `${clientDetail?.HRTitle} (${clientDetail?.Role})` : clientDetail?.HRTitle : "NA"}
                 </span>
               </div>
               {/* {!allApiData?.Is_HRTypeDP ? <div className={CompanyProfileCardStyle.contactDuration}>
