@@ -26,7 +26,7 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
   const [apiError, setAPIError] = useState('')
   const handleReopen = async (d) => {
     setAPIError('')
-    let data = { hrID: apiData.HR_Id, updatedTR: apiData?.HRStatusCode === HiringRequestHRStatus.COMPLETED ? d.talent : radioValue ? d.talent : apiData.ClientDetail.NoOfTalents };
+    let data = { hrID: apiData.HR_Id, updatedTR: (apiData?.HRStatusCode || apiData?.hrStatusCode) === HiringRequestHRStatus.COMPLETED ? d.talent : radioValue ? d.talent : apiData.ClientDetail.NoOfTalents };
     setIsLoading(true);
     const response = await hiringRequestDAO.ReopenHRDAO(data);
     if (response?.statusCode === HTTPStatusCode.OK) {
@@ -85,7 +85,7 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
                 },
               }}
               required={
-                apiData?.HRStatusCode === HiringRequestHRStatus.COMPLETED
+                (apiData?.HRStatusCode || apiData?.hrStatusCode) === HiringRequestHRStatus.COMPLETED
               }
             />
           </div>
@@ -125,7 +125,7 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
                     },
                   }}
                   required={
-                    apiData?.HRStatusCode !== HiringRequestHRStatus.COMPLETED &&
+                    (apiData?.HRStatusCode || apiData?.hrStatusCode) !== HiringRequestHRStatus.COMPLETED &&
                     radioValue
                   }
                 />
