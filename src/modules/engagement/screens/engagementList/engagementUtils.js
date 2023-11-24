@@ -79,6 +79,7 @@ export const engagementUtils = {
 			currentStatus: item?.currentStatus,
 			// isContractCompleted: item?.isContractCompleted,
 			isRenewalAvailable: item?.isRenewalAvailable,
+			isRenewalContract: item?.isRenewalContract,
 		}));
 	},
 	getClientFeedbackColor: (color) => {
