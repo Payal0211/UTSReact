@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { Dropdown, Menu, message, Table, Tooltip, Modal, Checkbox } from "antd";
+import { Dropdown, Menu, message, Table, Tooltip, Modal, Checkbox, Select } from "antd";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
@@ -57,6 +57,7 @@ let defaaultFilterState = {  pagesize: 100,
 	sortorder: "desc",
 	searchText: "",
 	IsDirectHR: false,
+  hrTypeIds:''
 }
 
 const AllHiringRequestScreen = () => {
@@ -96,6 +97,8 @@ const AllHiringRequestScreen = () => {
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [HRTypesList,setHRTypesList] = useState([])
+  const [selectedHRTypes, setSelectedHRTypes] = useState([])
 
   useEffect(() => {
     const getUserResult = async () => {
@@ -330,6 +333,7 @@ const AllHiringRequestScreen = () => {
     const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
     if (response?.statusCode === HTTPStatusCode.OK) {
       setFiltersList(response && response?.responseBody?.details?.Data);
+      setHRTypesList(response && response?.responseBody?.details?.Data.hrTypes.map(i => ({id:i.text, value:i.value})))
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
       return navigate(UTSRoutes.LOGINROUTE);
     } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
@@ -429,6 +433,17 @@ const AllHiringRequestScreen = () => {
     downloadToExcel(DataToExport);
   };
 
+  useEffect(()=>{
+    if(selectedHRTypes.length > 0) {
+      let typeIds = selectedHRTypes.reduce((val, hr, ind) => {console.log(hr,val,ind);
+        let str = ind === (selectedHRTypes.length -1) ?  val + `${hr.id}` : val + `${hr.id},`
+        return str },'')
+      setTableFilteredState(prev=> ({...prev, hrTypeIds:typeIds}))
+    }else{
+      setTableFilteredState(prev=> ({...prev, hrTypeIds:''}))
+    }
+  },[selectedHRTypes])
+
   const clearFilters = useCallback(() => {
     setAppliedFilters(new Map());
     setCheckedState(new Map());
@@ -458,6 +473,7 @@ const AllHiringRequestScreen = () => {
     setIsFrontEndHR(false);
     setIsOnlyPriority(false);
     setIsShowDirectHRChecked(false);
+    setSelectedHRTypes([])
     setPageIndex(1);
     setPageSize(100);
   }, [
@@ -652,6 +668,18 @@ const AllHiringRequestScreen = () => {
             >
               Show Self Sign Up Only
             </Checkbox>
+
+            {/* <Select 
+                mode="multiple"
+                size='small'
+                style={{ width: '25%' }}
+                placeholder="Select HR Type"
+                value={selectedHRTypes}
+                onChange={(data,datawithID)=>{console.log(data,datawithID);setSelectedHRTypes(datawithID)}}
+                options={HRTypesList} 
+            /> */}
+
+           
             <div className={allHRStyles.searchFilterSet}>
               <SearchSVG style={{ width: "16px", height: "16px" }} />
               <input

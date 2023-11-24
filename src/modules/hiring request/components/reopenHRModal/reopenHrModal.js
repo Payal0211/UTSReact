@@ -73,7 +73,7 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
               errors={errors}
               validationSchema={{
                 validate: (value) => {
-                  if(apiData?.ClientDetail?.Availability === "Full Time"){
+                  if((apiData?.ClientDetail?.Availability ||apiData?.typeOfEmployee ) === "Full Time"){
                     if (`${value}` <= apiData.ClientDetail.NoOfTalents) {
                     return "TR cannot be reduced";
                     }
