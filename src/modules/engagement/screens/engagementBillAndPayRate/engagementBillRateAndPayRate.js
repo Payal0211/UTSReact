@@ -141,7 +141,7 @@ const EngagementBillRateAndPayRate = ({
 				onboardId: talentInfo?.onboardID,
 				// billRate: d.billRate,
 				billRate: d.finalBillRate,
-				payRate: d.payRate,
+				payRate: d.finalPayRate,
 				nr: d.billNRRate,
 				billRateComment: d.billRateAdditionalComment,
 				payRateComment: d.payRateAdditionalComment || '',
@@ -171,7 +171,7 @@ const EngagementBillRateAndPayRate = ({
 		async (d) => {
 			let billRateDataFormatter = {
 				onboardId: talentInfo?.onboardID,
-				billRate: d.billRate,
+				billRate: d.finalBillRate,
 				// payRate: d.payRate,
 				payRate: d.finalPayRate,
 				nr: d.payNRRate,

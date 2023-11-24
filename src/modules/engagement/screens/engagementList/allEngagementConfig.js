@@ -174,13 +174,13 @@ export const allEngagementConfig = {
 							},
 						);
 					}
-					if (param?.isRenewalAvailable === 1) {
+					if (param?.isRenewalAvailable === 1 && param?.isRenewalContract === 0) {
 						listItemData.push({
 							label: 'Renew Engagement',
 							key: 'reNewEngagement',
 							IsEnabled: true,
 						});
-					}
+					}				
 					if (param?.isContractCompleted !== 1) {
 						listItemData.push({
 							label: 'End Engagement',
