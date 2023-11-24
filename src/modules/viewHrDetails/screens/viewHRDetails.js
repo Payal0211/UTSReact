@@ -194,8 +194,9 @@ const ViewHRDetails = () => {
 												<span>Role Title:</span>{' '}
 												{hiringDetails?.responseBody?.details
 													?.hiringRequestTitle ? miscData?.loggedInUserTypeID === UserAccountRole.DEVELOPER || miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR  ? `${hiringDetails?.responseBody?.details
-														?.hiringRequestTitle} ( ${hiringDetails?.responseBody?.details
-														?.hiringRequestRole} )` : hiringDetails?.responseBody?.details
+														?.hiringRequestTitle}   ${ hiringDetails?.responseBody?.details
+															?.hiringRequestRole && `( ${hiringDetails?.responseBody?.details
+														?.hiringRequestRole} )`} ` : hiringDetails?.responseBody?.details
 														?.hiringRequestTitle : 'NA'}
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li>

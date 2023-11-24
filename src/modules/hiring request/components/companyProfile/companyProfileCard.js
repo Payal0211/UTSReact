@@ -263,7 +263,7 @@ const CompanyProfileCard = ({
                   {clientDetail?.HRTitle ? userSessionMemo?.loggedInUserTypeID ===
                     UserAccountRole.DEVELOPER ||
                     userSessionMemo?.loggedInUserTypeID ===
-                      UserAccountRole.ADMINISTRATOR ? `${clientDetail?.HRTitle} (${clientDetail?.Role})` : clientDetail?.HRTitle : "NA"}
+                      UserAccountRole.ADMINISTRATOR ? `${clientDetail?.HRTitle} ${clientDetail?.Role && `(${clientDetail?.Role})`}` : clientDetail?.HRTitle : "NA"}
                 </span>
               </div>
               {/* {!allApiData?.Is_HRTypeDP ? <div className={CompanyProfileCardStyle.contactDuration}>
