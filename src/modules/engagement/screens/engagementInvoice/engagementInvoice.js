@@ -10,6 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
+import { Skeleton } from 'antd';
 
 const EngagementInvoice = ({
 	engagementListHandler,
@@ -32,6 +33,7 @@ const EngagementInvoice = ({
 	} = useForm();
 	const [getInvoiceDetails, setInvoiceDetails] = useState(null);
 	const watchInvoiceStatus = watch('invoiceStatus');
+	const [isLoading , setIsLoading] = useState(false);
 	const submitEndEngagementHandler = useCallback(
 		async (d) => {
 			// let formattedData = {
@@ -94,7 +96,7 @@ const EngagementInvoice = ({
 			// 	finalPayRate: 0,
 			// 	finalBillRate: 0,
 			// };
-
+			setIsLoading(true)
 			let formattedData = {
 				"onBoardID":talentInfo?.onboardID ,
 				"invoiceSentdate": new Date(d.invoiceDate)
@@ -115,7 +117,9 @@ const EngagementInvoice = ({
 			if (response.statusCode === HTTPStatusCode.OK) {
 				closeModal();
 				engagementListHandler();
+				setIsLoading(false)
 			}
+			setIsLoading(false)
 		},
 		[
 			closeModal,
@@ -170,6 +174,7 @@ const EngagementInvoice = ({
 				</ul>
 			</div>
 
+			{isLoading ? <Skeleton /> : <>
 			<div className={engagementInvoice.row}>
 				<div className={engagementInvoice.colMd6}>
 					<HRInputField
@@ -275,12 +280,16 @@ const EngagementInvoice = ({
 					<br />
 				</>
 			)}
+			</>}
+
+			
 
 			<div className={engagementInvoice.formPanelAction}>
 				<button
 					type="submit"
 					onClick={handleSubmit(submitEndEngagementHandler)}
-					className={engagementInvoice.btnPrimary}>
+					className={engagementInvoice.btnPrimary}
+					disabled={isLoading}>
 					Save
 				</button>
 				<button

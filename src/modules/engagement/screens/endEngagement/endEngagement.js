@@ -12,6 +12,7 @@ import { HTTPStatusCode } from 'constants/network';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import moment from 'moment/moment';
+import { Skeleton } from 'antd';
 
 const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 	const {
@@ -27,6 +28,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 	const [getUploadFileData, setUploadFileData] = useState('');
 	const [showUploadModal, setUploadModal] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isSubmit,setIsSubmit] = useState(false)
 	const [getValidation, setValidation] = useState({
 		systemFileUpload: '',
 		googleDriveFileUpload: '',
@@ -113,6 +115,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 
 	const submitEndEngagementHandler = useCallback(
 		async (d) => {
+			setIsSubmit(true)
 			let formattedData = {
 				contractDetailID: getEndEngagementDetails?.contractDetailID,
 				contractEndDate: d.lastWorkingDate,
@@ -131,7 +134,9 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 			if (response.statusCode === HTTPStatusCode.OK) {
 				closeModal();
 				engagementListHandler();
+				setIsSubmit(false)
 			}
+			setIsSubmit(false)
 		},
 		[
 			base64File,
@@ -178,7 +183,8 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 				</ul>
 			</div>
 
-			<div className={allengagementEnd.row}>
+			{isSubmit ? <Skeleton /> : <>
+				<div className={allengagementEnd.row}>
 				<div className={allengagementEnd.colMd6}>
 					<div className={allengagementEnd.timeSlotItemField}>
 						<div className={allengagementEnd.timeLabel}>
@@ -278,12 +284,17 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 					/>
 				</div>
 			</div>
+			</>}
+
+		
 
 			<div className={allengagementEnd.formPanelAction}>
 				<button
 					type="submit"
 					onClick={handleSubmit(submitEndEngagementHandler)}
-					className={allengagementEnd.btnPrimary}>
+					className={allengagementEnd.btnPrimary}
+					disabled={isSubmit}
+					>
 					Save
 				</button>
 				<button

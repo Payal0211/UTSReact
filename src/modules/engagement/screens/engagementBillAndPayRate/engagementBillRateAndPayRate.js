@@ -4,7 +4,7 @@ import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSel
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import allengagementBillAndPayRateStyles from './engagementBillRate.module.css';
-import { Tabs } from 'antd';
+import { Skeleton, Tabs } from 'antd';
 import { ReactComponent as MinusSVG } from 'assets/svg/minus.svg';
 import { ReactComponent as PlusSVG } from 'assets/svg/plus.svg';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
@@ -75,6 +75,7 @@ const EngagementBillRateAndPayRate = ({
 	const [currency, setCurrency] = useState([]);
 	const [currencyValue,setCurrencyValue] = useState("");
 	const [levelBillEdit, setBillEdit] = useState('Select');
+	const [isLoading, setIsLoading] = useState(false)
 
 	const currencyHandler = useCallback(async () => {
 		const response = await MasterDAO.getCurrencyRequestDAO();
@@ -137,6 +138,7 @@ const EngagementBillRateAndPayRate = ({
 
 	const submitBillRateHandler = useCallback(
 		async (d) => {
+			setIsLoading(true)
 			let billRateDataFormatter = {
 				onboardId: talentInfo?.onboardID,
 				// billRate: d.billRate,
@@ -162,13 +164,16 @@ const EngagementBillRateAndPayRate = ({
 				closeModal();
 				resetFormFields();
 				engagementListHandler();
+				setIsLoading(false)
 			}
+			setIsLoading(false)
 		},
 		[closeModal, engagementListHandler, month, talentInfo?.onboardID, year],
 	);
 
 	const submitPayRateHandler = useCallback(
 		async (d) => {
+			setIsLoading(true)
 			let billRateDataFormatter = {
 				onboardId: talentInfo?.onboardID,
 				billRate: d.finalBillRate,
@@ -192,7 +197,9 @@ const EngagementBillRateAndPayRate = ({
 				closeModal();
 				resetFormFields();
 				engagementListHandler();
+				setIsLoading(false)
 			}
+			setIsLoading(false)
 			// console.log(response, '-response---');
 		},
 		[closeModal, engagementListHandler, month, talentInfo?.onboardID, year],
@@ -297,6 +304,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 						className={
 							allengagementBillAndPayRateStyles.firstFeebackTableContainer
 						}>
+						{isLoading ? <Skeleton /> : <>
 						<div
 							className={`${allengagementBillAndPayRateStyles.row} ${allengagementBillAndPayRateStyles.billRateWrapper}`}>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
@@ -362,6 +370,10 @@ const nrPercentageBR = useCallback( async(e)=>{
 									errors={errors}
 									validationSchema={{
 										required: 'please enter bill rate manually.',
+										min:{
+											value: 1,
+											message: `please enter the value more than 0`,
+											},
 									}}
 									label="Final Actual Bill Rate"
 									name="finalBillRate"
@@ -440,6 +452,8 @@ const nrPercentageBR = useCallback( async(e)=>{
 								/>
 							</div>
 						</div>
+						</>}	
+						
 
 						<div className={allengagementBillAndPayRateStyles.formPanelAction}>
 							<button
@@ -447,7 +461,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 								type="submit"
 								onClick={handleSubmit(submitBillRateHandler)}
 								className={allengagementBillAndPayRateStyles.btnPrimary}
-								disabled={activeTab !== '1'}
+								disabled={isLoading ? isLoading : activeTab !== '1'}
 								>
 								Save
 							</button>
@@ -466,7 +480,10 @@ const nrPercentageBR = useCallback( async(e)=>{
 						className={
 							allengagementBillAndPayRateStyles.firstFeebackTableContainer
 						}>
-						<div
+
+							{isLoading ? <Skeleton /> : 							
+							<>
+								<div
 							className={`${allengagementBillAndPayRateStyles.row} ${allengagementBillAndPayRateStyles.billRateWrapper}`}>
 							<div className={allengagementBillAndPayRateStyles.colMd6}>
 								<HRSelectField
@@ -535,6 +552,10 @@ const nrPercentageBR = useCallback( async(e)=>{
 									errors={errors}
 									validationSchema={{
 										required: 'please enter pay rate manually.',
+										min:{
+											value: 0.1,
+											message: `please enter the value more than 0`,
+											},
 									}}
 									label="Final Actual Pay Rate"
 									name="finalPayRate"
@@ -615,13 +636,15 @@ const nrPercentageBR = useCallback( async(e)=>{
 								/>
 							</div>
 						</div>
+							</>}
+					
 
 						<div className={allengagementBillAndPayRateStyles.formPanelAction}>
 							<button
 								type="submit"
 								onClick={handleSubmit(submitPayRateHandler)}
 								className={allengagementBillAndPayRateStyles.btnPrimary}
-								disabled={activeTab !== '2'}
+								disabled={isLoading ? isLoading : activeTab !== '2'}
 								>
 								Save
 							</button>

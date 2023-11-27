@@ -11,7 +11,7 @@ import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
-import { Divider } from 'antd';
+import { Divider, Skeleton } from 'antd';
 import { ReactComponent as MinusSVG } from 'assets/svg/minus.svg';
 import { ReactComponent as PlusSVG } from 'assets/svg/plus.svg';
 import moment from 'moment';
@@ -35,6 +35,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 	const [currencyValue,setCurrencyValue] = useState("")
 	const [startDate,setStartDate] = useState();
 	const [endDate,setEndDate] = useState();
+	const [isLoading ,setIsLoading] = useState(false)
 
 	const getRenewEngagementHandler = useCallback(async () => {
 		const response = await engagementRequestDAO.getRenewEngagementRequestDAO({
@@ -69,6 +70,7 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 	}, [setValue, talentInfo?.onboardID]);
 	const submitContractRenewalHandler = useCallback(
 		async (d) => {
+			setIsLoading(true)
 			let contractRenewalDataFormatter = {
 				onBoardId: talentInfo?.onboardID,
 				contractStartDate: d.renewedStartDate,
@@ -89,7 +91,9 @@ const RenewEngagement = ({ engagementListHandler, talentInfo, closeModal }) => {
 			if (response.statusCode === HTTPStatusCode.OK) {
 				closeModal();
 				engagementListHandler();
+				setIsLoading(false);
 			}
+			setIsLoading(false)
 		},
 		[
 			closeModal,
@@ -193,6 +197,8 @@ useEffect(()=>{
 				</ul>
 			</div>
 
+			{isLoading ? <Skeleton /> : 			
+			<>
 			<h2 className={allengagementEnd.contractTitle}>Contract Details</h2>
 			<div className={allengagementEnd.row}>
 				<div className={allengagementEnd.colMd6}>
@@ -318,6 +324,10 @@ useEffect(()=>{
 						validationSchema={{
 							required: 'Please enter bill rate.',
 							valueAsNumber: true,
+							min:{
+								value: 1,
+								message: `please enter the value more than 0`,
+								},
 						}}
 						label={`Bill Rate(${currencyValue})`}
 						onChangeHandler={e=> {
@@ -368,6 +378,10 @@ useEffect(()=>{
 						validationSchema={{
 							required: 'Please enter pay rate.',
 							valueAsNumber: true,
+							min:{
+								value: 0.1,
+								message: `please enter the value more than 0`,
+								},
 						}}
 						onChangeHandler={e=> { 
 							setPayRateValue(parseFloat(e.target.value))
@@ -439,12 +453,17 @@ useEffect(()=>{
 					/>
 				</div>
 			</div>
+			</>}
+
+			
 
 			<div className={allengagementEnd.formPanelAction}>
 				<button
 					type="submit"
 					onClick={handleSubmit(submitContractRenewalHandler)}
-					className={allengagementEnd.btnPrimary}>
+					className={allengagementEnd.btnPrimary}
+					disabled={isLoading}
+					>
 					Save
 				</button>
 				<button

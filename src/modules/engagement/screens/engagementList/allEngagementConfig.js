@@ -366,7 +366,8 @@ export const allEngagementConfig = {
 				align: 'left',
 				width: '165px',
 				render:(text)=>{
-					return text ? moment(text).format('DD/MM/YYYY') : ''
+					// return text ? moment(text).format('DD/MM/YYYY') : ''
+					return text
 				}
 			},
 			{
@@ -576,7 +577,8 @@ export const allEngagementConfig = {
 				key: 'contractStartDate',
 				align: 'left',
 				render:(text)=>{
-					return text ? moment(text).format('DD/MM/YYYY') : ''
+					// return text ? moment(text).format('DD/MM/YYYY') : ''
+					return text
 				}
 			},
 			{
@@ -585,7 +587,8 @@ export const allEngagementConfig = {
 				key: 'contractEndDate',
 				align: 'left',
 				render:(text)=>{
-					return text ? moment(text).format('DD/MM/YYYY') : ''
+					// return text ? moment(text).format('DD/MM/YYYY') : ''
+					return text
 				}
 			},
 			{
@@ -594,7 +597,8 @@ export const allEngagementConfig = {
 				key: 'actualEndDate',
 				align: 'left',
 				render:(text)=>{
-					return text ? moment(text).format('DD/MM/YYYY') : ''
+					// return text ? moment(text).format('DD/MM/YYYY') : ''
+					return text
 				}
 			},
 			{
@@ -627,7 +631,8 @@ export const allEngagementConfig = {
 				key: 'renewalstartDate',
 				align: 'left',
 				render:(text)=>{
-					return text ? moment(text).format('DD/MM/YYYY') : ''
+					// return text ? moment(text).format('DD/MM/YYYY') : ''
+					return text
 				}
 			},
 			{
@@ -636,7 +641,8 @@ export const allEngagementConfig = {
 				key: 'renewalendDate',
 				align: 'left',
 				render:(text)=>{
-					return text ? moment(text).format('DD/MM/YYYY') : ''
+					// return text ? moment(text).format('DD/MM/YYYY') : ''
+					return text
 				}
 			},
 			{
@@ -652,7 +658,8 @@ export const allEngagementConfig = {
 				key: 'sowSignedDate',
 				align: 'left',
 				render:(text)=>{
-					return text ? moment(text).format('DD/MM/YYYY') : ''
+					// return text ? moment(text).format('DD/MM/YYYY') : ''
+					return text
 				}
 			},
 			{
@@ -673,7 +680,8 @@ export const allEngagementConfig = {
 				key: 'invoiceSentDate',
 				align: 'left',
 				render:(text)=>{
-					return text ? moment(text).format('DD/MM/YYYY') : ''
+					// return text ? moment(text).format('DD/MM/YYYY') : ''
+					return text
 				}
 			},
 			{
@@ -694,7 +702,8 @@ export const allEngagementConfig = {
 				key: 'dateofPayment',
 				align: 'left',
 				render:(text)=>{
-					return text ? moment(text).format('DD/MM/YYYY') : ''
+					// return text ? moment(text).format('DD/MM/YYYY') : ''
+					return text
 				}
 			},
 			{
