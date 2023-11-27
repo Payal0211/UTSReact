@@ -102,6 +102,8 @@ const HRFields = ({
   const [currency, setCurrency] = useState([]);
   const [budgets, setBudgets] = useState([]);
   const [salesPerson, setSalesPerson] = useState([]);
+  const [isSalesPersionDisable,setIsSalesPersionDisable] = useState(false)
+  const [salesPersionNameFromEmail,setSalesPersionNameFromEmail] = useState('')
   const [howSoon, setHowSoon] = useState([]);
   // const [region, setRegion] = useState([]); // removed 
   const [isLoading, setIsLoading] = useState(false);
@@ -671,11 +673,32 @@ const HRFields = ({
               : watchClientName
           );
 
-        existingClientDetails?.statusCode === HTTPStatusCode.OK &&
-          setContactAndSalesID((prev) => ({
-            ...prev,
-            contactID: existingClientDetails?.responseBody?.contactid,
-          }));
+        // existingClientDetails?.statusCode === HTTPStatusCode.OK &&
+        //   setContactAndSalesID((prev) => ({
+        //     ...prev,
+        //     contactID: existingClientDetails?.responseBody?.contactid,
+        //   }));
+
+          if(existingClientDetails?.statusCode === HTTPStatusCode.OK){
+            setContactAndSalesID((prev) => ({
+              ...prev,
+              contactID: existingClientDetails?.responseBody?.contactid,
+            }));
+            setIsCompanyNameAvailable(true);
+            setValue("companyName", existingClientDetails?.responseBody?.name);
+            companyName(existingClientDetails?.responseBody?.name);
+
+            if(existingClientDetails?.responseBody?.salesuserid > 0){
+              setIsSalesPersionDisable(true)
+              let salesUserObj = salesPerson.filter(p=> p.id === parseInt(existingClientDetails?.responseBody?.salesuserid))
+              setValue("salesPerson", salesUserObj[0]?.id);
+              setSalesPersionNameFromEmail(salesUserObj[0]?.value)
+            }else {
+              setIsSalesPersionDisable(false)
+              resetField("salesPerson")
+              setSalesPersionNameFromEmail('')
+            }
+          }
 
         /* setError('clientName', {
 			type: 'duplicateCompanyName',
@@ -687,11 +710,11 @@ const HRFields = ({
           setValue("clientName", "");
         existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
           setValue("companyName", "");
-        existingClientDetails.statusCode === HTTPStatusCode.OK &&
-          setValue("companyName", existingClientDetails?.responseBody?.name);
-        companyName(existingClientDetails?.responseBody?.name);
-        existingClientDetails.statusCode === HTTPStatusCode.OK &&
-          setIsCompanyNameAvailable(true);
+        // existingClientDetails?.statusCode === HTTPStatusCode.OK &&
+        //   setValue("companyName", existingClientDetails?.responseBody?.name);
+        // companyName(existingClientDetails?.responseBody?.name);
+        // existingClientDetails?.statusCode === HTTPStatusCode.OK &&
+        //   setIsCompanyNameAvailable(true);
         setIsLoading(false);
       }
     },
@@ -1410,8 +1433,29 @@ const HRFields = ({
 
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
-                  {userData.LoggedInUserTypeID && (
+                  {userData.LoggedInUserTypeID && isSalesPersionDisable ? (
                     <HRSelectField
+                    key={"salesPersionDefaultDisabled"}
+                      setValue={setValue}
+                      searchable={true}
+                      register={register}
+                      label={"Sales Person"}
+                      defaultValue={
+                        salesPersionNameFromEmail
+                      }
+                      options={salesPerson && salesPerson}
+                      name="salesPerson"
+                      isError={errors["salesPerson"] && errors["salesPerson"]}
+                      required
+                      errorMsg={
+                        errors?.salesPerson?.message ||
+                        "Please select hiring request sales person"
+                      }
+                      disabled
+                    />
+                  ) : (
+                    <HRSelectField
+                    key={"salesPersionEnabled"}
                       setValue={setValue}
                       searchable={true}
                       register={register}

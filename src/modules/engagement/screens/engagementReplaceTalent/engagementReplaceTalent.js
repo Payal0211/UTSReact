@@ -7,7 +7,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import allengagementReplceTalentStyles from '../engagementBillAndPayRate/engagementBillRate.module.css';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { Radio } from 'antd';
+import { Radio, Skeleton } from 'antd';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
 const EngagementReplaceTalent = ({
@@ -23,6 +23,7 @@ const EngagementReplaceTalent = ({
 	/*--------- antd Radio ---------------- */
 
 	const [getRadio, setRadio] = useState('client');
+	const [isLoading, setIsLoading] = useState(false)
 	const {
 		register,
 		unregister,
@@ -75,6 +76,7 @@ const EngagementReplaceTalent = ({
 
 	const submitTalentReplacementHandler = useCallback(
 		async (d) => {
+			setIsLoading(true)
 			let talentReplacementDetails = {
 				onboardId: talentInfo?.onboardID || talentInfo?.OnBoardId,
 				replacementID:
@@ -102,7 +104,9 @@ const EngagementReplaceTalent = ({
 				} else {
 					callAPI(hrId);
 				}
+				setIsLoading(false)
 			}
+			setIsLoading(false)
 		},
 		[
 			callAPI,
@@ -135,7 +139,9 @@ const EngagementReplaceTalent = ({
 			</div>
 			<div
 				className={allengagementReplceTalentStyles.firstFeebackTableContainer}>
-				<div
+
+					{isLoading ? <Skeleton /> : <>
+						<div
 					className={`${allengagementReplceTalentStyles.row} ${allengagementReplceTalentStyles.billRateWrapper}`}>
 					<div className={allengagementReplceTalentStyles.colMd6}>
 						<HRSelectField
@@ -333,12 +339,15 @@ const EngagementReplaceTalent = ({
 						/>
 					</div>
 				</div>
+					</>}
+			
 
 				<div className={allengagementReplceTalentStyles.formPanelAction}>
 					<button
 						type="submit"
 						onClick={handleSubmit(submitTalentReplacementHandler)}
-						className={allengagementReplceTalentStyles.btnPrimary}>
+						className={allengagementReplceTalentStyles.btnPrimary}
+						disabled={isLoading}>
 						Save
 					</button>
 					<button

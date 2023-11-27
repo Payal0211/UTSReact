@@ -5,7 +5,7 @@ import React, {
 	useMemo,
 	useCallback,
 } from 'react';
-import { Dropdown, Menu, message, Table, Tooltip, Modal } from 'antd';
+import { Dropdown, Menu, message, Table, Tooltip, Modal, Skeleton } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
@@ -136,6 +136,7 @@ const EngagementList = () => {
 	const [isEditTSC,setISEditTSC] = useState(false);
 	const [TSCONBoardData,setTSCONBoardData] = useState({})
 	const [isAddTSC,setIsAddTSC] = useState(false);
+	const [issubmitTSC,setsubmitTSC] = useState(false);
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -233,6 +234,7 @@ const EngagementList = () => {
 				if (response?.statusCode === HTTPStatusCode.OK) {
 					// setTSCusers()
 					setTSCusers(response.responseBody.drpTSCUserList.map(item=> ({...item, id:item.value , value: item.text, })))
+					setTSCONBoardData(prev=>({...prev,tscPersonID: response.responseBody.tscPersonID}))
 				} 
 			}
 
@@ -243,10 +245,12 @@ const EngagementList = () => {
 	},[TSCONBoardData.onboardID])
 	
 	const submitTSC = async (d)=>{
+		setsubmitTSC(true)
 		let payload = {
 			"onBoardID": TSCONBoardData.onboardID,
 			"tscUserId": +d.AddTSCName,
-			"tscEditReason": d.tscReason ? d.tscReason : ''
+			"tscEditReason": d.tscReason ? d.tscReason : '',
+			"oldTSC_PersonID": TSCONBoardData.tscPersonID,
 		  }
 		let response = await engagementRequestDAO.updateTSCNameDAO(payload);
 			if (response?.statusCode === HTTPStatusCode.OK) {
@@ -256,6 +260,7 @@ const EngagementList = () => {
 				resetTSCField('tscReason')
 				setTSCONBoardData({})
 				handleHRRequest({...tableFilteredState, searchText: searchText})
+				setsubmitTSC(false)
 			} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 				setLoading(false);
 				return navigate(UTSRoutes.LOGINROUTE);
@@ -268,6 +273,7 @@ const EngagementList = () => {
 				setLoading(false);
 				return 'NO DATA FOUND';
 			}
+			setsubmitTSC(true)
 	}
 
 	const closeAddTSC = () =>{
@@ -504,6 +510,7 @@ const EngagementList = () => {
 		};
 		handleHRRequest(reqFilter);
 		onRemoveHRFilters();
+		setSearchText('')
 		setStartDate(new Date());
 	}, [
 		handleHRRequest,
@@ -552,6 +559,7 @@ const EngagementList = () => {
 								type={InputType.TEXT}
 								className={allEngagementStyles.searchInput}
 								placeholder="Search Table"
+								value={searchText}
 								onChange={(e) => {
 									 setSearchText(e.target.value)
 									return setDebouncedSearch(
@@ -1092,7 +1100,7 @@ const EngagementList = () => {
 								</div>
 							</div>
 						
-						<div className={allengagementAddFeedbackStyles.row}>
+						{issubmitTSC ? <Skeleton /> : <div className={allengagementAddFeedbackStyles.row}>
 							<div className={allengagementAddFeedbackStyles.colMd6}>
 								<HRInputField
 									register={TSCsetValue}
@@ -1152,14 +1160,16 @@ const EngagementList = () => {
 								/>
 							</div>
 
-						</div>
+						</div>}
+						
 
 						<div className={allengagementAddFeedbackStyles.formPanelAction}>
 							<button
 								// disabled={isLoading}
 								type="submit"
 								onClick={TSChandleSubmit(submitTSC)}
-								className={allengagementAddFeedbackStyles.btnPrimary}>
+								className={allengagementAddFeedbackStyles.btnPrimary} 
+								disabled={issubmitTSC}>
 								Save TSC Name
 							</button>
 							<button
