@@ -469,7 +469,13 @@ const EngagementList = () => {
 	const handleExport = (apiData) => {
 		let DataToExport =  apiData.map(data => {
 			let obj = {}
-			tableColumnsMemo.map(val => val.key !== "action" && (obj[`${val.title}`] = data[`${val.key}`]))
+			tableColumnsMemo.forEach(val => {if(val.key !== "action"){
+				if(val.key === 'engagementType'){
+					obj[`${val.title}`] = `${data.typeOfHR} ${data.h_Availability && `- ${data.h_Availability}`}`
+				}else{
+					obj[`${val.title}`] = data[`${val.key}`]
+				} }
+			} )
 		return obj;
 			}
 		 )
@@ -878,7 +884,7 @@ const EngagementList = () => {
 							})
 						}>
 						<EngagementReplaceTalent
-							engagementListHandler={() => handleHRRequest(tableFilteredState)}
+							engagementListHandler={() => handleHRRequest({...tableFilteredState, searchText: searchText})}
 							talentInfo={filteredData}
 							isEngagement={true}
 							closeModal={() =>
@@ -906,7 +912,7 @@ const EngagementList = () => {
 							})
 						}>
 						<EngagementEnd
-							engagementListHandler={() => handleHRRequest(tableFilteredState)}
+							engagementListHandler={() => handleHRRequest({...tableFilteredState, searchText: searchText})}
 							talentInfo={filteredData}
 							closeModal={() =>
 								setEngagementModal({
@@ -933,7 +939,7 @@ const EngagementList = () => {
 							})
 						}>
 						<RenewEngagement
-							engagementListHandler={() => handleHRRequest(tableFilteredState)}
+							engagementListHandler={() => handleHRRequest({...tableFilteredState, searchText: searchText})}
 							talentInfo={filteredData}
 							closeModal={() =>
 								setEngagementModal({
@@ -962,7 +968,7 @@ const EngagementList = () => {
 						}
 						}>
 						<EngagementBillRateAndPayRate
-							engagementListHandler={() => handleHRRequest(tableFilteredState)}
+							engagementListHandler={() => handleHRRequest({...tableFilteredState, searchText: searchText})}
 							talentInfo={filteredData}
 							closeModal={() =>{
 								setEngagementModal({
@@ -1002,7 +1008,7 @@ const EngagementList = () => {
 						}>
 						<EngagementInvoice
 							isModalOpen={getEngagementModal.engagementInvoice}
-							engagementListHandler={() => handleHRRequest(tableFilteredState)}
+							engagementListHandler={() => handleHRRequest({...tableFilteredState, searchText: searchText})}
 							talentInfo={filteredData}
 							closeModal={() =>
 								setEngagementModal({

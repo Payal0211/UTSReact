@@ -45,6 +45,8 @@ const EngagementBillRateAndPayRate = ({
 
 	const watchBillRate = watch('billRate');
 	const watchPayRate = watch('payRate');
+	const watchFinalBillRate = watch('finalBillRate');
+	const watchFinalPayRate = watch('finalPayRate');
 	const watchNRRate = watch('billNRRate');
 
 	const [billRateValue, setBillRateValue] = useState(watchBillRate);
@@ -262,7 +264,7 @@ const EngagementBillRateAndPayRate = ({
 	}, [ currency,currencyValue]);
 
 const nrPercentagePR =useCallback( async(e)=>{
-let response = await engagementRequestDAO.calculateActualNRBRPRDAO(watchBillRate,e,currencyValue)
+let response = await engagementRequestDAO.calculateActualNRBRPRDAO(watchFinalBillRate,e,currencyValue)
 
 if(response?.statusCode===HTTPStatusCode?.OK){
 	setValue("payNRRate",response?.responseBody?.details)
@@ -272,10 +274,10 @@ if(response?.statusCode===HTTPStatusCode?.OK){
 		type:"finalPayRate",
 	message:response.statusCode === HTTPStatusCode?.BAD_REQUEST && "Can't Calculate"})
 }
-},[setValue,setError,watchBillRate,HTTPStatusCode])
+},[setValue,setError,watchFinalBillRate,HTTPStatusCode])
 
 const nrPercentageBR = useCallback( async(e)=>{
-	let response = await engagementRequestDAO.calculateActualNRBRPRDAO(e.target.value,watchPayRate,currencyValue)
+	let response = await engagementRequestDAO.calculateActualNRBRPRDAO(e.target.value,watchFinalPayRate,currencyValue)
 	if(response?.statusCode===HTTPStatusCode?.OK){
 		setValue("billNRRate",response?.responseBody?.details)
 		setError("billNRRate",{})
@@ -284,7 +286,7 @@ const nrPercentageBR = useCallback( async(e)=>{
 			type:"finalBillRate",
 		message:response.statusCode === HTTPStatusCode?.BAD_REQUEST && "Can't Calculate"})
 	}
-	},[setValue,setError,watchPayRate,HTTPStatusCode])
+	},[setValue,setError,watchFinalPayRate,HTTPStatusCode])
 
 	return (
 		<div className={allengagementBillAndPayRateStyles.engagementModalContainer}>
