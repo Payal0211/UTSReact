@@ -158,7 +158,9 @@ useEffect(()=>{
 		setError('payRate',{message:"Please enter Pay rate."})
 	}
 	if(billRateValue && payRateValue && currencyValue  ){
-		calulateNR()		
+		calulateNR()	
+		clearErrors('billRate')	
+		clearErrors('payRate')	
 	}	
 },[billRateValue,payRateValue,currencyValue])
 
