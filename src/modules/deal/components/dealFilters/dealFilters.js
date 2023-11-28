@@ -192,7 +192,7 @@ const DealFilters = ({
 			filterFields_DealList: { ...filters },
 			pageNumber:1
 		});
-		setPageIndex(1)
+		setPageIndex && setPageIndex(1)
 		const reqFilter = {
 			...tableFilteredState,
 			filterFields_DealList: { ...filters },

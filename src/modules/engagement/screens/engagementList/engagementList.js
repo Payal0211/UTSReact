@@ -273,7 +273,7 @@ const EngagementList = () => {
 				setLoading(false);
 				return 'NO DATA FOUND';
 			}
-			setsubmitTSC(true)
+			setsubmitTSC(false)
 	}
 
 	const closeAddTSC = () =>{
