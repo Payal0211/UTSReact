@@ -478,11 +478,11 @@ export default function HRReport() {
           <h2>
             No profiles shared % -{" "}
             <span>
-              {reportList.length > 0 &&
+              {reportList.length > 0 && reportList[0].stageValue > 0 ? 
                 (
                   (reportList[4].stageValue / reportList[0].stageValue) *
                   100
-                ).toFixed(2)}
+                ).toFixed(2) : "NA"}
             </span>
           </h2>
         </div>
@@ -495,11 +495,11 @@ export default function HRReport() {
           <h2>
           At least 3 profile shared % -{" "}
             <span>
-              {reportList.length > 0 &&
+              {reportList.length > 0 && reportList[0].stageValue > 0 ?
                 (
                   (reportList[5].stageValue / reportList[0].stageValue) *
                   100
-                ).toFixed(2)}
+                ).toFixed(2) : "NA"}
             </span>
           </h2>
         </div>
@@ -512,11 +512,11 @@ export default function HRReport() {
           <h2>
             At least 1 profiles shared in 2 days % -{" "}
             <span>
-              {reportList.length > 0 &&
+              {reportList.length > 0 && reportList[0].stageValue > 0 ?
                 (
                   (reportList[9].stageValue / reportList[0].stageValue) *
                   100
-                ).toFixed(2)}
+                ).toFixed(2) : "NA"}
             </span>
           </h2>
         </div>
@@ -525,11 +525,11 @@ export default function HRReport() {
           <h2>
           At least 6 profiles shared in 10 days % -{" "}
             <span>
-              {reportList.length > 0 &&
+              {reportList.length > 0 && reportList[0].stageValue > 0 ?
                 (
                   (reportList[6].stageValue / reportList[0].stageValue) *
                   100
-                ).toFixed(2)}
+                ).toFixed(2) : "NA"}
             </span>
           </h2>
         </div>
@@ -543,11 +543,11 @@ export default function HRReport() {
           <h2>
           At least 5 profiles are shared in 5 days % -{" "}
             <span>
-              {reportList.length > 0 &&
+              {reportList.length > 0 && reportList[0].stageValue > 0 ?
                 (
                   (reportList[7].stageValue / reportList[0].stageValue) *
                   100
-                ).toFixed(2)}
+                ).toFixed(2) : "NA"}
             </span>
           </h2>
         </div>
@@ -556,11 +556,11 @@ export default function HRReport() {
           <h2>
           At least 10 profiles are shared in 10 days % -{" "}
             <span>
-              {reportList.length > 0 &&
+              {reportList.length > 0 && reportList[0].stageValue > 0 ?
                 (
                   (reportList[8].stageValue / reportList[0].stageValue) *
                   100
-                ).toFixed(2)}
+                ).toFixed(2) : 'NA'}
             </span>
           </h2>
         </div>
@@ -568,11 +568,11 @@ export default function HRReport() {
           <h2>
             At least 1 profiles shared in 5 days % -{" "}
             <span>
-              {reportList.length > 0 &&
+              {reportList.length > 0 && reportList[0].stageValue > 0 ?
                 (
                   (reportList[10].stageValue / reportList[0].stageValue) *
                   100
-                ).toFixed(2)}
+                ).toFixed(2): 'NA'}
             </span>
           </h2>
         </div>
