@@ -151,31 +151,14 @@ const calulateNR =async() =>{
 
 
 useEffect(()=>{
+	if(!billRateValue){
+		setError('billRate',{message:"Please enter bill rate."})
+	}
+	if(!payRateValue){
+		setError('payRate',{message:"Please enter Pay rate."})
+	}
 	if(billRateValue && payRateValue && currencyValue  ){
-		// if(billRateValue < payRateValue){
-		// 	calulateNR()
-		// 		setTimeout(()=>{
-		// 		clearErrors('billRate')
-		// 	},3000)
-		// 	setError('billRate',{message:'bill rate must be greater then pay rate'})
-		// 	return
-		// }
-
-		// if(payRateValue > billRateValue){
-		// 	setTimeout(()=>{
-		// 		clearErrors('payRate')
-		// 	},3000)
-		// 	setError('payRate',{message:'pay rate must be less then bill rate'})
-		// 	return
-		// }
-		calulateNR()
-		// else{
-		// 	setTimeout(()=>{
-		// 		clearErrors('billRate')
-		// 	},3000)
-		// 	setError('billRate',{message:'bill rate must be greater then pay rate'})
-		// }
-		
+		calulateNR()		
 	}	
 },[billRateValue,payRateValue,currencyValue])
 
@@ -348,7 +331,7 @@ useEffect(()=>{
 						type={InputType.NUMBER}
 						value={billRateValue}
 						placeholder="Enter Amount"
-						required
+						required={true}
 					/>
 					<button
 						className={allengagementEnd.plusButton}
