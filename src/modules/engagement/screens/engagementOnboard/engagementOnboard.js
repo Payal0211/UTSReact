@@ -742,8 +742,14 @@ const EngagementOnboard = ({
             <li>
               <span>Talent Start Date : </span>
 
-              {getOnboardFormDetails?.talentOnBoardDate
+              {/* {getOnboardFormDetails?.talentOnBoardDate
                 ? getOnboardFormDetails?.talentOnBoardDate
+                : "NA"} */}
+
+              {getOnboardFormDetails?.contractStartDate
+                ? moment(getOnboardFormDetails?.contractStartDate).format(
+                    "DD-MM-YYYY"
+                  )
                 : "NA"}
             </li>
           </ul>

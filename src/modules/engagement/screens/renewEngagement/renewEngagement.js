@@ -155,7 +155,7 @@ useEffect(()=>{
 		setError('billRate',{message:"Please enter bill rate."})
 	}
 	if(!payRateValue){
-		setError('payRate',{message:"Please enter Pay rate."})
+		setError('payRate',{message:"Please enter pay rate."})
 	}
 	if(billRateValue && payRateValue && currencyValue  ){
 		calulateNR()	
@@ -305,7 +305,7 @@ useEffect(()=>{
 					</button>
 					<HRInputField
 						register={register}
-						errors={errors}
+						// errors={errors}
 						validationSchema={{
 							required: 'Please enter bill rate.',
 							valueAsNumber: true,
@@ -314,6 +314,8 @@ useEffect(()=>{
 								message: `please enter the value more than 0`,
 								},
 						}}
+						isError={!watch('billRate') ? true : errors['billRate']}
+						errorMsg={errors['billRate']?.message ?errors['billRate']?.message : 'Please enter bill rate.'}
 						label={`Bill Rate(${currencyValue})`}
 						onChangeHandler={e=> {
 							setBillRateValue(parseFloat(e.target.value))
@@ -357,9 +359,9 @@ useEffect(()=>{
 					</button>
 					<HRInputField
 						register={register}
-						errors={errors}
-						// isError={errors['payRate']}
-						// errorMsg={errors['payRate']?.message ? errors['payRate'].message : 'Please enter pay rate.'}
+						// errors={errors}
+						isError={!watch('payRate') ? true : errors['payRate']}
+						errorMsg={errors['payRate']?.message ? errors['payRate'].message : 'Please enter pay rate.'}
 						validationSchema={{
 							required: 'Please enter pay rate.',
 							valueAsNumber: true,
