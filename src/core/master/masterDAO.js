@@ -31,6 +31,56 @@ export const MasterDAO = {
 			return errorDebug(error, 'masterDAO.getFixedValueRequestDAO');
 		}
 	},
+	getPayRollTypeDAO: async function () {
+		try {
+			const fixedValueResult = await MasterAPI.getPayRollTypeRequest();
+			if (fixedValueResult) {
+				const statusCode = fixedValueResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = fixedValueResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return fixedValueResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return fixedValueResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'masterDAO.getPayRollTypeDAO');
+		}
+	},
+	getHRPricingTypeDAO: async function () {
+		try {
+			const fixedValueResult = await MasterAPI.getHRPricingTypeRequest();
+			if (fixedValueResult) {
+				const statusCode = fixedValueResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = fixedValueResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return fixedValueResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return fixedValueResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'masterDAO.getHRPricingTypeDAO');
+		}
+	},
 	getGEORequestDAO: async function () {
 		try {
 			const geoResult = await MasterAPI.getGEORequest();

@@ -13,7 +13,7 @@ import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import { MdOutlinePreview } from 'react-icons/md';
-import { Modal, Tooltip, AutoComplete, } from 'antd';
+import { Modal, Tooltip, AutoComplete,Radio } from 'antd';
 import { Controller } from 'react-hook-form';
 
 const CompanyDetails = ({
@@ -31,7 +31,7 @@ const CompanyDetails = ({
 	setCompanyName,
 	companyName,
 	control,
-	companyDetail, setCompanyDetail,getCompanyDetails, controlledFieldsProp
+	companyDetail, setCompanyDetail,getCompanyDetails, controlledFieldsProp,typeOfPricing,setTypeOfPricing
 }) => {
 	let {controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType} = controlledFieldsProp
 	const [GEO, setGEO] = useState([]);
@@ -560,6 +560,29 @@ const CompanyDetails = ({
 						</div>
 					</div>
 
+					{/* <div className={CompanyDetailsStyle.row}>
+						<div className={CompanyDetailsStyle.colMd12}>
+							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<label style={{marginBottom:"12px"}}>
+							Type Of pricing
+							{/* <span className={allengagementReplceTalentStyles.reqField}>
+								*
+							</span>
+						</label>
+						<Radio.Group
+							// defaultValue={'client'}
+							// className={allengagementReplceTalentStyles.radioGroup}
+							onChange={e=> setTypeOfPricing(e.target.value)}
+							value={typeOfPricing}
+							>
+							<Radio value={1}>Transparent Pricing</Radio>
+							<Radio value={0}>Non Transparent Pricing</Radio>
+						</Radio.Group>
+							</div>
+							{console.log("type of prising",typeOfPricing)}
+												
+						</div>
+					</div> */}
 					<div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd12}>
 							<HRInputField

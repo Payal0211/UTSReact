@@ -6,6 +6,7 @@ import {
   message,
   AutoComplete,
   Modal,
+  Radio
 } from "antd";
 import {
   ClientHRURL,
@@ -76,6 +77,8 @@ const HRFields = ({
   const inputRef = useRef(null);
   const [getUploadFileData, setUploadFileData] = useState("");
   const [availability, setAvailability] = useState([]);
+  const [payRollTypes, setPayRollTypes] = useState([]);
+  const [hrPricingTypes, setHRPricingTypes] = useState([]);
   // const [timeZonePref, setTimeZonePref] = useState([]);
   const [workingMode, setWorkingMode] = useState([]);
   const [controlledWorkingValue, setControlledWorkingValue] = useState(
@@ -180,6 +183,9 @@ const HRFields = ({
   const [showGPTModal, setShowGPTModal] = useState(false);
   const [gptDetails, setGPTDetails] = useState({});
   const [gptFileDetails, setGPTFileDetails] = useState({});
+  const [typeOfPricing,setTypeOfPricing] = useState(1)
+  const [transactionMessage,setTransactionMessage] = useState('')
+  const [disableYypeOfPricing,setDisableTypeOfPricing] = useState(false)
 
   /* const { fields, append, remove } = useFieldArray({
 		control,
@@ -445,9 +451,59 @@ const HRFields = ({
     const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
     setAvailability(
       availabilityResponse &&
-        availabilityResponse.responseBody?.BindHiringAvailability
+        availabilityResponse.responseBody?.BindHiringAvailability.reverse()
     );
   }, []);
+
+  const getPayrollType = useCallback(async () => {
+    const payRollsResponse = await MasterDAO.getPayRollTypeDAO();
+    setPayRollTypes(
+      payRollsResponse &&
+        payRollsResponse.responseBody
+    );
+  }, []);
+  const getHRPricingType = useCallback(async () => {
+    const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
+    setHRPricingTypes(
+      HRPricingResponse &&
+      HRPricingResponse.responseBody
+    );
+  }, []);
+
+  const getRequiredHRPricingType = useCallback(() =>{
+    let reqOpt = []
+
+    if(watch("availability")?.value === "Full Time"){
+      if(typeOfPricing === 1){
+        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Full Time" && item.isTransparent === true)
+        if(Filter.length){
+          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+        }
+      }else{
+        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Full Time" && item.isTransparent === false)
+        if(Filter.length){
+          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+        }
+      }
+    }
+
+    if(watch("availability")?.value === "Part Time"){
+      if(typeOfPricing === 1){
+        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Part Time"&& item.isTransparent === true)
+        if(Filter.length){
+          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+        }
+      }else{
+        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Part Time" && item.isTransparent === false)
+        if(Filter.length){
+          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+        }
+      }
+    }
+
+    return reqOpt
+
+  },[hrPricingTypes, watch('availability'), typeOfPricing]) 
 
   const watchPostalCode = watch("postalCode");
 
@@ -688,6 +744,16 @@ const HRFields = ({
             setValue("companyName", existingClientDetails?.responseBody?.name);
             companyName(existingClientDetails?.responseBody?.name);
 
+            if(existingClientDetails?.responseBody?.isTransparentPricing !== null ){
+              setTypeOfPricing(existingClientDetails?.responseBody?.isTransparentPricing === true ? 1 : 0)
+              setDisableTypeOfPricing(true)
+              setTransactionMessage('*This client has been selected in past for below pricing model. To change and update pricing model go to Company and make the changes to reflect right while submitting this HR.')
+            }else{
+              setTypeOfPricing(1)
+              setDisableTypeOfPricing(false)
+              setTransactionMessage('*You are creating this HR for the first time for this Client after roll out of Transparent Pricing, help us select if this client and HR falls under transparent or non transparent pricing.')
+            }
+
             if(existingClientDetails?.responseBody?.salesuserid > 0){
               setIsSalesPersionDisable(true)
               let salesUserObj = salesPerson.filter(p=> p.id === parseInt(existingClientDetails?.responseBody?.salesuserid))
@@ -823,6 +889,8 @@ const HRFields = ({
   useEffect(
     () => {
       getAvailability();
+      getPayrollType ();
+      getHRPricingType();
       getTalentRole();
       // getSalesPerson();
       // getRegion();
@@ -870,6 +938,23 @@ const HRFields = ({
     isHRDirectPlacement === false && unregister("dpPercentage");
     isHRDirectPlacement === true && unregister("tempProject");
   }, [isHRDirectPlacement, unregister]);
+
+  useEffect(()=>{
+    if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8){
+      unregister('payrollType')
+    }
+
+    if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+      unregister("tempProject")
+      unregister('contractDuration')
+    }
+
+    if((watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 )){
+      unregister('payrollType')
+      unregister("tempProject")
+      unregister('contractDuration')
+    }
+  },[watch('hiringPricingType')])
 
   useEffect(() => {
     if (watch("budget")?.value === "2") {
@@ -941,7 +1026,7 @@ const HRFields = ({
         isHRDirectPlacement,
         addHRResponse,
         getUploadFileData && getUploadFileData,
-        jdDumpID
+        jdDumpID,typeOfPricing,hrPricingTypes
       );
 
       if(watch('fromTime').value === watch('endTime').value){
@@ -991,7 +1076,7 @@ const HRFields = ({
       } else if (type !== SubmitType.SAVE_AS_DRAFT) {
         setType(SubmitType.SUBMIT);
       }
-
+console.log('hr Fields',hrFormDetails)
 
       const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
@@ -1043,6 +1128,8 @@ const HRFields = ({
       setTitle,
       tabFieldDisabled,
       watch,
+      typeOfPricing,
+      hrPricingTypes
     ]
   );
 
@@ -1059,6 +1146,62 @@ const HRFields = ({
   useEffect(() => {
     setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));
   }, [watchSalesPerson]);
+
+  useEffect(() => {
+    if(watch('budget')?.value === '1'){
+      if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+        let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        let cal = (dpPercentage * watch('adhocBudgetCost'))
+        setValue('uplersFees',cal ? cal : 0)
+      }else{
+           let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
+      setValue('uplersFees',cal ? cal : 0)
+      }
+   
+    }
+
+    if(watch('budget')?.value === '2'){
+      if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+        let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        let calMin = (dpPercentage * watch('minimumBudget'))
+        let calMax = (dpPercentage * watch('maximumBudget'))
+        setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
+      }else{
+        let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
+        let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
+        setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
+       }
+    }
+  },[watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget'),watch('budget'),watch('NRMargin')]);
+
+  useEffect(()=>{
+    if(watch('budget')?.value === '1'){
+      if(typeOfPricing === 0){
+        let cal = watch('adhocBudgetCost') - watch('uplersFees')
+        setValue("needToPay",cal? cal : 0)
+      }else{
+        let cal = parseFloat(watch('adhocBudgetCost')) + parseFloat(watch('uplersFees'))
+        setValue("needToPay",cal? cal : 0)
+      }
+      
+    }
+    if(watch('budget')?.value === '2'){
+      if(typeOfPricing === 0){
+        let uplersBudget = watch('uplersFees')?.split('-')
+        let minCal = watch('minimumBudget') - uplersBudget[0]
+        let maxCal = watch('maximumBudget') - uplersBudget[1]
+        setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
+      }else{
+        let uplersBudget = watch('uplersFees')?.split('-')
+        let minCal = parseFloat(watch('minimumBudget')) + parseFloat(uplersBudget[0])
+        let maxCal = parseFloat(watch('maximumBudget')) + parseFloat(uplersBudget[1])
+
+        setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
+      }
+      
+      
+    }
+  },[watch('uplersFees'),watch('budget'),watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget')])
 
   // useEffect(() => {
   //   if (timeZonePref.length > 0) {
@@ -1530,50 +1673,185 @@ const HRFields = ({
 									/>
 								</div>
 							</div> */}
+<div className={HRFieldStyle.colMd12}>
+<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<label style={{marginBottom:"12px"}}>
+							Type Of pricing
+							{/* <span className={allengagementReplceTalentStyles.reqField}>
+								*
+							</span> */}
+						</label>
+            {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> } 
+						<Radio.Group
+            disabled={disableYypeOfPricing}
+							// defaultValue={'client'}
+							// className={allengagementReplceTalentStyles.radioGroup}
+							onChange={e=> setTypeOfPricing(e.target.value)}
+							value={typeOfPricing}
+							>
+							<Radio value={1}>Transparent Pricing</Radio>
+							<Radio value={0}>Non Transparent Pricing</Radio>
+						</Radio.Group>
+							</div>
+</div>
 
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
-                    controlledValue={controlledWorkingValue}
-                    setControlledValue={setControlledWorkingValue}
-                    isControlled={true}
+                   controlledValue={controlledAvailabilityValue}
+                   setControlledValue={setControlledAvailabilityValue}
+                   isControlled={true}
                     mode={"id/value"}
-                    searchable={false}
                     setValue={setValue}
                     register={register}
-                    label={"Mode of Working?"}
-                    defaultValue="Select working mode"
-                    options={workingMode && workingMode}
-                    name="workingMode"
-                    isError={errors["workingMode"] && errors["workingMode"]}
+                    label={"Availability"}
+                    defaultValue="Select availability"
+                    options={availability}
+                    name="availability"
+                    isError={errors["availability"] && errors["availability"]}
                     required
-                    errorMsg={"Please select the working mode."}
+                    errorMsg={"Please select the availability."}
                   />
                 </div>
               </div>
 
-              <div className={HRFieldStyle.colMd6}>
+{watch('availability')?.id && <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
-                    controlledValue={controlledCurrencyValue}
-                    setControlledValue={setControlledCurrencyValue}
-                    isControlled={true}
+                  //  controlledValue={controlledAvailabilityValue}
+                  //  setControlledValue={setControlledAvailabilityValue}
+                  //  isControlled={true}
                     mode={"id/value"}
-                    searchable={true}
                     setValue={setValue}
                     register={register}
-                    label={"Currency"}
-                    defaultValue="Select Currency"
-                    options={currency && currency}
-                    name="currency"
-                    isError={errors["currency"] && errors["currency"]}
+                    label={"Hiring Pricing Type"}
+                    defaultValue="Select Hiring Pricing"
+                    options={getRequiredHRPricingType()}
+                    name="hiringPricingType"
+                    isError={errors["hiringPricingType"] && errors["hiringPricingType"]}
                     required
-                    errorMsg={"Please select currency"}
+                    errorMsg={"Please select the Hiring Pricing."}
                   />
                 </div>
               </div>
-            </div>
-            {getWorkingModelFields()}
+              }
+              
+
+{(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8) &&  <>
+              <div className={HRFieldStyle.colMd6}>
+                  <div className={HRFieldStyle.formGroup}>
+                    <HRSelectField
+                      mode={"id/value"}
+                      searchable={false}
+                      setValue={setValue}
+                      register={register}
+                      label={"Is this Hiring need Temporary for any project?"}
+                      defaultValue={"Please Select"}
+                      options={tempProjects.map((item) => ({
+                        id: item.id,
+                        label: item.text,
+                        value: item.value,
+                      }))}
+                      name="tempProject"
+                      isError={errors["tempProject"] && errors["tempProject"]}
+                      // required={!isHRDirectPlacement}
+                      required={(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8)? true : false}
+                      errorMsg={"Please select."}
+                    />
+                  </div>
+                </div>
+              <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                    dropdownRender={(menu) => (
+                      <>
+                        {menu}
+                        <Divider style={{ margin: "8px 0" }} />
+                        <Space style={{ padding: "0 8px 4px" }}>
+                          <label>Other:</label>
+                          <input
+                            type={InputType.NUMBER}
+                            className={HRFieldStyle.addSalesItem}
+                            placeholder="Ex: 5,6,7..."
+                            ref={inputRef}
+                            value={name}
+                            onChange={onNameChange}
+                            required
+                          />
+                          <Button
+                            style={{
+                              backgroundColor: `var(--uplers-grey)`,
+                            }}
+                            shape="round"
+                            type="text"
+                            icon={<PlusOutlined />}
+                            onClick={addItem}
+                            disabled={
+                              name
+                                ? contractDurations.filter(
+                                    (duration) => duration.value == name
+                                  ).length > 0
+                                : true
+                            }
+                          >
+                            Add item
+                          </Button>
+                        </Space>
+                        <br />
+                      </>
+                    )}
+                    options={contractDurations.map((item) => ({
+                      id: item.id,
+                      label: item.text,
+                      value: item.value,
+                    }))}
+                    mode={"id/value"}
+                    setValue={setValue}
+                    register={register}
+                    label={"Contract Duration (in months)"}
+                    defaultValue="Ex: 3,6,12..."
+                    inputRef={inputRef}
+                    addItem={addItem}
+                    onNameChange={onNameChange}
+                    name="contractDuration"
+                    isError={
+                      errors["contractDuration"] && errors["contractDuration"]
+                    }
+                    // required={!isHRDirectPlacement}
+                    required={(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8)?true:false}
+                    errorMsg={"Please select hiring request contract duration"}
+                    disabled={isHRDirectPlacement}
+                  />
+                </div>
+              </div>
+
+</>}
+              
+              {(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) && <>
+                 <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                  //  controlledValue={controlledAvailabilityValue}
+                  //  setControlledValue={setControlledAvailabilityValue}
+                  //  isControlled={true}
+                    mode={"id/value"}
+                    setValue={setValue}
+                    register={register}
+                    label={"Who will manage the payroll?"}
+                    defaultValue="Select payroll"
+                    options={payRollTypes}
+                    name="payrollType"
+                    isError={errors["payrollType"] && errors["payrollType"]}
+                    required={(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 )? true : false}
+                    errorMsg={"Please select Payroll Type."}
+                  />
+                </div>
+              </div>
+             
+              </>
+              }
+              
+             
             {/* {watch('role')?.id === -1 && (
 							<div className={HRFieldStyle.row}>
 								<div className={HRFieldStyle.colMd12}>
@@ -1613,94 +1891,11 @@ const HRFields = ({
 								/>
 							</div>
 						</div> */}
-            <div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
-              <div className={HRFieldStyle.colMd6}>
-                {!getUploadFileData ? (
-                  <HRInputField
-                    disabled={jdURLLink}
-                    register={register}
-                    leadingIcon={<UploadSVG />}
-                    label={`Job Description`}
-                    name="jdExport"
-                    type={InputType.BUTTON}
-                    buttonLabel="Upload JD File"
-                    // value="Upload JD File"
-                    onClickHandler={() => setUploadModal(true)}
-                    required={!jdURLLink && !getUploadFileData}
-                    validationSchema={{
-                      required: "please select a file.",
-                    }}
-                    errors={errors}
-                  />
-                ) : (
-                  <div className={HRFieldStyle.uploadedJDWrap}>
-                    <label>Job Description *</label>
-                    <div className={HRFieldStyle.uploadedJDName}>
-                      {getUploadFileData}{" "}
-                      <CloseSVG
-                        className={HRFieldStyle.uploadedJDClose}
-                        onClick={() => {
-                          setUploadFileData("");
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-              {showUploadModal && (
-                <UploadModal
-                //   isGoogleDriveUpload={true}
-                  isLoading={isLoading}
-                  uploadFileHandler={uploadFileHandler}
-                //   googleDriveFileUploader={() => googleDriveFileUploader()}
-                //   uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
-                  modalTitle={"Upload JD"}
-                  modalSubtitle={"Job Description"}
-                  isFooter={false}
-                  openModal={showUploadModal}
-                  setUploadModal={setUploadModal}
-                  cancelModal={() => setUploadModal(false)}
-                  setValidation={setValidation}
-                  getValidation={getValidation}
-                //   getGoogleDriveLink={getGoogleDriveLink}
-                //   setGoogleDriveLink={setGoogleDriveLink}
-                />
-              )}
-              <div className={HRFieldStyle.orLabel}>OR</div>
-              <div className={HRFieldStyle.colMd6}>
-                <HRInputField
-                  onChangeHandler={(e) => toggleJDHandler(e)}
-                  disabled={getUploadFileData}
-                  label="Job Description URL"
-                  name="jdURL"
-                  type={InputType.TEXT}
-                  placeholder="Add JD link"
-                  register={register}
-                  required={!getUploadFileData}
-                  errors={errors}
-                  onBlurHandler={(e) => onHandleFocusOut(e)}
-                  validationSchema={
-                    {
-                      // pattern: {
-                      // 	value: URLRegEx.url,
-                      // 	message: 'Entered value does not match url format',
-                      // },
-                    }
-                  }
-                />
-              </div>
+
+        
             </div>
 
-            <div className={HRFieldStyle.row}>
-              <div className={HRFieldStyle.colMd12}>
-                <div className={HRFieldStyle.checkBoxGroup}>
-                  <Checkbox onClick={toggleHRDirectPlacement}>
-                    Is this HR a Direct Placement?
-                  </Checkbox>
-                </div>
-              </div>
-            </div>
-            <br />
+
             <div className={HRFieldStyle.row}>
               {isHRDirectPlacement ? (
                 <div className={HRFieldStyle.colMd6}>
@@ -1723,18 +1918,18 @@ const HRFields = ({
                     register={register}
                     errors={errors}
                     validationSchema={{
-                      required: "please enter the nr margin percentage.",
+                      required: "please enter the Uplers Fees %.",
                     }}
-                    label="NR Margin Percentage"
+                    label="Uplers Fees %"
                     name="NRMargin"
                     type={InputType.TEXT}
-                    placeholder="Select NR margin percentage"
+                    placeholder="Select Uplers Fees %"
                     required={!isHRDirectPlacement}
                   />
                 </div>
               )}
 
-              {!isHRDirectPlacement && (
+              {/* {!isHRDirectPlacement && (
                 <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
@@ -1756,7 +1951,7 @@ const HRFields = ({
                     />
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
 
             <div className={HRFieldStyle.row}>
@@ -1838,7 +2033,175 @@ const HRFields = ({
                   disabled={watch("budget")?.value !== "2"}
                 />
               </div>
+
+              {watch('budget')?.value !== "3" && <>
+              <div className={HRFieldStyle.colMd4}>
+                              <HRInputField
+                                label={watch('budget')?.value === "2" ?  "Uplers Fees ( Min - Max)" : "Uplers Fees"}
+                                register={register}
+                                name="uplersFees"
+                                type={InputType.TEXT}
+                                placeholder="Maximum- Ex: 2300"
+                                disabled={true}
+                              />
+                            </div>
+
+                            <div className={HRFieldStyle.colMd4}>
+                              <HRInputField
+                                label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Client needs to pay ( Min - Max )" : "Client needs to pay"}
+                                register={register}
+                                name="needToPay"
+                                type={InputType.TEXT}
+                                placeholder="Maximum- Ex: 2300"
+                                disabled={true}
+                              />
+                            </div>
+              </>}
+
+
+
+              {/* {(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? } */}
+              
+
+
             </div>
+
+            <div className={HRFieldStyle.row}>
+            <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                    controlledValue={controlledWorkingValue}
+                    setControlledValue={setControlledWorkingValue}
+                    isControlled={true}
+                    mode={"id/value"}
+                    searchable={false}
+                    setValue={setValue}
+                    register={register}
+                    label={"Mode of Working?"}
+                    defaultValue="Select working mode"
+                    options={workingMode && workingMode}
+                    name="workingMode"
+                    isError={errors["workingMode"] && errors["workingMode"]}
+                    required
+                    errorMsg={"Please select the working mode."}
+                  />
+                </div>
+              </div>
+
+              <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                    controlledValue={controlledCurrencyValue}
+                    setControlledValue={setControlledCurrencyValue}
+                    isControlled={true}
+                    mode={"id/value"}
+                    searchable={true}
+                    setValue={setValue}
+                    register={register}
+                    label={"Currency"}
+                    defaultValue="Select Currency"
+                    options={currency && currency}
+                    name="currency"
+                    isError={errors["currency"] && errors["currency"]}
+                    required
+                    errorMsg={"Please select currency"}
+                  />
+                </div>
+              </div>
+              {getWorkingModelFields()}
+            </div>
+            
+            <div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
+              <div className={HRFieldStyle.colMd6}>
+                {!getUploadFileData ? (
+                  <HRInputField
+                    disabled={jdURLLink}
+                    register={register}
+                    leadingIcon={<UploadSVG />}
+                    label={`Job Description`}
+                    name="jdExport"
+                    type={InputType.BUTTON}
+                    buttonLabel="Upload JD File"
+                    // value="Upload JD File"
+                    onClickHandler={() => setUploadModal(true)}
+                    required={!jdURLLink && !getUploadFileData}
+                    validationSchema={{
+                      required: "please select a file.",
+                    }}
+                    errors={errors}
+                  />
+                ) : (
+                  <div className={HRFieldStyle.uploadedJDWrap}>
+                    <label>Job Description *</label>
+                    <div className={HRFieldStyle.uploadedJDName}>
+                      {getUploadFileData}{" "}
+                      <CloseSVG
+                        className={HRFieldStyle.uploadedJDClose}
+                        onClick={() => {
+                          setUploadFileData("");
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+              {showUploadModal && (
+                <UploadModal
+                //   isGoogleDriveUpload={true}
+                  isLoading={isLoading}
+                  uploadFileHandler={uploadFileHandler}
+                //   googleDriveFileUploader={() => googleDriveFileUploader()}
+                //   uploadFileFromGoogleDriveLink={uploadFileFromGoogleDriveLink}
+                  modalTitle={"Upload JD"}
+                  modalSubtitle={"Job Description"}
+                  isFooter={false}
+                  openModal={showUploadModal}
+                  setUploadModal={setUploadModal}
+                  cancelModal={() => setUploadModal(false)}
+                  setValidation={setValidation}
+                  getValidation={getValidation}
+                //   getGoogleDriveLink={getGoogleDriveLink}
+                //   setGoogleDriveLink={setGoogleDriveLink}
+                />
+              )}
+              <div className={HRFieldStyle.orLabel}>OR</div>
+              <div className={HRFieldStyle.colMd6}>
+                <HRInputField
+                  onChangeHandler={(e) => toggleJDHandler(e)}
+                  disabled={getUploadFileData}
+                  label="Job Description URL"
+                  name="jdURL"
+                  type={InputType.TEXT}
+                  placeholder="Add JD link"
+                  register={register}
+                  required={!getUploadFileData}
+                  errors={errors}
+                  onBlurHandler={(e) => onHandleFocusOut(e)}
+                  validationSchema={
+                    {
+                      // pattern: {
+                      // 	value: URLRegEx.url,
+                      // 	message: 'Entered value does not match url format',
+                      // },
+                    }
+                  }
+                />
+              </div>
+            </div>
+
+            {/* <div className={HRFieldStyle.row}>
+              <div className={HRFieldStyle.colMd12}>
+                <div className={HRFieldStyle.checkBoxGroup}>
+                  <Checkbox onClick={toggleHRDirectPlacement}>
+                    Is this HR a Direct Placement?
+                  </Checkbox>
+                </div>
+              </div>
+            </div> */}
+            <br />
+           
+
+
 
             {/* <div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd6}>
@@ -1881,69 +2244,7 @@ const HRFields = ({
                   />
                 </div>
               </div>
-              <div className={HRFieldStyle.colMd4}>
-                <div className={HRFieldStyle.formGroup}>
-                  <HRSelectField
-                    dropdownRender={(menu) => (
-                      <>
-                        {menu}
-                        <Divider style={{ margin: "8px 0" }} />
-                        <Space style={{ padding: "0 8px 4px" }}>
-                          <label>Other:</label>
-                          <input
-                            type={InputType.NUMBER}
-                            className={HRFieldStyle.addSalesItem}
-                            placeholder="Ex: 5,6,7..."
-                            ref={inputRef}
-                            value={name}
-                            onChange={onNameChange}
-                            required
-                          />
-                          <Button
-                            style={{
-                              backgroundColor: `var(--uplers-grey)`,
-                            }}
-                            shape="round"
-                            type="text"
-                            icon={<PlusOutlined />}
-                            onClick={addItem}
-                            disabled={
-                              name
-                                ? contractDurations.filter(
-                                    (duration) => duration.value == name
-                                  ).length > 0
-                                : true
-                            }
-                          >
-                            Add item
-                          </Button>
-                        </Space>
-                        <br />
-                      </>
-                    )}
-                    options={contractDurations.map((item) => ({
-                      id: item.id,
-                      label: item.text,
-                      value: item.value,
-                    }))}
-                    mode={"id/value"}
-                    setValue={setValue}
-                    register={register}
-                    label={"Contract Duration (in months)"}
-                    defaultValue="Ex: 3,6,12..."
-                    inputRef={inputRef}
-                    addItem={addItem}
-                    onNameChange={onNameChange}
-                    name="contractDuration"
-                    isError={
-                      errors["contractDuration"] && errors["contractDuration"]
-                    }
-                    required={!isHRDirectPlacement}
-                    errorMsg={"Please select hiring request contract duration"}
-                    disabled={isHRDirectPlacement}
-                  />
-                </div>
-              </div>
+            
               <div className={HRFieldStyle.colMd4}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRInputField
@@ -1968,9 +2269,8 @@ const HRFields = ({
                   />
                 </div>
               </div>
-            </div>
-            <div className={HRFieldStyle.row}>
-              <div className={HRFieldStyle.colMd6}>
+
+              <div className={HRFieldStyle.colMd4}>
                 <HRInputField
                   register={register}
                   errors={errors}
@@ -1992,26 +2292,8 @@ const HRFields = ({
                   required
                 />
               </div>
-              <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.formGroup}>
-                  <HRSelectField
-                   controlledValue={controlledAvailabilityValue}
-                   setControlledValue={setControlledAvailabilityValue}
-                   isControlled={true}
-                    mode={"id/value"}
-                    setValue={setValue}
-                    register={register}
-                    label={"Availability"}
-                    defaultValue="Select availability"
-                    options={availability}
-                    name="availability"
-                    isError={errors["availability"] && errors["availability"]}
-                    required
-                    errorMsg={"Please select the availability."}
-                  />
-                </div>
-              </div>
             </div>
+
 
             {watch("availability")?.value === "Part Time" && (
               <div className={HRFieldStyle.row}>

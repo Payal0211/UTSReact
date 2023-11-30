@@ -23,6 +23,32 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getFixedValueRequest');
 		}
 	},
+	getPayRollTypeRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_PAYROLL_TYPE;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getPayRollTypeRequest');
+		}
+	},
+	getHRPricingTypeRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_HR_PRICING_TYPE;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getHRPricingTypeRequest');
+		}
+	},
 	getGEORequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =

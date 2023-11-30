@@ -122,6 +122,13 @@
     margin-bottom: 0 !important;
 }
 
+.teansactionMessage {
+    color: #f90;
+    font-family: Montserrat;
+    font-size: 12px;
+    font-weight: 400;
+}
+
 .reqExperience {
     margin: 0;
     flex-wrap: wrap;
