@@ -83,10 +83,16 @@ export const hrUtils = {
 		addHrResponse,
 		fileName,
 		jdDumpID,
+		typeOfPricing,
+		hrPricingTypes
 	) {
 		let enIDdata = localStorage.getItem('enIDdata');
 		const hrFormDetails = {
 			en_Id: _isNull(enIDdata) ? '' : enIDdata,
+			IsTransparentPricing: typeOfPricing === 1 ? true : false,
+			HrTypePricingId: draft === SubmitType.SAVE_AS_DRAFT ? watch('hiringPricingType')?.id : d.hiringPricingType?.id,
+			HrTypeId: hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id).hrtypeId,
+			PayrollTypeId: draft === SubmitType.SAVE_AS_DRAFT ?  watch('payrollType')?.id: (watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5) ? 1  : d.payrollType?.id,
 			contactId: contactID || 0,
 			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 			clientName:
@@ -157,7 +163,7 @@ export const hrUtils = {
 					: _isNull(d.adhocBudgetCost)
 					? null
 					: d.adhocBudgetCost,
-			IsHiringLimited: isHRDirectPlacement? null : SubmitType.SAVE_AS_DRAFT
+			IsHiringLimited: (watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6)? false : isHRDirectPlacement? null : SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('tempProject')?.value)
 					? null
 					: watch('tempProject')?.value
@@ -208,8 +214,8 @@ export const hrUtils = {
 			ChildCompanyName: watch('otherChildCompanyName')
 				? watch('otherChildCompanyName')
 				: watch('childCompany')?.value,
-			contractDuration: 
-				draft === SubmitType.SAVE_AS_DRAFT
+			contractDuration: !(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8)? "":
+				draft === SubmitType.SAVE_AS_DRAFT 
 					? isHRDirectPlacement ? null : _isNull(watch('contractDuration'))
 						? null
 						: watch('contractDuration').value
@@ -371,7 +377,8 @@ export const hrUtils = {
 					: _isNull(d.discoveryCallLink)
 					? null
 					: d.discoveryCallLink,
-			isHRTypeDP: isHRDirectPlacement,
+			// isHRTypeDP: isHRDirectPlacement,
+			isHRTypeDP: (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? true : false,
 			directPlacement: {
 				hiringRequestId: 0,
 				modeOfWork:

@@ -70,6 +70,7 @@ const ClientField = ({
 		},
 	});
 	// const [isLoading, setIsLoading] = useState(false);
+	const [typeOfPricing,setTypeOfPricing] = useState(1)
 	const [type, setType] = useState('');
 	const [addClientResponse, setAddClientResponse] = useState(null);
 	const [addClientResponseID, setAddClientResponseID] = useState(0);
@@ -155,7 +156,8 @@ const ClientField = ({
 			primaryClientEmail,
 			primaryClientEN_ID,
 			legelInfoEN_ID,
-			companyDetail
+			companyDetail,
+			typeOfPricing
 		);
 
 		let newPOClist = d.pocList.map(contact => {
@@ -192,6 +194,7 @@ const ClientField = ({
 			setType(SubmitType.SAVE_AS_DRAFT);
 		}
 		if(companyDetail.en_Id){
+
         	const addClientResult = await ClientDAO.createClientDAO(clientFormDetails);
 
 		if (addClientResult.statusCode === HTTPStatusCode.OK) {
@@ -394,6 +397,8 @@ const ClientField = ({
 				companyDetail={companyDetail}
 				setCompanyDetail={setCompanyDetail}
 				getCompanyDetails={getCompanyDetails}
+				typeOfPricing={typeOfPricing}
+				setTypeOfPricing={setTypeOfPricing}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>
 			<AddNewClient

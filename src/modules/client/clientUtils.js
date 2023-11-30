@@ -51,10 +51,11 @@ export function clientFormDataFormatter(
 	legelInfoEN_ID,
 	companyDetail,
 	base64ClientImage,
-	getUploadClientFileData,
+	getUploadClientFileData,typeOfPricing
 ) {
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
+		// IsTransparentPricing: typeOfPricing === 1 ? true : false ,
 		company: {
 			// en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
 			en_Id : companyDetail.en_Id,
