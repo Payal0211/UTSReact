@@ -760,9 +760,12 @@ const HRFields = ({
               setValue("salesPerson", salesUserObj[0]?.id);
               setSalesPersionNameFromEmail(salesUserObj[0]?.value)
             }else {
-              setIsSalesPersionDisable(false)
-              resetField("salesPerson")
-              setSalesPersionNameFromEmail('')
+              if(userData?.LoggedInUserTypeID !== UserAccountRole.SALES){
+                setIsSalesPersionDisable(false)
+                resetField("salesPerson")
+                setSalesPersionNameFromEmail('')
+              }
+              
             }
           }
 
@@ -940,8 +943,12 @@ const HRFields = ({
   }, [isHRDirectPlacement, unregister]);
 
   useEffect(()=>{
+    let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
+
+    setValue('NRMargin',precentage)
+
     if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8){
-      unregister('payrollType')
+      unregister('payrollType')     
     }
 
     if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
@@ -954,7 +961,7 @@ const HRFields = ({
       unregister("tempProject")
       unregister('contractDuration')
     }
-  },[watch('hiringPricingType')])
+  },[watch('hiringPricingType'),hrPricingTypes])
 
   useEffect(() => {
     if (watch("budget")?.value === "2") {
@@ -1596,7 +1603,25 @@ console.log('hr Fields',hrFormDetails)
                       }
                       disabled
                     />
-                  ) : (
+                  ) :userData?.LoggedInUserTypeID === UserAccountRole.SALES ? (
+                    <HRSelectField
+                    key={"salesPersionEnabledSales"}
+                      setValue={setValue}
+                      searchable={true}
+                      register={register}
+                      label={"Sales Person"}
+                      defaultValue={ userData?.FullName}
+                      options={salesPerson && salesPerson}
+                      name="salesPerson"
+                      isError={errors["salesPerson"] && errors["salesPerson"]}
+                      required
+                      errorMsg={
+                        errors?.salesPerson?.message ||
+                        "Please select hiring request sales person"
+                      }
+                      disabled={true}
+                    />
+                  ): (
                     <HRSelectField
                     key={"salesPersionEnabled"}
                       setValue={setValue}
@@ -1686,7 +1711,7 @@ console.log('hr Fields',hrFormDetails)
             disabled={disableYypeOfPricing}
 							// defaultValue={'client'}
 							// className={allengagementReplceTalentStyles.radioGroup}
-							onChange={e=> setTypeOfPricing(e.target.value)}
+							onChange={e=> {setTypeOfPricing(e.target.value);resetField('hiringPricingType');resetField('availability');setControlledAvailabilityValue("Select availability")}}
 							value={typeOfPricing}
 							>
 							<Radio value={1}>Transparent Pricing</Radio>
@@ -1715,7 +1740,7 @@ console.log('hr Fields',hrFormDetails)
                 </div>
               </div>
 
-{watch('availability')?.id && <div className={HRFieldStyle.colMd6}>
+              {watch('availability')?.id && <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                   //  controlledValue={controlledAvailabilityValue}
@@ -1737,8 +1762,8 @@ console.log('hr Fields',hrFormDetails)
               }
               
 
-{(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8) &&  <>
-              <div className={HRFieldStyle.colMd6}>
+              {(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8) &&  <>
+              {(watch('hiringPricingType')?.id !== 1) && <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                       mode={"id/value"}
@@ -1759,7 +1784,8 @@ console.log('hr Fields',hrFormDetails)
                       errorMsg={"Please select."}
                     />
                   </div>
-                </div>
+                </div>}
+              
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
@@ -1922,7 +1948,7 @@ console.log('hr Fields',hrFormDetails)
                     }}
                     label="Uplers Fees %"
                     name="NRMargin"
-                    type={InputType.TEXT}
+                    type={InputType.NUMBER}
                     placeholder="Select Uplers Fees %"
                     required={!isHRDirectPlacement}
                   />
@@ -1977,7 +2003,7 @@ console.log('hr Fields',hrFormDetails)
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={"Adhoc Budget"}
+                  label={"Estimated Adhoc Budget"}
                   register={register}
                   name="adhocBudgetCost"
                   type={InputType.NUMBER}
@@ -1996,7 +2022,7 @@ console.log('hr Fields',hrFormDetails)
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={"Minimum Budget (Monthly)"}
+                  label={"Estimated Minimum Budget (Monthly)"}
                   register={register}
                   name="minimumBudget"
                   type={InputType.NUMBER}
@@ -2016,7 +2042,7 @@ console.log('hr Fields',hrFormDetails)
 
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={"Maximum Budget (Monthly)"}
+                  label={"Estimated Maximum Budget (Monthly)"}
                   register={register}
                   name="maximumBudget"
                   type={InputType.NUMBER}
@@ -2037,7 +2063,7 @@ console.log('hr Fields',hrFormDetails)
               {watch('budget')?.value !== "3" && <>
               <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={watch('budget')?.value === "2" ?  "Uplers Fees ( Min - Max)" : "Uplers Fees"}
+                                label={watch('budget')?.value === "2" ?  "Estimated Uplers Fees ( Min - Max)" : "Estimated Uplers Fees"}
                                 register={register}
                                 name="uplersFees"
                                 type={InputType.TEXT}
@@ -2048,7 +2074,7 @@ console.log('hr Fields',hrFormDetails)
 
                             <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Client needs to pay ( Min - Max )" : "Client needs to pay"}
+                                label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Estimated Client needs to pay ( Min - Max )" : "Estimated Client needs to pay"}
                                 register={register}
                                 name="needToPay"
                                 type={InputType.TEXT}

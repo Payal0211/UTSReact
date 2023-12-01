@@ -376,8 +376,8 @@ const EngagementList = () => {
 	}, [getEngagementModal?.engagementAddFeedback]);
 
 	useEffect(() => {
-		handleHRRequest(tableFilteredState);
-	}, [handleHRRequest, tableFilteredState, feedBackSave]);
+		handleHRRequest({...tableFilteredState,searchText: searchText});
+	}, [handleHRRequest, tableFilteredState, feedBackSave,searchText]);
 
 	useEffect(() => {
 		resetField('feedbackComments');

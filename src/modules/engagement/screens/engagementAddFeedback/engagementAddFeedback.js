@@ -1,4 +1,4 @@
-import {  message } from 'antd';
+import {  Skeleton, message } from 'antd';
 import { InputType,	GoogleDriveCredentials } from 'constants/application';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
@@ -22,6 +22,7 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
 }) => {
     const watchFeedbackDate = watch('feedBackDate')
     const submitFeedbacHandler = async (data) => {
+        setIsLoading(true)
         const feedBackdata = {
             hiringRequest_ID: getFeedbackFormContent?.hiringRequest_ID,
             contactID: getFeedbackFormContent?.contactID,
@@ -40,7 +41,9 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
         if (response.statusCode === HTTPStatusCode.OK) {
             onCancel()
             setFeedbackSave(!feedBackSave)
+            isLoading(false)
         }
+        setIsLoading(false)
     }
     const [getUploadFileData, setUploadFileData] = useState('');
     const [showUploadModal, setUploadModal] = useState(false);
@@ -151,7 +154,8 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                     <li><span>Talent Name:</span> {getFeedbackFormContent?.talentName}</li>
                 </ul>
             </div>
-
+            {isLoading ?<Skeleton /> :
+            <>
             <div className={allengagementAddFeedbackStyles.row}>
                 <div
                     className={allengagementAddFeedbackStyles.colMd6}>
@@ -239,6 +243,10 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                     />
                 </div>
             </div>
+</>
+}
+            
+           
 
             <div className={allengagementAddFeedbackStyles.row}>
                 <div
@@ -302,7 +310,8 @@ const EngagementAddFeedback = ({ getFeedbackFormContent, onCancel, feedBackSave,
                     // disabled={isLoading}
                     type="submit"
                     onClick={handleSubmit(submitFeedbacHandler)}
-                    className={allengagementAddFeedbackStyles.btnPrimary}>
+                    className={allengagementAddFeedbackStyles.btnPrimary}
+                    disabled={isLoading}>
                     Save
                 </button>
                 <button
