@@ -52,6 +52,8 @@ const EditClientField = ({
 	const [primaryClientEmail, setPrimaryClientEmail] = useState('');
 	const [legelInfoEN_ID, setLegelInfoEN_ID] = useState('')
 	const [isSavedLoading, setIsSavedLoading] = useState(false);
+	const [typeOfPricing,setTypeOfPricing] = useState(null)
+	const [pricingTypeError,setPricingTypeError] = useState(false);
 
 	const [clientPOCs, setClientPOCs]  = useState([])
 	/** ---- Useform()  Starts here --------- */
@@ -147,7 +149,12 @@ const EditClientField = ({
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 		// setIsLoading(true);
 		setIsSavedLoading(true)
-		let clientFormDetails = clientFormDataFormatter(
+		if(typeOfPricing === null){
+			setIsSavedLoading(false)
+			setPricingTypeError(true)
+			return
+		}
+		let clientFormDetails = clientFormDataFormatter({
 			d,
 			type,
 			addClientResponseID,
@@ -162,7 +169,7 @@ const EditClientField = ({
 			legelInfoEN_ID,
 			companyDetail,
             base64ClientImage,
-            getUploadClientFileData
+            getUploadClientFileData,typeOfPricing}
 		);
 
 		let newPOClist = d.pocList.map(contact => {
@@ -409,6 +416,10 @@ const EditClientField = ({
 				companyDetail={companyDetail}
 				setCompanyDetail={setCompanyDetail}
 				getCompanyDetails={getCompanyDetails}
+				typeOfPricing={typeOfPricing}
+				setTypeOfPricing={setTypeOfPricing}
+				setPricingTypeError={setPricingTypeError}
+				pricingTypeError={pricingTypeError}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>
 			<EditClient
