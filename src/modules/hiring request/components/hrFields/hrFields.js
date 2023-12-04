@@ -1886,7 +1886,7 @@ console.log('hr Fields',hrFormDetails)
                     validationSchema={{
                       required: "please enter payroll partner name.",
                     }}
-                    label="Patroll Partner Name"
+                    label="Payroll Partner Name"
                     name="payrollPartnerName"
                     type={InputType.TEXT}
                     placeholder="Enter the Payroll partner name"
