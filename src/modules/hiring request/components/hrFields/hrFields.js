@@ -1876,6 +1876,25 @@ console.log('hr Fields',hrFormDetails)
              
               </>
               }
+
+
+              {watch('payrollType')?.id === 4 && <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                <HRInputField
+                    register={register}
+                    errors={errors}
+                    validationSchema={{
+                      required: "please enter payroll partner name.",
+                    }}
+                    label="Patroll Partner Name"
+                    name="payrollPartnerName"
+                    type={InputType.TEXT}
+                    placeholder="Enter the Payroll partner name"
+                    required={watch('payrollType')?.id === 4}
+                  />
+                </div>
+              </div>}
+
               
              
             {/* {watch('role')?.id === -1 && (

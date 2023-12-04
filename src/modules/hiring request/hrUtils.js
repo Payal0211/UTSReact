@@ -94,6 +94,7 @@ export const hrUtils = {
 			HrTypeId: hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id).hrtypeId,
 			PayrollTypeId: draft === SubmitType.SAVE_AS_DRAFT ?  watch('payrollType')?.id: (watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5) ? 1  : d.payrollType?.id,
 			contactId: contactID || 0,
+			PayrollPartnerName:  watch('payrollType')?.id === 4 ? watch('payrollPartnerName') : '' ,
 			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 			clientName:
 				draft === SubmitType.SAVE_AS_DRAFT ? watch('clientName') : d.clientName,
