@@ -36,7 +36,7 @@ export function locationFormatter(location) {
 	});
 	return tempArray;
 }
-export function clientFormDataFormatter(
+export function clientFormDataFormatter({
 	d,
 	draft,
 	contactID,
@@ -52,11 +52,11 @@ export function clientFormDataFormatter(
 	companyDetail,
 	base64ClientImage,
 	getUploadClientFileData,typeOfPricing
-) {
+}) {
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
-		// IsTransparentPricing: typeOfPricing === 1 ? true : false ,
 		company: {
+			IsTransparentPricing: typeOfPricing === 1 ? true : false ,
 			// en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
 			en_Id : companyDetail.en_Id,
 			company: draft === SubmitType.SAVE_AS_DRAFT ? companyName : d.companyName,

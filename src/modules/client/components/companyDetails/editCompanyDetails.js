@@ -14,8 +14,9 @@ import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { _isNull } from "shared/utils/basic_utils";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { MdOutlinePreview } from "react-icons/md";
-import { Modal, Tooltip, AutoComplete } from "antd";
+import { Modal, Tooltip, AutoComplete, Radio } from "antd";
 import { Controller } from "react-hook-form";
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
 const EditCompanyDetails = ({
   register,
@@ -34,7 +35,7 @@ const EditCompanyDetails = ({
   control,
   companyDetail,
   setCompanyDetail,
-  getCompanyDetails,
+  getCompanyDetails,typeOfPricing,setTypeOfPricing,pricingTypeError,setPricingTypeError,
   controlledFieldsProp,
 }) => {
   let {
@@ -79,6 +80,16 @@ const EditCompanyDetails = ({
   const [showCompanyEmail, setShowCompanyEmail] = useState(false);
 
   let controllerRef = useRef(null);
+
+  const [userData, setUserData] = useState({});
+
+	useEffect(() => {
+		const getUserResult = async () => {
+			let userData = UserSessionManagementController.getUserSession();
+			if (userData) setUserData(userData);
+		};
+		getUserResult();
+	}, []);
 
   const getLeadOwnerBytype = async (type) => {
     let result = await MasterDAO.getLeadTypeDAO(type);
@@ -275,6 +286,12 @@ const EditCompanyDetails = ({
         });
         setControlledLeadOwner(filteredOwner[0].value);
       }
+    }
+    // for Transparent Pricing
+    if(companyDetail.isTransparentPricing !== null ){
+      setTypeOfPricing(companyDetail.isTransparentPricing === true ? 1 : 0)
+    }else{
+      setTypeOfPricing(null)
     }
   }, [companyDetail, leadOwner]);
 
@@ -631,6 +648,30 @@ const EditCompanyDetails = ({
               />
             </div>
           </div>
+
+          	<div className={CompanyDetailsStyle.row}>
+						<div className={CompanyDetailsStyle.colMd12}>
+							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<label style={{marginBottom:"12px"}}>
+							Type Of pricing
+							 {/* <span className={allengagementReplceTalentStyles.reqField}>
+								*
+              </span> */}
+						</label>
+            {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>}	
+						<Radio.Group
+              disabled={userData?.LoggedInUserTypeID !== 1} 
+							onChange={e=> {setTypeOfPricing(e.target.value); setPricingTypeError && setPricingTypeError(false)}}
+							value={typeOfPricing}
+							>
+							<Radio value={1}>Transparent Pricing</Radio>
+							<Radio value={0}>Non Transparent Pricing</Radio>
+						</Radio.Group>
+							</div>
+				
+								
+						</div>
+					</div>
 
           <div className={CompanyDetailsStyle.row}>
             <div className={CompanyDetailsStyle.colMd12}>

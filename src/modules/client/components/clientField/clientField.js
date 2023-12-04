@@ -143,7 +143,7 @@ const ClientField = ({
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 		// setIsLoading(true);
 		setIsSavedLoading(true)
-		let clientFormDetails = clientFormDataFormatter(
+		let clientFormDetails = clientFormDataFormatter({
 			d,
 			type,
 			addClientResponseID,
@@ -157,7 +157,7 @@ const ClientField = ({
 			primaryClientEN_ID,
 			legelInfoEN_ID,
 			companyDetail,
-			typeOfPricing
+			typeOfPricing}
 		);
 
 		let newPOClist = d.pocList.map(contact => {
