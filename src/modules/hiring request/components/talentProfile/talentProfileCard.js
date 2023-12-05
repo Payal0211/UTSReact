@@ -95,6 +95,7 @@ const TalentProfileCard = ({
 								callHRapi={callHRapi}
 								setHRapiCall={setHRapiCall}
 								inteviewSlotDetails={inteviewSlotDetails}
+								IsTransparentPricing={apiData?.IsTransparentPricing}
 							/>
 						</Suspense>
 					) : (

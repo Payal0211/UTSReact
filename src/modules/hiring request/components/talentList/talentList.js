@@ -70,6 +70,7 @@ const TalentList = ({
 	callHRapi,
 	inteviewSlotDetails,
 	talentID,
+	IsTransparentPricing
 }) => {
 	const navigate = useNavigate()
 	const [scheduleAnotherRoundInterview, setScheduleAnotherRoundInterview] =
@@ -691,18 +692,26 @@ const TalentList = ({
 													</span>
 												</div>
 												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" &&
-												 (item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && <span
-													onClick={() => {
-														setTalentIndex(item?.TalentID);
-														setEditBillRate(true);
-													}}
+												 (item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && IsTransparentPricing ? <span
 													style={{
 														textDecoration: 'underline',
 														color: `var(--background-color-ebony)`,
 														cursor: 'pointer',
 													}}>
 													Edit
-												</span>}
+												</span> :
+												<span
+												onClick={() => {
+													setTalentIndex(item?.TalentID);
+													setEditBillRate(true);
+												}}
+												style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>
+												Edit
+											</span>}
 												
 											</div>
 											<div className={TalentListStyle.payRate}>
@@ -716,18 +725,27 @@ const TalentList = ({
 													</span>
 												</div>
 												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && 
-												(item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && <span
-													onClick={() => {
-														setEditPayRate(true);
-														setTalentIndex(item?.TalentID);
-													}}
+												(item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && IsTransparentPricing ? <span
 													style={{
 														textDecoration: 'underline',
 														color: `var(--background-color-ebony)`,
 														cursor: 'pointer',
 													}}>
 													Edit
-												</span>}
+												</span>:
+												<span
+												onClick={() => {
+													setEditPayRate(true);
+													setTalentIndex(item?.TalentID);
+												}}
+
+												style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>
+												Edit
+											</span>}
 												
 											</div>
 											<div className={TalentListStyle.nr}>
