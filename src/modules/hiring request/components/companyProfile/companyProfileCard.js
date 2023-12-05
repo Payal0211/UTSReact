@@ -188,8 +188,8 @@ const CompanyProfileCard = ({
                           ? clientDetail?.SpecificMonth
                           : 0
                       }
-					Months`
-                    : "Direct Placement"}
+					Months ${allApiData?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}`
+                    : `Direct Placement ${allApiData?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}` }
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.category}>

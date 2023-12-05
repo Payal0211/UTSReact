@@ -183,7 +183,8 @@ const HRFields = ({
   const [showGPTModal, setShowGPTModal] = useState(false);
   const [gptDetails, setGPTDetails] = useState({});
   const [gptFileDetails, setGPTFileDetails] = useState({});
-  const [typeOfPricing,setTypeOfPricing] = useState(1)
+  const [typeOfPricing,setTypeOfPricing] = useState(null)
+  const [pricingTypeError,setPricingTypeError] = useState(false);
   const [transactionMessage,setTransactionMessage] = useState('')
   const [disableYypeOfPricing,setDisableTypeOfPricing] = useState(false)
 
@@ -749,7 +750,7 @@ const HRFields = ({
               setDisableTypeOfPricing(true)
               setTransactionMessage('*This client has been selected in past for below pricing model. To change and update pricing model go to Company and make the changes to reflect right while submitting this HR.')
             }else{
-              setTypeOfPricing(1)
+              setTypeOfPricing(null)
               setDisableTypeOfPricing(false)
               setTransactionMessage('*You are creating this HR for the first time for this Client after roll out of Transparent Pricing, help us select if this client and HR falls under transparent or non transparent pricing.')
             }
@@ -1025,6 +1026,13 @@ const HRFields = ({
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
+
+      if(typeOfPricing === null){
+        setIsSavedLoading(false)
+        setPricingTypeError(true)
+        return
+      }
+
       let hrFormDetails = hrUtils.hrFormDataFormatter(
         d,
         type,
@@ -1158,7 +1166,7 @@ console.log('hr Fields',hrFormDetails)
     if(watch('budget')?.value === '1'){
       if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
         let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
-        let cal = (dpPercentage * watch('adhocBudgetCost'))
+        let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
         setValue('uplersFees',cal ? cal : 0)
       }else{
            let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
@@ -1170,8 +1178,8 @@ console.log('hr Fields',hrFormDetails)
     if(watch('budget')?.value === '2'){
       if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
         let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
-        let calMin = (dpPercentage * watch('minimumBudget'))
-        let calMax = (dpPercentage * watch('maximumBudget'))
+        let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
+        let calMax = (dpPercentage * watch('maximumBudget') *12) /100
         setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
       }else{
         let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
@@ -1698,20 +1706,22 @@ console.log('hr Fields',hrFormDetails)
 									/>
 								</div>
 							</div> */}
+              {console.log('error',errors)}
 <div className={HRFieldStyle.colMd12}>
 <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>
 							Type Of pricing
-							{/* <span className={allengagementReplceTalentStyles.reqField}>
+							<span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
 								*
-							</span> */}
+							</span>
 						</label>
+            {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
             {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> } 
 						<Radio.Group
             disabled={disableYypeOfPricing}
 							// defaultValue={'client'}
 							// className={allengagementReplceTalentStyles.radioGroup}
-							onChange={e=> {setTypeOfPricing(e.target.value);resetField('hiringPricingType');resetField('availability');setControlledAvailabilityValue("Select availability")}}
+							onChange={e=> {setTypeOfPricing(e.target.value);resetField('hiringPricingType');resetField('availability');setControlledAvailabilityValue("Select availability");setPricingTypeError(false)}}
 							value={typeOfPricing}
 							>
 							<Radio value={1}>Transparent Pricing</Radio>
@@ -1958,7 +1968,8 @@ console.log('hr Fields',hrFormDetails)
                   />
                 </div>
               ) : (
-                <div className={HRFieldStyle.colMd6}>
+                <>
+                  <div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     register={register}
                     errors={errors}
@@ -1972,6 +1983,28 @@ console.log('hr Fields',hrFormDetails)
                     required={!isHRDirectPlacement}
                   />
                 </div>
+                <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                    controlledValue={controlledCurrencyValue}
+                    setControlledValue={setControlledCurrencyValue}
+                    isControlled={true}
+                    mode={"id/value"}
+                    searchable={true}
+                    setValue={setValue}
+                    register={register}
+                    label={"Currency"}
+                    defaultValue="Select Currency"
+                    options={currency && currency}
+                    name="currency"
+                    isError={errors["currency"] && errors["currency"]}
+                    required
+                    errorMsg={"Please select currency"}
+                  />
+                </div>
+              </div>
+                </>
+              
               )}
 
               {/* {!isHRDirectPlacement && (
@@ -2133,26 +2166,7 @@ console.log('hr Fields',hrFormDetails)
                 </div>
               </div>
 
-              <div className={HRFieldStyle.colMd6}>
-                <div className={HRFieldStyle.formGroup}>
-                  <HRSelectField
-                    controlledValue={controlledCurrencyValue}
-                    setControlledValue={setControlledCurrencyValue}
-                    isControlled={true}
-                    mode={"id/value"}
-                    searchable={true}
-                    setValue={setValue}
-                    register={register}
-                    label={"Currency"}
-                    defaultValue="Select Currency"
-                    options={currency && currency}
-                    name="currency"
-                    isError={errors["currency"] && errors["currency"]}
-                    required
-                    errorMsg={"Please select currency"}
-                  />
-                </div>
-              </div>
+              
               {getWorkingModelFields()}
             </div>
             
@@ -2266,7 +2280,7 @@ console.log('hr Fields',hrFormDetails)
 						</div> */}
 
             <div className={HRFieldStyle.row}>
-              <div className={HRFieldStyle.colMd4}>
+              {/* <div className={HRFieldStyle.colMd4}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     setValue={setValue}
@@ -2288,9 +2302,9 @@ console.log('hr Fields',hrFormDetails)
                     disabled={isHRDirectPlacement}
                   />
                 </div>
-              </div>
+              </div> */}
             
-              <div className={HRFieldStyle.colMd4}>
+              <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRInputField
                     required
@@ -2315,7 +2329,7 @@ console.log('hr Fields',hrFormDetails)
                 </div>
               </div>
 
-              <div className={HRFieldStyle.colMd4}>
+              <div className={HRFieldStyle.colMd6}>
                 <HRInputField
                   register={register}
                   errors={errors}
