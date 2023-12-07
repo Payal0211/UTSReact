@@ -196,12 +196,20 @@ export const hrUtils = {
 					: _isNull(d.availability)
 					? null
 					: d.availability?.value,
+			// NRMargin: 
+			// 	draft === SubmitType.SAVE_AS_DRAFT
+			// 		? isHRDirectPlacement ? 0 :_isNull(watch('NRMargin'))
+			// 			? 0
+			// 			: parseInt(watch('NRMargin'))
+			// 		: isHRDirectPlacement ? 0 : _isNull(d.NRMargin)
+			// 		? 0
+			// 		: parseInt(d.NRMargin),
 			NRMargin: 
 				draft === SubmitType.SAVE_AS_DRAFT
-					? isHRDirectPlacement ? 0 :_isNull(watch('NRMargin'))
+					? (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6) ? 0 :_isNull(watch('NRMargin'))
 						? 0
 						: parseInt(watch('NRMargin'))
-					: isHRDirectPlacement ? 0 : _isNull(d.NRMargin)
+					: (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6) ? 0 : _isNull(d.NRMargin)
 					? 0
 					: parseInt(d.NRMargin),
 			salesPerson:
@@ -390,14 +398,23 @@ export const hrUtils = {
 						: _isNull(d.workingMode)
 						? null
 						: d.workingMode?.value,
-				dpPercentage: isHRDirectPlacement
+				// dpPercentage: isHRDirectPlacement
+				// 	? draft === SubmitType.SAVE_AS_DRAFT
+				// 		? _isNull(watch('dpPercentage'))
+				// 			? 0
+				// 			: parseFloat(watch('dpPercentage'))
+				// 		: _isNull(d.dpPercentage)
+				// 		? 0
+				// 		: parseFloat(d.dpPercentage)
+				// 	: 0,
+				dpPercentage: (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6)
 					? draft === SubmitType.SAVE_AS_DRAFT
-						? _isNull(watch('dpPercentage'))
+						? _isNull(watch('NRMargin'))
 							? 0
-							: parseFloat(watch('dpPercentage'))
-						: _isNull(d.dpPercentage)
+							: parseFloat(watch('NRMargin'))
+						: _isNull(d.NRMargin)
 						? 0
-						: parseFloat(d.dpPercentage)
+						: parseFloat(d.NRMargin)
 					: 0,
 				address:
 					draft === SubmitType.SAVE_AS_DRAFT

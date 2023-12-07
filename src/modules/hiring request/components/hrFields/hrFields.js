@@ -1091,7 +1091,7 @@ const HRFields = ({
       } else if (type !== SubmitType.SAVE_AS_DRAFT) {
         setType(SubmitType.SUBMIT);
       }
-console.log('hr Fields',hrFormDetails)
+// console.log('hr Fields',hrFormDetails)
 
       const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
@@ -1975,6 +1975,8 @@ console.log('hr Fields',hrFormDetails)
                     errors={errors}
                     validationSchema={{
                       required: "please enter the Uplers Fees %.",
+                      min:{value:1,message:"Uplers Fees % can not be 0"},
+                      max:{value:100,message:"Uplers Fees % can not be more then 100"}
                     }}
                     label="Uplers Fees %"
                     name="NRMargin"
