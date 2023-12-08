@@ -156,6 +156,8 @@ const HRFields = ({
     useState("Select Currency");
     const [controlledAvailabilityValue, setControlledAvailabilityValue] =
     useState("Select availability");
+    const [controlledHiringPricingTypeValue, setControlledHiringPricingTypeValue] =
+    useState("Select Hiring Pricing");
   const [DealHRData, setDealHRData] = useState({});
   let controllerRef = useRef(null);
   const {
@@ -949,7 +951,8 @@ const HRFields = ({
     setValue('NRMargin',precentage)
 
     if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8){
-      unregister('payrollType')     
+      unregister('payrollType')    
+      watch('hiringPricingType')?.id === 1 && unregister("tempProject")
     }
 
     if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
@@ -1481,10 +1484,12 @@ const HRFields = ({
       }
 
       return e.target.value;
-    });
-
-    
+    });   
   };
+
+  useEffect(()=> {resetField('hiringPricingType')
+  setControlledHiringPricingTypeValue("Select Hiring Pricing")
+},[watch('availability')])
 
   return (
     <>
@@ -1753,9 +1758,9 @@ const HRFields = ({
               {watch('availability')?.id && <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
-                  //  controlledValue={controlledAvailabilityValue}
-                  //  setControlledValue={setControlledAvailabilityValue}
-                  //  isControlled={true}
+                   controlledValue={controlledHiringPricingTypeValue}
+                   setControlledValue={setControlledHiringPricingTypeValue}
+                   isControlled={true}
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
@@ -1888,7 +1893,7 @@ const HRFields = ({
               }
 
 
-              {watch('payrollType')?.id === 4 && <div className={HRFieldStyle.colMd6}>
+              {watch('payrollType')?.id === 3 && <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                 <HRInputField
                     register={register}
@@ -2041,7 +2046,7 @@ const HRFields = ({
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
-                    label={"Add your estimated budget (Monthly)"}
+                    label={`Add your estimated ${typeOfPricing === 1 ? "salary ":''}budget (Monthly)`}
                     defaultValue="Select Budget"
                     options={budgets.map((item) => ({
                       id: item.id,
@@ -2057,7 +2062,7 @@ const HRFields = ({
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={"Estimated Adhoc Budget"}
+                  label={`Estimated ${typeOfPricing === 1 ? "salary ":''}Budget`}
                   register={register}
                   name="adhocBudgetCost"
                   type={InputType.NUMBER}
@@ -2076,7 +2081,7 @@ const HRFields = ({
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={"Estimated Minimum Budget (Monthly)"}
+                  label={`Estimated Minimum ${typeOfPricing === 1 ? "salary ":''}Budget (Monthly)`}
                   register={register}
                   name="minimumBudget"
                   type={InputType.NUMBER}
@@ -2096,7 +2101,7 @@ const HRFields = ({
 
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={"Estimated Maximum Budget (Monthly)"}
+                  label={`Estimated Maximum ${typeOfPricing === 1 ? "salary ":''}Budget (Monthly)`}
                   register={register}
                   name="maximumBudget"
                   type={InputType.NUMBER}
