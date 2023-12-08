@@ -125,29 +125,26 @@ const ViewHRDetails = () => {
 												{hiringDetails?.responseBody?.details?.contractType ??
 													'NA'}
 											</li>
-											{hiringDetails?.responseBody?.details?.contractType ===
-											'Direct Placement' ? (
-												<li>
-													<span>DP:</span>{' '}
-													{hiringDetails?.responseBody?.details?.dpPercentage ??
-														'NA'}{' '}
-													%
-												</li>
-											) : (
-												<li>
-													<span>NR:</span>{' '}
-													{hiringDetails?.responseBody?.details?.nrPercetange ??
-														'NA'}{' '}
-													%
-												</li>
-											)}
+											<li>
+												<span>Availibilty:</span>{' '}
+												{hiringDetails?.responseBody?.details?.availability ??
+													'NA'}
+											</li>
+											<li>
+												<span>Hiring Pricing Type:</span>{' '}
+												{hiringDetails?.responseBody?.details?.transparentModel
+													?.hrTypePricing
+													?? 'NA'}{' '}
+												
+												<i className={ViewHRDetailsStyle.blueDot} />
+											</li>
 											<li>
 												<span>Contract Duration:</span>{' '}
 												{hiringDetails?.responseBody?.details
 													?.contractDuration ?? 'NA'}{' '}
 												Months
 												<i className={ViewHRDetailsStyle.blueDot} />
-											</li>
+											</li>											
 											<li>
 												<span>How Many Talent Request:</span> {hiringDetails?.responseBody?.details?.noOfTalents ?? 'NA'}
 											</li>
@@ -167,7 +164,7 @@ const ViewHRDetails = () => {
 											</li>
 
 											<li>
-												<span>BQ Form Link:</span>{' '}
+												<span>HR Form Link:</span>{' '}
 												{hiringDetails?.responseBody?.details?.bqLink ? (
 													<a
 														href={hiringDetails?.responseBody?.details?.bqLink}
@@ -201,6 +198,44 @@ const ViewHRDetails = () => {
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li>
 											<li>
+												<span>Transparent Pricing:</span>{' '}
+												{hiringDetails?.responseBody?.details?.transparentModel?.isTransparentPricing ? "Yes"
+													:'No'}
+												<i className={ViewHRDetailsStyle.blueDot} />
+											</li>
+											{hiringDetails?.responseBody?.details?.contractType ===
+											'Direct Placement' ? (
+												<li>
+													<span>Uplers Fees:</span>{' '}
+													{hiringDetails?.responseBody?.details?.dpPercentage ??
+														'NA'}{' '}
+													%
+												</li>
+											) : (
+												<li>
+													<span>Uplers Fees:</span>{' '}
+													{hiringDetails?.responseBody?.details?.nrPercetange ??
+														'NA'}{' '}
+													%
+												</li>
+											)}
+											{hiringDetails?.responseBody?.details?.transparentModel?.payrollType && <li>
+												<span>Payroll Type:</span>{' '}
+												{hiringDetails?.responseBody?.details?.transparentModel?.payrollType ?? 'NA'}
+												<i className={ViewHRDetailsStyle.blueDot} />
+											</li>}
+											
+											{hiringDetails?.responseBody?.details?.transparentModel?.payrollTypeId === 3 && <li>
+												<span>Payroll Partner Name:</span>{' '}
+												{hiringDetails?.responseBody?.details?.transparentModel?.payrollPartnerName ?? 'NA'}
+												<i className={ViewHRDetailsStyle.blueDot} />
+											</li> }
+											{hiringDetails?.responseBody?.details?.transparentModel?.calculatedUplersfees && <li>
+												<span>Estimated Uplers Fees:</span>{' '}
+												{hiringDetails?.responseBody?.details?.transparentModel?.calculatedUplersfees ?? 'NA'}
+												<i className={ViewHRDetailsStyle.blueDot} />
+											</li> }
+											<li>
 												<span>JD URL:</span>{' '}
 												{hiringDetails?.responseBody?.details?.jdurl ? <a
 													rel="noreferrer"
@@ -227,11 +262,6 @@ const ViewHRDetails = () => {
 													?.requiredExperienceYear ?? 'NA'}{' '}
 												Years
 												<i className={ViewHRDetailsStyle.blueDot} />
-											</li>
-											<li>
-												<span>Availibilty:</span>{' '}
-												{hiringDetails?.responseBody?.details?.availability ??
-													'NA'}
 											</li>
 											<li>
 												<span>Deal ID:</span>{' '}

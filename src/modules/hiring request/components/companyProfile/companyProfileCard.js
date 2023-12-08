@@ -2,7 +2,7 @@ import CompanyProfileCardStyle from "./companyProfile.module.css";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { AiFillLinkedin } from "react-icons/ai";
-import { Divider, Dropdown, Menu, Modal, Tabs } from "antd";
+import { Divider, Dropdown, Menu, Modal, Tabs, Tooltip } from "antd";
 import { Link,useNavigate,  useParams } from "react-router-dom";
 import UpdateTRModal from "../../components/updateTRModal/updateTRModal";
 import ChangeDate from "../changeDate/changeDateModal";
@@ -11,6 +11,7 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import { UserAccountRole } from "constants/application";
 import { NetworkInfo } from "constants/network";
 import JOBPostSLA from "./jobPostSLA";
+import infoIcon from 'assets/svg/info.svg'
 
 const CompanyProfileCard = ({
   clientDetail,
@@ -179,8 +180,19 @@ const CompanyProfileCard = ({
 					{clientDetail?.Managed ? clientDetail?.Managed : 'NA'}
 				</span>
 			</div> */}
+      {console.log('API data',allApiData)}
               <div className={CompanyProfileCardStyle.EngagementType}>
-                <span>Engagement Type:</span>&nbsp;&nbsp;
+                <span>Engagement Type <Tooltip
+							placement="bottomLeft"
+							title={<div>
+                <p>Hiring Type: {allApiData?.transparentModel?.HrTypePricing}</p>
+                {allApiData?.transparentModel?.PayrollType && <p>Payroll Type: {allApiData?.transparentModel?.PayrollType ?? 'NA'}</p>}
+                
+                {allApiData?.transparentModel?.PayrollPartnerName && 
+                <p>Payroll Partner: {allApiData?.transparentModel?.PayrollPartnerName}</p>}
+              </div>}>
+								<img src={infoIcon} alt='info' />							
+						</Tooltip> :</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {!allApiData?.Is_HRTypeDP
                     ? `Contract - ${
@@ -188,8 +200,8 @@ const CompanyProfileCard = ({
                           ? clientDetail?.SpecificMonth
                           : 0
                       }
-					Months ${allApiData?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}`
-                    : `Direct Placement ${allApiData?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}` }
+					Months ${allApiData?.transparentModel?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}`
+                    : `Direct Placement ${allApiData?.transparentModel?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}` }
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.category}>
@@ -292,6 +304,12 @@ const CompanyProfileCard = ({
                 <span>Budget:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.Cost ? clientDetail?.Cost : "NA"}
+                </span>
+              </div>
+              <div className={CompanyProfileCardStyle.budget}>
+                <span>Estimated Uplers Fees:</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                  {allApiData?.transparentModel?.CalculatedUplersfees ? allApiData?.transparentModel?.CalculatedUplersfees : "NA"}
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.engagement}>
