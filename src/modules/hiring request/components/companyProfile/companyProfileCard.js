@@ -180,19 +180,8 @@ const CompanyProfileCard = ({
 					{clientDetail?.Managed ? clientDetail?.Managed : 'NA'}
 				</span>
 			</div> */}
-      {console.log('API data',allApiData)}
               <div className={CompanyProfileCardStyle.EngagementType}>
-                <span>Engagement Type <Tooltip
-							placement="bottomLeft"
-							title={<div>
-                <p>Hiring Type: {allApiData?.transparentModel?.HrTypePricing}</p>
-                {allApiData?.transparentModel?.PayrollType && <p>Payroll Type: {allApiData?.transparentModel?.PayrollType ?? 'NA'}</p>}
-                
-                {allApiData?.transparentModel?.PayrollPartnerName && 
-                <p>Payroll Partner: {allApiData?.transparentModel?.PayrollPartnerName}</p>}
-              </div>}>
-								<img src={infoIcon} alt='info' />							
-						</Tooltip> :</span>&nbsp;&nbsp;
+                <span>Engagement Type :</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {!allApiData?.Is_HRTypeDP
                     ? `Contract - ${
@@ -301,17 +290,31 @@ const CompanyProfileCard = ({
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.budget}>
-                <span>Budget:</span>&nbsp;&nbsp;
+                <span>Budget <Tooltip
+							placement="bottomLeft"
+							title={<div>
+                <p>Hiring Type : {allApiData?.transparentModel?.HrTypePricing}</p>
+                {allApiData?.transparentModel?.PayrollType && <p>Payroll Type : {allApiData?.transparentModel?.PayrollType ?? 'NA'}</p>}
+                
+                {allApiData?.transparentModel?.PayrollPartnerName && 
+                <p>Payroll Partner : {allApiData?.transparentModel?.PayrollPartnerName}</p>}
+                {allApiData?.transparentModel?.CalculatedUplersfees && <p>Estimated Uplers Fees : {allApiData?.transparentModel?.CalculatedUplersfees}</p>}
+                {allApiData?.transparentModel?.IsTransparentPricing
+ ? <p>Estimated Client Need To Pay : {allApiData?.transparentModel?.ClientNeedsToPay}</p> 
+ : <p>Talent Estimated Pay : {allApiData?.transparentModel?.TalentsPay}</p>}
+              </div>}>
+								<img src={infoIcon} alt='info' />							
+						</Tooltip> :</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.Cost ? clientDetail?.Cost : "NA"}
                 </span>
               </div>
-              <div className={CompanyProfileCardStyle.budget}>
+              {/* <div className={CompanyProfileCardStyle.budget}>
                 <span>Estimated Uplers Fees:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {allApiData?.transparentModel?.CalculatedUplersfees ? allApiData?.transparentModel?.CalculatedUplersfees : "NA"}
                 </span>
-              </div>
+              </div> */}
               <div className={CompanyProfileCardStyle.engagement}>
                 <span>Engagement:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>

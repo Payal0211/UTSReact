@@ -1489,6 +1489,7 @@ const HRFields = ({
   };
 
   useEffect(()=> {resetField('hiringPricingType')
+  resetField('payrollType')  
   setControlledHiringPricingTypeValue("Select Hiring Pricing")
 },[watch('availability')])
 
@@ -1712,7 +1713,7 @@ const HRFields = ({
 									/>
 								</div>
 							</div> */}
-              {console.log('error',errors)}
+
 <div className={HRFieldStyle.colMd12}>
 <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>
@@ -1906,7 +1907,7 @@ const HRFields = ({
                     name="payrollPartnerName"
                     type={InputType.TEXT}
                     placeholder="Enter the Payroll partner name"
-                    required={watch('payrollType')?.id === 4}
+                    required={watch('payrollType')?.id === 3}
                   />
                 </div>
               </div>}

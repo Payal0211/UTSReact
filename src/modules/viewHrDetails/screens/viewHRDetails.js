@@ -139,6 +139,26 @@ const ViewHRDetails = () => {
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li>
 											<li>
+												{hiringDetails?.responseBody?.details?.transparentModel.isTransparentPricing ?<><span>Estimated Client Need To Pay:</span>{' '}
+												{hiringDetails?.responseBody?.details?.transparentModel.clientNeedsToPay
+													?? 'NA'}{' '}
+												
+												<i className={ViewHRDetailsStyle.blueDot} />
+												</>
+												
+											:<>
+											<span>Talent Estimated Pay:</span>{' '}
+												{hiringDetails?.responseBody?.details?.transparentModel
+													?.talentsPay
+													?? 'NA'}{' '}
+												
+												<i className={ViewHRDetailsStyle.blueDot} />
+											</>
+											
+											}
+												
+											</li>
+											<li>
 												<span>Contract Duration:</span>{' '}
 												{hiringDetails?.responseBody?.details
 													?.contractDuration ?? 'NA'}{' '}
@@ -235,6 +255,7 @@ const ViewHRDetails = () => {
 												{hiringDetails?.responseBody?.details?.transparentModel?.calculatedUplersfees ?? 'NA'}
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li> }
+
 											<li>
 												<span>JD URL:</span>{' '}
 												{hiringDetails?.responseBody?.details?.jdurl ? <a
