@@ -7,6 +7,7 @@ import {
   AutoComplete,
   Modal,
   Skeleton,
+  Radio
 } from "antd";
 import {
   ClientHRURL,
@@ -72,6 +73,8 @@ const EditHRFields = ({
 
   const [getUploadFileData, setUploadFileData] = useState("");
   const [availability, setAvailability] = useState([]);
+  const [payRollTypes, setPayRollTypes] = useState([]);
+  const [hrPricingTypes, setHRPricingTypes] = useState([]);
   const [timeZonePref, setTimeZonePref] = useState([]);
   const [workingMode, setWorkingMode] = useState([]);
   const [talentRole, setTalentRole] = useState([]);
@@ -114,6 +117,8 @@ const EditHRFields = ({
   );
   const [controlledAvailabilityValue, setControlledAvailabilityValue] =
     useState("Select availability");
+    const [controlledHiringPricingTypeValue, setControlledHiringPricingTypeValue] =
+    useState("Select Hiring Pricing");
   const [controlledWorkingValue, setControlledWorkingValue] = useState(
     "Select working mode"
   );
@@ -135,6 +140,8 @@ const EditHRFields = ({
     useState("Select End Time");
   const [controlledTempProjectValue, setControlledTempProjectValue] =
     useState("Please select .");
+    const [controlledPayrollTypeValue, setControlledPayrollTypeValue] =
+    useState("Select payroll");
   const [
     controlledPartialEngagementValue,
     setControlledPartialEngagementValue,
@@ -149,6 +156,8 @@ const EditHRFields = ({
   const [showGPTModal, setShowGPTModal] = useState(false);
   const [gptDetails, setGPTDetails] = useState({});
   const [gptFileDetails, setGPTFileDetails] = useState({});
+  const [typeOfPricing,setTypeOfPricing] = useState(1)
+  const [transactionMessage,setTransactionMessage] = useState('')
 
   const [tempProjects, setTempProject] = useState([
     {
@@ -456,9 +465,60 @@ const EditHRFields = ({
     const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
     setAvailability(
       availabilityResponse &&
-        availabilityResponse.responseBody?.BindHiringAvailability
+        availabilityResponse.responseBody?.BindHiringAvailability.reverse()
     );
   }, []);
+
+  const getPayrollType = useCallback(async () => {
+    const payRollsResponse = await MasterDAO.getPayRollTypeDAO();
+    setPayRollTypes(
+      payRollsResponse &&
+        payRollsResponse.responseBody
+    );
+  }, []);
+  const getHRPricingType = useCallback(async () => {
+    const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
+    setHRPricingTypes(
+      HRPricingResponse &&
+      HRPricingResponse.responseBody
+    );
+  }, []);
+
+  const getRequiredHRPricingType = useCallback(() =>{
+    let reqOpt = []
+
+    if(watch("availability")?.value === "Full Time"){
+      if(typeOfPricing === 1){
+        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Full Time" && item.isTransparent === true)
+        if(Filter.length){
+          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+        }
+      }else{
+        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Full Time" && item.isTransparent === false)
+        if(Filter.length){
+          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+        }
+      }
+    }
+
+    if(watch("availability")?.value === "Part Time"){
+      if(typeOfPricing === 1){
+        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Part Time"&& item.isTransparent === true)
+        if(Filter.length){
+          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+        }
+      }else{
+        let Filter = hrPricingTypes.filter(item=> item.engagementType === "Part Time" && item.isTransparent === false)
+        if(Filter.length){
+          reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+        }
+      }
+    }
+
+    return reqOpt
+
+  },[hrPricingTypes, watch('availability'), typeOfPricing]) 
+
   const getHowSoon = useCallback(async () => {
     const howSoonResponse = await MasterDAO.getHowSoonRequestDAO();
     setHowSoon(howSoonResponse && howSoonResponse.responseBody);
@@ -738,6 +798,8 @@ const EditHRFields = ({
   useEffect(() => {
     getCurrencyHandler();
     getAvailability();
+    getPayrollType ();
+    getHRPricingType();
     getTalentRole();
     getSalesPerson();
     // getRegion();
@@ -777,6 +839,26 @@ const EditHRFields = ({
       unregister(["address", "city", "state", "country", "postalCode"]);
     }
   }, [modeOfWork, unregister]);
+
+  useEffect(()=>{
+    let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
+    setValue('NRMargin',precentage) 
+
+    if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8){
+      unregister('payrollType')   
+    }
+
+    if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+      unregister("tempProject")
+      unregister('contractDuration')
+    }
+
+    if((watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 )){
+      unregister('payrollType')
+      unregister("tempProject")
+      unregister('contractDuration')
+    }
+  },[watch('hiringPricingType'),hrPricingTypes])
 
   useEffect(() => {
     if (watch("budget")?.value === "2") {
@@ -885,7 +967,8 @@ const EditHRFields = ({
         isHRDirectPlacement,
         addHRResponse,
         getUploadFileData && getUploadFileData,
-        watchJDUrl ? watchJDUrl : jdDumpID
+        watchJDUrl ? watchJDUrl : jdDumpID,
+        typeOfPricing,hrPricingTypes
       );
 
       hrFormDetails["allowSpecialEdit"] = getHRdetails?.allowSpecialEdit;
@@ -970,6 +1053,7 @@ const EditHRFields = ({
       setTitle,
       // setTabFieldDisabled,
       // tabFieldDisabled,
+      typeOfPricing,hrPricingTypes,
       getHRdetails?.addHiringRequest?.hrNumber,
       messageAPI,
     ]
@@ -1119,6 +1203,62 @@ const EditHRFields = ({
     }
   }, [getHRdetails, availability]);
 
+  useEffect(() => {
+    if(watch('budget')?.value === '1'){
+      if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+        let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
+        setValue('uplersFees',cal ? cal : 0)
+      }else{
+           let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
+      setValue('uplersFees',cal ? cal : 0)
+      }
+   
+    }
+
+    if(watch('budget')?.value === '2'){
+      if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+        let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
+        let calMax = (dpPercentage * watch('maximumBudget') *12) /100
+        setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
+      }else{
+        let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
+        let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
+        setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
+       }
+    }
+  },[watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget'),watch('budget'),watch('NRMargin')]);
+
+  useEffect(()=>{
+    if(watch('budget')?.value === '1'){
+      if(typeOfPricing === 0){
+        let cal = watch('adhocBudgetCost') - watch('uplersFees')
+        setValue("needToPay",cal? cal : 0)
+      }else{
+        let cal = parseFloat(watch('adhocBudgetCost')) + parseFloat(watch('uplersFees'))
+        setValue("needToPay",cal? cal : 0)
+      }
+      
+    }
+    if(watch('budget')?.value === '2'){
+      if(typeOfPricing === 0){
+        let uplersBudget = watch('uplersFees')?.split('-')
+        let minCal = watch('minimumBudget') - uplersBudget[0]
+        let maxCal = watch('maximumBudget') - uplersBudget[1]
+        setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
+      }else{
+        let uplersBudget = watch('uplersFees')?.split('-')
+        let minCal = parseFloat(watch('minimumBudget')) + parseFloat(uplersBudget[0])
+        let maxCal = parseFloat(watch('maximumBudget')) + parseFloat(uplersBudget[1])
+
+        setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
+      }
+      
+      
+    }
+  },[watch('uplersFees'),watch('budget'),watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget')])
+
   // useEffect(() => {
   //   if (getHRdetails?.salesHiringRequest_Details?.timezoneId) {
   //     const findRegion = region.filter(
@@ -1223,7 +1363,34 @@ const EditHRFields = ({
         setControlledTempProjectValue(findtempProject[0]?.value);
       }
     }
-  }, [getHRdetails, tempProjects, setValue]);
+
+    if(getHRdetails?.addHiringRequest?.isTransparentPricing !== null ){
+      setTypeOfPricing(getHRdetails?.addHiringRequest?.isTransparentPricing === true ? 1 : 0)
+      setTransactionMessage('*This client has been selected in past for below pricing model. To change and update pricing model go to Company and make the changes to reflect right while submitting this HR.')
+    }else{
+      setTypeOfPricing(1)
+      setTransactionMessage('*You are creating this HR for the first time for this Client after roll out of Transparent Pricing, help us select if this client and HR falls under transparent or non transparent pricing.')
+    }
+
+    let filteredHRtype = hrPricingTypes.find(item=> item.id === getHRdetails?.addHiringRequest?.hiringTypePricingId)
+    console.log("filteredHRtype",filteredHRtype)
+    if(filteredHRtype){
+      setValue('hiringPricingType',{id:filteredHRtype.id, value: filteredHRtype.type})
+      setControlledHiringPricingTypeValue(filteredHRtype.type)
+    }
+
+    let payrollTypeFilter = payRollTypes.find(item=> item.id === getHRdetails?.addHiringRequest?.payrollTypeId)
+    if(payrollTypeFilter){
+      console.log('payrollTypeFilter',payrollTypeFilter)
+      setValue('payrollType',{id:payrollTypeFilter.id, value: payrollTypeFilter.value})
+      setControlledPayrollTypeValue(payrollTypeFilter.value)
+      if(getHRdetails?.addHiringRequest?.payrollTypeId === 3){
+        setValue('payrollPartnerName',getHRdetails?.addHiringRequest?.payrollPartnerName)
+      }
+    }
+    
+
+  }, [getHRdetails, tempProjects, setValue, hrPricingTypes,payRollTypes]);
 
   useEffect(() => {
     if (getHRdetails?.addHiringRequest?.partialEngagementTypeId) {
@@ -1610,6 +1777,451 @@ const EditHRFields = ({
                   )}
                 </div>
 
+                <div className={HRFieldStyle.colMd12}>
+              <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<label style={{marginBottom:"12px"}}>
+							Type Of pricing
+							{/* <span className={allengagementReplceTalentStyles.reqField}>
+								*
+							</span> */}
+						</label>
+            {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> } 
+						<Radio.Group
+              disabled={userData?.LoggedInUserTypeID !== 1} 
+							// className={allengagementReplceTalentStyles.radioGroup}
+							onChange={e=> {setTypeOfPricing(e.target.value)
+                ;resetField('hiringPricingType');resetField('availability')
+                ;setControlledAvailabilityValue("Select availability"); resetField('payrollType')}}
+							value={typeOfPricing}
+							>
+							<Radio value={1}>Transparent Pricing</Radio>
+							<Radio value={0}>Non Transparent Pricing</Radio>
+						</Radio.Group>
+							</div>
+              </div>          
+                  <div className={HRFieldStyle.colMd6}>
+                  <div className={HRFieldStyle.formGroup}>
+                    {/* <HRSelectField
+                                    mode={'id/value'}
+                                    setValue={setValue}
+                                    register={register}
+                                    label={'Availability'}
+                                    defaultValue="Select availability"
+                                    options={availability}
+                                    name="availability"
+                                    isError={errors['availability'] && errors['availability']}
+                                    required
+                                    errorMsg={'Please select the availability.'}
+                                /> */}
+                    <HRSelectField
+                      controlledValue={controlledAvailabilityValue}
+                      setControlledValue={val=> {setControlledAvailabilityValue(val);resetField('hiringPricingType');
+                      resetField('payrollType');setControlledPayrollTypeValue("Select payroll")
+                      setControlledHiringPricingTypeValue("Select Hiring Pricing")}}
+                      isControlled={true}
+                      mode={"id/value"}
+                      setValue={setValue}
+                      register={register}
+                      label={"Availability"}
+                      defaultValue="Select availability"
+                      options={availability}
+                      name="availability"
+                      isError={errors["availability"] && errors["availability"]}
+                      required
+                      errorMsg={"Please select the availability."}
+                    />
+                  </div>
+                </div>
+
+                {watch('availability')?.id && <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                   controlledValue={controlledHiringPricingTypeValue}
+                   setControlledValue={setControlledHiringPricingTypeValue}
+                   isControlled={true}
+                    mode={"id/value"}
+                    setValue={setValue}
+                    register={register}
+                    label={"Hiring Pricing Type"}
+                    defaultValue="Select Hiring Pricing"
+                    options={getRequiredHRPricingType()}
+                    name="hiringPricingType"
+                    isError={errors["hiringPricingType"] && errors["hiringPricingType"]}
+                    required
+                    errorMsg={"Please select the Hiring Pricing."}
+                  />
+                </div>
+              </div>
+              }
+
+              {
+                (watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8) && <>
+                {(watch('hiringPricingType')?.id !== 1) && 
+                  <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.formGroup}>
+                      <HRSelectField
+                        controlledValue={controlledTempProjectValue}
+                        setControlledValue={setControlledTempProjectValue}
+                        isControlled={true}
+                        isControlledBoolean={true}
+                        mode={"id/value"}
+                        searchable={false}
+                        setValue={setValue}
+                        register={register}
+                        label={"Is this Hiring need Temporary for any project?"}
+                        defaultValue="Select"
+                        options={tempProjects.map((item) => ({
+                          id: item.id,
+                          label: item.text,
+                          value: item.value,
+                        }))}
+                        name="tempProject"
+                        isError={errors["tempProject"] && errors["tempProject"]}
+                        required={!isHRDirectPlacement}
+                        errorMsg={"Please select."}
+                      />
+                    </div>
+                  </div>}
+
+                  <div className={HRFieldStyle.colMd6}>
+                  <div className={HRFieldStyle.formGroup}>
+                    <HRSelectField
+                      dropdownRender={(menu) => (
+                        <>
+                          {menu}
+                          <Divider style={{ margin: "8px 0" }} />
+                          <Space style={{ padding: "0 8px 4px" }}>
+                            <label>Other:</label>
+                            <input
+                              type={InputType.NUMBER}
+                              className={HRFieldStyle.addSalesItem}
+                              placeholder="Ex: 5,6,7..."
+                              ref={inputRef}
+                              value={name}
+                              onChange={onNameChange}
+                              required
+                            />
+                            <Button
+                              style={{
+                                backgroundColor: `var(--uplers-grey)`,
+                              }}
+                              shape="round"
+                              type="text"
+                              icon={<PlusOutlined />}
+                              onClick={addItem}
+                              disabled={
+                                name
+                                  ? contractDurations.filter(
+                                      (duration) => duration.value == name
+                                    ).length > 0
+                                  : true
+                              }
+                            >
+                              Add item
+                            </Button>
+                          </Space>
+                          <br />
+                        </>
+                      )}
+                      options={contractDurations.map((item) => ({
+                        id: item.id,
+                        label: item.text,
+                        value: item.value,
+                      }))}
+                      controlledValue={contractDurationValue}
+                      setControlledValue={setContractDuration}
+                      isControlled={true}
+                      setValue={setValue}
+                      register={register}
+                      label={"Contract Duration (in months)"}
+                      defaultValue="Ex: 3,6,12..."
+                      inputRef={inputRef}
+                      addItem={addItem}
+                      mode={"id/value"}
+                      onNameChange={onNameChange}
+                      name="contractDuration"
+                      isError={
+                        errors["contractDuration"] && errors["contractDuration"]
+                      }
+                      required={!isHRDirectPlacement}
+                      errorMsg={
+                        "Please select hiring request contract duration"
+                      }
+                      disabled={isHRDirectPlacement}
+                    />
+                  </div>
+                </div>                
+                </>
+              }
+
+              {(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) && <>
+                 <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.formGroup}>
+                      <HRSelectField
+                       controlledValue={controlledPayrollTypeValue}
+                       setControlledValue={setControlledPayrollTypeValue}
+                       isControlled={true}
+                        mode={"id/value"}
+                        setValue={setValue}
+                        register={register}
+                        label={"Who will manage the payroll?"}
+                        defaultValue="Select payroll"
+                        options={payRollTypes}
+                        name="payrollType"
+                        isError={errors["payrollType"] && errors["payrollType"]}
+                        required={(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 )? true : false}
+                        errorMsg={"Please select Payroll Type."}
+                      />
+                    </div>
+                  </div>            
+              </>}
+
+              {watch('payrollType')?.id === 3 && <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                <HRInputField
+                    register={register}
+                    errors={errors}
+                    validationSchema={{
+                      required: "please enter payroll partner name.",
+                    }}
+                    label="Payroll Partner Name"
+                    name="payrollPartnerName"
+                    type={InputType.TEXT}
+                    placeholder="Enter the Payroll partner name"
+                    required={watch('payrollType')?.id === 3}
+                  />
+                </div>
+              </div>}
+              
+              </div>
+
+              <div className={HRFieldStyle.row}>
+                {isHRDirectPlacement ? (
+                  <div className={HRFieldStyle.colMd6}>
+                    <HRInputField
+                      register={register}
+                      errors={errors}
+                      validationSchema={{
+                        required: "please enter the DP Percentage.",
+                      }}
+                      label="DP Percentage"
+                      name="dpPercentage"
+                      type={InputType.NUMBER}
+                      placeholder="Enter the DP Percentage"
+                      required={isHRDirectPlacement}
+                    />
+                  </div>
+                ) : (
+                  <div className={HRFieldStyle.colMd6}>
+                    <HRInputField
+                      register={register}
+                      errors={errors}
+                      validationSchema={{
+                        required: "please enter the Uplers Fees %.",
+                      }}
+                      label="Uplers Fees %"
+                      name="NRMargin"
+                      type={InputType.NUMBER}
+                      placeholder="Select Uplers Fees %"
+                      required={!isHRDirectPlacement}
+                    />
+                  </div>
+                )}
+
+                <div className={HRFieldStyle.colMd6}>
+                  <div className={HRFieldStyle.formGroup}>
+                    <HRSelectField
+                      controlledValue={controlledCurrencyValue}
+                      setControlledValue={setControlledCurrencyValue}
+                      isControlled={true}
+                      mode={"id/value"}
+                      searchable={true}
+                      setValue={setValue}
+                      register={register}
+                      label={"Currency"}
+                      defaultValue="Select Currency"
+                      options={currency && currency}
+                      name="currency"
+                      isError={errors["currency"] && errors["currency"]}
+                      required
+                      errorMsg={"Please select currency"}
+                    />
+                  </div>
+                </div>
+
+                {/* {!isHRDirectPlacement ? (
+                  <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.formGroup}>
+                      <HRSelectField
+                        controlledValue={controlledTempProjectValue}
+                        setControlledValue={setControlledTempProjectValue}
+                        isControlled={true}
+                        isControlledBoolean={true}
+                        mode={"id/value"}
+                        searchable={false}
+                        setValue={setValue}
+                        register={register}
+                        label={"Is this Hiring need Temporary for any project?"}
+                        defaultValue="Select"
+                        options={tempProjects.map((item) => ({
+                          id: item.id,
+                          label: item.text,
+                          value: item.value,
+                        }))}
+                        name="tempProject"
+                        isError={errors["tempProject"] && errors["tempProject"]}
+                        required={!isHRDirectPlacement}
+                        errorMsg={"Please select."}
+                      />
+                    </div>
+                  </div>
+                ) : null} */}
+
+                {/* <div className={HRFieldStyle.colMd6}>
+							<div className={HRFieldStyle.formGroup}>
+								{/* <HRSelectField
+                                    mode={'id/value'}
+                                    searchable={false}
+                                    setValue={setValue}
+                                    register={register}
+                                    label={'Mode of Working?'}
+                                    defaultValue="Select working mode"
+                                    options={workingMode && workingMode}
+                                    name="workingMode"
+                                    isError={errors['workingMode'] && errors['workingMode']}
+                                    required
+                                    errorMsg={'Please select the working mode.'}
+                                /> 
+								*/}
+                {/* <HRSelectField
+									controlledValue={controlledWorkingValue}
+									setControlledValue={setControlledWorkingValue}
+									isControlled={true}
+									mode={'id/value'}
+									searchable={false}
+									setValue={setValue}
+									register={register}
+									label={'Mode of Working?'}
+									defaultValue="Select working mode"
+									options={workingMode && workingMode}
+									name="workingMode"
+									isError={errors['workingMode'] && errors['workingMode']}
+									required
+									errorMsg={'Please select the working mode.'}
+								/>
+							</div>
+						</div> */}
+              </div>
+
+              
+              <div className={HRFieldStyle.row}>
+                <div className={HRFieldStyle.colMd4}>
+                  <div className={HRFieldStyle.formGroup}>
+                    <HRSelectField
+                      controlledValue={controlledBudgetValue}
+                      setControlledValue={setControlledBudgetValue}
+                      isControlled={true}
+                      setValue={setValue}
+                      register={register}
+                      label={`Add your estimated ${typeOfPricing === 1 ? "salary ":''}budget (Monthly)`}
+                      options={budgets.map((item) => ({
+                        id: item.id,
+                        label: item.text,
+                        value: item.value,
+                      }))}
+                      name="budget"
+                      isError={errors["budget"] && errors["budget"]}
+                      required
+                      mode={"id/value"}
+                      errorMsg={"Please select hiring request budget"}
+                    />
+                  </div>
+                </div>
+                <div className={HRFieldStyle.colMd4}>
+                  <HRInputField
+                    label={`Estimated ${typeOfPricing === 1 ? "salary ":''}Budget`}
+                    register={register}
+                    name="adhocBudgetCost"
+                    type={InputType.NUMBER}
+                    placeholder="Adhoc- Ex: 2300, 2000"
+                    required={watch("budget")?.value === "1"}
+                    errors={errors}
+                    validationSchema={{
+                      required: "please enter the Adhoc Budget.",
+                      min: {
+                        value: 1,
+                        message: `please don't enter the value less than 1`,
+                      },
+                    }}
+                    disabled={watch("budget")?.value !== "1"}
+                  />
+                </div>
+                <div className={HRFieldStyle.colMd4}>
+                  <HRInputField
+                    label={`Estimated Minimum ${typeOfPricing === 1 ? "salary ":''}Budget (Monthly)`}
+                    register={register}
+                    name="minimumBudget"
+                    type={InputType.NUMBER}
+                    placeholder="Minimum- Ex: 2300, 2000"
+                    required={watch("budget")?.value === "2"}
+                    errors={errors}
+                    validationSchema={{
+                      required: "please enter the minimum budget.",
+                      min: {
+                        value: 1,
+                        message: `please don't enter the value less than 1`,
+                      },
+                    }}
+                    disabled={watch("budget")?.value !== "2"}
+                  />
+                </div>
+
+                <div className={HRFieldStyle.colMd4}>
+                  <HRInputField
+                    label={`Estimated Maximum ${typeOfPricing === 1 ? "salary ":''}Budget (Monthly)`}
+                    register={register}
+                    name="maximumBudget"
+                    type={InputType.NUMBER}
+                    placeholder="Maximum- Ex: 2300, 2000"
+                    required={watch("budget")?.value === "2"}
+                    errors={errors}
+                    validationSchema={{
+                      required: "please enter the maximum budget.",
+                      min: {
+                        value: watch("minimumBudget"),
+                        message: "Budget should be more than minimum budget.",
+                      },
+                    }}
+                    disabled={watch("budget")?.value !== "2"}
+                  />
+                </div>
+
+                {watch('budget')?.value !== "3" && <>
+              <div className={HRFieldStyle.colMd4}>
+                              <HRInputField
+                                label={watch('budget')?.value === "2" ?  "Estimated Uplers Fees ( Min - Max)" : "Estimated Uplers Fees"}
+                                register={register}
+                                name="uplersFees"
+                                type={InputType.TEXT}
+                                placeholder="Maximum- Ex: 2300"
+                                disabled={true}
+                              />
+                            </div>
+
+                            <div className={HRFieldStyle.colMd4}>
+                              <HRInputField
+                                label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Estimated Client needs to pay ( Min - Max )" : "Estimated Client needs to pay"}
+                                register={register}
+                                name="needToPay"
+                                type={InputType.TEXT}
+                                placeholder="Maximum- Ex: 2300"
+                                disabled={true}
+                              />
+                            </div>
+              </>}
+              </div>
+
+              <div className={HRFieldStyle.row}>
                 <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     {/* <HRSelectField
@@ -1646,28 +2258,9 @@ const EditHRFields = ({
                   </div>
                 </div>
 
-                <div className={HRFieldStyle.colMd6}>
-                  <div className={HRFieldStyle.formGroup}>
-                    <HRSelectField
-                      controlledValue={controlledCurrencyValue}
-                      setControlledValue={setControlledCurrencyValue}
-                      isControlled={true}
-                      mode={"id/value"}
-                      searchable={true}
-                      setValue={setValue}
-                      register={register}
-                      label={"Currency"}
-                      defaultValue="Select Currency"
-                      options={currency && currency}
-                      name="currency"
-                      isError={errors["currency"] && errors["currency"]}
-                      required
-                      errorMsg={"Please select currency"}
-                    />
-                  </div>
-                </div>
-              </div>
+              
               {getWorkingModelFields()}
+              </div>
               {/* {watch('role')?.id === -1 && (
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd12}>
@@ -1805,7 +2398,7 @@ const EditHRFields = ({
                 </div>
               </div>
 
-              <div className={HRFieldStyle.row}>
+              {/* <div className={HRFieldStyle.row}>
                 <div className={HRFieldStyle.colMd12}>
                   <div className={HRFieldStyle.checkBoxGroup}>
                     <Checkbox
@@ -1817,186 +2410,9 @@ const EditHRFields = ({
                   </div>
                 </div>
               </div>
-              <br />
-              <div className={HRFieldStyle.row}>
-                {isHRDirectPlacement ? (
-                  <div className={HRFieldStyle.colMd6}>
-                    <HRInputField
-                      register={register}
-                      errors={errors}
-                      validationSchema={{
-                        required: "please enter the DP Percentage.",
-                      }}
-                      label="DP Percentage"
-                      name="dpPercentage"
-                      type={InputType.NUMBER}
-                      placeholder="Enter the DP Percentage"
-                      required={isHRDirectPlacement}
-                    />
-                  </div>
-                ) : (
-                  <div className={HRFieldStyle.colMd6}>
-                    <HRInputField
-                      register={register}
-                      errors={errors}
-                      validationSchema={{
-                        required: "please enter the nr margin percentage.",
-                      }}
-                      label="NR Margin Percentage"
-                      name="NRMargin"
-                      type={InputType.TEXT}
-                      placeholder="Select NR margin percentage"
-                      required={!isHRDirectPlacement}
-                    />
-                  </div>
-                )}
+              <br /> */}
+            
 
-                {!isHRDirectPlacement ? (
-                  <div className={HRFieldStyle.colMd6}>
-                    <div className={HRFieldStyle.formGroup}>
-                      <HRSelectField
-                        controlledValue={controlledTempProjectValue}
-                        setControlledValue={setControlledTempProjectValue}
-                        isControlled={true}
-                        isControlledBoolean={true}
-                        mode={"id/value"}
-                        searchable={false}
-                        setValue={setValue}
-                        register={register}
-                        label={"Is this Hiring need Temporary for any project?"}
-                        defaultValue="Select"
-                        options={tempProjects.map((item) => ({
-                          id: item.id,
-                          label: item.text,
-                          value: item.value,
-                        }))}
-                        name="tempProject"
-                        isError={errors["tempProject"] && errors["tempProject"]}
-                        required={!isHRDirectPlacement}
-                        errorMsg={"Please select."}
-                      />
-                    </div>
-                  </div>
-                ) : null}
-
-                {/* <div className={HRFieldStyle.colMd6}>
-							<div className={HRFieldStyle.formGroup}>
-								{/* <HRSelectField
-                                    mode={'id/value'}
-                                    searchable={false}
-                                    setValue={setValue}
-                                    register={register}
-                                    label={'Mode of Working?'}
-                                    defaultValue="Select working mode"
-                                    options={workingMode && workingMode}
-                                    name="workingMode"
-                                    isError={errors['workingMode'] && errors['workingMode']}
-                                    required
-                                    errorMsg={'Please select the working mode.'}
-                                /> 
-								*/}
-                {/* <HRSelectField
-									controlledValue={controlledWorkingValue}
-									setControlledValue={setControlledWorkingValue}
-									isControlled={true}
-									mode={'id/value'}
-									searchable={false}
-									setValue={setValue}
-									register={register}
-									label={'Mode of Working?'}
-									defaultValue="Select working mode"
-									options={workingMode && workingMode}
-									name="workingMode"
-									isError={errors['workingMode'] && errors['workingMode']}
-									required
-									errorMsg={'Please select the working mode.'}
-								/>
-							</div>
-						</div> */}
-              </div>
-
-              <div className={HRFieldStyle.row}>
-                <div className={HRFieldStyle.colMd4}>
-                  <div className={HRFieldStyle.formGroup}>
-                    <HRSelectField
-                      controlledValue={controlledBudgetValue}
-                      setControlledValue={setControlledBudgetValue}
-                      isControlled={true}
-                      setValue={setValue}
-                      register={register}
-                      label={"Add your estimated budget (Monthly)"}
-                      options={budgets.map((item) => ({
-                        id: item.id,
-                        label: item.text,
-                        value: item.value,
-                      }))}
-                      name="budget"
-                      isError={errors["budget"] && errors["budget"]}
-                      required
-                      mode={"id/value"}
-                      errorMsg={"Please select hiring request budget"}
-                    />
-                  </div>
-                </div>
-                <div className={HRFieldStyle.colMd4}>
-                  <HRInputField
-                    label={"Adhoc Budget"}
-                    register={register}
-                    name="adhocBudgetCost"
-                    type={InputType.NUMBER}
-                    placeholder="Adhoc- Ex: 2300, 2000"
-                    required={watch("budget")?.value === "1"}
-                    errors={errors}
-                    validationSchema={{
-                      required: "please enter the Adhoc Budget.",
-                      min: {
-                        value: 1,
-                        message: `please don't enter the value less than 1`,
-                      },
-                    }}
-                    disabled={watch("budget")?.value !== "1"}
-                  />
-                </div>
-                <div className={HRFieldStyle.colMd4}>
-                  <HRInputField
-                    label={"Minimum Budget (Monthly)"}
-                    register={register}
-                    name="minimumBudget"
-                    type={InputType.NUMBER}
-                    placeholder="Minimum- Ex: 2300, 2000"
-                    required={watch("budget")?.value === "2"}
-                    errors={errors}
-                    validationSchema={{
-                      required: "please enter the minimum budget.",
-                      min: {
-                        value: 1,
-                        message: `please don't enter the value less than 1`,
-                      },
-                    }}
-                    disabled={watch("budget")?.value !== "2"}
-                  />
-                </div>
-
-                <div className={HRFieldStyle.colMd4}>
-                  <HRInputField
-                    label={"Maximum Budget (Monthly)"}
-                    register={register}
-                    name="maximumBudget"
-                    type={InputType.NUMBER}
-                    placeholder="Maximum- Ex: 2300, 2000"
-                    required={watch("budget")?.value === "2"}
-                    errors={errors}
-                    validationSchema={{
-                      required: "please enter the maximum budget.",
-                      min: {
-                        value: watch("minimumBudget"),
-                        message: "Budget should be more than minimum budget.",
-                      },
-                    }}
-                    disabled={watch("budget")?.value !== "2"}
-                  />
-                </div>
-              </div>
 
               <div className={HRFieldStyle.row}>
                 {/* <div className={HRFieldStyle.colMd6}>
@@ -2071,74 +2487,7 @@ const EditHRFields = ({
                     />
                   </div>
                 </div>
-                <div className={HRFieldStyle.colMd4}>
-                  <div className={HRFieldStyle.formGroup}>
-                    <HRSelectField
-                      dropdownRender={(menu) => (
-                        <>
-                          {menu}
-                          <Divider style={{ margin: "8px 0" }} />
-                          <Space style={{ padding: "0 8px 4px" }}>
-                            <label>Other:</label>
-                            <input
-                              type={InputType.NUMBER}
-                              className={HRFieldStyle.addSalesItem}
-                              placeholder="Ex: 5,6,7..."
-                              ref={inputRef}
-                              value={name}
-                              onChange={onNameChange}
-                              required
-                            />
-                            <Button
-                              style={{
-                                backgroundColor: `var(--uplers-grey)`,
-                              }}
-                              shape="round"
-                              type="text"
-                              icon={<PlusOutlined />}
-                              onClick={addItem}
-                              disabled={
-                                name
-                                  ? contractDurations.filter(
-                                      (duration) => duration.value == name
-                                    ).length > 0
-                                  : true
-                              }
-                            >
-                              Add item
-                            </Button>
-                          </Space>
-                          <br />
-                        </>
-                      )}
-                      options={contractDurations.map((item) => ({
-                        id: item.id,
-                        label: item.text,
-                        value: item.value,
-                      }))}
-                      controlledValue={contractDurationValue}
-                      setControlledValue={setContractDuration}
-                      isControlled={true}
-                      setValue={setValue}
-                      register={register}
-                      label={"Contract Duration (in months)"}
-                      defaultValue="Ex: 3,6,12..."
-                      inputRef={inputRef}
-                      addItem={addItem}
-                      mode={"id/value"}
-                      onNameChange={onNameChange}
-                      name="contractDuration"
-                      isError={
-                        errors["contractDuration"] && errors["contractDuration"]
-                      }
-                      required={!isHRDirectPlacement}
-                      errorMsg={
-                        "Please select hiring request contract duration"
-                      }
-                      disabled={isHRDirectPlacement}
-                    />
-                  </div>
-                </div>
+              
                 <div className={HRFieldStyle.colMd4}>
                   <div className={HRFieldStyle.formGroup}>
                     {/* <label>
@@ -2187,9 +2536,8 @@ const EditHRFields = ({
                     {/* </div> */}
                   </div>
                 </div>
-              </div>
-              <div className={HRFieldStyle.row}>
-                <div className={HRFieldStyle.colMd6}>
+
+                <div className={HRFieldStyle.colMd4}>
                   <HRInputField
                     register={register}
                     errors={errors}
@@ -2211,37 +2559,6 @@ const EditHRFields = ({
                     required
                     disabled={true}
                   />
-                </div>
-                <div className={HRFieldStyle.colMd6}>
-                  <div className={HRFieldStyle.formGroup}>
-                    {/* <HRSelectField
-                                    mode={'id/value'}
-                                    setValue={setValue}
-                                    register={register}
-                                    label={'Availability'}
-                                    defaultValue="Select availability"
-                                    options={availability}
-                                    name="availability"
-                                    isError={errors['availability'] && errors['availability']}
-                                    required
-                                    errorMsg={'Please select the availability.'}
-                                /> */}
-                    <HRSelectField
-                      controlledValue={controlledAvailabilityValue}
-                      setControlledValue={setControlledAvailabilityValue}
-                      isControlled={true}
-                      mode={"id/value"}
-                      setValue={setValue}
-                      register={register}
-                      label={"Availability"}
-                      defaultValue="Select availability"
-                      options={availability}
-                      name="availability"
-                      isError={errors["availability"] && errors["availability"]}
-                      required
-                      errorMsg={"Please select the availability."}
-                    />
-                  </div>
                 </div>
               </div>
 
@@ -2469,12 +2786,12 @@ const EditHRFields = ({
                     register={register}
                     errors={errors}
                     validationSchema={{
-                      required: "please enter the BQ form link.",
+                      required: "please enter the HR form link.",
                     }}
-                    label="BQ Form Link"
+                    label="HR Form Link"
                     name="bqFormLink"
                     type={InputType.TEXT}
-                    placeholder="Enter the link for BQ form"
+                    placeholder="Enter the link for HR form"
                     required={getHRdetails?.addHiringRequest?.guid === null}
                   />
                 </div>

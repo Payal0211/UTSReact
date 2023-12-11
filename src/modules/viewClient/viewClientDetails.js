@@ -137,7 +137,7 @@ function ViewClientDetails() {
 						&nbsp;{viewDetails?.clientDetails?.companyName}						
 					</h1>
 					<div className={dealDetailsStyles.dealDetailsRight}>
-						{/* <button  className={dealDetailsStyles.yellowOutlinedButton} type="button">View BQ Form</button>  */}
+						{/* <button  className={dealDetailsStyles.yellowOutlinedButton} type="button">View HR Form</button>  */}
 
                         {/* <HROperator
                             title="Edit Company"

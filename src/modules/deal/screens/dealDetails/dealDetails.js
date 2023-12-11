@@ -152,7 +152,7 @@ const DealDetails = () => {
 						
 					</h1>
 					<div className={dealDetailsStyles.dealDetailsRight}>
-						{/* <button  className={dealDetailsStyles.yellowOutlinedButton} type="button">View BQ Form</button> */}
+						{/* <button  className={dealDetailsStyles.yellowOutlinedButton} type="button">View HR Form</button> */}
 
 						{ dealDetails?.dealStage === "SAL Achieved" && 	<button type="button" onClick={()=>{
 							localStorage.setItem('dealID',dealID)

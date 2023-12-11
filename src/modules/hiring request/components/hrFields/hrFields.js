@@ -273,14 +273,15 @@ const HRFields = ({
         fileData?.type !== "application/msword" &&
         fileData?.type !== "text/plain" &&
         fileData?.type !==
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document" &&
-        fileData?.type !== "image/png" &&
-        fileData?.type !== "image/jpeg"
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
+        //   &&
+        // fileData?.type !== "image/png" &&
+        // fileData?.type !== "image/jpeg"
       ) {
         setValidation({
           ...getValidation,
           systemFileUpload:
-            "Uploaded file is not a valid, Only pdf, docs, jpg, jpeg, png, text and rtf files are allowed",
+            "Uploaded file is not a valid, Only pdf, docs, text and rtf files are allowed",
         });
         setIsLoading(false);
       } else if (fileData?.size >= 500000) {
@@ -1488,6 +1489,7 @@ const HRFields = ({
   };
 
   useEffect(()=> {resetField('hiringPricingType')
+  resetField('payrollType')  
   setControlledHiringPricingTypeValue("Select Hiring Pricing")
 },[watch('availability')])
 
@@ -1711,7 +1713,7 @@ const HRFields = ({
 									/>
 								</div>
 							</div> */}
-              {console.log('error',errors)}
+
 <div className={HRFieldStyle.colMd12}>
 <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>
@@ -1905,7 +1907,7 @@ const HRFields = ({
                     name="payrollPartnerName"
                     type={InputType.TEXT}
                     placeholder="Enter the Payroll partner name"
-                    required={watch('payrollType')?.id === 4}
+                    required={watch('payrollType')?.id === 3}
                   />
                 </div>
               </div>}
@@ -2433,6 +2435,7 @@ const HRFields = ({
                     setControlledValue={setControlledTimeZoneValue}
                     isControlled={true}
                     mode={"id/value"}
+                    searchable={true}
                     // disabled={_isNull(prefRegion)}
                     setValue={setValue}
                     register={register}
@@ -2577,12 +2580,12 @@ const HRFields = ({
                   register={register}
                   errors={errors}
                   validationSchema={{
-                  	required: 'please enter the BQ form link.',
+                  	required: 'please enter the HR form link.',
                   }}
-                  label="BQ Form Link"
+                  label="HR Form Link"
                   name="bqFormLink"
                   type={InputType.TEXT}
-                  placeholder="Enter the link for BQ form"
+                  placeholder="Enter the link for HR form"
                   required
                 />
               </div>
