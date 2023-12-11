@@ -547,28 +547,29 @@ export const allEngagementConfig = {
 				key: 'kickOff',
 				align: 'left',
 			},
-			// {
-			// 	title: 'Bill Rate',
-			// 	dataIndex: 'billRate',
-			// 	key: 'billRate',
-			// 	align: 'left',
-			// },
+			
 			{
-				title: 'Actual Client Bill Rate & Currency',
+				title: 'Actual BR & Currency',
 				dataIndex: 'actualBillRate',
 				key: 'actualBillRate',
 				align: 'left',
 			},
-			// {
-			// 	title: 'Pay Rate',
-			// 	dataIndex: 'payRate',
-			// 	key: 'payRate',
-			// 	align: 'left',
-			// },
 			{
-				title: 'Actual Talent Pay Rate & Currency',
+				title: 'BR',
+				dataIndex: 'payout_BillRate',
+				key: 'payout_BillRate',
+				align: 'left',				
+			},			
+			{
+				title: 'Actual PR & Currency',
 				dataIndex: 'actualPayRate',
 				key: 'actualPayRate',
+				align: 'left',
+			},
+			{
+				title: 'PR',
+				dataIndex: 'payout_PayRate',
+				key: 'payout_PayRate',
 				align: 'left',
 			},
 			{
