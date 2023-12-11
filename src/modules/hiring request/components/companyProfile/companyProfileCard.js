@@ -298,7 +298,8 @@ const CompanyProfileCard = ({
                 
                 {allApiData?.transparentModel?.PayrollPartnerName && 
                 <p>Payroll Partner : {allApiData?.transparentModel?.PayrollPartnerName}</p>}
-                {allApiData?.transparentModel?.CalculatedUplersfees && <p>Estimated Uplers Fees : {allApiData?.transparentModel?.CalculatedUplersfees}</p>}
+                <p>Uplers Fees %: {allApiData?.transparentModel?.PricingPercent}</p>
+                {allApiData?.transparentModel?.CalculatedUplersfees && <p>Uplers Fees : {allApiData?.transparentModel?.CalculatedUplersfees}</p>}
                 {allApiData?.transparentModel?.IsTransparentPricing
  ? <p>Estimated Client Need To Pay : {allApiData?.transparentModel?.ClientNeedsToPay}</p> 
  : <p>Talent Estimated Pay : {allApiData?.transparentModel?.TalentsPay}</p>}
