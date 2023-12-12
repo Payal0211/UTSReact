@@ -1327,6 +1327,42 @@ export const reportConfig = {
 				},
 			},
 			{
+				title: 'HR Accepted Date',
+				dataIndex: 'hrAcceptedDateTime',
+				key: 'hrAcceptedDateTime',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text}</Fragment>;
+				},
+			},
+			{
+				title: 'Sales Head',
+				dataIndex: 'salesPersonHead',
+				key: 'salesPersonHead',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'First Profile Share Date',
+				dataIndex: 'firstProfileSharedDate',
+				key: 'firstProfileSharedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'HR Raised Date',
+				dataIndex: 'hrRaisedDate',
+				key: 'hrRaisedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
 				title: 'HR Status',
 				dataIndex: 'hR_Status',
 				key: 'hR_Status',
