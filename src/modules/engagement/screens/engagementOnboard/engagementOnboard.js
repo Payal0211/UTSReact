@@ -754,7 +754,7 @@ const EngagementOnboard = ({
             </li>
           </ul>
         </div>
-        </> :  <h2>No Data Available</h2>}
+        </> : <h2>No Data Available</h2>}
       
 
         {/* <div className={allengagementOnboardStyles.engagementContent}>
