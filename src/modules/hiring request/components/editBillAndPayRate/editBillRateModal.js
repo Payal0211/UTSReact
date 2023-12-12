@@ -136,7 +136,7 @@ const EditBillRate = ({
 									message: `please don't enter 100 & grater value`,
 								}
 							}}
-							label="NR margin percentage"
+							label="Uplers Fees %"
 							name="nrMarginPercentage"
 							type={InputType.NUMBER}
 							placeholder="Enter"

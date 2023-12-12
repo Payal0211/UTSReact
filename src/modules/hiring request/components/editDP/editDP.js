@@ -102,6 +102,7 @@ const EditDPRate = ({ onCancel
                             type={InputType.NUMBER}
                             placeholder="Enter Amount"
                             required
+                            disabled
                         />
                     </div>
                 </div>
