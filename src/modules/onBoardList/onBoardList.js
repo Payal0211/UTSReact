@@ -15,7 +15,7 @@ const onBoardListConfig = () => {
         dataIndex: "createdByDatetime",
         key: "createdByDatetime",
         align: "left",  
-        width: '120px',          
+        width: '150px',          
         render:(text)=>{
             let dateArr = text.split(" ")
             return dateArr[0]
@@ -64,12 +64,18 @@ const onBoardListConfig = () => {
         dataIndex: "salesPerson",
         key: "salesPerson",
         align: "left",
-      },
+      },      
       {
         title: "AM",
         dataIndex: "amAssignmentuser",
         key: "amAssignmentuser",
         align: "left",
+      },
+      {
+        title:"TSC Name",
+        dataIndex:"tscName",
+        key:'tscName',
+        align:"left",
       },
       {
         title: "Onboarding Client",
@@ -155,12 +161,12 @@ const onBoardListConfig = () => {
         key: "replacementDate",
         align: "left",
       },
-      {
-        title: "Notice Period",
-        dataIndex: "noticePeriod",
-        key: "noticePeriod",
-        align: "left",
-      },
+      // {
+      //   title: "Notice Period",
+      //   dataIndex: "noticePeriod",
+      //   key: "noticePeriod",
+      //   align: "left",
+      // },
       {
         title: "LastWorking Date",
         dataIndex: "lastWorkingDate",
@@ -246,59 +252,56 @@ function OnBoardList() {
     return(
         <div className={onboardList.hiringRequestContainer}>
             <div className={onboardList.addnewHR}>
-				<div className={onboardList.hiringRequest}>OnBoard List</div>               
+				      <div className={onboardList.hiringRequest}>OnBoard List</div>               
             </div>
-
             <div className={onboardList.filterContainer}>
-				<div className={onboardList.filterSets}>
-					<div className={onboardList.filterRight}>		      
-              <div className={onboardList.searchFilterSet}>
-							<SearchSVG style={{ width: '16px', height: '16px' }} />
-							<input
-								type={InputType.TEXT}
-								className={onboardList.searchInput}
-								placeholder="Search Table"
-								onChange={(e) => {
-									setSearchText(e.target.value);									
-								}}
-							/>
-						</div>
-					</div>
-				</div>
-			</div>
-
-      <div className={onboardList.tableDetails}>
-				{isLoading ? (
-					<TableSkeleton />
-				) : (
-					<WithLoader className="mainLoader">
-						<Table
-							scroll={{ x: '300vw', y: '100vh' }}
-							id="hrListingTable"
-							columns={tableColumnsMemo}
-							bordered={false}
-							dataSource={onBoardListData}
-              // pagination={false}
-							pagination={
-								{
-                  // onChange: (pageNum, pageSize) => {
-                  //     setPageIndex(pageNum);
-                  //     setPageSize(pageSize);
-                  // },
-                  size: 'small',
-                  // pageSize: pageSize,
-                  // pageSizeOptions: pageSizeOptions,
-                  total: totalRecords,
-                  // showTotal: (total, range) =>
-                  //     `${range[0]}-${range[1]} of ${totalRecords} items`,
-                  // defaultCurrent: pageIndex,
-								}
-							}
-						/>
-					</WithLoader>
-				)}
-			</div>
-
+              <div className={onboardList.filterSets}>
+                <div className={onboardList.filterRight}>		      
+                    <div className={onboardList.searchFilterSet}>
+                    <SearchSVG style={{ width: '16px', height: '16px' }} />
+                    <input
+                      type={InputType.TEXT}
+                      className={onboardList.searchInput}
+                      placeholder="Search Table"
+                      onChange={(e) => {
+                        setSearchText(e.target.value);									
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className={onboardList.tableDetails}>
+              {isLoading ? (
+                <TableSkeleton />
+              ) : (
+                <WithLoader className="mainLoader">
+                  <Table
+                    scroll={{ x: '300vw', y: '100vh' }}
+                    id="hrListingTable"
+                    columns={tableColumnsMemo}
+                    bordered={false}
+                    dataSource={onBoardListData}
+                    // pagination={false}
+                    pagination={
+                      {
+                        // onChange: (pageNum, pageSize) => {
+                        //     setPageIndex(pageNum);
+                        //     setPageSize(pageSize);
+                        // },
+                        size: 'small',
+                        // pageSize: pageSize,
+                        // pageSizeOptions: pageSizeOptions,
+                        total: totalRecords,
+                        // showTotal: (total, range) =>
+                        //     `${range[0]}-${range[1]} of ${totalRecords} items`,
+                        // defaultCurrent: pageIndex,
+                      }
+                    }
+                  />
+                </WithLoader>
+              )}
+            </div>
         </div>
     )
 }
