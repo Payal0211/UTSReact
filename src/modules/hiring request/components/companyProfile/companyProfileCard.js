@@ -186,10 +186,10 @@ const CompanyProfileCard = ({
                   {!allApiData?.Is_HRTypeDP
                     ? `Contract - ${
                         clientDetail?.SpecificMonth
-                          ? clientDetail?.SpecificMonth
+                          ? clientDetail?.SpecificMonth === -1 ? 'Indefinite': `${clientDetail?.SpecificMonth} Months`
                           : 0
                       }
-					Months ${allApiData?.transparentModel?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}`
+					 ${allApiData?.transparentModel?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}`
                     : `Direct Placement ${allApiData?.transparentModel?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}` }
                 </span>
               </div>
@@ -201,6 +201,21 @@ const CompanyProfileCard = ({
                     : "NA"}
                 </span>
               </div>
+              {allApiData?.transparentModel?.JobType &&  <>
+                <Divider
+            style={{
+              margin: "10px 0",
+            }}
+          /><div className={CompanyProfileCardStyle.category}>
+                <span>Job Type:</span>&nbsp;&nbsp;
+              </div>
+              {allApiData?.transparentModel?.JobType.map(jobtype=>
+                <div className={CompanyProfileCardStyle.category}>
+                <span style={{ fontWeight: "500" }}>{jobtype}</span>&nbsp;&nbsp;
+              </div>
+                )}
+              </>}
+             
             </div>
           </div>
           <Divider
@@ -290,7 +305,7 @@ const CompanyProfileCard = ({
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.budget}>
-                <span>Budget <Tooltip
+                <span>{`${allApiData?.transparentModel?.IsTransparentPricing ? 'Salary' : ''} Budget` }<Tooltip
 							placement="bottomLeft"
 							title={<div>
                 <p>Hiring Type : {allApiData?.transparentModel?.HrTypePricing}</p>
@@ -299,7 +314,7 @@ const CompanyProfileCard = ({
                 {allApiData?.transparentModel?.PayrollPartnerName && 
                 <p>Payroll Partner : {allApiData?.transparentModel?.PayrollPartnerName}</p>}
                 <p>Uplers Fees %: {allApiData?.transparentModel?.PricingPercent}</p>
-                {allApiData?.transparentModel?.CalculatedUplersfees && <p>Uplers Fees : {allApiData?.transparentModel?.CalculatedUplersfees}</p>}
+                {allApiData?.transparentModel?.CalculatedUplersfees && <p>Uplers Fees Amount : {allApiData?.transparentModel?.CalculatedUplersfees}</p>}
                 {allApiData?.transparentModel?.IsTransparentPricing
  ? <p>Estimated Client Need To Pay : {allApiData?.transparentModel?.ClientNeedsToPay}</p> 
  : <p>Talent Estimated Pay : {allApiData?.transparentModel?.TalentsPay}</p>}

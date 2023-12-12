@@ -70,7 +70,8 @@ const ClientField = ({
 		},
 	});
 	// const [isLoading, setIsLoading] = useState(false);
-	const [typeOfPricing,setTypeOfPricing] = useState(1)
+	const [typeOfPricing,setTypeOfPricing] = useState(null)
+	const [pricingTypeError,setPricingTypeError] = useState(false);
 	const [type, setType] = useState('');
 	const [addClientResponse, setAddClientResponse] = useState(null);
 	const [addClientResponseID, setAddClientResponseID] = useState(0);
@@ -143,6 +144,12 @@ const ClientField = ({
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 		// setIsLoading(true);
 		setIsSavedLoading(true)
+
+		if(typeOfPricing === null){
+			setIsSavedLoading(false)
+			setPricingTypeError(true)
+			return
+		  }
 		let clientFormDetails = clientFormDataFormatter({
 			d,
 			type,
@@ -214,7 +221,7 @@ const ClientField = ({
 					addNewHiringRequest: false,
 				});
 			type !== SubmitType.SAVE_AS_DRAFT &&
-				setClientDetails(addClientResult?.responseBody?.details);
+				setClientDetails({...addClientResult?.responseBody?.details,typeOfPricing});
 
 			type !== SubmitType.SAVE_AS_DRAFT &&
 				setInterviewDetails(
@@ -398,6 +405,8 @@ const ClientField = ({
 				setCompanyDetail={setCompanyDetail}
 				getCompanyDetails={getCompanyDetails}
 				typeOfPricing={typeOfPricing}
+				pricingTypeError={pricingTypeError}
+				setPricingTypeError={setPricingTypeError}
 				setTypeOfPricing={setTypeOfPricing}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>

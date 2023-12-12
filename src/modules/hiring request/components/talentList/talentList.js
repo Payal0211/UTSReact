@@ -686,20 +686,13 @@ const TalentList = ({
 										<>
 											<div className={TalentListStyle.payRate}>
 												<div>
-													<span>Bill Rate:</span>&nbsp;&nbsp;
+													<span>Client's Bill Amount:</span>&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
 														{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
 													</span>
 												</div>
 												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" &&
-												 (item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && IsTransparentPricing ? <span
-													style={{
-														textDecoration: 'underline',
-														color: `var(--background-color-ebony)`,
-														cursor: 'pointer',
-													}}>
-													Edit
-												</span> :
+												 (item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
 												<span
 												onClick={() => {
 													setTalentIndex(item?.TalentID);
@@ -716,8 +709,62 @@ const TalentList = ({
 											</div>
 											<div className={TalentListStyle.payRate}>
 												<div>
-													<span onClick={() => setEditPayRate(true)}>
-														Pay Rate:
+													<span>
+													Talent Expected Pay:
+													</span>
+													&nbsp;&nbsp;
+													<span style={{ fontWeight: '500' }}>
+														{_isNull(item?.PayRate) ? 'NA' : item?.PayRate}
+													</span>
+												</div>
+												
+												
+											</div>
+											<div className={TalentListStyle.nr}>
+												<div>
+													<span>Uplers Fees (%):</span>&nbsp;&nbsp;
+													<span style={{ fontWeight: '500' }}>
+														{_isNull(item?.NR) ? 'NA' : item?.NR}
+													</span>
+												</div>
+												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && 
+												(item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
+												<span
+												onClick={() => {
+													setEditPayRate(true);
+													setTalentIndex(item?.TalentID);
+												}}
+
+												style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>
+												Edit
+											</span>}
+											</div>
+											<div className={TalentListStyle.nr}>
+												<div>
+													<span>Uplers Fess Amount:</span>&nbsp;&nbsp;
+													<span style={{ fontWeight: '500' }}>
+														{_isNull(item?.UplersfeesAmount) ? 'NA' : item?.UplersfeesAmount}
+													</span>
+												</div>
+											</div>
+											
+										</>
+									) : (
+										<>
+											<div className={TalentListStyle.billRate}>
+												<span>Client's Bill Amount:</span>&nbsp;&nbsp;
+												<span style={{ fontWeight: '500' }}>
+													{_isNull(item?.DPAmount) ? 'NA' : `${item?.CurrencySign} ${item?.DPAmount} ${item?.TalentCurrenyCode} One time Amount` }
+												</span>
+											</div>
+											<div className={TalentListStyle.payRate}>
+												<div>
+													<span>
+													Talent Expected Pay:
 													</span>
 													&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
@@ -725,14 +772,7 @@ const TalentList = ({
 													</span>
 												</div>
 												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && 
-												(item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && IsTransparentPricing ? <span
-													style={{
-														textDecoration: 'underline',
-														color: `var(--background-color-ebony)`,
-														cursor: 'pointer',
-													}}>
-													Edit
-												</span>:
+												(item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
 												<span
 												onClick={() => {
 													setEditPayRate(true);
@@ -748,34 +788,22 @@ const TalentList = ({
 											</span>}
 												
 											</div>
-											<div className={TalentListStyle.nr}>
+											<div className={TalentListStyle.payRate}>
 												<div>
-													<span>NR:</span>&nbsp;&nbsp;
+													<span>
+													Talent Current Pay:
+													</span>
+													&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
-														{_isNull(item?.NR) ? 'NA' : item?.NR}
+														{_isNull(item?.PayRateDP) ? 'NA' : item?.PayRateDP}
 													</span>
 												</div>
-												{/* <span
-													style={{
-														textDecoration: 'underline',
-														color: `var(--background-color-ebony)`,
-														cursor: 'pointer',
-													}}>
-													Edit
-												</span> */}
-											</div>
-										</>
-									) : (
-										<>
-											<div className={TalentListStyle.billRate}>
-												<span>DP Amount:</span>&nbsp;&nbsp;
-												<span style={{ fontWeight: '500' }}>
-													{_isNull(item?.DPAmount) ? 'NA' : `${item?.CurrencySign} ${item?.DPAmount} ${item?.TalentCurrenyCode} One time Amount` }
-												</span>
+												
+												
 											</div>
 											<div className={TalentListStyle.payRate}>
 												<div>
-													<span>DP Percetange:</span>&nbsp;&nbsp;
+													<span>uplers Fees (%):</span>&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
 														{_isNull(item?.DPPercentage)
 															? 'NA'
@@ -796,6 +824,19 @@ const TalentList = ({
 													Edit
 												</span>}
 											
+											</div>
+											<div className={TalentListStyle.payRate}>
+												<div>
+													<span>
+													Uplers Fess Amount:
+													</span>
+													&nbsp;&nbsp;
+													<span style={{ fontWeight: '500' }}>
+														{_isNull(item?.UplersfeesAmount) ? 'NA' : item?.UplersfeesAmount}
+													</span>
+												</div>
+												
+												
 											</div>
 										</>
 									)}

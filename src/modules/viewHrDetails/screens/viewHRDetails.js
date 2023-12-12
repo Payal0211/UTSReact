@@ -130,6 +130,17 @@ const ViewHRDetails = () => {
 												{hiringDetails?.responseBody?.details?.availability ??
 													'NA'}
 											</li>
+											{hiringDetails?.responseBody?.details?.transparentModel?.jobType &&<li style={{display:'flex'}}>
+											<span>Job Type:</span>{' '}
+											<div>
+												{hiringDetails?.responseBody?.details?.transparentModel
+													?.jobType.map(item => <p>{item}</p>)}
+											</div>
+												
+											</li>
+
+											}
+											
 											<li>
 												<span>Hiring Pricing Type:</span>{' '}
 												{hiringDetails?.responseBody?.details?.transparentModel
@@ -161,8 +172,10 @@ const ViewHRDetails = () => {
 											<li>
 												<span>Contract Duration:</span>{' '}
 												{hiringDetails?.responseBody?.details
-													?.contractDuration ?? 'NA'}{' '}
-												Months
+													?.contractDuration ? hiringDetails?.responseBody?.details
+													?.contractDuration === -1 ? 'Indefinite' : `${hiringDetails?.responseBody?.details
+													?.contractDuration} Months` : 'NA'}{' '}
+												
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li>											
 											<li>
@@ -223,6 +236,7 @@ const ViewHRDetails = () => {
 													:'No'}
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li>
+
 											{hiringDetails?.responseBody?.details?.contractType ===
 											'Direct Placement' ? (
 												<li>
@@ -251,7 +265,7 @@ const ViewHRDetails = () => {
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li> }
 											{hiringDetails?.responseBody?.details?.transparentModel?.calculatedUplersfees && <li>
-												<span>Estimated Uplers Fees:</span>{' '}
+												<span>Estimated Uplers Fees Amount:</span>{' '}
 												{hiringDetails?.responseBody?.details?.transparentModel?.calculatedUplersfees ?? 'NA'}
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li> }
@@ -267,7 +281,7 @@ const ViewHRDetails = () => {
 												
 											</li>
 											<li>
-												<span>Estimated Budget:</span>{' '}
+												<span>Estimated {hiringDetails?.responseBody?.details?.transparentModel?.isTransparentPricing ? "Salary" : null} Budget:</span>{' '}
 												{hiringDetails?.responseBody?.details?.hiringCost ??
 													'NA'}
 												<i className={ViewHRDetailsStyle.blueDot} />

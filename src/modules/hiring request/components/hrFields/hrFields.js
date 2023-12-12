@@ -1779,8 +1779,8 @@ const HRFields = ({
               }
               
 
-              {(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8) &&  <>
-              {(watch('hiringPricingType')?.id !== 1) && <div className={HRFieldStyle.colMd6}>
+              {(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8) &&  <>
+              {/* {(watch('hiringPricingType')?.id !== 1) && <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                       mode={"id/value"}
@@ -1802,7 +1802,7 @@ const HRFields = ({
                     />
                   </div>
                 </div>}
-              
+               */}
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
@@ -1861,7 +1861,7 @@ const HRFields = ({
                       errors["contractDuration"] && errors["contractDuration"]
                     }
                     // required={!isHRDirectPlacement}
-                    required={(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8)?true:false}
+                    required={(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8)?true:false}
                     errorMsg={"Please select hiring request contract duration"}
                     disabled={isHRDirectPlacement}
                   />
@@ -1894,6 +1894,70 @@ const HRFields = ({
               </>
               }
 
+              {watch('payrollType')?.id === 4 && <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                    dropdownRender={(menu) => (
+                      <>
+                        {menu}
+                        <Divider style={{ margin: "8px 0" }} />
+                        <Space style={{ padding: "0 8px 4px" }}>
+                          <label>Other:</label>
+                          <input
+                            type={InputType.NUMBER}
+                            className={HRFieldStyle.addSalesItem}
+                            placeholder="Ex: 5,6,7..."
+                            ref={inputRef}
+                            value={name}
+                            onChange={onNameChange}
+                            required
+                          />
+                          <Button
+                            style={{
+                              backgroundColor: `var(--uplers-grey)`,
+                            }}
+                            shape="round"
+                            type="text"
+                            icon={<PlusOutlined />}
+                            onClick={addItem}
+                            disabled={
+                              name
+                                ? contractDurations.filter(
+                                    (duration) => duration.value == name
+                                  ).length > 0
+                                : true
+                            }
+                          >
+                            Add item
+                          </Button>
+                        </Space>
+                        <br />
+                      </>
+                    )}
+                    options={contractDurations.map((item) => ({
+                      id: item.id,
+                      label: item.text,
+                      value: item.value,
+                    }))}
+                    mode={"id/value"}
+                    setValue={setValue}
+                    register={register}
+                    label={"Contract Duration (in months)"}
+                    defaultValue="Ex: 3,6,12..."
+                    inputRef={inputRef}
+                    addItem={addItem}
+                    onNameChange={onNameChange}
+                    name="contractDuration"
+                    isError={
+                      errors["contractDuration"] && errors["contractDuration"]
+                    }
+                    // required={!isHRDirectPlacement}
+                    required={watch('payrollType')?.id === 4}
+                    errorMsg={"Please select hiring request contract duration"}
+                    disabled={isHRDirectPlacement}
+                  />
+                </div>
+              </div>}
 
               {watch('payrollType')?.id === 3 && <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
@@ -2124,7 +2188,7 @@ const HRFields = ({
               {watch('budget')?.value !== "3" && <>
               <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={watch('budget')?.value === "2" ?  "Estimated Uplers Fees ( Min - Max)" : "Estimated Uplers Fees"}
+                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees Amount ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }` : `Estimated Uplers Fees Amount ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }`}
                                 register={register}
                                 name="uplersFees"
                                 type={InputType.TEXT}
@@ -2133,7 +2197,7 @@ const HRFields = ({
                               />
                             </div>
 
-                            <div className={HRFieldStyle.colMd4}>
+                           {!(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) && <div className={HRFieldStyle.colMd4}>
                               <HRInputField
                                 label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Estimated Client needs to pay ( Min - Max )" : "Estimated Client needs to pay"}
                                 register={register}
@@ -2142,7 +2206,7 @@ const HRFields = ({
                                 placeholder="Maximum- Ex: 2300"
                                 disabled={true}
                               />
-                            </div>
+                            </div>} 
               </>}
 
 
