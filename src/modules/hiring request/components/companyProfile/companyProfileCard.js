@@ -305,7 +305,11 @@ const CompanyProfileCard = ({
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.budget}>
-                <span>{`${allApiData?.transparentModel?.IsTransparentPricing ? 'Salary' : ''} Budget` }<Tooltip
+                <span>{`${allApiData?.transparentModel?.IsTransparentPricing ? 'Salary' : ''} Budget` } :</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                  {clientDetail?.Cost ? clientDetail?.Cost : "NA"}
+                </span>
+                <Tooltip
 							placement="bottomLeft"
 							title={<div>
                 <p>Hiring Type : {allApiData?.transparentModel?.HrTypePricing}</p>
@@ -319,11 +323,8 @@ const CompanyProfileCard = ({
  ? <p>Estimated Client Need To Pay : {allApiData?.transparentModel?.ClientNeedsToPay}</p> 
  : <p>Talent Estimated Pay : {allApiData?.transparentModel?.TalentsPay}</p>}
               </div>}>
-								<img src={infoIcon} alt='info' />							
-						</Tooltip> :</span>&nbsp;&nbsp;
-                <span style={{ fontWeight: "500" }}>
-                  {clientDetail?.Cost ? clientDetail?.Cost : "NA"}
-                </span>
+								<img src={infoIcon} alt='info' style={{marginLeft:'auto'}} />							
+						</Tooltip>
               </div>
               {/* <div className={CompanyProfileCardStyle.budget}>
                 <span>Estimated Uplers Fees:</span>&nbsp;&nbsp;
