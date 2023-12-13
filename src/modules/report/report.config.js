@@ -1273,45 +1273,27 @@ export const reportConfig = {
 	hrPopupReportConfig: (hrStage) => {
 		return [
 			{
-				title: 'Client',
-				dataIndex: 'fullName',
-				key: 'fullName',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text }</Fragment>;
-				},
-			},
-			{
-				title: 'Company Name',
-				dataIndex: 'company',
-				key: 'company',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text }</Fragment>;
-				},
-			},	
-			{
-				title: 'Sales Person',
-				dataIndex: 'salesPerson',
-				key: 'salesPerson',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text }</Fragment>;
-				},
-			},
-			{
-				title: '# Profile Shared',
-				dataIndex: 'noOfProfileShared',
-				key: 'noOfProfileShared',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text }</Fragment>;
-				},
-			},	
-			{
 				title: 'HR #',
 				dataIndex: 'hR_NUMBER',
 				key: 'hR_NUMBER',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			// {
+			// 	title: 'Client',
+			// 	dataIndex: 'fullName',
+			// 	key: 'fullName',
+			// 	align: 'left',
+			// 	render: (text) => {
+			// 		return <Fragment key={text}>{text }</Fragment>;
+			// 	},
+			// },
+			{
+				title: 'Company',
+				dataIndex: 'company',
+				key: 'company',
 				align: 'left',
 				render: (text) => {
 					return <Fragment key={text}>{text }</Fragment>;
@@ -1327,6 +1309,15 @@ export const reportConfig = {
 				},
 			},
 			{
+				title: 'HR Raised Date',
+				dataIndex: 'hrRaisedDate',
+				key: 'hrRaisedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
 				title: 'HR Accepted Date',
 				dataIndex: 'hrAcceptedDateTime',
 				key: 'hrAcceptedDateTime',
@@ -1335,6 +1326,24 @@ export const reportConfig = {
 					return <Fragment key={text}>{text}</Fragment>;
 				},
 			},
+			{
+				title: '1st Profile Share Date',
+				dataIndex: 'firstProfileSharedDate',
+				key: 'firstProfileSharedDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Total Profile Shared',
+				dataIndex: 'noOfProfileShared',
+				key: 'noOfProfileShared',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},	
 			{
 				title: 'Sales Head',
 				dataIndex: 'salesPersonHead',
@@ -1345,23 +1354,14 @@ export const reportConfig = {
 				},
 			},
 			{
-				title: 'First Profile Share Date',
-				dataIndex: 'firstProfileSharedDate',
-				key: 'firstProfileSharedDate',
+				title: 'Sales Person',
+				dataIndex: 'salesPerson',
+				key: 'salesPerson',
 				align: 'left',
 				render: (text) => {
 					return <Fragment key={text}>{text }</Fragment>;
 				},
-			},
-			{
-				title: 'HR Raised Date',
-				dataIndex: 'hrRaisedDate',
-				key: 'hrRaisedDate',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text }</Fragment>;
-				},
-			},
+			},		
 			{
 				title: 'HR Status',
 				dataIndex: 'hR_Status',
