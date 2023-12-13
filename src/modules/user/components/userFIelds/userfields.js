@@ -129,6 +129,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 		resetField,
 		clearErrors,
 		reset,
+		unregister,
 		// control,
 		formState: { errors },
 	} = useForm({});
@@ -367,6 +368,13 @@ const UsersFields = ({ id, setLoading, loading }) => {
 	);
 
 	useEffect(() => {
+		if(watchDepartMentName?.value === "Administration"){
+			unregister('level');
+			unregister('reportingUser');
+			unregister('geoSpecific');
+			unregister('geo');
+			unregister('team');
+		}
 		if (
 			watchDepartMentName?.value === 'Select'
 			// || watchDepartMentName?.value === "Administration"
@@ -376,6 +384,11 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			resetField('geoSpecific', { keepError: false });
 			resetField('geo', { keepError: false });
 			resetField('team', { keepError: false });
+			unregister('level');
+			unregister('reportingUser');
+			unregister('geoSpecific');
+			unregister('geo');
+			unregister('team');
 			setLevelEdit('Select');
 			setGEOType('');
 			setSpecificGEO('Select');
@@ -399,7 +412,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			resetField('geoSpecific');
 			resetField('geo');
 		}
-	}, [watchDepartMentName]);
+	}, [watchDepartMentName,enableALlFieldsMemo,resetField]);
 
 	useEffect(() => {
 		if (watchLevelName?.value === 'Select') {
@@ -751,7 +764,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			}
 		}
 	}, [userDetails]);
-
+console.log('errors',errors)
 	return (
 		<div className={UserFieldStyle.hrFieldContainer}>
 			{getformLoading ? (
@@ -905,7 +918,9 @@ const UsersFields = ({ id, setLoading, loading }) => {
 														options={getLevelList && getLevelList}
 														name="level"
 														isError={errors['level'] && errors['level']}
-														required
+														required={(watchDepartMentName &&
+															watchDepartMentName?.value !== 'Administration' &&
+															watchDepartMentName?.value !== 'Select') ? true : false}
 														errorMsg={'Please select level'}
 													/>
 												</div>
@@ -941,7 +956,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 														options={getTeamUserForm && getTeamUserForm}
 														name="team"
 														isError={errors['team'] && errors['team']}
-														required
+														required={(watchLevelName &&
+															watchDepartMentName?.value !== 'Administration') ? true : false}
 														errorMsg={'Please select team'}
 													/>
 												</div>
@@ -970,7 +986,10 @@ const UsersFields = ({ id, setLoading, loading }) => {
 													name="priorityCount"
 													type={InputType.TEXT}
 													placeholder="Enter Priority Count"
-													required
+													required={(watchDepartMentName?.value !== 'Select' &&
+													watchLevelName?.value !== 'Select' &&
+													watchDepartMentName?.value === 'Demand' &&
+													watchLevelName?.value === 'Head') ? true : false}
 												/>
 											</div>
 										)}
@@ -996,7 +1015,8 @@ const UsersFields = ({ id, setLoading, loading }) => {
 														isError={
 															errors['geoSpecific'] && errors['geoSpecific']
 														}
-														required
+														required={(watchDepartMentName?.value !== 'Administration' &&
+														watchLevelName?.value !== 'Select') ? true : false}
 														errorMsg={'Please select geo specific'}
 													/>
 												</div>
