@@ -465,7 +465,7 @@ const TalentList = ({
 						<div
 							key={item?.Name}
 							id={item?.TalentID}>
-							<div className={TalentListStyle.talentCard}>
+							<div className={TalentListStyle.talentCard} style={{minHeight: hrType? '680px': ''}}>
 								<div className={TalentListStyle.talentCardBody}>
 									<div className={TalentListStyle.partWise}>
 										<div
@@ -691,7 +691,7 @@ const TalentList = ({
 														{_isNull(item?.BillRate) ? 'NA' : item?.BillRate}
 													</span>
 												</div>
-												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" &&
+												{/* {hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" &&
 												 (item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
 												<span
 												onClick={() => {
@@ -704,7 +704,7 @@ const TalentList = ({
 													cursor: 'pointer',
 												}}>
 												Edit
-											</span>}
+											</span>} */}
 												
 											</div>
 											<div className={TalentListStyle.payRate}>
@@ -731,8 +731,10 @@ const TalentList = ({
 												(item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
 												<span
 												onClick={() => {
-													setEditPayRate(true);
+													// setEditPayRate(true);
+													// setTalentIndex(item?.TalentID);
 													setTalentIndex(item?.TalentID);
+													setEditBillRate(true);
 												}}
 
 												style={{
@@ -771,7 +773,7 @@ const TalentList = ({
 														{_isNull(item?.PayRate) ? 'NA' : item?.PayRate}
 													</span>
 												</div>
-												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && 
+												{/* {hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && 
 												(item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
 												<span
 												onClick={() => {
@@ -785,7 +787,7 @@ const TalentList = ({
 													cursor: 'pointer',
 												}}>
 												Edit
-											</span>}
+											</span>} */}
 												
 											</div>
 											<div className={TalentListStyle.payRate}>
@@ -803,7 +805,7 @@ const TalentList = ({
 											</div>
 											<div className={TalentListStyle.payRate}>
 												<div>
-													<span>uplers Fees (%):</span>&nbsp;&nbsp;
+													<span>Uplers Fees (%):</span>&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
 														{_isNull(item?.DPPercentage)
 															? 'NA'

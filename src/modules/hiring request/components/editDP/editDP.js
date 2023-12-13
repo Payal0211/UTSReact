@@ -75,7 +75,7 @@ const EditDPRate = ({ onCancel
         <div className={editBillAndPayRate.engagementModalContainer}
         >
             <div className={`${editBillAndPayRate.headingContainer} ${editBillAndPayRate.payRateContainer}`}>
-                <h1>Edit DP Rate ({hrNO})</h1>
+                <h1>Edit Uplers Fees ({hrNO})</h1>
             </div>
 
             {isLoading ? <SpinLoader /> : 
