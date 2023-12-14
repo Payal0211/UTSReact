@@ -18,6 +18,7 @@ import { _isNull } from 'shared/utils/basic_utils';
 import LogoLoader from 'shared/components/loader/logoLoader';
 import { ReactComponent as FocusRole } from 'assets/svg/FocusRole.svg';
 import plusSkill from "../../../../assets/svg/plusSkill.svg";
+import PublishHRPopup from '../publishHRPopup/publishHRPopup';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -78,6 +79,7 @@ const DebriefingHR = ({
 	}, []);
 	const [isFocusedRole, setIsFocusedRole] = useState(false)
 	const [talentRole, setTalentRole] = useState([]);
+	const [showPublishModal, setShowPublishModal] = useState(false)
 	// const combinedSkillsMemo = useMemo(() => {
 	// 	const combinedData = [
 	// 		JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
@@ -317,6 +319,9 @@ const DebriefingHR = ({
 	}, [JDParsedSkills, setValue]);
     
 	// console.log("errors", errors,isOtherSkillExistMemo);
+	const openPublishModal = ()=>{
+		setShowPublishModal(true)
+	}
 	
 	const debriefSubmitHandler = async (d) => {
 		setIsLoading(true);
@@ -777,12 +782,13 @@ const DebriefingHR = ({
 						<button
 							type="button"
 							className={DebriefingHRStyle.btnPrimary}
-							onClick={handleSubmit(debriefSubmitHandler)}
+							onClick={handleSubmit(openPublishModal)}
 							disable={isLoading}	
 							>
 							
 							Create
 						</button>
+						<PublishHRPopup handleOK={handleSubmit(debriefSubmitHandler)} showModal={showPublishModal} setShowModal={setShowPublishModal} />
 					</div>
 				)}
 			</WithLoader>
