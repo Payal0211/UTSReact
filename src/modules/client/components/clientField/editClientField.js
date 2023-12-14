@@ -149,11 +149,11 @@ const EditClientField = ({
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 		// setIsLoading(true);
 		setIsSavedLoading(true)
-		if(typeOfPricing === null){
-			setIsSavedLoading(false)
-			setPricingTypeError(true)
-			return
-		}
+		// if(typeOfPricing === null){
+		// 	setIsSavedLoading(false)
+		// 	setPricingTypeError(true)
+		// 	return
+		// }
 		let clientFormDetails = clientFormDataFormatter({
 			d,
 			type,
@@ -317,9 +317,11 @@ const EditClientField = ({
 
 	const getCompanyDetails = async (ID) => {
 		resetAllFields()
+		setIsSavedLoading(true)
 		let companyDetailsData = await HubSpotDAO.getCompanyForEditDetailsDAO(ID)
 	
 		if(companyDetailsData?.statusCode === HTTPStatusCode.OK){
+			setIsSavedLoading(false)
 			const {companyDetails,contactDetails, companyContract ,contactPoc} = companyDetailsData.responseBody
 
 			companyDetails && setCompanyDetail(companyDetails)  
@@ -389,6 +391,7 @@ const EditClientField = ({
 				setClientPOCs(contactPoc)
 			}
 		}
+		setIsSavedLoading(false)
 	}
 
     useEffect(()=>{
