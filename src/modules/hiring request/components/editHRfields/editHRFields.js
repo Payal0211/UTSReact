@@ -1375,7 +1375,7 @@ const EditHRFields = ({
       setTypeOfPricing(getHRdetails?.addHiringRequest?.isTransparentPricing === true ? 1 : 0)
       setTransactionMessage('*This client has been selected in past for below pricing model. To change and update pricing model go to Company and make the changes to reflect right while submitting this HR.')
     }else{
-      setTypeOfPricing(1)
+      setTypeOfPricing(null)
       setTransactionMessage('*You are creating this HR for the first time for this Client after roll out of Transparent Pricing, help us select if this client and HR falls under transparent or non transparent pricing.')
     }
 

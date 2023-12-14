@@ -749,7 +749,7 @@ const TalentList = ({
 												<div>
 													<span>Uplers Fess Amount:</span>&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
-														{_isNull(item?.UplersfeesAmount) ? 'NA' : item?.UplersfeesAmount}
+														{_isNull(item?.UplersfeesAmount) ? 'NA' : `${item?.UplersfeesAmount} ${item.TalentCurrenyCode}`}
 													</span>
 												</div>
 											</div>
@@ -834,7 +834,7 @@ const TalentList = ({
 													</span>
 													&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
-														{_isNull(item?.UplersfeesAmount) ? 'NA' : item?.UplersfeesAmount}
+														{_isNull(item?.UplersfeesAmount) ? 'NA' : `${item?.UplersfeesAmount} ${item.TalentCurrenyCode}`}
 													</span>
 												</div>
 												
