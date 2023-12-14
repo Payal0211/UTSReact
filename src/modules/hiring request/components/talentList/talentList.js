@@ -757,12 +757,12 @@ const TalentList = ({
 										</>
 									) : (
 										<>
-											<div className={TalentListStyle.billRate}>
+											{/* <div className={TalentListStyle.billRate}>
 												<span>Client's Bill Amount:</span>&nbsp;&nbsp;
 												<span style={{ fontWeight: '500' }}>
 													{_isNull(item?.DPAmount) ? 'NA' : `${item?.CurrencySign} ${item?.DPAmount} ${item?.TalentCurrenyCode} One time Amount` }
 												</span>
-											</div>
+											</div> */}
 											<div className={TalentListStyle.payRate}>
 												<div>
 													<span>
@@ -834,7 +834,7 @@ const TalentList = ({
 													</span>
 													&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
-														{_isNull(item?.UplersfeesAmount) ? 'NA' : `${item?.UplersfeesAmount} ${item.TalentCurrenyCode}`}
+														{_isNull(item?.UplersfeesAmount) ? 'NA' : `${item?.CurrencySign} ${item?.UplersfeesAmount} ${item.TalentCurrenyCode} One time Amount`}
 													</span>
 												</div>
 												
