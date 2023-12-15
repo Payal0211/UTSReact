@@ -851,8 +851,8 @@ const HRFields = ({
     pathName === ClientHRURL.ADD_NEW_CLIENT &&
       setValue("companyName", clientDetail?.companyname);
 
-      if(clientDetail.typeOfPricing !== null ){
-        setTypeOfPricing(clientDetail.typeOfPricing)
+      if(clientDetail?.typeOfPricing !== null ){
+        setTypeOfPricing(clientDetail?.typeOfPricing)
         setDisableTypeOfPricing(true)
         setTransactionMessage('*This client has been selected in past for below pricing model. To change and update pricing model go to Company and make the changes to reflect right while submitting this HR.')
       }else{
@@ -864,7 +864,7 @@ const HRFields = ({
     getLocation.pathname,
     clientDetail?.clientemail,
     clientDetail?.companyname,
-    clientDetail.typeOfPricing,
+    clientDetail?.typeOfPricing,
     pathName,
     setValue,
   ]);
