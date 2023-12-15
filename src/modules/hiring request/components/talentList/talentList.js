@@ -747,7 +747,7 @@ const TalentList = ({
 											</div>
 											<div className={TalentListStyle.nr}>
 												<div>
-													<span>Uplers Fess Amount:</span>&nbsp;&nbsp;
+													<span>Uplers Fees Amount:</span>&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
 														{_isNull(item?.UplersfeesAmount) ? 'NA' : `${item?.UplersfeesAmount} ${item.TalentCurrenyCode}`}
 													</span>
@@ -830,7 +830,7 @@ const TalentList = ({
 											<div className={TalentListStyle.payRate}>
 												<div>
 													<span>
-													Uplers Fess Amount:
+													Uplers Fees Amount:
 													</span>
 													&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>

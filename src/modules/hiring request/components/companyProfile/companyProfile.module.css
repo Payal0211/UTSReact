@@ -26,7 +26,6 @@
 .companyURL,
 .pocName,
 .pocEmail,
-.EngagementType,
 .category,
 .TR,
 .TRParked,
@@ -44,6 +43,12 @@
     align-items: center;
     /* justify-content: center; */
     padding-top:5px;
+}
+.EngagementType{
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: center; */
+  padding-top:5px;
 }
 .TR button {
   font-family: "Montserrat";
