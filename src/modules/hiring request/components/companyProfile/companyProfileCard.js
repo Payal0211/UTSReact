@@ -200,24 +200,25 @@ const CompanyProfileCard = ({
                     ? allApiData?.companyCategory
                     : "NA"}
                 </span>
-              </div>
-              {allApiData?.transparentModel?.JobType &&  <>
+              </div>           
+            </div>
+          </div>
+          {allApiData?.transparentModel?.JobType &&  <>
                 <Divider
             style={{
               margin: "10px 0",
             }}
-          /><div className={CompanyProfileCardStyle.category}>
+          />
+          <div className={CompanyProfileCardStyle.EngagementType}>
                 <span>Job Type:</span>&nbsp;&nbsp;
+               <div>  {allApiData?.transparentModel?.JobType.map(jobtype=>
+               <>
+               <span style={{ fontWeight: "500" }}>{jobtype}</span>&nbsp;&nbsp;<br/>
+               </>   
+                )}</div>
               </div>
-              {allApiData?.transparentModel?.JobType.map(jobtype=>
-                <div className={CompanyProfileCardStyle.category}>
-                <span style={{ fontWeight: "500" }}>{jobtype}</span>&nbsp;&nbsp;
-              </div>
-                )}
-              </>}
              
-            </div>
-          </div>
+              </>}
           <Divider
             style={{
               margin: "10px 0",

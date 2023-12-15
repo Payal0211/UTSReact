@@ -850,10 +850,21 @@ const HRFields = ({
       setValue("clientName", clientDetail?.clientemail);
     pathName === ClientHRURL.ADD_NEW_CLIENT &&
       setValue("companyName", clientDetail?.companyname);
+
+      if(clientDetail.typeOfPricing !== null ){
+        setTypeOfPricing(clientDetail.typeOfPricing)
+        setDisableTypeOfPricing(true)
+        setTransactionMessage('*This client has been selected in past for below pricing model. To change and update pricing model go to Company and make the changes to reflect right while submitting this HR.')
+      }else{
+        setTypeOfPricing(null)
+        setDisableTypeOfPricing(false)
+        setTransactionMessage('*You are creating this HR for the first time for this Client after roll out of Transparent Pricing, help us select if this client and HR falls under transparent or non transparent pricing.')
+      }
   }, [
     getLocation.pathname,
     clientDetail?.clientemail,
     clientDetail?.companyname,
+    clientDetail.typeOfPricing,
     pathName,
     setValue,
   ]);

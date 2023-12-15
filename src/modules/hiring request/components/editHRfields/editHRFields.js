@@ -961,11 +961,11 @@ const EditHRFields = ({
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
 
-      if(typeOfPricing === null){
-        setIsSavedLoading(false)
-        setPricingTypeError(true)
-        return
-      }
+      // if(typeOfPricing === null){
+      //   setIsSavedLoading(false)
+      //   setPricingTypeError(true)
+      //   return
+      // }
       let hrFormDetails = hrUtils.hrFormDataFormatter(
         d,
         type,
