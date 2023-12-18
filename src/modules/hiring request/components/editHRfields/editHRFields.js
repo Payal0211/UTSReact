@@ -1598,15 +1598,13 @@ const EditHRFields = ({
         setControlledEndTimeValue(
           gptDetails?.salesHiringRequest_Details?.timeZoneEndTime
         );
-      gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
+        gptDetails?.salesHiringRequest_Details?.timeZoneFromTime &&
         setValue(
-          "fromTime",
-          gptDetails?.salesHiringRequest_Details?.timeZoneFromTime
+          "fromTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneFromTime}
         );
       gptDetails?.salesHiringRequest_Details?.timeZoneEndTime &&
         setValue(
-          "endTime",
-          gptDetails?.salesHiringRequest_Details?.timeZoneEndTime
+          "endTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneEndTime}  
         );
       setValue("budget", "2");
 
@@ -2352,11 +2350,9 @@ const EditHRFields = ({
                       errorMsg={"Please select the working mode."}
                     />
                   </div>
-                </div>
-
-              
-              {getWorkingModelFields()}
+                </div>                           
               </div>
+              {getWorkingModelFields()}
               {/* {watch('role')?.id === -1 && (
 						<div className={HRFieldStyle.row}>
 							<div className={HRFieldStyle.colMd12}>
@@ -2736,6 +2732,7 @@ const EditHRFields = ({
                       setControlledValue={setControlledTimeZoneValue}
                       isControlled={true}
                       mode={"id/value"}
+                      searchable={true}
                       // disabled={_isNull(prefRegion)}
                       setValue={setValue}
                       register={register}
@@ -2787,7 +2784,27 @@ const EditHRFields = ({
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                       controlledValue={controlledFromTimeValue}
-                      setControlledValue={setControlledFromTimeValue}
+                      setControlledValue={val=> {setControlledFromTimeValue(val);
+                        let index = getStartEndTimes.findIndex(item=> item.value === val)
+                        if(index >= getStartEndTimes.length -16){         
+                            let newInd =   index - (getStartEndTimes.length -16)
+                            let endtime = getStartEndTimes[newInd]
+                            setControlledEndTimeValue(
+                              endtime.value
+                            );
+                            setValue(
+                              "endTime",{id: "", value: endtime.value}  
+                            );
+                        }else{
+                            let endtime = getStartEndTimes[index + 16]
+                            setControlledEndTimeValue(
+                              endtime.value
+                            );
+                            setValue(
+                              "endTime",{id: "", value: endtime.value}  
+                            );
+                        };
+                      }}
                       isControlled={true}
                       mode={"id/value"}
                       // disabled={

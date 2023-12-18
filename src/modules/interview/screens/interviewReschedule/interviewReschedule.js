@@ -34,6 +34,7 @@ const InterviewReschedule = ({
 	reScheduleSlotRadio,
 	setRescheduleSlotRadio,
 	getInterviewStatus,
+	isAnotherRound
 }) => {
 	const {
 		watch,
@@ -195,6 +196,7 @@ const InterviewReschedule = ({
 				interviewCallLink: data?.interviewCallLink
 					? data?.interviewCallLink
 					: '',
+				IsAnotherRoundInterview: isAnotherRound ?  true : false
 			};
 
 			let response = await hiringRequestDAO.getReSchduleInterviewInformation(
@@ -255,7 +257,7 @@ const InterviewReschedule = ({
 			className={InterviewScheduleStyle.interviewContainer}
 			id={key}>
 			<div className={InterviewScheduleStyle.interviewModalTitle}>
-				<h2>Reschedule Interview</h2>
+				<h2>{isAnotherRound ? "Schedule Interview" : "Reschedule Interview"} </h2>
 			</div>
 			{contextHolder}
 			<div className={InterviewScheduleStyle.panelBody}>
@@ -316,6 +318,7 @@ const InterviewReschedule = ({
 						<SpinLoader />
 					) : (
 						<form id="interviewReschedule">
+							{isAnotherRound ? null : <>
 							<div className={InterviewScheduleStyle.row}>
 								<div className={InterviewScheduleStyle.colMd12}>
 									<div
@@ -380,6 +383,8 @@ const InterviewReschedule = ({
 								className={InterviewScheduleStyle.topDivider}
 								dashed
 							/>
+							</>}
+							
 
 							<div className={InterviewScheduleStyle.row}>
 								<div className={InterviewScheduleStyle.colMd12}>

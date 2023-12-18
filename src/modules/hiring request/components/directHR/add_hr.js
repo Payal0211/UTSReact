@@ -166,6 +166,9 @@ export default function AddHR(
   const [leadSource, setLeadSource] = useState([]);
   const [leadOwner, setLeadOwner] = useState([]);
   const [controlledDealSource, setControlledDealSource] = useState();
+  const [typeOfPricing,setTypeOfPricing] = useState(1)
+  const [hrPricingTypes, setHRPricingTypes] = useState([]);  
+  const [payRollTypes, setPayRollTypes] = useState([]);
 
   const getSkills = useCallback(async () => {
     const response = await MasterDAO.getSkillsRequestDAO();
@@ -180,6 +183,22 @@ export default function AddHR(
     );
     return filteredData;
   }, [getClientEmailSuggestion, watchClientName]);
+
+  const getHRPricingType = useCallback(async () => {
+    const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
+    setHRPricingTypes(
+      HRPricingResponse &&
+      HRPricingResponse.responseBody
+    );
+  }, []);
+
+  const getPayrollType = useCallback(async () => {
+    const payRollsResponse = await MasterDAO.getPayRollTypeDAO();
+    setPayRollTypes(
+      payRollsResponse &&
+        payRollsResponse.responseBody
+    );
+  }, []);
 
   /* ------------------ Upload JD Starts Here ---------------------- */
   const [openPicker, authResponse] = useDrivePicker();
@@ -661,6 +680,8 @@ export default function AddHR(
       getPartialEngHandler();
       getHowSoon();
       getNRMarginHandler();
+      getPayrollType();
+      getHRPricingType()
       getDurationTypes();
       getStartEndTimeHandler();
       getSkills();
@@ -813,6 +834,11 @@ export default function AddHR(
         jdDumpId: jdDumpID,
         en_Id: "",
         isSpecialEdit: isSpecialEdit,
+        IsTransparentPricing:typeOfPricing === 1 ? true : false,
+        HrTypePricingId: d.hiringPricingType.id,
+        HrTypeId: hrPricingTypes?.find(item=> item.id === d.hiringPricingType?.id).hrtypeId,
+        PayrollTypeId: d.hiringPricingType.id === 3 ?  d.payrollType.id : '',
+        PayrollPartnerName:  d.payrollType.id === 3 ? d.payrollPartnerName : '' ,
       };
 
       if (watch("fromTime").value === watch("endTime").value) {
@@ -896,7 +922,9 @@ export default function AddHR(
       setError,
       watch,
       jdDumpID,
-      isSpecialEdit
+      isSpecialEdit,
+      typeOfPricing,
+      hrPricingTypes
     ]
   );
 
@@ -1166,6 +1194,28 @@ export default function AddHR(
       return !prev;
     });
   };
+  const getRequiredHRPricingType = useCallback(() =>{
+    let reqOpt = []
+
+    if(typeOfPricing === 1){
+      let Filter = hrPricingTypes.filter(item=> item.engagementType === "Full Time" && item.isTransparent === true)
+      if(Filter.length){
+        reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+      }
+    }else{
+      let Filter = hrPricingTypes.filter(item=> item.engagementType === "Full Time" && item.isTransparent === false)
+      if(Filter.length){
+        reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+      }
+    }
+
+    return reqOpt
+
+  },[hrPricingTypes, typeOfPricing]) 
+
+  useEffect(()=>{
+    resetField('payrollType')
+  },[watch('hiringPricingType')])
 
   return (
     <div className={HRFieldStyle.addNewContainer}>
@@ -1300,6 +1350,83 @@ export default function AddHR(
                 />
               </div>
 
+              <div className={HRFieldStyle.colMd12}>
+<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<label style={{marginBottom:"12px"}}>
+							Type Of pricing
+							<span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
+								*
+							</span>
+						</label>
+            {/* {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
+            {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> }  */}
+						<Radio.Group
+            disabled={true}
+							// defaultValue={'client'}
+							// className={allengagementReplceTalentStyles.radioGroup}
+							onChange={e=> setTypeOfPricing(e.target.value)}
+							value={typeOfPricing}
+							>
+							<Radio value={1}>Transparent Pricing</Radio>
+							<Radio value={0}>Non Transparent Pricing</Radio>
+						</Radio.Group>
+							</div>
+</div>
+
+<div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                    mode={"id/value"}
+                    setValue={setValue}
+                    register={register}
+                    label={"Hiring Pricing Type"}
+                    defaultValue="Select Hiring Pricing"
+                    options={getRequiredHRPricingType()}
+                    name="hiringPricingType"
+                    isError={errors["hiringPricingType"] && errors["hiringPricingType"]}
+                    required
+                    errorMsg={"Please select the Hiring Pricing."}
+                  />
+                </div>
+              </div>
+
+              {watch('hiringPricingType')?.id === 3 && <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                  <HRSelectField
+                  //  controlledValue={controlledAvailabilityValue}
+                  //  setControlledValue={setControlledAvailabilityValue}
+                  //  isControlled={true}
+                    mode={"id/value"}
+                    setValue={setValue}
+                    register={register}
+                    label={"Who will manage the payroll?"}
+                    defaultValue="Select payroll"
+                    options={payRollTypes}
+                    name="payrollType"
+                    isError={errors["payrollType"] && errors["payrollType"]}
+                    required={(watch('hiringPricingType')?.id === 3)? true : false}
+                    errorMsg={"Please select Payroll Type."}
+                  />
+                </div>
+              </div>}
+
+              {watch('payrollType')?.id === 3 && <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.formGroup}>
+                <HRInputField
+                    register={register}
+                    errors={errors}
+                    validationSchema={{
+                      required: "please enter payroll partner name.",
+                    }}
+                    label="Payroll Partner Name"
+                    name="payrollPartnerName"
+                    type={InputType.TEXT}
+                    placeholder="Enter the Payroll partner name"
+                    required={watch('payrollType')?.id === 3}
+                  />
+                </div>
+              </div>}
+
               <div className={HRFieldStyle.colMd6}>
                 <HRInputField
                   //	disabled={
@@ -1329,7 +1456,6 @@ export default function AddHR(
                 />
               </div>
 
-              <div className={HRFieldStyle.colMd6}></div>
 
 
               <div className={HRFieldStyle.colMd6}>
@@ -1671,6 +1797,7 @@ export default function AddHR(
                     isControlled={true}
                     mode={"id/value"}
                     // disabled={_isNull(prefRegion)}
+                    searchable={true}
                     setValue={setValue}
                     register={register}
                     label={"Select Time Zone"}
@@ -1693,7 +1820,27 @@ export default function AddHR(
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                       controlledValue={controlledFromTimeValue}
-                      setControlledValue={setControlledFromTimeValue}
+                      setControlledValue={val=> {setControlledFromTimeValue(val);
+                        let index = getStartEndTimes.findIndex(item=> item.value === val)
+                        if(index >= getStartEndTimes.length -16){         
+                            let newInd =   index - (getStartEndTimes.length -16)
+                            let endtime = getStartEndTimes[newInd]
+                            setControlledEndTimeValue(
+                              endtime.value
+                            );
+                            setValue(
+                              "endTime",{id: "", value: endtime.value}  
+                            );
+                        }else{
+                            let endtime = getStartEndTimes[index + 16]
+                            setControlledEndTimeValue(
+                              endtime.value
+                            );
+                            setValue(
+                              "endTime",{id: "", value: endtime.value}  
+                            );
+                        };
+                      }}
                       isControlled={true}
                       mode={"id/value"}
                       // disabled={
