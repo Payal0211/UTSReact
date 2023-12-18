@@ -1334,6 +1334,7 @@ const TalentList = ({
 						setRescheduleSlotRadio={setRescheduleSlotRadio}
 						// getSlotInformationHandler={getSlotInformationHandler}
 						getInterviewStatus={getInterviewStatus}
+						isAnotherRound={isAnotherRound}
 					/>
 				</Modal>
 			)}

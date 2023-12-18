@@ -294,7 +294,7 @@ const HRFields = ({
       } else {
         let formData = new FormData();
         formData.append("File", fileData);
-        formData.append("clientemail", filteredMemo[0]?.emailId?? '');
+        formData.append("clientemail", clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId?? '');
         let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
         if (uploadFileResponse.statusCode === 400) {
           setValidation({
@@ -348,7 +348,7 @@ const HRFields = ({
         setIsLoading(false);
       }
     },
-    [getValidation, setJDDumpID, setJDParsedSkills, filteredMemo]
+    [getValidation, setJDDumpID, setJDParsedSkills, filteredMemo,clientDetail]
   );
 
   const googleDriveFileUploader = useCallback(() => {
@@ -851,7 +851,8 @@ const HRFields = ({
     pathName === ClientHRURL.ADD_NEW_CLIENT &&
       setValue("companyName", clientDetail?.companyname);
 
-      if(clientDetail?.typeOfPricing !== null ){
+      if(clientDetail?.typeOfPricing !== undefined){
+          if(clientDetail?.typeOfPricing !== null ){
         setTypeOfPricing(clientDetail?.typeOfPricing)
         setDisableTypeOfPricing(true)
         setTransactionMessage('*This client has been selected in past for below pricing model. To change and update pricing model go to Company and make the changes to reflect right while submitting this HR.')
@@ -860,6 +861,8 @@ const HRFields = ({
         setDisableTypeOfPricing(false)
         setTransactionMessage('*You are creating this HR for the first time for this Client after roll out of Transparent Pricing, help us select if this client and HR falls under transparent or non transparent pricing.')
       }
+      }
+    
   }, [
     getLocation.pathname,
     clientDetail?.clientemail,
@@ -2248,12 +2251,9 @@ const HRFields = ({
                     errorMsg={"Please select the working mode."}
                   />
                 </div>
-              </div>
-
-              
-              {getWorkingModelFields()}
+              </div>              
             </div>
-            
+            {getWorkingModelFields()}
             <div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
               <div className={HRFieldStyle.colMd6}>
                 {!getUploadFileData ? (
@@ -2561,7 +2561,27 @@ const HRFields = ({
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                     controlledValue={controlledFromTimeValue}
-                    setControlledValue={setControlledFromTimeValue}
+                    setControlledValue={val=> {setControlledFromTimeValue(val);
+                      let index = getStartEndTimes.findIndex(item=> item.value === val)
+                      if(index >= getStartEndTimes.length -16){         
+                          let newInd =   index - (getStartEndTimes.length -16)
+                          let endtime = getStartEndTimes[newInd]
+                          setControlledEndTimeValue(
+                            endtime.value
+                          );
+                          setValue(
+                            "endTime",{id: "", value: endtime.value}  
+                          );
+                      }else{
+                          let endtime = getStartEndTimes[index + 16]
+                          setControlledEndTimeValue(
+                            endtime.value
+                          );
+                          setValue(
+                            "endTime",{id: "", value: endtime.value}  
+                          );
+                      };
+                    }}
                     isControlled={true}
                     mode={"id/value"}
                     // disabled={

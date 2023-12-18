@@ -15,6 +15,7 @@ import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import { MdOutlinePreview } from 'react-icons/md';
 import { Modal, Tooltip, AutoComplete,Radio } from 'antd';
 import { Controller } from 'react-hook-form';
+import { UserSessionManagementController } from "modules/user/services/user_session_services";
 
 const CompanyDetails = ({
 	register,
@@ -31,7 +32,8 @@ const CompanyDetails = ({
 	setCompanyName,
 	companyName,
 	control,
-	companyDetail, setCompanyDetail,getCompanyDetails, controlledFieldsProp,typeOfPricing,setTypeOfPricing
+	companyDetail, setCompanyDetail,getCompanyDetails, controlledFieldsProp,typeOfPricing,setTypeOfPricing,
+	pricingTypeError,setPricingTypeError
 }) => {
 	let {controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType} = controlledFieldsProp
 	const [GEO, setGEO] = useState([]);
@@ -65,7 +67,15 @@ const CompanyDetails = ({
 	const [getCompanyNameMessage, setCompanyNameMessage] = useState('');
 	const [showCompanyEmail, setShowCompanyEmail] = useState(false)
 
-	
+	const [userData, setUserData] = useState({});
+
+	useEffect(() => {
+	  const getUserResult = async () => {
+		let userData = UserSessionManagementController.getUserSession();
+		if (userData) setUserData(userData);
+	  };
+	  getUserResult();
+	}, []);
 
 	let controllerRef = useRef(null);
 
@@ -208,7 +218,7 @@ const CompanyDetails = ({
 			setValue('companyLocation', location[0])
 			setControlledCompanyLoacation(location[0]?.value)
 		}
-	},[GEO , companyDetail,setValue])
+	},[GEO , companyDetail?.geO_ID,setValue])
 
 
 	useEffect(()=>{
@@ -238,7 +248,7 @@ const CompanyDetails = ({
 		}
 			
 		}
-	},[leadSource?.BindLeadType , companyDetail,setValue])
+	},[leadSource?.BindLeadType , companyDetail?.leadType,setValue])
 
 	useEffect(() => {
 		if(companyDetail.leadUserID && leadOwner.length	> 0){
@@ -248,7 +258,7 @@ const CompanyDetails = ({
 				setControlledLeadOwner(filteredOwner[0].value)
 			}
 					}
-	},[companyDetail,leadOwner])
+	},[companyDetail.leadUserID,leadOwner])
 
 	const getCompanyDetailsByEmail = async (email)=> {
 
@@ -327,10 +337,10 @@ const CompanyDetails = ({
 
 	const getCompanyValue = (clientName, data) => {
 		setValue('companyName', clientName);
-		setError('companyName', {
-			type: 'validate',
-			message: '',
-		});
+		// setError('companyName', {
+		// 	type: 'validate',
+		// 	message: '',
+		// });
 
 		// get company name
 		getCompanyDetails(data.companyID)
@@ -433,6 +443,7 @@ const CompanyDetails = ({
 											<Controller
 												render={({ ...props }) => (
 													<AutoComplete
+													{...props }
 														options={getCompanyNameSuggestion.length > 0 ? getCompanyNameSuggestion : []}
 														onSelect={(clientName, data) =>
 															getCompanyValue(clientName,data)
@@ -560,19 +571,20 @@ const CompanyDetails = ({
 						</div>
 					</div>
 
-					{/* <div className={CompanyDetailsStyle.row}>
+					<div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd12}>
 							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>
 							Type Of pricing
-							{/* <span className={allengagementReplceTalentStyles.reqField}>
+							 <span className={CompanyDetailsStyle.reqField}>
 								*
 							</span>
 						</label>
+						{pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>}
 						<Radio.Group
-							// defaultValue={'client'}
+							 disabled={userData?.LoggedInUserTypeID !== 1} 
 							// className={allengagementReplceTalentStyles.radioGroup}
-							onChange={e=> setTypeOfPricing(e.target.value)}
+							onChange={e=> {setTypeOfPricing(e.target.value);setPricingTypeError(false)}}
 							value={typeOfPricing}
 							>
 							<Radio value={1}>Transparent Pricing</Radio>
@@ -582,7 +594,7 @@ const CompanyDetails = ({
 							{console.log("type of prising",typeOfPricing)}
 												
 						</div>
-					</div> */}
+					</div>
 					<div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd12}>
 							<HRInputField

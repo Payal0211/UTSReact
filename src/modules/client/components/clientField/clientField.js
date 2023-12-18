@@ -207,6 +207,7 @@ const ClientField = ({
 		if (addClientResult.statusCode === HTTPStatusCode.OK) {
 			setIsSavedLoading(false)
 			setAddClientResponse(addClientResult?.responseBody?.details);
+			window.scrollTo(0, 0);
 			type !== SubmitType.SAVE_AS_DRAFT && setTitle('Add New Hiring Requests');
 			type !== SubmitType.SAVE_AS_DRAFT &&
 				setAddClientResponseID(
@@ -318,12 +319,15 @@ const ClientField = ({
 		if(companyDetailsData.statusCode === HTTPStatusCode.OK){
 			const {companyDetails,contactDetails, companyContract ,contactPoc} = companyDetailsData.responseBody
 
+			if(companyDetails !== null){
 			companyDetails && setCompanyDetail(companyDetails)  
 			companyDetails?.companyName && setValue('companyName',companyDetails?.companyName)
 			companyDetails?.website && setValue('companyURL',companyDetails?.website)
 			companyDetails?.linkedInProfile	&& setValue('companyLinkedinProfile',companyDetails?.linkedInProfile)
 			companyDetails?.address	&& setValue('companyAddress',companyDetails?.address)
 			companyDetails?.companySize && setValue('companySize',companyDetails?.companySize)
+			}
+			
 			// companyDetails?.phone && setValue('phoneNumber',companyDetails?.phone)
 			if(companyDetails?.phone){
 				setValue('phoneNumber',companyDetails?.phone?.slice(3))
@@ -368,7 +372,7 @@ const ClientField = ({
 				}
 			}
 
-			if(companyContract.id){
+			if(companyContract?.id){
 				companyContract?.en_Id && setLegelInfoEN_ID(companyContract?.en_Id)
 				companyContract?.signingAuthorityName && setValue('legalClientFullName',companyContract?.signingAuthorityName)
 				companyContract?.signingAuthorityEmail && setValue('legalClientEmailID',companyContract?.signingAuthorityEmail)
