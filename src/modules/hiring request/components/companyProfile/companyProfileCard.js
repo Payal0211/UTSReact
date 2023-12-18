@@ -203,7 +203,7 @@ const CompanyProfileCard = ({
               </div>           
             </div>
           </div>
-          {allApiData?.transparentModel?.JobType &&  <>
+          {allApiData?.transparentModel?.JobType?.length > 0 &&  <>
                 <Divider
             style={{
               margin: "10px 0",
