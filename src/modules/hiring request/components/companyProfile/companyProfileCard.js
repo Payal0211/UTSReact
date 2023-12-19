@@ -180,7 +180,7 @@ const CompanyProfileCard = ({
 					{clientDetail?.Managed ? clientDetail?.Managed : 'NA'}
 				</span>
 			</div> */}
-              <div className={CompanyProfileCardStyle.EngagementType}>
+              {/* <div className={CompanyProfileCardStyle.EngagementType}>
                 <span>Engagement Type :</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {!allApiData?.Is_HRTypeDP
@@ -191,6 +191,14 @@ const CompanyProfileCard = ({
                       }
 					 ${allApiData?.transparentModel?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}`
                     : `Direct Placement ${allApiData?.transparentModel?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}` }
+                </span>
+              </div> */}
+               <div className={CompanyProfileCardStyle.EngagementType}>
+                <span>Engagement Type :</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                  { 
+					`${allApiData?.transparentModel?.HrTypePricing}  ${allApiData?.transparentModel?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}`
+                   }
                 </span>
               </div>
               {allApiData?.transparentModel?.EngagementText &&  <div className={CompanyProfileCardStyle.EngagementType}>

@@ -877,7 +877,7 @@ export default function AddHR(
         IsTransparentPricing:typeOfPricing === 1 ? true : false,
         HrTypePricingId: d.hiringPricingType.id,
         HrTypeId: hrPricingTypes?.find(item=> item.id === d.hiringPricingType?.id).hrtypeId,
-        PayrollTypeId: d.hiringPricingType.id === 3 ?  d.payrollType.id : '',
+        PayrollTypeId: d.hiringPricingType.id === 3 ?  d.payrollType.id : 0,
         PayrollPartnerName:  d.payrollType?.id === 3 ? d.payrollPartnerName : '' ,
         CalculatedUplersfees:  d.uplersFees,
         UplersfeesInPercentage: d.NRMargin,
