@@ -193,6 +193,13 @@ const CompanyProfileCard = ({
                     : `Direct Placement ${allApiData?.transparentModel?.IsTransparentPricing ? "( Transparent )" : "( Non Transparent )"}` }
                 </span>
               </div>
+              {allApiData?.transparentModel?.EngagementText &&  <div className={CompanyProfileCardStyle.EngagementType}>
+                <span style={{ fontWeight: "500" }}>
+                  {allApiData?.transparentModel?.EngagementText}
+                     
+                </span>
+              </div>}
+             
               <div className={CompanyProfileCardStyle.category}>
                 <span>Uplers Category:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
