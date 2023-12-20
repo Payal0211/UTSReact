@@ -84,18 +84,20 @@ export const hrUtils = {
 		fileName,
 		jdDumpID,
 		typeOfPricing,
-		hrPricingTypes
+		hrPricingTypes,
+		companyType
 	) {
 		let enIDdata = localStorage.getItem('enIDdata');
 		const hrFormDetails = {
 			en_Id: _isNull(enIDdata) ? '' : enIDdata,
 			IsTransparentPricing: typeOfPricing === 1 ? true : false,
-			HrTypePricingId: draft === SubmitType.SAVE_AS_DRAFT ? watch('hiringPricingType')?.id : d.hiringPricingType?.id,
-			HrTypeId: hrPricingTypes?.find(item=> item.id === watch('hiringPricingType')?.id).hrtypeId,
-			CalculatedUplersfees:  watch('uplersFees')? typeof watch('uplersFees') === 'string'? watch('uplersFees') :  JSON.stringify(watch('uplersFees')) : '',
-			PayrollTypeId: draft === SubmitType.SAVE_AS_DRAFT ?  watch('payrollType')?.id: (watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5) ? 1  : d.payrollType?.id,
+			HrTypePricingId: companyType?.id !== 1 ? null : draft === SubmitType.SAVE_AS_DRAFT ? watch('hiringPricingType')?.id : d.hiringPricingType?.id,
+			HrTypeId: companyType?.id !== 1 ? null : hrPricingTypes?.find(item=> item.id === watch('hiringPricingType')?.id).hrtypeId,
+			PayPerType:  companyType?.id ,
+			CalculatedUplersfees: companyType?.id !== 1 ? '' :  watch('uplersFees')? typeof watch('uplersFees') === 'string'? watch('uplersFees') :  JSON.stringify(watch('uplersFees')) : '',
+			PayrollTypeId: companyType?.id !== 1 ? null : draft === SubmitType.SAVE_AS_DRAFT ?  watch('payrollType')?.id: (watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5) ? 1  : d.payrollType?.id,
 			contactId: contactID || 0,
-			PayrollPartnerName:  watch('payrollType')?.id === 3 ? watch('payrollPartnerName') : '' ,
+			PayrollPartnerName: companyType?.id !== 1 ? '' :  watch('payrollType')?.id === 3 ? watch('payrollPartnerName') : '' ,
 			isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 			clientName:
 				draft === SubmitType.SAVE_AS_DRAFT ? watch('clientName') : d.clientName,

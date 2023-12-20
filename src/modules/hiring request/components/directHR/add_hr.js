@@ -41,6 +41,7 @@ import { UserAccountRole } from "constants/application";
 import LogoLoader from "shared/components/loader/logoLoader";
 
 import AddPlus from "assets/svg/AddPlus.svg";
+import PublishHRPopup from "../publishHRPopup/publishHRPopup";
 
 export default function AddHR(
   {
@@ -131,6 +132,7 @@ export default function AddHR(
   const [controlledEndTimeValue, setControlledEndTimeValue] =
     useState("Select End Time");
   const [controlledRoleValue, setControlledRoleValue] = useState("Select Role");
+  const [showPublishModal, setShowPublishModal] = useState(false)
 
   const [DealHRData, setDealHRData] = useState({});
   let controllerRef = useRef(null);
@@ -978,6 +980,10 @@ export default function AddHR(
     }
   }, [errors?.clientName]);
 
+  const openPublishModal = ()=>{
+		setShowPublishModal(true)
+	}
+
   const getdealHRdetailsHandler = async (DID) => {
     const response = await hiringRequestDAO.getDealHRDetailsRequestDAO(DID);
     if (response.statusCode === HTTPStatusCode.OK) {
@@ -1308,7 +1314,8 @@ export default function AddHR(
   // fees calculation 
   useEffect(() => {
       if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
-        let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        let dpPercentage = watch('NRMargin')
         let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
         let calMax = (dpPercentage * watch('maximumBudget') *12) /100
         setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
@@ -2268,13 +2275,15 @@ export default function AddHR(
             </button> */}
 
           <button
-            onClick={handleSubmit(hrSubmitHandler)}
+            onClick={handleSubmit(openPublishModal)}
             className={HRFieldStyle.btnPrimary}
             disabled={isSavedLoading}
           >
             Create HR
           </button>
         </div>
+
+        <PublishHRPopup handleOK={handleSubmit(hrSubmitHandler)} showModal={showPublishModal} setShowModal={setShowPublishModal} />
 
         {showGPTModal && (
           <Modal

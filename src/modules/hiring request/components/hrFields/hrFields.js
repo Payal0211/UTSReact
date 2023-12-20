@@ -1059,7 +1059,7 @@ const HRFields = ({
         isHRDirectPlacement,
         addHRResponse,
         getUploadFileData && getUploadFileData,
-        jdDumpID,typeOfPricing,hrPricingTypes
+        jdDumpID,typeOfPricing,hrPricingTypes,{id:1}
       );
 
       if(watch('fromTime').value === watch('endTime').value){
@@ -1183,7 +1183,8 @@ const HRFields = ({
   useEffect(() => {
     if(watch('budget')?.value === '1'){
       if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
-        let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        let dpPercentage = watch('NRMargin')
         let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
         setValue('uplersFees',cal ? cal : 0)
       }else{
@@ -1195,7 +1196,8 @@ const HRFields = ({
 
     if(watch('budget')?.value === '2'){
       if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
-        let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        let dpPercentage = watch('NRMargin')
         let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
         let calMax = (dpPercentage * watch('maximumBudget') *12) /100
         setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)

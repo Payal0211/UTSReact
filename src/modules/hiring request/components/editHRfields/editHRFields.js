@@ -106,6 +106,7 @@ const EditHRFields = ({
   const [isSavedLoading, setIsSavedLoading] = useState(false);
   const [getGoogleDriveLink, setGoogleDriveLink] = useState("");
   const [getClientNameSuggestion, setClientNameSuggestion] = useState([]);
+  const [companyType , setComapnyType] = useState({})
 
   const [controlledRoleValue, setControlledRoleValue] = useState("Select Role");
   const [controlledBudgetValue, setControlledBudgetValue] =
@@ -808,7 +809,7 @@ const EditHRFields = ({
     getWorkingMode();
     getCountry();
     getHowSoon();
-    getNRMarginHandler();
+    // getNRMarginHandler();
     getDurationTypes();
     getBudgetHandler();
     contractDurationHandler();
@@ -975,7 +976,7 @@ const EditHRFields = ({
         addHRResponse,
         getUploadFileData && getUploadFileData,
         watchJDUrl ? watchJDUrl : jdDumpID,
-        typeOfPricing,hrPricingTypes
+        typeOfPricing,hrPricingTypes,companyType
       );
 
       hrFormDetails["allowSpecialEdit"] = getHRdetails?.allowSpecialEdit;
@@ -1062,7 +1063,7 @@ const EditHRFields = ({
       // tabFieldDisabled,
       typeOfPricing,hrPricingTypes,
       getHRdetails?.addHiringRequest?.hrNumber,
-      messageAPI,
+      messageAPI,companyType
     ]
   );
   useEffect(() => {
@@ -1108,7 +1109,7 @@ const EditHRFields = ({
     );
     setValue(
       "NRMargin",
-      getHRdetails?.addHiringRequest?.talentCostCalcPercentage
+      getHRdetails?.addHiringRequest?.isHrtypeDp === true ?  getHRdetails?.addHiringRequest?.dppercentage  :   getHRdetails?.addHiringRequest?.talentCostCalcPercentage
     );
     setValue("months", getHRdetails?.salesHiringRequest_Details?.specificMonth);
     setValue("years", getHRdetails?.salesHiringRequest_Details?.yearOfExp);
@@ -1151,6 +1152,13 @@ const EditHRFields = ({
       );
     }
     setUploadFileData(getHRdetails?.addHiringRequest?.jdfilename);
+
+    let company_Type = getHRdetails?.companyTypes?.filter(item => item.isActive === true);
+    if(company_Type?.length > 0){
+       setComapnyType(company_Type[0])
+    }
+
+   
   }, [getHRdetails, setValue]);
   useEffect(() => {
     if (localStorage.getItem("hrID")) {
@@ -1213,7 +1221,8 @@ const EditHRFields = ({
   useEffect(() => {
     if(watch('budget')?.value === '1'){
       if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
-        let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        let dpPercentage = watch('NRMargin')
         let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
         setValue('uplersFees',cal ? cal : 0)
       }else{
@@ -1225,10 +1234,11 @@ const EditHRFields = ({
 
     if(watch('budget')?.value === '2'){
       if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
-        let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+        let dpPercentage = watch('NRMargin')
         let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
         let calMax = (dpPercentage * watch('maximumBudget') *12) /100
-        setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
+        setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`,watch('NRMargin'))
       }else{
         let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
         let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
@@ -1380,7 +1390,7 @@ const EditHRFields = ({
     }
 
     let filteredHRtype = hrPricingTypes.find(item=> item.id === getHRdetails?.addHiringRequest?.hiringTypePricingId)
-    console.log("filteredHRtype",filteredHRtype)
+   
     if(filteredHRtype){
       setValue('hiringPricingType',{id:filteredHRtype.id, value: filteredHRtype.type})
       setControlledHiringPricingTypeValue(filteredHRtype.type)
@@ -1388,7 +1398,7 @@ const EditHRFields = ({
 
     let payrollTypeFilter = payRollTypes.find(item=> item.id === getHRdetails?.addHiringRequest?.payrollTypeId)
     if(payrollTypeFilter){
-      console.log('payrollTypeFilter',payrollTypeFilter)
+      
       setValue('payrollType',{id:payrollTypeFilter.id, value: payrollTypeFilter.value})
       setControlledPayrollTypeValue(payrollTypeFilter.value)
       if(getHRdetails?.addHiringRequest?.payrollTypeId === 3){
@@ -1671,6 +1681,7 @@ const EditHRFields = ({
             <div className={HRFieldStyle.hrFieldLeftPane}>
               <h3>Hiring Request Details</h3>
               <p>Please provide the necessary details</p>
+              <p className={HRFieldStyle.teansactionMessage}>HR is "{companyType?.name}"</p>
               <LogoLoader visible={isSavedLoading} />
             </div>
 
@@ -1782,7 +1793,8 @@ const EditHRFields = ({
                   )}
                 </div>
 
-                <div className={HRFieldStyle.colMd12}>
+
+                {companyType?.id === 1 &&   <div className={HRFieldStyle.colMd12}>
               <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>
 							Type Of pricing
@@ -1804,7 +1816,8 @@ const EditHRFields = ({
 							<Radio value={0}>Non Transparent Pricing</Radio>
 						</Radio.Group>
 							</div>
-              </div>          
+              </div> }
+                        
                   <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     {/* <HRSelectField
@@ -1838,8 +1851,107 @@ const EditHRFields = ({
                     />
                   </div>
                 </div>
+{/*  Duration in case of Pay Per Credit */}
 
-                {watch('availability')?.id && <div className={HRFieldStyle.colMd6}>
+                {companyType?.id=== 2 && <>
+                  <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.formGroup}>
+                      <HRSelectField
+                        controlledValue={controlledTempProjectValue}
+                        setControlledValue={setControlledTempProjectValue}
+                        isControlled={true}
+                        isControlledBoolean={true}
+                        mode={"id/value"}
+                        searchable={false}
+                        setValue={setValue}
+                        register={register}
+                        label={"Is this Hiring need Temporary for any project?"}
+                        defaultValue="Select"
+                        options={tempProjects.map((item) => ({
+                          id: item.id,
+                          label: item.text,
+                          value: item.value,
+                        }))}
+                        name="tempProject"
+                        isError={errors["tempProject"] && errors["tempProject"]}
+                        required={companyType?.id=== 2 ? true : false}
+                        errorMsg={"Please select."}
+                      />
+                    </div>
+                  </div>
+                <div className={HRFieldStyle.colMd6}>
+                  <div className={HRFieldStyle.formGroup}>
+                    <HRSelectField
+                      dropdownRender={(menu) => (
+                        <>
+                          {menu}
+                          <Divider style={{ margin: "8px 0" }} />
+                          <Space style={{ padding: "0 8px 4px" }}>
+                            <label>Other:</label>
+                            <input
+                              type={InputType.NUMBER}
+                              className={HRFieldStyle.addSalesItem}
+                              placeholder="Ex: 5,6,7..."
+                              ref={inputRef}
+                              value={name}
+                              onChange={onNameChange}
+                              required
+                            />
+                            <Button
+                              style={{
+                                backgroundColor: `var(--uplers-grey)`,
+                              }}
+                              shape="round"
+                              type="text"
+                              icon={<PlusOutlined />}
+                              onClick={addItem}
+                              disabled={
+                                name
+                                  ? contractDurations.filter(
+                                      (duration) => duration.value == name
+                                    ).length > 0
+                                  : true
+                              }
+                            >
+                              Add item
+                            </Button>
+                          </Space>
+                          <br />
+                        </>
+                      )}
+                      options={contractDurations.map((item) => ({
+                        id: item.id,
+                        label: item.text,
+                        value: item.value,
+                      }))}
+                      controlledValue={contractDurationValue}
+                      setControlledValue={setContractDuration}
+                      isControlled={true}
+                      setValue={setValue}
+                      register={register}
+                      label={"Contract Duration (in months)"}
+                      defaultValue="Ex: 3,6,12..."
+                      inputRef={inputRef}
+                      addItem={addItem}
+                      mode={"id/value"}
+                      onNameChange={onNameChange}
+                      name="contractDuration"
+                      isError={
+                        errors["contractDuration"] && errors["contractDuration"]
+                      }
+                      required={companyType?.id=== 2 ? true : false}
+                      errorMsg={
+                        "Please select hiring request contract duration"
+                      }
+                      // disabled={isHRDirectPlacement}
+                    />
+                  </div>
+                </div>
+                </> 
+                  }
+
+                {companyType?.id === 1 && <>
+                 {watch('availability')?.id && <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                    controlledValue={controlledHiringPricingTypeValue}
@@ -2067,12 +2179,14 @@ const EditHRFields = ({
                   />
                 </div>
               </div>}
+                </> }
+
+               
               
               </div>
 
               <div className={HRFieldStyle.row}>
-
-              <div className={HRFieldStyle.colMd6}>
+                {companyType?.id === 1 && <div className={HRFieldStyle.colMd6}>
                     <HRInputField
                       register={register}
                       errors={errors}
@@ -2087,7 +2201,9 @@ const EditHRFields = ({
                       placeholder="Select Uplers Fees %"
                       required
                     />
-                  </div>
+                  </div>}
+
+              
                 {/* {isHRDirectPlacement ? (
                   <div className={HRFieldStyle.colMd6}>
                     <HRInputField

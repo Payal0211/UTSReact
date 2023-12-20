@@ -122,7 +122,7 @@
 }
 
 .teansactionMessage {
-    color: #f90;
+    color: #f90 !important;
     font-family: Montserrat;
     font-size: 12px;
     font-weight: 400;
