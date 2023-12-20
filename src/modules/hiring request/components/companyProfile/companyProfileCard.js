@@ -202,7 +202,7 @@ const CompanyProfileCard = ({
               ? clientDetail?.SpecificMonth === -1 ? 'Indefinite': `${clientDetail?.SpecificMonth} Months`
               : 0
           }`}  
-          ${(allApiData?.transparentModel?.IsTransparentPricing !==null) && allApiData?.transparentModel?.IsTransparentPricing  ? "( Transparent )" : "( Non Transparent )"}`
+          ${(allApiData?.transparentModel?.IsTransparentPricing !==null) ? (allApiData?.transparentModel?.IsTransparentPricing  ? "( Transparent )" : "( Non Transparent )") : ''}`
                    }
                 </span>
               </div>
