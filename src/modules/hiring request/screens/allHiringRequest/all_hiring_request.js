@@ -661,23 +661,24 @@ const AllHiringRequestScreen = () => {
             >
               Show only Priority
             </Checkbox>
-            <Checkbox
+            {/* <Checkbox
               checked={isFrontEndHR}
               onClick={() => setIsFrontEndHR((prev) => !prev)}
               className={allHRStyles.focusCheckBox}
             >
               Show Self Sign Up Only
-            </Checkbox>
+            </Checkbox> */}
 
-            {/* <Select 
+            <Select 
                 mode="multiple"
                 size='small'
-                style={{ width: '25%' }}
+                style={{ width: '150px' }}
+                search={false}
                 placeholder="Select HR Type"
                 value={selectedHRTypes}
                 onChange={(data,datawithID)=>{console.log(data,datawithID);setSelectedHRTypes(datawithID)}}
                 options={HRTypesList} 
-            /> */}
+            />
 
            
             <div className={allHRStyles.searchFilterSet}>

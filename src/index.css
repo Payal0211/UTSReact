@@ -1067,6 +1067,21 @@ table {
 }
 
 
+[class*="filterRight"] .ant-select-multiple .ant-select-selector{
+  padding-top: 5px;
+  padding-bottom: 5px; 
+  height: auto;
+  min-height: 44px;
+  font-size: 14px;
+  overflow-y: auto;
+  max-height: 50px;
+}
+
+[class*="filterRight"] .ant-select .ant-select-selector .ant-select-selection-placeholder{
+  font-size: 12px;
+}
+
+
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {
@@ -1125,6 +1140,22 @@ table {
   }
 
 
+  [class*="filterRight"] .ant-select-multiple .ant-select-selector{
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    height: auto;
+    min-height: 35px;
+    font-size: 12px;
+    overflow-y: auto;
+    max-height: 40px;
+  }
+  
+  [class*="filterRight"] .ant-select .ant-select-selector .ant-select-selection-placeholder{
+    font-size: 10px;
+  }
+  
+
+
 }
 
 
@@ -1145,6 +1176,8 @@ table {
   [class*="FeedbackDatedetail"] .ant-radio-group .ant-radio-wrapper .ant-radio{
     top: 1px;
   }
+
+ 
 
 
   /* .ant-table-thead > tr > th{
