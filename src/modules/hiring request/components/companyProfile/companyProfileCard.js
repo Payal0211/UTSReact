@@ -196,14 +196,15 @@ const CompanyProfileCard = ({
                <div className={CompanyProfileCardStyle.EngagementType}>
                 <span>Engagement Type :</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
-                  { 
+                  {allApiData?.transparentModel?.EngagementType ? allApiData?.transparentModel?.EngagementType : allApiData?.EngagementType}
+                  {/* { 
 					`${allApiData?.transparentModel?.HrTypePricingId > 0 ? allApiData?.transparentModel?.HrTypePricing : `Contract - ${
             clientDetail?.SpecificMonth
               ? clientDetail?.SpecificMonth === -1 ? 'Indefinite': `${clientDetail?.SpecificMonth} Months`
               : 0
           }`}  
           ${(allApiData?.transparentModel?.IsTransparentPricing !==null) ? (allApiData?.transparentModel?.IsTransparentPricing  ? "( Transparent )" : "( Non Transparent )") : ''}`
-                   }
+                   } */}
                 </span>
               </div>
               {allApiData?.transparentModel?.EngagementText &&  <div className={CompanyProfileCardStyle.EngagementType}>
@@ -326,14 +327,18 @@ const CompanyProfileCard = ({
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.budget}>
-                <span>{`${allApiData?.transparentModel?.IsTransparentPricing ? 'Salary' : ''} Budget` } :</span>&nbsp;&nbsp;
+                {/* <span>{`${allApiData?.transparentModel?.IsTransparentPricing ? 'Salary' : ''} Budget` } :</span>&nbsp;&nbsp;            
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.Cost ? clientDetail?.Cost : "NA"}
-                </span>
-                {allApiData?.transparentModel?.HrTypePricingId > 0 && <Tooltip
+                </span> */}
+
+                <span>{allApiData?.transparentModel?.BudgetTitle ? allApiData?.transparentModel?.BudgetTitle : allApiData?.BudgetTitle} :</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>{allApiData?.transparentModel?.BudgetText ? allApiData?.transparentModel?.BudgetText : allApiData?.BudgetText}</span>
+                {allApiData?.transparentModel?.PayPerHire_I_Info?.length > 0 && <Tooltip
 							placement="bottomLeft"
 							title={<div>
-                <p>Hiring Type : {allApiData?.transparentModel?.HrTypePricing}</p>
+                {allApiData?.transparentModel?.PayPerHire_I_Info?.map(item=> <p>{item}</p>)}
+                {/* <p>Hiring Type : {allApiData?.transparentModel?.HrTypePricing}</p>
                 {allApiData?.transparentModel?.PayrollType && <p>Payroll Type : {allApiData?.transparentModel?.PayrollType ?? 'NA'}</p>}
                 
                 {allApiData?.transparentModel?.PayrollPartnerName && 
@@ -342,7 +347,7 @@ const CompanyProfileCard = ({
                 {allApiData?.transparentModel?.CalculatedUplersfees && <p>Uplers Fees Amount : {allApiData?.transparentModel?.CalculatedUplersfees}</p>}
                 {allApiData?.transparentModel?.IsTransparentPricing
  ? <p>Estimated Client Need To Pay : {allApiData?.transparentModel?.ClientNeedsToPay}</p> 
- : <p>Talent Estimated Pay : {allApiData?.transparentModel?.TalentsPay}</p>}
+ : <p>Talent Estimated Pay : {allApiData?.transparentModel?.TalentsPay}</p>} */}
               </div>}>
 								<img src={infoIcon} alt='info' style={{marginLeft:'auto'}} />							
 						</Tooltip>}
