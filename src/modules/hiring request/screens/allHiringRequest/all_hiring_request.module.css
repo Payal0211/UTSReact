@@ -128,9 +128,9 @@
 .filterRight{
     display: flex;
     justify-content: flex-end;
-    gap:24px;
+    gap:12px;
     align-items: center ; 
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
 }
 
 .searchFilterSet{
@@ -331,6 +331,9 @@
 }
 
 
+.searchFilterSet{
+    width: 180px;
+}
 
 
 /* Responsive css start */
@@ -402,7 +405,7 @@
     }
 
     .searchFilterSet{
-        width: 200px;
+        width: 150px;
         height: 35px;
     }
 
