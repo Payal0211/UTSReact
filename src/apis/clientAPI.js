@@ -152,5 +152,21 @@ export const ClientAPI = {
 		} catch (error) {
 			return errorDebug(error, 'ClientAPI.userDetailsRequest');
 		}
-	}
+	},
+	trackingLeadClientSourceDetails:async function (contactId) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.TRACKING_LEAD_CLIENT_SOURCE +
+			`?ContactID=${contactId}`; 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getClientFilterList');
+		}
+	},
 };

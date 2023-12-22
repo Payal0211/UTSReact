@@ -166,6 +166,38 @@ export const allClientRequestDAO  = {
         } catch (error) {
             return errorDebug(error, 'allClientRequestDAO.userDetailsDAO');
         }
+	},
+	trackingLeadClientSourceDAO : async function(reqData){
+		try {            
+            const trackingLeadResult = await ClientAPI.trackingLeadClientSourceDetails(reqData);
+            if (trackingLeadResult) {
+				const statusCode = trackingLeadResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = trackingLeadResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return trackingLeadResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return trackingLeadResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+        } catch (error) {
+            return errorDebug(error, 'allClientRequestDAO.userDetailsDAO');
+        }
 	}
 
 }

@@ -29,6 +29,8 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { HttpStatusCode } from "axios";
 import { DateTimeUtils } from "shared/utils/basic_utils";
 
+import { BsArrowUpRight } from "react-icons/bs";
+
 function ViewClientDetails() {
 	const [isLoading, setLoading] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
@@ -37,6 +39,8 @@ function ViewClientDetails() {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const navigate = useNavigate();
 	const [jobpostDraft, setModaljobpostDraft] = useState(false);
+	const [utmTraking, setModalutmTraking] = useState(false);
+	const [utmTrackingData, setUtmTrackingData] = useState([]);
 	const [guid,setGuid] = useState('');
 	const [draftJObPostDetails,setDraftJobPostDetails] = useState({});
 	useEffect(() => {
@@ -55,6 +59,14 @@ function ViewClientDetails() {
 		}
 		setLoading(false);
 	}
+
+	const viewUTMTrackingDetails = async () =>{
+		let response = await allClientRequestDAO.trackingLeadClientSourceDAO(clientID);	
+		if(response.statusCode === HttpStatusCode.Ok){
+			setUtmTrackingData(response.responseBody);
+		}
+	}
+
 
    const togglePriority = useCallback(
 		async (payload) => {
@@ -108,6 +120,62 @@ function ViewClientDetails() {
 		setLoading(false);
 		setViewDetails(response?.responseBody);	
 	}
+
+
+	const utmTrackingDataSource = utmTrackingData?.map((item)=>({
+        key:"1",
+        actions: item?.actions ? item?.actions : "NA",
+        source:item?.source ? item?.source : "NA",
+        medium:item?.medium?item?.medium:"NA",
+        campaign:item?.campaign?item?.campaign:"NA",
+        content:item?.content?item?.content:"NA",
+		term:item?.term?item?.term:"NA",
+		placement:item?.placement?item?.placement:"NA",
+		refUrl:item?.refUrl?item?.refUrl:"NA"
+    }))
+
+	  const columnsUTM = [
+        {
+          title: 'Actions',
+          dataIndex: 'actions',
+          key: 'actions',
+        },
+        {
+          title: 'Source',
+          dataIndex: 'source',
+          key: 'source',
+        },
+        {
+          title: 'Medium',
+          dataIndex: 'medium',
+          key: 'medium',
+        },
+        {
+            title: 'Campaign',
+            dataIndex: 'campaign',
+            key: 'campaign',
+        },
+        {
+            title: 'Content',
+            dataIndex: 'content',
+            key: 'content',
+        },
+		{
+            title: 'Term',
+            dataIndex: 'term',
+            key: 'term',
+        },
+		{
+            title: 'Placement',
+            dataIndex: 'placement',
+            key: 'placement',
+        },
+		{
+            title: 'Ref URL',
+            dataIndex: 'refUrl',
+            key: 'refUrl',
+        },
+      ];
 
     return(
         <WithLoader
@@ -168,7 +236,7 @@ function ViewClientDetails() {
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Client Source</span>
-								{viewDetails?.clientDetails?.clientSource ? viewDetails?.clientDetails?.clientSource : "NA"}
+								<h3 className={dealDetailsStyles.viewdetailBtnAdd}>{viewDetails?.clientDetails?.clientSource ? viewDetails?.clientDetails?.clientSource : "NA"} <span onClick={()=>{setModalutmTraking(true);viewUTMTrackingDetails();}}>View Details <BsArrowUpRight /></span></h3>
 							</div>
 						</li>
 						<li>
@@ -485,10 +553,31 @@ function ViewClientDetails() {
 					</div> */}
 				</div>
 			</Modal>
+
+
+			<Modal
+				width={'864px'}
+				centered
+				footer={false}
+				open={utmTraking}
+				className="utmTrakingModal"
+				onOk={() => setModalutmTraking(false)}
+				onCancel={() => setModalutmTraking(false)}
+			>
+				<h2>UTM Tracking</h2>
+				 <div className={dealDetailsStyles.utmTrakingContent}>
+					 <Table dataSource={utmTrackingDataSource} columns={columnsUTM} pagination={false} className="CustomTable"/>
+
+					 <div className={dealDetailsStyles.formPanelAction}>
+						<button className={dealDetailsStyles.btn} onClick={()=>setModalutmTraking(false)}>
+							Close
+						</button>
+					 </div>
+
+				</div>
+			</Modal>
 		</WithLoader>
 
-		
-		
     )
 }
 
