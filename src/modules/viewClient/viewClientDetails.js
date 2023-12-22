@@ -131,7 +131,7 @@ function ViewClientDetails() {
         content:item?.content?item?.content:"NA",
 		term:item?.term?item?.term:"NA",
 		placement:item?.placement?item?.placement:"NA",
-		refUrl:item?.refUrl?item?.refUrl:"NA"
+		refUrl:item?.ref_URL?item?.ref_URL:"NA"
     }))
 
 	  const columnsUTM = [
