@@ -31,6 +31,7 @@ const DealFilters = ({
 		setToggleBack(true);
 		setFilterSubChild(item);
 	};
+	console.log(filterSubChild,"filterSubChildfilterSubChildfilterSubChild");
 	// useEffect(() => {
 	// 	getHTMLFilter
 	// 		? setTimeout(() => {

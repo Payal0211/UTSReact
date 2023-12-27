@@ -369,5 +369,10 @@ export class ClientHappinessSurvey{
 	static SEND_EMAIL_FOR_FEEDBACK = "SendEmailForFeedback";
 	static SAVE_CLIENT_HAPPINESS_SURVEYS= "SaveClientHappinessSurveys";
 	static CLIENT_HAPPINESS_SURVEY_OPTION = "ClientHappinessSurveysOption";
+}
 
+export class UtmTrackingReport{
+	static UTM_TRACKING_REPORT = 'TrackingLeadDetail/';
+	static UTM_TRACKING_REPORT_LIST = 'List';
+	static GET_UTM_TRACKING_FILTERS = "GetAllFilterDataForTrackingLeadDetail";
 }
