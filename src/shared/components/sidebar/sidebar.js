@@ -147,7 +147,7 @@ const isAccess = (ID, title) =>{
 	title === 'Demand Funnel' || 
 	title === 'SLA Report' || 
 	title === 'Client Report' || 
-	title === 'I2S Report' || title === 'Master' || title === 'Deal' || title === 'HR Report' || 
+	title === 'I2S Report' || title === 'Master' || title === 'Deal' || title === 'HR Report' ||  title === 'UTM Tracking Report' ||
 	title === 'Client Happiness Survey' || title === 'Team Demand Funnel'
 	|| title === 'Clients' || title=== 'HR Lost Report' || title=== 'Supply Funnel'){
 
@@ -306,6 +306,14 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			icon: HRReport,
 			navigateTo: UTSRoutes.HR_REPORT,
 			isVisible: isAccess(usertypeID, 'HR Report')
+		}),
+		new SideBarModels({
+			id: 'UTMTrackingReport',
+			title: 'UTM Tracking Report',
+			isActive: false,
+			icon: HRReport,
+			navigateTo: UTSRoutes.UTM_TRACKING_REPORT,
+			isVisible: isAccess(usertypeID, 'UTM Tracking Report')
 		}),
 		new SideBarModels({
 			id: 'I2SReport',

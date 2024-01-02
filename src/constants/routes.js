@@ -111,6 +111,10 @@ const HRReport = React.lazy(() =>
 	import('modules/report/screens/hrReport/hrReport')
 );
 
+const UTMTrackingReport = React.lazy(() =>
+	import('modules/report/screens/utmTrackingReport/utmTrackingReport')
+);
+
 const DashboardScreen = React.lazy(() =>
     import('modules/dashboard/screens/dashboard'),
 )
@@ -192,6 +196,7 @@ export default class UTSRoutes {
 	static Edit_HR = '/EditNewHR/:hrID'
 	static ABOUT_CLIENT = '/userDetails';
 	static ONBOARD = '/onBoardList';
+	static UTM_TRACKING_REPORT = "/utmTrackingReport";
 }
 
 export const navigateToComponent = {
@@ -354,6 +359,11 @@ export const navigateToComponent = {
 	[UTSRoutes.HR_REPORT]:(
 		<Suspense>
 			<HRReport />
+		</Suspense>
+	),
+	[UTSRoutes.UTM_TRACKING_REPORT]:(
+		<Suspense>
+			<UTMTrackingReport />
 		</Suspense>
 	),
 [UTSRoutes.DASHBOARD]:(

@@ -1436,4 +1436,62 @@ export const reportConfig = {
 			},
 		];
 	},
+	UTMReportFilterTypeConfig: (filterList) => {
+		return [
+			{
+				label: 'Numbers of Jobs',
+				name: 'get_JobPostCount_For_UTM_Tracking_Lead',
+				child: filterList?.get_JobPostCount_For_UTM_Tracking_Lead,
+				isSearch: false,
+			},
+			{
+				label: 'Ref URL',
+				name: 'ref_Url',
+				child: filterList?.ref_Url,
+				isSearch: false,
+				// isSingle:true
+			},
+			{
+				label: 'UTM Campaign',
+				name: 'utM_Campaign',
+				child: filterList?.utM_Campaign,
+				isSearch: true,
+			},
+			{
+				label: 'UTM Content',
+				name: 'utM_Content',
+				child: filterList?.utM_Content,
+				isSearch: false,
+				// isSingle:true
+			},
+			{
+				label: 'UTM Medium',
+				name: 'utM_Medium',
+				child: filterList?.utM_Medium,
+				isSearch: false,
+				// isSingle:true
+			},
+			{
+				label: 'UTM Placement',
+				name: 'utM_Placement',
+				child: filterList?.utM_Placement,
+				isSearch: false,
+				// isSingle:true
+			},
+			{
+				label: 'UTM Source',
+				name: 'utM_Source',
+				child: filterList?.utM_Source,
+				isSearch: false,
+				// isSingle:true
+			},
+			{
+				label: 'UTM Term',
+				name: 'utM_Term',
+				child: filterList?.utM_Term,
+				isSearch: false,
+				// isSingle:true
+			},
+		];
+	},
 };

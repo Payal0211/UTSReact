@@ -435,7 +435,7 @@ const AllHiringRequestScreen = () => {
 
   useEffect(()=>{
     if(selectedHRTypes.length > 0) {
-      let typeIds = selectedHRTypes.reduce((val, hr, ind) => {console.log(hr,val,ind);
+      let typeIds = selectedHRTypes.reduce((val, hr, ind) => {console.log(hr,val,ind,"dksjfsjdfjds");
         let str = ind === (selectedHRTypes.length -1) ?  val + `${hr.id}` : val + `${hr.id},`
         return str },'')
       setTableFilteredState(prev=> ({...prev, hrTypeIds:typeIds}))
