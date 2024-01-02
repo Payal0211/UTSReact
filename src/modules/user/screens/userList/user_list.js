@@ -81,7 +81,7 @@ const UserList = () => {
 	}, [debouncedSearch,fetchUserList]);
 	useEffect(() => {
 		fetchUserList();
-	}, [fetchUserList]);
+	}, []);
 
 	const tableColumnsMemo = useMemo(() => userConfig.tableConfig(), []);
 

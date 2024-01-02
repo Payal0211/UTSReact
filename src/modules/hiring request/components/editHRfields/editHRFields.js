@@ -843,8 +843,8 @@ const EditHRFields = ({
   }, [modeOfWork, unregister]);
 
   useEffect(()=>{
-    let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
-    setValue('NRMargin',precentage) 
+    // let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
+    // setValue('NRMargin',precentage) 
 
     if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8){
       unregister('payrollType')   
@@ -1955,7 +1955,10 @@ const EditHRFields = ({
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                    controlledValue={controlledHiringPricingTypeValue}
-                   setControlledValue={setControlledHiringPricingTypeValue}
+                   setControlledValue={ val=> {setControlledHiringPricingTypeValue(val)
+                    let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
+
+                    setValue('NRMargin',precentage)}}
                    isControlled={true}
                     mode={"id/value"}
                     setValue={setValue}
