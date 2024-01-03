@@ -168,7 +168,7 @@ export default function UTMTrackingReport() {
   const handleFiltersRequest = useCallback(
     (reqFilter) => {
       let fd = reqFilter.filterFields_DealList;
-      let get_JobPostCount_For_UTM_Tracking_Lead = fd["get_JobPostCount_For_UTM_Tracking_Lead"] ? fd["get_JobPostCount_For_UTM_Tracking_Lead"] : "";
+      let get_JobPostCount_For_UTM_Tracking_Lead = fd["get_JobPostCount_For_UTM_Tracking_Lead"] ? fd["get_JobPostCount_For_UTM_Tracking_Lead"] : null;
       let ref_Url = fd["ref_Url"] ? fd["ref_Url"] : "";
       let utM_Campaign= fd["utM_Campaign"] ? fd["utM_Campaign"] : "";
       let utM_Content = fd["utM_Content"] ? fd["utM_Content"] : "";
@@ -222,7 +222,7 @@ export default function UTMTrackingReport() {
       UTMReportFilter: {
         Fromdate: firstDay.toLocaleDateString("en-US"),
         ToDate: lastDay.toLocaleDateString("en-US"),
-        NoOfJobs: "",
+        NoOfJobs: null,
         UTM_Source: "",
         UTM_Medium: "",
         UTM_Campaign: "",
@@ -254,7 +254,7 @@ export default function UTMTrackingReport() {
     //   };
     // });
 
-    let get_JobPostCount_For_UTM_Tracking_Lead = filters["get_JobPostCount_For_UTM_Tracking_Lead"] ? filters["get_JobPostCount_For_UTM_Tracking_Lead"] : "";
+    let get_JobPostCount_For_UTM_Tracking_Lead = filters["get_JobPostCount_For_UTM_Tracking_Lead"] ? filters["get_JobPostCount_For_UTM_Tracking_Lead"] : null;
     let ref_Url = filters["ref_Url"] ? filters["ref_Url"] : "";
     let utM_Campaign = filters["utM_Campaign"]
       ? filters["utM_Campaign"]
@@ -315,7 +315,7 @@ export default function UTMTrackingReport() {
           //   };
           // });
 
-          let get_JobPostCount_For_UTM_Tracking_Lead = filters["get_JobPostCount_For_UTM_Tracking_Lead"] ? filters["get_JobPostCount_For_UTM_Tracking_Lead"] : "";
+          let get_JobPostCount_For_UTM_Tracking_Lead = filters["get_JobPostCount_For_UTM_Tracking_Lead"] ? filters["get_JobPostCount_For_UTM_Tracking_Lead"] : null;
           let ref_Url = filters["ref_Url"]
             ? filters["ref_Url"]
             : "";
@@ -376,7 +376,7 @@ export default function UTMTrackingReport() {
       UTMReportFilter: {
         Fromdate: moment(params.fromDate).format("YYYY-MM-DD"),
         ToDate: moment(params.toDate).format("YYYY-MM-DD"),
-        NoOfJobs: "",
+        NoOfJobs: null,
         UTM_Source: "",
         UTM_Medium: "",
         UTM_Campaign: "",

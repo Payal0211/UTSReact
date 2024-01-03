@@ -556,7 +556,7 @@ function ViewClientDetails() {
 
 
 			<Modal
-				width={'864px'}
+				width={'1200px'}
 				centered
 				footer={false}
 				open={utmTraking}
