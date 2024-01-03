@@ -70,7 +70,8 @@ const TalentList = ({
 	callHRapi,
 	inteviewSlotDetails,
 	talentID,
-	IsTransparentPricing
+	IsTransparentPricing,
+	DynamicSalaryInfo
 }) => {
 	const navigate = useNavigate()
 	const [scheduleAnotherRoundInterview, setScheduleAnotherRoundInterview] =
@@ -682,7 +683,53 @@ const TalentList = ({
 										}}
 									/>
 
-									{!hrType ? (
+									{DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info=> <div className={TalentListStyle.payRate}>
+												<div>
+													<span>
+													{info.Title}
+													</span>
+													&nbsp;&nbsp;
+													<span style={{ fontWeight: '500' }}>
+													{info.Value}
+													</span>
+												</div>
+												{info.IsEditable && <>
+													{!hrType ? <>
+														{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && 
+												(item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
+												<span
+												onClick={() => {
+													// setEditPayRate(true);
+													// setTalentIndex(item?.TalentID);
+													setTalentIndex(item?.TalentID);
+													setEditBillRate(true);
+												}}
+
+												style={{
+													textDecoration: 'underline',
+													color: `var(--background-color-ebony)`,
+													cursor: 'pointer',
+												}}>
+												Edit
+											</span>}
+													</> : <>
+													{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && <span
+													onClick={() => {
+														setEditDPRate(true);
+														setDPData({ talentId:item?.TalentID , contactPriorityID: item?.ContactPriorityID, allValues: item});
+													}}
+													style={{
+														textDecoration: 'underline',
+														color: `var(--background-color-ebony)`,
+														cursor: 'pointer',
+													}}>
+													Edit
+												</span>}
+													</>}
+												</>}
+												
+											</div> )}
+									{/* {!hrType ? (
 										<>
 											<div className={TalentListStyle.payRate}>
 												<div>
@@ -704,7 +751,7 @@ const TalentList = ({
 													cursor: 'pointer',
 												}}>
 												Edit
-											</span>} */}
+											 </span>} }
 												
 											</div>
 											<div className={TalentListStyle.payRate}>
@@ -762,7 +809,7 @@ const TalentList = ({
 												<span style={{ fontWeight: '500' }}>
 													{_isNull(item?.DPAmount) ? 'NA' : `${item?.CurrencySign} ${item?.DPAmount} ${item?.TalentCurrenyCode} One time Amount` }
 												</span>
-											</div> */}
+											</div> /}
 											<div className={TalentListStyle.payRate}>
 												<div>
 													<span>
@@ -787,7 +834,7 @@ const TalentList = ({
 													cursor: 'pointer',
 												}}>
 												Edit
-											</span>} */}
+											</span>} /}
 												
 											</div>
 											<div className={TalentListStyle.payRate}>
@@ -841,7 +888,7 @@ const TalentList = ({
 												
 											</div>
 										</>
-									)}
+									)} */}
 
 									<Divider
 										style={{
