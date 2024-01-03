@@ -164,6 +164,11 @@ export const clientHappinessSurveyConfig = {
 				dataIndex: 'options',
 				key: 'options',
 				width: '250px',
+				render:(text)=>{
+					return text.length > 0 ? <ul>
+						{text.split(',').map(opt=> <li>{opt}</li>)}
+					</ul> : ''
+				}
 			},
 			{
 				title: 'Testimonial Options',
