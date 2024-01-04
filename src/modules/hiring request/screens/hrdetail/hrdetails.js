@@ -275,9 +275,12 @@ const editHR = () => {
 								cloneHR={apiData?.dynamicCTA?.CloneHR}
 							/>
 						)}
-						{apiData?.AllowSpecialEdit && (apiData?.IsDirectHR ? <div onClick={()=> navigate(`/EditNewHR/${apiData?.HR_Id}`)}>
+						{/* {apiData?.AllowSpecialEdit && (apiData?.IsDirectHR ? <div onClick={()=> navigate(`/EditNewHR/${apiData?.HR_Id}`)}>
 							<EditSVG style={{ fontSize: '16px' }} />{' '}
 							<span className={HRDetailStyle.btnLabel}>Edit Direct HR</span></div> : <div onClick={()=> editHR()}>
+							<EditSVG style={{ fontSize: '16px' }} />{' '}
+							<span className={HRDetailStyle.btnLabel}>Edit HR</span></div>)} */}
+							{apiData?.AllowSpecialEdit && (<div onClick={()=> editHR()}>
 							<EditSVG style={{ fontSize: '16px' }} />{' '}
 							<span className={HRDetailStyle.btnLabel}>Edit HR</span></div>)}
 					</div>
