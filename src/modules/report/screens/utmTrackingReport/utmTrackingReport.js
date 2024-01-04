@@ -180,7 +180,7 @@ export default function UTMTrackingReport() {
       let payload = {
         // pageIndex: 1,
         // pageSize: 0,
-        UTMReportFilter: {
+
           Fromdate: moment(firstDay).format("YYYY-MM-DD"),
           ToDate: moment(lastDay).format("YYYY-MM-DD"),
           NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
@@ -191,12 +191,12 @@ export default function UTMTrackingReport() {
           UTM_Term: utM_Term,
           UTM_Placement:utM_Placement,
           ref_url:ref_Url
-        },
+
       };
       getUTMReportList(payload);
 
       let params = {
-       UTMReportFilter: {
+
           Fromdate: moment(firstDay).format("YYYY-MM-DD"),
           ToDate: moment(lastDay).format("YYYY-MM-DD"),
           NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
@@ -207,7 +207,7 @@ export default function UTMTrackingReport() {
           UTM_Term: utM_Term,
           UTM_Placement:utM_Placement,
           ref_url:ref_Url
-        },
+
       };
 
       if (hrStage) {
@@ -219,7 +219,7 @@ export default function UTMTrackingReport() {
 
   useEffect(() => {
     let payload = {
-      UTMReportFilter: {
+
         Fromdate: firstDay.toLocaleDateString("en-US"),
         ToDate: lastDay.toLocaleDateString("en-US"),
         NoOfJobs: null,
@@ -230,7 +230,7 @@ export default function UTMTrackingReport() {
         UTM_Term: "",
         UTM_Placement:"",
         ref_url:""
-      },
+
     };
     getUTMReportList(payload);
     getUTMReportFilterList();
@@ -267,7 +267,7 @@ export default function UTMTrackingReport() {
 
 
     let payload = {
-      UTMReportFilter: {
+
         Fromdate: firstDay.toLocaleDateString("en-US"),
         ToDate: lastDay.toLocaleDateString("en-US"),
         NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
@@ -278,7 +278,7 @@ export default function UTMTrackingReport() {
         UTM_Term: utM_Term,
         UTM_Placement:utM_Placement,
         ref_url:ref_Url
-      },
+
     };
     getUTMReportList(payload);
   }, [isFocusedRole]);
@@ -334,7 +334,7 @@ export default function UTMTrackingReport() {
           let payload = {
             // pageIndex: 1,
             // pageSize: 0,
-            UTMReportFilter: {
+
               Fromdate: moment(start).format("YYYY-MM-DD"),
               ToDate: moment(end).format("YYYY-MM-DD"),
               NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
@@ -345,7 +345,7 @@ export default function UTMTrackingReport() {
               UTM_Term: utM_Term,
               UTM_Placement:utM_Placement,
               ref_url:ref_Url
-            },
+
           };
           getUTMReportList(payload);
         }
@@ -373,7 +373,7 @@ export default function UTMTrackingReport() {
     let payload = {
       // pageIndex: 1,
       // pageSize: 0,
-      UTMReportFilter: {
+  
         Fromdate: moment(params.fromDate).format("YYYY-MM-DD"),
         ToDate: moment(params.toDate).format("YYYY-MM-DD"),
         NoOfJobs: null,
@@ -384,7 +384,7 @@ export default function UTMTrackingReport() {
         UTM_Term: "",
         UTM_Placement:"",
         ref_url:""
-      },
+
     };
     getUTMReportList(payload);
     onRemoveDealFilters();
