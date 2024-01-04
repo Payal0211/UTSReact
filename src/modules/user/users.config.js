@@ -12,14 +12,16 @@ export const userConfig = {
 				align: 'center',
 				width: '55px',
 
-				render: (_, param) => {
-					return (
+				render: (_, param) => {					
+					if(param.userTypeID	!== 13){
+						return (
 						<Link
 							to={`/user/${param?.id}`}
 							style={{ color: 'black', textDecoration: 'underline' }}>
 							<PencilSVG />
 						</Link>
 					);
+					}				
 				},
 			},
 			{
