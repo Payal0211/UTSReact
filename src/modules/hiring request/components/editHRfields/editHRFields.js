@@ -539,13 +539,15 @@ const EditHRFields = ({
     const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
 
     setTalentRole(talentRole && talentRole.responseBody);
-    setTalentRole((preValue) => [
-      ...preValue,
+    setTalentRole((preValue) => {
+      let oldArr = preValue
+      return [
+      ...oldArr,
       {
         id: -1,
         value: "Others",
       },
-    ]);
+    ]});
   }, []);
   const getSalesPerson = useCallback(async () => {
     const salesPersonResponse = await MasterDAO.getSalesManRequestDAO();
@@ -1475,7 +1477,7 @@ const EditHRFields = ({
       setShowGPTModal(false);
 
       let _getHrValues = { ...getHRdetails };
-
+     
       _getHrValues.salesHiringRequest_Details.requirement =
         gptFileDetails.Requirements;
       _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
@@ -1484,6 +1486,7 @@ const EditHRFields = ({
         gptFileDetails.Responsibility;
       _getHrValues.addHiringRequest.jdurl = "";
       _getHrValues.addHiringRequest.jdfilename = gptFileDetails.FileName;
+       _getHrValues.addHiringRequest.isTransparentPricing = (typeOfPricing === 1 ? true : false)
       if(gptFileDetails.Skills.length > 0){_getHrValues.chatGptSkills = gptFileDetails.Skills.map(item=> item.value).join(',');}  
 
       setHRdetails(_getHrValues);
@@ -1551,6 +1554,7 @@ const EditHRFields = ({
         gptDetails?.salesHiringRequest_Details?.rolesResponsibilities; // not sure with roles key name
       _getHrValues.chatGptSkills = gptDetails?.chatGptSkills;
       _getHrValues.chatGptAllSkills = gptDetails?.chatGptAllSkills;
+      _getHrValues.addHiringRequest.isTransparentPricing = (typeOfPricing === 1 ? true : false)
      
       const findWorkingMode = workingMode.filter(
         (item) => item?.id === parseInt(gptDetails?.modeOfWorkingId)
