@@ -46,17 +46,19 @@ const ViewHRDetails = () => {
 
 	const ShowEditCTA = () =>{
 		if(hiringDetails?.responseBody?.details?.hrStatus === 'Open'){
-			if(hiringDetails?.responseBody?.details?.isDirectHR === false){
- 				return <button onClick={editHr}>Edit HR</button>
-			}else{
-				if( miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS ||
-						miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER || miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR  ){
-							return <button onClick={()=>navigate(`/EditNewHR/${id.id}`)}>Edit Direct HR</button>
-						}
-						else{
-							return <button disabled>Edit Direct HR</button>
-						}
-			}
+			return <button onClick={editHr}>Edit HR</button>
+			// if(hiringDetails?.responseBody?.details?.isDirectHR === false){
+ 			// 	return <button onClick={editHr}>Edit HR</button>
+			// }
+			// else{
+			// 	if( miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS ||
+			// 			miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER || miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR  ){
+			// 				return <button onClick={()=>navigate(`/EditNewHR/${id.id}`)}>Edit Direct HR</button>
+			// 			}
+			// 			else{
+			// 				return <button disabled>Edit Direct HR</button>
+			// 			}
+			// }
 		}
 	}
 

@@ -166,6 +166,7 @@ export class MastersAPI {
 	static CLONE_HR = 'CloneHR';
 	static GET_COUNTRY_LIST_BY_POSTALCODE =
 		'GetCountryListByCountryCodeOrPostalcode';
+	static GET_COUNTRY_LIST_BY_CITY = 'FetchCountriesBasedonCity'	
 	static CHECK_COUNTRY_REGION = 'CheckCountryRegion';
 	static CHECK_COUNTRY_NAME = 'CheckCountryName';
 	static ADD_COUNTRY = 'AddCountry';
@@ -262,7 +263,8 @@ export class HiringRequestsAPI {
 	static GET_HR_SLA_DETAILS = 'GetHiringRequestSLADetails';
 	static UPDATE_SLA_DATE = 'UpdateSLADate';
 	static EXTRACTTEXTUSINGPYTHON = 'ExtractTextUsingPython';
-	static GET_CHANNEL_LIBRARY = 'GetChannelLibrary'
+	static GET_CHANNEL_LIBRARY = 'GetChannelLibrary';
+	static GET_lOGIN_HR_INFO = 'GetLoginHrInfo'
 }
 
 export class UsersAPI {

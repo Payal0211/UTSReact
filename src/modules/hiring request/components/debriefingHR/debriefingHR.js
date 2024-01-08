@@ -41,7 +41,10 @@ const DebriefingHR = ({
 	clientDetail,
 	params,
 	isCloned,
-	addData
+	addData,
+	disabledFields,
+	AboutCompanyDesc,
+	isDirectHR
 }) => {
 	const {
 		watch,
@@ -111,6 +114,7 @@ const DebriefingHR = ({
 		// 	'roleAndResponsibilities',
 		// 	addData?.salesHiringRequest_Details?.rolesResponsibilities,
 		// );
+		console.log('add data',addData)
 		setValue('requirements', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
 		JDParsedSkills?.Requirements ||
 		(addData?.salesHiringRequest_Details?.requirement), {
@@ -130,6 +134,12 @@ const DebriefingHR = ({
 		setAllSuggestedSkills(addData?.chatGptAllSkills?.split(","));
 		setValue('role',addData?.addHiringRequest?.requestForTalent);
 	}, [addData]);
+
+	useEffect(()=>{
+		if(AboutCompanyDesc !== null){
+			setValue('aboutCompany', AboutCompanyDesc);
+		}
+	},[AboutCompanyDesc])
 
 	useEffect(() => {
 		if (addData?.addHiringRequest?.requestForTalent) {
@@ -383,7 +393,8 @@ const DebriefingHR = ({
 					"isUserAddMore": false
 				},
 				"secondaryinterviewerList": d.secondaryInterviewer
-			}
+			},
+			isDirectHR:isDirectHR
 		};
 		
 		if(!sameSkillIssue){
@@ -629,6 +640,7 @@ const DebriefingHR = ({
 										name="role"
 										isError={errors['role'] && errors['role']}
 										required
+										disabled={ disabledFields !== null ? disabledFields?.role : false}
 										errorMsg={'Please select hiring request role'}
 									/>
 								</div>
@@ -767,6 +779,7 @@ const DebriefingHR = ({
 					// }}
 					fields={fields}
 					getHRdetails={getHRdetails}
+					disabledFields={disabledFields}
 				/>
 				<Divider />
 				{isLoading ? (

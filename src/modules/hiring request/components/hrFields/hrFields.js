@@ -35,6 +35,7 @@ import useDebounce from "shared/hooks/useDebounce";
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 import { UserAccountRole } from "constants/application";
 import LogoLoader from "shared/components/loader/logoLoader";
+import { HttpStatusCode } from "axios";
 
 export const secondaryInterviewer = {
   interviewerId:"0",
@@ -60,7 +61,12 @@ const HRFields = ({
   getHRdetails,
   setHRdetails,
   setAddData,
-  fromClientflow
+  fromClientflow,
+  removeFields,
+  disabledFields,
+  defaultPropertys,
+  isDirectHR,
+  setAboutCompanyDesc
 }) => {
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
@@ -74,6 +80,7 @@ const HRFields = ({
 
   const [isSavedLoading, setIsSavedLoading] = useState(false);
   const [controlledCountryName, setControlledCountryName] = useState("");
+  const [countryListMessage,setCountryListMessage] = useState(null)
   const inputRef = useRef(null);
   const [getUploadFileData, setUploadFileData] = useState("");
   const [availability, setAvailability] = useState([]);
@@ -347,6 +354,7 @@ const HRFields = ({
         }
         setIsLoading(false);
       }
+      setIsLoading(false);
     },
     [getValidation, setJDDumpID, setJDParsedSkills, filteredMemo,clientDetail]
   );
@@ -528,6 +536,7 @@ const HRFields = ({
           setValue("state", "");
         } else if (response.getCountry?.length === 1) {
           setControlledCountryName(response?.getCountry?.[0]?.value);
+          setValue("country", {id: response?.getCountry?.[0]?.id, value: response?.getCountry?.[0]?.value} )
           setValue("city", response?.stateCityData?.province);
           setValue("state", response?.stateCityData?.stateEn);
           clearErrors("country");
@@ -748,6 +757,8 @@ const HRFields = ({
             setValue("companyName", existingClientDetails?.responseBody?.name);
             companyName(existingClientDetails?.responseBody?.name);
 
+            setAboutCompanyDesc(existingClientDetails?.responseBody?.AboutCompanyDesc?? null)
+
             if(existingClientDetails?.responseBody?.isTransparentPricing !== null ){
               setTypeOfPricing(existingClientDetails?.responseBody?.isTransparentPricing === true ? 1 : 0)
               setDisableTypeOfPricing(true)
@@ -765,6 +776,9 @@ const HRFields = ({
               setSalesPersionNameFromEmail(salesUserObj[0]?.value)
             }else {
               if(userData?.LoggedInUserTypeID !== UserAccountRole.SALES){
+                if(defaultPropertys !==null && defaultPropertys?.salesPerson > 0 ){
+                  return
+                }
                 setIsSalesPersionDisable(false)
                 resetField("salesPerson")
                 setSalesPersionNameFromEmail('')
@@ -791,7 +805,7 @@ const HRFields = ({
         setIsLoading(false);
       }
     },
-    [filteredMemo, setValue, watchClientName]
+    [filteredMemo, setValue, watchClientName,defaultPropertys]
   );
 
   const getOtherRoleHandler = useCallback(
@@ -822,13 +836,55 @@ const HRFields = ({
   const watchCountry = watch("country");
   const { isReady, debouncedFunction } = useDebounce(postalCodeHandler, 2000);
   useEffect(() => {
-    !isPostalCodeNotFound && debouncedFunction("POSTAL_CODE");
-  }, [debouncedFunction, watchPostalCode, isPostalCodeNotFound]);
+    if(removeFields !== null && removeFields.postalCode === true){
+      return
+    }else{
+      !isPostalCodeNotFound && debouncedFunction("POSTAL_CODE");
+    }
+    
+  }, [debouncedFunction, watchPostalCode, isPostalCodeNotFound,removeFields]);
   useEffect(() => {
+    if(removeFields !== null && removeFields.postalCode === true){
+      return
+    }else{
     if (country && country?.getCountry?.length > 1 && watchCountry) {
       !isPostalCodeNotFound && debouncedFunction("COUNTRY_CODE");
     }
-  }, [country, debouncedFunction, isPostalCodeNotFound, watchCountry]);
+  }
+  }, [country, debouncedFunction, isPostalCodeNotFound, watchCountry,removeFields]);
+
+ // Handle city change for Direct HR
+  const watchCity = watch("city");
+  const cityChangeHandler = async () =>{
+    const countryResponse = await MasterDAO.getCountryByCityRequestDAO(watchCity)
+
+    if(countryResponse.statusCode === HttpStatusCode.Ok){
+      if(countryResponse.responseBody.message === "List of countries"){
+        setCountryListMessage(null)
+        let countryList = countryResponse.responseBody.details
+        setCountry(countryList !== null ? {getCountry: countryList.map(list=> ({id:list.id, value: list.country}))     }  : [])
+        if(countryList.length === 1){
+          
+          setControlledCountryName(countryList[0]?.country);
+          setValue('country',countryList[0])
+        }
+        if(countryList.length > 1){
+          setControlledCountryName('')
+          resetField('country')
+        }
+      }else{
+        let countryList = countryResponse.responseBody.details
+        setCountry(countryList !== null ? {getCountry: countryList.map(list=> ({id:list.id, value: list.country}))     }  : [])
+        setControlledCountryName('')
+        resetField('country')
+        setCountryListMessage(countryResponse.responseBody.message)
+        setTimeout(()=>{
+          setCountryListMessage(null)
+        },7000)
+      }
+    }
+  }
+  const { isReady: isCityReady, debouncedFunction: cityDeb } = useDebounce(cityChangeHandler, 2000);
 
   useEffect(() => {
     let timer;
@@ -1061,6 +1117,8 @@ const HRFields = ({
         getUploadFileData && getUploadFileData,
         jdDumpID,typeOfPricing,hrPricingTypes,{id:1}
       );
+      hrFormDetails.isDirectHR = isDirectHR
+
 
       if(watch('fromTime').value === watch('endTime').value){
         setIsSavedLoading(false);
@@ -1162,7 +1220,8 @@ const HRFields = ({
       tabFieldDisabled,
       watch,
       typeOfPricing,
-      hrPricingTypes
+      hrPricingTypes,
+      isDirectHR
     ]
   );
 
@@ -1176,8 +1235,8 @@ const HRFields = ({
     }
   }, [errors?.clientName]);
 
-  useEffect(() => {
-    setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));
+  useEffect(() => {  
+      setContactAndSalesID((prev) => ({ ...prev, salesID: watchSalesPerson }));   
   }, [watchSalesPerson]);
 
   useEffect(() => {
@@ -1504,10 +1563,45 @@ const HRFields = ({
     });   
   };
 
-  useEffect(()=> {resetField('hiringPricingType')
-  resetField('payrollType')  
-  setControlledHiringPricingTypeValue("Select Hiring Pricing")
-},[watch('availability')])
+
+  useEffect(()=> {
+
+    //setDefault values 
+    if(defaultPropertys !== null){
+        let {talentsNumber,isTransparentPricing,currency } = defaultPropertys
+
+        if(talentsNumber > 0){
+          setValue('talentsNumber',talentsNumber)
+        }
+
+        setControlledCurrencyValue(currency);
+        setValue('currency',{id:"",value:currency})
+
+        setTypeOfPricing(isTransparentPricing  === true ? 1 : 0)
+        setDisableTypeOfPricing(true)
+    }
+  
+
+
+  },[  
+    removeFields,
+    disabledFields,
+    defaultPropertys,
+    setValue
+  ])
+
+  useEffect(() => {
+    if(defaultPropertys !== null ){
+      let {salesPerson :salesPersonID } = defaultPropertys
+      
+      if(salesPersonID && salesPerson?.length > 0){
+        setIsSalesPersionDisable(disabledFields?.salesPerson)
+        let salesUserObj = salesPerson.filter(p=> p.id === salesPersonID)
+        setValue("salesPerson", salesUserObj[0]?.id);
+        setSalesPersionNameFromEmail(salesUserObj[0]?.value)
+      }
+    }
+  },[defaultPropertys,salesPerson,disabledFields])
 
   return (
     <>
@@ -1615,7 +1709,7 @@ const HRFields = ({
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   {userData.LoggedInUserTypeID && isSalesPersionDisable ? (
-                    <HRSelectField
+                    <HRSelectField                  
                     key={"salesPersionDefaultDisabled"}
                       setValue={setValue}
                       searchable={true}
@@ -1636,6 +1730,7 @@ const HRFields = ({
                     />
                   ) :userData?.LoggedInUserTypeID === UserAccountRole.SALES ? (
                     <HRSelectField
+                  
                     key={"salesPersionEnabledSales"}
                       setValue={setValue}
                       searchable={true}
@@ -1654,14 +1749,17 @@ const HRFields = ({
                     />
                   ): (
                     <HRSelectField
+                    controlledValue={salesPersionNameFromEmail}
+                   setControlledValue={setSalesPersionNameFromEmail}
+                   mode={'id'}
+                   isControlled={true}
                     key={"salesPersionEnabled"}
                       setValue={setValue}
                       searchable={true}
                       register={register}
                       label={"Sales Person"}
                       defaultValue={
-                        userData?.LoggedInUserTypeID === UserAccountRole.SALES
-                          ? userData?.FullName
+                        salesPersionNameFromEmail.length > 0 ? salesPersionNameFromEmail 
                           : "Select sales Persons"
                       }
                       options={salesPerson && salesPerson}
@@ -1757,7 +1855,8 @@ const HRFields = ({
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                    controlledValue={controlledAvailabilityValue}
-                   setControlledValue={setControlledAvailabilityValue}
+                   setControlledValue={val=>{setControlledAvailabilityValue(val);resetField('hiringPricingType');
+                   resetField('payrollType');setControlledHiringPricingTypeValue("Select Hiring Pricing")}}
                    isControlled={true}
                     mode={"id/value"}
                     setValue={setValue}
@@ -2268,7 +2367,7 @@ const HRFields = ({
                     type={InputType.BUTTON}
                     buttonLabel="Upload JD File"
                     // value="Upload JD File"
-                    onClickHandler={() => setUploadModal(true)}
+                    onClickHandler={() => {setUploadModal(true);setIsLoading(false);}}
                     required={!jdURLLink && !getUploadFileData}
                     validationSchema={{
                       required: "please select a file.",
@@ -2434,7 +2533,8 @@ const HRFields = ({
                   name="talentsNumber"
                   type={InputType.NUMBER}
                   placeholder="Please enter number of talents needed"
-                  required
+                  required={disabledFields !== null ? !disabledFields?.talentRequired : true}
+                  disabled={disabledFields !== null ? disabledFields?.talentRequired : false}
                 />
               </div>
             </div>
@@ -2659,7 +2759,7 @@ const HRFields = ({
                   />
                 </div>
               </div>
-              <div className={HRFieldStyle.colMd6}>
+              {(removeFields !== null && removeFields?.dealID === true) ? null : <div className={HRFieldStyle.colMd6}>
                 <HRInputField
                   register={register}
                   disabled={true}
@@ -2668,11 +2768,12 @@ const HRFields = ({
                   type={InputType.NUMBER}
                   placeholder="Enter ID"
                 />
-              </div>
+              </div>}
+             
             </div>
 
             <div className={HRFieldStyle.row}>
-              <div className={HRFieldStyle.colMd6}>
+              {(removeFields !== null && removeFields?.hrFormLink === true) ? null :  <div className={HRFieldStyle.colMd6}>
                 <HRInputField
                   register={register}
                   errors={errors}
@@ -2685,8 +2786,9 @@ const HRFields = ({
                   placeholder="Enter the link for HR form"
                   required
                 />
-              </div>
-              <div className={HRFieldStyle.colMd6}>
+              </div> }
+             
+              {(removeFields !== null && removeFields?.discoveryCallLink === true) ? null :    <div className={HRFieldStyle.colMd6}>
                 <HRInputField
                   register={register}
                   errors={errors}
@@ -2699,7 +2801,8 @@ const HRFields = ({
                   placeholder="Enter the link for Discovery call"
                   required
                 />
-              </div>
+              </div>}
+           
             </div>
           </form>
         </div>
@@ -3024,10 +3127,53 @@ const HRFields = ({
     ) {
       return null;
     } else {
+      if(isDirectHR){
+        return (<>
+         <div className={HRFieldStyle.row}>
+                  <div className={HRFieldStyle.colMd6}>
+                        <HRInputField
+                         onChangeHandler={e=> cityDeb() }
+                          register={register}
+                          errors={errors}
+                          validationSchema={{
+                            required: "please enter the city.",
+                          }}
+                          label="City"
+                          name="city"
+                          type={InputType.TEXT}
+                          placeholder="Enter the City"
+                          required
+                        />
+                        {countryListMessage !== null && <p className={HRFieldStyle.error}>*{countryListMessage}</p>}
+                  </div>
+
+                  <div className={HRFieldStyle.colMd6}>
+                        <div className={HRFieldStyle.formGroup}>
+                          <HRSelectField
+                            setControlledValue={setControlledCountryName}
+                            controlledValue={controlledCountryName}
+                            isControlled={true}
+                            mode={"id/value"}
+                            searchable={false}
+                            setValue={setValue}
+                            register={register}
+                            label={"Country"}
+                            defaultValue="Select country"
+                            options={country?.getCountry || []}
+                            name="country"
+                            isError={errors["country"] && errors["country"]}
+                            required={!controlledCountryName}
+                            errorMsg={"Please select the country."}
+                          />
+                        </div>
+                  </div>
+         </div>
+        </>)
+      }
       return (
         <>
           <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd6}>
+          {(removeFields !== null && removeFields?.postalCode === true) ? null :    <div className={HRFieldStyle.colMd6}>
               <HRInputField
                 register={register}
                 errors={errors}
@@ -3045,7 +3191,8 @@ const HRFields = ({
                 // onChangeHandler={postalCodeHandler}
                 required
               />
-            </div>
+            </div>}
+         
             <div className={HRFieldStyle.colMd6}>
               <div className={HRFieldStyle.formGroup}>
                 <HRSelectField
@@ -3066,10 +3213,8 @@ const HRFields = ({
                 />
               </div>
             </div>
-          </div>
 
-          <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd6}>
+            {(removeFields !== null && removeFields?.state === true) ? null : <div className={HRFieldStyle.colMd6}>
               <HRInputField
                 register={register}
                 errors={errors}
@@ -3082,7 +3227,8 @@ const HRFields = ({
                 placeholder="Enter the State"
                 required
               />
-            </div>
+            </div>}
+                   
             <div className={HRFieldStyle.colMd6}>
               <HRInputField
                 register={register}
@@ -3098,7 +3244,8 @@ const HRFields = ({
               />
             </div>
           </div>
-          <div className={HRFieldStyle.row}>
+          
+          {(removeFields !== null && removeFields?.address === true) ? null : <div className={HRFieldStyle.row}>
             <div className={HRFieldStyle.colMd12}>
               <HRInputField
                 isTextArea={true}
@@ -3114,7 +3261,8 @@ const HRFields = ({
                 required
               />
             </div>
-          </div>
+          </div>}
+          
           {isNewPostalCodeModal && (
             <Modal
               footer={false}

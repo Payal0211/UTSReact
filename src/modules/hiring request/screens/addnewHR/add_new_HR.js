@@ -6,6 +6,8 @@ import AddNewHRStyle from './add_new_HR.module.css';
 import EditHRFields from 'modules/hiring request/components/editHRfields/editHRFields';
 import EditDebriefingHR from 'modules/hiring request/components/editDebrieingHR/editDebriefingHR';
 import { useLocation } from 'react-router-dom';
+import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
+import { HTTPStatusCode } from 'constants/network';
 
 const AddNewHR = () => {
 	
@@ -33,6 +35,12 @@ const AddNewHR = () => {
 	const [getHRdetails, setHRdetails] = useState({});
 	const [getCompanyName, setCompanyName] = useState();
 	const [ EditTitle, setEditTitle] = useState('Edit Hiring Requests')
+
+	const [defaultPropertys, setDefaultPropertys] = useState(null);
+	const [disabledFields, setDisabledFields] = useState(null);
+	const [removeFields, setRemoveFields] = useState(null)
+	const [isDirectHR, setIsDirectHR] = useState(false)
+	const [AboutCompanyDesc, setAboutCompanyDesc ] = useState(null)
 
 	useEffect(()=>{
 		if(getHRdetails?.addHiringRequest?.hrNumber){
@@ -73,6 +81,21 @@ const AddNewHR = () => {
 		setCompanyName(e);
 	};
 
+	const callHRLoginInfo = async () => {
+		let result  = await hiringRequestDAO.getLoginHrInfoRequestDAO()
+		console.log(result);
+		if(result.statusCode === HTTPStatusCode.OK){	
+			setIsDirectHR(result.responseBody.isDirectHR)		
+			setRemoveFields(result.responseBody.removeFields)
+			setDisabledFields(result.responseBody.disabledFields)
+			setDefaultPropertys(result.responseBody.defaultProperties)
+		}
+	}
+
+	useEffect(() => {
+		callHRLoginInfo()
+	},[])
+
 	return (
 		<div className={AddNewHRStyle.addNewContainer}>
 			<div className={AddNewHRStyle.addHRTitle}>{title}</div>
@@ -104,6 +127,11 @@ const AddNewHR = () => {
 									getHRdetails={getHRdetails}
 									setHRdetails={setHRdetails}
 									setAddData={setAddData}
+									removeFields={removeFields}
+									disabledFields={disabledFields}
+									defaultPropertys={defaultPropertys}
+									isDirectHR={isDirectHR}
+									setAboutCompanyDesc={setAboutCompanyDesc}
 								/>
 							),
 						},
@@ -125,6 +153,9 @@ const AddNewHR = () => {
 									params={paramsURL}
 									isCloned={navigateParams?.isCloned || false}
 									addData={addData}
+									disabledFields={disabledFields}
+									AboutCompanyDesc={AboutCompanyDesc}
+									isDirectHR={isDirectHR}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,
