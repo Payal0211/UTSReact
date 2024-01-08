@@ -547,55 +547,50 @@ const AllHiringRequestScreen = () => {
             miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
             miscData?.loggedInUserTypeID === UserAccountRole.MARKETING) && (
             <HROperator
-              title={
-                miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
-                miscData?.loggedInUserTypeID === UserAccountRole.MARKETING
-                  ? "Add New Direct HR"
-                  : "Add New HR"
-              }
+            title={"Add New HR"}
+              // title={
+              //   miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
+              //   miscData?.loggedInUserTypeID === UserAccountRole.MARKETING
+              //     ? "Add New Direct HR"
+              //     : "Add New HR"
+              // }
               icon={<ArrowDownSVG style={{ width: "16px" }} />}
               backgroundColor={`var(--color-sunlight)`}
               iconBorder={`1px solid var(--color-sunlight)`}
               isDropdown={true}
               listItem={
-                miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR
-                  ? [
-                      {
-                        label: "Add New HR",
-                        key: AddNewType.HR,
-                        IsEnabled: true,
-                      },
-                      {
-                        label: "Add New Direct HR",
-                        key: AddNewType.DIRECT_HR,
-                        IsEnabled: true,
-                      },
-                      {
-                        label: "Add New Client",
-                        key: AddNewType.CLIENT,
-                        IsEnabled: true,
-                      },
-                    ]
-                  : miscData?.loggedInUserTypeID ===
+                // miscData?.loggedInUserTypeID === UserAccountRole.ADMINISTRATOR
+                //   ? [
+                //       {
+                //         label: "Add New HR",
+                //         key: AddNewType.HR,
+                //         IsEnabled: true,
+                //       },
+                //       // {
+                //       //   label: "Add New Direct HR",
+                //       //   key: AddNewType.DIRECT_HR,
+                //       //   IsEnabled: true,
+                //       // },
+                //       {
+                //         label: "Add New Client",
+                //         key: AddNewType.CLIENT,
+                //         IsEnabled: true,
+                //       },
+                //     ]
+                //   : 
+                miscData?.loggedInUserTypeID ===
                       UserAccountRole.TALENTOPS ||
                     miscData?.loggedInUserTypeID ===
-                      UserAccountRole.OPS_TEAM_MANAGER
-                  ? [
-                      {
-                        label: "Add New HR",
-                        key: AddNewType.HR,
-                        IsEnabled: true,
-                      },
-                    ]
-                  : miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
+                      UserAccountRole.OPS_TEAM_MANAGER || miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
                     miscData?.loggedInUserTypeID === UserAccountRole.MARKETING
                   ? [
                       {
-                        label: "Add New Direct HR",
-                        key: AddNewType.DIRECT_HR,
+                        label: "Add New HR",
+                        key: AddNewType.HR,
                         IsEnabled: true,
                       },
                     ]
+                
                   : [
                       {
                         label: "Add New HR",

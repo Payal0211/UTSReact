@@ -18,6 +18,7 @@ const AddInterviewer = ({
 	watch,
 	errors,
 	getHRdetails,
+	disabledFields
 }) => {
 	/**Add Secondary Items*/
 
@@ -121,7 +122,8 @@ const AddInterviewer = ({
 				fields?.length === 0 && (
 					<button
 						className={AddInterviewerStyle.addInterviewer}
-						onClick={onAddSecondaryInterviewer}>
+						onClick={onAddSecondaryInterviewer}
+						disabled={ disabledFields !== null ? disabledFields?.interviewerSection	: false}>
 						Add Interviewer
 					</button>
 				)
@@ -739,7 +741,8 @@ const AddInterviewer = ({
 								validationSchema={{
 									required: 'please enter the primary interviewer full name.',
 								}}
-								required
+								required={disabledFields !== null ? !disabledFields?.interviewerSection : true}
+								disabled={ disabledFields !== null ? disabledFields?.interviewerSection : false}
 							/>
 						</div>
 
@@ -759,7 +762,8 @@ const AddInterviewer = ({
 										message: 'Entered value does not match email format',
 									},
 								}}
-								required
+								required={disabledFields !== null ? !disabledFields?.interviewerSection : true}
+								disabled={ disabledFields !== null ? disabledFields?.interviewerSection : false}
 							/>
 						</div>
 					</div>
@@ -784,14 +788,16 @@ const AddInterviewer = ({
 										  }
 									}
 								}}
-								required
+								required={disabledFields !== null ? !disabledFields?.interviewerSection : true}
+								disabled={ disabledFields !== null ? disabledFields?.interviewerSection : false}
 							/>
 						</div>
 
 						<div className={AddInterviewerStyle.colMd6}>
 							<HRInputField
 								// disabled={!_isNull(interviewDetails.designation)}
-								required
+								required={disabledFields !== null ? !disabledFields?.interviewerSection : true}
+								disabled={ disabledFields !== null ? disabledFields?.interviewerSection : false}
 								errors={errors}
 								validationSchema={{
 									required: 'please enter the primary interviewer designation.',
@@ -800,7 +806,7 @@ const AddInterviewer = ({
 								label="Interviewer Designation "
 								name="interviewerDesignation"
 								type={InputType.TEXT}
-								placeholder="Enter Designation"
+								placeholder="Enter Designation"								
 							/>
 						</div>
 					</div>

@@ -794,6 +794,33 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getCountryByPostalCodeRequestDAO');
 		}
 	},
+	getCountryByCityRequestDAO: async function (city) {
+		try {
+			const hrCountryResponse = await MasterAPI.getCountryByCityRequest(
+				city,
+			);
+			if (hrCountryResponse) {
+				const statusCode = hrCountryResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = hrCountryResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return hrCountryResponse;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return hrCountryResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getCountryByCityRequestDAO');
+		}
+	},
 	getUserTypeRequestDAO: async function () {
 		try {
 			const userTypeResponse = await MasterAPI.getUserTypeRequest();

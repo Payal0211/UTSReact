@@ -1486,8 +1486,52 @@ const EditHRFields = ({
         gptFileDetails.Responsibility;
       _getHrValues.addHiringRequest.jdurl = "";
       _getHrValues.addHiringRequest.jdfilename = gptFileDetails.FileName;
-       _getHrValues.addHiringRequest.isTransparentPricing = (typeOfPricing === 1 ? true : false)
-      if(gptFileDetails.Skills.length > 0){_getHrValues.chatGptSkills = gptFileDetails.Skills.map(item=> item.value).join(',');}  
+
+    // set value to prevent change after JD upload 
+    _getHrValues.addHiringRequest.isTransparentPricing = (typeOfPricing === 1 ? true : false)
+    _getHrValues.hdnModeOfWork = watch('workingMode')?.value ?? getHRdetails.hdnModeOfWork
+    _getHrValues.contractDuration = watch('contractDuration')?.value ?? getHRdetails.contractDuration
+    _getHrValues.addHiringRequest.partialEngagementTypeId = watch("partialEngagement").id ?? getHRdetails?.addHiringRequest?.partialEngagementTypeId
+    _getHrValues.salesHiringRequest_Details.adhocBudgetCost = watch("adhocBudgetCost")?? getHRdetails?.salesHiringRequest_Details?.adhocBudgetCost
+    _getHrValues.salesHiringRequest_Details.budgetFrom = watch("minimumBudget") ?? getHRdetails?.salesHiringRequest_Details?.budgetFrom;
+    _getHrValues.salesHiringRequest_Details.budgetTo = watch("maximumBudget")??  getHRdetails?.salesHiringRequest_Details?.budgetTo;
+    _getHrValues.budgetType = controlledBudgetValue ?? getHRdetails?.budget;
+    _getHrValues.addHiringRequest.salesUserId = watch('salesPerson') ?? getHRdetails?.addHiringRequest?.salesUserId
+    _getHrValues.salesHiringRequest_Details.timeZoneFromTime =  controlledFromTimeValue ?? getHRdetails?.salesHiringRequest_Details.timeZoneFromTime ;
+    _getHrValues.salesHiringRequest_Details.timeZoneEndTime =  controlledEndTimeValue ?? getHRdetails?.salesHiringRequest_Details.timeZoneEndTime;
+    _getHrValues.salesHiringRequest_Details.timezoneId = controlledTimeZoneValue ??  getHRdetails?.salesHiringRequest_Details?.timezoneId
+    _getHrValues.salesHiringRequest_Details.currency = controlledCurrencyValue ?? getHRdetails?.salesHiringRequest_Details.currency;
+    _getHrValues.salesHiringRequest_Details.yearOfExp = watch("years") ;
+    _getHrValues.salesHiringRequest_Details.specificMonth =  watch("months");
+    _getHrValues.salesHiringRequest_Details.howSoon = controlledSoonValue ?? getHRdetails?.salesHiringRequest_Details?.howSoon;
+    _getHrValues.salesHiringRequest_Details.durationType = controlledDurationTypeValue??  getHRdetails?.salesHiringRequest_Details.durationType;
+    _getHrValues.addHiringRequest.availability =  controlledAvailabilityValue ?? getHRdetails.addHiringRequest.availability;
+
+
+    if(getHRdetails?.addHiringRequest?.isHrtypeDp === true){
+      _getHrValues.addHiringRequest.dppercentage = watch("NRMargin")
+    } else{ 
+      _getHrValues.addHiringRequest.talentCostCalcPercentage = watch("NRMargin")
+    } 
+  
+    if(watch("postalCode")){
+      _getHrValues.directPlacement.postalCode = watch("postalCode")
+    }  
+    if(watch("city")){
+      _getHrValues.directPlacement.city = watch("city")
+    }  
+    if(watch("state")){
+      _getHrValues.directPlacement.state = watch("state")
+    }  
+    if(watch("country")){
+      _getHrValues.directPlacement.country = controlledCountryValue
+    }  
+    if(watch("address")){
+      _getHrValues.directPlacement.address = watch("address")
+    }  
+    ///////// 
+
+    if(gptFileDetails.Skills.length > 0){_getHrValues.chatGptSkills = gptFileDetails.Skills.map(item=> item.value).join(',');}  
 
       setHRdetails(_getHrValues);
     } else {

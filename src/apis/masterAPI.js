@@ -408,6 +408,22 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getCountryByPostalCodeRequest');
 		}
 	},
+	getCountryByCityRequest: async function (city) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.MASTERS +
+			MastersAPI.GET_COUNTRY_LIST_BY_CITY 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = {'city':city};
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCountryByCityRequest');
+		}
+	},
 
 	getUserTypeRequest: async function () {
 		let httpService = new HttpServices();

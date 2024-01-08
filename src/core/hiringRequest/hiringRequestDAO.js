@@ -182,6 +182,29 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getClientDetailRequestDAO');
 		}
 	},
+	getLoginHrInfoRequestDAO: async function () {
+		try {
+			const HRLoginInfo = await HiringRequestAPI.getLoginHrInfoRequest();
+
+			if (HRLoginInfo) {
+				const statusCode = HRLoginInfo['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = HRLoginInfo?.responseBody;
+					return { statusCode: statusCode, responseBody: tempResult.details };
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return HRLoginInfo;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return HRLoginInfo;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getLoginHrInfoRequestDAO');
+		}
+	},
 	createHRDAO: async function (hrData) {
 		try {
 			const createHRResult = await HiringRequestAPI.createHiringRequest(hrData);
