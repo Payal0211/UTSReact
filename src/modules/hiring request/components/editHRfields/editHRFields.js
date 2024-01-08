@@ -1506,8 +1506,10 @@ const EditHRFields = ({
     _getHrValues.salesHiringRequest_Details.howSoon = controlledSoonValue ?? getHRdetails?.salesHiringRequest_Details?.howSoon;
     _getHrValues.salesHiringRequest_Details.durationType = controlledDurationTypeValue??  getHRdetails?.salesHiringRequest_Details.durationType;
     _getHrValues.addHiringRequest.availability =  controlledAvailabilityValue ?? getHRdetails.addHiringRequest.availability;
-
-
+    _getHrValues.addHiringRequest.bqlink  = watch("bqFormLink")?? getHRdetails?.addHiringRequest?.bqlink;
+    _getHrValues.addHiringRequest.discoveryCall = watch("discoveryCallLink")??      getHRdetails?.addHiringRequest?.discoveryCall;
+    _getHrValues.addHiringRequest.noofHoursworking = watch("workingHours")?? getHRdetails?.addHiringRequest?.noofHoursworking;
+    
     if(getHRdetails?.addHiringRequest?.isHrtypeDp === true){
       _getHrValues.addHiringRequest.dppercentage = watch("NRMargin")
     } else{ 
