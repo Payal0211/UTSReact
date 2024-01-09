@@ -1859,7 +1859,7 @@ const EditHRFields = ({
 							// className={allengagementReplceTalentStyles.radioGroup}
 							onChange={e=> {setTypeOfPricing(e.target.value)
                 ;resetField('hiringPricingType');resetField('availability')
-                ;setControlledAvailabilityValue("Select availability"); resetField('payrollType');setPricingTypeError(false)}}
+                ;setControlledAvailabilityValue("Select availability"); resetField('payrollType');setPricingTypeError(false);resetField('contractDuration');setContractDuration('')}}
 							value={typeOfPricing}
 							>
 							<Radio value={1}>Transparent Pricing</Radio>
@@ -1886,7 +1886,7 @@ const EditHRFields = ({
                       controlledValue={controlledAvailabilityValue}
                       setControlledValue={val=> {setControlledAvailabilityValue(val);resetField('hiringPricingType');
                       resetField('payrollType');setControlledPayrollTypeValue("Select payroll")
-                      setControlledHiringPricingTypeValue("Select Hiring Pricing")}}
+                      setControlledHiringPricingTypeValue("Select Hiring Pricing");resetField('contractDuration');setContractDuration('')}}
                       isControlled={true}
                       mode={"id/value"}
                       setValue={setValue}
@@ -1932,6 +1932,7 @@ const EditHRFields = ({
                 <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
+                    key={'contract Duration for pay per Credit'}
                       dropdownRender={(menu) => (
                         <>
                           {menu}
@@ -2007,7 +2008,7 @@ const EditHRFields = ({
                    controlledValue={controlledHiringPricingTypeValue}
                    setControlledValue={ val=> {setControlledHiringPricingTypeValue(val)
                     let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
-
+                    ;resetField('contractDuration');setContractDuration('')
                     setValue('NRMargin',precentage)}}
                    isControlled={true}
                     mode={"id/value"}
@@ -2057,6 +2058,7 @@ const EditHRFields = ({
                   <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
+                    key={'contract Duration for Hirying Prysing'}
                       dropdownRender={(menu) => (
                         <>
                           {menu}
@@ -2150,6 +2152,7 @@ const EditHRFields = ({
               {watch('payrollType')?.id === 4 &&  <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
+                    key={'contract Duration for Payroll'}
                       dropdownRender={(menu) => (
                         <>
                           {menu}
