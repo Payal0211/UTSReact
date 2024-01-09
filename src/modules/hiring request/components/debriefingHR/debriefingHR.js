@@ -380,7 +380,7 @@ const DebriefingHR = ({
 			JDDumpID: jdDumpID || 0,
 			ActionType: "Save",
 			IsHrfocused: isFocusedRole,
-			role: d.role.id,
+			role: d.role?.id ? d.role?.id : null,
 			hrTitle: d.hrTitle,
 			allSkills:goodToSkillList,
 			"interviewerDetails":{
@@ -639,7 +639,7 @@ const DebriefingHR = ({
 										options={talentRole && talentRole}
 										name="role"
 										isError={errors['role'] && errors['role']}
-										required
+										required={disabledFields !== null ? !disabledFields?.role : true}
 										disabled={ disabledFields !== null ? disabledFields?.role : false}
 										errorMsg={'Please select hiring request role'}
 									/>
