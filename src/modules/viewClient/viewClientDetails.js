@@ -177,6 +177,18 @@ function ViewClientDetails() {
         },
       ];
 
+	function testJSON(text) {
+		if (typeof text !== "string") {
+			return false;
+		}
+		try {
+			JSON.parse(text);
+			return true;
+		} catch (error) {
+			return false;
+		}
+	}
+
     return(
         <WithLoader
 			showLoader={isLoading}
@@ -520,18 +532,19 @@ function ViewClientDetails() {
 								}
 								<div className={dealDetailsStyles.jobRoleTypePart}>
 									<p>Roles & Responsibilities </p>										
-									<ul className={dealDetailsStyles.jdRequrementText}>
-									{draftJObPostDetails?.JobDetails?.rolesResponsibilities ?
-									JSON.parse(draftJObPostDetails?.JobDetails?.rolesResponsibilities).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />)
+									
+									{draftJObPostDetails?.JobDetails?.rolesResponsibilities ? testJSON(draftJObPostDetails?.JobDetails?.rolesResponsibilities) ? <ul className={dealDetailsStyles.jdRequrementText}>
+									{JSON.parse(draftJObPostDetails?.JobDetails?.rolesResponsibilities).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />)} </ul>: <div  dangerouslySetInnerHTML={{ __html: draftJObPostDetails?.JobDetails?.rolesResponsibilities}} /> 
 									: "-"}									
-									</ul>
+									
 								</div>
 								<div className={dealDetailsStyles.jobRoleTypePart}>
 									<p>Requirements</p>
-									<ul className={dealDetailsStyles.jdRequrementText}>
+									
 										{(!draftJObPostDetails?.JobDetails?.requirements || draftJObPostDetails?.JobDetails?.requirements === "[]") ?  
-										"-" : JSON.parse(draftJObPostDetails?.JobDetails?.requirements).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />)}										
-									</ul>
+										"-" : testJSON(draftJObPostDetails?.JobDetails?.requirements) ? <ul className={dealDetailsStyles.jdRequrementText}>{JSON.parse(draftJObPostDetails?.JobDetails?.requirements).map(text=> <li dangerouslySetInnerHTML={{ __html: text}} />)}</ul> : 
+										<div  dangerouslySetInnerHTML={{ __html: draftJObPostDetails?.JobDetails?.requirements}} /> }										
+									
 								</div>
 							</div>
 						</div>

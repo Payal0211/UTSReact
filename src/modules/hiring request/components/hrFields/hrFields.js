@@ -3162,7 +3162,7 @@ const HRFields = ({
                             options={country?.getCountry || []}
                             name="country"
                             isError={errors["country"] && errors["country"]}
-                            required={!controlledCountryName}
+                            required
                             errorMsg={"Please select the country."}
                           />
                         </div>
