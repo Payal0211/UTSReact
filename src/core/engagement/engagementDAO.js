@@ -701,6 +701,40 @@ export const engagementRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.getTSCUserListDAO');
 		}
 	},
+	getAllBRPRListDAO: async function (id) {
+		try {
+			const allBRPRListResult = await EngagementRequestAPI.getAllBRPRList(
+				id,
+			);
+			if (allBRPRListResult) {
+				const statusCode = allBRPRListResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = allBRPRListResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return allBRPRListResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return allBRPRListResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getAllBRPRListDAO');
+		}
+	},
 	updateTSCNameDAO: async function (data) {
 		try {
 			const updateResult = await EngagementRequestAPI.updateTSCName(

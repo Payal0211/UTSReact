@@ -129,7 +129,8 @@ export const allEngagementConfig = {
 		setIsAddTSC,
 		setTSCONBoardData,
 		setISEditTSC,
-		setActiveTab
+		setActiveTab,
+		setAllBRPRdata
 	) => {
 		return [
 			{
@@ -170,6 +171,11 @@ export const allEngagementConfig = {
 							{
 								label: 'Edit Pay Rate',
 								key: 'editPayRate',
+								IsEnabled: true,
+							},
+							{
+								label: 'Edit All BR PR',
+								key: 'editAllBRPR',
 								IsEnabled: true,
 							},
 						);
@@ -258,6 +264,14 @@ export const allEngagementConfig = {
 										setEngagementBillAndPayRateTab('2');
 										setActiveTab('2')
 										setFilteredData(param);
+										break;
+									}
+									case 'Edit All BR PR':{
+										setEngagementModal({
+											...getEngagementModal,
+											engagementEditAllBillRateAndPayRate: true,
+										});
+										setAllBRPRdata(param);
 										break;
 									}
 									case 'Add Invoice Details': {
