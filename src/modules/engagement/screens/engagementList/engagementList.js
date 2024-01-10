@@ -44,6 +44,7 @@ import RenewEngagement from '../renewEngagement/renewEngagement';
 import { useForm, Controller } from 'react-hook-form';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import { MasterDAO } from 'core/master/masterDAO';
+import EditAllBRPR from '../editAllBRPR/editAllBRPR';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() => import('./engagementFilter'));
@@ -75,6 +76,7 @@ const EngagementList = () => {
 	const pageSizeOptions = [100, 200, 300, 500, 1000];
 	const pageFeedbackSizeOptions = [10, 20, 30, 50, 100];
 	const [filteredData, setFilteredData] = useState(null);
+	const [allBRPRdata,setAllBRPRdata] = useState(null);
 	const [totalRecords, setTotalRecords] = useState(0);
 	const [pageIndex, setPageIndex] = useState(1);
 	const [pageSize, setPageSize] = useState(100);
@@ -106,6 +108,7 @@ const EngagementList = () => {
 		engagementBillRateAndPayRate: false,
 		engagementEnd: false,
 		engagementInvoice: false,
+		engagementEditAllBillRateAndPayRate:false,
 	});
 	const [getHRAndEngagementId, setHRAndEngagementId] = useState({
 		hrNumber: '',
@@ -180,7 +183,8 @@ const EngagementList = () => {
 				setIsAddTSC,
 				setTSCONBoardData,
 				setISEditTSC,
-				setActiveTab
+				setActiveTab,
+				setAllBRPRdata
 			),
 		[getEngagementModal],
 	);
@@ -895,6 +899,32 @@ const EngagementList = () => {
 								})
 							}
 						/>
+					</Modal>
+				)}
+				{/* ================ MODAL FOR EDIT ALL BR PR ================= */}
+				{getEngagementModal.engagementEditAllBillRateAndPayRate && (
+					<Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						open={getEngagementModal.engagementEditAllBillRateAndPayRate}
+						className="engagementReplaceTalentModal"
+						onCancel={() =>
+							setEngagementModal({
+								...getEngagementModal,
+								engagementEditAllBillRateAndPayRate: false,
+							})
+						}>
+							<EditAllBRPR
+							closeModal={() =>
+								setEngagementModal({
+									...getEngagementModal,
+									engagementReplaceTalent: false,
+								})
+							}
+							allBRPRdata={allBRPRdata}
+							/>
 					</Modal>
 				)}
 				{/** ============ MODAL FOR ENGAGEMENT END ================ */}

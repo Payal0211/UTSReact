@@ -368,6 +368,22 @@ export const EngagementRequestAPI = {
 			return errorDebug(error, 'EngagementRequestAPI.getTSCUserList');
 		}
 	},
+	getAllBRPRList: async function (id) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.GET_ENGAGEMENT_EDIT_ALL_BR_PR +
+			`?OnboardID=${id}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'EngagementRequestAPI.getAllBRPRList');
+		}
+	},
 	updateTSCName: async function (data) {
 		let httpService = new HttpServices();
 		httpService.URL =
