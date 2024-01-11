@@ -899,9 +899,10 @@ const TalentList = ({
 									<div className={TalentListStyle.interviewSlots}>
 										<span>Available Interview Slots:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{inteviewSlotDetails?.[0]?.SlotList?.length === 0 ? (
+											{/* { inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList?.length === 0 } */}
+											{ inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList?.length === 0 ? (
 												'NA'
-											) : (
+											) : item.InterViewStatusId !== 1 ? 'NA' : (
 												<Dropdown
 													trigger={['click']}
 													placement="bottom"
