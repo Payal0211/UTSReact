@@ -54,7 +54,7 @@ console.log('allBRPRlist',allBRPRlist)
 			const response = await engagementRequestDAO.saveEditBillPayRateRequestDAO(
 				billRateDataFormatter,
 			);
-      console.log("save response",response)
+
 			if (response.statusCode === HTTPStatusCode.OK) {
         getAllBRPRTableData(allBRPRdata?.onboardID)
 			}
@@ -68,9 +68,6 @@ console.log('allBRPRlist',allBRPRlist)
 
     const updateBRValue= () =>{
       if(colval > data.pr){
-        let allListToUpdate = [...allBRPRlist]
-      console.log('a;;', allListToUpdate)
-      // let index= allListToUpdate.findIndex(item=> item.id === data.id)
       let dataTochange = {...data}
       let newNRDPValue = colval - dataTochange.pr
       let newNRDPPer = (1 - (dataTochange.pr / colval)) * 100
@@ -80,9 +77,6 @@ console.log('allBRPRlist',allBRPRlist)
       dataTochange.actual_NR_Percentage = newNRDPPer.toFixed(2)
       
       saveHandler(dataTochange,true)
-      // allListToUpdate.splice(index,1,dataTochange)
-      // console.log({index, dataTochange,allListToUpdate})
-      // setAllBRPRList(allListToUpdate)
       }
       
     }
@@ -97,7 +91,7 @@ console.log('allBRPRlist',allBRPRlist)
       onClick={() => updateBRValue()}
     /></div>
     }else{
-      return <p style={{cursor:'pointer'}} onDoubleClick={()=>setIsEdit(true)}>{val}</p>
+      return <p style={{cursor:'pointer', margin:'0'}} onDoubleClick={()=>setIsEdit(true)}>{val}</p>
     }
   }
 
@@ -106,10 +100,7 @@ console.log('allBRPRlist',allBRPRlist)
     const [colval,setcolVal]= useState(val)
 
     const updatePRValue= () =>{
-      if(colval < data.br){
-let allListToUpdate = [...allBRPRlist]
-      console.log('PR;;', allListToUpdate)
-      let index= allListToUpdate.findIndex(item=> item.id === data.id)
+      if(colval < data.br){    
       let dataTochange = {...data}
       let newNRDPValue = dataTochange.br - colval  
       let newNRDPPer = (1 - (colval / dataTochange.br)) * 100
@@ -119,10 +110,6 @@ let allListToUpdate = [...allBRPRlist]
       dataTochange.actual_NR_Percentage = newNRDPPer.toFixed(2)
 
       saveHandler(dataTochange,false)
-      
-      // allListToUpdate.splice(index,1,dataTochange)
-      // console.log({index, dataTochange,allListToUpdate})
-      // setAllBRPRList(allListToUpdate)
       }
       
     }
@@ -138,7 +125,7 @@ let allListToUpdate = [...allBRPRlist]
       onClick={() => updatePRValue()}
     /></div>
     }else{
-      return <p style={{cursor:'pointer'}} onDoubleClick={()=>setIsEdit(true)}>{val}</p>
+      return <p style={{cursor:'pointer', margin:'0'}} onDoubleClick={()=>setIsEdit(true)}>{val}</p>
     }
   }
 

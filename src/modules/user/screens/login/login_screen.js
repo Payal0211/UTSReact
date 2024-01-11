@@ -16,9 +16,11 @@ import WithLoader from 'shared/components/loader/loader';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import { useForm } from 'react-hook-form';
+import { useCookies } from 'react-cookie'
 
 const LoginScreen = () => {
 	const [isLoading, setLoading] = useState(false);
+	const [cookies, setCookie, removeCookie] = useCookies(['uplers_user']);
 	const [togglePasswordVisibility, onTogglePassword] = useIconToggle();
 	const navigate = useNavigate();
 	const {
@@ -50,6 +52,13 @@ const LoginScreen = () => {
 			if (result.statusCode === HTTPStatusCode.OK) {
 				setLoading(false);
 				navigate(isAccess(result.responseBody.LoggedInUserTypeID) ? UTSRoutes.ALLHIRINGREQUESTROUTE : UTSRoutes.DASHBOARD);
+				// set cookie uplers_user for 1 year
+				const oneYearFromNow = new Date();
+  				oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+				setCookie('uplers_user', result.responseBody.EmployeeID,{
+					expires: oneYearFromNow,
+					path: '/', 
+				  })
 
 			} else {
 				setLoading(false);

@@ -202,6 +202,8 @@ const HRFields = ({
 		name: 'secondaryInterviewer',
 	}); */
 
+  const [countryBasedOnIP, setCountryBasedOnIP] = useState('')
+
   const watchClientName = watch("clientName");
   const _endTime = watch("endTime");
   let filteredMemo = useMemo(() => {
@@ -964,7 +966,7 @@ const HRFields = ({
   }, [userData]);
 
   useEffect(
-    () => {
+    () => {    
       getAvailability();
       getPayrollType ();
       getHRPricingType();
@@ -982,6 +984,12 @@ const HRFields = ({
       getNRMarginHandler();
       getDurationTypes();
       getStartEndTimeHandler();
+      // get country name based on IP
+      fetch("https://ipapi.co/json")
+      .then((response) => response.json())
+      .then((data) => {
+        setCountryBasedOnIP(data.country_name)
+      });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
     [
@@ -1016,6 +1024,8 @@ const HRFields = ({
     isHRDirectPlacement === true && unregister("tempProject");
   }, [isHRDirectPlacement, unregister]);
 
+
+
   useEffect(()=>{
     let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
 
@@ -1027,6 +1037,9 @@ const HRFields = ({
     }
 
     if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+      if(countryBasedOnIP === 'India'){
+        setValue('NRMargin',7.5)
+      }
       unregister("tempProject")
       unregister('contractDuration')
     }
@@ -1036,7 +1049,7 @@ const HRFields = ({
       unregister("tempProject")
       unregister('contractDuration')
     }
-  },[watch('hiringPricingType'),hrPricingTypes])
+  },[watch('hiringPricingType'),hrPricingTypes,countryBasedOnIP])
 
   useEffect(() => {
     if (watch("budget")?.value === "2") {
