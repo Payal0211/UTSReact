@@ -338,16 +338,7 @@ const CompanyProfileCard = ({
 							placement="bottomLeft"
 							title={<div>
                 {allApiData?.transparentModel?.PayPerHire_I_Info?.map(item=> <p>{item}</p>)}
-                {/* <p>Hiring Type : {allApiData?.transparentModel?.HrTypePricing}</p>
-                {allApiData?.transparentModel?.PayrollType && <p>Payroll Type : {allApiData?.transparentModel?.PayrollType ?? 'NA'}</p>}
-                
-                {allApiData?.transparentModel?.PayrollPartnerName && 
-                <p>Payroll Partner : {allApiData?.transparentModel?.PayrollPartnerName}</p>}
-                <p>Uplers Fees %: {allApiData?.transparentModel?.PricingPercent}</p>
-                {allApiData?.transparentModel?.CalculatedUplersfees && <p>Uplers Fees Amount : {allApiData?.transparentModel?.CalculatedUplersfees}</p>}
-                {allApiData?.transparentModel?.IsTransparentPricing
- ? <p>Estimated Client Need To Pay : {allApiData?.transparentModel?.ClientNeedsToPay}</p> 
- : <p>Talent Estimated Pay : {allApiData?.transparentModel?.TalentsPay}</p>} */}
+  
               </div>}>
 								<img src={infoIcon} alt='info' style={{marginLeft:'auto'}} />							
 						</Tooltip>}
@@ -428,7 +419,16 @@ const CompanyProfileCard = ({
                         Click Here
                       </a>
                     )
-                  ) : (
+                  ): clientDetail?.JDFileOrURL === "JDURL" ? (
+                    <a
+                      rel="noreferrer"
+                      href={clientDetail?.JobDetail}
+                      style={{ textDecoration: "underline" }}
+                      target="_blank"
+                    >
+                      Click Here
+                    </a>
+                  )   : (
                     "NA"
                   )}
                 </span>
