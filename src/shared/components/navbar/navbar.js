@@ -5,6 +5,7 @@ import UTSRoutes from 'constants/routes';
 import { Badge, Dropdown, Tooltip } from 'antd';
 import { ReactComponent as BellSVG } from 'assets/svg/bell.svg';
 import { ReactComponent as LogoutSVG } from 'assets/svg/logout.svg';
+import  UTSLogoSVG  from 'assets/svg/UTSLogo.svg'
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 import { MasterDAO } from 'core/master/masterDAO';
@@ -51,7 +52,8 @@ const Navbar = ({ fullName }) => {
 						<img
 							alt="logo"
 							className={navbarStyles.uplersTalentLogo}
-							src="https://staging.project-progress.net/html/uplers-talent-solutions/images/login-logo.svg"
+							// src="https://staging.project-progress.net/html/uplers-talent-solutions/images/login-logo.svg"
+							src={UTSLogoSVG}
 						/>
 					</Link>
 					{/* <div className={navbarStyles.activeTalent}>

@@ -585,16 +585,16 @@ const DebriefingHR = ({
 												new RegExp(clientDetail?.companyname, 'i'),
 											);
 											if (params === 'addnewhr') {
-												if (index !== -1) {
-													return `Please do not mention company name [${getCompanyName}] here`;
-												}
+												// if (index !== -1) {
+												// 	return `Please do not mention company name [${getCompanyName}] here`;
+												// }
 												if (!value) {
 													return 'Please add something about the company';
 												}
 											} else {
-												if (index1 !== -1) {
-													return `Please do not mention company name [${clientDetail?.companyname}] here`;
-												}
+												// if (index1 !== -1) {
+												// 	return `Please do not mention company name [${clientDetail?.companyname}] here`;
+												// }
 												if (!value) {
 													return 'Please add something about the company';
 												}
@@ -607,7 +607,7 @@ const DebriefingHR = ({
 									type={InputType.TEXT}
 									placeholder="Please enter details about company."
 								/>
-								<p>* Please do not mention company name here</p>
+								{/* <p>* Please do not mention company name here</p> */}
 							</div>
 							<TextEditor
 								isControlled={true}
