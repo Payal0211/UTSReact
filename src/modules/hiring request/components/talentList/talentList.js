@@ -908,9 +908,20 @@ const TalentList = ({
 													placement="bottom"
 													overlay={
 														<Menu>
-															{hrUtils
+															{/* {hrUtils
 																?.formatInterviewSlots(
 																	inteviewSlotDetails[listIndex]?.SlotList,
+																)
+																?.map((item, index) => {
+																	return (
+																		<Menu.Item key={index}>
+																			{item?.label}
+																		</Menu.Item>
+																	);
+																})} */}
+																{hrUtils
+																?.formatInterviewSlots(
+																	inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList
 																)
 																?.map((item, index) => {
 																	return (
@@ -923,11 +934,14 @@ const TalentList = ({
 													}>
 													<span>
 														<Space>
-															{
+															{/* {
 																hrUtils?.formatInterviewSlots(
 																	inteviewSlotDetails[listIndex]?.SlotList,
 																)?.[0]?.label
-															}
+															} */}
+															{hrUtils?.formatInterviewSlots(
+																	inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList,
+																)?.[0]?.label}
 															<DownOutlined />
 														</Space>
 													</span>

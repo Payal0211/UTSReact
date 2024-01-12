@@ -621,9 +621,9 @@ const EditDebriefingHR = ({
 												let index = value?.search(
 													new RegExp(getHRdetails?.company, 'i'),
 												);
-												if (index !== -1) {
-													return `Please do not mention company name [${getHRdetails?.company}] here`;
-												}
+												// if (index !== -1) {
+												// 	return `Please do not mention company name [${getHRdetails?.company}] here`;
+												// }
 												// 	if (
 												// 		value.toLowerCase() ===
 												// 		getHRdetails?.company.toLowerCase() &&
@@ -645,7 +645,7 @@ const EditDebriefingHR = ({
 										type={InputType.TEXT}
 										placeholder="Please enter details about company."
 									/>
-									<p>* Please do not mention company name here</p>
+									{/* <p>* Please do not mention company name here</p> */}
 								</div>
 								<TextEditor
 									isControlled={true}

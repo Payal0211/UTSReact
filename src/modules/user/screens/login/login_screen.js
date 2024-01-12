@@ -16,6 +16,7 @@ import WithLoader from 'shared/components/loader/loader';
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
 import { useForm } from 'react-hook-form';
+import  UTSLogoSVG  from 'assets/svg/UTSLogo.svg'
 import { useCookies } from 'react-cookie'
 
 const LoginScreen = () => {
@@ -106,7 +107,8 @@ const LoginScreen = () => {
 								<img
 									alt="avatar"
 									className={loginStyle.uplersTalentLogo}
-									src="https://staging.project-progress.net/html/uplers-talent-solutions/images/login-logo.svg"
+									// src="https://staging.project-progress.net/html/uplers-talent-solutions/images/login-logo.svg"
+									src={UTSLogoSVG}
 								/>
 							</div>
 							<div className={loginStyle.welcomePart}>
