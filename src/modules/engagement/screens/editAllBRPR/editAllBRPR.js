@@ -135,6 +135,9 @@ const columns = useMemo(()=>{
 dataIndex: 'monthNames',
 key: 'monthNames',
 align: 'left',
+render :(value,data)=>{
+  return `${data.monthNames} ( ${data.years} )`
+}
 },
 {title: 'BR',
 dataIndex: 'br',
