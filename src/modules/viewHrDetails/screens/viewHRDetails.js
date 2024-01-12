@@ -110,6 +110,11 @@ const ViewHRDetails = () => {
 												{hiringDetails?.responseBody?.details
 													?.hiringRequestRole ?? 'NA'}
 											</li> */}
+						<li>
+                        <span>About Company:</span>{" "}
+                        {hiringDetails?.responseBody?.details?.aboutCompanyDesc?? "NA"}
+                        <i className={ViewHRDetailsStyle.blueDot} />
+                      </li>					
                       <li>
                         <span>Job Description:</span>{" "}
                         {hiringDetails?.responseBody?.details
@@ -266,8 +271,7 @@ const ViewHRDetails = () => {
                         <i className={ViewHRDetailsStyle.blueDot} />
                       </li>
 
-                      {hiringDetails?.responseBody?.details?.PayPerHire_I_Info
-                        ?.length === 0 &&
+                      {(hiringDetails?.responseBody?.details?.transparentModel?.payPerHire_I_Info?.length === 0) ?
                       hiringDetails?.responseBody?.details?.contractType ===
                         "Direct Placement" ? (
                         <li>
@@ -283,7 +287,7 @@ const ViewHRDetails = () => {
                             "NA"}{" "}
                           %
                         </li>
-                      )}
+                      ): null }
 
                       {hiringDetails?.responseBody?.details?.transparentModel
                         ?.payrollType && (
@@ -304,7 +308,7 @@ const ViewHRDetails = () => {
                           <i className={ViewHRDetailsStyle.blueDot} />
                         </li>
                       )}
-                      {hiringDetails?.responseBody?.details?.transparentModel
+                      {/* {hiringDetails?.responseBody?.details?.transparentModel
                         ?.calculatedUplersfees && (
                         <li>
                           <span>Estimated Uplers Fees Amount:</span>{" "}
@@ -312,7 +316,7 @@ const ViewHRDetails = () => {
                             ?.transparentModel?.calculatedUplersfees ?? "NA"}
                           <i className={ViewHRDetailsStyle.blueDot} />
                         </li>
-                      )}
+                      )} */}
 
                       <li>
                         <span>JD URL:</span>{" "}
@@ -334,25 +338,25 @@ const ViewHRDetails = () => {
 													'NA'}
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li> */}
-                      <li>
+					{hiringDetails?.responseBody?.details?.hrNumber &&  <li style={{display:'flex'}}>
                         <span>
                           {hiringDetails?.responseBody?.details
                             ?.transparentModel?.budgetTitle
                             ? `${hiringDetails?.responseBody?.details?.transparentModel?.budgetTitle} :`
                             : `${hiringDetails?.responseBody?.details?.budgetTitle} :`}
                         </span>{" "}
-                        {hiringDetails?.responseBody?.details?.transparentModel
+                        <div style={{width:'70%',display:'flex'}}>{hiringDetails?.responseBody?.details?.transparentModel
                           ?.budgetText
                           ? hiringDetails?.responseBody?.details
                               ?.transparentModel?.budgetText
                           : hiringDetails?.responseBody?.details?.budgetText}
-                        {hiringDetails?.responseBody?.details?.PayPerHire_I_Info
-                          ?.length > 0 && (
-                          <Tooltip
+                        {hiringDetails?.responseBody?.details?.transparentModel?.payPerHire_I_Info?.length > 0 && (
+							
+								 <Tooltip
                             placement="bottomLeft"
                             title={
                               <div>
-                                {hiringDetails?.responseBody?.details?.PayPerHire_I_Info?.map(
+                                {hiringDetails?.responseBody?.details?.transparentModel?.payPerHire_I_Info?.map(
                                   (item) => (
                                     <p>{item}</p>
                                   )
@@ -366,8 +370,11 @@ const ViewHRDetails = () => {
                               style={{ marginLeft: "auto" }}
                             />
                           </Tooltip>
-                        )}
-                      </li>
+							
+                         
+                        )}</div>
+                      </li>}
+                     
 
                       <li>
                         <span>Sales Person:</span>{" "}
