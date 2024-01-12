@@ -735,7 +735,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			setValue('employeeLastName', userDetails?.fullName?.split(' ')[1]);
 			setValue('employeeFirstName', userDetails?.fullName?.split(' ')[0]);
 			setValue('employeeId', userDetails?.employeeId);
-			setValue('skypeID', userDetails?.skypeId);
+			// setValue('skypeID', userDetails?.skypeId);
 			setValue('emailID', userDetails?.emailId);
 			setValue('primaryClientPhoneNumber', userDetails?.contactNumber);
 			setValue('employeeDesignation', userDetails?.designation);
@@ -1128,7 +1128,7 @@ console.log('errors',errors)
 								</div>
 
 								<div className={UserFieldStyle.row}>
-									<div className={UserFieldStyle.colMd6}>
+									{/* <div className={UserFieldStyle.colMd6}>
 										<HRInputField
 											register={register}
 											defaultValue={
@@ -1151,7 +1151,7 @@ console.log('errors',errors)
 											// 	watch('userType')?.id === UserAccountRole.FINANCE_EXECUTIVE
 											// }
 										/>
-									</div>
+									</div> */}
 									<div className={UserFieldStyle.colMd6}>
 										<HRInputField
 											register={register}
