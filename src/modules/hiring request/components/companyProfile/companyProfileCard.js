@@ -404,7 +404,7 @@ const CompanyProfileCard = ({
                       >
                         Click Here
                       </a>
-                    ) : (
+                    ) : clientDetail?.JobDetail ? (
                       <a
                         rel="noreferrer"
                         href={
@@ -418,7 +418,7 @@ const CompanyProfileCard = ({
                       >
                         Click Here
                       </a>
-                    )
+                    ) : 'NA'
                   ): clientDetail?.JDFileOrURL === "JDURL" ? (
                     <a
                       rel="noreferrer"
