@@ -119,25 +119,25 @@ export const userConfig = {
 					return text ? text : 'NA';
 				},
 			},
-			{
-				title: 'Skype',
-				dataIndex: 'skype',
+			// {
+			// 	title: 'Skype',
+			// 	dataIndex: 'skype',
 
-				key: 'skype',
+			// 	key: 'skype',
 
-				align: 'left',
-				render: (text) => {
-					return text ? (
-						<Tooltip
-							title={text}
-							placement="bottom">
-							{text}
-						</Tooltip>
-					) : (
-						'NA'
-					);
-				},
-			},
+			// 	align: 'left',
+			// 	render: (text) => {
+			// 		return text ? (
+			// 			<Tooltip
+			// 				title={text}
+			// 				placement="bottom">
+			// 				{text}
+			// 			</Tooltip>
+			// 		) : (
+			// 			'NA'
+			// 		);
+			// 	},
+			// },
 			{
 				title: 'Contact',
 				dataIndex: 'contact',

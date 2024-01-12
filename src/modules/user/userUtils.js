@@ -56,7 +56,7 @@ export const userUtils = {
 			isOdr: d?.odrPool ? d?.odrPool : true,
 			managerID: d?.salesManager?.id ? d?.salesManager?.id : 0,
 			priorityCount: _isNull(d.priorityCount) ? 0 : parseInt(d.priorityCount),
-			skypeId: d?.skypeID ? d?.skypeID : '',
+			skypeId: '',
 			emailId: d?.emailID ? d?.emailID : 'NA',
 			designation: d?.employeeDesignation ? d?.employeeDesignation : 'NA',
 			description: d?.description ? d?.description : '',
