@@ -178,9 +178,12 @@ const ViewHRDetails = () => {
                       )}
 
                       <li>
-                        <span>Hiring Pricing Type:</span>{" "}
-                        {hiringDetails?.responseBody?.details?.transparentModel
-                          ?.hrTypePricing ?? "NA"}{" "}
+                        <span>Engagement Type:</span>{" "}
+
+                        { (hiringDetails?.responseBody?.details?.isPayPerHire) && (hiringDetails?.responseBody?.details?.transparentModel
+                          ?.hrTypePricing ?? "NA")}{" "}
+                          { (hiringDetails?.responseBody?.details?.isPayPerCredit) && (hiringDetails?.responseBody?.details?.payPerCreditModel
+                          ?.engagementType ?? "NA")}
                         <i className={ViewHRDetailsStyle.blueDot} />
                       </li>
                       {/* <li>
