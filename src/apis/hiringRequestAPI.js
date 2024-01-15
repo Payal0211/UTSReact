@@ -805,6 +805,20 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.acceptHRRequest');
 		}
 	},
+	syncUTSTOATS: async (hrID) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.SYNC_HR_UTS_TO_ATS + `?HRid=${hrID}`;
+		httpService.dataToSend = {};
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.syncUTSTOATS');
+		}
+	},
 	getRemainingPriorityCount: async () => {
 		let httpService = new HttpServices();
 		httpService.URL =

@@ -38,6 +38,7 @@ import { ReactComponent as AfterKickOffSVG } from 'assets/svg/AfterKickOff.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/TimeStartEnd.svg';
 import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
 import { ReactComponent as EditSVG } from 'assets/svg/pencil.svg';
+import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 
 import { HRDeleteType, HiringRequestHRStatus, InputType } from 'constants/application';
 
@@ -231,11 +232,21 @@ const togglePriority = useCallback(
 	[apiData, navigate],
 );
 
-const editHR = () => {
-	navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
-	localStorage.setItem('hrID', apiData?.HR_Id);
-	localStorage.removeItem('dealID')
-};
+	const shyncDataUTStoATS = async () => {
+		setLoading(true)
+		const result = await hiringRequestDAO.syncUTSTOATSRequestDAO(apiData?.HR_Id)
+
+		if(result.statusCode === HTTPStatusCode.OK){
+			setLoading(false);
+		}
+		setLoading(false);
+	}
+
+	const editHR = () => {
+		navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
+		localStorage.setItem('hrID', apiData?.HR_Id);
+		localStorage.removeItem('dealID')
+	};
 
 	const [showAMModal, setShowAMModal] = useState(false);
 	const [reopenHrModal, setReopenHrModal] = useState(false);
@@ -275,6 +286,9 @@ const editHR = () => {
 								cloneHR={apiData?.dynamicCTA?.CloneHR}
 							/>
 						)}
+
+						{/* Sync HR UTS to ATS */}
+						{userData?.LoggedInUserTypeID === 1 &&  <Tooltip title={'Sync HR data UTS-ATS'} placement="bottom" ><div className={HRDetailStyle.hiringRequestPriority} onClick={()=> shyncDataUTStoATS()}><RefreshSyncSVG width="17" height="16" style={{ fontSize: '16px' }} /></div></Tooltip> }
 						{/* {apiData?.AllowSpecialEdit && (apiData?.IsDirectHR ? <div onClick={()=> navigate(`/EditNewHR/${apiData?.HR_Id}`)}>
 							<EditSVG style={{ fontSize: '16px' }} />{' '}
 							<span className={HRDetailStyle.btnLabel}>Edit Direct HR</span></div> : <div onClick={()=> editHR()}>
