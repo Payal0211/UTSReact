@@ -179,7 +179,7 @@ const AnotherRound = ({
 		[param?.hrid],
 	);
 
-	const anotherRoundHandler = useCallback(
+	const anotherRoundHandler = useCallback(		
 		async (d) => {
 			setIsLoading(true);
 
@@ -188,7 +188,8 @@ const AnotherRound = ({
 			setSlot2timematch(false)
 			setSlot3timematch(false)
 
-			if(moment(d.slot1StartTime).format('HH mm a') === moment(d.slot1EndTime).format('HH mm a')){
+			if(radioValue !== AnotherRoundInterviewOption.YES){
+				if(moment(d.slot1StartTime).format('HH mm a') === moment(d.slot1EndTime).format('HH mm a')){
 					timeError = true;
 					setSlot1timematch(true)
 				}
@@ -202,6 +203,7 @@ const AnotherRound = ({
 					setSlot3timematch(true)
 					timeError = true;
 				}	
+			}			
 
 			if(timeError){
 				setIsLoading(false);
