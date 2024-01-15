@@ -196,7 +196,8 @@ const CompanyProfileCard = ({
                <div className={CompanyProfileCardStyle.EngagementType}>
                 <span>Engagement Type :</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
-                  {allApiData?.transparentModel?.EngagementType ? allApiData?.transparentModel?.EngagementType : allApiData?.EngagementType}
+                  {allApiData?.IsPayPerHire && allApiData?.transparentModel?.EngagementType ? allApiData?.transparentModel?.EngagementType : allApiData?.EngagementType}
+                  {allApiData?.IsPayPerCredit && allApiData?.PayPerCreditModel?.EngagementType }
                   {/* { 
 					`${allApiData?.transparentModel?.HrTypePricingId > 0 ? allApiData?.transparentModel?.HrTypePricing : `Contract - ${
             clientDetail?.SpecificMonth
@@ -224,7 +225,8 @@ const CompanyProfileCard = ({
               </div>           
             </div>
           </div>
-          {allApiData?.transparentModel?.JobType?.length > 0 &&  <>
+          {/* Job type pay pre hire */}
+          {allApiData?.IsPayPerHire && allApiData?.transparentModel?.JobType?.length > 0 &&  <>
                 <Divider
             style={{
               margin: "10px 0",
@@ -240,6 +242,24 @@ const CompanyProfileCard = ({
               </div>
              
               </>}
+
+          {/* Job type pay pre credit */}
+          {allApiData?.IsPayPerCredit && allApiData?.PayPerCreditModel?.JobType?.length > 0 &&  <>
+                <Divider
+            style={{
+              margin: "10px 0",
+            }}
+          />
+          <div className={CompanyProfileCardStyle.EngagementType}>
+                <span>Job Type:</span>&nbsp;&nbsp;
+               <div>  {allApiData?.PayPerCreditModel?.JobType.map(jobtype=>
+               <>
+               <span style={{ fontWeight: "500" }}>{jobtype}</span>&nbsp;&nbsp;<br/>
+               </>   
+                )}</div>
+              </div>
+             
+              </> }
           <Divider
             style={{
               margin: "10px 0",
@@ -326,7 +346,8 @@ const CompanyProfileCard = ({
                   Years
                 </span>
               </div>
-              <div className={CompanyProfileCardStyle.budget}>
+              {/* budget for pay per Hire */}
+              {allApiData?.IsPayPerHire && <div className={CompanyProfileCardStyle.budget}>
                 {/* <span>{`${allApiData?.transparentModel?.IsTransparentPricing ? 'Salary' : ''} Budget` } :</span>&nbsp;&nbsp;            
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.Cost ? clientDetail?.Cost : "NA"}
@@ -343,7 +364,14 @@ const CompanyProfileCard = ({
 								<img src={infoIcon} alt='info' style={{marginLeft:'auto'}} />							
 						</Tooltip>}
                 
-              </div>
+              </div>}
+              {/* budget for pay per credit */}  
+              {allApiData?.IsPayPerCredit &&  <div className={CompanyProfileCardStyle.budget}>
+                <span>{allApiData?.PayPerCreditModel?.BudgetTitle ? allApiData?.PayPerCreditModel?.BudgetTitle : allApiData?.BudgetTitle} :</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>{allApiData?.PayPerCreditModel?.BudgetText ? allApiData?.PayPerCreditModel?.BudgetText : allApiData?.BudgetText}</span>              
+              </div>}
+
+              
               {/* <div className={CompanyProfileCardStyle.budget}>
                 <span>Estimated Uplers Fees:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>

@@ -146,12 +146,29 @@ const ViewHRDetails = () => {
                         {hiringDetails?.responseBody?.details?.availability ??
                           "NA"}
                       </li>
-                      {hiringDetails?.responseBody?.details?.transparentModel
+
+                      {/*  job type pay per cedit  */}
+                      {hiringDetails?.responseBody?.details?.isPayPerHire && hiringDetails?.responseBody?.details?.transparentModel
                         ?.jobType && (
                         <li style={{ display: "flex" }}>
                           <span>Job Type:</span>{" "}
                           <div>
                             {hiringDetails?.responseBody?.details?.transparentModel?.jobType.map(
+                              (item) => (
+                                <p>{item}</p>
+                              )
+                            )}
+                          </div>
+                        </li>
+                      )}
+
+                       {/*  job type pay per cedit  */}
+                       {hiringDetails?.responseBody?.details?.isPayPerCredit && hiringDetails?.responseBody?.details?.payPerCreditModel
+                        ?.jobType && (
+                        <li style={{ display: "flex" }}>
+                          <span>Job Type:</span>{" "}
+                          <div>
+                            {hiringDetails?.responseBody?.details?.payPerCreditModel?.jobType.map(
                               (item) => (
                                 <p>{item}</p>
                               )
@@ -338,14 +355,15 @@ const ViewHRDetails = () => {
 													'NA'}
 												<i className={ViewHRDetailsStyle.blueDot} />
 											</li> */}
-					{hiringDetails?.responseBody?.details?.hrNumber &&  <li style={{display:'flex'}}>
+					{hiringDetails?.responseBody?.details?.hrNumber && <>
+          {hiringDetails?.responseBody?.details?.isPayPerHire &&  <li style={{display:'flex'}}>
                         <span>
                           {hiringDetails?.responseBody?.details
                             ?.transparentModel?.budgetTitle
-                            ? `${hiringDetails?.responseBody?.details?.transparentModel?.budgetTitle} :`
-                            : `${hiringDetails?.responseBody?.details?.budgetTitle} :`}
+                            ? `${hiringDetails?.responseBody?.details?.transparentModel?.budgetTitle}: `
+                            : `${hiringDetails?.responseBody?.details?.budgetTitle}: `}
                         </span>{" "}
-                        <div style={{width:'70%',display:'flex'}}>{hiringDetails?.responseBody?.details?.transparentModel
+                        <div style={{width:'70%',display:'flex', marginLeft:'5px'}}>{hiringDetails?.responseBody?.details?.transparentModel
                           ?.budgetText
                           ? hiringDetails?.responseBody?.details
                               ?.transparentModel?.budgetText
@@ -374,6 +392,23 @@ const ViewHRDetails = () => {
                          
                         )}</div>
                       </li>}
+
+                      {hiringDetails?.responseBody?.details?.isPayPerCredit &&  <li style={{display:'flex'}}>
+                        <span>
+                          {hiringDetails?.responseBody?.details
+                            ?.payPerCreditModel?.budgetTitle
+                            ? `${hiringDetails?.responseBody?.details?.payPerCreditModel?.budgetTitle}: `
+                            : `${hiringDetails?.responseBody?.details?.budgetTitle}: `}
+                        </span>
+                        <div style={{width:'70%',display:'flex', marginLeft:'5px'}}>{hiringDetails?.responseBody?.details?.payPerCreditModel
+                          ?.budgetText
+                          ? hiringDetails?.responseBody?.details
+                              ?.payPerCreditModel?.budgetText
+                          : hiringDetails?.responseBody?.details?.budgetText}
+                        </div>
+                      </li>}
+          </> }
+
                      
 
                       <li>
