@@ -196,7 +196,7 @@ const CompanyProfileCard = ({
                <div className={CompanyProfileCardStyle.EngagementType}>
                 <span>Engagement Type :</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
-                  {allApiData?.IsPayPerHire && allApiData?.transparentModel?.EngagementType ? allApiData?.transparentModel?.EngagementType : allApiData?.EngagementType}
+                  {allApiData?.IsPayPerHire && (allApiData?.transparentModel?.EngagementType ? allApiData?.transparentModel?.EngagementType : allApiData?.EngagementType)}
                   {allApiData?.IsPayPerCredit && allApiData?.PayPerCreditModel?.EngagementType }
                   {/* { 
 					`${allApiData?.transparentModel?.HrTypePricingId > 0 ? allApiData?.transparentModel?.HrTypePricing : `Contract - ${
