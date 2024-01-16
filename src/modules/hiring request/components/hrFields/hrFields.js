@@ -123,6 +123,8 @@ const HRFields = ({
   const [pathName, setPathName] = useState("");
   const [showUploadModal, setUploadModal] = useState(false);
   const [isCompanyNameAvailable, setIsCompanyNameAvailable] = useState(false);
+  const [controlledBudgetValue, setControlledBudgetValue] =
+  useState("Select Budget");
 // from add client flow to enadle JD fields 
   useEffect(()=>{
     if(fromClientflow === true){
@@ -1484,7 +1486,10 @@ const HRFields = ({
           "endTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneEndTime}
           
         );
-     	setValue("budget", "2");
+
+      resetField("adhocBudgetCost")
+     	setValue("budget", {id: '', value: '2'});
+      setControlledBudgetValue('2')
 
 	    setHRdetails(gptDetails);
         setAddData(gptDetails);
@@ -2236,7 +2241,11 @@ const HRFields = ({
             <div className={HRFieldStyle.row}>
               <div className={HRFieldStyle.colMd4}>
                 <div className={HRFieldStyle.formGroup}>
+                  {console.log('watch',watch("budget"))}
                   <HRSelectField
+                  controlledValue={controlledBudgetValue}
+                  setControlledValue={setControlledBudgetValue}
+                  isControlled={true}
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}

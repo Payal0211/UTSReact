@@ -40,6 +40,7 @@ const AddNewHR = () => {
 	const [disabledFields, setDisabledFields] = useState(null);
 	const [removeFields, setRemoveFields] = useState(null)
 	const [isDirectHR, setIsDirectHR] = useState(false)
+	const [isBDRMDRUser ,setIsBDRMDRUser] = useState(false)
 	const [AboutCompanyDesc, setAboutCompanyDesc ] = useState(null)
 
 	useEffect(()=>{
@@ -50,7 +51,12 @@ const AddNewHR = () => {
 			}
 			if(localStorage.getItem('hrID') && !localStorage.getItem('fromEditDeBriefing')) {			
 				setTitle(`Edit ${getHRdetails?.addHiringRequest?.hrNumber}`)
-			}	
+			}
+			
+			setIsDirectHR(getHRdetails?.directHiringInfo_edit?.isDirectHR)		
+			setIsBDRMDRUser(getHRdetails?.directHiringInfo_edit?.isBDR_MDRUser)
+			setRemoveFields(getHRdetails?.directHiringInfo_edit?.removeFields)
+			setDefaultPropertys(getHRdetails?.directHiringInfo_edit?.defaultProperties)
 		}   
 	},[getHRdetails?.addHiringRequest?.hrNumber,getHRdetails?.addHiringRequest?.isActive,tabFieldDisabled])
 
@@ -187,6 +193,10 @@ const AddNewHR = () => {
 									setHRdetails={setHRdetails}
 									setJDDumpID={setJDDumpID}
 									jdDumpID={jdDumpID}
+									removeFields={removeFields}
+									disabledFields={disabledFields}
+									isBDRMDRUser={isBDRMDRUser}
+									isDirectHR={isDirectHR}
 								/>
 							),
 							disabled: localStorage.getItem('fromEditDeBriefing') && true,
@@ -205,6 +215,10 @@ const AddNewHR = () => {
 									getHRdetails={getHRdetails}
 									setHRdetails={setHRdetails}
 									jdDumpID={jdDumpID}
+									removeFields={removeFields}
+									disabledFields={disabledFields}
+									isBDRMDRUser={isBDRMDRUser}
+									isDirectHR={isDirectHR}
 								/>
 							),
 							disabled: tabFieldDisabled?.debriefingHR,

@@ -132,6 +132,18 @@ export const allClientsConfig = {
                 width: '100px',
             },
             {
+                title: 'Input Source',
+                dataIndex: 'inputSource',
+                key: 'inputSource',
+                width: '100px',
+            },
+            {
+                title: 'Source Category',
+                dataIndex: 'sourceCategory',
+                key: 'sourceCategory',
+                width: '100px',
+            },
+            {
                 title: 'Status',
                 dataIndex: 'status',
                 key: 'status',
