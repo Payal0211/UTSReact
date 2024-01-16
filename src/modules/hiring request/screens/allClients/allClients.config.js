@@ -119,7 +119,7 @@ export const allClientsConfig = {
                 title: 'AM',
                 dataIndex: 'aM_UserName',
                 key: 'aM_UserName',
-                width: '300px',
+                width: '250px',
                 render:(text,result)=>{
                     let data = {clientID: result?.clientID, companyID: result?.companyID }
                     return text ? <div className={clienthappinessSurveyStyles.AMNAME}  onClick={()=>editAMHandler(data)}>{text}</div> : null
@@ -135,14 +135,12 @@ export const allClientsConfig = {
                 title: 'Input Source',
                 dataIndex: 'inputSource',
                 key: 'inputSource',
-                width: '100px',
-            },
+                width: '150px',            },
             {
                 title: 'Source Category',
                 dataIndex: 'sourceCategory',
                 key: 'sourceCategory',
-                width: '100px',
-            },
+                width: '150px',            },
             {
                 title: 'Status',
                 dataIndex: 'status',
