@@ -216,7 +216,7 @@ const CompanyProfileCard = ({
               </div>}
              
               <div className={CompanyProfileCardStyle.category}>
-                <span>Uplers Category:</span>&nbsp;&nbsp;
+                <span>Company Category:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {allApiData?.companyCategory
                     ? allApiData?.companyCategory
