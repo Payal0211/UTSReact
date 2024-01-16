@@ -282,14 +282,15 @@ const ViewHRDetails = () => {
                           : "NA"}
                         <i className={ViewHRDetailsStyle.blueDot} />
                       </li>
-                      <li>
+                      {!hiringDetails?.responseBody?.details?.isPayPerCredit && <li>
                         <span>Transparent Pricing:</span>{" "}
                         {hiringDetails?.responseBody?.details?.transparentModel
                           ?.isTransparentPricing
                           ? "Yes"
                           : "No"}
                         <i className={ViewHRDetailsStyle.blueDot} />
-                      </li>
+                      </li>}
+                      
 
                       {(hiringDetails?.responseBody?.details?.transparentModel?.payPerHire_I_Info?.length === 0) ?
                       hiringDetails?.responseBody?.details?.contractType ===
@@ -388,7 +389,8 @@ const ViewHRDetails = () => {
                             <img
                               src={infoIcon}
                               alt="info"
-                              style={{ marginLeft: "auto" }}
+                              style={{ marginLeft: "auto",width: '24px',
+                              height: '24px' }}
                             />
                           </Tooltip>
 							
