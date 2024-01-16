@@ -53,7 +53,8 @@ function AllClients() {
             poc: "",
             fromDate: "",
             toDate: "",
-            searchText: ""
+            searchText: "",
+            SearchSourceCategory:""
         }
 	});
     const [totalRecords, setTotalRecords] = useState(0);
@@ -66,6 +67,8 @@ function AllClients() {
 	const [endDate, setEndDate] = useState(null);
     const [search, setSearch] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState(search);
+    const [SearchSourceCategory, setSearchSourceCategory] = useState('');
+    const [debouncedSearchSourceCategory, setDebouncedSearchSourceCategory] = useState(SearchSourceCategory);
 
     const [filteredTagLength, setFilteredTagLength] = useState(0);
     const [filtersList, setFiltersList] = useState([]);
@@ -181,6 +184,23 @@ function AllClients() {
         setDebouncedSearch(e.target.value)
         setPageIndex(1); 
     };
+
+    const debouncedSearchSourceCategoryHandler = (e) => {
+        if(e.target.value.length > 3 || e.target.value === ''){
+            setTimeout(()=>{
+                setTableFilteredState(prevState => ({
+                ...prevState,
+                pagenumber:1,
+                filterFields_Client: {
+                ...prevState.filterFields_Client,
+                SearchSourceCategory:e.target.value,
+                }
+                }));  
+            },2000)         
+        }           
+        setDebouncedSearchSourceCategory(e.target.value)
+        setPageIndex(1); 
+    };
   
 	const clearFilters = useCallback(() => {
 		setAppliedFilters(new Map());
@@ -189,6 +209,7 @@ function AllClients() {
         setPageSize(100);
         setPageIndex(1);
         setDebouncedSearch(search);
+        setDebouncedSearchSourceCategory(SearchSourceCategory)
 		setTableFilteredState({       
             pagenumber:1,
             totalrecord:100,
@@ -279,6 +300,16 @@ function AllClients() {
                                 <p onClick={()=> clearFilters() }>Reset Filters</p>                        
                             </div>                        
                             <div className={clienthappinessSurveyStyles.filterRight}>
+                            <div className={clienthappinessSurveyStyles.searchFilterSet}>
+                                    <SearchSVG style={{ width: '16px', height: '16px' }} />
+                                    <input
+                                        type={InputType.TEXT}
+                                        className={clienthappinessSurveyStyles.searchInput}
+                                        placeholder="Search Source Category"
+                                        onChange={debouncedSearchSourceCategoryHandler}
+                                        value={debouncedSearchSourceCategory}
+                                    />
+                                </div>
                                 <div className={clienthappinessSurveyStyles.searchFilterSet}>
                                     <SearchSVG style={{ width: '16px', height: '16px' }} />
                                     <input
