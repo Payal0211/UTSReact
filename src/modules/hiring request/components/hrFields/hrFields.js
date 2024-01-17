@@ -2241,7 +2241,6 @@ const HRFields = ({
             <div className={HRFieldStyle.row}>
               <div className={HRFieldStyle.colMd4}>
                 <div className={HRFieldStyle.formGroup}>
-                  {console.log('watch',watch("budget"))}
                   <HRSelectField
                   controlledValue={controlledBudgetValue}
                   setControlledValue={setControlledBudgetValue}

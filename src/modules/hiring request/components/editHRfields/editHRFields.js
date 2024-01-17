@@ -59,6 +59,10 @@ const EditHRFields = ({
   setHRdetails,
   setFromEditDeBriefing,
   fromEditDeBriefing,
+  removeFields,
+	disabledFields,
+	isBDRMDRUser,
+	isDirectHR,
 }) => {
   const inputRef = useRef(null);
   const [userData, setUserData] = useState({});
@@ -131,6 +135,7 @@ const EditHRFields = ({
     useState("Select how soon?");
   const [controlledCountryValue, setControlledCountryValue] =
     useState("Select country");
+  const [countryListMessage,setCountryListMessage] = useState(null)
   const [contractDurationValue, setContractDuration] = useState("");
 
   const [controlledDurationTypeValue, setControlledDurationTypeValue] =
@@ -948,14 +953,41 @@ const EditHRFields = ({
   const watchCountry = watch("country");
   const { isReady, debouncedFunction } = useDebounce(postalCodeHandler, 2000);
   useEffect(() => {
+    if(removeFields !== null && removeFields.postalCode === true ){
+      return
+    }else{
+      if(isDirectHR === true && isBDRMDRUser === true){
+        return
+      }
     !isPostalCodeNotFound && debouncedFunction("POSTAL_CODE");
-  }, [debouncedFunction, watchPostalCode, isPostalCodeNotFound]);
+    }
+  }, [debouncedFunction, watchPostalCode, isPostalCodeNotFound, removeFields, isDirectHR]);
 
-  useEffect(() => {
-    if (country && country?.length > 1 && watchCountry) {
+  const countryCodeChangeHandler = () =>{
+    if(removeFields !== null && removeFields.postalCode === true ){
+      return
+    }else{
+    if (country && country?.length > 1 && watch("country")) {
+      if(isDirectHR === true && isBDRMDRUser === true){
+        return
+      }
       !isPostalCodeNotFound && debouncedFunction("COUNTRY_CODE");
     }
-  }, [country, debouncedFunction, isPostalCodeNotFound, watchCountry]);
+  }
+  }
+
+  // useEffect(() => {
+  //   if(removeFields !== null && removeFields.postalCode === true ){
+  //     return
+  //   }else{
+  //   if (country && country?.length > 1 && watchCountry) {
+  //     if(isDirectHR === true && isBDRMDRUser === true){
+  //       return
+  //     }
+  //     !isPostalCodeNotFound && debouncedFunction("COUNTRY_CODE");
+  //   }
+  // }
+  // }, [country, debouncedFunction, isPostalCodeNotFound, watchCountry,removeFields,isDirectHR]);
 
   const [messageAPI, contextHolder] = message.useMessage();
   let watchJDUrl = watch("jdURL");
@@ -980,7 +1012,12 @@ const EditHRFields = ({
         watchJDUrl ? watchJDUrl : jdDumpID,
         typeOfPricing,hrPricingTypes,companyType
       );
-
+      hrFormDetails.isDirectHR = isDirectHR
+      if(isDirectHR === true && isBDRMDRUser === true){
+        hrFormDetails.directPlacement.address = ''
+        hrFormDetails.directPlacement.postalCode = ''
+        hrFormDetails.directPlacement.state = ''
+      }
       hrFormDetails["allowSpecialEdit"] = getHRdetails?.allowSpecialEdit;
 
       if(watch('fromTime').value === watch('endTime').value){
@@ -1666,7 +1703,9 @@ const EditHRFields = ({
         setValue(
           "endTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneEndTime}  
         );
-      setValue("budget", "2");
+      resetField("adhocBudgetCost")
+      setValue("budget", {id: '', value: '2'});
+      setControlledBudgetValue('2')
 
       setGPTDetails({});
       setShowGPTModal(false);
@@ -1720,6 +1759,39 @@ const EditHRFields = ({
       return e.target.value;
     });
   };
+
+  // Handle city change for Direct HR
+  const watchCity = watch("city");
+  const cityChangeHandler = async () =>{
+    const countryResponse = await MasterDAO.getCountryByCityRequestDAO(watchCity)
+
+    if(countryResponse.statusCode === HttpStatusCode.Ok){
+      if(countryResponse.responseBody.message === "List of countries"){
+        setCountryListMessage(null)
+        let countryList = countryResponse.responseBody.details
+        setCountry(countryList !== null ?  countryList.map(list=> ({id:list.id, value: list.country}))  : [])
+        if(countryList.length === 1){
+          
+          setControlledCountryValue(countryList[0]?.country);
+          setValue('country',countryList[0])
+        }
+        if(countryList.length > 1){
+          setControlledCountryValue('')
+          resetField('country')
+        }
+      }else{
+        let countryList = countryResponse.responseBody.details
+        setCountry(countryList !== null ?  countryList.map(list=> ({id:list.id, value: list.country}))   : [])
+        setControlledCountryValue('')
+        resetField('country')
+        setCountryListMessage(countryResponse.responseBody.message)
+        setTimeout(()=>{
+          setCountryListMessage(null)
+        },7000)
+      }
+    }
+  }
+  const { isReady: isCityReady, debouncedFunction: cityDeb } = useDebounce(cityChangeHandler, 2000);
 
 
   return (
@@ -1834,10 +1906,10 @@ const EditHRFields = ({
                       options={salesPerson && salesPerson}
                       name="salesPerson"
                       isError={errors["salesPerson"] && errors["salesPerson"]}
-                      required
+                      required={disabledFields !== null ? !disabledFields?.salesPerson : true}
                       errorMsg={"Please select hiring request sales person"}
                       disabled={
-                        userData?.LoggedInUserTypeID === UserAccountRole.SALES
+                        disabledFields !== null ? disabledFields?.salesPerson  : userData?.LoggedInUserTypeID === UserAccountRole.SALES
                       }
                     />
                   )}
@@ -2820,8 +2892,8 @@ const EditHRFields = ({
                     name="talentsNumber"
                     type={InputType.NUMBER}
                     placeholder="Please enter number of talents needed"
-                    required
-                    disabled={true}
+                    required={disabledFields !== null ? !disabledFields?.talentRequired : true}
+                    disabled={disabledFields !== null ? disabledFields?.talentRequired : true}
                   />
                 </div>
               </div>
@@ -3053,7 +3125,7 @@ const EditHRFields = ({
                     />
                   </div>
                 </div>
-                <div className={HRFieldStyle.colMd6}>
+                {(removeFields !== null && removeFields?.dealID === true) ? null :   <div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     disabled={true}
                     register={register}
@@ -3062,11 +3134,12 @@ const EditHRFields = ({
                     type={InputType.NUMBER}
                     placeholder="Enter ID"
                   />
-                </div>
+                </div>}
+              
               </div>
 
               <div className={HRFieldStyle.row}>
-                <div className={HRFieldStyle.colMd6}>
+                {(removeFields !== null && removeFields?.hrFormLink === true) ? null : <div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     register={register}
                     errors={errors}
@@ -3079,8 +3152,9 @@ const EditHRFields = ({
                     placeholder="Enter the link for HR form"
                     required={getHRdetails?.addHiringRequest?.guid === null}
                   />
-                </div>
-                <div className={HRFieldStyle.colMd6}>
+                </div>}
+                
+                {(removeFields !== null && removeFields?.discoveryCallLink === true) ? null :<div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     register={register}
                     errors={errors}
@@ -3093,7 +3167,8 @@ const EditHRFields = ({
                     placeholder="Enter the link for Discovery call"
                     required={getHRdetails?.addHiringRequest?.guid === null}
                   />
-                </div>
+                </div> }
+                
               </div>
             </form>
           </div>
@@ -3424,10 +3499,53 @@ const EditHRFields = ({
     ) {
       return null;
     } else {
+      if(isDirectHR === true && isBDRMDRUser === true){
+        return (<>
+         <div className={HRFieldStyle.row}>
+                  <div className={HRFieldStyle.colMd6}>
+                        <HRInputField
+                         onChangeHandler={e=> cityDeb() }
+                          register={register}
+                          errors={errors}
+                          validationSchema={{
+                            required: "please enter the city.",
+                          }}
+                          label="City"
+                          name="city"
+                          type={InputType.TEXT}
+                          placeholder="Enter the City"
+                          required
+                        />
+                        {countryListMessage !== null && <p className={HRFieldStyle.error}>*{countryListMessage}</p>}
+                  </div>
+
+                  <div className={HRFieldStyle.colMd6}>
+                        <div className={HRFieldStyle.formGroup}>
+                        <HRSelectField
+                  controlledValue={controlledCountryValue}
+                  setControlledValue={setControlledCountryValue}
+                  isControlled={true}
+                  mode={"id/value"}
+                  searchable={false}
+                  setValue={setValue}
+                  register={register}
+                  label={"Country"}
+                  defaultValue="Select country"
+                  options={country ? country : []}
+                  name="country"
+                  isError={errors["country"] && errors["country"]}
+                  required
+                  errorMsg={"Please select the country."}
+                />
+                        </div>
+                  </div>
+         </div>
+        </>)
+      }
       return (
         <>
           <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd6}>
+            {(removeFields !== null && removeFields?.postalCode === true) ? null :  <div className={HRFieldStyle.colMd6}>
               <HRInputField
                 register={register}
                 errors={errors}
@@ -3440,12 +3558,13 @@ const EditHRFields = ({
                 placeholder="Enter the Postal Code"
                 required
               />
-            </div>
+            </div>}
+           
             <div className={HRFieldStyle.colMd6}>
               <div className={HRFieldStyle.formGroup}>
                 <HRSelectField
                   controlledValue={controlledCountryValue}
-                  setControlledValue={setControlledCountryValue}
+                  setControlledValue={val=> {setControlledCountryValue(val);countryCodeChangeHandler()}}
                   isControlled={true}
                   mode={"id/value"}
                   searchable={false}
@@ -3462,8 +3581,9 @@ const EditHRFields = ({
               </div>
             </div>
           </div>
+         
           <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd6}>
+             {(removeFields !== null && removeFields?.state === true) ? null : <div className={HRFieldStyle.colMd6}>
               <HRInputField
                 register={register}
                 errors={errors}
@@ -3476,7 +3596,8 @@ const EditHRFields = ({
                 placeholder="Enter the State"
                 required
               />
-            </div>
+            </div>}
+           
             <div className={HRFieldStyle.colMd6}>
               <HRInputField
                 register={register}
@@ -3493,6 +3614,7 @@ const EditHRFields = ({
             </div>
           </div>
           <div className={HRFieldStyle.row}>
+          {(removeFields !== null && removeFields?.address === true) ? null : 
             <div className={HRFieldStyle.colMd12}>
               <HRInputField
                 isTextArea={true}
@@ -3507,7 +3629,8 @@ const EditHRFields = ({
                 placeholder="Enter the Address"
                 required
               />
-            </div>
+            </div>}
+          
           </div>
 
           {isNewPostalCodeModal && (
