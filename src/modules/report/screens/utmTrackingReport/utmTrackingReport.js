@@ -384,7 +384,7 @@ export default function UTMTrackingReport() {
           [item.filterType]:item.id,
         };
       });
-      let get_JobPostCount_For_UTM_Tracking_Lead = filters["get_JobPostCount_For_UTM_Tracking_Lead"] ? filters["get_JobPostCount_For_UTM_Tracking_Lead"] : null;
+      // let get_JobPostCount_For_UTM_Tracking_Lead = filters["get_JobPostCount_For_UTM_Tracking_Lead"] ? filters["get_JobPostCount_For_UTM_Tracking_Lead"] : null;
       let ref_Url = filters["ref_Url"] ? filters["ref_Url"] : "";
       let utM_Campaign = filters["utM_Campaign"]
         ? filters["utM_Campaign"]
@@ -399,7 +399,7 @@ export default function UTMTrackingReport() {
       let params = {     
           fromDate: moment(firstDay).format("YYYY-MM-DD"),
           toDate: moment(lastDay).format("YYYY-MM-DD"),
-          noOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,   
+          // noOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,   
           utM_Source: utM_Source,
           utM_Medium: utM_Medium,
           utM_Campaign: utM_Campaign,
