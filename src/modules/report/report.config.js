@@ -1438,12 +1438,12 @@ export const reportConfig = {
 	},
 	UTMReportFilterTypeConfig: (filterList) => {
 		return [
-			{
-				label: 'Numbers of Jobs',
-				name: 'get_JobPostCount_For_UTM_Tracking_Lead',
-				child: filterList?.get_JobPostCount_For_UTM_Tracking_Lead,
-				isSearch: false,
-			},
+			// {
+			// 	label: 'Numbers of Jobs',
+			// 	name: 'get_JobPostCount_For_UTM_Tracking_Lead',
+			// 	child: filterList?.get_JobPostCount_For_UTM_Tracking_Lead,
+			// 	isSearch: false,
+			// },
 			{
 				label: 'Ref URL',
 				name: 'ref_Url',
@@ -1494,4 +1494,85 @@ export const reportConfig = {
 			},
 		];
 	},
+	UTMPopupReportConfig: () => {
+		return [
+			{
+				title: 'Client',
+				dataIndex: 'client',
+				key: 'client',
+				align: 'left',				
+			},
+			{
+				title: 'Hr Number',
+				dataIndex: 'hrNumber',
+				key: 'hrNumber',
+				align: 'left',		
+				render: (text, result) => (
+					result?.hrid ? 
+					<Link
+					  target="_blank"
+					  to={`/allhiringrequest/${result?.hrid}`}
+					  style={{ color: "black", textDecoration: "underline" }}
+					  onClick={() => localStorage.removeItem("dealID")}
+					>
+					  {text}
+					</Link> : {text}
+				  ),		
+			},
+			{
+				title: 'Country',
+				dataIndex: 'country',
+				key: 'country',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'State',
+				dataIndex: 'state',
+				key: 'state',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'City',
+				dataIndex: 'city',
+				key: 'city',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text}</Fragment>;
+				},
+			},
+			{
+				title: 'Browser',
+				dataIndex: 'browser',
+				key: 'browser',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Device',
+				dataIndex: 'device',
+				key: 'device',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},	
+			{
+				title: 'iP Address',
+				dataIndex: 'iP_Address',
+				key: 'iP_Address',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			}				
+		];
+	}
 };
