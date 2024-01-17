@@ -1438,12 +1438,12 @@ export const reportConfig = {
 	},
 	UTMReportFilterTypeConfig: (filterList) => {
 		return [
-			{
-				label: 'Numbers of Jobs',
-				name: 'get_JobPostCount_For_UTM_Tracking_Lead',
-				child: filterList?.get_JobPostCount_For_UTM_Tracking_Lead,
-				isSearch: false,
-			},
+			// {
+			// 	label: 'Numbers of Jobs',
+			// 	name: 'get_JobPostCount_For_UTM_Tracking_Lead',
+			// 	child: filterList?.get_JobPostCount_For_UTM_Tracking_Lead,
+			// 	isSearch: false,
+			// },
 			{
 				label: 'Ref URL',
 				name: 'ref_Url',

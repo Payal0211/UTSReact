@@ -66,7 +66,7 @@ export default function UTMTrackingReport() {
   });
 
   const data = {
-    NoOfJobs : null,
+    // NoOfJobs : null,
     Fromdate:"",
     ToDate:"",
     UTM_Source:"",
@@ -177,7 +177,7 @@ export default function UTMTrackingReport() {
       let payload = {
           Fromdate: moment(firstDay).format("YYYY-MM-DD"),
           ToDate: moment(lastDay).format("YYYY-MM-DD"),
-          NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
+          // NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
           UTM_Source: utM_Source,
           UTM_Medium: utM_Medium,
           UTM_Campaign: utM_Campaign,
@@ -191,7 +191,7 @@ export default function UTMTrackingReport() {
       let params = {
           Fromdate: moment(firstDay).format("YYYY-MM-DD"),
           ToDate: moment(lastDay).format("YYYY-MM-DD"),
-          NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
+          // NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
           UTM_Source: utM_Source,
           UTM_Medium: utM_Medium,
           UTM_Campaign: utM_Campaign,
@@ -212,7 +212,7 @@ export default function UTMTrackingReport() {
     let payload = {
         Fromdate: firstDay.toLocaleDateString("en-US"),
         ToDate: lastDay.toLocaleDateString("en-US"),
-        NoOfJobs: null,
+        // NoOfJobs: null,
         UTM_Source: "",
         UTM_Medium: "",
         UTM_Campaign: "",
@@ -258,7 +258,7 @@ export default function UTMTrackingReport() {
     let payload = {
         Fromdate: firstDay.toLocaleDateString("en-US"),
         ToDate: lastDay.toLocaleDateString("en-US"),
-        NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
+        // NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
         UTM_Source: utM_Source,
         UTM_Medium: utM_Medium,
         UTM_Campaign: utM_Campaign,
@@ -321,7 +321,7 @@ export default function UTMTrackingReport() {
           let payload = {
               Fromdate: moment(start).format("YYYY-MM-DD"),
               ToDate: moment(end).format("YYYY-MM-DD"),
-              NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
+              // NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
               UTM_Source: utM_Source,
               UTM_Medium: utM_Medium,
               UTM_Campaign: utM_Campaign,
@@ -360,7 +360,7 @@ export default function UTMTrackingReport() {
   
         Fromdate: moment(params.fromDate).format("YYYY-MM-DD"),
         ToDate: moment(params.toDate).format("YYYY-MM-DD"),
-        NoOfJobs: null,
+        // NoOfJobs: null,
         UTM_Source: "",
         UTM_Medium: "",
         UTM_Campaign: "",
