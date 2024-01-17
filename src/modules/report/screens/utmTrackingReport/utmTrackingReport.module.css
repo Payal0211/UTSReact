@@ -14,6 +14,12 @@
     font-weight: 500;
     line-height: 40px;
 }
+.cardInner .textLink{
+    text-decoration: underline;
+    color:#337ab7;
+    cursor: pointer;
+
+}
 
 .btnPrimary {
     background: #FFDA30;
