@@ -379,4 +379,6 @@ export class UtmTrackingReport{
 	static UTM_TRACKING_REPORT = 'TrackingLeadDetail/';
 	static UTM_TRACKING_REPORT_LIST = 'List';
 	static GET_UTM_TRACKING_FILTERS = "GetAllFilterDataForTrackingLeadDetail";
+	static UTM_TRACKING_LEAD_DETAIL_REPORT = 'TrackingLeadDetailPopUP/';
+	static UTM_TRACKING_LEAD_DETAIL_REPORT_LIST = 'PopUPList'
 }

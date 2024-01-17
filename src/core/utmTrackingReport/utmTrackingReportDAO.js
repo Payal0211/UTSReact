@@ -56,5 +56,30 @@ export const utmTrackingReportDAO = {
 		} catch (error) {
 			return errorDebug(error, 'utmTrackingReportDAO.getutmTrackingReportFiltersDAO');
 		}
+	},
+	getutmTrackingLeadDetailDAO: async function (data) {
+		try {
+			const utmTrackingLeadDetailReport = await utmTrackingReportAPI.utmTrackingLeadDetailPopUP(data);
+			if (utmTrackingLeadDetailReport) {
+				const statusCode = utmTrackingLeadDetailReport['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = utmTrackingLeadDetailReport?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return utmTrackingLeadDetailReport;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return utmTrackingLeadDetailReport;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}			
+		} catch (error) {
+			return errorDebug(error, 'utmTrackingReportDAO.getutmTrackingLeadDetailDAO');
+		}
 	}
 };

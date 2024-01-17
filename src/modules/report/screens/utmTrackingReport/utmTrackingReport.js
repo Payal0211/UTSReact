@@ -83,7 +83,6 @@ export default function UTMTrackingReport() {
   //   setutmTrackingListList(res?.responseBody?.details);
   // }
 
-
   var date = new Date();
 
   var firstDay =
@@ -114,10 +113,10 @@ export default function UTMTrackingReport() {
 
   const getHRPopUpReportList = async (params) => {
     setLoading(true);
-    const response = await clientReport.getHRPopUpRequestList(params);
+    const response = await utmTrackingReportDAO.getutmTrackingLeadDetailDAO(params);
     if (response.statusCode === HTTPStatusCode.OK) {
       let details = response.responseBody.details;
-      // console.log("popup data", details)
+      console.log("popup data", details)
       setReportPopupList(details);
       setLoading(false);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -151,8 +150,6 @@ export default function UTMTrackingReport() {
     }
   };
 
-  console.log(filtersList?.get_JobPostCount_For_UTM_Tracking_Lead
-    ,"filtersListfiltersListfiltersListfiltersList");
 
   const allDropdownsList = () =>{
     setNumOfJobs(filtersList && filtersList?.get_JobPostCount_For_UTM_Tracking_Lead?.map(item=>({id:item?.value,value:item?.value})));
@@ -178,9 +175,6 @@ export default function UTMTrackingReport() {
       let utM_Term = fd["utM_Term"] ? fd["utM_Term"] : ""
 
       let payload = {
-        // pageIndex: 1,
-        // pageSize: 0,
-
           Fromdate: moment(firstDay).format("YYYY-MM-DD"),
           ToDate: moment(lastDay).format("YYYY-MM-DD"),
           NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
@@ -191,12 +185,10 @@ export default function UTMTrackingReport() {
           UTM_Term: utM_Term,
           UTM_Placement:utM_Placement,
           ref_url:ref_Url
-
       };
       getUTMReportList(payload);
 
       let params = {
-
           Fromdate: moment(firstDay).format("YYYY-MM-DD"),
           ToDate: moment(lastDay).format("YYYY-MM-DD"),
           NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
@@ -207,7 +199,6 @@ export default function UTMTrackingReport() {
           UTM_Term: utM_Term,
           UTM_Placement:utM_Placement,
           ref_url:ref_Url
-
       };
 
       if (hrStage) {
@@ -219,7 +210,6 @@ export default function UTMTrackingReport() {
 
   useEffect(() => {
     let payload = {
-
         Fromdate: firstDay.toLocaleDateString("en-US"),
         ToDate: lastDay.toLocaleDateString("en-US"),
         NoOfJobs: null,
@@ -230,7 +220,6 @@ export default function UTMTrackingReport() {
         UTM_Term: "",
         UTM_Placement:"",
         ref_url:""
-
     };
     getUTMReportList(payload);
     getUTMReportFilterList();
@@ -246,13 +235,13 @@ export default function UTMTrackingReport() {
 
   useEffect(() => {
     let filters = {};
-    // appliedFilter.forEach((item) => {
-    //   filters = {
-    //     ...filters,
-    //     [item.filterType]:
-    //       item.filterType === "CompanyCategory" ? item.value : item.id,
-    //   };
-    // });
+    appliedFilter.forEach((item) => {
+      filters = {
+        ...filters,
+        [item.filterType]:
+          item.filterType === "CompanyCategory" ? item.value : item.id,
+      };
+    });
 
     let get_JobPostCount_For_UTM_Tracking_Lead = filters["get_JobPostCount_For_UTM_Tracking_Lead"] ? filters["get_JobPostCount_For_UTM_Tracking_Lead"] : null;
     let ref_Url = filters["ref_Url"] ? filters["ref_Url"] : "";
@@ -267,7 +256,6 @@ export default function UTMTrackingReport() {
 
 
     let payload = {
-
         Fromdate: firstDay.toLocaleDateString("en-US"),
         ToDate: lastDay.toLocaleDateString("en-US"),
         NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
@@ -278,7 +266,6 @@ export default function UTMTrackingReport() {
         UTM_Term: utM_Term,
         UTM_Placement:utM_Placement,
         ref_url:ref_Url
-
     };
     getUTMReportList(payload);
   }, [isFocusedRole]);
@@ -332,9 +319,6 @@ export default function UTMTrackingReport() {
 
 
           let payload = {
-            // pageIndex: 1,
-            // pageSize: 0,
-
               Fromdate: moment(start).format("YYYY-MM-DD"),
               ToDate: moment(end).format("YYYY-MM-DD"),
               NoOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,
@@ -391,50 +375,49 @@ export default function UTMTrackingReport() {
     // getI2SReport(params);
   };
 
-  // const setTableData = useCallback(
-  //   (reportData) => {
-  //     let filters = {};
-  //     appliedFilter.forEach((item) => {
-  //       filters = {
-  //         ...filters,
-  //         [item.filterType]:
-  //           item.filterType === "CompanyCategory" ? item.value : item.id,
-  //       };
-  //     });
+  const setTableData = useCallback(
+    (reportData) => {   
+      let filters = {};
+      appliedFilter.forEach((item) => {
+        filters = {
+          ...filters,
+          [item.filterType]:item.id,
+        };
+      });
+      let get_JobPostCount_For_UTM_Tracking_Lead = filters["get_JobPostCount_For_UTM_Tracking_Lead"] ? filters["get_JobPostCount_For_UTM_Tracking_Lead"] : null;
+      let ref_Url = filters["ref_Url"] ? filters["ref_Url"] : "";
+      let utM_Campaign = filters["utM_Campaign"]
+        ? filters["utM_Campaign"]
+        : "";
+      let utM_Content = filters["utM_Content"] ? filters["utM_Content"] : "";
+      let utM_Medium = filters["utM_Medium"] ? filters["utM_Medium"] : ""
+      let utM_Placement = filters["utM_Placement"] ? filters["utM_Placement"] : ""
+      let utM_Source = filters["utM_Source"] ? filters["utM_Source"] : ""
+      let utM_Term = filters["utM_Term"] ? filters["utM_Term"] : ""
 
-  //     let TypeOfHR = filters["TypeOfHR"] ? filters["TypeOfHR"] : "";
-  //     let SalesManager = filters["SalesManager"] ? filters["SalesManager"] : "";
-  //     let ModeOfWorking = filters["ModeOfWorking"]
-  //       ? filters["ModeOfWorking"]
-  //       : "";
-  //     let HiringStatus = filters["HiringStatus"] ? filters["HiringStatus"] : "";
-  //     let ClientType = filters["ClientType"] ? filters["ClientType"] : "0"
-  //     // console.log(reportData);
-  //     setHRStage(reportData.stageName);
-  //     let params = {
-  //       pageIndex: 1,
-  //       pageSize: 0,
-  //       hiringRequestReportPopupFilter: {
-  //         fromDate: moment(firstDay).format("YYYY-MM-DD"),
-  //         toDate: moment(lastDay).format("YYYY-MM-DD"),
-  //         typeOfHR: TypeOfHR,
-  //         modeOfWorkId: ModeOfWorking,
-  //         heads: SalesManager,
-  //         hrStatusID: HiringStatus,
-  //         stages: reportData.stageName,
-  //         isHrfocused: isFocusedRole,
-  //         clientType: ClientType
-  //       },
-  //     };
-  //     getHRPopUpReportList(params);
-  //   },
-  //   [hrStage, firstDay, lastDay, appliedFilter, isFocusedRole]
-  // );
+      setHRStage(reportData.actions);
+      let params = {     
+          fromDate: moment(firstDay).format("YYYY-MM-DD"),
+          toDate: moment(lastDay).format("YYYY-MM-DD"),
+          noOfJobs: get_JobPostCount_For_UTM_Tracking_Lead,   
+          utM_Source: utM_Source,
+          utM_Medium: utM_Medium,
+          utM_Campaign: utM_Campaign,
+          utM_Content: utM_Content,
+          utM_Term: utM_Term,
+          utM_Placement: utM_Placement,
+          ref_url:ref_Url,
+          stage: reportData.actions,       
+      };
+      getHRPopUpReportList(params);
+    },
+    [hrStage, firstDay, lastDay, appliedFilter, isFocusedRole]
+  );
 
-  // const tableColumnsMemo = useMemo(
-  //   () => reportConfig.hrPopupReportConfig(hrStage),
-  //   [hrStage]
-  // );
+  const tableColumnsMemo = useMemo(
+    () => reportConfig.UTMPopupReportConfig(),
+    [hrStage]
+  );
 
   const onRemoveDealFilters = () => {
     setTimeout(() => {
@@ -453,17 +436,17 @@ export default function UTMTrackingReport() {
     setHTMLFilter(!getHTMLFilter);
   }, [getHTMLFilter, isAllowFilters]);
 
-  // const handleExport = (apiData) => {
-  //   let DataToExport = apiData.map((data) => {
-  //     let obj = {};
-  //     tableColumnsMemo.map(
-  //       (val) =>
-  //         val.key !== "action" && (obj[`${val.title}`] = data[`${val.key}`])
-  //     );
-  //     return obj;
-  //   });
-  //   downloadToExcel(DataToExport, `HRReport: ${hrStage}.xlsx`);
-  // };
+  const handleExport = (apiData) => {
+    let DataToExport = apiData.map((data) => {
+      let obj = {};
+      tableColumnsMemo.map(
+        (val) =>
+          val.key !== "action" && (obj[`${val.title}`] = data[`${val.key}`])
+      );
+      return obj;
+    });
+    downloadToExcel(DataToExport, `UTMTrackingReport: ${hrStage} => ${moment(startDate).format("YYYY-MM-DD")}/${ moment(endDate).format("YYYY-MM-DD")}.xlsx`);
+  };
 
   return (
     <div className={utmTrackingReportStyle.dealContainer}>
@@ -534,190 +517,6 @@ export default function UTMTrackingReport() {
           </div>
         </div>
       </div>
-
-      {/* <div
-        className={`${utmTrackingReportStyle.filterSets} ${utmTrackingReportStyle.filterDescription}`}
-        style={{ marginBottom: "5px" }}
-      >
-        <div className={utmTrackingReportStyle.filterType}>
-          <h2>
-            No profiles shared % -{" "}
-            <span>
-              {reportList.length > 0 && reportList[0].stageValue > 0 ? 
-                (
-                  (reportList[4].stageValue / reportList[0].stageValue) *
-                  100
-                ).toFixed(2) : "NA"}
-            </span>
-          </h2>
-        </div>
-
-        <div className={utmTrackingReportStyle.filterType}>
-          
-          <h2>
-          At least 3 profile shared % -{" "}
-            <span>
-              {reportList.length > 0 && reportList[0].stageValue > 0 ?
-                (
-                  (reportList[5].stageValue / reportList[0].stageValue) *
-                  100
-                ).toFixed(2) : "NA"}
-            </span>
-          </h2>
-        </div>
-
-        <div className={utmTrackingReportStyle.filterType}>
-          
-          <h2>
-            At least 1 profiles shared in 2 days % -{" "}
-            <span>
-              {reportList.length > 0 && reportList[0].stageValue > 0 ?
-                (
-                  (reportList[9].stageValue / reportList[0].stageValue) *
-                  100
-                ).toFixed(2) : "NA"}
-            </span>
-          </h2>
-        </div>
-
-        <div className={utmTrackingReportStyle.filterType}>
-          <h2>
-          At least 6 profiles shared in 10 days % -{" "}
-            <span>
-              {reportList.length > 0 && reportList[0].stageValue > 0 ?
-                (
-                  (reportList[6].stageValue / reportList[0].stageValue) *
-                  100
-                ).toFixed(2) : "NA"}
-            </span>
-          </h2>
-        </div>
-      </div>
-
-      <div
-        className={`${utmTrackingReportStyle.filterSets} ${utmTrackingReportStyle.filterDescription}`}
-        style={{ marginTop: "0" }}
-      >
-        <div className={utmTrackingReportStyle.filterType}>
-          <h2>
-          At least 5 profiles are shared in 5 days % -{" "}
-            <span>
-              {reportList.length > 0 && reportList[0].stageValue > 0 ?
-                (
-                  (reportList[7].stageValue / reportList[0].stageValue) *
-                  100
-                ).toFixed(2) : "NA"}
-            </span>
-          </h2>
-        </div>
-
-        <div className={utmTrackingReportStyle.filterType}>
-          <h2>
-          At least 10 profiles are shared in 10 days % -{" "}
-            <span>
-              {reportList.length > 0 && reportList[0].stageValue > 0 ?
-                (
-                  (reportList[8].stageValue / reportList[0].stageValue) *
-                  100
-                ).toFixed(2) : 'NA'}
-            </span>
-          </h2>
-        </div>
-        <div className={utmTrackingReportStyle.filterType}>
-          <h2>
-            At least 1 profiles shared in 5 days % -{" "}
-            <span>
-              {reportList.length > 0 && reportList[0].stageValue > 0 ?
-                (
-                  (reportList[10].stageValue / reportList[0].stageValue) *
-                  100
-                ).toFixed(2): 'NA'}
-            </span>
-          </h2>
-        </div>
-      </div> */}
-
-              {/* <Select 
-                mode="multiple"
-                size='small'
-                style={{ width: '150px' }}
-                search={false}
-                placeholder="Select Number of Jobs"
-                // value={selectedHRTypes}
-                onChange={(data,datawithID)=>{console.log(data,datawithID)}}
-                options={numOfJobs} 
-              />
-              <Select 
-                mode="multiple"
-                size='small'
-                style={{ width: '150px' }}
-                search={false}
-                placeholder="Select Ref Url"
-                // value={selectedHRTypes}
-                // onChange={(data,datawithID)=>{console.log(data,datawithID);setSelectedHRTypes(datawithID)}}
-                options={refURL} 
-              />
-              <Select 
-                mode="multiple"
-                size='small'
-                style={{ width: '150px' }}
-                search={false}
-                placeholder="Select UTM Campaign"
-                // value={selectedHRTypes}
-                // onChange={(data,datawithID)=>{console.log(data,datawithID);setSelectedHRTypes(datawithID)}}
-                options={campaign} 
-              />
-              <Select 
-                mode="multiple"
-                size='small'
-                style={{ width: '150px' }}
-                search={false}
-                placeholder="Select UTM Medium"
-                // value={selectedHRTypes}
-                // onChange={(data,datawithID)=>{console.log(data,datawithID);setSelectedHRTypes(datawithID)}}
-                options={medium} 
-              />
-              <Select 
-                mode="multiple"
-                size='small'
-                style={{ width: '150px' }}
-                search={false}
-                placeholder="Select UTM Content"
-                // value={selectedHRTypes}
-                // onChange={(data,datawithID)=>{console.log(data,datawithID);setSelectedHRTypes(datawithID)}}
-                options={content} 
-              />
-              <Select 
-                mode="multiple"
-                size='small'
-                style={{ width: '150px' }}
-                search={false}
-                placeholder="Select UTM Placement"
-                // value={selectedHRTypes}
-                // onChange={(data,datawithID)=>{console.log(data,datawithID);setSelectedHRTypes(datawithID)}}
-                options={placement} 
-              />
-              <Select 
-                mode="multiple"
-                size='small'
-                style={{ width: '150px' }}
-                search={false}
-                placeholder="Select UTM Source"
-                // value={selectedHRTypes}
-                // onChange={(data,datawithID)=>{console.log(data,datawithID);setSelectedHRTypes(datawithID)}}
-                options={source} 
-              />
-               <Select 
-                mode="multiple"
-                size='small'
-                style={{ width: '150px' }}
-                search={false}
-                placeholder="Select UTM Term"
-                // value={selectedHRTypes}
-                // onChange={(data,datawithID)=>{console.log(data,datawithID);setSelectedHRTypes(datawithID)}}
-                options={term} 
-              /> */}
-
       <div className={utmTrackingReportStyle.i2sContainer} style={{ width: "50%" }}>
         <div className={utmTrackingReportStyle.cardWrapper}>
           <div className={utmTrackingReportStyle.cardTitle}>
@@ -730,14 +529,63 @@ export default function UTMTrackingReport() {
               <li className={utmTrackingReportStyle.row}>
                  <div className={utmTrackingReportStyle.rowLabel}>{report.actions}</div>
                 {/* <div className={utmTrackingReportStyle.rowLabel}>{report.value}</div> */}
-                <div className={utmTrackingReportStyle.rowValue}>
-                {report.value}
+                <div className={utmTrackingReportStyle.rowValue}>                
+                {report.value > 0 ? (
+                    <p
+                      className={utmTrackingReportStyle.textLink}
+                      onClick={() => {
+                        setTableData(report);                        
+                      }}
+                    >
+                      {report.value}
+                    </p>
+                  ) : (
+                    <p>{report.value}</p>
+                  )}
                 </div>
               </li>
             ))}
           </ul>
         </div>
       </div>
+
+      {reportPopupList.length > 0 && (
+        <div className={utmTrackingReportStyle.i2sContainer}>
+          {isLoading ? (
+            <div style={{ height: "200px", overflow: "hidden" }}>
+              <TableSkeleton />
+            </div>
+          ) : (
+            <>
+              <div className={utmTrackingReportStyle.exportAction}>
+                <h3 className={utmTrackingReportStyle.cardTitle}>
+                UTM Tracking Report : {hrStage}
+                </h3>
+
+                <button
+                  className={utmTrackingReportStyle.btnPrimary}
+                  onClick={() => handleExport(reportPopupList)}
+                >
+                  Export
+                </button>
+              </div>
+
+              <Table
+                id="clientReportTable"
+                columns={tableColumnsMemo}
+                bordered={false}
+                dataSource={reportPopupList}
+                scroll={{
+                  y: 400,
+                }}
+                pagination={false}
+              />
+            </>
+          )}
+        </div>
+      )}
+
+
       {isAllowFilters && (
         <Suspense>
           <DealListLazyComponents
