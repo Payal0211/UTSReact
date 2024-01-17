@@ -162,7 +162,7 @@ const EditHRFields = ({
   const [showGPTModal, setShowGPTModal] = useState(false);
   const [gptDetails, setGPTDetails] = useState({});
   const [gptFileDetails, setGPTFileDetails] = useState({});
-  const [typeOfPricing,setTypeOfPricing] = useState(1)
+  const [typeOfPricing,setTypeOfPricing] = useState(null)
   const [transactionMessage,setTransactionMessage] = useState('')
   const [pricingTypeError,setPricingTypeError] = useState(false);
 
@@ -996,11 +996,11 @@ const EditHRFields = ({
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
 
-      // if(typeOfPricing === null){
-      //   setIsSavedLoading(false)
-      //   setPricingTypeError(true)
-      //   return
-      // }
+      if(typeOfPricing === null){
+        setIsSavedLoading(false)
+        setPricingTypeError(true)
+        return
+      }
       let hrFormDetails = hrUtils.hrFormDataFormatter(
         d,
         type,
@@ -1927,7 +1927,7 @@ const EditHRFields = ({
             {pricingTypeError && <p className={HRFieldStyle.error}>*Please select pricing type</p>}
             {transactionMessage && <p className={HRFieldStyle.teansactionMessage}>{transactionMessage}</p> } 
 						<Radio.Group
-              disabled={userData?.LoggedInUserTypeID !== 1} 
+              disabled={true} 
 							// className={allengagementReplceTalentStyles.radioGroup}
 							onChange={e=> {setTypeOfPricing(e.target.value)
                 ;resetField('hiringPricingType');resetField('availability')
