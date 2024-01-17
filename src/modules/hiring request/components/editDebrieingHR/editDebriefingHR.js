@@ -36,6 +36,8 @@ const EditDebriefingHR = ({
 	setHRdetails,
 	jdDumpID,
 	getHRdetails,
+	isDirectHR,
+	disabledFields
 }) => {
 	const {
 		watch,
@@ -433,7 +435,8 @@ const EditDebriefingHR = ({
 						"isUserAddMore": false
 					},
 					"secondaryinterviewerList": d.secondaryInterviewer
-				}
+				},
+				isDirectHR:isDirectHR
 			};
 
 			if(!sameSkillIssue){
@@ -675,7 +678,8 @@ const EditDebriefingHR = ({
 										options={talentRole && talentRole}
 										name="role"
 										isError={errors['role'] && errors['role']}
-										required
+										required={disabledFields !== null ? !disabledFields?.role : true}
+										disabled={ disabledFields !== null ? disabledFields?.role : false}
 										errorMsg={'Please select hiring request role'}
 									/>
 								</div>
@@ -832,6 +836,7 @@ const EditDebriefingHR = ({
 						watch={watch}
 						fields={fields}
 						getHRdetails={getHRdetails}
+						disabledFields={disabledFields}
 					/>
 					<Divider />
 					<div className={DebriefingHRStyle.formPanelAction}>
