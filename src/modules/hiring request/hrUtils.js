@@ -90,7 +90,7 @@ export const hrUtils = {
 		let enIDdata = localStorage.getItem('enIDdata');
 		const hrFormDetails = {
 			en_Id: _isNull(enIDdata) ? '' : enIDdata,
-			IsTransparentPricing: typeOfPricing === 1 ? true :  typeOfPricing === 2 ?  false : null,
+			IsTransparentPricing: typeOfPricing === 1 ? true :  typeOfPricing === 0 ?  false : null,
 			HrTypePricingId: companyType?.id !== 1 ? null : draft === SubmitType.SAVE_AS_DRAFT ? watch('hiringPricingType')?.id : d.hiringPricingType?.id,
 			HrTypeId: companyType?.id !== 1 ? null : hrPricingTypes?.find(item=> item.id === watch('hiringPricingType')?.id).hrtypeId,
 			PayPerType:  companyType?.id ,
