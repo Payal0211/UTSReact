@@ -614,13 +614,15 @@ const HRFields = ({
     const talentRole = await MasterDAO.getTalentsRoleRequestDAO();
 
     setTalentRole(talentRole && talentRole.responseBody);
-    setTalentRole((preValue) => [
-      ...preValue,
+    setTalentRole((preValue) => {
+      let oldArray = [...preValue]
+      return [
+      ...oldArray,
       {
         id: -1,
         value: "Others",
       },
-    ]);
+    ]});
   }, []);
 
   const getDurationTypes = useCallback(async () => {
