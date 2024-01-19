@@ -8,6 +8,7 @@ import { OnboardDAO } from 'core/onboard/onboardDAO';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import DatePicker from 'react-datepicker';
 import { lastWorkingDay } from 'shared/utils/basic_utils';
+import { Skeleton } from 'antd';
 
 const UpdateLegalTalentOnboardStatus = ({
 	talentInfo,
@@ -26,6 +27,7 @@ const UpdateLegalTalentOnboardStatus = ({
 	} = useForm({});
 
 	const [talentStatus, setTalentStatus] = useState([]);
+	const [isLoading, setIsLoading] = useState(false)
 	const getTalentStatusHandler = useCallback(async () => {
 		const response = await OnboardDAO.getOnboardStatusRequestDAO({
 			onboardID: talentInfo?.OnBoardId,
@@ -45,6 +47,7 @@ const UpdateLegalTalentOnboardStatus = ({
 
 	const talentStatusSubmitHanlder = useCallback(
 		async (d) => {
+			setIsLoading(true)
 			let talentStatusObject = {
 				onboardID: talentInfo?.OnBoardId,
 				talentID: talentInfo?.TalentID,
@@ -70,6 +73,7 @@ const UpdateLegalTalentOnboardStatus = ({
 			let response = await OnboardDAO.onboardStatusUpdatesRequestDAO(
 				talentStatusObject,
 			);
+			setIsLoading(false)
 			if (response) callAPI(hrId);
 		},
 		[
@@ -100,6 +104,7 @@ const UpdateLegalTalentOnboardStatus = ({
 			</div>
 
 			<div className={UpdateLegalClientOnboardStatusStyle.transparent}>
+				{isLoading ? <Skeleton /> : <>
 				<div className={UpdateLegalClientOnboardStatusStyle.colMd12}>
 					<HRSelectField
 						mode={'id/value'}
@@ -239,9 +244,12 @@ const UpdateLegalTalentOnboardStatus = ({
 						</div>
 					</>
 				)}
+				</> }
+				
 
 				<div className={UpdateLegalClientOnboardStatusStyle.formPanelAction}>
 					<button
+					    disabled={isLoading}
 						type="submit"
 						onClick={handleSubmit(talentStatusSubmitHanlder)}
 						className={UpdateLegalClientOnboardStatusStyle.btnPrimary}>
