@@ -2907,7 +2907,7 @@ const EditHRFields = ({
                     type={InputType.NUMBER}
                     placeholder="Please enter number of talents needed"
                     required={disabledFields !== null ? !disabledFields?.talentRequired : true}
-                    disabled={disabledFields !== null ? disabledFields?.talentRequired : true}
+                    disabled={disabledFields !== null ? disabledFields?.talentRequired : false}
                   />
                 </div>
               </div>   
