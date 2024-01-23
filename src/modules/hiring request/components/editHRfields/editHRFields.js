@@ -2009,7 +2009,8 @@ const EditHRFields = ({
                       />
                     </div>
                   </div>
-                <div className={HRFieldStyle.colMd6}>
+
+                  {(watch('availability')?.id !== 2 || watch('tempProject')?.value === true)  &&   <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                     key={'contract Duration for pay per Credit'}
@@ -2077,7 +2078,8 @@ const EditHRFields = ({
                       // disabled={isHRDirectPlacement}
                     />
                   </div>
-                </div>
+                </div>}
+               
                 </> 
                   }
 
@@ -2806,8 +2808,9 @@ const EditHRFields = ({
               </div>
 
               <div className={HRFieldStyle.row}>
-                <div className={HRFieldStyle.colMd4}>
-                  <div className={HRFieldStyle.formGroup}>
+                
+                  {
+                    companyType?.id === 1 && <div className={HRFieldStyle.colMd4}> <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                       controlledValue={controlledDurationTypeValue}
                       setControlledValue={setControlledDurationTypeValue}
@@ -2830,7 +2833,10 @@ const EditHRFields = ({
                       disabled={isHRDirectPlacement}
                     />
                   </div>
-                </div>
+                  </div>
+                  }
+                 
+                
               
                 <div className={HRFieldStyle.colMd4}>
                   <div className={HRFieldStyle.formGroup}>
@@ -2905,7 +2911,7 @@ const EditHRFields = ({
                   />
                 </div>
               </div>   
-              {(watch("availability")?.value === "Part Time" || companyType.id === 1) && (
+              {(watch("availability")?.value === "Part Time" && companyType.id === 1) && (
                 <div className={HRFieldStyle.row}>
                     <div className={HRFieldStyle.colMd6}>
                     <div className={HRFieldStyle.formGroup}>

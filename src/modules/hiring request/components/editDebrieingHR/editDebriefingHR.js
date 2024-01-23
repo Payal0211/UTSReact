@@ -728,6 +728,8 @@ const EditDebriefingHR = ({
 										errorMsg={'Please select hiring request role'}
 									/>
 								</div>
+								
+								</>}
 								<div className={DebriefingHRStyle.mb50}>
 									<HRInputField
 										register={register}
@@ -742,8 +744,6 @@ const EditDebriefingHR = ({
 										required
 									/>	
 								</div>	
-								</>}
-								
 								
 								<div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
@@ -873,7 +873,7 @@ const EditDebriefingHR = ({
 						</div>
 					</div>
 
-					{companyType?.id === 2 &&  <DebrefCompanyDetails register={register}  errors={errors} />}
+					{companyType?.id === 2 &&  <DebrefCompanyDetails register={register}  errors={errors} watch={watch} />}
 
 					
 					{companyType?.id === 1 && <>

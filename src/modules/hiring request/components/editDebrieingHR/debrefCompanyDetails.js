@@ -5,7 +5,7 @@ import HRInputField from "../hrInputFields/hrInputFields";
 import { InputType } from "constants/application";
 import HRSelectField from '../hrSelectField/hrSelectField';
 
-export default function DebrefCompanyDetails({ register, errors }) {
+export default function DebrefCompanyDetails({ register, errors, watch }) {
   return (
     <>
     <Divider />
@@ -26,7 +26,7 @@ export default function DebrefCompanyDetails({ register, errors }) {
                 name="companyName"
                 type={InputType.TEXT}
                 placeholder="Enter company name"
-                required
+                
               />
             </div>
             <div className={DebriefingHRStyle.colMd6}>
@@ -40,7 +40,7 @@ export default function DebrefCompanyDetails({ register, errors }) {
                 name="industry"
                 type={InputType.TEXT}
                 placeholder="Enter company Industry"
-                required
+                
               />
             </div>
           </div>
@@ -51,7 +51,7 @@ export default function DebrefCompanyDetails({ register, errors }) {
                 register={register}
                 errors={errors}
                 validationSchema={{
-                  required: "please enter the company website.",
+                //   required: "please enter the company website.",
                   validate: (value) =>{
                     try {
                         new URL(value);
@@ -65,7 +65,6 @@ export default function DebrefCompanyDetails({ register, errors }) {
                 name="webSite"
                 type={InputType.TEXT}
                 placeholder="Enter company website"
-                required
               />
             </div>
             <div className={DebriefingHRStyle.colMd6}>
@@ -73,7 +72,7 @@ export default function DebrefCompanyDetails({ register, errors }) {
                 register={register}
                 errors={errors}
                 validationSchema={{
-                  required: "please enter the company name.",
+                //   required: "please enter the company name.",
                   validate: (value) =>{
                     try {
                         new URL(value);
@@ -87,11 +86,10 @@ export default function DebrefCompanyDetails({ register, errors }) {
                 name="companyLinkedin"
                 type={InputType.TEXT}
                 placeholder="Enter company Linkedin"
-                required
               />
             </div>
           </div>
-        <div className={DebriefingHRStyle.row}>
+        {/* <div className={DebriefingHRStyle.row}>
             <div className={DebriefingHRStyle.colMd6}>
                         <HRInputField
                             register={register}
@@ -106,7 +104,7 @@ export default function DebrefCompanyDetails({ register, errors }) {
                             required
                         />
                 </div>
-            </div>
+            </div> */}
           
 
           <div className={DebriefingHRStyle.aboutCompanyField}>
