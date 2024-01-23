@@ -1135,6 +1135,7 @@ const HRFields = ({
         jdDumpID,typeOfPricing,hrPricingTypes,{id:1}
       );
       hrFormDetails.isDirectHR = isDirectHR
+      hrFormDetails.PayPerType =  1
 
 
       if(watch('fromTime').value === watch('endTime').value){
