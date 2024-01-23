@@ -171,14 +171,14 @@ const EditHRFields = ({
       disabled: false,
       group: null,
       selected: false,
-      text: `Yes, it's for a limited Project`,
+      text: `Temporary`,
       value: true,
     },
     {
       disabled: false,
       group: null,
       selected: false,
-      text: `No, They want to hire for long term`,
+      text: `Permanent`,
       value: false,
     },
   ]);
@@ -545,7 +545,7 @@ const EditHRFields = ({
 
     setTalentRole(talentRole && talentRole.responseBody);
     setTalentRole((preValue) => {
-      let oldArr = preValue
+      let oldArr = [...preValue]
       return [
       ...oldArr,
       {
@@ -996,7 +996,7 @@ const EditHRFields = ({
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
 
-      if(typeOfPricing === null){
+      if(typeOfPricing === null && companyType.id === 1){
         setIsSavedLoading(false)
         setPricingTypeError(true)
         return
@@ -1803,7 +1803,7 @@ const EditHRFields = ({
             <div className={HRFieldStyle.hrFieldLeftPane}>
               <h3>Hiring Request Details</h3>
               <p>Please provide the necessary details</p>
-              <p className={HRFieldStyle.teansactionMessage}>HR is "{companyType?.name}"</p>
+              <p className={HRFieldStyle.teansactionMessage}>{companyType?.name &&`HR is "${companyType?.name}"`}</p>
               <LogoLoader visible={isSavedLoading} />
             </div>
 
@@ -1958,7 +1958,14 @@ const EditHRFields = ({
                       controlledValue={controlledAvailabilityValue}
                       setControlledValue={val=> {setControlledAvailabilityValue(val);resetField('hiringPricingType');
                       resetField('payrollType');setControlledPayrollTypeValue("Select payroll")
-                      setControlledHiringPricingTypeValue("Select Hiring Pricing");resetField('contractDuration');setContractDuration('')}}
+                      setControlledHiringPricingTypeValue("Select Hiring Pricing");resetField('contractDuration');setContractDuration('');
+                      if(companyType?.id=== 2){
+                        if(val === 'Part Time'){
+                          setValue('tempProject',{id: undefined, value: true})
+                          setControlledTempProjectValue(true)
+                        }
+                      }          
+                    }}
                       isControlled={true}
                       mode={"id/value"}
                       setValue={setValue}
@@ -1998,6 +2005,7 @@ const EditHRFields = ({
                         isError={errors["tempProject"] && errors["tempProject"]}
                         required={companyType?.id=== 2 ? true : false}
                         errorMsg={"Please select."}
+                        disabled={controlledAvailabilityValue === 'Part Time' ? true : false}
                       />
                     </div>
                   </div>
@@ -2461,7 +2469,7 @@ const EditHRFields = ({
                       isControlled={true}
                       setValue={setValue}
                       register={register}
-                      label={`Add your estimated ${typeOfPricing === 1 ? "salary ":''}budget (Monthly)`}
+                      label={`Add your estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}budget (Monthly)`}
                       options={budgets.map((item) => ({
                         id: item.id,
                         label: item.text,
@@ -2477,7 +2485,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={`Estimated ${typeOfPricing === 1 ? "salary ":''}Budget`}
+                    label={`Estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget`}
                     register={register}
                     name="adhocBudgetCost"
                     type={InputType.NUMBER}
@@ -2496,7 +2504,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={`Estimated Minimum ${typeOfPricing === 1 ? "salary ":''}Budget (Monthly)`}
+                    label={`Estimated Minimum ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget (Monthly)`}
                     register={register}
                     name="minimumBudget"
                     type={InputType.NUMBER}
@@ -2516,7 +2524,7 @@ const EditHRFields = ({
 
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={`Estimated Maximum ${typeOfPricing === 1 ? "salary ":''}Budget (Monthly)`}
+                    label={`Estimated Maximum ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget (Monthly)`}
                     register={register}
                     name="maximumBudget"
                     type={InputType.NUMBER}
@@ -2896,11 +2904,10 @@ const EditHRFields = ({
                     disabled={disabledFields !== null ? disabledFields?.talentRequired : true}
                   />
                 </div>
-              </div>
-
-              {watch("availability")?.value === "Part Time" && (
+              </div>   
+              {(watch("availability")?.value === "Part Time" || companyType.id === 1) && (
                 <div className={HRFieldStyle.row}>
-                  <div className={HRFieldStyle.colMd6}>
+                    <div className={HRFieldStyle.colMd6}>
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
                         controlledValue={controlledPartialEngagementValue}
@@ -2926,6 +2933,7 @@ const EditHRFields = ({
                       />
                     </div>
                   </div>
+                  
                   <div className={HRFieldStyle.colMd6}>
                     <div className={HRFieldStyle.formGroup}>
                       <HRInputField
@@ -3125,7 +3133,8 @@ const EditHRFields = ({
                     />
                   </div>
                 </div>
-                {(removeFields !== null && removeFields?.dealID === true) ? null :   <div className={HRFieldStyle.colMd6}>
+                {companyType?.id=== 1 && <> 
+                 {(removeFields !== null && removeFields?.dealID === true) ? null :   <div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     disabled={true}
                     register={register}
@@ -3135,10 +3144,11 @@ const EditHRFields = ({
                     placeholder="Enter ID"
                   />
                 </div>}
+                </>}             
               
               </div>
 
-              <div className={HRFieldStyle.row}>
+                {companyType?.id === 1 &&   <div className={HRFieldStyle.row}>
                 {(removeFields !== null && removeFields?.hrFormLink === true) ? null : <div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     register={register}
@@ -3169,7 +3179,8 @@ const EditHRFields = ({
                   />
                 </div> }
                 
-              </div>
+              </div>}
+            
             </form>
           </div>
 
@@ -3499,7 +3510,7 @@ const EditHRFields = ({
     ) {
       return null;
     } else {
-      if(isDirectHR === true && isBDRMDRUser === true){
+      if((isDirectHR === true && isBDRMDRUser === true) || companyType?.id=== 2){
         return (<>
          <div className={HRFieldStyle.row}>
                   <div className={HRFieldStyle.colMd6}>
