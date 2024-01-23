@@ -394,7 +394,9 @@ const DebriefingHR = ({
 				},
 				"secondaryinterviewerList": d.secondaryInterviewer
 			},
-			isDirectHR:isDirectHR
+			isDirectHR:isDirectHR,
+			companyType: "Pay Per Hire",
+			PayPerType:  1 ,
 		};
 		
 		if(!sameSkillIssue){
