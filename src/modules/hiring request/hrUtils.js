@@ -167,7 +167,7 @@ export const hrUtils = {
 					: _isNull(d.adhocBudgetCost)
 					? null
 					: d.adhocBudgetCost,
-			IsHiringLimited: (watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 || watch('hiringPricingType')?.id === 1)? false : isHRDirectPlacement? null : SubmitType.SAVE_AS_DRAFT
+			IsHiringLimited: (watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 || watch('hiringPricingType')?.id === 1)? false : SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('tempProject')?.value)
 					? null
 					: watch('tempProject')?.value
