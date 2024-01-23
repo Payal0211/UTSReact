@@ -736,10 +736,12 @@ const ViewHRDetails = () => {
                       <ul>
                         <li>
                           <span>Industry:</span>{" "}
-                          {
+                          {/* {
                             hiringDetails?.responseBody?.details
                               ?.additionalDetails?.industry_Type
-                          }
+                          } */}
+                          {hiringDetails?.responseBody?.details
+                              ?.companyInfo?.industry}
                           <i className={ViewHRDetailsStyle.blueDot} />
                         </li>
                         <li>
