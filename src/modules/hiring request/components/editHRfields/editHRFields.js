@@ -991,7 +991,7 @@ const EditHRFields = ({
 
   const [messageAPI, contextHolder] = message.useMessage();
   let watchJDUrl = watch("jdURL");
-  setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
+  getHRdetails?.en_Id && setEnID(getHRdetails?.en_Id && getHRdetails?.en_Id);
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
@@ -1460,7 +1460,11 @@ const EditHRFields = ({
   }, [getHRdetails, partialEngagements]);
 
   useEffect(() => {
-    if (getHRdetails?.contractDuration) {
+    if(getHRdetails?.contractDuration === "0"){
+      setValue("contractDuration", {id: undefined, value: '0'});
+      setContractDuration("0");
+      return
+    }
       const contract = contractDurations.filter(
         (item) => item.value === (getHRdetails?.contractDuration === '-1' ? "Indefinite" : getHRdetails?.contractDuration)
       );
@@ -1469,7 +1473,7 @@ const EditHRFields = ({
         setValue("contractDuration", contract[0]);
         setContractDuration(contract[0]?.value);
       } else {
-        if (getHRdetails?.contractDuration !== "0") {
+        if (getHRdetails?.contractDuration !== "0" || getHRdetails?.contractDuration !== "-1") {
           const object = {
             disabled: false,
             group: null,
@@ -1480,7 +1484,7 @@ const EditHRFields = ({
           setcontractDurations((prev) => [...prev, object]);
           // this will trigger this Effect again and then go to if
         }
-      }
+
     }
   }, [getHRdetails, contractDurations]);
 
@@ -2009,7 +2013,7 @@ const EditHRFields = ({
                       />
                     </div>
                   </div>
-
+                  {console.log('req duration',companyType?.id=== 2 ? (watch('availability')?.id !== 2 || watch('tempProject')?.value === true) : false, watch('availability')?.id !== 2 , watch('tempProject')?.value === true)}
                   {(watch('availability')?.id !== 2 || watch('tempProject')?.value === true)  &&   <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
@@ -2051,7 +2055,7 @@ const EditHRFields = ({
                           <br />
                         </>
                       )}
-                      options={contractDurations.map((item) => ({
+                      options={contractDurations.filter(item=> item?.value !== "-1").map((item) => ({
                         id: item.id,
                         label: item.text,
                         value: item.value,
@@ -2071,12 +2075,13 @@ const EditHRFields = ({
                       isError={
                         errors["contractDuration"] && errors["contractDuration"]
                       }
-                      required={companyType?.id=== 2 ? true : false}
+                      required={companyType?.id=== 2 ? (watch('availability')?.id !== 2 || watch('tempProject')?.value === true) : false}
                       errorMsg={
                         "Please select hiring request contract duration"
                       }
                       // disabled={isHRDirectPlacement}
                     />
+                   
                   </div>
                 </div>}
                
@@ -2178,7 +2183,7 @@ const EditHRFields = ({
                           <br />
                         </>
                       )}
-                      options={contractDurations.map((item) => ({
+                      options={contractDurations.filter(item=> item?.value !== "-1").map((item) => ({
                         id: item.id,
                         label: item.text,
                         value: item.value,
@@ -2272,7 +2277,7 @@ const EditHRFields = ({
                           <br />
                         </>
                       )}
-                      options={contractDurations.map((item) => ({
+                      options={contractDurations.filter(item=> item?.value !== "-1").map((item) => ({
                         id: item.id,
                         label: item.text,
                         value: item.value,
