@@ -415,7 +415,11 @@ const ViewHRDetails = () => {
           </> }
 
                      
-
+                      <li>
+                        <span>Currency :</span>{" "}
+                        {hiringDetails?.responseBody?.details?.currency ??
+                          "NA"}
+                      </li>
                       <li>
                         <span>Sales Person:</span>{" "}
                         {hiringDetails?.responseBody?.details?.salesPerson ??

@@ -125,14 +125,14 @@ export const allClientsConfig = {
                     return text ? <div className={clienthappinessSurveyStyles.AMNAME}  onClick={()=>editAMHandler(data)}>{text}</div> : null
                 }
             },
+            // {
+            //     title: 'Geo',
+            //     dataIndex: 'geo',
+            //     key: 'geo',
+            //     width: '100px',
+            // },
             {
-                title: 'Geo',
-                dataIndex: 'geo',
-                key: 'geo',
-                width: '100px',
-            },
-            {
-                title: 'Input Source',
+                title: 'Source',
                 dataIndex: 'inputSource',
                 key: 'inputSource',
                 width: '150px',            },
