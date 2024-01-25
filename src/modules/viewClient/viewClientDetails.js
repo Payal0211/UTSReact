@@ -248,7 +248,7 @@ function ViewClientDetails() {
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Client Source</span>
-								<h3 className={dealDetailsStyles.viewdetailBtnAdd}>{viewDetails?.clientDetails?.clientSource ? viewDetails?.clientDetails?.clientSource : "NA"} <span onClick={()=>{setModalutmTraking(true);viewUTMTrackingDetails();}}>View Details <BsArrowUpRight /></span></h3>
+								<h3 className={dealDetailsStyles.viewdetailBtnAdd}>{viewDetails?.clientDetails?.clientSource ? viewDetails?.clientDetails?.clientSource : "NA"} {viewDetails?.clientDetails?.clientSource === 'Self Signup' &&<span onClick={()=>{setModalutmTraking(true);viewUTMTrackingDetails();}}>View Details <BsArrowUpRight /></span> } </h3>
 							</div>
 						</li>
 						<li>
@@ -280,10 +280,14 @@ function ViewClientDetails() {
 								<li>
 									<span>Client Email:</span>
 									{viewDetails?.clientDetails?.clientEmail ? viewDetails?.clientDetails?.clientEmail : "NA"}
-								</li>
+								</li>							
                                 <li>
 									<span>Lead Source : </span>
 									{viewDetails?.clientDetails?.leadSource ? viewDetails?.clientDetails?.leadSource : "NA"}
+								</li>
+								<li>
+									<span>Client Contact Number:</span>
+									{viewDetails?.clientDetails?.clientContactNumber ? viewDetails?.clientDetails?.clientContactNumber : "NA"}
 								</li>
 								<li>
 									<span>Client Linkedin : -</span>

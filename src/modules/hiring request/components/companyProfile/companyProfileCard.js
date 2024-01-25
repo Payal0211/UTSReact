@@ -346,6 +346,12 @@ const CompanyProfileCard = ({
                   Years
                 </span>
               </div>
+              <div className={CompanyProfileCardStyle.minExp}>
+                <span>Currency:</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                 {allApiData?.HRDetails?.Currency ?? "NA"}
+                </span>
+              </div>
               {/* budget for pay per Hire */}
               {allApiData?.IsPayPerHire && <div className={CompanyProfileCardStyle.budget}>
                 {/* <span>{`${allApiData?.transparentModel?.IsTransparentPricing ? 'Salary' : ''} Budget` } :</span>&nbsp;&nbsp;            
