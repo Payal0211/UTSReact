@@ -582,6 +582,7 @@ const EditDebriefingHR = ({
 		let companyInfo = getHRdetails?.companyInfo
 
 		if(companyInfo?.companyID){
+			companyInfo?.aboutCompanyDesc && setValue('aboutCompany',companyInfo?.aboutCompanyDesc)
 			companyInfo?.companyName && setValue('companyName',companyInfo?.companyName)
 			companyInfo?.website && setValue('webSite',companyInfo?.website)
 			companyInfo?.industry && setValue('industry',companyInfo?.industry)
