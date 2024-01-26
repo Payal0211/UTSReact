@@ -410,7 +410,7 @@ function AllClients() {
                                                   }
                                         }       
                                         
-                                        />;
+                                        />
                                     </WithLoader>
                             )} 
                 </div>

@@ -572,6 +572,24 @@ const DebriefingHR = ({
 								errors={errors}
 								name="roleAndResponsibilities"
 							/>
+							
+							<TextEditor
+								isControlled={true}
+								// controlledValue={JDParsedSkills?.Requirements || ''}
+								controlledValue={addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
+									JDParsedSkills?.Requirements ||
+									(addData?.salesHiringRequest_Details?.requirement)
+								}
+								label={'Requirements'}
+								placeholder={'Enter Requirements'}
+								setValue={setValue}
+								watch={watch}
+								register={register}
+								errors={errors}
+								name="requirements"
+								required
+							/>
+
 							<div className={DebriefingHRStyle.aboutCompanyField}>
 								<HRInputField
 									required
@@ -611,22 +629,7 @@ const DebriefingHR = ({
 								/>
 								{/* <p>* Please do not mention company name here</p> */}
 							</div>
-							<TextEditor
-								isControlled={true}
-								// controlledValue={JDParsedSkills?.Requirements || ''}
-								controlledValue={addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
-									JDParsedSkills?.Requirements ||
-									(addData?.salesHiringRequest_Details?.requirement)
-								}
-								label={'Requirements'}
-								placeholder={'Enter Requirements'}
-								setValue={setValue}
-								watch={watch}
-								register={register}
-								errors={errors}
-								name="requirements"
-								required
-							/>
+
 								<div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
 									controlledValue={controlledRoleValue}
