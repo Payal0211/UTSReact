@@ -657,7 +657,25 @@ const EditDebriefingHR = ({
 									errors={errors}
 									name="roleAndResponsibilities"
 								/>
-								{companyType?.id === 1 && <div className={DebriefingHRStyle.aboutCompanyField}>
+							
+								
+								<TextEditor
+									isControlled={true}
+									controlledValue={getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.requirement)) :getHRdetails?.salesHiringRequest_Details?.requirement :
+										JDParsedSkills?.Requirements ||
+										(getHRdetails?.salesHiringRequest_Details?.requirement)
+									}
+									label={'Requirements'}
+									placeholder={'Enter Requirements'}
+									setValue={setValue}
+									watch={watch}
+									register={register}
+									errors={errors}
+									name="requirements"
+									required
+								/>
+
+{companyType?.id === 1 && <div className={DebriefingHRStyle.aboutCompanyField}>
 									<HRInputField
 										required
 										isTextArea={true}
@@ -693,22 +711,7 @@ const EditDebriefingHR = ({
 									/>
 									{/* <p>* Please do not mention company name here</p> */}
 								</div>}
-								
-								<TextEditor
-									isControlled={true}
-									controlledValue={getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.requirement)) :getHRdetails?.salesHiringRequest_Details?.requirement :
-										JDParsedSkills?.Requirements ||
-										(getHRdetails?.salesHiringRequest_Details?.requirement)
-									}
-									label={'Requirements'}
-									placeholder={'Enter Requirements'}
-									setValue={setValue}
-									watch={watch}
-									register={register}
-									errors={errors}
-									name="requirements"
-									required
-								/>
+
 								{companyType?.id === 1 && <>
 								<div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
