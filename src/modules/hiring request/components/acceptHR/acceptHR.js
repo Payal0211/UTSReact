@@ -27,6 +27,7 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
 				HRID: urlSplitter,
 				AcceptValue: '1',
 				Reason: '',
+				isInternal: false
 			};
 
 			const response = await hiringRequestDAO.acceptHRRequestDAO(
@@ -47,6 +48,7 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
 				HRID: urlSplitter,
 				AcceptValue: '2',
 				Reason: d.acceptHRDetails,
+				isInternal: false
 			};
 
 			const response = await hiringRequestDAO.acceptHRRequestDAO(

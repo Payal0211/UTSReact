@@ -330,7 +330,7 @@ const HiringFilters = ({
 							<br />
 							<div className={hiringFilterStyle.filtersListType}>
 								{searchData && searchData.length > 0
-									? searchData.map((item, index) => {
+									? searchData?.map((item, index) => {
 											return (
 												<div
 													className={hiringFilterStyle.filterItem}
@@ -361,7 +361,7 @@ const HiringFilters = ({
 												</div>
 											);
 									  })
-									: filterSubChild.child.map((item, index) => {
+									: filterSubChild?.child?.map((item, index) => {
 											return (
 												<div
 													className={hiringFilterStyle.filterItem}

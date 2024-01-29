@@ -92,7 +92,7 @@ export const hrUtils = {
 			en_Id: _isNull(enIDdata) ? '' : enIDdata,
 			IsTransparentPricing: typeOfPricing === 1 ? true :  typeOfPricing === 0 ?  false : null,
 			HrTypePricingId: companyType?.id !== 1 ? null : draft === SubmitType.SAVE_AS_DRAFT ? watch('hiringPricingType')?.id : d.hiringPricingType?.id,
-			HrTypeId: companyType?.id !== 1 ? null : hrPricingTypes?.find(item=> item.id === watch('hiringPricingType')?.id).hrtypeId,
+			HrTypeId: companyType?.id !== 1 ? null : hrPricingTypes?.find(item=> item.id === watch('hiringPricingType')?.id)?.hrtypeId,
 			PayPerType:  companyType?.id ,
 			CalculatedUplersfees: companyType?.id !== 1 ? '' :  watch('uplersFees')? typeof watch('uplersFees') === 'string'? watch('uplersFees') :  JSON.stringify(watch('uplersFees')) : '',
 			PayrollTypeId: companyType?.id !== 1 ? null : draft === SubmitType.SAVE_AS_DRAFT ?  watch('payrollType')?.id: (watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5) ? 1  : d.payrollType?.id,
