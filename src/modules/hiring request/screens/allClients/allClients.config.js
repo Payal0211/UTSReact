@@ -71,6 +71,9 @@ export const allClientsConfig = {
                 key: 'companyName',
                 width: '210px',
                 render: (text, result) => {
+                    if(result.companyID === 0  || result.clientID=== 0){
+                        return text
+                    }
 					return (
 						<Link
 							// to={`/viewClient/${result.companyID}~${result.clientID}`}
