@@ -27,6 +27,15 @@ export const allClientsConfig = {
 				isSearch: false,
             },
             {
+                label: 'Lead Type',
+				name: 'leadUserId',
+				child: filterList?.LeadTypeList.filter(
+					(item, index) => index !== 0 && item,
+				),
+				isSearch: false,
+                isSingleSelect:true
+            },
+            {
                 label: 'Category',
 				name: 'category',
 				child: filterList?.CompanyCategory,
