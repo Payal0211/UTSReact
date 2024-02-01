@@ -292,7 +292,7 @@ const CompanyProfileCard = ({
                     userSessionMemo?.loggedInUserTypeID ===
                       UserAccountRole.SALES ||
                     userSessionMemo?.loggedInUserTypeID ===
-                      UserAccountRole.SALES_MANAGER) && (
+                      UserAccountRole.SALES_MANAGER) && (allApiData?.ReplaceOnBoardID === null || allApiData?.ReplaceOnBoardID === 0 ) &&  (
                     <button
                       onClick={() => {
                         setUpdateTR(true);

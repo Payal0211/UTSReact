@@ -353,6 +353,7 @@ export class TalentReplaceAPI {
 	static ENGAGEMENT_REPLACE_TALENT =
 		'GetEngagemetnsForReplacementBasedOnLWDOption';
 	static SAVE_REPLACED_TALENT = 'SaveReplaceTalent';
+	static CREATE_REPLACE_HR = 'CreateReplaceHR'
 }
 export class IncentiveReport {
 	static GET_USER_ROLE = 'GetIncentiveReport';

@@ -7,9 +7,10 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import allengagementReplceTalentStyles from '../engagementBillAndPayRate/engagementBillRate.module.css';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { Radio, Skeleton } from 'antd';
+import { Modal, Radio, Skeleton } from 'antd';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
+import { Link } from 'react-router-dom';
 const EngagementReplaceTalent = ({
 	talentInfo,
 	hrId,
@@ -24,6 +25,8 @@ const EngagementReplaceTalent = ({
 
 	const [getRadio, setRadio] = useState('client');
 	const [isLoading, setIsLoading] = useState(false)
+	const [newHRModal,setNewHrModal] = useState(false)
+	const [newHRDetails , setNewHRDetails] = useState({})
 	const {
 		register,
 		unregister,
@@ -73,6 +76,22 @@ const EngagementReplaceTalent = ({
 	},[watch("replaceStage"), setValue,unregister])
 
 	// console.log({getTalentReplacementData,talentInfo})
+	const CreateReplaceHR =async ()=>{
+		console.log('payload to create',{HrID:hrId || getTalentReplacementData?.onBoardTalents?.hiringRequestId
+			,OnBoardID: talentInfo?.onboardID || talentInfo?.OnBoardId})
+			const response = await engagementRequestDAO.createReplaceHRRequestDAO(
+				{HrID:hrId || getTalentReplacementData?.onBoardTalents?.hiringRequestId
+						,OnBoardID: talentInfo?.onboardID || talentInfo?.OnBoardId}
+			);
+
+			if (response?.statusCode === HTTPStatusCode.OK) {
+			console.log(response)
+			setNewHrModal(true)
+			setNewHRDetails(response?.responseBody?.details)
+			}
+			setIsLoading(false)
+	}
+
 
 	const submitTalentReplacementHandler = useCallback(
 		async (d) => {
@@ -98,13 +117,14 @@ const EngagementReplaceTalent = ({
 				talentReplacementDetails,
 			);
 			if (response?.statusCode === HTTPStatusCode.OK) {
-				if (isEngagement === true) {
-					closeModal();
-					engagementListHandler();
-				} else {
-					callAPI(hrId);
-				}
-				setIsLoading(false)
+				return CreateReplaceHR()
+				// if (isEngagement === true) {
+				// 	closeModal();
+				// 	engagementListHandler();
+				// } else {
+				// 	callAPI(hrId);
+				// }
+				
 			}
 			setIsLoading(false)
 		},
@@ -126,6 +146,17 @@ const EngagementReplaceTalent = ({
 	useEffect(() => {
 		getReplaceTalentInfoHandler();
 	}, [getReplaceTalentInfoHandler]);
+
+	const manageNewHRClose  = () =>{
+		setNewHrModal(false)
+		setNewHRDetails({})
+		if (isEngagement === true) {
+			closeModal();
+			engagementListHandler();
+		} else {
+			callAPI(hrId);
+		}
+	} 
 
 	return (
 		<div className={allengagementReplceTalentStyles.engagementModalContainer}>
@@ -357,6 +388,26 @@ const EngagementReplaceTalent = ({
 					</button>
 				</div>
 			</div>
+			<Modal
+			    open={newHRModal} 
+				closable={false}
+				centered
+				footer={<div className={allengagementReplceTalentStyles.formPanelAction}>
+				<button
+					type="submit"
+					onClick={() => manageNewHRClose()}
+					className={allengagementReplceTalentStyles.btnPrimary}
+					>
+					OK
+				</button>
+				
+			</div>}
+				
+				// onCancel={() => manageNewHRClose()}
+					>
+				<h1>New HR Created <Link to={`/allhiringrequest/${newHRDetails?.hR_Id}`} target='_blank'>{newHRDetails?.hR_Number}</Link></h1>
+				
+			</Modal>
 		</div>
 	);
 };
