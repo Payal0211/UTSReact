@@ -327,6 +327,13 @@ export const allHRConfig = {
         isSearch: true,
       },
       {
+        label: 'Lead Type',
+        name: 'leadUserId',
+        child: filterList?.leadTypeList,
+        isSearch: false,
+        isSingleSelect:true
+    },
+      {
         label: "Sales Representative",
         name: "salesRep",
         child: filterList?.salesReps,
