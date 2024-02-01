@@ -30,25 +30,25 @@ const EmptyTalentProfile = ({ talentLength }) => {
 	const navigate = useNavigate();
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + urlSplitter?.split('HR')[1];
-	const [apiData, setAPIdata] = useState([]);
-	const callAPI = useCallback(
-		async (hrid) => {
-			setLoading(true);
-			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
+	// const [apiData, setAPIdata] = useState([]);
+	// const callAPI = useCallback(
+	// 	async (hrid) => {
+	// 		setLoading(true);
+	// 		let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
 
-			if (response.statusCode === HTTPStatusCode.OK) {
-				setAPIdata(response && response?.responseBody);
-				setLoading(false);
-			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
-				navigate(UTSRoutes.PAGENOTFOUNDROUTE);
-			}
-		},
-		[navigate],
-	);
-	useEffect(() => {
-		setLoading(true);
-		callAPI(urlSplitter?.split('HR')[0]);
-	}, [urlSplitter, callAPI]);
+	// 		if (response.statusCode === HTTPStatusCode.OK) {
+	// 			setAPIdata(response && response?.responseBody);
+	// 			setLoading(false);
+	// 		} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+	// 			navigate(UTSRoutes.PAGENOTFOUNDROUTE);
+	// 		}
+	// 	},
+	// 	[navigate],
+	// );
+	// useEffect(() => {
+	// 	setLoading(true);
+	// 	callAPI(urlSplitter?.split('HR')[0]);
+	// }, [urlSplitter, callAPI]);
 
 	const [matchmakingData, setMatchmakingData] = useState(false);
 

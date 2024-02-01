@@ -67,6 +67,25 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	createReplaceHRRequest: async function (details) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TALENT_REPLACEMENT +
+			TalentReplaceAPI.CREATE_REPLACE_HR  + `?HrID=${details.HrID}&OnBoardID=${details.OnBoardID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.createReplaceHRRequest',
+			);
+		}
+	},
 	saveTalentReplacementRequest: async function (talentReplaceDetails) {
 		let httpService = new HttpServices();
 		httpService.URL =
