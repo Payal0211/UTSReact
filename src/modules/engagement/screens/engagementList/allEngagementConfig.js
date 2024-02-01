@@ -443,6 +443,7 @@ export const allEngagementConfig = {
 						)}
 						<Link
 							to={`/allhiringrequest/${result?.hrID}`}
+							target='_blank'
 							style={{ color: '#006699', textDecoration: 'underline' }}>
 							{result?.engagementId_HRID.slice(
 								result?.engagementId_HRID?.indexOf('/'),
