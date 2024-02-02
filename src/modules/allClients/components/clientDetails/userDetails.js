@@ -11,11 +11,16 @@ import { useNavigate } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {  Spin } from 'antd';
+import {  Checkbox, Spin } from 'antd';
 
 const UserDetails = () => {
     const navigate = useNavigate();
     const [isLoading,setIsLoading] = useState(false);
+    const [IsChecked,setIsChecked] = useState({
+        IsPostaJob:false,
+        IsProfileView:false,
+        IsHybridModel:false,
+    });
     const {
         watch,
         register,
@@ -27,8 +32,6 @@ const UserDetails = () => {
     let company_name = watch('companyName');
     let work_email = watch('workEmail');
     let free_credits = watch('freeCredits');
-
-
     useEffect(() => {
         if(full_name){
             setError('fullName', null);
@@ -102,12 +105,16 @@ const UserDetails = () => {
 
     const onSubmitData = async () => {
         setIsLoading(true);
-        const response = await allClientRequestDAO.userDetailsDAO({
+        let payload = {
             fullName: full_name,
             workEmail: work_email,
             companyName: company_name,
-            freeCredit: Number(free_credits)
-          });
+            freeCredit: Number(free_credits),
+            IsPostaJob: IsChecked?.IsPostaJob,
+            IsProfileView: IsChecked?.IsProfileView, 
+            IsHybridModel: IsChecked?.IsHybridModel
+        }
+        const response = await allClientRequestDAO.userDetailsDAO(payload);
           if (response.statusCode === HTTPStatusCode.OK) {           
             toast.success("Client added successfully",{
                 position: toast.POSITION.TOP_RIGHT,
@@ -171,7 +178,7 @@ const UserDetails = () => {
                         <HRInputField                  
                         register={register}
                         errors={errors}                   
-                        label="Free credits"
+                        label="Free Credits"
                         name="freeCredits"
                         type={InputType.NUMBER}
                         placeholder="Enter free credits"
@@ -184,7 +191,12 @@ const UserDetails = () => {
                             },
                         }}
                         />
-                    </div>                  
+                    </div>  
+                    <div className={userDetails.checkbox}>
+                        <Checkbox name='IsPostaJob' checked={IsChecked?.IsPostaJob} onChange={(e)=>setIsChecked({...IsChecked,IsPostaJob:e.target.checked})}>Credit per post a job.</Checkbox>
+                        <Checkbox name="IsProfileView" checked={IsChecked?.IsProfileView} onChange={(e)=>setIsChecked({...IsChecked,IsProfileView:e.target.checked})}>Credit per profile view.</Checkbox>
+                        <Checkbox name="IsHybridModel" checked={IsChecked?.IsHybridModel} onChange={(e)=>setIsChecked({...IsChecked,IsHybridModel:e.target.checked})}>Do you want to continue with Hybrid model ?</Checkbox>
+                    </div>                   
                     <div>
                     <button type='button' className={userDetails.btn} onClick={handleSubmit}>SUBMIT</button>
                     </div>     

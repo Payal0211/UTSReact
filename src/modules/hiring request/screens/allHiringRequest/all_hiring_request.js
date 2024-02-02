@@ -547,7 +547,7 @@ const AllHiringRequestScreen = () => {
             miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
             miscData?.loggedInUserTypeID === UserAccountRole.MARKETING) && (
             <HROperator
-            title={"Add New HR"}
+            title={"Add New HR (Pay Per Hire)"}
               // title={
               //   miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
               //   miscData?.loggedInUserTypeID === UserAccountRole.MARKETING
@@ -585,7 +585,7 @@ const AllHiringRequestScreen = () => {
                     miscData?.loggedInUserTypeID === UserAccountRole.MARKETING
                   ? [
                       {
-                        label: "Add New HR",
+                        label: "Add New HR (Pay Per Hire)",
                         key: AddNewType.HR,
                         IsEnabled: true,
                       },
@@ -593,8 +593,13 @@ const AllHiringRequestScreen = () => {
                 
                   : [
                       {
-                        label: "Add New HR",
-                        key: AddNewType.HR,
+                        label: "Add New HR (Pay Per Hire)",
+                        key: AddNewType.HRHIRE,
+                        IsEnabled: true,
+                      },
+                      {
+                        label: "Add New HR (Pay Per Credit)",
+                        key: AddNewType.HRCREDIT,
                         IsEnabled: true,
                       },
                       {
@@ -606,9 +611,16 @@ const AllHiringRequestScreen = () => {
               }
               menuAction={(item) => {
                 switch (item.key) {
-                  case AddNewType.HR: {
+                  case AddNewType.HRCREDIT: {
                     navigate(UTSRoutes.ADDNEWHR);
                     localStorage.removeItem("dealId");
+                    localStorage.setItem("PayPerKey",4)
+                    break;
+                  }
+                  case AddNewType.HRHIRE: {
+                    navigate(UTSRoutes.ADDNEWHR);
+                    localStorage.removeItem("dealId");
+                    localStorage.setItem("PayPerKey",1)
                     break;
                   }
                   case AddNewType.DIRECT_HR: {
