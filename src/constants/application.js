@@ -93,7 +93,8 @@ export class FormType {
 }
 export class AddNewType {
 	static CLIENT = 'Add New Client';
-	static HR = 'Add New HR';
+	static HRCREDIT = 'Add New HR (Pay Per Credit)';
+	static HRHIRE="Add New HR (Pay Per Hire)"
 	static DIRECT_HR = 'Add New Direct HR'
 	static DEBRIEFING = 'debriefingHR';
 }
