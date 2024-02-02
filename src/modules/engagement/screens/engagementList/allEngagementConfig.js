@@ -199,7 +199,7 @@ export const allEngagementConfig = {
 						param?.clientLegal_StatusID === 2 &&
 						param?.isContractCompleted !== 1 &&
 						param?.isHRManaged === 0 &&
-						param?.currentStatus !== 'In Replacement'
+						param?.currentStatus !== 'In Replacement' && (param?.replacementID === 0 || param?.replacementID === null)
 					) {
 						listItemData.push({
 							label: 'Replace Engagement',
