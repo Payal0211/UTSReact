@@ -195,8 +195,11 @@ const UserDetails = () => {
                     <div className={userDetails.checkbox}>
                         <Checkbox name='IsPostaJob' checked={IsChecked?.IsPostaJob} onChange={(e)=>setIsChecked({...IsChecked,IsPostaJob:e.target.checked})}>Credit per post a job.</Checkbox>
                         <Checkbox name="IsProfileView" checked={IsChecked?.IsProfileView} onChange={(e)=>setIsChecked({...IsChecked,IsProfileView:e.target.checked})}>Credit per profile view.</Checkbox>
-                        <Checkbox name="IsHybridModel" checked={IsChecked?.IsHybridModel} onChange={(e)=>setIsChecked({...IsChecked,IsHybridModel:e.target.checked})}>Do you want to continue with Hybrid model ?</Checkbox>
+                      
                     </div>                   
+                    <div className={userDetails.checkbox}>
+                        <Checkbox name="IsHybridModel" checked={IsChecked?.IsHybridModel} onChange={(e)=>setIsChecked({...IsChecked,IsHybridModel:e.target.checked})}>Do you want to continue with Hybrid model ?</Checkbox>
+                    </div>   
                     <div>
                     <button type='button' className={userDetails.btn} onClick={handleSubmit}>SUBMIT</button>
                     </div>     
