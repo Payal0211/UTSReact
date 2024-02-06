@@ -49,6 +49,14 @@ const ClientField = ({
 	const [primaryClientEmail, setPrimaryClientEmail] = useState('');
 	const [legelInfoEN_ID, setLegelInfoEN_ID] = useState('')
 	const [isSavedLoading, setIsSavedLoading] = useState(false);
+	const [checkPayPer, setCheckPayPer] = useState({
+		companyTypeID:0,
+		anotherCompanyTypeID:0
+	});
+	const [IsChecked,setIsChecked] = useState({
+        isPostaJob:false,
+        isProfileView:false,
+    });
 
 	const [clientPOCs, setClientPOCs]  = useState([])
 	/** ---- Useform()  Starts here --------- */
@@ -164,7 +172,10 @@ const ClientField = ({
 			primaryClientEN_ID,
 			legelInfoEN_ID,
 			companyDetail,
-			typeOfPricing}
+			typeOfPricing,
+			checkPayPer,
+			IsChecked
+		}
 		);
 
 		let newPOClist = d.pocList.map(contact => {
@@ -412,6 +423,10 @@ const ClientField = ({
 				pricingTypeError={pricingTypeError}
 				setPricingTypeError={setPricingTypeError}
 				setTypeOfPricing={setTypeOfPricing}
+				setCheckPayPer={setCheckPayPer}
+				checkPayPer={checkPayPer}
+				setIsChecked={setIsChecked}
+				IsChecked={IsChecked}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>
 			<AddNewClient

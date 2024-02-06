@@ -51,12 +51,18 @@ export function clientFormDataFormatter({
 	legelInfoEN_ID,
 	companyDetail,
 	base64ClientImage,
-	getUploadClientFileData,typeOfPricing
+	getUploadClientFileData,typeOfPricing,
+	checkPayPer,
+	IsChecked
 }) {
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 		company: {
 			IsTransparentPricing: typeOfPricing === 1 ? true : false ,
+			anotherCompanyTypeID:checkPayPer?.anotherCompanyTypeID,
+			companyTypeID:checkPayPer?.companyTypeID,
+			isPostaJob:IsChecked?.isPostaJob,
+			isProfileView:IsChecked?.isProfileView,
 			// en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
 			en_Id : companyDetail.en_Id,
 			company: draft === SubmitType.SAVE_AS_DRAFT ? companyName : d.companyName,
@@ -64,6 +70,14 @@ export function clientFormDataFormatter({
 				base64ProfilePic: base64Image,
 				extenstion: getUploadFileData?.split('.')[1],
 			},
+			jpCreditBalance:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('jpCreditBalance'))
+						? null
+						: watch('jpCreditBalance')
+					: _isNull(d.jpCreditBalance)
+					? null
+					: Number(d.jpCreditBalance),
 			aboutCompanyDesc: 
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('aboutCompany'))
