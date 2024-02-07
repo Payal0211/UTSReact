@@ -120,6 +120,18 @@ const ClientField = ({
 	const [isSameAsPrimaryPOC, setSameAsPrimaryPOC] = useState(false);
 
 	const [flagAndCode, setFlagAndCode] = useState([]);
+	const [checkPayPer, setCheckPayPer] = useState({
+		companyTypeID:0,
+		anotherCompanyTypeID:0
+	});
+	const [IsChecked,setIsChecked] = useState({
+        isPostaJob:false,
+        isProfileView:false,
+    });
+	const [payPerCondition,setPayPerCondition] = useState({
+		companyTypeID:0,
+		anotherCompanyTypeID:0
+	})
 
 	const SameASPrimaryPOCHandler = useCallback((e) => {
 		// e.preventDefault();
@@ -165,6 +177,9 @@ const ClientField = ({
 			legelInfoEN_ID,
 			companyDetail,
 			typeOfPricing,
+			checkPayPer,
+			IsChecked,
+			payPerCondition,
 		}
 		);
 
@@ -251,6 +266,18 @@ const ClientField = ({
 	useEffect(() => {
 		getCodeAndFlag();
 	}, []);
+
+	useEffect(() => {
+		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==0){
+			setPayPerCondition({...payPerCondition,companyTypeID:1});
+		}else
+		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==2){
+			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1})
+		}else
+		if(checkPayPer?.companyTypeID>0 || checkPayPer?.companyTypeID==2){
+			setPayPerCondition({...payPerCondition,companyTypeID:2});
+		}
+	}, [checkPayPer,payPerCondition])
 
 	useEffect(() => {
 		if (isSameAsPrimaryPOC) {
@@ -413,6 +440,10 @@ const ClientField = ({
 				pricingTypeError={pricingTypeError}
 				setPricingTypeError={setPricingTypeError}
 				setTypeOfPricing={setTypeOfPricing}
+				checkPayPer={checkPayPer}
+				setCheckPayPer={setCheckPayPer}
+				setIsChecked={setIsChecked}
+				IsChecked={IsChecked}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>
 			<AddNewClient
