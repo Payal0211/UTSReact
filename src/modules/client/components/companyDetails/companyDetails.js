@@ -32,7 +32,6 @@ const CompanyDetails = ({
 	setCompanyName,
 	companyName,
 	control,
-	setCheckPayPer,checkPayPer,setIsChecked,IsChecked,
 	companyDetail, setCompanyDetail,getCompanyDetails, controlledFieldsProp,typeOfPricing,setTypeOfPricing,
 	pricingTypeError,setPricingTypeError
 }) => {
@@ -595,65 +594,6 @@ const CompanyDetails = ({
 												
 						</div>
 					</div>
-					<div className={CompanyDetailsStyle.row}>
-						<div className={CompanyDetailsStyle.colMd12}>
-							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
-								<label style={{marginBottom:"12px"}}>
-							Client Modal
-							 <span className={CompanyDetailsStyle.reqField}>
-								*
-							</span>
-						</label>
-							{/* {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>} */}
-							<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
-								<Checkbox 
-									value={2} 
-									onChange={(e)=>setCheckPayPer({...checkPayPer,companyTypeID:e.target.checked===true ? e.target.value:0})}
-									>Pay Per Credit</Checkbox>
-								<Checkbox 
-									value={1} 
-									onChange={(e)=>setCheckPayPer({...checkPayPer,anotherCompanyTypeID:e.target.checked===true ? e.target.value:0})}
-									>Pay Per Hire</Checkbox>
-							</div>
-							</div>												
-						</div>
-					</div>
-					{checkPayPer?.companyTypeID==2 && 
-					<>
-						<div className={CompanyDetailsStyle.row}>
-							<div className={CompanyDetailsStyle.colMd12}>
-								<HRInputField
-									register={register}
-									errors={errors}
-									validationSchema={{
-										required: checkPayPer?.companyTypeID==2 ?'Please enter free credits.':null,
-									}}
-									label="Free Credits"
-									name={'jpCreditBalance'}
-									type={InputType.TEXT}
-									placeholder="Free Credits "
-									required={checkPayPer?.companyTypeID==2?true:false}
-								/>
-							</div>
-						</div>
-						<div className={CompanyDetailsStyle.row}>
-							<div className={CompanyDetailsStyle.colMd12}>
-								<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
-									{/* <label style={{marginBottom:"12px"}}>
-								Client Modal
-								<span className={CompanyDetailsStyle.reqField}>
-									*
-								</span>
-							</label> */}
-								{/* {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>} */}
-								<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
-									<Checkbox name='IsPostaJob' checked={IsChecked?.isPostaJob} onChange={(e)=>setIsChecked({...IsChecked,isPostaJob:e.target.checked})}>Credit per post a job.</Checkbox>
-									<Checkbox name="IsProfileView" checked={IsChecked?.isProfileView} onChange={(e)=>setIsChecked({...IsChecked,isProfileView:e.target.checked})}>Credit per profile view.</Checkbox>
-							</div>
-								</div>												
-							</div>
-						</div>
-					</>}
 					<div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd12}>
 							<HRInputField
