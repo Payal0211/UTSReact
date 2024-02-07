@@ -67,6 +67,8 @@ const EditClientField = ({
 		anotherCompanyTypeID:0
 	})
 
+	console.log(payPerCondition,"payPerConditionpayPerCondition",checkPayPer);
+
 	const [clientPOCs, setClientPOCs]  = useState([])
 	/** ---- Useform()  Starts here --------- */
 	const {
@@ -339,14 +341,14 @@ const EditClientField = ({
 	useEffect(() => {
 		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==0){
 			setPayPerCondition({...payPerCondition,companyTypeID:1});
-		}
+		}else
 		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==2){
 			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1})
-		}
+		}else
 		if(checkPayPer?.companyTypeID>0 || checkPayPer?.companyTypeID==2){
 			setPayPerCondition({...payPerCondition,companyTypeID:2});
 		}
-	}, [checkPayPer])
+	}, [checkPayPer,payPerCondition])
 	
 	const getCompanyDetails = async (ID) => {
 		resetAllFields()
