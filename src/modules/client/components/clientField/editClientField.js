@@ -54,6 +54,14 @@ const EditClientField = ({
 	const [isSavedLoading, setIsSavedLoading] = useState(false);
 	const [typeOfPricing,setTypeOfPricing] = useState(null)
 	const [pricingTypeError,setPricingTypeError] = useState(false);
+	const [checkPayPer, setCheckPayPer] = useState({
+		companyTypeID:0,
+		anotherCompanyTypeID:0
+	});
+	const [IsChecked,setIsChecked] = useState({
+        isPostaJob:false,
+        isProfileView:false,
+    });
 
 	const [clientPOCs, setClientPOCs]  = useState([])
 	/** ---- Useform()  Starts here --------- */
@@ -169,6 +177,8 @@ const EditClientField = ({
 			legelInfoEN_ID,
 			companyDetail,
             base64ClientImage,
+			checkPayPer,
+			IsChecked,
             getUploadClientFileData,typeOfPricing}
 		);
 
@@ -286,6 +296,7 @@ const EditClientField = ({
 		resetField('companyInboundType')
 		setControlledLeadOwner('Please Select')
 		resetField('companyLeadOwner')
+		resetField('jpCreditBalance')
 
 		setPrimaryClientEN_ID('')
 		resetField('primaryClientName')
@@ -315,6 +326,11 @@ const EditClientField = ({
 			
     }
 
+	useEffect(() => {
+		companyDetail && setCheckPayPer({...checkPayPer,...{companyTypeID:companyDetail?.companyTypeID,anotherCompanyTypeID:companyDetail?.anotherCompanyTypeID}});
+		companyDetail && setIsChecked({...IsChecked,...{isPostaJob:companyDetail?.isPostaJob,isProfileView:companyDetail?.isProfileView}});
+	}, [companyDetail])
+	
 	const getCompanyDetails = async (ID) => {
 		resetAllFields()
 		setIsSavedLoading(true)
@@ -323,7 +339,6 @@ const EditClientField = ({
 		if(companyDetailsData?.statusCode === HTTPStatusCode.OK){
 			setIsSavedLoading(false)
 			const {companyDetails,contactDetails, companyContract ,contactPoc} = companyDetailsData.responseBody
-
 			companyDetails && setCompanyDetail(companyDetails)  
 			companyDetails?.companyName && setValue('companyName',companyDetails?.companyName)
 			companyDetails?.website && setValue('companyURL',companyDetails?.website)
@@ -331,7 +346,7 @@ const EditClientField = ({
 			companyDetails?.address	&& setValue('companyAddress',companyDetails?.address)
 			companyDetails?.companySize && setValue('companySize',companyDetails?.companySize)
 			companyDetails?.aboutCompanyDesc && setValue('aboutCompany',companyDetails?.aboutCompanyDesc)
-
+			companyDetails?.jpCreditBalance && setValue("jpCreditBalance",companyDetails?.jpCreditBalance);
 			// companyDetails?.phone && setValue('phoneNumber',companyDetails?.phone)
 			if(companyDetails?.phone){
 				setValue('phoneNumber',companyDetails?.phone?.slice(3))
@@ -423,6 +438,10 @@ const EditClientField = ({
 				setTypeOfPricing={setTypeOfPricing}
 				setPricingTypeError={setPricingTypeError}
 				pricingTypeError={pricingTypeError}
+				checkPayPer={checkPayPer}
+				setCheckPayPer={setCheckPayPer}
+				setIsChecked={setIsChecked}
+				IsChecked={IsChecked}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>
 			<EditClient
