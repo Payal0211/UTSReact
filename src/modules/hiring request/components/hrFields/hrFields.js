@@ -842,7 +842,7 @@ const HRFields = ({
   const watchCountry = watch("country");
   const { isReady, debouncedFunction } = useDebounce(postalCodeHandler, 2000);
   useEffect(() => {
-    if(removeFields !== null && removeFields.postalCode === true){
+    if(removeFields !== null && removeFields?.postalCode === true){
       return
     }else{
       !isPostalCodeNotFound && debouncedFunction("POSTAL_CODE");
@@ -850,7 +850,7 @@ const HRFields = ({
     
   }, [debouncedFunction, watchPostalCode, isPostalCodeNotFound,removeFields]);
   useEffect(() => {
-    if(removeFields !== null && removeFields.postalCode === true){
+    if(removeFields !== null && removeFields?.postalCode === true){
       return
     }else{
     if (country && country?.getCountry?.length > 1 && watchCountry) {
@@ -1590,7 +1590,7 @@ const HRFields = ({
   useEffect(()=> {
 
     //setDefault values 
-    if(defaultPropertys !== null){
+    if(defaultPropertys !== null && defaultPropertys !== undefined){
         let {talentsNumber,isTransparentPricing,currency } = defaultPropertys
 
         if(talentsNumber > 0){
@@ -1614,7 +1614,7 @@ const HRFields = ({
   ])
 
   useEffect(() => {
-    if(defaultPropertys !== null ){
+    if(defaultPropertys !== null && defaultPropertys !== undefined ){
       let {salesPerson :salesPersonID } = defaultPropertys
       
       if(salesPersonID && salesPerson?.length > 0){
