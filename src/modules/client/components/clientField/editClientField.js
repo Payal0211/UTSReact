@@ -62,6 +62,12 @@ const EditClientField = ({
         isPostaJob:false,
         isProfileView:false,
     });
+	const [payPerCondition,setPayPerCondition] = useState({
+		companyTypeID:0,
+		anotherCompanyTypeID:0
+	})
+
+	console.log(payPerCondition,"payPerConditionpayPerCondition",checkPayPer);
 
 	const [clientPOCs, setClientPOCs]  = useState([])
 	/** ---- Useform()  Starts here --------- */
@@ -179,6 +185,7 @@ const EditClientField = ({
             base64ClientImage,
 			checkPayPer,
 			IsChecked,
+			payPerCondition,
             getUploadClientFileData,typeOfPricing}
 		);
 
@@ -330,6 +337,18 @@ const EditClientField = ({
 		companyDetail && setCheckPayPer({...checkPayPer,...{companyTypeID:companyDetail?.companyTypeID,anotherCompanyTypeID:companyDetail?.anotherCompanyTypeID}});
 		companyDetail && setIsChecked({...IsChecked,...{isPostaJob:companyDetail?.isPostaJob,isProfileView:companyDetail?.isProfileView}});
 	}, [companyDetail])
+
+	useEffect(() => {
+		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==0){
+			setPayPerCondition({...payPerCondition,companyTypeID:1});
+		}else
+		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==2){
+			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1})
+		}else
+		if(checkPayPer?.companyTypeID>0 || checkPayPer?.companyTypeID==2){
+			setPayPerCondition({...payPerCondition,companyTypeID:2});
+		}
+	}, [checkPayPer,payPerCondition])
 	
 	const getCompanyDetails = async (ID) => {
 		resetAllFields()
