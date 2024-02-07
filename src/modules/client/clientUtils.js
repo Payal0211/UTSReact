@@ -53,14 +53,14 @@ export function clientFormDataFormatter({
 	base64ClientImage,
 	getUploadClientFileData,typeOfPricing,
 	checkPayPer,
-	IsChecked
+	IsChecked,payPerCondition
 }) {
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 		company: {
 			IsTransparentPricing: typeOfPricing === 1 ? true : false ,
-			anotherCompanyTypeID:checkPayPer?.anotherCompanyTypeID,
-			companyTypeID:checkPayPer?.companyTypeID,
+			anotherCompanyTypeID:payPerCondition?.anotherCompanyTypeID,
+			companyTypeID:payPerCondition?.companyTypeID,
 			isPostaJob:IsChecked?.isPostaJob,
 			isProfileView:IsChecked?.isProfileView,
 			// en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
