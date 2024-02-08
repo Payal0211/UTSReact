@@ -198,7 +198,7 @@ const UserDetails = () => {
                       
                     </div>                   
                     <div className={userDetails.checkbox}>
-                        <Checkbox name="IsHybridModel" checked={IsChecked?.IsHybridModel} onChange={(e)=>setIsChecked({...IsChecked,IsHybridModel:e.target.checked})}>Do you want to continue with Hybrid model ?</Checkbox>
+                        <Checkbox name="IsHybridModel" checked={IsChecked?.IsHybridModel} onChange={(e)=>setIsChecked({...IsChecked,IsHybridModel:e.target.checked})}>Do you want to continue with Pay Per Hire (Hybrid) model ?</Checkbox>
                     </div>   
                     <div>
                     <button type='button' className={userDetails.btn} onClick={handleSubmit}>SUBMIT</button>

@@ -37,7 +37,7 @@ const EditCompanyDetails = ({
   setCompanyDetail,
   getCompanyDetails,typeOfPricing,setTypeOfPricing,pricingTypeError,setPricingTypeError,
   controlledFieldsProp,
-  checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError
+  checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError,payPerCondition
 }) => {
   let {
     controlledCompanyLoacation,
