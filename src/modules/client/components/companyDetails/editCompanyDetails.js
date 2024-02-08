@@ -678,7 +678,7 @@ const EditCompanyDetails = ({
 						<div className={CompanyDetailsStyle.colMd12}>
 							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>
-							Client Modal
+							Client Model
 							 <span className={CompanyDetailsStyle.reqField}>
 								*
 							</span>
