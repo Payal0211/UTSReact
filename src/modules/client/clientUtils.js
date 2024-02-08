@@ -58,7 +58,7 @@ export function clientFormDataFormatter({
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 		company: {
-			IsTransparentPricing: typeOfPricing === 1 ? true : false ,
+			IsTransparentPricing: typeOfPricing === 1 && !checkPayPer?.anotherCompanyTypeID==0 && (!checkPayPer?.companyTypeID==0 || !checkPayPer?.companyTypeID==2) ? true : null ,
 			anotherCompanyTypeID:payPerCondition?.anotherCompanyTypeID,
 			companyTypeID:payPerCondition?.companyTypeID,
 			isPostaJob:IsChecked?.isPostaJob,

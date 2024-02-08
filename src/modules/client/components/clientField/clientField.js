@@ -72,6 +72,7 @@ const ClientField = ({
 	// const [isLoading, setIsLoading] = useState(false);
 	const [typeOfPricing,setTypeOfPricing] = useState(null)
 	const [pricingTypeError,setPricingTypeError] = useState(false);
+	const [payPerError,setPayPerError] = useState(false);
 	const [type, setType] = useState('');
 	const [addClientResponse, setAddClientResponse] = useState(null);
 	const [addClientResponseID, setAddClientResponseID] = useState(0);
@@ -157,11 +158,16 @@ const ClientField = ({
 		// setIsLoading(true);
 		setIsSavedLoading(true)
 
-		if(typeOfPricing === null){
+		if(typeOfPricing === null && !checkPayPer?.anotherCompanyTypeID==0 && (!checkPayPer?.companyTypeID==0 || !checkPayPer?.companyTypeID==2)){
 			setIsSavedLoading(false)
 			setPricingTypeError(true)
 			return
-		  }
+		}
+		if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
+			setIsSavedLoading(false)
+			setPayPerError(true)
+			return
+		}
 		let clientFormDetails = clientFormDataFormatter({
 			d,
 			type,
@@ -272,9 +278,9 @@ const ClientField = ({
 			setPayPerCondition({...payPerCondition,companyTypeID:1});
 		}else
 		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==2){
-			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1})
+			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1,companyTypeID:2});
 		}else
-		if(checkPayPer?.companyTypeID>0 || checkPayPer?.companyTypeID==2){
+		if(checkPayPer?.companyTypeID==2  && checkPayPer?.anotherCompanyTypeID==0){
 			setPayPerCondition({...payPerCondition,companyTypeID:2});
 		}
 	}, [checkPayPer,payPerCondition])
@@ -444,6 +450,8 @@ const ClientField = ({
 				setCheckPayPer={setCheckPayPer}
 				setIsChecked={setIsChecked}
 				IsChecked={IsChecked}
+				payPerError={payPerError}
+				setPayPerError={setPayPerError}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>
 			<AddNewClient
