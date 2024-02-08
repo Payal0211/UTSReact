@@ -59,8 +59,8 @@ export function clientFormDataFormatter({
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
 		company: {
 			IsTransparentPricing: typeOfPricing === 1 && !checkPayPer?.anotherCompanyTypeID==0 && (!checkPayPer?.companyTypeID==0 || !checkPayPer?.companyTypeID==2) ? true : null ,
-			anotherCompanyTypeID:payPerCondition?.anotherCompanyTypeID,
-			companyTypeID:payPerCondition?.companyTypeID,
+			anotherCompanyTypeID:checkPayPer?.anotherCompanyTypeID,
+			companyTypeID:checkPayPer?.companyTypeID,
 			isPostaJob:IsChecked?.isPostaJob,
 			isProfileView:IsChecked?.isProfileView,
 			// en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
