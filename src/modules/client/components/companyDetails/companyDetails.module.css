@@ -109,7 +109,7 @@
     color:red
 }
 .reqField {
-    color: var(--uplers-black);
+    color: red;
     font-weight: 700;
     font-size: 14px;
     margin-left: 4px;

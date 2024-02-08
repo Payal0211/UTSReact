@@ -37,7 +37,7 @@ const EditCompanyDetails = ({
   setCompanyDetail,
   getCompanyDetails,typeOfPricing,setTypeOfPricing,pricingTypeError,setPricingTypeError,
   controlledFieldsProp,
-  checkPayPer,setCheckPayPer,setIsChecked,IsChecked
+  checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError
 }) => {
   let {
     controlledCompanyLoacation,
@@ -650,29 +650,6 @@ const EditCompanyDetails = ({
             </div>
           </div>
 
-          	<div className={CompanyDetailsStyle.row}>
-						<div className={CompanyDetailsStyle.colMd12}>
-							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
-								<label style={{marginBottom:"12px"}}>
-							Type Of pricing
-							 {/* <span className={allengagementReplceTalentStyles.reqField}>
-								*
-              </span> */}
-						</label>
-            {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>}	
-						<Radio.Group
-              disabled={userData?.LoggedInUserTypeID !== 1} 
-							onChange={e=> {setTypeOfPricing(e.target.value); setPricingTypeError && setPricingTypeError(false)}}
-							value={typeOfPricing}
-							>
-							<Radio value={1}>Transparent Pricing</Radio>
-							<Radio value={0}>Non Transparent Pricing</Radio>
-						</Radio.Group>
-							</div>
-				
-								
-						</div>
-					</div>
 
           <div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd12}>
@@ -683,16 +660,17 @@ const EditCompanyDetails = ({
 								*
 							</span>
 						</label>
+            {payPerError && <p className={CompanyDetailsStyle.error}>*Please select client model</p>}
 							{/* {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>} */}
 							<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
 								<Checkbox 
 									value={2} 
-									onChange={(e)=>setCheckPayPer({...checkPayPer,companyTypeID:e.target.checked===true ? e.target.value:0})}
+									onChange={(e)=>{setCheckPayPer({...checkPayPer,companyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false)}}
                   checked={checkPayPer?.companyTypeID}
 									>Pay Per Credit</Checkbox>
 								<Checkbox 
 									value={1} 
-									onChange={(e)=>{setCheckPayPer({...checkPayPer,anotherCompanyTypeID:e.target.checked===true ? e.target.value:0})}}
+									onChange={(e)=>{setCheckPayPer({...checkPayPer,anotherCompanyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false)}}
                   checked={checkPayPer?.anotherCompanyTypeID}
 									>Pay Per Hire</Checkbox>
 							</div>
@@ -740,6 +718,30 @@ const EditCompanyDetails = ({
 							</div>
 						</div>
 					</>}
+
+          <div className={CompanyDetailsStyle.row}>
+						<div className={CompanyDetailsStyle.colMd12}>
+							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<label style={{marginBottom:"12px"}}>
+							Type Of Pricing 
+              <span className={CompanyDetailsStyle.reqField}>
+								*
+							</span>
+						</label>
+            {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>}	
+						<Radio.Group
+              disabled={userData?.LoggedInUserTypeID !== 1 || checkPayPer?.anotherCompanyTypeID==0 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2) } 
+							onChange={e=> {setTypeOfPricing(e.target.value); setPricingTypeError && setPricingTypeError(false)}}
+							value={typeOfPricing}
+							>
+							<Radio value={1}>Transparent Pricing</Radio>
+							<Radio value={0}>Non Transparent Pricing</Radio>
+						</Radio.Group>
+							</div>
+				
+								
+						</div>
+					</div>
 
           <div className={CompanyDetailsStyle.row}>
             <div className={CompanyDetailsStyle.colMd12}>
