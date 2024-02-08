@@ -54,6 +54,7 @@ const EditClientField = ({
 	const [isSavedLoading, setIsSavedLoading] = useState(false);
 	const [typeOfPricing,setTypeOfPricing] = useState(null)
 	const [pricingTypeError,setPricingTypeError] = useState(false);
+	const [payPerError,setPayPerError] = useState(false);
 	const [checkPayPer, setCheckPayPer] = useState({
 		companyTypeID:0,
 		anotherCompanyTypeID:0
@@ -163,11 +164,16 @@ const EditClientField = ({
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 		// setIsLoading(true);
 		setIsSavedLoading(true)
-		// if(typeOfPricing === null){
-		// 	setIsSavedLoading(false)
-		// 	setPricingTypeError(true)
-		// 	return
-		// }
+		if(typeOfPricing === null && !checkPayPer?.anotherCompanyTypeID==0 && (!checkPayPer?.companyTypeID==0 || !checkPayPer?.companyTypeID==2)){
+			setIsSavedLoading(false)
+			setPricingTypeError(true)
+			return
+		}
+		if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
+			setIsSavedLoading(false)
+			setPayPerError(true)
+			return
+		}
 		let clientFormDetails = clientFormDataFormatter({
 			d,
 			type,
@@ -343,9 +349,9 @@ const EditClientField = ({
 			setPayPerCondition({...payPerCondition,companyTypeID:1});
 		}else
 		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==2){
-			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1})
+			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1,companyTypeID:2});
 		}else
-		if(checkPayPer?.companyTypeID>0 || checkPayPer?.companyTypeID==2){
+		if(checkPayPer?.companyTypeID==2  && checkPayPer?.anotherCompanyTypeID==0){
 			setPayPerCondition({...payPerCondition,companyTypeID:2});
 		}
 	}, [checkPayPer,payPerCondition])
@@ -461,6 +467,8 @@ const EditClientField = ({
 				setCheckPayPer={setCheckPayPer}
 				setIsChecked={setIsChecked}
 				IsChecked={IsChecked}
+				payPerError={payPerError}
+				setPayPerError={setPayPerError}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>
 			<EditClient
