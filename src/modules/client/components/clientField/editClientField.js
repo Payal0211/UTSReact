@@ -68,8 +68,6 @@ const EditClientField = ({
 		anotherCompanyTypeID:0
 	})
 
-	console.log(payPerCondition,"payPerConditionpayPerCondition",checkPayPer);
-
 	const [clientPOCs, setClientPOCs]  = useState([])
 	/** ---- Useform()  Starts here --------- */
 	const {

@@ -55,10 +55,19 @@ export function clientFormDataFormatter({
 	checkPayPer,
 	IsChecked,payPerCondition
 }) {
+	let _val = "";
+	if(typeOfPricing===1){
+		_val = true;
+	}else{
+		_val = false;
+	}
+	if(checkPayPer?.anotherCompanyTypeID==0 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
+		_val = null;
+	}
 	const clientFormDetails = {
-		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
+		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,	
 		company: {
-			IsTransparentPricing: typeOfPricing === 1 && !checkPayPer?.anotherCompanyTypeID==0 && (!checkPayPer?.companyTypeID==0 || !checkPayPer?.companyTypeID==2) ? true : null ,
+			IsTransparentPricing:_val,
 			anotherCompanyTypeID:checkPayPer?.anotherCompanyTypeID,
 			companyTypeID:checkPayPer?.companyTypeID,
 			isPostaJob:IsChecked?.isPostaJob,
