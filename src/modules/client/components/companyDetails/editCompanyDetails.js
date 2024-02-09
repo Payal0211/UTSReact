@@ -650,7 +650,6 @@ const EditCompanyDetails = ({
             </div>
           </div>
 
-
           <div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd12}>
 							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
@@ -665,8 +664,9 @@ const EditCompanyDetails = ({
 							<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
 								<Checkbox 
 									value={2} 
-									onChange={(e)=>{setCheckPayPer({...checkPayPer,companyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false);}}
-                  checked={checkPayPer?.companyTypeID===2?true:false}
+									onChange={(e)=>{setCheckPayPer({...checkPayPer,companyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false);
+                  setIsChecked({...IsChecked,isPostaJob:false,isProfileView:false})}}
+                  checked={checkPayPer?.companyTypeID}
 									>Pay Per Credit</Checkbox>
 								<Checkbox 
 									value={1} 
@@ -720,11 +720,14 @@ const EditCompanyDetails = ({
 								<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
 									<Checkbox name='IsPostaJob' 
                     checked={IsChecked?.isPostaJob} 
-                    onChange={(e)=>setIsChecked({...IsChecked,isPostaJob:e.target.checked})}
+                    onChange={(e)=>{
+                      setIsChecked({...IsChecked,isPostaJob:e.target.checked})}}
                     >Credit per post a job.</Checkbox>
 									<Checkbox name="IsProfileView" 
                     checked={IsChecked?.isProfileView} 
-                    onChange={(e)=>setIsChecked({...IsChecked,isProfileView:e.target.checked})}>Credit per profile view.</Checkbox>
+                    onChange={(e)=>{
+                      setIsChecked({...IsChecked,isProfileView:e.target.checked})}}>
+                      Credit per profile view.</Checkbox>
 							</div>
 								</div>												
 							</div>
