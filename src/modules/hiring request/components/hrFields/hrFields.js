@@ -841,23 +841,23 @@ const HRFields = ({
   }, [getOtherRoleHandler, watchOtherRole]);
   const watchCountry = watch("country");
   const { isReady, debouncedFunction } = useDebounce(postalCodeHandler, 2000);
-  useEffect(() => {
-    if(removeFields !== null && removeFields?.postalCode === true){
-      return
-    }else{
-      !isPostalCodeNotFound && debouncedFunction("POSTAL_CODE");
-    }
+  // useEffect(() => {
+  //   if(removeFields !== null && removeFields?.postalCode === true){
+  //     return
+  //   }else{
+  //     !isPostalCodeNotFound && debouncedFunction("POSTAL_CODE");
+  //   }
     
-  }, [debouncedFunction, watchPostalCode, isPostalCodeNotFound,removeFields]);
-  useEffect(() => {
-    if(removeFields !== null && removeFields?.postalCode === true){
-      return
-    }else{
-    if (country && country?.getCountry?.length > 1 && watchCountry) {
-      !isPostalCodeNotFound && debouncedFunction("COUNTRY_CODE");
-    }
-  }
-  }, [country, debouncedFunction, isPostalCodeNotFound, watchCountry,removeFields]);
+  // }, [debouncedFunction, watchPostalCode, isPostalCodeNotFound,removeFields]);
+  // useEffect(() => {
+  //   if(removeFields !== null && removeFields?.postalCode === true){
+  //     return
+  //   }else{
+  //   if (country && country?.getCountry?.length > 1 && watchCountry) {
+  //     !isPostalCodeNotFound && debouncedFunction("COUNTRY_CODE");
+  //   }
+  // }
+  // }, [country, debouncedFunction, isPostalCodeNotFound, watchCountry,removeFields]);
 
  // Handle city change for Direct HR
   const watchCity = watch("city");
@@ -3153,184 +3153,225 @@ const HRFields = ({
     ) {
       return null;
     } else {
-      if(isDirectHR){
-        return (<>
-         <div className={HRFieldStyle.row}>
-                  <div className={HRFieldStyle.colMd6}>
-                        <HRInputField
-                         onChangeHandler={e=> cityDeb() }
-                          register={register}
-                          errors={errors}
-                          validationSchema={{
-                            required: "please enter the city.",
-                          }}
-                          label="City"
-                          name="city"
-                          type={InputType.TEXT}
-                          placeholder="Enter the City"
-                          required
-                        />
-                        {countryListMessage !== null && <p className={HRFieldStyle.error}>*{countryListMessage}</p>}
-                  </div>
+      return (<>
+        <div className={HRFieldStyle.row}>
+                 <div className={HRFieldStyle.colMd6}>
+                       <HRInputField
+                        onChangeHandler={e=> cityDeb() }
+                         register={register}
+                         errors={errors}
+                         validationSchema={{
+                           required: "please enter the city.",
+                         }}
+                         label="City"
+                         name="city"
+                         type={InputType.TEXT}
+                         placeholder="Enter the City"
+                         required
+                       />
+                       {countryListMessage !== null && <p className={HRFieldStyle.error}>*{countryListMessage}</p>}
+                 </div>
 
-                  <div className={HRFieldStyle.colMd6}>
-                        <div className={HRFieldStyle.formGroup}>
-                          <HRSelectField
-                            setControlledValue={setControlledCountryName}
-                            controlledValue={controlledCountryName}
-                            isControlled={true}
-                            mode={"id/value"}
-                            searchable={false}
-                            setValue={setValue}
-                            register={register}
-                            label={"Country"}
-                            defaultValue="Select country"
-                            options={country?.getCountry || []}
-                            name="country"
-                            isError={errors["country"] && errors["country"]}
-                            required
-                            errorMsg={"Please select the country."}
-                          />
-                        </div>
-                  </div>
-         </div>
-        </>)
-      }
-      return (
-        <>
-          <div className={HRFieldStyle.row}>
-          {(removeFields !== null && removeFields?.postalCode === true) ? null :    <div className={HRFieldStyle.colMd6}>
-              <HRInputField
-                register={register}
-                errors={errors}
-                validationSchema={{
-                  required: "please enter the postal code.",
-                  min: {
-                    value: 0,
-                    message: `please don't enter the value less than 0`,
-                  },
-                }}
-                label="Postal Code"
-                name="postalCode"
-                type={InputType.NUMBER}
-                placeholder="Enter the Postal Code"
-                // onChangeHandler={postalCodeHandler}
-                required
-              />
-            </div>}
+                 <div className={HRFieldStyle.colMd6}>
+                       <div className={HRFieldStyle.formGroup}>
+                         <HRSelectField
+                           setControlledValue={setControlledCountryName}
+                           controlledValue={controlledCountryName}
+                           isControlled={true}
+                           mode={"id/value"}
+                           searchable={false}
+                           setValue={setValue}
+                           register={register}
+                           label={"Country"}
+                           defaultValue="Select country"
+                           options={country?.getCountry || []}
+                           name="country"
+                           isError={errors["country"] && errors["country"]}
+                           required
+                           errorMsg={"Please select the country."}
+                         />
+                       </div>
+                 </div>
+        </div>
+       </>)
+      // if(isDirectHR){
+      //   return (<>
+      //    <div className={HRFieldStyle.row}>
+      //             <div className={HRFieldStyle.colMd6}>
+      //                   <HRInputField
+      //                    onChangeHandler={e=> cityDeb() }
+      //                     register={register}
+      //                     errors={errors}
+      //                     validationSchema={{
+      //                       required: "please enter the city.",
+      //                     }}
+      //                     label="City"
+      //                     name="city"
+      //                     type={InputType.TEXT}
+      //                     placeholder="Enter the City"
+      //                     required
+      //                   />
+      //                   {countryListMessage !== null && <p className={HRFieldStyle.error}>*{countryListMessage}</p>}
+      //             </div>
+
+      //             <div className={HRFieldStyle.colMd6}>
+      //                   <div className={HRFieldStyle.formGroup}>
+      //                     <HRSelectField
+      //                       setControlledValue={setControlledCountryName}
+      //                       controlledValue={controlledCountryName}
+      //                       isControlled={true}
+      //                       mode={"id/value"}
+      //                       searchable={false}
+      //                       setValue={setValue}
+      //                       register={register}
+      //                       label={"Country"}
+      //                       defaultValue="Select country"
+      //                       options={country?.getCountry || []}
+      //                       name="country"
+      //                       isError={errors["country"] && errors["country"]}
+      //                       required
+      //                       errorMsg={"Please select the country."}
+      //                     />
+      //                   </div>
+      //             </div>
+      //    </div>
+      //   </>)
+      // }
+      // return (
+      //   <>
+      //     <div className={HRFieldStyle.row}>
+      //     {(removeFields !== null && removeFields?.postalCode === true) ? null :    <div className={HRFieldStyle.colMd6}>
+      //         <HRInputField
+      //           register={register}
+      //           errors={errors}
+      //           validationSchema={{
+      //             required: "please enter the postal code.",
+      //             min: {
+      //               value: 0,
+      //               message: `please don't enter the value less than 0`,
+      //             },
+      //           }}
+      //           label="Postal Code"
+      //           name="postalCode"
+      //           type={InputType.NUMBER}
+      //           placeholder="Enter the Postal Code"
+      //           // onChangeHandler={postalCodeHandler}
+      //           required
+      //         />
+      //       </div>}
          
-            <div className={HRFieldStyle.colMd6}>
-              <div className={HRFieldStyle.formGroup}>
-                <HRSelectField
-                  setControlledValue={setControlledCountryName}
-                  controlledValue={controlledCountryName}
-                  isControlled={true}
-                  mode={"id/value"}
-                  searchable={false}
-                  setValue={setValue}
-                  register={register}
-                  label={"Country"}
-                  defaultValue="Select country"
-                  options={country?.getCountry || []}
-                  name="country"
-                  isError={errors["country"] && errors["country"]}
-                  required={!controlledCountryName}
-                  errorMsg={"Please select the country."}
-                />
-              </div>
-            </div>
+      //       <div className={HRFieldStyle.colMd6}>
+      //         <div className={HRFieldStyle.formGroup}>
+      //           <HRSelectField
+      //             setControlledValue={setControlledCountryName}
+      //             controlledValue={controlledCountryName}
+      //             isControlled={true}
+      //             mode={"id/value"}
+      //             searchable={false}
+      //             setValue={setValue}
+      //             register={register}
+      //             label={"Country"}
+      //             defaultValue="Select country"
+      //             options={country?.getCountry || []}
+      //             name="country"
+      //             isError={errors["country"] && errors["country"]}
+      //             required={!controlledCountryName}
+      //             errorMsg={"Please select the country."}
+      //           />
+      //         </div>
+      //       </div>
 
-            {(removeFields !== null && removeFields?.state === true) ? null : <div className={HRFieldStyle.colMd6}>
-              <HRInputField
-                register={register}
-                errors={errors}
-                validationSchema={{
-                  required: "please enter the state.",
-                }}
-                label="State"
-                name="state"
-                type={InputType.TEXT}
-                placeholder="Enter the State"
-                required
-              />
-            </div>}
+      //       {(removeFields !== null && removeFields?.state === true) ? null : <div className={HRFieldStyle.colMd6}>
+      //         <HRInputField
+      //           register={register}
+      //           errors={errors}
+      //           validationSchema={{
+      //             required: "please enter the state.",
+      //           }}
+      //           label="State"
+      //           name="state"
+      //           type={InputType.TEXT}
+      //           placeholder="Enter the State"
+      //           required
+      //         />
+      //       </div>}
                    
-            <div className={HRFieldStyle.colMd6}>
-              <HRInputField
-                register={register}
-                errors={errors}
-                validationSchema={{
-                  required: "please enter the city.",
-                }}
-                label="City"
-                name="city"
-                type={InputType.TEXT}
-                placeholder="Enter the City"
-                required
-              />
-            </div>
-          </div>
+      //       <div className={HRFieldStyle.colMd6}>
+      //         <HRInputField
+      //           register={register}
+      //           errors={errors}
+      //           validationSchema={{
+      //             required: "please enter the city.",
+      //           }}
+      //           label="City"
+      //           name="city"
+      //           type={InputType.TEXT}
+      //           placeholder="Enter the City"
+      //           required
+      //         />
+      //       </div>
+      //     </div>
           
-          {(removeFields !== null && removeFields?.address === true) ? null : <div className={HRFieldStyle.row}>
-            <div className={HRFieldStyle.colMd12}>
-              <HRInputField
-                isTextArea={true}
-                register={register}
-                errors={errors}
-                validationSchema={{
-                  required: "please enter the address.",
-                }}
-                label="Address"
-                name="address"
-                type={InputType.TEXT}
-                placeholder="Enter the Address"
-                required
-              />
-            </div>
-          </div>}
+      //     {(removeFields !== null && removeFields?.address === true) ? null : <div className={HRFieldStyle.row}>
+      //       <div className={HRFieldStyle.colMd12}>
+      //         <HRInputField
+      //           isTextArea={true}
+      //           register={register}
+      //           errors={errors}
+      //           validationSchema={{
+      //             required: "please enter the address.",
+      //           }}
+      //           label="Address"
+      //           name="address"
+      //           type={InputType.TEXT}
+      //           placeholder="Enter the Address"
+      //           required
+      //         />
+      //       </div>
+      //     </div>}
           
-          {isNewPostalCodeModal && (
-            <Modal
-              footer={false}
-              title="Postal Code Not Found"
-              open={isNewPostalCodeModal}
-              onCancel={() => setNewPostalCodeModal(false)}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <h3>Are you sure you want to proceed?</h3>
-              </div>
-              <div className={HRFieldStyle.formPanelAction}>
-                <button
-                  type="submit"
-                  onClick={() => {
-                    setPostalCodeNotFound(true);
-                    setNewPostalCodeModal(false);
-                  }}
-                  className={HRFieldStyle.btnPrimary}
-                >
-                  OK
-                </button>
-                <button
-                  onClick={() => {
-                    setValue("postalCode", "");
-                    setPostalCodeNotFound(false);
-                    setNewPostalCodeModal(false);
-                  }}
-                  className={HRFieldStyle.btn}
-                >
-                  Cancel
-                </button>
-              </div>
-            </Modal>
-          )}
-        </>
-      );
+      //     {isNewPostalCodeModal && (
+      //       <Modal
+      //         footer={false}
+      //         title="Postal Code Not Found"
+      //         open={isNewPostalCodeModal}
+      //         onCancel={() => setNewPostalCodeModal(false)}
+      //       >
+      //         <div
+      //           style={{
+      //             display: "flex",
+      //             justifyContent: "center",
+      //             alignItems: "center",
+      //           }}
+      //         >
+      //           <h3>Are you sure you want to proceed?</h3>
+      //         </div>
+      //         <div className={HRFieldStyle.formPanelAction}>
+      //           <button
+      //             type="submit"
+      //             onClick={() => {
+      //               setPostalCodeNotFound(true);
+      //               setNewPostalCodeModal(false);
+      //             }}
+      //             className={HRFieldStyle.btnPrimary}
+      //           >
+      //             OK
+      //           </button>
+      //           <button
+      //             onClick={() => {
+      //               setValue("postalCode", "");
+      //               setPostalCodeNotFound(false);
+      //               setNewPostalCodeModal(false);
+      //             }}
+      //             className={HRFieldStyle.btn}
+      //           >
+      //             Cancel
+      //           </button>
+      //         </div>
+      //       </Modal>
+      //     )}
+      //   </>
+      // );
     }
   }
 };
