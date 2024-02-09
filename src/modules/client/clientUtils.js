@@ -68,8 +68,8 @@ export function clientFormDataFormatter({
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,	
 		company: {
 			IsTransparentPricing:_val,
-			anotherCompanyTypeID:checkPayPer?.anotherCompanyTypeID,
-			companyTypeID:checkPayPer?.companyTypeID,
+			anotherCompanyTypeID:payPerCondition?.anotherCompanyTypeID,
+			companyTypeID:payPerCondition?.companyTypeID,
 			isPostaJob:IsChecked?.isPostaJob,
 			isProfileView:IsChecked?.isProfileView,
 			// en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
@@ -82,10 +82,10 @@ export function clientFormDataFormatter({
 			jpCreditBalance:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('jpCreditBalance'))
-						? null
+						? 0
 						: watch('jpCreditBalance')
 					: _isNull(d.jpCreditBalance)
-					? null
+					? 0
 					: Number(d.jpCreditBalance),
 			aboutCompanyDesc: 
 				draft === SubmitType.SAVE_AS_DRAFT
