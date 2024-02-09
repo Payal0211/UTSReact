@@ -55,12 +55,21 @@ export function clientFormDataFormatter({
 	checkPayPer,
 	IsChecked,payPerCondition
 }) {
+	let _val = "";
+	if(typeOfPricing===1){
+		_val = true;
+	}else{
+		_val = false;
+	}
+	if(checkPayPer?.anotherCompanyTypeID==0 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
+		_val = null;
+	}
 	const clientFormDetails = {
-		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
+		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,	
 		company: {
-			IsTransparentPricing: typeOfPricing === 1 && !checkPayPer?.anotherCompanyTypeID==0 && (!checkPayPer?.companyTypeID==0 || !checkPayPer?.companyTypeID==2) ? true : null ,
-			anotherCompanyTypeID:checkPayPer?.anotherCompanyTypeID,
-			companyTypeID:checkPayPer?.companyTypeID,
+			IsTransparentPricing:_val,
+			anotherCompanyTypeID:payPerCondition?.anotherCompanyTypeID,
+			companyTypeID:payPerCondition?.companyTypeID,
 			isPostaJob:IsChecked?.isPostaJob,
 			isProfileView:IsChecked?.isProfileView,
 			// en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
@@ -73,10 +82,10 @@ export function clientFormDataFormatter({
 			jpCreditBalance:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('jpCreditBalance'))
-						? null
+						? 0
 						: watch('jpCreditBalance')
 					: _isNull(d.jpCreditBalance)
-					? null
+					? 0
 					: Number(d.jpCreditBalance),
 			aboutCompanyDesc: 
 				draft === SubmitType.SAVE_AS_DRAFT

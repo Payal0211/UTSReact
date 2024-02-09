@@ -606,6 +606,10 @@ const CompanyDetails = ({
 									errors={errors}
 									validationSchema={{
 										required: checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null ?'Please enter free credits.':null,
+										min: {
+											value: 0,
+											message: `please don't enter the value less than 0`,
+										},
 									}}
 									label="Free Credits"
 									name={'jpCreditBalance'}
