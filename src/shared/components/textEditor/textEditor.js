@@ -58,7 +58,7 @@ const TextEditor = ({
 				{label}
 			</label>
 			{required && (
-				<span style={{ paddingLeft: '5px' }}>
+				<span style={{ paddingLeft: '5px', color:'#E03A3A' }}>
 					<b>*</b>
 				</span>
 			)}
