@@ -345,7 +345,7 @@ const EditClientField = ({
 	
 	useEffect(() => {
 		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==0){
-			setPayPerCondition({...payPerCondition,companyTypeID:1,anotherCompanyTypeID:1});
+			setPayPerCondition({...payPerCondition,companyTypeID:1,anotherCompanyTypeID:0});
 		}else
 		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==2){
 			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1,companyTypeID:2});
