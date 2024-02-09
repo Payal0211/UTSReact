@@ -68,8 +68,6 @@ const EditClientField = ({
 		anotherCompanyTypeID:0
 	})
 
-	console.log(payPerCondition,"payPerConditionpayPerCondition",checkPayPer);
-
 	const [clientPOCs, setClientPOCs]  = useState([])
 	/** ---- Useform()  Starts here --------- */
 	const {
@@ -344,18 +342,22 @@ const EditClientField = ({
 		companyDetail && setIsChecked({...IsChecked,...{isPostaJob:companyDetail?.isPostaJob,isProfileView:companyDetail?.isProfileView}});
 	}, [companyDetail])
 
+	
 	useEffect(() => {
 		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==0){
-			setPayPerCondition({...payPerCondition,companyTypeID:2});
-			// setCheckPayPer({...checkPayPer,anotherCompanyTypeID:1})
+			setPayPerCondition({...payPerCondition,companyTypeID:1,anotherCompanyTypeID:1});
 		}else
 		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==2){
 			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1,companyTypeID:2});
 		}else
 		if(checkPayPer?.companyTypeID==2  && checkPayPer?.anotherCompanyTypeID==0){
-			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1});
+			setPayPerCondition({...payPerCondition,companyTypeID:2,anotherCompanyTypeID:0});
 		}
-	}, [checkPayPer,payPerCondition])
+		// else if(checkPayPer?.companyTypeID==1  && checkPayPer?.anotherCompanyTypeID==0){
+			// 	setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1});
+			// }
+		}, [checkPayPer])
+		
 	
 	const getCompanyDetails = async (ID) => {
 		resetAllFields()
@@ -372,7 +374,8 @@ const EditClientField = ({
 			companyDetails?.address	&& setValue('companyAddress',companyDetails?.address)
 			companyDetails?.companySize && setValue('companySize',companyDetails?.companySize)
 			companyDetails?.aboutCompanyDesc && setValue('aboutCompany',companyDetails?.aboutCompanyDesc)
-			companyDetails?.jpCreditBalance && setValue("jpCreditBalance",companyDetails?.jpCreditBalance);
+			// companyDetails?.jpCreditBalance && setValue("jpCreditBalance",companyDetails?.jpCreditBalance);
+			setValue("jpCreditBalance",0);
 			// companyDetails?.phone && setValue('phoneNumber',companyDetails?.phone)
 			if(companyDetails?.phone){
 				setValue('phoneNumber',companyDetails?.phone?.slice(3))

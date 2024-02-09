@@ -230,7 +230,7 @@ const EditCompanyDetails = ({
   // 	if(companyDetail.phone){
   // 		setValue('phoneNumber',companyDetail.phone.slice(3))
   // 	}
-  // },[companyDetail.phone,setValue])
+  // },[companyDetail.phone,setValue])  
 
   useEffect(() => {
     if (companyDetail?.geO_ID) {
@@ -665,8 +665,8 @@ const EditCompanyDetails = ({
 							<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
 								<Checkbox 
 									value={2} 
-									onChange={(e)=>{setCheckPayPer({...checkPayPer,companyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false)}}
-                  checked={checkPayPer?.companyTypeID}
+									onChange={(e)=>{setCheckPayPer({...checkPayPer,companyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false);}}
+                  checked={checkPayPer?.companyTypeID===2?true:false}
 									>Pay Per Credit</Checkbox>
 								<Checkbox 
 									value={1} 
@@ -680,21 +680,33 @@ const EditCompanyDetails = ({
 					{checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null &&
 					<>
 						<div className={CompanyDetailsStyle.row}>
-							<div className={CompanyDetailsStyle.colMd12}>
+							<div className={CompanyDetailsStyle.colMd6}>
+              <label style={{marginBottom:"12px"}}>
+							Free Credits
+              <span className={CompanyDetailsStyle.reqField}>
+								*
+							</span>
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Balance Credit : {companyDetail?.jpCreditBalance}
+						</label>
 								<HRInputField
 									register={register}
 									errors={errors}
 									validationSchema={{
 										required: checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null ?'Please enter free credits.':null,
+                    min: {
+                      value: 0,
+                      message: `please don't enter the value less than 0`,
+                    },
 									}}
-									label="Free Credits"
+									// label={`Free Credits Balance Credit : ${companyDetail?.jpCreditBalance}`}
 									name={'jpCreditBalance'}
-									type={InputType.TEXT}
-									placeholder="Free Credits "
+									type={InputType.NUMBER}
+									placeholder="Free Credits"
 									required={checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null?true:false}
 								/>
 							</div>
 						</div>
+            <label style={{marginBottom:"12px"}}>Total New Balance : { parseInt(watch("jpCreditBalance"))+parseInt(companyDetail?.jpCreditBalance)} </label>
 						<div className={CompanyDetailsStyle.row}>
 							<div className={CompanyDetailsStyle.colMd12}>
 								<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
