@@ -474,6 +474,7 @@ const EditClientField = ({
 				payPerError={payPerError}
 				setPayPerError={setPayPerError}
 				payPerCondition={payPerCondition}
+				clientPOCs={clientPOCs}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>
 			<EditClient

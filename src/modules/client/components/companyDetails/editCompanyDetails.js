@@ -17,6 +17,7 @@ import { MdOutlinePreview } from "react-icons/md";
 import { Modal, Tooltip, AutoComplete, Radio, Checkbox } from "antd";
 import { Controller } from "react-hook-form";
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import CreditTransactionHistoryModal from "./creditTransactionHistoryModal";
 
 const EditCompanyDetails = ({
   register,
@@ -36,7 +37,7 @@ const EditCompanyDetails = ({
   companyDetail,
   setCompanyDetail,
   getCompanyDetails,typeOfPricing,setTypeOfPricing,pricingTypeError,setPricingTypeError,
-  controlledFieldsProp,
+  controlledFieldsProp,clientPOCs,
   checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError,payPerCondition
 }) => {
   let {
@@ -79,6 +80,8 @@ const EditCompanyDetails = ({
   const [getCompanyNameSuggestion, setCompanyNameSuggestion] = useState([]);
   const [getCompanyNameMessage, setCompanyNameMessage] = useState("");
   const [showCompanyEmail, setShowCompanyEmail] = useState(false);
+  const [creditTransactionModal,setTransactionModal] = useState(false);
+  const [creditTransactionData,setCreditTransactionData] = useState([]);
 
   let controllerRef = useRef(null);
 
@@ -437,6 +440,16 @@ const EditCompanyDetails = ({
     if (watchCompanyLeadSource?.id !== 1) unregister("companyLeadSource");
   }, [unregister, watchCompanyLeadSource?.id]);
 
+  const getCreditTransactionData = async ()=>{
+    setTransactionModal(true)
+    let result = await ClientDAO.getCreditTransationHistoryDAO(clientPOCs[0]?.companyId,clientPOCs[0]?.contactId)
+    // console.log("fatchpreOnBoardInfo", result.responseBody.details);
+
+    if (result?.statusCode === HTTPStatusCode.OK) {
+      setCreditTransactionData(result?.responseBody);
+    }
+  }
+
   return (
     <div className={CompanyDetailsStyle.tabsFormItem}>
       <div className={CompanyDetailsStyle.tabsFormItemInner}>
@@ -688,9 +701,11 @@ const EditCompanyDetails = ({
 							</span>
              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Balance Credit : {companyDetail?.jpCreditBalance}
 						</label>
+            <div className={CompanyDetailsStyle.FreecreditFieldWrap}>
 								<HRInputField
 									register={register}
 									errors={errors}
+                  className="yourClassName"
 									validationSchema={{
 										required: checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null ?'Please enter free credits.':null,
                     min: {
@@ -704,9 +719,18 @@ const EditCompanyDetails = ({
 									placeholder="Free Credits"
 									required={checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null?true:false}
 								/>
+                <label style={{marginBottom:"20px",marginTop:"-26px",display:"block"}}>Total New Balance : { parseInt(watch("jpCreditBalance"))+parseInt(companyDetail?.jpCreditBalance)} </label>
+                </div>
 							</div>
+              <div className={CompanyDetailsStyle.colMd6}>
+                  <span className={CompanyDetailsStyle.creditTransactionModalLink} onClick={()=>getCreditTransactionData()}>Credits transaction history</span>
+              </div>
 						</div>
-            <label style={{marginBottom:"12px"}}>Total New Balance : { parseInt(watch("jpCreditBalance"))+parseInt(companyDetail?.jpCreditBalance)} </label>
+            <div className={CompanyDetailsStyle.row}>
+							<div className={CompanyDetailsStyle.colMd6}>
+                
+              </div>
+            </div>
 						<div className={CompanyDetailsStyle.row}>
 							<div className={CompanyDetailsStyle.colMd12}>
 								<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
@@ -722,13 +746,15 @@ const EditCompanyDetails = ({
                     checked={IsChecked?.isPostaJob} 
                     onChange={(e)=>{
                       setIsChecked({...IsChecked,isPostaJob:e.target.checked})}}
-                    >Credit per post a job.</Checkbox>
+                    >Credit per post a job.
+                  </Checkbox>
 									<Checkbox name="IsProfileView" 
                     checked={IsChecked?.isProfileView} 
                     onChange={(e)=>{
                       setIsChecked({...IsChecked,isProfileView:e.target.checked})}}>
-                      Credit per profile view.</Checkbox>
-							</div>
+                      Credit per profile view.
+                  </Checkbox>
+							  </div>
 								</div>												
 							</div>
 						</div>
@@ -991,6 +1017,11 @@ const EditCompanyDetails = ({
             >
               <img src={base64Image} alt="preview" />
             </Modal>
+            <CreditTransactionHistoryModal 
+            creditTransactionModal={creditTransactionModal} 
+            setTransactionModal={setTransactionModal}
+            creditTransactionData={creditTransactionData}
+            />
             {showUploadModal && (
               <UploadModal
                 isFooter={false}
