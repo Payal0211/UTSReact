@@ -4,6 +4,7 @@ import { NetworkInfo } from 'constants/network';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import infoIcon from 'assets/svg/info.svg'
+import moment from 'moment';
 
 export const reportConfig = {
 	/**------------- DEMAND FUNNEL REPORT------------------  */
@@ -1573,6 +1574,69 @@ export const reportConfig = {
 					return <Fragment key={text}>{text }</Fragment>;
 				},
 			}				
+		];
+	},
+	ClientPortalPopupReportConfig: () => {
+		return [
+			{
+				title: 'Client',
+				dataIndex: 'client',
+				key: 'client',
+				align: 'left',				
+			},
+			{
+				title: 'Hr Number',
+				dataIndex: 'hrNumber',
+				key: 'hrNumber',
+				align: 'left',		
+				render: (text, result) => (
+					result?.hrid ? 
+					<Link
+					  target="_blank"
+					  to={`/allhiringrequest/${result?.hrid}`}
+					  style={{ color: "black", textDecoration: "underline" }}
+					  onClick={() => localStorage.removeItem("dealID")}
+					>
+					  {text}
+					</Link> : {text}
+				  ),		
+			},
+			{
+				title: 'Device',
+				dataIndex: 'device',
+				key: 'device',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Location',
+				dataIndex: 'location',
+				key: 'location',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'Talent Name',
+				dataIndex: 'talentName',
+				key: 'talentName',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text}</Fragment>;
+				},
+			},
+			{
+				title: 'Created Date',
+				dataIndex: 'createdDate',
+				key: 'createdDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{moment(text).format("DD/MM/YYYY") }</Fragment>;
+				},
+			},					
 		];
 	}
 };
