@@ -31,7 +31,8 @@ export const hrUtils = {
 			reopenHR:item?.reopenHR,
 			companyCategory: item?.companyCategory,
 			HRID: item?.hrid,
-			isHRFocused: item?.isHRFocused
+			isHRFocused: item?.isHRFocused,
+			companyModel: item?.companyModel
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {

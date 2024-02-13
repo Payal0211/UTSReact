@@ -53,7 +53,7 @@ export function clientFormDataFormatter({
 	base64ClientImage,
 	getUploadClientFileData,typeOfPricing,
 	checkPayPer,
-	IsChecked,payPerCondition
+	IsChecked,payPerCondition,clientPOCs
 }) {
 	let _val = "";
 	if(typeOfPricing===1){
@@ -304,6 +304,16 @@ export function clientFormDataFormatter({
 			: draft === SubmitType.SAVE_AS_DRAFT
 			? watch('secondaryContactName').id.toString()
 			: d.secondaryContactName.id.toString(),
+		companyname: d.companyName,
+		clientemail:
+			draft === SubmitType.SAVE_AS_DRAFT
+			? _isNull(primaryClientEmail)
+				? null
+				: primaryClientEmail
+			: _isNull(d.primaryClientEmailID)
+			? null
+			: d.primaryClientEmailID,
+		contactId:clientPOCs?clientPOCs[0]?.contactId:0
 	};
 	return clientFormDetails;
 }

@@ -450,6 +450,9 @@ const EditCompanyDetails = ({
     }
   }
 
+  let _totalSum;
+  _totalSum = parseInt(watch("jpCreditBalance"))+parseInt(companyDetail?.jpCreditBalance);
+
   return (
     <div className={CompanyDetailsStyle.tabsFormItem}>
       <div className={CompanyDetailsStyle.tabsFormItemInner}>
@@ -683,7 +686,7 @@ const EditCompanyDetails = ({
 									>Pay Per Credit</Checkbox>
 								<Checkbox 
 									value={1} 
-									onChange={(e)=>{setCheckPayPer({...checkPayPer,anotherCompanyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false)}}
+									onChange={(e)=>{setCheckPayPer({...checkPayPer,anotherCompanyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false);setTypeOfPricing(null)}}
                   checked={checkPayPer?.anotherCompanyTypeID}
 									>Pay Per Hire</Checkbox>
 							</div>
@@ -692,14 +695,15 @@ const EditCompanyDetails = ({
 					</div>
 					{checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null &&
 					<>
+          Remaining Credit : <span style={{fontWeight:"bold",marginBottom:"80px",marginTop:"20px"}}>{companyDetail?.jpCreditBalance}</span>
 						<div className={CompanyDetailsStyle.row}>
 							<div className={CompanyDetailsStyle.colMd6}>
               <label style={{marginBottom:"12px"}}>
-							Free Credits
+							Topup Credit
               <span className={CompanyDetailsStyle.reqField}>
 								*
 							</span>
-             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Balance Credit : {companyDetail?.jpCreditBalance}
+             {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Remaining Credit : <span style={{fontWeight:"bold"}}>{companyDetail?.jpCreditBalance}</span> */}
 						</label>
             <div className={CompanyDetailsStyle.FreecreditFieldWrap}>
 								<HRInputField
@@ -712,18 +716,27 @@ const EditCompanyDetails = ({
                       value: 0,
                       message: `please don't enter the value less than 0`,
                     },
+                    max: {
+                      value: 99,
+                      message: `please don't enter the value greater than 99`,
+                    }
 									}}
-									// label={`Free Credits Balance Credit : ${companyDetail?.jpCreditBalance}`}
+                  onKeyDownHandler={(e)=>{
+                    if (e.key === '-' || e.key === '+' || e.key === 'E' ||  e.key === 'e') {
+                      e.preventDefault();
+                    }
+                  }}
+                  // label={`Free Credits Balance Credit : ${companyDetail?.jpCreditBalance}`}
 									name={'jpCreditBalance'}
 									type={InputType.NUMBER}
 									placeholder="Free Credits"
 									required={checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null?true:false}
 								/>
-                <label style={{marginBottom:"20px",marginTop:"-26px",display:"block"}}>Total New Balance : { parseInt(watch("jpCreditBalance"))+parseInt(companyDetail?.jpCreditBalance)} </label>
+               {!isNaN(_totalSum) && <label style={{marginBottom:"20px",marginTop:"-26px",display:"block",fontWeight:"bold"}}>Total Credit Balance : <span style={{fontWeight:"bold"}}>{_totalSum}</span> </label>}
                 </div>
 							</div>
               <div className={CompanyDetailsStyle.colMd6}>
-                  <span className={CompanyDetailsStyle.creditTransactionModalLink} onClick={()=>getCreditTransactionData()}>Credits transaction history</span>
+                  <span className={CompanyDetailsStyle.creditTransactionModalLink} onClick={()=>getCreditTransactionData()}>Credit Transaction History</span>
               </div>
 						</div>
             <div className={CompanyDetailsStyle.row}>

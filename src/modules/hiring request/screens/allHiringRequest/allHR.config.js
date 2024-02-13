@@ -165,13 +165,6 @@ export const allHRConfig = {
         width: "100px",
       },
       {
-        title: "Cat",
-        dataIndex: "companyCategory",
-        key: "companyCategory",
-        align: "left",
-        width: "50px",
-      },
-      {
         title: "Company",
         dataIndex: "Company",
         key: "company",
@@ -190,6 +183,13 @@ export const allHRConfig = {
         // 		</a>
         // 	);
         // },
+      },
+      {
+        title: "Company Type",
+        dataIndex: "companyModel",
+        key: "companyModel",
+        align: "left",
+        width: "50px",
       },
       {
         title: "Time",
@@ -440,6 +440,12 @@ export const allHRConfig = {
             value: "Direct Placement",
           },
         ],
+        isSearch: false,
+      },
+      {
+        label: "Company Type",
+        name: "companyTypeIds",
+        child: filterList?.companyModel,
         isSearch: false,
       },
     ];

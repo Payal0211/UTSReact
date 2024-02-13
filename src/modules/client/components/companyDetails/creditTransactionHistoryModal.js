@@ -65,11 +65,11 @@ const CreditTransactionHistoryModal = ({creditTransactionModal,setTransactionMod
       
     return(
         <Modal
-				width={'1200px'}
+				width={'991px'}
 				centered
 				footer={false}
 				open={creditTransactionModal}
-				className="creditTransactionModal"
+				className="creditTransactionModal customTransactionModal"
 				onOk={() => setTransactionModal(false)}
 				onCancel={() => setTransactionModal(false)}
 			>
