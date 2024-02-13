@@ -190,7 +190,7 @@ const EditClientField = ({
 			checkPayPer,
 			IsChecked,
 			payPerCondition,
-            getUploadClientFileData,typeOfPricing}
+            getUploadClientFileData,typeOfPricing,clientPOCs}
 		);
 
 		let newPOClist = d.pocList.map(contact => {

@@ -614,7 +614,12 @@ const CompanyDetails = ({
 									label="Free Credits"
 									name={'jpCreditBalance'}
 									type={InputType.TEXT}
-									placeholder="Free Credits "
+									placeholder="Free Credits"
+									onKeyDownHandler={(e)=>{
+										if (e.key === '-' || e.key === '+' || e.key === 'E' ||  e.key === 'e') {
+											e.preventDefault();
+										}
+									}}
 									required={checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null?true:false}
 								/>
 							</div>
