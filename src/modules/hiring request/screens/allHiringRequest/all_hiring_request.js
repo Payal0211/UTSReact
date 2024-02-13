@@ -812,10 +812,10 @@ const AllHiringRequestScreen = () => {
                           pagesize: pageSize,
                           pagenum: pageNum,
                         });
-                        handleHRRequest({
-                          pagesize: pageSize,
-                          pagenum: pageNum,
-                        });
+                        // handleHRRequest({
+                        //   pagesize: pageSize,
+                        //   pagenum: pageNum,
+                        // });
                       },
                       size: "small",
                       pageSize: pageSize,

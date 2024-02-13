@@ -1085,6 +1085,11 @@ table {
 }
 
 
+[class*="customTransactionModal"] .ant-table{
+  overflow-y: auto;
+  height: 60vh;
+}
+
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {
