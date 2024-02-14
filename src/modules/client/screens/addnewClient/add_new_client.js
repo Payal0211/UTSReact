@@ -25,6 +25,7 @@ const AddNewClientScreen = () => {
 		Requirements: '',
 	});
 	const [jdDumpID, setJDDumpID] = useState('');
+	const [userCompanyTypeID, setUserCompanyTypeID] = useState(1)
 	return (
 		<div className={AddNewClientStyle.addNewContainer}>
 			<div className={AddNewClientStyle.addHRTitle}>{title}</div>
@@ -69,6 +70,8 @@ const AddNewClientScreen = () => {
 									jdDumpID={jdDumpID}
 									params={params}
 									fromClientflow={true}
+									userCompanyTypeID={userCompanyTypeID}
+									setUserCompanyTypeID={setUserCompanyTypeID}
 								/>
 							),
 							disabled: tabFieldDisabled.addNewHiringRequest,
@@ -88,6 +91,8 @@ const AddNewClientScreen = () => {
 									jdDumpID={jdDumpID}
 									clientDetail={clientDetail}
 									params={params}
+									userCompanyTypeID={userCompanyTypeID}
+									setUserCompanyTypeID={setUserCompanyTypeID}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,

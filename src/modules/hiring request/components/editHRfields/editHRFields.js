@@ -1969,7 +1969,7 @@ const EditHRFields = ({
                       setControlledValue={val=> {setControlledAvailabilityValue(val);resetField('hiringPricingType');
                       resetField('payrollType');setControlledPayrollTypeValue("Select payroll")
                       setControlledHiringPricingTypeValue("Select Hiring Pricing");resetField('contractDuration');setContractDuration('');
-                      if(companyType?.id=== 2){
+                      if(companyType?.id === 2){
                         if(val === 'Part Time'){
                           setValue('tempProject',{id: undefined, value: true})
                           setControlledTempProjectValue(true)
@@ -2019,7 +2019,7 @@ const EditHRFields = ({
                       />
                     </div>
                   </div>
-                  {console.log('req duration',companyType?.id=== 2 ? (watch('availability')?.id !== 2 || watch('tempProject')?.value === true) : false, watch('availability')?.id !== 2 , watch('tempProject')?.value === true)}
+                 
                   {(watch('availability')?.id !== 2 || watch('tempProject')?.value === true)  &&   <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
@@ -2555,7 +2555,8 @@ const EditHRFields = ({
                   />
                 </div>
 
-                {watch('budget')?.value !== "3" && <>
+{companyType?.id===  1 && <>
+ {watch('budget')?.value !== "3" && <>
               <div className={HRFieldStyle.colMd4}>
                               <HRInputField
                                 label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees Amount ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }` : `Estimated Uplers Fees Amount ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }`}
@@ -2578,6 +2579,8 @@ const EditHRFields = ({
                               />
                             </div>}
               </>}
+</>}
+               
               </div>
 
               <div className={HRFieldStyle.row}>
