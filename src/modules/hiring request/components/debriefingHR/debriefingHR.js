@@ -19,6 +19,7 @@ import LogoLoader from 'shared/components/loader/logoLoader';
 import { ReactComponent as FocusRole } from 'assets/svg/FocusRole.svg';
 import plusSkill from "../../../../assets/svg/plusSkill.svg";
 import PublishHRPopup from '../publishHRPopup/publishHRPopup';
+import DebrefCompanyDetails from '../editDebrieingHR/debrefCompanyDetails';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -44,7 +45,9 @@ const DebriefingHR = ({
 	addData,
 	disabledFields,
 	AboutCompanyDesc,
-	isDirectHR
+	isDirectHR,
+	userCompanyTypeID,
+	setUserCompanyTypeID
 }) => {
 	const {
 		watch,
@@ -395,9 +398,23 @@ const DebriefingHR = ({
 				"secondaryinterviewerList": d.secondaryInterviewer
 			},
 			isDirectHR:isDirectHR,
-			companyType: "Pay Per Hire",
-			PayPerType:  1 ,
+			companyType: userCompanyTypeID === 1 ? "Pay Per Hire" : "Pay Per Credit",
+			PayPerType:  userCompanyTypeID ,
 		};
+
+		if(userCompanyTypeID === 2){
+			debriefFormDetails['companyInfo'] = {
+				"companyID": getHRdetails?.companyInfo?.companyID,
+				"companyName": d.companyName,
+				"website": d.webSite,
+				"linkedInURL": d.companyLinkedin,
+				"industry": d.industry,
+				"companySize": d.companySize,
+				"aboutCompanyDesc": d.aboutCompany
+			}
+
+			debriefFormDetails['interviewerDetails'] = getHRdetails?.interviewerDetails
+		}
 		
 		if(!sameSkillIssue){
 			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -590,7 +607,7 @@ const DebriefingHR = ({
 								required
 							/>
 
-							<div className={DebriefingHRStyle.aboutCompanyField}>
+							{userCompanyTypeID === 1 && <div className={DebriefingHRStyle.aboutCompanyField}>
 								<HRInputField
 									required
 									isTextArea={true}
@@ -628,9 +645,9 @@ const DebriefingHR = ({
 									placeholder="Please enter details about company."
 								/>
 								{/* <p>* Please do not mention company name here</p> */}
-							</div>
+							</div>}
 
-								<div className={DebriefingHRStyle.mb50}>
+							{userCompanyTypeID === 1 && <div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
 									controlledValue={controlledRoleValue}
 									setControlledValue={setControlledRoleValue}
@@ -648,7 +665,8 @@ const DebriefingHR = ({
 										disabled={ disabledFields !== null ? disabledFields?.role : false}
 										errorMsg={'Please select hiring request role'}
 									/>
-								</div>
+								</div>}		
+								
 								<div className={DebriefingHRStyle.mb50}>
 								<HRInputField
 									register={register}
@@ -770,22 +788,26 @@ const DebriefingHR = ({
 					</div>
 				</div>
 
-				<Divider />
-				<AddInterviewer
-					errors={errors}
-					append={append}
-					remove={remove}
-					setValue={setValue}
-					register={register}
-					watch={watch}
-					// interviewDetails={{fullName:getHRdetails.interviewerFullName
-					// 	,emailId:getHRdetails.interviewerEmail
-					// 	,linkedin:getHRdetails.interviewerLinkedin,designation:getHRdetails.interviewerDesignation
-					// }}
-					fields={fields}
-					getHRdetails={getHRdetails}
-					disabledFields={disabledFields}
-				/>
+				{userCompanyTypeID === 2 && <DebrefCompanyDetails register={register}  errors={errors} watch={watch} />}
+
+				{userCompanyTypeID === 1 && <>
+					<Divider />
+					<AddInterviewer
+						errors={errors}
+						append={append}
+						remove={remove}
+						setValue={setValue}
+						register={register}
+						watch={watch}
+						// interviewDetails={{fullName:getHRdetails.interviewerFullName
+						// 	,emailId:getHRdetails.interviewerEmail
+						// 	,linkedin:getHRdetails.interviewerLinkedin,designation:getHRdetails.interviewerDesignation
+						// }}
+						fields={fields}
+						getHRdetails={getHRdetails}
+						disabledFields={disabledFields}
+					/>
+				</>}
 				<Divider />
 				{isLoading ? (
 					<SpinLoader />
