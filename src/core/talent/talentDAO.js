@@ -29,7 +29,7 @@ export const TalentStatusDAO = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'userDAO.getStatusDetailRequestDAO');
+			return errorDebug(error, 'TalentStatusDAO.getStatusDetailRequestDAO');
 		}
 	},
 	updateTalentStatusRequestDAO: async function (talentDetails) {
@@ -55,7 +55,7 @@ export const TalentStatusDAO = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'userDAO.updateTalentStatusRequestDAO');
+			return errorDebug(error, 'TalentStatusDAO.updateTalentStatusRequestDAO');
 		}
 	},
 	removeOnHoldStatusRequestDAO: async function (talentDetails) {
@@ -81,7 +81,7 @@ export const TalentStatusDAO = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'userDAO.removeOnHoldStatusRequestDAO');
+			return errorDebug(error, 'TalentStatusDAO.removeOnHoldStatusRequestDAO');
 		}
 	},
 	talentReplacementRequestDAO: async function (talentDetails) {
@@ -107,7 +107,59 @@ export const TalentStatusDAO = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'userDAO.talentReplacementRequestDAO');
+			return errorDebug(error, 'TalentStatusDAO.talentReplacementRequestDAO');
+		}
+	},
+	talentaStatusCreditBaseRequestDAO: async function (hrId,talentID) {
+		try {
+			const talentStatusCreditBaseResponse =
+				await TalentStatusAPI.getStatusDetailCreditBaseRequest(hrId,talentID);
+			if (talentStatusCreditBaseResponse) {
+				const statusCode = talentStatusCreditBaseResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = talentStatusCreditBaseResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return talentStatusCreditBaseResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return talentStatusCreditBaseResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TalentStatusDAO.talentaStatusCreditBaseRequestDAO');
+		}
+	},
+	updateTalentaStatusCreditBaseRequestDAO: async function (talentDetails) {
+		try {
+			const updateTalentStatusCreditBaseResponse =
+				await TalentStatusAPI.updateStatusCreditBaseRequest(talentDetails);
+			if (updateTalentStatusCreditBaseResponse) {
+				const statusCode = updateTalentStatusCreditBaseResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = updateTalentStatusCreditBaseResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return updateTalentStatusCreditBaseResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return updateTalentStatusCreditBaseResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'TalentStatusDAO.updateTalentaStatusCreditBaseRequestDAO');
 		}
 	},
 };
