@@ -341,6 +341,16 @@ const JOBPostSLA = ({ allApiData }) => {
               <div className={CompanyProfileCardStyle.jobStepTextWrap}>
                 <p>{hrSLADetails.length && `${hrSLADetails[6].stageName}`}</p>
                 <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+               
+                  <div className={CompanyProfileCardStyle.StepscreeningBox}>
+                    {" "}
+                    <span
+                      className={CompanyProfileCardStyle.screeningColorOrange}
+                    >
+                      {hrSLADetails.length && `${hrSLADetails[6].noOfTalents} Talents Shortlisted`}
+                    </span>{" "}
+                  </div>
+                
                   {/* <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
                           <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div> */}
                 </div>
@@ -367,6 +377,17 @@ const JOBPostSLA = ({ allApiData }) => {
               <div className={CompanyProfileCardStyle.jobStepTextWrap}>
                 <p>{hrSLADetails.length && `${hrSLADetails[7].stageName}`}</p>
                 <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+               
+                  <div className={CompanyProfileCardStyle.StepscreeningBox}>
+                    {" "}
+                    <span
+                      className={CompanyProfileCardStyle.screeningColorOrange}
+                    >
+                      {hrSLADetails.length &&
+                  `${hrSLADetails[7].noOfTalents} Talents in Interview`}
+                    </span>{" "}
+                  </div>
+                
                   {/* <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
                           <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div> */}
                 </div>
