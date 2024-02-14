@@ -71,7 +71,8 @@ const TalentList = ({
 	inteviewSlotDetails,
 	talentID,
 	IsTransparentPricing,
-	DynamicSalaryInfo
+	DynamicSalaryInfo,
+	apiData
 }) => {
 	const navigate = useNavigate()
 	const [scheduleAnotherRoundInterview, setScheduleAnotherRoundInterview] =
@@ -1553,6 +1554,7 @@ const TalentList = ({
 						hrId={hrId}
 						callAPI={callAPI}
 						closeModal={() => setTalentStatus(false)}
+						apiData={apiData}
 					/>
 				</Modal>
 			)}

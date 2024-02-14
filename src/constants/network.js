@@ -355,6 +355,8 @@ export class TalentReplaceAPI {
 		'GetEngagemetnsForReplacementBasedOnLWDOption';
 	static SAVE_REPLACED_TALENT = 'SaveReplaceTalent';
 	static CREATE_REPLACE_HR = 'CreateReplaceHR'
+	static CREDITBASE_TALENT_STATUS = "CreditBased/GetStatusDetail"
+	static CREDITBASE_UPDATE_TALENT_STATUS = "CreditBased/UpdateTalentStatus"
 }
 export class IncentiveReport {
 	static GET_USER_ROLE = 'GetIncentiveReport';
