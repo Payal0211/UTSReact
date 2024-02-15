@@ -46,6 +46,12 @@ export const allClientsConfig = {
 				name: 'poc',
 				child: filterList?.POCList,
 				isSearch: true,
+            },
+            {
+                label: 'Company Type',
+				name: 'searchCompanyModel',
+				child: filterList?.CompanyModel,
+				// isSearch: true,
             }            		
 		];
     },
@@ -96,6 +102,12 @@ export const allClientsConfig = {
 						</Link>
 					);
 				},
+            },
+            {
+                title: 'Company Type',
+                dataIndex: 'companyModel',
+                key: 'companyModel',
+                width: '150px',
             },
             {
                 title: 'Client',
