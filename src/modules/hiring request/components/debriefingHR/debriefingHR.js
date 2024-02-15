@@ -335,6 +335,19 @@ const DebriefingHR = ({
 	const openPublishModal = ()=>{
 		setShowPublishModal(true)
 	}
+
+	useEffect(()=>{
+		let companyInfo = getHRdetails?.companyInfo
+
+		if(companyInfo?.companyID){
+			companyInfo?.aboutCompanyDesc && setValue('aboutCompany',companyInfo?.aboutCompanyDesc)
+			companyInfo?.companyName && setValue('companyName',companyInfo?.companyName)
+			companyInfo?.website && setValue('webSite',companyInfo?.website)
+			companyInfo?.industry && setValue('industry',companyInfo?.industry)
+			companyInfo?.linkedInURL && setValue('companyLinkedin',companyInfo?.linkedInURL)
+			companyInfo?.companySize && setValue('companySize',companyInfo?.companySize)
+		}
+	},[getHRdetails])
 	
 	const debriefSubmitHandler = async (d) => {
 		setIsLoading(true);
@@ -398,6 +411,15 @@ const DebriefingHR = ({
 				"secondaryinterviewerList": d.secondaryInterviewer
 			},
 			isDirectHR:isDirectHR,
+			companyInfo: {
+				"companyID": getHRdetails?.companyInfo?.companyID,
+				"companyName": d.companyName,
+				"website": d.webSite,
+				"linkedInURL": d.companyLinkedin,
+				"industry": d.industry,
+				"companySize": getHRdetails?.companyInfo?.companySize,
+				"aboutCompanyDesc": d.aboutCompany
+			},
 			companyType: userCompanyTypeID === 1 ? "Pay Per Hire" : "Pay Per Credit",
 			PayPerType:  userCompanyTypeID ,
 		};
