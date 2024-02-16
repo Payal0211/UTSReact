@@ -62,9 +62,6 @@ export default function UTMTrackingReport() {
 
   // const [utmTrackingListList, setutmTrackingListList] = useState([]); 
 
-console.log(reportList,"reportListreportListreportList");
-console.log(selectedClientName,"selectedClientNameselectedClientNameselectedClientName");
-
   const [tableFilteredState, setTableFilteredState] = useState({
     totalrecord: 100,
     pagenumber: 1,
@@ -108,7 +105,6 @@ console.log(selectedClientName,"selectedClientNameselectedClientNameselectedClie
     const response = await clientPortalTrackingReportDAO.clientPortalTrackingReportPopupListDAO(params);
     if (response.statusCode === HTTPStatusCode.OK) {
       let details = response.responseBody.details;
-      console.log("popup data", details)
       setReportPopupList(details);
       setLoading(false);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -333,7 +329,6 @@ console.log(selectedClientName,"selectedClientNameselectedClientNameselectedClie
   const getClientNameFilter = useCallback(async () => {
     const response = await clientPortalTrackingReportDAO.clientPortalTrackingReportFilterDAO();
     if (response?.statusCode === HTTPStatusCode.OK) {
-      console.log(response?.responseBody?.details,"askdjaskjdasdj");
       // setFiltersList(response && response?.responseBody?.details?.Data);
       // setHRTypesList(response && response?.responseBody?.details?.Data.hrTypes.map(i => ({id:i.text, value:i.value})))
       setClientNameList(response && response?.responseBody?.details?.map(i=>({value:i?.clientID,label:i?.clientName})))
