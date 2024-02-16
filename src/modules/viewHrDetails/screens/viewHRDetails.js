@@ -414,7 +414,10 @@ const ViewHRDetails = () => {
                       </li>}
           </> }
 
-                     
+          <li>
+                        <span>Is budget confidential :</span>{" "}
+                        {hiringDetails?.responseBody?.details?.isConfidentialBudget ? "YES" : "NO"}
+                      </li>
                       <li>
                         <span>Currency :</span>{" "}
                         {hiringDetails?.responseBody?.details?.currency ??

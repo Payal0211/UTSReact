@@ -292,7 +292,7 @@ const CompanyProfileCard = ({
                     userSessionMemo?.loggedInUserTypeID ===
                       UserAccountRole.SALES ||
                     userSessionMemo?.loggedInUserTypeID ===
-                      UserAccountRole.SALES_MANAGER) && (allApiData?.ReplaceOnBoardID === null || allApiData?.ReplaceOnBoardID === 0 ) &&  (
+                      UserAccountRole.SALES_MANAGER) && (allApiData?.ReplaceOnBoardID === null || allApiData?.ReplaceOnBoardID === 0 ) && clientDetail?.CompanyTypeID === 1 &&  (
                     <button
                       onClick={() => {
                         setUpdateTR(true);
@@ -384,6 +384,12 @@ const CompanyProfileCard = ({
                   {allApiData?.transparentModel?.CalculatedUplersfees ? allApiData?.transparentModel?.CalculatedUplersfees : "NA"}
                 </span>
               </div> */}
+               <div className={CompanyProfileCardStyle.engagement}>
+                <span>Is budget confidential:</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                  {allApiData?.HRDetails?.IsConfidentialBudget ? "YES" : "NO" }
+                </span>
+              </div>
               <div className={CompanyProfileCardStyle.engagement}>
                 <span>Engagement:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
