@@ -110,6 +110,12 @@ export const allClientsConfig = {
                 width: '150px',
             },
             {
+                title: 'Credit Utilization',
+                dataIndex: 'creditUtilization',
+                key: 'creditUtilization',
+                width: '150px',
+            },
+            {
                 title: 'Client',
                 dataIndex: 'clientName',
                 key: 'clientName',
