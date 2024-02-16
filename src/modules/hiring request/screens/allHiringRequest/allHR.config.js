@@ -192,6 +192,13 @@ export const allHRConfig = {
         width: "30px",
       },
       {
+        title: "HR Type",
+        dataIndex: "hrTypeName",
+        key: "hrTypeName",
+        align: "left",
+        width: "30px",
+      },
+      {
         title: "HR Status",
         dataIndex: "hrStatus",
         key: "hr_status",
