@@ -61,6 +61,7 @@ const EditHRFields = ({
   fromEditDeBriefing,
   removeFields,
 	disabledFields,
+  setDisabledFields,
 	isBDRMDRUser,
 	isDirectHR,
 }) => {
@@ -165,7 +166,7 @@ const EditHRFields = ({
   const [typeOfPricing,setTypeOfPricing] = useState(null)
   const [transactionMessage,setTransactionMessage] = useState('')
   const [pricingTypeError,setPricingTypeError] = useState(false);
-
+  const [isBudgetConfidential, setIsBudgetConfidentil] = useState(false)
   const [tempProjects, setTempProject] = useState([
     {
       disabled: false,
@@ -1019,6 +1020,7 @@ const EditHRFields = ({
         typeOfPricing,hrPricingTypes,companyType
       );
       hrFormDetails.isDirectHR = isDirectHR
+      hrFormDetails.IsConfidentialBudget = isBudgetConfidential
       if(isDirectHR === true && isBDRMDRUser === true){
         hrFormDetails.directPlacement.address = ''
         hrFormDetails.directPlacement.postalCode = ''
@@ -1108,7 +1110,8 @@ const EditHRFields = ({
       // tabFieldDisabled,
       typeOfPricing,hrPricingTypes,
       getHRdetails?.addHiringRequest?.hrNumber,
-      messageAPI,companyType
+      messageAPI,companyType,
+      isBudgetConfidential
     ]
   );
   useEffect(() => {
@@ -1175,6 +1178,7 @@ const EditHRFields = ({
     setValue("country", getHRdetails?.directPlacement?.country);
     setValue("address", getHRdetails?.directPlacement?.address);
     setValue("jdExport", getHRdetails?.addHiringRequest?.jdfilename);
+    setIsBudgetConfidentil(getHRdetails?.salesHiringRequest_Details?.isConfidentialBudget)
     // setValue(
     //   "contractDuration",
     //   getHRdetails?.salesHiringRequest_Details?.durationType
@@ -1802,6 +1806,20 @@ const EditHRFields = ({
     }
   }
   const { isReady: isCityReady, debouncedFunction: cityDeb } = useDebounce(cityChangeHandler, 2000);
+
+  useEffect(()=>{
+    if(companyType?.id === 1){
+      // resetField('talentsNumber')
+      setDisabledFields(prev=> ({...prev , talentRequired : false}))
+    
+    }
+
+    if(companyType?.id === 2){
+      // setValue('talentsNumber',1)
+      setDisabledFields(prev=> ({...prev , talentRequired : true}))
+      
+    }
+  },[companyType?.id])
 
 
   return (
@@ -2583,6 +2601,14 @@ const EditHRFields = ({
                
               </div>
 
+              <div className={HRFieldStyle.row}> 
+            <div className={HRFieldStyle.colMd6} style={{paddingBottom:'20px'}}>
+            <Checkbox checked={isBudgetConfidential} onClick={()=> setIsBudgetConfidentil(prev => !prev)}>
+                Keep my budget confidential
+						</Checkbox>	
+            </div>         
+            </div>
+
               <div className={HRFieldStyle.row}>
                 <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
@@ -2852,7 +2878,7 @@ const EditHRFields = ({
                  
                 
               
-                <div className={HRFieldStyle.colMd4}>
+                <div className={companyType?.id === 1 ? HRFieldStyle.colMd4 : HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     {/* <label>
                                     Required Experience
@@ -2901,7 +2927,7 @@ const EditHRFields = ({
                   </div>
                 </div>
 
-                <div className={HRFieldStyle.colMd4}>
+                <div className={companyType?.id === 1 ? HRFieldStyle.colMd4 : HRFieldStyle.colMd6}>
                   <HRInputField
                     register={register}
                     errors={errors}

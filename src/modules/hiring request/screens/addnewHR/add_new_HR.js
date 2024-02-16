@@ -141,6 +141,7 @@ const AddNewHR = () => {
 									setAboutCompanyDesc={setAboutCompanyDesc}
 									userCompanyTypeID={userCompanyTypeID}
 									setUserCompanyTypeID={setUserCompanyTypeID}
+									setDisabledFields={setDisabledFields}
 								/>
 							),
 						},
@@ -202,6 +203,7 @@ const AddNewHR = () => {
 									disabledFields={disabledFields}
 									isBDRMDRUser={isBDRMDRUser}
 									isDirectHR={isDirectHR}
+									setDisabledFields={setDisabledFields}
 								/>
 							),
 							disabled: localStorage.getItem('fromEditDeBriefing') && true,

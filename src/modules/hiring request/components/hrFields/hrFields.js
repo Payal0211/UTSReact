@@ -64,6 +64,7 @@ const HRFields = ({
   fromClientflow,
   removeFields,
   disabledFields,
+  setDisabledFields,
   defaultPropertys,
   isDirectHR,
   setAboutCompanyDesc,userCompanyTypeID, setUserCompanyTypeID
@@ -201,7 +202,7 @@ const HRFields = ({
   const [pricingTypeError,setPricingTypeError] = useState(false);
   const [transactionMessage,setTransactionMessage] = useState('')
   const [disableYypeOfPricing,setDisableTypeOfPricing] = useState(false)
-
+  const [isBudgetConfidential, setIsBudgetConfidentil] = useState(false)
   /* const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
@@ -1157,6 +1158,7 @@ const HRFields = ({
       );
       hrFormDetails.isDirectHR = isDirectHR
       hrFormDetails.PayPerType =  userCompanyTypeID
+      hrFormDetails.IsConfidentialBudget = isBudgetConfidential
 
       if(type !== SubmitType.SAVE_AS_DRAFT){
         if(watch('fromTime')?.value === watch('endTime')?.value){
@@ -1263,7 +1265,8 @@ const HRFields = ({
       typeOfPricing,
       hrPricingTypes,
       isDirectHR,
-      userCompanyTypeID
+      userCompanyTypeID,
+      isBudgetConfidential
     ]
   );
 
@@ -1651,11 +1654,15 @@ const HRFields = ({
 
   useEffect(() => {
     if(userCompanyTypeID === 1){
+      resetField('talentsNumber')
+      setDisabledFields(prev=> ({...prev , talentRequired : false}))
       unregister('tempProject')
       unregister('contractDuration')
     }
 
     if(userCompanyTypeID === 2){
+      setValue('talentsNumber',1)
+      setDisabledFields(prev=> ({...prev , talentRequired : true}))
       if(watch('tempProject')?.value === false){
         unregister('contractDuration')
         unregister('hiringPricingType')
@@ -2539,6 +2546,13 @@ const HRFields = ({
               
 
 
+            </div>
+            <div className={HRFieldStyle.row}> 
+            <div className={HRFieldStyle.colMd6} style={{paddingBottom:'20px'}}>
+            <Checkbox checked={isBudgetConfidential} onClick={()=> setIsBudgetConfidentil(prev => !prev)}>
+                Keep my budget confidential
+						</Checkbox>	
+            </div>         
             </div>
 
             <div className={HRFieldStyle.row}>
