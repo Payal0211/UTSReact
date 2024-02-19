@@ -56,9 +56,8 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 		const response = await TalentStatusDAO.talentaStatusCreditBaseRequestDAO(hrId,talentInfo?.TalentID)
 		if(response?.statusCode=== HTTPStatusCode.OK){
 			setTalentStatusCreditBase(response?.responseBody?.details)
-			const {details} = response?.responseBody?.details
-			details?.OtherRejectReason && setValue("profileRejectionStage",details?.OtherRejectReason) 
-			details?.TalentStatusIdClientPortal && setValue("statusId",details?.TalentStatusIdClientPortal)
+			const {OtherRejectReason} = response?.responseBody?.details
+			OtherRejectReason && setValue("profileRejectionStage",OtherRejectReason)
 		}
 	},[hrId,talentInfo?.TalentID,setValue])
 
@@ -73,12 +72,11 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 	}, [talentStatusCreditBase])
 
 	useEffect(() => {
-		if(talentStatusCreditBase?.OtherRejectReason){
+		if(talentStatusCreditBase?.RejectReasonId){
 			const creditRejectReason = talentStatusCreditBase?.CreditBased_RejectReason?.filter(
-				(item) => item?.value=== talentStatusCreditBase?.OtherRejectReason
-			)
-			setValue("profileRejectionStage",creditRejectReason[0])
-			setControllCreditBaseRejectReason(creditRejectReason[0]?.value)
+				(item) => item?.id=== talentStatusCreditBase?.RejectReasonId)
+				setValue("rejectReasonID",creditRejectReason[0])
+				setControllCreditBaseRejectReason(creditRejectReason[0]?.value)
 		}
 	}, [talentStatusCreditBase])
 	
@@ -127,7 +125,8 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 					ctpId:talentStatusCreditBase?.ContactTalentPriorityID,
 					talentId:talentInfo?.TalentID,
 					statusId: d?.statusId?.id,
-					profileRejectionStage:_isNull(d?.profileRejectionStage?.value) ? "" : d?.profileRejectionStage?.value
+					rejectReasonID :_isNull(d?.rejectReasonID?.id) ? 0 : d?.rejectReasonID?.id,
+					profileRejectionStage : _isNull(d?.profileRejectionStage) ? "" : d?.profileRejectionStage
 				}
 				let response = await TalentStatusDAO.updateTalentaStatusCreditBaseRequestDAO(
 					talentStatusObject,
@@ -225,14 +224,31 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 								mode={'id/value'}
 								setValue={setValue}
 								register={register}
-								name="profileRejectionStage"
+								name="rejectReasonID"
 								label="Select Reject Reason"
 								defaultValue="Please Select"
 								options={talentStatusCreditBase?.CreditBased_RejectReason}
 								required
-								isError={errors['profileRejectionStage'] && errors['profileRejectionStage']}
+								isError={errors['rejectReasonID '] && errors['rejectReasonID ']}
 								errorMsg="Please select Reject Reason."
 							/>
+							</div>
+						)}
+						{watch('rejectReasonID')?.id === -1 && watch('statusId')?.id === 8 &&(
+							<div className={TalentStatusStyle.colMd12}>
+								<HRInputField
+									isTextArea={true}
+									register={register}
+									errors={errors}
+									label={'Other Reason'}
+									required
+									name="profileRejectionStage"
+									type={InputType.TEXT}
+									placeholder="Other Reason"
+									validationSchema={{
+										required: 'Please enter other reason.',
+									}}
+								/>
 							</div>
 						)}
 					</>

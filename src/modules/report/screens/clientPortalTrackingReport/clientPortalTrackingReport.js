@@ -323,7 +323,7 @@ export default function UTMTrackingReport() {
       );
       return obj;
     });
-    downloadToExcel(DataToExport, `ClientPortalTrackingReport: ${hrStage} => ${moment(startDate).format("YYYY-MM-DD")}/${ moment(endDate).format("YYYY-MM-DD")}.xlsx`);
+    downloadToExcel(DataToExport, `ClientPortalTrackingReport: ${hrStage}_${moment(startDate).format("YYYY-MM-DD")}/${ moment(endDate).format("YYYY-MM-DD")}.xlsx`);
   };
 
   const getClientNameFilter = useCallback(async () => {
