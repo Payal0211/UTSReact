@@ -6,7 +6,8 @@ import {
   message,
   AutoComplete,
   Modal,
-  Radio
+  Radio,
+  Tooltip
 } from "antd";
 import {
   ClientHRURL,
@@ -36,6 +37,7 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import { UserAccountRole } from "constants/application";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { HttpStatusCode } from "axios";
+import infoIcon from 'assets/svg/info.svg'
 
 export const secondaryInterviewer = {
   interviewerId:"0",
@@ -2552,6 +2554,12 @@ const HRFields = ({
             <Checkbox checked={isBudgetConfidential} onClick={()=> setIsBudgetConfidentil(prev => !prev)}>
                 Keep my budget confidential
 						</Checkbox>	
+            <Tooltip
+              overlayStyle={{minWidth: '650px'}}
+							placement="right"
+							title={"Please provide actual salary ranges for job matching purposes. This information remains confidential to the talents and helps us connect you with suitable candidates."}>
+								<img src={infoIcon} alt='info' />							
+						</Tooltip>
             </div>         
             </div>
 
