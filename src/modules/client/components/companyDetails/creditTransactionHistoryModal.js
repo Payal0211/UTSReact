@@ -11,7 +11,7 @@ const CreditTransactionHistoryModal = ({creditTransactionModal,setTransactionMod
         status: (
           <div className="userThumbWrap">
             <span class="green">
-              {data?.hrStatus.toLowerCase() === "completed"
+              {typeof data?.hrStatus === 'string' && data?.hrStatus.toLowerCase() === "completed"
                 ? "Paid"
                 : data?.hrStatus}
             </span>{" "}
