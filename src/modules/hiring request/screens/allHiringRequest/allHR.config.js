@@ -57,7 +57,7 @@ export const allHRConfig = {
         render: (text, result) => {
           return (
             <>
-              {result?.reopenHR === 0 ? (
+              {result?.reopenHR === 0 && result?.isDisplayReopenOrCloseIcon === true ? (
                 <Tooltip placement="bottom" title={"Close HR"}>
                   <a href="javascript:void(0);">
                     <CloseHR
@@ -69,7 +69,7 @@ export const allHRConfig = {
                     />
                   </a>
                 </Tooltip>
-              ) : LoggedInUserTypeID !== 5 && LoggedInUserTypeID !== 10 ? (
+              ) : LoggedInUserTypeID !== 5 && LoggedInUserTypeID !== 10 && result?.isDisplayReopenOrCloseIcon === true ? (
                 <Tooltip placement="bottom" title={"Reopen HR"}>
                   <a href="javascript:void(0);">
                     <ReopenHR
