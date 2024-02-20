@@ -33,7 +33,8 @@ export const hrUtils = {
 			HRID: item?.hrid,
 			isHRFocused: item?.isHRFocused,
 			companyModel: item?.companyModel,
-			hrTypeName: item?.hrTypeName
+			hrTypeName: item?.hrTypeName,
+			isDisplayReopenOrCloseIcon : item?.isDisplayReopenOrCloseIcon
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {
