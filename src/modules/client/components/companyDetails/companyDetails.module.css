@@ -442,3 +442,17 @@
     margin: 0 0 2px !important;
 }
 
+.userThumbWrap{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+.userThumbWrap h5{
+    color: #0A66C2;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 0;
+  }
