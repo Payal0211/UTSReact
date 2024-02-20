@@ -226,7 +226,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 </div>
               </div>
             </li>
-            <li className={hrSLADetails[3]?.completedStageID >= hrSLADetails[3]?.stageID && CompanyProfileCardStyle.check}>
+            {/* <li className={hrSLADetails[3]?.completedStageID >= hrSLADetails[3]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
                 title={
@@ -257,7 +257,7 @@ const JOBPostSLA = ({ allApiData }) => {
                   </div>
                 </div>
               </div>
-            </li>
+            </li> */}
             <li className={hrSLADetails[4]?.completedStageID >= hrSLADetails[4]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
