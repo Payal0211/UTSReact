@@ -21,7 +21,7 @@ const CompanyProfileCard = ({
 }) => {
   const navigate = useNavigate();
   const [updateTR, setUpdateTR] = useState(false);
-  const [updateTRDetail, setUpdateTRDetails] = useState([]);
+  const [updateTRDetail, setUpdateTRDetails] = useState([]); 
 
   const [title, setTitle] = useState("Company Details");
   const [updateDate, setUpdateDate] = useState(false);
@@ -40,7 +40,7 @@ const CompanyProfileCard = ({
 
 
   useEffect(() => {
-    if (allApiData.Guid) {
+    if (allApiData.IsPayPerCredit) {
       setAvalableTabs([
         {
           label: "Company Details",
@@ -62,7 +62,7 @@ const CompanyProfileCard = ({
         },
       ]);
     }
-  }, [allApiData.Guid, allApiData.HR_Id]);
+  }, [allApiData.IsPayPerCredit, allApiData.HR_Id]);
 
   const CompanyProfileCardComp = () => {
     return (
