@@ -21,6 +21,7 @@ const UserDetails = () => {
         IsProfileView:false,
         IsHybridModel:false,
     });
+    const [error,setErrors] = useState(false);
     const {
         watch,
         register,
@@ -97,6 +98,10 @@ const UserDetails = () => {
                 message: 'please enter the value more than 0.',
             });
         }
+        if(IsChecked?.IsPostaJob === false && IsChecked?.IsProfileView === false){
+            setErrors(true);
+            isValid = false;
+        }
 
         if(isValid){
             onSubmitData();
@@ -133,80 +138,109 @@ const UserDetails = () => {
           setIsLoading(false);
     }
     return ( 
-        <div>
-            {isLoading ? <div className={userDetails.spin}> <Spin/> </div>: 
-            <form id="userDetailsform" className={userDetails.hrFieldRightPane}>
-                <ToastContainer />
-                <div className={userDetails.container}>
-                    <div className={userDetails.colMd6}>
-                        <HRInputField                  
-                        register={register}
-                        errors={errors}                   
-                        label="Full Name"
-                        name="fullName"
-                        type={InputType.TEXT}
-                        placeholder="Enter first & last name"
-                        required                    
-                        />
-                    </div>
+        <div className={userDetails.addNewContainer}>
 
-                    <div className={userDetails.colMd6}>
-                        <HRInputField                  
-                        register={register}
-                        errors={errors}                   
-                        label="Company Name"
-                        name="companyName"
-                        type={InputType.TEXT}
-                        placeholder="Enter company name"
-                        required
-                        />
-                    </div>
+            <div className={userDetails.tabsBody}>
+             <div className={userDetails.tabsFormItem}>
+                <div className={userDetails.tabsFormItemInner}>
+                    <>
+                        <div className={userDetails.tabsLeftPanel}>
+                            <h3>Invite Credit Base Client</h3>
+                            {/* <p>Please provide the necessary details</p> */}
+                        </div>
+                        <div className={userDetails.tabsRightPanel}>
+                    {isLoading ? <div className={userDetails.spin}> <Spin/> </div>: 
+                            <form id="userDetailsform" className={userDetails.hrFieldRightPane}>
+                                <ToastContainer />
+                            
+                                <div className={userDetails.row}>
+                                    <div className={userDetails.colMd6}>
+                                        <HRInputField                  
+                                        register={register}
+                                        errors={errors}                   
+                                        label="Full Name"
+                                        name="fullName"
+                                        type={InputType.TEXT}
+                                        placeholder="Enter first & last name"
+                                        required                    
+                                        />
+                                    </div>
+                            
 
-                    <div className={userDetails.colMd6}>
-                        <HRInputField                  
-                        register={register}
-                        errors={errors}                   
-                        label="Work Email"
-                        name="workEmail"
-                        type={InputType.TEXT}
-                        placeholder="Enter work email"
-                        required
-                        />
-                    </div>
+                                    <div className={userDetails.colMd6}>
+                                        <HRInputField                  
+                                        register={register}
+                                        errors={errors}                   
+                                        label="Company Name"
+                                        name="companyName"
+                                        type={InputType.TEXT}
+                                        placeholder="Enter company name"
+                                        required
+                                        />
+                                    </div>
 
-                    <div className={userDetails.colMd6}>
-                        <HRInputField                  
-                        register={register}
-                        errors={errors}                   
-                        label="Free Credits"
-                        name="freeCredits"
-                        type={InputType.NUMBER}
-                        placeholder="Enter free credits"
-                        required
-                        validationSchema={{
-                            required: "please enter free credits.",
-                            min: {
-                            value: 1,
-                            message: `please enter the value more than 0`,
-                            },
-                        }}
-                        />
-                    </div>  
-                    <div className={userDetails.checkbox}>
-                        <Checkbox name='IsPostaJob' checked={IsChecked?.IsPostaJob} onChange={(e)=>setIsChecked({...IsChecked,IsPostaJob:e.target.checked})}>Credit per post a job.</Checkbox>
-                        <Checkbox name="IsProfileView" checked={IsChecked?.IsProfileView} onChange={(e)=>setIsChecked({...IsChecked,IsProfileView:e.target.checked})}>Credit per profile view.</Checkbox>
-                      
-                    </div>                   
-                    <div className={userDetails.checkbox}>
-                        <Checkbox name="IsHybridModel" checked={IsChecked?.IsHybridModel} onChange={(e)=>setIsChecked({...IsChecked,IsHybridModel:e.target.checked})}>Do you want to continue with Pay Per Hire (Hybrid) model ?</Checkbox>
-                    </div>   
-                    <div>
-                    <button type='button' className={userDetails.btn} onClick={handleSubmit}>SUBMIT</button>
-                    </div>     
-                </div>        
-            </form>
-            }
+                                    </div> 
+
+                                    <div className={userDetails.row}>
+                                    <div className={userDetails.colMd6}>
+                                        <HRInputField                  
+                                        register={register}
+                                        errors={errors}                   
+                                        label="Work Email"
+                                        name="workEmail"
+                                        type={InputType.TEXT}
+                                        placeholder="Enter work email"
+                                        required
+                                        />
+                                    </div>
+
+                                    <div className={userDetails.colMd6}>
+                                        <HRInputField                  
+                                        register={register}
+                                        errors={errors}                   
+                                        label="Free Credits"
+                                        name="freeCredits"
+                                        type={InputType.NUMBER}
+                                        placeholder="Enter free credits"
+                                        required
+                                        validationSchema={{
+                                            required: "please enter free credits.",
+                                            min: {
+                                            value: 1,
+                                            message: `please enter the value more than 0`,
+                                            },
+                                        }}
+                                        />
+                                    </div>
+                                    </div> 
+                                
+                                    <div className={userDetails.checkbox}>
+                                        <Checkbox 
+                                            name='IsPostaJob' 
+                                            checked={IsChecked?.IsPostaJob} 
+                                            onChange={(e)=>{setIsChecked({...IsChecked,IsPostaJob:e.target.checked});setErrors(false);}}>
+                                            Credit per post a job.
+                                        </Checkbox>
+                                        <Checkbox 
+                                        name="IsProfileView" checked={IsChecked?.IsProfileView} onChange={(e)=>{setIsChecked({...IsChecked,IsProfileView:e.target.checked});setErrors(false);}}>Credit per profile view.</Checkbox>
+                                    </div>                   
+                                    {error && <p className={userDetails.error}>*Please select option</p>}
+                                    <div className={userDetails.checkbox}>
+                                        <Checkbox name="IsHybridModel" checked={IsChecked?.IsHybridModel} onChange={(e)=>setIsChecked({...IsChecked,IsHybridModel:e.target.checked})}>Do you want to continue with Pay Per Hire (Hybrid) model ?</Checkbox>
+                                    </div>   
+                                    <div>
+                                    <button type='button' className={userDetails.btn} onClick={handleSubmit}>SUBMIT</button>
+                                    </div>     
+                                
+                            </form>
+                    }
+                        </div>
+                    </>
+                </div>
+             </div>
+             </div>
         </div>
+
     )
 }
 
