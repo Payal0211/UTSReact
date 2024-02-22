@@ -12,6 +12,7 @@ import UTSRoutes from 'constants/routes';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {  Checkbox, Spin } from 'antd';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 const UserDetails = () => {
     const navigate = useNavigate();
@@ -22,6 +23,8 @@ const UserDetails = () => {
         IsHybridModel:false,
     });
     const [error,setErrors] = useState(false);
+    const [errorData,setErrorsData] = useState(false);
+    const [errorMessage,setErrorMessage] = useState();
     const {
         watch,
         register,
@@ -95,7 +98,13 @@ const UserDetails = () => {
             isValid = false;
             setError('freeCredits', {
                 type: 'freeCredits',
-                message: 'please enter the value more than 0.',
+                message: 'please enter value more than 0.',
+            });
+        }else if(free_credits>999){
+            isValid = false;
+            setError('freeCredits', {
+                type: 'freeCredits',
+                message: 'please do not enter value more than 3 digits.',
             });
         }
         if(IsChecked?.IsPostaJob === false && IsChecked?.IsProfileView === false){
@@ -128,18 +137,20 @@ const UserDetails = () => {
             setTimeout(() => {
                 navigate(UTSRoutes.ALLCLIENTS); 
             }, 1000);
-                       
+            setErrorsData(false);
           }else if(response.statusCode === HTTPStatusCode.BAD_REQUEST){
-            toast.error(response.responseBody, {
-                position: toast.POSITION.TOP_RIGHT,
-                autoClose: 2000, 
-              });
+            // toast.error(response.responseBody, {
+            //     position: toast.POSITION.TOP_RIGHT,
+            //     autoClose: 2000, 
+            //   });
+            setErrorsData(true);
+            setErrorMessage(response?.responseBody)
           }
           setIsLoading(false);
     }
     return ( 
         <div className={userDetails.addNewContainer}>
-
+        <LogoLoader visible={isLoading} />
             <div className={userDetails.tabsBody}>
              <div className={userDetails.tabsFormItem}>
                 <div className={userDetails.tabsFormItemInner}>
@@ -149,7 +160,7 @@ const UserDetails = () => {
                             {/* <p>Please provide the necessary details</p> */}
                         </div>
                         <div className={userDetails.tabsRightPanel}>
-                    {isLoading ? <div className={userDetails.spin}> <Spin/> </div>: 
+                    {/* {isLoading ? <div className={userDetails.spin}> <Spin/> </div>:  */}
                             <form id="userDetailsform" className={userDetails.hrFieldRightPane}>
                                 <ToastContainer />
                             
@@ -203,12 +214,10 @@ const UserDetails = () => {
                                         type={InputType.NUMBER}
                                         placeholder="Enter free credits"
                                         required
-                                        validationSchema={{
-                                            required: "please enter free credits.",
-                                            min: {
-                                            value: 1,
-                                            message: `please enter the value more than 0`,
-                                            },
+                                        onKeyDownHandler={(e)=>{
+                                            if (e.key === '-' || e.key === '+' || e.key === 'E' ||  e.key === 'e') {
+                                                e.preventDefault();
+                                            }
                                         }}
                                         />
                                     </div>
@@ -227,13 +236,14 @@ const UserDetails = () => {
                                     {error && <p className={userDetails.error}>*Please select option</p>}
                                     <div className={userDetails.checkbox}>
                                         <Checkbox name="IsHybridModel" checked={IsChecked?.IsHybridModel} onChange={(e)=>setIsChecked({...IsChecked,IsHybridModel:e.target.checked})}>Do you want to continue with Pay Per Hire (Hybrid) model ?</Checkbox>
-                                    </div>   
+                                    </div>  
+                                    {errorData && <p className={userDetails.error}>{errorMessage}</p>} 
                                     <div>
                                     <button type='button' className={userDetails.btn} onClick={handleSubmit}>SUBMIT</button>
                                     </div>     
                                 
                             </form>
-                    }
+                    {/* } */}
                         </div>
                     </>
                 </div>
