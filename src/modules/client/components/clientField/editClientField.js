@@ -55,6 +55,7 @@ const EditClientField = ({
 	const [typeOfPricing,setTypeOfPricing] = useState(null)
 	const [pricingTypeError,setPricingTypeError] = useState(false);
 	const [payPerError,setPayPerError] = useState(false);
+	const [creditError,setCreditError] = useState(false);
 	const [checkPayPer, setCheckPayPer] = useState({
 		companyTypeID:0,
 		anotherCompanyTypeID:0
@@ -170,6 +171,11 @@ const EditClientField = ({
 		if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
 			setIsSavedLoading(false)
 			setPayPerError(true)
+			return
+		}
+		if(checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob===false && IsChecked?.isProfileView===false){
+			setIsSavedLoading(false)
+			setCreditError(true)
 			return
 		}
 		let clientFormDetails = clientFormDataFormatter({
@@ -474,6 +480,8 @@ const EditClientField = ({
 				payPerError={payPerError}
 				setPayPerError={setPayPerError}
 				payPerCondition={payPerCondition}
+				setCreditError={setCreditError}
+				creditError={creditError}
 				clientPOCs={clientPOCs}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>

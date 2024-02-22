@@ -38,7 +38,8 @@ const EditCompanyDetails = ({
   setCompanyDetail,
   getCompanyDetails,typeOfPricing,setTypeOfPricing,pricingTypeError,setPricingTypeError,
   controlledFieldsProp,clientPOCs,
-  checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError,payPerCondition
+  checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError,payPerCondition,
+  setCreditError,creditError
 }) => {
   let {
     controlledCompanyLoacation,
@@ -758,16 +759,17 @@ const EditCompanyDetails = ({
 									<Checkbox name='IsPostaJob' 
                     checked={IsChecked?.isPostaJob} 
                     onChange={(e)=>{
-                      setIsChecked({...IsChecked,isPostaJob:e.target.checked})}}
+                      setIsChecked({...IsChecked,isPostaJob:e.target.checked});setCreditError(false)}}
                     >Credit per post a job.
                   </Checkbox>
 									<Checkbox name="IsProfileView" 
                     checked={IsChecked?.isProfileView} 
                     onChange={(e)=>{
-                      setIsChecked({...IsChecked,isProfileView:e.target.checked})}}>
+                      setIsChecked({...IsChecked,isProfileView:e.target.checked});setCreditError(false)}}>
                       Credit per profile view.
                   </Checkbox>
 							  </div>
+                {creditError && <p className={CompanyDetailsStyle.error}>*Please select option</p>}
 								</div>												
 							</div>
 						</div>
