@@ -317,11 +317,11 @@ const getSideBar = (usertypeID,EmployeeID) => {
 		}),
 		new SideBarModels({
 			id: 'ClientPortalTrackingReport',
-			title: 'Client Portal Tracking Report',
+			title: 'Client Tracking Details',
 			isActive: false,
 			icon: HRReport,
 			navigateTo: UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT,
-			isVisible: isAccess(usertypeID, 'Client Portal Tracking Report')
+			isVisible: isAccess(usertypeID, 'Client Tracking Details')
 		}),
 		new SideBarModels({
 			id: 'I2SReport',

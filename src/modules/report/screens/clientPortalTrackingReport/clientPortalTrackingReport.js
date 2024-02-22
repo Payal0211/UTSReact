@@ -357,7 +357,7 @@ export default function UTMTrackingReport() {
   return (
     <div className={clientPortalTrackingReportStyle.dealContainer}>
       <div className={clientPortalTrackingReportStyle.header}>
-        <div className={clientPortalTrackingReportStyle.dealLable}>Client Portal Tracking Report</div>
+        <div className={clientPortalTrackingReportStyle.dealLable}>Client Tracking Details</div>
         <LogoLoader visible={isLoading} />
       </div>
 
@@ -478,7 +478,7 @@ export default function UTMTrackingReport() {
             <>
               <div className={clientPortalTrackingReportStyle.exportAction}>
                 <h3 className={clientPortalTrackingReportStyle.cardTitle}>
-                Client Portal Tracking Report : {hrStage}
+                Client Tracking Details : {hrStage}
                 </h3>
 
                 <button
