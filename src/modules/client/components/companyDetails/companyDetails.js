@@ -34,7 +34,8 @@ const CompanyDetails = ({
 	control,
 	companyDetail, setCompanyDetail,getCompanyDetails, controlledFieldsProp,typeOfPricing,setTypeOfPricing,
 	pricingTypeError,setPricingTypeError,
-	checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError
+	checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError,
+	setCreditError,creditError
 }) => {
 	let {controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType} = controlledFieldsProp
 	const [GEO, setGEO] = useState([]);
@@ -610,6 +611,10 @@ const CompanyDetails = ({
 											value: 0,
 											message: `please don't enter the value less than 0`,
 										},
+										max: {
+											value: 99,
+											message: `please don't enter the value greater than 99`,
+										}
 									}}
 									label="Free Credits"
 									name={'jpCreditBalance'}
@@ -637,12 +642,13 @@ const CompanyDetails = ({
 								<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
 									<Checkbox name='IsPostaJob' 
                     checked={IsChecked?.isPostaJob} 
-                    onChange={(e)=>setIsChecked({...IsChecked,isPostaJob:e.target.checked})}
+                    onChange={(e)=>{setIsChecked({...IsChecked,isPostaJob:e.target.checked});setCreditError(false)}}
                     >Credit per post a job.</Checkbox>
 									<Checkbox name="IsProfileView" 
                     checked={IsChecked?.isProfileView} 
-                    onChange={(e)=>setIsChecked({...IsChecked,isProfileView:e.target.checked})}>Credit per profile view.</Checkbox>
+                    onChange={(e)=>{setIsChecked({...IsChecked,isProfileView:e.target.checked});setCreditError(false)}}>Credit per profile view.</Checkbox>
 							</div>
+							{creditError && <p className={CompanyDetailsStyle.error}>*Please select option</p>}
 								</div>												
 							</div>
 						</div>

@@ -125,6 +125,7 @@ const ClientField = ({
 		companyTypeID:0,
 		anotherCompanyTypeID:0
 	});
+	const [creditError,setCreditError] = useState(false);
 	const [IsChecked,setIsChecked] = useState({
         isPostaJob:false,
         isProfileView:false,
@@ -166,6 +167,11 @@ const ClientField = ({
 		if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
 			setIsSavedLoading(false)
 			setPayPerError(true)
+			return
+		}
+		if(checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob===false && IsChecked?.isProfileView===false){
+			setIsSavedLoading(false)
+			setCreditError(true)
 			return
 		}
 		let clientFormDetails = clientFormDataFormatter({
@@ -452,6 +458,8 @@ const ClientField = ({
 				IsChecked={IsChecked}
 				payPerError={payPerError}
 				setPayPerError={setPayPerError}
+				setCreditError={setCreditError}
+				creditError={setCreditError}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
 			/>
 			<AddNewClient
