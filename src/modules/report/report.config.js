@@ -1579,13 +1579,22 @@ export const reportConfig = {
 	ClientPortalPopupReportConfig: () => {
 		return [
 			{
+				title: 'Action Date',
+				dataIndex: 'createdDate',
+				key: 'createdDate',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{moment(text).format("DD/MM/YYYY h:mm:ss") }</Fragment>;
+				},
+			},
+			{
 				title: 'Client',
 				dataIndex: 'client',
 				key: 'client',
 				align: 'left',				
 			},
 			{
-				title: 'Hr Number',
+				title: 'HR #',
 				dataIndex: 'hrNumber',
 				key: 'hrNumber',
 				align: 'left',		
@@ -1620,21 +1629,12 @@ export const reportConfig = {
 				},
 			},
 			{
-				title: 'Talent Name',
+				title: 'Talent',
 				dataIndex: 'talentName',
 				key: 'talentName',
 				align: 'left',
 				render: (text) => {
 					return <Fragment key={text}>{text}</Fragment>;
-				},
-			},
-			{
-				title: 'Created Date',
-				dataIndex: 'createdDate',
-				key: 'createdDate',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{moment(text).format("DD/MM/YYYY") }</Fragment>;
 				},
 			},					
 		];
