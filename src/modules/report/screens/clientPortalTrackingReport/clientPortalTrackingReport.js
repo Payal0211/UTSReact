@@ -191,8 +191,8 @@ export default function UTMTrackingReport() {
         // NoOfJobs: null,
         clientID:0
     };
-    getClientPortalReportList(payload);
-    getClientNameFilter();
+    // getClientPortalReportList(payload);
+    // getClientNameFilter();
     // getUTMTrackingList(data);
     setStartDate(firstDay);
     setEndDate(lastDay);
@@ -207,7 +207,7 @@ export default function UTMTrackingReport() {
     let payload = {
       fromDate: moment(firstDay).format("YYYY-MM-DD"),
       toDate: moment(lastDay).format("YYYY-MM-DD"),
-      clientID:selectedClientName
+      clientID:selectedClientName ? selectedClientName : 0 
     };
     getClientPortalReportList(payload);
   }, [isFocusedRole]);
