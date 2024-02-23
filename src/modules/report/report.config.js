@@ -5,6 +5,7 @@ import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import infoIcon from 'assets/svg/info.svg'
 import moment from 'moment';
+import { split } from 'lodash';
 
 export const reportConfig = {
 	/**------------- DEMAND FUNNEL REPORT------------------  */
@@ -1625,7 +1626,10 @@ export const reportConfig = {
 				key: 'location',
 				align: 'left',
 				render: (text) => {
-					return <Fragment key={text}>{text }</Fragment>;
+					let data = text.split(",");
+					const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+					const result = filteredValues.join(", ");
+					return <Fragment key={result}>{result}</Fragment>;
 				},
 			},
 			{
