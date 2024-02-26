@@ -948,6 +948,7 @@ const EditCompanyDetails = ({
                       errors["companyLeadOwner"] && errors["companyLeadOwner"]
                     }
                     errorMsg={"Please select lead source"}
+                    searchable={true}
                   />
                 </div>
               </div>
@@ -967,6 +968,7 @@ const EditCompanyDetails = ({
                     label="Inbound Type"
                     defaultValue="Please Select"
                     options={leadSource?.BindInBoundDrp}
+                    searchable={true}
                   />
                 </div>
               </div>
