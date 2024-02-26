@@ -9,7 +9,7 @@ const AddNewClientScreen = () => {
 	const [title, setTitle] = useState('Add New Client');
 
 	const params = window?.location?.pathname?.split('/')?.[2];
-
+	const [disabledFields, setDisabledFields] = useState(null);
 	const [clientDetail, setClientDetails] = useState({});
 	const [interviewDetails, setInterviewDetails] = useState(null);
 	const [tabFieldDisabled, setTabFieldDisabled] = useState({
@@ -72,6 +72,7 @@ const AddNewClientScreen = () => {
 									fromClientflow={true}
 									userCompanyTypeID={userCompanyTypeID}
 									setUserCompanyTypeID={setUserCompanyTypeID}
+									setDisabledFields={setDisabledFields}
 								/>
 							),
 							disabled: tabFieldDisabled.addNewHiringRequest,

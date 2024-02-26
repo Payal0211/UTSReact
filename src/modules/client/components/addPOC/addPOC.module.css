@@ -85,6 +85,11 @@
     width: 100%;
 }
 
+.formGroup [class*="ant-select-selection-search-input"] {
+    height: auto !important;
+    padding: 16px 16px !important;
+}
+
 .reqField {
     color: var(--uplers-black);
     font-weight: 700;
