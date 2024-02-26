@@ -94,7 +94,7 @@ const AddNewHR = () => {
 		if(result.statusCode === HTTPStatusCode.OK){	
 			setIsDirectHR(result.responseBody.isDirectHR)		
 			setRemoveFields(result.responseBody.removeFields)
-			setDisabledFields(result.responseBody.disabledFields)
+			setDisabledFields(prev=>({...prev,talentRequired:result.responseBody.disabledFields}))
 			setDefaultPropertys(result.responseBody.defaultProperties)
 		}
 	}

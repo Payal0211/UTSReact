@@ -106,6 +106,7 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors ,clientP
 										errors['primaryContactName'] && errors['primaryContactName']
 									}
 									errorMsg="Please select a primary POC."
+									searchable={true}
 								/>
 							</div>
 						</div>
@@ -123,6 +124,7 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors ,clientP
 									label="Secondary Contact Name"
 									defaultValue="Select secondary POC"
 									options={salesMan && salesMan}
+									searchable={true}
 								/>
 							</div>
 						</div>
@@ -144,6 +146,7 @@ const AddNewPOC = ({ setValue, fields, append, remove, register, errors ,clientP
 											label="Secondary Contact Name"
 											defaultValue="Select secondary POC"
 											options={salesMan && salesMan}
+											searchable={true}
 										/>
 										<div
 											className={AddNewPOCStyle.formClosedICon}
