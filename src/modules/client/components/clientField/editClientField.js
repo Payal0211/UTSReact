@@ -56,6 +56,7 @@ const EditClientField = ({
 	const [pricingTypeError,setPricingTypeError] = useState(false);
 	const [payPerError,setPayPerError] = useState(false);
 	const [creditError,setCreditError] = useState(false);
+	const clientID = localStorage.getItem("clientID")
 	const [checkPayPer, setCheckPayPer] = useState({
 		companyTypeID:0,
 		anotherCompanyTypeID:0
@@ -423,8 +424,17 @@ const EditClientField = ({
 						}else{
 							setValue('primaryClientPhoneNumber',contactDetailobj?.contactNo)
 						}								
-					}	
-					setClientDetailCheckList(contactDetails)
+					}
+					const matchId = Number(clientID); 
+					const matchedObject = contactDetails.find(obj => obj.id === matchId);
+					if (matchedObject) {
+					const filteredData = contactDetails.filter(obj => obj.id !== matchId);
+					const newData = [matchedObject, ...filteredData];
+					setClientDetailCheckList(newData)
+					} else {
+					console.log("No matching object found");
+					}
+					// setClientDetailCheckList(contactDetails)
 				}
 			}
 

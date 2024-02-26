@@ -67,7 +67,8 @@ export const allClientsConfig = {
                     return (
                     <Link
                         to={`/editclient/${result.companyID}`}
-                        style={{ color: 'black', textDecoration: 'underline' }}>
+                        style={{ color: 'black', textDecoration: 'underline' }}
+                        onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
                         <PencilSVG />
                     </Link>
                     )

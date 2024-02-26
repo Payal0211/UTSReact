@@ -228,7 +228,7 @@ function ViewClientDetails() {
                             overlayClassName={dealDetailsStyles.viewClientdrop}
                             className={dealDetailsStyles.viewClientdrop}
                         /> */}						
-						<button type="button" onClick={() => navigate(`/editclient/${companyID}`)}>Edit Company</button>
+						<button type="button" onClick={() => {navigate(`/editclient/${companyID}`);localStorage.setItem("clientID",clientID)}}>Edit Company</button>
 						<button type="button" onClick={() => navigate('/allhiringrequest/addnewhr')} >Create HR</button>
 					
 						{/* <div className={dealDetailsStyles.deleteButton}>
@@ -242,7 +242,20 @@ function ViewClientDetails() {
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Client Name</span>
-								{viewDetails?.clientDetails?.clientName ? viewDetails?.clientDetails?.clientName : "NA"}
+								<h3 className={dealDetailsStyles.viewdetailBtnAdd}>
+									{viewDetails?.clientDetails?.clientName ? viewDetails?.clientDetails?.clientName : "NA"} 
+									{/* <span onClick={() => navigate('/clientPortalTrackingReport')}>View History <BsArrowUpRight /></span> */}
+									<div className={dealDetailsStyles.viewHistory}>
+									<Link
+										target="_blank"
+										to={`/clientPortalTrackingReport`}
+										style={{ color: "rgba(0, 0, 0, 0.85)", textDecoration: "underline" }}
+										onClick={localStorage.setItem("clientID",Number(clientID))}
+										>
+										View History <BsArrowUpRight />
+									</Link>
+									</div>
+								</h3>							
 							</div>
 						</li>
 						<li>
