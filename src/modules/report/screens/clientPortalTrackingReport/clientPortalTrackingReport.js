@@ -59,6 +59,8 @@ export default function UTMTrackingReport() {
   const [term,setTerm] = useState([]);
   const [selectedClientName, setSelectClientName] = useState()
   const [ClientNameList,setClientNameList] = useState([])
+  const client = localStorage.getItem("clientID");
+  const clientID = Number(client);
 
   // const [utmTrackingListList, setutmTrackingListList] = useState([]); 
 
@@ -88,6 +90,10 @@ export default function UTMTrackingReport() {
       setReportList(details);
       setReportPopupList([]);
       setLoading(false);
+    }else if (response?.statusCode === HTTPStatusCode.NOT_FOUND){
+      setReportList([]);
+      setReportPopupList([]);
+      setLoading(false);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
       setLoading(false);
       return navigate(UTSRoutes.LOGINROUTE);
@@ -106,6 +112,9 @@ export default function UTMTrackingReport() {
     if (response.statusCode === HTTPStatusCode.OK) {
       let details = response.responseBody.details;
       setReportPopupList(details);
+      setLoading(false);
+    } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND){
+      setReportPopupList([]);
       setLoading(false);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
       setLoading(false);
@@ -194,9 +203,10 @@ export default function UTMTrackingReport() {
     // getClientPortalReportList(payload);
     // getClientNameFilter();
     // getUTMTrackingList(data);
+    setSelectClientName(Number(clientID))
     setStartDate(firstDay);
     setEndDate(lastDay);
-  }, []);
+  }, [clientID]);
 
   // useEffect(() => {
   //   allDropdownsList();
@@ -207,10 +217,12 @@ export default function UTMTrackingReport() {
     let payload = {
       fromDate: moment(firstDay).format("YYYY-MM-DD"),
       toDate: moment(lastDay).format("YYYY-MM-DD"),
-      clientID:selectedClientName ? selectedClientName : 0 
+      clientID:selectedClientName ? Number(selectedClientName) : 0 
     };
-    getClientPortalReportList(payload);
-  }, [isFocusedRole]);
+    if(selectedClientName){
+      getClientPortalReportList(payload);
+    }
+  }, [selectedClientName]);
 
   const onCalenderFilter = useCallback(
     (dates) => {
@@ -238,7 +250,7 @@ export default function UTMTrackingReport() {
           let payload = {
             fromDate: moment(start).format("YYYY-MM-DD"),
             toDate: moment(end).format("YYYY-MM-DD"),
-            clientID:selectedClientName
+            clientID:Number(selectedClientName)
           };
           getClientPortalReportList(payload);
         }
@@ -285,7 +297,7 @@ export default function UTMTrackingReport() {
           fromDate: moment(firstDay).format("YYYY-MM-DD"),
           toDate: moment(lastDay).format("YYYY-MM-DD"),
           actionID:reportData?.actionID,
-          clientID:selectedClientName?selectedClientName:0
+          clientID:selectedClientName?Number(selectedClientName):0
       };
       getClientPortalPopUpReportList(params);
     },
@@ -345,11 +357,11 @@ export default function UTMTrackingReport() {
     getClientNameFilter();
   }, [getClientNameFilter]);
 
-  const changeClientName = (value)=>{
+  const changeClientName = ()=>{
     let payload = {
       fromDate: moment(firstDay).format("YYYY-MM-DD"),
       toDate: moment(lastDay).format("YYYY-MM-DD"),
-      clientID:value
+      clientID:selectedClientName?Number(selectedClientName):0
     };
     getClientPortalReportList(payload);
   }
@@ -367,7 +379,7 @@ export default function UTMTrackingReport() {
           <Select
             // defaultValue="lucy"
             style={{ width: 200 }}
-            onChange={(value)=>{
+            onSelect={(value)=>{
               changeClientName(value);
               setSelectClientName(value);     
             }}
@@ -464,6 +476,7 @@ export default function UTMTrackingReport() {
                 </div>
               </li>
             ))}
+            {reportList?.length === 0 && <div className={clientPortalTrackingReportStyle.noDataFoundText}>No Data Available</div>}
           </ul>
         </div>
       </div>

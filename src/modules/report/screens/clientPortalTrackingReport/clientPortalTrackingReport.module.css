@@ -357,6 +357,17 @@
     border-bottom: 1px solid #f0f0f0;
 }
 
+.noDataFoundText{
+    text-align: center;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.filterSetsInner [class*="ant-select-selection-search-input"] {
+    height: auto !important;
+    padding: 16px 16px !important;
+}
+
 
 
 

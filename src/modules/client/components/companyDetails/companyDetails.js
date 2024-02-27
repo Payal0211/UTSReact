@@ -818,6 +818,7 @@ const CompanyDetails = ({
 									required={leadOwner.length > 0}
 									isError={errors['companyLeadOwner'] && errors['companyLeadOwner']}
 									errorMsg={'Please select lead source'}
+									searchable={true}
 								/>
 							</div>
 						</div>}
@@ -836,6 +837,7 @@ const CompanyDetails = ({
 										label="Inbound Type"
 										defaultValue="Please Select"
 										options={leadSource?.BindInBoundDrp}
+										searchable={true}
 									/>
 								</div>
 							</div>
