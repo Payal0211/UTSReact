@@ -390,17 +390,23 @@ const EditClientField = ({
 
 			if(companyDetails?.companyLogo){
 				setUploadFileData(companyDetails?.companyLogo)
-			}  
-	
-			if(contactDetails){
-				if(contactDetails?.length === 1){
-					let contactDetailobj = contactDetails[0]
+			} 
+			
+			const matchId = Number(clientID); 
+			const matchedObject = contactDetails.find(obj => obj.id === matchId);
+			if (matchedObject) {
+			const filteredData = contactDetails.filter(obj => obj.id !== matchId);
+			const newData = [matchedObject, ...filteredData];
+			setClientDetailCheckList(newData)
+			if(newData){
+				if(newData?.length === 1){
+					let contactDetailobj = newData[0]
 					contactDetailobj?.en_Id && setPrimaryClientEN_ID(contactDetailobj?.en_Id)
 					contactDetailobj?.fullName && setValue('primaryClientName',contactDetailobj?.fullName)
 					contactDetailobj?.emailID && setValue('primaryClientEmailID',contactDetailobj?.emailID)
 					contactDetailobj?.designation && setValue('primaryDesignation',contactDetailobj?.designation)
 					contactDetailobj?.linkedIn && setValue('PrimaryClientLinkedinProfile',contactDetailobj?.linkedIn)	
-                    contactDetailobj?.clientProfilePic && setUploadClientFileData(contactDetailobj?.clientProfilePic)
+					contactDetailobj?.clientProfilePic && setUploadClientFileData(contactDetailobj?.clientProfilePic)
 					if(contactDetailobj?.contactNo){
 						if(contactDetailobj?.contactNo.includes('+91')){
 							setValue('primaryClientPhoneNumber',contactDetailobj?.contactNo.slice(3))
@@ -410,14 +416,14 @@ const EditClientField = ({
 					}						
 				}
 
-				if(contactDetails?.length > 0 ){
-					let contactDetailobj = contactDetails[0]
+				if(newData?.length > 0 ){
+					let contactDetailobj = newData[0]
 					contactDetailobj?.en_Id && setPrimaryClientEN_ID(contactDetailobj?.en_Id)
 					contactDetailobj?.fullName && setValue('primaryClientName',contactDetailobj?.fullName)
 					contactDetailobj?.emailID && setValue('primaryClientEmailID',contactDetailobj?.emailID)
 					contactDetailobj?.designation && setValue('primaryDesignation',contactDetailobj?.designation)
 					contactDetailobj?.linkedIn && setValue('PrimaryClientLinkedinProfile',contactDetailobj?.linkedIn)
-                    contactDetailobj?.clientProfilePic && setUploadClientFileData(contactDetailobj?.clientProfilePic)
+					contactDetailobj?.clientProfilePic && setUploadClientFileData(contactDetailobj?.clientProfilePic)
 					if(contactDetailobj?.contactNo){
 						if(contactDetailobj?.contactNo.includes('+91')){
 							setValue('primaryClientPhoneNumber',contactDetailobj?.contactNo.slice(3))
@@ -425,16 +431,6 @@ const EditClientField = ({
 							setValue('primaryClientPhoneNumber',contactDetailobj?.contactNo)
 						}								
 					}
-					const matchId = Number(clientID); 
-					const matchedObject = contactDetails.find(obj => obj.id === matchId);
-					if (matchedObject) {
-					const filteredData = contactDetails.filter(obj => obj.id !== matchId);
-					const newData = [matchedObject, ...filteredData];
-					setClientDetailCheckList(newData)
-					} else {
-					console.log("No matching object found");
-					}
-					// setClientDetailCheckList(contactDetails)
 				}
 			}
 
@@ -450,6 +446,10 @@ const EditClientField = ({
 			if(contactPoc){
 				setClientPOCs(contactPoc)
 			}
+			} else {
+			console.log("No matching object found");
+			}
+			// setClientDetailCheckList(contactDetails)
 		}
 		setIsSavedLoading(false)
 	}
