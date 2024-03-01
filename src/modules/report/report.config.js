@@ -1621,6 +1621,24 @@ export const reportConfig = {
 				},
 			},
 			{
+				title: 'Browser',
+				dataIndex: 'browser',
+				key: 'browser',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
+				title: 'IP Address',
+				dataIndex: 'ipAddress',
+				key: 'ipAddress',
+				align: 'left',
+				render: (text) => {
+					return <Fragment key={text}>{text }</Fragment>;
+				},
+			},
+			{
 				title: 'Location',
 				dataIndex: 'location',
 				key: 'location',
