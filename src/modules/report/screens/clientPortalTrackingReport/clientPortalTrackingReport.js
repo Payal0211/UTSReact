@@ -57,6 +57,7 @@ export default function UTMTrackingReport() {
   const [placement,sePlacement] = useState([]);
   const [source,setSource] = useState([]);
   const [term,setTerm] = useState([]);
+  const [filterCall,setFilterCall] = useState(false);
   const [selectedClientName, setSelectClientName] = useState()
   const [ClientNameList,setClientNameList] = useState([])
   const client = localStorage.getItem("clientID");
@@ -203,7 +204,11 @@ export default function UTMTrackingReport() {
     // getClientPortalReportList(payload);
     // getClientNameFilter();
     // getUTMTrackingList(data);
-    setSelectClientName(Number(clientID))
+    if(clientID !== 0){
+      setSelectClientName(Number(clientID));
+    }else{
+      setSelectClientName();
+    }
     setStartDate(firstDay);
     setEndDate(lastDay);
   }, [clientID]);
@@ -219,10 +224,10 @@ export default function UTMTrackingReport() {
       toDate: moment(lastDay).format("YYYY-MM-DD"),
       clientID:selectedClientName ? Number(selectedClientName) : 0 
     };
-    if(selectedClientName){
+    if(!filterCall){
       getClientPortalReportList(payload);
     }
-  }, [selectedClientName]);
+  }, [selectedClientName,filterCall]);
 
   const onCalenderFilter = useCallback(
     (dates) => {
@@ -250,7 +255,7 @@ export default function UTMTrackingReport() {
           let payload = {
             fromDate: moment(start).format("YYYY-MM-DD"),
             toDate: moment(end).format("YYYY-MM-DD"),
-            clientID:Number(selectedClientName)
+            clientID:selectedClientName ? Number(selectedClientName) : 0
           };
           getClientPortalReportList(payload);
         }
@@ -339,16 +344,21 @@ export default function UTMTrackingReport() {
   };
 
   const getClientNameFilter = useCallback(async () => {
+    setLoading(true);
     const response = await clientPortalTrackingReportDAO.clientPortalTrackingReportFilterDAO();
     if (response?.statusCode === HTTPStatusCode.OK) {
       // setFiltersList(response && response?.responseBody?.details?.Data);
       // setHRTypesList(response && response?.responseBody?.details?.Data.hrTypes.map(i => ({id:i.text, value:i.value})))
       setClientNameList(response && response?.responseBody?.details?.map(i=>({value:i?.clientID,label:i?.clientName})))
+      setLoading(false);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+      setLoading(false);
       return navigate(UTSRoutes.LOGINROUTE);
     } else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+      setLoading(false);
       return navigate(UTSRoutes.SOMETHINGWENTWRONG);
     } else {
+       setLoading(false);
       return "NO DATA FOUND";
     }
   }, [navigate]);
@@ -357,11 +367,11 @@ export default function UTMTrackingReport() {
     getClientNameFilter();
   }, [getClientNameFilter]);
 
-  const changeClientName = ()=>{
+  const changeClientName = (value)=>{
     let payload = {
       fromDate: moment(firstDay).format("YYYY-MM-DD"),
       toDate: moment(lastDay).format("YYYY-MM-DD"),
-      clientID:selectedClientName?Number(selectedClientName):0
+      clientID:value?value:0
     };
     getClientPortalReportList(payload);
   }
@@ -381,7 +391,8 @@ export default function UTMTrackingReport() {
             style={{ width: 200 }}
             onSelect={(value)=>{
               changeClientName(value);
-              setSelectClientName(value);     
+              setSelectClientName(value);   
+              setFilterCall(true);  
             }}
             filterOption={(inputValue, option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1}
             placeholder="Select client name"
