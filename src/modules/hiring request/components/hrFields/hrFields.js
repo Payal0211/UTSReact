@@ -81,6 +81,7 @@ const HRFields = ({
     getUserResult();
   }, []);
 
+  const [creditBaseCheckBoxError,setCreditBaseCheckBoxError] = useState(false)
   const [isSavedLoading, setIsSavedLoading] = useState(false);
   const [controlledCountryName, setControlledCountryName] = useState("");
   const [countryListMessage,setCountryListMessage] = useState(null)
@@ -205,6 +206,9 @@ const HRFields = ({
   const [transactionMessage,setTransactionMessage] = useState('')
   const [disableYypeOfPricing,setDisableTypeOfPricing] = useState(false)
   const [isBudgetConfidential, setIsBudgetConfidentil] = useState(false)
+  const [isProfileView,setIsProfileView] = useState(false)
+  const [isPostaJob,setIsPostaJob] = useState(false)
+  const [isVettedProfile,setIsVettedProfile] = useState(true)
   /* const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
@@ -1138,7 +1142,7 @@ const HRFields = ({
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
-
+      setCreditBaseCheckBoxError(false)
       if(userCompanyTypeID === 1){
         if(typeOfPricing === null){
                 setIsSavedLoading(false)
@@ -1161,6 +1165,23 @@ const HRFields = ({
       hrFormDetails.isDirectHR = isDirectHR
       hrFormDetails.PayPerType =  userCompanyTypeID
       hrFormDetails.IsConfidentialBudget = isBudgetConfidential
+      
+      if(userCompanyTypeID === 2){
+        if(!isPostaJob && !isProfileView){
+          setCreditBaseCheckBoxError(true)
+          setIsSavedLoading(false);
+          return 
+        }
+        hrFormDetails.IsPostaJob = isPostaJob
+        hrFormDetails.IsProfileView = isProfileView
+        hrFormDetails.IsVettedProfile = isVettedProfile
+      }
+      if(userCompanyTypeID === 1){
+        hrFormDetails.IsPostaJob = false
+        hrFormDetails.IsProfileView = false
+        hrFormDetails.IsVettedProfile = false
+      }
+      
 
       if(type !== SubmitType.SAVE_AS_DRAFT){
         if(watch('fromTime')?.value === watch('endTime')?.value){
@@ -1268,7 +1289,10 @@ const HRFields = ({
       hrPricingTypes,
       isDirectHR,
       userCompanyTypeID,
-      isBudgetConfidential
+      isBudgetConfidential,
+      isPostaJob,
+      isProfileView,
+      isVettedProfile
     ]
   );
 
@@ -1660,6 +1684,9 @@ const HRFields = ({
       setDisabledFields(prev=> ({...prev , talentRequired : false}))
       unregister('tempProject')
       unregister('contractDuration')
+      setIsProfileView(false)
+      setIsVettedProfile(false)
+      setIsPostaJob(false)
     }
 
     if(userCompanyTypeID === 2){
@@ -1922,9 +1949,32 @@ const HRFields = ({
 							</div>
             </div> }
 
+{/* Pay per Credit */}
+{userCompanyTypeID === 2 && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
+  <div>
+            <Checkbox checked={isPostaJob} onClick={()=> setIsPostaJob(prev=> !prev)}>
+            Credit per post a job
+						</Checkbox>	
+            <Checkbox checked={isProfileView} onClick={()=> setIsProfileView(prev=> !prev)}>
+            Credit per profile view
+						</Checkbox>	
+            </div>
+            {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Credit Base</p>}
+</div> }
+
+
+{userCompanyTypeID === 2 && isProfileView && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
+<Radio.Group
+                  onChange={e=> {setIsVettedProfile(e.target.value)}}
+                  value={isVettedProfile}
+                  >
+                  <Radio value={false}>Fast Profile</Radio>
+                  <Radio value={true}>Vetted Profile</Radio>
+                </Radio.Group>
+</div> }
 
            
-
+{/* Pay per Hire  */}
 {userCompanyTypeID === 1 && <div className={HRFieldStyle.colMd12}>
 <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>

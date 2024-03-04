@@ -169,6 +169,10 @@ const EditHRFields = ({
   const [transactionMessage,setTransactionMessage] = useState('')
   const [pricingTypeError,setPricingTypeError] = useState(false);
   const [isBudgetConfidential, setIsBudgetConfidentil] = useState(false)
+  const [isVettedProfile,setIsVettedProfile] = useState(true)
+  const [isProfileView,setIsProfileView] = useState(false)
+  const [isPostaJob,setIsPostaJob] = useState(false)
+  const [creditBaseCheckBoxError,setCreditBaseCheckBoxError] = useState(false)
   const [tempProjects, setTempProject] = useState([
     {
       disabled: false,
@@ -1030,6 +1034,22 @@ const EditHRFields = ({
       }
       hrFormDetails["allowSpecialEdit"] = getHRdetails?.allowSpecialEdit;
 
+      if(companyType.id === 2){
+        if(!isPostaJob && !isProfileView){
+          setCreditBaseCheckBoxError(true)
+          setIsSavedLoading(false);
+          return 
+        }
+        hrFormDetails.IsPostaJob = isPostaJob
+        hrFormDetails.IsProfileView = isProfileView
+        hrFormDetails.IsVettedProfile = isVettedProfile
+      }
+      if(companyType.id === 1){
+        hrFormDetails.IsPostaJob = false
+        hrFormDetails.IsProfileView = false
+        hrFormDetails.IsVettedProfile = false
+      }
+
       if(watch('fromTime').value === watch('endTime').value){
         setIsSavedLoading(false);
         return setError("fromTime", {
@@ -1456,7 +1476,10 @@ const EditHRFields = ({
         setValue('payrollPartnerName',getHRdetails?.addHiringRequest?.payrollPartnerName)
       }
     }
-    
+
+    setIsVettedProfile(getHRdetails?.addHiringRequest?.isVettedProfile)
+    setIsPostaJob(getHRdetails?.companyInfo?.isPostaJob)
+    setIsProfileView(getHRdetails?.companyInfo?.isProfileView)
 
   }, [getHRdetails, tempProjects, setValue, hrPricingTypes,payRollTypes]);
 
@@ -1945,6 +1968,27 @@ const EditHRFields = ({
                   )}
                 </div>
 
+                {companyType?.id === 2 && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
+  <div>
+            <Checkbox checked={isPostaJob} disabled={true} onClick={()=> setIsPostaJob(prev=> !prev)}>
+            Credit per post a job
+						</Checkbox>	
+            <Checkbox checked={isProfileView} disabled={true} onClick={()=> setIsProfileView(prev=> !prev)}>
+            Credit per profile view
+						</Checkbox>	
+            </div>
+            {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Credit Base</p>}
+</div> }
+
+                {companyType?.id === 2  && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
+<Radio.Group
+                  onChange={e=> {setIsVettedProfile(e.target.value)}}
+                  value={isVettedProfile}
+                  >
+                  <Radio value={false}>Fast Profile</Radio>
+                  <Radio value={true}>Vetted Profile</Radio>
+                </Radio.Group>
+</div> }
 
                 {companyType?.id === 1 &&   <div className={HRFieldStyle.colMd12}>
               <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
