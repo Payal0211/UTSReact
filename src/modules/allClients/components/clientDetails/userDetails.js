@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import UTSRoutes from "constants/routes";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Checkbox, Spin } from "antd";
+import { Checkbox, Radio, Spin } from "antd";
 import LogoLoader from "shared/components/loader/logoLoader";
 
 const UserDetails = () => {
@@ -23,6 +23,9 @@ const UserDetails = () => {
     IsHybridModel: false,
   });
   const [error, setErrors] = useState(false);
+  const [profileSharingOptionError, setProfileSharingOptionError] =
+    useState(false);
+  const [profileSharingOption, setProfileSharingOption] = useState(null);
   const [errorData, setErrorsData] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
   const {
@@ -91,7 +94,7 @@ const UserDetails = () => {
       isValid = false;
       setError("freeCredits", {
         type: "freeCredits",
-        message: "please enter free Credits.",
+        message: "please enter free credits.",
       });
     } else if (free_credits < 1) {
       isValid = false;
@@ -111,6 +114,11 @@ const UserDetails = () => {
       isValid = false;
     }
 
+    if (IsChecked?.IsProfileView === true && profileSharingOption === null) {
+      setProfileSharingOptionError(true);
+      isValid = false;
+    }
+
     if (isValid) {
       onSubmitData();
     }
@@ -126,6 +134,7 @@ const UserDetails = () => {
       IsPostaJob: IsChecked?.IsPostaJob,
       IsProfileView: IsChecked?.IsProfileView,
       IsHybridModel: IsChecked?.IsHybridModel,
+      IsVettedProfile: profileSharingOption
     };
     const response = await allClientRequestDAO.userDetailsDAO(payload);
     if (response.statusCode === HTTPStatusCode.OK) {
@@ -205,7 +214,6 @@ const UserDetails = () => {
                         required
                       />
                     </div>
-
                   </div>
                   <div className={userDetails.row}>
                     <div className={userDetails.colMd6}>
@@ -254,6 +262,8 @@ const UserDetails = () => {
                           IsProfileView: e.target.checked,
                         });
                         setErrors(false);
+                        setProfileSharingOption(null);
+                        setProfileSharingOptionError(false);
                       }}
                     >
                       Credit per profile view.
@@ -261,8 +271,46 @@ const UserDetails = () => {
                   </div>
                   {error && (
                     <p className={userDetails.error}>
-                      *Please select option per post a job or per profile view.
+                      * Please select option per post a job or per profile view.
                     </p>
+                  )}
+                  {IsChecked?.IsProfileView && (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        marginBottom: "20px",
+                        marginLeft: "188px",
+                        marginTop: "0px",
+                      }}
+                    >
+                      <label style={{ marginBottom: "12px" }}>
+                        Profile Sharing Options
+                        <span className={userDetails.reqField}>*</span>
+                      </label>
+                      <Radio.Group
+                        onChange={(e) => {
+                          setProfileSharingOption(e.target.value);
+                          setProfileSharingOptionError(false);
+                        }}
+                        value={profileSharingOption}
+                      >
+                        <Radio value={true}>Vetted Profile</Radio>
+                        <Radio value={false}>Fast Profile</Radio>
+                      </Radio.Group>
+                      {profileSharingOptionError && (
+                        <p
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            marginTop: "15px",
+                          }}
+                          className={userDetails.error}
+                        >
+                          * Please select profile sharing options
+                        </p>
+                      )}
+                    </div>
                   )}
                   <div className={userDetails.checkbox}>
                     <Checkbox
