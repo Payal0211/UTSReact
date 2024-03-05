@@ -1042,7 +1042,7 @@ const EditHRFields = ({
         }
         hrFormDetails.IsPostaJob = isPostaJob
         hrFormDetails.IsProfileView = isProfileView
-        hrFormDetails.IsVettedProfile = isVettedProfile
+        hrFormDetails.IsVettedProfile = isProfileView ? isVettedProfile : null
       }
       if(companyType.id === 1){
         hrFormDetails.IsPostaJob = false
@@ -1969,18 +1969,18 @@ const EditHRFields = ({
                 </div>
 
                 {companyType?.id === 2 && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
-  <div>
-            <Checkbox checked={isPostaJob} disabled={true} onClick={()=> setIsPostaJob(prev=> !prev)}>
-            Credit per post a job
-						</Checkbox>	
-            <Checkbox checked={isProfileView} disabled={true} onClick={()=> setIsProfileView(prev=> !prev)}>
-            Credit per profile view
-						</Checkbox>	
-            </div>
-            {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Credit Base</p>}
-</div> }
+                <div>
+                          <Checkbox checked={isPostaJob} disabled={true} onClick={()=> setIsPostaJob(prev=> !prev)}>
+                          Credit per post a job
+                          </Checkbox>	
+                          <Checkbox checked={isProfileView} disabled={true} onClick={()=> setIsProfileView(prev=> !prev)}>
+                          Credit per profile view
+                          </Checkbox>	
+                          </div>
+                          {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Option</p>}
+                </div> }
 
-                {companyType?.id === 2  && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
+                {companyType?.id === 2 && isProfileView  && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
 <Radio.Group
                   onChange={e=> {setIsVettedProfile(e.target.value)}}
                   value={isVettedProfile}
