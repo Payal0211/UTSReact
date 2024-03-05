@@ -39,7 +39,8 @@ const EditCompanyDetails = ({
   getCompanyDetails,typeOfPricing,setTypeOfPricing,pricingTypeError,setPricingTypeError,
   controlledFieldsProp,clientPOCs,
   checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError,payPerCondition,
-  setCreditError,creditError
+  setCreditError,creditError,
+  profileSharingOption,setProfileSharingOption,profileSharingOptionError,setProfileSharingOptionError
 }) => {
   let {
     controlledCompanyLoacation,
@@ -298,6 +299,7 @@ const EditCompanyDetails = ({
     }else{
       setTypeOfPricing(null)
     }
+    setProfileSharingOption(companyDetail?.isVettedProfile)
   }, [companyDetail, leadOwner]);
 
   const getCompanyDetailsByEmail = async (email) => {
@@ -747,7 +749,7 @@ const EditCompanyDetails = ({
             </div>
 						<div className={CompanyDetailsStyle.row}>
 							<div className={CompanyDetailsStyle.colMd12}>
-								<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<div style={{display:'flex',flexDirection:'column',marginBottom:'16px'}}> 
 									{/* <label style={{marginBottom:"12px"}}>
 								Client Modal
 								<span className={CompanyDetailsStyle.reqField}>
@@ -765,11 +767,29 @@ const EditCompanyDetails = ({
 									<Checkbox name="IsProfileView" 
                     checked={IsChecked?.isProfileView} 
                     onChange={(e)=>{
-                      setIsChecked({...IsChecked,isProfileView:e.target.checked});setCreditError(false)}}>
+                      setIsChecked({...IsChecked,isProfileView:e.target.checked});setCreditError(false);setProfileSharingOption(null);setProfileSharingOptionError(false);}}>
                       Credit per profile view.
                   </Checkbox>
 							  </div>
                 {creditError && <p className={CompanyDetailsStyle.error}>*Please select option</p>}
+                {IsChecked?.isProfileView && 
+							<div style={{display:'flex',flexDirection:'column',marginBottom:'20px',marginLeft: '188px', marginTop:"19px"}}> 
+											<label style={{marginBottom:"12px"}}>
+										Profile Sharing Options
+										<span className={CompanyDetailsStyle.reqField}>
+											*
+										</span>
+									</label>
+									<Radio.Group
+										onChange={e=> {setProfileSharingOption(e.target.value);setProfileSharingOptionError(false)}}
+										value={profileSharingOption}
+										>
+										<Radio value={true}>Vetted Profile</Radio>
+										<Radio value={false}>Fast Profile</Radio>
+									</Radio.Group>
+                      {profileSharingOptionError && <p style={{display:'flex',flexDirection:'column',marginTop:"15px"}} className={CompanyDetailsStyle.error}>*Please select profile sharing options</p>}
+							</div>	
+						}
 								</div>												
 							</div>
 						</div>

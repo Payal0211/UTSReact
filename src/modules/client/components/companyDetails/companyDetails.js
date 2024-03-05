@@ -35,7 +35,8 @@ const CompanyDetails = ({
 	companyDetail, setCompanyDetail,getCompanyDetails, controlledFieldsProp,typeOfPricing,setTypeOfPricing,
 	pricingTypeError,setPricingTypeError,
 	checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError,
-	setCreditError,creditError
+	setCreditError,creditError,profileSharingOption,setProfileSharingOption,
+	profileSharingOptionError,setProfileSharingOptionError
 }) => {
 	let {controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType} = controlledFieldsProp
 	const [GEO, setGEO] = useState([]);
@@ -631,7 +632,7 @@ const CompanyDetails = ({
 						</div>
 						<div className={CompanyDetailsStyle.row}>
 							<div className={CompanyDetailsStyle.colMd12}>
-								<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<div style={{display:'flex',flexDirection:'column',marginBottom:'16px'}}> 
 									{/* <label style={{marginBottom:"12px"}}>
 								Client Modal
 								<span className={CompanyDetailsStyle.reqField}>
@@ -641,14 +642,34 @@ const CompanyDetails = ({
 								{/* {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>} */}
 								<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
 									<Checkbox name='IsPostaJob' 
-                    checked={IsChecked?.isPostaJob} 
-                    onChange={(e)=>{setIsChecked({...IsChecked,isPostaJob:e.target.checked});setCreditError(false)}}
-                    >Credit per post a job.</Checkbox>
+										checked={IsChecked?.isPostaJob} 
+										onChange={(e)=>{setIsChecked({...IsChecked,isPostaJob:e.target.checked});setCreditError(false)}}>Credit per post a job.
+									</Checkbox>
 									<Checkbox name="IsProfileView" 
-                    checked={IsChecked?.isProfileView} 
-                    onChange={(e)=>{setIsChecked({...IsChecked,isProfileView:e.target.checked});setCreditError(false)}}>Credit per profile view.</Checkbox>
-							</div>
-							{creditError && <p className={CompanyDetailsStyle.error}>*Please select option</p>}
+										checked={IsChecked?.isProfileView} 
+										onChange={(e)=>{setIsChecked({...IsChecked,isProfileView:e.target.checked});setCreditError(false);setProfileSharingOption(null);setProfileSharingOptionError(false)}}>Credit per profile view.
+									</Checkbox>
+								</div>
+							{creditError && <p  style={{marginBottom:'0px'}} className={CompanyDetailsStyle.error}>*Please select option</p>}
+							{IsChecked?.isProfileView && 
+							<div style={{display:'flex',flexDirection:'column',marginBottom:'16px',marginLeft: '188px',marginTop:"19px"}}> 
+											<label style={{marginBottom:"12px"}}>
+										Profile Sharing Options
+										<span className={CompanyDetailsStyle.reqField}>
+											*
+										</span>
+									</label>
+									{pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>}
+									<Radio.Group
+										onChange={e=> {setProfileSharingOption(e.target.value); setProfileSharingOptionError(false)}}
+										value={profileSharingOption}
+										>
+										<Radio value={true}>Vetted Profile</Radio>
+										<Radio value={false}>Fast Profile</Radio>
+									</Radio.Group>
+									 {profileSharingOptionError&&<p  style={{marginTop:'6px',marginBottom:'0px'}} className={CompanyDetailsStyle.error}>*Please select profile sharing options</p>}										
+							</div>	
+						}
 								</div>												
 							</div>
 						</div>

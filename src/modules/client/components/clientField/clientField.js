@@ -71,6 +71,8 @@ const ClientField = ({
 	});
 	// const [isLoading, setIsLoading] = useState(false);
 	const [typeOfPricing,setTypeOfPricing] = useState(null)
+	const [profileSharingOption,setProfileSharingOption] = useState(null)
+	const [profileSharingOptionError,setProfileSharingOptionError] = useState(false);
 	const [pricingTypeError,setPricingTypeError] = useState(false);
 	const [payPerError,setPayPerError] = useState(false);
 	const [type, setType] = useState('');
@@ -164,6 +166,11 @@ const ClientField = ({
 			setPricingTypeError(true)
 			return
 		}
+		if(profileSharingOption === null && IsChecked?.isProfileView){
+			setIsSavedLoading(false)
+			setProfileSharingOptionError(true)
+			return
+		}
 		if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
 			setIsSavedLoading(false)
 			setPayPerError(true)
@@ -192,6 +199,7 @@ const ClientField = ({
 			checkPayPer,
 			IsChecked,
 			payPerCondition,
+			profileSharingOption
 		}
 		);
 
@@ -459,8 +467,12 @@ const ClientField = ({
 				payPerError={payPerError}
 				setPayPerError={setPayPerError}
 				setCreditError={setCreditError}
-				creditError={setCreditError}
-				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
+				creditError={creditError}
+				profileSharingOption={profileSharingOption}
+				setProfileSharingOption={setProfileSharingOption}
+				setProfileSharingOptionError={setProfileSharingOptionError}
+				profileSharingOptionError={profileSharingOptionError}
+				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}
 			/>
 			<AddNewClient
 				setError={setError}

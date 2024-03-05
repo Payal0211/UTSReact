@@ -53,7 +53,8 @@ export function clientFormDataFormatter({
 	base64ClientImage,
 	getUploadClientFileData,typeOfPricing,
 	checkPayPer,
-	IsChecked,payPerCondition,clientPOCs
+	IsChecked,payPerCondition,clientPOCs,
+	profileSharingOption
 }) {
 	let _val = "";
 	if(typeOfPricing===1){
@@ -67,6 +68,7 @@ export function clientFormDataFormatter({
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,	
 		company: {
+			IsVettedProfile:profileSharingOption,
 			IsTransparentPricing:_val,
 			anotherCompanyTypeID:payPerCondition?.anotherCompanyTypeID,
 			companyTypeID:payPerCondition?.companyTypeID,

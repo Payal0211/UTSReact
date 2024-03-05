@@ -54,6 +54,8 @@ const EditClientField = ({
 	const [isSavedLoading, setIsSavedLoading] = useState(false);
 	const [typeOfPricing,setTypeOfPricing] = useState(null)
 	const [pricingTypeError,setPricingTypeError] = useState(false);
+	const [profileSharingOption,setProfileSharingOption] = useState(null)
+	const [profileSharingOptionError,setProfileSharingOptionError] = useState(false);
 	const [payPerError,setPayPerError] = useState(false);
 	const [creditError,setCreditError] = useState(false);
 	const clientID = localStorage.getItem("clientID")
@@ -159,6 +161,8 @@ const EditClientField = ({
 		[flagAndCode],
 	);
 
+	console.log(profileSharingOption,"profileSharingOptionprofileSharingOption");
+
 	/** -------- Masters API Ends here-------------- */
 	/** Submit the client form Starts */
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
@@ -167,6 +171,11 @@ const EditClientField = ({
 		if(typeOfPricing === null && !checkPayPer?.anotherCompanyTypeID==0 && (!checkPayPer?.companyTypeID==0 || !checkPayPer?.companyTypeID==2)){
 			setIsSavedLoading(false)
 			setPricingTypeError(true)
+			return
+		}
+		if(profileSharingOption === null && IsChecked?.isProfileView){
+			setIsSavedLoading(false)
+			setProfileSharingOptionError(true)
 			return
 		}
 		if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
@@ -197,7 +206,7 @@ const EditClientField = ({
 			checkPayPer,
 			IsChecked,
 			payPerCondition,
-            getUploadClientFileData,typeOfPricing,clientPOCs}
+            getUploadClientFileData,typeOfPricing,clientPOCs,profileSharingOption}
 		);
 
 		let newPOClist = d.pocList.map(contact => {
@@ -494,6 +503,10 @@ const EditClientField = ({
 				creditError={creditError}
 				clientPOCs={clientPOCs}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
+				setProfileSharingOption={setProfileSharingOption}
+				setProfileSharingOptionError={setProfileSharingOptionError}
+				profileSharingOption={profileSharingOption}
+				profileSharingOptionError={profileSharingOptionError}
 			/>
 			<EditClient
 				setError={setError}
