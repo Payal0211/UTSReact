@@ -1174,7 +1174,7 @@ const HRFields = ({
         }
         hrFormDetails.IsPostaJob = isPostaJob
         hrFormDetails.IsProfileView = isProfileView
-        hrFormDetails.IsVettedProfile = isVettedProfile
+        hrFormDetails.IsVettedProfile = isProfileView ? isVettedProfile : null
       }
       if(userCompanyTypeID === 1){
         hrFormDetails.IsPostaJob = false
@@ -1951,6 +1951,7 @@ const HRFields = ({
 
 {/* Pay per Credit */}
 {userCompanyTypeID === 2 && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
+  {!clientDetails?.isHybrid && <p className={HRFieldStyle.teansactionMessage}>If you wish to create a pay per hire HR, edit company and make the hybrid model selection for this account.</p> }
   <div>
             <Checkbox checked={isPostaJob} onClick={()=> setIsPostaJob(prev=> !prev)}>
             Credit per post a job
@@ -1959,7 +1960,7 @@ const HRFields = ({
             Credit per profile view
 						</Checkbox>	
             </div>
-            {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Credit Base</p>}
+            {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Option</p>}
 </div> }
 
 
