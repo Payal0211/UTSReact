@@ -138,7 +138,7 @@ const UserDetails = () => {
     };
     const response = await allClientRequestDAO.userDetailsDAO(payload);
     if (response.statusCode === HTTPStatusCode.OK) {
-      toast.success("Client added successfully", {
+      toast.success("Data save successfully", {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 1000,
       });
