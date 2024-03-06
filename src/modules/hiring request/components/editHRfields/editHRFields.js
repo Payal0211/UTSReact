@@ -1311,7 +1311,7 @@ const EditHRFields = ({
       }else{
         if(getHRdetails?.addHiringRequest?.guid){
           let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
-          let needToPay = watch('adhocBudgetCost') + cal
+          let needToPay = +watch('adhocBudgetCost') + cal
       setValue('uplersFees',cal ? cal : 0)
       setValue("needToPay",needToPay? needToPay : 0)
         }else{
@@ -1331,8 +1331,8 @@ const EditHRFields = ({
             let dpPercentage = watch('NRMargin')
             let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
             let calMax = (dpPercentage * watch('maximumBudget') *12) /100           
-            let minCal = watch('minimumBudget') - calMin
-            let maxCal = watch('maximumBudget') - calMax
+            let minCal = +watch('minimumBudget') - calMin
+            let maxCal = +watch('maximumBudget') - calMax
             setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
             setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`,watch('NRMargin'))
         }else{
@@ -1348,8 +1348,8 @@ const EditHRFields = ({
         if(getHRdetails?.addHiringRequest?.guid){
             let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
             let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
-            let minCal = watch('minimumBudget') + calMin
-            let maxCal = watch('maximumBudget') + calMax
+            let minCal = +watch('minimumBudget') + +calMin
+            let maxCal = +watch('maximumBudget') + +calMax
             setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
             setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
         }else{
