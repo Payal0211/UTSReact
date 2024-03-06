@@ -211,6 +211,7 @@ export class ClientsAPI {
 	static ADD_CLIENT_WITH_CREDITS= 'AddClientwithCredits';
 	static TRACKING_LEAD_CLIENT_SOURCE = "TrackingLeadDetailClientSource";
 	static GET_CREDIT_TRANSACTION_HISTORY = "GetCreditTransactionHistory";
+	static RESEND_INVITE_EMAIL = "ResendInviteEmail";
 }
 
 export class HiringRequestsAPI {

@@ -10,7 +10,7 @@ import React, { useCallback, useState } from 'react';
 import { _isNull } from 'shared/utils/basic_utils';
 import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';
-import { Checkbox } from 'antd'
+import { Checkbox ,message} from 'antd'
 const EditClient = ({
 	setError,
 	watch,
@@ -38,6 +38,7 @@ const EditClient = ({
       });
 	const [isLoading, setIsLoading] = useState(false);
 	const [ checkedClients, setCheckedClients] = useState([])
+	const [messageApi, contextHolder] = message.useMessage();
 	const onAddNewClient = useCallback(
 		(e) => {
 			e.preventDefault();
@@ -157,10 +158,26 @@ const EditClient = ({
         },
         [convertToBase64, getValidation, setBase64Image, setUploadFileData]
       );
+
+	  const resendInviteEmailAPI = async(contactId) =>{
+		const response = await ClientDAO.resendInviteEmailDAO(contactId);
+		if(response?.statusCode=== HTTPStatusCode.OK){
+			messageApi.open({
+				type: "success",
+				content:"Email send successfully",
+			});
+		}else{
+			messageApi.open({
+				type: "error",
+				content:"Email not send successfully",
+			});
+		}
+	  }
     
 
 	return (
 		<div className={AddClientStyle.tabsFormItem}>
+			{contextHolder}
 			<div className={AddClientStyle.tabsFormItemInner}>
 				<div className={AddClientStyle.tabsLeftPanel}>
 					<h3>Client Details</h3>
@@ -200,6 +217,8 @@ const EditClient = ({
 										phoneNumber: list.contactNo,
 										designation: list.designation,
 										linkedinProfile: list.linkedIn,
+										resendInviteEmail: list.resendInviteEmail,
+										ID: list.id
 									} })
 								}
 								
@@ -357,7 +376,7 @@ const EditClient = ({
 					</div>
 
 					<div className={AddClientStyle.row}>
-						<div className={AddClientStyle.colMd12}>
+						<div className={AddClientStyle.colMd6}>
 							<HRInputField
 								register={register}
 								errors={errors}
@@ -376,6 +395,9 @@ const EditClient = ({
 								required
 							/>
 						</div>
+						{clientDetailCheckList?.[0]?.resendInviteEmail === false &&<div className={AddClientStyle.colMd6}>
+                  			<span className={AddClientStyle.resendInviteEmailModalLink} onClick={()=>resendInviteEmailAPI(clientDetailCheckList?.[0]?.id)}>Resend Invite Email</span>
+              			</div>}
 					</div>
 				</div>
 			</div>
@@ -486,7 +508,7 @@ const EditClient = ({
 							</div>
 
 							<div className={AddClientStyle.row}>
-								<div className={AddClientStyle.colMd12}>
+								<div className={AddClientStyle.colMd6}>
 									<HRInputField
 										register={register}
 										validationSchema={{
@@ -501,6 +523,9 @@ const EditClient = ({
 										required
 									/>
 								</div>
+								{item?.resendInviteEmail===false && <div className={AddClientStyle.colMd6}>
+                  					<span className={AddClientStyle.resendInviteEmailModalLink} onClick={()=>resendInviteEmailAPI(item?.ID)}>Resend Invite Email</span>
+              					</div>}
 							</div>
 						</div>
 					</div>

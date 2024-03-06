@@ -29,6 +29,8 @@ export const secondaryClient = {
 	phoneNumber: '',
 	designation: '',
 	linkedinProfile: '',
+	resendInviteEmail:'',
+	ID:'',
 };
 export const poc = {
 	contactName: '',
