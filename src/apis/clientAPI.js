@@ -185,4 +185,20 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getClientFilterList');
 		}
 	},
+	resendInviteEmail:async function (ContactId) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.RESEND_INVITE_EMAIL +
+			`?ContactId=${ContactId}&InvitingUserId=${null}`; 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getClientFilterList');
+		}
+	},
 };

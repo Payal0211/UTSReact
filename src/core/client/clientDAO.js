@@ -139,4 +139,27 @@ export const ClientDAO = {
 			return errorDebug(error, 'ClientDAO.getCreditTransationHistoryDAO');
 		}
 	},
+	resendInviteEmailDAO: async function (ContactId) {
+		try {
+			const resendInviteEmailResult = await ClientAPI.resendInviteEmail(ContactId)
+			if (resendInviteEmailResult) {
+				const statusCode = resendInviteEmailResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = resendInviteEmailResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return resendInviteEmailResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return resendInviteEmailResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.resendInviteEmailDAO');
+		}
+	},
 };
