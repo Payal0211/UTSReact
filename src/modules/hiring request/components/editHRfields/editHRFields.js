@@ -1294,11 +1294,32 @@ const EditHRFields = ({
       if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
         // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
         let dpPercentage = watch('NRMargin')
-        let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
-        setValue('uplersFees',cal ? cal : 0)
+     
+        
+        if(getHRdetails?.addHiringRequest?.guid){
+          let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
+          let needToPay = watch('adhocBudgetCost') - cal
+          setValue('uplersFees',cal ? cal : 0)
+          setValue("needToPay",needToPay? needToPay : 0)
+        }else{
+          let cal = ((watch('adhocBudgetCost') * 100)/ (100 + +dpPercentage)) 
+          let upFess = (watch('adhocBudgetCost') - cal) * 12
+          setValue("needToPay",cal? cal.toFixed(2) : 0)
+          setValue('uplersFees',upFess ? upFess.toFixed(2) : 0)
+        }
+       
       }else{
-           let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
+        if(getHRdetails?.addHiringRequest?.guid){
+          let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
+          let needToPay = watch('adhocBudgetCost') + cal
       setValue('uplersFees',cal ? cal : 0)
+      setValue("needToPay",needToPay? needToPay : 0)
+        }else{
+          let cal =  (watch('adhocBudgetCost') * 100)/ (100 + +watch('NRMargin'))
+          let upFess = watch('adhocBudgetCost') - cal
+          setValue("needToPay",cal? cal.toFixed(2) : 0)
+          setValue('uplersFees',upFess ? upFess.toFixed(2) : 0)
+        }           
       }
    
     }
@@ -1306,46 +1327,73 @@ const EditHRFields = ({
     if(watch('budget')?.value === '2'){
       if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
         // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
-        let dpPercentage = watch('NRMargin')
-        let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
-        let calMax = (dpPercentage * watch('maximumBudget') *12) /100
-        setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`,watch('NRMargin'))
+        if(getHRdetails?.addHiringRequest?.guid){
+            let dpPercentage = watch('NRMargin')
+            let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
+            let calMax = (dpPercentage * watch('maximumBudget') *12) /100           
+            let minCal = watch('minimumBudget') - calMin
+            let maxCal = watch('maximumBudget') - calMax
+            setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
+            setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`,watch('NRMargin'))
+        }else{
+              let calMin = ((watch('minimumBudget') * 100)/(100 + +watch('NRMargin'))) 
+              let minUpFees = (watch('minimumBudget') - calMin)* 12
+              let calMax = ((watch('maximumBudget') * 100)/(100 + +watch('NRMargin'))) 
+              let maxUpFees = (watch('maximumBudget') - calMax)* 12
+              setValue("needToPay",`${calMin? calMin.toFixed(2) : 0} - ${calMax? calMax.toFixed(2) : 0}`)
+              setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
+        }
+       
       }else{
-        let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
-        let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
-        setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
+        if(getHRdetails?.addHiringRequest?.guid){
+            let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
+            let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
+            let minCal = watch('minimumBudget') + calMin
+            let maxCal = watch('maximumBudget') + calMax
+            setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
+            setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
+        }else{
+          let calMin =  (watch('minimumBudget') * 100)/(100 + +watch('NRMargin'))
+          let minUpFees = watch('minimumBudget') - calMin
+          let calMax =  (watch('maximumBudget') * 100)/(100 + +watch('NRMargin'))
+          let maxUpFees = watch('maximumBudget') - calMax
+          setValue("needToPay",`${calMin? calMin.toFixed(2) : 0} - ${calMax? calMax.toFixed(2) : 0}`)
+          setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
+        }
+        
        }
     }
   },[watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget'),watch('budget'),watch('NRMargin')]);
 
-  useEffect(()=>{
-    if(watch('budget')?.value === '1'){
-      if(typeOfPricing === 0){
-        let cal = watch('adhocBudgetCost') - watch('uplersFees')
-        setValue("needToPay",cal? cal : 0)
-      }else{
-        let cal = parseFloat(watch('adhocBudgetCost')) + parseFloat(watch('uplersFees'))
-        setValue("needToPay",cal? cal : 0)
-      }
+  // set client need to pay
+  // useEffect(()=>{
+  //   if(watch('budget')?.value === '1'){
+  //     if(typeOfPricing === 0){
+  //       let cal = watch('adhocBudgetCost') - watch('uplersFees')
+  //       setValue("needToPay",cal? cal : 0)
+  //     }else{
+  //       let cal = parseFloat(watch('adhocBudgetCost')) + parseFloat(watch('uplersFees'))
+  //       setValue("needToPay",cal? cal : 0)
+  //     }
       
-    }
-    if(watch('budget')?.value === '2'){
-      if(typeOfPricing === 0){
-        let uplersBudget = watch('uplersFees')?.split('-')
-        let minCal = watch('minimumBudget') - uplersBudget[0]
-        let maxCal = watch('maximumBudget') - uplersBudget[1]
-        setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
-      }else{
-        let uplersBudget = watch('uplersFees')?.split('-')
-        let minCal = parseFloat(watch('minimumBudget')) + parseFloat(uplersBudget[0])
-        let maxCal = parseFloat(watch('maximumBudget')) + parseFloat(uplersBudget[1])
+  //   }
+  //   if(watch('budget')?.value === '2'){
+  //     if(typeOfPricing === 0){
+  //       let uplersBudget = watch('uplersFees')?.split('-')
+  //       let minCal = watch('minimumBudget') - uplersBudget[0]
+  //       let maxCal = watch('maximumBudget') - uplersBudget[1]
+  //       setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
+  //     }else{
+  //       let uplersBudget = watch('uplersFees')?.split('-')
+  //       let minCal = parseFloat(watch('minimumBudget')) + parseFloat(uplersBudget[0])
+  //       let maxCal = parseFloat(watch('maximumBudget')) + parseFloat(uplersBudget[1])
 
-        setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
-      }
+  //       setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
+  //     }
       
       
-    }
-  },[watch('uplersFees'),watch('budget'),watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget')])
+  //   }
+  // },[watch('uplersFees'),watch('budget'),watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget')])
 
   // useEffect(() => {
   //   if (getHRdetails?.salesHiringRequest_Details?.timezoneId) {
@@ -2125,7 +2173,10 @@ const EditHRFields = ({
                           <br />
                         </>
                       )}
-                      options={contractDurations.filter(item=> item?.value !== "-1").map((item) => ({
+                      options={contractDurations.filter(item=> {
+                        if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" && item?.value !== "Indefinite"
+                        return item?.value !== "-1"
+                      }).map((item) => ({
                         id: item.id,
                         label: item.text,
                         value: item.value,
@@ -2253,7 +2304,10 @@ const EditHRFields = ({
                           <br />
                         </>
                       )}
-                      options={contractDurations.filter(item=> item?.value !== "-1").map((item) => ({
+                      options={contractDurations.filter(item=> {
+                        if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" && item?.value !== "Indefinite"
+                        return item?.value !== "-1"
+                      }).map((item) => ({
                         id: item.id,
                         label: item.text,
                         value: item.value,
@@ -2347,7 +2401,10 @@ const EditHRFields = ({
                           <br />
                         </>
                       )}
-                      options={contractDurations.filter(item=> item?.value !== "-1").map((item) => ({
+                      options={contractDurations.filter(item=> {
+                        if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 7)  return item?.value !== "-1" && item?.value !== "Indefinite"
+                        return item?.value !== "-1"
+                      }).map((item) => ({
                         id: item.id,
                         label: item.text,
                         value: item.value,
@@ -2581,7 +2638,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={`Estimated Minimum ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget (Monthly)`}
+                    label={getHRdetails?.addHiringRequest?.guid ?  `Estimated Minimum ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget (Monthly)`: `Client Estimated Minimum Budget (Monthly)`}
                     register={register}
                     name="minimumBudget"
                     type={InputType.NUMBER}
@@ -2601,7 +2658,7 @@ const EditHRFields = ({
 
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={`Estimated Maximum ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget (Monthly)`}
+                    label={getHRdetails?.addHiringRequest?.guid ?   `Estimated Maximum ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget (Monthly)` : `Client Estimated Maximum Budget (Monthly)`}
                     register={register}
                     name="maximumBudget"
                     type={InputType.NUMBER}
@@ -2632,9 +2689,20 @@ const EditHRFields = ({
                               />
                             </div>
 
-                            {!(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) &&            <div className={HRFieldStyle.colMd4}>
+                            {!(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) &&    getHRdetails?.addHiringRequest?.guid &&        <div className={HRFieldStyle.colMd4}>
                               <HRInputField
                                 label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Estimated Client needs to pay ( Min - Max )" : "Estimated Client needs to pay"}
+                                register={register}
+                                name="needToPay"
+                                type={InputType.TEXT}
+                                placeholder="Maximum- Ex: 2300"
+                                disabled={true}
+                              />
+                            </div>}
+
+                            {!getHRdetails?.addHiringRequest?.guid && <div className={HRFieldStyle.colMd4}>
+                              <HRInputField
+                                label={"Talent Estimated Pay"}
                                 register={register}
                                 name="needToPay"
                                 type={InputType.TEXT}
