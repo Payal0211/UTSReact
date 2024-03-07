@@ -712,6 +712,8 @@ const HRFields = ({
   const getClientNameValue = (clientName,clientData) => {
     setValue("clientName", clientName);
     setClientDetails(clientData)
+
+    setIsVettedProfile(clientData?.isVettedProfile)
     // to unfocus or blur client name field
     document.activeElement.blur();
     setError("clientName", {
