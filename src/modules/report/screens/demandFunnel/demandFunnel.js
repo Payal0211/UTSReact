@@ -32,6 +32,7 @@ export const demandFunnelDefault = {
 	replacement: '',
 	head: '',
 	isActionWise: true,
+	geos:''
 };
 const DemandFunnelScreen = () => {
 	const { control } = useForm();
@@ -238,6 +239,7 @@ const DemandFunnelScreen = () => {
 			replacement: '',
 			head: '',
 			isActionWise: true,
+			geos:'',
 		});
 		setDemandFunnelHRDetailsState({
 			adhocType: '',
@@ -263,6 +265,7 @@ const DemandFunnelScreen = () => {
 				replacement: '',
 				head: '',
 				isActionWise: true,
+				geos:'',
 			},
 		});
 		viewDemandFunnelSummaryHandler(demandFunnelDefault);
@@ -276,6 +279,7 @@ const DemandFunnelScreen = () => {
 			replacement: '',
 			head: '',
 			isActionWise: true,
+			geos:'',
 		};
 		onRemoveFilters()
 		getReportFilterHandler()

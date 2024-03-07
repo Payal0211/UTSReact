@@ -251,13 +251,13 @@ const DemandFunnelFilter = ({
 		});
 
 		const newfilterState = {...tableFilteredState}
-
 		newfilterState.isHiringNeedTemp = filters.isHiringNeedTemp ? filters.isHiringNeedTemp : ''
 		newfilterState.modeOfWork = filters.modeOfWork ? filters.modeOfWork : ''
 		newfilterState.typeOfHR = filters.typeOfHR ? filters.typeOfHR : '-1'
 		newfilterState.companyCategory = filters.companyCategory? filters.companyCategory: ''
 		newfilterState.replacement = filters.replacement ? filters.replacement : ''
 		newfilterState.head = filters.head ? filters.head : ''
+		newfilterState.geos = filters.geos ? filters.geos : ''
 		if(filters.leadUserId){
 			newfilterState.leadUserId = filters.leadUserId 
 		}else{
@@ -502,7 +502,7 @@ const DemandFunnelFilter = ({
 						<button
 							className={hiringFilterStyle.clearAll}
 							onClick={clearFilters}>
-							Clear All
+							Clear All 
 						</button>
 						<button
 							className={hiringFilterStyle.applyFilters}
