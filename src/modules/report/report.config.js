@@ -385,6 +385,7 @@ export const reportConfig = {
 			{ name: 'Replacement' },
 			{ name: 'Head' },
 			{ name: 'Action/HR' },
+			{ name: 'Geo'}
 		];
 	},
 	demandReportFilterTypeConfig: (filterList) => {
@@ -470,6 +471,27 @@ export const reportConfig = {
 						value: 'HR Wise Data',
 					},
 				],
+			},
+			{
+				label: 'Geo',
+				name: 'geos',
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: 'India',
+						value: 'India',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: 'Global',
+						value: 'Global',
+					},
+				],
+				isSearch: false,
 			},
 		];
 	},
@@ -1433,6 +1455,28 @@ export const reportConfig = {
 				label: 'Client Type',
 				name: 'ClientType',
 				child: filterList?.ClientType.filter(val => val.text !== "0" ),
+				isSearch: false,
+				isSingle:true
+			},
+			{
+				label: 'Geo',
+				name: 'geos',
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: 'India',
+						value: 'India',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: 'Global',
+						value: 'Global',
+					},
+				],
 				isSearch: false,
 				isSingle:true
 			},
