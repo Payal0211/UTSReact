@@ -2520,7 +2520,8 @@ const HRFields = ({
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
-                    label={`Add your estimated ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}budget (Monthly)`}
+                    // label={`Add your estimated ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}budget (Monthly)`}
+                    label={`Add your client estimated budget (Monthly)`}
                     defaultValue="Select Budget"
                     options={budgets.map((item) => ({
                       id: item.id,
