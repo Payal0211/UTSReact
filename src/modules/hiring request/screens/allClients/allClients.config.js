@@ -55,7 +55,7 @@ export const allClientsConfig = {
             }            		
 		];
     },
-    tableConfig : (editAMHandler) => {
+    tableConfig : (editAMHandler,isShowAddClientCredit) => {
         return [
             {
                 title: '',
@@ -65,7 +65,7 @@ export const allClientsConfig = {
 				width: '60px',
                 render:(_,result) => {
                     return (
-                    <Link
+                    isShowAddClientCredit=== true &&<Link
                         to={`/editclient/${result.companyID}`}
                         style={{ color: 'black', textDecoration: 'underline' }}
                         onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
