@@ -528,6 +528,7 @@ const EditClientField = ({
 				setBase64Image={setBase64ClientImage}
 				getUploadFileData={getUploadClientFileData}
 				setUploadFileData={setUploadClientFileData}
+				checkPayPer={checkPayPer}
 			/>
 			<div className={ClientFieldStyle.tabsFormItem}>
 				<div className={ClientFieldStyle.tabsFormItemInner}>

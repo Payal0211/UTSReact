@@ -28,7 +28,8 @@ const EditClient = ({
     base64Image,
     setBase64Image,
     getUploadFileData,
-    setUploadFileData
+    setUploadFileData,
+	checkPayPer
 }) => {
     const [showUploadModal, setUploadModal] = useState(false);
     const [getValidation, setValidation] = useState({
@@ -395,7 +396,7 @@ const EditClient = ({
 								required
 							/>
 						</div>
-						{clientDetailCheckList?.[0]?.resendInviteEmail === false &&<div className={AddClientStyle.colMd6}>
+						{checkPayPer?.companyTypeID===2 &&<div className={AddClientStyle.colMd6}>
                   			<span className={AddClientStyle.resendInviteEmailModalLink} onClick={()=>resendInviteEmailAPI(clientDetailCheckList?.[0]?.id)}>Resend Invite Email</span>
               			</div>}
 					</div>
@@ -523,7 +524,7 @@ const EditClient = ({
 										required
 									/>
 								</div>
-								{item?.resendInviteEmail===false && <div className={AddClientStyle.colMd6}>
+								{checkPayPer?.companyTypeID===2 && <div className={AddClientStyle.colMd6}>
                   					<span className={AddClientStyle.resendInviteEmailModalLink} onClick={()=>resendInviteEmailAPI(item?.ID)}>Resend Invite Email</span>
               					</div>}
 							</div>

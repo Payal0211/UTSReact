@@ -1,4 +1,5 @@
 import CloneHRModalStyle from '../allHiringRequest/cloneHRModal.module.css';
+import {useState} from 'react'
 
 const CloneHRModal = ({
 	cloneHRhandler,
@@ -6,21 +7,25 @@ const CloneHRModal = ({
 	getHRnumber,
 	navigateToCloneHR,
 }) => {
+	const [disableOK , setDisableOK] = useState(false)
+
 	return (
 		<div className={CloneHRModalStyle.cloneHRConfContent}>
-			<h2>Are you sure want to clone HR {getHRnumber}</h2>
+			<h2>Are you sure want to clone {getHRnumber}</h2>
 
 			<div className={CloneHRModalStyle.formPanelAction}>
 				{cloneHRhandler ? (
 					<button
+						disabled={disableOK}
 						className={CloneHRModalStyle.btnPrimary}
-						onClick={() => cloneHRhandler()}>
+						onClick={() => {cloneHRhandler();setDisableOK(true)}}>
 						Ok
 					</button>
 				) : (
 					<button
+						disabled={disableOK}
 						className={CloneHRModalStyle.btnPrimary}
-						onClick={() => navigateToCloneHR()}>
+						onClick={() => {navigateToCloneHR();setDisableOK(true)}}>
 						Ok
 					</button>
 				)}
