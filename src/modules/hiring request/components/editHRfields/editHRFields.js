@@ -2603,7 +2603,8 @@ const EditHRFields = ({
                       isControlled={true}
                       setValue={setValue}
                       register={register}
-                      label={`Add your estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}budget (Monthly)`}
+                      label={`Add your client estimated budget (Monthly)`}
+                      // label={`Add your estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}budget (Monthly)`}
                       options={budgets.map((item) => ({
                         id: item.id,
                         label: item.text,

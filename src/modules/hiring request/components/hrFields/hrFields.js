@@ -1488,9 +1488,9 @@ const HRFields = ({
       let _getHrValues = { ...getHRdetails };
 
       _getHrValues.salesHiringRequest_Details.requirement =
-        gptFileDetails.Requirements;
+        gptFileDetails.Requirements?? '';
       _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
-        gptFileDetails.Responsibility;
+        gptFileDetails.Responsibility?? '';
       _getHrValues.salesHiringRequest_Details.rolesResponsibilities =
         gptFileDetails.Responsibility;
       _getHrValues.addHiringRequest.jdurl = "";
@@ -1704,6 +1704,7 @@ const HRFields = ({
       resetField('talentsNumber')
       setDisabledFields(prev=> ({...prev , talentRequired : false}))
       unregister('tempProject')
+      setControlledTempProjectValue("Please select .")
       unregister('contractDuration')
       setIsProfileView(false)
       setIsVettedProfile(false)
@@ -2520,7 +2521,8 @@ const HRFields = ({
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
-                    label={`Add your estimated ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}budget (Monthly)`}
+                    // label={`Add your estimated ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}budget (Monthly)`}
+                    label={`Add your client estimated budget (Monthly)`}
                     defaultValue="Select Budget"
                     options={budgets.map((item) => ({
                       id: item.id,
