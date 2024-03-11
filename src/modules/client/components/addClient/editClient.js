@@ -10,6 +10,7 @@ import React, { useCallback, useState } from 'react';
 import { _isNull } from 'shared/utils/basic_utils';
 import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';
+import ConfirmationModal from './confirmationResendEmailModal';
 import { Checkbox ,message} from 'antd'
 const EditClient = ({
 	setError,
@@ -32,6 +33,8 @@ const EditClient = ({
 	checkPayPer
 }) => {
     const [showUploadModal, setUploadModal] = useState(false);
+	const [showConfirmationModal, setConfirmationModal] = useState(false);
+	const [clientID, setClientID] = useState();
     const [getValidation, setValidation] = useState({
         systemFileUpload: "",
         googleDriveFileUpload: "",
@@ -161,13 +164,16 @@ const EditClient = ({
       );
 
 	  const resendInviteEmailAPI = async(contactId) =>{
+		setConfirmationModal(true);
 		const response = await ClientDAO.resendInviteEmailDAO(contactId);
 		if(response?.statusCode=== HTTPStatusCode.OK){
+			setConfirmationModal(false);
 			messageApi.open({
 				type: "success",
 				content:"Email send successfully",
 			});
 		}else{
+			setConfirmationModal(false);
 			messageApi.open({
 				type: "error",
 				content:"Email not send successfully",
@@ -396,9 +402,20 @@ const EditClient = ({
 								required
 							/>
 						</div>
-						{checkPayPer?.companyTypeID===2 &&<div className={AddClientStyle.colMd6}>
-                  			<span className={AddClientStyle.resendInviteEmailModalLink} onClick={()=>resendInviteEmailAPI(clientDetailCheckList?.[0]?.id)}>Resend Invite Email</span>
-              			</div>}
+						<div className={AddClientStyle.colMd6}>
+						{checkPayPer?.companyTypeID===2 &&
+						<button
+							type="submit"
+							onClick={()=>{
+								// resendInviteEmailAPI(clientDetailCheckList?.[0]?.id);
+								setClientID(clientDetailCheckList?.[0]?.id)
+								setConfirmationModal(true);
+							}}
+							className={AddClientStyle.btnPrimaryResendBtn}>
+							Resend Invite Email
+						</button>
+						}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -524,14 +541,29 @@ const EditClient = ({
 										required
 									/>
 								</div>
-								{checkPayPer?.companyTypeID===2 && <div className={AddClientStyle.colMd6}>
-                  					<span className={AddClientStyle.resendInviteEmailModalLink} onClick={()=>resendInviteEmailAPI(item?.ID)}>Resend Invite Email</span>
-              					</div>}
+								<div className={AddClientStyle.colMd6}>
+								{checkPayPer?.companyTypeID===2 && 
+								<button
+									type="submit"
+									onClick={()=>{
+										// resendInviteEmailAPI(item?.ID);
+										setClientID(item?.ID)
+										setConfirmationModal(true);
+									}}
+									className={AddClientStyle.btnPrimaryResendBtn}>
+									Resend Invite Email
+								</button>
+								}
+								</div>
 							</div>
 						</div>
 					</div>
 				);
 			})}
+		<ConfirmationModal
+		setConfirmationModal={setConfirmationModal}
+		showConfirmationModal={showConfirmationModal}
+		clientID={clientID}/>
 		</div>
 	);
 };

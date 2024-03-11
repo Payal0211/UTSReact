@@ -43,6 +43,8 @@ function ViewClientDetails() {
 	const [utmTrackingData, setUtmTrackingData] = useState([]);
 	const [guid,setGuid] = useState('');
 	const [draftJObPostDetails,setDraftJobPostDetails] = useState({});
+	const getisShowAddClientCredit = localStorage.getItem("isShowAddClientCredit")
+
 	useEffect(() => {
 		if(jobpostDraft){
 			getJobPostDraftData();
@@ -228,7 +230,7 @@ function ViewClientDetails() {
                             overlayClassName={dealDetailsStyles.viewClientdrop}
                             className={dealDetailsStyles.viewClientdrop}
                         /> */}						
-						<button type="button" onClick={() => {navigate(`/editclient/${companyID}`);localStorage.setItem("clientID",clientID)}}>Edit Company</button>
+						{getisShowAddClientCredit == "true" &&<button type="button" onClick={() => {navigate(`/editclient/${companyID}`);localStorage.setItem("clientID",clientID)}}>Edit Company</button>}
 						<button type="button" onClick={() => navigate('/allhiringrequest/addnewhr')} >Create HR</button>
 					
 						{/* <div className={dealDetailsStyles.deleteButton}>
