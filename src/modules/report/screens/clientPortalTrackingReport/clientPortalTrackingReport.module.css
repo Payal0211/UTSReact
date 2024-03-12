@@ -127,8 +127,9 @@
 .cardInner .row{
     display: flex;
     justify-content: space-between;
-    padding: 5px 15px;
+    padding: 10px 15px;
     font-size: 13px;
+    align-items: center;
 }
 
 .cardInner .row div:first-child{
@@ -153,8 +154,14 @@
     text-decoration: underline;
     color:#337ab7;
     cursor: pointer;
-
+    margin: 0;
 }
+
+
+.LeftTextWrap{
+    display: flex;
+    align-items: center;
+}   
 
 .filterSets {
     width: 96%;

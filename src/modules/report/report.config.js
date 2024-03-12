@@ -1621,8 +1621,8 @@ export const reportConfig = {
 			}				
 		];
 	},
-	ClientPortalPopupReportConfig: (hrStage) => {
-		if(hrStage==="Status Change"){
+	ClientPortalPopupReportConfig: (hrStageId) => {
+		if(hrStageId===16){
 			return [
 				{
 					title: 'Action Date',
@@ -1714,7 +1714,64 @@ export const reportConfig = {
 					},
 				},					
 			];
-		}else{
+		}else if (hrStageId===1 || hrStageId===2 || hrStageId===18){
+			return [
+				{
+					title: 'Action Date',
+					dataIndex: 'createdDate',
+					key: 'createdDate',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{moment(text).format("DD/MM/YYYY h:mm:ss") }</Fragment>;
+					},
+				},
+				{
+					title: 'Client',
+					dataIndex: 'client',
+					key: 'client',
+					align: 'left',				
+				},
+				{
+					title: 'Device',
+					dataIndex: 'device',
+					key: 'device',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Browser',
+					dataIndex: 'browser',
+					key: 'browser',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'IP Address',
+					dataIndex: 'ipAddress',
+					key: 'ipAddress',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Location',
+					dataIndex: 'location',
+					key: 'location',
+					align: 'left',
+					render: (text) => {
+						let data = text.split(",");
+						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+						const result = filteredValues.join(", ");
+						return <Fragment key={result}>{result}</Fragment>;
+					},
+				},				
+			];
+		} else{
 			return [
 				{
 					title: 'Action Date',
