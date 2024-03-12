@@ -202,6 +202,23 @@ export const allClientsConfig = {
                     return moment(text).format('DD/MM/YYYY')
                 },
             },
+            {
+                title: 'SSO',
+                dataIndex: 'ssO_Login',
+                key: 'ssO_Login',
+                width: '150px',
+                render: (text, result) => {
+					return (
+						<a
+                            href={text}
+                            target="_blank"
+                            className={clienthappinessSurveyStyles.linkForSSO}
+                            >
+                            <button  className={clienthappinessSurveyStyles.btnPrimaryResendBtn}>Login with SSO</button>
+						</a>
+					);
+				},
+            },
           ]; 
     },
     ViewClienttableConfig : (togglePriority,setModaljobpostDraft,setGuid) => {
