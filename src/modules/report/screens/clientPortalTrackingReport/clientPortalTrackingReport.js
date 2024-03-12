@@ -472,13 +472,15 @@ export default function UTMTrackingReport() {
           <ul className={clientPortalTrackingReportStyle.cardInner}>
             {reportList?.map((report) => (
               <li className={clientPortalTrackingReportStyle.row}>
+                <div className={clientPortalTrackingReportStyle.LeftTextWrap}>
                  <div className={clientPortalTrackingReportStyle.rowLabel}>{report.actions}</div>
                  {report.actionID===3 && 
                   <Tooltip 	placement="bottomLeft"
                  title= "These are profiles that have been rejected, accompanied by appropriate reasons for rejection, excluding cases where the talent status change to rejection involves Pay per credit/pay per view talent.">
-                   <img src={infoIcon} alt='info' style={{paddingRight:"400px",paddingBottom:"10px"}} /> 
+                   <img src={infoIcon} alt='info'/> 
                  </Tooltip>
                  }
+                 </div>
                 <div className={clientPortalTrackingReportStyle.rowValue}>                
                 {report.totalRecords > 0 ? (
                     <p
