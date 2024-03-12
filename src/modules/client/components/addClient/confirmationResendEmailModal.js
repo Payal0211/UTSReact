@@ -40,8 +40,8 @@ const ConfirmationModal = ({showConfirmationModal,setConfirmationModal,clientID}
 					<img src={LeavePageIcon} alt="leaveicon" />
 					<h3>Are you sure you want to resend invite email?</h3>
 					<div className={AddClientStyle.multiquesbtn}>
-						<button className={`${AddClientStyle.btnPrimaryResendBtn} ${AddClientStyle.blank}`} onClick={()=>setConfirmationModal(false)}>No</button>
 						<button className={AddClientStyle.btnPrimaryResendBtn} onClick={resendInviteEmailAPI} >Yes</button>
+						<button className={`${AddClientStyle.btnPrimaryResendBtn} ${AddClientStyle.blank}`} onClick={()=>setConfirmationModal(false)}>No</button>
 					</div>
 				</div>
 			</Modal>

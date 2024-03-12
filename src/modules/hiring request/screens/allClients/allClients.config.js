@@ -5,6 +5,7 @@ import { ReactComponent as NextWeekPriorityStar } from 'assets/svg/nextWeekPrior
 import { ReactComponent as NoPriorityStar } from 'assets/svg/noPriorityStar.svg';
 import { Button } from "antd";
 import dealDetailsStyles from "../../../../modules/viewClient/viewClientDetails.module.css";
+import moment from "moment";
 export const allClientsConfig = {
     allClientsTypeConfig : (filterList) => {
         return [
@@ -184,7 +185,23 @@ export const allClientsConfig = {
                          style={{backgroundColor:`${result.statusColor}`}} >{text}</span>			
 					);
 				},
-            }
+            },
+            {
+                title: 'Invite Name',
+                dataIndex: 'inviteName',
+                key: 'inviteName',
+                width: '100px',
+            },
+            {
+                title: 'Invite Date',
+                dataIndex: 'inviteDate',
+                key: 'inviteDate',
+                width: '100px',
+                render: (text) => {
+                    if (!text) return null;
+                    return moment(text).format('DD/MM/YYYY')
+                },
+            },
           ]; 
     },
     ViewClienttableConfig : (togglePriority,setModaljobpostDraft,setGuid) => {
