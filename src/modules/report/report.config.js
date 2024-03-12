@@ -1621,88 +1621,182 @@ export const reportConfig = {
 			}				
 		];
 	},
-	ClientPortalPopupReportConfig: () => {
-		return [
-			{
-				title: 'Action Date',
-				dataIndex: 'createdDate',
-				key: 'createdDate',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{moment(text).format("DD/MM/YYYY h:mm:ss") }</Fragment>;
+	ClientPortalPopupReportConfig: (hrStage) => {
+		if(hrStage==="Status Change"){
+			return [
+				{
+					title: 'Action Date',
+					dataIndex: 'createdDate',
+					key: 'createdDate',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{moment(text).format("DD/MM/YYYY h:mm:ss") }</Fragment>;
+					},
 				},
-			},
-			{
-				title: 'Client',
-				dataIndex: 'client',
-				key: 'client',
-				align: 'left',				
-			},
-			{
-				title: 'HR #',
-				dataIndex: 'hrNumber',
-				key: 'hrNumber',
-				align: 'left',		
-				render: (text, result) => (
-					result?.hrid ? 
-					<Link
-					  target="_blank"
-					  to={`/allhiringrequest/${result?.hrid}`}
-					  style={{ color: "black", textDecoration: "underline" }}
-					  onClick={() => localStorage.removeItem("dealID")}
-					>
-					  {text}
-					</Link> : {text}
-				  ),		
-			},
-			{
-				title: 'Device',
-				dataIndex: 'device',
-				key: 'device',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text }</Fragment>;
+				{
+					title: 'Client',
+					dataIndex: 'client',
+					key: 'client',
+					align: 'left',				
 				},
-			},
-			{
-				title: 'Browser',
-				dataIndex: 'browser',
-				key: 'browser',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text }</Fragment>;
+				{
+					title: 'HR #',
+					dataIndex: 'hrNumber',
+					key: 'hrNumber',
+					align: 'left',		
+					render: (text, result) => (
+						result?.hrid ? 
+						<Link
+						  target="_blank"
+						  to={`/allhiringrequest/${result?.hrid}`}
+						  style={{ color: "black", textDecoration: "underline" }}
+						  onClick={() => localStorage.removeItem("dealID")}
+						>
+						  {text}
+						</Link> : {text}
+					  ),		
 				},
-			},
-			{
-				title: 'IP Address',
-				dataIndex: 'ipAddress',
-				key: 'ipAddress',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text }</Fragment>;
+				{
+					title: 'Device',
+					dataIndex: 'device',
+					key: 'device',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
 				},
-			},
-			{
-				title: 'Location',
-				dataIndex: 'location',
-				key: 'location',
-				align: 'left',
-				render: (text) => {
-					let data = text.split(",");
-					const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
-					const result = filteredValues.join(", ");
-					return <Fragment key={result}>{result}</Fragment>;
+				{
+					title: 'Browser',
+					dataIndex: 'browser',
+					key: 'browser',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
 				},
-			},
-			{
-				title: 'Talent',
-				dataIndex: 'talentName',
-				key: 'talentName',
-				align: 'left',
-				render: (text) => {
-					return <Fragment key={text}>{text}</Fragment>;
+				{
+					title: 'IP Address',
+					dataIndex: 'ipAddress',
+					key: 'ipAddress',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
 				},
-			},					
-		];
+				{
+					title: 'Location',
+					dataIndex: 'location',
+					key: 'location',
+					align: 'left',
+					render: (text) => {
+						let data = text.split(",");
+						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+						const result = filteredValues.join(", ");
+						return <Fragment key={result}>{result}</Fragment>;
+					},
+				},
+				{
+					title: 'Talent',
+					dataIndex: 'talentName',
+					key: 'talentName',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text}</Fragment>;
+					},
+				},	
+				{
+					title: 'Talent Status',
+					dataIndex: 'talentStatus',
+					key: 'talentStatus',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text}</Fragment>;
+					},
+				},					
+			];
+		}else{
+			return [
+				{
+					title: 'Action Date',
+					dataIndex: 'createdDate',
+					key: 'createdDate',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{moment(text).format("DD/MM/YYYY h:mm:ss") }</Fragment>;
+					},
+				},
+				{
+					title: 'Client',
+					dataIndex: 'client',
+					key: 'client',
+					align: 'left',				
+				},
+				{
+					title: 'HR #',
+					dataIndex: 'hrNumber',
+					key: 'hrNumber',
+					align: 'left',		
+					render: (text, result) => (
+						result?.hrid ? 
+						<Link
+						  target="_blank"
+						  to={`/allhiringrequest/${result?.hrid}`}
+						  style={{ color: "black", textDecoration: "underline" }}
+						  onClick={() => localStorage.removeItem("dealID")}
+						>
+						  {text}
+						</Link> : {text}
+					  ),		
+				},
+				{
+					title: 'Device',
+					dataIndex: 'device',
+					key: 'device',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Browser',
+					dataIndex: 'browser',
+					key: 'browser',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'IP Address',
+					dataIndex: 'ipAddress',
+					key: 'ipAddress',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Location',
+					dataIndex: 'location',
+					key: 'location',
+					align: 'left',
+					render: (text) => {
+						let data = text.split(",");
+						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+						const result = filteredValues.join(", ");
+						return <Fragment key={result}>{result}</Fragment>;
+					},
+				},
+				{
+					title: 'Talent',
+					dataIndex: 'talentName',
+					key: 'talentName',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text}</Fragment>;
+					},
+				},					
+			];
+		}
 	}
 };

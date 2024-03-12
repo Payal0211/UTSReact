@@ -16,7 +16,7 @@ import { clientReport } from "core/clientReport/clientReportDAO";
 import { reportConfig } from "modules/report/report.config";
 import { HTTPStatusCode } from "constants/network";
 import UTSRoutes from "constants/routes";
-import { Table, Checkbox, Select } from "antd";
+import { Table, Checkbox, Select, Tooltip } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import moment from "moment";
 import { downloadToExcel } from "modules/report/reportUtils";
@@ -25,6 +25,7 @@ import { clientPortalTrackingReportDAO } from "core/clientPortalTrackingReport/c
 import { clientPortalTrackingReportAPI } from "apis/clientPortalTrackingReportAPI";
 import { utmTrackingReportAPI } from "apis/utmTrackingReportAPI";
 import { utmTrackingReportDAO } from "core/utmTrackingReport/utmTrackingReportDAO";
+import infoIcon from "../../../../assets/svg/info.svg"
 const DealListLazyComponents = React.lazy(() =>
   import("modules/deal/components/dealFilters/dealFilters")
 );
@@ -310,7 +311,7 @@ export default function UTMTrackingReport() {
   );
 
   const tableColumnsMemo = useMemo(
-    () => reportConfig.ClientPortalPopupReportConfig(),
+    () => reportConfig.ClientPortalPopupReportConfig(hrStage),
     [hrStage]
   );
 
@@ -470,7 +471,12 @@ export default function UTMTrackingReport() {
             {reportList?.map((report) => (
               <li className={clientPortalTrackingReportStyle.row}>
                  <div className={clientPortalTrackingReportStyle.rowLabel}>{report.actions}</div>
-                {/* <div className={clientPortalTrackingReportStyle.rowLabel}>{report.value}</div> */}
+                 {report.actions==="Reject Profile" && 
+                  <Tooltip 	placement="bottomLeft"
+                 title= "These are profiles that have been rejected, accompanied by appropriate reasons for rejection, excluding cases where the talent status change to rejection involves Pay per credit/pay per view talent.">
+                   <img src={infoIcon} alt='info' style={{paddingRight:"400px",paddingBottom:"10px"}} /> 
+                 </Tooltip>
+                 }
                 <div className={clientPortalTrackingReportStyle.rowValue}>                
                 {report.totalRecords > 0 ? (
                     <p
