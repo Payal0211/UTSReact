@@ -40,7 +40,7 @@ const CompanyProfileCard = ({
 
 
   useEffect(() => {
-    if (allApiData.IsPayPerCredit) {
+    if (allApiData.IsPayPerCredit || allApiData.Guid) {
       setAvalableTabs([
         {
           label: "Company Details",
