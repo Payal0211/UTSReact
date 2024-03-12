@@ -39,6 +39,7 @@ export default function UTMTrackingReport() {
   const [isLoading, setLoading] = useState(false);
   const [reportList, setReportList] = useState([]);
   const [hrStage, setHRStage] = useState("");
+  const [hrStageId, setHRStageId] = useState("");
   const [reportPopupList, setReportPopupList] = useState([]);
 
   const [getHTMLFilter, setHTMLFilter] = useState(false);
@@ -299,6 +300,7 @@ export default function UTMTrackingReport() {
   const setTableData = useCallback(
     (reportData) => {   
       setHRStage(reportData.actions);
+      setHRStageId(reportData?.actionID)
       let params = {     
           fromDate: moment(firstDay).format("YYYY-MM-DD"),
           toDate: moment(lastDay).format("YYYY-MM-DD"),
@@ -311,8 +313,8 @@ export default function UTMTrackingReport() {
   );
 
   const tableColumnsMemo = useMemo(
-    () => reportConfig.ClientPortalPopupReportConfig(hrStage),
-    [hrStage]
+    () => reportConfig.ClientPortalPopupReportConfig(hrStageId),
+    [hrStage,hrStageId]
   );
 
   // const onRemoveDealFilters = () => {
@@ -471,7 +473,7 @@ export default function UTMTrackingReport() {
             {reportList?.map((report) => (
               <li className={clientPortalTrackingReportStyle.row}>
                  <div className={clientPortalTrackingReportStyle.rowLabel}>{report.actions}</div>
-                 {report.actions==="Reject Profile" && 
+                 {report.actionID===3 && 
                   <Tooltip 	placement="bottomLeft"
                  title= "These are profiles that have been rejected, accompanied by appropriate reasons for rejection, excluding cases where the talent status change to rejection involves Pay per credit/pay per view talent.">
                    <img src={infoIcon} alt='info' style={{paddingRight:"400px",paddingBottom:"10px"}} /> 
