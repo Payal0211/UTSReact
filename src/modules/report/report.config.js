@@ -1634,7 +1634,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client',
+					title: 'Client/User',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
@@ -1726,7 +1726,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client',
+					title: 'Client/User',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
@@ -1783,7 +1783,7 @@ export const reportConfig = {
 					},
 				},
 				{
-					title: 'Client',
+					title: 'Client/User',
 					dataIndex: 'client',
 					key: 'client',
 					align: 'left',				
