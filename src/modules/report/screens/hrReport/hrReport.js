@@ -158,7 +158,8 @@ export default function HRReport() {
           hrStatusID: HiringStatus,
           isHrfocused: isFocusedRole,
           stages: hrStage,
-          clientType: ClientType
+          clientType: ClientType,
+          geos:geos
         },
       };
 
@@ -350,7 +351,10 @@ export default function HRReport() {
         ? filters["ModeOfWorking"]
         : "";
       let HiringStatus = filters["HiringStatus"] ? filters["HiringStatus"] : "";
-      let ClientType = filters["ClientType"] ? filters["ClientType"] : "0"
+      let ClientType = filters["ClientType"] ? filters["ClientType"] : "0";
+      let geos = filters["geos"]
+          ? filters["geos"]
+          : "";
       // console.log(reportData);
       setHRStage(reportData.stageName);
       let params = {
@@ -365,7 +369,8 @@ export default function HRReport() {
           hrStatusID: HiringStatus,
           stages: reportData.stageName,
           isHrfocused: isFocusedRole,
-          clientType: ClientType
+          clientType: ClientType,
+          geos:geos
         },
       };
       getHRPopUpReportList(params);
