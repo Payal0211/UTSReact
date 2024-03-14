@@ -64,7 +64,7 @@ const CloneHRModal = ({
 			{isHRHybrid && <>
 				<div className={CloneHRModalStyle.colMd12}>
 				<h4 style={{marginBottom:"12px"}}>
-				Please select which type of Hr you want create              
+				Please select which type of Hr you want to create              
                 </h4>
 				</div>
 						<div className={CloneHRModalStyle.colMd12}>
