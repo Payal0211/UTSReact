@@ -630,7 +630,19 @@ const DebriefingHR = ({
 							/>
 
 							{userCompanyTypeID === 1 && <div className={DebriefingHRStyle.aboutCompanyField}>
-								<HRInputField
+							<TextEditor
+									isControlled={true}
+									controlledValue={AboutCompanyDesc ? AboutCompanyDesc : getHRdetails?.companyInfo?.aboutCompanyDesc}
+									label={'About Company'}
+									placeholder={"Please enter details about company."}
+									setValue={setValue}
+									watch={watch}
+									register={register}
+									errors={errors}
+									name="aboutCompany"
+									required
+								/>
+								{/* <HRInputField
 									required
 									isTextArea={true}
 									errors={errors}
@@ -665,7 +677,7 @@ const DebriefingHR = ({
 									name="aboutCompany"
 									type={InputType.TEXT}
 									placeholder="Please enter details about company."
-								/>
+								/> */}
 								{/* <p>* Please do not mention company name here</p> */}
 							</div>}
 
@@ -810,7 +822,7 @@ const DebriefingHR = ({
 					</div>
 				</div>
 
-				{userCompanyTypeID === 2 && <DebrefCompanyDetails register={register}  errors={errors} watch={watch} />}
+				{userCompanyTypeID === 2 && <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
 
 				{userCompanyTypeID === 1 && <>
 					<Divider />

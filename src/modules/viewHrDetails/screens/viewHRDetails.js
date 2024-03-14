@@ -110,11 +110,12 @@ const ViewHRDetails = () => {
 												{hiringDetails?.responseBody?.details
 													?.hiringRequestRole ?? 'NA'}
 											</li> */}
-						<li>
+						{/* <li style={{display:'flex'}}>
                         <span>About Company:</span>{" "}
-                        {hiringDetails?.responseBody?.details?.aboutCompanyDesc?? "NA"}
+                         {hiringDetails?.responseBody?.details?.aboutCompanyDesc?? "NA"} 
+                        {hiringDetails?.responseBody?.details?.aboutCompanyDesc? <div style={{marginLeft:'5px'}} dangerouslySetInnerHTML={{__html:hiringDetails?.responseBody?.details?.aboutCompanyDesc}}></div> : "NA"}
                         <i className={ViewHRDetailsStyle.blueDot} />
-                      </li>					
+                      </li>					 */}
                       <li>
                         <span>Job Description:</span>{" "}
                         {hiringDetails?.responseBody?.details
@@ -474,7 +475,20 @@ const ViewHRDetails = () => {
                   </div>
                 </div>
               </div>
+           
+             
             </div>
+
+            {!hiringDetails?.responseBody?.details?.additionalDetails &&   <div className={ViewHRDetailsStyle.viewHRDetailsBox} style={{marginTop:'10px'}}>
+              <h3>
+              About Company
+                <i className={ViewHRDetailsStyle.blueDot} />
+              </h3>
+              {hiringDetails?.responseBody?.details?.aboutCompanyDesc? <div  dangerouslySetInnerHTML={{__html:hiringDetails?.responseBody?.details?.aboutCompanyDesc}}></div> : "NA"}
+               
+                 
+              </div>}
+          
           </div>
         </div>
 
@@ -807,12 +821,8 @@ const ViewHRDetails = () => {
                 </div>
                 <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
                   <h3>About Company</h3>
-                  <div className={ViewHRDetailsStyle.viewHrJDDetailsBox}>
-                    {
-                      hiringDetails?.responseBody?.details?.additionalDetails
-                        ?.about_Company_desc
-                    }
-                  </div>
+                  {hiringDetails?.responseBody?.details?.additionalDetails?.about_Company_desc ?<div className={ViewHRDetailsStyle.viewHrJDDetailsBox} dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.additionalDetails?.about_Company_desc}}></div> : 'NA'}
+                  
                 </div>
               </div>
             </div>
