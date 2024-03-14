@@ -34,7 +34,9 @@ export const hrUtils = {
 			isHRFocused: item?.isHRFocused,
 			companyModel: item?.companyModel,
 			hrTypeName: item?.hrTypeName,
-			isDisplayReopenOrCloseIcon : item?.isDisplayReopenOrCloseIcon
+			isDisplayReopenOrCloseIcon : item?.isDisplayReopenOrCloseIcon,
+			isHybrid: item.isHybrid,
+			companyID: item?.companyID,
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {
