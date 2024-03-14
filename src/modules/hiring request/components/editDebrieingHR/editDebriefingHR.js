@@ -676,8 +676,20 @@ const EditDebriefingHR = ({
 									required
 								/>
 
-{companyType?.id === 1 && <div className={DebriefingHRStyle.aboutCompanyField}>
-									<HRInputField
+							{companyType?.id === 1 && <div className={DebriefingHRStyle.aboutCompanyField}>
+								<TextEditor
+									isControlled={true}
+									controlledValue={getHRdetails?.addHiringRequest?.aboutCompanyDesc ? getHRdetails?.addHiringRequest?.aboutCompanyDesc : getHRdetails?.companyInfo?.aboutCompanyDesc}
+									label={'About Company'}
+									placeholder={"Please enter details about company."}
+									setValue={setValue}
+									watch={watch}
+									register={register}
+									errors={errors}
+									name="aboutCompany"
+									required
+								/>
+									{/* <HRInputField
 										required
 										isTextArea={true}
 										errors={errors}
@@ -709,7 +721,7 @@ const EditDebriefingHR = ({
 										name="aboutCompany"
 										type={InputType.TEXT}
 										placeholder="Please enter details about company."
-									/>
+									/> */}
 									{/* <p>* Please do not mention company name here</p> */}
 								</div>}
 
@@ -877,7 +889,7 @@ const EditDebriefingHR = ({
 						</div>
 					</div>
 
-					{companyType?.id === 2 &&  <DebrefCompanyDetails register={register}  errors={errors} watch={watch} />}
+					{companyType?.id === 2 &&  <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
 
 					
 					{companyType?.id === 1 && <>

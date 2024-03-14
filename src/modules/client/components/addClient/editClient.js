@@ -181,7 +181,6 @@ const EditClient = ({
 		}
 	  }
     
-
 	return (
 		<div className={AddClientStyle.tabsFormItem}>
 			{contextHolder}
@@ -403,8 +402,8 @@ const EditClient = ({
 							/>
 						</div>
 						<div className={AddClientStyle.colMd6}>
-						{checkPayPer?.companyTypeID===2 &&
-						<button
+						{checkPayPer?.companyTypeID===2 && clientDetailCheckList[0]?.resendInviteEmail === true &&
+						<button 
 							type="submit"
 							onClick={()=>{
 								// resendInviteEmailAPI(clientDetailCheckList?.[0]?.id);
@@ -542,7 +541,7 @@ const EditClient = ({
 									/>
 								</div>
 								<div className={AddClientStyle.colMd6}>
-								{checkPayPer?.companyTypeID===2 && 
+								{checkPayPer?.companyTypeID===2 &&  item?.resendInviteEmail===true &&
 								<button
 									type="submit"
 									onClick={()=>{
