@@ -103,6 +103,7 @@ const HRDetailScreen = () => {
 
 	let urlSplitter = `${switchLocation.pathname.split('/')[2]}`;
 	const updatedSplitter = 'HR' + apiData && apiData?.ClientDetail?.HR_Number;
+	const hybridInfo = apiData && {isHybrid: apiData?.ClientDetail?.IsHybrid,companyID: apiData?.ClientDetail?.CompanyId}
 	const miscData = UserSessionManagementController.getUserSession();
 
 	const callAPI = useCallback(
@@ -284,6 +285,7 @@ const togglePriority = useCallback(
 							<CloneHR
 								updatedSplitter={updatedSplitter}
 								cloneHR={apiData?.dynamicCTA?.CloneHR}
+								hybridInfo={hybridInfo}
 							/>
 						)}
 

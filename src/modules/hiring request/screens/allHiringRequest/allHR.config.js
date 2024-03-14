@@ -111,7 +111,7 @@ export const allHRConfig = {
                     onClick={() => {
                       setCloneHR(true);
                       setHRID(result?.key);
-                      setHRNumber(result?.HR_ID);
+                      setHRNumber({hrNumber:result?.HR_ID, isHybrid:result?.isHybrid,companyID:result?.companyID});
                     }}
                   />
                 </a>

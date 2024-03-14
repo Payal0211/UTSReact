@@ -37,3 +37,8 @@
 .formPanelAction button+button {
   margin-left: 18px;
 }
+
+.error {
+  color: var(--danger-color);
+  font-size: var(--fontsize-tough);
+}
