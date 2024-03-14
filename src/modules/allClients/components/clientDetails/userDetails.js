@@ -3,7 +3,7 @@ import userDetails from "./userDetails.module.css";
 import { InputType } from "constants/application";
 import { useForm } from "react-hook-form";
 import { _isNull } from "shared/utils/basic_utils";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import { HTTPStatusCode } from "constants/network";
 import { allClientRequestDAO } from "core/allClients/allClientsDAO";
@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import UTSRoutes from "constants/routes";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Checkbox, Radio, Spin } from "antd";
+import { AutoComplete, Checkbox, Radio, Spin } from "antd";
 import LogoLoader from "shared/components/loader/logoLoader";
 
 const UserDetails = () => {
@@ -23,11 +23,18 @@ const UserDetails = () => {
     IsHybridModel: false,
   });
   const [error, setErrors] = useState(false);
+  const [errorPOCName, setErrorsPocName] = useState(false);
   const [profileSharingOptionError, setProfileSharingOptionError] =
-    useState(false);
+  useState(false);
   const [profileSharingOption, setProfileSharingOption] = useState(null);
   const [errorData, setErrorsData] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
+  const [pocName, setPOCName] = useState([]);
+  let fullname = JSON.parse(localStorage.getItem('userSessionInfo'))
+  const [inputValue, setInputValue] = useState({
+    id:"",
+    value:"",
+  });
   const {
     watch,
     register,
@@ -114,6 +121,11 @@ const UserDetails = () => {
       isValid = false;
     }
 
+    if (inputValue?.id===undefined && inputValue?.value===undefined) {
+      setErrorsPocName(true);
+      isValid = false;
+    }
+
     if (IsChecked?.IsProfileView === true && profileSharingOption === null) {
       setProfileSharingOptionError(true);
       isValid = false;
@@ -134,7 +146,8 @@ const UserDetails = () => {
       IsPostaJob: IsChecked?.IsPostaJob,
       IsProfileView: IsChecked?.IsProfileView,
       IsHybridModel: IsChecked?.IsHybridModel,
-      IsVettedProfile: profileSharingOption
+      IsVettedProfile: profileSharingOption,
+      poC_ID:inputValue?.id
     };
     const response = await allClientRequestDAO.userDetailsDAO(payload);
     if (response.statusCode === HTTPStatusCode.OK) {
@@ -156,6 +169,41 @@ const UserDetails = () => {
     }
     setIsLoading(false);
   };
+
+  // const getCompanyPOCList = async () =>{
+  //   const response = await allClientRequestDAO.getActiveSalesUserListDAO();
+  //   console.log(response?.responseBody,"responeresponerespone");
+  //   setPOCName(response?.responseBody);
+  // }
+
+  const getCompanyPOCList = useCallback(
+    async (clientEmail) => {
+      let response =  await allClientRequestDAO.getActiveSalesUserListDAO(clientEmail);
+      if (response?.statusCode === HTTPStatusCode.OK) {
+        setPOCName(response?.responseBody.map(data=>({
+          value:data?.fullName,
+          id:data?.id,
+          EmpId:data?.employeeID
+        })));
+      } else if (
+        response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
+        response?.statusCode === HTTPStatusCode.NOT_FOUND
+      ) {
+        setPOCName([]);
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    getCompanyPOCList()
+  }, [])
+  
+  useEffect(() => {
+    const data = pocName.filter((item)=>item?.EmpId===fullname?.EmployeeID);
+    setInputValue({...inputValue,id:data[0]?.id,value:data[0]?.value})
+  }, [pocName])
+
   return (
     <div className={userDetails.addNewContainer}>
       <LogoLoader visible={isLoading} />
@@ -180,23 +228,47 @@ const UserDetails = () => {
                       <HRInputField
                         register={register}
                         errors={errors}
-                        label="Client Full Name"
-                        name="fullName"
+                        label="Company Name"
+                        name="companyName"
                         type={InputType.TEXT}
-                        placeholder="Enter client full name"
+                        placeholder="Enter company name"
                         required
                       />
                     </div>
                   </div>
                   <div className={userDetails.row}>
                     <div className={userDetails.colMd6}>
+                    <div className={userDetails.formGroup}>
+                      <label>
+                      POC Name <b className={userDetails.error}>*</b>
+                      </label>
+                      <AutoComplete
+                        value={inputValue?.value}
+                        options={pocName}
+                        // autoFocus={true}
+                        filterOption={true}
+                        placeholder="Enter POC Name"
+                        onChange={(e,val)=>{
+                          setInputValue({...inputValue,id:val?.id,value:val?.value});
+                          setErrorsPocName(false);
+                          }}
+                      />
+                       {errorPOCName && (<p className={userDetails.error}>
+                        * Please select POC Name
+                      </p>)}
+                      </div>
+                    </div>
+                  </div>
+                   
+                  <div className={userDetails.row}>
+                    <div className={userDetails.colMd6}>
                       <HRInputField
                         register={register}
                         errors={errors}
-                        label="Company Name"
-                        name="companyName"
+                        label="Client Full Name"
+                        name="fullName"
                         type={InputType.TEXT}
-                        placeholder="Enter company name"
+                        placeholder="Enter client full name"
                         required
                       />
                     </div>

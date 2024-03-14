@@ -456,6 +456,9 @@ const EditCompanyDetails = ({
   let _totalSum;
   _totalSum = parseInt(watch("jpCreditBalance"))+parseInt(companyDetail?.jpCreditBalance);
 
+
+  console.log(typeOfPricing,"typeOfPricingtypeOfPricingtypeOfPricing");
+
   return (
     <div className={CompanyDetailsStyle.tabsFormItem}>
       <div className={CompanyDetailsStyle.tabsFormItemInner}>
@@ -806,7 +809,9 @@ const EditCompanyDetails = ({
 						</label>
             {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>}	
 						<Radio.Group
-              disabled={userData?.LoggedInUserTypeID !== 1 || checkPayPer?.anotherCompanyTypeID==0 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2) } 
+              disabled={
+                // userData?.LoggedInUserTypeID !== 1 ||
+                 checkPayPer?.anotherCompanyTypeID==0 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2) } 
 							onChange={e=> {setTypeOfPricing(e.target.value); setPricingTypeError && setPricingTypeError(false)}}
 							value={typeOfPricing}
 							>

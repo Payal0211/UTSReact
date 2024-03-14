@@ -107,3 +107,24 @@
     font-size: 14px;
     margin-left: 4px;
 }
+
+
+.hrFieldRightPane .formGroup{
+    margin: 0 0 32px;
+}
+
+.hrFieldRightPane .formGroup [class*="ant-select-selection-search-input"] {
+    height: auto !important;
+    padding: 16px 16px !important;
+}
+
+.hrFieldRightPane .formGroup label {
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #676767;
+    margin: 0 0 8px;
+    display: inline-block;
+}
