@@ -4,8 +4,9 @@ import DebriefingHRStyle from "./debriefingHR.module.css";
 import HRInputField from "../hrInputFields/hrInputFields";
 import { InputType } from "constants/application";
 import HRSelectField from '../hrSelectField/hrSelectField';
+import TextEditor from 'shared/components/textEditor/textEditor';
 
-export default function DebrefCompanyDetails({ register, errors, watch }) {
+export default function DebrefCompanyDetails({ register, errors, watch, getHRdetails, setValue }) {
   return (
     <>
     <Divider />
@@ -108,7 +109,19 @@ export default function DebrefCompanyDetails({ register, errors, watch }) {
           
 
           <div className={DebriefingHRStyle.aboutCompanyField}>
-            <HRInputField
+          <TextEditor
+									isControlled={true}
+									controlledValue={getHRdetails?.addHiringRequest?.aboutCompanyDesc ? getHRdetails?.addHiringRequest?.aboutCompanyDesc : getHRdetails?.companyInfo?.aboutCompanyDesc}
+									label={'About Company'}
+									placeholder={"Please enter details about company."}
+									setValue={setValue}
+									watch={watch}
+									register={register}
+									errors={errors}
+									name="aboutCompany"
+									required
+								/>
+            {/* <HRInputField
               required
               isTextArea={true}
               errors={errors}
@@ -124,7 +137,7 @@ export default function DebrefCompanyDetails({ register, errors, watch }) {
               name="aboutCompany"
               type={InputType.TEXT}
               placeholder="Please enter details about company."
-            />
+            /> */}
             {/* <p>* Please do not mention company name here</p> */}
           </div>
         </div>

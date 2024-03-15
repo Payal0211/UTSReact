@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import UTSRoutes from 'constants/routes';
 import { MasterDAO } from 'core/master/masterDAO';
 
-const CloneHR = ({ updatedSplitter, cloneHR }) => {
+const CloneHR = ({ updatedSplitter, cloneHR ,hybridInfo}) => {
 	const [isCloneHR, setCloneHR] = useState(false);
 	const cloneHRModalInfo = () => {
 		setCloneHR(!isCloneHR);
@@ -16,10 +16,13 @@ const CloneHR = ({ updatedSplitter, cloneHR }) => {
 
 	const hrId = useParams();
 	const navigate = useNavigate();
-	const navigateToCloneHR = useCallback(async () => {
-		const data = {
+	const navigateToCloneHR = useCallback(async (isHybrid, payload) => {
+		let data = {
 			hrid: hrId?.hrid,
 		};
+		if(isHybrid){
+			data = {...data,...payload}	  
+		  }
 
 		const response = await MasterDAO.getCloneHRDAO(data);
 		if (response?.statusCode === HTTPStatusCode.OK) {
@@ -30,8 +33,8 @@ const CloneHR = ({ updatedSplitter, cloneHR }) => {
 		}
 	}, [hrId.hrid, navigate]);
 
-	return (
-		<div
+	return (<>
+	<div
 			className={
 				cloneHR?.IsEnabled
 					? CloneHRStyle.transparentBtnGroup
@@ -40,7 +43,9 @@ const CloneHR = ({ updatedSplitter, cloneHR }) => {
 			onClick={cloneHR?.IsEnabled ? cloneHRModalInfo : null}>
 			<CloneHRSVG style={{ fontSize: '16px' }} />{' '}
 			<span className={CloneHRStyle.btnLabel}>Clone HR</span>
-			{isCloneHR && (
+			
+		</div>
+		{isCloneHR && (
 				<Modal
 					width={'700px'}
 					centered
@@ -52,10 +57,13 @@ const CloneHR = ({ updatedSplitter, cloneHR }) => {
 						getHRnumber={updatedSplitter}
 						onCancel={cloneHRModalInfo}
 						navigateToCloneHR={navigateToCloneHR}
+						isHRHybrid={hybridInfo?.isHybrid}
+						companyID={hybridInfo?.companyID}
 					/>
 				</Modal>
 			)}
-		</div>
+	</>
+		
 	);
 };
 
