@@ -294,13 +294,19 @@ const EditCompanyDetails = ({
       }
     }
     // for Transparent Pricing
-    if(companyDetail.isTransparentPricing !== null ){
-      setTypeOfPricing(companyDetail.isTransparentPricing === true ? 1 : 0)
-    }else{
-      setTypeOfPricing(null)
-    }
+    
     setProfileSharingOption(companyDetail?.isVettedProfile)
   }, [companyDetail, leadOwner]);
+
+  useEffect(() => {
+    if(companyDetail.isTransparentPricing !== null ){
+      setTypeOfPricing(companyDetail.isTransparentPricing === true ? 1 : 0)
+    }
+    else{
+      setTypeOfPricing(null)
+    }
+  }, [companyDetail])
+  
 
   const getCompanyDetailsByEmail = async (email) => {
     let response = await HubSpotDAO.getContactsByEmailDAO(email);
@@ -456,8 +462,6 @@ const EditCompanyDetails = ({
   let _totalSum;
   _totalSum = parseInt(watch("jpCreditBalance"))+parseInt(companyDetail?.jpCreditBalance);
 
-
-  console.log(typeOfPricing,"typeOfPricingtypeOfPricingtypeOfPricing");
 
   return (
     <div className={CompanyDetailsStyle.tabsFormItem}>
