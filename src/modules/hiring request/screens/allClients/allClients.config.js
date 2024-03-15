@@ -67,7 +67,7 @@ export const allClientsConfig = {
                     width: '60px',
                     render:(_,result) => {
                         return (
-                        isShowAddClientCredit=== true &&<Link
+                        isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
                             to={`/editclient/${result.companyID}`}
                             style={{ color: 'black', textDecoration: 'underline' }}
                             onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
@@ -210,7 +210,8 @@ export const allClientsConfig = {
                     width: '150px',
                     render: (text, result) => {
                         return (
-                            <a
+                            result?.companyID !==0 && result?.clientID!==0 &&
+                                <a
                                 href={text}
                                 target="_blank"
                                 className={clienthappinessSurveyStyles.linkForSSO}
@@ -231,7 +232,7 @@ export const allClientsConfig = {
                     width: '60px',
                     render:(_,result) => {
                         return (
-                        isShowAddClientCredit=== true &&<Link
+                        isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
                             to={`/editclient/${result.companyID}`}
                             style={{ color: 'black', textDecoration: 'underline' }}
                             onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
