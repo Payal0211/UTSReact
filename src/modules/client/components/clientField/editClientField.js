@@ -163,7 +163,6 @@ const EditClientField = ({
 		[flagAndCode],
 	);
 
-	console.log(profileSharingOption,"profileSharingOptionprofileSharingOption");
 
 	/** -------- Masters API Ends here-------------- */
 	/** Submit the client form Starts */
