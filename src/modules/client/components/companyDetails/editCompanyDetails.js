@@ -295,10 +295,10 @@ const EditCompanyDetails = ({
     }
     // for Transparent Pricing
     
-    setProfileSharingOption(companyDetail?.isVettedProfile)
   }, [companyDetail, leadOwner]);
-
+  
   useEffect(() => {
+    setProfileSharingOption(companyDetail?.isVettedProfile)
     if(companyDetail.isTransparentPricing !== null ){
       setTypeOfPricing(companyDetail.isTransparentPricing === true ? 1 : 0)
     }
@@ -782,7 +782,7 @@ const EditCompanyDetails = ({
                 {IsChecked?.isProfileView && 
 							<div style={{display:'flex',flexDirection:'column',marginBottom:'20px',marginLeft: '188px', marginTop:"19px"}}> 
 											<label style={{marginBottom:"12px"}}>
-										Profile Sharing Options
+										Profile Sharing Options 
 										<span className={CompanyDetailsStyle.reqField}>
 											*
 										</span>
