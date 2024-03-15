@@ -18,6 +18,7 @@ import { Modal, Tooltip, AutoComplete, Radio, Checkbox } from "antd";
 import { Controller } from "react-hook-form";
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import CreditTransactionHistoryModal from "./creditTransactionHistoryModal";
+import TextEditor from "shared/components/textEditor/textEditor";
 
 const EditCompanyDetails = ({
   register,
@@ -1005,18 +1006,37 @@ const EditCompanyDetails = ({
           </div>
           <div className={CompanyDetailsStyle.row}>
             <div className={CompanyDetailsStyle.colMd12}>
-              <HRInputField
+            {/* <TextEditor
+              isControlled={true}
+              controlledValue={controlledAboutCompany}
+              label={"About Company"}
+              placeholder={"About Company"}
+              required
+              setValue={setValue}
+              validationSchema={{
+                required: "Please enter the about company.",
+              }}
+              // watch={watch}
+              register={register}
+              errors={errors}
+              name="aboutCompany"
+            /> */}
+              <TextEditor
                 register={register}
+                setValue={setValue}
                 errors={errors}
-                validationSchema={{
-                  required: "Please enter the about company.",
-                }}
+                controlledValue={companyDetail?.aboutCompanyDesc}
+                isControlled={true}
+                // validationSchema={{
+                //   required: "Please enter the about company.",
+                // }}
                 isTextArea={true}
                 label="About Company"
                 name="aboutCompany"
                 type={InputType.TEXT}
                 placeholder="About Company"
                 required
+                watch={watch}
               />
               {/* {!getUploadFileData ? (
 								<HRInputField
