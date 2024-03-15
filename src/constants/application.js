@@ -76,7 +76,7 @@ export const EmailRegEx = {
 		/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
 };
 export const URLRegEx = {
-	url: /^[a-zA-Z.:]+$/,
+	url: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/,
 };
 
 export const UsernameRegEx = {
