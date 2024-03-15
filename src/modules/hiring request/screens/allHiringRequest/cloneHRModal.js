@@ -19,6 +19,14 @@ const CloneHRModal = ({
 
 	const [isErrors,setIsErrors] = useState(false)
 
+	const resetFields = () => {
+		setTypeOfPricing(null)
+		setUserCompanyTypeID(1)
+		setIsVettedProfile(false)
+		setIsPostaJob(false)
+		setIsProfileView(false)
+	}
+
 	const handleHybridClone = () => {
 		let ERROR = false
 		setIsErrors(false)
@@ -48,10 +56,9 @@ const CloneHRModal = ({
 			  "isProfileView": isProfileView,
 			  "isVettedProfile": isVettedProfile
 			}
-		  }
-
-		  if(cloneHRhandler){cloneHRhandler(isHRHybrid,payload);setDisableOK(true)}
-		  else{navigateToCloneHR(isHRHybrid,payload);setDisableOK(true)} 
+		  }		
+		  if(cloneHRhandler){resetFields();cloneHRhandler(isHRHybrid,payload);setDisableOK(true)}
+		  else{resetFields();navigateToCloneHR(isHRHybrid,payload);setDisableOK(true)} 
 		}
 
 		
@@ -91,10 +98,10 @@ const CloneHRModal = ({
   {/* {!clientDetails?.isHybrid && <p className={CloneHRModalStyle.teansactionMessage}>If you wish to create a pay per hire HR, edit company and make the hybrid model selection for this account.</p> } */}
   <div>
             <Checkbox checked={isPostaJob} onClick={()=> setIsPostaJob(prev=> !prev)}>
-            Credit per post a job
+            <span style={{fontWeight:500}}>Credit per post a job</span>
 						</Checkbox>	
             <Checkbox checked={isProfileView} onClick={()=> setIsProfileView(prev=> !prev)}>
-            Credit per profile view
+            <span style={{fontWeight:500}}>Credit per profile view</span>
 						</Checkbox>	
             </div>
             {isErrors&& (!isPostaJob && !isProfileView) && <p className={CloneHRModalStyle.error}>Please select Option</p>}
