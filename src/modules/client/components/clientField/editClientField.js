@@ -163,13 +163,14 @@ const EditClientField = ({
 		[flagAndCode],
 	);
 
+	console.log(typeOfPricing,checkPayPer,"checkPayPercheckPayPercheckPayPer");
 
 	/** -------- Masters API Ends here-------------- */
 	/** Submit the client form Starts */
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 		// setIsLoading(true);
 		setIsSavedLoading(true)
-		if(typeOfPricing === null && !checkPayPer?.anotherCompanyTypeID==0 && (!checkPayPer?.companyTypeID==0 || !checkPayPer?.companyTypeID==2)){
+		if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
 			setIsSavedLoading(false)
 			setPricingTypeError(true)
 			return
