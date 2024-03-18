@@ -252,7 +252,7 @@ function ViewClientDetails() {
 										target="_blank"
 										to={`/clientPortalTrackingReport`}
 										style={{ color: "rgba(0, 0, 0, 0.85)", textDecoration: "underline" }}
-										onClick={localStorage.setItem("clientID",Number(clientID))}
+										onClick={()=>localStorage.setItem("clientID",Number(clientID))}
 										>
 										View History <BsArrowUpRight />
 									</Link>
