@@ -82,7 +82,7 @@ export default function UTMTrackingReport() {
   var firstDay =
     startDate !== null
       ? startDate
-      : new Date(date.getFullYear(), date.getMonth() - 1, date.getDate());
+      : new Date(date.getFullYear(), date.getMonth(), date.getDate()-7);
   var lastDay = endDate !== null ? endDate : new Date(date);
 
   const getClientPortalReportList = async (params) => {
@@ -242,8 +242,8 @@ export default function UTMTrackingReport() {
         let params = {
           fromDate: new Date(
             date.getFullYear(),
-            date.getMonth() - 1,
-            date.getDate()
+            date.getMonth(),
+            date.getDate()-7
           ),
           toDate: new Date(date),
         };
@@ -270,8 +270,8 @@ export default function UTMTrackingReport() {
     let params = {
       fromDate: new Date(
         date.getFullYear(),
-        date.getMonth() - 1,
-        date.getDate()
+        date.getMonth(),
+        date.getDate()-7
       ),
       toDate: new Date(date),
     };
