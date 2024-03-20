@@ -1368,9 +1368,9 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getDurationTypeDAO');
 		}
 	},
-	getLeadTypeDAO: async function (LeadType) {
+	getLeadTypeDAO: async function (LeadType,hrid) {
 		try {
-			const leadTypeResponse = await MasterAPI.geLeadType(LeadType);
+			const leadTypeResponse = await MasterAPI.geLeadType(LeadType,hrid);
 			if (leadTypeResponse) {
 				const statusCode = leadTypeResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {

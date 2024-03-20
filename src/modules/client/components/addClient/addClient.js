@@ -1,4 +1,4 @@
-import { EmailRegEx, InputType, URLRegEx } from 'constants/application';
+import { EmailRegEx, InputType, URLRegEx, ValidateFieldURL } from 'constants/application';
 import { ValidateInput } from 'constants/inputValidators';
 import { HTTPStatusCode } from 'constants/network';
 import { ClientDAO } from 'core/client/clientDAO';
@@ -241,6 +241,18 @@ const AddNewClient = ({
 									// 		value: URLRegEx.url,
 									// 		message: 'Entered value does not match url format',
 									// 	},
+									validate: value => {
+										try {
+											
+											if(ValidateFieldURL(value,"linkedin")){
+												return true
+											}else{
+												return 'Entered value does not match linkedin url format';
+											}
+											} catch (error) {
+											return 'Entered value does not match url format';
+											}											
+									}
 								}}
 								label="HS Client Linkedin Profile (Primary)"
 								name={'PrimaryClientLinkedinProfile'}
@@ -364,6 +376,18 @@ const AddNewClient = ({
 										register={register}
 										validationSchema={{
 											required: true,
+											validate: value => {
+												try {
+													
+													if(ValidateFieldURL(value,"linkedin")){
+														return true
+													}else{
+														return 'Entered value does not match linkedin url format';
+													}
+													} catch (error) {
+													return 'Entered value does not match url format';
+													}											
+											}
 										}}
 										label="HS Client Linkedin Profile (Secondary)"
 										name={`secondaryClient.[${index}].linkedinProfile`}

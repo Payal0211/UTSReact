@@ -76,9 +76,44 @@ export const EmailRegEx = {
 		/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
 };
 export const URLRegEx = {
-	url: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/,
+	url:/^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
 };
 
+export const validateUrl = (url) => {
+    const pattern = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return pattern.test(url);
+};
+
+export const validateLinkedInURL = (url) => {
+	const pattern = /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub)\/[a-zA-Z0-9_-]+\/?$/;
+    return pattern.test(url);
+}
+
+export const ValidateFieldURL = (url, field) => {
+    if(url !==""){
+    if (field === "website") {
+		const pattern =  /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+(\.[a-zA-Z]{2,})?\/?\/?.*$/i;
+       
+        if(pattern.test(url)){
+          
+            return true
+        }else{
+        
+            return false
+        }
+    } else if (field === "linkedin") {
+        const pattern =/^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/i;    
+        
+        if(pattern.test(url)){
+          
+            return true
+        }else{
+            
+            return false
+        }
+    }
+}
+};
 export const UsernameRegEx = {
 	length: '(?=.{4,15})',
 };

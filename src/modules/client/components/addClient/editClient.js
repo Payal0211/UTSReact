@@ -1,4 +1,4 @@
-import { EmailRegEx, InputType, URLRegEx } from 'constants/application';
+import { EmailRegEx, InputType, URLRegEx, ValidateFieldURL } from 'constants/application';
 import { ValidateInput } from 'constants/inputValidators';
 import { HTTPStatusCode,NetworkInfo  } from 'constants/network';
 import UploadModal from "shared/components/uploadModal/uploadModal";
@@ -393,6 +393,17 @@ const EditClient = ({
 									// 		value: URLRegEx.url,
 									// 		message: 'Entered value does not match url format',
 									// 	},
+									validate: value => {
+										try {
+											if(ValidateFieldURL(value,"linkedin")){
+												return true
+											}else{
+												return 'Entered value does not match linkedin url format';
+											}
+											} catch (error) {
+											return 'Entered value does not match url format';
+											}											
+									}
 								}}
 								label="HS Client Linkedin Profile (Primary)"
 								name={'PrimaryClientLinkedinProfile'}
@@ -530,6 +541,17 @@ const EditClient = ({
 										register={register}
 										validationSchema={{
 											required: true,
+											validate: value => {
+												try {
+													if(ValidateFieldURL(value,"linkedin")){
+														return true
+													}else{
+														return 'Entered value does not match linkedin url format';
+													}
+													} catch (error) {
+													return 'Entered value does not match url format';
+													}											
+											}
 										}}
 										label="HS Client Linkedin Profile (Secondary)"
 										name={`secondaryClient.[${index}].linkedinProfile`}
