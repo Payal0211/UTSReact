@@ -2,7 +2,7 @@ import { Divider } from "antd";
 import React from "react";
 import DebriefingHRStyle from "./debriefingHR.module.css";
 import HRInputField from "../hrInputFields/hrInputFields";
-import { InputType } from "constants/application";
+import { InputType, ValidateFieldURL, validateLinkedInURL } from "constants/application";
 import HRSelectField from '../hrSelectField/hrSelectField';
 import TextEditor from 'shared/components/textEditor/textEditor';
 
@@ -55,8 +55,13 @@ export default function DebrefCompanyDetails({ register, errors, watch, getHRdet
                 //   required: "please enter the company website.",
                   validate: (value) =>{
                     try {
-                        new URL(value);
-                        return true;
+                        // new URL(value);
+                        // return true;
+                        if(ValidateFieldURL(value,"website")){
+                          return true
+                        }else{
+                          return "Entered value does not match url format";
+                        }
                       } catch (error) {
                         return 'Entered value does not match url format';
                       }
@@ -76,8 +81,13 @@ export default function DebrefCompanyDetails({ register, errors, watch, getHRdet
                 //   required: "please enter the company name.",
                   validate: (value) =>{
                     try {
-                        new URL(value);
-                        return true;
+                        // new URL(value);
+                        // return true;
+                        if(ValidateFieldURL(value,"linkedin")){
+                          return true
+                        }else{
+                          return 'Entered value does not match linkedin url format';
+                        }
                       } catch (error) {
                         return 'Entered value does not match url format';
                       }

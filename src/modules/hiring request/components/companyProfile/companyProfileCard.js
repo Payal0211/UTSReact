@@ -108,7 +108,7 @@ const CompanyProfileCard = ({
                   )}
                 </span>
                 &nbsp;&nbsp;
-                {clientDetail?.LinkedInProfile && (
+                {/* {clientDetail?.LinkedInProfile && (
                   <a
                     href={clientDetail?.LinkedInProfile}
                     target="_blank"
@@ -116,7 +116,7 @@ const CompanyProfileCard = ({
                   >
                     <AiFillLinkedin style={{ color: "#006699" }} />
                   </a>
-                )}
+                )} */}
               </div>
             </div>
             <div style={{ cursor: "pointer" }}>

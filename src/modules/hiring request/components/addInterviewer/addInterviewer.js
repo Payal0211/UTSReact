@@ -1,4 +1,4 @@
-import { EmailRegEx, InputType, URLRegEx } from 'constants/application';
+import { EmailRegEx, InputType, URLRegEx, ValidateFieldURL } from 'constants/application';
 import { useCallback, useEffect } from 'react';
 import HRInputField from '../hrInputFields/hrInputFields';
 import AddInterviewerStyle from './addInterviewer.module.css';
@@ -260,8 +260,13 @@ const AddInterviewer = ({
 													return "Interviewer linkedin is already in use"
 												}
 												try {
-													new URL(value);
-													return true;
+													// new URL(value);
+													// return true;
+													if(ValidateFieldURL(value,"linkedin")){
+														return true
+													}else{
+														return 'Entered value does not match linkedin url format';
+													}
 													} catch (error) {
 													return 'Entered value does not match url format';
 													}											
@@ -781,8 +786,13 @@ const AddInterviewer = ({
 									required: 'please enter the primary interviewer linkedin.',
 									validate: (value) =>{
 										try {
-											new URL(value);
-											return true;
+											// new URL(value);
+											if(ValidateFieldURL(value,"linkedin")){
+												return true
+											}else{
+												return 'Entered value does not match linkedin url format';
+											}
+											// return true;
 										  } catch (error) {
 											return 'Entered value does not match url format';
 										  }

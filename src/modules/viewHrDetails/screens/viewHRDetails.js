@@ -766,12 +766,13 @@ const ViewHRDetails = () => {
                           <i className={ViewHRDetailsStyle.blueDot} />
                         </li>
                         <li>
-                          <span>Client’s Linkedin:</span>{" "}
+                          <span>Company URL:</span>{" "}
                           <a
-                            href={
-                              hiringDetails?.responseBody?.details
-                                ?.additionalDetails?.contactsLinkedInProfile
-                            }
+                            // href={
+                            //   hiringDetails?.responseBody?.details
+                            //     ?.additionalDetails?.contactsLinkedInProfile
+                            // }
+                            href={hiringDetails?.responseBody?.details?.companyInfo?.website}
                             target="_blank"
                             rel="noreferrer"
                           >

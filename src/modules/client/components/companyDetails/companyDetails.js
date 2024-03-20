@@ -2,7 +2,7 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import CompanyDetailsStyle from './companyDetails.module.css';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
-import { InputType ,URLRegEx,EmailRegEx} from 'constants/application';
+import { InputType ,URLRegEx,EmailRegEx, validateLinkedInURL, ValidateFieldURL} from 'constants/application';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { locationFormatter } from 'modules/client/clientUtils';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -492,6 +492,14 @@ const CompanyDetails = ({
 									// 	value: URLRegEx.url,
 									// 	message: 'Entered value does not match url format',
 									// },
+
+									validate: value => {										
+										if(ValidateFieldURL(value,"website")){
+											return true
+										 }else{
+											 return 'Entered value does not match url format'
+										 }
+										}
 								}}
 								placeholder="Enter profile link"
 								required
@@ -724,6 +732,13 @@ const CompanyDetails = ({
 									// 	value: URLRegEx.url,
 									// 	message: 'Entered value does not match url format',
 									// },
+									validate: value => {										
+										if(ValidateFieldURL(value,"linkedin")){
+											return true
+										 }else{
+											 return 'Entered value does not match linkedin url format'
+										 }
+										}
 								}}
 								label="Linkedin Profile"
 								name={'companyLinkedinProfile'}

@@ -3,7 +3,7 @@ import CompanyDetailsStyle from "./companyDetails.module.css";
 import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
-import { InputType, URLRegEx, EmailRegEx } from "constants/application";
+import { InputType, URLRegEx, EmailRegEx,validateUrl, validateLinkedInURL, ValidateFieldURL } from "constants/application";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { locationFormatter } from "modules/client/clientUtils";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -582,10 +582,17 @@ const EditCompanyDetails = ({
                 type={InputType.TEXT}
                 validationSchema={{
                   required: "Please enter the Company link.",
-                  pattern: {
-                  	value: URLRegEx.url,
-                  	message: 'Entered value does not match url format',
-                  },
+                  // pattern: {
+                  // 	value: URLRegEx.url,
+                  // 	message: 'Entered value does not match url format',
+                  // },
+                  validate:(value=>{
+										if(ValidateFieldURL(value,"website")){
+                      return true
+                    }else{
+                      return 'Entered value does not match url format'
+                    }
+									})
                 }}
                 placeholder="Enter link"
                 required
@@ -857,6 +864,23 @@ const EditCompanyDetails = ({
                   // 	value: URLRegEx.url,
                   // 	message: 'Entered value does not match url format',
                   // },
+                  validate: value => {                   
+                    if(ValidateFieldURL(value,"linkedin")){
+                       return true
+                    }else{
+                        return 'Entered value does not match linkedin url format'
+                    }
+                    // try {
+                    //   var linkedin=/(http(s)?)?:?(\/\/)?(([w]{3}||\w\w)\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
+                    //   if(linkedin.test(value)){
+                    //     return true
+                    //   }else{
+                    //     return 'Entered value does not match linkedin url format';
+                    //   }
+                    //   } catch (error) {
+                    //   return 'Entered value does not match url format';
+                    //   }											
+                  }
                 }}
                 label="Linkedin Profile"
                 name={"companyLinkedinProfile"}
