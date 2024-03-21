@@ -4,6 +4,8 @@ import { NetworkInfo } from 'constants/network';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import infoIcon from 'assets/svg/info.svg'
+import moment from 'moment';
+import { split } from 'lodash';
 
 export const reportConfig = {
 	/**------------- DEMAND FUNNEL REPORT------------------  */
@@ -383,6 +385,7 @@ export const reportConfig = {
 			{ name: 'Replacement' },
 			{ name: 'Head' },
 			{ name: 'Action/HR' },
+			{ name: 'Geo'}
 		];
 	},
 	demandReportFilterTypeConfig: (filterList) => {
@@ -468,6 +471,27 @@ export const reportConfig = {
 						value: 'HR Wise Data',
 					},
 				],
+			},
+			{
+				label: 'Geo',
+				name: 'geos',
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: 'India',
+						value: 'India',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: 'Global',
+						value: 'Global',
+					},
+				],
+				isSearch: false,
 			},
 		];
 	},
@@ -1434,6 +1458,28 @@ export const reportConfig = {
 				isSearch: false,
 				isSingle:true
 			},
+			{
+				label: 'Geo',
+				name: 'geos',
+				child: [
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: 'India',
+						value: 'India',
+					},
+					{
+						disabled: false,
+						group: null,
+						selected: false,
+						text: 'Global',
+						value: 'Global',
+					},
+				],
+				isSearch: false,
+				isSingle:true
+			},
 		];
 	},
 	UTMReportFilterTypeConfig: (filterList) => {
@@ -1574,5 +1620,240 @@ export const reportConfig = {
 				},
 			}				
 		];
+	},
+	ClientPortalPopupReportConfig: (hrStageId) => {
+		if(hrStageId===16){
+			return [
+				{
+					title: 'Action Date',
+					dataIndex: 'createdDate',
+					key: 'createdDate',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{moment(text).format("DD/MM/YYYY h:mm:ss") }</Fragment>;
+					},
+				},
+				{
+					title: 'Client/User',
+					dataIndex: 'client',
+					key: 'client',
+					align: 'left',				
+				},
+				{
+					title: 'HR #',
+					dataIndex: 'hrNumber',
+					key: 'hrNumber',
+					align: 'left',		
+					render: (text, result) => (
+						result?.hrid ? 
+						<Link
+						  target="_blank"
+						  to={`/allhiringrequest/${result?.hrid}`}
+						  style={{ color: "black", textDecoration: "underline" }}
+						  onClick={() => localStorage.removeItem("dealID")}
+						>
+						  {text}
+						</Link> : {text}
+					  ),		
+				},
+				{
+					title: 'Device',
+					dataIndex: 'device',
+					key: 'device',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Browser',
+					dataIndex: 'browser',
+					key: 'browser',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'IP Address',
+					dataIndex: 'ipAddress',
+					key: 'ipAddress',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Location',
+					dataIndex: 'location',
+					key: 'location',
+					align: 'left',
+					render: (text) => {
+						let data = text.split(",");
+						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+						const result = filteredValues.join(", ");
+						return <Fragment key={result}>{result}</Fragment>;
+					},
+				},
+				{
+					title: 'Talent',
+					dataIndex: 'talentName',
+					key: 'talentName',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text}</Fragment>;
+					},
+				},	
+				{
+					title: 'Talent Status',
+					dataIndex: 'talentStatus',
+					key: 'talentStatus',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text}</Fragment>;
+					},
+				},					
+			];
+		}else if (hrStageId===1 || hrStageId===2 || hrStageId===18){
+			return [
+				{
+					title: 'Action Date',
+					dataIndex: 'createdDate',
+					key: 'createdDate',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{moment(text).format("DD/MM/YYYY h:mm:ss") }</Fragment>;
+					},
+				},
+				{
+					title: 'Client/User',
+					dataIndex: 'client',
+					key: 'client',
+					align: 'left',				
+				},
+				{
+					title: 'Device',
+					dataIndex: 'device',
+					key: 'device',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Browser',
+					dataIndex: 'browser',
+					key: 'browser',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'IP Address',
+					dataIndex: 'ipAddress',
+					key: 'ipAddress',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Location',
+					dataIndex: 'location',
+					key: 'location',
+					align: 'left',
+					render: (text) => {
+						let data = text.split(",");
+						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+						const result = filteredValues.join(", ");
+						return <Fragment key={result}>{result}</Fragment>;
+					},
+				},				
+			];
+		} else{
+			return [
+				{
+					title: 'Action Date',
+					dataIndex: 'createdDate',
+					key: 'createdDate',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{moment(text).format("DD/MM/YYYY h:mm:ss") }</Fragment>;
+					},
+				},
+				{
+					title: 'Client/User',
+					dataIndex: 'client',
+					key: 'client',
+					align: 'left',				
+				},
+				{
+					title: 'HR #',
+					dataIndex: 'hrNumber',
+					key: 'hrNumber',
+					align: 'left',		
+					render: (text, result) => (
+						result?.hrid ? 
+						<Link
+						  target="_blank"
+						  to={`/allhiringrequest/${result?.hrid}`}
+						  style={{ color: "black", textDecoration: "underline" }}
+						  onClick={() => localStorage.removeItem("dealID")}
+						>
+						  {text}
+						</Link> : {text}
+					  ),		
+				},
+				{
+					title: 'Device',
+					dataIndex: 'device',
+					key: 'device',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Browser',
+					dataIndex: 'browser',
+					key: 'browser',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'IP Address',
+					dataIndex: 'ipAddress',
+					key: 'ipAddress',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text }</Fragment>;
+					},
+				},
+				{
+					title: 'Location',
+					dataIndex: 'location',
+					key: 'location',
+					align: 'left',
+					render: (text) => {
+						let data = text.split(",");
+						const filteredValues = data.filter(value => value !== "null" && value.trim() !== "");
+						const result = filteredValues.join(", ");
+						return <Fragment key={result}>{result}</Fragment>;
+					},
+				},
+				{
+					title: 'Talent',
+					dataIndex: 'talentName',
+					key: 'talentName',
+					align: 'left',
+					render: (text) => {
+						return <Fragment key={text}>{text}</Fragment>;
+					},
+				},					
+			];
+		}
 	}
 };

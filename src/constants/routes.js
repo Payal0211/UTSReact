@@ -115,6 +115,10 @@ const UTMTrackingReport = React.lazy(() =>
 	import('modules/report/screens/utmTrackingReport/utmTrackingReport')
 );
 
+const ClientPortalrackingReport = React.lazy(() =>
+	import('modules/report/screens/clientPortalTrackingReport/clientPortalTrackingReport')
+);
+
 const DashboardScreen = React.lazy(() =>
     import('modules/dashboard/screens/dashboard'),
 )
@@ -197,6 +201,7 @@ export default class UTSRoutes {
 	static ABOUT_CLIENT = '/userDetails';
 	static ONBOARD = '/onBoardList';
 	static UTM_TRACKING_REPORT = "/utmTrackingReport";
+	static CLIENT_PORTAL_TRACKING_REPORT = "/clientPortalTrackingReport";
 }
 
 export const navigateToComponent = {
@@ -364,6 +369,11 @@ export const navigateToComponent = {
 	[UTSRoutes.UTM_TRACKING_REPORT]:(
 		<Suspense>
 			<UTMTrackingReport />
+		</Suspense>
+	),
+	[UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT]:(
+		<Suspense>
+			<ClientPortalrackingReport />
 		</Suspense>
 	),
 [UTSRoutes.DASHBOARD]:(

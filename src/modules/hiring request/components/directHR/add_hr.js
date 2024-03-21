@@ -12,6 +12,7 @@ import {
   GoogleDriveCredentials,
   InputType,
   SubmitType,
+  ValidateFieldURL,
   WorkingMode,
 } from "constants/application";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -1463,8 +1464,13 @@ export default function AddHR(
                     required: "please enter the company URL.",
                     validate: (value) => {
                       try {
-                        new URL(value);
-                        return true;
+                        // new URL(value);
+                        // return true;
+                        if(ValidateFieldURL(value,"website")){
+                          return true
+                        }else{
+                          return "Entered value does not match url format";
+                        }
                       } catch (error) {
                         return "Entered value does not match url format";
                       }

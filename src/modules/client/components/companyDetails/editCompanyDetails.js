@@ -3,7 +3,7 @@ import CompanyDetailsStyle from "./companyDetails.module.css";
 import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
-import { InputType, URLRegEx, EmailRegEx } from "constants/application";
+import { InputType, URLRegEx, EmailRegEx,validateUrl, validateLinkedInURL, ValidateFieldURL } from "constants/application";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { locationFormatter } from "modules/client/clientUtils";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -14,9 +14,11 @@ import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { _isNull } from "shared/utils/basic_utils";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { MdOutlinePreview } from "react-icons/md";
-import { Modal, Tooltip, AutoComplete, Radio } from "antd";
+import { Modal, Tooltip, AutoComplete, Radio, Checkbox } from "antd";
 import { Controller } from "react-hook-form";
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
+import CreditTransactionHistoryModal from "./creditTransactionHistoryModal";
+import TextEditor from "shared/components/textEditor/textEditor";
 
 const EditCompanyDetails = ({
   register,
@@ -36,7 +38,10 @@ const EditCompanyDetails = ({
   companyDetail,
   setCompanyDetail,
   getCompanyDetails,typeOfPricing,setTypeOfPricing,pricingTypeError,setPricingTypeError,
-  controlledFieldsProp,
+  controlledFieldsProp,clientPOCs,
+  checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError,payPerCondition,
+  setCreditError,creditError,
+  profileSharingOption,setProfileSharingOption,profileSharingOptionError,setProfileSharingOptionError
 }) => {
   let {
     controlledCompanyLoacation,
@@ -78,6 +83,8 @@ const EditCompanyDetails = ({
   const [getCompanyNameSuggestion, setCompanyNameSuggestion] = useState([]);
   const [getCompanyNameMessage, setCompanyNameMessage] = useState("");
   const [showCompanyEmail, setShowCompanyEmail] = useState(false);
+  const [creditTransactionModal,setTransactionModal] = useState(false);
+  const [creditTransactionData,setCreditTransactionData] = useState([]);
 
   let controllerRef = useRef(null);
 
@@ -229,7 +236,7 @@ const EditCompanyDetails = ({
   // 	if(companyDetail.phone){
   // 		setValue('phoneNumber',companyDetail.phone.slice(3))
   // 	}
-  // },[companyDetail.phone,setValue])
+  // },[companyDetail.phone,setValue])  
 
   useEffect(() => {
     if (companyDetail?.geO_ID) {
@@ -288,12 +295,19 @@ const EditCompanyDetails = ({
       }
     }
     // for Transparent Pricing
+    
+  }, [companyDetail, leadOwner]);
+  
+  useEffect(() => {
+    setProfileSharingOption(companyDetail?.isVettedProfile)
     if(companyDetail.isTransparentPricing !== null ){
       setTypeOfPricing(companyDetail.isTransparentPricing === true ? 1 : 0)
-    }else{
+    }
+    else{
       setTypeOfPricing(null)
     }
-  }, [companyDetail, leadOwner]);
+  }, [companyDetail])
+  
 
   const getCompanyDetailsByEmail = async (email) => {
     let response = await HubSpotDAO.getContactsByEmailDAO(email);
@@ -436,6 +450,20 @@ const EditCompanyDetails = ({
     if (watchCompanyLeadSource?.id !== 1) unregister("companyLeadSource");
   }, [unregister, watchCompanyLeadSource?.id]);
 
+  const getCreditTransactionData = async ()=>{
+    setTransactionModal(true)
+    let result = await ClientDAO.getCreditTransationHistoryDAO(clientPOCs[0]?.companyId,clientPOCs[0]?.contactId)
+    // console.log("fatchpreOnBoardInfo", result.responseBody.details);
+
+    if (result?.statusCode === HTTPStatusCode.OK) {
+      setCreditTransactionData(result?.responseBody);
+    }
+  }
+
+  let _totalSum;
+  _totalSum = parseInt(watch("jpCreditBalance"))+parseInt(companyDetail?.jpCreditBalance);
+
+
   return (
     <div className={CompanyDetailsStyle.tabsFormItem}>
       <div className={CompanyDetailsStyle.tabsFormItemInner}>
@@ -554,10 +582,17 @@ const EditCompanyDetails = ({
                 type={InputType.TEXT}
                 validationSchema={{
                   required: "Please enter the Company link.",
-                  pattern: {
-                  	value: URLRegEx.url,
-                  	message: 'Entered value does not match url format',
-                  },
+                  // pattern: {
+                  // 	value: URLRegEx.url,
+                  // 	message: 'Entered value does not match url format',
+                  // },
+                  validate:(value=>{
+										if(ValidateFieldURL(value,"website")){
+                      return true
+                    }else{
+                      return 'Entered value does not match url format'
+                    }
+									})
                 }}
                 placeholder="Enter link"
                 required
@@ -649,18 +684,146 @@ const EditCompanyDetails = ({
             </div>
           </div>
 
-          	<div className={CompanyDetailsStyle.row}>
+          <div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd12}>
 							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>
-							Type Of pricing
-							 {/* <span className={allengagementReplceTalentStyles.reqField}>
+							Client Model
+							 <span className={CompanyDetailsStyle.reqField}>
 								*
-              </span> */}
+							</span>
+						</label>
+            {payPerError && <p className={CompanyDetailsStyle.error}>*Please select client model</p>}
+							{/* {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>} */}
+							<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
+								<Checkbox 
+									value={2} 
+									onChange={(e)=>{setCheckPayPer({...checkPayPer,companyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false);
+                  setIsChecked({...IsChecked,isPostaJob:false,isProfileView:false})}}
+                  checked={checkPayPer?.companyTypeID}
+									>Pay Per Credit</Checkbox>
+								<Checkbox 
+									value={1} 
+									onChange={(e)=>{setCheckPayPer({...checkPayPer,anotherCompanyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false);setTypeOfPricing(null)}}
+                  checked={checkPayPer?.anotherCompanyTypeID}
+									>Pay Per Hire</Checkbox>
+							</div>
+							</div>												
+						</div>
+					</div>
+					{checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null &&
+					<>
+          Remaining Credit : <span style={{fontWeight:"bold",marginBottom:"80px",marginTop:"20px"}}>{companyDetail?.jpCreditBalance}</span>
+						<div className={CompanyDetailsStyle.row}>
+							<div className={CompanyDetailsStyle.colMd6}>
+              <label style={{marginBottom:"12px"}}>
+							Topup Credit
+              <span className={CompanyDetailsStyle.reqField}>
+								*
+							</span>
+             {/* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Remaining Credit : <span style={{fontWeight:"bold"}}>{companyDetail?.jpCreditBalance}</span> */}
+						</label>
+            <div className={CompanyDetailsStyle.FreecreditFieldWrap}>
+								<HRInputField
+									register={register}
+									errors={errors}
+                  className="yourClassName"
+									validationSchema={{
+										required: checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null ?'Please enter free credits.':null,
+                    min: {
+                      value: 0,
+                      message: `please don't enter the value less than 0`,
+                    },
+                    max: {
+                      value: 99,
+                      message: `please don't enter the value greater than 99`,
+                    }
+									}}
+                  onKeyDownHandler={(e)=>{
+                    if (e.key === '-' || e.key === '+' || e.key === 'E' ||  e.key === 'e') {
+                      e.preventDefault();
+                    }
+                  }}
+                  // label={`Free Credits Balance Credit : ${companyDetail?.jpCreditBalance}`}
+									name={'jpCreditBalance'}
+									type={InputType.NUMBER}
+									placeholder="Free Credits"
+									required={checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null?true:false}
+								/>
+               {!isNaN(_totalSum) && <label style={{marginBottom:"20px",marginTop:"-26px",display:"block",fontWeight:"bold"}}>Total Credit Balance : <span style={{fontWeight:"bold"}}>{_totalSum}</span> </label>}
+                </div>
+							</div>
+              <div className={CompanyDetailsStyle.colMd6}>
+                  <span className={CompanyDetailsStyle.creditTransactionModalLink} onClick={()=>getCreditTransactionData()}>Credit Transaction History</span>
+              </div>
+						</div>
+            <div className={CompanyDetailsStyle.row}>
+							<div className={CompanyDetailsStyle.colMd6}>
+                
+              </div>
+            </div>
+						<div className={CompanyDetailsStyle.row}>
+							<div className={CompanyDetailsStyle.colMd12}>
+								<div style={{display:'flex',flexDirection:'column',marginBottom:'16px'}}> 
+									{/* <label style={{marginBottom:"12px"}}>
+								Client Modal
+								<span className={CompanyDetailsStyle.reqField}>
+									*
+								</span>
+							</label> */}
+								{/* {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>} */}
+								<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
+									<Checkbox name='IsPostaJob' 
+                    checked={IsChecked?.isPostaJob} 
+                    onChange={(e)=>{
+                      setIsChecked({...IsChecked,isPostaJob:e.target.checked});setCreditError(false)}}
+                    >Credit per post a job.
+                  </Checkbox>
+									<Checkbox name="IsProfileView" 
+                    checked={IsChecked?.isProfileView} 
+                    onChange={(e)=>{
+                      setIsChecked({...IsChecked,isProfileView:e.target.checked});setCreditError(false);setProfileSharingOption(null);setProfileSharingOptionError(false);}}>
+                      Credit per profile view.
+                  </Checkbox>
+							  </div>
+                {creditError && <p className={CompanyDetailsStyle.error}>*Please select option</p>}
+                {IsChecked?.isProfileView && 
+							<div style={{display:'flex',flexDirection:'column',marginBottom:'20px',marginLeft: '188px', marginTop:"19px"}}> 
+											<label style={{marginBottom:"12px"}}>
+										Profile Sharing Options 
+										<span className={CompanyDetailsStyle.reqField}>
+											*
+										</span>
+									</label>
+									<Radio.Group
+										onChange={e=> {setProfileSharingOption(e.target.value);setProfileSharingOptionError(false)}}
+										value={profileSharingOption}
+										>
+										<Radio value={true}>Vetted Profile</Radio>
+										<Radio value={false}>Fast Profile</Radio>
+									</Radio.Group>
+                      {profileSharingOptionError && <p style={{display:'flex',flexDirection:'column',marginTop:"15px"}} className={CompanyDetailsStyle.error}>*Please select profile sharing options</p>}
+							</div>	
+						}
+								</div>												
+							</div>
+						</div>
+					</>}
+
+          <div className={CompanyDetailsStyle.row}>
+						<div className={CompanyDetailsStyle.colMd12}>
+							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<label style={{marginBottom:"12px"}}>
+							Type Of Pricing 
+              <span className={CompanyDetailsStyle.reqField}>
+								*
+							</span>
 						</label>
             {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>}	
 						<Radio.Group
-              disabled={userData?.LoggedInUserTypeID !== 1} 
+              disabled={
+                // userData?.LoggedInUserTypeID !== 1 ||
+                 checkPayPer?.anotherCompanyTypeID==0 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2) } 
 							onChange={e=> {setTypeOfPricing(e.target.value); setPricingTypeError && setPricingTypeError(false)}}
 							value={typeOfPricing}
 							>
@@ -701,6 +864,23 @@ const EditCompanyDetails = ({
                   // 	value: URLRegEx.url,
                   // 	message: 'Entered value does not match url format',
                   // },
+                  validate: value => {                   
+                    if(ValidateFieldURL(value,"linkedin")){
+                       return true
+                    }else{
+                        return 'Entered value does not match linkedin url format'
+                    }
+                    // try {
+                    //   var linkedin=/(http(s)?)?:?(\/\/)?(([w]{3}||\w\w)\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
+                    //   if(linkedin.test(value)){
+                    //     return true
+                    //   }else{
+                    //     return 'Entered value does not match linkedin url format';
+                    //   }
+                    //   } catch (error) {
+                    //   return 'Entered value does not match url format';
+                    //   }											
+                  }
                 }}
                 label="Linkedin Profile"
                 name={"companyLinkedinProfile"}
@@ -822,6 +1002,7 @@ const EditCompanyDetails = ({
                       errors["companyLeadOwner"] && errors["companyLeadOwner"]
                     }
                     errorMsg={"Please select lead source"}
+                    searchable={true}
                   />
                 </div>
               </div>
@@ -841,6 +1022,7 @@ const EditCompanyDetails = ({
                     label="Inbound Type"
                     defaultValue="Please Select"
                     options={leadSource?.BindInBoundDrp}
+                    searchable={true}
                   />
                 </div>
               </div>
@@ -848,18 +1030,37 @@ const EditCompanyDetails = ({
           </div>
           <div className={CompanyDetailsStyle.row}>
             <div className={CompanyDetailsStyle.colMd12}>
-              <HRInputField
+            {/* <TextEditor
+              isControlled={true}
+              controlledValue={controlledAboutCompany}
+              label={"About Company"}
+              placeholder={"About Company"}
+              required
+              setValue={setValue}
+              validationSchema={{
+                required: "Please enter the about company.",
+              }}
+              // watch={watch}
+              register={register}
+              errors={errors}
+              name="aboutCompany"
+            /> */}
+              <TextEditor
                 register={register}
+                setValue={setValue}
                 errors={errors}
-                validationSchema={{
-                  required: "Please enter the about company.",
-                }}
+                controlledValue={companyDetail?.aboutCompanyDesc}
+                isControlled={true}
+                // validationSchema={{
+                //   required: "Please enter the about company.",
+                // }}
                 isTextArea={true}
                 label="About Company"
                 name="aboutCompany"
                 type={InputType.TEXT}
                 placeholder="About Company"
                 required
+                watch={watch}
               />
               {/* {!getUploadFileData ? (
 								<HRInputField
@@ -906,6 +1107,11 @@ const EditCompanyDetails = ({
             >
               <img src={base64Image} alt="preview" />
             </Modal>
+            <CreditTransactionHistoryModal 
+            creditTransactionModal={creditTransactionModal} 
+            setTransactionModal={setTransactionModal}
+            creditTransactionData={creditTransactionData}
+            />
             {showUploadModal && (
               <UploadModal
                 isFooter={false}

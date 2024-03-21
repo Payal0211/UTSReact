@@ -21,7 +21,7 @@ const CompanyProfileCard = ({
 }) => {
   const navigate = useNavigate();
   const [updateTR, setUpdateTR] = useState(false);
-  const [updateTRDetail, setUpdateTRDetails] = useState([]);
+  const [updateTRDetail, setUpdateTRDetails] = useState([]); 
 
   const [title, setTitle] = useState("Company Details");
   const [updateDate, setUpdateDate] = useState(false);
@@ -40,7 +40,7 @@ const CompanyProfileCard = ({
 
 
   useEffect(() => {
-    if (allApiData.Guid) {
+    if (allApiData.IsPayPerCredit || allApiData.Guid) {
       setAvalableTabs([
         {
           label: "Company Details",
@@ -62,7 +62,7 @@ const CompanyProfileCard = ({
         },
       ]);
     }
-  }, [allApiData.Guid, allApiData.HR_Id]);
+  }, [allApiData.IsPayPerCredit, allApiData.HR_Id]);
 
   const CompanyProfileCardComp = () => {
     return (
@@ -108,7 +108,7 @@ const CompanyProfileCard = ({
                   )}
                 </span>
                 &nbsp;&nbsp;
-                {clientDetail?.LinkedInProfile && (
+                {/* {clientDetail?.LinkedInProfile && (
                   <a
                     href={clientDetail?.LinkedInProfile}
                     target="_blank"
@@ -116,7 +116,7 @@ const CompanyProfileCard = ({
                   >
                     <AiFillLinkedin style={{ color: "#006699" }} />
                   </a>
-                )}
+                )} */}
               </div>
             </div>
             <div style={{ cursor: "pointer" }}>
@@ -292,7 +292,7 @@ const CompanyProfileCard = ({
                     userSessionMemo?.loggedInUserTypeID ===
                       UserAccountRole.SALES ||
                     userSessionMemo?.loggedInUserTypeID ===
-                      UserAccountRole.SALES_MANAGER) && (
+                      UserAccountRole.SALES_MANAGER) && (allApiData?.ReplaceOnBoardID === null || allApiData?.ReplaceOnBoardID === 0 ) && clientDetail?.CompanyTypeID === 1 &&  (
                     <button
                       onClick={() => {
                         setUpdateTR(true);
@@ -346,6 +346,12 @@ const CompanyProfileCard = ({
                   Years
                 </span>
               </div>
+              <div className={CompanyProfileCardStyle.minExp}>
+                <span>Currency:</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                 {allApiData?.HRDetails?.Currency ?? "NA"}
+                </span>
+              </div>
               {/* budget for pay per Hire */}
               {allApiData?.IsPayPerHire && <div className={CompanyProfileCardStyle.budget}>
                 {/* <span>{`${allApiData?.transparentModel?.IsTransparentPricing ? 'Salary' : ''} Budget` } :</span>&nbsp;&nbsp;            
@@ -378,6 +384,12 @@ const CompanyProfileCard = ({
                   {allApiData?.transparentModel?.CalculatedUplersfees ? allApiData?.transparentModel?.CalculatedUplersfees : "NA"}
                 </span>
               </div> */}
+               <div className={CompanyProfileCardStyle.engagement}>
+                <span>Is budget confidential:</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                  {allApiData?.HRDetails?.IsConfidentialBudget ? "YES" : "NO" }
+                </span>
+              </div>
               <div className={CompanyProfileCardStyle.engagement}>
                 <span>Engagement:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>

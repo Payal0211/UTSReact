@@ -127,6 +127,7 @@ export default function HRReport() {
       let ModeOfWorking = fd["ModeOfWorking"] ? fd["ModeOfWorking"] : "";
       let HiringStatus = fd["HiringStatus"] ? fd["HiringStatus"] : "";
       let ClientType = fd["ClientType"] ? fd["ClientType"] : "0"
+      let geos = fd["geos"] ? fd["geos"] : ""
 
       let payload = {
         pageIndex: 1,
@@ -139,7 +140,8 @@ export default function HRReport() {
           heads: SalesManager,
           hrStatusID: HiringStatus,
           isHrfocused: isFocusedRole,
-          clientType: ClientType
+          clientType: ClientType,
+          geos:geos
         },
       };
       getHRReportList(payload);
@@ -156,7 +158,8 @@ export default function HRReport() {
           hrStatusID: HiringStatus,
           isHrfocused: isFocusedRole,
           stages: hrStage,
-          clientType: ClientType
+          clientType: ClientType,
+          geos:geos
         },
       };
 
@@ -179,7 +182,8 @@ export default function HRReport() {
         heads: "",
         hrStatusID: "",
         isHrfocused: isFocusedRole,
-        clientType: '0'
+        clientType: '0',
+        geos:"",
       },
     };
     getHRReportList(payload);
@@ -205,6 +209,7 @@ export default function HRReport() {
       : "";
     let HiringStatus = filters["HiringStatus"] ? filters["HiringStatus"] : "";
     let ClientType = filters["ClientType"] ? filters["ClientType"] : "0"
+    let geos = filters["geos"] ? filters["geos"] : "";
 
     let payload = {
       pageIndex: 1,
@@ -217,7 +222,8 @@ export default function HRReport() {
         heads: SalesManager,
         hrStatusID: HiringStatus,
         isHrfocused: isFocusedRole,
-        clientType: ClientType
+        clientType: ClientType,
+        geos:geos
       },
     };
     getHRReportList(payload);
@@ -266,6 +272,9 @@ export default function HRReport() {
             ? filters["HiringStatus"]
             : "";
           let ClientType = filters["ClientType"] ? filters["ClientType"] : "0"
+          let geos = filters["geos"]
+          ? filters["geos"]
+          : "";
 
           let payload = {
             pageIndex: 1,
@@ -278,7 +287,8 @@ export default function HRReport() {
               heads: SalesManager,
               hrStatusID: HiringStatus,
               isHrfocused: isFocusedRole,
-              clientType: ClientType
+              clientType: ClientType,
+              geos:geos
             },
           };
           getHRReportList(payload);
@@ -315,7 +325,8 @@ export default function HRReport() {
         heads: "",
         hrStatusID: "",
         isHrfocused: isFocusedRole,
-        clientType: '0'
+        clientType: '0',
+        geos:""
       },
     };
     getHRReportList(payload);
@@ -340,7 +351,10 @@ export default function HRReport() {
         ? filters["ModeOfWorking"]
         : "";
       let HiringStatus = filters["HiringStatus"] ? filters["HiringStatus"] : "";
-      let ClientType = filters["ClientType"] ? filters["ClientType"] : "0"
+      let ClientType = filters["ClientType"] ? filters["ClientType"] : "0";
+      let geos = filters["geos"]
+          ? filters["geos"]
+          : "";
       // console.log(reportData);
       setHRStage(reportData.stageName);
       let params = {
@@ -355,7 +369,8 @@ export default function HRReport() {
           hrStatusID: HiringStatus,
           stages: reportData.stageName,
           isHrfocused: isFocusedRole,
-          clientType: ClientType
+          clientType: ClientType,
+          geos:geos
         },
       };
       getHRPopUpReportList(params);

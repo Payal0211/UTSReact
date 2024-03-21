@@ -216,7 +216,7 @@ export default function BeforePreOnboarding({
   const watchDealSource = watch("dealSource");
 
   const getLeadOwnerBytype = async (type) => {
-    let result = await MasterDAO.getLeadTypeDAO(type);
+    let result = await MasterDAO.getLeadTypeDAO(type,preOnboardingDetailsForAMAssignment.hR_ID);
     // console.log("fatchpreOnBoardInfo", result.responseBody.details);
 
     if (result?.statusCode === HTTPStatusCode.OK) {

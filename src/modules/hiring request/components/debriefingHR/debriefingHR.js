@@ -19,6 +19,7 @@ import LogoLoader from 'shared/components/loader/logoLoader';
 import { ReactComponent as FocusRole } from 'assets/svg/FocusRole.svg';
 import plusSkill from "../../../../assets/svg/plusSkill.svg";
 import PublishHRPopup from '../publishHRPopup/publishHRPopup';
+import DebrefCompanyDetails from '../editDebrieingHR/debrefCompanyDetails';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -44,7 +45,9 @@ const DebriefingHR = ({
 	addData,
 	disabledFields,
 	AboutCompanyDesc,
-	isDirectHR
+	isDirectHR,
+	userCompanyTypeID,
+	setUserCompanyTypeID
 }) => {
 	const {
 		watch,
@@ -332,6 +335,19 @@ const DebriefingHR = ({
 	const openPublishModal = ()=>{
 		setShowPublishModal(true)
 	}
+
+	useEffect(()=>{
+		let companyInfo = getHRdetails?.companyInfo
+
+		if(companyInfo?.companyID){
+			companyInfo?.aboutCompanyDesc && setValue('aboutCompany',companyInfo?.aboutCompanyDesc)
+			companyInfo?.companyName && setValue('companyName',companyInfo?.companyName)
+			companyInfo?.website && setValue('webSite',companyInfo?.website)
+			companyInfo?.industry && setValue('industry',companyInfo?.industry)
+			companyInfo?.linkedInURL && setValue('companyLinkedin',companyInfo?.linkedInURL)
+			companyInfo?.companySize && setValue('companySize',companyInfo?.companySize)
+		}
+	},[getHRdetails])
 	
 	const debriefSubmitHandler = async (d) => {
 		setIsLoading(true);
@@ -394,8 +410,33 @@ const DebriefingHR = ({
 				},
 				"secondaryinterviewerList": d.secondaryInterviewer
 			},
-			isDirectHR:isDirectHR
+			isDirectHR:isDirectHR,
+			companyInfo: {
+				"companyID": getHRdetails?.companyInfo?.companyID,
+				"companyName": d.companyName,
+				"website": d.webSite,
+				"linkedInURL": d.companyLinkedin,
+				"industry": d.industry,
+				"companySize": getHRdetails?.companyInfo?.companySize,
+				"aboutCompanyDesc": d.aboutCompany
+			},
+			companyType: userCompanyTypeID === 1 ? "Pay Per Hire" : "Pay Per Credit",
+			PayPerType:  userCompanyTypeID ,
 		};
+
+		if(userCompanyTypeID === 2){
+			debriefFormDetails['companyInfo'] = {
+				"companyID": getHRdetails?.companyInfo?.companyID,
+				"companyName": d.companyName,
+				"website": d.webSite,
+				"linkedInURL": d.companyLinkedin,
+				"industry": d.industry,
+				"companySize": d.companySize,
+				"aboutCompanyDesc": d.aboutCompany
+			}
+
+			debriefFormDetails['interviewerDetails'] = getHRdetails?.interviewerDetails
+		}
 		
 		if(!sameSkillIssue){
 			const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -570,7 +611,38 @@ const DebriefingHR = ({
 								errors={errors}
 								name="roleAndResponsibilities"
 							/>
-							<div className={DebriefingHRStyle.aboutCompanyField}>
+							
+							<TextEditor
+								isControlled={true}
+								// controlledValue={JDParsedSkills?.Requirements || ''}
+								controlledValue={addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
+									JDParsedSkills?.Requirements ||
+									(addData?.salesHiringRequest_Details?.requirement)
+								}
+								label={'Requirements'}
+								placeholder={'Enter Requirements'}
+								setValue={setValue}
+								watch={watch}
+								register={register}
+								errors={errors}
+								name="requirements"
+								required
+							/>
+
+							{userCompanyTypeID === 1 && 
+							<TextEditor
+									isControlled={true}
+									controlledValue={AboutCompanyDesc ? AboutCompanyDesc : getHRdetails?.companyInfo?.aboutCompanyDesc}
+									label={'About Company'}
+									placeholder={"Please enter details about company."}
+									setValue={setValue}
+									watch={watch}
+									register={register}
+									errors={errors}
+									name="aboutCompany"
+									required
+								/>}
+								{/* <div className={DebriefingHRStyle.aboutCompanyField}>
 								<HRInputField
 									required
 									isTextArea={true}
@@ -606,26 +678,11 @@ const DebriefingHR = ({
 									name="aboutCompany"
 									type={InputType.TEXT}
 									placeholder="Please enter details about company."
-								/>
-								{/* <p>* Please do not mention company name here</p> */}
-							</div>
-							<TextEditor
-								isControlled={true}
-								// controlledValue={JDParsedSkills?.Requirements || ''}
-								controlledValue={addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
-									JDParsedSkills?.Requirements ||
-									(addData?.salesHiringRequest_Details?.requirement)
-								}
-								label={'Requirements'}
-								placeholder={'Enter Requirements'}
-								setValue={setValue}
-								watch={watch}
-								register={register}
-								errors={errors}
-								name="requirements"
-								required
-							/>
-								<div className={DebriefingHRStyle.mb50}>
+								/> */}
+								{/* <p>* Please do not mention company name here</p> </div>}*/}
+							
+
+							{userCompanyTypeID === 1 && <div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
 									controlledValue={controlledRoleValue}
 									setControlledValue={setControlledRoleValue}
@@ -643,7 +700,8 @@ const DebriefingHR = ({
 										disabled={ disabledFields !== null ? disabledFields?.role : false}
 										errorMsg={'Please select hiring request role'}
 									/>
-								</div>
+								</div>}		
+								
 								<div className={DebriefingHRStyle.mb50}>
 								<HRInputField
 									register={register}
@@ -765,22 +823,26 @@ const DebriefingHR = ({
 					</div>
 				</div>
 
-				<Divider />
-				<AddInterviewer
-					errors={errors}
-					append={append}
-					remove={remove}
-					setValue={setValue}
-					register={register}
-					watch={watch}
-					// interviewDetails={{fullName:getHRdetails.interviewerFullName
-					// 	,emailId:getHRdetails.interviewerEmail
-					// 	,linkedin:getHRdetails.interviewerLinkedin,designation:getHRdetails.interviewerDesignation
-					// }}
-					fields={fields}
-					getHRdetails={getHRdetails}
-					disabledFields={disabledFields}
-				/>
+				{userCompanyTypeID === 2 && <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
+
+				{userCompanyTypeID === 1 && <>
+					<Divider />
+					<AddInterviewer
+						errors={errors}
+						append={append}
+						remove={remove}
+						setValue={setValue}
+						register={register}
+						watch={watch}
+						// interviewDetails={{fullName:getHRdetails.interviewerFullName
+						// 	,emailId:getHRdetails.interviewerEmail
+						// 	,linkedin:getHRdetails.interviewerLinkedin,designation:getHRdetails.interviewerDesignation
+						// }}
+						fields={fields}
+						getHRdetails={getHRdetails}
+						disabledFields={disabledFields}
+					/>
+				</>}
 				<Divider />
 				{isLoading ? (
 					<SpinLoader />

@@ -43,6 +43,8 @@ function ViewClientDetails() {
 	const [utmTrackingData, setUtmTrackingData] = useState([]);
 	const [guid,setGuid] = useState('');
 	const [draftJObPostDetails,setDraftJobPostDetails] = useState({});
+	const getisShowAddClientCredit = localStorage.getItem("isShowAddClientCredit")
+
 	useEffect(() => {
 		if(jobpostDraft){
 			getJobPostDraftData();
@@ -228,7 +230,7 @@ function ViewClientDetails() {
                             overlayClassName={dealDetailsStyles.viewClientdrop}
                             className={dealDetailsStyles.viewClientdrop}
                         /> */}						
-						<button type="button" onClick={() => navigate(`/editclient/${companyID}`)}>Edit Company</button>
+						{getisShowAddClientCredit == "true" &&<button type="button" onClick={() => {navigate(`/editclient/${companyID}`);localStorage.setItem("clientID",clientID)}}>Edit Company</button>}
 						<button type="button" onClick={() => navigate('/allhiringrequest/addnewhr')} >Create HR</button>
 					
 						{/* <div className={dealDetailsStyles.deleteButton}>
@@ -242,13 +244,26 @@ function ViewClientDetails() {
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Client Name</span>
-								{viewDetails?.clientDetails?.clientName ? viewDetails?.clientDetails?.clientName : "NA"}
+								<h3 className={dealDetailsStyles.viewdetailBtnAdd}>
+									{viewDetails?.clientDetails?.clientName ? viewDetails?.clientDetails?.clientName : "NA"} 
+									{/* <span onClick={() => navigate('/clientPortalTrackingReport')}>View History <BsArrowUpRight /></span> */}
+									<div className={dealDetailsStyles.viewHistory}>
+									<Link
+										target="_blank"
+										to={`/clientPortalTrackingReport`}
+										style={{ color: "rgba(0, 0, 0, 0.85)", textDecoration: "underline" }}
+										onClick={()=>localStorage.setItem("clientID",Number(clientID))}
+										>
+										View History <BsArrowUpRight />
+									</Link>
+									</div>
+								</h3>							
 							</div>
 						</li>
 						<li>
 							<div className={dealDetailsStyles.topCardItem}>
 								<span>Client Source</span>
-								<h3 className={dealDetailsStyles.viewdetailBtnAdd}>{viewDetails?.clientDetails?.clientSource ? viewDetails?.clientDetails?.clientSource : "NA"} <span onClick={()=>{setModalutmTraking(true);viewUTMTrackingDetails();}}>View Details <BsArrowUpRight /></span></h3>
+								<h3 className={dealDetailsStyles.viewdetailBtnAdd}>{viewDetails?.clientDetails?.clientSource ? viewDetails?.clientDetails?.clientSource : "NA"} {viewDetails?.clientDetails?.clientSource === 'Self Signup' &&<span onClick={()=>{setModalutmTraking(true);viewUTMTrackingDetails();}}>View Details <BsArrowUpRight /></span> } </h3>
 							</div>
 						</li>
 						<li>
@@ -280,10 +295,14 @@ function ViewClientDetails() {
 								<li>
 									<span>Client Email:</span>
 									{viewDetails?.clientDetails?.clientEmail ? viewDetails?.clientDetails?.clientEmail : "NA"}
-								</li>
+								</li>							
                                 <li>
 									<span>Lead Source : </span>
 									{viewDetails?.clientDetails?.leadSource ? viewDetails?.clientDetails?.leadSource : "NA"}
+								</li>
+								<li>
+									<span>Client Contact Number:</span>
+									{viewDetails?.clientDetails?.clientContactNumber ? viewDetails?.clientDetails?.clientContactNumber : "NA"}
 								</li>
 								<li>
 									<span>Client Linkedin : -</span>

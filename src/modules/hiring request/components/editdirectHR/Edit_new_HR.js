@@ -16,6 +16,7 @@ import {
   GoogleDriveCredentials,
   InputType,
   SubmitType,
+  ValidateFieldURL,
   WorkingMode,
 } from "constants/application";
 import { ReactComponent as LinkSVG } from "assets/svg/link.svg";
@@ -1527,8 +1528,13 @@ const EditNewHR = () => {
                       required: "please enter the company URL.",
                       validate: (value) => {
                         try {
-                          new URL(value);
-                          return true;
+                          // new URL(value);
+                          // return true;
+                          if(ValidateFieldURL(value,"website")){
+														return true
+													}else{
+														return "Entered value does not match url format";
+													}
                         } catch (error) {
                           return "Entered value does not match url format";
                         }
@@ -2375,8 +2381,13 @@ const EditNewHR = () => {
                       required: "please enter the company Website.",
                       validate: (value) => {
                         try {
-                          new URL(value);
-                          return true;
+                          // new URL(value);
+                          // return true;
+                          if(ValidateFieldURL(value,"website")){
+														return true
+													}else{
+														return "Entered value does not match url format";
+													}
                         } catch (error) {
                           return "Entered value does not match url format";
                         }

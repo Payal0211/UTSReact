@@ -110,11 +110,12 @@ const ViewHRDetails = () => {
 												{hiringDetails?.responseBody?.details
 													?.hiringRequestRole ?? 'NA'}
 											</li> */}
-						<li>
+						{/* <li style={{display:'flex'}}>
                         <span>About Company:</span>{" "}
-                        {hiringDetails?.responseBody?.details?.aboutCompanyDesc?? "NA"}
+                         {hiringDetails?.responseBody?.details?.aboutCompanyDesc?? "NA"} 
+                        {hiringDetails?.responseBody?.details?.aboutCompanyDesc? <div style={{marginLeft:'5px'}} dangerouslySetInnerHTML={{__html:hiringDetails?.responseBody?.details?.aboutCompanyDesc}}></div> : "NA"}
                         <i className={ViewHRDetailsStyle.blueDot} />
-                      </li>					
+                      </li>					 */}
                       <li>
                         <span>Job Description:</span>{" "}
                         {hiringDetails?.responseBody?.details
@@ -414,8 +415,15 @@ const ViewHRDetails = () => {
                       </li>}
           </> }
 
-                     
-
+          <li>
+                        <span>Is budget confidential :</span>{" "}
+                        {hiringDetails?.responseBody?.details?.isConfidentialBudget ? "YES" : "NO"}
+                      </li>
+                      <li>
+                        <span>Currency :</span>{" "}
+                        {hiringDetails?.responseBody?.details?.currency ??
+                          "NA"}
+                      </li>
                       <li>
                         <span>Sales Person:</span>{" "}
                         {hiringDetails?.responseBody?.details?.salesPerson ??
@@ -467,7 +475,20 @@ const ViewHRDetails = () => {
                   </div>
                 </div>
               </div>
+           
+             
             </div>
+
+            {!hiringDetails?.responseBody?.details?.additionalDetails &&   <div className={ViewHRDetailsStyle.viewHRDetailsBox} style={{marginTop:'10px'}}>
+              <h3>
+              About Company
+                <i className={ViewHRDetailsStyle.blueDot} />
+              </h3>
+              {hiringDetails?.responseBody?.details?.aboutCompanyDesc? <div  dangerouslySetInnerHTML={{__html:hiringDetails?.responseBody?.details?.aboutCompanyDesc}}></div> : "NA"}
+               
+                 
+              </div>}
+          
           </div>
         </div>
 
@@ -736,19 +757,22 @@ const ViewHRDetails = () => {
                       <ul>
                         <li>
                           <span>Industry:</span>{" "}
-                          {
+                          {/* {
                             hiringDetails?.responseBody?.details
                               ?.additionalDetails?.industry_Type
-                          }
+                          } */}
+                          {hiringDetails?.responseBody?.details
+                              ?.companyInfo?.industry}
                           <i className={ViewHRDetailsStyle.blueDot} />
                         </li>
                         <li>
-                          <span>Client’s Linkedin:</span>{" "}
+                          <span>Company URL:</span>{" "}
                           <a
-                            href={
-                              hiringDetails?.responseBody?.details
-                                ?.additionalDetails?.contactsLinkedInProfile
-                            }
+                            // href={
+                            //   hiringDetails?.responseBody?.details
+                            //     ?.additionalDetails?.contactsLinkedInProfile
+                            // }
+                            href={hiringDetails?.responseBody?.details?.companyInfo?.website}
                             target="_blank"
                             rel="noreferrer"
                           >
@@ -798,12 +822,8 @@ const ViewHRDetails = () => {
                 </div>
                 <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
                   <h3>About Company</h3>
-                  <div className={ViewHRDetailsStyle.viewHrJDDetailsBox}>
-                    {
-                      hiringDetails?.responseBody?.details?.additionalDetails
-                        ?.about_Company_desc
-                    }
-                  </div>
+                  {hiringDetails?.responseBody?.details?.additionalDetails?.about_Company_desc ?<div className={ViewHRDetailsStyle.viewHrJDDetailsBox} dangerouslySetInnerHTML={{ __html: hiringDetails?.responseBody?.details?.additionalDetails?.about_Company_desc}}></div> : 'NA'}
+                  
                 </div>
               </div>
             </div>

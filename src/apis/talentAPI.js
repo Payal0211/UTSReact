@@ -80,4 +80,38 @@ export const TalentStatusAPI = {
 			return errorDebug(error, 'TalentStatusAPI.talentReplacementRequest');
 		}
 	},
+	getStatusDetailCreditBaseRequest: async (hrId,talentID) => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.TALENT_STATUS +
+				TalentReplaceAPI.CREDITBASE_TALENT_STATUS + 
+				`?HrID=${hrId}&TalentID=${talentID}`;
+
+			httpService.setAuthRequired = true;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TalentStatusAPI.getStatusDetailCreditBaseRequest');
+		}
+	},
+	updateStatusCreditBaseRequest: async (talentDetails) => {
+		try {
+			let httpService = new HttpServices();
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.TALENT_STATUS +
+				TalentReplaceAPI.CREDITBASE_UPDATE_TALENT_STATUS;
+
+			httpService.setAuthRequired = true;
+			httpService.dataToSend = talentDetails;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TalentStatusAPI.updateStatusCreditBaseRequest');
+		}
+	},
 };

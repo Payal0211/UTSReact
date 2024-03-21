@@ -705,10 +705,10 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getDashboardCountRequest');
 		}
 	},
-	geLeadType: async function (LeadType) {
+	geLeadType: async function (LeadType,hrid) {
 		let httpService = new HttpServices();
 		httpService.URL =
-			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_LEAD_BY_TYPE + `?LeadType=${LeadType}`;
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.GET_LEAD_BY_TYPE + `?LeadType=${LeadType}${hrid ? `&HrID=${hrid}`: '' }`;
 		httpService.setAuthRequired = true;
 		
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();

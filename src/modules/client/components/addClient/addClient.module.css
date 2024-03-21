@@ -160,6 +160,25 @@
     border-color: var(--color-sunlight);
 }
 
+
+.btnPrimaryResendBtn{
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    height: 40px;
+    margin-top: 30px;
+    border: 0;
+}
+
 .formPanelAction button+button {
     margin-left: 16px;
 }
@@ -253,4 +272,39 @@
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     margin: 0;
+}
+.resendInviteEmailModalLink{
+    display: inline-block;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 38px;
+}
+
+
+/* Confirm Email css start */
+
+.ConfirmationEmailModal .ConfirmationModalContent{
+    text-align: center;
+}
+
+.ConfirmationEmailModal .ConfirmationModalContent h3{
+    margin: 12px 0 20px; 
+}
+
+.ConfirmationEmailModal .multiquesbtn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.ConfirmationEmailModal .btnPrimaryResendBtn{
+    margin-top: 0px;
+}
+
+.ConfirmationEmailModal .btnPrimaryResendBtn.blank{
+    border: 1px solid #232323;
+    color: #232323;
+    background: #FFF;
 }

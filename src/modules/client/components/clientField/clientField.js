@@ -71,7 +71,10 @@ const ClientField = ({
 	});
 	// const [isLoading, setIsLoading] = useState(false);
 	const [typeOfPricing,setTypeOfPricing] = useState(null)
+	const [profileSharingOption,setProfileSharingOption] = useState(null)
+	const [profileSharingOptionError,setProfileSharingOptionError] = useState(false);
 	const [pricingTypeError,setPricingTypeError] = useState(false);
+	const [payPerError,setPayPerError] = useState(false);
 	const [type, setType] = useState('');
 	const [addClientResponse, setAddClientResponse] = useState(null);
 	const [addClientResponseID, setAddClientResponseID] = useState(0);
@@ -120,6 +123,19 @@ const ClientField = ({
 	const [isSameAsPrimaryPOC, setSameAsPrimaryPOC] = useState(false);
 
 	const [flagAndCode, setFlagAndCode] = useState([]);
+	const [checkPayPer, setCheckPayPer] = useState({
+		companyTypeID:0,
+		anotherCompanyTypeID:0
+	});
+	const [creditError,setCreditError] = useState(false);
+	const [IsChecked,setIsChecked] = useState({
+        isPostaJob:false,
+        isProfileView:false,
+    });
+	const [payPerCondition,setPayPerCondition] = useState({
+		companyTypeID:0,
+		anotherCompanyTypeID:0
+	})
 
 	const SameASPrimaryPOCHandler = useCallback((e) => {
 		// e.preventDefault();
@@ -145,11 +161,26 @@ const ClientField = ({
 		// setIsLoading(true);
 		setIsSavedLoading(true)
 
-		if(typeOfPricing === null){
+		if(typeOfPricing === null && !checkPayPer?.anotherCompanyTypeID==0 && (!checkPayPer?.companyTypeID==0 || !checkPayPer?.companyTypeID==2)){
 			setIsSavedLoading(false)
 			setPricingTypeError(true)
 			return
-		  }
+		}
+		if(profileSharingOption === null && IsChecked?.isProfileView){
+			setIsSavedLoading(false)
+			setProfileSharingOptionError(true)
+			return
+		}
+		if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
+			setIsSavedLoading(false)
+			setPayPerError(true)
+			return
+		}
+		if(checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob===false && IsChecked?.isProfileView===false){
+			setIsSavedLoading(false)
+			setCreditError(true)
+			return
+		}
 		let clientFormDetails = clientFormDataFormatter({
 			d,
 			type,
@@ -164,7 +195,12 @@ const ClientField = ({
 			primaryClientEN_ID,
 			legelInfoEN_ID,
 			companyDetail,
-			typeOfPricing}
+			typeOfPricing,
+			checkPayPer,
+			IsChecked,
+			payPerCondition,
+			profileSharingOption
+		}
 		);
 
 		let newPOClist = d.pocList.map(contact => {
@@ -250,6 +286,18 @@ const ClientField = ({
 	useEffect(() => {
 		getCodeAndFlag();
 	}, []);
+
+	useEffect(() => {
+		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==0){
+			setPayPerCondition({...payPerCondition,companyTypeID:1,anotherCompanyTypeID:1});
+		}else
+		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==2){
+			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1,companyTypeID:2});
+		}else
+		if(checkPayPer?.companyTypeID==2  && checkPayPer?.anotherCompanyTypeID==0){
+			setPayPerCondition({...payPerCondition,companyTypeID:2,anotherCompanyTypeID:0});
+		}
+	}, [checkPayPer,payPerCondition])
 
 	useEffect(() => {
 		if (isSameAsPrimaryPOC) {
@@ -412,7 +460,19 @@ const ClientField = ({
 				pricingTypeError={pricingTypeError}
 				setPricingTypeError={setPricingTypeError}
 				setTypeOfPricing={setTypeOfPricing}
-				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
+				checkPayPer={checkPayPer}
+				setCheckPayPer={setCheckPayPer}
+				setIsChecked={setIsChecked}
+				IsChecked={IsChecked}
+				payPerError={payPerError}
+				setPayPerError={setPayPerError}
+				setCreditError={setCreditError}
+				creditError={creditError}
+				profileSharingOption={profileSharingOption}
+				setProfileSharingOption={setProfileSharingOption}
+				setProfileSharingOptionError={setProfileSharingOptionError}
+				profileSharingOptionError={profileSharingOptionError}
+				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}
 			/>
 			<AddNewClient
 				setError={setError}

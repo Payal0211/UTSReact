@@ -84,7 +84,7 @@ const AllHiringRequestScreen = () => {
   const [priorityCount, setPriorityCount] = useState([]);
   const [messageAPI, contextHolder] = message.useMessage();
   const [openCloneHR, setCloneHR] = useState(false);
-  const [getHRnumber, setHRNumber] = useState("");
+  const [getHRnumber, setHRNumber] = useState({hrNumber:'', isHybrid:false});
   const [getHRID, setHRID] = useState("");
   const [reopenHrData, setReopenHRData] = useState({});
   const [reopenHrModal, setReopenHrModal] = useState(false);
@@ -197,10 +197,13 @@ const AllHiringRequestScreen = () => {
     },
     [apiData, messageAPI, navigate]
   );
-  const cloneHRhandler = async () => {
-    const data = {
+  const cloneHRhandler = async (isHybrid, payload) => {
+    let data = {
       hrid: getHRID,
     };
+    if(isHybrid){
+      data = {...data,...payload}
+    }
     const response = data?.hrid && (await MasterDAO.getCloneHRDAO(data));
     // console.log(response, '--response');
     if (response.statusCode === HTTPStatusCode.OK) {
@@ -597,18 +600,17 @@ const AllHiringRequestScreen = () => {
                         key: AddNewType.HR,
                         IsEnabled: true,
                       },
-                      {
-                        label: "Add New Client",
-                        key: AddNewType.CLIENT,
-                        IsEnabled: true,
-                      },
+                      // {
+                      //   label: "Add New Client",
+                      //   key: AddNewType.CLIENT,
+                      //   IsEnabled: true,
+                      // },
                     ]
               }
               menuAction={(item) => {
                 switch (item.key) {
                   case AddNewType.HR: {
                     navigate(UTSRoutes.ADDNEWHR);
-                    localStorage.removeItem("dealId");
                     break;
                   }
                   case AddNewType.DIRECT_HR: {
@@ -813,10 +815,10 @@ const AllHiringRequestScreen = () => {
                           pagesize: pageSize,
                           pagenum: pageNum,
                         });
-                        handleHRRequest({
-                          pagesize: pageSize,
-                          pagenum: pageNum,
-                        });
+                        // handleHRRequest({
+                        //   pagesize: pageSize,
+                        //   pagenum: pageNum,
+                        // });
                       },
                       size: "small",
                       pageSize: pageSize,
@@ -868,7 +870,9 @@ const AllHiringRequestScreen = () => {
         <CloneHR
           cloneHRhandler={cloneHRhandler}
           onCancel={() => setCloneHR(false)}
-          getHRnumber={getHRnumber}
+          getHRnumber={getHRnumber.hrNumber}
+          isHRHybrid={getHRnumber.isHybrid}
+          companyID={getHRnumber.companyID}
         />
       </Modal>
 

@@ -316,6 +316,14 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			isVisible: isAccess(usertypeID, 'UTM Tracking Report')
 		}),
 		new SideBarModels({
+			id: 'ClientPortalTrackingReport',
+			title: 'Client Tracking Details',
+			isActive: false,
+			icon: HRReport,
+			navigateTo: UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT,
+			isVisible: isAccess(usertypeID, 'Client Tracking Details')
+		}),
+		new SideBarModels({
 			id: 'I2SReport',
 			title: 'I2S Report',
 			isActive: false,

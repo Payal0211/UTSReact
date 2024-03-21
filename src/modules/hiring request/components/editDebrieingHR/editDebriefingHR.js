@@ -18,6 +18,7 @@ import LogoLoader from 'shared/components/loader/logoLoader';
 import { ReactComponent as FocusRole } from 'assets/svg/FocusRole.svg';
 import plusSkill from '../../../../assets/svg/plusSkill.svg';
 import PublishHRPopup from '../publishHRPopup/publishHRPopup';
+import DebrefCompanyDetails from './debrefCompanyDetails';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -79,6 +80,7 @@ const EditDebriefingHR = ({
 	let watchSkills = watch('skills');
 	const [talentRole, setTalentRole] = useState([]);
 	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
+	const [companyType , setComapnyType] = useState({})
 
 	//to set skills and control
 	useEffect(()=>{
@@ -93,6 +95,10 @@ const EditDebriefingHR = ({
 			setGoodSuggestedSkills(getHRdetails?.chatGptSkills?.split(","));
 			setAllSuggestedSkills(getHRdetails?.chatGptAllSkills?.split(","));
 		}
+		let company_Type = getHRdetails?.companyTypes?.filter(item => item.isActive === true);
+		if(company_Type?.length > 0){
+			setComapnyType(company_Type[0])
+		 }
 	},[getHRdetails]);
 	/* const combinedSkillsMemo = useMemo(
 		() => [
@@ -436,9 +442,35 @@ const EditDebriefingHR = ({
 					},
 					"secondaryinterviewerList": d.secondaryInterviewer
 				},
-				isDirectHR:isDirectHR
+				isDirectHR:isDirectHR,
+				companyInfo: {
+					"companyID": getHRdetails?.companyInfo?.companyID,
+					"companyName": d.companyName,
+					"website": d.webSite,
+					"linkedInURL": d.companyLinkedin,
+					"industry": d.industry,
+					"companySize": getHRdetails?.companyInfo?.companySize,
+					"aboutCompanyDesc": d.aboutCompany
+				},
+				companyType: companyType?.name,
+				PayPerType:  companyType?.id 
 			};
 
+			if(companyType?.id === 2){
+				debriefFormDetails['companyInfo'] = {
+					"companyID": getHRdetails?.companyInfo?.companyID,
+					"companyName": d.companyName,
+					"website": d.webSite,
+					"linkedInURL": d.companyLinkedin,
+					"industry": d.industry,
+					"companySize": d.companySize,
+					"aboutCompanyDesc": d.aboutCompany
+				}
+
+				debriefFormDetails['interviewerDetails'] = getHRdetails?.interviewerDetails
+			}
+
+			
 			if(!sameSkillIssue){
 				const debriefResult = await hiringRequestDAO.createDebriefingDAO(
 				debriefFormDetails,
@@ -458,7 +490,7 @@ const EditDebriefingHR = ({
 			}
 			
 		},
-		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI,isFocusedRole],
+		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI,isFocusedRole,companyType],
 	);
 
 	const needMoreInforSubmitHandler = useCallback(
@@ -545,6 +577,18 @@ const EditDebriefingHR = ({
 			);
 		setIsFocusedRole(getHRdetails?.salesHiringRequest_Details?.isHrfocused)
 		// setValue("skills",getHRdetails?.skillmulticheckbox)
+
+		//set Company Details 
+		let companyInfo = getHRdetails?.companyInfo
+
+		if(companyInfo?.companyID){
+			companyInfo?.aboutCompanyDesc && setValue('aboutCompany',companyInfo?.aboutCompanyDesc)
+			companyInfo?.companyName && setValue('companyName',companyInfo?.companyName)
+			companyInfo?.website && setValue('webSite',companyInfo?.website)
+			companyInfo?.industry && setValue('industry',companyInfo?.industry)
+			companyInfo?.linkedInURL && setValue('companyLinkedin',companyInfo?.linkedInURL)
+			companyInfo?.companySize && setValue('companySize',companyInfo?.companySize)
+		}
 	}, [getHRdetails, setValue]);
 
 	function testJSON(text) {
@@ -614,7 +658,38 @@ const EditDebriefingHR = ({
 									errors={errors}
 									name="roleAndResponsibilities"
 								/>
-								<div className={DebriefingHRStyle.aboutCompanyField}>
+							
+								
+								<TextEditor
+									isControlled={true}
+									controlledValue={getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.requirement)) :getHRdetails?.salesHiringRequest_Details?.requirement :
+										JDParsedSkills?.Requirements ||
+										(getHRdetails?.salesHiringRequest_Details?.requirement)
+									}
+									label={'Requirements'}
+									placeholder={'Enter Requirements'}
+									setValue={setValue}
+									watch={watch}
+									register={register}
+									errors={errors}
+									name="requirements"
+									required
+								/>
+
+							{companyType?.id === 1 && 
+								<TextEditor
+									isControlled={true}
+									controlledValue={getHRdetails?.addHiringRequest?.aboutCompanyDesc ? getHRdetails?.addHiringRequest?.aboutCompanyDesc : getHRdetails?.companyInfo?.aboutCompanyDesc}
+									label={'About Company'}
+									placeholder={"Please enter details about company."}
+									setValue={setValue}
+									watch={watch}
+									register={register}
+									errors={errors}
+									name="aboutCompany"
+									required
+								/>}
+									{/* <div className={DebriefingHRStyle.aboutCompanyField}> 
 									<HRInputField
 										required
 										isTextArea={true}
@@ -647,24 +722,11 @@ const EditDebriefingHR = ({
 										name="aboutCompany"
 										type={InputType.TEXT}
 										placeholder="Please enter details about company."
-									/>
-									{/* <p>* Please do not mention company name here</p> */}
-								</div>
-								<TextEditor
-									isControlled={true}
-									controlledValue={getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.requirement)) :getHRdetails?.salesHiringRequest_Details?.requirement :
-										JDParsedSkills?.Requirements ||
-										(getHRdetails?.salesHiringRequest_Details?.requirement)
-									}
-									label={'Requirements'}
-									placeholder={'Enter Requirements'}
-									setValue={setValue}
-									watch={watch}
-									register={register}
-									errors={errors}
-									name="requirements"
-									required
-								/>
+									/> */}
+									{/* <p>* Please do not mention company name here</p></div>} */}
+								
+
+								{companyType?.id === 1 && <>
 								<div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
 										controlledValue={controlledRoleValue}
@@ -683,6 +745,8 @@ const EditDebriefingHR = ({
 										errorMsg={'Please select hiring request role'}
 									/>
 								</div>
+								
+								</>}
 								<div className={DebriefingHRStyle.mb50}>
 									<HRInputField
 										register={register}
@@ -826,6 +890,10 @@ const EditDebriefingHR = ({
 						</div>
 					</div>
 
+					{companyType?.id === 2 &&  <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
+
+					
+					{companyType?.id === 1 && <>
 					<Divider />
 					<AddInterviewer
 						errors={errors}
@@ -837,7 +905,9 @@ const EditDebriefingHR = ({
 						fields={fields}
 						getHRdetails={getHRdetails}
 						disabledFields={disabledFields}
-					/>
+					/></>}
+
+					
 					<Divider />
 					<div className={DebriefingHRStyle.formPanelAction}>
 						{/* <button

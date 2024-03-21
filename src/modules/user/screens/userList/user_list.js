@@ -79,9 +79,9 @@ const UserList = () => {
 		}, 1000);
 		return () => clearTimeout(timer);
 	}, [debouncedSearch,fetchUserList]);
-	useEffect(() => {
-		fetchUserList();
-	}, []);
+	// useEffect(() => {
+	// 	fetchUserList();
+	// }, []);
 
 	const tableColumnsMemo = useMemo(() => userConfig.tableConfig(), []);
 

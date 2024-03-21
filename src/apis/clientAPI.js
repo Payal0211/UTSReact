@@ -169,4 +169,51 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getClientFilterList');
 		}
 	},
+	getCreditTransactionHistory:async function (companyID,clientID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.GET_CREDIT_TRANSACTION_HISTORY +
+			`?CompanyID=${companyID}&ClientID=${clientID}`; 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getClientFilterList');
+		}
+	},
+	resendInviteEmail:async function (ContactId) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.RESEND_INVITE_EMAIL +
+			`?ContactId=${ContactId}&InvitingUserId=${null}`; 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getClientFilterList');
+		}
+	},
+	getActiveSalesUserList:async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.GET_ACTIVE_SALES_USERLIST; 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getActiveSalesUserList');
+		}
+	},
 };

@@ -51,12 +51,29 @@ export function clientFormDataFormatter({
 	legelInfoEN_ID,
 	companyDetail,
 	base64ClientImage,
-	getUploadClientFileData,typeOfPricing
+	getUploadClientFileData,typeOfPricing,
+	checkPayPer,
+	IsChecked,payPerCondition,clientPOCs,
+	profileSharingOption
 }) {
+	let _val = "";
+	if(typeOfPricing===1){
+		_val = true;
+	}else{
+		_val = false;
+	}
+	if(checkPayPer?.anotherCompanyTypeID==0 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
+		_val = null;
+	}
 	const clientFormDetails = {
-		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,
+		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,	
 		company: {
-			IsTransparentPricing: typeOfPricing === 1 ? true : false ,
+			IsVettedProfile:profileSharingOption,
+			IsTransparentPricing:_val,
+			anotherCompanyTypeID:payPerCondition?.anotherCompanyTypeID,
+			companyTypeID:payPerCondition?.companyTypeID,
+			isPostaJob:IsChecked?.isPostaJob,
+			isProfileView:IsChecked?.isProfileView,
 			// en_Id: _isNull(addClientResponse) ? '' : addClientResponse.company.en_Id,
 			en_Id : companyDetail.en_Id,
 			company: draft === SubmitType.SAVE_AS_DRAFT ? companyName : d.companyName,
@@ -64,6 +81,14 @@ export function clientFormDataFormatter({
 				base64ProfilePic: base64Image,
 				extenstion: getUploadFileData?.split('.')[1],
 			},
+			jpCreditBalance:
+				draft === SubmitType.SAVE_AS_DRAFT
+					? _isNull(watch('jpCreditBalance'))
+						? 0
+						: watch('jpCreditBalance')
+					: _isNull(d.jpCreditBalance)
+					? 0
+					: Number(d.jpCreditBalance),
 			aboutCompanyDesc: 
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('aboutCompany'))
@@ -281,6 +306,16 @@ export function clientFormDataFormatter({
 			: draft === SubmitType.SAVE_AS_DRAFT
 			? watch('secondaryContactName').id.toString()
 			: d.secondaryContactName.id.toString(),
+		companyname: d.companyName,
+		clientemail:
+			draft === SubmitType.SAVE_AS_DRAFT
+			? _isNull(primaryClientEmail)
+				? null
+				: primaryClientEmail
+			: _isNull(d.primaryClientEmailID)
+			? null
+			: d.primaryClientEmailID,
+		contactId:clientPOCs?clientPOCs[0]?.contactId:0
 	};
 	return clientFormDetails;
 }

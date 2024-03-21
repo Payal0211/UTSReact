@@ -226,7 +226,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 </div>
               </div>
             </li>
-            <li className={hrSLADetails[3]?.completedStageID >= hrSLADetails[3]?.stageID && CompanyProfileCardStyle.check}>
+            {/* <li className={hrSLADetails[3]?.completedStageID >= hrSLADetails[3]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
                 title={
@@ -257,7 +257,7 @@ const JOBPostSLA = ({ allApiData }) => {
                   </div>
                 </div>
               </div>
-            </li>
+            </li> */}
             <li className={hrSLADetails[4]?.completedStageID >= hrSLADetails[4]?.stageID && CompanyProfileCardStyle.check}>
               <Tooltip
                 placement="top"
@@ -341,6 +341,16 @@ const JOBPostSLA = ({ allApiData }) => {
               <div className={CompanyProfileCardStyle.jobStepTextWrap}>
                 <p>{hrSLADetails.length && `${hrSLADetails[6].stageName}`}</p>
                 <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+               
+                  <div className={CompanyProfileCardStyle.StepscreeningBox}>
+                    {" "}
+                    <span
+                      className={CompanyProfileCardStyle.screeningColorOrange}
+                    >
+                      {hrSLADetails.length && `${hrSLADetails[6].noOfTalents} Talents Shortlisted`}
+                    </span>{" "}
+                  </div>
+                
                   {/* <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
                           <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div> */}
                 </div>
@@ -367,6 +377,17 @@ const JOBPostSLA = ({ allApiData }) => {
               <div className={CompanyProfileCardStyle.jobStepTextWrap}>
                 <p>{hrSLADetails.length && `${hrSLADetails[7].stageName}`}</p>
                 <div className={CompanyProfileCardStyle.jobStepTextBtnWrap}>
+               
+                  <div className={CompanyProfileCardStyle.StepscreeningBox}>
+                    {" "}
+                    <span
+                      className={CompanyProfileCardStyle.screeningColorOrange}
+                    >
+                      {hrSLADetails.length &&
+                  `${hrSLADetails[7].noOfTalents} Talents in Interview`}
+                    </span>{" "}
+                  </div>
+                
                   {/* <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div>
                           <div className={CompanyProfileCardStyle.StepscreeningBox}>Date - 6th Sept, 2023</div> */}
                 </div>

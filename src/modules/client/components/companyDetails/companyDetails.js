@@ -2,7 +2,7 @@ import UploadModal from 'shared/components/uploadModal/uploadModal';
 import CompanyDetailsStyle from './companyDetails.module.css';
 import { ReactComponent as UploadSVG } from 'assets/svg/upload.svg';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
-import { InputType ,URLRegEx,EmailRegEx} from 'constants/application';
+import { InputType ,URLRegEx,EmailRegEx, validateLinkedInURL, ValidateFieldURL} from 'constants/application';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { locationFormatter } from 'modules/client/clientUtils';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -13,7 +13,7 @@ import { HTTPStatusCode } from 'constants/network';
 import { _isNull } from 'shared/utils/basic_utils';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import { MdOutlinePreview } from 'react-icons/md';
-import { Modal, Tooltip, AutoComplete,Radio } from 'antd';
+import { Modal, Tooltip, AutoComplete,Radio, Checkbox } from 'antd';
 import { Controller } from 'react-hook-form';
 import { UserSessionManagementController } from "modules/user/services/user_session_services";
 
@@ -33,7 +33,10 @@ const CompanyDetails = ({
 	companyName,
 	control,
 	companyDetail, setCompanyDetail,getCompanyDetails, controlledFieldsProp,typeOfPricing,setTypeOfPricing,
-	pricingTypeError,setPricingTypeError
+	pricingTypeError,setPricingTypeError,
+	checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError,
+	setCreditError,creditError,profileSharingOption,setProfileSharingOption,
+	profileSharingOptionError,setProfileSharingOptionError
 }) => {
 	let {controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType} = controlledFieldsProp
 	const [GEO, setGEO] = useState([]);
@@ -68,7 +71,6 @@ const CompanyDetails = ({
 	const [showCompanyEmail, setShowCompanyEmail] = useState(false)
 
 	const [userData, setUserData] = useState({});
-
 	useEffect(() => {
 	  const getUserResult = async () => {
 		let userData = UserSessionManagementController.getUserSession();
@@ -490,6 +492,14 @@ const CompanyDetails = ({
 									// 	value: URLRegEx.url,
 									// 	message: 'Entered value does not match url format',
 									// },
+
+									validate: value => {										
+										if(ValidateFieldURL(value,"website")){
+											return true
+										 }else{
+											 return 'Entered value does not match url format'
+										 }
+										}
 								}}
 								placeholder="Enter profile link"
 								required
@@ -575,14 +585,115 @@ const CompanyDetails = ({
 						<div className={CompanyDetailsStyle.colMd12}>
 							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>
-							Type Of pricing
+							Client Model
+							 <span className={CompanyDetailsStyle.reqField}>
+								*
+							</span>
+						</label>
+						{payPerError && <p className={CompanyDetailsStyle.error}>*Please select client model</p>}
+							{/* {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>} */}
+							<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
+								<Checkbox 
+									value={2} 
+									onChange={(e)=>{setCheckPayPer({...checkPayPer,companyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false)}}
+                  checked={checkPayPer?.companyTypeID}
+									>Pay Per Credit</Checkbox>
+								<Checkbox 
+									value={1} 
+									onChange={(e)=>{setCheckPayPer({...checkPayPer,anotherCompanyTypeID:e.target.checked===true ? e.target.value:0});setPayPerError(false)}}
+                  checked={checkPayPer?.anotherCompanyTypeID}
+									>Pay Per Hire</Checkbox>
+							</div>
+							</div>												
+						</div>
+					</div>
+					{checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null &&
+					<>
+						<div className={CompanyDetailsStyle.row}>
+							<div className={CompanyDetailsStyle.colMd12}>
+								<HRInputField
+									register={register}
+									errors={errors}
+									validationSchema={{
+										required: checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null ?'Please enter free credits.':null,
+										min: {
+											value: 0,
+											message: `please don't enter the value less than 0`,
+										},
+										max: {
+											value: 99,
+											message: `please don't enter the value greater than 99`,
+										}
+									}}
+									label="Free Credits"
+									name={'jpCreditBalance'}
+									type={InputType.TEXT}
+									placeholder="Free Credits"
+									onKeyDownHandler={(e)=>{
+										if (e.key === '-' || e.key === '+' || e.key === 'E' ||  e.key === 'e') {
+											e.preventDefault();
+										}
+									}}
+									required={checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null?true:false}
+								/>
+							</div>
+						</div>
+						<div className={CompanyDetailsStyle.row}>
+							<div className={CompanyDetailsStyle.colMd12}>
+								<div style={{display:'flex',flexDirection:'column',marginBottom:'16px'}}> 
+									{/* <label style={{marginBottom:"12px"}}>
+								Client Modal
+								<span className={CompanyDetailsStyle.reqField}>
+									*
+								</span>
+							</label> */}
+								{/* {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>} */}
+								<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
+									<Checkbox name='IsPostaJob' 
+										checked={IsChecked?.isPostaJob} 
+										onChange={(e)=>{setIsChecked({...IsChecked,isPostaJob:e.target.checked});setCreditError(false)}}>Credit per post a job.
+									</Checkbox>
+									<Checkbox name="IsProfileView" 
+										checked={IsChecked?.isProfileView} 
+										onChange={(e)=>{setIsChecked({...IsChecked,isProfileView:e.target.checked});setCreditError(false);setProfileSharingOption(null);setProfileSharingOptionError(false)}}>Credit per profile view.
+									</Checkbox>
+								</div>
+							{creditError && <p  style={{marginBottom:'0px'}} className={CompanyDetailsStyle.error}>*Please select option</p>}
+							{IsChecked?.isProfileView && 
+							<div style={{display:'flex',flexDirection:'column',marginBottom:'16px',marginLeft: '188px',marginTop:"19px"}}> 
+											<label style={{marginBottom:"12px"}}>
+										Profile Sharing Options
+										<span className={CompanyDetailsStyle.reqField}>
+											*
+										</span>
+									</label>
+									{pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>}
+									<Radio.Group
+										onChange={e=> {setProfileSharingOption(e.target.value); setProfileSharingOptionError(false)}}
+										value={profileSharingOption}
+										>
+										<Radio value={true}>Vetted Profile</Radio>
+										<Radio value={false}>Fast Profile</Radio>
+									</Radio.Group>
+									 {profileSharingOptionError&&<p  style={{marginTop:'6px',marginBottom:'0px'}} className={CompanyDetailsStyle.error}>*Please select profile sharing options</p>}										
+							</div>	
+						}
+								</div>												
+							</div>
+						</div>
+					</>}
+					<div className={CompanyDetailsStyle.row}>
+						<div className={CompanyDetailsStyle.colMd12}>
+							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<label style={{marginBottom:"12px"}}>
+							Type Of Pricing
 							 <span className={CompanyDetailsStyle.reqField}>
 								*
 							</span>
 						</label>
 						{pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>}
 						<Radio.Group
-							 disabled={userData?.LoggedInUserTypeID !== 1} 
+							 disabled={userData?.LoggedInUserTypeID !== 1 || checkPayPer?.anotherCompanyTypeID==0 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2) } 
 							// className={allengagementReplceTalentStyles.radioGroup}
 							onChange={e=> {setTypeOfPricing(e.target.value);setPricingTypeError(false)}}
 							value={typeOfPricing}
@@ -590,9 +701,7 @@ const CompanyDetails = ({
 							<Radio value={1}>Transparent Pricing</Radio>
 							<Radio value={0}>Non Transparent Pricing</Radio>
 						</Radio.Group>
-							</div>
-							{console.log("type of prising",typeOfPricing)}
-												
+							</div>												
 						</div>
 					</div>
 					<div className={CompanyDetailsStyle.row}>
@@ -623,6 +732,13 @@ const CompanyDetails = ({
 									// 	value: URLRegEx.url,
 									// 	message: 'Entered value does not match url format',
 									// },
+									validate: value => {										
+										if(ValidateFieldURL(value,"linkedin")){
+											return true
+										 }else{
+											 return 'Entered value does not match linkedin url format'
+										 }
+										}
 								}}
 								label="Linkedin Profile"
 								name={'companyLinkedinProfile'}
@@ -738,6 +854,7 @@ const CompanyDetails = ({
 									required={leadOwner.length > 0}
 									isError={errors['companyLeadOwner'] && errors['companyLeadOwner']}
 									errorMsg={'Please select lead source'}
+									searchable={true}
 								/>
 							</div>
 						</div>}
@@ -756,6 +873,7 @@ const CompanyDetails = ({
 										label="Inbound Type"
 										defaultValue="Please Select"
 										options={leadSource?.BindInBoundDrp}
+										searchable={true}
 									/>
 								</div>
 							</div>

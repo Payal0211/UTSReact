@@ -209,7 +209,10 @@ export class ClientsAPI {
 	static UPDATE_AM_FOR_COMPANY = 'UpdateAMForCompany';
 	static DRAFTJOBDETAILS = 'GetDraftJobDetails';
 	static ADD_CLIENT_WITH_CREDITS= 'AddClientwithCredits';
-	static TRACKING_LEAD_CLIENT_SOURCE = "TrackingLeadDetailClientSource"
+	static TRACKING_LEAD_CLIENT_SOURCE = "TrackingLeadDetailClientSource";
+	static GET_CREDIT_TRANSACTION_HISTORY = "GetCreditTransactionHistory";
+	static RESEND_INVITE_EMAIL = "ResendInviteEmail";
+	static GET_ACTIVE_SALES_USERLIST= "GetActiveSalesUserList";
 }
 
 export class HiringRequestsAPI {
@@ -353,6 +356,9 @@ export class TalentReplaceAPI {
 	static ENGAGEMENT_REPLACE_TALENT =
 		'GetEngagemetnsForReplacementBasedOnLWDOption';
 	static SAVE_REPLACED_TALENT = 'SaveReplaceTalent';
+	static CREATE_REPLACE_HR = 'CreateReplaceHR'
+	static CREDITBASE_TALENT_STATUS = "CreditBased/GetStatusDetail"
+	static CREDITBASE_UPDATE_TALENT_STATUS = "CreditBased/UpdateTalentStatus"
 }
 export class IncentiveReport {
 	static GET_USER_ROLE = 'GetIncentiveReport';
@@ -381,4 +387,11 @@ export class UtmTrackingReport{
 	static GET_UTM_TRACKING_FILTERS = "GetAllFilterDataForTrackingLeadDetail";
 	static UTM_TRACKING_LEAD_DETAIL_REPORT = 'TrackingLeadDetailPopUP/';
 	static UTM_TRACKING_LEAD_DETAIL_REPORT_LIST = 'PopUPList'
+}
+
+
+export class ClientPortalTrackingReport{
+	static CLIENT_PORTAL_TRACKING_FILTER="ClientPortalTrackingDetails/Filters";
+	static CLIENT_PORTAL_TRACKING_LIST="ClientPortalTrackingDetails/List";
+	static CLIENT_PORTAL_TRACKING_POPUP_LIST="ClientPortalTrackingDetails/PopUPList";
 }

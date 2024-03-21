@@ -29,6 +29,8 @@ export const secondaryClient = {
 	phoneNumber: '',
 	designation: '',
 	linkedinProfile: '',
+	resendInviteEmail:'',
+	ID:'',
 };
 export const poc = {
 	contactName: '',
@@ -54,6 +56,23 @@ const EditClientField = ({
 	const [isSavedLoading, setIsSavedLoading] = useState(false);
 	const [typeOfPricing,setTypeOfPricing] = useState(null)
 	const [pricingTypeError,setPricingTypeError] = useState(false);
+	const [profileSharingOption,setProfileSharingOption] = useState(null)
+	const [profileSharingOptionError,setProfileSharingOptionError] = useState(false);
+	const [payPerError,setPayPerError] = useState(false);
+	const [creditError,setCreditError] = useState(false);
+	const clientID = localStorage.getItem("clientID")
+	const [checkPayPer, setCheckPayPer] = useState({
+		companyTypeID:0,
+		anotherCompanyTypeID:0
+	});
+	const [IsChecked,setIsChecked] = useState({
+        isPostaJob:false,
+        isProfileView:false,
+    });
+	const [payPerCondition,setPayPerCondition] = useState({
+		companyTypeID:0,
+		anotherCompanyTypeID:0
+	})
 
 	const [clientPOCs, setClientPOCs]  = useState([])
 	/** ---- Useform()  Starts here --------- */
@@ -144,16 +163,33 @@ const EditClientField = ({
 		[flagAndCode],
 	);
 
+	console.log(typeOfPricing,checkPayPer,"checkPayPercheckPayPercheckPayPer");
+
 	/** -------- Masters API Ends here-------------- */
 	/** Submit the client form Starts */
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {
 		// setIsLoading(true);
 		setIsSavedLoading(true)
-		// if(typeOfPricing === null){
-		// 	setIsSavedLoading(false)
-		// 	setPricingTypeError(true)
-		// 	return
-		// }
+		if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
+			setIsSavedLoading(false)
+			setPricingTypeError(true)
+			return
+		}
+		if(profileSharingOption === null && IsChecked?.isProfileView){
+			setIsSavedLoading(false)
+			setProfileSharingOptionError(true)
+			return
+		}
+		if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
+			setIsSavedLoading(false)
+			setPayPerError(true)
+			return
+		}
+		if(checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob===false && IsChecked?.isProfileView===false){
+			setIsSavedLoading(false)
+			setCreditError(true)
+			return
+		}
 		let clientFormDetails = clientFormDataFormatter({
 			d,
 			type,
@@ -169,7 +205,10 @@ const EditClientField = ({
 			legelInfoEN_ID,
 			companyDetail,
             base64ClientImage,
-            getUploadClientFileData,typeOfPricing}
+			checkPayPer,
+			IsChecked,
+			payPerCondition,
+            getUploadClientFileData,typeOfPricing,clientPOCs,profileSharingOption}
 		);
 
 		let newPOClist = d.pocList.map(contact => {
@@ -286,6 +325,7 @@ const EditClientField = ({
 		resetField('companyInboundType')
 		setControlledLeadOwner('Please Select')
 		resetField('companyLeadOwner')
+		resetField('jpCreditBalance')
 
 		setPrimaryClientEN_ID('')
 		resetField('primaryClientName')
@@ -315,6 +355,28 @@ const EditClientField = ({
 			
     }
 
+	useEffect(() => {
+		companyDetail && setCheckPayPer({...checkPayPer,...{companyTypeID:companyDetail?.companyTypeID,anotherCompanyTypeID:companyDetail?.anotherCompanyTypeID}});
+		companyDetail && setIsChecked({...IsChecked,...{isPostaJob:companyDetail?.isPostaJob,isProfileView:companyDetail?.isProfileView}});
+	}, [companyDetail])
+
+	
+	useEffect(() => {
+		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==0){
+			setPayPerCondition({...payPerCondition,companyTypeID:1,anotherCompanyTypeID:0});
+		}else
+		if(checkPayPer?.anotherCompanyTypeID==1 && checkPayPer?.companyTypeID==2){
+			setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1,companyTypeID:2});
+		}else
+		if(checkPayPer?.companyTypeID==2  && checkPayPer?.anotherCompanyTypeID==0){
+			setPayPerCondition({...payPerCondition,companyTypeID:2,anotherCompanyTypeID:0});
+		}
+		// else if(checkPayPer?.companyTypeID==1  && checkPayPer?.anotherCompanyTypeID==0){
+			// 	setPayPerCondition({...payPerCondition,anotherCompanyTypeID:1});
+			// }
+		}, [checkPayPer])
+		
+	
 	const getCompanyDetails = async (ID) => {
 		resetAllFields()
 		setIsSavedLoading(true)
@@ -323,7 +385,6 @@ const EditClientField = ({
 		if(companyDetailsData?.statusCode === HTTPStatusCode.OK){
 			setIsSavedLoading(false)
 			const {companyDetails,contactDetails, companyContract ,contactPoc} = companyDetailsData.responseBody
-
 			companyDetails && setCompanyDetail(companyDetails)  
 			companyDetails?.companyName && setValue('companyName',companyDetails?.companyName)
 			companyDetails?.website && setValue('companyURL',companyDetails?.website)
@@ -331,7 +392,8 @@ const EditClientField = ({
 			companyDetails?.address	&& setValue('companyAddress',companyDetails?.address)
 			companyDetails?.companySize && setValue('companySize',companyDetails?.companySize)
 			companyDetails?.aboutCompanyDesc && setValue('aboutCompany',companyDetails?.aboutCompanyDesc)
-
+			// companyDetails?.jpCreditBalance && setValue("jpCreditBalance",companyDetails?.jpCreditBalance);
+			setValue("jpCreditBalance",0);
 			// companyDetails?.phone && setValue('phoneNumber',companyDetails?.phone)
 			if(companyDetails?.phone){
 				setValue('phoneNumber',companyDetails?.phone?.slice(3))
@@ -339,17 +401,23 @@ const EditClientField = ({
 
 			if(companyDetails?.companyLogo){
 				setUploadFileData(companyDetails?.companyLogo)
-			}  
-	
-			if(contactDetails){
-				if(contactDetails?.length === 1){
-					let contactDetailobj = contactDetails[0]
+			} 
+			
+			const matchId = Number(clientID); 
+			const matchedObject = contactDetails.find(obj => obj.id === matchId);
+			if (matchedObject) {
+			const filteredData = contactDetails.filter(obj => obj.id !== matchId);
+			const newData = [matchedObject, ...filteredData];
+			setClientDetailCheckList(newData)
+			if(newData){
+				if(newData?.length === 1){
+					let contactDetailobj = newData[0]
 					contactDetailobj?.en_Id && setPrimaryClientEN_ID(contactDetailobj?.en_Id)
 					contactDetailobj?.fullName && setValue('primaryClientName',contactDetailobj?.fullName)
 					contactDetailobj?.emailID && setValue('primaryClientEmailID',contactDetailobj?.emailID)
 					contactDetailobj?.designation && setValue('primaryDesignation',contactDetailobj?.designation)
 					contactDetailobj?.linkedIn && setValue('PrimaryClientLinkedinProfile',contactDetailobj?.linkedIn)	
-                    contactDetailobj?.clientProfilePic && setUploadClientFileData(contactDetailobj?.clientProfilePic)
+					contactDetailobj?.clientProfilePic && setUploadClientFileData(contactDetailobj?.clientProfilePic)
 					if(contactDetailobj?.contactNo){
 						if(contactDetailobj?.contactNo.includes('+91')){
 							setValue('primaryClientPhoneNumber',contactDetailobj?.contactNo.slice(3))
@@ -359,22 +427,21 @@ const EditClientField = ({
 					}						
 				}
 
-				if(contactDetails?.length > 0 ){
-					let contactDetailobj = contactDetails[0]
+				if(newData?.length > 0 ){
+					let contactDetailobj = newData[0]
 					contactDetailobj?.en_Id && setPrimaryClientEN_ID(contactDetailobj?.en_Id)
 					contactDetailobj?.fullName && setValue('primaryClientName',contactDetailobj?.fullName)
 					contactDetailobj?.emailID && setValue('primaryClientEmailID',contactDetailobj?.emailID)
 					contactDetailobj?.designation && setValue('primaryDesignation',contactDetailobj?.designation)
 					contactDetailobj?.linkedIn && setValue('PrimaryClientLinkedinProfile',contactDetailobj?.linkedIn)
-                    contactDetailobj?.clientProfilePic && setUploadClientFileData(contactDetailobj?.clientProfilePic)
+					contactDetailobj?.clientProfilePic && setUploadClientFileData(contactDetailobj?.clientProfilePic)
 					if(contactDetailobj?.contactNo){
 						if(contactDetailobj?.contactNo.includes('+91')){
 							setValue('primaryClientPhoneNumber',contactDetailobj?.contactNo.slice(3))
 						}else{
 							setValue('primaryClientPhoneNumber',contactDetailobj?.contactNo)
 						}								
-					}	
-					setClientDetailCheckList(contactDetails)
+					}
 				}
 			}
 
@@ -390,6 +457,10 @@ const EditClientField = ({
 			if(contactPoc){
 				setClientPOCs(contactPoc)
 			}
+			} else {
+			console.log("No matching object found");
+			}
+			// setClientDetailCheckList(contactDetails)
 		}
 		setIsSavedLoading(false)
 	}
@@ -423,7 +494,21 @@ const EditClientField = ({
 				setTypeOfPricing={setTypeOfPricing}
 				setPricingTypeError={setPricingTypeError}
 				pricingTypeError={pricingTypeError}
+				checkPayPer={checkPayPer}
+				setCheckPayPer={setCheckPayPer}
+				setIsChecked={setIsChecked}
+				IsChecked={IsChecked}
+				payPerError={payPerError}
+				setPayPerError={setPayPerError}
+				payPerCondition={payPerCondition}
+				setCreditError={setCreditError}
+				creditError={creditError}
+				clientPOCs={clientPOCs}
 				controlledFieldsProp={{controlledCompanyLoacation, setControlledCompanyLoacation,controlledLeadSource, setControlledLeadSource,controlledLeadOwner, setControlledLeadOwner,controlledLeadType, setControlledLeadType}}  
+				setProfileSharingOption={setProfileSharingOption}
+				setProfileSharingOptionError={setProfileSharingOptionError}
+				profileSharingOption={profileSharingOption}
+				profileSharingOptionError={profileSharingOptionError}
 			/>
 			<EditClient
 				setError={setError}
@@ -443,6 +528,7 @@ const EditClientField = ({
 				setBase64Image={setBase64ClientImage}
 				getUploadFileData={getUploadClientFileData}
 				setUploadFileData={setUploadClientFileData}
+				checkPayPer={checkPayPer}
 			/>
 			<div className={ClientFieldStyle.tabsFormItem}>
 				<div className={ClientFieldStyle.tabsFormItemInner}>

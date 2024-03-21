@@ -99,11 +99,9 @@ function AllClients() {
 		getFilterRequest();
 	},[getFilterRequest])
 
-
-
     useEffect(() => {
         getAllClientsList(tableFilteredState);
-    },[tableFilteredState]);
+    },[tableFilteredState,isShowAddClientCredit]);
 
     const reloadClientList = ()=>{
         getAllClientsList(tableFilteredState);
@@ -128,6 +126,7 @@ function AllClients() {
             setAllClientList(modifyResponseData(response?.responseBody?.Data?.rows));
             setIsShowAddClientCredit(response?.responseBody?.ShowAddClient);
             setTotalRecords(response?.responseBody?.Data?.totalrows);
+            localStorage.setItem("isShowAddClientCredit",response?.responseBody?.ShowAddClient)
             setLoading(false);          
         } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
             setLoading(false);
@@ -265,8 +264,8 @@ function AllClients() {
     }
 
     const allClientsColumnsMemo = useMemo(
-		() => allClientsConfig.tableConfig(editAMHandler),
-		[],
+		() => allClientsConfig.tableConfig(editAMHandler,isShowAddClientCredit),
+		[isShowAddClientCredit],
 	); 
 
     const handleExport = async () => {          
@@ -410,7 +409,7 @@ function AllClients() {
                                                   }
                                         }       
                                         
-                                        />;
+                                        />
                                     </WithLoader>
                             )} 
                 </div>

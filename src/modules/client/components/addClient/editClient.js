@@ -1,4 +1,4 @@
-import { EmailRegEx, InputType, URLRegEx } from 'constants/application';
+import { EmailRegEx, InputType, URLRegEx, ValidateFieldURL } from 'constants/application';
 import { ValidateInput } from 'constants/inputValidators';
 import { HTTPStatusCode,NetworkInfo  } from 'constants/network';
 import UploadModal from "shared/components/uploadModal/uploadModal";
@@ -10,7 +10,8 @@ import React, { useCallback, useState } from 'react';
 import { _isNull } from 'shared/utils/basic_utils';
 import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';
-import { Checkbox } from 'antd'
+import ConfirmationModal from './confirmationResendEmailModal';
+import { Checkbox ,message} from 'antd'
 const EditClient = ({
 	setError,
 	watch,
@@ -28,9 +29,12 @@ const EditClient = ({
     base64Image,
     setBase64Image,
     getUploadFileData,
-    setUploadFileData
+    setUploadFileData,
+	checkPayPer
 }) => {
     const [showUploadModal, setUploadModal] = useState(false);
+	const [showConfirmationModal, setConfirmationModal] = useState(false);
+	const [clientID, setClientID] = useState();
     const [getValidation, setValidation] = useState({
         systemFileUpload: "",
         googleDriveFileUpload: "",
@@ -38,6 +42,7 @@ const EditClient = ({
       });
 	const [isLoading, setIsLoading] = useState(false);
 	const [ checkedClients, setCheckedClients] = useState([])
+	const [messageApi, contextHolder] = message.useMessage();
 	const onAddNewClient = useCallback(
 		(e) => {
 			e.preventDefault();
@@ -157,10 +162,28 @@ const EditClient = ({
         },
         [convertToBase64, getValidation, setBase64Image, setUploadFileData]
       );
-    
 
+	  const resendInviteEmailAPI = async(contactId) =>{
+		setConfirmationModal(true);
+		const response = await ClientDAO.resendInviteEmailDAO(contactId);
+		if(response?.statusCode=== HTTPStatusCode.OK){
+			setConfirmationModal(false);
+			messageApi.open({
+				type: "success",
+				content:"Email send successfully",
+			});
+		}else{
+			setConfirmationModal(false);
+			messageApi.open({
+				type: "error",
+				content:"Email not send successfully",
+			});
+		}
+	  }
+    
 	return (
 		<div className={AddClientStyle.tabsFormItem}>
+			{contextHolder}
 			<div className={AddClientStyle.tabsFormItemInner}>
 				<div className={AddClientStyle.tabsLeftPanel}>
 					<h3>Client Details</h3>
@@ -200,6 +223,8 @@ const EditClient = ({
 										phoneNumber: list.contactNo,
 										designation: list.designation,
 										linkedinProfile: list.linkedIn,
+										resendInviteEmail: list.resendInviteEmail,
+										ID: list.id
 									} })
 								}
 								
@@ -357,7 +382,7 @@ const EditClient = ({
 					</div>
 
 					<div className={AddClientStyle.row}>
-						<div className={AddClientStyle.colMd12}>
+						<div className={AddClientStyle.colMd6}>
 							<HRInputField
 								register={register}
 								errors={errors}
@@ -368,6 +393,17 @@ const EditClient = ({
 									// 		value: URLRegEx.url,
 									// 		message: 'Entered value does not match url format',
 									// 	},
+									validate: value => {
+										try {
+											if(ValidateFieldURL(value,"linkedin")){
+												return true
+											}else{
+												return 'Entered value does not match linkedin url format';
+											}
+											} catch (error) {
+											return 'Entered value does not match url format';
+											}											
+									}
 								}}
 								label="HS Client Linkedin Profile (Primary)"
 								name={'PrimaryClientLinkedinProfile'}
@@ -375,6 +411,20 @@ const EditClient = ({
 								placeholder="Add Linkedin profile link"
 								required
 							/>
+						</div>
+						<div className={AddClientStyle.colMd6}>
+						{checkPayPer?.companyTypeID===2 && clientDetailCheckList[0]?.resendInviteEmail === true &&
+						<button 
+							type="submit"
+							onClick={()=>{
+								// resendInviteEmailAPI(clientDetailCheckList?.[0]?.id);
+								setClientID(clientDetailCheckList?.[0]?.id)
+								setConfirmationModal(true);
+							}}
+							className={AddClientStyle.btnPrimaryResendBtn}>
+							Resend Invite Email
+						</button>
+						}
 						</div>
 					</div>
 				</div>
@@ -486,11 +536,22 @@ const EditClient = ({
 							</div>
 
 							<div className={AddClientStyle.row}>
-								<div className={AddClientStyle.colMd12}>
+								<div className={AddClientStyle.colMd6}>
 									<HRInputField
 										register={register}
 										validationSchema={{
 											required: true,
+											validate: value => {
+												try {
+													if(ValidateFieldURL(value,"linkedin")){
+														return true
+													}else{
+														return 'Entered value does not match linkedin url format';
+													}
+													} catch (error) {
+													return 'Entered value does not match url format';
+													}											
+											}
 										}}
 										label="HS Client Linkedin Profile (Secondary)"
 										name={`secondaryClient.[${index}].linkedinProfile`}
@@ -501,11 +562,29 @@ const EditClient = ({
 										required
 									/>
 								</div>
+								<div className={AddClientStyle.colMd6}>
+								{checkPayPer?.companyTypeID===2 &&  item?.resendInviteEmail===true &&
+								<button
+									type="submit"
+									onClick={()=>{
+										// resendInviteEmailAPI(item?.ID);
+										setClientID(item?.ID)
+										setConfirmationModal(true);
+									}}
+									className={AddClientStyle.btnPrimaryResendBtn}>
+									Resend Invite Email
+								</button>
+								}
+								</div>
 							</div>
 						</div>
 					</div>
 				);
 			})}
+		<ConfirmationModal
+		setConfirmationModal={setConfirmationModal}
+		showConfirmationModal={showConfirmationModal}
+		clientID={clientID}/>
 		</div>
 	);
 };

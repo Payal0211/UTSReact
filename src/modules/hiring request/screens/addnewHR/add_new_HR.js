@@ -42,6 +42,7 @@ const AddNewHR = () => {
 	const [isDirectHR, setIsDirectHR] = useState(false)
 	const [isBDRMDRUser ,setIsBDRMDRUser] = useState(false)
 	const [AboutCompanyDesc, setAboutCompanyDesc ] = useState(null)
+	const [userCompanyTypeID, setUserCompanyTypeID] = useState(1)
 
 	useEffect(()=>{
 		if(getHRdetails?.addHiringRequest?.hrNumber){
@@ -89,11 +90,11 @@ const AddNewHR = () => {
 
 	const callHRLoginInfo = async () => {
 		let result  = await hiringRequestDAO.getLoginHrInfoRequestDAO()
-		console.log(result);
+		// console.log(result);
 		if(result.statusCode === HTTPStatusCode.OK){	
 			setIsDirectHR(result.responseBody.isDirectHR)		
 			setRemoveFields(result.responseBody.removeFields)
-			setDisabledFields(result.responseBody.disabledFields)
+			setDisabledFields(prev=>({...prev,talentRequired:result.responseBody.disabledFields}))
 			setDefaultPropertys(result.responseBody.defaultProperties)
 		}
 	}
@@ -138,6 +139,9 @@ const AddNewHR = () => {
 									defaultPropertys={defaultPropertys}
 									isDirectHR={isDirectHR}
 									setAboutCompanyDesc={setAboutCompanyDesc}
+									userCompanyTypeID={userCompanyTypeID}
+									setUserCompanyTypeID={setUserCompanyTypeID}
+									setDisabledFields={setDisabledFields}
 								/>
 							),
 						},
@@ -162,6 +166,8 @@ const AddNewHR = () => {
 									disabledFields={disabledFields}
 									AboutCompanyDesc={AboutCompanyDesc}
 									isDirectHR={isDirectHR}
+									userCompanyTypeID={userCompanyTypeID}
+									setUserCompanyTypeID={setUserCompanyTypeID}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,
@@ -197,6 +203,7 @@ const AddNewHR = () => {
 									disabledFields={disabledFields}
 									isBDRMDRUser={isBDRMDRUser}
 									isDirectHR={isDirectHR}
+									setDisabledFields={setDisabledFields}
 								/>
 							),
 							disabled: localStorage.getItem('fromEditDeBriefing') && true,

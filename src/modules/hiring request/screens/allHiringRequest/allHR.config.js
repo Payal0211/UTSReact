@@ -25,7 +25,7 @@ export const allHRConfig = {
         dataIndex: "isHRFocused",
         key: "isHRFocused",
         align: "center",
-        width: "3%",
+        width: "2%",
         render: (val) => {
           return val ? <FocusedRole /> : null;
         },
@@ -57,7 +57,7 @@ export const allHRConfig = {
         render: (text, result) => {
           return (
             <>
-              {result?.reopenHR === 0 ? (
+              {result?.reopenHR === 0 && result?.isDisplayReopenOrCloseIcon === true ? (
                 <Tooltip placement="bottom" title={"Close HR"}>
                   <a href="javascript:void(0);">
                     <CloseHR
@@ -69,7 +69,7 @@ export const allHRConfig = {
                     />
                   </a>
                 </Tooltip>
-              ) : LoggedInUserTypeID !== 5 && LoggedInUserTypeID !== 10 ? (
+              ) : LoggedInUserTypeID !== 5 && LoggedInUserTypeID !== 10 && result?.isDisplayReopenOrCloseIcon === true ? (
                 <Tooltip placement="bottom" title={"Reopen HR"}>
                   <a href="javascript:void(0);">
                     <ReopenHR
@@ -111,7 +111,7 @@ export const allHRConfig = {
                     onClick={() => {
                       setCloneHR(true);
                       setHRID(result?.key);
-                      setHRNumber(result?.HR_ID);
+                      setHRNumber({hrNumber:result?.HR_ID, isHybrid:result?.isHybrid,companyID:result?.companyID});
                     }}
                   />
                 </a>
@@ -138,7 +138,7 @@ export const allHRConfig = {
         dataIndex: "HR_ID",
         key: "HR_ID",
         align: "left",
-        width: "13%",
+        width: "10%",
         render: (text, result) => (
           <Link
             target="_blank"
@@ -154,20 +154,13 @@ export const allHRConfig = {
         title: "TR",
         dataIndex: "TR",
         key: "TR",
-        width: "5%",
+        width: "4%",
         align: "left",
       },
       {
         title: "Position",
         dataIndex: "Position",
         key: "position",
-        align: "left",
-        width: "100px",
-      },
-      {
-        title: "Cat",
-        dataIndex: "companyCategory",
-        key: "companyCategory",
         align: "left",
         width: "50px",
       },
@@ -176,7 +169,7 @@ export const allHRConfig = {
         dataIndex: "Company",
         key: "company",
         align: "left",
-        width: "115px",
+        width: "40px",
         // render: (text) => {
         // 	return (
         // 		<a
@@ -192,6 +185,33 @@ export const allHRConfig = {
         // },
       },
       {
+        title: "Company Type",
+        dataIndex: "companyModel",
+        key: "companyModel",
+        align: "left",
+        width: "30px",
+      },
+      {
+        title: "HR Type",
+        dataIndex: "hrTypeName",
+        key: "hrTypeName",
+        align: "left",
+        width: "30px",
+      },
+      {
+        title: "HR Status",
+        dataIndex: "hrStatus",
+        key: "hr_status",
+        align: "left",
+        width: "12%",
+        render: (_, param) => {
+          return All_Hiring_Request_Utils.GETHRSTATUS(
+            param?.hrStatusCode,
+            param?.hrStatus
+          );
+        },
+      },
+      {
         title: "Time",
         dataIndex: "Time",
         key: "time",
@@ -203,14 +223,14 @@ export const allHRConfig = {
         dataIndex: "typeOfEmployee",
         key: "fte_pte",
         align: "left",
-        width: "65px",
+        width: "20px",
       },
       {
         title: "Sales Rep",
         dataIndex: "salesRep",
         key: "sales_rep",
         align: "left",
-        width: "9%",
+        width: "7%",
         render: (text, result) => {
           return (
             <Link
@@ -222,19 +242,6 @@ export const allHRConfig = {
             >
               {text}
             </Link>
-          );
-        },
-      },
-      {
-        title: "HR Status",
-        dataIndex: "hrStatus",
-        key: "hr_status",
-        align: "left",
-        width: "13%",
-        render: (_, param) => {
-          return All_Hiring_Request_Utils.GETHRSTATUS(
-            param?.hrStatusCode,
-            param?.hrStatus
           );
         },
       },
@@ -326,6 +333,13 @@ export const allHRConfig = {
         child: filterList?.managers,
         isSearch: true,
       },
+      {
+        label: 'Lead Type',
+        name: 'leadUserId',
+        child: filterList?.leadTypeList,
+        isSearch: false,
+        isSingleSelect:true
+    },
       {
         label: "Sales Representative",
         name: "salesRep",
@@ -433,6 +447,12 @@ export const allHRConfig = {
             value: "Direct Placement",
           },
         ],
+        isSearch: false,
+      },
+      {
+        label: "Company Type",
+        name: "companyTypeIds",
+        child: filterList?.companyModel,
         isSearch: false,
       },
     ];

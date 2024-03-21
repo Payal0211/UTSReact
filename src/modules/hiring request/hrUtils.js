@@ -31,7 +31,12 @@ export const hrUtils = {
 			reopenHR:item?.reopenHR,
 			companyCategory: item?.companyCategory,
 			HRID: item?.hrid,
-			isHRFocused: item?.isHRFocused
+			isHRFocused: item?.isHRFocused,
+			companyModel: item?.companyModel,
+			hrTypeName: item?.hrTypeName,
+			isDisplayReopenOrCloseIcon : item?.isDisplayReopenOrCloseIcon,
+			isHybrid: item.isHybrid,
+			companyID: item?.companyID,
 		}));
 	},
 	allHiringRequestSearch: (e, apiData) => {
@@ -92,7 +97,7 @@ export const hrUtils = {
 			en_Id: _isNull(enIDdata) ? '' : enIDdata,
 			IsTransparentPricing: typeOfPricing === 1 ? true :  typeOfPricing === 0 ?  false : null,
 			HrTypePricingId: companyType?.id !== 1 ? null : draft === SubmitType.SAVE_AS_DRAFT ? watch('hiringPricingType')?.id : d.hiringPricingType?.id,
-			HrTypeId: companyType?.id !== 1 ? null : hrPricingTypes?.find(item=> item.id === watch('hiringPricingType')?.id).hrtypeId,
+			HrTypeId: companyType?.id !== 1 ? null : hrPricingTypes?.find(item=> item.id === watch('hiringPricingType')?.id)?.hrtypeId,
 			PayPerType:  companyType?.id ,
 			CalculatedUplersfees: companyType?.id !== 1 ? '' :  watch('uplersFees')? typeof watch('uplersFees') === 'string'? watch('uplersFees') :  JSON.stringify(watch('uplersFees')) : '',
 			PayrollTypeId: companyType?.id !== 1 ? null : draft === SubmitType.SAVE_AS_DRAFT ?  watch('payrollType')?.id: (watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5) ? 1  : d.payrollType?.id,
@@ -167,7 +172,7 @@ export const hrUtils = {
 					: _isNull(d.adhocBudgetCost)
 					? null
 					: d.adhocBudgetCost,
-			IsHiringLimited: (watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 || watch('hiringPricingType')?.id === 1)? false : isHRDirectPlacement? null : SubmitType.SAVE_AS_DRAFT
+			IsHiringLimited: (watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 || watch('hiringPricingType')?.id === 1)? false : SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('tempProject')?.value)
 					? null
 					: watch('tempProject')?.value
@@ -226,7 +231,7 @@ export const hrUtils = {
 			ChildCompanyName: watch('otherChildCompanyName')
 				? watch('otherChildCompanyName')
 				: watch('childCompany')?.value,
-			contractDuration: !(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 ||watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8 || watch('payrollType')?.id === 4)? "":
+			contractDuration: (companyType?.id === 2 && watch('tempProject')?.value === true)  ? d?.contractDuration?.value === 'Indefinite' ? '-1' : d.contractDuration?.value : !(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 ||watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8 || watch('payrollType')?.id === 4)? "":
 				draft === SubmitType.SAVE_AS_DRAFT 
 					? isHRDirectPlacement ? null : _isNull(watch('contractDuration'))
 						? null

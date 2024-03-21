@@ -9,7 +9,7 @@ const AddNewClientScreen = () => {
 	const [title, setTitle] = useState('Add New Client');
 
 	const params = window?.location?.pathname?.split('/')?.[2];
-
+	const [disabledFields, setDisabledFields] = useState(null);
 	const [clientDetail, setClientDetails] = useState({});
 	const [interviewDetails, setInterviewDetails] = useState(null);
 	const [tabFieldDisabled, setTabFieldDisabled] = useState({
@@ -25,6 +25,7 @@ const AddNewClientScreen = () => {
 		Requirements: '',
 	});
 	const [jdDumpID, setJDDumpID] = useState('');
+	const [userCompanyTypeID, setUserCompanyTypeID] = useState(1)
 	return (
 		<div className={AddNewClientStyle.addNewContainer}>
 			<div className={AddNewClientStyle.addHRTitle}>{title}</div>
@@ -69,6 +70,9 @@ const AddNewClientScreen = () => {
 									jdDumpID={jdDumpID}
 									params={params}
 									fromClientflow={true}
+									userCompanyTypeID={userCompanyTypeID}
+									setUserCompanyTypeID={setUserCompanyTypeID}
+									setDisabledFields={setDisabledFields}
 								/>
 							),
 							disabled: tabFieldDisabled.addNewHiringRequest,
@@ -88,6 +92,8 @@ const AddNewClientScreen = () => {
 									jdDumpID={jdDumpID}
 									clientDetail={clientDetail}
 									params={params}
+									userCompanyTypeID={userCompanyTypeID}
+									setUserCompanyTypeID={setUserCompanyTypeID}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,

@@ -568,6 +568,18 @@ button.yellowOutlinedButton {
     cursor: pointer;
 }
 
+.viewdetailBtnAdd .viewHistory{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    margin: 0;
+    text-decoration: underline;
+    cursor: pointer;
+    color:#CECCCC !important;
+    font-weight: 400;
+}
+
 
 .formPanelAction {
     display: flex;
