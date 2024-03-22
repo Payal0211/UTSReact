@@ -697,7 +697,7 @@ const TalentList = ({
 												{info.IsEditable && <>
 													{!hrType ? <>
 														{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && 
-												(item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
+												(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
 												<span
 												onClick={() => {
 													// setEditPayRate(true);
