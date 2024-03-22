@@ -2620,7 +2620,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={`Estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget`}
+                    label={`Estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "client ":''}Budget`}
                     register={register}
                     name="adhocBudgetCost"
                     type={InputType.NUMBER}
