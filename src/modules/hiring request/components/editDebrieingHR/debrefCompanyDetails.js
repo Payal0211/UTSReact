@@ -118,7 +118,7 @@ export default function DebrefCompanyDetails({ register, errors, watch, getHRdet
             </div> */}
           
 
-          <div className={DebriefingHRStyle.aboutCompanyField}>
+          
           <TextEditor
 									isControlled={true}
 									controlledValue={getHRdetails?.addHiringRequest?.aboutCompanyDesc ? getHRdetails?.addHiringRequest?.aboutCompanyDesc : getHRdetails?.companyInfo?.aboutCompanyDesc}
@@ -131,7 +131,7 @@ export default function DebrefCompanyDetails({ register, errors, watch, getHRdet
 									name="aboutCompany"
 									required
 								/>
-            {/* <HRInputField
+            {/*<div className={DebriefingHRStyle.aboutCompanyField}> <HRInputField
               required
               isTextArea={true}
               errors={errors}
@@ -148,8 +148,8 @@ export default function DebrefCompanyDetails({ register, errors, watch, getHRdet
               type={InputType.TEXT}
               placeholder="Please enter details about company."
             /> */}
-            {/* <p>* Please do not mention company name here</p> */}
-          </div>
+            {/* <p>* Please do not mention company name here</p> </div>*/}
+          
         </div>
       </div>
       
