@@ -1133,7 +1133,10 @@ const EditHRFields = ({
       typeOfPricing,hrPricingTypes,
       getHRdetails?.addHiringRequest?.hrNumber,
       messageAPI,companyType,
-      isBudgetConfidential
+      isBudgetConfidential,
+      isVettedProfile,
+      isPostaJob,
+      isProfileView
     ]
   );
   useEffect(() => {
@@ -1481,6 +1484,7 @@ const EditHRFields = ({
           item?.value ===
           getHRdetails?.salesHiringRequest_Details?.timeZoneEndTime
       );
+      console.log("Times",{findFromTime,findEndTime,endTime:getHRdetails?.salesHiringRequest_Details?.timeZoneEndTime,getStartEndTimes});
       setValue("fromTime", findFromTime[0]);
       setControlledFromTimeValue(findFromTime[0]?.value);
       setValue("endTime", findEndTime[0]);
