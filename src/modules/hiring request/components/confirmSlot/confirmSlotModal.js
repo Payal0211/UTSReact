@@ -19,6 +19,7 @@ const ConfirmSlotModal = ({
 	hiringRequestNumber,
 	setHRapiCall,
 	callHRapi,
+	ScheduleTimeZone
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const dateConverter = () => {
@@ -168,6 +169,12 @@ const ConfirmSlotModal = ({
 											display: 'flex',
 											flexDirection: 'column',
 										}}>
+											{ScheduleTimeZone && <div style={{marginBottom:'10px'}}>
+											<span>Time Zone:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{ScheduleTimeZone}
+											</span>
+										</div>}
 										<label>
 											Select Date & Time Slot to Schedule Interview
 											<span className={confirmSlotStyle.reqField}>*</span>
