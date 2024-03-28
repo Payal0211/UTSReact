@@ -66,6 +66,7 @@ export default function BeforePreOnboarding({
 
   const [isLoading, setIsLoading] = useState(false);
   const [isTabDisabled, setTabDisabled] = useState(false)
+  const [isTransparentPricing,setIsTransparentPricing] = useState(false)
 
   function convertToValidDate(timeString, currentDate = new Date()) {
     // Step 1: Parse the time string into separate components
@@ -114,6 +115,7 @@ export default function BeforePreOnboarding({
     //   console.log("fatchpreOnBoardInfo", result.responseBody.details);
 
       if (result?.statusCode === HTTPStatusCode.OK) {
+        setIsTransparentPricing(result.responseBody.details.isTransparentPricing)
         setTabDisabled(result.responseBody.details.isFirstTabReadOnly
           )
         setPreONBoardingData(result.responseBody.details);
@@ -235,7 +237,13 @@ export default function BeforePreOnboarding({
   }, [watchDealSource, setValue]);
 
   useEffect(() => {
-    let billRate =  watch('payRate') * 100 /(100- watch('nrPercent')) 
+//     BR (Client Pay ) = select 2200 * 100 /(100-35) : Nontranspernt Modell
+//     BR (Client Pay ) = select 2200 *( 100+35) /100 : Transpernt Model
+    let billRate =  watch('payRate') * 100 /(100- watch('nrPercent'))
+    if(isTransparentPricing){
+       billRate = (+watch('payRate') * (100 + +watch('nrPercent'))) / 100
+    } 
+    
     billRate && setValue('billRate',billRate.toFixed(2)) 
   },[watch('payRate'),preOnboardingDetailsForAMAssignment, watch('nrPercent')])
 
