@@ -72,3 +72,7 @@
 .formPanelAction button+button {
     margin-left: 18px;
 }
+
+.customSelectAMName [class*="ant-select-selection-search-input"]{
+    padding-left: 15px !important;
+}
