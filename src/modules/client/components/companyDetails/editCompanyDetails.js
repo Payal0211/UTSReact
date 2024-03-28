@@ -14,7 +14,7 @@ import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { _isNull } from "shared/utils/basic_utils";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { MdOutlinePreview } from "react-icons/md";
-import { Modal, Tooltip, AutoComplete, Radio, Checkbox } from "antd";
+import { Modal, Tooltip, AutoComplete, Radio, Checkbox, Avatar } from "antd";
 import { Controller } from "react-hook-form";
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import CreditTransactionHistoryModal from "./creditTransactionHistoryModal";
@@ -512,9 +512,15 @@ const EditCompanyDetails = ({
                     alignItems: "center",
                     textAlign: "center",
                   }}
-                >
+                >         
                   {!getUploadFileData ? (
-                    <p>Upload Company Logo</p>
+                    // <p>Upload Company Logo</p>
+                    <Avatar 
+                    style={{ width: "100%",
+                    height: "100%", display: "flex",alignItems: "center"}} 
+                    size="large">
+                      {companyDetail?.companyName?.substring(0, 2)}
+                      </Avatar>
                   ) : (
                     <img
                       style={{
@@ -535,7 +541,7 @@ const EditCompanyDetails = ({
                   )}
                 </div>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <div style={{background:'var(--color-sunlight)',marginTop:'-25px',marginRight:'11px',display:'flex',padding:'2px',borderRadius:'50%',cursor:'pointer'}}>
+                    <div style={{background:'var(--color-sunlight)',marginTop:'-25px',marginRight:'11px',display:'flex',padding:'2px',borderRadius:'50%',cursor:'pointer',zIndex:50}}>
                        <EditSVG
                   
                     width={24}
