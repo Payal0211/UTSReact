@@ -428,7 +428,7 @@ const EditDebriefingHR = ({
 				ActionType: getHRdetails?.addHiringRequest?.isActive ? "Edit" : "Save",
 				IsHrfocused: isFocusedRole,
 				allowSpecialEdit: getHRdetails?.allowSpecialEdit,
-				role: d.role.id,
+				role: d?.role?.id,
 				hrTitle: d.hrTitle,
 				allSkills:goodToSkillList,
 				"interviewerDetails":{
@@ -478,10 +478,11 @@ const EditDebriefingHR = ({
 			if (debriefResult.statusCode === HTTPStatusCode.OK) {
 				// window.location.replace(UTSRoutes.ALLHIRINGREQUESTROUTE);
 				setIsLoading(false);
-				messageAPI.open({
-					type: 'success',
-					content: 'HR Debriefing has been updated successfully..',
-				});
+				// messageAPI.open({
+				// 	type: 'success',
+				// 	content: 'HR Debriefing has been updated successfully..',
+				// });
+				message.success('HR Debriefing has been updated successfully..')
 
 				navigate(`/allhiringrequest/${getHRdetails?.addHiringRequest?.id}`)
 			}
