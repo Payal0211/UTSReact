@@ -1089,6 +1089,7 @@ console.log('errors',errors)
 														defaultValue={'Select'}
 														options={getReportingList && getReportingList}
 														name="reportingUser"
+														searchable={true}
 													/>
 												</div>
 											</div>
