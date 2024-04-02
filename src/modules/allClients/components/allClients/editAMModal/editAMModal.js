@@ -110,18 +110,19 @@ const EditAMModal = ({ amToFetch ,closeModal,reloadClientList}) => {
 												disabled
 											/>
 					</div>
-				<div className={editAMStatusStyle.colMd6}>
+				<div className={`${editAMStatusStyle.colMd6}  ${editAMStatusStyle.customSelectAMName}`}>
 						<HRSelectField
 							setValue={setValue}
 							register={register}
-							// searchable={true}
+							searchable={true}
 							name="newAMName"
 							label="Select New AM Name"
 							defaultValue="Please Select"
-							options={AMList}
+							options={AMList?.sort((a, b) => a.value.localeCompare(b.value))}
 							required
 							isError={errors['newAMName'] && errors['newAMName']}
 							errorMsg="Please select AM Name."
+							className="custom-select-class"
 						/>
 					</div>
 					</div>

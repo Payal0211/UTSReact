@@ -697,7 +697,7 @@ const TalentList = ({
 												{info.IsEditable && <>
 													{!hrType ? <>
 														{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && 
-												(item?.Status === 'Selected' || item?.Status === 'Shortlisted' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
+												(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
 												<span
 												onClick={() => {
 													// setEditPayRate(true);
@@ -897,6 +897,15 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
+									{item?.ScheduleTimeZone && (
+										<div className={TalentListStyle.interviewSlots}>
+											<span>Time Zone:</span>&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{item?.ScheduleTimeZone}
+											</span>
+										</div>
+									)}
+
 									<div className={TalentListStyle.interviewSlots}>
 										<span>Available Interview Slots:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
@@ -1765,6 +1774,7 @@ const TalentList = ({
 						hiringRequestNumber={hiringRequestNumber}
 						setHRapiCall={setHRapiCall}
 						callHRapi={callHRapi}
+						ScheduleTimeZone={talentDetail.find(item=> item.TalentID === talentIndex)?.ScheduleTimeZone}
 					/>
 				</Modal>
 			)}
