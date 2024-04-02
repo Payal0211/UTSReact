@@ -76,7 +76,8 @@ const UserDetails = () => {
   const handleSubmit = () => {
     let isValid = true;
     let emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-    let companyurlRegex =  /^(http|https):\/\/[a-zA-Z0-9. -]+\.[a-zA-Z]{2,}$/;
+    // let companyurlRegex =  /^(http|https):\/\/[a-zA-Z0-9. -]+\.[a-zA-Z]{2,}$/;
+    let companyurlRegex =  /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+(\.[a-zA-Z]{2,})?\/?\/?.*$/i;
     if (_isNull(full_name)) {
       isValid = false;
       setError("fullName", {
