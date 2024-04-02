@@ -20,8 +20,10 @@
 }
 
 .disabled{
-    opacity:.7;
+    /* opacity:.7; */
     cursor:not-allowed !important;
+    color: rgba(36, 36, 36, 0.2) !important; /* Added style to update disabled form fields */
+    background-color: rgba(186, 186, 186, 0.2) !important; /* Added style to update disabled form fields */
 }
 .inputBoxError .inputfield {
     border: 1px solid var(--danger-color);
