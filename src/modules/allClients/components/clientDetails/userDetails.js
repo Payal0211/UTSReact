@@ -44,6 +44,7 @@ const UserDetails = () => {
 
   let full_name = watch("fullName");
   let company_name = watch("companyName");
+  let company_URL = watch("companyURL")
   let work_email = watch("workEmail");
   let free_credits = watch("freeCredits");
   useEffect(() => {
@@ -56,6 +57,11 @@ const UserDetails = () => {
       setError("companyName", null);
     }
   }, [company_name]);
+  useEffect(() => {
+    if(company_URL){
+      setError("companyURL",null);
+    }
+  },[company_URL])
   useEffect(() => {
     if (work_email) {
       setError("workEmail", null);
@@ -70,6 +76,8 @@ const UserDetails = () => {
   const handleSubmit = () => {
     let isValid = true;
     let emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    // let companyurlRegex =  /^(http|https):\/\/[a-zA-Z0-9. -]+\.[a-zA-Z]{2,}$/;
+    let companyurlRegex =  /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+(\.[a-zA-Z]{2,})?\/?\/?.*$/i;
     if (_isNull(full_name)) {
       isValid = false;
       setError("fullName", {
@@ -84,6 +92,20 @@ const UserDetails = () => {
         message: "please enter company name.",
       });
     }
+    if (_isNull(company_URL)) {
+      isValid = false;
+      setError("companyURL", {
+        type: "companyURL",
+        message: "please enter company url.",
+      });
+    }else if(!companyurlRegex.test(company_URL)){
+      isValid = false;
+      setError("companyURL", {
+        type: "companyURL",
+        message: "please enter a valid company url.",
+      });
+    }
+
     if (_isNull(work_email)) {
       isValid = false;
       setError("workEmail", {
@@ -142,6 +164,7 @@ const UserDetails = () => {
       fullName: full_name,
       workEmail: work_email,
       companyName: company_name,
+      companyURL:company_URL,
       freeCredit: Number(free_credits),
       IsPostaJob: IsChecked?.IsPostaJob,
       IsProfileView: IsChecked?.IsProfileView,
@@ -236,6 +259,22 @@ const UserDetails = () => {
                       />
                     </div>
                   </div>
+
+                  <div className={userDetails.row}>
+                    <div className={userDetails.colMd6}>
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        label="Company URL"
+                        name="companyURL"
+                        type={InputType.TEXT}
+                        placeholder="Enter company url"
+                        required
+                      />
+                    </div>
+                  </div>
+
+
                   <div className={userDetails.row}>
                     <div className={userDetails.colMd6}>
                     <div className={userDetails.formGroup}>

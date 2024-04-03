@@ -398,7 +398,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 placement="top"
                 title={
                   hrSLADetails.length &&
-                  `${hrSLADetails[8].noOfTalents}/${hrSLADetails[8].requiredTalents} Talent Hired`
+                  `${hrSLADetails[8].noOfTalents} Talent Hired`
                 }
               >
                 <div
@@ -418,7 +418,7 @@ const JOBPostSLA = ({ allApiData }) => {
                   {/* <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div> */}
                   <div className={CompanyProfileCardStyle.StepscreeningBox}>
                     {hrSLADetails.length &&
-                      `${hrSLADetails[8].noOfTalents}/${hrSLADetails[8].requiredTalents} Talent Hired`}
+                      `${hrSLADetails[8].noOfTalents} Talent Hired`}
                   </div>
                 </div>
               </div>
@@ -428,7 +428,7 @@ const JOBPostSLA = ({ allApiData }) => {
                 placement="top"
                 title={
                   hrSLADetails.length &&
-                  `${hrSLADetails[9].noOfTalents}/${hrSLADetails[9].requiredTalents} Talent Onboarded`
+                  `${hrSLADetails[9].noOfTalents} Talent Onboarded`
                 }
               >
                 <div
@@ -447,7 +447,7 @@ const JOBPostSLA = ({ allApiData }) => {
                   {/* <div className={CompanyProfileCardStyle.StepscreeningBox}>SLA - <span className={CompanyProfileCardStyle.screeningColorGreen}> 12 Hours</span> </div> */}
                   <div className={CompanyProfileCardStyle.StepscreeningBox}>
                     {hrSLADetails.length &&
-                      `${hrSLADetails[9].noOfTalents}/${hrSLADetails[9].requiredTalents} Talent Onboarded`}
+                      `${hrSLADetails[9].noOfTalents} Talent Onboarded`}
                   </div>
                 </div>
               </div>
