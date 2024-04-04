@@ -748,7 +748,9 @@
 } 
 
 
-
+.fixInputAlignment [class*="ant-select-selection-search-input"]{
+    height: 20px !important;
+}
 
 /* Responsive css start */
 

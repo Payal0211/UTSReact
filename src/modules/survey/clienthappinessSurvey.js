@@ -740,7 +740,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
 
 			<div className={clienthappinessSurveyStyles.row}>
 				<div className={clienthappinessSurveyStyles.colMd12}>
-                    <div className={clienthappinessSurveyStyles.InputGroup}>
+                    <div className={`${clienthappinessSurveyStyles.InputGroup} ${clienthappinessSurveyStyles.fixInputAlignment}`}>
                                 <label>Company</label>
 								<Controller
 									render={({ ...props }) => (                                        
