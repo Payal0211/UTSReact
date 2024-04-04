@@ -96,7 +96,7 @@ const EngagementList = () => {
 	const [engagementBillAndPayRateTab, setEngagementBillAndPayRateTab] =
 		useState('1');
 	const [activeTab, setActiveTab] = useState('')	
-	console.log(apiData,"apiData");
+
 	const [getEngagementModal, setEngagementModal] = useState({
 		engagementFeedback: false,
 		engagementRenew: false,

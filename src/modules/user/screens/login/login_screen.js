@@ -91,7 +91,7 @@ const LoginScreen = () => {
 
 
 	const sendResetLink = async (d) =>{
-		console.log("link to send reset",d)
+		// console.log("link to send reset",d)
 	}
 
 	return (

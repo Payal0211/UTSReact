@@ -21,13 +21,13 @@ export default function EditAllBRPR({closeModal,allBRPRdata}) {
 const getAllBRPRTableData = async (onboardID)=>{
   setIsLoading(true)
     let result = await engagementRequestDAO.getAllBRPRListDAO(onboardID)
-    console.log("getAllBRPRTableData",result)
+    // console.log("getAllBRPRTableData",result)
     if(result.statusCode === HTTPStatusCode.OK){
       setAllBRPRList(result.responseBody)
       setIsLoading(false)
     }
 }
-console.log('allBRPRlist',allBRPRlist)
+
   useEffect(()=>{
     getAllBRPRTableData(allBRPRdata?.onboardID )
   }

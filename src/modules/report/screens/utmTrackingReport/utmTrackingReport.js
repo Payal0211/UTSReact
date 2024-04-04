@@ -116,7 +116,7 @@ export default function UTMTrackingReport() {
     const response = await utmTrackingReportDAO.getutmTrackingLeadDetailDAO(params);
     if (response.statusCode === HTTPStatusCode.OK) {
       let details = response.responseBody.details;
-      console.log("popup data", details)
+      // console.log("popup data", details)
       setReportPopupList(details);
       setLoading(false);
     } else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {

@@ -117,7 +117,6 @@ const DebriefingHR = ({
 		// 	'roleAndResponsibilities',
 		// 	addData?.salesHiringRequest_Details?.rolesResponsibilities,
 		// );
-		console.log('add data',addData)
 		setValue('requirements', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
 		JDParsedSkills?.Requirements ||
 		(addData?.salesHiringRequest_Details?.requirement), {
