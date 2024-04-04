@@ -1097,9 +1097,10 @@ const EditHRFields = ({
       } else if (type !== SubmitType.SAVE_AS_DRAFT) {
         setType(SubmitType.SUBMIT);
       }
+      setInterval(()=>setIsSavedLoading(false),58000)
       const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
-
-      if (addHRRequest.statusCode === HTTPStatusCode.OK) {
+      
+      if (addHRRequest?.statusCode === HTTPStatusCode.OK) {
         setIsSavedLoading(false);
         window.scrollTo(0, 0);
         setAddHRResponse(getHRdetails?.en_Id);
