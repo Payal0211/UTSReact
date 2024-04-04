@@ -438,7 +438,7 @@ const AllHiringRequestScreen = () => {
 
   useEffect(()=>{
     if(selectedHRTypes.length > 0) {
-      let typeIds = selectedHRTypes.reduce((val, hr, ind) => {console.log(hr,val,ind,"dksjfsjdfjds");
+      let typeIds = selectedHRTypes.reduce((val, hr, ind) => {
         let str = ind === (selectedHRTypes.length -1) ?  val + `${hr.id}` : val + `${hr.id},`
         return str },'')
       setTableFilteredState(prev=> ({...prev, hrTypeIds:typeIds}))
@@ -673,7 +673,7 @@ const AllHiringRequestScreen = () => {
                 search={false}
                 placeholder="Select HR Type"
                 value={selectedHRTypes}
-                onChange={(data,datawithID)=>{console.log(data,datawithID);setSelectedHRTypes(datawithID)}}
+                onChange={(data,datawithID)=>{setSelectedHRTypes(datawithID)}}
                 options={HRTypesList} 
             />
 

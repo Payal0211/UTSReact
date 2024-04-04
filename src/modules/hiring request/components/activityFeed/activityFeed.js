@@ -321,7 +321,6 @@ if(activeTabType){
 															{DateTimeUtils.getTimeFromString(item?.ActionDate)}
 														</div>
 													</div>
-													{console.log(item)}
 													<div className={ActivityFeedStyle.activityFeedActivities}>
 														{item?.IsNotes === 0 ? (
 															<div className={ActivityFeedStyle.profileStatus}>

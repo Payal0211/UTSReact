@@ -77,15 +77,15 @@ const EngagementReplaceTalent = ({
 
 	// console.log({getTalentReplacementData,talentInfo})
 	const CreateReplaceHR =async ()=>{
-		console.log('payload to create',{HrID:hrId || getTalentReplacementData?.onBoardTalents?.hiringRequestId
-			,OnBoardID: talentInfo?.onboardID || talentInfo?.OnBoardId})
+		// console.log('payload to create',{HrID:hrId || getTalentReplacementData?.onBoardTalents?.hiringRequestId
+		// 	,OnBoardID: talentInfo?.onboardID || talentInfo?.OnBoardId})
 			const response = await engagementRequestDAO.createReplaceHRRequestDAO(
 				{HrID:hrId || getTalentReplacementData?.onBoardTalents?.hiringRequestId
 						,OnBoardID: talentInfo?.onboardID || talentInfo?.OnBoardId}
 			);
 
 			if (response?.statusCode === HTTPStatusCode.OK) {
-			console.log(response)
+			// console.log(response)
 			setNewHrModal(true)
 			setNewHRDetails(response?.responseBody?.details)
 			}

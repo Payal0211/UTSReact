@@ -764,7 +764,7 @@ const UsersFields = ({ id, setLoading, loading }) => {
 			}
 		}
 	}, [userDetails]);
-console.log('errors',errors)
+
 	return (
 		<div className={UserFieldStyle.hrFieldContainer}>
 			{getformLoading ? (
