@@ -472,6 +472,7 @@ const EditDebriefingHR = ({
 
 			
 			if(!sameSkillIssue){
+				setInterval(()=>setIsLoading(false),58000)
 				const debriefResult = await hiringRequestDAO.createDebriefingDAO(
 				debriefFormDetails,
 			);
