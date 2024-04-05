@@ -63,6 +63,7 @@ export class UserAPI {
 	static IS_EMPLOYEE_ID_EXIST = 'IsEmployeeIDExist';
 	static IS_EMPLOYEE_NAME_EXIST = 'IsEmployeeFullNameExist';
 	static CHANGE_PASSWORD = 'ChangePassword';
+	static UTS_FEEDBACK = 'UTSFeedBack';
 }
 
 export class AMAssignmentAPI {
