@@ -6,6 +6,7 @@ import Sidebar from 'shared/components/sidebar/sidebar';
 
 import { BsDisplay } from 'react-icons/bs';
 import { ChatListing } from 'widget-demo-chat';
+import UTSFeedback from 'modules/utsFeedback/utsFeedback';
 
 
 const Layout = () => {
@@ -30,6 +31,7 @@ const Layout = () => {
 					width: '100%',
 				}}>
 				<Outlet />
+				<UTSFeedback />
 			</main>
 			{(userData?.LoggedInUserTypeID === 2 || userData?.EmployeeID === "UP1302AM") && <ChatListing />}
 		</div>
