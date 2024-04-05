@@ -59,7 +59,6 @@ export default function UTMTrackingReport() {
   const [placement,sePlacement] = useState([]);
   const [source,setSource] = useState([]);
   const [term,setTerm] = useState([]);
-  const [filterCall,setFilterCall] = useState(false);
   const [selectedClientName, setSelectClientName] = useState()
   const [ClientNameList,setClientNameList] = useState([])
   const client = localStorage.getItem("clientID");
@@ -218,18 +217,27 @@ export default function UTMTrackingReport() {
   // useEffect(() => {
   //   allDropdownsList();
   // }, [filtersList])
-  
 
-  useEffect(() => {
-    let payload = {
+  let payload ={}
+
+  if(selectedClientName){
+    payload = {
       fromDate: moment(firstDay).format("YYYY-MM-DD"),
       toDate: moment(lastDay).format("YYYY-MM-DD"),
       clientID:selectedClientName ? Number(selectedClientName) : 0 
     };
-    if(!filterCall){
-      getClientPortalReportList(payload);
-    }
-  }, [selectedClientName,filterCall]);
+  }else{
+    payload = {
+      fromDate: moment(firstDay).format("YYYY-MM-DD"),
+      toDate: moment(lastDay).format("YYYY-MM-DD"),
+      clientID: 0 
+    };
+  }
+  
+  
+  useEffect(() => {
+    getClientPortalReportList(payload);
+  }, [selectedClientName]);
 
   const onCalenderFilter = useCallback(
     (dates) => {
@@ -370,14 +378,6 @@ export default function UTMTrackingReport() {
     getClientNameFilter();
   }, [getClientNameFilter]);
 
-  const changeClientName = (value)=>{
-    let payload = {
-      fromDate: moment(firstDay).format("YYYY-MM-DD"),
-      toDate: moment(lastDay).format("YYYY-MM-DD"),
-      clientID:value?value:0
-    };
-    getClientPortalReportList(payload);
-  }
 
   return (
     <div className={clientPortalTrackingReportStyle.dealContainer}>
@@ -393,9 +393,7 @@ export default function UTMTrackingReport() {
             // defaultValue="lucy"
             style={{ width: 200 }}
             onSelect={(value)=>{
-              changeClientName(value);
               setSelectClientName(value);   
-              setFilterCall(true);  
             }}
             filterOption={(inputValue, option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1}
             placeholder="Select client name"
