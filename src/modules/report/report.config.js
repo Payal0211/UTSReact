@@ -1011,7 +1011,9 @@ export const reportConfig = {
 							target="_blank"
 							href={
 								param?.jdFile
-									? `${NetworkInfo.FILENETWORK}ClientAttachments/${param?.jdFile}`
+									? `${ NetworkInfo.PROTOCOL +
+										NetworkInfo.DOMAIN +
+										"Media/JDParsing/JDfiles/"}${param?.jdFile}`
 									: param.jd
 							}
 							style={{ color: 'black', textDecoration: 'underline' }}
