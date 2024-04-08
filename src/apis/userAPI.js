@@ -62,6 +62,24 @@ export const userAPI = {
 			return errorDebug(error, 'UserAPI.createUserRequest');
 		}
 	},
+	submitUTSFeedback: async (userData) => {
+		try {
+			let httpService = new HttpServices();
+			
+			httpService.URL =
+				NetworkInfo.NETWORK +
+				SubDomain.USER +
+				UserAPI.UTS_FEEDBACK
+			
+			httpService.setAuthRequired = true;
+			httpService.dataToSend = userData;
+			httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'UserAPI.submitUTSFeedback');
+		}
+	},
 	getUserDetailsRequest: async (userData) => {
 		try {
 			let httpService = new HttpServices();
