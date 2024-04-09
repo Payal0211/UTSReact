@@ -85,6 +85,29 @@ export default function UTSFeedback() {
     setUploadFileData(event.target.files[0].name);
   };
 
+  const detectBrowser = (userAgent) => {
+    if (userAgent.indexOf("Firefox") > -1) {
+      return "Mozilla Firefox";
+    } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+      return "Opera";
+    } else if (userAgent.indexOf("Chrome") > -1) {
+      return "Google Chrome";
+    } else if (userAgent.indexOf("Safari") > -1) {
+      return "Safari";
+    } else if (userAgent.indexOf("Trident") > -1) {
+      return "Microsoft Internet Explorer";
+    } else {
+      return "Unknown";
+    }
+  };
+
+  const detectBrowserVersion = (userAgent) => {
+    const browserName = detectBrowser(userAgent);
+    const start = userAgent.indexOf(browserName) + browserName.length + 1;
+    const end = userAgent.indexOf(" ", start);
+    return userAgent.substring(start, end);
+  };
+
   const submitFeedback = async (d) => {
     setIsLoading(true);
     setRatingError({ isError: false, message: "" });
@@ -95,9 +118,17 @@ export default function UTSFeedback() {
       return;
     }
 
+
+    const userAgent = window.navigator.userAgent;
+    const browserName = detectBrowser(userAgent);
+    const browserVersion = detectBrowserVersion(userAgent);
+    const platform = window.navigator.platform;
+
     const payload = {
       ratingStar: d.rating,
       feedback: d.message,
+      Browser: `${browserName}, ${browserVersion}, ${platform} `,
+      PageUrl: window.location.href,
       fileUpload: {
         base64ProfilePic: base64Image ? base64Image : "",
         extenstion: getUploadFileData ? getUploadFileData.split(".")[1] : "",
