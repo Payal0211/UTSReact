@@ -11,6 +11,7 @@ import {
 } from "antd";
 import {
   ClientHRURL,
+  EmailRegEx,
   GoogleDriveCredentials,
   InputType,
   SubmitType,
@@ -38,6 +39,7 @@ import { UserAccountRole } from "constants/application";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { HttpStatusCode } from "axios";
 import infoIcon from 'assets/svg/info.svg'
+import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
 
 export const secondaryInterviewer = {
   interviewerId:"0",
@@ -318,7 +320,7 @@ const HRFields = ({
       } else {
         let formData = new FormData();
         formData.append("File", fileData);
-        formData.append("clientemail", clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId?? '');
+        formData.append("clientemail", clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId ?  filteredMemo[0]?.emailId : watchClientName?? '');
         let uploadFileResponse = await hiringRequestDAO.uploadFileDAO(formData);
         if (uploadFileResponse.statusCode === 400) {
           setValidation({
@@ -779,6 +781,9 @@ const HRFields = ({
             }));
             setIsCompanyNameAvailable(true);
             setValue("companyName", existingClientDetails?.responseBody?.name);
+            setValue("clientName", existingClientDetails?.responseBody?.email)
+            clearErrors(["clientName"])
+          
             companyName(existingClientDetails?.responseBody?.name);
 
             setAboutCompanyDesc(existingClientDetails?.responseBody?.AboutCompanyDesc?? null)
@@ -823,10 +828,36 @@ const HRFields = ({
 				existingClientDetails?.statusCode === HTTPStatusCode.NOT_FOUND &&
 				'Client email does not exist.',
 		}); */
-        existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
-          setValue("clientName", "");
-        existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
-          setValue("companyName", "");
+
+    // for manage and fetch from HubSpot
+    if(existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND){
+
+      let email =  filteredMemo[0]?.emailId
+      ? filteredMemo[0]?.emailId
+      : watchClientName
+      if(EmailRegEx.email.test(email)){
+         let response = await HubSpotDAO.getContactsByEmailDAO(email)
+      if(response.statusCode === HTTPStatusCode.OK){
+        getHRClientName(watchClientName)
+
+      }else{
+        message.error(response?.responseBody)
+        setValue("clientName", "")
+      } 
+      setIsSavedLoading(false)
+        setIsLoading(false);
+      }else{
+        setValue("clientName", "")
+        setIsSavedLoading(false)
+        setIsLoading(false);
+      }
+
+         
+    }
+        // existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
+        //   setValue("clientName", "");
+        // existingClientDetails.statusCode === HTTPStatusCode.NOT_FOUND &&
+        //   setValue("companyName", "");
         // existingClientDetails?.statusCode === HTTPStatusCode.OK &&
         //   setValue("companyName", existingClientDetails?.responseBody?.name);
         // companyName(existingClientDetails?.responseBody?.name);

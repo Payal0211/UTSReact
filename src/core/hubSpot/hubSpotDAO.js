@@ -111,4 +111,32 @@ export const HubSpotDAO = {
 			return errorDebug(error, 'HubSpotDAO.getContactsByEmailDAO');
 		}
     },
+	getContactsByEmailDAO :async (Email)=>{
+        try {
+            const contactsResult = await HubSpotAPI.getContactsByEmail(Email)
+			if (contactsResult) {
+				const statusCode = contactsResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = contactsResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return contactsResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return contactsResult;
+                else if (statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR){
+                    return contactsResult;
+                }
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'HubSpotDAO.getContactsByEmailDAO');
+		}
+    },
 }

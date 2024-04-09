@@ -667,6 +667,7 @@ const OnboardField = () => {
                     mode="id/value"
                     setValue={setValue}
                     register={register}
+                    searchable={true}
                     label={"Talent Time Zone"}
                     defaultValue={"Select Time Zone"}
                     options={talentTimeZone}

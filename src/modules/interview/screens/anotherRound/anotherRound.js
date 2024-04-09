@@ -1107,6 +1107,7 @@ const AnotherRound = ({
 															isControlled={true}
 															mode={'id/value'}
 															setValue={setValue}
+															searchable={true}
 															register={register}
 															name="interviewTimezone"
 															label="Time Zone"
