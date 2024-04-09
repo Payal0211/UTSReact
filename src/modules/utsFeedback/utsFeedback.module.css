@@ -83,7 +83,7 @@ display: flex;
     height: 48px;
     border-radius: 8px;
     margin: 10px 0 32px;
-    cursor: pointer;
+    /* cursor: pointer; */
 }
 
 .fileSelector p {
@@ -96,8 +96,26 @@ display: flex;
     background: var(--color-sunlight);
     font-weight: 600;
     width: 100px;
+    height:100%;
     cursor: pointer;
    }
+
+.fileSelector img {
+cursor: pointer;
+}
+
+.headerclass {
+display: flex;
+justify-content: space-between;
+}
+
+.headerclass img{
+    cursor: pointer;
+}
+
+.modalWrapper [class*='ant-modal-close'] {
+    display:none
+}
 
 .actions {
     display: flex;

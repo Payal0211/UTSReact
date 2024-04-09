@@ -519,7 +519,7 @@ const EditCompanyDetails = ({
                     style={{ width: "100%",
                     height: "100%", display: "flex",alignItems: "center"}} 
                     size="large">
-                      {companyDetail?.companyName?.substring(0, 2)}
+                      {companyDetail?.companyName?.substring(0, 2).toUpperCase()}
                       </Avatar>
                   ) : (
                     <img

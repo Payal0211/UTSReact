@@ -66,7 +66,7 @@ export default function UTSFeedback() {
       if (filesize > 5120) {
         setFileError({
           isError: true,
-          message: "Video Size larger then 5MB not allowed",
+          message: "* Video Size larger then 5MB not allowed",
         });
         return;
       }
@@ -75,7 +75,7 @@ export default function UTSFeedback() {
       if (filesize > 2048) {
         setFileError({
           isError: true,
-          message: "Image Size larger then 2MB not allowed",
+          message: "* Image Size larger then 2MB not allowed",
         });
         return;
       }
@@ -83,7 +83,6 @@ export default function UTSFeedback() {
     const base64 = await convertToBase64(file);
     setBase64Image(base64);
     setUploadFileData(event.target.files[0].name);
-    console.log(file);
   };
 
   const submitFeedback = async (d) => {
@@ -91,7 +90,7 @@ export default function UTSFeedback() {
     setRatingError({ isError: false, message: "" });
     // User/UTSFeedBack
     if (!d.rating) {
-      setRatingError({ isError: true, message: "Please select rating" });
+      setRatingError({ isError: true, message: "* Please select rating" });
       setIsLoading(false);
       return;
     }
@@ -141,16 +140,22 @@ export default function UTSFeedback() {
         )}{" "}
       </button>
 
-      <Modal
+     <Modal
         width={"700px"}
         centered
+        
         footer={false}
         open={showFeedbackModal}
         //  className="cloneHRConfWrap"
-        onCancel={() => setShowFeedbackModal(false)}
+        closable={false}
+        // onCancel={() => setShowFeedbackModal(false)}
       >
         <div>
-          <h2>Submit UTS Feedback</h2>
+          <div className={utsFeedbackStyles.headerclass}>
+            <h2>Submit UTS Feedback</h2>
+          <img src={RemoveSVG} alt="icon" width={"25px"} onClick={()=> setShowFeedbackModal(false)} />
+          </div>
+          
           <Divider style={{ margin: "10px 0" }} dashed />
 
           {isLoading ? (
@@ -225,7 +230,7 @@ export default function UTSFeedback() {
                   isTextArea={true}
                   rows={4}
                   validationSchema={{
-                    required: "please enter the client name.",
+                    required: "please enter message.",
                   }}
                   errors={errors}
                 />
@@ -237,22 +242,22 @@ export default function UTSFeedback() {
                   <p className={utsFeedbackStyles.error}>{fileError.message}</p>
                 )}
                 <div
-                  className={utsFeedbackStyles.fileSelector}
-                  onClick={() => {
+                  className={utsFeedbackStyles.fileSelector}                
+                >
+                  <p>{getUploadFileData ? getUploadFileData : "Choose File"}</p>
+                  <div onClick={() => {
                     if (getUploadFileData) {
                       setBase64Image("");
                       setUploadFileData("");
                       return;
                     }
                     fileRef?.current?.click();
-                  }}
-                >
-                  <p>{getUploadFileData ? getUploadFileData : "Choose File"}</p>
-                  {getUploadFileData ? (
+                  }}>{getUploadFileData ? (
                     <img src={RemoveSVG} alt="icon" width={"40px"} />
                   ) : (
                     <button>Browse</button>
-                  )}
+                  )}</div>
+                 
                 </div>
 
                 <input
@@ -287,6 +292,8 @@ export default function UTSFeedback() {
           </div>
         </div>
       </Modal>
+
+   
     </>
   );
 }
