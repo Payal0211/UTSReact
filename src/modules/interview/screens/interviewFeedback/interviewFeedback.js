@@ -276,13 +276,13 @@ const InterviewFeedback = ({
 												No, I would not like to move ahead with the hiring of
 												this talent.
 											</Radio>
-											{!isEditFeedback && (
+											{/* {!isEditFeedback && (
 												<Radio value={'OnHold'}>
 													I liked the talent but feeling confused about the
 													hiring decision. Can I keep this talent on hold for
 													now?
 												</Radio>
-											)}
+											)} */}
 											<Radio value={'AnotherRound'}>
 												Certainly, but would love to have another round of
 												interview
