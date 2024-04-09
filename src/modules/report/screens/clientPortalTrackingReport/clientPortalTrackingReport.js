@@ -218,25 +218,23 @@ export default function UTMTrackingReport() {
   //   allDropdownsList();
   // }, [filtersList])
 
-  let payload ={}
-
-  if(selectedClientName){
-    payload = {
-      fromDate: moment(firstDay).format("YYYY-MM-DD"),
-      toDate: moment(lastDay).format("YYYY-MM-DD"),
-      clientID:selectedClientName ? Number(selectedClientName) : 0 
-    };
-  }else{
-    payload = {
-      fromDate: moment(firstDay).format("YYYY-MM-DD"),
-      toDate: moment(lastDay).format("YYYY-MM-DD"),
-      clientID: 0 
-    };
-  }
-  
-  
   useEffect(() => {
-    getClientPortalReportList(payload);
+    if(selectedClientName){
+      let payload = {
+         fromDate: moment(firstDay).format("YYYY-MM-DD"),
+         toDate: moment(lastDay).format("YYYY-MM-DD"),
+         clientID:selectedClientName ? Number(selectedClientName) : 0 
+       };
+      getClientPortalReportList(payload);
+    }
+    else{
+      let payload = {
+        fromDate: moment(firstDay).format("YYYY-MM-DD"),
+        toDate: moment(lastDay).format("YYYY-MM-DD"),
+        clientID:0 
+      };
+     getClientPortalReportList(payload);
+    }
   }, [selectedClientName]);
 
   const onCalenderFilter = useCallback(
