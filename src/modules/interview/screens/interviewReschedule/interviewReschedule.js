@@ -428,6 +428,7 @@ const InterviewReschedule = ({
 										isControlled={true}
 										setValue={setValue}
 										register={register}
+										searchable={true}
 										name="interviewTimezone"
 										label="Time Zone"
 										mode="id"
