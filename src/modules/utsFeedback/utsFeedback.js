@@ -131,7 +131,7 @@ export default function UTSFeedback() {
       PageUrl: window.location.href,
       fileUpload: {
         base64ProfilePic: base64Image ? base64Image : "",
-        extenstion: getUploadFileData ? getUploadFileData.split(".")[1] : "",
+        extenstion: getUploadFileData ? getUploadFileData.split(".")[getUploadFileData.split(".").length - 1] : "",
       },
     };
 
