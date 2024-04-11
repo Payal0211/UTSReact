@@ -219,23 +219,13 @@ export default function UTMTrackingReport() {
   // }, [filtersList])
 
   useEffect(() => {
-    if(selectedClientName){
       let payload = {
          fromDate: moment(firstDay).format("YYYY-MM-DD"),
          toDate: moment(lastDay).format("YYYY-MM-DD"),
-         clientID:selectedClientName ? Number(selectedClientName) : 0 
+         clientID:clientID ?Number(clientID):0
        };
       getClientPortalReportList(payload);
-    }
-    else{
-      let payload = {
-        fromDate: moment(firstDay).format("YYYY-MM-DD"),
-        toDate: moment(lastDay).format("YYYY-MM-DD"),
-        clientID:0 
-      };
-     getClientPortalReportList(payload);
-    }
-  }, [selectedClientName]);
+  }, [clientID]);
 
   const onCalenderFilter = useCallback(
     (dates) => {
@@ -376,6 +366,16 @@ export default function UTMTrackingReport() {
     getClientNameFilter();
   }, [getClientNameFilter]);
 
+  const changeClientName = (value)=>{
+    let payload = {
+      fromDate: moment(firstDay).format("YYYY-MM-DD"),
+      toDate: moment(lastDay).format("YYYY-MM-DD"),
+      clientID:value?value:0
+    };
+    setSelectClientName(value)
+    getClientPortalReportList(payload);
+  }
+
 
   return (
     <div className={clientPortalTrackingReportStyle.dealContainer}>
@@ -390,8 +390,11 @@ export default function UTMTrackingReport() {
           <Select
             // defaultValue="lucy"
             style={{ width: 200 }}
-            onSelect={(value)=>{
-              setSelectClientName(value);   
+            // onSelect={(value)=>{
+            //   setSelectClientName(value);   
+            // }}
+            onChange={(value)=>{
+              changeClientName(value);   
             }}
             filterOption={(inputValue, option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1}
             placeholder="Select client name"
