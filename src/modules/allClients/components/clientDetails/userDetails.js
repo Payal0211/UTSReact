@@ -434,7 +434,7 @@ const UserDetails = () => {
                         })
                       }
                     >
-                      Do you want to continue with Pay Per Hire (Hybrid) model ?
+                      Do you want to continue with <b>Pay Per Hire</b> ?
                     </Checkbox>
                   </div>
                   {errorData && (
