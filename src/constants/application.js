@@ -197,14 +197,15 @@ export class hiringRequestPriority {
 
 export class HiringRequestHRStatus {
 	static DRAFT = 101;
-	static HR_ACCEPTED = 102;
-	static ACCEPTANCE_PENDING = 103;
-	static INFO_PENDING = 104;
-	static COMPLETED = 105;
-	static IN_PROCESS = 106;
-	static CANCELLED = 107;
-	static ON_HOLD = 108;
-	static LOST = 109;
+	static HR_ACCEPTED = 102;//   Open 
+	static ACCEPTANCE_PENDING = 103;//   Closed - Expired 
+	static INFO_PENDING = 104;// Active - Reposted    104
+	static COMPLETED = 105;//  Closed - Won
+	static IN_PROCESS = 106;// Active
+	static CANCELLED = 107;// Active - but no longer accepting applicaitons
+	static ON_HOLD = 108;// Closed - Cancelled
+	static LOST = 109;// Closed - Lost
+	static REOPEN = 110
 }
 
 export class AnotherRoundInterviewOption {

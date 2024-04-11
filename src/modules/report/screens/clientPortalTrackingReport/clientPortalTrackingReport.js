@@ -59,7 +59,6 @@ export default function UTMTrackingReport() {
   const [placement,sePlacement] = useState([]);
   const [source,setSource] = useState([]);
   const [term,setTerm] = useState([]);
-  const [filterCall,setFilterCall] = useState(false);
   const [selectedClientName, setSelectClientName] = useState()
   const [ClientNameList,setClientNameList] = useState([])
   const client = localStorage.getItem("clientID");
@@ -218,18 +217,15 @@ export default function UTMTrackingReport() {
   // useEffect(() => {
   //   allDropdownsList();
   // }, [filtersList])
-  
 
   useEffect(() => {
-    let payload = {
-      fromDate: moment(firstDay).format("YYYY-MM-DD"),
-      toDate: moment(lastDay).format("YYYY-MM-DD"),
-      clientID:selectedClientName ? Number(selectedClientName) : 0 
-    };
-    if(!filterCall){
+      let payload = {
+         fromDate: moment(firstDay).format("YYYY-MM-DD"),
+         toDate: moment(lastDay).format("YYYY-MM-DD"),
+         clientID:clientID ?Number(clientID):0
+       };
       getClientPortalReportList(payload);
-    }
-  }, [selectedClientName,filterCall]);
+  }, [clientID]);
 
   const onCalenderFilter = useCallback(
     (dates) => {
@@ -376,8 +372,10 @@ export default function UTMTrackingReport() {
       toDate: moment(lastDay).format("YYYY-MM-DD"),
       clientID:value?value:0
     };
+    setSelectClientName(value)
     getClientPortalReportList(payload);
   }
+
 
   return (
     <div className={clientPortalTrackingReportStyle.dealContainer}>
@@ -392,10 +390,11 @@ export default function UTMTrackingReport() {
           <Select
             // defaultValue="lucy"
             style={{ width: 200 }}
-            onSelect={(value)=>{
-              changeClientName(value);
-              setSelectClientName(value);   
-              setFilterCall(true);  
+            // onSelect={(value)=>{
+            //   setSelectClientName(value);   
+            // }}
+            onChange={(value)=>{
+              changeClientName(value);   
             }}
             filterOption={(inputValue, option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1}
             placeholder="Select client name"

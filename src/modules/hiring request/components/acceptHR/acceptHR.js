@@ -108,7 +108,7 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
 								className={AcceptHRStyle.btnPrimary}>
 								Accept HR
 							</button>
-							{apiData?.HRAction !== 'HR Wait For More Info' && (
+							{/* {apiData?.HRAction !== 'HR Wait For More Info' && (
 								<button
 									type="submit"
 									onClick={
@@ -119,7 +119,7 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
 									className={AcceptHRStyle.btn}>
 									Wait for more Information
 								</button>
-							)}
+							)} */}
 						</div>
 					</div>
 				)}

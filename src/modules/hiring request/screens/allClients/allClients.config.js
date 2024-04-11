@@ -60,151 +60,7 @@ export const allClientsConfig = {
         if(isShowAddClientCredit === true){
             return [
                 {
-                    title: '',
-                    dataIndex: 'Edit',
-                    key: 'edit',
-                    align: 'center',
-                    width: '60px',
-                    render:(_,result) => {
-                        return (
-                        isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
-                            to={`/editclient/${result.companyID}`}
-                            style={{ color: 'black', textDecoration: 'underline' }}
-                            onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
-                            <PencilSVG />
-                        </Link>
-                        )
-                    }
-                },
-                
-                {
-                    title: 'Added Date',
-                    dataIndex: 'addedDate',
-                    key: 'addedDate',
-                    width: '120px',
-                },
-                {
-                    title: 'Company',
-                    dataIndex: 'companyName',
-                    key: 'companyName',
-                    width: '210px',
-                    render: (text, result) => {
-                        if(result.companyID === 0  || result.clientID=== 0){
-                            return text
-                        }
-                        return (
-                            <Link
-                                // to={`/viewClient/${result.companyID}~${result.clientID}`}
-                                to={`/viewClient/${result.companyID}/${result.clientID}`}
-                                target="_blank"
-                                style={{
-                                    color: `var(--uplers-black)`,
-                                    textDecoration: 'underline',
-                                }}>
-                                {text}
-                            </Link>
-                        );
-                    },
-                },
-                {
-                    title: 'Company Type',
-                    dataIndex: 'companyModel',
-                    key: 'companyModel',
-                    width: '150px',
-                },
-                {
-                    title: 'Credit Utilization',
-                    dataIndex: 'creditUtilization',
-                    key: 'creditUtilization',
-                    width: '150px',
-                },
-                {
-                    title: 'Client',
-                    dataIndex: 'clientName',
-                    key: 'clientName',
-                    width: '150px',
-                },
-                {
-                    title: 'Client Email',
-                    dataIndex: 'clientEmail',
-                    key: 'clientEmail',
-                    width: '200px',
-                },
-                {
-                    title: 'POC',
-                    dataIndex: 'poc',
-                    key: 'poc',
-                    width: '150px',
-                    // render: (text, result) => {
-                    // 	return (
-                    // 		<Link
-                    // 			to={`/allclients`}
-                    // 			style={{
-                    // 				color: `var(--uplers-black)`,
-                    // 				textDecoration: 'underline',
-                    // 			}}>
-                    // 			{text}
-                    // 		</Link>
-                    // 	);
-                    // },
-                },
-                {
-                    title: 'AM',
-                    dataIndex: 'aM_UserName',
-                    key: 'aM_UserName',
-                    width: '250px',
-                    render:(text,result)=>{
-                        let data = {clientID: result?.clientID, companyID: result?.companyID }
-                        return text ? <div className={clienthappinessSurveyStyles.AMNAME}  onClick={()=>editAMHandler(data)}>{text}</div> : null
-                    }
-                },
-                // {
-                //     title: 'Geo',
-                //     dataIndex: 'geo',
-                //     key: 'geo',
-                //     width: '100px',
-                // },
-                {
-                    title: 'Source',
-                    dataIndex: 'inputSource',
-                    key: 'inputSource',
-                    width: '150px',            },
-                {
-                    title: 'Source Category',
-                    dataIndex: 'sourceCategory',
-                    key: 'sourceCategory',
-                    width: '150px',            },
-                {
-                    title: 'Status',
-                    dataIndex: 'status',
-                    key: 'status',
-                    width: '150px',
-                    render: (text,result) => {
-                        return (
-                            text && <span 
-                             className={clienthappinessSurveyStyles.StatusOpportunity} 
-                             style={{backgroundColor:`${result.statusColor}`}} >{text}</span>			
-                        );
-                    },
-                },
-                {
-                    title: 'Invite Name',
-                    dataIndex: 'inviteName',
-                    key: 'inviteName',
-                    width: '100px',
-                },
-                {
-                    title: 'Invite Date',
-                    dataIndex: 'inviteDate',
-                    key: 'inviteDate',
-                    width: '100px',
-                    render: (text) => {
-                        if (!text) return null;
-                        return moment(text).format('DD/MM/YYYY')
-                    },
-                },
-                {
-                    title: 'SSO',
+                    title: 'SSO Login',
                     dataIndex: 'ssO_Login',
                     key: 'ssO_Login',
                     width: '150px',
@@ -221,9 +77,6 @@ export const allClientsConfig = {
                         );
                     },
                 },
-              ]; 
-        }else{
-            return [
                 {
                     title: '',
                     dataIndex: 'Edit',
@@ -353,16 +206,163 @@ export const allClientsConfig = {
                     },
                 },
                 {
-                    title: 'Invite Name',
+                    title: 'Inviting',
                     dataIndex: 'inviteName',
                     key: 'inviteName',
-                    width: '100px',
+                    width: '150px',
                 },
                 {
-                    title: 'Invite Date',
+                    title: 'Invited Date',
                     dataIndex: 'inviteDate',
                     key: 'inviteDate',
-                    width: '100px',
+                    width: '150px',
+                    render: (text) => {
+                        if (!text) return null;
+                        return moment(text).format('DD/MM/YYYY')
+                    },
+                },
+              ]; 
+        }else{
+            return [
+                {
+                    title: '',
+                    dataIndex: 'Edit',
+                    key: 'edit',
+                    align: 'center',
+                    width: '20px',
+                    render:(_,result) => {
+                        return (
+                        isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
+                            to={`/editclient/${result.companyID}`}
+                            style={{ color: 'black', textDecoration: 'underline' }}
+                            onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
+                            <PencilSVG />
+                        </Link>
+                        )
+                    }
+                },
+                
+                {
+                    title: 'Added Date',
+                    dataIndex: 'addedDate',
+                    key: 'addedDate',
+                    width: '120px',
+                },
+                {
+                    title: 'Company',
+                    dataIndex: 'companyName',
+                    key: 'companyName',
+                    width: '210px',
+                    render: (text, result) => {
+                        if(result.companyID === 0  || result.clientID=== 0){
+                            return text
+                        }
+                        return (
+                            <Link
+                                // to={`/viewClient/${result.companyID}~${result.clientID}`}
+                                to={`/viewClient/${result.companyID}/${result.clientID}`}
+                                target="_blank"
+                                style={{
+                                    color: `var(--uplers-black)`,
+                                    textDecoration: 'underline',
+                                }}>
+                                {text}
+                            </Link>
+                        );
+                    },
+                },
+                {
+                    title: 'Company Type',
+                    dataIndex: 'companyModel',
+                    key: 'companyModel',
+                    width: '150px',
+                },
+                {
+                    title: 'Credit Utilization',
+                    dataIndex: 'creditUtilization',
+                    key: 'creditUtilization',
+                    width: '150px',
+                },
+                {
+                    title: 'Client',
+                    dataIndex: 'clientName',
+                    key: 'clientName',
+                    width: '150px',
+                },
+                {
+                    title: 'Client Email',
+                    dataIndex: 'clientEmail',
+                    key: 'clientEmail',
+                    width: '200px',
+                },
+                {
+                    title: 'POC',
+                    dataIndex: 'poc',
+                    key: 'poc',
+                    width: '150px',
+                    // render: (text, result) => {
+                    // 	return (
+                    // 		<Link
+                    // 			to={`/allclients`}
+                    // 			style={{
+                    // 				color: `var(--uplers-black)`,
+                    // 				textDecoration: 'underline',
+                    // 			}}>
+                    // 			{text}
+                    // 		</Link>
+                    // 	);
+                    // },
+                },
+                {
+                    title: 'AM',
+                    dataIndex: 'aM_UserName',
+                    key: 'aM_UserName',
+                    width: '250px',
+                    render:(text,result)=>{
+                        let data = {clientID: result?.clientID, companyID: result?.companyID }
+                        return text ? <div className={clienthappinessSurveyStyles.AMNAME}  onClick={()=>editAMHandler(data)}>{text}</div> : null
+                    }
+                },
+                // {
+                //     title: 'Geo',
+                //     dataIndex: 'geo',
+                //     key: 'geo',
+                //     width: '100px',
+                // },
+                {
+                    title: 'Source',
+                    dataIndex: 'inputSource',
+                    key: 'inputSource',
+                    width: '150px',            },
+                {
+                    title: 'Source Category',
+                    dataIndex: 'sourceCategory',
+                    key: 'sourceCategory',
+                    width: '150px',            },
+                {
+                    title: 'Status',
+                    dataIndex: 'status',
+                    key: 'status',
+                    width: '150px',
+                    render: (text,result) => {
+                        return (
+                            text && <span 
+                             className={clienthappinessSurveyStyles.StatusOpportunity} 
+                             style={{backgroundColor:`${result.statusColor}`}} >{text}</span>			
+                        );
+                    },
+                },
+                {
+                    title: 'Inviting',
+                    dataIndex: 'inviteName',
+                    key: 'inviteName',
+                    width: '150px',
+                },
+                {
+                    title: 'Invited Date',
+                    dataIndex: 'inviteDate',
+                    key: 'inviteDate',
+                    width: '150px',
                     render: (text) => {
                         if (!text) return null;
                         return moment(text).format('DD/MM/YYYY')
