@@ -241,6 +241,7 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                             options={talentStatus?.Timezonedata}
                             defaultValue="Please Select"
                             // placeholder={'Enter POC Name'}
+                            searchable={true}
                             name="timeZone"
                             isError={errors['timeZone'] && errors['timeZone']}
                             required

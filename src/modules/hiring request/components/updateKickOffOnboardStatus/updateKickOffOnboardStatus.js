@@ -114,6 +114,7 @@ const UpdateKickOffOnboardStatus = ({
 								setValue={setValue}
 								register={register}
 								name="timezone"
+								searchable={true}
 								label="Time Zone"
 								defaultValue="Please Select"
 								options={talentStatus?.Timezonedata}

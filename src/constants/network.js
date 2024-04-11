@@ -93,6 +93,7 @@ export class HubspotsAPI {
 	static GET_COMPANY_DETAILS = 'GetCompanyDetails'
 	static GET_CONTACTS_BY_EMAIL = 'GetHubSpotContactsByEmail'
 	static GET_COMPANT_DETAILS_FOR_EDIT = 'GetCompanyDetailsForEditClient'
+	static GET_COMPANY_DETAILS_HUBSPOT  = 'Contact/GetHubSpotContactsByEmail'
 }
 
 export class EngagementAPI {

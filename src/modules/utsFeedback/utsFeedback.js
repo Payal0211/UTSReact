@@ -66,7 +66,7 @@ export default function UTSFeedback() {
       if (filesize > 5120) {
         setFileError({
           isError: true,
-          message: "Video Size larger then 5MB not allowed",
+          message: "* Video Size larger then 5MB not allowed",
         });
         return;
       }
@@ -75,7 +75,7 @@ export default function UTSFeedback() {
       if (filesize > 2048) {
         setFileError({
           isError: true,
-          message: "Image Size larger then 2MB not allowed",
+          message: "* Image Size larger then 2MB not allowed",
         });
         return;
       }
@@ -83,7 +83,29 @@ export default function UTSFeedback() {
     const base64 = await convertToBase64(file);
     setBase64Image(base64);
     setUploadFileData(event.target.files[0].name);
-    console.log(file);
+  };
+
+  const detectBrowser = (userAgent) => {
+    if (userAgent.indexOf("Firefox") > -1) {
+      return "Mozilla Firefox";
+    } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+      return "Opera";
+    } else if (userAgent.indexOf("Chrome") > -1) {
+      return "Google Chrome";
+    } else if (userAgent.indexOf("Safari") > -1) {
+      return "Safari";
+    } else if (userAgent.indexOf("Trident") > -1) {
+      return "Microsoft Internet Explorer";
+    } else {
+      return "Unknown";
+    }
+  };
+
+  const detectBrowserVersion = (userAgent) => {
+    const browserName = detectBrowser(userAgent);
+    const start = userAgent.indexOf(browserName) + browserName.length + 1;
+    const end = userAgent.indexOf(" ", start);
+    return userAgent.substring(start, end);
   };
 
   const submitFeedback = async (d) => {
@@ -91,17 +113,25 @@ export default function UTSFeedback() {
     setRatingError({ isError: false, message: "" });
     // User/UTSFeedBack
     if (!d.rating) {
-      setRatingError({ isError: true, message: "Please select rating" });
+      setRatingError({ isError: true, message: "* Please select rating" });
       setIsLoading(false);
       return;
     }
 
+
+    const userAgent = window.navigator.userAgent;
+    const browserName = detectBrowser(userAgent);
+    const browserVersion = detectBrowserVersion(userAgent);
+    const platform = window.navigator.platform;
+
     const payload = {
       ratingStar: d.rating,
       feedback: d.message,
+      Browser: `${browserName}, ${browserVersion}, ${platform} `,
+      PageUrl: window.location.href,
       fileUpload: {
         base64ProfilePic: base64Image ? base64Image : "",
-        extenstion: getUploadFileData ? getUploadFileData.split(".")[1] : "",
+        extenstion: getUploadFileData ? getUploadFileData.split(".")[getUploadFileData.split(".").length - 1] : "",
       },
     };
 
@@ -141,16 +171,22 @@ export default function UTSFeedback() {
         )}{" "}
       </button>
 
-      <Modal
+     <Modal
         width={"700px"}
         centered
+        
         footer={false}
         open={showFeedbackModal}
         //  className="cloneHRConfWrap"
-        onCancel={() => setShowFeedbackModal(false)}
+        closable={false}
+        // onCancel={() => setShowFeedbackModal(false)}
       >
         <div>
-          <h2>Submit UTS Feedback</h2>
+          <div className={utsFeedbackStyles.headerclass}>
+            <h2>Submit UTS Feedback</h2>
+          <img src={RemoveSVG} alt="icon" width={"25px"} onClick={()=> setShowFeedbackModal(false)} />
+          </div>
+          
           <Divider style={{ margin: "10px 0" }} dashed />
 
           {isLoading ? (
@@ -225,7 +261,7 @@ export default function UTSFeedback() {
                   isTextArea={true}
                   rows={4}
                   validationSchema={{
-                    required: "please enter the client name.",
+                    required: "please enter message.",
                   }}
                   errors={errors}
                 />
@@ -237,22 +273,22 @@ export default function UTSFeedback() {
                   <p className={utsFeedbackStyles.error}>{fileError.message}</p>
                 )}
                 <div
-                  className={utsFeedbackStyles.fileSelector}
-                  onClick={() => {
+                  className={utsFeedbackStyles.fileSelector}                
+                >
+                  <p>{getUploadFileData ? getUploadFileData : "Choose File"}</p>
+                  <div onClick={() => {
                     if (getUploadFileData) {
                       setBase64Image("");
                       setUploadFileData("");
                       return;
                     }
                     fileRef?.current?.click();
-                  }}
-                >
-                  <p>{getUploadFileData ? getUploadFileData : "Choose File"}</p>
-                  {getUploadFileData ? (
+                  }}>{getUploadFileData ? (
                     <img src={RemoveSVG} alt="icon" width={"40px"} />
                   ) : (
                     <button>Browse</button>
-                  )}
+                  )}</div>
+                 
                 </div>
 
                 <input
@@ -287,6 +323,8 @@ export default function UTSFeedback() {
           </div>
         </div>
       </Modal>
+
+   
     </>
   );
 }
