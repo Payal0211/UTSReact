@@ -696,7 +696,7 @@ const TalentList = ({
 												</div>
 												{info.IsEditable && <>
 													{!hrType ? <>
-														{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && 
+														{apiData?.JobStatusID !== 2  && 
 												(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
 												<span
 												onClick={() => {
@@ -714,7 +714,7 @@ const TalentList = ({
 												Edit
 											</span>}
 													</> : <>
-													{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && <span
+													{apiData?.JobStatusID !== 2 && <span
 													onClick={() => {
 														setEditDPRate(true);
 														setDPData({ talentId:item?.TalentID , contactPriorityID: item?.ContactPriorityID, allValues: item});

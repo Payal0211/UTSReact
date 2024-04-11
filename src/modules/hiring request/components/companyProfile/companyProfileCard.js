@@ -282,17 +282,19 @@ const CompanyProfileCard = ({
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.ActiveTR}
                 </span>
-                {apiData !== "Cancelled" &&
-                  apiData !== "Completed" &&
-                  apiData !== "Lost" &&
-                  (userSessionMemo?.loggedInUserTypeID ===
-                    UserAccountRole.DEVELOPER ||
-                    userSessionMemo?.loggedInUserTypeID ===
-                      UserAccountRole.ADMINISTRATOR ||
-                    userSessionMemo?.loggedInUserTypeID ===
-                      UserAccountRole.SALES ||
-                    userSessionMemo?.loggedInUserTypeID ===
-                      UserAccountRole.SALES_MANAGER) && (allApiData?.ReplaceOnBoardID === null || allApiData?.ReplaceOnBoardID === 0 ) && clientDetail?.CompanyTypeID === 1 &&  (
+                {
+                // apiData !== "Cancelled" &&
+                //   apiData !== "Completed" &&
+                //   apiData !== "Lost" &&
+                //   (userSessionMemo?.loggedInUserTypeID ===
+                //     UserAccountRole.DEVELOPER ||
+                //     userSessionMemo?.loggedInUserTypeID ===
+                //       UserAccountRole.ADMINISTRATOR ||
+                //     userSessionMemo?.loggedInUserTypeID ===
+                //       UserAccountRole.SALES ||
+                //     userSessionMemo?.loggedInUserTypeID ===
+                //       UserAccountRole.SALES_MANAGER) && (allApiData?.ReplaceOnBoardID === null || allApiData?.ReplaceOnBoardID === 0 ) && clientDetail?.CompanyTypeID === 1 
+                allApiData?.dynamicCTA?.UpdateTR?.IsEnabled  &&  (
                     <button
                       onClick={() => {
                         setUpdateTR(true);
