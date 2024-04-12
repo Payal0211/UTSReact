@@ -1,5 +1,5 @@
 import WithLoader from "shared/components/loader/loader";
-import { Button, Table, Tag, message, Modal } from 'antd';
+import { Button, Table, Tag, message, Modal, Avatar } from 'antd';
 // import dealDetailsStyles from './dealDetailsStyle.module.css';
 
 import dealDetailsStyles from './viewClientDetails.module.css';
@@ -213,8 +213,15 @@ function ViewClientDetails() {
 							// alt={viewDetails?.clientDetails?.companyInitial}
 							alt=""
 						/> : 
-						<span className={dealDetailsStyles.viewClientUser} style={{backgroundImage: viewClient}}>
-							{viewDetails?.clientDetails?.companyInitial}							
+						<span className={dealDetailsStyles.viewClientUser} 
+						// style={{backgroundImage: viewClient}}
+						>
+							 <Avatar 
+                    style={{ width: "100%",
+                    height: "100%", display: "flex",alignItems: "center"}} 
+                    size="large">{viewDetails?.clientDetails?.companyName.substring(0, 2).toUpperCase()}	</Avatar>
+							{/* {viewDetails?.clientDetails?.companyInitial} */}
+													
 						</span>}
 						&nbsp;{viewDetails?.clientDetails?.companyName}						
 					</h1>

@@ -81,8 +81,10 @@ const AcceptHR = ({ apiData, hrID, openModal, cancelModal }) => {
 					<div className={AcceptHRStyle.transparent}>
 						<p className={AcceptHRStyle.paragraph}>
 							If you have complete clarity for this HR, then kindly accept the
+							HR”.
+							{/* If you have complete clarity for this HR, then kindly accept the
 							HR. If you need more clarity on this HR, then change the Status to
-							“Waiting for more information”.
+							“Waiting for more information”. */}
 						</p>
 						{showMoreInfo && (
 							<div className={AcceptHRStyle.colMd12}>
