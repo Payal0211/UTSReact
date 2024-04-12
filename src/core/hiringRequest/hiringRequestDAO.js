@@ -2075,33 +2075,33 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.WSJOBPOSTSLADAO()');
 		}
 	},
-	getChannelLibraryDAO:async (data) => {
-		try {
-			const AMRESPONSE = await HiringRequestAPI.getChannelLibraryApi(data);
-			if (AMRESPONSE) {
-				const statusCode = AMRESPONSE['statusCode'];
-				if (statusCode === HTTPStatusCode.OK) {
-					const tempResult = AMRESPONSE.responseBody;
-					return {
-						statusCode: statusCode,
-						responseBody: tempResult,
-					};
-				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
-					return AMRESPONSE;
-				} else if (
-					statusCode === HTTPStatusCode.BAD_REQUEST ||
-					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
-				)
-					return AMRESPONSE;
-				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
-					let deletedResponse =
-						UserSessionManagementController.deleteAllSession();
-					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
-				}
-				return statusCode;
-			}
-		} catch (error) {
-			return errorDebug(error, 'hiringRequestDAO.getChannelLibraryDAO()');
-		}
-	},
+	// getChannelLibraryDAO:async (data) => {
+	// 	try {
+	// 		const AMRESPONSE = await HiringRequestAPI.getChannelLibraryApi(data);
+	// 		if (AMRESPONSE) {
+	// 			const statusCode = AMRESPONSE['statusCode'];
+	// 			if (statusCode === HTTPStatusCode.OK) {
+	// 				const tempResult = AMRESPONSE.responseBody;
+	// 				return {
+	// 					statusCode: statusCode,
+	// 					responseBody: tempResult,
+	// 				};
+	// 			} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+	// 				return AMRESPONSE;
+	// 			} else if (
+	// 				statusCode === HTTPStatusCode.BAD_REQUEST ||
+	// 				statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+	// 			)
+	// 				return AMRESPONSE;
+	// 			else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+	// 				let deletedResponse =
+	// 					UserSessionManagementController.deleteAllSession();
+	// 				if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+	// 			}
+	// 			return statusCode;
+	// 		}
+	// 	} catch (error) {
+	// 		return errorDebug(error, 'hiringRequestDAO.getChannelLibraryDAO()');
+	// 	}
+	// },
 };

@@ -1169,18 +1169,18 @@ export const HiringRequestAPI = {
 			return errorDebug(error,'HiringRequestAPI.extractTextUsingPythonApi');
 		}
 	},
-	getChannelLibraryApi: async (data) => {
-		let httpService = new HttpServices();
-		httpService.URL =
-			NetworkInfo.NETWORK +SubDomain.VIEW_ALL_HR +
-			HiringRequestsAPI.GET_CHANNEL_LIBRARY + `?Type=${data.type}&ChannelID=${data.channelID}` ;
-		httpService.setAuthRequired = true;
-		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
-		try {
-			let response = await httpService.sendGetRequest();
-			return response;
-		} catch (error) {
-			return errorDebug(error, 'HiringRequestAPI.getChannelLibraryApi');
-		}
-	},
+	// getChannelLibraryApi: async (data) => {
+	// 	let httpService = new HttpServices();
+	// 	httpService.URL =
+	// 		NetworkInfo.NETWORK +SubDomain.VIEW_ALL_HR +
+	// 		HiringRequestsAPI.GET_CHANNEL_LIBRARY + `?Type=${data.type}&ChannelID=${data.channelID}` ;
+	// 	httpService.setAuthRequired = true;
+	// 	httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+	// 	try {
+	// 		let response = await httpService.sendGetRequest();
+	// 		return response;
+	// 	} catch (error) {
+	// 		return errorDebug(error, 'HiringRequestAPI.getChannelLibraryApi');
+	// 	}
+	// },
 };
