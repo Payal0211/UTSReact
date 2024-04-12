@@ -122,142 +122,141 @@ const ActivityFeed = ({
 		return notesTemplate.body;
 	};
 
-	const getChannelData = async (data)=>{
-		let result = await hiringRequestDAO.getChannelLibraryDAO(data)
-		// console.log('channel response', result);
-		setActivityFeedList(result?.responseBody?.details)
-		setActivityFeedMessage(result?.responseBody?.message)
-		if(result.statusCode === HTTPStatusCode.OK){
+	// const getChannelData = async (data)=>{
+	// 	let result = await hiringRequestDAO.getChannelLibraryDAO(data)
+	// 	// console.log('channel response', result);
+	// 	setActivityFeedList(result?.responseBody?.details)
+	// 	setActivityFeedMessage(result?.responseBody?.message)
+	// 	if(result.statusCode === HTTPStatusCode.OK){
 
-		}
-	}
+	// 	}
+	// }
 
-	useEffect(()=> {
-if(activeTabType){
-	let	payload = {
-		type: activeTabType,
-		channelID: ChannelID
-	}
-	// console.log('channel payload', payload,ChannelID);
-	getChannelData(payload)
-}
-	},[activeTabType,ChannelID])
+// 	useEffect(()=> {
+// if(activeTabType){
+// 	let	payload = {
+// 		type: activeTabType,
+// 		channelID: ChannelID
+// 	}
+// 	getChannelData(payload)
+// }
+// 	},[activeTabType,ChannelID])
 
-	const Documentsdata = activityFeedList?.slice()?.reverse()?.map((data)=>({
-				key: '1',
-				imageUrl : data?.fileUrl,
-				filename: data?.name,
-				dateadded: data?.createdDateTime,
-	}))
+	// const Documentsdata = activityFeedList?.slice()?.reverse()?.map((data)=>({
+	// 			key: '1',
+	// 			imageUrl : data?.fileUrl,
+	// 			filename: data?.name,
+	// 			dateadded: data?.createdDateTime,
+	// }))
 
-	const DocumentcolumnsConfig = (activityFeedList)=>{
-		return[
-		{
-			title: 'Filename',
-			dataIndex: 'filename',
-			key: 'filename',
-			render: (_, record) => {
-				const fileType = record?.filename.split(".")[1];
-				return(
-				<div className={ActivityFeedStyle.gridContentLeft}>
-					<div className={ActivityFeedStyle.documentassetImg}>
-						{fileType === "docx" && (
-						<img src={FiIconWord} alt='img' />
-						)}
-						{fileType === "xls" && (
-						<img src={FiIconWord} alt='img' />
-						)}
-						{fileType === "xlsx" && (
-						<img src={FiIconWord} alt='img' />
-						)}
-						{fileType === "csv" && (
-						<img src={FiIconWord} alt='img' />
-						)}
-						{fileType === "doc" && (
-						<img src={FiIconWord} alt='img' />
-						)}
-						{fileType === "txt" && (
-						<img src={FiIconWord} alt='img' />
-						)}
-						{fileType === "pdf" && (
-                            <img src={FiIconPDF} alt='img' />
-                        )}
-					</div>
-					<div className={ActivityFeedStyle.documentassetDetails}>
-						<div className={ActivityFeedStyle.assetName}>{record?.filename}</div>
-						{/*<span>1 page</span>*/}{fileType === "docx" && (<span>DOC</span>)}
-						{fileType === "xls" && (<span>DOC</span>)}
-						{fileType === "xlsx" && (<span>DOC</span>)}
-						{fileType === "csv" && (<span>DOC</span>)}
-						{fileType === "doc" && (<span>DOC</span>)}
-						{fileType === "txt" && (<span>DOC</span>)}
-						{fileType === "pdf" && (<span>PDF</span>)}
-					</div>
-				</div>)}
-				},
-			// {
-			// title: 'Added by',
-			// dataIndex: 'addedby',
-			// key: 'addedby',
-			// },
-			{
-			title: 'Date added',
-			dataIndex: 'dateadded',
-			key: 'dateadded',
-			render:(_,record)=>{
-				const messageDate = 
-					record?.dateadded
-					? new Date(record?.dateadded)
-					: null;
+	// const DocumentcolumnsConfig = (activityFeedList)=>{
+	// 	return[
+	// 	{
+	// 		title: 'Filename',
+	// 		dataIndex: 'filename',
+	// 		key: 'filename',
+	// 		render: (_, record) => {
+	// 			const fileType = record?.filename.split(".")[1];
+	// 			return(
+	// 			<div className={ActivityFeedStyle.gridContentLeft}>
+	// 				<div className={ActivityFeedStyle.documentassetImg}>
+	// 					{fileType === "docx" && (
+	// 					<img src={FiIconWord} alt='img' />
+	// 					)}
+	// 					{fileType === "xls" && (
+	// 					<img src={FiIconWord} alt='img' />
+	// 					)}
+	// 					{fileType === "xlsx" && (
+	// 					<img src={FiIconWord} alt='img' />
+	// 					)}
+	// 					{fileType === "csv" && (
+	// 					<img src={FiIconWord} alt='img' />
+	// 					)}
+	// 					{fileType === "doc" && (
+	// 					<img src={FiIconWord} alt='img' />
+	// 					)}
+	// 					{fileType === "txt" && (
+	// 					<img src={FiIconWord} alt='img' />
+	// 					)}
+	// 					{fileType === "pdf" && (
+    //                         <img src={FiIconPDF} alt='img' />
+    //                     )}
+	// 				</div>
+	// 				<div className={ActivityFeedStyle.documentassetDetails}>
+	// 					<div className={ActivityFeedStyle.assetName}>{record?.filename}</div>
+	// 					{/*<span>1 page</span>*/}{fileType === "docx" && (<span>DOC</span>)}
+	// 					{fileType === "xls" && (<span>DOC</span>)}
+	// 					{fileType === "xlsx" && (<span>DOC</span>)}
+	// 					{fileType === "csv" && (<span>DOC</span>)}
+	// 					{fileType === "doc" && (<span>DOC</span>)}
+	// 					{fileType === "txt" && (<span>DOC</span>)}
+	// 					{fileType === "pdf" && (<span>PDF</span>)}
+	// 				</div>
+	// 			</div>)}
+	// 			},
+	// 		// {
+	// 		// title: 'Added by',
+	// 		// dataIndex: 'addedby',
+	// 		// key: 'addedby',
+	// 		// },
+	// 		{
+	// 		title: 'Date added',
+	// 		dataIndex: 'dateadded',
+	// 		key: 'dateadded',
+	// 		render:(_,record)=>{
+	// 			const messageDate = 
+	// 				record?.dateadded
+	// 				? new Date(record?.dateadded)
+	// 				: null;
 
-					const today = new Date();
-					const yesterday = new Date(today);
-					yesterday.setDate(today.getDate() - 1);
+	// 				const today = new Date();
+	// 				const yesterday = new Date(today);
+	// 				yesterday.setDate(today.getDate() - 1);
 
-					let dateString = "";
-					if (messageDate) {
-					if (messageDate.toDateString() === today.toDateString()) {
-						dateString = "Today";
-					} else if (
-						messageDate.toDateString() === yesterday.toDateString()
-					) {
-						dateString = "Yesterday";
-					} else {
-						dateString = moment(messageDate.toDateString()).format("MMM D,YYYY");
-					}
-					}
+	// 				let dateString = "";
+	// 				if (messageDate) {
+	// 				if (messageDate.toDateString() === today.toDateString()) {
+	// 					dateString = "Today";
+	// 				} else if (
+	// 					messageDate.toDateString() === yesterday.toDateString()
+	// 				) {
+	// 					dateString = "Yesterday";
+	// 				} else {
+	// 					dateString = moment(messageDate.toDateString()).format("MMM D,YYYY");
+	// 				}
+	// 				}
 
-					const showDateSeparator = dateString !== currentChatDate;
-					currentChatDate = dateString;
-				return <span>{dateString}</span>
-			}
-			},
-			{
-			title: '',
-			key: 'action',
-			render: (_, record) => {
-				return	<a href={record.imageUrl} download target="_blank">
-					<span className={ActivityFeedStyle.downloadLink}>Download</span>
-					</a>
-			},
-			},
-		]};
+	// 				const showDateSeparator = dateString !== currentChatDate;
+	// 				currentChatDate = dateString;
+	// 			return <span>{dateString}</span>
+	// 		}
+	// 		},
+	// 		{
+	// 		title: '',
+	// 		key: 'action',
+	// 		render: (_, record) => {
+	// 			return	<a href={record.imageUrl} download target="_blank">
+	// 				<span className={ActivityFeedStyle.downloadLink}>Download</span>
+	// 				</a>
+	// 		},
+	// 		},
+	// 	]};
 
-			const columns = DocumentcolumnsConfig(activityFeedList);
-			let currentChatDate = null;
+	// 		const columns = DocumentcolumnsConfig(activityFeedList);
+	// 		let currentChatDate = null;
 	
-			const formatTime = (time) => {
-				var dateString = time;
-				var date = new Date(dateString);
+	// 		const formatTime = (time) => {
+	// 			var dateString = time;
+	// 			var date = new Date(dateString);
 
-				// Format the date as "12:58 PM"
-				var formattedTime = date.toLocaleTimeString('en-US', {
-				hour: 'numeric',
-				minute: '2-digit',
-				hour12: true
-				});
-				return formattedTime
-			};
+	// 			// Format the date as "12:58 PM"
+	// 			var formattedTime = date.toLocaleTimeString('en-US', {
+	// 			hour: 'numeric',
+	// 			minute: '2-digit',
+	// 			hour12: true
+	// 			});
+	// 			return formattedTime
+	// 		};
 
 	return (
 		<div className={ActivityFeedStyle.activityContainer}>
@@ -298,9 +297,9 @@ if(activeTabType){
 				<Tabs className={ActivityFeedStyle.channelLibTabs}>
 					<TabList className={ActivityFeedStyle.channelLibTabsTitle}>
 						<Tab >Activity</Tab>
-						<Tab onClick={()=> setActiveTabType(ChannelType.images)}>Images</Tab>
+						{/* <Tab onClick={()=> setActiveTabType(ChannelType.images)}>Images</Tab>
 						<Tab onClick={()=>{ setActiveTabType(ChannelType.documents)}}>Documents</Tab>
-						<Tab onClick={()=>{ setActiveTabType(ChannelType.videos)}}>Videos</Tab>
+						<Tab onClick={()=>{ setActiveTabType(ChannelType.videos)}}>Videos</Tab> */}
 						{/* <Tab onClick={()=>{ console.log("Links")}}>Links</Tab>  */}
 					</TabList>
 
@@ -452,7 +451,7 @@ if(activeTabType){
 					</TabPanel>
 
 {/* Images tab */}
-					<TabPanel className={ActivityFeedStyle.tabContent}>
+					{/* <TabPanel className={ActivityFeedStyle.tabContent}>
 						<div className={ActivityFeedStyle.contentGrid}>
 							<ul className={ActivityFeedStyle.channelLibImagesBoxes}>
 								{activityFeedList && activityFeedList?.slice()?.reverse()?.map((data)=>{
@@ -478,19 +477,17 @@ if(activeTabType){
 								  }
 				  
 								  const showDateSeparator = dateString !== currentChatDate;
-								  currentChatDate = dateString; // Update currentDate
+								  currentChatDate = dateString; 
 									return(
 									<>
 									 {showDateSeparator && (
 											<li className={ActivityFeedStyle.dividerText}>{dateString}</li>
                     				)}
 										<li>
-											{/* <span>Anjali,Image 12:58 PM</span> */}
 											<span>{formatTime(data?.createdDateTime)}</span>
 											<div className={ActivityFeedStyle.channelLibTabImg}>
 												<img src={data?.fileUrl} width="95" height="95" onClick={() => window.open(data?.fileUrl, "_blank")}/>
 											</div>
-											{/* <a href='#'>View in conversation</a> */}
 										</li>
 									</>
 									)
@@ -500,17 +497,17 @@ if(activeTabType){
 								)}
 							</ul>		
 						</div>
-					</TabPanel>
+					</TabPanel> */}
 
 					{/* Documents tab */}
-					<TabPanel className={ActivityFeedStyle.tabContent}>
+					{/* <TabPanel className={ActivityFeedStyle.tabContent}>
 						<div className={ActivityFeedStyle.assetGrid}>
 							<Table className={ActivityFeedStyle.LinkTableWrap} dataSource={Documentsdata} columns={columns} pagination={false}  />
 						</div>
-					</TabPanel>
+					</TabPanel> */}
 
 									{/* Video Tab  */}
-					<TabPanel className={ActivityFeedStyle.tabContent}>
+					{/* <TabPanel className={ActivityFeedStyle.tabContent}>
 						<div className={ActivityFeedStyle.contentGrid}>
 							<ul className={`${ActivityFeedStyle.channelLibImagesBoxes} ${ActivityFeedStyle.channelLibVideoBoxes}`}>
 							{activityFeedList && activityFeedList?.slice()?.reverse()?.map((data)=>{
@@ -536,7 +533,7 @@ if(activeTabType){
 							  }
 			  
 							  const showDateSeparator = dateString !== currentChatDate;
-							  currentChatDate = dateString; // Update currentDate
+							  currentChatDate = dateString; 
 
 									return(
 										<>
@@ -554,7 +551,6 @@ if(activeTabType){
 															controls={false}
                                                         />
 												</div>
-												{/* <a href='#'>View in conversation</a> */}
 											</li>
 										</>
 									)
@@ -564,7 +560,7 @@ if(activeTabType){
 								)}
 							</ul>
 						</div>
-					</TabPanel>
+					</TabPanel> */}
 
 					<TabPanel className={ActivityFeedStyle.tabContent}>
 						<div className={ActivityFeedStyle.assetGrid}>

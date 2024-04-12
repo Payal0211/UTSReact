@@ -269,7 +269,7 @@ export class HiringRequestsAPI {
 	static GET_HR_SLA_DETAILS = 'GetHiringRequestSLADetails';
 	static UPDATE_SLA_DATE = 'UpdateSLADate';
 	static EXTRACTTEXTUSINGPYTHON = 'ExtractTextUsingPython';
-	static GET_CHANNEL_LIBRARY = 'GetChannelLibrary';
+	// static GET_CHANNEL_LIBRARY = 'GetChannelLibrary';
 	static GET_lOGIN_HR_INFO = 'GetLoginHrInfo';
 	static SYNC_HR_UTS_TO_ATS  = 'SyncHRUtsToAts'
 }

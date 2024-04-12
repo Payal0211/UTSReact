@@ -33,7 +33,7 @@ const Layout = () => {
 				<Outlet />
 				<UTSFeedback />
 			</main>
-			{(userData?.LoggedInUserTypeID === 2 || userData?.EmployeeID === "UP1302AM") && <ChatListing />}
+			{/* {(userData?.LoggedInUserTypeID === 2 || userData?.EmployeeID === "UP1302AM") && <ChatListing />} */}
 		</div>
 	);
 };
