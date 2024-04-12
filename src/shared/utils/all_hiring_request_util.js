@@ -71,82 +71,179 @@ export const All_Hiring_Request_Utils = {
 		}
 	},
 	GETHRSTATUS: function (statusCode, hrStatus) {
-		switch (statusCode) {
-			case HiringRequestHRStatus.DRAFT:
+// 		ID    Title    StatusCode    BackGroundColor    TextColor    IsActive
+// 1    Draft    101    #F0F0F0    #303030    1
+// 2    Open    102    #E6F7DB    #17620A    1
+// 3    Active    106    #E8F2FD    #0070E0    1
+// 4    Closed - Won    105    #477A58    #D5F9E8    1
+// 5    Closed - Cancelled    108    #984D42    #FAF1F1    1
+// 6    Closed - Lost    109    #AC8C1B    #FAF8F1    1
+// 7    Closed - Expired    103    #706F68    #F2F2F2    1
+// 8    Active - but no longer accepting applicaitons    107    #F9E7DA    #B34C01    1
+// 9    Active - Reposted    104    #E9F9F9    #044D49    1
+// 10    Re-Open    110    #F8F2F7    #9B078D    1
+
+switch (statusCode) {
+	case HiringRequestHRStatus.DRAFT:
+		return (
+			<HRStatusComponent
+				title={hrStatus}
+				backgroundColor={'#F0F0F0 '}
+				color={'#303030'}
+			/>
+		);
+		case HiringRequestHRStatus.HR_ACCEPTED:
 				return (
 					<HRStatusComponent
 						title={hrStatus}
-						backgroundColor={'#EEEEEE'}
-						color={'#4E5063'}
+						backgroundColor={'#E6F7DB'}
+						color={'#17620A'}
 					/>
 				);
-			case HiringRequestHRStatus.HR_ACCEPTED:
-				return (
-					<HRStatusComponent
-						title={hrStatus}
-						backgroundColor={'#e4eae3'}
-						color={'#799774'}
-					/>
-				);
-			case HiringRequestHRStatus.ACCEPTANCE_PENDING:
-				return (
-					<HRStatusComponent
-						title={hrStatus}
-						backgroundColor={'#F2F4E6'}
-						color={'#1E210D'}
-					/>
-				);
-			case HiringRequestHRStatus.INFO_PENDING:
-				return (
-					<HRStatusComponent
-						title={hrStatus}
-						backgroundColor={'#fad1d2'}
-						color={'#e41a1c'}
-					/>
-				);
-			case HiringRequestHRStatus.ON_HOLD:
-				return (
-					<HRStatusComponent
-						title={hrStatus}
-						backgroundColor={'#EAD9C8'}
-						color={'#CD7F32'}
-					/>
-				);
-			case HiringRequestHRStatus.COMPLETED:
-				return (
-					<HRStatusComponent
-						title={hrStatus}
-						backgroundColor={'#B0D2AA'}
-						color={'#006D2C'}
-					/>
-				);
-			case HiringRequestHRStatus.IN_PROCESS:
-				return (
-					<HRStatusComponent
-						title={hrStatus}
-						backgroundColor={'#F7E3C4'}
-						color={'#BC770E'}
-					/>
-				);
-			case HiringRequestHRStatus.CANCELLED:
-				return (
-					<HRStatusComponent
-						title={hrStatus}
-						backgroundColor={'#F0E2E2'}
-						color={'#810000'}
-					/>
-				);
-			case HiringRequestHRStatus.LOST:
-				return (
-					<HRStatusComponent
-						title={hrStatus}
-						backgroundColor={'#F0E2E2'}
-						color={'#810000'}
-					/>
-				);
-			default:
-				break;
-		}
+		case HiringRequestHRStatus.ACCEPTANCE_PENDING:
+		return (
+			<HRStatusComponent
+				title={hrStatus}
+				backgroundColor={'#706F68'}
+				color={'#F2F2F2'}
+			/>
+		);
+		case HiringRequestHRStatus.INFO_PENDING:
+		return (
+			<HRStatusComponent
+				title={hrStatus}
+				backgroundColor={'#E9F9F9'}
+				color={'#044D49'}
+			/>
+		);
+		case HiringRequestHRStatus.ON_HOLD:
+			return (
+				<HRStatusComponent
+					title={hrStatus}
+					backgroundColor={'#984D42'}
+					color={'#FAF1F1'}
+				/>
+			);
+		case HiringRequestHRStatus.COMPLETED:
+		return (
+			<HRStatusComponent
+				title={hrStatus}
+				backgroundColor={'#477A58'}
+				color={'#D5F9E8'}
+			/>
+		);
+		case HiringRequestHRStatus.IN_PROCESS:
+		return (
+			<HRStatusComponent
+				title={hrStatus}
+				backgroundColor={'#E8F2FD'}
+				color={'#0070E0'}
+			/>
+		);
+		case HiringRequestHRStatus.CANCELLED:
+			return (
+				<HRStatusComponent
+					title={hrStatus}
+					backgroundColor={'#F9E7DA'}
+					color={'#B34C01'}
+				/>
+			);
+		case HiringRequestHRStatus.LOST:
+			return (
+				<HRStatusComponent
+					title={hrStatus}
+					backgroundColor={'#AC8C1B'}
+					color={'#FAF8F1'}
+				/>
+			);
+		case HiringRequestHRStatus.REOPEN:
+			return (
+				<HRStatusComponent
+					title={hrStatus}
+					backgroundColor={'#F8F2F7'}
+					color={'#9B078D'}
+				/>
+			);
+	default:
+		break;
+}
+
+		// switch (statusCode) {
+		// 	case HiringRequestHRStatus.DRAFT:
+		// 		return (
+		// 			<HRStatusComponent
+		// 				title={hrStatus}
+		// 				backgroundColor={'#EEEEEE'}
+		// 				color={'#4E5063'}
+		// 			/>
+		// 		);
+		// 	case HiringRequestHRStatus.HR_ACCEPTED:
+		// 		return (
+		// 			<HRStatusComponent
+		// 				title={hrStatus}
+		// 				backgroundColor={'#e4eae3'}
+		// 				color={'#799774'}
+		// 			/>
+		// 		);
+		// 	case HiringRequestHRStatus.ACCEPTANCE_PENDING:
+		// 		return (
+		// 			<HRStatusComponent
+		// 				title={hrStatus}
+		// 				backgroundColor={'#F2F4E6'}
+		// 				color={'#1E210D'}
+		// 			/>
+		// 		);
+		// 	case HiringRequestHRStatus.INFO_PENDING:
+		// 		return (
+		// 			<HRStatusComponent
+		// 				title={hrStatus}
+		// 				backgroundColor={'#fad1d2'}
+		// 				color={'#e41a1c'}
+		// 			/>
+		// 		);
+		// 	case HiringRequestHRStatus.ON_HOLD:
+		// 		return (
+		// 			<HRStatusComponent
+		// 				title={hrStatus}
+		// 				backgroundColor={'#EAD9C8'}
+		// 				color={'#CD7F32'}
+		// 			/>
+		// 		);
+		// 	case HiringRequestHRStatus.COMPLETED:
+		// 		return (
+		// 			<HRStatusComponent
+		// 				title={hrStatus}
+		// 				backgroundColor={'#B0D2AA'}
+		// 				color={'#006D2C'}
+		// 			/>
+		// 		);
+		// 	case HiringRequestHRStatus.IN_PROCESS:
+		// 		return (
+		// 			<HRStatusComponent
+		// 				title={hrStatus}
+		// 				backgroundColor={'#F7E3C4'}
+		// 				color={'#BC770E'}
+		// 			/>
+		// 		);
+		// 	case HiringRequestHRStatus.CANCELLED:
+		// 		return (
+		// 			<HRStatusComponent
+		// 				title={hrStatus}
+		// 				backgroundColor={'#F0E2E2'}
+		// 				color={'#810000'}
+		// 			/>
+		// 		);
+		// 	case HiringRequestHRStatus.LOST:
+		// 		return (
+		// 			<HRStatusComponent
+		// 				title={hrStatus}
+		// 				backgroundColor={'#F0E2E2'}
+		// 				color={'#810000'}
+		// 			/>
+		// 		);
+		// 	default:
+		// 		break;
+		// }
 	},
 	GETTALENTSTATUS: function (statusCode, talentStatus) {
 		switch (statusCode) {
