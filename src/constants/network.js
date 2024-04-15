@@ -272,6 +272,7 @@ export class HiringRequestsAPI {
 	// static GET_CHANNEL_LIBRARY = 'GetChannelLibrary';
 	static GET_lOGIN_HR_INFO = 'GetLoginHrInfo';
 	static SYNC_HR_UTS_TO_ATS  = 'SyncHRUtsToAts'
+	static CLOSE_ACTION_History = 'GetHRCloseActionHistory'
 }
 
 export class UsersAPI {

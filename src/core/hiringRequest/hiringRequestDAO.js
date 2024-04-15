@@ -59,6 +59,31 @@ export const hiringRequestDAO = {
 		}
 	},
 
+	getCloseJobPostsLogs: async function (data) {
+		try {
+			const closejobResult = await HiringRequestAPI.closeJobLogs(data);
+			if (closejobResult) {
+				const statusCode = closejobResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = closejobResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return closejobResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return closejobResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getCloseJobPostsLogs');
+		}
+	},
+
 	getReSchduleInterviewInformation: async function (data) {
 		try {
 			const reScheduleResult = await HiringRequestAPI.reScheduleInterview(data);
