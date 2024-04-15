@@ -349,7 +349,7 @@ export const allHRConfig = {
       {
         label: "HR Status",
         name: "hrStatus",
-        child: filterList?.hrStatusList.map(it=>( {
+        child: filterList?.hrStatusList?.map(it=>( {
               disabled: false,
               group: null,
               selected: false,
