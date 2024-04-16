@@ -64,7 +64,7 @@ const closeHRcolumns = [
 		dataIndex: 'addedby',
 		key: 'addedby',
 		render:(val,data,index)=>{
-			return `${index + 1} st Time`
+			return `${index + 1} Time`
 		}
 		},
 		{
