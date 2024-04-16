@@ -12,8 +12,9 @@ const HRStatusComponent = ({ title, backgroundColor, color }) => {
 				backgroundColor: backgroundColor,
 				color: color,
 				textAlign: 'center',
-				maxWidth: '98% ',
-				justifyContent: 'flex-start'
+				maxWidth: '100% ',
+				display:'inline-block',
+				lineHeight:'32px'
 			}}>
 			{title}
 		</div>
