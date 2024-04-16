@@ -1049,14 +1049,15 @@ const EditHRFields = ({
         hrFormDetails.IsProfileView = false
         hrFormDetails.IsVettedProfile = false
       }
-
-      if(watch('fromTime').value === watch('endTime').value){
+      if(type !== SubmitType.SAVE_AS_DRAFT){
+      if(watch('fromTime')?.value === watch('endTime')?.value){
         setIsSavedLoading(false);
         return setError("fromTime", {
           type: "validate",
           message: "Start & End Time is same.",
         });
-      }     
+      } 
+    }    
 
       if (type === SubmitType.SAVE_AS_DRAFT) {        
         if (_isNull(watch("clientName"))) {
