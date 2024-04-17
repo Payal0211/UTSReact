@@ -117,18 +117,24 @@ const DebriefingHR = ({
 		// 	'roleAndResponsibilities',
 		// 	addData?.salesHiringRequest_Details?.rolesResponsibilities,
 		// );
-		setValue('requirements', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
-		JDParsedSkills?.Requirements ||
-		(addData?.salesHiringRequest_Details?.requirement), {
-				shouldDirty: true,
-			});
-		setValue('roleAndResponsibilities', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
-			?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
-			?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
-			?.rolesResponsibilities :
-			JDParsedSkills?.Responsibility ||
-			(addData?.salesHiringRequest_Details
-				?.rolesResponsibilities ), {
+		// setValue('requirements', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
+		// JDParsedSkills?.Requirements ||
+		// (addData?.salesHiringRequest_Details?.requirement), {
+		// 		shouldDirty: true,
+		// 	});
+		// setValue('roleAndResponsibilities', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
+		// 	?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
+		// 	?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
+		// 	?.rolesResponsibilities :
+		// 	JDParsedSkills?.Responsibility ||
+		// 	(addData?.salesHiringRequest_Details
+		// 		?.rolesResponsibilities ), {
+		// 	shouldDirty: true,
+		// });
+		setValue('jobDescription', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
+			?.JobDescription)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
+			?.JobDescription)) : addData?.salesHiringRequest_Details
+			?.JobDescription :addData?.salesHiringRequest_Details?.JobDescription, {
 			shouldDirty: true,
 		});
 		setIsFocusedRole(addData?.salesHiringRequest_Details?.isHrfocused);
@@ -312,22 +318,28 @@ const DebriefingHR = ({
 		// 		shouldDirty: true,
 		// 	});
 
-		JDParsedSkills &&  setValue('requirements', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
-		JDParsedSkills?.Requirements ||
-		(addData?.salesHiringRequest_Details?.requirement), {
-				shouldDirty: true,
-			});
+		// JDParsedSkills &&  setValue('requirements', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.requirement) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.requirement)) :addData?.salesHiringRequest_Details?.requirement :
+		// JDParsedSkills?.Requirements ||
+		// (addData?.salesHiringRequest_Details?.requirement), {
+		// 		shouldDirty: true,
+		// 	});
 
 
-		JDParsedSkills &&	setValue('roleAndResponsibilities', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
-			?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
-			?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
-			?.rolesResponsibilities :
-			JDParsedSkills?.Responsibility ||
-			(addData?.salesHiringRequest_Details
-				?.rolesResponsibilities ), {
-				shouldDirty: true,
-			});
+		// JDParsedSkills &&	setValue('roleAndResponsibilities', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
+		// 	?.rolesResponsibilities)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
+		// 	?.rolesResponsibilities)) : addData?.salesHiringRequest_Details
+		// 	?.rolesResponsibilities :
+		// 	JDParsedSkills?.Responsibility ||
+		// 	(addData?.salesHiringRequest_Details
+		// 		?.rolesResponsibilities ), {
+		// 		shouldDirty: true,
+		// 	});
+
+			JDParsedSkills &&	setValue('jobDescription', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
+			JDParsedSkills?.JobDescription ||
+			(addData?.salesHiringRequest_Details?.JobDescription) , {
+					shouldDirty: true,
+				});
 	}, [JDParsedSkills, setValue]);
     
 	// console.log("errors", errors,isOtherSkillExistMemo);
@@ -382,8 +394,11 @@ const DebriefingHR = ({
 		})
 
 		let debriefFormDetails = {
-			roleAndResponsibilites: d.roleAndResponsibilities,
-			requirements: d.requirements,
+			// roleAndResponsibilites: d.roleAndResponsibilities,
+			// requirements: d.requirements,
+			roleAndResponsibilites: '',
+			requirements: '',
+			JobDescription:d.jobDescription,
 			en_Id: enID,
 			skills: skillList?.filter((item) => item?.skillsID !== -1),
 			aboutCompanyDesc: d.aboutCompany,
@@ -590,7 +605,7 @@ const DebriefingHR = ({
 					</div>
 					<div className={DebriefingHRStyle.hrFieldRightPane}>
 						<div className={DebriefingHRStyle.colMd12}>
-							<TextEditor
+							{/* <TextEditor
 								isControlled={true}
 								// controlledValue={JDParsedSkills?.Responsibility || ''}
 								controlledValue={ addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
@@ -625,6 +640,23 @@ const DebriefingHR = ({
 								register={register}
 								errors={errors}
 								name="requirements"
+								required
+							/> */}
+
+							<TextEditor
+								isControlled={true}
+								// controlledValue={JDParsedSkills?.Requirements || ''}
+								controlledValue={addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
+									JDParsedSkills?.JobDescription ||
+									(addData?.salesHiringRequest_Details?.JobDescription)
+								}
+								label={'Job Description'}
+								placeholder={'Enter Job Description'}
+								setValue={setValue}
+								watch={watch}
+								register={register}
+								errors={errors}
+								name="jobDescription"
 								required
 							/>
 

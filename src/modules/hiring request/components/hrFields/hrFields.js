@@ -1518,6 +1518,8 @@ const HRFields = ({
 
       let _getHrValues = { ...getHRdetails };
 
+      _getHrValues.salesHiringRequest_Details.JobDescription =
+        gptFileDetails.JobDescription?? '';
       _getHrValues.salesHiringRequest_Details.requirement =
         gptFileDetails.Requirements?? '';
       _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
@@ -1663,7 +1665,7 @@ const HRFields = ({
 
     const getResponse = async () => {
       const response = await hiringRequestDAO.extractTextUsingPythonDAO({
-        clientEmail: email.trim(),
+        clientEmail: email? email.trim() : clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId ?  filteredMemo[0]?.emailId : watchClientName?? '',
         psUrl: e.target.value,
       });
       if (response.statusCode === HTTPStatusCode.OK) {
@@ -3326,8 +3328,36 @@ const HRFields = ({
                       </div>
                     </>
                   )}
+                  {gptDetails?.salesHiringRequest_Details?.jobDescription && (
+                    <>
+                      <h3 style={{ marginTop: "10px" }}>Job Description :</h3>
+                      {testJSON(
+                        gptDetails?.salesHiringRequest_Details?.jobDescription
+                      ) ? (
+                        <div className={HRFieldStyle.viewHrJDDetailsBox}>
+                          <ul>
+                            {JSON.parse(
+                              gptDetails?.salesHiringRequest_Details
+                                ?.jobDescription
+                            ).map((text) => (
+                              <li dangerouslySetInnerHTML={{ __html: text }} />
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <div
+                          className={HRFieldStyle.viewHrJDDetailsBox}
+                          dangerouslySetInnerHTML={{
+                            __html:
+                              gptDetails?.salesHiringRequest_Details
+                                ?.jobDescription,
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
 
-                  {gptDetails?.salesHiringRequest_Details?.requirement && (
+                  {/* {gptDetails?.salesHiringRequest_Details?.requirement && (
                     <>
                       <h3 style={{ marginTop: "10px" }}>Requirements :</h3>
                       {testJSON(
@@ -3387,7 +3417,7 @@ const HRFields = ({
                         />
                       )}
                     </>
-                  )}
+                  )} */}
 
                   {/*  For JD File  */}
                   {gptFileDetails.JDDumpID && (
@@ -3409,28 +3439,42 @@ const HRFields = ({
                         </>
                       )}
 
-                      {gptFileDetails?.Requirements && (
+                      {/* {gptFileDetails?.Requirements && (
                         <>
                           <h3 style={{ marginTop: "10px" }}>Requirements :</h3>
-                          <div className={HRFieldStyle.viewHrJDDetailsBox}>
+                          <div className={HRFieldStyle.viewHrJDDetailsBox}> */}
                             {/* <ul>
                     {gptFileDetails?.Requirements?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
                   </ul> */}
-                            {gptFileDetails?.Requirements}
+                            {/* {gptFileDetails?.Requirements}
                           </div>
                         </>
-                      )}
+                      )} */}
 
-                      {gptFileDetails?.Responsibility && (
+                      {/* {gptFileDetails?.Responsibility && (
                         <>
                           <h3 style={{ marginTop: "10px" }}>
                             Responsibility :
+                          </h3>
+                          <div className={HRFieldStyle.viewHrJDDetailsBox}> */}
+                            {/* <ul>
+                    {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
+                  </ul> */}
+                            {/* {gptFileDetails?.Responsibility}
+                          </div>
+                        </>
+                      )} */}
+
+                      {gptFileDetails?.JobDescription && (
+                        <>
+                          <h3 style={{ marginTop: "10px" }}>
+                          Job Description :
                           </h3>
                           <div className={HRFieldStyle.viewHrJDDetailsBox}>
                             {/* <ul>
                     {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
                   </ul> */}
-                            {gptFileDetails?.Responsibility}
+                            {gptFileDetails?.JobDescription}
                           </div>
                         </>
                       )}
