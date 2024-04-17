@@ -2610,7 +2610,7 @@ const EditHRFields = ({
                       isControlled={true}
                       setValue={setValue}
                       register={register}
-                      label={`Add your client estimated budget (Monthly)`}
+                      label={`Add your ${getHRdetails?.addHiringRequest?.guid ? 'talent salary' :'client estimated '  }  budget (Monthly)`}
                       // label={`Add your estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}budget (Monthly)`}
                       options={budgets.map((item) => ({
                         id: item.id,
@@ -2627,7 +2627,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={`Estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "client ":''}Budget`}
+                    label={`${typeOfPricing === 1 || companyType?.id=== 2 ? getHRdetails?.addHiringRequest?.guid ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (Monthly)`}
                     register={register}
                     name="adhocBudgetCost"
                     type={InputType.NUMBER}
@@ -2646,7 +2646,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={getHRdetails?.addHiringRequest?.guid ?  `Estimated Minimum ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget (Monthly)`: `Client Estimated Minimum Budget (Monthly)`}
+                    label={getHRdetails?.addHiringRequest?.guid ?  `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Minimum Budget (Monthly)`: `Client Estimated Minimum Budget (Monthly)`}
                     register={register}
                     name="minimumBudget"
                     type={InputType.NUMBER}
@@ -2666,7 +2666,7 @@ const EditHRFields = ({
 
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={getHRdetails?.addHiringRequest?.guid ?   `Estimated Maximum ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget (Monthly)` : `Client Estimated Maximum Budget (Monthly)`}
+                    label={getHRdetails?.addHiringRequest?.guid ?   `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Maximum Budget (Monthly)` : `Client Estimated Maximum Budget (Monthly)`}
                     register={register}
                     name="maximumBudget"
                     type={InputType.NUMBER}
@@ -2688,7 +2688,7 @@ const EditHRFields = ({
  {watch('budget')?.value !== "3" && <>
               <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees Amount ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }` : `Estimated Uplers Fees Amount ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }`}
+                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees Amount ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }` : `Estimated Uplers Fees Amount ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }`}
                                 register={register}
                                 name="uplersFees"
                                 type={InputType.TEXT}
@@ -2710,7 +2710,7 @@ const EditHRFields = ({
 
                             {!getHRdetails?.addHiringRequest?.guid && <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={"Talent Estimated Pay"}
+                                label={"Talent Estimated Pay (Monthly)"}
                                 register={register}
                                 name="needToPay"
                                 type={InputType.TEXT}
