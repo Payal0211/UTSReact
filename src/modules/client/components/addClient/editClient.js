@@ -413,7 +413,7 @@ const EditClient = ({
 							/>
 						</div>
 						<div className={AddClientStyle.colMd6}>
-						{checkPayPer?.companyTypeID===2 && clientDetailCheckList[0]?.resendInviteEmail === true &&
+						{clientDetailCheckList[0]?.resendInviteEmail === true &&
 						<button 
 							type="submit"
 							onClick={()=>{
