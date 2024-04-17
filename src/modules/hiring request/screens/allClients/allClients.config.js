@@ -66,7 +66,7 @@ export const allClientsConfig = {
                     width: '150px',
                     render: (text, result) => {
                         return (
-                            result?.companyID !==0 && result?.clientID!==0 &&
+                            result?.isActive === "yes" && result?.companyID !==0 && result?.clientID!==0 &&
                                 <a
                                 href={text}
                                 target="_blank"
@@ -221,6 +221,12 @@ export const allClientsConfig = {
                         return moment(text).format('DD/MM/YYYY')
                     },
                 },
+                {
+                    title: 'Is Active',
+                    dataIndex: 'isActive',
+                    key: 'isActive',
+                    width: '100px',                   
+                },
               ]; 
         }else{
             return [
@@ -367,6 +373,12 @@ export const allClientsConfig = {
                         if (!text) return null;
                         return moment(text).format('DD/MM/YYYY')
                     },
+                },
+                {
+                    title: 'Is Active',
+                    dataIndex: 'isActive',
+                    key: 'isActive',
+                    width: '100px',                   
                 },
                 // {
                 //     title: 'SSO',
