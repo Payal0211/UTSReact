@@ -180,7 +180,7 @@ const EditClient = ({
 			});
 		}
 	  }
-    
+
 	return (
 		<div className={AddClientStyle.tabsFormItem}>
 			{contextHolder}
@@ -563,7 +563,7 @@ const EditClient = ({
 									/>
 								</div>
 								<div className={AddClientStyle.colMd6}>
-								{checkPayPer?.companyTypeID===2 &&  item?.resendInviteEmail===true &&
+								{item?.resendInviteEmail===true &&
 								<button
 									type="submit"
 									onClick={()=>{
