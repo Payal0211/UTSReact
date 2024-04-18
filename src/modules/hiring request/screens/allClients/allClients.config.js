@@ -206,7 +206,7 @@ export const allClientsConfig = {
                     },
                 },
                 {
-                    title: 'Inviting',
+                    title: 'Invited By',
                     dataIndex: 'inviteName',
                     key: 'inviteName',
                     width: '150px',
@@ -359,7 +359,7 @@ export const allClientsConfig = {
                     },
                 },
                 {
-                    title: 'Inviting',
+                    title: 'Invited By',
                     dataIndex: 'inviteName',
                     key: 'inviteName',
                     width: '150px',

@@ -130,7 +130,8 @@ export const allEngagementConfig = {
 		setTSCONBoardData,
 		setISEditTSC,
 		setActiveTab,
-		setAllBRPRdata
+		setAllBRPRdata,
+		editAMModalcontroler
 	) => {
 		return [
 			{
@@ -689,6 +690,9 @@ export const allEngagementConfig = {
 				dataIndex: 'amName',
 				key: 'amName',
 				align: 'left',
+				render:(text,data)=>{
+					return text ? <div className={allengagementStyles.amName}  onClick={()=>{editAMModalcontroler(data.invoicingDetails)}}>{text}</div> : null
+				}
 			},
 			{
 				title: 'Invoice Sent Date',

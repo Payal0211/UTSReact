@@ -124,6 +124,44 @@ export const EngagementRequestAPI = {
 			);
 		}
 	},
+	getAMDetailsRequest: async function (id) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.GET_AM_DETAILS +
+			`?PayOutID=${id}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.getAMDetailsRequest',
+			);
+		}
+	},
+	saveAMNAMEEDITRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.ENGAGEMENT +
+			EngagementAPI.UPDATE_AM_PAY_OUT ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = payload;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(
+				error,
+				'EngagementRequestAPI.getAMDetailsRequest',
+			);
+		}
+	},
 	changeContractEndDateRequest: async function (talentDetails) {
 		let httpService = new HttpServices();
 		httpService.URL =

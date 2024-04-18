@@ -66,6 +66,7 @@ export const engagementUtils = {
 			invoiceSentDate: item?.invoiceSentDate ? item?.invoiceSentDate : '',
 			invoiceNumber: item?.invoiceNumber ? item?.invoiceNumber : '',
 			invoiceStatus: item?.invoiceStatus ? item?.invoiceStatus : '',
+			invoicingDetails: item?.invoicingDetails ? item?.invoicingDetails : '',
 			dateofPayment: item?.dateofPayment ? item?.dateofPayment : '',
 			createdByDatetime: item?.createdByDatetime
 				? item?.createdByDatetime

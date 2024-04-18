@@ -134,3 +134,8 @@
 .tableDetails{
     margin-top: 24px;
 }
+
+.amName {
+    text-decoration: underline;
+    cursor: pointer;
+}
