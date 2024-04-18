@@ -223,6 +223,82 @@ export const engagementRequestDAO = {
 			);
 		}
 	},
+	getAMDetailsDAO: async function (id) {
+		try {
+			const replaceTalentResponse =
+				await EngagementRequestAPI.getAMDetailsRequest(
+					id,
+				);
+			if (replaceTalentResponse) {
+				const statusCode = replaceTalentResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = replaceTalentResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return replaceTalentResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return replaceTalentResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.getAMDetailsDAO',
+			);
+		}
+	},
+	saveAMNAMEEDITDAO: async function (payload) {
+		try {
+			const replaceTalentResponse =
+				await EngagementRequestAPI.saveAMNAMEEDITRequest(
+					payload
+				);
+			if (replaceTalentResponse) {
+				const statusCode = replaceTalentResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = replaceTalentResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return replaceTalentResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return replaceTalentResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'engagementRequestDAO.saveAMNAMEEDIT',
+			);
+		}
+	},
 	changeContractEndDateRequestDAO: async function (talentDetails) {
 		try {
 			const changeContractEndDateResponse =
