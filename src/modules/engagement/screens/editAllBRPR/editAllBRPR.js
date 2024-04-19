@@ -7,16 +7,18 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import allengagementReplceTalentStyles from '../engagementBillAndPayRate/engagementBillRate.module.css';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { Radio, Skeleton, Table } from 'antd';
+import { Radio, Skeleton, Table,  } from 'antd';
+import Select from 'react-select';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
+import { MasterDAO } from 'core/master/masterDAO';
 
 
 export default function EditAllBRPR({closeModal,allBRPRdata}) {
   const [allBRPRlist, setAllBRPRList] = useState([])
   const [isLoading, setIsLoading] = useState(false)
-
+  const [availability, setAvailability] = useState([]);
 
 const getAllBRPRTableData = async (onboardID)=>{
   setIsLoading(true)
@@ -30,6 +32,7 @@ const getAllBRPRTableData = async (onboardID)=>{
 
   useEffect(()=>{
     getAllBRPRTableData(allBRPRdata?.onboardID )
+    getAvailability()
   }
   ,[allBRPRdata?.onboardID ])  
 
@@ -46,9 +49,11 @@ const getAllBRPRTableData = async (onboardID)=>{
 				billrateCurrency: d.currency,
 				month: d.months,
 				year: d.years,
+        ContractType: d.contractType,
 				billRateReason: 'Bulk_BR_PR_Update',
 				payrateReason: 'Bulk_BR_PR_Update',
 				isEditBillRate: isBillRateEdit,
+        isFromMultiPopup : true
 			};
 
 			const response = await engagementRequestDAO.saveEditBillPayRateRequestDAO(
@@ -129,6 +134,56 @@ const getAllBRPRTableData = async (onboardID)=>{
     }
   }
 
+  const getAvailability = useCallback(async () => {
+    const availabilityResponse = await MasterDAO.getFixedValueRequestDAO();
+    setAvailability(
+      availabilityResponse &&
+        availabilityResponse.responseBody?.BindHiringAvailability.reverse()
+    );
+  }, []);
+
+  const CompContractTypeColField = ({val,data}) => {
+    const [isEdit,setIsEdit] = useState(false)
+    const [colval,setcolVal]= useState({})
+
+    useEffect(()=>{
+      setcolVal({ value: val, label: val })
+    },[val])
+
+    const updatecontectTypeValue= () =>{
+      let dataTochange = {...data}
+      dataTochange.contractType = colval.value
+      dataTochange.edited = true
+      saveHandler(dataTochange,false)     
+    }
+
+
+    if(isEdit){
+      return <div style={{display:'flex',alignItems:'center' }}><div style={{display:'flex' ,flexDirection:'column'}}>
+        {/* <Select
+      defaultValue={colval}
+      style={{ width: 120 }}
+      onChange={(val)=>setcolVal(val)}
+      options={availability?.map(val=> ({ value: val.value, label: val.value }))}
+    /> */}
+
+     <Select
+        value={colval}
+        defaultValue={colval}
+        onChange={(val)=>setcolVal(val)}
+        options={availability?.map(val=> ({ value: val.value, label: val.value }))}
+      />
+      </div> <TickMark
+      width={24}
+      height={24}
+      style={{marginLeft:'10px',cursor:'pointer'}}
+      onClick={() => updatecontectTypeValue()}
+    /></div>
+    }else{
+      return <p style={{cursor:'pointer', margin:'0'}} onDoubleClick={()=>setIsEdit(true)}>{val}</p>
+    }
+  }
+
 const columns = useMemo(()=>{
   return [
   {title: 'Months',
@@ -139,6 +194,13 @@ render :(value,data)=>{
   return `${data.monthNames} ( ${data.years} )`
 }
 },
+{title: 'Contract Type',
+dataIndex: 'contractType',
+key: 'contractType',
+align: 'left',
+render: (value,data)=>{
+  return <CompContractTypeColField  val={value} data={data} />
+}},
 {title: 'BR',
 dataIndex: 'br',
 key: 'br',

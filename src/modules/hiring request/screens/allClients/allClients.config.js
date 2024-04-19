@@ -146,13 +146,13 @@ export const allClientsConfig = {
                     title: 'Client Email',
                     dataIndex: 'clientEmail',
                     key: 'clientEmail',
-                    width: '200px',
+                    width: '250px',
                 },
                 {
                     title: 'POC',
                     dataIndex: 'poc',
                     key: 'poc',
-                    width: '150px',
+                    width: '200px',
                     // render: (text, result) => {
                     // 	return (
                     // 		<Link
@@ -170,7 +170,7 @@ export const allClientsConfig = {
                     title: 'AM',
                     dataIndex: 'aM_UserName',
                     key: 'aM_UserName',
-                    width: '250px',
+                    width: '200px',
                     render:(text,result)=>{
                         let data = {clientID: result?.clientID, companyID: result?.companyID }
                         return text ? <div className={clienthappinessSurveyStyles.AMNAME}  onClick={()=>editAMHandler(data)}>{text}</div> : null
@@ -218,7 +218,7 @@ export const allClientsConfig = {
                     width: '150px',
                     render: (text) => {
                         if (!text) return null;
-                        return moment(text).format('DD/MM/YYYY')
+                        return text
                     },
                 },
                 {
