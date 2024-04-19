@@ -422,7 +422,7 @@ const EditClient = ({
 								setConfirmationModal(true);
 							}}
 							className={AddClientStyle.btnPrimaryResendBtn}>
-							Resend Invite Email
+							Send / Resend Invite Email
 						</button>
 						}
 						</div>
@@ -572,7 +572,7 @@ const EditClient = ({
 										setConfirmationModal(true);
 									}}
 									className={AddClientStyle.btnPrimaryResendBtn}>
-									Resend Invite Email
+									Send / Resend Invite Email
 								</button>
 								}
 								</div>
