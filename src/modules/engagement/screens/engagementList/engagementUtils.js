@@ -82,7 +82,8 @@ export const engagementUtils = {
 			isRenewalAvailable: item?.isRenewalAvailable,
 			isRenewalContract: item?.isRenewalContract,
 			payout_BillRate:item?.payout_BillRate,
-			payout_PayRate:item?.payout_PayRate
+			payout_PayRate:item?.payout_PayRate,
+			replacementID:item?.replacementID,
 		}));
 	},
 	getClientFeedbackColor: (color) => {
