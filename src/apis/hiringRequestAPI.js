@@ -47,6 +47,22 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'hiringRequestAPI.getPaginatedHiringRequest');
 		}
 	},
+	closeJobLogs:async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.CLOSE_ACTION_History + `?hrId=${data}`;
+		httpService.dataToSend = data;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestAPI.closeJobLogs');
+		}
+	},
 	reScheduleInterview: async function (data) {
 		let httpService = new HttpServices();
 		httpService.URL =

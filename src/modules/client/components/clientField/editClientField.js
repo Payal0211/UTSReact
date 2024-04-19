@@ -163,8 +163,6 @@ const EditClientField = ({
 		[flagAndCode],
 	);
 
-	console.log(typeOfPricing,checkPayPer,"checkPayPercheckPayPercheckPayPer");
-
 	/** -------- Masters API Ends here-------------- */
 	/** Submit the client form Starts */
 	const clientSubmitHandler = async (d, type = SubmitType.SAVE_AS_DRAFT) => {

@@ -45,6 +45,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import EditAllBRPR from '../editAllBRPR/editAllBRPR';
+import moment from 'moment';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() => import('./engagementFilter'));
@@ -142,6 +143,10 @@ const EngagementList = () => {
 	const [isAddTSC,setIsAddTSC] = useState(false);
 	const [issubmitTSC,setsubmitTSC] = useState(false);
 
+	const [editAMModal,setEditAMModal] = useState(false)
+	const [AMLIST, setAMLIST] = useState([])
+	const [AMDetails,setAMDetails] = useState({});
+
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
 			setIsAllowFilters(false);
@@ -170,6 +175,55 @@ const EngagementList = () => {
 		formState: { errors:TSCErrors },
 	} = useForm();
 
+	const {
+		register:AMregister,
+		handleSubmit:AMSubmit,
+		setValue:AMsetValue,
+		resetField:resetAMField,	
+		formState: { errors:AMErrors },
+	} = useForm();
+
+	const editAMModalcontroler = async (id) =>{
+		setEditAMModal(true)
+		let result = await engagementRequestDAO.getAMDetailsDAO(id)
+	
+		if(result?.statusCode === HTTPStatusCode.OK) {
+			let data = result.responseBody.details
+			setAMLIST(data.AMList.map(am=> ({id:am.text,value:am.value})))
+			setAMDetails(data.PayOut_Basic_Informtion)
+			AMsetValue('amName', data.PayOut_Basic_Informtion.aM_UserName)
+		}		
+	}
+
+	const saveEditAM = async (d)=>{
+		let payload = {
+			"payOutID": AMDetails?.payOutID,
+			"onBoardID": AMDetails?.onBoardID,
+			"hiringRequestID": AMDetails?.hiringRequestID,
+			"contactID": AMDetails?.contactID,
+			"talentID": AMDetails?.talentID,
+			"month": new Date(startDate).getMonth() + 1,
+			"year": new Date(startDate).getFullYear(),
+			"oldAMPersonID": AMDetails?.aM_SalesPersonID,
+			"newAMPersonID": +d.newAMName,
+			"comment": d.note,
+			"engagementId_HRID": AMDetails?.engagementId_HRID
+		  }
+
+		const result=  await engagementRequestDAO.saveAMNAMEEDITDAO(payload)
+
+		if(result.statusCode === HTTPStatusCode.OK) {
+			setEditAMModal(false)
+			setAMLIST([])
+			setAMDetails({})
+			resetAMField('amName')
+			resetAMField('newAMName')
+			resetAMField('note')
+			handleHRRequest({...tableFilteredState,searchText: searchText});
+		}
+	}
+
+
 	const tableColumnsMemo = useMemo(
 		() =>
 			allEngagementConfig.tableConfig(
@@ -184,7 +238,8 @@ const EngagementList = () => {
 				setTSCONBoardData,
 				setISEditTSC,
 				setActiveTab,
-				setAllBRPRdata
+				setAllBRPRdata,
+				editAMModalcontroler
 			),
 		[getEngagementModal],
 	);
@@ -1221,6 +1276,90 @@ const EngagementList = () => {
 					</Modal>
 				)}
 
+				{/* edit AM Name */}
+
+				{editAMModal && <Modal
+						transitionName=""
+						width="930px"
+						centered
+						footer={null}
+						className={allEngagementStyles.engagementaddtscModal}
+						open={editAMModal}
+						onCancel={() =>
+							setEditAMModal(false)
+						}
+						>
+							<div >
+				<h2 className={allEngagementStyles.modalTitle}>Edit AM</h2>
+				<p>Company Name: <b>{AMDetails?.companyName?? 'NA'}</b> | Client Name: <b>{AMDetails?.clientName?? 'NA'}</b> | Effictive From : <b>{moment(startDate).format('MM-YYYY')}</b></p>
+				<p>EN/HR : <b>{AMDetails?.engagementId_HRID}</b> </p>
+			</div>
+
+			<div className={allEngagementStyles.row}>
+			<div className={allEngagementStyles.colMd6}>
+				<HRInputField
+					register={AMregister}
+					label={'Current AM '}
+					name={'amName'}
+					type={InputType.TEXT}
+					// value={AMDetails?.aM_UserName}
+					placeholder="Enter AM "
+					disabled
+				/>
+			</div>
+	
+			<div className={`${allEngagementStyles.colMd6}  ${allEngagementStyles.customSelectAMName}`}>
+				<HRSelectField
+					setValue={(val, _)=>AMsetValue(val,_)}
+					register={AMregister}
+					searchable={true}
+					name="newAMName"
+					label="Select New AM "
+					defaultValue="Please Select"
+					options={AMLIST?.sort((a, b) => a.value.localeCompare(b.value))}
+					required
+					isError={AMErrors['newAMName'] && AMErrors['newAMName']}
+					errorMsg="Please select AM."
+					className="custom-select-class"
+				/>
+			</div>
+			</div>
+
+			<div className={allEngagementStyles.row}>
+			<HRInputField
+
+				label={'Note/Comments'}
+				register={AMregister}
+				name={'note'}
+				type={InputType.TEXT}
+				placeholder="Enter Note/Comment"
+				isTextArea
+				rows={5}
+				required
+				validationSchema={{
+				required: 'please enter Note/Comments.',
+				}}
+				isError={AMErrors['note'] && AMErrors['note']}
+				errorMsg="Please Enter note / comments."
+				/>
+			</div>
+
+			<div className={allEngagementStyles.formPanelAction}>
+						<button
+							type="submit"
+							onClick={AMSubmit(saveEditAM)}
+							className={allEngagementStyles.btnPrimary}
+							disabled={isLoading}
+							>
+							Save
+						</button>
+						<button
+							onClick={()=>setEditAMModal(false)}
+							className={allEngagementStyles.btnCancle}>
+							Cancel
+						</button>
+					</div>
+							</Modal>}
 			</div>
 		</div>
 	);

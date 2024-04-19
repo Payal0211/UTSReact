@@ -1049,14 +1049,15 @@ const EditHRFields = ({
         hrFormDetails.IsProfileView = false
         hrFormDetails.IsVettedProfile = false
       }
-
-      if(watch('fromTime').value === watch('endTime').value){
+      if(type !== SubmitType.SAVE_AS_DRAFT){
+      if(watch('fromTime')?.value === watch('endTime')?.value){
         setIsSavedLoading(false);
         return setError("fromTime", {
           type: "validate",
           message: "Start & End Time is same.",
         });
-      }     
+      } 
+    }    
 
       if (type === SubmitType.SAVE_AS_DRAFT) {        
         if (_isNull(watch("clientName"))) {
@@ -1605,7 +1606,8 @@ const EditHRFields = ({
       setShowGPTModal(false);
 
       let _getHrValues = { ...getHRdetails };
-     
+      _getHrValues.salesHiringRequest_Details.jobDescription =
+      gptFileDetails.JobDescription?? '';
       _getHrValues.salesHiringRequest_Details.requirement =
         gptFileDetails.Requirements;
       _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
@@ -1825,7 +1827,7 @@ const EditHRFields = ({
 
     const getResponse = async () => {
       const response = await hiringRequestDAO.extractTextUsingPythonDAO({
-        clientEmail: email.trim(),
+        clientEmail: email ? email.trim() :clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId ?  filteredMemo[0]?.emailId : watchClientName?? '',
         psUrl: e.target.value,
       });
 
@@ -2608,7 +2610,7 @@ const EditHRFields = ({
                       isControlled={true}
                       setValue={setValue}
                       register={register}
-                      label={`Add your client estimated budget (Monthly)`}
+                      label={`Add your ${getHRdetails?.addHiringRequest?.guid ? 'talent salary' :'client estimated '  }  budget (Monthly)`}
                       // label={`Add your estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}budget (Monthly)`}
                       options={budgets.map((item) => ({
                         id: item.id,
@@ -2625,7 +2627,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={`Estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "client ":''}Budget`}
+                    label={`${typeOfPricing === 1 || companyType?.id=== 2 ? getHRdetails?.addHiringRequest?.guid ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (Monthly)`}
                     register={register}
                     name="adhocBudgetCost"
                     type={InputType.NUMBER}
@@ -2644,7 +2646,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={getHRdetails?.addHiringRequest?.guid ?  `Estimated Minimum ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget (Monthly)`: `Client Estimated Minimum Budget (Monthly)`}
+                    label={getHRdetails?.addHiringRequest?.guid ?  `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Minimum Budget (Monthly)`: `Client Estimated Minimum Budget (Monthly)`}
                     register={register}
                     name="minimumBudget"
                     type={InputType.NUMBER}
@@ -2664,7 +2666,7 @@ const EditHRFields = ({
 
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={getHRdetails?.addHiringRequest?.guid ?   `Estimated Maximum ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}Budget (Monthly)` : `Client Estimated Maximum Budget (Monthly)`}
+                    label={getHRdetails?.addHiringRequest?.guid ?   `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Maximum Budget (Monthly)` : `Client Estimated Maximum Budget (Monthly)`}
                     register={register}
                     name="maximumBudget"
                     type={InputType.NUMBER}
@@ -2686,7 +2688,7 @@ const EditHRFields = ({
  {watch('budget')?.value !== "3" && <>
               <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees Amount ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }` : `Estimated Uplers Fees Amount ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }`}
+                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees Amount ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }` : `Estimated Uplers Fees Amount ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }`}
                                 register={register}
                                 name="uplersFees"
                                 type={InputType.TEXT}
@@ -2708,7 +2710,7 @@ const EditHRFields = ({
 
                             {!getHRdetails?.addHiringRequest?.guid && <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={"Talent Estimated Pay"}
+                                label={"Talent Estimated Pay (Monthly)"}
                                 register={register}
                                 name="needToPay"
                                 type={InputType.TEXT}
@@ -3530,7 +3532,36 @@ const EditHRFields = ({
                     </>
                   )}
 
-                  {gptDetails?.salesHiringRequest_Details?.requirement && (
+                  {gptDetails?.salesHiringRequest_Details?.jobDescription && (
+                    <>
+                      <h3 style={{ marginTop: "10px" }}>Job Description :</h3>
+                      {testJSON(
+                        gptDetails?.salesHiringRequest_Details?.jobDescription
+                      ) ? (
+                        <div className={HRFieldStyle.viewHrJDDetailsBox}>
+                          <ul>
+                            {JSON.parse(
+                              gptDetails?.salesHiringRequest_Details
+                                ?.jobDescription
+                            ).map((text) => (
+                              <li dangerouslySetInnerHTML={{ __html: text }} />
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <div
+                          className={HRFieldStyle.viewHrJDDetailsBox}
+                          dangerouslySetInnerHTML={{
+                            __html:
+                              gptDetails?.salesHiringRequest_Details
+                                ?.jobDescription,
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+
+                  {/* {gptDetails?.salesHiringRequest_Details?.requirement && (
                     <>
                       <h3 style={{ marginTop: "10px" }}>Requirements :</h3>
                       {testJSON(
@@ -3557,9 +3588,9 @@ const EditHRFields = ({
                         />
                       )}
                     </>
-                  )}
+                  )} */}
 
-                  {gptDetails?.salesHiringRequest_Details
+                  {/* {gptDetails?.salesHiringRequest_Details
                     ?.rolesResponsibilities && (
                     <>
                       <h3 style={{ marginTop: "10px" }}>
@@ -3590,7 +3621,7 @@ const EditHRFields = ({
                         />
                       )}
                     </>
-                  )}
+                  )} */}
 
                   {/*  For JD File  */}
                   {gptFileDetails.JDDumpID && (
@@ -3612,28 +3643,42 @@ const EditHRFields = ({
                         </>
                       )}
 
-                      {gptFileDetails?.Requirements && (
+                      {/* {gptFileDetails?.Requirements && (
                         <>
                           <h3 style={{ marginTop: "10px" }}>Requirements :</h3>
-                          <div className={HRFieldStyle.viewHrJDDetailsBox}>
+                          <div className={HRFieldStyle.viewHrJDDetailsBox}> */}
                             {/* <ul>
                     {gptFileDetails?.Requirements?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
                   </ul> */}
-                            {gptFileDetails?.Requirements}
+                            {/* {gptFileDetails?.Requirements}
                           </div>
                         </>
-                      )}
+                      )} */}
 
-                      {gptFileDetails?.Responsibility && (
+                      {/* {gptFileDetails?.Responsibility && (
                         <>
                           <h3 style={{ marginTop: "10px" }}>
                             Responsibility :
+                          </h3>
+                          <div className={HRFieldStyle.viewHrJDDetailsBox}> */}
+                            {/* <ul>
+                    {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
+                  </ul> */}
+                            {/* {gptFileDetails?.Responsibility}
+                          </div>
+                        </>
+                      )} */}
+
+                      {gptFileDetails?.JobDescription && (
+                        <>
+                          <h3 style={{ marginTop: "10px" }}>
+                          Job Description :
                           </h3>
                           <div className={HRFieldStyle.viewHrJDDetailsBox}>
                             {/* <ul>
                     {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
                   </ul> */}
-                            {gptFileDetails?.Responsibility}
+                            {gptFileDetails?.JobDescription}
                           </div>
                         </>
                       )}

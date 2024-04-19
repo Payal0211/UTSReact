@@ -58,6 +58,32 @@ const dataSource = [
 	  },
 ];
 
+const closeHRcolumns = [
+	{
+		title: 'Job post Closed',
+		dataIndex: 'addedby',
+		key: 'addedby',
+		render:(val,data,index)=>{
+			return `${index + 1} Time`
+		}
+		},
+		{
+			title: 'Date',
+			dataIndex: 'createdByDateTime',
+			key: 'createdByDateTime',
+		},
+		{
+			title: 'By whom',
+			dataIndex: 'fullName',
+			key: 'fullName',
+		},
+		{
+			title: 'Role',
+			dataIndex: 'userRole',
+			key: 'userRole',
+		},
+]
+
 const columns = [
 
 {
@@ -110,6 +136,7 @@ const ActivityFeed = ({
 	const [activityFeedMessage,setActivityFeedMessage] = useState();
 
 	const [activeTabType,setActiveTabType] = useState()
+	const [CloseHRdataSource,setCloseHRdataSource] = useState([])
 
 	const sanitizer = DOMPurify.sanitize;
 	const searchMemo = useMemo(() => {
@@ -131,6 +158,19 @@ const ActivityFeed = ({
 
 	// 	}
 	// }
+
+	const getCloseJobLogs = async (hrid)=>{
+		let result = await hiringRequestDAO.getCloseJobPostsLogs(hrid)
+		if(result?.statusCode === HTTPStatusCode.OK){
+			setCloseHRdataSource(result.responseBody)
+		}else{
+			setCloseHRdataSource([])
+		}
+	}
+
+	useEffect(()=>{
+		getCloseJobLogs(hrID)
+	},[hrID])
 
 // 	useEffect(()=> {
 // if(activeTabType){
@@ -297,6 +337,7 @@ const ActivityFeed = ({
 				<Tabs className={ActivityFeedStyle.channelLibTabs}>
 					<TabList className={ActivityFeedStyle.channelLibTabsTitle}>
 						<Tab >Activity</Tab>
+						<Tab >Close HR log</Tab>
 						{/* <Tab onClick={()=> setActiveTabType(ChannelType.images)}>Images</Tab>
 						<Tab onClick={()=>{ setActiveTabType(ChannelType.documents)}}>Documents</Tab>
 						<Tab onClick={()=>{ setActiveTabType(ChannelType.videos)}}>Videos</Tab> */}
@@ -448,6 +489,11 @@ const ActivityFeed = ({
 								</div>
 							</div>	
 						</div>
+					</TabPanel>
+
+					{/* close HR log */}
+					<TabPanel className={ActivityFeedStyle.tabContent}>
+					{CloseHRdataSource.length === 0 ? <h4>No close action performed on this job</h4> : <Table className={ActivityFeedStyle.LinkTableWrap} dataSource={CloseHRdataSource} columns={closeHRcolumns} pagination={false} />}	
 					</TabPanel>
 
 {/* Images tab */}

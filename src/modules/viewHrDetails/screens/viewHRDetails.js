@@ -558,7 +558,7 @@ const ViewHRDetails = () => {
             </p>
           </div>
           <div className={ViewHRDetailsStyle.viewHRRightDetails}>
-            <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+            {/* <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
               <h3>
                 Requirements
                 <i className={ViewHRDetailsStyle.blueDot} />
@@ -628,6 +628,47 @@ const ViewHRDetails = () => {
                     __html:
                       hiringDetails?.responseBody?.details
                         ?.rolesResponsibilites,
+                  }}
+                />
+              )}
+            </div> */}
+
+            <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+              <h3>
+                Job Description
+                <i className={ViewHRDetailsStyle.blueDot} />
+              </h3>
+              {hiringDetails?.responseBody?.details?.guid ? (
+                testJSON(
+                  hiringDetails?.responseBody?.details?.job_Description
+                ) ? (
+                  <div className={ViewHRDetailsStyle.viewHrJDDetailsBox}>
+                    <ul>
+                      {JSON.parse(
+                        hiringDetails?.responseBody?.details
+                          ?.job_Description
+                      ).map((text) => (
+                        <li dangerouslySetInnerHTML={{ __html: text }} />
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <div
+                    className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        hiringDetails?.responseBody?.details
+                          ?.job_Description,
+                    }}
+                  />
+                )
+              ) : (
+                <div
+                  className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      hiringDetails?.responseBody?.details
+                        ?.job_Description,
                   }}
                 />
               )}
