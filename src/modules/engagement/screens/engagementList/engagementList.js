@@ -146,6 +146,7 @@ const EngagementList = () => {
 	const [editAMModal,setEditAMModal] = useState(false)
 	const [AMLIST, setAMLIST] = useState([])
 	const [AMDetails,setAMDetails] = useState({});
+	const [AMLOADING,setAMLOADING] = useState(false)
 
 	const onRemoveHRFilters = () => {
 		setTimeout(() => {
@@ -196,6 +197,7 @@ const EngagementList = () => {
 	}
 
 	const saveEditAM = async (d)=>{
+		setAMLOADING(true)
 		let payload = {
 			"payOutID": AMDetails?.payOutID,
 			"onBoardID": AMDetails?.onBoardID,
@@ -220,7 +222,9 @@ const EngagementList = () => {
 			resetAMField('newAMName')
 			resetAMField('note')
 			handleHRRequest({...tableFilteredState,searchText: searchText});
+			setAMLOADING(false)
 		}
+		setAMLOADING(false)
 	}
 
 
@@ -1278,7 +1282,7 @@ const EngagementList = () => {
 
 				{/* edit AM Name */}
 
-				{editAMModal && <Modal
+				{editAMModal &&  <Modal
 						transitionName=""
 						width="930px"
 						centered
@@ -1295,7 +1299,8 @@ const EngagementList = () => {
 				<p>EN/HR : <b>{AMDetails?.engagementId_HRID}</b> </p>
 			</div>
 
-			<div className={allEngagementStyles.row}>
+			<>
+				{AMLOADING ? <Skeleton active /> : <><div className={allEngagementStyles.row}>
 			<div className={allEngagementStyles.colMd6}>
 				<HRInputField
 					register={AMregister}
@@ -1358,7 +1363,10 @@ const EngagementList = () => {
 							className={allEngagementStyles.btnCancle}>
 							Cancel
 						</button>
-					</div>
+					</div></>}
+				</>
+
+			
 							</Modal>}
 			</div>
 		</div>
