@@ -300,45 +300,11 @@ const togglePriority = useCallback(
 							<EditSVG style={{ fontSize: '16px' }} />{' '}
 							<span className={HRDetailStyle.btnLabel}>Edit HR</span></div>)}
 					</div>
-
-					{apiData?.HRStatusCode === HiringRequestHRStatus.CANCELLED ? <>
-						{apiData?.dynamicCTA?.ReopenHR?.IsEnabled && (
-                <div
-                  className={HRDetailStyle.hiringRequestPriority}
-                  onClick={() => {
-                    setReopenHrModal(true);
-                  }}
-                >
-                  <Tooltip placement="bottom" title="Reopen HR">
-                    <ReopenHR
-                      style={{ width: "24px" }}
-                      className={HRDetailStyle.deleteSVG}
-                    />
-                  </Tooltip>
-                </div>
-              )}
-			  
-			  {reopenHrModal && (
-                <Modal
-                  width={"864px"}
-                  centered
-                  footer={false}
-                  open={reopenHrModal}
-                  className="updateTRModal"
-                  onCancel={() => setReopenHrModal(false)}
-                >
-                  <ReopenHRModal
-                    onCancel={() => setReopenHrModal(false)}
-                    apiData={apiData}
-                  />
-                </Modal>
-              )}
-			  </> : (
-						<div className={HRDetailStyle.hrDetailsRightPart}>
+				
+					<div className={HRDetailStyle.hrDetailsRightPart}>
 							{/* <button onClick={() => setShowAMModal(true)} className={HRDetailStyle.primaryButton}>Assign AM</button> */}
 
 							{/* <PreOnboardingTabModal showAMModal={showAMModal} setShowAMModal={setShowAMModal} /> */}
-						
 
 							{apiData?.dynamicCTA?.CTA_Set1 &&
 								apiData?.dynamicCTA?.CTA_Set1?.length > 0 && (
@@ -361,60 +327,7 @@ const togglePriority = useCallback(
 									/>
 								)}
 
-							{/* {apiData?.activity_MissingAction_CTA?.length > 0 && (
-								<span>
-									<h4>
-										{getNextActionMissingActionMemo?.key !== 'ShareAProfile' &&
-											'Next Action'}{' '}
-										{nextMissingActionHandler()}{' '}
-									</h4>
-								</span>
-							)} */}
-              {/**  As of No Put on HOLD */}
-              {/* <HROperator
-								title={
-									hrUtils.handleAdHOC(apiData && apiData?.AdhocPoolValue)[0]
-										?.label
-								}
-								icon={<ArrowDownSVG style={{ width: '16px' }} />}
-								backgroundColor={`var(--background-color-light)`}
-								labelBorder={`1px solid var(--color-sunlight)`}
-								iconBorder={`1px solid var(--color-sunlight)`}
-								isDropdown={true}
-								listItem={hrUtils.handleAdHOC(apiData?.AdhocPoolValue)}
-								menuAction={(menuItem) => {
-									switch (menuItem.key) {
-										case 'Pass to ODR': {
-											updateODRPoolStatusHandler({
-												hrID: urlSplitter?.split('HR')[0],
-												isPool: false,
-												isODR: true,
-											});
-											break;
-										}
-										case 'Pass to Pool': {
-											updateODRPoolStatusHandler({
-												hrID: urlSplitter?.split('HR')[0],
-												isPool: true,
-												isODR: false,
-											});
-											break;
-										}
-										case 'Keep it with me as well': {
-											updateODRPoolStatusHandler({
-												hrID: urlSplitter?.split('HR')[0],
-												isPool: true,
-												isODR: true,
-											});
-											break;
-										}
-										default:
-											break;
-									}
-								}}
-							/> */}
-
-              {apiData?.dynamicCTA?.CloseHr && (
+{apiData?.dynamicCTA?.CloseHr?.IsEnabled && (
                 <div
                   className={HRDetailStyle.hiringRequestPriority}
                   onClick={() => {
@@ -479,8 +392,63 @@ const togglePriority = useCallback(
                   />
                 </Modal>
               )}
+
+							{/* {apiData?.activity_MissingAction_CTA?.length > 0 && (
+								<span>
+									<h4>
+										{getNextActionMissingActionMemo?.key !== 'ShareAProfile' &&
+											'Next Action'}{' '}
+										{nextMissingActionHandler()}{' '}
+									</h4>
+								</span>
+							)} */}
+              {/**  As of No Put on HOLD */}
+              {/* <HROperator
+								title={
+									hrUtils.handleAdHOC(apiData && apiData?.AdhocPoolValue)[0]
+										?.label
+								}
+								icon={<ArrowDownSVG style={{ width: '16px' }} />}
+								backgroundColor={`var(--background-color-light)`}
+								labelBorder={`1px solid var(--color-sunlight)`}
+								iconBorder={`1px solid var(--color-sunlight)`}
+								isDropdown={true}
+								listItem={hrUtils.handleAdHOC(apiData?.AdhocPoolValue)}
+								menuAction={(menuItem) => {
+									switch (menuItem.key) {
+										case 'Pass to ODR': {
+											updateODRPoolStatusHandler({
+												hrID: urlSplitter?.split('HR')[0],
+												isPool: false,
+												isODR: true,
+											});
+											break;
+										}
+										case 'Pass to Pool': {
+											updateODRPoolStatusHandler({
+												hrID: urlSplitter?.split('HR')[0],
+												isPool: true,
+												isODR: false,
+											});
+											break;
+										}
+										case 'Keep it with me as well': {
+											updateODRPoolStatusHandler({
+												hrID: urlSplitter?.split('HR')[0],
+												isPool: true,
+												isODR: true,
+											});
+											break;
+										}
+										default:
+											break;
+									}
+								}}
+							/> */}
+
+
             </div>
-          )}
+		
         </div>
         {isLoading ? (
           <>
