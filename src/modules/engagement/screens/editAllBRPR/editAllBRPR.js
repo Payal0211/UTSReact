@@ -7,7 +7,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import allengagementReplceTalentStyles from '../engagementBillAndPayRate/engagementBillRate.module.css';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
-import { Radio, Skeleton, Table,  } from 'antd';
+import { Radio, Skeleton, Table, Modal } from 'antd';
 import Select from 'react-select';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
@@ -85,9 +85,22 @@ const getAllBRPRTableData = async (onboardID)=>{
       }
       
     }
-
+// {console.log("colval",colval)}
     if(isEdit){
-      return <div style={{display:'flex' , alignItems:'center'}}><div style={{display:'flex' ,flexDirection:'column'}}><input type='number' onDoubleClick={()=>{setIsEdit(false);setcolVal(val)}} value={colval} onChange={e=> setcolVal(+e.target.value)} /> 
+      return <div style={{display:'flex' , alignItems:'center'}}><div style={{display:'flex' ,flexDirection:'column'}}><input type='number' onDoubleClick={()=>{setIsEdit(false);setcolVal(val)}} value={colval} onChange={e=> {
+        const inputNumber = e.target.value;   
+        // Check if the input is not empty and doesn't start with 0
+       
+        if (inputNumber === '' || inputNumber !== '0' ) {
+          // console.log(inputNumber,inputNumber[0] == 0, inputNumber[0], typeof inputNumber)
+          if(inputNumber[0] == 0){
+            // console.log("rem 0",+inputNumber.substring(1))
+            setcolVal(+inputNumber.substring(1))
+          }else{
+            setcolVal(+inputNumber)
+          } 
+        }
+      }} /> 
       {colval < data.pr && <p style={{ margin:'0', color:'red'}}>BR can not be less then PR</p>}
       </div> <TickMark
       width={24}
@@ -145,6 +158,7 @@ const getAllBRPRTableData = async (onboardID)=>{
   const CompContractTypeColField = ({val,data}) => {
     const [isEdit,setIsEdit] = useState(false)
     const [colval,setcolVal]= useState({})
+    const [showConfirm, setShowConfirm] = useState(false)
 
     useEffect(()=>{
       setcolVal({ value: val, label: val })
@@ -154,19 +168,12 @@ const getAllBRPRTableData = async (onboardID)=>{
       let dataTochange = {...data}
       dataTochange.contractType = colval.value
       dataTochange.edited = true
-      saveHandler(dataTochange,false)     
+      saveHandler(dataTochange,true)     
     }
 
 
     if(isEdit){
       return <div style={{display:'flex',alignItems:'center' }}><div style={{display:'flex' ,flexDirection:'column'}}>
-        {/* <Select
-      defaultValue={colval}
-      style={{ width: 120 }}
-      onChange={(val)=>setcolVal(val)}
-      options={availability?.map(val=> ({ value: val.value, label: val.value }))}
-    /> */}
-
      <Select
         value={colval}
         defaultValue={colval}
@@ -177,8 +184,50 @@ const getAllBRPRTableData = async (onboardID)=>{
       width={24}
       height={24}
       style={{marginLeft:'10px',cursor:'pointer'}}
-      onClick={() => updatecontectTypeValue()}
-    /></div>
+      // onClick={() => setShowConfirm() updatecontectTypeValue()}
+      onClick={() => {
+        if(val !== colval?.value){
+          setShowConfirm(true)
+        }else{
+          setIsEdit(false)
+        }
+      }}
+    />
+    <Modal open={showConfirm} 
+    transitionName=""
+    width="530px"
+    centered
+    footer={null}
+    className="engagementReplaceTalentModal"
+    onCancel={() =>
+      setShowConfirm(false)
+    }
+    >
+      <div>
+      <div
+            className={`${allengagementReplceTalentStyles.headingContainer} ${allengagementReplceTalentStyles.replaceTalentWrapper}`}>
+            <p>
+                Are you sure you want to change contract type <b>{val}</b> to <b>{colval?.value}</b>{" "}
+                if yes then please update BR and PR 
+            </p>
+        </div>
+        <div className={allengagementReplceTalentStyles.formPanelAction}>
+							<button
+								type="submit"
+								onClick={()=>{updatecontectTypeValue();setShowConfirm(false)}}
+								className={allengagementReplceTalentStyles.btnPrimary}
+								>
+								YES
+							</button>
+							<button
+								className={allengagementReplceTalentStyles.btn}
+								onClick={()=> setShowConfirm(false)}>
+								Cancel
+							</button>
+						</div>
+      </div>
+    </Modal>
+    </div>
     }else{
       return <p style={{cursor:'pointer', margin:'0'}} onDoubleClick={()=>setIsEdit(true)}>{val}</p>
     }
