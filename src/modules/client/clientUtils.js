@@ -141,11 +141,11 @@ export function clientFormDataFormatter({
 			phone:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('companyCountryCode'))
-						? '+91' + watch('phoneNumber')
-						: watch('companyCountryCode') + watch('phoneNumber')
+						? (watch('phoneNumber') != undefined && watch('phoneNumber') != '' ) ? '+91' + watch('phoneNumber') : ""
+						: (watch('phoneNumber') != undefined && watch('phoneNumber') != '' )? watch('companyCountryCode') + watch('phoneNumber'):''
 					: _isNull(d.companyCountryCode)
-					? '+91' + d.phoneNumber
-					: d.companyCountryCode + d.phoneNumber,
+					? (d.phoneNumber != undefined && d.phoneNumber != '') ? '+91' + d.phoneNumber : ''
+					: (d.phoneNumber != undefined && d.phoneNumber != '') ? d.companyCountryCode + d.phoneNumber : '',
 			teamManagement:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? parseInt(watch('remote'))
@@ -200,12 +200,12 @@ export function clientFormDataFormatter({
 			contactNo:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('primaryClientCountryCode'))
-						? '+91' + watch('primaryClientPhoneNumber')
-						: watch('primaryClientCountryCode') +
-						  watch('primaryClientPhoneNumber')
+						? (watch('primaryClientPhoneNumber') != undefined && watch('primaryClientPhoneNumber') != '') ? '+91' + watch('primaryClientPhoneNumber') : ''
+						:(watch('primaryClientPhoneNumber') != undefined && watch('primaryClientPhoneNumber') != '') ? watch('primaryClientCountryCode') +
+						  watch('primaryClientPhoneNumber') : ""
 					: _isNull(d.primaryClientCountryCode)
-					? '+91' + d.primaryClientPhoneNumber
-					: d.primaryClientCountryCode + d.primaryClientPhoneNumber,
+					? (d.primaryClientPhoneNumber != undefined && d.primaryClientPhoneNumber != '') ? '+91' + d.primaryClientPhoneNumber : ''
+					: (d.primaryClientPhoneNumber != undefined && d.primaryClientPhoneNumber != '') ? d.primaryClientCountryCode + d.primaryClientPhoneNumber : '',
 			designation:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('primaryDesignation'))
@@ -275,11 +275,11 @@ export function clientFormDataFormatter({
 			phoneNumber:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('legalClientCountryCode'))
-						? '+91' + watch('legalClientPhoneNumber')
-						: watch('legalClientCountryCode') + watch('legalClientPhoneNumber')
+						? (watch('legalClientPhoneNumber') != undefined && watch('legalClientPhoneNumber') != "") ? '+91' + watch('legalClientPhoneNumber') : ''
+						: (watch('legalClientPhoneNumber') != undefined && watch('legalClientPhoneNumber') != "") ? watch('legalClientCountryCode') + watch('legalClientPhoneNumber'): ''
 					: _isNull(d.legalClientCountryCode)
-					? '+91' + d.legalClientPhoneNumber
-					: d.legalClientCountryCode + d.legalClientPhoneNumber,
+					? (d.legalClientPhoneNumber != undefined && d.legalClientPhoneNumber != '') ? '+91' + d.legalClientPhoneNumber :''
+					: (d.legalClientPhoneNumber != undefined && d.legalClientPhoneNumber != '') ? d.legalClientCountryCode + d.legalClientPhoneNumber : '',
 			legalCompanyAddress:
 				draft === SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('legalCompanyAddress'))

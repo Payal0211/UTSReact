@@ -450,7 +450,7 @@ const ActivityFeed = ({
 														
 														
 														<div className={ActivityFeedStyle.activityAction}>
-														{item?.IsNotes === 0 && item?.ActionName === "Talent Status On Hold" && (<>
+														{/* {item?.IsNotes === 0 && item?.ActionName === "Talent Status On Hold" && (<>
 																<span style={{marginRight: '14px'}}></span>
 																<span style={{ fontWeight: '500' }}>{'On Hold Remark : '}</span>
 																<span >
@@ -463,8 +463,8 @@ const ActivityFeed = ({
 																<span >
 																	{item?.Remark &&   item?.Remark }
 																</span></>
-															)}
-															{item?.Remark && (<>
+															)} */}
+															{ item?.Remark && (<>
 																<span style={{marginRight: '14px'}}></span>
 																<span style={{ fontWeight: '500' }}>{'Remark : '}</span>
 																<span >
