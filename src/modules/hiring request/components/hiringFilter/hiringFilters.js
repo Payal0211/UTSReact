@@ -406,7 +406,7 @@ const HiringFilters = ({
 									else setFilteredTagLength(prev => prev - 1)
 									setIsShowDirectHRChecked(e.target.checked);
 									}}>
-									Show Direct HR 
+									Show Profile Shared HR
 								</Checkbox>
 								{filtersType.map((item, index) => {
 									return (
