@@ -85,16 +85,16 @@ const getAllBRPRTableData = async (onboardID)=>{
       }
       
     }
-{console.log("colval",colval)}
+// {console.log("colval",colval)}
     if(isEdit){
       return <div style={{display:'flex' , alignItems:'center'}}><div style={{display:'flex' ,flexDirection:'column'}}><input type='number' onDoubleClick={()=>{setIsEdit(false);setcolVal(val)}} value={colval} onChange={e=> {
         const inputNumber = e.target.value;   
         // Check if the input is not empty and doesn't start with 0
        
         if (inputNumber === '' || inputNumber !== '0' ) {
-          console.log(inputNumber,inputNumber[0] == 0, inputNumber[0], typeof inputNumber)
+          // console.log(inputNumber,inputNumber[0] == 0, inputNumber[0], typeof inputNumber)
           if(inputNumber[0] == 0){
-            console.log("rem 0",+inputNumber.substring(1))
+            // console.log("rem 0",+inputNumber.substring(1))
             setcolVal(+inputNumber.substring(1))
           }else{
             setcolVal(+inputNumber)
