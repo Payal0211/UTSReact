@@ -109,6 +109,12 @@ input[type="file"] {
   display: none;
 }
 
+.mainWrapper{
+  padding-top: 80px;;
+  padding-left: 60px;
+  width: 100%;  
+}
+
 /* -- Ant Table Pagination--*/
 .ant-table-tbody .first-row,
 .ant-table-body .ant-table-measure-row td {
@@ -116,7 +122,8 @@ input[type="file"] {
 }
 
 .ant-table-pagination-right {
-  margin-top: 30px !important;
+  margin-top: 24px !important;
+  margin-bottom: 0 !important;
   justify-content: center !important;
 }
 
@@ -124,15 +131,25 @@ input[type="file"] {
   padding: 0;
 }
 
-.ant-pagination-item a:hover {
+/* .ant-pagination-item a:hover {
   color: var(--color-sunlight) !important;
-}
+} */
 
-.ant-pagination-item.ant-pagination-item-active {
+.ant-pagination.ant-pagination-mini .ant-pagination-item.ant-pagination-item-active {
   background-color: var(--color-sunlight) !important;
   border-radius: 8px;
   border: none;
+  min-width: 24px;
 }
+.ant-pagination .ant-pagination-item:hover a,.ant-pagination .ant-pagination-prev:hover .ant-pagination-item-link,.ant-pagination .ant-pagination-next:hover .ant-pagination-item-link{
+  color: var(--uplers-black);
+}
+
+.ant-pagination .ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-link-icon,.ant-pagination .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-link-icon{
+  color: var(--uplers-black);
+}
+
+.ant-pagination .ant-select .ant-select-arrow{right:10px;}
 
 .ant-pagination-item.ant-pagination-item-active a {
   font-weight: 700;
@@ -171,7 +188,7 @@ table {
 }
 
 .ant-table-tbody > tr > td {
-  padding: 18px 12px !important;
+  padding: 14px 12px !important;
 }
 .ant-table-thead > tr > th {
   /* padding: 24px !important; */
@@ -193,7 +210,7 @@ table {
 
 /* TO FIX TABLE BODY WITH AVAILABLE DISPLAY HEIGHT */
 .ant-table-body {
-  max-height: calc(100vh - 545px) !important;
+  max-height: calc(100vh - 421px) !important;
   min-height: 100px;
 }
 
@@ -987,18 +1004,13 @@ table {
   line-height: 20px;
   color: rgba(107, 107, 107, 0.6);
 }
-
-
 /* Ant date Time picker custom Css End */
-
 
 [class*="ant-select-dropdown"][class*="GenerateautocompleteField"]{
   z-index: 9999 !important;
   width: 500px !important;
   min-width: 500px !important;
 }
-
-
 
 /* jobpostDraftModal css start */
 .jobpostDraftModal .ant-modal-header{
@@ -1019,7 +1031,6 @@ table {
 }
 
 /* jobpostDraftModal css End */
-
 
 #interviewReschedule .ant-select .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input{
   padding: 15px;
@@ -1067,8 +1078,8 @@ table {
 
 .ant-pagination.ant-pagination-mini .ant-pagination-item{
   min-width: auto;
+  margin: 0 4px;
 }
-
 
 [class*="filterRight"] .ant-select-multiple .ant-select-selector{
   padding-top: 5px;
@@ -1093,11 +1104,14 @@ table {
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {
+  .mainWrapper {
+    padding-top: 64px;
+  }
 
   .ant-table-thead > tr > th {
-      font-size: 10px;
-      padding-left: 10px !important;
-      padding-right: 10px !important;
+    font-size: 10px;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
   }
 
   .ant-table-tbody > tr > td{
@@ -1116,12 +1130,12 @@ table {
   }
 
   .ant-table-body{
-    max-height: calc(100vh - 400px) !important;
+    max-height: calc(100vh - 322px) !important;
   }
 
   .telentDetailBtn{
-      font-size: 12px !important;
-      padding: 5px 8px !important;
+    font-size: 12px !important;
+    padding: 5px 8px !important;
   }
 
   .ant-table-pagination-right {
@@ -1161,9 +1175,6 @@ table {
   [class*="filterRight"] .ant-select .ant-select-selector .ant-select-selection-placeholder{
     font-size: 10px;
   }
-  
-
-
 }
 
 

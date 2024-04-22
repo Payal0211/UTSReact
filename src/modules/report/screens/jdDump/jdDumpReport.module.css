@@ -1,9 +1,6 @@
 .hiringRequestContainer {
-    /* width: 95%; */
-    /* margin: 0 auto; */
-    margin: 25px 40px;
+    padding: 25px 40px;
 }
-
 
 .addnewHR {
     display: flex;
@@ -45,27 +42,21 @@
 }
 
 .filterContainer {
-    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
-    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
-    margin: 40px auto 20px auto;
+    margin: 24px auto;
     background-color: var(--background-color-light);
 }
 
-
-
 .filterSets {
-    width: 96%;
+    /* width: 96%; */
     margin-left: auto;
     margin-right: auto;
-    padding: 30px 0;
+    padding: 24px;
     display: flex;
     border-radius: 10px;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    /* height: 92px; */
-
 }
 
 .addFilter {
@@ -663,4 +654,16 @@ tr th:first-child {
 
 .demandFunnelModal [class*="ant-pagination"] {
     display: none;
+}
+
+@media screen and (max-width: 1440px) {
+    .hiringRequestContainer {
+        padding: 16px 24px;
+    }
+    .filterContainer {        
+        margin: 16px auto;
+    }
+    .tableDetails{
+        margin-top: 16px;
+    }
 }

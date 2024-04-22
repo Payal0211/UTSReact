@@ -1,18 +1,10 @@
 .dealContainer {
-    /* background-color: red; */
-    /* height: 100vh; */
-    margin: 25px 40px;
-}
-
-.header {
-    margin-bottom: 61px;
-    width: inherit;
+    padding: 25px 40px;
 }
 
 .dealLable {
     font-size: 32px;
     font-weight: 500;
-    line-height: 40px;
 }
 
 .filterInterview {
@@ -23,29 +15,29 @@
 }
 
 .filterContainer {
-    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
-    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
-    margin: 40px auto 20px auto;
+    margin: 24px auto;
     background-color: var(--background-color-light);
 }
+
 .tableDetails {
     margin-top: 24px;
+    overflow: auto;
+    /* margin-bottom: 24px; */
+    border-radius: 8px;
+    /* max-height: 1000px; */
 }
 
-
 .filterSets {
-    width: 96%;
+    /* width: 96%; */
     margin-left: auto;
     margin-right: auto;
-    padding: 30px 0;
+    padding: 24px;
     display: flex;
     border-radius: 10px;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    /* height: 92px; */
-
 }
 
 .filterSetsInner{
@@ -207,13 +199,7 @@
     cursor: pointer;
 }
 
-.tableDetails {
-    overflow: auto;
-    /* margin-bottom: 24px; */
-    border-radius: 8px;
-    /* max-height: 1000px; */
 
-}
 
 table {
     width: 100%;
@@ -471,12 +457,19 @@ table {
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {
-
+    .dealContainer {
+        padding: 16px 24px;
+    }
+    .filterContainer{
+        margin: 16px auto;
+    }
     .calendarFilter{
         width:185px;
         height: 35px;
     }
-
+    .tableDetails{
+        margin-top: 16px;
+    }
     .calendarFilter svg{
         margin-right: 5px !important;
     }
@@ -490,7 +483,7 @@ table {
     }  
 
     .dealLable {
-        font-size: 28px;
+        font-size: 26px;
     }
   
     .filterRight .focusCheckBox{
@@ -508,21 +501,12 @@ table {
     }
   
     .filterSets{
-        padding: 15px 0;
-        width: 98%;
+        padding: 15px;
     }
   
     .addFilter{
         width: 125px;
         gap: 8px;
-    }
-
-    .header {
-        margin-bottom: 30px;
-    }
-
-    .filterContainer{
-        margin: 30px auto 20px auto;
     }
 
     .btnPrimary {
@@ -533,11 +517,6 @@ table {
 
     .togglebtn {
         height: 40px
-    }
-
-    .filterSets{
-        padding: 15px 0;
-        width: 98%;
     }
 
     .filterRight{

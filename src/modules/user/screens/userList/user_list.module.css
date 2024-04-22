@@ -1,7 +1,5 @@
 .hiringRequestContainer {
-    /* width: 95%; */
-    /* margin: 0 auto; */
-    margin: 25px 40px;
+    padding: 25px 40px;
 }
 
 .userListTitle {
@@ -64,28 +62,23 @@
     border-bottom-right-radius: 8px;
     background-color: var(--background-color-light);
 }
+
 .filterContainer{
-    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
-    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
-    margin: 40px auto 20px auto ;
+    margin: 24px auto;
     background-color: var(--background-color-light);
 }
 
-
-
 .filterSets{
-    width: 96%;
+    /* width: 96%; */
     margin-left: auto;
     margin-right: auto;
-    padding:30px 0;
+    padding: 24px;
     display: flex;
     border-radius: 10px;
     justify-content: end;
     align-items: center;
     flex-wrap: wrap;
-    /* height: 92px; */
-
 }
 
 .addFilter{
@@ -230,55 +223,53 @@
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {
-
+    .hiringRequestContainer {
+        padding: 16px 24px;
+    }
+    .filterContainer{
+        margin: 16px auto;
+    }
+    .tableDetails{
+        margin-top: 16px;
+    }
+    .userListTitle button{
+        padding-top: 11px;
+        padding-bottom: 11px;
+    }
     .calendarFilter{
         width:195px;
     }
-  
     .calendarFilter .dateFilter{
         font-size: 12px;
-    }
-  
+    }  
     .searchInput{
         font-size: 12px;
-    }  
-
-    .hiringRequest {
-        font-size: 28px;
     }
-  
+    .hiringRequest {
+        font-size: 26px;
+    }
     .filterRight .focusCheckBox{
         max-width: 115px;
         align-items: center;
     }
-
     .filterRight .focusCheckBox span{
         font-size: 12px;
         line-height: 16px;
     }
-  
     .filterSetsInner p{
         font-size: 12px;
     }
-  
     .addFilter{
         width: 155px;
     }
-
-
     .label {
         font-size: 12px;
-    }
-
-
-    .filterContainer{
-        margin: 30px auto 20px auto;
     }
 
     .btnPrimary {
         font-size: 12px;
         line-height: 16px;
-        padding: 12px 25px;
+        padding: 11px 25px;
     }
 
     .togglebtn {
@@ -286,8 +277,7 @@
     }
 
     .filterSets{
-        padding: 15px 0;
-        width: 98%;
+        padding: 15px;
     }
 
     .filterRight{

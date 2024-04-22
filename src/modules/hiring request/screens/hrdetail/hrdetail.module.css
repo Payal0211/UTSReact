@@ -1,6 +1,5 @@
 .hiringRequestContainer {
-    width: 95%;
-    margin: 0 auto;
+    padding: 25px 40px;
 }
 .hrback{
     display: inline-block;
@@ -793,4 +792,10 @@ label.radioCheck_Mark {
   }
   label.radioCheck_Mark input:checked + span.customCheck_Mark:after {
     opacity: 1;
+  }
+
+  @media screen and (max-width: 1440px) {
+    .hiringRequestContainer {
+        padding: 16px 24px;
+    }
   }
