@@ -257,7 +257,7 @@ const UserDetails = () => {
       freeCredit:clientModel.PayPerCredit === true ? Number(free_credits):0,
       IsPostaJob: clientModel.PayPerCredit === true ?IsChecked?.IsPostaJob :false,
       IsHybridModel: clientModel.PayPerCredit === true && clientModel.PayPerHire=== true ? true:false ,
-      IsVettedProfile: IsChecked.IsProfileView ? profileSharingOption:"",
+      IsVettedProfile: IsChecked.IsProfileView ? profileSharingOption:null,
       poC_ID:inputValue?.id,
       isTransparentPricing:clientModel.PayPerHire ?pricingOption:"",
       creditCurrency:clientModel.PayPerCredit === true ?currency:"",
@@ -366,6 +366,7 @@ const UserDetails = () => {
                           PayPerHire: e.target.checked,
                         });
                         seterrorClient(false);
+                        setPricingOption(null)
                       }}
                     >
                       Pay Per Hire
@@ -512,8 +513,8 @@ const UserDetails = () => {
                       * Please select option per post a job or per profile view.
                     </p>
                   )}
-                  {IsChecked?.IsPostaJob && (
                        <div className={userDetails.row}>
+                  {IsChecked?.IsPostaJob && (
                       <div className={userDetails.colMd6}>
                          <HRInputField
                            register={register}
@@ -525,6 +526,9 @@ const UserDetails = () => {
                            required
                          />
                        </div>
+                  )}
+                        {IsChecked?.IsProfileView && (
+                          <>
                         <div className={userDetails.colMd6}>
                        <HRInputField
                            register={register}
@@ -546,9 +550,8 @@ const UserDetails = () => {
                             placeholder="Enter Non Vetted Profile View Credit"
                             required
                           />
+                       </div></>)}
                        </div>
-                       </div>
-                  )}
                   {IsChecked?.IsProfileView && (
                     <div
                       style={{
