@@ -281,72 +281,6 @@ export const allHRConfig = {
       // 	isSearch: false,
       // },
       {
-        label: "Tenure",
-        name: "tenure",
-        child: [],
-        isSearch: false,
-        isNumber: true,
-      },
-      {
-        label: "Talent Request",
-        name: "tr",
-        child: [],
-        isSearch: false,
-        isNumber: true,
-      },
-      {
-        label: "Position",
-        name: "position",
-        child: filterList?.positions,
-        isSearch: true,
-      },
-      // {
-      // 	label: 'Company',
-      // 	name: 'company',
-      // 	child: filterList?.companies,
-      // 	isSearch: true,
-      // },
-      {
-        label: "FTE/PTE",
-        name: "typeOfEmployee",
-        child: [
-          {
-            disabled: false,
-            group: null,
-            selected: false,
-            text: "FTE",
-            value: "FTE",
-          },
-          {
-            disabled: false,
-            group: null,
-            selected: false,
-            text: "PTE",
-            value: "PTE",
-          },
-        ],
-        isSearch: false,
-      },
-      {
-        label: "Manager",
-        name: "manager",
-        child: filterList?.managers,
-        isSearch: true,
-      },
-      {
-        label: 'Lead Type',
-        name: 'leadUserId',
-        child: filterList?.leadTypeList,
-        isSearch: false,
-        isSingleSelect:true
-    },
-      {
-        label: "Sales Representative",
-        name: "salesRep",
-        child: filterList?.salesReps,
-        isSearch: true,
-      },
-      {
         label: "HR Status",
         name: "hrStatus",
         child: filterList?.hrStatusList?.map(it=>( {
@@ -436,6 +370,72 @@ export const allHRConfig = {
           
         // ],
         isSearch: false,
+      },
+      {
+        label: "Tenure",
+        name: "tenure",
+        child: [],
+        isSearch: false,
+        isNumber: true,
+      },
+      {
+        label: "Talent Request",
+        name: "tr",
+        child: [],
+        isSearch: false,
+        isNumber: true,
+      },
+      {
+        label: "Position",
+        name: "position",
+        child: filterList?.positions,
+        isSearch: true,
+      },
+      // {
+      // 	label: 'Company',
+      // 	name: 'company',
+      // 	child: filterList?.companies,
+      // 	isSearch: true,
+      // },
+      {
+        label: "FTE/PTE",
+        name: "typeOfEmployee",
+        child: [
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "FTE",
+            value: "FTE",
+          },
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "PTE",
+            value: "PTE",
+          },
+        ],
+        isSearch: false,
+      },
+      {
+        label: "Manager",
+        name: "manager",
+        child: filterList?.managers,
+        isSearch: true,
+      },
+      {
+        label: 'Lead Type',
+        name: 'leadUserId',
+        child: filterList?.leadTypeList,
+        isSearch: false,
+        isSingleSelect:true
+    },
+      {
+        label: "Sales Representative",
+        name: "salesRep",
+        child: filterList?.salesReps,
+        isSearch: true,
       },
       {
         label: "Type of HR",
