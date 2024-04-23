@@ -1294,7 +1294,7 @@ const EngagementList = () => {
 						}
 						>
 							<div >
-				<h2 className={allEngagementStyles.modalTitle}>Edit AM</h2>
+				<h2 className={allEngagementStyles.modalTitle}>Edit AM/NBD</h2>
 				<p>Company Name: <b>{AMDetails?.companyName?? 'NA'}</b> | Client Name: <b>{AMDetails?.clientName?? 'NA'}</b> | Effictive From : <b>{moment(startDate).format('MM-YYYY')}</b></p>
 				<p>EN/HR : <b>{AMDetails?.engagementId_HRID}</b> </p>
 			</div>
@@ -1304,7 +1304,7 @@ const EngagementList = () => {
 			<div className={allEngagementStyles.colMd6}>
 				<HRInputField
 					register={AMregister}
-					label={'Current AM '}
+					label={'Current AM/NBD '}
 					name={'amName'}
 					type={InputType.TEXT}
 					// value={AMDetails?.aM_UserName}
@@ -1319,7 +1319,7 @@ const EngagementList = () => {
 					register={AMregister}
 					searchable={true}
 					name="newAMName"
-					label="Select New AM "
+					label="Select New AM/NBD"
 					defaultValue="Please Select"
 					options={AMLIST?.sort((a, b) => a.value.localeCompare(b.value))}
 					required
