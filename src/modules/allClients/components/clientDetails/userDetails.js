@@ -462,7 +462,6 @@ const UserDetails = () => {
                   <Select onChange={handleChange} name="creditCurrency">
                   <Select.Option value="INR">INR</Select.Option>
                   <Select.Option value="USD">USD</Select.Option>
-
                 </Select>
                 {errorCurrency &&  <p
                           style={{
@@ -515,7 +514,7 @@ const UserDetails = () => {
                   )}
                   {IsChecked?.IsPostaJob && (
                        <div className={userDetails.row}>
-                       <div className={userDetails.colMd6}>
+                      <div className={userDetails.colMd6}>
                          <HRInputField
                            register={register}
                            errors={errors}
@@ -525,6 +524,28 @@ const UserDetails = () => {
                            placeholder="Enter Job post credit"
                            required
                          />
+                       </div>
+                        <div className={userDetails.colMd6}>
+                       <HRInputField
+                           register={register}
+                           errors={errors}
+                           label="Vetted Profile View Credit"
+                           name="vettedProfileViewCredit"
+                           type={InputType.NUMBER}
+                           placeholder="Enter Vetted Profile View Credit"
+                           required
+                         />
+                         </div>
+                         <div className={userDetails.colMd6}>
+                        <HRInputField
+                            register={register}
+                            errors={errors}
+                            label="Non Vetted Profile View Credit"
+                            name="nonVettedProfileViewCredit"
+                            type={InputType.NUMBER}
+                            placeholder="Enter Non Vetted Profile View Credit"
+                            required
+                          />
                        </div>
                        </div>
                   )}
@@ -565,31 +586,23 @@ const UserDetails = () => {
                         </p>
                       )}
 
-                      <div className={userDetails.row}>
+                      {/* <div className={userDetails.row}>
                        <div className={userDetails.colMd6}>
-                         <HRInputField
-                           register={register}
-                           errors={errors}
-                           label="Vetted Profile View Credit"
-                           name="vettedProfileViewCredit"
-                           type={InputType.NUMBER}
-                           placeholder="Enter Vetted Profile View Credit"
-                           required
-                         />
+                         
                        </div>
                      
                        <div className={userDetails.colMd6}>
-                       <HRInputField
-                           register={register}
-                           errors={errors}
-                           label="Non Vetted Profile View Credit"
-                           name="nonVettedProfileViewCredit"
-                           type={InputType.NUMBER}
-                           placeholder="Enter Non Vetted Profile View Credit"
-                           required
-                         />
+                        <HRInputField
+                            register={register}
+                            errors={errors}
+                            label="Non Vetted Profile View Credit"
+                            name="nonVettedProfileViewCredit"
+                            type={InputType.NUMBER}
+                            placeholder="Enter Non Vetted Profile View Credit"
+                            required
+                          />
                        </div>
-                       </div>
+                       </div> */}
                      
                     </div>
                   )}
@@ -609,9 +622,6 @@ const UserDetails = () => {
                         required
                       />
                     </div>
-                  </div>
-
-                  <div className={userDetails.row}>
                     <div className={userDetails.colMd6}>
                       <HRInputField
                         register={register}
@@ -624,6 +634,10 @@ const UserDetails = () => {
                       />
                     </div>
                   </div>
+
+                  {/* <div className={userDetails.row}>
+                    
+                  </div> */}
 
 
                   <div className={userDetails.row}>
@@ -648,9 +662,6 @@ const UserDetails = () => {
                       </p>)}
                       </div>
                     </div>
-                  </div>
-                   
-                  <div className={userDetails.row}>
                     <div className={userDetails.colMd6}>
                       <HRInputField
                         register={register}
@@ -663,6 +674,10 @@ const UserDetails = () => {
                       />
                     </div>
                   </div>
+                   
+                  {/* <div className={userDetails.row}>
+                    
+                  </div> */}
 
                   <div className={userDetails.row}>
                     <div className={userDetails.colMd6}>
