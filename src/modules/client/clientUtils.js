@@ -68,6 +68,17 @@ export function clientFormDataFormatter({
 	const clientFormDetails = {
 		isSaveasDraft: draft === SubmitType.SAVE_AS_DRAFT && true,	
 		company: {
+			creditCurrency: checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null ? watch('creditCurrency') : null,   
+			creditAmount: draft === SubmitType.SAVE_AS_DRAFT
+			? _isNull(watch('creditAmount'))
+				? 0
+				: checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null && watch('creditAmount')
+			: _isNull(d.creditAmount)
+			? 0
+			: checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null && Number(d.creditAmount) ,
+			jobPostCredit: IsChecked?.isPostaJob ? watch('jobPostCredit') : null,
+			vettedProfileViewCredit: IsChecked?.isProfileView ? watch('vettedProfileViewCredit') : null,
+			nonVettedProfileViewCredit:IsChecked?.isProfileView ? watch('nonVettedProfileViewCredit') : null,
 			IsVettedProfile:profileSharingOption,
 			IsTransparentPricing:_val,
 			anotherCompanyTypeID:payPerCondition?.anotherCompanyTypeID,
