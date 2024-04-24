@@ -1,3 +1,4 @@
+
 import UploadModal from "shared/components/uploadModal/uploadModal";
 import CompanyDetailsStyle from "./companyDetails.module.css";
 import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
@@ -14,7 +15,7 @@ import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { _isNull } from "shared/utils/basic_utils";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import { MdOutlinePreview } from "react-icons/md";
-import { Modal, Tooltip, AutoComplete, Radio, Checkbox, Avatar, Select } from "antd";
+import { Modal, Tooltip, AutoComplete, Radio, Checkbox, Avatar } from "antd";
 import { Controller } from "react-hook-form";
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import CreditTransactionHistoryModal from "./creditTransactionHistoryModal";
@@ -58,7 +59,6 @@ const EditCompanyDetails = ({
   const [leadOwner, setLeadOwner] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showUploadModal, setUploadModal] = useState(false);
-  const [errorCurrency, seterrorCurrency] = useState(false);
   const getGEO = async () => {
     const geoLocationResponse = await MasterDAO.getGEORequestDAO();
     setGEO(geoLocationResponse && geoLocationResponse.responseBody);
@@ -720,41 +720,6 @@ const EditCompanyDetails = ({
 					</div>
 					{checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null &&
 					<>
-          <div className={CompanyDetailsStyle.row}>
-              <div className={CompanyDetailsStyle.colMd6}>
-                      <HRInputField
-                        register={register}
-                        errors={errors}
-                        label="Per credit amount"
-                        name="creditAmount"
-                        type={InputType.NUMBER}
-                        placeholder="Enter per credit amount"
-                        required
-                      />
-              </div>               
-              <div className={CompanyDetailsStyle.colMd6}>
-                <label>
-                    Currency
-                      <span className={CompanyDetailsStyle.reqField}>*</span>
-                </label>
-                <Select onChange={() => {}} name="creditCurrency">
-                  <Select.Option value="INR">INR</Select.Option>
-                  <Select.Option value="USD">USD</Select.Option>
-                </Select>
-                {errorCurrency &&  <p
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          marginTop: "15px",
-                        }}
-                        className={CompanyDetailsStyle.error}
-                      >
-                        *  Please enter currency
-                      </p>}
-              </div>
-          </div>
-
-
           Remaining Credit : <span style={{fontWeight:"bold",marginBottom:"80px",marginTop:"20px"}}>{companyDetail?.jpCreditBalance}</span>
 						<div className={CompanyDetailsStyle.row}>
 							<div className={CompanyDetailsStyle.colMd6}>
@@ -847,47 +812,6 @@ const EditCompanyDetails = ({
                       {profileSharingOptionError && <p style={{display:'flex',flexDirection:'column',marginTop:"15px"}} className={CompanyDetailsStyle.error}>*Please select profile sharing options</p>}
 							</div>	
 						}
-                <div className={CompanyDetailsStyle.row}>
-                  {/* {IsChecked?.IsPostaJob && ( */}
-                      <div className={CompanyDetailsStyle.colMd4}>
-                         <HRInputField
-                           register={register}
-                           errors={errors}
-                           label="Job post credit"
-                           name="jobPostCredit"
-                           type={InputType.NUMBER}
-                           placeholder="Enter Job post credit"
-                           required
-                         />
-                       </div>
-                  {/* )} */}
-                        {/* {IsChecked?.IsProfileView && ( */}
-                          <>
-                        <div className={CompanyDetailsStyle.colMd4}>
-                       <HRInputField
-                           register={register}
-                           errors={errors}
-                           label="Vetted Profile View Credit"
-                           name="vettedProfileViewCredit"
-                           type={InputType.NUMBER}
-                           placeholder="Enter Vetted Profile View Credit"
-                           required
-                         />
-                         </div>
-                         <div className={CompanyDetailsStyle.colMd4}>
-                        <HRInputField
-                            register={register}
-                            errors={errors}
-                            label="Non Vetted Profile View Credit"
-                            name="nonVettedProfileViewCredit"
-                            type={InputType.NUMBER}
-                            placeholder="Enter Non Vetted Profile View Credit"
-                            required
-                          />
-                       </div></>
-                       {/* )} */}
-                </div>
-                
 								</div>												
 							</div>
 						</div>
