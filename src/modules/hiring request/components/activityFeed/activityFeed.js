@@ -397,7 +397,7 @@ const ActivityFeed = ({
 															&nbsp;&nbsp;
 															<span style={{ fontWeight: '500' }}>
 																{item?.IsNotes === 1
-																	? 'Assigned to : '
+																	? item?.DisplayName === "Talent Note" ? "Talent : " :'Assigned to : '
 																	: 'Action by : '}
 															</span>
 															<span>
