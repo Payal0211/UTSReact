@@ -40,6 +40,7 @@ import LogoLoader from "shared/components/loader/logoLoader";
 import { NetworkInfo } from "constants/network";
 import { HttpStatusCode } from "axios";
 import infoIcon from 'assets/svg/info.svg'
+import DOMPurify from "dompurify";
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -1900,7 +1901,15 @@ const EditHRFields = ({
     }
   },[companyType?.id])
 
-
+  const sanitizedDescription = (JobDescription) => {
+    return DOMPurify.sanitize(JobDescription, {
+        // ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li', 'a'],
+        ALLOWED_ATTR: {
+            // '*': ['class'], // Allow class attribute for custom styling
+            'a': ['href', 'target'] // Allow href and target for links
+        }
+    })
+  };
   return (
     <div className={HRFieldStyle.hrFieldContainer}>
       {contextHolder}
@@ -3544,7 +3553,7 @@ const EditHRFields = ({
                               gptDetails?.salesHiringRequest_Details
                                 ?.jobDescription
                             ).map((text) => (
-                              <li dangerouslySetInnerHTML={{ __html: text }} />
+                              <li dangerouslySetInnerHTML={{ __html: sanitizedDescription(text) }} />
                             ))}
                           </ul>
                         </div>
@@ -3552,9 +3561,7 @@ const EditHRFields = ({
                         <div
                           className={HRFieldStyle.viewHrJDDetailsBox}
                           dangerouslySetInnerHTML={{
-                            __html:
-                              gptDetails?.salesHiringRequest_Details
-                                ?.jobDescription,
+                            __html:sanitizedDescription(gptDetails?.salesHiringRequest_Details?.jobDescription),
                           }}
                         />
                       )}

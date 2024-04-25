@@ -40,6 +40,7 @@ import LogoLoader from "shared/components/loader/logoLoader";
 import { HttpStatusCode } from "axios";
 import infoIcon from 'assets/svg/info.svg'
 import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
+import DOMPurify from "dompurify";
 
 export const secondaryInterviewer = {
   interviewerId:"0",
@@ -1757,7 +1758,15 @@ const HRFields = ({
     }
 
   },[userCompanyTypeID,watch('tempProject')])
-
+  const sanitizedDescription = (JobDescription) => {
+    return DOMPurify.sanitize(JobDescription, {
+        // ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li', 'a'],
+        ALLOWED_ATTR: {
+            // '*': ['class'], // Allow class attribute for custom styling
+            'a': ['href', 'target'] // Allow href and target for links
+        }
+    })
+  };
   return (
     <>
       {contextHolder}
@@ -3340,7 +3349,7 @@ const HRFields = ({
                               gptDetails?.salesHiringRequest_Details
                                 ?.jobDescription
                             ).map((text) => (
-                              <li dangerouslySetInnerHTML={{ __html: text }} />
+                              <li dangerouslySetInnerHTML={{ __html: sanitizedDescription(text) }} />
                             ))}
                           </ul>
                         </div>
@@ -3349,8 +3358,7 @@ const HRFields = ({
                           className={HRFieldStyle.viewHrJDDetailsBox}
                           dangerouslySetInnerHTML={{
                             __html:
-                              gptDetails?.salesHiringRequest_Details
-                                ?.jobDescription,
+                            sanitizedDescription(gptDetails?.salesHiringRequest_Details?.jobDescription),
                           }}
                         />
                       )}
