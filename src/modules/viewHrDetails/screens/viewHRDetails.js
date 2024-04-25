@@ -12,6 +12,7 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import { UserAccountRole } from "constants/application";
 import infoIcon from "assets/svg/info.svg";
 import LogoLoader from "shared/components/loader/logoLoader";
+import DOMPurify from "dompurify";
 
 const ViewHRDetails = () => {
   const [hiringDetails, setHiringDetails] = useState("");
@@ -66,6 +67,15 @@ const ViewHRDetails = () => {
     }
   };
 
+  const sanitizedDescription = (JobDescription) => {
+    return DOMPurify.sanitize(JobDescription, {
+        // ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li', 'a'],
+        ALLOWED_ATTR: {
+            // '*': ['class'], // Allow class attribute for custom styling
+            'a': ['href', 'target'] // Allow href and target for links
+        }
+    })
+  };
   return (
     <>
       <div className={ViewHRDetailsStyle.viewHRDetailsWrap}>
@@ -633,45 +643,56 @@ const ViewHRDetails = () => {
               )}
             </div> */}
 
-            <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
+            <div>
               <h3>
                 Job Description
                 <i className={ViewHRDetailsStyle.blueDot} />
               </h3>
-              {hiringDetails?.responseBody?.details?.guid ? (
+              {hiringDetails?.responseBody?.details?.guid ?
+               (
                 testJSON(
                   hiringDetails?.responseBody?.details?.job_Description
                 ) ? (
-                  <div className={ViewHRDetailsStyle.viewHrJDDetailsBox}>
+                  <div 
+                  // className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+                  >
                     <ul>
                       {JSON.parse(
                         hiringDetails?.responseBody?.details
                           ?.job_Description
                       ).map((text) => (
-                        <li dangerouslySetInnerHTML={{ __html: text }} />
+                        <li dangerouslySetInnerHTML={{ __html: sanitizedDescription(text) }} />
                       ))}
                     </ul>
                   </div>
                 ) : (
                   <div
-                    className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+                    // className={ViewHRDetailsStyle.viewHrJDDetailsBox}
                     dangerouslySetInnerHTML={{
-                      __html:
-                        hiringDetails?.responseBody?.details
-                          ?.job_Description,
+                      __html:sanitizedDescription( hiringDetails?.responseBody?.details?.job_Description)                       
                     }}
                   />
                 )
-              ) : (
-                <div
-                  className={ViewHRDetailsStyle.viewHrJDDetailsBox}
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      hiringDetails?.responseBody?.details
-                        ?.job_Description,
-                  }}
-                />
-              )}
+              ) : 
+              (
+                  <div
+                    // className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+                    dangerouslySetInnerHTML={{
+                      __html: sanitizedDescription( hiringDetails?.responseBody?.details?.job_Description)
+                    }}
+                  />
+                )               
+              // (
+              //   <div
+              //     className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+              //     dangerouslySetInnerHTML={{
+              //       __html:
+              //         hiringDetails?.responseBody?.details
+              //           ?.job_Description,
+              //     }}
+              //   />
+              // )
+              }
             </div>
 
             <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
