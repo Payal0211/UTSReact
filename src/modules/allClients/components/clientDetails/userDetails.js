@@ -66,7 +66,8 @@ const UserDetails = () => {
   let vettedProfileViewCredit= watch("vettedProfileViewCredit");
   let nonVettedProfileViewCredit= watch("nonVettedProfileViewCredit");
   const handleChange=(value)=>{
-     setcurrency(value)
+     setcurrency(value);
+     seterrorCurrency(false);
   }
   useEffect(() => {
     if (nonVettedProfileViewCredit) {
@@ -465,7 +466,7 @@ const UserDetails = () => {
                           }}
                           className={userDetails.error}
                         >
-                         *  Please enter currency
+                         *  Please select currency
                         </p>}
 
                   </div>
