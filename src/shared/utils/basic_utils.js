@@ -202,3 +202,30 @@ export const getPayload = (flag, data) => {
 		countryCode: '',
 	};
 };
+
+
+export const budgetStringToCommaSeprated =(string)=> {
+	
+	const containsCommas = /,/.test(string);
+	if(containsCommas){
+		string = string.replace(/,/g, '')
+	}
+
+	try{
+		const numericString = string.match(/\d+\.\d+/)[0];
+
+	// Convert the numeric string to a number
+	const numericValue = parseFloat(numericString);
+
+	// Convert the numeric value to a comma-separated string
+	const commaSeparatedString = numericValue.toLocaleString("en-IN");
+
+	// Concatenate the modified numeric string with the rest of the input string
+	const modifiedString = string.replace(numericString, commaSeparatedString);
+	return modifiedString
+	}catch(err){
+		return string
+	}
+
+	
+}
