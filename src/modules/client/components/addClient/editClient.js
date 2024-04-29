@@ -12,6 +12,7 @@ import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';
 import ConfirmationModal from './confirmationResendEmailModal';
 import { Checkbox ,message} from 'antd'
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 const EditClient = ({
 	setError,
 	watch,
@@ -200,6 +201,7 @@ const EditClient = ({
 						)}
 					</div>
 				</div>
+				
 				<div className={AddClientStyle.tabsRightPanel}>
 					{clientDetailCheckList.length > 0 && <div className={AddClientStyle.row} style={{marginBottom:'15px'}}>
 					<div className={AddClientStyle.colMd12}>
@@ -584,7 +586,10 @@ const EditClient = ({
 		<ConfirmationModal
 		setConfirmationModal={setConfirmationModal}
 		showConfirmationModal={showConfirmationModal}
-		clientID={clientID}/>
+		clientID={clientID}
+		setIsLoading={setIsLoading}
+		isLoading={isLoading}
+		/>
 		</div>
 	);
 };
