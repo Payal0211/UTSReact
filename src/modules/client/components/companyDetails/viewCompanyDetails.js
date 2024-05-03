@@ -7,40 +7,38 @@ import { HTTPStatusCode,NetworkInfo  } from 'constants/network';
 import { Avatar, Tabs ,Table, Skeleton } from "antd";
 import { allClientRequestDAO } from 'core/allClients/allClientsDAO';
 
-const creditColumn = [{
+const creditColumn = [  {
+  title: "Created Date",
+  dataIndex: "createdByDate",
+  key: "createdByDate",
+  align: "left",
+},
+{
+  title: "Package",
+  dataIndex: "packageName",
+  key: "packageName",
+  align: "left",
+},
+  {
+    title: "Client (Company)",
+    dataIndex: "company",
+    key: "company",
+    align: "left",
+    render:(_,val)=>{
+      return `${val.client} (${val.company})`
+    }
+  },
+  {
     title: "HR #",
     dataIndex: "hrNumber",
     key: "hrNumber",
     align: "left",
   },
+
   {
-    title: "Company",
-    dataIndex: "company",
-    key: "company",
-    align: "left",
-  },
-  {
-    title: "Client",
-    dataIndex: "client",
-    key: "client",
-    align: "left",
-  },
-  {
-    title: "Talent Name",
+    title: "Talent",
     dataIndex: "talentName",
     key: "talentName",
-    align: "left",
-  },
-  {
-    title: "Currency",
-    dataIndex: "creditCurrency",
-    key: "creditCurrency",
-    align: "left",
-  },
-  {
-    title: "Created Date",
-    dataIndex: "createdByDate",
-    key: "createdByDate",
     align: "left",
   },
   {
@@ -49,22 +47,26 @@ const creditColumn = [{
     key: "creditUsed",
     align: "left",
   },
+
   {
-    title: "Credit Balance",
+    title: "Credit/Price",
     dataIndex: "creditBalance",
     key: "creditBalance",
     align: "left",
   },
   {
-    title: "Amount Per Credit",
+    title: "Total",
     dataIndex: "amountPerCredit",
     key: "amountPerCredit",
     align: "left",
+    render:(_,val)=>{
+      return val.creditBalance *  val.creditUsed
+    }
   },
   {
-    title: "Package Name",
-    dataIndex: "packageName",
-    key: "packageName",
+    title: "Currency",
+    dataIndex: "creditCurrency",
+    key: "creditCurrency",
     align: "left",
   },
 ]
@@ -457,6 +459,14 @@ export default function ViewCompanyDetails() {
                       <div className={AddNewClientStyle.summaryCard}>
                       JP Credit Balance:{" "}
                         <span>{creditUtilize.length > 0 ? creditUtilize[0].jpCreditBalance : 'NA'}</span>
+                      </div>
+                      <div className={AddNewClientStyle.summaryCard}>
+                      Current Amount:{" "}
+                        <span>{creditUtilize.length > 0 ? creditUtilize[0].currentAmount : 'NA'}</span>
+                      </div>
+                      <div className={AddNewClientStyle.summaryCard}>
+                      Current Currency:{" "}
+                        <span>{creditUtilize.length > 0 ? creditUtilize[0].currentCurrency : 'NA'}</span>
                       </div>
                     </div>
                     <Table 
