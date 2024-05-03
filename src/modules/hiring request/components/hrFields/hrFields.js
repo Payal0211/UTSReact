@@ -717,6 +717,9 @@ const HRFields = ({
     setClientDetails(clientData)
 
     setIsVettedProfile(clientData?.isVettedProfile)
+    setIsPostaJob(clientData?.isPostaJob)
+    setIsProfileView(clientData?.isProfileView)
+    setIsVettedProfile(clientData?.isVettedProfile)
     // to unfocus or blur client name field
     document.activeElement.blur();
     setError("clientName", {
