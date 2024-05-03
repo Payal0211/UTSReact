@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { engagementUtils } from './engagementUtils';
 import allengagementStyles from '../engagementFeedback/engagementFeedback.module.css';
 import moment from 'moment';
+import { budgetStringToCommaSepratedwithjustcurrency } from 'shared/utils/basic_utils';
 export const allEngagementConfig = {
 	engagementFilterTypeConfig: (filterList) => {
 		return [
@@ -626,13 +627,19 @@ export const allEngagementConfig = {
 				key: 'actualBillRate',
 				align: 'left',
 				width: '120px',
+				render:(text)=>{
+					return budgetStringToCommaSepratedwithjustcurrency(text)
+				}
 			},
 			{
 				title: 'BR',
 				dataIndex: 'payout_BillRate',
 				key: 'payout_BillRate',
 				align: 'left',	
-				width:'100px'			
+				width:'100px',
+				render:(text)=>{
+					return text.toLocaleString()
+				}			
 			},
 			{
 				title: 'Actual PR & Currency',
@@ -640,6 +647,9 @@ export const allEngagementConfig = {
 				key: 'actualPayRate',
 				align: 'left',
 				width: '120px',
+				render:(text)=>{
+					return budgetStringToCommaSepratedwithjustcurrency(text)
+				}
 			},
 			{
 				title: 'PR',
@@ -647,6 +657,9 @@ export const allEngagementConfig = {
 				key: 'payout_PayRate',
 				align: 'left',
 				width: '120px',
+				render:(text)=>{
+					return text.toLocaleString()
+				}
 			},		
 			{
 				title: 'NR',
@@ -654,6 +667,9 @@ export const allEngagementConfig = {
 				key: 'actualNR',
 				align: 'left',
 				width: '120px',
+				render:(text)=>{
+					return budgetStringToCommaSepratedwithjustcurrency(text)
+				}
 			},			
 			{
 				title: ' NR (%)',
@@ -668,6 +684,9 @@ export const allEngagementConfig = {
 				key: 'dpAmount',
 				align: 'left',
 				width: '140px',
+				render:(text)=>{
+					return budgetStringToCommaSepratedwithjustcurrency(text)
+				}
 			},
 			{
 				title: 'DP (%)',
