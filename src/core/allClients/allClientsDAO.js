@@ -221,6 +221,28 @@ export const allClientRequestDAO  = {
 		} catch (error) {
 			return errorDebug(error, 'ClientDAO.getActiveSalesUserListDAO');
 		}
+	},
+	getCreditUtilizationListDAO:async function (payload) {
+		try {
+			const activeSalesUserList = await ClientAPI.getCreditUtilizationList(payload)
+			if (activeSalesUserList) {
+				const statusCode = activeSalesUserList['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = activeSalesUserList.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return activeSalesUserList;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return activeSalesUserList;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.getCreditUtilizationListDAO');
+		}
 	}
-
 }

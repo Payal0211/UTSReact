@@ -4,6 +4,7 @@ import ChangePassword from 'modules/user/screens/changePassword/changePassword';
 import ViewClientDetails from 'modules/viewClient/viewClientDetails';
 import React, { Suspense } from 'react';
 import ChatGPTResponse from 'modules/report/screens/chatGPTResponse/chatGPTResponse';
+import ViewCompanyDetails from 'modules/client/components/companyDetails/viewCompanyDetails';
 
 const Dashboard = React.lazy(() =>
 	import('modules/dashboard/screens/dashboard'),
@@ -160,6 +161,7 @@ export default class UTSRoutes {
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
 	static EDITCLIENT = '/editclient/:CompanyID';
+	static VIEWCOMPANYDETAILS = '/viewCompanyDetails/:CompanyID'
 	static INTERVIEWLISTROUTE = '/interview';
 	static INTERVIEWSCHEDULE = '/interview/scheduleinterview';
 	static INTERVIEWFEEDBACK = '/interview/feedback';
@@ -395,6 +397,11 @@ export const navigateToComponent = {
 [UTSRoutes.EDITCLIENT]:(
 	<Suspense>
 			<EditClient />
+	</Suspense>
+),
+[UTSRoutes.VIEWCOMPANYDETAILS]:(
+	<Suspense>
+			<ViewCompanyDetails />
 	</Suspense>
 ),
 [UTSRoutes.VIEWCLIENT]: (

@@ -3,7 +3,8 @@ import clienthappinessSurveyStyles from "../../../survey/client_happiness_survey
 import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
 import { ReactComponent as NextWeekPriorityStar } from 'assets/svg/nextWeekPriorityStar.svg';
 import { ReactComponent as NoPriorityStar } from 'assets/svg/noPriorityStar.svg';
-import { Button } from "antd";
+import infoIcon from 'assets/svg/info.svg'
+import { Button, Tooltip } from "antd";
 import dealDetailsStyles from "../../../../modules/viewClient/viewClientDetails.module.css";
 import moment from "moment";
 export const allClientsConfig = {
@@ -110,8 +111,7 @@ export const allClientsConfig = {
                         if(result.companyID === 0  || result.clientID=== 0){
                             return text
                         }
-                        return (
-                            <Link
+                        return (<div style={{display:'flex',alignItems:'center'}}> <Link
                                 // to={`/viewClient/${result.companyID}~${result.clientID}`}
                                 to={`/viewClient/${result.companyID}/${result.clientID}`}
                                 target="_blank"
@@ -121,6 +121,14 @@ export const allClientsConfig = {
                                 }}>
                                 {text}
                             </Link>
+                            <div style={{marginLeft:'auto', cursor:'pointer'}}>
+                               <Tooltip title="view Company details" placement="right" >
+                                <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank"><img src={infoIcon} alt='info'  />	</a>                               
+                            </Tooltip> 
+                            </div>
+                            
+                            </div>
+                           
                         );
                     },
                 },

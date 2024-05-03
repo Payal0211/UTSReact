@@ -173,11 +173,11 @@ const EditClientField = ({
 			setPricingTypeError(true)
 			return
 		}
-		if(profileSharingOption === null && IsChecked?.isProfileView){
-			setIsSavedLoading(false)
-			setProfileSharingOptionError(true)
-			return
-		}
+		// if(profileSharingOption === null && IsChecked?.isProfileView){
+		// 	setIsSavedLoading(false)
+		// 	setProfileSharingOptionError(true)
+		// 	return
+		// }
 		if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
 			setIsSavedLoading(false)
 			setPayPerError(true)
