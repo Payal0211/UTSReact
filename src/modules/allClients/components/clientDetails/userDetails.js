@@ -217,10 +217,10 @@ const UserDetails = () => {
       setPricingOptionError(true);
       isValid = false;
     }
-    if (IsChecked?.IsProfileView === true && profileSharingOption === null) {
-      setProfileSharingOptionError(true);
-      isValid = false;
-    }
+    // if (IsChecked?.IsProfileView === true && profileSharingOption === null) {
+    //   setProfileSharingOptionError(true);
+    //   isValid = false;
+    // }
     if (IsChecked?.IsProfileView === true && _isNull(vettedProfileViewCredit)) {
       isValid = false;
       setError("vettedProfileViewCredit", {
@@ -546,7 +546,7 @@ const UserDetails = () => {
                           />
                        </div></>)}
                        </div>
-                  {IsChecked?.IsProfileView && (
+                  {/* {IsChecked?.IsProfileView && (
                     <div
                       style={{
                         display: "flex",
@@ -599,10 +599,10 @@ const UserDetails = () => {
                             required
                           />
                        </div>
-                       </div> */}
-                     
+                       </div> 
+                     /}
                     </div>
-                  )}
+                  )} */}
                 </>
                   )}
                

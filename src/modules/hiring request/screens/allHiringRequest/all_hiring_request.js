@@ -376,14 +376,14 @@ const AllHiringRequestScreen = () => {
           toDate: new Date(end).toLocaleDateString("en-US"),
         },
       });
-      handleHRRequest({
-        ...tableFilteredState,
-        filterFields_ViewAllHRs: {
-          ...tableFilteredState.filterFields_ViewAllHRs,
-          fromDate: new Date(start).toLocaleDateString("en-US"),
-          toDate: new Date(end).toLocaleDateString("en-US"),
-        },
-      });
+      // handleHRRequest({
+      //   ...tableFilteredState,
+      //   filterFields_ViewAllHRs: {
+      //     ...tableFilteredState.filterFields_ViewAllHRs,
+      //     fromDate: new Date(start).toLocaleDateString("en-US"),
+      //     toDate: new Date(end).toLocaleDateString("en-US"),
+      //   },
+      // });
     }
   };
 
@@ -468,7 +468,7 @@ const AllHiringRequestScreen = () => {
     localStorage.removeItem("filterFields_ViewAllHRs");
     localStorage.removeItem("appliedHRfilters");
     localStorage.removeItem("HRFilterCheckedState");
-    handleHRRequest(defaaultFilterState);
+    // handleHRRequest(defaaultFilterState);
     setIsAllowFilters(false);
     setEndDate(null);
     setStartDate(null);
@@ -480,7 +480,7 @@ const AllHiringRequestScreen = () => {
     setPageIndex(1);
     setPageSize(100);
   }, [
-    handleHRRequest,
+    // handleHRRequest,
     setAppliedFilters,
     setCheckedState,
     setFilteredTagLength,

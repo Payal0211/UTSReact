@@ -866,7 +866,7 @@ const EditCompanyDetails = ({
                   </Checkbox>
 							  </div>
                 {creditError && <p className={CompanyDetailsStyle.error}>*Please select option</p>}
-                {IsChecked?.isProfileView && 
+                {/* {IsChecked?.isProfileView && 
                   <div style={{display:'flex',flexDirection:'column',marginBottom:'20px',marginLeft: '270px', marginTop:"19px"}}> 
                           <label style={{marginBottom:"12px"}}>
                         Profile Sharing Options 
@@ -883,7 +883,7 @@ const EditCompanyDetails = ({
                       </Radio.Group>
                           {profileSharingOptionError && <p style={{display:'flex',flexDirection:'column',marginTop:"15px"}} className={CompanyDetailsStyle.error}>*Please select profile sharing options</p>}
                   </div>	
-                }
+                } */}
                 <div className={CompanyDetailsStyle.row}>                  
                       {IsChecked?.isPostaJob ? 
                       <div className={CompanyDetailsStyle.colMd4} >

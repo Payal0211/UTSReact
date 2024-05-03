@@ -216,4 +216,20 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getActiveSalesUserList');
 		}
 	},
+	getCreditUtilizationList:async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.LIST_CREDIT_UTILIZATION; 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getCreditUtilizationList');
+		}
+	},
 };
