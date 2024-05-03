@@ -445,6 +445,20 @@ export default function ViewCompanyDetails() {
                     {label: 'Credit Utilize',
                     key: 'Credit Utilize',
                     children: <>
+                    <div className={AddNewClientStyle.summaryContainer}>
+                      <div className={AddNewClientStyle.summaryCard}>
+                      Vetted Count:{" "}
+                        <span>{creditUtilize.length > 0 ? creditUtilize[0].vettedCount : 'NA'}</span>
+                      </div>
+                      <div className={AddNewClientStyle.summaryCard}>
+                      Non-Vetted Count:{" "}
+                        <span>{creditUtilize.length > 0 ? creditUtilize[0].nonVettedCount : 'NA'}</span>
+                      </div>
+                      <div className={AddNewClientStyle.summaryCard}>
+                      JP Credit Balance:{" "}
+                        <span>{creditUtilize.length > 0 ? creditUtilize[0].jpCreditBalance : 'NA'}</span>
+                      </div>
+                    </div>
                     <Table 
                       scroll={{ x: "100vw", y: "100vh" }}
                       id="hrListingTable"
