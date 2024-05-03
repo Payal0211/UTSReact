@@ -225,7 +225,28 @@ export const budgetStringToCommaSeprated =(string)=> {
 	return modifiedString
 	}catch(err){
 		return string
-	}
-
-	
+	}	
 }
+
+export const budgetStringToCommaSepratedwithjustcurrency = (string)=> {
+	try{
+		if(string){
+			const numericValue = parseFloat(string.replace(/[^\d.]/g, ''));
+
+			// Convert the number to a comma-separated string
+			const formattedValue = numericValue.toLocaleString();
+
+			// Include the currency in the output
+			const output = formattedValue + " " + string.replace(/\d+(\.\d+)?/, '');
+
+			return  output;
+		}else{
+			return string
+		}
+
+	}
+	catch(err){
+		return string
+	}
+	
+ }
