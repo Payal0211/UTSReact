@@ -232,17 +232,18 @@ export const allHRConfig = {
         align: "left",
         width: "7%",
         render: (text, result) => {
-          return (
-            <Link
-              to={`/user/${result?.userId}`}
-              style={{
-                color: `var(--uplers-black)`,
-                textDecoration: "underline",
-              }}
-            >
-              {text}
-            </Link>
-          );
+          // return (
+          //   // <Link
+          //   //   to={`/user/${result?.userId}`}
+          //   //   style={{
+          //   //     color: `var(--uplers-black)`,
+          //   //     textDecoration: "underline",
+          //   //   }}
+          //   // >
+          //   //   {text}
+          //   // </Link>
+          // );
+          return text
         },
       },
     ];
