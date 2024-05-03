@@ -156,4 +156,22 @@
     color: #0278e4;
     cursor: pointer;
   }
+
+  .summaryContainer {
+    display: flex;
+    justify-content: end;
+    padding: 10px;
+  }
   
+  .summaryCard {
+    padding: 15px;
+    border: 1px solid;
+    background: white;
+    width: fit-content;
+    border-radius: 6px;
+    margin: 0 5px;
+  }
+
+  .summaryCard span {
+    font-weight: bold;
+  }

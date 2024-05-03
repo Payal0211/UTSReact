@@ -427,7 +427,7 @@ const EditDebriefingHR = ({
 				requirements: '',
 				JobDescription:d.jobDescription,
 				en_Id: enID,
-				skills: skillList?.filter((item) => item?.skillsID !== -1),
+				skills: skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString(),
 				aboutCompanyDesc: d.aboutCompany,
 				// secondaryInterviewer: d.secondaryInterviewer,
 				interviewerFullName: d.interviewerFullName,
@@ -440,7 +440,7 @@ const EditDebriefingHR = ({
 				allowSpecialEdit: getHRdetails?.allowSpecialEdit,
 				role: d?.role?.id,
 				hrTitle: d.hrTitle,
-				allSkills:goodToSkillList,
+				allSkills:goodToSkillList.map(item=> item.skillsName).toString(),
 				"interviewerDetails":{
 					"primaryInterviewer": {
 						"interviewerId": d.interviewerId,
