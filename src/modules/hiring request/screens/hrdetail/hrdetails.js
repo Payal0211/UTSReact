@@ -200,6 +200,17 @@ const HRDetailScreen = () => {
 	}, [apiData]);
 // console.log('apiData', apiData)
 
+const handleReopen = async (d) => {
+	let data = { hrID: apiData.HR_Id, updatedTR: apiData.ClientDetail.NoOfTalents };
+	const response = await hiringRequestDAO.ReopenHRDAO(data);
+	if (response?.statusCode === HTTPStatusCode.OK) {                            
+	  window.location.reload();
+	}
+	if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
+	  message.error(response?.responseBody)
+	}
+  };
+
 const togglePriority = useCallback(
 	async (payload) => {
 		setLoading(true);
@@ -365,6 +376,9 @@ const togglePriority = useCallback(
                 <div
                   className={HRDetailStyle.hiringRequestPriority}
                   onClick={() => {
+					if(apiData?.IsPayPerCredit){
+						return handleReopen()
+					}
                     setReopenHrModal(true);
                   }}
                 >
