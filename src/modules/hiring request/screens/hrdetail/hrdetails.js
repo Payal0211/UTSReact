@@ -201,14 +201,18 @@ const HRDetailScreen = () => {
 // console.log('apiData', apiData)
 
 const handleReopen = async (d) => {
+	setLoading(true)
 	let data = { hrID: apiData.HR_Id, updatedTR: apiData.ClientDetail.NoOfTalents };
 	const response = await hiringRequestDAO.ReopenHRDAO(data);
 	if (response?.statusCode === HTTPStatusCode.OK) {                            
 	  window.location.reload();
+	  setLoading(false)
 	}
 	if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
 	  message.error(response?.responseBody)
+	  setLoading(false)
 	}
+	setLoading(false)
   };
 
 const togglePriority = useCallback(
