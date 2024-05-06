@@ -2,13 +2,21 @@ export class NetworkInfo {
 	static PROTOCOL = 'http://';
 	// static domain = 'localhost:5162/';
 	static DOMAIN = '3.218.6.134:9082/';
+	// static domain = 'https://clientportal.uplers.com/gspace/';
+	static domain = 'https://c17d-3-218-6-134.ngrok-free.app/';
 	static FILEDOMAIN = '3.218.6.134:90/';
 	// static PROTOCOL = 'https://';
 	// static DOMAIN = '809c77bfbe78ce2d4010a080a425ea2b.loophole.site/';
 	static NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN;
+	static network =  NetworkInfo.domain;
 	static FILENETWORK = NetworkInfo.PROTOCOL + NetworkInfo.FILEDOMAIN;
 	static ENV = "QA";
 }
+
+export class GSpaceEmails{
+static EMAILS = "mehul@uplers.com,vishwa.p@uplers.in,jimit.soni@uplers.in";
+}
+
 export class SubDomain {
 	static USER_OPERATIONS = 'UserOperationsAPI/';
 	static VIEW_ALL_HR = 'ViewAllHR/';
@@ -36,6 +44,8 @@ export class SubDomain {
 	static HUB_SPOT = 'Hubspot/';
 	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/'	
 	static DIRECT_HR = 'DirectHR/'
+	static SPACE = "space"
+	static MEMBER = "member"
 }
 export class APIType {
 	static USER = '/user';
@@ -217,6 +227,9 @@ export class ClientsAPI {
 	static GET_CREDIT_TRANSACTION_HISTORY = "GetCreditTransactionHistory";
 	static RESEND_INVITE_EMAIL = "ResendInviteEmail";
 	static GET_ACTIVE_SALES_USERLIST= "GetActiveSalesUserList";
+	static GET_SALES_USER_WITH_HEAD  = "GetSalesUserWithHead";
+	static UPDATE_SPACE_ID_FOR_CLIENT = "UpdateSpaceIDForClient";
+	static GET_SPACEID_FOR_CLIENTEMAIL= "GetSpaceIdForClientEmail";
 }
 
 export class HiringRequestsAPI {
@@ -275,6 +288,7 @@ export class HiringRequestsAPI {
 	static GET_lOGIN_HR_INFO = 'GetLoginHrInfo';
 	static SYNC_HR_UTS_TO_ATS  = 'SyncHRUtsToAts'
 	static CLOSE_ACTION_History = 'GetHRCloseActionHistory'
+	static GET_SALES_USER_WITH_HEAD_AFTER_HRCREATE = "GetSalesUserWithHeadAfterHRCreate";
 }
 
 export class UsersAPI {

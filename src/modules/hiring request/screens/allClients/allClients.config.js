@@ -6,6 +6,7 @@ import { ReactComponent as NoPriorityStar } from 'assets/svg/noPriorityStar.svg'
 import { Button } from "antd";
 import dealDetailsStyles from "../../../../modules/viewClient/viewClientDetails.module.css";
 import moment from "moment";
+import { result } from "lodash";
 export const allClientsConfig = {
     allClientsTypeConfig : (filterList) => {
         return [
@@ -56,7 +57,8 @@ export const allClientsConfig = {
             }            		
 		];
     },
-    tableConfig : (editAMHandler,isShowAddClientCredit) => {
+    tableConfig : (editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID) => {
+        // && LoggedInUserTypeID?.LoggedInUserTypeID == 2
         if(isShowAddClientCredit === true){
             return [
                 {
@@ -78,6 +80,19 @@ export const allClientsConfig = {
                     },
                 },
                 {
+                    title: 'Create G-Space',
+                    dataIndex: 'create_gspace',
+                    key: 'create_gspace',
+                    width: '150px',
+                    render: (text, result) => {
+                        if(result?.isGSpaceCreated === false){
+                            return (                                    
+                                <button  className={clienthappinessSurveyStyles.btnPrimaryResendBtn} onClick={()=>createGspaceAPI(result?.companyName,result?.clientEmail)}>Create G-Space</button>
+                            );
+                        }
+                    },
+                },
+                {
                     title: '',
                     dataIndex: 'Edit',
                     key: 'edit',
@@ -94,7 +109,6 @@ export const allClientsConfig = {
                         )
                     }
                 },
-                
                 {
                     title: 'Added Date',
                     dataIndex: 'addedDate',
@@ -235,7 +249,7 @@ export const allClientsConfig = {
                     dataIndex: 'Edit',
                     key: 'edit',
                     align: 'center',
-                    width: '20px',
+                    width: '50px',
                     render:(_,result) => {
                         return (
                         isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link

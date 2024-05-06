@@ -22,11 +22,13 @@ import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { allClientRequestDAO } from 'core/allClients/allClientsDAO';
+import { allClientRequestDAO} from 'core/allClients/allClientsDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { allClientsConfig } from 'modules/hiring request/screens/allClients/allClients.config';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import EditAMModal from './components/allClients/editAMModal/editAMModal';
+import { GSpaceEmails } from 'constants/network';
+import { HttpStatusCode } from 'axios';
 
 const AllClientFiltersLazy = React.lazy(() =>
 	import('modules/allClients/components/allClients/allClientsFilter'),
@@ -99,8 +101,23 @@ function AllClients() {
 		getFilterRequest();
 	},[getFilterRequest])
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('clientEmail');
+    const authToken = urlParams.get('Token');
+    const name = urlParams.get('SpaceName');
+
+const updateSpaceIDForClientFun = async () =>{
+    let payload = {
+        "clientEmail": email,
+        "SpaceID": name,
+        "TokenObject": authToken
+    }
+   await allClientRequestDAO.updateSpaceIDForClientDAO(payload)
+}
+
     useEffect(() => {
         getAllClientsList(tableFilteredState);
+        updateSpaceIDForClientFun()
     },[tableFilteredState,isShowAddClientCredit]);
 
     const reloadClientList = ()=>{
@@ -263,8 +280,30 @@ function AllClients() {
         setAMToFetch(data)
     }
 
+    const getEmployeeID = localStorage.getItem("EmployeeID");
+    let LoggedInUserTypeID = JSON.parse(localStorage.getItem('userSessionInfo'))
+
+        const createGspaceAPI = async (clientName,clientEmail) =>{
+            const getEmails = await allClientRequestDAO.getSalesUserWithHeadDAO(clientEmail);
+            const checkEmail = /^[a-zA-Z0-9._%+-]+@(uplers\.in|uplers\.com)$/i;
+            var emailString = GSpaceEmails.EMAILS.split(',');
+            if(getEmails?.statusCode === HTTPStatusCode.OK){
+                getEmails?.responseBody?.forEach((emails)=>{
+                    if(emails?.salesUserEmail && checkEmail.test(emails?.salesUserEmail)){
+                        emailString.push(emails?.salesUserEmail);
+                    }
+                    if(emails?.salesUserHeadEmail && checkEmail.test(emails?.salesUserHeadEmail)){
+                        emailString.push(emails?.salesUserHeadEmail);
+                    }
+                })
+            }
+            var updatedEmailString = emailString.join(',');  
+            const response = await allClientRequestDAO.createGspaceDAO(`${clientName}-UTS`,updatedEmailString,clientEmail)
+            window.open(response?.responseBody?.authUrl, '_blank');
+        }
+
     const allClientsColumnsMemo = useMemo(
-		() => allClientsConfig.tableConfig(editAMHandler,isShowAddClientCredit),
+		() => allClientsConfig.tableConfig(editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID),
 		[isShowAddClientCredit],
 	); 
 

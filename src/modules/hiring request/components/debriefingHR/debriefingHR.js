@@ -7,7 +7,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
-import { HTTPStatusCode } from 'constants/network';
+import { GSpaceEmails, HTTPStatusCode } from 'constants/network';
 import HRInputField from '../hrInputFields/hrInputFields';
 import { InputType } from 'constants/application';
 import { useNavigate } from 'react-router-dom';
@@ -86,6 +86,7 @@ const DebriefingHR = ({
 	const [isFocusedRole, setIsFocusedRole] = useState(false)
 	const [talentRole, setTalentRole] = useState([]);
 	const [showPublishModal, setShowPublishModal] = useState(false)
+	const [salesHeadList,setSalesHeadList] = useState([]);
 	// const combinedSkillsMemo = useMemo(() => {
 	// 	const combinedData = [
 	// 		JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
@@ -343,7 +344,7 @@ const DebriefingHR = ({
 	}, [JDParsedSkills, setValue]);
     
 	// console.log("errors", errors,isOtherSkillExistMemo);
-	const openPublishModal = ()=>{
+	const openPublishModal = async  ()=>{
 		setShowPublishModal(true)
 	}
 
@@ -457,6 +458,24 @@ const DebriefingHR = ({
 			debriefFormDetails,
 		);
 		if (debriefResult.statusCode === HTTPStatusCode.OK) {
+			const getSalesHead = await hiringRequestDAO.getSalesUsersWithHeadAfterHrCreateDAO(enID);
+			const checkEmail = /^[a-zA-Z0-9._%+-]+@(uplers\.in|uplers\.com)$/i;
+			var emailString = GSpaceEmails.EMAILS.split(',');
+			getSalesHead?.responseBody?.details?.forEach((list)=>{
+				if(list?.salesUserEmail && checkEmail.test(list?.salesUserEmail)){
+					emailString.push(list?.salesUserEmail);
+				}
+				if(list?.salesUserHeadEmail && checkEmail.test(list?.salesUserHeadEmail)){
+					emailString.push(list?.salesUserHeadEmail);
+				}
+			})
+			var updatedEmailString = emailString.join(','); 
+			console.log(updatedEmailString,"updatedEmailString");
+			let payload = {
+				client_email : getSalesHead?.responseBody?.details?.[0]?.clientEmail,
+				users : updatedEmailString
+			}
+			const addMember = await hiringRequestDAO.addMemberToGspaceDAO(payload);
 			setIsLoading(false);
 			messageAPI.open({
 				type: 'success',
@@ -464,11 +483,11 @@ const DebriefingHR = ({
 			});
 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
 		}
-		}else{
-			setIsLoading(false);
-		}
-		
-	};
+	}else{
+		setIsLoading(false);
+	}
+	
+};
 
 	// const needMoreInforSubmitHandler = async (d) => {
 	// 	setIsLoading(true);

@@ -2100,6 +2100,64 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.WSJOBPOSTSLADAO()');
 		}
 	},
+	getSalesUsersWithHeadAfterHrCreateDAO:async (hrid) => {
+		try {
+			const getSaleHead = await HiringRequestAPI.getSalesUsersWithHeadAfterHrCreate(hrid);
+			if (getSaleHead) {
+				const statusCode = getSaleHead['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = getSaleHead.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return getSaleHead;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return getSaleHead;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getSalesUsersWithHeadAfterHrCreateDAO()');
+		}
+	},
+	addMemberToGspaceDAO:async (data) => {
+		try {
+			const addMember = await HiringRequestAPI.addMemberToGspace(data);
+			if (addMember) {
+				const statusCode = addMember['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = addMember.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return addMember;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return addMember;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.addMemberToGspaceDAO()');
+		}
+	},
 	// getChannelLibraryDAO:async (data) => {
 	// 	try {
 	// 		const AMRESPONSE = await HiringRequestAPI.getChannelLibraryApi(data);

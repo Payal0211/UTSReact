@@ -107,6 +107,32 @@ export class HttpServices {
 				headers: {
 					'Content-Type': this._contentType,
 					Authorization: this._isAuthRequired && this._authToken,
+					"ngrok-skip-browser-warning":"69420",
+				},
+			});
+			return {
+				statusCode: response.status,
+				responseBody: response?.data,
+			};
+		} catch (error) {
+			const errorResult = errorDebug(
+				error.response.data,
+				'httpServices.sendGetRequest()',
+			);
+			return {
+				statusCode: errorResult.statusCode,
+				responseBody: errorResult.responseBody,
+			};
+		}
+	}
+
+	async sendGetRequestHeader(data) {
+		try {
+			const response = await axios.get(this._URL, {
+				headers: {
+					'Content-Type': this._contentType,
+					Authorization: this._isAuthRequired && this._authToken,
+					"EmailID":data
 				},
 			});
 
