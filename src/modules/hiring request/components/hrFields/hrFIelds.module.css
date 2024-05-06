@@ -109,6 +109,10 @@
     box-shadow: none;
 }
 
+.formPanelAction button+button:disabled {
+    cursor: not-allowed;
+}
+
 .formPanelAction .btnPrimary {
     background: #FFDA30;
     border-color: #FFDA30;
