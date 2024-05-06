@@ -12,6 +12,7 @@ import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';
 import ConfirmationModal from './confirmationResendEmailModal';
 import { Checkbox ,message} from 'antd'
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 const EditClient = ({
 	setError,
 	watch,
@@ -200,6 +201,7 @@ const EditClient = ({
 						)}
 					</div>
 				</div>
+				
 				<div className={AddClientStyle.tabsRightPanel}>
 					{clientDetailCheckList.length > 0 && <div className={AddClientStyle.row} style={{marginBottom:'15px'}}>
 					<div className={AddClientStyle.colMd12}>
@@ -234,68 +236,68 @@ const EditClient = ({
 						</div>
 						</div>}
 					<div className={AddClientStyle.row}>
-                    <div className={AddClientStyle.colMd12}>
-              <div
-                style={{
-                  width: "145px",
-                  height: "145px",
-                  marginBottom: "20px",
-                }}
-              >
-                <div
-                  style={{
-                    width: "145px",
-                    height: "145px",
-                    backgroundColor: "#EBEBEB",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  {!getUploadFileData ? (
-                    <p>Upload Profile</p>
-                  ) : (
-                    <img
-                      style={{
-                        width: "145px",
-                        height: "145px",
-                        borderRadius: "50%",
-                      }}
-                      src={
-                        base64Image
-                          ? base64Image
-                          : NetworkInfo.PROTOCOL +
-                            NetworkInfo.DOMAIN +
-                            "Media/ClientProfilePic/" +
-                            getUploadFileData
-                      }
-                      alt="preview"
-                    />
-                  )}
-                </div>
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <div style={{background:'var(--color-sunlight)',marginTop:'-25px',marginRight:'11px',display:'flex',padding:'2px',borderRadius:'50%',cursor:'pointer'}}>
-                       <EditSVG                
-                    width={24}
-                    height={24}
-                    onClick={() => setUploadModal(true)}
-                  /> 
-                    </div>
-                </div>
-              </div>
-              {showUploadModal && (
-              <UploadModal
-                isFooter={false}
-                uploadFileHandler={uploadFileHandler}
-                modalTitle={"Upload Profile"}
-                openModal={showUploadModal}
-                cancelModal={() => setUploadModal(false)}
-                setValidation={setValidation}
-                getValidation={getValidation}
-              />
-            )}
-            </div>
+                    {/* <div className={AddClientStyle.colMd12}>
+						<div
+							style={{
+							width: "145px",
+							height: "145px",
+							marginBottom: "20px",
+							}}
+						>
+							<div
+							style={{
+								width: "145px",
+								height: "145px",
+								backgroundColor: "#EBEBEB",
+								borderRadius: "50%",
+								display: "flex",
+								alignItems: "center",
+								textAlign: "center",
+							}}
+							>
+							{!getUploadFileData ? (
+								<p>Upload Profile</p>
+							) : (
+								<img
+								style={{
+									width: "145px",
+									height: "145px",
+									borderRadius: "50%",
+								}}
+								src={
+									base64Image
+									? base64Image
+									: NetworkInfo.PROTOCOL +
+										NetworkInfo.DOMAIN +
+										"Media/ClientProfilePic/" +
+										getUploadFileData
+								}
+								alt="preview"
+								/>
+							)}
+							</div>
+							<div style={{ display: "flex", justifyContent: "flex-end" }}>
+							<div style={{background:'var(--color-sunlight)',marginTop:'-25px',marginRight:'11px',display:'flex',padding:'2px',borderRadius:'50%',cursor:'pointer'}}>
+								<EditSVG                
+								width={24}
+								height={24}
+								onClick={() => setUploadModal(true)}
+							/> 
+								</div>
+							</div>
+						</div>
+						{showUploadModal && (
+						<UploadModal
+							isFooter={false}
+							uploadFileHandler={uploadFileHandler}
+							modalTitle={"Upload Profile"}
+							openModal={showUploadModal}
+							cancelModal={() => setUploadModal(false)}
+							setValidation={setValidation}
+							getValidation={getValidation}
+						/>
+						)}
+					</div> */}
 						<div className={AddClientStyle.colMd6}>
 							<HRInputField
 								register={register}
@@ -584,7 +586,10 @@ const EditClient = ({
 		<ConfirmationModal
 		setConfirmationModal={setConfirmationModal}
 		showConfirmationModal={showConfirmationModal}
-		clientID={clientID}/>
+		clientID={clientID}
+		setIsLoading={setIsLoading}
+		isLoading={isLoading}
+		/>
 		</div>
 	);
 };

@@ -40,6 +40,7 @@ import LogoLoader from "shared/components/loader/logoLoader";
 import { HttpStatusCode } from "axios";
 import infoIcon from 'assets/svg/info.svg'
 import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
+import DOMPurify from "dompurify";
 
 export const secondaryInterviewer = {
   interviewerId:"0",
@@ -220,6 +221,8 @@ const HRFields = ({
   
 
   const [countryBasedOnIP, setCountryBasedOnIP] = useState('')
+  const [checkCreditAvailability,setCheckCreditAvailability] = useState({})
+  const [isCreateHRDisable,setIsCreateHRDisable] = useState(false)
 
   const watchClientName = watch("clientName");
   const _endTime = watch("endTime");
@@ -716,6 +719,9 @@ const HRFields = ({
     setClientDetails(clientData)
 
     setIsVettedProfile(clientData?.isVettedProfile)
+    setIsPostaJob(clientData?.isPostaJob)
+    setIsProfileView(clientData?.isProfileView)
+    setIsVettedProfile(clientData?.isVettedProfile)
     // to unfocus or blur client name field
     document.activeElement.blur();
     setError("clientName", {
@@ -785,6 +791,8 @@ const HRFields = ({
             clearErrors(["clientName"])
           
             companyName(existingClientDetails?.responseBody?.name);
+
+            setCheckCreditAvailability(existingClientDetails?.responseBody?.CheckCreditAvailablilty) 
 
             setAboutCompanyDesc(existingClientDetails?.responseBody?.AboutCompanyDesc?? null)
             if(clientDetails?.isHybrid === false){
@@ -871,6 +879,19 @@ const HRFields = ({
     },
     [filteredMemo, setValue, watchClientName,defaultPropertys,clientDetails?.isHybrid]
   );
+
+  useEffect(()=>{
+    // for Disable Enable Create HR based on credit
+    if(userCompanyTypeID === 2){
+      if(checkCreditAvailability?.isCreditAvailable === false && isPostaJob === true){
+        setIsCreateHRDisable(true)
+      }else{
+        setIsCreateHRDisable(false)
+      }
+    }else{
+      setIsCreateHRDisable(false)
+    }
+  },[checkCreditAvailability,userCompanyTypeID,isPostaJob])
 
   const getOtherRoleHandler = useCallback(
     async (data) => {
@@ -1757,7 +1778,15 @@ const HRFields = ({
     }
 
   },[userCompanyTypeID,watch('tempProject')])
-
+  const sanitizedDescription = (JobDescription) => {
+    return DOMPurify.sanitize(JobDescription, {
+        // ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li', 'a'],
+        ALLOWED_ATTR: {
+            // '*': ['class'], // Allow class attribute for custom styling
+            'a': ['href', 'target'] // Allow href and target for links
+        }
+    })
+  };
   return (
     <>
       {contextHolder}
@@ -2016,6 +2045,7 @@ const HRFields = ({
 						</Checkbox>	
             </div>
             {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Option</p>}
+            {isCreateHRDisable && <p className={HRFieldStyle.error} style={{marginTop:'5px'}}>* Please purchase the subcription package, you do not have enough credit balance</p> }
 </div> }
 
 
@@ -3170,9 +3200,9 @@ const HRFields = ({
         <div className={HRFieldStyle.formPanelAction}>
           <button
             style={{
-              cursor: type === SubmitType.SUBMIT ? "no-drop" : "pointer",
+              cursor:isCreateHRDisable ? 'not-allowed' : type === SubmitType.SUBMIT ? "no-drop" : "pointer",
             }}
-            disabled={type === SubmitType.SUBMIT}
+            disabled={isCreateHRDisable ? true : type === SubmitType.SUBMIT}
             className={HRFieldStyle.btn}
             onClick={hrSubmitHandler}
           >
@@ -3182,7 +3212,7 @@ const HRFields = ({
           <button
             onClick={handleSubmit(hrSubmitHandler)}
             className={HRFieldStyle.btnPrimary}
-            disabled={isSavedLoading}
+            disabled={isCreateHRDisable ? true : isSavedLoading}
           >
             Create HR
           </button>
@@ -3340,7 +3370,7 @@ const HRFields = ({
                               gptDetails?.salesHiringRequest_Details
                                 ?.jobDescription
                             ).map((text) => (
-                              <li dangerouslySetInnerHTML={{ __html: text }} />
+                              <li dangerouslySetInnerHTML={{ __html: sanitizedDescription(text) }} />
                             ))}
                           </ul>
                         </div>
@@ -3349,8 +3379,7 @@ const HRFields = ({
                           className={HRFieldStyle.viewHrJDDetailsBox}
                           dangerouslySetInnerHTML={{
                             __html:
-                              gptDetails?.salesHiringRequest_Details
-                                ?.jobDescription,
+                            sanitizedDescription(gptDetails?.salesHiringRequest_Details?.jobDescription),
                           }}
                         />
                       )}

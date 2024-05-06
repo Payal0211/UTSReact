@@ -230,6 +230,7 @@ export class ClientsAPI {
 	static GET_SALES_USER_WITH_HEAD  = "GetSalesUserWithHead";
 	static UPDATE_SPACE_ID_FOR_CLIENT = "UpdateSpaceIDForClient";
 	static GET_SPACEID_FOR_CLIENTEMAIL= "GetSpaceIdForClientEmail";
+	static LIST_CREDIT_UTILIZATION = 'ListCreditUtilization'
 }
 
 export class HiringRequestsAPI {

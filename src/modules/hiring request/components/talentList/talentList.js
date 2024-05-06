@@ -22,6 +22,7 @@ import UTSRoutes from 'constants/routes';
 import {
 	_isNull,
 	addHours,
+	budgetStringToCommaSeprated,
 	defaultEndTime,
 	defaultStartTime,
 	getInterviewSlotInfo,
@@ -691,7 +692,7 @@ const TalentList = ({
 													</span>
 													&nbsp;&nbsp;
 													<span style={{ fontWeight: '500' }}>
-													{info.Value}
+													 {(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:" )? info.Value ? budgetStringToCommaSeprated(info.Value): info.Value : info?.Value}
 													</span>
 												</div>
 												{info.IsEditable && <>

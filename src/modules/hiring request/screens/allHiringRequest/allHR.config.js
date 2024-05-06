@@ -5,8 +5,10 @@ import { ReactComponent as CloneHRSVG } from "assets/svg/cloneHR.svg";
 import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
 import { ReactComponent as CloseHR } from "assets/svg/power.svg";
 import { ReactComponent as FocusedRole } from "assets/svg/FocusRole.svg";
-import { Tooltip } from "antd";
+import { Tooltip, message } from "antd";
 import moment from "moment";
+import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
+import { HTTPStatusCode } from "constants/network";
 export const allHRConfig = {
   tableConfig: (
     togglePriority,
@@ -75,6 +77,19 @@ export const allHRConfig = {
                     <ReopenHR
                       style={{ fontSize: "16px" }}
                       onClick={() => {
+                        if(result?.companyModel === 'Pay Per Credit'){
+                          const handleReopen = async (d) => {
+                            let data = { hrID: result?.HRID, updatedTR: result?.TR };
+                            const response = await hiringRequestDAO.ReopenHRDAO(data);
+                            if (response?.statusCode === HTTPStatusCode.OK) {                            
+                              window.location.reload();
+                            }
+                            if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
+                              message.error(response?.responseBody)
+                            }
+                          };
+                          return handleReopen()
+                        }
                         setReopenHRData({
                           ...result,
                           HR_Id: result?.HRID,
@@ -232,17 +247,18 @@ export const allHRConfig = {
         align: "left",
         width: "7%",
         render: (text, result) => {
-          return (
-            <Link
-              to={`/user/${result?.userId}`}
-              style={{
-                color: `var(--uplers-black)`,
-                textDecoration: "underline",
-              }}
-            >
-              {text}
-            </Link>
-          );
+          // return (
+          //   // <Link
+          //   //   to={`/user/${result?.userId}`}
+          //   //   style={{
+          //   //     color: `var(--uplers-black)`,
+          //   //     textDecoration: "underline",
+          //   //   }}
+          //   // >
+          //   //   {text}
+          //   // </Link>
+          // );
+          return text
         },
       },
     ];

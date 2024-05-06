@@ -202,3 +202,69 @@ export const getPayload = (flag, data) => {
 		countryCode: '',
 	};
 };
+
+
+export const budgetStringToCommaSeprated =(string)=> {
+	
+	const containsCommas = /,/.test(string);
+	if(containsCommas){
+		string = string.replace(/,/g, '')
+	}
+
+	try{
+	// 	const numericString = string.match(/\d+\.\d+/)[0];
+
+	// // Convert the numeric string to a number
+	// const numericValue = parseFloat(numericString);
+
+	// // Convert the numeric value to a comma-separated string
+	// const commaSeparatedString = numericValue.toLocaleString("en-IN");
+
+	// // Concatenate the modified numeric string with the rest of the input string
+	// const modifiedString = string.replace(numericString, commaSeparatedString);
+	// console.log("comma sap try",modifiedString,string)
+	// return modifiedString
+	const numericMatch = string.match(/[0-9,.]+/);
+	if (numericMatch) {
+		const numericString = numericMatch[0];
+
+		// Convert the numeric string to a number
+		const numericValue = parseFloat(numericString.replace(/[^0-9.]/g, ''));
+
+		// Convert the numeric value to a comma-separated string
+		const commaSeparatedString = numericValue.toLocaleString("en-IN");
+
+		// Replace the original numeric string in the input string with the formatted currency
+		return string.replace(numericString, commaSeparatedString);
+	} else {
+		// If no numeric part is found, return the original string
+		return string;
+	}
+	}catch(err){
+		console.log("comma sap catch",string,err)
+		return string
+	}	
+}
+
+export const budgetStringToCommaSepratedwithjustcurrency = (string)=> {
+	try{
+		if(string){
+			const numericValue = parseFloat(string.replace(/[^\d.]/g, ''));
+
+			// Convert the number to a comma-separated string
+			const formattedValue = numericValue.toLocaleString();
+
+			// Include the currency in the output
+			const output = formattedValue + " " + string.replace(/\d+(\.\d+)?/, '');
+
+			return  output;
+		}else{
+			return string
+		}
+
+	}
+	catch(err){
+		return string
+	}
+	
+ }
