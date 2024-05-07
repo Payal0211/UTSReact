@@ -205,8 +205,13 @@ const handleReopen = async (d) => {
 	let data = { hrID: apiData.HR_Id, updatedTR: apiData.ClientDetail.NoOfTalents };
 	const response = await hiringRequestDAO.ReopenHRDAO(data);
 	if (response?.statusCode === HTTPStatusCode.OK) {                            
-	  window.location.reload();
 	  setLoading(false)
+	  setLoading && setLoading(false)
+	  if(response?.responseBody?.details?.isReopen){
+		 window.location.reload();
+	  }else{
+		message.error(response?.responseBody?.details?.message)
+	  }
 	}
 	if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
 	  message.error(response?.responseBody)
