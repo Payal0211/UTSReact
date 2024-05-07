@@ -19,7 +19,8 @@ export const allHRConfig = {
     setReopenHrModal,
     setCloseHRDetail,
     setCloseHrModal,
-    LoggedInUserTypeID
+    LoggedInUserTypeID,
+    setLoading
   ) => {
     return [
       {
@@ -79,14 +80,24 @@ export const allHRConfig = {
                       onClick={() => {
                         if(result?.companyModel === 'Pay Per Credit'){
                           const handleReopen = async (d) => {
+                            setLoading && setLoading(true)
                             let data = { hrID: result?.HRID, updatedTR: result?.TR };
                             const response = await hiringRequestDAO.ReopenHRDAO(data);
+                            // console.log("reoprn ",response)
                             if (response?.statusCode === HTTPStatusCode.OK) {                            
-                              window.location.reload();
+                              
+                              setLoading && setLoading(false)
+                              if(response?.responseBody?.details?.isReopen){
+                                 window.location.reload();
+                              }else{
+                                message.error(response?.responseBody?.details?.message,10)
+                              }
                             }
                             if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
-                              message.error(response?.responseBody)
+                              message.error(response?.responseBody,10)
+                              setLoading && setLoading(false)
                             }
+                            setLoading && setLoading(false)
                           };
                           return handleReopen()
                         }
