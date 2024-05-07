@@ -165,7 +165,7 @@ export const hrUtils = {
 					: _isNull(d.currency.value)
 					? null
 					: d.currency.value,	
-			adhocBudgetCost: SubmitType.SAVE_AS_DRAFT
+			adhocBudgetCost:draft ===  SubmitType.SAVE_AS_DRAFT
 					? _isNull(watch('adhocBudgetCost'))
 					? null
 					: watch('adhocBudgetCost')
