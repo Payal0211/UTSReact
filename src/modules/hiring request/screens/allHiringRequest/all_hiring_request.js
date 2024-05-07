@@ -226,7 +226,7 @@ const AllHiringRequestScreen = () => {
         setReopenHrModal,
         setCloseHRDetail,
         setCloseHrModal,
-        userData?.LoggedInUserTypeID
+        userData?.LoggedInUserTypeID,setLoading
       ),
     [togglePriority, userData.LoggedInUserTypeID]
   );
