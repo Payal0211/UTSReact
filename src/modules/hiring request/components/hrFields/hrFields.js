@@ -1287,7 +1287,6 @@ const HRFields = ({
       } else if (type !== SubmitType.SAVE_AS_DRAFT) {
         setType(SubmitType.SUBMIT);
       }
-// console.log('hr Fields',hrFormDetails)
 
       const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
 
