@@ -83,9 +83,15 @@ export const allHRConfig = {
                             setLoading && setLoading(true)
                             let data = { hrID: result?.HRID, updatedTR: result?.TR };
                             const response = await hiringRequestDAO.ReopenHRDAO(data);
+                            // console.log("reoprn ",response)
                             if (response?.statusCode === HTTPStatusCode.OK) {                            
-                              window.location.reload();
+                              
                               setLoading && setLoading(false)
+                              if(response?.responseBody?.details?.isReopen){
+                                 window.location.reload();
+                              }else{
+                                message.error(response?.responseBody?.details?.message)
+                              }
                             }
                             if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
                               message.error(response?.responseBody)
