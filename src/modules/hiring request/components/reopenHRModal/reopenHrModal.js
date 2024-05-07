@@ -34,11 +34,11 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
         onCancel();
         window.location.reload();
       }else{
-        message.error(response?.responseBody?.details?.message)
+        message.error(response?.responseBody?.details?.message,10)
       }
     }
     if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
-      setAPIError(response?.responseBody)
+      setAPIError(response?.responseBody,10)
       // setError('talent',{message: response?.responseBody } )
     }
     setIsLoading(false);

@@ -210,11 +210,11 @@ const handleReopen = async (d) => {
 	  if(response?.responseBody?.details?.isReopen){
 		 window.location.reload();
 	  }else{
-		message.error(response?.responseBody?.details?.message)
+		message.error(response?.responseBody?.details?.message,10)
 	  }
 	}
 	if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
-	  message.error(response?.responseBody)
+	  message.error(response?.responseBody,10)
 	  setLoading(false)
 	}
 	setLoading(false)
