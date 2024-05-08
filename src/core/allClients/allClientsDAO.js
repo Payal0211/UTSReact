@@ -317,7 +317,29 @@ export const allClientRequestDAO  = {
 		} catch (error) {
 			return errorDebug(error, 'ClientDAO.getSpaceIdForClientEmailDAO');
 		}
+	},
+
+	getCreditUtilizationListDAO: async function (emailID) {
+		try {
+			const spaceIdForClientEmail = await ClientAPI.getCreditUtilizationList(emailID)
+			if (spaceIdForClientEmail) {
+				const statusCode = spaceIdForClientEmail['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = spaceIdForClientEmail.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return spaceIdForClientEmail;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return spaceIdForClientEmail;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.getCreditUtilizationListDAO');
+		}
 	}
-
-
 }
