@@ -3,7 +3,7 @@ import clienthappinessSurveyStyles from "../../../survey/client_happiness_survey
 import { ReactComponent as PencilSVG } from 'assets/svg/pencil.svg';
 import { ReactComponent as NextWeekPriorityStar } from 'assets/svg/nextWeekPriorityStar.svg';
 import { ReactComponent as NoPriorityStar } from 'assets/svg/noPriorityStar.svg';
-import infoIcon from 'assets/svg/info.svg'
+import eyeIcon from 'assets/svg/eye.svg'
 import { Button, Tooltip } from "antd";
 import dealDetailsStyles from "../../../../modules/viewClient/viewClientDetails.module.css";
 import moment from "moment";
@@ -98,6 +98,26 @@ export const allClientsConfig = {
                     }
                 },
                 {
+                    title:'',
+                dataIndex: 'View',
+                key: 'view',
+                align: 'center',
+                width: '60px',
+            render:(_,result) => {
+                if(result.companyID !== 0  || result.clientID !== 0){
+                return <div style={{marginLeft:'auto', cursor:'pointer'}}>
+                                <Tooltip title="View Company Details" placement="right" >
+                                <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank">
+                                    <img src={eyeIcon} alt='info' style={{width:'35px',height:'35px'}}  />	
+                                    {/* <EyeIcon /> */}
+                                    </a>                               
+                            </Tooltip> 
+                            </div>
+                }
+                
+            }
+            },
+                {
                     title: 'Added Date',
                     dataIndex: 'addedDate',
                     key: 'addedDate',
@@ -122,11 +142,11 @@ export const allClientsConfig = {
                                 }}>
                                 {text}
                             </Link>
-                            <div style={{marginLeft:'auto', cursor:'pointer'}}>
-                               <Tooltip title="view Company details" placement="right" >
-                                <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank"><img src={infoIcon} alt='info'  />	</a>                               
+                            {/* <div style={{marginLeft:'auto', cursor:'pointer'}}>
+                               <Tooltip title="View Company Details" placement="right" >
+                                <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank"><img src={eyeIcon} alt='info'  />	</a>                               
                             </Tooltip> 
-                            </div>
+                            </div> */}
                             
                             </div>
                            

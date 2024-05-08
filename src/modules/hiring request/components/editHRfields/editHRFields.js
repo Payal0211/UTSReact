@@ -105,6 +105,8 @@ const EditHRFields = ({
   const [getClientNameMessage, setClientNameMessage] = useState("");
   const [disableButton, setDisableButton] = useState(true);
   const [currency, setCurrency] = useState([]);
+  const [isFreshersAllowed,setIsFreshersAllowed] = useState(false)
+  const [isExpDisabled , setIsExpDisabled ] = useState(false)
 
   const [getValidation, setValidation] = useState({
     systemFileUpload: "",
@@ -1028,6 +1030,8 @@ const EditHRFields = ({
       );
       hrFormDetails.isDirectHR = isDirectHR
       hrFormDetails.IsConfidentialBudget = isBudgetConfidential
+      hrFormDetails.IsFresherAllowed = isFreshersAllowed
+
       if(isDirectHR === true && isBDRMDRUser === true){
         hrFormDetails.directPlacement.address = ''
         hrFormDetails.directPlacement.postalCode = ''
@@ -1139,7 +1143,8 @@ const EditHRFields = ({
       isBudgetConfidential,
       isVettedProfile,
       isPostaJob,
-      isProfileView
+      isProfileView,
+      isFreshersAllowed
     ]
   );
   useEffect(() => {
@@ -1761,8 +1766,14 @@ const EditHRFields = ({
           "maximumBudget",
           gptDetails?.salesHiringRequest_Details?.budgetTo
         );
-      gptDetails?.salesHiringRequest_Details?.yearOfExp &&
+      if(gptDetails?.salesHiringRequest_Details?.yearOfExp){
         setValue("years", gptDetails?.salesHiringRequest_Details?.yearOfExp);
+        setIsFreshersAllowed(gptDetails?.salesHiringRequest_Details?.yearOfExp)
+        if(gptDetails?.salesHiringRequest_Details?.yearOfExp === 0){         
+          setIsExpDisabled(true) 
+        }
+      } 
+        
       gptDetails?.salesHiringRequest_Details?.specificMonth &&
         setValue(
           "months",
@@ -3027,11 +3038,18 @@ const EditHRFields = ({
                       required
                       label="Required Experience"
                       errors={errors}
+                      onChangeHandler={(value) => {
+                        let val= value.target.value
+                        if(val === '0'){
+                          setIsFreshersAllowed(true)
+                          setIsExpDisabled(true) 
+                        }
+                      }}
                       validationSchema={{
                         required: "please enter the years.",
                         min: {
-                          value: 1,
-                          message: `please don't enter the value less than 1`,
+                          value: isFreshersAllowed ? 0 : 1,
+                        message: `please don't enter the value less than ${isFreshersAllowed ? 0 : 1}`,
                         },
                         max: {
                           value: 60,
@@ -3042,6 +3060,7 @@ const EditHRFields = ({
                       name="years"
                       type={InputType.NUMBER}
                       placeholder="Enter years"
+                      disabled={isExpDisabled}
                     />
                     {/* <HRInputField
                                         register={register}
@@ -3089,6 +3108,15 @@ const EditHRFields = ({
                   />
                 </div>
               </div>   
+
+              <div className={HRFieldStyle.row}> 
+            <div className={HRFieldStyle.colMd6} style={{paddingBottom:'20px'}}>
+            <Checkbox checked={isFreshersAllowed} onClick={()=> {setIsFreshersAllowed(prev => !prev);setIsExpDisabled(false)}}>
+             Freshers allowed
+						</Checkbox>	
+            </div>         
+            </div>
+
               {(watch("availability")?.value === "Part Time" && companyType.id === 1) && (
                 <div className={HRFieldStyle.row}>
                     <div className={HRFieldStyle.colMd6}>

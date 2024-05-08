@@ -305,7 +305,7 @@ const EditClient = ({
 								validationSchema={{
 									required: 'please enter the primary client name',
 								}}
-								label="HS Client Full Name (Primary)"
+								label="Client Full Name (Primary)"
 								name={'primaryClientName'}
 								type={InputType.TEXT}
 								placeholder="Enter full name "
@@ -328,7 +328,7 @@ const EditClient = ({
 										message: 'Entered value does not match email format',
 									},
 								}}
-								label="HS Client Email ID (Primary)"
+								label="Client Email ID (Primary)"
 								name={'primaryClientEmailID'}
 								type={InputType.EMAIL}
 								placeholder="Enter Email ID "
@@ -407,7 +407,7 @@ const EditClient = ({
 											}											
 									}
 								}}
-								label="HS Client Linkedin Profile (Primary)"
+								label="Client Linkedin Profile (Primary)"
 								name={'PrimaryClientLinkedinProfile'}
 								type={InputType.TEXT}
 								placeholder="Add Linkedin profile link"
@@ -466,7 +466,7 @@ const EditClient = ({
 										validationSchema={{
 											required: true,
 										}}
-										label="HS Client Full Name (Secondary)"
+										label="Client Full Name (Secondary)"
 										name={`secondaryClient.[${index}].fullName`}
 										type={InputType.TEXT}
 										placeholder="Enter full name"
@@ -486,7 +486,7 @@ const EditClient = ({
 												message: 'please enter a valid email.',
 											},
 										}}
-										label="HS ClientEmail ID (Secondary)"
+										label="ClientEmail ID (Secondary)"
 										name={`secondaryClient.[${index}].emailID`}
 										type={InputType.EMAIL}
 										isError={!!errors?.secondaryClient?.[index]?.emailID}
@@ -555,7 +555,7 @@ const EditClient = ({
 													}											
 											}
 										}}
-										label="HS Client Linkedin Profile (Secondary)"
+										label="Client Linkedin Profile (Secondary)"
 										name={`secondaryClient.[${index}].linkedinProfile`}
 										type={InputType.TEXT}
 										isError={!!errors?.secondaryClient?.[index]?.linkedinProfile}

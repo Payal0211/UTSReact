@@ -558,7 +558,7 @@ const EditClientField = ({
 									validationSchema={{
 										required: 'please enter the legal client name.',
 									}}
-									label="HS Client Full Name"
+									label="Client Full Name"
 									name="legalClientFullName"
 									type={InputType.TEXT}
 									placeholder="Enter full name"
@@ -578,7 +578,7 @@ const EditClientField = ({
 											message: 'please enter a valid email.',
 										},
 									}}
-									label="HS Client Email ID"
+									label="Client Email ID"
 									name={'legalClientEmailID'}
 									type={InputType.EMAIL}
 									placeholder="Enter Email ID"

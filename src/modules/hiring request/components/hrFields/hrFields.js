@@ -209,6 +209,8 @@ const HRFields = ({
   const [transactionMessage,setTransactionMessage] = useState('')
   const [disableYypeOfPricing,setDisableTypeOfPricing] = useState(false)
   const [isBudgetConfidential, setIsBudgetConfidentil] = useState(false)
+  const [isFreshersAllowed,setIsFreshersAllowed] = useState(false)
+  const [isExpDisabled , setIsExpDisabled ] = useState(false)
   const [isProfileView,setIsProfileView] = useState(false)
   const [isPostaJob,setIsPostaJob] = useState(false)
   const [isVettedProfile,setIsVettedProfile] = useState(true)
@@ -1219,6 +1221,7 @@ const HRFields = ({
       hrFormDetails.isDirectHR = isDirectHR
       hrFormDetails.PayPerType =  userCompanyTypeID
       hrFormDetails.IsConfidentialBudget = isBudgetConfidential
+      hrFormDetails.IsFresherAllowed = isFreshersAllowed
       
       if(userCompanyTypeID === 2){
         if(!isPostaJob && !isProfileView){
@@ -1345,7 +1348,8 @@ const HRFields = ({
       isBudgetConfidential,
       isPostaJob,
       isProfileView,
-      isVettedProfile
+      isVettedProfile,
+      isFreshersAllowed
     ]
   );
 
@@ -1773,6 +1777,7 @@ const HRFields = ({
       }
       if(watch('tempProject')?.value === true){
         unregister('hiringPricingType')
+        register('contractDuration')
       }
     }
 
@@ -2193,7 +2198,7 @@ const HRFields = ({
                       // isControlled={true}
                       setValue={setValue}
                       register={register}
-                      label={"Contract Duration (in months)"}
+                      label={"Contract Duration (in months) 1"}
                       defaultValue="Ex: 3,6,12..."
                       inputRef={inputRef}
                       addItem={addItem}
@@ -2209,7 +2214,6 @@ const HRFields = ({
                       }
                       // disabled={isHRDirectPlacement}
                     />
-                   
                   </div>
                 </div>}
                
@@ -2313,7 +2317,7 @@ const HRFields = ({
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
-                    label={"Contract Duration (in months)"}
+                    label={"Contract Duration (in months) 2"}
                     defaultValue="Ex: 3,6,12..."
                     inputRef={inputRef}
                     addItem={addItem}
@@ -2327,6 +2331,8 @@ const HRFields = ({
                     errorMsg={"Please select hiring request contract duration"}
                     disabled={isHRDirectPlacement}
                   />
+                   {/* {console.log("req in month",(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8),watch('hiringPricingType'),
+                  errors)} */}
                 </div>
               </div>
 
@@ -2870,13 +2876,20 @@ const HRFields = ({
                 <div className={HRFieldStyle.formGroup}>
                   <HRInputField
                     required
+                    onChangeHandler={(value) => {
+                      let val= value.target.value
+                      if(val === '0'){
+                        setIsFreshersAllowed(true)
+                        setIsExpDisabled(true) 
+                      }
+                    }}
                     label="Required Experience"
                     errors={errors}
                     validationSchema={{
                       required: "please enter the years.",
                       min: {
-                        value: 0,
-                        message: "please don't enter the value less than 0",
+                        value: isFreshersAllowed ? 0 : 1,
+                        message: `please don't enter the value less than ${isFreshersAllowed ? 0 : 1}`,
                       },
                       max: {
                         value: 60,
@@ -2887,6 +2900,7 @@ const HRFields = ({
                     name="years"
                     type={InputType.NUMBER}
                     placeholder="Enter years"
+                    disabled={isExpDisabled}
                   />
                 </div>
               </div>
@@ -2914,6 +2928,20 @@ const HRFields = ({
                   disabled={disabledFields !== null ? disabledFields?.talentRequired : false}
                 />
               </div>
+            </div>
+
+            <div className={HRFieldStyle.row}> 
+            <div className={HRFieldStyle.colMd6} style={{paddingBottom:'20px'}}>
+            <Checkbox checked={isFreshersAllowed} onClick={()=> {setIsFreshersAllowed(prev => !prev);setIsExpDisabled(false)}}>
+             Freshers allowed
+						</Checkbox>	
+            {/* <Tooltip
+              overlayStyle={{minWidth: '650px'}}
+							placement="right"
+							title={"Please provide actual salary ranges for job matching purposes. This information remains confidential to the talents and helps us connect you with suitable candidates."}>
+								<img src={infoIcon} alt='info' />							
+						</Tooltip> */}
+            </div>         
             </div>
 
 
