@@ -222,19 +222,20 @@ export const allClientRequestDAO  = {
 			return errorDebug(error, 'ClientDAO.getActiveSalesUserListDAO');
 		}
 	},
-	getCreditUtilizationListDAO:async function (payload) {
+
+	createGspaceDAO: async function (clientName,usersEmails,clientEmail) {
 		try {
-			const activeSalesUserList = await ClientAPI.getCreditUtilizationList(payload)
-			if (activeSalesUserList) {
-				const statusCode = activeSalesUserList['statusCode'];
+			const createGspace = await ClientAPI.createGspace(clientName,usersEmails,clientEmail)
+			if (createGspace) {
+				const statusCode = createGspace['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
-					const tempResult = activeSalesUserList.responseBody;
+					const tempResult = createGspace.responseBody;
 					return {
 						statusCode: statusCode,
-						responseBody: tempResult.details,
+						responseBody: tempResult,
 					};
-				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return activeSalesUserList;
-				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return activeSalesUserList;
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return createGspace;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return createGspace;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
 					let deletedResponse =
 						UserSessionManagementController.deleteAllSession();
@@ -242,7 +243,81 @@ export const allClientRequestDAO  = {
 				}
 			}
 		} catch (error) {
-			return errorDebug(error, 'ClientDAO.getCreditUtilizationListDAO');
+			return errorDebug(error, 'ClientDAO.createGspaceDAO');
+		}
+	},
+
+	getSalesUserWithHeadDAO: async function (emailID) {
+		try {
+			const salesUserWithHead = await ClientAPI.getSalesUserWithHead(emailID)
+			if (salesUserWithHead) {
+				const statusCode = salesUserWithHead['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = salesUserWithHead.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return salesUserWithHead;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return salesUserWithHead;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.createGspaceDAO');
+		}
+	},
+
+	updateSpaceIDForClientDAO: async function (redData) {
+		try {
+			const updateSpaceIDForClientData = await ClientAPI.updateSpaceIDForClient(redData)
+			if (updateSpaceIDForClientData) {
+				const statusCode = updateSpaceIDForClientData['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = updateSpaceIDForClientData.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return updateSpaceIDForClientData;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return updateSpaceIDForClientData;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.updateSpaceIDForClientDAO');
+		}
+	},
+
+	getSpaceIdForClientEmailDAO: async function (emailID) {
+		try {
+			const spaceIdForClientEmail = await ClientAPI.getSpaceIdForClientEmail(emailID)
+			if (spaceIdForClientEmail) {
+				const statusCode = spaceIdForClientEmail['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = spaceIdForClientEmail.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return spaceIdForClientEmail;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return spaceIdForClientEmail;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.getSpaceIdForClientEmailDAO');
 		}
 	}
+
+
 }

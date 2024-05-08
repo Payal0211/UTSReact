@@ -7,6 +7,7 @@ import eyeIcon from 'assets/svg/eye.svg'
 import { Button, Tooltip } from "antd";
 import dealDetailsStyles from "../../../../modules/viewClient/viewClientDetails.module.css";
 import moment from "moment";
+import { result } from "lodash";
 export const allClientsConfig = {
     allClientsTypeConfig : (filterList) => {
         return [
@@ -57,7 +58,8 @@ export const allClientsConfig = {
             }            		
 		];
     },
-    tableConfig : (editAMHandler,isShowAddClientCredit) => {
+    tableConfig : (editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID) => {
+        // && LoggedInUserTypeID?.LoggedInUserTypeID == 2
         if(isShowAddClientCredit === true){
             return [
                 {
@@ -115,7 +117,6 @@ export const allClientsConfig = {
                 
             }
             },
-                
                 {
                     title: 'Added Date',
                     dataIndex: 'addedDate',
@@ -256,6 +257,189 @@ export const allClientsConfig = {
                     width: '100px',                   
                 },
               ]; 
+        }else if (LoggedInUserTypeID?.LoggedInUserTypeID == 2){
+            return [
+                {
+                    title: 'Create G-Space',
+                    dataIndex: 'create_gspace',
+                    key: 'create_gspace',
+                    width: '150px',
+                    render: (text, result) => {
+                        if(result?.isGSpaceCreated === false){
+                            return (                                    
+                                <button  className={clienthappinessSurveyStyles.btnPrimaryResendBtn} onClick={()=>createGspaceAPI(result?.companyName,result?.clientEmail)}>Create G-Space</button>
+                            );
+                        }
+                    },
+                },
+                {
+                    title: '',
+                    dataIndex: 'Edit',
+                    key: 'edit',
+                    align: 'center',
+                    width: '50px',
+                    render:(_,result) => {
+                        return (
+                        isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
+                            to={`/editclient/${result.companyID}`}
+                            style={{ color: 'black', textDecoration: 'underline' }}
+                            onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
+                            <PencilSVG />
+                        </Link>
+                        )
+                    }
+                },
+                
+                {
+                    title: 'Added Date',
+                    dataIndex: 'addedDate',
+                    key: 'addedDate',
+                    width: '120px',
+                },
+                {
+                    title: 'Company',
+                    dataIndex: 'companyName',
+                    key: 'companyName',
+                    width: '210px',
+                    render: (text, result) => {
+                        if(result.companyID === 0  || result.clientID=== 0){
+                            return text
+                        }
+                        return (
+                            <Link
+                                // to={`/viewClient/${result.companyID}~${result.clientID}`}
+                                to={`/viewClient/${result.companyID}/${result.clientID}`}
+                                target="_blank"
+                                style={{
+                                    color: `var(--uplers-black)`,
+                                    textDecoration: 'underline',
+                                }}>
+                                {text}
+                            </Link>
+                        );
+                    },
+                },
+                {
+                    title: 'Company Type',
+                    dataIndex: 'companyModel',
+                    key: 'companyModel',
+                    width: '150px',
+                },
+                {
+                    title: 'Credit Utilization',
+                    dataIndex: 'creditUtilization',
+                    key: 'creditUtilization',
+                    width: '150px',
+                },
+                {
+                    title: 'Client',
+                    dataIndex: 'clientName',
+                    key: 'clientName',
+                    width: '150px',
+                },
+                {
+                    title: 'Client Email',
+                    dataIndex: 'clientEmail',
+                    key: 'clientEmail',
+                    width: '200px',
+                },
+                {
+                    title: 'POC',
+                    dataIndex: 'poc',
+                    key: 'poc',
+                    width: '150px',
+                    // render: (text, result) => {
+                    // 	return (
+                    // 		<Link
+                    // 			to={`/allclients`}
+                    // 			style={{
+                    // 				color: `var(--uplers-black)`,
+                    // 				textDecoration: 'underline',
+                    // 			}}>
+                    // 			{text}
+                    // 		</Link>
+                    // 	);
+                    // },
+                },
+                {
+                    title: 'AM',
+                    dataIndex: 'aM_UserName',
+                    key: 'aM_UserName',
+                    width: '250px',
+                    render:(text,result)=>{
+                        let data = {clientID: result?.clientID, companyID: result?.companyID }
+                        return text ? <div className={clienthappinessSurveyStyles.AMNAME}  onClick={()=>editAMHandler(data)}>{text}</div> : null
+                    }
+                },
+                // {
+                //     title: 'Geo',
+                //     dataIndex: 'geo',
+                //     key: 'geo',
+                //     width: '100px',
+                // },
+                {
+                    title: 'Source',
+                    dataIndex: 'inputSource',
+                    key: 'inputSource',
+                    width: '150px',            },
+                {
+                    title: 'Source Category',
+                    dataIndex: 'sourceCategory',
+                    key: 'sourceCategory',
+                    width: '150px',            },
+                {
+                    title: 'Status',
+                    dataIndex: 'status',
+                    key: 'status',
+                    width: '150px',
+                    render: (text,result) => {
+                        return (
+                            text && <span 
+                             className={clienthappinessSurveyStyles.StatusOpportunity} 
+                             style={{backgroundColor:`${result.statusColor}`}} >{text}</span>			
+                        );
+                    },
+                },
+                {
+                    title: 'Invited By',
+                    dataIndex: 'inviteName',
+                    key: 'inviteName',
+                    width: '150px',
+                },
+                {
+                    title: 'Invited Date',
+                    dataIndex: 'inviteDate',
+                    key: 'inviteDate',
+                    width: '150px',
+                    render: (text) => {
+                        if (!text) return null;
+                        return moment(text).format('DD/MM/YYYY')
+                    },
+                },
+                {
+                    title: 'Is Active',
+                    dataIndex: 'isActive',
+                    key: 'isActive',
+                    width: '100px',                   
+                },
+                // {
+                //     title: 'SSO',
+                //     dataIndex: 'ssO_Login',
+                //     key: 'ssO_Login',
+                //     width: '150px',
+                //     render: (text, result) => {
+                //         return (
+                //             <a
+                //                 href={text}
+                //                 target="_blank"
+                //                 className={clienthappinessSurveyStyles.linkForSSO}
+                //                 >
+                //                 <button  className={clienthappinessSurveyStyles.btnPrimaryResendBtn}>Login with SSO</button>
+                //             </a>
+                //         );
+                //     },
+                // },
+              ]; 
         }else{
             return [
                 {
@@ -263,7 +447,7 @@ export const allClientsConfig = {
                     dataIndex: 'Edit',
                     key: 'edit',
                     align: 'center',
-                    width: '20px',
+                    width: '50px',
                     render:(_,result) => {
                         return (
                         isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
