@@ -211,6 +211,7 @@ const HRFields = ({
   const [isBudgetConfidential, setIsBudgetConfidentil] = useState(false)
   const [isFreshersAllowed,setIsFreshersAllowed] = useState(false)
   const [isExpDisabled , setIsExpDisabled ] = useState(false)
+  const [isFresherDisabled,setIsFresherDisabled] = useState(false)
   const [isProfileView,setIsProfileView] = useState(false)
   const [isPostaJob,setIsPostaJob] = useState(false)
   const [isVettedProfile,setIsVettedProfile] = useState(true)
@@ -2881,6 +2882,11 @@ const HRFields = ({
                       if(val === '0'){
                         setIsFreshersAllowed(true)
                         setIsExpDisabled(true) 
+                        setIsFresherDisabled(false)
+                      }else{
+                        setIsFreshersAllowed(false)
+                        setIsExpDisabled(false) 
+                        setIsFresherDisabled(true)
                       }
                     }}
                     label="Required Experience"
@@ -2932,7 +2938,14 @@ const HRFields = ({
 
             <div className={HRFieldStyle.row}> 
             <div className={HRFieldStyle.colMd6} style={{paddingBottom:'20px'}}>
-            <Checkbox checked={isFreshersAllowed} onClick={()=> {setIsFreshersAllowed(prev => !prev);setIsExpDisabled(false)}}>
+            <Checkbox checked={isFreshersAllowed} onClick={()=> {setIsFreshersAllowed(prev => {
+              if(prev === false){
+                setValue('years',0)
+                setIsExpDisabled(true)
+              }else{
+                setIsExpDisabled(false)
+              }
+              return !prev})}} disabled={isFresherDisabled}>
              Freshers allowed
 						</Checkbox>	
             {/* <Tooltip
