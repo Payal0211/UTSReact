@@ -3,7 +3,7 @@ export class NetworkInfo {
 	// static domain = 'localhost:5162/';
 	static DOMAIN = '3.218.6.134:9082/';
 	// static domain = 'https://clientportal.uplers.com/gspace/';
-	static domain = 'https://c17d-3-218-6-134.ngrok-free.app/';
+	static domain = 'https://bb8d-3-218-6-134.ngrok-free.app/';
 	static FILEDOMAIN = '3.218.6.134:90/';
 	// static PROTOCOL = 'https://';
 	// static DOMAIN = '809c77bfbe78ce2d4010a080a425ea2b.loophole.site/';
