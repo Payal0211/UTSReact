@@ -481,6 +481,10 @@ const ViewHRDetails = () => {
                           "NA"
                         )}
                       </li>
+                      <li>
+                        <span>Fresher Allowed:</span>{" "}
+                        {hiringDetails?.responseBody?.details?.isFresherAllowed ? "Yes" : "NO"}
+                      </li>
                     </ul>
                   </div>
                 </div>

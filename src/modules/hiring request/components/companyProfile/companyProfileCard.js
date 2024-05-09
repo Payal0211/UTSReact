@@ -341,11 +341,17 @@ const CompanyProfileCard = ({
 				</span>
 			</div> } */}
 
-              <div className={CompanyProfileCardStyle.minExp}>
+             {clientDetail?.MinYearOfExp !== 0 && <div className={CompanyProfileCardStyle.minExp}>
                 <span>Minimum Exp Required:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.MinYearOfExp ? clientDetail?.MinYearOfExp : 0}{" "}
                   Years
+                </span>
+              </div>} 
+              <div className={CompanyProfileCardStyle.minExp}>
+                <span>Fresher Allowed:</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                  {allApiData?.HRDetails?.IsFresherAllowed ? "YES" : "NO"}
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.minExp}>

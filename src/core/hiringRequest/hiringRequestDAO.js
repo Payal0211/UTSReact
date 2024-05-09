@@ -2100,6 +2100,35 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.WSJOBPOSTSLADAO()');
 		}
 	},
+	getActionhistoryDAO:async (data) => {
+		try {
+			const activityHistory = await HiringRequestAPI.getActionhistory(data);
+			if (activityHistory) {
+				const statusCode = activityHistory['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = activityHistory.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return activityHistory;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return activityHistory;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.getActionhistoryDAO()');
+		}
+	},
 	getSalesUsersWithHeadAfterHrCreateDAO:async (hrid) => {
 		try {
 			const getSaleHead = await HiringRequestAPI.getSalesUsersWithHeadAfterHrCreate(hrid);

@@ -105,6 +105,9 @@ const EditHRFields = ({
   const [getClientNameMessage, setClientNameMessage] = useState("");
   const [disableButton, setDisableButton] = useState(true);
   const [currency, setCurrency] = useState([]);
+  const [isFreshersAllowed,setIsFreshersAllowed] = useState(false)
+  const [isExpDisabled , setIsExpDisabled ] = useState(false)
+  const [isFresherDisabled,setIsFresherDisabled] = useState(false)
 
   const [getValidation, setValidation] = useState({
     systemFileUpload: "",
@@ -192,6 +195,7 @@ const EditHRFields = ({
   ]);
 
   const [timeZoneList,setTimezoneList] = useState([]);
+  const [clientDetails , setClientDetails] = useState({});
 
   let controllerRef = useRef(null);
   const {
@@ -644,8 +648,16 @@ const EditHRFields = ({
     setHRDirectPlacement(e.target.checked);
   }, []);
 
-  const getClientNameValue = (clientName) => {
+  const getClientNameValue = (clientName,clientData) => {
     setValue("clientName", clientName);
+    setClientDetails(clientData)
+
+    setIsVettedProfile(clientData?.isVettedProfile)
+    setIsPostaJob(clientData?.isPostaJob)
+    setIsProfileView(clientData?.isProfileView)
+    setIsVettedProfile(clientData?.isVettedProfile)
+    document.activeElement.blur();
+
     setError("clientName", {
       type: "validate",
       message: "",
@@ -1019,7 +1031,7 @@ const EditHRFields = ({
         d,
         type,
         watch,
-        getHRdetails?.addHiringRequest?.contactId,
+        clientDetails.contactId ? clientDetails.contactId  : getHRdetails?.addHiringRequest?.contactId,
         isHRDirectPlacement,
         addHRResponse,
         getUploadFileData && getUploadFileData,
@@ -1028,6 +1040,8 @@ const EditHRFields = ({
       );
       hrFormDetails.isDirectHR = isDirectHR
       hrFormDetails.IsConfidentialBudget = isBudgetConfidential
+      hrFormDetails.IsFresherAllowed = isFreshersAllowed
+
       if(isDirectHR === true && isBDRMDRUser === true){
         hrFormDetails.directPlacement.address = ''
         hrFormDetails.directPlacement.postalCode = ''
@@ -1124,6 +1138,7 @@ const EditHRFields = ({
     [
       watch,
       getHRdetails?.addHiringRequest?.contactId,
+      clientDetails.contactId,
       getHRdetails?.en_Id,
       isHRDirectPlacement,
       addHRResponse,
@@ -1139,7 +1154,8 @@ const EditHRFields = ({
       isBudgetConfidential,
       isVettedProfile,
       isPostaJob,
-      isProfileView
+      isProfileView,
+      isFreshersAllowed
     ]
   );
   useEffect(() => {
@@ -1189,6 +1205,14 @@ const EditHRFields = ({
     );
     setValue("months", getHRdetails?.salesHiringRequest_Details?.specificMonth);
     setValue("years", getHRdetails?.salesHiringRequest_Details?.yearOfExp);
+    setIsFreshersAllowed(getHRdetails?.salesHiringRequest_Details?.isFresherAllowed)
+    if(getHRdetails?.salesHiringRequest_Details?.yearOfExp === 0){         
+      setIsExpDisabled(true) 
+      setIsFresherDisabled(false)
+    }else{
+      setIsExpDisabled(false) 
+      setIsFresherDisabled(true)
+    }
     setValue("talentsNumber", getHRdetails?.addHiringRequest?.noofTalents);
     setValue("dealID", getHRdetails?.addHiringRequest?.dealId);
     setValue("bqFormLink", getHRdetails?.addHiringRequest?.bqlink);
@@ -1761,8 +1785,10 @@ const EditHRFields = ({
           "maximumBudget",
           gptDetails?.salesHiringRequest_Details?.budgetTo
         );
-      gptDetails?.salesHiringRequest_Details?.yearOfExp &&
+      if(gptDetails?.salesHiringRequest_Details?.yearOfExp){
         setValue("years", gptDetails?.salesHiringRequest_Details?.yearOfExp);
+      } 
+        
       gptDetails?.salesHiringRequest_Details?.specificMonth &&
         setValue(
           "months",
@@ -1934,8 +1960,8 @@ const EditHRFields = ({
                       render={({ ...props }) => (
                         <AutoComplete
                           options={getClientNameSuggestion}
-                          onSelect={(clientName) =>
-                            getClientNameValue(clientName)
+                          onSelect={(clientName,_obj) =>
+                            getClientNameValue(clientName,_obj)
                           }
                           filterOption={true}
                           onSearch={(searchValue) => {
@@ -3027,11 +3053,23 @@ const EditHRFields = ({
                       required
                       label="Required Experience"
                       errors={errors}
+                      onChangeHandler={(value) => {
+                        let val= value.target.value
+                        if(val === '0'){
+                          setIsFreshersAllowed(true)
+                          setIsExpDisabled(true) 
+                          setIsFresherDisabled(false)
+                        }else{
+                          setIsFreshersAllowed(false)
+                          setIsExpDisabled(false) 
+                          setIsFresherDisabled(true)
+                        }
+                      }}
                       validationSchema={{
                         required: "please enter the years.",
                         min: {
-                          value: 1,
-                          message: `please don't enter the value less than 1`,
+                          value: isFreshersAllowed ? 0 : 1,
+                        message: `please don't enter the value less than ${isFreshersAllowed ? 0 : 1}`,
                         },
                         max: {
                           value: 60,
@@ -3042,6 +3080,7 @@ const EditHRFields = ({
                       name="years"
                       type={InputType.NUMBER}
                       placeholder="Enter years"
+                      disabled={isExpDisabled}
                     />
                     {/* <HRInputField
                                         register={register}
@@ -3089,6 +3128,22 @@ const EditHRFields = ({
                   />
                 </div>
               </div>   
+
+              <div className={HRFieldStyle.row}> 
+            <div className={HRFieldStyle.colMd6} style={{paddingBottom:'20px'}}>
+            <Checkbox checked={isFreshersAllowed} onClick={()=> {setIsFreshersAllowed(prev => {
+              if(prev === false){
+                setValue('years',0)
+                setIsExpDisabled(true)
+              }else{
+                setIsExpDisabled(false)
+              }
+              return !prev})}} disabled={isFresherDisabled}>
+             Freshers allowed
+						</Checkbox>	
+            </div>         
+            </div>
+
               {(watch("availability")?.value === "Part Time" && companyType.id === 1) && (
                 <div className={HRFieldStyle.row}>
                     <div className={HRFieldStyle.colMd6}>
