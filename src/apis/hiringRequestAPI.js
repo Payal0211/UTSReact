@@ -1197,6 +1197,18 @@ export const HiringRequestAPI = {
 			return errorDebug(error,'HiringRequestAPI.getSalesUsersWithHeadAfterHrCreate');
 		}
 	},
+	getActionhistory : async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL = NetworkInfo.NETWORK + SubDomain.HIRING +  HiringRequestsAPI.GET_ACTION_UPDATES +`?HRId=${data.hrID}&HistoryID=${data.historyID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error,'HiringRequestAPI.getSalesUsersWithHeadAfterHrCreate');
+		}
+	},
 	addMemberToGspace : async (data) => {
 		let httpService = new HttpServices();
 		httpService.URL = NetworkInfo.network + SubDomain.MEMBER;
