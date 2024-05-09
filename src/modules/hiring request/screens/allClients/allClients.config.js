@@ -108,7 +108,7 @@ export const allClientsConfig = {
                 return <div style={{marginLeft:'auto', cursor:'pointer'}}>
                                 <Tooltip title="View Company Details" placement="right" >
                                 <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank">
-                                    <img src={eyeIcon} alt='info' style={{width:'35px',height:'35px'}}  />	
+                                    <img src={eyeIcon} alt='info' width="22" height="22"  />	
                                     {/* <EyeIcon /> */}
                                     </a>                               
                             </Tooltip> 

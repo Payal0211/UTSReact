@@ -110,10 +110,10 @@ const HRDetailScreen = () => {
 		async (hrid) => {
 			setLoading(true);
 			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
-			if (response.statusCode === HTTPStatusCode.OK) {
+			if (response?.statusCode === HTTPStatusCode.OK) {
 				setAPIdata(response && response?.responseBody);
 				setLoading(false);
-			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+			} else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
 				navigate(UTSRoutes.PAGENOTFOUNDROUTE);
 			}
 		},
