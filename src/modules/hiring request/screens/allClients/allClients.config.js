@@ -249,6 +249,9 @@ export const allClientsConfig = {
                             return (                                    
                                 <button  className={clienthappinessSurveyStyles.btnPrimaryResendBtn} onClick={()=>createGspaceAPI(result?.companyName,result?.clientEmail)}>Create G-Space</button>
                             );
+                        }else{
+                            return <span 
+                             style={{color:"green",fontSize:"11px",fontWeight:"500"}} >G-Space Created</span>
                         }
                     },
                 },

@@ -5,7 +5,7 @@ import React, {
 	useCallback,
     useMemo,
 } from 'react';
-import { Dropdown, Menu, Table, Modal,Select, AutoComplete } from 'antd';
+import { Dropdown, Menu, Table, Modal,Select, AutoComplete,message } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
@@ -82,6 +82,7 @@ function AllClients() {
     const [editAM,setEditAM]= useState(false)
     const [amToFetch,setAMToFetch] = useState({})
     const[isShowAddClientCredit,setIsShowAddClientCredit] =  useState(false); 
+    const [messageAPI, contextHolder] = message.useMessage();
 
 	const getFilterRequest = useCallback(async () => {
 		// const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
@@ -105,6 +106,7 @@ function AllClients() {
     const email = urlParams.get('clientEmail');
     const authToken = urlParams.get('Token');
     const name = urlParams.get('SpaceName');
+    const spaceName = urlParams.get('clientName')
 
 const updateSpaceIDForClientFun = async () =>{
     let payload = {
@@ -112,12 +114,35 @@ const updateSpaceIDForClientFun = async () =>{
         "SpaceID": name,
         "TokenObject": authToken
     }
-   await allClientRequestDAO.updateSpaceIDForClientDAO(payload)
+    await allClientRequestDAO.updateSpaceIDForClientDAO(payload)
+    if(email && authToken && name){
+       setDebouncedSearch(email);
+       setTimeout(()=>{
+        setTableFilteredState(prevState => ({
+        ...prevState,
+        pagenumber:1,
+        filterFields_Client: {
+        ...prevState.filterFields_Client,
+        searchText: email,
+        }
+        }));  
+    },2000)
+        messageAPI.open(
+            {
+                type: 'success',
+                content: `G-Space created sucsssfully for ${spaceName}`,
+            },
+            1000,
+        )
+   }
 }
 
     useEffect(() => {
-        getAllClientsList(tableFilteredState);
         updateSpaceIDForClientFun()
+    }, []);
+    
+    useEffect(() => {
+        getAllClientsList(tableFilteredState);
     },[tableFilteredState,isShowAddClientCredit]);
 
     const reloadClientList = ()=>{
@@ -280,9 +305,7 @@ const updateSpaceIDForClientFun = async () =>{
         setAMToFetch(data)
     }
 
-    const getEmployeeID = localStorage.getItem("EmployeeID");
     let LoggedInUserTypeID = JSON.parse(localStorage.getItem('userSessionInfo'))
-
         const createGspaceAPI = async (clientName,clientEmail) =>{
             const getEmails = await allClientRequestDAO.getSalesUserWithHeadDAO(clientEmail);
             const checkEmail = /^[a-zA-Z0-9._%+-]+@(uplers\.in|uplers\.com)$/i;
@@ -317,7 +340,9 @@ const updateSpaceIDForClientFun = async () =>{
     }
     return(
         <>
+        {contextHolder}
             <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
+        <WithLoader className="mainLoader" showLoader={isLoading}>
                 <div className={clienthappinessSurveyStyles.addnewHR}>
                     <div className={clienthappinessSurveyStyles.hiringRequest}>All Clients</div>
                     <div className={clienthappinessSurveyStyles.btn_wrap}>
@@ -453,6 +478,7 @@ const updateSpaceIDForClientFun = async () =>{
                             )} 
                 </div>
 
+            </WithLoader>
             </div>
 
             {isAllowFilters && (
