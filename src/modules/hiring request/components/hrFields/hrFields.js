@@ -1128,12 +1128,25 @@ const HRFields = ({
       }
       unregister("tempProject")
       unregister('contractDuration')
+
+      if(watch('payrollType')?.id === 4){
+        register('contractDuration',{
+          required: true
+        })    
+      }
     }
 
     if((watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 )){
       unregister('payrollType')
       unregister("tempProject")
       unregister('contractDuration')
+    }
+
+     // re register full time
+     if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8){
+      register('contractDuration',{
+        required: true
+      })
     }
   },[watch('hiringPricingType'),hrPricingTypes,countryBasedOnIP])
 

@@ -880,6 +880,11 @@ const EditHRFields = ({
     if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
       unregister("tempProject")
       unregister('contractDuration')
+      if(watch('payrollType')?.id === 4){
+        register('contractDuration',{
+          required: true
+        })    
+      }
     }
 
     if((watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 )){
@@ -887,6 +892,13 @@ const EditHRFields = ({
       unregister("tempProject")
       unregister('contractDuration')
     }
+
+    // re register full time
+    if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8){
+      register('contractDuration',{
+        required: true
+      })
+    }  
   },[watch('hiringPricingType'),hrPricingTypes])
 
   useEffect(() => {
@@ -1120,6 +1132,7 @@ const EditHRFields = ({
         setIsSavedLoading(false);
         window.scrollTo(0, 0);
         setAddHRResponse(getHRdetails?.en_Id);
+        setHRdetails(prev=> ({...prev,companyInfo: addHRRequest?.responseBody?.details?.companyInfo}))
         type !== SubmitType.SAVE_AS_DRAFT &&
           setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`);
         // type !== SubmitType.SAVE_AS_DRAFT &&
@@ -2399,10 +2412,9 @@ const EditHRFields = ({
                         errorMsg={"Please select Payroll Type."}
                       />
                     </div>
-                  </div>            
-              </>}
+                  </div>    
 
-              {watch('payrollType')?.id === 4 &&  <div className={HRFieldStyle.colMd6}>
+                   {watch('payrollType')?.id === 4 &&  <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                     key={'contract Duration for Payroll'}
@@ -2473,7 +2485,8 @@ const EditHRFields = ({
                       // disabled={isHRDirectPlacement}
                     />
                   </div>
-                </div> }
+                </div> }        
+              </>}             
 
               {watch('payrollType')?.id === 3 && <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
