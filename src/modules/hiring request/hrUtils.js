@@ -233,10 +233,10 @@ export const hrUtils = {
 				: watch('childCompany')?.value,
 			contractDuration: (companyType?.id === 2 && watch('tempProject')?.value === true)  ? d?.contractDuration?.value === 'Indefinite' ? '-1' : d.contractDuration?.value : !(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 ||watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8 || watch('payrollType')?.id === 4)? "":
 				draft === SubmitType.SAVE_AS_DRAFT 
-					? isHRDirectPlacement ? null : _isNull(watch('contractDuration'))
+					?  _isNull(watch('contractDuration'))
 						? null
 						: watch('contractDuration').value === 'Indefinite' ? '-1' : watch('contractDuration').value
-					:isHRDirectPlacement ? null : _isNull(d.contractDuration.value)
+					: _isNull(d.contractDuration.value)
 					? null
 					: d.contractDuration.value === 'Indefinite' ? '-1' : d.contractDuration.value ,
 			TimeZoneFromTime:  

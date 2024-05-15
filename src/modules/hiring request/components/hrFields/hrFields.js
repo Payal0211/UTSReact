@@ -2343,7 +2343,7 @@ const HRFields = ({
                     // required={!isHRDirectPlacement}
                     required={(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8)?true:false}
                     errorMsg={"Please select hiring request contract duration"}
-                    disabled={isHRDirectPlacement}
+                    // disabled={isHRDirectPlacement}
                   />
                    {/* {console.log("req in month",(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8),watch('hiringPricingType'),
                   errors)} */}
@@ -2436,7 +2436,7 @@ const HRFields = ({
                     // required={!isHRDirectPlacement}
                     required={userCompanyTypeID === 1 && watch('payrollType')?.id === 4}
                     errorMsg={"Please select hiring request contract duration"}
-                    disabled={isHRDirectPlacement}
+                    // disabled={isHRDirectPlacement}
                   />
                 </div>
               </div>}
