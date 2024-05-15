@@ -1164,6 +1164,11 @@ const EditCompanyDetails = ({
                     defaultValue="Please Select"
                     options={leadSource?.BindInBoundDrp}
                     searchable={true}
+                    required={watch("companyLeadSource")?.id === 1}
+                    isError={
+                      errors["companyInboundType"] && errors["companyInboundType"]
+                    }
+                    errorMsg={"Please select inbound type"}
                   />
                 </div>
               </div>
