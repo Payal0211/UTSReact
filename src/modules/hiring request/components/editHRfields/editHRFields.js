@@ -1126,6 +1126,7 @@ const EditHRFields = ({
         setType(SubmitType.SUBMIT);
       }
       setInterval(()=>setIsSavedLoading(false),58000)
+
       const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
       
       if (addHRRequest?.statusCode === HTTPStatusCode.OK) {
@@ -2270,7 +2271,7 @@ const EditHRFields = ({
                    controlledValue={controlledHiringPricingTypeValue}
                    setControlledValue={ val=> {setControlledHiringPricingTypeValue(val)
                     let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
-                    ;resetField('contractDuration');setContractDuration('')
+                    ;resetField('contractDuration');setContractDuration('');resetField('payrollType');setControlledPayrollTypeValue("Select payroll")
                     setValue('NRMargin',precentage)}}
                    isControlled={true}
                     mode={"id/value"}
@@ -2382,7 +2383,7 @@ const EditHRFields = ({
                       isError={
                         errors["contractDuration"] && errors["contractDuration"]
                       }
-                      required={!isHRDirectPlacement}
+                      required={(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8)?true:false}
                       errorMsg={
                         "Please select hiring request contract duration"
                       }
@@ -2398,7 +2399,13 @@ const EditHRFields = ({
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
                        controlledValue={controlledPayrollTypeValue}
-                       setControlledValue={setControlledPayrollTypeValue}
+                       setControlledValue={val=>{setControlledPayrollTypeValue(val);
+                        if(val== 'I will pay on contract via payment services'){
+                          register('contractDuration',{
+                            required: true
+                          })
+                        }
+                       }}
                        isControlled={true}
                         mode={"id/value"}
                         setValue={setValue}
@@ -2478,7 +2485,7 @@ const EditHRFields = ({
                       isError={
                         errors["contractDuration"] && errors["contractDuration"]
                       }
-                      required={!isHRDirectPlacement}
+                      required={watch('payrollType')?.id === 4 }
                       errorMsg={
                         "Please select hiring request contract duration"
                       }
