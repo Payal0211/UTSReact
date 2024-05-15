@@ -11,12 +11,12 @@ import { result } from "lodash";
 export const allClientsConfig = {
     allClientsTypeConfig : (filterList) => {
         return [
-			{
-				label: 'Status',
-				name: 'companyStatus',
-				child: filterList?.ContactStatus,
-				isSearch: false,
-			},
+			// {
+			// 	label: 'Status',
+			// 	name: 'companyStatus',
+			// 	child: filterList?.ContactStatus,
+			// 	isSearch: false,
+			// },
 			{
 				label: 'GEO',
 				name: 'geo',
@@ -87,36 +87,46 @@ export const allClientsConfig = {
                     align: 'center',
                     width: '60px',
                     render:(_,result) => {
-                        return (
-                        isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
+                        return (<div style={{display:'flex'}}>
+                        {isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
                             to={`/editclient/${result.companyID}`}
                             style={{ color: 'black', textDecoration: 'underline' }}
                             onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
                             <PencilSVG />
-                        </Link>
-                        )
-                    }
-                },
-                {
-                    title:'',
-                dataIndex: 'View',
-                key: 'view',
-                align: 'center',
-                width: '60px',
-            render:(_,result) => {
-                if(result.companyID !== 0  || result.clientID !== 0){
-                return <div style={{marginLeft:'auto', cursor:'pointer'}}>
+                        </Link>}
+                        {(result.companyID !== 0  || result.clientID !== 0) &&  <div style={{marginLeft:'auto', cursor:'pointer',marginLeft:'10px'}}>
                                 <Tooltip title="View Company Details" placement="right" >
                                 <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank">
-                                    <img src={eyeIcon} alt='info' style={{width:'35px',height:'35px'}}  />	
+                                    <img src={eyeIcon} alt='info' width="22" height="22"  />	
                                     {/* <EyeIcon /> */}
                                     </a>                               
                             </Tooltip> 
-                            </div>
-                }
+                            </div>}
+                        </div>
+                        
+                        )
+                    }
+                },
+            //     {
+            //         title:'',
+            //     dataIndex: 'View',
+            //     key: 'view',
+            //     align: 'center',
+            //     width: '60px',
+            // render:(_,result) => {
+            //     if(result.companyID !== 0  || result.clientID !== 0){
+            //     return <div style={{marginLeft:'auto', cursor:'pointer'}}>
+            //                     <Tooltip title="View Company Details" placement="right" >
+            //                     <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank">
+            //                         <img src={eyeIcon} alt='info' width="22" height="22"  />	
+            //                         {/* <EyeIcon /> */}
+            //                         </a>                               
+            //                 </Tooltip> 
+            //                 </div>
+            //     }
                 
-            }
-            },
+            // }
+            // },
                 {
                     title: 'Added Date',
                     dataIndex: 'addedDate',
@@ -221,19 +231,19 @@ export const allClientsConfig = {
                     dataIndex: 'sourceCategory',
                     key: 'sourceCategory',
                     width: '150px',            },
-                {
-                    title: 'Status',
-                    dataIndex: 'status',
-                    key: 'status',
-                    width: '150px',
-                    render: (text,result) => {
-                        return (
-                            text && <span 
-                             className={clienthappinessSurveyStyles.StatusOpportunity} 
-                             style={{backgroundColor:`${result.statusColor}`}} >{text}</span>			
-                        );
-                    },
-                },
+                // {
+                //     title: 'Status',
+                //     dataIndex: 'status',
+                //     key: 'status',
+                //     width: '150px',
+                //     render: (text,result) => {
+                //         return (
+                //             text && <span 
+                //              className={clienthappinessSurveyStyles.StatusOpportunity} 
+                //              style={{backgroundColor:`${result.statusColor}`}} >{text}</span>			
+                //         );
+                //     },
+                // },
                 {
                     title: 'Invited By',
                     dataIndex: 'inviteName',

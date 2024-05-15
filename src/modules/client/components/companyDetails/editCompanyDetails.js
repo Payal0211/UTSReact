@@ -479,8 +479,20 @@ const EditCompanyDetails = ({
   }, [getLeadSource]);
 
   useEffect(() => {
-    if (watchCompanyLeadSource?.id !== 1) unregister("companyLeadSource");
-  }, [unregister, watchCompanyLeadSource?.id]);
+    if (watchCompanyLeadSource?.id === 1){
+      unregister("companyLeadOwner");
+      register('companyInboundType',{required: true})
+    }
+    
+    if(watchCompanyLeadSource?.id === 2){
+      unregister("companyInboundType");
+      register('companyLeadOwner',{required: true})
+    }
+    if(watchCompanyLeadSource?.id === 3){
+      unregister("companyInboundType");
+      unregister('companyLeadOwner')
+    }
+  }, [unregister, watchCompanyLeadSource?.id,register]);
 
   const getCreditTransactionData = async ()=>{
     setTransactionModal(true)
@@ -988,7 +1000,7 @@ const EditCompanyDetails = ({
                 register={register}
                 errors={errors}
                 validationSchema={{
-                  required: "please enter the linkedin profile.",
+                  required: "please enter the Company Linkedin.",
                   // pattern: {
                   // 	value: URLRegEx.url,
                   // 	message: 'Entered value does not match url format',
@@ -1011,10 +1023,10 @@ const EditCompanyDetails = ({
                     //   }											
                   }
                 }}
-                label="Linkedin Profile"
+                label="Company Linkedin"
                 name={"companyLinkedinProfile"}
                 type={InputType.TEXT}
-                placeholder="Enter linkedin profile "
+                placeholder="Enter Company Linkedin "
                 required
               />
             </div>
@@ -1049,7 +1061,7 @@ const EditCompanyDetails = ({
             </div>
           </div>
 
-          <div className={CompanyDetailsStyle.row}>
+          {/* <div className={CompanyDetailsStyle.row}>
             <div className={CompanyDetailsStyle.colMd12}>
               <div className={CompanyDetailsStyle.radioFormGroup}>
                 <label>
@@ -1088,7 +1100,7 @@ const EditCompanyDetails = ({
                 </label>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className={CompanyDetailsStyle.row}>
             <div className={CompanyDetailsStyle.colMd6}>
               <div className={CompanyDetailsStyle.formGroup}>
@@ -1103,7 +1115,7 @@ const EditCompanyDetails = ({
                   label="Lead Source"
                   defaultValue="Select Lead Source"
                   options={leadSource?.BindLeadType}
-                  required
+                  required={true}
                   isError={
                     errors["companyLeadSource"] && errors["companyLeadSource"]
                   }
@@ -1130,7 +1142,7 @@ const EditCompanyDetails = ({
                     isError={
                       errors["companyLeadOwner"] && errors["companyLeadOwner"]
                     }
-                    errorMsg={"Please select lead source"}
+                    errorMsg={"Please select lead owner"}
                     searchable={true}
                   />
                 </div>

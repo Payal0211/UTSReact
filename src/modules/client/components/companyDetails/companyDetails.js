@@ -777,7 +777,7 @@ const CompanyDetails = ({
 						</div>
 					</div>
 
-					<div className={CompanyDetailsStyle.row}>
+					{/* <div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd12}>
 							<div className={CompanyDetailsStyle.radioFormGroup}>
 								<label>
@@ -816,7 +816,7 @@ const CompanyDetails = ({
 								</label>
 							</div>
 						</div>
-					</div>
+					</div> */}
 					<div className={CompanyDetailsStyle.row}>
 						<div className={CompanyDetailsStyle.colMd6}>
 							<div className={CompanyDetailsStyle.formGroup}>

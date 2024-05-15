@@ -416,6 +416,7 @@ const EditDebriefingHR = ({
 						message: 'Same skills are not allowed',
 					});
 					setSameSkillError(true)
+					setShowPublishModal(false)
 					sameSkillIssue = true
 				}
 			})

@@ -390,6 +390,7 @@ const DebriefingHR = ({
 					message: 'Same skills are not allowed',
 				});
 				setSameSkillError(true)
+				setShowPublishModal(false)
 				sameSkillIssue = true
 			}
 		})
@@ -470,7 +471,7 @@ const DebriefingHR = ({
 				}
 			})
 			var updatedEmailString = emailString.join(','); 
-			console.log(updatedEmailString,"updatedEmailString");
+			
 			let payload = {
 				client_email : getSalesHead?.responseBody?.details?.[0]?.clientEmail,
 				users : updatedEmailString
