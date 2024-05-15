@@ -16,6 +16,7 @@ import {
 	jdDumpSearch,
 } from 'modules/report/reportUtils';
 import { InputType } from 'constants/application';
+import WithLoader from 'shared/components/loader/loader';
 
 const JDDumpReportScreen = () => {
 	const { control } = useForm();
@@ -138,6 +139,7 @@ const JDDumpReportScreen = () => {
 
 	return (
 		<div className={JDDUmpStyle.hiringRequestContainer}>
+			<WithLoader showLoader={isLoading} className="pageMainLoader">
 			<div className={JDDUmpStyle.addnewHR}>
 				<div className={JDDUmpStyle.hiringRequest}>JD Efficiency Report</div>
 			</div>
@@ -510,6 +512,7 @@ const JDDumpReportScreen = () => {
 					</div>
 				</Modal>
 			)}
+		</WithLoader>
 		</div>
 	);
 };

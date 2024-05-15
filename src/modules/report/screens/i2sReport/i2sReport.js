@@ -178,6 +178,7 @@ const [dateError, setDateError] = useState(false);
   };
   return (
     <div className={I2SReport.dealContainer}>
+      <WithLoader className="pageMainLoader" showLoader={isLoading}>
       <div className={I2SReport.header}>
         <div className={I2SReport.dealLable}>Interview To Success</div>
       </div>
@@ -291,6 +292,7 @@ const [dateError, setDateError] = useState(false);
           />
         </Modal>
       </div>
+    </WithLoader>
     </div>
   );
 };

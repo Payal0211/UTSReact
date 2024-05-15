@@ -406,6 +406,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
   return (
     <>
     <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
+    <WithLoader className="pageMainLoader" showLoader={isLoading}> 
         <div className={clienthappinessSurveyStyles.addnewHR}>
             <div className={clienthappinessSurveyStyles.hiringRequest}>Client Happiness Survey</div>
             <div className={clienthappinessSurveyStyles.btn_wrap}>
@@ -700,6 +701,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                             </WithLoader>
                        )} 
          </div>
+    </WithLoader>
     </div>
 
     {isAllowFilters && (

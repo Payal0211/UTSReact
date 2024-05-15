@@ -11,6 +11,7 @@ import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
 import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
 import { ReactComponent as Close } from "assets/svg/close.svg";
+import WithLoader from 'shared/components/loader/loader';
 
 const TimeZoneList = () => {
     const [isLoading, setLoading] = useState(false);
@@ -135,7 +136,8 @@ const TimeZoneList = () => {
 		downloadToExcel(DataToExport);
 	}
     return (
-        <div className={CurrencyListStyle.hiringRequestContainer}>
+		<div className={CurrencyListStyle.hiringRequestContainer}>
+			<WithLoader className="pageMainLoader" showLoader={isLoading}>
 			<div className={CurrencyListStyle.addnewHR}>
 				<div className={CurrencyListStyle.hiringRequest}>
 					TimeZone
@@ -202,6 +204,7 @@ const TimeZoneList = () => {
 					</>
 				)}
 			</div>						
+		</WithLoader>
 		</div>
     )
 }

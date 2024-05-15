@@ -340,9 +340,9 @@ const updateSpaceIDForClientFun = async () =>{
     }
     return(
         <>
-        {contextHolder}
-            <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
         <WithLoader className="mainLoader" showLoader={isLoading}>
+            <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
+        {contextHolder}
                 <div className={clienthappinessSurveyStyles.addnewHR}>
                     <div className={clienthappinessSurveyStyles.hiringRequest}>All Clients</div>
                     <div className={clienthappinessSurveyStyles.btn_wrap}>
@@ -478,8 +478,8 @@ const updateSpaceIDForClientFun = async () =>{
                             )} 
                 </div>
 
-            </WithLoader>
             </div>
+            </WithLoader>
 
             {isAllowFilters && (
                         <Suspense fallback={<div>Loading...</div>}>

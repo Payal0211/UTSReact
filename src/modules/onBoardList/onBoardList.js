@@ -250,7 +250,8 @@ function OnBoardList() {
     }   
 
     return(
-        <div className={onboardList.hiringRequestContainer}>
+      <div className={onboardList.hiringRequestContainer}>
+          <WithLoader className="pageMainLoader" showLoader={isLoading}>
             <div className={onboardList.addnewHR}>
 				      <div className={onboardList.hiringRequest}>OnBoard List</div>               
             </div>
@@ -302,6 +303,7 @@ function OnBoardList() {
                 </WithLoader>
               )}
             </div>
+      </WithLoader>
         </div>
     )
 }

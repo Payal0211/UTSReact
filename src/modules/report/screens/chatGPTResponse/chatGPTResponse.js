@@ -125,6 +125,7 @@ export default function ChatGPTResponse() {
 
   return (
     <div className={gptStyles.hiringRequestContainer}>
+      <WithLoader className="pageMainLoader" showLoader={isLoading}>
         <div className={gptStyles.addnewHR}>
 				<div className={gptStyles.hiringRequest}>Chat GPT Response's</div>
                 <div className={gptStyles.btn_wrap}>
@@ -238,6 +239,7 @@ export default function ChatGPTResponse() {
                           </div>
                 </div>                  
             </Modal>    
+    </WithLoader>
     </div>
   )
 }

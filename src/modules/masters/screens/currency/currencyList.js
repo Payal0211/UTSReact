@@ -9,6 +9,7 @@ import { MasterConfig } from 'modules/masters/masterConfig';
 import { MasterUtils } from 'modules/masters/masterUtils';
 import AddCountry from 'modules/masters/components/addCountry/addCountry';
 import UpdateExchangeRate from 'modules/masters/components/updateCurrencyExchangeRate/updateCurrencyExchangeRate';
+import WithLoader from 'shared/components/loader/loader';
 
 const CurrencyList = () => {
 	const [isEditExchangeRate, setEditExchangeRate] = useState(false);
@@ -59,6 +60,7 @@ const CurrencyList = () => {
 
 	return (
 		<div className={CurrencyListStyle.hiringRequestContainer}>
+			<WithLoader className="pageMainLoader" showLoader={isLoading}>
 			<div className={CurrencyListStyle.addnewHR}>
 				<div className={CurrencyListStyle.hiringRequest}>
 					Currency Exchange List
@@ -126,6 +128,7 @@ const CurrencyList = () => {
 					/>
 				</Modal>
 			)}
+		</WithLoader>
 		</div>
 	);
 };

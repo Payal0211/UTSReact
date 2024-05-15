@@ -346,7 +346,8 @@ if(talentID?.id){
 
 
   return (
-    <div className={allHRStyles.hiringRequestContainer}>
+	  <div className={allHRStyles.hiringRequestContainer}>
+		<WithLoader className="pageMainLoader" showLoader={isLoading}>
         <div className={allHRStyles.addnewHR}>
 				<div className={allHRStyles.hiringRequest}>HR Lost Report</div>
                 <div className={allHRStyles.btn_wrap}>
@@ -576,6 +577,7 @@ if(talentID?.id){
                 </div>
 			</Modal>                    
 
+	</WithLoader>
     </div>
   )
 }

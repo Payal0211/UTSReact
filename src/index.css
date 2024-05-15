@@ -808,6 +808,18 @@ table {
   justify-content: center;
   height: calc(100vh - 300px);
 }
+.pageMainLoader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #f2f2f2;
+  z-index: 999;
+}
 
 .disabledTransparentBtnGroup {
   opacity: 0.5;

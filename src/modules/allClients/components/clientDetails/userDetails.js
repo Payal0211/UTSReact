@@ -13,6 +13,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AutoComplete, Checkbox, Dropdown, Menu, Radio, Select, Spin } from "antd";
 import LogoLoader from "shared/components/loader/logoLoader";
+import WithLoader from "shared/components/loader/loader";
 
 const UserDetails = () => {
   const navigate = useNavigate();
@@ -292,6 +293,7 @@ const UserDetails = () => {
 
   const getCompanyPOCList = useCallback(
     async (clientEmail) => {
+      setIsLoading(true)
       let response =  await allClientRequestDAO.getActiveSalesUserListDAO(clientEmail);
       if (response?.statusCode === HTTPStatusCode.OK) {
         setPOCName(response?.responseBody.map(data=>({
@@ -305,6 +307,7 @@ const UserDetails = () => {
       ) {
         setPOCName([]);
       }
+      setIsLoading(false);
     },
     []
   );
@@ -319,6 +322,7 @@ const UserDetails = () => {
   }, [pocName])
 
   return (
+    <WithLoader className="pageMainLoader" showLoader={isLoading}>
     <div className={userDetails.addNewContainer}>
       <LogoLoader visible={isLoading} />
       <div className={userDetails.tabsBody}>
@@ -723,6 +727,7 @@ const UserDetails = () => {
         </div>
       </div>
     </div>
+    </WithLoader>
   );
 };
 

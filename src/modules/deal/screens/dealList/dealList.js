@@ -193,6 +193,7 @@ const DealList = () => {
 
 	return (
 		<div className={DealListStyle.dealContainer}>
+			<WithLoader className="pageMainLoader" showLoader={isLoading}>
 			<div className={DealListStyle.header}>
 				<div className={DealListStyle.dealLable}>Deal Listing</div>
 			</div>
@@ -353,6 +354,7 @@ const DealList = () => {
 					/>
 				</Suspense>
 			)}
+		</WithLoader>
 		</div>
 	);
 };
