@@ -11,12 +11,12 @@ import { result } from "lodash";
 export const allClientsConfig = {
     allClientsTypeConfig : (filterList) => {
         return [
-			{
-				label: 'Status',
-				name: 'companyStatus',
-				child: filterList?.ContactStatus,
-				isSearch: false,
-			},
+			// {
+			// 	label: 'Status',
+			// 	name: 'companyStatus',
+			// 	child: filterList?.ContactStatus,
+			// 	isSearch: false,
+			// },
 			{
 				label: 'GEO',
 				name: 'geo',
@@ -231,19 +231,19 @@ export const allClientsConfig = {
                     dataIndex: 'sourceCategory',
                     key: 'sourceCategory',
                     width: '150px',            },
-                {
-                    title: 'Status',
-                    dataIndex: 'status',
-                    key: 'status',
-                    width: '150px',
-                    render: (text,result) => {
-                        return (
-                            text && <span 
-                             className={clienthappinessSurveyStyles.StatusOpportunity} 
-                             style={{backgroundColor:`${result.statusColor}`}} >{text}</span>			
-                        );
-                    },
-                },
+                // {
+                //     title: 'Status',
+                //     dataIndex: 'status',
+                //     key: 'status',
+                //     width: '150px',
+                //     render: (text,result) => {
+                //         return (
+                //             text && <span 
+                //              className={clienthappinessSurveyStyles.StatusOpportunity} 
+                //              style={{backgroundColor:`${result.statusColor}`}} >{text}</span>			
+                //         );
+                //     },
+                // },
                 {
                     title: 'Invited By',
                     dataIndex: 'inviteName',
