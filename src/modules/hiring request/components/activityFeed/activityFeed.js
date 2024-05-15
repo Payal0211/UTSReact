@@ -826,7 +826,7 @@ const ActivityFeed = ({
 							{historyData?.discovery_Call && <div className={ActivityFeedStyle.historyGridInfo}><span>Discovery Call:</span> {historyData?.discovery_Call}</div>}
 							{historyData?.discription && <div className={ActivityFeedStyle.historyGridInfo}><span>Discription:</span> {historyData?.discription}</div>}
 							{historyData?.dpPercentage && <div className={ActivityFeedStyle.historyGridInfo}><span>DP Percentage:</span> {historyData?.dpPercentage}</div>}
-							{historyData?.duration && <div className={ActivityFeedStyle.historyGridInfo}><span>Duration:</span> {historyData?.duration}</div>}
+							{historyData?.duration && <div className={ActivityFeedStyle.historyGridInfo}><span>Duration:</span> {historyData?.specificMonth == "-1" ? "Indefinite" : historyData?.duration}</div>}
 							{historyData?.durationType && <div className={ActivityFeedStyle.historyGridInfo}><span>DurationType:</span> {historyData?.durationType}</div>}
 							{historyData?.genericInfo && <div className={ActivityFeedStyle.historyGridInfo}><span>Generic Info:</span> {historyData?.genericInfo}</div>}
 							{historyData?.hR_Cost && <div className={ActivityFeedStyle.historyGridInfo}><span>HR Cost:</span> {historyData?.hR_Cost}</div>}
@@ -862,7 +862,7 @@ const ActivityFeed = ({
 							{historyData?.roleTeamSize && <div className={ActivityFeedStyle.historyGridInfo}><span>Role Team Size:</span> {historyData?.roleTeamSize}</div>}
 							{historyData?.rolesResponsibilities && <div className={ActivityFeedStyle.historyGridInfo}><span>Roles/Responsibilities:</span> {historyData?.rolesResponsibilities}</div>}
 							{historyData?.salesUser && <div className={ActivityFeedStyle.historyGridInfo}><span>Sales User:</span> {historyData?.salesUser}</div>}
-							{historyData?.specificMonth && <div className={ActivityFeedStyle.historyGridInfo}><span>Specific Month:</span> {historyData?.specificMonth}</div>}
+							{(historyData?.specificMonth && historyData?.specificMonth != "-1") && <div className={ActivityFeedStyle.historyGridInfo}><span>Specific Month:</span> {historyData?.specificMonth == "-1" ? "Indefinite" : historyData?.specificMonth}</div>}
 							{historyData?.tR_Accepted && <div className={ActivityFeedStyle.historyGridInfo}><span>TR Accepted:</span> {historyData?.tR_Accepted}</div>}
 							{historyData?.talentCostCalcPercentage && <div className={ActivityFeedStyle.historyGridInfo}><span>Talent Cost Percentage:</span> {historyData?.talentCostCalcPercentage}</div>}
 							{historyData?.timeZone_FromTime && <div className={ActivityFeedStyle.historyGridInfo}><span>From Time:</span> {historyData?.timeZone_FromTime}</div>}
