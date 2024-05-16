@@ -121,6 +121,21 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getClientFilterList');
 		}
 	},
+	getResetAllDemoHRTalentStatus:async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.RESET_DEMO_TALENT_STATUS ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getResetAllDemoHRTalentStatus');
+		}
+	},
 	getJobDetails:async function (guid,clientID) {
 		let httpService = new HttpServices();
 		httpService.URL =

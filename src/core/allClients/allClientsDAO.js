@@ -103,6 +103,38 @@ export const allClientRequestDAO  = {
 			return errorDebug(error,'allClientRequestDAO.getClientDetailsForViewDAO');
 		}
 	},
+	getResetAllDemoHRTalentStatusDAO : async function (){
+		try {
+			const viewClientDetailsResult = await ClientAPI.getResetAllDemoHRTalentStatus();
+			if (viewClientDetailsResult) {
+				const statusCode = viewClientDetailsResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = viewClientDetailsResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return viewClientDetailsResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return viewClientDetailsResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error,'allClientRequestDAO.getResetAllDemoHRTalentStatusDAO');
+		}
+	},
 	getDraftJobDetailsDAO : async function (guid,clientID) {
 		try {
 			const draftJobDetails = await ClientAPI.getJobDetails(guid,clientID);

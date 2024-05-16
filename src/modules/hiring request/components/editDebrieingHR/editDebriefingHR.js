@@ -374,12 +374,11 @@ const EditDebriefingHR = ({
 		// 		shouldDirty: true,
 		// 	});
 
-		JDParsedSkills &&	setValue('jobDescription', getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
+		JDParsedSkills &&	setValue('jobDescription', (getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
 			JDParsedSkills?.jobDescription ||
-			(getHRdetails?.salesHiringRequest_Details?.jobDescription) , {
+			(getHRdetails?.salesHiringRequest_Details?.jobDescription)) ?? '' , {
 					shouldDirty: true,
 				});
-		
 	}, [JDParsedSkills, setValue]);
 
 	const openPublishModal = ()=>{
@@ -588,10 +587,10 @@ const EditDebriefingHR = ({
 		// 			(getHRdetails?.salesHiringRequest_Details
 		// 				?.rolesResponsibilities ),
 		// 	);
-			setValue('jobDescription', getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details
+			setValue('jobDescription', (getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details
 				?.jobDescription)? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details
 				?.jobDescription)) : getHRdetails?.salesHiringRequest_Details
-				?.jobDescription :getHRdetails?.salesHiringRequest_Details?.jobDescription, {
+				?.jobDescription :getHRdetails?.salesHiringRequest_Details?.jobDescription)?? '', {
 				shouldDirty: true,
 			});
 		setIsFocusedRole(getHRdetails?.salesHiringRequest_Details?.isHrfocused)
@@ -699,9 +698,9 @@ const EditDebriefingHR = ({
 							<TextEditor
 								isControlled={true}
 								// controlledValue={JDParsedSkills?.Requirements || ''}
-								controlledValue={getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
+								controlledValue={(getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
 									JDParsedSkills?.jobDescription ||
-									(getHRdetails?.salesHiringRequest_Details?.jobDescription)
+									(getHRdetails?.salesHiringRequest_Details?.jobDescription)) ?? ''
 								}
 								label={'Job Description'}
 								placeholder={'Enter Job Description'}
