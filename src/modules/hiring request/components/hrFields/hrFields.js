@@ -1127,7 +1127,7 @@ const HRFields = ({
         setValue('NRMargin',7.5)
       }
       unregister("tempProject")
-      unregister('contractDuration')
+      watch('payrollType')?.id !== 4 && unregister('contractDuration')
 
       if(watch('payrollType')?.id === 4){
         register('contractDuration',{
@@ -1139,7 +1139,7 @@ const HRFields = ({
     if((watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 )){
       unregister('payrollType')
       unregister("tempProject")
-      unregister('contractDuration')
+      watch('hiringPricingType')?.id !== 2 && unregister('contractDuration')
     }
 
      // re register full time
@@ -1575,8 +1575,11 @@ const HRFields = ({
         (item) => item?.id == gptDetails?.modeOfWorkingId
       );
 
-      setValue("workingMode", findWorkingMode[0]);
+      if(findWorkingMode[0]?.value){
+        setValue("workingMode", findWorkingMode[0]);
       setControlledWorkingValue(findWorkingMode[0]?.value);
+      }
+      
       setValue("jdExport", "");
       gptDetails?.addHiringRequest?.noofTalents &&
         setValue("talentsNumber", gptDetails?.addHiringRequest?.noofTalents);
@@ -1588,11 +1591,16 @@ const HRFields = ({
         setControlledAvailabilityValue(findAvailability[0].value)
       }
 
-      gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 &&
+      if(gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 ){
+        resetField("adhocBudgetCost")
+        setValue("budget", {id: '', value: '2'});
+        setControlledBudgetValue('2')
         setValue(
-          "minimumBudget",
-          gptDetails?.salesHiringRequest_Details?.budgetFrom
-        );
+            "minimumBudget",
+            gptDetails?.salesHiringRequest_Details?.budgetFrom
+          );
+      }
+        
       gptDetails?.salesHiringRequest_Details?.budgetTo > 0 &&
         setValue(
           "maximumBudget",
@@ -1635,9 +1643,7 @@ const HRFields = ({
           
         );
 
-      resetField("adhocBudgetCost")
-     	setValue("budget", {id: '', value: '2'});
-      setControlledBudgetValue('2')
+      
 
 	    setHRdetails(gptDetails);
         setAddData(gptDetails);
@@ -2067,7 +2073,7 @@ const HRFields = ({
 </div> }
 
 
-{userCompanyTypeID === 2 && isProfileView && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
+{/* {userCompanyTypeID === 2 && isProfileView && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
 <Radio.Group
                   onChange={e=> {setIsVettedProfile(e.target.value)}}
                   value={isVettedProfile}
@@ -2075,7 +2081,7 @@ const HRFields = ({
                   <Radio value={false}>Fast Profile</Radio>
                   <Radio value={true}>Vetted Profile</Radio>
                 </Radio.Group>
-</div> }
+</div> } */}
 
            
 {/* Pay per Hire  */}

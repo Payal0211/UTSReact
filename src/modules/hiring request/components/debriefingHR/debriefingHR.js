@@ -132,10 +132,10 @@ const DebriefingHR = ({
 		// 		?.rolesResponsibilities ), {
 		// 	shouldDirty: true,
 		// });
-		setValue('jobDescription', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
+		setValue('jobDescription', (addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
 			?.JobDescription)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
 			?.JobDescription)) : addData?.salesHiringRequest_Details
-			?.JobDescription :addData?.salesHiringRequest_Details?.JobDescription, {
+			?.JobDescription :addData?.salesHiringRequest_Details?.JobDescription) ?? "", {
 			shouldDirty: true,
 		});
 		setIsFocusedRole(addData?.salesHiringRequest_Details?.isHrfocused);
@@ -336,9 +336,9 @@ const DebriefingHR = ({
 		// 		shouldDirty: true,
 		// 	});
 
-			JDParsedSkills &&	setValue('jobDescription', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
+			JDParsedSkills &&	setValue('jobDescription', (addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
 			JDParsedSkills?.JobDescription ||
-			(addData?.salesHiringRequest_Details?.JobDescription) , {
+			(addData?.salesHiringRequest_Details?.JobDescription))?? "" , {
 					shouldDirty: true,
 				});
 	}, [JDParsedSkills, setValue]);
@@ -666,9 +666,9 @@ const DebriefingHR = ({
 							<TextEditor
 								isControlled={true}
 								// controlledValue={JDParsedSkills?.Requirements || ''}
-								controlledValue={addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
+								controlledValue={(addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
 									JDParsedSkills?.JobDescription ||
-									(addData?.salesHiringRequest_Details?.JobDescription)
+									(addData?.salesHiringRequest_Details?.JobDescription)) ?? ''
 								}
 								label={'Job Description'}
 								placeholder={'Enter Job Description'}

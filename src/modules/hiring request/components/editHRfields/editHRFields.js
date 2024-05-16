@@ -879,7 +879,7 @@ const EditHRFields = ({
 
     if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
       unregister("tempProject")
-      unregister('contractDuration')
+      watch('payrollType')?.id !== 4 && unregister('contractDuration')
       if(watch('payrollType')?.id === 4){
         register('contractDuration',{
           required: true
@@ -890,7 +890,7 @@ const EditHRFields = ({
     if((watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 )){
       unregister('payrollType')
       unregister("tempProject")
-      unregister('contractDuration')
+      watch('hiringPricingType')?.id !== 2 &&  unregister('contractDuration')
     }
 
     // re register full time
@@ -1729,10 +1729,13 @@ const EditHRFields = ({
       _getHrValues.addHiringRequest.guid = gptDetails?.addHiringRequest?.guid;
       _getHrValues.addHiringRequest.jdurl = jdURLLink;
       _getHrValues.addHiringRequest.jdfilename = "";
-      _getHrValues.salesHiringRequest_Details.budgetFrom =
+      if(gptDetails?.salesHiringRequest_Details?.budgetFrom > 0){
+        _getHrValues.salesHiringRequest_Details.budgetFrom =
         gptDetails?.salesHiringRequest_Details?.budgetFrom > 0
           ? gptDetails?.salesHiringRequest_Details?.budgetFrom
           : watch("minimumBudget");
+      }
+      
       _getHrValues.salesHiringRequest_Details.budgetTo =
         gptDetails?.salesHiringRequest_Details?.budgetTo > 0
           ? gptDetails?.salesHiringRequest_Details?.budgetTo
@@ -1786,14 +1789,21 @@ const EditHRFields = ({
       //   setValue("availability", gptDetails?.addHiringRequest?.availability);
         if(gptDetails?.addHiringRequest?.availability){
           let findAvailability = availability.filter(item=> item.value === gptDetails?.addHiringRequest?.availability)
-          setValue("availability", findAvailability[0]);
+          if(findAvailability[0].value){
+              setValue("availability", findAvailability[0]);
           setControlledAvailabilityValue(findAvailability[0].value)
+          }        
         }
-      gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 &&
+      if(gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 ){
         setValue(
           "minimumBudget",
           gptDetails?.salesHiringRequest_Details?.budgetFrom
         );
+        resetField("adhocBudgetCost")
+        setValue("budget", {id: '', value: '2'});
+        setControlledBudgetValue('2')
+      }
+        
       gptDetails?.salesHiringRequest_Details?.budgetTo > 0 &&
         setValue(
           "maximumBudget",
@@ -1837,9 +1847,7 @@ const EditHRFields = ({
         setValue(
           "endTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneEndTime}  
         );
-      resetField("adhocBudgetCost")
-      setValue("budget", {id: '', value: '2'});
-      setControlledBudgetValue('2')
+
 
       setGPTDetails({});
       setShowGPTModal(false);
@@ -2083,7 +2091,7 @@ const EditHRFields = ({
                           {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Option</p>}
                 </div> }
 
-                {companyType?.id === 2 && isProfileView  && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
+                {/* {companyType?.id === 2 && isProfileView  && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
 <Radio.Group
                   onChange={e=> {setIsVettedProfile(e.target.value)}}
                   value={isVettedProfile}
@@ -2091,7 +2099,7 @@ const EditHRFields = ({
                   <Radio value={false}>Fast Profile</Radio>
                   <Radio value={true}>Vetted Profile</Radio>
                 </Radio.Group>
-</div> }
+</div> } */}
 
                 {companyType?.id === 1 &&   <div className={HRFieldStyle.colMd12}>
               <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
@@ -2273,7 +2281,7 @@ const EditHRFields = ({
                     let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
                     ;resetField('contractDuration');setContractDuration('');resetField('payrollType');setControlledPayrollTypeValue("Select payroll")
                     setValue('NRMargin',precentage)}}
-                   isControlled={true}
+                    isControlled={true}
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
