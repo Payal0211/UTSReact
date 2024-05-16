@@ -127,25 +127,9 @@ const ViewHRDetails = () => {
                         <i className={ViewHRDetailsStyle.blueDot} />
                       </li>					 */}
                       <li>
-                        <span>Job Description:</span>{" "}
-                        {hiringDetails?.responseBody?.details
-                          ?.jobDescription ? (
-                          <a
-                            href={
-                              NetworkInfo.PROTOCOL +
-                              NetworkInfo.DOMAIN +
-                              "Media/JDParsing/JDfiles/" +
-                              hiringDetails?.responseBody?.details
-                                ?.jobDescription
-                            }
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Click Here
-                          </a>
-                        ) : (
-                          "NA"
-                        )}
+                        <span>Sales Person:</span>{" "}
+                        {hiringDetails?.responseBody?.details?.salesPerson ??
+                          "NA"}
                       </li>
                       <li>
                         <span>Contract Type:</span>{" "}
@@ -434,11 +418,7 @@ const ViewHRDetails = () => {
                         {hiringDetails?.responseBody?.details?.currency ??
                           "NA"}
                       </li>
-                      <li>
-                        <span>Sales Person:</span>{" "}
-                        {hiringDetails?.responseBody?.details?.salesPerson ??
-                          "NA"}
-                      </li>
+                     
                       <li>
                         <span>Required Experience:</span>{" "}
                         {hiringDetails?.responseBody?.details
@@ -647,7 +627,7 @@ const ViewHRDetails = () => {
               )}
             </div> */}
 
-            <div>
+            <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
               <h3>
                 Job Description
                 <i className={ViewHRDetailsStyle.blueDot} />
