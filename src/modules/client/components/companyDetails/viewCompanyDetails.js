@@ -57,8 +57,8 @@ const creditColumn = [
 
   {
     title: "Credit/Price",
-    dataIndex: "creditBalance",
-    key: "creditBalance",
+    dataIndex: "amountPerCredit",
+    key: "amountPerCredit",
     align: "left",
     width: "150px",
   },
@@ -69,7 +69,7 @@ const creditColumn = [
     align: "left",
     width: "100px",
     render: (_, val) => {
-      return val.creditBalance * val.creditUsed;
+      return val.amountPerCredit * val.creditUsed;
     },
   },
   {
@@ -602,6 +602,12 @@ alt="preview"
     return (
       <>
         <div className={AddNewClientStyle.summaryContainer}>
+        <div className={AddNewClientStyle.summaryCard}>
+            Total Credit Used:{" "}
+            <span>
+              {creditUtilize.map(item=> item.creditUsed).reduce((acc, crrent)=> crrent + acc , 0)}
+            </span>
+          </div>
           <div className={AddNewClientStyle.summaryCard}>
             Vetted Count:{" "}
             <span>
