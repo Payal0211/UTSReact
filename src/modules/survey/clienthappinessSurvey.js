@@ -406,7 +406,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
   return (
     <>
     <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
-    <WithLoader className="pageMainLoader" showLoader={isLoading}> 
+    <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> 
         <div className={clienthappinessSurveyStyles.addnewHR}>
             <div className={clienthappinessSurveyStyles.hiringRequest}>Client Happiness Survey</div>
             <div className={clienthappinessSurveyStyles.btn_wrap}>

@@ -137,7 +137,7 @@ const TimeZoneList = () => {
 	}
     return (
 		<div className={CurrencyListStyle.hiringRequestContainer}>
-			<WithLoader className="pageMainLoader" showLoader={isLoading}>
+			<WithLoader className="pageMainLoader" showLoader={search?.length?false:isLoading}>
 			<div className={CurrencyListStyle.addnewHR}>
 				<div className={CurrencyListStyle.hiringRequest}>
 					TimeZone
