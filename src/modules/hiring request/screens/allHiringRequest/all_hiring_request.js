@@ -491,7 +491,7 @@ const AllHiringRequestScreen = () => {
 
   return (
     <div className={allHRStyles.hiringRequestContainer}>
-      <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}>
+      {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
       {contextHolder}
       <div className={allHRStyles.addnewHR}>
         <div className={allHRStyles.hiringRequest}>All Hiring Requests</div>
@@ -910,7 +910,7 @@ const AllHiringRequestScreen = () => {
           />
         </Modal>
       )}
-    </WithLoader>
+    {/* </WithLoader> */}
     </div>
   );
 };
