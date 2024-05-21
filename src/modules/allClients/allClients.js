@@ -340,7 +340,7 @@ const updateSpaceIDForClientFun = async () =>{
     }
     return(
         <>
-        <WithLoader className="mainLoader" showLoader={isLoading}>
+        <WithLoader className="mainLoader" showLoader={debouncedSearch?.length?false:isLoading}>
             <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
         {contextHolder}
                 <div className={clienthappinessSurveyStyles.addnewHR}>

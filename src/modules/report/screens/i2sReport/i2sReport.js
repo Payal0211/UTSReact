@@ -178,7 +178,7 @@ const [dateError, setDateError] = useState(false);
   };
   return (
     <div className={I2SReport.dealContainer}>
-      <WithLoader className="pageMainLoader" showLoader={isLoading}>
+      <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}>
       <div className={I2SReport.header}>
         <div className={I2SReport.dealLable}>Interview To Success</div>
       </div>

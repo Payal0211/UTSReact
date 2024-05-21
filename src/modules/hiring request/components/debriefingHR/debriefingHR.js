@@ -607,7 +607,7 @@ const DebriefingHR = ({
 		<div className={DebriefingHRStyle.debriefingHRContainer}>
 			{contextHolder}
 			<WithLoader
-				showLoader={isLoading}
+				showLoader={debouncedSearch?.length?false:isLoading}
 				className="mainLoader">
 				<div className={DebriefingHRStyle.partOne}>
 					<div className={DebriefingHRStyle.hrFieldLeftPane}>
