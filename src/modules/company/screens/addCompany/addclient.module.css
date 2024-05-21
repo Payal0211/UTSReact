@@ -1,0 +1,72 @@
+.addHRTitle {
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 35px;
+}
+
+.addNewContainer {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.tabsFormItem {
+    padding-bottom: 23px;
+    margin-bottom: 55px;
+    border-bottom: 1px solid rgba(206, 204, 204, 0.5);
+}
+
+.tabsFormItemInner {
+    display: flex;
+}
+
+.tabsFormItem:nth-last-child(2) {
+    margin-bottom: 0;
+}
+
+.tabsLeftPanel {
+    width: 33.33%;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #7C7C7C;
+}
+
+.tabsRightPanel {
+    flex: 1;
+    padding-left: 30px;
+}
+
+.row {
+    margin: 0 -9px;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.colMd12 {
+    width: 100%;
+    padding: 0 9px;
+}
+
+.colMd6 {
+    width: 50%;
+    padding: 0 9px;
+}
+
+.colMd4 {
+    width: 33.33%;
+    padding: 0 9px;
+}
+
+.tabsLeftPanel h3 {
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 30px;
+    color: var(--uplers-black);
+    margin: 0 0 8px;
+}
+
+.tabsLeftPanel p {
+    margin: 0;
+}

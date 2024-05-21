@@ -148,6 +148,10 @@ const OnBoardList = React.lazy(() =>
 import('modules/onBoardList/onBoardList')
 )
 
+const AddCompany = React.lazy(() => 
+	import('modules/company/screens/addCompany/addCompany')
+)
+
 // const ViewClient = React.lazy(() => 
 // import('modules/viewClient/viewClientDetails'))
 
@@ -204,6 +208,7 @@ export default class UTSRoutes {
 	static ONBOARD = '/onBoardList';
 	static UTM_TRACKING_REPORT = "/utmTrackingReport";
 	static CLIENT_PORTAL_TRACKING_REPORT = "/clientPortalTrackingReport";
+	static ADD_NEW_COMPANY = "/addNewCompany/:companyID";
 }
 
 export const navigateToComponent = {
@@ -437,6 +442,11 @@ export const navigateToComponent = {
 [UTSRoutes.ONBOARD] : (
 	<Suspense>
 		<OnBoardList />
+	</Suspense>
+),
+[UTSRoutes.ADD_NEW_COMPANY] : (
+	<Suspense>
+		<AddCompany />
 	</Suspense>
 )
 };
