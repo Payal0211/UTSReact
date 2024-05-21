@@ -257,7 +257,7 @@ function ViewClientDetails() {
                             overlayClassName={dealDetailsStyles.viewClientdrop}
                             className={dealDetailsStyles.viewClientdrop}
                         /> */}		
-						{(userData.LoggedInUserTypeID === 1 || userData.LoggedInUserTypeID === 2 || userData.LoggedInUserTypeID === 9) && (companyID === "37720" )  && <button type="button" onClick={() => resetTalentCTA()} >Reset Talens for Demo Account</button> }			
+						{(userData.LoggedInUserTypeID === 1 || userData.LoggedInUserTypeID === 2 || userData.LoggedInUserTypeID === 9) && (companyID === "37720" )  && <button type="button" onClick={() => resetTalentCTA()} >Reset Talents for Demo Account</button> }			
 						{getisShowAddClientCredit == "true" &&<button type="button" onClick={() => {navigate(`/editclient/${companyID}`);localStorage.setItem("clientID",clientID)}}>Edit Company</button>}
 						<button type="button" onClick={() => navigate('/allhiringrequest/addnewhr')} >Create HR</button>
 					
