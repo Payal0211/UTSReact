@@ -87,7 +87,7 @@ const UserList = () => {
 
 	return (
 		<div className={allUserStyles.hiringRequestContainer}>
-			<WithLoader className="pageMainLoader" showLoader={isLoading}>
+			<WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}>
 			<div className={allUserStyles.userListTitle}>
 				<div className={allUserStyles.hiringRequest}>Users</div>
 				<button

@@ -193,7 +193,7 @@ const DealList = () => {
 
 	return (
 		<div className={DealListStyle.dealContainer}>
-			<WithLoader className="pageMainLoader" showLoader={isLoading}>
+			<WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}>
 			<div className={DealListStyle.header}>
 				<div className={DealListStyle.dealLable}>Deal Listing</div>
 			</div>

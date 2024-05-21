@@ -139,7 +139,7 @@ const JDDumpReportScreen = () => {
 
 	return (
 		<div className={JDDUmpStyle.hiringRequestContainer}>
-			<WithLoader showLoader={isLoading} className="pageMainLoader">
+			<WithLoader showLoader={debouncedSearch?.length?false:isLoading} className="pageMainLoader">
 			<div className={JDDUmpStyle.addnewHR}>
 				<div className={JDDUmpStyle.hiringRequest}>JD Efficiency Report</div>
 			</div>

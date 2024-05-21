@@ -251,7 +251,7 @@ function OnBoardList() {
 
     return(
       <div className={onboardList.hiringRequestContainer}>
-          <WithLoader className="pageMainLoader" showLoader={isLoading}>
+          <WithLoader className="pageMainLoader" showLoader={searchText?.length?false:isLoading}>
             <div className={onboardList.addnewHR}>
 				      <div className={onboardList.hiringRequest}>OnBoard List</div>               
             </div>
