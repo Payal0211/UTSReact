@@ -226,6 +226,10 @@ const HRFields = ({
   const [countryBasedOnIP, setCountryBasedOnIP] = useState('')
   const [checkCreditAvailability,setCheckCreditAvailability] = useState({})
   const [isCreateHRDisable,setIsCreateHRDisable] = useState(false)
+  const [hideProfileView, setHideProfileView] = useState(false)
+  const [hidePostJob, setHidePostJob] = useState(false)
+  const [disableProfileView,setDisableProfileView] = useState(false)
+  const [disablePostJob,setDisablePostJob] = useState(false)
 
   const watchClientName = watch("clientName");
   const _endTime = watch("endTime");
@@ -893,6 +897,34 @@ const HRFields = ({
       }
     }else{
       setIsCreateHRDisable(false)
+    }
+
+    if(clientDetails?.isHybrid === false && clientDetails?.companyTypeID ===2 ){
+          if(clientDetails?.isPostaJob && clientDetails?.isProfileView=== false){
+            setHideProfileView(true)
+            setDisablePostJob(true)
+            return
+          }
+          if(clientDetails?.isProfileView &&  clientDetails?.isPostaJob=== false){
+            setHidePostJob(true)
+            setDisableProfileView(true)
+            return
+          }
+          if(clientDetails?.isProfileView &&  clientDetails?.isPostaJob){
+            setDisableProfileView(true)
+            setDisablePostJob(true)
+            return
+          }
+          setHidePostJob(false)
+          setHideProfileView(false)
+          setDisablePostJob(false)
+          setDisableProfileView(false)
+
+    }else{
+      setHidePostJob(false)
+      setHideProfileView(false)
+      setDisablePostJob(false)
+      setDisableProfileView(false)
     }
   },[checkCreditAvailability,userCompanyTypeID,isPostaJob])
 
@@ -2061,12 +2093,12 @@ const HRFields = ({
 {userCompanyTypeID === 2 && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
   {!clientDetails?.isHybrid && <p className={HRFieldStyle.teansactionMessage}>If you wish to create a pay per hire HR, edit company and make the hybrid model selection for this account.</p> }
   <div>
-            <Checkbox checked={isPostaJob} onClick={()=> setIsPostaJob(prev=> !prev)}>
+          {!hidePostJob && <Checkbox checked={isPostaJob} onClick={()=> setIsPostaJob(prev=> !prev)} disabled={disablePostJob}>
             Credit per post a job
-						</Checkbox>	
-            <Checkbox checked={isProfileView} onClick={()=> setIsProfileView(prev=> !prev)}>
+						</Checkbox>}  	
+          {!hideProfileView && <Checkbox checked={isProfileView} onClick={()=> setIsProfileView(prev=> !prev)} disabled={disableProfileView}>
             Credit per profile view
-						</Checkbox>	
+						</Checkbox>	}  
             </div>
             {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Option</p>}
             {isCreateHRDisable && <p className={HRFieldStyle.error} style={{marginTop:'5px'}}>* Please purchase the subcription package, you do not have enough credit balance</p> }

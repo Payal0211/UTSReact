@@ -593,7 +593,7 @@ const EngagementList = () => {
 
 	return (
 		<div className={allEngagementStyles.hiringRequestContainer}>
-			<WithLoader showLoader={isLoading} className="pageMainLoader">
+			<WithLoader showLoader={searchText?.length?false:isLoading} className="pageMainLoader">
 			<div className={allEngagementStyles.addnewHR}>
 				<div className={allEngagementStyles.hiringRequest}>
 					Engagement Dashboard -{' '}
