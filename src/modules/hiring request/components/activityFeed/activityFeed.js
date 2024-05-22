@@ -139,6 +139,7 @@ const ActivityFeed = ({
 	const [activeTabType,setActiveTabType] = useState()
 	const [CloseHRdataSource,setCloseHRdataSource] = useState([])
 	const [historyID,setHistoryID] = useState()
+	const [detailHisoryID,setDetailHistoryID] = useState()
 	const [showActivityDetails,setShowActivityDetails] = useState(false)
 	const [issHistoryLoading,setIsHistoryLoading] = useState(false)
 	const [historyData,sethistoryData] = useState({})
@@ -185,12 +186,13 @@ const ActivityFeed = ({
 	if(historyID){
 		let payload = {
 			historyID,
-			hrID
+			hrID,
+			detailHisoryID
 		}
 		getActionhistory(payload)
 	}
 
-	},[historyID,hrID])
+	},[historyID,hrID,detailHisoryID])
 
 	const getCloseJobLogs = async (hrid)=>{
 		let result = await hiringRequestDAO.getCloseJobPostsLogs(hrid)
@@ -402,7 +404,7 @@ const ActivityFeed = ({
 																		? item?.DisplayName === "TSC Auto Assignment" ? `TSC ${item?.TSCPerson} Auto Assignment`: item?.DisplayName
 																		: item?.ActionName}{' '}
 
-																	{item?.IsDisplayUpdateHR === 1 &&  <Tooltip title="View Details"><img src={infoIcon} style={{marginLeft:'5px', cursor:'pointer'}}  alt="info" onClick={()=>{setShowActivityDetails(true);setHistoryID(item?.HistoryID)}} /></Tooltip>}	
+																	{(item?.IsDisplayUpdateHR === 1 || item?.IsDisplayUpdateHRDetail === 1) &&  <Tooltip title="View Details"><img src={infoIcon} style={{marginLeft:'5px', cursor:'pointer'}}  alt="info" onClick={()=>{setShowActivityDetails(true);setHistoryID(item?.HistoryID);setDetailHistoryID(item?.DetailHistoryID)}} /></Tooltip>}	
 																</span>
 																<span>{item?.TalentName && ' for '}</span>
 																<span
@@ -869,9 +871,8 @@ const ActivityFeed = ({
 							{historyData?.timeZone_EndTime && <div className={ActivityFeedStyle.historyGridInfo}><span>End Time:</span> {historyData?.timeZone_EndTime}</div>}							
 							{historyData?.timezone && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone:</span> {historyData?.timezone}</div>}
 							{historyData?.timezone_Preference && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone Preference:</span> {historyData?.timezone_Preference}</div>}
-							{historyData?.jobDescription && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Description:</span> {historyData?.jobDescription}</div>}
-
 						</div>
+						{historyData?.jobDescription && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Description:</span> <div dangerouslySetInnerHTML={{__html:historyData?.jobDescription}} /></div>}
 						</>}
 						</Modal>}
 
