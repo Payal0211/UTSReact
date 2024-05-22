@@ -869,7 +869,7 @@ const ActivityFeed = ({
 							{historyData?.timeZone_EndTime && <div className={ActivityFeedStyle.historyGridInfo}><span>End Time:</span> {historyData?.timeZone_EndTime}</div>}							
 							{historyData?.timezone && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone:</span> {historyData?.timezone}</div>}
 							{historyData?.timezone_Preference && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone Preference:</span> {historyData?.timezone_Preference}</div>}
-
+							{historyData?.jobDescription && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Description:</span> {historyData?.jobDescription}</div>}
 
 						</div>
 						</>}
