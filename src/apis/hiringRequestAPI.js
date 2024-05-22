@@ -1199,7 +1199,7 @@ export const HiringRequestAPI = {
 	},
 	getActionhistory : async (data) => {
 		let httpService = new HttpServices();
-		httpService.URL = NetworkInfo.NETWORK + SubDomain.HIRING +  HiringRequestsAPI.GET_ACTION_UPDATES +`?HRId=${data.hrID}&HistoryID=${data.historyID}`;
+		httpService.URL = NetworkInfo.NETWORK + SubDomain.HIRING +  HiringRequestsAPI.GET_ACTION_UPDATES +`?HRId=${data.hrID}&HistoryID=${data.historyID}&DetailHistoryID=${data.detailHisoryID}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
