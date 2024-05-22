@@ -14,6 +14,7 @@ import CompanySection from "./companySection";
 import FundingSection from "./fundingSection";
 import CultureAndPerks from "./cultureAndPerks";
 import ClientSection from "./clientSection";
+import EngagementSection from "./engagementSection";
 
 function AddCompany() {
   const {
@@ -48,19 +49,7 @@ function AddCompany() {
 
       <ClientSection register ={register} errors={errors} setValue={setValue} watch={watch} /> 
 
-      <div className={AddNewClientStyle.tabsFormItem}>
-      <div className={AddNewClientStyle.tabsFormItemInner}>
-        <div className={AddNewClientStyle.tabsLeftPanel}>
-          <h3>Engagement Details</h3>
-
-        </div>
-
-        <div className={AddNewClientStyle.tabsRightPanel}>
-
-        </div>
-
-        </div>
-      </div>
+    <EngagementSection register ={register} errors={errors} setValue={setValue} watch={watch} />
        
     </div>
   );

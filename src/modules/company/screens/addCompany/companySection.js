@@ -197,49 +197,49 @@ function CompanySection({register,errors,setValue,watch}) {
 
             <div className={AddNewClientStyle.row}>
             <div className={AddNewClientStyle.colMd6}>
-              <HRSelectField
-                //   isControlled={true}
-                //   controlledValue={controlledCompanyLoacation}
-                //   setControlledValue={setControlledCompanyLoacation}
-                  setValue={setValue}
-                  mode={"id/value"}
-                  register={register}
-                  name="companyType"
-                  label="Company Type"
-                  defaultValue="Select "
-                  options={['1-10 emp','11-50 emp','51-200 emp'].map(item =>({
-                    id: item,
-                    value: item,
-                }))}
-                  required
-                  isError={
-                    errors["companyType"] && errors["companyType"]
-                  }
-                  errorMsg="Please select a Company Type."
-                />
+            <HRInputField
+                    register={register}
+                    errors={errors}
+                    name="companyType"
+                    label="Company Type"
+                    type={InputType.TEXT}
+                    validationSchema={{
+                      required: "Please enter the Company Type",
+                      // pattern: {
+                      // 	value: URLRegEx.url,
+                      // 	message: 'Entered value does not match url format',
+                      // },
+                    }}
+                    onChangeHandler={(e) => {
+                      // setCompanyName(e.target.value);
+                      // debounceDuplicateCompanyName(e.target.value);
+                    }}
+                    placeholder="Enter company type"
+                    required
+                  />
               </div>
 
               <div className={AddNewClientStyle.colMd6}>
-              <HRSelectField
-                //   isControlled={true}
-                //   controlledValue={controlledCompanyLoacation}
-                //   setControlledValue={setControlledCompanyLoacation}
-                  setValue={setValue}
-                  mode={"id/value"}
-                  register={register}
-                  name="industry"
-                  label="Industry"
-                  defaultValue="Select"
-                  options={['1-10 emp','11-50 emp','51-200 emp'].map(item =>({
-                    id: item,
-                    value: item,
-                }))}
-                  required
-                  isError={
-                    errors["industry"] && errors["industry"]
-                  }
-                  errorMsg="Please select a industry."
-                />
+              <HRInputField
+                    register={register}
+                    errors={errors}
+                    name="industry"
+                    label="Industry"
+                    type={InputType.TEXT}
+                    validationSchema={{
+                      required: "Please enter the industry",
+                      // pattern: {
+                      // 	value: URLRegEx.url,
+                      // 	message: 'Entered value does not match url format',
+                      // },
+                    }}
+                    onChangeHandler={(e) => {
+                      // setCompanyName(e.target.value);
+                      // debounceDuplicateCompanyName(e.target.value);
+                    }}
+                    placeholder="Enter Industry"
+                    required
+                  />
               </div>
 
               <div className={AddNewClientStyle.colMd6}>
