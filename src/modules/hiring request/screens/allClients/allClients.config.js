@@ -68,10 +68,11 @@ export const allClientsConfig = {
                     key: 'ssO_Login',
                     width: '150px',
                     render: (text, result) => {
+                        let url = text + `&isInternal=${true}`
                         return (
                             result?.isActive === "yes" && result?.companyID !==0 && result?.clientID!==0 &&
                                 <a
-                                href={text}
+                                href={url}
                                 target="_blank"
                                 className={clienthappinessSurveyStyles.linkForSSO}
                                 >
