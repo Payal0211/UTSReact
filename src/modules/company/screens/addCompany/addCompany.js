@@ -1,87 +1,69 @@
-import React from 'react'
-import AddNewClientStyle from './addclient.module.css';
+import React from "react";
+import AddNewClientStyle from "./addclient.module.css";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
+import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
+import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
+import { useFieldArray, useForm } from "react-hook-form";
+import TextEditor from "shared/components/textEditor/textEditor";
+import { Checkbox, message } from 'antd';
+
+
+import CompanySection from "./companySection";
+import FundingSection from "./fundingSection";
+import CultureAndPerks from "./cultureAndPerks";
+import ClientSection from "./clientSection";
 
 function AddCompany() {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    setError,
+    unregister,
+    getValues,
+    resetField,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      secondaryClient: [],
+      pocList: [],
+    },
+  });
+
   return (
     <div className={AddNewClientStyle.addNewContainer}>
-			<div className={AddNewClientStyle.addHRTitle}>Add New Company/Client Details</div>
+      <div className={AddNewClientStyle.addHRTitle}>
+        Add New Company/Client Details
+      </div>
 
-            <div className={AddNewClientStyle.tabsFormItem}>
+      <CompanySection register ={register} errors={errors} setValue={setValue} watch={watch} />
+
+      <FundingSection register ={register} errors={errors} setValue={setValue} watch={watch} />
+
+      <CultureAndPerks register ={register} errors={errors} setValue={setValue} watch={watch} /> 
+
+      <ClientSection register ={register} errors={errors} setValue={setValue} watch={watch} /> 
+
+      <div className={AddNewClientStyle.tabsFormItem}>
       <div className={AddNewClientStyle.tabsFormItemInner}>
-      <div className={AddNewClientStyle.tabsLeftPanel}>
-          <h3>Basic Company Details</h3>
-          {/* <p>Please provide the necessary details</p> */}
-          <p>The Talents would be able to see <br/> fields highlighted in blue.</p>
+        <div className={AddNewClientStyle.tabsLeftPanel}>
+          <h3>Engagement Details</h3>
+
         </div>
 
         <div className={AddNewClientStyle.tabsRightPanel}>
-        <div className={AddNewClientStyle.row}>
-        <div className={AddNewClientStyle.colMd12}>
-              <div
-                style={{
-                  width: "145px",
-                  height: "145px",
-                  marginBottom: "20px",
-                }}
-              >
-                <div
-                  style={{
-                    width: "145px",
-                    height: "145px",
-                    backgroundColor: "#EBEBEB",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    textAlign: "center",
-                  }}
-                >         <p>Upload Company Logo</p>
-                  {/* {!getUploadFileData ? (
-                    // <p>Upload Company Logo</p>
-                    <Avatar 
-                    style={{ width: "100%",
-                    height: "100%", display: "flex",alignItems: "center"}} 
-                    size="large">
-                      {companyDetail?.companyName?.substring(0, 2).toUpperCase()}
-                      </Avatar>
-                  ) : (
-                    <img
-                      style={{
-                        width: "145px",
-                        height: "145px",
-                        borderRadius: "50%",
-                      }}
-                      src={
-                        base64Image
-                          ? base64Image
-                          : NetworkInfo.PROTOCOL +
-                            NetworkInfo.DOMAIN +
-                            "Media/CompanyLogo/" +
-                            getUploadFileData
-                      }
-                      alt="preview"
-                    />
-                  )} */}
-                </div>
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <div style={{background:'var(--color-sunlight)',marginTop:'-25px',marginRight:'11px',display:'flex',padding:'2px',borderRadius:'50%',cursor:'pointer',zIndex:50}}>
-                       <EditSVG
-                  
-                    width={24}
-                    height={24}
-                    onClick={() => {}}
-                  /> 
-                    </div>
-                  
-                </div>
-              </div>
-            </div>
-            </div>
+
         </div>
+
         </div>
-        </div>
+      </div>
+       
     </div>
-  )
+  );
 }
 
-export default AddCompany
+export default AddCompany;
