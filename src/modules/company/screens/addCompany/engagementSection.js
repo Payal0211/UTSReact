@@ -7,7 +7,7 @@ import HRSelectField from "modules/hiring request/components/hrSelectField/hrSel
 import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
 import { useFieldArray, useForm } from "react-hook-form";
 import TextEditor from "shared/components/textEditor/textEditor";
-import { Checkbox, message, Select } from 'antd';
+import { Checkbox, message, Select, Radio } from 'antd';
 
 
 
@@ -16,6 +16,7 @@ function EngagementSection({ register, errors, setValue, watch }) {
     const [typeOfPricing,setTypeOfPricing] = useState(null)
     const [profileSharingOption,setProfileSharingOption] = useState(null)
     const [profileSharingOptionError,setProfileSharingOptionError] = useState(false);
+	const [pricingTypeError,setPricingTypeError] = useState(false);
 
     const [checkPayPer, setCheckPayPer] = useState({
 		companyTypeID:0,
@@ -182,24 +183,7 @@ function EngagementSection({ register, errors, setValue, watch }) {
                   </Checkbox>
 							  </div>
                 {creditError && <p className={AddNewClientStyle.error}>*Please select option</p>}
-                {/* {IsChecked?.isProfileView && 
-                  <div style={{display:'flex',flexDirection:'column',marginBottom:'20px',marginLeft: '270px', marginTop:"19px"}}> 
-                          <label style={{marginBottom:"12px"}}>
-                        Profile Sharing Options 
-                        <span className={AddNewClientStyle.reqField}>
-                          *
-                        </span>
-                      </label>
-                      <Radio.Group
-                        onChange={e=> {setProfileSharingOption(e.target.value);setProfileSharingOptionError(false)}}
-                        value={profileSharingOption}
-                        >
-                        <Radio value={true}>Vetted Profile</Radio>
-                        <Radio value={false}>Fast Profile</Radio>
-                      </Radio.Group>
-                          {profileSharingOptionError && <p style={{display:'flex',flexDirection:'column',marginTop:"15px"}} className={AddNewClientStyle.error}>*Please select profile sharing options</p>}
-                  </div>	
-                } */}
+               
                 <div className={AddNewClientStyle.row}>                  
                       {IsChecked?.isPostaJob ? 
                       <div className={AddNewClientStyle.colMd4} >
@@ -254,6 +238,32 @@ function EngagementSection({ register, errors, setValue, watch }) {
 							</div>
 						</div>
 					</>}
+
+                    <div className={AddNewClientStyle.row}>
+						<div className={AddNewClientStyle.colMd12}>
+							<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<label style={{marginBottom:"12px"}}>
+							Type Of Pricing 
+              <span className={AddNewClientStyle.reqField}>
+								*
+							</span>
+						</label>
+            {pricingTypeError && <p className={AddNewClientStyle.error}>*Please select pricing type</p>}	
+						<Radio.Group
+              disabled={
+                // userData?.LoggedInUserTypeID !== 1 ||
+                 checkPayPer?.anotherCompanyTypeID==0 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2) } 
+							onChange={e=> {setTypeOfPricing(e.target.value); setPricingTypeError && setPricingTypeError(false)}}
+							value={typeOfPricing}
+							>
+							<Radio value={1}>Transparent Pricing</Radio>
+							<Radio value={0}>Non Transparent Pricing</Radio>
+						</Radio.Group>
+							</div>
+				
+								
+						</div>
+					</div>
       </div>
 
       </div>
