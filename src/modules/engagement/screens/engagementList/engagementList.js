@@ -1005,6 +1005,7 @@ const EngagementList = () => {
 						<EngagementEnd
 							engagementListHandler={() => handleHRRequest({...tableFilteredState, searchText: searchText})}
 							talentInfo={filteredData}
+							lostReasons={filtersList?.onBoardingLostReasons}
 							closeModal={() =>
 								setEngagementModal({
 									...getEngagementModal,
