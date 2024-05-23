@@ -94,7 +94,7 @@ export const allEngagementConfig = {
 				isSearch: true,
 			},
 			{
-				label: 'Contract Lost Resons',
+				label: 'Contract Lost Reasons',
 				name: 'OnBoardLostReasons',
 				child: filterList?.onBoardingLostReasons,
 				isSearch: false,
