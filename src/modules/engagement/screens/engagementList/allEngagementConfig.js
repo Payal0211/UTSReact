@@ -93,6 +93,12 @@ export const allEngagementConfig = {
 				child: filterList?.lost,
 				isSearch: true,
 			},
+			{
+				label: 'Contract Lost Resons',
+				name: 'OnBoardLostReasons',
+				child: filterList?.onBoardingLostReasons,
+				isSearch: false,
+			},
 			// {
 			// 	label: 'Deployed Source',
 			// 	name: 'DeployedSource',
@@ -730,7 +736,14 @@ export const allEngagementConfig = {
 				key: 'replacementEng',
 				align: 'left',
 				width: '140px',
-			},			
+			},
+			{
+				title: 'Contract Lost Reason',
+				dataIndex: 'onBoardLostReason',
+				key: 'onBoardLostReason',
+				align: 'left',
+				width: '140px',
+			},		
 		];
 	},
 	clientFeedbackTypeConfig: (filterList) => {

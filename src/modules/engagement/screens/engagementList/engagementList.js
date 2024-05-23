@@ -663,7 +663,7 @@ const EngagementList = () => {
 
 						<div className={allEngagementStyles.priorityFilterSet}>
 							{/* <div className={allEngagementStyles.label}>Showing</div> */}
-							<div className={allEngagementStyles.paginationFilter} style={{marginRight:'10px', marginLeft:'10px'}}>
+							<div className={allEngagementStyles.paginationFilter} style={{marginRight:'30px', marginLeft:'10px'}}>
 							<button
 								className={allEngagementStyles.btnPrimary}
 								
