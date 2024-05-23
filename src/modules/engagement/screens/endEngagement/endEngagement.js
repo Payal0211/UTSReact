@@ -9,12 +9,13 @@ import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import 'react-datepicker/dist/react-datepicker.css';
 import { engagementRequestDAO } from 'core/engagement/engagementDAO';
 import { HTTPStatusCode } from 'constants/network';
+import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import moment from 'moment/moment';
 import { Skeleton } from 'antd';
 
-const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
+const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReasons }) => {
 	const {
 		register,
 		handleSubmit,
@@ -121,6 +122,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 				contractEndDate: d.lastWorkingDate,
 				reason: d.endEngagementReason,
 				fileName: getUploadFileData,
+				LostReasonID: +d.lostReason.id,
 				fileUpload: {
 					base64ProfilePic: base64File,
 					extenstion: getUploadFileData?.split('.')[1],
@@ -266,6 +268,25 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal }) => {
 				setValidation={setValidation}
 				getValidation={getValidation}
 			/>
+
+				<div className={allengagementEnd.row}>
+				<div className={allengagementEnd.colMd12}>
+				<HRSelectField
+                  setValue={setValue}
+                  mode={"id/value"}
+                  register={register}
+                  name="lostReason"
+                  label="Contract Lost Reason"
+                  defaultValue="Select Reason"
+                  options={lostReasons ? lostReasons.map(item=> ({id: item.value, value:item.text})) : []}
+                  required
+                  isError={
+                    errors["lostReason"] && errors["lostReason"]
+                  }
+                  errorMsg="Please select contract lost reason."
+                />
+				</div>
+				</div>
 			<div className={allengagementEnd.row}>
 				<div className={allengagementEnd.colMd12}>
 					<HRInputField

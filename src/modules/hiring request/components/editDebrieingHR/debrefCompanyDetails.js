@@ -12,7 +12,7 @@ export default function DebrefCompanyDetails({ register, errors, watch, getHRdet
     <Divider />
       <div className={DebriefingHRStyle.partOne}>
         <div className={DebriefingHRStyle.hrFieldLeftPane}>
-          <h3>Comapny Details</h3>
+          <h3>Company Details</h3>
         </div>
         <div className={DebriefingHRStyle.hrFieldRightPane}>
           <div className={DebriefingHRStyle.row}>
