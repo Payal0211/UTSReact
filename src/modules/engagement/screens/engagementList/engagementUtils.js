@@ -84,6 +84,7 @@ export const engagementUtils = {
 			payout_BillRate:item?.payout_BillRate,
 			payout_PayRate:item?.payout_PayRate,
 			replacementID:item?.replacementID,
+			onBoardLostReason:item?.onBoardLostReason
 		}));
 	},
 	getClientFeedbackColor: (color) => {
