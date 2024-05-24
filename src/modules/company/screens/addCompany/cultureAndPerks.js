@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AddNewClientStyle from "./addclient.module.css";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import { ReactComponent as DeleteIcon} from 'assets/svg/delete-yellow.svg'
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
@@ -9,7 +10,29 @@ import { useFieldArray, useForm } from "react-hook-form";
 import TextEditor from "shared/components/textEditor/textEditor";
 import { Checkbox, message } from 'antd';
 
-function CultureAndPerks({register,errors,setValue,watch}) {
+function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDetails,cultureDetails,companyDetails}) {
+    const [controlledperk, setControlledperk] = useState([]);
+    const [combinedPerkMemo, setCombinedPerkMemo] = useState([])
+   useEffect(()=>{
+    if(perkDetails?.length > 0){
+setValue('perksAndAdvantages',perkDetails.map(item=> ({
+    id: item,
+    value: item,
+})))
+setCombinedPerkMemo(perkDetails.map(item=> ({
+    id: item,
+    value: item,
+})))
+setControlledperk(perkDetails.map(item=> ({
+    id: item,
+    value: item,
+})))
+    }
+
+    if(companyDetails?.companyName){
+        companyDetails?.culture && setValue('culture',companyDetails?.culture)
+    }
+   },[perkDetails,companyDetails]) 
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
     <div className={AddNewClientStyle.tabsFormItemInner}>
@@ -25,8 +48,8 @@ function CultureAndPerks({register,errors,setValue,watch}) {
             register={register}
             setValue={setValue}
             // errors={errors}
-            // controlledValue={companyDetail?.aboutCompanyDesc}
-            // isControlled={true}
+            controlledValue={companyDetails?.culture ? companyDetails.culture : ''}
+            isControlled={true}
             isTextArea={true}
             label="Culture"
             name="culture"
@@ -130,6 +153,15 @@ function CultureAndPerks({register,errors,setValue,watch}) {
         </div>
         </div>
 
+        {cultureDetails?.length > 0 && <div className={AddNewClientStyle.row}>
+            {cultureDetails?.map(culture=> <div className={AddNewClientStyle.colMd4} key={culture.cultureID}>
+                <div className={AddNewClientStyle.cultureImageContainer}>
+                    <img src={culture.cultureImage} alt='culture' className={AddNewClientStyle.cultureImage} />
+                    <DeleteIcon  className={AddNewClientStyle.cultureDelete}/>
+                </div>
+            </div>)}
+            </div>}
+
         <div className={AddNewClientStyle.row}>
         <div className={AddNewClientStyle.colMd12}>
         <HRInputField
@@ -137,6 +169,12 @@ function CultureAndPerks({register,errors,setValue,watch}) {
                 // errors={errors}
                 label="Add YouTube links"
                 name="youtubeLink"
+                validationSchema={{
+                  pattern: {
+										value: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/,
+										message: 'Youtube link is not valid',
+									},
+                }}
                 type={InputType.TEXT}
                 onChangeHandler={(e) => {
                 }}
@@ -145,19 +183,36 @@ function CultureAndPerks({register,errors,setValue,watch}) {
         </div>
         </div>
 
+        {youTubeDetails?.length > 0 &&  <div className={AddNewClientStyle.row} >
+          {youTubeDetails.map(youtube=> <div className={AddNewClientStyle.colMd12} key={youtube.youtubeID}>
+                {/* <iframe
+  src={youtube.youtubeLink}
+  frameborder='0'
+  allow='autoplay; encrypted-media'
+  allowfullscreen
+  title='video'
+/> */}
+<div className={AddNewClientStyle.youTubeDetails}>
+  {youtube.youtubeLink}  <DeleteIcon style={{marginLeft:'10px',cursor:'pointer'}} />
+</div>
+                </div>)}
+                
+        </div>}
+
         <div className={AddNewClientStyle.row}>
         <div className={AddNewClientStyle.colMd12}>
         <HRSelectField
+        isControlled={true}
+        controlledValue={controlledperk}
+        setControlledValue={setControlledperk}
               setValue={setValue}
-              mode={"id/value"}
+              mode={'tags'}
               register={register}
               name="perksAndAdvantages"
               label="Company perks & advantages"
               defaultValue="Mention perks & advantages"
-              options={['1-10 emp','11-50 emp','51-200 emp'].map(item =>({
-                id: item,
-                value: item,
-            }))}
+              options={combinedPerkMemo}
+              setOptions={setCombinedPerkMemo}
             />
         </div>
         </div>

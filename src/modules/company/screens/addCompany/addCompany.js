@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AddNewClientStyle from "./addclient.module.css";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
@@ -8,15 +8,20 @@ import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
 import { useFieldArray, useForm } from "react-hook-form";
 import TextEditor from "shared/components/textEditor/textEditor";
 import { Checkbox, message } from 'antd';
-
+import { useNavigate, useParams } from 'react-router-dom'
+import { allCompanyRequestDAO } from "core/company/companyDAO";
 
 import CompanySection from "./companySection";
 import FundingSection from "./fundingSection";
 import CultureAndPerks from "./cultureAndPerks";
 import ClientSection from "./clientSection";
 import EngagementSection from "./engagementSection";
+import { HTTPStatusCode } from "constants/network";
 
 function AddCompany() {
+    const navigate = useNavigate()
+    const {companyID} = useParams()
+    const [getCompanyDetails,setCompanyDetails] = useState({})
   const {
     register,
     handleSubmit,
@@ -35,17 +40,41 @@ function AddCompany() {
     },
   });
 
+  const getDetails = async()=>{
+    const result = await allCompanyRequestDAO.getCompanyDetailDAO(companyID)
+    console.log("res",result)
+    if(result?.statusCode === HTTPStatusCode.OK){
+        setCompanyDetails(result?.responseBody)
+    }
+  }
+
+  useEffect(()=> {
+    if(companyID){
+        getDetails()
+    }
+
+  },[companyID])
+
+  const clientSubmitHandler = async (d) =>{
+console.log("data to send",d)
+  }
+  console.log("data to send",errors)
   return (
     <div className={AddNewClientStyle.addNewContainer}>
       <div className={AddNewClientStyle.addHRTitle}>
-        Add New Company/Client Details
+       {companyID ? 'Edit' : 'Add New'}  Company/Client Details
       </div>
 
-      <CompanySection register ={register} errors={errors} setValue={setValue} watch={watch} />
+      <CompanySection register ={register} errors={errors} setValue={setValue} watch={watch} companyDetails={getCompanyDetails?.basicDetails} />
 
-      <FundingSection register ={register} errors={errors} setValue={setValue} watch={watch} />
+      <FundingSection register ={register} errors={errors} setValue={setValue} watch={watch} companyDetails={getCompanyDetails?.basicDetails} fundingDetails={getCompanyDetails?.fundingDetails} />
 
-      <CultureAndPerks register ={register} errors={errors} setValue={setValue} watch={watch} /> 
+      <CultureAndPerks register ={register} errors={errors} setValue={setValue} watch={watch} 
+      companyDetails={getCompanyDetails?.basicDetails}  
+      cultureDetails={getCompanyDetails?.cultureDetails} 
+      youTubeDetails={getCompanyDetails?.youTubeDetails}
+      perkDetails={getCompanyDetails?.perkDetails} 
+      /> 
 
       <ClientSection register ={register} errors={errors} setValue={setValue} watch={watch} /> 
 
@@ -84,7 +113,24 @@ function AddCompany() {
       
     </div>
     </div>
+
+    <div className={AddNewClientStyle.formPanelAction}>
+				<button
+				
+					onClick={()=> navigate(-1)}
+					className={AddNewClientStyle.btn}>
+					Cancel
+				</button>
+				<button
+					// disabled={isLoading}
+					type="submit"
+					onClick={handleSubmit(clientSubmitHandler)}
+					className={AddNewClientStyle.btnPrimary}>
+					Save 
+				</button>
     </div>
+    </div>
+    
   );
 }
 

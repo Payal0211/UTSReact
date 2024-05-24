@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState, useCallback, useEffect} from "react";
 import AddNewClientStyle from "./addclient.module.css";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
@@ -7,9 +7,85 @@ import HRSelectField from "modules/hiring request/components/hrSelectField/hrSel
 import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
 import { useFieldArray, useForm } from "react-hook-form";
 import TextEditor from "shared/components/textEditor/textEditor";
+import UploadModal from "shared/components/uploadModal/uploadModal";
 import { Checkbox, message } from 'antd';
+import { HTTPStatusCode, NetworkInfo } from "constants/network";
 
-function CompanySection({register,errors,setValue,watch}) {
+function CompanySection({register,errors,setValue,watch,companyDetails}) {
+  const [getUploadFileData, setUploadFileData] = useState('');
+  const [base64Image, setBase64Image] = useState('');
+  const [showUploadModal, setUploadModal] = useState(false);
+
+  const [getValidation, setValidation] = useState({
+    systemFileUpload: "",
+    googleDriveFileUpload: "",
+    linkValidation: "",
+  });
+
+  useEffect(() => {
+    companyDetails?.companyLogo && setUploadFileData(companyDetails?.companyLogo)
+    companyDetails?.companyName && setValue('companyName', companyDetails?.companyName)
+    companyDetails?.website && setValue('companyURL',companyDetails?.website)
+    companyDetails?.foundedYear  && setValue('foundedIn', companyDetails?.foundedYear)
+     setValue('teamSize', companyDetails?.teamSize)
+    companyDetails?.companyType && setValue('companyType', companyDetails?.companyType)
+    companyDetails?.headquaters && setValue('headquaters', companyDetails?.headquaters)
+    companyDetails?.aboutCompany && setValue('aboutCompany', companyDetails?.aboutCompany)
+    companyDetails?.companyIndustry && setValue('industry', companyDetails?.companyIndustry)
+    
+  },[companyDetails])
+
+  const convertToBase64 = useCallback((file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  }, []);
+
+  const uploadFileHandler = useCallback(
+    async (e) => {
+      // setIsLoading(true);
+      let fileData = e.target.files[0];
+      if (
+        fileData?.type !== "image/png" &&
+        fileData?.type !== "image/jpeg" &&
+        fileData?.type !== "image/svg+xml"
+      ) {
+        setValidation({
+          ...getValidation,
+          systemFileUpload:
+            "Uploaded file is not a valid, Only jpg, jpeg, png, svg files are allowed",
+        });
+        // setIsLoading(false);
+      } else if (fileData?.size >= 500000) {
+        setValidation({
+          ...getValidation,
+          systemFileUpload:
+            "Upload file size more than 500kb, Please Upload file upto 500kb",
+        });
+        // setIsLoading(false);
+      } else {
+        const base64 = await convertToBase64(fileData);
+
+        setValidation({
+          ...getValidation,
+          systemFileUpload: "",
+        });
+        // setIsLoading(false);
+        setBase64Image(base64);
+        setUploadFileData(fileData.name);
+        setUploadModal(false);
+      }
+    },
+    [convertToBase64, getValidation, setBase64Image, setUploadFileData]
+  );
+
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
         <div className={AddNewClientStyle.tabsFormItemInner}>
@@ -44,15 +120,14 @@ function CompanySection({register,errors,setValue,watch}) {
                     }}
                   >
                     {" "}
+                    {!getUploadFileData ? (
                     <p>Upload Company Logo</p>
-                    {/* {!getUploadFileData ? (
-                    // <p>Upload Company Logo</p>
-                    <Avatar 
-                    style={{ width: "100%",
-                    height: "100%", display: "flex",alignItems: "center"}} 
-                    size="large">
-                      {companyDetail?.companyName?.substring(0, 2).toUpperCase()}
-                      </Avatar>
+                    // <Avatar 
+                    // style={{ width: "100%",
+                    // height: "100%", display: "flex",alignItems: "center"}} 
+                    // size="large">
+                    //   {companyDetail?.companyName?.substring(0, 2).toUpperCase()}
+                    //   </Avatar>
                   ) : (
                     <img
                       style={{
@@ -60,17 +135,22 @@ function CompanySection({register,errors,setValue,watch}) {
                         height: "145px",
                         borderRadius: "50%",
                       }}
+                      // src={
+                      //   base64Image
+                      //     ? base64Image
+                      //     : NetworkInfo.PROTOCOL +
+                      //       NetworkInfo.DOMAIN +
+                      //       "Media/CompanyLogo/" +
+                      //       getUploadFileData
+                      // }
                       src={
                         base64Image
                           ? base64Image
-                          : NetworkInfo.PROTOCOL +
-                            NetworkInfo.DOMAIN +
-                            "Media/CompanyLogo/" +
-                            getUploadFileData
+                          : getUploadFileData
                       }
                       alt="preview"
                     />
-                  )} */}
+                  )}
                   </div>
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <div
@@ -85,7 +165,7 @@ function CompanySection({register,errors,setValue,watch}) {
                         zIndex: 50,
                       }}
                     >
-                      <EditSVG width={24} height={24} onClick={() => {}} />
+                      <EditSVG width={24} height={24} onClick={() => setUploadModal(true)} />
                     </div>
                   </div>
                 </div>
@@ -172,26 +252,27 @@ function CompanySection({register,errors,setValue,watch}) {
               </div>
 
               <div className={AddNewClientStyle.colMd6}>
-              <HRSelectField
-                //   isControlled={true}
-                //   controlledValue={controlledCompanyLoacation}
-                //   setControlledValue={setControlledCompanyLoacation}
-                  setValue={setValue}
-                  mode={"id/value"}
-                  register={register}
-                  name="teamSize"
+              <HRInputField
+                    register={register}
+                    errors={errors}
+                    name="teamSize"
                   label="Team Size"
-                  defaultValue="Select team size"
-                  options={['1-10 emp','11-50 emp','51-200 emp'].map(item =>({
-                    id: item,
-                    value: item,
-                }))}
-                  required
-                  isError={
-                    errors["teamSize"] && errors["teamSize"]
-                  }
-                  errorMsg="Please select a team size."
-                />
+                    type={InputType.NUMBER}
+                    validationSchema={{
+                      required: "Please enter the team size.",
+                      min: {
+                        value: 1,
+                        message: `please don't enter the value less than 1`,
+                      },
+                    }}
+                    onChangeHandler={(e) => {
+                      // setCompanyName(e.target.value);
+                      // debounceDuplicateCompanyName(e.target.value);
+                    }}
+                    placeholder="Enter team size"
+                    required
+                  />
+            
               </div>
             </div>
 
@@ -272,8 +353,8 @@ function CompanySection({register,errors,setValue,watch}) {
                 register={register}
                 setValue={setValue}
                 // errors={errors}
-                // controlledValue={companyDetail?.aboutCompanyDesc}
-                // isControlled={true}
+                controlledValue={companyDetails?.aboutCompany}
+                isControlled={true}
                 isTextArea={true}
                 label="About Company"
                 name="aboutCompany"
@@ -284,6 +365,18 @@ function CompanySection({register,errors,setValue,watch}) {
               />
               </div>
             </div>
+
+            {showUploadModal && (
+              <UploadModal
+                isFooter={false}
+                uploadFileHandler={uploadFileHandler}
+                modalTitle={"Upload Logo"}
+                openModal={showUploadModal}
+                cancelModal={() => setUploadModal(false)}
+                setValidation={setValidation}
+                getValidation={getValidation}
+              />
+            )}
 
           </div>
         </div>

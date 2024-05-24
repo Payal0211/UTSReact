@@ -22,6 +22,7 @@ export class SubDomain {
 	static VIEW_ALL_HR = 'ViewAllHR/';
 	static MASTERS = 'MastersAPI/';
 	static CLIENT = 'Client/';
+	static COMPANY = 'Company/'
 	static CLIENT_REPORT = 'ClientReport/';
 	static HR_REPORT = 'HRReport/';
 	static HIRING = 'Hiring/';
@@ -54,6 +55,10 @@ export class APIType {
 export class DirectHR {
 	static GET_MASTER_FOR_DIRECTHR = 'GetMastersForDirectHR'
 	static GET_HR_DETAILS =  'GetDetail'
+}
+
+export class CompanysAPI {
+	static GET_DETAILS = 'GetDetails'
 }
 export class MethodType {
 	static GET = '/get';
