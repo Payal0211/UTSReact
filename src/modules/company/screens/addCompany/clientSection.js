@@ -10,7 +10,7 @@ import {
 } from 'modules/client/clientUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 
-function ClientSection({ register, errors, setValue, watch }) {
+function ClientSection({ register, errors, setValue, watch ,fields, append, remove,contactDetails}) {
     const [flagAndCode, setFlagAndCode] = useState([]);
 
     const getCodeAndFlag = async () => {
@@ -19,6 +19,24 @@ function ClientSection({ register, errors, setValue, watch }) {
 			getCodeAndFlagResponse && getCodeAndFlagResponse.responseBody,
 		);
 	};
+
+  useEffect(()=>{
+    if(contactDetails?.length){
+      let primaryclient = contactDetails[0]
+
+      primaryclient?.fullName && setValue('clientName',primaryclient?.fullName)
+      primaryclient?.emailID && setValue('clientEmailID',primaryclient?.emailID)
+      primaryclient?.designation && setValue('clientDesignation',primaryclient?.designation)
+      if(primaryclient?.contactNo){
+        console.log('cc',primaryclient?.contactNo?.slice(0,3))
+        if(primaryclient?.contactNo.includes('+91')){
+          setValue('primaryClientPhoneNumber',primaryclient?.contactNo?.slice(3))
+        }else{
+          setValue('primaryClientPhoneNumber',primaryclient?.contactNo)
+        }								
+      }
+    }
+  },[contactDetails])
 
 	const flagAndCodeMemo = useMemo(
 		() => getFlagAndCodeOptions(flagAndCode),

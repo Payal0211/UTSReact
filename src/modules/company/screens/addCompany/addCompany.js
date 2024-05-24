@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import AddNewClientStyle from "./addclient.module.css";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
@@ -17,11 +17,16 @@ import CultureAndPerks from "./cultureAndPerks";
 import ClientSection from "./clientSection";
 import EngagementSection from "./engagementSection";
 import { HTTPStatusCode } from "constants/network";
+import { MasterDAO } from "core/master/masterDAO";
 
 function AddCompany() {
     const navigate = useNavigate()
     const {companyID} = useParams()
     const [getCompanyDetails,setCompanyDetails] = useState({})
+    const [ getValuesForDD , setValuesForDD ] = useState({})
+    const [allPocs, setAllPocs] = useState([])
+    const [controlledPOC, setControlledPOC] = useState([]);
+
   const {
     register,
     handleSubmit,
@@ -36,9 +41,14 @@ function AddCompany() {
   } = useForm({
     defaultValues: {
       secondaryClient: [],
-      pocList: [],
+      fundingList: [],
     },
   });
+
+  const { fields, append, remove } = useFieldArray({
+		control,
+		name: 'secondaryClient',
+	});
 
   const getDetails = async()=>{
     const result = await allCompanyRequestDAO.getCompanyDetailDAO(companyID)
@@ -48,12 +58,41 @@ function AddCompany() {
     }
   }
 
+  const getAllValuesForDD = useCallback(async () => {
+    const getDDResponse = await MasterDAO.getFixedValueRequestDAO();
+    setValuesForDD(getDDResponse && getDDResponse?.responseBody);
+  }, []);
+
+  const getAllSalesPerson = useCallback(async () => {
+    const allSalesResponse = await MasterDAO.getSalesManRequestDAO()
+    setAllPocs(allSalesResponse && allSalesResponse?.responseBody?.details)
+  },[])
+
+  useEffect(() => {
+    getAllValuesForDD()
+    getAllSalesPerson()
+  },[])
+
   useEffect(()=> {
     if(companyID){
         getDetails()
     }
 
   },[companyID])
+
+  useEffect(()=> {
+    if(getCompanyDetails?.pocUserIds?.length && allPocs?.length){
+      let SelectedPocs = getCompanyDetails?.pocUserIds.map(pocId=> {
+        let data = allPocs.find(item=> item.id === pocId)
+        return {
+          id:data.id,
+          value:data.value
+        }
+      })
+      setValue('uplersPOCname',SelectedPocs)
+      setControlledPOC(SelectedPocs)
+    }
+  },[getCompanyDetails?.pocUserIds,allPocs])
 
   const clientSubmitHandler = async (d) =>{
 console.log("data to send",d)
@@ -76,9 +115,9 @@ console.log("data to send",d)
       perkDetails={getCompanyDetails?.perkDetails} 
       /> 
 
-      <ClientSection register ={register} errors={errors} setValue={setValue} watch={watch} /> 
+      <ClientSection register ={register} errors={errors} setValue={setValue} watch={watch} fields={fields} append={append} remove={remove} contactDetails={getCompanyDetails?.contactDetails}  /> 
 
-    <EngagementSection register ={register} errors={errors} setValue={setValue} watch={watch} />
+    <EngagementSection register ={register} errors={errors} setValue={setValue} watch={watch} engagementDetails={getCompanyDetails?.engagementDetails} />
 
     <div className={AddNewClientStyle.tabsFormItem}>
     <div className={AddNewClientStyle.tabsFormItemInner}>
@@ -90,16 +129,16 @@ console.log("data to send",d)
         <div className={AddNewClientStyle.row}>
         <div className={AddNewClientStyle.colMd12}>
         <HRSelectField
+          isControlled={true}
+          controlledValue={controlledPOC}
+          setControlledValue={setControlledPOC}
               setValue={setValue}
-              mode={"id/value"}
+              mode={'multiple'}
               register={register}
               name="uplersPOCname"
               label="Uplers's POC name"
               defaultValue="Enter POC name"
-              options={['1-10 emp','11-50 emp','51-200 emp'].map(item =>({
-                id: item,
-                value: item,
-            }))}
+              options={allPocs}
             required
             isError={
               errors["uplersPOCname"] && errors["uplersPOCname"]

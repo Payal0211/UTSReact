@@ -9,7 +9,13 @@ import { useFieldArray, useForm } from "react-hook-form";
 import TextEditor from "shared/components/textEditor/textEditor";
 import { Checkbox, message, Select, Radio } from "antd";
 
-function EngagementSection({ register, errors, setValue, watch }) {
+function EngagementSection({
+  register,
+  errors,
+  setValue,
+  watch,
+  engagementDetails,
+}) {
   const [payPerError, setPayPerError] = useState(false);
   const [typeOfPricing, setTypeOfPricing] = useState(null);
   const [profileSharingOption, setProfileSharingOption] = useState(null);
@@ -30,6 +36,45 @@ function EngagementSection({ register, errors, setValue, watch }) {
 
   let _currency = watch("creditCurrency");
 
+  useEffect(() => {
+    engagementDetails?.companyTypeID &&
+      setCheckPayPer({
+        ...checkPayPer,
+        companyTypeID: engagementDetails?.companyTypeID,
+      });
+
+    engagementDetails?.creditCurrency &&
+      setValue("creditCurrency", engagementDetails?.creditCurrency);
+    engagementDetails?.creditAmount &&
+      setValue("creditAmount", engagementDetails?.creditAmount);
+    engagementDetails?.jpCreditBalance &&
+      setValue("freeCredit", engagementDetails?.jpCreditBalance);
+
+    if (engagementDetails?.companyID) {
+      setIsChecked({
+        isPostaJob: engagementDetails?.isPostaJob,
+        isProfileView: engagementDetails?.isProfileView,
+      });
+      if (engagementDetails?.isPostaJob) {
+        engagementDetails?.jobPostCredit &&
+          setValue("jobPostCredit", engagementDetails?.jobPostCredit);
+      }
+
+      if (engagementDetails?.isProfileView) {
+        engagementDetails?.vettedProfileViewCredit &&
+          setValue(
+            "vettedProfileViewCredit",
+            engagementDetails?.vettedProfileViewCredit
+          );
+        engagementDetails?.nonVettedProfileViewCredit &&
+          setValue(
+            "nonVettedProfileViewCredit",
+            engagementDetails?.nonVettedProfileViewCredit
+          );
+      }
+    }
+  }, [engagementDetails]);
+
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
       <div className={AddNewClientStyle.tabsFormItemInner}>
@@ -39,7 +84,7 @@ function EngagementSection({ register, errors, setValue, watch }) {
 
         <div className={AddNewClientStyle.tabsRightPanel}>
           <div className={AddNewClientStyle.row}>
-            <div className={AddNewClientStyle.colMd12}>
+            <div className={AddNewClientStyle.colMd6}>
               <div
                 style={{
                   display: "flex",
@@ -95,13 +140,55 @@ function EngagementSection({ register, errors, setValue, watch }) {
                 </div>
               </div>
             </div>
+
+            <div className={AddNewClientStyle.colMd6}>
+              {!(
+                checkPayPer?.anotherCompanyTypeID == 0 &&
+                (checkPayPer?.companyTypeID == 0 ||
+                  checkPayPer?.companyTypeID == 2)
+              ) && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginBottom: "32px",
+                  }}
+                >
+                  <label style={{ marginBottom: "12px" }}>
+                    Type Of Pricing
+                    <span className={AddNewClientStyle.reqField}>*</span>
+                  </label>
+                  {pricingTypeError && (
+                    <p className={AddNewClientStyle.error}>
+                      *Please select pricing type
+                    </p>
+                  )}
+                  <Radio.Group
+                    disabled={
+                      // userData?.LoggedInUserTypeID !== 1 ||
+                      checkPayPer?.anotherCompanyTypeID == 0 &&
+                      (checkPayPer?.companyTypeID == 0 ||
+                        checkPayPer?.companyTypeID == 2)
+                    }
+                    onChange={(e) => {
+                      setTypeOfPricing(e.target.value);
+                      setPricingTypeError && setPricingTypeError(false);
+                    }}
+                    value={typeOfPricing}
+                  >
+                    <Radio value={1}>Transparent Pricing</Radio>
+                    <Radio value={0}>Non Transparent Pricing</Radio>
+                  </Radio.Group>
+                </div>
+              )}
+            </div>
           </div>
 
           {checkPayPer?.companyTypeID !== 0 &&
             checkPayPer?.companyTypeID !== null && (
               <>
                 <div className={AddNewClientStyle.row}>
-                <div className={AddNewClientStyle.colMd6}>
+                  <div className={AddNewClientStyle.colMd6}>
                     <label className={AddNewClientStyle.label}>
                       Currency
                       <span className={AddNewClientStyle.reqField}>*</span>
@@ -189,7 +276,7 @@ function EngagementSection({ register, errors, setValue, watch }) {
                         }}
                         // label={`Free Credits Balance Credit : ${companyDetail?.jpCreditBalance}`}
                         name={"freeCredit"}
-                        label='Free Credit'
+                        label="Free Credit"
                         type={InputType.NUMBER}
                         placeholder="Enter number of free credits"
                         required={
@@ -321,49 +408,6 @@ function EngagementSection({ register, errors, setValue, watch }) {
                 </div>
               </>
             )}
-
-          {!(
-            checkPayPer?.anotherCompanyTypeID == 0 &&
-            (checkPayPer?.companyTypeID == 0 || checkPayPer?.companyTypeID == 2)
-          ) && (
-            <div className={AddNewClientStyle.row}>
-              <div className={AddNewClientStyle.colMd12}>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    marginBottom: "32px",
-                  }}
-                >
-                  <label style={{ marginBottom: "12px" }}>
-                    Type Of Pricing
-                    <span className={AddNewClientStyle.reqField}>*</span>
-                  </label>
-                  {pricingTypeError && (
-                    <p className={AddNewClientStyle.error}>
-                      *Please select pricing type
-                    </p>
-                  )}
-                  <Radio.Group
-                    disabled={
-                      // userData?.LoggedInUserTypeID !== 1 ||
-                      checkPayPer?.anotherCompanyTypeID == 0 &&
-                      (checkPayPer?.companyTypeID == 0 ||
-                        checkPayPer?.companyTypeID == 2)
-                    }
-                    onChange={(e) => {
-                      setTypeOfPricing(e.target.value);
-                      setPricingTypeError && setPricingTypeError(false);
-                    }}
-                    value={typeOfPricing}
-                  >
-                    <Radio value={1}>Transparent Pricing</Radio>
-                    <Radio value={0}>Non Transparent Pricing</Radio>
-                  </Radio.Group>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
