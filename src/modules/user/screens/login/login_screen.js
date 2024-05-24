@@ -97,9 +97,9 @@ const LoginScreen = () => {
 	return (
 		<Fragment>
 			{contextHolder}
-			<WithLoader
+			{/* <WithLoader
 				className="mainLoader"
-				showLoader={isLoading}>
+				showLoader={isLoading}> */}
 				<div className={loginStyle.loginContainer}>
 					<div className={loginStyle.loginColumn_1}>
 						<div className={loginStyle.loginColumn_1_Body}>
@@ -231,7 +231,7 @@ const LoginScreen = () => {
                 </div>                
             </div>            
             </Modal>          
-			</WithLoader>
+			{/* </WithLoader> */}
 		</Fragment>
 	);
 };
