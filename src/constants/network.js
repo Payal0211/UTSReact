@@ -296,6 +296,7 @@ export class HiringRequestsAPI {
 	static SYNC_HR_UTS_TO_ATS  = 'SyncHRUtsToAts'
 	static GET_ACTION_UPDATES = 'GetUpdateHRDetails'
 	static CLOSE_ACTION_History = 'GetHRCloseActionHistory'
+	static DELETE_TEST_HR = 'DeleteTestHR'
 	static GET_SALES_USER_WITH_HEAD_AFTER_HRCREATE = "GetSalesUserWithHeadAfterHRCreate";
 }
 
