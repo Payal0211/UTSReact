@@ -438,8 +438,9 @@ const DebriefingHR = ({
 			},
 			companyType: userCompanyTypeID === 1 ? "Pay Per Hire" : "Pay Per Credit",
 			PayPerType:  userCompanyTypeID ,
+			IsMustHaveSkillschanged : true,
+			IsGoodToHaveSkillschanged: true
 		};
-
 		if(userCompanyTypeID === 2){
 			debriefFormDetails['companyInfo'] = {
 				"companyID": getHRdetails?.companyInfo?.companyID,
