@@ -152,6 +152,47 @@ export class HttpServices {
 		}
 	}
 
+		/**
+	 * @Function SEND_GET_REQUEST_FILE_DOWNLOAD()
+	 * @Methods axios.POST()
+	 * @Returns An Object
+	 */
+
+		async sendPostRequestForDownloadFile() {
+			try {
+				const response = await axios.post(this._URL,this._dataToSend, {
+					responseType : 'blob',
+					headers: {
+						'Content-Type': this._contentType,
+						Authorization: this._isAuthRequired && this._authToken,
+					},
+				});
+				if(response?.status === 401){
+					localStorage.clear();
+					window.location.reload();
+					return
+				}
+				return {
+					statusCode: response.status,
+					responseBody: response.data,
+				};
+			} catch (error) {
+				const errorResult = errorDebug(
+					error.response.data,
+					'httpServices.sendGetRequest()',
+				);
+				if(errorResult?.statusCode === 401){
+					localStorage.clear();
+					window.location.reload();
+					return
+				}
+				return {
+					statusCode: errorResult.statusCode,
+					responseBody: errorResult.responseBody,
+				};
+			}
+		}
+
 	async sendGetRequestWithErrData() {
 		try {
 			const response = await axios.get(this._URL, {
