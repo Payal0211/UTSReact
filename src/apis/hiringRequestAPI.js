@@ -835,6 +835,19 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.syncUTSTOATS');
 		}
 	},
+	deleteHRRequestAPI: async (hrID) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.DELETE_TEST_HR + `?hrId=${hrID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.deleteHRRequestAPI');
+		}
+	},
 	getRemainingPriorityCount: async () => {
 		let httpService = new HttpServices();
 		httpService.URL =

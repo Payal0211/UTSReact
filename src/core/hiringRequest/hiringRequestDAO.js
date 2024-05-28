@@ -1395,6 +1395,36 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.syncUTSTOATSRequestDAO()');
 		}
 	},
+	deleteHRRequestDAO: async (hrID) => {
+		try {
+			const syncResponse = await HiringRequestAPI.deleteHRRequestAPI(hrID);
+
+			if (syncResponse) {
+				const statusCode = syncResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = syncResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return syncResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return syncResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.deleteHRRequestDAO()');
+		}
+	},
 	getRemainingPriorityCountDAO: async () => {
 		try {
 			const getPriorityCount =

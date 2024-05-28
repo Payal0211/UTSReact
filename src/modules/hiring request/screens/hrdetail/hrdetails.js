@@ -6,6 +6,7 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import HRDetailStyle from './hrdetail.module.css';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { ReactComponent as PowerSVG } from 'assets/svg/power.svg';
+import { ReactComponent as Trash } from 'assets/svg/trash.svg';
 import UTSRoutes from 'constants/routes';
 import { HTTPStatusCode } from 'constants/network';
 import WithLoader from 'shared/components/loader/loader';
@@ -263,6 +264,17 @@ const togglePriority = useCallback(
 		setLoading(false);
 	}
 
+	const deleteHR = async ()=>{
+		setLoading(true)
+		const result = await hiringRequestDAO.deleteHRRequestDAO(apiData?.HR_Id)
+
+		if(result.statusCode === HTTPStatusCode.OK){
+			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+			setLoading(false);
+		}
+		setLoading(false);
+	}
+
 	const editHR = () => {
 		navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 		localStorage.setItem('hrID', apiData?.HR_Id);
@@ -319,6 +331,9 @@ const togglePriority = useCallback(
 							{apiData?.AllowSpecialEdit && (<div onClick={()=> editHR()}>
 							<EditSVG style={{ fontSize: '16px' }} />{' '}
 							<span className={HRDetailStyle.btnLabel}>Edit HR</span></div>)}
+
+						{/* Delete HR CTA */}
+						{apiData?.AllowHRDelete && <Tooltip title={'Delete HR'} placement="bottom" ><div className={HRDetailStyle.hiringRequestPriority} onClick={()=>deleteHR()}><Trash width="17" height="16" style={{ fontSize: '16px' }} /></div></Tooltip> }
 					</div>
 				
 					<div className={HRDetailStyle.hrDetailsRightPart}>
