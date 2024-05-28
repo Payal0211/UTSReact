@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
 import AddNewClientStyle from "./addclient.module.css";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
-import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
 import { useFieldArray, useForm } from "react-hook-form";
 import TextEditor from "shared/components/textEditor/textEditor";
-import { Checkbox, message } from 'antd';
-import { useNavigate, useParams } from 'react-router-dom'
+import { Checkbox, message } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 
 import CompanySection from "./companySection";
@@ -20,12 +20,26 @@ import { HTTPStatusCode } from "constants/network";
 import { MasterDAO } from "core/master/masterDAO";
 
 function AddCompany() {
-    const navigate = useNavigate()
-    const {companyID} = useParams()
-    const [getCompanyDetails,setCompanyDetails] = useState({})
-    const [ getValuesForDD , setValuesForDD ] = useState({})
-    const [allPocs, setAllPocs] = useState([])
-    const [controlledPOC, setControlledPOC] = useState([]);
+  const navigate = useNavigate();
+  const { companyID } = useParams();
+  const [getCompanyDetails, setCompanyDetails] = useState({});
+  const [getValuesForDD, setValuesForDD] = useState({});
+  const [allPocs, setAllPocs] = useState([]);
+  const [controlledPOC, setControlledPOC] = useState([]);
+  const [isSelfFunded,setIsSelfFunded] = useState(false)
+  const [pricingTypeError, setPricingTypeError] = useState(false);
+
+
+  // engagement Values 
+  const [typeOfPricing, setTypeOfPricing] = useState(null);
+  const [checkPayPer, setCheckPayPer] = useState({
+    companyTypeID: 0,
+    anotherCompanyTypeID: 0,
+  });
+  const [IsChecked, setIsChecked] = useState({
+    isPostaJob: false,
+    isProfileView: false,
+  });
 
   const {
     register,
@@ -40,23 +54,28 @@ function AddCompany() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      secondaryClient: [],
+      clientDetails: [],
       fundingList: [],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
-		control,
-		name: 'secondaryClient',
-	});
+    control,
+    name: "clientDetails",
+  });
 
-  const getDetails = async()=>{
-    const result = await allCompanyRequestDAO.getCompanyDetailDAO(companyID)
-    console.log("res",result)
-    if(result?.statusCode === HTTPStatusCode.OK){
-        setCompanyDetails(result?.responseBody)
+  const { fields:fundingFields, append:appendFunding, remove:removeFunding } = useFieldArray({
+    control,
+    name: "fundingDetails",
+  });
+
+  const getDetails = async () => {
+    const result = await allCompanyRequestDAO.getCompanyDetailDAO(companyID);
+  
+    if (result?.statusCode === HTTPStatusCode.OK) {
+      setCompanyDetails(result?.responseBody);
     }
-  }
+  };
 
   const getAllValuesForDD = useCallback(async () => {
     const getDDResponse = await MasterDAO.getFixedValueRequestDAO();
@@ -64,112 +83,245 @@ function AddCompany() {
   }, []);
 
   const getAllSalesPerson = useCallback(async () => {
-    const allSalesResponse = await MasterDAO.getSalesManRequestDAO()
-    setAllPocs(allSalesResponse && allSalesResponse?.responseBody?.details)
-  },[])
+    const allSalesResponse = await MasterDAO.getSalesManRequestDAO();
+    setAllPocs(allSalesResponse && allSalesResponse?.responseBody?.details);
+  }, []);
 
   useEffect(() => {
-    getAllValuesForDD()
-    getAllSalesPerson()
-  },[])
+    getAllValuesForDD();
+    getAllSalesPerson();
+  }, []);
 
-  useEffect(()=> {
-    if(companyID){
-        getDetails()
+  useEffect(() => {
+    if (companyID !== 0) {
+      getDetails();
+    }else{
+      setCompanyDetails({basicDetails:{
+        "companyID": 0,
+        "companyName": "",
+        "companyLogo": "",
+        "websiteUrl": "",
+        "foundedYear": "",
+        "companySize": "",
+        "companyType": "",
+        "industry": "",
+        "headquaters": "",
+        "aboutCompanyDesc": "",
+        "culture": "",
+        "isSelfFunded": true
+    },
+    cultureDetails:[],
+    youTubeDetails:[]})
     }
+  }, [companyID]);
 
-  },[companyID])
-
-  useEffect(()=> {
-    if(getCompanyDetails?.pocUserIds?.length && allPocs?.length){
-      let SelectedPocs = getCompanyDetails?.pocUserIds.map(pocId=> {
-        let data = allPocs.find(item=> item.id === pocId)
+  useEffect(() => {
+    if (getCompanyDetails?.pocUserIds?.length && allPocs?.length) {
+      let SelectedPocs = getCompanyDetails?.pocUserIds.map((pocId) => {
+        let data = allPocs.find((item) => item.id === pocId);
         return {
-          id:data.id,
-          value:data.value
-        }
-      })
-      setValue('uplersPOCname',SelectedPocs)
-      setControlledPOC(SelectedPocs)
+          id: data.id,
+          value: data.value,
+        };
+      });
+      setValue("uplersPOCname", SelectedPocs);
+      setControlledPOC(SelectedPocs);
     }
-  },[getCompanyDetails?.pocUserIds,allPocs])
+  }, [getCompanyDetails?.pocUserIds, allPocs]);
 
-  const clientSubmitHandler = async (d) =>{
-console.log("data to send",d)
-  }
-  console.log("data to send",errors)
+  const clientSubmitHandler = async (d) => {
+
+    if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
+			setPricingTypeError(true)
+			return
+		}
+
+    // check for at lest one admin client
+    let isAdmin = false
+
+    d.clientDetails.map((client) => {
+      if(client.roleID === 1){
+        isAdmin = true
+      }
+    })
+
+    if(!isAdmin){
+      message.error(" Please Select a client as Admin")
+      return
+    }
+
+    let modClientDetails = d.clientDetails.map((client) =>({
+      "clientID": client.id,
+      "en_Id": client.en_Id,
+      "isPrimary": client.isPrimary,
+      "fullName": client.fullName,
+      "emailId": client.emailID,
+      "designation": client.designation,
+      "phoneNumber": client.countryCode+ client.contactNo,
+      "accessRoleId": client.roleID
+    }))
+
+    let modCultureDetails = getCompanyDetails?.cultureDetails.map((culture) =>({
+      cultureID:culture.cultureID,
+      culture_Image: culture.cultureImage
+    }))
+    let payload = {
+      "basicDetails": {
+        "companyID": companyID,
+        "companyName": d.companyName,
+        "companyLogo": getCompanyDetails?.basicDetails?.companyLogo,
+        "websiteUrl": d.companyURL,
+        "foundedYear": d.foundedIn,
+        "companySize": +d.teamSize,
+        "companyType": d.companyType,
+        "industry": d.industry,
+        "headquaters": d.headquaters,
+        "aboutCompanyDesc": d.aboutCompany,
+        "culture": d.culture,
+        "isSelfFunded": isSelfFunded
+      },
+      "fundingDetails": d.fundingDetails,
+      "cultureDetails": modCultureDetails,
+      "perkDetails": d.perksAndAdvantages?.map(it=> it.value),
+      "youTubeDetails": getCompanyDetails?.youTubeDetails,
+      "clientDetails": modClientDetails,
+      "engagementDetails": {
+        "companyTypeID": checkPayPer?.companyTypeID,
+        "anotherCompanyTypeID": checkPayPer?.anotherCompanyTypeID,
+        "isPostaJob": IsChecked.isPostaJob,
+        "isProfileView": IsChecked.isProfileView,
+        "jpCreditBalance": d.freeCredit,
+        "isTransparentPricing": typeOfPricing === 1 ? true :  typeOfPricing === 0 ?  false : null,
+        "isVettedProfile": true,
+        "creditAmount": d.creditAmount,
+        "creditCurrency": d.creditCurrency,
+        "jobPostCredit": d.jobPostCredit,
+        "vettedProfileViewCredit": d.vettedProfileViewCredit,
+        "nonVettedProfileViewCredit": d.nonVettedProfileViewCredit,
+        "hiringTypePricingId": d.hiringPricingType?.id
+      },
+      "pocIds": d.uplersPOCname?.map(poc=> poc.id)
+    }
+
+
+    console.log("plaod",payload)
+
+    let submitresult = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
+console.log("submited res",submitresult)
+    if(submitresult?.statusCode === HTTPStatusCode.OK){
+
+    }
+  };
+  console.log("data errors", errors);
   return (
     <div className={AddNewClientStyle.addNewContainer}>
       <div className={AddNewClientStyle.addHRTitle}>
-       {companyID ? 'Edit' : 'Add New'}  Company/Client Details
+        {companyID !== '0' ? "Edit" : "Add New"} Company/Client Details
       </div>
 
-      <CompanySection register ={register} errors={errors} setValue={setValue} watch={watch} companyDetails={getCompanyDetails?.basicDetails} />
+      <CompanySection
+        register={register}
+        errors={errors}
+        setValue={setValue}
+        watch={watch}
+        companyDetails={getCompanyDetails?.basicDetails}
+        setCompanyDetails={setCompanyDetails}
+      />
 
-      <FundingSection register ={register} errors={errors} setValue={setValue} watch={watch} companyDetails={getCompanyDetails?.basicDetails} fundingDetails={getCompanyDetails?.fundingDetails} />
+      <FundingSection
+        register={register}
+        errors={errors}
+        setValue={setValue}
+        watch={watch}
+        companyDetails={getCompanyDetails?.basicDetails}
+        fundingDetails={getCompanyDetails?.fundingDetails}
+        isSelfFunded={isSelfFunded} 
+        setIsSelfFunded={setIsSelfFunded}
+        fields={fundingFields}
+        append={appendFunding}
+        remove={removeFunding}   
+      />
 
-      <CultureAndPerks register ={register} errors={errors} setValue={setValue} watch={watch} 
-      companyDetails={getCompanyDetails?.basicDetails}  
-      cultureDetails={getCompanyDetails?.cultureDetails} 
-      youTubeDetails={getCompanyDetails?.youTubeDetails}
-      perkDetails={getCompanyDetails?.perkDetails} 
-      /> 
+      <CultureAndPerks
+        register={register}
+        errors={errors}
+        setValue={setValue}
+        watch={watch}
+        companyDetails={getCompanyDetails?.basicDetails}
+        cultureDetails={getCompanyDetails?.cultureDetails ?? []}
+        youTubeDetails={getCompanyDetails?.youTubeDetails ?? []}
+        perkDetails={getCompanyDetails?.perkDetails}
+        setCompanyDetails={setCompanyDetails}
+        companyID={companyID}
+      />
 
-      <ClientSection register ={register} errors={errors} setValue={setValue} watch={watch} fields={fields} append={append} remove={remove} contactDetails={getCompanyDetails?.contactDetails}  /> 
+      <ClientSection
+        register={register}
+        errors={errors}
+        setValue={setValue}
+        watch={watch}
+        fields={fields}
+        append={append}
+        remove={remove}
+        contactDetails={getCompanyDetails?.contactDetails}
+        accessTypes={getValuesForDD?.BindAccessRoleType}
+      />
 
-    <EngagementSection register ={register} errors={errors} setValue={setValue} watch={watch} engagementDetails={getCompanyDetails?.engagementDetails} />
+      <EngagementSection
+        register={register}
+        errors={errors}
+        setValue={setValue}
+        watch={watch}
+        resetField={resetField}
+        unregister={unregister}
+        engagementDetails={getCompanyDetails?.engagementDetails}
+        hooksProps={{checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError}}
+      />
 
-    <div className={AddNewClientStyle.tabsFormItem}>
-    <div className={AddNewClientStyle.tabsFormItemInner}>
-      <div className={AddNewClientStyle.tabsLeftPanel}>
-        <h3>Add POCs</h3>
-        <p>Please provide the necessary details.</p>
-      </div>
-      <div className={AddNewClientStyle.tabsRightPanel}>
-        <div className={AddNewClientStyle.row}>
-        <div className={AddNewClientStyle.colMd12}>
-        <HRSelectField
-          isControlled={true}
-          controlledValue={controlledPOC}
-          setControlledValue={setControlledPOC}
-              setValue={setValue}
-              mode={'multiple'}
-              register={register}
-              name="uplersPOCname"
-              label="Uplers's POC name"
-              defaultValue="Enter POC name"
-              options={allPocs}
-            required
-            isError={
-              errors["uplersPOCname"] && errors["uplersPOCname"]
-            }
-            errorMsg="Please select POC name."
-            />
+      <div className={AddNewClientStyle.tabsFormItem}>
+        <div className={AddNewClientStyle.tabsFormItemInner}>
+          <div className={AddNewClientStyle.tabsLeftPanel}>
+            <h3>Add POCs</h3>
+            <p>Please provide the necessary details.</p>
+          </div>
+          <div className={AddNewClientStyle.tabsRightPanel}>
+            <div className={AddNewClientStyle.row}>
+              <div className={AddNewClientStyle.colMd12}>
+                <HRSelectField
+                  isControlled={true}
+                  controlledValue={controlledPOC}
+                  setControlledValue={setControlledPOC}
+                  setValue={setValue}
+                  mode={"multiple"}
+                  register={register}
+                  name="uplersPOCname"
+                  label="Uplers's POC name"
+                  defaultValue="Enter POC name"
+                  options={allPocs}
+                  required
+                  isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
+                  errorMsg="Please select POC name."
+                />
+              </div>
+            </div>
+          </div>
         </div>
-        </div>
-       
       </div>
-      
-    </div>
-    </div>
 
-    <div className={AddNewClientStyle.formPanelAction}>
-				<button
-				
-					onClick={()=> navigate(-1)}
-					className={AddNewClientStyle.btn}>
-					Cancel
-				</button>
-				<button
-					// disabled={isLoading}
-					type="submit"
-					onClick={handleSubmit(clientSubmitHandler)}
-					className={AddNewClientStyle.btnPrimary}>
-					Save 
-				</button>
+      <div className={AddNewClientStyle.formPanelAction}>
+        <button onClick={() => navigate(-1)} className={AddNewClientStyle.btn}>
+          Cancel
+        </button>
+        <button
+          // disabled={isLoading}
+          type="submit"
+          onClick={handleSubmit(clientSubmitHandler)}
+          className={AddNewClientStyle.btnPrimary}
+        >
+          Save
+        </button>
+      </div>
     </div>
-    </div>
-    
   );
 }
 

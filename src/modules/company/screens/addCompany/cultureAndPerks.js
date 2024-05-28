@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AddNewClientStyle from "./addclient.module.css";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
@@ -9,30 +9,122 @@ import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
 import { useFieldArray, useForm } from "react-hook-form";
 import TextEditor from "shared/components/textEditor/textEditor";
 import { Checkbox, message } from 'antd';
+import { allCompanyRequestDAO } from "core/company/companyDAO";
+import { HTTPStatusCode } from "constants/network";
+import { HttpStatusCode } from "axios";
 
-function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDetails,cultureDetails,companyDetails}) {
+function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDetails,cultureDetails,companyDetails,setCompanyDetails,companyID}) {
     const [controlledperk, setControlledperk] = useState([]);
     const [combinedPerkMemo, setCombinedPerkMemo] = useState([])
+    const pictureRef = useRef()
    useEffect(()=>{
     if(perkDetails?.length > 0){
-setValue('perksAndAdvantages',perkDetails.map(item=> ({
-    id: item,
-    value: item,
-})))
-setCombinedPerkMemo(perkDetails.map(item=> ({
-    id: item,
-    value: item,
-})))
-setControlledperk(perkDetails.map(item=> ({
-    id: item,
-    value: item,
-})))
-    }
+      setValue('perksAndAdvantages',perkDetails?.map(item=> ({
+          id: item,
+          value: item,
+      })))
+      setCombinedPerkMemo(perkDetails?.map(item=> ({
+          id: item,
+          value: item,
+      })))
+      setControlledperk(perkDetails?.map(item=> ({
+          id: item,
+          value: item,
+      })))
+          }
 
     if(companyDetails?.companyName){
         companyDetails?.culture && setValue('culture',companyDetails?.culture)
     }
    },[perkDetails,companyDetails]) 
+
+   const uploadCultureImages = async (Files) => {
+     
+    let filesToUpload = new FormData()
+
+
+
+      for (let i = 0; i < Files.length; i++) {
+       
+       filesToUpload.append("Files",Files[i])
+      }
+      // filesToUpload.append("Files",Files)
+     filesToUpload.append('IsCompanyLogo',false)
+     filesToUpload.append('IsCultureImage',true)
+
+    //  let payload = {
+    //   Files:Files,
+    //   IsCompanyLogo:false,
+    //   IsCultureImage:true
+    //  }
+
+     let Result = await allCompanyRequestDAO.uploadImageDAO(filesToUpload)
+
+     
+     if(Result?.statusCode === HTTPStatusCode.OK){
+        let imgUrls = Result?.responseBody
+
+        let imgObj = imgUrls.map(url=> (
+          {
+            "cultureID": 0,
+            "cultureImage": url
+          }
+        ))
+        let newCultureObj = [...cultureDetails]
+        setCompanyDetails(prev=> ({...prev,
+          cultureDetails:[...imgObj,...newCultureObj]
+          }))
+     }
+
+   }
+
+
+   const removeYoutubeDetailsFromBE = async (toDelete) => {
+    let payload = {
+        "youtubeID": toDelete.youtubeID,
+        "companyID": companyID
+    }
+    const result = await allCompanyRequestDAO.deleteYoutubeDetailsDAO(payload)
+    if(result.statusCode === HttpStatusCode.Ok){
+      let filteredValue =  youTubeDetails.filter(d=> !(d.youtubeID === toDelete.youtubeID && d.youtubeLink === toDelete.youtubeLink))
+      setCompanyDetails(prev => ({...prev,youTubeDetails:filteredValue}))
+    }
+    }
+
+   const removeYoutubelink = (toDelete) => {
+    if(toDelete.youtubeID === 0){
+      let filteredValue =  youTubeDetails.filter(d=> !(d.youtubeID === toDelete.youtubeID && d.youtubeLink === toDelete.youtubeLink))
+      setCompanyDetails(prev => ({...prev,youTubeDetails:filteredValue}))
+    }else {
+      removeYoutubeDetailsFromBE(toDelete)
+    }
+      
+   }
+
+   const removeIMGFromBE= async (toDelete) =>{
+    let payload = {
+      "cultureID": toDelete.cultureID,
+      "culture_Image": toDelete.cultureImage,
+      "companyID": companyID
+    }
+
+    const result = await allCompanyRequestDAO.deleteImageDAO(payload)
+
+    if(result.statusCode === HttpStatusCode.Ok){
+      let filteredValue =  cultureDetails.filter(d=> !(d.cultureID=== toDelete.cultureID && d.cultureImage=== toDelete.cultureImage))
+      setCompanyDetails(prev => ({...prev,cultureDetails:filteredValue}))
+    }
+   }
+
+   const deleteCulturImage = (toDelete) => {
+    if(toDelete.cultureID === 0){
+      let filteredValue =  cultureDetails.filter(d=> !(d.cultureID=== toDelete.cultureID && d.cultureImage=== toDelete.cultureImage))
+      setCompanyDetails(prev => ({...prev,cultureDetails:filteredValue}))
+    }else {
+      removeIMGFromBE(toDelete)
+    }
+   }
+
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
     <div className={AddNewClientStyle.tabsFormItemInner}>
@@ -55,7 +147,7 @@ setControlledperk(perkDetails.map(item=> ({
             name="culture"
             type={InputType.TEXT}
             placeholder="Enter about company culture"
-            // required
+            required={false}
             watch={watch}
           />
           </div>
@@ -63,10 +155,11 @@ setControlledperk(perkDetails.map(item=> ({
 
         <div className={AddNewClientStyle.row}>
         <div className={AddNewClientStyle.colMd12}>
-        <div className={AddNewClientStyle.label}>Culture</div>
+        <div className={AddNewClientStyle.label}>Picture</div>
         <div
               className={AddNewClientStyle.FilesDragAndDrop__area}
               style={{ width: "100%", cursor: "pointer" }}
+              onClick={()=> pictureRef && pictureRef.current.click()}
             >
               <svg
                 width="24"
@@ -93,11 +186,14 @@ setControlledperk(perkDetails.map(item=> ({
                 />
               </svg>
               <p>
-                <span>Click to Upload</span> or drag and drop
+                <span>Click to Upload</span> 
               </p>
               <span> (Max. File size: 25 MB)</span>
               <input
+              ref={pictureRef}
                 type="file"
+                accept="image/png,image/jpeg"
+                multiple="multiple"
                 style={{ display: "none" }}
                 name="cultureImage"
                 onChange={async (e) => {
@@ -118,17 +214,10 @@ setControlledperk(perkDetails.map(item=> ({
                     return;
                   }
 
-                  const reader = new FileReader();
-                  const loadEndPromise = new Promise((resolve, reject) => {
-                    reader.onloadend = () => {
-                      resolve(reader.result);
-                    };
-                    reader.onerror = (error) => {
-                      reject(error);
-                    };
-                  });
-                  reader.readAsDataURL(file);
+
                   try {
+                    
+                    uploadCultureImages(e.target.files)
                     // setIsLoading(true);
                     // const result = await loadEndPromise;
                     // setIsLoading(false);
@@ -154,10 +243,10 @@ setControlledperk(perkDetails.map(item=> ({
         </div>
 
         {cultureDetails?.length > 0 && <div className={AddNewClientStyle.row}>
-            {cultureDetails?.map(culture=> <div className={AddNewClientStyle.colMd4} key={culture.cultureID}>
+            {cultureDetails?.map(culture=> <div className={AddNewClientStyle.colMd4} key={`${culture.cultureID} ${culture.cultureImage}`}>
                 <div className={AddNewClientStyle.cultureImageContainer}>
                     <img src={culture.cultureImage} alt='culture' className={AddNewClientStyle.cultureImage} />
-                    <DeleteIcon  className={AddNewClientStyle.cultureDelete}/>
+                    <DeleteIcon  className={AddNewClientStyle.cultureDelete} onClick={()=> deleteCulturImage(culture)}/>
                 </div>
             </div>)}
             </div>}
@@ -175,6 +264,22 @@ setControlledperk(perkDetails.map(item=> ({
 										message: 'Youtube link is not valid',
 									},
                 }}
+                onKeyDownHandler={e=>{
+                  if(e.keyCode === 13){
+                    const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/;
+                      if(!regex.test(e.target.value)){
+                        return message.error('Youtube link is not valid')
+                      }
+
+                    let youtubeDetail = {youtubeLink: watch('youtubeLink'), 
+                      youtubeID: 0
+                      }
+
+                      let nweyouTubeDetails = [...youTubeDetails]
+                      setCompanyDetails(prev => ({...prev,youTubeDetails:[ youtubeDetail,...nweyouTubeDetails]}))
+                      setValue('youtubeLink','')
+                  }
+                }}
                 type={InputType.TEXT}
                 onChangeHandler={(e) => {
                 }}
@@ -184,7 +289,7 @@ setControlledperk(perkDetails.map(item=> ({
         </div>
 
         {youTubeDetails?.length > 0 &&  <div className={AddNewClientStyle.row} >
-          {youTubeDetails.map(youtube=> <div className={AddNewClientStyle.colMd12} key={youtube.youtubeID}>
+          {youTubeDetails.map(youtube=> <div className={AddNewClientStyle.colMd12} key={`${youtube.youtubeID} ${youtube.youtubeLink}}`  }>
                 {/* <iframe
   src={youtube.youtubeLink}
   frameborder='0'
@@ -193,7 +298,7 @@ setControlledperk(perkDetails.map(item=> ({
   title='video'
 /> */}
 <div className={AddNewClientStyle.youTubeDetails}>
-  {youtube.youtubeLink}  <DeleteIcon style={{marginLeft:'10px',cursor:'pointer'}} />
+  {youtube.youtubeLink}  <DeleteIcon style={{marginLeft:'10px',cursor:'pointer'}} onClick={()=>{ removeYoutubelink(youtube)}} />
 </div>
                 </div>)}
                 

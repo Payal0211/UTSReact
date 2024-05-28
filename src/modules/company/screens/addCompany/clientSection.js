@@ -1,4 +1,4 @@
-import React , {useState, useMemo, useEffect} from "react";
+import React , {useState, useMemo, useEffect, useCallback} from "react";
 import AddNewClientStyle from "./addclient.module.css";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
@@ -10,9 +10,27 @@ import {
 } from 'modules/client/clientUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 
-function ClientSection({ register, errors, setValue, watch ,fields, append, remove,contactDetails}) {
-    const [flagAndCode, setFlagAndCode] = useState([]);
+export const secondaryClient = {
+clientProfilePic:"",
+companyID:0,
+contactNo:"",
+designation:"",
+emailID:"",
+firstName:"",
+fullName:"",
+id:0,
+isPrimary:false,
+lastName:"",
+linkedIn:"",
+resendInviteEmail:false,
+roleID:0,
+countryCode:''
+};
 
+function ClientSection({ register, errors, setValue, watch ,fields, append, remove,contactDetails,accessTypes}) {
+    const [flagAndCode, setFlagAndCode] = useState([]);
+    const [controlledRoleId,setControlledRoleId] = useState([]);
+   
     const getCodeAndFlag = async () => {
 		const getCodeAndFlagResponse = await MasterDAO.getCodeAndFlagRequestDAO();
 		setFlagAndCode(
@@ -21,64 +39,118 @@ function ClientSection({ register, errors, setValue, watch ,fields, append, remo
 	};
 
   useEffect(()=>{
-    if(contactDetails?.length){
-      let primaryclient = contactDetails[0]
+    remove()
+    if(contactDetails?.length > 0){
+      contactDetails?.forEach(contact => {
+        let phoneDetails = {
+          contactNo:"",
+          countryCode:''
+        }
 
-      primaryclient?.fullName && setValue('clientName',primaryclient?.fullName)
-      primaryclient?.emailID && setValue('clientEmailID',primaryclient?.emailID)
-      primaryclient?.designation && setValue('clientDesignation',primaryclient?.designation)
-      if(primaryclient?.contactNo){
-        console.log('cc',primaryclient?.contactNo?.slice(0,3))
-        if(primaryclient?.contactNo.includes('+91')){
-          setValue('primaryClientPhoneNumber',primaryclient?.contactNo?.slice(3))
+         if(contact?.contactNo){
+        if(contact?.contactNo?.includes('+91')){
+          phoneDetails.contactNo = contact?.contactNo?.slice(3)
+          phoneDetails.countryCode = contact?.contactNo?.slice(0,3)
         }else{
-          setValue('primaryClientPhoneNumber',primaryclient?.contactNo)
-        }								
-      }
+          phoneDetails.contactNo = contact?.contactNo
+          
+        }}
+         append({...secondaryClient,...contact,...phoneDetails})
+      })
+    }else{
+      append({...secondaryClient,roleID:1,isPrimary:true})
     }
   },[contactDetails])
+
+  const onAddNewClient = useCallback(
+		(e) => {
+			e.preventDefault();
+			append({ ...secondaryClient });
+		},
+		[append],
+	);
+	const onRemoveAddedClient = useCallback(
+		(e, index) => {
+			e.preventDefault();
+			remove(index);
+		},
+		[remove],
+	);
+
+  useEffect(() => {
+    if(accessTypes?.length > 0 && fields?.length > 0){
+      setControlledRoleId([])
+      fields?.forEach(field => {
+        setControlledRoleId(prev => [...prev,accessTypes?.find(val=> val.id === field.roleID)?.value])
+      })
+      
+    }
+  },[accessTypes,fields])
 
 	const flagAndCodeMemo = useMemo(
 		() => getFlagAndCodeOptions(flagAndCode),
 		[flagAndCode],
 	);
 
-    useEffect(()=> getCodeAndFlag(), [])
+    useEffect(()=> {getCodeAndFlag()}, [])
+
+
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
-      <div className={AddNewClientStyle.tabsFormItemInner}>
+
+      {fields?.map((item,index)=> {
+        return <div className={AddNewClientStyle.tabsFormItemInner}>
         <div className={AddNewClientStyle.tabsLeftPanel}>
-          <h3>Client Details</h3>
+          <h3>{(index > 0) && "Secondary "} Client Details {(index > 0) && `- ${index}`}</h3>
 
           <div className={AddNewClientStyle.leftPanelAction}>
-            <button
+            {(index === 0 && fields?.length === 1)  &&  <button
               type="button"
               className={AddNewClientStyle.btn}
-              onClick={() => {}}
+              onClick={(e) => onAddNewClient(e)}
+            >
+              Add Another Client
+            </button>}
+
+
+           {index > 0 && index + 1 === fields?.length && <>
+           <button
+              type="button"
+              className={AddNewClientStyle.btn}
+              onClick={(e) => onAddNewClient(e)}
             >
               Add Another Client
             </button>
+
+            <button
+										type="button"
+										className={AddNewClientStyle.btn}
+										onClick={(e) => onRemoveAddedClient(e, index)}>
+										Remove
+						</button>
+           </>} 
           </div>
         </div>
 
         <div className={AddNewClientStyle.tabsRightPanel}>
-          <div className={AddNewClientStyle.row}>
+        <div className={AddNewClientStyle.row}>
             <div className={AddNewClientStyle.colMd6}>
+              {console.log('Error',errors,errors?.[`clientDetails.[${index}].fullName`])}
               <HRInputField
                 register={register}
-                errors={errors}
+                // isError={!!errors?.clientDetails?.[index]?.fullName}
+                errors={errors?.clientDetails?.[index]?.fullName}
                 label="Client Full Name"
-                name="clientName"
+                name={`clientDetails.[${index}].fullName`}
                 type={InputType.TEXT}
                 validationSchema={{
                   required: "Please enter the Client Name",
                 }}
-                onChangeHandler={(e) => {
-                  // setCompanyName(e.target.value);
-                  // debounceDuplicateCompanyName(e.target.value);
-                }}
+                // errorMsg="Please enter the Client Name."
                 placeholder="Enter Client Name"
-                required
+                required={true}
+                disabled={false}
+                forArrayFields={true}
               />
             </div>
 
@@ -86,57 +158,55 @@ function ClientSection({ register, errors, setValue, watch ,fields, append, remo
               <HRInputField
                 //								disabled={isLoading}
                 register={register}
-                errors={errors}
+               errors={errors?.clientDetails?.[index]?.emailID}
                 validationSchema={{
-                  required: "please enter the primary client email ID.",
+                  required: `Please enter the ${index > 0 ? "secondary ": "primary "}client email ID.`,
                   pattern: {
                     value: EmailRegEx.email,
                     message: "Entered value does not match email format",
                   },
                 }}
                 label="Work Email"
-                name={"clientEmailID"}
+                name={`clientDetails.[${index}].emailID`}
                 type={InputType.EMAIL}
                 placeholder="Enter Email ID "
-                onChangeHandler={(e) => {
-                  // setPrimaryClientEmail(e.target.value);
-                  // debounceDuplicateEmailCheckHandler(e.target.value);
-                }}
                 required
+                forArrayFields={true}
               />
             </div>
           </div>
+
           <div className={AddNewClientStyle.row}>
                 <div className={AddNewClientStyle.colMd6}>
                 <HRInputField
                 register={register}
                 // errors={errors}
                 label="Designation"
-                name="clientDesignation"
+                name={`clientDetails.[${index}].designation`}
                 type={InputType.TEXT}
-                // validationSchema={{
-                //   required: "Please enter the Client Designation",
-                // }}
-                onChangeHandler={(e) => {
-                  // setCompanyName(e.target.value);
-                  // debounceDuplicateCompanyName(e.target.value);
-                }}
                 placeholder="Enter Client Designation"
-                // required
               />
                 </div>
 
                 <div className={AddNewClientStyle.colMd6}>
                 <HRSelectField
+                isControlled={true}
+                controlledValue={controlledRoleId[index]}
+             
+                setControlledValue={val=>setControlledRoleId(prev=> {
+                  let newControlled = [...prev]
+                  newControlled[index] = val
+                  return newControlled
+                })}
               setValue={setValue}
-              mode={"id/value"}
+              mode={"id"}
               register={register}
-              name="clientAccessType"
+              name={`clientDetails.[${index}].roleID`}
               label="Access Type"
               defaultValue="Choose Access Type"
-              options={['1-10 emp','11-50 emp','51-200 emp'].map(item =>({
-                id: item,
-                value: item,
+              options={accessTypes?.map(item =>({
+                id: item.id,
+                value: item.value,
             }))}
             />
                 </div>
@@ -151,7 +221,7 @@ function ClientSection({ register, errors, setValue, watch ,fields, append, remo
 										searchable={true}
 										setValue={setValue}
 										register={register}
-										name="primaryClientCountryCode"
+										name={`clientDetails.[${index}].countryCode`}
 										defaultValue="+91"
 										options={flagAndCodeMemo}
 									/>
@@ -159,7 +229,7 @@ function ClientSection({ register, errors, setValue, watch ,fields, append, remo
 								<div className={AddNewClientStyle.phoneNoInput}>
 									<HRInputField
 										register={register}
-										name={'primaryClientPhoneNumber'}
+										name={`clientDetails.[${index}].contactNo`}
 										type={InputType.NUMBER}
 										placeholder="Enter Phone number"
 									/>
@@ -169,7 +239,8 @@ function ClientSection({ register, errors, setValue, watch ,fields, append, remo
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      })}
     </div>
   );
 }

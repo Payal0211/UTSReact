@@ -10,11 +10,13 @@ import TextEditor from "shared/components/textEditor/textEditor";
 import UploadModal from "shared/components/uploadModal/uploadModal";
 import { Checkbox, message } from 'antd';
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
+import { allCompanyRequestDAO } from "core/company/companyDAO";
 
-function CompanySection({register,errors,setValue,watch,companyDetails}) {
+function CompanySection({register,errors,setValue,watch,companyDetails,setCompanyDetails}) {
   const [getUploadFileData, setUploadFileData] = useState('');
   const [base64Image, setBase64Image] = useState('');
   const [showUploadModal, setUploadModal] = useState(false);
+  const [controlledFoundedInValue, setControlledFoundedInValue] = useState('')
 
   const [getValidation, setValidation] = useState({
     systemFileUpload: "",
@@ -26,8 +28,11 @@ function CompanySection({register,errors,setValue,watch,companyDetails}) {
     companyDetails?.companyLogo && setUploadFileData(companyDetails?.companyLogo)
     companyDetails?.companyName && setValue('companyName', companyDetails?.companyName)
     companyDetails?.website && setValue('companyURL',companyDetails?.website)
-    companyDetails?.foundedYear  && setValue('foundedIn', companyDetails?.foundedYear)
-     setValue('teamSize', companyDetails?.teamSize)
+    if(companyDetails?.foundedYear){
+      setValue('foundedIn', companyDetails?.foundedYear)
+      setControlledFoundedInValue(companyDetails?.foundedYear)
+    }  
+    companyDetails?.teamSize > 0 && setValue('teamSize', companyDetails?.teamSize)
     companyDetails?.companyType && setValue('companyType', companyDetails?.companyType)
     companyDetails?.headquaters && setValue('headquaters', companyDetails?.headquaters)
     companyDetails?.aboutCompany && setValue('aboutCompany', companyDetails?.aboutCompany)
@@ -35,18 +40,22 @@ function CompanySection({register,errors,setValue,watch,companyDetails}) {
     
   },[companyDetails])
 
-  const convertToBase64 = useCallback((file) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  }, []);
+
+  const generateYears = (startYear, endYear) => {
+    const years = [];
+    for (let year = startYear; year <= endYear; year++) {
+      years.push(year);
+    }
+    return years;
+  };
+
+  const startYear = 1970;
+  const endYear = new Date().getFullYear();
+
+  const yearOptions = generateYears(startYear, endYear).map((year) => ({
+    id: year.toString(),
+    value: year.toString(),
+  }));
 
   const uploadFileHandler = useCallback(
     async (e) => {
@@ -71,19 +80,29 @@ function CompanySection({register,errors,setValue,watch,companyDetails}) {
         });
         // setIsLoading(false);
       } else {
-        const base64 = await convertToBase64(fileData);
+
+        let filesToUpload = new FormData()
+         filesToUpload.append("Files",fileData)
+       filesToUpload.append('IsCompanyLogo',true)
+       filesToUpload.append('IsCultureImage',false)
+
+       let Result = await allCompanyRequestDAO.uploadImageDAO(filesToUpload)
 
         setValidation({
           ...getValidation,
           systemFileUpload: "",
         });
-        // setIsLoading(false);
-        setBase64Image(base64);
-        setUploadFileData(fileData.name);
+
+        if(Result?.statusCode === HTTPStatusCode.OK){
+          let imgUrls = Result?.responseBody
+           setUploadFileData(imgUrls[0]);
+           setCompanyDetails(prev=>({...prev,basicDetails: {companyLogo: imgUrls[0],...prev.basicDetails?.companyLogo}}))
+        }
+       
         setUploadModal(false);
       }
     },
-    [convertToBase64, getValidation, setBase64Image, setUploadFileData]
+    [getValidation, setBase64Image, setUploadFileData]
   );
 
   return (
@@ -227,28 +246,22 @@ function CompanySection({register,errors,setValue,watch,companyDetails}) {
 
             <div className={AddNewClientStyle.row}>
             <div className={AddNewClientStyle.colMd6}>
-                
-                  <HRInputField
-                    register={register}
-                    errors={errors}
-                    label="Founded in"
-                    name="foundedIn"
-                    type={InputType.TEXT}
-                    validationSchema={{
-                      required: "Please enter the Founded in",
-                      // pattern: {
-                      // 	value: URLRegEx.url,
-                      // 	message: 'Entered value does not match url format',
-                      // },
-                    }}
-                    onChangeHandler={(e) => {
-                      // setCompanyName(e.target.value);
-                      // debounceDuplicateCompanyName(e.target.value);
-                    }}
-                    placeholder="Enter year"
-                    required
-                  />
-                
+                  <HRSelectField 
+                  controlledValue={controlledFoundedInValue}
+                  setControlledValue={setControlledFoundedInValue}
+                  isControlled={true}
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  label="Founded in"
+                  name="foundedIn"
+                  mode={"value"}
+                  defaultValue="Select Year"
+                  isError={errors["foundedIn"] && errors["foundedIn"]}
+                  required
+                  errorMsg={"Please select Founded in"}
+                  options={yearOptions}
+                  />              
               </div>
 
               <div className={AddNewClientStyle.colMd6}>
@@ -353,7 +366,7 @@ function CompanySection({register,errors,setValue,watch,companyDetails}) {
                 register={register}
                 setValue={setValue}
                 // errors={errors}
-                controlledValue={companyDetails?.aboutCompany}
+                controlledValue={companyDetails?.aboutCompany ?? ''}
                 isControlled={true}
                 isTextArea={true}
                 label="About Company"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import AddNewClientStyle from "./addclient.module.css";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
@@ -8,40 +8,70 @@ import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
 import { useFieldArray, useForm } from "react-hook-form";
 import TextEditor from "shared/components/textEditor/textEditor";
 import { Checkbox, message, Select, Radio } from "antd";
+import { MasterDAO } from "core/master/masterDAO";
 
 function EngagementSection({
   register,
   errors,
   setValue,
+  resetField,
+  unregister,
   watch,
   engagementDetails,
+  hooksProps
 }) {
+  const {checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError} = hooksProps
   const [payPerError, setPayPerError] = useState(false);
-  const [typeOfPricing, setTypeOfPricing] = useState(null);
-  const [profileSharingOption, setProfileSharingOption] = useState(null);
-  const [profileSharingOptionError, setProfileSharingOptionError] =
-    useState(false);
-  const [pricingTypeError, setPricingTypeError] = useState(false);
+  
 
-  const [checkPayPer, setCheckPayPer] = useState({
-    companyTypeID: 0,
-    anotherCompanyTypeID: 0,
-  });
-  const [IsChecked, setIsChecked] = useState({
-    isPostaJob: false,
-    isProfileView: false,
-  });
+  const [hrPricingTypes, setHRPricingTypes] = useState([]);
+  const [controlledHiringPricingTypeValue, setControlledHiringPricingTypeValue] =
+  useState("Select Hiring Pricing");
+
   const [creditError, setCreditError] = useState(false);
   const [errorCurrency, seterrorCurrency] = useState(false);
 
   let _currency = watch("creditCurrency");
 
+  const getHRPricingType = useCallback(async () => {
+    const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
+    setHRPricingTypes(
+      HRPricingResponse &&
+      HRPricingResponse.responseBody
+    );
+  }, []);
   useEffect(() => {
-    engagementDetails?.companyTypeID &&
+    getHRPricingType()
+  },[])
+
+  const getRequiredHRPricingType = useCallback(() =>{
+    let reqOpt = []
+
+    if(typeOfPricing === 1){
+      let Filter = hrPricingTypes.filter(item=> item.isActive === true && item.isTransparent === true)
+      if(Filter.length){
+        reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+      }
+    }else{
+      let Filter = hrPricingTypes.filter(item=> item.isActive === true && item.isTransparent === false)
+      if(Filter.length){
+        reqOpt = Filter.map(item=> ({id:item.id, value: item.type}))
+      }
+    }
+
+    return reqOpt
+
+  },[hrPricingTypes,  typeOfPricing]) 
+
+  useEffect(() => {
+    // engagementDetails?.companyTypeID &&
       setCheckPayPer({
         ...checkPayPer,
-        companyTypeID: engagementDetails?.companyTypeID,
+        companyTypeID: engagementDetails?.companyTypeID??0,
+        anotherCompanyTypeID:engagementDetails?.anotherCompanyTypeID??0
       });
+    
+    engagementDetails?.isTransparentPricing != null && setTypeOfPricing(engagementDetails?.isTransparentPricing === true ? 1 : 0)
 
     engagementDetails?.creditCurrency &&
       setValue("creditCurrency", engagementDetails?.creditCurrency);
@@ -75,6 +105,17 @@ function EngagementSection({
     }
   }, [engagementDetails]);
 
+  useEffect(()=>{
+    if(engagementDetails?.hiringTypePricingId && hrPricingTypes.length > 0){
+      let filteredHRtype = hrPricingTypes.find(item=> item.id === engagementDetails?.hiringTypePricingId)
+   
+      if(filteredHRtype){
+        setValue('hiringPricingType',{id:filteredHRtype.id, value: filteredHRtype.type})
+        setControlledHiringPricingTypeValue(filteredHRtype.type)
+      }
+    }
+  },[engagementDetails?.hiringTypePricingId,hrPricingTypes  ])
+
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
       <div className={AddNewClientStyle.tabsFormItemInner}>
@@ -106,6 +147,8 @@ function EngagementSection({
                   <Checkbox
                     value={2}
                     onChange={(e) => {
+                      // resetField('hiringPricingType')
+                      unregister('hiringPricingType')
                       setCheckPayPer({
                         ...checkPayPer,
                         companyTypeID:
@@ -125,11 +168,16 @@ function EngagementSection({
                   <Checkbox
                     value={1}
                     onChange={(e) => {
+                      // resetField('hiringPricingType')
+                      unregister('hiringPricingType')
                       setCheckPayPer({
                         ...checkPayPer,
                         anotherCompanyTypeID:
                           e.target.checked === true ? e.target.value : 0,
                       });
+                      if(e.target.checked === true){
+                        register('hiringPricingType',{require:true})
+                      }
                       setPayPerError(false);
                       setTypeOfPricing(null);
                     }}
@@ -183,6 +231,27 @@ function EngagementSection({
               )}
             </div>
           </div>
+
+          { checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null && <div className={AddNewClientStyle.row} >
+            <div className={AddNewClientStyle.colMd12}>
+                <HRSelectField 
+                 controlledValue={controlledHiringPricingTypeValue}
+                 setControlledValue={setControlledHiringPricingTypeValue}
+                 isControlled={true}
+                  mode={"id/value"}
+                  setValue={setValue}
+                  register={register}
+                  // label={"Hiring Pricing Type"}
+                  label={"Choose Engagement Mode"}
+                  defaultValue="Select Engagement Mode"
+                  options={getRequiredHRPricingType()}
+                  name="hiringPricingType"
+                  isError={errors["hiringPricingType"] && errors["hiringPricingType"]}
+                  required={(checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null) ? true : null}
+                  errorMsg={"Please select the Engagement Mode."}
+                />
+            </div>
+            </div>}
 
           {checkPayPer?.companyTypeID !== 0 &&
             checkPayPer?.companyTypeID !== null && (
@@ -327,8 +396,7 @@ function EngagementSection({
                               isProfileView: e.target.checked,
                             });
                             setCreditError(false);
-                            setProfileSharingOption(null);
-                            setProfileSharingOptionError(false);
+                           
                           }}
                         >
                           Credit per profile view.

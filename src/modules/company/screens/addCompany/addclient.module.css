@@ -297,3 +297,20 @@
     max-width: 100%;
     align-items: center;
 }
+
+.dateSelect {
+    display: flex;
+}
+
+.dateSelect .ant-select .ant-select-selector {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+  }
+.dateSelect .ant-select:last-child .ant-select-selector {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-right: 1px solid #cecccc;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
