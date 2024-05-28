@@ -638,7 +638,7 @@ const ViewHRDetails = () => {
                   hiringDetails?.responseBody?.details?.job_Description
                 ) ? (
                   <div 
-                  // className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+                  className={ViewHRDetailsStyle.viewHrJDDetailsBox}
                   >
                     <ul>
                       {JSON.parse(
@@ -651,7 +651,7 @@ const ViewHRDetails = () => {
                   </div>
                 ) : (
                   <div
-                    // className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+                    className={ViewHRDetailsStyle.viewHrJDDetailsBox}
                     dangerouslySetInnerHTML={{
                       __html:sanitizedDescription( hiringDetails?.responseBody?.details?.job_Description)                       
                     }}
@@ -660,7 +660,7 @@ const ViewHRDetails = () => {
               ) : 
               (
                   <div
-                    // className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+                    className={ViewHRDetailsStyle.viewHrJDDetailsBox}
                     dangerouslySetInnerHTML={{
                       __html: sanitizedDescription( hiringDetails?.responseBody?.details?.job_Description)
                     }}
