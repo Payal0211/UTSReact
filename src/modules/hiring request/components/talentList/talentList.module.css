@@ -29,6 +29,16 @@
     padding-bottom: 75px;
 }
 
+.ResumeLink {
+    color: #1890ff;
+    text-decoration: none;
+    background-color: transparent;
+    outline: none;
+    cursor: pointer;
+    transition: color 0.3s;
+    margin: 0;
+}
+
 .partWise {
     display: flex;
     justify-content: space-between;

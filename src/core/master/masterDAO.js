@@ -1791,5 +1791,34 @@ export const MasterDAO = {
 				'MasterDAO.getOnBoardListDAO',
 			);
 		}
+	},
+	downloadResumeDAO : async function (data) {
+		try {
+			const onBoardListtitleResponse =
+				await MasterAPI.downloadResumeAPI(data);
+			if (onBoardListtitleResponse) {
+				const statusCode = onBoardListtitleResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResut = onBoardListtitleResponse?.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResut,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND)
+					return onBoardListtitleResponse;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return onBoardListtitleResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(
+				error,
+				'MasterDAO.downloadResumeDAO',
+			);
+		}
 	}
 };

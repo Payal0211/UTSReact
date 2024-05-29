@@ -52,6 +52,7 @@ import ProfileLogDetails from '../profileLogDetails/profileLog';
 import TalentInterviewStatus from '../talentInterviewStatus/talentInterviewStatus';
 import EditDPRate from '../editDP/editDP';
 import PreOnboardingTabModal from '../preOnboardingModals/preOnboardingTabModal';
+import { MasterDAO } from 'core/master/masterDAO';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -447,6 +448,35 @@ const TalentList = ({
 	const [AMFlags, setAMFlags] = useState({})
 	// end preONBoard states and controlers
 
+	const resumeDownload = async (data) => {
+		try {
+		  const payload = {
+			"resumeFile": data.TalentResumeLink
+		  };
+		//   payload.filename = data?.Talent_Resume;
+		//   payload.talentId = data?.ATS_TalentID;
+		//   payload.hiringRequestId = data?.HiringRequest_ID;
+		//   payload.isATSTalentId = true;
+	
+		  let res = await MasterDAO.downloadResumeDAO(payload);
+	
+		  const blob = new Blob([res?.responseBody], {
+			type: "application/octet-stream",
+		  });
+		  const link = document.createElement("a");
+		  const fileUrl = window.URL.createObjectURL(blob);
+		  link.href = fileUrl;
+		  let arr = data?.TalentResumeLink?.split("/");
+		  let fileName = arr[arr.length - 1];
+		  link.download = fileName;
+		  document.body.appendChild(link);
+		  link.click();
+		  document.body.removeChild(link);
+		} catch (error) {
+		  console.error("Error downloading file:", error);
+		}
+	  };
+
 	return (
 		<div>
 			{contextHolder}
@@ -548,9 +578,9 @@ const TalentList = ({
 									</div>
 
 									<div className={TalentListStyle.profileURL}>
-										<span>Profile URL:</span>&nbsp;&nbsp;
+										<span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{item?.ATSTalentLiveURL ? (
+											{item?.NeedToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={()=>resumeDownload(item)}>Click here</p> : item?.ATSTalentLiveURL ? (
 												<a
 													style={{ textDecoration: 'underline' }}
 													href={item?.ATSTalentLiveURL}
@@ -561,6 +591,7 @@ const TalentList = ({
 											) : (
 												'NA'
 											)}
+											
 										</span>
 									</div>
 

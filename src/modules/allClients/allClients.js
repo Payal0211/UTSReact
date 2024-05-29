@@ -85,15 +85,22 @@ function AllClients() {
     const [messageAPI, contextHolder] = message.useMessage();
 
 	const getFilterRequest = useCallback(async () => {
+        setLoading(true);
 		// const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
         const  response = await allClientRequestDAO.getClientFilterDAO();
+        setLoading(false)
+
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setFiltersList(response && response?.responseBody?.Data);
+            setLoading(false)
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            setLoading(false)
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+            setLoading(false)
 			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
 		} else {
+            setLoading(false)
 			return 'NO DATA FOUND';
 		}
 	}, [navigate]);
@@ -109,6 +116,7 @@ function AllClients() {
     const spaceName = urlParams.get('clientName')
 
 const updateSpaceIDForClientFun = async () =>{
+    setLoading(true);
     let payload = {
         "clientEmail": email,
         "SpaceID": name,
@@ -135,6 +143,7 @@ const updateSpaceIDForClientFun = async () =>{
             1000,
         )
    }
+   setLoading(false);
 }
 
     useEffect(() => {
@@ -340,8 +349,8 @@ const updateSpaceIDForClientFun = async () =>{
     }
     return(
         <>
-        <WithLoader className="mainLoader" showLoader={debouncedSearch?.length?false:isLoading}>
-            <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
+        <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
+                <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}>
         {contextHolder}
                 <div className={clienthappinessSurveyStyles.addnewHR}>
                     <div className={clienthappinessSurveyStyles.hiringRequest}>All Clients</div>
@@ -478,8 +487,9 @@ const updateSpaceIDForClientFun = async () =>{
                             )} 
                 </div>
 
-            </div>
             </WithLoader>
+            </div>
+           
 
             {isAllowFilters && (
                         <Suspense fallback={<div>Loading...</div>}>
@@ -512,7 +522,7 @@ const updateSpaceIDForClientFun = async () =>{
                 onCancel={() => setEditAM(false)}>
                <EditAMModal amToFetch={amToFetch} closeModal={() => setEditAM(false)} reloadClientList={reloadClientList} />
             </Modal>}  
-        </>
+            </>
     )
 }
 
