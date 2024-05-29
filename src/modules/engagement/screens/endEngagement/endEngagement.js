@@ -138,7 +138,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 				(engagementReplacement?.replacementData == true && addLatter == false) ? d.lwd :"" ,
 				replacementInitiatedby:loggedInUserID.toString(),
 				engHRReplacement:
-				(engagementReplacement?.replacementData == true && addLatter == false)? d.engagementreplacement.id :""
+				(engagementReplacement?.replacementData == true && addLatter == false) ? d.engagementreplacement.id :""
 				}
 			};
 			const response =
@@ -338,33 +338,8 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 					</Checkbox>
 				</div>
 			</div>
-			<div className={`${allengagementEnd.row} ${allengagementEnd.mb32}`}>
-				<div className={allengagementEnd.colMd12}>
-					<Checkbox
-                     	name="PayPerCredit"
-                      	checked={addLatter}
-                      	onChange={(e) => {
-                        	setAddLetter(e.target.checked);
-						}}
-                    >
-					Will add this later, by doing this you understand that replacement will not be tracked correctly.
-                    </Checkbox>
-				</div>
-			</div>
-			<div className={allengagementEnd.row}>
-				{engagementReplacement?.replacementData && <div className={allengagementEnd.colMd6}>
-					<HRSelectField
-						disabled={addLatter}
-						setValue={setValue}
-						mode={"id/value"}
-						register={register}
-						name="engagementreplacement"
-						label="Select HR ID/Eng ID created to replace this engagement"
-						defaultValue="Select HR ID/Eng ID"
-						options={getEndEngagementDetails?.replacementEngAndHR ? getEndEngagementDetails?.replacementEngAndHR.map(item=> ({id: item.stringIdValue, value:item.value})) : []}
-					/>
-				</div>}
-				<div className={allengagementEnd.colMd6}>
+			<div className={`${allengagementEnd.row} ${allengagementEnd.mb16}`}>
+			<div className={allengagementEnd.colMd6}>
 					{engagementReplacement?.replacementData &&<div className={allengagementEnd.timeSlotItemField}>
 						<div className={allengagementEnd.timeLabel}>
 							Last Working Day
@@ -390,6 +365,33 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 							/>
 						</div>
 					</div>}
+				</div>
+			</div>
+			<div className={allengagementEnd.row}>
+				{engagementReplacement?.replacementData && <div className={allengagementEnd.colMd6}>
+					<HRSelectField
+						disabled={addLatter}
+						setValue={setValue}
+						mode={"id/value"}
+						register={register}
+						name="engagementreplacement"
+						label="Select HR ID/Eng ID created to replace this engagement"
+						defaultValue="Select HR ID/Eng ID"
+						options={getEndEngagementDetails?.replacementEngAndHR ? getEndEngagementDetails?.replacementEngAndHR.map(item=> ({id: item.stringIdValue, value:item.value})) : []}
+					/>
+				</div>}
+			</div>
+			<div className={`${allengagementEnd.row} ${allengagementEnd.mb32}`}>
+				<div className={allengagementEnd.colMd12}>
+					<Checkbox
+                     	name="PayPerCredit"
+                      	checked={addLatter}
+                      	onChange={(e) => {
+                        	setAddLetter(e.target.checked);
+						}}
+                    >
+					Will add this later, by doing this you understand that replacement will not be tracked correctly.
+                    </Checkbox>
 				</div>
 			</div>
 			</>}
