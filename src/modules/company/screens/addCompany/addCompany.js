@@ -1,13 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import AddNewClientStyle from "./addclient.module.css";
-import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
-import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
-import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
-import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
 import { useFieldArray, useForm } from "react-hook-form";
-import TextEditor from "shared/components/textEditor/textEditor";
-import { Checkbox, message } from "antd";
+import { Skeleton, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 
@@ -28,6 +23,10 @@ function AddCompany() {
   const [controlledPOC, setControlledPOC] = useState([]);
   const [isSelfFunded,setIsSelfFunded] = useState(false)
   const [pricingTypeError, setPricingTypeError] = useState(false);
+  const [payPerError, setPayPerError] = useState(false);
+
+  const [loadingDetails,setLoadingDetails] = useState(false)
+  const [disableSubmit , setDisableSubmit] = useState(false)
 
 
   // engagement Values 
@@ -47,6 +46,7 @@ function AddCompany() {
     setValue,
     control,
     setError,
+    clearErrors,
     unregister,
     getValues,
     resetField,
@@ -70,11 +70,14 @@ function AddCompany() {
   });
 
   const getDetails = async () => {
+    setLoadingDetails(true)
     const result = await allCompanyRequestDAO.getCompanyDetailDAO(companyID);
   
     if (result?.statusCode === HTTPStatusCode.OK) {
       setCompanyDetails(result?.responseBody);
+      setLoadingDetails(false)
     }
+    setLoadingDetails(false)
   };
 
   const getAllValuesForDD = useCallback(async () => {
@@ -93,7 +96,7 @@ function AddCompany() {
   }, []);
 
   useEffect(() => {
-    if (companyID !== 0) {
+    if (companyID !== '0') {
       getDetails();
     }else{
       setCompanyDetails({basicDetails:{
@@ -130,9 +133,19 @@ function AddCompany() {
   }, [getCompanyDetails?.pocUserIds, allPocs]);
 
   const clientSubmitHandler = async (d) => {
-
+    setLoadingDetails(true)
+    setDisableSubmit(true)
     if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
 			setPricingTypeError(true)
+      setLoadingDetails(false)
+      setDisableSubmit(false)
+			return
+		}
+
+    if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
+      setLoadingDetails(false)
+      setDisableSubmit(false)
+			setPayPerError(true)
 			return
 		}
 
@@ -147,6 +160,8 @@ function AddCompany() {
 
     if(!isAdmin){
       message.error(" Please Select a client as Admin")
+      setLoadingDetails(false)
+      setDisableSubmit(false)
       return
     }
 
@@ -204,15 +219,22 @@ function AddCompany() {
     }
 
 
-    console.log("plaod",payload)
+    // console.log("plaod",payload)
 
     let submitresult = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
-console.log("submited res",submitresult)
+// console.log("submited res",submitresult)
     if(submitresult?.statusCode === HTTPStatusCode.OK){
-
+      navigate('/allClients')
     }
+
+    if(submitresult?.statusCode === HTTPStatusCode.BAD_REQUEST){
+      message.error("Validation Error : "+ submitresult?.responseBody)
+    }
+
+    setLoadingDetails(false)
+      setDisableSubmit(false)
   };
-  console.log("data errors", errors);
+
   return (
     <div className={AddNewClientStyle.addNewContainer}>
       <div className={AddNewClientStyle.addHRTitle}>
@@ -220,12 +242,17 @@ console.log("submited res",submitresult)
       </div>
 
       <CompanySection
+        companyID={companyID}
         register={register}
         errors={errors}
         setValue={setValue}
+        clearErrors={clearErrors}
+        setError={setError}
         watch={watch}
         companyDetails={getCompanyDetails?.basicDetails}
         setCompanyDetails={setCompanyDetails}
+        loadingDetails={loadingDetails}
+        setDisableSubmit={setDisableSubmit}
       />
 
       <FundingSection
@@ -239,7 +266,8 @@ console.log("submited res",submitresult)
         setIsSelfFunded={setIsSelfFunded}
         fields={fundingFields}
         append={appendFunding}
-        remove={removeFunding}   
+        remove={removeFunding} 
+        loadingDetails={loadingDetails}  
       />
 
       <CultureAndPerks
@@ -253,9 +281,12 @@ console.log("submited res",submitresult)
         perkDetails={getCompanyDetails?.perkDetails}
         setCompanyDetails={setCompanyDetails}
         companyID={companyID}
+        cultureAndParksValue={getValuesForDD?.CompanyPerks}
+        loadingDetails={loadingDetails}
       />
 
       <ClientSection
+        companyID={companyID}
         register={register}
         errors={errors}
         setValue={setValue}
@@ -263,8 +294,12 @@ console.log("submited res",submitresult)
         fields={fields}
         append={append}
         remove={remove}
+        clearErrors={clearErrors}
+        setError={setError}
         contactDetails={getCompanyDetails?.contactDetails}
         accessTypes={getValuesForDD?.BindAccessRoleType}
+        loadingDetails={loadingDetails}
+        setDisableSubmit={setDisableSubmit}
       />
 
       <EngagementSection
@@ -275,11 +310,12 @@ console.log("submited res",submitresult)
         resetField={resetField}
         unregister={unregister}
         engagementDetails={getCompanyDetails?.engagementDetails}
-        hooksProps={{checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError}}
+        hooksProps={{checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError,payPerError, setPayPerError}}
+        loadingDetails={loadingDetails}
       />
 
       <div className={AddNewClientStyle.tabsFormItem}>
-        <div className={AddNewClientStyle.tabsFormItemInner}>
+        {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
             <h3>Add POCs</h3>
             <p>Please provide the necessary details.</p>
@@ -305,7 +341,8 @@ console.log("submited res",submitresult)
               </div>
             </div>
           </div>
-        </div>
+        </div>}
+        
       </div>
 
       <div className={AddNewClientStyle.formPanelAction}>
@@ -313,7 +350,8 @@ console.log("submited res",submitresult)
           Cancel
         </button>
         <button
-          // disabled={isLoading}
+          disabled={disableSubmit}
+          style={{cursor:disableSubmit? "not-allowed" :"pointer"}}
           type="submit"
           onClick={handleSubmit(clientSubmitHandler)}
           className={AddNewClientStyle.btnPrimary}

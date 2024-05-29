@@ -1,13 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import AddNewClientStyle from "./addclient.module.css";
-import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
-import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
-import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
-import { useFieldArray, useForm } from "react-hook-form";
-import TextEditor from "shared/components/textEditor/textEditor";
-import { Checkbox, message, Select, Radio } from "antd";
+import { InputType } from "constants/application";
+import { Checkbox, Select, Radio, Skeleton } from "antd";
 import { MasterDAO } from "core/master/masterDAO";
 
 function EngagementSection({
@@ -18,11 +14,10 @@ function EngagementSection({
   unregister,
   watch,
   engagementDetails,
-  hooksProps
+  hooksProps,
+  loadingDetails
 }) {
-  const {checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError} = hooksProps
-  const [payPerError, setPayPerError] = useState(false);
-  
+  const {checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError,payPerError, setPayPerError} = hooksProps  
 
   const [hrPricingTypes, setHRPricingTypes] = useState([]);
   const [controlledHiringPricingTypeValue, setControlledHiringPricingTypeValue] =
@@ -118,7 +113,7 @@ function EngagementSection({
 
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
-      <div className={AddNewClientStyle.tabsFormItemInner}>
+      {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
         <div className={AddNewClientStyle.tabsLeftPanel}>
           <h3>Engagement Details</h3>
         </div>
@@ -328,10 +323,10 @@ function EngagementSection({
                             value: 0,
                             message: `please don't enter the value less than 0`,
                           },
-                          max: {
-                            value: 99,
-                            message: `please don't enter the value greater than 99`,
-                          },
+                          // max: {
+                          //   value: 99,
+                          //   message: `please don't enter the value greater than 99`,
+                          // },
                         }}
                         onKeyDownHandler={(e) => {
                           if (
@@ -409,7 +404,7 @@ function EngagementSection({
                       )}
 
                       <div className={AddNewClientStyle.row}>
-                        {IsChecked?.isPostaJob ? (
+                        {IsChecked?.isPostaJob && (
                           <div className={AddNewClientStyle.colMd6}>
                             <HRInputField
                               register={register}
@@ -426,9 +421,7 @@ function EngagementSection({
                               }}
                             />
                           </div>
-                        ) : (
-                          <div className={AddNewClientStyle.colMd4}></div>
-                        )}
+                        ) }
 
                         {IsChecked?.isProfileView && (
                           <>
@@ -477,7 +470,8 @@ function EngagementSection({
               </>
             )}
         </div>
-      </div>
+      </div>}
+      
     </div>
   );
 }

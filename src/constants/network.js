@@ -63,6 +63,7 @@ export class CompanysAPI {
 	static DELETE_YOUTUBE_DETAILS = 'DeleteYouTubeDetails';
 	static DELETE_CULTURE_IMAGE = 'DeleteCultureImage'
 	static UPDATE_COMPANY_DETAILS = 'UpdateDetails'
+	static VALIDATE_COMPANY_CLIENT = 'ValidateCompanyClient'
 }
 export class MethodType {
 	static GET = '/get';

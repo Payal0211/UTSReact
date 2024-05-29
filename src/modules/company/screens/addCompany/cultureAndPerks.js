@@ -1,21 +1,19 @@
 import React, { useEffect, useState, useRef } from "react";
 import AddNewClientStyle from "./addclient.module.css";
-import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
-import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as DeleteIcon} from 'assets/svg/delete-yellow.svg'
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
-import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
-import { useFieldArray, useForm } from "react-hook-form";
+import { InputType } from "constants/application";
 import TextEditor from "shared/components/textEditor/textEditor";
-import { Checkbox, message } from 'antd';
+import { Checkbox, Skeleton, message } from 'antd';
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { HTTPStatusCode } from "constants/network";
 import { HttpStatusCode } from "axios";
 
-function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDetails,cultureDetails,companyDetails,setCompanyDetails,companyID}) {
+function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDetails,cultureDetails,companyDetails,setCompanyDetails,companyID,loadingDetails,cultureAndParksValue}) {
     const [controlledperk, setControlledperk] = useState([]);
     const [combinedPerkMemo, setCombinedPerkMemo] = useState([])
+    const [uploading,setUploading] = useState(false)
     const pictureRef = useRef()
    useEffect(()=>{
     if(perkDetails?.length > 0){
@@ -38,29 +36,27 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
     }
    },[perkDetails,companyDetails]) 
 
+   useEffect(()=>{
+    if(cultureAndParksValue?.length > 0){
+      setCombinedPerkMemo(cultureAndParksValue?.map(item=> ({
+        id: item.value,
+        value: item.value,
+    })))
+    }
+   },[cultureAndParksValue])
+
    const uploadCultureImages = async (Files) => {
-     
+    setUploading(true)
     let filesToUpload = new FormData()
 
-
-
-      for (let i = 0; i < Files.length; i++) {
-       
+      for (let i = 0; i < Files.length; i++) {   
        filesToUpload.append("Files",Files[i])
       }
-      // filesToUpload.append("Files",Files)
      filesToUpload.append('IsCompanyLogo',false)
      filesToUpload.append('IsCultureImage',true)
 
-    //  let payload = {
-    //   Files:Files,
-    //   IsCompanyLogo:false,
-    //   IsCultureImage:true
-    //  }
-
      let Result = await allCompanyRequestDAO.uploadImageDAO(filesToUpload)
-
-     
+   
      if(Result?.statusCode === HTTPStatusCode.OK){
         let imgUrls = Result?.responseBody
 
@@ -75,7 +71,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
           cultureDetails:[...imgObj,...newCultureObj]
           }))
      }
-
+     setUploading(false)
    }
 
 
@@ -127,7 +123,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
 
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
-    <div className={AddNewClientStyle.tabsFormItemInner}>
+      {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
             <div className={AddNewClientStyle.tabsLeftPanel}>
                 <h3>Culture & Perks</h3>
                 <p>Please provide the necessary details</p>
@@ -156,7 +152,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
         <div className={AddNewClientStyle.row}>
         <div className={AddNewClientStyle.colMd12}>
         <div className={AddNewClientStyle.label}>Picture</div>
-        <div
+        {uploading? <Skeleton active /> : <div
               className={AddNewClientStyle.FilesDragAndDrop__area}
               style={{ width: "100%", cursor: "pointer" }}
               onClick={()=> pictureRef && pictureRef.current.click()}
@@ -215,30 +211,15 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
                   }
 
 
-                  try {
-                    
+                  try {                 
                     uploadCultureImages(e.target.files)
-                    // setIsLoading(true);
-                    // const result = await loadEndPromise;
-                    // setIsLoading(false);
-                    // let _culVal = [...cultureDetails];
-                    // _culVal.push({
-                    //   cultureImage: result,
-                    //   internalId: Math.random(),
-                    //   cultureID: null,
-                    //   internalName: file.name,
-                    //   fileUpload: {
-                    //     base64ProfilePic: result,
-                    //     extenstion: file.name.split(".").pop(),
-                    //   },
-                    // });
-                    // setCultureDetails(_culVal);
                   } catch (error) {
                     console.error("Error reading the file:", error);
                   }
                 }}
               />
-            </div>
+            </div>}
+        
         </div>
         </div>
 
@@ -283,7 +264,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
                 type={InputType.TEXT}
                 onChangeHandler={(e) => {
                 }}
-                placeholder="Add Links separated by commas"
+                placeholder="Add Links and press Enter"
               />
         </div>
         </div>
@@ -297,7 +278,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
   allowfullscreen
   title='video'
 /> */}
-<div className={AddNewClientStyle.youTubeDetails}>
+<div className={AddNewClientStyle.youTubeDetails} onClick={()=>{}}>
   {youtube.youtubeLink}  <DeleteIcon style={{marginLeft:'10px',cursor:'pointer'}} onClick={()=>{ removeYoutubelink(youtube)}} />
 </div>
                 </div>)}
@@ -322,7 +303,8 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
         </div>
         </div>
             </div>
-            </div>
+            </div>}
+    
 
           
 

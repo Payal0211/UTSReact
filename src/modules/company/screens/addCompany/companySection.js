@@ -1,18 +1,18 @@
 import React,{useState, useCallback, useEffect} from "react";
 import AddNewClientStyle from "./addclient.module.css";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
-import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
-import { useFieldArray, useForm } from "react-hook-form";
+
 import TextEditor from "shared/components/textEditor/textEditor";
 import UploadModal from "shared/components/uploadModal/uploadModal";
-import { Checkbox, message } from 'antd';
-import { HTTPStatusCode, NetworkInfo } from "constants/network";
+import { Skeleton } from 'antd';
+import { HTTPStatusCode } from "constants/network";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 
-function CompanySection({register,errors,setValue,watch,companyDetails,setCompanyDetails}) {
+function CompanySection({companyID,register,errors,setValue,watch,companyDetails,setCompanyDetails,loadingDetails,clearErrors,setError,setDisableSubmit}) {
   const [getUploadFileData, setUploadFileData] = useState('');
   const [base64Image, setBase64Image] = useState('');
   const [showUploadModal, setUploadModal] = useState(false);
@@ -105,8 +105,31 @@ function CompanySection({register,errors,setValue,watch,companyDetails,setCompan
     [getValidation, setBase64Image, setUploadFileData]
   );
 
+  const validateCompanyName = async () => {
+   let payload = {
+      "workEmail": "",
+      "companyName": watch('companyName'),
+      "currentCompanyID": +companyID
+    }
+
+    const result = await allCompanyRequestDAO.validateClientCompanyDAO(payload)
+
+    if(result.statusCode === HTTPStatusCode.OK){
+      clearErrors('companyName')
+      setDisableSubmit(false)
+    }
+    if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
+      setDisableSubmit(true)
+      setError('companyName',{
+        type: "manual",
+        message: result?.responseBody,
+      })
+    }
+  }
+
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
+      {loadingDetails ? <Skeleton active /> : <>
         <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
             <h3>Basic Company Details</h3>
@@ -118,7 +141,8 @@ function CompanySection({register,errors,setValue,watch,companyDetails,setCompan
           </div>
 
           <div className={AddNewClientStyle.tabsRightPanel}>
-            <div className={AddNewClientStyle.row}>
+            
+                <div className={AddNewClientStyle.row}>
               <div className={AddNewClientStyle.colMd12}>
                 <div
                   style={{
@@ -207,6 +231,7 @@ function CompanySection({register,errors,setValue,watch,companyDetails,setCompan
                       // 	message: 'Entered value does not match url format',
                       // },
                     }}
+                    onBlurHandler={()=> validateCompanyName()}
                     onChangeHandler={(e) => {
                       // setCompanyName(e.target.value);
                       // debounceDuplicateCompanyName(e.target.value);
@@ -390,9 +415,12 @@ function CompanySection({register,errors,setValue,watch,companyDetails,setCompan
                 getValidation={getValidation}
               />
             )}
+           
+        
 
           </div>
         </div>
+        </>}
       </div>
   )
 }

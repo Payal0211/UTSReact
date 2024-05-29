@@ -165,5 +165,37 @@ export const allCompanyRequestDAO  = {
         } catch (error) {
             return errorDebug(error, 'allCompanyRequestDAO.updateCompanyDetailsDAO');
         }
+    },
+	validateClientCompanyDAO: async (payload) =>{
+        try {            
+            const allClientsResult = await CompanyAPI.validateClientCompanyRequest(payload);
+            if (allClientsResult) {
+				const statusCode = allClientsResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = allClientsResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return allClientsResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return allClientsResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+        } catch (error) {
+            return errorDebug(error, 'allCompanyRequestDAO.updateCompanyDetailsDAO');
+        }
     }
 }
