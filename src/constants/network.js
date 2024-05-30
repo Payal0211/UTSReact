@@ -94,7 +94,8 @@ export class ReportType {
 	static SUPPLY_FUNNEL = 'SupplyFunnel/';
 	static TEAM_DEMAND_FUNNEL = 'TeamDemandFunnel/';
 	static JD_PARSING_DUMP = 'JDParsingDump/';
-	static HR_LOST_REPORT = 'HRLostReport/'
+	static HR_LOST_REPORT = 'HRLostReport/';
+	static REPLACEMENT_REPORT = 'ReplacementReport';
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

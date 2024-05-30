@@ -108,6 +108,10 @@ const ClientReport = React.lazy(() =>
  	import('modules/report/screens/clientReport/clientReport')
 );
 
+const ReplacementReport = React.lazy(() =>
+	import('modules/report/screens/replacementReport/replacementReport')
+);
+
 const HRReport = React.lazy(() =>
 	import('modules/report/screens/hrReport/hrReport')
 );
@@ -208,6 +212,7 @@ export default class UTSRoutes {
 	static ONBOARD = '/onBoardList';
 	static UTM_TRACKING_REPORT = "/utmTrackingReport";
 	static CLIENT_PORTAL_TRACKING_REPORT = "/clientPortalTrackingReport";
+	static REPLACEMENT_REPORT = "/replacementReport";
 	static ADD_NEW_COMPANY = "/addNewCompany/:companyID";
 }
 
@@ -366,6 +371,11 @@ export const navigateToComponent = {
 	[UTSRoutes.CLIENT_REPORT]:(
 		<Suspense>
 			<ClientReport />
+		</Suspense>
+	),
+	[UTSRoutes.REPLACEMENT_REPORT]:(
+		<Suspense>
+			<ReplacementReport />
 		</Suspense>
 	),
 	[UTSRoutes.HR_REPORT]:(

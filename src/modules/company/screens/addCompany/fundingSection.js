@@ -161,7 +161,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                     // errors={errors}
                     label="Funding Amount"
                     name={`fundingDetails.[${index}].fundingAmount`}
-                    type={InputType.NUMBER}
+                    type={InputType.TEXT}
                     onChangeHandler={(e) => {
                     }}
                     placeholder="Ex: 500k, 900k, 1M, 2B..."

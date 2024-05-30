@@ -21,29 +21,40 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
           id: item,
           value: item,
       })))
-      setCombinedPerkMemo(perkDetails?.map(item=> ({
+      if(cultureAndParksValue?.length > 0){
+         setCombinedPerkMemo([...perkDetails?.map(item=> ({
           id: item,
           value: item,
-      })))
+      })),...cultureAndParksValue?.filter(item=> !perkDetails?.includes(item.value)).map(item=> ({
+        id: item.value,
+        value: item.value,
+    }))] )
+      }
+     
       setControlledperk(perkDetails?.map(item=> ({
           id: item,
           value: item,
       })))
+          }else{
+            setCombinedPerkMemo(cultureAndParksValue?.map(item=> ({
+                    id: item.value,
+                    value: item.value,
+                })))
           }
 
     if(companyDetails?.companyName){
         companyDetails?.culture && setValue('culture',companyDetails?.culture)
     }
-   },[perkDetails,companyDetails]) 
+   },[perkDetails,companyDetails,cultureAndParksValue]) 
 
-   useEffect(()=>{
-    if(cultureAndParksValue?.length > 0){
-      setCombinedPerkMemo(cultureAndParksValue?.map(item=> ({
-        id: item.value,
-        value: item.value,
-    })))
-    }
-   },[cultureAndParksValue])
+  //  useEffect(()=>{
+  //   if(cultureAndParksValue?.length > 0){
+  //     setCombinedPerkMemo(cultureAndParksValue?.map(item=> ({
+  //       id: item.value,
+  //       value: item.value,
+  //   })))
+  //   }
+  //  },[cultureAndParksValue])
 
    const uploadCultureImages = async (Files) => {
     setUploading(true)

@@ -871,6 +871,8 @@ const ActivityFeed = ({
 							{historyData?.timeZone_EndTime && <div className={ActivityFeedStyle.historyGridInfo}><span>End Time:</span> {historyData?.timeZone_EndTime}</div>}							
 							{historyData?.timezone && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone:</span> {historyData?.timezone}</div>}
 							{historyData?.timezone_Preference && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone Preference:</span> {historyData?.timezone_Preference}</div>}
+							{historyData?.employmentType && <div className={ActivityFeedStyle.historyGridInfo}><span>Employment Type :</span> {historyData?.employmentType}</div>}
+							{historyData?.payrollType && <div className={ActivityFeedStyle.historyGridInfo}><span>Payroll Type:</span> {historyData?.payrollType}</div>}
 						</div>
 						{historyData?.jobDescription && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Description:</span> <div dangerouslySetInnerHTML={{__html:historyData?.jobDescription}} /></div>}
 						{historyData?.MustHaveSkills && <div className={ActivityFeedStyle.MustHaveSkills}><span>Must Have Skills:</span> <div dangerouslySetInnerHTML={{__html:historyData?.MustHaveSkills}} /></div>}
