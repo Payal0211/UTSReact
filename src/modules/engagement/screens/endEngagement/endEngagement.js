@@ -134,11 +134,9 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 				isReplacement: engagementReplacement?.replacementData,
 				talentReplacement: {
 				onboardId: talentInfo?.onboardID,
-				lastWorkingDay:
-				(engagementReplacement?.replacementData == true && addLatter == false) ? d.lwd :"" ,
+				lastWorkingDay: addLatter === false ? d.lwd :"" ,
 				replacementInitiatedby:loggedInUserID.toString(),
-				engHRReplacement:
-				(engagementReplacement?.replacementData == true && addLatter == false) ? d.engagementreplacement.id :""
+				engHRReplacement: addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id 
 				}
 			};
 			const response =
@@ -159,7 +157,8 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 			getEndEngagementDetails?.contractDetailID,
 			getUploadFileData,
 			talentInfo,
-			engagementReplacement?.replacementData
+			engagementReplacement?.replacementData,
+			addLatter
 		],
 	);
 
@@ -217,6 +216,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 										selected={watch('lastWorkingDate')}
 										onChange={(date) => {
 											setValue('lastWorkingDate', date);
+											setValue("lwd",date)
 										}}
 										placeholderText="Contract End Date"
 										dateFormat="dd/MM/yyyy"
@@ -329,8 +329,10 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 							...engagementReplacement,
 							replacementData: e.target.checked,
 							});
-							if(e.target.checked == false){
-								setValue("lwd","")
+							if(e.target.checked === false){
+								setAddLetter(false)
+								setValue("lwd","");
+								setValue("engagementreplacement","")
 							}
 						}}
 					>
@@ -339,7 +341,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 				</div>
 			</div>
 			<div className={`${allengagementEnd.row} ${allengagementEnd.mb16}`}>
-			<div className={allengagementEnd.colMd6}>
+				<div className={allengagementEnd.colMd6}>
 					{engagementReplacement?.replacementData &&<div className={allengagementEnd.timeSlotItemField}>
 						<div className={allengagementEnd.timeLabel}>
 							Last Working Day
@@ -356,7 +358,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 										placeholderText="Last Working Day"
 										dateFormat="dd/MM/yyyy"
 										minDate={new Date()}
-										disabled={addLatter}
+										// disabled={addLatter}
 									/>
 								)}
 								name="lwd"
@@ -382,7 +384,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 				</div>}
 			</div>
 			<div className={`${allengagementEnd.row} ${allengagementEnd.mb32}`}>
-				<div className={allengagementEnd.colMd12}>
+				{engagementReplacement?.replacementData &&<div className={allengagementEnd.colMd12}>
 					<Checkbox
                      	name="PayPerCredit"
                       	checked={addLatter}
@@ -392,7 +394,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
                     >
 					Will add this later, by doing this you understand that replacement will not be tracked correctly.
                     </Checkbox>
-				</div>
+				</div>}
 			</div>
 			</>}
 			<div className={allengagementEnd.formPanelAction}>
