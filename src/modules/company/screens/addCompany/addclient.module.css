@@ -1,0 +1,337 @@
+.addHRTitle {
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 35px;
+}
+
+.addNewContainer {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.tabsFormItem {
+    padding-bottom: 23px;
+    margin-bottom: 55px;
+    border-bottom: 1px solid rgba(206, 204, 204, 0.5);
+    padding-top: 23px;
+}
+
+.tabsFormItemInner {
+    display: flex;
+}
+
+.tabsFormItem:nth-last-child(2) {
+    margin-bottom: 0;
+}
+
+.tabsLeftPanel {
+    width: 33.33%;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #7C7C7C;
+}
+
+.tabsRightPanel {
+    flex: 1;
+    padding-left: 30px;
+}
+
+.row {
+    margin: 0 -9px;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.colMd12 {
+    width: 100%;
+    padding: 0 9px;
+}
+
+.colMd6 {
+    width: 50%;
+    padding: 0 9px;
+}
+
+.colMd4 {
+    width: 33.33%;
+    padding: 0 9px;
+}
+
+.tabsLeftPanel h3 {
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 30px;
+    color: var(--uplers-black);
+    margin: 0 0 8px;
+}
+
+.tabsLeftPanel p {
+    margin: 0;
+}
+
+.leftPanelAction {
+    margin-top: 32px;
+}
+
+.leftPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid var(--tabs-border-color);
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.leftPanelAction button+button {
+    margin-left: 16px;
+}
+
+.leftPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    color: var(--uplers-black);
+    border-color: var(--color-sunlight);
+}
+
+.calendarFilterSet{
+    display: flex;
+    justify-content: space-evenly;
+    /* align-items: center; */
+    gap: 8px;
+    flex-direction: column;
+}
+.label{
+    /* font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--uplers-lightBlack); */
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #676767;
+    /* margin: 0 0 8px; */
+    display: inline-block;
+}
+.calendarFilter{ 
+    height: 54px;
+    border-radius: 8px;
+    padding: 2px 10px;
+    border: 1px solid var(--background-color-metal);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    background-color: #fff;
+}
+
+.calendarFilterDisabled{
+    background-color: #E7E7E7 !important ;
+    cursor: not-allowed !important;
+}
+
+
+.calendarFilter [class*="react-datepicker-popper"]{
+    right: 0 !important;
+    left: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    margin: 40px 0 30px;
+}
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  > div
+  > [class*="react-datepicker"] {
+  margin-left: 0;
+  min-width: 100%;
+}
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  [class*="react-datepicker__navigation"]:before {
+  top: 14px;
+}
+.calendarFilter
+  [class*="react-datepicker-popper"]
+  [class*="react-datepicker__day-names"] {
+  margin-top: 5px;
+}
+.calendarFilter
+  [class*="react-datepicker__month-container"]
+  [class*="react-datepicker__month"] {
+  margin-bottom: 10px;
+}
+
+.dateFilter{
+    cursor: pointer;
+    width: 102%;
+    outline: none;
+    border:none;
+    color: var(--uplers-black);
+    font-weight: 500;
+}
+
+.FilesDragAndDrop__area {
+    border: 1px dashed #cecccc;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    background: #f5f5f5;
+    text-align: center;
+    padding: 23px 0;
+  }
+  
+  .FilesDragAndDrop__area p {
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 0;
+    margin-top: 20px;
+  }
+  .FilesDragAndDrop__area p span {
+    font-size: 14px;
+    color: #f52887;
+    font-weight: 500;
+  }
+  .FilesDragAndDrop__area span {
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .phoneNoCode {
+    width: 120px;
+}
+
+.phoneNoCode [class*="ant-select-selector"] {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.phoneNoInput {
+    flex: 1;
+}
+
+.phoneNoInput [class*="formField"] {
+    margin: 0;
+}
+
+.phoneNoInput input {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin: 0;
+}
+
+.reqField {
+    color: red;
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+.formPanelAction {
+    padding: 32px 0;
+    justify-content: center;
+    display: flex;
+}
+
+.formPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid var(--tabs-border-color);
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.formPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+
+.formPanelAction button+button {
+    margin-left: 16px;
+}
+
+.cultureImage {
+    width: 100%;
+    border-radius: 10%;
+    margin-bottom: 15px;
+}
+
+.cultureImageContainer{
+    position: relative;
+    width: 100%;
+}
+
+.cultureDelete {
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    cursor: pointer;
+}
+
+.youTubeDetails{
+    background: #fff8d6;
+    border-radius: 14px;
+    color: #002dcb;
+    display: flex;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    margin-top: 11px;
+    padding: 5px 14px;
+    text-decoration: underline;
+    width: fit-content;
+    max-width: 100%;
+    align-items: center;
+}
+
+.error{
+    color:red
+}
+
+.btnPrimaryResendBtn{
+    background: var(--color-sunlight);
+    border: 0;
+    border-radius: 8px;
+    box-shadow: none;
+    color: var(--uplers-black);
+    cursor: pointer;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-weight: 500;
+    height: 40px;
+    line-height: 17px;
+    margin-top: 30px;
+    outline: none;
+    padding: 12px 28px;
+}
+
+.dateSelect {
+    display: flex;
+}
+
+.dateSelect .ant-select .ant-select-selector {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+  }
+.dateSelect .ant-select:last-child .ant-select-selector {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-right: 1px solid #cecccc;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}

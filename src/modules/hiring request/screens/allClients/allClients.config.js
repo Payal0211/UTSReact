@@ -94,7 +94,7 @@ export const allClientsConfig = {
                     render:(_,result) => {
                         return (<div style={{display:'flex'}}>
                         {isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
-                            to={`/editclient/${result.companyID}`}
+                            to={`/addNewCompany/${result.companyID}`}
                             style={{ color: 'black', textDecoration: 'underline' }}
                             onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
                             <PencilSVG />

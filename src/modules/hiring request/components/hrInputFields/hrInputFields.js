@@ -27,6 +27,7 @@ const HRInputField = ({
 	validationSchema,
 	onKeyDownHandler,
 	rows,
+	forArrayFields
 }) => {
 	const formFieldClasses = classNames({
 		[HRInputFieldStyle.inputfield]: true,
@@ -132,6 +133,11 @@ const HRInputField = ({
 						</div>
 				  )
 				: false}
+			{forArrayFields && required && errors?.message && (
+						<div className={HRInputFieldStyle.error}>
+							{errors?.message && `* ${errors?.message}`}
+						</div>
+				  )}
 			{isError && <div className={HRInputFieldStyle.error}>* {errorMsg}</div>}
 		</div>
 	);
