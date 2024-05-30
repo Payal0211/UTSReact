@@ -278,7 +278,7 @@ function AddCompany() {
         companyDetails={getCompanyDetails?.basicDetails}
         cultureDetails={getCompanyDetails?.cultureDetails ?? []}
         youTubeDetails={getCompanyDetails?.youTubeDetails ?? []}
-        perkDetails={getCompanyDetails?.perkDetails}
+        perkDetails={getCompanyDetails?.perkDetails ?? []}
         setCompanyDetails={setCompanyDetails}
         companyID={companyID}
         cultureAndParksValue={getValuesForDD?.CompanyPerks}
