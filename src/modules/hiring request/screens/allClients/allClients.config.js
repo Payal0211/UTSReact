@@ -69,10 +69,14 @@ export const allClientsConfig = {
                     width: '150px',
                     render: (text, result) => {
                         let url = text + `&isInternal=${true}`
+                        console.log(url,
+                            "urlurlurlurlurlurlurlurlurlurlurl"
+                        );
+                        let data = "http://localhost:3001/login?AD=izGYZlR14Hk=&CT=A4kiPq3O96U=&UID=D7DA5b0OLj4=&isInternal=true"
                         return (
                             result?.isActive === "yes" && result?.companyID !==0 && result?.clientID!==0 &&
                                 <a
-                                href={url}
+                                href={data}
                                 target="_blank"
                                 className={clienthappinessSurveyStyles.linkForSSO}
                                 >

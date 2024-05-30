@@ -1,5 +1,5 @@
 import React, { useEffect , useState, useCallback, useRef} from "react";
-import { Skeleton, Dropdown, Menu, message } from 'antd';
+import { Skeleton, Dropdown, Menu, message, Checkbox } from 'antd';
 import HRDetailStyle from '../../screens/hrdetail/hrdetail.module.css';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
@@ -11,6 +11,7 @@ import { HTTPStatusCode } from "constants/network";
 import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import UploadModal from "shared/components/uploadModal/uploadModal";
+import DatePicker from "react-datepicker";
 
 
 import { ReactComponent as GeneralInformationSVG } from 'assets/svg/generalInformation.svg';
@@ -18,6 +19,7 @@ import { ReactComponent as EditFieldSVG } from 'assets/svg/EditField.svg';
 import { ReactComponent as AboutCompanySVG } from 'assets/svg/aboutCompany.svg';
 import { ReactComponent as ClientTeamMemberSVG } from 'assets/svg/clientTeammember.svg';
 import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 
 import { BsThreeDots } from 'react-icons/bs';
 
@@ -89,7 +91,14 @@ export default function DuringPreOnboarding({
             const response = await MasterDAO.getBuddyRequestDAO();
             setBuddy(response && response?.responseBody?.details);
         }, []);
-
+    const [engagementReplacement,setEngagementReplacement] = useState({
+        replacementData : false
+    })
+    const [addLatter,setAddLetter] = useState(false);
+    const [replacementEngHr,setReplacementEngHr] = useState([])
+    const loggedInUserID = JSON.parse(localStorage.getItem('userSessionInfo')).LoggedInUserTypeID
+    const [controlledEngRep, setControlledEngRep] = useState()
+    
     useEffect(() => {
         getReportingToHandler();
 		getBuddyHandler();
@@ -144,10 +153,11 @@ export default function DuringPreOnboarding({
     
           if (result?.statusCode === HTTPStatusCode.OK) {
             let data = result.responseBody.details
-
+            const _checkValue = Object.keys(data.replacementDetail).length === 0;
            setTabDisabled(data.isSecondTabReadOnly)
            setTabData(data.secondTabAMAssignmentOnBoardingDetails)
            setUplersLeavePolicyLink(data.uplersLeavePolicy)
+           setReplacementEngHr(data.replacementEngAndHR)
            setDeviceMasters(data.deviceMaster)
            setValue('invoiceRaisinfTo',data.secondTabAMAssignmentOnBoardingDetails.inVoiceRaiseTo)
            setValue('invoiceRaisingToEmail',data.secondTabAMAssignmentOnBoardingDetails.inVoiceRaiseToEmail)
@@ -161,7 +171,11 @@ export default function DuringPreOnboarding({
 
            setValue('exitPolicy',data.exit_Policy)
            setValue('feedbackProcess', data.feedback_Process)
-
+           setEngagementReplacement({
+            ...engagementReplacement,
+            replacementData: _checkValue === false ? true: false,
+          });
+          setValue('lwd', data.replacementDetail.lastWorkingDay);
            setClientTeamMembers(data.onBoardClientTeam)
 
            if(data.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption){
@@ -243,7 +257,14 @@ export default function DuringPreOnboarding({
             "totalCost": !talentDeteils?.IsHRTypeDP ?  d.devicePolicy.id === 2 ?  deviceMasters.filter(item=> item.id === d.deviceType.id)[0].deviceCost : 0 : 0,//deviceCost
             "radio_LeavePolicies":!talentDeteils?.IsHRTypeDP ?  d.leavePolicie.value : "",
             "leavePolicyPasteLinkName": !talentDeteils?.IsHRTypeDP ?  d.leavePolicie.id === 2 ?  d.policyLink ? d.policyLink : "" : "" : "",
-            "teamMembers": clientTeamMembers
+            "teamMembers": clientTeamMembers,
+            "isReplacement": engagementReplacement?.replacementData,
+            "talentReplacement": {
+            "onboardId": talentDeteils?.OnBoardId,
+            "lastWorkingDay":addLatter === false ? d.lwd :"" ,
+            "replacementInitiatedby":loggedInUserID.toString(),
+            "engHRReplacement": addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id 
+            }
           }
 
           let result = await OnboardDAO.updatePreOnBoardInfoDAO(payload);
@@ -1042,6 +1063,97 @@ export default function DuringPreOnboarding({
 
             </div>
         </div>
+
+        <div className={HRDetailStyle.onboardingProcesBox}>
+            <div className={HRDetailStyle.onboardingProcessLeft}>
+                <div><ClientTeamMemberSVG width="51" height="26" /></div>
+                <h3 className={HRDetailStyle.titleLeft}>Replacement Details</h3>
+            </div>
+
+            <div className={HRDetailStyle.onboardingProcessMid}>
+              <div className={`${HRDetailStyle.labelreplacement}`}>
+                  <Checkbox
+                        disabled={isTabDisabled}
+                          name="PayPerCredit"
+                          checked={engagementReplacement?.replacementData}
+                          onChange={(e) => {
+                          setEngagementReplacement({
+                          ...engagementReplacement,
+                          replacementData: e.target.checked,
+                          });
+                          if(e.target.checked === false){
+                            setAddLetter(false)
+                            setValue("lwd","");
+                            setValue("engagementreplacement","")
+                        }
+                        }}
+                      >
+                      Is this engagement going under replacement?
+                  </Checkbox>
+              </div>
+              <div className={`${HRDetailStyle.labelreplacement}`}>
+                <div className={HRDetailStyle.colMd6}>
+                  {engagementReplacement?.replacementData &&<div className={HRDetailStyle.timeSlotItemField}>
+                    <div className={HRDetailStyle.timeLabel}>
+                      Last Working Day
+                    </div>
+                    <div className={HRDetailStyle.timeSlotItem}>
+                      <CalenderSVG />
+                      <Controller
+                        render={({ ...props }) => (
+                          <DatePicker
+                            selected={watch('lwd')}
+                            onChange={(date) => {
+                              setValue('lwd', date);
+                            }}
+                            placeholderText="Last Working Day"
+                            dateFormat="dd/MM/yyyy"
+                            minDate={new Date()}
+                            // disabled={addLatter}
+                          />
+                        )}
+                        name="lwd"
+                        rules={{ required: true }}
+                        control={control}
+                      />
+                    </div>
+                  </div>}
+                </div>
+              </div>
+              <div className={HRDetailStyle.labelreplacement}>
+                {engagementReplacement?.replacementData && <div className={HRDetailStyle.colMd6}>
+                  <HRSelectField
+                   controlledValue={controlledEngRep}
+                   setControlledValue={setControlledEngRep}
+                   isControlled={true}
+                    disabled={addLatter || isTabDisabled}
+                    setValue={setValue}
+                    mode={"id/value"}
+                    register={register}
+                    name="engagementreplacement"
+                    label="Select HR ID/Eng ID created to replace this engagement"
+                    defaultValue="Select HR ID/Eng ID"
+                    options={replacementEngHr ? replacementEngHr.map(item=> ({id: item.stringIdValue, value:item.value})) : []}
+                  />
+                </div>}
+              </div>
+              <div className={`${HRDetailStyle.labelreplacement} ${HRDetailStyle.mb32}`}>
+                {engagementReplacement?.replacementData &&<div className={HRDetailStyle.colMd12}>
+                  <Checkbox
+                    disabled={isTabDisabled}
+                    name="PayPerCredit"
+                    checked={addLatter}
+                    onChange={(e) => {
+                    setAddLetter(e.target.checked);
+                    }}
+                            >
+                  Will add this later, by doing this you understand that replacement will not be tracked correctly.
+                    </Checkbox>
+                </div>}
+              </div>
+            </div>
+        </div>
+
         </>}
       
     </div>

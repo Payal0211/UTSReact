@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Skeleton, Tooltip, Modal } from "antd";
+import { Skeleton, Tooltip, Modal, Checkbox } from "antd";
 import HRDetailStyle from "../../screens/hrdetail/hrdetail.module.css";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
@@ -24,6 +24,9 @@ import { ReactComponent as TelentDetailSVG } from "assets/svg/TelentDetail.svg";
 import { ReactComponent as EditFieldSVG } from "assets/svg/EditField.svg";
 import { ReactComponent as ClockIconSVG } from "assets/svg/clock-icon.svg";
 import moment from "moment";
+import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import { isNull } from "lodash";
+import { _isNull } from "shared/utils/basic_utils";
 
 export default function BeforePreOnboarding({
   talentDeteils,
@@ -63,10 +66,17 @@ export default function BeforePreOnboarding({
 
   const [controlledDealOwner, setControlledDealOwner] = useState()
   const [controlledDealSource, setControlledDealSource] = useState()
+  const [controlledEngRep, setControlledEngRep] = useState()
 
   const [isLoading, setIsLoading] = useState(false);
   const [isTabDisabled, setTabDisabled] = useState(false)
   const [isTransparentPricing,setIsTransparentPricing] = useState(false)
+  const [engagementReplacement,setEngagementReplacement] = useState({
+		replacementData : false
+	})
+  const [addLatter,setAddLetter] = useState(false);
+  const [replacementEngHr,setReplacementEngHr] = useState([])
+  const loggedInUserID = JSON.parse(localStorage.getItem('userSessionInfo')).LoggedInUserTypeID
 
   function convertToValidDate(timeString, currentDate = new Date()) {
     // Step 1: Parse the time string into separate components
@@ -115,6 +125,8 @@ export default function BeforePreOnboarding({
     //   console.log("fatchpreOnBoardInfo", result.responseBody.details);
 
       if (result?.statusCode === HTTPStatusCode.OK) {
+        const _checkValue = Object.keys(result.responseBody.details.replacementDetail).length === 0;
+        setReplacementEngHr(result.responseBody.details.replacementEngAndHR)
         setIsTransparentPricing(result.responseBody.details.isTransparentPricing)
         setTabDisabled(result.responseBody.details.isFirstTabReadOnly
           )
@@ -122,6 +134,10 @@ export default function BeforePreOnboarding({
         setPreOnboardingDetailsForAMAssignment(
           result.responseBody.details.preOnboardingDetailsForAMAssignment
         );
+        setEngagementReplacement({
+          ...engagementReplacement,
+          replacementData: _checkValue === false ? true: false,
+        });
         setWorkManagement(
           result.responseBody.details.preOnboardingDetailsForAMAssignment
             .workForceManagement
@@ -150,7 +166,7 @@ export default function BeforePreOnboarding({
           result.responseBody.details.preOnboardingDetailsForAMAssignment
             .utS_HRAcceptedBy
         );
-
+        setValue('lwd', result.responseBody.details.replacementDetail.lastWorkingDay);
         result.responseBody.details.preOnboardingDetailsForAMAssignment
                 .shiftStartTime && setValue(
           "shiftStartTime",
@@ -198,7 +214,8 @@ export default function BeforePreOnboarding({
            setControlledDealSource(dealSourceObj[0].value)
             setValue('dealSource',dealSourceObj[0])
         }
-    
+        const _filterData = result.responseBody.details.replacementEngAndHR?.filter((e) => e.id === result.responseBody.details.replacementDetail.newHrid || result.responseBody.details.replacementDetail.newOnBoardId);
+        setControlledEngRep(_filterData[0].value)
       }
     },
     [setValue]
@@ -271,7 +288,14 @@ export default function BeforePreOnboarding({
           ? null
           : parseFloat(d.billRate) , //,
         netPaymentDays: parseInt(d.netTerm.value), //Update
-        nrMargin:!preOnboardingDetailsForAMAssignment?.isHRTypeDP ? d.nrPercent : null
+        nrMargin:!preOnboardingDetailsForAMAssignment?.isHRTypeDP ? d.nrPercent : null,
+        isReplacement: engagementReplacement?.replacementData,
+				talentReplacement: {
+				onboardId: talentDeteils?.OnBoardId,
+				lastWorkingDay:addLatter === false ? d.lwd :"" ,
+				replacementInitiatedby:loggedInUserID.toString(),
+				engHRReplacement: addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id 
+				}
       };
 
       let result = await OnboardDAO.updateBeforeOnBoardInfoDAO(payload);
@@ -302,7 +326,9 @@ export default function BeforePreOnboarding({
       preONBoardingData,
       preOnboardingDetailsForAMAssignment,
       EnableNextTab,
-      actionType ,editPayRate
+      actionType ,editPayRate,
+      engagementReplacement?.replacementData,
+      addLatter
     ]
   );
   //  console.log("form error", errors);
@@ -1185,6 +1211,98 @@ export default function BeforePreOnboarding({
                 </div>
               </div>
             </div>
+
+            <div className={HRDetailStyle.onboardingProcesBox}>
+              <div className={HRDetailStyle.onboardingProcessLeft}>
+                <div>
+                  <TelentDetailSVG width="27" height="32" />
+                </div>
+                <h3 className={HRDetailStyle.titleLeft}>Replacement Details</h3>
+              </div>
+              
+          <div className={HRDetailStyle.onboardingProcessMid}>
+              <div className={`${HRDetailStyle.labelreplacement}`}>
+                  <Checkbox
+                          disabled={isTabDisabled}
+                          name="PayPerCredit"
+                          checked={engagementReplacement?.replacementData}
+                          onChange={(e) => {
+                          setEngagementReplacement({
+                          ...engagementReplacement,
+                          replacementData: e.target.checked,
+                          });
+                          if(e.target.checked === false){
+                            setAddLetter(false)
+                            setValue("lwd","");
+								            setValue("engagementreplacement","")
+                          }
+                        }}
+                      >
+                      Is this engagement going under replacement?
+                  </Checkbox>
+              </div>
+              <div className={`${HRDetailStyle.labelreplacement}`}>
+                <div className={HRDetailStyle.colMd6}>
+                  {engagementReplacement?.replacementData &&<div className={HRDetailStyle.timeSlotItemField}>
+                    <div className={HRDetailStyle.timeLabel}>
+                      Last Working Day
+                    </div>
+                    <div className={HRDetailStyle.timeSlotItem}>
+                      <CalenderSVG />
+                      <Controller
+                        render={({ ...props }) => (
+                          <DatePicker
+                          disabled={isTabDisabled}
+                            selected={watch('lwd')}
+                            onChange={(date) => {
+                              setValue('lwd', date);
+                            }}
+                            placeholderText="Last Working Day"
+                            dateFormat="dd/MM/yyyy"
+                            minDate={new Date()}
+                          />
+                        )}
+                        name="lwd"
+                        rules={{ required: true }}
+                        control={control}
+                      />
+                    </div>
+                  </div>}
+                </div>
+              </div>
+              <div className={HRDetailStyle.labelreplacement}>
+                {engagementReplacement?.replacementData && <div className={HRDetailStyle.colMd6}>
+                  <HRSelectField
+                    controlledValue={controlledEngRep}
+                    setControlledValue={setControlledEngRep}
+                    isControlled={true}
+                    disabled={addLatter || isTabDisabled}
+                    setValue={setValue}
+                    mode={"id/value"}
+                    register={register}
+                    name="engagementreplacement"
+                    label="Select HR ID/Eng ID created to replace this engagement"
+                    defaultValue="Select HR ID/Eng ID"
+                    options={replacementEngHr ? replacementEngHr.map(item=> ({id: item.stringIdValue, value:item.value})) : []}
+                  />
+                </div>}
+              </div>
+              <div className={`${HRDetailStyle.labelreplacement} ${HRDetailStyle.mb32}`}>
+                {engagementReplacement?.replacementData &&<div className={HRDetailStyle.colMd12}>
+                  <Checkbox
+                    disabled={isTabDisabled}
+                    name="PayPerCredit"
+                    checked={addLatter}
+                    onChange={(e) => {
+                    setAddLetter(e.target.checked);
+                    }}
+                  >
+                    Will add this later, by doing this you understand that replacement will not be tracked correctly.
+                  </Checkbox>
+                </div>}
+              </div>
+            </div>
+      </div>
           </>
         )}
       </div>

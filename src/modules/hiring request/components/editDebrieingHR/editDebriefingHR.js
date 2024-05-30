@@ -78,10 +78,11 @@ const EditDebriefingHR = ({
 	const [isFocusedRole, setIsFocusedRole] = useState(false)
 	let watchOtherSkills = watch('otherSkill');
 	let watchSkills = watch('skills');
+	let goodToHaveSkill = watch('goodToHaveSkills');
+	console.log(watchOtherSkills,"watchOtherSkills",watchSkills);
 	const [talentRole, setTalentRole] = useState([]);
 	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
 	const [companyType , setComapnyType] = useState({})
-
 	//to set skills and control
 	useEffect(()=>{
 		setControlledJDParsed(getHRdetails?.skillmulticheckbox?.map((item) => ({id:item?.id, value:item?.text})))
@@ -384,7 +385,16 @@ const EditDebriefingHR = ({
 	const openPublishModal = ()=>{
 		setShowPublishModal(true)
 	}
-
+const checkValChnage = () => {
+		// Convert both arrays to JSON strings
+		const arr1Str = JSON.stringify(controlledGoodToHave);
+		const arr2Str = JSON.stringify(getHRdetails?.allSkillmulticheckbox?.map((item) => ({id:item?.id, value:item?.text})));
+	  console.log(arr1Str, "arr1Str")
+	  console.log(arr2Str, "arr2Str")
+		console.log(arr1Str === arr2Str)
+		// Compare the JSON strings
+		return (arr1Str === arr2Str ? false : true);
+}
 	const debriefSubmitHandler = useCallback(
 		async (d) => {
 			setIsLoading(true);
@@ -419,7 +429,6 @@ const EditDebriefingHR = ({
 					sameSkillIssue = true
 				}
 			})
-
 			let debriefFormDetails = {
 				// roleAndResponsibilites:  d.roleAndResponsibilities,
 				// requirements:  d.requirements,
@@ -463,9 +472,11 @@ const EditDebriefingHR = ({
 					"aboutCompanyDesc": d.aboutCompany
 				},
 				companyType: companyType?.name,
-				PayPerType:  companyType?.id 
+				PayPerType:  companyType?.id,
+				// --update-- 0 or 1 check
+				// IsMustHaveSkillschanged: false,
+				// IsGoodToHaveSkillschanged:checkValChnage()
 			};
-
 			if(companyType?.id === 2){
 				debriefFormDetails['companyInfo'] = {
 					"companyID": getHRdetails?.companyInfo?.companyID,
@@ -639,9 +650,9 @@ const EditDebriefingHR = ({
 	return (
 		<>
 			{contextHolder}
-			<WithLoader
+			 <WithLoader
 				showLoader={isLoading}
-				className="mainLoader">
+				className="mainLoader"> 
 				<div className={DebriefingHRStyle.debriefingHRContainer}>
 					<div className={DebriefingHRStyle.partOne}>
 						<div className={DebriefingHRStyle.hrFieldLeftPane}>
