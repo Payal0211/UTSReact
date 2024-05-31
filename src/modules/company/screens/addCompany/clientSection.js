@@ -228,8 +228,8 @@ function ClientSection({
                       onBlurHandler={() => {
                         if (
                           errors?.clientDetails?.[index]?.emailID &&
-                          errors?.clientDetails?.[index]?.emailID?.message !==
-                            "Contact already exists in same Company"
+                          !errors?.clientDetails?.[index]?.emailID?.message.includes('This work email :') 
+                           
                         ) {
                           return;
                         }

@@ -18,7 +18,7 @@ function ReplacementReport() {
 
     const [ searchText , setSearchText] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState('');
-    const [totalRecords, setTotalRecords] = useState(100);
+    const [totalRecords, setTotalRecords] = useState(0);
     const [pageSize, setPageSize] = useState(100);    
 	const [pageIndex, setPageIndex] = useState(1);
     const pageSizeOptions = [100, 200, 300, 500, 1000,5000];
@@ -31,7 +31,7 @@ function ReplacementReport() {
   const getReplacements = async ()=>{
     setIsLoading(true)
     let payload = {
-        // "totalrecord": pageSize,
+        "totalrecord": pageSize,
         "pagenumber": pageIndex,
         "FilterFields": {
             "fromDate": startDate?.toLocaleDateString("en-US"),
@@ -45,7 +45,8 @@ function ReplacementReport() {
     // console.log(replacementResult)
 
     if(replacementResult?.statusCode === HTTPStatusCode.OK){
-        setReplacementDetails(replacementResult?.responseBody)
+        setReplacementDetails(replacementResult?.responseBody?.rows)
+        setTotalRecords(replacementResult?.responseBody?.totalrows)
         setIsLoading(false)
     }else{
         setReplacementDetails([])
@@ -160,6 +161,13 @@ const handleExport = (apiData) => {
     width: '100px',
 },
 {
+    title: 'DP/BR',				
+    dataIndex: 'dpbr',
+    key: 'dpbr',
+    align: 'left',
+    width: '100px',
+},
+{
     title: 'Start Date',				
     dataIndex: 'startDate',
     key: 'startDate',
@@ -205,6 +213,13 @@ const handleExport = (apiData) => {
     title: 'New NR/DP',				
     dataIndex: 'newUplersNR',
     key: 'newUplersNR',
+    align: 'left',
+    width: '100px',
+},
+{
+    title: 'New DP/BR',				
+    dataIndex: 'newDPBR',
+    key: 'newDPBR',
     align: 'left',
     width: '100px',
 },
@@ -294,20 +309,20 @@ const handleExport = (apiData) => {
 								columns={tableColumnsMemo}
 								bordered={false}
 								dataSource={getReplaceMentDetails}
-								pagination={false} 
-								// pagination={{
-								// 	onChange: (pageNum, pageSize) => {
-								// 		setPageIndex(pageNum);
-								// 		setPageSize(pageSize);
-								// 	},
-								// 	size: 'small',
-								// 	pageSize: pageSize,
-								// 	pageSizeOptions: pageSizeOptions,
-								// 	total: totalRecords,
-								// 	showTotal: (total, range) =>
-								// 		`${range[0]}-${range[1]} of ${totalRecords} items`,
-								// 	defaultCurrent: pageIndex,
-								// }}
+								// pagination={false} 
+								pagination={{
+									onChange: (pageNum, pageSize) => {
+										setPageIndex(pageNum);
+										setPageSize(pageSize);
+									},
+									size: 'small',
+									pageSize: pageSize,
+									pageSizeOptions: pageSizeOptions,
+									total: totalRecords,
+									showTotal: (total, range) =>
+										`${range[0]}-${range[1]} of ${totalRecords} items`,
+									defaultCurrent: pageIndex,
+								}}
 							/>
 						</WithLoader>
 					)}
