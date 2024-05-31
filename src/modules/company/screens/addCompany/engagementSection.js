@@ -17,16 +17,23 @@ function EngagementSection({
   hooksProps,
   loadingDetails
 }) {
-  const {checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError,payPerError, setPayPerError} = hooksProps  
+  const {checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError,payPerError, setPayPerError,creditError, setCreditError} = hooksProps  
 
   const [hrPricingTypes, setHRPricingTypes] = useState([]);
   const [controlledHiringPricingTypeValue, setControlledHiringPricingTypeValue] =
   useState("Select Hiring Pricing");
 
-  const [creditError, setCreditError] = useState(false);
   const [errorCurrency, seterrorCurrency] = useState(false);
 
   let _currency = watch("creditCurrency");
+
+  useEffect(() => {
+    if(!_currency){
+      seterrorCurrency(true)
+    }else{
+      seterrorCurrency(false)
+    }
+  },[_currency]);
 
   const getHRPricingType = useCallback(async () => {
     const HRPricingResponse = await MasterDAO.getHRPricingTypeDAO();
@@ -281,7 +288,7 @@ function EngagementSection({
                       </p>
                     )}
                   </div>
-                  <div className={AddNewClientStyle.colMd6}>
+                 {_currency === "INR" ? null : <div className={AddNewClientStyle.colMd6}>
                     <HRInputField
                       register={register}
                       errors={errors}
@@ -292,21 +299,19 @@ function EngagementSection({
                       required={
                         checkPayPer?.companyTypeID !== 0 &&
                         checkPayPer?.companyTypeID !== null
-                          ? true
+                          ? _currency === "INR" ? false : true
                           : false
                       }
                       validationSchema={{
                         required:
                           checkPayPer?.companyTypeID !== 0 &&
                           checkPayPer?.companyTypeID !== null
-                            ? "Please enter Per credit amount."
+                            ? _currency === "INR"  ? null : "Please enter Per credit amount."
                             : null,
                       }}
                     />
-                  </div>
-                </div>
+                  </div>} 
 
-                <div className={AddNewClientStyle.row}>
                   <div className={AddNewClientStyle.colMd6}>
                     <div className={AddNewClientStyle.FreecreditFieldWrap}>
                       <HRInputField
@@ -353,6 +358,8 @@ function EngagementSection({
                     </div>
                   </div>
                 </div>
+
+            
                 <div className={AddNewClientStyle.row}>
                   <div className={AddNewClientStyle.colMd6}></div>
                 </div>
