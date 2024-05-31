@@ -88,6 +88,7 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                setTabData(result.responseBody.details.genOnBoardTalent)
                const _filterData = result.responseBody.details.replacementEngAndHR?.filter((e) => e.id === result.responseBody.details.replacementDetail.newHrid || result.responseBody.details.replacementDetail.newOnBoardId);
                setControlledEngRep(_filterData[0].value)
+               setValue('engagementreplacement',_filterData[0].stringIdValue)
                 // setValue('time',result.responseBody.details.genOnBoardTalent.kickoffTimezonePreferenceId)
             }
            

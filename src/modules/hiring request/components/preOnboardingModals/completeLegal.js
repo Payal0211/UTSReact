@@ -144,6 +144,7 @@ export default function CompleteLegal({talentDeteils,HRID, setShowAMModal,callAP
                 setValue('lwd', result.responseBody.details.replacementDetail.lastWorkingDay);
                 const _filterData = result.responseBody.details.replacementEngAndHR?.filter((e) => e.id === result.responseBody.details.replacementDetail.newHrid || result.responseBody.details.replacementDetail.newOnBoardId);
                 setControlledEngRep(_filterData[0].value)
+                setValue('engagementreplacement',_filterData[0].stringIdValue)
                 setBoardData(result.responseBody.details)
                 setTabDisabled(result.responseBody.details.isThirdTabReadOnly)
             //    if(result.responseBody.details.kickoffStatusId === 4
