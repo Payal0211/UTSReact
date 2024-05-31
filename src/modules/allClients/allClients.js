@@ -355,7 +355,10 @@ const updateSpaceIDForClientFun = async () =>{
                 <div className={clienthappinessSurveyStyles.addnewHR}>
                     <div className={clienthappinessSurveyStyles.hiringRequest}>All Clients</div>
                     <div className={clienthappinessSurveyStyles.btn_wrap}>
-                       {isShowAddClientCredit && <button className={clienthappinessSurveyStyles.btnwhite} onClick={() => navigate(UTSRoutes.ABOUT_CLIENT)}>Invite client</button>}
+                       {isShowAddClientCredit && <button className={clienthappinessSurveyStyles.btnwhite}
+                        // onClick={() => navigate(UTSRoutes.ABOUT_CLIENT)}
+                        onClick={() => navigate(`/addNewCompany/0`)}
+                        >Add Company</button>}
                         <button className={clienthappinessSurveyStyles.btnwhite} onClick={() => handleExport()}>Export</button>
                     </div>
                 </div>

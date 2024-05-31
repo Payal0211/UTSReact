@@ -20,6 +20,9 @@ import I2sIcon from 'assets/svg/i2sIcon.svg';
 import GPTIcon from 'assets/svg/GPT.svg'
 import clientReport from  'assets/svg/clientReport.svg';
 import HRReport from 'assets/svg/clientLogs.svg'
+import UTMTrackingIcon from 'assets/UTMtracking report.png'
+import ClientDetailsIcon from 'assets/Clienttracking details.png'
+import ReplacementIcon from 'assets/Talentreplacement.png'
 import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
 
 import SLAReport from 'assets/svg/slaReport.svg';
@@ -303,7 +306,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			id: 'ReplacementReport',
 			title: 'Replacement Report',
 			isActive: false,
-			icon: clientReport,
+			icon: ReplacementIcon,
 			navigateTo: UTSRoutes.REPLACEMENT_REPORT,
 			isVisible: isAccess(usertypeID, 'Replacement Report')
 		}),
@@ -319,7 +322,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			id: 'UTMTrackingReport',
 			title: 'UTM Tracking Report',
 			isActive: false,
-			icon: HRReport,
+			icon: UTMTrackingIcon,
 			navigateTo: UTSRoutes.UTM_TRACKING_REPORT,
 			isVisible: isAccess(usertypeID, 'UTM Tracking Report')
 		}),
@@ -327,7 +330,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			id: 'ClientPortalTrackingReport',
 			title: 'Client Tracking Details',
 			isActive: false,
-			icon: HRReport,
+			icon: ClientDetailsIcon,
 			navigateTo: UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT,
 			isVisible: isAccess(usertypeID, 'Client Tracking Details')
 		}),

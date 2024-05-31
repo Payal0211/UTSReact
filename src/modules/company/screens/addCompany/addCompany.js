@@ -24,6 +24,7 @@ function AddCompany() {
   const [isSelfFunded,setIsSelfFunded] = useState(false)
   const [pricingTypeError, setPricingTypeError] = useState(false);
   const [payPerError, setPayPerError] = useState(false);
+  const [creditError, setCreditError] = useState(false);
 
   const [loadingDetails,setLoadingDetails] = useState(false)
   const [disableSubmit , setDisableSubmit] = useState(false)
@@ -149,6 +150,13 @@ function AddCompany() {
 			return
 		}
 
+    if(checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob===false && IsChecked?.isProfileView===false){
+			setLoadingDetails(false)
+      setDisableSubmit(false)
+			setCreditError(true)
+			return
+		}
+
     // check for at lest one admin client
     let isAdmin = false
 
@@ -208,7 +216,7 @@ function AddCompany() {
         "jpCreditBalance": d.freeCredit,
         "isTransparentPricing": typeOfPricing === 1 ? true :  typeOfPricing === 0 ?  false : null,
         "isVettedProfile": true,
-        "creditAmount": d.creditAmount,
+        "creditAmount": d.creditCurrency === "INR" ? null :  d.creditAmount,
         "creditCurrency": d.creditCurrency,
         "jobPostCredit": d.jobPostCredit,
         "vettedProfileViewCredit": d.vettedProfileViewCredit,
@@ -310,7 +318,7 @@ function AddCompany() {
         resetField={resetField}
         unregister={unregister}
         engagementDetails={getCompanyDetails?.engagementDetails}
-        hooksProps={{checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError,payPerError, setPayPerError}}
+        hooksProps={{checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError,payPerError, setPayPerError,creditError, setCreditError}}
         loadingDetails={loadingDetails}
       />
 

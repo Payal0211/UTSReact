@@ -49,6 +49,15 @@ const ViewHRDetails = () => {
     }
   }
 
+  function removeDuplicates(arr) {
+  const mapFromColors = new Map(
+    arr?.map(c => [c.text, c])
+  );
+  
+  const uniqueColors = [...mapFromColors.values()];
+  return uniqueColors
+  }
+
   const ShowEditCTA = () => {
     if (hiringDetails?.responseBody?.details?.hrStatus === "Open") {
       return <button onClick={editHr}>Edit HR</button>;
@@ -689,7 +698,7 @@ const ViewHRDetails = () => {
                   ?.length === 0 ? (
                   <p>NA</p>
                 ) : (
-                  hiringDetails?.responseBody?.details.requiredSkillList?.map(
+                  removeDuplicates(hiringDetails?.responseBody?.details.requiredSkillList)?.map(
                     (item) => {
                       return <span>{item?.text}</span>;
                     }
@@ -708,7 +717,7 @@ const ViewHRDetails = () => {
                   ?.length === 0 ? (
                   <p>NA</p>
                 ) : (
-                  hiringDetails?.responseBody?.details.goodToHaveSkillList?.map(
+                  removeDuplicates(hiringDetails?.responseBody?.details.goodToHaveSkillList)?.map(
                     (item) => {
                       return <span>{item?.text}</span>;
                     }
