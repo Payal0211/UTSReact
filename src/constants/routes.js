@@ -112,6 +112,10 @@ const ReplacementReport = React.lazy(() =>
 	import('modules/report/screens/replacementReport/replacementReport')
 );
 
+const TalentBackoutReport = React.lazy(() =>
+	import('modules/report/screens/talentBackoutReport/talentBackoutReport')
+);
+
 const HRReport = React.lazy(() =>
 	import('modules/report/screens/hrReport/hrReport')
 );
@@ -214,6 +218,7 @@ export default class UTSRoutes {
 	static CLIENT_PORTAL_TRACKING_REPORT = "/clientPortalTrackingReport";
 	static REPLACEMENT_REPORT = "/replacementReport";
 	static ADD_NEW_COMPANY = "/addNewCompany/:companyID";
+	static TALENT_BACKOUT_REPORT = "/talentBackoutReport";
 }
 
 export const navigateToComponent = {
@@ -376,6 +381,11 @@ export const navigateToComponent = {
 	[UTSRoutes.REPLACEMENT_REPORT]:(
 		<Suspense>
 			<ReplacementReport />
+		</Suspense>
+	),
+	[UTSRoutes.TALENT_BACKOUT_REPORT]:(
+		<Suspense>
+			<TalentBackoutReport />
 		</Suspense>
 	),
 	[UTSRoutes.HR_REPORT]:(
