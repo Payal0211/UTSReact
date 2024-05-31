@@ -96,6 +96,7 @@ export class ReportType {
 	static JD_PARSING_DUMP = 'JDParsingDump/';
 	static HR_LOST_REPORT = 'HRLostReport/';
 	static REPLACEMENT_REPORT = 'ReplacementReport';
+	static TALENT_BACKOUT_REPORT = 'TalentBackoutReport';
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

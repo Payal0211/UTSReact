@@ -1,5 +1,5 @@
 import React , { useEffect, useState } from 'react'
-import ReplacementStyle from "./replacementReport.module.css";
+import TalentBackoutStyle from "./talentBackoutReport.module.css";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,14 +12,14 @@ import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { Table } from 'antd';
 import { downloadToExcel } from 'modules/report/reportUtils';
 
-function ReplacementReport() {
-    const [getReplaceMentDetails,setReplacementDetails] = useState([])
+function TalentBackoutReport() {
+    const [getBackoutDetails,setTalentBackoutDetails] = useState([])
     const [isLoading, setIsLoading] = useState(false)
 
     const [ searchText , setSearchText] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState('');
     const [totalRecords, setTotalRecords] = useState(0);
-    const [pageSize, setPageSize] = useState(100);    
+    const [pageSize, setPageSize] = useState(10);    
 	const [pageIndex, setPageIndex] = useState(1);
     const pageSizeOptions = [100, 200, 300, 500, 1000,5000];
 
@@ -28,7 +28,7 @@ function ReplacementReport() {
     const [endDate, setEndDate] = useState(new Date(date));
   const [dateError, setDateError] = useState(false);
 
-  const getReplacements = async ()=>{
+  const getBackoutData = async ()=>{
     setIsLoading(true)
     let payload = {
         "totalrecord": pageSize,
@@ -40,16 +40,16 @@ function ReplacementReport() {
         }
     }
 
-    const replacementResult = await ReportDAO.getReplacementReportDRO(payload)
+    const talentBackoutResult = await ReportDAO.getTalentBackoutReportDRO(payload)
 
     // console.log(replacementResult)
 
-    if(replacementResult?.statusCode === HTTPStatusCode.OK){
-        setReplacementDetails(replacementResult?.responseBody?.rows)
-        setTotalRecords(replacementResult?.responseBody?.totalrows)
-        setIsLoading(false)
+    if(talentBackoutResult?.statusCode === HTTPStatusCode.OK){
+        setTalentBackoutDetails(talentBackoutResult?.responseBody?.rows)
+        setTotalRecords(talentBackoutResult?.responseBody?.totalrows)
+        setIsLoading(false)    
     }else{
-        setReplacementDetails([])
+        setTalentBackoutDetails([])
         setIsLoading(false)
     }
     setIsLoading(false)
@@ -57,7 +57,7 @@ function ReplacementReport() {
 
   useEffect(()=>{
     if(endDate && startDate){
-         getReplacements()
+         getBackoutData()
     }
    
   },[endDate,startDate,debouncedSearch])
@@ -83,7 +83,7 @@ function ReplacementReport() {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => getReplaceMentDetails() , 1000);
+    const timer = setTimeout(() => getBackoutData() , 1000);
     return () => clearTimeout(timer);
 }, [debouncedSearch]);
 
@@ -101,41 +101,48 @@ const handleExport = (apiData) => {
     return obj;
         }
      )
-     downloadToExcel(DataToExport,'replacement report.xlsx')
+     downloadToExcel(DataToExport,'Talent_Backout_Report.xlsx')
 
 }
 
   const tableColumnsMemo = [{
-    title: 'Engagement ID',				
-    dataIndex: 'engagementID',
-    key: 'engagementID',
+    title: 'Created Date',				
+    dataIndex: 'createdDateTime',
+    key: 'createdDateTime',
     align: 'left',
-    width:'200px'
+    width:'150px'
 },{
-    title: 'Company/Client',				
-    dataIndex: 'company',
-    key: 'company',
+    title: 'HR #',				
+    dataIndex: 'hR_Number',
+    key: 'hR_Number',
     align: 'left',  
-    width: '150px',
-},
-{
-    title: 'Job Title',				
-    dataIndex: 'role',
-    key: 'role',
-    align: 'left',
-    width: '150px',
-},
-{
-    title: 'Original HR',				
-    dataIndex: 'oldHRID',
-    key: 'oldHRID',
-    align: 'left',
     width: '200px',
 },
 {
-    title: 'HR Status',				
-    dataIndex: 'oldHRStatus',
-    key: 'oldHRStatus',
+    title: 'Sales Person',				
+    dataIndex: 'salesUser',
+    key: 'salesUser',
+    align: 'left',
+    width: '150px',
+},
+{
+    title: 'Client',				
+    dataIndex: 'client',
+    key: 'client',
+    align: 'left',
+    width: '250px',
+},
+{
+  title: 'Company',				
+  dataIndex: 'company',
+  key: 'company',
+  align: 'left',
+  width: '200px',
+},
+{
+    title: 'Job Title',				
+    dataIndex: 'jobTitle',
+    key: 'jobTitle',
     align: 'left',
     width: '150px',
 },
@@ -147,113 +154,56 @@ const handleExport = (apiData) => {
     width: '150px',
 },
 {
+  title: 'Backout Reason',				
+  dataIndex: 'rejectedReason',
+  key: 'rejectedReason',
+  align: 'left',
+  width: '150px',
+},
+{
     title: 'PR',				
-    dataIndex: 'talentBRPR',
-    key: 'talentBRPR',
+    dataIndex: 'pr',
+    key: 'pr',
     align: 'left',
     width: '100px',
 },
 {
-    title: 'NR/DP',				
-    dataIndex: 'uplersNR',
-    key: 'uplersNR',
+    title: 'BR/DP Amount',				
+    dataIndex: 'br',
+    key: 'br',
     align: 'left',
-    width: '100px',
+    width: '125px',
 },
 {
-    title: 'DP/BR',				
-    dataIndex: 'dpbr',
-    key: 'dpbr',
-    align: 'left',
-    width: '100px',
+  title: 'NR/DP',				
+  dataIndex: 'uplersNRDP',
+  key: 'uplersNRDP',
+  align: 'left',
+  width: '100px',
 },
 {
-    title: 'Start Date',				
-    dataIndex: 'startDate',
-    key: 'startDate',
-    align: 'left',
-    width: '150px',
-},
-{
-    title: 'End Date',				
-    dataIndex: 'endDate',
-    key: 'endDate',
-    align: 'left',
-    width: '150px',
-},
-{
-    title: 'Replacement Date',				
-    dataIndex: 'replacementDate',
-    key: 'replacementDate',
-    align: 'left',
-    width: '150px',
-},
-{
-    title: 'New HR',				
-    dataIndex: 'newHRID',
-    key: 'newHRID',
-    align: 'left',
-    width: '200px',
-},
-{
-    title: 'New Talent',				
-    dataIndex: 'newTalent',
-    key: 'newTalent',
-    align: 'left',
-    width: '150px',
-},
-{
-    title: 'New PR',				
-    dataIndex: 'newTalentBRPR',
-    key: 'newTalentBRPR',
-    align: 'left',
-    width: '100px',
-},
-{
-    title: 'New NR/DP',				
-    dataIndex: 'newUplersNR',
-    key: 'newUplersNR',
-    align: 'left',
-    width: '100px',
-},
-{
-    title: 'New DP/BR',				
-    dataIndex: 'newDPBR',
-    key: 'newDPBR',
-    align: 'left',
-    width: '100px',
-},
-{
-    title: 'New Start Date',				
-    dataIndex: 'newStartDate',
-    key: 'newStartDate',
-    align: 'left',
-    width: '150px',
-},
-{
-    title: 'New End Date',				
-    dataIndex: 'newEndDate',
-    key: 'newEndDate',
-    align: 'left',
-    width: '150px',
-},
-
+  title: 'HR Status',				
+  dataIndex: 'hrStatus',
+  key: 'hrStatus',
+  align: 'left',
+  width: '150px',
+}
 ]
 
   return (
-    <div className={ReplacementStyle.dealContainer}>
-    <div className={ReplacementStyle.header}>
-      <div className={ReplacementStyle.dealLable}>Replacement Report</div>
+    <div className={TalentBackoutStyle.dealContainer}>
+    <div className={TalentBackoutStyle.header}>
+      <div className={TalentBackoutStyle.dealLable}>Talent Backout Report</div>
     </div>
 
-    <div className={ReplacementStyle.filterContainer}>
-        <div className={ReplacementStyle.filterSets}>
-          <div className={ReplacementStyle.filterRight}>
-          <div className={ReplacementStyle.searchFilterSet}>
+    <div className={TalentBackoutStyle.filterContainer}>
+        <div className={TalentBackoutStyle.filterSets}>
+          <div className={TalentBackoutStyle.filterRight}>
+          <div className={TalentBackoutStyle.searchFilterSet}>
 							<SearchSVG style={{ width: '16px', height: '16px' }} />
 							<input
 								type={InputType.TEXT}
-								className={ReplacementStyle.searchInput}
+								className={TalentBackoutStyle.searchInput}
 								placeholder="Search Table"
 								value={searchText}
 								onChange={(e) => {
@@ -265,10 +215,10 @@ const handleExport = (apiData) => {
 							/>
 						</div>
       
-            <div className={ReplacementStyle.calendarFilterSet}>
-              {dateError &&  <p className={ReplacementStyle.error}>* Start and End dates can't be same </p>}
-              <div className={ReplacementStyle.label}>Date</div>
-              <div className={ReplacementStyle.calendarFilter}>
+            <div className={TalentBackoutStyle.calendarFilterSet}>
+              {dateError &&  <p className={TalentBackoutStyle.error}>* Start and End dates can't be same </p>}
+              <div className={TalentBackoutStyle.label}>Date</div>
+              <div className={TalentBackoutStyle.calendarFilter}>
                 <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
                 <DatePicker
                   style={{ backgroundColor: "red" }}
@@ -276,7 +226,7 @@ const handleExport = (apiData) => {
                     e.preventDefault();
                     e.stopPropagation();
                   }}
-                  className={ReplacementStyle.dateFilter}
+                  className={TalentBackoutStyle.dateFilter}
                   placeholderText="Start date - End date"
                   selected={startDate}
                   onChange={onCalenderFilter}
@@ -289,8 +239,8 @@ const handleExport = (apiData) => {
             </div>
             <button
               type="submit"
-              className={ReplacementStyle.btnPrimary}
-              onClick={() => handleExport(getReplaceMentDetails)}
+              className={TalentBackoutStyle.btnPrimary}
+              onClick={() => handleExport(getBackoutDetails)}
             >
               Export
             </button>
@@ -298,7 +248,7 @@ const handleExport = (apiData) => {
         </div>
       </div>
 
-      <div className={ReplacementStyle.tableDetails}>
+      <div className={TalentBackoutStyle.tableDetails}>
 					{isLoading ? (
 						<TableSkeleton />
 					) : (
@@ -308,12 +258,13 @@ const handleExport = (apiData) => {
 								id="hrListingTable"
 								columns={tableColumnsMemo}
 								bordered={false}
-								dataSource={getReplaceMentDetails}
-								// pagination={false} 
+								dataSource={getBackoutDetails}
+								//pagination={false} 
 								pagination={{
-									onChange: (pageNum, pageSize) => {
+									onChange: (pageNum, pageSize) => {                    
 										setPageIndex(pageNum);
 										setPageSize(pageSize);
+                    getBackoutData();
 									},
 									size: 'small',
 									pageSize: pageSize,
@@ -332,4 +283,4 @@ const handleExport = (apiData) => {
   )
 }
 
-export default ReplacementReport
+export default TalentBackoutReport
