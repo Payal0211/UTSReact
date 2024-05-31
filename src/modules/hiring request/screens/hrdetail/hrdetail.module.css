@@ -794,3 +794,25 @@ label.radioCheck_Mark {
   label.radioCheck_Mark input:checked + span.customCheck_Mark:after {
     opacity: 1;
   }
+
+  .labelreplacement{
+    display: block;
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .labelreplacement .colMd6 {
+    width: 50%;
+   }
+
+    .labelreplacement .colMd12{
+        padding: 0;
+    }
+
+    .labelreplacement .timeSlotItem{
+        margin-bottom: 0;
+    }
+
+    .labelreplacement .formField{
+        margin: 0 0 20px;
+    }

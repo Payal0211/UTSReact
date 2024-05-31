@@ -458,12 +458,16 @@ const EngagementList = () => {
 	}, [getEngagementModal.engagementBillRateAndPayRate]);
 
 	const getEngagementFilterList = useCallback(async () => {
+		setLoading(true);
 		const response = await engagementRequestDAO.getEngagementFilterListDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
+			setLoading(false);
 			setFiltersList(response && response?.responseBody?.details);
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			setLoading(false);
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			setLoading(false);
 			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
 		} else {
 			return 'NO DATA FOUND';

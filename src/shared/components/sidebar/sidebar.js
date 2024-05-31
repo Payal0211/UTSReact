@@ -300,6 +300,14 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			isVisible: isAccess(usertypeID, 'Client Report')
 		}),
 		new SideBarModels({
+			id: 'ReplacementReport',
+			title: 'Replacement Report',
+			isActive: false,
+			icon: clientReport,
+			navigateTo: UTSRoutes.REPLACEMENT_REPORT,
+			isVisible: isAccess(usertypeID, 'Replacement Report')
+		}),
+		new SideBarModels({
 			id: 'HRReport',
 			title: 'HR Report',
 			isActive: false,
