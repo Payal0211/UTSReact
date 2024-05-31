@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Skeleton, Tooltip, Modal, Checkbox } from "antd";
+import { Skeleton, Tooltip, Modal, Checkbox,DatePicker } from "antd";
 import HRDetailStyle from "../../screens/hrdetail/hrdetail.module.css";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
@@ -12,7 +12,6 @@ import {
 import { OnboardDAO } from "core/onboard/onboardDAO";
 import { MasterDAO } from "core/master/masterDAO";
 import { HTTPStatusCode } from "constants/network";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { NetworkInfo } from "constants/network";
 
@@ -27,6 +26,7 @@ import moment from "moment";
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { isNull } from "lodash";
 import { _isNull } from "shared/utils/basic_utils";
+import dayjs from 'dayjs';
 
 export default function BeforePreOnboarding({
   talentDeteils,
@@ -122,10 +122,7 @@ export default function BeforePreOnboarding({
   const fatchpreOnBoardInfo = useCallback(
     async (req) => {
       let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);
-    //   console.log("fatchpreOnBoardInfo", result.responseBody.details);
-
       if (result?.statusCode === HTTPStatusCode.OK) {
-        const _checkValue = Object.keys(result.responseBody.details.replacementDetail).length === 0;
         setReplacementEngHr(result.responseBody.details.replacementEngAndHR)
         setIsTransparentPricing(result.responseBody.details.isTransparentPricing)
         setTabDisabled(result.responseBody.details.isFirstTabReadOnly
@@ -136,7 +133,7 @@ export default function BeforePreOnboarding({
         );
         setEngagementReplacement({
           ...engagementReplacement,
-          replacementData: _checkValue === false ? true: false,
+          replacementData: result.responseBody.details.replacementDetail !== null ? true : false,
         });
         setWorkManagement(
           result.responseBody.details.preOnboardingDetailsForAMAssignment
@@ -166,7 +163,7 @@ export default function BeforePreOnboarding({
           result.responseBody.details.preOnboardingDetailsForAMAssignment
             .utS_HRAcceptedBy
         );
-        setValue('lwd', result.responseBody.details.replacementDetail.lastWorkingDay);
+        setValue('lwd', dayjs(result.responseBody.details.replacementDetail.lastWorkingDay).toDate());
         result.responseBody.details.preOnboardingDetailsForAMAssignment
                 .shiftStartTime && setValue(
           "shiftStartTime",
@@ -207,16 +204,16 @@ export default function BeforePreOnboarding({
         let dealSourceObj = drpLeadTypes.filter(item => item.value === result.responseBody.details.preOnboardingDetailsForAMAssignment.dealSource)
 
         if(dealOwnerOBJ.length){
-           setControlledDealOwner(dealOwnerOBJ[0].value)
-           setValue('dealOwner', dealOwnerOBJ[0])
+          setControlledDealOwner(dealOwnerOBJ[0].value)
+          setValue('dealOwner', dealOwnerOBJ[0])
         }
         if(dealSourceObj.length){
-           setControlledDealSource(dealSourceObj[0].value)
-            setValue('dealSource',dealSourceObj[0])
+          setControlledDealSource(dealSourceObj[0].value)
+          setValue('dealSource',dealSourceObj[0])
         }
         const _filterData = result.responseBody.details.replacementEngAndHR?.filter((e) => e.id === result.responseBody.details.replacementDetail.newHrid || result.responseBody.details.replacementDetail.newOnBoardId);
         setControlledEngRep(_filterData[0].value)
-        setValue('engagementreplacement',_filterData[0].stringIdValue)
+        setValue('engagementreplacement',_filterData[0])
       }
     },
     [setValue]
@@ -332,6 +329,11 @@ export default function BeforePreOnboarding({
       addLatter
     ]
   );
+  const disabledDate = (current) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);        
+    return current && current < today;
+  };
   //  console.log("form error", errors);
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
@@ -1250,23 +1252,45 @@ export default function BeforePreOnboarding({
                     </div>
                     <div className={HRDetailStyle.timeSlotItem}>
                       <CalenderSVG />
-                      <Controller
+                      {isTabDisabled ? <Controller
                         render={({ ...props }) => (
                           <DatePicker
+                          {...props}
                           disabled={isTabDisabled}
-                            selected={watch('lwd')}
+                            selected={dayjs(watch('lwd'))}
                             onChange={(date) => {
                               setValue('lwd', date);
                             }}
                             placeholderText="Last Working Day"
                             dateFormat="dd/MM/yyyy"
-                            minDate={new Date()}
+                            disabledDate={disabledDate}
+                            value={dayjs(watch('lwd'))}
+                            control={control}
                           />
                         )}
                         name="lwd"
                         rules={{ required: true }}
                         control={control}
-                      />
+                      />: <Controller
+                      render={({ ...props }) => (
+                        <DatePicker
+                        {...props}
+                        disabled={isTabDisabled}
+                          selected={dayjs(watch('lwd'))}
+                          onChange={(date) => {
+                            setValue('lwd', date);
+                          }}
+                          placeholderText="Last Working Day"
+                          dateFormat="dd/MM/yyyy"
+                          disabledDate={disabledDate}
+                          // value={dayjs(watch('lwd'))}
+                          control={control}
+                        />
+                      )}
+                      name="lwd"
+                      rules={{ required: true }}
+                      control={control}
+                    />}
                     </div>
                   </div>}
                 </div>

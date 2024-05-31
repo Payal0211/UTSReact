@@ -135,16 +135,15 @@ export default function CompleteLegal({talentDeteils,HRID, setShowAMModal,callAP
             // console.log("fatchOnBoardInfo",result.responseBody.details)
 
             if (result?.statusCode === HTTPStatusCode.OK){
-                const _checkValue = Object.keys(result.responseBody.details.replacementDetail).length === 0;
                 setEngagementReplacement({
                     ...engagementReplacement,
-                    replacementData: _checkValue === false ? true: false,
+                    replacementData: result.responseBody.details.replacementDetail !== null ? true : false,
                 });
                 setReplacementEngHr(result.responseBody.details.replacementEngAndHR)
-                setValue('lwd', result.responseBody.details.replacementDetail.lastWorkingDay);
+                setValue('lwd', dayjs(result.responseBody.details.replacementDetail.lastWorkingDay));
                 const _filterData = result.responseBody.details.replacementEngAndHR?.filter((e) => e.id === result.responseBody.details.replacementDetail.newHrid || result.responseBody.details.replacementDetail.newOnBoardId);
                 setControlledEngRep(_filterData[0].value)
-                setValue('engagementreplacement',_filterData[0].stringIdValue)
+                setValue('engagementreplacement',_filterData[0])
                 setBoardData(result.responseBody.details)
                 setTabDisabled(result.responseBody.details.isThirdTabReadOnly)
             //    if(result.responseBody.details.kickoffStatusId === 4
@@ -450,10 +449,11 @@ if(boardData){
                     </div>
                     <div className={HRDetailStyle.timeSlotItem}>
                       <CalenderSVG />
-                      <Controller
+                      {isTabDisabled ? <Controller
                         render={({ ...props }) => (
                           <DatePicker
-                            selected={watch('lwd')}
+                          {...props}
+                            selected={dayjs(watch('lwd'))}
                             onChange={(date) => {
                               setValue('lwd', date);
                             }}
@@ -461,13 +461,36 @@ if(boardData){
                             dateFormat="dd/MM/yyyy"
                             // minDate={new Date()}
                             disabledDate={disabledDate}
+                            value={dayjs(watch('lwd'))}
                             // disabled={addLatter}
+                            control={control}
+                            disabled={isTabDisabled}
                           />
                         )}
                         name="lwd"
                         rules={{ required: true }}
                         control={control}
-                      />
+                      />: <Controller
+                      render={({ ...props }) => (
+                        <DatePicker
+                        {...props}
+                          selected={dayjs(watch("lwd"))}
+                          onChange={(date) => {
+                            setValue('lwd', date);
+                          }}
+                          placeholderText="Last Working Day"
+                          dateFormat="dd/MM/yyyy"
+                          // disabled={addLatter}
+                          disabledDate={disabledDate}
+                        //   value={dayjs(watch("lwd"))}
+                          control={control}
+                          disabled={isTabDisabled}
+                        />
+                      )}
+                      name="lwd"
+                      rules={{ required: true }}
+                      control={control}
+                    />}
                     </div>
                   </div>}
                 </div>

@@ -1,5 +1,5 @@
 import React, { useEffect , useState, useCallback, useRef} from "react";
-import { Skeleton, Dropdown, Menu, message, Checkbox } from 'antd';
+import { Skeleton, Dropdown, Menu, message, Checkbox , DatePicker} from 'antd';
 import HRDetailStyle from '../../screens/hrdetail/hrdetail.module.css';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
@@ -11,7 +11,6 @@ import { HTTPStatusCode } from "constants/network";
 import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
 import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
 import UploadModal from "shared/components/uploadModal/uploadModal";
-import DatePicker from "react-datepicker";
 
 
 import { ReactComponent as GeneralInformationSVG } from 'assets/svg/generalInformation.svg';
@@ -20,6 +19,7 @@ import { ReactComponent as AboutCompanySVG } from 'assets/svg/aboutCompany.svg';
 import { ReactComponent as ClientTeamMemberSVG } from 'assets/svg/clientTeammember.svg';
 import { ReactComponent as LinkedinClientSVG } from 'assets/svg/LinkedinClient.svg';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
+import dayjs from 'dayjs';
 
 import { BsThreeDots } from 'react-icons/bs';
 
@@ -148,12 +148,9 @@ export default function DuringPreOnboarding({
 
     const fatchduringOnBoardInfo = useCallback(
         async (req) => {
-          let result = await OnboardDAO.getDuringOnBoardInfoDAO(req);
-        //   console.log("fatchduringOnBoardInfo", result);
-    
+          let result = await OnboardDAO.getDuringOnBoardInfoDAO(req);    
           if (result?.statusCode === HTTPStatusCode.OK) {
             let data = result.responseBody.details
-            const _checkValue = Object.keys(data.replacementDetail).length === 0;
            setTabDisabled(data.isSecondTabReadOnly)
            setTabData(data.secondTabAMAssignmentOnBoardingDetails)
            setUplersLeavePolicyLink(data.uplersLeavePolicy)
@@ -173,14 +170,14 @@ export default function DuringPreOnboarding({
            setValue('feedbackProcess', data.feedback_Process)
            setEngagementReplacement({
             ...engagementReplacement,
-            replacementData: _checkValue === false ? true: false,
+            replacementData: data.replacementDetail !== null ? true : false,
           });
-          setValue('lwd', data.replacementDetail.lastWorkingDay);
+          setValue('lwd', dayjs(data.replacementDetail.lastWorkingDay).toDate());
            setClientTeamMembers(data.onBoardClientTeam)
 
            const _filterData = data.replacementEngAndHR?.filter((e) => e.id === data.replacementDetail.newHrid || data.replacementDetail.newOnBoardId);
            setControlledEngRep(_filterData[0].value)
-           setValue('engagementreplacement',_filterData[0].stringIdValue)
+           setValue('engagementreplacement',_filterData[0])
 
            if(data.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption){
             let filteredDevicePolicy = devicePolices.filter(item=> item.value ===  data.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption)
@@ -397,6 +394,12 @@ export default function DuringPreOnboarding({
             clearErrors('deviceType')
         }
       },[watchDevicePolicy,clearErrors])
+
+      const disabledDate = (current) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);        
+        return current && current < today;
+      };
 
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
@@ -1103,23 +1106,47 @@ export default function DuringPreOnboarding({
                     </div>
                     <div className={HRDetailStyle.timeSlotItem}>
                       <CalenderSVG />
-                      <Controller
+                     {isTabDisabled ?  <Controller
                         render={({ ...props }) => (
                           <DatePicker
-                            selected={watch('lwd')}
+                          {...props}
+                            selected={dayjs(watch("lwd"))}
                             onChange={(date) => {
                               setValue('lwd', date);
                             }}
                             placeholderText="Last Working Day"
                             dateFormat="dd/MM/yyyy"
-                            minDate={new Date()}
                             // disabled={addLatter}
+                            disabledDate={disabledDate}
+                            value={dayjs(watch("lwd"))}
+                            control={control}
+                            disabled={isTabDisabled}
                           />
                         )}
                         name="lwd"
                         rules={{ required: true }}
                         control={control}
-                      />
+                      />: <Controller
+                      render={({ ...props }) => (
+                        <DatePicker
+                        {...props}
+                          selected={dayjs(watch("lwd"))}
+                          onChange={(date) => {
+                            setValue('lwd', date);
+                          }}
+                          placeholderText="Last Working Day"
+                          dateFormat="dd/MM/yyyy"
+                          // disabled={addLatter}
+                          disabledDate={disabledDate}
+                        //   value={dayjs(watch("lwd"))}
+                          control={control}
+                          disabled={isTabDisabled}
+                        />
+                      )}
+                      name="lwd"
+                      rules={{ required: true }}
+                      control={control}
+                    />}
                     </div>
                   </div>}
                 </div>

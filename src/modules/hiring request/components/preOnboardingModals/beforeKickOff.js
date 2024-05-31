@@ -71,7 +71,6 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
             // console.log("fatchOnBoardInfo",result.responseBody.details)
 
             if (result?.statusCode === HTTPStatusCode.OK){
-                const _checkValue = Object.keys(result.responseBody.details.replacementDetail).length === 0;
                if(result.responseBody.details.genOnBoardTalent.kickoffStatusId === 4
                 ){
                     EnableNextTab(talentDeteils,HRID,'After Kick-off')
@@ -80,7 +79,7 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                 setTabDisabled(result.responseBody.details.isFourthTabReadOnly)
                 setEngagementReplacement({
                     ...engagementReplacement,
-                    replacementData: _checkValue === false ? true: false,
+                    replacementData: result.responseBody.details.replacementDetail !== null ? true : false,
                   });
                   setValue('lwd', result.responseBody.details.replacementDetail.lastWorkingDay);
                 result.responseBody.details.genOnBoardTalent.kickoffDate &&  setValue('callDate',result.responseBody.details.genOnBoardTalent.kickoffDate)
@@ -88,7 +87,7 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                setTabData(result.responseBody.details.genOnBoardTalent)
                const _filterData = result.responseBody.details.replacementEngAndHR?.filter((e) => e.id === result.responseBody.details.replacementDetail.newHrid || result.responseBody.details.replacementDetail.newOnBoardId);
                setControlledEngRep(_filterData[0].value)
-               setValue('engagementreplacement',_filterData[0].stringIdValue)
+               setValue('engagementreplacement',_filterData[0])
                 // setValue('time',result.responseBody.details.genOnBoardTalent.kickoffTimezonePreferenceId)
             }
            
@@ -368,9 +367,10 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                     </div>
                     <div className={HRDetailStyle.timeSlotItem}>
                       <CalenderSVG />
-                      <Controller
+                      {isTabDisabled ? <Controller
                         render={({ ...props }) => (
                           <DatePicker
+                          {...props}
                             selected={watch('lwd')}
                             onChange={(date) => {
                               setValue('lwd', date);
@@ -379,13 +379,32 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                             dateFormat="dd/MM/yyyy"
                             // minDate={new Date()}
                             disabledDate={disabledDate}
+                            value={dayjs(watch('lwd'))}
+                            disabled={isTabDisabled}
                             // disabled={addLatter}
                           />
                         )}
                         name="lwd"
                         rules={{ required: true }}
                         control={control}
-                      />
+                      /> : <Controller
+                      render={({ ...props }) => (
+                        <DatePicker
+                        {...props}
+                          selected={watch('lwd')}
+                          onChange={(date) => {
+                            setValue('lwd', date);
+                          }}
+                          placeholderText="Last Working Day"
+                          dateFormat="dd/MM/yyyy"
+                          disabledDate={disabledDate}
+                          disabled={isTabDisabled}
+                        />
+                      )}
+                      name="lwd"
+                      rules={{ required: true }}
+                      control={control}
+                    />}
                     </div>
                   </div>}
                 </div>

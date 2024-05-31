@@ -10,6 +10,7 @@ import { HTTPStatusCode } from 'constants/network';
 
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as AfterKickOffSVG } from 'assets/svg/AfterKickOff.svg';
+import dayjs from 'dayjs';
 
 
 export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI}) {
@@ -32,7 +33,6 @@ export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI
     const loggedInUserID = JSON.parse(localStorage.getItem('userSessionInfo')).LoggedInUserTypeID
     const [controlledEngRep, setControlledEngRep] = useState()
 
-    console.log(talentDeteils,"talentDeteilstalentDeteils");
 
     useEffect(() => {
         setIsLoading(true)
@@ -47,16 +47,15 @@ export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI
             // console.log("fatchOnBoardInfo",result.responseBody.details)
 
             if (result?.statusCode === HTTPStatusCode.OK){
-                const _checkValue = Object.keys(result.responseBody.details.replacementDetail).length === 0;
                 setReplacementEngHr(result.responseBody.details.replacementEngAndHR)
                 setEngagementReplacement({
                     ...engagementReplacement,
-                    replacementData: _checkValue === false ? true: false,
+                    replacementData: result.responseBody.details.replacementDetail !== null ? true : false,
                   });
-                  setValue('lwd', result.responseBody.details.replacementDetail.lastWorkingDay);
+                  setValue('lwd', dayjs(result.responseBody.details.replacementDetail.lastWorkingDay).toDate());
                   const _filterData = result.responseBody.details.replacementEngAndHR?.filter((e) => e.id === result.responseBody.details.replacementDetail.newHrid || result.responseBody.details.replacementDetail.newOnBoardId);
                   setControlledEngRep(_filterData[0].value)
-                  setValue('engagementreplacement',_filterData[0].stringIdValue)
+                  setValue('engagementreplacement',_filterData[0])
             }
            
             // result.responseBody.details && setValue('msaDate', result.responseBody.details)
@@ -326,10 +325,11 @@ export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI
                     </div>
                     <div className={HRDetailStyle.timeSlotItem}>
                       <CalenderSVG />
-                      <Controller
+                      {isTabDisabled ?<Controller
                         render={({ ...props }) => (
                           <DatePicker
-                            selected={watch('lwd')}
+                          {...props}
+                            selected={dayjs(watch('lwd'))}
                             onChange={(date) => {
                               setValue('lwd', date);
                             }}
@@ -337,13 +337,37 @@ export default function AfterKickOff({talentDeteils,HRID, setShowAMModal,callAPI
                             dateFormat="dd/MM/yyyy"
                             // minDate={new Date()}
                             disabledDate={disabledDate}
+                            value={dayjs(watch('lwd'))}
                             // disabled={addLatter}
+                            control={control}
+                            disabled={isTabDisabled}
                           />
                         )}
                         name="lwd"
                         rules={{ required: true }}
                         control={control}
-                      />
+                      />:<Controller
+                      render={({ ...props }) => (
+                        <DatePicker
+                        {...props}
+                          selected={dayjs(watch('lwd'))}
+                          onChange={(date) => {
+                            setValue('lwd', date);
+                          }}
+                          placeholderText="Last Working Day"
+                          dateFormat="dd/MM/yyyy"
+                          // minDate={new Date()}
+                          disabledDate={disabledDate}
+                        //   value={dayjs(watch('lwd'))}
+                          // disabled={addLatter}
+                          control={control}
+                          disabled={isTabDisabled}
+                        />
+                      )}
+                      name="lwd"
+                      rules={{ required: true }}
+                      control={control}
+                    />}
                     </div>
                   </div>}
                 </div>
