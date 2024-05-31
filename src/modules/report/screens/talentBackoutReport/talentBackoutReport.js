@@ -83,7 +83,7 @@ function TalentBackoutReport() {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => getBackoutDetails() , 1000);
+    const timer = setTimeout(() => getBackoutData() , 1000);
     return () => clearTimeout(timer);
 }, [debouncedSearch]);
 
