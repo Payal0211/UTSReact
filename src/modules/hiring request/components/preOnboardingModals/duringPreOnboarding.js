@@ -178,6 +178,10 @@ export default function DuringPreOnboarding({
           setValue('lwd', data.replacementDetail.lastWorkingDay);
            setClientTeamMembers(data.onBoardClientTeam)
 
+           const _filterData = data.replacementEngAndHR?.filter((e) => e.id === data.replacementDetail.newHrid || data.replacementDetail.newOnBoardId);
+           setControlledEngRep(_filterData[0].value)
+           setValue('engagementreplacement',_filterData[0].stringIdValue)
+
            if(data.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption){
             let filteredDevicePolicy = devicePolices.filter(item=> item.value ===  data.secondTabAMAssignmentOnBoardingDetails.devicesPoliciesOption)
             setValue('devicePolicy',filteredDevicePolicy[0])

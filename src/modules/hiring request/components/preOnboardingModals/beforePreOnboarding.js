@@ -216,6 +216,7 @@ export default function BeforePreOnboarding({
         }
         const _filterData = result.responseBody.details.replacementEngAndHR?.filter((e) => e.id === result.responseBody.details.replacementDetail.newHrid || result.responseBody.details.replacementDetail.newOnBoardId);
         setControlledEngRep(_filterData[0].value)
+        setValue('engagementreplacement',_filterData[0].stringIdValue)
       }
     },
     [setValue]
