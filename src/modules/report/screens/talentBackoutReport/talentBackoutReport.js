@@ -18,8 +18,8 @@ function TalentBackoutReport() {
 
     const [ searchText , setSearchText] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState('');
-    const [totalRecords, setTotalRecords] = useState(100);
-    const [pageSize, setPageSize] = useState(5);    
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [pageSize, setPageSize] = useState(10);    
 	const [pageIndex, setPageIndex] = useState(1);
     const pageSizeOptions = [100, 200, 300, 500, 1000,5000];
 
@@ -120,8 +120,8 @@ const handleExport = (apiData) => {
 },
 {
     title: 'Sales Person',				
-    dataIndex: 'salesPerson',
-    key: 'salesPerson',
+    dataIndex: 'salesUser',
+    key: 'salesUser',
     align: 'left',
     width: '150px',
 },
