@@ -53,6 +53,22 @@ export const CompanyAPI = {
 			return errorDebug(error, 'CompanyAPI.deleteCultureImageRequest');
 		}
 	},
+	deleteFundingRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.COMPANY +
+			CompanysAPI.DELETE_FUNDING ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = payload;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'CompanyAPI.deleteCultureImageRequest');
+		}
+	},
 	deleteYoutubeDetailsRequest: async function (payload) {
 		let httpService = new HttpServices();
 		httpService.URL =

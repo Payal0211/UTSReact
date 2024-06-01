@@ -41,6 +41,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 		replacementData : false
 	})
 	const loggedInUserID = JSON.parse(localStorage.getItem('userSessionInfo')).LoggedInUserTypeID
+	const watchLostReason = watch("lostReason");
 	const convertToBase64 = useCallback((file) => {
 		return new Promise((resolve, reject) => {
 			const fileReader = new FileReader();
@@ -137,7 +138,9 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 				lastWorkingDay: addLatter === false ? d.lwd :"" ,
 				replacementInitiatedby:loggedInUserID.toString(),
 				engHRReplacement: addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id 
-				}
+				},
+				dpPercentage : +d.dpPercentage,
+				dpAmount : +d.dpAmount
 			};
 			const response =
 				await engagementRequestDAO.changeContractEndDateRequestDAO(
@@ -174,6 +177,16 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 			resetField('endEngagementReason');
 		}
 	}, [closeModal, resetField]);
+
+	let watchExpectedCTC  = watch('expectedCTC')
+    let watchDPpercentage = watch('dpPercentage')
+
+    // watch values and change DP amount
+    useEffect(() => { 
+        let DPAMOUNT =  ((watchExpectedCTC *  12) * watchDPpercentage) / 100 
+        setValue('dpAmount', DPAMOUNT.toFixed(2))
+    },[watchExpectedCTC,watchDPpercentage, setValue])
+
 
 	return (
 		<div className={allengagementEnd.engagementModalWrap}>
@@ -301,6 +314,74 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
                 />
 				</div>
 				</div>
+
+				{watchLostReason?.id === "3" && <div className={allengagementEnd.row}>
+					<div className={allengagementEnd.colMd12}>
+				  	 	<p>Currency<b style={{color:"red"}}> *</b> :{' '} {getEndEngagementDetails?.currency} </p>	
+					</div>
+				</div>}
+
+				{watchLostReason?.id === "3" && <div className={allengagementEnd.row}>
+                    <div
+                        className={allengagementEnd.colMd12}>
+                        <HRInputField
+                            register={register}
+                            errors={errors}
+                            validationSchema={{
+                                required: 'please enter Talent Expected CTC.',
+                            }}
+                            label="Talent Expected CTC Monthly"
+                            name="expectedCTC"
+                            type={InputType.NUMBER}
+                            placeholder="Enter Amount"
+                            required = {watchLostReason?.id === "3" ? true:false}
+                        />
+                    </div>
+                </div>}
+
+				{watchLostReason?.id === "3" && <div className={allengagementEnd.row}>
+                    <div
+                        className={allengagementEnd.colMd12}>
+                        <HRInputField
+                            register={register}
+                            errors={errors}
+                            validationSchema={{
+                                required: 'please enter DP Percentage.',
+                            }}
+                            label="DP Percentage"
+                            name="dpPercentage"
+                            type={InputType.NUMBER}
+                            placeholder="Enter Amount"
+                            required = {watchLostReason?.id === "3" ? true:false}
+                        />
+                    </div>
+                </div>}
+
+				{watchLostReason?.id === "3" && <div className={allengagementEnd.row}>
+					<div
+						className={allengagementEnd.colMd12}>
+						<HRInputField
+							register={register}
+							errors={errors}
+							validationSchema={{
+								required: 'Invalid DP Amount.',
+								validate: (value) => {
+									if (value <= 0) {
+										return "Invalid DP Amount.";
+									}
+									},
+							}}
+							label="DP One time Amount"
+							name="dpAmount"
+							type={InputType.NUMBER}
+							placeholder="Enter Amount"
+							required = {watchLostReason?.id === "3" ? true:false}
+							disabled={true}
+						/>
+					</div>
+				</div>}
+
+
 			<div className={allengagementEnd.row}>
 				<div className={allengagementEnd.colMd12}>
 					<HRInputField

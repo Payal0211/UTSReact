@@ -290,6 +290,7 @@ function AddCompany() {
         watch={watch}
         companyDetails={getCompanyDetails?.basicDetails}
         fundingDetails={getCompanyDetails?.fundingDetails}
+        companyID={companyID}
         isSelfFunded={isSelfFunded} 
         setIsSelfFunded={setIsSelfFunded}
         fields={fundingFields}

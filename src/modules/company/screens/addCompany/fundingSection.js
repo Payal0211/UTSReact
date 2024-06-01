@@ -4,6 +4,8 @@ import HRInputField from "modules/hiring request/components/hrInputFields/hrInpu
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { InputType  } from "constants/application";
 import { Checkbox, message, Select, Skeleton } from 'antd';
+import { allCompanyRequestDAO } from "core/company/companyDAO";
+import { HttpStatusCode } from "axios";
 
 
 const defaultFunding = {
@@ -29,7 +31,7 @@ const seriesOptions = [
   { value: "Series I Round", id: "Series I Round" },
 ];
 
-function FundingSection({register,errors,setValue,watch,companyDetails,fundingDetails,isSelfFunded,setIsSelfFunded,fields, append, remove,loadingDetails}) {
+function FundingSection({register,errors,setValue,watch,companyDetails,fundingDetails,isSelfFunded,setIsSelfFunded,fields, append, remove,loadingDetails,companyID}) {
   const [controlledSeries,setControlledSeries] = useState([]);
     useEffect(() => {
         if(companyDetails?.companyName){
@@ -63,10 +65,31 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
       },
       [append],
     );
-    const onRemoveAddedRound = useCallback(
-      (e, index) => {
-        e.preventDefault();
+
+    const removeFundingfromBE = async (toDelete,index)=>{
+      let payload = {
+        "fundingID": toDelete.fundingID,
+        "companyID": companyID
+      }
+// console.log(toDelete, companyID)
+      const result = await allCompanyRequestDAO.deleteFundingDAO(payload)
+ 
+      if(result.statusCode === HttpStatusCode.Ok){
         remove(index);
+      }
+    }
+  
+
+    const onRemoveAddedRound = useCallback(
+      (e, index,item) => {
+        if(item?.fundingID === 0){
+          e.preventDefault();
+          remove(index);
+        }else{
+          e.preventDefault();
+          removeFundingfromBE(item,index)
+        }
+        
       },
       [remove],
     );
@@ -138,7 +161,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
             <button
 										type="button"
 										className={AddNewClientStyle.btn}
-										onClick={(e) => onRemoveAddedRound(e, index)}>
+										onClick={(e) => onRemoveAddedRound(e, index,item)}>
 										Remove
 						</button>
            </>} 
