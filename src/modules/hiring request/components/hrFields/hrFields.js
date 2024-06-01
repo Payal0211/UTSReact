@@ -41,6 +41,7 @@ import { HttpStatusCode } from "axios";
 import infoIcon from 'assets/svg/info.svg'
 import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
 import DOMPurify from "dompurify";
+import { allCompanyRequestDAO } from "core/company/companyDAO";
 
 export const secondaryInterviewer = {
   interviewerId:"0",
@@ -136,11 +137,11 @@ const HRFields = ({
   const [controlledBudgetValue, setControlledBudgetValue] =
   useState("Select Budget");
 // from add client flow to enadle JD fields 
-  useEffect(()=>{
-    if(fromClientflow === true){
-      setIsCompanyNameAvailable(true)
-    }
-  },[fromClientflow])
+  // useEffect(()=>{
+  //   if(fromClientflow === true){
+  //     setIsCompanyNameAvailable(true)
+  //   }
+  // },[fromClientflow])
 
   const [addHRResponse, setAddHRResponse] = useState(null);
   const [type, setType] = useState("");
@@ -230,6 +231,9 @@ const HRFields = ({
   const [hidePostJob, setHidePostJob] = useState(false)
   const [disableProfileView,setDisableProfileView] = useState(false)
   const [disablePostJob,setDisablePostJob] = useState(false)
+
+  const [ showAddCompany, setShowAddCompany] = useState(false)
+  const [showAddClient,setAddClient] = useState(false)
 
   const watchClientName = watch("clientName");
   const _endTime = watch("endTime");
@@ -689,6 +693,16 @@ const HRFields = ({
 	}, [setTimezoneList]);
 
   const getLocation = useLocation();
+  const {state} = useLocation();
+  const [companyID,setCompanyID]= useState(null)
+
+  useEffect(() => {
+    if(state?.companyName){
+      setCompanyID(state.companyID);
+      setValue('companyName', state?.companyName);
+      // getClientNameSuggestionHandler("")
+    }
+  },[state])
 
   const onNameChange = (event) => {
     setName(event.target.value);
@@ -739,25 +753,28 @@ const HRFields = ({
 
   const getClientNameSuggestionHandler = useCallback(
     async (clientName) => {
-      let response = await MasterDAO.getEmailSuggestionDAO(clientName);
+      let response = await MasterDAO.getEmailSuggestionDAO(clientName,companyID);
 
       if (response?.statusCode === HTTPStatusCode.OK) {
         setClientNameSuggestion(response?.responseBody?.details);
         setClientNameMessage("");
+        setAddClient(false)
       } else if (
         response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
         response?.statusCode === HTTPStatusCode.NOT_FOUND
       ) {
         setError("clientName", {
           type: "validate",
-          message: response?.responseBody,
+          // message: response?.responseBody,
+          message: "We couldn't find the client. Add Client to this Company",
         });
+        setAddClient(true)
         setClientNameSuggestion([]);
         setClientNameMessage(response?.responseBody);
         //TODO:- JD Dump ID
       }
     },
-    [setError]
+    [setError,companyID]
   );
 
   const validate = (clientName) => {
@@ -792,7 +809,7 @@ const HRFields = ({
               ...prev,
               contactID: existingClientDetails?.responseBody?.contactid,
             }));
-            setIsCompanyNameAvailable(true);
+            // setIsCompanyNameAvailable(true);
             setValue("companyName", existingClientDetails?.responseBody?.name);
             setValue("clientName", existingClientDetails?.responseBody?.email)
             clearErrors(["clientName"])
@@ -1843,6 +1860,30 @@ const HRFields = ({
         }
     })
   };
+
+  const validateCompanyName = async () => {
+    let payload = {
+       "workEmail": "",
+       "companyName": watch('companyName').trim(),
+       "currentCompanyID": 0
+     }
+
+     const result = await allCompanyRequestDAO.validateClientCompanyDAO(payload)
+     if(result.statusCode === HTTPStatusCode.OK){
+       setError('companyName',{
+         type: "manual",
+         message: "We couldn't find the company. Create company",
+       })
+       setShowAddCompany(true)
+      //  setDisableSubmit(true)
+     }
+     if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
+      clearErrors('companyName')
+      setShowAddCompany(false)
+      setCompanyID(result.details.companyID)
+       //  setDisableSubmit(false)
+     }
+   }
   return (
     <>
       {contextHolder}
@@ -1857,7 +1898,29 @@ const HRFields = ({
 
           <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
             <div className={HRFieldStyle.row}>
-              {pathName === ClientHRURL.ADD_NEW_CLIENT ? (
+            <div className={HRFieldStyle.colMd6}>
+                <HRInputField
+                  //	disabled={
+                  //	pathName === ClientHRURL.ADD_NEW_CLIENT ||
+                  //isCompanyNameAvailable ||
+                  //isLoading
+                  //}
+                  // disabled={isCompanyNameAvailable ? true : false}
+                  register={register}
+                  errors={errors}
+                  validationSchema={{
+                    required: "please enter the company name.",
+                  }}
+                  label="Company Name"
+                  name="companyName"
+                  onBlurHandler={()=>validateCompanyName()}
+                  type={InputType.TEXT}
+                  placeholder="Enter Company Name"
+                  required
+                />
+              </div>
+              <div className={HRFieldStyle.colMd6}>
+                  {pathName === ClientHRURL.ADD_NEW_CLIENT ? (
                 <div className={HRFieldStyle.colMd12}>
                   <HRInputField
                     disabled={
@@ -1924,28 +1987,34 @@ const HRFields = ({
                   </div>
                 </div>
               )}
+           
+              </div>
+             <div className={HRFieldStyle.colMd6}>{showAddCompany && 
+             <div className={HRFieldStyle.formPanelAction} style={{padding: '0 0 32px 0 ',justifyContent:'flex-start'}}>
+                <button
+                  onClick={()=>navigate('/addNewCompany/0',{state:{createHR:true , companyName:watch('companyName')}})}
+                  className={HRFieldStyle.btnPrimary}
+                
+                >
+                Add Company / Client
+                </button>
+              </div>} 
+              </div>
+
+              <div className={HRFieldStyle.colMd6}>{showAddClient && 
+             <div className={HRFieldStyle.formPanelAction} style={{padding: '0 0 32px 0 ',justifyContent:'flex-start'}}>
+                <button
+                  onClick={()=>navigate(`/addNewCompany/${companyID}`,{state:{createHR:true }})}
+                  className={HRFieldStyle.btnPrimary}
+                
+                >
+                Add Client
+                </button>
+              </div>} 
+              </div>
             </div>
             <div className={HRFieldStyle.row}>
-              <div className={HRFieldStyle.colMd6}>
-                <HRInputField
-                  //	disabled={
-                  //	pathName === ClientHRURL.ADD_NEW_CLIENT ||
-                  //isCompanyNameAvailable ||
-                  //isLoading
-                  //}
-                  disabled={isCompanyNameAvailable ? true : false}
-                  register={register}
-                  errors={errors}
-                  validationSchema={{
-                    required: "please enter the company name.",
-                  }}
-                  label="Company Name"
-                  name="companyName"
-                  type={InputType.TEXT}
-                  placeholder="Enter Company Name"
-                  required
-                />
-              </div>
+             
 
               <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>

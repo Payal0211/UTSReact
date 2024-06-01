@@ -3,7 +3,7 @@ import AddNewClientStyle from "./addclient.module.css";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Skeleton, message } from "antd";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 
 import CompanySection from "./companySection";
@@ -16,6 +16,7 @@ import { MasterDAO } from "core/master/masterDAO";
 
 function AddCompany() {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const { companyID } = useParams();
   const [getCompanyDetails, setCompanyDetails] = useState({});
   const [getValuesForDD, setValuesForDD] = useState({});
@@ -223,7 +224,8 @@ function AddCompany() {
         "nonVettedProfileViewCredit": d.nonVettedProfileViewCredit,
         "hiringTypePricingId": d.hiringPricingType?.id
       },
-      "pocIds": d.uplersPOCname?.map(poc=> poc.id)
+      "pocIds": d.uplersPOCname?.map(poc=> poc.id),
+      "IsRedirectFromHRPage" : state?.createHR ? true : false
     }
 
 
@@ -232,7 +234,18 @@ function AddCompany() {
     let submitresult = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
 // console.log("submited res",submitresult)
     if(submitresult?.statusCode === HTTPStatusCode.OK){
-      navigate('/allClients')
+      if(state?.createHR){
+        navigate('/allhiringrequest/addnewhr',{
+          state:{
+            companyID:submitresult?.responseBody?.companyID ,     
+            companyName: submitresult?.responseBody?.companyName,
+            clientDetails: submitresult?.responseBody?.summaryClients
+          }})
+          window.scrollTo(0,0)
+      }else{
+         navigate('/allClients')
+      }
+     
     }
 
     if(submitresult?.statusCode === HTTPStatusCode.BAD_REQUEST){
@@ -242,6 +255,13 @@ function AddCompany() {
     setLoadingDetails(false)
       setDisableSubmit(false)
   };
+
+  // When From Create HR page
+  useEffect(()=>{
+    if(state?.createHR){
+      setValue('companyName', state?.companyName)
+    }
+  },[state])
 
   return (
     <div className={AddNewClientStyle.addNewContainer}>
