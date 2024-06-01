@@ -29,6 +29,7 @@ export const secondaryClient = {
   resendInviteEmail: false,
   roleID: 3,
   countryCode: "",
+  isNewClient:true
 };
 
 function ClientSection({
@@ -80,6 +81,7 @@ function ClientSection({
           ...secondaryClient,
           ...contact,
           _id: contact.id,
+          isNewClient:false,
           ...phoneDetails,
         });
       });
@@ -178,13 +180,15 @@ function ClientSection({
                         Add Another Client
                       </button>
 
-                      <button
+
+                      {item?.isNewClient && <button
                         type="button"
                         className={AddNewClientStyle.btn}
                         onClick={(e) => onRemoveAddedClient(e, index)}
                       >
                         Remove
-                      </button>
+                      </button>}
+                      
                     </>
                   )}
                 </div>
