@@ -208,6 +208,11 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 						<span>Talent Name:</span>
 						{talentInfo?.talentName}
 					</li>
+					<li className={allengagementEnd.divider}>|</li>
+					<li>
+						<span>DP Percentage:</span>
+						{getEndEngagementDetails?.dpnrPercentage}
+					</li>
 				</ul>
 			</div>
 
