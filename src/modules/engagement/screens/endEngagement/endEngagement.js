@@ -143,6 +143,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 				dpPercentage : +d.dpPercentage,
 				dpAmount : +d.dpAmount,
 				newContractStartDate : d.newContractStartDate,
+				expectedCTC : +d.expectedCTC,
 			};
 			const response =
 				await engagementRequestDAO.changeContractEndDateRequestDAO(

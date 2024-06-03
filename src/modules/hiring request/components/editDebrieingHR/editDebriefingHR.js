@@ -99,7 +99,7 @@ const EditDebriefingHR = ({
 		let company_Type = getHRdetails?.companyTypes?.filter(item => item.isActive === true);
 		if(company_Type?.length > 0){
 			setComapnyType(company_Type[0])
-		 }
+		}
 	},[getHRdetails]);
 	/* const combinedSkillsMemo = useMemo(
 		() => [
@@ -474,8 +474,8 @@ const checkValChnage = () => {
 				companyType: companyType?.name,
 				PayPerType:  companyType?.id,
 				// --update-- 0 or 1 check
-				// IsMustHaveSkillschanged: false,
-				// IsGoodToHaveSkillschanged:checkValChnage()
+				IsMustHaveSkillschanged: getHRdetails?.skillmulticheckbox?.length === watchSkills?.length ? false :true,
+				IsGoodToHaveSkillschanged:getHRdetails?.allSkillmulticheckbox?.length === goodToHaveSkill?.length ? false: true,
 			};
 			if(companyType?.id === 2){
 				debriefFormDetails['companyInfo'] = {
@@ -513,7 +513,7 @@ const checkValChnage = () => {
 			}
 			
 		},
-		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI,isFocusedRole,companyType],
+		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI,isFocusedRole,companyType,watchSkills,goodToHaveSkill],
 	);
 
 	const needMoreInforSubmitHandler = useCallback(
