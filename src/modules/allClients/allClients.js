@@ -29,6 +29,7 @@ import { downloadToExcel } from 'modules/report/reportUtils';
 import EditAMModal from './components/allClients/editAMModal/editAMModal';
 import { GSpaceEmails } from 'constants/network';
 import { HttpStatusCode } from 'axios';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 const AllClientFiltersLazy = React.lazy(() =>
 	import('modules/allClients/components/allClients/allClientsFilter'),
@@ -88,7 +89,6 @@ function AllClients() {
         setLoading(true);
 		// const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
         const  response = await allClientRequestDAO.getClientFilterDAO();
-        setLoading(false)
 
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setFiltersList(response && response?.responseBody?.Data);
@@ -350,10 +350,11 @@ const updateSpaceIDForClientFun = async () =>{
     return(
         <>
         <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
-                <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}>
+                {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
         {contextHolder}
                 <div className={clienthappinessSurveyStyles.addnewHR}>
                     <div className={clienthappinessSurveyStyles.hiringRequest}>All Clients</div>
+                    <LogoLoader visible={isLoading} />
                     <div className={clienthappinessSurveyStyles.btn_wrap}>
                        {isShowAddClientCredit && <button className={clienthappinessSurveyStyles.btnwhite}
                         // onClick={() => navigate(UTSRoutes.ABOUT_CLIENT)}
@@ -490,7 +491,7 @@ const updateSpaceIDForClientFun = async () =>{
                             )} 
                 </div>
 
-            </WithLoader>
+            {/* </WithLoader> */}
             </div>
            
 

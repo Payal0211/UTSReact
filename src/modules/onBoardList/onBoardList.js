@@ -7,6 +7,7 @@ import { Table } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { MasterDAO } from 'core/master/masterDAO';
 import { HTTPStatusCode } from 'constants/network';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 const onBoardListConfig = () => {
     return [     
@@ -251,9 +252,10 @@ function OnBoardList() {
 
     return(
       <div className={onboardList.hiringRequestContainer}>
-          <WithLoader className="pageMainLoader" showLoader={searchText?.length?false:isLoading}>
+          {/* <WithLoader className="pageMainLoader" showLoader={searchText?.length?false:isLoading}> */}
             <div className={onboardList.addnewHR}>
-				      <div className={onboardList.hiringRequest}>OnBoard List</div>               
+				      <div className={onboardList.hiringRequest}>OnBoard List</div>    
+              <LogoLoader visible={isLoading} />           
             </div>
             <div className={onboardList.filterContainer}>
               <div className={onboardList.filterSets}>
@@ -303,7 +305,7 @@ function OnBoardList() {
                 </WithLoader>
               )}
             </div>
-      </WithLoader>
+      {/* </WithLoader> */}
         </div>
     )
 }

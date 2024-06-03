@@ -21,6 +21,7 @@ import Column from 'antd/lib/table/Column';
 import ColumnGroup from 'antd/lib/table/ColumnGroup';
 import SupplyFunnelModal from 'modules/report/components/supplyFunnelModal/supplyFunnelModal';
 import WithLoader from 'shared/components/loader/loader';
+import LogoLoader from 'shared/components/loader/logoLoader';
 const SupplyFunnelFilterLazyComponent = React.lazy(() =>
 	import('modules/report/components/supplyFunnelFilter/supplyFunnelFilter'),
 );
@@ -454,11 +455,12 @@ const SupplyFunnelScreen = () => {
 	}, [getReportFilterHandler]);
 	return (
 		<div className={SupplyFunnelStyle.hiringRequestContainer}>
-				<WithLoader className="pageMainLoader" showLoader={isLoading}>
+				{/* <WithLoader className="pageMainLoader" showLoader={isLoading}> */}
 				<div className={SupplyFunnelStyle.addnewHR}>
 					<div className={SupplyFunnelStyle.hiringRequest}>
 						Supply Funnel Report
 					</div>
+					<LogoLoader visible={isLoading} />
 				</div>
 				{/*
 				* --------- Filter Component Starts ---------
@@ -658,7 +660,7 @@ const SupplyFunnelScreen = () => {
 						demandFunnelValue={supplyFunnelValue}
 					/>
 				)}
-		</WithLoader>
+		{/* </WithLoader> */}
 			</div>
 	);
 };

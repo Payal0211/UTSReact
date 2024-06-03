@@ -11,6 +11,7 @@ import WithLoader from 'shared/components/loader/loader';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { Table } from 'antd';
 import { downloadToExcel } from 'modules/report/reportUtils';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 function ReplacementReport() {
     const [getReplaceMentDetails,setReplacementDetails] = useState([])
@@ -244,6 +245,7 @@ const handleExport = (apiData) => {
     <div className={ReplacementStyle.dealContainer}>
     <div className={ReplacementStyle.header}>
       <div className={ReplacementStyle.dealLable}>Replacement Report</div>
+      <LogoLoader visible={isLoading} />
     </div>
 
     <div className={ReplacementStyle.filterContainer}>
