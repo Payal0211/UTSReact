@@ -108,6 +108,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 
 			const formattedDate = convertedDate?.format('YYYY-MM-DDTHH:mm:ss');
 			setValue("lastWorkingDate", new Date(formattedDate));
+			setValue("newContractStartDate", new Date(formattedDate));
 			/* let updatedDate = new Date(
 				new Date(
 					response?.responseBody?.details?.contractEndDate,
@@ -140,7 +141,8 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 				engHRReplacement: addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id 
 				},
 				dpPercentage : +d.dpPercentage,
-				dpAmount : +d.dpAmount
+				dpAmount : +d.dpAmount,
+				newContractStartDate : d.newContractStartDate,
 			};
 			const response =
 				await engagementRequestDAO.changeContractEndDateRequestDAO(
@@ -384,6 +386,44 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 							disabled={true}
 						/>
 					</div>
+				</div>}
+
+				{watchLostReason?.id === "3" && 
+				<div className={`${allengagementEnd.row} ${allengagementEnd.mb32}`}>
+					<div className={allengagementEnd.colMd6}>
+					<div className={allengagementEnd.timeSlotItemField}>
+						<div className={allengagementEnd.timeLabel}>
+							New	Contract Start Date
+							<span>
+								<b style={{ color: 'red' }}> *</b>
+							</span>
+						</div>
+						<div className={allengagementEnd.timeSlotItem}>
+							<CalenderSVG />
+							<Controller
+								render={({ ...props }) => (
+									<DatePicker
+										selected={watch('newContractStartDate')}
+										onChange={(date) => {
+											setValue('newContractStartDate', date);
+											// setValue("lwd",date)
+										}}
+										placeholderText="New Contract Start Date"
+										dateFormat="dd/MM/yyyy"
+									/>
+								)}
+								name="newContractStartDate"
+								rules={{ required: true }}
+								control={control}
+							/>
+							{errors.newContractStartDate && (
+								<div className={allengagementEnd.error}>
+									* Please select new	contract start date.
+								</div>
+							)}
+						</div>
+					</div>
+				</div>
 				</div>}
 
 
