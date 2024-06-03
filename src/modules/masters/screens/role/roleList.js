@@ -15,6 +15,7 @@ import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
 import { ReactComponent as Close } from "assets/svg/close.svg";
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { useForm } from 'react-hook-form';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 const RoleList = () => {	
     const [isLoading, setLoading] = useState(false);
@@ -206,6 +207,7 @@ const RoleList = () => {
 				<div className={CurrencyListStyle.hiringRequest}>
 					Roles List
 				</div>
+				<LogoLoader visible={isLoading} />
                 <div className={CurrencyListStyle.headerContainer}>              
 					<div className={CurrencyListStyle.searchFilterSet}>
 						<SearchSVG style={{ width: '16px', height: '16px' }} />

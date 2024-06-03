@@ -15,6 +15,7 @@ import { userConfig } from '../../users.config';
 import { userUtils } from '../../userUtils';
 import { HTTPStatusCode } from 'constants/network';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 const UserList = () => {
 	/* const [tableFilteredState, setTableFilteredState] = useState({
@@ -87,9 +88,10 @@ const UserList = () => {
 
 	return (
 		<div className={allUserStyles.hiringRequestContainer}>
-			<WithLoader className="pageMainLoader" showLoader={searchText?.length?false:isLoading}>
+			{/* <WithLoader className="pageMainLoader" showLoader={searchText?.length?false:isLoading}> */}
 			<div className={allUserStyles.userListTitle}>
 				<div className={allUserStyles.hiringRequest}>Users</div>
+			<LogoLoader visible={isLoading} />
 				<button
 					type="button"
 					onClick={() => navigate(UTSRoutes.ADDNEWUSERROUTE)}>
@@ -202,7 +204,7 @@ const UserList = () => {
 					</WithLoader>
 				)}
 			</div>
-		</WithLoader>
+		{/* </WithLoader> */}
 		</div>
 	);
 };

@@ -28,13 +28,10 @@ export const clientHappinessSurveyRequestDAO = {
 				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
 					return clientHappinessSurveyListResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
-					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					// UserSessionManagementController.deleteAllSession();
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -63,13 +60,10 @@ export const clientHappinessSurveyRequestDAO = {
 				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
 					return getAutoCompleteCompanyResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
-					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					// UserSessionManagementController.deleteAllSession();
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -98,13 +92,10 @@ export const clientHappinessSurveyRequestDAO = {
 				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
 					return sendEmailForFeedbackResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
-					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					// UserSessionManagementController.deleteAllSession();
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -133,13 +124,10 @@ export const clientHappinessSurveyRequestDAO = {
 				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
 					return saveClientHappinessSurveysResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
-					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					// UserSessionManagementController.deleteAllSession();
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 		} catch (error) {
@@ -166,13 +154,10 @@ export const clientHappinessSurveyRequestDAO = {
 				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
 					return saveClientHappinessSurveysOptionResult;
 				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
-					UserSessionManagementController.deleteAllSession();
-					return (
-						<Navigate
-							replace
-							to={UTSRoutes.LOGINROUTE}
-						/>
-					);
+					// UserSessionManagementController.deleteAllSession();
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
 				}
 			}
 

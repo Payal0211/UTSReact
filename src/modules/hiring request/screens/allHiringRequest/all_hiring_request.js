@@ -44,6 +44,7 @@ import _debounce from "lodash/debounce";
 import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal";
 import CloseHRModal from "../../components/closeHRModal/closeHRModal";
 import { downloadToExcel } from "modules/report/reportUtils";
+import LogoLoader from "shared/components/loader/logoLoader";
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -491,9 +492,10 @@ const AllHiringRequestScreen = () => {
 
   return (
     <div className={allHRStyles.hiringRequestContainer}>
-      <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}>
       {contextHolder}
       <div className={allHRStyles.addnewHR}>
+      {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
+      <LogoLoader visible={isLoading} />
         <div className={allHRStyles.hiringRequest}>All Hiring Requests</div>
         <div className={allHRStyles.btn_wrap}>
           <div className={allHRStyles.priorities_drop_custom}>
@@ -910,7 +912,7 @@ const AllHiringRequestScreen = () => {
           />
         </Modal>
       )}
-    </WithLoader>
+    {/* </WithLoader> */}
     </div>
   );
 };

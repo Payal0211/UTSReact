@@ -5,6 +5,7 @@ import gptStyles from './chatGpt.module.css'
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import WithLoader from 'shared/components/loader/loader';
 import { Table,Modal, Checkbox } from 'antd';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 const gptTabelConfig = (setModalJDText,setJDTextModal,setModalJDResponse,setResponseModal) => {
     return [
@@ -125,12 +126,13 @@ export default function ChatGPTResponse() {
 
   return (
     <div className={gptStyles.hiringRequestContainer}>
-      <WithLoader className="pageMainLoader" showLoader={isLoading}>
+      {/* <WithLoader className="pageMainLoader" showLoader={isLoading}> */}
         <div className={gptStyles.addnewHR}>
 				<div className={gptStyles.hiringRequest}>Chat GPT Response's</div>
                 <div className={gptStyles.btn_wrap}>
                
                 </div>
+                <LogoLoader visible={isLoading} />
         </div>
 
         <div className={gptStyles.filterContainer}>
@@ -239,7 +241,7 @@ export default function ChatGPTResponse() {
                           </div>
                 </div>                  
             </Modal>    
-    </WithLoader>
+    {/* </WithLoader> */}
     </div>
   )
 }

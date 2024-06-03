@@ -27,6 +27,7 @@ import {
 import { IoChevronDownOutline } from 'react-icons/io5';
 import moment from 'moment';
 import WithLoader from 'shared/components/loader/loader';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 // const DemandFunnelFilterLazyComponent = React.lazy(() =>
 // 	import('modules/report/components/demandFunnelFilter/demandFunnelFilter'),
@@ -508,9 +509,10 @@ const SlaReports = () => {
 
 	return (
 		<div className={SlaReportStyle.hiringRequestContainer}>
-				<WithLoader className="pageMainLoader" showLoader={isLoading}>
+				{/* <WithLoader className="pageMainLoader" showLoader={isLoading}> */}
 				<div className={SlaReportStyle.addnewHR}>
 					<div className={SlaReportStyle.hiringRequest}>SLA Report</div>
+					<LogoLoader visible={isLoading}/>
 				</div>
 				{/*
 				* --------- Filter Component Starts ---------
@@ -801,7 +803,7 @@ const SlaReports = () => {
 						demandFunnelValue={demandFunnelValue}
 					/>
 				)} */}
-		</WithLoader>
+		{/* </WithLoader> */}
 			</div>
 	);
 };

@@ -12,6 +12,7 @@ import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
 import { ReactComponent as TickMark } from "assets/svg/assignCurrect.svg";
 import { ReactComponent as Close } from "assets/svg/close.svg";
 import WithLoader from 'shared/components/loader/loader';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 const TimeZoneList = () => {
     const [isLoading, setLoading] = useState(false);
@@ -137,11 +138,12 @@ const TimeZoneList = () => {
 	}
     return (
 		<div className={CurrencyListStyle.hiringRequestContainer}>
-			<WithLoader className="pageMainLoader" showLoader={search?.length?false:isLoading}>
+			{/* <WithLoader className="pageMainLoader" showLoader={search?.length?false:isLoading}> */}
 			<div className={CurrencyListStyle.addnewHR}>
 				<div className={CurrencyListStyle.hiringRequest}>
 					TimeZone
 				</div>
+				<LogoLoader visible={isLoading} />
                 <div className={CurrencyListStyle.headerContainer}>              
 					<div className={CurrencyListStyle.searchFilterSet}>
 						<SearchSVG style={{ width: '16px', height: '16px' }} />
@@ -204,7 +206,7 @@ const TimeZoneList = () => {
 					</>
 				)}
 			</div>						
-		</WithLoader>
+		{/* </WithLoader> */}
 		</div>
     )
 }

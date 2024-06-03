@@ -46,6 +46,7 @@ import { downloadToExcel } from 'modules/report/reportUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import EditAllBRPR from '../editAllBRPR/editAllBRPR';
 import moment from 'moment';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() => import('./engagementFilter'));
@@ -597,12 +598,13 @@ const EngagementList = () => {
 
 	return (
 		<div className={allEngagementStyles.hiringRequestContainer}>
-			<WithLoader showLoader={searchText?.length?false:isLoading} className="pageMainLoader">
+			{/* <WithLoader showLoader={searchText?.length?false:isLoading} className="pageMainLoader"> */}
 			<div className={allEngagementStyles.addnewHR}>
 				<div className={allEngagementStyles.hiringRequest}>
 					Engagement Dashboard -{' '}
 					{startDate.toLocaleDateString('default', { month: 'long' })}
 				</div>
+				<LogoLoader visible={isLoading} />
 				{/* <div>
 					<button
 						className={allEngagementStyles.btnPrimary}
@@ -1375,7 +1377,7 @@ const EngagementList = () => {
 			
 							</Modal>}
 			</div>
-		</WithLoader>
+		{/* </WithLoader> */}
 		</div>
 	);
 };

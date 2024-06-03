@@ -11,6 +11,7 @@ import WithLoader from 'shared/components/loader/loader';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import { Table } from 'antd';
 import { downloadToExcel } from 'modules/report/reportUtils';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 function TalentBackoutReport() {
     const [getBackoutDetails,setTalentBackoutDetails] = useState([])
@@ -194,6 +195,7 @@ const handleExport = (apiData) => {
     <div className={TalentBackoutStyle.dealContainer}>
     <div className={TalentBackoutStyle.header}>
       <div className={TalentBackoutStyle.dealLable}>Talent Backout Report</div>
+      <LogoLoader visible={isLoading} />
     </div>
 
     <div className={TalentBackoutStyle.filterContainer}>
