@@ -5,7 +5,7 @@ import HRInputField from "modules/hiring request/components/hrInputFields/hrInpu
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { InputType } from "constants/application";
 import TextEditor from "shared/components/textEditor/textEditor";
-import { Checkbox, Skeleton, message } from 'antd';
+import { Checkbox, Skeleton, Upload, message } from 'antd';
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { HTTPStatusCode } from "constants/network";
 import { HttpStatusCode } from "axios";
@@ -15,6 +15,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
     const [combinedPerkMemo, setCombinedPerkMemo] = useState([])
     const [uploading,setUploading] = useState(false)
     const pictureRef = useRef()
+    const { Dragger } = Upload;
    useEffect(()=>{
     if(perkDetails?.length > 0){
       setValue('perksAndAdvantages',perkDetails?.map(item=> ({
@@ -132,6 +133,35 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
     }
    }
 
+
+
+   const handleDrop = async (e) => {
+     e.preventDefault();
+     const files = e.dataTransfer.files;
+     if (!files.length) return;
+ 
+     const acceptedTypes = ["image/jpeg", "image/png"];
+     const maxSize = 25 * 1024 * 1024;
+ 
+     for (const file of files) {
+       if (!acceptedTypes.includes(file.type)) {
+         message.info("Please select a valid image file (JPEG or PNG).");
+         return;
+       }
+ 
+       if (file.size > maxSize) {
+         message.error("Maximum image size are 25 MB.");
+         return;
+       }
+     }
+ 
+     try {
+       uploadCultureImages(files);
+     } catch (error) {
+       console.error("Error reading the file:", error);
+     }
+   };
+
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
       {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
@@ -163,10 +193,14 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
         <div className={AddNewClientStyle.row}>
         <div className={AddNewClientStyle.colMd12}>
         <div className={AddNewClientStyle.label}>Picture</div>
+        {/* <Dragger> */}
         {uploading? <Skeleton active /> : <div
               className={AddNewClientStyle.FilesDragAndDrop__area}
               style={{ width: "100%", cursor: "pointer" }}
               onClick={()=> pictureRef && pictureRef.current.click()}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={handleDrop}
+              onDragLeave={(e) => e.preventDefault()}
             >
               <svg
                 width="24"
@@ -193,7 +227,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
                 />
               </svg>
               <p>
-                <span>Click to Upload</span> 
+                <span>Click to Upload or drag and drop</span> 
               </p>
               <span> (Max. File size: 25 MB)</span>
               <input
@@ -230,6 +264,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
                 }}
               />
             </div>}
+            {/* </Dragger> */}
         
         </div>
         </div>
@@ -308,6 +343,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
               name="perksAndAdvantages"
               label="Company perks & advantages"
               defaultValue="Mention perks & advantages"
+              placeholder="Mention perks & advantages"
               options={combinedPerkMemo}
               setOptions={setCombinedPerkMemo}
             />

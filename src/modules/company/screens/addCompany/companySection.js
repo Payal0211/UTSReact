@@ -397,7 +397,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                 label="About Company"
                 name="aboutCompany"
                 type={InputType.TEXT}
-                placeholder="About Company"
+                placeholder="Enter about company"
                 // required
                 watch={watch}
               />

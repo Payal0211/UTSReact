@@ -201,7 +201,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                     type={InputType.NUMBER}
                     onChangeHandler={(e) => {
                     }}
-                    placeholder="Ex: 500k, 900k, 1M, 2B..."
+                    placeholder="Enter round number"
                     disabled={isSelfFunded}
                   />
                 </div>
@@ -267,7 +267,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                     type={InputType.TEXT}
                     onChangeHandler={(e) => {
                     }}
-                    placeholder="Enter Investor"
+                    placeholder="Add investors seprated by comma (,)"
                     disabled={isSelfFunded}
                   />
                 </div>

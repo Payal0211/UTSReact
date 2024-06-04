@@ -295,7 +295,7 @@ function EngagementSection({
                       label="Per credit amount"
                       name="creditAmount"
                       type={InputType.NUMBER}
-                      placeholder="Enter per credit amount"
+                      placeholder="Enter the rate per credit"
                       required={
                         checkPayPer?.companyTypeID !== 0 &&
                         checkPayPer?.companyTypeID !== null
@@ -419,7 +419,7 @@ function EngagementSection({
                               label="Credit per post a job"
                               name="jobPostCredit"
                               type={InputType.NUMBER}
-                              placeholder="Enter credit per post a job"
+                              placeholder="Enter credit cost for posting a job"
                               required={IsChecked?.isPostaJob ? true : false}
                               validationSchema={{
                                 required: IsChecked?.isPostaJob
