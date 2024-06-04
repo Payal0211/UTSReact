@@ -984,10 +984,10 @@ export const MasterDAO = {
 			);
 		}
 	},
-	getEmailSuggestionDAO: async function (email) {
+	getEmailSuggestionDAO: async function (email,companyId) {
 		try {
 			const emailSuggestionResponse = await MasterAPI.getEmailSuggestionRequest(
-				email,
+				email,companyId
 			);
 			if (emailSuggestionResponse) {
 				const statusCode = emailSuggestionResponse['statusCode'];

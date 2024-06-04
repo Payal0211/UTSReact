@@ -111,7 +111,7 @@ export const CompanyAPI = {
 		httpService.dataToSend = payload;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
-			let response = await httpService.sendPostRequest();
+			let response = await httpService.sendPostRequestFullResponse();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'CompanyAPI.validateClientCompanyRequest');

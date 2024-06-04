@@ -65,6 +65,37 @@ export class HttpServices {
 		}
 	}
 
+	async sendPostRequestFullResponse() {
+		try {
+			const response = await axios.post(
+				this._URL, // URL Passing
+				this._dataToSend, // Data-Body Passing
+				{
+					headers: {
+						'Content-Type': this._contentType,
+						Authorization: this._isAuthRequired && this._authToken,
+					},
+				},
+			);
+			
+			return {
+				statusCode: response.status,
+				responseBody: response,
+			};
+		} catch (error) {
+			const errorResult = errorDebug(
+				error.response.data,
+				'httpServices.sendPostRequest()',
+			);
+			return {
+				statusCode: errorResult.statusCode,
+				responseBody: errorResult.responseBody,
+				details:error.response?.data?.details
+
+			};
+		}
+	}
+
 	async sendFileDataPostRequest() {
 		try {
 			const response = await axios.post(
