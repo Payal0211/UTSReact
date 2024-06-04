@@ -152,7 +152,7 @@ const updateSpaceIDForClientFun = async () =>{
     
     useEffect(() => {
         getAllClientsList(tableFilteredState);
-    },[tableFilteredState,isShowAddClientCredit]);
+    },[tableFilteredState]);
 
     const reloadClientList = ()=>{
         getAllClientsList(tableFilteredState);
