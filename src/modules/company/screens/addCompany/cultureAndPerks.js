@@ -193,7 +193,6 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
         <div className={AddNewClientStyle.row}>
         <div className={AddNewClientStyle.colMd12}>
         <div className={AddNewClientStyle.label}>Picture</div>
-        {/* <Dragger> */}
         {uploading? <Skeleton active /> : <div
               className={AddNewClientStyle.FilesDragAndDrop__area}
               style={{ width: "100%", cursor: "pointer" }}
@@ -264,7 +263,6 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
                 }}
               />
             </div>}
-            {/* </Dragger> */}
         
         </div>
         </div>
