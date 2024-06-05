@@ -226,7 +226,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
                 />
               </svg>
               <p>
-                <span>Click to Upload or drag and drop</span> 
+                <span>Click to Upload</span> <span style={{color:"gray"}}>or drag and drop</span>
               </p>
               <span> (Max. File size: 25 MB)</span>
               <input
