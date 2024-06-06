@@ -498,7 +498,7 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
                         inputClassName={previewClientStyle.inputcustom}
                     />  
 
-                     <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                     <div className={`${previewClientStyle.buttonEditGroup}`}>
                         <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyFound(false)}> Cancel </button>
                         <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyFound(false)}> SAVE </button>
                     </div>                 
@@ -520,19 +520,13 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
         wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
             <HRSelectField
-                // mode='id/value'
-                // controlledValue={feedBackTypeEdit}
-                // setControlledValue={setFeedbackTypeEdit}
-                // isControlled={true}
-                // setValue={setValue}
                 register={register}
                 name="TeamSize"
-                label="Feedback Type"
+                label="Change team size"
                 defaultValue="Please Select"
-                // options={getFeedbackFormContent.drpFeedbackType?.filter((item) => item?.value !== "0")}
             />
 
-         <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+         <div className={`${previewClientStyle.buttonEditGroup}`}>
             <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyFound(false)}> Cancel </button>
             <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyFound(false)}> SAVE </button>
         </div>    
@@ -543,22 +537,23 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
         open={isEditCompanyType}
         onOk={() => setIsEditCompanyType(false)}
         onCancel={() => setIsEditCompanyType(false)}
-        width={300}
+        width={400}
         footer={false}
         maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
-        <HRInputField
-          //    required
-          rows={4}
-          errors={errors}
-          label={"Company Type"}
-          register={register}
-          name="companyType"
-          type={InputType.TEXT}
-          placeholder="Please enter"
-        />
-        <button onClick={() => setIsEditCompanyType(false)}>Cancel</button>
-        <button onClick={() => setIsEditCompanyType(false)}>SAVE</button>
+            <HRSelectField
+                register={register}
+                name="companytype"
+                label="Company type"
+                defaultValue="SaaS"
+            />
+
+         <div className={`${previewClientStyle.buttonEditGroup}`}>
+            <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyType(false)}> Cancel </button>
+            <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyType(false)}> SAVE </button>
+        </div>    
       </Modal>
       {/* Company Industry Modal*/}
       <Modal
@@ -566,9 +561,11 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
         open={isEditCompanyIndustry}
         onOk={() => setIsEditCompanyIndustry(false)}
         onCancel={() => setIsEditCompanyIndustry(false)}
-        width={300}
+        width={400}
         footer={false}
         maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
         <HRInputField
           //    required
@@ -578,10 +575,15 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
           register={register}
           name="companyIndustry"
           type={InputType.TEXT}
-          placeholder="Please enter"
+          placeholder="Please enter Industry"
         />
-        <button onClick={() => setIsEditCompanyIndustry(false)}>Cancel</button>
-        <button onClick={() => setIsEditCompanyIndustry(false)}>SAVE</button>
+ 
+
+        <div className={`${previewClientStyle.buttonEditGroup}`}>
+            <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyIndustry(false)}> Cancel </button>
+            <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyIndustry(false)}> SAVE </button>
+        </div>   
+       
       </Modal>
       {/* Headquarters Modal*/}
       <Modal
@@ -592,11 +594,17 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
         width={300}
         footer={false}
         maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
         <label>Headquarters</label>
+
         <AutoComplete />
-        <button onClick={() => setIsEditHeadquarters(false)}>Cancel</button>
-        <button onClick={() => setIsEditHeadquarters(false)}>SAVE</button>
+
+        <div className={`${previewClientStyle.buttonEditGroup}`}>
+            <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditHeadquarters(false)}> Cancel </button>
+            <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditHeadquarters(false)}> SAVE </button>
+        </div>   
       </Modal>
     </>
   );
