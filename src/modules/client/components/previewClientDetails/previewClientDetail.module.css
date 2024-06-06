@@ -115,6 +115,9 @@
 }
 
 .PreviewpageMainWrap .formFields .formFieldsboxinner h2 {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     background: #FFFDF1;
     padding: 15px 29px;
     color: #232323;
@@ -438,7 +441,7 @@
 
 .PreviewpageMainWrap .companyBenefits ul li{
     border: 1px solid #fff8d6;
-    margin-right: 8px;
+    margin-right: 0px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -453,14 +456,32 @@
 }
 
 
-.companyProfileBox{
+
+.PreviewpageMainWrap .formFieldTitleTwo h2{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.PreviewpageMainWrap .formFieldTitleTwo .addNewClientText{
+    color: #1B73BA;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 18px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+.PreviewpageMainWrap .companyProfileBox{
     display: flex;
     align-items: center;
     gap: 16px;
     margin-bottom: 32px;
 }
 
-.companyProfileBox .companyProfileImg{
+.PreviewpageMainWrap .companyProfileBox .companyProfileImg{
     position: relative;
     border: 1px solid rgba(255, 255, 255, 1);
     width: 68px;
@@ -468,7 +489,7 @@
     border-radius: 50%;
 }
 
-.companyProfileBox .companyProfileImg .editNewIcon{
+.PreviewpageMainWrap .companyProfileBox .companyProfileImg .editNewIcon{
     position: absolute;
     bottom: 0;
     right: 0;
@@ -478,14 +499,14 @@
     border-radius: 50%;
 }
 
-.companyProfileBox .companyProfileImg img{
+.PreviewpageMainWrap .companyProfileBox .companyProfileImg img{
     width: 68px;
     height: 68px;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.companyProfileBox .companyProfRightDetail h3{
+.PreviewpageMainWrap .companyProfileBox .companyProfRightDetail h3{
     display: flex;
     align-items: center;
     gap: 4px;
@@ -496,7 +517,7 @@
     margin-bottom: 5px;
 }
 
-.companyProfileBox .companyProfRightDetail a{
+.PreviewpageMainWrap .companyProfileBox .companyProfRightDetail a{
     display: flex;
     align-items: center;
     gap: 4px;
@@ -507,3 +528,58 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+
+
+.PreviewpageMainWrap .companyDetailTop.clientDetailListed ul{
+    border-bottom: 1px dashed #23232333;
+    column-gap: 50px;
+    row-gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+}
+
+.PreviewpageMainWrap .companyDetailTop.clientDetailListed ul li{
+    margin-bottom: 0px;
+}
+
+.PreviewpageMainWrap .companyDetailTop.clientDetailListed .companyNewClientbox:last-child ul{
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.PreviewpageMainWrap .companyDetailTop.clientDetailListed .clientlistedTop{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.PreviewpageMainWrap .companyDetailTop.clientDetailListed .clientlistedTitle{
+    display: table;
+    background: linear-gradient(118.92deg, #efeeff 26.18%, rgba(255, 234, 222, 0.94) 96.85%);
+    color: #232323;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 14px;
+    padding: 4px 8px 4px 8px;
+    border-radius: 100px;
+}
+
+
+
+.PreviewpageMainWrap .companyDetailTop.engagementDetailListed ul{
+    margin-bottom: 0px;
+    row-gap: 24px;
+    column-gap: 24px;
+}
+
+.PreviewpageMainWrap .companyDetailTop.engagementDetailListed ul li{
+    width: calc(25% - 20px);
+    margin-bottom: 0;
+}
+
+.PreviewpageMainWrap .companyBenefits ul.mt0{
+    margin-top: 0px;
+}   

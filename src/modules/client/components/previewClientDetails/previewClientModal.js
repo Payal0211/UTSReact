@@ -76,6 +76,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
         footer={false}
         maskClosable={false}
         className={previewClientStyle.clientDetailModal}
+        wrapClassName="clientDetailModalWrapper"
       >
         <div className={previewClientStyle.PreviewpageMainWrap}>
           <div className={previewClientStyle.PostHeader}>
@@ -333,36 +334,148 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                 <div className={previewClientStyle.formFieldsbox}>
                     <div className={previewClientStyle.formFieldsboxinner}>
                         <div className={previewClientStyle.formFieldTitleTwo}>
-                            <h2>Client Details</h2>
-                            <span className={previewClientStyle.addNewClientText}>Add New Client</span>
+                            <h2>Client Details <span className={previewClientStyle.addNewClientText}>Add New Client</span></h2>
                         </div>
 
                         <div className={previewClientStyle.companyDetails}>  
 
-                            <div className={previewClientStyle.companyDetailTop}>
+                            <div className={`${previewClientStyle.companyDetailTop} ${previewClientStyle.clientDetailListed}`}>
+                               
+                                <div className={previewClientStyle.companyNewClientbox}>  
+                                    <h5 className={previewClientStyle.clientlistedTop}> <span className={previewClientStyle.clientlistedTitle}> Client 1 </span>  <span className={previewClientStyle.editNewIcon}><EditNewIcon/></span></h5>    
+                                        
                                     <ul>
                                         <li>
-                                            <span onClick={()=>setIsEditCompanyFound(true)}>  Founded in <EditNewIcon/> </span>
-                                            <p>Test</p>
+                                            <span>Client Full Name</span>
+                                            <p>Shikha Dhawan</p>
                                         </li>
                                         <li>
-                                            <span onClick={()=>setIsEditTeamSize(true)}> Team Size <EditNewIcon/> </span>
-                                            <p> Test </p>
+                                            <span>Client’s Work Email</span>
+                                            <p>shikha@techinnovate.com</p>
                                         </li>
                                         <li>
-                                            <span onClick={()=>setIsEditCompanyType(true)}> Company Type <EditNewIcon/> </span>
-                                            <p> Test </p>
+                                            <span>Designation</span>
+                                            <p>Marketing Director</p>
                                         </li>
                                         <li>
-                                            <span onClick={()=>setIsEditCompanyIndustry(true)}>Company Industry <EditNewIcon/> </span>
-                                            <p> Test </p>
+                                            <span>Access Type</span>
+                                            <p>Admin</p>
                                         </li>
                                         <li>
-                                            <span onClick={()=>setIsEditHeadquarters(true)}> Headquarters <EditNewIcon/> </span>
-                                            <p> Test </p>
+                                            <span>Phone Number</span>
+                                            <p>+919784635475</p>
                                         </li>
                                     </ul>
+                                </div>
+
+                                <div className={previewClientStyle.companyNewClientbox}>  
+                                    <h5 className={previewClientStyle.clientlistedTop}> <span className={previewClientStyle.clientlistedTitle}> Client 2 </span>  <span className={previewClientStyle.editNewIcon}><EditNewIcon/></span></h5>    
+                                    <ul>
+                                        <li>
+                                            <span>Client Full Name</span>
+                                            <p>Shikha Dhawan</p>
+                                        </li>
+                                        <li>
+                                            <span>Client’s Work Email</span>
+                                            <p>shikha@techinnovate.com</p>
+                                        </li>
+                                        <li>
+                                            <span>Designation</span>
+                                            <p>Marketing Director</p>
+                                        </li>
+                                        <li>
+                                            <span>Access Type</span>
+                                            <p>Admin</p>
+                                        </li>
+                                        <li>
+                                            <span>Phone Number</span>
+                                            <p>+919784635475</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                             
                             </div>
+
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className={previewClientStyle.formFields}>
+                <div className={previewClientStyle.formFieldsbox}>
+                    <div className={previewClientStyle.formFieldsboxinner}>
+                       
+                        <h2>Engagement Details <span className={previewClientStyle.editNewIcon}><EditNewIcon/></span></h2>
+                       
+
+                        <div className={previewClientStyle.companyDetails}>  
+                            <div className={`${previewClientStyle.companyDetailTop} ${previewClientStyle.engagementDetailListed}`}>
+                                <ul>
+                                    <li>
+                                        <span>Model</span>
+                                        <p>Pay Per Credit,Pay Per Hire</p>
+                                    </li>
+                                    <li>
+                                        <span>Per Credit Amount</span>
+                                        <p>100 INR</p>
+                                    </li>
+                                    <li>
+                                        <span>Credit for viewing vetted profile</span>
+                                        <p>05</p>
+                                    </li>
+                                    <li>
+                                        <span>Credit per post a job</span>
+                                        <p>05</p>
+                                    </li>
+                                    <li>
+                                        <span>Currency (Credit)</span>
+                                        <p>INR</p>
+                                    </li>
+                                    <li>
+                                        <span>Free Credits</span>
+                                        <p>30</p>
+                                    </li>
+                                    <li>
+                                        <span>Credit for viewing non vetted profile</span>
+                                        <p>INR</p>
+                                    </li>
+                                   
+                                    <li>
+                                        <span>Type of Pricing (Pay per hire)</span>
+                                        <p>Transparent</p>
+                                    </li>
+                                    <li>
+                                        <span>Model (Pay per hire)</span>
+                                        <p>Hire a Contractor</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className={previewClientStyle.formFields}>
+                <div className={previewClientStyle.formFieldsbox}>
+                    <div className={previewClientStyle.formFieldsboxinner}>
+
+                        <h2>Uplers’s POCs <span className={previewClientStyle.editNewIcon}><EditNewIcon/></span></h2>
+
+                        <div className={previewClientStyle.companyDetails}>  
+                                <div className={previewClientStyle.companyBenefits}>
+                                    <ul className={previewClientStyle.mt0}>
+                                        <li>
+                                            <span>Firstname Lastname</span>
+                                        </li>  
+                                        <li>
+                                            <span>Firstname Lastname</span>
+                                        </li>  
+                                        <li>
+                                            <span>Firstname Lastname</span>
+                                        </li>   
+                                    </ul>
+                                </div>
                         </div>
                     </div>
                 </div>
