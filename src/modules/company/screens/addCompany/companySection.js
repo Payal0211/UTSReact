@@ -11,12 +11,19 @@ import UploadModal from "shared/components/uploadModal/uploadModal";
 import { Skeleton } from 'antd';
 import { HTTPStatusCode } from "constants/network";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
+import { useNavigate } from "react-router-dom";
 
 function CompanySection({companyID,register,errors,setValue,watch,companyDetails,setCompanyDetails,loadingDetails,clearErrors,setError,setDisableSubmit}) {
   const [getUploadFileData, setUploadFileData] = useState('');
   const [base64Image, setBase64Image] = useState('');
   const [showUploadModal, setUploadModal] = useState(false);
   const [controlledFoundedInValue, setControlledFoundedInValue] = useState('')
+  const [isViewCompany, setIsViewCompany] = useState(false)
+  const [isViewCompanyurl, setIsViewCompanyurl] = useState(false)
+  const [currentCompanyId, setCurrentCompanyId] = useState()
+  const [currentCompanyurlId, setCurrentCompanyurlId] = useState()
+
+  const navigate = useNavigate();
 
   const [getValidation, setValidation] = useState({
     systemFileUpload: "",
@@ -109,7 +116,8 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
    let payload = {
       "workEmail": "",
       "companyName": watch('companyName'),
-      "currentCompanyID": +companyID
+      "currentCompanyID": +companyID,
+      // "websiteURL": watch("companyURL")
     }
 
     const result = await allCompanyRequestDAO.validateClientCompanyDAO(payload)
@@ -117,15 +125,44 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
     if(result.statusCode === HTTPStatusCode.OK){
       clearErrors('companyName')
       setDisableSubmit(false)
+      setIsViewCompany(false);
     }
     if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
       setDisableSubmit(true)
+      setIsViewCompany(true);
+      setCurrentCompanyId(result?.details?.companyID);
       setError('companyName',{
         type: "manual",
         message: result?.responseBody,
       })
     }
   }
+
+  const validateCompanyURL = async () => {
+    let payload = {
+       "workEmail": "",
+       "companyName": watch('companyName'),
+       "currentCompanyID": +companyID,
+       "websiteURL": watch("companyURL")
+     }
+ 
+     const result = await allCompanyRequestDAO.validateClientCompanyDAO(payload)
+ 
+     if(result.statusCode === HTTPStatusCode.OK){
+       clearErrors('companyURL')
+       setDisableSubmit(false)
+       setIsViewCompanyurl(false);
+     }
+     if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
+       setDisableSubmit(true)
+       setIsViewCompanyurl(true);
+       setCurrentCompanyurlId(result?.details?.companyID);
+       setError('companyURL',{
+         type: "manual",
+         message: result?.responseBody,
+       })
+     }
+   }
 
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
@@ -239,8 +276,11 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     placeholder="Enter Name"
                     required
                   />
-               
-              </div>
+                    <div className={AddNewClientStyle.formPanelAction}>
+                        {isViewCompany && 
+                        <button className={AddNewClientStyle.btnPrimary} onClick={()=>navigate(`/viewCompanyDetails/${currentCompanyId}`)}>View Company</button>}
+                    </div>
+                  </div>
 
               <div className={AddNewClientStyle.colMd6}>
                 <HRInputField
@@ -265,7 +305,12 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                   }}
                   placeholder="Enter website url"
                   required
+                  onBlurHandler={()=> validateCompanyURL()}
                 />
+                 <div className={AddNewClientStyle.formPanelAction}>
+                  {isViewCompanyurl && 
+                  <button className={AddNewClientStyle.btnPrimary} onClick={()=>navigate(`/viewCompanyDetails/${currentCompanyurlId}`)}>View Company</button>}
+                </div>
               </div>
             </div>
 

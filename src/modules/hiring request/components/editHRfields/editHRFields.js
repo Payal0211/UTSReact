@@ -29,7 +29,7 @@ import { useForm, Controller } from "react-hook-form";
 import { HTTPStatusCode } from "constants/network";
 import { _isNull, getPayload } from "shared/utils/basic_utils";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { hrUtils } from "modules/hiring request/hrUtils";
 import { MasterDAO } from "core/master/masterDAO";
 import useDrivePicker from "react-google-drive-picker/dist";
@@ -70,6 +70,7 @@ const EditHRFields = ({
 }) => {
   const inputRef = useRef(null);
   const [userData, setUserData] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUserResult = async () => {
@@ -1968,6 +1969,9 @@ const EditHRFields = ({
               <h3>Hiring Request Details</h3>
               <p>Please provide the necessary details</p>
               <p className={HRFieldStyle.teansactionMessage}>{companyType?.name &&`HR is "${companyType?.name}"`}</p>
+              <div className={HRFieldStyle.formPanelAction}>
+              <button className={HRFieldStyle.btnPrimary} onClick={()=>navigate(`/viewCompanyDetails/${getHRdetails?.companyInfo?.companyID}`)}>View / Edit Company Details</button>
+              </div>
               <LogoLoader visible={isSavedLoading} />
             </div>
 
