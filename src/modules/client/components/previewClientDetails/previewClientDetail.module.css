@@ -601,8 +601,22 @@
     height: 40px;
 }
 
-.prevClientModalWrapper [class*="hrInputFields_input"]{
+.prevClientModalWrapper [class*="inputBox"] [class*="inputfield"] {
     padding: 9px 16px;
 }
+
+.prevClientModalWrapper [class*="ant-select"] [class*="ant-select-selector"] {
+    height: 40px;
+    padding: 9px 16px;
+}
+
+.prevClientModalWrapper [class*="ant-select"] [class*="ant-select-selection-search"][class*="ant-select-selection-search-input"] {
+    height: 40px;
+    padding: 9px 16px;
+}
+
+
+
+
 
 /* Edit Modal css End */

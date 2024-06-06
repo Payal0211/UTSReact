@@ -112,7 +112,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                                     </div>  
                                     <div className={previewClientStyle.companyProfRightDetail}>
                                             <h3>{getCompanyDetails?.basicDetails?.companyName} <span className={previewClientStyle.editNewIcon} onClick={()=>setIsEditCompanyName(true)}> <EditNewIcon/> </span></h3>
-                                            {getCompanyDetails?.basicDetails?.website} <span className={previewClientStyle.editNewIcon} onClick={()=>setIsEditCompanyWebsite(true)}> <EditNewIcon/> </span>
+                                           <a > {getCompanyDetails?.basicDetails?.website} <span className={previewClientStyle.editNewIcon} onClick={()=>setIsEditCompanyWebsite(true)}> <EditNewIcon/> </span></a>
                                     </div>      
                                 </div>        
 
@@ -1139,6 +1139,8 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
         width={500}
         footer={false}
         maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
         <HRInputField
           //    required
@@ -1165,6 +1167,8 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
         width={500}
         footer={false}
         maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
         <HRInputField
           //    required
@@ -1211,7 +1215,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                         inputClassName={previewClientStyle.inputcustom}
                     />  
 
-                     <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                     <div className={`${previewClientStyle.buttonEditGroup}`}>
                         <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyFound(false)}> Cancel </button>
                         <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyFound(false)}> SAVE </button>
                     </div>                 
@@ -1242,10 +1246,9 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                 name="teamSize"
                 label="Team Size"
                 defaultValue="Please Select"
-                // options={getFeedbackFormContent.drpFeedbackType?.filter((item) => item?.value !== "0")}
             />
 
-         <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+         <div className={`${previewClientStyle.buttonEditGroup}`}>
             <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditTeamSize(false)}> Cancel </button>
             <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditTeamSize(false)}> SAVE </button>
         </div>    
@@ -1256,9 +1259,11 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
         open={isEditCompanyType}
         onOk={() => setIsEditCompanyType(false)}
         onCancel={() => setIsEditCompanyType(false)}
-        width={300}
+        width={400}
         footer={false}
         maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
         <HRInputField
           //    required
@@ -1271,7 +1276,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
           type={InputType.TEXT}
           placeholder="Please enter"
         />
-        <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+        <div className={`${previewClientStyle.buttonEditGroup} `}>
             <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyType(false)}> Cancel </button>
             <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyType(false)}> SAVE </button>
         </div>   
@@ -1282,9 +1287,11 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
         open={isEditCompanyIndustry}
         onOk={() => setIsEditCompanyIndustry(false)}
         onCancel={() => setIsEditCompanyIndustry(false)}
-        width={300}
+        width={400}
         footer={false}
         maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
         <HRInputField
           //    required
@@ -1295,9 +1302,9 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
           name="companyIndustry"
           setValue={setValue}
           type={InputType.TEXT}
-          placeholder="Please enter"
+          placeholder="Please enter Industry"
         />
-        <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+        <div className={`${previewClientStyle.buttonEditGroup}`}>
             <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyIndustry(false)}> Cancel </button>
             <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyIndustry(false)}> SAVE </button>
         </div>
@@ -1312,6 +1319,8 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
         width={300}
         footer={false}
         maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
         <label>Headquarters</label>
         <HRInputField
@@ -1324,7 +1333,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
           type={InputType.TEXT}
           placeholder="Please enter"
         />
-        <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+        <div className={`${previewClientStyle.buttonEditGroup}`}>
             <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditHeadquarters(false)}> Cancel </button>
             <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditHeadquarters(false)}> SAVE </button>
         </div>
