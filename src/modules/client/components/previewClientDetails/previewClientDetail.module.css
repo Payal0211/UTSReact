@@ -1,0 +1,509 @@
+
+.clientDetailModal .ant-modal-content{
+    background-color: #fff !important;
+}
+
+
+.clientDetailModal .row {
+    margin: 0 -9px;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.clientDetailModal .colMd12 {
+    width: 100%;
+    padding: 0 9px;
+}
+
+.clientDetailModal .colMd6 {
+    width: 50%;
+    padding: 0 9px;
+}
+
+.clientDetailModal .colMd4 {
+    width: 33.33%;
+    padding: 0 9px;
+}
+
+
+.PreviewpageMainWrap .formFields {
+    margin-top: 20px;
+}
+
+.PostHeader{
+    padding: 6px 32px 0;
+}
+
+.PostHeader h4{
+    color: #232323;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 26px;
+}
+
+.PreviewpageMainWrap ul{
+    padding: 0;
+}
+
+.PreviewpageMainWrap ul li{
+    list-style: none;
+}
+
+.PreviewpageMainWrap .buttonEditGroup{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 10px;
+}
+
+.PreviewpageMainWrap .buttonEditGroup.BtnRight {
+    justify-content: end;
+}
+
+.PreviewpageMainWrap .buttonEditGroup .btnPrimary{
+    color: #232323;
+    font-style: normal;
+    line-height: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 0;
+    transition: 0.5s all;
+    background: #FFDA30;
+    padding: 0 25px;
+    font-size: 18px;
+    display: inline-block;
+    text-align: center;
+    min-height: 46px;
+    border-radius: 27px;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+    font-size: 14px;
+    min-height: 40px;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .buttonEditGroup .btnPrimary.blank{
+    background: transparent;
+    padding: 0 0px;
+}
+
+.PreviewpageMainWrap h6{
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    color: #6B6B6B;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+}
+
+.PreviewpageMainWrap .formFieldsbox{
+    padding: 0 32px;
+}
+
+.PreviewpageMainWrap .formFieldsboxinner {
+    border: 1px dashed #23232333;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.PreviewpageMainWrap .formFields .FieldsBoxInner-Content {
+    padding: 16px 32px;
+}
+
+.PreviewpageMainWrap .formFields .formFieldsboxinner h2 {
+    background: #FFFDF1;
+    padding: 15px 29px;
+    color: #232323;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+
+.PreviewpageMainWrap .companyDetails {
+    padding: 18px 32px 32px 32px;
+}
+
+.PreviewpageMainWrap .companyDetails hr {
+    border: 0;
+    border-bottom: 1px dashed #23232333;
+    margin-top: 27px;
+    margin-bottom: 31px;
+}
+
+.PreviewpageMainWrap .companyDetailTop ul {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 29px;
+    column-gap: 32px;
+}
+
+.PreviewpageMainWrap .companyDetailTop ul li{
+    margin-right: 0px;
+    margin-bottom: 10px;
+}
+
+.PreviewpageMainWrap .companyDetailTop ul li span {
+    font-size: 12px;
+    font-weight: 400;
+    display: flex;
+    gap: 5px;
+    color: #676767;
+}
+
+.PreviewpageMainWrap .formFields .editNewIcon {
+    display: flex;
+    margin-left: 2px;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .companyDetailTop ul li p {
+    font-size: 14px;
+    font-weight: 500;
+    color: #232323;
+    margin-bottom: 0;
+}
+
+
+.PreviewpageMainWrap .fundingrounds{
+    border-top: 1px solid #bababa33;
+    padding-top: 8px;
+    padding-bottom: 30px;
+}
+
+.PreviewpageMainWrap .fundingrounds ul{
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+}
+
+.PreviewpageMainWrap .fundingrounds li{
+    border-right: 1px solid #bababa33;
+    padding-right: 35px;
+    margin-right: 35px;
+}
+
+.PreviewpageMainWrap .fundingrounds li:last-child {
+    margin-right: 0;
+    padding-right: 0;
+    border: 0;
+    max-width: 286px;
+}
+
+.PreviewpageMainWrap .fundingrounds li h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #232323;
+    line-height: 28px;
+}
+
+.PreviewpageMainWrap .fundingrounds li span{
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #232323;
+    line-height: 18px;
+    margin-bottom: 6px;
+}
+
+.PreviewpageMainWrap .fundingrounds li p{
+    color: #676767;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    margin: 0;
+}
+
+.PreviewpageMainWrap .fundingrounds li p a {
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 500;
+    color: #384ad7;
+    text-decoration: underline;
+    margin-left: 5px;
+}
+
+
+.PreviewpageMainWrap .RoundBtnWrap{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.PreviewpageMainWrap .RoundBtnWrap h6{
+    margin-bottom: 0;
+}
+
+.PreviewpageMainWrap .RoundBtnWrap .addAnotherRoundbtn{
+    color: #1B73BA;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 18px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .roundsListed{
+    display: flex;
+    flex-wrap: wrap;
+    border-top: 1px dashed #23232333;
+    padding-top: 48px;
+    column-gap: 28px;
+    row-gap: 60px;
+}
+
+.PreviewpageMainWrap .roundsListContent{
+    position: relative;
+    margin-right: 0px;
+    width: calc(25% - 22px);
+}
+
+.PreviewpageMainWrap .roundsListContent::before{
+    height: 36px;
+    width: 1px;
+    border-left: 1px dashed #23232333;
+    content: "";
+    position: absolute;
+    top: -49px;
+    left: 0;
+}
+
+.PreviewpageMainWrap .roundsListContent h4 {
+    color: #232323;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 18px;
+    margin-bottom: 4px;
+}
+
+.PreviewpageMainWrap .roundsListContent > span .roundHoverAction{
+    display: none;
+}
+
+.PreviewpageMainWrap .roundsListContent > span{
+    position: relative;
+    font-size: 12px;
+    font-weight: 500;
+    color: #232323;
+    margin-bottom: 8px;
+    padding: 4px 8px 4px 8px;
+    border-radius: 100px;
+    background: #bababa33;
+    display: table;
+}
+
+.PreviewpageMainWrap .roundsListContent:hover .roundHoverAction span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    padding: 3px;
+    width: 50%;
+    background: transparent;
+    margin: 0;
+    border-right: 1px solid #676767;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .roundsListContent:hover .roundHoverAction span:nth-child(2){
+    border-right: 0px;
+    color: #E03A3A;
+}
+
+
+
+.PreviewpageMainWrap .roundsListContent > span:hover .roundHoverAction{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: -26px;
+    right: 2px;
+    border: 1px solid #676767;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #FFFDF1;
+    min-width: 66px;
+}
+
+
+.PreviewpageMainWrap .roundsListContent.active > span{
+    background: linear-gradient(118.92deg, #efeeff 26.18%, rgba(255, 234, 222, 0.94) 96.85%);
+}
+
+.PreviewpageMainWrap .roundsListContent.Selected > span{
+    background: #FFDA30;
+}
+
+.PreviewpageMainWrap .roundsListContent p{
+    color: #232323;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14.63px;
+    margin-bottom: 0;
+}
+
+
+
+.PreviewpageMainWrap .imgSection{
+    flex-wrap: wrap;
+    display: flex;
+    column-gap: 22px;
+    row-gap: 16px;
+    margin-top: 24px;
+    margin-bottom: 32px;
+}
+
+.PreviewpageMainWrap .imgSection .imgThumb, .PreviewpageMainWrap .imgSection .videoWrapper{
+    position: relative;
+    width: calc(33.33% - 15px);
+    border-radius: 18px;
+    overflow: hidden;
+    padding-top: 19.40%;
+}
+
+.PreviewpageMainWrap .imgSection .imgThumb img, .PreviewpageMainWrap .imgSection .videoWrapper iframe{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    object-fit: cover;
+}
+
+.PreviewpageMainWrap .imgSection .videoWrapper iframe{border: none;}
+
+.PreviewpageMainWrap .imgSection .DeleteBtn, .PreviewpageMainWrap .imgSection .videoWrapper .DeleteBtn{
+    display: none;
+}
+
+.PreviewpageMainWrap .imgSection .imgThumb:hover .DeleteBtn, .PreviewpageMainWrap .imgSection .videoWrapper:hover .DeleteBtn{
+    display: block;
+}
+
+.PreviewpageMainWrap .imgSection .imgThumb:hover::after{
+    content: "";
+    background: #ffffffe6;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.PreviewpageMainWrap .imgSection .imgThumb .DeleteBtn{
+    min-width: 55px;
+    max-width: 55px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    margin: 0 auto;
+    z-index: 2;
+    cursor: pointer;
+}   
+
+.PreviewpageMainWrap .imgSection .DeleteBtn svg {
+    width: 100%;
+    height: 100%;
+}
+
+
+.PreviewpageMainWrap .imgSection .videoWrapper:hover .DeleteBtn{
+    min-width: 38px;
+    max-width: 38px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .companyBenefits ul{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    margin-top: 12px;
+}
+
+.PreviewpageMainWrap .companyBenefits ul li{
+    border: 1px solid #fff8d6;
+    margin-right: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 9px 16px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #232323;
+    background: #fff8d6;
+    border-radius: 14px;
+    margin-bottom: 0px;
+}
+
+
+.companyProfileBox{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.companyProfileBox .companyProfileImg{
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 1);
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+}
+
+.companyProfileBox .companyProfileImg .editNewIcon{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #eaeaea;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+}
+
+.companyProfileBox .companyProfileImg img{
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.companyProfileBox .companyProfRightDetail h3{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: rgba(0, 0, 0, 1);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 29px;
+    margin-bottom: 5px;
+}
+
+.companyProfileBox .companyProfRightDetail a{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #1B73BA;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    text-decoration: underline;
+    cursor: pointer;
+}
