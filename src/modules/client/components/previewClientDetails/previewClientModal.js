@@ -1,7 +1,7 @@
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
 import previewClientStyle from "../previewClientDetails/previewClientDetail.module.css";
-import { AutoComplete } from "antd";
+import { AutoComplete, Checkbox, Select } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as DeleteNewIcon } from "assets/svg/delete-icon.svg";
 
@@ -43,6 +43,10 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal,setcompanyID,get
   const [isEditHeadquarters, setIsEditHeadquarters] = useState(false);
   const [getCompanyDetails, setCompanyDetails] = useState({});
   const [showAllInvestors, setShowAllInvestors] = useState(false);
+  const [isAnotherRound,setAnotherRound] = useState(false)
+  const [isAddNewClient,setAddNewClient] = useState(false)
+  const [isEditClient,setEditClient] = useState(false)
+  const [isEditEngagement,setEditEngagement] = useState(false)
 
   const allInvestors = getCompanyDetails?.fundingDetails?.[0]?.allInvestors?getCompanyDetails?.fundingDetails?.[0]?.allInvestors?.split(",") : [];
   const displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
@@ -194,8 +198,114 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
 
                                 <div className={previewClientStyle.RoundBtnWrap}>
                                     <h6>Rounds</h6>
-                                    <span className={previewClientStyle.addAnotherRoundbtn}>Add Another Round</span>
+                                    <span className={previewClientStyle.addAnotherRoundbtn} onClick={()=>setAnotherRound(true)}>Add Another Round</span>
                                 </div> 
+                                {isAnotherRound && <><div className={previewClientStyle.row}>
+                                    <div className={previewClientStyle.colMd6}>
+                                        <HRInputField
+                                            register={register}
+                                            // errors={errors}
+                                            label="Funding Amount"
+                                            // name={`fundingDetails.[${index}].fundingAmount`}
+                                            name={"fundingAmount"}
+                                            type={InputType.TEXT}
+                                            // onChangeHandler={(e) => {
+                                            // }}
+                                            placeholder="Ex: 500k, 900k, 1M, 2B..."
+                                            // disabled={isSelfFunded}
+                                        />
+                                    </div>
+                                    <div className={previewClientStyle.colMd6}>
+                                        <HRInputField
+                                            register={register}
+                                            // errors={errors}
+                                            label="Funding Round"
+                                            // name={`fundingDetails.[${index}].fundingRound`}
+                                            name={"fundingRound"}
+                                            type={InputType.NUMBER}
+                                            onChangeHandler={(e) => {
+                                            }}
+                                            placeholder="Enter round number"
+                                            // disabled={isSelfFunded}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className={previewClientStyle.row}>
+                                <div className={previewClientStyle.colMd6} >
+                                    <HRSelectField
+                                    isControlled={true}
+                                    //  controlledValue={controlledSeries[index]}
+                                    //  setControlledValue={val=>setControlledSeries(prev=> {
+                                    //   let newControlled = [...prev]
+                                    //   newControlled[index] = val
+                                    //   return newControlled
+                                    // })}
+                                    setValue={setValue}
+                                    mode={"id"}
+                                    register={register}
+                                    //   name={`fundingDetails.[${index}].series`}
+                                    name="series"
+                                    label="Series"
+                                    defaultValue="Select"
+                                    //   options={seriesOptions}
+                                    // disabled={isSelfFunded}
+                                    />
+                                </div>
+
+          
+                                <div className={previewClientStyle.colMd6}> 
+                                <div className={previewClientStyle.label}>Month-Year</div>
+                                <div className={previewClientStyle.dateSelect}>
+                        
+                                <Select
+                                            //   options={monthOptions}
+                                            placeholder="Select month"
+                                            //   value={watch(`fundingDetails.[${index}].month`) ? watch(`fundingDetails.[${index}].month`) : undefined}
+                                            //   onSelect={(e) => {                     
+                                            //    setValue(`fundingDetails.[${index}].month`,e)
+                                            //   }}
+                                            //   disabled={isSelfFunded}
+                                            />
+                                            <Select
+                                            //   options={yearOptions}
+                                            placeholder="Select year"
+                                            //   value={watch(`fundingDetails.[${index}].year`) ? watch(`fundingDetails.[${index}].year`) : undefined}
+                                            //   onSelect={(e) => {
+                                            //     setValue(`fundingDetails.[${index}].year`,e)
+                                            //   }}
+                                            //   disabled={isSelfFunded}
+                                            />
+                                            </div>
+                                            </div>
+
+                                            <div className={previewClientStyle.row}>
+                                    <div className={previewClientStyle.colMd12}>
+                                    <HRInputField
+                                        register={register}
+                                        // errors={errors}
+                                        // name={`fundingDetails.[${index}].investors`}
+                                        name={"investors"}
+                                        label="Investors"
+                                        type={InputType.TEXT}
+                                        // onChangeHandler={(e) => {
+                                        // }}
+                                        placeholder="Add investors seprated by comma (,)"
+                                        // disabled={isSelfFunded}
+                                    />
+                                    </div>
+
+                                </div>
+
+                                </div>
+
+                                <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                                    <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={()=>setAnotherRound(false)}> Cancel </button>
+                                    <button type="button" className={previewClientStyle.btnPrimary} onClick={()=>setAnotherRound(false)}>  SAVE </button>
+                                </div>
+
+                                </>}
+
                             
                                 <div className={previewClientStyle.roundsListed}>  
                                 {getCompanyDetails?.fundingDetails?.map((val) =>(
@@ -334,41 +444,327 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                 <div className={previewClientStyle.formFieldsbox}>
                     <div className={previewClientStyle.formFieldsboxinner}>
                         <div className={previewClientStyle.formFieldTitleTwo}>
-                            <h2>Client Details <span className={previewClientStyle.addNewClientText}>Add New Client</span></h2>
+                            <h2>Client Details <span className={previewClientStyle.addNewClientText} onClick={()=>setAddNewClient(true)}>Add New Client</span></h2>
                         </div>
+
+                        {isAddNewClient && <>
+                            <div className={previewClientStyle.row}>
+                  <div className={previewClientStyle.colMd6}>
+                    <HRInputField
+                      register={register}
+                      // isError={!!errors?.clientDetails?.[index]?.fullName}
+                    //   errors={errors?.clientDetails?.[index]?.fullName}
+                      label="Client Full Name"
+                    //   name={`clientDetails.[${index}].fullName`}
+                    name="fullName"
+                      type={InputType.TEXT}
+                    //   validationSchema={{
+                    //     required: "Please enter the Client Name",
+                    //   }}
+                      // errorMsg="Please enter the Client Name."
+                      placeholder="Enter Client Name"
+                      required={true}
+                      disabled={false}
+                      forArrayFields={true}
+                    />
+                  </div>
+
+                  <div className={previewClientStyle.colMd6}>
+                    <HRInputField
+                      //								disabled={isLoading}
+                      register={register}
+                    //   errors={errors?.clientDetails?.[index]?.emailID}
+                    //   validationSchema={{
+                    //     required: `Please enter the client email ID.`,
+                    //     pattern: {
+                    //       value: EmailRegEx.email,
+                    //       message: "Entered value does not match email format",
+                    //     },
+                    //   }}
+                      label="Work Email"
+                    //   name={`clientDetails.[${index}].emailID`}
+                    name={"emailID"}
+                    //   onBlurHandler={() => {
+                    //     if (
+                    //       errors?.clientDetails?.[index]?.emailID &&
+                    //       !errors?.clientDetails?.[index]?.emailID?.message.includes('This work email :') 
+                           
+                    //     ) {
+                    //       return;
+                    //     }
+
+                    //     let eReg = new RegExp(EmailRegEx.email);
+
+                    //     if (
+                    //       item?.emailID !==
+                    //         watch(`clientDetails.[${index}].emailID`) &&
+                    //       eReg.test(watch(`clientDetails.[${index}].emailID`))
+                    //     ) {
+                    //       validateCompanyName(index);
+                    //     } else {
+                    //       clearErrors(`clientDetails.[${index}].emailID`);
+                    //       setDisableSubmit(false);
+                    //     }
+                    //   }}
+                      type={InputType.EMAIL}
+                      placeholder="Enter Email ID "
+                      required
+                      forArrayFields={true}
+                    />
+                  </div>
+                </div>
+
+                <div className={previewClientStyle.row}>
+                  <div className={previewClientStyle.colMd6}>
+                    <HRInputField
+                      register={register}
+                      // errors={errors}
+                      label="Designation"
+                    //   name={`clientDetails.[${index}].designation`}
+                    name="designation"
+                      type={InputType.TEXT}
+                      placeholder="Enter Client Designation"
+                    />
+                  </div>
+
+                  <div className={previewClientStyle.colMd6}>
+                    <HRSelectField
+                      isControlled={true}
+                    //   controlledValue={controlledRoleId[index]}
+                    //   setControlledValue={(val) =>
+                    //     setControlledRoleId((prev) => {
+                    //       let newControlled = [...prev];
+                    //       newControlled[index] = val;
+                    //       return newControlled;
+                    //     })
+                    //   }
+                      setValue={setValue}
+                      mode={"id"}
+                      register={register}
+                    //   name={`clientDetails.[${index}].roleID`}
+                    name="roleID"
+                      label="Access Type"
+                      defaultValue="Choose Access Type"
+                    //   options={accessTypes?.map((item) => ({
+                    //     id: item.id,
+                    //     value: item.value,
+                    //   }
+                    // ))
+                // }
+                    />
+                  </div>
+                </div>
+
+                <div className={previewClientStyle.row}>
+                  <div className={previewClientStyle.colMd6}>
+                    <div className={previewClientStyle.label}>Phone number</div>
+                    <div style={{ display: "flex" }}>
+                      <div className={previewClientStyle.phoneNoCode}>
+                        <HRSelectField
+                          searchable={true}
+                          setValue={setValue}
+                          register={register}
+                        //   name={`clientDetails.[${index}].countryCode`}
+                        name="countryCode"
+                          defaultValue="+91"
+                        //   options={flagAndCodeMemo}
+                        />
+                      </div>
+                      <div className={previewClientStyle.phoneNoInput}>
+                        <HRInputField
+                          register={register}
+                        //   name={`clientDetails.[${index}].contactNo`}
+                        name="contactNo"
+                          type={InputType.NUMBER}
+                          placeholder="Enter Phone number"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                                    <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={()=>setAddNewClient(false)}> Cancel </button>
+                                    <button type="button" className={previewClientStyle.btnPrimary} onClick={()=>setAddNewClient(false)}>  SAVE </button>
+                                </div>
+
+                        </>}
 
                         <div className={previewClientStyle.companyDetails}>  
 
                             <div className={`${previewClientStyle.companyDetailTop} ${previewClientStyle.clientDetailListed}`}>
+
+                           
                                
-                                <div className={previewClientStyle.companyNewClientbox}>  
-                                    <h5 className={previewClientStyle.clientlistedTop}> <span className={previewClientStyle.clientlistedTitle}> Client 1 </span>  <span className={previewClientStyle.editNewIcon}><EditNewIcon/></span></h5>    
-                                        
+                                {getCompanyDetails?.contactDetails?.map((val)=>(
+                                    <div className={previewClientStyle.companyNewClientbox}>  
+                                    <h5 className={previewClientStyle.clientlistedTop}> <span className={previewClientStyle.clientlistedTitle}> Client 1 </span>  <span className={previewClientStyle.editNewIcon} onClick={()=>setEditClient(true)}><EditNewIcon/></span></h5>    
+                                    {isEditClient && <>
+                            <div className={previewClientStyle.row}>
+                  <div className={previewClientStyle.colMd6}>
+                    <HRInputField
+                      register={register}
+                      // isError={!!errors?.clientDetails?.[index]?.fullName}
+                    //   errors={errors?.clientDetails?.[index]?.fullName}
+                      label="Client Full Name"
+                    //   name={`clientDetails.[${index}].fullName`}
+                    name="fullName"
+                      type={InputType.TEXT}
+                    //   validationSchema={{
+                    //     required: "Please enter the Client Name",
+                    //   }}
+                      // errorMsg="Please enter the Client Name."
+                      placeholder="Enter Client Name"
+                      required={true}
+                      disabled={false}
+                      forArrayFields={true}
+                    />
+                  </div>
+
+                  <div className={previewClientStyle.colMd6}>
+                    <HRInputField
+                      //								disabled={isLoading}
+                      register={register}
+                    //   errors={errors?.clientDetails?.[index]?.emailID}
+                    //   validationSchema={{
+                    //     required: `Please enter the client email ID.`,
+                    //     pattern: {
+                    //       value: EmailRegEx.email,
+                    //       message: "Entered value does not match email format",
+                    //     },
+                    //   }}
+                      label="Work Email"
+                    //   name={`clientDetails.[${index}].emailID`}
+                    name={"emailID"}
+                    //   onBlurHandler={() => {
+                    //     if (
+                    //       errors?.clientDetails?.[index]?.emailID &&
+                    //       !errors?.clientDetails?.[index]?.emailID?.message.includes('This work email :') 
+                           
+                    //     ) {
+                    //       return;
+                    //     }
+
+                    //     let eReg = new RegExp(EmailRegEx.email);
+
+                    //     if (
+                    //       item?.emailID !==
+                    //         watch(`clientDetails.[${index}].emailID`) &&
+                    //       eReg.test(watch(`clientDetails.[${index}].emailID`))
+                    //     ) {
+                    //       validateCompanyName(index);
+                    //     } else {
+                    //       clearErrors(`clientDetails.[${index}].emailID`);
+                    //       setDisableSubmit(false);
+                    //     }
+                    //   }}
+                      type={InputType.EMAIL}
+                      placeholder="Enter Email ID "
+                      required
+                      forArrayFields={true}
+                    />
+                  </div>
+                </div>
+
+                <div className={previewClientStyle.row}>
+                  <div className={previewClientStyle.colMd6}>
+                    <HRInputField
+                      register={register}
+                      // errors={errors}
+                      label="Designation"
+                    //   name={`clientDetails.[${index}].designation`}
+                    name="designation"
+                      type={InputType.TEXT}
+                      placeholder="Enter Client Designation"
+                    />
+                  </div>
+
+                  <div className={previewClientStyle.colMd6}>
+                    <HRSelectField
+                      isControlled={true}
+                    //   controlledValue={controlledRoleId[index]}
+                    //   setControlledValue={(val) =>
+                    //     setControlledRoleId((prev) => {
+                    //       let newControlled = [...prev];
+                    //       newControlled[index] = val;
+                    //       return newControlled;
+                    //     })
+                    //   }
+                      setValue={setValue}
+                      mode={"id"}
+                      register={register}
+                    //   name={`clientDetails.[${index}].roleID`}
+                    name="roleID"
+                      label="Access Type"
+                      defaultValue="Choose Access Type"
+                    //   options={accessTypes?.map((item) => ({
+                    //     id: item.id,
+                    //     value: item.value,
+                    //   }
+                    // ))
+                // }
+                    />
+                  </div>
+                </div>
+
+                <div className={previewClientStyle.row}>
+                  <div className={previewClientStyle.colMd6}>
+                    <div className={previewClientStyle.label}>Phone number</div>
+                    <div style={{ display: "flex" }}>
+                      <div className={previewClientStyle.phoneNoCode}>
+                        <HRSelectField
+                          searchable={true}
+                          setValue={setValue}
+                          register={register}
+                        //   name={`clientDetails.[${index}].countryCode`}
+                        name="countryCode"
+                          defaultValue="+91"
+                        //   options={flagAndCodeMemo}
+                        />
+                      </div>
+                      <div className={previewClientStyle.phoneNoInput}>
+                        <HRInputField
+                          register={register}
+                        //   name={`clientDetails.[${index}].contactNo`}
+                        name="contactNo"
+                          type={InputType.NUMBER}
+                          placeholder="Enter Phone number"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                                    <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={()=>setEditClient(false)}> Cancel </button>
+                                    <button type="button" className={previewClientStyle.btnPrimary} onClick={()=>setEditClient(false)}>  SAVE </button>
+                                </div>
+
+                                    </>}
                                     <ul>
                                         <li>
                                             <span>Client Full Name</span>
-                                            <p>Shikha Dhawan</p>
+                                            <p>{val?.fullName}</p>
                                         </li>
                                         <li>
                                             <span>Client’s Work Email</span>
-                                            <p>shikha@techinnovate.com</p>
+                                            <p>{val?.emailID}</p>
                                         </li>
                                         <li>
                                             <span>Designation</span>
-                                            <p>Marketing Director</p>
+                                            <p>{val?.designation}</p>
                                         </li>
                                         <li>
                                             <span>Access Type</span>
-                                            <p>Admin</p>
+                                            <p>{val?.roleID == 1 && "Admin" || val?.roleID == 2 && "All Jobs" || val?.roleID == 3 && "My Jobs"}</p>
                                         </li>
                                         <li>
                                             <span>Phone Number</span>
-                                            <p>+919784635475</p>
+                                            <p>{val?.contactNo}</p>
                                         </li>
                                     </ul>
                                 </div>
+                                ))}
 
-                                <div className={previewClientStyle.companyNewClientbox}>  
+                                {/* <div className={previewClientStyle.companyNewClientbox}>  
                                     <h5 className={previewClientStyle.clientlistedTop}> <span className={previewClientStyle.clientlistedTitle}> Client 2 </span>  <span className={previewClientStyle.editNewIcon}><EditNewIcon/></span></h5>    
                                     <ul>
                                         <li>
@@ -392,7 +788,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                                             <p>+919784635475</p>
                                         </li>
                                     </ul>
-                                </div>
+                                </div> */}
                              
                             </div>
 
@@ -406,8 +802,240 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                 <div className={previewClientStyle.formFieldsbox}>
                     <div className={previewClientStyle.formFieldsboxinner}>
                        
-                        <h2>Engagement Details <span className={previewClientStyle.editNewIcon}><EditNewIcon/></span></h2>
-                       
+                        <h2>Engagement Details <span className={previewClientStyle.editNewIcon} onClick={()=>setEditEngagement(true)}><EditNewIcon/></span></h2>
+                       {isEditEngagement &&<>
+                        <label style={{ marginBottom: "12px" }}>
+                            Model
+                            <span className={previewClientStyle.reqField}>*</span>
+                        </label>
+                       <div className={previewClientStyle.row}>
+                            <div className={previewClientStyle.colMd6}>
+                                <Checkbox>Pay per Credit</Checkbox>
+                            </div>
+                            <div className={previewClientStyle.colMd6}>
+                                <Checkbox>Pay per Hire</Checkbox>
+                            </div>
+                       </div>
+                       <div className={previewClientStyle.row}>
+                  <div className={previewClientStyle.colMd6}>
+                    <label className={previewClientStyle.label}>
+                      Currency
+                      <span className={previewClientStyle.reqField}>*</span>
+                    </label>
+                    <Select
+                    //   onChange={(e) => {
+                    //     setValue("creditCurrency", e);
+                    //     seterrorCurrency(false);
+                    //   }}
+                      name="creditCurrency"
+                    //   value={_currency}
+                      placeholder={"Select currency"}
+                    >
+                      <Select.Option value="INR">INR</Select.Option>
+                      <Select.Option value="USD">USD</Select.Option>
+                    </Select>
+                    {/* {errorCurrency && (
+                      <p
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                        className={previewClientStyle.error}
+                      >
+                        * Please select currency
+                      </p>
+                    )} */}
+                  </div>
+                 {/* {_currency === "INR" ? null :  */}
+                 <div className={previewClientStyle.colMd6}>
+                    <HRInputField
+                      register={register}
+                      errors={errors}
+                      label="Per credit amount"
+                      name="creditAmount"
+                      type={InputType.NUMBER}
+                      placeholder="Enter the rate per credit"
+                    //   required={
+                    //     checkPayPer?.companyTypeID !== 0 &&
+                    //     checkPayPer?.companyTypeID !== null
+                    //       ? _currency === "INR" ? false : true
+                    //       : false
+                    //   }
+                    //   validationSchema={{
+                    //     required:
+                    //       checkPayPer?.companyTypeID !== 0 &&
+                    //       checkPayPer?.companyTypeID !== null
+                    //         ? _currency === "INR"  ? null : "Please enter Per credit amount."
+                    //         : null,
+                    //   }}
+                    />
+                  </div>
+                  {/* }  */}
+
+                  <div className={previewClientStyle.colMd6}>
+                    <div className={previewClientStyle.FreecreditFieldWrap}>
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        className="yourClassName"
+                        // validationSchema={{
+                        //   required:
+                        //     checkPayPer?.companyTypeID !== 0 &&
+                        //     checkPayPer?.companyTypeID !== null
+                        //       ? "Please enter free credits."
+                        //       : null,
+                        //   min: {
+                        //     value: 0,
+                        //     message: `please don't enter the value less than 0`,
+                        //   },
+                        // }}
+                        // onKeyDownHandler={(e) => {
+                        //   if (
+                        //     e.key === "-" ||
+                        //     e.key === "+" ||
+                        //     e.key === "E" ||
+                        //     e.key === "e"
+                        //   ) {
+                        //     e.preventDefault();
+                        //   }
+                        // }}
+                        // label={`Free Credits Balance C redit : ${companyDetail?.jpCreditBalance}`}
+                        name={"freeCredit"}
+                        label="Free Credit"
+                        type={InputType.NUMBER}
+                        placeholder="Enter number of free credits"
+                        // required={
+                        //   checkPayPer?.companyTypeID !== 0 &&
+                        //   checkPayPer?.companyTypeID !== null
+                        //     ? true
+                        //     : false
+                        // }
+                      />
+                    </div>
+                  </div>
+                </div>
+
+            
+                <div className={previewClientStyle.row}>
+                  <div className={previewClientStyle.colMd6}></div>
+                </div>
+                <div className={previewClientStyle.row}>
+                  <div className={previewClientStyle.colMd12}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        marginBottom: "16px",
+                      }}
+                    >
+                      <div
+                        className={previewClientStyle.payPerCheckboxWrap}
+                        style={{ marginBottom: "16px" }}
+                      >
+                        <Checkbox
+                          name="IsPostaJob"
+                        //   checked={IsChecked?.isPostaJob}
+                        //   onChange={(e) => {
+                        //     setIsChecked({
+                        //       ...IsChecked,
+                        //       isPostaJob: e.target.checked,
+                        //     });
+                        //     setCreditError(false);
+                        //   }}
+                        >
+                          Credit per post a job.
+                        </Checkbox>
+                        <Checkbox
+                          name="IsProfileView"
+                        //   checked={IsChecked?.isProfileView}
+                        //   onChange={(e) => {
+                        //     setIsChecked({
+                        //       ...IsChecked,
+                        //       isProfileView: e.target.checked,
+                        //     });
+                        //     setCreditError(false);
+                           
+                        //   }}
+                        >
+                          Credit per profile view.
+                        </Checkbox>
+                      </div>
+                      {/* {creditError && (
+                        <p className={previewClientStyle.error}>
+                          *Please select option
+                        </p>
+                      )} */}
+
+                      <div className={previewClientStyle.row}>
+                        {/* {IsChecked?.isPostaJob && ( */}
+                          <div className={previewClientStyle.colMd6}>
+                            <HRInputField
+                              register={register}
+                              errors={errors}
+                              label="Credit per post a job"
+                              name="jobPostCredit"
+                              type={InputType.NUMBER}
+                              placeholder="Enter credit cost for posting a job"
+                            //   required={IsChecked?.isPostaJob ? true : false}
+                            //   validationSchema={{
+                            //     required: IsChecked?.isPostaJob
+                            //       ? "Please enter credit per post a job."
+                            //       : null,
+                            //   }}
+                            />
+                          </div>
+                        {/* ) } */}
+
+                        {/* {IsChecked?.isProfileView && ( */}
+                          <>
+                            <div className={previewClientStyle.colMd6}>
+                              <HRInputField
+                                register={register}
+                                errors={errors}
+                                label="Credit for viewing vetted profile"
+                                name="vettedProfileViewCredit"
+                                type={InputType.NUMBER}
+                                placeholder="Enter credit cost for unlocking one vetted profile"
+                                // required={
+                                //   IsChecked?.isProfileView ? true : false
+                                // }
+                                // validationSchema={{
+                                //   required: IsChecked?.isProfileView
+                                //     ? "Please enter vetted profile credit."
+                                //     : null,
+                                // }}
+                              />
+                            </div>
+                            <div className={previewClientStyle.colMd6}>
+                              <HRInputField
+                                register={register}
+                                errors={errors}
+                                label="Credit for Viewing non vetted profile"
+                                name="nonVettedProfileViewCredit"
+                                type={InputType.NUMBER}
+                                placeholder="Enter credit cost for unlocking one non vetted profile"
+                                // required={
+                                //   IsChecked?.isProfileView ? true : false
+                                // }
+                                // validationSchema={{
+                                //   required: IsChecked?.isProfileView
+                                //     ? "Please enter non vetted profile credit."
+                                //     : null,
+                                // }}
+                              />
+                            </div>
+                          </>
+                        {/* )} */}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                                    <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={()=>setEditEngagement(false)}> Cancel </button>
+                                    <button type="button" className={previewClientStyle.btnPrimary} onClick={()=>setEditEngagement(false)}>  SAVE </button>
+                                </div>
+                       </>}
 
                         <div className={previewClientStyle.companyDetails}>  
                             <div className={`${previewClientStyle.companyDetailTop} ${previewClientStyle.engagementDetailListed}`}>
@@ -468,12 +1096,12 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                                         <li>
                                             <span>Firstname Lastname</span>
                                         </li>  
-                                        <li>
+                                        {/* <li>
                                             <span>Firstname Lastname</span>
                                         </li>  
                                         <li>
                                             <span>Firstname Lastname</span>
-                                        </li>   
+                                        </li>    */}
                                     </ul>
                                 </div>
                         </div>
