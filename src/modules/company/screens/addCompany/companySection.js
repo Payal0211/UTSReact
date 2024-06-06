@@ -246,7 +246,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                 <HRInputField
                   register={register}
                   errors={errors}
-                  label="Website URL"
+                  label="Company Website URL"
                   name="companyURL"
                   type={InputType.TEXT}
                   validationSchema={{
