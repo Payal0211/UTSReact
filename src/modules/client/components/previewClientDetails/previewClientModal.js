@@ -1,5 +1,5 @@
 import Modal from "antd/lib/modal/Modal";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import previewClientStyle from "../previewClientDetails/previewClientDetail.module.css";
 import { AutoComplete } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
@@ -19,8 +19,12 @@ import ReactQuill from "react-quill";
 
 import { AiOutlineEdit } from "react-icons/ai";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { allCompanyRequestDAO } from "core/company/companyDAO";
+import { HTTPStatusCode } from "constants/network";
+import TextEditor from "shared/components/textEditor/textEditor";
+import YouTubeVideo from "./youTubeVideo";
 
-function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
+function PreviewClientModal({ isPreviewModal, setIsPreviewModal,setcompanyID,getcompanyID }) {
   const {
     register,
     handleSubmit,
@@ -37,6 +41,30 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
   const [isEditCompanyType, setIsEditCompanyType] = useState(false);
   const [isEditCompanyIndustry, setIsEditCompanyIndustry] = useState(false);
   const [isEditHeadquarters, setIsEditHeadquarters] = useState(false);
+  const [getCompanyDetails, setCompanyDetails] = useState({});
+  const [showAllInvestors, setShowAllInvestors] = useState(false);
+
+  const allInvestors = getCompanyDetails?.fundingDetails?.[0]?.allInvestors?getCompanyDetails?.fundingDetails?.[0]?.allInvestors?.split(",") : [];
+  const displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
+
+  const toggleInvestors = () => {
+    setShowAllInvestors((prev) => !prev);
+  };
+  
+  const getDetails = async () => {
+      const result = await allCompanyRequestDAO.getCompanyDetailDAO(getcompanyID);
+    
+      if (result?.statusCode === HTTPStatusCode.OK) {
+        setCompanyDetails(result?.responseBody);
+     }
+    };
+
+useEffect(() => {
+    getDetails()
+}, [getcompanyID])
+
+console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
+
   return (
     <>
       <Modal
@@ -66,12 +94,12 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
 
                                 <div className={previewClientStyle.companyProfileBox}>
                                     <div className={previewClientStyle.companyProfileImg}>
-                                        <img src={CompanyDetailimg1} alt="detailImg" />  
+                                        <img src={getCompanyDetails?.basicDetails?.companyLogo} alt="detailImg" />  
                                         <span className={previewClientStyle.editNewIcon}> <EditNewIcon/> </span>
                                     </div>  
                                     <div className={previewClientStyle.companyProfRightDetail}>
-                                            <h3>Tech Innovate Solutions Inc. <span className={previewClientStyle.editNewIcon}> <EditNewIcon/> </span></h3>
-                                            <a href="#">www.techinnovatesolutions.com <span className={previewClientStyle.editNewIcon}> <EditNewIcon/> </span></a>
+                                            <h3>{getCompanyDetails?.basicDetails?.companyName} <span className={previewClientStyle.editNewIcon}> <EditNewIcon/> </span></h3>
+                                            <a href="#">{getCompanyDetails?.basicDetails?.website} <span className={previewClientStyle.editNewIcon}> <EditNewIcon/> </span></a>
                                     </div>      
                                 </div>        
 
@@ -79,34 +107,47 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
                                     <ul>
                                         <li>
                                             <span onClick={()=>setIsEditCompanyFound(true)}>  Founded in <EditNewIcon/> </span>
-                                            <p>Test</p>
+                                            <p>{getCompanyDetails?.basicDetails?.foundedYear ?getCompanyDetails?.basicDetails?.foundedYear : "NA"}</p>
                                         </li>
                                         <li>
                                             <span onClick={()=>setIsEditTeamSize(true)}> Team Size <EditNewIcon/> </span>
-                                            <p> Test </p>
+                                            <p> {getCompanyDetails?.basicDetails?.teamSize  ? getCompanyDetails?.basicDetails?.teamSize: "NA"} </p>
                                         </li>
                                         <li>
                                             <span onClick={()=>setIsEditCompanyType(true)}> Company Type <EditNewIcon/> </span>
-                                            <p> Test </p>
+                                            <p> {getCompanyDetails?.basicDetails?.companyType  ? getCompanyDetails?.basicDetails?.companyType: "NA"} </p>
                                         </li>
                                         <li>
                                             <span onClick={()=>setIsEditCompanyIndustry(true)}>Company Industry <EditNewIcon/> </span>
-                                            <p> Test </p>
+                                            <p> {getCompanyDetails?.basicDetails?.companyIndustry  ? getCompanyDetails?.basicDetails?.companyIndustry: "NA"} </p>
                                         </li>
                                         <li>
                                             <span onClick={()=>setIsEditHeadquarters(true)}> Headquarters <EditNewIcon/> </span>
-                                            <p> Test </p>
+                                            <p> {getCompanyDetails?.basicDetails?.headquaters  ?getCompanyDetails?.basicDetails?.headquaters : "NA"} </p>
                                         </li>
                                     </ul>
                                 </div>
 
-                                <h6> About us <span className={previewClientStyle.editNewIcon}> <EditNewIcon/> </span> </h6>
+                                <h6> About us <span className={previewClientStyle.editNewIcon}> </span> </h6>
 
-                                <p> 
+                                {/* <p> 
                                     At Tech Innovate Solutions Inc., our company culture is characterized by innovation, collaboration, and a relentless pursuit of excellence. We foster an environment where creativity flourishes, and employees are empowered to think outside the box and push the boundaries of what's possible.
                                     Collaboration is at the heart of our culture. We believe that the best ideas emerge from diverse perspectives and collective efforts. Our teams work closely together, sharing knowledge, expertise, and ideas to tackle complex challenges and drive innovation.
                                     Transparency and open communication are key pillars of our culture. We encourage an environment where everyone feels heard and valued, and where feedback is welcomed and acted upon constructively.
-                                </p>
+                                </p> */}
+                                <TextEditor
+                                    register={register}
+                                    setValue={setValue}
+                                    // errors={errors}
+                                    controlledValue={getCompanyDetails?.basicDetails?.aboutCompany}
+                                    isControlled={true}
+                                    isTextArea={true}
+                                    name="aboutCompany"
+                                    type={InputType.TEXT}
+                                    placeholder="Enter about company"
+                                    // required
+                                    watch={watch}
+                                />
 
                                 <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
                                     <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`}> Cancel </button>
@@ -121,23 +162,30 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
                                     <ul>
                                         <li>
                                             <span>Total Funding</span>
-                                            <h3>$4.13M</h3>
+                                            <h3>{getCompanyDetails?.fundingDetails?.[0]?.fundingAmount ?getCompanyDetails?.fundingDetails?.[0]?.fundingAmount : "NA"}</h3>
                                         </li>
 
                                         <li>
                                             <span>Funding Rounds</span>
-                                            <p> 4</p>
+                                            <p>{getCompanyDetails?.fundingDetails?.[0]?.fundingRound?getCompanyDetails?.fundingDetails?.[0]?.fundingRound:"NA"}</p>
                                         </li>
 
                                         <li>
                                             <span>Latest Funding Round</span>
-                                            <p>Jan, 2024</p>
+                                            <p>{getCompanyDetails?.fundingDetails?.[0]?.lastFundingRound?getCompanyDetails?.fundingDetails?.[0]?.lastFundingRound:"NA"}</p>
                                         </li>
 
                                         <li>
                                             <span>Investors</span>
-                                            <p> Silverneedle Ventures, JSW Venture,RiSo Capital,
-                                            <a href="#" >view all</a>
+                                            <p>
+                                                {displayedInvestors.length > 0 ? displayedInvestors.join(', ') : "NA"}
+                                                {allInvestors.length > 4 && (
+                                                <span>
+                                                ... <a href="#" onClick={(e) => { e.preventDefault(); toggleInvestors(); }} title="view all">
+                                                    {showAllInvestors ? 'Show Less' : 'View All'}
+                                                    </a>
+                                                </span>
+                                                )}
                                             </p>
                                         </li>
                                     </ul>
@@ -148,18 +196,20 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
                                     <span className={previewClientStyle.addAnotherRoundbtn}>Add Another Round</span>
                                 </div> 
                             
-                                <div className={previewClientStyle.roundsListed}>   
+                                <div className={previewClientStyle.roundsListed}>  
+                                {getCompanyDetails?.fundingDetails?.map((val) =>(
                                     <div className={`${previewClientStyle.roundsListContent} ${previewClientStyle.active}`}>
-                                            <span> Round 4  |  Series C  |  Feb, 2024
+                                            <span> {val?.fundingRound ? val?.fundingRound + " | " : ""} {val?.series?.trim() ?  val?.series : ""}  {val?.fundingMonth ? " | " + val?.fundingMonth: ""},{val?.fundingYear}
                                                 <div className={previewClientStyle.roundHoverAction}>
                                                     <span><AiOutlineEdit /></span>
                                                     <span><RiDeleteBinLine /></span>
                                                 </div>
                                             </span>
-                                            <h4>$2M</h4>
-                                            <p>Investors: Silverneedle Ventures, JSW Ventures</p>
+                                            {val?.fundingAmount && <h4>{val?.fundingAmount}</h4>}
+                                            {val?.investors && <p>Investors: {val?.investors}</p>}
                                     </div>    
-                                    <div className={`${previewClientStyle.roundsListContent} ${previewClientStyle.Selected}`}>
+                                ))} 
+                                    {/* <div className={`${previewClientStyle.roundsListContent} ${previewClientStyle.Selected}`}>
                                         <span>
                                             Series B  |  Nov, 2021
                                             <div className={previewClientStyle.roundHoverAction}>
@@ -191,7 +241,7 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
                                         </span>
                                         <h4>$140K</h4>
                                         <p>Investors: Silverneedle Ventures, JSW Ventures</p>
-                                    </div>                                     
+                                    </div>                                      */}
                                 </div>
 
                                 <div className={previewClientStyle.row}>
@@ -212,39 +262,50 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
 
                             <h6> Culture <span className={previewClientStyle.editNewIcon} ><EditNewIcon/></span> </h6>
 
-                            <p>
-                                Collaboration is at the heart of our culture. We believe that the best ideas emerge from diverse perspectives and collective efforts. Our teams work closely together, sharing knowledge, expertise, and ideas to tackle complex challenges and drive innovation.
-                                Transparency and open communication are key pillars of our culture. We encourage an environment where everyone feels heard and valued, and where feedback is welcomed and acted upon constructively. 
-                            </p>
-                            <p>
-                                We prioritize work-life balance and well-being, recognizing that happy and healthy employees are essential for driving success. Flexible work arrangements and wellness programs are just some of the ways we support our employees.
-                            </p>
+                            <TextEditor
+                                    register={register}
+                                    setValue={setValue}
+                                    // errors={errors}
+                                    controlledValue={getCompanyDetails?.basicDetails?.culture}
+                                    isControlled={true}
+                                    isTextArea={true}
+                                    name="culture"
+                                    type={InputType.TEXT}
+                                    placeholder="Enter about Culture"
+                                    // required
+                                    watch={watch}
+                                />
 
                             <div className={previewClientStyle.imgSection}>
-                                <div className={previewClientStyle.imgThumb}>
-                                    <img src={CompanyDetailimg1} alt="detailImg" />
-                                    <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
-                                </div>
-                                <div className={previewClientStyle.imgThumb}>
+                                {getCompanyDetails?.cultureDetails?.map((val)=>(
+                                    <div className={previewClientStyle.imgThumb}>
+                                        <img src={val?.cultureImage} alt="detailImg" />
+                                        <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
+                                    </div>
+                                ))}
+                                {/* <div className={previewClientStyle.imgThumb}>
                                     <img src={CompanyDetailimg2} alt="detailImg" />
                                     <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
                                 </div>
                                 <div className={previewClientStyle.imgThumb}>
                                     <img src={CompanyDetailimg3} alt="detailImg" />
                                     <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
-                                </div>
-                                <div className={previewClientStyle.videoWrapper}>
+                                </div> */}
+                                {getCompanyDetails?.youTubeDetails?.map((val)=>(
+                                    <div className={previewClientStyle.videoWrapper}>
+                                        {/* <iframe width="420" height="315"
+                                            src={`https://www.youtube.com/embed/${val?.youtubeLink}`}>
+                                        </iframe> */}
+                                        <YouTubeVideo videoLink={val?.youtubeLink}/>
+                                        <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
+                                    </div>
+                                ))}
+                                {/* <div className={previewClientStyle.videoWrapper}>
                                     <iframe width="420" height="315"
                                         src="https://www.youtube.com/embed/tgbNymZ7vqY">
                                     </iframe>
                                     <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
-                                </div>
-                                <div className={previewClientStyle.videoWrapper}>
-                                    <iframe width="420" height="315"
-                                        src="https://www.youtube.com/embed/tgbNymZ7vqY">
-                                    </iframe>
-                                    <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
-                                </div>
+                                </div> */}
                             </div>
 
                                 
@@ -254,18 +315,11 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
 
                             <div className={previewClientStyle.companyBenefits}>
                                 <ul>
+                                   {getCompanyDetails?.perkDetails?.map((val)=>(
                                     <li>
-                                    <span>Remote Work Flexibility</span>
-                                    </li>  
-                                    <li>
-                                    <span>Health Insurance</span>
-                                    </li>  
-                                    <li>
-                                    <span>Paid Time Off</span>
-                                    </li>  
-                                    <li>
-                                    <span>Education Assistance</span>
-                                    </li>       
+                                        <span>{val}</span>
+                                    </li>
+                                   ))}  
                                 </ul>
                             </div>
                     

@@ -86,6 +86,7 @@ function AllClients() {
     const[isShowAddClientCredit,setIsShowAddClientCredit] =  useState(false); 
     const [messageAPI, contextHolder] = message.useMessage();
     const [isPreviewModal,setIsPreviewModal] = useState(false);
+    const [getcompanyID,setcompanyID] = useState();
 
 	const getFilterRequest = useCallback(async () => {
         setLoading(true);
@@ -337,7 +338,7 @@ const updateSpaceIDForClientFun = async () =>{
         }
 
     const allClientsColumnsMemo = useMemo(
-		() => allClientsConfig.tableConfig(editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID),
+		() => allClientsConfig.tableConfig(editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID,setIsPreviewModal,setcompanyID),
 		[isShowAddClientCredit],
 	); 
 
@@ -358,7 +359,7 @@ const updateSpaceIDForClientFun = async () =>{
                     <div className={clienthappinessSurveyStyles.hiringRequest}>All Clients</div>
                     <LogoLoader visible={isLoading} />
                     <div className={clienthappinessSurveyStyles.btn_wrap}>
-                        <button className={clienthappinessSurveyStyles.btnwhite} onClick={()=>setIsPreviewModal(true)}>Preview Company Details</button>
+                        {/* <button className={clienthappinessSurveyStyles.btnwhite} onClick={()=>setIsPreviewModal(true)}>Preview Company Details</button> */}
                        {isShowAddClientCredit && <button className={clienthappinessSurveyStyles.btnwhite}
                         // onClick={() => navigate(UTSRoutes.ABOUT_CLIENT)}
                         onClick={() => navigate(`/addNewCompany/0`)}
@@ -530,7 +531,7 @@ const updateSpaceIDForClientFun = async () =>{
                <EditAMModal amToFetch={amToFetch} closeModal={() => setEditAM(false)} reloadClientList={reloadClientList} />
             </Modal>}  
 
-            <PreviewClientModal setIsPreviewModal={setIsPreviewModal} isPreviewModal={isPreviewModal}/>
+            <PreviewClientModal setIsPreviewModal={setIsPreviewModal} isPreviewModal={isPreviewModal} setcompanyID={setcompanyID} getcompanyID={getcompanyID} />
             </>
     )
 }

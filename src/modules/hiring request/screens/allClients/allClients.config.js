@@ -58,7 +58,7 @@ export const allClientsConfig = {
             }            		
 		];
     },
-    tableConfig : (editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID) => {
+    tableConfig : (editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID,setIsPreviewModal,setcompanyID) => {
         // && LoggedInUserTypeID?.LoggedInUserTypeID == 2
         if(isShowAddClientCredit === true){
             return [
@@ -105,6 +105,24 @@ export const allClientsConfig = {
                             </div>}
                         </div>
                         
+                        )
+                    }
+                },
+
+                {
+                    title: '',
+                    dataIndex: 'PreviewPage',
+                    key: 'preview',
+                    align: 'center',
+                    width: '50px',
+                    render:(_,result) => {
+                        return (
+                        isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<div
+                            // to={`/editclient/${result.companyID}`}
+                            style={{ color: 'black', textDecoration: 'underline',cursor:"pointer" }}
+                            onClick={()=>{localStorage.setItem("clientID",result?.clientID);setIsPreviewModal(true);setcompanyID(result?.companyID)}}>
+                            <PencilSVG />
+                        </div>
                         )
                     }
                 },
@@ -303,6 +321,24 @@ export const allClientsConfig = {
                         )
                     }
                 },
+
+                {
+                    title: '',
+                    dataIndex: 'PreviewPage',
+                    key: 'preview',
+                    align: 'center',
+                    width: '50px',
+                    render:(_,result) => {
+                        return (
+                        isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<div
+                            // to={`/editclient/${result.companyID}`}
+                            style={{ color: 'black', textDecoration: 'underline',cursor:"pointer" }}
+                            onClick={()=>{localStorage.setItem("clientID",result?.clientID);setIsPreviewModal(true)}}>
+                            <PencilSVG />
+                        </div>
+                        )
+                    }
+                },
                 
                 {
                     title: 'Added Date',
@@ -470,6 +506,24 @@ export const allClientsConfig = {
                             onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
                             <PencilSVG />
                         </Link>
+                        )
+                    }
+                },
+
+                {
+                    title: '',
+                    dataIndex: 'PreviewPage',
+                    key: 'preview',
+                    align: 'center',
+                    width: '50px',
+                    render:(_,result) => {
+                        return (
+                        isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<div
+                            // to={`/editclient/${result.companyID}`}
+                            style={{ color: 'black', textDecoration: 'underline',cursor:"pointer" }}
+                            onClick={()=>{localStorage.setItem("clientID",result?.clientID);setIsPreviewModal(true)}}>
+                            <PencilSVG />
+                        </div>
                         )
                     }
                 },
