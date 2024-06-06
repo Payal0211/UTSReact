@@ -33,12 +33,12 @@ This information will be visible to talents, and they will start applying based 
 Gen-AI screening will be generated based on the information provided in this form</li>
     </ul>
     <div>
-        <button className={PublishStyles.edit} onClick={() => {
+        {/* <button className={PublishStyles.edit} onClick={() => {
       setShowModal(false);
-    }}>Edit</button>
+    }}>Edit</button> */}
         <button className={PublishStyles.create} onClick={() => {
       handleOK()
-    }}>Publish HR</button>
+    }}>Save HR</button>
     </div>
     {/* <div className={PublishStyles.bottomtext}>
          <p className={PublishStyles.bottomtext}>P.S. This mask is just to grab your attention on the severity of this action!!! </p>

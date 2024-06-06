@@ -26,7 +26,7 @@ function EngagementSection({
   const [errorCurrency, seterrorCurrency] = useState(false);
 
   let _currency = watch("creditCurrency");
-
+ let _totalSum = parseInt(watch("freeCredit"))+parseInt(engagementDetails?.totalCreditBalance?? 0);
   useEffect(() => {
     if(!_currency){
       seterrorCurrency(true)
@@ -312,7 +312,9 @@ function EngagementSection({
                     />
                   </div>} 
 
+                  
                   <div className={AddNewClientStyle.colMd6}>
+                    Remaining Credit : <span style={{fontWeight:"bold",marginBottom:"80px",marginTop:"20px"}}>{engagementDetails?.totalCreditBalance}</span>
                     <div className={AddNewClientStyle.FreecreditFieldWrap}>
                       <HRInputField
                         register={register}
@@ -356,6 +358,7 @@ function EngagementSection({
                         }
                       />
                     </div>
+                    {!isNaN(_totalSum) && <label style={{marginBottom:"20px",marginTop:"-26px",display:"block",fontWeight:"bold"}}>Total Credit Balance : <span style={{fontWeight:"bold"}}>{_totalSum}</span> </label>}
                   </div>
                 </div>
 

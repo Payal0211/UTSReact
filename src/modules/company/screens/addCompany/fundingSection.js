@@ -140,30 +140,30 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
               <p>Please provide the necessary details</p>
   
               <div className={AddNewClientStyle.leftPanelAction}>    
-              {(index === 0 && fields?.length === 1)  &&  <button
+              {/* {(index === 0 && fields?.length === 1)  &&  <button
               type="button"
               className={AddNewClientStyle.btn}
               onClick={(e) => onAddNewRound(e)}
             >
               Add Another Round
-            </button>}
+            </button>} */}
 
 
            {index > 0 && index + 1 === fields?.length && <>
-           <button
+           {/* <button
               type="button"
               className={AddNewClientStyle.btn}
               onClick={(e) => onAddNewRound(e)}
             >
               Add Another Round
-            </button>
+            </button> */}
 
-            <button
+            {/* <button
 										type="button"
 										className={AddNewClientStyle.btn}
 										onClick={(e) => onRemoveAddedRound(e, index,item)}>
 										Remove
-						</button>
+						</button> */}
            </>} 
             
             </div>
@@ -191,7 +191,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                     disabled={isSelfFunded}
                   />
                 </div>
-
+{/* 
                 <div className={AddNewClientStyle.colMd6}>
                 <HRInputField
                     register={register}
@@ -204,7 +204,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                     placeholder="Ex: 500k, 900k, 1M, 2B..."
                     disabled={isSelfFunded}
                   />
-                </div>
+                </div> */}
             </div>
 
            
@@ -222,7 +222,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                   mode={"id"}
                   register={register}
                   name={`fundingDetails.[${index}].series`}
-                  label="Series"
+                  label="Funding Round/Series"
                   defaultValue="Select"
                   options={seriesOptions}
                 disabled={isSelfFunded}
@@ -231,7 +231,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
 
           
               <div className={AddNewClientStyle.colMd6}> 
-              <div className={AddNewClientStyle.label}>Month-Year</div>
+              <div className={AddNewClientStyle.label}>Last Funding Date</div>
               <div className={AddNewClientStyle.dateSelect}>
     
               <Select
