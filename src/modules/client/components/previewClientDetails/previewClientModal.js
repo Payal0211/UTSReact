@@ -47,6 +47,7 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal,setcompanyID,get
   const [isAddNewClient,setAddNewClient] = useState(false)
   const [isEditClient,setEditClient] = useState(false)
   const [isEditEngagement,setEditEngagement] = useState(false)
+  const [isEditPOC,setEditPOC] = useState(false)
 
   const allInvestors = getCompanyDetails?.fundingDetails?.[0]?.allInvestors?getCompanyDetails?.fundingDetails?.[0]?.allInvestors?.split(",") : [];
   const displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
@@ -60,12 +61,19 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal,setcompanyID,get
     
       if (result?.statusCode === HTTPStatusCode.OK) {
         setCompanyDetails(result?.responseBody);
+        setValue("foundedIn",getCompanyDetails?.basicDetails?.foundedYear);
+        setValue("companyWebsite",getCompanyDetails?.basicDetails?.website);
+        setValue("teamSize",getCompanyDetails?.basicDetails?.teamSize);
+        setValue("companyType",getCompanyDetails?.basicDetails?.companyType);
+        setValue("companyIndustry",getCompanyDetails?.basicDetails?.companyIndustry);
+        setValue("headquarters",getCompanyDetails?.basicDetails?.headquaters)
+        setValue("companyName",getCompanyDetails?.basicDetails?.companyName)
      }
     };
 
 useEffect(() => {
     getDetails()
-}, [getcompanyID])
+}, [getcompanyID,setValue])
 
 console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
 
@@ -103,8 +111,8 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                                         <span className={previewClientStyle.editNewIcon}> <EditNewIcon/> </span>
                                     </div>  
                                     <div className={previewClientStyle.companyProfRightDetail}>
-                                            <h3>{getCompanyDetails?.basicDetails?.companyName} <span className={previewClientStyle.editNewIcon}> <EditNewIcon/> </span></h3>
-                                            <a href="#">{getCompanyDetails?.basicDetails?.website} <span className={previewClientStyle.editNewIcon}> <EditNewIcon/> </span></a>
+                                            <h3>{getCompanyDetails?.basicDetails?.companyName} <span className={previewClientStyle.editNewIcon} onClick={()=>setIsEditCompanyName(true)}> <EditNewIcon/> </span></h3>
+                                            {getCompanyDetails?.basicDetails?.website} <span className={previewClientStyle.editNewIcon} onClick={()=>setIsEditCompanyWebsite(true)}> <EditNewIcon/> </span>
                                     </div>      
                                 </div>        
 
@@ -1088,7 +1096,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                 <div className={previewClientStyle.formFieldsbox}>
                     <div className={previewClientStyle.formFieldsboxinner}>
 
-                        <h2>Uplers’s POCs <span className={previewClientStyle.editNewIcon}><EditNewIcon/></span></h2>
+                        <h2>Uplers’s POCs <span className={previewClientStyle.editNewIcon} onClick={()=>setEditPOC(true)}><EditNewIcon/></span></h2>
 
                         <div className={previewClientStyle.companyDetails}>  
                                 <div className={previewClientStyle.companyBenefits}>
@@ -1104,6 +1112,13 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                                         </li>    */}
                                     </ul>
                                 </div>
+                                {isEditPOC && <div className={previewClientStyle.row}>
+                                  <AutoComplete />
+                                  <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                                    <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={()=>setEditPOC(false)}> Cancel </button>
+                                    <button type="button" className={previewClientStyle.btnPrimary} onClick={()=>setEditPOC(false)}>  SAVE </button>
+                                </div>
+                                </div>}
                         </div>
                     </div>
                 </div>
@@ -1125,10 +1140,21 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
         footer={false}
         maskClosable={false}
       >
-        <label>Change Company Name</label>
-        <AutoComplete />
-        <button onClick={() => setIsEditCompanyName(false)}>Cancel</button>
-        <button onClick={() => setIsEditCompanyName(false)}>SAVE</button>
+        <HRInputField
+          //    required
+          rows={4}
+          errors={errors}
+          label={"Company Name"}
+          register={register}
+          setValue={setValue}
+          name="companyName"
+          type={InputType.TEXT}
+          placeholder="Company website"
+        />
+         <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                        <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyName(false)}> Cancel </button>
+                        <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyName(false)}> SAVE </button>
+                    </div>  
       </Modal>
       {/* Company website Modal*/}
       <Modal
@@ -1146,12 +1172,16 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
           errors={errors}
           label={"Company website"}
           register={register}
+          setValue={setValue}
           name="companyWebsite"
           type={InputType.TEXT}
           placeholder="Company website"
         />
-        <button onClick={() => setIsEditCompanyWebsite(false)}>Cancel</button>
-        <button onClick={() => setIsEditCompanyWebsite(false)}>SAVE</button>
+        <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                        <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyWebsite(false)}> Cancel </button>
+                        <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyWebsite(false)}> SAVE </button>
+                    </div>  
+        
       </Modal>
       {/* Company Found Modal*/}
       <Modal
@@ -1174,6 +1204,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                         label={"Founded in"}
                         register={register}
                         name="foundedIn"
+                        setValue={setValue}
                         type={InputType.TEXT}
                         placeholder="Please enter"
                         className={previewClientStyle.inputcustom}
@@ -1201,22 +1232,22 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
         className="prevClientModal"
         wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
-            <HRSelectField
+            <HRInputField
                 // mode='id/value'
                 // controlledValue={feedBackTypeEdit}
                 // setControlledValue={setFeedbackTypeEdit}
                 // isControlled={true}
-                // setValue={setValue}
+                setValue={setValue}
                 register={register}
-                name="TeamSize"
-                label="Feedback Type"
+                name="teamSize"
+                label="Team Size"
                 defaultValue="Please Select"
                 // options={getFeedbackFormContent.drpFeedbackType?.filter((item) => item?.value !== "0")}
             />
 
          <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
-            <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyFound(false)}> Cancel </button>
-            <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyFound(false)}> SAVE </button>
+            <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditTeamSize(false)}> Cancel </button>
+            <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditTeamSize(false)}> SAVE </button>
         </div>    
       </Modal>
       {/* Company Type Modal*/}
@@ -1232,6 +1263,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
         <HRInputField
           //    required
           rows={4}
+          setValue={setValue}
           errors={errors}
           label={"Company Type"}
           register={register}
@@ -1239,8 +1271,10 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
           type={InputType.TEXT}
           placeholder="Please enter"
         />
-        <button onClick={() => setIsEditCompanyType(false)}>Cancel</button>
-        <button onClick={() => setIsEditCompanyType(false)}>SAVE</button>
+        <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+            <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyType(false)}> Cancel </button>
+            <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyType(false)}> SAVE </button>
+        </div>   
       </Modal>
       {/* Company Industry Modal*/}
       <Modal
@@ -1259,11 +1293,15 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
           label={"Company Industry"}
           register={register}
           name="companyIndustry"
+          setValue={setValue}
           type={InputType.TEXT}
           placeholder="Please enter"
         />
-        <button onClick={() => setIsEditCompanyIndustry(false)}>Cancel</button>
-        <button onClick={() => setIsEditCompanyIndustry(false)}>SAVE</button>
+        <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+            <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyIndustry(false)}> Cancel </button>
+            <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyIndustry(false)}> SAVE </button>
+        </div>
+       
       </Modal>
       {/* Headquarters Modal*/}
       <Modal
@@ -1276,9 +1314,20 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
         maskClosable={false}
       >
         <label>Headquarters</label>
-        <AutoComplete />
-        <button onClick={() => setIsEditHeadquarters(false)}>Cancel</button>
-        <button onClick={() => setIsEditHeadquarters(false)}>SAVE</button>
+        <HRInputField
+          //    required
+          rows={4}
+          errors={errors}
+          register={register}
+          name="headquarters"
+          setValue={setValue}
+          type={InputType.TEXT}
+          placeholder="Please enter"
+        />
+        <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+            <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditHeadquarters(false)}> Cancel </button>
+            <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditHeadquarters(false)}> SAVE </button>
+        </div>
       </Modal>
     </>
   );
