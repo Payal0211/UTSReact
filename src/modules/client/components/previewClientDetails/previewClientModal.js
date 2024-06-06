@@ -480,19 +480,32 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
         width={300}
         footer={false}
         maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
-        <HRInputField
-          //    required
-          rows={4}
-          errors={errors}
-          label={"Founded in"}
-          register={register}
-          name="foundedIn"
-          type={InputType.TEXT}
-          placeholder="Please enter"
-        />
-        <button onClick={() => setIsEditCompanyFound(false)}>Cancel</button>
-        <button onClick={() => setIsEditCompanyFound(false)}>SAVE</button>
+          <div className={previewClientStyle.row}>
+            <div className={previewClientStyle.colMd12}>
+                    <HRInputField
+                        //    required
+                        rows={4}
+                        errors={errors}
+                        label={"Founded in"}
+                        register={register}
+                        name="foundedIn"
+                        type={InputType.TEXT}
+                        placeholder="Please enter"
+                        className={previewClientStyle.inputcustom}
+                        inputClassName={previewClientStyle.inputcustom}
+                    />  
+
+                     <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                        <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyFound(false)}> Cancel </button>
+                        <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyFound(false)}> SAVE </button>
+                    </div>                 
+            </div>
+        </div>
+       
+       
       </Modal>
       {/* Team Size Modal*/}
       <Modal
@@ -503,19 +516,26 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal }) {
         width={300}
         footer={false}
         maskClosable={false}
+        className="prevClientModal"
+        wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
-        <HRInputField
-          //    required
-          rows={4}
-          errors={errors}
-          label={"Change team size"}
-          register={register}
-          name="teamSize"
-          type={InputType.TEXT}
-          placeholder="Please enter"
-        />
-        <button onClick={() => setIsEditTeamSize(false)}>Cancel</button>
-        <button onClick={() => setIsEditTeamSize(false)}>SAVE</button>
+            <HRSelectField
+                // mode='id/value'
+                // controlledValue={feedBackTypeEdit}
+                // setControlledValue={setFeedbackTypeEdit}
+                // isControlled={true}
+                // setValue={setValue}
+                register={register}
+                name="TeamSize"
+                label="Feedback Type"
+                defaultValue="Please Select"
+                // options={getFeedbackFormContent.drpFeedbackType?.filter((item) => item?.value !== "0")}
+            />
+
+         <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+            <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={() => setIsEditCompanyFound(false)}> Cancel </button>
+            <button type="button" className={previewClientStyle.btnPrimary} onClick={() => setIsEditCompanyFound(false)}> SAVE </button>
+        </div>    
       </Modal>
       {/* Company Type Modal*/}
       <Modal

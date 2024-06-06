@@ -3,38 +3,37 @@
     background-color: #fff !important;
 }
 
-
-.clientDetailModal .row {
+.row {
     margin: 0 -9px;
     flex-wrap: wrap;
     display: flex;
 }
 
-.clientDetailModal .colMd12 {
+.colMd12 {
     width: 100%;
     padding: 0 9px;
 }
 
-.clientDetailModal .colMd6 {
+.colMd6 {
     width: 50%;
     padding: 0 9px;
 }
 
-.clientDetailModal .colMd4 {
+.colMd4 {
     width: 33.33%;
     padding: 0 9px;
 }
 
 
-.PreviewpageMainWrap .formFields {
+.formFields {
     margin-top: 20px;
 }
 
-.PostHeader{
+.PreviewpageMainWrap .PostHeader{
     padding: 6px 32px 0;
 }
 
-.PostHeader h4{
+.PreviewpageMainWrap .PostHeader h4{
     color: #232323;
     font-size: 24px;
     font-weight: 700;
@@ -49,18 +48,18 @@
     list-style: none;
 }
 
-.PreviewpageMainWrap .buttonEditGroup{
+.buttonEditGroup{
     display: flex;
     flex-wrap: wrap;
     gap: 18px;
     margin-top: 10px;
 }
 
-.PreviewpageMainWrap .buttonEditGroup.BtnRight {
+.buttonEditGroup.BtnRight {
     justify-content: end;
 }
 
-.PreviewpageMainWrap .buttonEditGroup .btnPrimary{
+.buttonEditGroup .btnPrimary{
     color: #232323;
     font-style: normal;
     line-height: normal;
@@ -83,7 +82,7 @@
     cursor: pointer;
 }
 
-.PreviewpageMainWrap .buttonEditGroup .btnPrimary.blank{
+.buttonEditGroup .btnPrimary.blank{
     background: transparent;
     padding: 0 0px;
 }
@@ -156,6 +155,10 @@
     display: flex;
     gap: 5px;
     color: #676767;
+}
+
+.PreviewpageMainWrap .companyDetailTop ul li span svg{
+    cursor: pointer;
 }
 
 .PreviewpageMainWrap .formFields .editNewIcon {
@@ -583,3 +586,23 @@
 .PreviewpageMainWrap .companyBenefits ul.mt0{
     margin-top: 0px;
 }   
+
+
+
+
+/* Edit Modal css start */
+
+.prevClientModalWrapper{
+    z-index: 7777;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.prevClientModalWrapper .inputcustom{
+    height: 40px;
+}
+
+.prevClientModalWrapper [class*="hrInputFields_input"]{
+    padding: 9px 16px;
+}
+
+/* Edit Modal css End */
