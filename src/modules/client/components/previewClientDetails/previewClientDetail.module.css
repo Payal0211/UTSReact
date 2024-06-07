@@ -82,9 +82,19 @@
     cursor: pointer;
 }
 
+.buttonEditGroup .btnPrimary:hover{
+    background: #232323;
+    color: #fff;
+}
+
 .buttonEditGroup .btnPrimary.blank{
     background: transparent;
     padding: 0 0px;
+}
+
+.buttonEditGroup .btnPrimary.blank:hover{
+    background: transparent;
+    color: #232323;
 }
 
 .PreviewpageMainWrap h6{
@@ -587,7 +597,180 @@
     margin-top: 0px;
 }   
 
+.mb24{
+    margin-bottom: 24px;
+    margin-top: 0;
+}
 
+.mt24{
+    margin-top: 24px;
+}
+
+.reqField{
+    color: #B60707;
+    font-weight: 700;
+    font-size: 12px;
+    margin-left: 4px;
+}
+
+.EditCalturebox .FilesDragAndDropArea{
+    border: 1px dashed #cecccc;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    text-align: center;
+    padding: 23px 0;
+    margin-top: 10px;
+}
+
+.EditCalturebox .FilesDragAndDropArea p {
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 0;
+    margin-top: 20px;
+}
+
+.EditCalturebox .FilesDragAndDropArea span {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+
+.EditCalturebox .FilesDragAndDropArea p span {
+    font-size: 14px;
+    color: #f52887;
+    font-weight: 500;
+}
+
+.PreviewpageMainWrap .EditCalturebox .imgSection .imgThumb{
+    overflow: visible;
+}
+
+.PreviewpageMainWrap .EditCalturebox .imgSection .imgThumb .DeleteBtn{
+    display: block;
+}
+
+.PreviewpageMainWrap .EditCalturebox .imgSection .imgThumb:hover::after{
+    content: none;
+}
+
+.PreviewpageMainWrap .EditCalturebox .imgSection .imgThumb .DeleteBtn{
+    min-width: 26px;
+    max-width: 26px;
+    top: 8px;
+    left: inherit;
+    right: -5px;
+}
+
+.PreviewpageMainWrap .EditCalturebox .imgSection .imgThumb img{
+    border: 1px solid #CECCCC66;
+}
+
+
+.addanotherBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f5f5f5;
+    border: 1px solid #cecccc;
+    border-radius: 8px;
+    color: #676767;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 24px;
+}
+
+.addanotherBtn svg{
+    margin-right: 8px;
+}
+
+
+.phoneLabel{
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #676767;
+    display: inline-block;
+}
+
+
+.phoneNoCode {
+    width: 120px;
+}
+
+.phoneNoCode [class*="ant-select-selector"] {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.phoneNoInput {
+    flex: 1;
+}
+
+.phoneNoInput [class*="formField"] {
+    margin: 0;
+}
+
+.phoneNoInput input {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin: 0;
+}
+
+
+.dateSelect {
+    display: flex;
+}
+
+.dateSelect [class*="ant-select"] [class*="ant-select-selector"]{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+  }
+.dateSelect [class*="ant-select"]:last-child [class*="ant-select-selector"]{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-right: 1px solid #cecccc;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+
+.dateSelect .ant-select .ant-select-selector {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+  }
+.dateSelect .ant-select:last-child .ant-select-selector{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-right: 1px solid #cecccc;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+
+.youTubeDetails{
+    background: #fff8d6;
+    border-radius: 14px;
+    color: #002dcb;
+    display: flex;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    margin-top: 11px;
+    padding: 5px 14px;
+    text-decoration: underline;
+    width: fit-content;
+    max-width: 100%;
+    align-items: center;
+}
 
 
 /* Edit Modal css start */
@@ -614,9 +797,6 @@
     height: 40px;
     padding: 9px 16px;
 }
-
-
-
 
 
 /* Edit Modal css End */
