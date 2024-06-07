@@ -1,5 +1,5 @@
 import Modal from "antd/lib/modal/Modal";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import previewClientStyle from "../previewClientDetails/previewClientDetail.module.css";
 import { AutoComplete, Checkbox, Select, message } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
@@ -23,6 +23,7 @@ import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { HTTPStatusCode } from "constants/network";
 import TextEditor from "shared/components/textEditor/textEditor";
 import YouTubeVideo from "./youTubeVideo";
+import { MasterDAO } from "core/master/masterDAO";
 
 function PreviewClientModal({ isPreviewModal, setIsPreviewModal,setcompanyID,getcompanyID }) {
   const {
@@ -50,9 +51,14 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal,setcompanyID,get
   const [isEditPOC,setEditPOC] = useState(false)
   const [isEditCultureSection,setEditCultureSection] = useState(false);
   const [isEditCompanyBenefits,setEditCompanyBenefits] = useState(false)
+  const [getValuesForDD, setValuesForDD] = useState({});
+  const [controlledPOC,setControlledPOC] = useState([]);
+  const [allPocs, setAllPocs] = useState([]);
 
   const allInvestors = getCompanyDetails?.fundingDetails?.[0]?.allInvestors?getCompanyDetails?.fundingDetails?.[0]?.allInvestors?.split(",") : [];
   const displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
+
+  console.log(getValuesForDD,"getValuesForDDgetValuesForDDgetValuesForDD");
 
   const toggleInvestors = () => {
     setShowAllInvestors((prev) => !prev);
@@ -71,14 +77,54 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal,setcompanyID,get
         setValue("companyIndustry",data?.basicDetails?.companyIndustry);
         setValue("headquarters",data?.basicDetails?.headquaters)
         setValue("companyName",data?.basicDetails?.companyName)
+        setValue("fullName",data?.contactDetails?.[0]?.fullName)
+        setValue("emailID",data?.contactDetails?.[0]?.emailID)
+        setValue("designation",data?.contactDetails?.[0]?.designation)
+        setValue("accessType",data?.contactDetails?.[0]?.accessType)
+        setValue("contactNo",data?.contactDetails?.[0]?.contactNo)
+
+        console.log(data?.contactDetails,"data?.contactDetails?.fullNamedata?.contactDetails?.fullName");
      }
     };
+
+    console.log(watch("fullName"),"fullNamefullNamefullNamefullName");
 
 useEffect(() => {
     getDetails()
 }, [getcompanyID,setValue])
 
+const getAllValuesForDD = useCallback(async () => {
+  const getDDResponse = await MasterDAO.getFixedValueRequestDAO();
+  setValuesForDD(getDDResponse && getDDResponse?.responseBody);
+}, []);
+
+const getAllSalesPerson = useCallback(async () => {
+  const allSalesResponse = await MasterDAO.getSalesManRequestDAO();
+  setAllPocs(allSalesResponse && allSalesResponse?.responseBody?.details);
+}, []);
+
+useEffect(() => {
+  getAllValuesForDD()
+  getAllSalesPerson()
+}, [])
+
+useEffect(() => {
+  if (getCompanyDetails?.pocUserIds?.length && allPocs?.length) {
+    let SelectedPocs = getCompanyDetails?.pocUserIds.map((pocId) => {
+      let data = allPocs.find((item) => item.id === pocId);
+      return {
+        id: data.id,
+        value: data.value,
+      };
+    });
+    setValue("uplersPOCname", SelectedPocs);
+    setControlledPOC(SelectedPocs);
+  }
+}, [getCompanyDetails?.pocUserIds, allPocs]);
+
 console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
+
+console.log(allPocs,"allPocsallPocsallPocsallPocs");
 
   return (
     <>
@@ -582,6 +628,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                   <div className={previewClientStyle.colMd6}>
                     <HRInputField
                       register={register}
+                      setValue={setValue}
                       // isError={!!errors?.clientDetails?.[index]?.fullName}
                     //   errors={errors?.clientDetails?.[index]?.fullName}
                       label="Client Full Name"
@@ -603,6 +650,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                     <HRInputField
                       //								disabled={isLoading}
                       register={register}
+                      setValue={setValue}
                     //   errors={errors?.clientDetails?.[index]?.emailID}
                     //   validationSchema={{
                     //     required: `Please enter the client email ID.`,
@@ -648,6 +696,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                   <div className={previewClientStyle.colMd6}>
                     <HRInputField
                       register={register}
+                      setValue={setValue}
                       // errors={errors}
                       label="Designation"
                     //   name={`clientDetails.[${index}].designation`}
@@ -671,16 +720,16 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                       setValue={setValue}
                       mode={"id"}
                       register={register}
-                    //   name={`clientDetails.[${index}].roleID`}
+                      // name={`clientDetails.[${index}].roleID`}
                     name="roleID"
                       label="Access Type"
                       defaultValue="Choose Access Type"
-                    //   options={accessTypes?.map((item) => ({
-                    //     id: item.id,
-                    //     value: item.value,
-                    //   }
-                    // ))
-                // }
+                      options={getValuesForDD?.BindAccessRoleType?.map((item) => ({
+                        id: item.id,
+                        value: item.value,
+                      }
+                    ))
+                  }
                     />
                   </div>
                 </div>
@@ -725,19 +774,20 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
 
                            
                                
-                                {getCompanyDetails?.contactDetails?.map((val)=>(
-                                    <div className={previewClientStyle.companyNewClientbox}>  
-                                    <h5 className={previewClientStyle.clientlistedTop}> <span className={previewClientStyle.clientlistedTitle}> Client 1 </span>  <span className={previewClientStyle.editNewIcon} onClick={()=>setEditClient(true)}><EditNewIcon/></span></h5>    
-                                    {isEditClient && <>
-                            <div className={previewClientStyle.row}>
+                      {getCompanyDetails?.contactDetails?.map((val,index)=>(
+                          <div className={previewClientStyle.companyNewClientbox}>  
+                          <h5 className={previewClientStyle.clientlistedTop}> <span className={previewClientStyle.clientlistedTitle}> Client {index > 0 && `- ${index}`} </span>  <span className={previewClientStyle.editNewIcon} onClick={()=>setEditClient(true)}><EditNewIcon/></span></h5>    
+                          {isEditClient && <>
+                  <div className={previewClientStyle.row}>
                   <div className={previewClientStyle.colMd6}>
                     <HRInputField
                       register={register}
+                      setValue={setValue}
                       // isError={!!errors?.clientDetails?.[index]?.fullName}
                     //   errors={errors?.clientDetails?.[index]?.fullName}
                       label="Client Full Name"
-                    //   name={`clientDetails.[${index}].fullName`}
-                    name="fullName"
+                      name={`clientDetails.[${index}].fullName`}
+                    // name="fullName"
                       type={InputType.TEXT}
                     //   validationSchema={{
                     //     required: "Please enter the Client Name",
@@ -754,6 +804,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                     <HRInputField
                       //								disabled={isLoading}
                       register={register}
+                      setValue={setValue}
                     //   errors={errors?.clientDetails?.[index]?.emailID}
                     //   validationSchema={{
                     //     required: `Please enter the client email ID.`,
@@ -763,8 +814,8 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                     //     },
                     //   }}
                       label="Work Email"
-                    //   name={`clientDetails.[${index}].emailID`}
-                    name={"emailID"}
+                      name={`clientDetails.[${index}].emailID`}
+                    // name={"emailID"}
                     //   onBlurHandler={() => {
                     //     if (
                     //       errors?.clientDetails?.[index]?.emailID &&
@@ -800,9 +851,10 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                     <HRInputField
                       register={register}
                       // errors={errors}
+                      setValue={setValue}
                       label="Designation"
-                    //   name={`clientDetails.[${index}].designation`}
-                    name="designation"
+                      name={`clientDetails.[${index}].designation`}
+                    // name="designation"
                       type={InputType.TEXT}
                       placeholder="Enter Client Designation"
                     />
@@ -822,8 +874,8 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                       setValue={setValue}
                       mode={"id"}
                       register={register}
-                    //   name={`clientDetails.[${index}].roleID`}
-                    name="roleID"
+                      name={`clientDetails.[${index}].roleID`}
+                    // name="accessType"
                       label="Access Type"
                       defaultValue="Choose Access Type"
                     //   options={accessTypes?.map((item) => ({
@@ -845,8 +897,8 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                           searchable={true}
                           setValue={setValue}
                           register={register}
-                        //   name={`clientDetails.[${index}].countryCode`}
-                        name="countryCode"
+                          name={`clientDetails.[${index}].countryCode`}
+                        // name="countryCode"
                           defaultValue="+91"
                         //   options={flagAndCodeMemo}
                         />
@@ -892,34 +944,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                                         </li>
                                     </ul>
                                 </div>
-                                ))}
-
-                                {/* <div className={previewClientStyle.companyNewClientbox}>  
-                                    <h5 className={previewClientStyle.clientlistedTop}> <span className={previewClientStyle.clientlistedTitle}> Client 2 </span>  <span className={previewClientStyle.editNewIcon}><EditNewIcon/></span></h5>    
-                                    <ul>
-                                        <li>
-                                            <span>Client Full Name</span>
-                                            <p>Shikha Dhawan</p>
-                                        </li>
-                                        <li>
-                                            <span>Client’s Work Email</span>
-                                            <p>shikha@techinnovate.com</p>
-                                        </li>
-                                        <li>
-                                            <span>Designation</span>
-                                            <p>Marketing Director</p>
-                                        </li>
-                                        <li>
-                                            <span>Access Type</span>
-                                            <p>Admin</p>
-                                        </li>
-                                        <li>
-                                            <span>Phone Number</span>
-                                            <p>+919784635475</p>
-                                        </li>
-                                    </ul>
-                                </div> */}
-                             
+                                ))}                             
                             </div>
 
                            
@@ -1235,7 +1260,23 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                                     </ul>
                                 </div>
                                 {isEditPOC && <div className={previewClientStyle.row}>
-                                  <AutoComplete />
+                                  <div className={previewClientStyle.colMd12}>
+                                    <HRSelectField
+                                      isControlled={true}
+                                      controlledValue={controlledPOC}
+                                      setControlledValue={setControlledPOC}
+                                      setValue={setValue}
+                                      mode={"multiple"}
+                                      register={register}
+                                      name="uplersPOCname"
+                                      // label="Uplers's POC name"
+                                      defaultValue="Enter POC name"
+                                      options={allPocs}
+                                      // required
+                                      // isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
+                                      // errorMsg="Please select POC name."
+                                    />
+                                  </div>
                                   <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
                                     <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={()=>setEditPOC(false)}> Cancel </button>
                                     <button type="button" className={previewClientStyle.btnPrimary} onClick={()=>setEditPOC(false)}>  SAVE </button>
