@@ -1,7 +1,7 @@
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
 import previewClientStyle from "../previewClientDetails/previewClientDetail.module.css";
-import { AutoComplete, Checkbox, Select } from "antd";
+import { AutoComplete, Checkbox, Select, message } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as DeleteNewIcon } from "assets/svg/delete-icon.svg";
 
@@ -48,6 +48,8 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal,setcompanyID,get
   const [isEditClient,setEditClient] = useState(false)
   const [isEditEngagement,setEditEngagement] = useState(false)
   const [isEditPOC,setEditPOC] = useState(false)
+  const [isEditCultureSection,setEditCultureSection] = useState(false);
+  const [isEditCompanyBenefits,setEditCompanyBenefits] = useState(false)
 
   const allInvestors = getCompanyDetails?.fundingDetails?.[0]?.allInvestors?getCompanyDetails?.fundingDetails?.[0]?.allInvestors?.split(",") : [];
   const displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
@@ -60,14 +62,15 @@ function PreviewClientModal({ isPreviewModal, setIsPreviewModal,setcompanyID,get
       const result = await allCompanyRequestDAO.getCompanyDetailDAO(getcompanyID);
     
       if (result?.statusCode === HTTPStatusCode.OK) {
+        const data = result?.responseBody;
         setCompanyDetails(result?.responseBody);
-        setValue("foundedIn",getCompanyDetails?.basicDetails?.foundedYear);
-        setValue("companyWebsite",getCompanyDetails?.basicDetails?.website);
-        setValue("teamSize",getCompanyDetails?.basicDetails?.teamSize);
-        setValue("companyType",getCompanyDetails?.basicDetails?.companyType);
-        setValue("companyIndustry",getCompanyDetails?.basicDetails?.companyIndustry);
-        setValue("headquarters",getCompanyDetails?.basicDetails?.headquaters)
-        setValue("companyName",getCompanyDetails?.basicDetails?.companyName)
+        setValue("foundedIn",data?.basicDetails?.foundedYear);
+        setValue("companyWebsite",data?.basicDetails?.website);
+        setValue("teamSize",data?.basicDetails?.teamSize);
+        setValue("companyType",data?.basicDetails?.companyType);
+        setValue("companyIndustry",data?.basicDetails?.companyIndustry);
+        setValue("headquarters",data?.basicDetails?.headquaters)
+        setValue("companyName",data?.basicDetails?.companyName)
      }
     };
 
@@ -379,7 +382,7 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                             <hr />
                                             
 
-                            <h6> Culture <span className={previewClientStyle.editNewIcon} ><EditNewIcon/></span> </h6>
+                            <h6> Culture <span className={previewClientStyle.editNewIcon} onClick={()=>setEditCultureSection(true)}><EditNewIcon/></span> </h6>
 
                             <TextEditor
                                     register={register}
@@ -395,21 +398,131 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                                     watch={watch}
                                 />
 
-                            <div className={previewClientStyle.imgSection}>
+                                {isEditCultureSection &&  <div className={previewClientStyle.row}>
+                                <div className={previewClientStyle.colMd12}>
+                                <div className={previewClientStyle.label}>Picture</div>
+                                {/* {uploading? <Skeleton active /> :  */}
+                                <div
+                                      className={previewClientStyle.FilesDragAndDrop__area}
+                                      style={{ width: "100%", cursor: "pointer" }}
+                                      // onClick={()=> pictureRef && pictureRef.current.click()}
+                                      // onDragOver={(e) => e.preventDefault()}
+                                      // onDrop={handleDrop}
+                                      // onDragLeave={(e) => e.preventDefault()}
+                                    >
+                                      <svg
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                      >
+                                        <path
+                                          d="M8.99994 17.7505C8.58994 17.7505 8.24994 17.4105 8.24994 17.0005V12.8105L7.52994 13.5305C7.23994 13.8205 6.75994 13.8205 6.46994 13.5305C6.17994 13.2405 6.17994 12.7605 6.46994 12.4705L8.46994 10.4705C8.67994 10.2605 9.00994 10.1905 9.28994 10.3105C9.56994 10.4205 9.74994 10.7005 9.74994 11.0005V17.0005C9.74994 17.4105 9.40994 17.7505 8.99994 17.7505Z"
+                                          fill="#F52887"
+                                        />
+                                        <path
+                                          d="M10.9999 13.7495C10.8099 13.7495 10.6199 13.6795 10.4699 13.5295L8.46994 11.5295C8.17994 11.2395 8.17994 10.7595 8.46994 10.4695C8.75994 10.1795 9.23994 10.1795 9.52994 10.4695L11.5299 12.4695C11.8199 12.7595 11.8199 13.2395 11.5299 13.5295C11.3799 13.6795 11.1899 13.7495 10.9999 13.7495Z"
+                                          fill="#F52887"
+                                        />
+                                        <path
+                                          d="M15 22.75H9C3.57 22.75 1.25 20.43 1.25 15V9C1.25 3.57 3.57 1.25 9 1.25H14C14.41 1.25 14.75 1.59 14.75 2C14.75 2.41 14.41 2.75 14 2.75H9C4.39 2.75 2.75 4.39 2.75 9V15C2.75 19.61 4.39 21.25 9 21.25H15C19.61 21.25 21.25 19.61 21.25 15V10C21.25 9.59 21.59 9.25 22 9.25C22.41 9.25 22.75 9.59 22.75 10V15C22.75 20.43 20.43 22.75 15 22.75Z"
+                                          fill="#F52887"
+                                        />
+                                        <path
+                                          d="M22 10.7505H18C14.58 10.7505 13.25 9.42048 13.25 6.00048V2.00048C13.25 1.70048 13.43 1.42048 13.71 1.31048C13.99 1.19048 14.31 1.26048 14.53 1.47048L22.53 9.47048C22.74 9.68048 22.81 10.0105 22.69 10.2905C22.57 10.5705 22.3 10.7505 22 10.7505ZM14.75 3.81048V6.00048C14.75 8.58048 15.42 9.25048 18 9.25048H20.19L14.75 3.81048Z"
+                                          fill="#F52887"
+                                        />
+                                      </svg>
+                                      <p>
+                                        <span>Click to Upload</span> <span style={{color:"gray"}}>or drag and drop</span>
+                                      </p>
+                                      <span> (Max. File size: 25 MB)</span>
+                                      <input
+                                      // ref={pictureRef}
+                                        type="file"
+                                        accept="image/png,image/jpeg"
+                                        multiple="multiple"
+                                        style={{ display: "none" }}
+                                        name="cultureImage"
+                                        onChange={async (e) => {
+                                          const file = e.target.files[0];
+                                          if (!file) return;
+
+                                          const acceptedTypes = ["image/jpeg", "image/png"];
+                                          if (!acceptedTypes.includes(file.type)) {
+                                            message.info(
+                                              "Please select a valid image file (JPEG or PNG)."
+                                            );
+                                            return;
+                                          }
+
+                                          const maxSize = 25 * 1024 * 1024;
+                                          if (file.size > maxSize) {
+                                            message.error("Maximum image size are 25 MB.");
+                                            return;
+                                          }
+
+
+                                          try {                 
+                                            // uploadCultureImages(e.target.files)
+                                          } catch (error) {
+                                            console.error("Error reading the file:", error);
+                                          }
+                                        }}
+                                      />
+                                    </div>
+                                    {/* } */}
+                                
+                                </div>
+                                </div>}
+
+                              <div className={previewClientStyle.imgSection}>
                                 {getCompanyDetails?.cultureDetails?.map((val)=>(
                                     <div className={previewClientStyle.imgThumb}>
                                         <img src={val?.cultureImage} alt="detailImg" />
                                         <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
                                     </div>
                                 ))}
-                                {/* <div className={previewClientStyle.imgThumb}>
-                                    <img src={CompanyDetailimg2} alt="detailImg" />
-                                    <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
-                                </div>
-                                <div className={previewClientStyle.imgThumb}>
-                                    <img src={CompanyDetailimg3} alt="detailImg" />
-                                    <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
-                                </div> */}
+                            </div>
+                            {isEditCultureSection && <div className={previewClientStyle.row}>
+                          <div className={previewClientStyle.colMd12}>
+                          <HRInputField
+                                  register={register}
+                                  // errors={errors}
+                                  label="Add YouTube links"
+                                  name="youtubeLink"
+                                  // validationSchema={{
+                                  //   pattern: {
+                                  //     value: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/,
+                                  //     message: 'Youtube link is not valid',
+                                  //   },
+                                  // }}
+                                  // onKeyDownHandler={e=>{
+                                  //   if(e.keyCode === 13){
+                                  //     const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/;
+                                  //       if(!regex.test(e.target.value)){
+                                  //         return message.error('Youtube link is not valid')
+                                  //       }
+
+                                  //     let youtubeDetail = {youtubeLink: watch('youtubeLink'), 
+                                  //       youtubeID: 0
+                                  //       }
+
+                                  //       let nweyouTubeDetails = [...youTubeDetails]
+                                  //       setCompanyDetails(prev => ({...prev,youTubeDetails:[ youtubeDetail,...nweyouTubeDetails]}))
+                                  //       setValue('youtubeLink','')
+                                  //   }
+                                  // }}
+                                  type={InputType.TEXT}
+                                  // onChangeHandler={(e) => {
+                                  // }}
+                                  placeholder="Add Links and press Enter"
+                                />
+                          </div>
+                          </div>
+                         }
+                            <div className={previewClientStyle.imgSection}>
                                 {getCompanyDetails?.youTubeDetails?.map((val)=>(
                                     <div className={previewClientStyle.videoWrapper}>
                                         {/* <iframe width="420" height="315"
@@ -419,17 +532,18 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                                         <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
                                     </div>
                                 ))}
-                                {/* <div className={previewClientStyle.videoWrapper}>
-                                    <iframe width="420" height="315"
-                                        src="https://www.youtube.com/embed/tgbNymZ7vqY">
-                                    </iframe>
-                                    <span className={previewClientStyle.DeleteBtn}><DeleteNewIcon/> </span>
-                                </div> */}
-                            </div>
+                                </div>
+
+                            {isEditCultureSection &&<>
+                              <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                                    <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={()=>setEditCultureSection(false)}> Cancel </button>
+                                    <button type="button" className={previewClientStyle.btnPrimary} onClick={()=>setEditCultureSection(false)}>  SAVE </button>
+                                </div>
+                            </>}
 
                                 
                             <h6>Company Benefits 
-                                <span className={previewClientStyle.editNewIcon}><EditNewIcon/></span>
+                                <span className={previewClientStyle.editNewIcon} onClick={()=>setEditCompanyBenefits(true)}><EditNewIcon/></span>
                             </h6>
 
                             <div className={previewClientStyle.companyBenefits}>
@@ -441,6 +555,14 @@ console.log(getCompanyDetails,"getCompanyDetailsgetCompanyDetails");
                                    ))}  
                                 </ul>
                             </div>
+
+                            {isEditCompanyBenefits && <div className={previewClientStyle.row}>
+                                  <AutoComplete />
+                                  <div className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}>
+                                    <button type="button" className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`} onClick={()=>setEditCompanyBenefits(false)}> Cancel </button>
+                                    <button type="button" className={previewClientStyle.btnPrimary} onClick={()=>setEditCompanyBenefits(false)}>  SAVE </button>
+                                </div>
+                                </div>}
                     
                             </div>
                         </div>
