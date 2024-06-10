@@ -335,3 +335,8 @@
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 }
+
+.formGroup [class*="ant-select-selection-search-input"] {
+    height: auto !important;
+    padding: 16px 16px !important;
+}

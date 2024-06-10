@@ -37,6 +37,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
     companyDetails?.headquaters && setValue('headquaters', companyDetails?.headquaters)
     companyDetails?.aboutCompany && setValue('aboutCompany', companyDetails?.aboutCompany)
     companyDetails?.companyIndustry && setValue('industry', companyDetails?.companyIndustry)
+    companyDetails?.linkedInProfile && setValue('companyLinkedinURL', companyDetails?.linkedInProfile)
     
   },[companyDetails])
 
@@ -270,14 +271,47 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
             </div>
 
             <div className={AddNewClientStyle.row}>
+            <div className={AddNewClientStyle.colMd6} >
+              <HRInputField
+								register={register}
+								errors={errors}
+								validationSchema={{
+									required:
+										'please enter the primary client linkedin profile URL.',
+									// pattern: {
+									// 		value: URLRegEx.url,
+									// 		message: 'Entered value does not match url format',
+									// 	},
+									validate: value => {
+										try {
+											if(ValidateFieldURL(value,"linkedin")){
+												return true
+											}else{
+												return 'Entered value does not match linkedin url format';
+											}
+											} catch (error) {
+											return 'Entered value does not match url format';
+											}											
+									}
+								}}
+								label="Company Linkedin URL"
+								name={'companyLinkedinURL'}
+								type={InputType.TEXT}
+								placeholder="Add Company Linkedin URL"
+								required
+							/>
+              </div>
+
             <div className={AddNewClientStyle.colMd6}>
-                  <HRSelectField 
+              <div className={AddNewClientStyle.formGroup}>
+<HRSelectField 
                   controlledValue={controlledFoundedInValue}
                   setControlledValue={setControlledFoundedInValue}
                   isControlled={true}
                   register={register}
                   errors={errors}
                   setValue={setValue}
+                  searchable={true}
                   label="Founded in"
                   name="foundedIn"
                   mode={"value"}
@@ -286,7 +320,9 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                   required
                   errorMsg={"Please select Founded in"}
                   options={yearOptions}
-                  />              
+                  />  
+              </div>
+                              
               </div>
 
               <div className={AddNewClientStyle.colMd6}>
@@ -312,10 +348,8 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                   />
             
               </div>
-            </div>
 
-            <div className={AddNewClientStyle.row}>
-            <div className={AddNewClientStyle.colMd6}>
+              <div className={AddNewClientStyle.colMd6}>
             <HRInputField
                     register={register}
                     errors={errors}
@@ -337,6 +371,10 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     required
                   />
               </div>
+            </div>
+
+            <div className={AddNewClientStyle.row}>
+         
 
               <div className={AddNewClientStyle.colMd6}>
               <HRInputField
@@ -360,6 +398,8 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     required
                   />
               </div>
+
+             
 
               <div className={AddNewClientStyle.colMd6}>
               <HRInputField

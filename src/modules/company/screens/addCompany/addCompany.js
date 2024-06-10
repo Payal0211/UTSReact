@@ -122,15 +122,25 @@ function AddCompany() {
 
   useEffect(() => {
     if (getCompanyDetails?.pocUserIds?.length && allPocs?.length) {
-      let SelectedPocs = getCompanyDetails?.pocUserIds.map((pocId) => {
-        let data = allPocs.find((item) => item.id === pocId);
-        return {
-          id: data.id,
-          value: data.value,
-        };
+      // let SelectedPocs = getCompanyDetails?.pocUserIds.map((pocId) => {
+      //   let data = allPocs.find((item) => item.id === pocId);
+      //   return {
+      //     id: data.id,
+      //     value: data.value,
+      //   };
+      // });
+      // setValue("uplersPOCname", SelectedPocs);
+      // setControlledPOC(SelectedPocs);
+      let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserIds[0]);
+      setValue("uplersPOCname", {
+        id: data.id,
+        value: data.value,
       });
-      setValue("uplersPOCname", SelectedPocs);
-      setControlledPOC(SelectedPocs);
+      setControlledPOC({
+        id: data.id,
+        value: data.value,
+      });
+      
     }
   }, [getCompanyDetails?.pocUserIds, allPocs]);
 
@@ -189,6 +199,7 @@ function AddCompany() {
       cultureID:culture.cultureID,
       culture_Image: culture.cultureImage
     }))
+
     let payload = {
       "basicDetails": {
         "companyID": companyID,
@@ -202,6 +213,7 @@ function AddCompany() {
         "headquaters": d.headquaters,
         "aboutCompanyDesc": d.aboutCompany,
         "culture": d.culture,
+        "linkedInProfile": d.companyLinkedinURL,
         "isSelfFunded": isSelfFunded
       },
       "fundingDetails": d.fundingDetails,
@@ -214,17 +226,18 @@ function AddCompany() {
         "anotherCompanyTypeID": checkPayPer?.anotherCompanyTypeID,
         "isPostaJob": IsChecked.isPostaJob,
         "isProfileView": IsChecked.isProfileView,
-        "jpCreditBalance": d.freeCredit,
+        "jpCreditBalance": checkPayPer?.companyTypeID===2 ? +d.freeCredit ?? null : null,
         "isTransparentPricing": typeOfPricing === 1 ? true :  typeOfPricing === 0 ?  false : null,
         "isVettedProfile": true,
-        "creditAmount": d.creditCurrency === "INR" ? null :  d.creditAmount,
-        "creditCurrency": d.creditCurrency,
-        "jobPostCredit": d.jobPostCredit,
-        "vettedProfileViewCredit": d.vettedProfileViewCredit,
-        "nonVettedProfileViewCredit": d.nonVettedProfileViewCredit,
-        "hiringTypePricingId": d.hiringPricingType?.id
+        "creditAmount": (checkPayPer?.companyTypeID===2) ? +d.creditAmount : null,
+        "creditCurrency":checkPayPer?.companyTypeID===2 ? d.creditCurrency : null,
+        "jobPostCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob=== true) ? +d.jobPostCredit ?? null : null,
+        "vettedProfileViewCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ?  +d.vettedProfileViewCredit ?? null : null,
+        "nonVettedProfileViewCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ? +d.nonVettedProfileViewCredit?? null : null,
+        "hiringTypePricingId": checkPayPer?.anotherCompanyTypeID === 1 ? d.hiringPricingType?.id : null
       },
-      "pocIds": d.uplersPOCname?.map(poc=> poc.id),
+      // "pocIds": d.uplersPOCname?.map(poc=> poc.id),
+      "pocIds": [d.uplersPOCname?.id],
       "IsRedirectFromHRPage" : state?.createHR ? true : false
     }
 
@@ -346,7 +359,7 @@ function AddCompany() {
       <div className={AddNewClientStyle.tabsFormItem}>
         {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
-            <h3>Add POCs</h3>
+            <h3>Add POC</h3>
             <p>Please provide the necessary details.</p>
           </div>
           <div className={AddNewClientStyle.tabsRightPanel}>
@@ -357,7 +370,8 @@ function AddCompany() {
                   controlledValue={controlledPOC}
                   setControlledValue={setControlledPOC}
                   setValue={setValue}
-                  mode={"multiple"}
+                  // mode={"multiple"}
+                  mode={"id/value"}
                   register={register}
                   name="uplersPOCname"
                   label="Uplers's POC name"

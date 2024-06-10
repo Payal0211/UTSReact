@@ -389,7 +389,7 @@ export default function UTMTrackingReport() {
           <div className={clientPortalTrackingReportStyle.filterSetsInner}>
           <Select
             // defaultValue="lucy"
-            style={{ width: 200 }}
+            style={{ width: 400 }}
             // onSelect={(value)=>{
             //   setSelectClientName(value);   
             // }}

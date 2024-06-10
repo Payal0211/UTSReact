@@ -292,6 +292,9 @@ function ClientSection({
                         id: item.id,
                         value: item.value,
                       }))}
+                      isError={errors[`clientDetails.[${index}].roleID`] && errors[`clientDetails.[${index}].roleID`]}
+                      required
+                      errorMsg={"Please select Access Type"}
                     />
                   </div>
                 </div>

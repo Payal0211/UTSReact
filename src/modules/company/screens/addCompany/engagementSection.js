@@ -288,7 +288,7 @@ function EngagementSection({
                       </p>
                     )}
                   </div>
-                 {_currency === "INR" ? null : <div className={AddNewClientStyle.colMd6}>
+                  <div className={AddNewClientStyle.colMd6}>
                     <HRInputField
                       register={register}
                       errors={errors}
@@ -299,18 +299,18 @@ function EngagementSection({
                       required={
                         checkPayPer?.companyTypeID !== 0 &&
                         checkPayPer?.companyTypeID !== null
-                          ? _currency === "INR" ? false : true
+                          ? true
                           : false
                       }
                       validationSchema={{
                         required:
                           checkPayPer?.companyTypeID !== 0 &&
                           checkPayPer?.companyTypeID !== null
-                            ? _currency === "INR"  ? null : "Please enter Per credit amount."
+                            ? "Please enter Per credit amount."
                             : null,
                       }}
                     />
-                  </div>} 
+                  </div>
 
                   
                   <div className={AddNewClientStyle.colMd6}>
@@ -321,11 +321,11 @@ function EngagementSection({
                         errors={errors}
                         className="yourClassName"
                         validationSchema={{
-                          required:
-                            checkPayPer?.companyTypeID !== 0 &&
-                            checkPayPer?.companyTypeID !== null
-                              ? "Please enter free credits."
-                              : null,
+                          // required:
+                          //   checkPayPer?.companyTypeID !== 0 &&
+                          //   checkPayPer?.companyTypeID !== null
+                          //     ? "Please enter free credits."
+                          //     : null,
                           min: {
                             value: 0,
                             message: `please don't enter the value less than 0`,
@@ -350,12 +350,12 @@ function EngagementSection({
                         label="Free Credit"
                         type={InputType.NUMBER}
                         placeholder="Enter number of free credits"
-                        required={
-                          checkPayPer?.companyTypeID !== 0 &&
-                          checkPayPer?.companyTypeID !== null
-                            ? true
-                            : false
-                        }
+                        // required={
+                        //   checkPayPer?.companyTypeID !== 0 &&
+                        //   checkPayPer?.companyTypeID !== null
+                        //     ? true
+                        //     : false
+                        // }
                       />
                     </div>
                     {!isNaN(_totalSum) && <label style={{marginBottom:"20px",marginTop:"-26px",display:"block",fontWeight:"bold"}}>Total Credit Balance : <span style={{fontWeight:"bold"}}>{_totalSum}</span> </label>}

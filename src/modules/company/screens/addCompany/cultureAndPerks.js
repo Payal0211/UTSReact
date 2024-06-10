@@ -133,7 +133,26 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
     }
    }
 
+const addnewYoutubeLink = (e) =>{
+  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=%\?]{11})$/;;
+                      if(!regex.test(e.target.value)){
+                        return message.error('Youtube link is not valid')
+                      }
 
+                    let youtubeDetail = {youtubeLink: watch('youtubeLink'), 
+                      youtubeID: 0
+                      }
+
+                      let oldLinks = youTubeDetails.map(item=> item.youtubeLink)
+                      if(oldLinks.includes(watch('youtubeLink'))){
+                        setValue('youtubeLink','')
+                        return message.error('Youtube link Already exists')
+                      }
+
+                      let nweyouTubeDetails = [...youTubeDetails]
+                      setCompanyDetails(prev => ({...prev,youTubeDetails:[ youtubeDetail,...nweyouTubeDetails]}))
+                      setValue('youtubeLink','')
+}
 
    const handleDrop = async (e) => {
      e.preventDefault();
@@ -285,25 +304,20 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
                 name="youtubeLink"
                 validationSchema={{
                   pattern: {
-										value: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/,
+										value: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=%\?]{11})$/,
 										message: 'Youtube link is not valid',
 									},
                 }}
                 onKeyDownHandler={e=>{
                   if(e.keyCode === 13){
-                    const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/;
-                      if(!regex.test(e.target.value)){
-                        return message.error('Youtube link is not valid')
-                      }
-
-                    let youtubeDetail = {youtubeLink: watch('youtubeLink'), 
-                      youtubeID: 0
-                      }
-
-                      let nweyouTubeDetails = [...youTubeDetails]
-                      setCompanyDetails(prev => ({...prev,youTubeDetails:[ youtubeDetail,...nweyouTubeDetails]}))
-                      setValue('youtubeLink','')
+                    addnewYoutubeLink(e)
                   }
+                }}
+                onBlurHandler={e=>{
+                  if(e.target.value){
+                    addnewYoutubeLink(e)
+                  }
+                  
                 }}
                 type={InputType.TEXT}
                 onChangeHandler={(e) => {
