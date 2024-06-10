@@ -41,6 +41,7 @@ import { NetworkInfo } from "constants/network";
 import { HttpStatusCode } from "axios";
 import infoIcon from 'assets/svg/info.svg'
 import DOMPurify from "dompurify";
+import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -178,6 +179,8 @@ const EditHRFields = ({
   const [isProfileView,setIsProfileView] = useState(false)
   const [isPostaJob,setIsPostaJob] = useState(false)
   const [creditBaseCheckBoxError,setCreditBaseCheckBoxError] = useState(false)
+  const [isPreviewModal,setIsPreviewModal] = useState(false);
+  const [getcompanyID,setcompanyID] = useState("");
   const [tempProjects, setTempProject] = useState([
     {
       disabled: false,
@@ -1959,7 +1962,7 @@ const EditHRFields = ({
         }
     })
   };
-  return (
+  return (<>
     <div className={HRFieldStyle.hrFieldContainer}>
       {contextHolder}
       {getHRdetails?.salesHiringRequest_Details ? (
@@ -1970,7 +1973,7 @@ const EditHRFields = ({
               <p>Please provide the necessary details</p>
               <p className={HRFieldStyle.teansactionMessage}>{companyType?.name &&`HR is "${companyType?.name}"`}</p>
               <div className={HRFieldStyle.formPanelAction}>
-              <button className={HRFieldStyle.btnPrimary} onClick={()=>navigate(`/viewCompanyDetails/${getHRdetails?.companyInfo?.companyID}`)}>View / Edit Company Details</button>
+              <button className={HRFieldStyle.btnPrimary} onClick={()=>{setIsPreviewModal(true); setcompanyID(getHRdetails?.companyInfo?.companyID)}}>View / Edit Company Details</button>
               </div>
               <LogoLoader visible={isSavedLoading} />
             </div>
@@ -3812,6 +3815,8 @@ const EditHRFields = ({
         <Skeleton />
       )}
     </div>
+    <PreviewClientModal setIsPreviewModal={setIsPreviewModal} isPreviewModal={isPreviewModal} setcompanyID={setcompanyID} getcompanyID={getcompanyID} />
+    </>
   );
 
   function getWorkingModelFields() {

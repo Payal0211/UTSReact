@@ -12,6 +12,7 @@ import { Skeleton } from 'antd';
 import { HTTPStatusCode } from "constants/network";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { useNavigate } from "react-router-dom";
+import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 
 function CompanySection({companyID,register,errors,setValue,watch,companyDetails,setCompanyDetails,loadingDetails,clearErrors,setError,setDisableSubmit}) {
   const [getUploadFileData, setUploadFileData] = useState('');
@@ -21,7 +22,8 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
   const [isViewCompany, setIsViewCompany] = useState(false)
   const [isViewCompanyurl, setIsViewCompanyurl] = useState(false)
   const [currentCompanyId, setCurrentCompanyId] = useState()
-  const [currentCompanyurlId, setCurrentCompanyurlId] = useState()
+  const [isPreviewModal,setIsPreviewModal] = useState(false);
+  const [getcompanyID,setcompanyID] = useState("");
 
   const navigate = useNavigate();
 
@@ -130,7 +132,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
     if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
       setDisableSubmit(true)
       setIsViewCompany(true);
-      setCurrentCompanyId(result?.details?.companyID);
+      setcompanyID(result?.details?.companyID);
       setError('companyName',{
         type: "manual",
         message: result?.responseBody,
@@ -147,16 +149,16 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
      }
  
      const result = await allCompanyRequestDAO.validateClientCompanyDAO(payload)
- 
+     
      if(result.statusCode === HTTPStatusCode.OK){
        clearErrors('companyURL')
        setDisableSubmit(false)
        setIsViewCompanyurl(false);
-     }
-     if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
-       setDisableSubmit(true)
-       setIsViewCompanyurl(true);
-       setCurrentCompanyurlId(result?.details?.companyID);
+      }
+      if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
+        setDisableSubmit(true)
+        setIsViewCompanyurl(true);
+        setcompanyID(result?.details?.companyID);
        setError('companyURL',{
          type: "manual",
          message: result?.responseBody,
@@ -165,11 +167,12 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
    }
 
   return (
+    <>
     <div className={AddNewClientStyle.tabsFormItem}>
       {loadingDetails ? <Skeleton active /> : <>
         <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
-            <h3>Basic Company Details</h3>
+            <h3>Basic Company Details 1232</h3>
             {/* <p>Please provide the necessary details</p> */}
             <p>
               The Talents would be able to see <br /> fields highlighted in
@@ -278,7 +281,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                   />
                     <div className={AddNewClientStyle.formPanelAction}>
                         {isViewCompany && 
-                        <button className={AddNewClientStyle.btnPrimary} onClick={()=>navigate(`/viewCompanyDetails/${currentCompanyId}`)}>View Company</button>}
+                        <button className={AddNewClientStyle.btnPrimary} onClick={()=>setIsPreviewModal(true)}>View Company</button>}
                     </div>
                   </div>
 
@@ -309,7 +312,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                 />
                  <div className={AddNewClientStyle.formPanelAction}>
                   {isViewCompanyurl && 
-                  <button className={AddNewClientStyle.btnPrimary} onClick={()=>navigate(`/viewCompanyDetails/${currentCompanyurlId}`)}>View Company</button>}
+                  <button className={AddNewClientStyle.btnPrimary} onClick={()=>setIsPreviewModal(true)}>View Company</button>}
                 </div>
               </div>
             </div>
@@ -467,6 +470,8 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
         </div>
         </>}
       </div>
+        <PreviewClientModal setIsPreviewModal={setIsPreviewModal} isPreviewModal={isPreviewModal} setcompanyID={setcompanyID} getcompanyID={getcompanyID} />
+        </>
   )
 }
 

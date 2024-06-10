@@ -778,6 +778,16 @@
 }
 
 
+.reactQuillReadonly [class*="ql-container"]{
+    border: 0px !important;
+}
+
+.reactQuillReadonly [class*="ql-editor"]{
+    padding: 0 0 10px;
+}
+
+
+
 
 /* Edit Modal css start */
 
