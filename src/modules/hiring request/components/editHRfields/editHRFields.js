@@ -1972,7 +1972,7 @@ const EditHRFields = ({
               <h3>Hiring Request Details</h3>
               <p>Please provide the necessary details</p>
               <p className={HRFieldStyle.teansactionMessage}>{companyType?.name &&`HR is "${companyType?.name}"`}</p>
-              <div className={HRFieldStyle.formPanelAction}>
+              <div className={HRFieldStyle.formPanelAction} style={{padding:"0 0 20px",justifyContent:"flex-start"}}>
               <button className={HRFieldStyle.btnPrimary} onClick={()=>{setIsPreviewModal(true); setcompanyID(getHRdetails?.companyInfo?.companyID)}}>View / Edit Company Details</button>
               </div>
               <LogoLoader visible={isSavedLoading} />

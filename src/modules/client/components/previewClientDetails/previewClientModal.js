@@ -1107,7 +1107,17 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           </li>
                           <li>
                             <span>Additional Information</span>
-                            <p>{getCompanyDetails?.fundingDetails?.[0]?.additionalInformation?getCompanyDetails?.fundingDetails?.[0]?.additionalInformation:"NA"}</p>
+                            {/* <p>{getCompanyDetails?.fundingDetails?.[0]?.additionalInformation?getCompanyDetails?.fundingDetails?.[0]?.additionalInformation:"NA"}</p> */}
+                            <ReactQuill 
+                              theme="snow"
+                              value={getCompanyDetails?.fundingDetails?.[0]?.additionalInformation}
+                              readOnly
+                              modules={{ toolbar: false }}    
+                              className={previewClientStyle.reactQuillReadonly}             
+                              style={{
+                                border:"none !important",
+                              }}       
+                            />
                           </li>
                         </ul>
                       </div>

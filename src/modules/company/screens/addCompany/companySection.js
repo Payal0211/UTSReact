@@ -172,7 +172,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
       {loadingDetails ? <Skeleton active /> : <>
         <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
-            <h3>Basic Company Details 1232</h3>
+            <h3>Basic Company Details</h3>
             {/* <p>Please provide the necessary details</p> */}
             <p>
               The Talents would be able to see <br /> fields highlighted in
@@ -279,7 +279,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     placeholder="Enter Name"
                     required
                   />
-                    <div className={AddNewClientStyle.formPanelAction}>
+                    <div className={AddNewClientStyle.formPanelAction} style={{padding:"0 0 20px",justifyContent:"flex-start"}}>
                         {isViewCompany && 
                         <button className={AddNewClientStyle.btnPrimary} onClick={()=>setIsPreviewModal(true)}>View Company</button>}
                     </div>
@@ -310,7 +310,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                   required
                   onBlurHandler={()=> validateCompanyURL()}
                 />
-                 <div className={AddNewClientStyle.formPanelAction}>
+                 <div className={AddNewClientStyle.formPanelAction} style={{padding:"0 0 20px",justifyContent:"flex-start"}}>
                   {isViewCompanyurl && 
                   <button className={AddNewClientStyle.btnPrimary} onClick={()=>setIsPreviewModal(true)}>View Company</button>}
                 </div>
