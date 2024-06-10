@@ -6,6 +6,7 @@ import { InputType  } from "constants/application";
 import { Checkbox, message, Select, Skeleton } from 'antd';
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { HttpStatusCode } from "axios";
+import TextEditor from "shared/components/textEditor/textEditor";
 
 
 const defaultFunding = {
@@ -15,7 +16,8 @@ const defaultFunding = {
   "series": "",
   "month": "",
   "year": "",
-  "investors": ""
+  "investors": "",
+  "additionalInformation":''
 }
 
 const seriesOptions = [
@@ -48,7 +50,8 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                 "series": funding.series,
                 "month": funding.fundingMonth,
                 "year": funding.fundingYear,
-                "investors": funding.investors
+                "investors": funding.investors,
+                'additionalInformation':funding.additionalInformation
               }
               append(fundingobj)
               setControlledSeries(prev=> [...prev,funding.series])
@@ -271,6 +274,27 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                     disabled={isSelfFunded}
                   />
                 </div>
+
+            </div>
+
+            <div className={AddNewClientStyle.row}>
+              <div className={AddNewClientStyle.colMd12}>
+              <TextEditor
+                register={register}
+                setValue={setValue}
+                // errors={errors}
+                controlledValue={item?.additionalInformation}
+                isControlled={true}
+                isTextArea={true}
+                label="Additional Information"
+                name={`fundingDetails.[${index}].additionalInformation`}
+                type={InputType.TEXT}
+                placeholder="Enter Additional Information"
+                // required
+                watch={watch}
+                disabled={isSelfFunded}
+              />
+              </div>
 
             </div>
           </div>

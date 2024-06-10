@@ -752,8 +752,8 @@ const HRFields = ({
   };
 
   const getClientNameSuggestionHandler = useCallback(
-    async (clientName) => {
-      let response = await MasterDAO.getEmailSuggestionDAO(clientName,companyID);
+    async (clientName,cid) => {
+      let response = await MasterDAO.getEmailSuggestionDAO(clientName,cid? cid :companyID);
 
       if (response?.statusCode === HTTPStatusCode.OK) {
         setClientNameSuggestion(response?.responseBody?.details);
@@ -1881,6 +1881,7 @@ const HRFields = ({
       clearErrors('companyName')
       setShowAddCompany(false)
       setCompanyID(result.details.companyID)
+      getClientNameSuggestionHandler('',result.details.companyID)
        //  setDisableSubmit(false)
      }
    }

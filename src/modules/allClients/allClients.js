@@ -356,7 +356,7 @@ const updateSpaceIDForClientFun = async () =>{
                 {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
         {contextHolder}
                 <div className={clienthappinessSurveyStyles.addnewHR}>
-                    <div className={clienthappinessSurveyStyles.hiringRequest}>All Clients</div>
+                    <div className={clienthappinessSurveyStyles.hiringRequest}>All Company Clients</div>
                     <LogoLoader visible={isLoading} />
                     <div className={clienthappinessSurveyStyles.btn_wrap}>
                         {/* <button className={clienthappinessSurveyStyles.btnwhite} onClick={()=>setIsPreviewModal(true)}>Preview Company Details</button> */}
