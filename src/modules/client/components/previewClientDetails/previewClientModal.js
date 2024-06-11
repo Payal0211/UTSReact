@@ -20,7 +20,7 @@ import ReactQuill from "react-quill";
 import { AiOutlineEdit } from "react-icons/ai";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
-import { HTTPStatusCode } from "constants/network";
+import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import TextEditor from "shared/components/textEditor/textEditor";
 import YouTubeVideo from "./youTubeVideo";
 import { MasterDAO } from "core/master/masterDAO";
@@ -91,6 +91,7 @@ function PreviewClientModal({
   const [isCulture,setIsCulture] = useState('')
   const [uploading,setUploading] = useState(false)
   const [isLoading,setIsLoading] = useState(false)
+  const [errorClient, setErrorClient] = useState({});
   const [checkPayPer, setCheckPayPer] = useState({
     companyTypeID: 0,
     anotherCompanyTypeID: 0,
@@ -125,7 +126,6 @@ function PreviewClientModal({
   const youTubeDetails= getCompanyDetails?.youTubeDetails ?? []
   let _currency = watch("creditCurrency");
 
-  console.log(controlledPOC,"controlledPOC");
 
   const getCodeAndFlag = async () => {
     const getCodeAndFlagResponse = await MasterDAO.getCodeAndFlagRequestDAO();
@@ -146,8 +146,6 @@ function PreviewClientModal({
     ? allInvestors
     : allInvestors.slice(0, 4);
 
-  console.log(getValuesForDD, "getValuesForDDgetValuesForDDgetValuesForDD");
-  console.log(getcompanyID,"getcompanyIDgetcompanyID");
 
 
   const toggleInvestors = () => {
@@ -394,7 +392,6 @@ function PreviewClientModal({
     }
   }, [getCompanyDetails?.pocUserIds, allPocs]);
 
-  console.log(allPocs,"allPocsallPocsallPocs");
 
   useEffect(() => {
     if (getCompanyDetails?.perkDetails?.length > 0) {
@@ -461,7 +458,6 @@ function PreviewClientModal({
     value: year.toString(),
   }));
 
-  console.log(yearOptions,"yearOptionsyearOptions");
 
 
   const uploadFileHandler = useCallback(
@@ -583,7 +579,6 @@ const [controlledSeries,setControlledSeries] = useState([]);
                 "year": funding.fundingYear,
                 "investors": funding.investors
               }
-              console.log(fundingobj,"fundingobjfundingobj");
               append(fundingobj)
               setControlledSeries(prev=> [...prev,funding.series])
             });
@@ -605,7 +600,6 @@ const [controlledSeries,setControlledSeries] = useState([]);
         "fundingID": toDelete.fundingID,
         "companyID": getcompanyID
       }
-// console.log(toDelete, companyID)
       const result = await allCompanyRequestDAO.deleteFundingDAO(payload)
  
       if(result.statusCode === HttpStatusCode.Ok){
@@ -925,42 +919,45 @@ const [controlledSeries,setControlledSeries] = useState([]);
                     >
                       <div className={previewClientStyle.companyProfileBox}>
                         <div className={previewClientStyle.companyProfileImg}>
-                         {!getUploadFileData ?(<p>Upload Company Logo</p>) :( <img
-                            src={base64Image
-                              ? base64Image
-                              : getUploadFileData}
+                         {/* {!getUploadFileData ?(<p>Upload Company Logo</p>) :(  */}
+                         <img
+                            // src={base64Image
+                            //   ? base64Image
+                            //   : getUploadFileData}
+                            src={getCompanyDetails?.basicDetails?.companyLogo}
                             alt="detailImg"
-                          />)}
-                          <span className={previewClientStyle.editNewIcon}>
+                          />
+                          {/* )} */}
+                          {NetworkInfo.ENV === "QA" &&<span className={previewClientStyle.editNewIcon}>
                             {" "}
                             <EditNewIcon
                              onClick={() => setUploadModal(true)} 
                              />{" "}
-                          </span>
+                          </span>}
                         </div>
                         <div
                           className={previewClientStyle.companyProfRightDetail}
                         >
                           <h3>
                             {getCompanyDetails?.basicDetails?.companyName}{" "}
-                            <span
+                            {NetworkInfo.ENV === "QA" &&<span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => setIsEditCompanyName(true)}
                             >
                               {" "}
                               <EditNewIcon />{" "}
-                            </span>
+                            </span>}
                           </h3>
                           <a>
                             {" "}
                             {getCompanyDetails?.basicDetails?.website}{" "}
-                            <span
+                            {NetworkInfo.ENV === "QA" &&<span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => setIsEditCompanyWebsite(true)}
                             >
                               {" "}
                               <EditNewIcon />{" "}
-                            </span>
+                            </span>}
                           </a>
                         </div>
                       </div>
@@ -968,12 +965,12 @@ const [controlledSeries,setControlledSeries] = useState([]);
                       <div className={previewClientStyle.companyDetailTop}>
                         <ul>
                           <li>
-                            <span 
+                           {NetworkInfo.ENV === "QA" ? <span 
                             onClick={() => setIsEditCompanyFound(true)}
                             >
                               {" "}
                               Founded in <EditNewIcon />{" "}
-                            </span>
+                            </span>:<span>Founded in</span>}
                             <p>
                               {getCompanyDetails?.basicDetails?.foundedYear
                                 ? getCompanyDetails?.basicDetails?.foundedYear
@@ -981,12 +978,12 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                            <span 
+                           {NetworkInfo.ENV === "QA" ? <span 
                             onClick={() => setIsEditTeamSize(true)}
                             >
                               {" "}
                               Team Size <EditNewIcon />{" "}
-                            </span>
+                            </span>:<span>Team Size</span>}
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.teamSize
@@ -995,10 +992,10 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                            <span onClick={() => setIsEditCompanyType(true)}>
+                            {NetworkInfo.ENV === "QA" ?<span onClick={() => setIsEditCompanyType(true)}>
                               {" "}
                               Company Type <EditNewIcon />{" "}
-                            </span>
+                            </span>:<span>Company Type</span>}
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.companyType
@@ -1007,11 +1004,11 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                            <span
+                            {NetworkInfo.ENV === "QA" ?<span
                               onClick={() => setIsEditCompanyIndustry(true)}
                             >
                               Company Industry <EditNewIcon />{" "}
-                            </span>
+                            </span>:<span> Company Industry</span>}
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.companyIndustry
@@ -1021,12 +1018,12 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                            <span 
+                            {NetworkInfo.ENV === "QA" ?<span 
                             onClick={() => setIsEditHeadquarters(true)}
                             >
                               {" "}
                               Headquarters <EditNewIcon />{" "}
-                            </span>
+                            </span>:<span>Headquarters</span>}
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.headquaters
@@ -1040,12 +1037,11 @@ const [controlledSeries,setControlledSeries] = useState([]);
                       <h6>
                         {" "}
                         About us{" "}
-                        <span className={previewClientStyle.editNewIcon} 
+                        {NetworkInfo.ENV === "QA" &&<span className={previewClientStyle.editNewIcon} 
                         onClick={()=>setIsEditAboutUs(true)}
                         >
                         <EditNewIcon />
-                          {" "}
-                        </span>{" "}
+                        </span>}
                       </h6>
                       {isEditAboutUs== false?
                       <ReactQuill 
@@ -1093,7 +1089,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
 
                       <h6>Funding</h6>
 
-                      <div className={previewClientStyle.fundingrounds}>
+                      {getCompanyDetails?.basicDetails?.isSelfFunded === false ?<div className={previewClientStyle.fundingrounds}>
                         <ul>
                           <li>
                             <span>Funding Round Series</span>
@@ -1154,9 +1150,9 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           <li>
                             <span>Additional Information</span>
                             {/* <p>{getCompanyDetails?.fundingDetails?.[0]?.additionalInformation?getCompanyDetails?.fundingDetails?.[0]?.additionalInformation:"NA"}</p> */}
-                            <ReactQuill 
+                          <ReactQuill 
                               theme="snow"
-                              value={getCompanyDetails?.fundingDetails?.[0]?.additionalInformation}
+                              value={getCompanyDetails?.fundingDetails?.[0]?.additionalInformation ? getCompanyDetails?.fundingDetails?.[0]?.additionalInformation : "NA"}
                               readOnly
                               modules={{ toolbar: false }}    
                               className={previewClientStyle.reactQuillReadonly}             
@@ -1166,7 +1162,13 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             />
                           </li>
                         </ul>
-                      </div>
+                      </div>:<div className={previewClientStyle.fundingrounds}>
+                        <ul>
+                        <li>
+                            <span>Self-funded</span>
+                          </li>
+                        </ul>
+                      </div>}
 
                       {/* <div className={previewClientStyle.RoundBtnWrap}>
                         <h6>Rounds</h6>
@@ -1373,12 +1375,12 @@ const [controlledSeries,setControlledSeries] = useState([]);
                       <h6>
                         {" "}
                         Culture{" "}
-                        <span
+                       {NetworkInfo.ENV === "QA" && <span
                           className={previewClientStyle.editNewIcon}
                           onClick={() => setEditCultureSection(true)}
                         >
                           <EditNewIcon />
-                        </span>{" "}
+                        </span>}
                       </h6>
 
                       {/* <TextEditor
@@ -1569,7 +1571,6 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </div>
                           )}
 
-                          {console.log(youTubeDetails,"youTubeDetailsyouTubeDetails")}
 
                           <div className={previewClientStyle.row}>
                             {youTubeDetails?.map((youtube)=>(
@@ -1621,9 +1622,9 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           {getCompanyDetails?.cultureDetails?.map((val) => (
                             <div className={previewClientStyle.imgThumb}>
                               <img src={val?.cultureImage} alt="detailImg" />
-                              <span className={previewClientStyle.DeleteBtn} onClick={()=>deleteCulturImage(val)}>
+                              {NetworkInfo.ENV === "QA" &&<span className={previewClientStyle.DeleteBtn} onClick={()=>deleteCulturImage(val)}>
                                 <DeleteNewIcon />{" "}
-                              </span>
+                              </span>}
                             </div>
                           ))}
                         </div>
@@ -1675,9 +1676,9 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                                 src={`https://www.youtube.com/embed/${val?.youtubeLink}`}>
                                             </iframe> */}
                               <YouTubeVideo videoLink={val?.youtubeLink} />
-                              <span className={previewClientStyle.DeleteBtn}>
+                              {NetworkInfo.ENV === "QA" &&<span className={previewClientStyle.DeleteBtn}>
                                 <DeleteNewIcon onClick={()=>{ removeYoutubelink(val)}}/>{" "}
-                              </span>
+                              </span>}
                             </div>
                           ))}
                         </div>
@@ -1685,12 +1686,12 @@ const [controlledSeries,setControlledSeries] = useState([]);
 
                       <h6>
                         Company Benefits
-                        <span
+                        {NetworkInfo.ENV === "QA" &&<span
                           className={previewClientStyle.editNewIcon}
                           onClick={() => setEditCompanyBenefits(true)}
                         >
                           <EditNewIcon />
-                        </span>
+                        </span>}
                       </h6>
 
                       <div className={previewClientStyle.companyBenefits}>
@@ -1757,12 +1758,12 @@ const [controlledSeries,setControlledSeries] = useState([]);
                   <div className={previewClientStyle.formFieldTitleTwo}>
                     <h2>
                       Client Details{" "}
-                      <span
+                      {NetworkInfo.ENV === "QA" ?<span
                         className={previewClientStyle.addNewClientText}
                         onClick={() => setAddNewClient(true)}
                       >
                         Add New Client
-                      </span>
+                      </span>:<span className={previewClientStyle.addNewClientText}> Add New Client</span>}
                     </h2>
                   </div>
 
@@ -1943,7 +1944,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                               {" "}
                               {`Client ${index + 1}`}{" "}
                             </span>{" "}
-                            <span
+                           {NetworkInfo.ENV === "QA" && <span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => {setEditClient(true); setClickIndex(index); 
                                 setClientDetailsData({...clientDetailsData,
@@ -1958,7 +1959,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             })}}
                             >
                               <EditNewIcon />
-                            </span>
+                            </span>}
                           </h5>
                           {clickIndex===index && isEditClient &&  (
                             <>
@@ -1966,7 +1967,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                 <div className={previewClientStyle.colMd6}>
                                   <HRInputField
                                     register={register}
-                                    value={clientDetailsData?.fullName}
+                                    value={clientDetailsData?.fullName?clientDetailsData?.fullName:""}
                                     // isError={!!errors?.clientDetails?.[index]?.fullName}
                                     //   errors={errors?.clientDetails?.[index]?.fullName}
                                     label="Client Full Name"
@@ -1974,7 +1975,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                     onChangeHandler={(e)=>{
                                       setClientDetailsData({...clientDetailsData,fullName:e?.target?.value})
                                     }}
-                                    name={`clientDetails.[${index}].fullName`}
+                                    name={"fullName"}
                                     // name="fullName"
                                     type={InputType.TEXT}
                                       // validationSchema={{
@@ -2154,15 +2155,15 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           <ul>
                             <li>
                               <span>Client Full Name</span>
-                              <p>{val?.fullName}</p>
+                              <p>{val?.fullName?val?.fullName:"NA"}</p>
                             </li>
                             <li>
                               <span>Client’s Work Email</span>
-                              <p>{val?.emailID}</p>
+                              <p>{val?.emailID?val?.emailID:"NA"}</p>
                             </li>
                             <li>
                               <span>Designation</span>
-                              <p>{val?.designation}</p>
+                              <p>{val?.designation?val?.designation:"NA"}</p>
                             </li>
                             <li>
                               <span>Access Type</span>
@@ -2174,7 +2175,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </li>
                             <li>
                               <span>Phone Number</span>
-                              <p>{val?.contactNo}</p>
+                              <p>{val?.contactNo?val?.contactNo:"NA"}</p>
                             </li>
                           </ul>
                         </div>
@@ -2190,12 +2191,12 @@ const [controlledSeries,setControlledSeries] = useState([]);
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
                     Engagement Details{" "}
-                    <span
+                   {NetworkInfo.ENV === "QA" && <span
                       className={previewClientStyle.editNewIcon}
                       onClick={() => setEditEngagement(true)}
                     >
                       <EditNewIcon />
-                    </span>
+                    </span>}
                   </h2>
 
                   <div className={previewClientStyle.companyDetails}>
@@ -2522,8 +2523,8 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           <p>{getCompanyDetails?.engagementDetails?.creditCurrency?getCompanyDetails?.engagementDetails?.creditCurrency:"NA"}</p>
                         </li>
                         <li>
-                          <span>Free Credits</span>
-                          <p>{getCompanyDetails?.engagementDetails?.jpCreditBalance?getCompanyDetails?.engagementDetails?.jpCreditBalance:"NA"}</p>
+                          <span>Total Credit Balance</span>
+                          <p>{getCompanyDetails?.engagementDetails?.totalCreditBalance?getCompanyDetails?.engagementDetails?.totalCreditBalance:"NA"}</p>
                         </li>
                         <li>
                           <span>Credit for viewing non vetted profile</span>
@@ -2550,12 +2551,12 @@ const [controlledSeries,setControlledSeries] = useState([]);
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
                     Uplers’s POC{" "}
-                    <span
+                   {NetworkInfo.ENV === "QA" && <span
                       className={previewClientStyle.editNewIcon}
                       onClick={() => setEditPOC(true)}
                     >
                       <EditNewIcon />
-                    </span>
+                    </span>}
                   </h2>
 
                   <div className={previewClientStyle.companyDetails}>
@@ -2623,7 +2624,6 @@ const [controlledSeries,setControlledSeries] = useState([]);
         </div>
       </Modal>
 
-      {console.log(yearOptions,"yearOptionsyearOptions")}
 
       {/* Company name Modal*/}
       <Modal
