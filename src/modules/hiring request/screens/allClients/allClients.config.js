@@ -96,11 +96,13 @@ export const allClientsConfig = {
                             <PencilSVG />
                         </Link>}
                         {(result.companyID !== 0  || result.clientID !== 0) &&  <div style={{marginLeft:'auto', cursor:'pointer',marginLeft:'10px'}}>
-                                <Tooltip title="View Company Details" placement="right" >
-                                <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank">
+                                <Tooltip title="Preview Company Profile" placement="right" >
+                                {/* <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank">
                                     <img src={eyeIcon} alt='info' width="22" height="22"  />	
-                                    {/* <EyeIcon /> */}
-                                    </a>                               
+                                    {/* <EyeIcon /> 
+                                    </a>         */}    
+                                     <img src={eyeIcon} alt='info' width="22" height="22" onClick={()=>{localStorage.setItem("clientID",result?.clientID);setIsPreviewModal(true);setcompanyID(result?.companyID)}}  />	
+
                             </Tooltip> 
                             </div>}
                         </div>
@@ -285,6 +287,25 @@ export const allClientsConfig = {
                     key: 'isActive',
                     width: '100px',                   
                 },
+                {
+                    title: 'View Company',
+                    dataIndex: 'Edit',
+                    key: 'edit',
+                    align: 'center',
+                    width: '150px',
+                render: (text, result) => {
+                    return <>{(result.companyID !== 0  || result.clientID !== 0) &&  <div style={{marginLeft:'auto', cursor:'pointer',marginLeft:'10px'}}>
+            
+                    <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank" className={clienthappinessSurveyStyles.linkForSSO}>
+                        {/* <img src={eyeIcon} alt='info' width="22" height="22"  />	 */}
+                        <button  className={clienthappinessSurveyStyles.btnPrimaryResendBtn}>View Company Details</button>
+                        {/* <EyeIcon /> */}
+                        </a>                               
+               
+                </div>}
+                    </>
+                }
+            }
               ]; 
         }else if (LoggedInUserTypeID?.LoggedInUserTypeID == 2){
             return [

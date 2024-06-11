@@ -365,12 +365,14 @@ function AddCompany() {
           <div className={AddNewClientStyle.tabsRightPanel}>
             <div className={AddNewClientStyle.row}>
               <div className={AddNewClientStyle.colMd12}>
-                <HRSelectField
+                <div className={AddNewClientStyle.formGroup}>
+                   <HRSelectField
                   isControlled={true}
                   controlledValue={controlledPOC}
                   setControlledValue={setControlledPOC}
                   setValue={setValue}
                   // mode={"multiple"}
+                  searchable={true}
                   mode={"id/value"}
                   register={register}
                   name="uplersPOCname"
@@ -381,6 +383,8 @@ function AddCompany() {
                   isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
                   errorMsg="Please select POC name."
                 />
+                </div>
+               
               </div>
             </div>
           </div>
