@@ -889,6 +889,11 @@ const [controlledSeries,setControlledSeries] = useState([]);
       // }
     }
 
+    const companyTypeMessages = [
+      getCompanyDetails?.engagementDetails?.anotherCompanyTypeID === 1 && "Pay per Hire",
+      getCompanyDetails?.engagementDetails?.companyTypeID === 2 && "Pay per Credit"
+    ].filter(Boolean).join(', ');
+
   return (
     <>
      <LogoLoader visible={isLoading} />
@@ -928,7 +933,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             alt="detailImg"
                           />
                           {/* )} */}
-                          {NetworkInfo.ENV === "QA" &&<span className={previewClientStyle.editNewIcon}>
+                          {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE"  &&<span className={previewClientStyle.editNewIcon}>
                             {" "}
                             <EditNewIcon
                              onClick={() => setUploadModal(true)} 
@@ -940,7 +945,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                         >
                           <h3>
                             {getCompanyDetails?.basicDetails?.companyName}{" "}
-                            {NetworkInfo.ENV === "QA" &&<span
+                            {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" &&<span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => setIsEditCompanyName(true)}
                             >
@@ -951,7 +956,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           <a>
                             {" "}
                             {getCompanyDetails?.basicDetails?.website}{" "}
-                            {NetworkInfo.ENV === "QA" &&<span
+                            {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" &&<span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => setIsEditCompanyWebsite(true)}
                             >
@@ -965,7 +970,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                       <div className={previewClientStyle.companyDetailTop}>
                         <ul>
                           <li>
-                           {NetworkInfo.ENV === "QA" ? <span 
+                           {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" ? <span 
                             onClick={() => setIsEditCompanyFound(true)}
                             >
                               {" "}
@@ -978,7 +983,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                           {NetworkInfo.ENV === "QA" ? <span 
+                           {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" ? <span 
                             onClick={() => setIsEditTeamSize(true)}
                             >
                               {" "}
@@ -992,7 +997,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                            {NetworkInfo.ENV === "QA" ?<span onClick={() => setIsEditCompanyType(true)}>
+                            {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" ?<span onClick={() => setIsEditCompanyType(true)}>
                               {" "}
                               Company Type <EditNewIcon />{" "}
                             </span>:<span>Company Type</span>}
@@ -1004,7 +1009,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                            {NetworkInfo.ENV === "QA" ?<span
+                            {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" ?<span
                               onClick={() => setIsEditCompanyIndustry(true)}
                             >
                               Company Industry <EditNewIcon />{" "}
@@ -1018,7 +1023,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                            {NetworkInfo.ENV === "QA" ?<span 
+                            {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" ?<span 
                             onClick={() => setIsEditHeadquarters(true)}
                             >
                               {" "}
@@ -1037,7 +1042,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                       <h6>
                         {" "}
                         About us{" "}
-                        {NetworkInfo.ENV === "QA" &&<span className={previewClientStyle.editNewIcon} 
+                        {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" &&<span className={previewClientStyle.editNewIcon} 
                         onClick={()=>setIsEditAboutUs(true)}
                         >
                         <EditNewIcon />
@@ -1375,7 +1380,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                       <h6>
                         {" "}
                         Culture{" "}
-                       {NetworkInfo.ENV === "QA" && <span
+                       {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" && <span
                           className={previewClientStyle.editNewIcon}
                           onClick={() => setEditCultureSection(true)}
                         >
@@ -1622,7 +1627,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           {getCompanyDetails?.cultureDetails?.map((val) => (
                             <div className={previewClientStyle.imgThumb}>
                               <img src={val?.cultureImage} alt="detailImg" />
-                              {NetworkInfo.ENV === "QA" &&<span className={previewClientStyle.DeleteBtn} onClick={()=>deleteCulturImage(val)}>
+                              {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" &&<span className={previewClientStyle.DeleteBtn} onClick={()=>deleteCulturImage(val)}>
                                 <DeleteNewIcon />{" "}
                               </span>}
                             </div>
@@ -1676,7 +1681,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                                 src={`https://www.youtube.com/embed/${val?.youtubeLink}`}>
                                             </iframe> */}
                               <YouTubeVideo videoLink={val?.youtubeLink} />
-                              {NetworkInfo.ENV === "QA" &&<span className={previewClientStyle.DeleteBtn}>
+                              {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" &&<span className={previewClientStyle.DeleteBtn}>
                                 <DeleteNewIcon onClick={()=>{ removeYoutubelink(val)}}/>{" "}
                               </span>}
                             </div>
@@ -1686,7 +1691,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
 
                       <h6>
                         Company Benefits
-                        {NetworkInfo.ENV === "QA" &&<span
+                        {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" &&<span
                           className={previewClientStyle.editNewIcon}
                           onClick={() => setEditCompanyBenefits(true)}
                         >
@@ -1758,7 +1763,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                   <div className={previewClientStyle.formFieldTitleTwo}>
                     <h2>
                       Client Details{" "}
-                      {NetworkInfo.ENV === "QA" ?<span
+                      {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" ?<span
                         className={previewClientStyle.addNewClientText}
                         onClick={() => setAddNewClient(true)}
                       >
@@ -1944,7 +1949,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                               {" "}
                               {`Client ${index + 1}`}{" "}
                             </span>{" "}
-                           {NetworkInfo.ENV === "QA" && <span
+                           {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" && <span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => {setEditClient(true); setClickIndex(index); 
                                 setClientDetailsData({...clientDetailsData,
@@ -2191,7 +2196,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
                     Engagement Details{" "}
-                   {NetworkInfo.ENV === "QA" && <span
+                   {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" && <span
                       className={previewClientStyle.editNewIcon}
                       onClick={() => setEditEngagement(true)}
                     >
@@ -2503,8 +2508,9 @@ const [controlledSeries,setControlledSeries] = useState([]);
                       <ul>
                         <li>
                           <span>Model</span>
-                          <p>{getCompanyDetails?.engagementDetails?.anotherCompanyTypeID === 1 && "Pay per Hire"},
-                          {getCompanyDetails?.engagementDetails?.companyTypeID === 2 && "Pay per Credit"}</p>
+                          {/* <p>{getCompanyDetails?.engagementDetails?.anotherCompanyTypeID === 1 && "Pay per Hire"}, 
+                          {getCompanyDetails?.engagementDetails?.companyTypeID === 2 && "Pay per Credit"}</p> */}
+                          <p>{companyTypeMessages}</p>
                         </li>
                         <li>
                           <span>Per Credit Amount</span>
@@ -2533,12 +2539,16 @@ const [controlledSeries,setControlledSeries] = useState([]);
 
                         <li>
                           <span>Type of Pricing (Pay per hire)</span>
-                          <p>{getCompanyDetails?.engagementDetails?.hiringTypePricingId == 1 ? "Transparent":"Non Transparent"}</p>
+                          <p>{getCompanyDetails?.engagementDetails?.isTransparentPricing == true ? "Transparent":"Non Transparent"}</p>
                         </li>
-                        {/* <li>
+                        <li>
                           <span>Model (Pay per hire)</span>
-                          <p>Hire a Contractor</p>
-                        </li> */}
+                          <p>{getCompanyDetails?.engagementDetails?.hiringTypePricingId === 1 ? "Hire a Contractor" :
+                                getCompanyDetails?.engagementDetails?.hiringTypePricingId === 2 ? "Hire an employee on Uplers Payroll" :
+                                getCompanyDetails?.engagementDetails?.hiringTypePricingId === 3 ? "Direct-hire on your payroll" :
+                                getCompanyDetails?.engagementDetails?.hiringTypePricingId === 4 ? "Hire part time Contractors" : "NA"
+                                }</p>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -2551,7 +2561,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
                     Uplers’s POC{" "}
-                   {NetworkInfo.ENV === "QA" && <span
+                   {NetworkInfo.ENV === "QA" && NetworkInfo.ENV === "LIVE" && <span
                       className={previewClientStyle.editNewIcon}
                       onClick={() => setEditPOC(true)}
                     >
