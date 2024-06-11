@@ -700,6 +700,7 @@ const HRFields = ({
     if(state?.companyName){
       setCompanyID(state.companyID);
       setValue('companyName', state?.companyName);
+      getClientNameSuggestionHandler('',state.companyID)
       // getClientNameSuggestionHandler("")
     }
   },[state])
@@ -1954,6 +1955,7 @@ const HRFields = ({
                     <Controller
                       render={({ ...props }) => (
                         <AutoComplete
+                          disabled={companyID === undefined || companyID === null ? true : false}
                           options={getClientNameSuggestion}
                           onSelect={(clientName,_obj) => getClientNameValue(clientName,_obj)}
                           filterOption={true}
@@ -1978,6 +1980,7 @@ const HRFields = ({
                       name="clientName"
                       // rules={{ required: true }}
                       control={control}
+                      
                     />
                     {errors.clientName && (
                       <div className={HRFieldStyle.error}>
