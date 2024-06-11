@@ -279,7 +279,11 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
 
             <div className={AddNewClientStyle.row}>
               <div className={AddNewClientStyle.colMd12}>
-              <TextEditor
+                {isSelfFunded ?<><div className={AddNewClientStyle.label}>Additional Information</div>
+                <div className={AddNewClientStyle.disabledTextArea} >
+                    <p>Additional Information</p>
+                </div>
+                </>  :  <TextEditor
                 register={register}
                 setValue={setValue}
                 // errors={errors}
@@ -293,7 +297,8 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                 // required
                 watch={watch}
                 disabled={isSelfFunded}
-              />
+              />}
+             
               </div>
 
             </div>

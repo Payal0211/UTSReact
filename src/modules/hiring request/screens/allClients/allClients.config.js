@@ -288,11 +288,11 @@ export const allClientsConfig = {
                     width: '100px',                   
                 },
                 {
-                    title: 'View Company',
+                    title: '',
                     dataIndex: 'Edit',
                     key: 'edit',
                     align: 'center',
-                    width: '150px',
+                    width: '200px',
                 render: (text, result) => {
                     return <>{(result.companyID !== 0  || result.clientID !== 0) &&  <div style={{marginLeft:'auto', cursor:'pointer',marginLeft:'10px'}}>
             
