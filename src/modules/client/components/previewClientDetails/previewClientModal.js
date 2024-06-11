@@ -107,13 +107,25 @@ function PreviewClientModal({
   const [controlledHiringPricingTypeValue, setControlledHiringPricingTypeValue] =
   useState("Select Hiring Pricing");
   const [flagAndCode, setFlagAndCode] = useState([]);
+  const [clientValueDetails,setClientValueDetails] = useState({})
+  const [clickIndex,setClickIndex] = useState(); 
+  const [clientDetailsData,setClientDetailsData] = useState({
+    "clientID": "",
+    "en_Id": "",
+    "isPrimary": "",
+    "fullName": "",
+    "emailId": "",
+    "designation": "",
+    "phoneNumber": "",
+    "accessRoleId": ""
+  })
   const pictureRef = useRef()
   const { Dragger } = Upload;
   const cultureDetails = [];
   const youTubeDetails= getCompanyDetails?.youTubeDetails ?? []
   let _currency = watch("creditCurrency");
 
-  console.log(_currency,"creditCurrency");
+  console.log(controlledPOC,"controlledPOC");
 
   const getCodeAndFlag = async () => {
     const getCodeAndFlagResponse = await MasterDAO.getCodeAndFlagRequestDAO();
@@ -157,11 +169,11 @@ function PreviewClientModal({
       setValue("companyIndustry", data?.basicDetails?.companyIndustry);
       setValue("headquarters", data?.basicDetails?.headquaters);
       setValue("companyName", data?.basicDetails?.companyName);
-      setValue("fullName", data?.contactDetails?.[0]?.fullName);
-      setValue("emailID", data?.contactDetails?.[0]?.emailID);
-      setValue("designation", data?.contactDetails?.[0]?.designation);
-      setValue("accessType", data?.contactDetails?.[0]?.accessType);
-      setValue("contactNo", data?.contactDetails?.[0]?.contactNo);
+      setValue("fullName", data?.contactDetails?.[1]?.firstName);
+      setValue("emailID", data?.contactDetails?.[1]?.emailID);
+      setValue("designation", data?.contactDetails?.[1]?.designation);
+      setValue("accessType", data?.contactDetails?.[1]?.accessType);
+      setValue("contactNo", data?.contactDetails?.[1]?.contactNo);
       setValue("fundingAmount",data?.fundingDetails?.[0]?.fundingAmount)
       setValue("fundingRound",data?.fundingDetails?.[0]?.fundingRound)
       setValue("investors",data?.fundingDetails?.[0]?.investors)
@@ -381,6 +393,8 @@ function PreviewClientModal({
       setControlledPOC(SelectedPocs);
     }
   }, [getCompanyDetails?.pocUserIds, allPocs]);
+
+  console.log(allPocs,"allPocsallPocsallPocs");
 
   useEffect(() => {
     if (getCompanyDetails?.perkDetails?.length > 0) {
@@ -716,12 +730,20 @@ const [controlledSeries,setControlledSeries] = useState([]);
         
      }
 
+     let modCultureDetails = getCompanyDetails?.cultureDetails?.map((culture) =>({
+      cultureID:culture.cultureID,
+      culture_Image: culture.cultureImage
+    }))
+
      const addCultureDetails = async () =>{
       setIsLoading(true);
       let payload = {
-        youTubeDetails:youTubeDetails,
-        cultureDetails:isCulture,
-        IsUpdateFromPreviewPage:true,
+        "basicDetails":{
+          "companyID": getcompanyID,
+        },
+        "youTubeDetails":youTubeDetails,
+        "cultureDetails":modCultureDetails,
+        "IsUpdateFromPreviewPage":true,
       }
       const res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
       setEditCultureSection(false);
@@ -826,27 +848,51 @@ const [controlledSeries,setControlledSeries] = useState([]);
 
     const addEngagementDetails = async () =>{
       setIsLoading(true);
-      // let payload = {
-      //   "engagementDetails": {
-      //   "companyTypeID": checkPayPer?.companyTypeID,
-      //   "anotherCompanyTypeID": checkPayPer?.anotherCompanyTypeID,
-      //   "isPostaJob": IsChecked.isPostaJob,
-      //   "isProfileView": IsChecked.isProfileView,
-      //   "jpCreditBalance": freeCredit,
-      //   "isTransparentPricing": typeOfPricing === 1 ? true :  typeOfPricing === 0 ?  false : null,
-      //   "isVettedProfile": true,
-      //   "creditAmount": creditCurrency === "INR" ? null :  creditAmount,
-      //   "creditCurrency": creditCurrency,
-      //   "jobPostCredit": jobPostCredit,
-      //   "vettedProfileViewCredit": vettedProfileViewCredit,
-      //   "nonVettedProfileViewCredit": nonVettedProfileViewCredit,
-      //   "hiringTypePricingId": hiringPricingType?.id
-      //   },
-      //   "IsUpdateFromPreviewPage":true,
+      let payload = {
+        "basicDetails":{
+          "companyID": getcompanyID,
+        },
+        "engagementDetails": {
+        "companyTypeID": checkPayPer?.companyTypeID,
+        "anotherCompanyTypeID": checkPayPer?.anotherCompanyTypeID,
+        "isPostaJob": IsChecked.isPostaJob,
+        "isProfileView": IsChecked.isProfileView,
+        "jpCreditBalance": watch("freeCredit"),
+        "isTransparentPricing": typeOfPricing === 1 ? true :  typeOfPricing === 0 ?  false : null,
+        "isVettedProfile": true,
+        "creditAmount": watch("creditCurrency") === "INR" ? null :  watch("creditAmount"),
+        "creditCurrency": watch("creditCurrency"),
+        "jobPostCredit": watch("jobPostCredit"),
+        "vettedProfileViewCredit": watch("vettedProfileViewCredit"),
+        "nonVettedProfileViewCredit": watch("nonVettedProfileViewCredit"),
+        "hiringTypePricingId": watch("hiringPricingType")?.id
+        },
+
+        "IsUpdateFromPreviewPage":true,
+      }
+      let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
+      // if(res.statusCode.HTTPStatusCode.OK){
+        getDetails();
+        setEditEngagement(false);
+        setIsLoading(false);
       // }
-      // let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
-      setEditEngagement(false);
-      setIsLoading(false);
+    }
+
+    const addClientDetailsDetails = async () =>{
+      setIsLoading(true);
+      let payload = {
+        "basicDetails":{
+          "companyID": getcompanyID,
+        },
+        "clientDetails": [clientDetailsData],
+        "IsUpdateFromPreviewPage":true,
+      }
+      let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
+      // if(res.statusCode.HTTPStatusCode.OK){
+        getDetails();
+        setEditClient(false);
+        setIsLoading(false);
+      // }
     }
 
   return (
@@ -888,7 +934,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           <span className={previewClientStyle.editNewIcon}>
                             {" "}
                             <EditNewIcon
-                            //  onClick={() => setUploadModal(true)} 
+                             onClick={() => setUploadModal(true)} 
                              />{" "}
                           </span>
                         </div>
@@ -899,7 +945,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             {getCompanyDetails?.basicDetails?.companyName}{" "}
                             <span
                               className={previewClientStyle.editNewIcon}
-                              // onClick={() => setIsEditCompanyName(true)}
+                              onClick={() => setIsEditCompanyName(true)}
                             >
                               {" "}
                               <EditNewIcon />{" "}
@@ -910,7 +956,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             {getCompanyDetails?.basicDetails?.website}{" "}
                             <span
                               className={previewClientStyle.editNewIcon}
-                              // onClick={() => setIsEditCompanyWebsite(true)}
+                              onClick={() => setIsEditCompanyWebsite(true)}
                             >
                               {" "}
                               <EditNewIcon />{" "}
@@ -923,7 +969,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                         <ul>
                           <li>
                             <span 
-                            // onClick={() => setIsEditCompanyFound(true)}
+                            onClick={() => setIsEditCompanyFound(true)}
                             >
                               {" "}
                               Founded in <EditNewIcon />{" "}
@@ -936,7 +982,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           </li>
                           <li>
                             <span 
-                            // onClick={() => setIsEditTeamSize(true)}
+                            onClick={() => setIsEditTeamSize(true)}
                             >
                               {" "}
                               Team Size <EditNewIcon />{" "}
@@ -962,7 +1008,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           </li>
                           <li>
                             <span
-                              // onClick={() => setIsEditCompanyIndustry(true)}
+                              onClick={() => setIsEditCompanyIndustry(true)}
                             >
                               Company Industry <EditNewIcon />{" "}
                             </span>
@@ -976,7 +1022,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           </li>
                           <li>
                             <span 
-                            // onClick={() => setIsEditHeadquarters(true)}
+                            onClick={() => setIsEditHeadquarters(true)}
                             >
                               {" "}
                               Headquarters <EditNewIcon />{" "}
@@ -995,7 +1041,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                         {" "}
                         About us{" "}
                         <span className={previewClientStyle.editNewIcon} 
-                        // onClick={()=>setIsEditAboutUs(true)}
+                        onClick={()=>setIsEditAboutUs(true)}
                         >
                         <EditNewIcon />
                           {" "}
@@ -1329,7 +1375,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                         Culture{" "}
                         <span
                           className={previewClientStyle.editNewIcon}
-                          // onClick={() => setEditCultureSection(true)}
+                          onClick={() => setEditCultureSection(true)}
                         >
                           <EditNewIcon />
                         </span>{" "}
@@ -1575,7 +1621,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           {getCompanyDetails?.cultureDetails?.map((val) => (
                             <div className={previewClientStyle.imgThumb}>
                               <img src={val?.cultureImage} alt="detailImg" />
-                              <span className={previewClientStyle.DeleteBtn}>
+                              <span className={previewClientStyle.DeleteBtn} onClick={()=>deleteCulturImage(val)}>
                                 <DeleteNewIcon />{" "}
                               </span>
                             </div>
@@ -1630,7 +1676,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                             </iframe> */}
                               <YouTubeVideo videoLink={val?.youtubeLink} />
                               <span className={previewClientStyle.DeleteBtn}>
-                                <DeleteNewIcon />{" "}
+                                <DeleteNewIcon onClick={()=>{ removeYoutubelink(val)}}/>{" "}
                               </span>
                             </div>
                           ))}
@@ -1641,7 +1687,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                         Company Benefits
                         <span
                           className={previewClientStyle.editNewIcon}
-                          // onClick={() => setEditCompanyBenefits(true)}
+                          onClick={() => setEditCompanyBenefits(true)}
                         >
                           <EditNewIcon />
                         </span>
@@ -1727,6 +1773,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           <div className={previewClientStyle.colMd6}>
                             <HRInputField
                               register={register}
+                              setValue={setValue}
                               // isError={!!errors?.clientDetails?.[index]?.fullName}
                               //   errors={errors?.clientDetails?.[index]?.fullName}
                               label="Client Full Name"
@@ -1898,26 +1945,41 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </span>{" "}
                             <span
                               className={previewClientStyle.editNewIcon}
-                              // onClick={() => setEditClient(true)}
+                              onClick={() => {setEditClient(true); setClickIndex(index); 
+                                setClientDetailsData({...clientDetailsData,
+                                  clientID:val?.id
+                                  ,en_Id:val?.en_Id,
+                                  isPrimary:val?.isPrimary,
+                                  fullName:val?.fullName,
+                                  emailId:val?.emailID,
+                                  designation: val?.designation,
+                                  phoneNumber:val?.contactNo,
+                                  accessRoleId:val?.roleID
+                            })}}
                             >
                               <EditNewIcon />
                             </span>
                           </h5>
-                          {isEditClient && (
+                          {clickIndex===index && isEditClient &&  (
                             <>
-                              <div className={previewClientStyle.row}>
+                              <div className={previewClientStyle.row} key={index}>
                                 <div className={previewClientStyle.colMd6}>
                                   <HRInputField
                                     register={register}
+                                    value={clientDetailsData?.fullName}
                                     // isError={!!errors?.clientDetails?.[index]?.fullName}
                                     //   errors={errors?.clientDetails?.[index]?.fullName}
                                     label="Client Full Name"
-                                    //   name={`clientDetails.[${index}].fullName`}
-                                    name="fullName"
+                                    setValue={setValue}
+                                    onChangeHandler={(e)=>{
+                                      setClientDetailsData({...clientDetailsData,fullName:e?.target?.value})
+                                    }}
+                                    name={`clientDetails.[${index}].fullName`}
+                                    // name="fullName"
                                     type={InputType.TEXT}
-                                    //   validationSchema={{
-                                    //     required: "Please enter the Client Name",
-                                    //   }}
+                                      // validationSchema={{
+                                      //   required: "Please enter the Client Name",
+                                      // }}
                                     // errorMsg="Please enter the Client Name."
                                     placeholder="Enter Client Name"
                                     required={true}
@@ -1938,9 +2000,13 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                     //       message: "Entered value does not match email format",
                                     //     },
                                     //   }}
+                                    value={clientDetailsData?.emailId}
                                     label="Work Email"
                                     //   name={`clientDetails.[${index}].emailID`}
                                     name={"emailID"}
+                                    onChangeHandler={(e)=>{
+                                      setClientDetailsData({...clientDetailsData,emailId:e?.target?.value})
+                                    }}
                                     //   onBlurHandler={() => {
                                     //     if (
                                     //       errors?.clientDetails?.[index]?.emailID &&
@@ -1976,9 +2042,13 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                   <HRInputField
                                     register={register}
                                     // errors={errors}
+                                    value={clientDetailsData?.designation}
                                     label="Designation"
-                                    //   name={`clientDetails.[${index}].designation`}
+                                    //name={`clientDetails.[${index}].designation`}
                                     name="designation"
+                                    onChangeHandler={(e)=>{
+                                      setClientDetailsData({...clientDetailsData,designation:e?.target?.value})
+                                    }}
                                     type={InputType.TEXT}
                                     placeholder="Enter Client Designation"
                                   />
@@ -1998,10 +2068,14 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                     setValue={setValue}
                                     mode={"id"}
                                     register={register}
-                                    //   name={`clientDetails.[${index}].roleID`}
+                                    // name={`clientDetails.[${index}].roleID`}
                                     name="roleID"
                                     label="Access Type"
                                     defaultValue="Choose Access Type"
+                                    value={clientDetailsData?.accessRoleId}
+                                    onChangeHandler={(e)=>{
+                                      setClientDetailsData({...clientDetailsData,fullName:e?.target?.value})
+                                    }}
                                     //   options={accessTypes?.map((item) => ({
                                     //     id: item.id,
                                     //     value: item.value,
@@ -2028,6 +2102,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                         setValue={setValue}
                                         register={register}
                                         //   name={`clientDetails.[${index}].countryCode`}
+                                        value={clientDetailsData?.countryCode}
                                         name="countryCode"
                                         defaultValue="+91"
                                           options={flagAndCodeMemo}
@@ -2040,10 +2115,14 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                     >
                                       <HRInputField
                                         register={register}
-                                        //   name={`clientDetails.[${index}].contactNo`}
+                                          // name={`clientDetails.[${index}].contactNo`}
                                         name="contactNo"
+                                        onChangeHandler={(e)=>{
+                                          setClientDetailsData({...clientDetailsData,phoneNumber:e?.target?.value})
+                                        }}
                                         type={InputType.NUMBER}
                                         placeholder="Enter Phone number"
+                                        value={clientDetailsData?.phoneNumber}
                                       />
                                     </div>
                                   </div>
@@ -2063,7 +2142,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                 <button
                                   type="button"
                                   className={previewClientStyle.btnPrimary}
-                                  onClick={() => setEditClient(false)}
+                                  onClick={() =>addClientDetailsDetails()}
                                 >
                                   {" "}
                                   SAVE{" "}
@@ -2113,7 +2192,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                     Engagement Details{" "}
                     <span
                       className={previewClientStyle.editNewIcon}
-                      // onClick={() => setEditEngagement(true)}
+                      onClick={() => setEditEngagement(true)}
                     >
                       <EditNewIcon />
                     </span>
@@ -2186,11 +2265,13 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                   seterrorCurrency(false);
                                 }}
                               name="creditCurrency"
-                                value={_currency}
+                              value={_currency}
                               placeholder={"Select currency"}
                             >
                               <Select.Option value="INR">INR</Select.Option>
                               <Select.Option value="USD">USD</Select.Option>
+                              <Select.Option value="INR">INRTest1</Select.Option>
+                              <Select.Option value="USD">USD2</Select.Option>
                             </Select>
                             {errorCurrency && (
                                             <p
@@ -2471,7 +2552,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                     Uplers’s POC{" "}
                     <span
                       className={previewClientStyle.editNewIcon}
-                      // onClick={() => setEditPOC(true)}
+                      onClick={() => setEditPOC(true)}
                     >
                       <EditNewIcon />
                     </span>
@@ -2494,20 +2575,21 @@ const [controlledSeries,setControlledSeries] = useState([]);
                         >
                           <div className={previewClientStyle.MultiselectCustom}>
                             <HRSelectField
-                              isControlled={true}
-                              controlledValue={controlledPOC}
-                              setControlledValue={setControlledPOC}
-                              setValue={setValue}
-                              mode={"multiple"}
-                              register={register}
-                              name="uplersPOCname"
-                              label="Uplers's POC name"
-                              defaultValue="Enter POC name"
-                              options={allPocs}
-                              // required
-                              // isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
-                              // errorMsg="Please select POC name."
-                            />
+                            isControlled={true}
+                            controlledValue={controlledPOC}
+                            setControlledValue={setControlledPOC}
+                            setValue={setValue}
+                            // mode={"multiple"}
+                            mode={"id/value"}
+                            register={register}
+                            name="uplersPOCname"
+                            label="Uplers's POC name"
+                            defaultValue="Enter POC name"
+                            options={allPocs}
+                            required
+                            isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
+                            errorMsg="Please select POC name."
+                          />
                           </div>
 
                           <div

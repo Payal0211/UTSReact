@@ -815,5 +815,13 @@
     padding: 9px 16px;
 }
 
+[class*="ant-select-dropdown"][class*="customDropdownIndex"] {
+    z-index: 9999;
+}
+
+.customDropdownIndex{
+    z-index: 9999 !important;
+}
+
 
 /* Edit Modal css End */
