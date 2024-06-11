@@ -1102,6 +1102,29 @@ table {
   height: 60vh;
 }
 
+
+.clientDetailModalWrapper .ant-modal-content, .prevClientModal .ant-modal-content{
+  background-color: #fff !important;
+  border-radius: 16px !important;
+}
+
+.prevClientModal .ant-modal-content .ant-modal-close{
+  top: 5px;
+  right: 5px;
+}
+
+.prevClientModal .ant-modal-content .ant-modal-close-x{
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+  font-size: 16px;
+}
+
+.prevClientModal .ant-modal-content .ant-modal-body{
+  padding: 16px;
+}
+
+
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {

@@ -13,7 +13,7 @@ import HRSelectField from "modules/hiring request/components/hrSelectField/hrSel
 import UploadModal from 'shared/components/uploadModal/uploadModal';
 import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 import moment from 'moment/moment';
-import { Skeleton } from 'antd';
+import { Checkbox, Skeleton } from 'antd';
 
 const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReasons }) => {
 	const {
@@ -36,7 +36,12 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 		linkValidation: '',
 	});
 	const [base64File, setBase64File] = useState('');
-
+	const [addLatter,setAddLetter] = useState(false)
+	const [engagementReplacement,setEngagementReplacement] = useState({
+		replacementData : false
+	})
+	const loggedInUserID = JSON.parse(localStorage.getItem('userSessionInfo')).LoggedInUserTypeID
+	const watchLostReason = watch("lostReason");
 	const convertToBase64 = useCallback((file) => {
 		return new Promise((resolve, reject) => {
 			const fileReader = new FileReader();
@@ -103,6 +108,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 
 			const formattedDate = convertedDate?.format('YYYY-MM-DDTHH:mm:ss');
 			setValue("lastWorkingDate", new Date(formattedDate));
+			setValue("newContractStartDate", new Date(formattedDate));
 			/* let updatedDate = new Date(
 				new Date(
 					response?.responseBody?.details?.contractEndDate,
@@ -127,8 +133,18 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 					base64ProfilePic: base64File,
 					extenstion: getUploadFileData?.split('.')[1],
 				},
+				isReplacement: engagementReplacement?.replacementData,
+				talentReplacement: {
+				onboardId: talentInfo?.onboardID,
+				lastWorkingDay: addLatter === false ? d.lwd :"" ,
+				replacementInitiatedby:loggedInUserID.toString(),
+				engHRReplacement: addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id 
+				},
+				dpPercentage : +d.dpPercentage,
+				dpAmount : +d.dpAmount,
+				newContractStartDate : d.newContractStartDate,
+				expectedCTC : +d.expectedCTC,
 			};
-
 			const response =
 				await engagementRequestDAO.changeContractEndDateRequestDAO(
 					formattedData,
@@ -146,6 +162,9 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 			engagementListHandler,
 			getEndEngagementDetails?.contractDetailID,
 			getUploadFileData,
+			talentInfo,
+			engagementReplacement?.replacementData,
+			addLatter
 		],
 	);
 
@@ -161,6 +180,16 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 			resetField('endEngagementReason');
 		}
 	}, [closeModal, resetField]);
+
+	let watchExpectedCTC  = watch('expectedCTC')
+    let watchDPpercentage = watch('dpPercentage')
+
+    // watch values and change DP amount
+    useEffect(() => { 
+        let DPAMOUNT =  ((watchExpectedCTC *  12) * watchDPpercentage) / 100 
+        setValue('dpAmount', DPAMOUNT.toFixed(2))
+    },[watchExpectedCTC,watchDPpercentage, setValue])
+
 
 	return (
 		<div className={allengagementEnd.engagementModalWrap}>
@@ -182,6 +211,11 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 						<span>Talent Name:</span>
 						{talentInfo?.talentName}
 					</li>
+					<li className={allengagementEnd.divider}>|</li>
+					<li>
+						<span>DP Percentage:</span>
+						{getEndEngagementDetails?.dpnrPercentage}
+					</li>
 				</ul>
 			</div>
 
@@ -192,7 +226,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 						<div className={allengagementEnd.timeLabel}>
 							Contract End Date
 							<span>
-								<b style={{ color: 'black' }}>*</b>
+								<b style={{ color: 'red' }}> *</b>
 							</span>
 						</div>
 						<div className={allengagementEnd.timeSlotItem}>
@@ -203,6 +237,7 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 										selected={watch('lastWorkingDate')}
 										onChange={(date) => {
 											setValue('lastWorkingDate', date);
+											setValue("lwd",date)
 										}}
 										placeholderText="Contract End Date"
 										dateFormat="dd/MM/yyyy"
@@ -287,6 +322,112 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
                 />
 				</div>
 				</div>
+
+				{watchLostReason?.id === "3" && <div className={allengagementEnd.row}>
+					<div className={allengagementEnd.colMd12}>
+				  	 	<p>Currency<b style={{color:"red"}}> *</b> :{' '} {getEndEngagementDetails?.currency} </p>	
+					</div>
+				</div>}
+
+				{watchLostReason?.id === "3" && <div className={allengagementEnd.row}>
+                    <div
+                        className={allengagementEnd.colMd12}>
+                        <HRInputField
+                            register={register}
+                            errors={errors}
+                            validationSchema={{
+                                required: 'please enter Talent Expected CTC.',
+                            }}
+                            label="Talent Expected CTC Monthly"
+                            name="expectedCTC"
+                            type={InputType.NUMBER}
+                            placeholder="Enter Amount"
+                            required = {watchLostReason?.id === "3" ? true:false}
+                        />
+                    </div>
+                </div>}
+
+				{watchLostReason?.id === "3" && <div className={allengagementEnd.row}>
+                    <div
+                        className={allengagementEnd.colMd12}>
+                        <HRInputField
+                            register={register}
+                            errors={errors}
+                            validationSchema={{
+                                required: 'please enter DP Percentage.',
+                            }}
+                            label="DP Percentage"
+                            name="dpPercentage"
+                            type={InputType.NUMBER}
+                            placeholder="Enter Amount"
+                            required = {watchLostReason?.id === "3" ? true:false}
+                        />
+                    </div>
+                </div>}
+
+				{watchLostReason?.id === "3" && <div className={allengagementEnd.row}>
+					<div
+						className={allengagementEnd.colMd12}>
+						<HRInputField
+							register={register}
+							errors={errors}
+							validationSchema={{
+								required: 'Invalid DP Amount.',
+								validate: (value) => {
+									if (value <= 0) {
+										return "Invalid DP Amount.";
+									}
+									},
+							}}
+							label="DP One time Amount"
+							name="dpAmount"
+							type={InputType.NUMBER}
+							placeholder="Enter Amount"
+							required = {watchLostReason?.id === "3" ? true:false}
+							disabled={true}
+						/>
+					</div>
+				</div>}
+
+				{watchLostReason?.id === "3" && 
+				<div className={`${allengagementEnd.row} ${allengagementEnd.mb32}`}>
+					<div className={allengagementEnd.colMd6}>
+					<div className={allengagementEnd.timeSlotItemField}>
+						<div className={allengagementEnd.timeLabel}>
+							New	Contract Start Date
+							<span>
+								<b style={{ color: 'red' }}> *</b>
+							</span>
+						</div>
+						<div className={allengagementEnd.timeSlotItem}>
+							<CalenderSVG />
+							<Controller
+								render={({ ...props }) => (
+									<DatePicker
+										selected={watch('newContractStartDate')}
+										onChange={(date) => {
+											setValue('newContractStartDate', date);
+											// setValue("lwd",date)
+										}}
+										placeholderText="New Contract Start Date"
+										dateFormat="dd/MM/yyyy"
+									/>
+								)}
+								name="newContractStartDate"
+								rules={{ required: true }}
+								control={control}
+							/>
+							{errors.newContractStartDate && (
+								<div className={allengagementEnd.error}>
+									* Please select new	contract start date.
+								</div>
+							)}
+						</div>
+					</div>
+				</div>
+				</div>}
+
+
 			<div className={allengagementEnd.row}>
 				<div className={allengagementEnd.colMd12}>
 					<HRInputField
@@ -305,10 +446,84 @@ const EngagementEnd = ({ engagementListHandler, talentInfo, closeModal,lostReaso
 					/>
 				</div>
 			</div>
+			<div className={`${allengagementEnd.row} ${allengagementEnd.mb16}`}>
+				<div className={allengagementEnd.colMd12}>
+					<Checkbox
+							name="PayPerCredit"
+							checked={engagementReplacement?.replacementData}
+							onChange={(e) => {
+							setEngagementReplacement({
+							...engagementReplacement,
+							replacementData: e.target.checked,
+							});
+							if(e.target.checked === false){
+								setAddLetter(false)
+								setValue("lwd","");
+								setValue("engagementreplacement","")
+							}
+						}}
+					>
+					Is this engagement going under replacement?
+					</Checkbox>
+				</div>
+			</div>
+			<div className={`${allengagementEnd.row} ${allengagementEnd.mb16}`}>
+				<div className={allengagementEnd.colMd6}>
+					{engagementReplacement?.replacementData &&<div className={allengagementEnd.timeSlotItemField}>
+						<div className={allengagementEnd.timeLabel}>
+							Last Working Day
+						</div>
+						<div className={allengagementEnd.timeSlotItem}>
+							<CalenderSVG />
+							<Controller
+								render={({ ...props }) => (
+									<DatePicker
+										selected={watch('lwd')}
+										onChange={(date) => {
+											setValue('lwd', date);
+										}}
+										placeholderText="Last Working Day"
+										dateFormat="dd/MM/yyyy"
+										minDate={new Date()}
+										// disabled={addLatter}
+									/>
+								)}
+								name="lwd"
+								rules={{ required: true }}
+								control={control}
+							/>
+						</div>
+					</div>}
+				</div>
+			</div>
+			<div className={allengagementEnd.row}>
+				{engagementReplacement?.replacementData && <div className={allengagementEnd.colMd6}>
+					<HRSelectField
+						disabled={addLatter}
+						setValue={setValue}
+						mode={"id/value"}
+						register={register}
+						name="engagementreplacement"
+						label="Select HR ID/Eng ID created to replace this engagement"
+						defaultValue="Select HR ID/Eng ID"
+						options={getEndEngagementDetails?.replacementEngAndHR ? getEndEngagementDetails?.replacementEngAndHR.map(item=> ({id: item.stringIdValue, value:item.value})) : []}
+					/>
+				</div>}
+			</div>
+			<div className={`${allengagementEnd.row} ${allengagementEnd.mb32}`}>
+				{engagementReplacement?.replacementData &&<div className={allengagementEnd.colMd12}>
+					<Checkbox
+                     	name="PayPerCredit"
+                      	checked={addLatter}
+                      	onChange={(e) => {
+                        	setAddLetter(e.target.checked);
+						}}
+                    >
+					Will add this later, by doing this you understand that replacement will not be tracked correctly.
+                    </Checkbox>
+				</div>}
+			</div>
 			</>}
-
-		
-
 			<div className={allengagementEnd.formPanelAction}>
 				<button
 					type="submit"

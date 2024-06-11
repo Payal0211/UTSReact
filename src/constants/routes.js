@@ -108,6 +108,14 @@ const ClientReport = React.lazy(() =>
  	import('modules/report/screens/clientReport/clientReport')
 );
 
+const ReplacementReport = React.lazy(() =>
+	import('modules/report/screens/replacementReport/replacementReport')
+);
+
+const TalentBackoutReport = React.lazy(() =>
+	import('modules/report/screens/talentBackoutReport/talentBackoutReport')
+);
+
 const HRReport = React.lazy(() =>
 	import('modules/report/screens/hrReport/hrReport')
 );
@@ -146,6 +154,10 @@ import('modules/allClients/components/clientDetails/userDetails')
 
 const OnBoardList = React.lazy(() => 
 import('modules/onBoardList/onBoardList')
+)
+
+const AddCompany = React.lazy(() => 
+	import('modules/company/screens/addCompany/addCompany')
 )
 
 // const ViewClient = React.lazy(() => 
@@ -204,6 +216,9 @@ export default class UTSRoutes {
 	static ONBOARD = '/onBoardList';
 	static UTM_TRACKING_REPORT = "/utmTrackingReport";
 	static CLIENT_PORTAL_TRACKING_REPORT = "/clientPortalTrackingReport";
+	static REPLACEMENT_REPORT = "/replacementReport";
+	static ADD_NEW_COMPANY = "/addNewCompany/:companyID";
+	static TALENT_BACKOUT_REPORT = "/talentBackoutReport";
 }
 
 export const navigateToComponent = {
@@ -363,6 +378,16 @@ export const navigateToComponent = {
 			<ClientReport />
 		</Suspense>
 	),
+	[UTSRoutes.REPLACEMENT_REPORT]:(
+		<Suspense>
+			<ReplacementReport />
+		</Suspense>
+	),
+	[UTSRoutes.TALENT_BACKOUT_REPORT]:(
+		<Suspense>
+			<TalentBackoutReport />
+		</Suspense>
+	),
 	[UTSRoutes.HR_REPORT]:(
 		<Suspense>
 			<HRReport />
@@ -437,6 +462,11 @@ export const navigateToComponent = {
 [UTSRoutes.ONBOARD] : (
 	<Suspense>
 		<OnBoardList />
+	</Suspense>
+),
+[UTSRoutes.ADD_NEW_COMPANY] : (
+	<Suspense>
+		<AddCompany />
 	</Suspense>
 )
 };

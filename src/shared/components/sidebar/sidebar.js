@@ -20,6 +20,10 @@ import I2sIcon from 'assets/svg/i2sIcon.svg';
 import GPTIcon from 'assets/svg/GPT.svg'
 import clientReport from  'assets/svg/clientReport.svg';
 import HRReport from 'assets/svg/clientLogs.svg'
+import UTMTrackingIcon from 'assets/UTMtracking report.png'
+import ClientDetailsIcon from 'assets/Clienttracking details.png'
+import ReplacementIcon from 'assets/Talentreplacement.png'
+import TalentBackoutIcon from 'assets/Talentbackout.png'
 import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
 
 import SLAReport from 'assets/svg/slaReport.svg';
@@ -148,8 +152,8 @@ const isAccess = (ID, title) =>{
 	title === 'SLA Report' || 
 	title === 'Client Report' || 
 	title === 'I2S Report' || title === 'Master' || title === 'Deal' || title === 'HR Report' ||  title === 'UTM Tracking Report' ||
-	title === 'Client Happiness Survey' || title === 'Team Demand Funnel'
-	|| title === 'Clients' || title=== 'HR Lost Report' || title=== 'Supply Funnel'){
+	title === 'Client Happiness Survey' || title === 'Team Demand Funnel' || title === 'Client Tracking Details'
+	|| title === 'Clients' || title=== 'HR Lost Report' || title=== 'Supply Funnel' || title === "TalentBackout Report" || title === "Replacement Report"){
 
 		isVisible = (ID === 1 || ID === 4 || ID === 5 || ID === 9 || ID === 10 || ID === 11 || ID === 12 || ID === 6)  
 		
@@ -300,6 +304,22 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			isVisible: isAccess(usertypeID, 'Client Report')
 		}),
 		new SideBarModels({
+			id: 'ReplacementReport',
+			title: 'Replacement Report',
+			isActive: false,
+			icon: ReplacementIcon,
+			navigateTo: UTSRoutes.REPLACEMENT_REPORT,
+			isVisible: isAccess(usertypeID, 'Replacement Report')
+		}),
+		new SideBarModels({
+			id: 'TalentBackoutReport',
+			title: 'Talent Backout Report',
+			isActive: false,
+			icon: TalentBackoutIcon,
+			navigateTo: UTSRoutes.TALENT_BACKOUT_REPORT,
+			isVisible: isAccess(usertypeID, 'TalentBackout Report')
+		}),
+		new SideBarModels({
 			id: 'HRReport',
 			title: 'HR Report',
 			isActive: false,
@@ -311,7 +331,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			id: 'UTMTrackingReport',
 			title: 'UTM Tracking Report',
 			isActive: false,
-			icon: HRReport,
+			icon: UTMTrackingIcon,
 			navigateTo: UTSRoutes.UTM_TRACKING_REPORT,
 			isVisible: isAccess(usertypeID, 'UTM Tracking Report')
 		}),
@@ -319,7 +339,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			id: 'ClientPortalTrackingReport',
 			title: 'Client Tracking Details',
 			isActive: false,
-			icon: HRReport,
+			icon: ClientDetailsIcon,
 			navigateTo: UTSRoutes.CLIENT_PORTAL_TRACKING_REPORT,
 			isVisible: isAccess(usertypeID, 'Client Tracking Details')
 		}),

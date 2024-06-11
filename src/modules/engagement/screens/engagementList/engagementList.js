@@ -46,6 +46,7 @@ import { downloadToExcel } from 'modules/report/reportUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import EditAllBRPR from '../editAllBRPR/editAllBRPR';
 import moment from 'moment';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() => import('./engagementFilter'));
@@ -458,12 +459,16 @@ const EngagementList = () => {
 	}, [getEngagementModal.engagementBillRateAndPayRate]);
 
 	const getEngagementFilterList = useCallback(async () => {
+		setLoading(true);
 		const response = await engagementRequestDAO.getEngagementFilterListDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
+			setLoading(false);
 			setFiltersList(response && response?.responseBody?.details);
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			setLoading(false);
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			setLoading(false);
 			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
 		} else {
 			return 'NO DATA FOUND';
@@ -593,12 +598,13 @@ const EngagementList = () => {
 
 	return (
 		<div className={allEngagementStyles.hiringRequestContainer}>
-			<WithLoader showLoader={searchText?.length?false:isLoading} className="pageMainLoader">
+			{/* <WithLoader showLoader={searchText?.length?false:isLoading} className="pageMainLoader"> */}
 			<div className={allEngagementStyles.addnewHR}>
 				<div className={allEngagementStyles.hiringRequest}>
 					Engagement Dashboard -{' '}
 					{startDate.toLocaleDateString('default', { month: 'long' })}
 				</div>
+				<LogoLoader visible={isLoading} />
 				{/* <div>
 					<button
 						className={allEngagementStyles.btnPrimary}
@@ -1371,7 +1377,7 @@ const EngagementList = () => {
 			
 							</Modal>}
 			</div>
-		</WithLoader>
+		{/* </WithLoader> */}
 		</div>
 	);
 };

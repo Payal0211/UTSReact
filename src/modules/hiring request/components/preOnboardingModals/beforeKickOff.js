@@ -1,5 +1,5 @@
 import React , { useCallback, useEffect, useState } from "react";
-import {Skeleton,DatePicker,TimePicker } from 'antd';
+import {Skeleton,DatePicker,TimePicker,Checkbox} from 'antd';
 import HRDetailStyle from '../../screens/hrdetail/hrdetail.module.css';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import { Controller, useForm } from 'react-hook-form';
@@ -13,6 +13,7 @@ import { ReactComponent as BeforeKickOffSVG } from 'assets/svg/beforeKickOff.svg
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { ReactComponent as ClockIconSVG } from 'assets/svg/TimeStartEnd.svg';
 import moment from "moment";
+// import DatePicker from "react-datepicker";
 
 export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,EnableNextTab}) {
 
@@ -31,6 +32,13 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
     const [isTabDisabled, setTabDisabled] = useState(false)
     const [TabData,setTabData] = useState({})
     const [controlledTimeZone, setControlledTimeZone] = useState()
+    const [engagementReplacement,setEngagementReplacement] = useState({
+		replacementData : false
+	})
+    const [addLatter,setAddLetter] = useState(false);
+    const [replacementEngHr,setReplacementEngHr] = useState([])
+    const loggedInUserID = JSON.parse(localStorage.getItem('userSessionInfo')).LoggedInUserTypeID
+    const [controlledEngRep, setControlledEngRep] = useState()
 
     const getTalentStatusHandler = useCallback(async () => {
         setIsLoading(true)
@@ -67,10 +75,19 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                 ){
                     EnableNextTab(talentDeteils,HRID,'After Kick-off')
                 }  
+                setReplacementEngHr(result.responseBody.details.replacementEngAndHR)
                 setTabDisabled(result.responseBody.details.isFourthTabReadOnly)
+                setEngagementReplacement({
+                    ...engagementReplacement,
+                    replacementData: result.responseBody.details.replacementDetail !== null ? true : false,
+                  });
+                  setValue('lwd', result.responseBody.details.replacementDetail.lastWorkingDay);
                 result.responseBody.details.genOnBoardTalent.kickoffDate &&  setValue('callDate',result.responseBody.details.genOnBoardTalent.kickoffDate)
 
                setTabData(result.responseBody.details.genOnBoardTalent)
+               const _filterData = result.responseBody.details.replacementEngAndHR?.filter((e) => e.id === result.responseBody.details.replacementDetail.newHrid || result.responseBody.details.replacementDetail.newOnBoardId);
+               setControlledEngRep(_filterData[0].value)
+               setValue('engagementreplacement',_filterData[0])
                 // setValue('time',result.responseBody.details.genOnBoardTalent.kickoffTimezonePreferenceId)
             }
            
@@ -108,7 +125,14 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                 kickoffDate: d.callDate,
                 // "isAfterKickOff": false
             },
-            afterKickOff:{}
+            afterKickOff:{},
+            isReplacement: engagementReplacement?.replacementData,
+            talentReplacement: {
+            onboardId: talentDeteils?.OnBoardId,
+            lastWorkingDay:addLatter === false ? d.lwd :"" ,
+            replacementInitiatedby:loggedInUserID.toString(),
+            engHRReplacement: addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id 
+            }
         };
 
         // console.log("ScheduleKickOff",req, d)
@@ -132,6 +156,12 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
         resetField('pocName')
         resetField('time')
     }
+
+    const disabledDate = (current) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);        
+        return current && current < today;
+      };
 
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
@@ -298,6 +328,117 @@ export default function BeforeKickOff({talentDeteils,HRID, setShowAMModal,Enable
                     </div>
 
                 </div>
+            </div>
+
+        </div>}
+
+        {isLoading ? <Skeleton /> :  <div className={HRDetailStyle.onboardingProcesBox}>
+            <div className={HRDetailStyle.onboardingProcessLeft}>
+                <div><BeforeKickOffSVG width="32" height="28" /></div>
+                <h3 className={HRDetailStyle.titleLeft}>Replacement Details</h3>
+            </div>
+
+            <div className={HRDetailStyle.onboardingProcessMid}>
+              <div className={`${HRDetailStyle.labelreplacement}`}>
+                  <Checkbox
+                          disabled={isTabDisabled}
+                          name="PayPerCredit"
+                          checked={engagementReplacement?.replacementData}
+                          onChange={(e) => {
+                          setEngagementReplacement({
+                          ...engagementReplacement,
+                          replacementData: e.target.checked,
+                          });
+                          if(e.target.checked === false){
+                            setAddLetter(false)
+                            setValue("lwd","");
+                            setValue("engagementreplacement","")
+                          }
+                        }}
+                      >
+                      Is this engagement going under replacement?
+                  </Checkbox>
+              </div>
+              <div className={`${HRDetailStyle.labelreplacement}`}>
+                <div className={HRDetailStyle.colMd6}>
+                  {engagementReplacement?.replacementData &&<div className={HRDetailStyle.timeSlotItemField}>
+                    <div className={HRDetailStyle.timeLabel}>
+                      Last Working Day
+                    </div>
+                    <div className={HRDetailStyle.timeSlotItem}>
+                      <CalenderSVG />
+                      {isTabDisabled ? <Controller
+                        render={({ ...props }) => (
+                          <DatePicker
+                          {...props}
+                            selected={watch('lwd')}
+                            onChange={(date) => {
+                              setValue('lwd', date);
+                            }}
+                            placeholderText="Last Working Day"
+                            dateFormat="dd/MM/yyyy"
+                            // minDate={new Date()}
+                            disabledDate={disabledDate}
+                            value={dayjs(watch('lwd'))}
+                            disabled={isTabDisabled}
+                            // disabled={addLatter}
+                          />
+                        )}
+                        name="lwd"
+                        rules={{ required: true }}
+                        control={control}
+                      /> : <Controller
+                      render={({ ...props }) => (
+                        <DatePicker
+                        {...props}
+                          selected={watch('lwd')}
+                          onChange={(date) => {
+                            setValue('lwd', date);
+                          }}
+                          placeholderText="Last Working Day"
+                          dateFormat="dd/MM/yyyy"
+                          disabledDate={disabledDate}
+                          disabled={isTabDisabled}
+                        />
+                      )}
+                      name="lwd"
+                      rules={{ required: true }}
+                      control={control}
+                    />}
+                    </div>
+                  </div>}
+                </div>
+              </div>
+              <div className={HRDetailStyle.labelreplacement}>
+                {engagementReplacement?.replacementData && <div className={HRDetailStyle.colMd6}>
+                  <HRSelectField
+                    controlledValue={controlledEngRep}
+                    setControlledValue={setControlledEngRep}
+                    isControlled={true}
+                    disabled={addLatter || isTabDisabled}
+                    setValue={setValue}
+                    mode={"id/value"}
+                    register={register}
+                    name="engagementreplacement"
+                    label="Select HR ID/Eng ID created to replace this engagement"
+                    defaultValue="Select HR ID/Eng ID"
+                    options={replacementEngHr ? replacementEngHr.map(item=> ({id: item.stringIdValue, value:item.value})) : []}
+                  />
+                </div>}
+              </div>
+              <div className={`${HRDetailStyle.labelreplacement} ${HRDetailStyle.mb32}`}>
+                {engagementReplacement?.replacementData &&<div className={HRDetailStyle.colMd12}>
+                  <Checkbox
+                              name="PayPerCredit"
+                                checked={isTabDisabled}
+                                onChange={(e) => {
+                                  setAddLetter(e.target.checked);
+                    }}
+                            >
+                  Will add this later, by doing this you understand that replacement will not be tracked correctly.
+                            </Checkbox>
+                </div>}
+              </div>
             </div>
 
         </div>}

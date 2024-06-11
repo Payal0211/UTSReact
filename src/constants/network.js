@@ -22,6 +22,7 @@ export class SubDomain {
 	static VIEW_ALL_HR = 'ViewAllHR/';
 	static MASTERS = 'MastersAPI/';
 	static CLIENT = 'Client/';
+	static COMPANY = 'Company/'
 	static CLIENT_REPORT = 'ClientReport/';
 	static HR_REPORT = 'HRReport/';
 	static HIRING = 'Hiring/';
@@ -55,6 +56,16 @@ export class DirectHR {
 	static GET_MASTER_FOR_DIRECTHR = 'GetMastersForDirectHR'
 	static GET_HR_DETAILS =  'GetDetail'
 }
+
+export class CompanysAPI {
+	static GET_DETAILS = 'GetDetails';
+	static UPLOAD_IMAGE = 'UploadImage';
+	static DELETE_YOUTUBE_DETAILS = 'DeleteYouTubeDetails';
+	static DELETE_CULTURE_IMAGE = 'DeleteCultureImage'
+	static UPDATE_COMPANY_DETAILS = 'UpdateDetails'
+	static VALIDATE_COMPANY_CLIENT = 'ValidateCompanyClient'
+	static DELETE_FUNDING = "DeleteFundingDetails"
+}
 export class MethodType {
 	static GET = '/get';
 	static POST = '/post';
@@ -84,7 +95,9 @@ export class ReportType {
 	static SUPPLY_FUNNEL = 'SupplyFunnel/';
 	static TEAM_DEMAND_FUNNEL = 'TeamDemandFunnel/';
 	static JD_PARSING_DUMP = 'JDParsingDump/';
-	static HR_LOST_REPORT = 'HRLostReport/'
+	static HR_LOST_REPORT = 'HRLostReport/';
+	static REPLACEMENT_REPORT = 'ReplacementReport';
+	static TALENT_BACKOUT_REPORT = 'TalentBackoutReport';
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';

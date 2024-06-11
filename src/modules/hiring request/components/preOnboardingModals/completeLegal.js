@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import dayjs from 'dayjs';
-import { Skeleton, Tooltip, Modal, DatePicker,TimePicker, Tabs, Dropdown, Menu, message } from 'antd';
+import { Skeleton, Tooltip, Modal,TimePicker, Tabs, Dropdown, Menu, message, Checkbox,DatePicker } from 'antd';
 import HRDetailStyle from '../../screens/hrdetail/hrdetail.module.css';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
 import HRInputField from 'modules/hiring request/components/hrInputFields/hrInputFields';
@@ -16,6 +16,7 @@ import { ReactComponent as CloseSVG } from 'assets/svg/close.svg';
 
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import moment from "moment";
+// import DatePicker from "react-datepicker";
 
 export default function CompleteLegal({talentDeteils,HRID, setShowAMModal,callAPI,EnableNextTab}) {
 
@@ -39,6 +40,13 @@ export default function CompleteLegal({talentDeteils,HRID, setShowAMModal,callAP
 		googleDriveFileUpload: '',
 		linkValidation: '',
 	})
+    const [engagementReplacement,setEngagementReplacement] = useState({
+		replacementData : false
+	})
+    const [addLatter,setAddLetter] = useState(false);
+    const [replacementEngHr,setReplacementEngHr] = useState([])
+    const loggedInUserID = JSON.parse(localStorage.getItem('userSessionInfo')).LoggedInUserTypeID
+    const [controlledEngRep, setControlledEngRep] = useState()
 
     const uploadFileHandler = useCallback(
 		async (e) => {
@@ -127,6 +135,15 @@ export default function CompleteLegal({talentDeteils,HRID, setShowAMModal,callAP
             // console.log("fatchOnBoardInfo",result.responseBody.details)
 
             if (result?.statusCode === HTTPStatusCode.OK){
+                setEngagementReplacement({
+                    ...engagementReplacement,
+                    replacementData: result.responseBody.details.replacementDetail !== null ? true : false,
+                });
+                setReplacementEngHr(result.responseBody.details.replacementEngAndHR)
+                setValue('lwd', dayjs(result.responseBody.details.replacementDetail.lastWorkingDay));
+                const _filterData = result.responseBody.details.replacementEngAndHR?.filter((e) => e.id === result.responseBody.details.replacementDetail.newHrid || result.responseBody.details.replacementDetail.newOnBoardId);
+                setControlledEngRep(_filterData[0].value)
+                setValue('engagementreplacement',_filterData[0])
                 setBoardData(result.responseBody.details)
                 setTabDisabled(result.responseBody.details.isThirdTabReadOnly)
             //    if(result.responseBody.details.kickoffStatusId === 4
@@ -137,7 +154,7 @@ export default function CompleteLegal({talentDeteils,HRID, setShowAMModal,callAP
            
             // result.responseBody.details && setValue('msaDate', result.responseBody.details)
             // setIsLoading(false)
-    },[])
+    },[setValue])
 
     useEffect(()=>{
 if(boardData){
@@ -196,6 +213,13 @@ if(boardData){
                 sowDocumentLink:d.sowDocumentLink,
             },
             kickOff: null,
+            isReplacement: engagementReplacement?.replacementData,
+            talentReplacement: {
+            onboardId: talentDeteils?.OnBoardId,
+            lastWorkingDay:addLatter === false ? d.lwd :"" ,
+            replacementInitiatedby:loggedInUserID.toString(),
+            engHRReplacement: addLatter === true || d.engagementreplacement === undefined ? "" : d.engagementreplacement.id 
+            }
         };
 //  console.log("complete Legal req",req)
         let response = await OnboardDAO.onboardStatusUpdatesRequestDAO(
@@ -208,7 +232,13 @@ if(boardData){
         callAPI(HRID)
         }
         setIsLoading(false)
-    },[talentDeteils, HRID,callAPI,setShowAMModal])
+    },[talentDeteils, HRID,callAPI,setShowAMModal,engagementReplacement?.replacementData,addLatter])
+
+    const disabledDate = (current) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);        
+        return current && current < today;
+      };
 
   return (
     <div className={HRDetailStyle.onboardingProcesswrap}>
@@ -230,7 +260,7 @@ if(boardData){
                                     <DatePicker
                                     { ...props }
                                         value={dayjs(watch('msaDate'))}
-                                        selected={watch('msaDate')}
+                                        selected={watch('MSA Sign Date ')}
                                         // placeholderText={props.value ? props.value :"Select Date 34"}
                                         onChange={(date) => {
                                             setValue('msaDate', date);
@@ -378,6 +408,124 @@ if(boardData){
 								/>
 							)}
                 </div>
+            </div>
+            </>}
+           
+
+        </div>
+
+        <div className={HRDetailStyle.onboardingProcesBox}>
+            {isLoading ? <Skeleton /> : <>
+             <div className={HRDetailStyle.onboardingProcessLeft}>
+                <div><DuringLegalSVG width="32" height="32" /></div>
+                <h3 className={HRDetailStyle.titleLeft}>Replacement Details</h3>
+            </div>
+            <div className={HRDetailStyle.onboardingProcessMid}>
+              <div className={`${HRDetailStyle.labelreplacement}`}>
+                  <Checkbox
+                          disabled={isTabDisabled}
+                          name="PayPerCredit"
+                          checked={engagementReplacement?.replacementData}
+                          onChange={(e) => {
+                          setEngagementReplacement({
+                          ...engagementReplacement,
+                          replacementData: e.target.checked,
+                          });
+                          if(e.target.checked === false){
+                            setAddLetter(false)
+                            setValue("lwd","");
+                            setValue("engagementreplacement","")
+                          }
+                        }}
+                      >
+                      Is this engagement going under replacement?
+                  </Checkbox>
+              </div>
+              <div className={`${HRDetailStyle.labelreplacement}`}>
+                <div className={HRDetailStyle.colMd6}>
+                  {engagementReplacement?.replacementData &&<div className={HRDetailStyle.timeSlotItemField}>
+                    <div className={HRDetailStyle.timeLabel}>
+                      Last Working Day
+                    </div>
+                    <div className={HRDetailStyle.timeSlotItem}>
+                      <CalenderSVG />
+                      {isTabDisabled ? <Controller
+                        render={({ ...props }) => (
+                          <DatePicker
+                          {...props}
+                            selected={dayjs(watch('lwd'))}
+                            onChange={(date) => {
+                              setValue('lwd', date);
+                            }}
+                            placeholderText="Last Working Day"
+                            dateFormat="dd/MM/yyyy"
+                            // minDate={new Date()}
+                            disabledDate={disabledDate}
+                            value={dayjs(watch('lwd'))}
+                            // disabled={addLatter}
+                            control={control}
+                            disabled={isTabDisabled}
+                          />
+                        )}
+                        name="lwd"
+                        rules={{ required: true }}
+                        control={control}
+                      />: <Controller
+                      render={({ ...props }) => (
+                        <DatePicker
+                        {...props}
+                          selected={dayjs(watch("lwd"))}
+                          onChange={(date) => {
+                            setValue('lwd', date);
+                          }}
+                          placeholderText="Last Working Day"
+                          dateFormat="dd/MM/yyyy"
+                          // disabled={addLatter}
+                          disabledDate={disabledDate}
+                        //   value={dayjs(watch("lwd"))}
+                          control={control}
+                          disabled={isTabDisabled}
+                        />
+                      )}
+                      name="lwd"
+                      rules={{ required: true }}
+                      control={control}
+                    />}
+                    </div>
+                  </div>}
+                </div>
+              </div>
+              <div className={HRDetailStyle.labelreplacement}>
+                {engagementReplacement?.replacementData && <div className={HRDetailStyle.colMd6}>
+                  <HRSelectField
+                  isControlled={true}
+                  controlledValue={controlledEngRep}
+                  setControlledValue={setControlledEngRep}
+                    disabled={addLatter || isTabDisabled}
+                    setValue={setValue}
+                    mode={"id/value"}
+                    register={register}
+                    name="engagementreplacement"
+                    label="Select HR ID/Eng ID created to replace this engagement"
+                    defaultValue="Select HR ID/Eng ID"
+                    options={replacementEngHr ? replacementEngHr.map(item=> ({id: item.stringIdValue, value:item.value})) : []}
+                  />
+                </div>}
+              </div>
+              <div className={`${HRDetailStyle.labelreplacement} ${HRDetailStyle.mb32}`}>
+                {engagementReplacement?.replacementData &&<div className={HRDetailStyle.colMd12}>
+                  <Checkbox
+                  disabled={isTabDisabled}
+                              name="PayPerCredit"
+                                checked={addLatter}
+                                onChange={(e) => {
+                                  setAddLetter(e.target.checked);
+                    }}
+                            >
+                  Will add this later, by doing this you understand that replacement will not be tracked correctly.
+                            </Checkbox>
+                </div>}
+              </div>
             </div>
             </>}
            

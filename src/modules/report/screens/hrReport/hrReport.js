@@ -416,7 +416,7 @@ export default function HRReport() {
   // console.log('client', reportList, appliedFilter)
   return (
     <div className={hrReportStyle.dealContainer}>
-      <WithLoader className="pageMainLoader" showLoader={isLoading}>
+      {/* <WithLoader className="pageMainLoader" showLoader={isLoading}> */}
       <div className={hrReportStyle.header}>
         <div className={hrReportStyle.dealLable}>HR Report</div>
         <LogoLoader visible={isLoading} />
@@ -692,7 +692,7 @@ export default function HRReport() {
           />
         </Suspense>
       )}
-    </WithLoader>
+    {/* </WithLoader> */}
     </div>
   );
 }

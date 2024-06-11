@@ -141,7 +141,7 @@ const TextEditor = ({
 			<div className={TextEditorStyle.editorBody}>
 				<div
 					{...register(name, {
-						required: `please enter the ${label.toLowerCase()}`,
+						required: required ? `please enter the ${label.toLowerCase()}` : false,
 					})}
 					ref={commentRef}
 					id={name || 'commentBox'}

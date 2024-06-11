@@ -58,7 +58,7 @@ export const allClientsConfig = {
             }            		
 		];
     },
-    tableConfig : (editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID) => {
+    tableConfig : (editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID,setIsPreviewModal,setcompanyID) => {
         // && LoggedInUserTypeID?.LoggedInUserTypeID == 2
         if(isShowAddClientCredit === true){
             return [
@@ -90,17 +90,19 @@ export const allClientsConfig = {
                     render:(_,result) => {
                         return (<div style={{display:'flex'}}>
                         {isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<Link
-                            to={`/editclient/${result.companyID}`}
+                            to={`/addNewCompany/${result.companyID}`}
                             style={{ color: 'black', textDecoration: 'underline' }}
                             onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
                             <PencilSVG />
                         </Link>}
                         {(result.companyID !== 0  || result.clientID !== 0) &&  <div style={{marginLeft:'auto', cursor:'pointer',marginLeft:'10px'}}>
-                                <Tooltip title="View Company Details" placement="right" >
-                                <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank">
+                                <Tooltip title="Preview Company Profile" placement="right" >
+                                {/* <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank">
                                     <img src={eyeIcon} alt='info' width="22" height="22"  />	
-                                    {/* <EyeIcon /> */}
-                                    </a>                               
+                                    {/* <EyeIcon /> 
+                                    </a>         */}    
+                                     <img src={eyeIcon} alt='info' width="22" height="22" onClick={()=>{localStorage.setItem("clientID",result?.clientID);setIsPreviewModal(true);setcompanyID(result?.companyID)}}  />	
+
                             </Tooltip> 
                             </div>}
                         </div>
@@ -108,6 +110,24 @@ export const allClientsConfig = {
                         )
                     }
                 },
+
+                // {
+                //     title: '',
+                //     dataIndex: 'PreviewPage',
+                //     key: 'preview',
+                //     align: 'center',
+                //     width: '50px',
+                //     render:(_,result) => {
+                //         return (
+                //         isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<div
+                //             // to={`/editclient/${result.companyID}`}
+                //             style={{ color: 'black', textDecoration: 'underline',cursor:"pointer" }}
+                //             onClick={()=>{localStorage.setItem("clientID",result?.clientID);setIsPreviewModal(true);setcompanyID(result?.companyID)}}>
+                //             <PencilSVG />
+                //         </div>
+                //         )
+                //     }
+                // },
             //     {
             //         title:'',
             //     dataIndex: 'View',
@@ -267,6 +287,25 @@ export const allClientsConfig = {
                     key: 'isActive',
                     width: '100px',                   
                 },
+                {
+                    title: '',
+                    dataIndex: 'Edit',
+                    key: 'edit',
+                    align: 'center',
+                    width: '200px',
+                render: (text, result) => {
+                    return <>{(result.companyID !== 0  || result.clientID !== 0) &&  <div style={{marginLeft:'auto', cursor:'pointer',marginLeft:'10px'}}>
+            
+                    <a href={`/viewCompanyDetails/${result.companyID}`} target="_blank" className={clienthappinessSurveyStyles.linkForSSO}>
+                        {/* <img src={eyeIcon} alt='info' width="22" height="22"  />	 */}
+                        <button  className={clienthappinessSurveyStyles.btnPrimaryResendBtn}>View Company Details</button>
+                        {/* <EyeIcon /> */}
+                        </a>                               
+               
+                </div>}
+                    </>
+                }
+            }
               ]; 
         }else if (LoggedInUserTypeID?.LoggedInUserTypeID == 2){
             return [
@@ -300,6 +339,24 @@ export const allClientsConfig = {
                             onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
                             <PencilSVG />
                         </Link>
+                        )
+                    }
+                },
+
+                {
+                    title: '',
+                    dataIndex: 'PreviewPage',
+                    key: 'preview',
+                    align: 'center',
+                    width: '50px',
+                    render:(_,result) => {
+                        return (
+                        isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<div
+                            // to={`/editclient/${result.companyID}`}
+                            style={{ color: 'black', textDecoration: 'underline',cursor:"pointer" }}
+                            onClick={()=>{localStorage.setItem("clientID",result?.clientID);setIsPreviewModal(true)}}>
+                            <PencilSVG />
+                        </div>
                         )
                     }
                 },
@@ -470,6 +527,24 @@ export const allClientsConfig = {
                             onClick={()=>localStorage.setItem("clientID",result?.clientID)}>
                             <PencilSVG />
                         </Link>
+                        )
+                    }
+                },
+
+                {
+                    title: '',
+                    dataIndex: 'PreviewPage',
+                    key: 'preview',
+                    align: 'center',
+                    width: '50px',
+                    render:(_,result) => {
+                        return (
+                        isShowAddClientCredit=== true && result?.companyID !==0 && result?.clientID!==0 &&<div
+                            // to={`/editclient/${result.companyID}`}
+                            style={{ color: 'black', textDecoration: 'underline',cursor:"pointer" }}
+                            onClick={()=>{localStorage.setItem("clientID",result?.clientID);setIsPreviewModal(true)}}>
+                            <PencilSVG />
+                        </div>
                         )
                     }
                 },

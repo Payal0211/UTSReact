@@ -5,7 +5,7 @@ import React, {
 	useCallback,
     useMemo,
 } from 'react';
-import { Dropdown, Menu, Table, Modal,Select, AutoComplete,message } from 'antd';
+import { Dropdown, Menu, Table, Modal,Select, AutoComplete,message, Tooltip } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
@@ -29,6 +29,8 @@ import { downloadToExcel } from 'modules/report/reportUtils';
 import EditAMModal from './components/allClients/editAMModal/editAMModal';
 import { GSpaceEmails } from 'constants/network';
 import { HttpStatusCode } from 'axios';
+import LogoLoader from 'shared/components/loader/logoLoader';
+import PreviewClientModal from 'modules/client/components/previewClientDetails/previewClientModal';
 
 const AllClientFiltersLazy = React.lazy(() =>
 	import('modules/allClients/components/allClients/allClientsFilter'),
@@ -83,17 +85,25 @@ function AllClients() {
     const [amToFetch,setAMToFetch] = useState({})
     const[isShowAddClientCredit,setIsShowAddClientCredit] =  useState(false); 
     const [messageAPI, contextHolder] = message.useMessage();
+    const [isPreviewModal,setIsPreviewModal] = useState(false);
+    const [getcompanyID,setcompanyID] = useState();
 
 	const getFilterRequest = useCallback(async () => {
+        setLoading(true);
 		// const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
         const  response = await allClientRequestDAO.getClientFilterDAO();
+
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setFiltersList(response && response?.responseBody?.Data);
+            setLoading(false)
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            setLoading(false)
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+            setLoading(false)
 			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
 		} else {
+            setLoading(false)
 			return 'NO DATA FOUND';
 		}
 	}, [navigate]);
@@ -109,6 +119,7 @@ function AllClients() {
     const spaceName = urlParams.get('clientName')
 
 const updateSpaceIDForClientFun = async () =>{
+    setLoading(true);
     let payload = {
         "clientEmail": email,
         "SpaceID": name,
@@ -135,6 +146,7 @@ const updateSpaceIDForClientFun = async () =>{
             1000,
         )
    }
+   setLoading(false);
 }
 
     useEffect(() => {
@@ -143,7 +155,7 @@ const updateSpaceIDForClientFun = async () =>{
     
     useEffect(() => {
         getAllClientsList(tableFilteredState);
-    },[tableFilteredState,isShowAddClientCredit]);
+    },[tableFilteredState]);
 
     const reloadClientList = ()=>{
         getAllClientsList(tableFilteredState);
@@ -326,7 +338,7 @@ const updateSpaceIDForClientFun = async () =>{
         }
 
     const allClientsColumnsMemo = useMemo(
-		() => allClientsConfig.tableConfig(editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID),
+		() => allClientsConfig.tableConfig(editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID,setIsPreviewModal,setcompanyID),
 		[isShowAddClientCredit],
 	); 
 
@@ -340,13 +352,20 @@ const updateSpaceIDForClientFun = async () =>{
     }
     return(
         <>
-        <WithLoader className="mainLoader" showLoader={debouncedSearch?.length?false:isLoading}>
-            <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
+        <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
+                {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
         {contextHolder}
                 <div className={clienthappinessSurveyStyles.addnewHR}>
-                    <div className={clienthappinessSurveyStyles.hiringRequest}>All Clients</div>
+                    <div className={clienthappinessSurveyStyles.hiringRequest}>All Company Clients</div>
+                    <LogoLoader visible={isLoading} />
                     <div className={clienthappinessSurveyStyles.btn_wrap}>
-                       {isShowAddClientCredit && <button className={clienthappinessSurveyStyles.btnwhite} onClick={() => navigate(UTSRoutes.ABOUT_CLIENT)}>Invite client</button>}
+                        {/* <button className={clienthappinessSurveyStyles.btnwhite} onClick={()=>setIsPreviewModal(true)}>Preview Company Details</button> */}
+                       {isShowAddClientCredit && <Tooltip title="Invite Client"  placement="bottom">
+                        <button className={clienthappinessSurveyStyles.btnwhite}
+                        // onClick={() => navigate(UTSRoutes.ABOUT_CLIENT)}
+                        onClick={() => navigate(`/addNewCompany/0`)}
+                        >Add Company</button>
+                       </Tooltip> }
                         <button className={clienthappinessSurveyStyles.btnwhite} onClick={() => handleExport()}>Export</button>
                     </div>
                 </div>
@@ -478,8 +497,9 @@ const updateSpaceIDForClientFun = async () =>{
                             )} 
                 </div>
 
+            {/* </WithLoader> */}
             </div>
-            </WithLoader>
+           
 
             {isAllowFilters && (
                         <Suspense fallback={<div>Loading...</div>}>
@@ -512,7 +532,9 @@ const updateSpaceIDForClientFun = async () =>{
                 onCancel={() => setEditAM(false)}>
                <EditAMModal amToFetch={amToFetch} closeModal={() => setEditAM(false)} reloadClientList={reloadClientList} />
             </Modal>}  
-        </>
+
+            <PreviewClientModal setIsPreviewModal={setIsPreviewModal} isPreviewModal={isPreviewModal} setcompanyID={setcompanyID} getcompanyID={getcompanyID} />
+            </>
     )
 }
 
