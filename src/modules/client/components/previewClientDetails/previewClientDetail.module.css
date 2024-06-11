@@ -188,7 +188,7 @@
 .PreviewpageMainWrap .fundingrounds{
     border-top: 1px solid #bababa33;
     padding-top: 8px;
-    padding-bottom: 30px;
+    padding-bottom: 0;
 }
 
 .PreviewpageMainWrap .fundingrounds ul{
@@ -202,13 +202,22 @@
     border-right: 1px solid #bababa33;
     padding-right: 35px;
     margin-right: 35px;
+    min-width: calc(33.33% - 27px);
+}
+.PreviewpageMainWrap .fundingrounds li:nth-child(3){
+    padding-right: 0;
+    margin-right: 0;
+    border-right: none;
 }
 
+.PreviewpageMainWrap .fundingrounds li:nth-last-child(2),
 .PreviewpageMainWrap .fundingrounds li:last-child {
     margin-right: 0;
     padding-right: 0;
-    border: 0;
-    max-width: 286px;
+    border-right: none;
+    max-width: 100%;
+    width: 100%;
+
 }
 
 .PreviewpageMainWrap .fundingrounds li h3 {
@@ -501,6 +510,10 @@
     width: 68px;
     height: 68px;
     border-radius: 50%;
+    background: #eee;
+    align-items: center;
+    justify-content: center;
+    display: inline-flex;
 }
 
 .PreviewpageMainWrap .companyProfileBox .companyProfileImg .editNewIcon{
@@ -514,10 +527,10 @@
 }
 
 .PreviewpageMainWrap .companyProfileBox .companyProfileImg img{
-    width: 68px;
-    height: 68px;
     border-radius: 50%;
-    object-fit: cover;
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%
 }
 
 .PreviewpageMainWrap .companyProfileBox .companyProfRightDetail h3{

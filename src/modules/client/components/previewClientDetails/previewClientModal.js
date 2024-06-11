@@ -915,7 +915,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
         "basicDetails":{
           "companyID": getcompanyID,
         },
-        "perkDetails": watch("perksAndAdvantages")?.map(item=>item?.value),
+        "pocIds": [watch("uplersPOCname")?.id],
         "IsUpdateFromPreviewPage":true,
       }
       let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
@@ -1065,6 +1065,20 @@ const [controlledSeries,setControlledSeries] = useState([]);
                               {" "}
                               {getCompanyDetails?.basicDetails?.headquaters
                                 ? getCompanyDetails?.basicDetails?.headquaters
+                                : "NA"}{" "}
+                            </p>
+                          </li>
+                          <li>
+                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" ?<span 
+                            onClick={() => setIsEditHeadquarters(true)}
+                            >
+                              {" "}
+                              Linkedin URL <EditNewIcon />{" "}
+                            </span>:<span>Linkedin URL</span>}
+                            <p>
+                              {" "}
+                              {getCompanyDetails?.basicDetails?.linkedInProfile
+                                ? getCompanyDetails?.basicDetails?.linkedInProfile
                                 : "NA"}{" "}
                             </p>
                           </li>
@@ -1985,8 +1999,8 @@ const [controlledSeries,setControlledSeries] = useState([]);
                               className={previewClientStyle.editNewIcon}
                               onClick={() => {setEditClient(true); setClickIndex(index); 
                                 setClientDetailsData({...clientDetailsData,
-                                  clientID:val?.id
-                                  ,en_Id:val?.en_Id,
+                                  clientID:val?.id,
+                                  en_Id:val?.en_Id,
                                   isPrimary:val?.isPrimary,
                                   fullName:val?.fullName,
                                   emailId:val?.emailID,
@@ -2095,31 +2109,22 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                 <div className={previewClientStyle.colMd6}>
                                   <HRSelectField
                                     isControlled={true}
-                                    //   controlledValue={controlledRoleId[index]}
-                                    //   setControlledValue={(val) =>
-                                    //     setControlledRoleId((prev) => {
-                                    //       let newControlled = [...prev];
-                                    //       newControlled[index] = val;
-                                    //       return newControlled;
-                                    //     })
-                                    //   }
                                     setValue={setValue}
                                     mode={"id"}
                                     register={register}
-                                    // name={`clientDetails.[${index}].roleID`}
                                     name="roleID"
                                     label="Access Type"
                                     defaultValue="Choose Access Type"
                                     value={clientDetailsData?.accessRoleId}
                                     onChangeHandler={(e)=>{
-                                      setClientDetailsData({...clientDetailsData,fullName:e?.target?.value})
+                                      setClientDetailsData({...clientDetailsData,accessRoleId:e?.target?.value})
                                     }}
-                                    //   options={accessTypes?.map((item) => ({
-                                    //     id: item.id,
-                                    //     value: item.value,
-                                    //   }
-                                    // ))
-                                    // }
+                                      options={getValuesForDD?.BindAccessRoleType?.map((item) => ({
+                                        id: item.id,
+                                        value: item.value,
+                                      }
+                                    ))
+                                    }
                                   />
                                 </div>
                               </div>
