@@ -5,7 +5,7 @@ import React, {
 	useCallback,
     useMemo,
 } from 'react';
-import { Dropdown, Menu, Table, Modal,Select, AutoComplete,message } from 'antd';
+import { Dropdown, Menu, Table, Modal,Select, AutoComplete,message, Tooltip } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
@@ -360,10 +360,12 @@ const updateSpaceIDForClientFun = async () =>{
                     <LogoLoader visible={isLoading} />
                     <div className={clienthappinessSurveyStyles.btn_wrap}>
                         {/* <button className={clienthappinessSurveyStyles.btnwhite} onClick={()=>setIsPreviewModal(true)}>Preview Company Details</button> */}
-                       {isShowAddClientCredit && <button className={clienthappinessSurveyStyles.btnwhite}
+                       {isShowAddClientCredit && <Tooltip title="Invite Client"  placement="bottom">
+                        <button className={clienthappinessSurveyStyles.btnwhite}
                         // onClick={() => navigate(UTSRoutes.ABOUT_CLIENT)}
                         onClick={() => navigate(`/addNewCompany/0`)}
-                        >Add Company</button>}
+                        >Add Company</button>
+                       </Tooltip> }
                         <button className={clienthappinessSurveyStyles.btnwhite} onClick={() => handleExport()}>Export</button>
                     </div>
                 </div>
