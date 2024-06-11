@@ -116,7 +116,15 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
   );
 
   const validateCompanyName = async () => {
-   let payload = {
+    if(watch('companyName')){
+      if(companyDetails?.companyName === watch('companyName')){
+        clearErrors('companyName')
+        setDisableSubmit(false)
+        setIsViewCompany(false);
+        return
+      }
+
+      let payload = {
       "workEmail": "",
       "companyName": watch('companyName'),
       "currentCompanyID": +companyID,
@@ -139,32 +147,44 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
         message: result?.responseBody,
       })
     }
+    }
+   
   }
 
   const validateCompanyURL = async () => {
-    let payload = {
-       "workEmail": "",
-       "companyName": watch('companyName'),
-       "currentCompanyID": +companyID,
-       "websiteURL": watch("companyURL")
-     }
- 
-     const result = await allCompanyRequestDAO.validateClientCompanyDAO(payload)
-     
-     if(result.statusCode === HTTPStatusCode.OK){
-       clearErrors('companyURL')
-       setDisableSubmit(false)
-       setIsViewCompanyurl(false);
+    if(watch("companyURL")){
+
+      if(companyDetails?.website === watch("companyURL")){
+        clearErrors('companyURL')
+        setDisableSubmit(false)
+        setIsViewCompanyurl(false);
+        return
       }
-      if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
-        setDisableSubmit(true)
-        setIsViewCompanyurl(true);
-        setcompanyID(result?.details?.companyID);
-       setError('companyURL',{
-         type: "manual",
-         message: result?.responseBody,
-       })
-     }
+      let payload = {
+        "workEmail": "",
+        "companyName": watch('companyName'),
+        "currentCompanyID": +companyID,
+        "websiteURL": watch("companyURL")
+      }
+  
+      const result = await allCompanyRequestDAO.validateClientCompanyDAO(payload)
+      
+      if(result.statusCode === HTTPStatusCode.OK){
+        clearErrors('companyURL')
+        setDisableSubmit(false)
+        setIsViewCompanyurl(false);
+       }
+       if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
+         setDisableSubmit(true)
+         setIsViewCompanyurl(true);
+         setcompanyID(result?.details?.companyID);
+        setError('companyURL',{
+          type: "manual",
+          message: result?.responseBody,
+        })
+      }
+    }
+   
    }
 
   return (
