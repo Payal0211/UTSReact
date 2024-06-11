@@ -894,6 +894,36 @@ const [controlledSeries,setControlledSeries] = useState([]);
       getCompanyDetails?.engagementDetails?.companyTypeID === 2 && "Pay per Credit"
     ].filter(Boolean).join(', ');
 
+    const handleSubmitCompanyPerks = async() =>{
+      setIsLoading(true);
+      let payload = {
+        "basicDetails":{
+          "companyID": getcompanyID,
+        },
+        "perkDetails": watch("perksAndAdvantages")?.map(item=>item?.value),
+        "IsUpdateFromPreviewPage":true,
+      }
+      let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
+      getDetails();
+      setEditCompanyBenefits(false);
+      setIsLoading(false);
+    }
+
+    const handleSubmitUplersPOC = async() =>{
+      setIsLoading(true);
+      let payload = {
+        "basicDetails":{
+          "companyID": getcompanyID,
+        },
+        "perkDetails": watch("perksAndAdvantages")?.map(item=>item?.value),
+        "IsUpdateFromPreviewPage":true,
+      }
+      let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
+      getDetails();
+      setEditPOC(false);
+      setIsLoading(false);
+    }
+
   return (
     <>
      <LogoLoader visible={isLoading} />
@@ -1744,7 +1774,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                               <button
                                 type="button"
                                 className={previewClientStyle.btnPrimary}
-                                onClick={() => setEditCompanyBenefits(false)}
+                                onClick={() => handleSubmitCompanyPerks()}
                               >
                                 {" "}
                                 SAVE{" "}
@@ -1765,12 +1795,12 @@ const [controlledSeries,setControlledSeries] = useState([]);
                   <div className={previewClientStyle.formFieldTitleTwo}>
                     <h2>
                       Client Details{" "}
-                      {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" ?<span
+                      {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" &&<span
                         className={previewClientStyle.addNewClientText}
                         onClick={() => setAddNewClient(true)}
                       >
                         Add New Client
-                      </span>:<span className={previewClientStyle.addNewClientText}> Add New Client</span>}
+                      </span>}
                     </h2>
                   </div>
 
@@ -2599,9 +2629,9 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             label="Uplers's POC name"
                             defaultValue="Enter POC name"
                             options={allPocs}
-                            required
-                            isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
-                            errorMsg="Please select POC name."
+                            // required
+                            // isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
+                            // errorMsg="Please select POC name."
                           />
                           </div>
 
@@ -2619,7 +2649,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             <button
                               type="button"
                               className={previewClientStyle.btnPrimary}
-                              onClick={() => setEditPOC(false)}
+                              onClick={() => handleSubmitUplersPOC()}
                             >
                               {" "}
                               SAVE{" "}
