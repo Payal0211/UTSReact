@@ -99,7 +99,41 @@ const AllHiringRequestScreen = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [HRTypesList,setHRTypesList] = useState([])
-  const [selectedHRTypes, setSelectedHRTypes] = useState([])
+  const [selectedHRTypes, setSelectedHRTypes] = useState([]);
+
+  // UTS-7517: Code for clone HR in demo acccount starts
+
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);  
+  const [showCloneHRToDemoAccount, setShowCloneHRToDemoAccount] = useState(false);
+
+  const handleDemoCloneCheckboxChange = (value) => {     
+    const obj = {'companyId':value.companyID, 'hRID':value.HRID, 'hR_Number': value.HR_ID};
+  
+    setSelectedCheckboxes(prev => {
+      if(prev.map(item=> item.hRID)?.includes(value.HRID)){
+        return prev.filter(item=> item.hRID !== value.HRID);
+      }
+      return [...prev, obj]});    
+  };
+
+  const CloneHRDemoAccountAPICall = async () => {    
+    if(selectedCheckboxes.length > 0)
+    {      
+      setLoading(true);
+      let payload = { "cloneHRLists" : selectedCheckboxes  }
+      let result = await hiringRequestDAO.cloneHRToDemoAccountDAO(payload);
+      if (result.statusCode === 200) {      
+        message.success("Operation performed successfully, you will get an email with detailed information"); 
+        setSelectedCheckboxes([]); 
+      }
+      setLoading(false);
+    }
+    else{
+      message.error("Please select atleast one HR.");
+    }
+  };
+
+  // UTS-7517: Code for clone HR in demo acccount ends
 
   useEffect(() => {
     const getUserResult = async () => {
@@ -227,12 +261,16 @@ const AllHiringRequestScreen = () => {
         setReopenHrModal,
         setCloseHRDetail,
         setCloseHrModal,
-        userData?.LoggedInUserTypeID,setLoading
+        userData?.LoggedInUserTypeID,
+        setLoading,
+        handleDemoCloneCheckboxChange, 
+        selectedCheckboxes,       
+        showCloneHRToDemoAccount
       ),
-    [togglePriority, userData.LoggedInUserTypeID]
+    [togglePriority, userData.LoggedInUserTypeID,selectedCheckboxes]
   );
   const handleHRRequest = useCallback(
-    async (pageData) => {
+    async (pageData) => {      
       setLoading(true);
       // save filter value in localstorage
       if (pageData.filterFields_ViewAllHRs) {
@@ -254,6 +292,7 @@ const AllHiringRequestScreen = () => {
         setTotalRecords(response?.responseBody?.totalrows);
         setLoading(false);
         setAPIdata(hrUtils.modifyHRRequestData(response && response));
+        setShowCloneHRToDemoAccount(response?.responseBody?.ShowCloneToDemoAccount);
       } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
         setLoading(false);
         setTotalRecords(0);
@@ -488,7 +527,7 @@ const AllHiringRequestScreen = () => {
     setIsAllowFilters,
     setTableFilteredState,
     // tableFilteredState,
-  ]);
+  ]);  
 
   return (
     <div className={allHRStyles.hiringRequestContainer}>
@@ -653,6 +692,13 @@ const AllHiringRequestScreen = () => {
               <div className={allHRStyles.filterCount}>{filteredTagLength}</div>
             </div>
             <p onClick={() => clearFilters()}>Reset Filters</p>
+
+            {showCloneHRToDemoAccount && <button
+            className={allHRStyles.btnPrimary}
+            onClick={() => CloneHRDemoAccountAPICall()} >
+            Clone HR(s) to Demo Account
+          </button>}
+
           </div>
           <div className={allHRStyles.filterRight}>
             <Checkbox
