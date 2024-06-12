@@ -52,7 +52,7 @@ export const allHRConfig = {
               <Tooltip placement="bottom" title={"Clone HR to Demo Account"}>
                     <a href="javascript:void(0);"> 
                     <Checkbox
-                      // checked={selectedCheckboxes.includes(result.HRID)}
+                      checked={selectedCheckboxes.map(item=> item.hRID)?.includes(result.HRID)}
                       onClick={() => handleDemoCloneCheckboxChange(result)}
                     >              
                     </Checkbox> 

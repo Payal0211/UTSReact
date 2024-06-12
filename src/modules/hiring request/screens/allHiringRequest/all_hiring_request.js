@@ -108,7 +108,12 @@ const AllHiringRequestScreen = () => {
 
   const handleDemoCloneCheckboxChange = (value) => {     
     const obj = {'companyId':value.companyID, 'hRID':value.HRID, 'hR_Number': value.HR_ID};
-    setSelectedCheckboxes(prev => [...prev, obj]);    
+  
+    setSelectedCheckboxes(prev => {
+      if(prev.map(item=> item.hRID)?.includes(value.HRID)){
+        return prev.filter(item=> item.hRID !== value.HRID);
+      }
+      return [...prev, obj]});    
   };
 
   const CloneHRDemoAccountAPICall = async () => {    
@@ -262,7 +267,7 @@ const AllHiringRequestScreen = () => {
         selectedCheckboxes,       
         showCloneHRToDemoAccount
       ),
-    [togglePriority, userData.LoggedInUserTypeID]
+    [togglePriority, userData.LoggedInUserTypeID,selectedCheckboxes]
   );
   const handleHRRequest = useCallback(
     async (pageData) => {      
