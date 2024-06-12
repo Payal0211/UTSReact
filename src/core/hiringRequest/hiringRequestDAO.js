@@ -2217,6 +2217,37 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.addMemberToGspaceDAO()');
 		}
 	},
+
+	cloneHRToDemoAccountDAO:async (data) => {
+		try {
+			const amountResponse = await HiringRequestAPI.cloneHRToDemoAccount(data);
+			if (amountResponse) {
+				const statusCode = amountResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = amountResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return amountResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return amountResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.cloneHRToDemoAccountDAO()');
+		}
+	},
+
 	// getChannelLibraryDAO:async (data) => {
 	// 	try {
 	// 		const AMRESPONSE = await HiringRequestAPI.getChannelLibraryApi(data);
