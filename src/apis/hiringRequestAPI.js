@@ -1235,6 +1235,22 @@ export const HiringRequestAPI = {
 			return errorDebug(error,'HiringRequestAPI.addMemberToGspace');
 		}
 	},
+
+	cloneHRToDemoAccount: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.CLONE_HR_DEMO_ACCOUNT ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.cloneHRToDemoAccount');
+		}
+	},
+
 	// getChannelLibraryApi: async (data) => {
 	// 	let httpService = new HttpServices();
 	// 	httpService.URL =

@@ -5,7 +5,7 @@ import { ReactComponent as CloneHRSVG } from "assets/svg/cloneHR.svg";
 import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
 import { ReactComponent as CloseHR } from "assets/svg/power.svg";
 import { ReactComponent as FocusedRole } from "assets/svg/FocusRole.svg";
-import { Tooltip, message } from "antd";
+import { Tooltip, message, Checkbox } from "antd";
 import moment from "moment";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
 import { HTTPStatusCode } from "constants/network";
@@ -20,7 +20,10 @@ export const allHRConfig = {
     setCloseHRDetail,
     setCloseHrModal,
     LoggedInUserTypeID,
-    setLoading
+    setLoading,
+    handleDemoCloneCheckboxChange,
+    selectedCheckboxes,    
+    showCloneHRToDemoAccount
   ) => {
     return [
       {
@@ -31,6 +34,33 @@ export const allHRConfig = {
         width: "2%",
         render: (val) => {
           return val ? <FocusedRole /> : null;
+        },
+      },
+
+      {
+        title: "",
+        dataIndex: "showCloneToDemoAccount",
+        key: "showCloneToDemoAccount",
+        align: "center",
+        width: showCloneHRToDemoAccount === true ? "2%": "0",      
+        render: (text, result) => {
+          if(showCloneHRToDemoAccount === true)
+          {
+            return (
+              <>
+              {result?.showCloneToDemoAccount === true ? (
+              <Tooltip placement="bottom" title={"Clone HR to Demo Account"}>
+                    <a href="javascript:void(0);"> 
+                    <Checkbox
+                      // checked={selectedCheckboxes.includes(result.HRID)}
+                      onClick={() => handleDemoCloneCheckboxChange(result)}
+                    >              
+                    </Checkbox> 
+                    </a>
+                  </Tooltip>) : ""}
+              </>
+            );
+        }
         },
       },
 
