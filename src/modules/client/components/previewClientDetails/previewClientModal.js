@@ -1,7 +1,7 @@
 import Modal from "antd/lib/modal/Modal";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import previewClientStyle from "../previewClientDetails/previewClientDetail.module.css";
-import { AutoComplete, Checkbox, Select, Skeleton, Upload, message } from "antd";
+import { AutoComplete, Avatar, Checkbox, Select, Skeleton, Upload, message } from "antd";
 import { ReactComponent as EditNewIcon } from "assets/svg/editnewIcon.svg";
 import { ReactComponent as DeleteNewIcon } from "assets/svg/delete-icon.svg";
 
@@ -955,13 +955,16 @@ const [controlledSeries,setControlledSeries] = useState([]);
                       <div className={previewClientStyle.companyProfileBox}>
                         <div className={previewClientStyle.companyProfileImg}>
                          {/* {!getUploadFileData ?(<p>Upload Company Logo</p>) :(  */}
-                         <img
+                         {getCompanyDetails?.basicDetails?.companyLogo?<img
                             // src={base64Image
                             //   ? base64Image
                             //   : getUploadFileData}
                             src={getCompanyDetails?.basicDetails?.companyLogo}
                             alt="detailImg"
-                          />
+                          />:<Avatar 
+                          style={{ width: "56px",
+                          height: "56px", display: "flex",alignItems: "center"}} 
+                          size="large">{getCompanyDetails?.basicDetails?.companyName?.substring(0, 2).toUpperCase()}</Avatar>}
                           {/* )} */}
                           {NetworkInfo.ENV !== "QA" 
                           && NetworkInfo.ENV !== "LIVE"  
