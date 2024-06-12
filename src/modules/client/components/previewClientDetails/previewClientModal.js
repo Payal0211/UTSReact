@@ -967,7 +967,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           size="large">{getCompanyDetails?.basicDetails?.companyName?.substring(0, 2).toUpperCase()}</Avatar>}
                           {/* )} */}
                           {NetworkInfo.ENV !== "QA" 
-                          && NetworkInfo.ENV !== "LIVE"  
+                          && NetworkInfo.ENV !== "Live"  
                           &&<span className={previewClientStyle.editNewIcon}>
                             {" "}
                             <EditNewIcon
@@ -980,7 +980,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                         >
                           <h3>
                             {getCompanyDetails?.basicDetails?.companyName}{" "}
-                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" &&<span
+                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" &&<span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => setIsEditCompanyName(true)}
                             >
@@ -991,7 +991,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           <a>
                             {" "}
                             {getCompanyDetails?.basicDetails?.website}{" "}
-                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" &&<span
+                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" &&<span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => setIsEditCompanyWebsite(true)}
                             >
@@ -1005,7 +1005,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                       <div className={previewClientStyle.companyDetailTop}>
                         <ul>
                           <li>
-                           {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" ? <span 
+                           {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" ? <span 
                             onClick={() => setIsEditCompanyFound(true)}
                             >
                               {" "}
@@ -1018,7 +1018,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                           {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" ? <span 
+                           {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" ? <span 
                             onClick={() => setIsEditTeamSize(true)}
                             >
                               {" "}
@@ -1032,7 +1032,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" ?<span onClick={() => setIsEditCompanyType(true)}>
+                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" ?<span onClick={() => setIsEditCompanyType(true)}>
                               {" "}
                               Company Type <EditNewIcon />{" "}
                             </span>:<span>Company Type</span>}
@@ -1044,7 +1044,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" ?<span
+                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" ?<span
                               onClick={() => setIsEditCompanyIndustry(true)}
                             >
                               Company Industry <EditNewIcon />{" "}
@@ -1058,7 +1058,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" ?<span 
+                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" ?<span 
                             onClick={() => setIsEditHeadquarters(true)}
                             >
                               {" "}
@@ -1072,7 +1072,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                             </p>
                           </li>
                           <li>
-                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" ?<span 
+                            {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" ?<span 
                             onClick={() => setIsEditHeadquarters(true)}
                             >
                               {" "}
@@ -1091,7 +1091,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                       <h6>
                         {" "}
                         About us{" "}
-                        {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" &&<span className={previewClientStyle.editNewIcon} 
+                        {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" &&<span className={previewClientStyle.editNewIcon} 
                         onClick={()=>setIsEditAboutUs(true)}
                         >
                         <EditNewIcon />
@@ -1429,7 +1429,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                       <h6>
                         {" "}
                         Culture{" "}
-                       {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" && <span
+                       {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" && <span
                           className={previewClientStyle.editNewIcon}
                           onClick={() => setEditCultureSection(true)}
                         >
@@ -1676,7 +1676,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                           {getCompanyDetails?.cultureDetails?.map((val) => (
                             <div className={previewClientStyle.imgThumb}>
                               <img src={val?.cultureImage} alt="detailImg" />
-                              {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" &&<span className={previewClientStyle.DeleteBtn} onClick={()=>deleteCulturImage(val)}>
+                              {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" &&<span className={previewClientStyle.DeleteBtn} onClick={()=>deleteCulturImage(val)}>
                                 <DeleteNewIcon />{" "}
                               </span>}
                             </div>
@@ -1730,7 +1730,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                                                 src={`https://www.youtube.com/embed/${val?.youtubeLink}`}>
                                             </iframe> */}
                               <YouTubeVideo videoLink={val?.youtubeLink} />
-                              {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" &&<span className={previewClientStyle.DeleteBtn}>
+                              {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" &&<span className={previewClientStyle.DeleteBtn}>
                                 <DeleteNewIcon onClick={()=>{ removeYoutubelink(val)}}/>{" "}
                               </span>}
                             </div>
@@ -1740,7 +1740,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
 
                       <h6>
                         Company Benefits
-                        {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" &&<span
+                        {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" &&<span
                           className={previewClientStyle.editNewIcon}
                           onClick={() => setEditCompanyBenefits(true)}
                         >
@@ -1812,7 +1812,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                   <div className={previewClientStyle.formFieldTitleTwo}>
                     <h2>
                       Client Details{" "}
-                      {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" &&<span
+                      {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" &&<span
                         className={previewClientStyle.addNewClientText}
                         onClick={() => setAddNewClient(true)}
                       >
@@ -1998,7 +1998,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                               {" "}
                               {`Client ${index + 1}`}{" "}
                             </span>{" "}
-                           {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" && <span
+                           {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" && <span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => {setEditClient(true); setClickIndex(index); 
                                 setClientDetailsData({...clientDetailsData,
@@ -2236,7 +2236,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
                     Engagement Details{" "}
-                   {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" && <span
+                   {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" && <span
                       className={previewClientStyle.editNewIcon}
                       onClick={() => setEditEngagement(true)}
                     >
@@ -2601,7 +2601,7 @@ const [controlledSeries,setControlledSeries] = useState([]);
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
                     Uplers’s POC{" "}
-                   {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "LIVE" && <span
+                   {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" && <span
                       className={previewClientStyle.editNewIcon}
                       onClick={() => setEditPOC(true)}
                     >
