@@ -29,11 +29,11 @@ function ReplacementReport() {
     const [endDate, setEndDate] = useState(new Date(date));
   const [dateError, setDateError] = useState(false);
 
-  const getReplacements = async ()=>{
+  const getReplacements = async (psize,pindex)=>{
     setIsLoading(true)
     let payload = {
-        "totalrecord": pageSize,
-        "pagenumber": pageIndex,
+        "totalrecord": psize ? psize : pageSize,
+        "pagenumber": pindex ? pindex : pageIndex,
         "FilterFields": {
             "fromDate": startDate?.toLocaleDateString("en-US"),
             "toDate": endDate?.toLocaleDateString("en-US"),
@@ -316,6 +316,7 @@ const handleExport = (apiData) => {
 									onChange: (pageNum, pageSize) => {
 										setPageIndex(pageNum);
 										setPageSize(pageSize);
+                    getReplacements(pageSize, pageNum)
 									},
 									size: 'small',
 									pageSize: pageSize,
