@@ -722,8 +722,8 @@ const checkValChnage = () => {
 								name="jobDescription"
 								required
 							/>
-
-							{companyType?.id === 1 && 
+							{/* Hide company details */}
+							{/* {companyType?.id === 1 && 
 								<TextEditor
 									isControlled={true}
 									controlledValue={getHRdetails?.addHiringRequest?.aboutCompanyDesc ? getHRdetails?.addHiringRequest?.aboutCompanyDesc : getHRdetails?.companyInfo?.aboutCompanyDesc}
@@ -735,7 +735,7 @@ const checkValChnage = () => {
 									errors={errors}
 									name="aboutCompany"
 									required
-								/>}
+								/>} */}
 									{/* <div className={DebriefingHRStyle.aboutCompanyField}> 
 									<HRInputField
 										required
@@ -936,8 +936,8 @@ const checkValChnage = () => {
 							</div>
 						</div>
 					</div>
-
-					{companyType?.id === 2 &&  <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
+					{/* Hide Interviewer and Company details */}
+					{/* {companyType?.id === 2 &&  <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
 
 					
 					{companyType?.id === 1 && <>
@@ -952,7 +952,7 @@ const checkValChnage = () => {
 						fields={fields}
 						getHRdetails={getHRdetails}
 						disabledFields={disabledFields}
-					/></>}
+					/></>} */}
 
 					
 					<Divider />

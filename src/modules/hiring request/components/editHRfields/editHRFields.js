@@ -3090,6 +3090,11 @@ const EditHRFields = ({
                       errors={errors}
                       onChangeHandler={(value) => {
                         let val= value.target.value
+                        if(val === ''){
+                          setIsExpDisabled(false) 
+                          setIsFresherDisabled(false)
+                          return
+                        }
                         if(val === '0'){
                           setIsFreshersAllowed(true)
                           setIsExpDisabled(true) 

@@ -3012,6 +3012,11 @@ const HRFields = ({
                     required
                     onChangeHandler={(value) => {
                       let val= value.target.value
+                      if(val === ''){
+                        setIsExpDisabled(false) 
+                        setIsFresherDisabled(false)
+                        return
+                      }
                       if(val === '0'){
                         setIsFreshersAllowed(true)
                         setIsExpDisabled(true) 
