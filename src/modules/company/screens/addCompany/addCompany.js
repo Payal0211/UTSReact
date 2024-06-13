@@ -11,7 +11,7 @@ import FundingSection from "./fundingSection";
 import CultureAndPerks from "./cultureAndPerks";
 import ClientSection from "./clientSection";
 import EngagementSection from "./engagementSection";
-import { HTTPStatusCode } from "constants/network";
+import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { MasterDAO } from "core/master/masterDAO";
 
 function AddCompany() {
@@ -77,6 +77,19 @@ function AddCompany() {
   
     if (result?.statusCode === HTTPStatusCode.OK) {
       setCompanyDetails(result?.responseBody);
+      setLoadingDetails(false)
+    }
+    setLoadingDetails(false)
+  };
+
+  const getDetailsForAutoFetchAI = async (compURL) => {
+    setLoadingDetails(true)
+    const result = await allCompanyRequestDAO.getCompanyDetailDAO(0,compURL);
+
+    if (result?.statusCode === HTTPStatusCode.OK) {
+      let newresponse = {...result?.responseBody,basicDetails: {...result?.responseBody?.basicDetails,
+        companyLogo: `${NetworkInfo.PROTOCOL}${NetworkInfo.DOMAIN}Media/companylogo/${result?.responseBody?.basicDetails?.companyLogo}`      }      }
+      setCompanyDetails(newresponse);
       setLoadingDetails(false)
     }
     setLoadingDetails(false)
@@ -294,6 +307,7 @@ function AddCompany() {
         setCompanyDetails={setCompanyDetails}
         loadingDetails={loadingDetails}
         setDisableSubmit={setDisableSubmit}
+        getDetailsForAutoFetchAI={getDetailsForAutoFetchAI}
       />
 
       <FundingSection
