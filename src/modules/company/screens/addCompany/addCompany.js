@@ -237,7 +237,7 @@ function AddCompany() {
         "hiringTypePricingId": checkPayPer?.anotherCompanyTypeID === 1 ? d.hiringPricingType?.id : null
       },
       // "pocIds": d.uplersPOCname?.map(poc=> poc.id),
-      "pocIds": [d.uplersPOCname?.id],
+      "pocId": d.uplersPOCname?.id,
       "IsRedirectFromHRPage" : state?.createHR ? true : false
     }
 
@@ -359,7 +359,7 @@ function AddCompany() {
       <div className={AddNewClientStyle.tabsFormItem}>
         {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
-            <h3>Add POC</h3>
+            <h3>Add AM</h3>
             <p>Please provide the necessary details.</p>
           </div>
           <div className={AddNewClientStyle.tabsRightPanel}>
@@ -376,12 +376,12 @@ function AddCompany() {
                   mode={"id/value"}
                   register={register}
                   name="uplersPOCname"
-                  label="Uplers's POC name"
-                  defaultValue="Enter POC name"
+                  label="Uplers's AM name"
+                  defaultValue="Select AM name"
                   options={allPocs}
                   required
                   isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
-                  errorMsg="Please select POC name."
+                  errorMsg="Please select AM name."
                 />
                 </div>
                

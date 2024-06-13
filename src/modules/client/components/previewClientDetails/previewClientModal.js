@@ -209,7 +209,6 @@ function PreviewClientModal({
     setIsLoading(false);
   };
 
-  console.log(isSelfFunded, "isSelfFunded");
 
   const handleSubmitcompanyName = async () => {
     setIsLoading(true);
