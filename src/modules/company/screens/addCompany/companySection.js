@@ -8,7 +8,7 @@ import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
 
 import TextEditor from "shared/components/textEditor/textEditor";
 import UploadModal from "shared/components/uploadModal/uploadModal";
-import { Skeleton } from 'antd';
+import { Avatar, Skeleton } from 'antd';
 import { HTTPStatusCode } from "constants/network";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { useNavigate } from "react-router-dom";
@@ -224,14 +224,14 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     }}
                   >
                     {" "}
-                    {!getUploadFileData ? (
-                    <p>Upload Company Logo</p>
-                    // <Avatar 
-                    // style={{ width: "100%",
-                    // height: "100%", display: "flex",alignItems: "center"}} 
-                    // size="large">
-                    //   {companyDetail?.companyName?.substring(0, 2).toUpperCase()}
-                    //   </Avatar>
+                    {!getUploadFileData  ? (
+                    // <p>Upload Company Logo</p>
+                    <Avatar 
+                    style={{ width: "100%",
+                    height: "100%", display: "flex",alignItems: "center"}} 
+                    size="large">
+                      {companyDetails?.companyName?.substring(0, 2).toUpperCase()}
+                      </Avatar>
                   ) : (
                     <img
                       style={{

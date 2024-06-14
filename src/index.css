@@ -1125,6 +1125,15 @@ table {
 }
 
 
+.ant-message{
+  z-index: 99999;
+}
+
+.custom-syntooltip{
+  z-index: 9999;    
+}
+
+
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {
