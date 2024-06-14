@@ -347,7 +347,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
 								errors={errors}
 								validationSchema={{
 									required:
-										'please enter the primary client linkedin profile URL.',
+										'please enter the company linkedin URL.',
 									// pattern: {
 									// 		value: URLRegEx.url,
 									// 		message: 'Entered value does not match url format',
@@ -419,7 +419,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
             
               </div>
 
-              <div className={AddNewClientStyle.colMd6}>
+              {/* <div className={AddNewClientStyle.colMd6}>
             <HRInputField
                     register={register}
                     errors={errors}
@@ -440,13 +440,8 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     placeholder="Enter company type"
                     required
                   />
-              </div>
-            </div>
-
-            <div className={AddNewClientStyle.row}>
-         
-
-              <div className={AddNewClientStyle.colMd6}>
+              </div> */}
+                <div className={AddNewClientStyle.colMd6}>
               <HRInputField
                     register={register}
                     errors={errors}
@@ -468,6 +463,12 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     required
                   />
               </div>
+            </div>
+
+            <div className={AddNewClientStyle.row}>
+         
+
+            
 
              
 

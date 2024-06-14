@@ -256,6 +256,8 @@ function AddCompany() {
     let submitresult = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
 // console.log("submited res",submitresult)
     if(submitresult?.statusCode === HTTPStatusCode.OK){
+      setCompanyDetails(prev=> ({...prev,
+        basicDetails: payload.basicDetails}))
       if(state?.createHR){
         navigate('/allhiringrequest/addnewhr',{
           state:{
@@ -355,6 +357,7 @@ function AddCompany() {
       />
 
       <EngagementSection
+        companyID={companyID}
         register={register}
         errors={errors}
         setValue={setValue}
@@ -369,7 +372,7 @@ function AddCompany() {
       {companyID === '0' &&  <div className={AddNewClientStyle.tabsFormItem}>
         {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
-            <h3>Add AM</h3>
+            <h3>Add Add Salesperson (NBD/AM)</h3>
             <p>Please provide the necessary details.</p>
           </div>
           <div className={AddNewClientStyle.tabsRightPanel}>
@@ -386,12 +389,12 @@ function AddCompany() {
                   mode={"id/value"}
                   register={register}
                   name="uplersPOCname"
-                  label="Uplers's AM name"
-                  defaultValue="Select AM name"
+                  label="Uplers's Salesperson (NBD/AM)"
+                  defaultValue="Select Salesperson (NBD/AM)"
                   options={allPocs}
                   required
                   isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
-                  errorMsg="Please select AM name."
+                  errorMsg="Please select Salesperson (NBD/AM)."
                 />
                 </div>
                

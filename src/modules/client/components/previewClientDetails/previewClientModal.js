@@ -890,6 +890,7 @@ function PreviewClientModal({
     [flagAndCode]
   );
 
+
   const addEngagementDetails = async () => {
     // if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
 		// 	setPricingTypeError(true)
@@ -1246,7 +1247,7 @@ function PreviewClientModal({
                                 : "NA"}{" "}
                             </p>
                           </li>
-                          <li>
+                          {/* <li>
                             {NetworkInfo.ENV !== "QA" &&
                             NetworkInfo.ENV !== "Live" ? (
                               <span onClick={() => setIsEditCompanyType(true)}>
@@ -1262,7 +1263,7 @@ function PreviewClientModal({
                                 ? getCompanyDetails?.basicDetails?.companyType
                                 : "NA"}{" "}
                             </p>
-                          </li>
+                          </li> */}
                           <li>
                             {NetworkInfo.ENV !== "QA" &&
                             NetworkInfo.ENV !== "Live" ? (
@@ -1468,7 +1469,7 @@ function PreviewClientModal({
                         <div className={previewClientStyle.fundingrounds}>
                           <ul>
                             <li>
-                              <span>Self-funded</span>
+                              <span>Self-funded (bootstrapped)</span>
                             </li>
                           </ul>
                         </div>
@@ -1483,7 +1484,7 @@ function PreviewClientModal({
                                 checked={isSelfFunded}
                                 onClick={() => setIsSelfFunded((prev) => !prev)}
                               >
-                                Self-funded company without external
+                                Self-funded (bootstrapped) company without external
                                 investments.
                               </Checkbox>
                             </div>
@@ -3430,7 +3431,7 @@ function PreviewClientModal({
         </div>
       </Modal>
       {/* Company Type Modal*/}
-      <Modal
+      {/* <Modal
         centered
         open={isEditCompanyType}
         onOk={() => setIsEditCompanyType(false)}
@@ -3470,7 +3471,7 @@ function PreviewClientModal({
             SAVE{" "}
           </button>
         </div>
-      </Modal>
+      </Modal> */}
       {/* Company Industry Modal*/}
       <Modal
         centered
