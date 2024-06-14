@@ -13,8 +13,10 @@ import { HTTPStatusCode } from "constants/network";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { useNavigate } from "react-router-dom";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
+import ReactQuill from "react-quill";
 
-function CompanySection({companyID,register,errors,setValue,watch,companyDetails,setCompanyDetails,loadingDetails,clearErrors,setError,setDisableSubmit}) {
+function CompanySection({companyID,register,errors,setValue,watch,companyDetails,setCompanyDetails,loadingDetails,clearErrors,setError,
+  setDisableSubmit,aboutCompanyError}) {
   const [getUploadFileData, setUploadFileData] = useState('');
   const [base64Image, setBase64Image] = useState('');
   const [showUploadModal, setUploadModal] = useState(false);
@@ -495,7 +497,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
 
             <div className={AddNewClientStyle.row}>
             <div className={AddNewClientStyle.colMd12}>
-            <TextEditor
+            {/* <TextEditor
                 register={register}
                 setValue={setValue}
                 // errors={errors}
@@ -508,8 +510,27 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                 placeholder="Enter about company"
                 // required
                 watch={watch}
+                /> */}
+               
+              <label style={{ marginBottom: "12px" }}>
+                About Company
+                {/* <span className={AddNewClientStyle.reqField}>*</span> */}
+              </label>
+             <ReactQuill
+                register={register}
+                setValue={setValue}
+                theme="snow"
+                className="heightSize"
+                value={companyDetails?.aboutCompany ?? ''} 
+                name="aboutCompany"
+                onChange={(val) => setValue("aboutCompany",val)}
               />
-              </div>
+              {/* {aboutCompanyError && (
+                <p className={AddNewClientStyle.error}>
+                *Please enter About company
+              </p>
+              )} */}
+               </div>
             </div>
 
             {showUploadModal && (
