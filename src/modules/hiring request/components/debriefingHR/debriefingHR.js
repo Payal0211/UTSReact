@@ -20,6 +20,7 @@ import { ReactComponent as FocusRole } from 'assets/svg/FocusRole.svg';
 import plusSkill from "../../../../assets/svg/plusSkill.svg";
 import PublishHRPopup from '../publishHRPopup/publishHRPopup';
 import DebrefCompanyDetails from '../editDebrieingHR/debrefCompanyDetails';
+import ReactQuill from 'react-quill';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -664,7 +665,7 @@ const DebriefingHR = ({
 								required
 							/> */}
 
-							<TextEditor
+							{/* <TextEditor
 								isControlled={true}
 								// controlledValue={JDParsedSkills?.Requirements || ''}
 								controlledValue={(addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
@@ -679,6 +680,29 @@ const DebriefingHR = ({
 								errors={errors}
 								name="jobDescription"
 								required
+							/> */}
+							<label style={{ marginBottom: "12px" }}>
+								Job Description
+								{/* <span className={AddNewClientStyle.reqField}>*</span> */}
+							</label>
+							<ReactQuill
+								register={register}
+								setValue={setValue}
+								theme="snow"
+								className="heightSize"
+								value={(addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
+									JDParsedSkills?.JobDescription ||
+									(addData?.salesHiringRequest_Details?.JobDescription)) ?? ''
+								}
+								name="jobDescription"
+								onChange={(val) => setValue("jobDescription",val)}
+							/>
+							<input
+								type="hidden"
+								{...register('jobDescription', {
+								required: 'Job description is required',
+								validate: (value) => value.trim() !== '' || 'Job description cannot be empty'
+								})}
 							/>
 						{/* Hide company details */}
 							{/* {userCompanyTypeID === 1 && 

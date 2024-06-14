@@ -9,6 +9,7 @@ import { Checkbox, Skeleton, Upload, message } from 'antd';
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { HTTPStatusCode } from "constants/network";
 import { HttpStatusCode } from "axios";
+import ReactQuill from "react-quill";
 
 function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDetails,cultureDetails,companyDetails,setCompanyDetails,companyID,loadingDetails,cultureAndParksValue}) {
     const [controlledperk, setControlledperk] = useState([]);
@@ -192,7 +193,7 @@ const addnewYoutubeLink = (e) =>{
               <div className={AddNewClientStyle.tabsRightPanel}>
             <div className={AddNewClientStyle.row}>
         <div className={AddNewClientStyle.colMd12}>
-        <TextEditor
+        {/* <TextEditor
             register={register}
             setValue={setValue}
             // errors={errors}
@@ -205,7 +206,20 @@ const addnewYoutubeLink = (e) =>{
             placeholder="Enter about company culture"
             required={false}
             watch={watch}
-          />
+          /> */}
+           <label style={{ marginBottom: "12px" }}>
+              Culture
+              {/* <span className={AddNewClientStyle.reqField}>*</span> */}
+            </label>
+            <ReactQuill
+              register={register}
+              setValue={setValue}
+              theme="snow"
+              className="heightSize"
+              value={companyDetails?.culture ? companyDetails.culture : ''} 
+              name="culture"
+              onChange={(val) => setValue("culture",val)}
+            />
           </div>
         </div>
 

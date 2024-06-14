@@ -26,6 +26,7 @@ function AddCompany() {
   const [pricingTypeError, setPricingTypeError] = useState(false);
   const [payPerError, setPayPerError] = useState(false);
   const [creditError, setCreditError] = useState(false);
+  const [aboutCompanyError, setAboutCompanyError] = useState(false);
 
   const [loadingDetails,setLoadingDetails] = useState(false)
   const [disableSubmit , setDisableSubmit] = useState(false)
@@ -145,6 +146,7 @@ function AddCompany() {
   }, [getCompanyDetails?.pocUserIds, allPocs]);
 
   const clientSubmitHandler = async (d) => {
+    console.log(d,"aboutCompanyaboutCompanyaboutCompany");
     setLoadingDetails(true)
     setDisableSubmit(true)
     if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
@@ -167,6 +169,13 @@ function AddCompany() {
 			setCreditError(true)
 			return
 		}
+
+  
+
+    if(!watch("aboutCompany")){
+      setAboutCompanyError(true);
+      return;
+    }
 
     // check for at lest one admin client
     let isAdmin = false
@@ -296,6 +305,7 @@ function AddCompany() {
         setCompanyDetails={setCompanyDetails}
         loadingDetails={loadingDetails}
         setDisableSubmit={setDisableSubmit}
+        aboutCompanyError={aboutCompanyError}
       />
 
       <FundingSection
