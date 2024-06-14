@@ -1474,7 +1474,7 @@ function PreviewClientModal({
                         </div>
                       )}
 
-                      {getCompanyDetails?.basicDetails?.isSelfFunded ===
+                      {/* {getCompanyDetails?.basicDetails?.isSelfFunded ===
                         true && (
                         <>
                           <div className={previewClientStyle.row}>
@@ -1610,14 +1610,6 @@ function PreviewClientModal({
                           <div
                             className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24}`}
                           >
-                            {/* <button
-                              type="button"
-                              className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`}
-                              onClick={() => setAnotherRound(false)}
-                            >
-                              {" "}
-                              Cancel{" "}
-                            </button> */}
                             <button
                               type="button"
                               className={previewClientStyle.btnPrimary}
@@ -1628,7 +1620,7 @@ function PreviewClientModal({
                             </button>
                           </div>
                         </>
-                      )}
+                      )} */}
 
                       {/* <div className={previewClientStyle.roundsListed}>
                         {getCompanyDetails?.fundingDetails?.map((val) => (
