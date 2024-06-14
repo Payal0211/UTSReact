@@ -345,7 +345,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
 								errors={errors}
 								validationSchema={{
 									required:
-										'please enter the primary client linkedin profile URL.',
+										'please enter the company linkedin URL.',
 									// pattern: {
 									// 		value: URLRegEx.url,
 									// 		message: 'Entered value does not match url format',
