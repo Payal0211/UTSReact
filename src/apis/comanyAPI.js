@@ -10,7 +10,7 @@ export const CompanyAPI = {
 			NetworkInfo.NETWORK +
 			SubDomain.COMPANY +
 			CompanysAPI.GET_DETAILS +
-			`?CompanyID=${companyID}${compURL && `&companyurl=${compURL}`}`
+			`?CompanyID=${companyID}${compURL ? `&companyurl=${compURL}`  : ''}`
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
