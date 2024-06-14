@@ -175,7 +175,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
            {index === 0 && <div className={AddNewClientStyle.row}>
                     <div className={AddNewClientStyle.colMd12} style={{marginBottom:'15px'}}>
                         <Checkbox checked={isSelfFunded} onClick={()=>setIsSelfFunded(prev=> !prev)}>
-                                            Self-funded company without external investments.
+                        Self-funded (bootstrapped) company without external investments.
                         </Checkbox>
                     </div>
             </div>} 

@@ -417,7 +417,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
             
               </div>
 
-              <div className={AddNewClientStyle.colMd6}>
+              {/* <div className={AddNewClientStyle.colMd6}>
             <HRInputField
                     register={register}
                     errors={errors}
@@ -438,13 +438,8 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     placeholder="Enter company type"
                     required
                   />
-              </div>
-            </div>
-
-            <div className={AddNewClientStyle.row}>
-         
-
-              <div className={AddNewClientStyle.colMd6}>
+              </div> */}
+                <div className={AddNewClientStyle.colMd6}>
               <HRInputField
                     register={register}
                     errors={errors}
@@ -466,6 +461,12 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     required
                   />
               </div>
+            </div>
+
+            <div className={AddNewClientStyle.row}>
+         
+
+            
 
              
 

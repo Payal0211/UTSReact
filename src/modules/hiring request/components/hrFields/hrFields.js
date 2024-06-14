@@ -3221,8 +3221,8 @@ const HRFields = ({
                     controlledValue={controlledFromTimeValue}
                     setControlledValue={val=> {setControlledFromTimeValue(val);
                       let index = getStartEndTimes.findIndex(item=> item.value === val)
-                      if(index >= getStartEndTimes.length -16){         
-                          let newInd =   index - (getStartEndTimes.length -16)
+                      if(index >= getStartEndTimes.length -18){         
+                          let newInd =   index - (getStartEndTimes.length -18)
                           let endtime = getStartEndTimes[newInd]
                           setControlledEndTimeValue(
                             endtime.value
@@ -3231,7 +3231,7 @@ const HRFields = ({
                             "endTime",{id: "", value: endtime.value}  
                           );
                       }else{
-                          let endtime = getStartEndTimes[index + 16]
+                          let endtime = getStartEndTimes[index + 18]
                           setControlledEndTimeValue(
                             endtime.value
                           );
