@@ -3159,7 +3159,7 @@ function PreviewClientModal({
               </div>
             </div>
 
-            <div className={previewClientStyle.formFields}>
+            {/* <div className={previewClientStyle.formFields}>
               <div className={previewClientStyle.formFieldsbox}>
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
@@ -3234,7 +3234,7 @@ function PreviewClientModal({
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </Modal>

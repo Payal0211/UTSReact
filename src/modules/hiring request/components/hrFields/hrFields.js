@@ -118,6 +118,7 @@ const HRFields = ({
       value: false,
     },
   ]);
+  const [autoCompleteValue,setAutoCompleteValue] = useState("")
   const [talentRole, setTalentRole] = useState([]);
   const [country, setCountry] = useState([]);
   const [currency, setCurrency] = useState([]);
@@ -1863,6 +1864,12 @@ const HRFields = ({
   };
 
   const validateCompanyName = async () => {
+    setClientNameMessage("");
+    clearErrors('clientName')
+    setValue('clientName','')
+    setAutoCompleteValue('')
+    setAddClient(false)
+    setCompanyID(null)
     let payload = {
        "workEmail": "",
        "companyName": watch('companyName').trim(),
@@ -1957,12 +1964,14 @@ const HRFields = ({
                         <AutoComplete
                           disabled={companyID === undefined || companyID === null ? true : false}
                           options={getClientNameSuggestion}
-                          onSelect={(clientName,_obj) => getClientNameValue(clientName,_obj)}
+                          onSelect={(clientName,_obj) => {getClientNameValue(clientName,_obj);setAutoCompleteValue(clientName)}}
                           filterOption={true}
                           onSearch={(searchValue) => {
                             setClientNameSuggestion([]);
                             getClientNameSuggestionHandler(searchValue);
+                            setAutoCompleteValue(searchValue);
                           }}
+                          value={autoCompleteValue}
                           onChange={(clientName) =>
                             setValue("clientName", clientName)
                           }
@@ -3003,6 +3012,11 @@ const HRFields = ({
                     required
                     onChangeHandler={(value) => {
                       let val= value.target.value
+                      if(val === ''){
+                        setIsExpDisabled(false) 
+                        setIsFresherDisabled(false)
+                        return
+                      }
                       if(val === '0'){
                         setIsFreshersAllowed(true)
                         setIsExpDisabled(true) 

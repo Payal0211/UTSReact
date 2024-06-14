@@ -1,4 +1,4 @@
-import React , { useEffect, useState } from 'react'
+import React , { useEffect, useState, useCallback } from 'react'
 import TalentBackoutStyle from "./talentBackoutReport.module.css";
 import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
 import DatePicker from "react-datepicker";
@@ -29,11 +29,11 @@ function TalentBackoutReport() {
     const [endDate, setEndDate] = useState(new Date(date));
   const [dateError, setDateError] = useState(false);
 
-  const getBackoutData = async ()=>{
+  const getBackoutData = useCallback(async (psize,pInd)=>{
     setIsLoading(true)
     let payload = {
-        "totalrecord": pageSize,
-        "pagenumber": pageIndex,
+        "totalrecord": psize ? psize : pageSize,
+        "pagenumber": pInd ? pInd : pageIndex,
         "FilterFields": {
             "fromDate": startDate?.toLocaleDateString("en-US"),
             "toDate": endDate?.toLocaleDateString("en-US"),
@@ -54,7 +54,7 @@ function TalentBackoutReport() {
         setIsLoading(false)
     }
     setIsLoading(false)
-  }
+  } ,[endDate, pageIndex, pageSize, searchText,startDate]) 
 
   useEffect(()=>{
     if(endDate && startDate){
@@ -69,7 +69,7 @@ function TalentBackoutReport() {
     setStartDate(start);
     setEndDate(end);
 
-    if (start.toLocaleDateString() === end.toLocaleDateString()) {
+    if (start?.toLocaleDateString() === end?.toLocaleDateString()) {
       let params = {
         fromDate: new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()),
         toDate: new Date(date),
@@ -266,7 +266,7 @@ const handleExport = (apiData) => {
 									onChange: (pageNum, pageSize) => {                    
 										setPageIndex(pageNum);
 										setPageSize(pageSize);
-                    getBackoutData();
+                    getBackoutData(pageSize , pageNum);
 									},
 									size: 'small',
 									pageSize: pageSize,

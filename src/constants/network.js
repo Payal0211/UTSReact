@@ -306,6 +306,7 @@ export class HiringRequestsAPI {
 	static CLOSE_ACTION_History = 'GetHRCloseActionHistory'
 	static DELETE_TEST_HR = 'DeleteTestHR'
 	static GET_SALES_USER_WITH_HEAD_AFTER_HRCREATE = "GetSalesUserWithHeadAfterHRCreate";
+	static CLONE_HR_DEMO_ACCOUNT = "CloneHRDemoAccount";
 }
 
 export class UsersAPI {

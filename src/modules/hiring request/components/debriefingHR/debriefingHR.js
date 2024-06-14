@@ -680,8 +680,8 @@ const DebriefingHR = ({
 								name="jobDescription"
 								required
 							/>
-
-							{userCompanyTypeID === 1 && 
+						{/* Hide company details */}
+							{/* {userCompanyTypeID === 1 && 
 							<TextEditor
 									isControlled={true}
 									controlledValue={AboutCompanyDesc ? AboutCompanyDesc : getHRdetails?.companyInfo?.aboutCompanyDesc}
@@ -693,7 +693,7 @@ const DebriefingHR = ({
 									errors={errors}
 									name="aboutCompany"
 									required
-								/>}
+								/>} */}
 								{/* <div className={DebriefingHRStyle.aboutCompanyField}>
 								<HRInputField
 									required
@@ -874,8 +874,8 @@ const DebriefingHR = ({
 						</div>
 					</div>
 				</div>
-
-				{userCompanyTypeID === 2 && <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
+                {/* Hide Interviewer and Company Details */}
+				{/* {userCompanyTypeID === 2 && <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
 
 				{userCompanyTypeID === 1 && <>
 					<Divider />
@@ -894,7 +894,7 @@ const DebriefingHR = ({
 						getHRdetails={getHRdetails}
 						disabledFields={disabledFields}
 					/>
-				</>}
+				</>} */}
 				<Divider />
 				{isLoading ? (
 					<SpinLoader />
