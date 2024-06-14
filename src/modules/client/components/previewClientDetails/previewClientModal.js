@@ -14,6 +14,7 @@ import {
   Radio,
   Select,
   Skeleton,
+  Tooltip,
   Upload,
   message,
 } from "antd";
@@ -43,6 +44,7 @@ import UploadModal from "shared/components/uploadModal/uploadModal";
 import "react-quill/dist/quill.snow.css";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { getFlagAndCodeOptions } from "modules/client/clientUtils";
+import { ReactComponent as RefreshSyncSVG } from 'assets/svg/refresh-sync.svg'
 
 function PreviewClientModal({
   isPreviewModal,
@@ -128,6 +130,7 @@ function PreviewClientModal({
   const [clientValueDetails, setClientValueDetails] = useState({});
   const [clickIndex, setClickIndex] = useState();
   const [controlledSeries, setControlledSeries] = useState([]);
+  const [messageAPI, contextHolder] = message.useMessage();
   const [clientDetailsData, setClientDetailsData] = useState({
     clientID: "",
     en_Id: "",
@@ -208,7 +211,6 @@ function PreviewClientModal({
     }
     setIsLoading(false);
   };
-
 
   const handleSubmitcompanyName = async () => {
     setIsLoading(true);
@@ -546,10 +548,18 @@ function PreviewClientModal({
               ...prev.basicDetails?.companyLogo,
             },
           }));
+          let payload = {
+            basicDetails: {
+              companyID: getcompanyID,
+              companyLogo:imgUrls[0],
+            },
+            IsUpdateFromPreviewPage: true,
+          }
+          setUploadModal(false);
+          let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
           getDetails();
         }
 
-        setUploadModal(false);
       }
     },
     [getValidation, setBase64Image, setUploadFileData, getcompanyID, setValue]
@@ -880,8 +890,27 @@ function PreviewClientModal({
     [flagAndCode]
   );
 
-  const addEngagementDetails = async (d) => {
-    // console.log(d, "sasdadasdasdasdasdasd");
+
+  const addEngagementDetails = async () => {
+    // if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
+		// 	setPricingTypeError(true)
+    //   // setLoadingDetails(false)
+    //   // setDisableSubmit(false)
+		// 	return
+		// }
+    // if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
+    //   // setLoadingDetails(false)
+    //   // setDisableSubmit(false)
+		// 	setPayPerError(true)
+		// 	return
+		// }
+
+    // if(checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob===false && IsChecked?.isProfileView===false){
+		// 	// setLoadingDetails(false)
+    //   // setDisableSubmit(false)
+		// 	setCreditError(true)
+		// 	return
+		// }
     setIsLoading(true);
     let payload = {
       basicDetails: {
@@ -892,17 +921,16 @@ function PreviewClientModal({
         anotherCompanyTypeID: checkPayPer?.anotherCompanyTypeID,
         isPostaJob: IsChecked.isPostaJob,
         isProfileView: IsChecked.isProfileView,
-        jpCreditBalance: watch("freeCredit"),
+        jpCreditBalance:checkPayPer?.companyTypeID===2? watch("freeCredit")??null:null,
         isTransparentPricing:
           typeOfPricing === 1 ? true : typeOfPricing === 0 ? false : null,
         isVettedProfile: true,
-        creditAmount:
-          watch("creditCurrency") === "INR" ? null : watch("creditAmount"),
-        creditCurrency: watch("creditCurrency"),
-        jobPostCredit: watch("jobPostCredit"),
-        vettedProfileViewCredit: watch("vettedProfileViewCredit"),
-        nonVettedProfileViewCredit: watch("nonVettedProfileViewCredit"),
-        hiringTypePricingId: watch("hiringPricingType")?.id,
+        creditAmount:(checkPayPer?.companyTypeID===2) ?  watch("creditCurrency"):null,
+        creditCurrency:checkPayPer?.companyTypeID===2? watch("creditCurrency"):null,
+        jobPostCredit: (checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob=== true) ? watch("jobPostCredit") ?? null : null,
+        vettedProfileViewCredit: (checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ? watch("vettedProfileViewCredit") ?? null : null,
+        nonVettedProfileViewCredit:(checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ? watch("nonVettedProfileViewCredit") ?? null : null,
+        hiringTypePricingId:checkPayPer?.anotherCompanyTypeID === 1 ? watch("hiringPricingType")?.id : null,
       },
 
       IsUpdateFromPreviewPage: true,
@@ -1061,8 +1089,23 @@ function PreviewClientModal({
     setIsLoading(false);
   };
 
+  const syncCompany = async() =>{
+    setIsLoading(true)
+    let res = await allCompanyRequestDAO.getSyncCompanyProfileDAO(getcompanyID);
+    if(res?.statusCode === 200){
+      messageAPI.open({
+        type: "success",
+        content: "Sync successfully",
+        className: 'synMsgToastr',
+        duration: 2,
+      });
+    }
+    setIsLoading(false)
+  }
+
   return (
     <>
+    
       <LogoLoader visible={isLoading} />
       <Modal
         centered
@@ -1075,10 +1118,20 @@ function PreviewClientModal({
         className={previewClientStyle.clientDetailModal}
         wrapClassName="clientDetailModalWrapper"
       >
+        {contextHolder}
         <div className={previewClientStyle.PreviewpageMainWrap}>
-          <div className={previewClientStyle.PostHeader}>
+          <div className={`${previewClientStyle.PostHeader} ${previewClientStyle.refreshBtnWrap}`}>
             <h4>Company / Client Details</h4>
+            <div className={previewClientStyle.hiringRequestPriority} onClick={()=>syncCompany()}>
+              <Tooltip title={'Sync company data to ATS'} placement="bottom"
+              style={{"zIndex":"9999"}}
+            
+              overlayClassName="custom-syntooltip">
+                <RefreshSyncSVG width="17" height="16" style={{ fontSize: '16px' }} />
+            </Tooltip>
+            </div>
           </div>
+         
 
           <div className={previewClientStyle.PostJobStepSecondWrap}>
             <div className={previewClientStyle.formFields}>
@@ -1422,7 +1475,7 @@ function PreviewClientModal({
                         </div>
                       )}
 
-                      {getCompanyDetails?.basicDetails?.isSelfFunded ===
+                      {/* {getCompanyDetails?.basicDetails?.isSelfFunded ===
                         true && (
                         <>
                           <div className={previewClientStyle.row}>
@@ -1558,14 +1611,6 @@ function PreviewClientModal({
                           <div
                             className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24}`}
                           >
-                            {/* <button
-                              type="button"
-                              className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`}
-                              onClick={() => setAnotherRound(false)}
-                            >
-                              {" "}
-                              Cancel{" "}
-                            </button> */}
                             <button
                               type="button"
                               className={previewClientStyle.btnPrimary}
@@ -1576,7 +1621,7 @@ function PreviewClientModal({
                             </button>
                           </div>
                         </>
-                      )}
+                      )} */}
 
                       {/* <div className={previewClientStyle.roundsListed}>
                         {getCompanyDetails?.fundingDetails?.map((val) => (
@@ -3107,7 +3152,7 @@ function PreviewClientModal({
               </div>
             </div>
 
-            {/* <div className={previewClientStyle.formFields}>
+            <div className={previewClientStyle.formFields}>
               <div className={previewClientStyle.formFieldsbox}>
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
@@ -3182,7 +3227,7 @@ function PreviewClientModal({
                   </div>
                 </div>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </Modal>
