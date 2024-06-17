@@ -174,6 +174,8 @@ function AddCompany() {
 
     if(!watch("aboutCompany")){
       setAboutCompanyError(true);
+      setLoadingDetails(false)
+      setDisableSubmit(false)
       return;
     }
 

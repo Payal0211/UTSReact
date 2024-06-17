@@ -645,7 +645,7 @@ const HRFields = ({
 
     setTalentRole(talentRole && talentRole.responseBody);
     setTalentRole((preValue) => {
-      let oldArray = [...preValue]
+      let oldArray = new Array(preValue) 
       return [
       ...oldArray,
       {
@@ -839,7 +839,7 @@ const HRFields = ({
             }
 
             if(existingClientDetails?.responseBody?.salesuserid > 0){
-              setIsSalesPersionDisable(true)
+              // setIsSalesPersionDisable(true)
               let salesUserObj = salesPerson.filter(p=> p.id === parseInt(existingClientDetails?.responseBody?.salesuserid))
               setValue("salesPerson", salesUserObj[0]?.id);
               setSalesPersionNameFromEmail(salesUserObj[0]?.value)
