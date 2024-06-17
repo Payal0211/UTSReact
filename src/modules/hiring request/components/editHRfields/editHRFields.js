@@ -3412,7 +3412,7 @@ const EditHRFields = ({
                     />
                   </div>
                 </div>
-                {companyType?.id=== 1 && <> 
+                {/* {companyType?.id=== 1 && <> 
                  {(removeFields !== null && removeFields?.dealID === true) ? null :   <div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     disabled={true}
@@ -3423,7 +3423,7 @@ const EditHRFields = ({
                     placeholder="Enter ID"
                   />
                 </div>}
-                </>}             
+                </>}              */}
               
               </div>
 
