@@ -3315,7 +3315,7 @@ const HRFields = ({
                   />
                 </div>
               </div>
-              {userCompanyTypeID === 1 && <>
+              {/* {userCompanyTypeID === 1 && <>
               {(removeFields !== null && removeFields?.dealID === true) ? null : <div className={HRFieldStyle.colMd6}>
                 <HRInputField
                   register={register}
@@ -3326,7 +3326,7 @@ const HRFields = ({
                   placeholder="Enter ID"
                 />
               </div>}
-              </>}
+              </>} */}
               
              
             </div>

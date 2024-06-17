@@ -385,15 +385,15 @@ function AddCompany() {
         loadingDetails={loadingDetails}
       />
 
-      {companyID === '0' &&  <div className={AddNewClientStyle.tabsFormItem}>
+        <div className={AddNewClientStyle.tabsFormItem}>
         {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
-            <h3>Add Add Salesperson (NBD/AM)</h3>
+            <h3>{companyID === '0' && "Add"} Salesperson (NBD/AM)</h3>
             <p>Please provide the necessary details.</p>
           </div>
           <div className={AddNewClientStyle.tabsRightPanel}>
             <div className={AddNewClientStyle.row}>
-              <div className={AddNewClientStyle.colMd12}>
+              <div className={AddNewClientStyle.colMd6}>
                 <div className={AddNewClientStyle.formGroup}>
                    <HRSelectField
                   isControlled={true}
@@ -419,7 +419,7 @@ function AddCompany() {
           </div>
         </div>}
         
-      </div>}
+      </div>
      
 
       <div className={AddNewClientStyle.formPanelAction}>
