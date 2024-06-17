@@ -515,22 +515,22 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                
               <label style={{ marginBottom: "12px" }}>
                 About Company
-                {/* <span className={AddNewClientStyle.reqField}>*</span> */}
+                <span className={AddNewClientStyle.reqField}>*</span>
               </label>
              <ReactQuill
                 register={register}
                 setValue={setValue}
                 theme="snow"
                 className="heightSize"
-                value={companyDetails?.aboutCompany ?? ''} 
+                value={!watch("aboutCompany") ? companyDetails?.aboutCompany ?? '' : watch("aboutCompany")} 
                 name="aboutCompany"
                 onChange={(val) => setValue("aboutCompany",val)}
               />
-              {/* {aboutCompanyError && (
+              {aboutCompanyError && (
                 <p className={AddNewClientStyle.error}>
                 *Please enter About company
               </p>
-              )} */}
+              )}
                </div>
             </div>
 
