@@ -487,7 +487,7 @@ const ViewHRDetails = () => {
               About Company
                 <i className={ViewHRDetailsStyle.blueDot} />
               </h3>
-              {hiringDetails?.responseBody?.details?.aboutCompanyDesc? <div  dangerouslySetInnerHTML={{__html:hiringDetails?.responseBody?.details?.aboutCompanyDesc}}></div> : "NA"}
+              {hiringDetails?.responseBody?.details?.aboutCompanyDesc? <div className="jobDescrition" dangerouslySetInnerHTML={{__html:hiringDetails?.responseBody?.details?.aboutCompanyDesc}}></div> : "NA"}
                
                  
               </div>}
@@ -647,8 +647,9 @@ const ViewHRDetails = () => {
                   hiringDetails?.responseBody?.details?.job_Description
                 ) ? (
                   <div 
-                  className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+                  className={ViewHRDetailsStyle.viewHrJDDetailsBox}  
                   >
+                    <div className="jobDescrition">
                     <ul>
                       {JSON.parse(
                         hiringDetails?.responseBody?.details
@@ -657,6 +658,7 @@ const ViewHRDetails = () => {
                         <li dangerouslySetInnerHTML={{ __html: sanitizedDescription(text) }} />
                       ))}
                     </ul>
+                    </div>
                   </div>
                 ) : (
                   <div

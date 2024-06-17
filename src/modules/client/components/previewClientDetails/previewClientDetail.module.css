@@ -40,6 +40,20 @@
     line-height: 26px;
 }
 
+.PreviewpageMainWrap .PostHeader.refreshBtnWrap{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.PreviewpageMainWrap .PostHeader.refreshBtnWrap .hiringRequestPriority{
+    cursor: pointer;
+    display: flex;
+    border: 1px solid #b7b7b7;
+    padding: 4px;
+    border-radius: 4px;
+}
+
 .PreviewpageMainWrap ul{
     padding: 0;
 }
@@ -836,5 +850,10 @@
     z-index: 9999 !important;
 }
 
+
+.syncTooltip{
+    position: relative;
+    z-index: 9999 !important;
+}
 
 /* Edit Modal css End */

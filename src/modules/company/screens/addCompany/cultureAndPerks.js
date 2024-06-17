@@ -9,6 +9,7 @@ import { Checkbox, Skeleton, Upload, message } from 'antd';
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { HTTPStatusCode } from "constants/network";
 import { HttpStatusCode } from "axios";
+import ReactQuill from "react-quill";
 
 function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDetails,cultureDetails,companyDetails,setCompanyDetails,companyID,loadingDetails,cultureAndParksValue}) {
     const [controlledperk, setControlledperk] = useState([]);
@@ -134,9 +135,9 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
    }
 
 const addnewYoutubeLink = (e) =>{
-  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=%\?]{11})$/;;
+  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=%\?]{11})$/;
                       if(!regex.test(e.target.value)){
-                        return message.error('Youtube link is not valid')
+                        return message.error('Please provide proper youtube video link, channel/page link not allowed.')
                       }
 
                     let youtubeDetail = {youtubeLink: watch('youtubeLink'), 
@@ -192,7 +193,7 @@ const addnewYoutubeLink = (e) =>{
               <div className={AddNewClientStyle.tabsRightPanel}>
             <div className={AddNewClientStyle.row}>
         <div className={AddNewClientStyle.colMd12}>
-        <TextEditor
+        {/* <TextEditor
             register={register}
             setValue={setValue}
             // errors={errors}
@@ -205,7 +206,20 @@ const addnewYoutubeLink = (e) =>{
             placeholder="Enter about company culture"
             required={false}
             watch={watch}
-          />
+          /> */}
+           <label style={{ marginBottom: "12px" }}>
+              Culture
+              {/* <span className={AddNewClientStyle.reqField}>*</span> */}
+            </label>
+            <ReactQuill
+              register={register}
+              setValue={setValue}
+              theme="snow"
+              className="heightSize"
+              value={companyDetails?.culture ? companyDetails.culture : ''} 
+              name="culture"
+              onChange={(val) => setValue("culture",val)}
+            />
           </div>
         </div>
 
@@ -322,7 +336,7 @@ const addnewYoutubeLink = (e) =>{
                 type={InputType.TEXT}
                 onChangeHandler={(e) => {
                 }}
-                placeholder="Add Links and press Enter"
+                placeholder="Ex: https://www.youtube.com/watch?v=Bzf-ngn_JAw"
               />
         </div>
         </div>
@@ -353,9 +367,9 @@ const addnewYoutubeLink = (e) =>{
               mode={'tags'}
               register={register}
               name="perksAndAdvantages"
-              label="Company perks & advantages"
-              defaultValue="Mention perks & advantages"
-              placeholder="Mention perks & advantages"
+              label="Company perks & benefits"
+              defaultValue="Mention perks & benefits"
+              placeholder="Mention perks & benefits"
               options={combinedPerkMemo}
               setOptions={setCombinedPerkMemo}
             />

@@ -26,6 +26,7 @@ function AddCompany() {
   const [pricingTypeError, setPricingTypeError] = useState(false);
   const [payPerError, setPayPerError] = useState(false);
   const [creditError, setCreditError] = useState(false);
+  const [aboutCompanyError, setAboutCompanyError] = useState(false);
 
   const [loadingDetails,setLoadingDetails] = useState(false)
   const [disableSubmit , setDisableSubmit] = useState(false)
@@ -158,6 +159,7 @@ function AddCompany() {
   }, [getCompanyDetails?.pocUserIds, allPocs]);
 
   const clientSubmitHandler = async (d) => {
+    console.log(d,"aboutCompanyaboutCompanyaboutCompany");
     setLoadingDetails(true)
     setDisableSubmit(true)
     if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
@@ -180,6 +182,15 @@ function AddCompany() {
 			setCreditError(true)
 			return
 		}
+
+  
+
+    if(!watch("aboutCompany")){
+      setAboutCompanyError(true);
+      setLoadingDetails(false)
+      setDisableSubmit(false)
+      return;
+    }
 
     // check for at lest one admin client
     let isAdmin = false
@@ -250,7 +261,7 @@ function AddCompany() {
         "hiringTypePricingId": checkPayPer?.anotherCompanyTypeID === 1 ? d.hiringPricingType?.id : null
       },
       // "pocIds": d.uplersPOCname?.map(poc=> poc.id),
-      "pocIds": [d.uplersPOCname?.id],
+      "pocId": d.uplersPOCname?.id,
       "IsRedirectFromHRPage" : state?.createHR ? true : false
     }
 
@@ -260,6 +271,8 @@ function AddCompany() {
     let submitresult = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
 // console.log("submited res",submitresult)
     if(submitresult?.statusCode === HTTPStatusCode.OK){
+      setCompanyDetails(prev=> ({...prev,
+        basicDetails: payload.basicDetails}))
       if(state?.createHR){
         navigate('/allhiringrequest/addnewhr',{
           state:{
@@ -307,6 +320,7 @@ function AddCompany() {
         setCompanyDetails={setCompanyDetails}
         loadingDetails={loadingDetails}
         setDisableSubmit={setDisableSubmit}
+        aboutCompanyError={aboutCompanyError}
         getDetailsForAutoFetchAI={getDetailsForAutoFetchAI}
       />
 
@@ -359,6 +373,7 @@ function AddCompany() {
       />
 
       <EngagementSection
+        companyID={companyID}
         register={register}
         errors={errors}
         setValue={setValue}
@@ -370,10 +385,10 @@ function AddCompany() {
         loadingDetails={loadingDetails}
       />
 
-      <div className={AddNewClientStyle.tabsFormItem}>
+      {companyID === '0' &&  <div className={AddNewClientStyle.tabsFormItem}>
         {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
-            <h3>Add POC</h3>
+            <h3>Add Add Salesperson (NBD/AM)</h3>
             <p>Please provide the necessary details.</p>
           </div>
           <div className={AddNewClientStyle.tabsRightPanel}>
@@ -390,12 +405,12 @@ function AddCompany() {
                   mode={"id/value"}
                   register={register}
                   name="uplersPOCname"
-                  label="Uplers's POC name"
-                  defaultValue="Enter POC name"
+                  label="Uplers's Salesperson (NBD/AM)"
+                  defaultValue="Select Salesperson (NBD/AM)"
                   options={allPocs}
                   required
                   isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
-                  errorMsg="Please select POC name."
+                  errorMsg="Please select Salesperson (NBD/AM)."
                 />
                 </div>
                
@@ -404,7 +419,8 @@ function AddCompany() {
           </div>
         </div>}
         
-      </div>
+      </div>}
+     
 
       <div className={AddNewClientStyle.formPanelAction}>
         <button onClick={() => navigate(-1)} className={AddNewClientStyle.btn}>

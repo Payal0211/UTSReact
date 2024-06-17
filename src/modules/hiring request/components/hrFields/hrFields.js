@@ -645,7 +645,7 @@ const HRFields = ({
 
     setTalentRole(talentRole && talentRole.responseBody);
     setTalentRole((preValue) => {
-      let oldArray = [...preValue]
+      let oldArray = new Array(preValue) 
       return [
       ...oldArray,
       {
@@ -839,7 +839,7 @@ const HRFields = ({
             }
 
             if(existingClientDetails?.responseBody?.salesuserid > 0){
-              setIsSalesPersionDisable(true)
+              // setIsSalesPersionDisable(true)
               let salesUserObj = salesPerson.filter(p=> p.id === parseInt(existingClientDetails?.responseBody?.salesuserid))
               setValue("salesPerson", salesUserObj[0]?.id);
               setSalesPersionNameFromEmail(salesUserObj[0]?.value)
@@ -3012,6 +3012,11 @@ const HRFields = ({
                     required
                     onChangeHandler={(value) => {
                       let val= value.target.value
+                      if(val === ''){
+                        setIsExpDisabled(false) 
+                        setIsFresherDisabled(false)
+                        return
+                      }
                       if(val === '0'){
                         setIsFreshersAllowed(true)
                         setIsExpDisabled(true) 
@@ -3216,8 +3221,8 @@ const HRFields = ({
                     controlledValue={controlledFromTimeValue}
                     setControlledValue={val=> {setControlledFromTimeValue(val);
                       let index = getStartEndTimes.findIndex(item=> item.value === val)
-                      if(index >= getStartEndTimes.length -16){         
-                          let newInd =   index - (getStartEndTimes.length -16)
+                      if(index >= getStartEndTimes.length -18){         
+                          let newInd =   index - (getStartEndTimes.length -18)
                           let endtime = getStartEndTimes[newInd]
                           setControlledEndTimeValue(
                             endtime.value
@@ -3226,7 +3231,7 @@ const HRFields = ({
                             "endTime",{id: "", value: endtime.value}  
                           );
                       }else{
-                          let endtime = getStartEndTimes[index + 16]
+                          let endtime = getStartEndTimes[index + 18]
                           setControlledEndTimeValue(
                             endtime.value
                           );

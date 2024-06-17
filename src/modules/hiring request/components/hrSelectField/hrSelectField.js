@@ -127,6 +127,7 @@ const HRSelectField = ({
 					dropdownRender={dropdownRender}
 					onChange={(value, option) => getChangeHandlerWithValue(value, option)}
 					options={options}
+					getPopupContainer={(trigger) => trigger.parentElement}
 				/>
 			) : isValue ? 
 			<Select

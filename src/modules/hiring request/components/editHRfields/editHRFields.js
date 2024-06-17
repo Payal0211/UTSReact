@@ -3090,6 +3090,11 @@ const EditHRFields = ({
                       errors={errors}
                       onChangeHandler={(value) => {
                         let val= value.target.value
+                        if(val === ''){
+                          setIsExpDisabled(false) 
+                          setIsFresherDisabled(false)
+                          return
+                        }
                         if(val === '0'){
                           setIsFreshersAllowed(true)
                           setIsExpDisabled(true) 
@@ -3312,8 +3317,8 @@ const EditHRFields = ({
                       controlledValue={controlledFromTimeValue}
                       setControlledValue={val=> {setControlledFromTimeValue(val);
                         let index = getStartEndTimes.findIndex(item=> item.value === val)
-                        if(index >= getStartEndTimes.length -16){         
-                            let newInd =   index - (getStartEndTimes.length -16)
+                        if(index >= getStartEndTimes.length -18){         
+                            let newInd =   index - (getStartEndTimes.length -18)
                             let endtime = getStartEndTimes[newInd]
                             setControlledEndTimeValue(
                               endtime.value
@@ -3322,7 +3327,7 @@ const EditHRFields = ({
                               "endTime",{id: "", value: endtime.value}  
                             );
                         }else{
-                            let endtime = getStartEndTimes[index + 16]
+                            let endtime = getStartEndTimes[index + 18]
                             setControlledEndTimeValue(
                               endtime.value
                             );

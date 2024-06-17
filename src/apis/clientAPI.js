@@ -311,4 +311,19 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getCreditUtilizationList');
 		}
 	},
+	getSyncCompanyProfile:async function (companyID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.COMPANY +
+			ClientsAPI.SYNC_COMPANY_PROFILE+`?CompanyID=${companyID}` ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getSyncCompanyProfile');
+		}
+	},
 };
