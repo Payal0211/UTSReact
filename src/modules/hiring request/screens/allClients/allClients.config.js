@@ -44,12 +44,12 @@ export const allClientsConfig = {
 				child: filterList?.CompanyCategory,
 				isSearch: false,
             },
-            {
-                label: 'POC',
-				name: 'poc',
-				child: filterList?.POCList,
-				isSearch: true,
-            },
+            // {
+            //     label: 'POC',
+			// 	name: 'poc',
+			// 	child: filterList?.POCList,
+			// 	isSearch: true,
+            // },
             {
                 label: 'Company Type',
 				name: 'searchCompanyModel',
