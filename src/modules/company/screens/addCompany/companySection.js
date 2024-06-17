@@ -15,8 +15,10 @@ import { useNavigate } from "react-router-dom";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 import ReactQuill from "react-quill";
 
+
 function CompanySection({companyID,register,errors,setValue,watch,companyDetails,setCompanyDetails,loadingDetails,clearErrors,setError,
-  setDisableSubmit,aboutCompanyError}) {
+  setDisableSubmit,aboutCompanyError,getDetailsForAutoFetchAI}) {
+
   const [getUploadFileData, setUploadFileData] = useState('');
   const [base64Image, setBase64Image] = useState('');
   const [showUploadModal, setUploadModal] = useState(false);
@@ -175,6 +177,9 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
         clearErrors('companyURL')
         setDisableSubmit(false)
         setIsViewCompanyurl(false);
+        if(companyID === '0'){
+            getDetailsForAutoFetchAI(watch("companyURL"))
+        }     
        }
        if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
          setDisableSubmit(true)

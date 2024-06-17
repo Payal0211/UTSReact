@@ -7,9 +7,9 @@ import { Navigate } from "react-router-dom";
 import { errorDebug } from "shared/utils/error_debug_utils";
 
 export const allCompanyRequestDAO  = {
-    getCompanyDetailDAO: async (ID) =>{
+    getCompanyDetailDAO: async (ID, compURL) =>{
         try {            
-            const allClientsResult = await CompanyAPI.getCompanyDetailsRequest(ID);
+            const allClientsResult = await CompanyAPI.getCompanyDetailsRequest(ID,compURL);
             if (allClientsResult) {
 				const statusCode = allClientsResult['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
