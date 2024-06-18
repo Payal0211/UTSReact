@@ -208,12 +208,12 @@ export const allClientsConfig = {
                     key: 'clientEmail',
                     width: '250px',
                 },
-                {
-                    title: 'Access Type',
-                    dataIndex: 'accessType',
-                    key: 'accessType',
-                    width: '250px',
-                },
+                // {
+                //     title: 'Access Type',
+                //     dataIndex: 'accessType',
+                //     key: 'accessType',
+                //     width: '250px',
+                // },
                 {
                     title: 'NBD',
                     dataIndex: 'poc',
