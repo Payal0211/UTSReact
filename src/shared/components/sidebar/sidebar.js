@@ -184,16 +184,16 @@ const getSideBar = (usertypeID,EmployeeID) => {
 			branch: [],
 			isVisible: isAccess(usertypeID,'Hiring Request')
 		}),
-		new SideBarModels({
-			id: 'UTS_DealList',
-			title: 'Deal',
-			isActive: false,
-			icon: Handshake,
-			navigateTo: UTSRoutes.DEALLISTROUTE,
-			isChildren: false,
-			branch: [],
-			isVisible: isAccess(usertypeID,'Deal')
-		}),
+		// new SideBarModels({
+		// 	id: 'UTS_DealList',
+		// 	title: 'Deal',
+		// 	isActive: false,
+		// 	icon: Handshake,
+		// 	navigateTo: UTSRoutes.DEALLISTROUTE,
+		// 	isChildren: false,
+		// 	branch: [],
+		// 	isVisible: isAccess(usertypeID,'Deal')
+		// }),
 		new SideBarModels({
 			id: 'UTS_AllClients',
 			title: 'Clients',

@@ -47,7 +47,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
     if(companyDetails?.companyName){
         companyDetails?.culture && setValue('culture',companyDetails?.culture)
     }
-   },[perkDetails,companyDetails,cultureAndParksValue]) 
+   },[perkDetails,companyDetails,cultureAndParksValue,setValue]) 
 
   //  useEffect(()=>{
   //   if(cultureAndParksValue?.length > 0){
@@ -181,7 +181,7 @@ const addnewYoutubeLink = (e) =>{
        console.error("Error reading the file:", error);
      }
    };
-
+//  console.log("culture",companyDetails)
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
       {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
@@ -218,7 +218,9 @@ const addnewYoutubeLink = (e) =>{
               className="heightSize"
               value={companyDetails?.culture ? companyDetails.culture : ''} 
               name="culture"
-              onChange={(val) => setValue("culture",val)}
+              onChange={(val) => {setValue("culture",val)
+                setCompanyDetails(prev=> ({...prev, basicDetails:{ ...prev.basicDetails,culture : val}}))
+              }}
             />
           </div>
         </div>

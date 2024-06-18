@@ -208,6 +208,7 @@ function PreviewClientModal({
       setIsAboutUs(data?.basicDetails?.aboutCompany);
       setIsCulture(data?.basicDetails?.culture);
       setIsSelfFunded(data?.basicDetails?.isSelfFunded);
+      setBase64Image(data?.basicDetails?.companyLogo)
     }
     setIsLoading(false);
   };
@@ -1195,7 +1196,7 @@ function PreviewClientModal({
                                 </span>
                               )}
                           </h3>
-                          <a>
+                          <a href={getCompanyDetails?.basicDetails?.website} alt='companysite' target="_blank" rel="noreferrer">
                             {" "}
                             {getCompanyDetails?.basicDetails?.website}{" "}
                             {NetworkInfo.ENV !== "QA" &&

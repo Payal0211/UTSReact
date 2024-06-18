@@ -7,6 +7,7 @@ import { Checkbox, message, Select, Skeleton } from 'antd';
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { HttpStatusCode } from "axios";
 import TextEditor from "shared/components/textEditor/textEditor";
+import ReactQuill from "react-quill";
 
 
 const defaultFunding = {
@@ -283,7 +284,22 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                 <div className={AddNewClientStyle.disabledTextArea} >
                     <p>Additional Information</p>
                 </div>
-                </>  :  <TextEditor
+                </>  :  <>
+                <div className={AddNewClientStyle.label}>Additional Information</div>
+                <ReactQuill
+              register={register}
+              setValue={setValue}
+              theme="snow"
+              className="heightSize"
+              // value={companyDetails?.culture ? companyDetails.culture : ''} 
+              value={watch(`fundingDetails.[${index}].additionalInformation`)}
+              name={`fundingDetails.[${index}].additionalInformation`}
+              onChange={(val) => {setValue(`fundingDetails.[${index}].additionalInformation`,val)
+                // setCompanyDetails(prev=> ({...prev, basicDetails:{ ...prev.basicDetails,culture : val}}))
+              }}
+            />
+            
+            {/* <TextEditor
                 register={register}
                 setValue={setValue}
                 // errors={errors}
@@ -297,7 +313,8 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                 // required
                 watch={watch}
                 disabled={isSelfFunded}
-              />}
+              /> */}
+                </>}
              
               </div>
 

@@ -208,12 +208,12 @@ export const allClientsConfig = {
                     key: 'clientEmail',
                     width: '250px',
                 },
-                {
-                    title: 'Access Type',
-                    dataIndex: 'accessType',
-                    key: 'accessType',
-                    width: '250px',
-                },
+                // {
+                //     title: 'Access Type',
+                //     dataIndex: 'accessType',
+                //     key: 'accessType',
+                //     width: '250px',
+                // },
                 {
                     title: 'NBD',
                     dataIndex: 'poc',
@@ -249,10 +249,10 @@ export const allClientsConfig = {
                 //     width: '100px',
                 // },
                 {
-                    title: 'Source (Category',
+                    title: 'Source (Category)',
                     dataIndex: 'inputSource',
                     key: 'inputSource',
-                    width: '150px',            },
+                    width: '152px',            },
                 // {
                 //     title: 'Source Category',
                 //     dataIndex: 'sourceCategory',

@@ -690,10 +690,7 @@ const DebriefingHR = ({
 								setValue={setValue}
 								theme="snow"
 								className="heightSize"
-								value={(addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
-									JDParsedSkills?.JobDescription ||
-									(addData?.salesHiringRequest_Details?.JobDescription)) ?? ''
-								}
+								value={watch('jobDescription')}
 								name="jobDescription"
 								onChange={(val) => setValue("jobDescription",val)}
 							/>

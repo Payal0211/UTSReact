@@ -30,6 +30,8 @@ function AddCompany() {
 
   const [loadingDetails,setLoadingDetails] = useState(false)
   const [disableSubmit , setDisableSubmit] = useState(false)
+  const [ loadingCompanyDetails , setLoadingCompanyDetails] = useState(false)
+  const [showFetchATButton,setShowFetchAIButton] = useState(false);
 
 
   // engagement Values 
@@ -84,16 +86,22 @@ function AddCompany() {
   };
 
   const getDetailsForAutoFetchAI = async (compURL) => {
-    setLoadingDetails(true)
+    setShowFetchAIButton(false)
+    setLoadingCompanyDetails(true)
     const result = await allCompanyRequestDAO.getCompanyDetailDAO(0,compURL);
 
     if (result?.statusCode === HTTPStatusCode.OK) {
-      let newresponse = {...result?.responseBody,basicDetails: {...result?.responseBody?.basicDetails,
+      if(result?.responseBody?.basicDetails?.companyLogo !== null) {
+         let newresponse = {...result?.responseBody,basicDetails: {...result?.responseBody?.basicDetails,
         companyLogo: `${NetworkInfo.PROTOCOL}${NetworkInfo.DOMAIN}Media/companylogo/${result?.responseBody?.basicDetails?.companyLogo}`      }      }
       setCompanyDetails(newresponse);
-      setLoadingDetails(false)
+      }else{
+        message.warn("No Detail Fetched From AI")
+      }
+     
+      setLoadingCompanyDetails(false)
     }
-    setLoadingDetails(false)
+    setLoadingCompanyDetails(false)
   };
 
   const getAllValuesForDD = useCallback(async () => {
@@ -269,10 +277,10 @@ function AddCompany() {
     // console.log("plaod",payload)
 
     let submitresult = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
+    setCompanyDetails(prev=> ({...prev,
+      basicDetails: payload.basicDetails}))
 // console.log("submited res",submitresult)
     if(submitresult?.statusCode === HTTPStatusCode.OK){
-      setCompanyDetails(prev=> ({...prev,
-        basicDetails: payload.basicDetails}))
       if(state?.createHR){
         navigate('/allhiringrequest/addnewhr',{
           state:{
@@ -322,6 +330,9 @@ function AddCompany() {
         setDisableSubmit={setDisableSubmit}
         aboutCompanyError={aboutCompanyError}
         getDetailsForAutoFetchAI={getDetailsForAutoFetchAI}
+        loadingCompanyDetails={loadingCompanyDetails}
+        showFetchATButton={showFetchATButton}
+        setShowFetchAIButton={setShowFetchAIButton}
       />
 
       <FundingSection
@@ -388,12 +399,12 @@ function AddCompany() {
       {companyID === '0' &&  <div className={AddNewClientStyle.tabsFormItem}>
         {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
-            <h3>Add Add Salesperson (NBD/AM)</h3>
+            <h3>{companyID === '0' && "Add"} Salesperson (NBD/AM)</h3>
             <p>Please provide the necessary details.</p>
           </div>
           <div className={AddNewClientStyle.tabsRightPanel}>
             <div className={AddNewClientStyle.row}>
-              <div className={AddNewClientStyle.colMd12}>
+              <div className={AddNewClientStyle.colMd6}>
                 <div className={AddNewClientStyle.formGroup}>
                    <HRSelectField
                   isControlled={true}
@@ -420,6 +431,7 @@ function AddCompany() {
         </div>}
         
       </div>}
+       
      
 
       <div className={AddNewClientStyle.formPanelAction}>
