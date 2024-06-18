@@ -17,7 +17,7 @@ import ReactQuill from "react-quill";
 
 
 function CompanySection({companyID,register,errors,setValue,watch,companyDetails,setCompanyDetails,loadingDetails,clearErrors,setError,
-  setDisableSubmit,aboutCompanyError,getDetailsForAutoFetchAI}) {
+  setDisableSubmit,aboutCompanyError,getDetailsForAutoFetchAI,loadingCompanyDetails,showFetchATButton,setShowFetchAIButton}) {
 
   const [getUploadFileData, setUploadFileData] = useState('');
   const [base64Image, setBase64Image] = useState('');
@@ -63,7 +63,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
     return years;
   };
 
-  const startYear = 1970;
+  const startYear = 1900;
   const endYear = new Date().getFullYear();
 
   const yearOptions = generateYears(startYear, endYear).map((year) => ({
@@ -156,6 +156,9 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
   }
 
   const validateCompanyURL = async () => {
+    setShowFetchAIButton(false)
+    clearErrors('companyURL')
+    setIsViewCompanyurl(false);
     if(watch("companyURL")){
 
       if(companyDetails?.website === watch("companyURL")){
@@ -178,7 +181,9 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
         setDisableSubmit(false)
         setIsViewCompanyurl(false);
         if(companyID === '0'){
-            getDetailsForAutoFetchAI(watch("companyURL"))
+            // getDetailsForAutoFetchAI(watch("companyURL"))
+
+            setShowFetchAIButton(true)
         }     
        }
        if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
@@ -303,6 +308,9 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     onChangeHandler={(e) => {
                       // setCompanyName(e.target.value);
                       // debounceDuplicateCompanyName(e.target.value);
+                      setShowFetchAIButton(false)
+                      clearErrors('companyURL')
+                      setIsViewCompanyurl(false);
                     }}
                     placeholder="Enter Name"
                     required
@@ -314,7 +322,13 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                   </div>
 
               <div className={AddNewClientStyle.colMd6}>
-                <HRInputField
+
+                {loadingCompanyDetails ? <>
+                  <Skeleton active />
+
+                  <p style={{fontWeight:'bold',color:'green'}}>Fetching Company Details From AI ...</p>
+                </> : <>
+                   <HRInputField
                   register={register}
                   errors={errors}
                   label="Company Website URL"
@@ -339,9 +353,13 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                   onBlurHandler={()=> validateCompanyURL()}
                 />
                  <div className={AddNewClientStyle.formPanelAction} style={{padding:"0 0 20px",justifyContent:"flex-start"}}>
-                  {isViewCompanyurl && 
+                  {showFetchATButton && <div><button className={AddNewClientStyle.btnPrimary} onClick={()=>getDetailsForAutoFetchAI(watch("companyURL"))}>Fetch detail From AI</button>
+                  <p style={{color:'orange', margin:'5px 0'}}>Fetch Company details from parsing tools like X-Ray Search.</p></div>}
+                  {(isViewCompanyurl &&  watch('companyName')) &&
                   <button className={AddNewClientStyle.btnPrimary} onClick={()=>setIsPreviewModal(true)}>View Company</button>}
                 </div>
+                </>}
+             
               </div>
             </div>
 

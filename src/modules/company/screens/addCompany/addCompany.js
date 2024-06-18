@@ -30,6 +30,8 @@ function AddCompany() {
 
   const [loadingDetails,setLoadingDetails] = useState(false)
   const [disableSubmit , setDisableSubmit] = useState(false)
+  const [ loadingCompanyDetails , setLoadingCompanyDetails] = useState(false)
+  const [showFetchATButton,setShowFetchAIButton] = useState(false);
 
 
   // engagement Values 
@@ -84,16 +86,22 @@ function AddCompany() {
   };
 
   const getDetailsForAutoFetchAI = async (compURL) => {
-    setLoadingDetails(true)
+    setShowFetchAIButton(false)
+    setLoadingCompanyDetails(true)
     const result = await allCompanyRequestDAO.getCompanyDetailDAO(0,compURL);
 
     if (result?.statusCode === HTTPStatusCode.OK) {
-      let newresponse = {...result?.responseBody,basicDetails: {...result?.responseBody?.basicDetails,
+      if(result?.responseBody?.basicDetails?.companyLogo !== null) {
+         let newresponse = {...result?.responseBody,basicDetails: {...result?.responseBody?.basicDetails,
         companyLogo: `${NetworkInfo.PROTOCOL}${NetworkInfo.DOMAIN}Media/companylogo/${result?.responseBody?.basicDetails?.companyLogo}`      }      }
       setCompanyDetails(newresponse);
-      setLoadingDetails(false)
+      }else{
+        message.warn("No Detail Fetched From AI")
+      }
+     
+      setLoadingCompanyDetails(false)
     }
-    setLoadingDetails(false)
+    setLoadingCompanyDetails(false)
   };
 
   const getAllValuesForDD = useCallback(async () => {
@@ -322,6 +330,9 @@ function AddCompany() {
         setDisableSubmit={setDisableSubmit}
         aboutCompanyError={aboutCompanyError}
         getDetailsForAutoFetchAI={getDetailsForAutoFetchAI}
+        loadingCompanyDetails={loadingCompanyDetails}
+        showFetchATButton={showFetchATButton}
+        setShowFetchAIButton={setShowFetchAIButton}
       />
 
       <FundingSection
