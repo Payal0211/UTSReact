@@ -269,10 +269,10 @@ function AddCompany() {
     // console.log("plaod",payload)
 
     let submitresult = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
+    setCompanyDetails(prev=> ({...prev,
+      basicDetails: payload.basicDetails}))
 // console.log("submited res",submitresult)
     if(submitresult?.statusCode === HTTPStatusCode.OK){
-      setCompanyDetails(prev=> ({...prev,
-        basicDetails: payload.basicDetails}))
       if(state?.createHR){
         navigate('/allhiringrequest/addnewhr',{
           state:{
