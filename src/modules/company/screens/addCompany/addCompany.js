@@ -396,7 +396,7 @@ function AddCompany() {
         loadingDetails={loadingDetails}
       />
 
-        <div className={AddNewClientStyle.tabsFormItem}>
+      {companyID === '0' &&  <div className={AddNewClientStyle.tabsFormItem}>
         {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
             <h3>{companyID === '0' && "Add"} Salesperson (NBD/AM)</h3>
@@ -430,7 +430,8 @@ function AddCompany() {
           </div>
         </div>}
         
-      </div>
+      </div>}
+       
      
 
       <div className={AddNewClientStyle.formPanelAction}>
