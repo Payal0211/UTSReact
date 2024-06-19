@@ -44,12 +44,12 @@ export const allClientsConfig = {
 				child: filterList?.CompanyCategory,
 				isSearch: false,
             },
-            {
-                label: 'POC',
-				name: 'poc',
-				child: filterList?.POCList,
-				isSearch: true,
-            },
+            // {
+            //     label: 'POC',
+			// 	name: 'poc',
+			// 	child: filterList?.POCList,
+			// 	isSearch: true,
+            // },
             {
                 label: 'Company Type',
 				name: 'searchCompanyModel',
@@ -208,8 +208,14 @@ export const allClientsConfig = {
                     key: 'clientEmail',
                     width: '250px',
                 },
+                // {
+                //     title: 'Access Type',
+                //     dataIndex: 'accessType',
+                //     key: 'accessType',
+                //     width: '250px',
+                // },
                 {
-                    title: 'POC',
+                    title: 'NBD',
                     dataIndex: 'poc',
                     key: 'poc',
                     width: '200px',
@@ -243,15 +249,15 @@ export const allClientsConfig = {
                 //     width: '100px',
                 // },
                 {
-                    title: 'Source',
+                    title: 'Source (Category)',
                     dataIndex: 'inputSource',
                     key: 'inputSource',
-                    width: '150px',            },
-                {
-                    title: 'Source Category',
-                    dataIndex: 'sourceCategory',
-                    key: 'sourceCategory',
-                    width: '150px',            },
+                    width: '152px',            },
+                // {
+                //     title: 'Source Category',
+                //     dataIndex: 'sourceCategory',
+                //     key: 'sourceCategory',
+                //     width: '150px',            },
                 // {
                 //     title: 'Status',
                 //     dataIndex: 'status',

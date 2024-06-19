@@ -208,6 +208,7 @@ function PreviewClientModal({
       setIsAboutUs(data?.basicDetails?.aboutCompany);
       setIsCulture(data?.basicDetails?.culture);
       setIsSelfFunded(data?.basicDetails?.isSelfFunded);
+      setBase64Image(data?.basicDetails?.companyLogo)
     }
     setIsLoading(false);
   };
@@ -496,7 +497,7 @@ function PreviewClientModal({
     return years;
   };
 
-  const startYear = 1970;
+  const startYear = 1900;
   const endYear = new Date().getFullYear();
 
   const yearOptions = generateYears(startYear, endYear).map((year) => ({
@@ -890,6 +891,7 @@ function PreviewClientModal({
     [flagAndCode]
   );
 
+
   const addEngagementDetails = async () => {
     // if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
 		// 	setPricingTypeError(true)
@@ -1194,7 +1196,7 @@ function PreviewClientModal({
                                 </span>
                               )}
                           </h3>
-                          <a>
+                          <a href={getCompanyDetails?.basicDetails?.website} alt='companysite' target="_blank" rel="noreferrer">
                             {" "}
                             {getCompanyDetails?.basicDetails?.website}{" "}
                             {NetworkInfo.ENV !== "QA" &&
@@ -1246,7 +1248,7 @@ function PreviewClientModal({
                                 : "NA"}{" "}
                             </p>
                           </li>
-                          <li>
+                          {/* <li>
                             {NetworkInfo.ENV !== "QA" &&
                             NetworkInfo.ENV !== "Live" ? (
                               <span onClick={() => setIsEditCompanyType(true)}>
@@ -1262,7 +1264,7 @@ function PreviewClientModal({
                                 ? getCompanyDetails?.basicDetails?.companyType
                                 : "NA"}{" "}
                             </p>
-                          </li>
+                          </li> */}
                           <li>
                             {NetworkInfo.ENV !== "QA" &&
                             NetworkInfo.ENV !== "Live" ? (
@@ -1468,7 +1470,7 @@ function PreviewClientModal({
                         <div className={previewClientStyle.fundingrounds}>
                           <ul>
                             <li>
-                              <span>Self-funded</span>
+                              <span>Self-funded (bootstrapped)</span>
                             </li>
                           </ul>
                         </div>
@@ -1483,7 +1485,7 @@ function PreviewClientModal({
                                 checked={isSelfFunded}
                                 onClick={() => setIsSelfFunded((prev) => !prev)}
                               >
-                                Self-funded company without external
+                                Self-funded (bootstrapped) company without external
                                 investments.
                               </Checkbox>
                             </div>
@@ -3151,7 +3153,7 @@ function PreviewClientModal({
               </div>
             </div>
 
-            <div className={previewClientStyle.formFields}>
+            {/* <div className={previewClientStyle.formFields}>
               <div className={previewClientStyle.formFieldsbox}>
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
@@ -3226,7 +3228,7 @@ function PreviewClientModal({
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </Modal>
@@ -3430,7 +3432,7 @@ function PreviewClientModal({
         </div>
       </Modal>
       {/* Company Type Modal*/}
-      <Modal
+      {/* <Modal
         centered
         open={isEditCompanyType}
         onOk={() => setIsEditCompanyType(false)}
@@ -3470,7 +3472,7 @@ function PreviewClientModal({
             SAVE{" "}
           </button>
         </div>
-      </Modal>
+      </Modal> */}
       {/* Company Industry Modal*/}
       <Modal
         centered

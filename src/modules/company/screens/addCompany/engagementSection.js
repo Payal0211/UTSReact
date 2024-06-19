@@ -15,6 +15,7 @@ function EngagementSection({
   watch,
   engagementDetails,
   hooksProps,
+  companyID,
   loadingDetails
 }) {
   const {checkPayPer, setCheckPayPer, IsChecked, setIsChecked,typeOfPricing, setTypeOfPricing,pricingTypeError, setPricingTypeError,payPerError, setPayPerError,creditError, setCreditError} = hooksProps  
@@ -314,7 +315,7 @@ function EngagementSection({
 
                   
                   <div className={AddNewClientStyle.colMd6}>
-                    Remaining Credit : <span style={{fontWeight:"bold",marginBottom:"80px",marginTop:"20px"}}>{engagementDetails?.totalCreditBalance}</span>
+                   {companyID !== '0' && <>Remaining Credit : <span style={{fontWeight:"bold",marginBottom:"80px",marginTop:"20px"}}>{engagementDetails?.totalCreditBalance}</span></>} 
                     <div className={AddNewClientStyle.FreecreditFieldWrap}>
                       <HRInputField
                         register={register}
@@ -358,7 +359,7 @@ function EngagementSection({
                         // }
                       />
                     </div>
-                    {!isNaN(_totalSum) && <label style={{marginBottom:"20px",marginTop:"-26px",display:"block",fontWeight:"bold"}}>Total Credit Balance : <span style={{fontWeight:"bold"}}>{_totalSum}</span> </label>}
+                    {(companyID !== '0' && !isNaN(_totalSum)) && <label style={{marginBottom:"20px",marginTop:"-26px",display:"block",fontWeight:"bold"}}>Total Credit Balance : <span style={{fontWeight:"bold"}}>{_totalSum}</span> </label>}
                   </div>
                 </div>
 

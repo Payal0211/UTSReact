@@ -732,10 +732,7 @@ const checkValChnage = () => {
 								setValue={setValue}
 								theme="snow"
 								className="heightSize"
-								value={(getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
-									JDParsedSkills?.jobDescription ||
-									(getHRdetails?.salesHiringRequest_Details?.jobDescription)) ?? ''
-								}
+								value={watch("jobDescription")}
 								name="jobDescription"
 								onChange={(val) => setValue("jobDescription",val)}
 							/>

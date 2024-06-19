@@ -56,6 +56,7 @@ import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSel
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { BsThreeDots } from 'react-icons/bs';
 import PreOnboardingTabModal from 'modules/hiring request/components/preOnboardingModals/preOnboardingTabModal';
+import DeleteHRModal from 'modules/hiring request/components/deleteHR/deleteHRModal';
 
 /** Lazy Loading the component */
 
@@ -84,6 +85,7 @@ const HRDetailScreen = () => {
 	const [editDebrifing, setEditDebring] = useState([]);
 
 	const [closeHrModal, setCloseHrModal] = useState(false);
+	const [deleteHRModal,setDeleteHrModal] = useState(false);
 	const [userData, setUserData] = useState({});
 	useEffect(() => {
 		const getUserResult = async () => {
@@ -298,6 +300,26 @@ const togglePriority = useCallback(
 				</Link>
 				<div className={HRDetailStyle.hrDetails}>
 					<div className={HRDetailStyle.hrDetailsLeftPart}>
+						{/* Delete HR CTA */}
+						<>{apiData?.AllowHRDelete && <Tooltip title={'Delete HR'} placement="bottom" ><div className={HRDetailStyle.hiringRequestPriority} onClick={()=>setDeleteHrModal(true)}><Trash width="17" height="16" style={{ fontSize: '16px' }} /></div></Tooltip> }
+						{deleteHRModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={deleteHRModal}
+                  className="updateTRModal"
+                  onCancel={() => setDeleteHrModal(false)}
+                >
+					<DeleteHRModal
+						closeHR={() => {}}
+						deleteHRDetail={() => deleteHR()}
+						onCancel={() => setDeleteHrModal(false)}
+					/>
+                </Modal>
+              )}
+						</>
+						
 						<div className={HRDetailStyle.hiringRequestIdSets}>
 							{updatedSplitter}
 						</div>
@@ -332,8 +354,7 @@ const togglePriority = useCallback(
 							<EditSVG style={{ fontSize: '16px' }} />{' '}
 							<span className={HRDetailStyle.btnLabel}>Edit HR</span></div>)}
 
-						{/* Delete HR CTA */}
-						{apiData?.AllowHRDelete && <Tooltip title={'Delete HR'} placement="bottom" ><div className={HRDetailStyle.hiringRequestPriority} onClick={()=>deleteHR()}><Trash width="17" height="16" style={{ fontSize: '16px' }} /></div></Tooltip> }
+						
 					</div>
 				
 					<div className={HRDetailStyle.hrDetailsRightPart}>

@@ -47,7 +47,7 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
     if(companyDetails?.companyName){
         companyDetails?.culture && setValue('culture',companyDetails?.culture)
     }
-   },[perkDetails,companyDetails,cultureAndParksValue]) 
+   },[perkDetails,companyDetails,cultureAndParksValue,setValue]) 
 
   //  useEffect(()=>{
   //   if(cultureAndParksValue?.length > 0){
@@ -135,9 +135,9 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
    }
 
 const addnewYoutubeLink = (e) =>{
-  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=%\?]{11})$/;;
+  const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=%\?]{11})$/;
                       if(!regex.test(e.target.value)){
-                        return message.error('Youtube link is not valid')
+                        return message.error('Please provide proper youtube video link, channel/page link not allowed.')
                       }
 
                     let youtubeDetail = {youtubeLink: watch('youtubeLink'), 
@@ -181,7 +181,7 @@ const addnewYoutubeLink = (e) =>{
        console.error("Error reading the file:", error);
      }
    };
-
+//  console.log("culture",companyDetails)
   return (
     <div className={AddNewClientStyle.tabsFormItem}>
       {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
@@ -218,7 +218,9 @@ const addnewYoutubeLink = (e) =>{
               className="heightSize"
               value={companyDetails?.culture ? companyDetails.culture : ''} 
               name="culture"
-              onChange={(val) => setValue("culture",val)}
+              onChange={(val) => {setValue("culture",val)
+                setCompanyDetails(prev=> ({...prev, basicDetails:{ ...prev.basicDetails,culture : val}}))
+              }}
             />
           </div>
         </div>
@@ -336,7 +338,7 @@ const addnewYoutubeLink = (e) =>{
                 type={InputType.TEXT}
                 onChangeHandler={(e) => {
                 }}
-                placeholder="Add Links and press Enter"
+                placeholder="Ex: https://www.youtube.com/watch?v=Bzf-ngn_JAw"
               />
         </div>
         </div>
@@ -367,9 +369,9 @@ const addnewYoutubeLink = (e) =>{
               mode={'tags'}
               register={register}
               name="perksAndAdvantages"
-              label="Company perks & advantages"
-              defaultValue="Mention perks & advantages"
-              placeholder="Mention perks & advantages"
+              label="Company perks & benefits"
+              defaultValue="Mention perks & benefits"
+              placeholder="Mention perks & benefits"
               options={combinedPerkMemo}
               setOptions={setCombinedPerkMemo}
             />
