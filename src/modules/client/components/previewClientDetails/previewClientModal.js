@@ -153,6 +153,7 @@ function PreviewClientModal({
   });
   const [errorsData, setErrorsData] = useState({});
   const [pricingTypeError, setPricingTypeError] = useState(false);
+  const [additionalInformation,setAdditionInformation] = useState("")
   const pictureRef = useRef();
   const { Dragger } = Upload;
   const cultureDetails = [];
@@ -1080,7 +1081,7 @@ function PreviewClientModal({
           month: watch("month"),
           year: watch("year"),
           investors: watch("investors"),
-          additionalInformation: watch("additionalInformation"),
+          additionalInformation: additionalInformation,
         },
       ],
       IsUpdateFromPreviewPage: true,
@@ -1088,6 +1089,7 @@ function PreviewClientModal({
     let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
     getDetails();
     setIsLoading(false);
+    setAdditionInformation("");
   };
 
   const syncCompany = async() =>{
@@ -1170,23 +1172,19 @@ function PreviewClientModal({
                             </Avatar>
                           )}
                           {/* )} */}
-                          {NetworkInfo.ENV !== "QA" &&
-                            NetworkInfo.ENV !== "Live" && (
                               <span className={previewClientStyle.editNewIcon}>
                                 {" "}
                                 <EditNewIcon
                                   onClick={() => setUploadModal(true)}
                                 />{" "}
                               </span>
-                            )}
                         </div>
                         <div
                           className={previewClientStyle.companyProfRightDetail}
                         >
                           <h3>
                             {getCompanyDetails?.basicDetails?.companyName}{" "}
-                            {NetworkInfo.ENV !== "QA" &&
-                              NetworkInfo.ENV !== "Live" && (
+                            
                                 <span
                                   className={previewClientStyle.editNewIcon}
                                   onClick={() => setIsEditCompanyName(true)}
@@ -1194,13 +1192,12 @@ function PreviewClientModal({
                                   {" "}
                                   <EditNewIcon />{" "}
                                 </span>
-                              )}
+                           
                           </h3>
                           <a href={getCompanyDetails?.basicDetails?.website} alt='companysite' target="_blank" rel="noreferrer">
                             {" "}
                             {getCompanyDetails?.basicDetails?.website}{" "}
-                            {NetworkInfo.ENV !== "QA" &&
-                              NetworkInfo.ENV !== "Live" && (
+                            
                                 <span
                                   className={previewClientStyle.editNewIcon}
                                   onClick={() => setIsEditCompanyWebsite(true)}
@@ -1208,23 +1205,18 @@ function PreviewClientModal({
                                   {" "}
                                   <EditNewIcon />{" "}
                                 </span>
-                              )}
+                              
                           </a>
                         </div>
                       </div>
 
                       <div className={previewClientStyle.companyDetailTop}>
                         <ul>
-                          <li>
-                            {NetworkInfo.ENV !== "QA" &&
-                            NetworkInfo.ENV !== "Live" ? (
+                          <li>           
                               <span onClick={() => setIsEditCompanyFound(true)}>
                                 {" "}
                                 Founded in <EditNewIcon />{" "}
                               </span>
-                            ) : (
-                              <span>Founded in</span>
-                            )}
                             <p>
                               {getCompanyDetails?.basicDetails?.foundedYear
                                 ? getCompanyDetails?.basicDetails?.foundedYear
@@ -1232,15 +1224,12 @@ function PreviewClientModal({
                             </p>
                           </li>
                           <li>
-                            {NetworkInfo.ENV !== "QA" &&
-                            NetworkInfo.ENV !== "Live" ? (
+                            
                               <span onClick={() => setIsEditTeamSize(true)}>
                                 {" "}
                                 Team Size <EditNewIcon />{" "}
                               </span>
-                            ) : (
-                              <span>Team Size</span>
-                            )}
+                            
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.teamSize
@@ -1248,34 +1237,28 @@ function PreviewClientModal({
                                 : "NA"}{" "}
                             </p>
                           </li>
-                          {/* <li>
-                            {NetworkInfo.ENV !== "QA" &&
-                            NetworkInfo.ENV !== "Live" ? (
+                          <li>
+                           
                               <span onClick={() => setIsEditCompanyType(true)}>
                                 {" "}
                                 Company Type <EditNewIcon />{" "}
                               </span>
-                            ) : (
-                              <span>Company Type</span>
-                            )}
+                           
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.companyType
                                 ? getCompanyDetails?.basicDetails?.companyType
                                 : "NA"}{" "}
                             </p>
-                          </li> */}
+                          </li> 
                           <li>
-                            {NetworkInfo.ENV !== "QA" &&
-                            NetworkInfo.ENV !== "Live" ? (
+                           
                               <span
                                 onClick={() => setIsEditCompanyIndustry(true)}
                               >
                                 Company Industry <EditNewIcon />{" "}
                               </span>
-                            ) : (
-                              <span> Company Industry</span>
-                            )}
+                            
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.companyIndustry
@@ -1285,15 +1268,12 @@ function PreviewClientModal({
                             </p>
                           </li>
                           <li>
-                            {NetworkInfo.ENV !== "QA" &&
-                            NetworkInfo.ENV !== "Live" ? (
+                           
                               <span onClick={() => setIsEditHeadquarters(true)}>
                                 {" "}
                                 Headquarters <EditNewIcon />{" "}
                               </span>
-                            ) : (
-                              <span>Headquarters</span>
-                            )}
+                          
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.headquaters
@@ -1302,15 +1282,12 @@ function PreviewClientModal({
                             </p>
                           </li>
                           <li>
-                            {NetworkInfo.ENV !== "QA" &&
-                            NetworkInfo.ENV !== "Live" ? (
+                           
                               <span onClick={() => setIsEditLinkedInURL(true)}>
                                 {" "}
                                 Linkedin URL <EditNewIcon />{" "}
                               </span>
-                            ) : (
-                              <span>Linkedin URL</span>
-                            )}
+                            
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.linkedInProfile
@@ -1325,15 +1302,14 @@ function PreviewClientModal({
                       <h6>
                         {" "}
                         About us{" "}
-                        {NetworkInfo.ENV !== "QA" &&
-                          NetworkInfo.ENV !== "Live" && (
+                       
                             <span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => setIsEditAboutUs(true)}
                             >
                               <EditNewIcon />
                             </span>
-                          )}
+                          
                       </h6>
                       {isEditAboutUs == false ? (
                         <ReactQuill
@@ -1476,7 +1452,7 @@ function PreviewClientModal({
                         </div>
                       )}
 
-                      {/* {getCompanyDetails?.basicDetails?.isSelfFunded ===
+                       {getCompanyDetails?.basicDetails?.isSelfFunded ===
                         true && (
                         <>
                           <div className={previewClientStyle.row}>
@@ -1591,7 +1567,7 @@ function PreviewClientModal({
 
                           <div className={previewClientStyle.row}>
                             <div className={previewClientStyle.colMd12}>
-                              <TextEditor
+                              {/* <TextEditor
                                 register={register}
                                 setValue={setValue}
                                 // errors={errors}
@@ -1605,6 +1581,23 @@ function PreviewClientModal({
                                 // required
                                 watch={watch}
                                 disabled={isSelfFunded}
+                              /> */}
+                              <label className={previewClientStyle.phoneLabel}>Additional Information</label>
+                              <ReactQuill
+                                theme="snow"
+                                placeholder="Enter Additional Information"
+                                value={
+                                  additionalInformation
+                                }
+                                onChange={(val)=>setAdditionInformation(val)}
+                                readOnly={isSelfFunded?true:false}
+                                // modules={{ toolbar: false }}
+                                className={
+                                  previewClientStyle.reactQuillEdit
+                                }
+                                style={{
+                                  border: "none !important",
+                                }}
                               />
                             </div>
                           </div>
@@ -1622,7 +1615,7 @@ function PreviewClientModal({
                             </button>
                           </div>
                         </>
-                      )} */}
+                      )}
 
                       {/* <div className={previewClientStyle.roundsListed}>
                         {getCompanyDetails?.fundingDetails?.map((val) => (
@@ -1678,15 +1671,14 @@ function PreviewClientModal({
                       <h6>
                         {" "}
                         Culture{" "}
-                        {NetworkInfo.ENV !== "QA" &&
-                          NetworkInfo.ENV !== "Live" && (
+                       
                             <span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => setEditCultureSection(true)}
                             >
                               <EditNewIcon />
                             </span>
-                          )}
+                          
                       </h6>
 
                       {/* <TextEditor
@@ -1960,15 +1952,14 @@ function PreviewClientModal({
                           {getCompanyDetails?.cultureDetails?.map((val) => (
                             <div className={previewClientStyle.imgThumb}>
                               <img src={val?.cultureImage} alt="detailImg" />
-                              {NetworkInfo.ENV !== "QA" &&
-                                NetworkInfo.ENV !== "Live" && (
+                             
                                   <span
                                     className={previewClientStyle.DeleteBtn}
                                     onClick={() => deleteCulturImage(val)}
                                   >
                                     <DeleteNewIcon />{" "}
                                   </span>
-                                )}
+                              
                             </div>
                           ))}
                         </div>
@@ -2020,8 +2011,7 @@ function PreviewClientModal({
                                                 src={`https://www.youtube.com/embed/${val?.youtubeLink}`}>
                                             </iframe> */}
                               <YouTubeVideo videoLink={val?.youtubeLink} />
-                              {NetworkInfo.ENV !== "QA" &&
-                                NetworkInfo.ENV !== "Live" && (
+                              
                                   <span
                                     className={previewClientStyle.DeleteBtn}
                                   >
@@ -2031,7 +2021,7 @@ function PreviewClientModal({
                                       }}
                                     />{" "}
                                   </span>
-                                )}
+                               
                             </div>
                           ))}
                         </div>
@@ -2039,15 +2029,14 @@ function PreviewClientModal({
 
                       <h6>
                         Company Benefits
-                        {NetworkInfo.ENV !== "QA" &&
-                          NetworkInfo.ENV !== "Live" && (
+                       
                             <span
                               className={previewClientStyle.editNewIcon}
                               onClick={() => setEditCompanyBenefits(true)}
                             >
                               <EditNewIcon />
                             </span>
-                          )}
+                         
                       </h6>
 
                       <div className={previewClientStyle.companyBenefits}>
@@ -2114,15 +2103,14 @@ function PreviewClientModal({
                   <div className={previewClientStyle.formFieldTitleTwo}>
                     <h2>
                       Client Details{" "}
-                      {NetworkInfo.ENV !== "QA" &&
-                        NetworkInfo.ENV !== "Live" && (
+                      
                           <span
                             className={previewClientStyle.addNewClientText}
                             onClick={() => setAddNewClient(true)}
                           >
                             Add New Client
                           </span>
-                        )}
+                        
                     </h2>
                   </div>
 
@@ -2362,8 +2350,7 @@ function PreviewClientModal({
                               {" "}
                               {`Client ${index + 1}`}{" "}
                             </span>{" "}
-                            {NetworkInfo.ENV !== "QA" &&
-                              NetworkInfo.ENV !== "Live" && (
+                           
                                 <span
                                   className={previewClientStyle.editNewIcon}
                                   onClick={() => {
@@ -2384,7 +2371,7 @@ function PreviewClientModal({
                                 >
                                   <EditNewIcon />
                                 </span>
-                              )}
+                             
                           </h5>
                           {clickIndex === index && isEditClient && (
                             <>
@@ -2653,14 +2640,14 @@ function PreviewClientModal({
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
                     Engagement Details{" "}
-                    {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" && (
+                    
                       <span
                         className={previewClientStyle.editNewIcon}
                         onClick={() => setEditEngagement(true)}
                       >
                         <EditNewIcon />
                       </span>
-                    )}
+                   
                   </h2>
 
                   <div className={previewClientStyle.companyDetails}>
@@ -3153,19 +3140,19 @@ function PreviewClientModal({
               </div>
             </div>
 
-            {/* <div className={previewClientStyle.formFields}>
+            <div className={previewClientStyle.formFields}>
               <div className={previewClientStyle.formFieldsbox}>
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
                     Uplers’s POC{" "}
-                    {NetworkInfo.ENV !== "QA" && NetworkInfo.ENV !== "Live" && (
+                    
                       <span
                         className={previewClientStyle.editNewIcon}
                         onClick={() => setEditPOC(true)}
                       >
                         <EditNewIcon />
                       </span>
-                    )}
+                   
                   </h2>
 
                   <div className={previewClientStyle.companyDetails}>
@@ -3228,7 +3215,7 @@ function PreviewClientModal({
                   </div>
                 </div>
               </div>
-            </div> */}
+            </div> 
           </div>
         </div>
       </Modal>
@@ -3432,7 +3419,7 @@ function PreviewClientModal({
         </div>
       </Modal>
       {/* Company Type Modal*/}
-      {/* <Modal
+      <Modal
         centered
         open={isEditCompanyType}
         onOk={() => setIsEditCompanyType(false)}
@@ -3472,7 +3459,7 @@ function PreviewClientModal({
             SAVE{" "}
           </button>
         </div>
-      </Modal> */}
+      </Modal>
       {/* Company Industry Modal*/}
       <Modal
         centered
