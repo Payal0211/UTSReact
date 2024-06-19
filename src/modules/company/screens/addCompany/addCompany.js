@@ -143,7 +143,7 @@ function AddCompany() {
   }, [companyID]);
 
   useEffect(() => {
-    if (getCompanyDetails?.pocUserIds?.length && allPocs?.length) {
+    if (getCompanyDetails?.pocUserDetailsEdit?.pocUserID && allPocs?.length) {
       // let SelectedPocs = getCompanyDetails?.pocUserIds.map((pocId) => {
       //   let data = allPocs.find((item) => item.id === pocId);
       //   return {
@@ -153,7 +153,7 @@ function AddCompany() {
       // });
       // setValue("uplersPOCname", SelectedPocs);
       // setControlledPOC(SelectedPocs);
-      let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserIds[0]);
+      let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserDetailsEdit?.pocUserID);
       setValue("uplersPOCname", {
         id: data.id,
         value: data.value,
@@ -270,6 +270,8 @@ function AddCompany() {
       },
       // "pocIds": d.uplersPOCname?.map(poc=> poc.id),
       "pocId": d.uplersPOCname?.id,
+      "HRID":getCompanyDetails?.pocUserDetailsEdit?.hrid ?? 0,
+      "Sales_AM_NBD":getCompanyDetails?.pocUserDetailsEdit?.sales_AM_NBD ?? '',
       "IsRedirectFromHRPage" : state?.createHR ? true : false
     }
 
@@ -396,7 +398,7 @@ function AddCompany() {
         loadingDetails={loadingDetails}
       />
 
-      {companyID === '0' &&  <div className={AddNewClientStyle.tabsFormItem}>
+      <div className={AddNewClientStyle.tabsFormItem}>
         {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
             <h3>{companyID === '0' && "Add"} Salesperson (NBD/AM)</h3>
@@ -430,7 +432,7 @@ function AddCompany() {
           </div>
         </div>}
         
-      </div>}
+      </div>
        
      
 
