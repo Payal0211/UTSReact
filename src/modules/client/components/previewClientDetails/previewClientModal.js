@@ -964,7 +964,7 @@ function PreviewClientModal({
       };
       setIsLoading(true);
       let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
-      if (res.statusCode.HTTPStatusCode.OK) {
+      if (res.statusCode===HTTPStatusCode.OK) {
         // if(res.statusCode.HTTPStatusCode.OK){
         setIsLoading(false);
         getDetails();
@@ -1006,7 +1006,7 @@ function PreviewClientModal({
       let response = await allCompanyRequestDAO.updateCompanyDetailsDAO(
         payload
       );
-      if (response.statusCode.HTTPStatusCode.OK) {
+      if (response.statusCode===HTTPStatusCode.OK) {
         getDetails();
         setAddNewClient(false);
         setError({});
