@@ -497,7 +497,7 @@ function PreviewClientModal({
     return years;
   };
 
-  const startYear = 1970;
+  const startYear = 1900;
   const endYear = new Date().getFullYear();
 
   const yearOptions = generateYears(startYear, endYear).map((year) => ({
