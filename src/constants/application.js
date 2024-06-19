@@ -102,7 +102,7 @@ export const ValidateFieldURL = (url, field) => {
             return false
         }
     } else if (field === "linkedin") {
-        const pattern =/^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/i;    
+        const pattern =/^(http(s)?:\/\/)?([\w]+\.)?linkedin\.com\/(pub|in|profile|company)\/[A-z0-9_-]+\/?/i;;    
         
         if(pattern.test(url)){
           

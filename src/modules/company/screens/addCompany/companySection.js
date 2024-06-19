@@ -552,10 +552,11 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                 watch={watch}
                 /> */}
                
-              <label style={{ marginBottom: "12px" }}>
+              {/* <label style={{ marginBottom: "12px" }}>
                 About Company
                 <span className={AddNewClientStyle.reqField}>*</span>
-              </label>
+              </label> */}
+              <div className={AddNewClientStyle.label}>About Company <span className={AddNewClientStyle.reqField}>*</span></div>
              <ReactQuill
                 register={register}
                 setValue={setValue}
