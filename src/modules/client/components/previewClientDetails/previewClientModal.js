@@ -153,6 +153,7 @@ function PreviewClientModal({
   });
   const [errorsData, setErrorsData] = useState({});
   const [pricingTypeError, setPricingTypeError] = useState(false);
+  const [additionalInformation,setAdditionInformation] = useState("")
   const pictureRef = useRef();
   const { Dragger } = Upload;
   const cultureDetails = [];
@@ -1078,7 +1079,7 @@ function PreviewClientModal({
           month: watch("month"),
           year: watch("year"),
           investors: watch("investors"),
-          additionalInformation: watch("additionalInformation"),
+          additionalInformation: additionalInformation,
         },
       ],
       IsUpdateFromPreviewPage: true,
@@ -1086,6 +1087,7 @@ function PreviewClientModal({
     let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
     getDetails();
     setIsLoading(false);
+    setAdditionInformation("");
   };
 
   const syncCompany = async() =>{
@@ -1474,7 +1476,7 @@ function PreviewClientModal({
                         </div>
                       )}
 
-                      {/* {getCompanyDetails?.basicDetails?.isSelfFunded ===
+                       {getCompanyDetails?.basicDetails?.isSelfFunded ===
                         true && (
                         <>
                           <div className={previewClientStyle.row}>
@@ -1589,7 +1591,7 @@ function PreviewClientModal({
 
                           <div className={previewClientStyle.row}>
                             <div className={previewClientStyle.colMd12}>
-                              <TextEditor
+                              {/* <TextEditor
                                 register={register}
                                 setValue={setValue}
                                 // errors={errors}
@@ -1603,6 +1605,23 @@ function PreviewClientModal({
                                 // required
                                 watch={watch}
                                 disabled={isSelfFunded}
+                              /> */}
+                              <label className={previewClientStyle.phoneLabel}>Additional Information</label>
+                              <ReactQuill
+                                theme="snow"
+                                placeholder="Enter Additional Information"
+                                value={
+                                  additionalInformation
+                                }
+                                onChange={(val)=>setAdditionInformation(val)}
+                                readOnly={isSelfFunded?true:false}
+                                // modules={{ toolbar: false }}
+                                className={
+                                  previewClientStyle.reactQuillEdit
+                                }
+                                style={{
+                                  border: "none !important",
+                                }}
                               />
                             </div>
                           </div>
@@ -1620,7 +1639,7 @@ function PreviewClientModal({
                             </button>
                           </div>
                         </>
-                      )} */}
+                      )}
 
                       {/* <div className={previewClientStyle.roundsListed}>
                         {getCompanyDetails?.fundingDetails?.map((val) => (
