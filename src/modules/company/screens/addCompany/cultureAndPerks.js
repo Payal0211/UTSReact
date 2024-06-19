@@ -192,7 +192,7 @@ const addnewYoutubeLink = (e) =>{
             
               <div className={AddNewClientStyle.tabsRightPanel}>
             <div className={AddNewClientStyle.row}>
-        <div className={AddNewClientStyle.colMd12}>
+        <div className={AddNewClientStyle.colMd12} style={{marginBottom: '25px'}}>
         {/* <TextEditor
             register={register}
             setValue={setValue}
@@ -207,10 +207,7 @@ const addnewYoutubeLink = (e) =>{
             required={false}
             watch={watch}
           /> */}
-           <label style={{ marginBottom: "12px" }}>
-              Culture
-              {/* <span className={AddNewClientStyle.reqField}>*</span> */}
-            </label>
+            <div className={AddNewClientStyle.label}>Culture</div>
             <ReactQuill
               register={register}
               setValue={setValue}

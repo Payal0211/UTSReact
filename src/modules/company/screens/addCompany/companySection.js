@@ -28,6 +28,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
   const [currentCompanyId, setCurrentCompanyId] = useState()
   const [isPreviewModal,setIsPreviewModal] = useState(false);
   const [getcompanyID,setcompanyID] = useState("");
+  const [disableCompanyURL,setDisableCompanyURL] = useState(companyID === '0' ? true : false);
 
   const navigate = useNavigate();
 
@@ -120,6 +121,9 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
   );
 
   const validateCompanyName = async () => {
+    setDisableCompanyURL(true)
+    clearErrors('companyURL')
+    setValue('companyURL','')
     if(watch('companyName')){
       if(companyDetails?.companyName === watch('companyName')){
         clearErrors('companyName')
@@ -141,10 +145,12 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
       clearErrors('companyName')
       setDisableSubmit(false)
       setIsViewCompany(false);
+      setDisableCompanyURL(false)
     }
     if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
       setDisableSubmit(true)
       setIsViewCompany(true);
+      setDisableCompanyURL(true)
       setcompanyID(result?.details?.companyID);
       setError('companyName',{
         type: "manual",
@@ -161,7 +167,8 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
     setIsViewCompanyurl(false);
     if(watch("companyURL")){
 
-      if(companyDetails?.website === watch("companyURL")){
+      if(ValidateFieldURL(watch("companyURL"), "website")){
+          if(companyDetails?.website === watch("companyURL")){
         clearErrors('companyURL')
         setDisableSubmit(false)
         setIsViewCompanyurl(false);
@@ -195,6 +202,14 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
           message: result?.responseBody,
         })
       }
+      }else{
+        setError('companyURL',{
+          type: "manual",
+          message: "Entered value does not match url format",
+        })
+      }
+
+    
     }
    
    }
@@ -351,6 +366,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                   placeholder="Enter website url"
                   required
                   onBlurHandler={()=> validateCompanyURL()}
+                  disabled={disableCompanyURL}
                 />
                  <div className={AddNewClientStyle.formPanelAction} style={{padding:"0 0 20px",justifyContent:"flex-start"}}>
                   {showFetchATButton && <div><button className={AddNewClientStyle.btnPrimary} onClick={()=>getDetailsForAutoFetchAI(watch("companyURL"))}>Fetch detail From AI</button>
@@ -536,10 +552,11 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                 watch={watch}
                 /> */}
                
-              <label style={{ marginBottom: "12px" }}>
+              {/* <label style={{ marginBottom: "12px" }}>
                 About Company
                 <span className={AddNewClientStyle.reqField}>*</span>
-              </label>
+              </label> */}
+              <div className={AddNewClientStyle.label}>About Company <span className={AddNewClientStyle.reqField}>*</span></div>
              <ReactQuill
                 register={register}
                 setValue={setValue}

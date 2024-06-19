@@ -537,6 +537,12 @@ const AllHiringRequestScreen = () => {
       <LogoLoader visible={isLoading} />
         <div className={allHRStyles.hiringRequest}>All Hiring Requests</div>
         <div className={allHRStyles.btn_wrap}>
+        {showCloneHRToDemoAccount && <button
+        style={{marginRight:'15px'}}
+            className={allHRStyles.btnPrimary}
+            onClick={() => CloneHRDemoAccountAPICall()} >
+            Clone HR(s) to Demo Account
+          </button>}
           <div className={allHRStyles.priorities_drop_custom}>
             {priorityCount?.length === 1 ? (
               <button className={allHRStyles.togglebtn}>
@@ -693,11 +699,7 @@ const AllHiringRequestScreen = () => {
             </div>
             <p onClick={() => clearFilters()}>Reset Filters</p>
 
-            {showCloneHRToDemoAccount && <button
-            className={allHRStyles.btnPrimary}
-            onClick={() => CloneHRDemoAccountAPICall()} >
-            Clone HR(s) to Demo Account
-          </button>}
+           
 
           </div>
           <div className={allHRStyles.filterRight}>
