@@ -19,6 +19,9 @@ const AddNewHR = () => {
 
 	const navigateParams = useLocation();
 
+	//for isskill change 
+	const [originalDetails , setOriginalDetails ] = useState({})
+
 	// const [fromEditDeBriefing, setFromEditDeBriefing] = useState({
 	// 	addNewHiringRequest: false,
 	// 	debriefingHR: true,
@@ -204,6 +207,8 @@ const AddNewHR = () => {
 									isBDRMDRUser={isBDRMDRUser}
 									isDirectHR={isDirectHR}
 									setDisabledFields={setDisabledFields}
+									originalDetails={originalDetails} 
+									setOriginalDetails={setOriginalDetails} 
 								/>
 							),
 							disabled: localStorage.getItem('fromEditDeBriefing') && true,
@@ -225,7 +230,8 @@ const AddNewHR = () => {
 									removeFields={removeFields}
 									disabledFields={disabledFields}
 									isBDRMDRUser={isBDRMDRUser}
-									isDirectHR={isDirectHR}
+									isDirectHR={isDirectHR}originalDetails={originalDetails} 
+									setOriginalDetails={setOriginalDetails} 
 								/>
 							),
 							disabled: tabFieldDisabled?.debriefingHR,
