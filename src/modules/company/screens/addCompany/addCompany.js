@@ -155,12 +155,12 @@ function AddCompany() {
       // setControlledPOC(SelectedPocs);
       let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserDetailsEdit?.pocUserID);
       setValue("uplersPOCname", {
-        id: data.id,
-        value: data.value,
+        id: data?.id,
+        value: data?.value,
       });
       setControlledPOC({
-        id: data.id,
-        value: data.value,
+        id: data?.id,
+        value: data?.value,
       });
       
     }
