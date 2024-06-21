@@ -13,12 +13,14 @@ import ClientSection from "./clientSection";
 import EngagementSection from "./engagementSection";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { MasterDAO } from "core/master/masterDAO";
+import LogoLoader from "shared/components/loader/logoLoader";
 
 function AddCompany() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const { companyID } = useParams();
   const [getCompanyDetails, setCompanyDetails] = useState({});
+  const [getFundingDetails,setFundingDetails] = useState([]);
   const [getValuesForDD, setValuesForDD] = useState({});
   const [allPocs, setAllPocs] = useState([]);
   const [controlledPOC, setControlledPOC] = useState([]);
@@ -29,6 +31,7 @@ function AddCompany() {
   const [aboutCompanyError, setAboutCompanyError] = useState(false);
 
   const [loadingDetails,setLoadingDetails] = useState(false)
+  const [isLogoLoader,setIsLogoLoader] = useState(false)
   const [disableSubmit , setDisableSubmit] = useState(false)
   const [ loadingCompanyDetails , setLoadingCompanyDetails] = useState(false)
   const [showFetchATButton,setShowFetchAIButton] = useState(false);
@@ -80,6 +83,7 @@ function AddCompany() {
   
     if (result?.statusCode === HTTPStatusCode.OK) {
       setCompanyDetails(result?.responseBody);
+      setFundingDetails(result?.responseBody.fundingDetails)
       setLoadingDetails(false)
     }
     setLoadingDetails(false)
@@ -155,24 +159,26 @@ function AddCompany() {
       // setControlledPOC(SelectedPocs);
       let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserDetailsEdit?.pocUserID);
       setValue("uplersPOCname", {
-        id: data.id,
-        value: data.value,
+        id: data?.id,
+        value: data?.value,
       });
       setControlledPOC({
-        id: data.id,
-        value: data.value,
+        id: data?.id,
+        value: data?.value,
       });
       
     }
   }, [getCompanyDetails?.pocUserIds, allPocs]);
 
   const clientSubmitHandler = async (d) => {
-    console.log(d,"aboutCompanyaboutCompanyaboutCompany");
+    // console.log(d,"aboutCompanyaboutCompanyaboutCompany");
     setLoadingDetails(true)
+    setIsLogoLoader(true)
     setDisableSubmit(true)
     if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
 			setPricingTypeError(true)
       setLoadingDetails(false)
+      setIsLogoLoader(false)
       setDisableSubmit(false)
 			return
 		}
@@ -180,12 +186,14 @@ function AddCompany() {
     if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
       setLoadingDetails(false)
       setDisableSubmit(false)
+      setIsLogoLoader(false)
 			setPayPerError(true)
 			return
 		}
 
     if(checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob===false && IsChecked?.isProfileView===false){
 			setLoadingDetails(false)
+      setIsLogoLoader(false)
       setDisableSubmit(false)
 			setCreditError(true)
 			return
@@ -196,6 +204,7 @@ function AddCompany() {
     if(!watch("aboutCompany")){
       setAboutCompanyError(true);
       setLoadingDetails(false)
+      setIsLogoLoader(false)
       setDisableSubmit(false)
       return;
     }
@@ -212,6 +221,7 @@ function AddCompany() {
     if(!isAdmin){
       message.error(" Please Select a client as Admin")
       setLoadingDetails(false)
+      setIsLogoLoader(false)
       setDisableSubmit(false)
       return
     }
@@ -302,6 +312,7 @@ function AddCompany() {
     }
 
     setLoadingDetails(false)
+    setIsLogoLoader(false)
       setDisableSubmit(false)
   };
 
@@ -343,7 +354,7 @@ function AddCompany() {
         setValue={setValue}
         watch={watch}
         companyDetails={getCompanyDetails?.basicDetails}
-        fundingDetails={getCompanyDetails?.fundingDetails}
+        fundingDetails={getFundingDetails}
         companyID={companyID}
         isSelfFunded={isSelfFunded} 
         setIsSelfFunded={setIsSelfFunded}
@@ -450,6 +461,8 @@ function AddCompany() {
           Save
         </button>
       </div>
+
+      <LogoLoader visible={isLogoLoader} />
     </div>
   );
 }

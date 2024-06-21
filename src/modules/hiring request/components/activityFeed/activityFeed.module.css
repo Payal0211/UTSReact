@@ -375,7 +375,9 @@
     margin-right: 5px;
 }
 .skillsContainer{
-    display: flex;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 5px;
 }
 .skillChip {
     font-family: "Montserrat";
