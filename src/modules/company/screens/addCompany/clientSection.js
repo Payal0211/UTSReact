@@ -154,6 +154,14 @@ function ClientSection({
         <Skeleton active />
       ) : (
         fields?.map((item, index) => {
+          let allEmails = []
+          fields.forEach((_, emailindex) => {
+            if(emailindex !== index) {
+             allEmails.push(watch(`clientDetails.[${emailindex}].emailID`)) 
+           } 
+           })
+
+           let emailInclude = allEmails.includes( watch(`clientDetails.[${index}].emailID`))
           return (
             <div className={AddNewClientStyle.tabsFormItemInner}>
               <div className={AddNewClientStyle.tabsLeftPanel}>
@@ -226,6 +234,11 @@ function ClientSection({
                           value: EmailRegEx.email,
                           message: "Entered value does not match email format",
                         },
+                        validate: value => {
+                          if(emailInclude){
+                            return "Client email id is already in use"
+                          }
+                        }
                       }}
                       label="Work Email"
                       name={`clientDetails.[${index}].emailID`}

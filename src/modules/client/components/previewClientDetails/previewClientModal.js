@@ -1237,7 +1237,7 @@ function PreviewClientModal({
                                 : "NA"}{" "}
                             </p>
                           </li>
-                          <li>
+                          {/* <li>
                            
                               <span onClick={() => setIsEditCompanyType(true)}>
                                 {" "}
@@ -1250,7 +1250,7 @@ function PreviewClientModal({
                                 ? getCompanyDetails?.basicDetails?.companyType
                                 : "NA"}{" "}
                             </p>
-                          </li> 
+                          </li>  */}
                           <li>
                            
                               <span
@@ -2028,7 +2028,7 @@ function PreviewClientModal({
                       )}
 
                       <h6>
-                        Company Benefits
+                      Company perks & benefits
                        
                             <span
                               className={previewClientStyle.editNewIcon}
@@ -2062,9 +2062,9 @@ function PreviewClientModal({
                               mode={"tags"}
                               register={register}
                               name="perksAndAdvantages"
-                              label="Company perks & advantages"
-                              defaultValue="Mention perks & advantages"
-                              placeholder="Mention perks & advantages"
+                              label="Company perks & benefits"
+                              defaultValue="Mention perks & benefits"
+                              placeholder="Mention perks & benefits"
                               options={combinedPerkMemo}
                               setOptions={setCombinedPerkMemo}
                             />
@@ -3116,7 +3116,7 @@ function PreviewClientModal({
                           </p>
                         </li>
                         <li>
-                          <span>Model (Pay per hire)</span>
+                          <span>Engagement Mode (Pay per hire)</span>
                           <p>
                             {getCompanyDetails?.engagementDetails
                               ?.hiringTypePricingId === 1
