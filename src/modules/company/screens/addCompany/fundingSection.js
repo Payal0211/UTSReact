@@ -38,11 +38,8 @@ const seriesOptions = [
 
 function FundingSection({register,errors,setValue,watch,companyDetails,fundingDetails,isSelfFunded,setIsSelfFunded,fields, append, remove,loadingDetails,companyID}) {
   const [controlledSeries,setControlledSeries] = useState([]);
-    useEffect(() => {
-        if(companyDetails?.companyName){
-            setIsSelfFunded(companyDetails?.isSelfFunded)
-        }
-        remove()
+    useEffect(() => {   
+      remove()
         if(fundingDetails?.length > 0){
           setControlledSeries([])
             fundingDetails?.forEach(funding => {
@@ -58,11 +55,17 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
               }
               append(fundingobj)
               setControlledSeries(prev=> [...prev,funding.series])
-            });
+            });        
         }else{
           append(defaultFunding)
         } 
-    },[companyDetails,fundingDetails])
+    },[fundingDetails])
+
+    useEffect(()=>{
+      if(companyDetails?.companyName){
+        setIsSelfFunded(companyDetails?.isSelfFunded)
+    }
+    },[companyDetails])
 
     const onAddNewRound = useCallback(
       (e) => {
