@@ -123,13 +123,13 @@ export default function BeforePreOnboarding({
     async (req) => {
       let result = await OnboardDAO.getBeforeOnBoardInfoDAO(req);
       if (result?.statusCode === HTTPStatusCode.OK) {
-        setReplacementEngHr(result.responseBody.details.replacementEngAndHR)
-        setIsTransparentPricing(result.responseBody.details.isTransparentPricing)
-        setTabDisabled(result.responseBody.details.isFirstTabReadOnly
+        setReplacementEngHr(result.responseBody.details?.replacementEngAndHR)
+        setIsTransparentPricing(result.responseBody.details?.isTransparentPricing)
+        setTabDisabled(result.responseBody.details?.isFirstTabReadOnly
           )
         setPreONBoardingData(result.responseBody.details);
         setPreOnboardingDetailsForAMAssignment(
-          result.responseBody.details.preOnboardingDetailsForAMAssignment
+          result.responseBody.details?.preOnboardingDetailsForAMAssignment
         );
         setEngagementReplacement({
           ...engagementReplacement,
@@ -137,55 +137,54 @@ export default function BeforePreOnboarding({
         });
         setWorkManagement(
           result.responseBody.details.preOnboardingDetailsForAMAssignment
-            .workForceManagement
+            ?.workForceManagement
         );
-        setNetTerms(result.responseBody.details.drpNetPaymentDays);
-        setCurrentHRs(result.responseBody.details.currentHRs);
+        setNetTerms(result.responseBody.details?.drpNetPaymentDays);
+        setCurrentHRs(result.responseBody.details?.currentHRs);
 
         setValue(
           "netTerm",
-          result.responseBody.details.preOnboardingDetailsForAMAssignment
-            .payementNetTerm
+          result.responseBody.details?.preOnboardingDetailsForAMAssignment
+            ?.payementNetTerm
         );
         setValue(
           "payRate",
-          result.responseBody.details.preOnboardingDetailsForAMAssignment
-            .talentCost
+          result.responseBody.details?.preOnboardingDetailsForAMAssignment
+            ?.talentCost
 
         );
         setValue(
           "billRate",
-          result.responseBody.details.preOnboardingDetailsForAMAssignment
-            .finalHrCost
+          result.responseBody.details?.preOnboardingDetailsForAMAssignment
+            ?.finalHrCost
         );
         setValue(
           "hrAcceptedBy",
-          result.responseBody.details.preOnboardingDetailsForAMAssignment
-            .utS_HRAcceptedBy
+          result.responseBody.details?.preOnboardingDetailsForAMAssignment
+            ?.utS_HRAcceptedBy
         );
-        setValue('lwd', dayjs(result.responseBody.details.replacementDetail.lastWorkingDay).toDate());
+        setValue('lwd', dayjs(result.responseBody.details?.replacementDetail?.lastWorkingDay).toDate());
         result.responseBody.details.preOnboardingDetailsForAMAssignment
                 .shiftStartTime && setValue(
           "shiftStartTime",
           // new Date(
             convertToValidDate(
-              result.responseBody.details.preOnboardingDetailsForAMAssignment
-                .shiftStartTime
+              result.responseBody.details?.preOnboardingDetailsForAMAssignment?.shiftStartTime
             )
           // )
         );
-        result.responseBody.details.preOnboardingDetailsForAMAssignment
-        .shiftEndTime && setValue(
+        result.responseBody.details?.preOnboardingDetailsForAMAssignment
+        ?.shiftEndTime && setValue(
           "shiftEndTime",
           // new Date(
             convertToValidDate(
-              result.responseBody.details.preOnboardingDetailsForAMAssignment
-                .shiftEndTime
+              result.responseBody.details?.preOnboardingDetailsForAMAssignment
+                ?.shiftEndTime
             )
           // )    
         );
         
-        let preOnboardDetail = result.responseBody.details.preOnboardingDetailsForAMAssignment
+        let preOnboardDetail = result.responseBody.details?.preOnboardingDetailsForAMAssignment
 
         preOnboardDetail?.dpAmount && setValue('dpAmount',preOnboardDetail?.dpAmount)
         preOnboardDetail?.currentCTC && setValue('currentCTC',preOnboardDetail?.currentCTC)

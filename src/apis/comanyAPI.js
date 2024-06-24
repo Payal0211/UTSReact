@@ -4,13 +4,13 @@ import { HttpServices } from 'shared/services/http/http_service';
 import { errorDebug } from 'shared/utils/error_debug_utils';
 
 export const CompanyAPI = {
-    getCompanyDetailsRequest: async function (companyID) {
+    getCompanyDetailsRequest: async function (companyID,compURL) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.COMPANY +
 			CompanysAPI.GET_DETAILS +
-			`?CompanyID=${companyID}`;
+			`?CompanyID=${companyID}${compURL ? `&companyurl=${compURL}`  : ''}`
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {

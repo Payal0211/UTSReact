@@ -558,7 +558,7 @@ alt="preview"
           </div>
         </div>
 
-        <div
+        {/* <div
           className={AddNewClientStyle.viewHRDetailsItem}
           style={{ marginBottom: "30px" }}
         >
@@ -593,7 +593,7 @@ alt="preview"
               </div>
             )}
           </div>
-        </div>
+        </div> */}
       </>
     );
   };

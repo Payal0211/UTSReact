@@ -40,4 +40,8 @@
     border-bottom: 1px solid var(--uplers-border-color);
 }
 
+.formField [class*='ant-select-selection-overflow-item']{
+    text-transform: capitalize;
+}
+
 

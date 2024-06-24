@@ -7,6 +7,7 @@ import { Checkbox, message, Select, Skeleton } from 'antd';
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { HttpStatusCode } from "axios";
 import TextEditor from "shared/components/textEditor/textEditor";
+import ReactQuill from "react-quill";
 
 
 const defaultFunding = {
@@ -31,15 +32,14 @@ const seriesOptions = [
   { value: "Series G Round", id: "Series G Round" },
   { value: "Series H Round", id: "Series H Round" },
   { value: "Series I Round", id: "Series I Round" },
+  { value: "IPO", id: "IPO" },
+  { value: "Private Equity", id: "Private Equity" },
 ];
 
 function FundingSection({register,errors,setValue,watch,companyDetails,fundingDetails,isSelfFunded,setIsSelfFunded,fields, append, remove,loadingDetails,companyID}) {
   const [controlledSeries,setControlledSeries] = useState([]);
-    useEffect(() => {
-        if(companyDetails?.companyName){
-            setIsSelfFunded(companyDetails?.isSelfFunded)
-        }
-        remove()
+    useEffect(() => {   
+      remove()
         if(fundingDetails?.length > 0){
           setControlledSeries([])
             fundingDetails?.forEach(funding => {
@@ -55,11 +55,17 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
               }
               append(fundingobj)
               setControlledSeries(prev=> [...prev,funding.series])
-            });
+            });        
         }else{
           append(defaultFunding)
         } 
-    },[companyDetails,fundingDetails])
+    },[fundingDetails])
+
+    useEffect(()=>{
+      if(companyDetails?.companyName){
+        setIsSelfFunded(companyDetails?.isSelfFunded)
+    }
+    },[companyDetails])
 
     const onAddNewRound = useCallback(
       (e) => {
@@ -124,7 +130,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
       return years;
     };
   
-    const startYear = 1970;
+    const startYear = watch('foundedIn') ? watch('foundedIn') : 1900;
     const endYear = new Date().getFullYear();
   
     const yearOptions = generateYears(startYear, endYear).map((year) => ({
@@ -175,7 +181,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
            {index === 0 && <div className={AddNewClientStyle.row}>
                     <div className={AddNewClientStyle.colMd12} style={{marginBottom:'15px'}}>
                         <Checkbox checked={isSelfFunded} onClick={()=>setIsSelfFunded(prev=> !prev)}>
-                                            Self-funded company without external investments.
+                        Self-funded (bootstrapped) company without external investments.
                         </Checkbox>
                     </div>
             </div>} 
@@ -236,7 +242,7 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
               <div className={AddNewClientStyle.colMd6}> 
               <div className={AddNewClientStyle.label}>Last Funding Date</div>
               <div className={AddNewClientStyle.dateSelect}>
-    
+              <div className={AddNewClientStyle.formGroup} style={{width:'50%'}}>
               <Select
                           options={monthOptions}
                           placeholder="Select month"
@@ -246,15 +252,19 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                           }}
                           disabled={isSelfFunded}
                         />
+                        </div>
+                        <div className={AddNewClientStyle.formGroup} style={{width:'50%'}}>
                         <Select
                           options={yearOptions}
                           placeholder="Select year"
+                          showSearch={true}
                           value={watch(`fundingDetails.[${index}].year`) ? watch(`fundingDetails.[${index}].year`) : undefined}
                           onSelect={(e) => {
                             setValue(`fundingDetails.[${index}].year`,e)
                           }}
                           disabled={isSelfFunded}
                         />
+                        </div>
                         </div>
                         </div>
 
@@ -283,7 +293,22 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                 <div className={AddNewClientStyle.disabledTextArea} >
                     <p>Additional Information</p>
                 </div>
-                </>  :  <TextEditor
+                </>  :  <>
+                <div className={AddNewClientStyle.label}>Additional Information</div>
+                <ReactQuill
+              register={register}
+              setValue={setValue}
+              theme="snow"
+              className="heightSize"
+              // value={companyDetails?.culture ? companyDetails.culture : ''} 
+              value={watch(`fundingDetails.[${index}].additionalInformation`)}
+              name={`fundingDetails.[${index}].additionalInformation`}
+              onChange={(val) => {setValue(`fundingDetails.[${index}].additionalInformation`,val)
+                // setCompanyDetails(prev=> ({...prev, basicDetails:{ ...prev.basicDetails,culture : val}}))
+              }}
+            />
+            
+            {/* <TextEditor
                 register={register}
                 setValue={setValue}
                 // errors={errors}
@@ -297,7 +322,8 @@ function FundingSection({register,errors,setValue,watch,companyDetails,fundingDe
                 // required
                 watch={watch}
                 disabled={isSelfFunded}
-              />}
+              /> */}
+                </>}
              
               </div>
 

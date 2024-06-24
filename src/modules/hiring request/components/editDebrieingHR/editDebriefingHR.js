@@ -39,7 +39,8 @@ const EditDebriefingHR = ({
 	jdDumpID,
 	getHRdetails,
 	isDirectHR,
-	disabledFields
+	disabledFields,
+	originalDetails , setOriginalDetails 
 }) => {
 	const {
 		watch,
@@ -80,7 +81,7 @@ const EditDebriefingHR = ({
 	let watchOtherSkills = watch('otherSkill');
 	let watchSkills = watch('skills');
 	let goodToHaveSkill = watch('goodToHaveSkills');
-	console.log(watchOtherSkills,"watchOtherSkills",watchSkills);
+
 	const [talentRole, setTalentRole] = useState([]);
 	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
 	const [companyType , setComapnyType] = useState({})
@@ -120,8 +121,9 @@ const EditDebriefingHR = ({
 	const [sameSkillErrors, setSameSkillError] = useState(false)
 	const [showPublishModal, setShowPublishModal] = useState(false)
 	useEffect(()=>{
+		let JDPARSKILL = JDParsedSkills ? [...JDParsedSkills?.Skills] : [];
 		const combinedData = [
-			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
+			...JDPARSKILL,
 			...skills,
 			...[
 				{
@@ -131,12 +133,12 @@ const EditDebriefingHR = ({
 			],
 		];
 		const combinewithoutOther = [
-			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
+			...JDPARSKILL,
 			...skills,
 		];
 		// remove selected skill for other skill list 
-		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed.map(s=> s?.value).includes(o?.value)))
-		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave.map(s=> s?.value).includes(o?.value)))
+		setSkillMemo(combinewithoutOther?.filter((o) => !controlledJDParsed?.map(s=> s?.value).includes(o?.value)))
+		setCombinedSkillsMemo(combinedData?.filter((o) => !controlledGoodToHave?.map(s=> s?.value).includes(o?.value)))
 	},[JDParsedSkills, controlledJDParsed, skills,controlledGoodToHave])
 	// const combinedSkillsMemo = useMemo(() => {
 	// 	const combinedData = [
@@ -437,7 +439,7 @@ const checkValChnage = () => {
 				requirements: '',
 				JobDescription:d.jobDescription,
 				en_Id: enID,
-				skills: skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString(),
+				skills: skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString(),//must have
 				aboutCompanyDesc: d.aboutCompany,
 				// secondaryInterviewer: d.secondaryInterviewer,
 				interviewerFullName: d.interviewerFullName,
@@ -450,7 +452,7 @@ const checkValChnage = () => {
 				allowSpecialEdit: getHRdetails?.allowSpecialEdit,
 				role: d?.role?.id,
 				hrTitle: d.hrTitle,
-				allSkills:goodToSkillList.map(item=> item.skillsName).toString(),
+				allSkills:goodToSkillList.map(item=> item.skillsName).toString(), // good to have
 				"interviewerDetails":{
 					"primaryInterviewer": {
 						"interviewerId": d.interviewerId,
@@ -475,8 +477,8 @@ const checkValChnage = () => {
 				companyType: companyType?.name,
 				PayPerType:  companyType?.id,
 				// --update-- 0 or 1 check
-				IsMustHaveSkillschanged: getHRdetails?.skillmulticheckbox?.length === watchSkills?.length ? false :true,
-				IsGoodToHaveSkillschanged:getHRdetails?.allSkillmulticheckbox?.length === goodToHaveSkill?.length ? false: true,
+				 IsMustHaveSkillschanged: originalDetails?.skillmulticheckbox?.map(i=> i.text).toString() === skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString() ? false :true,
+				 IsGoodToHaveSkillschanged:originalDetails?.allSkillmulticheckbox?.map(i=> i.text).toString() === goodToSkillList.map(item=> item.skillsName).toString() ? false: true,
 			};
 			if(companyType?.id === 2){
 				debriefFormDetails['companyInfo'] = {
@@ -492,7 +494,6 @@ const checkValChnage = () => {
 				debriefFormDetails['interviewerDetails'] = getHRdetails?.interviewerDetails
 			}
 
-			
 			if(!sameSkillIssue){
 				setInterval(()=>setIsLoading(false),58000)
 				const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -732,10 +733,7 @@ const checkValChnage = () => {
 								setValue={setValue}
 								theme="snow"
 								className="heightSize"
-								value={(getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
-									JDParsedSkills?.jobDescription ||
-									(getHRdetails?.salesHiringRequest_Details?.jobDescription)) ?? ''
-								}
+								value={watch("jobDescription")}
 								name="jobDescription"
 								onChange={(val) => setValue("jobDescription",val)}
 							/>

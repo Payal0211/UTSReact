@@ -245,6 +245,7 @@ export class ClientsAPI {
 	static GET_SPACEID_FOR_CLIENTEMAIL= "GetSpaceIdForClientEmail";
 	static LIST_CREDIT_UTILIZATION = 'ListCreditUtilization'
 	static RESET_DEMO_TALENT_STATUS = 'ResetAllDemoHRTalentStatus'
+	static SYNC_COMPANY_PROFILE = "SyncCompanyProfile";
 }
 
 export class HiringRequestsAPI {

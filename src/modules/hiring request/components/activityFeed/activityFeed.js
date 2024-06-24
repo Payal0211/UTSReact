@@ -875,8 +875,8 @@ const ActivityFeed = ({
 							{historyData?.payrollType && <div className={ActivityFeedStyle.historyGridInfo}><span>Payroll Type:</span> {historyData?.payrollType}</div>}
 						</div>
 						{historyData?.jobDescription && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Description:</span> <div dangerouslySetInnerHTML={{__html:historyData?.jobDescription}} /></div>}
-						{historyData?.MustHaveSkills && <div className={ActivityFeedStyle.MustHaveSkills}><span>Must Have Skills:</span> <div dangerouslySetInnerHTML={{__html:historyData?.MustHaveSkills}} /></div>}
-						{historyData?.GoodToHaveSkills && <div className={ActivityFeedStyle.GoodToHaveSkills}><span>Good To Have Skills:</span> <div dangerouslySetInnerHTML={{__html:historyData?.GoodToHaveSkills}} /></div>}
+						{historyData?.mustHaveSkills && <div className={ActivityFeedStyle.MustHaveSkills} style={{display:'flex',marginTop:'10px'}}><span>Must Have Skills:</span> <div className={ActivityFeedStyle.skillsContainer}>{historyData?.mustHaveSkills.split(',').map(skill=> <div className={ActivityFeedStyle.skillChip}>{skill}</div>)}</div></div>}
+						{historyData?.goodToHaveSkills && <div className={ActivityFeedStyle.GoodToHaveSkills} style={{display:'flex',marginTop:'10px'}}><span>Good To Have Skills:</span> <div className={ActivityFeedStyle.skillsContainer}>{historyData?.goodToHaveSkills.split(',').map(skill=> <div className={ActivityFeedStyle.skillChip}>{skill}</div>)}</div></div>}
 						</>}
 						</Modal>}
 

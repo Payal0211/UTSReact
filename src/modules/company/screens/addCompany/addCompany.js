@@ -11,14 +11,16 @@ import FundingSection from "./fundingSection";
 import CultureAndPerks from "./cultureAndPerks";
 import ClientSection from "./clientSection";
 import EngagementSection from "./engagementSection";
-import { HTTPStatusCode } from "constants/network";
+import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { MasterDAO } from "core/master/masterDAO";
+import LogoLoader from "shared/components/loader/logoLoader";
 
 function AddCompany() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const { companyID } = useParams();
   const [getCompanyDetails, setCompanyDetails] = useState({});
+  const [getFundingDetails,setFundingDetails] = useState([]);
   const [getValuesForDD, setValuesForDD] = useState({});
   const [allPocs, setAllPocs] = useState([]);
   const [controlledPOC, setControlledPOC] = useState([]);
@@ -29,7 +31,10 @@ function AddCompany() {
   const [aboutCompanyError, setAboutCompanyError] = useState(false);
 
   const [loadingDetails,setLoadingDetails] = useState(false)
+  const [isLogoLoader,setIsLogoLoader] = useState(false)
   const [disableSubmit , setDisableSubmit] = useState(false)
+  const [ loadingCompanyDetails , setLoadingCompanyDetails] = useState(false)
+  const [showFetchATButton,setShowFetchAIButton] = useState(false);
 
 
   // engagement Values 
@@ -78,9 +83,29 @@ function AddCompany() {
   
     if (result?.statusCode === HTTPStatusCode.OK) {
       setCompanyDetails(result?.responseBody);
+      setFundingDetails(result?.responseBody.fundingDetails)
       setLoadingDetails(false)
     }
     setLoadingDetails(false)
+  };
+
+  const getDetailsForAutoFetchAI = async (compURL) => {
+    setShowFetchAIButton(false)
+    setLoadingCompanyDetails(true)
+    const result = await allCompanyRequestDAO.getCompanyDetailDAO(0,compURL);
+
+    if (result?.statusCode === HTTPStatusCode.OK) {
+      if(result?.responseBody?.basicDetails?.companyLogo !== null) {
+         let newresponse = {...result?.responseBody,basicDetails: {...result?.responseBody?.basicDetails,
+        companyLogo: `${NetworkInfo.PROTOCOL}${NetworkInfo.DOMAIN}Media/companylogo/${result?.responseBody?.basicDetails?.companyLogo}`      }      }
+      setCompanyDetails(newresponse);
+      }else{
+        message.warn("No Detail Fetched From AI")
+      }
+     
+      setLoadingCompanyDetails(false)
+    }
+    setLoadingCompanyDetails(false)
   };
 
   const getAllValuesForDD = useCallback(async () => {
@@ -122,7 +147,7 @@ function AddCompany() {
   }, [companyID]);
 
   useEffect(() => {
-    if (getCompanyDetails?.pocUserIds?.length && allPocs?.length) {
+    if (getCompanyDetails?.pocUserDetailsEdit?.pocUserID && allPocs?.length) {
       // let SelectedPocs = getCompanyDetails?.pocUserIds.map((pocId) => {
       //   let data = allPocs.find((item) => item.id === pocId);
       //   return {
@@ -132,26 +157,28 @@ function AddCompany() {
       // });
       // setValue("uplersPOCname", SelectedPocs);
       // setControlledPOC(SelectedPocs);
-      let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserIds[0]);
+      let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserDetailsEdit?.pocUserID);
       setValue("uplersPOCname", {
-        id: data.id,
-        value: data.value,
+        id: data?.id,
+        value: data?.value,
       });
       setControlledPOC({
-        id: data.id,
-        value: data.value,
+        id: data?.id,
+        value: data?.value,
       });
       
     }
   }, [getCompanyDetails?.pocUserIds, allPocs]);
 
   const clientSubmitHandler = async (d) => {
-    console.log(d,"aboutCompanyaboutCompanyaboutCompany");
+    // console.log(d,"aboutCompanyaboutCompanyaboutCompany");
     setLoadingDetails(true)
+    setIsLogoLoader(true)
     setDisableSubmit(true)
     if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
 			setPricingTypeError(true)
       setLoadingDetails(false)
+      setIsLogoLoader(false)
       setDisableSubmit(false)
 			return
 		}
@@ -159,12 +186,14 @@ function AddCompany() {
     if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
       setLoadingDetails(false)
       setDisableSubmit(false)
+      setIsLogoLoader(false)
 			setPayPerError(true)
 			return
 		}
 
     if(checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob===false && IsChecked?.isProfileView===false){
 			setLoadingDetails(false)
+      setIsLogoLoader(false)
       setDisableSubmit(false)
 			setCreditError(true)
 			return
@@ -174,6 +203,9 @@ function AddCompany() {
 
     if(!watch("aboutCompany")){
       setAboutCompanyError(true);
+      setLoadingDetails(false)
+      setIsLogoLoader(false)
+      setDisableSubmit(false)
       return;
     }
 
@@ -189,6 +221,7 @@ function AddCompany() {
     if(!isAdmin){
       message.error(" Please Select a client as Admin")
       setLoadingDetails(false)
+      setIsLogoLoader(false)
       setDisableSubmit(false)
       return
     }
@@ -247,6 +280,8 @@ function AddCompany() {
       },
       // "pocIds": d.uplersPOCname?.map(poc=> poc.id),
       "pocId": d.uplersPOCname?.id,
+      "HRID":getCompanyDetails?.pocUserDetailsEdit?.hrid ?? 0,
+      "Sales_AM_NBD":getCompanyDetails?.pocUserDetailsEdit?.sales_AM_NBD ?? '',
       "IsRedirectFromHRPage" : state?.createHR ? true : false
     }
 
@@ -254,6 +289,8 @@ function AddCompany() {
     // console.log("plaod",payload)
 
     let submitresult = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
+    setCompanyDetails(prev=> ({...prev,
+      basicDetails: payload.basicDetails}))
 // console.log("submited res",submitresult)
     if(submitresult?.statusCode === HTTPStatusCode.OK){
       if(state?.createHR){
@@ -275,6 +312,7 @@ function AddCompany() {
     }
 
     setLoadingDetails(false)
+    setIsLogoLoader(false)
       setDisableSubmit(false)
   };
 
@@ -304,6 +342,10 @@ function AddCompany() {
         loadingDetails={loadingDetails}
         setDisableSubmit={setDisableSubmit}
         aboutCompanyError={aboutCompanyError}
+        getDetailsForAutoFetchAI={getDetailsForAutoFetchAI}
+        loadingCompanyDetails={loadingCompanyDetails}
+        showFetchATButton={showFetchATButton}
+        setShowFetchAIButton={setShowFetchAIButton}
       />
 
       <FundingSection
@@ -312,7 +354,7 @@ function AddCompany() {
         setValue={setValue}
         watch={watch}
         companyDetails={getCompanyDetails?.basicDetails}
-        fundingDetails={getCompanyDetails?.fundingDetails}
+        fundingDetails={getFundingDetails}
         companyID={companyID}
         isSelfFunded={isSelfFunded} 
         setIsSelfFunded={setIsSelfFunded}
@@ -355,6 +397,7 @@ function AddCompany() {
       />
 
       <EngagementSection
+        companyID={companyID}
         register={register}
         errors={errors}
         setValue={setValue}
@@ -366,15 +409,15 @@ function AddCompany() {
         loadingDetails={loadingDetails}
       />
 
-      {companyID === '0' &&  <div className={AddNewClientStyle.tabsFormItem}>
+      <div className={AddNewClientStyle.tabsFormItem}>
         {loadingDetails ? <Skeleton active /> : <div className={AddNewClientStyle.tabsFormItemInner}>
           <div className={AddNewClientStyle.tabsLeftPanel}>
-            <h3>Add AM</h3>
+            <h3>{companyID === '0' && "Add"} Salesperson (NBD/AM)</h3>
             <p>Please provide the necessary details.</p>
           </div>
           <div className={AddNewClientStyle.tabsRightPanel}>
             <div className={AddNewClientStyle.row}>
-              <div className={AddNewClientStyle.colMd12}>
+              <div className={AddNewClientStyle.colMd6}>
                 <div className={AddNewClientStyle.formGroup}>
                    <HRSelectField
                   isControlled={true}
@@ -386,12 +429,12 @@ function AddCompany() {
                   mode={"id/value"}
                   register={register}
                   name="uplersPOCname"
-                  label="Uplers's AM name"
-                  defaultValue="Select AM name"
+                  label="Uplers's Salesperson (NBD/AM)"
+                  defaultValue="Select Salesperson (NBD/AM)"
                   options={allPocs}
                   required
                   isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
-                  errorMsg="Please select AM name."
+                  errorMsg="Please select Salesperson (NBD/AM)."
                 />
                 </div>
                
@@ -400,7 +443,8 @@ function AddCompany() {
           </div>
         </div>}
         
-      </div>}
+      </div>
+       
      
 
       <div className={AddNewClientStyle.formPanelAction}>
@@ -417,6 +461,8 @@ function AddCompany() {
           Save
         </button>
       </div>
+
+      <LogoLoader visible={isLogoLoader} />
     </div>
   );
 }

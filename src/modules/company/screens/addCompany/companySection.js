@@ -15,8 +15,10 @@ import { useNavigate } from "react-router-dom";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 import ReactQuill from "react-quill";
 
+
 function CompanySection({companyID,register,errors,setValue,watch,companyDetails,setCompanyDetails,loadingDetails,clearErrors,setError,
-  setDisableSubmit,aboutCompanyError}) {
+  setDisableSubmit,aboutCompanyError,getDetailsForAutoFetchAI,loadingCompanyDetails,showFetchATButton,setShowFetchAIButton}) {
+
   const [getUploadFileData, setUploadFileData] = useState('');
   const [base64Image, setBase64Image] = useState('');
   const [showUploadModal, setUploadModal] = useState(false);
@@ -26,6 +28,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
   const [currentCompanyId, setCurrentCompanyId] = useState()
   const [isPreviewModal,setIsPreviewModal] = useState(false);
   const [getcompanyID,setcompanyID] = useState("");
+  const [disableCompanyURL,setDisableCompanyURL] = useState(companyID === '0' ? true : false);
 
   const navigate = useNavigate();
 
@@ -61,7 +64,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
     return years;
   };
 
-  const startYear = 1970;
+  const startYear = 1900;
   const endYear = new Date().getFullYear();
 
   const yearOptions = generateYears(startYear, endYear).map((year) => ({
@@ -118,6 +121,9 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
   );
 
   const validateCompanyName = async () => {
+    setDisableCompanyURL(true)
+    clearErrors('companyURL')
+    setValue('companyURL','')
     if(watch('companyName')){
       if(companyDetails?.companyName === watch('companyName')){
         clearErrors('companyName')
@@ -139,10 +145,12 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
       clearErrors('companyName')
       setDisableSubmit(false)
       setIsViewCompany(false);
+      setDisableCompanyURL(false)
     }
     if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
       setDisableSubmit(true)
       setIsViewCompany(true);
+      setDisableCompanyURL(true)
       setcompanyID(result?.details?.companyID);
       setError('companyName',{
         type: "manual",
@@ -154,9 +162,13 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
   }
 
   const validateCompanyURL = async () => {
+    setShowFetchAIButton(false)
+    clearErrors('companyURL')
+    setIsViewCompanyurl(false);
     if(watch("companyURL")){
 
-      if(companyDetails?.website === watch("companyURL")){
+      if(ValidateFieldURL(watch("companyURL"), "website")){
+          if(companyDetails?.website === watch("companyURL")){
         clearErrors('companyURL')
         setDisableSubmit(false)
         setIsViewCompanyurl(false);
@@ -175,6 +187,11 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
         clearErrors('companyURL')
         setDisableSubmit(false)
         setIsViewCompanyurl(false);
+        if(companyID === '0'){
+            // getDetailsForAutoFetchAI(watch("companyURL"))
+
+            setShowFetchAIButton(true)
+        }     
        }
        if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
          setDisableSubmit(true)
@@ -185,6 +202,14 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
           message: result?.responseBody,
         })
       }
+      }else{
+        setError('companyURL',{
+          type: "manual",
+          message: "Entered value does not match url format",
+        })
+      }
+
+    
     }
    
    }
@@ -298,6 +323,9 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     onChangeHandler={(e) => {
                       // setCompanyName(e.target.value);
                       // debounceDuplicateCompanyName(e.target.value);
+                      setShowFetchAIButton(false)
+                      clearErrors('companyURL')
+                      setIsViewCompanyurl(false);
                     }}
                     placeholder="Enter Name"
                     required
@@ -309,7 +337,13 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                   </div>
 
               <div className={AddNewClientStyle.colMd6}>
-                <HRInputField
+
+                {loadingCompanyDetails ? <>
+                  <Skeleton active />
+
+                  <p style={{fontWeight:'bold',color:'green'}}>Fetching Company Details From AI ...</p>
+                </> : <>
+                   <HRInputField
                   register={register}
                   errors={errors}
                   label="Company Website URL"
@@ -332,11 +366,16 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                   placeholder="Enter website url"
                   required
                   onBlurHandler={()=> validateCompanyURL()}
+                  disabled={disableCompanyURL}
                 />
                  <div className={AddNewClientStyle.formPanelAction} style={{padding:"0 0 20px",justifyContent:"flex-start"}}>
-                  {isViewCompanyurl && 
+                  {showFetchATButton && <div><button className={AddNewClientStyle.btnPrimary} onClick={()=>getDetailsForAutoFetchAI(watch("companyURL"))}>Fetch detail From AI</button>
+                  <p style={{color:'orange', margin:'5px 0'}}>Fetch Company details from parsing tools like X-Ray Search.</p></div>}
+                  {(isViewCompanyurl &&  watch('companyName')) &&
                   <button className={AddNewClientStyle.btnPrimary} onClick={()=>setIsPreviewModal(true)}>View Company</button>}
                 </div>
+                </>}
+             
               </div>
             </div>
 
@@ -347,7 +386,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
 								errors={errors}
 								validationSchema={{
 									required:
-										'please enter the primary client linkedin profile URL.',
+										'please enter the company linkedin URL.',
 									// pattern: {
 									// 		value: URLRegEx.url,
 									// 		message: 'Entered value does not match url format',
@@ -419,7 +458,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
             
               </div>
 
-              <div className={AddNewClientStyle.colMd6}>
+              {/* <div className={AddNewClientStyle.colMd6}>
             <HRInputField
                     register={register}
                     errors={errors}
@@ -440,13 +479,8 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     placeholder="Enter company type"
                     required
                   />
-              </div>
-            </div>
-
-            <div className={AddNewClientStyle.row}>
-         
-
-              <div className={AddNewClientStyle.colMd6}>
+              </div> */}
+                <div className={AddNewClientStyle.colMd6}>
               <HRInputField
                     register={register}
                     errors={errors}
@@ -468,6 +502,12 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     required
                   />
               </div>
+            </div>
+
+            <div className={AddNewClientStyle.row}>
+         
+
+            
 
              
 
@@ -512,24 +552,25 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                 watch={watch}
                 /> */}
                
-              <label style={{ marginBottom: "12px" }}>
+              {/* <label style={{ marginBottom: "12px" }}>
                 About Company
-                {/* <span className={AddNewClientStyle.reqField}>*</span> */}
-              </label>
+                <span className={AddNewClientStyle.reqField}>*</span>
+              </label> */}
+              <div className={AddNewClientStyle.label}>About Company <span className={AddNewClientStyle.reqField}>*</span></div>
              <ReactQuill
                 register={register}
                 setValue={setValue}
                 theme="snow"
                 className="heightSize"
-                value={companyDetails?.aboutCompany ?? ''} 
+                value={!watch("aboutCompany") ? companyDetails?.aboutCompany ?? '' : watch("aboutCompany")} 
                 name="aboutCompany"
                 onChange={(val) => setValue("aboutCompany",val)}
               />
-              {/* {aboutCompanyError && (
+              {aboutCompanyError && (
                 <p className={AddNewClientStyle.error}>
                 *Please enter About company
               </p>
-              )} */}
+              )}
                </div>
             </div>
 

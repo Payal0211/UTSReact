@@ -374,3 +374,23 @@
     color: #7c7c7c;
     margin-right: 5px;
 }
+.skillsContainer{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 5px;
+}
+.skillChip {
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    text-align: center;
+    color: #ffffff;
+    display: inline-block;
+    background: #232323;
+    border-radius: 4px;
+    padding: 6px 8px;
+    cursor: default;
+    text-transform: capitalize;
+    margin: 0 5px
+}
