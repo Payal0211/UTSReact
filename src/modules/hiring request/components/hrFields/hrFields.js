@@ -2741,7 +2741,7 @@ const HRFields = ({
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={`Client Estimated Budget`}
+                  label={`Client Estimated Budget (Monthly)`}
                   register={register}
                   name="adhocBudgetCost"
                   type={InputType.NUMBER}

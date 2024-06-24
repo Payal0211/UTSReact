@@ -214,6 +214,12 @@ function ClientSection({
                       type={InputType.TEXT}
                       validationSchema={{
                         required: "Please enter the Client Name",
+                        validate:(value)=>{
+                          const regex = /^[a-zA-Z ]*$/
+                          if(!regex.test(value)){
+                            return 'Invalid input. Special characters and numbers are not allowed.'
+                          }
+                        }
                       }}
                       // errorMsg="Please enter the Client Name."
                       placeholder="Enter Client Name"
@@ -281,7 +287,19 @@ function ClientSection({
                       name={`clientDetails.[${index}].designation`}
                       type={InputType.TEXT}
                       placeholder="Enter Client Designation"
+                      validationSchema={{
+                        validate:(value)=>{
+                          const regex = /^[a-zA-Z0-9 ]*$/
+                          if(!regex.test(value)){
+                            return 'Invalid input. Special characters are not allowed.'
+                          }
+                        }
+                      }}
+                      forArrayFields={true}
+                      errors={errors?.clientDetails?.[index]?.designation}
+                      required={watch(`clientDetails.[${index}].designation`) ?  true : false}
                     />
+                    {console.log("err",errors)}
                   </div>
 
                   <div className={AddNewClientStyle.colMd6}>
@@ -332,6 +350,16 @@ function ClientSection({
                           name={`clientDetails.[${index}].contactNo`}
                           type={InputType.NUMBER}
                           placeholder="Enter Phone number"
+                          maxLength={15}
+                          validationSchema={{
+                            maxLength: {
+                              value: 15,
+                              message: "Too Many Characters"
+                            }}
+                          }
+                          required={watch(`clientDetails.[${index}].contactNo`) ? true : false}
+                          forArrayFields={true}
+                          errors={errors?.clientDetails?.[index]?.contactNo}
                         />
                       </div>
                     </div>

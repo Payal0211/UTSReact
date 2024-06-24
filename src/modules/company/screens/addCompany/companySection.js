@@ -121,9 +121,11 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
   );
 
   const validateCompanyName = async () => {
-    setDisableCompanyURL(true)
+    if(companyID === '0'){
+        setDisableCompanyURL(true)
     clearErrors('companyURL')
     setValue('companyURL','')
+    }
     if(watch('companyName')){
       if(companyDetails?.companyName === watch('companyName')){
         clearErrors('companyName')
@@ -150,7 +152,9 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
     if(result.statusCode === HTTPStatusCode.BAD_REQUEST){
       setDisableSubmit(true)
       setIsViewCompany(true);
-      setDisableCompanyURL(true)
+      if(companyID === '0'){
+        setDisableCompanyURL(true)
+      }      
       setcompanyID(result?.details?.companyID);
       setError('companyName',{
         type: "manual",
@@ -323,9 +327,12 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     onChangeHandler={(e) => {
                       // setCompanyName(e.target.value);
                       // debounceDuplicateCompanyName(e.target.value);
-                      setShowFetchAIButton(false)
+                      if(companyID === '0'){
+                         setShowFetchAIButton(false)
                       clearErrors('companyURL')
                       setIsViewCompanyurl(false);
+                      }
+                     
                     }}
                     placeholder="Enter Name"
                     required

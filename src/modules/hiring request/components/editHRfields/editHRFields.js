@@ -203,6 +203,9 @@ const EditHRFields = ({
   const [timeZoneList,setTimezoneList] = useState([]);
   const [clientDetails , setClientDetails] = useState({});
 
+  // const isGUID = getHRdetails?.addHiringRequest?.guid 
+  
+
   let controllerRef = useRef(null);
   const {
     watch,
@@ -222,7 +225,7 @@ const EditHRFields = ({
       autocompleteField: "abc",
     },
   });
-
+const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? 'DPHR' : ''  // for check if DP is selected 
   //CLONE HR functionality
   const getHRdetailsHandler = async (hrId) => {
     const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId);
@@ -1347,7 +1350,7 @@ const EditHRFields = ({
         let dpPercentage = watch('NRMargin')
      
         
-        if(getHRdetails?.addHiringRequest?.guid){
+        if(isGUID){
           let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
           let needToPay = watch('adhocBudgetCost') - cal
           setValue('uplersFees',cal ? cal : 0)
@@ -1360,7 +1363,7 @@ const EditHRFields = ({
         }
        
       }else{
-        if(getHRdetails?.addHiringRequest?.guid){
+        if(isGUID){
           let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
           let needToPay = +watch('adhocBudgetCost') + cal
       setValue('uplersFees',cal ? cal : 0)
@@ -1378,7 +1381,7 @@ const EditHRFields = ({
     if(watch('budget')?.value === '2'){
       if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
         // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
-        if(getHRdetails?.addHiringRequest?.guid){
+        if(isGUID){
             let dpPercentage = watch('NRMargin')
             let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
             let calMax = (dpPercentage * watch('maximumBudget') *12) /100           
@@ -1396,7 +1399,7 @@ const EditHRFields = ({
         }
        
       }else{
-        if(getHRdetails?.addHiringRequest?.guid){
+        if(isGUID){
             let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
             let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
             let minCal = +watch('minimumBudget') + +calMin
@@ -2687,7 +2690,7 @@ const EditHRFields = ({
                       isControlled={true}
                       setValue={setValue}
                       register={register}
-                      label={`Add your ${getHRdetails?.addHiringRequest?.guid ? 'talent salary' :'client estimated '  }  budget (Monthly)`}
+                      label={`Add your ${isGUID ? 'talent salary' :'client estimated '  }  budget (Monthly)`}
                       // label={`Add your estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}budget (Monthly)`}
                       options={budgets.map((item) => ({
                         id: item.id,
@@ -2704,7 +2707,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={`${typeOfPricing === 1 || companyType?.id=== 2 ? getHRdetails?.addHiringRequest?.guid ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (Monthly)`}
+                    label={`${typeOfPricing === 1 || companyType?.id=== 2 ? isGUID ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (Monthly)`}
                     register={register}
                     name="adhocBudgetCost"
                     type={InputType.NUMBER}
@@ -2723,7 +2726,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={getHRdetails?.addHiringRequest?.guid ?  `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Minimum Budget (Monthly)`: `Client Estimated Minimum Budget (Monthly)`}
+                    label={isGUID ?  `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Minimum Budget (Monthly)`: `Client Estimated Minimum Budget (Monthly)`}
                     register={register}
                     name="minimumBudget"
                     type={InputType.NUMBER}
@@ -2743,7 +2746,7 @@ const EditHRFields = ({
 
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={getHRdetails?.addHiringRequest?.guid ?   `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Maximum Budget (Monthly)` : `Client Estimated Maximum Budget (Monthly)`}
+                    label={isGUID ?   `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Maximum Budget (Monthly)` : `Client Estimated Maximum Budget (Monthly)`}
                     register={register}
                     name="maximumBudget"
                     type={InputType.NUMBER}
@@ -2774,7 +2777,7 @@ const EditHRFields = ({
                               />
                             </div>
 
-                            {!(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) &&    getHRdetails?.addHiringRequest?.guid &&        <div className={HRFieldStyle.colMd4}>
+                            {!(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) &&    isGUID &&        <div className={HRFieldStyle.colMd4}>
                               <HRInputField
                                 label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Estimated Client needs to pay ( Min - Max )" : "Estimated Client needs to pay"}
                                 register={register}
@@ -2785,7 +2788,7 @@ const EditHRFields = ({
                               />
                             </div>}
 
-                            {!getHRdetails?.addHiringRequest?.guid && <div className={HRFieldStyle.colMd4}>
+                            {!isGUID && <div className={HRFieldStyle.colMd4}>
                               <HRInputField
                                 label={"Talent Estimated Pay (Monthly)"}
                                 register={register}
@@ -3446,7 +3449,7 @@ const EditHRFields = ({
                     name="bqFormLink"
                     type={InputType.TEXT}
                     placeholder="Enter the link for HR form"
-                    required={getHRdetails?.addHiringRequest?.guid === null}
+                    required={isGUID === null}
                   />
                 </div>}
                 
@@ -3461,7 +3464,7 @@ const EditHRFields = ({
                     name="discoveryCallLink"
                     type={InputType.TEXT}
                     placeholder="Enter the link for Discovery call"
-                    required={getHRdetails?.addHiringRequest?.guid === null}
+                    required={isGUID === null}
                   />
                 </div> }
                 
