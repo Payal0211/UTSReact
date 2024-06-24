@@ -227,7 +227,7 @@ function PreviewClientModal({
     setIsLoading(false);
   };
 
-  const onSubmitField = async () => {
+  const onSubmitField = async (field) => {
     setIsLoading(true);
     let valid = true;
     let _errors = { ...errorsData };
@@ -236,31 +236,36 @@ function PreviewClientModal({
       _errors.linkedInProfile = '* Entered value does not match linkedin url format';
       valid = false;
     }
-    const fieldsToValidate = ["linkedInProfile", "websiteUrl", "companyName", "foundedYear", "teamSize", "industry"];
-    fieldsToValidate.forEach(field => {
-      const value = watch(field)?.trim();
+      let value = ""
+      if (field === 'pocId') {
+        value = watch(field)?.id;
+      } else {
+        value = watch(field)?.trim();
+      }
+      
       if (!value) {
         _errors[field] = `Please enter the ${field.replace(/([A-Z])/g, ' $1').trim()}.`;
         valid = false;
       }
-    });
-
     if (!valid) {
       setErrorsData(_errors);
       setIsLoading(false);
       return;
     }
     const basicDetails = {};
-    fieldsToValidate.forEach(field => {
-      basicDetails[field] = watch(field);
-    });
-
-    basicDetails.companyID = getcompanyID;
-
     let payload = {
-      basicDetails,
       IsUpdateFromPreviewPage: true,
     };
+      if (field == 'pocId') {        
+        payload.pocId = watch('pocId')?.id;
+        payload.HRID = getCompanyDetails?.pocUserDetailsEdit?.hrid;
+        payload.Sales_AM_NBD = getCompanyDetails?.pocUserDetailsEdit?.sales_AM_NBD;
+      }  else { 
+        basicDetails[field] = watch(field);
+      }
+    basicDetails.companyID = getcompanyID;
+    payload.basicDetails = basicDetails;
+
     let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
     if (res?.statusCode === HTTPStatusCode.OK) {
       getDetails();
@@ -270,6 +275,7 @@ function PreviewClientModal({
       setIsEditCompanyWebsite(false);
       setIsEditCompanyIndustry(false);
       setIsEditLinkedInURL(false);
+      setEditPOC(false);
     }
     setIsLoading(false);
   }
@@ -345,16 +351,16 @@ function PreviewClientModal({
   }, []);
 
   useEffect(() => {
-    if (getCompanyDetails?.pocUserId && allPocs?.length) {
-      let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserId);
+    if (getCompanyDetails?.pocUserDetailsEdit && allPocs?.length) {
+      let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserDetailsEdit?.pocUserID);
         let SelectedPocs = {
           id: data.id,
           value: data.value,
         };
-      setValue("uplersPOCname", SelectedPocs);
+      setValue("pocId", SelectedPocs);
       setControlledPOC(SelectedPocs);
     }
-  }, [getCompanyDetails?.pocUserId, allPocs]);
+  }, [getCompanyDetails?.pocUserDetailsEdit, allPocs]);
 
   useEffect(() => {
     if (getCompanyDetails?.perkDetails?.length > 0) {
@@ -983,20 +989,6 @@ function PreviewClientModal({
     setIsLoading(false);
   };
 
-  const handleSubmitUplersPOC = async () => {
-    setIsLoading(true);
-    let payload = {
-      basicDetails: {
-        companyID: getcompanyID,
-      },
-      pocId: watch("uplersPOCname")?.id,
-      IsUpdateFromPreviewPage: true,
-    };
-    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
-    getDetails();
-    setEditPOC(false);
-    setIsLoading(false);
-  };
 
   const handleSelftFunding = async () => {
     setIsLoading(true);
@@ -1177,18 +1169,6 @@ function PreviewClientModal({
                                 : "NA"}{" "}
                             </p>
                           </li>
-                          {/* <li>
-                            <span onClick={() => setIsEditCompanyType(true)}>
-                              {" "}
-                              Company Type <EditNewIcon />{" "}
-                            </span>
-                            <p>
-                              {" "}
-                              {getCompanyDetails?.basicDetails?.companyType
-                                ? getCompanyDetails?.basicDetails?.companyType
-                                : "NA"}{" "}
-                            </p>
-                          </li> */}
                           <li>
 
                             <span
@@ -2924,8 +2904,7 @@ function PreviewClientModal({
               <div className={previewClientStyle.formFieldsbox}>
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
-                    Uplers’s POC{" "}
-
+                  Uplers's Salesperson (NBD/AM){" "}
                     <span
                       className={previewClientStyle.editNewIcon}
                       onClick={() => setEditPOC(true)}
@@ -2939,11 +2918,11 @@ function PreviewClientModal({
                   {!isEditPOC && (
                     <div className={previewClientStyle.companyBenefits}>
                       <ul className={previewClientStyle.mt0}>
-                        {getCompanyDetails?.pocUserDetails?.map((item) => (
+                        {/* {getCompanyDetails?.pocUserDetailsEdit?.map((item) => ( */}
                           <li>
-                            <span>{item?.pocName}</span>
+                            <span>{getCompanyDetails?.pocUserDetailsEdit?.pocName}</span>
                           </li>
-                        ))}
+                        {/* ))} */}
                       </ul>
                     </div>
                   )}
@@ -2961,11 +2940,11 @@ function PreviewClientModal({
                               // mode={"multiple"}
                               mode={"id/value"}
                               register={register}
-                              name="uplersPOCname"
-                              label="Uplers's POC name"
-                              defaultValue="Enter POC name"
+                              name="pocId"
+                              label="Uplers's Salesperson (NBD/AM)"
+                              defaultValue="Select Salesperson (NBD/AM)"
                               options={allPocs}
-                            // required
+                              required
                             // isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
                             // errorMsg="Please select POC name."
                             />
@@ -2985,7 +2964,7 @@ function PreviewClientModal({
                             <button
                               type="button"
                               className={previewClientStyle.btnPrimary}
-                              onClick={() => handleSubmitUplersPOC()}
+                              onClick={() => onSubmitField("pocId")}
                             >
                               {" "}
                               SAVE{" "}
@@ -3048,7 +3027,7 @@ function PreviewClientModal({
             type="button"
             className={previewClientStyle.btnPrimary}
             onClick={() => {
-              onSubmitField();
+              onSubmitField("companyName");
             }}
           >
             {" "}
@@ -3120,7 +3099,7 @@ function PreviewClientModal({
           <button
             type="button"
             className={previewClientStyle.btnPrimary}
-            onClick={() => onSubmitField()}
+            onClick={() => onSubmitField("websiteUrl")}
           >
             {" "}
             SAVE{" "}
@@ -3184,7 +3163,7 @@ function PreviewClientModal({
               <button
                 type="button"
                 className={previewClientStyle.btnPrimary}
-                onClick={() => onSubmitField()}
+                onClick={() => onSubmitField("foundedYear")}
               >
                 {" "}
                 SAVE{" "}
@@ -3245,7 +3224,7 @@ function PreviewClientModal({
           <button
             type="button"
             className={previewClientStyle.btnPrimary}
-            onClick={() => onSubmitField()}
+            onClick={() => onSubmitField("teamSize")}
           >
             {" "}
             SAVE{" "}
@@ -3337,7 +3316,7 @@ function PreviewClientModal({
           <button
             type="button"
             className={previewClientStyle.btnPrimary}
-            onClick={() => onSubmitField()}
+            onClick={() => onSubmitField("industry")}
           >
             {" "}
             SAVE{" "}
@@ -3429,7 +3408,7 @@ function PreviewClientModal({
           <button
             type="button"
             className={previewClientStyle.btnPrimary}
-            onClick={() => onSubmitField()}
+            onClick={() => onSubmitField("linkedInProfile")}
           >
             {" "}
             SAVE{" "}
