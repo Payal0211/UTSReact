@@ -673,6 +673,7 @@ function PreviewClientModal({
     let payload = {
       basicDetails: {
         companyID: getcompanyID,
+        culture: isCulture
       },
       youTubeDetails: youTubeDetails,
       cultureDetails: modCultureDetails,
