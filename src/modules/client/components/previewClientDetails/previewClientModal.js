@@ -201,9 +201,9 @@ function PreviewClientModal({
       const data = result?.responseBody;
       setCompanyDetails(result?.responseBody);
       setValue("foundedYear", data?.basicDetails?.foundedYear);
-      setValue("linkedinUrl", data?.basicDetails?.linkedInProfile);
+      setValue("linkedInProfile", data?.basicDetails?.linkedInProfile);
       setControlledFoundedInValue(data?.basicDetails?.foundedYear);
-      setValue("companyWebsite", data?.basicDetails?.website);
+      setValue("websiteUrl", data?.basicDetails?.website);
       setValue("teamSize", data?.basicDetails?.teamSize);
       setValue("companyType", data?.basicDetails?.companyType);
       setValue("industry", data?.basicDetails?.companyIndustry);
@@ -232,11 +232,11 @@ function PreviewClientModal({
     let valid = true;
     let _errors = { ...errorsData };
 
-    if (!ValidateFieldURL(watch('linkedinUrl')?.trim(), "linkedin")) {
-      _errors.linkedinUrl = '* Entered value does not match linkedin url format';
+    if (!ValidateFieldURL(watch('linkedInProfile')?.trim(), "linkedin")) {
+      _errors.linkedInProfile = '* Entered value does not match linkedin url format';
       valid = false;
     }
-    const fieldsToValidate = ["linkedinUrl", "companyWebsite", "companyName", "foundedYear", "teamSize", "industry"];
+    const fieldsToValidate = ["linkedInProfile", "websiteUrl", "companyName", "foundedYear", "teamSize", "industry"];
     fieldsToValidate.forEach(field => {
       const value = watch(field)?.trim();
       if (!value) {
@@ -3074,13 +3074,13 @@ function PreviewClientModal({
           label={"Company website"}
           register={register}
           setValue={setValue}
-          name="companyWebsite"
+          name="websiteUrl"
           type={InputType.TEXT}
           onChangeHandler={(value) => {
             if (ValidateFieldURL(value, "website")) {
-              setErrorsData({ "companyWebsite": "" });
+              setErrorsData({ "websiteUrl": "" });
             } else {
-              setErrorsData({ "companyWebsite": "" });
+              setErrorsData({ "websiteUrl": "" });
               // setErrorsData({"companyWebsite":"Entered value does not match url format"});
             }
           }}
@@ -3100,9 +3100,9 @@ function PreviewClientModal({
           }}
           placeholder="Company website"
         />
-        {errorsData.companyWebsite && (
+        {errorsData.websiteUrl && (
           <span style={{ color: "red" }}>
-            {errorsData.companyWebsite}
+            {errorsData.websiteUrl}
           </span>
         )}
         <div
@@ -3403,17 +3403,17 @@ function PreviewClientModal({
           rows={4}
           errors={errors}
           register={register}
-          name="linkedinUrl"
+          name="linkedInProfile"
           setValue={setValue}
           onChangeHandler={(value) => {
-            setErrorsData({ "linkedinUrl": "" });
+            setErrorsData({ "linkedInProfile": "" });
           }}
           type={InputType.TEXT}
           placeholder="Company Linkedin URL"
         />
-        {errorsData.linkedinUrl && (
+        {errorsData.linkedInProfile && (
           <span style={{ color: "red" }}>
-            {errorsData.linkedinUrl}
+            {errorsData.linkedInProfile}
           </span>
         )}
         <div className={`${previewClientStyle.buttonEditGroup}`}>
