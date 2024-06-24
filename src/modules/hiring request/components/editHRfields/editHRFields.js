@@ -2768,7 +2768,7 @@ const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType
  {watch('budget')?.value !== "3" && <>
               <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees Amount ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }` : `Estimated Uplers Fees Amount ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }`}
+                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }` : `Estimated Uplers Fees ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }`}
                                 register={register}
                                 name="uplersFees"
                                 type={InputType.TEXT}
@@ -2790,7 +2790,7 @@ const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType
 
                             {!isGUID && <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={"Talent Estimated Pay (Monthly)"}
+                                label={"Estimated Salary Budget(Monthly)"}
                                 register={register}
                                 name="needToPay"
                                 type={InputType.TEXT}
