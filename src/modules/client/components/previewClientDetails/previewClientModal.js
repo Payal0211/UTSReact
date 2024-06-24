@@ -1176,20 +1176,18 @@ function PreviewClientModal({
                                 : "NA"}{" "}
                             </p>
                           </li>
-                          <li>
-
+                          {/* <li>
                             <span onClick={() => setIsEditCompanyType(true)}>
                               {" "}
                               Company Type <EditNewIcon />{" "}
                             </span>
-
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.companyType
                                 ? getCompanyDetails?.basicDetails?.companyType
                                 : "NA"}{" "}
                             </p>
-                          </li>
+                          </li> */}
                           <li>
 
                             <span
@@ -1861,7 +1859,7 @@ function PreviewClientModal({
                         </div>
                       )}
                       <h6>
-                        Company Benefits
+                      Company perks & benefits
                         <span
                           className={previewClientStyle.editNewIcon}
                           onClick={() => setEditCompanyBenefits(true)}
@@ -1894,9 +1892,9 @@ function PreviewClientModal({
                               mode={"tags"}
                               register={register}
                               name="perksAndAdvantages"
-                              label="Company perks & advantages"
-                              defaultValue="Mention perks & advantages"
-                              placeholder="Mention perks & advantages"
+                              label="Company perks & benefits"
+                              defaultValue="Mention perks & benefits"
+                              placeholder="Mention perks & benefits"
                               options={combinedPerkMemo}
                               setOptions={setCombinedPerkMemo}
                             />
@@ -2896,7 +2894,7 @@ function PreviewClientModal({
                           </p>
                         </li>
                         <li>
-                          <span>Model (Pay per hire)</span>
+                          <span>Engagement Mode (Pay per hire)</span>
                           <p>
                             {getCompanyDetails?.engagementDetails
                               ?.hiringTypePricingId === 1
@@ -3167,6 +3165,7 @@ function PreviewClientModal({
               name="foundedYear"
               mode={"value"}
               defaultValue="Select Year"
+              searchable={true}
               //  isError={errors["foundedIn"] && errors["foundedIn"]}
               required
               //  errorMsg={"Please select Founded in"}
