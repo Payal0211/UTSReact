@@ -29,7 +29,7 @@ import HRInputField from "modules/hiring request/components/hrInputFields/hrInpu
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 
 import { useFieldArray, useForm } from "react-hook-form";
-import { InputType } from "constants/application";
+import { EmailRegEx, InputType, ValidateFieldURL } from "constants/application";
 import { HttpStatusCode, all } from "axios";
 import ReactQuill from "react-quill";
 
@@ -87,6 +87,7 @@ function PreviewClientModal({
   const [isEditEngagement, setEditEngagement] = useState(false);
   const [isEditPOC, setEditPOC] = useState(false);
   const [isEditCultureSection, setEditCultureSection] = useState(false);
+  const [isEditFunding, setEditFunding] = useState(false);
   const [isEditCompanyBenefits, setEditCompanyBenefits] = useState(false);
   const [getValuesForDD, setValuesForDD] = useState({});
   const [controlledPOC, setControlledPOC] = useState([]);
@@ -122,6 +123,7 @@ function PreviewClientModal({
   const [typeOfPricing, setTypeOfPricing] = useState(null);
   const [hrPricingTypes, setHRPricingTypes] = useState([]);
   const [errorCurrency, seterrorCurrency] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(false)
   const [
     controlledHiringPricingTypeValue,
     setControlledHiringPricingTypeValue,
@@ -131,16 +133,7 @@ function PreviewClientModal({
   const [clickIndex, setClickIndex] = useState();
   const [controlledSeries, setControlledSeries] = useState([]);
   const [messageAPI, contextHolder] = message.useMessage();
-  const [clientDetailsData, setClientDetailsData] = useState({
-    clientID: "",
-    en_Id: "",
-    isPrimary: "",
-    fullName: "",
-    emailId: "",
-    designation: "",
-    phoneNumber: "",
-    accessRoleId: "",
-  });
+  const [clientDetailsData, setClientDetailsData] = useState({});
   const [otherClientDetailsData, setOtherClientDetailsData] = useState({
     clientID: 0,
     // "en_Id": "",
@@ -151,21 +144,39 @@ function PreviewClientModal({
     phoneNumber: "",
     accessRoleId: "",
   });
-  const [errorsData, setErrorsData] = useState({});
+  const [errorsData, setErrorsData] = useState({});  
+  const [controlledRoleId, setControlledRoleId] = useState([]);
   const [pricingTypeError, setPricingTypeError] = useState(false);
-  const [additionalInformation,setAdditionInformation] = useState("")
+  const [additionalInformation, setAdditionInformation] = useState("")
   const pictureRef = useRef();
   const { Dragger } = Upload;
   const cultureDetails = [];
   const youTubeDetails = getCompanyDetails?.youTubeDetails ?? [];
   let _currency = watch("creditCurrency");
 
+  useEffect(() => {
+    if (clickIndex !== null && isEditClient) {
+      const client = getCompanyDetails?.contactDetails[clickIndex];
+      setClientDetailsData({
+        clientID: client?.id ? client?.id : "",
+        en_Id: client?.en_Id ? client?.en_Id : "",
+        isPrimary: client?.isPrimary ? client?.isPrimary : false,
+        fullName: client?.fullName ? client?.fullName : "",
+        emailId: client?.emailID ? client?.emailID : "",
+        designation: client?.designation ? client?.designation : "",
+        phoneNumber: client?.contactNo ? client?.contactNo : "",
+        accessRoleId: client?.roleID ? client?.roleID : "",
+        countryCode: client?.countryCode || "",
+      });
+    }
+  }, [clickIndex, isEditClient, getCompanyDetails]);
   const getCodeAndFlag = async () => {
     const getCodeAndFlagResponse = await MasterDAO.getCodeAndFlagRequestDAO();
     setFlagAndCode(
       getCodeAndFlagResponse && getCodeAndFlagResponse.responseBody
     );
   };
+  let eReg = new RegExp(EmailRegEx.email);
 
   useEffect(() => {
     getCodeAndFlag();
@@ -189,13 +200,13 @@ function PreviewClientModal({
     if (result?.statusCode === HTTPStatusCode.OK) {
       const data = result?.responseBody;
       setCompanyDetails(result?.responseBody);
-      setValue("foundedIn", data?.basicDetails?.foundedYear);
-      setValue("linkedinURL", data?.basicDetails?.linkedInProfile);
+      setValue("foundedYear", data?.basicDetails?.foundedYear);
+      setValue("linkedInProfile", data?.basicDetails?.linkedInProfile);
       setControlledFoundedInValue(data?.basicDetails?.foundedYear);
-      setValue("companyWebsite", data?.basicDetails?.website);
+      setValue("websiteUrl", data?.basicDetails?.website);
       setValue("teamSize", data?.basicDetails?.teamSize);
       setValue("companyType", data?.basicDetails?.companyType);
-      setValue("companyIndustry", data?.basicDetails?.companyIndustry);
+      setValue("industry", data?.basicDetails?.companyIndustry);
       setValue("headquarters", data?.basicDetails?.headquaters);
       setValue("companyName", data?.basicDetails?.companyName);
       setValue("fullName", data?.contactDetails?.[1]?.firstName);
@@ -206,6 +217,8 @@ function PreviewClientModal({
       setValue("fundingAmount", data?.fundingDetails?.[0]?.fundingAmount);
       setValue("fundingRound", data?.fundingDetails?.[0]?.fundingRound);
       setValue("investors", data?.fundingDetails?.[0]?.investors);
+      setValue("fundingMonth", data?.fundingDetails?.[0]?.fundingMonth);
+      setValue("fundingYear", data?.fundingDetails?.[0]?.fundingYear);
       setIsAboutUs(data?.basicDetails?.aboutCompany);
       setIsCulture(data?.basicDetails?.culture);
       setIsSelfFunded(data?.basicDetails?.isSelfFunded);
@@ -214,73 +227,58 @@ function PreviewClientModal({
     setIsLoading(false);
   };
 
-  const handleSubmitcompanyName = async () => {
+  const onSubmitField = async (field) => {
     setIsLoading(true);
+    let valid = true;
+    let _errors = { ...errorsData };
+
+    if (!ValidateFieldURL(watch('linkedInProfile')?.trim(), "linkedin")) {
+      _errors.linkedInProfile = '* Entered value does not match linkedin url format';
+      valid = false;
+    }
+      let value = ""
+      if (field === 'pocId') {
+        value = watch(field)?.id;
+      } else {
+        value = watch(field)?.trim();
+      }
+      
+      if (!value) {
+        _errors[field] = `Please enter the ${field.replace(/([A-Z])/g, ' $1').trim()}.`;
+        valid = false;
+      }
+    if (!valid) {
+      setErrorsData(_errors);
+      setIsLoading(false);
+      return;
+    }
+    const basicDetails = {};
     let payload = {
-      basicDetails: {
-        companyID: getcompanyID,
-        companyName: watch("companyName"),
-      },
       IsUpdateFromPreviewPage: true,
     };
+      if (field == 'pocId') {        
+        payload.pocId = watch('pocId')?.id;
+        payload.HRID = getCompanyDetails?.pocUserDetailsEdit?.hrid;
+        payload.Sales_AM_NBD = getCompanyDetails?.pocUserDetailsEdit?.sales_AM_NBD;
+      }  else { 
+        basicDetails[field] = watch(field);
+      }
+    basicDetails.companyID = getcompanyID;
+    payload.basicDetails = basicDetails;
+
     let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
     if (res?.statusCode === HTTPStatusCode.OK) {
       getDetails();
       setIsEditCompanyName(false);
-    }
-    setIsLoading(false);
-  };
-
-  const handleSubmitcompanyWebsite = async () => {
-    setIsLoading(true);
-    let payload = {
-      basicDetails: {
-        companyID: getcompanyID,
-        websiteUrl: watch("companyWebsite"),
-      },
-      IsUpdateFromPreviewPage: true,
-    };
-    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
-    if (res?.statusCode === HTTPStatusCode.OK) {
-      getDetails();
-      setIsEditCompanyWebsite(false);
-    }
-    setIsLoading(false);
-  };
-
-  const handleSubmitcompanyFound = async () => {
-    setIsLoading(true);
-    let payload = {
-      basicDetails: {
-        companyID: getcompanyID,
-        foundedYear: watch("foundedIn"),
-      },
-      IsUpdateFromPreviewPage: true,
-    };
-    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
-    if (res?.statusCode === HTTPStatusCode.OK) {
-      getDetails();
       setIsEditCompanyFound(false);
-    }
-    setIsLoading(false);
-  };
-
-  const handleSubmitTeamSize = async () => {
-    setIsLoading(true);
-    let payload = {
-      basicDetails: {
-        companyID: getcompanyID,
-        companySize: watch("teamSize"),
-      },
-      IsUpdateFromPreviewPage: true,
-    };
-    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
-    if (res?.statusCode === HTTPStatusCode.OK) {
-      getDetails();
       setIsEditTeamSize(false);
+      setIsEditCompanyWebsite(false);
+      setIsEditCompanyIndustry(false);
+      setIsEditLinkedInURL(false);
+      setEditPOC(false);
     }
     setIsLoading(false);
-  };
+  }
 
   const handleSubmitCompanyType = async () => {
     setIsLoading(true);
@@ -295,23 +293,6 @@ function PreviewClientModal({
     if (res?.statusCode === HTTPStatusCode.OK) {
       getDetails();
       setIsEditCompanyType(false);
-    }
-    setIsLoading(false);
-  };
-
-  const handleSubmitCompanyIndustry = async () => {
-    setIsLoading(true);
-    let payload = {
-      basicDetails: {
-        companyID: getcompanyID,
-        industry: watch("companyIndustry"),
-      },
-      IsUpdateFromPreviewPage: true,
-    };
-    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
-    if (res?.statusCode === HTTPStatusCode.OK) {
-      getDetails();
-      setIsEditCompanyIndustry(false);
     }
     setIsLoading(false);
   };
@@ -333,23 +314,6 @@ function PreviewClientModal({
     setIsLoading(false);
   };
 
-  const handleSubmitCompanyLinkedIn = async () => {
-    setIsLoading(true);
-    let payload = {
-      basicDetails: {
-        companyID: getcompanyID,
-        linkedInProfile: watch("linkedinURL"),
-      },
-      IsUpdateFromPreviewPage: true,
-    };
-    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
-    if (res?.statusCode === HTTPStatusCode.OK) {
-      getDetails();
-      setIsEditLinkedInURL(false);
-    }
-    setIsLoading(false);
-  };
-
   const handleSubmitAboutUs = async () => {
     setIsLoading(true);
     let payload = {
@@ -366,47 +330,6 @@ function PreviewClientModal({
     }
     setIsLoading(false);
   };
-
-  // let payload = {
-  //   "basicDetails": {
-  //     "companyID": companyID,
-  //     "companyName": d.companyName,
-  //     "companyLogo": getCompanyDetails?.basicDetails?.companyLogo,
-  //     "websiteUrl": d.companyURL,
-  //     "foundedYear": d.foundedIn,
-  //     "companySize": +d.teamSize,
-  //     "companyType": d.companyType,
-  //     "industry": d.industry,
-  //     "headquaters": d.headquaters,
-  //     "aboutCompanyDesc": d.aboutCompany,
-  //     "culture": d.culture,
-  //     "isSelfFunded": isSelfFunded
-  //   },
-  //   "fundingDetails": d.fundingDetails,
-  //   "cultureDetails": modCultureDetails,
-  //   "perkDetails": d.perksAndAdvantages?.map(it=> it.value),
-  //   "youTubeDetails": getCompanyDetails?.youTubeDetails,
-  //   "clientDetails": modClientDetails,
-  //   "engagementDetails": {
-  //     "companyTypeID": checkPayPer?.companyTypeID,
-  //     "anotherCompanyTypeID": checkPayPer?.anotherCompanyTypeID,
-  //     "isPostaJob": IsChecked.isPostaJob,
-  //     "isProfileView": IsChecked.isProfileView,
-  //     "jpCreditBalance": d.freeCredit,
-  //     "isTransparentPricing": typeOfPricing === 1 ? true :  typeOfPricing === 0 ?  false : null,
-  //     "isVettedProfile": true,
-  //     "creditAmount": d.creditCurrency === "INR" ? null :  d.creditAmount,
-  //     "creditCurrency": d.creditCurrency,
-  //     "jobPostCredit": d.jobPostCredit,
-  //     "vettedProfileViewCredit": d.vettedProfileViewCredit,
-  //     "nonVettedProfileViewCredit": d.nonVettedProfileViewCredit,
-  //     "hiringTypePricingId": d.hiringPricingType?.id
-  //   },
-  //   "pocIds": d.uplersPOCname?.map(poc=> poc.id),
-  //   "IsRedirectFromHRPage" : state?.createHR ? true : false
-  // }
-
-  // let submitresult = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload)
 
   useEffect(() => {
     getDetails();
@@ -428,18 +351,16 @@ function PreviewClientModal({
   }, []);
 
   useEffect(() => {
-    if (getCompanyDetails?.pocUserIds?.length && allPocs?.length) {
-      let SelectedPocs = getCompanyDetails?.pocUserIds.map((pocId) => {
-        let data = allPocs.find((item) => item.id === pocId);
-        return {
+    if (getCompanyDetails?.pocUserDetailsEdit && allPocs?.length) {
+      let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserDetailsEdit?.pocUserID);
+        let SelectedPocs = {
           id: data.id,
           value: data.value,
         };
-      });
-      setValue("uplersPOCname", SelectedPocs);
+      setValue("pocId", SelectedPocs);
       setControlledPOC(SelectedPocs);
     }
-  }, [getCompanyDetails?.pocUserIds, allPocs]);
+  }, [getCompanyDetails?.pocUserDetailsEdit, allPocs]);
 
   useEffect(() => {
     if (getCompanyDetails?.perkDetails?.length > 0) {
@@ -498,7 +419,7 @@ function PreviewClientModal({
     return years;
   };
 
-  const startYear = 1900;
+  const startYear = watch('foundedIn') ? watch('foundedIn') : 1900;
   const endYear = new Date().getFullYear();
 
   const yearOptions = generateYears(startYear, endYear).map((year) => ({
@@ -553,7 +474,7 @@ function PreviewClientModal({
           let payload = {
             basicDetails: {
               companyID: getcompanyID,
-              companyLogo:imgUrls[0],
+              companyLogo: imgUrls[0],
             },
             IsUpdateFromPreviewPage: true,
           }
@@ -621,6 +542,8 @@ function PreviewClientModal({
     { value: "Series G Round", id: "Series G Round" },
     { value: "Series H Round", id: "Series H Round" },
     { value: "Series I Round", id: "Series I Round" },
+    { value: "IPO", id: "IPO" },
+    { value: "Private Equity", id: "Private Equity" },
   ];
 
   const uploadCultureImages = async (Files) => {
@@ -756,6 +679,7 @@ function PreviewClientModal({
     let payload = {
       basicDetails: {
         companyID: getcompanyID,
+        culture: isCulture
       },
       youTubeDetails: youTubeDetails,
       cultureDetails: modCultureDetails,
@@ -894,25 +818,6 @@ function PreviewClientModal({
 
 
   const addEngagementDetails = async () => {
-    // if(typeOfPricing === null && checkPayPer?.anotherCompanyTypeID==1 && (checkPayPer?.companyTypeID==0 || checkPayPer?.companyTypeID==2)){
-		// 	setPricingTypeError(true)
-    //   // setLoadingDetails(false)
-    //   // setDisableSubmit(false)
-		// 	return
-		// }
-    // if(checkPayPer?.anotherCompanyTypeID==0 && checkPayPer?.companyTypeID==0){
-    //   // setLoadingDetails(false)
-    //   // setDisableSubmit(false)
-		// 	setPayPerError(true)
-		// 	return
-		// }
-
-    // if(checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob===false && IsChecked?.isProfileView===false){
-		// 	// setLoadingDetails(false)
-    //   // setDisableSubmit(false)
-		// 	setCreditError(true)
-		// 	return
-		// }
     setIsLoading(true);
     let payload = {
       basicDetails: {
@@ -923,16 +828,16 @@ function PreviewClientModal({
         anotherCompanyTypeID: checkPayPer?.anotherCompanyTypeID,
         isPostaJob: IsChecked.isPostaJob,
         isProfileView: IsChecked.isProfileView,
-        jpCreditBalance:checkPayPer?.companyTypeID===2? watch("freeCredit")??null:null,
+        jpCreditBalance: checkPayPer?.companyTypeID === 2 ? parseInt(watch("freeCredit")) ?? null : null,
         isTransparentPricing:
           typeOfPricing === 1 ? true : typeOfPricing === 0 ? false : null,
         isVettedProfile: true,
-        creditAmount:(checkPayPer?.companyTypeID===2) ?  watch("creditCurrency"):null,
-        creditCurrency:checkPayPer?.companyTypeID===2? watch("creditCurrency"):null,
-        jobPostCredit: (checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob=== true) ? watch("jobPostCredit") ?? null : null,
-        vettedProfileViewCredit: (checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ? watch("vettedProfileViewCredit") ?? null : null,
-        nonVettedProfileViewCredit:(checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ? watch("nonVettedProfileViewCredit") ?? null : null,
-        hiringTypePricingId:checkPayPer?.anotherCompanyTypeID === 1 ? watch("hiringPricingType")?.id : null,
+        creditAmount: (checkPayPer?.companyTypeID === 2) ? parseInt(watch("creditAmount")) : null,
+        creditCurrency: checkPayPer?.companyTypeID === 2 ? watch("creditCurrency") : null,
+        jobPostCredit: (checkPayPer?.companyTypeID === 2 && IsChecked?.isPostaJob === true) ? parseInt(watch("jobPostCredit")) ?? null : null,
+        vettedProfileViewCredit: (checkPayPer?.companyTypeID === 2 && IsChecked?.isProfileView === true) ? parseInt(watch("vettedProfileViewCredit")) ?? null : null,
+        nonVettedProfileViewCredit: (checkPayPer?.companyTypeID === 2 && IsChecked?.isProfileView === true) ? parseInt(watch("nonVettedProfileViewCredit")) ?? null : null,
+        hiringTypePricingId: checkPayPer?.anotherCompanyTypeID === 1 ? watch("hiringPricingType")?.id : null,
       },
 
       IsUpdateFromPreviewPage: true,
@@ -956,8 +861,21 @@ function PreviewClientModal({
       _errors.emailIdData = "Please enter email address";
       valid = false;
     }
+    if (clientDetailsData?.emailId && !eReg.test(clientDetailsData?.emailId)) {
+      _errors.emailIdData = "Please enter valid email address";
+      valid = false;
+    }
+    if (!clientDetailsData?.accessRoleId) {
+      _errors.accessRoleId = "Please select access type";
+      valid = false;
+    }
     setErrorsData(_errors);
     if (valid) {
+      const countryCode = clientDetailsData.countryCode;
+      delete clientDetailsData.countryCode;
+      if (clientDetailsData.phoneNumber) {
+        clientDetailsData.phoneNumber = countryCode + clientDetailsData.phoneNumber;
+      }
       let payload = {
         basicDetails: {
           companyID: getcompanyID,
@@ -967,12 +885,17 @@ function PreviewClientModal({
       };
       setIsLoading(true);
       let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
-      if (res.statusCode===HTTPStatusCode.OK) {
+      if (res.statusCode === HTTPStatusCode.OK) {
         // if(res.statusCode.HTTPStatusCode.OK){
         setIsLoading(false);
         getDetails();
         setEditClient(false);
-        setError({});
+        setError({});        
+        resetField('designationOther')
+        resetField('roleIDOther')
+        resetField('emailIDOther')
+        resetField('contactNoOther')
+        resetField('fullNameOther')
         // }
       } else {
         _errors.emailIdData = res?.responseBody?.message;
@@ -996,12 +919,21 @@ function PreviewClientModal({
       _errors.emailId = "Please enter email address";
       valid = false;
     }
+    if (otherClientDetailsData?.emailId && !eReg.test(otherClientDetailsData?.emailId)) {
+      _errors.emailId = "Please enter valid email address";
+      valid = false;
+    }
+    if (!otherClientDetailsData?.accessRoleId) {
+      _errors.accessRoleId = "Please select access type";
+      valid = false;
+    }
     setErrorsData(_errors);
     if (valid) {
       setIsLoading(true);
       let payload = {
         basicDetails: {
           companyID: getcompanyID,
+          companyName: watch("companyName")
         },
         clientDetails: [otherClientDetailsData],
         IsUpdateFromPreviewPage: true,
@@ -1009,28 +941,35 @@ function PreviewClientModal({
       let response = await allCompanyRequestDAO.updateCompanyDetailsDAO(
         payload
       );
-      if (response.statusCode===HTTPStatusCode.OK) {
+      if (response.statusCode === HTTPStatusCode.OK) {
         getDetails();
         setAddNewClient(false);
         setError({});
-        setOtherClientDetailsData({});
+        setErrorsData({});
+        setOtherClientDetailsData({});        
+        resetField('designationOther')
+        resetField('roleIDOther')
+        resetField('emailIDOther')
+        resetField('contactNoOther')
+        resetField('fullNameOther')
         setIsLoading(false);
       } else {
-        _errors.emailId = response?.responseBody?.message;
+        _errors.emailId = response?.responseBody; 
         valid = false;
         setErrorsData(_errors);
         setIsLoading(false);
       }
-      setError({});
-      setIsLoading(false);
+      // setError({});
+      // setErrorsData({});
+      // setIsLoading(false);
     }
   };
 
   const companyTypeMessages = [
     getCompanyDetails?.engagementDetails?.anotherCompanyTypeID === 1 &&
-      "Pay per Hire",
+    "Pay per Hire",
     getCompanyDetails?.engagementDetails?.companyTypeID === 2 &&
-      "Pay per Credit",
+    "Pay per Credit",
   ]
     .filter(Boolean)
     .join(", ");
@@ -1050,27 +989,13 @@ function PreviewClientModal({
     setIsLoading(false);
   };
 
-  const handleSubmitUplersPOC = async () => {
-    setIsLoading(true);
-    let payload = {
-      basicDetails: {
-        companyID: getcompanyID,
-      },
-      pocIds: [watch("uplersPOCname")?.id],
-      IsUpdateFromPreviewPage: true,
-    };
-    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
-    getDetails();
-    setEditPOC(false);
-    setIsLoading(false);
-  };
 
   const handleSelftFunding = async () => {
     setIsLoading(true);
     let payload = {
       basicDetails: {
         companyID: getcompanyID,
-        isSelfFunded: false,
+        isSelfFunded: isSelfFunded,
       },
       fundingDetails: [
         {
@@ -1078,8 +1003,8 @@ function PreviewClientModal({
           fundingAmount: watch("fundingAmount"),
           fundingRound: watch("fundingRound"),
           series: watch("series"),
-          month: watch("month"),
-          year: watch("year"),
+          month: watch("fundingMonth"),
+          year: watch("fundingYear"),
           investors: watch("investors"),
           additionalInformation: additionalInformation,
         },
@@ -1089,13 +1014,14 @@ function PreviewClientModal({
     let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
     getDetails();
     setIsLoading(false);
+    setEditFunding(false);
     setAdditionInformation("");
   };
 
-  const syncCompany = async() =>{
+  const syncCompany = async () => {
     setIsLoading(true)
     let res = await allCompanyRequestDAO.getSyncCompanyProfileDAO(getcompanyID);
-    if(res?.statusCode === 200){
+    if (res?.statusCode === 200) {
       messageAPI.open({
         type: "success",
         content: "Sync successfully",
@@ -1106,9 +1032,15 @@ function PreviewClientModal({
     setIsLoading(false)
   }
 
+  const addHttps = (url) => {
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+    return url;
+  };
   return (
     <>
-    
+
       <LogoLoader visible={isLoading} />
       <Modal
         centered
@@ -1125,16 +1057,16 @@ function PreviewClientModal({
         <div className={previewClientStyle.PreviewpageMainWrap}>
           <div className={`${previewClientStyle.PostHeader} ${previewClientStyle.refreshBtnWrap}`}>
             <h4>Company / Client Details</h4>
-            <div className={previewClientStyle.hiringRequestPriority} onClick={()=>syncCompany()}>
+            <div className={previewClientStyle.hiringRequestPriority} onClick={() => syncCompany()}>
               <Tooltip title={'Sync company data to ATS'} placement="bottom"
-              style={{"zIndex":"9999"}}
-            
-              overlayClassName="custom-syntooltip">
+                style={{ "zIndex": "9999" }}
+
+                overlayClassName="custom-syntooltip">
                 <RefreshSyncSVG width="17" height="16" style={{ fontSize: '16px' }} />
-            </Tooltip>
+              </Tooltip>
             </div>
           </div>
-         
+
 
           <div className={previewClientStyle.PostJobStepSecondWrap}>
             <div className={previewClientStyle.formFields}>
@@ -1172,51 +1104,51 @@ function PreviewClientModal({
                             </Avatar>
                           )}
                           {/* )} */}
-                              <span className={previewClientStyle.editNewIcon}>
-                                {" "}
-                                <EditNewIcon
-                                  onClick={() => setUploadModal(true)}
-                                />{" "}
-                              </span>
+                          <span className={previewClientStyle.editNewIcon}>
+                            {" "}
+                            <EditNewIcon
+                              onClick={() => setUploadModal(true)}
+                            />{" "}
+                          </span>
                         </div>
                         <div
                           className={previewClientStyle.companyProfRightDetail}
                         >
                           <h3>
                             {getCompanyDetails?.basicDetails?.companyName}{" "}
-                            
-                                <span
-                                  className={previewClientStyle.editNewIcon}
-                                  onClick={() => setIsEditCompanyName(true)}
-                                >
-                                  {" "}
-                                  <EditNewIcon />{" "}
-                                </span>
-                           
+
+                            <span
+                              className={previewClientStyle.editNewIcon}
+                              onClick={() => setIsEditCompanyName(true)}
+                            >
+                              {" "}
+                              <EditNewIcon />{" "}
+                            </span>
+
                           </h3>
-                          <a href={getCompanyDetails?.basicDetails?.website} alt='companysite' target="_blank" rel="noreferrer">
+                          <a href={addHttps(getCompanyDetails?.basicDetails?.website)} alt='companysite' target="_blank" rel="noreferrer">
                             {" "}
                             {getCompanyDetails?.basicDetails?.website}{" "}
-                            
-                                <span
-                                  className={previewClientStyle.editNewIcon}
-                                  onClick={() => setIsEditCompanyWebsite(true)}
-                                >
-                                  {" "}
-                                  <EditNewIcon />{" "}
-                                </span>
-                              
+
+                            <span
+                              className={previewClientStyle.editNewIcon}
+                              onClick={() => setIsEditCompanyWebsite(true)}
+                            >
+                              {" "}
+                              <EditNewIcon />{" "}
+                            </span>
+
                           </a>
                         </div>
                       </div>
 
                       <div className={previewClientStyle.companyDetailTop}>
                         <ul>
-                          <li>           
-                              <span onClick={() => setIsEditCompanyFound(true)}>
-                                {" "}
-                                Founded in <EditNewIcon />{" "}
-                              </span>
+                          <li>
+                            <span onClick={() => setIsEditCompanyFound(true)}>
+                              {" "}
+                              Founded in <EditNewIcon />{" "}
+                            </span>
                             <p>
                               {getCompanyDetails?.basicDetails?.foundedYear
                                 ? getCompanyDetails?.basicDetails?.foundedYear
@@ -1224,12 +1156,12 @@ function PreviewClientModal({
                             </p>
                           </li>
                           <li>
-                            
-                              <span onClick={() => setIsEditTeamSize(true)}>
-                                {" "}
-                                Team Size <EditNewIcon />{" "}
-                              </span>
-                            
+
+                            <span onClick={() => setIsEditTeamSize(true)}>
+                              {" "}
+                              Team Size <EditNewIcon />{" "}
+                            </span>
+
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.teamSize
@@ -1237,43 +1169,29 @@ function PreviewClientModal({
                                 : "NA"}{" "}
                             </p>
                           </li>
-                          {/* <li>
-                           
-                              <span onClick={() => setIsEditCompanyType(true)}>
-                                {" "}
-                                Company Type <EditNewIcon />{" "}
-                              </span>
-                           
-                            <p>
-                              {" "}
-                              {getCompanyDetails?.basicDetails?.companyType
-                                ? getCompanyDetails?.basicDetails?.companyType
-                                : "NA"}{" "}
-                            </p>
-                          </li>  */}
                           <li>
-                           
-                              <span
-                                onClick={() => setIsEditCompanyIndustry(true)}
-                              >
-                                Company Industry <EditNewIcon />{" "}
-                              </span>
-                            
+
+                            <span
+                              onClick={() => setIsEditCompanyIndustry(true)}
+                            >
+                              Company Industry <EditNewIcon />{" "}
+                            </span>
+
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.companyIndustry
                                 ? getCompanyDetails?.basicDetails
-                                    ?.companyIndustry
+                                  ?.companyIndustry
                                 : "NA"}{" "}
                             </p>
                           </li>
                           <li>
-                           
-                              <span onClick={() => setIsEditHeadquarters(true)}>
-                                {" "}
-                                Headquarters <EditNewIcon />{" "}
-                              </span>
-                          
+
+                            <span onClick={() => setIsEditHeadquarters(true)}>
+                              {" "}
+                              Headquarters <EditNewIcon />{" "}
+                            </span>
+
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.headquaters
@@ -1282,17 +1200,17 @@ function PreviewClientModal({
                             </p>
                           </li>
                           <li>
-                           
-                              <span onClick={() => setIsEditLinkedInURL(true)}>
-                                {" "}
-                                Linkedin URL <EditNewIcon />{" "}
-                              </span>
-                            
+
+                            <span onClick={() => setIsEditLinkedInURL(true)}>
+                              {" "}
+                              Linkedin URL <EditNewIcon />{" "}
+                            </span>
+
                             <p>
                               {" "}
                               {getCompanyDetails?.basicDetails?.linkedInProfile
                                 ? getCompanyDetails?.basicDetails
-                                    ?.linkedInProfile
+                                  ?.linkedInProfile
                                 : "NA"}{" "}
                             </p>
                           </li>
@@ -1302,14 +1220,14 @@ function PreviewClientModal({
                       <h6>
                         {" "}
                         About us{" "}
-                       
-                            <span
-                              className={previewClientStyle.editNewIcon}
-                              onClick={() => setIsEditAboutUs(true)}
-                            >
-                              <EditNewIcon />
-                            </span>
-                          
+
+                        <span
+                          className={previewClientStyle.editNewIcon}
+                          onClick={() => setIsEditAboutUs(true)}
+                        >
+                          <EditNewIcon />
+                        </span>
+
                       </h6>
                       {isEditAboutUs == false ? (
                         <ReactQuill
@@ -1329,6 +1247,7 @@ function PreviewClientModal({
                             value={isAboutUs}
                             onChange={(val) => setIsAboutUs(val)}
                             className={previewClientStyle.reactQuillEdit}
+                            required
                           />
                           <div
                             className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}
@@ -1355,108 +1274,115 @@ function PreviewClientModal({
 
                       <hr />
 
-                      <h6>Funding</h6>
-
-                      {getCompanyDetails?.basicDetails?.isSelfFunded ===
-                      false ? (
-                        <div className={previewClientStyle.fundingrounds}>
-                          <ul>
-                            <li>
-                              <span>Funding Round Series</span>
-                              <p>
-                                {getCompanyDetails?.fundingDetails?.[0]?.series
-                                  ? getCompanyDetails?.fundingDetails?.[0]
-                                      ?.series
-                                  : "NA"}
-                              </p>
-                            </li>
-
-                            <li>
-                              <span>Funding Amount</span>
-                              <p>
-                                {getCompanyDetails?.fundingDetails?.[0]
-                                  ?.fundingAmount
-                                  ? getCompanyDetails?.fundingDetails?.[0]
-                                      ?.fundingAmount
-                                  : "NA"}
-                              </p>
-                            </li>
-
-                            <li>
-                              <span>Latest Funding Round</span>
-                              <p>
-                                {getCompanyDetails?.fundingDetails?.[0]
-                                  ?.lastFundingRound
-                                  ? getCompanyDetails?.fundingDetails?.[0]
-                                      ?.lastFundingRound
-                                  : "NA"}
-                              </p>
-                            </li>
-
-                            <li>
-                              <span>Investors</span>
-                              <p>
-                                {displayedInvestors.length > 0
-                                  ? displayedInvestors.join(", ")
-                                  : "NA"}
-                                {allInvestors.length > 4 && (
-                                  <span>
-                                    ...{" "}
-                                    <a
-                                      href="#"
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        toggleInvestors();
-                                      }}
-                                      title="view all"
-                                    >
-                                      {showAllInvestors
-                                        ? "Show Less"
-                                        : "View All"}
-                                    </a>
-                                  </span>
-                                )}
-                              </p>
-                            </li>
-                            <li>
-                              <span>Additional Information</span>
-                              {/* <p>{getCompanyDetails?.fundingDetails?.[0]?.additionalInformation?getCompanyDetails?.fundingDetails?.[0]?.additionalInformation:"NA"}</p> */}
-                              <ReactQuill
-                                theme="snow"
-                                value={
-                                  getCompanyDetails?.fundingDetails?.[0]
-                                    ?.additionalInformation
+                      <h6>Funding
+                        <span
+                          className={previewClientStyle.editNewIcon}
+                          onClick={() => setEditFunding(true)}
+                        >
+                          <EditNewIcon />
+                        </span>
+                      </h6>
+                      {!isEditFunding && getCompanyDetails?.basicDetails?.isSelfFunded ===
+                        false && (
+                          <div className={previewClientStyle.fundingrounds}>
+                            <ul>
+                              <li>
+                                <span>Funding Round Series</span>
+                                <p>
+                                  {getCompanyDetails?.fundingDetails?.[0]?.series
                                     ? getCompanyDetails?.fundingDetails?.[0]
-                                        ?.additionalInformation
-                                    : "NA"
-                                }
-                                readOnly
-                                modules={{ toolbar: false }}
-                                className={
-                                  previewClientStyle.reactQuillReadonly
-                                }
-                                style={{
-                                  border: "none !important",
-                                }}
-                              />
-                            </li>
-                          </ul>
-                        </div>
-                      ) : (
-                        <div className={previewClientStyle.fundingrounds}>
-                          <ul>
-                            <li>
-                              <span>Self-funded (bootstrapped)</span>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
+                                      ?.series
+                                    : "NA"}
+                                </p>
+                              </li>
 
-                       {getCompanyDetails?.basicDetails?.isSelfFunded ===
+                              <li>
+                                <span>Funding Amount</span>
+                                <p>
+                                  {getCompanyDetails?.fundingDetails?.[0]
+                                    ?.fundingAmount
+                                    ? getCompanyDetails?.fundingDetails?.[0]
+                                      ?.fundingAmount
+                                    : "NA"}
+                                </p>
+                              </li>
+
+                              <li>
+                                <span>Latest Funding Round</span>
+                                <p>
+                                  {getCompanyDetails?.fundingDetails?.[0]
+                                    ?.lastFundingRound
+                                    ? getCompanyDetails?.fundingDetails?.[0]
+                                      ?.lastFundingRound
+                                    : "NA"}
+                                </p>
+                              </li>
+
+                              <li>
+                                <span>Investors</span>
+                                <p>
+                                  {displayedInvestors.length > 0
+                                    ? displayedInvestors.join(", ")
+                                    : "NA"}
+                                  {allInvestors.length > 4 && (
+                                    <span>
+                                      ...{" "}
+                                      <a
+                                        href="#"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          toggleInvestors();
+                                        }}
+                                        title="view all"
+                                      >
+                                        {showAllInvestors
+                                          ? "Show Less"
+                                          : "View All"}
+                                      </a>
+                                    </span>
+                                  )}
+                                </p>
+                              </li>
+                              <li>
+                                <span>Additional Information</span>
+                                {/* <p>{getCompanyDetails?.fundingDetails?.[0]?.additionalInformation?getCompanyDetails?.fundingDetails?.[0]?.additionalInformation:"NA"}</p> */}
+                                <ReactQuill
+                                  theme="snow"
+                                  value={
+                                    getCompanyDetails?.fundingDetails?.[0]
+                                      ?.additionalInformation
+                                      ? getCompanyDetails?.fundingDetails?.[0]
+                                        ?.additionalInformation
+                                      : "NA"
+                                  }
+                                  readOnly
+                                  modules={{ toolbar: false }}
+                                  className={
+                                    previewClientStyle.reactQuillReadonly
+                                  }
+                                  style={{
+                                    border: "none !important",
+                                  }}
+                                />
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+                      {!isEditFunding && getCompanyDetails?.basicDetails?.isSelfFunded ===
                         true && (
+                          <div className={previewClientStyle.fundingrounds}>
+                            <ul>
+                              <li>
+                                <span>Self-funded (bootstrapped)</span>
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+
+                      {isEditFunding && (
                         <>
                           <div className={previewClientStyle.row}>
-                            <div className={previewClientStyle.colMd12}>
+                            <div className={previewClientStyle.colMd12} style={{ marginBottom: '16px' }}>
                               <Checkbox
                                 checked={isSelfFunded}
                                 onClick={() => setIsSelfFunded((prev) => !prev)}
@@ -1475,26 +1401,11 @@ function PreviewClientModal({
                                 name={"fundingAmount"}
                                 setValue={setValue}
                                 type={InputType.TEXT}
-                                onChangeHandler={(e) => {}}
+                                onChangeHandler={(e) => { }}
                                 placeholder="Ex: 500k, 900k, 1M, 2B..."
                                 disabled={isSelfFunded}
                               />
                             </div>
-                            <div className={previewClientStyle.colMd6}>
-                              <HRInputField
-                                register={register}
-                                label="Funding Round"
-                                name={"fundingRound"}
-                                type={InputType.NUMBER}
-                                onChangeHandler={(e) => {}}
-                                placeholder="Enter round number"
-                                disabled={isSelfFunded}
-                                setValue={setValue}
-                              />
-                            </div>
-                          </div>
-
-                          <div className={previewClientStyle.row}>
                             <div className={previewClientStyle.colMd6}>
                               <HRSelectField
                                 controlledValue={controlledSeries}
@@ -1504,13 +1415,15 @@ function PreviewClientModal({
                                 mode={"id"}
                                 register={register}
                                 name={"series"}
-                                label="Series"
+                                label="Funding Round/Series"
                                 defaultValue="Select"
                                 options={seriesOptions}
                                 disabled={isSelfFunded}
                               />
                             </div>
+                          </div>
 
+                          <div className={previewClientStyle.row}>
                             <div className={previewClientStyle.colMd6}>
                               <div className={previewClientStyle.phoneLabel}>
                                 Month-Year
@@ -1523,12 +1436,12 @@ function PreviewClientModal({
                                     trigger.parentElement
                                   }
                                   value={
-                                    watch(`fundingDetails.month`)
-                                      ? watch(`fundingDetails.month`)
+                                    watch(`fundingMonth`)
+                                      ? watch(`fundingMonth`)
                                       : undefined
                                   }
                                   onSelect={(e) => {
-                                    setValue(`month`, e);
+                                    setValue(`fundingMonth`, e);
                                   }}
                                   disabled={isSelfFunded}
                                 />
@@ -1539,12 +1452,13 @@ function PreviewClientModal({
                                     trigger.parentElement
                                   }
                                   value={
-                                    watch(`fundingDetails.year`)
-                                      ? watch(`fundingDetails.year`)
+                                    watch(`fundingYear`)
+                                      ? watch(`fundingYear`)
                                       : undefined
                                   }
+                                  showSearch={true}
                                   onSelect={(e) => {
-                                    setValue(`year`, e);
+                                    setValue(`fundingYear`, e);
                                   }}
                                   disabled={isSelfFunded}
                                 />
@@ -1558,7 +1472,7 @@ function PreviewClientModal({
                                 name={"investors"}
                                 type={InputType.TEXT}
                                 setValue={setValue}
-                                onChangeHandler={(e) => {}}
+                                onChangeHandler={(e) => { }}
                                 placeholder="Add investors seprated by comma (,)"
                                 disabled={isSelfFunded}
                               />
@@ -1567,44 +1481,48 @@ function PreviewClientModal({
 
                           <div className={previewClientStyle.row}>
                             <div className={previewClientStyle.colMd12}>
-                              {/* <TextEditor
-                                register={register}
-                                setValue={setValue}
-                                // errors={errors}
-                                // controlledValue=}
-                                isControlled={true}
-                                isTextArea={true}
-                                label="Additional Information"
-                                name={`additionalInformation`}
-                                type={InputType.TEXT}
-                                placeholder="Enter Additional Information"
-                                // required
-                                watch={watch}
-                                disabled={isSelfFunded}
-                              /> */}
-                              <label className={previewClientStyle.phoneLabel}>Additional Information</label>
-                              <ReactQuill
-                                theme="snow"
-                                placeholder="Enter Additional Information"
-                                value={
-                                  additionalInformation
-                                }
-                                onChange={(val)=>setAdditionInformation(val)}
-                                readOnly={isSelfFunded?true:false}
-                                // modules={{ toolbar: false }}
-                                className={
-                                  previewClientStyle.reactQuillEdit
-                                }
-                                style={{
-                                  border: "none !important",
-                                }}
-                              />
+                              {isSelfFunded ? <><div className={previewClientStyle.phoneLabel}>Additional Information</div>
+                                <div className={previewClientStyle.disabledTextArea} >
+                                  <p>Additional Information</p>
+                                </div>
+                              </> : <>
+                                <label className={previewClientStyle.phoneLabel}>Additional Information</label>
+                                <ReactQuill
+                                  theme="snow"
+                                  placeholder="Enter Additional Information"
+                                  value={
+                                    additionalInformation
+                                  }
+                                  onChange={(val) => setAdditionInformation(val)}
+                                  readOnly={isSelfFunded ? true : false}
+                                  // modules={{ toolbar: false }}
+                                  className={
+                                    previewClientStyle.reactQuillEdit
+                                  }
+                                  // className={`${previewClientStyle.reactQuillEdit} ${isSelfFunded ? 'disabled-input' : ''}`}
+
+                                  style={{
+                                    border: "none !important",
+                                  }}
+                                />
+                              </>}
                             </div>
                           </div>
-
                           <div
-                            className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24}`}
+                            className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}
                           >
+                            <button
+                              type="button"
+                              className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`}
+                              onClick={() => {
+                                setEditFunding(false)
+                                setIsSelfFunded(false)
+                              }
+                              }
+                            >
+                              {" "}
+                              Cancel{" "}
+                            </button>
                             <button
                               type="button"
                               className={previewClientStyle.btnPrimary}
@@ -1616,86 +1534,23 @@ function PreviewClientModal({
                           </div>
                         </>
                       )}
-
-                      {/* <div className={previewClientStyle.roundsListed}>
-                        {getCompanyDetails?.fundingDetails?.map((val) => (
-                          <div
-                            className={`${previewClientStyle.roundsListContent} ${previewClientStyle.active}`}
-                          >
-                            <span>
-                              {" "}
-                              {val?.fundingRound
-                                ? val?.fundingRound + " | "
-                                : ""}{" "}
-                              {val?.series?.trim() ? val?.series : ""}{" "}
-                              {val?.fundingMonth
-                                ? " | " + val?.fundingMonth
-                                : ""}
-                              ,{val?.fundingYear}
-                              <div
-                                className={previewClientStyle.roundHoverAction}
-                              >
-                                <span>
-                                  <AiOutlineEdit />
-                                </span>
-                                <span>
-                                  <RiDeleteBinLine />
-                                </span>
-                              </div>
-                            </span>
-                            {val?.fundingAmount && (
-                              <h4>{val?.fundingAmount}</h4>
-                            )}
-                            {val?.investors && (
-                              <p>Investors: {val?.investors}</p>
-                            )}
-                          </div>
-                        ))}
-                                                           
-                      </div> */}
-
                       <div className={previewClientStyle.row}>
                         <div className={previewClientStyle.colMd6}>
-                          {/* <HRInputField
-                                            label="Company Name"
-                                            name="companyName"
-                                            type={InputType.TEXT}
-                                            placeholder="Enter Name"
-                                            required
-                                        /> */}
                         </div>
                       </div>
-
                       <hr />
-
                       <h6>
                         {" "}
                         Culture{" "}
-                       
-                            <span
-                              className={previewClientStyle.editNewIcon}
-                              onClick={() => setEditCultureSection(true)}
-                            >
-                              <EditNewIcon />
-                            </span>
-                          
-                      </h6>
 
-                      {/* <TextEditor
-                        register={register}
-                        setValue={setValue}
-                        // errors={errors}
-                        controlledValue={
-                          getCompanyDetails?.basicDetails?.culture
-                        }
-                        isControlled={true}
-                        isTextArea={true}
-                        name="culture"
-                        type={InputType.TEXT}
-                        placeholder="Enter about Culture"
-                        // required
-                        watch={watch}
-                      /> */}
+                        <span
+                          className={previewClientStyle.editNewIcon}
+                          onClick={() => setEditCultureSection(true)}
+                        >
+                          <EditNewIcon />
+                        </span>
+
+                      </h6>
 
                       {isEditCultureSection === false && (
                         <ReactQuill
@@ -1889,7 +1744,7 @@ function PreviewClientModal({
                                     }
                                   }}
                                   type={InputType.TEXT}
-                                  onChangeHandler={(e) => {}}
+                                  onChangeHandler={(e) => { }}
                                   placeholder="Add Links and press Enter"
                                 />
                               </div>
@@ -1952,91 +1807,47 @@ function PreviewClientModal({
                           {getCompanyDetails?.cultureDetails?.map((val) => (
                             <div className={previewClientStyle.imgThumb}>
                               <img src={val?.cultureImage} alt="detailImg" />
-                             
-                                  <span
-                                    className={previewClientStyle.DeleteBtn}
-                                    onClick={() => deleteCulturImage(val)}
-                                  >
-                                    <DeleteNewIcon />{" "}
-                                  </span>
-                              
+
+                              <span
+                                className={previewClientStyle.DeleteBtn}
+                                onClick={() => deleteCulturImage(val)}
+                              >
+                                <DeleteNewIcon />{" "}
+                              </span>
+
                             </div>
                           ))}
                         </div>
                       )}
-
-                      {/* {isEditCultureSection && <div className={previewClientStyle.row}>
-                                        <div className={previewClientStyle.colMd12}>
-                                                <HRInputField
-                                                register={register}
-                                                // errors={errors}
-                                                label="Add YouTube links"
-                                                name="youtubeLink"
-                                                // validationSchema={{
-                                                //   pattern: {
-                                                //     value: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/,
-                                                //     message: 'Youtube link is not valid',
-                                                //   },
-                                                // }}
-                                                // onKeyDownHandler={e=>{
-                                                //   if(e.keyCode === 13){
-                                                //     const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/;
-                                                //       if(!regex.test(e.target.value)){
-                                                //         return message.error('Youtube link is not valid')
-                                                //       }
-
-                                                //     let youtubeDetail = {youtubeLink: watch('youtubeLink'), 
-                                                //       youtubeID: 0
-                                                //       }
-
-                                                //       let nweyouTubeDetails = [...youTubeDetails]
-                                                //       setCompanyDetails(prev => ({...prev,youTubeDetails:[ youtubeDetail,...nweyouTubeDetails]}))
-                                                //       setValue('youtubeLink','')
-                                                //   }
-                                                // }}
-                                                type={InputType.TEXT}
-                                                // onChangeHandler={(e) => {
-                                                // }}
-                                                placeholder="Add Links and press Enter"
-                                                />
-                                        </div>
-                                </div>
-                                } */}
 
                       {!isEditCultureSection && (
                         <div className={previewClientStyle.imgSection}>
                           {getCompanyDetails?.youTubeDetails?.map((val) => (
                             <div className={previewClientStyle.videoWrapper}>
-                              {/* <iframe width="420" height="315"
-                                                src={`https://www.youtube.com/embed/${val?.youtubeLink}`}>
-                                            </iframe> */}
                               <YouTubeVideo videoLink={val?.youtubeLink} />
-                              
-                                  <span
-                                    className={previewClientStyle.DeleteBtn}
-                                  >
-                                    <DeleteNewIcon
-                                      onClick={() => {
-                                        removeYoutubelink(val);
-                                      }}
-                                    />{" "}
-                                  </span>
-                               
+
+                              <span
+                                className={previewClientStyle.DeleteBtn}
+                              >
+                                <DeleteNewIcon
+                                  onClick={() => {
+                                    removeYoutubelink(val);
+                                  }}
+                                />{" "}
+                              </span>
                             </div>
                           ))}
                         </div>
                       )}
-
                       <h6>
                       Company perks & benefits
-                       
-                            <span
-                              className={previewClientStyle.editNewIcon}
-                              onClick={() => setEditCompanyBenefits(true)}
-                            >
-                              <EditNewIcon />
-                            </span>
-                         
+                        <span
+                          className={previewClientStyle.editNewIcon}
+                          onClick={() => setEditCompanyBenefits(true)}
+                        >
+                          <EditNewIcon />
+                        </span>
+
                       </h6>
 
                       <div className={previewClientStyle.companyBenefits}>
@@ -2103,14 +1914,14 @@ function PreviewClientModal({
                   <div className={previewClientStyle.formFieldTitleTwo}>
                     <h2>
                       Client Details{" "}
-                      
-                          <span
-                            className={previewClientStyle.addNewClientText}
-                            onClick={() => setAddNewClient(true)}
-                          >
-                            Add New Client
-                          </span>
-                        
+
+                      <span
+                        className={previewClientStyle.addNewClientText}
+                        onClick={() => setAddNewClient(true)}
+                      >
+                        Add New Client
+                      </span>
+
                     </h2>
                   </div>
 
@@ -2122,16 +1933,14 @@ function PreviewClientModal({
                             <HRInputField
                               register={register}
                               setValue={setValue}
-                              // isError={!!errors?.clientDetails?.[index]?.fullName}
-                              //   errors={errors?.clientDetails?.[index]?.fullName}
                               label="Client Full Name"
                               onChangeHandler={(e) => {
                                 setOtherClientDetailsData({
                                   ...otherClientDetailsData,
                                   fullName: e?.target?.value,
                                 });
+                                setErrorsData({ "fullName": "" });
                               }}
-                              //   name={`clientDetails.[${index}].fullName`}
                               name="fullNameOther"
                               type={InputType.TEXT}
                               //   validationSchema={{
@@ -2139,8 +1948,7 @@ function PreviewClientModal({
                               //   }}
                               // errorMsg="Please enter the Client Name."
                               placeholder="Enter Client Name"
-                              required={true}
-                              disabled={false}
+                              required
                               forArrayFields={true}
                             />
                             {errorsData.fullName && (
@@ -2152,49 +1960,18 @@ function PreviewClientModal({
 
                           <div className={previewClientStyle.colMd6}>
                             <HRInputField
-                              //								disabled={isLoading}
                               register={register}
-                              //   errors={errors?.clientDetails?.[index]?.emailID}
-                              //   validationSchema={{
-                              //     required: `Please enter the client email ID.`,
-                              //     pattern: {
-                              //       value: EmailRegEx.email,
-                              //       message: "Entered value does not match email format",
-                              //     },
-                              //   }}
                               label="Work Email"
-                              //   name={`clientDetails.[${index}].emailID`}
-                              name={"emailIDOther"}
+                              name="emailIDOther"
                               onChangeHandler={(e) => {
                                 setOtherClientDetailsData({
                                   ...otherClientDetailsData,
                                   emailId: e?.target?.value,
                                 });
+                                setErrorsData({ "emailId": "" });
                               }}
-                              //   onBlurHandler={() => {
-                              //     if (
-                              //       errors?.clientDetails?.[index]?.emailID &&
-                              //       !errors?.clientDetails?.[index]?.emailID?.message.includes('This work email :')
-
-                              //     ) {
-                              //       return;
-                              //     }
-
-                              //     let eReg = new RegExp(EmailRegEx.email);
-
-                              //     if (
-                              //       item?.emailID !==
-                              //         watch(`clientDetails.[${index}].emailID`) &&
-                              //       eReg.test(watch(`clientDetails.[${index}].emailID`))
-                              //     ) {
-                              //       validateCompanyName(index);
-                              //     } else {
-                              //       clearErrors(`clientDetails.[${index}].emailID`);
-                              //       setDisableSubmit(false);
-                              //     }
-                              //   }}
                               type={InputType.EMAIL}
-                              placeholder="Enter Email ID "
+                              placeholder="Enter Email ID"
                               required
                               forArrayFields={true}
                             />
@@ -2210,9 +1987,7 @@ function PreviewClientModal({
                           <div className={previewClientStyle.colMd6}>
                             <HRInputField
                               register={register}
-                              // errors={errors}
                               label="Designation"
-                              //   name={`clientDetails.[${index}].designation`}
                               name="designationOther"
                               onChangeHandler={(e) => {
                                 setOtherClientDetailsData({
@@ -2228,37 +2003,29 @@ function PreviewClientModal({
                           <div className={previewClientStyle.colMd6}>
                             <label className={previewClientStyle.phoneLabel}>
                               Access Type
-                            </label>
+                            </label>                            
+                            <span className={previewClientStyle.reqField}>
+                                *
+                              </span>
                             <Select
-                              // isControlled={true}
-                              //   controlledValue={controlledRoleId[index]}
-                              //   setControlledValue={(val) =>
-                              //     setControlledRoleId((prev) => {
-                              //       let newControlled = [...prev];
-                              //       newControlled[index] = val;
-                              //       return newControlled;
-                              //     })
-                              //   }
-                              // setValue={setValue}
-                              // mode={"id"}
-                              // register={register}
-                              //   name={`clientDetails.[${index}].roleID`}
+                              required
                               getPopupContainer={(trigger) =>
                                 trigger.parentElement
                               }
                               name="roleIDOther"
                               label="Access Type"
                               defaultValue="Choose Access Type"
-                              value={getValuesForDD?.BindAccessRoleType?.find(
-                                (option) =>
-                                  option?.id ===
-                                  otherClientDetailsData?.accessRoleId
-                              )}
+                              // value={getValuesForDD?.BindAccessRoleType?.find(
+                              //   (option) =>
+                              //     option?.id ===
+                              //     otherClientDetailsData?.accessRoleId
+                              // )}
                               onChange={(selectedValue, val) => {
                                 setOtherClientDetailsData({
                                   ...otherClientDetailsData,
                                   accessRoleId: val?.id,
                                 });
+                                setErrorsData({ "accessRoleId": "" });
                               }}
                               options={getValuesForDD?.BindAccessRoleType?.map(
                                 (item) => ({
@@ -2266,13 +2033,12 @@ function PreviewClientModal({
                                   value: item.value,
                                 })
                               )}
-                              //   options={accessTypes?.map((item) => ({
-                              //     id: item.id,
-                              //     value: item.value,
-                              //   }
-                              // ))
-                              // }
                             />
+                            {errorsData.accessRoleId && (
+                              <span style={{ color: "red" }}>
+                                {errorsData.accessRoleId}
+                              </span>
+                            )}
                           </div>
                         </div>
 
@@ -2285,11 +2051,10 @@ function PreviewClientModal({
                               <div className={previewClientStyle.phoneNoCode}>
                                 <HRSelectField
                                   searchable={true}
-                                  setValue={setValue}
+                                  // setValue={setValue}
                                   register={register}
                                   //   name={`clientDetails.[${index}].countryCode`}
                                   name="countryCodeOther"
-                                  value={otherClientDetailsData?.countryCode}
                                   defaultValue="+91"
                                   options={flagAndCodeMemo}
                                 />
@@ -2320,7 +2085,16 @@ function PreviewClientModal({
                           <button
                             type="button"
                             className={`${previewClientStyle.btnPrimary} ${previewClientStyle.blank}`}
-                            onClick={() => setAddNewClient(false)}
+                            onClick={() => {
+                              setAddNewClient(false)
+                              setOtherClientDetailsData({})
+                              setErrorsData({})
+                              resetField('designationOther')
+                              resetField('roleIDOther')
+                              resetField('emailIDOther')
+                              resetField('contactNoOther')
+                              resetField('fullNameOther')                              
+                            }}
                           >
                             {" "}
                             Cancel{" "}
@@ -2350,28 +2124,28 @@ function PreviewClientModal({
                               {" "}
                               {`Client ${index + 1}`}{" "}
                             </span>{" "}
-                           
-                                <span
-                                  className={previewClientStyle.editNewIcon}
-                                  onClick={() => {
-                                    setEditClient(true);
-                                    setClickIndex(index);
-                                    setClientDetailsData({
-                                      ...clientDetailsData,
-                                      clientID: val?.id,
-                                      en_Id: val?.en_Id,
-                                      isPrimary: val?.isPrimary,
-                                      fullName: val?.fullName,
-                                      emailId: val?.emailID,
-                                      designation: val?.designation,
-                                      phoneNumber: val?.contactNo,
-                                      accessRoleId: val?.roleID,
-                                    });
-                                  }}
-                                >
-                                  <EditNewIcon />
-                                </span>
-                             
+
+                            <span
+                              className={previewClientStyle.editNewIcon}
+                              onClick={() => {
+                                setEditClient(true);
+                                setClickIndex(index);
+                                setClientDetailsData({
+                                  ...clientDetailsData,
+                                  clientID: val?.id,
+                                  en_Id: val?.en_Id,
+                                  isPrimary: val?.isPrimary,
+                                  fullName: val?.fullName,
+                                  emailId: val?.emailID,
+                                  designation: val?.designation,
+                                  phoneNumber: val?.contactNo,
+                                  accessRoleId: val?.roleID,
+                                });
+                              }}
+                            >
+                              <EditNewIcon />
+                            </span>
+
                           </h5>
                           {clickIndex === index && isEditClient && (
                             <>
@@ -2420,14 +2194,6 @@ function PreviewClientModal({
                                   <HRInputField
                                     //								disabled={isLoading}
                                     register={register}
-                                    //   errors={errors?.clientDetails?.[index]?.emailID}
-                                    //   validationSchema={{
-                                    //     required: `Please enter the client email ID.`,
-                                    //     pattern: {
-                                    //       value: EmailRegEx.email,
-                                    //       message: "Entered value does not match email format",
-                                    //     },
-                                    //   }}
                                     value={clientDetailsData?.emailId}
                                     label="Work Email"
                                     //   name={`clientDetails.[${index}].emailID`}
@@ -2438,28 +2204,6 @@ function PreviewClientModal({
                                         emailId: e?.target?.value,
                                       });
                                     }}
-                                    // onBlurHandler={() => {
-                                    //   if (
-                                    //     errors?.clientDetails?.[index]?.emailID &&
-                                    //     !errors?.clientDetails?.[index]?.emailID?.message.includes('This work email :')
-
-                                    //   ) {
-                                    //     return;
-                                    //   }
-
-                                    //   let eReg = new RegExp(EmailRegEx.email);
-
-                                    //   if (
-                                    //     item?.emailID !==
-                                    //       watch(`clientDetails.[${index}].emailID`) &&
-                                    //     eReg.test(watch(`clientDetails.[${index}].emailID`))
-                                    //   ) {
-                                    //     validateCompanyName(index);
-                                    //   } else {
-                                    //     clearErrors(`clientDetails.[${index}].emailID`);
-                                    //     setDisableSubmit(false);
-                                    //   }
-                                    // }}
                                     type={InputType.EMAIL}
                                     placeholder="Enter Email ID "
                                     required
@@ -2498,7 +2242,10 @@ function PreviewClientModal({
                                     className={previewClientStyle.phoneLabel}
                                   >
                                     Access Type
-                                  </label>
+                                  </label>                                  
+                                <span className={previewClientStyle.reqField}>
+                                  *
+                                </span>
                                   <Select
                                     // isControlled={true}
                                     // setValue={setValue}
@@ -2513,7 +2260,7 @@ function PreviewClientModal({
                                     value={getValuesForDD?.BindAccessRoleType?.find(
                                       (option) =>
                                         option?.id ===
-                                        clientDetailsData?.accessRoleId
+                                      clientDetailsData?.accessRoleId
                                     )}
                                     onChange={(selectedValue, val) => {
                                       setClientDetailsData({
@@ -2547,7 +2294,7 @@ function PreviewClientModal({
                                         setValue={setValue}
                                         register={register}
                                         //   name={`clientDetails.[${index}].countryCode`}
-                                        value={clientDetailsData?.countryCode}
+                                        value={val?.countryCode}
                                         name="countryCode"
                                         defaultValue="+91"
                                         options={flagAndCodeMemo}
@@ -2640,14 +2387,14 @@ function PreviewClientModal({
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
                     Engagement Details{" "}
-                    
-                      <span
-                        className={previewClientStyle.editNewIcon}
-                        onClick={() => setEditEngagement(true)}
-                      >
-                        <EditNewIcon />
-                      </span>
-                   
+
+                    <span
+                      className={previewClientStyle.editNewIcon}
+                      onClick={() => setEditEngagement(true)}
+                    >
+                      <EditNewIcon />
+                    </span>
+
                   </h2>
 
                   <div className={previewClientStyle.companyDetails}>
@@ -2662,6 +2409,11 @@ function PreviewClientModal({
                           Model{" "}
                           <span className={previewClientStyle.reqField}>*</span>
                         </label>
+                        {payPerError && (
+                              <p className={previewClientStyle.error}>
+                                *Please select client model
+                              </p>
+                            )}
                         <div
                           className={`${previewClientStyle.row} ${previewClientStyle.mb24}`}
                         >
@@ -2718,67 +2470,70 @@ function PreviewClientModal({
                               (checkPayPer?.companyTypeID == 0 ||
                                 checkPayPer?.companyTypeID == 2)
                             ) && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  marginBottom: "32px",
-                                }}
-                              >
-                                <label style={{ marginBottom: "12px" }}>
-                                  Type Of Pricing
-                                  <span className={previewClientStyle.reqField}>
-                                    *
-                                  </span>
-                                </label>
-                                {pricingTypeError && (
-                                  <p className={previewClientStyle.error}>
-                                    *Please select pricing type
-                                  </p>
-                                )}
-                                <Radio.Group
-                                  disabled={
-                                    // userData?.LoggedInUserTypeID !== 1 ||
-                                    checkPayPer?.anotherCompanyTypeID == 0 &&
-                                    (checkPayPer?.companyTypeID == 0 ||
-                                      checkPayPer?.companyTypeID == 2)
-                                  }
-                                  onChange={(e) => {
-                                    setTypeOfPricing(e.target.value);
-                                    setPricingTypeError &&
-                                      setPricingTypeError(false);
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    marginBottom: "32px",
                                   }}
-                                  value={typeOfPricing}
                                 >
-                                  <Radio value={1}>Transparent Pricing</Radio>
-                                  <Radio value={0}>
-                                    Non Transparent Pricing
-                                  </Radio>
-                                </Radio.Group>
-                              </div>
-                            )}
+                                  <label style={{ marginBottom: "12px" }}>
+                                    Type Of Pricing
+                                    <span className={previewClientStyle.reqField}>
+                                      *
+                                    </span>
+                                  </label>
+                                  {pricingTypeError && (
+                                    <p className={previewClientStyle.error}>
+                                      *Please select pricing type
+                                    </p>
+                                  )}
+                                  <Radio.Group
+                                    disabled={
+                                      // userData?.LoggedInUserTypeID !== 1 ||
+                                      checkPayPer?.anotherCompanyTypeID == 0 &&
+                                      (checkPayPer?.companyTypeID == 0 ||
+                                        checkPayPer?.companyTypeID == 2)
+                                    }
+                                    onChange={(e) => {
+                                      setTypeOfPricing(e.target.value);
+                                      setPricingTypeError &&
+                                        setPricingTypeError(false);
+                                    }}
+                                    value={typeOfPricing}
+                                  >
+                                    <Radio value={1}>Transparent Pricing</Radio>
+                                    <Radio value={0}>
+                                      Non Transparent Pricing
+                                    </Radio>
+                                  </Radio.Group>
+                                </div>
+                              )}
                           </div>
                         </div>
                         { checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null && <div className={previewClientStyle.row} >
                           <div className={previewClientStyle.colMd12}>
-                              <HRSelectField 
+                            <HRSelectField
                               controlledValue={controlledHiringPricingTypeValue}
                               setControlledValue={setControlledHiringPricingTypeValue}
                               isControlled={true}
-                                mode={"id/value"}
-                                setValue={setValue}
-                                register={register}
-                                // label={"Hiring Pricing Type"}
-                                label={"Choose Engagement Mode"}
-                                defaultValue="Select Engagement Mode"
-                                options={getRequiredHRPricingType()}
-                                name="hiringPricingType"
-                                isError={errors["hiringPricingType"] && errors["hiringPricingType"]}
-                                required={(checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null) ? true : null}
-                                errorMsg={"Please select the Engagement Mode."}
-                              />
+                              mode={"id/value"}
+                              setValue={setValue}
+                              register={register}
+                              // label={"Hiring Pricing Type"}
+                              label={"Choose Engagement Mode"}
+                              defaultValue="Select Engagement Mode"
+                              options={getRequiredHRPricingType()}
+                              name="hiringPricingType"
+                              isError={errors["hiringPricingType"] && errors["hiringPricingType"]}
+                              required={(checkPayPer?.anotherCompanyTypeID === 1 && typeOfPricing !== null) ? true : null}
+                              errorMsg={"Please select the Engagement Mode."}
+                            />
                           </div>
-                          </div>}
+                        </div>}
+                        {checkPayPer?.companyTypeID !== 0 &&
+                      checkPayPer?.companyTypeID !== null && (
+                        <>
                         <div className={previewClientStyle.row}>
                           <div className={previewClientStyle.colMd6}>
                             <label className={previewClientStyle.phoneLabel}>
@@ -2825,7 +2580,7 @@ function PreviewClientModal({
                                 placeholder="Enter the rate per credit"
                                 required={
                                   checkPayPer?.companyTypeID !== 0 &&
-                                  checkPayPer?.companyTypeID !== null
+                                    checkPayPer?.companyTypeID !== null
                                     ? _currency === "INR"
                                       ? false
                                       : true
@@ -2834,7 +2589,7 @@ function PreviewClientModal({
                                 validationSchema={{
                                   required:
                                     checkPayPer?.companyTypeID !== 0 &&
-                                    checkPayPer?.companyTypeID !== null
+                                      checkPayPer?.companyTypeID !== null
                                       ? _currency === "INR"
                                         ? null
                                         : "Please enter Per credit amount."
@@ -2845,7 +2600,7 @@ function PreviewClientModal({
                           )}
 
                           <div className={previewClientStyle.colMd6}>
-                          Remaining Credit : <span style={{fontWeight:"bold",marginBottom:"80px",marginTop:"20px"}}>{getCompanyDetails?.engagementDetails?.totalCreditBalance}</span>
+                            Remaining Credit : <span style={{ fontWeight: "bold", marginBottom: "80px", marginTop: "20px" }}>{getCompanyDetails?.engagementDetails?.totalCreditBalance}</span>
                             <div
                               className={previewClientStyle.FreecreditFieldWrap}
                             >
@@ -2856,7 +2611,7 @@ function PreviewClientModal({
                                 validationSchema={{
                                   required:
                                     checkPayPer?.companyTypeID !== 0 &&
-                                    checkPayPer?.companyTypeID !== null
+                                      checkPayPer?.companyTypeID !== null
                                       ? "Please enter free credits."
                                       : null,
                                   min: {
@@ -2881,7 +2636,7 @@ function PreviewClientModal({
                                 placeholder="Enter number of free credits"
                                 required={
                                   checkPayPer?.companyTypeID !== 0 &&
-                                  checkPayPer?.companyTypeID !== null
+                                    checkPayPer?.companyTypeID !== null
                                     ? true
                                     : false
                                 }
@@ -3011,7 +2766,10 @@ function PreviewClientModal({
                             </div>
                           </div>
                         </div>
-
+                        </>
+                       )}
+                       
+                       {(checkPayPer?.anotherCompanyTypeID == 1 || checkPayPer?.companyTypeID == 2) && (
                         <div
                           className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.mb24}`}
                         >
@@ -3032,9 +2790,10 @@ function PreviewClientModal({
                             SAVE{" "}
                           </button>
                         </div>
+                      )}
                       </>
                     )}
-
+                    {!isEditEngagement &&
                     <div
                       className={`${previewClientStyle.companyDetailTop} ${previewClientStyle.engagementDetailListed}`}
                     >
@@ -3052,7 +2811,7 @@ function PreviewClientModal({
                           <p>
                             {getCompanyDetails?.engagementDetails?.creditAmount
                               ? getCompanyDetails?.engagementDetails
-                                  ?.creditAmount
+                                ?.creditAmount
                               : "NA"}
                           </p>
                         </li>
@@ -3062,7 +2821,7 @@ function PreviewClientModal({
                             {getCompanyDetails?.engagementDetails
                               ?.vettedProfileViewCredit
                               ? getCompanyDetails?.engagementDetails
-                                  ?.vettedProfileViewCredit
+                                ?.vettedProfileViewCredit
                               : "NA"}
                           </p>
                         </li>
@@ -3071,7 +2830,7 @@ function PreviewClientModal({
                           <p>
                             {getCompanyDetails?.engagementDetails?.jobPostCredit
                               ? getCompanyDetails?.engagementDetails
-                                  ?.jobPostCredit
+                                ?.jobPostCredit
                               : "NA"}
                           </p>
                         </li>
@@ -3081,7 +2840,7 @@ function PreviewClientModal({
                             {getCompanyDetails?.engagementDetails
                               ?.creditCurrency
                               ? getCompanyDetails?.engagementDetails
-                                  ?.creditCurrency
+                                ?.creditCurrency
                               : "NA"}
                           </p>
                         </li>
@@ -3091,7 +2850,7 @@ function PreviewClientModal({
                             {getCompanyDetails?.engagementDetails
                               ?.totalCreditBalance
                               ? getCompanyDetails?.engagementDetails
-                                  ?.totalCreditBalance
+                                ?.totalCreditBalance
                               : "NA"}
                           </p>
                         </li>
@@ -3101,7 +2860,7 @@ function PreviewClientModal({
                             {getCompanyDetails?.engagementDetails
                               ?.nonVettedProfileViewCredit
                               ? getCompanyDetails?.engagementDetails
-                                  ?.nonVettedProfileViewCredit
+                                ?.nonVettedProfileViewCredit
                               : "NA"}
                           </p>
                         </li>
@@ -3122,19 +2881,20 @@ function PreviewClientModal({
                               ?.hiringTypePricingId === 1
                               ? "Hire a Contractor"
                               : getCompanyDetails?.engagementDetails
-                                  ?.hiringTypePricingId === 2
-                              ? "Hire an employee on Uplers Payroll"
-                              : getCompanyDetails?.engagementDetails
+                                ?.hiringTypePricingId === 2
+                                ? "Hire an employee on Uplers Payroll"
+                                : getCompanyDetails?.engagementDetails
                                   ?.hiringTypePricingId === 3
-                              ? "Direct-hire on your payroll"
-                              : getCompanyDetails?.engagementDetails
-                                  ?.hiringTypePricingId === 4
-                              ? "Hire part time Contractors"
-                              : "NA"}
+                                  ? "Direct-hire on your payroll"
+                                  : getCompanyDetails?.engagementDetails
+                                    ?.hiringTypePricingId === 4
+                                    ? "Hire part time Contractors"
+                                    : "NA"}
                           </p>
                         </li>
                       </ul>
                     </div>
+                    }
                   </div>
                 </div>
               </div>
@@ -3144,27 +2904,28 @@ function PreviewClientModal({
               <div className={previewClientStyle.formFieldsbox}>
                 <div className={previewClientStyle.formFieldsboxinner}>
                   <h2>
-                    Uplers’s POC{" "}
-                    
-                      <span
-                        className={previewClientStyle.editNewIcon}
-                        onClick={() => setEditPOC(true)}
-                      >
-                        <EditNewIcon />
-                      </span>
-                   
+                  Uplers's Salesperson (NBD/AM){" "}
+                    <span
+                      className={previewClientStyle.editNewIcon}
+                      onClick={() => setEditPOC(true)}
+                    >
+                      <EditNewIcon />
+                    </span>
+
                   </h2>
 
                   <div className={previewClientStyle.companyDetails}>
+                  {!isEditPOC && (
                     <div className={previewClientStyle.companyBenefits}>
                       <ul className={previewClientStyle.mt0}>
-                        {getCompanyDetails?.pocUserDetails?.map((item) => (
+                        {/* {getCompanyDetails?.pocUserDetailsEdit?.map((item) => ( */}
                           <li>
-                            <span>{item?.pocName}</span>
+                            <span>{getCompanyDetails?.pocUserDetailsEdit?.pocName}</span>
                           </li>
-                        ))}
+                        {/* ))} */}
                       </ul>
                     </div>
+                  )}
                     {isEditPOC && (
                       <div className={previewClientStyle.row}>
                         <div
@@ -3179,13 +2940,13 @@ function PreviewClientModal({
                               // mode={"multiple"}
                               mode={"id/value"}
                               register={register}
-                              name="uplersPOCname"
-                              label="Uplers's POC name"
-                              defaultValue="Enter POC name"
+                              name="pocId"
+                              label="Uplers's Salesperson (NBD/AM)"
+                              defaultValue="Select Salesperson (NBD/AM)"
                               options={allPocs}
-                              // required
-                              // isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
-                              // errorMsg="Please select POC name."
+                              required
+                            // isError={errors["uplersPOCname"] && errors["uplersPOCname"]}
+                            // errorMsg="Please select POC name."
                             />
                           </div>
 
@@ -3203,7 +2964,7 @@ function PreviewClientModal({
                             <button
                               type="button"
                               className={previewClientStyle.btnPrimary}
-                              onClick={() => handleSubmitUplersPOC()}
+                              onClick={() => onSubmitField("pocId")}
                             >
                               {" "}
                               SAVE{" "}
@@ -3215,7 +2976,7 @@ function PreviewClientModal({
                   </div>
                 </div>
               </div>
-            </div> 
+            </div>
           </div>
         </div>
       </Modal>
@@ -3233,16 +2994,24 @@ function PreviewClientModal({
         wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
         <HRInputField
-          //    required
-          rows={4}
+          required
           errors={errors}
+          rows={4}
           label={"Company Name"}
           register={register}
           setValue={setValue}
           name="companyName"
           type={InputType.TEXT}
-          placeholder="Company website"
+          onChangeHandler={(e) => {
+            setErrorsData({ "companyName": "" });
+          }}
+          placeholder="Company Name"
         />
+        {errorsData.companyName && (
+          <span style={{ color: "red" }}>
+            {errorsData.companyName}
+          </span>
+        )}
         <div
           className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}
         >
@@ -3258,7 +3027,7 @@ function PreviewClientModal({
             type="button"
             className={previewClientStyle.btnPrimary}
             onClick={() => {
-              handleSubmitcompanyName();
+              onSubmitField("companyName");
             }}
           >
             {" "}
@@ -3279,16 +3048,43 @@ function PreviewClientModal({
         wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
         <HRInputField
-          //    required
+          required
           rows={4}
           errors={errors}
           label={"Company website"}
           register={register}
           setValue={setValue}
-          name="companyWebsite"
+          name="websiteUrl"
           type={InputType.TEXT}
+          onChangeHandler={(value) => {
+            if (ValidateFieldURL(value, "website")) {
+              setErrorsData({ "websiteUrl": "" });
+            } else {
+              setErrorsData({ "websiteUrl": "" });
+              // setErrorsData({"companyWebsite":"Entered value does not match url format"});
+            }
+          }}
+          validationSchema={{
+            required: "Please enter the Company Website link.",
+            // pattern: {
+            // 	value: URLRegEx.url,
+            // 	message: 'Entered value does not match url format',
+            // },
+            validate: (value) => {
+              if (ValidateFieldURL(value, "website")) {
+                return true;
+              } else {
+                return "Entered value does not match url format";
+              }
+            },
+          }}
           placeholder="Company website"
         />
+        {errorsData.websiteUrl && (
+          <span style={{ color: "red" }}>
+            {errorsData.websiteUrl}
+          </span>
+        )}
         <div
           className={`${previewClientStyle.buttonEditGroup} ${previewClientStyle.BtnRight}`}
         >
@@ -3303,7 +3099,7 @@ function PreviewClientModal({
           <button
             type="button"
             className={previewClientStyle.btnPrimary}
-            onClick={() => handleSubmitcompanyWebsite()}
+            onClick={() => onSubmitField("websiteUrl")}
           >
             {" "}
             SAVE{" "}
@@ -3346,11 +3142,12 @@ function PreviewClientModal({
               //  errors={errors}
               setValue={setValue}
               label="Founded in"
-              name="foundedIn"
+              name="foundedYear"
               mode={"value"}
               defaultValue="Select Year"
+              searchable={true}
               //  isError={errors["foundedIn"] && errors["foundedIn"]}
-              //  required
+              required
               //  errorMsg={"Please select Founded in"}
               options={yearOptions}
             />
@@ -3366,7 +3163,7 @@ function PreviewClientModal({
               <button
                 type="button"
                 className={previewClientStyle.btnPrimary}
-                onClick={() => handleSubmitcompanyFound()}
+                onClick={() => onSubmitField("foundedYear")}
               >
                 {" "}
                 SAVE{" "}
@@ -3388,17 +3185,33 @@ function PreviewClientModal({
         wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
         <HRInputField
-          // mode='id/value'
-          // controlledValue={feedBackTypeEdit}
-          // setControlledValue={setFeedbackTypeEdit}
-          // isControlled={true}
+          validationSchema={{
+            required: "Please enter the team size.",
+            min: {
+              value: 1,
+              message: `please don't enter the value less than 1`,
+            },
+          }}
+          type={InputType.NUMBER}
           setValue={setValue}
           register={register}
+          onChangeHandler={(e) => {
+            if (e.target.value && e.target.value > 0) {
+              setErrorsData({ "teamSize": "" });
+            } else {
+              setErrorsData({ "teamSize": "Please don't enter the value less than 1" });
+            }
+          }}
           name="teamSize"
+          placeholder="Enter team size"
           label="Team Size"
-          defaultValue="Please Select"
+          required
         />
-
+        {errorsData.teamSize && (
+          <span style={{ color: "red" }}>
+            {errorsData.teamSize}
+          </span>
+        )}
         <div className={`${previewClientStyle.buttonEditGroup}`}>
           <button
             type="button"
@@ -3411,7 +3224,7 @@ function PreviewClientModal({
           <button
             type="button"
             className={previewClientStyle.btnPrimary}
-            onClick={() => handleSubmitTeamSize()}
+            onClick={() => onSubmitField("teamSize")}
           >
             {" "}
             SAVE{" "}
@@ -3473,16 +3286,24 @@ function PreviewClientModal({
         wrapClassName={previewClientStyle.prevClientModalWrapper}
       >
         <HRInputField
-          //    required
+          required
           rows={4}
           errors={errors}
           label={"Company Industry"}
           register={register}
-          name="companyIndustry"
+          name="industry"
+          onChangeHandler={(e) => {
+            setErrorsData({ "industry": "" });
+          }}
           setValue={setValue}
           type={InputType.TEXT}
           placeholder="Please enter Industry"
         />
+        {errorsData.industry && (
+          <span style={{ color: "red" }}>
+            {errorsData.industry}
+          </span>
+        )}
         <div className={`${previewClientStyle.buttonEditGroup}`}>
           <button
             type="button"
@@ -3495,7 +3316,7 @@ function PreviewClientModal({
           <button
             type="button"
             className={previewClientStyle.btnPrimary}
-            onClick={() => handleSubmitCompanyIndustry()}
+            onClick={() => onSubmitField("industry")}
           >
             {" "}
             SAVE{" "}
@@ -3558,15 +3379,23 @@ function PreviewClientModal({
       >
         <label>Linkedin URL</label>
         <HRInputField
-          //    required
+          required
           rows={4}
           errors={errors}
           register={register}
-          name="linkedinURL"
+          name="linkedInProfile"
           setValue={setValue}
+          onChangeHandler={(value) => {
+            setErrorsData({ "linkedInProfile": "" });
+          }}
           type={InputType.TEXT}
-          placeholder="Please enter"
+          placeholder="Company Linkedin URL"
         />
+        {errorsData.linkedInProfile && (
+          <span style={{ color: "red" }}>
+            {errorsData.linkedInProfile}
+          </span>
+        )}
         <div className={`${previewClientStyle.buttonEditGroup}`}>
           <button
             type="button"
@@ -3579,7 +3408,7 @@ function PreviewClientModal({
           <button
             type="button"
             className={previewClientStyle.btnPrimary}
-            onClick={() => handleSubmitCompanyLinkedIn()}
+            onClick={() => onSubmitField("linkedInProfile")}
           >
             {" "}
             SAVE{" "}

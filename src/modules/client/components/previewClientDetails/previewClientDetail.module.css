@@ -856,4 +856,18 @@
     z-index: 9999 !important;
 }
 
+.formFieldsbox .companyDetails .disabledTextArea{
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(107, 107, 107, 0.6);
+    padding: 16px 16px;
+    cursor: not-allowed;
+    background-color: rgba(186, 186, 186, 0.2);
+}
+.formFieldsbox .companyDetails .disabledTextArea p{
+    margin-bottom: 0;
+}
 /* Edit Modal css End */

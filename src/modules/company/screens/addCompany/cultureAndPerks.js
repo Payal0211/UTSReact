@@ -260,7 +260,7 @@ const addnewYoutubeLink = (e) =>{
               <p>
                 <span>Click to Upload</span> <span style={{color:"gray"}}>or drag and drop</span>
               </p>
-              <span> (Max. File size: 25 MB)</span>
+              {/* <span> (Max. File size: 25 MB)</span> */}
               <input
               ref={pictureRef}
                 type="file"
@@ -280,11 +280,11 @@ const addnewYoutubeLink = (e) =>{
                     return;
                   }
 
-                  const maxSize = 25 * 1024 * 1024;
-                  if (file.size > maxSize) {
-                    message.error("Maximum image size are 25 MB.");
-                    return;
-                  }
+                  // const maxSize = 25 * 1024 * 1024;
+                  // if (file.size > maxSize) {
+                  //   message.error("Maximum image size are 25 MB.");
+                  //   return;
+                  // }
 
 
                   try {                 
