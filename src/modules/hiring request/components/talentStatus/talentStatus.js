@@ -38,6 +38,8 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
     useState("Select Talent Status");
 	const [controllCreditBaseRejectReason, setControllCreditBaseRejectReason] =
     useState("Select Reject Reason");
+	const [controllCreditBaseRejectParentReason, setControllCreditBaseRejectParentReason] =
+    useState("Select Reject Reason");
 	const getTalentStatusHandler = useCallback(async () => {
 		const response = await TalentStatusDAO.getStatusDetailRequestDAO({
 			talentID: talentInfo?.TalentID,
@@ -77,12 +79,16 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 		if(talentStatusCreditBase?.RejectReasonId){
 			const creditRejectReason = talentStatusCreditBase?.CreditBased_RejectReason?.filter(
 				(item) => item?.id=== talentStatusCreditBase?.RejectReasonId)
-				setValue("rejectReasonID",creditRejectReason[0])
-				setControllCreditBaseRejectReason(creditRejectReason[0]?.value)
+			// const getParentRejectedReasons = talentStatusCreditBase?.CreditBased_RejectReason?.find()
+			setValue('rejectReasonParentID',{id: creditRejectReason[0]?.parentId	,value: creditRejectReason[0]?.parentName})
+
+			setControllCreditBaseRejectParentReason(creditRejectReason[0]?.parentName)
+			setValue("rejectReasonID",creditRejectReason[0])
+			setControllCreditBaseRejectReason(creditRejectReason[0]?.reason)
 		}
 	}, [talentStatusCreditBase])
 	
-
+console.log(controllCreditBaseRejectParentReason,controllCreditBaseRejectReason, watch(["rejectReasonID",'rejectReasonParentID']))
 	const removeOnHoldStatusHandler = useCallback(async () => {
 		const response = await TalentStatusDAO.removeOnHoldStatusRequestDAO({
 			hrID: hrId,
@@ -239,9 +245,9 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 						{watch('statusId')?.id === 8 && (<>
 							<div className={TalentStatusStyle.colMd12}>
 							<HRSelectField
-								// controlledValue={controllCreditBaseRejectReason}
-								// setControlledValue={setControllCreditBaseRejectReason}
-							 	// isControlled={true}
+								controlledValue={controllCreditBaseRejectParentReason}
+								setControlledValue={setControllCreditBaseRejectParentReason}
+							 	isControlled={true}
 								mode={'id/value'}
 								setValue={setValue}
 								register={register}
