@@ -43,6 +43,7 @@ import { downloadToExcel } from 'modules/report/reportUtils';
 import { allHRConfig } from '../../../hiring request/screens/allHiringRequest/allHR.config';
 import { ReportDAO } from 'core/report/reportDAO';
 import moment from 'moment';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -346,9 +347,11 @@ if(talentID?.id){
 
 
   return (
-    <div className={allHRStyles.hiringRequestContainer}>
+	  <div className={allHRStyles.hiringRequestContainer}>
+		{/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
         <div className={allHRStyles.addnewHR}>
 				<div className={allHRStyles.hiringRequest}>HR Lost Report</div>
+				<LogoLoader visible={isLoading} />
                 <div className={allHRStyles.btn_wrap}>
                 <button
 								className={allHRStyles.btnPrimary}								
@@ -576,6 +579,7 @@ if(talentID?.id){
                 </div>
 			</Modal>                    
 
+	{/* </WithLoader> */}
     </div>
   )
 }

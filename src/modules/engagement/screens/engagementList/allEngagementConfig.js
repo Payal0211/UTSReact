@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { engagementUtils } from './engagementUtils';
 import allengagementStyles from '../engagementFeedback/engagementFeedback.module.css';
 import moment from 'moment';
+import { budgetStringToCommaSepratedwithjustcurrency } from 'shared/utils/basic_utils';
 export const allEngagementConfig = {
 	engagementFilterTypeConfig: (filterList) => {
 		return [
@@ -92,6 +93,12 @@ export const allEngagementConfig = {
 				child: filterList?.lost,
 				isSearch: true,
 			},
+			{
+				label: 'Contract Lost Reasons',
+				name: 'OnBoardLostReasons',
+				child: filterList?.onBoardingLostReasons,
+				isSearch: false,
+			},
 			// {
 			// 	label: 'Deployed Source',
 			// 	name: 'DeployedSource',
@@ -139,7 +146,7 @@ export const allEngagementConfig = {
 				dataIndex: 'action',
 				key: 'action',
 				align: 'left',
-				width: '180px',
+				width: '120px',
 				render: (_, param, index) => {
 					let listItemData = [
 						{
@@ -292,13 +299,14 @@ export const allEngagementConfig = {
 				},
 			},
 			{
-				title: 'Client Feedback',
+				title: (<>Client Feedback <br />Last Feedback Date</>),
 				dataIndex: 'clientFeedback',
 				key: 'clientFeedback',
 				align: 'left',
-				width: '140px',
+				width: '150px',
 				render: (text, result) =>
 					result?.clientFeedback === 0 && result?.onboardID && result?.hrID ? (
+						<div style={{display:"flex",flexDirection:"column"}}>
 						<a href="javascript:void(0);"
 							style={{
 								color: engagementUtils.getClientFeedbackColor(
@@ -331,66 +339,66 @@ export const allEngagementConfig = {
 									engagementReplaceTalent: false,
 								});
 							}}>
-							{'Add'}
+							{'Add'} 
 						</a>
+						 {result?.lastFeedbackDate}
+						 </div>
 					) : (
-						<a href="javascript:void(0);"
-							style={{
-								color: engagementUtils.getClientFeedbackColor(
-									result?.feedbackType,
-								),
-								textDecoration: 'underline',
-							}}
-							onClick={() => {
-								setFeedBackData((prev) => ({
-									...prev,
-									onBoardId: result?.onboardID,
-								}));
-								setHRAndEngagementId({
-									talentName: result?.talentName,
-									engagementID: result?.engagementId_HRID.slice(
-										0,
-										result?.engagementId_HRID?.indexOf('/'),
+						<div style={{display:"flex",flexDirection:"column"}}>
+							<a href="javascript:void(0);"
+								style={{
+									color: engagementUtils.getClientFeedbackColor(
+										result?.feedbackType,
 									),
-									hrNumber: result?.engagementId_HRID.slice(
-										result?.engagementId_HRID?.indexOf('/') + 1,
-									),
-									onBoardId: result?.onboardID,
-									hrId: result?.hrID,
-								});
-								setEngagementModal({
-									engagementFeedback: true,
-									engagementBillRate: false,
-									engagementPayRate: false,
-									engagementOnboard: false,
-									engagementAddFeedback: false,
-									engagementBillRateAndPayRate: false,
-									engagementEnd: false,
-									engagementInvoice: false,
-									engagementReplaceTalent: false,
-								});
-							}}>
-							{'View/Add'}
-						</a>
+									textDecoration: 'underline',
+								}}
+								onClick={() => {
+									setFeedBackData((prev) => ({
+										...prev,
+										onBoardId: result?.onboardID,
+									}));
+									setHRAndEngagementId({
+										talentName: result?.talentName,
+										engagementID: result?.engagementId_HRID.slice(
+											0,
+											result?.engagementId_HRID?.indexOf('/'),
+										),
+										hrNumber: result?.engagementId_HRID.slice(
+											result?.engagementId_HRID?.indexOf('/') + 1,
+										),
+										onBoardId: result?.onboardID,
+										hrId: result?.hrID,
+									});
+									setEngagementModal({
+										engagementFeedback: true,
+										engagementBillRate: false,
+										engagementPayRate: false,
+										engagementOnboard: false,
+										engagementAddFeedback: false,
+										engagementBillRateAndPayRate: false,
+										engagementEnd: false,
+										engagementInvoice: false,
+										engagementReplaceTalent: false,
+									});
+								}}>
+								{'View/Add'}  
+							</a>
+							{result?.lastFeedbackDate}
+						</div>
 					),
-			},
+			},		
 			{
-				title: 'Last Feedback Date',
-				dataIndex: 'lastFeedbackDate',
-				key: 'lastFeedbackDate',
-				align: 'left',
-				width: '165px',
-				render:(text)=>{
-					// return text ? moment(text).format('DD/MM/YYYY') : ''
-					return text
-				}
-			},
-			{
-				title: 'Onboarding Form',
+				title: (
+					<>
+						Onboarding
+						<br />
+						Form
+					</>
+				),
 				dataIndex: 'ClientLegal_StatusID',
 				key: 'ClientLegal_StatusID',
 				align: 'left',
-				width: '150px',
+				width: '80px',
 				render: (text, result) =>
 					result?.clientLegal_StatusID === 2 && (
 						<a href="javascript:void(0);"
@@ -425,17 +433,18 @@ export const allEngagementConfig = {
 					),
 			},
 			{
-				title: 'Eng. Count',
+				title: 'Eng. Count',				
 				dataIndex: 'engagementCount',
 				key: 'engagementCount',
 				align: 'left',
-				width:'100px'
+				width:'80px'
 			},
 			{
-				title: 'Engagement ID/HR ID',
+				title: 'Eng. ID/HR#',
 				dataIndex: 'engagementId_HRID',
 				key: 'engagementId_HRID',
 				align: 'left',
+				width:"200px",
 				render: (text, result) => (
 					<p>
 						{result?.engagementId_HRID.slice(
@@ -454,10 +463,11 @@ export const allEngagementConfig = {
 				),
 			},
 			{
-				title: 'Engagement Type',
+				title: 'Eng. Type',
 				dataIndex: 'engagementType',
 				key: 'engagementType',
 				align: 'left',
+				width:"150px",
 				render: (text, result) => (
 					<p>
 						{result?.typeOfHR}{' '}
@@ -466,41 +476,39 @@ export const allEngagementConfig = {
 				),
 			},
 			{
-				title: 'Company',
-				dataIndex: 'company',
-				key: 'company',
+				title: 'Talent',
+				dataIndex: 'talentName',
+				key: 'talentName',
 				align: 'left',
+				width:"250px",
 			},
-
 			{
 				title: 'Client',
 				dataIndex: 'clientName',
 				key: 'clientName',
 				align: 'left',
+				width:"180px"
 			},
 			{
-				title: 'Talent',
-				dataIndex: 'talentName',
-				key: 'talentName',
+				title: 'Company',
+				dataIndex: 'company',
+				key: 'company',
 				align: 'left',
-			},
+				width:"180px"
+			},	
 			{
-				title: 'Current Status',
+				title: 'Eng. Status',
 				dataIndex: 'currentStatus',
 				key: 'currentStatus',
 				align: 'left',
-			},
-			// {
-			// 	title: 'Deployed Source',
-			// 	dataIndex: 'deployedSource',
-			// 	key: 'deployedSource',
-			// 	align: 'left',
-			// },
+				width:"150px"
+			},			
 			{
-				title: 'TSC Name',
+				title: 'TSC',
 				dataIndex: 'tscName',
 				key: 'tscName',
 				align: 'left',
+				width:"180px",
 				render:(text, data)=>{
 					if(text){
 						return text
@@ -522,131 +530,183 @@ export const allEngagementConfig = {
 				}
 			},
 			{
+				title: 'NBD',
+				dataIndex: 'nbdName',
+				key: 'nbdName',
+				align: 'left',
+				width:"150px",
+			},
+			{
+				title: 'AM/NBD',
+				dataIndex: 'amName',
+				key: 'amName',
+				align: 'left',
+				width:"180px",
+				render:(text,data)=>{
+					return  data?.nbdName ? <div> {text} </div>:  
+					<div className={allengagementStyles.amName}  onClick={()=>{editAMModalcontroler(data.invoicingDetails)}}>{text}</div> 
+				}
+			},
+			{
+				title: 'Job Title',
+				dataIndex: 'position',
+				key: 'position',
+				align: 'left',
+				width:"250px",
+			},			
+			{
 				title: 'GEO',
 				dataIndex: 'geo',
 				key: 'geo',
 				align: 'left',
+				width:"100px",
 			},
 			{
-				title: 'Position',
-				dataIndex: 'position',
-				key: 'position',
+				title: 'SOW Signed Date',
+				dataIndex: 'sowSignedDate',
+				key: 'sowSignedDate',
 				align: 'left',
-			},
-			{
-				title: 'Lost',
-				dataIndex: 'isLost',
-				key: 'isLost',
-				align: 'left',
-			},
-			{
-				title: 'Old Talent',
-				dataIndex: 'oldTalent',
-				key: 'oldTalent',
-				align: 'left',
-			},
-			{
-				title: 'Replacement Eng. ID',
-				dataIndex: 'replacementEng',
-				key: 'replacementEng',
-				align: 'left',
-			},
-			{
-				title: 'Notice Period',
-				dataIndex: 'noticePeriod',
-				key: 'noticePeriod',
-				align: 'left',
+				width:"120px",
+				render:(text)=>{
+					// return text ? moment(text).format('DD/MM/YYYY') : ''
+					return text
+				}
 			},
 			{
 				title: 'Kick Off',
 				dataIndex: 'kickOff',
 				key: 'kickOff',
 				align: 'left',
+				width:"180px",
 			},
-			
 			{
-				title: 'Actual BR & Currency',
-				dataIndex: 'actualBillRate',
-				key: 'actualBillRate',
+				title: 'Eng. Tenture',
+				dataIndex: 'engagementTenure',
+				key: 'engagementTenure',
 				align: 'left',
+				width:'80px',
+				render: (text) => <p>{text + ' Months'}</p>,
 			},
 			{
-				title: 'BR',
-				dataIndex: 'payout_BillRate',
-				key: 'payout_BillRate',
-				align: 'left',				
-			},			
-			{
-				title: 'Actual PR & Currency',
-				dataIndex: 'actualPayRate',
-				key: 'actualPayRate',
-				align: 'left',
-			},
-			{
-				title: 'PR',
-				dataIndex: 'payout_PayRate',
-				key: 'payout_PayRate',
-				align: 'left',
-			},
-			{
-				title: 'Engagement Start Date',
+				title: 'Eng. Start Date',
 				dataIndex: 'contractStartDate',
 				key: 'contractStartDate',
 				align: 'left',
+				width:'90px',
 				render:(text)=>{
 					// return text ? moment(text).format('DD/MM/YYYY') : ''
 					return text
 				}
 			},
 			{
-				title: 'Engagement End Date',
+				title: 'Eng. End Date',
 				dataIndex: 'contractEndDate',
 				key: 'contractEndDate',
 				align: 'left',
+				width:'90px',
 				render:(text)=>{
 					// return text ? moment(text).format('DD/MM/YYYY') : ''
 					return text
 				}
+			},
+			{
+				title: 'Lost',
+				dataIndex: 'isLost',
+				key: 'isLost',
+				align: 'left',
+				width:'70px',
 			},
 			{
 				title: 'Actual End Date',
 				dataIndex: 'actualEndDate',
 				key: 'actualEndDate',
 				align: 'left',
+				width:"150px",
 				render:(text)=>{
 					// return text ? moment(text).format('DD/MM/YYYY') : ''
 					return text
 				}
 			},
 			{
+				title: 'Actual BR & Currency',
+				dataIndex: 'actualBillRate',
+				key: 'actualBillRate',
+				align: 'left',
+				width: '120px',
+				render:(text)=>{
+					return budgetStringToCommaSepratedwithjustcurrency(text)
+				}
+			},
+			{
+				title: 'BR',
+				dataIndex: 'payout_BillRate',
+				key: 'payout_BillRate',
+				align: 'left',	
+				width:'100px',
+				render:(text)=>{
+					return text.toLocaleString()
+				}			
+			},
+			{
+				title: 'Actual PR & Currency',
+				dataIndex: 'actualPayRate',
+				key: 'actualPayRate',
+				align: 'left',
+				width: '120px',
+				render:(text)=>{
+					return budgetStringToCommaSepratedwithjustcurrency(text)
+				}
+			},
+			{
+				title: 'PR',
+				dataIndex: 'payout_PayRate',
+				key: 'payout_PayRate',
+				align: 'left',
+				width: '120px',
+				render:(text)=>{
+					return text.toLocaleString()
+				}
+			},		
+			{
 				title: 'NR',
 				dataIndex: 'actualNR',
 				key: 'actualNR',
 				align: 'left',
-			},
+				width: '120px',
+				render:(text)=>{
+					return budgetStringToCommaSepratedwithjustcurrency(text)
+				}
+			},			
 			{
 				title: ' NR (%)',
 				dataIndex: 'nr',
 				key: 'nr',
 				align: 'left',
+				width: '120px',
 			},
 			{
 				title: 'DP Amount',
 				dataIndex: 'dpAmount',
 				key: 'dpAmount',
 				align: 'left',
+				width: '140px',
+				render:(text)=>{
+					return budgetStringToCommaSepratedwithjustcurrency(text)
+				}
 			},
 			{
 				title: 'DP (%)',
 				dataIndex: 'dP_Percentage',
 				key: 'dP_Percentage',
 				align: 'left',
+				width: '140px',
 			},
 			{
 				title: 'Renewal Start Date',
 				dataIndex: 'renewalstartDate',
 				key: 'renewalstartDate',
 				align: 'left',
+				width: '140px',
 				render:(text)=>{
 					// return text ? moment(text).format('DD/MM/YYYY') : ''
 					return text
@@ -657,99 +717,33 @@ export const allEngagementConfig = {
 				dataIndex: 'renewalendDate',
 				key: 'renewalendDate',
 				align: 'left',
+				width: '140px',
 				render:(text)=>{
 					// return text ? moment(text).format('DD/MM/YYYY') : ''
 					return text
 				}
 			},
 			{
-				title: 'Engagement Tenture',
-				dataIndex: 'engagementTenure',
-				key: 'engagementTenure',
+				title: 'Old Talent',
+				dataIndex: 'oldTalent',
+				key: 'oldTalent',
 				align: 'left',
-				render: (text) => <p>{text + ' Months'}</p>,
+				width: '140px',
 			},
 			{
-				title: 'SOW Signed Date',
-				dataIndex: 'sowSignedDate',
-				key: 'sowSignedDate',
+				title: 'Replacement Eng. ID',
+				dataIndex: 'replacementEng',
+				key: 'replacementEng',
 				align: 'left',
-				render:(text)=>{
-					// return text ? moment(text).format('DD/MM/YYYY') : ''
-					return text
-				}
+				width: '140px',
 			},
 			{
-				title: 'NBD',
-				dataIndex: 'nbdName',
-				key: 'nbdName',
+				title: 'Contract Lost Reason',
+				dataIndex: 'onBoardLostReason',
+				key: 'onBoardLostReason',
 				align: 'left',
-			},
-			{
-				title: 'AM Name',
-				dataIndex: 'amName',
-				key: 'amName',
-				align: 'left',
-				render:(text,data)=>{
-					return text ? <div className={allengagementStyles.amName}  onClick={()=>{editAMModalcontroler(data.invoicingDetails)}}>{text}</div> : null
-				}
-			},
-			{
-				title: 'Invoice Sent Date',
-				dataIndex: 'invoiceSentDate',
-				key: 'invoiceSentDate',
-				align: 'left',
-				render:(text)=>{
-					// return text ? moment(text).format('DD/MM/YYYY') : ''
-					return text
-				}
-			},
-			{
-				title: 'Invoice Number',
-				dataIndex: 'invoiceNumber',
-				key: 'invoiceNumber',
-				align: 'left',
-			},
-			{
-				title: 'Invoice Status',
-				dataIndex: 'invoiceStatus',
-				key: 'invoiceStatus',
-				align: 'left',
-			},
-			{
-				title: 'Date of Payment',
-				dataIndex: 'dateofPayment',
-				key: 'dateofPayment',
-				align: 'left',
-				render:(text)=>{
-					// return text ? moment(text).format('DD/MM/YYYY') : ''
-					return text
-				}
-			},
-			{
-				title: 'Created Date',
-				dataIndex: 'createdByDatetime',
-				key: 'createdByDatetime',
-				align: 'left',
-			},
-			{
-				title: 'Engagement Status',
-				dataIndex: 'currentStatus',
-				key: 'currentStatus',
-				align: 'left',
-			},
-			// {
-			// 	title: 'Type Of HR',
-			// 	dataIndex: 'typeOfHR',
-			// 	key: 'typeOfHR',
-			// 	align: 'left',
-			// },
-			// {
-			// 	title: 'Availability',
-			// 	dataIndex: 'h_Availability',
-			// 	key: 'h_Availability',
-			// 	align: 'left',
-			// },
+				width: '140px',
+			},		
 		];
 	},
 	clientFeedbackTypeConfig: (filterList) => {

@@ -21,6 +21,7 @@ import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import moment from "moment";
 import { downloadToExcel } from "modules/report/reportUtils";
 import LogoLoader from "shared/components/loader/logoLoader";
+import WithLoader from "shared/components/loader/loader";
 const DealListLazyComponents = React.lazy(() =>
   import("modules/deal/components/dealFilters/dealFilters")
 );
@@ -415,6 +416,7 @@ export default function HRReport() {
   // console.log('client', reportList, appliedFilter)
   return (
     <div className={hrReportStyle.dealContainer}>
+      {/* <WithLoader className="pageMainLoader" showLoader={isLoading}> */}
       <div className={hrReportStyle.header}>
         <div className={hrReportStyle.dealLable}>HR Report</div>
         <LogoLoader visible={isLoading} />
@@ -690,6 +692,7 @@ export default function HRReport() {
           />
         </Suspense>
       )}
+    {/* </WithLoader> */}
     </div>
   );
 }

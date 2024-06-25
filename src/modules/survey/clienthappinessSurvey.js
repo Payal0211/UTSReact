@@ -31,6 +31,7 @@ import { downloadToExcel } from 'modules/report/reportUtils';
 import { clientHappinessSurveyConfig } from 'modules/hiring request/screens/clientHappinessSurvey/clientHappinessSurvey.config';
 import { Radio } from 'antd';
 import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSelectField';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 const SurveyFiltersLazyComponent = React.lazy(() =>
 	import('modules/survey/components/surveyFilter/surveyfilters'),
@@ -406,8 +407,10 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
   return (
     <>
     <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
+    {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}>  */}
         <div className={clienthappinessSurveyStyles.addnewHR}>
             <div className={clienthappinessSurveyStyles.hiringRequest}>Client Happiness Survey</div>
+            <LogoLoader visible={isLoading} />
             <div className={clienthappinessSurveyStyles.btn_wrap}>
                 <div className={clienthappinessSurveyStyles.priorities_drop_custom}>
                     {/* {priorityCount?.length === 1 ? (
@@ -700,6 +703,7 @@ const SurveyFiltersLazyComponent = React.lazy(() =>
                             </WithLoader>
                        )} 
          </div>
+    {/* </WithLoader> */}
     </div>
 
     {isAllowFilters && (

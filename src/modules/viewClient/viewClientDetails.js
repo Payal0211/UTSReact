@@ -28,6 +28,7 @@ import Star from 'assets/svg/selectStarFill.svg';
 import { AiOutlineClose } from 'react-icons/ai';
 import { HttpStatusCode } from "axios";
 import { DateTimeUtils } from "shared/utils/basic_utils";
+import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 
 import { BsArrowUpRight } from "react-icons/bs";
 
@@ -44,6 +45,16 @@ function ViewClientDetails() {
 	const [guid,setGuid] = useState('');
 	const [draftJObPostDetails,setDraftJobPostDetails] = useState({});
 	const getisShowAddClientCredit = localStorage.getItem("isShowAddClientCredit")
+	const [userData, setUserData] = useState({});
+
+	useEffect(() => {
+		const getUserResult = async () => {
+			let userData = UserSessionManagementController.getUserSession();
+			if (userData) setUserData(userData);
+		};
+		getUserResult();
+	}, []);
+	
 
 	useEffect(() => {
 		if(jobpostDraft){
@@ -115,6 +126,15 @@ function ViewClientDetails() {
 	useEffect(() => {
 		getDataForViewClient();
 	},[]);
+
+	const resetTalentCTA = async () => {
+		setLoading(true)
+		let response = await allClientRequestDAO.getResetAllDemoHRTalentStatusDAO(companyID,clientID);	
+		if(response?.statusCode === 200){
+			message.success("Talents Status Reset")
+		}
+		setLoading(false);
+	}
 
 	const getDataForViewClient = async () => {
 		setLoading(true)
@@ -236,8 +256,9 @@ function ViewClientDetails() {
                             isDropdown={true}
                             overlayClassName={dealDetailsStyles.viewClientdrop}
                             className={dealDetailsStyles.viewClientdrop}
-                        /> */}						
-						{getisShowAddClientCredit == "true" &&<button type="button" onClick={() => {navigate(`/editclient/${companyID}`);localStorage.setItem("clientID",clientID)}}>Edit Company</button>}
+                        /> */}		
+						{(userData.LoggedInUserTypeID === 1 || userData.LoggedInUserTypeID === 2 || userData.LoggedInUserTypeID === 9) && (companyID === "37720" )  && <button type="button" onClick={() => resetTalentCTA()} >Reset Talents for Demo Account</button> }			
+						{getisShowAddClientCredit == "true" &&<button type="button" onClick={() => {navigate(`/addNewCompany/${companyID}`);localStorage.setItem("clientID",clientID)}}>Edit Company</button>}
 						<button type="button" onClick={() => navigate('/allhiringrequest/addnewhr')} >Create HR</button>
 					
 						{/* <div className={dealDetailsStyles.deleteButton}>

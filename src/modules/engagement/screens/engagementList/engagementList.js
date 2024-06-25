@@ -46,6 +46,7 @@ import { downloadToExcel } from 'modules/report/reportUtils';
 import { MasterDAO } from 'core/master/masterDAO';
 import EditAllBRPR from '../editAllBRPR/editAllBRPR';
 import moment from 'moment';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 /** Importing Lazy components using Suspense */
 const EngagementFilerList = React.lazy(() => import('./engagementFilter'));
@@ -458,12 +459,16 @@ const EngagementList = () => {
 	}, [getEngagementModal.engagementBillRateAndPayRate]);
 
 	const getEngagementFilterList = useCallback(async () => {
+		setLoading(true);
 		const response = await engagementRequestDAO.getEngagementFilterListDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
+			setLoading(false);
 			setFiltersList(response && response?.responseBody?.details);
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+			setLoading(false);
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+			setLoading(false);
 			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
 		} else {
 			return 'NO DATA FOUND';
@@ -593,11 +598,13 @@ const EngagementList = () => {
 
 	return (
 		<div className={allEngagementStyles.hiringRequestContainer}>
+			{/* <WithLoader showLoader={searchText?.length?false:isLoading} className="pageMainLoader"> */}
 			<div className={allEngagementStyles.addnewHR}>
 				<div className={allEngagementStyles.hiringRequest}>
 					Engagement Dashboard -{' '}
 					{startDate.toLocaleDateString('default', { month: 'long' })}
 				</div>
+				<LogoLoader visible={isLoading} />
 				{/* <div>
 					<button
 						className={allEngagementStyles.btnPrimary}
@@ -662,7 +669,7 @@ const EngagementList = () => {
 
 						<div className={allEngagementStyles.priorityFilterSet}>
 							{/* <div className={allEngagementStyles.label}>Showing</div> */}
-							<div className={allEngagementStyles.paginationFilter} style={{marginRight:'10px', marginLeft:'10px'}}>
+							<div className={allEngagementStyles.paginationFilter} style={{marginRight:'30px', marginLeft:'10px'}}>
 							<button
 								className={allEngagementStyles.btnPrimary}
 								
@@ -1004,6 +1011,7 @@ const EngagementList = () => {
 						<EngagementEnd
 							engagementListHandler={() => handleHRRequest({...tableFilteredState, searchText: searchText})}
 							talentInfo={filteredData}
+							lostReasons={filtersList?.onBoardingLostReasons}
 							closeModal={() =>
 								setEngagementModal({
 									...getEngagementModal,
@@ -1294,7 +1302,7 @@ const EngagementList = () => {
 						}
 						>
 							<div >
-				<h2 className={allEngagementStyles.modalTitle}>Edit AM</h2>
+				<h2 className={allEngagementStyles.modalTitle}>Edit AM/NBD</h2>
 				<p>Company Name: <b>{AMDetails?.companyName?? 'NA'}</b> | Client Name: <b>{AMDetails?.clientName?? 'NA'}</b> | Effictive From : <b>{moment(startDate).format('MM-YYYY')}</b></p>
 				<p>EN/HR : <b>{AMDetails?.engagementId_HRID}</b> </p>
 			</div>
@@ -1304,7 +1312,7 @@ const EngagementList = () => {
 			<div className={allEngagementStyles.colMd6}>
 				<HRInputField
 					register={AMregister}
-					label={'Current AM '}
+					label={'Current AM/NBD '}
 					name={'amName'}
 					type={InputType.TEXT}
 					// value={AMDetails?.aM_UserName}
@@ -1319,7 +1327,7 @@ const EngagementList = () => {
 					register={AMregister}
 					searchable={true}
 					name="newAMName"
-					label="Select New AM "
+					label="Select New AM/NBD"
 					defaultValue="Please Select"
 					options={AMLIST?.sort((a, b) => a.value.localeCompare(b.value))}
 					required
@@ -1369,6 +1377,7 @@ const EngagementList = () => {
 			
 							</Modal>}
 			</div>
+		{/* </WithLoader> */}
 		</div>
 	);
 };

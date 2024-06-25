@@ -112,7 +112,23 @@ input[type="file"] {
 .mainWrapper{
   padding-top: 80px;;
   padding-left: 60px;
-  width: 100%;  
+  width: 100%;
+}
+
+/* -- Quill Editor --*/
+
+.quill.heightSize .ql-container {
+  border: 1px solid #ccc;
+  display: block;      
+  position: relative;
+}
+
+.quill.heightSize .ql-container .ql-editor{
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 16px;
+  display: block;
+  min-height: 120px;
 }
 
 /* -- Ant Table Pagination--*/
@@ -825,6 +841,18 @@ table {
   justify-content: center;
   height: calc(100vh - 300px);
 }
+.pageMainLoader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #f2f2f2;
+  z-index: 999;
+}
 
 .disabledTransparentBtnGroup {
   opacity: 0.5;
@@ -1100,6 +1128,169 @@ table {
   overflow-y: auto;
   height: 60vh;
 }
+
+
+.clientDetailModalWrapper .ant-modal-content, .prevClientModal .ant-modal-content{
+  background-color: #fff !important;
+  border-radius: 16px !important;
+}
+
+.prevClientModal .ant-modal-content .ant-modal-close{
+  top: 5px;
+  right: 5px;
+}
+
+.prevClientModal .ant-modal-content .ant-modal-close-x{
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+  font-size: 16px;
+}
+
+.prevClientModal .ant-modal-content .ant-modal-body{
+  padding: 16px;
+}
+
+
+.ant-message{
+  z-index: 99999;
+}
+
+.custom-syntooltip{
+  z-index: 9999;    
+}
+
+
+
+
+/* Preview Editor css start */
+
+.jobDescrition h3{
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.jobDescrition ul, .jobDescrition ol{
+  padding-left: 18px;
+  padding-inline-start: 18px !important;
+  margin-bottom: 10px !important;
+}
+
+.jobDescrition ul li{
+  list-style-type: disc;
+  padding-left: 0;
+  margin-bottom: 0px !important;
+}
+
+.jobDescrition ol li{
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.88);
+  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+  counter-increment: list-0;
+  list-style: decimal;
+  display: list-item;
+  margin-bottom: 0px !important;
+}
+
+.jobDescrition.prerequisites ul{
+  display: block;
+  gap: 0px;
+}
+
+.jobDescrition.prerequisites ul li{
+  background: transparent;
+  border: 0px;
+  margin-bottom: 0px !important;
+  padding: 0;
+  display: list-item;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+.jobDescrition.prerequisites ol li{
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.88);
+  background: transparent;
+  border: 0px;
+  padding: 0;
+  margin-bottom: 0px !important;
+  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+  counter-increment: list-0;
+  list-style: decimal;
+  display: list-item;
+}
+
+
+.jobDescrition{
+  color: rgba(0, 0, 0, 0.85) !important;
+  line-height: 1.42 !important;
+}
+
+.jobDescrition p{
+  color: rgba(0, 0, 0, 0.85) !important;
+  margin-bottom: 0px !important;
+  line-height: 18px !important;
+}
+
+.jobDescrition h1{
+    font-size: 2em !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+    margin-bottom: 0px !important;
+}
+
+.jobDescrition h2{
+    font-size: 1.5em !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+    margin-bottom: 0px !important;
+}
+
+.jobDescrition h3 {
+  font-size: 1.17em !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  margin-bottom: 0px !important
+}
+.jobDescrition h4 {
+  font-size: 1em !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  margin-bottom: 0px;
+}
+.jobDescrition h5 {
+  font-size: 0.83em !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  margin-bottom: 0px;
+}
+.jobDescrition h6 {
+  font-size: 0.67em !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  margin-bottom: 0px;
+}
+.jobDescrition a {
+  text-decoration: underline;
+}
+.jobDescrition blockquote {
+  border-left: 4px solid #ccc;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding-left: 16px;
+}
+.jobDescrition code,
+.jobDescrition pre {
+  background-color: #f0f0f0;
+  border-radius: 3px;
+}
+.jobDescrition pre {
+  white-space: pre-wrap;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding: 5px 10px;
+}
+.jobDescrition code {
+  font-size: 85%;
+  padding: 2px 4px;
+}
+
+/* Preview Editor css End */
+
 
 /* Responsive css start */
 

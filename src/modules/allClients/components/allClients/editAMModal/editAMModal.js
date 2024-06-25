@@ -91,7 +91,7 @@ const EditAMModal = ({ amToFetch ,closeModal,reloadClientList}) => {
 		<div className={editAMStatusStyle.container}>
 			{contextHolder}
 			<div >
-				<h2 className={editAMStatusStyle.modalTitle}>Edit AM Name</h2>
+				<h2 className={editAMStatusStyle.modalTitle}>Edit AM/NBD Name</h2>
 				<p>Company Name: <b>{AMDetails?.companyName?? 'NA'}</b> | Client Name: <b>{AMDetails?.clientName?? 'NA'}</b> | GEO Allocation: <b>{AMDetails?.geo ?? 'NA'}</b></p>
 			</div>
 
@@ -103,7 +103,7 @@ const EditAMModal = ({ amToFetch ,closeModal,reloadClientList}) => {
 					<div className={editAMStatusStyle.colMd6}>
 					<HRInputField
 												register={register}
-												label={'Current AM Name'}
+												label={'Current AM/NBD Name'}
 												name={'amName'}
 												type={InputType.TEXT}
 												placeholder="Enter AM Name"
@@ -116,7 +116,7 @@ const EditAMModal = ({ amToFetch ,closeModal,reloadClientList}) => {
 							register={register}
 							searchable={true}
 							name="newAMName"
-							label="Select New AM Name"
+							label="Select New AM/NBD Name"
 							defaultValue="Please Select"
 							options={AMList?.sort((a, b) => a.value.localeCompare(b.value))}
 							required

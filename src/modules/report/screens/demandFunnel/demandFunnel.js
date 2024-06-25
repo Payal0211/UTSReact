@@ -18,6 +18,8 @@ import { reportConfig } from 'modules/report/report.config';
 import DemandFunnelModal from 'modules/report/components/demandFunnelModal/demandFunnelModal';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { Controller, useForm } from 'react-hook-form';
+import WithLoader from 'shared/components/loader/loader';
+import LogoLoader from 'shared/components/loader/logoLoader';
 const DemandFunnelFilterLazyComponent = React.lazy(() =>
 	import('modules/report/components/demandFunnelFilter/demandFunnelFilter'),
 );
@@ -183,6 +185,7 @@ const DemandFunnelScreen = () => {
 		[viewSummaryData],
 	);
 	const getReportFilterHandler = useCallback(async () => {
+		setLoading(true);
 		const response = await ReportDAO.demandFunnelFiltersRequestDAO();
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setFiltersList(response && response?.responseBody?.Data);
@@ -203,6 +206,7 @@ const DemandFunnelScreen = () => {
 					endDate: response?.responseBody?.Data?.EndDate,
 				},
 			});
+			setLoading(false);
 		} else {
 			setFiltersList([]);
 		}
@@ -299,10 +303,12 @@ const DemandFunnelScreen = () => {
 
 	return (
 		<div className={DemandFunnelStyle.hiringRequestContainer}>
+			{/* <WithLoader className="pageMainLoader" showLoader={isLoading}> */}
 			<div className={DemandFunnelStyle.addnewHR}>
 				<div className={DemandFunnelStyle.hiringRequest}>
 					Demand Funnel Report
 				</div>
+				<LogoLoader visible={isLoading} />
 			</div>
 			{/*
 			 * --------- Filter Component Starts ---------
@@ -473,6 +479,7 @@ const DemandFunnelScreen = () => {
 					isFocusedRole={isFocusedRole}
 				/>
 			)}
+		{/* </WithLoader> */}
 		</div>
 	);
 };

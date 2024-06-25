@@ -11,8 +11,9 @@ import { useNavigate } from "react-router-dom";
 import UTSRoutes from "constants/routes";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AutoComplete, Checkbox, Radio, Spin } from "antd";
+import { AutoComplete, Checkbox, Dropdown, Menu, Radio, Select, Spin } from "antd";
 import LogoLoader from "shared/components/loader/logoLoader";
+import WithLoader from "shared/components/loader/loader";
 
 const UserDetails = () => {
   const navigate = useNavigate();
@@ -22,13 +23,27 @@ const UserDetails = () => {
     IsProfileView: false,
     IsHybridModel: false,
   });
+
+
+  const [clientModel, setClientModel] = useState({
+    PayPerCredit:false,
+    PayPerHire:false
+  });
+  const[pricingOption,setPricingOption]=useState(null)
+  const[pricingOptionError,setPricingOptionError]=useState(false)
+  const[currency,setcurrency]=useState("")
+
   const [error, setErrors] = useState(false);
+  const [errorClient, seterrorClient] = useState(false);
+
   const [errorPOCName, setErrorsPocName] = useState(false);
   const [profileSharingOptionError, setProfileSharingOptionError] =
   useState(false);
   const [profileSharingOption, setProfileSharingOption] = useState(null);
   const [errorData, setErrorsData] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
+  const [errorCurrency, seterrorCurrency] = useState(false);
+
   const [pocName, setPOCName] = useState([]);
   let fullname = JSON.parse(localStorage.getItem('userSessionInfo'))
   const [inputValue, setInputValue] = useState({
@@ -47,6 +62,30 @@ const UserDetails = () => {
   let company_URL = watch("companyURL")
   let work_email = watch("workEmail");
   let free_credits = watch("freeCredits");
+  let creditAmount= watch("creditAmount");
+  let jobPostCredit=watch("jobPostCredit");
+  let vettedProfileViewCredit= watch("vettedProfileViewCredit");
+  let nonVettedProfileViewCredit= watch("nonVettedProfileViewCredit");
+  const handleChange=(value)=>{
+     setcurrency(value);
+     seterrorCurrency(false);
+  }
+  useEffect(() => {
+    if (nonVettedProfileViewCredit) {
+      setError("nonVettedProfileViewCredit", null);
+    }
+  }, [nonVettedProfileViewCredit]);
+  
+  useEffect(() => {
+    if (vettedProfileViewCredit) {
+      setError("vettedProfileViewCredit", null);
+    }
+  }, [vettedProfileViewCredit]);
+  useEffect(() => {
+    if (jobPostCredit) {
+      setError("jobPostCredit", null);
+    }
+  }, [jobPostCredit]);
   useEffect(() => {
     if (full_name) {
       setError("fullName", null);
@@ -68,10 +107,16 @@ const UserDetails = () => {
     }
   }, [work_email]);
   useEffect(() => {
+    if (creditAmount) {
+      setError("creditAmount", null);
+    }
+  }, [creditAmount]);
+  useEffect(() => {
     if (free_credits) {
       setError("freeCredits", null);
     }
   }, [free_credits]);
+ 
 
   const handleSubmit = () => {
     let isValid = true;
@@ -105,7 +150,6 @@ const UserDetails = () => {
         message: "please enter a valid company url.",
       });
     }
-
     if (_isNull(work_email)) {
       isValid = false;
       setError("workEmail", {
@@ -119,40 +163,79 @@ const UserDetails = () => {
         message: "Please enter a valid work email.",
       });
     }
-    if (_isNull(free_credits)) {
-      isValid = false;
-      setError("freeCredits", {
-        type: "freeCredits",
-        message: "please enter free credits.",
-      });
-    } else if (free_credits < 1) {
-      isValid = false;
-      setError("freeCredits", {
-        type: "freeCredits",
-        message: "please enter value more than 0.",
-      });
-    } else if (free_credits > 999) {
-      isValid = false;
-      setError("freeCredits", {
-        type: "freeCredits",
-        message: "please do not enter value more than 3 digits.",
-      });
-    }
-    if (IsChecked?.IsPostaJob === false && IsChecked?.IsProfileView === false) {
-      setErrors(true);
-      isValid = false;
-    }
-
+    if(clientModel?.PayPerCredit){
+      if (IsChecked?.IsPostaJob === false && IsChecked?.IsProfileView === false) {
+        setErrors(true);
+        isValid = false;
+      }
+      if (_isNull(free_credits)) {
+        isValid = false;
+        setError("freeCredits", {
+          type: "freeCredits",
+          message: "please enter free credits.",
+        });
+      } else if (free_credits < 1) {
+        isValid = false;
+        setError("freeCredits", {
+          type: "freeCredits",
+          message: "please enter value more than 0.",
+        });
+      } else if (free_credits > 999) {
+        isValid = false;
+        setError("freeCredits", {
+          type: "freeCredits",
+          message: "please do not enter value more than 3 digits.",
+        });
+      }
+      if(_isNull(creditAmount)){
+        isValid = false;
+        setError("creditAmount", {
+          type: "creditAmount",
+          message: "please enter credits amount.",
+        });
+      }
+      if(clientModel.PayPerCredit && currency ===  ""){
+        isValid = false;
+       seterrorCurrency(true)
+      }
+      if(IsChecked?.IsPostaJob && _isNull(jobPostCredit)){
+        isValid = false;
+        setError("jobPostCredit", {
+          type: "jobPostCredit",
+          message: "please enter job post credits.",
+        });
+      }
+    }  
+    if(clientModel?.PayPerCredit  === false && clientModel?.PayPerHire === false){
+      seterrorClient(true);
+        isValid = false;
+    } 
     if (inputValue?.id===undefined && inputValue?.value===undefined) {
       setErrorsPocName(true);
       isValid = false;
     }
-
-    if (IsChecked?.IsProfileView === true && profileSharingOption === null) {
-      setProfileSharingOptionError(true);
+    if(clientModel.PayPerHire === true && pricingOption === null){
+      setPricingOptionError(true);
       isValid = false;
     }
-
+    // if (IsChecked?.IsProfileView === true && profileSharingOption === null) {
+    //   setProfileSharingOptionError(true);
+    //   isValid = false;
+    // }
+    if (IsChecked?.IsProfileView === true && _isNull(vettedProfileViewCredit)) {
+      isValid = false;
+      setError("vettedProfileViewCredit", {
+        type: "vettedProfileViewCredit",
+        message: "please enter vetted profile credit.",
+      });
+    }
+    if (IsChecked?.IsProfileView === true && _isNull(nonVettedProfileViewCredit)  ) {
+      isValid = false;
+      setError("nonVettedProfileViewCredit", {
+        type: "nonVettedProfileViewCredit",
+        message: "please enter non vetted profile credit.",
+      });
+    }
     if (isValid) {
       onSubmitData();
     }
@@ -165,13 +248,22 @@ const UserDetails = () => {
       workEmail: work_email,
       companyName: company_name,
       companyURL:company_URL,
-      freeCredit: Number(free_credits),
-      IsPostaJob: IsChecked?.IsPostaJob,
-      IsProfileView: IsChecked?.IsProfileView,
-      IsHybridModel: IsChecked?.IsHybridModel,
-      IsVettedProfile: profileSharingOption,
-      poC_ID:inputValue?.id
+      freeCredit:clientModel.PayPerCredit === true ? Number(free_credits):0,
+      IsPostaJob: clientModel.PayPerCredit === true ?IsChecked?.IsPostaJob :false,
+      IsHybridModel: clientModel.PayPerCredit === true && clientModel.PayPerHire=== true ? true:false ,
+      IsVettedProfile: IsChecked.IsProfileView ? profileSharingOption:null,
+      poC_ID:inputValue?.id,
+      isTransparentPricing:clientModel.PayPerHire ?pricingOption:null,
+      creditCurrency:clientModel.PayPerCredit === true ?currency:null,
+      isProfileView:clientModel.PayPerCredit === true ?IsChecked?.IsProfileView:false,
+      creditAmount:clientModel.PayPerCredit === true ?parseInt(creditAmount):0,
+      jobPostCredit:clientModel.PayPerCredit === true && IsChecked.IsPostaJob?parseInt(jobPostCredit):0,
+      vettedProfileViewCredit: clientModel.PayPerCredit === true &&IsChecked.IsProfileView ?vettedProfileViewCredit:0,
+      nonVettedProfileViewCredit:clientModel.PayPerCredit === true &&IsChecked.IsProfileView ?nonVettedProfileViewCredit:0,
+      isPayPerCredit:clientModel.PayPerCredit,
+      isPayPerHire:clientModel?.PayPerHire
     };
+    
     const response = await allClientRequestDAO.userDetailsDAO(payload);
     if (response.statusCode === HTTPStatusCode.OK) {
       toast.success("Data save successfully", {
@@ -201,6 +293,7 @@ const UserDetails = () => {
 
   const getCompanyPOCList = useCallback(
     async (clientEmail) => {
+      setIsLoading(true)
       let response =  await allClientRequestDAO.getActiveSalesUserListDAO(clientEmail);
       if (response?.statusCode === HTTPStatusCode.OK) {
         setPOCName(response?.responseBody.map(data=>({
@@ -214,6 +307,7 @@ const UserDetails = () => {
       ) {
         setPOCName([]);
       }
+      setIsLoading(false);
     },
     []
   );
@@ -228,6 +322,7 @@ const UserDetails = () => {
   }, [pocName])
 
   return (
+    <WithLoader className="pageMainLoader" showLoader={isLoading}>
     <div className={userDetails.addNewContainer}>
       <LogoLoader visible={isLoading} />
       <div className={userDetails.tabsBody}>
@@ -235,7 +330,7 @@ const UserDetails = () => {
           <div className={userDetails.tabsFormItemInner}>
             <>
               <div className={userDetails.tabsLeftPanel}>
-                <h3>Invite Credit Base Client</h3>
+                <h3>Invite client</h3>
                 {/* <p>Please provide the necessary details</p> */}
               </div>
               <div className={userDetails.tabsRightPanel}>
@@ -245,87 +340,84 @@ const UserDetails = () => {
                   className={userDetails.hrFieldRightPane}
                 >
                   <ToastContainer />
-
-                  <div className={userDetails.row}>
-                    <div className={userDetails.colMd6}>
-                      <HRInputField
-                        register={register}
-                        errors={errors}
-                        label="Company Name"
-                        name="companyName"
-                        type={InputType.TEXT}
-                        placeholder="Enter company name"
-                        required
-                      />
-                    </div>
+                  Client Model <span className={userDetails.reqField}>*</span>
+                  <div className={userDetails.checkbox}>
+                    <Checkbox
+                      name="PayPerCredit"
+                      checked={clientModel?.PayPerCredit}
+                      onChange={(e) => {
+                        setClientModel({
+                          ...clientModel,
+                          PayPerCredit: e.target.checked,
+                        });
+                        seterrorClient(false);
+                      }}
+                    >
+                      Pay Per Credit
+                    </Checkbox>
+                    <Checkbox
+                      name="PayPerHire"
+                      checked={clientModel?.PayPerHire}
+                      onChange={(e) => {
+                        setClientModel({
+                          ...clientModel,
+                          PayPerHire: e.target.checked,
+                        });
+                        seterrorClient(false);
+                        setPricingOption(null)
+                      }}
+                    >
+                      Pay Per Hire
+                    </Checkbox>
+                  
+                
                   </div>
-
-                  <div className={userDetails.row}>
-                    <div className={userDetails.colMd6}>
-                      <HRInputField
-                        register={register}
-                        errors={errors}
-                        label="Company URL"
-                        name="companyURL"
-                        type={InputType.TEXT}
-                        placeholder="Enter company url"
-                        required
-                      />
-                    </div>
-                  </div>
-
-
-                  <div className={userDetails.row}>
-                    <div className={userDetails.colMd6}>
-                    <div className={userDetails.formGroup}>
-                      <label>
-                      POC Name <b className={userDetails.error}>*</b>
+                  {errorClient && (
+                    <p className={userDetails.error}>
+                      * Please select option per client model.
+                    </p>
+                  )}
+                  {clientModel?.PayPerHire && (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        marginBottom: "20px",
+                        marginLeft: "188px",
+                        marginTop: "0px",
+                      }}
+                    >
+                      <label style={{ marginBottom: "12px" }}>
+                      Type of Pricing
+                        <span className={userDetails.reqField}>*</span>
                       </label>
-                      <AutoComplete
-                        value={inputValue?.value}
-                        options={pocName}
-                        // autoFocus={true}
-                        filterOption={true}
-                        placeholder="Enter POC Name"
-                        onChange={(e,val)=>{
-                          setInputValue({...inputValue,id:val?.id,value:val?.value});
-                          setErrorsPocName(false);
+                      <Radio.Group
+                        onChange={(e) => {
+                          setPricingOption(e.target.value);
+                          setPricingOptionError(false);
+                        }}
+                        value={pricingOption}
+                      >
+                        <Radio value={true}>Transparent Pricing</Radio>
+                        <Radio value={false}>Non Transparent Pricing</Radio>
+                      </Radio.Group>
+                      {pricingOptionError && (
+                        <p
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            marginTop: "15px",
                           }}
-                      />
-                       {errorPOCName && (<p className={userDetails.error}>
-                        * Please select POC Name
-                      </p>)}
-                      </div>
+                          className={userDetails.error}
+                        >
+                          * Please select type of pricing options
+                        </p>
+                      )}
                     </div>
-                  </div>
-                   
-                  <div className={userDetails.row}>
-                    <div className={userDetails.colMd6}>
-                      <HRInputField
-                        register={register}
-                        errors={errors}
-                        label="Client Full Name"
-                        name="fullName"
-                        type={InputType.TEXT}
-                        placeholder="Enter client full name"
-                        required
-                      />
-                    </div>
-                  </div>
+                  )}
 
-                  <div className={userDetails.row}>
-                    <div className={userDetails.colMd6}>
-                      <HRInputField
-                        register={register}
-                        errors={errors}
-                        label="Work Email"
-                        name="workEmail"
-                        type={InputType.TEXT}
-                        placeholder="Enter work email"
-                        required
-                      />
-                    </div>
-                  </div>
+{clientModel?.PayPerCredit && (
+                  <>
                   <div className={userDetails.row}>
                     <div className={userDetails.colMd6}>
                       <HRInputField
@@ -348,9 +440,43 @@ const UserDetails = () => {
                         }}
                       />
                     </div>
-                  </div>
+                 
+                <div className={userDetails.colMd6}>
+                  <HRInputField
+                    register={register}
+                    errors={errors}
+                    label="Per credit amount"
+                    name="creditAmount"
+                    type={InputType.NUMBER}
+                    placeholder="Enter per credit amount"
+                    required
+                  />
+                </div>
+               
+                  <div className={userDetails.colMd6}>
+                  <label style={{ marginBottom: "12px" }}>
+                     Currency
+                        <span className={userDetails.reqField}>*</span>
+                      </label>
+                  <Select onChange={handleChange} name="creditCurrency">
+                  <Select.Option value="INR">INR</Select.Option>
+                  <Select.Option value="USD">USD</Select.Option>
+                </Select>
+                {errorCurrency &&  <p
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            // marginTop: "15px",
+                          }}
+                          className={userDetails.error}
+                        >
+                         *  Please select currency
+                        </p>}
 
-                  <div className={userDetails.checkbox}>
+                  </div>
+                </div>
+
+          <div className={userDetails.checkbox}>
                     <Checkbox
                       name="IsPostaJob"
                       checked={IsChecked?.IsPostaJob}
@@ -379,13 +505,52 @@ const UserDetails = () => {
                     >
                       Credit per profile view.
                     </Checkbox>
-                  </div>
-                  {error && (
+                  </div> 
+                   {error && (
                     <p className={userDetails.error}>
                       * Please select option per post a job or per profile view.
                     </p>
                   )}
-                  {IsChecked?.IsProfileView && (
+                       <div className={userDetails.row}>
+                  {IsChecked?.IsPostaJob && (
+                      <div className={userDetails.colMd6}>
+                         <HRInputField
+                           register={register}
+                           errors={errors}
+                           label="Job post credit"
+                           name="jobPostCredit"
+                           type={InputType.NUMBER}
+                           placeholder="Enter Job post credit"
+                           required
+                         />
+                       </div>
+                  )}
+                        {IsChecked?.IsProfileView && (
+                          <>
+                        <div className={userDetails.colMd6}>
+                       <HRInputField
+                           register={register}
+                           errors={errors}
+                           label="Vetted Profile Credit"
+                           name="vettedProfileViewCredit"
+                           type={InputType.NUMBER}
+                           placeholder="Enter Vetted Profile Credit"
+                           required
+                         />
+                         </div>
+                         <div className={userDetails.colMd6}>
+                        <HRInputField
+                            register={register}
+                            errors={errors}
+                            label="Non Vetted Profile Credit"
+                            name="nonVettedProfileViewCredit"
+                            type={InputType.NUMBER}
+                            placeholder="Enter Non Vetted Profile Credit"
+                            required
+                          />
+                       </div></>)}
+                       </div>
+                  {/* {IsChecked?.IsProfileView && (
                     <div
                       style={{
                         display: "flex",
@@ -421,9 +586,114 @@ const UserDetails = () => {
                           * Please select profile sharing options
                         </p>
                       )}
+
+                      {/* <div className={userDetails.row}>
+                       <div className={userDetails.colMd6}>
+                         
+                       </div>
+                     
+                       <div className={userDetails.colMd6}>
+                        <HRInputField
+                            register={register}
+                            errors={errors}
+                            label="Non Vetted Profile View Credit"
+                            name="nonVettedProfileViewCredit"
+                            type={InputType.NUMBER}
+                            placeholder="Enter Non Vetted Profile View Credit"
+                            required
+                          />
+                       </div>
+                       </div> 
+                     /}
                     </div>
+                  )} */}
+                </>
                   )}
-                  <div className={userDetails.checkbox}>
+               
+                  <div className={userDetails.row}>
+
+                    <div className={userDetails.colMd6}>
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        label="Company Name"
+                        name="companyName"
+                        type={InputType.TEXT}
+                        placeholder="Enter company name"
+                        required
+                      />
+                    </div>
+                    <div className={userDetails.colMd6}>
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        label="Company URL"
+                        name="companyURL"
+                        type={InputType.TEXT}
+                        placeholder="Enter company url"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* <div className={userDetails.row}>
+                    
+                  </div> */}
+
+
+                  <div className={userDetails.row}>                                 
+                    <div className={userDetails.colMd6}>
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        label="Work Email"
+                        name="workEmail"
+                        type={InputType.TEXT}
+                        placeholder="Enter work email"
+                        required
+                      />
+                    </div>                
+                    <div className={userDetails.colMd6}>
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        label="Client Full Name"
+                        name="fullName"
+                        type={InputType.TEXT}
+                        placeholder="Enter client full name"
+                        required
+                      />
+                    </div>
+                  </div>
+                   
+                  {/* <div className={userDetails.row}>
+                    
+                  </div> */}
+                  <div className={userDetails.row}>
+                  <div className={userDetails.colMd6}>
+                    <div className={userDetails.formGroup}>
+                      <label>
+                      POC Name <b className={userDetails.error}>*</b>
+                      </label>
+                      <AutoComplete
+                        value={inputValue?.value}
+                        options={pocName}
+                        // autoFocus={true}
+                        filterOption={true}
+                        placeholder="Enter POC Name"
+                        onChange={(e,val)=>{
+                          setInputValue({...inputValue,id:val?.id,value:val?.value});
+                          setErrorsPocName(false);
+                          }}
+                      />
+                       {errorPOCName && (<p className={userDetails.error}>
+                        * Please select POC Name
+                      </p>)}
+                    </div>
+                  </div>  
+                  </div>
+               
+                  {/* <div className={userDetails.checkbox}>
                     <Checkbox
                       name="IsHybridModel"
                       checked={IsChecked?.IsHybridModel}
@@ -436,7 +706,7 @@ const UserDetails = () => {
                     >
                       Do you want to continue with <b>Pay Per Hire</b> ?
                     </Checkbox>
-                  </div>
+                  </div> */}
                   {errorData && (
                     <p className={userDetails.error}>{errorMessage}</p>
                   )}
@@ -457,6 +727,7 @@ const UserDetails = () => {
         </div>
       </div>
     </div>
+    </WithLoader>
   );
 };
 

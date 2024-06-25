@@ -8,6 +8,8 @@ import { MasterDAO } from 'core/master/masterDAO';
 import { MasterConfig } from 'modules/masters/masterConfig';
 import { MasterUtils } from 'modules/masters/masterUtils';
 import AddCountry from 'modules/masters/components/addCountry/addCountry';
+import WithLoader from 'shared/components/loader/loader';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 const CountryList = () => {
 	const [isAddCountryModal, setAddCountryModal] = useState(false);
@@ -56,8 +58,10 @@ const CountryList = () => {
 
 	return (
 		<div className={CountryListStyle.hiringRequestContainer}>
+			{/* <WithLoader className="pageMainLoader" showLoader={isLoading}> */}
 			<div className={CountryListStyle.addnewHR}>
 				<div className={CountryListStyle.hiringRequest}>Country List</div>
+				<LogoLoader visible={isLoading} />
 				<div>
 					<button
 						className={CountryListStyle.btnPrimary}
@@ -127,6 +131,7 @@ const CountryList = () => {
 					/>
 				</Modal>
 			)}
+		{/* </WithLoader> */}
 		</div>
 	);
 };

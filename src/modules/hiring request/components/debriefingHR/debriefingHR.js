@@ -7,7 +7,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
-import { HTTPStatusCode } from 'constants/network';
+import { GSpaceEmails, HTTPStatusCode } from 'constants/network';
 import HRInputField from '../hrInputFields/hrInputFields';
 import { InputType } from 'constants/application';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,7 @@ import { ReactComponent as FocusRole } from 'assets/svg/FocusRole.svg';
 import plusSkill from "../../../../assets/svg/plusSkill.svg";
 import PublishHRPopup from '../publishHRPopup/publishHRPopup';
 import DebrefCompanyDetails from '../editDebrieingHR/debrefCompanyDetails';
+import ReactQuill from 'react-quill';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -86,6 +87,7 @@ const DebriefingHR = ({
 	const [isFocusedRole, setIsFocusedRole] = useState(false)
 	const [talentRole, setTalentRole] = useState([]);
 	const [showPublishModal, setShowPublishModal] = useState(false)
+	const [salesHeadList,setSalesHeadList] = useState([]);
 	// const combinedSkillsMemo = useMemo(() => {
 	// 	const combinedData = [
 	// 		JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
@@ -131,10 +133,10 @@ const DebriefingHR = ({
 		// 		?.rolesResponsibilities ), {
 		// 	shouldDirty: true,
 		// });
-		setValue('jobDescription', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
+		setValue('jobDescription', (addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details
 			?.JobDescription)? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details
 			?.JobDescription)) : addData?.salesHiringRequest_Details
-			?.JobDescription :addData?.salesHiringRequest_Details?.JobDescription, {
+			?.JobDescription :addData?.salesHiringRequest_Details?.JobDescription) ?? "", {
 			shouldDirty: true,
 		});
 		setIsFocusedRole(addData?.salesHiringRequest_Details?.isHrfocused);
@@ -335,15 +337,15 @@ const DebriefingHR = ({
 		// 		shouldDirty: true,
 		// 	});
 
-			JDParsedSkills &&	setValue('jobDescription', addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
+			JDParsedSkills &&	setValue('jobDescription', (addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
 			JDParsedSkills?.JobDescription ||
-			(addData?.salesHiringRequest_Details?.JobDescription) , {
+			(addData?.salesHiringRequest_Details?.JobDescription))?? "" , {
 					shouldDirty: true,
 				});
 	}, [JDParsedSkills, setValue]);
     
 	// console.log("errors", errors,isOtherSkillExistMemo);
-	const openPublishModal = ()=>{
+	const openPublishModal = async  ()=>{
 		setShowPublishModal(true)
 	}
 
@@ -389,6 +391,7 @@ const DebriefingHR = ({
 					message: 'Same skills are not allowed',
 				});
 				setSameSkillError(true)
+				setShowPublishModal(false)
 				sameSkillIssue = true
 			}
 		})
@@ -400,7 +403,7 @@ const DebriefingHR = ({
 			requirements: '',
 			JobDescription:d.jobDescription,
 			en_Id: enID,
-			skills: skillList?.filter((item) => item?.skillsID !== -1),
+			skills: skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString(),
 			aboutCompanyDesc: d.aboutCompany,
 			// secondaryInterviewer: d.secondaryInterviewer,
 			interviewerFullName: d.interviewerFullName,
@@ -412,7 +415,7 @@ const DebriefingHR = ({
 			IsHrfocused: isFocusedRole,
 			role: d.role?.id ? d.role?.id : null,
 			hrTitle: d.hrTitle,
-			allSkills:goodToSkillList,
+			allSkills:goodToSkillList.map(item=> item.skillsName).toString(),
 			"interviewerDetails":{
 				"primaryInterviewer": {
 					"interviewerId": d.interviewerId,
@@ -436,8 +439,9 @@ const DebriefingHR = ({
 			},
 			companyType: userCompanyTypeID === 1 ? "Pay Per Hire" : "Pay Per Credit",
 			PayPerType:  userCompanyTypeID ,
+			IsMustHaveSkillschanged : true,
+			IsGoodToHaveSkillschanged: true
 		};
-
 		if(userCompanyTypeID === 2){
 			debriefFormDetails['companyInfo'] = {
 				"companyID": getHRdetails?.companyInfo?.companyID,
@@ -457,6 +461,24 @@ const DebriefingHR = ({
 			debriefFormDetails,
 		);
 		if (debriefResult.statusCode === HTTPStatusCode.OK) {
+			const getSalesHead = await hiringRequestDAO.getSalesUsersWithHeadAfterHrCreateDAO(enID);
+			const checkEmail = /^[a-zA-Z0-9._%+-]+@(uplers\.in|uplers\.com)$/i;
+			var emailString = GSpaceEmails.EMAILS.split(',');
+			getSalesHead?.responseBody?.details?.forEach((list)=>{
+				if(list?.salesUserEmail && checkEmail.test(list?.salesUserEmail)){
+					emailString.push(list?.salesUserEmail);
+				}
+				if(list?.salesUserHeadEmail && checkEmail.test(list?.salesUserHeadEmail)){
+					emailString.push(list?.salesUserHeadEmail);
+				}
+			})
+			var updatedEmailString = emailString.join(','); 
+			
+			let payload = {
+				client_email : getSalesHead?.responseBody?.details?.[0]?.clientEmail,
+				users : updatedEmailString
+			}
+			const addMember = await hiringRequestDAO.addMemberToGspaceDAO(payload);
 			setIsLoading(false);
 			messageAPI.open({
 				type: 'success',
@@ -464,11 +486,11 @@ const DebriefingHR = ({
 			});
 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
 		}
-		}else{
-			setIsLoading(false);
-		}
-		
-	};
+	}else{
+		setIsLoading(false);
+	}
+	
+};
 
 	// const needMoreInforSubmitHandler = async (d) => {
 	// 	setIsLoading(true);
@@ -587,7 +609,7 @@ const DebriefingHR = ({
 		<div className={DebriefingHRStyle.debriefingHRContainer}>
 			{contextHolder}
 			<WithLoader
-				showLoader={isLoading}
+				showLoader={debouncedSearch?.length?false:isLoading}
 				className="mainLoader">
 				<div className={DebriefingHRStyle.partOne}>
 					<div className={DebriefingHRStyle.hrFieldLeftPane}>
@@ -643,12 +665,12 @@ const DebriefingHR = ({
 								required
 							/> */}
 
-							<TextEditor
+							{/* <TextEditor
 								isControlled={true}
 								// controlledValue={JDParsedSkills?.Requirements || ''}
-								controlledValue={addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
+								controlledValue={(addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
 									JDParsedSkills?.JobDescription ||
-									(addData?.salesHiringRequest_Details?.JobDescription)
+									(addData?.salesHiringRequest_Details?.JobDescription)) ?? ''
 								}
 								label={'Job Description'}
 								placeholder={'Enter Job Description'}
@@ -658,9 +680,29 @@ const DebriefingHR = ({
 								errors={errors}
 								name="jobDescription"
 								required
+							/> */}
+							<label style={{ marginBottom: "12px" }}>
+								Job Description
+								{/* <span className={AddNewClientStyle.reqField}>*</span> */}
+							</label>
+							<ReactQuill
+								register={register}
+								setValue={setValue}
+								theme="snow"
+								className="heightSize"
+								value={watch('jobDescription')}
+								name="jobDescription"
+								onChange={(val) => setValue("jobDescription",val)}
 							/>
-
-							{userCompanyTypeID === 1 && 
+							<input
+								type="hidden"
+								{...register('jobDescription', {
+								required: 'Job description is required',
+								validate: (value) => value.trim() !== '' || 'Job description cannot be empty'
+								})}
+							/>
+						{/* Hide company details */}
+							{/* {userCompanyTypeID === 1 && 
 							<TextEditor
 									isControlled={true}
 									controlledValue={AboutCompanyDesc ? AboutCompanyDesc : getHRdetails?.companyInfo?.aboutCompanyDesc}
@@ -672,7 +714,7 @@ const DebriefingHR = ({
 									errors={errors}
 									name="aboutCompany"
 									required
-								/>}
+								/>} */}
 								{/* <div className={DebriefingHRStyle.aboutCompanyField}>
 								<HRInputField
 									required
@@ -853,8 +895,8 @@ const DebriefingHR = ({
 						</div>
 					</div>
 				</div>
-
-				{userCompanyTypeID === 2 && <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
+                {/* Hide Interviewer and Company Details */}
+				{/* {userCompanyTypeID === 2 && <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
 
 				{userCompanyTypeID === 1 && <>
 					<Divider />
@@ -873,7 +915,7 @@ const DebriefingHR = ({
 						getHRdetails={getHRdetails}
 						disabledFields={disabledFields}
 					/>
-				</>}
+				</>} */}
 				<Divider />
 				{isLoading ? (
 					<SpinLoader />

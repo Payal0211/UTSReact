@@ -6,6 +6,7 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import HRDetailStyle from './hrdetail.module.css';
 import { ReactComponent as ArrowLeftSVG } from 'assets/svg/arrowLeft.svg';
 import { ReactComponent as PowerSVG } from 'assets/svg/power.svg';
+import { ReactComponent as Trash } from 'assets/svg/trash.svg';
 import UTSRoutes from 'constants/routes';
 import { HTTPStatusCode } from 'constants/network';
 import WithLoader from 'shared/components/loader/loader';
@@ -55,6 +56,7 @@ import HRSelectField from 'modules/hiring request/components/hrSelectField/hrSel
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { BsThreeDots } from 'react-icons/bs';
 import PreOnboardingTabModal from 'modules/hiring request/components/preOnboardingModals/preOnboardingTabModal';
+import DeleteHRModal from 'modules/hiring request/components/deleteHR/deleteHRModal';
 
 /** Lazy Loading the component */
 
@@ -83,6 +85,7 @@ const HRDetailScreen = () => {
 	const [editDebrifing, setEditDebring] = useState([]);
 
 	const [closeHrModal, setCloseHrModal] = useState(false);
+	const [deleteHRModal,setDeleteHrModal] = useState(false);
 	const [userData, setUserData] = useState({});
 	useEffect(() => {
 		const getUserResult = async () => {
@@ -110,10 +113,10 @@ const HRDetailScreen = () => {
 		async (hrid) => {
 			setLoading(true);
 			let response = await hiringRequestDAO.getViewHiringRequestDAO(hrid);
-			if (response.statusCode === HTTPStatusCode.OK) {
+			if (response?.statusCode === HTTPStatusCode.OK) {
 				setAPIdata(response && response?.responseBody);
 				setLoading(false);
-			} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+			} else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
 				navigate(UTSRoutes.PAGENOTFOUNDROUTE);
 			}
 		},
@@ -200,6 +203,26 @@ const HRDetailScreen = () => {
 	}, [apiData]);
 // console.log('apiData', apiData)
 
+const handleReopen = async (d) => {
+	setLoading(true)
+	let data = { hrID: apiData.HR_Id, updatedTR: apiData.ClientDetail.NoOfTalents };
+	const response = await hiringRequestDAO.ReopenHRDAO(data);
+	if (response?.statusCode === HTTPStatusCode.OK) {                            
+	  setLoading(false)
+	  setLoading && setLoading(false)
+	  if(response?.responseBody?.details?.isReopen){
+		 window.location.reload();
+	  }else{
+		message.error(response?.responseBody?.details?.message,10)
+	  }
+	}
+	if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
+	  message.error(response?.responseBody,10)
+	  setLoading(false)
+	}
+	setLoading(false)
+  };
+
 const togglePriority = useCallback(
 	async (payload) => {
 		setLoading(true);
@@ -243,6 +266,17 @@ const togglePriority = useCallback(
 		setLoading(false);
 	}
 
+	const deleteHR = async ()=>{
+		setLoading(true)
+		const result = await hiringRequestDAO.deleteHRRequestDAO(apiData?.HR_Id)
+
+		if(result.statusCode === HTTPStatusCode.OK){
+			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
+			setLoading(false);
+		}
+		setLoading(false);
+	}
+
 	const editHR = () => {
 		navigate(UTSRoutes.ADDNEWHR, { state: { isCloned: true } });
 		localStorage.setItem('hrID', apiData?.HR_Id);
@@ -266,6 +300,26 @@ const togglePriority = useCallback(
 				</Link>
 				<div className={HRDetailStyle.hrDetails}>
 					<div className={HRDetailStyle.hrDetailsLeftPart}>
+						{/* Delete HR CTA */}
+						<>{apiData?.AllowHRDelete && <Tooltip title={'Delete HR'} placement="bottom" ><div className={HRDetailStyle.hiringRequestPriority} onClick={()=>setDeleteHrModal(true)}><Trash width="17" height="16" style={{ fontSize: '16px' }} /></div></Tooltip> }
+						{deleteHRModal && (
+                <Modal
+                  width={"864px"}
+                  centered
+                  footer={false}
+                  open={deleteHRModal}
+                  className="updateTRModal"
+                  onCancel={() => setDeleteHrModal(false)}
+                >
+					<DeleteHRModal
+						closeHR={() => {}}
+						deleteHRDetail={() => deleteHR()}
+						onCancel={() => setDeleteHrModal(false)}
+					/>
+                </Modal>
+              )}
+						</>
+						
 						<div className={HRDetailStyle.hiringRequestIdSets}>
 							{updatedSplitter}
 						</div>
@@ -299,6 +353,8 @@ const togglePriority = useCallback(
 							{apiData?.AllowSpecialEdit && (<div onClick={()=> editHR()}>
 							<EditSVG style={{ fontSize: '16px' }} />{' '}
 							<span className={HRDetailStyle.btnLabel}>Edit HR</span></div>)}
+
+						
 					</div>
 				
 					<div className={HRDetailStyle.hrDetailsRightPart}>
@@ -365,6 +421,9 @@ const togglePriority = useCallback(
                 <div
                   className={HRDetailStyle.hiringRequestPriority}
                   onClick={() => {
+					if(apiData?.IsPayPerCredit){
+						return handleReopen()
+					}
                     setReopenHrModal(true);
                   }}
                 >

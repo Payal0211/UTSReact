@@ -19,6 +19,8 @@ import UTSRoutes from "constants/routes";
 import { Table, Checkbox } from "antd";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import moment from "moment";
+import WithLoader from "shared/components/loader/loader";
+import LogoLoader from "shared/components/loader/logoLoader";
 const DealListLazyComponents = React.lazy(() =>
   import("modules/deal/components/dealFilters/dealFilters")
 );
@@ -442,8 +444,10 @@ export default function ClientReport() {
   //console.log('client', reportList, appliedFilter)
   return (
     <div className={ClientReportStyle.dealContainer}>
+      {/* <WithLoader showLoader={isLoading} className="pageMainLoader"> */}
       <div className={ClientReportStyle.header}>
         <div className={ClientReportStyle.dealLable}>Client Report</div>
+        <LogoLoader visible={isLoading} />
       </div>
 
       <div className={ClientReportStyle.filterContainer}>
@@ -596,6 +600,7 @@ export default function ClientReport() {
           />
         </Suspense>
       )}
+    {/* </WithLoader> */}
     </div>
   );
 }

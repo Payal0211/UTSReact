@@ -24,6 +24,7 @@ import { dealUtils } from 'modules/deal/dealUtils';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton';
 import WithLoader from 'shared/components/loader/loader';
 import { HTTPStatusCode } from 'constants/network';
+import LogoLoader from 'shared/components/loader/logoLoader';
 // import DealFilters from 'modules/deal/components/dealFilters/dealFilters';
 const DealListLazyComponents = React.lazy(() =>
 	import('modules/deal/components/dealFilters/dealFilters'),
@@ -193,6 +194,8 @@ const DealList = () => {
 
 	return (
 		<div className={DealListStyle.dealContainer}>
+			<LogoLoader visible={isLoading} />
+			{/* <WithLoader className="pageMainLoader" showLoader={searchText?.length?false:isLoading}> */}
 			<div className={DealListStyle.header}>
 				<div className={DealListStyle.dealLable}>Deal Listing</div>
 			</div>
@@ -353,6 +356,7 @@ const DealList = () => {
 					/>
 				</Suspense>
 			)}
+		{/* </WithLoader> */}
 		</div>
 	);
 };

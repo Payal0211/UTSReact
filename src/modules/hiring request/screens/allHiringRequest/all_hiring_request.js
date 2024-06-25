@@ -44,6 +44,7 @@ import _debounce from "lodash/debounce";
 import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal";
 import CloseHRModal from "../../components/closeHRModal/closeHRModal";
 import { downloadToExcel } from "modules/report/reportUtils";
+import LogoLoader from "shared/components/loader/logoLoader";
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -98,7 +99,41 @@ const AllHiringRequestScreen = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [HRTypesList,setHRTypesList] = useState([])
-  const [selectedHRTypes, setSelectedHRTypes] = useState([])
+  const [selectedHRTypes, setSelectedHRTypes] = useState([]);
+
+  // UTS-7517: Code for clone HR in demo acccount starts
+
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);  
+  const [showCloneHRToDemoAccount, setShowCloneHRToDemoAccount] = useState(false);
+
+  const handleDemoCloneCheckboxChange = (value) => {     
+    const obj = {'companyId':value.companyID, 'hRID':value.HRID, 'hR_Number': value.HR_ID};
+  
+    setSelectedCheckboxes(prev => {
+      if(prev.map(item=> item.hRID)?.includes(value.HRID)){
+        return prev.filter(item=> item.hRID !== value.HRID);
+      }
+      return [...prev, obj]});    
+  };
+
+  const CloneHRDemoAccountAPICall = async () => {    
+    if(selectedCheckboxes.length > 0)
+    {      
+      setLoading(true);
+      let payload = { "cloneHRLists" : selectedCheckboxes  }
+      let result = await hiringRequestDAO.cloneHRToDemoAccountDAO(payload);
+      if (result.statusCode === 200) {      
+        message.success("Operation performed successfully, you will get an email with detailed information"); 
+        setSelectedCheckboxes([]); 
+      }
+      setLoading(false);
+    }
+    else{
+      message.error("Please select atleast one HR.");
+    }
+  };
+
+  // UTS-7517: Code for clone HR in demo acccount ends
 
   useEffect(() => {
     const getUserResult = async () => {
@@ -226,12 +261,16 @@ const AllHiringRequestScreen = () => {
         setReopenHrModal,
         setCloseHRDetail,
         setCloseHrModal,
-        userData?.LoggedInUserTypeID
+        userData?.LoggedInUserTypeID,
+        setLoading,
+        handleDemoCloneCheckboxChange, 
+        selectedCheckboxes,       
+        showCloneHRToDemoAccount
       ),
-    [togglePriority, userData.LoggedInUserTypeID]
+    [togglePriority, userData.LoggedInUserTypeID,selectedCheckboxes]
   );
   const handleHRRequest = useCallback(
-    async (pageData) => {
+    async (pageData) => {      
       setLoading(true);
       // save filter value in localstorage
       if (pageData.filterFields_ViewAllHRs) {
@@ -253,6 +292,7 @@ const AllHiringRequestScreen = () => {
         setTotalRecords(response?.responseBody?.totalrows);
         setLoading(false);
         setAPIdata(hrUtils.modifyHRRequestData(response && response));
+        setShowCloneHRToDemoAccount(response?.responseBody?.ShowCloneToDemoAccount);
       } else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
         setLoading(false);
         setTotalRecords(0);
@@ -376,14 +416,14 @@ const AllHiringRequestScreen = () => {
           toDate: new Date(end).toLocaleDateString("en-US"),
         },
       });
-      handleHRRequest({
-        ...tableFilteredState,
-        filterFields_ViewAllHRs: {
-          ...tableFilteredState.filterFields_ViewAllHRs,
-          fromDate: new Date(start).toLocaleDateString("en-US"),
-          toDate: new Date(end).toLocaleDateString("en-US"),
-        },
-      });
+      // handleHRRequest({
+      //   ...tableFilteredState,
+      //   filterFields_ViewAllHRs: {
+      //     ...tableFilteredState.filterFields_ViewAllHRs,
+      //     fromDate: new Date(start).toLocaleDateString("en-US"),
+      //     toDate: new Date(end).toLocaleDateString("en-US"),
+      //   },
+      // });
     }
   };
 
@@ -468,7 +508,7 @@ const AllHiringRequestScreen = () => {
     localStorage.removeItem("filterFields_ViewAllHRs");
     localStorage.removeItem("appliedHRfilters");
     localStorage.removeItem("HRFilterCheckedState");
-    handleHRRequest(defaaultFilterState);
+    // handleHRRequest(defaaultFilterState);
     setIsAllowFilters(false);
     setEndDate(null);
     setStartDate(null);
@@ -480,21 +520,29 @@ const AllHiringRequestScreen = () => {
     setPageIndex(1);
     setPageSize(100);
   }, [
-    handleHRRequest,
+    // handleHRRequest,
     setAppliedFilters,
     setCheckedState,
     setFilteredTagLength,
     setIsAllowFilters,
     setTableFilteredState,
     // tableFilteredState,
-  ]);
+  ]);  
 
   return (
     <div className={allHRStyles.hiringRequestContainer}>
       {contextHolder}
       <div className={allHRStyles.addnewHR}>
+      {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
+      <LogoLoader visible={isLoading} />
         <div className={allHRStyles.hiringRequest}>All Hiring Requests</div>
         <div className={allHRStyles.btn_wrap}>
+        {showCloneHRToDemoAccount && <button
+        style={{marginRight:'15px'}}
+            className={allHRStyles.btnPrimary}
+            onClick={() => CloneHRDemoAccountAPICall()} >
+            Clone HR(s) to Demo Account
+          </button>}
           <div className={allHRStyles.priorities_drop_custom}>
             {priorityCount?.length === 1 ? (
               <button className={allHRStyles.togglebtn}>
@@ -650,6 +698,9 @@ const AllHiringRequestScreen = () => {
               <div className={allHRStyles.filterCount}>{filteredTagLength}</div>
             </div>
             <p onClick={() => clearFilters()}>Reset Filters</p>
+
+           
+
           </div>
           <div className={allHRStyles.filterRight}>
             <Checkbox
@@ -909,6 +960,7 @@ const AllHiringRequestScreen = () => {
           />
         </Modal>
       )}
+    {/* </WithLoader> */}
     </div>
   );
 };

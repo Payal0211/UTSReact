@@ -4,6 +4,7 @@ import ChangePassword from 'modules/user/screens/changePassword/changePassword';
 import ViewClientDetails from 'modules/viewClient/viewClientDetails';
 import React, { Suspense } from 'react';
 import ChatGPTResponse from 'modules/report/screens/chatGPTResponse/chatGPTResponse';
+import ViewCompanyDetails from 'modules/client/components/companyDetails/viewCompanyDetails';
 
 const Dashboard = React.lazy(() =>
 	import('modules/dashboard/screens/dashboard'),
@@ -107,6 +108,14 @@ const ClientReport = React.lazy(() =>
  	import('modules/report/screens/clientReport/clientReport')
 );
 
+const ReplacementReport = React.lazy(() =>
+	import('modules/report/screens/replacementReport/replacementReport')
+);
+
+const TalentBackoutReport = React.lazy(() =>
+	import('modules/report/screens/talentBackoutReport/talentBackoutReport')
+);
+
 const HRReport = React.lazy(() =>
 	import('modules/report/screens/hrReport/hrReport')
 );
@@ -147,6 +156,10 @@ const OnBoardList = React.lazy(() =>
 import('modules/onBoardList/onBoardList')
 )
 
+const AddCompany = React.lazy(() => 
+	import('modules/company/screens/addCompany/addCompany')
+)
+
 // const ViewClient = React.lazy(() => 
 // import('modules/viewClient/viewClientDetails'))
 
@@ -160,6 +173,7 @@ export default class UTSRoutes {
 	static ADDNEWHR = '/allhiringrequest/addnewhr';
 	static ADDNEWCLIENT = '/allhiringrequest/addnewclient';
 	static EDITCLIENT = '/editclient/:CompanyID';
+	static VIEWCOMPANYDETAILS = '/viewCompanyDetails/:CompanyID'
 	static INTERVIEWLISTROUTE = '/interview';
 	static INTERVIEWSCHEDULE = '/interview/scheduleinterview';
 	static INTERVIEWFEEDBACK = '/interview/feedback';
@@ -202,6 +216,9 @@ export default class UTSRoutes {
 	static ONBOARD = '/onBoardList';
 	static UTM_TRACKING_REPORT = "/utmTrackingReport";
 	static CLIENT_PORTAL_TRACKING_REPORT = "/clientPortalTrackingReport";
+	static REPLACEMENT_REPORT = "/replacementReport";
+	static ADD_NEW_COMPANY = "/addNewCompany/:companyID";
+	static TALENT_BACKOUT_REPORT = "/talentBackoutReport";
 }
 
 export const navigateToComponent = {
@@ -361,6 +378,16 @@ export const navigateToComponent = {
 			<ClientReport />
 		</Suspense>
 	),
+	[UTSRoutes.REPLACEMENT_REPORT]:(
+		<Suspense>
+			<ReplacementReport />
+		</Suspense>
+	),
+	[UTSRoutes.TALENT_BACKOUT_REPORT]:(
+		<Suspense>
+			<TalentBackoutReport />
+		</Suspense>
+	),
 	[UTSRoutes.HR_REPORT]:(
 		<Suspense>
 			<HRReport />
@@ -397,6 +424,11 @@ export const navigateToComponent = {
 			<EditClient />
 	</Suspense>
 ),
+[UTSRoutes.VIEWCOMPANYDETAILS]:(
+	<Suspense>
+			<ViewCompanyDetails />
+	</Suspense>
+),
 [UTSRoutes.VIEWCLIENT]: (
 	<Suspense>
 		<ViewClientDetails />
@@ -430,6 +462,11 @@ export const navigateToComponent = {
 [UTSRoutes.ONBOARD] : (
 	<Suspense>
 		<OnBoardList />
+	</Suspense>
+),
+[UTSRoutes.ADD_NEW_COMPANY] : (
+	<Suspense>
+		<AddCompany />
 	</Suspense>
 )
 };

@@ -65,6 +65,37 @@ export class HttpServices {
 		}
 	}
 
+	async sendPostRequestFullResponse() {
+		try {
+			const response = await axios.post(
+				this._URL, // URL Passing
+				this._dataToSend, // Data-Body Passing
+				{
+					headers: {
+						'Content-Type': this._contentType,
+						Authorization: this._isAuthRequired && this._authToken,
+					},
+				},
+			);
+			
+			return {
+				statusCode: response.status,
+				responseBody: response,
+			};
+		} catch (error) {
+			const errorResult = errorDebug(
+				error.response.data,
+				'httpServices.sendPostRequest()',
+			);
+			return {
+				statusCode: errorResult.statusCode,
+				responseBody: errorResult.responseBody,
+				details:error.response?.data?.details
+
+			};
+		}
+	}
+
 	async sendFileDataPostRequest() {
 		try {
 			const response = await axios.post(
@@ -107,6 +138,32 @@ export class HttpServices {
 				headers: {
 					'Content-Type': this._contentType,
 					Authorization: this._isAuthRequired && this._authToken,
+					"ngrok-skip-browser-warning":"69420",
+				},
+			});
+			return {
+				statusCode: response.status,
+				responseBody: response?.data,
+			};
+		} catch (error) {
+			const errorResult = errorDebug(
+				error.response.data,
+				'httpServices.sendGetRequest()',
+			);
+			return {
+				statusCode: errorResult.statusCode,
+				responseBody: errorResult.responseBody,
+			};
+		}
+	}
+
+	async sendGetRequestHeader(data) {
+		try {
+			const response = await axios.get(this._URL, {
+				headers: {
+					'Content-Type': this._contentType,
+					Authorization: this._isAuthRequired && this._authToken,
+					"EmailID":data
 				},
 			});
 
@@ -125,6 +182,47 @@ export class HttpServices {
 			};
 		}
 	}
+
+		/**
+	 * @Function SEND_GET_REQUEST_FILE_DOWNLOAD()
+	 * @Methods axios.POST()
+	 * @Returns An Object
+	 */
+
+		async sendPostRequestForDownloadFile() {
+			try {
+				const response = await axios.post(this._URL,this._dataToSend, {
+					responseType : 'blob',
+					headers: {
+						'Content-Type': this._contentType,
+						Authorization: this._isAuthRequired && this._authToken,
+					},
+				});
+				if(response?.status === 401){
+					localStorage.clear();
+					window.location.reload();
+					return
+				}
+				return {
+					statusCode: response.status,
+					responseBody: response.data,
+				};
+			} catch (error) {
+				const errorResult = errorDebug(
+					error.response.data,
+					'httpServices.sendGetRequest()',
+				);
+				if(errorResult?.statusCode === 401){
+					localStorage.clear();
+					window.location.reload();
+					return
+				}
+				return {
+					statusCode: errorResult.statusCode,
+					responseBody: errorResult.responseBody,
+				};
+			}
+		}
 
 	async sendGetRequestWithErrData() {
 		try {

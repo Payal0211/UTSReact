@@ -487,13 +487,13 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getReporteeTeamManagerRequest');
 		}
 	},
-	getEmailSuggestionRequest: async function (email) {
+	getEmailSuggestionRequest: async function (email,companyId) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.HIRING +
 			MastersAPI.GET_EMAIL_SUGGESTION +
-			`?search=${email}`;
+			`?search=${email}&companyid=${companyId?? 0}`;
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
@@ -938,6 +938,21 @@ export const MasterAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'MasterAPI.getOnBoardListData');
+		}
+	},
+	downloadResumeAPI : async function (data) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + 'ViewAllHR/DownloadResume' ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = data
+		try {
+			let response = await httpService.sendPostRequestForDownloadFile();
+			// let response = await httpService.sendPostRequest()
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.downloadResumeAPI');
 		}
 	}
 };

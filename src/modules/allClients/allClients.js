@@ -5,7 +5,7 @@ import React, {
 	useCallback,
     useMemo,
 } from 'react';
-import { Dropdown, Menu, Table, Modal,Select, AutoComplete } from 'antd';
+import { Dropdown, Menu, Table, Modal,Select, AutoComplete,message, Tooltip } from 'antd';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
@@ -22,11 +22,15 @@ import { ReactComponent as SearchSVG } from 'assets/svg/search.svg';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { allClientRequestDAO } from 'core/allClients/allClientsDAO';
+import { allClientRequestDAO} from 'core/allClients/allClientsDAO';
 import { HTTPStatusCode } from 'constants/network';
 import { allClientsConfig } from 'modules/hiring request/screens/allClients/allClients.config';
 import { downloadToExcel } from 'modules/report/reportUtils';
 import EditAMModal from './components/allClients/editAMModal/editAMModal';
+import { GSpaceEmails } from 'constants/network';
+import { HttpStatusCode } from 'axios';
+import LogoLoader from 'shared/components/loader/logoLoader';
+import PreviewClientModal from 'modules/client/components/previewClientDetails/previewClientModal';
 
 const AllClientFiltersLazy = React.lazy(() =>
 	import('modules/allClients/components/allClients/allClientsFilter'),
@@ -80,17 +84,26 @@ function AllClients() {
     const [editAM,setEditAM]= useState(false)
     const [amToFetch,setAMToFetch] = useState({})
     const[isShowAddClientCredit,setIsShowAddClientCredit] =  useState(false); 
+    const [messageAPI, contextHolder] = message.useMessage();
+    const [isPreviewModal,setIsPreviewModal] = useState(false);
+    const [getcompanyID,setcompanyID] = useState();
 
 	const getFilterRequest = useCallback(async () => {
+        setLoading(true);
 		// const response = await hiringRequestDAO.getAllFilterDataForHRRequestDAO();
         const  response = await allClientRequestDAO.getClientFilterDAO();
+
 		if (response?.statusCode === HTTPStatusCode.OK) {
 			setFiltersList(response && response?.responseBody?.Data);
+            setLoading(false)
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            setLoading(false)
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+            setLoading(false)
 			return navigate(UTSRoutes.SOMETHINGWENTWRONG);
 		} else {
+            setLoading(false)
 			return 'NO DATA FOUND';
 		}
 	}, [navigate]);
@@ -99,9 +112,50 @@ function AllClients() {
 		getFilterRequest();
 	},[getFilterRequest])
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('clientEmail');
+    const authToken = urlParams.get('Token');
+    const name = urlParams.get('SpaceName');
+    const spaceName = urlParams.get('clientName')
+
+const updateSpaceIDForClientFun = async () =>{
+    setLoading(true);
+    let payload = {
+        "clientEmail": email,
+        "SpaceID": name,
+        "TokenObject": authToken
+    }
+    await allClientRequestDAO.updateSpaceIDForClientDAO(payload)
+    if(email && authToken && name){
+       setDebouncedSearch(email);
+       setTimeout(()=>{
+        setTableFilteredState(prevState => ({
+        ...prevState,
+        pagenumber:1,
+        filterFields_Client: {
+        ...prevState.filterFields_Client,
+        searchText: email,
+        }
+        }));  
+    },2000)
+        messageAPI.open(
+            {
+                type: 'success',
+                content: `G-Space created sucsssfully for ${spaceName}`,
+            },
+            1000,
+        )
+   }
+   setLoading(false);
+}
+
+    useEffect(() => {
+        updateSpaceIDForClientFun()
+    }, []);
+    
     useEffect(() => {
         getAllClientsList(tableFilteredState);
-    },[tableFilteredState,isShowAddClientCredit]);
+    },[tableFilteredState]);
 
     const reloadClientList = ()=>{
         getAllClientsList(tableFilteredState);
@@ -263,8 +317,28 @@ function AllClients() {
         setAMToFetch(data)
     }
 
+    let LoggedInUserTypeID = JSON.parse(localStorage.getItem('userSessionInfo'))
+        const createGspaceAPI = async (clientName,clientEmail) =>{
+            const getEmails = await allClientRequestDAO.getSalesUserWithHeadDAO(clientEmail);
+            const checkEmail = /^[a-zA-Z0-9._%+-]+@(uplers\.in|uplers\.com)$/i;
+            var emailString = GSpaceEmails.EMAILS.split(',');
+            if(getEmails?.statusCode === HTTPStatusCode.OK){
+                getEmails?.responseBody?.forEach((emails)=>{
+                    if(emails?.salesUserEmail && checkEmail.test(emails?.salesUserEmail)){
+                        emailString.push(emails?.salesUserEmail);
+                    }
+                    if(emails?.salesUserHeadEmail && checkEmail.test(emails?.salesUserHeadEmail)){
+                        emailString.push(emails?.salesUserHeadEmail);
+                    }
+                })
+            }
+            var updatedEmailString = emailString.join(',');  
+            const response = await allClientRequestDAO.createGspaceDAO(`${clientName}-UTS`,updatedEmailString,clientEmail)
+            window.open(response?.responseBody?.authUrl, '_blank');
+        }
+
     const allClientsColumnsMemo = useMemo(
-		() => allClientsConfig.tableConfig(editAMHandler,isShowAddClientCredit),
+		() => allClientsConfig.tableConfig(editAMHandler,isShowAddClientCredit,createGspaceAPI,LoggedInUserTypeID,setIsPreviewModal,setcompanyID),
 		[isShowAddClientCredit],
 	); 
 
@@ -278,11 +352,20 @@ function AllClients() {
     }
     return(
         <>
-            <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
+        <div className={clienthappinessSurveyStyles.hiringRequestContainer}>
+                {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
+        {contextHolder}
                 <div className={clienthappinessSurveyStyles.addnewHR}>
-                    <div className={clienthappinessSurveyStyles.hiringRequest}>All Clients</div>
+                    <div className={clienthappinessSurveyStyles.hiringRequest}>All Company Clients</div>
+                    <LogoLoader visible={isLoading} />
                     <div className={clienthappinessSurveyStyles.btn_wrap}>
-                       {isShowAddClientCredit && <button className={clienthappinessSurveyStyles.btnwhite} onClick={() => navigate(UTSRoutes.ABOUT_CLIENT)}>Add Client with Credit</button>}
+                        {/* <button className={clienthappinessSurveyStyles.btnwhite} onClick={()=>setIsPreviewModal(true)}>Preview Company Details</button> */}
+                       {isShowAddClientCredit && <Tooltip title="Invite Client"  placement="bottom">
+                        <button className={clienthappinessSurveyStyles.btnwhite}
+                        // onClick={() => navigate(UTSRoutes.ABOUT_CLIENT)}
+                        onClick={() => navigate(`/addNewCompany/0`)}
+                        >Add Company</button>
+                       </Tooltip> }
                         <button className={clienthappinessSurveyStyles.btnwhite} onClick={() => handleExport()}>Export</button>
                     </div>
                 </div>
@@ -414,7 +497,9 @@ function AllClients() {
                             )} 
                 </div>
 
+            {/* </WithLoader> */}
             </div>
+           
 
             {isAllowFilters && (
                         <Suspense fallback={<div>Loading...</div>}>
@@ -447,7 +532,9 @@ function AllClients() {
                 onCancel={() => setEditAM(false)}>
                <EditAMModal amToFetch={amToFetch} closeModal={() => setEditAM(false)} reloadClientList={reloadClientList} />
             </Modal>}  
-        </>
+
+            <PreviewClientModal setIsPreviewModal={setIsPreviewModal} isPreviewModal={isPreviewModal} setcompanyID={setcompanyID} getcompanyID={getcompanyID} />
+            </>
     )
 }
 

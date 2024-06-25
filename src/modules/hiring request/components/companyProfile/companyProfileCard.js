@@ -341,11 +341,17 @@ const CompanyProfileCard = ({
 				</span>
 			</div> } */}
 
-              <div className={CompanyProfileCardStyle.minExp}>
+             {clientDetail?.MinYearOfExp !== 0 && <div className={CompanyProfileCardStyle.minExp}>
                 <span>Minimum Exp Required:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.MinYearOfExp ? clientDetail?.MinYearOfExp : 0}{" "}
                   Years
+                </span>
+              </div>} 
+              <div className={CompanyProfileCardStyle.minExp}>
+                <span>Fresher Allowed:</span>&nbsp;&nbsp;
+                <span style={{ fontWeight: "500" }}>
+                  {allApiData?.HRDetails?.IsFresherAllowed ? "YES" : "NO"}
                 </span>
               </div>
               <div className={CompanyProfileCardStyle.minExp}>
@@ -533,21 +539,21 @@ const CompanyProfileCard = ({
           />
           <div className={CompanyProfileCardStyle.partWise}>
             <div>
-              <div className={CompanyProfileCardStyle.pocName}>
+              {/* <div className={CompanyProfileCardStyle.pocName}>
                 <span>POC Name:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.POCFullName ? clientDetail?.POCFullName : "NA"}
                 </span>
-                &nbsp;&nbsp;
+                &nbsp;&nbsp; */}
                 {/*  TODO:- 
 				<AiFillLinkedin style={{ color: '#006699' }} /> */}
-              </div>
+              {/* </div>
               <div className={CompanyProfileCardStyle.pocEmail}>
                 <span>POC Email:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>
                   {clientDetail?.POCEmailID ? clientDetail?.POCEmailID : "NA"}
                 </span>
-              </div>
+              </div> */}
               <div className={CompanyProfileCardStyle.salesPerson}>
                 <span>Sales Person:</span>&nbsp;&nbsp;
                 <span style={{ fontWeight: "500" }}>

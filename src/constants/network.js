@@ -2,18 +2,27 @@ export class NetworkInfo {
 	static PROTOCOL = 'http://';
 	// static domain = 'localhost:5162/';
 	static DOMAIN = '3.218.6.134:9082/';
+	// static domain = 'https://clientportal.uplers.com/gspace/';
+	static domain = 'https://bb8d-3-218-6-134.ngrok-free.app/';
 	static FILEDOMAIN = '3.218.6.134:90/';
 	// static PROTOCOL = 'https://';
 	// static DOMAIN = '809c77bfbe78ce2d4010a080a425ea2b.loophole.site/';
 	static NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN;
+	static network =  NetworkInfo.domain;
 	static FILENETWORK = NetworkInfo.PROTOCOL + NetworkInfo.FILEDOMAIN;
 	static ENV = "QA";
 }
+
+export class GSpaceEmails{
+static EMAILS = "mehul@uplers.com,vishwa.p@uplers.in,jimit.soni@uplers.in";
+}
+
 export class SubDomain {
 	static USER_OPERATIONS = 'UserOperationsAPI/';
 	static VIEW_ALL_HR = 'ViewAllHR/';
 	static MASTERS = 'MastersAPI/';
 	static CLIENT = 'Client/';
+	static COMPANY = 'Company/'
 	static CLIENT_REPORT = 'ClientReport/';
 	static HR_REPORT = 'HRReport/';
 	static HIRING = 'Hiring/';
@@ -36,6 +45,8 @@ export class SubDomain {
 	static HUB_SPOT = 'Hubspot/';
 	static CLIENT_BASED_REPORT_WITHHUB_SPOT  = 'ClientBasedReportWithHubSpot/'	
 	static DIRECT_HR = 'DirectHR/'
+	static SPACE = "space"
+	static MEMBER = "member"
 }
 export class APIType {
 	static USER = '/user';
@@ -44,6 +55,16 @@ export class APIType {
 export class DirectHR {
 	static GET_MASTER_FOR_DIRECTHR = 'GetMastersForDirectHR'
 	static GET_HR_DETAILS =  'GetDetail'
+}
+
+export class CompanysAPI {
+	static GET_DETAILS = 'GetDetails';
+	static UPLOAD_IMAGE = 'UploadImage';
+	static DELETE_YOUTUBE_DETAILS = 'DeleteYouTubeDetails';
+	static DELETE_CULTURE_IMAGE = 'DeleteCultureImage'
+	static UPDATE_COMPANY_DETAILS = 'UpdateDetails'
+	static VALIDATE_COMPANY_CLIENT = 'ValidateCompanyClient'
+	static DELETE_FUNDING = "DeleteFundingDetails"
 }
 export class MethodType {
 	static GET = '/get';
@@ -74,7 +95,9 @@ export class ReportType {
 	static SUPPLY_FUNNEL = 'SupplyFunnel/';
 	static TEAM_DEMAND_FUNNEL = 'TeamDemandFunnel/';
 	static JD_PARSING_DUMP = 'JDParsingDump/';
-	static HR_LOST_REPORT = 'HRLostReport/'
+	static HR_LOST_REPORT = 'HRLostReport/';
+	static REPLACEMENT_REPORT = 'ReplacementReport';
+	static TALENT_BACKOUT_REPORT = 'TalentBackoutReport';
 }
 export class ReportsAPI {
 	static LISTING = 'Listing';
@@ -217,6 +240,12 @@ export class ClientsAPI {
 	static GET_CREDIT_TRANSACTION_HISTORY = "GetCreditTransactionHistory";
 	static RESEND_INVITE_EMAIL = "ResendInviteEmail";
 	static GET_ACTIVE_SALES_USERLIST= "GetActiveSalesUserList";
+	static GET_SALES_USER_WITH_HEAD  = "GetSalesUserWithHead";
+	static UPDATE_SPACE_ID_FOR_CLIENT = "UpdateSpaceIDForClient";
+	static GET_SPACEID_FOR_CLIENTEMAIL= "GetSpaceIdForClientEmail";
+	static LIST_CREDIT_UTILIZATION = 'ListCreditUtilization'
+	static RESET_DEMO_TALENT_STATUS = 'ResetAllDemoHRTalentStatus'
+	static SYNC_COMPANY_PROFILE = "SyncCompanyProfile";
 }
 
 export class HiringRequestsAPI {
@@ -274,7 +303,11 @@ export class HiringRequestsAPI {
 	// static GET_CHANNEL_LIBRARY = 'GetChannelLibrary';
 	static GET_lOGIN_HR_INFO = 'GetLoginHrInfo';
 	static SYNC_HR_UTS_TO_ATS  = 'SyncHRUtsToAts'
+	static GET_ACTION_UPDATES = 'GetUpdateHRDetails'
 	static CLOSE_ACTION_History = 'GetHRCloseActionHistory'
+	static DELETE_TEST_HR = 'DeleteTestHR'
+	static GET_SALES_USER_WITH_HEAD_AFTER_HRCREATE = "GetSalesUserWithHeadAfterHRCreate";
+	static CLONE_HR_DEMO_ACCOUNT = "CloneHRDemoAccount";
 }
 
 export class UsersAPI {

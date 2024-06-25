@@ -19,6 +19,7 @@ import { ReactComponent as FocusRole } from 'assets/svg/FocusRole.svg';
 import plusSkill from '../../../../assets/svg/plusSkill.svg';
 import PublishHRPopup from '../publishHRPopup/publishHRPopup';
 import DebrefCompanyDetails from './debrefCompanyDetails';
+import ReactQuill from 'react-quill';
 
 export const secondaryInterviewer = {
 	fullName: '',
@@ -38,7 +39,8 @@ const EditDebriefingHR = ({
 	jdDumpID,
 	getHRdetails,
 	isDirectHR,
-	disabledFields
+	disabledFields,
+	originalDetails , setOriginalDetails 
 }) => {
 	const {
 		watch,
@@ -78,10 +80,11 @@ const EditDebriefingHR = ({
 	const [isFocusedRole, setIsFocusedRole] = useState(false)
 	let watchOtherSkills = watch('otherSkill');
 	let watchSkills = watch('skills');
+	let goodToHaveSkill = watch('goodToHaveSkills');
+
 	const [talentRole, setTalentRole] = useState([]);
 	const [controlledRoleValue, setControlledRoleValue] = useState('Select Role');
 	const [companyType , setComapnyType] = useState({})
-
 	//to set skills and control
 	useEffect(()=>{
 		setControlledJDParsed(getHRdetails?.skillmulticheckbox?.map((item) => ({id:item?.id, value:item?.text})))
@@ -98,7 +101,7 @@ const EditDebriefingHR = ({
 		let company_Type = getHRdetails?.companyTypes?.filter(item => item.isActive === true);
 		if(company_Type?.length > 0){
 			setComapnyType(company_Type[0])
-		 }
+		}
 	},[getHRdetails]);
 	/* const combinedSkillsMemo = useMemo(
 		() => [
@@ -118,8 +121,9 @@ const EditDebriefingHR = ({
 	const [sameSkillErrors, setSameSkillError] = useState(false)
 	const [showPublishModal, setShowPublishModal] = useState(false)
 	useEffect(()=>{
+		let JDPARSKILL = JDParsedSkills ? [...JDParsedSkills?.Skills] : [];
 		const combinedData = [
-			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
+			...JDPARSKILL,
 			...skills,
 			...[
 				{
@@ -129,12 +133,12 @@ const EditDebriefingHR = ({
 			],
 		];
 		const combinewithoutOther = [
-			JDParsedSkills ? [...JDParsedSkills?.Skills] : [],
+			...JDPARSKILL,
 			...skills,
 		];
 		// remove selected skill for other skill list 
-		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed.map(s=> s?.value).includes(o?.value)))
-		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave.map(s=> s?.value).includes(o?.value)))
+		setSkillMemo(combinewithoutOther?.filter((o) => !controlledJDParsed?.map(s=> s?.value).includes(o?.value)))
+		setCombinedSkillsMemo(combinedData?.filter((o) => !controlledGoodToHave?.map(s=> s?.value).includes(o?.value)))
 	},[JDParsedSkills, controlledJDParsed, skills,controlledGoodToHave])
 	// const combinedSkillsMemo = useMemo(() => {
 	// 	const combinedData = [
@@ -374,18 +378,26 @@ const EditDebriefingHR = ({
 		// 		shouldDirty: true,
 		// 	});
 
-		JDParsedSkills &&	setValue('jobDescription', getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
+		JDParsedSkills &&	setValue('jobDescription', (getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
 			JDParsedSkills?.jobDescription ||
-			(getHRdetails?.salesHiringRequest_Details?.jobDescription) , {
+			(getHRdetails?.salesHiringRequest_Details?.jobDescription)) ?? '' , {
 					shouldDirty: true,
 				});
-		
 	}, [JDParsedSkills, setValue]);
 
 	const openPublishModal = ()=>{
 		setShowPublishModal(true)
 	}
-
+const checkValChnage = () => {
+		// Convert both arrays to JSON strings
+		const arr1Str = JSON.stringify(controlledGoodToHave);
+		const arr2Str = JSON.stringify(getHRdetails?.allSkillmulticheckbox?.map((item) => ({id:item?.id, value:item?.text})));
+	  console.log(arr1Str, "arr1Str")
+	  console.log(arr2Str, "arr2Str")
+		console.log(arr1Str === arr2Str)
+		// Compare the JSON strings
+		return (arr1Str === arr2Str ? false : true);
+}
 	const debriefSubmitHandler = useCallback(
 		async (d) => {
 			setIsLoading(true);
@@ -416,10 +428,10 @@ const EditDebriefingHR = ({
 						message: 'Same skills are not allowed',
 					});
 					setSameSkillError(true)
+					setShowPublishModal(false)
 					sameSkillIssue = true
 				}
 			})
-
 			let debriefFormDetails = {
 				// roleAndResponsibilites:  d.roleAndResponsibilities,
 				// requirements:  d.requirements,
@@ -427,7 +439,7 @@ const EditDebriefingHR = ({
 				requirements: '',
 				JobDescription:d.jobDescription,
 				en_Id: enID,
-				skills: skillList?.filter((item) => item?.skillsID !== -1),
+				skills: skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString(),//must have
 				aboutCompanyDesc: d.aboutCompany,
 				// secondaryInterviewer: d.secondaryInterviewer,
 				interviewerFullName: d.interviewerFullName,
@@ -440,7 +452,7 @@ const EditDebriefingHR = ({
 				allowSpecialEdit: getHRdetails?.allowSpecialEdit,
 				role: d?.role?.id,
 				hrTitle: d.hrTitle,
-				allSkills:goodToSkillList,
+				allSkills:goodToSkillList.map(item=> item.skillsName).toString(), // good to have
 				"interviewerDetails":{
 					"primaryInterviewer": {
 						"interviewerId": d.interviewerId,
@@ -463,9 +475,11 @@ const EditDebriefingHR = ({
 					"aboutCompanyDesc": d.aboutCompany
 				},
 				companyType: companyType?.name,
-				PayPerType:  companyType?.id 
+				PayPerType:  companyType?.id,
+				// --update-- 0 or 1 check
+				 IsMustHaveSkillschanged: originalDetails?.skillmulticheckbox?.map(i=> i.text).toString() === skillList?.filter((item) => item?.skillsID !== -1)?.map(item=> item.skillsName).toString() ? false :true,
+				 IsGoodToHaveSkillschanged:originalDetails?.allSkillmulticheckbox?.map(i=> i.text).toString() === goodToSkillList.map(item=> item.skillsName).toString() ? false: true,
 			};
-
 			if(companyType?.id === 2){
 				debriefFormDetails['companyInfo'] = {
 					"companyID": getHRdetails?.companyInfo?.companyID,
@@ -480,7 +494,6 @@ const EditDebriefingHR = ({
 				debriefFormDetails['interviewerDetails'] = getHRdetails?.interviewerDetails
 			}
 
-			
 			if(!sameSkillIssue){
 				setInterval(()=>setIsLoading(false),58000)
 				const debriefResult = await hiringRequestDAO.createDebriefingDAO(
@@ -502,7 +515,7 @@ const EditDebriefingHR = ({
 			}
 			
 		},
-		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI,isFocusedRole,companyType],
+		[enID, getHRdetails?.addHiringRequest?.jddumpId, messageAPI,isFocusedRole,companyType,watchSkills,goodToHaveSkill],
 	);
 
 	const needMoreInforSubmitHandler = useCallback(
@@ -587,10 +600,10 @@ const EditDebriefingHR = ({
 		// 			(getHRdetails?.salesHiringRequest_Details
 		// 				?.rolesResponsibilities ),
 		// 	);
-			setValue('jobDescription', getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details
+			setValue('jobDescription', (getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details
 				?.jobDescription)? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details
 				?.jobDescription)) : getHRdetails?.salesHiringRequest_Details
-				?.jobDescription :getHRdetails?.salesHiringRequest_Details?.jobDescription, {
+				?.jobDescription :getHRdetails?.salesHiringRequest_Details?.jobDescription)?? '', {
 				shouldDirty: true,
 			});
 		setIsFocusedRole(getHRdetails?.salesHiringRequest_Details?.isHrfocused)
@@ -639,9 +652,9 @@ const EditDebriefingHR = ({
 	return (
 		<>
 			{contextHolder}
-			<WithLoader
+			 <WithLoader
 				showLoader={isLoading}
-				className="mainLoader">
+				className="mainLoader"> 
 				<div className={DebriefingHRStyle.debriefingHRContainer}>
 					<div className={DebriefingHRStyle.partOne}>
 						<div className={DebriefingHRStyle.hrFieldLeftPane}>
@@ -695,12 +708,12 @@ const EditDebriefingHR = ({
 									required
 								/> */}
 
-							<TextEditor
+							{/* <TextEditor
 								isControlled={true}
 								// controlledValue={JDParsedSkills?.Requirements || ''}
-								controlledValue={getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
+								controlledValue={(getHRdetails?.addHiringRequest?.guid ? testJSON(getHRdetails?.salesHiringRequest_Details?.jobDescription) ? createListMarkup(JSON.parse(getHRdetails?.salesHiringRequest_Details?.jobDescription)) :getHRdetails?.salesHiringRequest_Details?.jobDescription :
 									JDParsedSkills?.jobDescription ||
-									(getHRdetails?.salesHiringRequest_Details?.jobDescription)
+									(getHRdetails?.salesHiringRequest_Details?.jobDescription)) ?? ''
 								}
 								label={'Job Description'}
 								placeholder={'Enter Job Description'}
@@ -710,9 +723,29 @@ const EditDebriefingHR = ({
 								errors={errors}
 								name="jobDescription"
 								required
+							/> */}
+							<label style={{ marginBottom: "12px" }}>
+								Job Description
+								{/* <span className={AddNewClientStyle.reqField}>*</span> */}
+							</label>
+							<ReactQuill
+								register={register}
+								setValue={setValue}
+								theme="snow"
+								className="heightSize"
+								value={watch("jobDescription")}
+								name="jobDescription"
+								onChange={(val) => setValue("jobDescription",val)}
 							/>
-
-							{companyType?.id === 1 && 
+							<input
+								type="hidden"
+								{...register('jobDescription', {
+								required: 'Job description is required',
+								validate: (value) => value.trim() !== '' || 'Job description cannot be empty'
+								})}
+							/>
+							{/* Hide company details */}
+							{/* {companyType?.id === 1 && 
 								<TextEditor
 									isControlled={true}
 									controlledValue={getHRdetails?.addHiringRequest?.aboutCompanyDesc ? getHRdetails?.addHiringRequest?.aboutCompanyDesc : getHRdetails?.companyInfo?.aboutCompanyDesc}
@@ -724,7 +757,7 @@ const EditDebriefingHR = ({
 									errors={errors}
 									name="aboutCompany"
 									required
-								/>}
+								/>} */}
 									{/* <div className={DebriefingHRStyle.aboutCompanyField}> 
 									<HRInputField
 										required
@@ -925,8 +958,8 @@ const EditDebriefingHR = ({
 							</div>
 						</div>
 					</div>
-
-					{companyType?.id === 2 &&  <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
+					{/* Hide Interviewer and Company details */}
+					{/* {companyType?.id === 2 &&  <DebrefCompanyDetails register={register}  errors={errors} watch={watch} getHRdetails={getHRdetails} setValue={setValue} />}
 
 					
 					{companyType?.id === 1 && <>
@@ -941,7 +974,7 @@ const EditDebriefingHR = ({
 						fields={fields}
 						getHRdetails={getHRdetails}
 						disabledFields={disabledFields}
-					/></>}
+					/></>} */}
 
 					
 					<Divider />

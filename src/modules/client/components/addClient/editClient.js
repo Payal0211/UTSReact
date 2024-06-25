@@ -12,6 +12,7 @@ import { secondaryClient } from '../clientField/clientField';
 import AddClientStyle from './addClient.module.css';
 import ConfirmationModal from './confirmationResendEmailModal';
 import { Checkbox ,message} from 'antd'
+import SpinLoader from 'shared/components/spinLoader/spinLoader';
 const EditClient = ({
 	setError,
 	watch,
@@ -200,6 +201,7 @@ const EditClient = ({
 						)}
 					</div>
 				</div>
+				
 				<div className={AddClientStyle.tabsRightPanel}>
 					{clientDetailCheckList.length > 0 && <div className={AddClientStyle.row} style={{marginBottom:'15px'}}>
 					<div className={AddClientStyle.colMd12}>
@@ -234,68 +236,68 @@ const EditClient = ({
 						</div>
 						</div>}
 					<div className={AddClientStyle.row}>
-                    <div className={AddClientStyle.colMd12}>
-              <div
-                style={{
-                  width: "145px",
-                  height: "145px",
-                  marginBottom: "20px",
-                }}
-              >
-                <div
-                  style={{
-                    width: "145px",
-                    height: "145px",
-                    backgroundColor: "#EBEBEB",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  {!getUploadFileData ? (
-                    <p>Upload Profile</p>
-                  ) : (
-                    <img
-                      style={{
-                        width: "145px",
-                        height: "145px",
-                        borderRadius: "50%",
-                      }}
-                      src={
-                        base64Image
-                          ? base64Image
-                          : NetworkInfo.PROTOCOL +
-                            NetworkInfo.DOMAIN +
-                            "Media/ClientProfilePic/" +
-                            getUploadFileData
-                      }
-                      alt="preview"
-                    />
-                  )}
-                </div>
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <div style={{background:'var(--color-sunlight)',marginTop:'-25px',marginRight:'11px',display:'flex',padding:'2px',borderRadius:'50%',cursor:'pointer'}}>
-                       <EditSVG                
-                    width={24}
-                    height={24}
-                    onClick={() => setUploadModal(true)}
-                  /> 
-                    </div>
-                </div>
-              </div>
-              {showUploadModal && (
-              <UploadModal
-                isFooter={false}
-                uploadFileHandler={uploadFileHandler}
-                modalTitle={"Upload Profile"}
-                openModal={showUploadModal}
-                cancelModal={() => setUploadModal(false)}
-                setValidation={setValidation}
-                getValidation={getValidation}
-              />
-            )}
-            </div>
+                    {/* <div className={AddClientStyle.colMd12}>
+						<div
+							style={{
+							width: "145px",
+							height: "145px",
+							marginBottom: "20px",
+							}}
+						>
+							<div
+							style={{
+								width: "145px",
+								height: "145px",
+								backgroundColor: "#EBEBEB",
+								borderRadius: "50%",
+								display: "flex",
+								alignItems: "center",
+								textAlign: "center",
+							}}
+							>
+							{!getUploadFileData ? (
+								<p>Upload Profile</p>
+							) : (
+								<img
+								style={{
+									width: "145px",
+									height: "145px",
+									borderRadius: "50%",
+								}}
+								src={
+									base64Image
+									? base64Image
+									: NetworkInfo.PROTOCOL +
+										NetworkInfo.DOMAIN +
+										"Media/ClientProfilePic/" +
+										getUploadFileData
+								}
+								alt="preview"
+								/>
+							)}
+							</div>
+							<div style={{ display: "flex", justifyContent: "flex-end" }}>
+							<div style={{background:'var(--color-sunlight)',marginTop:'-25px',marginRight:'11px',display:'flex',padding:'2px',borderRadius:'50%',cursor:'pointer'}}>
+								<EditSVG                
+								width={24}
+								height={24}
+								onClick={() => setUploadModal(true)}
+							/> 
+								</div>
+							</div>
+						</div>
+						{showUploadModal && (
+						<UploadModal
+							isFooter={false}
+							uploadFileHandler={uploadFileHandler}
+							modalTitle={"Upload Profile"}
+							openModal={showUploadModal}
+							cancelModal={() => setUploadModal(false)}
+							setValidation={setValidation}
+							getValidation={getValidation}
+						/>
+						)}
+					</div> */}
 						<div className={AddClientStyle.colMd6}>
 							<HRInputField
 								register={register}
@@ -303,7 +305,7 @@ const EditClient = ({
 								validationSchema={{
 									required: 'please enter the primary client name',
 								}}
-								label="HS Client Full Name (Primary)"
+								label="Client Full Name (Primary)"
 								name={'primaryClientName'}
 								type={InputType.TEXT}
 								placeholder="Enter full name "
@@ -326,7 +328,7 @@ const EditClient = ({
 										message: 'Entered value does not match email format',
 									},
 								}}
-								label="HS Client Email ID (Primary)"
+								label="Client Email ID (Primary)"
 								name={'primaryClientEmailID'}
 								type={InputType.EMAIL}
 								placeholder="Enter Email ID "
@@ -405,7 +407,7 @@ const EditClient = ({
 											}											
 									}
 								}}
-								label="HS Client Linkedin Profile (Primary)"
+								label="Client Linkedin Profile (Primary)"
 								name={'PrimaryClientLinkedinProfile'}
 								type={InputType.TEXT}
 								placeholder="Add Linkedin profile link"
@@ -464,7 +466,7 @@ const EditClient = ({
 										validationSchema={{
 											required: true,
 										}}
-										label="HS Client Full Name (Secondary)"
+										label="Client Full Name (Secondary)"
 										name={`secondaryClient.[${index}].fullName`}
 										type={InputType.TEXT}
 										placeholder="Enter full name"
@@ -484,7 +486,7 @@ const EditClient = ({
 												message: 'please enter a valid email.',
 											},
 										}}
-										label="HS ClientEmail ID (Secondary)"
+										label="ClientEmail ID (Secondary)"
 										name={`secondaryClient.[${index}].emailID`}
 										type={InputType.EMAIL}
 										isError={!!errors?.secondaryClient?.[index]?.emailID}
@@ -553,7 +555,7 @@ const EditClient = ({
 													}											
 											}
 										}}
-										label="HS Client Linkedin Profile (Secondary)"
+										label="Client Linkedin Profile (Secondary)"
 										name={`secondaryClient.[${index}].linkedinProfile`}
 										type={InputType.TEXT}
 										isError={!!errors?.secondaryClient?.[index]?.linkedinProfile}
@@ -584,7 +586,10 @@ const EditClient = ({
 		<ConfirmationModal
 		setConfirmationModal={setConfirmationModal}
 		showConfirmationModal={showConfirmationModal}
-		clientID={clientID}/>
+		clientID={clientID}
+		setIsLoading={setIsLoading}
+		isLoading={isLoading}
+		/>
 		</div>
 	);
 };

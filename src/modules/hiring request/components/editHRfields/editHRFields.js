@@ -29,7 +29,7 @@ import { useForm, Controller } from "react-hook-form";
 import { HTTPStatusCode } from "constants/network";
 import { _isNull, getPayload } from "shared/utils/basic_utils";
 import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { hrUtils } from "modules/hiring request/hrUtils";
 import { MasterDAO } from "core/master/masterDAO";
 import useDrivePicker from "react-google-drive-picker/dist";
@@ -40,6 +40,8 @@ import LogoLoader from "shared/components/loader/logoLoader";
 import { NetworkInfo } from "constants/network";
 import { HttpStatusCode } from "axios";
 import infoIcon from 'assets/svg/info.svg'
+import DOMPurify from "dompurify";
+import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 
 export const secondaryInterviewer = {
   fullName: "",
@@ -66,9 +68,12 @@ const EditHRFields = ({
   setDisabledFields,
 	isBDRMDRUser,
 	isDirectHR,
+  originalDetails,
+  setOriginalDetails 
 }) => {
   const inputRef = useRef(null);
   const [userData, setUserData] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUserResult = async () => {
@@ -104,6 +109,9 @@ const EditHRFields = ({
   const [getClientNameMessage, setClientNameMessage] = useState("");
   const [disableButton, setDisableButton] = useState(true);
   const [currency, setCurrency] = useState([]);
+  const [isFreshersAllowed,setIsFreshersAllowed] = useState(false)
+  const [isExpDisabled , setIsExpDisabled ] = useState(false)
+  const [isFresherDisabled,setIsFresherDisabled] = useState(false)
 
   const [getValidation, setValidation] = useState({
     systemFileUpload: "",
@@ -173,6 +181,8 @@ const EditHRFields = ({
   const [isProfileView,setIsProfileView] = useState(false)
   const [isPostaJob,setIsPostaJob] = useState(false)
   const [creditBaseCheckBoxError,setCreditBaseCheckBoxError] = useState(false)
+  const [isPreviewModal,setIsPreviewModal] = useState(false);
+  const [getcompanyID,setcompanyID] = useState("");
   const [tempProjects, setTempProject] = useState([
     {
       disabled: false,
@@ -191,6 +201,10 @@ const EditHRFields = ({
   ]);
 
   const [timeZoneList,setTimezoneList] = useState([]);
+  const [clientDetails , setClientDetails] = useState({});
+
+  // const isGUID = getHRdetails?.addHiringRequest?.guid 
+  
 
   let controllerRef = useRef(null);
   const {
@@ -211,12 +225,13 @@ const EditHRFields = ({
       autocompleteField: "abc",
     },
   });
-
+const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? 'DPHR' : ''  // for check if DP is selected 
   //CLONE HR functionality
   const getHRdetailsHandler = async (hrId) => {
     const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId);
     if (response.statusCode === HTTPStatusCode.OK) {
       setHRdetails(response?.responseBody?.details);
+      setOriginalDetails(response?.responseBody?.details) 
       if (!response?.responseBody?.details?.addHiringRequest?.isActive) {
         setTabFieldDisabled({ ...tabFieldDisabled, debriefingHR: true });
       } else {
@@ -643,8 +658,16 @@ const EditHRFields = ({
     setHRDirectPlacement(e.target.checked);
   }, []);
 
-  const getClientNameValue = (clientName) => {
+  const getClientNameValue = (clientName,clientData) => {
     setValue("clientName", clientName);
+    setClientDetails(clientData)
+
+    setIsVettedProfile(clientData?.isVettedProfile)
+    setIsPostaJob(clientData?.isPostaJob)
+    setIsProfileView(clientData?.isProfileView)
+    setIsVettedProfile(clientData?.isVettedProfile)
+    document.activeElement.blur();
+
     setError("clientName", {
       type: "validate",
       message: "",
@@ -866,14 +889,26 @@ const EditHRFields = ({
 
     if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
       unregister("tempProject")
-      unregister('contractDuration')
+      watch('payrollType')?.id !== 4 && unregister('contractDuration')
+      if(watch('payrollType')?.id === 4){
+        register('contractDuration',{
+          required: true
+        })    
+      }
     }
 
     if((watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 5 )){
       unregister('payrollType')
       unregister("tempProject")
-      unregister('contractDuration')
+      watch('hiringPricingType')?.id !== 2 &&  unregister('contractDuration')
     }
+
+    // re register full time
+    if(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8){
+      register('contractDuration',{
+        required: true
+      })
+    }  
   },[watch('hiringPricingType'),hrPricingTypes])
 
   useEffect(() => {
@@ -1018,7 +1053,7 @@ const EditHRFields = ({
         d,
         type,
         watch,
-        getHRdetails?.addHiringRequest?.contactId,
+        clientDetails.contactId ? clientDetails.contactId  : getHRdetails?.addHiringRequest?.contactId,
         isHRDirectPlacement,
         addHRResponse,
         getUploadFileData && getUploadFileData,
@@ -1027,6 +1062,8 @@ const EditHRFields = ({
       );
       hrFormDetails.isDirectHR = isDirectHR
       hrFormDetails.IsConfidentialBudget = isBudgetConfidential
+      hrFormDetails.IsFresherAllowed = isFreshersAllowed
+
       if(isDirectHR === true && isBDRMDRUser === true){
         hrFormDetails.directPlacement.address = ''
         hrFormDetails.directPlacement.postalCode = ''
@@ -1099,12 +1136,14 @@ const EditHRFields = ({
         setType(SubmitType.SUBMIT);
       }
       setInterval(()=>setIsSavedLoading(false),58000)
+
       const addHRRequest = await hiringRequestDAO.createHRDAO(hrFormDetails);
       
       if (addHRRequest?.statusCode === HTTPStatusCode.OK) {
         setIsSavedLoading(false);
         window.scrollTo(0, 0);
         setAddHRResponse(getHRdetails?.en_Id);
+        setHRdetails(prev=> ({...prev,companyInfo: addHRRequest?.responseBody?.details?.companyInfo}))
         type !== SubmitType.SAVE_AS_DRAFT &&
           setTitle(`Debriefing ${getHRdetails?.addHiringRequest?.hrNumber}`);
         // type !== SubmitType.SAVE_AS_DRAFT &&
@@ -1123,6 +1162,7 @@ const EditHRFields = ({
     [
       watch,
       getHRdetails?.addHiringRequest?.contactId,
+      clientDetails.contactId,
       getHRdetails?.en_Id,
       isHRDirectPlacement,
       addHRResponse,
@@ -1138,7 +1178,8 @@ const EditHRFields = ({
       isBudgetConfidential,
       isVettedProfile,
       isPostaJob,
-      isProfileView
+      isProfileView,
+      isFreshersAllowed
     ]
   );
   useEffect(() => {
@@ -1188,6 +1229,14 @@ const EditHRFields = ({
     );
     setValue("months", getHRdetails?.salesHiringRequest_Details?.specificMonth);
     setValue("years", getHRdetails?.salesHiringRequest_Details?.yearOfExp);
+    setIsFreshersAllowed(getHRdetails?.salesHiringRequest_Details?.isFresherAllowed)
+    if(getHRdetails?.salesHiringRequest_Details?.yearOfExp === 0){         
+      setIsExpDisabled(true) 
+      setIsFresherDisabled(false)
+    }else{
+      setIsExpDisabled(false) 
+      setIsFresherDisabled(true)
+    }
     setValue("talentsNumber", getHRdetails?.addHiringRequest?.noofTalents);
     setValue("dealID", getHRdetails?.addHiringRequest?.dealId);
     setValue("bqFormLink", getHRdetails?.addHiringRequest?.bqlink);
@@ -1301,7 +1350,7 @@ const EditHRFields = ({
         let dpPercentage = watch('NRMargin')
      
         
-        if(getHRdetails?.addHiringRequest?.guid){
+        if(isGUID){
           let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
           let needToPay = watch('adhocBudgetCost') - cal
           setValue('uplersFees',cal ? cal : 0)
@@ -1314,7 +1363,7 @@ const EditHRFields = ({
         }
        
       }else{
-        if(getHRdetails?.addHiringRequest?.guid){
+        if(isGUID){
           let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
           let needToPay = +watch('adhocBudgetCost') + cal
       setValue('uplersFees',cal ? cal : 0)
@@ -1332,7 +1381,7 @@ const EditHRFields = ({
     if(watch('budget')?.value === '2'){
       if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
         // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
-        if(getHRdetails?.addHiringRequest?.guid){
+        if(isGUID){
             let dpPercentage = watch('NRMargin')
             let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
             let calMax = (dpPercentage * watch('maximumBudget') *12) /100           
@@ -1350,7 +1399,7 @@ const EditHRFields = ({
         }
        
       }else{
-        if(getHRdetails?.addHiringRequest?.guid){
+        if(isGUID){
             let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
             let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
             let minCal = +watch('minimumBudget') + +calMin
@@ -1621,7 +1670,7 @@ const EditHRFields = ({
     _getHrValues.addHiringRequest.isTransparentPricing = (typeOfPricing === 1 ? true : false)
     _getHrValues.hdnModeOfWork = watch('workingMode')?.value ?? getHRdetails.hdnModeOfWork
     _getHrValues.contractDuration = watch('contractDuration')?.value ?? getHRdetails.contractDuration
-    _getHrValues.addHiringRequest.partialEngagementTypeId = watch("partialEngagement").id ?? getHRdetails?.addHiringRequest?.partialEngagementTypeId
+    _getHrValues.addHiringRequest.partialEngagementTypeId = watch("partialEngagement")?.id ?? getHRdetails?.addHiringRequest?.partialEngagementTypeId
     _getHrValues.salesHiringRequest_Details.adhocBudgetCost = watch("adhocBudgetCost")?? getHRdetails?.salesHiringRequest_Details?.adhocBudgetCost
     _getHrValues.salesHiringRequest_Details.budgetFrom = watch("minimumBudget") ?? getHRdetails?.salesHiringRequest_Details?.budgetFrom;
     _getHrValues.salesHiringRequest_Details.budgetTo = watch("maximumBudget")??  getHRdetails?.salesHiringRequest_Details?.budgetTo;
@@ -1663,7 +1712,11 @@ const EditHRFields = ({
     }  
     ///////// 
 
-    if(gptFileDetails.Skills.length > 0){_getHrValues.chatGptSkills = gptFileDetails.Skills.map(item=> item.value).join(',');}  
+    if(gptFileDetails.Skills.length > 0){
+      // _getHrValues.chatGptSkills = gptFileDetails.Skills.map(item=> item.value).join(',');
+      _getHrValues.skillmulticheckbox = gptFileDetails.Skills?.map(item=> ({...item,text:item.value}))
+      _getHrValues.allSkillmulticheckbox = []
+    }  
 
       setHRdetails(_getHrValues);
     } else {
@@ -1690,10 +1743,13 @@ const EditHRFields = ({
       _getHrValues.addHiringRequest.guid = gptDetails?.addHiringRequest?.guid;
       _getHrValues.addHiringRequest.jdurl = jdURLLink;
       _getHrValues.addHiringRequest.jdfilename = "";
-      _getHrValues.salesHiringRequest_Details.budgetFrom =
+      if(gptDetails?.salesHiringRequest_Details?.budgetFrom > 0){
+        _getHrValues.salesHiringRequest_Details.budgetFrom =
         gptDetails?.salesHiringRequest_Details?.budgetFrom > 0
           ? gptDetails?.salesHiringRequest_Details?.budgetFrom
           : watch("minimumBudget");
+      }
+      
       _getHrValues.salesHiringRequest_Details.budgetTo =
         gptDetails?.salesHiringRequest_Details?.budgetTo > 0
           ? gptDetails?.salesHiringRequest_Details?.budgetTo
@@ -1747,21 +1803,30 @@ const EditHRFields = ({
       //   setValue("availability", gptDetails?.addHiringRequest?.availability);
         if(gptDetails?.addHiringRequest?.availability){
           let findAvailability = availability.filter(item=> item.value === gptDetails?.addHiringRequest?.availability)
-          setValue("availability", findAvailability[0]);
+          if(findAvailability[0].value){
+              setValue("availability", findAvailability[0]);
           setControlledAvailabilityValue(findAvailability[0].value)
+          }        
         }
-      gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 &&
+      if(gptDetails?.salesHiringRequest_Details?.budgetFrom > 0 ){
         setValue(
           "minimumBudget",
           gptDetails?.salesHiringRequest_Details?.budgetFrom
         );
+        resetField("adhocBudgetCost")
+        setValue("budget", {id: '', value: '2'});
+        setControlledBudgetValue('2')
+      }
+        
       gptDetails?.salesHiringRequest_Details?.budgetTo > 0 &&
         setValue(
           "maximumBudget",
           gptDetails?.salesHiringRequest_Details?.budgetTo
         );
-      gptDetails?.salesHiringRequest_Details?.yearOfExp &&
+      if(gptDetails?.salesHiringRequest_Details?.yearOfExp){
         setValue("years", gptDetails?.salesHiringRequest_Details?.yearOfExp);
+      } 
+        
       gptDetails?.salesHiringRequest_Details?.specificMonth &&
         setValue(
           "months",
@@ -1796,9 +1861,7 @@ const EditHRFields = ({
         setValue(
           "endTime",{id: "", value: gptDetails?.salesHiringRequest_Details?.timeZoneEndTime}  
         );
-      resetField("adhocBudgetCost")
-      setValue("budget", {id: '', value: '2'});
-      setControlledBudgetValue('2')
+
 
       setGPTDetails({});
       setShowGPTModal(false);
@@ -1900,8 +1963,16 @@ const EditHRFields = ({
     }
   },[companyType?.id])
 
-
-  return (
+  const sanitizedDescription = (JobDescription) => {
+    return DOMPurify.sanitize(JobDescription, {
+        // ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li', 'a'],
+        ALLOWED_ATTR: {
+            // '*': ['class'], // Allow class attribute for custom styling
+            'a': ['href', 'target'] // Allow href and target for links
+        }
+    })
+  };
+  return (<>
     <div className={HRFieldStyle.hrFieldContainer}>
       {contextHolder}
       {getHRdetails?.salesHiringRequest_Details ? (
@@ -1911,6 +1982,9 @@ const EditHRFields = ({
               <h3>Hiring Request Details</h3>
               <p>Please provide the necessary details</p>
               <p className={HRFieldStyle.teansactionMessage}>{companyType?.name &&`HR is "${companyType?.name}"`}</p>
+              <div className={HRFieldStyle.formPanelAction} style={{padding:"0 0 20px",justifyContent:"flex-start"}}>
+              <button className={HRFieldStyle.btnPrimary} onClick={()=>{setIsPreviewModal(true); setcompanyID(getHRdetails?.companyInfo?.companyID)}}>View / Edit Company Details</button>
+              </div>
               <LogoLoader visible={isSavedLoading} />
             </div>
 
@@ -1925,8 +1999,8 @@ const EditHRFields = ({
                       render={({ ...props }) => (
                         <AutoComplete
                           options={getClientNameSuggestion}
-                          onSelect={(clientName) =>
-                            getClientNameValue(clientName)
+                          onSelect={(clientName,_obj) =>
+                            getClientNameValue(clientName,_obj)
                           }
                           filterOption={true}
                           onSearch={(searchValue) => {
@@ -2034,7 +2108,7 @@ const EditHRFields = ({
                           {creditBaseCheckBoxError && (!isPostaJob && !isProfileView) && <p className={HRFieldStyle.error}>Please select Option</p>}
                 </div> }
 
-                {companyType?.id === 2 && isProfileView  && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
+                {/* {companyType?.id === 2 && isProfileView  && <div className={HRFieldStyle.colMd12} style={{marginBottom: '32px'}}>
 <Radio.Group
                   onChange={e=> {setIsVettedProfile(e.target.value)}}
                   value={isVettedProfile}
@@ -2042,7 +2116,7 @@ const EditHRFields = ({
                   <Radio value={false}>Fast Profile</Radio>
                   <Radio value={true}>Vetted Profile</Radio>
                 </Radio.Group>
-</div> }
+</div> } */}
 
                 {companyType?.id === 1 &&   <div className={HRFieldStyle.colMd12}>
               <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
@@ -2222,9 +2296,9 @@ const EditHRFields = ({
                    controlledValue={controlledHiringPricingTypeValue}
                    setControlledValue={ val=> {setControlledHiringPricingTypeValue(val)
                     let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
-                    ;resetField('contractDuration');setContractDuration('')
+                    ;resetField('contractDuration');setContractDuration('');resetField('payrollType');setControlledPayrollTypeValue("Select payroll")
                     setValue('NRMargin',precentage)}}
-                   isControlled={true}
+                    isControlled={true}
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
@@ -2334,7 +2408,7 @@ const EditHRFields = ({
                       isError={
                         errors["contractDuration"] && errors["contractDuration"]
                       }
-                      required={!isHRDirectPlacement}
+                      required={(watch('hiringPricingType')?.id === 1 || watch('hiringPricingType')?.id === 2 || watch('hiringPricingType')?.id === 4 || watch('hiringPricingType')?.id === 5 || watch('hiringPricingType')?.id === 7 || watch('hiringPricingType')?.id === 8)?true:false}
                       errorMsg={
                         "Please select hiring request contract duration"
                       }
@@ -2350,7 +2424,13 @@ const EditHRFields = ({
                     <div className={HRFieldStyle.formGroup}>
                       <HRSelectField
                        controlledValue={controlledPayrollTypeValue}
-                       setControlledValue={setControlledPayrollTypeValue}
+                       setControlledValue={val=>{setControlledPayrollTypeValue(val);
+                        if(val== 'I will pay on contract via payment services'){
+                          register('contractDuration',{
+                            required: true
+                          })
+                        }
+                       }}
                        isControlled={true}
                         mode={"id/value"}
                         setValue={setValue}
@@ -2364,10 +2444,9 @@ const EditHRFields = ({
                         errorMsg={"Please select Payroll Type."}
                       />
                     </div>
-                  </div>            
-              </>}
+                  </div>    
 
-              {watch('payrollType')?.id === 4 &&  <div className={HRFieldStyle.colMd6}>
+                   {watch('payrollType')?.id === 4 &&  <div className={HRFieldStyle.colMd6}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRSelectField
                     key={'contract Duration for Payroll'}
@@ -2431,14 +2510,15 @@ const EditHRFields = ({
                       isError={
                         errors["contractDuration"] && errors["contractDuration"]
                       }
-                      required={!isHRDirectPlacement}
+                      required={watch('payrollType')?.id === 4 }
                       errorMsg={
                         "Please select hiring request contract duration"
                       }
                       // disabled={isHRDirectPlacement}
                     />
                   </div>
-                </div> }
+                </div> }        
+              </>}             
 
               {watch('payrollType')?.id === 3 && <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
@@ -2610,7 +2690,7 @@ const EditHRFields = ({
                       isControlled={true}
                       setValue={setValue}
                       register={register}
-                      label={`Add your ${getHRdetails?.addHiringRequest?.guid ? 'talent salary' :'client estimated '  }  budget (Monthly)`}
+                      label={`Add your ${isGUID ? 'talent salary' :'client estimated '  }  budget (Monthly)`}
                       // label={`Add your estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}budget (Monthly)`}
                       options={budgets.map((item) => ({
                         id: item.id,
@@ -2627,7 +2707,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={`${typeOfPricing === 1 || companyType?.id=== 2 ? getHRdetails?.addHiringRequest?.guid ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (Monthly)`}
+                    label={`${typeOfPricing === 1 || companyType?.id=== 2 ? isGUID ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (Monthly)`}
                     register={register}
                     name="adhocBudgetCost"
                     type={InputType.NUMBER}
@@ -2646,7 +2726,7 @@ const EditHRFields = ({
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={getHRdetails?.addHiringRequest?.guid ?  `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Minimum Budget (Monthly)`: `Client Estimated Minimum Budget (Monthly)`}
+                    label={isGUID ?  `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Minimum Budget (Monthly)`: `Client Estimated Minimum Budget (Monthly)`}
                     register={register}
                     name="minimumBudget"
                     type={InputType.NUMBER}
@@ -2666,7 +2746,7 @@ const EditHRFields = ({
 
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={getHRdetails?.addHiringRequest?.guid ?   `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Maximum Budget (Monthly)` : `Client Estimated Maximum Budget (Monthly)`}
+                    label={isGUID ?   `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Maximum Budget (Monthly)` : `Client Estimated Maximum Budget (Monthly)`}
                     register={register}
                     name="maximumBudget"
                     type={InputType.NUMBER}
@@ -2688,7 +2768,7 @@ const EditHRFields = ({
  {watch('budget')?.value !== "3" && <>
               <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees Amount ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }` : `Estimated Uplers Fees Amount ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }`}
+                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }` : `Estimated Uplers Fees ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }`}
                                 register={register}
                                 name="uplersFees"
                                 type={InputType.TEXT}
@@ -2697,7 +2777,7 @@ const EditHRFields = ({
                               />
                             </div>
 
-                            {!(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) &&    getHRdetails?.addHiringRequest?.guid &&        <div className={HRFieldStyle.colMd4}>
+                            {!(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) &&    isGUID &&        <div className={HRFieldStyle.colMd4}>
                               <HRInputField
                                 label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Estimated Client needs to pay ( Min - Max )" : "Estimated Client needs to pay"}
                                 register={register}
@@ -2708,9 +2788,9 @@ const EditHRFields = ({
                               />
                             </div>}
 
-                            {!getHRdetails?.addHiringRequest?.guid && <div className={HRFieldStyle.colMd4}>
+                            {!isGUID && <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={"Talent Estimated Pay (Monthly)"}
+                                label={"Estimated Salary Budget(Monthly)"}
                                 register={register}
                                 name="needToPay"
                                 type={InputType.TEXT}
@@ -3018,11 +3098,28 @@ const EditHRFields = ({
                       required
                       label="Required Experience"
                       errors={errors}
+                      onChangeHandler={(value) => {
+                        let val= value.target.value
+                        if(val === ''){
+                          setIsExpDisabled(false) 
+                          setIsFresherDisabled(false)
+                          return
+                        }
+                        if(val === '0'){
+                          setIsFreshersAllowed(true)
+                          setIsExpDisabled(true) 
+                          setIsFresherDisabled(false)
+                        }else{
+                          setIsFreshersAllowed(false)
+                          setIsExpDisabled(false) 
+                          setIsFresherDisabled(true)
+                        }
+                      }}
                       validationSchema={{
                         required: "please enter the years.",
                         min: {
-                          value: 1,
-                          message: `please don't enter the value less than 1`,
+                          value: isFreshersAllowed ? 0 : 1,
+                        message: `please don't enter the value less than ${isFreshersAllowed ? 0 : 1}`,
                         },
                         max: {
                           value: 60,
@@ -3033,6 +3130,7 @@ const EditHRFields = ({
                       name="years"
                       type={InputType.NUMBER}
                       placeholder="Enter years"
+                      disabled={isExpDisabled}
                     />
                     {/* <HRInputField
                                         register={register}
@@ -3080,6 +3178,22 @@ const EditHRFields = ({
                   />
                 </div>
               </div>   
+
+              <div className={HRFieldStyle.row}> 
+            <div className={HRFieldStyle.colMd6} style={{paddingBottom:'20px'}}>
+            <Checkbox checked={isFreshersAllowed} onClick={()=> {setIsFreshersAllowed(prev => {
+              if(prev === false){
+                setValue('years',0)
+                setIsExpDisabled(true)
+              }else{
+                setIsExpDisabled(false)
+              }
+              return !prev})}} disabled={isFresherDisabled}>
+             Freshers allowed
+						</Checkbox>	
+            </div>         
+            </div>
+
               {(watch("availability")?.value === "Part Time" && companyType.id === 1) && (
                 <div className={HRFieldStyle.row}>
                     <div className={HRFieldStyle.colMd6}>
@@ -3213,8 +3327,8 @@ const EditHRFields = ({
                       controlledValue={controlledFromTimeValue}
                       setControlledValue={val=> {setControlledFromTimeValue(val);
                         let index = getStartEndTimes.findIndex(item=> item.value === val)
-                        if(index >= getStartEndTimes.length -16){         
-                            let newInd =   index - (getStartEndTimes.length -16)
+                        if(index >= getStartEndTimes.length -18){         
+                            let newInd =   index - (getStartEndTimes.length -18)
                             let endtime = getStartEndTimes[newInd]
                             setControlledEndTimeValue(
                               endtime.value
@@ -3223,7 +3337,7 @@ const EditHRFields = ({
                               "endTime",{id: "", value: endtime.value}  
                             );
                         }else{
-                            let endtime = getStartEndTimes[index + 16]
+                            let endtime = getStartEndTimes[index + 18]
                             setControlledEndTimeValue(
                               endtime.value
                             );
@@ -3308,7 +3422,7 @@ const EditHRFields = ({
                     />
                   </div>
                 </div>
-                {companyType?.id=== 1 && <> 
+                {/* {companyType?.id=== 1 && <> 
                  {(removeFields !== null && removeFields?.dealID === true) ? null :   <div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     disabled={true}
@@ -3319,7 +3433,7 @@ const EditHRFields = ({
                     placeholder="Enter ID"
                   />
                 </div>}
-                </>}             
+                </>}              */}
               
               </div>
 
@@ -3335,7 +3449,7 @@ const EditHRFields = ({
                     name="bqFormLink"
                     type={InputType.TEXT}
                     placeholder="Enter the link for HR form"
-                    required={getHRdetails?.addHiringRequest?.guid === null}
+                    required={isGUID === null}
                   />
                 </div>}
                 
@@ -3350,7 +3464,7 @@ const EditHRFields = ({
                     name="discoveryCallLink"
                     type={InputType.TEXT}
                     placeholder="Enter the link for Discovery call"
-                    required={getHRdetails?.addHiringRequest?.guid === null}
+                    required={isGUID === null}
                   />
                 </div> }
                 
@@ -3544,7 +3658,7 @@ const EditHRFields = ({
                               gptDetails?.salesHiringRequest_Details
                                 ?.jobDescription
                             ).map((text) => (
-                              <li dangerouslySetInnerHTML={{ __html: text }} />
+                              <li dangerouslySetInnerHTML={{ __html: sanitizedDescription(text) }} />
                             ))}
                           </ul>
                         </div>
@@ -3552,9 +3666,7 @@ const EditHRFields = ({
                         <div
                           className={HRFieldStyle.viewHrJDDetailsBox}
                           dangerouslySetInnerHTML={{
-                            __html:
-                              gptDetails?.salesHiringRequest_Details
-                                ?.jobDescription,
+                            __html:sanitizedDescription(gptDetails?.salesHiringRequest_Details?.jobDescription),
                           }}
                         />
                       )}
@@ -3718,6 +3830,8 @@ const EditHRFields = ({
         <Skeleton />
       )}
     </div>
+    <PreviewClientModal setIsPreviewModal={setIsPreviewModal} isPreviewModal={isPreviewModal} setcompanyID={setcompanyID} getcompanyID={getcompanyID} />
+    </>
   );
 
   function getWorkingModelFields() {

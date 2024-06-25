@@ -103,6 +103,38 @@ export const allClientRequestDAO  = {
 			return errorDebug(error,'allClientRequestDAO.getClientDetailsForViewDAO');
 		}
 	},
+	getResetAllDemoHRTalentStatusDAO : async function (){
+		try {
+			const viewClientDetailsResult = await ClientAPI.getResetAllDemoHRTalentStatus();
+			if (viewClientDetailsResult) {
+				const statusCode = viewClientDetailsResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = viewClientDetailsResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (
+					statusCode === HTTPStatusCode.NOT_FOUND ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return viewClientDetailsResult;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return viewClientDetailsResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					UserSessionManagementController.deleteAllSession();
+					return (
+						<Navigate
+							replace
+							to={UTSRoutes.LOGINROUTE}
+						/>
+					);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error,'allClientRequestDAO.getResetAllDemoHRTalentStatusDAO');
+		}
+	},
 	getDraftJobDetailsDAO : async function (guid,clientID) {
 		try {
 			const draftJobDetails = await ClientAPI.getJobDetails(guid,clientID);
@@ -221,6 +253,125 @@ export const allClientRequestDAO  = {
 		} catch (error) {
 			return errorDebug(error, 'ClientDAO.getActiveSalesUserListDAO');
 		}
-	}
+	},
 
+	createGspaceDAO: async function (clientName,usersEmails,clientEmail) {
+		try {
+			const createGspace = await ClientAPI.createGspace(clientName,usersEmails,clientEmail)
+			if (createGspace) {
+				const statusCode = createGspace['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = createGspace.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return createGspace;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return createGspace;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.createGspaceDAO');
+		}
+	},
+
+	getSalesUserWithHeadDAO: async function (emailID) {
+		try {
+			const salesUserWithHead = await ClientAPI.getSalesUserWithHead(emailID)
+			if (salesUserWithHead) {
+				const statusCode = salesUserWithHead['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = salesUserWithHead.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return salesUserWithHead;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return salesUserWithHead;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.createGspaceDAO');
+		}
+	},
+
+	updateSpaceIDForClientDAO: async function (redData) {
+		try {
+			const updateSpaceIDForClientData = await ClientAPI.updateSpaceIDForClient(redData)
+			if (updateSpaceIDForClientData) {
+				const statusCode = updateSpaceIDForClientData['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = updateSpaceIDForClientData.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return updateSpaceIDForClientData;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return updateSpaceIDForClientData;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.updateSpaceIDForClientDAO');
+		}
+	},
+
+	getSpaceIdForClientEmailDAO: async function (emailID) {
+		try {
+			const spaceIdForClientEmail = await ClientAPI.getSpaceIdForClientEmail(emailID)
+			if (spaceIdForClientEmail) {
+				const statusCode = spaceIdForClientEmail['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = spaceIdForClientEmail.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return spaceIdForClientEmail;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return spaceIdForClientEmail;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.getSpaceIdForClientEmailDAO');
+		}
+	},
+
+	getCreditUtilizationListDAO: async function (emailID) {
+		try {
+			const spaceIdForClientEmail = await ClientAPI.getCreditUtilizationList(emailID)
+			if (spaceIdForClientEmail) {
+				const statusCode = spaceIdForClientEmail['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = spaceIdForClientEmail.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult.details,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) return spaceIdForClientEmail;
+				else if (statusCode === HTTPStatusCode.BAD_REQUEST) return spaceIdForClientEmail;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+			}
+		} catch (error) {
+			return errorDebug(error, 'ClientDAO.getCreditUtilizationListDAO');
+		}
+	}
 }

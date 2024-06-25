@@ -1,0 +1,873 @@
+
+.clientDetailModal .ant-modal-content{
+    background-color: #fff !important;
+}
+
+.row {
+    margin: 0 -9px;
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.colMd12 {
+    width: 100%;
+    padding: 0 9px;
+}
+
+.colMd6 {
+    width: 50%;
+    padding: 0 9px;
+}
+
+.colMd4 {
+    width: 33.33%;
+    padding: 0 9px;
+}
+
+
+.formFields {
+    margin-top: 20px;
+}
+
+.PreviewpageMainWrap .PostHeader{
+    padding: 6px 32px 0;
+}
+
+.PreviewpageMainWrap .PostHeader h4{
+    color: #232323;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 26px;
+}
+
+.PreviewpageMainWrap .PostHeader.refreshBtnWrap{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.PreviewpageMainWrap .PostHeader.refreshBtnWrap .hiringRequestPriority{
+    cursor: pointer;
+    display: flex;
+    border: 1px solid #b7b7b7;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.PreviewpageMainWrap ul{
+    padding: 0;
+}
+
+.PreviewpageMainWrap ul li{
+    list-style: none;
+}
+
+.buttonEditGroup{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 10px;
+}
+
+.buttonEditGroup.BtnRight {
+    justify-content: end;
+}
+
+.buttonEditGroup .btnPrimary{
+    color: #232323;
+    font-style: normal;
+    line-height: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 0;
+    transition: 0.5s all;
+    background: #FFDA30;
+    padding: 0 25px;
+    font-size: 18px;
+    display: inline-block;
+    text-align: center;
+    min-height: 46px;
+    border-radius: 27px;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+    font-size: 14px;
+    min-height: 40px;
+    cursor: pointer;
+}
+
+.buttonEditGroup .btnPrimary:hover{
+    background: #232323;
+    color: #fff;
+}
+
+.buttonEditGroup .btnPrimary.blank{
+    background: transparent;
+    padding: 0 0px;
+}
+
+.buttonEditGroup .btnPrimary.blank:hover{
+    background: transparent;
+    color: #232323;
+}
+
+.PreviewpageMainWrap h6{
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    color: #6B6B6B;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+}
+
+.PreviewpageMainWrap .formFieldsbox{
+    padding: 0 32px;
+}
+
+.PreviewpageMainWrap .formFieldsboxinner {
+    border: 1px dashed #23232333;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.PreviewpageMainWrap .formFields .FieldsBoxInner-Content {
+    padding: 16px 32px;
+}
+
+.PreviewpageMainWrap .formFields .formFieldsboxinner h2 {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #FFFDF1;
+    padding: 15px 29px;
+    color: #232323;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+
+.PreviewpageMainWrap .companyDetails {
+    padding: 18px 32px 32px 32px;
+}
+
+.PreviewpageMainWrap .companyDetails hr {
+    border: 0;
+    border-bottom: 1px dashed #23232333;
+    margin-top: 27px;
+    margin-bottom: 31px;
+}
+
+.PreviewpageMainWrap .companyDetailTop ul {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 29px;
+    column-gap: 32px;
+}
+
+.PreviewpageMainWrap .companyDetailTop ul li{
+    margin-right: 0px;
+    margin-bottom: 10px;
+}
+
+.PreviewpageMainWrap .companyDetailTop ul li span {
+    font-size: 12px;
+    font-weight: 400;
+    display: flex;
+    gap: 5px;
+    color: #676767;
+}
+
+.PreviewpageMainWrap .companyDetailTop ul li span svg{
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .formFields .editNewIcon {
+    display: flex;
+    margin-left: 2px;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .companyDetailTop ul li p {
+    font-size: 14px;
+    font-weight: 500;
+    color: #232323;
+    margin-bottom: 0;
+}
+
+
+.PreviewpageMainWrap .fundingrounds{
+    border-top: 1px solid #bababa33;
+    padding-top: 8px;
+    padding-bottom: 0;
+}
+
+.PreviewpageMainWrap .fundingrounds ul{
+    display: flex;
+    row-gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+}
+
+.PreviewpageMainWrap .fundingrounds li{
+    border-right: 1px solid #bababa33;
+    padding-right: 35px;
+    margin-right: 35px;
+    min-width: calc(33.33% - 27px);
+}
+.PreviewpageMainWrap .fundingrounds li:nth-child(3){
+    padding-right: 0;
+    margin-right: 0;
+    border-right: none;
+}
+
+.PreviewpageMainWrap .fundingrounds li:nth-last-child(2),
+.PreviewpageMainWrap .fundingrounds li:last-child {
+    margin-right: 0;
+    padding-right: 0;
+    border-right: none;
+    max-width: 100%;
+    width: 100%;
+
+}
+
+.PreviewpageMainWrap .fundingrounds li h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #232323;
+    line-height: 28px;
+}
+
+.PreviewpageMainWrap .fundingrounds li span{
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #232323;
+    line-height: 18px;
+    margin-bottom: 6px;
+}
+
+.PreviewpageMainWrap .fundingrounds li p{
+    color: #676767;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    margin: 0;
+}
+
+.PreviewpageMainWrap .fundingrounds li p a {
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 500;
+    color: #384ad7;
+    text-decoration: underline;
+    margin-left: 5px;
+}
+
+
+.PreviewpageMainWrap .RoundBtnWrap{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.PreviewpageMainWrap .RoundBtnWrap h6{
+    margin-bottom: 0;
+}
+
+.PreviewpageMainWrap .RoundBtnWrap .addAnotherRoundbtn{
+    color: #1B73BA;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 18px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .roundsListed{
+    display: flex;
+    flex-wrap: wrap;
+    border-top: 1px dashed #23232333;
+    padding-top: 48px;
+    column-gap: 28px;
+    row-gap: 60px;
+}
+
+.PreviewpageMainWrap .roundsListContent{
+    position: relative;
+    margin-right: 0px;
+    width: calc(25% - 22px);
+}
+
+.PreviewpageMainWrap .roundsListContent::before{
+    height: 36px;
+    width: 1px;
+    border-left: 1px dashed #23232333;
+    content: "";
+    position: absolute;
+    top: -49px;
+    left: 0;
+}
+
+.PreviewpageMainWrap .roundsListContent h4 {
+    color: #232323;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 18px;
+    margin-bottom: 4px;
+}
+
+.PreviewpageMainWrap .roundsListContent > span .roundHoverAction{
+    display: none;
+}
+
+.PreviewpageMainWrap .roundsListContent > span{
+    position: relative;
+    font-size: 12px;
+    font-weight: 500;
+    color: #232323;
+    margin-bottom: 8px;
+    padding: 4px 8px 4px 8px;
+    border-radius: 100px;
+    background: #bababa33;
+    display: table;
+}
+
+.PreviewpageMainWrap .roundsListContent:hover .roundHoverAction span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    padding: 3px;
+    width: 50%;
+    background: transparent;
+    margin: 0;
+    border-right: 1px solid #676767;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .roundsListContent:hover .roundHoverAction span:nth-child(2){
+    border-right: 0px;
+    color: #E03A3A;
+}
+
+
+
+.PreviewpageMainWrap .roundsListContent > span:hover .roundHoverAction{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: -26px;
+    right: 2px;
+    border: 1px solid #676767;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #FFFDF1;
+    min-width: 66px;
+}
+
+
+.PreviewpageMainWrap .roundsListContent.active > span{
+    background: linear-gradient(118.92deg, #efeeff 26.18%, rgba(255, 234, 222, 0.94) 96.85%);
+}
+
+.PreviewpageMainWrap .roundsListContent.Selected > span{
+    background: #FFDA30;
+}
+
+.PreviewpageMainWrap .roundsListContent p{
+    color: #232323;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14.63px;
+    margin-bottom: 0;
+}
+
+
+
+.PreviewpageMainWrap .imgSection{
+    flex-wrap: wrap;
+    display: flex;
+    column-gap: 22px;
+    row-gap: 16px;
+    margin-top: 24px;
+    margin-bottom: 32px;
+}
+
+.PreviewpageMainWrap .imgSection .imgThumb, .PreviewpageMainWrap .imgSection .videoWrapper{
+    position: relative;
+    width: calc(33.33% - 15px);
+    border-radius: 18px;
+    overflow: hidden;
+    padding-top: 19.40%;
+}
+
+.PreviewpageMainWrap .imgSection .imgThumb img, .PreviewpageMainWrap .imgSection .videoWrapper iframe{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    object-fit: cover;
+}
+
+.PreviewpageMainWrap .imgSection .videoWrapper iframe{border: none;}
+
+.PreviewpageMainWrap .imgSection .DeleteBtn, .PreviewpageMainWrap .imgSection .videoWrapper .DeleteBtn{
+    display: none;
+}
+
+.PreviewpageMainWrap .imgSection .imgThumb:hover .DeleteBtn, .PreviewpageMainWrap .imgSection .videoWrapper:hover .DeleteBtn{
+    display: block;
+}
+
+.PreviewpageMainWrap .imgSection .imgThumb:hover::after{
+    content: "";
+    background: #ffffffe6;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.PreviewpageMainWrap .imgSection .imgThumb .DeleteBtn{
+    min-width: 55px;
+    max-width: 55px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    margin: 0 auto;
+    z-index: 2;
+    cursor: pointer;
+}   
+
+.PreviewpageMainWrap .imgSection .DeleteBtn svg {
+    width: 100%;
+    height: 100%;
+}
+
+
+.PreviewpageMainWrap .imgSection .videoWrapper:hover .DeleteBtn{
+    min-width: 38px;
+    max-width: 38px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .companyBenefits ul{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    margin-top: 12px;
+}
+
+.PreviewpageMainWrap .companyBenefits ul li{
+    border: 1px solid #fff8d6;
+    margin-right: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 9px 16px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #232323;
+    background: #fff8d6;
+    border-radius: 14px;
+    margin-bottom: 0px;
+}
+
+
+
+.PreviewpageMainWrap .formFieldTitleTwo h2{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.PreviewpageMainWrap .formFieldTitleTwo .addNewClientText{
+    color: #1B73BA;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 18px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+.PreviewpageMainWrap .companyProfileBox{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.PreviewpageMainWrap .companyProfileBox .companyProfileImg{
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 1);
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: #eee;
+    align-items: center;
+    justify-content: center;
+    display: inline-flex;
+}
+
+.PreviewpageMainWrap .companyProfileBox .companyProfileImg .editNewIcon{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #eaeaea;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+}
+
+.PreviewpageMainWrap .companyProfileBox .companyProfileImg img{
+    border-radius: 50%;
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%
+}
+
+.PreviewpageMainWrap .companyProfileBox .companyProfRightDetail h3{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: rgba(0, 0, 0, 1);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 29px;
+    margin-bottom: 5px;
+}
+
+.PreviewpageMainWrap .companyProfileBox .companyProfRightDetail a{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #1B73BA;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+
+.PreviewpageMainWrap .companyDetailTop.clientDetailListed ul{
+    border-bottom: 1px dashed #23232333;
+    column-gap: 50px;
+    row-gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+}
+
+.PreviewpageMainWrap .companyDetailTop.clientDetailListed ul li{
+    margin-bottom: 0px;
+}
+
+.PreviewpageMainWrap .companyDetailTop.clientDetailListed .companyNewClientbox:last-child ul{
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.PreviewpageMainWrap .companyDetailTop.clientDetailListed .clientlistedTop{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.PreviewpageMainWrap .companyDetailTop.clientDetailListed .clientlistedTitle{
+    display: table;
+    background: linear-gradient(118.92deg, #efeeff 26.18%, rgba(255, 234, 222, 0.94) 96.85%);
+    color: #232323;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 14px;
+    padding: 4px 8px 4px 8px;
+    border-radius: 100px;
+}
+
+
+
+.PreviewpageMainWrap .companyDetailTop.engagementDetailListed ul{
+    margin-bottom: 0px;
+    row-gap: 24px;
+    column-gap: 24px;
+}
+
+.PreviewpageMainWrap .companyDetailTop.engagementDetailListed ul li{
+    width: calc(25% - 20px);
+    margin-bottom: 0;
+}
+
+.PreviewpageMainWrap .companyBenefits ul.mt0{
+    margin-top: 0px;
+}   
+
+.mb24{
+    margin-bottom: 24px;
+    margin-top: 0;
+}
+
+.mt24{
+    margin-top: 24px;
+}
+
+.reqField{
+    color: #B60707;
+    font-weight: 700;
+    font-size: 12px;
+    margin-left: 4px;
+}
+
+.EditCalturebox .FilesDragAndDropArea{
+    border: 1px dashed #cecccc;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    text-align: center;
+    padding: 23px 0;
+    margin-top: 10px;
+}
+
+.EditCalturebox .FilesDragAndDropArea p {
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 0;
+    margin-top: 20px;
+}
+
+.EditCalturebox .FilesDragAndDropArea span {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+
+.EditCalturebox .FilesDragAndDropArea p span {
+    font-size: 14px;
+    color: #f52887;
+    font-weight: 500;
+}
+
+.PreviewpageMainWrap .EditCalturebox .imgSection .imgThumb{
+    overflow: visible;
+}
+
+.PreviewpageMainWrap .EditCalturebox .imgSection .imgThumb .DeleteBtn{
+    display: block;
+}
+
+.PreviewpageMainWrap .EditCalturebox .imgSection .imgThumb:hover::after{
+    content: none;
+}
+
+.PreviewpageMainWrap .EditCalturebox .imgSection .imgThumb .DeleteBtn{
+    min-width: 26px;
+    max-width: 26px;
+    top: 8px;
+    left: inherit;
+    right: -5px;
+}
+
+.PreviewpageMainWrap .EditCalturebox .imgSection .imgThumb img{
+    border: 1px solid #CECCCC66;
+}
+
+
+.addanotherBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f5f5f5;
+    border: 1px solid #cecccc;
+    border-radius: 8px;
+    color: #676767;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 24px;
+}
+
+.addanotherBtn svg{
+    margin-right: 8px;
+}
+
+
+.phoneLabel{
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #676767;
+    display: inline-block;
+}
+
+
+.phoneNoCode {
+    width: 120px;
+}
+
+.phoneNoCode [class*="ant-select-selector"] {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.phoneNoInput {
+    flex: 1;
+}
+
+.phoneNoInput [class*="formField"] {
+    margin: 0;
+}
+
+.phoneNoInput input {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin: 0;
+}
+
+
+.dateSelect {
+    display: flex;
+}
+
+.dateSelect [class*="ant-select"] [class*="ant-select-selector"]{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+  }
+.dateSelect [class*="ant-select"]:last-child [class*="ant-select-selector"]{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-right: 1px solid #cecccc;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+
+.dateSelect .ant-select .ant-select-selector {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+  }
+.dateSelect .ant-select:last-child .ant-select-selector{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-right: 1px solid #cecccc;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+
+.youTubeDetails{
+    background: #fff8d6;
+    border-radius: 14px;
+    color: #002dcb;
+    display: flex;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    margin-top: 11px;
+    padding: 5px 14px;
+    text-decoration: underline;
+    width: fit-content;
+    max-width: 100%;
+    align-items: center;
+}
+
+
+.MultiselectCustom [class*="ant-select"]:last-child [class*="ant-select-selector"] [class*="ant-select-selection-search-input"]{
+    height: auto;
+}
+
+
+.reactQuillReadonly [class*="ql-container"]{
+    border: 0px !important;
+}
+
+.reactQuillReadonly [class*="ql-editor"]{
+    padding: 0 0 10px;
+}
+
+
+
+
+/* Edit Modal css start */
+
+.prevClientModalWrapper{
+    z-index: 7777;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.prevClientModalWrapper .inputcustom{
+    height: 40px;
+}
+
+.prevClientModalWrapper [class*="inputBox"] [class*="inputfield"] {
+    padding: 9px 16px;
+}
+
+.prevClientModalWrapper [class*="ant-select"] [class*="ant-select-selector"] {
+    height: 40px;
+    padding: 9px 16px;
+}
+
+.prevClientModalWrapper [class*="ant-select"] [class*="ant-select-selection-search"][class*="ant-select-selection-search-input"] {
+    height: 40px;
+    padding: 9px 16px;
+}
+
+[class*="ant-select-dropdown"][class*="customDropdownIndex"] {
+    z-index: 9999;
+}
+
+.customDropdownIndex{
+    z-index: 9999 !important;
+}
+
+
+.syncTooltip{
+    position: relative;
+    z-index: 9999 !important;
+}
+
+.formFieldsbox .companyDetails .disabledTextArea{
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(107, 107, 107, 0.6);
+    padding: 16px 16px;
+    cursor: not-allowed;
+    background-color: rgba(186, 186, 186, 0.2);
+}
+.formFieldsbox .companyDetails .disabledTextArea p{
+    margin-bottom: 0;
+}
+/* Edit Modal css End */

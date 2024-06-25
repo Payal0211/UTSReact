@@ -28,6 +28,7 @@ import { dealUtils } from "modules/deal/dealUtils";
 import TableSkeleton from "shared/components/tableSkeleton/tableSkeleton";
 import WithLoader from "shared/components/loader/loader";
 import { HTTPStatusCode } from "constants/network";
+import LogoLoader from "shared/components/loader/logoLoader";
 
 const I2sReport = () => {
   const [tableFilteredState, setTableFilteredState] = useState({
@@ -178,8 +179,10 @@ const [dateError, setDateError] = useState(false);
   };
   return (
     <div className={I2SReport.dealContainer}>
+      {/* <WithLoader className="pageMainLoader" showLoader={debouncedSearch?.length?false:isLoading}> */}
       <div className={I2SReport.header}>
         <div className={I2SReport.dealLable}>Interview To Success</div>
+        <LogoLoader visible={isLoading} />
       </div>
       {/*
        * --------- Filter Component Starts ---------
@@ -291,6 +294,7 @@ const [dateError, setDateError] = useState(false);
           />
         </Modal>
       </div>
+    {/* </WithLoader> */}
     </div>
   );
 };

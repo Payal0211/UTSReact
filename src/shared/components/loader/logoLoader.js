@@ -11,7 +11,7 @@ export default function LogoLoader({visible}) {
         height: '100%',
         zIndex: '9999',
         display: 'flex',
-        background: 'rgba(35, 35, 35, 0.3)',
+        background: 'rgba(10, 0, 0, 0.6)',
         display: visible === true ?  "flex":'none',
         alignItems: "center",
         justifyContent: "center",

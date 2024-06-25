@@ -1,9 +1,8 @@
 import UploadModal from "shared/components/uploadModal/uploadModal";
 import CompanyDetailsStyle from "./companyDetails.module.css";
-import { ReactComponent as UploadSVG } from "assets/svg/upload.svg";
 import { ReactComponent as EditSVG } from "assets/svg/EditField.svg";
 import HRInputField from "modules/hiring request/components/hrInputFields/hrInputFields";
-import { InputType, URLRegEx, EmailRegEx,validateUrl, validateLinkedInURL, ValidateFieldURL } from "constants/application";
+import { InputType, EmailRegEx,ValidateFieldURL } from "constants/application";
 import HRSelectField from "modules/hiring request/components/hrSelectField/hrSelectField";
 import { locationFormatter } from "modules/client/clientUtils";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -12,10 +11,7 @@ import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
 import { ClientDAO } from "core/client/clientDAO";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { _isNull } from "shared/utils/basic_utils";
-import { ReactComponent as CloseSVG } from "assets/svg/close.svg";
-import { MdOutlinePreview } from "react-icons/md";
-import { Modal, Tooltip, AutoComplete, Radio, Checkbox, Avatar } from "antd";
-import { Controller } from "react-hook-form";
+import { Modal, Radio, Checkbox, Avatar, Select } from "antd";
 import { UserSessionManagementController } from 'modules/user/services/user_session_services';
 import CreditTransactionHistoryModal from "./creditTransactionHistoryModal";
 import TextEditor from "shared/components/textEditor/textEditor";
@@ -32,11 +28,9 @@ const EditCompanyDetails = ({
   setBase64Image,
   getUploadFileData,
   setUploadFileData,
-  setCompanyName,
-  companyName,
-  control,
-  companyDetail,
   setCompanyDetail,
+  setCompanyName, 
+  companyDetail,  
   getCompanyDetails,typeOfPricing,setTypeOfPricing,pricingTypeError,setPricingTypeError,
   controlledFieldsProp,clientPOCs,
   checkPayPer,setCheckPayPer,setIsChecked,IsChecked,payPerError,setPayPerError,payPerCondition,
@@ -58,6 +52,7 @@ const EditCompanyDetails = ({
   const [leadOwner, setLeadOwner] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showUploadModal, setUploadModal] = useState(false);
+  const [errorCurrency, seterrorCurrency] = useState();
   const getGEO = async () => {
     const geoLocationResponse = await MasterDAO.getGEORequestDAO();
     setGEO(geoLocationResponse && geoLocationResponse.responseBody);
@@ -112,7 +107,19 @@ const EditCompanyDetails = ({
   };
 
   const watchLeadSource = watch("companyLeadSource");
-
+  let _currency = watch("creditCurrency");
+  // let _jobPostCredit = watch("jobPostCredit");
+  // let _creditAmount = watch("creditAmount");
+  // let _vettedProfileViewCredit = watch("vettedProfileViewCredit");
+  // let _nonVettedProfileViewCredit = watch("nonVettedProfileViewCredit");  
+  
+  useEffect(() => {
+    if(!_currency){
+      seterrorCurrency(true)
+    }else{
+      seterrorCurrency(false)
+    }
+  },[_currency]);
   useEffect(() => {
     if (watchLeadSource?.value) {
       getLeadOwnerBytype(watchLeadSource.value);
@@ -126,8 +133,8 @@ const EditCompanyDetails = ({
   // }, [errors?.companyName]);
 
   const watchCompanyLeadSource = watch("companyLeadSource");
-
   const watchCompanyEmail = watch("companyEmail");
+
 
   const convertToBase64 = useCallback((file) => {
     return new Promise((resolve, reject) => {
@@ -306,8 +313,33 @@ const EditCompanyDetails = ({
     else{
       setTypeOfPricing(null)
     }
+
+    setValue("jobPostCredit",companyDetail?.jobPostCredit);
+    setValue("creditAmount",companyDetail?.creditAmount);
+    setValue("creditCurrency",companyDetail?.creditCurrency);
+    setValue("vettedProfileViewCredit",companyDetail?.vettedProfileViewCredit);
+    setValue("nonVettedProfileViewCredit",companyDetail?.nonVettedProfileViewCredit);
   }, [companyDetail])
   
+  // useEffect(() => {
+  //   let _companyDetail = {...companyDetail};
+  //   if (_currency) {
+  //     _companyDetail.creditCurrency = _currency
+  //   }
+  //   if (_creditAmount) {
+  //     _companyDetail.creditAmount = _creditAmount
+  //   }
+  //   if (_jobPostCredit) {
+  //     _companyDetail.jobPostCredit = _jobPostCredit
+  //   }
+  //   if (_vettedProfileViewCredit) {
+  //     _companyDetail.vettedProfileViewCredit = _vettedProfileViewCredit
+  //   }
+  //   if (_nonVettedProfileViewCredit) {
+  //     _companyDetail.nonVettedProfileViewCredit = _nonVettedProfileViewCredit
+  //   }
+  //   setCompanyDetail(_companyDetail);
+  // },[_currency,_jobPostCredit,_creditAmount,_vettedProfileViewCredit,_nonVettedProfileViewCredit]);
 
   const getCompanyDetailsByEmail = async (email) => {
     let response = await HubSpotDAO.getContactsByEmailDAO(email);
@@ -447,8 +479,20 @@ const EditCompanyDetails = ({
   }, [getLeadSource]);
 
   useEffect(() => {
-    if (watchCompanyLeadSource?.id !== 1) unregister("companyLeadSource");
-  }, [unregister, watchCompanyLeadSource?.id]);
+    if (watchCompanyLeadSource?.id === 1){
+      unregister("companyLeadOwner");
+      register('companyInboundType',{required: true})
+    }
+    
+    if(watchCompanyLeadSource?.id === 2){
+      unregister("companyInboundType");
+      register('companyLeadOwner',{required: true})
+    }
+    if(watchCompanyLeadSource?.id === 3){
+      unregister("companyInboundType");
+      unregister('companyLeadOwner')
+    }
+  }, [unregister, watchCompanyLeadSource?.id,register]);
 
   const getCreditTransactionData = async ()=>{
     setTransactionModal(true)
@@ -684,7 +728,7 @@ const EditCompanyDetails = ({
                 label="Company Size"
                 name={"companySize"}
                 type={InputType.NUMBER}
-                placeholder="Company Size "
+                placeholder="Company Size"
                 required
               />
             </div>
@@ -719,6 +763,47 @@ const EditCompanyDetails = ({
 					</div>
 					{checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null &&
 					<>
+          <div className={CompanyDetailsStyle.row}>
+              <div className={CompanyDetailsStyle.colMd6}>
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        label="Per credit amount"
+                        name="creditAmount"
+                        type={InputType.NUMBER}
+                        placeholder="Enter per credit amount"
+                        required={checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null?true:false}          
+                        validationSchema={{
+                          required:checkPayPer?.companyTypeID !== 0  &&  checkPayPer?.companyTypeID !== null?  "Please enter Per credit amount.": null,                          
+                        }}              
+                      />
+              </div>               
+              <div className={CompanyDetailsStyle.colMd6}>
+                <label>
+                    Currency
+                      <span className={CompanyDetailsStyle.reqField}>*</span>
+                </label>
+                <Select onChange={(e) => {                  
+                  setValue("creditCurrency",e);
+                  seterrorCurrency(false);
+                }} name="creditCurrency" value={_currency} 
+                  >
+                  <Select.Option value="INR">INR</Select.Option>
+                  <Select.Option value="USD">USD</Select.Option>
+                </Select>
+                {errorCurrency &&  <p
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                        className={CompanyDetailsStyle.error}
+                      >
+                        *  Please select currency
+                      </p>}
+              </div>
+          </div>
+
+
           Remaining Credit : <span style={{fontWeight:"bold",marginBottom:"80px",marginTop:"20px"}}>{companyDetail?.jpCreditBalance}</span>
 						<div className={CompanyDetailsStyle.row}>
 							<div className={CompanyDetailsStyle.colMd6}>
@@ -778,7 +863,7 @@ const EditCompanyDetails = ({
 								</span>
 							</label> */}
 								{/* {pricingTypeError && <p className={CompanyDetailsStyle.error}>*Please select pricing type</p>} */}
-								<div className={CompanyDetailsStyle.payPerCheckboxWrap}>
+								<div className={CompanyDetailsStyle.payPerCheckboxWrap} style={{marginBottom:"16px"}}>
 									<Checkbox name='IsPostaJob' 
                     checked={IsChecked?.isPostaJob} 
                     onChange={(e)=>{
@@ -793,24 +878,74 @@ const EditCompanyDetails = ({
                   </Checkbox>
 							  </div>
                 {creditError && <p className={CompanyDetailsStyle.error}>*Please select option</p>}
-                {IsChecked?.isProfileView && 
-							<div style={{display:'flex',flexDirection:'column',marginBottom:'20px',marginLeft: '188px', marginTop:"19px"}}> 
-											<label style={{marginBottom:"12px"}}>
-										Profile Sharing Options 
-										<span className={CompanyDetailsStyle.reqField}>
-											*
-										</span>
-									</label>
-									<Radio.Group
-										onChange={e=> {setProfileSharingOption(e.target.value);setProfileSharingOptionError(false)}}
-										value={profileSharingOption}
-										>
-										<Radio value={true}>Vetted Profile</Radio>
-										<Radio value={false}>Fast Profile</Radio>
-									</Radio.Group>
-                      {profileSharingOptionError && <p style={{display:'flex',flexDirection:'column',marginTop:"15px"}} className={CompanyDetailsStyle.error}>*Please select profile sharing options</p>}
-							</div>	
-						}
+                {/* {IsChecked?.isProfileView && 
+                  <div style={{display:'flex',flexDirection:'column',marginBottom:'20px',marginLeft: '270px', marginTop:"19px"}}> 
+                          <label style={{marginBottom:"12px"}}>
+                        Profile Sharing Options 
+                        <span className={CompanyDetailsStyle.reqField}>
+                          *
+                        </span>
+                      </label>
+                      <Radio.Group
+                        onChange={e=> {setProfileSharingOption(e.target.value);setProfileSharingOptionError(false)}}
+                        value={profileSharingOption}
+                        >
+                        <Radio value={true}>Vetted Profile</Radio>
+                        <Radio value={false}>Fast Profile</Radio>
+                      </Radio.Group>
+                          {profileSharingOptionError && <p style={{display:'flex',flexDirection:'column',marginTop:"15px"}} className={CompanyDetailsStyle.error}>*Please select profile sharing options</p>}
+                  </div>	
+                } */}
+                <div className={CompanyDetailsStyle.row}>                  
+                      {IsChecked?.isPostaJob ? 
+                      <div className={CompanyDetailsStyle.colMd4} >
+                         <HRInputField
+                           register={register}
+                           errors={errors}
+                           label="Job post credit"
+                           name="jobPostCredit"
+                           type={InputType.NUMBER}
+                           placeholder="Enter Job post credit"
+                           required={IsChecked?.isPostaJob?true:false}
+                           validationSchema={{
+                            required: IsChecked?.isPostaJob ?'Please enter job post credit.':null,                            
+                          }}
+                         />
+                       </div> : <div className={CompanyDetailsStyle.colMd4}></div>}
+                 
+                      {IsChecked?.isProfileView && (
+                      <>
+                        <div className={CompanyDetailsStyle.colMd4}>
+                        <HRInputField
+                           register={register}
+                           errors={errors}
+                           label="Vetted Profile Credit"
+                           name="vettedProfileViewCredit"
+                           type={InputType.NUMBER}
+                           placeholder="Enter Vetted Profile Credit"
+                           required={IsChecked?.isProfileView ? true : false}
+                           validationSchema={{
+                            required: IsChecked?.isProfileView ?'Please enter vetted profile credit.':null,                          
+                          }}
+                         />
+                         </div>
+                         <div className={CompanyDetailsStyle.colMd4}>
+                          <HRInputField
+                              register={register}
+                              errors={errors}
+                              label="Non Vetted Profile Credit"
+                              name="nonVettedProfileViewCredit"
+                              type={InputType.NUMBER}
+                              placeholder="Enter Non Vetted Profile Credit"
+                              required={IsChecked?.isProfileView ? true : false}
+                              validationSchema={{
+                                required: IsChecked?.isProfileView ?'Please enter non vetted profile credit.':null,                          
+                              }}
+                            />
+                       </div></>
+                       )}
+                </div>
+                
 								</div>												
 							</div>
 						</div>
@@ -865,7 +1000,7 @@ const EditCompanyDetails = ({
                 register={register}
                 errors={errors}
                 validationSchema={{
-                  required: "please enter the linkedin profile.",
+                  required: "please enter the Company Linkedin.",
                   // pattern: {
                   // 	value: URLRegEx.url,
                   // 	message: 'Entered value does not match url format',
@@ -888,10 +1023,10 @@ const EditCompanyDetails = ({
                     //   }											
                   }
                 }}
-                label="Linkedin Profile"
+                label="Company Linkedin"
                 name={"companyLinkedinProfile"}
                 type={InputType.TEXT}
-                placeholder="Enter linkedin profile "
+                placeholder="Enter Company Linkedin "
                 required
               />
             </div>
@@ -926,7 +1061,7 @@ const EditCompanyDetails = ({
             </div>
           </div>
 
-          <div className={CompanyDetailsStyle.row}>
+          {/* <div className={CompanyDetailsStyle.row}>
             <div className={CompanyDetailsStyle.colMd12}>
               <div className={CompanyDetailsStyle.radioFormGroup}>
                 <label>
@@ -965,7 +1100,7 @@ const EditCompanyDetails = ({
                 </label>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className={CompanyDetailsStyle.row}>
             <div className={CompanyDetailsStyle.colMd6}>
               <div className={CompanyDetailsStyle.formGroup}>
@@ -980,7 +1115,7 @@ const EditCompanyDetails = ({
                   label="Lead Source"
                   defaultValue="Select Lead Source"
                   options={leadSource?.BindLeadType}
-                  required
+                  required={true}
                   isError={
                     errors["companyLeadSource"] && errors["companyLeadSource"]
                   }
@@ -1007,7 +1142,7 @@ const EditCompanyDetails = ({
                     isError={
                       errors["companyLeadOwner"] && errors["companyLeadOwner"]
                     }
-                    errorMsg={"Please select lead source"}
+                    errorMsg={"Please select lead owner"}
                     searchable={true}
                   />
                 </div>
@@ -1029,6 +1164,11 @@ const EditCompanyDetails = ({
                     defaultValue="Please Select"
                     options={leadSource?.BindInBoundDrp}
                     searchable={true}
+                    required={watch("companyLeadSource")?.id === 1}
+                    isError={
+                      errors["companyInboundType"] && errors["companyInboundType"]
+                    }
+                    errorMsg={"Please select inbound type"}
                   />
                 </div>
               </div>

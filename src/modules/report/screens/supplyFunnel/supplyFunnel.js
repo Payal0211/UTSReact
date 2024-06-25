@@ -20,6 +20,8 @@ import { Controller, useForm } from 'react-hook-form';
 import Column from 'antd/lib/table/Column';
 import ColumnGroup from 'antd/lib/table/ColumnGroup';
 import SupplyFunnelModal from 'modules/report/components/supplyFunnelModal/supplyFunnelModal';
+import WithLoader from 'shared/components/loader/loader';
+import LogoLoader from 'shared/components/loader/logoLoader';
 const SupplyFunnelFilterLazyComponent = React.lazy(() =>
 	import('modules/report/components/supplyFunnelFilter/supplyFunnelFilter'),
 );
@@ -453,154 +455,82 @@ const SupplyFunnelScreen = () => {
 	}, [getReportFilterHandler]);
 	return (
 		<div className={SupplyFunnelStyle.hiringRequestContainer}>
-			<div className={SupplyFunnelStyle.addnewHR}>
-				<div className={SupplyFunnelStyle.hiringRequest}>
-					Supply Funnel Report
-				</div>
-			</div>
-			{/*
-			 * --------- Filter Component Starts ---------
-			 * @Filter Part
-			 */}
-			<div className={SupplyFunnelStyle.filterContainer}>
-				<div className={SupplyFunnelStyle.filterSets}>
-					<div
-						className={SupplyFunnelStyle.addFilter}
-						onClick={toggleDemandReportFilter}>
-						<FunnelSVG style={{ width: '16px', height: '16px' }} />
-
-						<div className={SupplyFunnelStyle.filterLabel}>Add Filters</div>
-						<div className={SupplyFunnelStyle.filterCount}>
-							{filteredTagLength}
-						</div>
+				{/* <WithLoader className="pageMainLoader" showLoader={isLoading}> */}
+				<div className={SupplyFunnelStyle.addnewHR}>
+					<div className={SupplyFunnelStyle.hiringRequest}>
+						Supply Funnel Report
 					</div>
-					<div className={SupplyFunnelStyle.calendarFilterSet}>
-						<div className={SupplyFunnelStyle.label}>Date</div>
-
-						<div className={SupplyFunnelStyle.calendarFilter}>
-							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
-							<Controller
-								render={({ ...props }) => (
-									<DatePicker
-										className={SupplyFunnelStyle.dateFilter}
-										onKeyDown={(e) => {
-											e.preventDefault();
-											e.stopPropagation();
-										}}
-										// selected={watch('invoiceDate')}
-										// onChange={(date) => {
-										// 	setValue('invoiceDate', date);
-										// }}
-										placeholderText="Start date - End date"
-										selected={startDate}
-										onChange={onCalenderFilter}
-										startDate={startDate}
-										endDate={endDate}
-										selectsRange
-									/>
-								)}
-								name="invoiceDate"
-								rules={{ required: true }}
-								control={control}
-							/>
-						</div>
-					</div>
+					<LogoLoader visible={isLoading} />
 				</div>
-			</div>
+				{/*
+				* --------- Filter Component Starts ---------
+				* @Filter Part
+				*/}
+				<div className={SupplyFunnelStyle.filterContainer}>
+					<div className={SupplyFunnelStyle.filterSets}>
+						<div
+							className={SupplyFunnelStyle.addFilter}
+							onClick={toggleDemandReportFilter}>
+							<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
-			{/*
-			 * ------------ Table Starts-----------
-			 * @Table Part
-			 */}
-			<div className={SupplyFunnelStyle.tableDetails}>
-				{isLoading ? (
-					<TableSkeleton />
-				) : (
-					<>
-						<Table
-							scroll={{ x: '250vw', y: '100vh' }}
-							id="supplyFunnelListing"
-							bordered={false}
-							dataSource={[...apiData?.slice(1)]}
-							pagination={{
-								size: 'small',
-								pageSize: apiData?.length,
-							}}>
-							{unGroupedColumnDataMemo?.map((item) => (
-								<Column
-									title={item}
-									dataIndex={item}
-									key={item}
-									render={(text, param) => (
-										<Tooltip
-											placement="bottomLeft"
-											title={text}>
-											{item === 'Stage' || item === 'Duration' ? (
-												<p style={{ fontWeight: '550' }}>{text}</p>
-											) : (
-												<p
-													style={{
-														textDecoration: 'underline',
-														cursor: text === 0 ? 'no-drop' : 'pointer',
-													}}
-													onClick={
-														text === 0
-															? null
-															: () => {
-																	setSupplyFunnelModal(true);
-																	setSupplyFunnelValue({
-																		stage: param?.Stage,
-																		count: text,
-																	});
-																	setSupplyFunnelHRDetailsState({
-																		...supplyFunnelHRDetailsState,
-																		funnelFilter: {
-																			...supplyFunnelHRDetailsState?.funnelFilter,
-																		},
-																		newExistingType:
-																			item === 'Final Total'
-																				? ''
-																				: item?.split(' ')[0],
-																		currentStage: param.Stage,
-																	});
-															  }
-													}>
-													{text}
-												</p>
-											)}
-										</Tooltip>
+							<div className={SupplyFunnelStyle.filterLabel}>Add Filters</div>
+							<div className={SupplyFunnelStyle.filterCount}>
+								{filteredTagLength}
+							</div>
+						</div>
+						<div className={SupplyFunnelStyle.calendarFilterSet}>
+							<div className={SupplyFunnelStyle.label}>Date</div>
+
+							<div className={SupplyFunnelStyle.calendarFilter}>
+								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+								<Controller
+									render={({ ...props }) => (
+										<DatePicker
+											className={SupplyFunnelStyle.dateFilter}
+											onKeyDown={(e) => {
+												e.preventDefault();
+												e.stopPropagation();
+											}}
+											// selected={watch('invoiceDate')}
+											// onChange={(date) => {
+											// 	setValue('invoiceDate', date);
+											// }}
+											placeholderText="Start date - End date"
+											selected={startDate}
+											onChange={onCalenderFilter}
+											startDate={startDate}
+											endDate={endDate}
+											selectsRange
+										/>
 									)}
+									name="invoiceDate"
+									rules={{ required: true }}
+									control={control}
 								/>
-							))}
-							{GroupedColumn()}
-						</Table>
-						<div className={SupplyFunnelStyle.formPanelAction}>
-							<button
-								type="submit"
-								onClick={viewSupplyFunnelSummaryHandler}
-								className={SupplyFunnelStyle.btnPrimary}>
-								View Summary
-							</button>
+							</div>
 						</div>
-					</>
-				)}
-			</div>
-			{isSummary && (
+					</div>
+				</div>
+
+				{/*
+				* ------------ Table Starts-----------
+				* @Table Part
+				*/}
 				<div className={SupplyFunnelStyle.tableDetails}>
-					{isSummaryLoading ? (
+					{isLoading ? (
 						<TableSkeleton />
 					) : (
 						<>
 							<Table
-								scroll={{ x: '100vw', y: '100vh' }}
-								id="supplyFunnelViewSummary"
+								scroll={{ x: '250vw', y: '100vh' }}
+								id="supplyFunnelListing"
 								bordered={false}
-								dataSource={[...viewSummaryData?.slice(1)]}
+								dataSource={[...apiData?.slice(1)]}
 								pagination={{
 									size: 'small',
-									pageSize: viewSummaryData?.length,
+									pageSize: apiData?.length,
 								}}>
-								{unGroupedViewSummaryColumnDataMemo?.map((item) => (
+								{unGroupedColumnDataMemo?.map((item) => (
 									<Column
 										title={item}
 										dataIndex={item}
@@ -612,51 +542,126 @@ const SupplyFunnelScreen = () => {
 												{item === 'Stage' || item === 'Duration' ? (
 													<p style={{ fontWeight: '550' }}>{text}</p>
 												) : (
-													<p>{text}</p>
+													<p
+														style={{
+															textDecoration: 'underline',
+															cursor: text === 0 ? 'no-drop' : 'pointer',
+														}}
+														onClick={
+															text === 0
+																? null
+																: () => {
+																		setSupplyFunnelModal(true);
+																		setSupplyFunnelValue({
+																			stage: param?.Stage,
+																			count: text,
+																		});
+																		setSupplyFunnelHRDetailsState({
+																			...supplyFunnelHRDetailsState,
+																			funnelFilter: {
+																				...supplyFunnelHRDetailsState?.funnelFilter,
+																			},
+																			newExistingType:
+																				item === 'Final Total'
+																					? ''
+																					: item?.split(' ')[0],
+																			currentStage: param.Stage,
+																		});
+																}
+														}>
+														{text}
+													</p>
 												)}
 											</Tooltip>
 										)}
 									/>
 								))}
-								{ViewSummaryGroupedColumn()}
+								{GroupedColumn()}
 							</Table>
+							<div className={SupplyFunnelStyle.formPanelAction}>
+								<button
+									type="submit"
+									onClick={viewSupplyFunnelSummaryHandler}
+									className={SupplyFunnelStyle.btnPrimary}>
+									View Summary
+								</button>
+							</div>
 						</>
 					)}
 				</div>
-			)}
-
-			{isAllowFilters && (
-				<Suspense fallback={<div>Loading...</div>}>
-					<SupplyFunnelFilterLazyComponent
-						setAppliedFilters={setAppliedFilters}
-						appliedFilter={appliedFilter}
-						setCheckedState={setCheckedState}
-						checkedState={checkedState}
-						handleHRRequest={getSupplyReportListHandler}
-						setTableFilteredState={setTableFilteredState}
-						tableFilteredState={tableFilteredState}
-						setFilteredTagLength={setFilteredTagLength}
-						onRemoveHRFilters={onRemoveFilters}
-						getHTMLFilter={getHTMLFilter}
-						hrFilterList={reportConfig.SupplyReportFilterListConfig()}
-						filtersType={reportConfig.SupplyReportFilterTypeConfig(
-							filtersList && filtersList,
+				{isSummary && (
+					<div className={SupplyFunnelStyle.tableDetails}>
+						{isSummaryLoading ? (
+							<TableSkeleton />
+						) : (
+							<>
+								<Table
+									scroll={{ x: '100vw', y: '100vh' }}
+									id="supplyFunnelViewSummary"
+									bordered={false}
+									dataSource={[...viewSummaryData?.slice(1)]}
+									pagination={{
+										size: 'small',
+										pageSize: viewSummaryData?.length,
+									}}>
+									{unGroupedViewSummaryColumnDataMemo?.map((item) => (
+										<Column
+											title={item}
+											dataIndex={item}
+											key={item}
+											render={(text, param) => (
+												<Tooltip
+													placement="bottomLeft"
+													title={text}>
+													{item === 'Stage' || item === 'Duration' ? (
+														<p style={{ fontWeight: '550' }}>{text}</p>
+													) : (
+														<p>{text}</p>
+													)}
+												</Tooltip>
+											)}
+										/>
+									))}
+									{ViewSummaryGroupedColumn()}
+								</Table>
+							</>
 						)}
-						setSupplyFunnelHRDetailsState={setSupplyFunnelHRDetailsState}
-						supplyFunnelHRDetailsState={supplyFunnelHRDetailsState}
+					</div>
+				)}
+
+				{isAllowFilters && (
+					<Suspense fallback={<div>Loading...</div>}>
+						<SupplyFunnelFilterLazyComponent
+							setAppliedFilters={setAppliedFilters}
+							appliedFilter={appliedFilter}
+							setCheckedState={setCheckedState}
+							checkedState={checkedState}
+							handleHRRequest={getSupplyReportListHandler}
+							setTableFilteredState={setTableFilteredState}
+							tableFilteredState={tableFilteredState}
+							setFilteredTagLength={setFilteredTagLength}
+							onRemoveHRFilters={onRemoveFilters}
+							getHTMLFilter={getHTMLFilter}
+							hrFilterList={reportConfig.SupplyReportFilterListConfig()}
+							filtersType={reportConfig.SupplyReportFilterTypeConfig(
+								filtersList && filtersList,
+							)}
+							setSupplyFunnelHRDetailsState={setSupplyFunnelHRDetailsState}
+							supplyFunnelHRDetailsState={supplyFunnelHRDetailsState}
+						/>
+					</Suspense>
+				)}
+				{supplyFunnelModal && (
+					<SupplyFunnelModal
+						supplyFunnelModal={supplyFunnelModal}
+						setSupplyFunnelModal={setSupplyFunnelModal}
+						demandFunnelHRDetailsState={supplyFunnelHRDetailsState}
+						setDemandFunnelHRDetailsState={setSupplyFunnelHRDetailsState}
+						demandFunnelValue={supplyFunnelValue}
 					/>
-				</Suspense>
-			)}
-			{supplyFunnelModal && (
-				<SupplyFunnelModal
-					supplyFunnelModal={supplyFunnelModal}
-					setSupplyFunnelModal={setSupplyFunnelModal}
-					demandFunnelHRDetailsState={supplyFunnelHRDetailsState}
-					setDemandFunnelHRDetailsState={setSupplyFunnelHRDetailsState}
-					demandFunnelValue={supplyFunnelValue}
-				/>
-			)}
-		</div>
+				)}
+		{/* </WithLoader> */}
+			</div>
 	);
 };
 

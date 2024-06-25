@@ -12,6 +12,7 @@ import { UserSessionManagementController } from "modules/user/services/user_sess
 import { UserAccountRole } from "constants/application";
 import infoIcon from "assets/svg/info.svg";
 import LogoLoader from "shared/components/loader/logoLoader";
+import DOMPurify from "dompurify";
 
 const ViewHRDetails = () => {
   const [hiringDetails, setHiringDetails] = useState("");
@@ -48,6 +49,15 @@ const ViewHRDetails = () => {
     }
   }
 
+  function removeDuplicates(arr) {
+  const mapFromColors = new Map(
+    arr?.map(c => [c.text, c])
+  );
+  
+  const uniqueColors = [...mapFromColors.values()];
+  return uniqueColors
+  }
+
   const ShowEditCTA = () => {
     if (hiringDetails?.responseBody?.details?.hrStatus === "Open") {
       return <button onClick={editHr}>Edit HR</button>;
@@ -66,6 +76,15 @@ const ViewHRDetails = () => {
     }
   };
 
+  const sanitizedDescription = (JobDescription) => {
+    return DOMPurify.sanitize(JobDescription, {
+        // ALLOWED_TAGS: ['h1', 'h2', 'h3', 'p', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li', 'a'],
+        ALLOWED_ATTR: {
+            // '*': ['class'], // Allow class attribute for custom styling
+            'a': ['href', 'target'] // Allow href and target for links
+        }
+    })
+  };
   return (
     <>
       <div className={ViewHRDetailsStyle.viewHRDetailsWrap}>
@@ -117,25 +136,9 @@ const ViewHRDetails = () => {
                         <i className={ViewHRDetailsStyle.blueDot} />
                       </li>					 */}
                       <li>
-                        <span>Job Description:</span>{" "}
-                        {hiringDetails?.responseBody?.details
-                          ?.jobDescription ? (
-                          <a
-                            href={
-                              NetworkInfo.PROTOCOL +
-                              NetworkInfo.DOMAIN +
-                              "Media/JDParsing/JDfiles/" +
-                              hiringDetails?.responseBody?.details
-                                ?.jobDescription
-                            }
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Click Here
-                          </a>
-                        ) : (
-                          "NA"
-                        )}
+                        <span>Sales Person:</span>{" "}
+                        {hiringDetails?.responseBody?.details?.salesPerson ??
+                          "NA"}
                       </li>
                       <li>
                         <span>Contract Type:</span>{" "}
@@ -424,11 +427,7 @@ const ViewHRDetails = () => {
                         {hiringDetails?.responseBody?.details?.currency ??
                           "NA"}
                       </li>
-                      <li>
-                        <span>Sales Person:</span>{" "}
-                        {hiringDetails?.responseBody?.details?.salesPerson ??
-                          "NA"}
-                      </li>
+                     
                       <li>
                         <span>Required Experience:</span>{" "}
                         {hiringDetails?.responseBody?.details
@@ -471,6 +470,10 @@ const ViewHRDetails = () => {
                           "NA"
                         )}
                       </li>
+                      <li>
+                        <span>Fresher Allowed:</span>{" "}
+                        {hiringDetails?.responseBody?.details?.isFresherAllowed ? "Yes" : "NO"}
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -484,7 +487,7 @@ const ViewHRDetails = () => {
               About Company
                 <i className={ViewHRDetailsStyle.blueDot} />
               </h3>
-              {hiringDetails?.responseBody?.details?.aboutCompanyDesc? <div  dangerouslySetInnerHTML={{__html:hiringDetails?.responseBody?.details?.aboutCompanyDesc}}></div> : "NA"}
+              {hiringDetails?.responseBody?.details?.aboutCompanyDesc? <div className="jobDescrition" dangerouslySetInnerHTML={{__html:hiringDetails?.responseBody?.details?.aboutCompanyDesc}}></div> : "NA"}
                
                  
               </div>}
@@ -638,40 +641,53 @@ const ViewHRDetails = () => {
                 Job Description
                 <i className={ViewHRDetailsStyle.blueDot} />
               </h3>
-              {hiringDetails?.responseBody?.details?.guid ? (
+              {hiringDetails?.responseBody?.details?.guid ?
+               (
                 testJSON(
                   hiringDetails?.responseBody?.details?.job_Description
                 ) ? (
-                  <div className={ViewHRDetailsStyle.viewHrJDDetailsBox}>
+                  <div 
+                  className={ViewHRDetailsStyle.viewHrJDDetailsBox}  
+                  >
+                    <div className="jobDescrition">
                     <ul>
                       {JSON.parse(
                         hiringDetails?.responseBody?.details
                           ?.job_Description
                       ).map((text) => (
-                        <li dangerouslySetInnerHTML={{ __html: text }} />
+                        <li dangerouslySetInnerHTML={{ __html: sanitizedDescription(text) }} />
                       ))}
                     </ul>
+                    </div>
                   </div>
                 ) : (
                   <div
                     className={ViewHRDetailsStyle.viewHrJDDetailsBox}
                     dangerouslySetInnerHTML={{
-                      __html:
-                        hiringDetails?.responseBody?.details
-                          ?.job_Description,
+                      __html:sanitizedDescription( hiringDetails?.responseBody?.details?.job_Description)                       
                     }}
                   />
                 )
-              ) : (
-                <div
-                  className={ViewHRDetailsStyle.viewHrJDDetailsBox}
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      hiringDetails?.responseBody?.details
-                        ?.job_Description,
-                  }}
-                />
-              )}
+              ) : 
+              (
+                  <div
+                    className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+                    dangerouslySetInnerHTML={{
+                      __html: sanitizedDescription( hiringDetails?.responseBody?.details?.job_Description)
+                    }}
+                  />
+                )               
+              // (
+              //   <div
+              //     className={ViewHRDetailsStyle.viewHrJDDetailsBox}
+              //     dangerouslySetInnerHTML={{
+              //       __html:
+              //         hiringDetails?.responseBody?.details
+              //           ?.job_Description,
+              //     }}
+              //   />
+              // )
+              }
             </div>
 
             <div className={ViewHRDetailsStyle.viewHRDetailsBox}>
@@ -684,7 +700,7 @@ const ViewHRDetails = () => {
                   ?.length === 0 ? (
                   <p>NA</p>
                 ) : (
-                  hiringDetails?.responseBody?.details.requiredSkillList?.map(
+                  removeDuplicates(hiringDetails?.responseBody?.details.requiredSkillList)?.map(
                     (item) => {
                       return <span>{item?.text}</span>;
                     }
@@ -703,7 +719,7 @@ const ViewHRDetails = () => {
                   ?.length === 0 ? (
                   <p>NA</p>
                 ) : (
-                  hiringDetails?.responseBody?.details.goodToHaveSkillList?.map(
+                  removeDuplicates(hiringDetails?.responseBody?.details.goodToHaveSkillList)?.map(
                     (item) => {
                       return <span>{item?.text}</span>;
                     }

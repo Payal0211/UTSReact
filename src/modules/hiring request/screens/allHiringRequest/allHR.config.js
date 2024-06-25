@@ -5,8 +5,10 @@ import { ReactComponent as CloneHRSVG } from "assets/svg/cloneHR.svg";
 import { ReactComponent as ReopenHR } from "assets/svg/reopen.svg";
 import { ReactComponent as CloseHR } from "assets/svg/power.svg";
 import { ReactComponent as FocusedRole } from "assets/svg/FocusRole.svg";
-import { Tooltip } from "antd";
+import { Tooltip, message, Checkbox } from "antd";
 import moment from "moment";
+import { hiringRequestDAO } from "core/hiringRequest/hiringRequestDAO";
+import { HTTPStatusCode } from "constants/network";
 export const allHRConfig = {
   tableConfig: (
     togglePriority,
@@ -17,7 +19,11 @@ export const allHRConfig = {
     setReopenHrModal,
     setCloseHRDetail,
     setCloseHrModal,
-    LoggedInUserTypeID
+    LoggedInUserTypeID,
+    setLoading,
+    handleDemoCloneCheckboxChange,
+    selectedCheckboxes,    
+    showCloneHRToDemoAccount
   ) => {
     return [
       {
@@ -28,6 +34,33 @@ export const allHRConfig = {
         width: "2%",
         render: (val) => {
           return val ? <FocusedRole /> : null;
+        },
+      },
+
+      {
+        title: "",
+        dataIndex: "showCloneToDemoAccount",
+        key: "showCloneToDemoAccount",
+        align: "center",
+        width: showCloneHRToDemoAccount === true ? "2%": "0",      
+        render: (text, result) => {
+          if(showCloneHRToDemoAccount === true)
+          {
+            return (
+              <>
+              {result?.showCloneToDemoAccount === true ? (
+              <Tooltip placement="bottom" title={"Clone HR to Demo Account"}>
+                    <a href="javascript:void(0);"> 
+                    <Checkbox
+                      checked={selectedCheckboxes.map(item=> item.hRID)?.includes(result.HRID)}
+                      onClick={() => handleDemoCloneCheckboxChange(result)}
+                    >              
+                    </Checkbox> 
+                    </a>
+                  </Tooltip>) : ""}
+              </>
+            );
+        }
         },
       },
 
@@ -75,6 +108,29 @@ export const allHRConfig = {
                     <ReopenHR
                       style={{ fontSize: "16px" }}
                       onClick={() => {
+                        if(result?.companyModel === 'Pay Per Credit'){
+                          const handleReopen = async (d) => {
+                            setLoading && setLoading(true)
+                            let data = { hrID: result?.HRID, updatedTR: result?.TR };
+                            const response = await hiringRequestDAO.ReopenHRDAO(data);
+                            // console.log("reoprn ",response)
+                            if (response?.statusCode === HTTPStatusCode.OK) {                            
+                              
+                              setLoading && setLoading(false)
+                              if(response?.responseBody?.details?.isReopen){
+                                 window.location.reload();
+                              }else{
+                                message.error(response?.responseBody?.details?.message,10)
+                              }
+                            }
+                            if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
+                              message.error(response?.responseBody,10)
+                              setLoading && setLoading(false)
+                            }
+                            setLoading && setLoading(false)
+                          };
+                          return handleReopen()
+                        }
                         setReopenHRData({
                           ...result,
                           HR_Id: result?.HRID,
@@ -232,17 +288,18 @@ export const allHRConfig = {
         align: "left",
         width: "7%",
         render: (text, result) => {
-          return (
-            <Link
-              to={`/user/${result?.userId}`}
-              style={{
-                color: `var(--uplers-black)`,
-                textDecoration: "underline",
-              }}
-            >
-              {text}
-            </Link>
-          );
+          // return (
+          //   // <Link
+          //   //   to={`/user/${result?.userId}`}
+          //   //   style={{
+          //   //     color: `var(--uplers-black)`,
+          //   //     textDecoration: "underline",
+          //   //   }}
+          //   // >
+          //   //   {text}
+          //   // </Link>
+          // );
+          return text
         },
       },
     ];
@@ -280,72 +337,6 @@ export const allHRConfig = {
       // 	],
       // 	isSearch: false,
       // },
-      {
-        label: "Tenure",
-        name: "tenure",
-        child: [],
-        isSearch: false,
-        isNumber: true,
-      },
-      {
-        label: "Talent Request",
-        name: "tr",
-        child: [],
-        isSearch: false,
-        isNumber: true,
-      },
-      {
-        label: "Position",
-        name: "position",
-        child: filterList?.positions,
-        isSearch: true,
-      },
-      // {
-      // 	label: 'Company',
-      // 	name: 'company',
-      // 	child: filterList?.companies,
-      // 	isSearch: true,
-      // },
-      {
-        label: "FTE/PTE",
-        name: "typeOfEmployee",
-        child: [
-          {
-            disabled: false,
-            group: null,
-            selected: false,
-            text: "FTE",
-            value: "FTE",
-          },
-          {
-            disabled: false,
-            group: null,
-            selected: false,
-            text: "PTE",
-            value: "PTE",
-          },
-        ],
-        isSearch: false,
-      },
-      {
-        label: "Manager",
-        name: "manager",
-        child: filterList?.managers,
-        isSearch: true,
-      },
-      {
-        label: 'Lead Type',
-        name: 'leadUserId',
-        child: filterList?.leadTypeList,
-        isSearch: false,
-        isSingleSelect:true
-    },
-      {
-        label: "Sales Representative",
-        name: "salesRep",
-        child: filterList?.salesReps,
-        isSearch: true,
-      },
       {
         label: "HR Status",
         name: "hrStatus",
@@ -436,6 +427,72 @@ export const allHRConfig = {
           
         // ],
         isSearch: false,
+      },
+      {
+        label: "Tenure",
+        name: "tenure",
+        child: [],
+        isSearch: false,
+        isNumber: true,
+      },
+      {
+        label: "Talent Request",
+        name: "tr",
+        child: [],
+        isSearch: false,
+        isNumber: true,
+      },
+      {
+        label: "Position",
+        name: "position",
+        child: filterList?.positions,
+        isSearch: true,
+      },
+      // {
+      // 	label: 'Company',
+      // 	name: 'company',
+      // 	child: filterList?.companies,
+      // 	isSearch: true,
+      // },
+      {
+        label: "FTE/PTE",
+        name: "typeOfEmployee",
+        child: [
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "FTE",
+            value: "FTE",
+          },
+          {
+            disabled: false,
+            group: null,
+            selected: false,
+            text: "PTE",
+            value: "PTE",
+          },
+        ],
+        isSearch: false,
+      },
+      {
+        label: "Manager",
+        name: "manager",
+        child: filterList?.managers,
+        isSearch: true,
+      },
+      {
+        label: 'Lead Type',
+        name: 'leadUserId',
+        child: filterList?.leadTypeList,
+        isSearch: false,
+        isSingleSelect:true
+    },
+      {
+        label: "Sales Representative",
+        name: "salesRep",
+        child: filterList?.salesReps,
+        isSearch: true,
       },
       {
         label: "Type of HR",

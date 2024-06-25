@@ -29,12 +29,16 @@ export default function ReopenHrModal({ setUpdateTR, onCancel, apiData }) {
     let data = { hrID: apiData.HR_Id, updatedTR: (apiData?.HRStatusCode || apiData?.hrStatusCode) === HiringRequestHRStatus.COMPLETED ? d.talent : radioValue ? d.talent : apiData.ClientDetail.NoOfTalents };
     setIsLoading(true);
     const response = await hiringRequestDAO.ReopenHRDAO(data);
-    if (response?.statusCode === HTTPStatusCode.OK) {
-      onCancel();
-      window.location.reload();
+    if (response?.statusCode === HTTPStatusCode.OK) {    
+      if(response?.responseBody?.details?.isReopen){
+        onCancel();
+        window.location.reload();
+      }else{
+        message.error(response?.responseBody?.details?.message,10)
+      }
     }
     if(response?.statusCode === HTTPStatusCode.BAD_REQUEST){
-      setAPIError(response?.responseBody)
+      setAPIError(response?.responseBody,10)
       // setError('talent',{message: response?.responseBody } )
     }
     setIsLoading(false);

@@ -835,6 +835,19 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.syncUTSTOATS');
 		}
 	},
+	deleteHRRequestAPI: async (hrID) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.DELETE_TEST_HR + `?hrId=${hrID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.deleteHRRequestAPI');
+		}
+	},
 	getRemainingPriorityCount: async () => {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -1185,6 +1198,59 @@ export const HiringRequestAPI = {
 			return errorDebug(error,'HiringRequestAPI.extractTextUsingPythonApi');
 		}
 	},
+	getSalesUsersWithHeadAfterHrCreate : async (hrid) => {
+		let httpService = new HttpServices();
+		httpService.URL = NetworkInfo.NETWORK + SubDomain.HIRING +  HiringRequestsAPI.GET_SALES_USER_WITH_HEAD_AFTER_HRCREATE +`?HRID=${hrid}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error,'HiringRequestAPI.getSalesUsersWithHeadAfterHrCreate');
+		}
+	},
+	getActionhistory : async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL = NetworkInfo.NETWORK + SubDomain.HIRING +  HiringRequestsAPI.GET_ACTION_UPDATES +`?HRId=${data.hrID}&HistoryID=${data.historyID}&DetailHistoryID=${data.detailHisoryID}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error,'HiringRequestAPI.getSalesUsersWithHeadAfterHrCreate');
+		}
+	},
+	addMemberToGspace : async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL = NetworkInfo.network + SubDomain.MEMBER;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error,'HiringRequestAPI.addMemberToGspace');
+		}
+	},
+
+	cloneHRToDemoAccount: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.CLONE_HR_DEMO_ACCOUNT ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.cloneHRToDemoAccount');
+		}
+	},
+
 	// getChannelLibraryApi: async (data) => {
 	// 	let httpService = new HttpServices();
 	// 	httpService.URL =

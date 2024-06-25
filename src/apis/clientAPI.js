@@ -121,6 +121,21 @@ export const ClientAPI = {
 			return errorDebug(error, 'ClientAPI.getClientFilterList');
 		}
 	},
+	getResetAllDemoHRTalentStatus:async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.RESET_DEMO_TALENT_STATUS ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getResetAllDemoHRTalentStatus');
+		}
+	},
 	getJobDetails:async function (guid,clientID) {
 		let httpService = new HttpServices();
 		httpService.URL =
@@ -214,6 +229,101 @@ export const ClientAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'ClientAPI.getActiveSalesUserList');
+		}
+	},
+
+	createGspace:async function (clientName,usersEmails,clientEmail) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.network +
+			SubDomain.SPACE + `?spaceName=${clientName}&emails=${usersEmails}&&clientEmail=${clientEmail}`;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.createGspace');
+		}
+	},
+
+	getSalesUserWithHead :async function (emailID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.GET_SALES_USER_WITH_HEAD + `?EmailID=${emailID}`; 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequestHeader(emailID);
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getSalesUserWithHead');
+		}
+	},
+
+	updateSpaceIDForClient :async function (reqData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.UPDATE_SPACE_ID_FOR_CLIENT; 
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = reqData
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.updateSpaceIDForClient');
+		}
+	},
+
+	getSpaceIdForClientEmail :async function (emailID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.GET_SPACEID_FOR_CLIENTEMAIL; 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequestHeader(emailID);
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getSpaceIdForClientEmail');
+		}
+	},
+	getCreditUtilizationList :async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.CLIENT +
+			ClientsAPI.LIST_CREDIT_UTILIZATION; 
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		httpService.dataToSend = payload
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getCreditUtilizationList');
+		}
+	},
+	getSyncCompanyProfile:async function (companyID) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.COMPANY +
+			ClientsAPI.SYNC_COMPANY_PROFILE+`?CompanyID=${companyID}` ;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ClientAPI.getSyncCompanyProfile');
 		}
 	},
 };

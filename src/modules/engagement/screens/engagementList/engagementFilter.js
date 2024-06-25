@@ -230,6 +230,140 @@ const EngagementFilerList = ({
 		}
 	}, [appliedFilter, handleAppliedFilters]);
 
+	const ClientFeedbackmanager = ()=>{
+		const noFeedbackselected = checkedState.get(
+			`clientFeedbackNo Feedback`,
+		)
+		
+		const forcheckedStateName = filterSubChild?.child?.filter(item=> item.text !== 'No Feedback').map(child=> `${filterSubChild.name}${child.text}`) 
+
+		const ifOtherCheckSelectedThenNOFeedback = (checkedState)=>{
+			let selected = false		
+			for(let i= 0;i<forcheckedStateName.length;i++){
+				if(checkedState.get(forcheckedStateName[i]) === true){
+							selected = true
+						}
+			}
+			return selected
+		}
+
+		return (
+			searchData && searchData.length > 0 ? (
+				searchData.map((item, index) => {
+					if(item.text === 'No Feedback'){
+						return <div
+						className={engagementFilterStyle.filterItem}
+						key={index}>
+						<Checkbox
+							checked={checkedState.get(
+								`${filterSubChild?.name}${item.text}`,
+							)}
+							onChange={(e) => {
+								handleAppliedFilters(e.target.checked, {
+									filterType: filterSubChild?.name,
+									value: item?.value,
+									id: item?.text,
+								});
+							}}
+							id={item?.value + `/${index + 1}`}
+							style={{
+								fontSize: `${!item.label && '1rem'}`,
+								fontWeight: '500',
+							}}
+							disabled={ifOtherCheckSelectedThenNOFeedback(checkedState)}
+							>
+							{item.text}
+						</Checkbox>
+					</div>
+					}
+					return (
+						<div
+							className={engagementFilterStyle.filterItem}
+							key={index}>
+							<Checkbox
+								checked={checkedState.get(
+									`${filterSubChild?.name}${item.text}`,
+								)}
+								onChange={(e) => {
+									handleAppliedFilters(e.target.checked, {
+										filterType: filterSubChild?.name,
+										value: item?.value,
+										id: item?.text,
+									});
+								}}
+								id={item?.value + `/${index + 1}`}
+								style={{
+									fontSize: `${!item.label && '1rem'}`,
+									fontWeight: '500',
+								}}
+								disabled={noFeedbackselected}
+								>
+								{item.text}
+							</Checkbox>
+						</div>
+					);
+				})
+			) : (
+				<>
+					{filterSubChild?.child?.map((item, index) => {
+						if(item.text === 'No Feedback'){
+							return <div
+							className={engagementFilterStyle.filterItem}
+							key={index}>
+							<Checkbox
+								checked={checkedState.get(
+									`${filterSubChild?.name}${item.text}`,
+								)}
+								onChange={(e) => {
+									handleAppliedFilters(e.target.checked, {
+										filterType: filterSubChild?.name,
+										value: item?.value,
+										id: item?.text,
+									});
+								}}
+								id={item?.value + `/${index + 1}`}
+								style={{
+									fontSize: `${!item.label && '1rem'}`,
+									fontWeight: '500',
+								}}
+								disabled={ifOtherCheckSelectedThenNOFeedback(checkedState)}
+								>
+								{item.text}
+							</Checkbox>
+						</div>
+						}
+						return (
+							<div
+								className={engagementFilterStyle.filterItem}
+								key={index}>
+								<Checkbox
+									checked={checkedState.get(
+										`${filterSubChild?.name}${item.text}`,
+									)}
+									onChange={(e) => {
+										handleAppliedFilters(e.target.checked, {
+											filterType: filterSubChild?.name,
+											value: item?.value,
+											id: item?.text,
+										});
+									}}
+									id={item?.value + `/${index + 1}`}
+									style={{
+										fontSize: `${!item.label && '1rem'}`,
+										fontWeight: '500',
+									}}
+									disabled={noFeedbackselected}
+									>
+									{item.text}
+								</Checkbox>
+							</div>
+						);
+					})}
+				</>
+			)
+		)
+	}
+
 	return (
 		<aside className={`${engagementFilterStyle.aside} ${getHTMLFilter && engagementFilterStyle.closeFilter}`}>
 			<div className={engagementFilterStyle.asideBody}>
@@ -381,7 +515,7 @@ const EngagementFilerList = ({
                                         } */}
 										</>
 									)
-								) : searchData && searchData.length > 0 ? (
+								): filterSubChild?.label === 'Client Feedback'  ? <ClientFeedbackmanager /> : searchData && searchData.length > 0 ? (
 									searchData.map((item, index) => {
 										return (
 											<div

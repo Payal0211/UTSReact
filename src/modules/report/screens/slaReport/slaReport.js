@@ -26,6 +26,8 @@ import {
 } from 'modules/report/reportUtils';
 import { IoChevronDownOutline } from 'react-icons/io5';
 import moment from 'moment';
+import WithLoader from 'shared/components/loader/loader';
+import LogoLoader from 'shared/components/loader/logoLoader';
 
 // const DemandFunnelFilterLazyComponent = React.lazy(() =>
 // 	import('modules/report/components/demandFunnelFilter/demandFunnelFilter'),
@@ -507,111 +509,70 @@ const SlaReports = () => {
 
 	return (
 		<div className={SlaReportStyle.hiringRequestContainer}>
-			<div className={SlaReportStyle.addnewHR}>
-				<div className={SlaReportStyle.hiringRequest}>SLA Report</div>
-			</div>
-			{/*
-			 * --------- Filter Component Starts ---------
-			 * @Filter Part
-			 */}
-			<div className={SlaReportStyle.filterContainer}>
-				<div className={SlaReportStyle.filterSets}>
-				<div className={SlaReportStyle.filterSetsInner} >
-					<div
-						className={SlaReportStyle.addFilter}
-						onClick={toggleHRFilter}>
-						<FunnelSVG style={{ width: '16px', height: '16px' }} />
+				{/* <WithLoader className="pageMainLoader" showLoader={isLoading}> */}
+				<div className={SlaReportStyle.addnewHR}>
+					<div className={SlaReportStyle.hiringRequest}>SLA Report</div>
+					<LogoLoader visible={isLoading}/>
+				</div>
+				{/*
+				* --------- Filter Component Starts ---------
+				* @Filter Part
+				*/}
+				<div className={SlaReportStyle.filterContainer}>
+					<div className={SlaReportStyle.filterSets}>
+					<div className={SlaReportStyle.filterSetsInner} >
+						<div
+							className={SlaReportStyle.addFilter}
+							onClick={toggleHRFilter}>
+							<FunnelSVG style={{ width: '16px', height: '16px' }} />
 
-						<div className={SlaReportStyle.filterLabel}>Add Filters</div>
-						<div className={SlaReportStyle.filterCount}>
-							{filteredTagLength}
+							<div className={SlaReportStyle.filterLabel}>Add Filters</div>
+							<div className={SlaReportStyle.filterCount}>
+								{filteredTagLength}
+							</div>
 						</div>
-					</div>
-					<p onClick={()=> clearFilters() }>Reset Filters</p>
-					</div>
-					<div className={SlaReportStyle.calendarFilterSet}>
-					<Checkbox
-              checked={isFocusedRole}
-              onClick={() => setIsFocusedRole((prev) => !prev)}
-            >
-              Show only Focused Role
-            </Checkbox>
-						<label className={SlaReportStyle.radioCheck_Mark}>
-							<p>Overall SLA</p>
-							<input
-								{...register('remote')}
-								value={1}
-								type="radio"
-								checked={checkedValue}
-								onChange={(e) => {
-									checkedYes(e);
-								}}
-								id="remote"
-								name="remote"
-							/>
-							<span className={SlaReportStyle.customCheck_Mark}></span>
-						</label>
-						<label className={SlaReportStyle.radioCheck_Mark}>
-							<p>SLA Missed</p>
-							<input
-								{...register('remote')}
-								value={0}
-								type="radio"
-								checked={checkednoValue}
-								onChange={(e) => {
-									checkedNo(e);
-								}}
-								id="remote"
-								name="remote"
-							/>
-							<span className={SlaReportStyle.customCheck_Mark}></span>
-						</label>
-						<div className={SlaReportStyle.label}>Date</div>
-						{/* <div className={SlaReportStyle.calendarFilter}>
-							<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
-							<DatePicker
-								style={{ backgroundColor: 'red' }}
-								onKeyDown={(e) => {
-									e.preventDefault();
-									e.stopPropagation();
-								}}
-								className={SlaReportStyle.dateFilter}
-								placeholderText="Start date - End date"
-								selected={startDate}
-								onChange={onCalenderFilter}
-								startDate={startDate}
-								endDate={endDate}
-								selectsRange
-							/>
-						</div> */}
-						<div className={SlaReportStyle.calendarFilter_Wrap}>
-							<div className={SlaReportStyle.calendarFilter}>
+						<p onClick={()=> clearFilters() }>Reset Filters</p>
+						</div>
+						<div className={SlaReportStyle.calendarFilterSet}>
+						<Checkbox
+				checked={isFocusedRole}
+				onClick={() => setIsFocusedRole((prev) => !prev)}
+				>
+				Show only Focused Role
+				</Checkbox>
+							<label className={SlaReportStyle.radioCheck_Mark}>
+								<p>Overall SLA</p>
+								<input
+									{...register('remote')}
+									value={1}
+									type="radio"
+									checked={checkedValue}
+									onChange={(e) => {
+										checkedYes(e);
+									}}
+									id="remote"
+									name="remote"
+								/>
+								<span className={SlaReportStyle.customCheck_Mark}></span>
+							</label>
+							<label className={SlaReportStyle.radioCheck_Mark}>
+								<p>SLA Missed</p>
+								<input
+									{...register('remote')}
+									value={0}
+									type="radio"
+									checked={checkednoValue}
+									onChange={(e) => {
+										checkedNo(e);
+									}}
+									id="remote"
+									name="remote"
+								/>
+								<span className={SlaReportStyle.customCheck_Mark}></span>
+							</label>
+							<div className={SlaReportStyle.label}>Date</div>
+							{/* <div className={SlaReportStyle.calendarFilter}>
 								<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
-								{/* <Controller
-									render={({ ...props }) => (
-										<DatePicker
-											className={SlaReportStyle.dateFilter}
-											onKeyDown={(e) => {
-												e.preventDefault();
-												e.stopPropagation();
-											}}
-											// selected={watch('invoiceDate')}
-											// onChange={(date) => {
-											// 	setValue('invoiceDate', date);
-											// }}
-											placeholderText="Start date - End date"
-											selected={startDate}
-											onChange={onCalenderFilter}
-											startDate={startDate}
-											endDate={endDate}
-											selectsRange
-										/>
-									)}
-									name="invoiceDate"
-									rules={{ required: true }}
-									control={control}
-								/> */}
-
 								<DatePicker
 									style={{ backgroundColor: 'red' }}
 									onKeyDown={(e) => {
@@ -626,180 +587,224 @@ const SlaReports = () => {
 									endDate={endDate}
 									selectsRange
 								/>
+							</div> */}
+							<div className={SlaReportStyle.calendarFilter_Wrap}>
+								<div className={SlaReportStyle.calendarFilter}>
+									<CalenderSVG style={{ height: '16px', marginRight: '16px' }} />
+									{/* <Controller
+										render={({ ...props }) => (
+											<DatePicker
+												className={SlaReportStyle.dateFilter}
+												onKeyDown={(e) => {
+													e.preventDefault();
+													e.stopPropagation();
+												}}
+												// selected={watch('invoiceDate')}
+												// onChange={(date) => {
+												// 	setValue('invoiceDate', date);
+												// }}
+												placeholderText="Start date - End date"
+												selected={startDate}
+												onChange={onCalenderFilter}
+												startDate={startDate}
+												endDate={endDate}
+												selectsRange
+											/>
+										)}
+										name="invoiceDate"
+										rules={{ required: true }}
+										control={control}
+									/> */}
+
+									<DatePicker
+										style={{ backgroundColor: 'red' }}
+										onKeyDown={(e) => {
+											e.preventDefault();
+											e.stopPropagation();
+										}}
+										className={SlaReportStyle.dateFilter}
+										placeholderText="Start date - End date"
+										selected={startDate}
+										onChange={onCalenderFilter}
+										startDate={startDate}
+										endDate={endDate}
+										selectsRange
+									/>
+								</div>
+
+								<span>{dateError}</span>
 							</div>
 
-							<span>{dateError}</span>
-						</div>
-
-						{/* <div className={SlaReportStyle.priorityFilterSet}>
-							<div className={SlaReportStyle.label}>Showing</div>
-							<div className={SlaReportStyle.paginationFilter}>
-								<Dropdown
-									trigger={['click']}
-									placement="bottom"
-									overlay={
-										<Menu
-											onClick={(e) => {
-												setPageSize(parseInt(e.key));
-												if (pageSize !== parseInt(e.key)) {
-													slaReportDetails({
-														...tableFilteredState,
-														totalrecord: parseInt(e.key),
-														pagenumber: pageIndex,
-													});
-												}
-											}}>
-											{pageSizeOptions.map((item) => {
-												return <Menu.Item key={item}>{item}</Menu.Item>;
-											})}
-										</Menu>
-									}>
-									<span>
-										{pageSize}
-										<IoChevronDownOutline
-											style={{ paddingTop: '5px', fontSize: '16px' }}
-										/>
-									</span>
-								</Dropdown>
+							{/* <div className={SlaReportStyle.priorityFilterSet}>
+								<div className={SlaReportStyle.label}>Showing</div>
+								<div className={SlaReportStyle.paginationFilter}>
+									<Dropdown
+										trigger={['click']}
+										placement="bottom"
+										overlay={
+											<Menu
+												onClick={(e) => {
+													setPageSize(parseInt(e.key));
+													if (pageSize !== parseInt(e.key)) {
+														slaReportDetails({
+															...tableFilteredState,
+															totalrecord: parseInt(e.key),
+															pagenumber: pageIndex,
+														});
+													}
+												}}>
+												{pageSizeOptions.map((item) => {
+													return <Menu.Item key={item}>{item}</Menu.Item>;
+												})}
+											</Menu>
+										}>
+										<span>
+											{pageSize}
+											<IoChevronDownOutline
+												style={{ paddingTop: '5px', fontSize: '16px' }}
+											/>
+										</span>
+									</Dropdown>
+								</div>
+							</div> */}
+							<div>
+								<button
+									className={SlaReportStyle.btnPrimary}
+									onClick={() => exportHandler(slaDetailsList)}>
+									Export
+								</button>
 							</div>
-						</div> */}
-						<div>
-							<button
-								className={SlaReportStyle.btnPrimary}
-								onClick={() => exportHandler(slaDetailsList)}>
-								Export
-							</button>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			{/*
-			 * ------------ Table Starts-----------
-			 * @Table Part
-			 */}
-			<div className={SlaReportStyle.tableDetails}>
-				{isLoading ? (
-					<TableSkeleton />
-				) : (
-					<>
-						<Table
-							scroll={{ x: '100vw', y: '100vh' }}
-							id="hrListingTable"
-							columns={tableColumnsMemo}
-							bordered={false}
-							dataSource={listData}
-							// pagination={{
-							// 	size: 'small',
-							// 	pageSize: listData?.length,
-							// }}
-							pagination={false}
+				{/*
+				* ------------ Table Starts-----------
+				* @Table Part
+				*/}
+				<div className={SlaReportStyle.tableDetails}>
+					{isLoading ? (
+						<TableSkeleton />
+					) : (
+						<>
+							<Table
+								scroll={{ x: '100vw', y: '100vh' }}
+								id="hrListingTable"
+								columns={tableColumnsMemo}
+								bordered={false}
+								dataSource={listData}
+								// pagination={{
+								// 	size: 'small',
+								// 	pageSize: listData?.length,
+								// }}
+								pagination={false}
+							/>
+							{/* <div className={SlaReportStyle.formPanelAction}>
+								<button
+									type="submit"
+									onClick={viewDemandFunnelSummaryHandler}
+									className={SlaReportStyle.btnPrimary}>
+									View Summary
+								</button>
+							</div> */}
+						</>
+					)}
+				</div>
+
+				<ul className={SlaReportStyle.actionStatustab}>
+					<li>
+						<span className={SlaReportStyle.actionTab_On}></span>
+						ON Time
+					</li>
+					<li>
+						<span className={SlaReportStyle.actionTab_Before}></span>
+						Before Time
+					</li>
+					<li>
+						<span className={SlaReportStyle.actionTab_Exceeded}></span>
+						Exceeded SLA
+					</li>
+					<li>
+						<span className={SlaReportStyle.actionTab_Running}></span>
+						Running Late
+					</li>
+				</ul>
+
+				<div className={SlaReportStyle.tableDetails}>
+					{isSummaryLoading ? (
+						<TableSkeleton />
+					) : (
+						<>
+							<Table
+								scroll={{ x: '200vw', y: '100vh' }}
+								columns={slaDetailColumn}
+								bordered={false}
+								dataSource={slaDetailsList}
+								pagination={{
+									onChange: (pageNum, pageSize) => {
+										setPageIndex(pageNum);
+										setPageSize(pageSize);
+										// setTableFilteredState({
+										// 	...tableFilteredState,
+										// 	totalrecord: pageSize,
+										// 	pagenumber: pageNum,
+										// });
+										// slaReportDetails({ pageNumber: pageNum, totalRecord: pageSize , filterFieldsSLA: {
+										// 	fromDate: new Date(firstDay).toLocaleDateString('en-US'),
+										// 	toDate: new Date(lastDay).toLocaleDateString('en-US'),
+										// 	isHrfocused: isFocusedRole,
+										// } });
+									},
+									size: 'small',
+									pageSize: pageSize,
+									pageSizeOptions: pageSizeOptions,
+									total: totalRecords,
+									showTotal: (total, range) => {
+										return `${range[0]}-${range[1]} of ${totalRecords} items`
+									}
+										,
+									defaultCurrent: pageIndex,
+								}}
+							/>
+						</>
+					)}
+				</div>
+
+				{isAllowFilters && (
+					<Suspense fallback={<div>Loading...</div>}>
+						<SlaReportFilter
+							setAppliedFilters={setAppliedFilters}
+							appliedFilter={appliedFilter}
+							setCheckedState={setCheckedState}
+							checkedState={checkedState}
+							handleHRRequest={handleHRRequest}
+							setTableFilteredState={setTableFilteredState}
+							tableFilteredState={tableFilteredState}
+							setFilteredTagLength={setFilteredTagLength}
+							onRemoveHRFilters={onRemoveFilters}
+							getHTMLFilter={getHTMLFilter}
+							hrFilterList={reportConfig.slaReportFilterList()}
+							filtersType={reportConfig.slaReportFilterTypeConfig(
+								filtersList && filtersList,
+							)}
+							firstDay={firstDay}
+							lastDay={lastDay}
+							slaValue={slaValue}
+							clearFilters={clearFilters}
 						/>
-						{/* <div className={SlaReportStyle.formPanelAction}>
-							<button
-								type="submit"
-								onClick={viewDemandFunnelSummaryHandler}
-								className={SlaReportStyle.btnPrimary}>
-								View Summary
-							</button>
-						</div> */}
-					</>
+					</Suspense>
 				)}
-			</div>
-
-			<ul className={SlaReportStyle.actionStatustab}>
-				<li>
-					<span className={SlaReportStyle.actionTab_On}></span>
-					ON Time
-				</li>
-				<li>
-					<span className={SlaReportStyle.actionTab_Before}></span>
-					Before Time
-				</li>
-				<li>
-					<span className={SlaReportStyle.actionTab_Exceeded}></span>
-					Exceeded SLA
-				</li>
-				<li>
-					<span className={SlaReportStyle.actionTab_Running}></span>
-					Running Late
-				</li>
-			</ul>
-
-			<div className={SlaReportStyle.tableDetails}>
-				{isSummaryLoading ? (
-					<TableSkeleton />
-				) : (
-					<>
-						<Table
-							scroll={{ x: '200vw', y: '100vh' }}
-							columns={slaDetailColumn}
-							bordered={false}
-							dataSource={slaDetailsList}
-							pagination={{
-								onChange: (pageNum, pageSize) => {
-									setPageIndex(pageNum);
-									setPageSize(pageSize);
-									// setTableFilteredState({
-									// 	...tableFilteredState,
-									// 	totalrecord: pageSize,
-									// 	pagenumber: pageNum,
-									// });
-									// slaReportDetails({ pageNumber: pageNum, totalRecord: pageSize , filterFieldsSLA: {
-									// 	fromDate: new Date(firstDay).toLocaleDateString('en-US'),
-									// 	toDate: new Date(lastDay).toLocaleDateString('en-US'),
-									// 	isHrfocused: isFocusedRole,
-									// } });
-								},
-								size: 'small',
-								pageSize: pageSize,
-								pageSizeOptions: pageSizeOptions,
-								total: totalRecords,
-								showTotal: (total, range) => {
-									return `${range[0]}-${range[1]} of ${totalRecords} items`
-								}
-									,
-								defaultCurrent: pageIndex,
-							}}
-						/>
-					</>
-				)}
-			</div>
-
-			{isAllowFilters && (
-				<Suspense fallback={<div>Loading...</div>}>
-					<SlaReportFilter
-						setAppliedFilters={setAppliedFilters}
-						appliedFilter={appliedFilter}
-						setCheckedState={setCheckedState}
-						checkedState={checkedState}
-						handleHRRequest={handleHRRequest}
-						setTableFilteredState={setTableFilteredState}
-						tableFilteredState={tableFilteredState}
-						setFilteredTagLength={setFilteredTagLength}
-						onRemoveHRFilters={onRemoveFilters}
-						getHTMLFilter={getHTMLFilter}
-						hrFilterList={reportConfig.slaReportFilterList()}
-						filtersType={reportConfig.slaReportFilterTypeConfig(
-							filtersList && filtersList,
-						)}
-						firstDay={firstDay}
-						lastDay={lastDay}
-						slaValue={slaValue}
-						clearFilters={clearFilters}
+				{/* {demandFunnelModal && (
+					<DemandFunnelModal
+						demandFunnelModal={demandFunnelModal}
+						setDemandFunnelModal={setDemandFunnelModal}
+						demandFunnelHRDetailsState={demandFunnelHRDetailsState}
+						setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
+						demandFunnelValue={demandFunnelValue}
 					/>
-				</Suspense>
-			)}
-			{/* {demandFunnelModal && (
-				<DemandFunnelModal
-					demandFunnelModal={demandFunnelModal}
-					setDemandFunnelModal={setDemandFunnelModal}
-					demandFunnelHRDetailsState={demandFunnelHRDetailsState}
-					setDemandFunnelHRDetailsState={setDemandFunnelHRDetailsState}
-					demandFunnelValue={demandFunnelValue}
-				/>
-			)} */}
-		</div>
+				)} */}
+		{/* </WithLoader> */}
+			</div>
 	);
 };
 
