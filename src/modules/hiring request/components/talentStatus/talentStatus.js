@@ -88,7 +88,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 		}
 	}, [talentStatusCreditBase])
 	
-console.log(controllCreditBaseRejectParentReason,controllCreditBaseRejectReason, watch(["rejectReasonID",'rejectReasonParentID']))
+
 	const removeOnHoldStatusHandler = useCallback(async () => {
 		const response = await TalentStatusDAO.removeOnHoldStatusRequestDAO({
 			hrID: hrId,
