@@ -21,6 +21,8 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 		setError,
 		getValues,
 		unregister,
+		clearErrors,
+		resetField,
 		watch,
 		formState: { errors },
 	} = useForm({});
@@ -35,6 +37,8 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 	const [controllCreditBaseTalentStatus, setControllCreditBaseTalentStatus] =
     useState("Select Talent Status");
 	const [controllCreditBaseRejectReason, setControllCreditBaseRejectReason] =
+    useState("Select Reject Reason");
+	const [controllCreditBaseRejectParentReason, setControllCreditBaseRejectParentReason] =
     useState("Select Reject Reason");
 	const getTalentStatusHandler = useCallback(async () => {
 		const response = await TalentStatusDAO.getStatusDetailRequestDAO({
@@ -75,12 +79,16 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 		if(talentStatusCreditBase?.RejectReasonId){
 			const creditRejectReason = talentStatusCreditBase?.CreditBased_RejectReason?.filter(
 				(item) => item?.id=== talentStatusCreditBase?.RejectReasonId)
-				setValue("rejectReasonID",creditRejectReason[0])
-				setControllCreditBaseRejectReason(creditRejectReason[0]?.value)
+			// const getParentRejectedReasons = talentStatusCreditBase?.CreditBased_RejectReason?.find()
+			setValue('rejectReasonParentID',{id: creditRejectReason[0]?.parentId	,value: creditRejectReason[0]?.parentName})
+
+			setControllCreditBaseRejectParentReason(creditRejectReason[0]?.parentName)
+			setValue("rejectReasonID",creditRejectReason[0])
+			setControllCreditBaseRejectReason(creditRejectReason[0]?.reason)
 		}
 	}, [talentStatusCreditBase])
 	
-
+console.log(controllCreditBaseRejectParentReason,controllCreditBaseRejectReason, watch(["rejectReasonID",'rejectReasonParentID']))
 	const removeOnHoldStatusHandler = useCallback(async () => {
 		const response = await TalentStatusDAO.removeOnHoldStatusRequestDAO({
 			hrID: hrId,
@@ -169,6 +177,25 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 		watchTalentStatus?.id,
 	]);
 
+	const getParentRejectedReasons = (reasons)=> {
+		let reasonList = []
+		let reasonListArray = []
+
+		reasons?.forEach(reason=> {
+			if(!reasonList.includes(reason.parentName)){
+				reasonList.push(reason.parentName);
+				reasonListArray.push({ id:reason.parentId , value:reason.parentName })
+			}
+		})
+
+		return reasonListArray
+	}
+
+	const getRejectedReasons = (reasons)=> {
+		let reasonsList = reasons?.filter(reason=> reason.parentId === watch('rejectReasonParentID')?.id)?.map(item=> ({id:item.id,value:item.reason}))
+		return reasonsList
+	}
+
 	return (
 		<div className={TalentStatusStyle.container}>
 			<div className={TalentStatusStyle.modalTitle}>
@@ -215,8 +242,30 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 								errorMsg="Please select talent Status."
 							/>
 						</div>
-						{watch('statusId')?.id === 8 && (
+						{watch('statusId')?.id === 8 && (<>
 							<div className={TalentStatusStyle.colMd12}>
+							<HRSelectField
+								controlledValue={controllCreditBaseRejectParentReason}
+								setControlledValue={setControllCreditBaseRejectParentReason}
+							 	isControlled={true}
+								mode={'id/value'}
+								setValue={setValue}
+								register={register}
+								name="rejectReasonParentID"
+								label=" Rejection Reason"
+								defaultValue="Please Select"
+								options={getParentRejectedReasons(talentStatusCreditBase?.CreditBased_RejectReason)}
+								required
+								isError={errors['rejectReasonParentID'] && errors['rejectReasonParentID']}
+								errorMsg="Please select Reject Reason."
+								onValueChange={()=>{
+									resetField("rejectReasonID")
+									setControllCreditBaseRejectReason("Select Reject Reason")
+									clearErrors('rejectReasonParentID')
+								}}
+							/>
+							</div>
+							{watch('rejectReasonParentID')?.id && <div className={TalentStatusStyle.colMd12}>
 							<HRSelectField
 								controlledValue={controllCreditBaseRejectReason}
 								setControlledValue={setControllCreditBaseRejectReason}
@@ -225,14 +274,20 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 								setValue={setValue}
 								register={register}
 								name="rejectReasonID"
-								label="Select Reject Reason"
+								label="Detailed Rejection Sub Category"
 								defaultValue="Please Select"
-								options={talentStatusCreditBase?.CreditBased_RejectReason}
+								options={getRejectedReasons(talentStatusCreditBase?.CreditBased_RejectReason)}
 								required
-								isError={errors['rejectReasonID '] && errors['rejectReasonID ']}
-								errorMsg="Please select Reject Reason."
+								isError={errors['rejectReasonID'] && errors['rejectReasonID']}
+								errorMsg="Please select Category."
+								onValueChange={()=>{
+									clearErrors('rejectReasonID')
+								}}
 							/>
-							</div>
+							</div>}
+							
+						</>
+							
 						)}
 						{watch('rejectReasonID')?.id === -1 && watch('statusId')?.id === 8 &&(
 							<div className={TalentStatusStyle.colMd12}>
@@ -287,20 +342,46 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 						)}
 						{watch('talentStatus')?.id === 7 && (
 						<>
-							<div className={TalentStatusStyle.colMd12}>
+						<div className={TalentStatusStyle.colMd12}>
+							<HRSelectField
+								// controlledValue={controllCreditBaseRejectReason}
+								// setControlledValue={setControllCreditBaseRejectReason}
+							 	// isControlled={true}
+								mode={'id/value'}
+								setValue={setValue}
+								register={register}
+								name="rejectReasonParentID"
+								label="Rejection Reason"
+								defaultValue="Please Select"
+								options={getParentRejectedReasons(talentStatus?.Data?.TalentRejectReason)}
+								required
+								isError={errors['rejectReasonParentID'] && errors['rejectReasonParentID']}
+								errorMsg="Please select Reject Reason."
+								onValueChange={()=>{
+									resetField("rejectReason")
+									// setControllCreditBaseRejectReason("Select Reject Reason")
+									clearErrors('rejectReasonParentID')
+								}}
+							/>
+							</div>
+							{watch('rejectReasonParentID')?.id && <div className={TalentStatusStyle.colMd12}>
 								<HRSelectField
 									mode={'id/value'}
 									setValue={setValue}
 									register={register}
 									name="rejectReason"
-									label="Select Reject Reason"
+									label="Detailed Rejection Sub Category"
 									defaultValue="Please Select"
-									options={talentStatus?.Data?.TalentRejectReason}
+									options={getRejectedReasons(talentStatus?.Data?.TalentRejectReason)}
 									required
 									isError={errors['rejectReason'] && errors['rejectReason']}
-									errorMsg="Please select reject Reason."
+									errorMsg="Please select Category."
+									onValueChange={()=>{
+										clearErrors('rejectReason')
+									}}
 								/>
-							</div>
+							</div>}
+							
 							<div className={TalentStatusStyle.colMd12}>
 								<HRInputField
 									isTextArea={true}
