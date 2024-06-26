@@ -359,13 +359,16 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 								errorMsg="Please select Reject Reason."
 								onValueChange={()=>{
 									resetField("rejectReason")
-									// setControllCreditBaseRejectReason("Select Reject Reason")
+									setControllCreditBaseRejectReason("Select Reject Reason")
 									clearErrors('rejectReasonParentID')
 								}}
 							/>
 							</div>
 							{watch('rejectReasonParentID')?.id && <div className={TalentStatusStyle.colMd12}>
 								<HRSelectField
+									controlledValue={controllCreditBaseRejectReason}
+									setControlledValue={setControllCreditBaseRejectReason}
+									isControlled={true}
 									mode={'id/value'}
 									setValue={setValue}
 									register={register}
