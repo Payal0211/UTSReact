@@ -421,7 +421,13 @@ export const allClientsConfig = {
                     width: '200px',
                 },
                 {
-                    title: 'POC',
+                    title: 'Access Type',
+                    dataIndex: 'accessType',
+                    key: 'accessType',
+                    width: '250px',
+                },
+                {
+                    title: 'NBD',
                     dataIndex: 'poc',
                     key: 'poc',
                     width: '150px',
@@ -455,15 +461,15 @@ export const allClientsConfig = {
                 //     width: '100px',
                 // },
                 {
-                    title: 'Source',
+                    title: 'Source (Category)',
                     dataIndex: 'inputSource',
                     key: 'inputSource',
                     width: '150px',            },
-                {
-                    title: 'Source Category',
-                    dataIndex: 'sourceCategory',
-                    key: 'sourceCategory',
-                    width: '150px',            },
+                // {
+                //     title: 'Source Category',
+                //     dataIndex: 'sourceCategory',
+                //     key: 'sourceCategory',
+                //     width: '150px',            },
                 {
                     title: 'Status',
                     dataIndex: 'status',
@@ -609,7 +615,13 @@ export const allClientsConfig = {
                     width: '200px',
                 },
                 {
-                    title: 'POC',
+                    title: 'Access Type',
+                    dataIndex: 'accessType',
+                    key: 'accessType',
+                    width: '250px',
+                },
+                {
+                    title: 'NBD',
                     dataIndex: 'poc',
                     key: 'poc',
                     width: '150px',
@@ -643,15 +655,15 @@ export const allClientsConfig = {
                 //     width: '100px',
                 // },
                 {
-                    title: 'Source',
+                    title: 'Source (Category)',
                     dataIndex: 'inputSource',
                     key: 'inputSource',
                     width: '150px',            },
-                {
-                    title: 'Source Category',
-                    dataIndex: 'sourceCategory',
-                    key: 'sourceCategory',
-                    width: '150px',            },
+                // {
+                //     title: 'Source Category',
+                //     dataIndex: 'sourceCategory',
+                //     key: 'sourceCategory',
+                //     width: '150px',            },
                 {
                     title: 'Status',
                     dataIndex: 'status',
