@@ -78,6 +78,21 @@ export default function BeforePreOnboarding({
   const [replacementEngHr,setReplacementEngHr] = useState([])
   const loggedInUserID = JSON.parse(localStorage.getItem('userSessionInfo')).LoggedInUserTypeID
 
+  const [getStartEndTimes, setStaryEndTimes] = useState([]);
+  const [controlledFromTimeValue, setControlledFromTimeValue] =
+  useState("Select From Time");
+const [controlledEndTimeValue, setControlledEndTimeValue] =
+  useState("Select End Time");
+
+  const getStartEndTimeHandler = useCallback(async () => {
+    const durationTypes = await MasterDAO.getStartEndTimeDAO();
+    setStaryEndTimes(durationTypes && durationTypes?.responseBody);
+  }, []);
+
+  useEffect(()=>{
+    getStartEndTimeHandler();
+  },[])
+
   function convertToValidDate(timeString, currentDate = new Date()) {
     // Step 1: Parse the time string into separate components
     const [time, period] = timeString.split(" ");
@@ -164,25 +179,25 @@ export default function BeforePreOnboarding({
             ?.utS_HRAcceptedBy
         );
         setValue('lwd', dayjs(result.responseBody.details?.replacementDetail?.lastWorkingDay).toDate());
-        result.responseBody.details.preOnboardingDetailsForAMAssignment
-                .shiftStartTime && setValue(
-          "shiftStartTime",
-          // new Date(
-            convertToValidDate(
-              result.responseBody.details?.preOnboardingDetailsForAMAssignment?.shiftStartTime
-            )
-          // )
-        );
-        result.responseBody.details?.preOnboardingDetailsForAMAssignment
-        ?.shiftEndTime && setValue(
-          "shiftEndTime",
-          // new Date(
-            convertToValidDate(
-              result.responseBody.details?.preOnboardingDetailsForAMAssignment
-                ?.shiftEndTime
-            )
-          // )    
-        );
+        // result.responseBody.details.preOnboardingDetailsForAMAssignment
+        //         .shiftStartTime && setValue(
+        //   "shiftStartTime",
+        //   // new Date(
+        //     convertToValidDate(
+        //       result.responseBody.details?.preOnboardingDetailsForAMAssignment?.shiftStartTime
+        //     )
+        //   // )
+        // );
+        // result.responseBody.details?.preOnboardingDetailsForAMAssignment
+        // ?.shiftEndTime && setValue(
+        //   "shiftEndTime",
+        //   // new Date(
+        //     convertToValidDate(
+        //       result.responseBody.details?.preOnboardingDetailsForAMAssignment
+        //         ?.shiftEndTime
+        //     )
+        //   // )    
+        // );
         
         let preOnboardDetail = result.responseBody.details?.preOnboardingDetailsForAMAssignment
 
@@ -211,12 +226,33 @@ export default function BeforePreOnboarding({
           setValue('dealSource',dealSourceObj[0])
         }
         const _filterData = result.responseBody.details.replacementEngAndHR?.filter((e) => e.id === result.responseBody.details.replacementDetail.newHrid || result.responseBody.details.replacementDetail.newOnBoardId);
-        setControlledEngRep(_filterData[0].value)
+        setControlledEngRep(_filterData[0]?.value)
         setValue('engagementreplacement',_filterData[0])
       }
     },
     [setValue]
   );
+
+  useEffect(() => {
+    if (preONBoardingData?.preOnboardingDetailsForAMAssignment?.shiftStartTime) {
+      const findFromTime = getStartEndTimes.filter(
+        (item) =>
+          item?.value ===
+        preONBoardingData?.preOnboardingDetailsForAMAssignment
+        .shiftStartTime
+      );
+      const findEndTime = getStartEndTimes.filter(
+        (item) =>
+          item?.value ===
+          preONBoardingData?.preOnboardingDetailsForAMAssignment?.shiftEndTime 
+      );
+      setValue("shiftStartTime", findFromTime[0]);
+      setControlledFromTimeValue(findFromTime[0]?.value);
+      setValue("shiftEndTime", findEndTime[0]);
+      setControlledEndTimeValue(findEndTime[0]?.value);
+      // setControlledDurationTypeValue(findDurationMode[0]?.value);
+    }
+  }, [preONBoardingData, getStartEndTimes, setValue]);
 
   useEffect(() => {
     if (talentDeteils?.OnBoardId) {
@@ -267,14 +303,14 @@ export default function BeforePreOnboarding({
       let payload = {
         hR_ID: HRID,
         companyID: preOnboardingDetailsForAMAssignment?.companyID,
-        deal_Owner: d.dealOwner.value, //Update
-        deal_Source: d.dealSource.value, //Update
+        deal_Owner: d?.dealOwner?.value, //Update
+        deal_Source: d?.dealSource?.value, //Update
         onboard_ID: talentDeteils?.OnBoardId,
         engagemenID: preOnboardingDetailsForAMAssignment?.engagemenID,
         assignAM: preONBoardingData.assignAM, // when clicked from AMAssignment button pass this as true, you will get this value from 1st API’s response.
         talentID: talentDeteils?.TalentID,
-        talentShiftStartTime: moment(d.shiftStartTime).format('HH:mm A') , //Update
-        talentShiftEndTime: moment(d.shiftEndTime).format('HH:mm A'), //Update
+        talentShiftStartTime: d.shiftStartTime?.value , //Update
+        talentShiftEndTime: d.shiftEndTime?.value, //Update
         payRate: preOnboardingDetailsForAMAssignment?.isHRTypeDP
           ? 0
           :  parseFloat(d.payRate) , // pass as null if DP HR  // send numeric value //Update
@@ -500,7 +536,8 @@ export default function BeforePreOnboarding({
                   </span>
                 </div>
 
-                <div className={HRDetailStyle.modalFormWrapper}>
+                {/* Hide deal source and owner */}
+                {/* <div className={HRDetailStyle.modalFormWrapper}>
                   <div className={HRDetailStyle.modalFormCol}>
                     <HRSelectField
                     controlledValue={controlledDealSource}
@@ -539,7 +576,7 @@ export default function BeforePreOnboarding({
                       disabled={isTabDisabled}
                     />
                   </div>
-                </div>
+                </div> */}
 
                 {/* <div className={HRDetailStyle.onboardingCondition}>
                     <h5>Is this an Existing Client?</h5>
@@ -1113,7 +1150,7 @@ export default function BeforePreOnboarding({
                   </span>
                 </div>
                 
-                <div className={HRDetailStyle.onboardingDetailText}>
+                {/* <div className={HRDetailStyle.onboardingDetailText}>
                   <span>Talent IST Shift Start Time </span>
                   <span className={HRDetailStyle.onboardingTextBold}>
                     {preONBoardingData?.preOnboardingDetailsForAMAssignment?.istShiftStartTime
@@ -1128,7 +1165,7 @@ export default function BeforePreOnboarding({
                       ? preONBoardingData?.preOnboardingDetailsForAMAssignment?.istShiftEndTime
                       : "NA"}
                   </span>
-                </div>
+                </div> */}
 
                 {/* <div className={HRDetailStyle.onboardingDetailText}>
                     <span>Talent Shift Start/End Time</span>
@@ -1142,9 +1179,57 @@ export default function BeforePreOnboarding({
                       <div className={HRDetailStyle.timeSlotLabel}>
                         Talent Shift Start Time <span>*</span>
                       </div>
-                      <div className={HRDetailStyle.timeSlotItem}>
-                        <ClockIconSVG />
-                        <Controller
+                      <div className={`${HRDetailStyle.timeSlotItem} ${HRDetailStyle.formGroup}`}>
+                        {/* <ClockIconSVG /> */}
+                        <HRSelectField
+                    controlledValue={controlledFromTimeValue}
+                    setControlledValue={val=> {setControlledFromTimeValue(val);
+                      let index = getStartEndTimes.findIndex(item=> item.value === val)
+                      if(index >= getStartEndTimes.length -18){         
+                          let newInd =   index - (getStartEndTimes.length -18)
+                          let endtime = getStartEndTimes[newInd]
+                          setControlledEndTimeValue(
+                            endtime.value
+                          );
+                          setValue(
+                            "endTime",{id: "", value: endtime.value}  
+                          );
+                      }else{
+                          let endtime = getStartEndTimes[index + 18]
+                          setControlledEndTimeValue(
+                            endtime.value
+                          );
+                          setValue(
+                            "endTime",{id: "", value: endtime.value}  
+                          );
+                      };
+                    }}
+                    isControlled={true}
+                    mode={"id/value"}
+                    // disabled={
+                    //   watch("region")?.value.includes("Overlapping")
+                    //     ? true
+                    //     : false
+                    // }
+                    setValue={setValue}
+                    register={register}
+                    // label={"From Time"}
+                    searchable={true}
+                    defaultValue="Select From Time"
+                    options={getStartEndTimes.map((item) => ({
+                      id: item.id,
+                      label: item.text,
+                      value: item.value,
+                    }))}
+                    name="shiftStartTime"
+                    isError={errors["shiftStartTime"] && errors["shiftStartTime"]}
+                    required={true}
+                    disabled={isTabDisabled}
+                    // errorMsg={"Please select from time."}
+                    // errorMsg={errors["shiftStartTime"]?.message ?  errors["shiftStartTime"].message : "Please select from time."}
+                    errorMsg={errors["shiftStartTime"] ? errors["shiftStartTime"].message.length > 0 ? errors["fromTime"].message : "Please select from time." : "Please select from time."}
+                  />
+                        {/* <Controller
                           render={({ ...props }) => (
                             <DatePicker
                               selected={watch("shiftStartTime")}
@@ -1164,7 +1249,7 @@ export default function BeforePreOnboarding({
                           name="shiftStartTime"
                           rules={{ required: true }}
                           control={control}
-                        />
+                        /> */}
                         {errors.shiftStartTime && (
                           <div className={HRDetailStyle.error}>
                             Please enter start time
@@ -1179,9 +1264,35 @@ export default function BeforePreOnboarding({
                       <div className={HRDetailStyle.timeSlotLabel}>
                         Talent Shift End Time <span>*</span>
                       </div>
-                      <div className={HRDetailStyle.timeSlotItem}>
-                        <ClockIconSVG />
-                        <Controller
+                      <div className={`${HRDetailStyle.timeSlotItem} ${HRDetailStyle.formGroup}`}>
+                        {/* <ClockIconSVG /> */}
+                        <HRSelectField
+                    controlledValue={controlledEndTimeValue}
+                    setControlledValue={setControlledEndTimeValue}
+                    isControlled={true}
+                    mode={"id/value"}
+                    // disabled={
+                    //   watch("region")?.value.includes("Overlapping")
+                    //     ? true
+                    //     : false
+                    // }
+                    setValue={setValue}
+                    register={register}
+                    // label={"End Time"}
+                    searchable={true}
+                    defaultValue="Select End Time"
+                    options={getStartEndTimes.map((item) => ({
+                      id: item.id,
+                      label: item.text,
+                      value: item.value,
+                    }))}
+                    disabled={isTabDisabled}
+                    name="shiftEndTime"
+                    isError={errors["shiftEndTime"] && errors["shiftEndTime"]}
+                    required={true}
+                    errorMsg={"Please select end time."}
+                  />
+                        {/* <Controller
                           render={({ ...props }) => (
                             <DatePicker
                               selected={watch("shiftEndTime")}
@@ -1201,7 +1312,7 @@ export default function BeforePreOnboarding({
                           name="shiftEndTime"
                           rules={{ required: true }}
                           control={control}
-                        />
+                        /> */}
                         {errors.shiftEndTime && (
                           <div className={HRDetailStyle.error}>
                             Please enter end time

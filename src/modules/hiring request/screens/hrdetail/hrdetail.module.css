@@ -532,7 +532,10 @@
     align-items: center;
 }
 
-
+.formGroup [class*="ant-select-selection-search-input"] {
+    height: auto !important;
+    padding: 16px 16px !important;
+}
 /* Time Start & End Time Start */
 
 .startEndDate{

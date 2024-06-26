@@ -236,6 +236,8 @@ const HRFields = ({
   const [ showAddCompany, setShowAddCompany] = useState(false)
   const [showAddClient,setAddClient] = useState(false)
 
+  const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? 'DPHR' : ''
+
   const watchClientName = watch("clientName");
   const _endTime = watch("endTime");
   let filteredMemo = useMemo(() => {
@@ -1440,43 +1442,105 @@ const HRFields = ({
         // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
         let dpPercentage = watch('NRMargin')
         // let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
-        let cal = ((watch('adhocBudgetCost') * 100)/ (100 + +dpPercentage)) 
-        let upFess = (watch('adhocBudgetCost') - cal) * 12
-        setValue("needToPay",cal? cal.toFixed(2) : 0)
-        setValue('uplersFees',upFess ? upFess.toFixed(2) : 0)
-      }else{
-          //  let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
-          let cal =  (watch('adhocBudgetCost') * 100)/ (100 + +watch('NRMargin'))
-          let upFess = watch('adhocBudgetCost') - cal
+        // // let cal = ((watch('adhocBudgetCost') * 100)/ (100 + +dpPercentage)) 
+        // let needtopay = watch('adhocBudgetCost') - cal
+        // setValue("needToPay",needtopay ? needtopay.toFixed(2) : 0)
+        // setValue('uplersFees',cal? cal.toFixed(2) : 0)
+        if(isGUID){
+          let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
+          let needToPay = watch('adhocBudgetCost') - cal
+          setValue('uplersFees',cal ? cal : 0)
+          setValue("needToPay",needToPay? needToPay : 0)
+        }else{
+          let cal = ((watch('adhocBudgetCost') * 100)/ (100 + +dpPercentage)) 
+          let upFess = (watch('adhocBudgetCost') - cal) * 12
           setValue("needToPay",cal? cal.toFixed(2) : 0)
           setValue('uplersFees',upFess ? upFess.toFixed(2) : 0)
+        }
+      }else{
+          //  let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
+          // let cal =  (watch('adhocBudgetCost') * 100)/ (100 + +watch('NRMargin'))
+          // let upFess = watch('adhocBudgetCost') - cal
+          // setValue("needToPay",cal? cal.toFixed(2) : 0)
+          // setValue('uplersFees',upFess ? upFess.toFixed(2) : 0)
+
+          if(isGUID){
+            let cal = (watch('NRMargin') * watch('adhocBudgetCost'))/ 100
+            let needToPay = +watch('adhocBudgetCost') + cal
+        setValue('uplersFees',cal ? cal : 0)
+        setValue("needToPay",needToPay? needToPay : 0)
+          }else{
+            let cal =  (watch('adhocBudgetCost') * 100)/ (100 + +watch('NRMargin'))
+            let upFess = watch('adhocBudgetCost') - cal
+            setValue("needToPay",cal? cal.toFixed(2) : 0)
+            setValue('uplersFees',upFess ? upFess.toFixed(2) : 0)
+          }           
+        }
       }
    
-    }
     
-    if(watch('budget')?.value === '2'){
-      if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
-        // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
-        // let dpPercentage = watch('NRMargin')
-        // let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
-        // let calMax = (dpPercentage * watch('maximumBudget') *12) /100
-        let calMin = ((watch('minimumBudget') * 100)/(100 + +watch('NRMargin'))) 
-        let minUpFees = (watch('minimumBudget') - calMin)* 12
-        let calMax = ((watch('maximumBudget') * 100)/(100 + +watch('NRMargin'))) 
-        let maxUpFees = (watch('maximumBudget') - calMax)* 12
-        setValue("needToPay",`${calMin? calMin.toFixed(2) : 0} - ${calMax? calMax.toFixed(2) : 0}`)
-        setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
-      }else{
-        // let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
-        // let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
-        let calMin =  (watch('minimumBudget') * 100)/(100 + +watch('NRMargin'))
-        let minUpFees = watch('minimumBudget') - calMin
-        let calMax =  (watch('maximumBudget') * 100)/(100 + +watch('NRMargin'))
-        let maxUpFees = watch('maximumBudget') - calMax
-        setValue("needToPay",`${calMin? calMin.toFixed(2) : 0} - ${calMax? calMax.toFixed(2) : 0}`)
-        setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
-       }
-    }
+      if(watch('budget')?.value === '2'){
+        if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+          // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+          if(isGUID){
+              let dpPercentage = watch('NRMargin')
+              let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
+              let calMax = (dpPercentage * watch('maximumBudget') *12) /100           
+              let minCal = +watch('minimumBudget') - calMin
+              let maxCal = +watch('maximumBudget') - calMax
+              setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
+              setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`,watch('NRMargin'))
+          }else{
+                let calMin = ((watch('minimumBudget') * 100)/(100 + +watch('NRMargin'))) 
+                let minUpFees = (watch('minimumBudget') - calMin)* 12
+                let calMax = ((watch('maximumBudget') * 100)/(100 + +watch('NRMargin'))) 
+                let maxUpFees = (watch('maximumBudget') - calMax)* 12
+                setValue("needToPay",`${calMin? calMin.toFixed(2) : 0} - ${calMax? calMax.toFixed(2) : 0}`)
+                setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
+          }
+         
+        }else{
+          if(isGUID){
+              let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
+              let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
+              let minCal = +watch('minimumBudget') + +calMin
+              let maxCal = +watch('maximumBudget') + +calMax
+              setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
+              setValue('uplersFees',`${calMin? calMin : 0} - ${calMax? calMax : 0}`)
+          }else{
+            let calMin =  (watch('minimumBudget') * 100)/(100 + +watch('NRMargin'))
+            let minUpFees = watch('minimumBudget') - calMin
+            let calMax =  (watch('maximumBudget') * 100)/(100 + +watch('NRMargin'))
+            let maxUpFees = watch('maximumBudget') - calMax
+            setValue("needToPay",`${calMin? calMin.toFixed(2) : 0} - ${calMax? calMax.toFixed(2) : 0}`)
+            setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
+          }
+          
+         }
+      }
+    // if(watch('budget')?.value === '2'){
+    //   if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+    //     // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
+    //     let dpPercentage = watch('NRMargin')
+    //     let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
+    //     let calMax = (dpPercentage * watch('maximumBudget') *12) /100
+    //     // let calMin = ((watch('minimumBudget') * 100)/(100 + +watch('NRMargin'))) 
+    //     let minUpFees = (watch('minimumBudget') - calMin)* 12
+    //     // let calMax = ((watch('maximumBudget') * 100)/(100 + +watch('NRMargin'))) 
+    //     let maxUpFees = (watch('maximumBudget') - calMax)* 12
+    //     setValue("needToPay",`${calMin? calMin.toFixed(2) : 0} - ${calMax? calMax.toFixed(2) : 0}`)
+    //     setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
+    //   }else{
+    //     // let calMin = (watch('NRMargin') * watch('minimumBudget'))/ 100
+    //     // let calMax = (watch('NRMargin') * watch('maximumBudget'))/ 100
+    //     let calMin =  (watch('minimumBudget') * 100)/(100 + +watch('NRMargin'))
+    //     let minUpFees = watch('minimumBudget') - calMin
+    //     let calMax =  (watch('maximumBudget') * 100)/(100 + +watch('NRMargin'))
+    //     let maxUpFees = watch('maximumBudget') - calMax
+    //     setValue("needToPay",`${calMin? calMin.toFixed(2) : 0} - ${calMax? calMax.toFixed(2) : 0}`)
+    //     setValue('uplersFees',`${minUpFees? minUpFees.toFixed(2) : 0} - ${maxUpFees? maxUpFees.toFixed(2) : 0}`)
+    //    }
+    // }
   },[watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget'),watch('budget'),watch('NRMargin')]);
 
   // set client need to pay
@@ -2725,7 +2789,7 @@ const HRFields = ({
                     setValue={setValue}
                     register={register}
                     // label={`Add your estimated ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}budget (Monthly)`}
-                    label={`Add your client estimated budget (Monthly)`}
+                    label={`Add your ${isGUID ? 'talent salary' :'client estimated '  }  budget (Monthly)`}
                     defaultValue="Select Budget"
                     options={budgets.map((item) => ({
                       id: item.id,
@@ -2741,7 +2805,7 @@ const HRFields = ({
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={`Client Estimated Budget (Monthly)`}
+                  label={`${typeOfPricing === 1 || userCompanyTypeID=== 2 ? isGUID ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (Monthly)`}
                   register={register}
                   name="adhocBudgetCost"
                   type={InputType.NUMBER}
@@ -2761,7 +2825,7 @@ const HRFields = ({
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
                   // label={`Estimated Minimum ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}Budget (Monthly)`}
-                  label={`Client Estimated Minimum Budget (Monthly)`}
+                  label={isGUID ?  `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Minimum Budget (Monthly)`: `Client Estimated Minimum Budget (Monthly)`}
                   register={register}
                   name="minimumBudget"
                   type={InputType.NUMBER}
@@ -2782,7 +2846,7 @@ const HRFields = ({
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
                   // label={`Estimated Maximum ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}Budget (Monthly)`}
-                  label={`Client Estimated Maximum Budget (Monthly)`}
+                  label={isGUID ?   `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Maximum Budget (Monthly)` : `Client Estimated Maximum Budget (Monthly)`}
                   register={register}
                   name="maximumBudget"
                   type={InputType.NUMBER}
@@ -2804,7 +2868,7 @@ const HRFields = ({
                 {watch('budget')?.value !== "3" && <>
               <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees Amount ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }` : `Estimated Uplers Fees Amount ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '' }`}
+                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }` : `Estimated Uplers Fees ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }`}
                                 register={register}
                                 name="uplersFees"
                                 type={InputType.TEXT}
@@ -2813,17 +2877,18 @@ const HRFields = ({
                               />
                             </div>
 
-                           <div className={HRFieldStyle.colMd4}>
+                            {!isGUID && <div className={HRFieldStyle.colMd4}>
                               <HRInputField
                                 // label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Estimated Client needs to pay ( Min - Max )" : "Estimated Client needs to pay"}
                                 register={register}
-                                label={"Talent Estimated Pay"}
+                                label={"Estimated Salary Budget(Monthly)"}
                                 name="needToPay"
                                 type={InputType.TEXT}
                                 placeholder="Maximum- Ex: 2300"
                                 disabled={true}
                               />
-                            </div>
+                            </div>}
+                           
               </>}
               </>}
             
