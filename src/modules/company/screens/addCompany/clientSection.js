@@ -287,17 +287,18 @@ function ClientSection({
                       name={`clientDetails.[${index}].designation`}
                       type={InputType.TEXT}
                       placeholder="Enter Client Designation"
-                      validationSchema={{
-                        validate:(value)=>{
-                          const regex = /^[a-zA-Z0-9 ]*$/
-                          if(!regex.test(value)){
-                            return 'Invalid input. Special characters are not allowed.'
-                          }
-                        }
+                      validationSchema={{                        
+                        // required: `Please enter the client designation.`,
+                        // validate:(value)=>{
+                        //   const regex = /^[a-zA-Z0-9 ]*$/
+                        //   if(!regex.test(value)){
+                        //     return 'Invalid input. Special characters are not allowed.'
+                        //   }
+                        // }
                       }}
                       forArrayFields={true}
                       errors={errors?.clientDetails?.[index]?.designation}
-                      required={watch(`clientDetails.[${index}].designation`) ?  true : false}
+                      // required={watch(`clientDetails.[${index}].designation`) ?  true : false}
                     />
                     {console.log("err",errors)}
                   </div>
