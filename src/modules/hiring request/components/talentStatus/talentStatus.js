@@ -88,7 +88,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, closeModal,apiData}) => {
 		}
 	}, [talentStatusCreditBase])
 	
-console.log(controllCreditBaseRejectParentReason,controllCreditBaseRejectReason, watch(["rejectReasonID",'rejectReasonParentID']))
+
 	const removeOnHoldStatusHandler = useCallback(async () => {
 		const response = await TalentStatusDAO.removeOnHoldStatusRequestDAO({
 			hrID: hrId,
@@ -359,13 +359,16 @@ console.log(controllCreditBaseRejectParentReason,controllCreditBaseRejectReason,
 								errorMsg="Please select Reject Reason."
 								onValueChange={()=>{
 									resetField("rejectReason")
-									// setControllCreditBaseRejectReason("Select Reject Reason")
+									setControllCreditBaseRejectReason("Select Reject Reason")
 									clearErrors('rejectReasonParentID')
 								}}
 							/>
 							</div>
 							{watch('rejectReasonParentID')?.id && <div className={TalentStatusStyle.colMd12}>
 								<HRSelectField
+									controlledValue={controllCreditBaseRejectReason}
+									setControlledValue={setControllCreditBaseRejectReason}
+									isControlled={true}
 									mode={'id/value'}
 									setValue={setValue}
 									register={register}
