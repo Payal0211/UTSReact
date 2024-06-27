@@ -1,13 +1,17 @@
 export class NetworkInfo {
 	static PROTOCOL = 'http://';
+	static PROTOCOL_S = 'https://';
 	// static domain = 'localhost:5162/';
 	static DOMAIN = '3.218.6.134:9082/';
+	static ATS_DOMAIN = '/atsstaging.uplers.com/api/';
+	static ATS_TOKEN = 'y8sxutshp4gm2u4lsmsmlg';
 	// static domain = 'https://clientportal.uplers.com/gspace/';
 	static domain = 'https://bb8d-3-218-6-134.ngrok-free.app/';
 	static FILEDOMAIN = '3.218.6.134:90/';
 	// static PROTOCOL = 'https://';
 	// static DOMAIN = '809c77bfbe78ce2d4010a080a425ea2b.loophole.site/';
 	static NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN;
+	static ATS_NETWORK = NetworkInfo.PROTOCOL_S + NetworkInfo.ATS_DOMAIN
 	static network =  NetworkInfo.domain;
 	static FILENETWORK = NetworkInfo.PROTOCOL + NetworkInfo.FILEDOMAIN;
 	static ENV = "QA";
@@ -301,6 +305,8 @@ export class HiringRequestsAPI {
 	static UPDATE_SLA_DATE = 'UpdateSLADate';
 	static EXTRACTTEXTUSINGPYTHON = 'ExtractTextUsingPython';
 	// static GET_CHANNEL_LIBRARY = 'GetChannelLibrary';
+	static NOTE_LIST = 'hr/note-list';
+	static SAVE_NOTES = 'hr/note-create';
 	static GET_lOGIN_HR_INFO = 'GetLoginHrInfo';
 	static SYNC_HR_UTS_TO_ATS  = 'SyncHRUtsToAts'
 	static GET_ACTION_UPDATES = 'GetUpdateHRDetails'

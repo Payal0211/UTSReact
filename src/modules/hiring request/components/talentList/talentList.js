@@ -61,6 +61,7 @@ import AddNotes from './addNotes';
 import AllNotes from './allNotes';
 import ViewNotes from './viewNotes';
 import EditNotes from './editNotes';
+import moment from 'moment';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -229,11 +230,6 @@ const TalentList = ({
 		hrId: '',
 	});
 	const [getOnboardFormDetails, setOnboardFormDetails] = useState({});
-
-	const [showAddNotesModal, setShowAddNotesModal] = useState(false);
-	const [showAllNotesModal, setShowAllNotesModal] = useState(false);
-	const [showViewNotesModal, setShowViewNotesModal] = useState(false);
-	const [showEditNotesModal, setShowEditNotesModal] = useState(false);
 
 	const getOnboardingForm = async (getOnboardID) => {
 		setOnboardFormDetails({});
@@ -490,6 +486,134 @@ const TalentList = ({
 		}
 	};
 
+	// Talents Notes 
+
+	const fetchTalentsNotes =async (item,setNotes)=>{
+		let payload = {
+			"HRID": apiData?.HR_Id,
+			"ATS_TalentID": item?.ATSTalentID
+		}
+
+		let result = await hiringRequestDAO.getTalentNotesDAO(payload)
+		if(result.statusCode === 200) {
+			setNotes(result.responseBody.notes)
+		}else{
+			setNotes([])
+		}
+	}
+
+	const deleteNoteDetails = async (d) => {
+        let payload = {      
+            // "IsDeleted":true,
+    }
+    
+    let result = await hiringRequestDAO.saveNoteDetails(payload)
+    
+    console.log(payload)
+        }
+
+	const TalentNotesCardComp = ({item , listIndex})=>{
+		const [allNotes , setAllNotes] = useState([])
+		const [showAddNotesModal, setShowAddNotesModal] = useState(false);
+	const [showAllNotesModal, setShowAllNotesModal] = useState(false);
+	const [showViewNotesModal, setShowViewNotesModal] = useState(false);
+	const [showEditNotesModal, setShowEditNotesModal] = useState(false);
+		useEffect(()=>{
+			fetchTalentsNotes(item,setAllNotes )
+		},[item])
+
+console.log('allNotes',allNotes)
+		return (
+			<div className={TalentListStyle.addNotesList}>
+			<div className={TalentListStyle.addNotesHead}>
+				<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAddNotesModal(true)} title='Add a note for talent'><NotesIcon />Add a note for talent</button>
+			</div>
+
+			{allNotes?.map(note=> {
+			return	<div className={TalentListStyle.addNoteItem} key={note.Note_Id}>
+				<div className={TalentListStyle.addNoteAction} key={note.Note_Id}>
+					<button type="button" className={TalentListStyle.addNoteBtn} title='Edit' onClick={() => setShowEditNotesModal(true)}><EditIcon /></button>
+					<button type="button" className={TalentListStyle.addNoteBtn} title='Delete'><DeleteIcon /></button>
+				</div>
+				<h4>{note?.EmployeeName}    {moment(note.Added_Date).format('DD MMM YYYY')}   {/* 11:12 AM*/} </h4>
+				<p>{note.Notes} <span className={TalentListStyle.addNoteView} onClick={() => setShowViewNotesModal(true)}>view more</span></p>
+			</div>
+			}) }
+			{/* <div className={TalentListStyle.addNoteItem}>
+				<div className={TalentListStyle.addNoteAction}>
+					<button type="button" className={TalentListStyle.addNoteBtn} title='Edit' onClick={() => setShowEditNotesModal(true)}><EditIcon /></button>
+					<button type="button" className={TalentListStyle.addNoteBtn} title='Delete'><DeleteIcon /></button>
+				</div>
+				<h4>Stefan Mac    9 April 2024    11:12 AM</h4>
+				<p>Emily Chen is a strong candidate for the Marketing Manager role at ABC Corporation. She has a great.. <span className={TalentListStyle.addNoteView} onClick={() => setShowViewNotesModal(true)}>view more</span></p>
+			</div> */}
+
+			<div className={TalentListStyle.addNoteMore}>
+				<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAllNotesModal(true)} title='Show more notes'>Show more notes</button>
+			</div>
+
+			{/** ============ Modal For Add Notes ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				className="commonModalWrap"
+				open={showAddNotesModal}
+				onCancel={() =>
+					setShowAddNotesModal(false)
+				}>
+				<AddNotes onCancel={()=>setShowAddNotesModal(false)} item={item} apiData={apiData} setAllNotes={setAllNotes}/>
+			</Modal>
+
+			{/** ============ Modal For All Notes ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				className="commonModalWrap"
+				open={showAllNotesModal}
+				onCancel={() =>
+					setShowAllNotesModal(false)
+				}>
+				<AllNotes />
+			</Modal>
+			
+			{/** ============ Modal For View Notes ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				className="commonModalWrap"
+				open={showViewNotesModal}
+				onCancel={() =>
+					setShowViewNotesModal(false)
+				}>
+				<ViewNotes />
+			</Modal>
+			
+			{/** ============ Modal For Edit Notes ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				className="commonModalWrap"
+				open={showEditNotesModal}
+				onCancel={() =>
+					setShowEditNotesModal(false)
+				}>
+				<EditNotes />
+			</Modal>
+		</div>
+		)
+	
+	}
+
+
+
 	return (
 		<div>
 			{contextHolder}
@@ -589,7 +713,7 @@ const TalentList = ({
 											</Dropdown>
 										</div>
 									</div>
-
+			
 									<div className={TalentListStyle.profileURL}>
 										<span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
@@ -604,17 +728,17 @@ const TalentList = ({
 											) : (
 												'NA'
 											)}
-
+			
 										</span>
 									</div>
-
+			
 									<div className={TalentListStyle.EmailID}>
 										<span>Talent Email:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
 											{item?.EmailID ? item?.EmailID : "-"}
 										</span>
 									</div>
-
+			
 									<div className={TalentListStyle.experience}>
 										<span>Experience:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
@@ -657,13 +781,13 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-
+			
 									<TalentInterviewStatus
 										item={item}
 										setProfileRejectedModal={setProfileRejectedModal}
 										setShowFeedback={setShowFeedback}
 										setTalentIndex={setTalentIndex} />
-
+			
 									{/* HTML for Rejection Status Starts  */}
 									{/* <div className={TalentListStyle.statusReject}>
 										<div className={TalentListStyle.statusRejectInner}>
@@ -680,7 +804,7 @@ const TalentList = ({
 										</div>
 									</div> */}
 									{/* HTML for Rejection Status Ends */}
-
+			
 									{/* HTML for Feedback Pending Starts */}
 									{/* <div className={TalentListStyle.statusPending}>
 										<div className={TalentListStyle.statusPendingInner}>
@@ -693,7 +817,7 @@ const TalentList = ({
 										</div>
 									</div> */}
 									{/* HTML for Feedback Pending Ends */}
-
+			
 									{/* <div className={TalentListStyle.payRate}>
 										<div>
 											<span>Interview Status:</span>&nbsp;&nbsp;
@@ -703,7 +827,7 @@ const TalentList = ({
 													: item?.InterviewStatus}
 											</span>
 										</div>
-
+			
 										{(item?.ClientFeedback === InterviewFeedbackStatus.HIRED ||
 											item?.ClientFeedback ===
 												InterviewFeedbackStatus.REJECTED) && (
@@ -728,7 +852,7 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-
+			
 									{DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
 										<div>
 											<span>
@@ -750,7 +874,7 @@ const TalentList = ({
 															setTalentIndex(item?.TalentID);
 															setEditBillRate(true);
 														}}
-
+			
 														style={{
 															textDecoration: 'underline',
 															color: `var(--background-color-ebony)`,
@@ -773,7 +897,7 @@ const TalentList = ({
 												</span>}
 											</>}
 										</>}
-
+			
 									</div>)}
 									{/* {!hrType ? (
 										<>
@@ -829,7 +953,7 @@ const TalentList = ({
 													setTalentIndex(item?.TalentID);
 													setEditBillRate(true);
 												}}
-
+			
 												style={{
 													textDecoration: 'underline',
 													color: `var(--background-color-ebony)`,
@@ -873,7 +997,7 @@ const TalentList = ({
 													setEditPayRate(true);
 													setTalentIndex(item?.TalentID);
 												}}
-
+			
 												style={{
 													textDecoration: 'underline',
 													color: `var(--background-color-ebony)`,
@@ -904,7 +1028,7 @@ const TalentList = ({
 															? 'NA'
 															: item?.DPPercentage}
 													</span>
-
+			
 												</div>
 												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && <span
 													onClick={() => {
@@ -935,7 +1059,7 @@ const TalentList = ({
 											</div>
 										</>
 									)} */}
-
+			
 									<Divider
 										style={{
 											margin: '10px 0',
@@ -950,7 +1074,7 @@ const TalentList = ({
 											</span>
 										</div>
 									)}
-
+			
 									<div className={TalentListStyle.interviewSlots}>
 										<span>Available Interview Slots:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
@@ -1012,7 +1136,7 @@ const TalentList = ({
 											</span>
 										</div>
 									)}
-
+			
 									{/* <Divider
 										style={{
 											margin: '10px 0',
@@ -1031,7 +1155,7 @@ const TalentList = ({
 										}}>
 										Versant Test Results
 									</div>
-
+			
 									<div
 										style={{ padding: '2px 0', textDecoration: 'underline' }}>
 										Skill Test Results
@@ -1089,7 +1213,7 @@ const TalentList = ({
 																setTalentIndex(item?.TalentID);
 																break;
 															}
-
+			
 															case TalentOnboardStatus.INTERVIEW_STATUS: {
 																setInterviewStatus(true);
 																setTalentIndex(item?.TalentID);
@@ -1132,7 +1256,7 @@ const TalentList = ({
 															case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
 																setOnboardTalentModal(true);
 																setTalentIndex(item?.TalentID);
-
+			
 																break;
 															}
 															case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
@@ -1143,7 +1267,7 @@ const TalentList = ({
 															case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
 																// setLegalClientOnboardModal(true);
 																// setTalentIndex(item?.TalentID);
-
+			
 																setShowAMModal(true);
 																let Flags = {
 																	talent: item,
@@ -1210,35 +1334,10 @@ const TalentList = ({
 												/>
 											</div>
 										)}
-
-									<div className={TalentListStyle.addNotesList}>
-										<div className={TalentListStyle.addNotesHead}>
-											<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAddNotesModal(true)} title='Add a note for talent'><NotesIcon />Add a note for talent</button>
-										</div>
-										<div className={TalentListStyle.addNoteItem}>
-											<div className={TalentListStyle.addNoteAction}>
-												<button type="button" className={TalentListStyle.addNoteBtn} title='Edit' onClick={() => setShowEditNotesModal(true)}><EditIcon /></button>
-												<button type="button" className={TalentListStyle.addNoteBtn} title='Delete'><DeleteIcon /></button>
-											</div>
-											<h4>Stefan Mac    9 April 2024    11:12 AM</h4>
-											<p>Emily Chen is a strong candidate for the Marketing Manager role at ABC Corporation. She has a great.. <span className={TalentListStyle.addNoteView} onClick={() => setShowViewNotesModal(true)}>view more</span></p>
-										</div>
-
-										<div className={TalentListStyle.addNoteItem}>
-											<div className={TalentListStyle.addNoteAction}>
-												<button type="button" className={TalentListStyle.addNoteBtn} title='Edit' onClick={() => setShowEditNotesModal(true)}><EditIcon /></button>
-												<button type="button" className={TalentListStyle.addNoteBtn} title='Delete'><DeleteIcon /></button>
-											</div>
-											<h4>Stefan Mac    9 April 2024    11:12 AM</h4>
-											<p>The budget is less as per the talent costs we have for this range. Please increase it to 2500-3300 USD</p>
-										</div>
-
-										<div className={TalentListStyle.addNoteMore}>
-											<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAllNotesModal(true)} title='Show more notes'>Show more notes</button>
-										</div>
-									</div>
+									{console.log("items value",item , apiData)}
+									<TalentNotesCardComp item={item} />
 								</div>
-
+			
 								<div className={TalentListStyle.talentCardNote}>
 									<InfoCircleIcon /> Please note that any notes you add here will also be accessible to the client.
 								</div>
@@ -1250,64 +1349,6 @@ const TalentList = ({
 
 			{/** ============ MODAL FOR PROFILE REJECTED REASON ================ */}
 			<PreOnboardingTabModal showAMModal={showAMModal} setShowAMModal={setShowAMModal} AMFlags={AMFlags} callAPI={callAPI} />
-
-
-			{/** ============ Modal For Add Notes ================ */}
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				className="commonModalWrap"
-				open={showAddNotesModal}
-				onCancel={() =>
-					setShowAddNotesModal(false)
-				}>
-				<AddNotes />
-			</Modal>
-
-			{/** ============ Modal For All Notes ================ */}
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				className="commonModalWrap"
-				open={showAllNotesModal}
-				onCancel={() =>
-					setShowAllNotesModal(false)
-				}>
-				<AllNotes />
-			</Modal>
-			
-			{/** ============ Modal For View Notes ================ */}
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				className="commonModalWrap"
-				open={showViewNotesModal}
-				onCancel={() =>
-					setShowViewNotesModal(false)
-				}>
-				<ViewNotes />
-			</Modal>
-			
-			{/** ============ Modal For Edit Notes ================ */}
-			<Modal
-				transitionName=""
-				width="930px"
-				centered
-				footer={null}
-				className="commonModalWrap"
-				open={showEditNotesModal}
-				onCancel={() =>
-					setShowEditNotesModal(false)
-				}>
-				<EditNotes />
-			</Modal>
-
 
 
 			{/** ============ Engagement Onboard ================ */}

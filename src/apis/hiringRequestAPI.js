@@ -1250,6 +1250,34 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.cloneHRToDemoAccount');
 		}
 	},
+	getTalentNotesAPI: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.ATS_NETWORK+ HiringRequestsAPI.NOTE_LIST ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data
+		httpService.setAuthToken = NetworkInfo.ATS_TOKEN;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getTalentNotesAPI');
+		}
+	},
+	saveTalentNotesAPI: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.ATS_NETWORK+ HiringRequestsAPI.SAVE_NOTES;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data
+		httpService.setAuthToken = NetworkInfo.ATS_TOKEN;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.saveTalentNotesAPI');
+		}
+	},
 
 	// getChannelLibraryApi: async (data) => {
 	// 	let httpService = new HttpServices();
