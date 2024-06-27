@@ -2146,7 +2146,7 @@ const HRFields = ({
                       register={register}
                       label={"Sales Person"}
                       defaultValue={
-                        salesPersionNameFromEmail.length > 0 ? salesPersionNameFromEmail 
+                        salesPersionNameFromEmail?.length > 0 ? salesPersionNameFromEmail 
                           : "Select sales Persons"
                       }
                       options={salesPerson && salesPerson}
