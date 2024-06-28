@@ -1,9 +1,9 @@
-import { Divider, message, Checkbox } from 'antd';
+import { Divider, message, Checkbox, AutoComplete } from 'antd';
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import DebriefingHRStyle from './debriefingHR.module.css';
 import AddInterviewer from '../addInterviewer/addInterviewer';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useFieldArray, useForm, Controller } from 'react-hook-form';
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
@@ -143,6 +143,7 @@ const DebriefingHR = ({
 		setGoodSuggestedSkills(addData?.chatGptSkills?.split(","));
 		setAllSuggestedSkills(addData?.chatGptAllSkills?.split(","));
 		setValue('role',addData?.addHiringRequest?.requestForTalent);
+		setValue('hrTitle',addData?.addHiringRequest?.requestForTalent);
 	}, [addData]);
 
 	useEffect(()=>{
@@ -159,6 +160,7 @@ const DebriefingHR = ({
 			);
 			setValue('role', findRole[0]);
 			setControlledRoleValue(findRole[0]?.value);
+			setValue('hrTitle',addData?.addHiringRequest?.requestForTalent);
 		}
 	}, [addData, talentRole]);
 
@@ -413,7 +415,8 @@ const DebriefingHR = ({
 			JDDumpID: jdDumpID || 0,
 			ActionType: "Save",
 			IsHrfocused: isFocusedRole,
-			role: d.role?.id ? d.role?.id : null,
+			// role: d.role?.id ? d.role?.id : null,
+			role: null,
 			hrTitle: d.hrTitle,
 			allSkills:goodToSkillList.map(item=> item.skillsName).toString(),
 			"interviewerDetails":{
@@ -681,7 +684,8 @@ const DebriefingHR = ({
 								name="jobDescription"
 								required
 							/> */}
-							<label style={{ marginBottom: "12px" }}>
+							<div className={DebriefingHRStyle.mb50}>
+								<label style={{ marginBottom: "12px" }}>
 								Job Description
 								{/* <span className={AddNewClientStyle.reqField}>*</span> */}
 							</label>
@@ -701,6 +705,8 @@ const DebriefingHR = ({
 								validate: (value) => value.trim() !== '' || 'Job description cannot be empty'
 								})}
 							/>
+							</div>
+							
 						{/* Hide company details */}
 							{/* {userCompanyTypeID === 1 && 
 							<TextEditor
@@ -755,7 +761,7 @@ const DebriefingHR = ({
 								{/* <p>* Please do not mention company name here</p> </div>}*/}
 							
 
-							{userCompanyTypeID === 1 && <div className={DebriefingHRStyle.mb50}>
+							{/* {userCompanyTypeID === 1 && <div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
 									controlledValue={controlledRoleValue}
 									setControlledValue={setControlledRoleValue}
@@ -788,7 +794,42 @@ const DebriefingHR = ({
 									placeholder="Enter title"
 									required
 								/>
-							</div>
+							</div> */}
+
+								<div className={DebriefingHRStyle.mb50}>
+									<div className={DebriefingHRStyle.formGroup}>
+											<label>
+											Hiring Request Title <b style={{ color: "red" }}>*</b>
+											</label>
+											<Controller
+											render={({ ...props }) => (
+												<AutoComplete
+												options={talentRole && talentRole}
+												filterOption={true}             
+												onChange={(hrTitle) => {
+													setValue("hrTitle", hrTitle);
+												}}
+												placeholder="Enter Hiring Request Title"
+												//   ref={controllerRef}
+												value={watch('hrTitle')}
+												/>
+											)}
+											{...register("hrTitle", {
+												required: 'please enter the hiring request title.',
+											})}
+											name="hrTitle"
+											// rules={{ required: true }}
+											control={control}
+											/>
+											{errors.hrTitle && (
+											<div className={DebriefingHRStyle.error}>
+												{errors.hrTitle?.message &&
+												`* ${errors?.hrTitle?.message}`}
+											</div>
+											)}
+									</div>
+								</div>
+
 							<div className={DebriefingHRStyle.mb50}>
 							<HRSelectField
 										isControlled={true}

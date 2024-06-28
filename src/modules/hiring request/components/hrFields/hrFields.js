@@ -1447,7 +1447,8 @@ const HRFields = ({
         // setValue("needToPay",needtopay ? needtopay.toFixed(2) : 0)
         // setValue('uplersFees',cal? cal.toFixed(2) : 0)
         if(isGUID){
-          let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
+          // let cal = (dpPercentage * (watch('adhocBudgetCost') * 12)) / 100
+          let cal = (dpPercentage * (watch('adhocBudgetCost'))) / 100
           let needToPay = watch('adhocBudgetCost') - cal
           setValue('uplersFees',cal ? cal : 0)
           setValue("needToPay",needToPay? needToPay : 0)
@@ -1484,8 +1485,10 @@ const HRFields = ({
           // let dpPercentage = hrPricingTypes.find(i => i.id === watch('hiringPricingType')?.id).pricingPercent
           if(isGUID){
               let dpPercentage = watch('NRMargin')
-              let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
-              let calMax = (dpPercentage * watch('maximumBudget') *12) /100           
+              // let calMin = (dpPercentage * (watch('minimumBudget') * 12)) / 100
+              // let calMax = (dpPercentage * watch('maximumBudget') *12) /100        
+              let calMin = (dpPercentage * (watch('minimumBudget'))) / 100
+              let calMax = (dpPercentage * watch('maximumBudget')) /100      
               let minCal = +watch('minimumBudget') - calMin
               let maxCal = +watch('maximumBudget') - calMax
               setValue("needToPay",`${minCal? minCal : 0} - ${maxCal? maxCal : 0}`)
@@ -2146,7 +2149,7 @@ const HRFields = ({
                       register={register}
                       label={"Sales Person"}
                       defaultValue={
-                        salesPersionNameFromEmail.length > 0 ? salesPersionNameFromEmail 
+                        salesPersionNameFromEmail?.length > 0 ? salesPersionNameFromEmail 
                           : "Select sales Persons"
                       }
                       options={salesPerson && salesPerson}
@@ -2789,7 +2792,7 @@ const HRFields = ({
                     setValue={setValue}
                     register={register}
                     // label={`Add your estimated ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}budget (Monthly)`}
-                    label={`Add your ${isGUID ? 'talent salary' :'client estimated '  }  budget (Monthly)`}
+                    label={`Add your ${isGUID ? 'talent salary' :'client estimated '  }  budget (${isGUID ? "Annum" : "Monthly"})`}
                     defaultValue="Select Budget"
                     options={budgets.map((item) => ({
                       id: item.id,
@@ -2805,7 +2808,7 @@ const HRFields = ({
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={`${typeOfPricing === 1 || userCompanyTypeID=== 2 ? isGUID ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (Monthly)`}
+                  label={`${typeOfPricing === 1 || userCompanyTypeID=== 2 ? isGUID ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (${isGUID ? "Annum" : "Monthly"})`}
                   register={register}
                   name="adhocBudgetCost"
                   type={InputType.NUMBER}
@@ -2825,7 +2828,7 @@ const HRFields = ({
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
                   // label={`Estimated Minimum ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}Budget (Monthly)`}
-                  label={isGUID ?  `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Minimum Budget (Monthly)`: `Client Estimated Minimum Budget (Monthly)`}
+                  label={isGUID ?  `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`: `Client Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`}
                   register={register}
                   name="minimumBudget"
                   type={InputType.NUMBER}
@@ -2846,7 +2849,7 @@ const HRFields = ({
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
                   // label={`Estimated Maximum ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}Budget (Monthly)`}
-                  label={isGUID ?   `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Maximum Budget (Monthly)` : `Client Estimated Maximum Budget (Monthly)`}
+                  label={isGUID ?   `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})` : `Client Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})`}
                   register={register}
                   name="maximumBudget"
                   type={InputType.NUMBER}
@@ -2868,7 +2871,7 @@ const HRFields = ({
                 {watch('budget')?.value !== "3" && <>
               <div className={HRFieldStyle.colMd4}>
                               <HRInputField
-                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }` : `Estimated Uplers Fees ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annually)' : '(Monthly)' }`}
+                                label={watch('budget')?.value === "2" ?  `Estimated Uplers Fees ( Min - Max) ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annum)' : '(Monthly)' }` : `Estimated Uplers Fees ${(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? '(Annum)' : '(Monthly)' }`}
                                 register={register}
                                 name="uplersFees"
                                 type={InputType.TEXT}
@@ -2881,7 +2884,7 @@ const HRFields = ({
                               <HRInputField
                                 // label={(typeOfPricing === 0) ? watch('budget')?.value === "2" ? "Talent Estimated Pay ( Min -Max )" :  "Talent Estimated Pay" : watch('budget')?.value === "2" ?"Estimated Client needs to pay ( Min - Max )" : "Estimated Client needs to pay"}
                                 register={register}
-                                label={"Estimated Salary Budget(Monthly)"}
+                                label={`Estimated Salary Budget(${isGUID ? "Annum" : "Monthly"})`}
                                 name="needToPay"
                                 type={InputType.TEXT}
                                 placeholder="Maximum- Ex: 2300"
