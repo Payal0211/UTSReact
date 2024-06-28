@@ -1422,6 +1422,30 @@ const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType
     }
   },[watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget'),watch('budget'),watch('NRMargin')]);
 
+
+  const setBudgetValueOnChange = () =>{
+    if(watch('budget')?.value === '1'){
+      if(watch('adhocBudgetCost')){
+         if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+            setValue('adhocBudgetCost',watch('adhocBudgetCost') *12)
+      }
+      else{
+        setValue('adhocBudgetCost',watch('adhocBudgetCost') / 12)
+      }
+      }
+    }
+
+    if(watch('budget')?.value === '2'){
+      if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+        watch('maximumBudget') && setValue('maximumBudget', watch('maximumBudget') * 12)
+        watch('minimumBudget') && setValue('minimumBudget', watch('minimumBudget') * 12)
+      }else{
+        watch('maximumBudget') && setValue('maximumBudget', watch('maximumBudget') / 12)
+        watch('minimumBudget') && setValue('minimumBudget', watch('minimumBudget') / 12)
+      }
+    }
+  }
+
   // set client need to pay
   // useEffect(()=>{
   //   if(watch('budget')?.value === '1'){
@@ -2300,7 +2324,9 @@ const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType
                    setControlledValue={ val=> {setControlledHiringPricingTypeValue(val)
                     let precentage = hrPricingTypes.find(item=> item.id === watch('hiringPricingType')?.id)?.pricingPercent
                     ;resetField('contractDuration');setContractDuration('');resetField('payrollType');setControlledPayrollTypeValue("Select payroll")
-                    setValue('NRMargin',precentage)}}
+                    setValue('NRMargin',precentage);
+                    setBudgetValueOnChange()
+                  }}
                     isControlled={true}
                     mode={"id/value"}
                     setValue={setValue}

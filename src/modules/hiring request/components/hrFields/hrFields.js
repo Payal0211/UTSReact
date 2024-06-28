@@ -1546,6 +1546,29 @@ const HRFields = ({
     // }
   },[watch('adhocBudgetCost'),watch('maximumBudget'),watch('minimumBudget'),watch('budget'),watch('NRMargin')]);
 
+  const setBudgetValueOnChange = () =>{
+    if(watch('budget')?.value === '1'){
+      if(watch('adhocBudgetCost')){
+         if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+            setValue('adhocBudgetCost',watch('adhocBudgetCost') *12)
+      }
+      else{
+        setValue('adhocBudgetCost',watch('adhocBudgetCost') / 12)
+      }
+      }
+    }
+
+    if(watch('budget')?.value === '2'){
+      if(watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ){
+        watch('maximumBudget') && setValue('maximumBudget', watch('maximumBudget') * 12)
+        watch('minimumBudget') && setValue('minimumBudget', watch('minimumBudget') * 12)
+      }else{
+        watch('maximumBudget') && setValue('maximumBudget', watch('maximumBudget') / 12)
+        watch('minimumBudget') && setValue('minimumBudget', watch('minimumBudget') / 12)
+      }
+    }
+  }
+
   // set client need to pay
   // useEffect(()=>{
   //   if(watch('budget')?.value === '1'){
@@ -2426,7 +2449,7 @@ const HRFields = ({
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
                    controlledValue={controlledHiringPricingTypeValue}
-                   setControlledValue={setControlledHiringPricingTypeValue}
+                   setControlledValue={val => {setControlledHiringPricingTypeValue(val);setBudgetValueOnChange()}}
                    isControlled={true}
                     mode={"id/value"}
                     setValue={setValue}
