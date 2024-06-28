@@ -711,14 +711,14 @@ function PreviewClientModal({
 
     if (typeOfPricing === 1) {
       let Filter = hrPricingTypes.filter(
-        (item) => item.isActive === true && item.isTransparent === true
+        (item) => item.isActive === true && item.isTransparent === true && item.engagementType === "Full Time"
       );
       if (Filter.length) {
         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
       }
     } else {
       let Filter = hrPricingTypes.filter(
-        (item) => item.isActive === true && item.isTransparent === false
+        (item) => item.isActive === true && item.isTransparent === false && item.engagementType === "Full Time"
       );
       if (Filter.length) {
         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
