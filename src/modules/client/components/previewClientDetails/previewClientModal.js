@@ -1373,7 +1373,7 @@ function PreviewClientModal({
                           <div className={previewClientStyle.fundingrounds}>
                             <ul>
                               <li>
-                                <span>Self-funded (bootstrapped)</span>
+                                <span>Self-funded (bootstrapped) company without external investments.</span>
                               </li>
                             </ul>
                           </div>
