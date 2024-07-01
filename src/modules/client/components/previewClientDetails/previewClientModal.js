@@ -354,8 +354,8 @@ function PreviewClientModal({
     if (getCompanyDetails?.pocUserDetailsEdit && allPocs?.length) {
       let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserDetailsEdit?.pocUserID);
         let SelectedPocs = {
-          id: data.id,
-          value: data.value,
+          id: data.id ? data.id : null,
+          value: data.value ? data.value : null,
         };
       setValue("pocId", SelectedPocs);
       setControlledPOC(SelectedPocs);
