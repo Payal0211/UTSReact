@@ -35,12 +35,14 @@ function AddNotes({onCancel , item, apiData,setAllNotes}) {
     
     let result = await hiringRequestDAO.saveTalentNotesDAO(payload)
     
-    console.log(payload, result)
+    // console.log(payload, result)
     if(result.statusCode === 200) {
         setAllNotes(prev => ([{"Note_Id":result.responseBody.Note_Id, ...payload
             }, ...prev]))
+            onCancel()
+            resetField('addNoteForTalent')
     }else{
-        
+         message.error('Not able to add Note Something went Wrong. Please try again')
     }
         }
     return (<>
@@ -71,7 +73,7 @@ function AddNotes({onCancel , item, apiData,setAllNotes}) {
             />
 
             <div className={AddNotesStyle.formPanelAction}>
-                <button className={AddNotesStyle.btn} type='button' onClick={()=>onCancel()}>Cancel</button>
+                <button className={AddNotesStyle.btn} type='button' onClick={()=>{onCancel(); resetField('addNoteForTalent')}}>Cancel</button>
                 <button type="submit" className={AddNotesStyle.btnPrimary} onClick={handleSubmit(saveNoteDetails)}>Save</button>
             </div>
         </div>

@@ -86,6 +86,7 @@ const TalentList = ({
 	apiData
 }) => {
 	const navigate = useNavigate()
+	const EmpID = localStorage.getItem('EmployeeID')
 	const [scheduleAnotherRoundInterview, setScheduleAnotherRoundInterview] =
 		useState(false);
 	// console.log(scheduleAnotherRoundInterview, '-scheduleAnotherRoundInterview');
@@ -496,61 +497,64 @@ const TalentList = ({
 
 		let result = await hiringRequestDAO.getTalentNotesDAO(payload)
 		if(result.statusCode === 200) {
-			setNotes(result.responseBody.notes)
+			setNotes(result.responseBody.notes?.reverse())
 		}else{
 			setNotes([])
 		}
 	}
 
-	const deleteNoteDetails = async (d) => {
-        let payload = {      
-            // "IsDeleted":true,
+	const deleteNoteDetails = async (note,setAllNotes,item) => {
+        let payload = {   
+			...note,   
+            "IsDeleted":true,
+			"CompanyId":apiData?.ClientDetail?.CompanyId,
+            "ContactName" : apiData?.ClientDetail?.ClientName,
+            "ContactEmail" : apiData?.ClientDetail?.ClientEmail,
+            "HiringRequest_ID": apiData?.HR_Id,
+            "ATS_TalentID": item?.ATSTalentID,
+			"EmployeeID": localStorage.getItem('EmployeeID'),
+            "EmployeeName": localStorage.getItem('FullName')
     }
     
-    let result = await hiringRequestDAO.saveNoteDetails(payload)
-    
-    console.log(payload)
+    let result = await hiringRequestDAO.saveTalentNotesDAO(payload)
+
+	if(result.statusCode === 200){
+		setAllNotes(prev => prev.filter(i => i.Note_Id !== note.Note_Id))
+	}
         }
 
-	const TalentNotesCardComp = ({item , listIndex})=>{
+	const TalentNotesCardComp = ({item})=>{
 		const [allNotes , setAllNotes] = useState([])
 		const [showAddNotesModal, setShowAddNotesModal] = useState(false);
 	const [showAllNotesModal, setShowAllNotesModal] = useState(false);
 	const [showViewNotesModal, setShowViewNotesModal] = useState(false);
+	const [viewNoteData,setViewNoteData] = useState({});
 	const [showEditNotesModal, setShowEditNotesModal] = useState(false);
 		useEffect(()=>{
 			fetchTalentsNotes(item,setAllNotes )
 		},[item])
 
-console.log('allNotes',allNotes)
 		return (
 			<div className={TalentListStyle.addNotesList}>
 			<div className={TalentListStyle.addNotesHead}>
 				<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAddNotesModal(true)} title='Add a note for talent'><NotesIcon />Add a note for talent</button>
 			</div>
 
-			{allNotes?.map(note=> {
+			{allNotes?.slice(0,2).map(note=> {
 			return	<div className={TalentListStyle.addNoteItem} key={note.Note_Id}>
-				<div className={TalentListStyle.addNoteAction} key={note.Note_Id}>
-					<button type="button" className={TalentListStyle.addNoteBtn} title='Edit' onClick={() => setShowEditNotesModal(true)}><EditIcon /></button>
-					<button type="button" className={TalentListStyle.addNoteBtn} title='Delete'><DeleteIcon /></button>
-				</div>
-				<h4>{note?.EmployeeName}    {moment(note.Added_Date).format('DD MMM YYYY')}   {/* 11:12 AM*/} </h4>
-				<p>{note.Notes} <span className={TalentListStyle.addNoteView} onClick={() => setShowViewNotesModal(true)}>view more</span></p>
+				{note.EmployeeID === EmpID && <div className={TalentListStyle.addNoteAction} key={note.Note_Id}>
+					<button type="button" className={TalentListStyle.addNoteBtn} title='Edit' onClick={() => {setShowEditNotesModal(true);setViewNoteData(note)}}><EditIcon /></button>
+					<button type="button" className={TalentListStyle.addNoteBtn} title='Delete' onClick={()=> {deleteNoteDetails(note, setAllNotes, item)}}><DeleteIcon /></button>
+				</div>}
+				
+				<h4>{note?.EmployeeName}  {moment(note.Added_Date).format('DD MMM YYYY')}   {/* 11:12 AM*/} </h4>
+				<p>{note.Notes.length > 100 ? `${note.Notes.substring(0, 100)}...` : note.Notes} {note.Notes.length > 100 && <span className={TalentListStyle.addNoteView} onClick={() => {setShowViewNotesModal(true); setViewNoteData(note)}}>view more</span>}</p>
 			</div>
 			}) }
-			{/* <div className={TalentListStyle.addNoteItem}>
-				<div className={TalentListStyle.addNoteAction}>
-					<button type="button" className={TalentListStyle.addNoteBtn} title='Edit' onClick={() => setShowEditNotesModal(true)}><EditIcon /></button>
-					<button type="button" className={TalentListStyle.addNoteBtn} title='Delete'><DeleteIcon /></button>
-				</div>
-				<h4>Stefan Mac    9 April 2024    11:12 AM</h4>
-				<p>Emily Chen is a strong candidate for the Marketing Manager role at ABC Corporation. She has a great.. <span className={TalentListStyle.addNoteView} onClick={() => setShowViewNotesModal(true)}>view more</span></p>
-			</div> */}
-
-			<div className={TalentListStyle.addNoteMore}>
+			{allNotes.length > 2 && <div className={TalentListStyle.addNoteMore}>
 				<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAllNotesModal(true)} title='Show more notes'>Show more notes</button>
-			</div>
+			</div>}
+			
 
 			{/** ============ Modal For Add Notes ================ */}
 			<Modal
@@ -577,7 +581,13 @@ console.log('allNotes',allNotes)
 				onCancel={() =>
 					setShowAllNotesModal(false)
 				}>
-				<AllNotes />
+				<AllNotes onClose={()=>setShowAllNotesModal(false)} allNotes={allNotes} onEditNote={(note)=> {
+					setShowEditNotesModal(true);setViewNoteData(note)
+				}}
+				
+				deleteNote={(note)=> {
+					deleteNoteDetails(note, setAllNotes,item)
+				}}/>
 			</Modal>
 			
 			{/** ============ Modal For View Notes ================ */}
@@ -589,9 +599,17 @@ console.log('allNotes',allNotes)
 				className="commonModalWrap"
 				open={showViewNotesModal}
 				onCancel={() =>
-					setShowViewNotesModal(false)
+					{setShowViewNotesModal(false);setViewNoteData({})}
 				}>
-				<ViewNotes />
+				<ViewNotes viewNoteData={viewNoteData} onClose={()=> {setShowViewNotesModal(false);setViewNoteData({})}} showAll={()=>{setShowAllNotesModal(true);setShowViewNotesModal(false)}}
+				onEditNote={(note)=> {
+					setShowEditNotesModal(true);setViewNoteData(note);setShowViewNotesModal(false);
+				}}
+				
+				deleteNote={(note)=> {
+					deleteNoteDetails(note, setAllNotes,item);setShowViewNotesModal(false);
+				}}
+				 />
 			</Modal>
 			
 			{/** ============ Modal For Edit Notes ================ */}
@@ -603,9 +621,17 @@ console.log('allNotes',allNotes)
 				className="commonModalWrap"
 				open={showEditNotesModal}
 				onCancel={() =>
-					setShowEditNotesModal(false)
+					{setShowEditNotesModal(false);
+					setViewNoteData({})}
 				}>
-				<EditNotes />
+				<EditNotes onClose={() =>
+					{setShowEditNotesModal(false);
+					setViewNoteData({})}}
+					viewNoteData={viewNoteData}
+					apiData={apiData}
+					item={item}
+					setAllNotes={setAllNotes}
+					/>
 			</Modal>
 		</div>
 		)
@@ -1162,6 +1188,12 @@ console.log('allNotes',allNotes)
 									</div> */}
 									<Divider
 										style={{
+											margin: '16px 0 10px 0',
+										}}
+									/>
+									<TalentNotesCardComp item={item} />
+									<Divider
+										style={{
 											margin: '10px 0',
 										}}
 									/>
@@ -1334,8 +1366,8 @@ console.log('allNotes',allNotes)
 												/>
 											</div>
 										)}
-									{console.log("items value",item , apiData)}
-									<TalentNotesCardComp item={item} />
+								
+									
 								</div>
 			
 								<div className={TalentListStyle.talentCardNote}>

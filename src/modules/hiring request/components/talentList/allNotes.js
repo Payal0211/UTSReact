@@ -8,17 +8,11 @@ import AddNotesStyle from './addNotes.module.css';
 import { InputType } from 'constants/application';
 import HRInputField from '../hrInputFields/hrInputFields';
 import { useForm } from 'react-hook-form';
+import moment from 'moment';
 
-function AllNotes() {
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        control,
-        watch,
-        resetField,
-        formState: { errors },
-    } = useForm();
+
+function AllNotes({onClose, allNotes,onEditNote,deleteNote}) {
+    const EmpID = localStorage.getItem('EmployeeID')
     return (<>
         <div className={AddNotesStyle.addNotesModal}>
             <div className={AddNotesStyle.addNotesTitle}>
@@ -26,46 +20,23 @@ function AllNotes() {
             </div>
 
             <div className={AddNotesStyle.addNotesList}>
-                <div className={AddNotesStyle.addNoteItem}>
-                    <div className={AddNotesStyle.addNoteAction}>
-                        <button type="button" className={AddNotesStyle.addNoteBtn} title='Edit'><EditIcon /></button>
-                        <button type="button" className={AddNotesStyle.addNoteBtn} title='Delete'><DeleteIcon /></button>
-                    </div>
-                    <h4>Stefan Mac    9 April 2024     11:12 AM</h4>
-                    <p>The budget is less as per the talent costs we have for this range. Please increase it to 2500-3300 USD</p>
+                {allNotes?.map(note => {
+                    return  <div className={AddNotesStyle.addNoteItem}>
+                        {note.EmployeeID === EmpID &&  <div className={AddNotesStyle.addNoteAction}>
+                        <button type="button" className={AddNotesStyle.addNoteBtn} title='Edit' onClick={()=> onEditNote(note)}><EditIcon /></button>
+                        <button type="button" className={AddNotesStyle.addNoteBtn} title='Delete' onClick={()=>deleteNote(note)}><DeleteIcon /></button>
+                    </div>}
+                   
+                    <h4>{note?.EmployeeName}  {moment(note.Added_Date).format('DD MMM YYYY')}   {/* 11:12 AM*/}</h4>
+                    <p>{note.Notes}</p>
                 </div>
-
-                <div className={AddNotesStyle.addNoteItem}>
-                    <div className={AddNotesStyle.addNoteAction}>
-                        <button type="button" className={AddNotesStyle.addNoteBtn} title='Edit'><EditIcon /></button>
-                        <button type="button" className={AddNotesStyle.addNoteBtn} title='Delete'><DeleteIcon /></button>
-                    </div>
-                    <h4>Stefan Mac    9 April 2024    11:12 AM</h4>
-                    <p>The budget is less as per the talent costs we have for this range.</p>
-                </div>
-
-                <div className={AddNotesStyle.addNoteItem}>
-                    <div className={AddNotesStyle.addNoteAction}>
-                        <button type="button" className={AddNotesStyle.addNoteBtn} title='Edit'><EditIcon /></button>
-                        <button type="button" className={AddNotesStyle.addNoteBtn} title='Delete'><DeleteIcon /></button>
-                    </div>
-                    <h4>Stefan Mac    9 April 2024    11:12 AM</h4>
-                    <p>Emily Chen is a strong candidate for the Marketing Manager role at ABC Corporation. She has a great background in digital marketing and a strong track record of driving campaign success. I'm excited to move forward with the next steps in the process. Please let me know if you have any questions or concerns.</p>
-                </div>
-
-                <div className={AddNotesStyle.addNoteItem}>
-                    <div className={AddNotesStyle.addNoteAction}>
-                        <button type="button" className={AddNotesStyle.addNoteBtn} title='Edit'><EditIcon /></button>
-                        <button type="button" className={AddNotesStyle.addNoteBtn} title='Delete'><DeleteIcon /></button>
-                    </div>
-                    <h4>Stefan Mac    9 April 2024    11:12 AM</h4>
-                    <p>Emily Chen is a strong fit for the Senior Marketing Manager role at ABC Corporation. Her leadership experience and ability to drive team results are impressive. I'm excited to move forward with the next steps in the process. - Rachel Lee, Recruiter</p>
-                </div>
+                
+                })}
             </div>
 
 
             <div className={AddNotesStyle.formPanelAction}>
-                <button type="submit" className={AddNotesStyle.btnPrimary}>Cancel</button>
+                <button type="submit" className={AddNotesStyle.btnPrimary} onClick={onClose}>Cancel</button>
             </div>
         </div>
     </>
