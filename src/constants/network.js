@@ -1,10 +1,10 @@
 export class NetworkInfo {
 	static PROTOCOL = 'http://';
 	// static domain = 'localhost:5162/';
-	static DOMAIN = '3.218.6.134:9082/';
+	static DOMAIN = '3.82.177.154:9082/';
 	// static domain = 'https://clientportal.uplers.com/gspace/';
 	static domain = 'https://bb8d-3-218-6-134.ngrok-free.app/';
-	static FILEDOMAIN = '3.218.6.134:90/';
+	static FILEDOMAIN = '3.82.177.154:90/';
 	// static PROTOCOL = 'https://';
 	// static DOMAIN = '809c77bfbe78ce2d4010a080a425ea2b.loophole.site/';
 	static NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN;
