@@ -1,5 +1,5 @@
 .dealContainer {
-    padding: 25px 40px;
+    padding: 24px 40px;
 }
 
 .dealLable {
@@ -51,7 +51,6 @@
     font-weight: bold;
     cursor: pointer;
 }
-
 
 .addFilter {
     cursor: pointer;
@@ -199,7 +198,10 @@
     cursor: pointer;
 }
 
-
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
 
 table {
     width: 100%;
@@ -506,6 +508,7 @@ table {
   
     .addFilter{
         width: 125px;
+        height: 35px;
         gap: 8px;
     }
 
@@ -522,11 +525,6 @@ table {
     .filterRight{
         gap: 15px;
     }
-  
-    .addFilter{
-        width: 125px;
-        gap: 8px;
-    }
 
     .searchFilterSet{
         width: 200px;
@@ -541,10 +539,6 @@ table {
         width: 65px;
         height: 35px;
     }
-   
-    .addFilter{
-        height: 35px;
-    }
 
     .filterCount{
         width: 18px;
@@ -555,8 +549,6 @@ table {
     .label {
         font-size: 12px;
     }
-
-
   }
   
   

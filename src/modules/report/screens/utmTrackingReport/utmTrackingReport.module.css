@@ -1,11 +1,11 @@
 .dealContainer {
-    /* background-color: red; */
     /* height: 100vh; */
-    margin: 25px 40px;
+    padding: 24px 40px;
 }
 
 .header {
-    margin-bottom: 61px;
+    /* margin-bottom: 61px; */
+    margin-bottom: 32px;
     width: inherit;
 }
 
@@ -119,15 +119,22 @@
     padding-right: 25px;
 }
 
-.cardInner{
+.cardInner {
     padding: 10px 0;
+    margin-bottom: 0;
+    list-style-type: none;
 }
 
-.cardInner .row{
+.cardInner .row {
     display: flex;
     justify-content: space-between;
-    padding: 5px 15px;
+    padding: 10px 15px;
     font-size: 13px;
+    align-items: center;
+}
+
+.cardInner .row p{
+    margin-bottom: 0;
 }
 
 .cardInner .row div:first-child{
@@ -342,13 +349,25 @@
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #f0f0f0;
+    padding: 10px 16px 10px 24px;
+}
+
+.exportAction h3{
+    padding: 0;
+    margin: 0;
+}
+
+.exportAction .btnPrimary {
+    margin: 0;
+    padding: 10px 24px;
 }
 
 
-
-
-
 @media only screen and (max-width: 1440px) {
+    .dealContainer {
+        padding: 16px 24px;
+    }
+
     .filterContainer, .i2sContainer {        
         margin: 16px auto;
     }
@@ -393,11 +412,12 @@
   
     .addFilter{
         width: 125px;
+        height: 35px;
         gap: 8px;
     }
 
     .header {
-        margin-bottom: 30px;
+        margin-bottom: 24px;
     }
 
     .btnPrimary {
@@ -413,11 +433,6 @@
     .filterRight{
         gap: 15px;
     }
-  
-    .addFilter{
-        width: 125px;
-        gap: 8px;
-    }
 
     .searchFilterSet{
         width: 200px;
@@ -430,10 +445,6 @@
 
     .paginationFilter {
         width: 65px;
-        height: 35px;
-    }
-   
-    .addFilter{
         height: 35px;
     }
 
@@ -451,5 +462,4 @@
        padding: 15px !important;
     }
 
-
-  }
+}

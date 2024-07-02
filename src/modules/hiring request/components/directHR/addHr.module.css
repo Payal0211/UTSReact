@@ -1,14 +1,18 @@
-.addNewContainer {
+/* .addNewContainer {
     width: 95%;
     margin: 0 auto;
+} */
+
+.addNewContainer {
+    padding: 24px 40px;
 }
+
 .addHRTitle{
     font-size: 32px;
     font-weight: 500;
     margin-bottom: 40px;
     margin-top: 40px;
 }
-
 
 .hrFieldContainer {
     width: 100%;
@@ -415,4 +419,11 @@ cursor: default;
     outline: none;
     cursor: pointer;
     box-shadow: none;
+}
+
+
+@media screen and (max-width: 1440px) {
+    .addNewContainer {
+        padding: 16px 24px;
+    }
 }

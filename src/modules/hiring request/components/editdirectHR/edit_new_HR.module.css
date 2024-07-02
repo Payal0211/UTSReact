@@ -1,7 +1,12 @@
-.addNewContainer {
+/* .addNewContainer {
     width: 95%;
     margin: 0 auto;
+} */
+
+.addNewContainer {
+    padding: 24px 40px;
 }
+
 .addHRTitle{
     font-size: 32px;
     font-weight: 500;
@@ -417,4 +422,8 @@ cursor: default;
     margin-left: 4px;
 }
 
-
+@media screen and (max-width: 1440px) {
+    .addNewContainer {
+        padding: 16px 24px;
+    }
+}

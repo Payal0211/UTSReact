@@ -230,6 +230,10 @@
     border-radius: 8px;
     cursor: pointer;
 }
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
 
 .tableDetails {
     overflow: auto;
@@ -740,5 +744,8 @@ table {
 @media screen and (max-width: 1440px) {
     .filterContainer{
         margin: 16px auto;
+    }
+    .filterSets{
+        padding: 15px;
     }
 }

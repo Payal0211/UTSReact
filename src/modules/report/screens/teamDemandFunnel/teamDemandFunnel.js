@@ -808,7 +808,7 @@ const TeamDemandFunnelScreen = () => {
 													placement="bottomLeft"
 													title={text}>
 													
-														<p style={{ fontWeight: '550', padding: '5px',
+														<p style={{ fontWeight: '550', padding: '5px', marginBottom: '0px',
 														// , borderBottom: '4px solid #6DBAFF',
 														textDecoration: "underline",
 														textDecorationColor: "#6DBAFF",
@@ -822,11 +822,12 @@ const TeamDemandFunnelScreen = () => {
 														placement="bottomLeft"
 														title={text}>
 														{item === 'Stage' || item === 'Duration' ? (
-															<p style={{ fontWeight: '550' }}>{text}</p>
+															<p style={{ fontWeight: '550', marginBottom:'0' }}>{text}</p>
 														) : (
 															<p
 																style={{
 																	textDecoration: 'underline',
+																	marginBottom:'0',
 																	cursor: text === 0 ? 'no-drop' : 'pointer',
 																}}
 																onClick={
@@ -867,7 +868,7 @@ const TeamDemandFunnelScreen = () => {
 						)}
 					</div>
 					{isSummary && (
-						<div className={TeamDemandFunnelStyle.tableDetails}>
+						<div className={TeamDemandFunnelStyle.tableDetails} style={{marginTop: '0'}}>
 							{isSummaryLoading ? (
 								<TableSkeleton />
 							) : (
@@ -891,9 +892,9 @@ const TeamDemandFunnelScreen = () => {
 														placement="bottomLeft"
 														title={text}>
 														{item === 'Stage' || item === 'Duration' ? (
-															<p style={{ fontWeight: '550' }}>{text}</p>
+															<p style={{ fontWeight: '550', marginBottom:'0' }}>{text}</p>
 														) : (
-															<p>{text}</p>
+															<p style={{marginBottom:'0'}}>{text}</p>
 														)}
 													</Tooltip>
 												)}

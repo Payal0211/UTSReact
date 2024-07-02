@@ -1,5 +1,5 @@
 .hiringRequestContainer {
-    padding: 25px 40px;
+    padding: 24px 40px;
 }
 
 .hrback {
@@ -7,7 +7,6 @@
 }
 
 .goback {
-
     color: var(--uplers-black);
     display: flex;
     justify-content: flex-start;
@@ -19,7 +18,8 @@
 }
 
 .hrDetails {
-    margin-top: 40px;
+    /* margin-top: 40px; */
+    margin-top: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -92,9 +92,19 @@
 .hiringRequestPriority {
     background-color: var(--background-color-light);
     border: 2px solid var(--uplers-border-color);
-    padding: 10px 15px;
+    /* padding: 10px 15px; */
+    padding: 0;
     cursor: pointer;
     border-radius: 8px;
+    min-height: 52px;
+    min-width: 52px;
+    align-items: center;
+    justify-content: center;
+    display: inline-flex;
+}
+
+.hrDetailsLeftPart .hiringRequestPriority a{
+    display: inline-flex;
 }
 
 /* .hiringRequestPriority:hover{
@@ -102,9 +112,14 @@
     background-color: var(--color-sunlight);
     transition: all .2s ease;
 } */
+
+.hrDetailsRightPart .hiringRequestPriority .deleteSVG{
+    -webkit-transition: all 0.35s ease 0s;
+    transition: all 0.35s ease 0s;
+}
+
 .hiringRequestPriority:hover>.deleteSVG {
     transform: scale(.9);
-    transition: all .2s ease;
 }
 
 
@@ -142,11 +157,10 @@
     background-color: var(--background-color-light);
 }
 
-
-
 .portal {
     gap: 2rem;
-    margin-top: 50px;
+    /* margin-top: 50px; */
+    margin-top: 30px;
     display: flex;
     justify-content: space-between;
     /* align-items: flex-start; */
@@ -163,7 +177,8 @@
 }
 
 .activityFeed {
-    margin-top: 50px;
+    /* margin-top: 50px; */
+    margin-top: 40px;
 }
 
 
@@ -861,5 +876,13 @@ label.radioCheck_Mark input:checked+span.customCheck_Mark:after {
 @media screen and (max-width: 1440px) {
     .hiringRequestContainer {
         padding: 16px 24px;
+    }
+    .hiringRequestPriority {
+        min-height: 40px;
+        min-width: 40px;
+    }
+
+    .hrDetailsRightPart .hiringRequestPriority .deleteSVG{
+        width: 20 !important;
     }
 }

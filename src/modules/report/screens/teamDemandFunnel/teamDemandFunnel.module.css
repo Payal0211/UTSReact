@@ -1,5 +1,5 @@
 .hiringRequestContainer {
-    padding: 25px 40px;
+    padding: 24px 40px;
 }
 
 .container {
@@ -223,7 +223,10 @@
     border-radius: 8px;
     cursor: pointer;
 }
-
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
 .tableDetails {
     margin-top: 24px;
 }
@@ -232,7 +235,7 @@
 }
 
 .formPanelAction {
-    padding: 12px 0;
+    padding: 32px 0;
     justify-content: center;
     display: flex;
 }

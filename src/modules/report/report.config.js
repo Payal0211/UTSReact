@@ -41,7 +41,7 @@ export const reportConfig = {
 							<Tooltip
 							placement="bottomLeft"
 							title={data}>
-								<p style={{ fontWeight: '550', padding: '5px', borderBottom: heighlight ?'4px solid #6DBAFF' :'' }}>
+								<p style={{ fontWeight: '550', padding: '5px', marginBottom:'0', borderBottom: heighlight ?'4px solid #6DBAFF' :'' }}>
 									{data}
 								</p>							
 						</Tooltip>
@@ -58,7 +58,7 @@ export const reportConfig = {
 							placement="bottomLeft"
 							title={data}>
 							{item === 'Stage' || item === 'Duration' ? (
-								<p style={{ fontWeight: '550', padding: '5px', borderBottom: heighlight ?'2px solid #BDDFFE' :'' }}>
+								<p style={{ fontWeight: '550', padding: '5px', marginBottom: '0', borderBottom: heighlight ?'2px solid #BDDFFE' :'' }}>
 									{data}
 									</p>
 							) : item === 'Additional Info' ?  <img src={infoIcon} alt='info' /> : (
@@ -111,9 +111,9 @@ export const reportConfig = {
 						placement="bottomLeft"
 						title={data}>
 						{item === 'Stage' || item === 'Duration' ? (
-							<p style={{ fontWeight: '550' }}>{data}</p>
+							<p style={{ fontWeight: '550', marginBottom:'0' }}>{data}</p>
 						) : (
-							<p>{data}</p>
+							<p style={{marginBottom:'0'}}>{data}</p>
 						)}
 					</Tooltip>
 				),
@@ -522,7 +522,7 @@ export const reportConfig = {
 							placement="bottomLeft"
 							title={data}>
 							{item === 'Stage' || item === 'Duration' ? (
-								<p style={{ fontWeight: '550' }}>{data}</p>
+								<p style={{ fontWeight: '550',marginBottom:'0' }}>{data}</p>
 							) : (
 								<p
 									style={{ textDecoration: 'underline' }}

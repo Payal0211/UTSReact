@@ -1,7 +1,7 @@
 .hiringRequestContainer {
   /* margin: 25px 40px 32px;
   padding-bottom: 32px; */
-  padding: 25px 40px 32px;
+  padding: 24px 40px 32px;
 }
 .hiringRequestContainer [class*="ant-pagination"] {
   display: none;
@@ -237,7 +237,10 @@
   border-radius: 8px;
   cursor: pointer;
 }
-
+.paginationFilter .btnPrimary {
+  padding-top: 13px;
+  padding-bottom: 13px;
+}
 .tableDetails {
   margin-top: 24px;
 }
@@ -573,6 +576,9 @@ tr th:first-child {
   }
   .tableDetails{
     margin-top: 16px;
+  }
+  .filterSets{
+    padding: 15px;
   }
 }
 

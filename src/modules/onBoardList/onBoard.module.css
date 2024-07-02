@@ -1,5 +1,5 @@
 .hiringRequestContainer {
-    padding: 25px 40px;
+    padding: 24px 40px;
 }
 .addnewHR {
     display: flex;
@@ -62,5 +62,8 @@
     }
     .filterContainer{
         margin: 16px auto;
+    }
+    .filterSets{
+        padding: 15px;
     }
 }

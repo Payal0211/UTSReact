@@ -110,7 +110,7 @@ input[type="file"] {
 }
 
 .mainWrapper{
-  padding-top: 80px;
+  padding-top: 75px;
   padding-left: 60px;
   width: 100%;
 }
@@ -210,10 +210,15 @@ table {
   /* padding: 24px !important; */
   padding-left: 12px !important;
   padding-right: 12px !important;
+  white-space: nowrap;
 }
 .ant-table-thead > tr > th:first-child,
 .ant-table-tbody > tr > td:first-child {
   padding-left: 24px !important;
+}
+
+.ant-table-tbody > tr > td p{
+  margin-bottom: 0;
 }
 
 .ant-table-thead > tr > th {
@@ -227,8 +232,14 @@ table {
 /* TO FIX TABLE BODY WITH AVAILABLE DISPLAY HEIGHT */
 .ant-table-body {
   max-height: calc(100vh - 421px) !important;
-  min-height: 100px;
+  /* min-height: 100px; */
+  min-height: 250px;
 }
+
+.ant-table-empty .ant-table-tbody > tr.ant-table-placeholder td{
+  border-bottom: none;
+}
+
 
 /*-- React DatePicker--*/
 .react-datepicker {

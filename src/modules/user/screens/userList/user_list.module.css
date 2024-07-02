@@ -1,5 +1,5 @@
 .hiringRequestContainer {
-    padding: 25px 40px;
+    padding: 24px 40px;
 }
 
 .userListTitle {
@@ -214,6 +214,10 @@
     border: 1px solid var(--background-color-metal);
     border-radius: 8px;
     cursor: pointer;
+}
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
 }
 .tableDetails{
     margin-top: 24px;

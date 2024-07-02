@@ -1,5 +1,5 @@
 .hiringRequestContainer {
-    padding: 25px 40px;
+    padding: 24px 40px;
 }
 
 .addnewHR {
@@ -206,6 +206,10 @@
     border-radius: 8px;
     cursor: pointer;
 }
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
 
 .tableDetails {
     margin-top: 24px;
@@ -271,12 +275,13 @@
     font-size: 32px;
 }
 
-.selectedTextModal {
-
-    margin-left: 20px;
-    line-height: 39px;
-    font-weight: 500;
+.selectedTextModal{
+    margin: 0;
+    padding: 0 20px;
     font-size: 18px;
+    line-height: 36px;
+    font-weight: 500;
+    text-align: center;
 }
 
 .trReq {
@@ -666,9 +671,16 @@ s tr th:first-child {
     display: none;
 }
 
+.hiringRequestContainer .tableDetails [class*='ant-table'] [class*='ant-table-body']{
+    max-height: calc(100vh - 300px) !important;
+}
+
 
 
 @media only screen and (max-width: 1440px) {
+    .hiringRequestContainer .tableDetails [class*='ant-table'] [class*='ant-table-body']{
+        max-height: calc(100vh - 244px) !important;
+    }
     .hiringRequestContainer {
         padding: 16px 24px;
     }

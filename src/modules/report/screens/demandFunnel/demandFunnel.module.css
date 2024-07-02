@@ -1,5 +1,5 @@
 .hiringRequestContainer {
-    padding: 25px 40px;
+    padding: 24px 40px;
 }
 
 .addnewHR {
@@ -215,7 +215,10 @@
     border-radius: 8px;
     cursor: pointer;
 }
-
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
 .tableDetails {
     margin-top: 24px;
 }

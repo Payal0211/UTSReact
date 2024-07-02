@@ -1,11 +1,11 @@
 .dealContainer {
-    /* background-color: red; */
     /* height: 100vh; */
-    margin: 25px 40px;
+    padding: 24px 40px;
 }
 
 .header {
-    margin-bottom: 61px;
+    /* margin-bottom: 61px; */
+    margin-bottom: 32px;
     width: inherit;
 }
 
@@ -102,15 +102,22 @@
     padding: 10px 15px;
 }
 
-.cardInner{
+.cardInner {
     padding: 10px 0;
+    margin-bottom: 0;
+    list-style-type: none;
 }
 
 .cardInner .row{
     display: flex;
     justify-content: space-between;
-    padding: 5px 15px;
+    padding: 10px 15px;
     font-size: 13px;
+    align-items: center;
+}
+
+.cardInner .row p{
+    margin-bottom: 0;
 }
 
 .cardInner .row:nth-child(even){
@@ -237,6 +244,9 @@
 
 
 @media only screen and (max-width: 1440px) {
+    .dealContainer {
+        padding: 16px 24px;
+    }
     .filterContainer, .i2sContainer {
         margin: 16px auto;
     }
@@ -281,7 +291,12 @@
   
     .addFilter{
         width: 125px;
+        height: 35px;
         gap: 8px;
+    }
+
+    .header {
+        margin-bottom: 24px;
     }
 
     .label {
@@ -301,11 +316,6 @@
     .filterRight{
         gap: 15px;
     }
-  
-    .addFilter{
-        width: 125px;
-        gap: 8px;
-    }
 
     .searchFilterSet{
         width: 200px;
@@ -320,17 +330,12 @@
         width: 65px;
         height: 35px;
     }
-   
-    .addFilter{
-        height: 35px;
-    }
 
     .filterCount{
         width: 18px;
         height: 18px;
         font-size: 10px;
     }
-
 
   }
   

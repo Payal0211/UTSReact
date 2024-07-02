@@ -19,8 +19,8 @@
 }
 
 .sidebarBody {
-  margin-top: 80px;
-  height: calc(100vh - 80px);
+  margin-top: 75px;
+  height: calc(100vh - 75px);
   overflow-y: auto;
 }
 
@@ -146,3 +146,9 @@
 /* .sideBarSubmenu a:hover {
   background: rgba(211, 233, 150, 0.2);
 } */
+
+@media screen and (max-width: 1440px){
+  .sidebarBody {
+    margin-top: 63px;
+  }
+}

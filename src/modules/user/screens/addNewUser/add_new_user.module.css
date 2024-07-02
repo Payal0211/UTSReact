@@ -1,12 +1,19 @@
-.addNewContainer {
+/* .addNewContainer {
     width: 95%;
     margin: 0 auto;
+} */
+
+.addNewContainer {
+    padding: 24px 40px;
 }
+
 .addHRTitle{
     font-size: 32px;
     font-weight: 500;
-    margin-bottom: 80px;
+    /* margin-bottom: 80px; */
+    margin-bottom: 56px;
 }
+
 .goBack {
     color: var(--uplers-black);
     display: flex;
@@ -16,5 +23,11 @@
     cursor: pointer;
     font-size: var(--fontsize-uplers);
     font-weight: 500;
-    margin: 0 0 24px;
+    margin: 8px 0 24px;
+}
+
+@media screen and (max-width: 1440px) {
+    .addNewContainer {
+        padding: 16px 24px;
+    }
 }
