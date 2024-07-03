@@ -24,9 +24,11 @@ const HRSelectField = ({
 	isControlledBoolean,
 	isValue,
 	extraAction,
-	setOptions
+	setOptions,
+	onValueChange,
 }) => {
 	const getChangeHandlerWithValue = (value, option) => {
+		onValueChange && onValueChange(value, option)
 		if (mode === 'multiple') {
 			setValue(
 				name,

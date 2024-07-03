@@ -1,9 +1,9 @@
-import { Divider, message,Checkbox } from 'antd';
+import { Divider, message,Checkbox, AutoComplete } from 'antd';
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import DebriefingHRStyle from './debriefingHR.module.css';
 import AddInterviewer from '../addInterviewer/addInterviewer';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useFieldArray, useForm, Controller } from 'react-hook-form';
 import HRSelectField from '../hrSelectField/hrSelectField';
 import { MasterDAO } from 'core/master/masterDAO';
 import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
@@ -450,7 +450,7 @@ const checkValChnage = () => {
 				ActionType: getHRdetails?.addHiringRequest?.isActive ? "Edit" : "Save",
 				IsHrfocused: isFocusedRole,
 				allowSpecialEdit: getHRdetails?.allowSpecialEdit,
-				role: d?.role?.id,
+				role: true ? null : d?.role?.id,
 				hrTitle: d.hrTitle,
 				allSkills:goodToSkillList.map(item=> item.skillsName).toString(), // good to have
 				"interviewerDetails":{
@@ -724,6 +724,7 @@ const checkValChnage = () => {
 								name="jobDescription"
 								required
 							/> */}
+							<div className={DebriefingHRStyle.mb50}>
 							<label style={{ marginBottom: "12px" }}>
 								Job Description
 								{/* <span className={AddNewClientStyle.reqField}>*</span> */}
@@ -744,6 +745,7 @@ const checkValChnage = () => {
 								validate: (value) => value.trim() !== '' || 'Job description cannot be empty'
 								})}
 							/>
+							</div>
 							{/* Hide company details */}
 							{/* {companyType?.id === 1 && 
 								<TextEditor
@@ -795,7 +797,7 @@ const checkValChnage = () => {
 									{/* <p>* Please do not mention company name here</p></div>} */}
 								
 
-								{companyType?.id === 1 && <>
+								{/* {companyType?.id === 1 && <>
 								<div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
 										controlledValue={controlledRoleValue}
@@ -829,7 +831,44 @@ const checkValChnage = () => {
 										placeholder="Enter title"
 										required
 									/>	
-								</div>	
+								</div>	 */}
+
+								<div className={DebriefingHRStyle.mb50}>
+								<div className={DebriefingHRStyle.formGroup}>
+                    <label>
+					Hiring Request Title <b style={{ color: "red" }}>*</b>
+                    </label>
+                    <Controller
+                      render={({ ...props }) => (
+                        <AutoComplete
+                          options={talentRole && talentRole}
+                          filterOption={true}             
+                          onChange={(hrTitle) => {
+                            setValue("hrTitle", hrTitle);
+                          }}
+                          placeholder="Enter Hiring Request Title"
+                        //   ref={controllerRef}
+                          value={watch('hrTitle')}
+                        //   disabled={
+                        //     getHRdetails.allowSpecialEdit ? false : true
+                        //   }
+                        />
+                      )}
+                      {...register("hrTitle", {
+                        required: 'please enter the hiring request title.',
+                      })}
+                      name="hrTitle"
+                      // rules={{ required: true }}
+                      control={control}
+                    />
+                    {errors.hrTitle && (
+                      <div className={DebriefingHRStyle.error}>
+                        {errors.hrTitle?.message &&
+                          `* ${errors?.hrTitle?.message}`}
+                      </div>
+                    )}
+                  </div>
+								</div>
 								
 								<div className={DebriefingHRStyle.mb50}>
 									<HRSelectField
