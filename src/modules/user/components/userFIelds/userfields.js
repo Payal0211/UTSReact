@@ -353,13 +353,21 @@ const UsersFields = ({ id, setLoading, loading }) => {
 				levelId,
 			);
 			if (response?.responseBody?.details?.length > 0) {
-				setReportingList((prev) => [
-					...prev,
-					...response?.responseBody?.details.map(({ id, fullName }) => ({
+				setReportingList((prev) => {
+					// ...prev,
+					// ...response?.responseBody?.details.map(({ id, fullName }) => ({
+					// 	id: id,
+					// 	value: fullName,
+					// })),
+					const newValues = response?.responseBody?.details.map(({ id, fullName }) => ({
 						id: id,
 						value: fullName,
-					})),
-				]);
+					}))
+					const combinedValues = [...prev, ...newValues];
+					const uniqueValuesMap = new Map(combinedValues.map(item => [item.id, item]));
+					const uniqueValues = Array.from(uniqueValuesMap.values());
+					return uniqueValues;
+			});
 			} else if (response?.responseBody?.details === null) {
 				setReportingList([{ id: 0, value: 'Select' }]);
 			}
