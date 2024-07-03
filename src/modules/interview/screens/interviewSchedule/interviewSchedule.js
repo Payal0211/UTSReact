@@ -392,7 +392,7 @@ const InterviewSchedule = ({
 										name="slot1Date"
 										required
 										{...register('slot1Date')}
-										filterDate={disabledWeekend}
+										// filterDate={disabledWeekend}
 										selected={getScheduleSlotDate[0].slot1}
 										placeholderText="Select Date"
 										onChange={(date) => {
@@ -477,7 +477,7 @@ const InterviewSchedule = ({
 											<DatePicker
 												required
 												{...register('slot2Date')}
-												filterDate={disabledWeekend}
+												// filterDate={disabledWeekend}
 												selected={getScheduleSlotDate[1].slot1}
 												placeholderText="Select Date"
 												onChange={(date) => {
@@ -563,7 +563,7 @@ const InterviewSchedule = ({
 											<DatePicker
 												required
 												{...register('slot3Date')}
-												filterDate={disabledWeekend}
+												// filterDate={disabledWeekend}
 												placeholderText="Select Date"
 												selected={getScheduleSlotDate[2].slot1}
 												onChange={(date) => {
