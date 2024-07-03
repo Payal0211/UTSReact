@@ -677,4 +677,7 @@ tr th:first-child {
     .hiringRequest {
         font-size: 26px;
     }
+    .filterSets{
+        padding: 15px;
+    }
 }
