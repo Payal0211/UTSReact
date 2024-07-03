@@ -60,6 +60,35 @@
 .mb50{
     margin-bottom: 50px;
 }
+
+.formGroup {
+    margin: 0 0 32px;
+}
+
+.formGroup [class*="ant-select-selection-search-input"] {
+    height: auto !important;
+    padding: 16px 16px !important;
+}
+
+.formGroup label {
+    vertical-align: top;
+    font-family: 'Montserrat';
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #676767;
+    margin: 0 0 8px;
+    display: inline-block;
+}
+
+.formGroup .ant-select {
+    width: 100%;
+}
+
+.error {
+    color: var(--danger-color);
+    font-size: var(--fontsize-tough);
+}
 .formPanelAction {
     padding: 32px 0;
     justify-content: center;

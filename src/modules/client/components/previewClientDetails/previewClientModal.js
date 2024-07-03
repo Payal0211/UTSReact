@@ -354,8 +354,8 @@ function PreviewClientModal({
     if (getCompanyDetails?.pocUserDetailsEdit && allPocs?.length) {
       let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserDetailsEdit?.pocUserID);
         let SelectedPocs = {
-          id: data.id,
-          value: data.value,
+          id: data.id ? data.id : null,
+          value: data.value ? data.value : null,
         };
       setValue("pocId", SelectedPocs);
       setControlledPOC(SelectedPocs);
@@ -711,14 +711,14 @@ function PreviewClientModal({
 
     if (typeOfPricing === 1) {
       let Filter = hrPricingTypes.filter(
-        (item) => item.isActive === true && item.isTransparent === true
+        (item) => item.isActive === true && item.isTransparent === true && item.engagementType === "Full Time"
       );
       if (Filter.length) {
         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
       }
     } else {
       let Filter = hrPricingTypes.filter(
-        (item) => item.isActive === true && item.isTransparent === false
+        (item) => item.isActive === true && item.isTransparent === false && item.engagementType === "Full Time"
       );
       if (Filter.length) {
         reqOpt = Filter.map((item) => ({ id: item.id, value: item.type }));
@@ -1373,7 +1373,7 @@ function PreviewClientModal({
                           <div className={previewClientStyle.fundingrounds}>
                             <ul>
                               <li>
-                                <span>Self-funded (bootstrapped)</span>
+                                <span>Self-funded (bootstrapped) company without external investments.</span>
                               </li>
                             </ul>
                           </div>
