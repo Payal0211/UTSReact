@@ -233,11 +233,11 @@ const togglePriority = useCallback(
 			payload.person,
 		);
 	
-		if (response.statusCode === HTTPStatusCode.OK) {
+		if (response?.statusCode === HTTPStatusCode.OK) {
 			setLoading(false);
 			message.success('priority has been changed.')
 			callAPI(payload.hRID);
-		} else if (response.statusCode === HTTPStatusCode.NOT_FOUND) {
+		} else if (response?.statusCode === HTTPStatusCode.NOT_FOUND) {
 			setLoading(false);
 			message.error(response.responseBody)
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -260,7 +260,7 @@ const togglePriority = useCallback(
 		setLoading(true)
 		const result = await hiringRequestDAO.syncUTSTOATSRequestDAO(apiData?.HR_Id)
 
-		if(result.statusCode === HTTPStatusCode.OK){
+		if(result?.statusCode === HTTPStatusCode.OK){
 			setLoading(false);
 		}
 		setLoading(false);
@@ -270,7 +270,7 @@ const togglePriority = useCallback(
 		setLoading(true)
 		const result = await hiringRequestDAO.deleteHRRequestDAO(apiData?.HR_Id)
 
-		if(result.statusCode === HTTPStatusCode.OK){
+		if(result?.statusCode === HTTPStatusCode.OK){
 			navigate(UTSRoutes.ALLHIRINGREQUESTROUTE);
 			setLoading(false);
 		}
@@ -301,7 +301,8 @@ const togglePriority = useCallback(
 				<div className={HRDetailStyle.hrDetails}>
 					<div className={HRDetailStyle.hrDetailsLeftPart}>
 						{/* Delete HR CTA */}
-						<>{apiData?.AllowHRDelete && <Tooltip title={'Delete HR'} placement="bottom" ><div className={HRDetailStyle.hiringRequestPriority} onClick={()=>setDeleteHrModal(true)}><Trash width="17" height="16" style={{ fontSize: '16px' }} /></div></Tooltip> }
+						<>{apiData?.AllowHRDelete && 
+						<Tooltip title={'Delete HR'} placement="bottom" ><div className={HRDetailStyle.hiringRequestPriority} onClick={()=>setDeleteHrModal(true)}><Trash width="17" height="16" style={{ fontSize: '16px' }} /></div></Tooltip> }
 						{deleteHRModal && (
                 <Modal
                   width={"864px"}
