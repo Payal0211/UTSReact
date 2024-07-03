@@ -1,12 +1,17 @@
 .addHRTitle {
     font-size: 32px;
     font-weight: 500;
-    margin-bottom: 35px;
+    /* margin-bottom: 35px; */
+    margin-bottom: 24px;
 }
 
-.addNewContainer {
+/* .addNewContainer {
     width: 95%;
     margin: 0 auto;
+} */
+
+.addNewContainer {
+    padding: 24px 40px;
 }
 
 .tabsFormItem {
@@ -247,7 +252,7 @@
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
+    line-height: 18px;
     color: var(--uplers-black);
     padding: 12px 28px;
     outline: none;
@@ -359,4 +364,28 @@
 .disabledTextArea p {
     opacity: 0.3;
     padding: 13px;
+}
+
+@media screen and (max-width: 1440px) {
+    .addNewContainer {
+        padding: 16px 24px;
+    }
+    .addHRTitle{
+        font-size: 28px;
+    }
+    .formPanelAction {
+        padding: 24px 0;
+    }
+    .tabsLeftPanel {
+        width: 29%;
+        font-size: 14px;
+        line-height: 22px;
+    }
+    .tabsLeftPanel h3 {
+        font-size: 22px;
+        line-height: 28px;
+    }
+    .tabsFormItem {
+        margin-bottom: 35px;
+    }
 }

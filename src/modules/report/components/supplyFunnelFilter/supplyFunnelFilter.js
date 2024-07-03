@@ -122,7 +122,7 @@ const SupplyFunnelFilter = ({
 									border: 'none',
 									borderRadius: '10px',
 									fontSize: '.8rem',
-									margin: '10px 10px 10px 0',
+									margin: '4px 4px 4px 0',
 									fontWeight: '600',
 									padding: '10px 20px',
 								}}>
@@ -151,7 +151,7 @@ const SupplyFunnelFilter = ({
 							border: 'none',
 							borderRadius: '10px',
 							fontSize: '.8rem',
-							margin: '10px 10px 10px 0',
+							margin: '4px 4px 4px 0',
 							fontWeight: '600',
 							padding: '10px 20px',
 						}}>
@@ -286,8 +286,6 @@ const SupplyFunnelFilter = ({
 								{filterSubChild.label}
 							</span>
 							<br />
-
-							<br />
 							<div className={SupplyFunnelFilterStyle.filtersListType}>
 								{searchData && searchData.length > 0
 									? searchData.map((item, index) => {
@@ -381,7 +379,6 @@ const SupplyFunnelFilter = ({
 							</div>
 						</>
 					)}
-					<br />
 					<br />
 					<hr />
 					<div className={SupplyFunnelFilterStyle.operationsFilters}>

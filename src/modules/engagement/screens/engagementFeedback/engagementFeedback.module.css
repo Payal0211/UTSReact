@@ -139,3 +139,9 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+@media screen and (max-width: 1440px) {
+    .tableDetails{
+        margin-top: 16px;
+    }
+}

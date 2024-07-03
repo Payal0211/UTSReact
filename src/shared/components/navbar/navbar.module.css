@@ -11,8 +11,8 @@
 }
 
 .nav{
-    width: 95.5%;
-    padding: 15px 0;
+    /* width: 95.5%; */
+    padding: 13px 40px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -50,7 +50,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 2%;
+    gap: 24px;
     width: 67%;
 }
 .avatar{
@@ -62,4 +62,17 @@
 .avatarDetails{
     font-size: .8vw;
     font-weight: 600;
+}
+
+@media screen and (max-width: 1440px){
+    .nav{
+        padding: 8px 24px 8px 32px;
+    }
+    .avatar{
+        width: 40px;
+        max-width: 40px;
+    }
+    .navlink{
+        gap: 16px;
+    }    
 }

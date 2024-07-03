@@ -1,9 +1,6 @@
 .hiringRequestContainer {
-    /* width: 95%; */
-    /* margin: 0 auto; */
-    margin: 25px 40px;
+    padding: 24px 40px;
 }
-
 
 .addnewHR {
     display: flex;
@@ -45,27 +42,21 @@
 }
 
 .filterContainer {
-    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
-    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
-    margin: 40px auto 20px auto;
+    margin: 24px auto;
     background-color: var(--background-color-light);
 }
 
-
-
 .filterSets {
-    width: 96%;
+    /* width: 96%; */
     margin-left: auto;
     margin-right: auto;
-    padding: 30px 0;
+    padding: 24px;
     display: flex;
     border-radius: 10px;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    /* height: 92px; */
-
 }
 
 .addFilter {
@@ -145,7 +136,7 @@
     width: 250px;
     height: 44px;
     border-radius: 8px;
-    padding: 25px 10px;
+    padding: 10px 16px;
     border: 1px solid var(--background-color-metal);
     display: flex;
     justify-content: space-between;
@@ -215,7 +206,10 @@
     border-radius: 8px;
     cursor: pointer;
 }
-
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
 .tableDetails {
     margin-top: 24px;
 }
@@ -225,20 +219,23 @@
 } */
 
 .formPanelAction {
+    margin-left: auto;
+    margin-right: auto;
     padding: 32px 0;
     justify-content: center;
+    align-items: center;
     display: flex;
 }
 
 .formPanelAction button {
-    background: var(--text-color-purity);
-    border: 1px solid var(--tabs-border-color);
+    background: #FFFFFF;
+    border: 1px solid #CECCCC;
     border-radius: 8px;
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
-    color: var(--uplers-black);
+    line-height: 18px;
+    color: #232323;
     padding: 12px 28px;
     outline: none;
     cursor: pointer;
@@ -246,8 +243,8 @@
 }
 
 .formPanelAction .btnPrimary {
-    background: var(--color-sunlight);
-    border-color: var(--color-sunlight);
+    background: #FFDA30;
+    border-color: #FFDA30;
 }
 
 .formPanelAction button+button {
@@ -261,16 +258,14 @@
     border-radius: 8px;
 }
 
-.formPanelAction {
-
+/* .formPanelAction {
     padding: 32px 0;
     margin-left: auto;
     margin-right: auto;
     justify-content: center;
     display: flex;
     align-items: center;
-    /* width: 1176px */
-}
+} */
 
 .matchmakingLabel {
     margin-top: 40px;
@@ -280,11 +275,12 @@
     font-size: 32px;
 }
 .selectedTextModal{
-    
-        margin-left: 20px;
-        line-height: 39px;
-        font-weight: 500;
-        font-size: 18px;
+    margin: 0;
+    padding: 0 20px;
+    font-size: 18px;
+    line-height: 36px;
+    font-weight: 500;
+    text-align: center;
 }
 
 .trReq {
@@ -310,7 +306,7 @@
     background-color: var(--background-color-light);
 }
 
-.formPanelAction button {
+/* .formPanelAction button {
     background: #FFFFFF;
     border: 1px solid #CECCCC;
     border-radius: 8px;
@@ -332,7 +328,7 @@
 
 .formPanelAction button+button {
     margin-left: 16px;
-}
+} */
 
 .searchFilterSet {
     margin-right: 25px;
@@ -502,7 +498,7 @@ border: 2px solid var(--color-cyan);
     font-size: 15px;
     line-height: 17px;
     color: #232323;
-    padding: 17px 28px;
+    padding: 13px 24px;
     outline: none;
     transition: all 0.35s ease 0s;
     cursor: pointer;
@@ -541,7 +537,7 @@ tr th:first-child {
     font-size: 14px;
     line-height: 17px;
     color: #232323;
-    padding: 17px 28px;
+    padding: 13px 24px;
     outline: none;
     transition: all 0.35s ease 0s;
     cursor: pointer;
@@ -663,4 +659,22 @@ tr th:first-child {
 
 .demandFunnelModal [class*="ant-pagination"] {
     display: none;
+}
+
+@media screen and (max-width: 1440px) {
+    .hiringRequestContainer {
+        padding: 16px 24px;
+    }
+    .filterContainer {        
+        margin: 16px auto;
+    }
+    .tableDetails{
+        margin-top: 16px;
+    }
+    .formPanelAction {
+        padding: 24px 0;
+    }
+    .hiringRequest {
+        font-size: 26px;
+    }
 }

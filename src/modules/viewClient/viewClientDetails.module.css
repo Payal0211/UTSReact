@@ -32,7 +32,7 @@
 }
 .dealDetailsBack a svg{margin-right: 6px;}
 .dealDetailsTitle{
-    margin: 0 0 50px;
+    margin: 0 0 32px;
     object-fit: cover;
     display: flex;
     align-items: center;
@@ -52,8 +52,15 @@
     width: 56px;
     height: 56px;
     border-radius: 60px;
-    margin-right: 24px;
+    margin-right: 16px;
+    object-fit: contain;
+    background: #fff;
 }
+
+.dealDetailsTitle h1 .viewClientUser{
+    margin-right: 16px;
+}
+
 .dealDetailsTitle button {
     background: #FFDA30;
     border: 1px solid #FFDA30;
@@ -75,7 +82,7 @@
     border-color: #232323;
 }
 .dealDetailsTopCard{
-    margin: 0 0 40px;
+    margin: 0 0 32px;
 }
 .dealDetailsTopCard ul {
     margin: 0 -12px;
@@ -98,6 +105,7 @@
     font-size: 18px;
     line-height: 22px;
     color: #232323;
+    background: rgba(255,255,255,0.48);
 }
 .topCardItem span{
     display: block;
@@ -599,4 +607,10 @@ button.yellowOutlinedButton {
     outline: none;
     cursor: pointer;
     box-shadow: none;
+}
+
+@media screen and (max-width: 1440px) {
+    .formPanelAction {
+      margin-bottom: 24px;
+    }
 }

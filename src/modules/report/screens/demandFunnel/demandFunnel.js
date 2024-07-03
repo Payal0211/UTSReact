@@ -424,7 +424,7 @@ const DemandFunnelScreen = () => {
 				)}
 			</div>
 			{isSummary && (
-				<div className={DemandFunnelStyle.tableDetails}>
+				<div className={DemandFunnelStyle.tableDetails} style={{marginTop: '0'}}>
 					{isSummaryLoading ? (
 						<TableSkeleton />
 					) : (

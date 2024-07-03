@@ -1,7 +1,5 @@
 .hiringRequestContainer {
-    /* width: 95%; */
-    /* margin: 0 auto; */
-    margin: 25px 40px;
+    padding: 24px 40px;
 }
 .addnewHR {
     display: flex;
@@ -170,6 +168,12 @@
     border-radius: 8px;
     cursor: pointer;
 }
+
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
+
 .tableDetails{
     margin-top: 24px;
     padding-bottom: 40px;
@@ -180,7 +184,7 @@
 
 .filterContainer{
     border-radius: 10px;
-    margin: 40px auto 20px auto ;
+    margin: 24px auto;
 }
 
 .filterSetsContainer {
@@ -221,10 +225,10 @@
 
 
 .filterSets{
-    width: 100%;
+    /* width: 100%; */
     margin-left: auto;
     margin-right: auto;
-    padding:24px 16px;
+    padding: 24px;
     display: flex;
     border-radius: 10px;
     justify-content: space-between;
@@ -246,7 +250,7 @@
 }
 
 .filterDescription {
-    margin: 35px auto 15px auto;
+    margin: 24px auto 0 auto;
     justify-content: inherit;
     gap: 16px;
 }
@@ -368,7 +372,15 @@
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {
-
+    .hiringRequestContainer {
+        padding: 16px 24px;
+    }
+    .filterContainer{
+        margin: 16px auto;
+    }
+    .tableDetails{
+        margin-top: 16px;
+    }
     .calendarFilter{
         width:220px;
     }
@@ -391,7 +403,7 @@
     }  
 
     .hiringRequest {
-        font-size: 28px;
+        font-size: 26px;
     }
   
     .filterRight .focusCheckBox{
@@ -427,11 +439,6 @@
         font-size: 12px;
     }
 
-
-    .filterContainer{
-        margin: 30px auto 20px auto;
-    }
-
     .btnPrimary {
         font-size: 12px;
         line-height: 16px;
@@ -443,8 +450,7 @@
     }
 
     .filterSets{
-        padding: 15px 15px;
-        width: 100%;
+        padding: 15px;
     }
 
     .filterRight{
@@ -479,9 +485,10 @@
         height: 18px;
         font-size: 10px;
     }
-
-
-
+    
+    .paginationFilter .btnPrimary{
+        padding: 9px 24px;
+    }
   }
   
   

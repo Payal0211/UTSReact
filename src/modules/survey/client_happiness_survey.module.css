@@ -1,26 +1,20 @@
 .hiringRequestContainer {
-    /* width: 95%; */
-    /* margin: 0 auto; */
-    margin: 25px 40px;
+    padding: 24px 40px;
 }
-
 .AMNAME{
     text-decoration: underline;
     cursor: pointer;
 }
-
 .addnewHR {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
 }
-
 .hiringRequest {
     font-size: 32px;
     font-weight: 500;
 }
-
 .btnPrimary {
     background: #FFDA30;
     border: 1px solid transparent;
@@ -61,8 +55,6 @@
     margin-left: 20px;
 }
 
-
-
 .btnwhite:hover{
     background: #FFDA30;
 }
@@ -93,28 +85,23 @@
     border-bottom-right-radius: 8px;
     background-color: var(--background-color-light);
 }
+
 .filterContainer{
-    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
-    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
-    margin: 40px auto 20px auto ;
+    margin: 24px auto;
     background-color: var(--background-color-light);
 }
 
-
-
 .filterSets{
-    width: 96%;
+    /* width: 96%; */
     margin-left: auto;
     margin-right: auto;
-    padding:30px 0;
+    padding: 24px;
     display: flex;
     border-radius: 10px;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    /* height: 92px; */
-    
 }
 
 .filterSetsInner{
@@ -263,14 +250,15 @@
     border-radius: 8px;
     cursor: pointer;
 }
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
 .tableDetails{
     margin-top: 24px;
 }
 
-
-
 /* Custome Dropdown */
-
 .priorities_drop_custom {
   margin-right: 15px;
   position: relative;
@@ -755,7 +743,6 @@
 /* Responsive css start */
 
 @media only screen and (max-width: 1640px) {
-
     .calendarFilter{
         width:185px;
         height: 35px;
@@ -774,7 +761,7 @@
     }  
 
     .hiringRequest {
-        font-size: 28px;
+        font-size: 26px;
     }
   
     .filterRight .focusCheckBox{
@@ -809,17 +796,12 @@
         padding-left: 5px;
     }
 
-    .paginationFilter{
-        width: 65px;
-    }
-
     .filterSets .label{
         font-size: 12px;
     }
 
     .filterSets{
-        padding: 15px 0;
-        width: 98%;
+        padding: 15px;
     }
 
     .calendarFilter{
@@ -827,14 +809,8 @@
         height: 35px;
     }
 
-
     .label {
         font-size: 12px;
-    }
-
-
-    .filterContainer{
-        margin: 30px auto 20px auto;
     }
 
     .btnPrimary {
@@ -845,11 +821,6 @@
 
     .togglebtn {
         height: 40px
-    }
-
-    .filterSets{
-        padding: 15px 0;
-        width: 98%;
     }
 
     .filterRight{
@@ -885,8 +856,6 @@
         font-size: 10px;
     }
 
-
-
     .ratingFilter [class*="ratingNumber"] [class*="ant-select-selector"]{
         border: none;
         height: 35px;
@@ -897,29 +866,41 @@
     .ratingFilter:after{
         top: 17px;
     }
+}
 
+@media screen and (max-width: 1440px){
+    .hiringRequestContainer {
+        padding: 16px 24px;
+    }
+    .filterContainer{
+        margin: 16px auto;
+    }
+    .tableDetails{
+        margin-top: 16px;
+    }
+    .btnwhite{
+        padding-top: 11px;
+        padding-bottom: 11px;
+    }
+}
 
-  }
+@media only screen and (max-width: 1360px) {
+    .searchFilterSet{
+        width: 120px;
+        padding-left: 5px;
+        margin-left: 5px;
+    }
 
-  @media only screen and (max-width: 1360px) {
-        .searchFilterSet{
-            width: 120px;
-            padding-left: 5px;
-            margin-left: 5px;
-        }
+    .filterRight{
+        gap:10px;
+    }
 
-        .filterRight{
-            gap:10px;
-        }
-    
-        .calendarFilter{
-            width: 180px;
-        }
+    .calendarFilter{
+        width: 180px;
+    }
 
-        .calendarFilter svg{
-            margin-right: 5px !important;
-        }
-  }
-  
-  
-  /* Responsive css End */
+    .calendarFilter svg{
+        margin-right: 5px !important;
+    }
+}
+/* Responsive css End */
