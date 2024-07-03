@@ -237,20 +237,23 @@
 } */
 
 .formPanelAction {
+  margin-left: auto;
+  margin-right: auto;
   padding: 32px 0;
+  align-items: center;
   justify-content: center;
   display: flex;
 }
 
 .formPanelAction button {
-  background: var(--text-color-purity);
-  border: 1px solid var(--tabs-border-color);
+  background: #ffffff;
+  border: 1px solid #cecccc;
   border-radius: 8px;
   font-family: "Montserrat";
   font-weight: 500;
   font-size: 14px;
-  line-height: 17px;
-  color: var(--uplers-black);
+  line-height: 18px;
+  color: #232323;
   padding: 12px 28px;
   outline: none;
   cursor: pointer;
@@ -258,8 +261,8 @@
 }
 
 .formPanelAction .btnPrimary {
-  background: var(--color-sunlight);
-  border-color: var(--color-sunlight);
+  background: #ffda30;
+  border-color: #ffda30;
 }
 
 .formPanelAction button + button {
@@ -273,15 +276,14 @@
   border-radius: 8px;
 }
 
-.formPanelAction {
+/* .formPanelAction {
   padding: 32px 0;
   margin-left: auto;
   margin-right: auto;
   justify-content: center;
   display: flex;
   align-items: center;
-  /* width: 1176px */
-}
+} */
 
 .matchmakingLabel {
   margin-top: 40px;
@@ -313,7 +315,7 @@
   background-color: var(--background-color-light);
 }
 
-.formPanelAction button {
+/* .formPanelAction button {
   background: #ffffff;
   border: 1px solid #cecccc;
   border-radius: 8px;
@@ -335,7 +337,7 @@
 
 .formPanelAction button + button {
   margin-left: 16px;
-}
+} */
 
 .searchFilterSet {
   margin-right: 25px;
@@ -732,54 +734,56 @@ label.radioCheck_Mark input:checked + span.customCheck_Mark:after {
     font-size: 12px;
   }
 
-.btnPrimary {
+  .btnPrimary {
     font-size: 12px;
     line-height: 16px;
-    padding: 10px 25px;
-}
+    padding: 9px 25px;
+  }
 
-.togglebtn {
+  .togglebtn {
     height: 40px
-}
+  }
 
-.filterSets{
-  padding: 15px;
-}
+  .filterSets{
+    padding: 15px;
+  }
 
-.filterRight{
+  .filterRight{
     gap: 15px;
-}
+  }
 
-.addFilter{
+  .addFilter{
     width: 125px;
     gap: 8px;
-}
+  }
 
-.searchFilterSet{
+  .searchFilterSet{
     width: 200px;
     height: 35px;
-}
+  }
 
-.searchInput{
+  .searchInput{
     font-size: 10px;
-}   
+  }   
 
-.paginationFilter {
+  .paginationFilter {
     width: 65px;
     height: 35px;
-}
+  }
 
-.addFilter{
+  .addFilter{
     height: 35px;
-}
+  }
 
-.filterCount{
+  .filterCount{
     width: 18px;
     height: 18px;
     font-size: 10px;
-}
+  }
 
-
+  .formPanelAction {
+    padding: 24px 0;
+  }
 }
 
 

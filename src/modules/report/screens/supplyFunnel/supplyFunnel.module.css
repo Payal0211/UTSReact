@@ -213,21 +213,25 @@
 .tableDetails [class*="ant-pagination"]{
     display: none;
 }
+
 .formPanelAction {
+    margin-left: auto;
+    margin-right: auto;
     padding: 32px 0;
     justify-content: center;
+    align-items: center;
     display: flex;
 }
 
 .formPanelAction button {
-    background: var(--text-color-purity);
-    border: 1px solid var(--tabs-border-color);
+    background: #FFFFFF;
+    border: 1px solid #CECCCC;
     border-radius: 8px;
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
-    color: var(--uplers-black);
+    line-height: 18px;
+    color: #232323;
     padding: 12px 28px;
     outline: none;
     cursor: pointer;
@@ -235,8 +239,8 @@
 }
 
 .formPanelAction .btnPrimary {
-    background: var(--color-sunlight);
-    border-color: var(--color-sunlight);
+    background: #FFDA30;
+    border-color: #FFDA30;
 }
 
 .formPanelAction button+button {
@@ -250,16 +254,14 @@
     border-radius: 8px;
 }
 
-.formPanelAction {
-
+/* .formPanelAction {
     padding: 32px 0;
     margin-left: auto;
     margin-right: auto;
     justify-content: center;
     display: flex;
     align-items: center;
-    /* width: 1176px */
-}
+} */
 
 .matchmakingLabel {
     margin-top: 40px;
@@ -291,7 +293,7 @@
     background-color: var(--background-color-light);
 }
 
-.formPanelAction button {
+/* .formPanelAction button {
     background: #FFFFFF;
     border: 1px solid #CECCCC;
     border-radius: 8px;
@@ -313,7 +315,7 @@
 
 .formPanelAction button+button {
     margin-left: 16px;
-}
+} */
 
 .searchFilterSet {
     margin-right: 25px;
@@ -633,8 +635,9 @@ tr th:first-child {
         font-size: 10px;
     }
 
+    .formPanelAction {
+        padding: 24px 0;
+    }
+}
 
-  }
-  
-  
-  /* Responsive css End */
+/* Responsive css End */

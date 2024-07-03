@@ -400,7 +400,6 @@ const SlaReportFilerList = ({
             </>
           )}
           <br />
-          <br />
           <hr />
           <div className={slaReportStyle.operationsFilters}>
             <button

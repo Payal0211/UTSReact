@@ -247,7 +247,7 @@
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
+    line-height: 18px;
     color: var(--uplers-black);
     padding: 15px 28px;
     outline: none;
@@ -270,8 +270,6 @@
     padding: 10px 15px;
     border-radius: 8px;
 }
-
-
 
 .matchmakingLabel {
     margin-top: 40px;
@@ -710,6 +708,10 @@ tr th:first-child {
     .filterRight .btnPrimary{
         font-size: 12px;
         line-height: 12px;
+    }
+
+    .formPanelAction {
+        padding: 24px 0;
     }
 
   }

@@ -3,9 +3,10 @@
     position: fixed;
     top: 0;
     width: 25%;
-    max-height: 800px;
-        overflow: hidden;
-        right: -30%;
+    /* max-height: 800px; */
+    max-height: 100vh;
+    overflow-y: auto;
+    right: -30%;
     right: 0;
     box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.09);
     border-bottom-left-radius: 8px;

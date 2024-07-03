@@ -64,3 +64,9 @@
 .formPanelAction button+button {
     margin-left: 18px;
 }
+
+@media screen and (max-width: 1440px) {
+    .formPanelAction {
+      margin-bottom: 24px;
+    }
+}

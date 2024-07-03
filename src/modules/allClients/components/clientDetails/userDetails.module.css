@@ -137,4 +137,16 @@
     .addNewContainer {
         padding: 16px 24px;
     }
+    .tabsLeftPanel {
+        width: 29%;
+        font-size: 14px;
+        line-height: 22px;
+    }
+    .tabsLeftPanel h3 {
+        font-size: 22px;
+        line-height: 28px;
+    }
+    .tabsFormItem {
+        margin-bottom: 35px;
+    }
 }

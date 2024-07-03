@@ -31,7 +31,6 @@
     border-color: #232323;
 }
 
-
 .hiringRequest {
     font-size: 32px;
     font-weight: 500;
@@ -235,5 +234,8 @@
     }
     .filterSets{
         padding: 15px;
+    }
+    .hiringRequest {
+        font-size: 26px;
     }
 }

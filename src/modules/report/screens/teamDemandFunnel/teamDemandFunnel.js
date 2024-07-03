@@ -983,7 +983,7 @@ const TeamDemandFunnelScreen = () => {
 								</div>
 
 								{isLoading ? (
-									<SpinLoader />
+									<SpinLoader className="mainLoaderPopup" />
 								) : (
 									<div className={TeamDemandFunnelStyle.formPanelAction}>
 										<button

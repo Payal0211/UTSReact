@@ -7,19 +7,23 @@
 }
 .hrFieldLeftPane {
     width: 33.33%;
+    padding-right: 30px;
     /* border: 1px solid red; */
 }
 .hrFieldLeftPane h3 {
-    font-size: var(--fontsize-doom);
+    font-family: 'Montserrat';
     font-weight: 500;
-    line-height: 29px;
+    font-size: 24px;
+    line-height: 30px;
     color: var(--uplers-black);
+    margin: 0 0 8px;
 }
 
 .hrFieldLeftPane p {
-    font-size: var(--fontsize-brittle);
+    font-family: 'Montserrat';
     font-weight: 400;
-    line-height: 20px;
+    font-size: 16px;
+    line-height: 24px;
     color: #7C7C7C;
 }
 .hrFieldRightPane {
@@ -73,7 +77,7 @@
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
+    line-height: 18px;
     color: #232323;
     padding: 12px 28px;
     outline: none;
@@ -152,6 +156,9 @@
     list-style: none;
     padding: 0;
 }
+.selectFieldBox:empty{
+    display: none;
+}
 
 .selectFieldBox li span{
     color:#232323;
@@ -170,4 +177,29 @@
     background: var(--tabs-grey, rgba(186, 186, 186, 0.20));
     gap: 8px;
     cursor: pointer;
+}
+
+@media screen and (max-width: 1440px) {
+    .partOne {
+        padding-top: 40px;
+    }
+    .formPanelAction {
+        padding: 24px 0;
+    }
+
+    .hrFieldRightPane .mb50{
+        margin-bottom: 32px;
+    }
+    .hrFieldLeftPane {
+        width: 29%;
+        padding-right: 16px;
+    }
+    .hrFieldLeftPane h3 {
+        font-size: 22px;
+        line-height: 28px;
+    }
+    .hrFieldLeftPane p {
+        font-size: 14px;
+        line-height: 22px;
+    }  
 }

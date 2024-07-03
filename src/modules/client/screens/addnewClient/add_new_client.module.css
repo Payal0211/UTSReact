@@ -185,4 +185,7 @@
   .addNewContainer {
     padding: 16px 24px;
   }
+  .addHRTitle{
+    font-size: 28px;
+  }
 }

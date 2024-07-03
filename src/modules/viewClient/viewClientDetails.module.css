@@ -608,3 +608,9 @@ button.yellowOutlinedButton {
     cursor: pointer;
     box-shadow: none;
 }
+
+@media screen and (max-width: 1440px) {
+    .formPanelAction {
+      margin-bottom: 24px;
+    }
+}

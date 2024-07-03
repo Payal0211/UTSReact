@@ -183,7 +183,7 @@
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
+    line-height: 18px;
     color: #232323;
     padding: 12px 28px;
     outline: none;
@@ -220,4 +220,10 @@
 
 [class*="ant-select-dropdown"] {
     z-index: 1000 !important;
+}
+
+@media screen and (max-width: 1440px) {
+    .formPanelAction {
+      padding-bottom: 32px;
+    }
 }

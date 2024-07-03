@@ -422,7 +422,7 @@ table {
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
+    line-height: 18px;
     color: var(--uplers-black);
     padding: 12px 28px;
     outline: none;
@@ -548,6 +548,9 @@ table {
 
     .label {
         font-size: 12px;
+    }
+    .formPanelAction {
+        padding: 24px 0;
     }
   }
   

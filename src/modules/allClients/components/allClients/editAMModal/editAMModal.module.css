@@ -76,3 +76,9 @@
 .customSelectAMName [class*="ant-select-selection-search-input"]{
     padding-left: 15px !important;
 }
+
+@media screen and (max-width: 1440px) {
+    .formPanelAction {
+        margin-bottom: 24px;
+    }
+}

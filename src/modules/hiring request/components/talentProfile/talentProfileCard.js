@@ -37,9 +37,9 @@ const TalentProfileCard = ({
 					justifyContent: 'flexStart',
 					gap: '24px',
 				}}>
-				<label>
-					<h1>Profiles Shared</h1>
-				</label>
+				{/* <label> */}
+					<h2 className={TalentProfileCardStyle.talentProfileTitle}>Profiles Shared</h2>
+				{/* </label> */}
 				{apiData?.dynamicCTA?.MatchMaking && (
 					<button
 						disabled={!apiData?.dynamicCTA?.MatchMaking?.IsEnabled}

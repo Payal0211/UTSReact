@@ -6,15 +6,18 @@
     background-color: var(--background-color-light);
     height: calc(100% - 58px);
 }
+
+.talentProfileTitle{
+    font-size: 26px;
+    line-height: 30px;
+    margin-bottom: 16px;
+}
+
 .talentCardBody {
     width: 98%;
     margin: 0 auto;
     padding: 20px 0;
 }
-
-
-
-
 .matchmakeButtonOutline {
     background: var(--background-color-light);
     border: 1px solid #FFDA30;
@@ -73,4 +76,12 @@
     background: #232323;
     color: #fff;
     border-color: #232323;
+}
+
+@media screen and (max-width: 1440px) {
+    .talentProfileTitle{
+        font-size: 24px;
+        line-height: 26px;
+        margin-bottom: 20px;
+    }
 }

@@ -485,9 +485,10 @@
         height: 18px;
         font-size: 10px;
     }
-
-
-
+    
+    .paginationFilter .btnPrimary{
+        padding: 9px 24px;
+    }
   }
   
   

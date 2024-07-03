@@ -185,10 +185,7 @@
 @media screen and (min-width:1200px) and (max-width:1300px) {
     .hiringRequestIdSets {
         font-size: 1.5rem;
-        font-weight: 500;
     }
-
-
 }
 
 @media only screen and (max-width:1260px) {
@@ -248,12 +245,12 @@
 
 .formPanelAction button {
     background: var(--text-color-purity);
-    border: 1px solid var(--uplers-border-color);
+    border: 1px solid #cecccc;
     border-radius: 8px;
-    font-family: 'Montserrat';
+    font-family: "Montserrat";
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
+    line-height: 18px;
     color: var(--uplers-black);
     padding: 12px 28px;
     outline: none;
@@ -264,6 +261,12 @@
 .formPanelAction .btnPrimary {
     background: var(--color-sunlight);
     border-color: var(--color-sunlight);
+}
+
+.formPanelAction button:disabled {
+    background: #cecccc;
+    border: 1px solid #cecccc;
+    cursor: not-allowed;
 }
 
 .formPanelAction button+button {
@@ -308,7 +311,7 @@
     margin-bottom: 24px;
 }
 
-.formPanelAction {
+/* .formPanelAction {
     display: flex;
 }
 
@@ -325,7 +328,7 @@
     outline: none;
     cursor: pointer;
     box-shadow: none;
-}
+} 
 
 .formPanelAction .btnPrimary {
     background: var(--color-sunlight);
@@ -336,7 +339,7 @@
     background: #cecccc;
     border: 1px solid #cecccc;
     cursor: not-allowed;
-}
+} */
 
 .error {
     color: var(--danger-color);
@@ -883,6 +886,9 @@ label.radioCheck_Mark input:checked+span.customCheck_Mark:after {
     }
 
     .hrDetailsRightPart .hiringRequestPriority .deleteSVG{
-        width: 20 !important;
+        width: 20px !important;
+    }
+    .hiringRequestIdSets {
+        font-size: 1.7rem;
     }
 }
