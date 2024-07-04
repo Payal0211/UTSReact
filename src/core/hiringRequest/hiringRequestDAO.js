@@ -344,6 +344,33 @@ export const hiringRequestDAO = {
 			return errorDebug(error, 'hiringRequestDAO.createDebriefingDAO');
 		}
 	},
+	createAIJDDAO: async function (payload) {
+		try {
+			const createDebriefResult =
+				await HiringRequestAPI.createAIJDRequest(payload);
+			if (createDebriefResult) {
+				const statusCode = createDebriefResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = createDebriefResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return createDebriefResult;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return createDebriefResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.createDebriefingDAO');
+		}
+	},
 	getMatchmakingDAO: async function (matchMakingData) {
 		try {
 			const getMatchmakingResult = await HiringRequestAPI.getMatchmakingRequest(
@@ -629,6 +656,35 @@ export const hiringRequestDAO = {
 	uploadFileDAO: async (fileData) => {
 		try {
 			const uploadFileResponse = await HiringRequestAPI.uploadFile(fileData);
+			if (uploadFileResponse) {
+				const statusCode = uploadFileResponse['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = uploadFileResponse.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return uploadFileResponse;
+				} else if (
+					statusCode === HTTPStatusCode.BAD_REQUEST ||
+					statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+				)
+					return uploadFileResponse;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'hiringRequestDAO.deleteHRDAO()');
+		}
+	},
+	getDetailsFromTextDAO: async (payload,email) => {
+		try {
+			const uploadFileResponse = await HiringRequestAPI.getDetailsFromTextAPI(payload,email);
 			if (uploadFileResponse) {
 				const statusCode = uploadFileResponse['statusCode'];
 				if (statusCode === HTTPStatusCode.OK) {
