@@ -46,7 +46,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
       setValue('foundedIn', companyDetails?.foundedYear)
       setControlledFoundedInValue(companyDetails?.foundedYear)
     }  
-    companyDetails?.teamSize > 0 && setValue('teamSize', companyDetails?.teamSize)
+    companyDetails?.teamSize  && setValue('teamSize', companyDetails?.teamSize)
     companyDetails?.companyType && setValue('companyType', companyDetails?.companyType)
     companyDetails?.headquaters && setValue('headquaters', companyDetails?.headquaters)
     companyDetails?.aboutCompany && setValue('aboutCompany', companyDetails?.aboutCompany)
@@ -447,7 +447,7 @@ function CompanySection({companyID,register,errors,setValue,watch,companyDetails
                     errors={errors}
                     name="teamSize"
                   label="Team Size"
-                    type={InputType.NUMBER}
+                    type={InputType.TEXT}
                     validationSchema={{
                       required: "Please enter the team size.",
                       min: {

@@ -91,7 +91,8 @@ const Navbar = ({ fullName }) => {
 					<div className={navbarStyles.avatarDetails}>{fullName}</div>
 					<Tooltip
 						placement="bottom"
-						title="Logout"
+						// title="Logout"
+						title={<span style={{ color: '#232323', fontWeight: '500' }}>Logout</span>}
 						color={`var(--color-sunlight)`}>
 						<LogoutSVG
 							onClick={onLogoutHandler}

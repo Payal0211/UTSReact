@@ -8,7 +8,9 @@ const antIcon = (
 			flexDirection: 'row',
 			alignItems: 'center',
 			justifyContent: 'center',
-			marginLeft: '350px',
+			// marginLeft: '350px',
+			marginLeft: 'auto',
+			marginRight: 'auto',
 			fontWeight: 500,
 			color: `var(--uplers-black)`,
 		}}

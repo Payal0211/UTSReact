@@ -3,12 +3,17 @@
 .addHRTitle {
     font-size: 32px;
     font-weight: 500;
-    margin-bottom: 35px;
+    /* margin-bottom: 35px; */
+    margin-bottom: 24px;
 }
 
-.addNewContainer {
+/* .addNewContainer {
     width: 95%;
     margin: 0 auto;
+} */
+
+.addNewContainer {
+  padding: 24px 40px;
 }
 
 .newHR {
@@ -175,3 +180,12 @@
   .summaryCard span {
     font-weight: bold;
   }
+
+@media screen and (max-width: 1440px) {
+  .addNewContainer {
+    padding: 16px 24px;
+  }
+  .addHRTitle{
+    font-size: 28px;
+  }
+}

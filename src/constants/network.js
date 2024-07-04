@@ -2,13 +2,13 @@ export class NetworkInfo {
 	static PROTOCOL = 'http://';
 	static PROTOCOL_S = 'https://';
 	// static domain = 'localhost:5162/';
-	static DOMAIN = '3.218.6.134:9082/';
 	// static ATS_DOMAIN = '/atsstaging.uplers.com/api/';
 	static ATS_DOMAIN = '/13.233.146.211/api/';
 	static ATS_TOKEN = 'y8sxutshp4gm2u4lsmsmlg';
+	static DOMAIN = '3.82.177.154:9082/';
 	// static domain = 'https://clientportal.uplers.com/gspace/';
 	static domain = 'https://bb8d-3-218-6-134.ngrok-free.app/';
-	static FILEDOMAIN = '3.218.6.134:90/';
+	static FILEDOMAIN = '3.82.177.154:90/';
 	// static PROTOCOL = 'https://';
 	// static DOMAIN = '809c77bfbe78ce2d4010a080a425ea2b.loophole.site/';
 	static NETWORK = NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN;

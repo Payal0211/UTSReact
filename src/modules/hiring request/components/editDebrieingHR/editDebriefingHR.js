@@ -447,7 +447,7 @@ const checkValChnage = () => {
 				interviewerLinkedin: d.interviewerLinkedin,
 				interviewerDesignation: d.interviewerDesignation,
 				JDDumpID: jdDumpID? jdDumpID : getHRdetails?.addHiringRequest?.jddumpId  ,
-				ActionType: getHRdetails?.addHiringRequest?.isActive ? "Edit" : "Save",
+				ActionType: getHRdetails?.addHiringRequest?.isActive ? "Update_HRDBrifing" : "Save",
 				IsHrfocused: isFocusedRole,
 				allowSpecialEdit: getHRdetails?.allowSpecialEdit,
 				role: true ? null : d?.role?.id,

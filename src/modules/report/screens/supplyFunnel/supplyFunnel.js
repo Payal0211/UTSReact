@@ -540,11 +540,12 @@ const SupplyFunnelScreen = () => {
 												placement="bottomLeft"
 												title={text}>
 												{item === 'Stage' || item === 'Duration' ? (
-													<p style={{ fontWeight: '550' }}>{text}</p>
+													<p style={{ fontWeight: '550', marginBottom:'0' }}>{text}</p>
 												) : (
 													<p
 														style={{
 															textDecoration: 'underline',
+															marginBottom:'0',
 															cursor: text === 0 ? 'no-drop' : 'pointer',
 														}}
 														onClick={
@@ -590,7 +591,7 @@ const SupplyFunnelScreen = () => {
 					)}
 				</div>
 				{isSummary && (
-					<div className={SupplyFunnelStyle.tableDetails}>
+					<div className={SupplyFunnelStyle.tableDetails} style={{marginTop: '0'}}>
 						{isSummaryLoading ? (
 							<TableSkeleton />
 						) : (
@@ -614,9 +615,9 @@ const SupplyFunnelScreen = () => {
 													placement="bottomLeft"
 													title={text}>
 													{item === 'Stage' || item === 'Duration' ? (
-														<p style={{ fontWeight: '550' }}>{text}</p>
+														<p style={{ fontWeight: '550', marginBottom:'0' }}>{text}</p>
 													) : (
-														<p>{text}</p>
+														<p style={{marginBottom:'0'}}>{text}</p>
 													)}
 												</Tooltip>
 											)}

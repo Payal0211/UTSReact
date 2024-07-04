@@ -4,8 +4,7 @@
     padding: 10px 15px;
     border-radius: 8px;
 }
-.formPanelAction {
-   
+.formPanelAction {   
     padding: 32px 0;
     margin-left: auto;
     margin-right: auto;
@@ -42,7 +41,7 @@ border-bottom: 2px solid var(--color-sunlight);
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
+    line-height: 18px;
     color: #232323;
     padding: 12px 28px;
     outline: none;
@@ -251,4 +250,11 @@ tr th:first-child{
     background: #232323;
     color: #fff;
     border-color: #232323;
+}
+
+
+@media screen and (max-width: 1440px) {
+    .formPanelAction {
+        padding: 24px 0;
+    }
 }

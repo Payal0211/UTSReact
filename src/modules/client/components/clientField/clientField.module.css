@@ -146,7 +146,7 @@
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
+    line-height: 18px;
     color: var(--uplers-black);
     padding: 12px 28px;
     outline: none;
@@ -321,4 +321,22 @@
     height: 15px;
     border-radius: 50%;
     background: var(--color-sunlight);
+}
+
+@media screen and (max-width: 1440px) {
+    .formPanelAction {
+        padding: 24px 0;
+    }
+    .tabsLeftPanel {
+        width: 28%;
+        font-size: 14px;
+        line-height: 22px;
+    }
+    .tabsLeftPanel h3 {
+        font-size: 22px;
+        line-height: 28px;
+    }
+    .tabsFormItem {
+        margin-bottom: 35px;
+    }
 }

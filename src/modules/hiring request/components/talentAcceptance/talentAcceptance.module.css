@@ -150,8 +150,7 @@
     justify-content: space-around;
     gap: 16px;
 }
-.hiringRequestPriority {
-    
+.hiringRequestPriority {    
     background-color: var(--background-color-light);
     border: 2px solid var(--uplers-border-color);
     padding: 10px 15px;
@@ -399,4 +398,10 @@
 .error {
     color: var(--danger-color);
     font-size: var(--fontsize-tough);
+}
+
+@media screen and (max-width: 1440px) {
+    .formPanelAction {
+        margin-bottom: 24px;
+    }
 }

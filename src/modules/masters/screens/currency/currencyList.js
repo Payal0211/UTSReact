@@ -68,7 +68,6 @@ const CurrencyList = () => {
 				</div>
 				<LogoLoader visible={isLoading} />
 			</div>
-			<br />
 			{/*
 			 * ------------ Table Starts-----------
 			 * @Table Part
