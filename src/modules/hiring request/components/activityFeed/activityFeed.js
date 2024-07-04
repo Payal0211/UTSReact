@@ -873,6 +873,9 @@ const ActivityFeed = ({
 							{historyData?.timezone_Preference && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone Preference:</span> {historyData?.timezone_Preference}</div>}
 							{historyData?.employmentType && <div className={ActivityFeedStyle.historyGridInfo}><span>Employment Type :</span> {historyData?.employmentType}</div>}
 							{historyData?.payrollType && <div className={ActivityFeedStyle.historyGridInfo}><span>Payroll Type:</span> {historyData?.payrollType}</div>}
+							{historyData?.modeOfWork && <div className={ActivityFeedStyle.historyGridInfo}><span>Mode of work:</span> {historyData?.modeOfWork}</div>}
+							{historyData?.city && <div className={ActivityFeedStyle.historyGridInfo}><span>City:</span> {historyData?.city}</div>}
+							{historyData?.country && <div className={ActivityFeedStyle.historyGridInfo}><span>Country:</span> {historyData?.country}</div>}
 						</div>
 						{historyData?.jobDescription && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Description:</span> <div dangerouslySetInnerHTML={{__html:historyData?.jobDescription}} /></div>}
 						{historyData?.mustHaveSkills && <div className={ActivityFeedStyle.MustHaveSkills} style={{display:'flex',marginTop:'10px'}}><span>Must Have Skills:</span> <div className={ActivityFeedStyle.skillsContainer}>{historyData?.mustHaveSkills.split(',').map(skill=> <div className={ActivityFeedStyle.skillChip}>{skill}</div>)}</div></div>}
