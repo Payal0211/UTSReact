@@ -385,7 +385,8 @@
     }
 
     .togglebtn {
-        height: 40px
+        height: 40px;
+        font-size: 13px;
     }
 
     .filterSets{

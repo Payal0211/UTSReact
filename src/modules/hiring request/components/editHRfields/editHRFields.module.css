@@ -65,7 +65,8 @@
     margin: 0 0 32px;
 }
 
-.formGroup [class*="ant-select-selection-search-input"] {
+.formGroup [class*="ant-select-selection-search-input"],
+.hrFieldRightPane  [class*="formField"] [class*="ant-select-selection-search-input"]{
     height: auto !important;
     padding: 16px 16px !important;
 }
@@ -251,7 +252,7 @@
         padding: 24px 0;
     }
     .hrFieldLeftPane {
-        width: 29%;
+        width: 28%;
         padding-right: 16px;
     }
     .hrFieldLeftPane h3 {

@@ -390,7 +390,10 @@
     }
 
     .filterType{
-        padding: 10px 10px;
+        padding: 7px 13px;
+    }
+    .filterType img{
+        max-width: 20px;
     }
 
     .filterType h2 {

@@ -69,4 +69,15 @@
     .hiringRequest {
         font-size: 26px;
     }
+    .searchFilterSet {
+        width: 210px;
+        height: 36px;
+        margin-right: 8px;
+    }
+    .searchInput {
+        font-size: 13px;
+    }
+    .calendarFilterSet .label{
+        font-size: 13px;
+    }
 }

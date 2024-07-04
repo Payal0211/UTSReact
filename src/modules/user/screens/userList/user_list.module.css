@@ -239,6 +239,7 @@
     .userListTitle button{
         padding-top: 11px;
         padding-bottom: 11px;
+        font-size: 13px;
     }
     .calendarFilter{
         width:195px;

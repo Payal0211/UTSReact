@@ -74,5 +74,9 @@
     }
     .navlink{
         gap: 16px;
-    }    
+    }
+    .navlink svg{
+        width: 18px !important;
+        height: 18px !important;
+    } 
 }

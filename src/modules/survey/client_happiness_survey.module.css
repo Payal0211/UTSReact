@@ -814,7 +814,7 @@
     }
 
     .btnPrimary {
-        font-size: 12px;
+        font-size: 13px;
         line-height: 16px;
         padding: 12px 25px;
     }
@@ -881,6 +881,7 @@
     .btnwhite{
         padding-top: 11px;
         padding-bottom: 11px;
+        font-size: 13px;
     }
 }
 

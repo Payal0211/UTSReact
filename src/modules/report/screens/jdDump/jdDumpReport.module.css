@@ -97,19 +97,20 @@
 }
 
 .searchFilterSet {
-    border: 1px solid var(--background-color-metal);
+    border: 1px solid #E8E8E8;
     border-radius: 8px;
-    width: 250px;
-    height: 60px;
+    width: 276px;
+    height: 44px;
+    background: transparent;
     display: flex;
-
     justify-content: space-evenly;
     align-items: center;
     flex-wrap: wrap;
+    margin-right: 25px;
 }
 
 .searchInput {
-    
+    background: transparent;
     cursor: pointer;
     width: 80%;
     outline: none;
@@ -330,7 +331,7 @@
     margin-left: 16px;
 } */
 
-.searchFilterSet {
+/* .searchFilterSet {
     margin-right: 25px;
     border: 1px solid #E8E8E8;
     border-radius: 8px;
@@ -351,7 +352,7 @@
     border: none;
     color: var(--uplers-black);
     font-weight: 500;
-}
+} */
 
 .matchmakingTable {
     cursor: pointer;
@@ -679,5 +680,41 @@ tr th:first-child {
     }
     .filterSets{
         padding: 15px;
+    }
+    .btnPrimaryOutline{
+        padding-top: 9px;
+        padding-bottom: 9px;
+        font-size: 13px;
+        line-height: 16px;
+    }
+    .searchFilterSet {
+        width: 210px;
+        height: 36px;
+        margin-right: 8px;
+    }
+    .searchInput {
+        font-size: 13px;
+    }
+    .calendarFilterSet .label{
+        font-size: 13px;
+    }
+    .calendarFilter{
+        width: 200px;
+        height: 36px;
+        font-size: 13px;
+        padding: 7px 10px;
+    }
+    .calendarFilter svg{
+        margin-right: 8px !important;
+    }
+    .btnPrimary {
+        font-size: 13px;
+        line-height: 16px;
+        padding-top: 9px;
+        padding-bottom: 9px;
+    }
+    .selectedTextModal{       
+        font-size: 16px;
+        line-height: 32px;
     }
 }

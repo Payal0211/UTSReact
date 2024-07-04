@@ -325,7 +325,7 @@ function ViewClientDetails() {
 									{viewDetails?.clientDetails?.clientEmail ? viewDetails?.clientDetails?.clientEmail : "NA"}
 								</li>							
                                 <li>
-									<span>Lead Source : </span>
+									<span>Lead Source: </span>
 									{viewDetails?.clientDetails?.leadSource ? viewDetails?.clientDetails?.leadSource : "NA"}
 								</li>
 								<li>
@@ -333,7 +333,7 @@ function ViewClientDetails() {
 									{viewDetails?.clientDetails?.clientContactNumber ? viewDetails?.clientDetails?.clientContactNumber : "NA"}
 								</li>
 								<li>
-									<span>Client Linkedin : -</span>
+									<span>Client Linkedin:</span>
                                     {viewDetails?.clientDetails?.clientLinkedIn ? <a
 										href={viewDetails?.clientDetails?.clientLinkedIn}
 										target="_blank"
@@ -361,7 +361,7 @@ function ViewClientDetails() {
 									{viewDetails?.clientDetails?.leadUser ? viewDetails?.clientDetails?.leadUser : "NA"}
 								</li>
 								<li>
-									<span>Company URL : </span>
+									<span>Company URL: </span>
                                     {viewDetails?.clientDetails?.viewCompanyURL ? <a
 										href={viewDetails?.clientDetails?.companyURL}
 										target="_blank"
@@ -372,7 +372,7 @@ function ViewClientDetails() {
 									{viewDetails?.clientDetails?.geo ? viewDetails?.clientDetails?.geo : "NA"}
 								</li>
 								<li>
-									<span>Company Linkedin : </span>
+									<span>Company Linkedin: </span>
                                     {viewDetails?.clientDetails?.companyLinkedIn ? <a
 										href={viewDetails?.clientDetails?.companyLinkedIn}
 										target="_blank"
@@ -408,11 +408,11 @@ function ViewClientDetails() {
 							<h2>Additional Company Information</h2>
 							<ul>
 								<li>
-									<span>Industry : </span>
+									<span>Industry: </span>
 									{viewDetails?.clientDetails?.industry ? viewDetails?.clientDetails?.industry : "NA"}
 								</li>
 								<li>
-									<span>Company Size : </span>
+									<span>Company Size: </span>
 									{viewDetails?.clientDetails?.companySize ? viewDetails?.clientDetails?.companySize :"NA"}
 								</li>
                                 <li>
