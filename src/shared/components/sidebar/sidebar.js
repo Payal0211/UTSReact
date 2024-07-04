@@ -196,7 +196,7 @@ const getSideBar = (usertypeID,EmployeeID) => {
 		// }),
 		new SideBarModels({
 			id: 'UTS_AllClients',
-			title: 'Clients',
+			title: 'Company/Clients',
 			isActive: false,
 			icon:AllClients,
 			navigateTo: UTSRoutes.ALLCLIENTS,
