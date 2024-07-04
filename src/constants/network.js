@@ -308,6 +308,8 @@ export class HiringRequestsAPI {
 	// static GET_CHANNEL_LIBRARY = 'GetChannelLibrary';
 	static NOTE_LIST = 'hr/note-list';
 	static SAVE_NOTES = 'hr/note-create';
+	static DETAIL_FROM_TEXT = 'GetAllDetailsFromText'
+	static DONT_HAVE_JD = 'DontHaveJD'
 	static GET_lOGIN_HR_INFO = 'GetLoginHrInfo';
 	static SYNC_HR_UTS_TO_ATS  = 'SyncHRUtsToAts'
 	static GET_ACTION_UPDATES = 'GetUpdateHRDetails'
