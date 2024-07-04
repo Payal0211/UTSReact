@@ -687,7 +687,7 @@ tr th:first-child {
 
 @media screen and (max-width: 1440px) {
     .hrFieldLeftPane {
-        width: 29%;
+        width: 28%;
         padding-right: 16px;
     }    
     .hrFieldLeftPane h3 {
