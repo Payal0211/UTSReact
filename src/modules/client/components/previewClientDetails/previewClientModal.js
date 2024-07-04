@@ -354,11 +354,16 @@ function PreviewClientModal({
     if (getCompanyDetails?.pocUserDetailsEdit && allPocs?.length) {
       let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserDetailsEdit?.pocUserID);
         let SelectedPocs = {
-          id: data.id ? data.id : null,
-          value: data.value ? data.value : null,
+          id: data?.id || null,
+          value: data?.value || null,
         };
-      setValue("pocId", SelectedPocs);
-      setControlledPOC(SelectedPocs);
+        if(data){
+          setValue("pocId", SelectedPocs);
+          setControlledPOC(SelectedPocs);
+        }else{
+          setValue("pocId", { id: null, value: null });
+          setControlledPOC({ id: null, value: null });
+        }
     }
   }, [getCompanyDetails?.pocUserDetailsEdit, allPocs]);
 
