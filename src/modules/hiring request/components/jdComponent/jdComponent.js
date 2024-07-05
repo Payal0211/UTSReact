@@ -15,7 +15,7 @@ import 'react-quill/dist/quill.snow.css';
 
 const JobDescriptionComponent = ({error,helperProps}) => {
  const { setUploadFileData,setValidation,setShowGPTModal,setGPTFileDetails,watch
-    ,isHaveJD, setIsHaveJD,textCopyPastData,setTextCopyPastData,parseType,setParseType,getTextDetils
+    ,isHaveJD, setIsHaveJD,textCopyPastData,setTextCopyPastData,parseType,setParseType,getTextDetils,watchClientName,filteredMemo,clientDetail
  } = helperProps
     const [isLoading, setIsLoading] = useState(false); 
     const [uploadedFileInfo, setUploadedFileInfo] = useState(null);
@@ -29,7 +29,7 @@ const JobDescriptionComponent = ({error,helperProps}) => {
         name: "file",
         multiple: false,
         action:
-        NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_FILE + `?clientEmail=${watch('clientemail')}` ,
+        NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.UPLOAD_FILE + `?clientEmail=${clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId ?  filteredMemo[0]?.emailId : watchClientName?? ''}` ,
         headers: {
           Authorization: JSON.parse(localStorage.getItem("userSessionInfo"))?.Token,
         },

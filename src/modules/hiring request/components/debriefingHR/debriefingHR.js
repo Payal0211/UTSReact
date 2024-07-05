@@ -220,7 +220,6 @@ const DebriefingHR = ({
 	},[getTalentRole])
 
 	useEffect(() => {
-		console.log(JDParsedSkills,"JDParsedSkills")
 		setValue(
 			'skills',
 			JDParsedSkills?.Skills?.map((item) => ({
@@ -229,13 +228,32 @@ const DebriefingHR = ({
 			})),
 		);
 		setControlledJDParsed(JDParsedSkills?.Skills?.map((item) => item?.value));
-		setCombinedSkillsMemo(prev => [...prev, ...JDParsedSkills?.Skills?.map((item) => ({
-			id: item?.id.toString(),
-			value: item?.value,
-		})),...JDParsedSkills?.AllSkills?.map((item) => ({
-			id: item?.id.toString(),
-			value: item?.value,
-		}))])
+		setCombinedSkillsMemo(prev =>{ 
+
+			let newarray = [...prev]
+			if(JDParsedSkills?.Skills?.length > 0){
+				newarray = [...newarray,...JDParsedSkills?.Skills?.map((item) => ({
+					id: item?.id.toString(),
+					value: item?.value,
+				}))];
+			}
+
+			if(JDParsedSkills?.AllSkills?.length > 0){
+				newarray = [...newarray,...JDParsedSkills?.AllSkills?.map((item) => ({
+					id: item?.id.toString(),
+					value: item?.value,
+				}))]
+			}
+			return newarray
+		// 	return [...prev, ...JDParsedSkills?.Skills?.map((item) => ({
+		// 	id: item?.id.toString(),
+		// 	value: item?.value,
+		// })),...JDParsedSkills?.AllSkills?.map((item) => ({
+		// 	id: item?.id.toString(),
+		// 	value: item?.value,
+		// }))]
+	}
+	)
 
 		setValue(
 			'goodToHaveSkills',
