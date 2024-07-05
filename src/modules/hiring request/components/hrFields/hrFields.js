@@ -236,11 +236,8 @@ const HRFields = ({
 
   const [ showAddCompany, setShowAddCompany] = useState(false)
   const [showAddClient,setAddClient] = useState(false)
-
   const[textCopyPastData,setTextCopyPastData] = useState('');  
   const[parseType,setParseType] = useState('JDFileUpload');
-
-  const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? 'DPHR' : ''
 
   const watchClientName = watch("clientName");
   const _endTime = watch("endTime");
@@ -2895,8 +2892,8 @@ const HRFields = ({
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
-                    // label={`Add your estimated ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}budget (Monthly)`}
-                    label={`Add your ${isGUID ? 'talent salary' :'client estimated '  }  budget (${isGUID ? "Annum" : "Monthly"})`}
+                    label={`${isGUID? "Add your talent salary budget (Annum)" : "Add your client estimated budget (Monthly)"} `}
+                    // label={`Add your ${isGUID ? 'talent salary' :'client estimated '  }  budget (${isGUID ? "Annum" : "Monthly"})`}
                     defaultValue="Select Budget"
                     options={budgets.map((item) => ({
                       id: item.id,
@@ -2912,7 +2909,8 @@ const HRFields = ({
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={`${typeOfPricing === 1 || userCompanyTypeID=== 2 ? isGUID ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (${isGUID ? "Annum" : "Monthly"})`}
+                  label={`${isGUID ? 'Talent Salary Estimated Budget (Annum)' : 'Client Estimated Budget (Monthly)' }`}
+                  
                   register={register}
                   name="adhocBudgetCost"
                   type={InputType.NUMBER}
@@ -2931,8 +2929,9 @@ const HRFields = ({
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
+                 label={`${isGUID ? 'Talent Salary Estimated Minimum Budget (Annum)' : 'Client Estimated Minimum Budget (Monthly)'}`}
                   // label={`Estimated Minimum ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}Budget (Monthly)`}
-                  label={isGUID ?  `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`: `Client Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`}
+                  // label={isGUID ?  `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`: `Client Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`}
                   register={register}
                   name="minimumBudget"
                   type={InputType.NUMBER}
@@ -2952,8 +2951,8 @@ const HRFields = ({
 
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  // label={`Estimated Maximum ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}Budget (Monthly)`}
-                  label={isGUID ?   `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})` : `Client Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})`}
+                  label={`${isGUID ? 'Talent Salary Estimated Maximum Budget (Annum)' : 'Client Estimated Maximum Budget (Monthly)'}`}
+                  // label={isGUID ?   `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})` : `Client Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})`}
                   register={register}
                   name="maximumBudget"
                   type={InputType.NUMBER}
