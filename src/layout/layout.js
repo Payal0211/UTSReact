@@ -25,11 +25,13 @@ const Layout = () => {
 			<Navbar fullName={userData?.FullName} />
 			<Sidebar />
 			<main
-				style={{
-					paddingTop: '80px',
-					paddingLeft: '60px',
-					width: '100%',
-				}}>
+				// style={{
+				// 	paddingTop: '80px',
+				// 	paddingLeft: '60px',
+				// 	width: '100%',
+				// }}
+				className='mainWrapper'
+				>
 				<Outlet />
 				<UTSFeedback />
 			</main>

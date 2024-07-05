@@ -730,7 +730,7 @@ const SlaReports = () => {
 					</li>
 				</ul>
 
-				<div className={SlaReportStyle.tableDetails}>
+				<div className={SlaReportStyle.tableDetails} style={{marginTop: '0'}} >
 					{isSummaryLoading ? (
 						<TableSkeleton />
 					) : (

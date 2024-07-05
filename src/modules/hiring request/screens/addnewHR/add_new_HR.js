@@ -46,6 +46,7 @@ const AddNewHR = () => {
 	const [isBDRMDRUser ,setIsBDRMDRUser] = useState(false)
 	const [AboutCompanyDesc, setAboutCompanyDesc ] = useState(null)
 	const [userCompanyTypeID, setUserCompanyTypeID] = useState(1)
+	const [isHaveJD, setIsHaveJD] = useState(0);
 
 	useEffect(()=>{
 		if(getHRdetails?.addHiringRequest?.hrNumber){
@@ -145,6 +146,8 @@ const AddNewHR = () => {
 									userCompanyTypeID={userCompanyTypeID}
 									setUserCompanyTypeID={setUserCompanyTypeID}
 									setDisabledFields={setDisabledFields}
+									isHaveJD={isHaveJD}
+									setIsHaveJD={setIsHaveJD}
 								/>
 							),
 						},
@@ -171,6 +174,8 @@ const AddNewHR = () => {
 									isDirectHR={isDirectHR}
 									userCompanyTypeID={userCompanyTypeID}
 									setUserCompanyTypeID={setUserCompanyTypeID}
+									isHaveJD={isHaveJD}
+									setIsHaveJD={setIsHaveJD}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,
@@ -209,6 +214,8 @@ const AddNewHR = () => {
 									setDisabledFields={setDisabledFields}
 									originalDetails={originalDetails} 
 									setOriginalDetails={setOriginalDetails} 
+									isHaveJD={isHaveJD}
+									setIsHaveJD={setIsHaveJD}
 								/>
 							),
 							disabled: localStorage.getItem('fromEditDeBriefing') && true,
@@ -232,6 +239,8 @@ const AddNewHR = () => {
 									isBDRMDRUser={isBDRMDRUser}
 									isDirectHR={isDirectHR}originalDetails={originalDetails} 
 									setOriginalDetails={setOriginalDetails} 
+									isHaveJD={isHaveJD}
+									setIsHaveJD={setIsHaveJD}
 								/>
 							),
 							disabled: tabFieldDisabled?.debriefingHR,

@@ -615,7 +615,6 @@ const EngagementFilerList = ({
 						</>
 					)}
 					<br />
-					<br />
 					<hr />
 					<div className={engagementFilterStyle.operationsFilters}>
 						<button

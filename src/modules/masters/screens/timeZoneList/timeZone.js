@@ -165,8 +165,7 @@ const TimeZoneList = () => {
 					</div>
             	</div>				
 			</div>
-         
-			<br />			
+         	
 			<div className={CurrencyListStyle.tableDetails}>
 				{isLoading ? (
 					<TableSkeleton />

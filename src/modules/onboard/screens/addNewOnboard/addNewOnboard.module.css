@@ -1,6 +1,10 @@
-.addNewContainer {
+/* .addNewContainer {
     width: 95%;
     margin: 0 auto;
+} */
+
+.addNewContainer {
+    padding: 24px 40px;
 }
 
 .onboardLabel {
@@ -19,4 +23,10 @@
     font-size: var(--fontsize-uplers);
     font-weight: 500;
     margin: 0 0 24px;
+}
+
+@media screen and (max-width: 1440px) {
+    .addNewContainer {
+        padding: 16px 24px;
+    }
 }

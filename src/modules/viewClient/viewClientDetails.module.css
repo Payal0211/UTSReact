@@ -32,7 +32,7 @@
 }
 .dealDetailsBack a svg{margin-right: 6px;}
 .dealDetailsTitle{
-    margin: 0 0 50px;
+    margin: 0 0 32px;
     object-fit: cover;
     display: flex;
     align-items: center;
@@ -52,8 +52,15 @@
     width: 56px;
     height: 56px;
     border-radius: 60px;
-    margin-right: 24px;
+    margin-right: 16px;
+    object-fit: contain;
+    background: #fff;
 }
+
+.dealDetailsTitle h1 .viewClientUser{
+    margin-right: 16px;
+}
+
 .dealDetailsTitle button {
     background: #FFDA30;
     border: 1px solid #FFDA30;
@@ -75,7 +82,7 @@
     border-color: #232323;
 }
 .dealDetailsTopCard{
-    margin: 0 0 40px;
+    margin: 0 0 32px;
 }
 .dealDetailsTopCard ul {
     margin: 0 -12px;
@@ -95,9 +102,10 @@
     padding: 15px 24px;
     /* font-family: 'Montserrat'; */
     font-weight: 600;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 22px;
     color: #232323;
+    background: rgba(255,255,255,0.48);
 }
 .topCardItem span{
     display: block;
@@ -554,6 +562,7 @@ button.yellowOutlinedButton {
     gap: 5px;
     align-items: center;
     font-size: 16px;
+    line-height: 22px;
     font-weight: 600;
     margin: 0;
 }
@@ -599,4 +608,31 @@ button.yellowOutlinedButton {
     outline: none;
     cursor: pointer;
     box-shadow: none;
+}
+
+@media screen and (max-width: 1440px) {
+    .dealDetailsTitle h1 {
+        font-size: 28px;
+        line-height: 34px;
+    }
+    .formPanelAction {
+      margin-bottom: 24px;
+    }
+    .dealDetailsWrap {
+        padding:0 24px 24px;
+    }
+    .topCardItem {
+        padding: 13px 16px;
+    }
+    .dealDetailsTopCard ul {
+        margin: 0 -8px;
+    }
+    .dealDetailsTopCard ul li {
+        padding: 0 8px;
+    }
+    .dealDetailsTitle button {
+        font-size: 13px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
 }

@@ -1,4 +1,4 @@
-import { Divider, message, Checkbox, AutoComplete } from 'antd';
+import { Divider, message, Checkbox, AutoComplete, Skeleton } from 'antd';
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import DebriefingHRStyle from './debriefingHR.module.css';
@@ -48,7 +48,7 @@ const DebriefingHR = ({
 	AboutCompanyDesc,
 	isDirectHR,
 	userCompanyTypeID,
-	setUserCompanyTypeID
+	setUserCompanyTypeID,isHaveJD, setIsHaveJD
 }) => {
 	const {
 		watch,
@@ -108,6 +108,7 @@ const DebriefingHR = ({
 	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
 	const [SkillMemo, setSkillMemo] = useState([])
 	const [sameSkillErrors, setSameSkillError] = useState(false)
+	const [fetchAIJD,setFetchAIJD] = useState(false)
 
 	useEffect(() => {
 		setValue('aboutCompany', addData?.addHiringRequest?.aboutCompanyDesc);
@@ -338,7 +339,7 @@ const DebriefingHR = ({
 		// 		?.rolesResponsibilities ), {
 		// 		shouldDirty: true,
 		// 	});
-
+		
 			JDParsedSkills &&	setValue('jobDescription', (addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
 			JDParsedSkills?.JobDescription ||
 			(addData?.salesHiringRequest_Details?.JobDescription))?? "" , {
@@ -608,6 +609,58 @@ const DebriefingHR = ({
 	
 	}
 
+	const genrateAIJD = async () =>{
+		setFetchAIJD(true)
+		clearErrors(['hrTitle','skills','goodToHaveSkills'])
+
+		if(!watch('hrTitle')){
+			setError('hrTitle', {
+				type: 'AI Error',
+				message: 'Please enter hiring request title',
+			})
+			setFetchAIJD(false)
+			return
+		}
+
+		let mustSkills = watch('skills') ? watch('skills')?.map((item) => item.value || item?.skillsName) : []
+		let goodSkills = watch('goodToHaveSkills') ? watch('goodToHaveSkills')?.map((item) => item.value || item?.skillsName) : []
+
+		if(mustSkills.length === 0){
+			setError('skills', {
+				type: 'AI Error',
+				message: 'Please Select Skill',
+			})
+			setFetchAIJD(false)
+			return
+		}
+
+		if(goodSkills.length === 0){
+			setError('goodToHaveSkills', {
+				type: 'AI Error',
+				message: 'Please Select Skill',
+			})
+			setFetchAIJD(false)
+			return
+		}
+
+		let payload = {
+			"ContactID": getHRdetails?.contactId,
+			"HRID": getHRdetails?.id,
+			"MustHaveSkill": watch('skills').map((item) => item.value || item?.skillsName),
+			"GoodToHaveSkill": watch('goodToHaveSkills').map((item) => item.value || item?.skillsName),
+			"Title": watch('hrTitle'),
+			"Location": getHRdetails?.directPlacement?.modeOfWork			
+		}
+
+		const result =await hiringRequestDAO.createAIJDDAO(payload)
+
+		if(result?.statusCode === 200){
+			setValue("jobDescription",result?.responseBody?.jobDescription)	
+			setFetchAIJD(false)	
+		}
+		setFetchAIJD(false)
+	}
+
 	return (
 		<div className={DebriefingHRStyle.debriefingHRContainer}>
 			{contextHolder}
@@ -684,28 +737,7 @@ const DebriefingHR = ({
 								name="jobDescription"
 								required
 							/> */}
-							<div className={DebriefingHRStyle.mb50}>
-								<label style={{ marginBottom: "12px" }}>
-								Job Description
-								{/* <span className={AddNewClientStyle.reqField}>*</span> */}
-							</label>
-							<ReactQuill
-								register={register}
-								setValue={setValue}
-								theme="snow"
-								className="heightSize"
-								value={watch('jobDescription')}
-								name="jobDescription"
-								onChange={(val) => setValue("jobDescription",val)}
-							/>
-							<input
-								type="hidden"
-								{...register('jobDescription', {
-								required: 'Job description is required',
-								validate: (value) => value.trim() !== '' || 'Job description cannot be empty'
-								})}
-							/>
-							</div>
+							
 							
 						{/* Hide company details */}
 							{/* {userCompanyTypeID === 1 && 
@@ -908,6 +940,43 @@ const DebriefingHR = ({
 											<li key={skill} onClick={() => onSelectGoodSkill(skill)}><span>{skill}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
 										))}	
 								</ul>
+							</div>
+
+							{fetchAIJD && <LogoLoader visible={fetchAIJD}/> }
+							{isHaveJD === 1 && <div className={DebriefingHRStyle.mb50}>
+							<div className={DebriefingHRStyle.formPanelAction} style={{justifyContent:'left', padding:'5px 0'}}>
+								
+								<button
+							type="button"
+							className={DebriefingHRStyle.btnPrimary}
+							onClick={()=>genrateAIJD()}
+							>							
+							Generate AI JD
+						</button>
+					</div>
+							</div>}
+
+							<div className={DebriefingHRStyle.mb50}>
+								<label style={{ marginBottom: "12px" }}>
+								Job Description
+								{/* <span className={AddNewClientStyle.reqField}>*</span> */}
+							</label>
+							<ReactQuill
+								register={register}
+								setValue={setValue}
+								theme="snow"
+								className="heightSize"
+								value={watch('jobDescription')}
+								name="jobDescription"
+								onChange={(val) => setValue("jobDescription",val)}
+							/>
+							<input
+								type="hidden"
+								{...register('jobDescription', {
+								required: 'Job description is required',
+								validate: (value) => value.trim() !== '' || 'Job description cannot be empty'
+								})}
+							/>
 							</div>
 							{/* <div className={DebriefingHRStyle.mb50}>
 							<label

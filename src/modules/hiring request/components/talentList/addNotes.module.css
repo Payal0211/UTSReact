@@ -1,0 +1,172 @@
+.addNotesModal {
+    margin: 0;
+}
+
+.addNotesModal .addNotesTitle {
+    margin: 0 0 8px;
+}
+
+.addNotesModal .addNotesTitle h2 {
+    font-family: Montserrat;
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 500;
+    color: #232323;
+    margin: 0;
+}
+
+.addNotesModal .addNotesAlert {
+    font-family: Montserrat;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: #232323;
+    background: #F9F8F4;
+    margin: 0 0 16px;
+    padding: 15px 16px 15px 56px;
+    border: 1px solid #232323;
+    border-radius: 8px;
+    position: relative;
+}
+
+.addNotesModal .addNotesAlert img {
+    position: absolute;
+    top: 10px;
+    left: 16px;
+}
+
+.addNotesModal .formPanelAction {
+    margin: 32px 0 0 0;
+    display: flex;
+}
+
+.addNotesModal .formPanelAction button {
+    background: var(--text-color-purity);
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--uplers-black);
+    padding: 12px 28px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.addNotesModal .formPanelAction .btnPrimary {
+    background: var(--color-sunlight);
+    border-color: var(--color-sunlight);
+}
+
+.addNotesModal .formPanelAction button+button {
+    margin-left: 16px;
+}
+
+/**/
+.addNotesModal .addNotesList {
+    padding-top: 16px;
+}
+
+.addNotesModal .addNotesList .addNoteItem {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #E8E8E8;
+    position: relative;
+    font-family: Montserrat;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 400;
+    color: #232323;
+}
+
+.addNotesModal .addNotesList .addNoteItem:first-child {
+    margin-top: 0;
+}
+
+.addNotesModal .addNotesList .addNoteItem.viewNoteItem {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
+.addNotesModal .addNotesList .addNoteItem.viewNoteItem .addNoteAction {
+    top: -3px;
+}
+
+.addNotesModal .addNotesList .addNoteItem .addNoteAction {
+    position: absolute;
+    right: 0;
+    top: 13px;
+    gap: 10px;
+    align-items: center;
+    display: inline-flex;
+}
+
+.addNotesModal .addNotesList .addNoteItem .addNoteAction .addNoteBtn {
+    border-radius: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    display: inline-flex;
+}
+
+.addNotesModal .addNotesList .addNoteItem h4 {
+    font-family: Montserrat;
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 500;
+    text-align: left;
+    color: #232323;
+    margin: 0 0 8px;
+    padding-right: 58px;
+}
+
+.addNotesModal .addNotesList .addNoteItem p {
+    margin-bottom: 0;
+}
+
+.addNotesModal .addNotesList .addNoteItem .addNoteView {
+    text-decoration: underline;
+    font-weight: 400;
+    font-style: italic;
+    cursor: pointer;
+    color: #232323;
+}
+
+.addNotesModal .addNotesList .addNoteMore {
+    margin-top: 16px;
+}
+
+.addNotesModal .addNotesList .addNoteMore .addNoteBtn {
+    font-family: Montserrat;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    color: #0278E4;
+    border: none;
+    padding: 0;
+    background: transparent;
+    outline: none;
+    border-radius: 0;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: none;
+}
+
+.addNotesModal .editNotesItem {
+    font-family: Montserrat;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 400;
+    color: #232323;
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    height: 150px;
+}

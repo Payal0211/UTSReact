@@ -2926,7 +2926,7 @@ const EditHRFields = ({
 						</div>
 					</div> */}
               <div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
-                <div className={HRFieldStyle.colMd6}>
+                <div className={HRFieldStyle.colMd12}>
                   {!getUploadFileData ? (
                     <HRInputField
                       disabled={jdURLLink}
@@ -2998,7 +2998,7 @@ const EditHRFields = ({
                   // setGoogleDriveLink={setGoogleDriveLink}
                   setUploadFileData={setUploadFileData}
                 />
-                <div className={HRFieldStyle.orLabel}>OR</div>
+                {/* <div className={HRFieldStyle.orLabel}>OR</div>
                 <div className={HRFieldStyle.colMd6}>
                   <HRInputField
                     onChangeHandler={(e) => toggleJDHandler(e)}
@@ -3020,7 +3020,7 @@ const EditHRFields = ({
                       }
                     }
                   />
-                </div>
+                </div> */}
               </div>
 
               {/* <div className={HRFieldStyle.row}>

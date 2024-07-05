@@ -235,8 +235,7 @@ const RoleList = () => {
 					</div>
             	</div>				
 			</div>
-         
-			<br />			
+         		
 			<div className={CurrencyListStyle.tableDetails}>
 				{isLoading ? (
 					<TableSkeleton />
