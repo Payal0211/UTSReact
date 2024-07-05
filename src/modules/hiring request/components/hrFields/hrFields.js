@@ -1298,7 +1298,7 @@ const HRFields = ({
       JobDescription:JDDATA.jobDescription ?? '',
       roleName:JDDATA?.roleName ?? ''
     }
-    console.log(newObj)
+    // console.log(newObj)
       setJDParsedSkills(newObj)
       setHRdetails(_getHrValues);
     }else{
@@ -1767,7 +1767,15 @@ const HRFields = ({
     //when file uploaded
     if (gptFileDetails?.JDDumpID) {
       setUploadFileData(gptFileDetails.FileName);
-      setJDParsedSkills(gptFileDetails);
+      setJDParsedSkills({...gptFileDetails,...{
+        Skills: gptFileDetails?.Skills ? gptFileDetails?.Skills.map((item) => ({
+          id: "0",
+          value: item.value,
+        })) : [],
+        AllSkills: [],
+        // JobDescription:JDDATA.jobDescription ?? '',
+        // roleName:JDDATA?.roleName ?? ''
+      }});
 
       setJDDumpID(gptFileDetails.JDDumpID);
       setGPTFileDetails({});
@@ -3134,7 +3142,7 @@ const HRFields = ({
               </div>
             </div> */}
 <JobDescriptionComponent  helperProps={{ setUploadFileData,setValidation,setShowGPTModal,setGPTFileDetails,watch,isHaveJD,
-   setIsHaveJD,textCopyPastData,setTextCopyPastData,parseType,setParseType,getTextDetils}} />
+   setIsHaveJD,textCopyPastData,setTextCopyPastData,parseType,setParseType,getTextDetils,watchClientName,filteredMemo,clientDetail}} />
             
 
             {/* <div className={HRFieldStyle.row}>
