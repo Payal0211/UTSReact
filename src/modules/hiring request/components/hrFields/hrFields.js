@@ -1267,7 +1267,8 @@ const HRFields = ({
 
 
   const getTextDetils = async ()=>{
-    let payload = {"pdfText" :textCopyPastData }
+    if(textCopyPastData){
+      let payload = {"pdfText" :textCopyPastData }
 
     const result = await hiringRequestDAO.getDetailsFromTextDAO(payload , clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId ?  filteredMemo[0]?.emailId : watchClientName?? '')
 
@@ -1304,6 +1305,8 @@ const HRFields = ({
     }else{
       message.error("Something went wrong!")
     }
+    }
+    
   }
 
   const getParsingType = (isHaveJD,parseType) => {
