@@ -74,7 +74,7 @@ const HRFields = ({
   setDisabledFields,
   defaultPropertys,
   isDirectHR,
-  setAboutCompanyDesc,userCompanyTypeID, setUserCompanyTypeID,isHaveJD, setIsHaveJD
+  setAboutCompanyDesc,userCompanyTypeID, setUserCompanyTypeID,isHaveJD, setIsHaveJD,parseType,setParseType
 }) => {
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
@@ -236,11 +236,10 @@ const HRFields = ({
 
   const [ showAddCompany, setShowAddCompany] = useState(false)
   const [showAddClient,setAddClient] = useState(false)
-
   const[textCopyPastData,setTextCopyPastData] = useState('');  
-  const[parseType,setParseType] = useState('JDFileUpload');
 
-  const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? 'DPHR' : ''
+  const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 || userCompanyTypeID === 2 ) ? 'DPHR' : ''
+
 
   const watchClientName = watch("clientName");
   const _endTime = watch("endTime");
@@ -1268,32 +1267,46 @@ const HRFields = ({
 
 
   const getTextDetils = async ()=>{
-    let payload = {"pdfText" :textCopyPastData }
+    if(textCopyPastData){
+      let payload = {"pdfText" :textCopyPastData }
 
     const result = await hiringRequestDAO.getDetailsFromTextDAO(payload , clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId ?  filteredMemo[0]?.emailId : watchClientName?? '')
 
   
     if(result.statusCode === 200 ){
-     let JDDATA =  result?.responseBody?.details?.jobDescription
+     let JDDATA =  result?.responseBody?.details
      let _getHrValues = { ...getHRdetails };
      if(!_getHrValues.salesHiringRequest_Details){
       _getHrValues['salesHiringRequest_Details'] = {
-        JobDescription :JDDATA?? '',   
+        JobDescription :JDDATA?.jobDescription ?? '',   
       }
     }else{
        _getHrValues.salesHiringRequest_Details.JobDescription =
-       JDDATA?? '';
+       JDDATA?.jobDescription ?? '' ;
     }
-      setJDParsedSkills({
-        Skills: [],
-        Responsibility: "",
-        Requirements: "",
-        JobDescription:JDDATA?? ''
-      })
+
+   let newObj =  {
+      Skills: JDDATA?.skills ? JDDATA?.skills.split(',').map((item) => ({
+				id: "0",
+				value: item,
+			})) : [],
+      AllSkills: JDDATA?.allSkills ? JDDATA?.allSkills.split(',').map((item) => ({
+				id: "0",
+				value: item,
+			})) : [],
+      Responsibility: "",
+      Requirements: "",
+      JobDescription:JDDATA.jobDescription ?? '',
+      roleName:JDDATA?.roleName ?? ''
+    }
+    // console.log(newObj)
+      setJDParsedSkills(newObj)
       setHRdetails(_getHrValues);
     }else{
       message.error("Something went wrong!")
     }
+    }
+    
   }
 
   const getParsingType = (isHaveJD,parseType) => {
@@ -1757,7 +1770,15 @@ const HRFields = ({
     //when file uploaded
     if (gptFileDetails?.JDDumpID) {
       setUploadFileData(gptFileDetails.FileName);
-      setJDParsedSkills(gptFileDetails);
+      setJDParsedSkills({...gptFileDetails,...{
+        Skills: gptFileDetails?.Skills ? gptFileDetails?.Skills.map((item) => ({
+          id: "0",
+          value: item.value,
+        })) : [],
+        AllSkills: [],
+        // JobDescription:JDDATA.jobDescription ?? '',
+        // roleName:JDDATA?.roleName ?? ''
+      }});
 
       setJDDumpID(gptFileDetails.JDDumpID);
       setGPTFileDetails({});
@@ -2895,8 +2916,8 @@ const HRFields = ({
                     mode={"id/value"}
                     setValue={setValue}
                     register={register}
-                    // label={`Add your estimated ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}budget (Monthly)`}
-                    label={`Add your ${isGUID ? 'talent salary' :'client estimated '  }  budget (${isGUID ? "Annum" : "Monthly"})`}
+                    label={`${isGUID? "Add your talent salary budget (Annum)" : "Add your client estimated budget (Monthly)"} `}
+                    // label={`Add your ${isGUID ? 'talent salary' :'client estimated '  }  budget (${isGUID ? "Annum" : "Monthly"})`}
                     defaultValue="Select Budget"
                     options={budgets.map((item) => ({
                       id: item.id,
@@ -2912,7 +2933,8 @@ const HRFields = ({
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  label={`${typeOfPricing === 1 || userCompanyTypeID=== 2 ? isGUID ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (${isGUID ? "Annum" : "Monthly"})`}
+                  label={`${isGUID ? 'Talent Salary Estimated Budget (Annum)' : 'Client Estimated Budget (Monthly)' }`}
+                  
                   register={register}
                   name="adhocBudgetCost"
                   type={InputType.NUMBER}
@@ -2931,8 +2953,9 @@ const HRFields = ({
               </div>
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
+                 label={`${isGUID ? 'Talent Salary Estimated Minimum Budget (Annum)' : 'Client Estimated Minimum Budget (Monthly)'}`}
                   // label={`Estimated Minimum ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}Budget (Monthly)`}
-                  label={isGUID ?  `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`: `Client Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`}
+                  // label={isGUID ?  `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`: `Client Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`}
                   register={register}
                   name="minimumBudget"
                   type={InputType.NUMBER}
@@ -2952,8 +2975,8 @@ const HRFields = ({
 
               <div className={HRFieldStyle.colMd4}>
                 <HRInputField
-                  // label={`Estimated Maximum ${typeOfPricing === 1 || userCompanyTypeID === 2 ? "salary ":''}Budget (Monthly)`}
-                  label={isGUID ?   `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})` : `Client Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})`}
+                  label={`${isGUID ? 'Talent Salary Estimated Maximum Budget (Annum)' : 'Client Estimated Maximum Budget (Monthly)'}`}
+                  // label={isGUID ?   `${typeOfPricing === 1 || userCompanyTypeID === 2 ? "Talent Salary ":''}Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})` : `Client Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})`}
                   register={register}
                   name="maximumBudget"
                   type={InputType.NUMBER}
@@ -3122,7 +3145,7 @@ const HRFields = ({
               </div>
             </div> */}
 <JobDescriptionComponent  helperProps={{ setUploadFileData,setValidation,setShowGPTModal,setGPTFileDetails,watch,isHaveJD,
-   setIsHaveJD,textCopyPastData,setTextCopyPastData,parseType,setParseType,getTextDetils}} />
+   setIsHaveJD,textCopyPastData,setTextCopyPastData,parseType,setParseType,getTextDetils,watchClientName,filteredMemo,clientDetail}} />
             
 
             {/* <div className={HRFieldStyle.row}>
