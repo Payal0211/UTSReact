@@ -42,6 +42,7 @@ import infoIcon from 'assets/svg/info.svg'
 import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
 import DOMPurify from "dompurify";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
+import JobDescriptionComponent from "../jdComponent/jdComponent";
 
 export const secondaryInterviewer = {
   interviewerId:"0",
@@ -73,7 +74,7 @@ const HRFields = ({
   setDisabledFields,
   defaultPropertys,
   isDirectHR,
-  setAboutCompanyDesc,userCompanyTypeID, setUserCompanyTypeID
+  setAboutCompanyDesc,userCompanyTypeID, setUserCompanyTypeID,isHaveJD, setIsHaveJD
 }) => {
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
@@ -235,6 +236,9 @@ const HRFields = ({
 
   const [ showAddCompany, setShowAddCompany] = useState(false)
   const [showAddClient,setAddClient] = useState(false)
+
+  const[textCopyPastData,setTextCopyPastData] = useState('');  
+  const[parseType,setParseType] = useState('JDFileUpload');
 
   const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? 'DPHR' : ''
 
@@ -1262,6 +1266,50 @@ const HRFields = ({
 
   const [messageAPI, contextHolder] = message.useMessage();
 
+
+  const getTextDetils = async ()=>{
+    let payload = {"pdfText" :textCopyPastData }
+
+    const result = await hiringRequestDAO.getDetailsFromTextDAO(payload , clientDetail?.clientemail ?  clientDetail?.clientemail: filteredMemo[0]?.emailId ?  filteredMemo[0]?.emailId : watchClientName?? '')
+
+  
+    if(result.statusCode === 200 ){
+     let JDDATA =  result?.responseBody?.details?.jobDescription
+     let _getHrValues = { ...getHRdetails };
+     if(!_getHrValues.salesHiringRequest_Details){
+      _getHrValues['salesHiringRequest_Details'] = {
+        JobDescription :JDDATA?? '',   
+      }
+    }else{
+       _getHrValues.salesHiringRequest_Details.JobDescription =
+       JDDATA?? '';
+    }
+      setJDParsedSkills({
+        Skills: [],
+        Responsibility: "",
+        Requirements: "",
+        JobDescription:JDDATA?? ''
+      })
+      setHRdetails(_getHrValues);
+    }else{
+      message.error("Something went wrong!")
+    }
+  }
+
+  const getParsingType = (isHaveJD,parseType) => {
+    if(isHaveJD === 1){
+      return 'DonotHaveJD'
+    }
+    if(isHaveJD === 0){
+      if(parseType === 'JDFileUpload'){
+        return 'FileUpload'
+      }
+      if(parseType === "Text_Parsing"){
+        return 'CopyPaste'
+      }
+    }
+  }
+
   const hrSubmitHandler = useCallback(
     async (d, type = SubmitType.SAVE_AS_DRAFT) => {
       setIsSavedLoading(true);
@@ -1305,6 +1353,25 @@ const HRFields = ({
         hrFormDetails.IsProfileView = false
         hrFormDetails.IsVettedProfile = false
       }
+
+      // For JD error Handling
+
+      if(isHaveJD === 0){
+        if(parseType === 'JDFileUpload'){
+          if(getUploadFileData === ''){
+            message.error('Please select a file to upload')
+          setIsSavedLoading(false);
+          return
+          } 
+        }
+        if(parseType === "Text_Parsing"){
+          if(textCopyPastData === '' || textCopyPastData === '<p><br></p>'){
+          message.error('Please Copy & Paste JD')
+          setIsSavedLoading(false);
+          return}
+        }
+      }
+      hrFormDetails.ParsingType = getParsingType(isHaveJD,parseType)
       
 
       if(type !== SubmitType.SAVE_AS_DRAFT){
@@ -1416,7 +1483,8 @@ const HRFields = ({
       isPostaJob,
       isProfileView,
       isVettedProfile,
-      isFreshersAllowed
+      isFreshersAllowed,
+      isHaveJD,parseType,getUploadFileData,textCopyPastData
     ]
   );
 
@@ -1697,16 +1765,29 @@ const HRFields = ({
 
       let _getHrValues = { ...getHRdetails };
 
-      _getHrValues.salesHiringRequest_Details.JobDescription =
-        gptFileDetails.JobDescription?? '';
-      _getHrValues.salesHiringRequest_Details.requirement =
-        gptFileDetails.Requirements?? '';
-      _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
-        gptFileDetails.Responsibility?? '';
-      _getHrValues.salesHiringRequest_Details.rolesResponsibilities =
-        gptFileDetails.Responsibility;
-      _getHrValues.addHiringRequest.jdurl = "";
-      _getHrValues.addHiringRequest.jdfilename = gptFileDetails.FileName;
+      if(!_getHrValues.salesHiringRequest_Details){
+        _getHrValues['salesHiringRequest_Details'] = {
+          JobDescription :gptFileDetails.JobDescription?? '',
+          requirement : gptFileDetails.Requirements?? '',
+          roleAndResponsibilities :    gptFileDetails.Responsibility?? '',
+        rolesResponsibilities : gptFileDetails.Responsibility,
+      jdurl : "",
+      jdfilename : gptFileDetails.FileName,
+
+        }
+      }else{
+        _getHrValues.salesHiringRequest_Details.JobDescription =
+              gptFileDetails.JobDescription?? '';
+            _getHrValues.salesHiringRequest_Details.requirement =
+              gptFileDetails.Requirements?? '';
+            _getHrValues.salesHiringRequest_Details.roleAndResponsibilities =
+              gptFileDetails.Responsibility?? '';
+            _getHrValues.salesHiringRequest_Details.rolesResponsibilities =
+              gptFileDetails.Responsibility;
+            _getHrValues.addHiringRequest.jdurl = "";
+            _getHrValues.addHiringRequest.jdfilename = gptFileDetails.FileName;
+      }
+     
 
       setHRdetails(_getHrValues);
     } else {
@@ -2963,7 +3044,7 @@ const HRFields = ({
               </div>              
             </div>
             {getWorkingModelFields()}
-            <div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
+            {/* <div className={`${HRFieldStyle.row} ${HRFieldStyle.fieldOr}`}>
               <div className={HRFieldStyle.colMd6}>
                 {!getUploadFileData ? (
                   <HRInputField
@@ -3039,7 +3120,10 @@ const HRFields = ({
                   }
                 />
               </div>
-            </div>
+            </div> */}
+<JobDescriptionComponent  helperProps={{ setUploadFileData,setValidation,setShowGPTModal,setGPTFileDetails,watch,isHaveJD,
+   setIsHaveJD,textCopyPastData,setTextCopyPastData,parseType,setParseType,getTextDetils}} />
+            
 
             {/* <div className={HRFieldStyle.row}>
               <div className={HRFieldStyle.colMd12}>

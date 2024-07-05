@@ -1,0 +1,344 @@
+ /* .formFields-box {
+    padding: 0 58px;
+} */
+
+.formFields-box-inner {
+    border: 1px dashed #23232333;
+    border-radius: 16px;
+    background-color: #fff;
+    margin-bottom: 24px;
+}
+
+.formFields-box-inner h2 {
+    background: #fffdf1;
+    padding: 15px 29px;
+    border-radius: 16px 16px 0 0;
+}
+
+.formFields-wrapper {
+    padding: 22px 32px;
+
+}
+
+.jd-radio {
+    margin-top: -7px;
+    margin-bottom: 9px;
+}
+
+.jd-radio .ant-radio-button-wrapper span {
+    font-size: 12px;
+    color: #6b6b6b;
+    font-weight: 500;
+}
+
+.formFields-wrapper .ant-upload.ant-upload-drag{
+        position: relative;
+        /* width: 100%; */
+        /* height: 100%; */
+        text-align: center;
+        background: transparent;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: border-color 0.3s;
+}
+
+.jd-radio .ant-radio-button-wrapper span svg {
+    margin-right: 8px;
+    vertical-align: middle;
+    position: relative;
+}
+
+.customradio.ant-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.customradio.newradiodes .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) span {
+    font-weight: 600;
+    color: #232323;
+}
+
+.jd-radio .customradio.newradiodes.small label.ant-radio-button-wrapper {
+    height: 39px;
+}
+
+.jd-radio .customradio.newradiodes.small label.ant-radio-button-wrapper:first-child svg {
+    transform: rotate3d(1, 0, 0, 180deg);
+    top: -2px;
+}
+
+.customradio.newradiodes .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) span svg path {
+    fill: #232323;
+    color: #232323;
+}
+
+
+
+.ImageDragdropCustom .ant-upload-drag {
+    border-radius: 8px;
+    border: 1px dashed #CECCCC;
+    background: #FFF;
+}
+
+.ImageDragdropCustom .fileUpload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    background: linear-gradient(107deg, rgba(220, 231, 237, 0.60) -9.25%, rgba(224, 206, 183, 0.60) 125.93%);
+    border-radius: 50%;
+    margin: 0 auto 10px;
+}
+
+.ImageDragdropCustom .ant-upload-text {
+    color: #232323;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.ImageDragdropCustom .ant-upload-text .clickUploadText {
+    color: #002DCB;
+}
+
+.ImageDragdropCustom .ant-upload-hint {
+    color: #676767;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.ImageDragdropCustom .ant-upload-list {
+    display: none;
+}
+
+
+.customradio label.ant-radio-button-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid #CECCCC;
+    /* border-color: #CECCCC; */
+    background: #FFF;
+    height: 44px;
+    color: #000 !important;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 17.262px;
+    letter-spacing: -0.32px;
+}
+
+.customradio.newradiodes label.ant-radio-button-wrapper .checkIcon {
+    margin-left: 6px;
+    display: none;
+}
+
+.customradio.newradiodes .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) .checkIcon {
+    display: inline-flex;
+}
+
+.customradio.newradiodes .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
+.customradio.newradiodes .ant-radio-button-wrapper.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):active,
+.customradio.newradiodes .ant-radio-button-wrapper.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover,
+.customradio.newradiodes .ant-radio-button-wrapper.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):first-child {
+    border-radius: 24px;
+    border: 1px solid #FFDA30;
+    background: #FFF8D6;
+    box-shadow: inherit;
+}
+
+.customradio.newradiodes .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) span {
+    font-weight: 500;
+}
+
+.customradio.newradiodes label.ant-radio-button-wrapper {
+    border-radius: 24px;
+}
+
+.customradio.newradiodes.small label.ant-radio-button-wrapper {
+    font-size: 12px;
+    height: 28px;
+    white-space: nowrap;
+} 
+
+.customradio .ant-radio-button-wrapper:not(:first-child)::before {
+    background-color: transparent;
+}
+
+
+.noJobDesInfo {
+    padding: 12px 16px;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    font-family: Montserrat;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: #6B6B6B;
+    z-index: 1;
+}
+
+.noJobDesInfo:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 8px;
+    background: linear-gradient(118.92deg, #EFEEFF 26.18%, rgba(255, 234, 222, 0.94) 96.85%);
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.jobDesOrDivider {
+    font-family: Montserrat;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 400;
+    color: #232323;
+    text-align: center;
+    margin: 16px 0 24px;
+}
+
+.formFieldsheadind3 {
+    color: #232323;
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+}
+
+.jobDesUpload .FilesDragAndDrop__area {
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    margin-bottom: 0;
+}
+
+.FilesDragAndDrop__area p span {
+    font-size: 14px;
+    color: #f52887;
+    font-weight: 500;
+}
+
+.FilesDragAndDrop__area p {
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 0;
+    margin-top: 20px;
+}
+
+.FilesDragAndDrop__area {
+    border: 1px dashed #cecccc;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    background: #f5f5f5;
+    text-align: center;
+    padding: 23px 0;
+}
+
+.UploadPreviewBox{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 13px;
+    border-radius: 8px;
+    border: 1px solid #CECCCC;
+    background: #FFFFFF;
+    padding: 15px;
+    margin-top: 0.5rem;
+  }
+  
+  .UploadPreviewBox .UploadPreviewImg{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    border: 1px solid #CECCCC;
+    background: #FFF;
+  }
+  
+  .UploadPreviewBox .UploadPreviewDetail h5{
+    color: #232323;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 0;
+  }
+  
+  .UploadPreviewBox .UploadPreviewDetail h6{
+    color:#676767;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin: 0;
+  }
+
+  .UploadPreviewLeft{
+    display: flex;
+    gap: 12px;
+}
+
+
+.UploadPreviewRight{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.UploadPreviewRight h4{
+  color:rgba(107, 107, 107, 0.60);
+  font-size: 11px;
+  font-style: italic;
+  font-weight: 500;
+  line-height: normal;
+  margin: 0;
+}
+
+.UploadPreviewRight .deleteBtn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid #E8E8E8;
+    cursor: pointer;
+}
+
+.UploadPreviewRight .deleteBtn svg path{
+fill: #232323;
+}
+
+.uploadFaild, .uploadsuccess{
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.UploadPreviewRight .checkBtn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(50, 147, 111, 0.10);
+  }
+  
+  .UploadPreviewRight .checkBtn svg path{
+    fill: #32936F;
+  }
