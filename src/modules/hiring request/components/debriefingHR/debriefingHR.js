@@ -48,7 +48,7 @@ const DebriefingHR = ({
 	AboutCompanyDesc,
 	isDirectHR,
 	userCompanyTypeID,
-	setUserCompanyTypeID,isHaveJD, setIsHaveJD
+	setUserCompanyTypeID,isHaveJD, setIsHaveJD,parseType
 }) => {
 	const {
 		watch,
@@ -220,6 +220,7 @@ const DebriefingHR = ({
 	},[getTalentRole])
 
 	useEffect(() => {
+		console.log(JDParsedSkills,"JDParsedSkills")
 		setValue(
 			'skills',
 			JDParsedSkills?.Skills?.map((item) => ({
@@ -231,7 +232,21 @@ const DebriefingHR = ({
 		setCombinedSkillsMemo(prev => [...prev, ...JDParsedSkills?.Skills?.map((item) => ({
 			id: item?.id.toString(),
 			value: item?.value,
+		})),...JDParsedSkills?.AllSkills?.map((item) => ({
+			id: item?.id.toString(),
+			value: item?.value,
 		}))])
+
+		setValue(
+			'goodToHaveSkills',
+			JDParsedSkills?.AllSkills?.map((item) => ({
+				skillsID: item?.id.toString(),
+				skillsName: item?.value,
+			})),
+		);
+		setControlledGoodToHave(JDParsedSkills?.AllSkills?.map((item) => item?.value))
+
+		setValue('hrTitle',JDParsedSkills?.roleName ?? '')
 	}, [JDParsedSkills, setValue]);
 
 	const [search, setSearch] = useState('');
@@ -364,6 +379,21 @@ const DebriefingHR = ({
 			companyInfo?.companySize && setValue('companySize',companyInfo?.companySize)
 		}
 	},[getHRdetails])
+
+	
+const getParsingType = (isHaveJD,parseType) => {
+    if(isHaveJD === 1){
+      return 'DonotHaveJD'
+    }
+    if(isHaveJD === 0){
+      if(parseType === 'JDFileUpload'){
+        return 'FileUpload'
+      }
+      if(parseType === "Text_Parsing"){
+        return 'CopyPaste'
+      }
+    }
+  }
 	
 	const debriefSubmitHandler = async (d) => {
 		setIsLoading(true);
@@ -414,7 +444,7 @@ const DebriefingHR = ({
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
 			JDDumpID: jdDumpID || 0,
-			ActionType: "Save",
+			ActionType: "Create_HrDebrief",
 			IsHrfocused: isFocusedRole,
 			// role: d.role?.id ? d.role?.id : null,
 			role: null,
@@ -443,6 +473,7 @@ const DebriefingHR = ({
 			},
 			companyType: userCompanyTypeID === 1 ? "Pay Per Hire" : "Pay Per Credit",
 			PayPerType:  userCompanyTypeID ,
+			ParsingType: getParsingType(isHaveJD,parseType),
 			IsMustHaveSkillschanged : true,
 			IsGoodToHaveSkillschanged: true
 		};

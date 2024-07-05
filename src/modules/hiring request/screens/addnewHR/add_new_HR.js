@@ -47,6 +47,7 @@ const AddNewHR = () => {
 	const [AboutCompanyDesc, setAboutCompanyDesc ] = useState(null)
 	const [userCompanyTypeID, setUserCompanyTypeID] = useState(1)
 	const [isHaveJD, setIsHaveJD] = useState(0);
+	const[parseType,setParseType] = useState('JDFileUpload');
 
 	useEffect(()=>{
 		if(getHRdetails?.addHiringRequest?.hrNumber){
@@ -148,6 +149,8 @@ const AddNewHR = () => {
 									setDisabledFields={setDisabledFields}
 									isHaveJD={isHaveJD}
 									setIsHaveJD={setIsHaveJD}
+									parseType={parseType}
+									setParseType={setParseType}
 								/>
 							),
 						},
@@ -176,6 +179,7 @@ const AddNewHR = () => {
 									setUserCompanyTypeID={setUserCompanyTypeID}
 									isHaveJD={isHaveJD}
 									setIsHaveJD={setIsHaveJD}
+									parseType={parseType}
 								/>
 							),
 							disabled: tabFieldDisabled.debriefingHR,

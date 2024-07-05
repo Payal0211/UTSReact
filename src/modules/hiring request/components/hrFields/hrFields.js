@@ -74,7 +74,7 @@ const HRFields = ({
   setDisabledFields,
   defaultPropertys,
   isDirectHR,
-  setAboutCompanyDesc,userCompanyTypeID, setUserCompanyTypeID,isHaveJD, setIsHaveJD
+  setAboutCompanyDesc,userCompanyTypeID, setUserCompanyTypeID,isHaveJD, setIsHaveJD,parseType,setParseType
 }) => {
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
@@ -238,7 +238,7 @@ const HRFields = ({
   const [showAddClient,setAddClient] = useState(false)
 
   const[textCopyPastData,setTextCopyPastData] = useState('');  
-  const[parseType,setParseType] = useState('JDFileUpload');
+  
 
   const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? 'DPHR' : ''
 
@@ -1274,22 +1274,33 @@ const HRFields = ({
 
   
     if(result.statusCode === 200 ){
-     let JDDATA =  result?.responseBody?.details?.jobDescription
+     let JDDATA =  result?.responseBody?.details
      let _getHrValues = { ...getHRdetails };
      if(!_getHrValues.salesHiringRequest_Details){
       _getHrValues['salesHiringRequest_Details'] = {
-        JobDescription :JDDATA?? '',   
+        JobDescription :JDDATA?.jobDescription ?? '',   
       }
     }else{
        _getHrValues.salesHiringRequest_Details.JobDescription =
-       JDDATA?? '';
+       JDDATA?.jobDescription ?? '' ;
     }
-      setJDParsedSkills({
-        Skills: [],
-        Responsibility: "",
-        Requirements: "",
-        JobDescription:JDDATA?? ''
-      })
+
+   let newObj =  {
+      Skills: JDDATA?.skills ? JDDATA?.skills.split(',').map((item) => ({
+				id: "0",
+				value: item,
+			})) : [],
+      AllSkills: JDDATA?.allSkills ? JDDATA?.allSkills.split(',').map((item) => ({
+				id: "0",
+				value: item,
+			})) : [],
+      Responsibility: "",
+      Requirements: "",
+      JobDescription:JDDATA.jobDescription ?? '',
+      roleName:JDDATA?.roleName ?? ''
+    }
+    console.log(newObj)
+      setJDParsedSkills(newObj)
       setHRdetails(_getHrValues);
     }else{
       message.error("Something went wrong!")
