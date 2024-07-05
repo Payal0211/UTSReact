@@ -658,6 +658,7 @@ const AllHiringRequestScreen = () => {
               menuAction={(item) => {
                 switch (item.key) {
                   case AddNewType.HR: {
+                    localStorage.removeItem('hrID')
                     navigate(UTSRoutes.ADDNEWHR);
                     break;
                   }
