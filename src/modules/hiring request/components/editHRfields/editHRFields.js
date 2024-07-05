@@ -225,7 +225,8 @@ const EditHRFields = ({
       autocompleteField: "abc",
     },
   });
-const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 ) ? 'DPHR' : ''  // for check if DP is selected 
+
+  const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 || companyType.id === 2 ) ? 'DPHR' : ''  // for check if DP is selected 
   //CLONE HR functionality
   const getHRdetailsHandler = async (hrId) => {
     const response = await hiringRequestDAO.getHRDetailsRequestDAO(hrId);
@@ -2719,7 +2720,7 @@ const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType
                       isControlled={true}
                       setValue={setValue}
                       register={register}
-                      label={`Add your ${isGUID ? 'talent salary' :'client estimated '  }  budget (${isGUID ? "Annum" : "Monthly"})`}
+                      label={`${isGUID? "Add your talent salary budget (Annum)" : "Add your client estimated budget (Monthly)"} `}
                       // label={`Add your estimated ${typeOfPricing === 1 || companyType?.id=== 2 ? "salary ":''}budget (Monthly)`}
                       options={budgets.map((item) => ({
                         id: item.id,
@@ -2736,7 +2737,7 @@ const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={`${typeOfPricing === 1 || companyType?.id=== 2 ? isGUID ? 'Talent Salary ' : 'Client ' :''} Estimated Budget (${isGUID ? "Annum" : "Monthly"})`}
+                    label={`${isGUID ? 'Talent Salary Estimated Budget (Annum)' : 'Client Estimated Budget (Monthly)' }`}
                     register={register}
                     name="adhocBudgetCost"
                     type={InputType.NUMBER}
@@ -2755,7 +2756,7 @@ const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType
                 </div>
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={isGUID ?  `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`: `Client Estimated Minimum Budget (${isGUID ? "Annum" : "Monthly"})`}
+                   label={`${isGUID ? 'Talent Salary Estimated Minimum Budget (Annum)' : 'Client Estimated Minimum Budget (Monthly)'}`}
                     register={register}
                     name="minimumBudget"
                     type={InputType.NUMBER}
@@ -2775,7 +2776,7 @@ const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType
 
                 <div className={HRFieldStyle.colMd4}>
                   <HRInputField
-                    label={isGUID ?   `${typeOfPricing === 1 || companyType?.id=== 2 ? "Talent Salary ":''}Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})` : `Client Estimated Maximum Budget (${isGUID ? "Annum" : "Monthly"})`}
+                   label={`${isGUID ? 'Talent Salary Estimated Maximum Budget (Annum)' : 'Client Estimated Maximum Budget (Monthly)'}`}
                     register={register}
                     name="maximumBudget"
                     type={InputType.NUMBER}

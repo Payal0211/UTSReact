@@ -140,11 +140,12 @@ const ViewHRDetails = () => {
                         {hiringDetails?.responseBody?.details?.salesPerson ??
                           "NA"}
                       </li>
-                      <li>
+                      {hiringDetails?.responseBody?.details?.isPayPerHire && <li>
                         <span>Contract Type:</span>{" "}
                         {hiringDetails?.responseBody?.details?.contractType ??
                           "NA"}
-                      </li>
+                      </li>}
+                      
                       <li>
                         <span>Availibilty:</span>{" "}
                         {hiringDetails?.responseBody?.details?.availability ??
