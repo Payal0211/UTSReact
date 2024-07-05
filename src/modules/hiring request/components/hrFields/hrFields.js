@@ -238,6 +238,7 @@ const HRFields = ({
   const [showAddClient,setAddClient] = useState(false)
   const[textCopyPastData,setTextCopyPastData] = useState('');  
   const[parseType,setParseType] = useState('JDFileUpload');
+  const isGUID = (watch('hiringPricingType')?.id === 3 || watch('hiringPricingType')?.id === 6 || userCompanyTypeID === 2 ) ? 'DPHR' : ''
 
   const watchClientName = watch("clientName");
   const _endTime = watch("endTime");
