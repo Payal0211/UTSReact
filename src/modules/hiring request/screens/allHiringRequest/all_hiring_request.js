@@ -45,6 +45,7 @@ import ReopenHRModal from "../../components/reopenHRModal/reopenHrModal";
 import CloseHRModal from "../../components/closeHRModal/closeHRModal";
 import { downloadToExcel } from "modules/report/reportUtils";
 import LogoLoader from "shared/components/loader/logoLoader";
+import PreviewHRModal from "./previewHR/previewHRModal";
 
 /** Importing Lazy components using Suspense */
 const HiringFiltersLazyComponent = React.lazy(() =>
@@ -100,6 +101,13 @@ const AllHiringRequestScreen = () => {
   const [endDate, setEndDate] = useState(null);
   const [HRTypesList,setHRTypesList] = useState([])
   const [selectedHRTypes, setSelectedHRTypes] = useState([]);
+
+  const [ isPreviewModal, setIsPreviewModal ] = useState(false);
+  const [ previewHRID, setpreviewHRID ] = useState();
+  const [jobPreview, setJobPreview] = useState();
+  const [allData,setAllData] = useState(null);
+  const [hrIdforPreview, setHrIdforPreview] = useState("");
+  const [hrNumber, sethrNumber] = useState("");
 
   // UTS-7517: Code for clone HR in demo acccount starts
 
@@ -265,7 +273,9 @@ const AllHiringRequestScreen = () => {
         setLoading,
         handleDemoCloneCheckboxChange, 
         selectedCheckboxes,       
-        showCloneHRToDemoAccount
+        showCloneHRToDemoAccount,
+        setIsPreviewModal,
+        setpreviewHRID
       ),
     [togglePriority, userData.LoggedInUserTypeID,selectedCheckboxes]
   );
@@ -960,6 +970,18 @@ const AllHiringRequestScreen = () => {
           />
         </Modal>
       )}
+
+      <PreviewHRModal 
+        setChangeStatus={()=>{}}
+        setViewPosition={setIsPreviewModal}
+        ViewPosition={isPreviewModal}
+        setJobPreview={setJobPreview}
+        allData={allData}
+        jobPreview={jobPreview}
+        myJobPosts={()=>{}}
+        hrIdforPreview={hrIdforPreview}
+        hrNumber={hrNumber}
+      />
     {/* </WithLoader> */}
     </div>
   );
