@@ -181,8 +181,8 @@ const DebriefingHR = ({
 			...skills,
 		];
 		// remove selected skill for other skill list 
-		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed.map(s=> s?.value).includes(o?.value)))
-		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave.map(s=> s?.value).includes(o?.value)))
+		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed?.map(s=> s?.value).includes(o?.value)))
+		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave?.map(s=> s?.value).includes(o?.value)))
 	},[JDParsedSkills, controlledJDParsed, skills,controlledGoodToHave])
 
 	const isOtherSkillExistMemo = useMemo(() => {
