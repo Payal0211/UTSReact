@@ -1135,7 +1135,7 @@ const AnotherRound = ({
 															name="slot1Date"
 															required
 															{...register('slot1Date')}
-															filterDate={disabledWeekend}
+															// filterDate={disabledWeekend}
 															selected={getScheduleSlotDate?.[0]?.slot1}
 															placeholderText="Select Date"
 															onChange={(date) => {
@@ -1218,7 +1218,7 @@ const AnotherRound = ({
 															name="slot2Date"
 															required
 															{...register('slot2Date')}
-															filterDate={disabledWeekend}
+															// filterDate={disabledWeekend}
 															selected={getScheduleSlotDate?.[1]?.slot1}
 															placeholderText="Select Date"
 															onChange={(date) => {
@@ -1301,7 +1301,7 @@ const AnotherRound = ({
 															name="slot3Date"
 															required
 															{...register('slot3Date')}
-															filterDate={disabledWeekend}
+															// filterDate={disabledWeekend}
 															selected={getScheduleSlotDate?.[2]?.slot1}
 															placeholderText="Select Date"
 															onChange={(date) => {

@@ -478,7 +478,7 @@ const InterviewReschedule = ({
 									<DatePicker
 										required
 										{...register('slot1Date')}
-										filterDate={disabledWeekend}
+										// filterDate={disabledWeekend}
 										selected={getRescheduleSlotDate[0].slot1}
 										placeholderText="Select Date"
 										onChange={(date) => {
@@ -567,7 +567,7 @@ const InterviewReschedule = ({
 											<DatePicker
 												required
 												{...register('slot2Date')}
-												filterDate={disabledWeekend}
+												// filterDate={disabledWeekend}
 												selected={getRescheduleSlotDate[1].slot1}
 												placeholderText="Select Date"
 												onChange={(date) => {
@@ -654,7 +654,7 @@ const InterviewReschedule = ({
 											<DatePicker
 												required
 												{...register('slot3Date')}
-												filterDate={disabledWeekend}
+												// filterDate={disabledWeekend}
 												selected={getRescheduleSlotDate[2].slot1}
 												placeholderText="Select Date"
 												onChange={(date) => {
