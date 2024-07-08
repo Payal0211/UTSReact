@@ -1,21 +1,21 @@
 import { AutoComplete, Avatar, Checkbox, Radio, Select, Space, Spin, Tooltip, message } from "antd";
 import Modal from "antd/es/modal/Modal";
-// import "../../MyJobPosts/myJobPosts.css";
-// import "../../Home/home.css"
-// import "../../MyJobPosts/myJobPostsNew.css";
+import "./css/myJobPosts.css";
+import "./css/home.css"
+import "./css/myJobPostsNew.css";
 import 'react-quill/dist/quill.snow.css'
 import { useEffect, useRef, useState } from "react";
-// import {
-//   fetchCountriesBasedonCity,
-//   getContactTimeZone,
-//   getCurrency,
-//   getHiringTypePricing,
-//   getPayrollType,
-//   getSkills,
-//   getStartEndTime,
-//   getTalentsRolesData,
-//   updateJobPost,
-// } from "./services/registerationSteps";
+import {
+  fetchCountriesBasedonCity,
+  getContactTimeZone,
+  getCurrency,
+  getHiringTypePricing,
+  getPayrollType,
+  getSkills,
+  getStartEndTime,
+  getTalentsRolesData,
+  // updateJobPost,
+} from "./services/registerationSteps";
 import infosmallIcon from "assets/svg/infoSmallIcon.svg";
 import EditnewIcon from "assets/svg/editnewIcon.svg";
 
@@ -35,20 +35,21 @@ import moment from 'moment-timezone';
 import infoIcon from "assets/svg/infoIcon.svg";
 import rightGreen from "assets/svg/rightGreen.svg";
 import { getDataFromLocalStorage, trackingDetailsAPI, convertCurrency, EngOptions, sanitizeLinks, compensationOptions, industryOptions, seriesOptions, monthOptions, foundedIn, formatSkill } from "./services/commonUsedVar";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 // import { DeleteCultureImage, DeleteYoutubeLink, UpdateDetails, getCompanyPerks } from "../../../services/companyProfileApi";
 // import YouTubeVideo from "../../CompanyDetails/InnerComponents/youTubeVideo";
 
 import deleteIcon from "assets/svg/delete.svg";
 import DeleteIcon from "assets/svg/delete-icon.svg";
 import DeleteImg from "assets/svg/delete-icon.svg";
+import { allCompanyRequestDAO } from "core/company/companyDAO";
+import { MasterDAO } from "core/master/masterDAO";
 // import "../../CompanyDetails/companyDetails.css";
 function PreviewHRModal({
   setViewPosition,
   ViewPosition,
   setJobPreview,
   jobPreview,
-  myJobPosts,
   hrIdforPreview,
   setChangeStatus,
   hrNumber,
@@ -191,7 +192,7 @@ function PreviewHRModal({
   let allInvestors = details?.allInvestors ? details?.allInvestors?.split(",") : [];
   let displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   useEffect(() => {
     getRolesCurrencyList();
@@ -205,7 +206,7 @@ function PreviewHRModal({
     //   guid:_guid
     // });
     getCompanyPerksDetails();
-  }, []);
+  }, [hrIdforPreview]);
 
   const getCompanyPerksDetails = async () =>{
     // let res = await getCompanyPerks();
@@ -398,7 +399,7 @@ function PreviewHRModal({
         setJobPreview(prev => ({ ...prev, compensationOption: CompensationValues?.join('^') }));
         let data = { ...jobPreview };
         data.compensationOption = CompensationValues?.join('^');
-        dispatch({ type: 'FILL_STEPS_DATA', payload: data });
+        // dispatch({ type: 'FILL_STEPS_DATA', payload: data });
         setisCompensationOptionOpen(false);
       }
     }
@@ -416,7 +417,7 @@ function PreviewHRModal({
         setJobPreview(prev => ({ ...prev, industryType: specificIndustry?.join('^') }));
         let data = { ...jobPreview };
         data.industryType = specificIndustry?.join('^');
-        dispatch({ type: 'FILL_STEPS_DATA', payload: data });
+        // dispatch({ type: 'FILL_STEPS_DATA', payload: data });
         setisIndustryCandidatesOpen(false);
       }
     }
@@ -433,7 +434,7 @@ function PreviewHRModal({
       setJobPreview(prev => ({ ...prev, hasPeopleManagementExp: hasPeopleManagementExp }));
       let data = { ...jobPreview };
       data.hasPeopleManagementExp = hasPeopleManagementExp;
-      dispatch({ type: 'FILL_STEPS_DATA', payload: data });
+      // dispatch({ type: 'FILL_STEPS_DATA', payload: data });
       setisCandidatePeopleOpen(false);
     }
   }
@@ -450,7 +451,7 @@ function PreviewHRModal({
       setJobPreview(prev => ({ ...prev, prerequisites: prerequisites }));
       let data = { ...jobPreview };
       data.prerequisites = prerequisites;
-      dispatch({ type: 'FILL_STEPS_DATA', payload: data });
+      // dispatch({ type: 'FILL_STEPS_DATA', payload: data });
       setIsPrerequisites(false);
     }
   }
@@ -645,6 +646,7 @@ function PreviewHRModal({
       trackingDetails: trackingDetailsAPI()
     };
     let payload = {
+      HRID:  hrIdforPreview,
       roleName: null,
       experienceYears: null,
       noOfTalents: null,
@@ -706,8 +708,9 @@ function PreviewHRModal({
       payload[key] = obj[key];
     });
 
-    // let result = await updateJobPost(payload);
-    // return result;
+    let result = await allCompanyRequestDAO.updateHrPreviewDetailsDAO(payload);
+    
+    return result;
   };
 
   const updateRolesAndRes = async () => {
@@ -880,6 +883,7 @@ function PreviewHRModal({
       };
       setIsLoading(true)
       let result = await updateJobPostDetail(payload);
+      console.log('res for budget', result);
       if (result.statusCode === 200) {
         setisEditBudget(false);
         messageApi.open({
@@ -892,15 +896,15 @@ function PreviewHRModal({
           ...{
             currencySign: getSymbolFromCurrency(editBudget.currency),
             currency: editBudget.currency,
-            budgetFrom: result?.responseBody?.details?.budgetFrom,
-            budgetFromStr: result?.responseBody?.details?.budgetFromStr,
-            hrCost: result?.responseBody?.details?.hrCost,
-            budgetToStr: result?.responseBody?.details?.budgetToStr,
-            budgetTo: result?.responseBody?.details?.budgetTo,
+            budgetFrom: result?.responseBody?.budgetFrom,
+            budgetFromStr: result?.responseBody?.budgetFromStr,
+            hrCost: result?.responseBody?.hrCost,
+            budgetToStr: result?.responseBody?.budgetToStr,
+            budgetTo: result?.responseBody?.budgetTo,
             budgetType: editBudget?.budgetType,
             noBudgetBar: editBudget.budgetType === 3 ? true : false,
             isConfidentialBudget: editBudget?.isConfidentialBudget,
-            toolTipMessage :  result?.responseBody?.details?.toolTipMessage ?  result?.responseBody?.details?.toolTipMessage : editDuration?.toolTipMessage
+            toolTipMessage :  result?.responseBody?.toolTipMessage ?  result?.responseBody?.toolTipMessage : editDuration?.toolTipMessage
 
           },
         }));
@@ -1074,109 +1078,112 @@ function PreviewHRModal({
   };
 
   const getSkillList = async () => {
+    
     // let skillresult = await getSkills(localStorage.getItem("roleId"));
+    let skillresult = await MasterDAO.getSkillsRequestDAO();
+console.log("skillresult: " , skillresult)
 
-    // if (skillresult.statusCode === 200) {
-    //   const uniqueValues = new Set();
-    //   setSkills(
-    //     skillresult.responseBody.details
-    //       .filter((skill) => !uniqueValues.has(skill.value) && uniqueValues.add(skill.value))
-    //       .map((skill) => ({
-    //         value: skill.value,
-    //         label: skill.value,
-    //       }))
-    //   );
-    //   // setSkills(
-    //   //   skillresult.responseBody.details.map((skill) => ({
-    //   //     value: skill.value,
-    //   //     label: skill.value,
-    //   //   }))
-    //   // );
-    //   setTopSkills(
-    //     skillresult.responseBody.details.map((item) => ({
-    //       value: item.value,
-    //       label: (
-    //         <>
-    //           <img src={selectStarFillImage} alt="star" /> {item.value}
-    //         </>
-    //       ),
-    //     }))
-    //   );
-    // }
+    if (skillresult.statusCode === 200) {
+      const uniqueValues = new Set();
+      setSkills(
+        skillresult.responseBody
+          .filter((skill) => !uniqueValues.has(skill.value) && uniqueValues.add(skill.value))
+          .map((skill) => ({
+            value: skill.value,
+            label: skill.value,
+          }))
+      );
+      // setSkills(
+      //   skillresult.responseBody.details.map((skill) => ({
+      //     value: skill.value,
+      //     label: skill.value,
+      //   }))
+      // );
+      setTopSkills(
+        skillresult.responseBody.map((item) => ({
+          value: item.value,
+          label: (
+            <>
+              <img src={selectStarFillImage} alt="star" /> {item.value}
+            </>
+          ),
+        }))
+      );
+    }
   };
 
   const getTimeZoneValues = async () => {
-    // let response = await getContactTimeZone();
-    // let _list = [];
-    // if (response?.responseBody?.details) {
-    //   for (let val of response?.responseBody?.details) {
-    //     let obj = {};
-    //     obj.label = val.timeZoneTitle;
-    //     obj.value = val.id;
-    //     _list.push(obj);
-    //   }
-    //   setTimeZone(_list);
-    // }
+    let response = await getContactTimeZone();
+    let _list = [];
+    if (response?.responseBody?.details) {
+      for (let val of response?.responseBody?.details) {
+        let obj = {};
+        obj.label = val.timeZoneTitle;
+        obj.value = val.id;
+        _list.push(obj);
+      }
+      setTimeZone(_list);
+    }
   };
 
   const getStartEndTimeData = async () => {
-    // let response = await getStartEndTime();
-    // let _list = [];
-    // for (let val of response?.responseBody?.details) {
-    //   let obj = {};
-    //   obj.label = val.text;
-    //   obj.value = val.value;
-    //   _list.push(obj);
-    // }
-    // setStartEndTime(_list);
+    let response = await getStartEndTime();
+    let _list = [];
+    for (let val of response?.responseBody?.details) {
+      let obj = {};
+      obj.label = val.text;
+      obj.value = val.value;
+      _list.push(obj);
+    }
+    setStartEndTime(_list);
   };
 
   const GetPayrollType = async () => {
-    // let res = await getPayrollType();
-    // if (res?.statusCode === 200) {
-    //   setPayrollList(res.responseBody.details);
-    // }
+    let res = await getPayrollType();
+    if (res?.statusCode === 200) {
+      setPayrollList(res.responseBody.details);
+    }
   };
 
   const getRolesCurrencyList = async () => {
-    // let res = await getTalentsRolesData();
-    // let currencyresult = await getCurrency();
-    // if (res.statusCode === 200) {
-    //   setRolesData(res.responseBody.details);
-    // }
-    // if (currencyresult.statusCode === 200) {
-    //   setCurrencyList(
-    //     currencyresult.responseBody.details.map((currency) => ({
-    //       value: currency.value,
-    //       label: currency.value,
-    //     }))
-    //   );
-    // }
+    let res = await getTalentsRolesData();
+    let currencyresult = await getCurrency();
+    if (res.statusCode === 200) {
+      setRolesData(res.responseBody.details);
+    }
+    if (currencyresult.statusCode === 200) {
+      setCurrencyList(
+        currencyresult.responseBody.details.map((currency) => ({
+          value: currency.value,
+          label: currency.value,
+        }))
+      );
+    }
   };
 
   const getcountryData = async () => {
     setIsLoading(true)
-    // let res = await fetchCountriesBasedonCity({
-    //   city: editLocation.city,
-    // });
+    let res = await fetchCountriesBasedonCity({
+      city: editLocation.city,
+    });
 
-    // if (res?.statusCode == 200) {
-    //   let _list = [];
-    //   for (let val of res?.responseBody?.details) {
-    //     let obj = {};
-    //     obj.label = val.country;
-    //     obj.value = val.id;
-    //     _list.push(obj);
-    //   }
-    //   if (_list.length === 1) {
-    //     setEditLocation({
-    //       ...editLocation,
+    if (res?.statusCode == 200) {
+      let _list = [];
+      for (let val of res?.responseBody?.details) {
+        let obj = {};
+        obj.label = val.country;
+        obj.value = val.id;
+        _list.push(obj);
+      }
+      if (_list.length === 1) {
+        setEditLocation({
+          ...editLocation,
 
-    //       country: _list[0].value,
-    //     });
-    //   }
-    //   setCountry(_list);
-    // }
+          country: _list[0].value,
+        });
+      }
+      setCountry(_list);
+    }
     setIsLoading(false);
   };
 
@@ -1380,12 +1387,12 @@ function PreviewHRModal({
 
   const GetHiringTypePricing = async () => {
     setIsLoading(true);
-    // let res = await getHiringTypePricing(
-    //   editDuration?.employmentType?.split(" ").join("")
-    // );
-    // if (res?.statusCode === 200) {
-    //   setHiringTypePricing(res?.responseBody?.details);
-    // }
+    let res = await getHiringTypePricing(
+      editDuration?.employmentType?.split(" ").join("")
+    );
+    if (res?.statusCode === 200) {
+      setHiringTypePricing(res?.responseBody?.details);
+    }
     setIsLoading(false);
   };
 
@@ -1425,7 +1432,7 @@ function PreviewHRModal({
             <div className="PreviewStickyContent">
 
               <div className="Post-Header">
-                <h4>{jobActiveTab === "2" ? "View Job Post" : "Edit Job Post"}</h4>
+                <h4>Preview/Edit HR</h4>
               </div>
 
               <div className="PostJobStepSecondWrap">
@@ -1437,7 +1444,7 @@ function PreviewHRModal({
                           <h2 className="postJobFirstStepTitle">
                             {jobPreview?.roleName}
                             {hrNumber && <span className="boxInnerInfo">({hrNumber})</span>}
-                            {(jobActiveTab === "1" || jobActiveTab === "4") &&
+                           
                             <span className="editNewIcon" 
                             onClick={() => {
                               if (jobActiveTab === "2") {
@@ -1447,7 +1454,7 @@ function PreviewHRModal({
                               }
                               seteditRoleName(jobPreview?.roleName);
                             }}
-                            ><img src={EditnewIcon} /></span>}
+                            ><img src={EditnewIcon} /></span>
                           </h2>
                         </>
                       ) : (
@@ -1465,7 +1472,7 @@ function PreviewHRModal({
                           {error.editRoleName && (
                             <span className="error">{error.editRoleName}</span>
                           )}
-                          <div className="buttonEditGroup mt-2 justify-content-end">
+                          <div className="buttonEditGroup justify-content-end" style={{marginTop:'0.5rem'}}>
                             <button
                               type="button"
                               class="btnPrimary blank"
@@ -1516,7 +1523,7 @@ function PreviewHRModal({
                                 </Tooltip>
                               </div>
                               : jobPreview?.hrCost ? jobPreview?.hrCost : "NA"}
-                            {(jobActiveTab === "1" || jobActiveTab === "4") && 
+                          
                             <span className="editNewIcon" 
                               onClick={() => {
                                 if (jobActiveTab === "2") {
@@ -1534,7 +1541,7 @@ function PreviewHRModal({
                                 });
                                 CalculateEstimatedUplersFees(Number(jobPreview?.budgetFrom),Number(jobPreview?.budgetTo))                                                     
                               }}
-                              ><img src={EditnewIcon} /></span>}
+                              ><img src={EditnewIcon} /></span>
                                <Tooltip placement="bottom" title={<div dangerouslySetInnerHTML={{ __html: jobPreview?.toolTipMessage }} />} >
                                         <span className="editDevloper">
                                               <img src={infosmallIcon} className="edit" height={'12px'} style={{ display: 'flex' }} />
@@ -1550,7 +1557,7 @@ function PreviewHRModal({
                                 ? `Full Time contract for ${jobPreview?.contractDuration === -1 ? 'Indefinite' : jobPreview?.contractDuration} months`
                                 : `Full Time ${jobPreview?.contractDuration ? jobPreview?.contractDuration == -1 ? "Indefinite" : `${jobPreview?.contractDuration} months` : ""}`}
 
-                            {(jobActiveTab === "1" || jobActiveTab === "4") && isCloseJob === "false" &&
+                            
                             <span className="editNewIcon" 
                             onClick={() => {
                               setisEditDuration(true);
@@ -1568,14 +1575,14 @@ function PreviewHRModal({
                                 toolTipMessage: jobPreview?.toolTipMessage
                               });
                             }} 
-                            ><img src={EditnewIcon} /></span>}
+                            ><img src={EditnewIcon} /></span>
                           </li>
                           <li>
                             {" "}
                             <img src={umbrellaIconImage} className="edit" />
                             Notice Period - {jobPreview?.howSoon ? jobPreview?.howSoon : ""}
                             {/* Notice Period -  {jobPreview?.howsoon} */}
-                            {(jobActiveTab === "1" || jobActiveTab === "4") && 
+                           
                             <span className="editNewIcon" 
                             onClick={() => {
                               if (jobActiveTab === "2") {
@@ -1588,7 +1595,7 @@ function PreviewHRModal({
                                 howsoon: jobPreview?.howSoon,
                               });
                             }}
-                            ><img src={EditnewIcon} /></span>}
+                            ><img src={EditnewIcon} /></span>
                           </li>
                           <li>
                             <img src={locationIconImage} className="business" />
@@ -1596,7 +1603,7 @@ function PreviewHRModal({
                               ? jobPreview?.countryID ? `${jobPreview?.city ? jobPreview?.city : ""},${jobPreview?.countryID ? jobPreview?.countryID : ""}` : `${jobPreview?.city ? jobPreview?.city : ""}`
                               : "Work from anywhere"}
 
-                            {(jobActiveTab === "1" || jobActiveTab === "4") &&                             
+                                                     
                             <span className="editNewIcon" 
                               onClick={() => {
                                 if (jobActiveTab === "2") {
@@ -1613,7 +1620,7 @@ function PreviewHRModal({
                                   countryID: jobPreview?.countryID,
                                 });
                               }}
-                            ><img src={EditnewIcon} /></span>}
+                            ><img src={EditnewIcon} /></span>
                             
                           </li>
                           <li>
@@ -1622,7 +1629,7 @@ function PreviewHRModal({
                               ? `${jobPreview?.experienceYears} Years Exp`
                               : ""}
 
-                            {(jobActiveTab === "1" || jobActiveTab === "4") && 
+
                              <span className="editNewIcon" 
                              onClick={() => {
                               if (jobActiveTab === "2") {
@@ -1634,7 +1641,7 @@ function PreviewHRModal({
                               seteditExp(jobPreview?.experienceYears);
                               setIsFreshersAllowed(jobPreview?.isFresherAllowed)
                             }}
-                           ><img src={EditnewIcon} /></span>}
+                           ><img src={EditnewIcon} /></span>
                           </li>
                           <Tooltip placement="top" title={`India Standard Time ${jobPreview?.isT_TimeZone_FromTime} to ${jobPreview?.isT_TimeZone_EndTime}`}>
 
@@ -1647,7 +1654,7 @@ function PreviewHRModal({
                                   ? jobPreview?.timeZoneEndTime
                                   : ""
                                 } `}
-                              {(jobActiveTab === "1" || jobActiveTab === "4") &&
+                              
                                 <span className="editNewIcon" 
                                   onClick={() => {
                                     if (jobActiveTab === "2") {
@@ -1661,14 +1668,14 @@ function PreviewHRModal({
                                       timeZoneEndTime: jobPreview?.timeZoneEndTime,
                                     });
                                   }}
-                                ><img src={EditnewIcon} /></span>}
+                                ><img src={EditnewIcon} /></span>
                               </li>
                             </Tooltip>
                           </ul>
 
                         <div className="prevSkillTwopart">
                           <div className="prevSkillLeftside">
-                            {iseditSkills && (jobActiveTab === "1" || jobActiveTab === "4") ? (
+                            {iseditSkills  ? (
                               <div className="row">
                                 <div className="col-12">
                                   <div className="form-group">
@@ -1754,10 +1761,10 @@ function PreviewHRModal({
                               </div>
                             ) : (
                               <div className="topFillFileldRead">
-                                <h6>Top Skills   {(jobActiveTab === "1" || jobActiveTab === "4") &&                                   
+                                <h6>Top Skills                                    
                                   <span className="editNewIcon" 
                                   onClick={editSkills}
-                                ><img src={EditnewIcon} /></span>}                                  
+                                ><img src={EditnewIcon} /></span>                                
                                  </h6>
                                 <ul className="SlillBtnBox">
                                   {jobPreview?.skills
@@ -1784,7 +1791,7 @@ function PreviewHRModal({
 
                             <div className="RolesResponsibilitiesDetail">
                               <h6>
-                                Job description {(jobActiveTab === "1" || jobActiveTab === "4") && 
+                                Job description  
                                  <span className="editNewIcon" 
                                  onClick={() => {
                                   setisEditWhatWeoffer(true);
@@ -1796,9 +1803,9 @@ function PreviewHRModal({
                                   `;
                                   setEditWhatWeOffer(editWhatWeOffer ? editWhatWeOffer : jobPreview?.jobDescription ? jobPreview?.jobDescription : mergedContent);
                                 }}
-                               ><img src={EditnewIcon} /></span>} 
+                               ><img src={EditnewIcon} /></span>
                               </h6>
-                              {iseditWhatWeOffer && (jobActiveTab === "1" || jobActiveTab === "4") ? (
+                              {iseditWhatWeOffer ? (
                                 <>
                                   <ReactQuill
                                     theme="snow"

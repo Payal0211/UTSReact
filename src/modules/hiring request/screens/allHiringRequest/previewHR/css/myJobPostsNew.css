@@ -1,0 +1,765 @@
+.jobDesUpload .ant-upload-drag {
+    border-radius: 0;
+    border: none;
+    background: transparent;
+}
+
+.jobDesUpload .ant-upload-drag .ant-upload-btn {
+    padding: 0;
+}
+
+.jobDesUpload .FilesDragAndDrop__area {
+    border: 1px solid #CECCCC;
+    border-radius: 8px;
+    margin-bottom: 0;
+}
+
+.jobDesOrDivider {
+    font-family: Montserrat;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 400;
+    color: #232323;
+    text-align: center;
+    margin: 16px 0 24px;
+}
+
+.noJobDesInfo {
+    padding: 12px 16px;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    font-family: Montserrat;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: #6B6B6B;
+    z-index: 1;
+}
+
+.noJobDesInfo:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 8px;
+    background: linear-gradient(118.92deg, #EFEEFF 26.18%, rgba(255, 234, 222, 0.94) 96.85%);
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.jobDesCardBody {
+    padding: 24px 32px;
+}
+
+.jobDesCardBody .row,
+.hireEngModelField .row {
+    margin-right: -16px !important;
+    margin-left: -16px !important;
+}
+
+.jobDesCardBody .row [class*="col-"],
+.hireEngModelField .row [class*="col-"] {
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+}
+
+.jobDesCardBody .form-group {
+    /* margin-bottom: 56px; */
+    position: relative;
+}
+
+.jobDesCardBody .mb-24 {
+    margin-bottom: 24px;
+}
+
+.jobDesCardBody .mb-16 {
+    margin-bottom: 16px;
+}
+
+.jobDesCardBody .formCurField label {
+    font-family: Montserrat;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    color: rgba(107, 107, 107, 0.6);
+    position: absolute;
+    top: 17px;
+    right: 16px;
+}
+
+.jobDesCardBody .formCurField input {
+    padding-right: 120px;
+}
+
+.jobDesCardBody .form-group.jobCardCheckbox {
+    align-items: center;
+    display: inline-flex;
+}
+
+.jobDesCardBody .jobCardCheckbox label span {
+    font-size: 12px;
+    line-height: 15px;
+    font-weight: 500;
+    color: #232323;
+}
+
+.jobDesCardBody .confiBudgetInfo {
+    cursor: pointer;
+    display: inline-flex;
+}
+
+.hireEngModelField {
+    margin-bottom: 32px;
+}
+
+.hireEngModelField .mt-40 {
+    margin-top: 40px;
+}
+
+.formFields .hireEngModelField .form-group {
+    margin-bottom: 40px;
+}
+
+.choose-model ul.hireBenefitList {
+    max-width: 84%;
+}
+
+.choose-model ul.hireBenefitList li {
+    width: 50%;
+}
+
+/*Vital Information*/
+.vitalInfoBox .vitalInfoOption {
+    flex-wrap: wrap;
+    gap: 12px;
+    display: flex;
+}
+
+.vitalInfoBox .vitalInfoOption label {
+    font-family: Montserrat;
+    font-size: 12px;
+    line-height: 15px;
+    font-weight: 500;
+    color: #6B6B6B;
+    padding: 11px 16px;
+    margin: 0;
+    border: 1px solid #CECCCC;
+    border-radius: 30px;
+    /* cursor: pointer; */
+}
+
+.vitalInfoBox .vitalInfoOption .ant-radio-group{
+    gap: 12px;
+}
+
+.vitalInfoBox .vitalInfoOption label.ant-radio-button-wrapper{
+    height: auto;
+    border-radius: 30px !important;
+}
+
+.vitalInfoBox .vitalInfoOption label.ant-radio-button-wrapper span{
+    color: #6B6B6B;
+}
+
+.vitalInfoBox .vitalInfoOption+.vitalInfoInput {
+    margin-top: 16px;
+}
+
+.vitalInfoBox .addVitalInfoBtn {
+    font-family: Montserrat;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 15px;
+    color: #232323;
+    margin: 12px 0 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    display: inline-flex;
+}
+
+.vitalInfoBox textarea.form-control {
+    height: 118px;
+}
+
+/*Company Details*/
+.companyDetailsWrap .jobDesCardBody .form-group {
+    margin-bottom: 40px;
+}
+
+.jobDesCardBody .mt-24 {
+    margin-top: 24px;
+}
+.jobDesCardBody .mb-24 {
+    margin-bottom: 24px;
+}
+
+.companyDetailsWrap .jobDesCardBody .form-group label {
+    font-family: Montserrat;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 400;
+    color: #232323;
+    margin: 0 0 8px;
+}
+
+.companyDetailsWrap .jobDesCardBody .form-group label span {
+    font-weight: 700;
+    color: #B60707;
+}
+
+.companyDetailsWrap .noJobDesInfo {
+    margin-bottom: 16px;
+}
+
+.companyDetailsWrap .jobDesCardBody .change-remove-button .btn {
+    margin-bottom: 0;
+}
+
+.companyDetailsWrap .RoleEditor .ql-editor {
+    max-height: 164px;
+    height: 164px;
+    font-family: Montserrat;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+    color: #232323;
+}
+
+.companyDetailsWrap .RoleEditor .ql-editor p {
+    color: inherit;
+    font-size: inherit;
+    font-weight: normal;
+    line-height: normal;
+    margin: 0 0 8px;
+}
+
+.companyDetailsWrap .RoleEditor .ql-editor p:last-child {
+    margin-bottom: 0;
+}
+
+.companyDetailsWrap .FilesDragAndDrop__area {
+    background: transparent;
+    width: 100%;
+    display: block;
+    cursor: pointer;
+    margin-bottom: 24px;
+}
+
+
+.companyDetailsWrap .companyLogoBox {
+    padding: 16px;
+    border: 1px solid #CECCCC;
+    width: 434px;
+    max-width: 100%;
+    border-radius: 8px;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.companyDetailsWrap .companyLogoBox img {
+    max-width: 100%;
+    max-height: 96px;
+    vertical-align: middle;
+}
+
+.companyLogoBox .comLogoBoxAction {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.companyDetailsWrap .companyLogoBox .comLogoBoxAction .btn {
+    width: 26px;
+    height: 26px;
+    background: #F1F1F1;
+    border-radius: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.companyDetailsWrap .companyLogoBox .comLogoBoxAction .btn svg {
+    width: 14px;
+    height: 15px;
+}
+
+.companyDetailsWrap .companyLogoBox .comLogoBoxAction .btn input {
+    position: absolute;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    width: 150px;
+    height: 100%;
+    cursor: pointer;
+    opacity: 0;
+    border: none;
+    border-radius: 0;
+}
+
+.companyDetailsWrap .companyLogoBox .comLogoBoxAction .btn+.btn {
+    margin-left: 8px;
+}
+
+
+
+/* Preview Modal Css start */
+
+.PreviewModal-Header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #F8F7F4;
+    padding: 16px 58px;
+}
+
+.PreviewModal-Header .PreviewBtnHead{
+    display: flex;
+    gap: 12px;
+    padding-right: 12px;
+}
+
+.PreviewModal-Header .PreviewBtnHead .btnSecondary, .PreviewModal-Header .PreviewBtnHead .btnPrimary{
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 14px;
+    height: 41px;
+    min-height: 41px;
+}
+
+.PreviewpageMainWrap .Post-Header{
+    padding: 24px 58px 0px;
+}
+
+.PreviewpageMainWrap .formFields .editNewIcon{
+    margin-left: 2px;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .formFields .FieldsBoxInner-Content{
+    padding: 16px 32px;
+}
+
+
+.PreviewpageMainWrap .previewstepBox{
+    background:#fbfbfb;
+    border: 1px solid #67676752;
+    margin: 0px 0 30px;
+    border-radius: 16px;
+    padding: 16px 10px 16px 24px;
+}
+
+.PreviewpageMainWrap .previewstepBox li{
+    padding-left: 0px;
+}
+
+.PostNewJobModal.previewModalOpen .ant-modal-content{
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.PostNewJobModal.previewModalOpen .ant-modal-body > .Post-Header{
+    display: none;
+}
+
+.PreviewpageMainWrap .prevSkillTwopart .prevSkillLeftside h6{
+    line-height: 15px;
+}
+
+.PreviewpageMainWrap .prevSkillTwopart .prevSkillLeftside{
+    border: 0px;
+    background: transparent;
+    width: 100%;
+    padding: 0;
+}
+
+.PreviewpageMainWrap .RolesResponsibilitiesDetail{
+    margin-top: 30px;
+}
+
+.PreviewpageMainWrap .reactQuillEdit .ql-editor{
+    padding: 0px !important;
+}
+
+.PreviewpageMainWrap .reactQuillEdit .ql-container.ql-snow ul, .PreviewpageMainWrap .ql-container.ql-snow ul li {
+    padding-left: 5px !important;
+    color: #232323;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.PreviewpageMainWrap .reactQuillEdit .ql-snow .ql-editor h3{
+    color: #232323;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+
+/* Company Detail css */
+
+.PreviewpageMainWrap .company-details h6 {
+    color: #6B6B6B;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+}
+
+.PreviewpageMainWrap .company-details-inner{
+    border: 0;
+    background: #ffffff;
+    padding: 0;
+}
+
+.PreviewpageMainWrap .company-details-top ul{
+    column-gap: 32px;
+}
+
+.PreviewpageMainWrap .company-details-top ul li{
+    margin-right: 0px;
+    margin-bottom: 10px;
+}
+
+.PreviewpageMainWrap .company-details hr{
+    border-top: 0;
+}
+
+
+.PreviewpageMainWrap .funding-rounds{
+    padding-bottom: 30px;
+}
+
+.PreviewpageMainWrap .funding-rounds li h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #232323;
+    line-height: 28px;
+}
+
+.PreviewpageMainWrap .funding-rounds li span{
+    display: inline-block;
+    line-height: 18px;
+    margin-bottom: 6px;
+}
+
+.PreviewpageMainWrap .funding-rounds li p{
+    margin: 0;
+}
+
+.PreviewpageMainWrap .rounds-list{
+    column-gap: 38px;
+    row-gap: 60px;
+}
+
+.PreviewpageMainWrap .round-list-content{
+    position: relative;
+    margin-right: 0px;
+    width: calc(25% - 29px);
+}
+
+.PreviewpageMainWrap .round-list-content > span {position: relative;}
+.PreviewpageMainWrap .round-list-content > span .roundHoverAction{display: none;}
+.PreviewpageMainWrap .round-list-content > span:hover .roundHoverAction{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: -26px;
+    right: 2px;
+    border: 1px solid #676767;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #FFFDF1;
+    min-width: 66px;
+}
+
+.PreviewpageMainWrap .round-list-content:hover .roundHoverAction span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    padding: 3px;
+    width: 50%;
+    background: transparent;
+    margin: 0;
+    border-right: 1px solid #676767;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .round-list-content:hover .roundHoverAction span:nth-child(2){
+    border-right: 0px;
+    color: #E03A3A;
+}
+
+.PreviewpageMainWrap .round-list-content.Selected span{
+    background: #FFDA30;
+}
+
+.PreviewpageMainWrap .round-list-content.Selected h4, .PreviewpageMainWrap .round-list-content.Selected p{
+    color: #CECCCC;
+}
+
+.PreviewpageMainWrap .RoundBtnWrap{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.PreviewpageMainWrap .RoundBtnWrap h6{
+    margin-bottom: 0;
+}
+
+.PreviewpageMainWrap .addAnotherRoundbtn{
+    color: #1B73BA;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 18px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.PreviewpageMainWrap .company-details .img-section{
+    column-gap: 22px;
+    row-gap: 16px;
+}
+
+.PreviewpageMainWrap .img-section .video-wrapper iframe{border: none;}
+
+.PreviewpageMainWrap .img-section .img-thumb, .PreviewpageMainWrap .img-section .video-wrapper {
+    width: calc(33.33% - 15px);
+    border-radius: 18px;
+    overflow: hidden;
+    padding-top: 19.40%;
+}
+
+.PreviewpageMainWrap .img-section .img-thumb{position: relative;}
+.PreviewpageMainWrap .img-section .img-thumb > img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    object-fit: cover;
+}
+
+.PreviewpageMainWrap .img-section .img-thumb .DeleteBtn, .PreviewpageMainWrap .img-section .video-wrapper .DeleteBtn{display: none;cursor: pointer;}
+.PreviewpageMainWrap .img-section .img-thumb:hover .DeleteBtn, .PreviewpageMainWrap .img-section .video-wrapper:hover .DeleteBtn{display: block;}
+
+.PreviewpageMainWrap .img-section .img-thumb:hover::after{
+    content: "";
+    background: #ffffffe6;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.PreviewpageMainWrap .img-section .img-thumb .DeleteBtn{
+    min-width: 55px;
+    max-width: 55px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    margin: 0 auto;
+    z-index: 2;
+}
+
+.PreviewpageMainWrap .img-section .video-wrapper .DeleteBtn{
+    min-width: 38px;
+    max-width: 38px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+}
+
+.PreviewpageMainWrap .img-section .img-thumb .DeleteBtn img, .PreviewpageMainWrap .img-section .video-wrapper .DeleteBtn img{
+    width: 100%;
+    border-radius: inherit;
+}
+
+
+.PreviewpageMainWrap .company-benefits ul{
+    gap: 8px;
+    margin: 0;
+}
+
+.PreviewpageMainWrap .company-benefits ul li{
+    margin-bottom: 0px;
+}
+
+.vitalInformationContent{
+    padding: 32px;
+}
+
+.PreviewpageMainWrap .vitalInformationContent .company-benefits ul {
+    gap: 12px;
+    margin: 0;
+}
+
+.PreviewpageMainWrap .vitalInformationContent .company-benefits li{
+    margin-right: 0;
+    margin-bottom: 30px;
+}
+
+.PreviewpageMainWrap .vitalInformationContent h6 {
+    color: #6B6B6B;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+}
+
+.PreviewpageMainWrap .FilesDragAndDrop__area{
+    width: 100%;
+    background: transparent;
+}
+
+.PreviewpageMainWrap .uploaded-content{
+    height: 180px;
+    width: calc(33.33% - 15px);
+    margin: 0;
+    background: #f7f7f7;
+}
+
+.PreviewpageMainWrap .img-section .uploaded-content img{
+    height: 100%;
+    object-fit: contain;
+}
+
+.PreviewpageMainWrap .RoleEditor .ql-container.ql-snow {
+    border: 1px solid #ccc;
+}
+
+.PreviewpageMainWrap .heightSize .ql-editor {
+    max-height: 350px;
+    height: 120px;
+}
+
+/* preview edit modal css start */
+
+
+.BudgettooltipWrap{
+    display: flex;
+    align-items: center;
+}
+
+.PrevEditmodal .customCheckboxPreview .ant-checkbox-wrappe{
+    color: #232323;
+}
+
+.PrevEditmodal .customCheckboxPreview .ant-checkbox-inner{
+    width: 20px;
+    height: 20px;
+}
+
+.PrevEditmodal .customCheckboxPreview .ant-checkbox-inner::after{
+    width: 4px;
+    height: 8px;
+}
+
+.PrevEditmodal .customradio.newradiodes.small label.ant-radio-button-wrapper{
+    height: 28px;
+    padding-inline: 11px;
+}
+
+.PrevEditmodal .customradio.newradiodes.small label.ant-radio-button-wrapper span{line-height: 28px;font-weight: 500;}
+
+.PrevEditmodal .modalContent .form-group label{
+    display: flex;
+    align-items: center;
+    color: #6B6B6B;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 14px;
+}
+
+.customModal.PrevEditmodal .ant-select-multiple .ant-select-selector{
+    min-height: 42px;
+    height: auto;
+    padding: 9px 16px;
+}
+
+.customModal.PrevEditmodal .ant-select-multiple .ant-select-selection-placeholder{
+    inset-inline-start: 16px;
+    inset-inline-end: 16px;
+}
+
+.customModal.PrevEditmodal .ant-select-multiple .ant-select-selection-search{
+    margin: 0 !important;
+}
+
+.PreviewpageMainWrap .company-details .top-details {
+    padding: 0;
+    margin-bottom: 26px;
+}
+
+.PreviewpageMainWrap .company-details .top-details .thumbImages{
+    position: relative;
+}
+
+.PreviewpageMainWrap .company-details .top-details .thumbImages .editNameBtn{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #f7f7f7f5;
+    border-radius: 50%;
+    display: inline-flex;
+    margin: 0;
+}
+
+.PreviewpageMainWrap .company-details .top-details .thumbImages .editNameBtn label{
+    margin: 0;
+    display: inline-flex;
+}
+
+.PreviewpageMainWrap .company-details .top-details .thumbImages .editNameBtn label img{
+    margin: 0;
+}
+
+.PreviewpageMainWrap .company-details .top-details p{
+    margin-bottom: 0px;
+    font-size: 22px;
+    color: #232323;
+    font-weight: 500;
+    line-height: 28px;
+}
+
+.PreviewpageMainWrap .editNameBtn{
+    display: inline-block;
+    width: 18px;
+    margin-left: 8px;
+}
+
+.PreviewpageMainWrap .editNameBtn img{
+    width: 100%;
+    height: auto;
+}
+
+/* Preview Modal Css End */
