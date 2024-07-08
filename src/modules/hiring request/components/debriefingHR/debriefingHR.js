@@ -462,7 +462,7 @@ const getParsingType = (isHaveJD,parseType) => {
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
 			JDDumpID: jdDumpID || 0,
-			ActionType: "Create_HrDebrief",
+			ActionType: "Save",
 			IsHrfocused: isFocusedRole,
 			// role: d.role?.id ? d.role?.id : null,
 			role: null,
