@@ -3,7 +3,6 @@
     /* margin-bottom: 24px; */
     border-radius: 8px;
     /* max-height: 1000px; */
-
 }
 
 table {
@@ -19,7 +18,6 @@ table {
 .theadLoading {
     position: sticky !important;
     top: 0px !important;
-
 }
 
 .th {

@@ -7,7 +7,11 @@ import { AiOutlineDown } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
 import { Fragment, useEffect, useState, useCallback, useMemo } from 'react';
 import { ReactComponent as ExportSVG } from 'assets/svg/export.svg';
-import { useNavigate } from 'react-router-dom' 
+import { ReactComponent as NotesIcon } from 'assets/svg/notesIcon.svg';
+import { ReactComponent as EditIcon } from 'assets/svg/editIcon.svg';
+import { ReactComponent as DeleteIcon } from 'assets/svg/deleteIcon.svg';
+import { ReactComponent as InfoCircleIcon } from 'assets/svg/infoCircleIcon.svg';
+import { useNavigate } from 'react-router-dom'
 
 import {
 	InterviewFeedbackStatus,
@@ -53,6 +57,11 @@ import TalentInterviewStatus from '../talentInterviewStatus/talentInterviewStatu
 import EditDPRate from '../editDP/editDP';
 import PreOnboardingTabModal from '../preOnboardingModals/preOnboardingTabModal';
 import { MasterDAO } from 'core/master/masterDAO';
+import AddNotes from './addNotes';
+import AllNotes from './allNotes';
+import ViewNotes from './viewNotes';
+import EditNotes from './editNotes';
+import moment from 'moment';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -77,6 +86,7 @@ const TalentList = ({
 	apiData
 }) => {
 	const navigate = useNavigate()
+	const EmpID = localStorage.getItem('EmployeeID')
 	const [scheduleAnotherRoundInterview, setScheduleAnotherRoundInterview] =
 		useState(false);
 	// console.log(scheduleAnotherRoundInterview, '-scheduleAnotherRoundInterview');
@@ -280,21 +290,21 @@ const TalentList = ({
 		filterTalentID?.PayRate,
 		hrId,
 	]);
-// console.log("talentList details",	{talentCTA,
-// talentDetail,
-// miscData,
-// callAPI,
-// clientDetail,
-// HRStatusCode,
-// hrId,
-// starMarkedStatusCode,
-// hrStatus,
-// hiringRequestNumber,
-// hrType,
-// setHRapiCall,
-// callHRapi,
-// inteviewSlotDetails,
-// talentID,})
+	// console.log("talentList details",	{talentCTA,
+	// talentDetail,
+	// miscData,
+	// callAPI,
+	// clientDetail,
+	// HRStatusCode,
+	// hrId,
+	// starMarkedStatusCode,
+	// hrStatus,
+	// hiringRequestNumber,
+	// hrType,
+	// setHRapiCall,
+	// callHRapi,
+	// inteviewSlotDetails,
+	// talentID,})
 	// const updateHRcostHandler = useCallback(async () => {
 	// 	const calculateHRData = {
 	// 		ContactPriorityID: filterTalentID?.ContactPriorityID,
@@ -342,16 +352,16 @@ const TalentList = ({
 		const regex = /\d+/;
 		const match = inputString.match(regex);
 		if (match && match.length > 0) {
-		  const number = parseInt(match[0], 10);
-		  return number;
+			const number = parseInt(match[0], 10);
+			return number;
 		}
 		return null;
-	  }
+	}
 
 	useEffect(() => {
 		if (Object.keys(filterTalentID).length > 0 && editPayRate) {
 			setValue(
-				'talentFees',filterTalentID?.CTP_TalentCost);
+				'talentFees', filterTalentID?.CTP_TalentCost);
 		}
 	}, [filterTalentID, editPayRate, setValue]);
 
@@ -374,7 +384,7 @@ const TalentList = ({
 			ID,
 		);
 		if (response?.statusCode === HTTPStatusCode.OK) {
-			callAPI(hrId)		
+			callAPI(hrId)
 		} else if (response?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
 			return navigate(UTSRoutes.LOGINROUTE);
 		} else if (response?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
@@ -419,7 +429,7 @@ const TalentList = ({
 	useEffect(() => {
 		filterTalentID?.MasterId !== undefined && getConfirmSlotModal &&
 			getConfirmSlotDetailsHandler(filterTalentID?.MasterId);
-	}, [filterTalentID,getConfirmSlotModal]);
+	}, [filterTalentID, getConfirmSlotModal]);
 
 	const getConfirmSlotDetailsHandler = async (id) => {
 		const response = await hiringRequestDAO.getConfirmSlotDetailsDAO(id);
@@ -450,32 +460,185 @@ const TalentList = ({
 
 	const resumeDownload = async (data) => {
 		try {
-		  const payload = {
-			"resumeFile": data.TalentResumeLink
-		  };
-		//   payload.filename = data?.Talent_Resume;
-		//   payload.talentId = data?.ATS_TalentID;
-		//   payload.hiringRequestId = data?.HiringRequest_ID;
-		//   payload.isATSTalentId = true;
-	
-		  let res = await MasterDAO.downloadResumeDAO(payload);
-	
-		  const blob = new Blob([res?.responseBody], {
-			type: "application/octet-stream",
-		  });
-		  const link = document.createElement("a");
-		  const fileUrl = window.URL.createObjectURL(blob);
-		  link.href = fileUrl;
-		  let arr = data?.TalentResumeLink?.split("/");
-		  let fileName = arr[arr.length - 1];
-		  link.download = fileName;
-		  document.body.appendChild(link);
-		  link.click();
-		  document.body.removeChild(link);
+			const payload = {
+				"resumeFile": data.TalentResumeLink
+			};
+			//   payload.filename = data?.Talent_Resume;
+			//   payload.talentId = data?.ATS_TalentID;
+			//   payload.hiringRequestId = data?.HiringRequest_ID;
+			//   payload.isATSTalentId = true;
+
+			let res = await MasterDAO.downloadResumeDAO(payload);
+
+			const blob = new Blob([res?.responseBody], {
+				type: "application/octet-stream",
+			});
+			const link = document.createElement("a");
+			const fileUrl = window.URL.createObjectURL(blob);
+			link.href = fileUrl;
+			let arr = data?.TalentResumeLink?.split("/");
+			let fileName = arr[arr.length - 1];
+			link.download = fileName;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
 		} catch (error) {
-		  console.error("Error downloading file:", error);
+			console.error("Error downloading file:", error);
 		}
-	  };
+	};
+
+	// Talents Notes 
+
+	const fetchTalentsNotes =async (item,setNotes)=>{
+		let payload = {
+			"HRID": apiData?.HR_Id,
+			"ATS_TalentID": item?.ATSTalentID
+		}
+
+		let result = await hiringRequestDAO.getTalentNotesDAO(payload)
+		if(result.statusCode === 200) {
+			setNotes(result.responseBody.notes?.reverse())
+		}else{
+			setNotes([])
+		}
+	}
+
+	const deleteNoteDetails = async (note,setAllNotes,item) => {
+        let payload = {   
+			...note,   
+            "IsDeleted":true,
+			"CompanyId":apiData?.ClientDetail?.CompanyId,
+            "ContactName" : apiData?.ClientDetail?.ClientName,
+            "ContactEmail" : apiData?.ClientDetail?.ClientEmail,
+            "HiringRequest_ID": apiData?.HR_Id,
+            "ATS_TalentID": item?.ATSTalentID,
+			"EmployeeID": localStorage.getItem('EmployeeID'),
+            "EmployeeName": localStorage.getItem('FullName')
+    }
+    
+    let result = await hiringRequestDAO.saveTalentNotesDAO(payload)
+
+	if(result.statusCode === 200){
+		setAllNotes(prev => prev.filter(i => i.Note_Id !== note.Note_Id))
+	}
+        }
+
+	const TalentNotesCardComp = ({item})=>{
+		const [allNotes , setAllNotes] = useState([])
+		const [showAddNotesModal, setShowAddNotesModal] = useState(false);
+	const [showAllNotesModal, setShowAllNotesModal] = useState(false);
+	const [showViewNotesModal, setShowViewNotesModal] = useState(false);
+	const [viewNoteData,setViewNoteData] = useState({});
+	const [showEditNotesModal, setShowEditNotesModal] = useState(false);
+		useEffect(()=>{
+			fetchTalentsNotes(item,setAllNotes )
+		},[item])
+
+		return (
+			<div className={TalentListStyle.addNotesList}>
+			<div className={TalentListStyle.addNotesHead}>
+				<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAddNotesModal(true)} title='Add a note for talent'><NotesIcon />Add a note for talent</button>
+			</div>
+
+			{allNotes?.slice(0,2).map(note=> {
+			return	<div className={TalentListStyle.addNoteItem} key={note.Note_Id}>
+				{note.EmployeeID === EmpID && <div className={TalentListStyle.addNoteAction} key={note.Note_Id}>
+					<button type="button" className={TalentListStyle.addNoteBtn} title='Edit' onClick={() => {setShowEditNotesModal(true);setViewNoteData(note)}}><EditIcon /></button>
+					<button type="button" className={TalentListStyle.addNoteBtn} title='Delete' onClick={()=> {deleteNoteDetails(note, setAllNotes, item)}}><DeleteIcon /></button>
+				</div>}
+				
+				<h4>{note?.EmployeeName}  {moment(note.Added_Date).format('DD MMM YYYY')}   {/* 11:12 AM*/} </h4>
+				<p>{note.Notes.length > 100 ? `${note.Notes.substring(0, 100)}...` : note.Notes} {note.Notes.length > 100 && <span className={TalentListStyle.addNoteView} onClick={() => {setShowViewNotesModal(true); setViewNoteData(note)}}>view more</span>}</p>
+			</div>
+			}) }
+			{allNotes.length > 2 && <div className={TalentListStyle.addNoteMore}>
+				<button type="button" className={TalentListStyle.addNoteBtn} onClick={() => setShowAllNotesModal(true)} title='Show more notes'>Show more notes</button>
+			</div>}
+			
+
+			{/** ============ Modal For Add Notes ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				className="commonModalWrap"
+				open={showAddNotesModal}
+				onCancel={() =>
+					setShowAddNotesModal(false)
+				}>
+				<AddNotes onCancel={()=>setShowAddNotesModal(false)} item={item} apiData={apiData} setAllNotes={setAllNotes}/>
+			</Modal>
+
+			{/** ============ Modal For All Notes ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				className="commonModalWrap"
+				open={showAllNotesModal}
+				onCancel={() =>
+					setShowAllNotesModal(false)
+				}>
+				<AllNotes onClose={()=>setShowAllNotesModal(false)} allNotes={allNotes} onEditNote={(note)=> {
+					setShowEditNotesModal(true);setViewNoteData(note)
+				}}
+				
+				deleteNote={(note)=> {
+					deleteNoteDetails(note, setAllNotes,item)
+				}}/>
+			</Modal>
+			
+			{/** ============ Modal For View Notes ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				className="commonModalWrap"
+				open={showViewNotesModal}
+				onCancel={() =>
+					{setShowViewNotesModal(false);setViewNoteData({})}
+				}>
+				<ViewNotes viewNoteData={viewNoteData} onClose={()=> {setShowViewNotesModal(false);setViewNoteData({})}} showAll={()=>{setShowAllNotesModal(true);setShowViewNotesModal(false)}}
+				onEditNote={(note)=> {
+					setShowEditNotesModal(true);setViewNoteData(note);setShowViewNotesModal(false);
+				}}
+				
+				deleteNote={(note)=> {
+					deleteNoteDetails(note, setAllNotes,item);setShowViewNotesModal(false);
+				}}
+				 />
+			</Modal>
+			
+			{/** ============ Modal For Edit Notes ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				className="commonModalWrap"
+				open={showEditNotesModal}
+				onCancel={() =>
+					{setShowEditNotesModal(false);
+					setViewNoteData({})}
+				}>
+				<EditNotes onClose={() =>
+					{setShowEditNotesModal(false);
+					setViewNoteData({})}}
+					viewNoteData={viewNoteData}
+					apiData={apiData}
+					item={item}
+					setAllNotes={setAllNotes}
+					/>
+			</Modal>
+		</div>
+		)
+	
+	}
+
+
 
 	return (
 		<div>
@@ -493,12 +656,12 @@ const TalentList = ({
 						setPageIndex(page - 1);
 					},
 				}}
-				renderItem={(item, listIndex) => {					
+				renderItem={(item, listIndex) => {
 					return (
 						<div
 							key={item?.Name}
 							id={item?.TalentID}>
-							<div className={TalentListStyle.talentCard} style={{minHeight: hrType? '680px': ''}}>
+							<div className={`${TalentListStyle.talentCard} ${TalentListStyle.talentItemCard}`} style={{ minHeight: hrType ? '680px' : '' }}>
 								<div className={TalentListStyle.talentCardBody}>
 									<div className={TalentListStyle.partWise}>
 										<div
@@ -576,11 +739,11 @@ const TalentList = ({
 											</Dropdown>
 										</div>
 									</div>
-
+			
 									<div className={TalentListStyle.profileURL}>
 										<span>{item?.NeedToCallAWSBucket ? "Resume:" : "Profile URL:"}</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{item?.NeedToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={()=>resumeDownload(item)}>Click here</p> : item?.ATSTalentLiveURL ? (
+											{item?.NeedToCallAWSBucket ? <p className={TalentListStyle.ResumeLink} style={{ textDecoration: 'underline' }} onClick={() => resumeDownload(item)}>Click here</p> : item?.ATSTalentLiveURL ? (
 												<a
 													style={{ textDecoration: 'underline' }}
 													href={item?.ATSTalentLiveURL}
@@ -591,17 +754,17 @@ const TalentList = ({
 											) : (
 												'NA'
 											)}
-											
+			
 										</span>
 									</div>
-
+			
 									<div className={TalentListStyle.EmailID}>
 										<span>Talent Email:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
-											{item?.EmailID ? item?.EmailID:"-"}
+											{item?.EmailID ? item?.EmailID : "-"}
 										</span>
 									</div>
-
+			
 									<div className={TalentListStyle.experience}>
 										<span>Experience:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
@@ -644,13 +807,13 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-
-									<TalentInterviewStatus 
-									item={item}  
-									setProfileRejectedModal={setProfileRejectedModal} 
-									setShowFeedback={setShowFeedback}  
-									setTalentIndex={setTalentIndex} />
-
+			
+									<TalentInterviewStatus
+										item={item}
+										setProfileRejectedModal={setProfileRejectedModal}
+										setShowFeedback={setShowFeedback}
+										setTalentIndex={setTalentIndex} />
+			
 									{/* HTML for Rejection Status Starts  */}
 									{/* <div className={TalentListStyle.statusReject}>
 										<div className={TalentListStyle.statusRejectInner}>
@@ -667,7 +830,7 @@ const TalentList = ({
 										</div>
 									</div> */}
 									{/* HTML for Rejection Status Ends */}
-
+			
 									{/* HTML for Feedback Pending Starts */}
 									{/* <div className={TalentListStyle.statusPending}>
 										<div className={TalentListStyle.statusPendingInner}>
@@ -680,7 +843,7 @@ const TalentList = ({
 										</div>
 									</div> */}
 									{/* HTML for Feedback Pending Ends */}
-
+			
 									{/* <div className={TalentListStyle.payRate}>
 										<div>
 											<span>Interview Status:</span>&nbsp;&nbsp;
@@ -690,7 +853,7 @@ const TalentList = ({
 													: item?.InterviewStatus}
 											</span>
 										</div>
-
+			
 										{(item?.ClientFeedback === InterviewFeedbackStatus.HIRED ||
 											item?.ClientFeedback ===
 												InterviewFeedbackStatus.REJECTED) && (
@@ -715,41 +878,41 @@ const TalentList = ({
 											// border: `1px solid var(--uplers-border-color)`,
 										}}
 									/>
-
-									{DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info=> <div className={TalentListStyle.payRate}>
-												<div>
-													<span>
-													{info.Title}
-													</span>
-													&nbsp;&nbsp;
-													<span style={{ fontWeight: '500' }}>
-													 {(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:" )? info.Value ? budgetStringToCommaSeprated(info.Value): info.Value : info?.Value}
-													</span>
-												</div>
-												{info.IsEditable && <>
-													{!hrType ? <>
-														{apiData?.JobStatusID !== 2  && 
-												(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') && 
-												<span
-												onClick={() => {
-													// setEditPayRate(true);
-													// setTalentIndex(item?.TalentID);
-													setTalentIndex(item?.TalentID);
-													setEditBillRate(true);
-												}}
-
-												style={{
-													textDecoration: 'underline',
-													color: `var(--background-color-ebony)`,
-													cursor: 'pointer',
-												}}>
-												Edit
-											</span>}
-													</> : <>
-													{apiData?.JobStatusID !== 2 && <span
+			
+									{DynamicSalaryInfo.length > 0 && DynamicSalaryInfo.find(info => info.TalentID === item.TalentID)?.TalentDynamicInfo?.map(info => <div className={TalentListStyle.payRate}>
+										<div>
+											<span>
+												{info.Title}
+											</span>
+											&nbsp;&nbsp;
+											<span style={{ fontWeight: '500' }}>
+												{(info?.Title === "Talent's Expected Pay:" || info?.Title === "Talent's Current Pay:" || info?.Title === "Uplers Fees (in Amount):" || info?.Title === "Client's Bill Amount:") ? info.Value ? budgetStringToCommaSeprated(info.Value) : info.Value : info?.Value}
+											</span>
+										</div>
+										{info.IsEditable && <>
+											{!hrType ? <>
+												{apiData?.JobStatusID !== 2 &&
+													(item?.Status === 'Selected' || item?.Status === 'Profile Shared' || item?.Status === 'In Interview' || item?.Status === 'Replacement') &&
+													<span
+														onClick={() => {
+															// setEditPayRate(true);
+															// setTalentIndex(item?.TalentID);
+															setTalentIndex(item?.TalentID);
+															setEditBillRate(true);
+														}}
+			
+														style={{
+															textDecoration: 'underline',
+															color: `var(--background-color-ebony)`,
+															cursor: 'pointer',
+														}}>
+														Edit
+													</span>}
+											</> : <>
+												{apiData?.JobStatusID !== 2 && <span
 													onClick={() => {
 														setEditDPRate(true);
-														setDPData({ talentId:item?.TalentID , contactPriorityID: item?.ContactPriorityID, allValues: item});
+														setDPData({ talentId: item?.TalentID, contactPriorityID: item?.ContactPriorityID, allValues: item });
 													}}
 													style={{
 														textDecoration: 'underline',
@@ -758,10 +921,10 @@ const TalentList = ({
 													}}>
 													Edit
 												</span>}
-													</>}
-												</>}
-												
-											</div> )}
+											</>}
+										</>}
+			
+									</div>)}
 									{/* {!hrType ? (
 										<>
 											<div className={TalentListStyle.payRate}>
@@ -816,7 +979,7 @@ const TalentList = ({
 													setTalentIndex(item?.TalentID);
 													setEditBillRate(true);
 												}}
-
+			
 												style={{
 													textDecoration: 'underline',
 													color: `var(--background-color-ebony)`,
@@ -860,7 +1023,7 @@ const TalentList = ({
 													setEditPayRate(true);
 													setTalentIndex(item?.TalentID);
 												}}
-
+			
 												style={{
 													textDecoration: 'underline',
 													color: `var(--background-color-ebony)`,
@@ -891,7 +1054,7 @@ const TalentList = ({
 															? 'NA'
 															: item?.DPPercentage}
 													</span>
-
+			
 												</div>
 												{hrStatus !== 'Cancelled' && hrStatus !== 'Completed' &&  hrStatus !== "Lost" && <span
 													onClick={() => {
@@ -922,7 +1085,7 @@ const TalentList = ({
 											</div>
 										</>
 									)} */}
-
+			
 									<Divider
 										style={{
 											margin: '10px 0',
@@ -937,12 +1100,12 @@ const TalentList = ({
 											</span>
 										</div>
 									)}
-
+			
 									<div className={TalentListStyle.interviewSlots}>
 										<span>Available Interview Slots:</span>&nbsp;&nbsp;
 										<span style={{ fontWeight: '500' }}>
 											{/* { inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList?.length === 0 } */}
-											{ inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList?.length === 0 ? (
+											{inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID).SlotList?.length === 0 ? (
 												'NA'
 											) : item.InterViewStatusId !== 1 ? 'NA' : (
 												<Dropdown
@@ -961,9 +1124,9 @@ const TalentList = ({
 																		</Menu.Item>
 																	);
 																})} */}
-																{hrUtils
+															{hrUtils
 																?.formatInterviewSlots(
-																	inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList
+																	inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID).SlotList
 																)
 																?.map((item, index) => {
 																	return (
@@ -982,8 +1145,8 @@ const TalentList = ({
 																)?.[0]?.label
 															} */}
 															{hrUtils?.formatInterviewSlots(
-																	inteviewSlotDetails?.find(tal=> tal.TalentID === item.TalentID).SlotList,
-																)?.[0]?.label}
+																inteviewSlotDetails?.find(tal => tal.TalentID === item.TalentID).SlotList,
+															)?.[0]?.label}
 															<DownOutlined />
 														</Space>
 													</span>
@@ -999,7 +1162,7 @@ const TalentList = ({
 											</span>
 										</div>
 									)}
-
+			
 									{/* <Divider
 										style={{
 											margin: '10px 0',
@@ -1018,11 +1181,17 @@ const TalentList = ({
 										}}>
 										Versant Test Results
 									</div>
-
+			
 									<div
 										style={{ padding: '2px 0', textDecoration: 'underline' }}>
 										Skill Test Results
 									</div> */}
+									<Divider
+										style={{
+											margin: '16px 0 10px 0',
+										}}
+									/>
+									<TalentNotesCardComp item={item} />
 									<Divider
 										style={{
 											margin: '10px 0',
@@ -1030,171 +1199,179 @@ const TalentList = ({
 									/>
 									{talentCTA[ROW_SIZE * pageIndex + listIndex]?.cTAInfoList
 										?.length > 0 && (
-										<div
-											style={{
-												position: 'absolute',
-												marginTop: '10px',
-												textAlign: 'start !important',
-											}}>
-											<HROperator
-												onClickHandler={() => setTalentIndex(item?.TalentID)}
-												title={
-													talentCTA?.[ROW_SIZE * pageIndex + listIndex]
-														?.cTAInfoList[0]?.label
-												}
-												icon={<AiOutlineDown />}
-												backgroundColor={`var(--color-sunlight)`}
-												iconBorder={`1px solid var(--color-sunlight)`}
-												isDropdown={true}
-												listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
-												menuAction={(menuItem) => {
-													// console.log({menuItem})
-													switch (menuItem.key) {
-														case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
-															setScheduleInterviewModal(true);
-															setTalentIndex(item?.TalentID);
-															break;
-														}
-														case TalentOnboardStatus.ASSIGN_TSC :{
-															autoAssignTSC(item.OnBoardId)
-															break
-														}
-														case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
-															setReScheduleInterviewModal(true);
-															setTalentIndex(item?.TalentID);
-															break;
-														}
-														case TalentOnboardStatus.TALENT_ACCEPTANCE: {
-															setTalentAcceptance(true);
-															setTalentIndex(item?.TalentID);
-															break;
-														}
-														case TalentOnboardStatus.TALENT_STATUS: {
-															setTalentStatus(true);
-															setTalentIndex(item?.TalentID);
-															break;
-														}
-
-														case TalentOnboardStatus.INTERVIEW_STATUS: {
-															setInterviewStatus(true);
-															setTalentIndex(item?.TalentID);
-															break;
-														}
-														case TalentOnboardStatus.UPDATE_CLIENT_ON_BOARD_STATUS: {
-															// setOnboardClientModal(true);
-															// setTalentIndex(item?.TalentID);
-															setShowAMModal(true);
-															let Flags = {
-																talent: item,
-																tabLabel: 'During Pre-Onboarding',
-																forTalent: true,
-																hrID:hrId
-															}
-															setAMFlags(Flags)
-															break;
-														}
-														case TalentOnboardStatus.SUBMIT_CLIENT_FEEDBACK: {
-															setInterviewFeedback(true);
-															setTalentIndex(item?.TalentID);
-															break;
-														}
-														case TalentOnboardStatus.EDIT_CLIENT_FEEDBACK: {
-															// setInterviewFeedback(true);
-															setTalentIndex(item?.TalentID);
-															setEditFeedback(true);
-															break;
-														}
-														case TalentOnboardStatus.ANOTHER_ROUND_INTERVIEW: {
-															setAnotherRound(true);
-															setTalentIndex(item?.TalentID);
-															break;
-														}
-														case TalentOnboardStatus.SCHEDULE_ANOTHER_ROUND_INTERVIEW: {
-															setScheduleAnotherRoundInterview(true);
-															setTalentIndex(item?.TalentID);
-															break;
-														}
-														case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
-															setOnboardTalentModal(true);
-															setTalentIndex(item?.TalentID);
-
-															break;
-														}
-														case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
-															setLegalTalentOnboardModal(true);
-															setTalentIndex(item?.TalentID);
-															break;
-														}
-														case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
-															// setLegalClientOnboardModal(true);
-															// setTalentIndex(item?.TalentID);
-
-															setShowAMModal(true);
-															let Flags = {
-																talent: item,
-																tabLabel: 'Complete Legal',
-																forTalent: true,
-																hrID:hrId
-															}
-															setAMFlags(Flags)
-															break;
-														}
-														case TalentOnboardStatus.UPDATE_KICKOFF_ONBOARD_STATUS: {
-															// setTalentKickOffModal(true);
-															// setTalentIndex(item?.TalentID);
-															setShowAMModal(true);
-															let Flags = {
-																talent: item,
-																tabLabel: 'Before Kick-off',
-																forTalent: true,
-																hrID:hrId
-															}
-															setAMFlags(Flags)
-															break;
-														}
-														case TalentOnboardStatus.REPLACE_TALENT: {
-															setReplaceTalentModal(true);
-															setTalentIndex(item?.TalentID);
-															break;
-														}
-														case TalentOnboardStatus.CONFIRM_SLOT: {
-															setConfirmSlotModal(true);
-															setTalentIndex(item?.TalentID);
-															break;
-														}
-														case TalentOnboardStatus.GO_TO_ONBOARD:{
-															// let onboardID = item.OnBoardId
-															// navigate(`/onboard/edit/${onboardID}`)
-															// window.scrollTo(0, 0)
-															setShowAMModal(true);
-															let Flags = {
-																talent: item,
-																tabLabel: 'Before Pre-Onboarding',
-																forTalent: true,
-																actionType: 'GotoOnboard',
-																hrID:hrId
-															}
-															setAMFlags(Flags)
-															break;
-														}
-														case TalentOnboardStatus.VIEW_ENGAGEMENT:{
-																setHRAndEngagementId({
-																						talentName: item.Name,
-																						engagementID: item.EngagemenID,
-																						hrNumber: item.HR_Number,
-																						onBoardId: item.OnBoardId,
-																						hrId: hrId,
-																					})
-																setShowEngagementOnboard(true)
-															break
-														}
-														default:
-															break;
+											<div
+												// style={{
+												// 	position: 'absolute',
+												// 	marginTop: '10px',
+												// 	textAlign: 'start !important',
+												// }}
+												className={TalentListStyle.talentCardAction}
+											>
+												<HROperator
+													onClickHandler={() => setTalentIndex(item?.TalentID)}
+													title={
+														talentCTA?.[ROW_SIZE * pageIndex + listIndex]
+															?.cTAInfoList[0]?.label
 													}
-												}}
-											/>
-										</div>
-									)}
+													icon={<AiOutlineDown />}
+													backgroundColor={`var(--color-sunlight)`}
+													iconBorder={`1px solid var(--color-sunlight)`}
+													isDropdown={true}
+													listItem={hrUtils.showTalentCTA(filterTalentCTAs)}
+													menuAction={(menuItem) => {
+														// console.log({menuItem})
+														switch (menuItem.key) {
+															case TalentOnboardStatus.SCHEDULE_INTERVIEW: {
+																setScheduleInterviewModal(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.ASSIGN_TSC: {
+																autoAssignTSC(item.OnBoardId)
+																break
+															}
+															case TalentOnboardStatus.RESCHEDULE_INTERVIEW: {
+																setReScheduleInterviewModal(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.TALENT_ACCEPTANCE: {
+																setTalentAcceptance(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.TALENT_STATUS: {
+																setTalentStatus(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+			
+															case TalentOnboardStatus.INTERVIEW_STATUS: {
+																setInterviewStatus(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.UPDATE_CLIENT_ON_BOARD_STATUS: {
+																// setOnboardClientModal(true);
+																// setTalentIndex(item?.TalentID);
+																setShowAMModal(true);
+																let Flags = {
+																	talent: item,
+																	tabLabel: 'During Pre-Onboarding',
+																	forTalent: true,
+																	hrID: hrId
+																}
+																setAMFlags(Flags)
+																break;
+															}
+															case TalentOnboardStatus.SUBMIT_CLIENT_FEEDBACK: {
+																setInterviewFeedback(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.EDIT_CLIENT_FEEDBACK: {
+																// setInterviewFeedback(true);
+																setTalentIndex(item?.TalentID);
+																setEditFeedback(true);
+																break;
+															}
+															case TalentOnboardStatus.ANOTHER_ROUND_INTERVIEW: {
+																setAnotherRound(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.SCHEDULE_ANOTHER_ROUND_INTERVIEW: {
+																setScheduleAnotherRoundInterview(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.UPDATE_TALENT_ON_BOARD_STATUS: {
+																setOnboardTalentModal(true);
+																setTalentIndex(item?.TalentID);
+			
+																break;
+															}
+															case TalentOnboardStatus.UPDATE_LEGAL_TALENT_ONBOARD_STATUS: {
+																setLegalTalentOnboardModal(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.UPDATE_LEGAL_CLIENT_ONBOARD_STATUS: {
+																// setLegalClientOnboardModal(true);
+																// setTalentIndex(item?.TalentID);
+			
+																setShowAMModal(true);
+																let Flags = {
+																	talent: item,
+																	tabLabel: 'Complete Legal',
+																	forTalent: true,
+																	hrID: hrId
+																}
+																setAMFlags(Flags)
+																break;
+															}
+															case TalentOnboardStatus.UPDATE_KICKOFF_ONBOARD_STATUS: {
+																// setTalentKickOffModal(true);
+																// setTalentIndex(item?.TalentID);
+																setShowAMModal(true);
+																let Flags = {
+																	talent: item,
+																	tabLabel: 'Before Kick-off',
+																	forTalent: true,
+																	hrID: hrId
+																}
+																setAMFlags(Flags)
+																break;
+															}
+															case TalentOnboardStatus.REPLACE_TALENT: {
+																setReplaceTalentModal(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.CONFIRM_SLOT: {
+																setConfirmSlotModal(true);
+																setTalentIndex(item?.TalentID);
+																break;
+															}
+															case TalentOnboardStatus.GO_TO_ONBOARD: {
+																// let onboardID = item.OnBoardId
+																// navigate(`/onboard/edit/${onboardID}`)
+																// window.scrollTo(0, 0)
+																setShowAMModal(true);
+																let Flags = {
+																	talent: item,
+																	tabLabel: 'Before Pre-Onboarding',
+																	forTalent: true,
+																	actionType: 'GotoOnboard',
+																	hrID: hrId
+																}
+																setAMFlags(Flags)
+																break;
+															}
+															case TalentOnboardStatus.VIEW_ENGAGEMENT: {
+																setHRAndEngagementId({
+																	talentName: item.Name,
+																	engagementID: item.EngagemenID,
+																	hrNumber: item.HR_Number,
+																	onBoardId: item.OnBoardId,
+																	hrId: hrId,
+																})
+																setShowEngagementOnboard(true)
+																break
+															}
+															default:
+																break;
+														}
+													}}
+												/>
+											</div>
+										)}
+								
+									
+								</div>
+			
+								<div className={TalentListStyle.talentCardNote}>
+									<InfoCircleIcon /> Please note that any notes you add here will also be accessible to the client.
 								</div>
 							</div>
 						</div>
@@ -1203,26 +1380,27 @@ const TalentList = ({
 			/>
 
 			{/** ============ MODAL FOR PROFILE REJECTED REASON ================ */}
-			<PreOnboardingTabModal showAMModal={showAMModal} setShowAMModal={setShowAMModal}  AMFlags={AMFlags} callAPI={callAPI}/>
+			<PreOnboardingTabModal showAMModal={showAMModal} setShowAMModal={setShowAMModal} AMFlags={AMFlags} callAPI={callAPI} />
 
 
-					<Modal
-						transitionName=""
-						width="930px"
-						centered
-						footer={null}
-						className="engagementPayRateModal"
-						open={showengagementOnboard}
-						onCancel={() =>
-							setShowEngagementOnboard(false)
-						}>
-						<EngagementOnboard
-							getOnboardFormDetails={getOnboardFormDetails}
-							getHRAndEngagementId={getHRAndEngagementId}
-							scheduleTimezone={scheduleTimezone}
-						/>
-					</Modal>
-				
+			{/** ============ Engagement Onboard ================ */}
+			<Modal
+				transitionName=""
+				width="930px"
+				centered
+				footer={null}
+				className="engagementPayRateModal"
+				open={showengagementOnboard}
+				onCancel={() =>
+					setShowEngagementOnboard(false)
+				}>
+				<EngagementOnboard
+					getOnboardFormDetails={getOnboardFormDetails}
+					getHRAndEngagementId={getHRAndEngagementId}
+					scheduleTimezone={scheduleTimezone}
+				/>
+			</Modal>
+
 
 
 			{/** ============ MODAL FOR PROFILE REJECTED REASON ================ */}
@@ -1250,9 +1428,9 @@ const TalentList = ({
 						clientDetail,
 						hiringRequestNumber,
 					}}
-					// setHRapiCall={setHRapiCall}
-					// callHRapi={callHRapi}
-					// talentInfo={filterTalentID}
+				// setHRapiCall={setHRapiCall}
+				// callHRapi={callHRapi}
+				// talentInfo={filterTalentID}
 				/>
 			</Modal>
 
@@ -1379,6 +1557,7 @@ const TalentList = ({
 					<div></div>
 				</div>
 			</Modal>
+
 			{/** ============ MODAL FOR RESCHEDULING INTERVIEW ================ */}
 			{showReScheduleInterviewModal && (
 				<Modal
@@ -1410,6 +1589,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR ANOTHER ROUND RESCHEDULING INTERVIEW ================ */}
 			{isAnotherRound && (
 				<Modal
@@ -1442,6 +1622,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR SCHEDULE ANOTHER ROUND RESCHEDULING INTERVIEW ================ */}
 			{scheduleAnotherRoundInterview && (
 				<Modal
@@ -1473,6 +1654,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR SCHEDULING INTERVIEW ================ */}
 			{showScheduleInterviewModal && (
 				<Modal
@@ -1504,6 +1686,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR INTERVIEW FEEDBACK STATUS ================ */}
 			{interviewFeedback && (
 				<Modal
@@ -1531,6 +1714,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** =========== MODAL FOR EDIT FEEDBACK ============== */}
 			{isEditFeedback && (
 				<Modal
@@ -1558,6 +1742,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR TALENT ACCEPTANCE ================ */}
 			{showTalentAcceptance && (
 				<Modal
@@ -1581,6 +1766,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR TALENT STATUS ================ */}
 			{showTalentStatus && (
 				<Modal
@@ -1599,6 +1785,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR INTERVIEW STATUS ================ */}
 			{showInterviewStatus && (
 				<Modal
@@ -1617,6 +1804,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR UPDATE CLIENT ONBOARD STATUS ================ */}
 			{updateOnboardClientModal && (
 				<Modal
@@ -1634,6 +1822,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR UPDATE TALENT ONBOARD STATUS ================ */}
 			{updateOnboardTalentModal && (
 				<Modal
@@ -1651,6 +1840,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR UPDATE LEGAL CLIENT ONBOARD STATUS ================ */}
 			{updateLegalClientOnboardModal && (
 				<Modal
@@ -1668,6 +1858,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR UPDATE LEGAL TALENT ONBOARD STATUS ================ */}
 			{updateLegalTalentOnboardModal && (
 				<Modal
@@ -1685,6 +1876,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR EDIT BILL RATE ================ */}
 			{editBillRate && (
 				<Modal
@@ -1711,6 +1903,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR EDIT PAY RATE ================ */}
 			{editPayRate && (
 				<Modal
@@ -1744,7 +1937,7 @@ const TalentList = ({
 					open={editDPRate}
 					className="statusModalWrap"
 					onCancel={() => setEditDPRate(false)}>
-						<EditDPRate onCancel={() => setEditDPRate(false)}  hrId={hrId} DPData={DPData} hrNO={hiringRequestNumber}  />
+					<EditDPRate onCancel={() => setEditDPRate(false)} hrId={hrId} DPData={DPData} hrNO={hiringRequestNumber} />
 				</Modal>
 			)}
 
@@ -1766,6 +1959,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR TALENT REPLACEMENT ================ */}
 			{replaceTalentModal && (
 				<Modal
@@ -1784,6 +1978,7 @@ const TalentList = ({
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL FOR Confirm slot modal ================ */}
 			{getConfirmSlotModal && (
 				<Modal
@@ -1806,10 +2001,11 @@ const TalentList = ({
 						hiringRequestNumber={hiringRequestNumber}
 						setHRapiCall={setHRapiCall}
 						callHRapi={callHRapi}
-						ScheduleTimeZone={talentDetail.find(item=> item.TalentID === talentIndex)?.ScheduleTimeZone}
+						ScheduleTimeZone={talentDetail.find(item => item.TalentID === talentIndex)?.ScheduleTimeZone}
 					/>
 				</Modal>
 			)}
+
 			{/** ============ MODAL TO SEE FEEDBACK ================ */}
 			{isShowFeedback && (
 				<Modal

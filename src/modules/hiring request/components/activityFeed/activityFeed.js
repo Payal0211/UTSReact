@@ -832,7 +832,7 @@ const ActivityFeed = ({
 							{historyData?.durationType && <div className={ActivityFeedStyle.historyGridInfo}><span>DurationType:</span> {historyData?.durationType}</div>}
 							{historyData?.genericInfo && <div className={ActivityFeedStyle.historyGridInfo}><span>Generic Info:</span> {historyData?.genericInfo}</div>}
 							{historyData?.hR_Cost && <div className={ActivityFeedStyle.historyGridInfo}><span>HR Cost:</span> {historyData?.hR_Cost}</div>}
-							{historyData?.historyDate && <div className={ActivityFeedStyle.historyGridInfo}><span>History Date:</span> {historyData?.historyDate}</div>}
+							{/* {historyData?.historyDate && <div className={ActivityFeedStyle.historyGridInfo}><span>History Date:</span> {historyData?.historyDate}</div>} */}
 							{historyData?.howSoon && <div className={ActivityFeedStyle.historyGridInfo}><span>How Soon:</span> {historyData?.howSoon}</div>}
 							{historyData?.interviewLinkedin && <div className={ActivityFeedStyle.historyGridInfo}><span>Interview Linkedin:</span> {historyData?.interviewLinkedin}</div>}
 							{historyData?.interviewerDesignation && <div className={ActivityFeedStyle.historyGridInfo}><span>Interviewer Designation:</span> {historyData?.interviewerDesignation}</div>}
@@ -845,7 +845,7 @@ const ActivityFeed = ({
 							{historyData?.jobStatus && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Status:</span> {historyData?.jobStatus}</div>}
 							{historyData?.lastActivityDate && <div className={ActivityFeedStyle.historyGridInfo}><span>Last Activity Date:</span> {historyData?.lastActivityDate}</div>}
 							{historyData?.lastModifiedBy && <div className={ActivityFeedStyle.historyGridInfo}><span>Last Modified By:</span> {historyData?.lastModifiedBy}</div>}
-							{historyData?.lastModifiedDatetime && <div className={ActivityFeedStyle.historyGridInfo}><span>Last Modified Date time:</span> {historyData?.lastModifiedDatetime}</div>}
+							{/* {historyData?.lastModifiedDatetime && <div className={ActivityFeedStyle.historyGridInfo}><span>Last Modified Date time:</span> {historyData?.lastModifiedDatetime}</div>} */}
 							{historyData?.lossRemark && <div className={ActivityFeedStyle.historyGridInfo}><span>Loss Remark:</span> {historyData?.lossRemark}</div>}
 							{historyData?.monthDuration && <div className={ActivityFeedStyle.historyGridInfo}><span>Month Duration:</span> {historyData?.monthDuration}</div>}
 							{historyData?.noofEmployee && <div className={ActivityFeedStyle.historyGridInfo}><span>No of Employee:</span> {historyData?.noofEmployee}</div>}
@@ -864,7 +864,7 @@ const ActivityFeed = ({
 							{historyData?.roleTeamSize && <div className={ActivityFeedStyle.historyGridInfo}><span>Role Team Size:</span> {historyData?.roleTeamSize}</div>}
 							{historyData?.rolesResponsibilities && <div className={ActivityFeedStyle.historyGridInfo}><span>Roles/Responsibilities:</span> {historyData?.rolesResponsibilities}</div>}
 							{historyData?.salesUser && <div className={ActivityFeedStyle.historyGridInfo}><span>Sales User:</span> {historyData?.salesUser}</div>}
-							{(historyData?.specificMonth && historyData?.specificMonth != "-1") && <div className={ActivityFeedStyle.historyGridInfo}><span>Specific Month:</span> {historyData?.specificMonth == "-1" ? "Indefinite" : historyData?.specificMonth}</div>}
+							{(historyData?.specificMonth && historyData?.specificMonth == "-1") && <div className={ActivityFeedStyle.historyGridInfo}><span>Specific Month:</span> {historyData?.specificMonth == "-1" ? "Indefinite" : historyData?.specificMonth}</div>}
 							{historyData?.tR_Accepted && <div className={ActivityFeedStyle.historyGridInfo}><span>TR Accepted:</span> {historyData?.tR_Accepted}</div>}
 							{historyData?.talentCostCalcPercentage && <div className={ActivityFeedStyle.historyGridInfo}><span>Talent Cost Percentage:</span> {historyData?.talentCostCalcPercentage}</div>}
 							{historyData?.timeZone_FromTime && <div className={ActivityFeedStyle.historyGridInfo}><span>From Time:</span> {historyData?.timeZone_FromTime}</div>}
@@ -873,6 +873,9 @@ const ActivityFeed = ({
 							{historyData?.timezone_Preference && <div className={ActivityFeedStyle.historyGridInfo}><span>Timezone Preference:</span> {historyData?.timezone_Preference}</div>}
 							{historyData?.employmentType && <div className={ActivityFeedStyle.historyGridInfo}><span>Employment Type :</span> {historyData?.employmentType}</div>}
 							{historyData?.payrollType && <div className={ActivityFeedStyle.historyGridInfo}><span>Payroll Type:</span> {historyData?.payrollType}</div>}
+							{historyData?.modeOfWork && <div className={ActivityFeedStyle.historyGridInfo}><span>Mode of work:</span> {historyData?.modeOfWork}</div>}
+							{historyData?.city && <div className={ActivityFeedStyle.historyGridInfo}><span>City:</span> {historyData?.city}</div>}
+							{historyData?.country && <div className={ActivityFeedStyle.historyGridInfo}><span>Country:</span> {historyData?.country}</div>}
 						</div>
 						{historyData?.jobDescription && <div className={ActivityFeedStyle.historyGridInfo}><span>Job Description:</span> <div dangerouslySetInnerHTML={{__html:historyData?.jobDescription}} /></div>}
 						{historyData?.mustHaveSkills && <div className={ActivityFeedStyle.MustHaveSkills} style={{display:'flex',marginTop:'10px'}}><span>Must Have Skills:</span> <div className={ActivityFeedStyle.skillsContainer}>{historyData?.mustHaveSkills.split(',').map(skill=> <div className={ActivityFeedStyle.skillChip}>{skill}</div>)}</div></div>}

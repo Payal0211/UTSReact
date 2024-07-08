@@ -1,29 +1,33 @@
 .hiringRequestContainer {
-    width: 95%;
-    margin: 0 auto;
+    padding: 24px 40px;
 }
-.hrback{
+
+.hrback {
     display: inline-block;
 }
-.goback{
-   
+
+.goback {
     color: var(--uplers-black);
     display: flex;
     justify-content: flex-start;
     align-items: center;
     gap: 8px;
-    cursor: pointer ;
-    font-size:var(--fontsize-uplers);
+    cursor: pointer;
+    font-size: var(--fontsize-uplers);
     font-weight: 500;
 }
-.hrDetails{
-    margin-top: 40px;
+
+.hrDetails {
+    /* margin-top: 40px; */
+    margin-top: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
 }
-.hrDetailsLeftPart,.hrDetailsRightPart{
+
+.hrDetailsLeftPart,
+.hrDetailsRightPart {
     gap: 1rem;
     display: flex;
     justify-content: space-between;
@@ -31,6 +35,7 @@
     flex-wrap: wrap;
 
 }
+
 .hiringRequestIdSets {
     font-size: 2rem;
     font-weight: 500;
@@ -51,7 +56,8 @@
     cursor: pointer;
     box-shadow: none;
 }
-.btnLabel{
+
+.btnLabel {
     text-decoration: underline;
     text-transform: uppercase;
     color: var(--uplers-black);
@@ -59,33 +65,46 @@
     cursor: pointer;
     font-weight: 500;
 }
-.btnPrimaryOutline{
+
+.btnPrimaryOutline {
     background: var(--background-color-light);
-        border: 1px solid #FFDA30;
-        border-radius: 8px;
-        font-family: 'Montserrat';
-        font-weight: 500;
-        font-size: 15px;
-        line-height: 17px;
-        color: #232323;
-        padding: 17px 28px;
-        outline: none;
-        transition: all 0.35s ease 0s;
-        cursor: pointer;
-        box-shadow: none;
+    border: 1px solid #FFDA30;
+    border-radius: 8px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 17px;
+    color: #232323;
+    padding: 17px 28px;
+    outline: none;
+    transition: all 0.35s ease 0s;
+    cursor: pointer;
+    box-shadow: none;
 }
-.btnPrimaryOutline:hover,.btnPrimary:hover {
+
+.btnPrimaryOutline:hover,
+.btnPrimary:hover {
     background: #232323;
     color: #fff;
     border-color: #232323;
 }
 
-.hiringRequestPriority{
+.hiringRequestPriority {
     background-color: var(--background-color-light);
     border: 2px solid var(--uplers-border-color);
-    padding: 10px 15px;
+    /* padding: 10px 15px; */
+    padding: 0;
     cursor: pointer;
     border-radius: 8px;
+    min-height: 52px;
+    min-width: 52px;
+    align-items: center;
+    justify-content: center;
+    display: inline-flex;
+}
+
+.hrDetailsLeftPart .hiringRequestPriority a{
+    display: inline-flex;
 }
 
 /* .hiringRequestPriority:hover{
@@ -93,13 +112,18 @@
     background-color: var(--color-sunlight);
     transition: all .2s ease;
 } */
-.hiringRequestPriority:hover>.deleteSVG{
-   transform: scale(.9);
-   transition: all .2s ease;
+
+.hrDetailsRightPart .hiringRequestPriority .deleteSVG{
+    -webkit-transition: all 0.35s ease 0s;
+    transition: all 0.35s ease 0s;
+}
+
+.hiringRequestPriority:hover>.deleteSVG {
+    transform: scale(.9);
 }
 
 
-.infotextWrapper{
+.infotextWrapper {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -133,60 +157,60 @@
     background-color: var(--background-color-light);
 }
 
-
-
-.portal{
+.portal {
     gap: 2rem;
-    margin-top: 50px;
+    /* margin-top: 50px; */
+    margin-top: 30px;
     display: flex;
     justify-content: space-between;
     /* align-items: flex-start; */
 }
-.clientPortal{
-    width:33%;
+
+.clientPortal {
+    width: 33%;
 }
 
-.talentPortal{
+.talentPortal {
     width: 66%;
     display: flex;
     width: 70%;
 }
 
-.activityFeed{
-    margin-top: 50px;
+.activityFeed {
+    /* margin-top: 50px; */
+    margin-top: 40px;
 }
 
 
 @media screen and (min-width:1200px) and (max-width:1300px) {
     .hiringRequestIdSets {
-            font-size: 1.5rem;
-            font-weight: 500;
-        }
-    
-    
+        font-size: 1.5rem;
+    }
 }
+
 @media only screen and (max-width:1260px) {
-   
+
     .actionItem {
         width: 45%;
-        gap:0;
+        gap: 0;
         justify-content: space-between;
     }
 }
 
-.modalBody{
-    padding:0 40px 
+.modalBody {
+    padding: 0 40px
 }
 
-.tabContainer{
+.tabContainer {
     margin-top: 32px;
     margin-bottom: 40px;
 }
 
-.tabContainer [class*="ant-tabs-nav-list"]{    
+.tabContainer [class*="ant-tabs-nav-list"] {
     width: 100%;
 }
-.tabContainer [class*="ant-tabs-top"] [class*="ant-tabs-nav-list"] [class*="ant-tabs-tab"]{    
+
+.tabContainer [class*="ant-tabs-top"] [class*="ant-tabs-nav-list"] [class*="ant-tabs-tab"] {
     width: 50%;
     padding-left: 30px;
     justify-content: center;
@@ -203,6 +227,7 @@
     font-size: 14px;
     margin-left: 4px;
 }
+
 .row {
     gap: 8px;
     /* margin: 0 -9px; */
@@ -220,12 +245,12 @@
 
 .formPanelAction button {
     background: var(--text-color-purity);
-    border: 1px solid var(--uplers-border-color);
+    border: 1px solid #cecccc;
     border-radius: 8px;
-    font-family: 'Montserrat';
+    font-family: "Montserrat";
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
+    line-height: 18px;
     color: var(--uplers-black);
     padding: 12px 28px;
     outline: none;
@@ -238,46 +263,58 @@
     border-color: var(--color-sunlight);
 }
 
+.formPanelAction button:disabled {
+    background: #cecccc;
+    border: 1px solid #cecccc;
+    cursor: not-allowed;
+}
+
 .formPanelAction button+button {
     margin-left: 16px;
 }
+
 [class*="ant-select-dropdown"] {
     z-index: 99999 !important;
 }
 
 
 /* Styles Added for  */
-.modalInnerWrapper{
+.modalInnerWrapper {
     padding: 16px;
 }
-.modalLabel{
+
+.modalLabel {
     padding-bottom: 16px;
     line-height: 39px;
     font-weight: 500;
     font-size: 32px;
 }
-.modalLabelMsg{
+
+.modalLabelMsg {
     padding-bottom: 20px;
     color: #232323;
 }
 
-.modalFormWrapper{
+.modalFormWrapper {
     margin: 0 -12px;
     display: flex;
     flex-wrap: wrap;
     width: 100%;
 }
-.modalFormCol{
+
+.modalFormCol {
     width: 50%;
     padding: 0 12px;
 }
-.formField{
+
+.formField {
     margin-bottom: 24px;
 }
 
-.formPanelAction {
+/* .formPanelAction {
     display: flex;
 }
+
 .formPanelAction button {
     background: var(--text-color-purity);
     border: 1px solid #cecccc;
@@ -291,16 +328,18 @@
     outline: none;
     cursor: pointer;
     box-shadow: none;
-}
+} 
+
 .formPanelAction .btnPrimary {
     background: var(--color-sunlight);
     border-color: var(--color-sunlight);
 }
+
 .formPanelAction button:disabled {
     background: #cecccc;
     border: 1px solid #cecccc;
     cursor: not-allowed;
-}
+} */
 
 .error {
     color: var(--danger-color);
@@ -309,9 +348,9 @@
 
 /* Onboarding Process Css Start */
 
-.onboardingProcesspart{
+.onboardingProcesspart {
     background: #fff;
-    box-shadow:(0px 2px 8px 8px rgba(204, 238, 204, 0.25));
+    box-shadow: (0px 2px 8px 8px rgba(204, 238, 204, 0.25));
     padding: 0 32px;
     margin: 26px 0 32px;
     border-radius: 8px;
@@ -319,18 +358,18 @@
     overflow-y: auto;
 }
 
-.onboardingProcesspart .onboardingProcesBox{
+.onboardingProcesspart .onboardingProcesBox {
     display: flex;
     flex-wrap: wrap;
     border-bottom: 1px solid rgba(206, 204, 204, 0.50);
     padding: 32px 0 0;
 }
 
-.onboardingProcesspart .onboardingProcesBox:last-child{
+.onboardingProcesspart .onboardingProcesBox:last-child {
     border-bottom: 0px solid rgba(206, 204, 204, 0.50);
 }
 
-.onboardingProcesspart .titleLeft{
+.onboardingProcesspart .titleLeft {
     color: #232323;
     font-size: 24px;
     font-style: normal;
@@ -340,17 +379,17 @@
     margin-top: 10px;
 }
 
-.onboardingProcesspart .onboardingProcessLeft{
+.onboardingProcesspart .onboardingProcessLeft {
     width: 24%;
 }
 
-.onboardingProcesspart .onboardingProcessMid{
+.onboardingProcesspart .onboardingProcessMid {
     width: 76%;
     display: flex;
     flex-wrap: wrap;
 }
 
-.onboardingProcesspart .onboardingDetailText{
+.onboardingProcesspart .onboardingDetailText {
     display: flex;
     flex-direction: column;
     font-size: 12px;
@@ -366,11 +405,11 @@
     margin-bottom: 0px;
 } */
 
-.onboardingProcesspart .onboardingDetailText span{
+.onboardingProcesspart .onboardingDetailText span {
     margin-bottom: 8px;
 }
 
-.onboardingProcesspart .onboardingTextBold{
+.onboardingProcesspart .onboardingTextBold {
     font-weight: 500;
     font-size: 14px;
     display: flex;
@@ -378,7 +417,7 @@
     gap: 5px;
 }
 
-.onboardingTextUnderline{
+.onboardingTextUnderline {
     color: #1B73BA;
     font-size: 14px;
     font-style: normal;
@@ -387,7 +426,7 @@
     text-decoration-line: underline;
 }
 
-.onboardingDownload{
+.onboardingDownload {
     color: #1B73BA;
     font-size: 14px;
     font-style: normal;
@@ -403,17 +442,17 @@
     padding: 0;
 }
 
-.onboardingTextUnderline:hover{
+.onboardingTextUnderline:hover {
     text-decoration-line: underline;
 }
 
-.onboardingProcesspart .onboardingCondition{
+.onboardingProcesspart .onboardingCondition {
     display: flex;
     align-items: baseline;
     margin-bottom: 32px;
 }
 
-.onboardingProcesspart .onboardingCondition h5{
+.onboardingProcesspart .onboardingCondition h5 {
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
@@ -421,16 +460,16 @@
     margin-right: 20px;
 }
 
-.onboardingCurrentTextWrap{
+.onboardingCurrentTextWrap {
     position: relative;
     border-radius: 8px;
     border: 1px solid#CECCCC;
-    background:  #F7F7F7;
+    background: #F7F7F7;
     padding: 15px 24px;
     margin-bottom: 32px;
 }
 
-.onboardingCurrentTextWrap .onboardingCurrentText{
+.onboardingCurrentTextWrap .onboardingCurrentText {
     color: #7C7C7C;
     font-family: Montserrat;
     font-size: 14px;
@@ -443,21 +482,21 @@
     padding: 6px 0;
 }
 
-.onboardingCurrentTextWrap .onboardingCurrentText .onboardingTextBold{
+.onboardingCurrentTextWrap .onboardingCurrentText .onboardingTextBold {
     color: #232323;
 }
 
 
-.onbordingAssignMsgMain{
+.onbordingAssignMsgMain {
     padding-bottom: 16px;
     border-bottom: 1px solid #CECCCC;
     margin-bottom: 24px;
 }
 
-.onbordingAssignMsgMain .onbordingAssignMsg{
+.onbordingAssignMsgMain .onbordingAssignMsg {
     background: #D3E8D9;
     padding: 16px;
-    color:#232323;
+    color: #232323;
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
@@ -469,66 +508,66 @@
     border-radius: 8px;
 }
 
-.onbordingAssignMsgMain .onbordingAssignMsg .onbordingCurrentImg svg{
+.onbordingAssignMsgMain .onbordingAssignMsg .onbordingCurrentImg svg {
     display: block;
 }
 
 
-.onboardingProcesBox .modalFormWrapper input:disabled{
+.onboardingProcesBox .modalFormWrapper input:disabled {
     background: #F7F7F7;
 }
 
-.onboardingProcesBox .trailingIcon{
+.onboardingProcesBox .trailingIcon {
     top: 50%;
     transform: translateY(-50%);
 }
 
-.onboardingProcessLeft .modalBtnWrap .btnPrimary{
+.onboardingProcessLeft .modalBtnWrap .btnPrimary {
     margin-top: 10px;
 }
 
-.onboardingProcesBox .onboardingDotsDrop{
+.onboardingProcesBox .onboardingDotsDrop {
     cursor: pointer;
     position: absolute;
     top: 10px;
     right: 15px;
 }
 
-.onboardingProcesBox .modalFormHide{
+.onboardingProcesBox .modalFormHide {
     padding: 0px 0px 32px;
 }
 
-.onboardingProcesBox .modalBtnWrap{
+.onboardingProcesBox .modalBtnWrap {
     display: flex;
     gap: 15px;
 }
 
-.onboardingProcesBox .modalBtnWrap button{
+.onboardingProcesBox .modalBtnWrap button {
     padding: 12px 28px;
 }
 
-.onboardingProcesBox .modalFormEdited input{
+.onboardingProcesBox .modalFormEdited input {
     padding: 16px 40px 16px 16px;
 }
 
-.onboardingProcesBox textarea{
+.onboardingProcesBox textarea {
     min-height: 108px;
 }
 
-.ant-select.ant-select-focused .ant-select-selection-search-input{
+.ant-select.ant-select-focused .ant-select-selection-search-input {
     height: auto !important;
     padding: 16px 16px !important;
 }
 
 
-.onboardingProcesBox .reqFieldRed{
+.onboardingProcesBox .reqFieldRed {
     color: #E03A3A;
     font-weight: 700;
     font-size: 14px;
     margin-left: 2px;
 }
 
-.onboardingProcesBox .onboardingFormAlign .modalFormWrapper{
+.onboardingProcesBox .onboardingFormAlign .modalFormWrapper {
     align-items: center;
 }
 
@@ -536,24 +575,27 @@
     height: auto !important;
     padding: 16px 16px !important;
 }
+
 /* Time Start & End Time Start */
 
-.startEndDate{
+.startEndDate {
     display: flex;
     flex-wrap: wrap;
 }
 
-.startEndDate .timeSlotItem{
+.startEndDate .timeSlotItem {
     width: 50%;
 }
-.startEndDate .timeSlotItem:first-child [class*="react-datepicker__input-container"] input{
+
+.startEndDate .timeSlotItem:first-child [class*="react-datepicker__input-container"] input {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
-.startEndDate .timeSlotItem:last-child [class*="react-datepicker__input-container"] input{
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border-left: none;
+
+.startEndDate .timeSlotItem:last-child [class*="react-datepicker__input-container"] input {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: none;
 }
 
 /* Time Start & End Time end */
@@ -599,13 +641,13 @@
 
 /* Time Slot */
 
-.timeSlotItem{
+.timeSlotItem {
     width: 100%;
     position: relative;
     margin-bottom: 25px;
 }
 
-.marginBottom0{
+.marginBottom0 {
     margin-bottom: 0 !important;
 }
 
@@ -649,7 +691,7 @@
     cursor: pointer;
 }
 
-.timeSlotItem svg{
+.timeSlotItem svg {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -657,7 +699,8 @@
     z-index: 1;
     pointer-events: none;
 }
-.timeLabel{
+
+.timeLabel {
     vertical-align: top;
     font-family: 'Montserrat';
     font-weight: 400;
@@ -667,7 +710,8 @@
     margin: 0 0 8px;
     display: inline-block;
 }
-.timeSlotItem [class*="react-datepicker__input-container"] input{
+
+.timeSlotItem [class*="react-datepicker__input-container"] input {
     text-align: left;
     width: 100%;
     padding: 16px 40px 16px 16px;
@@ -706,7 +750,8 @@
     outline-color: var(--color-sunlight);
     border-color: var(--color-sunlight);
 }
-.timeSlotItem [class="react-datepicker-popper"]{
+
+.timeSlotItem [class="react-datepicker-popper"] {
     right: 16px !important;
     left: 0 !important;
     z-index: 2;
@@ -719,31 +764,37 @@
     width: 260px;
 }
 
-.timeSlotItem [class="react-datepicker"],.timeSlotItem [class*="react-datepicker--time-only"] {
+.timeSlotItem [class="react-datepicker"],
+.timeSlotItem [class*="react-datepicker--time-only"] {
     margin-left: 0;
     width: 100%;
     box-shadow: none !important;
     vertical-align: middle;
 }
 
-.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-container"],.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-box"]{width:100%}
+.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-container"],
+.timeSlotItem [class*="react-datepicker--time-only"] [class*="react-datepicker__time-box"] {
+    width: 100%
+}
 
 .timeSlotItem [class="react-datepicker__month-container"] {
     width: 100%;
 }
-.timeSlotItem [class*="react-datepicker__header "]{
+
+.timeSlotItem [class*="react-datepicker__header "] {
     border-bottom: 1px solid #E8E8E8;
 }
+
 .timeSlotItem [class="react-datepicker-popper"] [class*="react-datepicker__navigation"]:before {
     top: 14px;
 }
 
-.timeSlotItem.timePickerItem [class="react-datepicker-popper"]{
+.timeSlotItem.timePickerItem [class="react-datepicker-popper"] {
     width: 60%;
     right: auto !important;
 }
 
-.timeSlotSvgWrap .timeSlotLeftIcon{
+.timeSlotSvgWrap .timeSlotLeftIcon {
     position: absolute;
     left: 52%;
     top: 50%;
@@ -761,8 +812,9 @@ label.radioCheck_Mark {
     display: inline-block;
     padding-left: 28px;
     cursor: pointer;
-  }
-  span.customCheck_Mark {
+}
+
+span.customCheck_Mark {
     position: absolute;
     top: 1px;
     left: 0;
@@ -770,8 +822,9 @@ label.radioCheck_Mark {
     width: 20px;
     border: 1px solid #CECCCC;
     border-radius: 50%;
-  }
-  label.radioCheck_Mark input {
+}
+
+label.radioCheck_Mark input {
     position: absolute;
     width: 20px;
     height: 20px;
@@ -779,11 +832,13 @@ label.radioCheck_Mark {
     left: 0;
     opacity: 0;
     cursor: pointer;
-  }
-  label.radioCheck_Mark p {
+}
+
+label.radioCheck_Mark p {
     margin-bottom: 0;
-  }
-  span.customCheck_Mark::after {
+}
+
+span.customCheck_Mark::after {
     content: "";
     position: absolute;
     top: 4px;
@@ -793,29 +848,47 @@ label.radioCheck_Mark {
     border-radius: 50%;
     background: var(--color-sunlight);
     opacity: 0;
-  }
-  label.radioCheck_Mark input:checked + span.customCheck_Mark:after {
-    opacity: 1;
-  }
+}
 
-  .labelreplacement{
+label.radioCheck_Mark input:checked+span.customCheck_Mark:after {
+    opacity: 1;
+}
+
+.labelreplacement {
     display: block;
     width: 100%;
     margin-bottom: 16px;
-  }
+}
 
-  .labelreplacement .colMd6 {
+.labelreplacement .colMd6 {
     width: 50%;
-   }
+}
 
-    .labelreplacement .colMd12{
-        padding: 0;
+.labelreplacement .colMd12 {
+    padding: 0;
+}
+
+.labelreplacement .timeSlotItem {
+    margin-bottom: 0;
+}
+
+.labelreplacement .formField {
+    margin: 0 0 20px;
+}
+
+@media screen and (max-width: 1440px) {
+    .hiringRequestContainer {
+        padding: 16px 24px;
+    }
+    .hiringRequestPriority {
+        min-height: 40px;
+        min-width: 40px;
     }
 
-    .labelreplacement .timeSlotItem{
-        margin-bottom: 0;
+    .hrDetailsRightPart .hiringRequestPriority .deleteSVG{
+        width: 20px !important;
     }
-
-    .labelreplacement .formField{
-        margin: 0 0 20px;
+    .hiringRequestIdSets {
+        font-size: 1.7rem;
     }
+}

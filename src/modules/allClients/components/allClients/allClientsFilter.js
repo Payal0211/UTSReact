@@ -143,7 +143,8 @@ const AllClientFilters = ({
 									border: 'none',
 									borderRadius: '10px',
 									fontSize: '.8rem',
-									margin: '10px 10px 10px 0',
+									// margin: '10px 10px 10px 0',
+									margin: '4px 4px 4px 0',
 									fontWeight: '600',
 									padding: '10px 20px',
 								}}>
@@ -172,7 +173,7 @@ const AllClientFilters = ({
 							border: 'none',
 							borderRadius: '10px',
 							fontSize: '.8rem',
-							margin: '10px 10px 10px 0',
+							margin: '4px 4px 4px 0',
 							fontWeight: '600',
 							padding: '10px 20px',
 						}}>
@@ -398,7 +399,6 @@ const AllClientFilters = ({
 							</div>
 						</>
 					)}
-					<br />
 					<br />
 					<hr />
 					<div className={allClientsStyle.operationsFilters}>

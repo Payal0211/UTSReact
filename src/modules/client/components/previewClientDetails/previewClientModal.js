@@ -354,11 +354,16 @@ function PreviewClientModal({
     if (getCompanyDetails?.pocUserDetailsEdit && allPocs?.length) {
       let data = allPocs.find((item) => item.id === getCompanyDetails?.pocUserDetailsEdit?.pocUserID);
         let SelectedPocs = {
-          id: data.id ? data.id : null,
-          value: data.value ? data.value : null,
+          id: data?.id || null,
+          value: data?.value || null,
         };
-      setValue("pocId", SelectedPocs);
-      setControlledPOC(SelectedPocs);
+        if(data){
+          setValue("pocId", SelectedPocs);
+          setControlledPOC(SelectedPocs);
+        }else{
+          setValue("pocId", { id: null, value: null });
+          setControlledPOC({ id: null, value: null });
+        }
     }
   }, [getCompanyDetails?.pocUserDetailsEdit, allPocs]);
 
@@ -1711,17 +1716,17 @@ function PreviewClientModal({
                                   validationSchema={{
                                     pattern: {
                                       value:
-                                        /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/,
+                                        /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=%\?]{11})$/,
                                       message: "Youtube link is not valid",
                                     },
                                   }}
                                   onKeyDownHandler={(e) => {
                                     if (e.keyCode === 13) {
                                       const regex =
-                                        /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/;
+                                        /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=%\?]{11})$/;
                                       if (!regex.test(e.target.value)) {
                                         return message.error(
-                                          "Youtube link is not valid"
+                                          "Please provide proper youtube video link, channel/page link not allowed."
                                         );
                                       }
 

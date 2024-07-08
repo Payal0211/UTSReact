@@ -70,7 +70,6 @@ const CountryList = () => {
 					</button>
 				</div>
 			</div>
-			<br />
 			{/*
 			 * ------------ Table Starts-----------
 			 * @Table Part

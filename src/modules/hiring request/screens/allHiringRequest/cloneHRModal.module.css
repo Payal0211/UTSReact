@@ -42,3 +42,9 @@
   color: var(--danger-color);
   font-size: var(--fontsize-tough);
 }
+
+@media screen and (max-width: 1440px) {
+  .formPanelAction {
+    margin-bottom: 24px;
+  }
+}

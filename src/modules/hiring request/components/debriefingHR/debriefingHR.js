@@ -1,4 +1,4 @@
-import { Divider, message, Checkbox, AutoComplete } from 'antd';
+import { Divider, message, Checkbox, AutoComplete, Skeleton } from 'antd';
 import TextEditor from 'shared/components/textEditor/textEditor';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import DebriefingHRStyle from './debriefingHR.module.css';
@@ -48,7 +48,7 @@ const DebriefingHR = ({
 	AboutCompanyDesc,
 	isDirectHR,
 	userCompanyTypeID,
-	setUserCompanyTypeID
+	setUserCompanyTypeID,isHaveJD, setIsHaveJD,parseType
 }) => {
 	const {
 		watch,
@@ -108,6 +108,7 @@ const DebriefingHR = ({
 	const [combinedSkillsMemo, setCombinedSkillsMemo] = useState([])
 	const [SkillMemo, setSkillMemo] = useState([])
 	const [sameSkillErrors, setSameSkillError] = useState(false)
+	const [fetchAIJD,setFetchAIJD] = useState(false)
 
 	useEffect(() => {
 		setValue('aboutCompany', addData?.addHiringRequest?.aboutCompanyDesc);
@@ -180,8 +181,8 @@ const DebriefingHR = ({
 			...skills,
 		];
 		// remove selected skill for other skill list 
-		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed.map(s=> s?.value).includes(o?.value)))
-		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave.map(s=> s?.value).includes(o?.value)))
+		setSkillMemo(combinewithoutOther.filter((o) => !controlledJDParsed?.map(s=> s?.value).includes(o?.value)))
+		setCombinedSkillsMemo(combinedData.filter((o) => !controlledGoodToHave?.map(s=> s?.value).includes(o?.value)))
 	},[JDParsedSkills, controlledJDParsed, skills,controlledGoodToHave])
 
 	const isOtherSkillExistMemo = useMemo(() => {
@@ -227,10 +228,43 @@ const DebriefingHR = ({
 			})),
 		);
 		setControlledJDParsed(JDParsedSkills?.Skills?.map((item) => item?.value));
-		setCombinedSkillsMemo(prev => [...prev, ...JDParsedSkills?.Skills?.map((item) => ({
-			id: item?.id.toString(),
-			value: item?.value,
-		}))])
+		setCombinedSkillsMemo(prev =>{ 
+
+			let newarray = [...prev]
+			if(JDParsedSkills?.Skills?.length > 0){
+				newarray = [...newarray,...JDParsedSkills?.Skills?.map((item) => ({
+					id: item?.id.toString(),
+					value: item?.value,
+				}))];
+			}
+
+			if(JDParsedSkills?.AllSkills?.length > 0){
+				newarray = [...newarray,...JDParsedSkills?.AllSkills?.map((item) => ({
+					id: item?.id.toString(),
+					value: item?.value,
+				}))]
+			}
+			return newarray
+		// 	return [...prev, ...JDParsedSkills?.Skills?.map((item) => ({
+		// 	id: item?.id.toString(),
+		// 	value: item?.value,
+		// })),...JDParsedSkills?.AllSkills?.map((item) => ({
+		// 	id: item?.id.toString(),
+		// 	value: item?.value,
+		// }))]
+	}
+	)
+
+		setValue(
+			'goodToHaveSkills',
+			JDParsedSkills?.AllSkills?.map((item) => ({
+				skillsID: item?.id.toString(),
+				skillsName: item?.value,
+			})),
+		);
+		setControlledGoodToHave(JDParsedSkills?.AllSkills?.map((item) => item?.value))
+
+		setValue('hrTitle',JDParsedSkills?.roleName ?? '')
 	}, [JDParsedSkills, setValue]);
 
 	const [search, setSearch] = useState('');
@@ -338,7 +372,7 @@ const DebriefingHR = ({
 		// 		?.rolesResponsibilities ), {
 		// 		shouldDirty: true,
 		// 	});
-
+		
 			JDParsedSkills &&	setValue('jobDescription', (addData?.addHiringRequest?.guid ? testJSON(addData?.salesHiringRequest_Details?.JobDescription) ? createListMarkup(JSON.parse(addData?.salesHiringRequest_Details?.JobDescription)) :addData?.salesHiringRequest_Details?.JobDescription :
 			JDParsedSkills?.JobDescription ||
 			(addData?.salesHiringRequest_Details?.JobDescription))?? "" , {
@@ -363,6 +397,21 @@ const DebriefingHR = ({
 			companyInfo?.companySize && setValue('companySize',companyInfo?.companySize)
 		}
 	},[getHRdetails])
+
+	
+const getParsingType = (isHaveJD,parseType) => {
+    if(isHaveJD === 1){
+      return 'DonotHaveJD'
+    }
+    if(isHaveJD === 0){
+      if(parseType === 'JDFileUpload'){
+        return 'FileUpload'
+      }
+      if(parseType === "Text_Parsing"){
+        return 'CopyPaste'
+      }
+    }
+  }
 	
 	const debriefSubmitHandler = async (d) => {
 		setIsLoading(true);
@@ -413,7 +462,7 @@ const DebriefingHR = ({
 			interviewerLinkedin: d.interviewerLinkedin,
 			interviewerDesignation: d.interviewerDesignation,
 			JDDumpID: jdDumpID || 0,
-			ActionType: "Save",
+			ActionType: "Create_HrDebrief",
 			IsHrfocused: isFocusedRole,
 			// role: d.role?.id ? d.role?.id : null,
 			role: null,
@@ -442,6 +491,7 @@ const DebriefingHR = ({
 			},
 			companyType: userCompanyTypeID === 1 ? "Pay Per Hire" : "Pay Per Credit",
 			PayPerType:  userCompanyTypeID ,
+			ParsingType: getParsingType(isHaveJD,parseType),
 			IsMustHaveSkillschanged : true,
 			IsGoodToHaveSkillschanged: true
 		};
@@ -608,6 +658,58 @@ const DebriefingHR = ({
 	
 	}
 
+	const genrateAIJD = async () =>{
+		setFetchAIJD(true)
+		clearErrors(['hrTitle','skills','goodToHaveSkills'])
+
+		if(!watch('hrTitle')){
+			setError('hrTitle', {
+				type: 'AI Error',
+				message: 'Please enter hiring request title',
+			})
+			setFetchAIJD(false)
+			return
+		}
+
+		let mustSkills = watch('skills') ? watch('skills')?.map((item) => item.value || item?.skillsName) : []
+		let goodSkills = watch('goodToHaveSkills') ? watch('goodToHaveSkills')?.map((item) => item.value || item?.skillsName) : []
+
+		if(mustSkills.length === 0){
+			setError('skills', {
+				type: 'AI Error',
+				message: 'Please Select Skill',
+			})
+			setFetchAIJD(false)
+			return
+		}
+
+		if(goodSkills.length === 0){
+			setError('goodToHaveSkills', {
+				type: 'AI Error',
+				message: 'Please Select Skill',
+			})
+			setFetchAIJD(false)
+			return
+		}
+
+		let payload = {
+			"ContactID": getHRdetails?.contactId,
+			"HRID": getHRdetails?.id,
+			"MustHaveSkill": watch('skills').map((item) => item.value || item?.skillsName),
+			"GoodToHaveSkill": watch('goodToHaveSkills').map((item) => item.value || item?.skillsName),
+			"Title": watch('hrTitle'),
+			"Location": getHRdetails?.directPlacement?.modeOfWork			
+		}
+
+		const result =await hiringRequestDAO.createAIJDDAO(payload)
+
+		if(result?.statusCode === 200){
+			setValue("jobDescription",result?.responseBody?.jobDescription)	
+			setFetchAIJD(false)	
+		}
+		setFetchAIJD(false)
+	}
+
 	return (
 		<div className={DebriefingHRStyle.debriefingHRContainer}>
 			{contextHolder}
@@ -684,28 +786,7 @@ const DebriefingHR = ({
 								name="jobDescription"
 								required
 							/> */}
-							<div className={DebriefingHRStyle.mb50}>
-								<label style={{ marginBottom: "12px" }}>
-								Job Description
-								{/* <span className={AddNewClientStyle.reqField}>*</span> */}
-							</label>
-							<ReactQuill
-								register={register}
-								setValue={setValue}
-								theme="snow"
-								className="heightSize"
-								value={watch('jobDescription')}
-								name="jobDescription"
-								onChange={(val) => setValue("jobDescription",val)}
-							/>
-							<input
-								type="hidden"
-								{...register('jobDescription', {
-								required: 'Job description is required',
-								validate: (value) => value.trim() !== '' || 'Job description cannot be empty'
-								})}
-							/>
-							</div>
+							
 							
 						{/* Hide company details */}
 							{/* {userCompanyTypeID === 1 && 
@@ -908,6 +989,43 @@ const DebriefingHR = ({
 											<li key={skill} onClick={() => onSelectGoodSkill(skill)}><span>{skill}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
 										))}	
 								</ul>
+							</div>
+
+							{fetchAIJD && <LogoLoader visible={fetchAIJD}/> }
+							{isHaveJD === 1 && <div className={DebriefingHRStyle.mb50}>
+							<div className={DebriefingHRStyle.formPanelAction} style={{justifyContent:'left', padding:'5px 0'}}>
+								
+								<button
+							type="button"
+							className={DebriefingHRStyle.btnPrimary}
+							onClick={()=>genrateAIJD()}
+							>							
+							Generate AI JD
+						</button>
+					</div>
+							</div>}
+
+							<div className={DebriefingHRStyle.mb50}>
+								<label style={{ marginBottom: "12px" }}>
+								Job Description
+								{/* <span className={AddNewClientStyle.reqField}>*</span> */}
+							</label>
+							<ReactQuill
+								register={register}
+								setValue={setValue}
+								theme="snow"
+								className="heightSize"
+								value={watch('jobDescription')}
+								name="jobDescription"
+								onChange={(val) => setValue("jobDescription",val)}
+							/>
+							<input
+								type="hidden"
+								{...register('jobDescription', {
+								required: 'Job description is required',
+								validate: (value) => value.trim() !== '' || 'Job description cannot be empty'
+								})}
+							/>
 							</div>
 							{/* <div className={DebriefingHRStyle.mb50}>
 							<label

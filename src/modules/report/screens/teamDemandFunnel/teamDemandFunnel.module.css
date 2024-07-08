@@ -1,7 +1,5 @@
 .hiringRequestContainer {
-    /* width: 95%; */
-    /* margin: 0 auto; */
-    margin: 25px 40px;
+    padding: 24px 40px;
 }
 
 .container {
@@ -59,27 +57,21 @@
 }
 
 .filterContainer {
-    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
-    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
-    margin: 40px auto 20px auto;
+    margin: 24px auto;
     background-color: var(--background-color-light);
 }
 
-
-
 .filterSets {
-    width: 96%;
+    /* width: 96%; */
     margin-left: auto;
     margin-right: auto;
-    padding: 30px 0;
+    padding: 24px;
     display: flex;
     border-radius: 10px;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    /* height: 92px; */
-
 }
 
 .addFilter {
@@ -231,7 +223,10 @@
     border-radius: 8px;
     cursor: pointer;
 }
-
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
 .tableDetails {
     margin-top: 24px;
 }
@@ -240,7 +235,7 @@
 }
 
 .formPanelAction {
-    padding: 12px 0;
+    padding: 32px 0;
     justify-content: center;
     display: flex;
 }
@@ -252,7 +247,7 @@
     font-family: 'Montserrat';
     font-weight: 500;
     font-size: 14px;
-    line-height: 17px;
+    line-height: 18px;
     color: var(--uplers-black);
     padding: 15px 28px;
     outline: none;
@@ -275,8 +270,6 @@
     padding: 10px 15px;
     border-radius: 8px;
 }
-
-
 
 .matchmakingLabel {
     margin-top: 40px;
@@ -570,8 +563,7 @@ tr th:first-child {
 [class*=".ant-switch-checked"]{
     background-color: var(--color-sunlight) !important;
 }
-.ant-select .ant-select-selector .ant-select-selection-item {
-   
+.ant-select .ant-select-selector .ant-select-selection-item {   
     color: red;
 }
 
@@ -587,136 +579,111 @@ tr th:first-child {
 /* Responsive css start */
 
 @media only screen and (max-width: 1440px) {
-
+    .hiringRequestContainer {
+        padding: 16px 24px;
+    }
+    .filterContainer {        
+        margin: 16px auto;
+    }
     .calendarFilter{
         width:185px;
         height: 35px;
     }
-
+    .tableDetails{
+        margin-top: 16px;
+    }
     .calendarFilter svg{
         margin-right: 5px !important;
-    }
-  
+    }  
     .calendarFilter .dateFilter{
         font-size: 12px;
-    }
-  
+    }  
     .searchInput{
         font-size: 12px;
-    }  
-
-    .hiringRequest {
-        font-size: 28px;
     }
-  
+    .hiringRequest {
+        font-size: 26px;
+    }
     .filterRight .focusCheckBox{
         max-width: 115px;
         align-items: center;
     }
-
     .filterRight .focusCheckBox span{
         font-size: 12px;
         line-height: 16px;
     }
-  
     .filterSetsInner p{
         font-size: 12px;
     }
-  
     .addFilter{
         width: 155px;
     }
-
     .actionTab_Exceeded{
         font-size: 12px;
     }
-
     .filterRight .label{
         font-size: 12px;
     }
-
     .label {
         font-size: 12px;
     }
-
-
-    .filterContainer{
-        margin: 30px auto 20px auto;
-    }
-
     .btnPrimary {
         font-size: 12px;
         line-height: 16px;
         padding: 10px 25px;
     }
-
     .togglebtn {
         height: 40px
     }
-
     .filterSets{
-        padding: 15px 0;
-        width: 98%;
+        padding: 15px;
     }
-
     .filterRight{
         gap: 15px;
     }
-  
     .addFilter{
         width: 125px;
         gap: 8px;
     }
-
     .searchFilterSet{
         width: 200px;
         height: 35px;
     }
-
     .searchInput{
         font-size: 10px;
-    }   
-
+    }
     .paginationFilter {
         width: 65px;
         height: 35px;
     }
-   
     .addFilter{
         height: 35px;
     }
-
     .filterCount{
         width: 18px;
         height: 18px;
         font-size: 10px;
     }
-
-
-
+    .formPanelAction {
+        padding: 24px 0;
+    }
   }
   
-
   @media only screen and (max-width: 1340px) {
-
     .addFilter{
         width: 130px;
         gap: 10px;
     }
-
     .actionTab_Exceeded{
         font-size: 10px;
     }
-
     .filterRight{
         gap: 15px;
     }
-
     .filterRight .btnPrimary{
         font-size: 12px;
         line-height: 12px;
     }
-
   }
   
   /* Responsive css End */

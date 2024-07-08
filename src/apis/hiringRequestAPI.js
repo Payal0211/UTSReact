@@ -251,6 +251,22 @@ export const HiringRequestAPI = {
 			return errorDebug(error, 'HiringRequestAPI.createDebriefingRequest');
 		}
 	},
+	createAIJDRequest: async function (payload) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.HIRING +
+			HiringRequestsAPI.DONT_HAVE_JD;
+		httpService.dataToSend = payload;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.createAIJDRequest');
+		}
+	},
 	getMatchmakingRequest: async function (matchMakingData) {
 		let httpService = new HttpServices();
 		// const miscData =
@@ -415,6 +431,21 @@ export const HiringRequestAPI = {
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
 		try {
 			let response = await httpService.sendFileDataPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.deleteHRRequest');
+		}
+	},
+	getDetailsFromTextAPI: async (payload,email) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.HIRING + HiringRequestsAPI.DETAIL_FROM_TEXT + `?clientEmail=${email}`;
+		httpService.dataToSend = payload;
+
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendPostRequest();
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.deleteHRRequest');
@@ -1248,6 +1279,34 @@ export const HiringRequestAPI = {
 			return response;
 		} catch (error) {
 			return errorDebug(error, 'HiringRequestAPI.cloneHRToDemoAccount');
+		}
+	},
+	getTalentNotesAPI: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.ATS_NETWORK+ HiringRequestsAPI.NOTE_LIST ;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data
+		httpService.setAuthToken = NetworkInfo.ATS_TOKEN;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getTalentNotesAPI');
+		}
+	},
+	saveTalentNotesAPI: async (data) => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.ATS_NETWORK+ HiringRequestsAPI.SAVE_NOTES;
+		httpService.setAuthRequired = true;
+		httpService.dataToSend = data
+		httpService.setAuthToken = NetworkInfo.ATS_TOKEN;
+		try {
+			let response = await httpService.sendPostRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.saveTalentNotesAPI');
 		}
 	},
 

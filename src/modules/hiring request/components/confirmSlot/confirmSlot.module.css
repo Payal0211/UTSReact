@@ -39,25 +39,21 @@
     margin-bottom: 25px;
 }
 .filterContainer {
-    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
-    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
-    margin: 40px auto 20px auto;
+    margin: 24px auto;
     background-color: var(--background-color-light);
 }
 
 .filterSets {
-    width: 96%;
+    /* width: 96%; */
     margin-left: auto;
     margin-right: auto;
-    padding: 30px 0;
+    padding: 24px;
     display: flex;
     border-radius: 10px;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    /* height: 92px; */
-
 }
 
 .addFilter {
@@ -205,12 +201,15 @@
     border-radius: 8px;
     cursor: pointer;
 }
+.paginationFilter .btnPrimary {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
 .tableDetails{
    overflow: auto;
     /* margin-bottom: 24px; */
     border-radius: 8px;
     /* max-height: 1000px; */
-
 }
 table{
     width: 100%;
@@ -572,4 +571,13 @@ table{
 .error {
     color: var(--danger-color);
     font-size: var(--fontsize-tough);
+}
+
+@media screen and (max-width: 1440px) {
+    .filterContainer{
+        margin: 16px auto;
+    }
+    .filterSets{
+        padding: 15px;
+    }
 }

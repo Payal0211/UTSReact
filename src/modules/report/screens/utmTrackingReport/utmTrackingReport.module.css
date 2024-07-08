@@ -1,11 +1,11 @@
 .dealContainer {
-    /* background-color: red; */
     /* height: 100vh; */
-    margin: 25px 40px;
+    padding: 24px 40px;
 }
 
 .header {
-    margin-bottom: 61px;
+    /* margin-bottom: 61px; */
+    margin-bottom: 32px;
     width: inherit;
 }
 
@@ -52,12 +52,11 @@
 }
 
 .filterContainer, .i2sContainer {
-    /* box-shadow: -4px 4px 20px rgba(166, 166, 166, 0.2); */
     border-radius: 10px;
-    /* box-shadow: -4px 4px 20px rgba(140, 140, 140, 0.09); */
-    margin: 50px auto 20px auto;
+    margin: 24px auto;
     background-color: var(--background-color-light);
 }
+
 .i2sContainer {
     margin-top: 24px;
 }
@@ -120,15 +119,22 @@
     padding-right: 25px;
 }
 
-.cardInner{
+.cardInner {
     padding: 10px 0;
+    margin-bottom: 0;
+    list-style-type: none;
 }
 
-.cardInner .row{
+.cardInner .row {
     display: flex;
     justify-content: space-between;
-    padding: 5px 15px;
+    padding: 10px 15px;
     font-size: 13px;
+    align-items: center;
+}
+
+.cardInner .row p{
+    margin-bottom: 0;
 }
 
 .cardInner .row div:first-child{
@@ -157,16 +163,16 @@
 }
 
 .filterSets {
-    width: 96%;
+    /* width: 96%; */
     margin-left: auto;
     margin-right: auto;
-    padding: 30px 0;
+    padding: 24px;
     display: flex;
     border-radius: 10px;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    /* height: 92px; */
+    background-color: var(--background-color-light);
 }
 
 .filterSetsInner{
@@ -298,18 +304,7 @@
     font-weight: 500;
 }
 
-.filterSets{
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding:24px 16px;
-    display: flex;
-    border-radius: 10px;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    background-color: var(--background-color-light);
-}
+
 
 .filterDescription {
     margin: 35px auto 15px auto;
@@ -354,14 +349,28 @@
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #f0f0f0;
+    padding: 10px 16px 10px 24px;
+}
+
+.exportAction h3{
+    padding: 0;
+    margin: 0;
+}
+
+.exportAction .btnPrimary {
+    margin: 0;
+    padding: 10px 24px;
 }
 
 
-
-
-
 @media only screen and (max-width: 1440px) {
+    .dealContainer {
+        padding: 16px 24px;
+    }
 
+    .filterContainer, .i2sContainer {        
+        margin: 16px auto;
+    }
     .calendarFilter{
         width:185px;
         height: 35px;
@@ -380,7 +389,7 @@
     }  
 
     .dealLable {
-        font-size: 28px;
+        font-size: 26px;
     }
   
     .filterRight .focusCheckBox{
@@ -398,21 +407,17 @@
     }
   
     .filterSets{
-        padding: 15px 0;
-        width: 98%;
+        padding: 15px;
     }
   
     .addFilter{
         width: 125px;
+        height: 35px;
         gap: 8px;
     }
 
     .header {
-        margin-bottom: 30px;
-    }
-
-    .filterContainer{
-        margin: 30px auto 20px auto;
+        margin-bottom: 24px;
     }
 
     .btnPrimary {
@@ -425,18 +430,8 @@
         height: 40px
     }
 
-    .filterSets{
-        padding: 15px 0;
-        width: 98%;
-    }
-
     .filterRight{
         gap: 15px;
-    }
-  
-    .addFilter{
-        width: 125px;
-        gap: 8px;
     }
 
     .searchFilterSet{
@@ -450,10 +445,6 @@
 
     .paginationFilter {
         width: 65px;
-        height: 35px;
-    }
-   
-    .addFilter{
         height: 35px;
     }
 
@@ -471,5 +462,4 @@
        padding: 15px !important;
     }
 
-
-  }
+}
