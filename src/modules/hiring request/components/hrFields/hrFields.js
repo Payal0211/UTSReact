@@ -1777,7 +1777,7 @@ const HRFields = ({
         })) : [],
         AllSkills: [],
         // JobDescription:JDDATA.jobDescription ?? '',
-        // roleName:JDDATA?.roleName ?? ''
+        roleName:gptFileDetails?.Title ?? ''
       }});
 
       setJDDumpID(gptFileDetails.JDDumpID);
@@ -3828,6 +3828,7 @@ const HRFields = ({
                   {gptFileDetails.JDDumpID && (
                     <div>
                       <h3>File Name : {gptFileDetails?.FileName}</h3>
+                     {gptFileDetails?.Title && <h3>Role Title : {gptFileDetails?.Title}</h3>} 
 
                       {gptFileDetails?.Skills.length > 0 && (
                         <>
