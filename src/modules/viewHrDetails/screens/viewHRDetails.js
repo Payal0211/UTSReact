@@ -344,7 +344,7 @@ const ViewHRDetails = () => {
                         </li>
                       )} */}
 
-                      <li>
+                      {/* <li>
                         <span>JD URL:</span>{" "}
                         {hiringDetails?.responseBody?.details?.jdurl ? (
                           <a
@@ -357,7 +357,7 @@ const ViewHRDetails = () => {
                         ) : (
                           "NA"
                         )}
-                      </li>
+                      </li> */}
                       {/* <li>
 												<span>Estimated {hiringDetails?.responseBody?.details?.transparentModel?.isTransparentPricing ? "Salary" : null} Budget:</span>{' '}
 												{hiringDetails?.responseBody?.details?.hiringCost ??

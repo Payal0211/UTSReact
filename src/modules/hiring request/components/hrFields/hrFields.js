@@ -1370,6 +1370,11 @@ const HRFields = ({
       // For JD error Handling
 
       if(isHaveJD === 0){
+        if(parseType === 'Manual'){
+          message.error('Please select a file to upload')
+          setIsSavedLoading(false);
+          return
+        }
         if(parseType === 'JDFileUpload'){
           if(getUploadFileData === ''){
             message.error('Please select a file to upload')

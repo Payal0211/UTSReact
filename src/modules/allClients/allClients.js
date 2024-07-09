@@ -45,7 +45,7 @@ function AllClients() {
 		formState: { errors },
 	} = useForm();   
 
-    const pageSizeOptions = [100, 200, 300, 500, 1000,5000];
+    const pageSizeOptions = [20,100, 200, 300, 500, 1000,5000];
     const [tableFilteredState, setTableFilteredState] = useState({       
         pagenumber:1,
         totalrecord:100,
@@ -62,7 +62,7 @@ function AllClients() {
         }
 	});
     const [totalRecords, setTotalRecords] = useState(0);
-    const [pageSize, setPageSize] = useState(100);    
+    const [pageSize, setPageSize] = useState(20);    
 	const [pageIndex, setPageIndex] = useState(1);
 	const [isLoading, setLoading] = useState(false);
 
