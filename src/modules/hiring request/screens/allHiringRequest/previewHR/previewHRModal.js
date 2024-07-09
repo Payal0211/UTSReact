@@ -1127,9 +1127,9 @@ console.log("skillresult: " , skillresult)
   };
 
   const getStartEndTimeData = async () => {
-    let response = await getStartEndTime();
+    let response = await MasterDAO.getStartEndTimeDAO();
     let _list = [];
-    for (let val of response?.responseBody?.details) {
+    for (let val of response?.responseBody) {
       let obj = {};
       obj.label = val.text;
       obj.value = val.value;
