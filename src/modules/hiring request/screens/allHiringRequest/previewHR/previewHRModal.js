@@ -7,13 +7,6 @@ import 'react-quill/dist/quill.snow.css'
 import { useEffect, useRef, useState } from "react";
 import {
   fetchCountriesBasedonCity,
-  getContactTimeZone,
-  getCurrency,
-  getHiringTypePricing,
-  getPayrollType,
-  getSkills,
-  getStartEndTime,
-  getTalentsRolesData,
   // updateJobPost,
 } from "./services/registerationSteps";
 import infosmallIcon from "assets/svg/infoSmallIcon.svg";
@@ -1113,10 +1106,10 @@ console.log("skillresult: " , skillresult)
   };
 
   const getTimeZoneValues = async () => {
-    let response = await getContactTimeZone();
+    let response = await MasterDAO.getTimeZoneRequestDAO();
     let _list = [];
     if (response?.responseBody?.details) {
-      for (let val of response?.responseBody?.details) {
+      for (let val of response?.responseBody) {
         let obj = {};
         obj.label = val.timeZoneTitle;
         obj.value = val.id;
@@ -1139,21 +1132,21 @@ console.log("skillresult: " , skillresult)
   };
 
   const GetPayrollType = async () => {
-    let res = await getPayrollType();
+    let res = await MasterDAO.getPayRollTypeDAO();
     if (res?.statusCode === 200) {
-      setPayrollList(res.responseBody.details);
+      setPayrollList(res.responseBody);
     }
   };
 
   const getRolesCurrencyList = async () => {
-    let res = await getTalentsRolesData();
-    let currencyresult = await getCurrency();
+    let res = await MasterDAO.getTalentsRoleRequestDAO();
+    let currencyresult = await MasterDAO.getCurrencyRequestDAO();
     if (res.statusCode === 200) {
-      setRolesData(res.responseBody.details);
+      setRolesData(res.responseBody);
     }
     if (currencyresult.statusCode === 200) {
       setCurrencyList(
-        currencyresult.responseBody.details.map((currency) => ({
+        currencyresult.responseBody.map((currency) => ({
           value: currency.value,
           label: currency.value,
         }))
@@ -1387,11 +1380,12 @@ console.log("skillresult: " , skillresult)
 
   const GetHiringTypePricing = async () => {
     setIsLoading(true);
-    let res = await getHiringTypePricing(
-      editDuration?.employmentType?.split(" ").join("")
-    );
+    // let res = await getHiringTypePricing(
+    //   editDuration?.employmentType?.split(" ").join("")
+    // );
+    let res = await MasterDAO.getHRPricingTypeDAO();
     if (res?.statusCode === 200) {
-      setHiringTypePricing(res?.responseBody?.details);
+      setHiringTypePricing(res?.responseBody);
     }
     setIsLoading(false);
   };
