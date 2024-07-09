@@ -1676,7 +1676,9 @@ const EditHRFields = ({
     //when file uploaded
     if (gptFileDetails?.JDDumpID) {
       setUploadFileData(gptFileDetails.FileName);
-      setJDParsedSkills(gptFileDetails);
+      setJDParsedSkills({...gptFileDetails,
+        roleName:gptFileDetails?.Title ?? ''
+      });
 
       setJDDumpID(gptFileDetails.JDDumpID);
       setGPTFileDetails({});
@@ -3769,7 +3771,7 @@ const EditHRFields = ({
                   {gptFileDetails.JDDumpID && (
                     <div>
                       <h3>File Name : {gptFileDetails?.FileName}</h3>
-
+                      {gptFileDetails?.Title && <h3>Role Title : {gptFileDetails?.Title}</h3>} 
                       {gptFileDetails?.Skills.length > 0 && (
                         <>
                           <h3 style={{ marginTop: "10px" }}>Skills :</h3>

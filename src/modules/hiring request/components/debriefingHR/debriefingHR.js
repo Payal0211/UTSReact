@@ -447,6 +447,13 @@ const getParsingType = (isHaveJD,parseType) => {
 			}
 		})
 
+		if(d.jobDescription === '' || d.jobDescription === '<p><br></p>'){
+			message.error('Please fill Job Description')
+			setIsLoading(false);
+			return
+		}
+
+
 		let debriefFormDetails = {
 			// roleAndResponsibilites: d.roleAndResponsibilities,
 			// requirements: d.requirements,
@@ -1008,7 +1015,7 @@ const getParsingType = (isHaveJD,parseType) => {
 							<div className={DebriefingHRStyle.mb50}>
 								<label style={{ marginBottom: "12px" }}>
 								Job Description
-								{/* <span className={AddNewClientStyle.reqField}>*</span> */}
+								<span className={DebriefingHRStyle.reqField}>*</span>
 							</label>
 							<ReactQuill
 								register={register}
@@ -1022,10 +1029,11 @@ const getParsingType = (isHaveJD,parseType) => {
 							<input
 								type="hidden"
 								{...register('jobDescription', {
-								required: 'Job description is required',
+								required: '* Job description is required',
 								validate: (value) => value.trim() !== '' || 'Job description cannot be empty'
 								})}
 							/>
+							{errors['jobDescription'] && <p className={DebriefingHRStyle.error}>{errors['jobDescription'].message}</p>}
 							</div>
 							{/* <div className={DebriefingHRStyle.mb50}>
 							<label

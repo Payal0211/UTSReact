@@ -179,6 +179,13 @@
     cursor: pointer;
 }
 
+.reqField{
+    color: #E03A3A;
+    font-weight: 700;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
 @media screen and (max-width: 1440px) {
     .partOne {
         padding-top: 40px;

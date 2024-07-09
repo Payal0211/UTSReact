@@ -383,6 +383,8 @@ const EditDebriefingHR = ({
 			(getHRdetails?.salesHiringRequest_Details?.jobDescription)) ?? '' , {
 					shouldDirty: true,
 				});
+
+		setValue('hrTitle',JDParsedSkills?.roleName ?? '')
 	}, [JDParsedSkills, setValue]);
 
 	const openPublishModal = ()=>{
