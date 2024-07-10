@@ -3818,7 +3818,7 @@ const EditHRFields = ({
                           <h3 style={{ marginTop: "10px" }}>
                           Job Description :
                           </h3>
-                          <div className={HRFieldStyle.viewHrJDDetailsBox} dangerouslySetInnerHTML={{__html: gptFileDetails?.JobDescription}}>
+                          <div className={`${HRFieldStyle.viewHrJDDetailsBox} jobDescritionCSS`} dangerouslySetInnerHTML={{__html: gptFileDetails?.JobDescription}}>
                             {/* <ul>
                     {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
                   </ul> */}
