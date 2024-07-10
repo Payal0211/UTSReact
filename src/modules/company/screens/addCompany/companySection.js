@@ -6,7 +6,7 @@ import HRSelectField from "modules/hiring request/components/hrSelectField/hrSel
 import { InputType, EmailRegEx, ValidateFieldURL } from "constants/application";
 import UploadModal from "shared/components/uploadModal/uploadModal";
 import { Avatar, Skeleton } from "antd";
-import { HTTPStatusCode } from "constants/network";
+import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import PreviewClientModal from "modules/client/components/previewClientDetails/previewClientModal";
 import ReactQuill from "react-quill";
@@ -48,7 +48,10 @@ function CompanySection({
 
   useEffect(() => {
     companyDetails?.companyLogo &&
-      setUploadFileData(companyDetails?.companyLogo);
+    companyDetails?.companyLogo.includes(NetworkInfo.PROTOCOL +
+      NetworkInfo.DOMAIN) ? setUploadFileData(companyDetails?.companyLogo) :  setUploadFileData(  NetworkInfo.PROTOCOL +
+        NetworkInfo.DOMAIN +
+        "Media/CompanyLogo/" + companyDetails?.companyLogo);
     companyDetails?.companyName &&
       setValue("companyName", companyDetails?.companyName);
     companyDetails?.website && setValue("companyURL", companyDetails?.website);
