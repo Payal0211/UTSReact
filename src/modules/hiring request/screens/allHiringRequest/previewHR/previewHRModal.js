@@ -5,10 +5,6 @@ import "./css/home.css"
 import "./css/myJobPostsNew.css";
 import 'react-quill/dist/quill.snow.css'
 import { useEffect, useRef, useState } from "react";
-import {
-  fetchCountriesBasedonCity,
-  // updateJobPost,
-} from "./services/registerationSteps";
 import infosmallIcon from "assets/svg/infoSmallIcon.svg";
 import EditnewIcon from "assets/svg/editnewIcon.svg";
 
@@ -1156,13 +1152,11 @@ console.log("skillresult: " , skillresult)
 
   const getcountryData = async () => {
     setIsLoading(true)
-    let res = await fetchCountriesBasedonCity({
-      city: editLocation.city,
-    });
+    let res = await  MasterDAO.getCountryByCityRequestDAO(editLocation.city)
 
     if (res?.statusCode == 200) {
       let _list = [];
-      for (let val of res?.responseBody?.details) {
+      for (let val of res?.responseBody) {
         let obj = {};
         obj.label = val.country;
         obj.value = val.id;
