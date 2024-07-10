@@ -603,6 +603,8 @@
 .PreviewpageMainWrap .img-section .img-thumb .DeleteBtn img, .PreviewpageMainWrap .img-section .video-wrapper .DeleteBtn img{
     width: 100%;
     border-radius: inherit;
+    height: auto;
+    background: transparent;
 }
 
 .PreviewpageMainWrap .company-benefits ul{
@@ -640,6 +642,7 @@
     width: 100%;
     background: transparent;
     display: inline-block;
+    margin-bottom: 40px;
 }
 
 .PreviewpageMainWrap .uploaded-content{

@@ -7,7 +7,8 @@
     right: 20px;
 }
 
-.previewHRModal .ant-modal-close .ant-modal-close-x {
+.previewHRModal .ant-modal-close .ant-modal-close-x,
+.jobPostEditModal .ant-modal-close .ant-modal-close-x {
     width: 22px;
     height: 22px;
     line-height: 22px;
@@ -432,7 +433,8 @@
     width: 10px;
 }
 
-.previewHRModal .ant-select.ant-select-multiple .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input {
+.previewHRModal .ant-select.ant-select-multiple .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input,
+.PrevEditmodal .ant-select.ant-select-multiple .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input {
     height: auto;
 }
 
@@ -440,7 +442,7 @@
     left: 16px;
 } */
 
-.previewHRModal .ant-select .ant-select-selector .ant-select-selection-search {
+.previewHRModal .ant-select .ant-select-selector > .ant-select-selection-search {
     left: 16px;
 }
 
@@ -461,28 +463,10 @@
     margin: 0 0 8px;
 }
 
-.previewHRModal .formFields label {
+.previewHRModal label,
+.jobPostEditModal label {
     display: inline-block;
-}
-
-.previewHRModal .mb-4,
-.jobPostEditModal .mb-4 {
-    margin-bottom: 1.5rem !important;
-}
-
-.previewHRModal .mt-4,
-.jobPostEditModal .mt-4 {
-    margin-top: 1.5rem !important;
-}
-
-.previewHRModal .mt-2,
-.jobPostEditModal .mt-2 {
-    margin-top: .5rem !important;
-}
-
-.previewHRModal .mt-1,
-.jobPostEditModal .mt-1 {
-    margin-top: .25rem !important;
+    margin-bottom: 8px;
 }
 
 .previewHRModal .mb-0,
@@ -490,7 +474,43 @@
     margin-bottom: 0 !important;
 }
 
-.previewHRModal .formFields .form-control, .jobPostEditModal .formFields .form-control {
+.previewHRModal .mt-1,
+.jobPostEditModal .mt-1 {
+    margin-top: .25rem !important;
+}
+
+.previewHRModal .mt-2,
+.jobPostEditModal .mt-2 {
+    margin-top: .5rem !important;
+}
+
+.previewHRModal .mt-4,
+.jobPostEditModal .mt-4 {
+    margin-top: 1.5rem !important;
+}
+
+.previewHRModal .mt-3,
+.jobPostEditModal .mt-3 {
+    margin-top: 1rem !important;
+}
+
+.previewHRModal .mb-2,
+.jobPostEditModal .mb-2 {
+    margin-bottom: .5rem !important;
+}
+
+.previewHRModal .mb-3,
+.jobPostEditModal .mb-3 {
+    margin-bottom: 1rem!important;
+}
+
+.previewHRModal .mb-4,
+.jobPostEditModal .mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.previewHRModal .formFields .form-control,
+.jobPostEditModal .formFields .form-control {
     background: #fff;
     border: 1px solid #cecccc;
     border-radius: 8px !important;
@@ -507,7 +527,8 @@
     box-shadow: none;
 }
 
-.previewHRModal .formFields .form-control:focus {
+.previewHRModal .formFields .form-control:focus,
+.jobPostEditModal .formFields .form-control:focus {
     border: 1px solid #ffda30;
 }
 
@@ -516,8 +537,13 @@
     border: none;
 }
 
-.previewHRModal .formFields .ant-checkbox-wrapper,.jobPostEditModal .formFields .ant-checkbox-wrapper {
+.previewHRModal .formFields .ant-checkbox-wrapper,
+.jobPostEditModal .formFields .ant-checkbox-wrapper {
     display: inline-flex;
+}
+
+.previewHRModal .formFields .editinfo-details-form .ant-checkbox-wrapper{
+    margin-bottom: 0;
 }
 
 .previewHRModal .row,
@@ -528,20 +554,20 @@
     margin-right: -8px !important;
 }
 
-.previewHRModal .col-md-6,
-.jobPostEditModal .col-md-6 {
-    flex: 0 0 50%;
-    max-width: 50%;
-    padding-left: 8px;
-    padding-right: 8px;
-}
-
 .previewHRModal .col-md-12,
 .previewHRModal .col-12,
 .jobPostEditModal .col-md-12,
 .jobPostEditModal .col-12 {
     flex: 0 0 100%;
     max-width: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.previewHRModal .col-md-6,
+.jobPostEditModal .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
     padding-left: 8px;
     padding-right: 8px;
 }
@@ -589,9 +615,11 @@
 .customModal.jobPostEditModal .formFields .form-control {
     height: 40px;
 }
-
+.jobPostEditModal .changeLocationSec .ant-select-single .ant-select-arrow {
+    margin-top: -6px;
+}
 .customModal.jobPostEditModal .ant-select .ant-select-selector {
-    height: 42px;
+    height: auto;
     padding: 9px 16px;
 }
 
@@ -626,14 +654,14 @@
     /* gap: 10px; */
 }
 
-.customModal.jobPostEditModal .formFields .form-group .btnPrimary {
+/* .customModal.jobPostEditModal .formFields .form-group .btnPrimary {
     width: auto;
-}
+} */
 
-.customModal.jobPostEditModal .buttonEditGroup .btnPrimary {
+/* .customModal.jobPostEditModal .buttonEditGroup .btnPrimary {
     font-size: 12px;
     min-height: 30px;
-}
+} */
 
 /**/
 .formFields .form-group label {
@@ -715,4 +743,19 @@
 
 .jobPostEditModal .formFields .form-group {
     margin-bottom: 30px;
+}
+
+.jobPostEditModal .ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item{
+    background: #fff8d6;
+    color: #232323;
+}
+
+.jobPostEditModal .ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item .ant-select-selection-item-remove{
+    top: 8px;
+}
+
+.jobPostEditModal .ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item .ant-select-selection-item-remove svg {
+    fill: #232323;
+    width: 11px;
+    height: 11px;
 }

@@ -20,6 +20,7 @@ import locationIconImage from "assets/svg/locationIcon.svg";
 import awardIconImage from "assets/svg/awardIcon.svg";
 import CheckRadioIcon from "assets/svg/CheckRadioIcon.svg";
 import plusImage from "assets/svg/plus.svg";
+import plusIcon from "assets/svg/plusIcon.svg";
 import currencyIcon from "assets/svg/currencyIcon.svg"
 import selectStarFillImage from "assets/svg/selectStarFill.svg";
 import { AiFillStar } from "react-icons/ai";
@@ -2431,7 +2432,7 @@ function PreviewHRModal({
                                 </div>
                               </div>
 
-                              <div className="mb-4">
+                              <div className="mb-4 mt-2">
                                 <label>YouTube Links</label>
                                 <input
                                   type="text"
@@ -2964,7 +2965,7 @@ function PreviewHRModal({
         }}
         width={610}
         className="customModal jobPostEditModal"
-        // maskClosable={false}
+        maskClosable={false}
         footer={null}
       >
         <div className="modalContent">
@@ -3139,7 +3140,7 @@ function PreviewHRModal({
      } */}
                   </div>
                 </div>
-                <div className="form-group mt-2">
+                <div className="form-group mt-2 mb-0">
                   <Checkbox
                     name="isConfidentialBudget"
                     checked={editBudget.isConfidentialBudget}
@@ -3957,7 +3958,7 @@ function PreviewHRModal({
                     {compensationOptions?.map(option => (
                       !CompensationValues?.some(val => val === option.value) && (
                         <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setCompensationValues([...CompensationValues, option?.value])}>
-                          <span>{option.label} <img src={plusImage} loading="lazy" alt="star" /></span>
+                          <span>{option.label} <img src={plusIcon} loading="lazy" alt="star" /></span>
                         </li>
                       )
                     ))}
@@ -4016,7 +4017,7 @@ function PreviewHRModal({
                             setSpecificIndustry([...specificIndustry, option?.value])
                           }}
                           >
-                            <span>{option.label} <img src={plusImage} loading="lazy" alt="star" /></span>
+                            <span>{option.label} <img src={plusIcon} loading="lazy" alt="star" /></span>
                           </li>
                         )
                       ))}
