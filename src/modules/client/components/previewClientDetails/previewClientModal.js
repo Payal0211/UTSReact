@@ -222,7 +222,9 @@ function PreviewClientModal({
       setIsAboutUs(data?.basicDetails?.aboutCompany);
       setIsCulture(data?.basicDetails?.culture);
       setIsSelfFunded(data?.basicDetails?.isSelfFunded);
-      setBase64Image(data?.basicDetails?.companyLogo)
+      setBase64Image(NetworkInfo.PROTOCOL +
+        NetworkInfo.DOMAIN +
+        "Media/CompanyLogo/" + data?.basicDetails?.companyLogo)
     }
     setIsLoading(false);
   };
