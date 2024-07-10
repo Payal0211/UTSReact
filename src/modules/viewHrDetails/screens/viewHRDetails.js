@@ -428,14 +428,14 @@ const ViewHRDetails = () => {
                         {hiringDetails?.responseBody?.details?.currency ??
                           "NA"}
                       </li>
-                     
-                      <li>
+                     {(hiringDetails?.responseBody?.details?.isFresherAllowed === false && hiringDetails?.responseBody?.details?.requiredExperienceYear !== null) &&  <li>
                         <span>Required Experience:</span>{" "}
                         {hiringDetails?.responseBody?.details
                           ?.requiredExperienceYear ?? "NA"}{" "}
                         Years
                         <i className={ViewHRDetailsStyle.blueDot} />
-                      </li>
+                      </li>}
+                     
                       <li>
                         <span>Mode of Work:</span>{" "}
                         {/* {hiringDetails?.responseBody?.details?.dealID !== 0  ? hiringDetails?.responseBody?.details?.dealID : 'NA'} */}
@@ -471,10 +471,11 @@ const ViewHRDetails = () => {
                           "NA"
                         )}
                       </li>
+                    
                       <li>
                         <span>Fresher Allowed:</span>{" "}
-                        {hiringDetails?.responseBody?.details?.isFresherAllowed ? "Yes" : "NO"}
-                      </li>
+                        {(hiringDetails?.responseBody?.details?.isFresherAllowed || hiringDetails?.responseBody?.details?.requiredExperienceYear === null) ? "Yes" : "NO"}
+                      </li> 
                     </ul>
                   </div>
                 </div>
