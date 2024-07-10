@@ -619,8 +619,12 @@
     margin-top: -6px;
 }
 .customModal.jobPostEditModal .ant-select .ant-select-selector {
-    height: auto;
+    height: 42px;
     padding: 9px 16px;
+}
+
+.customModal.PrevEditmodal .prevSkillTwopart .ant-select-multiple .ant-select-selector{
+    height: auto;
 }
 
 .customModal.jobPostEditModal .groupMain-threeWrap .formgroup-three .courancy-group {
