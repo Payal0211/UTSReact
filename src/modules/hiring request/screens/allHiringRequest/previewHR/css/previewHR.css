@@ -1,0 +1,718 @@
+.previewHRModal .ant-modal-body {
+    padding: 0;
+}
+
+.previewHRModal .ant-modal-close {
+    top: 25px;
+    right: 20px;
+}
+
+.previewHRModal .ant-modal-close .ant-modal-close-x {
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    align-items: center;
+    justify-content: center;
+    display: inline-flex;
+    cursor: pointer;
+}
+
+.previewHRModal .ant-modal-close .ant-modal-close-x .anticon {
+    vertical-align: inherit;
+}
+
+.previewHRModal .ant-modal-content {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 16px !important;
+    background-color: #fff !important;
+}
+
+.previewHRModal ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.previewHRModal .formFields h2 {
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 600;
+    color: #232323;
+    margin-bottom: 4px;
+    background: #fffdf1;
+    padding: 15px 29px;
+    border-radius: 16px 16px 0 0;
+}
+
+.prevSkillTwopart {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.prevSkillTwopart p {
+    color: #232323;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.prevSkillTwopart .prevSkillLeftside {
+    border-radius: 8px;
+    border: 1px solid#F5F5F5;
+    background: rgba(255, 255, 255, 0.64);
+    width: calc(62% - 8px);
+    padding: 24px;
+}
+
+.prevSkillTwopart .prevSkillLeftside h6 {
+    color: #6B6B6B;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.prevSkillTwopart .SlillBtnBox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 0;
+    padding: 0;
+}
+
+.prevSkillTwopart .SlillBtnBox li {
+    display: flex;
+    height: 27px;
+    padding: 6px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #FFF8D6;
+    color: #232323;
+    text-align: center;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.RolesResponsibilitiesDetail h5 {
+    color: #6B6B6B;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-top: 20px;
+    display: inline-block;
+}
+
+.previewScreen .EditFieldShowIcon {
+    margin-top: -4px;
+    margin-left: 5px;
+    fill: #202020;
+    cursor: pointer;
+    font-size: 14px;
+    min-width: 14px;
+}
+
+.previewScreen .modalTitle .EditFieldShowIcon {
+    font-size: 22px;
+    margin-left: 10px;
+}
+
+.previewScreen h3 .EditFieldShowIcon {
+    font-size: 22px;
+    margin-left: 10px;
+}
+
+.previewScreen .previewstepBox .EditFieldShowIcon {
+    margin-top: 0px;
+}
+
+
+.RolesResponsibilitiesDetail .rolesText {
+    padding-left: 20px;
+}
+
+.RolesResponsibilitiesDetail .rolesText li {
+    position: relative;
+    color: #232323;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.RolesResponsibilitiesDetail .rolesText li::after {
+    content: "";
+    position: absolute;
+    left: -15px;
+    top: 11px;
+    background: #232323;
+    border-radius: 50%;
+    height: 3px;
+    width: 3px;
+}
+
+.prevSkillTwopart .prevSkillRightside {
+    position: relative;
+    border-radius: 8px;
+    border: 1px solid #F5F5F5;
+    background: rgba(255, 255, 255, 0.64);
+    width: calc(38% - 8px);
+    padding: 24px;
+}
+
+.prevSkillRightside .giveMorDetail {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    border: 1px solid rgba(186, 186, 186, 0.20);
+    background: rgba(103, 103, 103, 0.80);
+    backdrop-filter: blur(3.5px);
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    padding: 45px;
+}
+
+.prevSkillRightside .giveMorDetail a {
+    color: #FFF;
+    text-align: center;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-decoration-line: underline;
+    margin-top: 15px;
+}
+
+
+.prevSkillRightside .prevSkillrightDetail {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.prevSkillRightside .prevSkillrightDetail .prevSkillBox {
+    display: flex;
+    flex-direction: column;
+    width: calc(50% - 10px);
+    margin-bottom: 10px;
+}
+
+.point {
+    cursor: pointer;
+}
+
+.prevSkillRightside .skillTitle {
+    display: inline-block;
+    color: #6B6B6B;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-bottom: 5px;
+}
+
+.prevSkillRightside .prevSkillBox .Skillvalue {
+    color: #232323;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.respondQuestionsSec .respondQuestionsTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(186, 186, 186, 0.20);
+    padding: 30px 0;
+}
+
+.AditionalInfoModal .modalContentHeading {
+    display: flex;
+    align-items: center;
+    gap: 110px;
+}
+
+.AditionalInfoModal .modalContentHeading img {
+    width: 100px;
+}
+
+
+.respondQuestionsSec .respondCollapseHeading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.respondQuestionsSec .respondQuestionsTitle h4 {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #232323;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 0;
+}
+
+.respondQuestionsSec .respondQuestionsTitle span {
+    color: #676767;
+    font-weight: 400;
+}
+
+.respondQuestionsSec .respondQuestionsTitle .respondArrow {
+    transition: all .35s ease 0s;
+}
+
+.respondQuestionsSec .respondQuestionsTitle .respondArrow.active {
+    transform: rotate(180deg);
+    transition: all .35s ease 0s;
+}
+
+.previewHRModal .jobDescrition div,
+.previewHRModal .jobDescrition span {
+    width: auto !important;
+    height: auto !important;
+    font-family: Montserrat, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 18px !important;
+    position: initial !important;
+}
+
+.previewHRModal .RolesResponsibilitiesDetail .jobDescrition div,
+.previewHRModal .RolesResponsibilitiesDetail .jobDescrition span {
+    font-family: Montserrat, sans-serif !important;
+}
+
+.previewHRModal .company-details-top ul {
+    margin-bottom: 24px;
+}
+
+.previewHRModal .formFields .formFields-box .form-group {
+    margin-bottom: 24px;
+}
+
+.previewHRModal .formFields .formFields-box .formFields-box-title {
+    color: #232323;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    background: #fffdf1;
+    border-radius: 16px 16px 0 0;
+    padding: 15px 29px;
+    margin: 0;
+}
+
+.previewHRModal .formFields .formFields-box .formFields-box-inner .editNewIcon {
+    margin-left: 4px;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.previewHRModal .formFields .formFields-box .formFields-box-title .boxInnerInfo {
+    color: #232323;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    margin: 5px 0 0;
+    display: block;
+    padding: 0;
+}
+
+.previewHRModal .formFields .formFields-box .formFields-box-title.postJobFirstStepTitle .boxInnerInfo {
+    margin: 0;
+    padding: 0 8px;
+    display: inline-block;
+}
+
+.previewHRModal .previewHRAction {
+    padding: 16px 58px;
+}
+
+.previewHRModal .previewHRAction .btnPrimary {
+    background: #ffda30;
+    border: none;
+    border-radius: 30px;
+    display: inline-block;
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 700;
+    color: #232323;
+    font-style: normal;
+    padding: 12px 24px;
+    position: relative;
+    text-align: center;
+    text-transform: uppercase;
+    transition: all .5s;
+    z-index: 2;
+    cursor: pointer;
+    box-shadow: none;
+    outline: none;
+}
+
+.previewHRModal .previewHRAction .btnPrimary:hover {
+    background: #000;
+    color: #fff;
+}
+
+.previewHRModal .company-details .top-details .companyDetailsHead {
+    align-items: center;
+    display: flex;
+}
+
+.previewHRModal .company-details .top-details .thumbImages {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    font-size: 8px;
+    background: #f7f7f7;
+    border-radius: 70px;
+}
+
+.previewHRModal .company-details .top-details .thumbImages img {
+    object-fit: contain;
+}
+
+.previewHRModal .company-details .top-details .thumbImages .editNameBtn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #f7f7f7f5;
+    border-radius: 50%;
+    display: inline-flex;
+    margin: 0;
+    cursor: pointer;
+}
+
+.previewHRModal .editinfo-details-form .date-select {
+    display: flex;
+}
+
+.previewHRModal .justify-content-start {
+    justify-content: flex-start;
+}
+
+.previewHRModal .justify-content-end {
+    justify-content: flex-end;
+}
+
+.previewHRModal .formFields .formFields-box .buttonEditGroup {
+    gap: 18px;
+    flex-wrap: wrap;
+    display: flex;
+    margin-top: 16px;
+}
+
+.previewHRModal .ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item .ant-select-selection-item-content {
+    color: #232323;
+}
+
+.previewHRModal .ant-select-show-search.ant-select-multiple .ant-select-selection-overflow-item .ant-select-selection-item .ant-select-selection-item-remove svg {
+    fill: #232323;
+    height: 10px;
+    width: 10px;
+}
+
+.previewHRModal .ant-select.ant-select-multiple .ant-select-selector .ant-select-selection-search .ant-select-selection-search-input {
+    height: auto;
+}
+
+/* .previewHRModal .ant-select.customSelect .ant-select-selector .ant-select-selection-search {
+    left: 16px;
+} */
+
+.previewHRModal .ant-select .ant-select-selector .ant-select-selection-search {
+    left: 16px;
+}
+
+.previewHRModal .vitalInformationContent .company-benefits {
+    margin-bottom: 16px;
+}
+
+.previewHRModal .vitalInformationContent .company-benefits:last-child {
+    margin-bottom: 0;
+}
+
+.previewHRModal .PreviewpageMainWrap .vitalInformationContent h6 {
+    color: #6B6B6B;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+    margin: 0 0 8px;
+}
+
+.previewHRModal .formFields label {
+    display: inline-block;
+}
+
+.previewHRModal .mb-4,
+.jobPostEditModal .mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.previewHRModal .mt-4,
+.jobPostEditModal .mt-4 {
+    margin-top: 1.5rem !important;
+}
+
+.previewHRModal .mt-2,
+.jobPostEditModal .mt-2 {
+    margin-top: .5rem !important;
+}
+
+.previewHRModal .mt-1,
+.jobPostEditModal .mt-1 {
+    margin-top: .25rem !important;
+}
+
+.previewHRModal .mb-0,
+.jobPostEditModal .mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.previewHRModal .formFields .form-control, .jobPostEditModal .formFields .form-control {
+    background: #fff;
+    border: 1px solid #cecccc;
+    border-radius: 8px !important;
+    color: #232323;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    height: 52px;
+    line-height: normal;
+    padding: 12px 16px;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    width: 100%;
+    box-shadow: none;
+}
+
+.previewHRModal .formFields .form-control:focus {
+    border: 1px solid #ffda30;
+}
+
+.jobPostEditModal .formFields .FieldPlaceholderWrap .form-control {
+    background: #FFFFFF;
+    border: none;
+}
+
+.previewHRModal .formFields .ant-checkbox-wrapper,.jobPostEditModal .formFields .ant-checkbox-wrapper {
+    display: inline-flex;
+}
+
+.previewHRModal .row,
+.jobPostEditModal .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -8px !important;
+    margin-right: -8px !important;
+}
+
+.previewHRModal .col-md-6,
+.jobPostEditModal .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.previewHRModal .col-md-12,
+.previewHRModal .col-12,
+.jobPostEditModal .col-md-12,
+.jobPostEditModal .col-12 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.previewHRModal .formFields {
+    margin-top: 20px;
+}
+
+.previewHRModal .PreviewpageMainWrap .company-details .img-section:empty {
+    display: none;
+}
+
+.previewHRModal .vitalInformationContent .formFields.Filescopypaste__area {
+    margin-top: 0;
+}
+
+/************************************************/
+.customModal.jobPostEditModal .ant-modal-content {
+    padding: 16px 20px;
+    background: #fff !important;
+}
+
+.customModal.jobPostEditModal .ant-modal-body {
+    padding: 0;
+}
+
+.customModal.jobPostEditModal .ant-modal-content .formFields {
+    margin: 0px;
+}
+
+.customModal.jobPostEditModal .ant-modal-close {
+    top: 6px;
+    inset-inline-end: 5px;
+}
+
+.customModal.jobPostEditModal .ant-modal-content .buttonEditGroup {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.customModal.jobPostEditModal .hideSelect {
+    margin-top: 15px;
+}
+
+.customModal.jobPostEditModal .formFields .form-control {
+    height: 40px;
+}
+
+.customModal.jobPostEditModal .ant-select .ant-select-selector {
+    height: 42px;
+    padding: 9px 16px;
+}
+
+.customModal.jobPostEditModal .groupMain-threeWrap .formgroup-three .courancy-group {
+    min-width: 100px;
+}
+
+.customModal.jobPostEditModal .customradio label.ant-radio-button-wrapper {
+    height: 40px;
+}
+
+.customModal.jobPostEditModal .customradio.fullgroup {
+    flex-wrap: wrap;
+}
+
+.customModal.jobPostEditModal .customradio.fullgroup .ant-radio-button-wrapper {
+    width: 100%;
+    justify-content: left;
+}
+
+.customModal.jobPostEditModal .hideSelect.short-lab label {
+    display: block;
+    min-width: 200px;
+}
+
+.customModal.jobPostEditModal .hideSelect.short-lab .customSelect {
+    width: auto;
+}
+
+.customModal.jobPostEditModal .buttonEditGroup {
+    flex-wrap: nowrap;
+    /* gap: 10px; */
+}
+
+.customModal.jobPostEditModal .formFields .form-group .btnPrimary {
+    width: auto;
+}
+
+.customModal.jobPostEditModal .buttonEditGroup .btnPrimary {
+    font-size: 12px;
+    min-height: 30px;
+}
+
+/**/
+.formFields .form-group label {
+    color: #676767;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+/*****/
+/* Custom Radio css */
+
+.customradio.ant-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.customradio label.ant-radio-button-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid#CECCCC;
+    /* border-color: #CECCCC; */
+    background: #FFF;
+    height: 44px;
+    color: #000 !important;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 17.262px;
+    letter-spacing: -0.32px;
+    margin-bottom: 0;
+}
+
+.customradio .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+    background-color: transparent;
+}
+
+.customradio .ant-radio-button-wrapper:not(:first-child)::before {
+    background-color: transparent;
+}
+
+.customradio .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    border-color: #32936F;
+    /* border: 2px solid #32936F; */
+    box-shadow: 0px 0px 1px 1px #32936F;
+    background: #DDF6ED;
+}
+
+.customradio .ant-radio-button-wrapper:not(:first-child)::before {
+    background-color: transparent;
+}
+
+.customradio .ant-radio-button-wrapper.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):active,
+.customradio .ant-radio-button-wrapper.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover,
+.customradio .ant-radio-button-wrapper.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):first-child {
+    border-radius: 8px;
+    /* border: 2px solid var(--selection-stroke-green, #32936F); */
+    box-shadow: 0px 0px 1px 1px #32936F;
+    background: var(--selection-light-green, #DDF6ED);
+    color: #000;
+}
+
+.customradio label.ant-radio-button-wrapper span {
+    font-weight: 400;
+}
+
+/* Custom Radio css End*/
+
+/************************************************/
+.ant-modal-centered {
+    z-index: 1000;
+}
+
+.jobPostEditModal .formFields .form-group {
+    margin-bottom: 30px;
+}

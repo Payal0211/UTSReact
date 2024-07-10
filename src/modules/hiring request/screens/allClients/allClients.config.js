@@ -101,7 +101,7 @@ export const allClientsConfig = {
                                     <img src={eyeIcon} alt='info' width="22" height="22"  />	
                                     {/* <EyeIcon /> 
                                     </a>         */}    
-                                     <img src={eyeIcon} alt='info' width="22" height="22" onClick={()=>{localStorage.setItem("clientID",result?.clientID);setIsPreviewModal(true);setcompanyID(result?.companyID)}}  />	
+                                     <img src={eyeIcon} alt='info' style={{cursor:'pointer'}} width="22" height="22" onClick={()=>{localStorage.setItem("clientID",result?.clientID);setIsPreviewModal(true);setcompanyID(result?.companyID)}}  />	
 
                             </Tooltip> 
                             </div>}

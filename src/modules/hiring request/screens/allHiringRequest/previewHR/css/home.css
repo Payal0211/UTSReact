@@ -693,7 +693,7 @@
   }
 
 
-  .prevSkillTwopart{
+  /* .prevSkillTwopart{
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
@@ -929,7 +929,7 @@
   .respondQuestionsSec .respondQuestionsTitle .respondArrow.active{
     transform: rotate(180deg);
     transition: all .35s ease 0s;
-  }
+  } */
 
   
   .customModal.jobPostModal .ant-modal-content{
