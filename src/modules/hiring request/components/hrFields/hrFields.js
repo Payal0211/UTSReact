@@ -3050,6 +3050,30 @@ const HRFields = ({
             </div>
 
             <div className={HRFieldStyle.row}>
+            <div className={HRFieldStyle.colMd12}>
+            <HRSelectField
+									// isControlled={true}
+									// controlledValue={controlledGoodToHave}
+									// setControlledValue={setControlledGoodToHave}
+									// mode="multiple"
+									mode="tags"
+									setValue={setValue}
+									register={register}
+									label={'Compensation options'}
+									placeholder="Type skills"
+									// onChange={setSelectGoodToHaveItems}
+									options={[]}
+									// setOptions={setSkillMemo}
+									name="compensationOptions"
+									// isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
+									// required
+									// errorMsg={'Please select Compensation options.'}
+								/>
+            </div>
+            </div>
+            
+
+            <div className={HRFieldStyle.row}>
             <div className={HRFieldStyle.colMd6}>
                 <div className={HRFieldStyle.formGroup}>
                   <HRSelectField
@@ -3570,6 +3594,22 @@ const HRFields = ({
           </form>
         </div>
         <Divider />
+
+        <div className={HRFieldStyle.partOne}>
+          <div className={HRFieldStyle.hrFieldLeftPane}>
+            <h3>Enhance Talent Matchmaking</h3>
+            <p>This information will not be visible to
+                the talents or on job board, but will be used
+                by the system/internal team to find more
+                accurate match for this HR/Job.</p>
+           
+          
+          </div>
+
+          <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
+            
+          </form>
+        </div>
         {/* <AddInterviewer
 				errors={errors}
 				append={append}
