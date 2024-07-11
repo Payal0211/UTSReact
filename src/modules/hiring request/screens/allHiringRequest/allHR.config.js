@@ -50,7 +50,7 @@ export const allHRConfig = {
         render: (val,result) => {
           console.log(result);
           return <Tooltip title="Preview Company Profile" placement="right" >  
-               <img src={eyeIcon} alt='info' width="22" height="22" onClick={()=>{setIsPreviewModal(true);setpreviewHRID(result?.companyID);getPreviewPostData(result?.HRID,result.HR_ID,result?.companyID)}}  />	
+               <img src={eyeIcon} alt='info' style={{cursor:'pointer'}} width="22" height="22" onClick={()=>{setIsPreviewModal(true);setpreviewHRID(result?.companyID);getPreviewPostData(result?.HRID,result.HR_ID,result?.companyID)}}  />	
 
       </Tooltip> ;
         },
@@ -686,6 +686,7 @@ export const allHRConfig = {
                 fontSize: "14px",
                 cursor: "pointer",
                 padding: "7px",
+                whiteSpace: "nowrap",
               }}
               onClick={() => talentDtailOpen(values)}
             >

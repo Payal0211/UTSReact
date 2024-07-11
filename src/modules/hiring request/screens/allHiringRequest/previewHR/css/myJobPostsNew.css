@@ -424,6 +424,7 @@
     font-style: normal;
     font-weight: 400;
     line-height: 16px;
+    margin-bottom: 8px;
 }
 
 .PreviewpageMainWrap .company-details-inner{
@@ -602,8 +603,9 @@
 .PreviewpageMainWrap .img-section .img-thumb .DeleteBtn img, .PreviewpageMainWrap .img-section .video-wrapper .DeleteBtn img{
     width: 100%;
     border-radius: inherit;
+    height: auto;
+    background: transparent;
 }
-
 
 .PreviewpageMainWrap .company-benefits ul{
     gap: 8px;
@@ -611,7 +613,8 @@
 }
 
 .PreviewpageMainWrap .company-benefits ul li{
-    margin-bottom: 0px;
+    /* margin-bottom: 0px; */
+    margin: 0;
 }
 
 .vitalInformationContent{
@@ -625,7 +628,6 @@
 
 .PreviewpageMainWrap .vitalInformationContent .company-benefits li{
     margin-right: 0;
-    margin-bottom: 30px;
 }
 
 .PreviewpageMainWrap .vitalInformationContent h6 {
@@ -639,6 +641,8 @@
 .PreviewpageMainWrap .FilesDragAndDrop__area{
     width: 100%;
     background: transparent;
+    display: inline-block;
+    margin-bottom: 40px;
 }
 
 .PreviewpageMainWrap .uploaded-content{

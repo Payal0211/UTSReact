@@ -3,6 +3,7 @@ import Modal from "antd/es/modal/Modal";
 import "./css/myJobPosts.css";
 import "./css/home.css"
 import "./css/myJobPostsNew.css";
+import "./css/previewHR.css";
 import 'react-quill/dist/quill.snow.css'
 import { useEffect, useRef, useState } from "react";
 import infosmallIcon from "assets/svg/infoSmallIcon.svg";
@@ -15,6 +16,7 @@ import locationIconImage from "assets/svg/locationIcon.svg";
 import awardIconImage from "assets/svg/awardIcon.svg";
 import CheckRadioIcon from "assets/svg/CheckRadioIcon.svg";
 import plusImage from "assets/svg/plus.svg";
+import plusIcon from "assets/svg/plusIcon.svg";
 import currencyIcon from "assets/svg/currencyIcon.svg"
 import selectStarFillImage from "assets/svg/selectStarFill.svg";
 import { AiFillStar } from "react-icons/ai";
@@ -173,7 +175,7 @@ function PreviewHRModal({
   const [estimatedFromSalaryBudget, setFromEstimatedBudget] = useState(0);
   const [estimatedToSalaryBudget, setToEstimatedBudget] = useState(0);
   const [calculatedUplersFees, setCalculateUplersFees] = useState({
-    from:"",to:""        
+    from: "", to: ""
   })
   const [uplersFees, setUplersFees] = useState(0);
 
@@ -197,7 +199,7 @@ function PreviewHRModal({
     getCompanyPerksDetails();
   }, [hrIdforPreview]);
 
-  const getCompanyPerksDetails = async () =>{
+  const getCompanyPerksDetails = async () => {
     // let res = await getCompanyPerks();
     // setCompanyPerks(res?.responseBody?.details)
   }
@@ -225,9 +227,9 @@ function PreviewHRModal({
   };
   let TrackData = {
     trackingDetails: trackingDetailsAPI()
-};  
+  };
 
-  const CalculateEstimatedUplersFees = (fromSalaryBudget, toSalaryBudget) => {    
+  const CalculateEstimatedUplersFees = (fromSalaryBudget, toSalaryBudget) => {
     let fromBudget = 0;
     let toBudget = 0;
     let newFromBudget = 0;
@@ -235,45 +237,44 @@ function PreviewHRModal({
     let calculatedToBudget = 0;
     let calculateFromBudget = 0;
 
-    if(userData?.CompanyTypeId === 1){    
-    if(jobPreview?.hiringTypePricingId === 1 || jobPreview?.hiringTypePricingId === 2)
-    {
-        let fees = 35;      
-        setUplersFees(fees); 
-        
-        let _calVal =   {...calculatedUplersFees};
-        if(fromSalaryBudget || fromBudget === 0){ 
-            fromBudget = (fromSalaryBudget || fromBudget === 0) ? fromSalaryBudget : estimatedFromSalaryBudget;
-            newFromBudget = (fromBudget* 100 / (100 + fees)).toFixed(0);             
-            setFromEstimatedBudget(newFromBudget);    
-            calculateFromBudget = Number(fromBudget) - Number(newFromBudget);
-            _calVal.from = calculateFromBudget;          }            
-        if(toSalaryBudget){
-            toBudget = toSalaryBudget ? toSalaryBudget : estimatedToSalaryBudget;
-            newToBudget = (toBudget * 100 / (100 + fees)).toFixed(0);
-            setToEstimatedBudget(newToBudget);
-            calculatedToBudget = Number(toBudget) -  Number(newToBudget);
-            _calVal.to  = calculatedToBudget;
-        }                   
-        setCalculateUplersFees(_calVal);   
-    }
-    else
-    {    
-      let fees = TrackData?.trackingDetails?.country == "IN" ? 7.5 : 10; 
-      setUplersFees(fees);            
-      if(fromSalaryBudget){ 
-          fromBudget = (fromSalaryBudget ? fromSalaryBudget : estimatedFromSalaryBudget);                
-          let percentValuesFromBudget = (((fromBudget) * fees)/100);               
+    if (userData?.CompanyTypeId === 1) {
+      if (jobPreview?.hiringTypePricingId === 1 || jobPreview?.hiringTypePricingId === 2) {
+        let fees = 35;
+        setUplersFees(fees);
+
+        let _calVal = { ...calculatedUplersFees };
+        if (fromSalaryBudget || fromBudget === 0) {
+          fromBudget = (fromSalaryBudget || fromBudget === 0) ? fromSalaryBudget : estimatedFromSalaryBudget;
+          newFromBudget = (fromBudget * 100 / (100 + fees)).toFixed(0);
+          setFromEstimatedBudget(newFromBudget);
+          calculateFromBudget = Number(fromBudget) - Number(newFromBudget);
+          _calVal.from = calculateFromBudget;
+        }
+        if (toSalaryBudget) {
+          toBudget = toSalaryBudget ? toSalaryBudget : estimatedToSalaryBudget;
+          newToBudget = (toBudget * 100 / (100 + fees)).toFixed(0);
+          setToEstimatedBudget(newToBudget);
+          calculatedToBudget = Number(toBudget) - Number(newToBudget);
+          _calVal.to = calculatedToBudget;
+        }
+        setCalculateUplersFees(_calVal);
+      }
+      else {
+        let fees = TrackData?.trackingDetails?.country == "IN" ? 7.5 : 10;
+        setUplersFees(fees);
+        if (fromSalaryBudget) {
+          fromBudget = (fromSalaryBudget ? fromSalaryBudget : estimatedFromSalaryBudget);
+          let percentValuesFromBudget = (((fromBudget) * fees) / 100);
           setFromEstimatedBudget(percentValuesFromBudget);
-      }
-      if(toSalaryBudget){
-          toBudget = (toSalaryBudget ? toSalaryBudget : estimatedToSalaryBudget);            
-          let percentValuesToBudget = (((toBudget) * fees)/100);
+        }
+        if (toSalaryBudget) {
+          toBudget = (toSalaryBudget ? toSalaryBudget : estimatedToSalaryBudget);
+          let percentValuesToBudget = (((toBudget) * fees) / 100);
           setToEstimatedBudget(percentValuesToBudget);
+        }
       }
+    }
   }
-}
-} 
   const updateCompanyDetails = async (name, value, closeState, resetValState) => {
     setIsLoading(true);
     let linkedinRegex = /^(http(s)?:\/\/)?([\w]+\.)?linkedin\.com\/(pub|in|profile|company)\/[A-z0-9_-]+\/?/i;
@@ -488,10 +489,10 @@ function PreviewHRModal({
     let existInOther = false;
     values.forEach((skill) => {
       if (editTopSkills?.map(val => val.toLowerCase()).includes(skill.toLowerCase())) {
-          setEditTopSkills(prev => prev.filter(item => item.toLowerCase() !== skill.toLowerCase()));
+        setEditTopSkills(prev => prev.filter(item => item.toLowerCase() !== skill.toLowerCase()));
       }
     });
-    
+
     setEditSkills(values);
 
   };
@@ -503,26 +504,26 @@ function PreviewHRModal({
   };
 
   const topSkillSelect = (values) => {
-    values = [...new Set(values.map(skill => formatSkill(skill?.trim())))];      
+    values = [...new Set(values.map(skill => formatSkill(skill?.trim())))];
     let existInOther = false;
     values.forEach((skill) => {
       if (editskills?.map(val => val.toLowerCase()).includes(skill.toLowerCase())) {
-          setEditSkills(prev => prev.filter(item => formatSkill(item.toLowerCase()) !== formatSkill(skill.toLowerCase())));
+        setEditSkills(prev => prev.filter(item => formatSkill(item.toLowerCase()) !== formatSkill(skill.toLowerCase())));
       }
     });
     let _topskills = [...topSkills];
     values?.forEach(skill => {
       if (!_topskills?.some(option => option.value.toLowerCase() === formatSkill(skill.toLowerCase()))) {
         let index = _topskills?.findIndex((skillVal) => skillVal?.value.toLowerCase() === skill.toLowerCase());
-        if(index === -1){
-          _topskills.push({ value: formatSkill(skill?.trim()), label: <><AiFillStar /> {formatSkill(skill)}</> });  
-        }else{
+        if (index === -1) {
+          _topskills.push({ value: formatSkill(skill?.trim()), label: <><AiFillStar /> {formatSkill(skill)}</> });
+        } else {
           let _obj = {
-            value : formatSkill(skill?.trim()),
+            value: formatSkill(skill?.trim()),
             label: <><AiFillStar /> {formatSkill(skill)}</>
           }
-          _topskills[index] = _obj; 
-        }        
+          _topskills[index] = _obj;
+        }
       }
     });
     setTopSkills(_topskills);
@@ -572,7 +573,7 @@ function PreviewHRModal({
       let payload = {
         skills: editTopSkills?.join(","),
         allSkills: editskills?.join(","),
-        IsGoodToHaveSkillschanged:areGoodToHaveSkillsChanged,
+        IsGoodToHaveSkillschanged: areGoodToHaveSkillsChanged,
         IsMustHaveSkillschanged: areMustHaveSkillsChanged
       };
 
@@ -613,7 +614,7 @@ function PreviewHRModal({
     //   setEditSkills([]);
     // }
 
-    setisEditSkills(true);     
+    setisEditSkills(true);
     let _topskills = [...topSkills];
     let _skills = [...new Set(jobPreview?.skills?.split(",").filter(skill => skill.trim()))];
     _skills?.forEach(skill => {
@@ -623,9 +624,9 @@ function PreviewHRModal({
     });
     setTopSkills(_topskills);
     setEditTopSkills(_skills);
-    if(jobPreview?.allSkills){            
+    if (jobPreview?.allSkills) {
       setEditSkills([...new Set(jobPreview?.allSkills?.split(",").filter(skill => skill.trim()))]);
-    }else{
+    } else {
       setEditSkills([]);
     }
   };
@@ -635,7 +636,7 @@ function PreviewHRModal({
       trackingDetails: trackingDetailsAPI()
     };
     let payload = {
-      HRID:  hrIdforPreview,
+      HRID: hrIdforPreview,
       roleName: null,
       experienceYears: null,
       noOfTalents: null,
@@ -698,7 +699,7 @@ function PreviewHRModal({
     });
 
     let result = await allCompanyRequestDAO.updateHrPreviewDetailsDAO(payload);
-    
+
     return result;
   };
 
@@ -815,7 +816,7 @@ function PreviewHRModal({
     _budgetVal.budgetFrom = convertCurrency(_budgetVal.currency, value, _budgetVal.budgetFrom, data?.rates);
     _budgetVal.budgetTo = convertCurrency(_budgetVal.currency, value, _budgetVal.budgetTo, data?.rates);
     setEditBudget(_budgetVal);
-    CalculateEstimatedUplersFees(_budgetVal.budgetFrom ,  _budgetVal.budgetTo );
+    CalculateEstimatedUplersFees(_budgetVal.budgetFrom, _budgetVal.budgetTo);
 
     if (rate !== null) {
       const converted = (2000 * rate).toFixed(2);
@@ -893,7 +894,7 @@ function PreviewHRModal({
             budgetType: editBudget?.budgetType,
             noBudgetBar: editBudget.budgetType === 3 ? true : false,
             isConfidentialBudget: editBudget?.isConfidentialBudget,
-            toolTipMessage :  result?.responseBody?.toolTipMessage ?  result?.responseBody?.toolTipMessage : editDuration?.toolTipMessage
+            toolTipMessage: result?.responseBody?.toolTipMessage ? result?.responseBody?.toolTipMessage : editDuration?.toolTipMessage
 
           },
         }));
@@ -942,7 +943,7 @@ function PreviewHRModal({
         messageApi.open({
           type: "success",
           content: "Duration Updated",
-        });        
+        });
         setJobPreview((prev) => ({
           ...prev,
           ...{
@@ -953,10 +954,10 @@ function PreviewHRModal({
             payrollType: editDuration.payrollType,
             payrollPartnerName: editDuration.payrollPartnerName,
             isHiringLimited: editDuration.employmentType === 'Temporary' ? 'Temporary' : editDuration.employmentType === 'Permanent' ? 'Permanent' : null,
-            toolTipMessage: result?.responseBody?.details?.toolTipMessage ?  result?.responseBody?.details?.toolTipMessage : editDuration?.toolTipMessage,
-            hrCost : result?.responseBody?.details?.hrCost,
-            budgetFrom : result?.responseBody?.details?.budgetFrom,
-            budgetTo : result?.responseBody?.details?.budgetTo
+            toolTipMessage: result?.responseBody?.details?.toolTipMessage ? result?.responseBody?.details?.toolTipMessage : editDuration?.toolTipMessage,
+            hrCost: result?.responseBody?.details?.hrCost,
+            budgetFrom: result?.responseBody?.details?.budgetFrom,
+            budgetTo: result?.responseBody?.details?.budgetTo
           },
         }));
         setIsLoading(false);
@@ -1067,10 +1068,10 @@ function PreviewHRModal({
   };
 
   const getSkillList = async () => {
-    
+
     // let skillresult = await getSkills(localStorage.getItem("roleId"));
     let skillresult = await MasterDAO.getSkillsRequestDAO();
-console.log("skillresult: " , skillresult)
+    console.log("skillresult: ", skillresult)
 
     if (skillresult.statusCode === 200) {
       const uniqueValues = new Set();
@@ -1337,9 +1338,9 @@ console.log("skillresult: " , skillresult)
     if (editExp > 100) {
       _errors.editExp = `Please Enter maxmimum 100 value.`;
       valid = false;
-    }else if(!isFreshersAllowed && editExp == 0){
+    } else if (!isFreshersAllowed && editExp == 0) {
       _errors.editExp = `Please enter digits only, eg : 1, 2, 3.`;
-      valid = false;      
+      valid = false;
     }
     setError(_errors);
     if (valid) {
@@ -1409,9 +1410,9 @@ console.log("skillresult: " , skillresult)
           setChangeStatus(true)
           setEditWhatWeOffer("");
         }}
+        footer={null}
         width={1080}
-        footer={false}
-        className="PostNewJobModal editJobPostModal"
+        className="PostNewJobModal editJobPostModal previewHRModal"
         maskClosable={false}
       >
 
@@ -1429,19 +1430,19 @@ console.log("skillresult: " , skillresult)
                     <div className="formFields-box-inner">
                       {!iseditRoleName ? (
                         <>
-                          <h2 className="postJobFirstStepTitle">
+                          <h2 className="postJobFirstStepTitle formFields-box-title">
                             {jobPreview?.roleName}
                             {hrNumber && <span className="boxInnerInfo">({hrNumber})</span>}
-                           
-                            <span className="editNewIcon" 
-                            onClick={() => {
-                              if (jobActiveTab === "2") {
-                                setiseditRoleName(false);
-                              } else {
-                                setiseditRoleName(true);
-                              }
-                              seteditRoleName(jobPreview?.roleName);
-                            }}
+
+                            <span className="editNewIcon"
+                              onClick={() => {
+                                if (jobActiveTab === "2") {
+                                  setiseditRoleName(false);
+                                } else {
+                                  setiseditRoleName(true);
+                                }
+                                seteditRoleName(jobPreview?.roleName);
+                              }}
                             ><img src={EditnewIcon} /></span>
                           </h2>
                         </>
@@ -1460,7 +1461,7 @@ console.log("skillresult: " , skillresult)
                           {error.editRoleName && (
                             <span className="error">{error.editRoleName}</span>
                           )}
-                          <div className="buttonEditGroup justify-content-end" style={{marginTop:'0.5rem'}}>
+                          <div className="buttonEditGroup justify-content-end">
                             <button
                               type="button"
                               class="btnPrimary blank"
@@ -1480,7 +1481,7 @@ console.log("skillresult: " , skillresult)
                             </button>
                           </div>
                         </div>
-                      )}                      
+                      )}
 
                       <div className="FieldsBoxInner-Content">
                         <ul className="previewstepBox">
@@ -1511,8 +1512,8 @@ console.log("skillresult: " , skillresult)
                                 </Tooltip>
                               </div>
                               : jobPreview?.hrCost ? jobPreview?.hrCost : "NA"}
-                          
-                            <span className="editNewIcon" 
+
+                            <span className="editNewIcon"
                               onClick={() => {
                                 if (jobActiveTab === "2") {
                                   setisEditBudget(false)
@@ -1527,14 +1528,14 @@ console.log("skillresult: " , skillresult)
                                   budgetType: jobPreview?.budgetType,
                                   isConfidentialBudget: jobPreview?.isConfidentialBudget,
                                 });
-                                CalculateEstimatedUplersFees(Number(jobPreview?.budgetFrom),Number(jobPreview?.budgetTo))                                                     
+                                CalculateEstimatedUplersFees(Number(jobPreview?.budgetFrom), Number(jobPreview?.budgetTo))
                               }}
-                              ><img src={EditnewIcon} /></span>
-                               <Tooltip placement="bottom" title={<div dangerouslySetInnerHTML={{ __html: jobPreview?.toolTipMessage }} />} >
-                                        <span className="editDevloper">
-                                              <img src={infosmallIcon} className="edit" height={'12px'} style={{ display: 'flex' }} />
-                                          </span>
-                                        </Tooltip>
+                            ><img src={EditnewIcon} /></span>
+                            <Tooltip placement="bottom" title={<div dangerouslySetInnerHTML={{ __html: jobPreview?.toolTipMessage }} />} >
+                              <span className="editDevloper">
+                                <img src={infosmallIcon} className="edit" height={'12px'} style={{ display: 'flex' }} />
+                              </span>
+                            </Tooltip>
                           </li>
 
                           <li>
@@ -1545,24 +1546,24 @@ console.log("skillresult: " , skillresult)
                                 ? `Full Time contract for ${jobPreview?.contractDuration === -1 ? 'Indefinite' : jobPreview?.contractDuration} months`
                                 : `Full Time ${jobPreview?.contractDuration ? jobPreview?.contractDuration == -1 ? "Indefinite" : `${jobPreview?.contractDuration} months` : ""}`}
 
-                            
-                            <span className="editNewIcon" 
-                            onClick={() => {
-                              setisEditDuration(true);
-                              setError({});
-                              let _empType = userData?.CompanyTypeId == 2 ?
-                                jobPreview.employmentType === 'Part Time' ? jobPreview.employmentType : jobPreview?.isHiringLimited === 'Temporary' ? 'Temporary' : jobPreview?.isHiringLimited === 'Permanent' ? 'Permanent' : ''
-                                : jobPreview.employmentType
-                              seteditDuration({
-                                hiringTypePricingId: jobPreview?.hiringTypePricingId,
-                                payrollPartnerName: jobPreview?.payrollPartnerName ? jobPreview?.payrollPartnerName : null,
-                                payrollType: jobPreview?.payrollType ? jobPreview?.payrollType : null,
-                                payrollTypeId: jobPreview?.payrollTypeId ? jobPreview?.payrollTypeId : null,
-                                contractDuration: jobPreview?.contractDuration,
-                                employmentType: _empType,
-                                toolTipMessage: jobPreview?.toolTipMessage
-                              });
-                            }} 
+
+                            <span className="editNewIcon"
+                              onClick={() => {
+                                setisEditDuration(true);
+                                setError({});
+                                let _empType = userData?.CompanyTypeId == 2 ?
+                                  jobPreview.employmentType === 'Part Time' ? jobPreview.employmentType : jobPreview?.isHiringLimited === 'Temporary' ? 'Temporary' : jobPreview?.isHiringLimited === 'Permanent' ? 'Permanent' : ''
+                                  : jobPreview.employmentType
+                                seteditDuration({
+                                  hiringTypePricingId: jobPreview?.hiringTypePricingId,
+                                  payrollPartnerName: jobPreview?.payrollPartnerName ? jobPreview?.payrollPartnerName : null,
+                                  payrollType: jobPreview?.payrollType ? jobPreview?.payrollType : null,
+                                  payrollTypeId: jobPreview?.payrollTypeId ? jobPreview?.payrollTypeId : null,
+                                  contractDuration: jobPreview?.contractDuration,
+                                  employmentType: _empType,
+                                  toolTipMessage: jobPreview?.toolTipMessage
+                                });
+                              }}
                             ><img src={EditnewIcon} /></span>
                           </li>
                           <li>
@@ -1570,19 +1571,19 @@ console.log("skillresult: " , skillresult)
                             <img src={umbrellaIconImage} className="edit" />
                             Notice Period - {jobPreview?.howSoon ? jobPreview?.howSoon : ""}
                             {/* Notice Period -  {jobPreview?.howsoon} */}
-                           
-                            <span className="editNewIcon" 
-                            onClick={() => {
-                              if (jobActiveTab === "2") {
-                                setisEditNoticePeriod(false);
-                              } else {
-                                setisEditNoticePeriod(true);
-                              }
-                              setEditNoticePeriod({
-                                ...editNoticePeriod,
-                                howsoon: jobPreview?.howSoon,
-                              });
-                            }}
+
+                            <span className="editNewIcon"
+                              onClick={() => {
+                                if (jobActiveTab === "2") {
+                                  setisEditNoticePeriod(false);
+                                } else {
+                                  setisEditNoticePeriod(true);
+                                }
+                                setEditNoticePeriod({
+                                  ...editNoticePeriod,
+                                  howsoon: jobPreview?.howSoon,
+                                });
+                              }}
                             ><img src={EditnewIcon} /></span>
                           </li>
                           <li>
@@ -1591,8 +1592,8 @@ console.log("skillresult: " , skillresult)
                               ? jobPreview?.countryID ? `${jobPreview?.city ? jobPreview?.city : ""},${jobPreview?.countryID ? jobPreview?.countryID : ""}` : `${jobPreview?.city ? jobPreview?.city : ""}`
                               : "Work from anywhere"}
 
-                                                     
-                            <span className="editNewIcon" 
+
+                            <span className="editNewIcon"
                               onClick={() => {
                                 if (jobActiveTab === "2") {
                                   setisEditLocation(false);
@@ -1609,7 +1610,7 @@ console.log("skillresult: " , skillresult)
                                 });
                               }}
                             ><img src={EditnewIcon} /></span>
-                            
+
                           </li>
                           <li>
                             <img src={awardIconImage} className="business" />
@@ -1618,18 +1619,18 @@ console.log("skillresult: " , skillresult)
                               : ""}
 
 
-                             <span className="editNewIcon" 
-                             onClick={() => {
-                              if (jobActiveTab === "2") {
-                                setisEditExp(false);
-                              } else {
-                                setisEditExp(true);
-                              }
-                              setIsExpDisabled(false);
-                              seteditExp(jobPreview?.experienceYears);
-                              setIsFreshersAllowed(jobPreview?.isFresherAllowed)
-                            }}
-                           ><img src={EditnewIcon} /></span>
+                            <span className="editNewIcon"
+                              onClick={() => {
+                                if (jobActiveTab === "2") {
+                                  setisEditExp(false);
+                                } else {
+                                  setisEditExp(true);
+                                }
+                                setIsExpDisabled(false);
+                                seteditExp(jobPreview?.experienceYears);
+                                setIsFreshersAllowed(jobPreview?.isFresherAllowed)
+                              }}
+                            ><img src={EditnewIcon} /></span>
                           </li>
                           <Tooltip placement="top" title={`India Standard Time ${jobPreview?.isT_TimeZone_FromTime} to ${jobPreview?.isT_TimeZone_EndTime}`}>
 
@@ -1642,28 +1643,28 @@ console.log("skillresult: " , skillresult)
                                   ? jobPreview?.timeZoneEndTime
                                   : ""
                                 } `}
-                              
-                                <span className="editNewIcon" 
-                                  onClick={() => {
-                                    if (jobActiveTab === "2") {
-                                      setisEditShift(false);
-                                    } else {
-                                      setisEditShift(true);
-                                    }
-                                    setEditShift({
-                                      timeZone: jobPreview?.timeZone,
-                                      timeZoneFromTime: jobPreview?.timeZoneFromTime,
-                                      timeZoneEndTime: jobPreview?.timeZoneEndTime,
-                                    });
-                                  }}
-                                ><img src={EditnewIcon} /></span>
-                              </li>
-                            </Tooltip>
-                          </ul>
+
+                              <span className="editNewIcon"
+                                onClick={() => {
+                                  if (jobActiveTab === "2") {
+                                    setisEditShift(false);
+                                  } else {
+                                    setisEditShift(true);
+                                  }
+                                  setEditShift({
+                                    timeZone: jobPreview?.timeZone,
+                                    timeZoneFromTime: jobPreview?.timeZoneFromTime,
+                                    timeZoneEndTime: jobPreview?.timeZoneEndTime,
+                                  });
+                                }}
+                              ><img src={EditnewIcon} /></span>
+                            </li>
+                          </Tooltip>
+                        </ul>
 
                         <div className="prevSkillTwopart">
                           <div className="prevSkillLeftside">
-                            {iseditSkills  ? (
+                            {iseditSkills ? (
                               <div className="row">
                                 <div className="col-12">
                                   <div className="form-group">
@@ -1680,11 +1681,11 @@ console.log("skillresult: " , skillresult)
                                       tokenSeparators={[","]}
                                       options={topSkills}
                                       onInputKeyDown={(e) => handleTopSkillsInputKeyDown(e)}
-                                      onSelect={e => {                                                  
-                                        if(editskills?.map(skill => formatSkill(skill?.trim()?.toLowerCase())).includes(formatSkill(e?.trim()?.toLowerCase()))){
-                                            selectTopRef.current.blur();
+                                      onSelect={e => {
+                                        if (editskills?.map(skill => formatSkill(skill?.trim()?.toLowerCase())).includes(formatSkill(e?.trim()?.toLowerCase()))) {
+                                          selectTopRef.current.blur();
                                         }
-                                        }} 
+                                      }}
                                     />
                                     {skillErrors && editTopSkills?.length === 0 && (
                                       <span className="error">Please select Skills</span>
@@ -1696,7 +1697,7 @@ console.log("skillresult: " , skillresult)
                                 </div>
 
                                 <div className="col-12">
-                                  <div className="form-group mobileMarginNone">
+                                  <div className="form-group mb-0">
                                     <label>
                                       Please add good to have skills
                                     </label>
@@ -1749,11 +1750,11 @@ console.log("skillresult: " , skillresult)
                               </div>
                             ) : (
                               <div className="topFillFileldRead">
-                                <h6>Top Skills                                    
-                                  <span className="editNewIcon" 
-                                  onClick={editSkills}
-                                ><img src={EditnewIcon} /></span>                                
-                                 </h6>
+                                <h6>Top Skills
+                                  <span className="editNewIcon"
+                                    onClick={editSkills}
+                                  ><img src={EditnewIcon} /></span>
+                                </h6>
                                 <ul className="SlillBtnBox">
                                   {jobPreview?.skills
                                     ? [...new Set(jobPreview?.skills?.split(","))]?.map((skill, index) => (
@@ -1779,19 +1780,19 @@ console.log("skillresult: " , skillresult)
 
                             <div className="RolesResponsibilitiesDetail">
                               <h6>
-                                Job description  
-                                 <span className="editNewIcon" 
-                                 onClick={() => {
-                                  setisEditWhatWeoffer(true);
-                                  const mergedContent = `
+                                Job description
+                                <span className="editNewIcon"
+                                  onClick={() => {
+                                    setisEditWhatWeoffer(true);
+                                    const mergedContent = `
                                     ${jobPreview?.roleOverviewDescription ? `<h3>Role Overview Description</h3>${jobPreview?.roleOverviewDescription}<br><br>` : ''}
                                     ${jobPreview?.rolesResponsibilities ? `<h3>Roles & Responsibilities</h3>${jobPreview?.rolesResponsibilities}<br><br>` : ''}
                                     ${jobPreview?.requirements ? `<h3>Requirements</h3>${jobPreview?.requirements}<br><br>` : ''}
                                     ${jobPreview?.whatweoffer ? `<h3>What We Offer</h3>${jobPreview?.whatweoffer}` : ''}
                                   `;
-                                  setEditWhatWeOffer(editWhatWeOffer ? editWhatWeOffer : jobPreview?.jobDescription ? jobPreview?.jobDescription : mergedContent);
-                                }}
-                               ><img src={EditnewIcon} /></span>
+                                    setEditWhatWeOffer(editWhatWeOffer ? editWhatWeOffer : jobPreview?.jobDescription ? jobPreview?.jobDescription : mergedContent);
+                                  }}
+                                ><img src={EditnewIcon} /></span>
                               </h6>
                               {iseditWhatWeOffer ? (
                                 <>
@@ -1864,18 +1865,18 @@ console.log("skillresult: " , skillresult)
                 <div className="formFields">
                   <div className="formFields-box">
                     <div className="formFields-box-inner">
-                      <h2>Company Details</h2>
+                      <h2 className="formFields-box-title">Company Details</h2>
 
                       <div class="company-details">
                         <div className="top-details">
-                          <div className="d-flex align-items-center">
+                          <div className="companyDetailsHead">
                             <div className="thumbImages">
                               {basicDetails?.companyLogo ?
                                 <img src={basicDetails?.companyLogo} alt="CompanyProfileImg" /> :
                                 <Avatar
                                   style={{
-                                    width: "56px",
-                                    height: "56px", display: "flex", alignItems: "center"
+                                    width: "100%",
+                                    height: "100%", display: "flex", alignItems: "center"
                                   }}
                                   size="large">{basicDetails?.companyName?.substring(0, 2).toUpperCase()}</Avatar>}
 
@@ -1938,7 +1939,7 @@ console.log("skillresult: " , skillresult)
                           <div class="company-details-top">
                             <ul>
                               <li>
-                                <span className="editNewIcon" onClick={() => { setIsCompanyLinkedIn(true); setCompanyLinkedInValue(basicDetails?.linkedInProfile) }}> Company Linkedin <img src={EditnewIcon} /></span>
+                                <span onClick={() => { setIsCompanyLinkedIn(true); setCompanyLinkedInValue(basicDetails?.linkedInProfile) }}> Company Linkedin <img src={EditnewIcon} className="editNewIcon" /></span>
                                 <p>{basicDetails?.linkedInProfile ? <a href={basicDetails?.linkedInProfile} target="_blank">{basicDetails?.linkedInProfile}</a> : "NA"}</p>
                               </li>
                               <li><span onClick={() => { setisCompanyFoundedOpen(true); setCompanyFoundedValue(basicDetails?.foundedYear) }}>Founded in <img src={EditnewIcon} className="editNewIcon" /></span><p>{basicDetails?.foundedYear ? basicDetails?.foundedYear : 'NA'}</p></li>
@@ -2001,9 +2002,8 @@ console.log("skillresult: " , skillresult)
                             <div className="editinfo-details-form" >
                               <Checkbox checked={basicDetails?.isSelfFunded} name="isSelfFunded" onChange={(e) => {
                                 setBasicDetails({ ...basicDetails, ["isSelfFunded"]: e.target.checked })
-                              }}
-                              />
-                              <spna> Self-funded (bootstrapped) company without external investments. </spna>
+                              }}>Self-funded (bootstrapped) company without external investments.</Checkbox>
+
                               <div className="formFields">
                                 <div className="row">
                                   <div className="col-md-6">
@@ -2049,7 +2049,7 @@ console.log("skillresult: " , skillresult)
                                   <div className="col-md-6">
                                     <div className="form-group">
                                       <label>Date</label>
-                                      <div className="d-flex date-select">
+                                      <div className="date-select">
                                         <Select
                                           options={monthOptions}
                                           placeholder="Select month"
@@ -2299,7 +2299,7 @@ console.log("skillresult: " , skillresult)
                             </>
                             :
                             <>
-                              <div className="col-md-12 mt-4">
+                              <div className="mt-4">
                                 <h3>Pictures</h3>
                                 <label
                                   className="FilesDragAndDrop__area"
@@ -2426,7 +2426,7 @@ console.log("skillresult: " , skillresult)
                                 </div>
                               </div>
 
-                              <div className="col-md-12 mb-4">
+                              <div className="mb-4 mt-2">
                                 <label>YouTube Links</label>
                                 <input
                                   type="text"
@@ -2517,7 +2517,7 @@ console.log("skillresult: " , skillresult)
                             </>
                           }
 
-                          <h6>Company perks and benefits 
+                          <h6>Company perks and benefits
                             <span className="editNewIcon" onClick={() => { setIsCompanyBenefits(true); setPerkDetailsValue(perkDetails) }}><img src={EditnewIcon} /></span></h6>
                           <div className="company-benefits">
                             {isCompanyBenefits ?
@@ -2569,8 +2569,8 @@ console.log("skillresult: " , skillresult)
                 <div className="formFields">
                   <div className="formFields-box">
                     <div className="formFields-box-inner">
-                      <h2>Enhance Candidate Matchmaking <p className="mb-0 mt-1">
-                      This information will not be visible to the candidates or on job board, but will be used by the system/internal team to find more accurate match for this HR/Job.</p></h2>
+                      <h2 className="formFields-box-title">Enhance Candidate Matchmaking <span className="boxInnerInfo">
+                        This information will not be visible to the candidates or on job board, but will be used by the system/internal team to find more accurate match for this HR/Job.</span></h2>
                       <div className="vitalInformationContent">
                         {/* <h6>Compensation options
 
@@ -2590,7 +2590,7 @@ console.log("skillresult: " , skillresult)
                           </ul>
                         </div> */}
                         <h6>Industry from which candidates are neededs
-                        <span className="editNewIcon"  onClick={() => {
+                          <span className="editNewIcon" onClick={() => {
                             setisIndustryCandidatesOpen(true);
                             setSpecificIndustry(jobPreview?.industryType ? jobPreview?.industryType?.split("^") : [])
                           }} ><img src={EditnewIcon} /></span>
@@ -2606,7 +2606,7 @@ console.log("skillresult: " , skillresult)
                           </ul>
                         </div>
                         <h6>Need candidate with people management experience?
-                        <span className="editNewIcon" onClick={() => {
+                          <span className="editNewIcon" onClick={() => {
                             setisCandidatePeopleOpen(true);
                             setHasPeopleManagementExp(jobPreview?.hasPeopleManagementExp)
                           }} ><img src={EditnewIcon} /></span>
@@ -2622,7 +2622,7 @@ console.log("skillresult: " , skillresult)
 
                         <h6 className="mt-2">Prerequisites or key highlights
 
-                        <span className="editNewIcon" onClick={() => {
+                          <span className="editNewIcon" onClick={() => {
                             setIsPrerequisites(true);
                             setPrerequisites(jobPreview?.prerequisites);
                           }}><img src={EditnewIcon} /></span>
@@ -2666,7 +2666,7 @@ console.log("skillresult: " , skillresult)
                   </div>
                 </div>
 
-                <div class="trackerBtn mt-3 ml-4">
+                <div class="previewHRAction">
                   <button
                     type="button"
                     class="btnPrimary"
@@ -2699,6 +2699,7 @@ console.log("skillresult: " , skillresult)
           setCompanyLinkedInValue('');
         }}
         className="customModal jobPostEditModal"
+        footer={null}
       >
         <div className="modalContent">
           {isLoading && (
@@ -2735,6 +2736,7 @@ console.log("skillresult: " , skillresult)
         }}
         width={267}
         className="customModal jobPostEditModal PrevEditmodal"
+        footer={null}
       >
         <div className="modalContent">
           {isLoading && (
@@ -2777,6 +2779,7 @@ console.log("skillresult: " , skillresult)
         }}
         width={267}
         className="customModal jobPostEditModal PrevEditmodal"
+        footer={null}
       >
         <div className="modalContent">
           {isLoading && (
@@ -2829,6 +2832,7 @@ console.log("skillresult: " , skillresult)
         }}
         width={461}
         className="customModal jobPostEditModal"
+        footer={null}
       >
         <div className="modalContent">
           {isLoading && (
@@ -2867,6 +2871,7 @@ console.log("skillresult: " , skillresult)
         }}
         width={267}
         className="customModal jobPostEditModal"
+        footer={null}
       >
         {isLoading && (
           <Space size="middle">
@@ -2914,6 +2919,7 @@ console.log("skillresult: " , skillresult)
         }}
         width={461}
         className="customModal jobPostEditModal PrevEditmodal"
+        footer={null}
       >
         <div className="modalContent">
           {isLoading && (
@@ -2954,21 +2960,22 @@ console.log("skillresult: " , skillresult)
         width={610}
         className="customModal jobPostEditModal"
         maskClosable={false}
+        footer={null}
       >
         <div className="modalContent">
           <div className="row formFields">
             <div className="col-12">
               <div className="form-group">
-                
-                {editBudget?.budgetType === 3 ?  
-                         <label>
-                          Change {jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `Salary`:`Total`} Budget <span>*</span>
-                          </label> : 
-                          <label>
-                            Change {jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `Salary`:`Total`} Budget ({jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `${editBudget.currency}/Annum`:`${editBudget.currency}/Month`})? <span>*</span>
-                          </label>}
-                  
-                
+
+                {editBudget?.budgetType === 3 ?
+                  <label>
+                    Change {jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `Salary` : `Total`} Budget <span>*</span>
+                  </label> :
+                  <label>
+                    Change {jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `Salary` : `Total`} Budget ({jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `${editBudget.currency}/Annum` : `${editBudget.currency}/Month`})? <span>*</span>
+                  </label>}
+
+
                 <Radio.Group
                   className="customradio newradiodes small"
                   name="budgetType"
@@ -2980,7 +2987,7 @@ console.log("skillresult: " , skillresult)
                     setError({});
                     setFromEstimatedBudget(0);
                     setToEstimatedBudget(0);
-                    setCalculateUplersFees({from:"",to:""});                   
+                    setCalculateUplersFees({ from: "", to: "" });
                   }}
 
                   value={editBudget?.budgetType}
@@ -3064,16 +3071,16 @@ console.log("skillresult: " , skillresult)
                                 }
                               }
                               }
-                              onBlur={async (e) => {                                                    
-                                CalculateEstimatedUplersFees(Number(e.target.value) , (editBudget.budgetType !== 1 || editBudget?.budgetTo >= 0) ? editBudget?.budgetTo :null );
-                            }}
+                              onBlur={async (e) => {
+                                CalculateEstimatedUplersFees(Number(e.target.value), (editBudget.budgetType !== 1 || editBudget?.budgetTo >= 0) ? editBudget?.budgetTo : null);
+                              }}
                               onKeyPress={(event) => {
                                 if (event.key === "e" || event.key === "E" || event.key === "-") {
                                   event.preventDefault();
                                 }
                               }}
-                            />                            
-                            <span>({jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `${editBudget.currency}/Annum`:`${editBudget.currency}/Month`})</span>
+                            />
+                            <span>({jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `${editBudget.currency}/Annum` : `${editBudget.currency}/Month`})</span>
                           </div>
                         )}
                       {error.budgetFrom && (
@@ -3099,16 +3106,16 @@ console.log("skillresult: " , skillresult)
                               }
                             }
                             }
-                            onBlur={(e) => {                                                                                                       
-                              CalculateEstimatedUplersFees(Number(editBudget.budgetFrom),Number(e.target.value));
-                          }}
+                            onBlur={(e) => {
+                              CalculateEstimatedUplersFees(Number(editBudget.budgetFrom), Number(e.target.value));
+                            }}
                             onKeyPress={(event) => {
                               if (event.key === "e" || event.key === "E" || event.key === "-") {
                                 event.preventDefault();
                               }
                             }}
-                          />                          
-                          <span>({jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `${editBudget.currency}/Annum`:`${editBudget.currency}/Month`})</span>
+                          />
+                          <span>({jobPreview?.hiringTypePricingId === 3 || userData?.CompanyTypeId == 2 ? `${editBudget.currency}/Annum` : `${editBudget.currency}/Month`})</span>
                         </div>
                       )}
                       {error.budgetTo && (
@@ -3127,7 +3134,7 @@ console.log("skillresult: " , skillresult)
      } */}
                   </div>
                 </div>
-                <div className="form-group mt-2">
+                <div className="form-group mt-2 mb-0">
                   <Checkbox
                     name="isConfidentialBudget"
                     checked={editBudget.isConfidentialBudget}
@@ -3135,35 +3142,35 @@ console.log("skillresult: " , skillresult)
                   ><span style={{ fontWeight: 400 }} >Keep the Salary Confidential</span></Checkbox>
                 </div>
 
-                {userData?.CompanyTypeId === 1 && 
-                
-                (jobPreview?.hiringTypePricingId === 3 ? 
-                                (editBudget?.budgetType == 1 && editBudget?.budgetFrom > 0 )   
-                                ?
-                               <div className="noJobDesInfo mt-2">
-                                    Based on your selection of the 'Direct hire on your payroll - {TrackData?.trackingDetails?.country == "IN" ? "7.5%" : "10%"}' model, the one-time Uplers fee will be {editBudget?.currency} {estimatedFromSalaryBudget}
-                                </div> : editBudget?.budgetTo > 0 && <div className="noJobDesInfo mt-2">
-                                    Based on your selection of the 'Direct hire on your payroll - {TrackData?.trackingDetails?.country == "IN" ? "7.5%" : "10%"}' model, the one-time Uplers fee will be {editBudget?.currency} {estimatedFromSalaryBudget} - {estimatedToSalaryBudget}
-                                </div> 
-                                :                  
-                      
-                      (editBudget?.budgetType == 1 && editBudget?.budgetFrom > 0 )   
-                                ?
-                                 <div className="noJobDesInfo">Based on your selection of the 
-                                    {jobPreview?.hiringTypePricingId === 1 ? 
-                                    " Hire a contractor - 35% " : jobPreview?.hiringTypePricingId === 2 ? " Hire an employee on Uplers payroll - 35% " :` Direct-hire ${TrackData?.trackingDetails?.country == "IN" ? "7.5% " : "10% "}`   
-                                }
-                                model, the candidate payout is {editBudget?.currency} {estimatedFromSalaryBudget}/month, with Uplers fees up to {editBudget?.currency} {calculatedUplersFees?.from}/month.
-                                
-                            </div> : editBudget?.budgetTo > 0 && 
-                                <div className="noJobDesInfo">Based on your selection of the 
-                                {jobPreview?.hiringTypePricingId === 1 ? 
-                                " Hire a contractor - 35% " : jobPreview?.hiringTypePricingId === 2 ? " Hire an employee on Uplers payroll - 35% " :` Direct-hire ${TrackData?.trackingDetails?.country == "IN" ? "7.5% " : "10% "}`   
-                            }
-                            model, the candidate payout is {editBudget?.currency} {estimatedFromSalaryBudget +" - " + estimatedToSalaryBudget}/month, with Uplers fees ranging from  {editBudget?.currency} {calculatedUplersFees?.from  +" - " + calculatedUplersFees?.to }/month.
-                            
-                        </div>)
-                            }
+                {userData?.CompanyTypeId === 1 &&
+
+                  (jobPreview?.hiringTypePricingId === 3 ?
+                    (editBudget?.budgetType == 1 && editBudget?.budgetFrom > 0)
+                      ?
+                      <div className="noJobDesInfo mt-2">
+                        Based on your selection of the 'Direct hire on your payroll - {TrackData?.trackingDetails?.country == "IN" ? "7.5%" : "10%"}' model, the one-time Uplers fee will be {editBudget?.currency} {estimatedFromSalaryBudget}
+                      </div> : editBudget?.budgetTo > 0 && <div className="noJobDesInfo mt-2">
+                        Based on your selection of the 'Direct hire on your payroll - {TrackData?.trackingDetails?.country == "IN" ? "7.5%" : "10%"}' model, the one-time Uplers fee will be {editBudget?.currency} {estimatedFromSalaryBudget} - {estimatedToSalaryBudget}
+                      </div>
+                    :
+
+                    (editBudget?.budgetType == 1 && editBudget?.budgetFrom > 0)
+                      ?
+                      <div className="noJobDesInfo">Based on your selection of the
+                        {jobPreview?.hiringTypePricingId === 1 ?
+                          " Hire a contractor - 35% " : jobPreview?.hiringTypePricingId === 2 ? " Hire an employee on Uplers payroll - 35% " : ` Direct-hire ${TrackData?.trackingDetails?.country == "IN" ? "7.5% " : "10% "}`
+                        }
+                        model, the candidate payout is {editBudget?.currency} {estimatedFromSalaryBudget}/month, with Uplers fees up to {editBudget?.currency} {calculatedUplersFees?.from}/month.
+
+                      </div> : editBudget?.budgetTo > 0 &&
+                      <div className="noJobDesInfo">Based on your selection of the
+                        {jobPreview?.hiringTypePricingId === 1 ?
+                          " Hire a contractor - 35% " : jobPreview?.hiringTypePricingId === 2 ? " Hire an employee on Uplers payroll - 35% " : ` Direct-hire ${TrackData?.trackingDetails?.country == "IN" ? "7.5% " : "10% "}`
+                        }
+                        model, the candidate payout is {editBudget?.currency} {estimatedFromSalaryBudget + " - " + estimatedToSalaryBudget}/month, with Uplers fees ranging from  {editBudget?.currency} {calculatedUplersFees?.from + " - " + calculatedUplersFees?.to}/month.
+
+                      </div>)
+                }
 
                 <div className="buttonEditGroup justify-content-start">
                   <button
@@ -3214,6 +3221,7 @@ console.log("skillresult: " , skillresult)
         width={800}
         className="customModal jobPostEditModal"
         maskClosable={false}
+        footer={null}
       >
         <div className="modalContent">
           {userData?.CompanyTypeId === 1 ?
@@ -3461,6 +3469,7 @@ console.log("skillresult: " , skillresult)
         width={536}
         className="customModal jobPostEditModal"
         maskClosable={false}
+        footer={null}
       >
         <div className="modalContent">
           <div className="row">
@@ -3554,6 +3563,7 @@ console.log("skillresult: " , skillresult)
         width={400}
         className="customModal jobPostEditModal"
         maskClosable={false}
+        footer={null}
       >
         <div className="modalContent">
           <div className="row formFields">
@@ -3693,6 +3703,7 @@ console.log("skillresult: " , skillresult)
         width={338}
         className="customModal jobPostEditModal"
         maskClosable={false}
+        footer={null}
       >
         <div className="modalContent">
           <div className="row formFields">
@@ -3792,6 +3803,7 @@ console.log("skillresult: " , skillresult)
         width={556}
         className="customModal jobPostEditModal"
         maskClosable={false}
+        footer={null}
       >
         <div className="modalContent">
           <div className="row formFields">
@@ -3912,6 +3924,7 @@ console.log("skillresult: " , skillresult)
         }}
         width={620}
         className="customModal jobPostEditModal PrevEditmodal"
+        footer={null}
       >
         <div className="modalContent">
           {isLoading && (
@@ -3939,7 +3952,7 @@ console.log("skillresult: " , skillresult)
                     {compensationOptions?.map(option => (
                       !CompensationValues?.some(val => val === option.value) && (
                         <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setCompensationValues([...CompensationValues, option?.value])}>
-                          <span>{option.label} <img src={plusImage} loading="lazy" alt="star" /></span>
+                          <span>{option.label} <img src={plusIcon} loading="lazy" alt="star" /></span>
                         </li>
                       )
                     ))}
@@ -3967,6 +3980,7 @@ console.log("skillresult: " , skillresult)
         }}
         width={780}
         className="customModal jobPostEditModal PrevEditmodal"
+        footer={null}
       >
         <div className="modalContent">
           {isLoading && (
@@ -3997,7 +4011,7 @@ console.log("skillresult: " , skillresult)
                             setSpecificIndustry([...specificIndustry, option?.value])
                           }}
                           >
-                            <span>{option.label} <img src={plusImage} loading="lazy" alt="star" /></span>
+                            <span>{option.label} <img src={plusIcon} loading="lazy" alt="star" /></span>
                           </li>
                         )
                       ))}
@@ -4027,6 +4041,7 @@ console.log("skillresult: " , skillresult)
         }}
         width={400}
         className="customModal jobPostEditModal PrevEditmodal"
+        footer={null}
       >
         <div className="modalContent">
           {isLoading && (

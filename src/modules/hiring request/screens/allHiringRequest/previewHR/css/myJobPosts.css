@@ -1440,7 +1440,9 @@
 }
 
 .PostNewJobModal .PostNewJobModal-Content .ant-select-selection-placeholder {
-    padding-left: 12px;
+    padding-left: 0;
+    left: 16px;
+    right: 16px;
 }
 
 .Footer-Newjob {
@@ -1506,6 +1508,7 @@
 .customradio.newradiodes label.ant-radio-button-wrapper .checkIcon {
     margin-left: 6px;
     display: none;
+    vertical-align: -3px;
 }
 
 .customradio.newradiodes .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) .checkIcon {
@@ -3722,7 +3725,6 @@ span.PausethisjobText {
     display: none;
 }
 
-
 .buttonEditGroup .btnPrimary {
     font-size: 14px;
     min-height: 40px;
@@ -3745,6 +3747,11 @@ span.PausethisjobText {
     transition: all .5s;
     z-index: 2;
     cursor: pointer;
+}
+
+.buttonEditGroup .btnPrimary:hover{
+    background: #000;
+    color: #fff;
 }
 
 .justify-content-end {
@@ -4066,7 +4073,8 @@ span.PausethisjobText {
   }
   
   .editinfo-details-form {
-    padding: 0 32px;
+    /* padding: 0 32px; */
+    padding: 0;
   }
   .editinfo-details-form  .disabled-input{
     background-color:  #efefef !important; 
