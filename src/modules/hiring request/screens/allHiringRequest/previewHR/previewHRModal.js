@@ -26,15 +26,15 @@ import moment from 'moment-timezone';
 import infoIcon from "assets/svg/infoIcon.svg";
 import rightGreen from "assets/svg/rightGreen.svg";
 import { getDataFromLocalStorage, trackingDetailsAPI, convertCurrency, EngOptions, sanitizeLinks, compensationOptions, industryOptions, seriesOptions, monthOptions, foundedIn, formatSkill } from "./services/commonUsedVar";
-// import { useDispatch } from "react-redux";
 // import { DeleteCultureImage, DeleteYoutubeLink, UpdateDetails, getCompanyPerks } from "../../../services/companyProfileApi";
-// import YouTubeVideo from "../../CompanyDetails/InnerComponents/youTubeVideo";
 
 import deleteIcon from "assets/svg/delete.svg";
 import DeleteIcon from "assets/svg/delete-icon.svg";
 import DeleteImg from "assets/svg/delete-icon.svg";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
 import { MasterDAO } from "core/master/masterDAO";
+import YouTubeVideo from "modules/client/components/previewClientDetails/youTubeVideo";
+import { NetworkInfo } from "constants/network";
 // import "../../CompanyDetails/companyDetails.css";
 function PreviewHRModal({
   setViewPosition,
@@ -44,7 +44,9 @@ function PreviewHRModal({
   hrIdforPreview,
   setChangeStatus,
   hrNumber,
-  allData
+  allData,
+  ispreviewLoading,
+  previewIDs
 }) {
   const isCloseJob = localStorage.getItem("isCloseJob");
   const jobActiveTab = localStorage.getItem("jobActiveTab");
@@ -282,8 +284,9 @@ function PreviewHRModal({
 
     if (name === "companyName") {
       payload = {
+        IsUpdateFromPreviewPage:true,
         "basicDetails": {
-          "companyID": userData?.LoggedInUserCompanyID,
+          "companyID": previewIDs?.companyID,
           [name]: value,
           "website": companyURLChangeValue ? companyURLChangeValue : basicDetails?.website
         }
@@ -294,15 +297,17 @@ function PreviewHRModal({
         return;
       }
       payload = {
+        IsUpdateFromPreviewPage:true,
         "basicDetails": {
-          "companyID": userData?.LoggedInUserCompanyID,
+          "companyID": previewIDs?.companyID,
           "linkedInProfile": value ? value : basicDetails?.linkedInProfile
         }
       };
     } else if (name === "culture") {
       payload = {
+        IsUpdateFromPreviewPage:true,
         "basicDetails": {
-          "companyID": userData?.LoggedInUserCompanyID,
+          "companyID": previewIDs?.companyID,
           [name]: value,
         },
         "cultureDetails": cultureDetails,
@@ -310,8 +315,9 @@ function PreviewHRModal({
       };
     } else if (name === "teamSize") {
       payload = {
+        IsUpdateFromPreviewPage:true,
         "basicDetails": {
-          "companyID": userData?.LoggedInUserCompanyID,
+          "companyID": previewIDs?.companyID,
           [name]: value?.toString(),
           "companySize": value
         }
@@ -328,51 +334,53 @@ function PreviewHRModal({
         additionalInformation: value[0]?.additionalInformation
       };
       payload = {
+        IsUpdateFromPreviewPage:true,
         "basicDetails": {
-          "companyID": userData?.LoggedInUserCompanyID,
+          "companyID": previewIDs?.companyID,
           "isSelfFunded": basicDetails?.isSelfFunded,
         },
         "fundingDetails": [_objVal],
       };
     } else {
       payload = {
+        IsUpdateFromPreviewPage:true,
         "basicDetails": {
-          "companyID": userData?.LoggedInUserCompanyID,
+          "companyID": previewIDs?.companyID,
           [name]: value?.toString()
         }
       };
     }
 
-    // let res = await UpdateDetails(payload);
-    // if (res.statusCode === 200) {
-    //   messageApi.open({
-    //     type: "success",
-    //     content: `${name} updated`,
-    //   });
+    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
+    if (res.statusCode === 200) {
+      messageApi.open({
+        type: "success",
+        content: `${name} updated`,
+      });
 
-    //   if (name == 'aboutCompanyDesc') {
-    //     setBasicDetails({ ...basicDetails, ['aboutCompany']: value });
-    //   } else if (name === "companyName") {
-    //     setBasicDetails({ ...basicDetails, [name]: value, "website": companyURLChangeValue ? companyURLChangeValue : basicDetails?.website });
-    //   } else if (name === 'industry') {
-    //     setBasicDetails({ ...basicDetails, ['companyIndustry']: value });
-    //   } else {
-    //     setBasicDetails({ ...basicDetails, [name]: value });
-    //   }
-    //   closeState(false);
-    //   if (name === "fundingDetails") {
-    //     resetValState([]);
-    //     setFundingDetails(value);
-    //     if (!basicDetails?.isSelfFunded) {
-    //       details = value[0] ? value[0] : null;
-    //       allInvestors = details?.investors ? details?.investors?.split(",") : [];
-    //       displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
-    //     }
+      if (name == 'aboutCompanyDesc') {
+        setBasicDetails({ ...basicDetails, ['aboutCompany']: value });
+      } else if (name === "companyName") {
+        setBasicDetails({ ...basicDetails, [name]: value, "website": companyURLChangeValue ? companyURLChangeValue : basicDetails?.website });
+      } else if (name === 'industry') {
+        setBasicDetails({ ...basicDetails, ['companyIndustry']: value });
+      } else {
+        setBasicDetails({ ...basicDetails, [name]: value });
+      }
+      closeState(false);
+      if (name === "fundingDetails") {
+        resetValState([]);
+        setFundingDetails(value);
+        if (!basicDetails?.isSelfFunded) {
+          details = value[0] ? value[0] : null;
+          allInvestors = details?.investors ? details?.investors?.split(",") : [];
+          displayedInvestors = showAllInvestors ? allInvestors : allInvestors.slice(0, 4);
+        }
 
-    //   } else {
-    //     resetValState('');
-    //   }
-    // }
+      } else {
+        resetValState('');
+      }
+    }
     setIsLoading(false);
   };
 
@@ -873,7 +881,7 @@ function PreviewHRModal({
       };
       setIsLoading(true)
       let result = await updateJobPostDetail(payload);
-      console.log('res for budget', result);
+      // console.log('res for budget', result);
       if (result.statusCode === 200) {
         setisEditBudget(false);
         messageApi.open({
@@ -914,8 +922,11 @@ function PreviewHRModal({
       return
     }
     if ((editDuration?.hiringTypePricingId == 1 || editDuration?.hiringTypePricingId == 2) && !editDuration.contractDuration) {
-      message.error(`Please select contract duration`);
+      if(editDuration?.employmentType !== "Permanent"){
+         message.error(`Please select contract duration`);
       return
+      }
+     
     }
     if (editDuration?.hiringTypePricingId == 3 && editDuration.payrollTypeId == 4 && !editDuration.contractDuration) {
       message.error(`Please select contract duration`);
@@ -964,6 +975,7 @@ function PreviewHRModal({
       }
     }
   };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -1002,36 +1014,47 @@ function PreviewHRModal({
         const result = await loadEndPromise;
         setIsLoading(false);
         let payload = {
+          IsUpdateFromPreviewPage:true,
           "basicDetails": {
-            "companyID": userData?.LoggedInUserCompanyID,
+            "companyID": previewIDs?.companyID,
             "companyLogo": file.name,
-            "fileUpload": {
-              "base64ProfilePic": result,
-              "extension": file.name.split(".").pop(),
-            },
           }
         }
         setIsLoading(true);
-        // let res = await UpdateDetails(payload);
-        // setIsLoading(false);
-        // if (res.statusCode === 200) {
-        //   messageApi.open({
-        //     type: "success",
-        //     content: `Logo updated`,
-        //   });
-        //   setBasicDetails({
-        //     ...basicDetails,
-        //     companyLogo: result,
-        //   });
-        //   let data = { ...jobPreview };
-        //   data['companyLogo'] = result;
-        //   dispatch({ type: 'FILL_STEPS_DATA', payload: data });
-        //   let _userData = JSON.parse(localStorage.getItem('user'));
-        //   _userData.LoggedInUserProfilePic = result;
-        //   localStorage.setItem("user", JSON.stringify(_userData));
-        //   dispatch({ type: 'FETCH_USER_DATA', payload: _userData });
-        //   setPreviewLogo('');
-        // }
+       
+        let filesToUpload = new FormData();
+        filesToUpload.append("Files", file);
+        filesToUpload.append("IsCompanyLogo", true);
+        filesToUpload.append("IsCultureImage", false);
+
+        let res = await allCompanyRequestDAO.uploadImageDAO(filesToUpload);
+        setIsLoading(false);
+        if (res.statusCode === 200) {
+          // messageApi.open({
+          //   type: "success",
+          //   content: `Logo updated`,
+          // });
+          message.success(`Logo updated`)
+          let imgUrls = res?.responseBody;
+          // setBasicDetails({
+          //   ...basicDetails,
+          //   companyLogo: result,
+          // });
+          setBasicDetails({
+            ...basicDetails,
+            companyLogo: imgUrls[0],
+          });
+          //to update comp info in BE
+           allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
+          let data = { ...jobPreview };
+          data['companyLogo'] = result;
+          // dispatch({ type: 'FILL_STEPS_DATA', payload: data });
+          let _userData = JSON.parse(localStorage.getItem('user'));
+          _userData.LoggedInUserProfilePic = result;
+          localStorage.setItem("user", JSON.stringify(_userData));
+          // dispatch({ type: 'FETCH_USER_DATA', payload: _userData });
+          setPreviewLogo('');
+        }
 
       } catch (error) {
         console.error("Error reading the file:", error);
@@ -1071,7 +1094,7 @@ function PreviewHRModal({
 
     // let skillresult = await getSkills(localStorage.getItem("roleId"));
     let skillresult = await MasterDAO.getSkillsRequestDAO();
-    console.log("skillresult: ", skillresult)
+    // console.log("skillresult: ", skillresult)
 
     if (skillresult.statusCode === 200) {
       const uniqueValues = new Set();
@@ -1157,7 +1180,8 @@ function PreviewHRModal({
 
     if (res?.statusCode == 200) {
       let _list = [];
-      for (let val of res?.responseBody) {
+      for (let val of res?.responseBody?.details
+        ) {
         let obj = {};
         obj.label = val.country;
         obj.value = val.id;
@@ -1417,6 +1441,8 @@ function PreviewHRModal({
       >
 
         <div className="PostNewJobModal-Content poup-new-content">
+        
+       
           <div className="PreviewpageMainWrap">
             <div className="PreviewStickyContent">
 
@@ -1424,7 +1450,9 @@ function PreviewHRModal({
                 <h4>Preview/Edit HR</h4>
               </div>
 
-              <div className="PostJobStepSecondWrap">
+              {ispreviewLoading ? <div style={{display:'flex',justifyContent:'center'}}><Space size="large">
+          <Spin size="large" />
+        </Space> </div>  :  <div className="PostJobStepSecondWrap">
                 <div className="formFields">
                   <div className="formFields-box">
                     <div className="formFields-box-inner">
@@ -1472,13 +1500,15 @@ function PreviewHRModal({
                             >
                               Cancel
                             </button>
-                            <button
+                            {isLoading ? <Spin size="large" /> : <button
                               type="button"
                               class="btnPrimary"
                               onClick={() => updateRoleName()}
+                              disabled={isLoading}
                             >
-                              SAVE
-                            </button>
+                             SAVE
+                            </button>}
+                            
                           </div>
                         </div>
                       )}
@@ -1738,13 +1768,14 @@ function PreviewHRModal({
                                     >
                                       Cancel
                                     </button>
-                                    <button
+                                    {isLoading ? <Spin size="large" /> : <button
                                       type="button"
                                       class="btnPrimary"
                                       onClick={() => updateSkills()}
                                     >
                                       SAVE
-                                    </button>
+                                    </button>}
+                                    
                                   </div>
                                 </div>
                               </div>
@@ -1818,13 +1849,14 @@ function PreviewHRModal({
                                     >
                                       Cancel
                                     </button>
-                                    <button
+                                    {isLoading ? <Spin size="large" /> : <button
                                       type="button"
                                       class="btnPrimary"
                                       onClick={() => updateWhatWeOffer()}
                                     >
                                       SAVE
-                                    </button>
+                                    </button>}
+                                    
                                   </div>
                                 </>
                               ) : (
@@ -1872,7 +1904,9 @@ function PreviewHRModal({
                           <div className="companyDetailsHead">
                             <div className="thumbImages">
                               {basicDetails?.companyLogo ?
-                                <img src={basicDetails?.companyLogo} alt="CompanyProfileImg" /> :
+                                <img src={basicDetails?.companyLogo?.includes(NetworkInfo.PROTOCOL +
+                                  NetworkInfo.DOMAIN)? basicDetails?.companyLogo :  NetworkInfo.PROTOCOL + NetworkInfo.DOMAIN +
+                                  "Media/CompanyLogo/" + basicDetails?.companyLogo} alt="CompanyProfileImg" /> :
                                 <Avatar
                                   style={{
                                     width: "100%",
@@ -1984,13 +2018,14 @@ function PreviewHRModal({
                                 >
                                   Cancel
                                 </button>
-                                <button
+                                {isLoading ? <Spin size="large" /> :  <button
                                   type="button"
                                   class="btnPrimary"
                                   onClick={() => updateCompanyDetails('aboutCompanyDesc', aboutCompanyValue, setisAboutCompany, setAboutCompanyValue)}
                                 >
                                   SAVE
-                                </button>
+                                </button>}
+                               
                               </div>
                             </>
                           }
@@ -2139,13 +2174,14 @@ function PreviewHRModal({
                                   >
                                     Cancel
                                   </button>
-                                  <button
+                                  {isLoading ? <Spin size="large" /> :  <button
                                     type="button"
                                     class="btnPrimary"
                                     onClick={() => updateCompanyDetails('fundingDetails', fundingData, setIsFundingDetails, setFundingData)}
                                   >
                                     SAVE
-                                  </button>
+                                  </button>}
+                                 
                                 </div>
 
                               </div>
@@ -2255,7 +2291,7 @@ function PreviewHRModal({
                                             setIsLoading(true);
                                             // let res = await DeleteCultureImage({
                                             //   cultureID: img?.cultureID,
-                                            //   companyID: userData?.LoggedInUserCompanyID,
+                                            //   companyID: previewIDs?.companyID,
                                             //   culture_Image: img?.internalName ? img?.internalName : img?.cultureImage
                                             // });
                                             setIsLoading(false);
@@ -2274,24 +2310,25 @@ function PreviewHRModal({
                               <div className="img-section mt-24">
                                 {youTubeDetails && youTubeDetails?.map((link, index) => {
                                   return (
-                                    // <YouTubeVideo key={index} videoLink={link?.youtubeLink} onDelete={async () => {
-                                    //   let _youtubeVal = [...youTubeDetails];
-                                    //   if (link?.internalId) {
-                                    //     let index = _youtubeVal?.findIndex((val) => val?.internalId === link?.internalId);
-                                    //     _youtubeVal.splice(index, 1);
-                                    //   } else {
-                                    //     let index = _youtubeVal?.findIndex((val) => val?.youtubeID === link?.youtubeID);
-                                    //     _youtubeVal.splice(index, 1);
-                                    //     setIsLoading(true);
-                                    //     let res = await DeleteYoutubeLink({
-                                    //       youtubeID: link?.youtubeID,
-                                    //       companyID: userData?.LoggedInUserCompanyID,
-                                    //     });
-                                    //     setIsLoading(false);
-                                    //   }
-                                    //   setYouTubeDetails(_youtubeVal);
-                                    // }} />
-                                    <></>
+                                
+                                    <YouTubeVideo key={index} videoLink={link?.youtubeLink} onDelete={async () => {
+                                      let _youtubeVal = [...youTubeDetails];
+                                      if (link?.internalId) {
+                                        let index = _youtubeVal?.findIndex((val) => val?.internalId === link?.internalId);
+                                        _youtubeVal.splice(index, 1);
+                                      } else {
+                                        let index = _youtubeVal?.findIndex((val) => val?.youtubeID === link?.youtubeID);
+                                        _youtubeVal.splice(index, 1);
+                                        setIsLoading(true);
+                                        // let res = await DeleteYoutubeLink({
+                                        //   youtubeID: link?.youtubeID,
+                                        //   companyID: previewIDs?.companyID,
+                                        // });
+                                        setIsLoading(false);
+                                      }
+                                      setYouTubeDetails(_youtubeVal);
+                                    }} />
+                                
                                   )
                                 })
                                 }
@@ -2405,7 +2442,7 @@ function PreviewHRModal({
                                               setIsLoading(true);
                                               // let res = await DeleteCultureImage({
                                               //   cultureID: img?.cultureID,
-                                              //   companyID: userData?.LoggedInUserCompanyID,
+                                              //   companyID: previewIDs?.companyID,
                                               //   culture_Image: img?.internalName ? img?.internalName : img?.cultureImage
                                               // });
                                               setIsLoading(false);
@@ -2483,7 +2520,7 @@ function PreviewHRModal({
                                             setIsLoading(true);
                                             // let res = await DeleteYoutubeLink({
                                             //   youtubeID: link?.youtubeID,
-                                            //   companyID: userData?.LoggedInUserCompanyID,
+                                            //   companyID: previewIDs?.companyID,
                                             // });
                                             setIsLoading(false);
                                           }
@@ -2506,13 +2543,14 @@ function PreviewHRModal({
                                 >
                                   Cancel
                                 </button>
-                                <button
+                                {isLoading ? <Spin size="large" /> : <button
                                   type="button"
                                   class="btnPrimary"
                                   onClick={() => updateCompanyDetails('culture', culture, setIsCulture, setCulture)}
                                 >
                                   SAVE
-                                </button>
+                                </button>}
+                                
                               </div>
                             </>
                           }
@@ -2534,19 +2572,21 @@ function PreviewHRModal({
                                 />
                                 <div className="buttonEditGroup mt-4">
                                   <button type="button" class="btnPrimary blank" onClick={() => { setIsCompanyBenefits(false); setPerkDetailsValue([]) }}> Cancel </button>
-                                  <button type="button" class="btnPrimary" onClick={async () => {
+                                  {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={async () => {
                                     setPerkDetails(perkDetailsValue);
                                     setIsCompanyBenefits(false);
                                     let payload = {
+                                      IsUpdateFromPreviewPage:true,
                                       "basicDetails": {
-                                        "companyID": userData?.LoggedInUserCompanyID,
+                                        "companyID": previewIDs?.companyID,
                                       },
                                       "perkDetails": perkDetailsValue
                                     }
                                     setIsLoading(true);
-                                    // let res = await UpdateDetails(payload);
+                                    let res = await allCompanyRequestDAO.updateCompanyDetailsDAO(payload);
                                     setIsLoading(false);
-                                  }}> SAVE </button>
+                                  }}> SAVE </button>}
+                                  
                                 </div>
                               </>
                               :
@@ -2572,7 +2612,7 @@ function PreviewHRModal({
                       <h2 className="formFields-box-title">Enhance Candidate Matchmaking <span className="boxInnerInfo">
                         This information will not be visible to the candidates or on job board, but will be used by the system/internal team to find more accurate match for this HR/Job.</span></h2>
                       <div className="vitalInformationContent">
-                        {/* <h6>Compensation options
+                        <h6>Compensation options
 
                         <span className="editNewIcon"  onClick={() => {
                             setisCompensationOptionOpen(true);
@@ -2588,7 +2628,7 @@ function PreviewHRModal({
                                 )
                               })}
                           </ul>
-                        </div> */}
+                        </div>
                         <h6>Industry from which candidates are neededs
                           <span className="editNewIcon" onClick={() => {
                             setisIndustryCandidatesOpen(true);
@@ -2643,7 +2683,8 @@ function PreviewHRModal({
                               />
                               <div className="buttonEditGroup mt-4">
                                 <button type="button" class="btnPrimary blank" onClick={() => { setIsPrerequisites(false); setPrerequisites('') }}> Cancel </button>
-                                <button type="button" class="btnPrimary" onClick={updatePrerequisites}> SAVE </button>
+                                {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={updatePrerequisites}> SAVE </button>}
+                                
                               </div>
                             </div>
                           </div>
@@ -2683,9 +2724,12 @@ function PreviewHRModal({
                     close
                   </button>
                 </div>
-              </div>
+              </div>}
+
+              
             </div>
           </div>
+         
         </div>
       </Modal>
 
@@ -2718,7 +2762,8 @@ function PreviewHRModal({
                   onChange={(e) => setCompanyLinkedInValue(e.target.value)} />
                 <div className="buttonEditGroup">
                   <button type="button" class="btnPrimary blank" onClick={() => { setIsCompanyLinkedIn(false); setCompanyLinkedInValue('') }}> Cancel </button>
-                  <button type="button" class="btnPrimary" onClick={() => updateCompanyDetails('linkedInProfile', companyLinkedInValue, setIsCompanyLinkedIn, setCompanyLinkedInValue)}> SAVE </button>
+                  {isLoading ? <Spin size="large" /> :  <button type="button" class="btnPrimary" onClick={() => updateCompanyDetails('linkedInProfile', companyLinkedInValue, setIsCompanyLinkedIn, setCompanyLinkedInValue)}> SAVE </button>}
+                 
                 </div>
               </div>
             </div>
@@ -2760,7 +2805,8 @@ function PreviewHRModal({
                 />
                 <div className="buttonEditGroup">
                   <button type="button" class="btnPrimary blank" onClick={() => { setisCompanyFoundedOpen(false); setCompanyFoundedValue('') }}> Cancel </button>
-                  <button type="button" class="btnPrimary" onClick={() => updateCompanyDetails('foundedYear', companyFoundedValue, setisCompanyFoundedOpen, setCompanyFoundedValue)}> SAVE </button>
+                  {isLoading ? <Spin size="large" /> :  <button type="button" class="btnPrimary" onClick={() => updateCompanyDetails('foundedYear', companyFoundedValue, setisCompanyFoundedOpen, setCompanyFoundedValue)}> SAVE </button>}
+                 
                 </div>
               </div>
             </div>
@@ -2813,9 +2859,10 @@ function PreviewHRModal({
               </div>
               <div className="buttonEditGroup">
                 <button type="button" class="btnPrimary blank" onClick={() => { setIsCompanyNameChange(false); setIsCompanyNameChangeValue(''); setIsCompanyURLChangeValue(''); }}> Cancel </button>
-                <button type="button" class="btnPrimary" onClick={() =>
+                {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={() =>
                   updateCompanyDetails('companyName', companyNameChangeValue, setIsCompanyNameChange, setIsCompanyNameChangeValue)
-                }> SAVE </button>
+                }> SAVE </button>}
+                
               </div>
             </div>
           </div>
@@ -2853,7 +2900,8 @@ function PreviewHRModal({
                 />
                 <div className="buttonEditGroup">
                   <button type="button" class="btnPrimary blank" onClick={() => { setisEditCompanyLocation(false); setEditCompanyLocationValue(''); }}> Cancel </button>
-                  <button type="button" class="btnPrimary" onClick={() => updateCompanyDetails('headquaters', editCompanyLocationValue, setisEditCompanyLocation, setEditCompanyLocationValue)}> SAVE </button>
+                  {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={() => updateCompanyDetails('headquaters', editCompanyLocationValue, setisEditCompanyLocation, setEditCompanyLocationValue)}> SAVE </button>}
+                  
                 </div>
               </div>
             </div>
@@ -2899,7 +2947,8 @@ function PreviewHRModal({
 
                 <div className="buttonEditGroup">
                   <button type="button" class="btnPrimary blank" onClick={() => { setisEditCompanySize(false); setEditCompanySizeValue(''); }}> Cancel </button>
-                  <button type="button" class="btnPrimary" onClick={() => updateCompanyDetails('teamSize', editCompanySizeValue, setisEditCompanySize, setEditCompanySizeValue)}> SAVE </button>
+                  {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={() => updateCompanyDetails('teamSize', editCompanySizeValue, setisEditCompanySize, setEditCompanySizeValue)}> SAVE </button>}
+                  
                 </div>
 
               </div>
@@ -2934,7 +2983,8 @@ function PreviewHRModal({
                 <input type="text" placeholder="Please company industry" className="form-control" value={companyIndustryValue} onChange={(e) => setCompanyIndustryValue(e.target.value)} />
                 <div className="buttonEditGroup">
                   <button type="button" class="btnPrimary blank" onClick={() => { setisCompanyIndustryOpen(false); setCompanyIndustryValue(''); }}> Cancel </button>
-                  <button type="button" class="btnPrimary" onClick={() => updateCompanyDetails('industry', companyIndustryValue, setisCompanyIndustryOpen, setCompanyIndustryValue)}> SAVE </button>
+                  {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={() => updateCompanyDetails('industry', companyIndustryValue, setisCompanyIndustryOpen, setCompanyIndustryValue)}> SAVE </button>}
+                  
                 </div>
               </div>
             </div>
@@ -3191,13 +3241,14 @@ function PreviewHRModal({
                   >
                     Cancel
                   </button>
-                  <button
+                  {isLoading ? <Spin size="large" /> : <button
                     type="button"
                     class="btnPrimary"
                     onClick={() => updateBudget()}
                   >
                     SAVE
-                  </button>
+                  </button>}
+                  
                 </div>
               </div>
             </div>
@@ -3357,17 +3408,23 @@ function PreviewHRModal({
                   >
                     Cancel
                   </button>
-                  <button
+                  {isLoading ? <Spin size="large" /> : <button
                     type="button"
                     class="btnPrimary"
                     onClick={() => updateDuration()}
                   >
                     SAVE
-                  </button>
+                  </button>}
+                  
                 </div>
               </div>
             </div> :
             <div className="row formFields">
+               {isLoading && (
+            <Space size="middle">
+              <Spin size="large" />
+            </Space>
+          )}
               <div className="col-12">
                 <div className="form-group">
                   <label>
@@ -3445,13 +3502,14 @@ function PreviewHRModal({
                   >
                     Cancel
                   </button>
-                  <button
+                  {isLoading ? <Spin size="large" /> : <button
                     type="button"
                     class="btnPrimary"
                     onClick={() => updateDuration()}
                   >
                     SAVE
-                  </button>
+                  </button>}
+                  
                 </div>
               </div>
             </div>}
@@ -3538,13 +3596,14 @@ function PreviewHRModal({
                   >
                     Cancel
                   </button>
-                  <button
+                  {isLoading ? <Spin size="large" /> :  <button
                     type="button"
                     class="btnPrimary"
                     onClick={() => updateNoticePeriod()}
                   >
                     SAVE
-                  </button>
+                  </button>}
+                 
                 </div>
               </div>
             </div>
@@ -3678,13 +3737,14 @@ function PreviewHRModal({
                   >
                     Cancel
                   </button>
-                  <button
+                  {isLoading ? <Spin size="large" /> : <button
                     type="button"
                     class="btnPrimary"
                     onClick={() => updateLocation()}
                   >
                     SAVE
-                  </button>
+                  </button>}
+                  
                 </div>
               </div>
             </div>
@@ -3777,14 +3837,15 @@ function PreviewHRModal({
                   >
                     Cancel
                   </button>
-                  <button
+                  {isLoading ? <Spin size="large" /> :  <button
                     type="button"
                     class="btnPrimary"
                     onClick={() => updateExp()}
                     disabled={editExp === '' ? true : parseInt(editExp) < (isFreshersAllowed ? 0 : 1) ? true : false}
                   >
                     SAVE
-                  </button>
+                  </button>}
+                 
                 </div>
               </div>
             </div>
@@ -3902,13 +3963,14 @@ function PreviewHRModal({
                 >
                   Cancel
                 </button>
-                <button
+                {isLoading ? <Spin size="large" /> :  <button
                   type="button"
                   class="btnPrimary"
                   onClick={() => updateShift()}
                 >
                   SAVE
-                </button>
+                </button>}
+               
               </div>
             </div>
           </div>
@@ -3962,7 +4024,8 @@ function PreviewHRModal({
 
               <div className="buttonEditGroup mt-4">
                 <button type="button" class="btnPrimary blank" onClick={() => { setisCompensationOptionOpen(false); setCompensationValues([]) }}> Cancel </button>
-                <button type="button" class="btnPrimary" onClick={updateCompensationOptions}> SAVE </button>
+                {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={updateCompensationOptions}> SAVE </button>}
+                
               </div>
 
             </div>
@@ -4023,7 +4086,8 @@ function PreviewHRModal({
                     setisIndustryCandidatesOpen(false);
                     setSpecificIndustry([]);
                   }}> Cancel </button>
-                  <button type="button" class="btnPrimary" onClick={updateIndustry}> SAVE </button>
+                  {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={updateIndustry}> SAVE </button>}
+                  
                 </div>
               </div>
             </div>
@@ -4074,7 +4138,7 @@ function PreviewHRModal({
 
               <div className="buttonEditGroup">
                 <button type="button" class="btnPrimary blank" onClick={() => setisCandidatePeopleOpen(false)}> Cancel </button>
-                <button type="button" class="btnPrimary" onClick={updateCandidateManagement}> SAVE </button>
+                {isLoading ? <Spin size="large" /> : <button type="button" class="btnPrimary" onClick={updateCandidateManagement}> SAVE </button>}               
               </div>
 
             </div>

@@ -104,7 +104,7 @@ const AllHiringRequestScreen = () => {
   const [selectedHRTypes, setSelectedHRTypes] = useState([]);
 
   const [ isPreviewModal, setIsPreviewModal ] = useState(false);
-  const [ previewHRID, setpreviewHRID ] = useState();
+  const [ previewIDs, setpreviewIDs ] = useState();
   const [jobPreview, setJobPreview] = useState();
   const [allData,setAllData] = useState(null);
   const [hrIdforPreview, setHrIdforPreview] = useState("");
@@ -300,7 +300,7 @@ const AllHiringRequestScreen = () => {
         selectedCheckboxes,       
         showCloneHRToDemoAccount,
         setIsPreviewModal,
-        setpreviewHRID,
+        setpreviewIDs,
         getPreviewPostData
       ),
     [togglePriority, userData.LoggedInUserTypeID,selectedCheckboxes]
@@ -1006,6 +1006,8 @@ const AllHiringRequestScreen = () => {
         jobPreview={jobPreview}
         hrIdforPreview={hrIdforPreview}
         hrNumber={hrNumber}
+        ispreviewLoading={ispreviewLoading}
+        previewIDs={previewIDs}
       />
     {/* </WithLoader> */}
     </div>

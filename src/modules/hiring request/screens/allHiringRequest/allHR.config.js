@@ -26,7 +26,7 @@ export const allHRConfig = {
     selectedCheckboxes,    
     showCloneHRToDemoAccount,
     setIsPreviewModal,
-    setpreviewHRID,
+    setpreviewIDs,
     getPreviewPostData
   ) => {
     return [
@@ -48,9 +48,8 @@ export const allHRConfig = {
         align: "center",
         width: "2%",
         render: (val,result) => {
-          console.log(result);
           return <Tooltip title="Preview Company Profile" placement="right" >  
-               <img src={eyeIcon} alt='info' style={{cursor:'pointer'}} width="22" height="22" onClick={()=>{setIsPreviewModal(true);setpreviewHRID(result?.companyID);getPreviewPostData(result?.HRID,result.HR_ID,result?.companyID)}}  />	
+               <img src={eyeIcon} alt='info' style={{cursor:'pointer'}} width="22" height="22" onClick={()=>{setIsPreviewModal(true);setpreviewIDs({hrID:result?.HRID,companyID: result?.companyID});getPreviewPostData(result?.HRID,result.HR_ID,result?.companyID)}}  />	
 
       </Tooltip> ;
         },
