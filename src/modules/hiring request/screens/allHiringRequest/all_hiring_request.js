@@ -68,11 +68,11 @@ const AllHiringRequestScreen = () => {
 
   const [isLoading, setLoading] = useState(false);
 
-  const pageSizeOptions = [100, 200, 300, 500, 1000, 5000];
+  const pageSizeOptions = [20,100, 200, 300, 500, 1000, 5000];
   // const hrQueryData = useAllHRQuery();
   const [totalRecords, setTotalRecords] = useState(0);
   const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(100);
+  const [pageSize, setPageSize] = useState(20);
   const [isAllowFilters, setIsAllowFilters] = useState(false);
   const [getHTMLFilter, setHTMLFilter] = useState(false);
   const [filtersList, setFiltersList] = useState([]);
@@ -694,6 +694,7 @@ const AllHiringRequestScreen = () => {
               menuAction={(item) => {
                 switch (item.key) {
                   case AddNewType.HR: {
+                    localStorage.removeItem('hrID')
                     navigate(UTSRoutes.ADDNEWHR);
                     break;
                   }

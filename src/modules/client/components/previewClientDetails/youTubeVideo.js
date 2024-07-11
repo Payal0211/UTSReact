@@ -20,7 +20,8 @@ function YouTubeVideo({videoLink}) {
     }, [videoLink]);
 
     if (!videoId) {
-        return <div>No valid YouTube video link provided</div>;
+        return
+        // return <div>No valid YouTube video link provided</div>;
     }
 
     return(

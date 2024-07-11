@@ -44,10 +44,16 @@ function CultureAndPerks({register,errors,setValue,watch,perkDetails,youTubeDeta
                 })))
           }
 
-    if(companyDetails?.companyName){
-        companyDetails?.culture && setValue('culture',companyDetails?.culture)
-    }
+    // if(companyDetails?.companyName){
+    //     companyDetails?.culture && setValue('culture',companyDetails?.culture)
+    // }
    },[perkDetails,companyDetails,cultureAndParksValue,setValue]) 
+
+   useEffect(() => {
+    companyDetails?.culture &&
+    setValue("culture", companyDetails?.culture);
+   }, [setValue,companyDetails])
+   
 
   //  useEffect(()=>{
   //   if(cultureAndParksValue?.length > 0){
@@ -193,31 +199,25 @@ const addnewYoutubeLink = (e) =>{
               <div className={AddNewClientStyle.tabsRightPanel}>
             <div className={AddNewClientStyle.row}>
         <div className={AddNewClientStyle.colMd12} style={{marginBottom: '25px'}}>
-        {/* <TextEditor
-            register={register}
-            setValue={setValue}
-            // errors={errors}
-            controlledValue={companyDetails?.culture ? companyDetails.culture : ''}
-            isControlled={true}
-            isTextArea={true}
-            label="Culture"
-            name="culture"
-            type={InputType.TEXT}
-            placeholder="Enter about company culture"
-            required={false}
-            watch={watch}
-          /> */}
             <div className={AddNewClientStyle.label}>Culture</div>
             <ReactQuill
               register={register}
               setValue={setValue}
               theme="snow"
               className="heightSize"
-              value={companyDetails?.culture ? companyDetails.culture : ''} 
+              // value={companyDetails?.culture ? companyDetails.culture : ''} 
+              value={
+                !watch("culture")
+                  ? companyDetails?.culture ?? ""
+                  : watch("culture")
+              }
               name="culture"
-              onChange={(val) => {setValue("culture",val)
-                setCompanyDetails(prev=> ({...prev, basicDetails:{ ...prev.basicDetails,culture : val}}))
-              }}
+              onChange={(val) => setValue("culture", val)}
+              // onChange={(val) => {
+              //   // console.log(val,"dfsdfsdfsdfsdfsdfsdfdsf");
+              //   // setValue("culture",val)
+              //   // setCompanyDetails(prev=> ({...prev, basicDetails:{ ...prev.basicDetails,culture : val}}))
+              // }}
             />
           </div>
         </div>

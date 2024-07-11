@@ -222,7 +222,9 @@ function PreviewClientModal({
       setIsAboutUs(data?.basicDetails?.aboutCompany);
       setIsCulture(data?.basicDetails?.culture);
       setIsSelfFunded(data?.basicDetails?.isSelfFunded);
-      setBase64Image(data?.basicDetails?.companyLogo)
+      setBase64Image(NetworkInfo.PROTOCOL +
+        NetworkInfo.DOMAIN +
+        "Media/CompanyLogo/" + data?.basicDetails?.companyLogo)
     }
     setIsLoading(false);
   };
@@ -1716,17 +1718,17 @@ function PreviewClientModal({
                                   validationSchema={{
                                     pattern: {
                                       value:
-                                        /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/,
+                                        /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=%\?]{11})$/,
                                       message: "Youtube link is not valid",
                                     },
                                   }}
                                   onKeyDownHandler={(e) => {
                                     if (e.keyCode === 13) {
                                       const regex =
-                                        /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?(\S+)$/;
+                                        /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&=%\?]{11})$/;
                                       if (!regex.test(e.target.value)) {
                                         return message.error(
-                                          "Youtube link is not valid"
+                                          "Please provide proper youtube video link, channel/page link not allowed."
                                         );
                                       }
 

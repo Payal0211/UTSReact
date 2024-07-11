@@ -14,6 +14,8 @@ import EngagementSection from "./engagementSection";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { MasterDAO } from "core/master/masterDAO";
 import LogoLoader from "shared/components/loader/logoLoader";
+import { v4 as uuidv4 } from 'uuid';
+import { encrypt } from 'modules/EncryptionDecryption/encryptiondescryption.js'; 
 
 function AddCompany() {
   const navigate = useNavigate();
@@ -212,7 +214,7 @@ function AddCompany() {
     // check for at lest one admin client
     let isAdmin = false
 
-    d.clientDetails.map((client) => {
+    d?.clientDetails.map((client) => {
       if(client.roleID === 1){
         isAdmin = true
       }
@@ -226,16 +228,28 @@ function AddCompany() {
       return
     }
 
-    let modClientDetails = d.clientDetails.map((client) =>({
-      "clientID": client.id,
-      "en_Id": client.en_Id,
-      "isPrimary": client.isPrimary,
-      "fullName": client.fullName,
-      "emailId": client.emailID,
-      "designation": client.designation,
-      "phoneNumber": client.countryCode+ client.contactNo,
-      "accessRoleId": client.roleID
-    }))
+    let modClientDetails = d?.clientDetails.map((client) => {
+
+      // generate random password and encrypt that            
+      const newGuid = uuidv4();
+      const shortGuid = newGuid.slice(0, 10); // Pick only the first 10 letters 
+      let password = shortGuid;
+      let encryptedPassword = encrypt(password);
+
+      return {
+        "clientID": client.id,
+        "en_Id": client.en_Id,
+        "isPrimary": client.isPrimary,
+        "fullName": client.fullName,
+        "emailId": client.emailID,
+        "designation": client.designation,
+        "phoneNumber": client.countryCode+ client.contactNo,
+        "accessRoleId": client.roleID,
+        "password" : password,
+        "encryptedPassword" : encryptedPassword
+      }
+
+    })
 
     let modCultureDetails = getCompanyDetails?.cultureDetails.map((culture) =>({
       cultureID:culture.cultureID,
@@ -245,23 +259,23 @@ function AddCompany() {
     let payload = {
       "basicDetails": {
         "companyID": companyID,
-        "companyName": d.companyName,
+        "companyName": d?.companyName,
         "companyLogo": getCompanyDetails?.basicDetails?.companyLogo,
-        "websiteUrl": d.companyURL,
-        "foundedYear": d.foundedIn,
+        "websiteUrl": d?.companyURL,
+        "foundedYear": d?.foundedIn,
         // "companySize": +d.teamSize,
-        "teamSize": d.teamSize,
-        "companyType": d.companyType,
-        "industry": d.industry,
-        "headquaters": d.headquaters,
-        "aboutCompanyDesc": d.aboutCompany,
-        "culture": d.culture,
-        "linkedInProfile": d.companyLinkedinURL,
+        "teamSize": d?.teamSize,
+        "companyType": d?.companyType,
+        "industry": d?.industry,
+        "headquaters": d?.headquaters,
+        "aboutCompanyDesc": d?.aboutCompany,
+        "culture": d?.culture,
+        "linkedInProfile": d?.companyLinkedinURL,
         "isSelfFunded": isSelfFunded
       },
-      "fundingDetails": d.fundingDetails,
+      "fundingDetails": d?.fundingDetails,
       "cultureDetails": modCultureDetails,
-      "perkDetails": d.perksAndAdvantages?.map(it=> it.value),
+      "perkDetails": d?.perksAndAdvantages?.map(it=> it.value),
       "youTubeDetails": getCompanyDetails?.youTubeDetails,
       "clientDetails": modClientDetails,
       "engagementDetails": {
@@ -269,18 +283,18 @@ function AddCompany() {
         "anotherCompanyTypeID": checkPayPer?.anotherCompanyTypeID,
         "isPostaJob": IsChecked.isPostaJob,
         "isProfileView": IsChecked.isProfileView,
-        "jpCreditBalance": checkPayPer?.companyTypeID===2 ? +d.freeCredit ?? null : null,
+        "jpCreditBalance": checkPayPer?.companyTypeID===2 ? +d?.freeCredit ?? null : null,
         "isTransparentPricing": typeOfPricing === 1 ? true :  typeOfPricing === 0 ?  false : null,
         "isVettedProfile": true,
-        "creditAmount": (checkPayPer?.companyTypeID===2) ? +d.creditAmount : null,
-        "creditCurrency":checkPayPer?.companyTypeID===2 ? d.creditCurrency : null,
-        "jobPostCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob=== true) ? +d.jobPostCredit ?? null : null,
-        "vettedProfileViewCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ?  +d.vettedProfileViewCredit ?? null : null,
-        "nonVettedProfileViewCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ? +d.nonVettedProfileViewCredit?? null : null,
-        "hiringTypePricingId": checkPayPer?.anotherCompanyTypeID === 1 ? d.hiringPricingType?.id : null
+        "creditAmount": (checkPayPer?.companyTypeID===2) ? +d?.creditAmount : null,
+        "creditCurrency":checkPayPer?.companyTypeID===2 ? d?.creditCurrency : null,
+        "jobPostCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isPostaJob=== true) ? +d?.jobPostCredit ?? null : null,
+        "vettedProfileViewCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ?  +d?.vettedProfileViewCredit ?? null : null,
+        "nonVettedProfileViewCredit": (checkPayPer?.companyTypeID===2 && IsChecked?.isProfileView===true) ? +d?.nonVettedProfileViewCredit?? null : null,
+        "hiringTypePricingId": checkPayPer?.anotherCompanyTypeID === 1 ? d?.hiringPricingType?.id : null
       },
       // "pocIds": d.uplersPOCname?.map(poc=> poc.id),
-      "pocId": d.uplersPOCname?.id,
+      "pocId": d?.uplersPOCname?.id,
       "HRID":getCompanyDetails?.pocUserDetailsEdit?.hrid ?? 0,
       "Sales_AM_NBD":getCompanyDetails?.pocUserDetailsEdit?.sales_AM_NBD ?? '',
       "IsRedirectFromHRPage" : state?.createHR ? true : false

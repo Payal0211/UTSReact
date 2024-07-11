@@ -1370,6 +1370,11 @@ const HRFields = ({
       // For JD error Handling
 
       if(isHaveJD === 0){
+        if(parseType === 'Manual'){
+          message.error('Please select a file to upload')
+          setIsSavedLoading(false);
+          return
+        }
         if(parseType === 'JDFileUpload'){
           if(getUploadFileData === ''){
             message.error('Please select a file to upload')
@@ -1777,7 +1782,7 @@ const HRFields = ({
         })) : [],
         AllSkills: [],
         // JobDescription:JDDATA.jobDescription ?? '',
-        // roleName:JDDATA?.roleName ?? ''
+        roleName:gptFileDetails?.Title ?? ''
       }});
 
       setJDDumpID(gptFileDetails.JDDumpID);
@@ -3828,6 +3833,7 @@ const HRFields = ({
                   {gptFileDetails.JDDumpID && (
                     <div>
                       <h3>File Name : {gptFileDetails?.FileName}</h3>
+                     {gptFileDetails?.Title && <h3>Role Title : {gptFileDetails?.Title}</h3>} 
 
                       {gptFileDetails?.Skills.length > 0 && (
                         <>
@@ -3875,11 +3881,11 @@ const HRFields = ({
                           <h3 style={{ marginTop: "10px" }}>
                           Job Description :
                           </h3>
-                          <div className={HRFieldStyle.viewHrJDDetailsBox}>
+                          <div className={`${HRFieldStyle.viewHrJDDetailsBox} jobDescritionCSS`} dangerouslySetInnerHTML={{__html: gptFileDetails?.JobDescription}}>
                             {/* <ul>
                     {gptFileDetails?.Responsibility?.split(',')?.shift()?.map(req=>  <li>{req}</li>)}
                   </ul> */}
-                            {gptFileDetails?.JobDescription}
+                            {/* {gptFileDetails?.JobDescription} */}
                           </div>
                         </>
                       )}
