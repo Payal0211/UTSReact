@@ -1,8 +1,8 @@
 import { AutoComplete, Avatar, Checkbox, Radio, Select, Space, Spin, Tooltip, message } from "antd";
 import Modal from "antd/es/modal/Modal";
-import "./css/myJobPosts.css";
-import "./css/home.css"
-import "./css/myJobPostsNew.css";
+// import "./css/myJobPosts.css";
+// import "./css/home.css"
+// import "./css/myJobPostsNew.css";
 import "./css/previewHR.css";
 import 'react-quill/dist/quill.snow.css'
 import { useEffect, useRef, useState } from "react";
@@ -2191,7 +2191,6 @@ function PreviewHRModal({
                               <>
                                 <div className="funding-rounds">
                                   <ul>
-
                                     <li>
                                       <span>Funding Round/Series</span>
                                       <p>{fundingDetails && fundingDetails[0]?.series ? fundingDetails[0]?.series : "NA"}</p>
@@ -3727,7 +3726,7 @@ function PreviewHRModal({
                   </div>
                 )}
 
-                <div className="buttonEditGroup mt-2">
+                <div className="buttonEditGroup">
                   <button
                     type="button"
                     class="btnPrimary blank"
@@ -3999,7 +3998,7 @@ function PreviewHRModal({
 
               <div className="col-12">
                 <div className="form-group prevSkillTwopart">
-                  <label> Compensation Beyond Salary </label>
+                  <label>Compensation Beyond Salary</label>
                   <Select
                     mode="tags"
                     style={{ width: "100%" }}
@@ -4056,7 +4055,7 @@ function PreviewHRModal({
               <div className="form-group mb-0 vitalInfoBox">
                 <div className="col-12">
                   <div className="form-group prevSkillTwopart">
-                    <label> Specify the industry from which you need candidates. </label>
+                    <label>Specify the industry from which you need candidates.</label>
                     <Select
                       mode="tags"
                       style={{ width: "100%" }}
