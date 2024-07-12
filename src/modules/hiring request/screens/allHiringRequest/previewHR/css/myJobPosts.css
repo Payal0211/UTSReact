@@ -1,12 +1,6 @@
 /* dateoicker css start */
 
-.ModalMyjobPost.shedulMdForm .timeSlotItem [class="react-datepicker-popper"] {
-    z-index: 99;
-    background: transparent;
-    border: none;
-    border-radius: 0px;
-    box-shadow: inherit;
-}
+
 
 /* dateoicker css End */
 
@@ -624,17 +618,7 @@
     gap: 34px;
 }
 
-.ModalMyjobPost.ant-modal .ant-modal-content {
-    padding: 40px;
-}
 
-.ModalMyjobPost .modalTitle {
-    color: #232323;
-    font-size: 32px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
 
 .modalLeftPartImg {
     display: flex;
@@ -649,18 +633,7 @@
 }
 
 
-.ModalMyjobPost .ant-modal-content {
-    border-radius: 24px;
-}
 
-
-.ModalMyjobPost .MdFormWrap {
-    border-top: 1px solid rgba(186, 186, 186, 0.20) !important;
-}
-
-.ModalMyjobPost .ant-modal-footer {
-    display: none;
-}
 
 .MdFormInnerContent {
     margin-left: 150px;
@@ -696,11 +669,6 @@
     line-height: normal;
 }
 
-.ModalMyjobPost.Closejob .modalTitleTopWrap {
-    display: flex;
-    flex-direction: column;
-    align-items: baseline;
-}
 
 .closeJobStatus {
     display: flex;
@@ -730,10 +698,6 @@
 
 .closeJobStatus li.Bgexp {
     background: rgba(143, 133, 183, 0.10);
-}
-
-.ModalMyjobPost.Closejob .shortModalBtnWrap .BtnBlack:hover {
-    border: 1px solid #FFDA30;
 }
 
 .ant-modal.Closejob .modalMyjobMainWrapper .modalMainContent {
@@ -1002,159 +966,6 @@
 
 /* OnBording css End */
 
-
-/* Zomoto tracker css start */
-
-.ModalMyjobPost.ZomotoTracker .modalMainContentWrap {
-    display: block;
-}
-
-.ModalMyjobPost.ZomotoTracker .jobTelentProfileBoxsec {
-    background: rgba(186, 186, 186, 0.09);
-    border: 0px;
-    padding-bottom: 25px;
-}
-
-.ModalMyjobPost.ZomotoTracker .modalTitle {
-    font-size: 24px;
-}
-
-.ModalMyjobPost.ZomotoTracker .telentJobStepProgressbar li .telentJobStepIcon img {
-    opacity: 1;
-}
-
-.ModalMyjobPost.ZomotoTracker .modalTitleTopWrap {
-    border-bottom: 1px solid rgba(186, 186, 186, 0.20);
-    margin-bottom: 25px;
-    padding-bottom: 10px;
-    max-width: 100%;
-}
-
-.ModalMyjobPost.ZomotoTracker .jobTelentProfileBoxsec .jobTelentApplicantsBottom {
-    border: 0px;
-    width: 95%;
-    margin: 0px auto;
-    background: #fff;
-    border-radius: 12px;
-}
-
-.ModalMyjobPost.ZomotoTracker .jobTelentProfileBoxsec .startedApplicants {
-    border: 1px dashed rgba(107, 107, 107, 0.60);
-}
-
-.ModalMyjobPost.ZomotoTracker .jobTelentProfileBoxsec .jobTelentProfileBox .jobTelentReviewWrap {
-    margin-bottom: 20px;
-}
-
-.ModalMyjobPost.ZomotoTracker .jobTelentProfileBoxsec .jobTelentProfileBox .jobTelentReviewWrap li,
-.ModalMyjobPost.ZomotoTracker .jobTelentProfileBoxsec .jobTelentProfileBox .jobTelentReviewWrap li {
-    border-radius: 8px;
-}
-
-.ModalMyjobPost.ZomotoTracker .telentJobStepProgressbar li.cheked .telentJobStepIcon {
-    background: #FFFDF1;
-    border: 1px solid #FFDA30;
-}
-
-.ModalMyjobPost.ZomotoTracker .telentJobStepProgressbar li.cheked+li:after {
-    background-color: #FFDA30;
-}
-
-.ModalMyjobPost.ZomotoTracker .telentJobStepProgressbar li.cheked p {
-    color: #232323;
-    font-weight: 500;
-}
-
-.ModalMyjobPost.ZomotoTracker .telentJobStepProgressbar li.cheked .telentJobStepIcon:after {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: block;
-    text-align: center;
-    background-color: #32936F;
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-.ModalMyjobPost.ZomotoTracker .telentJobStepProgressbar li.cheked .telentJobStepIcon:before {
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-right-style: solid;
-    border-right-width: 1px;
-    content: "";
-    display: inline-block;
-    height: 5px;
-    width: 3px;
-    position: absolute;
-    right: 2px;
-    top: 1px;
-    z-index: 6;
-    color: #fff;
-    transform: rotate(45deg);
-}
-
-.ModalMyjobPost.ZomotoTracker .countNumber {
-    color: #232323;
-    font-size: 10px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 16px;
-}
-
-.ModalMyjobPost.ZomotoTracker .countNumber {
-    display: inline-table;
-    min-width: 36px;
-    background-color: #fff;
-    color: #000;
-    text-align: center;
-    padding: 2px 2px;
-    border-radius: 6px;
-    position: absolute;
-    z-index: 1;
-    top: -30px;
-    left: 0;
-    right: 0;
-    margin-left: 0;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
-}
-
-.ModalMyjobPost.ZomotoTracker .countNumber::before {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -7px;
-    border-width: 8px;
-    border-style: solid;
-    border-color: #e7e7e7 transparent transparent transparent;
-}
-
-.ModalMyjobPost.ZomotoTracker .countNumber::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 40%;
-    margin-left: -3px;
-    border-width: 7px;
-    border-style: solid;
-    border-color: #ffffff transparent transparent transparent;
-    z-index: 4;
-}
-
-
-.ModalMyjobPost.ZomotoTracker .trackerBtn {
-    margin-top: 20px;
-    width: 100%;
-    text-align: right;
-}
-
-.ModalMyjobPost.ZomotoTracker .telentJobStepProgressbar li {
-    width: 11%;
-}
-
 /* ShareFeedback modal css start */
 
 /*Radio Group css start */
@@ -1232,9 +1043,6 @@
     width: 100%;
 }
 
-.ModalMyjobPost.ZomotoTracker .openPositionDetail .trackerBtn {
-    text-align: left;
-}
 
 
 /* ShareFeedback modal css End */
@@ -1717,12 +1525,6 @@
 }
 
 /* Post job Preview Css Start */
-
-.PostNewJobModal .step-screen-sec {
-    background: transparent;
-    min-height: auto;
-}
-
 .PostNewJobModal .previewScreen .formFields {
     margin-top: 0px;
 }
@@ -2176,9 +1978,7 @@
 
 /* Quick Update Modal Start */
 
-.ModalMyjobPost.QuickUpdateModal .ant-modal-content {
-    padding: 50px;
-}
+
 
 .QuickUpdateModal .QuickUpdateInner {
     display: flex;
@@ -2270,9 +2070,7 @@
 }
 
 
-.ModalMyjobPost.QuickUpdateModal.givenSlotmodal .ant-modal-content {
-    padding: 32px;
-}
+
 
 .givenSlotmodal .BtnBlack.blank:hover {
     border: 1px solid #FFDA30;
@@ -2972,21 +2770,6 @@ span.PausethisjobText {
 
 .ant-modal.Closejob.ClosejobNew .MdFormInnerContent {
     margin-left: 108px;
-}
-
-.ModalMyjobPost.ClosejobNew .modalTitle {
-    font-size: 22px;
-}
-
-.ModalMyjobPost.ClosejobNew .modalTitleTopWrap h4 {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-
-.ModalMyjobPost.ClosejobNew .modalTitleTopWrap p {
-    color: #232323;
-    margin: 0;
 }
 
 
