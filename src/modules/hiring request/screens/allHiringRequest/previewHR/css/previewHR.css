@@ -7,7 +7,6 @@
     height: 100px !important;
 }
 
-/* Post New Job Modal Css Start */
 .PostNewJobModal {
     margin: 24px 0;
 }
@@ -167,8 +166,6 @@
     border-radius: 0px 0px 8px 8px;
 }
 
-/* Post job Preview Css End */
-
 .changeLocationSec .ant-select-single {
     height: 42px;
 }
@@ -177,7 +174,6 @@
     margin-top: -2px;
 }
 
-/* Quick Update Modal Start */
 .budgetSet {
     color: #FFF;
     font-family: "Montserrat";
@@ -271,16 +267,9 @@
     margin-bottom: 24px;
 }
 
-.PreviewpageMainWrap .PreviewStickyContent {
-    max-height: calc(100vh - 170px);
-    overflow-y: auto;
-    padding: 0 0 20px;
-}
-
 .PreviewpageMainWrap .PreviewModal-Header {
     position: sticky;
     top: 0;
-    /* z-index: 9999; */
 }
 
 .PostNewJobModal.editJobPostModal .ant-modal-content {
@@ -291,31 +280,8 @@
 
 .PostNewJobModal.editJobPostModal .PreviewStickyContent {
     max-height: calc(100vh - 98px);
+    overflow-y: auto;
     padding: 8px 0 20px;
-}
-
-
-@media only screen and (max-width: 767px) {
-    .poup-new-content .customradio.ant-radio-group {
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .PostJobStepSecondWrap .formFields h3 {
-        font-size: 13px;
-    }
-
-    .PostNewJobModal .Post-Header {
-        padding: 0 20px 10px 20px;
-    }
-
-    .Filescopypaste__area textarea.form-control {
-        height: 140px;
-    }
-
-    .formFields-box {
-        padding: 0 20px;
-    }
 }
 
 .justify-content-end {
@@ -518,7 +484,6 @@
 }
 
 .editinfo-details-form {
-    /* padding: 0 32px; */
     padding: 0;
 }
 
@@ -717,7 +682,6 @@
     margin-top: 8px;
 }
 
-/* Step 2 Css Start */
 .groupMain-threeWrap {
     display: flex;
     flex-wrap: wrap;
@@ -780,12 +744,10 @@
     line-height: normal;
 }
 
-/* Job Preview css start */
 .error {
     color: red
 }
 
-/* TextEditor css Start */
 [class*="editorContainer"] [class*="editor"] {
     border-radius: 8px 8px 0px 0px !important;
     border: 1px solid #CECCCC !important;
@@ -799,7 +761,6 @@
     background: #FFF;
 }
 
-/* TextEditor css End */
 .customModal.jobPostEditModal .ant-modal-close {
     top: 6px;
     inset-inline-end: 5px;
@@ -992,7 +953,6 @@
         padding-inline: 7px;
     }
 }
-
 /******* END home.css *******/
 
 
@@ -1024,7 +984,6 @@
     pointer-events: none;
 }
 
-/*Vital Information*/
 .vitalInfoBox .vitalInfoOption {
     flex-wrap: wrap;
     gap: 12px;
@@ -1043,7 +1002,6 @@
     border-radius: 30px;
 }
 
-/* Preview Modal Css start */
 .PreviewpageMainWrap .Post-Header {
     padding: 24px 58px 0px;
 }
@@ -1105,7 +1063,6 @@
     line-height: 24px;
 }
 
-/* Company Detail css */
 .PreviewpageMainWrap .company-details h6 {
     color: #6B6B6B;
     font-size: 12px;
@@ -1133,7 +1090,6 @@
 .PreviewpageMainWrap .company-details hr {
     border-top: 0;
 }
-
 
 .PreviewpageMainWrap .funding-rounds {
     padding-bottom: 30px;
@@ -1376,7 +1332,6 @@
     height: 120px;
 }
 
-/* preview edit modal css start */
 .PrevEditmodal .customCheckboxPreview .ant-checkbox-wrappe {
     color: #232323;
 }
@@ -1449,7 +1404,7 @@
     height: auto;
 }
 
-
+/*Responsive*/
 @media only screen and (max-width: 1200px) {
     .PreviewpageMainWrap .previewstepBox {
         gap: 15px;
@@ -1479,7 +1434,6 @@
         width: calc(50% - 4px);
     }
 }
-
 /******* END myJobPostsNew.css *******/
 
 
@@ -1981,7 +1935,6 @@
     margin-top: 0;
 }
 
-/************************************************/
 .customModal.jobPostEditModal .ant-modal-content {
     padding: 16px 20px;
     background: #fff !important;
@@ -2056,7 +2009,6 @@
     flex-wrap: nowrap;
 }
 
-/**/
 .formFields .form-group label {
     color: #676767;
     font-size: 12px;
@@ -2067,9 +2019,7 @@
     margin-bottom: 8px;
 }
 
-/*****/
 /* Custom Radio css */
-
 .customradio.ant-radio-group {
     display: flex;
     align-items: center;
@@ -2082,7 +2032,6 @@
     justify-content: center;
     border-radius: 8px;
     border: 1px solid#CECCCC;
-    /* border-color: #CECCCC; */
     background: #FFF;
     height: 44px;
     color: #000 !important;
@@ -2104,7 +2053,6 @@
 
 .customradio .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
     border-color: #32936F;
-    /* border: 2px solid #32936F; */
     box-shadow: 0px 0px 1px 1px #32936F;
     background: #DDF6ED;
 }
@@ -2117,7 +2065,6 @@
 .customradio .ant-radio-button-wrapper.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover,
 .customradio .ant-radio-button-wrapper.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):first-child {
     border-radius: 8px;
-    /* border: 2px solid var(--selection-stroke-green, #32936F); */
     box-shadow: 0px 0px 1px 1px #32936F;
     background: var(--selection-light-green, #DDF6ED);
     color: #000;
@@ -2126,10 +2073,8 @@
 .customradio label.ant-radio-button-wrapper span {
     font-weight: 400;
 }
-
 /* Custom Radio css End*/
 
-/************************************************/
 .ant-modal-centered {
     z-index: 1000;
 }
@@ -2153,7 +2098,7 @@
     height: 11px;
 }
 
-
+/*Responsive*/
 @media only screen and (max-width: 1200px) {
     .PreviewpageMainWrap .prevSkillTwopart .SlillBtnBox li, .PrevEditmodal .prevSkillTwopart .SlillBtnBox li{
         height: 25px;
@@ -2173,6 +2118,27 @@
 }
 
 @media only screen and (max-width: 767px) {
+    .poup-new-content .customradio.ant-radio-group {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .PostJobStepSecondWrap .formFields h3 {
+        font-size: 13px;
+    }
+
+    .PostNewJobModal .Post-Header {
+        padding: 0 20px 10px 20px;
+    }
+
+    .Filescopypaste__area textarea.form-control {
+        height: 140px;
+    }
+
+    .formFields-box {
+        padding: 0 20px;
+    }
+
     .prevSkillTwopart .prevSkillLeftside {
         width: 100%;
         border: none;
