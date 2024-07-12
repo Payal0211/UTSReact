@@ -1,8 +1,5 @@
 import { AutoComplete, Avatar, Checkbox, Radio, Select, Space, Spin, Tooltip, message } from "antd";
 import Modal from "antd/es/modal/Modal";
-// import "./css/myJobPosts.css";
-// import "./css/home.css"
-// import "./css/myJobPostsNew.css";
 import "./css/previewHR.css";
 import 'react-quill/dist/quill.snow.css'
 import { useEffect, useRef, useState } from "react";
