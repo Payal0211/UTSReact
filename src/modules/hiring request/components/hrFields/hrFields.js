@@ -7,7 +7,8 @@ import {
   AutoComplete,
   Modal,
   Radio,
-  Tooltip
+  Tooltip,
+  Select
 } from "antd";
 import {
   ClientHRURL,
@@ -39,6 +40,7 @@ import { UserAccountRole } from "constants/application";
 import LogoLoader from "shared/components/loader/logoLoader";
 import { HttpStatusCode } from "axios";
 import infoIcon from 'assets/svg/info.svg'
+import plusSkill from 'assets/svg/plusSkill.svg';
 import { HubSpotDAO } from "core/hubSpot/hubSpotDAO";
 import DOMPurify from "dompurify";
 import { allCompanyRequestDAO } from "core/company/companyDAO";
@@ -198,6 +200,17 @@ const HRFields = ({
       secondaryInterviewer: [],
     },
   });
+  const compensationOptions = [
+    { value: "Performance Bonuses", label: "Performance Bonuses" },
+    { value: "Stock Options (ESOPs/ESPPs)", label: "Stock Options (ESOPs/ESPPs)" },
+    { value: "Incentives / Variable Pay", label: "Incentives / Variable Pay" },
+    { value: "Profit Sharing", label: "Profit Sharing" },
+    { value: "Signing Bonus", label: "Signing Bonus"},
+    { value: "Retention Bonus", label: "Retention Bonus" },
+    {value:"Overtime Pay", label:"Overtime Pay"},
+    {value:"Allowances (e.g. Travel, Housing, Medical, Education, WFH)", label:"Allowances (e.g. Travel, Housing, Medical, Education, WFH)"},
+    {value:"Restricted Stock Units (RSUs)", label:"Restricted Stock Units (RSUs)"},
+  ];
 
   const [timeZoneList,setTimezoneList] = useState([]);
 
@@ -218,6 +231,8 @@ const HRFields = ({
   const [isProfileView,setIsProfileView] = useState(false)
   const [isPostaJob,setIsPostaJob] = useState(false)
   const [isVettedProfile,setIsVettedProfile] = useState(true)
+  const [peopleManagemantexp, setHasPeopleManagementExp] = useState(1)
+  const [CompensationValues, setCompensationValues] = useState([]);
   /* const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
@@ -3051,7 +3066,7 @@ const HRFields = ({
 
             <div className={HRFieldStyle.row}>
             <div className={HRFieldStyle.colMd12}>
-            <HRSelectField
+            {/* <HRSelectField
 									// isControlled={true}
 									// controlledValue={controlledGoodToHave}
 									// setControlledValue={setControlledGoodToHave}
@@ -3062,14 +3077,36 @@ const HRFields = ({
 									label={'Compensation options'}
 									placeholder="Type skills"
 									// onChange={setSelectGoodToHaveItems}
-									options={[]}
+									options={compensationOptions}
 									// setOptions={setSkillMemo}
 									name="compensationOptions"
 									// isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
 									// required
 									// errorMsg={'Please select Compensation options.'}
-								/>
+								/> */}
+                <div className={HRFieldStyle.labelForSelect}>Compensation options</div>
+                 <Select
+                    mode="tags"
+                    style={{ width: "100%" }}
+                    value={CompensationValues}
+                    options={compensationOptions}
+                    onChange={(values, _) => setCompensationValues(values)}
+                    placeholder="Enter benefits"
+                    tokenSeparators={[","]}
+                  />
             </div>
+            <ul className={HRFieldStyle.selectFieldBox}>
+            {compensationOptions?.map(option => (
+                      !CompensationValues?.some(val => val === option.value) && (
+                        <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setCompensationValues([...CompensationValues, option?.value])}>
+                          <span>{option.label} <img src={plusSkill} loading="lazy" alt="star" /></span>
+                        </li>
+                      )
+                    ))}
+										{/* {compensationOptions?.map((skill) => (																	
+											<li key={skill.value} onClick={() => console.log(skill)}><span>{skill.value}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
+										))}	 */}
+									</ul>
             </div>
             
 
@@ -3607,7 +3644,71 @@ const HRFields = ({
           </div>
 
           <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
-            
+          <div className={HRFieldStyle.row}>
+            <div className={HRFieldStyle.colMd12}>
+            <HRSelectField
+									// isControlled={true}
+									// controlledValue={controlledGoodToHave}
+									// setControlledValue={setControlledGoodToHave}
+									// mode="multiple"
+									mode="tags"
+									setValue={setValue}
+									register={register}
+									label={'Specify the industry from which the client needs talents'}
+									placeholder="Type skills"
+									// onChange={setSelectGoodToHaveItems}
+									options={[]}
+									// setOptions={setSkillMemo}
+									name="compensationOptions"
+									// isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
+									// required
+									// errorMsg={'Please select Compensation options.'}
+								/>
+            </div>
+            </div>
+
+            <div className={HRFieldStyle.colMd12}>
+<div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
+								<label style={{marginBottom:"12px"}}>
+                Does the client reauire a talent with oeoole management exoerience?
+							{/* <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
+								*
+							</span> */}
+						</label>
+						<Radio.Group
+            disabled={disableYypeOfPricing}
+							// defaultValue={'client'}
+							// className={allengagementReplceTalentStyles.radioGroup}
+							onChange={e=> {setHasPeopleManagementExp(e.target.value)}}
+							value={peopleManagemantexp}
+							>
+							<Radio value={1}>Yes</Radio>
+							<Radio value={0}>No</Radio>
+						</Radio.Group>
+							</div>
+</div>
+
+<div className={HRFieldStyle.colMd6}>
+                  <div className={HRFieldStyle.formGroup}>
+                    <HRInputField
+                      register={register}
+                      errors={errors}
+                      isTextArea={true}
+                      validationSchema={{
+                        required: "please enter the number of working hours.",
+                        min: {
+                          value: 1,
+                          message: `please enter the value more than 0`,
+                        },
+                      }}
+                      label="No Of Working Hours"
+                      name="workingHours"
+                      type={InputType.NUMBER}
+                      placeholder="Please enter no of working hours."
+                      required={watch("availability")?.value === "Part Time"}
+                    />
+                  </div>
+                </div>
           </form>
         </div>
         {/* <AddInterviewer
