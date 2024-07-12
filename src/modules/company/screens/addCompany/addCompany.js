@@ -14,6 +14,8 @@ import EngagementSection from "./engagementSection";
 import { HTTPStatusCode, NetworkInfo } from "constants/network";
 import { MasterDAO } from "core/master/masterDAO";
 import LogoLoader from "shared/components/loader/logoLoader";
+import { v4 as uuidv4 } from 'uuid';
+import { encrypt } from 'modules/EncryptionDecryption/encryptiondescryption.js'; 
 
 function AddCompany() {
   const navigate = useNavigate();
@@ -226,16 +228,28 @@ function AddCompany() {
       return
     }
 
-    let modClientDetails = d?.clientDetails.map((client) =>({
-      "clientID": client.id,
-      "en_Id": client.en_Id,
-      "isPrimary": client.isPrimary,
-      "fullName": client.fullName,
-      "emailId": client.emailID,
-      "designation": client.designation,
-      "phoneNumber": client.countryCode+ client.contactNo,
-      "accessRoleId": client.roleID
-    }))
+    let modClientDetails = d?.clientDetails.map((client) => {
+
+      // generate random password and encrypt that            
+      const newGuid = uuidv4();
+      const shortGuid = newGuid.slice(0, 10); // Pick only the first 10 letters 
+      let password = shortGuid;
+      let encryptedPassword = encrypt(password);
+
+      return {
+        "clientID": client.id,
+        "en_Id": client.en_Id,
+        "isPrimary": client.isPrimary,
+        "fullName": client.fullName,
+        "emailId": client.emailID,
+        "designation": client.designation,
+        "phoneNumber": client.countryCode+ client.contactNo,
+        "accessRoleId": client.roleID,
+        "password" : password,
+        "encryptedPassword" : encryptedPassword
+      }
+
+    })
 
     let modCultureDetails = getCompanyDetails?.cultureDetails.map((culture) =>({
       cultureID:culture.cultureID,

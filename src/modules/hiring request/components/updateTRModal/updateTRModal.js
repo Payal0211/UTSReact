@@ -16,6 +16,7 @@ const UpdateTR = ({
 	onCancel,
 	updateTRDetail,
 	apiData,
+	loader
 }) => {
 	const [count, setCount] = useState(0);
 	const [disable, setDisable] = useState(true);
@@ -144,7 +145,7 @@ const UpdateTR = ({
 		return () => setIsLoading(false);
 	}, []);
 	return (
-		<div className={updateTRStyle.engagementModalContainer}>
+		<div className={updateTRStyle.engagementModalContainer}>		
 			<div className={updateTRStyle.updateTRTitle}>
 				<h2>Update TR</h2>
 				<p>
@@ -159,7 +160,7 @@ const UpdateTR = ({
 
 			<h4 className={updateTRStyle.infoMsg}>{valueInfo}</h4>
 
-			{isLoading ? (
+			{(isLoading || loader) ? (
 				<SpinLoader />
 			) : (
 				<>
