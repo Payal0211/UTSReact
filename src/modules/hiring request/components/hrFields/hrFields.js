@@ -212,6 +212,12 @@ const HRFields = ({
     {value:"Restricted Stock Units (RSUs)", label:"Restricted Stock Units (RSUs)"},
   ];
 
+  const industryOptions = [
+    { value: "Service", label: "Service" },
+    {value:"Product", label:"Product"},
+    {value:"Manufacturing", label:"Manufacturing"},
+  ]
+
   const [timeZoneList,setTimezoneList] = useState([]);
 
   const watchSalesPerson = watch("salesPerson");
@@ -231,8 +237,9 @@ const HRFields = ({
   const [isProfileView,setIsProfileView] = useState(false)
   const [isPostaJob,setIsPostaJob] = useState(false)
   const [isVettedProfile,setIsVettedProfile] = useState(true)
-  const [peopleManagemantexp, setHasPeopleManagementExp] = useState(1)
+  const [peopleManagemantexp, setHasPeopleManagementExp] = useState(null)
   const [CompensationValues, setCompensationValues] = useState([]);
+  const [specificIndustry, setSpecificIndustry] = useState([]);
   /* const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'secondaryInterviewer',
@@ -1365,6 +1372,12 @@ const HRFields = ({
       hrFormDetails.PayPerType =  userCompanyTypeID
       hrFormDetails.IsConfidentialBudget = isBudgetConfidential
       hrFormDetails.IsFresherAllowed = isFreshersAllowed
+      hrFormDetails.industryType= specificIndustry?.join('^')
+      hrFormDetails.compensationOption = CompensationValues?.join('^')
+      hrFormDetails.hasPeopleManagementExp = peopleManagemantexp !== null ? peopleManagemantexp === 1 ? true : false : null
+      hrFormDetails.prerequisites = watch('parametersHighlight') ?? ''
+      hrFormDetails.HRIndustryType = specificIndustry?.join('^')
+      hrFormDetails.StringSeparator = "^"
       
       if(userCompanyTypeID === 2){
         if(!isPostaJob && !isProfileView){
@@ -1517,7 +1530,8 @@ const HRFields = ({
       isProfileView,
       isVettedProfile,
       isFreshersAllowed,
-      isHaveJD,parseType,getUploadFileData,textCopyPastData
+      isHaveJD,parseType,getUploadFileData,textCopyPastData,
+      CompensationValues,peopleManagemantexp,specificIndustry
     ]
   );
 
@@ -2295,7 +2309,7 @@ const HRFields = ({
                       label={"Sales Person"}
                       defaultValue={
                         salesPersionNameFromEmail?.length > 0 ? salesPersionNameFromEmail 
-                          : "Select sales Persons"
+                          : "Select Sales Persons"
                       }
                       options={salesPerson && salesPerson}
                       name="salesPerson"
@@ -3091,7 +3105,7 @@ const HRFields = ({
                     value={CompensationValues}
                     options={compensationOptions}
                     onChange={(values, _) => setCompensationValues(values)}
-                    placeholder="Enter benefits"
+                    placeholder="Select Compensation"
                     tokenSeparators={[","]}
                   />
             </div>
@@ -3646,7 +3660,7 @@ const HRFields = ({
           <form id="hrForm" className={HRFieldStyle.hrFieldRightPane}>
           <div className={HRFieldStyle.row}>
             <div className={HRFieldStyle.colMd12}>
-            <HRSelectField
+            {/* <HRSelectField
 									// isControlled={true}
 									// controlledValue={controlledGoodToHave}
 									// setControlledValue={setControlledGoodToHave}
@@ -3663,20 +3677,43 @@ const HRFields = ({
 									// isError={errors['goodToHaveSkills'] && errors['goodToHaveSkills']}
 									// required
 									// errorMsg={'Please select Compensation options.'}
-								/>
+								/> */}
+                 <div className={HRFieldStyle.labelForSelect}>Specify the industry from which the client needs talents</div>
+                 <Select
+                    mode="tags"
+                    style={{ width: "100%" }}
+                    value={specificIndustry}
+                      onChange={(values, _) => setSpecificIndustry(values)}
+                    options={industryOptions}
+                    placeholder="Select Industry"
+                    tokenSeparators={[","]}
+                  />
+                  <ul className={HRFieldStyle.selectFieldBox}>
+            {industryOptions?.map(option => (
+                      !specificIndustry?.some(val => val === option.value) && (
+                        <li key={option.value} style={{ cursor: "pointer" }} onClick={() => setSpecificIndustry([...specificIndustry, option?.value])}>
+                          <span>{option.label} <img src={plusSkill} loading="lazy" alt="star" /></span>
+                        </li>
+                      )
+                    ))}
+										{/* {compensationOptions?.map((skill) => (																	
+											<li key={skill.value} onClick={() => console.log(skill)}><span>{skill.value}<img src={plusSkill} loading="lazy" alt="star" /></span></li>
+										))}	 */}
+									</ul>
             </div>
+            
             </div>
 
             <div className={HRFieldStyle.colMd12}>
 <div style={{display:'flex',flexDirection:'column',marginBottom:'32px'}}> 
 								<label style={{marginBottom:"12px"}}>
-                Does the client reauire a talent with oeoole management exoerience?
+                Does the client reauire a talent with people management exoerience?
 							{/* <span style={{color:'#E03A3A',marginLeft:'4px', fontSize:'14px',fontWeight:700}}>
 								*
 							</span> */}
 						</label>
 						<Radio.Group
-            disabled={disableYypeOfPricing}
+           
 							// defaultValue={'client'}
 							// className={allengagementReplceTalentStyles.radioGroup}
 							onChange={e=> {setHasPeopleManagementExp(e.target.value)}}
@@ -3688,24 +3725,20 @@ const HRFields = ({
 							</div>
 </div>
 
-<div className={HRFieldStyle.colMd6}>
+<div className={HRFieldStyle.colMd12}>
                   <div className={HRFieldStyle.formGroup}>
                     <HRInputField
                       register={register}
                       errors={errors}
                       isTextArea={true}
-                      validationSchema={{
-                        required: "please enter the number of working hours.",
-                        min: {
-                          value: 1,
-                          message: `please enter the value more than 0`,
-                        },
-                      }}
-                      label="No Of Working Hours"
-                      name="workingHours"
-                      type={InputType.NUMBER}
-                      placeholder="Please enter no of working hours."
-                      required={watch("availability")?.value === "Part Time"}
+                      rows={4}
+                      label="Highlight any key parameters or things to consider for finding the best match talents"
+                      name="parametersHighlight"
+                      type={InputType.Text}
+                      placeholder="Ex: Need male candidates only, need candidates who have worked on enterprise softwares, need candidates
+who have worked in scaled start ups."
+                      // required={watch("availability")?.value === "Part Time"}
+                    
                     />
                   </div>
                 </div>

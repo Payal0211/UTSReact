@@ -112,7 +112,9 @@ const JobDescriptionComponent = ({error,helperProps}) => {
 
     return(    
       <>
-        <div className="formFields-box">
+        <div 
+        // className="formFields-box"
+        >
         {(isLoading) && <Space size="middle">
           <Spin size="large" />
         </Space>
