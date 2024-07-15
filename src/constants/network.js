@@ -70,6 +70,8 @@ export class CompanysAPI {
 	static UPDATE_COMPANY_DETAILS = 'UpdateDetails'
 	static VALIDATE_COMPANY_CLIENT = 'ValidateCompanyClient'
 	static DELETE_FUNDING = "DeleteFundingDetails"
+	static PREVIEW = 'Preview'
+	static HR_UPDATE_PREVIEW = 'HRUpdatePreviewDetails'
 }
 export class MethodType {
 	static GET = '/get';
@@ -443,4 +445,30 @@ export class ClientPortalTrackingReport{
 	static CLIENT_PORTAL_TRACKING_FILTER="ClientPortalTrackingDetails/Filters";
 	static CLIENT_PORTAL_TRACKING_LIST="ClientPortalTrackingDetails/List";
 	static CLIENT_PORTAL_TRACKING_POPUP_LIST="ClientPortalTrackingDetails/PopUPList";
+}
+
+export class RegisterSteps{
+	static  GET_ROLE_HIRING_DETAILS = 'GetRoleAndHiringTypeDetails';
+	static  SAVEROLEANDHIRINGTYPEDETAILS = 'SaveRoleAndHiringTypeDetails';
+	static  GETTALENTSROLES = 'GetTalentsRoles';
+	static TEXTEXTRACTION = 'TextExtraction/';
+	// static EXTRACTTEXT = 'ExtractTextUsingPython';
+	static EXTRACTTEXT = 'ExtractTextUsingclaudAI';
+	static EXTRACTTEXTAI = 'ExtractTextUsingclaudAI';
+	static GET_SKILLS_AND_BUDGET = 'GetSkillAndBudgetDetails';
+	static GET_SKILLS = 'GetSkills';
+	static GET_CURRENCY = 'GetCurrency';
+	static SAVE_SKILLS_AND_BUGET = 'SaveSkillAndBudgetDetails';
+	static EMPLOYEEMENTDETAILS = 'EmploymentDetails/';
+	static GETACHIEVEMENT  = 'GetAchievementWithUplersReason';
+	static SAVEEMPLOYEMENTDETAILS = 'SaveEmploymentDetails';
+	static GETTIMEZONEPREFERENCE = 'GetTimeZonePreference';
+	static GETTALENTTIMEZONE = 'GetTalentTimeZone';
+	static GETSTARTENDTIME  = 'GetStartEndTime';
+	static GETCONTACTTIMEZONE = 'GetContactTimeZone';
+	static GET_COUNTRY_LIST= 'GetCountryListByCountryCodeOrPostalcode';
+	static SAVE_STEPS_INFO = 'SaveStepsInfo';
+	static GET_HIRING_TYPE_PRICING = 'GetHiringTypePricing';
+	static GET_PAYROLL_TYPE = 'GetPayrollType';
+	static FETCH_COUNTRIES_BASED_ON_CITY= 'FetchCountriesBasedonCity';
 }

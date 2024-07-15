@@ -25,9 +25,12 @@ const CompanyProfileCard = ({
 
   const [title, setTitle] = useState("Company Details");
   const [updateDate, setUpdateDate] = useState(false);
+  const[isLoading,setIsLoading] = useState(false);
   const id = useParams();
   const getHRDetails = async () => {
+    setIsLoading(true);
     let response = await hiringRequestDAO.getViewHiringRequestDAO(id?.hrid);
+    setIsLoading(false);
     setUpdateTRDetails(response?.responseBody);
   };
   const userSessionMemo = useMemo(
@@ -66,10 +69,11 @@ const CompanyProfileCard = ({
 
   const CompanyProfileCardComp = () => {
     return (
+      
       <div
         className={CompanyProfileCardStyle.companyCard}
         style={{ marginTop: "10px" }}
-      >
+      >        
         <div className={CompanyProfileCardStyle.companyCardBody}>
           <div className={CompanyProfileCardStyle.partWise}>
             <div style={{ marginBottom: "10px" }}>
@@ -613,6 +617,7 @@ const CompanyProfileCard = ({
             setUpdateTR={() => setUpdateTR(true)}
             onCancel={() => setUpdateTR(false)}
             updateTRDetail={updateTRDetail}
+            loader={isLoading}
           />
         </Modal>
       )}
