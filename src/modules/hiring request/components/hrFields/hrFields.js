@@ -1390,6 +1390,7 @@ const HRFields = ({
         }
       }
       hrFormDetails.ParsingType = getParsingType(isHaveJD,parseType)
+      hrFormDetails.JDDescription = getParsingType(isHaveJD,parseType) === 'CopyPaste' ?  getHRdetails?.salesHiringRequest_Details?.JobDescription : null
       
 
       if(type !== SubmitType.SAVE_AS_DRAFT){
@@ -1478,6 +1479,7 @@ const HRFields = ({
       setIsSavedLoading(false);
     },
     [
+      getHRdetails,
       addHRResponse,
       contactID,
       getContactAndSaleID?.contactID,

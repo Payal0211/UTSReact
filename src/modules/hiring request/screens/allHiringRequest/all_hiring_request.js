@@ -632,7 +632,10 @@ const AllHiringRequestScreen = () => {
             miscData?.loggedInUserTypeID === UserAccountRole.SALES ||
             miscData?.loggedInUserTypeID === UserAccountRole.SALES_MANAGER ||
             miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
-            miscData?.loggedInUserTypeID === UserAccountRole.MARKETING) && (
+            miscData?.loggedInUserTypeID === UserAccountRole.MARKETING ||
+            miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+            miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS 
+          ) && (
             <HROperator
             title={"Add New HR"}
               // title={
@@ -669,7 +672,9 @@ const AllHiringRequestScreen = () => {
                       UserAccountRole.TALENTOPS ||
                     miscData?.loggedInUserTypeID ===
                       UserAccountRole.OPS_TEAM_MANAGER || miscData?.loggedInUserTypeID === UserAccountRole.BDR ||
-                    miscData?.loggedInUserTypeID === UserAccountRole.MARKETING
+                    miscData?.loggedInUserTypeID === UserAccountRole.MARKETING ||
+                    miscData?.loggedInUserTypeID === UserAccountRole.OPS_TEAM_MANAGER ||
+                    miscData?.loggedInUserTypeID === UserAccountRole.TALENTOPS
                   ? [
                       {
                         label: "Add New HR",
