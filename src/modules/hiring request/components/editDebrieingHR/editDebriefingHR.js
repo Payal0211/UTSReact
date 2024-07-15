@@ -384,7 +384,7 @@ const EditDebriefingHR = ({
 					shouldDirty: true,
 				});
 
-		setValue('hrTitle',JDParsedSkills?.roleName ?? '')
+		JDParsedSkills?.roleName && setValue('hrTitle',JDParsedSkills?.roleName ?? '')
 	}, [JDParsedSkills, setValue]);
 
 	const openPublishModal = ()=>{
@@ -869,7 +869,7 @@ const checkValChnage = () => {
                           `* ${errors?.hrTitle?.message}`}
                       </div>
                     )}
-                  </div>
+                  </div> 
 								</div>
 								
 								<div className={DebriefingHRStyle.mb50}>
