@@ -12,6 +12,7 @@ import DuringPreOnboarding from "./duringPreOnboarding";
 import CompleteLegal from "./completeLegal";
 import BeforeKickOff from "./beforeKickOff";
 import AfterKickOff from "./afterKickOff";
+import LegalPreOnboarding from "./legalPreOnboarding";
 
 
 
@@ -29,30 +30,35 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
     const EnableNextTab = useCallback((talentDeteil,HRID, tabLabel) =>{
         const tabList = [
             {
-                label: 'Before Pre-Onboarding',
-                key: 'Before Pre-Onboarding',
+                label: 'Contract Details',
+                key: 'Contract Details',
                 children: <BeforePreOnboarding  talentDeteils={talentDeteil} HRID={HRID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={actionType} setMessage={setMessage}/>,
             },
             {
-                label: 'During Pre-Onboarding',
-                key: 'During Pre-Onboarding',
-                children: <DuringPreOnboarding  talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+                label: 'Legal',
+                key: 'Legal',
+                children: <LegalPreOnboarding  talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} />,
             },
-            {
-                label: 'Complete Legal',
-                key: 'Complete Legal',
-                children: <CompleteLegal talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab}  callAPI={callAPI} />
-            },
-            {
-                label: 'Before Kick-off',
-                key: 'Before Kick-off',
-                children: <BeforeKickOff talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
-            },
-            {
-                label: 'After Kick-off',
-                key: 'After Kick-off',
-                children: <AfterKickOff talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
-            },
+            // {
+            //     label: 'During Pre-Onboarding',
+            //     key: 'During Pre-Onboarding',
+            //     children: <DuringPreOnboarding  talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+            // },
+            // {
+            //     label: 'Complete Legal',
+            //     key: 'Complete Legal',
+            //     children: <CompleteLegal talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab}  callAPI={callAPI} />
+            // },
+            // {
+            //     label: 'Before Kick-off',
+            //     key: 'Before Kick-off',
+            //     children: <BeforeKickOff talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+            // },
+            // {
+            //     label: 'After Kick-off',
+            //     key: 'After Kick-off',
+            //     children: <AfterKickOff talentDeteils={talentDeteil} HRID={HRID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+            // },
         ]
 
        let tabIndex = tabList.findIndex(tab => tab.label === tabLabel) 
@@ -72,30 +78,35 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
 
             const tabList = [
                 {
-                    label: 'Before Pre-Onboarding',
-                    key: 'Before Pre-Onboarding',
+                    label: 'Contract Details',
+                    key: 'Contract Details',
                     children: <BeforePreOnboarding  talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} />,
                 },
                 {
-                    label: 'During Pre-Onboarding',
-                    key: 'During Pre-Onboarding',
-                    children: <DuringPreOnboarding  talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab}  callAPI={callAPI} />,
+                    label: 'Legal',
+                    key: 'Legal',
+                    children: <LegalPreOnboarding  talentDeteils={AMFlags.talent} HRID={AMFlags.hrID}  setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} actionType={AMFlags.actionType} setMessage={setMessage} />,
                 },
-                {
-                    label: 'Complete Legal',
-                    key: 'Complete Legal',
-                    children: <CompleteLegal talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />
-                },
-                {
-                    label: 'Before Kick-off',
-                    key: 'Before Kick-off',
-                    children: <BeforeKickOff talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal}  EnableNextTab={EnableNextTab} callAPI={callAPI} />,
-                },
-                {
-                    label: 'After Kick-off',
-                    key: 'After Kick-off',
-                    children: <AfterKickOff talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal}  EnableNextTab={EnableNextTab} callAPI={callAPI} />,
-                },
+                // {
+                //     label: 'During Pre-Onboarding',
+                //     key: 'During Pre-Onboarding',
+                //     children: <DuringPreOnboarding  talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab}  callAPI={callAPI} />,
+                // },
+                // {
+                //     label: 'Complete Legal',
+                //     key: 'Complete Legal',
+                //     children: <CompleteLegal talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal} EnableNextTab={EnableNextTab} callAPI={callAPI} />
+                // },
+                // {
+                //     label: 'Before Kick-off',
+                //     key: 'Before Kick-off',
+                //     children: <BeforeKickOff talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal}  EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+                // },
+                // {
+                //     label: 'After Kick-off',
+                //     key: 'After Kick-off',
+                //     children: <AfterKickOff talentDeteils={AMFlags.talent} HRID={AMFlags.hrID} setShowAMModal={setShowAMModal}  EnableNextTab={EnableNextTab} callAPI={callAPI} />,
+                // },
             ]
 
            let tabIndex = tabList.findIndex(tab => tab.label === AMFlags.tabLabel) 
@@ -138,8 +149,8 @@ export default function PreOnboardingTabModal({showAMModal, setShowAMModal, AMFl
         </div>}
         
 
-        <div className={HRDetailStyle.modalLabel}>Onboarding Process</div>
-        <div className={HRDetailStyle.modalLabelMsg}>Kindly provide the required information for pre-onboarding in the AM handover process.</div>
+        <div className={HRDetailStyle.modalLabel}>Confirm contract details</div>
+        <div className={HRDetailStyle.modalLabelMsg}>Kindly provide the required information</div>
 
         {/* HTML Code Starts for Modal - Before Pre-Onboarding */}
         <Tabs

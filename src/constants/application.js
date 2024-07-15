@@ -157,8 +157,10 @@ export class TalentOnboardStatus {
 	static ANOTHER_ROUND_INTERVIEW = 'Another Round Interview';
 	static SCHEDULE_ANOTHER_ROUND_INTERVIEW = 'Schedule Another Interview Round';
 	static GO_TO_ONBOARD = "Go to OnBoard"
+	static CONFIRM_CONTRACT_DETAILS = "Confirm Contract Details";
 	static VIEW_ENGAGEMENT = 'View Engagement'
 	static ASSIGN_TSC = 'Assign TSC'
+	static LEGAL = 'Legal'
 }
 
 export class HRCTA {

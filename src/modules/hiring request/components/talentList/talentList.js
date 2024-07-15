@@ -1333,16 +1333,31 @@ const TalentList = ({
 																setTalentIndex(item?.TalentID);
 																break;
 															}
-															case TalentOnboardStatus.GO_TO_ONBOARD: {
+															case TalentOnboardStatus.CONFIRM_CONTRACT_DETAILS: {
 																// let onboardID = item.OnBoardId
 																// navigate(`/onboard/edit/${onboardID}`)
 																// window.scrollTo(0, 0)
 																setShowAMModal(true);
 																let Flags = {
 																	talent: item,
-																	tabLabel: 'Before Pre-Onboarding',
+																	tabLabel: 'Contract Details',
 																	forTalent: true,
-																	actionType: 'GotoOnboard',
+																	actionType: 'ContractDetails',
+																	hrID: hrId
+																}
+																setAMFlags(Flags)
+																break;
+															}
+															case TalentOnboardStatus.LEGAL: {
+																// let onboardID = item.OnBoardId
+																// navigate(`/onboard/edit/${onboardID}`)
+																// window.scrollTo(0, 0)
+																setShowAMModal(true);
+																let Flags = {
+																	talent: item,
+																	tabLabel: 'Legal',
+																	forTalent: true,
+																	actionType: 'Legal',
 																	hrID: hrId
 																}
 																setAMFlags(Flags)

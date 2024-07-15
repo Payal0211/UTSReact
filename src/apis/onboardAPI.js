@@ -168,4 +168,32 @@ export const OnboardAPI = {
 			return errorDebug(error, 'HiringRequestAPI.uploadPolicyFile');
 		}
 	},
+	getAMUsers: async () => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS +
+			OnboardsAPI.GET_AM_USER;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getAMUsers');
+		}
+	},
+	getStateList: async () => {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS +
+			OnboardsAPI.GET_STATE_LIST;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'HiringRequestAPI.getStateList');
+		}
+	},
 };
